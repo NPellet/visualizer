@@ -165,7 +165,7 @@ define( [ ], function( ) {
 		kill: function() {
 
 			this.graph.shapeZone.removeChild(this.group);
-			this.graph.removeShape( this );
+			this.graph._removeShape( this );
 
 			if( this.options.onRemove ) {
 				this.options.onRemove.call( this );
@@ -458,12 +458,15 @@ define( [ ], function( ) {
 		},
 
 
-		select: function() {
+		select: function( mute ) {
 
 			this._selected = true;
 			this.selectStyle();
 			this.setHandles();
-			this.graph.selectShape(this);
+
+			if( ! mute ) {
+				this.graph.selectShape( this, true );
+			}
 		},
 
 		unselect: function() {
@@ -525,7 +528,7 @@ define( [ ], function( ) {
 				function( e ) {
 					this.moving = false;
 					this.resize = false;
-					this.graph.shapeMoving(false);
+					this.graph.elementMoving(false);
 
 					return this.handleMouseUpImpl( e );
 				}  
@@ -534,7 +537,7 @@ define( [ ], function( ) {
 			mouseMove: [
 				function( e ) {
 
-					var coords = this.graph.getXY( e );
+					var coords = this.graph._getXY( e );
 					
 					var
 						deltaX = this.serie.getXAxis( ).getRelVal( coords.x - this.mouseCoords.x ),
@@ -575,7 +578,7 @@ define( [ ], function( ) {
 					e.preventDefault();
 
 					this.graph.shapeZone.appendChild( this.group ); // Put the shape on top of the stack !
-					this.graph.shapeMoving( this );
+					this.graph.elementMoving( this );
 
 					if( ! this._selected ) {
 						this.preventUnselect = true;
@@ -584,7 +587,7 @@ define( [ ], function( ) {
 							self.timeoutSelect = false;
 						}, 100);
 					}
-					this.mouseCoords = this.graph.getXY( e );	
+					this.mouseCoords = this.graph._getXY( e );	
 
 					return this.handleMouseDownImpl( e, this.mouseCoords );
 				}
@@ -629,7 +632,7 @@ define( [ ], function( ) {
 
 			if( this.isLocked() ) {
 				
-				this.graph.shapeMoving( false );
+				this.graph.elementMoving( false );
 				this.handleSelected = false;
 				this.moving = true;
 				return;

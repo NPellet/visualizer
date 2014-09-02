@@ -3,36 +3,26 @@ define( function() {
 
 	return [ function( domGraph ) {
 
-			var graphinstance = new Graph( domGraph, {}, {
-  "bottom": [
-    {
-      "flipped": false,
-      "primaryGrid": true,
-      "secondaryGrid": false,
-      "labelValue": "X axis",
-      "forcedMin": false,
-      "forcedMax": false
-    }
-  ],
-  "left": [
-    {
-      "flipped": false,
-      "primaryGrid": true,
-      "secondaryGrid": true,
-      "labelValue": "Y axis",
-      "forcedMin": false,
-      "forcedMax": false
-    }
-  ]
-}, function( graphinstance ) {
+			var graphinstance = new Graph( domGraph, { }, { }, function( graphinstance ) {
 			graphinstance.redraw( );
 			
-			graphinstance.newSerie("temp_nh")
-				.autoAxis()
-				.setData( series[ 0 ] );
+      graphinstance.newSerie("temp_nh")
+        .autoAxis()
+        .setData( series[ 0 ] );
 
-graphinstance.redraw();
+      graphinstance.redraw();
 			graphinstance.drawSeries();
+
+
+      var serie2 = [ 1850, 100, 1900 , 0, 1950, -100 ];
+      graphinstance.newSerie("222")
+        .autoAxis()
+        .setData( serie2 )
+        .setMarkers();
+      
+graphinstance.drawSeries();
+
+
 		});
 
 		}, 

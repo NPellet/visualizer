@@ -123,7 +123,7 @@ define( [  ], function( ) {
 				}
 
 				var line = shape.graph.getLinkingLine();
-				var coords = shape.graph.getXY( e );
+				var coords = shape.graph._getXY( e );
 
 				line.setAttribute('x2', coords.x - shape.graph.getPaddingLeft( ) );
 				line.setAttribute('y2', coords.y - shape.graph.getPaddingTop( ) );
@@ -194,7 +194,7 @@ define( [  ], function( ) {
 */
 			graph.shapeHandlers.mouseDown.push( function( e ) {
 			
-				if( self.graph.allowPlugin( e, self.plugin ) ) {
+				if( self.graph.isPluginAllowed( e, self.plugin ) ) {
 
 					this.moving = false;
 					this.handleSelected = false;

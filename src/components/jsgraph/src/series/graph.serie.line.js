@@ -12,15 +12,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			flip: false,
 			label: "",
 
-			markers: {
-				show: false,
-				type: 1,
-				zoom: 1,
-				strokeColor: false,
-				strokeWidth: 1,
-				fillColor: 'transparent'
-			},
-			
+			markers: false,
 			trackMouse: false,
 			trackMouseLabel: false,
 			trackMouseLabelRouding: 1,
@@ -106,7 +98,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 
 				for(var n = 0, m = this.options.autoPeakPickingNb; n < m; n++) {
 
-					this.picksDef.push( this.graph.makeShape( { 
+					this.picksDef.push( this.graph.newShape( { 
 
 							type: 'label', 
 							label: {
@@ -286,9 +278,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 				this.minY = minX;
 			}
 
-
-			this.graph.updateAxes();
-
+			this.graph._updateAxes();
 
 			return this;
 		},
@@ -381,10 +371,15 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 				}
 			}
 
-			this.graph.series.splice(this.graph.series.indexOf(this), 1);
-
+			this.graph._removeSerie( this );
+			
 			if( ! noRedraw ) {
 				this.graph.redraw();
+			}
+
+			if( this.graph.legend ) {
+
+				this.graph.legend.update( );
 			}
 		},
 
@@ -472,7 +467,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 
 
 		_getMarkerIndexFromEvent: function(e) {
-			var px = this.graph.getXY(e);
+			var px = this.graph._getXY(e);
 			return this.searchIndexByPxXY((px.x - this.graph.getPaddingLeft()), (px.y - this.graph.getPaddingTop()));
 
 		},
@@ -541,7 +536,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			var xData = this.xData;
 
 			if( this.degradationPx ) {
-				data = this.getDegradedData();
+				data = getDegradedData( this );
 				xData = data[ 1 ];
 				data = data[ 0 ];
 			}
@@ -644,7 +639,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 
 						for( ; j < m ; j += 1 ) {
 
-							if( this.markerPoints ) {
+							if( this.markersShown() ) {
 
 								this.getMarkerCurrentFamily( k );								
 							}
@@ -702,7 +697,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 						for( ; j < m ; j += 2 ) {
 
 
-							if( this.markerPoints ) {
+							if( this.markersShown() ) {
 
 								this.getMarkerCurrentFamily( k );
 								
@@ -794,7 +789,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 				this.lines.splice(i, 1);
 			}
 
-			this.insertMarkers();
+			insertMarkers( this );
 
 			this.groupMain.insertBefore(this.groupLines, next);
 			var label;
@@ -804,242 +799,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 		},
 
 
-		getDegradedData: function() { // Serie redrawing
-
-
-			var self = this,
-				xpx, 
-				ypx, 
-				xpx2,
-				ypx2,
-				i = 0, 
-				l = this.data.length, 
-				j = 0, 
-				k, 
-				m,
-				degradationMin, degradationMax, degradationNb, degradationValue, degradation, degradationMinMax = [],
-				incrXFlip = 0, incrYFlip = 1,
-				degradeFirstX, degradeFirstXPx,
-				optimizeMonotoneous = this.isXMonotoneous(), optimizeMaxPxX = this.getXAxis().getMaxPx(), optimizeBreak, buffer;
-
 		
-			if( this.isFlipped( ) ) {
-				incrXFlip = 1;
-				incrYFlip = 0;
-			}
-
-
-			var datas = [];
-			var xData = [],
-				dataY = [],
-				sum = 0;
-
-			if( this.mode == 'x_equally_separated' ) {
-
-				if( this.isFlipped( ) ) {
-					return [ this.data, this.xData ];
-				}
-
-
-				dataY = [];
-
-				for( ; i < l ; i ++ ) {
-					
-					j = 0, k = 0, m = this.data[ i ].length;
-
-					var delta = Math.round( this.degradationPx / this.getXAxis().getRelPx( this.xData[ i ].dx ) );
-
-					if( delta == 1 ) {
-						xData.push( this.xData[ i ] );
-						datas.push( this.data[ i ] );
-					}
-
-					degradationMin = Infinity;
-					degradationMax = - Infinity;
-
-
-					for( ; j < m ; j += 1 ) {
-
-						if( this.markerPoints ) {
-
-							this.getMarkerCurrentFamily( k );	
-						}
-
-
-						
-						xpx = this.xData[ i ].x + j * this.xData[ i ].dx;
-
-
-						if( optimizeMonotoneous && xpx < 0 ) {
-							buffer = [ xpx, ypx, this.data[ i ][ j ] ];
-							continue;
-						}
-
-						if( optimizeMonotoneous && buffer ) {
-
-							sum += buffer[ 2 ];
-							degradationMin = Math.min( degradationMin, buffer[ 2 ] );
-							degradationMax = Math.max( degradationMax, buffer[ 2 ] );
-
-							buffer = false;
-							k++;
-						}
-
-						sum += this.data[ i ][ j ];
-						degradationMin = Math.min( degradationMin, this.data[ i ][ j ] );
-						degradationMax = Math.max( degradationMax, this.data[ i ][ j ] );
-
-
-
-						if( ( j % delta == 0 && j > 0 ) || optimizeBreak ) {
-
-							dataY.push( sum / delta );
-
-							degradationMinMax.push( ( this.xData[ i ].x + j * this.xData[ i ].dx - ( delta / 2 ) * this.xData[ i ].dx ), degradationMin, degradationMax );
-
-							degradationMin = Infinity;
-							degradationMax = - Infinity;
-
-							
-							sum = 0;
-						}
-
-						if( optimizeMonotoneous && xpx > optimizeMaxPxX ) {
-							optimizeBreak = true;
-							break;
-						}
-						
-						k++;
-					}
-
-					datas.push( dataY );
-					xData.push( { dx: delta * this.xData[ i ].dx, x: this.xData[ i ].x + ( delta * this.xData[ i ].dx / 2 ) });
-				}
-
-
-				if( this.degradationSerie ) {
-					this.degradationSerie.setData( degradationMinMax );
-					this.degradationSerie.draw();
-				}
-
-				return [ datas, xData ] 
-
-			}
-
-
-			for(; i < l ; i++) {
-				
-				j = 0,
-				k = 0,
-				m = this.data[ i ].length;
-
-				
-				degradationNb = 0;
-				degradationValue = 0;
-
-				degradationMin = Infinity;
-				degradationMax = - Infinity;
-
-				var data = [];
-
-				for( ; j < m ; j += 2 ) {
-
-					xpx2 = this.getX( this.data[ i ][ j + incrXFlip ] );
-
-					if( optimizeMonotoneous && xpx2 < 0 ) {
-
-						buffer = [
-							xpx2,
-							this.getY( this.data[ i ][ j + incrYFlip ] ),
-							this.data[ i ][ j + incrXFlip ],
-							this.data[ i ][ j + incrYFlip ]
-						];
-
-						continue;
-					}
-
-					if( optimizeMonotoneous && buffer) {
-
-						degradationValue += buffer[ 3 ];
-						degradationNb ++;
-
-						degradationMin = Math.min( degradationMin, buffer[ 3 ] );
-						degradationMax = Math.max( degradationMax, buffer[ 3 ] );
-
-						degradeFirstX = buffer[ 2 ];
-						degradeFirstXPx = buffer[ 0 ];
-
-						buffer = false;
-						k++;
-
-
-					} else if( degradeFirstX === undefined ) {
-
-						degradeFirstX = this.data[ i ][ j + incrXFlip ];
-						degradeFirstXPx = xpx2;
-					}
-					
-
-					if( xpx2 - degradeFirstXPx > this.degradationPx && j < m ) {
-
-
-						data.push( 
-							( degradeFirstX + this.data[ i ][ j + incrXFlip ] ) / 2,
-							degradationValue / degradationNb
-						);
-
-						degradationMinMax.push( ( this.data[ i ][ j + incrXFlip ] + degradeFirstX ) / 2, degradationMin, degradationMax );
-
-
-						if( degradeFirstXPx > optimizeMaxPxX ) {
-							break;
-						}
-
-						degradeFirstX = undefined;
-						degradationNb = 0;
-						degradationValue = 0;
-						degradationMin = Infinity;
-						degradationMax = - Infinity;
-
-						k++;
-					} 
-
-					degradationValue += this.data[ i ][ j + incrYFlip ];
-					degradationNb ++;
-
-					degradationMin = Math.min( degradationMin, this.data[ i ][ j + incrYFlip ] );
-					degradationMax = Math.max( degradationMax, this.data[ i ][ j + incrYFlip ] );
-
-
-					if( optimizeMonotoneous && xpx2 > optimizeMaxPxX ) {
-						optimizeBreak = true;
-					}
-				
-					
-					xpx = xpx2;
-					ypx = ypx2;
-
-				}
-				
-				datas.push( data );
-
-				if( optimizeBreak ) {
-					break;
-				}
-			}
-
-
-			if( this.degradationSerie ) {
-				this.degradationSerie.setData( degradationMinMax );
-				this.degradationSerie.draw();
-			}
-	
-			return [ datas ];
-
-
-		},
-
-
 
 		getMarkerCurrentFamily: function( k ) {
 
@@ -1111,73 +871,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			dom.setAttribute('stroke-width', family.strokeWidth || 1 );
 		},
 
-		makePeakPicking: function(allY) {
-				
-			var self = this;
-
-			$.when.apply( $, this.picksDef ).then( function() {
-
-				var x,
-					px,
-					passed = [],
-					px,
-					i = 0,
-					l = allY.length,
-					k, m, y;
-				
-				allY.sort(function(a, b) {
-					return b[0] - a[0];
-				});
-
-				for( ; i < l ; i ++ ) {
-
-					x = allY[i][1],
-					px = self.getX(x),
-					k = 0, m = passed.length,
-					y = self.getY(allY[i][0]);
-
-					if( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
-						continue;
-					}
-
-					if( y > self.getYAxis().getMinPx() || y < self.getYAxis().getMaxPx() ) {
-						continue;
-					}
-
-					for( ; k < m ; k++) {
-						if(Math.abs(passed[k] - px) < self.options.autoPeakPickingMinDistance) {
-							break;
-						}
-					}
-
-					if(k < m) {
-						continue;
-					}
-
-					if( ! self.picks[ m ] ) {
-						return;
-					}
-
-
-
-					self.picks[ m ].set('labelPosition', { 
-															x: x,
-					 										dy: "-10px"
-					 									}
-					 				);
-
-					self.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
-					passed.push( px );
-
-					if(passed.length == self.options.autoPeakPickingNb) {
-						break;
-					}
-				}
-
-				self.graph.redrawShapes();
-
-			});
-		},
+		
 
 		hideTrackingMarker: function() {
 			this.marker.setAttribute('display', 'none');
@@ -1213,7 +907,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 				return currentLine;
 			}
 
-			if( ! ( xpx > this.getXAxis().getMaxPx() || xpx < this.getXAxis().getMinPx() ) ) {
+			if( this.markersShown() && ! ( xpx > this.getXAxis().getMaxPx() || xpx < this.getXAxis().getMinPx() ) ) {
 
 				drawMarkerXY( this.markerFamily[ this.markerCurrentFamily ], xpx, ypx );
 			}
@@ -1574,18 +1268,23 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 		},
 
 		getLineDashArray: function() {
+
+
 			switch(this.options.lineStyle) {
 				
-				case 2: 
-					return "5, 5";
-				break;
+				case 2: return "1, 1"; break;
+				case 3: return "2, 2"; break;
+				case 3: return "3, 3"; break;
+				case 4: return "4, 4"; break;
+				case 5: return "5, 5"; break;
 
-				case 3:
-					return "2, 2"
-				break;
+				case 6: return "5 2"; break
+				case 7: return "2 5"; break
 
-				case 4: return "1, 1"; break;
-				case 5: return "2, 4"; break;
+				case 8: return "4 2 4 4"; break;
+				case 9: return "1,3,1"; break;
+				case 10: return "9 2"; break;
+				case 11: return "2 9"; break;
 
 				case false:
 				case 1:
@@ -1597,6 +1296,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 				break;
 			}
 		},
+
 
 		/*  */
 
@@ -1630,8 +1330,8 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 
 		/* MARKERS */
 
-		showMarkers: function(skipRedraw) {
-			this.options.markers.show = true;
+		showMarkers: function( skipRedraw ) {
+			this.options.markers = true;
 
 			if(!skipRedraw && this._drawn) {
 				this.draw();
@@ -1640,8 +1340,8 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			return this;
 		},
 
-		hideMarkers: function(skipRedraw) {
-			this.options.markers.show = false;
+		hideMarkers: function( skipRedraw ) {
+			this.options.markers = false;
 
 			if( ! skipRedraw && this._drawn ) {
 				this.draw();
@@ -1651,7 +1351,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 		},
 
 		markersShown: function() {
-			return this.options.markers.show;	
+			return this.options.markers;	
 		},
 /*
 		setMarkerType: function(type, skipRedraw) {
@@ -1708,6 +1408,8 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 					fillColor: '',
 				}
 			*/
+
+			this.showMarkers( true );
 
 			if( ! family ) {
 
@@ -1787,23 +1489,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			this.markerPoints = markerPoints;
 		},
 
-		insertMarkers: function() {
-
-			if( ! this.markerFamily ) {
-				return;
-			}
-
-			for( var i = 0, l = this.markerFamily.length; i < l; i ++ ) {
-
-				this.markerFamily[ i ].dom.setAttribute( 'd', this.markerFamily[ i ].path );
-				this.groupMain.appendChild( this.markerFamily[ i ].dom );
-			}
-
-
-			
-
-		},
-
+	
 
 		addLabelX: function(x, label) {
 			this.addLabelObj({
@@ -1914,7 +1600,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 				e.stopPropagation();
 				label.dragging = true;
 
-				var coords = self.graph.getXY(e);
+				var coords = self.graph._getXY(e);
 				label.draggingIniX = coords.x;
 				label.draggingIniY = coords.y;
 				self.labelDragging = label;
@@ -1968,7 +1654,6 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			}
 
 			return this.markerForLegend;
-
 		},
 
 		eraseMarkers: function() {
@@ -1998,6 +1683,321 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 		family.path += family.markerPath + ' ';
 	}
 
+	function getDegradedData( graph ) { // Serie redrawing
+
+
+		var self = graph,
+			xpx, 
+			ypx, 
+			xpx2,
+			ypx2,
+			i = 0, 
+			l = graph.data.length, 
+			j = 0, 
+			k, 
+			m,
+			degradationMin, degradationMax, degradationNb, degradationValue, degradation, degradationMinMax = [],
+			incrXFlip = 0, incrYFlip = 1,
+			degradeFirstX, degradeFirstXPx,
+			optimizeMonotoneous = graph.isXMonotoneous(), optimizeMaxPxX = graph.getXAxis().getMaxPx(), optimizeBreak, buffer;
+
+	
+		if( graph.isFlipped( ) ) {
+			incrXFlip = 1;
+			incrYFlip = 0;
+		}
+
+
+		var datas = [];
+		var xData = [],
+			dataY = [],
+			sum = 0;
+
+		if( graph.mode == 'x_equally_separated' ) {
+
+			if( graph.isFlipped( ) ) {
+				return [ graph.data, graph.xData ];
+			}
+
+
+			dataY = [];
+
+			for( ; i < l ; i ++ ) {
+				
+				j = 0, k = 0, m = graph.data[ i ].length;
+
+				var delta = Math.round( graph.degradationPx / graph.getXAxis().getRelPx( graph.xData[ i ].dx ) );
+
+				if( delta == 1 ) {
+					xData.push( graph.xData[ i ] );
+					datas.push( graph.data[ i ] );
+				}
+
+				degradationMin = Infinity;
+				degradationMax = - Infinity;
+
+
+				for( ; j < m ; j += 1 ) {
+
+					if( graph.markerPoints ) {
+
+						graph.getMarkerCurrentFamily( k );	
+					}
+
+
+					
+					xpx = graph.xData[ i ].x + j * graph.xData[ i ].dx;
+
+
+					if( optimizeMonotoneous && xpx < 0 ) {
+						buffer = [ xpx, ypx, graph.data[ i ][ j ] ];
+						continue;
+					}
+
+					if( optimizeMonotoneous && buffer ) {
+
+						sum += buffer[ 2 ];
+						degradationMin = Math.min( degradationMin, buffer[ 2 ] );
+						degradationMax = Math.max( degradationMax, buffer[ 2 ] );
+
+						buffer = false;
+						k++;
+					}
+
+					sum += graph.data[ i ][ j ];
+					degradationMin = Math.min( degradationMin, graph.data[ i ][ j ] );
+					degradationMax = Math.max( degradationMax, graph.data[ i ][ j ] );
+
+
+
+					if( ( j % delta == 0 && j > 0 ) || optimizeBreak ) {
+
+						dataY.push( sum / delta );
+
+						degradationMinMax.push( ( graph.xData[ i ].x + j * graph.xData[ i ].dx - ( delta / 2 ) * graph.xData[ i ].dx ), degradationMin, degradationMax );
+
+						degradationMin = Infinity;
+						degradationMax = - Infinity;
+
+						
+						sum = 0;
+					}
+
+					if( optimizeMonotoneous && xpx > optimizeMaxPxX ) {
+						optimizeBreak = true;
+						break;
+					}
+					
+					k++;
+				}
+
+				datas.push( dataY );
+				xData.push( { dx: delta * graph.xData[ i ].dx, x: graph.xData[ i ].x + ( delta * graph.xData[ i ].dx / 2 ) });
+			}
+
+
+			if( graph.degradationSerie ) {
+				graph.degradationSerie.setData( degradationMinMax );
+				graph.degradationSerie.draw();
+			}
+
+			return [ datas, xData ] 
+
+		}
+
+
+		for(; i < l ; i++) {
+			
+			j = 0,
+			k = 0,
+			m = graph.data[ i ].length;
+
+			
+			degradationNb = 0;
+			degradationValue = 0;
+
+			degradationMin = Infinity;
+			degradationMax = - Infinity;
+
+			var data = [];
+
+			for( ; j < m ; j += 2 ) {
+
+				xpx2 = graph.getX( graph.data[ i ][ j + incrXFlip ] );
+
+				if( optimizeMonotoneous && xpx2 < 0 ) {
+
+					buffer = [
+						xpx2,
+						graph.getY( graph.data[ i ][ j + incrYFlip ] ),
+						graph.data[ i ][ j + incrXFlip ],
+						graph.data[ i ][ j + incrYFlip ]
+					];
+
+					continue;
+				}
+
+				if( optimizeMonotoneous && buffer) {
+
+					degradationValue += buffer[ 3 ];
+					degradationNb ++;
+
+					degradationMin = Math.min( degradationMin, buffer[ 3 ] );
+					degradationMax = Math.max( degradationMax, buffer[ 3 ] );
+
+					degradeFirstX = buffer[ 2 ];
+					degradeFirstXPx = buffer[ 0 ];
+
+					buffer = false;
+					k++;
+
+
+				} else if( degradeFirstX === undefined ) {
+
+					degradeFirstX = graph.data[ i ][ j + incrXFlip ];
+					degradeFirstXPx = xpx2;
+				}
+				
+
+				if( xpx2 - degradeFirstXPx > graph.degradationPx && j < m ) {
+
+
+					data.push( 
+						( degradeFirstX + graph.data[ i ][ j + incrXFlip ] ) / 2,
+						degradationValue / degradationNb
+					);
+
+					degradationMinMax.push( ( graph.data[ i ][ j + incrXFlip ] + degradeFirstX ) / 2, degradationMin, degradationMax );
+
+
+					if( degradeFirstXPx > optimizeMaxPxX ) {
+						break;
+					}
+
+					degradeFirstX = undefined;
+					degradationNb = 0;
+					degradationValue = 0;
+					degradationMin = Infinity;
+					degradationMax = - Infinity;
+
+					k++;
+				} 
+
+				degradationValue += graph.data[ i ][ j + incrYFlip ];
+				degradationNb ++;
+
+				degradationMin = Math.min( degradationMin, graph.data[ i ][ j + incrYFlip ] );
+				degradationMax = Math.max( degradationMax, graph.data[ i ][ j + incrYFlip ] );
+
+
+				if( optimizeMonotoneous && xpx2 > optimizeMaxPxX ) {
+					optimizeBreak = true;
+				}
+			
+				
+				xpx = xpx2;
+				ypx = ypx2;
+
+			}
+			
+			datas.push( data );
+
+			if( optimizeBreak ) {
+				break;
+			}
+		}
+
+
+		if( graph.degradationSerie ) {
+			graph.degradationSerie.setData( degradationMinMax );
+			graph.degradationSerie.draw();
+		}
+
+		return [ datas ];
+
+
+	};
+
+
+	function makePeakPicking( graph, allY ) {
+			
+		var self = graph;
+
+		$.when.apply( $, graph.picksDef ).then( function() {
+
+			var x,
+				px,
+				passed = [],
+				px,
+				i = 0,
+				l = allY.length,
+				k, m, y;
+			
+			allY.sort(function(a, b) {
+				return b[0] - a[0];
+			});
+
+			for( ; i < l ; i ++ ) {
+
+				x = allY[i][1],
+				px = self.getX(x),
+				k = 0, m = passed.length,
+				y = self.getY(allY[i][0]);
+
+				if( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
+					continue;
+				}
+
+				if( y > self.getYAxis().getMinPx() || y < self.getYAxis().getMaxPx() ) {
+					continue;
+				}
+
+				for( ; k < m ; k++) {
+					if(Math.abs(passed[k] - px) < self.options.autoPeakPickingMinDistance) {
+						break;
+					}
+				}
+
+				if(k < m) {
+					continue;
+				}
+
+				if( ! self.picks[ m ] ) {
+					return;
+				}
+
+
+
+				self.picks[ m ].set('labelPosition', { 
+														x: x,
+				 										dy: "-10px"
+				 									}
+				 				);
+
+				self.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
+				passed.push( px );
+
+				if(passed.length == self.options.autoPeakPickingNb) {
+					break;
+				}
+			}
+
+			self.graph.redrawShapes();
+
+		});
+	}
+
+	function insertMarkers( graph ) {
+
+		if( ! graph.markerFamily ) {
+			return;
+		}
+
+		for( var i = 0, l = graph.markerFamily.length; i < l; i ++ ) {
+			graph.markerFamily[ i ].dom.setAttribute( 'd', graph.markerFamily[ i ].path );
+			graph.groupMain.appendChild( graph.markerFamily[ i ].dom );
+		}
+	}
 
 
 	return GraphSerie;

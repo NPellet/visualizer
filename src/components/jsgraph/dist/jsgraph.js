@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.4
+ * jsGraphs JavaScript Graphing Library v1.9.7
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-08-29T22:59Z
+ * Date: 2014-09-02T02:37Z
  */
 
 (function( global, factory ) {
@@ -115,7 +115,7 @@ build['./graph.axis'] = ( function( $ ) {
 			this.label.setAttribute('text-anchor', 'middle');
 
 			this.groupGrids.setAttribute('clip-path', 'url(#_clipplot' + this.graph._creation + ')');
-			this.graph.applyStyleText(this.label);
+
 			this.group.appendChild(this.label);
 
 			this.groupSeries = document.createElementNS(this.graph.ns, 'g');
@@ -128,7 +128,7 @@ build['./graph.axis'] = ( function( $ ) {
 
 			this.group.addEventListener('mousemove', function(e) {
 				e.preventDefault();
-				var coords = self.graph.getXY(e);
+				var coords = self.graph._getXY(e);
 				self.handleMouseMoveLocal(coords.x,coords.y,e);
 
 				for(var i = 0, l = self.series.length; i < l; i++) {
@@ -149,14 +149,14 @@ build['./graph.axis'] = ( function( $ ) {
 
 			this.group.addEventListener('mouseout', function(e) {
 				e.preventDefault();
-				var coords = self.graph.getXY(e);
+				var coords = self.graph._getXY(e);
 				self.handleMouseOutLocal(coords.x,coords.y,e);
 			});
 
 			this.labels = [];
 			this.group.addEventListener('click', function(e) {
 				e.preventDefault();
-				var coords = self.graph.getXY(e);
+				var coords = self.graph._getXY(e);
 				self.addLabel(self.getVal(coords.x - self.graph.getPaddingLeft()));
 			});
 
@@ -181,7 +181,7 @@ build['./graph.axis'] = ( function( $ ) {
 				if(e.which == 3 || e.ctrlKey) {
 					return;
 				}
-				var coords = self.graph.getXY(e);
+				var coords = self.graph._getXY(e);
 
 				self.graph.currentAction = 'zooming';
 				self.graph._zoomingMode = self instanceof GraphXAxis ? 'x' : 'y';
@@ -217,6 +217,16 @@ build['./graph.axis'] = ( function( $ ) {
 
 				this.series[ i ].addLabelObj( { x: x } );
 			}
+		},
+
+		hide: function() {
+			this.options.display = false;
+			return this;
+		},
+
+		show: function() {
+			this.options.display = true;
+			return this;
 		},
 
 		setDisplay: function(bool) {
@@ -841,12 +851,12 @@ build['./graph.axis'] = ( function( $ ) {
 			
 			
 			while(incr < 1 * units[umin + 1][0] && umin > -1) {
+
 				first = false;
 				value = (value - valueRounded) * units[umin + 1][0] / units[umin][0];
 				valueRounded = Math.round(value);
 				text += " " + valueRounded + units[umin][1];
 				umin--;
-
 			}
 			
 			return text;
@@ -907,6 +917,12 @@ build['./graph.axis'] = ( function( $ ) {
 			}
 
 			this.options.tickPosition = pos;
+			return this;
+		},
+
+		toggleGrids: function( bool ) {
+			this.options.primaryGrid = bool;
+			this.options.secondaryGrid = bool;
 			return this;
 		},
 
@@ -1068,7 +1084,7 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
 				tickLabel.style.dominantBaseline = 'hanging';
 
 				this.setTickContent(tickLabel, value, options);
-				this.graph.applyStyleText(tickLabel);
+
 				this.groupTickLabels.appendChild(tickLabel);
 			}
 			this.ticks.push(tick);
@@ -1251,7 +1267,7 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
 					tickLabel.setAttribute('text-anchor', 'start');
 				}
 				tickLabel.style.dominantBaseline = 'central';
-				this.graph.applyStyleText(tickLabel);
+
 
 				this.setTickContent(tickLabel, value, options);
 
@@ -2371,7 +2387,7 @@ build['./graph.legend'] = ( function( ) {
 					e.stopPropagation();
 					e.preventDefault();
 					self.mousedown = true;
-					self.graph.shapeMoving( self );
+					self.graph.elementMoving( self );
 
 					self.rect.setAttribute('display', 'block');
 				}
@@ -2391,10 +2407,8 @@ build['./graph.legend'] = ( function( ) {
 			e.stopPropagation();
 			e.preventDefault();
 			this.mousedown = false;
-
 			this.rect.setAttribute('display', 'none');
-
-			this.graph.shapeStopMoving();
+			this.graph.elementMoving( false );
 		},
 
 		handleMouseMove: function( e ) {
@@ -2606,11 +2620,11 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 		this._dom = dom;
 		// DOM
 		
-		this.doDom();
+		this._doDom();
 
 		this.setSize( $(dom).width(), $(dom).height() );
 		this._resize();
-		this.registerEvents();
+		_registerEvents( this );
 		
 		this.dynamicLoader = new DynamicDepencies();
 		this.dynamicLoader.configure( this.options.dynamicDependencies );
@@ -2678,7 +2692,7 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			}
 		},
 
-		doDom: function() {
+		_doDom: function() {
 
 			// Create SVG element, set the NS
 			this.dom = document.createElementNS(this.ns, 'svg');
@@ -2806,7 +2820,7 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 
 		},
 
-		getXY: function(e) {
+		_getXY: function(e) {
 			
 			var x = e.clientX;
 			var y = e.clientY;
@@ -2818,154 +2832,29 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			return {x: x, y: y};
 		},
 
-		registerEvents: function() {
-			var self = this;
-
-			this._dom.addEventListener( 'keydown', function( e ) {
 		
-				e.preventDefault();
-				e.stopPropagation();
-				
-				if( e.keyCode == 8 && self.selectedShape ) {
-					self.selectedShape.kill();
-				}
-/*
-				if( e.keyCode == 16 && e.ctrlKey ) {
-					self.linkingReveal();
-				}
-*/
-
-			});
-
-/*
-			this._dom.addEventListener( 'keyup', function( e ) {
-
-				e.preventDefault();
-				e.stopPropagation();
-				self.linkingHide();
-			});*/
-
-
-
-			this.dom.addEventListener('mousemove', function(e) {
-				e.preventDefault();
-				var coords = self.getXY(e);
-				self.handleMouseMove(coords.x,coords.y,e);
-			});
-
-			this.dom.addEventListener('mousedown', function(e) {
-				
-				self.focus();
-
-				e.preventDefault( );
-				if( e.which == 3 || e.ctrlKey ) {
-					return;
-				}
-
-				var coords = self.getXY( e );
-				self.handleMouseDown( coords.x, coords.y, e );
-
-			});
-
-			this.dom.addEventListener('mouseup', function(e) {
-
-				e.preventDefault( );
-				var coords = self.getXY( e );
-				self.handleMouseUp( coords.x, coords.y, e );
-
-			});
-
-			this.dom.addEventListener('dblclick', function(e) {
-				e.preventDefault();
-				
-				if( self.clickTimeout ) {
-					window.clearTimeout( self.clickTimeout );
-				}
-
-				var coords = self.getXY(e);
-				self.cancelClick = true;
-				self.handleDblClick(coords.x,coords.y,e);
-			});
-
-			this.dom.addEventListener('click', function(e) {
-
-				// Cancel right click or Command+Click
-				if(e.which == 3 || e.ctrlKey)
-					return;
-				e.preventDefault();
-				var coords = self.getXY(e);
-				if(self.clickTimeout)
-					window.clearTimeout(self.clickTimeout);
-
-				// Only execute the action after 200ms
-				self.clickTimeout = window.setTimeout(function() {
-					self.handleClick(coords.x,coords.y,e);
-				}, 200);
-			});
-
-/*
-			this._dom.setAttribute('tabindex', 2);
-			console.log(this._dom);
-			this._dom.addEventListener('click', function() {
-				$(this._dom).focus();
-			});
-*/
-
-/*
-			this._dom.addEventListener('keydown', function(e) {
-				
-				var code = e.keyCode;
-				if(code < 37 || code > 40)
-					return;
-
-				self.applyToAxes(function(axis, position) {
-					var min = axis.getActualMin(),
-						max = axis.getActualMax(),
-						shift = (max - min) * 0.05 * (axis.isFlipped() ? -1 : 1) * ((code == 39 || code == 40) ? -1 : 1);
-					axis.setCurrentMin(min + shift);
-					axis.setCurrentMax(max + shift);
-				}, code, (code == 39 || code == 37), (code == 40 || code == 38));
-				self.refreshDrawingZone(true);
-				self.drawSeries(true);
-				// Left : 39
-				// Down: 40
-				// Right: 37
-				// Top: 38
-
-			});
-*/
-			this.rectEvent.addEventListener('mousewheel', function(e) {
-				e.preventDefault();
-				e.stopPropagation();
-				var deltaY = e.wheelDeltaY || e.wheelDelta || - e.deltaY;
-				self.handleMouseWheel(deltaY,e);	
-
-				return false;
-			});
-
-			this.rectEvent.addEventListener('wheel', function(e) {
-				e.stopPropagation();
-				e.preventDefault();
-				var deltaY = e.wheelDeltaY || e.wheelDelta || - e.deltaY;
-				self.handleMouseWheel( deltaY, e );	
-				
-				return false;
-			});
-		},
 
 		focus: function() {
 			this._dom.focus();
 		},
 
-		allowPlugin: function( e, plugin ) {
+		isPluginAllowed: function( e, plugin ) {
 
 			if( this.forcedPlugin == plugin ) {
 				return true;
 			}
 
-			var act = this.options.pluginAction[ plugin ] || {},
+			var act = this.options.pluginAction[ plugin ] || plugin,
 				shift = e.shiftKey, 
 				ctrl = e.ctrlKey;
+
+			if( act.shift === undefined ) {
+				act.shift = false;
+			}
+			
+			if( act.ctrl === undefined ) {
+				act.ctrl = false;
+			}
 
 			if(shift !== act.shift) {
 				return false;
@@ -2978,194 +2867,20 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			return true;
 		},
 
-		handleMouseDown: function( x, y, e ) {
-
-			var self = this,
-				$target = $(e.target), 
-				shift = e.shiftKey, 
-				ctrl = e.ctrlKey, 
-				keyComb = this.options.pluginAction,
-				i;
-
-			this.unselectShape();
-
-			if( this.forcedPlugin ) {
-
-				this.activePlugin = this.forcedPlugin;
-				this._pluginExecute( this.activePlugin, 'onMouseDown', [ this, x, y, e]);
-				return;
-			}
-
-
-			for( i in keyComb ) {
-
-				if( ! keyComb[i]._forced ) {
-
-					if( keyComb[ i ].shift == undefined ) {
-						keyComb[ i ].shift = false;
-					}
-					
-					if( keyComb[ i ].ctrl == undefined ) {
-						keyComb[ i ].ctrl = false;
-					}
-
-					if( shift != keyComb[i].shift ) {
-						continue;
-					}
-
-					if(ctrl != keyComb[i].ctrl) {
-						continue;
-					}
-				}
-
-				this.activePlugin = i; // Lease the mouse action to the current action
-
-				this._pluginExecute(i, 'onMouseDown', [ this, x, y, e]);
-
-				break;
-			}
-		},
-
-
-		handleMouseMove: function( x, y, e ) {
-
-			if( this.bypassHandleMouse ) {
-				this.bypassHandleMouse.handleMouseMove(e);
-				return;
-			}
-			
-			if( this._pluginExecute(this.activePlugin, 'onMouseMove', [ this, x, y, e ]) ) {
-				return;
-			};
-
-//			return;
-
-			this.applyToAxes('handleMouseMove', [x - this.options.paddingLeft, e], true, false);
-			this.applyToAxes('handleMouseMove', [y - this.options.paddingTop, e], false, true);
-
-			if(!this.activePlugin) {
-				var results = {};
-				
-				if(this.options.onMouseMoveData) {
-
-					for(var i = 0; i < this.series.length; i++) {
-						results[this.series[i].getName()] = this.series[i].handleMouseMove(false, true);
-					}
-
-					this.options.onMouseMoveData.call( this, e, results);
-				}
-				return;
-			}
-		},
-
+		
 		forcePlugin: function( plugin ) {
-			
 			this.forcedPlugin = plugin;
 		},
 
 		unforcePlugin: function( ) {
 			this.forcedPlugin = false;
 		},
-
-		handleMouseUp: function(x, y, e) {
-
-			if(this.bypassHandleMouse) {
-				this.bypassHandleMouse.handleMouseUp(e);
-				this.activePlugin = false;
-				return;
-			}
-
-			this._pluginExecute(this.activePlugin, 'onMouseUp', [ this, x, y, e ]);
-			this.activePlugin = false;
-
-		},
-
-		handleMouseWheel: function(delta, e) {
-
-
-			e.preventDefault();
-			e.stopPropagation();
-
-			if( ! this.options.wheel.type ) {
-				return;
-			}
-
-			switch( this.options.wheel.type ) {
-
-				case 'plugin':
-
-					var plugin;
-
-					if( plugin = this._plugins[ this.options.wheel.plugin ] ) {
-						plugin.onMouseWheel( delta, e );
-					}
-
-				break;
-
-
-				case 'toSeries':
-
-					for(var i = 0, l = this.series.length; i < l; i++) {
-						this.series[ i ].onMouseWheel(delta, e);
-					}
-
-				break;
-
-			}
-
-			this.redraw( );
-			this.drawSeries( true );
-		},
-
-		handleClick: function(x, y, e) {
-			
-			if( ! this.options.addLabelOnClick ) {
-				return;
-			}
-
-			if(this.currentAction !== false) {
-				return;
-			}
-
-			for(var i = 0, l = this.series.length; i < l; i++) {
-				this.series[i].addLabelX(this.series[i].getXAxis().getVal(x - this.getPaddingLeft()));
-			}
-		},
-
-		shapeMoving: function( movingElement ) {
 		
+		elementMoving: function( movingElement ) {
 			this.bypassHandleMouse = movingElement;
 		},
-
-		shapeStopMoving: function() {
-			this.bypassHandleMouse = false;
-		},
-
-		handleDblClick: function( x, y, e ) {
-		//	var _x = x - this.options.paddingLeft;
-		//	var _y = y - this.options.paddingTop;
-			var pref = this.options.dblclick;
-
-			if( ! pref || ! pref.type ) {
-				return;
-			}
-
-			switch( pref.type ) {
-
-				case 'plugin':
-
-					var plugin;
-
-					if( ( plugin = this._plugins[ pref.plugin ] ) ) {
-
-						plugin.onDblClick( this, x, y, pref.options, e );
-					}
-
-				break;
-			}
-		},
-
-		resetAxis: function() {
+	
+		_resetAxes: function() {
 
 			while(this.axisGroup.firstChild) {
 				this.axisGroup.removeChild(this.axisGroup.firstChild);
@@ -3176,14 +2891,9 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			this.axis.top = [];
 		},
 
-		resetSeries: function() {
-			for(var i = 0; i < this.series.length; i++) {
-				this.series[i].kill(true);	
-			}
-			this.series = [];
-		},
+	
 
-		applyToAxis: {
+		_applyToAxis: {
 			'string': function(type, func, params) {
 		//		params.splice(1, 0, type);
 
@@ -3199,7 +2909,7 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			}
 		},
 		
-		applyToAxes: function(func, params, tb, lr) {
+		_applyToAxes: function(func, params, tb, lr) {
 			var ax = [], i = 0, l;
 
 			if(tb || tb == undefined) {
@@ -3211,8 +2921,9 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 				ax.push('right');
 			}
 
-			for(l = ax.length; i < l; i++)
-				this.applyToAxis[typeof func].call(this, ax[i], func, params);
+			for( l = ax.length; i < l; i++ ) {
+				this._applyToAxis[typeof func].call(this, ax[i], func, params);
+			}
 		},
 
 
@@ -3258,10 +2969,6 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			return this.dom;
 		},
 
-		applyStyleText: function(dom) {
-//			dom.setAttribute('font-family', '"Myriad Pro", Arial, Serif');
-//			dom.setAttribute('font-size', '12px');
-		},
 
 		getXAxis: function(num, options) {
 			if(this.axis.top.length > 0 && this.axis.bottom.length == 0) {
@@ -3280,35 +2987,25 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			return this.getLeftAxis(num, options);
 		},
 
-		_getAxis: function(num, options, inst, pos) {
-			num = num || 0;
-			if(typeof num == "object") {
-				options = num;
-				num = 0;
-			}
-
-			
-			return this.axis[pos][num] = this.axis[pos][num] || new inst(this, pos, options);
-		},
-
+	
 		getTopAxis: function(num, options) {
-			return this._getAxis(num, options, GraphXAxis, 'top');
+			return _getAxis(this, num, options, GraphXAxis, 'top');
 		},
 
 		getBottomAxis: function(num, options) {
-			return this._getAxis(num, options, GraphXAxis, 'bottom');
+			return _getAxis(this, num, options, GraphXAxis, 'bottom');
 		},
 
 		getLeftAxis: function(num, options) {
-			return this._getAxis(num, options, GraphYAxis, 'left');
+			return _getAxis(this, num, options, GraphYAxis, 'left');
 		},
 
 		getRightAxis: function(num, options) {
-			return this._getAxis(num, options, GraphYAxis, 'right');
+			return _getAxis(this, num, options, GraphYAxis, 'right');
 		},
 
 		setBottomAxisAsTime: function( num, options ) {
-			return this._getAxis( num, options, GraphXAxisTime, 'bottom' );
+			return _getAxis( this, num, options, GraphXAxisTime, 'bottom' );
 		},
 
 
@@ -3364,10 +3061,6 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 
 		hideTitle: function() {
 			this.domTitle.setAttribute('display', 'none');
-		},
-
-		drawSerie: function(serie) {
-			serie.draw(this.getDrawingGroup());
 		},
 
 
@@ -3444,7 +3137,7 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			this.dom.setAttribute('height', this.height);
 			this.domTitle.setAttribute('x', this.width / 2);
 
-			this.refreshDrawingZone();
+			refreshDrawingZone( this );
 		},
 
 		canRedraw: function() {
@@ -3463,13 +3156,19 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 
 			} else {
 
-				this.refreshDrawingZone( noX, noY );
+				refreshDrawingZone( this, noX, noY );
 			}
 
 			return true;
 		},
 
-		updateAxes: function() {
+
+		/*
+		 *	Updates the min and max value of the axis according to the data only
+		 *	Does not perform autoscale
+		 *	But we need to keep track of the data min/max in case of an autoAxis.
+		 */
+		_updateAxes: function() {
 
 			var axisvars = ['bottom', 'top', 'left', 'right'],
 				axis,
@@ -3490,6 +3189,7 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 					if( axis.disabled ) {
 						continue;
 					}
+
 //console.log( axisvars[ j ], this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min'), this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
 					axis.setMinValueData( this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min') );
 					axis.setMaxValueData( this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
@@ -3499,127 +3199,13 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 		},
 
 		// Repaints the axis and series
-		refreshDrawingZone: function( noX, noY ) {
-
-			var i, j, l, xy, min, max;
-			var axisvars = ['bottom', 'top', 'left', 'right'], shift = [0, 0, 0, 0], axis;
-
-			this._painted = true;
-			this.refreshMinOrMax();
-
-			// Apply to top and bottom
-			this.applyToAxes( function( axis ) {
-
-				if( axis.disabled ) {
-					return;
-				}
-
-				var axisIndex = axisvars.indexOf( arguments[ 1 ] );
-				axis.setShift( shift[ axisIndex ] + axis.getAxisPosition(), axis.getAxisPosition( ) ); 
-				shift[ axisIndex ] += axis.getAxisPosition(); // Allow for the extra width/height of position shift
-
-			}, false, true, false );
 	
-	
-			// Applied to left and right
-			this.applyToAxes(function(axis) {
-
-				if( axis.disabled ) {
-					return;
-				}
-
-				axis.setMinPx( shift[ 1 ] );
-				axis.setMaxPx( this.getDrawingHeight( true ) - shift[ 0 ] );
-
-				// First we need to draw it in order to determine the width to allocate
-				// This is done to accomodate 0 and 100000 without overlapping any element in the DOM (label, ...)
-
-				var drawn = axis.draw( ) || 0,
-					axisIndex = axisvars.indexOf( arguments[ 1 ] ),
-					axisDim = axis.getAxisPosition( );
-
-				// Get axis position gives the extra shift that is common
-				axis.setShift(shift[axisIndex] + axisDim + drawn, drawn + axisDim);
-				shift[ axisIndex ] += drawn + axisDim;
-
-				axis.drawSeries();
-
-			}, false, false, true);
-
-		
-			// Apply to top and bottom
-			this.applyToAxes(function(axis) {
-				
-				if( axis.disabled ) {
-					return;
-				}
-
-				axis.setMinPx( shift[ 2 ] );
-				axis.setMaxPx( this.getDrawingWidth(true) - shift[ 3 ] );
-				axis.draw( );
-
-
-
-				axis.drawSeries();
-
-			}, false, true, false);
-
-			// Apply to all axis
-	/*		this.applyToAxes(function(axis) {
-				axis.drawSeries();
-			}, false, true, true);
-	*/		
-
-	
-			this.closeLine('right', this.getDrawingWidth(true), this.getDrawingWidth(true), shift[ 1 ], this.getDrawingHeight(true) - shift[0]);
-			this.closeLine('left', 0, 0, shift[ 1 ], this.getDrawingHeight(true) - shift[0]);
-			this.closeLine('top', shift[2], this.getDrawingWidth(true) - shift[3], 0, 0);
-			this.closeLine('bottom', shift[2], this.getDrawingWidth(true) - shift[3], this.getDrawingHeight(true) - shift[0], this.getDrawingHeight(true) - shift[0]);
-
-			this.clipRect.setAttribute('y', shift[1]);
-			this.clipRect.setAttribute('x', shift[2]);
-			this.clipRect.setAttribute('width', this.getDrawingWidth() - shift[2] - shift[3]);
-			this.clipRect.setAttribute('height', this.getDrawingHeight() - shift[1] - shift[0]);
-
-
-			this.rectEvent.setAttribute('x', shift[1]);
-			this.rectEvent.setAttribute('y', shift[2]);
-			this.rectEvent.setAttribute('width', this.getDrawingWidth() - shift[2] - shift[3]);
-			this.rectEvent.setAttribute('height', this.getDrawingHeight() - shift[1] - shift[0]);
-
-/*
-			this.shapeZoneRect.setAttribute('x', shift[1]);
-			this.shapeZoneRect.setAttribute('y', shift[2]);
-			this.shapeZoneRect.setAttribute('width', this.getDrawingWidth() - shift[2] - shift[3]);
-			this.shapeZoneRect.setAttribute('height', this.getDrawingHeight() - shift[1] - shift[0]);
-*/
-			this.shift = shift;
-			this.redrawShapes();
-		},
-
 
 		autoscaleAxes: function() {
 
-			this.applyToAxes( "setMinMaxToFitSeries", null, true, true );
+			this._applyToAxes( "setMinMaxToFitSeries", null, true, true );
 			this.redraw();
 			
-		},
-
-		closeLine: function(mode, x1, x2, y1, y2) {	
-			
-			if( this.options.close[ mode ] && this.axis[ mode ].length == 0 ) {
-
-				this.closingLines[ mode ].setAttribute('display', 'block');
-				this.closingLines[ mode ].setAttribute('x1', x1);
-				this.closingLines[ mode ].setAttribute('x2', x2);
-				this.closingLines[ mode ].setAttribute('y1', y1);
-				this.closingLines[ mode ].setAttribute('y2', y2);
-
-			} else {
-
-				this.closingLines[ mode ].setAttribute('display', 'none');
-
-			}
 		},
 
 		refreshMinOrMax: function() {
@@ -3671,8 +3257,26 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			}
 		},
 
+
 		getSeries: function() {
 			return this.series;
+		},
+
+
+		drawSerie: function( serie ) {
+
+			if( ! serie.draw ) {
+				throw "Serie has no method draw";
+			}
+
+			serie.draw( );
+		},
+
+		resetSeries: function() {
+			for(var i = 0; i < this.series.length; i++) {
+				this.series[i].kill(true);	
+			}
+			this.series = [];
 		},
 
 		drawSeries: function( ) {
@@ -3687,6 +3291,40 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			}
 		},
 
+		_removeSerie: function( serie ) {
+
+			this.series.splice( this.series.indexOf( serie ), 1 );
+	
+		},
+
+		selectSerie: function( serie ) {
+
+			if( this.selectedSerie == serie ) {
+				return;
+			}
+
+			if( this.selectedSerie ) {
+
+				this.selectedSerie.unselect();
+			}
+
+			this.selectedSerie = serie;
+			serie.select();
+		},
+
+		unselectSerie: function( serie ) {
+
+			serie.unselect();
+			this.selectedSerie = false;
+		},
+
+		getSelectedSerie: function() {
+			return this.selectedSerie;
+		},
+		
+
+
+/*
 		checkMinOrMax: function(serie) {
 			var xAxis = serie.getXAxis();
 			var yAxis = serie.getYAxis();
@@ -3719,39 +3357,7 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 
 			return isMinMax;
 		},
-
-		removeSerie: function(serie) {
-
-			var i = this.series.length - 1;
-			for(;i >= 0; i--) { // Let's remove the serie from the stack. // Not using indexOf because of Safari
-				if(this.series[i] == serie)
-					this.series.slice(i, 1);
-			}
-			serie.removeDom();
-			if( serie.isMinOrMax( ) ) {
-				this.refreshDrawingZone( );
-			}
-
-			if( this.legend ) {
-				this.legend.update( );
-			}
-			
-		},
-
-		setZoomMode: function(zoomMode) {
-			if(zoomMode == 'x' || zoomMode == 'y' || zoomMode == 'xy' || !zoomMode)
-				this.options.zoomMode = zoomMode;
-		},
-
-		setDefaultWheelAction: function(wheelAction) {
-			if(wheelAction != 'zoomY' && wheelAction != 'zoomX' && wheelAction != 'none')
-				return;
-			this.options.defaultWheelAction = wheelAction;
-		},
-
-		getZoomMode: function() {
-			return this.options.zoomMode;
-		},
+*/
 
 		makeToolbar: function( toolbarData ) {
 
@@ -3767,19 +3373,17 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			return deferred;
 		},
 
-		makeShape: function( shapeData, events, notify) {
+		newShape: function( shapeData, events, mute ) {
 
 			var self = this,
 				response,
 				deferred = $.Deferred();
 			
-
-			
 			shapeData.id = Math.random();
 
-			if( notify ) {
+			if( ! mute ) {
 
-				if( false === ( response = this.triggerEvent('onShapeBeforeMake', shapeData ) ) ) {
+				if( false === ( response = this.triggerEvent('onBeforeNewShape', shapeData ) ) ) {
 					return;
 				}
 			}
@@ -3851,6 +3455,12 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 
 				deferred.resolve( shape );
 
+
+				if( ! mute ) {
+					self.triggerEvent('onNewShape', shapeData );
+				}
+
+
 			}
 
 			if( shapeData.url ) {
@@ -3879,7 +3489,7 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			this.shapes = [];
 		},
 
-		removeShape: function( shape ) {
+		_removeShape: function( shape ) {
 			this.shapes.splice( this.shapes.indexOf( shape ), 1 );
 		},
 
@@ -4013,9 +3623,12 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			return;
 		},
 
-		selectShape: function(annot) {
-			if(this.selectedShape == annot)
-				return;
+		selectShape: function( shape, mute ) {
+
+			// Already selected. Returns false
+			if( this.selectedShape == shape ) {
+				return false;
+			}
 
 			if( this.selectedShape ) { // Only one selected shape at the time
 
@@ -4023,8 +3636,12 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 				this.selectedShape.unselect( );
 			}
 
-			this.selectedShape = annot;
-			this.triggerEvent('onShapeSelect', annot.data);
+			if( ! mute ) {
+				shape.select( true );
+			}
+
+			this.selectedShape = shape;
+			this.triggerEvent('onShapeSelect', shape.data);
 		},
 
 		unselectShape: function( ) {
@@ -4040,31 +3657,6 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			this.selectedShape = false;
 		},
 
-
-		selectSerie: function( serie ) {
-
-			if( this.selectedSerie == serie ) {
-				return;
-			}
-
-			if( this.selectedSerie ) {
-
-				this.selectedSerie.unselect();
-			}
-
-			this.selectedSerie = serie;
-			serie.select();
-		},
-
-		unselectSerie: function( serie ) {
-
-			serie.unselect();
-			this.selectedSerie = false;
-		},
-
-		getSelectedSerie: function() {
-			return this.selectedSerie;
-		},
 
 		makeLegend: function( options ) {
 			this.legend = new GraphLegend( this, options );
@@ -4165,14 +3757,13 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			return pos;
 		},
 
+
 		_getPositionPx: function(value, x, axis) {
 
 			var parsed;
-
+			
 			if(parsed = _parsePx(value)) {
-
 				return parsed; // return integer (will be interpreted as px)
-
 			}
 
 			if( parsed = this._parsePercent( value ) ) {
@@ -4182,12 +3773,11 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			} else if( axis ) {
 
 				return axis.getPos(value);
-
 			}
 		},
 
 
-		
+
 
 		_parsePercent: function(percent) {
 			if(percent && percent.indexOf && percent.indexOf('%') > -1) {
@@ -4292,10 +3882,6 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 	}
 
 
-
-	Graph.prototype.plugins = {};
-
-
 	function makeSerie( graph, name, options, type, callback ) {
 
 		return graph.dynamicLoader.load( 'serie', 'graph.serie.' + type, function( Serie ) {
@@ -4316,6 +3902,347 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 		}
 		return false;
 	};
+
+
+	function refreshDrawingZone( graph, noX, noY ) {
+
+		var i, j, l, xy, min, max;
+		var axisvars = ['bottom', 'top', 'left', 'right'], shift = [0, 0, 0, 0], axis;
+
+		graph._painted = true;
+		graph.refreshMinOrMax();
+
+		// Apply to top and bottom
+		graph._applyToAxes( function( axis ) {
+
+			if( axis.disabled ) {
+				return;
+			}
+
+			var axisIndex = axisvars.indexOf( arguments[ 1 ] );
+			axis.setShift( shift[ axisIndex ] + axis.getAxisPosition(), axis.getAxisPosition( ) ); 
+			shift[ axisIndex ] += axis.getAxisPosition(); // Allow for the extra width/height of position shift
+
+		}, false, true, false );
+
+
+		// Applied to left and right
+		graph._applyToAxes(function(axis) {
+
+			if( axis.disabled ) {
+				return;
+			}
+
+			axis.setMinPx( shift[ 1 ] );
+			axis.setMaxPx( graph.getDrawingHeight( true ) - shift[ 0 ] );
+
+			// First we need to draw it in order to determine the width to allocate
+			// graph is done to accomodate 0 and 100000 without overlapping any element in the DOM (label, ...)
+
+			var drawn = axis.draw( ) || 0,
+				axisIndex = axisvars.indexOf( arguments[ 1 ] ),
+				axisDim = axis.getAxisPosition( );
+
+			// Get axis position gives the extra shift that is common
+			axis.setShift(shift[axisIndex] + axisDim + drawn, drawn + axisDim);
+			shift[ axisIndex ] += drawn + axisDim;
+
+			axis.drawSeries();
+
+		}, false, false, true);
+
+	
+		// Apply to top and bottom
+		graph._applyToAxes(function(axis) {
+			
+			if( axis.disabled ) {
+				return;
+			}
+
+			axis.setMinPx( shift[ 2 ] );
+			axis.setMaxPx( graph.getDrawingWidth(true) - shift[ 3 ] );
+			axis.draw( );
+
+
+
+			axis.drawSeries();
+
+		}, false, true, false);
+
+		// Apply to all axis
+/*		graph._applyToAxes(function(axis) {
+			axis.drawSeries();
+		}, false, true, true);
+*/		
+
+
+		_closeLine( graph, 'right', graph.getDrawingWidth(true), graph.getDrawingWidth(true), shift[ 1 ], graph.getDrawingHeight(true) - shift[0]);
+		_closeLine( graph, 'left', 0, 0, shift[ 1 ], graph.getDrawingHeight(true) - shift[0]);
+		_closeLine( graph, 'top', shift[2], graph.getDrawingWidth(true) - shift[3], 0, 0);
+		_closeLine( graph, 'bottom', shift[2], graph.getDrawingWidth(true) - shift[3], graph.getDrawingHeight(true) - shift[0], graph.getDrawingHeight(true) - shift[0]);
+
+		graph.clipRect.setAttribute('y', shift[1]);
+		graph.clipRect.setAttribute('x', shift[2]);
+		graph.clipRect.setAttribute('width', graph.getDrawingWidth() - shift[2] - shift[3]);
+		graph.clipRect.setAttribute('height', graph.getDrawingHeight() - shift[1] - shift[0]);
+
+
+		graph.rectEvent.setAttribute('x', shift[1]);
+		graph.rectEvent.setAttribute('y', shift[2]);
+		graph.rectEvent.setAttribute('width', graph.getDrawingWidth() - shift[2] - shift[3]);
+		graph.rectEvent.setAttribute('height', graph.getDrawingHeight() - shift[1] - shift[0]);
+
+/*
+		graph.shapeZoneRect.setAttribute('x', shift[1]);
+		graph.shapeZoneRect.setAttribute('y', shift[2]);
+		graph.shapeZoneRect.setAttribute('width', graph.getDrawingWidth() - shift[2] - shift[3]);
+		graph.shapeZoneRect.setAttribute('height', graph.getDrawingHeight() - shift[1] - shift[0]);
+*/
+		graph.shift = shift;
+		graph.redrawShapes();
+	}
+
+	function _registerEvents( graph ) {
+		var self = graph;
+
+		graph._dom.addEventListener( 'keydown', function( e ) {
+	
+			e.preventDefault();
+			e.stopPropagation();
+			
+			if( e.keyCode == 8 && self.selectedShape ) {
+				self.selectedShape.kill();
+			}
+
+		});
+
+
+
+
+		graph.dom.addEventListener('mousemove', function(e) {
+			e.preventDefault();
+			var coords = self._getXY(e);
+			_handleMouseMove( self, coords.x, coords.y, e );
+		});
+
+		graph.dom.addEventListener('mousedown', function(e) {
+			
+			self.focus();
+
+			e.preventDefault( );
+			if( e.which == 3 || e.ctrlKey ) {
+				return;
+			}
+
+			var coords = self._getXY( e );
+			_handleMouseDown( self, coords.x, coords.y, e );
+
+		});
+
+		graph.dom.addEventListener('mouseup', function(e) {
+
+			e.preventDefault( );
+			var coords = self._getXY( e );
+			_handleMouseUp( self, coords.x, coords.y, e );
+
+		});
+
+		graph.dom.addEventListener('dblclick', function(e) {
+			e.preventDefault();
+			
+			if( self.clickTimeout ) {
+				window.clearTimeout( self.clickTimeout );
+			}
+
+			var coords = self._getXY(e);
+			self.cancelClick = true;
+			_handleDblClick( self, coords.x, coords.y, e );
+		});
+
+		graph.dom.addEventListener('click', function(e) {
+
+			// Cancel right click or Command+Click
+			if(e.which == 3 || e.ctrlKey)
+				return;
+			e.preventDefault();
+			var coords = self._getXY(e);
+			if(self.clickTimeout)
+				window.clearTimeout(self.clickTimeout);
+
+			// Only execute the action after 200ms
+			self.clickTimeout = window.setTimeout(function() {
+				_handleClick( self, coords.x,coords.y, e );
+			}, 200);
+		});
+
+		graph.rectEvent.addEventListener('mousewheel', function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			var deltaY = e.wheelDeltaY || e.wheelDelta || - e.deltaY;
+			handleMouseWheel(self, deltaY, e);
+
+			return false;
+		});
+
+		graph.rectEvent.addEventListener('wheel', function(e) {
+			e.stopPropagation();
+			e.preventDefault();
+			var deltaY = e.wheelDeltaY || e.wheelDelta || - e.deltaY;
+			handleMouseWheel( self, deltaY, e );	
+			
+			return false;
+		});
+	}
+
+	function _handleMouseDown( graph, x, y, e ) {
+
+		var self = graph,
+			$target = $(e.target), 
+			shift = e.shiftKey, 
+			ctrl = e.ctrlKey, 
+			keyComb = graph.options.pluginAction,
+			i;
+
+		graph.unselectShape();
+
+		if( graph.forcedPlugin ) {
+
+			graph.activePlugin = graph.forcedPlugin;
+			graph._pluginExecute( graph.activePlugin, 'onMouseDown', [ graph, x, y, e]);
+			return;
+		}
+
+		for( i in keyComb ) {
+
+			if( graph.isPluginAllowed( e, keyComb[ i ] ) ) {
+				
+				graph.activePlugin = i; // Lease the mouse action to the current action
+				graph._pluginExecute(i, 'onMouseDown', [ graph, x, y, e]);
+				break;
+			}
+		}
+	}
+
+
+
+	function _handleMouseMove( graph, x, y, e ) {
+
+		if( graph.bypassHandleMouse ) {
+			graph.bypassHandleMouse.handleMouseMove(e);
+			return;
+		}
+		
+		if( graph._pluginExecute(graph.activePlugin, 'onMouseMove', [ graph, x, y, e ]) ) {
+			return;
+		};
+
+//			return;
+
+		graph._applyToAxes('handleMouseMove', [x - graph.options.paddingLeft, e], true, false);
+		graph._applyToAxes('handleMouseMove', [y - graph.options.paddingTop, e], false, true);
+
+		if(!graph.activePlugin) {
+			var results = {};
+			
+			if(graph.options.onMouseMoveData) {
+
+				for(var i = 0; i < graph.series.length; i++) {
+					results[graph.series[i].getName()] = graph.series[i].handleMouseMove(false, true);
+				}
+
+				graph.options.onMouseMoveData.call( graph, e, results);
+			}
+			return;
+		}
+	}
+
+	function _handleDblClick( graph, x, y, e ) {
+	//	var _x = x - graph.options.paddingLeft;
+	//	var _y = y - graph.options.paddingTop;
+		var pref = graph.options.dblclick;
+
+		if( ! pref || ! pref.type ) {
+			return;
+		}
+
+		switch( pref.type ) {
+
+			case 'plugin':
+
+				var plugin;
+
+				if( ( plugin = graph._plugins[ pref.plugin ] ) ) {
+
+					plugin.onDblClick( graph, x, y, pref.options, e );
+				}
+
+			break;
+		}
+	}
+
+	function _handleMouseUp(graph, x, y, e) {
+
+		if(graph.bypassHandleMouse) {
+			graph.bypassHandleMouse.handleMouseUp(e);
+			graph.activePlugin = false;
+			return;
+		}
+
+		graph._pluginExecute(graph.activePlugin, 'onMouseUp', [ graph, x, y, e ]);
+		graph.activePlugin = false;
+
+	}
+
+ 	function _handleClick(graph, x, y, e) {
+		
+		if( ! graph.options.addLabelOnClick ) {
+			return;
+		}
+
+		if(graph.currentAction !== false) {
+			return;
+		}
+
+		for(var i = 0, l = graph.series.length; i < l; i++) {
+			graph.series[i].addLabelX(graph.series[i].getXAxis().getVal(x - graph.getPaddingLeft()));
+		}
+	}
+
+
+
+	function _getAxis(graph, num, options, inst, pos) {
+
+		num = num || 0;
+
+		if(typeof num == "object") {
+			options = num;
+			num = 0;
+		}
+
+		return graph.axis[pos][num] = graph.axis[pos][num] || new inst(graph, pos, options);
+	}
+
+
+	function _closeLine( graph, mode, x1, x2, y1, y2) {	
+		
+		if( graph.options.close === false ) {
+			return;
+		}
+		
+		if( ( graph.options.close === true  || graph.options.close[ mode ] ) && graph.axis[ mode ].length == 0 ) {
+
+			graph.closingLines[ mode ].setAttribute('display', 'block');
+			graph.closingLines[ mode ].setAttribute('x1', x1);
+			graph.closingLines[ mode ].setAttribute('x2', x2);
+			graph.closingLines[ mode ].setAttribute('y1', y1);
+			graph.closingLines[ mode ].setAttribute('y2', y2);
+
+		} else {
+
+			graph.closingLines[ mode ].setAttribute('display', 'none');
+
+		}
+	}
 
 
 	return Graph;
@@ -4461,7 +4388,7 @@ build['./graph._serie'] = ( function( ) {
 			this.setXAxis( ! this.isFlipped() ? this.graph.getXAxis() : this.graph.getYAxis() );
 			this.setYAxis( ! this.isFlipped() ? this.graph.getYAxis() : this.graph.getXAxis() );
 
-			this.graph.updateAxes();
+			this.graph._updateAxes();
 			
 			return this;
 		},
@@ -4629,12 +4556,12 @@ build['./plugins/graph.plugin.drag'] = ( function( ) {
 			var deltaX = x - this._draggingX;
 			var deltaY = y - this._draggingY;
 
-			graph.applyToAxes(function(axis) {
+			graph._applyToAxes(function(axis) {
 				axis.setCurrentMin(axis.getVal(axis.getMinPx() - deltaX));
 				axis.setCurrentMax(axis.getVal(axis.getMaxPx() - deltaX));
 			}, false, true, false);
 
-			graph.applyToAxes(function(axis) {
+			graph._applyToAxes(function(axis) {
 				axis.setCurrentMin(axis.getVal(axis.getMinPx() - deltaY));
 				axis.setCurrentMax(axis.getVal(axis.getMaxPx() - deltaY));
 			}, false, false, true);
@@ -4642,7 +4569,7 @@ build['./plugins/graph.plugin.drag'] = ( function( ) {
 			this._draggingX = x;
 			this._draggingY = y;
 
-			graph.refreshDrawingZone(true);
+			graph.redraw(true);
 			graph.drawSeries();
 		}
 	}
@@ -4787,7 +4714,7 @@ build['./plugins/graph.plugin.linking'] = ( function( ) {
 				}
 
 				var line = shape.graph.getLinkingLine();
-				var coords = shape.graph.getXY( e );
+				var coords = shape.graph._getXY( e );
 
 				line.setAttribute('x2', coords.x - shape.graph.getPaddingLeft( ) );
 				line.setAttribute('y2', coords.y - shape.graph.getPaddingTop( ) );
@@ -4858,7 +4785,7 @@ build['./plugins/graph.plugin.linking'] = ( function( ) {
 */
 			graph.shapeHandlers.mouseDown.push( function( e ) {
 			
-				if( self.graph.allowPlugin( e, self.plugin ) ) {
+				if( self.graph.isPluginAllowed( e, self.plugin ) ) {
 
 					this.moving = false;
 					this.handleSelected = false;
@@ -4947,7 +4874,7 @@ build['./plugins/graph.plugin.nmrpeakpicking'] = ( function( ) {
 	//		console.log( series[ 0 ].data );
 	//		console.log( series[ 0 ].getAdditionalData() );
 
-			this.graph.makeShape( {
+			this.graph.newShape( {
 
 				type: 'rect',
 				pos: {
@@ -5004,7 +4931,7 @@ build['./plugins/graph.plugin.range'] = ( function( ) {
 				return;
 			x -= graph.getPaddingLeft(), xVal = graph.getXAxis().getVal( x );
 
-			var shape = graph.makeShape({type: 'rangeX', pos: {x: xVal, y: 0}, pos2: {x: xVal, y: 0}}, {
+			var shape = graph.newShape({type: 'rangeX', pos: {x: xVal, y: 0}, pos2: {x: xVal, y: 0}}, {
 				onChange: function(newData) {
 					self.triggerEvent('onAnnotationChange', newData);
 				}
@@ -5103,7 +5030,7 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
 			};
 
 
-			var shape = graph.makeShape( $.extend( shapeInfo, this.options ), {}, true ).then( function( shape ) {
+			var shape = graph.newShape( $.extend( shapeInfo, this.options ), {}, true ).then( function( shape ) {
 
 				if( ! shape ) {
 					return;
@@ -5304,14 +5231,14 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
 
 			switch(this._zoomingMode) {
 				case 'x':
-					graph.applyToAxes('_doZoom', [_x, this.x1], true, false);
+					graph._applyToAxes('_doZoom', [_x, this.x1], true, false);
 				break;
 				case 'y':
-					graph.applyToAxes('_doZoom', [_y, this.y1], false, true);
+					graph._applyToAxes('_doZoom', [_y, this.y1], false, true);
 				break;
 				case 'xy':
-					graph.applyToAxes('_doZoom', [_x, this.x1], true, false);
-					graph.applyToAxes('_doZoom', [_y, this.y1], false, true);
+					graph._applyToAxes('_doZoom', [_x, this.x1], true, false);
+					graph._applyToAxes('_doZoom', [_y, this.y1], false, true);
 				break;
 			}
 			
@@ -5336,7 +5263,7 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
 				return;	
 			} 
 
-			this.graph.applyToAxes('handleMouseWheel', [ delta, e ], false, true);	
+			this.graph._applyToAxes('handleMouseWheel', [ delta, e ], false, true);	
 		},
 
 		onDblClick: function( graph, x, y, pref, e, mute ) {
@@ -5346,7 +5273,7 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
 
 			if( pref.mode == 'xtotal' ) {
 
-				this.graph.applyToAxes( "setMinMaxToFitSeries", null, true, false );
+				this.graph._applyToAxes( "setMinMaxToFitSeries", null, true, false );
 				this.graph.drawSeries();
 				
 				
@@ -5355,7 +5282,7 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
 
 			else if( pref.mode == 'ytotal' ) {
 
-				this.graph.applyToAxes( "setMinMaxToFitSeries", null, false, true );
+				this.graph._applyToAxes( "setMinMaxToFitSeries", null, false, true );
 				this.graph.drawSeries();
 				
 				
@@ -5459,15 +5386,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 			flip: false,
 			label: "",
 
-			markers: {
-				show: false,
-				type: 1,
-				zoom: 1,
-				strokeColor: false,
-				strokeWidth: 1,
-				fillColor: 'transparent'
-			},
-			
+			markers: false,
 			trackMouse: false,
 			trackMouseLabel: false,
 			trackMouseLabelRouding: 1,
@@ -5553,7 +5472,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 				for(var n = 0, m = this.options.autoPeakPickingNb; n < m; n++) {
 
-					this.picksDef.push( this.graph.makeShape( { 
+					this.picksDef.push( this.graph.newShape( { 
 
 							type: 'label', 
 							label: {
@@ -5733,9 +5652,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 				this.minY = minX;
 			}
 
-
-			this.graph.updateAxes();
-
+			this.graph._updateAxes();
 
 			return this;
 		},
@@ -5828,10 +5745,15 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 				}
 			}
 
-			this.graph.series.splice(this.graph.series.indexOf(this), 1);
-
+			this.graph._removeSerie( this );
+			
 			if( ! noRedraw ) {
 				this.graph.redraw();
+			}
+
+			if( this.graph.legend ) {
+
+				this.graph.legend.update( );
 			}
 		},
 
@@ -5919,7 +5841,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 
 		_getMarkerIndexFromEvent: function(e) {
-			var px = this.graph.getXY(e);
+			var px = this.graph._getXY(e);
 			return this.searchIndexByPxXY((px.x - this.graph.getPaddingLeft()), (px.y - this.graph.getPaddingTop()));
 
 		},
@@ -5988,7 +5910,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 			var xData = this.xData;
 
 			if( this.degradationPx ) {
-				data = this.getDegradedData();
+				data = getDegradedData( this );
 				xData = data[ 1 ];
 				data = data[ 0 ];
 			}
@@ -6091,7 +6013,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 						for( ; j < m ; j += 1 ) {
 
-							if( this.markerPoints ) {
+							if( this.markersShown() ) {
 
 								this.getMarkerCurrentFamily( k );								
 							}
@@ -6149,7 +6071,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 						for( ; j < m ; j += 2 ) {
 
 
-							if( this.markerPoints ) {
+							if( this.markersShown() ) {
 
 								this.getMarkerCurrentFamily( k );
 								
@@ -6176,7 +6098,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 							if( this.options.autoPeakPicking ) {
 
-								if( this.options.autoPeakPicking == "continuous") {
+								if( ! this.options.lineToZero ) {
 
 									if( ! lastYPeakPicking ) {
 										lastYPeakPicking = [ ( data[ i ][ j + incrYFlip ] ), data[ i ][ j + incrXFlip ] ];
@@ -6241,7 +6163,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 				this.lines.splice(i, 1);
 			}
 
-			this.insertMarkers();
+			insertMarkers( this );
 
 			this.groupMain.insertBefore(this.groupLines, next);
 			var label;
@@ -6251,242 +6173,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 		},
 
 
-		getDegradedData: function() { // Serie redrawing
-
-
-			var self = this,
-				xpx, 
-				ypx, 
-				xpx2,
-				ypx2,
-				i = 0, 
-				l = this.data.length, 
-				j = 0, 
-				k, 
-				m,
-				degradationMin, degradationMax, degradationNb, degradationValue, degradation, degradationMinMax = [],
-				incrXFlip = 0, incrYFlip = 1,
-				degradeFirstX, degradeFirstXPx,
-				optimizeMonotoneous = this.isXMonotoneous(), optimizeMaxPxX = this.getXAxis().getMaxPx(), optimizeBreak, buffer;
-
 		
-			if( this.isFlipped( ) ) {
-				incrXFlip = 1;
-				incrYFlip = 0;
-			}
-
-
-			var datas = [];
-			var xData = [],
-				dataY = [],
-				sum = 0;
-
-			if( this.mode == 'x_equally_separated' ) {
-
-				if( this.isFlipped( ) ) {
-					return [ this.data, this.xData ];
-				}
-
-
-				dataY = [];
-
-				for( ; i < l ; i ++ ) {
-					
-					j = 0, k = 0, m = this.data[ i ].length;
-
-					var delta = Math.round( this.degradationPx / this.getXAxis().getRelPx( this.xData[ i ].dx ) );
-
-					if( delta == 1 ) {
-						xData.push( this.xData[ i ] );
-						datas.push( this.data[ i ] );
-					}
-
-					degradationMin = Infinity;
-					degradationMax = - Infinity;
-
-
-					for( ; j < m ; j += 1 ) {
-
-						if( this.markerPoints ) {
-
-							this.getMarkerCurrentFamily( k );	
-						}
-
-
-						
-						xpx = this.xData[ i ].x + j * this.xData[ i ].dx;
-
-
-						if( optimizeMonotoneous && xpx < 0 ) {
-							buffer = [ xpx, ypx, this.data[ i ][ j ] ];
-							continue;
-						}
-
-						if( optimizeMonotoneous && buffer ) {
-
-							sum += buffer[ 2 ];
-							degradationMin = Math.min( degradationMin, buffer[ 2 ] );
-							degradationMax = Math.max( degradationMax, buffer[ 2 ] );
-
-							buffer = false;
-							k++;
-						}
-
-						sum += this.data[ i ][ j ];
-						degradationMin = Math.min( degradationMin, this.data[ i ][ j ] );
-						degradationMax = Math.max( degradationMax, this.data[ i ][ j ] );
-
-
-
-						if( ( j % delta == 0 && j > 0 ) || optimizeBreak ) {
-
-							dataY.push( sum / delta );
-
-							degradationMinMax.push( ( this.xData[ i ].x + j * this.xData[ i ].dx - ( delta / 2 ) * this.xData[ i ].dx ), degradationMin, degradationMax );
-
-							degradationMin = Infinity;
-							degradationMax = - Infinity;
-
-							
-							sum = 0;
-						}
-
-						if( optimizeMonotoneous && xpx > optimizeMaxPxX ) {
-							optimizeBreak = true;
-							break;
-						}
-						
-						k++;
-					}
-
-					datas.push( dataY );
-					xData.push( { dx: delta * this.xData[ i ].dx, x: this.xData[ i ].x + ( delta * this.xData[ i ].dx / 2 ) });
-				}
-
-
-				if( this.degradationSerie ) {
-					this.degradationSerie.setData( degradationMinMax );
-					this.degradationSerie.draw();
-				}
-
-				return [ datas, xData ] 
-
-			}
-
-
-			for(; i < l ; i++) {
-				
-				j = 0,
-				k = 0,
-				m = this.data[ i ].length;
-
-				
-				degradationNb = 0;
-				degradationValue = 0;
-
-				degradationMin = Infinity;
-				degradationMax = - Infinity;
-
-				var data = [];
-
-				for( ; j < m ; j += 2 ) {
-
-					xpx2 = this.getX( this.data[ i ][ j + incrXFlip ] );
-
-					if( optimizeMonotoneous && xpx2 < 0 ) {
-
-						buffer = [
-							xpx2,
-							this.getY( this.data[ i ][ j + incrYFlip ] ),
-							this.data[ i ][ j + incrXFlip ],
-							this.data[ i ][ j + incrYFlip ]
-						];
-
-						continue;
-					}
-
-					if( optimizeMonotoneous && buffer) {
-
-						degradationValue += buffer[ 3 ];
-						degradationNb ++;
-
-						degradationMin = Math.min( degradationMin, buffer[ 3 ] );
-						degradationMax = Math.max( degradationMax, buffer[ 3 ] );
-
-						degradeFirstX = buffer[ 2 ];
-						degradeFirstXPx = buffer[ 0 ];
-
-						buffer = false;
-						k++;
-
-
-					} else if( degradeFirstX === undefined ) {
-
-						degradeFirstX = this.data[ i ][ j + incrXFlip ];
-						degradeFirstXPx = xpx2;
-					}
-					
-
-					if( xpx2 - degradeFirstXPx > this.degradationPx && j < m ) {
-
-
-						data.push( 
-							( degradeFirstX + this.data[ i ][ j + incrXFlip ] ) / 2,
-							degradationValue / degradationNb
-						);
-
-						degradationMinMax.push( ( this.data[ i ][ j + incrXFlip ] + degradeFirstX ) / 2, degradationMin, degradationMax );
-
-
-						if( degradeFirstXPx > optimizeMaxPxX ) {
-							break;
-						}
-
-						degradeFirstX = undefined;
-						degradationNb = 0;
-						degradationValue = 0;
-						degradationMin = Infinity;
-						degradationMax = - Infinity;
-
-						k++;
-					} 
-
-					degradationValue += this.data[ i ][ j + incrYFlip ];
-					degradationNb ++;
-
-					degradationMin = Math.min( degradationMin, this.data[ i ][ j + incrYFlip ] );
-					degradationMax = Math.max( degradationMax, this.data[ i ][ j + incrYFlip ] );
-
-
-					if( optimizeMonotoneous && xpx2 > optimizeMaxPxX ) {
-						optimizeBreak = true;
-					}
-				
-					
-					xpx = xpx2;
-					ypx = ypx2;
-
-				}
-				
-				datas.push( data );
-
-				if( optimizeBreak ) {
-					break;
-				}
-			}
-
-
-			if( this.degradationSerie ) {
-				this.degradationSerie.setData( degradationMinMax );
-				this.degradationSerie.draw();
-			}
-	
-			return [ datas ];
-
-
-		},
-
-
 
 		getMarkerCurrentFamily: function( k ) {
 
@@ -6558,73 +6245,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 			dom.setAttribute('stroke-width', family.strokeWidth || 1 );
 		},
 
-		makePeakPicking: function(allY) {
-				
-			var self = this;
-
-			$.when.apply( $, this.picksDef ).then( function() {
-
-				var x,
-					px,
-					passed = [],
-					px,
-					i = 0,
-					l = allY.length,
-					k, m, y;
-				
-				allY.sort(function(a, b) {
-					return b[0] - a[0];
-				});
-
-				for( ; i < l ; i ++ ) {
-
-					x = allY[i][1],
-					px = self.getX(x),
-					k = 0, m = passed.length,
-					y = self.getY(allY[i][0]);
-
-					if( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
-						continue;
-					}
-
-					if( y > self.getYAxis().getMinPx() || y < self.getYAxis().getMaxPx() ) {
-						continue;
-					}
-
-					for( ; k < m ; k++) {
-						if(Math.abs(passed[k] - px) < self.options.autoPeakPickingMinDistance) {
-							break;
-						}
-					}
-
-					if(k < m) {
-						continue;
-					}
-
-					if( ! self.picks[ m ] ) {
-						return;
-					}
-
-
-
-					self.picks[ m ].set('labelPosition', { 
-															x: x,
-					 										dy: "-10px"
-					 									}
-					 				);
-
-					self.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
-					passed.push( px );
-
-					if(passed.length == self.options.autoPeakPickingNb) {
-						break;
-					}
-				}
-
-				self.graph.redrawShapes();
-
-			});
-		},
+		
 
 		hideTrackingMarker: function() {
 			this.marker.setAttribute('display', 'none');
@@ -6660,7 +6281,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 				return currentLine;
 			}
 
-			if( ! ( xpx > this.getXAxis().getMaxPx() || xpx < this.getXAxis().getMinPx() ) ) {
+			if( this.markersShown() && ! ( xpx > this.getXAxis().getMaxPx() || xpx < this.getXAxis().getMinPx() ) ) {
 
 				drawMarkerXY( this.markerFamily[ this.markerCurrentFamily ], xpx, ypx );
 			}
@@ -7021,18 +6642,23 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 		},
 
 		getLineDashArray: function() {
+
+
 			switch(this.options.lineStyle) {
 				
-				case 2: 
-					return "5, 5";
-				break;
+				case 2: return "1, 1"; break;
+				case 3: return "2, 2"; break;
+				case 3: return "3, 3"; break;
+				case 4: return "4, 4"; break;
+				case 5: return "5, 5"; break;
 
-				case 3:
-					return "2, 2"
-				break;
+				case 6: return "5 2"; break
+				case 7: return "2 5"; break
 
-				case 4: return "1, 1"; break;
-				case 5: return "2, 4"; break;
+				case 8: return "4 2 4 4"; break;
+				case 9: return "1,3,1"; break;
+				case 10: return "9 2"; break;
+				case 11: return "2 9"; break;
 
 				case false:
 				case 1:
@@ -7044,6 +6670,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 				break;
 			}
 		},
+
 
 		/*  */
 
@@ -7077,8 +6704,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 		/* MARKERS */
 
-		showMarkers: function(skipRedraw) {
-			this.options.markers.show = true;
+		showMarkers: function( skipRedraw ) {
+			this.options.markers = true;
 
 			if(!skipRedraw && this._drawn) {
 				this.draw();
@@ -7087,8 +6714,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 			return this;
 		},
 
-		hideMarkers: function(skipRedraw) {
-			this.options.markers.show = false;
+		hideMarkers: function( skipRedraw ) {
+			this.options.markers = false;
 
 			if( ! skipRedraw && this._drawn ) {
 				this.draw();
@@ -7098,7 +6725,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 		},
 
 		markersShown: function() {
-			return this.options.markers.show;	
+			return this.options.markers;	
 		},
 /*
 		setMarkerType: function(type, skipRedraw) {
@@ -7155,6 +6782,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 					fillColor: '',
 				}
 			*/
+
+			this.showMarkers( true );
 
 			if( ! family ) {
 
@@ -7234,23 +6863,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 			this.markerPoints = markerPoints;
 		},
 
-		insertMarkers: function() {
-
-			if( ! this.markerFamily ) {
-				return;
-			}
-
-			for( var i = 0, l = this.markerFamily.length; i < l; i ++ ) {
-
-				this.markerFamily[ i ].dom.setAttribute( 'd', this.markerFamily[ i ].path );
-				this.groupMain.appendChild( this.markerFamily[ i ].dom );
-			}
-
-
-			
-
-		},
-
+	
 
 		addLabelX: function(x, label) {
 			this.addLabelObj({
@@ -7361,7 +6974,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 				e.stopPropagation();
 				label.dragging = true;
 
-				var coords = self.graph.getXY(e);
+				var coords = self.graph._getXY(e);
 				label.draggingIniX = coords.x;
 				label.draggingIniY = coords.y;
 				self.labelDragging = label;
@@ -7415,7 +7028,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 			}
 
 			return this.markerForLegend;
-
 		},
 
 		eraseMarkers: function() {
@@ -7445,6 +7057,321 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 		family.path += family.markerPath + ' ';
 	}
 
+	function getDegradedData( graph ) { // Serie redrawing
+
+
+		var self = graph,
+			xpx, 
+			ypx, 
+			xpx2,
+			ypx2,
+			i = 0, 
+			l = graph.data.length, 
+			j = 0, 
+			k, 
+			m,
+			degradationMin, degradationMax, degradationNb, degradationValue, degradation, degradationMinMax = [],
+			incrXFlip = 0, incrYFlip = 1,
+			degradeFirstX, degradeFirstXPx,
+			optimizeMonotoneous = graph.isXMonotoneous(), optimizeMaxPxX = graph.getXAxis().getMaxPx(), optimizeBreak, buffer;
+
+	
+		if( graph.isFlipped( ) ) {
+			incrXFlip = 1;
+			incrYFlip = 0;
+		}
+
+
+		var datas = [];
+		var xData = [],
+			dataY = [],
+			sum = 0;
+
+		if( graph.mode == 'x_equally_separated' ) {
+
+			if( graph.isFlipped( ) ) {
+				return [ graph.data, graph.xData ];
+			}
+
+
+			dataY = [];
+
+			for( ; i < l ; i ++ ) {
+				
+				j = 0, k = 0, m = graph.data[ i ].length;
+
+				var delta = Math.round( graph.degradationPx / graph.getXAxis().getRelPx( graph.xData[ i ].dx ) );
+
+				if( delta == 1 ) {
+					xData.push( graph.xData[ i ] );
+					datas.push( graph.data[ i ] );
+				}
+
+				degradationMin = Infinity;
+				degradationMax = - Infinity;
+
+
+				for( ; j < m ; j += 1 ) {
+
+					if( graph.markerPoints ) {
+
+						graph.getMarkerCurrentFamily( k );	
+					}
+
+
+					
+					xpx = graph.xData[ i ].x + j * graph.xData[ i ].dx;
+
+
+					if( optimizeMonotoneous && xpx < 0 ) {
+						buffer = [ xpx, ypx, graph.data[ i ][ j ] ];
+						continue;
+					}
+
+					if( optimizeMonotoneous && buffer ) {
+
+						sum += buffer[ 2 ];
+						degradationMin = Math.min( degradationMin, buffer[ 2 ] );
+						degradationMax = Math.max( degradationMax, buffer[ 2 ] );
+
+						buffer = false;
+						k++;
+					}
+
+					sum += graph.data[ i ][ j ];
+					degradationMin = Math.min( degradationMin, graph.data[ i ][ j ] );
+					degradationMax = Math.max( degradationMax, graph.data[ i ][ j ] );
+
+
+
+					if( ( j % delta == 0 && j > 0 ) || optimizeBreak ) {
+
+						dataY.push( sum / delta );
+
+						degradationMinMax.push( ( graph.xData[ i ].x + j * graph.xData[ i ].dx - ( delta / 2 ) * graph.xData[ i ].dx ), degradationMin, degradationMax );
+
+						degradationMin = Infinity;
+						degradationMax = - Infinity;
+
+						
+						sum = 0;
+					}
+
+					if( optimizeMonotoneous && xpx > optimizeMaxPxX ) {
+						optimizeBreak = true;
+						break;
+					}
+					
+					k++;
+				}
+
+				datas.push( dataY );
+				xData.push( { dx: delta * graph.xData[ i ].dx, x: graph.xData[ i ].x + ( delta * graph.xData[ i ].dx / 2 ) });
+			}
+
+
+			if( graph.degradationSerie ) {
+				graph.degradationSerie.setData( degradationMinMax );
+				graph.degradationSerie.draw();
+			}
+
+			return [ datas, xData ] 
+
+		}
+
+
+		for(; i < l ; i++) {
+			
+			j = 0,
+			k = 0,
+			m = graph.data[ i ].length;
+
+			
+			degradationNb = 0;
+			degradationValue = 0;
+
+			degradationMin = Infinity;
+			degradationMax = - Infinity;
+
+			var data = [];
+
+			for( ; j < m ; j += 2 ) {
+
+				xpx2 = graph.getX( graph.data[ i ][ j + incrXFlip ] );
+
+				if( optimizeMonotoneous && xpx2 < 0 ) {
+
+					buffer = [
+						xpx2,
+						graph.getY( graph.data[ i ][ j + incrYFlip ] ),
+						graph.data[ i ][ j + incrXFlip ],
+						graph.data[ i ][ j + incrYFlip ]
+					];
+
+					continue;
+				}
+
+				if( optimizeMonotoneous && buffer) {
+
+					degradationValue += buffer[ 3 ];
+					degradationNb ++;
+
+					degradationMin = Math.min( degradationMin, buffer[ 3 ] );
+					degradationMax = Math.max( degradationMax, buffer[ 3 ] );
+
+					degradeFirstX = buffer[ 2 ];
+					degradeFirstXPx = buffer[ 0 ];
+
+					buffer = false;
+					k++;
+
+
+				} else if( degradeFirstX === undefined ) {
+
+					degradeFirstX = graph.data[ i ][ j + incrXFlip ];
+					degradeFirstXPx = xpx2;
+				}
+				
+
+				if( xpx2 - degradeFirstXPx > graph.degradationPx && j < m ) {
+
+
+					data.push( 
+						( degradeFirstX + graph.data[ i ][ j + incrXFlip ] ) / 2,
+						degradationValue / degradationNb
+					);
+
+					degradationMinMax.push( ( graph.data[ i ][ j + incrXFlip ] + degradeFirstX ) / 2, degradationMin, degradationMax );
+
+
+					if( degradeFirstXPx > optimizeMaxPxX ) {
+						break;
+					}
+
+					degradeFirstX = undefined;
+					degradationNb = 0;
+					degradationValue = 0;
+					degradationMin = Infinity;
+					degradationMax = - Infinity;
+
+					k++;
+				} 
+
+				degradationValue += graph.data[ i ][ j + incrYFlip ];
+				degradationNb ++;
+
+				degradationMin = Math.min( degradationMin, graph.data[ i ][ j + incrYFlip ] );
+				degradationMax = Math.max( degradationMax, graph.data[ i ][ j + incrYFlip ] );
+
+
+				if( optimizeMonotoneous && xpx2 > optimizeMaxPxX ) {
+					optimizeBreak = true;
+				}
+			
+				
+				xpx = xpx2;
+				ypx = ypx2;
+
+			}
+			
+			datas.push( data );
+
+			if( optimizeBreak ) {
+				break;
+			}
+		}
+
+
+		if( graph.degradationSerie ) {
+			graph.degradationSerie.setData( degradationMinMax );
+			graph.degradationSerie.draw();
+		}
+
+		return [ datas ];
+
+
+	};
+
+
+	function makePeakPicking( graph, allY ) {
+			
+		var self = graph;
+
+		$.when.apply( $, graph.picksDef ).then( function() {
+
+			var x,
+				px,
+				passed = [],
+				px,
+				i = 0,
+				l = allY.length,
+				k, m, y;
+			
+			allY.sort(function(a, b) {
+				return b[0] - a[0];
+			});
+
+			for( ; i < l ; i ++ ) {
+
+				x = allY[i][1],
+				px = self.getX(x),
+				k = 0, m = passed.length,
+				y = self.getY(allY[i][0]);
+
+				if( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
+					continue;
+				}
+
+				if( y > self.getYAxis().getMinPx() || y < self.getYAxis().getMaxPx() ) {
+					continue;
+				}
+
+				for( ; k < m ; k++) {
+					if(Math.abs(passed[k] - px) < self.options.autoPeakPickingMinDistance) {
+						break;
+					}
+				}
+
+				if(k < m) {
+					continue;
+				}
+
+				if( ! self.picks[ m ] ) {
+					return;
+				}
+
+
+
+				self.picks[ m ].set('labelPosition', { 
+														x: x,
+				 										dy: "-10px"
+				 									}
+				 				);
+
+				self.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
+				passed.push( px );
+
+				if(passed.length == self.options.autoPeakPickingNb) {
+					break;
+				}
+			}
+
+			self.graph.redrawShapes();
+
+		});
+	}
+
+	function insertMarkers( graph ) {
+
+		if( ! graph.markerFamily ) {
+			return;
+		}
+
+		for( var i = 0, l = graph.markerFamily.length; i < l; i ++ ) {
+			graph.markerFamily[ i ].dom.setAttribute( 'd', graph.markerFamily[ i ].path );
+			graph.groupMain.appendChild( graph.markerFamily[ i ].dom );
+		}
+	}
 
 
 	return GraphSerie;
@@ -7745,7 +7672,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 				}
 			}
 
-			this.graph.updateAxes();
+			this.graph._updateAxes();
 
 			this.data = arr;
 
@@ -8281,10 +8208,7 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
 				}
 			}
 
-
-
-			this.graph.updateAxes();
-
+			this.graph._updateAxes();
 			this.data = arr;
 
 			return this;
@@ -8704,7 +8628,7 @@ build['./shapes/graph.shape'] = ( function( ) {
 		kill: function() {
 
 			this.graph.shapeZone.removeChild(this.group);
-			this.graph.removeShape( this );
+			this.graph._removeShape( this );
 
 			if( this.options.onRemove ) {
 				this.options.onRemove.call( this );
@@ -8997,12 +8921,15 @@ build['./shapes/graph.shape'] = ( function( ) {
 		},
 
 
-		select: function() {
+		select: function( mute ) {
 
 			this._selected = true;
 			this.selectStyle();
 			this.setHandles();
-			this.graph.selectShape(this);
+
+			if( ! mute ) {
+				this.graph.selectShape( this, true );
+			}
 		},
 
 		unselect: function() {
@@ -9064,7 +8991,7 @@ build['./shapes/graph.shape'] = ( function( ) {
 				function( e ) {
 					this.moving = false;
 					this.resize = false;
-					this.graph.shapeMoving(false);
+					this.graph.elementMoving(false);
 
 					return this.handleMouseUpImpl( e );
 				}  
@@ -9073,7 +9000,7 @@ build['./shapes/graph.shape'] = ( function( ) {
 			mouseMove: [
 				function( e ) {
 
-					var coords = this.graph.getXY( e );
+					var coords = this.graph._getXY( e );
 					
 					var
 						deltaX = this.serie.getXAxis( ).getRelVal( coords.x - this.mouseCoords.x ),
@@ -9114,7 +9041,7 @@ build['./shapes/graph.shape'] = ( function( ) {
 					e.preventDefault();
 
 					this.graph.shapeZone.appendChild( this.group ); // Put the shape on top of the stack !
-					this.graph.shapeMoving( this );
+					this.graph.elementMoving( this );
 
 					if( ! this._selected ) {
 						this.preventUnselect = true;
@@ -9123,7 +9050,7 @@ build['./shapes/graph.shape'] = ( function( ) {
 							self.timeoutSelect = false;
 						}, 100);
 					}
-					this.mouseCoords = this.graph.getXY( e );	
+					this.mouseCoords = this.graph._getXY( e );	
 
 					return this.handleMouseDownImpl( e, this.mouseCoords );
 				}
@@ -9168,7 +9095,7 @@ build['./shapes/graph.shape'] = ( function( ) {
 
 			if( this.isLocked() ) {
 				
-				this.graph.shapeMoving( false );
+				this.graph.elementMoving( false );
 				this.handleSelected = false;
 				this.moving = true;
 				return;

@@ -180,10 +180,7 @@ define( [  '../graph._serie'], function( GraphSerieNonInstanciable ) {
 				}
 			}
 
-
-
-			this.graph.updateAxes();
-
+			this.graph._updateAxes();
 			this.data = arr;
 
 			return this;

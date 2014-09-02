@@ -18,12 +18,12 @@ define([], function() {
 			var deltaX = x - this._draggingX;
 			var deltaY = y - this._draggingY;
 
-			graph.applyToAxes(function(axis) {
+			graph._applyToAxes(function(axis) {
 				axis.setCurrentMin(axis.getVal(axis.getMinPx() - deltaX));
 				axis.setCurrentMax(axis.getVal(axis.getMaxPx() - deltaX));
 			}, false, true, false);
 
-			graph.applyToAxes(function(axis) {
+			graph._applyToAxes(function(axis) {
 				axis.setCurrentMin(axis.getVal(axis.getMinPx() - deltaY));
 				axis.setCurrentMax(axis.getVal(axis.getMaxPx() - deltaY));
 			}, false, false, true);
@@ -31,7 +31,7 @@ define([], function() {
 			this._draggingX = x;
 			this._draggingY = y;
 
-			graph.refreshDrawingZone(true);
+			graph.redraw(true);
 			graph.drawSeries();
 		}
 	}

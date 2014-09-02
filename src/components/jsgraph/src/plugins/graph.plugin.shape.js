@@ -54,7 +54,7 @@ define([], function() {
 			};
 
 
-			var shape = graph.makeShape( $.extend( shapeInfo, this.options ), {}, true ).then( function( shape ) {
+			var shape = graph.newShape( $.extend( shapeInfo, this.options ), {}, true ).then( function( shape ) {
 
 				if( ! shape ) {
 					return;

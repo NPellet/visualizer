@@ -66,7 +66,7 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
 				tickLabel.style.dominantBaseline = 'hanging';
 
 				this.setTickContent(tickLabel, value, options);
-				this.graph.applyStyleText(tickLabel);
+
 				this.groupTickLabels.appendChild(tickLabel);
 			}
 			this.ticks.push(tick);

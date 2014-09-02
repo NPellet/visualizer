@@ -77,7 +77,7 @@ define( [ 'jquery' ] , function( $ ) {
 			this.label.setAttribute('text-anchor', 'middle');
 
 			this.groupGrids.setAttribute('clip-path', 'url(#_clipplot' + this.graph._creation + ')');
-			this.graph.applyStyleText(this.label);
+
 			this.group.appendChild(this.label);
 
 			this.groupSeries = document.createElementNS(this.graph.ns, 'g');
@@ -90,7 +90,7 @@ define( [ 'jquery' ] , function( $ ) {
 
 			this.group.addEventListener('mousemove', function(e) {
 				e.preventDefault();
-				var coords = self.graph.getXY(e);
+				var coords = self.graph._getXY(e);
 				self.handleMouseMoveLocal(coords.x,coords.y,e);
 
 				for(var i = 0, l = self.series.length; i < l; i++) {
@@ -111,14 +111,14 @@ define( [ 'jquery' ] , function( $ ) {
 
 			this.group.addEventListener('mouseout', function(e) {
 				e.preventDefault();
-				var coords = self.graph.getXY(e);
+				var coords = self.graph._getXY(e);
 				self.handleMouseOutLocal(coords.x,coords.y,e);
 			});
 
 			this.labels = [];
 			this.group.addEventListener('click', function(e) {
 				e.preventDefault();
-				var coords = self.graph.getXY(e);
+				var coords = self.graph._getXY(e);
 				self.addLabel(self.getVal(coords.x - self.graph.getPaddingLeft()));
 			});
 
@@ -143,7 +143,7 @@ define( [ 'jquery' ] , function( $ ) {
 				if(e.which == 3 || e.ctrlKey) {
 					return;
 				}
-				var coords = self.graph.getXY(e);
+				var coords = self.graph._getXY(e);
 
 				self.graph.currentAction = 'zooming';
 				self.graph._zoomingMode = self instanceof GraphXAxis ? 'x' : 'y';
@@ -179,6 +179,16 @@ define( [ 'jquery' ] , function( $ ) {
 
 				this.series[ i ].addLabelObj( { x: x } );
 			}
+		},
+
+		hide: function() {
+			this.options.display = false;
+			return this;
+		},
+
+		show: function() {
+			this.options.display = true;
+			return this;
 		},
 
 		setDisplay: function(bool) {
@@ -803,12 +813,12 @@ define( [ 'jquery' ] , function( $ ) {
 			
 			
 			while(incr < 1 * units[umin + 1][0] && umin > -1) {
+
 				first = false;
 				value = (value - valueRounded) * units[umin + 1][0] / units[umin][0];
 				valueRounded = Math.round(value);
 				text += " " + valueRounded + units[umin][1];
 				umin--;
-
 			}
 			
 			return text;
@@ -869,6 +879,12 @@ define( [ 'jquery' ] , function( $ ) {
 			}
 
 			this.options.tickPosition = pos;
+			return this;
+		},
+
+		toggleGrids: function( bool ) {
+			this.options.primaryGrid = bool;
+			this.options.secondaryGrid = bool;
 			return this;
 		},
 

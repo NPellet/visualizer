@@ -16,7 +16,7 @@ define([], function() {
 	//		console.log( series[ 0 ].data );
 	//		console.log( series[ 0 ].getAdditionalData() );
 
-			this.graph.makeShape( {
+			this.graph.newShape( {
 
 				type: 'rect',
 				pos: {

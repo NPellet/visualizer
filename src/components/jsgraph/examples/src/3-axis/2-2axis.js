@@ -4,7 +4,7 @@ define( function() {
 
     function( domGraph ) {
 
-        var graphinstance = new Graph( domGraph );
+        var graphinstance = new Graph( domGraph, { title: 'Solar cell j-V curve'} );
 	// BEGIN IGNORE ON BUILD
 	var series = [ [], [], [] ];
 
@@ -34,12 +34,12 @@ var axisProperties = { primaryGrid: false, secondaryGrid: false, nbTicksPrimary:
   leftAxis = graphinstance.getLeftAxis( 0, axisProperties ),
   rightAxis = graphinstance.getRightAxis( 0, axisProperties );
 
-  graphinstance.newSerie( "cos" )
+  graphinstance.newSerie( "current" )
   .autoAxis()
   .setData( series[ 0 ] )
   .setLineColor('black');
 
-  graphinstance.newSerie( "cos" )
+  graphinstance.newSerie( "power" )
   .autoAxis()
   .setYAxis( graphinstance.getRightAxis() )
   .setData( series[ 1 ] )
@@ -50,7 +50,7 @@ var axisProperties = { primaryGrid: false, secondaryGrid: false, nbTicksPrimary:
   graphinstance.getXAxis().forceMin( 0 );
   graphinstance.getXAxis().forceMax( 1 );
 
-  graphinstance.makeShape({ 
+  graphinstance.newShape({ 
       type: 'arrow', 
       pos: { x: jmax },
       pos2: { dx: "-20px", dy: "-20px" },

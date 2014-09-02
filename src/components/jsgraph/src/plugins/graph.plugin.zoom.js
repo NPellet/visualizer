@@ -135,14 +135,14 @@ define([], function() {
 
 			switch(this._zoomingMode) {
 				case 'x':
-					graph.applyToAxes('_doZoom', [_x, this.x1], true, false);
+					graph._applyToAxes('_doZoom', [_x, this.x1], true, false);
 				break;
 				case 'y':
-					graph.applyToAxes('_doZoom', [_y, this.y1], false, true);
+					graph._applyToAxes('_doZoom', [_y, this.y1], false, true);
 				break;
 				case 'xy':
-					graph.applyToAxes('_doZoom', [_x, this.x1], true, false);
-					graph.applyToAxes('_doZoom', [_y, this.y1], false, true);
+					graph._applyToAxes('_doZoom', [_x, this.x1], true, false);
+					graph._applyToAxes('_doZoom', [_y, this.y1], false, true);
 				break;
 			}
 			
@@ -167,7 +167,7 @@ define([], function() {
 				return;	
 			} 
 
-			this.graph.applyToAxes('handleMouseWheel', [ delta, e ], false, true);	
+			this.graph._applyToAxes('handleMouseWheel', [ delta, e ], false, true);	
 		},
 
 		onDblClick: function( graph, x, y, pref, e, mute ) {
@@ -177,7 +177,7 @@ define([], function() {
 
 			if( pref.mode == 'xtotal' ) {
 
-				this.graph.applyToAxes( "setMinMaxToFitSeries", null, true, false );
+				this.graph._applyToAxes( "setMinMaxToFitSeries", null, true, false );
 				this.graph.drawSeries();
 				
 				
@@ -186,7 +186,7 @@ define([], function() {
 
 			else if( pref.mode == 'ytotal' ) {
 
-				this.graph.applyToAxes( "setMinMaxToFitSeries", null, false, true );
+				this.graph._applyToAxes( "setMinMaxToFitSeries", null, false, true );
 				this.graph.drawSeries();
 				
 				

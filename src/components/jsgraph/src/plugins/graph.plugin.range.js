@@ -13,7 +13,7 @@ define([], function() {
 				return;
 			x -= graph.getPaddingLeft(), xVal = graph.getXAxis().getVal( x );
 
-			var shape = graph.makeShape({type: 'rangeX', pos: {x: xVal, y: 0}, pos2: {x: xVal, y: 0}}, {
+			var shape = graph.newShape({type: 'rangeX', pos: {x: xVal, y: 0}, pos2: {x: xVal, y: 0}}, {
 				onChange: function(newData) {
 					self.triggerEvent('onAnnotationChange', newData);
 				}

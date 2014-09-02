@@ -126,7 +126,7 @@ define( [], function() {
 			this.setXAxis( ! this.isFlipped() ? this.graph.getXAxis() : this.graph.getYAxis() );
 			this.setYAxis( ! this.isFlipped() ? this.graph.getYAxis() : this.graph.getXAxis() );
 
-			this.graph.updateAxes();
+			this.graph._updateAxes();
 			
 			return this;
 		},

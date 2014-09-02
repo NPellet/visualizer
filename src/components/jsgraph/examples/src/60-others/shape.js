@@ -3,7 +3,6 @@ define( function() {
 
 	return [ function( domGraph ) {
 
-
 			// BEGIN IGNORE ON BUILD
 
 			var serie = [],
@@ -17,8 +16,6 @@ define( function() {
 			}
 
 			// END IGNORE ON BUILD
-
-
 
 			var graphinstance = new Graph( domGraph, {
 

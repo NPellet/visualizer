@@ -78,7 +78,7 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 					tickLabel.setAttribute('text-anchor', 'start');
 				}
 				tickLabel.style.dominantBaseline = 'central';
-				this.graph.applyStyleText(tickLabel);
+
 
 				this.setTickContent(tickLabel, value, options);
 

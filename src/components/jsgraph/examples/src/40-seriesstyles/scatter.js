@@ -17,7 +17,7 @@ define( function() {
 				);
 
 			var shape = { type: 'line', strokeColor: 'black', strokeWidth: 1, pos: { x: series[ 0 ][ 40 ], y: series[ 0 ][ 41 ] }, pos2: { x: 2000, y: "20px" } };
-			graphinstance.makeShape( shape ).then( function( shape ) {
+			graphinstance.newShape( shape ).then( function( shape ) {
 				shape.draw();
 				shape.redrawImpl();
 			});
