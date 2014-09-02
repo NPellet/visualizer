@@ -232,10 +232,7 @@ var VirtualRenderer = function(container, theme) {
             this.session.doc.off("changeNewLineMode", this.onChangeNewLineMode);
             
         this.session = session;
-        if (!session)
-            return;
-        
-        if (this.scrollMargin.top && session.getScrollTop() <= 0)
+        if (session && this.scrollMargin.top && session.getScrollTop() <= 0)
             session.setScrollTop(-this.scrollMargin.top);
 
         this.$cursorLayer.setSession(session);
@@ -243,6 +240,9 @@ var VirtualRenderer = function(container, theme) {
         this.$markerFront.setSession(session);
         this.$gutterLayer.setSession(session);
         this.$textLayer.setSession(session);
+        if (!session)
+            return;
+        
         this.$loop.schedule(this.CHANGE_FULL);
         this.session.$setFontMetrics(this.$fontMetrics);
         
@@ -258,7 +258,7 @@ var VirtualRenderer = function(container, theme) {
     *
     *
     **/
-    this.updateLines = function(firstRow, lastRow) {
+    this.updateLines = function(firstRow, lastRow, force) {
         if (lastRow === undefined)
             lastRow = Infinity;
 
@@ -276,8 +276,17 @@ var VirtualRenderer = function(container, theme) {
                 this.$changedLines.lastRow = lastRow;
         }
 
-        if (this.$changedLines.firstRow > this.layerConfig.lastRow ||
-            this.$changedLines.lastRow < this.layerConfig.firstRow)
+        // If the change happened offscreen above us then it's possible
+        // that a new line wrap will affect the position of the lines on our
+        // screen so they need redrawn.
+        // TODO: better solution is to not change scroll position when text is changed outside of visible area
+        if (this.$changedLines.lastRow < this.layerConfig.firstRow) {
+            if (force)
+                this.$changedLines.lastRow = this.layerConfig.lastRow;
+            else
+                return;
+        }
+        if (this.$changedLines.firstRow > this.layerConfig.lastRow)
             return;
         this.$loop.schedule(this.CHANGE_LINES);
     };
@@ -634,18 +643,17 @@ var VirtualRenderer = function(container, theme) {
             var val = this.textarea.value.replace(/^\x01+/, "");
             w *= (this.session.$getStringScreenWidth(val)[0]+2);
             h += 2;
-            posTop -= 1;
         }
         posLeft -= this.scrollLeft;
         if (posLeft > this.$size.scrollerWidth - w)
             posLeft = this.$size.scrollerWidth - w;
 
-        posLeft -= this.scrollBar.width;
+        posLeft += this.gutterWidth;
 
         this.textarea.style.height = h + "px";
         this.textarea.style.width = w + "px";
-        this.textarea.style.right = Math.max(0, this.$size.scrollerWidth - posLeft - w) + "px";
-        this.textarea.style.bottom = Math.max(0, this.$size.height - posTop - h) + "px";
+        this.textarea.style.left = Math.min(posLeft, this.$size.scrollerWidth - w) + "px";
+        this.textarea.style.top = Math.min(posTop, this.$size.height - h) + "px";
     };
 
     /**
@@ -906,6 +914,8 @@ var VirtualRenderer = function(container, theme) {
             this.$updateCachedSize(true, this.$gutterWidth, w, desiredHeight);
             // this.$loop.changes = 0;
             this.desiredHeight = desiredHeight;
+            
+            this._signal("autosize");
         }
     };
     
