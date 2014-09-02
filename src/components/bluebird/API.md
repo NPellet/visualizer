@@ -122,6 +122,20 @@ function getConnection(urlString) {
 
 The above ensures `getConnection()` fulfills the contract of a promise-returning function of never throwing a synchronous exception. Also see [`Promise.try`](#promisetryfunction-fn--arraydynamicdynamic-arguments--dynamic-ctx----promise) and [`Promise.method`](#promisemethodfunction-fn---function)
 
+The resolver is called synchronously (the following is for documentation purposes and not idiomatic code):
+
+```js
+function getPromiseResolveFn() {
+    var res;
+    new Promise(function (resolve) {
+        res = resolve;
+    });
+    // res is guaranteed to be set
+    return res;
+}
+```
+        
+
 <hr>
 
 #####`.then([Function fulfilledHandler] [, Function rejectedHandler ])` -> `Promise`
@@ -404,6 +418,9 @@ Now the animation is hidden but an exception or the actual return value will aut
 #####`.bind(dynamic thisArg)` -> `Promise`
 
 Create a promise that follows this promise, but is bound to the given `thisArg` value. A bound promise will call its handlers with the bound value set to `this`. Additionally promises derived from a bound promise will also be bound promises with the same `thisArg` binding as the original promise.
+
+If `thisArg` is a promise or thenable, its resolution will be awaited for and the bound value will be the promise's fulfillment value. If `thisArg` rejects
+then the returned promise is rejected with the `thisArg's` rejection reason. Note that this means you cannot use `this` without checking inside catch handlers for promises that bind to promise because in case of rejection of `thisArg`, `this` will be `undefined`.
 
 <hr>
 
@@ -976,7 +993,7 @@ fs.readdirAsync(".").map(function(fileName) {
 Example of static map:
 
 ```js
-var Promise = require("./js/main/bluebird.js");
+var Promise = require("bluebird");
 var join = Promise.join;
 var fs = Promise.promisifyAll(require("fs"));
 
@@ -1664,7 +1681,7 @@ restler.getAsync("http://...", ...,).spread(function(data, response) {
 
 #####`.nodeify([Function callback] [, Object options])` -> `Promise`
 
-Register a node-style callback on this promise. When this promise is is either fulfilled or rejected, the node callback will be called back with the node.js convention where error reason is the first argument and success value is the second argument. The error argument will be `null` in case of success.
+Register a node-style callback on this promise. When this promise is either fulfilled or rejected, the node callback will be called back with the node.js convention where error reason is the first argument and success value is the second argument. The error argument will be `null` in case of success.
 
 Returns back this promise instead of creating a new one. If the `callback` argument is not a function, this method does not do anything.
 
@@ -1991,7 +2008,7 @@ Promise.coroutine.addYieldHandler(function(yieldedValue) {
 
 var readFiles = Promise.coroutine(function* (fileNames) {
    var promises = [];
-   
+
    fileNames.forEach(function (fileName) {
       promises.push(fs.readFileAsync(fileName, "utf8"));
    });

@@ -1,3 +1,23 @@
+## 2.3.1 (2014-08-23)
+
+Features:
+
+ - `.using` can now be used with disposers created from different bluebird copy
+
+## 2.3.0 (2014-08-13)
+
+Features:
+
+ - [`.bind()`](API.md#binddynamic-thisarg---promise) and [`Promise.bind()`](API.md#promisebinddynamic-thisarg---promise) now await for the resolution of the `thisArg` if it's a promise or a thenable
+
+Bugfixes:
+
+ - Fix [#276](https://github.com/petkaantonov/bluebird/issues/276)
+
+## 2.2.2 (2014-07-14)
+
+ - Fix [#259](https://github.com/petkaantonov/bluebird/issues/259)
+
 ## 2.2.1 (2014-07-07)
 
  - Fix multiline error messages only showing the first line

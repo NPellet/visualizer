@@ -69,11 +69,24 @@ function Promise(resolver) {
     if (resolver !== INTERNAL) this._resolveFromResolver(resolver);
 }
 
+function returnFirstElement(elements) {
+    return elements[0];
+}
+
 Promise.prototype.bind = function Promise$bind(thisArg) {
+    var maybePromise = cast(thisArg, void 0);
     var ret = new Promise(INTERNAL);
-    ret._follow(this);
+    if (maybePromise instanceof Promise) {
+        var binder = maybePromise.then(function(thisArg) {
+            ret._setBoundTo(thisArg);
+        });
+        var p = Promise.all([this, binder]).then(returnFirstElement);
+        ret._follow(p);
+    } else {
+        ret._follow(this);
+        ret._setBoundTo(thisArg);
+    }
     ret._propagateFrom(this, PROPAGATE_TRACE | PROPAGATE_CANCEL);
-    ret._setBoundTo(thisArg);
     return ret;
 };
 
@@ -232,10 +245,19 @@ Promise.defer = Promise.pending = function Promise$Defer() {
 };
 
 Promise.bind = function Promise$Bind(thisArg) {
+    var maybePromise = cast(thisArg, void 0);
     var ret = new Promise(INTERNAL);
     ret._setTrace(void 0);
-    ret._setFulfilled();
-    ret._setBoundTo(thisArg);
+
+    if (maybePromise instanceof Promise) {
+        var p = maybePromise.then(function(thisArg) {
+            ret._setBoundTo(thisArg);
+        });
+        ret._follow(p);
+    } else {
+        ret._setBoundTo(thisArg);
+        ret._setFulfilled();
+    }
     return ret;
 };
 
@@ -551,7 +573,7 @@ Promise.prototype._proxyPromise = function Promise$_proxyPromise(promise) {
     ASSERT(!this.isResolved());
     ASSERT(arguments.length === 1);
     promise._setProxied();
-    this._setProxyHandlers(promise, -1);
+    this._setProxyHandlers(promise, -15);
 };
 
 Promise.prototype._setBoundTo = function Promise$_setBoundTo(obj) {
@@ -857,7 +879,7 @@ Promise.prototype._settlePromiseAt = function Promise$_settlePromiseAt(index) {
     //this is only necessary against index inflation with long lived promises
     //that accumulate the index size over time,
     //not because the data wouldn't be GCd otherwise
-    if (index >= 256) {
+    if (index >= 4) {
         this._queueGC();
     }
 };
@@ -893,13 +915,24 @@ Promise.prototype._queueGC = function Promise$_queueGC() {
 };
 
 Promise.prototype._gc = function Promise$gc() {
-    var len = this._length() * CALLBACK_SIZE;
+    var len = this._length() * CALLBACK_SIZE - CALLBACK_SIZE;
+    ASSERT(!(len in this));
     for (var i = 0; i < len; i++) {
+        ASSERT(i in this);
         //Delete is cool on array indexes
         delete this[i];
     }
+    this._clearFirstHandlerData();
     this._setLength(0);
     this._unsetGcQueued();
+};
+
+Promise.prototype._clearFirstHandlerData =
+function Promise$_clearFirstHandlerData() {
+    this._fulfillmentHandler0 = void 0;
+    this._rejectionHandler0 = void 0;
+    this._promise0 = void 0;
+    this._receiver0 = void 0;
 };
 
 Promise.prototype._queueSettleAt = function Promise$_queueSettleAt(index) {
