@@ -348,7 +348,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			}
 			
 			s.getChild( this.module.getConfiguration( 'colorjPath' ) ).then( function(value) {
-				element._backgroundColor = value;
+				element._backgroundColor = value.toString();
 			} );
 
 			return element;

@@ -62,16 +62,14 @@ requirejs.config({
 	}
 });
 
-require(['jquery', 'src/main/datas'], function($, Datas) {
+require(['jquery', 'src/main/datas', "src/main/entrypoint", "uri/URI.fragmentQuery"], function($, Datas, EntryPoint, URI) {
 
 	"use strict";
 
 	$(document).ready(function() {
-		require(["src/main/entrypoint", "uri/URI.fragmentQuery"], function(EntryPoint, URI) {
 			var url = new URI(window.location.href);
 			var type = (url.search().length > 0) ? "search" : (url.fragment()[0] === "?" ? "fragment" : "search");
 			var query = new URI(url[type]()).query(true);
 			EntryPoint.init(query, type.replace(type[0], type[0].toUpperCase()));
 		});
-	});
 });

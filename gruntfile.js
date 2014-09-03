@@ -243,6 +243,7 @@ module.exports = function(grunt) {
         
         compile: {
           options: {
+              "mainConfigFile": "./build/init.js",
             "dir": "./build2/",
             "appDir": "./build/",
             "baseUrl": "./",
