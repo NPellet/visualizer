@@ -1,13 +1,14 @@
+'use strict';
+
 define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api', 'src/util/domdeferred', 'src/util/datatraversing', 'src/util/typerenderer', 'src/util/context'], function(require, Default, Util, API, DomDeferred, Traversing, Renderer, Context) {
-	"use strict";
 	
-	function view() {};
-	view.prototype = $.extend(true, {}, Default, {
+	function View() {}
+
+	View.prototype = $.extend(true, {}, Default, {
 
 	 	init: function() {	
 
 	 		var self = this,
-	 			lastTr,
 	 			currentColSort;
 
 	 		var toggle = this.module.getConfiguration( 'toggle' );
@@ -21,7 +22,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
             // Mouseenter is better in this case because it will
             // not fire multiple times if the element has children
 	 		this.domTable.on('mouseenter', 'tbody tr', function() {
-                    console.log('mouse enter');
 	 				var dataRowId = $(this).index();
 	 					
 	 				if( ! isNaN( dataRowId ) ) {
@@ -39,30 +39,29 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                                         
 
 	 		}).on('click', 'tr', function() {
+                var $this = $(this);
 
- 				self.module.controller.lineClick( self.module.data, $(this).index() );
+ 				self.module.controller.lineClick( self.module.data, $this.index() );
 
  				if( toggle ) {
-console.log( toggle, self.selected );
  					if( toggle == 'single' && self.selected[ 0 ] !== undefined ) {
 
  						self.module.controller.onToggleOff( self.module.data, self.selected[ 0 ] );
- 						$(this).parent().children().eq( self.selected[ 0 ] ).toggleClass('toggled');
+                        $this.parent().children().eq( self.selected[ 0 ] ).toggleClass('toggled');
 
  						self.selected = [];
  					}
 
- 					var $this = $(this),
- 						index = $(this).index();
+ 					var index = $this.index();
 
- 					if( $( this ).hasClass( 'toggled' ) ) {
+ 					if( $this.hasClass( 'toggled' ) ) {
  						self.module.controller.onToggleOff( self.module.data, index );
  					} else {
  						self.module.controller.onToggleOn( self.module.data, index );
  					}
 
- 					$(this).toggleClass('toggled');
-console.log("Push");
+                    $this.toggleClass('toggled');
+
  					self.selected.push( index );
  				}
 
@@ -104,6 +103,7 @@ console.log("Push");
 				l = jpaths.length,
 				j = 0;
 
+            this.colsjPaths = jpaths;
 			this.jpaths = {};
 
 			var thead = '<tr>';
@@ -143,14 +143,6 @@ console.log("Push");
 			}
 	 	},
 
-	 	onResize: function( ) {
-	 		
-	 		if( ! this.jqGrid ) {
-	 			return;
-	 		}
-
-	 		
-	 	},
 
 	 	blank: {
 
@@ -187,14 +179,11 @@ console.log("Push");
 
 				this.elements = moduleValue;
                 
-				var self = this, 
-					jpaths = this.module.getConfiguration( 'colsjPaths' ),
+				var self = this,
 					nbLines = this.module.getConfiguration( 'nbLines' ) || 20,
 					html = '',
 					i = 0,
-					l = moduleValue.get().length,
-					j,
-					k = jpaths.length;
+					l = moduleValue.get().length;
 
 				this.module.data = moduleValue;
 
@@ -278,7 +267,7 @@ console.log("Push");
 		buildElement: function( source, i ) {
 			
 			var 
-				jpaths = this.module.getConfiguration( 'colsjPaths' ),
+				jpaths = this.colsjPaths,
 				html = '',
 				j,
 				k = jpaths.length;
@@ -339,12 +328,10 @@ console.log("Push");
 			},
 
 			removeRow: function( source ) {
-console.log( source );
 				this.onActionReceive.removeRowById.call( this, this.module.getDataFromRel('list').indexOf( source ) );
 			},
 
 			removeRowById: function( rowId ) {
-console.log( rowId );
 				if( rowId < 0 ) {
 					return;
 				}
@@ -358,18 +345,12 @@ console.log( rowId );
 					this.selected.splice( index, 1 );
 				}
 
-				console.log( this.selected );
-
 				this.domBody.children().eq( rowId ).remove();
 			},
 
 			toggleOff: function( source ) {
 
-				console.log( "Toggle Off" );
-
 				var index = this.module.getDataFromRel('list').indexOf( source );
-				console.log( index, this.module.getDataFromRel('list'), source );
-
 				if( index == -1 ) {
 					return;
 				}
@@ -379,12 +360,9 @@ console.log( rowId );
 
 			}
 
-		},
-
-		typeToScreen: {
-
 		}
 	});
 
-	return view;
+	return View;
+
 });
