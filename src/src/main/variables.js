@@ -1,13 +1,6 @@
-define([ 
-	'src/util/util',
-	'src/main/datas',
-	'src/util/debug',
-	'src/main/variable'
-	], 
+'use strict';
 
-	function( Util, Datas, Debug, Variable, Versioning ) { // Ensures Data is loaded, although not compulsory
-
-	"use strict";
+define(function() {
 
 	var allVariables = {};
 

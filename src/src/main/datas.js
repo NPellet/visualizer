@@ -540,7 +540,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 	// In order to prevent looping, the trigger and bind change should only be called via the module model.
 
 	var triggerChange = {
-		value: function( noBubble, args ) {
+		value: function( options, args ) {
 
 			// 2 June 2014
 			// This has been removed. No reason to trigger parent before self
@@ -557,6 +557,21 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 			}
 			*/
 
+            if(!Array.isArray(args)) {
+                args = [args];
+            }
+
+            var noBubble;
+            if(typeof options !== 'object') {
+                noBubble = options;
+            } else {
+                noBubble = options.noBubble;
+                args.unshift({
+                    target: this,
+                    options: options
+                });
+            }
+
 			if( this._dataChange ) {
 
 				for( var i in this._dataChange ) {
@@ -572,7 +587,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 				return;
 			}
 
-			this.__parent.triggerChange.apply( this.__parent, args );
+			this.__parent.triggerChange.apply( this.__parent, [noBubble, args] );
 		}
 	};
 

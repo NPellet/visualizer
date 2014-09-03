@@ -4,13 +4,30 @@ define(
 	'src/util/util',
 	'src/main/datas',
 	'src/util/versioning',
-	'src/util/debug'
+	'src/util/debug',
+    'src/util/variables'
 ],
-function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, although not compulsory
+function( $, Util, Datas, Versioning, Debug, Variables ) { // Ensures Data is loaded, although not compulsory
 
 	"use strict";
 
-	var data = Versioning.getData();
+    var data,
+        changeId;
+
+    function handleChange (event) {
+        if (event.target === data) {
+            // notify variables
+        }
+    }
+
+    function updateData () {
+        if (data) {
+            data.unbindChange(changeId);
+        }
+        data = Versioning.getData();
+        changeId = data.onChange(handleChange);
+    }
+    updateData();
 
 	var Variable = function( name ) {
 
@@ -95,7 +112,7 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 		triggerChange: function( callback ) {
 
 			var self = this;
-			data = Versioning.getData();
+			updateData();
 
 			if( this.rejectCurrentPromise ) {
 	
