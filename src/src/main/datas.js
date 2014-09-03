@@ -126,12 +126,8 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 		}
 	};
 
-
-
-
 	function DataString( s ) {
-		String.call(this, s);
-    	this.s_ = s;
+		this.s_ = String(s);
     }
 
 	var StringProperties = ["charAt", "charCodeAt", "concat", "fromCharCode", "indexOf", "lastIndexOf", "localCompare", 
@@ -155,9 +151,8 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 	DataString.prototype.nativeConstructor = String;
 
 	function DataNumber( s ) {
-		Number.call(this, s);
-    	this.s_ = s;
-    }
+		this.s_ = Number(s);
+	}
 
 	DataNumber.prototype.getType = function() {
 		return "number";
@@ -166,8 +161,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 	DataNumber.prototype.nativeConstructor = Number;
 
 	function DataBoolean( s ) {
-		Boolean.call(this, s);
-		this.s_ = s;
+		this.s_ = Boolean(s);
 	}
 	
 	DataBoolean.prototype.getType = function() {
@@ -488,54 +482,57 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 
 	var setChild = {
 		value: function( jpath, newValue, noMute, constructor ) {
-			var self = this;
 
-			var mute = false;
-			if( noMute === undefined ) {
-				mute = true;
-			}
+            var self = this;
 
-			
-			var onChangeOptions = Array.prototype.slice.call( arguments, 2 );
+//			var mute = false;
+//			if( noMute === undefined ) {
+//				mute = true;
+//			}
 
-			if( jpath && jpath.split ) { // Old version
-				jpath = jpath.split('.');
-				jpath.shift();
-			}
-			
-			jpath = jpath.slice();
+//			var onChangeOptions = Array.prototype.slice.call( arguments, 2 );
 
-			var jpathLength = jpath.length;
-			var el = jpath.shift();
+            if (typeof jpath === 'string') { // Old version
+                jpath = jpath.split('.');
+                jpath.shift();
+            }
 
-			if( jpathLength === 1 ) {
-				var res = self.set(el, newValue);
-				if(res) {
-					res.triggerChange();
-				}
-				return;
-			}							
+            jpath = jpath.slice();
 
-			var elementType = jpath.length === 0 ? constructor : ( typeof el === "number" ? DataArray : DataObject );
+            var jpathLength = jpath.length;
 
-			var name = el;
-			arguments[ 0 ] = jpath;
-			var args = arguments;
+            if (jpathLength === 0) {
+                throw new Error('setChild cannot be called with an empty jPath');
+            }
 
-			return this
-					.get(el, true, elementType)
-					.then(function( val ) {
-					
-						self.set( name, val );
-						val.linkToParent( self, name );
-						val.setChild.apply( val, args );
-					});
-					// 2 June 2014. This code has been removed.
-					// Bubbling should be done within the triggerElement with parenting.
-					//.done(function() {
-						
-					//});
-		}
+            var el = jpath.shift();
+
+            if (jpathLength === 1) {
+                var res = self.set(el, newValue);
+                res.linkToParent(self, el);
+                self.triggerChange();
+                return;
+            }
+
+            var elementType = jpath.length === 0 ? constructor : ( typeof jpath[0] === "number" ? DataArray : DataObject );
+
+            var name = el;
+
+            var args = [jpath, newValue, noMute, constructor];
+
+            return this
+                .get(el, true, elementType)
+                .then(function (val) {
+                    self.set(name, val);
+                    val.linkToParent(self, name);
+                    val.setChild.apply(val, args);
+                });
+            // 2 June 2014. This code has been removed.
+            // Bubbling should be done within the triggerElement with parenting.
+            //.done(function() {
+
+            //});
+        }
 	};
 
 

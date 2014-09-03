@@ -239,7 +239,7 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
         postvariables: [ 'sections', 'postvariables', 0, 'groups', 'postvariables', 0 ],
         headers: [ 'groups', 'headers', 0 ],
         dataType: [ 'groups', 'group', 0, 'dataType', 0 ],
-        debounce: [ 'groups', 'group', 0, 'debounce', 0 ],
+        debounce: [ 'groups', 'group', 0, 'debounce', 0 ]
     };
 
     Controller.prototype.initImpl = function () {
