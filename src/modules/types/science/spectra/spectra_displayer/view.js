@@ -707,7 +707,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 
 
 		onActionReceive: {
-			fromto: function(value, name) {
+			fromTo: function(value, name) {
 				this.graph.getBottomAxis()._doZoomVal(value.value.from, value.value.to, true);
 
 				this.graph.redraw(true);
