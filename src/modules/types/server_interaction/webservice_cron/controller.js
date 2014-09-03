@@ -103,7 +103,7 @@ define(['modules/default/defaultcontroller','components/x2js/xml2json.min'], fun
             } else if(datatype==='xml') {
                 dataobj = self.converter.xml_str2json(data);
             }
-            
+            self.addVar(variable, DataObject.check(dataobj, true));
             self.createDataFromEvent('onUpdateResult', 'result', dataobj);
             self.module.view.log(true, variable);
         };
