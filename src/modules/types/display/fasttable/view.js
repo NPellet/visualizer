@@ -270,7 +270,8 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 				jpaths = this.colsjPaths,
 				html = '',
 				j,
-				k = jpaths.length;
+				k = jpaths.length,
+                currentVar;
 
 			html += '<tr';
 			
@@ -288,8 +289,12 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 					continue;
 				}
 				
-				html += '<td>';	
-				html += Traversing.get( this.getValue( Traversing.get( source ), jpaths[ j ].jpath ) ) || "";
+				html += '<td>';
+                currentVar = Traversing.get( this.getValue( Traversing.get( source ), jpaths[ j ].jpath ) );
+                if(typeof currentVar === 'undefined') {
+                    currentVar = '';
+                }
+				html += currentVar;
 				html += '</td>';
 			}
 			html += '</tr>';
