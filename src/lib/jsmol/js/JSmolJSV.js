@@ -118,6 +118,11 @@
 				+ ';syncCallbackFunctionName Jmol._mySyncCallback;';	
 	}
 
+	proto._newApplet = function(viewerOptions) {
+		return (this._isPro ? new JSV.appletjs.JSVAppletPro(viewerOptions) 
+				: new JSV.appletjs.JSVApplet(viewerOptions));
+	}
+
 	proto._create = function(id, Info){
 
 		Jmol._setObject(this, id, Info);
