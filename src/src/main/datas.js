@@ -481,16 +481,9 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 	};
 
 	var setChild = {
-		value: function( jpath, newValue, noMute, constructor ) {
+		value: function( jpath, newValue, triggerParams, constructor ) {
 
             var self = this;
-
-//			var mute = false;
-//			if( noMute === undefined ) {
-//				mute = true;
-//			}
-
-//			var onChangeOptions = Array.prototype.slice.call( arguments, 2 );
 
             if (typeof jpath === 'string') { // Old version
                 jpath = jpath.split('.');
@@ -510,7 +503,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
             if (jpathLength === 1) {
                 var res = self.set(el, newValue);
                 res.linkToParent(self, el);
-                self.triggerChange();
+                self.triggerChange(false, triggerParams);
                 return;
             }
 
@@ -518,7 +511,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 
             var name = el;
 
-            var args = [jpath, newValue, noMute, constructor];
+            var args = [jpath, newValue, triggerParams, constructor];
 
             return this
                 .get(el, true, elementType)
@@ -527,11 +520,6 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
                     val.linkToParent(self, name);
                     val.setChild.apply(val, args);
                 });
-            // 2 June 2014. This code has been removed.
-            // Bubbling should be done within the triggerElement with parenting.
-            //.done(function() {
-
-            //});
         }
 	};
 
