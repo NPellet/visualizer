@@ -674,7 +674,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
 
         onActionReceive: {
-            fromto: function (value) {
+            fromTo: function (value) {
                 this.graph.getBottomAxis()._doZoomVal(value.value.from, value.value.to, true);
 
                 this.graph.redraw(true);
