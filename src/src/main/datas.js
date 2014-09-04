@@ -509,7 +509,9 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 
             if (jpathLength === 1) {
                 var res = self.set(el, newValue);
-                res.linkToParent(self, el);
+                if (res && res.linkToParent) {
+                    res.linkToParent(self, el);
+                }
                 self.triggerChange();
                 return;
             }
