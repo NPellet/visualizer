@@ -535,42 +535,45 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
         }
 	};
 
+    var triggerBubble = {
+        value: function (args) {
+
+            if( this._dataChange ) {
+                for( var i in this._dataChange ) {
+                    this._dataChange[ i ].apply( this, args );
+                }
+            }
+
+            if( ! this.__parent ) {
+                return;
+            }
+
+            args[0].jpath.unshift(this.__name);
+
+            this.__parent._triggerBubble.call( this.__parent, args );
+
+        }
+    };
+
 
 	// 2 June 2014
 	// In order to prevent looping, the trigger and bind change should only be called via the module model.
 
 	var triggerChange = {
-		value: function( options, args ) {
-
-			// 2 June 2014
-			// This has been removed. No reason to trigger parent before self
-
-
-			/*
-			if ( ! this._dataChange ) {
-
-				if( this.__parent ) {
-					this.__parent.triggerChange( moduleid );
-				}
-
-				return;
-			}
-			*/
+		value: function( noBubble, args ) {
 
             if(!Array.isArray(args)) {
-                args = [args];
+                if(args == undefined) {
+                    args = [];
+                } else {
+                    args = [args];
+                }
             }
 
-            var noBubble;
-            if(typeof options !== 'object') {
-                noBubble = options;
-            } else {
-                noBubble = options.noBubble;
-                args.unshift({
-                    target: this,
-                    options: options
-                });
-            }
+            args.unshift({
+                target: this,
+                jpath: []
+            });
 
 			if( this._dataChange ) {
 
@@ -587,7 +590,9 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 				return;
 			}
 
-			this.__parent.triggerChange.apply( this.__parent, [noBubble, args] );
+            args[0].jpath.unshift(this.__name);
+
+			this.__parent._triggerBubble.call( this.__parent, args );
 		}
 	};
 
@@ -624,9 +629,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 				idOrFunc = idOrFunc.id;
 			}
 
-			if( ! this._dataChange ) {
-				delete this._dataChange[ idOrFunc ];
-			}
+			delete this._dataChange[ idOrFunc ];
 		}
 	};
 
@@ -742,6 +745,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 		onChange: bindChange,
 		unbindChange: unbindChange,
 		triggerChange: triggerChange,
+        _triggerBubble: triggerBubble,
 		linkToParent: linkToParent,
 		getType: getType,
 		setValue: setValue

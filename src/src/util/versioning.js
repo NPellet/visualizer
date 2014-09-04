@@ -1,12 +1,12 @@
 // Versioning file
 
-define(['src/util/versionhandler'], function(VersionHandler) {
+define(['src/util/versionhandler', 'src/main/variables'], function(VersionHandler, Variables) {
 	"use strict";
 	var version = [2, 4, 2].join('.');
 	var dataHandler = new VersionHandler(),
 			viewHandler = new VersionHandler(),
 			view = new DataObject(),
-			data = new DataObject(),
+			data = Variables.getData(),
 			lastLoaded = {
 				view: {},
 				data: {}
@@ -93,13 +93,16 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 	}
 	
 	function updateData(newData) {
-		var i;
+		var i, child;
 		for(i in data) {
 			delete data[i];
 		}
 		for(i in newData) {
-			data[i] = DataObject.check(newData[i], true);
+            child = DataObject.check(newData[i], true);
+			data[i] = child;
+            child.linkToParent(data, i);
 		}
+        data.triggerChange();
 	}
 
 	return {
