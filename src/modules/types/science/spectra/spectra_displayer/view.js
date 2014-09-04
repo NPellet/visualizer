@@ -82,24 +82,26 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
             // Axes
             var xAxis = graph.getXAxis();
-            xAxis.flip(cfgCheckbox('flipAxis', 'flipX'))
+            xAxis
+                .flip(cfgCheckbox('flipAxis', 'flipX'))
                 .togglePrimaryGrid(cfgCheckbox('grid', 'vmain'))
                 .toggleSecondaryGrid(cfgCheckbox('grid', 'vsec'))
-                .setLabel(cfg('xLabel', ''));
-            xAxis.forceMin(cfg('minX', false)); //TODO wait for chainable methods
-            xAxis.forceMax(cfg('maxX', false));
+                .setLabel(cfg('xLabel', ''))
+                .forceMin(cfg('minX', false))
+                .forceMax(cfg('maxX', false));
             if(!cfgCheckbox('displayAxis', 'x')) {
                 xAxis.hide();
             }
             this.xAxis = xAxis;
 
             var yAxis = graph.getYAxis();
-            yAxis.flip(cfgCheckbox('flipAxis', 'flipY'))
+            yAxis
+                .flip(cfgCheckbox('flipAxis', 'flipY'))
                 .togglePrimaryGrid(cfgCheckbox('grid', 'hmain'))
                 .toggleSecondaryGrid(cfgCheckbox('grid', 'hsec'))
-                .setLabel(cfg('yLabel', ''));
-            yAxis.forceMin(cfg('minY', false));
-            yAxis.forceMax(cfg('maxY', false));
+                .setLabel(cfg('yLabel', ''))
+                .forceMin(cfg('minY', false))
+                .forceMax(cfg('maxY', false));
             if (!cfgCheckbox('displayAxis', 'y')) {
                 yAxis.hide();
             }
