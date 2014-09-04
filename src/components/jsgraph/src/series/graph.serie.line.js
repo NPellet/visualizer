@@ -118,197 +118,6 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			}
 		},
 
-
-		/**
-		 *	Possible data types
-		 *	[100, 0.145, 101, 0.152, 102, 0.153]
-		 *	[[100, 0.145, 101, 0.152], [104, 0.175, 106, 0.188]]
-		 *	[[100, 0.145], [101, 0.152], [102, 0.153], [...]]
-		 *	[{ x: 100, dx: 1, y: [0.145, 0.152, 0.153]}]
-		 *
-		 *	Converts every data type to a 1D array
-		 */
-		setData: function(data, arg, type) {
-
-			var z = 0,
-				x,
-				dx, 
-				arg = arg || "2D", 
-				type = type || 'float', 
-				arr, 
-				total = 0,
-				continuous;
-
-			if( ! data instanceof Array ) {
-				return;
-			}
-
-			// Single object
-			var datas = [];
-			if( ! ( data instanceof Array ) && typeof data == 'object' ) {
-				data = [ data ];
-			} else if( data instanceof Array && ! ( data[ 0 ] instanceof Array ) ) {// [100, 103, 102, 2143, ...]
-				data = [ data ];
-				arg = "1D";
-			}
-
-			var _2d = ( arg == "2D" );
-
-			// [[100, 0.145], [101, 0.152], [102, 0.153], [...]] ==> [[[100, 0.145], [101, 0.152], [102, 0.153], [...]]]
-			if( data[ 0 ] instanceof Array && arg == "2D" && ! ( data[ 0 ][ 0 ] instanceof Array ) ) {
-				data = [ data ];
-			}
-
-
-			if(data[ 0 ] instanceof Array) {
-				for(var i = 0, k = data.length; i < k; i++) {
-
-					arr = this._addData( type, _2d ? data[ i ].length * 2 : data[ i ].length );
-					datas.push( arr );
-					z = 0;
-					
-					for(var j = 0, l = data[ i ].length; j < l; j++) {
-
-						if(_2d) {
-							arr[z] = (data[i][j][0]);
-							this._checkX(arr[z]);
-							z++;
-							arr[z] = (data[i][j][1]);
-							this._checkY(arr[z]);
-							z++;
-							total++;
-						} else { // 1D Array
-							arr[z] = data[i][j];
-							this[j % 2 == 0 ? '_checkX' : '_checkY'](arr[z]);
-							z++;
-							total += j % 2 ? 1 : 0;
-
-						}
-					}
-				}
-
-			} else if(typeof data[0] == 'object') {
-				
-				this.mode = 'x_equally_separated';
-
-				var number = 0, numbers = [], datas = [], k = 0, o;
-				for(var i = 0, l = data.length; i < l; i++) { // Several piece of data together
-					number += data[i].y.length;
-					continuous = (i != 0) && (!data[i + 1] || data[i].x + data[i].dx * (data[i].y.length) == data[i + 1].x);
-					if( ! continuous ) {
-						datas.push(this._addData(type, number));
-						numbers.push(number);
-						number = 0;
-					}
-				}
-
-				this.xData = [];
-
-				number = 0, k = 0, z = 0;
-
-				for(var i = 0, l = data.length; i < l; i++) {
-					x = data[i].x, dx = data[i].dx;
-
-					this.xData.push( { x : x, dx : dx } );
-
-					o = data[i].y.length;
-					this._checkX( x );
-					this._checkX( x + dx * o );
-
-					for(var j = 0; j < o; j++) {
-						/*datas[k][z] = (x + j * dx);
-						this._checkX(datas[k][z]);
-						z++;*/
-						// 30 june 2014. To save memory I suggest that we do not add this stupid data.
-			
-						datas[k][z] = (data[i].y[j]);
-						this._checkY(datas[k][z]);
-						z++;
-						total++;
-
-
-					}
-					number += data[i].y.length;
-			
-					if(numbers[k] == number) {
-						k++;
-						number = 0;
-						z = 0;
-					}
-				}
-			}
-
-			// Determination of slots for low res spectrum
-			var w = ( this.maxX - this.minX ) / this.graph.getDrawingWidth( ),
-				ws = [];
-
-			var min = this.graph.getDrawingWidth( ) * 4;
-			var max = total / 4;
-
-			var min = this.graph.getDrawingWidth( );
-			var max = total;
-
-			this.data = datas;
-			
-			if( min > 0 ) {
-
-				while( min < max ) {
-					ws.push( min );
-					min *= 4;
-				}
-
-				this.slots = ws;
-			
-				if( this.options.useSlots ) {
-					this.calculateSlots( );
-				}
-			}
-
-			if( this.isFlipped() ) {
-
-				var maxX = this.maxX;
-				var maxY = this.maxY;
-				var minX = this.minX;
-				var minY = this.minY;
-
-				this.maxX = maxY;
-				this.maxY = maxX;
-
-				this.minX = minY;
-				this.minY = minX;
-			}
-
-			this.graph._updateAxes();
-
-			return this;
-		},
-
-
-		_addData: function(type, howmany) {
-
-			switch(type) {
-				case 'int':
-					var size = howmany * 4; // 4 byte per number (32 bits)
-				break;
-				case 'float':
-					var size = howmany * 8; // 4 byte per number (64 bits)
-				break;
-			}
-
-			var arr = new ArrayBuffer(size);
-
-			switch(type) {
-				case 'int':
-					return new Int32Array(arr);
-				break;
-
-				default:
-				case 'float':
-					return new Float64Array(arr);
-				break;
-			}
-		},
-
 		setAdditionalData: function( data ) {
 			this.additionalData = data;
 			return this;
@@ -779,7 +588,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			}
 
 			if( this.options.autoPeakPicking ) {
-				this.makePeakPicking( allY );
+				makePeakPicking( this, allY );
 			}
 
 			i++;
@@ -826,7 +635,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			//console.log(slotToUse, y, this.slots[ y ]);
 			
 			var currentLine = "M ";
-			k = 0;
+			var k = 0;
 			var i = 0, xpx, max;
 			var j;
 

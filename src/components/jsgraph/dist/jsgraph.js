@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.7
+ * jsGraphs JavaScript Graphing Library v1.9.9-1
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-09-02T02:37Z
+ * Date: 2014-09-03T03:56Z
  */
 
 (function( global, factory ) {
@@ -299,8 +299,14 @@ build['./graph.axis'] = ( function( $ ) {
 		setMinValueData: function( min ) { this.dataMin = min; },
 		setMaxValueData: function( max ) { this.dataMax = max; },
 
-		forceMin: function(val) {    this.options.forcedMin = val; },
-		forceMax: function(val) {   this.options.forcedMax = val; },
+		forceMin: function(val) {
+			this.options.forcedMin = val;
+			return this;
+		},
+		forceMax: function(val) {
+			this.options.forcedMax = val;
+			return this;
+		},
 
 		getNbTicksPrimary: function() {
 			return this.options.nbTicksPrimary;
@@ -4079,7 +4085,7 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			e.preventDefault();
 			e.stopPropagation();
 			var deltaY = e.wheelDeltaY || e.wheelDelta || - e.deltaY;
-			handleMouseWheel(self, deltaY, e);
+			_handleMouseWheel(self, deltaY, e);
 
 			return false;
 		});
@@ -4088,7 +4094,7 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			e.stopPropagation();
 			e.preventDefault();
 			var deltaY = e.wheelDeltaY || e.wheelDelta || - e.deltaY;
-			handleMouseWheel( self, deltaY, e );	
+			_handleMouseWheel( self, deltaY, e );	
 			
 			return false;
 		});
@@ -4228,7 +4234,7 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 		if( graph.options.close === false ) {
 			return;
 		}
-		
+
 		if( ( graph.options.close === true  || graph.options.close[ mode ] ) && graph.axis[ mode ].length == 0 ) {
 
 			graph.closingLines[ mode ].setAttribute('display', 'block');
@@ -4244,6 +4250,43 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 		}
 	}
 
+
+	function _handleMouseWheel(graph, delta, e) {
+
+
+		e.preventDefault();
+		e.stopPropagation();
+
+		if( ! graph.options.wheel.type ) {
+			return;
+		}
+
+		switch( graph.options.wheel.type ) {
+
+			case 'plugin':
+
+				var plugin;
+
+				if( plugin = graph._plugins[ graph.options.wheel.plugin ] ) {
+					plugin.onMouseWheel( delta, e );
+				}
+
+			break;
+
+
+			case 'toSeries':
+
+				for(var i = 0, l = graph.series.length; i < l; i++) {
+					graph.series[ i ].onMouseWheel(delta, e);
+				}
+
+			break;
+
+		}
+
+		graph.redraw( );
+		graph.drawSeries( true );
+	}
 
 	return Graph;
  } ) ( build["./jquery"],build["./graph.axis.x"],build["./graph.axis.y"],build["./graph.xaxis.time"],build["./graph.legend"],build["./dynamicdepencies"] );
@@ -4281,6 +4324,198 @@ build['./graph._serie'] = ( function( ) {
 		},
 
 
+
+		/**
+		 *	Possible data types
+		 *	[100, 0.145, 101, 0.152, 102, 0.153]
+		 *	[[100, 0.145, 101, 0.152], [104, 0.175, 106, 0.188]]
+		 *	[[100, 0.145], [101, 0.152], [102, 0.153], [...]]
+		 *	[{ x: 100, dx: 1, y: [0.145, 0.152, 0.153]}]
+		 *
+		 *	Converts every data type to a 1D array
+		 */
+
+		setData: function(data, arg, type) {
+
+			var z = 0,
+				x,
+				dx, 
+				arg = arg || "2D", 
+				type = type || 'float', 
+				arr, 
+				total = 0,
+				continuous;
+
+			if( ! data instanceof Array ) {
+				return;
+			}
+
+			// Single object
+			var datas = [];
+			if( ! ( data instanceof Array ) && typeof data == 'object' ) {
+				data = [ data ];
+			} else if( data instanceof Array && ! ( data[ 0 ] instanceof Array ) ) {// [100, 103, 102, 2143, ...]
+				data = [ data ];
+				arg = "1D";
+			}
+
+			var _2d = ( arg == "2D" );
+
+			// [[100, 0.145], [101, 0.152], [102, 0.153], [...]] ==> [[[100, 0.145], [101, 0.152], [102, 0.153], [...]]]
+			if( data[ 0 ] instanceof Array && arg == "2D" && ! ( data[ 0 ][ 0 ] instanceof Array ) ) {
+				data = [ data ];
+			}
+
+
+			if(data[ 0 ] instanceof Array) {
+				for(var i = 0, k = data.length; i < k; i++) {
+
+					arr = this._addData( type, _2d ? data[ i ].length * 2 : data[ i ].length );
+					datas.push( arr );
+					z = 0;
+					
+					for(var j = 0, l = data[ i ].length; j < l; j++) {
+
+						if(_2d) {
+							arr[z] = (data[i][j][0]);
+							this._checkX(arr[z]);
+							z++;
+							arr[z] = (data[i][j][1]);
+							this._checkY(arr[z]);
+							z++;
+							total++;
+						} else { // 1D Array
+							arr[z] = data[i][j];
+							this[j % 2 == 0 ? '_checkX' : '_checkY'](arr[z]);
+							z++;
+							total += j % 2 ? 1 : 0;
+
+						}
+					}
+				}
+
+			} else if(typeof data[0] == 'object') {
+				
+				this.mode = 'x_equally_separated';
+
+				var number = 0, numbers = [], datas = [], k = 0, o;
+				for(var i = 0, l = data.length; i < l; i++) { // Several piece of data together
+					number += data[i].y.length;
+					continuous = (i != 0) && (!data[i + 1] || data[i].x + data[i].dx * (data[i].y.length) == data[i + 1].x);
+					if( ! continuous ) {
+						datas.push(this._addData(type, number));
+						numbers.push(number);
+						number = 0;
+					}
+				}
+
+				this.xData = [];
+
+				number = 0, k = 0, z = 0;
+
+				for(var i = 0, l = data.length; i < l; i++) {
+					x = data[i].x, dx = data[i].dx;
+
+					this.xData.push( { x : x, dx : dx } );
+
+					o = data[i].y.length;
+					this._checkX( x );
+					this._checkX( x + dx * o );
+
+					for(var j = 0; j < o; j++) {
+						/*datas[k][z] = (x + j * dx);
+						this._checkX(datas[k][z]);
+						z++;*/
+						// 30 june 2014. To save memory I suggest that we do not add this stupid data.
+			
+						datas[k][z] = (data[i].y[j]);
+						this._checkY(datas[k][z]);
+						z++;
+						total++;
+
+
+					}
+					number += data[i].y.length;
+			
+					if(numbers[k] == number) {
+						k++;
+						number = 0;
+						z = 0;
+					}
+				}
+			}
+
+			// Determination of slots for low res spectrum
+			var w = ( this.maxX - this.minX ) / this.graph.getDrawingWidth( ),
+				ws = [];
+
+			var min = this.graph.getDrawingWidth( ) * 4;
+			var max = total / 4;
+
+			var min = this.graph.getDrawingWidth( );
+			var max = total;
+
+			this.data = datas;
+			
+			if( min > 0 ) {
+
+				while( min < max ) {
+					ws.push( min );
+					min *= 4;
+				}
+
+				this.slots = ws;
+			
+				if( this.options.useSlots ) {
+					this.calculateSlots( );
+				}
+			}
+
+			if( this.isFlipped() ) {
+
+				var maxX = this.maxX;
+				var maxY = this.maxY;
+				var minX = this.minX;
+				var minY = this.minY;
+
+				this.maxX = maxY;
+				this.maxY = maxX;
+
+				this.minX = minY;
+				this.minY = minX;
+			}
+
+			this.graph._updateAxes();
+
+			return this;
+		},
+
+
+
+		_addData: function(type, howmany) {
+
+			switch(type) {
+				case 'int':
+					var size = howmany * 4; // 4 byte per number (32 bits)
+				break;
+				case 'float':
+					var size = howmany * 8; // 4 byte per number (64 bits)
+				break;
+			}
+
+			var arr = new ArrayBuffer(size);
+
+			switch(type) {
+				case 'int':
+					return new Int32Array(arr);
+				break;
+
+				default:
+				case 'float':
+					return new Float64Array(arr);
+				break;
+			}
+		},
 
 		kill: function( noRedraw ) {
 
@@ -4394,7 +4629,7 @@ build['./graph._serie'] = ( function( ) {
 		},
 
 		setXAxis: function( axis ) {
-			if(typeof axis == "Number")
+			if(typeof axis == "number")
 				this.xaxis = this.isFlipped() ? this.graph.getYAxis(axis) : this.graph.getXAxis(axis);
 			else
 				this.xaxis = axis;
@@ -4403,7 +4638,7 @@ build['./graph._serie'] = ( function( ) {
 		},
 
 		setYAxis: function(axis) {
-			if(typeof axis == "Number")
+			if(typeof axis == "number")
 				this.xaxis = this.isFlipped() ? this.graph.getXAxis(axis) : this.graph.getYAxis(axis);
 			else
 				this.yaxis = axis;
@@ -5492,197 +5727,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 			}
 		},
 
-
-		/**
-		 *	Possible data types
-		 *	[100, 0.145, 101, 0.152, 102, 0.153]
-		 *	[[100, 0.145, 101, 0.152], [104, 0.175, 106, 0.188]]
-		 *	[[100, 0.145], [101, 0.152], [102, 0.153], [...]]
-		 *	[{ x: 100, dx: 1, y: [0.145, 0.152, 0.153]}]
-		 *
-		 *	Converts every data type to a 1D array
-		 */
-		setData: function(data, arg, type) {
-
-			var z = 0,
-				x,
-				dx, 
-				arg = arg || "2D", 
-				type = type || 'float', 
-				arr, 
-				total = 0,
-				continuous;
-
-			if( ! data instanceof Array ) {
-				return;
-			}
-
-			// Single object
-			var datas = [];
-			if( ! ( data instanceof Array ) && typeof data == 'object' ) {
-				data = [ data ];
-			} else if( data instanceof Array && ! ( data[ 0 ] instanceof Array ) ) {// [100, 103, 102, 2143, ...]
-				data = [ data ];
-				arg = "1D";
-			}
-
-			var _2d = ( arg == "2D" );
-
-			// [[100, 0.145], [101, 0.152], [102, 0.153], [...]] ==> [[[100, 0.145], [101, 0.152], [102, 0.153], [...]]]
-			if( data[ 0 ] instanceof Array && arg == "2D" && ! ( data[ 0 ][ 0 ] instanceof Array ) ) {
-				data = [ data ];
-			}
-
-
-			if(data[ 0 ] instanceof Array) {
-				for(var i = 0, k = data.length; i < k; i++) {
-
-					arr = this._addData( type, _2d ? data[ i ].length * 2 : data[ i ].length );
-					datas.push( arr );
-					z = 0;
-					
-					for(var j = 0, l = data[ i ].length; j < l; j++) {
-
-						if(_2d) {
-							arr[z] = (data[i][j][0]);
-							this._checkX(arr[z]);
-							z++;
-							arr[z] = (data[i][j][1]);
-							this._checkY(arr[z]);
-							z++;
-							total++;
-						} else { // 1D Array
-							arr[z] = data[i][j];
-							this[j % 2 == 0 ? '_checkX' : '_checkY'](arr[z]);
-							z++;
-							total += j % 2 ? 1 : 0;
-
-						}
-					}
-				}
-
-			} else if(typeof data[0] == 'object') {
-				
-				this.mode = 'x_equally_separated';
-
-				var number = 0, numbers = [], datas = [], k = 0, o;
-				for(var i = 0, l = data.length; i < l; i++) { // Several piece of data together
-					number += data[i].y.length;
-					continuous = (i != 0) && (!data[i + 1] || data[i].x + data[i].dx * (data[i].y.length) == data[i + 1].x);
-					if( ! continuous ) {
-						datas.push(this._addData(type, number));
-						numbers.push(number);
-						number = 0;
-					}
-				}
-
-				this.xData = [];
-
-				number = 0, k = 0, z = 0;
-
-				for(var i = 0, l = data.length; i < l; i++) {
-					x = data[i].x, dx = data[i].dx;
-
-					this.xData.push( { x : x, dx : dx } );
-
-					o = data[i].y.length;
-					this._checkX( x );
-					this._checkX( x + dx * o );
-
-					for(var j = 0; j < o; j++) {
-						/*datas[k][z] = (x + j * dx);
-						this._checkX(datas[k][z]);
-						z++;*/
-						// 30 june 2014. To save memory I suggest that we do not add this stupid data.
-			
-						datas[k][z] = (data[i].y[j]);
-						this._checkY(datas[k][z]);
-						z++;
-						total++;
-
-
-					}
-					number += data[i].y.length;
-			
-					if(numbers[k] == number) {
-						k++;
-						number = 0;
-						z = 0;
-					}
-				}
-			}
-
-			// Determination of slots for low res spectrum
-			var w = ( this.maxX - this.minX ) / this.graph.getDrawingWidth( ),
-				ws = [];
-
-			var min = this.graph.getDrawingWidth( ) * 4;
-			var max = total / 4;
-
-			var min = this.graph.getDrawingWidth( );
-			var max = total;
-
-			this.data = datas;
-			
-			if( min > 0 ) {
-
-				while( min < max ) {
-					ws.push( min );
-					min *= 4;
-				}
-
-				this.slots = ws;
-			
-				if( this.options.useSlots ) {
-					this.calculateSlots( );
-				}
-			}
-
-			if( this.isFlipped() ) {
-
-				var maxX = this.maxX;
-				var maxY = this.maxY;
-				var minX = this.minX;
-				var minY = this.minY;
-
-				this.maxX = maxY;
-				this.maxY = maxX;
-
-				this.minX = minY;
-				this.minY = minX;
-			}
-
-			this.graph._updateAxes();
-
-			return this;
-		},
-
-
-		_addData: function(type, howmany) {
-
-			switch(type) {
-				case 'int':
-					var size = howmany * 4; // 4 byte per number (32 bits)
-				break;
-				case 'float':
-					var size = howmany * 8; // 4 byte per number (64 bits)
-				break;
-			}
-
-			var arr = new ArrayBuffer(size);
-
-			switch(type) {
-				case 'int':
-					return new Int32Array(arr);
-				break;
-
-				default:
-				case 'float':
-					return new Float64Array(arr);
-				break;
-			}
-		},
-
 		setAdditionalData: function( data ) {
 			this.additionalData = data;
 			return this;
@@ -6153,7 +6197,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 			}
 
 			if( this.options.autoPeakPicking ) {
-				this.makePeakPicking( allY );
+				makePeakPicking( this, allY );
 			}
 
 			i++;
@@ -6200,7 +6244,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 			//console.log(slotToUse, y, this.slots[ y ]);
 			
 			var currentLine = "M ";
-			k = 0;
+			var k = 0;
 			var i = 0, xpx, max;
 			var j;
 
@@ -7559,64 +7603,6 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 		},
 
 
-		init: function( graph, name, options ) {
-
-			var self = this;
-
-			this.graph = graph;
-			this.name = name;
-
-			this.id = Math.random() + Date.now();
-
-			this.shown = true;
-			this.options = $.extend(true, {}, GraphSerieScatter.prototype.defaults, options);
-			this.data = [];
-
-			this._isMinOrMax = { x: { min: false, max: false}, y: { min: false, max: false} };
-
-			this.groupPoints = document.createElementNS(this.graph.ns, 'g');
-			this.groupMain = document.createElementNS(this.graph.ns, 'g');
-			
-			this.errorPath = document.createElementNS(this.graph.ns, 'path');
-			this.errorPath.setAttribute('stroke', 'black');
-			this.errorPath.setAttribute('fill', 'transparent');
-			this.errorPath.setAttribute('stroke-width', '1px');
-
-			this.groupMain.appendChild( this.errorPath );
-
-			this.additionalData = {};
-/*
-			this.groupPoints.addEventListener('mouseover', function(e) {
-			
-			});
-
-
-			this.groupPoints.addEventListener('mouseout', function(e) {
-			
-			});
-*/
-			this.minX = Number.MAX_VALUE;
-			this.minY = Number.MAX_VALUE;
-			this.maxX = Number.MIN_VALUE;
-			this.maxY = Number.MIN_VALUE;
-			
-			this.groupMain.appendChild(this.groupPoints);
-			this.currentAction = false;
-
-			if(this.initExtended1) {
-				this.initExtended1();
-			}
-
-			this.stdStyle = {
-				shape: 'circle',
-				cx: 0,
-				cy: 0,
-				r: 3,
-				stroke: 'transparent',
-				fill: "black"
-			}
-		},
-
 
 		/**
 		 *	Possible data types
@@ -7639,7 +7625,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 				continuous;
 
 			if( ! data instanceof Array ) {
-				return;
+				return this;
 			}
 
 			
@@ -7678,31 +7664,58 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 
 			return this;
 		},
+		
+		init: function( graph, name, options ) {
 
-		_addData: function(type, howmany) {
+			var self = this;
 
-			switch(type) {
-				case 'int':
-					var size = howmany * 4; // 4 byte per number (32 bits)
-				break;
-				case 'float':
-					var size = howmany * 8; // 4 byte per number (64 bits)
-				break;
+			this.graph = graph;
+			this.name = name;
+
+			this.id = Math.random() + Date.now();
+
+			this.shown = true;
+			this.options = $.extend(true, {}, GraphSerieScatter.prototype.defaults, options);
+			this.data = [];
+
+			this._isMinOrMax = { x: { min: false, max: false}, y: { min: false, max: false} };
+
+			this.groupPoints = document.createElementNS(this.graph.ns, 'g');
+			this.groupMain = document.createElementNS(this.graph.ns, 'g');
+			
+			this.additionalData = {};
+/*
+			this.groupPoints.addEventListener('mouseover', function(e) {
+			
+			});
+
+
+			this.groupPoints.addEventListener('mouseout', function(e) {
+			
+			});
+*/
+			this.minX = Number.MAX_VALUE;
+			this.minY = Number.MAX_VALUE;
+			this.maxX = Number.MIN_VALUE;
+			this.maxY = Number.MIN_VALUE;
+			
+			this.groupMain.appendChild(this.groupPoints);
+			this.currentAction = false;
+
+			if(this.initExtended1) {
+				this.initExtended1();
 			}
 
-			var arr = new ArrayBuffer(size);
-
-			switch(type) {
-				case 'int':
-					return new Int32Array(arr);
-				break;
-
-				default:
-				case 'float':
-					return new Float64Array(arr);
-				break;
+			this.stdStyle = {
+				shape: 'circle',
+				cx: 0,
+				cy: 0,
+				r: 3,
+				stroke: 'transparent',
+				fill: "black"
 			}
 		},
+
 
 		empty: function() {
 
@@ -7721,6 +7734,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 		},
 
 		setDataStyle: function( std, extra ) {
+
 			this.stdStylePerso = std;
 			this.extraStyle = extra;
 
@@ -7761,12 +7775,14 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 			var error;
 		//	var pathError = "M 0 0 ";
 
-			if( this.errortypes ) {
+			if( this.errorstyles ) {
 
-				this.errorsPaths = [];
-				for( var i = 0, l = this.errortypes.length; i < l ; i ++ ) {
-					this.errorsPaths[ i ] = { top: "", bottom: "", left: "", right: "" };
+				for( var i = 0, l = this.errorstyles.length; i < l ; i ++ ) {
+					this.errorstyles[ i ].paths = { top: "", bottom: "", left: "", right: "" };
+
 				}
+
+
 			}
 
 			for( ; j < m ; j += 2 ) {
@@ -7796,14 +7812,14 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 
 
 			
-			if( this.errortypes ) {
-					
-				for( var i = 0 , l = this.errorsPaths.length ; i < l ; i ++ ) {
+			if( this.errorstyles ) {
+			
+				for( var i = 0, l = this.errorstyles.length; i < l ; i ++ ) {
+				
+					for( var j in this.errorstyles[ i ].paths ) {
 
-					for( var j in this.errorsPaths[ i ] ) {
-
-						if( this.errorstyles[ this.errortypes[ i ] ][ j ] && this.errorstyles[ this.errortypes[ i ] ][ j ].dom ) {
-							this.errorstyles[ this.errortypes[ i ] ][ j ].dom.setAttribute( 'd', this.errorsPaths[ i ][ j ] );
+						if( this.errorstyles[ i ][ j ] && this.errorstyles[ i ][ j ].dom ) {
+							this.errorstyles[ i ][ j ].dom.setAttribute( 'd', this.errorstyles[ i ].paths[ j ] );
 						}
 					}
 				}
@@ -7823,28 +7839,33 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 			var bars = orientation == 'y' ? [ 'top', 'bottom' ] : [ 'left', 'right' ];
 			var j;
 
+			if( isNaN( xpx ) || isNaN( ypx ) ) {
+				return;
+			}
+
 			for( var i = 0 , l = error.length ; i < l ; i ++ ) {
 
 				if( error[ i ] instanceof Array ) { // TOP
 
 					j = bars[ 0 ];
-					this.errorsPaths[ i ][ j ] += " M " + xpx + " " + ypx;
-					this.errorsPaths[ i ][ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ][ 0 ] ), originPx );
+					this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+					this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ][ 0 ] ), originPx );
 
 					j = bars[ 1 ];
-					this.errorsPaths[ i ][ j ] += " M " + xpx + " " + ypx;
-					this.errorsPaths[ i ][ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ][ 1 ] ), originPx );
+					this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+					this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ][ 1 ] ), originPx );
 					
 
 				} else {
 
 
 					j = bars[ 0 ];
-					this.errorsPaths[ i ][ j ] += " M " + xpx + " " + ypx;
-					this.errorsPaths[ i ][ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ] ), originPx );
+
+					this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+					this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ] ), originPx );
 					j = bars[ 1 ];
-					this.errorsPaths[ i ][ j ] += " M " + xpx + " " + ypx;
-					this.errorsPaths[ i ][ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ] ), originPx );
+					this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+					this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ] ), originPx );
 				}
 			}	
 		},
@@ -7852,7 +7873,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 
 		makeError: function( orientation, level, coord, origin ) {
 
-			switch( this.errortypes[ level ] ) {
+			switch( this.errorstyles[ level ].type ) {
 
 				case 'bar':
 					return this["makeBar" + orientation.toUpperCase() ]( coord, origin );
@@ -7928,25 +7949,18 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 			return this;
 		},
 
-		setErrorStyle: function( errortypes, errorstyles ) {
-console.log('HERE FIRST');
+		setErrorStyle: function( errorstyles ) {
+
 			var self = this;
 
-			errortypes = errortypes || [ 'box', 'bar' ];
+			errorstyles = errorstyles || [ 'box', 'bar' ];
 
 			// Ensure array
-			if( ! Array.isArray( errortypes ) ) {
-				errortypes = [ errortypes ];
+			if( ! Array.isArray( errorstyles ) ) {
+				errorstyles = [ errorstyles ];
 			}
 
-			this.errortypes = errortypes;
-			
-
-			if( ! errorstyles ) {
-				errorstyles = { bar: { y: {} }, box: { y: {} } };
-			}
-
-			var styles = {};
+			var styles = [];
 			var pairs = [ [ 'y', 'top', 'bottom' ], [ 'x', 'left', 'right' ] ];
 
 			function makePath( style ) {
@@ -7958,10 +7972,19 @@ console.log('HERE FIRST');
 				self.groupMain.appendChild( style.dom );
 			}
 
-			for( var i in errorstyles ) {
+			for( var i = 0; i < errorstyles.length; i ++ ) {
 				// i is bar or box
 
 				styles[ i ] = {};
+				
+
+				if( typeof errorstyles[ i ] == "string" ) {
+
+					errorstyles[ i ] = { type: errorstyles[ i ], y: {} };
+
+				}
+
+				styles[ i ].type = errorstyles[ i ].type;
 
 				for( var j = 0, l = pairs.length ; j < l ; j ++ ) {
 

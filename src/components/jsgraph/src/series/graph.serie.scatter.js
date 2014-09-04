@@ -11,64 +11,6 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 		},
 
 
-		init: function( graph, name, options ) {
-
-			var self = this;
-
-			this.graph = graph;
-			this.name = name;
-
-			this.id = Math.random() + Date.now();
-
-			this.shown = true;
-			this.options = $.extend(true, {}, GraphSerieScatter.prototype.defaults, options);
-			this.data = [];
-
-			this._isMinOrMax = { x: { min: false, max: false}, y: { min: false, max: false} };
-
-			this.groupPoints = document.createElementNS(this.graph.ns, 'g');
-			this.groupMain = document.createElementNS(this.graph.ns, 'g');
-			
-			this.errorPath = document.createElementNS(this.graph.ns, 'path');
-			this.errorPath.setAttribute('stroke', 'black');
-			this.errorPath.setAttribute('fill', 'transparent');
-			this.errorPath.setAttribute('stroke-width', '1px');
-
-			this.groupMain.appendChild( this.errorPath );
-
-			this.additionalData = {};
-/*
-			this.groupPoints.addEventListener('mouseover', function(e) {
-			
-			});
-
-
-			this.groupPoints.addEventListener('mouseout', function(e) {
-			
-			});
-*/
-			this.minX = Number.MAX_VALUE;
-			this.minY = Number.MAX_VALUE;
-			this.maxX = Number.MIN_VALUE;
-			this.maxY = Number.MIN_VALUE;
-			
-			this.groupMain.appendChild(this.groupPoints);
-			this.currentAction = false;
-
-			if(this.initExtended1) {
-				this.initExtended1();
-			}
-
-			this.stdStyle = {
-				shape: 'circle',
-				cx: 0,
-				cy: 0,
-				r: 3,
-				stroke: 'transparent',
-				fill: "black"
-			}
-		},
-
 
 		/**
 		 *	Possible data types
@@ -91,7 +33,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 				continuous;
 
 			if( ! data instanceof Array ) {
-				return;
+				return this;
 			}
 
 			
@@ -130,31 +72,58 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 
 			return this;
 		},
+		
+		init: function( graph, name, options ) {
 
-		_addData: function(type, howmany) {
+			var self = this;
 
-			switch(type) {
-				case 'int':
-					var size = howmany * 4; // 4 byte per number (32 bits)
-				break;
-				case 'float':
-					var size = howmany * 8; // 4 byte per number (64 bits)
-				break;
+			this.graph = graph;
+			this.name = name;
+
+			this.id = Math.random() + Date.now();
+
+			this.shown = true;
+			this.options = $.extend(true, {}, GraphSerieScatter.prototype.defaults, options);
+			this.data = [];
+
+			this._isMinOrMax = { x: { min: false, max: false}, y: { min: false, max: false} };
+
+			this.groupPoints = document.createElementNS(this.graph.ns, 'g');
+			this.groupMain = document.createElementNS(this.graph.ns, 'g');
+			
+			this.additionalData = {};
+/*
+			this.groupPoints.addEventListener('mouseover', function(e) {
+			
+			});
+
+
+			this.groupPoints.addEventListener('mouseout', function(e) {
+			
+			});
+*/
+			this.minX = Number.MAX_VALUE;
+			this.minY = Number.MAX_VALUE;
+			this.maxX = Number.MIN_VALUE;
+			this.maxY = Number.MIN_VALUE;
+			
+			this.groupMain.appendChild(this.groupPoints);
+			this.currentAction = false;
+
+			if(this.initExtended1) {
+				this.initExtended1();
 			}
 
-			var arr = new ArrayBuffer(size);
-
-			switch(type) {
-				case 'int':
-					return new Int32Array(arr);
-				break;
-
-				default:
-				case 'float':
-					return new Float64Array(arr);
-				break;
+			this.stdStyle = {
+				shape: 'circle',
+				cx: 0,
+				cy: 0,
+				r: 3,
+				stroke: 'transparent',
+				fill: "black"
 			}
 		},
+
 
 		empty: function() {
 
@@ -173,6 +142,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 		},
 
 		setDataStyle: function( std, extra ) {
+
 			this.stdStylePerso = std;
 			this.extraStyle = extra;
 
@@ -213,12 +183,14 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			var error;
 		//	var pathError = "M 0 0 ";
 
-			if( this.errortypes ) {
+			if( this.errorstyles ) {
 
-				this.errorsPaths = [];
-				for( var i = 0, l = this.errortypes.length; i < l ; i ++ ) {
-					this.errorsPaths[ i ] = { top: "", bottom: "", left: "", right: "" };
+				for( var i = 0, l = this.errorstyles.length; i < l ; i ++ ) {
+					this.errorstyles[ i ].paths = { top: "", bottom: "", left: "", right: "" };
+
 				}
+
+
 			}
 
 			for( ; j < m ; j += 2 ) {
@@ -248,14 +220,14 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 
 
 			
-			if( this.errortypes ) {
-					
-				for( var i = 0 , l = this.errorsPaths.length ; i < l ; i ++ ) {
+			if( this.errorstyles ) {
+			
+				for( var i = 0, l = this.errorstyles.length; i < l ; i ++ ) {
+				
+					for( var j in this.errorstyles[ i ].paths ) {
 
-					for( var j in this.errorsPaths[ i ] ) {
-
-						if( this.errorstyles[ this.errortypes[ i ] ][ j ] && this.errorstyles[ this.errortypes[ i ] ][ j ].dom ) {
-							this.errorstyles[ this.errortypes[ i ] ][ j ].dom.setAttribute( 'd', this.errorsPaths[ i ][ j ] );
+						if( this.errorstyles[ i ][ j ] && this.errorstyles[ i ][ j ].dom ) {
+							this.errorstyles[ i ][ j ].dom.setAttribute( 'd', this.errorstyles[ i ].paths[ j ] );
 						}
 					}
 				}
@@ -275,28 +247,33 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			var bars = orientation == 'y' ? [ 'top', 'bottom' ] : [ 'left', 'right' ];
 			var j;
 
+			if( isNaN( xpx ) || isNaN( ypx ) ) {
+				return;
+			}
+
 			for( var i = 0 , l = error.length ; i < l ; i ++ ) {
 
 				if( error[ i ] instanceof Array ) { // TOP
 
 					j = bars[ 0 ];
-					this.errorsPaths[ i ][ j ] += " M " + xpx + " " + ypx;
-					this.errorsPaths[ i ][ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ][ 0 ] ), originPx );
+					this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+					this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ][ 0 ] ), originPx );
 
 					j = bars[ 1 ];
-					this.errorsPaths[ i ][ j ] += " M " + xpx + " " + ypx;
-					this.errorsPaths[ i ][ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ][ 1 ] ), originPx );
+					this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+					this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ][ 1 ] ), originPx );
 					
 
 				} else {
 
 
 					j = bars[ 0 ];
-					this.errorsPaths[ i ][ j ] += " M " + xpx + " " + ypx;
-					this.errorsPaths[ i ][ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ] ), originPx );
+
+					this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+					this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ] ), originPx );
 					j = bars[ 1 ];
-					this.errorsPaths[ i ][ j ] += " M " + xpx + " " + ypx;
-					this.errorsPaths[ i ][ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ] ), originPx );
+					this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+					this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ] ), originPx );
 				}
 			}	
 		},
@@ -304,7 +281,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 
 		makeError: function( orientation, level, coord, origin ) {
 
-			switch( this.errortypes[ level ] ) {
+			switch( this.errorstyles[ level ].type ) {
 
 				case 'bar':
 					return this["makeBar" + orientation.toUpperCase() ]( coord, origin );
@@ -380,25 +357,18 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			return this;
 		},
 
-		setErrorStyle: function( errortypes, errorstyles ) {
-console.log('HERE FIRST');
+		setErrorStyle: function( errorstyles ) {
+
 			var self = this;
 
-			errortypes = errortypes || [ 'box', 'bar' ];
+			errorstyles = errorstyles || [ 'box', 'bar' ];
 
 			// Ensure array
-			if( ! Array.isArray( errortypes ) ) {
-				errortypes = [ errortypes ];
+			if( ! Array.isArray( errorstyles ) ) {
+				errorstyles = [ errorstyles ];
 			}
 
-			this.errortypes = errortypes;
-			
-
-			if( ! errorstyles ) {
-				errorstyles = { bar: { y: {} }, box: { y: {} } };
-			}
-
-			var styles = {};
+			var styles = [];
 			var pairs = [ [ 'y', 'top', 'bottom' ], [ 'x', 'left', 'right' ] ];
 
 			function makePath( style ) {
@@ -410,10 +380,19 @@ console.log('HERE FIRST');
 				self.groupMain.appendChild( style.dom );
 			}
 
-			for( var i in errorstyles ) {
+			for( var i = 0; i < errorstyles.length; i ++ ) {
 				// i is bar or box
 
 				styles[ i ] = {};
+				
+
+				if( typeof errorstyles[ i ] == "string" ) {
+
+					errorstyles[ i ] = { type: errorstyles[ i ], y: {} };
+
+				}
+
+				styles[ i ].type = errorstyles[ i ].type;
 
 				for( var j = 0, l = pairs.length ; j < l ; j ++ ) {
 

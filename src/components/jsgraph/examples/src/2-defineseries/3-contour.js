@@ -2,9 +2,7 @@ define( function() {
 
 	return [ function( domGraph ) {
 
-
-
-		function hslToRgb(h, s, l){
+		function hslToRgb(h, s, l) {
 		    var r, g, b;
 
 		    if(s == 0){
@@ -28,8 +26,7 @@ define( function() {
 
 		    return "rgb(" + [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)].join(", ") + ")";
 		}
-
-
+		
 		var graphinstance = new Graph( domGraph, { series: [ 'contour' ] }, function( graphinstance ) {
 
 			var serie = graphinstance.newSerie("serieTest", {}, "contour")

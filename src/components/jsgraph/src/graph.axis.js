@@ -261,8 +261,14 @@ define( [ 'jquery' ] , function( $ ) {
 		setMinValueData: function( min ) { this.dataMin = min; },
 		setMaxValueData: function( max ) { this.dataMax = max; },
 
-		forceMin: function(val) {    this.options.forcedMin = val; },
-		forceMax: function(val) {   this.options.forcedMax = val; },
+		forceMin: function(val) {
+			this.options.forcedMin = val;
+			return this;
+		},
+		forceMax: function(val) {
+			this.options.forcedMax = val;
+			return this;
+		},
 
 		getNbTicksPrimary: function() {
 			return this.options.nbTicksPrimary;

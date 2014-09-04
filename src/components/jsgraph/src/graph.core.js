@@ -1533,7 +1533,7 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 			e.preventDefault();
 			e.stopPropagation();
 			var deltaY = e.wheelDeltaY || e.wheelDelta || - e.deltaY;
-			handleMouseWheel(self, deltaY, e);
+			_handleMouseWheel(self, deltaY, e);
 
 			return false;
 		});
@@ -1542,7 +1542,7 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 			e.stopPropagation();
 			e.preventDefault();
 			var deltaY = e.wheelDeltaY || e.wheelDelta || - e.deltaY;
-			handleMouseWheel( self, deltaY, e );	
+			_handleMouseWheel( self, deltaY, e );	
 			
 			return false;
 		});
@@ -1682,7 +1682,7 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 		if( graph.options.close === false ) {
 			return;
 		}
-		
+
 		if( ( graph.options.close === true  || graph.options.close[ mode ] ) && graph.axis[ mode ].length == 0 ) {
 
 			graph.closingLines[ mode ].setAttribute('display', 'block');
@@ -1698,6 +1698,43 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 		}
 	}
 
+
+	function _handleMouseWheel(graph, delta, e) {
+
+
+		e.preventDefault();
+		e.stopPropagation();
+
+		if( ! graph.options.wheel.type ) {
+			return;
+		}
+
+		switch( graph.options.wheel.type ) {
+
+			case 'plugin':
+
+				var plugin;
+
+				if( plugin = graph._plugins[ graph.options.wheel.plugin ] ) {
+					plugin.onMouseWheel( delta, e );
+				}
+
+			break;
+
+
+			case 'toSeries':
+
+				for(var i = 0, l = graph.series.length; i < l; i++) {
+					graph.series[ i ].onMouseWheel(delta, e);
+				}
+
+			break;
+
+		}
+
+		graph.redraw( );
+		graph.drawSeries( true );
+	}
 
 	return Graph;
 });
