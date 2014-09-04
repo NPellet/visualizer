@@ -161,7 +161,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                 if(cfgEl.extension) {
                     eCfgEl.match = new RegExp('^' + cfgEl.extension.replace(/\*/g, '.*').replace(/\?/g, '.') + '$', 'i');
                 } else {
-                    ecfgEl.match = /^.*$/i;
+                    eCfgEl.match = /^.*$/i;
                 }
                 if(!cfgEl.filter) {
                     eCfgEl.filter = "ext";
@@ -182,7 +182,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                 if(cfgEl.filter) {
                     eCfgEl.match = new RegExp('^' + cfgEl.filter.replace(/\*/g, '.*').replace(/\?/g, '.') + '$', 'i');
                 } else {
-                    ecfgEl.match = /^text\/plain$/i;
+                    eCfgEl.match = /^text\/plain$/i;
                 }
             }
             this.stringCfg = enhancedStringCfg;
@@ -201,7 +201,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         }
     };
 
-    Controller.prototype.open = function (data, transferType) {
+    Controller.prototype.open = function (data) {
 
         if (!data.items.length)
             return;
