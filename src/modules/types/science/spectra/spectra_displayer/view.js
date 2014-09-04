@@ -288,8 +288,11 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 				if(!moduleValue || !moduleValue.value)
 					return;
 
-				if(view.dom.data('spectra')) {
-					view.dom.data('spectra').setBoundaries(moduleValue.value.from, moduleValue.value.to);
+				if( this.graph ) {
+
+					this.graph.getBottomAxis()._doZoomVal(moduleValue.value.from, moduleValue.value.to, true);
+					this.graph.redraw( false, true, false );
+					this.graph.drawSeries();
 				}
 
 				return;

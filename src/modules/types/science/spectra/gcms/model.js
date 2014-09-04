@@ -13,11 +13,9 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function(Def
 
 			switch(rel) {
 				default:
-				case 'annotation':
+				case 'gcdata':
 
-					if( this.module.view.annotations ) {
-						data = this.module.view.annotations[0];
-					}
+					data = this.module.view.jcamp.gcms.gc;
 				
 				break;
 			}

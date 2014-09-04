@@ -33,7 +33,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 
 		fromtoGC: {
 			label: 'From - To on GC',
-			type: 'fromTo'
+			type: ['fromTo', 'object']
 		},
 
 		fromtoMS: {
