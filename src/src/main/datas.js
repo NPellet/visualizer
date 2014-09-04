@@ -314,7 +314,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 
 			if( type === "string" || type === "number" || type === "boolean" ) {
 
-				this[ prop ].setValue( value );
+				this[ prop ].setValue( valueTyped.get() );
 				return this[ prop ];
 			}
 
