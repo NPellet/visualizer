@@ -1,246 +1,257 @@
 'use strict';
+
 define(['src/util/versioning', 'src/util/debug'], function (Versioning, Debug) {
 
-    var migrate = function (view) {
+    var migrators = [
 
-        if (view._version) {
-            view.version = view._version;
-            delete view._version;
-        }
+        '2.1.0', function (view) {
+            if (view.entryPoint) {
+                view.variables = view.entryPoint.variables;
+                delete view.entryPoint;
 
-        if (view.version === Versioning.version)
-            return view;
+                // we should also resize the modules
+                var modules = view.modules;
+                for (var i = 0; i < modules.length; i++) {
+                    var module = modules[i];
+                    module.position.left *= 2;
+                    module.position.top *= 2;
+                    module.size.width *= 2;
+                    module.size.height *= 2;
+                }
+            }
+        },
 
-        if(typeof view.version !== 'undefined') {
-            Debug.info('Migrating view from version ' + view.version + ' to ' + Versioning.version);
-        }
-        
-        switch (view.version) {
-            case undefined:
-                if (view.entryPoint) {
-                    view.variables = view.entryPoint.variables;
-                    delete view.entryPoint;
+        '2.2.0', function (view) { // we change the grid to jqgrid and the editable_grid to jqgrid
+            if (view.modules) {
+                for (var i = 0; i < view.modules.length; i++) {
+                    var module = view.modules[i];
+                    if ((module.type === 'grid') || (module.type === 'editable_grid'))
+                        module.type = 'jqgrid';
+                }
+            }
+        },
 
-                    // we should also resize the modules
-                    var modules = view.modules;
-                    for (var i = 0; i < modules.length; i++) {
-                        var module = modules[i];
-                        module.position.left *= 2;
-                        module.position.top *= 2;
-                        module.size.width *= 2;
-                        module.size.height *= 2;
+        '2.2.1', function (view) { // modules are now defined based on URL
+            if (view.modules) {
+                for (var i = 0; i < view.modules.length; i++) {
+                    var module = view.modules[i];
+                    module.url = updateModule(module.type);
+                    delete module.type;
+                }
+            }
+        },
+
+        '2.2.2', function (view) { // modules are now defined based on URL
+            eachModule(view, function (module) {
+                module.url = './modules/types/array_search/configured_search/';
+            }, 'types/client_interaction/array_search');
+        },
+
+        '2.2.3', function (view) { // view title is in configuration.title
+            if (view.title) {
+                if (!view.configuration)
+                    view.configuration = new DataObject();
+                view.configuration.title = view.title;
+                delete view.title;
+            }
+            eachModule(view, function (module) {
+                var i;
+                module.url = 'modules/types/client_interaction/code_editor/';
+                if (module.configuration.groups.group[0].iseditable[0][0] === 'true')
+                    module.configuration.groups.group[0].iseditable[0][0] = 'editable';
+                delete module.configuration.groups.group[0].padding;
+                module.configuration.groups.group[0].mode = ['text'];
+                for (i = 0; i < module.vars_out.length; i++) {
+                    var varout = module.vars_out[i];
+                    if (varout.event) {
+                        varout.event = 'onEditorChange';
+                        varout.rel = 'value';
                     }
                 }
-            case '2.1': // we change the grid to jqgrid and the editable_grid to jqgrid
-                if (view.modules) {
-                    for (var i = 0; i < view.modules.length; i++) {
-                        var module = view.modules[i];
-                        if ((module.type === 'grid') || (module.type === 'editable_grid'))
-                            module.type = 'jqgrid';
+                for (i = 0; i < module.actions_out.length; i++) {
+                    var actout = module.actions_out[i];
+                    if (actout.event) {
+                        actout.event = 'onButtonClick';
+                        actout.rel = 'value';
                     }
                 }
-            case '2.2': // modules are now defined based on URL
-                if (view.modules) {
-                    for (var i = 0; i < view.modules.length; i++) {
-                        var module = view.modules[i];
-                        module.url = updateModule(module.type);
-                        delete module.type;
+            }, 'types/science/chemistry/jsmol_script');
+        },
+
+        '2.2.4', function (view) { // Change in the webservice search module
+            eachModule(view, function (module) {
+                var url = module.configuration.groups.group[0].url;
+                if (url[0]) {
+                    url[0] = url[0].replace(/<([a-zA-Z0-9]+)>/g, '{$1}');
+                }
+            }, 'types/server_interaction/webservice_search');
+        },
+
+        '2.2.5', function (view) {
+            eachModule(view, function (module) {
+                for (var j = 0; j < module.vars_out.length; j++) {
+                    var var_out = module.vars_out[j];
+                    var_out.event = 'onRead';
+                    if (var_out.rel === 'data')
+                        var_out.jpath = var_out.jpath + '.content';
+                    else if (var_out.rel === 'filename') {
+                        var_out.rel = 'data';
+                        var_out.jpath = var_out.jpath + '.filename';
                     }
                 }
-            case '2.2.1': // modules are now defined based on URL
-                eachModule(view, function (module) {
-                    module.url = './modules/types/array_search/configured_search/';
-                }, 'types/client_interaction/array_search');
+            }, 'types/client_interaction/dragdrop');
+        },
 
-            case '2.2.2': // view title is in configuration.title
-                if (view.title) {
-                    if (!view.configuration)
-                        view.configuration = new DataObject();
-                    view.configuration.title = view.title;
-                    delete view.title;
-                }
-                eachModule(view, function (module) {
-                    module.url = 'modules/types/client_interaction/code_editor/';
-                    if (module.configuration.groups.group[0].iseditable[0][0] === 'true')
-                        module.configuration.groups.group[0].iseditable[0][0] = 'editable';
-                    delete module.configuration.groups.group[0].padding;
-                    module.configuration.groups.group[0].mode = ['text'];
-                    for (var i = 0; i < module.vars_out.length; i++) {
-                        var varout = module.vars_out[i];
-                        if (varout.event) {
-                            varout.event = 'onEditorChange';
-                            varout.rel = 'value';
-                        }
+        '2.3.0-beta1', function (view) { // Add layers
+            view.grid = DataObject.recursiveTransform({
+                layers: {
+                    'Default layer': {
+                        name: 'Default layer'
                     }
-                    for (var i = 0; i < module.actions_out.length; i++) {
-                        var actout = module.actions_out[i];
-                        if (actout.event) {
-                            actout.event = 'onButtonClick';
-                            actout.rel = 'value';
-                        }
-                    }
-                }, 'types/science/chemistry/jsmol_script');
-
-            case '2.2.3': // Change in the webservice search module
-                eachModule(view, function (module) {
-                    var url = module.configuration.groups.group[0].url;
-                    if (url[0]) {
-                        url[0] = url[0].replace(/<([a-zA-Z0-9]+)>/g, '{$1}');
-                    }
-                }, 'types/server_interaction/webservice_search');
-
-            case '2.2.4': // Changes in the dragdrop module
-                eachModule(view, function (module) {
-                    for (var j = 0; j < module.vars_out.length; j++) {
-                        var var_out = module.vars_out[j];
-                        var_out.event = 'onRead';
-                        if (var_out.rel === 'data')
-                            var_out.jpath = var_out.jpath + '.content';
-                        else if (var_out.rel === 'filename') {
-                            var_out.rel = 'data';
-                            var_out.jpath = var_out.jpath + '.filename';
-                        }
-                    }
-                }, 'types/client_interaction/dragdrop');
-
-            case '2.2.5': // Add layers
-                view.grid = DataObject.recursiveTransform({
-                    layers: {
+                },
+                xWidth: 10,
+                yHeight: 10
+            });
+            eachModule(view, function (module) {
+                if (!module.layers) {
+                    module.layers = DataObject.recursiveTransform({
                         'Default layer': {
+                            position: {
+                                left: module.position.left,
+                                top: module.position.top,
+                                right: 0
+                            },
+                            size: {
+                                width: module.size.width,
+                                height: module.size.height
+                            },
+                            zIndex: module.zIndex,
+                            display: true,
+                            title: module.title,
+                            bgColor: module.bgColor,
+                            wrapper: module.displayWrapper,
+                            created: true,
                             name: 'Default layer'
                         }
-                    },
-                    xWidth: 10,
-                    yHeight: 10
-                });
-                eachModule(view, function (module) {
-                    if (!module.layers) {
-                        module.layers = DataObject.recursiveTransform({
-                            'Default layer': {
-                                position: {
-                                    left: module.position.left,
-                                    top: module.position.top,
-                                    right: 0
-                                },
-                                size: {
-                                    width: module.size.width,
-                                    height: module.size.height
-                                },
-                                zIndex: module.zIndex,
-                                display: true,
-                                title: module.title,
-                                bgColor: module.bgColor,
-                                wrapper: module.displayWrapper,
-                                created: true,
-                                name: 'Default layer'
-                            }
-                        });
-                        delete module.title;
-                        delete module.position;
-                        delete module.size;
-                        delete module.zIndex;
-                        delete module.displayWrapper;
-                        delete module.bgColor;
+                    });
+                    delete module.title;
+                    delete module.position;
+                    delete module.size;
+                    delete module.zIndex;
+                    delete module.displayWrapper;
+                    delete module.bgColor;
+                }
+            });
+        },
+
+        '2.4.0-b0', function (view) {
+            if (view.variables) {
+                for (var i = 0; i < view.variables.length; i++) {
+                    updateJpath(view.variables[i]);
+                }
+            }
+
+            eachModule(view, function (module) {
+                var i;
+                if (module.vars_out) {
+                    for (i = 0; i < module.vars_out.length; i++) {
+                        updateJpath(module.vars_out[i]);
                     }
-                });
-            case '2.3.0-beta1' :
-                if (view.variables) {
-                    for (var i = 0; i < view.variables.length; i++) {
-                        updateJpath(view.variables[i]);
+                }
+                if (module.actions_out) {
+                    for (i = 0; i < module.actions_out.length; i++) {
+                        updateJpath(module.actions_out[i]);
                     }
                 }
 
-                eachModule(view, function (module) {
-                    if (module.vars_out) {
-                        for (var i = 0; i < module.vars_out.length; i++) {
-                            updateJpath(module.vars_out[i]);
-                        }
-                    }
-                    if (module.actions_out) {
-                        for (var i = 0; i < module.actions_out.length; i++) {
-                            updateJpath(module.actions_out[i]);
-                        }
-                    }
+            });
+        },
 
-                });
-            case '2.4.0b0' :
-                eachModule(view, function (module) {
-                    var out = module.vars_out;
-                    for (var i = 0; i < out.length; i++) {
-                        out[i].setChild(['rel'], 'output');
+        '2.4.0-b1', function (view) {
+            eachModule(view, function (module) {
+                var out = module.vars_out;
+                for (var i = 0; i < out.length; i++) {
+                    out[i].setChild(['rel'], 'output');
+                }
+            }, 'types/edition/object_editor');
+        },
+
+        '2.4.0-b2', function (view) {
+            eachModule(view, function (module) {
+                var out = module.vars_out;
+                for (var i = 0; i < out.length; i++) {
+                    out[i].setChild(['rel'], 'filteredObject');
+                }
+            }, 'types/edition/filter_editor');
+        },
+
+        '2.4.1', function (view) {
+            eachModule(view, function (module) {
+                var i;
+                var postvariables = module.configuration.sections.postvariables[0].groups.postvariables[0];
+                for (i = 0; i < postvariables.length; i++) {
+                    if (!postvariables[i].variable) {
+                        postvariables.splice(i--, 1);
+                    } else {
+                        postvariables[i].destination = 'data';
                     }
-                }, 'types/edition/object_editor');
-            case '2.4.0b1' :
-                eachModule(view, function (module) {
-                    var out = module.vars_out;
-                    for (var i = 0; i < out.length; i++) {
-                        out[i].setChild(['rel'], 'filteredObject');
+                }
+                var searchparams = module.configuration.groups.searchparams[0];
+                for (i = 0; i < searchparams.length; i++) {
+                    if (!searchparams[i].name) {
+                        searchparams.splice(i--, 1);
+                    } else {
+                        searchparams[i].destination = 'url';
                     }
-                }, 'types/edition/filter_editor');
-            case '2.4.0b2' :
-                eachModule(view, function (module) {
-                    var i;
-                    var postvariables = module.configuration.sections.postvariables[0].groups.postvariables[0];
-                    for (i = 0; i < postvariables.length; i++) {
-                        if (!postvariables[i].variable) {
-                            postvariables.splice(i--, 1);
-                        } else {
-                            postvariables[i].destination = 'data';
-                        }
+                }
+                var input = module.vars_in;
+                for (i = 0; i < input.length; i++) {
+                    if (!input[i].rel) {
+                        input.splice(i--, 1);
+                    } else if (input[i].rel === 'varinput') {
+                        module.configuration.sections.postvariables[0].groups.postvariables[0].push({
+                            name: input[i].name,
+                            destination: 'url',
+                            variable: input[i].name,
+                            filter: 'none'
+                        });
+                        input.splice(i--, 1);
+                    } else if (input[i].rel === 'vartrigger') {
+                        module.configuration.sections.postvariables[0].groups.postvariables[0].push({
+                            name: input[i].name,
+                            destination: 'url',
+                            variable: input[i].name,
+                            filter: 'none'
+                        });
                     }
-                    var searchparams = module.configuration.groups.searchparams[0];
-                    for (i = 0; i < searchparams.length; i++) {
-                        if (!searchparams[i].name) {
-                            searchparams.splice(i--, 1);
-                        } else {
-                            searchparams[i].destination = 'url';
-                        }
-                    }
-                    var input = module.vars_in;
-                    for (i = 0; i < input.length; i++) {
-                        if (!input[i].rel) {
-                            input.splice(i--, 1);
-                        } else if (input[i].rel === 'varinput') {
-                            module.configuration.sections.postvariables[0].groups.postvariables[0].push({
-                                name: input[i].name,
-                                destination: 'url',
-                                variable: input[i].name,
-                                filter: 'none'
-                            });
-                            input.splice(i--, 1);
-                        } else if (input[i].rel === 'vartrigger') {
-                            module.configuration.sections.postvariables[0].groups.postvariables[0].push({
-                                name: input[i].name,
-                                destination: 'url',
-                                variable: input[i].name,
-                                filter: 'none'
-                            });
-                        }
-                    }
-                }, 'types/server_interaction/webservice_search');
-            case '2.4.1' :
-                eachModule(view, function (module) {
-                    if (module.layers) {
-                        var layers = module.layers,
-                            layer;
-                        for (var i in layers) {
-                            layer = layers[i];
-                            if (layer.bgcolor) {
-                                if (!layer.bgColor) {
-                                    layer.bgColor = layer.bgcolor;
-                                }
-                                delete layer.bgcolor;
+                }
+            }, 'types/server_interaction/webservice_search');
+        },
+
+        '2.4.2', function (view) {
+            eachModule(view, function (module) {
+                if (module.layers) {
+                    var layers = module.layers,
+                        layer;
+                    for (var i in layers) {
+                        layer = layers[i];
+                        if (layer.bgcolor) {
+                            if (!layer.bgColor) {
+                                layer.bgColor = layer.bgcolor;
                             }
+                            delete layer.bgcolor;
                         }
                     }
-                });
+                }
+            });
         }
-        view.version = Versioning.version;
 
-        return view;
-    };
+//  Add new migration functions here
+//      'x.y.z', function (view) {
+//          // Do something to the view
+//      }
 
-    return migrate;
+    ];
 
     function eachModule(view, callback, moduleNames) {
         if (view.modules) {
@@ -347,4 +358,151 @@ define(['src/util/versioning', 'src/util/debug'], function (Versioning, Debug) {
             element.setChild(['jpath'], jpath.split('.').slice(1));
         }
     }
+
+    function migrate(view) {
+
+        if (Object.keys(view).length === 0) {
+            view.version = Versioning.version;
+            return view;
+        }
+
+        if (view._version) {
+            view.version = view._version;
+            delete view._version;
+        }
+
+        if (view.version === Versioning.version)
+            return view;
+
+        if (typeof view.version !== 'undefined') {
+            Debug.info('Migrating view from version ' + view.version + ' to ' + Versioning.version);
+        }
+
+        // views without good version numbering
+        switch (view.version) {
+            case undefined:
+                view.version = '0.0.0';
+                break;
+            case '2.1':
+                view.version = '2.1.0';
+                break;
+            case '2.2':
+                view.version = '2.2.0';
+                break;
+            case '2.4.0b0':
+                view.version = '2.4.0-b0';
+                break;
+            case '2.4.0b1':
+                view.version = '2.4.0-b1';
+                break;
+            case '2.4.0b2':
+                view.version = '2.4.0-b2';
+                break;
+        }
+
+        var versionSem = Versioning.semver(view.version);
+
+        if (!versionSem) {
+            return view;
+        }
+
+        if (versionSem.prerelease) {
+            Debug.warn('Migrating a prerelease view, anything can happen !');
+        }
+
+        if (Versioning.semver(Versioning.version).prerelease) {
+            Debug.warn('Migrating to a prerelease version of the visualizer, anything can happen !');
+        }
+
+        migrateView(view, versionSem);
+
+        view.version = Versioning.version;
+
+        return view;
+    }
+
+    function migrateView(view, version) {
+        var i, j, k, l,
+            major, minor, patch, release,
+            found;
+        for (i = version.major; i < migrationFunctions.length; i++) {
+            major = migrationFunctions[i];
+            if (major) {
+                j = (i == version.major ? version.minor : 0);
+                for (; j < major.length; j++) {
+                    minor = major[j];
+                    if (minor) {
+                        k = ((i == version.major && j == version.minor) ? version.patch : 0);
+                        for (; k < minor.length; k++) {
+                            patch = minor[k];
+                            if (patch) {
+                                if (i == version.major && j == version.minor && k == version.patch) {
+                                    if (version.prerelease) {
+                                        for (l = 0; l < patch.length; l++) {
+                                            release = patch[l];
+                                            if (release.label == version.prerelease) {
+                                                found = true;
+                                            } else if (found) {
+                                                Debug.debug("applying migration to v" + i + "." + j + "." + k + "-" + release.label);
+                                                release.func(view);
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    for (l = 0; l < patch.length; l++) {
+                                        release = patch[l];
+                                        Debug.debug("applying migration to v" + i + "." + j + "." + k + "-" + release.label);
+                                        release.func(view);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    var migrationFunctions = [];
+
+    function addMigrationFunction(version, func) {
+
+        var semVer = Versioning.semver(version);
+
+        if (!semVer) {
+            throw new Error('invalid semver for migration function: ' + version);
+        }
+
+        if (typeof func !== 'function') {
+            throw new Error('object passed for migration ' + version + ' has to be a function');
+        }
+
+        var major = migrationFunctions[semVer.major] || (migrationFunctions[semVer.major] = []);
+        var minor = major[semVer.minor] || (major[semVer.minor] = []);
+        var patch = minor[semVer.patch] || (minor[semVer.patch] = []);
+
+        if (semVer.prerelease) {
+            patch.push({
+                label: semVer.prerelease,
+                func: func
+            });
+        } else {
+            patch.push({
+                label: 'release',
+                func: func
+            });
+        }
+
+    }
+
+    if (migrators.length % 2 == 1) {
+        throw new Error('Invalid length of the migrators array.');
+    }
+
+    for (var i = 0; i < migrators.length; i += 2) {
+        addMigrationFunction(migrators[i], migrators[i + 1]);
+    }
+
+    return migrate;
+
 });
