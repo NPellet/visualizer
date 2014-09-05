@@ -10,15 +10,15 @@ requirejs.config({
 });
 
 define([
-    'require',
-     'src/util/api',
-    'lodash',
-    'modules/default/defaultview',
-    'src/util/typerenderer',
-    'src/util/util',
-    'src/util/datatraversing',
-    'lib/svg-edit-2.7/embedapi',
-    'svgsanitize'
+        'require',
+        'src/util/api',
+        'lodash',
+        'modules/default/defaultview',
+        'src/util/typerenderer',
+        'src/util/util',
+        'src/util/datatraversing',
+        'lib/svg-edit-2.7/embedapi',
+        'svgsanitize'
     ],
     function(require, API, _, Default, Renderer) {
 
@@ -65,18 +65,18 @@ define([
             options: {
                 clearOnEnd: true,
                 persistOnEnd: false,
-                clearAnimationTags: false
+                clearAnimationTagsOnEnd: false,
+                clearAnimationTagsBeforeBegin: false
             }
         };
 
         //var animationAttr = ['dur', 'fill', 'repeatCount', 'repeatDur', 'restart', 'attributeType', 'calcMode', 'additive', 'accumulate'];
 
         var animationReserved = ['options', 'tag', 'attributes'];
-
         var mouseEventNames = ['click', 'dblclick', 'mouseenter', 'mouseleave'];
-
-
         var animMemory = {};
+        var highlightCount = {};
+        var blockHighlight = {};
 
         function view() {
             var self = this;
@@ -183,7 +183,7 @@ define([
 
             addAnimation: function($svgEl, anim) {
                 var self = this;
-                var count = 0;
+                var $allAnimations = $([]);
                 if(!anim.attributes) return;
                 var id = $svgEl.attr('id');
                 anim.tag = anim.tag || 'animate';
@@ -192,6 +192,8 @@ define([
                     anim.attributes = [anim.attributes];
                 }
                 anim = _.defaults(anim, defaultAnimAttributes);
+                var highlightId = self.getHighlightId($svgEl);
+
                 var thisDefault = {};
                 for(k in anim) {
                     if(animationReserved.indexOf(k) === -1) thisDefault[k] = _.cloneDeep(anim[k]);
@@ -201,99 +203,68 @@ define([
                     // rememberAnim(anim,id)
                     // memorizeAnim(anim, id);
 
-                    // Check if any of the attributes is a funciton
-                    if(_.any(anim.attributes[i], function(attribute) {
-                        return (typeof attribute === 'function');
-                    })) {
-                        $svgEl.each(function() {
-                            var animation = document.createElementNS('http://www.w3.org/2000/svg', anim.tag);
-                            for(var attribute in anim.attributes[i]) {
-                                var attrValue = anim.attributes[i][attribute];
-                                attrValue = (typeof  attrValue === 'function') ? attrValue.call() : attrValue;
-                                animation.setAttributeNS(null, attribute, attrValue);
-                            }
-                            $(this).append(animation);
-                        });
-                    }
-                    else {
+
+                    $svgEl.each(function() {
                         var animation = document.createElementNS('http://www.w3.org/2000/svg', anim.tag);
                         for(var attribute in anim.attributes[i]) {
                             var attrValue = anim.attributes[i][attribute];
+                            attrValue = (typeof  attrValue === 'function') ? attrValue.call() : attrValue;
                             animation.setAttributeNS(null, attribute, attrValue);
                         }
-                        $svgEl.append(animation);
-                    }
-
-                    // get the animations we just appended
-                    $animations = $svgEl.children(':last-child');
-
-                    // Listen to animation events and start the animation
-                    $animations.each(function() {
-                        this.addEventListener('endEvent', function() {
-                            // console.log($(this).parent());
-                            // Persist works only for <animate/>
-                            if(anim.options.persistOnEnd) {
-                                if(anim.tag === 'animate') {
-                                    $svgEl.attr(this.getAttribute('attributeName'), this.getAttribute('to'));
-                                }
-                                else {
-                                    console.warn('Could not persist animation');
-                                }
-                            }
-
-                            if(anim.options.clearAnimationTags) {
-                                console.log('clear animation tags');
-                                $getAnimationTags($svgEl).remove();
-                            }
-
-                            if(anim.options.clearOnEnd) {
-                                var el = this;
-                                var timeout = anim.options.clearOnEnd.timeout || 0;
-                                setTimeout(function() {
-                                    $(el).remove();
-                                    self._saveSvg();
-                                }, timeout);
-                            }
-                            else {
-                                // Don't clear anything
-                                // console.log('not clear on end')
-                            }
-                        });
-                        this.addEventListener('repeatEvent', function() {
-                            // nothing to do...
-                        });
-                        this.addEventListener('beginEvent', function() {
-                            // nothing to do...
-                        });
-                        if(anim.begin === 'indefinite') this.beginElement();
+                        $(this).append(animation);
                     });
 
 
-
-                    // (function($animations){
-                    //     var ii = i;
-                    //     var aanim = animation;
-                    //     aanim.addEventListener('endEvent', function() {
-                    //         if(anim.options.clearOnEnd) {
-                    //             $(aanim).remove();
-                    //             self._saveSvg();
-                    //         }
-                    //         else {
-                    //             console.log('not clear on end')
-                    //         }
-                    //         if(anim.options.persistOnEnd) {
-                    //             $svgEl.attr(this.getAttribute('attributeName'), this.getAttribute('to'));
-                    //         }
-                    //     });
-                    //     aanim.addEventListener('repeatEvent', function() {
-                    //         // nothing to do...
-                    //     });
-                    //     aanim.addEventListener('beginEvent', function() {
-                    //         // nothing to do...
-                    //     });
-                    //     if(anim.begin === 'indefinite') aanim.beginElement();
-                    // })($animations);
+                    // get the animations we just appended
+                    var $animations = $svgEl.children(':last-child');
+                    $allAnimations = $allAnimations.add($animations);
                 }
+
+                $allAnimations.each(function(){
+                    this.addEventListener('endEvent', function() {
+                        blockHighlight[highlightId] = false;
+                        // console.log($(this).parent());
+                        // Persist works only for <animate/>
+                        if(anim.options.persistOnEnd) {
+                            if(anim.tag === 'animate') {
+                                $svgEl.attr(this.getAttribute('attributeName'), this.getAttribute('to'));
+                            }
+                            else {
+                                console.warn('Could not persist animation');
+                            }
+                        }
+
+                        if(anim.options.clearAnimationTags) {
+                            console.log('clear animation tags');
+                            $getAnimationTags($svgEl).remove();
+                        }
+
+                        if(anim.options.clearOnEnd) {
+                            var el = this;
+                            var timeout = anim.options.clearOnEnd.timeout || 0;
+                            setTimeout(function() {
+                                $(el).remove();
+                                self._saveSvg();
+                            }, timeout);
+                        }
+                        else {
+                            // Don't clear anything
+                            // console.log('not clear on end')
+                        }
+                    });
+                    this.addEventListener('repeatEvent', function() {
+                        // nothing to do...
+                    });
+                    this.addEventListener('beginEvent', function() {
+                        if(anim.options.clearAnimationTagsBeforeBegin) {
+                            $getAnimationTags($svgEl).not($allAnimations).remove();
+                            highlightCount[highlightId] = 0;
+                            blockHighlight[highlightId] = true;
+                        }
+                    });
+                    if(this.getAttribute('begin') === 'indefinite')
+                        this.beginElement();
+                });
             },
 
             addAnimations: function($svgEl, animation) {
@@ -452,13 +423,15 @@ define([
                     /*      if( self.dataTimeout) { window.clearInterval( self.dataTimeout); }
                      self.dataTimeout = window.setInterval( function( ) { console.log( obj.info ); obj.info.triggerChange(); } , 100 );
                      */
-
+                    $(this).css('cursor', 'pointer');
                     self.module.controller.onHover(obj.info || {});
+
                 }
 
                 function onMouseLeave() {
                     // self.module.controller.onLeave(obj.info || {});
                     var effect = null;
+                    $(this).css('cursor', 'default');
                 }
 
                 function onMouseClick() {
@@ -467,11 +440,17 @@ define([
 
                 // Listen to highlights
                 if(doHighlight) {
-                    var killId = $svgEl.map(function() {return this.getAttribute('id')}).toArray().join(',');
+                    var killId = self.getHighlightId($svgEl);
                     API.killHighlight(killId);
                     API.listenHighlight({_highlight: obj._highlight}, cb, false, killId);
+                    highlightCount[killId] = highlightCount[killId] || 0;
 
                     function cb(onOff) {
+                        if(blockHighlight[killId]) {
+                            console.log('highlight blocked...');
+                            return;
+                        }
+                        console.log('highlight callaback');
                         var animation = {};
                         animation.tag = 'animateTransform';
                         animation.options = {
@@ -487,13 +466,15 @@ define([
                             accumulate: "sum",
                             fill: "freeze"
                         };
-                        if(onOff) {
+                        if(onOff && highlightCount[killId] === 0) {
                             animation.options.clearAnimationTags = false;
                             animation.attributes.to = "1.25";
+                            highlightCount[killId]++;
                         }
-                        else {
+                        else if(!onOff && highlightCount[killId] === 1) {
                             animation.options.clearAnimationTags = false;
                             animation.attributes.to = "0.8";
+                            highlightCount[killId]--;
                         }
                         self.addAnimation($svgEl, animation);
                     }
@@ -533,6 +514,10 @@ define([
                         }
                     }
                 })($svgEl);
+            },
+
+            getHighlightId: function($svgEl) {
+                $svgEl.map(function() {return this.getAttribute('id')}).toArray().join(',');
             },
 
             _clearEventCallbacks: function(svgModifier) {
