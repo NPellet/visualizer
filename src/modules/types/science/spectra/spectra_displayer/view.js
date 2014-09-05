@@ -1,814 +1,820 @@
-define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing', 'src/util/api', 'src/util/util', 'src/util/debug'], function(Default, Graph, DataTraversing, API, Util, Debug) {
-	
-	function view() {};
-	view.prototype = $.extend(true, {}, Default, {
+'use strict';
+
+define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/util/datatraversing', 'src/util/api', 'src/util/util', 'src/util/debug'], function (Default, Graph, DataTraversing, API, Util, Debug) {
+
+    function View() {
+    }
+
+    View.prototype = $.extend(true, {}, Default, {
+
+        init: function () {
+            this.series = {};
+            this.colorvars = [];
+            this.dom = $('<div />');
+            this.zones = {};
+            this._currentHighlights = { };
+            this.module.getDomContent().html(this.dom);
+            this.seriesActions = [ ];
+
+            this.colorId = 0;
+            this.colors = [ 'red', 'blue', 'green', 'black' ];
+
+            this.deferreds = {};
+            this.onchanges = {};
+        },
+
+        inDom: function () {
+
+            var self = this;
+
+            var prom = new Promise(function (resolve, reject) {
+
+                var cfg = self.module.getConfiguration.bind(self.module),
+                    cfgCheckbox = self.module.getConfigurationCheckbox.bind(self.module),
+                    graphurl = cfg('graphurl');
+
+                if (graphurl) {
+
+                    $.getJSON(graphurl, {}, function (data) {
+
+                        data.options.onMouseMoveData = function (e, val) {
+                            self.module.controller.sendAction('mousetrack', val);
+                        };
+
+                        resolve(new Graph(self.dom.get(0), data.options, data.axis));
+
+                    });
+
+                } else {
+
+                    var options = {
+                        close: {
+                            left: false,
+                            right: false,
+                            top: false,
+                            bottom: false
+                        },
+                        plugins: {},
+                        pluginAction: {}
+                    };
+
+                    var zoom = cfg('zoom');
+                    if (zoom && zoom !== 'none') {
+                        var zoomOptions = {};
+                        if (zoom === 'x') {
+                            zoomOptions.zoomMode = 'x';
+                        } else if (zoom === 'y') {
+                            zoomOptions.zoomMode = 'y';
+                        } else {
+                            zoomOptions.zoomMode = 'xy';
+                        }
+                        options.plugins['graph.plugin.zoom'] = zoomOptions;
+                        options.pluginAction['graph.plugin.zoom'] = {shift: false, ctrl: false};
+                        options.dblclick = {
+                            type: 'plugin',
+                            plugin: 'graph.plugin.zoom',
+                            options: {
+                                mode: 'total'
+                            }
+                        }
+                    }
+
+                    var wheel = cfg('wheelAction');
+                    if (wheel && wheel !== 'none') {
+                        var wheelOptions = {};
+
+                        if (wheel === 'xAxis') {
+                            wheelOptions.direction = 'x';
+                        } else {
+                            wheelOptions.direction = 'y';
+                        }
+
+                        options.wheel = {
+                            type: 'plugin',
+                            plugin: 'graph.plugin.zoom',
+                            options: wheelOptions
+                        };
+                    }
+
+                    var graph = new Graph(self.dom.get(0), options);
+
+                    // Axes
+                    var xAxis = graph.getXAxis();
+                    xAxis
+                        .flip(cfgCheckbox('flipAxis', 'flipX'))
+                        .togglePrimaryGrid(cfgCheckbox('grid', 'vmain'))
+                        .toggleSecondaryGrid(cfgCheckbox('grid', 'vsec'))
+                        .setLabel(cfg('xLabel', ''))
+                        .forceMin(cfg('minX', false))
+                        .forceMax(cfg('maxX', false))
+                        .setAxisDataSpacing(cfg('xLeftSpacing'), cfg('xRightSpacing'));
+                    if(!cfgCheckbox('displayAxis', 'x')) {
+                        xAxis.hide();
+                    }
+
+                    var yAxis = graph.getYAxis();
+                    yAxis
+                        .flip(cfgCheckbox('flipAxis', 'flipY'))
+                        .togglePrimaryGrid(cfgCheckbox('grid', 'hmain'))
+                        .toggleSecondaryGrid(cfgCheckbox('grid', 'hsec'))
+                        .setLabel(cfg('yLabel', ''))
+                        .forceMin(cfg('minY', false))
+                        .forceMax(cfg('maxY', false))
+                        .setAxisDataSpacing(cfg('yBottomSpacing'), cfg('yTopSpacing'));
+                    if (!cfgCheckbox('displayAxis', 'y')) {
+                        yAxis.hide();
+                    }
+
+                    if (cfgCheckbox('xAsTime', 'xastime')) {
+                        graph.setBottomAxisAsTime();
+                    }
+
+                    resolve(graph);
 
-		init: function() {
-			this.series = {};
-			this.colorvars = [];
-			this.dom = $('<div />');
-			this.zones = {};
-			this._currentHighlights = { };
-			this.module.getDomContent( ).html( this.dom );
-			this.seriesActions = [ ];
-
-			this.colorId = 0;
-			this.colors = [ "red", "blue", "green", "black" ];
-
-			this.deferreds = { };
-			this.onchanges = {};
-		},
-		
-		inDom: function() {
-
-			var self = this,
-				cfg = $.proxy( this.module.getConfiguration, this.module ),
-				graphurl = cfg( 'graphurl' ),
-				graph,
-				def = $.Deferred( );
+                }
+
+            });
+
+            prom.then(function (graph) {
+
+                self.graph = graph;
+                self.xAxis = graph.getXAxis();
+                self.yAxis = graph.getYAxis();
+
+                //TODO this is a hack to get annotations working
+                self.series['0000000000'] = [graph.newSerie('0000000000', {}).autoAxis()];
+
+                self.onResize();
+                self.resolveReady();
+
+            });
+
+        },
+
+        onResize: function () {
+            if (this.graph) {
+                this.graph.resize(this.width, this.height);
+                this.redraw(true);
+            }
+        },
+
+        redraw: function (forceReacalculateAxis) {
+
+            var cfg = $.proxy(this.module.getConfiguration, this.module);
+
+            if (forceReacalculateAxis) {
+                this.graph.redraw();
+            } else if (cfg('fullOut') == "none") {
+                this.graph.redraw(true, true);
+            } else if (cfg('fullOut') == "xAxis") {
+                this.graph.redraw(false, true);
+            } else if (cfg('fullOut') == "yAxis") {
+                this.graph.redraw(true, false);
+            } else {
+                this.graph.redraw();
+            }
+
+            this.graph.autoscaleAxes();
+            this.graph.drawSeries();
+
+        },
+
+        doZone: function (varname, zone, value, color) {
+            if (value && !zone[2]) {
 
-			if(graphurl) {
-					
-				$.getJSON(graphurl, {}, function(data) {
+                var serie = this.series[varname][0];
+                var rect = this.graph.makeShape({
+                    type: 'rect',
+                    pos: {
+                        x: zone[0]
+                    },
 
-					data.options.onMouseMoveData = function(e, val) {
-						self.module.controller.sendAction('mousetrack', val);
-					}
+                    pos2: {
+                        x: zone[1]
+                    },
 
-				 	def.resolve( new Graph(self.dom.get(0), data.options, data.axis) );
-				});
+                    fillColor: color,
+                    opacity: '0.5'
+                });
 
-			} else {
-
-				var graph = new Graph(this.dom.get(0), {
+                rect.setFullHeight();
 
-					close: {
-						left: true,
-						right: true,
-						top: true,
-						bottom: true
-					},
-
-					onAnnotationMake: function(annot) {
-						self.module.controller.sendAction('annotation', annot, 'onAnnotationAdd');
-					},
-
-					onAnnotationChange: function(annot) {
-						self.module.controller.sendAction('annotation', annot, 'onAnnotationChange');
-						DataTraversing.triggerDataChange(annot);
-					},
-
-					onMouseMoveData: function(e, val) {
-						var min, max, x1;
-						for(var k in self.zones) {
-
-							if( ! val[ k ] ) {
-								continue;
-							}
-
-							for( var i in self.zones[ k ] ) {
-
-								min = Math.min( self.zones[ k ][ i ][ 0 ], self.zones[ k ][ i ][ 1 ] );
-								max = Math.max( self.zones[ k ][ i ][ 0 ], self.zones[ k ][ i ][ 1 ] );
-
-								x1 = val[ k ].trueX;
-
-								if(min < x1 && max > x1) {
-									//CI.RepoHighlight.set(i, 1);
-									self._currentHighlights[ i ] = 1;
-
-								} else if(self._currentHighlights[i]) {
-									//CI.RepoHighlight.set(i, 0);
-									self._currentHighlights[i] = 0;
-								}
-							}
-						}
-
-					}
-				});
-
-				graph.getBottomAxis().options.onZoom = function(from, to) {
-					self.module.controller.sendAction('fromto', new DataObject({type: 'fromTo', value: new DataObject({ from: from, to: to })}), 'onZoomChange');
-				}
-
-				if( cfg( 'shiftxtozero' ) ) {
-
-					graph.getXAxis( ).options.shiftToZero = true;
-				}
-
-
-				graph.getLeftAxis().setDisplay( cfg('displayYAxis', false) );
-				graph.getLeftAxis().setLabel( cfg('yLabel', '') );
-
-				graph.getXAxis().setDisplay(cfg('displayXAxis', true));
-				graph.getXAxis().setLabel( cfg('xLabel', '') );
-
-				graph.getXAxis().togglePrimaryGrid( cfg( 'vertGridMain', false ) );
-				graph.getXAxis().toggleSecondaryGrid( cfg( 'vertGridSec', false ) );
-			
-				if( cfg( 'xastime' ) ) {
-					graph.getXAxis().options.unitModification = 'time';
-				}
-
-				graph.getYAxis().togglePrimaryGrid( cfg( 'horGridMain', false ) );
-				graph.getYAxis().toggleSecondaryGrid( cfg( 'horGridSec', false ) );
-			
-				graph.getXAxis().setAxisDataSpacing( cfg( 'xLeftSpacing' ), cfg( 'xRightSpacing' ) );
-				graph.getYAxis().setAxisDataSpacing( cfg( 'yBottomSpacing' ), cfg( 'yTopSpacing' ) );
-
-				graph.setDefaultWheelAction( cfg('wheelAction', 'none') );
+                zone.push(rect);
 
-				graph.getXAxis().forceMin( cfg('minX', false) );
-				graph.getLeftAxis().forceMin( cfg('minY', false) );
-				graph.getXAxis().forceMax( cfg('maxX', false) );
-				graph.getLeftAxis().forceMax( cfg('maxY', false) );
+            } else if (zone[2] && !value) {
 
-				graph.setOption('zoomMode', cfg( 'zoom' ) );
+                zone[2].kill();
+                zone.splice(2, 1);
 
-				def.resolve(graph);
-			}
+            }
+        },
 
-			$.when(def).then(function(graph) {
+        setSerieParameters: function (serie, varname, highlight) {
+            var self = this,
+                plotinfos = this.module.getConfiguration('plotinfos');
 
-				if(!graph) {
-					return;
-				}
+            highlight = highlight || [];
 
-				graph.redraw(true);
-				self.graph = graph;
-				
-				self.graph.getXAxis().flip( cfg('flipX', false) );
-				self.graph.getYAxis().flip( cfg('flipY', false) );
-
-				self.redraw( );
-				self.resolveReady();
+            if (plotinfos) {
 
-			});
-		},
-		
-		onResize: function() {
-			if(this.graph) {
-				this.graph.resize( this.width, this.height );
-				this.redraw(true);
-			}
-		},
-
-		redraw: function( forceReacalculateAxis ) {
-			
-			var cfg = $.proxy(this.module.getConfiguration, this.module);
-
-			if (forceReacalculateAxis) {
-				this.graph.redraw();
-			} else  if (cfg('fullOut') == "none") {
-				this.graph.redraw( true, true, true );
-			} else if (cfg('fullOut') == "xAxis") {
-				this.graph.redraw( false, false, true );
-			} else if (cfg('fullOut') == "yAxis") {
-				this.graph.redraw(false, true, false);
-			} else {
-				this.graph.redraw();
-			}
+                for (var i = 0, l = plotinfos.length; i < l; i++) {
+                    if (varname == plotinfos[i].variable) {
 
-			this.graph.drawSeries( );
+                        serie.options.lineToZero = !plotinfos[i].plotcontinuous[0];
+                        serie.options.useSlots = false;
+                        // TODO enable when slots are back
+                        // (plotinfos[i].optimizeSlots ? !!plotinfos[i].optimizeSlots[0] : false);
 
-		},
-		
-		doZone: function(varname, zone, value, color) {
+                        serie.setLineColor(Util.getColor(plotinfos[i].plotcolor));
+                        serie.setLineWidth(parseFloat(plotinfos[i].strokewidth) || 1);
+                        serie.options.autoPeakPicking = plotinfos[i].peakpicking[0];
 
-			if(value && !zone[2]) {
+                        if (plotinfos[i].markers[0]) {
+                            serie.showMarkers();
+                            serie.setMarkers([{
+                                type: 1,
+                                zoom: 2,
+                                strokeColor: Util.getColor(plotinfos[i].plotcolor),
+                                fillColor: Util.getColor(plotinfos[i].plotcolor),
+                                points: 'all'
+                            }]);
+                        }
+                    }
+                }
+            }
 
-				var serie = this.series[varname][0];
-				var rect = this.graph.makeShape({ 
-					type: 'rect',
-					pos: {
-						x: zone[0]
-					},
+            API.listenHighlight(highlight, function (value, commonKeys) {
 
-					pos2: {
-						x: zone[1]
-					},
+                serie.toggleMarker([ highlight.indexOf(commonKeys[0]), 0 ], value, true);
+            });
 
-					fillColor: color,
-					opacity: '0.5'
-				});
-				
-				rect.setFullHeight();
+            // 3 June 2014, Norman
+            // Ok here for instance we have a problem. The data generated by the graph is NOT in another variable
+            // Therefore we create this data from scratch. Easy.
+            serie.options.onMouseOverMarker = function (index, infos, xy) {
+                API.highlight(highlight[index[0]], 1);
+                self.module.controller.onMouseOverMarker(xy, infos);
+            };
+            serie.options.onMouseOutMarker = function (index, infos, xy) {
+                API.highlight(highlight[index[0]], 0);
+                self.module.controller.onMouseOutMarker(xy, infos);
+            };
+        },
 
-				zone.push(rect);
 
-			} else if(zone[2] && !value) {
+        blank: {
 
-				zone[2].kill();
-				zone.splice(2, 1);
+            xyArray: function (varName) {
 
-			}
-		},
+                this.removeSerie(varName);
+            },
 
+            xArray: function (varName) {
 
-		setSerieParameters: function(serie, varname, highlight) {
-			var self = this,
-				plotinfos = this.module.getConfiguration( 'plotinfos' );
+                this.removeSerie(varName);
+            },
 
-			highlight=highlight||[];
+            jcamp: function (varName) {
 
-			if( plotinfos ) {
+                this.removeSerie(varName);
+            },
 
-				for ( var i = 0, l = plotinfos.length ; i < l ; i++ ) {
-					if( varname == plotinfos[i].variable ) {
+            chart: function (varName) {
 
-						serie.options.lineToZero = ! plotinfos[i].plotcontinuous[0];
-						serie.options.useSlots =  (plotinfos[i].optimizeSlots ? !!plotinfos[i].optimizeSlots[0] : false);
+                this.removeSerie(varName);
+            }
+        },
 
-						
-						serie.setLineColor( Util.getColor( plotinfos[i].plotcolor ) );
-						serie.setLineWidth( plotinfos[i].strokewidth || 1 );
-						serie.options.autoPeakPicking = plotinfos[i].peakpicking[0];
 
-						if( plotinfos[i].markers[0] ) {
+        update: {
 
-							serie.showMarkers();
-							serie.setMarkerType(1);
-							serie.setMarkerZoom(2);
+            fromTo: function (moduleValue) {
+                var view = this;
 
-							serie.setMarkerStrokeColor( Util.getColor( plotinfos[i].plotcolor ) );
-							serie.setMarkerFillColor( Util.getColor( plotinfos[i].plotcolor ) );
-						}
-					}	
-				}
-			}
+                if (!moduleValue || !moduleValue.value)
+                    return;
 
-			API.listenHighlight(highlight, function(value, commonKeys) {
-				
-				serie.toggleMarker([ highlight.indexOf(commonKeys[0]), 0 ], value, true);
-			});
+                if (view.dom.data('spectra')) {
+                    view.dom.data('spectra').setBoundaries(moduleValue.value.from, moduleValue.value.to);
+                }
 
-			// 3 June 2014, Norman
-			// Ok here for instance we have a problem. The data generated by the graph is NOT in another variable
-			// Therefore we create this data from scratch. Easy.
-			serie.options.onMouseOverMarker = function(index, infos, xy) {
-				API.highlight(highlight[index[0]], 1);
-				self.module.controller.onMouseOverMarker(xy, infos);
-			};
-			serie.options.onMouseOutMarker = function(index, infos, xy) {
-				API.highlight(highlight[index[0]], 0);
-				self.module.controller.onMouseOutMarker(xy, infos);
-			};
-		},
+            },
 
+            /* OLD FORMAT
+             * chart: function(moduleValue, varname) {
 
-		blank: {
-
-			xyArray: function ( varName ) {
-
-				this.removeSerie(varName);
-			},
-
-			xArray: function ( varName ) {
-
-				this.removeSerie( varName );
-			},
-
-			jcamp: function ( varName ) {
-
-				this.removeSerie( varName );
-			},
-
-			chart: function ( varName ) {
-
-				this.removeSerie( varName );
-			}
-		},
-		
-
-		update: { 
-
-			'fromTo': function(moduleValue) {
-				var view = this;
-
-				if(!moduleValue || !moduleValue.value)
-					return;
-
+<<<<<<< HEAD
 				if( this.graph ) {
 
 					this.graph.getBottomAxis()._doZoomVal(moduleValue.value.from, moduleValue.value.to, true);
 					this.graph.redraw( false, true, false );
 					this.graph.drawSeries();
 				}
+=======
+             this.series[varname] = this.series[varname] || [];
+             this.removeSerie( varname );
+>>>>>>> jsgraph
 
-				return;
-			},
+             if(!moduleValue)
+             return;
 
-			/* OLD FORMAT
-                         * chart: function(moduleValue, varname) {
+             var newSeries=moduleValue.series || moduleValue;
+             if (!(newSeries instanceof Array)) {
+             newSeries=[newSeries];
+             }
 
-				this.series[varname] = this.series[varname] || [];
-				this.removeSerie( varname );
+             for (var i=0; i<newSeries.length; i++) {
+             var newSerie = newSeries[i];
+             var valFinal=[];
+             if(newSerie.y) {
+             for(var j = 0, l = newSerie.y.length; j < l; j++) {
+             valFinal.push(newSerie.x ? newSerie.x[j] : j);
+             valFinal.push(newSerie.y[j]);
+             }
+             }
 
-				if(!moduleValue)
-					return;
+             var serie = this.graph.newSerie(varname, {trackMouse: true});
 
-				var newSeries=moduleValue.series || moduleValue;
-				if (!(newSeries instanceof Array)) {
-					newSeries=[newSeries];
-				}
+             this.setSerieParameters(serie, varname, newSerie._highlight);
 
-				for (var i=0; i<newSeries.length; i++) {
-					var newSerie = newSeries[i];
-					var valFinal=[];
-					if(newSerie.y) {
-						for(var j = 0, l = newSerie.y.length; j < l; j++) {
-							valFinal.push(newSerie.x ? newSerie.x[j] : j);
-							valFinal.push(newSerie.y[j]);
-						}
-					}
-					
-					var serie = this.graph.newSerie(varname, {trackMouse: true});
+             this.normalize( valFinal, varname );
+             serie.setData( valFinal );
 
-					this.setSerieParameters(serie, varname, newSerie._highlight);
+             if( newSerie.infos ) {
+             serie.setInfos( newSerie.infos );
+             }
+             serie.autoAxis();
+             this.series[varname].push(serie);
+             }
 
-					this.normalize( valFinal, varname );
-					serie.setData( valFinal );
+             this.redraw();
+             },*/
 
-					if( newSerie.infos ) {
-						serie.setInfos( newSerie.infos );
-					}
-					serie.autoAxis();
-					this.series[varname].push(serie);
-				}
+            chart: function (moduleValue, varname) {
 
-				this.redraw();
-			},*/
-                        
-            chart: function(moduleValue, varname) {
+                this.series[varname] = this.series[varname] || [];
+                this.removeSerie(varname);
 
-            	this.series[varname] = this.series[varname] || [];
-				this.removeSerie( varname );
+                if (!moduleValue) {
+                    return;
+                }
 
-				if( ! moduleValue ) {
-					return;
-				}
-                                    
                 moduleValue = moduleValue.get();
-               
+
                 var data = moduleValue.data;
                 for (var i = 0; i < data.length; i++) {
-                
+
                     var aData = data[i];
                     var serieName = data.serieLabel;
-                
-					var valFinal=[];
-					if(aData.y) {
-						for(var j = 0, l = aData.y.length; j < l; j++) {
-							valFinal.push(aData.x ? aData.x[j] : j);
-							valFinal.push(aData.y[j]);
-						}
-					}
-					
-					var serie = this.graph.newSerie(serieName, {trackMouse: true});
 
-					this.setSerieParameters(serie, varname, aData._highlight);
+                    var valFinal = [];
+                    if (aData.y) {
+                        for (var j = 0, l = aData.y.length; j < l; j++) {
+                            valFinal.push(aData.x ? aData.x[j] : j);
+                            valFinal.push(aData.y[j]);
+                        }
+                    }
 
-					this.normalize( valFinal, varname );
-					serie.setData( valFinal );
+                    var serie = this.graph.newSerie(serieName, {trackMouse: true});
 
-					if( aData.infos ) {
-						serie.setInfos( aData.infos );
-					}
-					serie.autoAxis();
-					this.series[varname].push(serie);
-				}
+                    this.setSerieParameters(serie, varname, aData._highlight);
 
-				this.redraw();
-			},
+                    this.normalize(valFinal, varname);
+                    serie.setData(valFinal);
 
-			xyArray: function(moduleValue, varname) {
-				
-				this.series[varname] = this.series[varname] || [];
-				this.removeSerie( varname );
+                    if (aData.infos) {
+                        serie.setInfos(aData.infos);
+                    }
+                    serie.autoAxis();
+                    this.series[varname].push(serie);
+                }
 
-				if( ! moduleValue ) {
-					return;
-				}
+                this.redraw();
+            },
 
-				var val = moduleValue.get();
-				
-				var serie = this.graph.newSerie(varname, {trackMouse: true});
-				this.setSerieParameters(serie, varname);
+            xyArray: function (moduleValue, varname) {
 
-				this.normalize(val, varname);
-				serie.setData(val);
-				serie.autoAxis();
-				this.series[varname].push(serie);
-				this.redraw();
-			},
+                this.series[varname] = this.series[varname] || [];
+                this.removeSerie(varname);
+
+                if (!moduleValue) {
+                    return;
+                }
+
+                var val = moduleValue.get();
+
+                var serie = this.graph.newSerie(varname, {trackMouse: true});
+                this.setSerieParameters(serie, varname);
+
+                this.normalize(val, varname);
+                serie.setData(val);
+                serie.autoAxis();
+                this.series[varname].push(serie);
+                this.redraw();
+            },
 
 // in fact it is a Y array ...
-			xArray: function(moduleValue, varname) {
-				var self = this,
-					val;
+            xArray: function (moduleValue, varname) {
+                var self = this,
+                    val;
 
 
+                //			self.graph.setOption('zoomMode', self.module.getConfiguration( 'zoom' ) );
 
-	//			self.graph.setOption('zoomMode', self.module.getConfiguration( 'zoom' ) );
+                this.series[varname] = this.series[varname] || [];
+                this.removeSerie(varname);
 
-				this.series[varname] = this.series[varname] || [];
-				this.removeSerie(varname);
-	
-				if(!moduleValue)
-					return;
-				
-				val = DataTraversing.getValueIfNeeded(moduleValue);
+                if (!moduleValue)
+                    return;
 
-				var serie = self.graph.newSerie(varname, {trackMouse: true});
+                val = DataTraversing.getValueIfNeeded(moduleValue);
 
-				function buildVal( val ) {
-					var minX=self.module.getConfiguration( 'minX' ) || 0;
-					var maxX=self.module.getConfiguration( 'maxX' ) || val.length-1;
-					var step=(maxX-minX)/(val.length-1);
+                var serie = self.graph.newSerie(varname, {trackMouse: true});
+
+                function buildVal(val) {
+                    var minX = self.module.getConfiguration('minX') || 0;
+                    var maxX = self.module.getConfiguration('maxX') || val.length - 1;
+                    var step = (maxX - minX) / (val.length - 1);
                     var val2 = [];
-                    for(var i = 0, l = val.length; i < l; i++) {
-                            val2.push(minX+step*i);
-                            val2.push(val[i]);
+                    for (var i = 0, l = val.length; i < l; i++) {
+                        val2.push(minX + step * i);
+                        val2.push(val[i]);
                     }
-                    
-					self.normalize(val2, varname);
+
+                    self.normalize(val2, varname);
 
                     return val2;
-				}
+                }
 
-				var changeid = moduleValue.onChange( function() {
+                var changeid = moduleValue.onChange(function () {
 
-					serie.setData( buildVal( this.get( ) ) );
-					self.redraw();
-				} );
-
-				this.setOnChange( changeid, varname, moduleValue );
-
-
-                $.when(val).then(function(value){
-
-                     // lineToZero: !continuous}
-                    self.setSerieParameters(serie, varname);
-                    
-
-
-                    serie.setData( buildVal( value ) );
-                    serie.autoAxis();
-                    self.series[ varname ].push( serie );
+                    serie.setData(buildVal(this.get()));
                     self.redraw();
                 });
-                            
-			},
 
-			annotations: function(value) {
-
-				API.killHighlight( this.module.getId() );
-				value = DataTraversing.getValueIfNeeded(value);
-				if(!value)
-					return;
-
-				this.annotations = value;
-				this.resetAnnotations(true);
-			},
-
-			jcamp : function(moduleValue, varname) {
-
-				if(!moduleValue) {
-					return;
-				}
-
-				moduleValue = moduleValue.get(); // Get the true jcamp value
-
-				var self = this, 
-					serie, 
-					spectra;
-
-				API.killHighlight(this.module.getId() + varname);
-
-				if(!this.graph) {
-					return;
-				}
-
-				this.zones[varname] = moduleValue._zones;
-				
-				if( self.deferreds[ varname ] ) {
-					self.deferreds[ varname ].reject();
-				}
-
-				self.deferreds[ varname ] = $.Deferred();
-				var def = self.deferreds[ varname ];
-
-				require( [ 'src/util/jcampconverter' ], function( JcampConverter ) {
-
-					JcampConverter( moduleValue, { lowRes: 1024 } ).done( function( spectra ) {
-
-						if( def.state() == "rejected" ) {
-							return;
-						}
-
-						self.deferreds[ varname ] = false;
-						self.series[ varname ] = self.series[ varname ] || [];
-						self.series[ varname ] = [];
-
-						if(spectra.contourLines) {
-	
-							serie = self.graph.newSerie( varname, { trackMouse: true }, 'contour' );
-							self.setSerieParameters(serie, varname);
-							serie.setData( spectra.contourLines );
-							serie.autoAxis( );
-							self.series[ varname ].push( serie );
-
-						} else {
-
-							spectra = spectra.spectra;
-							for (var i=0, l = spectra.length; i<l; i++) {
-								serie = self.graph.newSerie(varname, {trackMouse: true});
-
-								var data=spectra[i].data[spectra[i].data.length - 1];
-
-								self.setSerieParameters(serie, varname);
-								self.normalize(data, varname);
-								serie.setData(data);
-								serie.autoAxis();
-								self.series[varname].push(serie);
-								break;
-							}
-
-							API.listenHighlight(moduleValue._highlight || [], function(value, commonKeys) {
-
-								for(var i = 0; i < commonKeys.length; i++) {
-
-									if( self.zones[ varname ][ commonKeys[ i ] ] ) {
-
-										self.doZone( varname, self.zones[ varname ][ commonKeys [ i ] ], value, self.series[varname].options.lineColor );
-									}
-								}
-							}, true, self.module.getId() + varname);
-						}
-						
-						self.redraw( );
-						self.resetAnnotations( true );
-					});
-				});
-			},
+                this.setOnChange(changeid, varname, moduleValue);
 
 
-			series_xy1d: function( data ) { // Receives an array of series. Blank the other ones.
+                $.when(val).then(function (value) {
 
-				/*if( ! data.data ) {
-					return;
-				}*/
+                    // lineToZero: !continuous}
+                    self.setSerieParameters(serie, varname);
 
-				this.graph.removeSeries();
-				
-				//data = data.get();
+                    serie.setData(buildVal(value));
 
-				var i = 0,
-					l = data.length;
+                    serie.autoAxis();
+                    self.series[ varname ].push(serie);
+                    self.redraw();
+                });
 
-				for( ; i < l ; i ++ ) {
+            },
 
-					var serie = this.graph.newSerie();
+            annotations: function (value) {
 
-					serie.autoAxis();
-					serie.setData( data[ i ].data );
-				//	serie.setLabel( data[ i ].label.toString( ) );
-					serie.setLineWidth( data[ i ].lineWidth || 1 );
-					serie.setLineColor( data[ i ].lineColor || Util.getColor( Util.getNextColorRGB( i, l ) ) );
-				}
+                API.killHighlight(this.module.getId());
+                value = DataTraversing.getValueIfNeeded(value);
+                if (!value)
+                    return;
 
-				this.redraw();
-			}
-		},
+                this.annotations = value;
+                this.resetAnnotations(true);
+            },
 
-		setOnChange: function( id, varname, obj ) {
+            jcamp: function (moduleValue, varname) {
+
+                if (!moduleValue) {
+                    return;
+                }
+
+                moduleValue = moduleValue.get(); // Get the true jcamp value
+
+                var self = this,
+                    serie,
+                    spectra;
+
+                API.killHighlight(this.module.getId() + varname);
+
+                if (!this.graph) {
+                    return;
+                }
+
+                this.zones[varname] = moduleValue._zones;
+
+                if (self.deferreds[ varname ]) {
+                    self.deferreds[ varname ].reject();
+                }
+
+                self.deferreds[ varname ] = $.Deferred();
+                var def = self.deferreds[ varname ];
+
+                require([ 'src/util/jcampconverter' ], function (JcampConverter) {
+
+                    JcampConverter(moduleValue, { lowRes: 1024 }).done(function (spectra) {
+
+                        if (def.state() == "rejected") {
+                            return;
+                        }
+
+                        self.deferreds[ varname ] = false;
+                        self.series[ varname ] = self.series[ varname ] || [];
+                        self.series[ varname ] = [];
+
+                        if (spectra.contourLines) {
+
+                            serie = self.graph.newSerie(varname, { trackMouse: true }, 'contour');
+                            self.setSerieParameters(serie, varname);
+                            serie.setData(spectra.contourLines);
+                            serie.autoAxis();
+                            self.series[ varname ].push(serie);
+
+                        } else {
+
+                            spectra = spectra.spectra;
+                            for (var i = 0, l = spectra.length; i < l; i++) {
+                                serie = self.graph.newSerie(varname, {trackMouse: true});
+
+                                var data = spectra[i].data[spectra[i].data.length - 1];
+
+                                self.setSerieParameters(serie, varname);
+                                self.normalize(data, varname);
+                                serie.setData(data);
+                                serie.autoAxis();
+                                self.series[varname].push(serie);
+                                break;
+                            }
+
+                            API.listenHighlight(moduleValue._highlight || [], function (value, commonKeys) {
+
+                                for (var i = 0; i < commonKeys.length; i++) {
+
+                                    if (self.zones[ varname ][ commonKeys[ i ] ]) {
+
+                                        self.doZone(varname, self.zones[ varname ][ commonKeys [ i ] ], value, self.series[varname].options.lineColor);
+                                    }
+                                }
+                            }, true, self.module.getId() + varname);
+                        }
+                        self.redraw();
+                        self.resetAnnotations(true);
+                    });
+                });
+            },
 
 
-			if( this.onchanges[ varname ] ) {
-				this.onchanges[ varname ].obj.unbindChange( this.onchanges[ varname ].id );
-			}
+            series_xy1d: function (data) { // Receives an array of series. Blank the other ones.
 
-			this.onchanges[ varname ] = { obj: obj, id: id };
+                /*if( ! data.data ) {
+                 return;
+                 }*/
 
+                this.graph.removeSeries();
 
-		},
+                //data = data.get();
 
+                var i = 0,
+                    l = data.length;
 
-		resetAnnotations: function(force) {
+                for (; i < l; i++) {
 
-			if(!this.annotations) {
-				return;
-			}
+                    var serie = this.graph.newSerie();
 
-			if(this.annotationsDone && !force)
-				return this.graph.redrawShapes();
+                    serie.autoAxis();
+                    serie.setData(data[ i ].data);
+                    //	serie.setLabel( data[ i ].label.toString( ) );
+                    serie.setLineWidth(data[ i ].lineWidth || 1);
+                    serie.setLineColor(data[ i ].lineColor || Util.getColor(Util.getNextColorRGB(i, l)));
+                }
 
-			this.annotationsDone = true;
-			this.graph.removeAnnotations();
-			var i = 0, l = this.annotations.length
-			for ( ; i < l ; i++ ) {
-				this.doAnnotation(this.annotations[i]);
-			}
-		},
+                this.redraw();
+            }
+        },
 
-		getFirstSerie: function() {
-			for(var i in this.series) {
-				if( this.series[i][0] ) {
-					return this.series[i][0];
-				}
-			}
-		},
-
-		doAnnotation: function(annotation) {
-			if ( !this.graph ) {
-				return;
-			}
-
-			var self = this,
-				shape = this.graph.makeShape( annotation, {}, false );
-
-			shape.setSelectable( true );
-			shape.setSerie( this.getFirstSerie() );
-
-                        Debug.debug('annotation.onChange is disabled, need to be fixed');
-			/*annotation.onChange( annotation, function( value ) {
-
-				shape.draw();
-				shape.redraw();
-
-			}, self.module.getId() );*/
-
-			shape.onMouseOver( function ( data ) {
-
-				API.highlight( data , 1 );
-
-			});
-
-			shape.onMouseOut( function ( data ) {
-
-				API.highlight( data , 0 );
-
-			});
+        setOnChange: function (id, varname, obj) {
 
 
-            API.listenHighlight( annotation, function(onOff) {
+            if (this.onchanges[ varname ]) {
+                this.onchanges[ varname ].obj.unbindChange(this.onchanges[ varname ].id);
+            }
 
-                    if(onOff) {
-                            shape.highlight( );
+            this.onchanges[ varname ] = { obj: obj, id: id };
+
+
+        },
+
+
+        resetAnnotations: function (force) {
+
+            if (!this.annotations) {
+                return;
+            }
+
+            if (this.annotationsDone && !force)
+                return this.graph.redrawShapes();
+
+            this.annotationsDone = true;
+            // TODO handle annotations
+            // this.graph.removeAnnotations();
+            var i = 0, l = this.annotations.length;
+            for (; i < l; i++) {
+                this.doAnnotation(this.annotations[i]);
+            }
+        },
+
+        getFirstSerie: function () {
+            for (var i in this.series) {
+                if (this.series[i][0]) {
+                    return this.series[i][0];
+                }
+            }
+        },
+
+        doAnnotation: function (annotation) {
+            if (!this.graph) {
+                return;
+            }
+
+            var self = this,
+                shape = this.graph.newShape(annotation, {}, false);
+
+            shape.then(function (shape) {
+                shape.setSelectable(true);
+                shape.setSerie(self.getFirstSerie());
+
+                Debug.debug('annotation.onChange is disabled, need to be fixed');
+                /*annotation.onChange( annotation, function( value ) {
+
+                 shape.draw();
+                 shape.redraw();
+
+                 }, self.module.getId() );*/
+//TODO fix mouseover
+//                shape.onMouseOver(function (data) {
+//
+//                    API.highlight(data, 1);
+//
+//                });
+//
+//                shape.onMouseOut(function (data) {
+//
+//                    API.highlight(data, 0);
+//
+//                });
+
+
+                API.listenHighlight(annotation, function (onOff) {
+
+                    if (onOff) {
+                        shape.highlight();
                     } else {
-                            shape.unHighlight( );
+                        shape.unHighlight();
                     }
-            }, false, self.module.getId() );
-			
-
-			shape.draw();
-			shape.redraw();
-		},
+                }, false, self.module.getId());
 
 
+                shape.draw();
+                shape.redraw();
+            });
+
+        },
 
 
-		removeSerie: function(serieName) {
-			if(this.series[serieName]) {
-				for(var i = 0; i < this.series[serieName].length; i++) {
-					this.series[serieName][i].kill( true );
-				}
-			}
+        removeSerie: function (serieName) {
+            if (this.series[serieName]) {
+                for (var i = 0; i < this.series[serieName].length; i++) {
+                    this.series[serieName][i].kill(true);
+                }
+            }
 
-			this.series[serieName] = [];
-		},
+            this.series[serieName] = [];
+        },
 
-		makeSerie: function(data, value, name) {
+        makeSerie: function (data, value, name) {
 
-			var self = this,
-				serie = this.graph.newSerie( data.name );
+            var self = this,
+                serie = this.graph.newSerie(data.name);
 
-			data.onChange(function() {
+            data.onChange(function () {
 
-				serie.setData(data.data);
-				self.graph.redraw();
-				self.graph.drawSeries();
-			});
+                serie.setData(data.data);
+                self.graph.redraw();
+                self.graph.drawSeries();
+            });
 
-			this.onActionReceive.removeSerieByName.call( this, data.name || {} );
-			serie.autoAxis();
-			serie.setData( data.data );
-			
-			this.seriesActions.push( [ value, serie, data.name ] );
-			this.setSerieParameters( serie, name );
-			
-			if( data.lineColor ) {
-				serie.setLineColor( data.lineColor );
-			}
+            this.onActionReceive.removeSerieByName.call(this, data.name || {});
+            serie.autoAxis();
+            serie.setData(data.data);
 
-			if( data.lineWidth ) {
-				serie.setLineWidth( data.lineWidth );
-			}
+            this.seriesActions.push([ value, serie, data.name ]);
+            this.setSerieParameters(serie, name);
 
-			this.redraw( );
-		},
+            if (data.lineColor) {
+                serie.setLineColor(data.lineColor);
+            }
 
+            if (data.lineWidth) {
+                serie.setLineWidth(data.lineWidth);
+            }
 
-		onActionReceive: {
-			fromTo: function(value, name) {
-				this.graph.getBottomAxis()._doZoomVal(value.value.from, value.value.to, true);
+            this.redraw();
+        },
 
-				this.graph.redraw(true);
-				this.graph.drawSeries();
+        onActionReceive: {
+            fromTo: function (value) {
+                this.graph.getBottomAxis()._doZoomVal(value.value.from, value.value.to, true);
 
-			},
+                this.graph.redraw(true);
+                this.graph.drawSeries();
 
-			addSerie: function(value) {
+            },
 
-				this.colorId ++;
-				value = value.get();
+            addSerie: function (value) {
 
-				if(value.name) {
-					this.makeSerie(value, value, value.name);
-				} else {
+                this.colorId++;
+                value = value.get();
 
-					for( var i in value ) {
-						this.makeSerie(value[i], value);
-					}
-				}
-			},
+                if (value.name) {
+                    this.makeSerie(value, value, value.name);
+                } else {
 
-			removeSerie: function(value) {	
+                    for (var i in value) {
+                        this.makeSerie(value[i], value);
+                    }
+                }
+            },
 
-				value = value.get();
+            removeSerie: function (value) {
 
-				for( var i = 0, l = this.seriesActions.length ; i < l ; i++ ) {
+                value = value.get();
 
-					if( this.seriesActions[ i ][ 0 ] == value ) {
-						this.seriesActions[ i ][ 1 ].kill();
-						this.seriesActions.splice( i, 1 );
-					}
-				}
-			},
+                for (var i = 0, l = this.seriesActions.length; i < l; i++) {
 
-			removeSerieByName: function(value) {	
-				for(var i = 0; i < this.seriesActions.length; i++) {
-					if(this.seriesActions[i][2] == value) {
-						this.seriesActions[i][1].kill();
-						this.seriesActions.splice(i, 1);
-						i--;
-					}
-				}
-			}
-		},
+                    if (this.seriesActions[ i ][ 0 ] == value) {
+                        this.seriesActions[ i ][ 1 ].kill();
+                        this.seriesActions.splice(i, 1);
+                    }
+                }
+            },
 
-		getDom: function() {
-			return this.dom;
-		},
-		
-		typeToScreen: {
-			
-		},
+            removeSerieByName: function (value) {
+                for (var i = 0; i < this.seriesActions.length; i++) {
+                    if (this.seriesActions[i][2] == value) {
+                        this.seriesActions[i][1].kill();
+                        this.seriesActions.splice(i, 1);
+                        i--;
+                    }
+                }
+            }
+        },
 
+        getDom: function () {
+            return this.dom;
+        },
 
-		normalize: function(array, varname) {
+        normalize: function (array, varname) {
 
-			var plotinfos = this.module.getConfiguration('plotinfos');
+            var plotinfos = this.module.getConfiguration('plotinfos');
+            var maxValue, minValue, i, l;
 
-			if (! plotinfos) return;
-			var normalize="";
-			for ( var i = 0, l = plotinfos.length ; i < l ; i++ ) {
-				if( varname == plotinfos[i].variable ) {
-					normalize=plotinfos[i].normalize
-				}
-			}
-			if (! normalize) return;
-			if (normalize=="max1") {
-				var maxValue=Number.MIN_VALUE;
-				for (var i=1; i<array.length; i=i+2) {
-					if (array[i]>maxValue) maxValue=array[i];
-				}
-				for (var i=1; i<array.length; i=i+2) {
-					array[i]/=maxValue;
-				}
-			} else if (normalize=="sum1") {
-				var total=0;
-				for (var i=1; i<array.length; i=i+2) {
-					total+=array[i];
-				}
-				for (var i=1; i<array.length; i=i+2) {
-					array[i]/=total;
-				}
-			} else if (normalize=="max1min0") {
-				var maxValue=Number.MIN_VALUE;
-				var minValue=Number.MAX_VALUE;
-				for (var i=1; i<array.length; i=i+2) {
-					if (array[i]>maxValue) maxValue=array[i];
-					if (array[i]<minValue) minValue=array[i];
-				}
-				var ratio=1/(maxValue-minValue);
-				for (var i=1; i<array.length; i=i+2) {
-					array[i]=(array[i]-minValue)*ratio;
-				}
-			}
-		}
-	});
-	return view;
+            if (!plotinfos) return;
+            var normalize = "";
+            for (i = 0, l = plotinfos.length; i < l; i++) {
+                if (varname == plotinfos[i].variable) {
+                    normalize = plotinfos[i].normalize
+                }
+            }
+            if (!normalize) return;
+            if (normalize == "max1") {
+                maxValue = Number.MIN_VALUE;
+                for (i = 1; i < array.length; i = i + 2) {
+                    if (array[i] > maxValue) maxValue = array[i];
+                }
+                for (i = 1; i < array.length; i = i + 2) {
+                    array[i] /= maxValue;
+                }
+            } else if (normalize == "sum1") {
+                var total = 0;
+                for (i = 1; i < array.length; i = i + 2) {
+                    total += array[i];
+                }
+                for (i = 1; i < array.length; i = i + 2) {
+                    array[i] /= total;
+                }
+            } else if (normalize == "max1min0") {
+                maxValue = Number.MIN_VALUE;
+                minValue = Number.MAX_VALUE;
+                for (i = 1; i < array.length; i = i + 2) {
+                    if (array[i] > maxValue) maxValue = array[i];
+                    if (array[i] < minValue) minValue = array[i];
+                }
+                var ratio = 1 / (maxValue - minValue);
+                for (i = 1; i < array.length; i = i + 2) {
+                    array[i] = (array[i] - minValue) * ratio;
+                }
+            }
+        }
+
+    });
+
+    return View;
+
 });
- 
-

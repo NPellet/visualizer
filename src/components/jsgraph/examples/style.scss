@@ -1,0 +1,58 @@
+
+body,html {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: "Myriad Pro", "Helvetica Neue", Arial, "Sans Serif";
+	font-size: 15px;
+}
+
+
+.graph-example {
+	
+	height: 500px;
+	width: 400px;
+	margin: 20px;
+	
+
+	position: relative;
+
+	background: white;/*linear-gradient(to bottom, #f2f7f9 0%,#f2f5f7 8%,#feffff 56%); /* W3C */
+	border: 1px solid #b7c8ce;
+	box-shadow: 0px 0px 5px #c7d8df;
+
+	.graph {
+		
+		height: 300px;
+	}
+
+	h1 {
+		background: linear-gradient(to bottom, #ddf1f9 0%,#ddf1f9 8%,#d7e7ed 100%); /* W3C */
+		border-bottom: 1px solid #b7c8ce;
+
+		padding: 5px;
+		padding-left: 0px;
+		padding-right: 0px;
+
+
+		margin: 0px;
+		margin-bottom: 0px;
+		font-size: 14px;
+		text-align: center;
+		color: #445961;
+	}
+
+	ul {
+		position: absolute;
+		bottom: 0px;
+		list-style-type: 'circle';
+		background-color: rgba(255, 255, 255, 0.8);
+		border-top: 1px solid rgba(200, 200, 200, 1 );
+		width: 100%;
+		box-sizing: border-box;
+		padding-top: 10px;
+	}
+}
+
