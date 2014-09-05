@@ -141,6 +141,9 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 self.xAxis = graph.getXAxis();
                 self.yAxis = graph.getYAxis();
 
+                //TODO this is a hack to get annotations working
+                self.series['0000000000'] = [graph.newSerie('0000000000', {}).autoAxis()];
+
                 self.onResize();
                 self.resolveReady();
 
@@ -622,44 +625,47 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             }
 
             var self = this,
-                shape = this.graph.makeShape(annotation, {}, false);
+                shape = this.graph.newShape(annotation, {}, false);
 
-            shape.setSelectable(true);
-            shape.setSerie(this.getFirstSerie());
+            shape.then(function (shape) {
+                shape.setSelectable(true);
+                shape.setSerie(self.getFirstSerie());
 
-            Debug.debug('annotation.onChange is disabled, need to be fixed');
-            /*annotation.onChange( annotation, function( value ) {
+                Debug.debug('annotation.onChange is disabled, need to be fixed');
+                /*annotation.onChange( annotation, function( value ) {
 
-             shape.draw();
-             shape.redraw();
+                 shape.draw();
+                 shape.redraw();
 
-             }, self.module.getId() );*/
+                 }, self.module.getId() );*/
+//TODO fix mouseover
+//                shape.onMouseOver(function (data) {
+//
+//                    API.highlight(data, 1);
+//
+//                });
+//
+//                shape.onMouseOut(function (data) {
+//
+//                    API.highlight(data, 0);
+//
+//                });
 
-            shape.onMouseOver(function (data) {
 
-                API.highlight(data, 1);
+                API.listenHighlight(annotation, function (onOff) {
 
+                    if (onOff) {
+                        shape.highlight();
+                    } else {
+                        shape.unHighlight();
+                    }
+                }, false, self.module.getId());
+
+
+                shape.draw();
+                shape.redraw();
             });
 
-            shape.onMouseOut(function (data) {
-
-                API.highlight(data, 0);
-
-            });
-
-
-            API.listenHighlight(annotation, function (onOff) {
-
-                if (onOff) {
-                    shape.highlight();
-                } else {
-                    shape.unHighlight();
-                }
-            }, false, self.module.getId());
-
-
-            shape.draw();
-            shape.redraw();
         },
 
 
