@@ -228,12 +228,13 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                         if (plotinfos[i].markers[0]) {
                             serie.showMarkers();
-                            serie.setMarkers({
+                            serie.setMarkers([{
                                 type: 1,
                                 zoom: 2,
                                 strokeColor: Util.getColor(plotinfos[i].plotcolor),
-                                fillColor: Util.getColor(plotinfos[i].plotcolor)
-                            });
+                                fillColor: Util.getColor(plotinfos[i].plotcolor),
+                                points: 'all'
+                            }]);
                         }
                     }
                 }
