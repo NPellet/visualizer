@@ -25,96 +25,126 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
         inDom: function () {
 
-            var cfg = this.module.getConfiguration.bind(this.module),
-                cfgCheckbox = this.module.getConfigurationCheckbox.bind(this.module),
-                graph;
+            var self = this;
 
-            var options = {
-                close: {
-                    left: false,
-                    right: false,
-                    top: false,
-                    bottom: false
-                },
-                plugins: {},
-                pluginAction: {}
-            };
+            var prom = new Promise(function (resolve, reject) {
 
-            var zoom = cfg('zoom');
-            if (zoom && zoom !== 'none') {
-                var zoomOptions = {};
-                if (zoom === 'x') {
-                    zoomOptions.zoomMode = 'x';
-                } else if (zoom === 'y') {
-                    zoomOptions.zoomMode = 'y';
+                var cfg = self.module.getConfiguration.bind(self.module),
+                    cfgCheckbox = self.module.getConfigurationCheckbox.bind(self.module),
+                    graphurl = cfg('graphurl');
+
+                if (graphurl) {
+
+                    $.getJSON(graphurl, {}, function (data) {
+
+                        data.options.onMouseMoveData = function (e, val) {
+                            self.module.controller.sendAction('mousetrack', val);
+                        };
+
+                        resolve(new Graph(self.dom.get(0), data.options, data.axis));
+
+                    });
+
                 } else {
-                    zoomOptions.zoomMode = 'xy';
-                }
-                options.plugins['graph.plugin.zoom'] = zoomOptions;
-                options.pluginAction['graph.plugin.zoom'] = {shift: false, ctrl: false};
-                options.dblclick = {
-                    type: 'plugin',
-                    plugin: 'graph.plugin.zoom',
-                    options: {
-                        mode: 'total'
+
+                    var options = {
+                        close: {
+                            left: false,
+                            right: false,
+                            top: false,
+                            bottom: false
+                        },
+                        plugins: {},
+                        pluginAction: {}
+                    };
+
+                    var zoom = cfg('zoom');
+                    if (zoom && zoom !== 'none') {
+                        var zoomOptions = {};
+                        if (zoom === 'x') {
+                            zoomOptions.zoomMode = 'x';
+                        } else if (zoom === 'y') {
+                            zoomOptions.zoomMode = 'y';
+                        } else {
+                            zoomOptions.zoomMode = 'xy';
+                        }
+                        options.plugins['graph.plugin.zoom'] = zoomOptions;
+                        options.pluginAction['graph.plugin.zoom'] = {shift: false, ctrl: false};
+                        options.dblclick = {
+                            type: 'plugin',
+                            plugin: 'graph.plugin.zoom',
+                            options: {
+                                mode: 'total'
+                            }
+                        }
                     }
+
+                    var wheel = cfg('wheelAction');
+                    if (wheel && wheel !== 'none') {
+                        var wheelOptions = {};
+
+                        if (wheel === 'xAxis') {
+                            wheelOptions.direction = 'x';
+                        } else {
+                            wheelOptions.direction = 'y';
+                        }
+
+                        options.wheel = {
+                            type: 'plugin',
+                            plugin: 'graph.plugin.zoom',
+                            options: wheelOptions
+                        };
+                    }
+
+                    var graph = new Graph(self.dom.get(0), options);
+
+                    // Axes
+                    var xAxis = graph.getXAxis();
+                    xAxis
+                        .flip(cfgCheckbox('flipAxis', 'flipX'))
+                        .togglePrimaryGrid(cfgCheckbox('grid', 'vmain'))
+                        .toggleSecondaryGrid(cfgCheckbox('grid', 'vsec'))
+                        .setLabel(cfg('xLabel', ''))
+                        .forceMin(cfg('minX', false))
+                        .forceMax(cfg('maxX', false))
+                        .setAxisDataSpacing(cfg('xLeftSpacing'), cfg('xRightSpacing'));
+                    if(!cfgCheckbox('displayAxis', 'x')) {
+                        xAxis.hide();
+                    }
+
+                    var yAxis = graph.getYAxis();
+                    yAxis
+                        .flip(cfgCheckbox('flipAxis', 'flipY'))
+                        .togglePrimaryGrid(cfgCheckbox('grid', 'hmain'))
+                        .toggleSecondaryGrid(cfgCheckbox('grid', 'hsec'))
+                        .setLabel(cfg('yLabel', ''))
+                        .forceMin(cfg('minY', false))
+                        .forceMax(cfg('maxY', false))
+                        .setAxisDataSpacing(cfg('yBottomSpacing'), cfg('yTopSpacing'));
+                    if (!cfgCheckbox('displayAxis', 'y')) {
+                        yAxis.hide();
+                    }
+
+                    if (cfgCheckbox('xAsTime', 'xastime')) {
+                        graph.setBottomAxisAsTime();
+                    }
+
+                    resolve(graph);
+
                 }
-            }
 
-            var wheel = cfg('wheelAction');
-            if (wheel && wheel !== 'none') {
-                var wheelOptions = {};
+            });
 
-                if (wheel === 'xAxis') {
-                    wheelOptions.direction = 'x';
-                } else {
-                    wheelOptions.direction = 'y';
-                }
+            prom.then(function (graph) {
 
-                options.wheel = {
-                    type: 'plugin',
-                    plugin: 'graph.plugin.zoom',
-                    options: wheelOptions
-                };
-            }
+                self.graph = graph;
+                self.xAxis = graph.getXAxis();
+                self.yAxis = graph.getYAxis();
 
-            graph = new Graph(this.dom.get(0), options);
+                self.onResize();
+                self.resolveReady();
 
-            // Axes
-            var xAxis = graph.getXAxis();
-            xAxis
-                .flip(cfgCheckbox('flipAxis', 'flipX'))
-                .togglePrimaryGrid(cfgCheckbox('grid', 'vmain'))
-                .toggleSecondaryGrid(cfgCheckbox('grid', 'vsec'))
-                .setLabel(cfg('xLabel', ''))
-                .forceMin(cfg('minX', false))
-                .forceMax(cfg('maxX', false));
-            if(!cfgCheckbox('displayAxis', 'x')) {
-                xAxis.hide();
-            }
-            this.xAxis = xAxis;
-
-            var yAxis = graph.getYAxis();
-            yAxis
-                .flip(cfgCheckbox('flipAxis', 'flipY'))
-                .togglePrimaryGrid(cfgCheckbox('grid', 'hmain'))
-                .toggleSecondaryGrid(cfgCheckbox('grid', 'hsec'))
-                .setLabel(cfg('yLabel', ''))
-                .forceMin(cfg('minY', false))
-                .forceMax(cfg('maxY', false));
-            if (!cfgCheckbox('displayAxis', 'y')) {
-                yAxis.hide();
-            }
-            this.yAxis = yAxis;
-
-            if (cfgCheckbox('xAsTime', 'xastime')) {
-                graph.setBottomAxisAsTime();
-            }
-
-            this.graph = graph;
-
-            this.redraw();
-            this.resolveReady();
+            });
 
         },
 
