@@ -26,7 +26,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
 		setPosition: function() {
 			var position = this._getPosition( this.getFromData('pos') );
 
-			if( ! position.x || ! position.y) {
+			if( ! position || ! position.x || ! position.y) {
 				return;
 			}
 

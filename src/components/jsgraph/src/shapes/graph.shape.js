@@ -457,12 +457,23 @@ define( [ ], function( ) {
 			this._selectable = bln;
 		},
 
+		setMovable: function ( bln ) {
+			this._movable = bln;
+		},
+
 
 		select: function( mute ) {
 
+			if( ! this._selectable ) {
+				return;
+			}
+
 			this._selected = true;
 			this.selectStyle();
-			this.setHandles();
+
+			if( ! this._staticHandles ) {
+				this.setHandles();
+			}
 
 			if( ! mute ) {
 				this.graph.selectShape( this, true );
@@ -471,6 +482,10 @@ define( [ ], function( ) {
 
 		unselect: function() {
 
+			if( ! this._selectable ) {
+				return;
+			}
+
 			this._selected = false;
 
 			this.setStrokeWidth();
@@ -478,8 +493,19 @@ define( [ ], function( ) {
 			this.setDashArray();
 			this.setFillColor();
 
-			if( this.handlesInDom ) {
+			if( this.handlesInDom && ! this._staticHandles ) {
 				this.handlesInDom = false;
+				this.removeHandles();
+			}
+			
+		},
+
+		staticHandles: function( bool ) {
+			this._staticHandles = bool;
+
+			if( bool ) {
+				this.setHandles();
+			} else {
 				this.removeHandles();
 			}
 			
@@ -491,7 +517,8 @@ define( [ ], function( ) {
 				return;
 			}
 
-			var self = this;
+			var self = this,
+				handles = [];
 
 			for( var i = 1; i <= nb; i ++ ) {
 
@@ -512,9 +539,13 @@ define( [ ], function( ) {
 						self.handleMouseDown( e );
 					} );
 
+					handles.push( self[ 'handle' + j ] );
+
 				} ) ( i );
 
 			}
+
+			return this.handles = handles;
 		},
 	
 		handleMouseDownImpl: function() {},
@@ -578,7 +609,10 @@ define( [ ], function( ) {
 					e.preventDefault();
 
 					this.graph.shapeZone.appendChild( this.group ); // Put the shape on top of the stack !
-					this.graph.elementMoving( this );
+
+					//if( this._movable !== false ) {
+						this.graph.elementMoving( this );
+					//}
 
 					if( ! this._selected ) {
 						this.preventUnselect = true;
@@ -625,25 +659,41 @@ define( [ ], function( ) {
 		},
 
 		handleMouseDown: function( e ) {
-			this.callHandler( 'mouseDown', e );
+			return this.callHandler( 'mouseDown', e );
 		},
 
 		handleMouseMove: function( e ) {
 
-			if( this.isLocked() ) {
-				
-				this.graph.elementMoving( false );
-				this.handleSelected = false;
-				this.moving = true;
-				return;
+			if( this.isLocked() && this._movable !== false ) {
 
+				this.graph.elementMoving( false );	
+
+				if( this.isLocked() ) {
+					this.handleSelected = false;
+				}
+
+				this.moving = true;
 			}
+			
+
+			if( ! this._movable ) {
+				this.moving = false;
+			}
+
+				
+			if( this.callHandler( 'beforeMouseMove', e ) === false ) {
+				return;
+			}
+
+
 			this.callHandler( 'mouseMove', e );
+
+
 		},
 
 		handleMouseUp: function( e ) {
 			this.callHandler( 'mouseUp', e );
-		
+			this.handleSelected = false;
 //			this.triggerChange();
 		},
 
@@ -666,8 +716,20 @@ define( [ ], function( ) {
 		callHandler: function( handlerType ) {
 			var handler = handlerType;
 			var args = Array.prototype.shift.call( arguments );
-
+			var resp;
+			
 			var handlers;
+
+			if( ( handlers = this.graph.shapeHandlers[ handler ] ) ) {
+				for( var i = 0, l = handlers.length ; i < l ; i ++ ) {
+					
+					if( ( resp = handlers[ i ].apply( this, arguments ) ) !== undefined) {
+						return resp;
+					}
+				}
+			}
+
+
 			if( ( handlers = GraphShape.prototype.handlers[ handler ] ) ) {
 				for( var i = 0, l = handlers.length ; i < l ; i ++ ) {
 					if( handlers[ i ].apply( this, arguments ) ) {
@@ -677,15 +739,7 @@ define( [ ], function( ) {
 			}
 
 			
-			if( ( handlers = this.graph.shapeHandlers[ handler ] ) ) {
-				for( var i = 0, l = handlers.length ; i < l ; i ++ ) {
-					
-					if( handlers[ i ].apply( this, arguments ) ) {
-					//	return;
-					}
-				}
-			}
-
+			
 		},
 
 		addHandles: function() {

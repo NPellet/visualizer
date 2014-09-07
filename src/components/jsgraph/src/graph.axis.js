@@ -195,6 +195,10 @@ define( [ 'jquery' ] , function( $ ) {
 			this.options.display = !!bool;
 			return this;
 		},
+
+		isDisplayed: function() {
+			return this.options.display;
+		},
 		
 		setLineAt0: function(bool) {
 			this.options.lineAt0 = !!bool;
@@ -244,8 +248,8 @@ define( [ 'jquery' ] , function( $ ) {
 		},
 
 		setMinPx: function(px) { this.minPx = px; },
-		getMinPx: function() { return this.isFlipped() ? this.maxPx : this.minPx; },
 		setMaxPx: function(px) { this.maxPx = px; },
+		getMinPx: function() { return this.isFlipped() ? this.maxPx : this.minPx; },
 		getMaxPx: function(px) { return this.isFlipped() ? this.minPx : this.maxPx; },
 		getMathMaxPx: function() { return this.maxPx; },
 
@@ -447,7 +451,7 @@ define( [ 'jquery' ] , function( $ ) {
 
 		setMinMaxToFitSeries: function() {
 
-			var interval = this.getMaxValue() - this.getMinValue();
+			var interval = this.getInterval();
 			
 			this.currentAxisMin = this.getMinValue() - (this.options.axisDataSpacing.min * interval);
 			this.currentAxisMax = this.getMaxValue() + (this.options.axisDataSpacing.max * interval);
@@ -464,6 +468,10 @@ define( [ 'jquery' ] , function( $ ) {
 
 		},
 
+		getInterval: function() {
+			return this.getMaxValue() - this.getMinValue()
+		},
+		
 		_getActualInterval: function() {
 			return this.getActualMax() - this.getActualMin();
 		},

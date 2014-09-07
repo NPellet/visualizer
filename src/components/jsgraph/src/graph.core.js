@@ -98,7 +98,8 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 			mouseUp: [],
 			mouseMove: [],
 			mouseOver: [],
-			mouseOut: []
+			mouseOut: [],
+			beforeMouseMove: []
 		};
 
 		this.pluginsReady = $.Deferred();
@@ -201,12 +202,14 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 			this.axisGroup = document.createElementNS(this.ns, 'g');
 			this.graphingZone.appendChild(this.axisGroup);
 
-			this.shapeZone = document.createElementNS(this.ns, 'g');
-			this.graphingZone.appendChild(this.shapeZone);
-
 
 			this.plotGroup = document.createElementNS(this.ns, 'g');
 			this.graphingZone.appendChild(this.plotGroup);
+
+			// 5 September 2014. I encountered a case here shapeZone must be above plotGroup
+			this.shapeZone = document.createElementNS(this.ns, 'g');
+			this.graphingZone.appendChild(this.shapeZone);
+
 			
 			this._makeClosingLines();
 
@@ -276,9 +279,16 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 
 		_getXY: function(e) {
 			
-			var x = e.clientX;
-			var y = e.clientY;
-			var pos = $(this._dom).offset();
+			var x = e.clientX,
+				y = e.clientY;
+
+			if( e.layerX !== undefined && e.layerY !== undefined ) {
+				return { x: e.layerX, y: e.layerY };
+			} 
+
+			y = e.clientY;
+
+			var pos = this.offsetCached || $( this._dom ).offset();
 
 			x -= pos.left - window.scrollX;
 			y -= pos.top - window.scrollY;
@@ -286,6 +296,14 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 			return {x: x, y: y};
 		},
 
+
+		cacheOffset: function() {
+			this.offsetCached = $( this._dom ).offset();
+		},
+
+		uncacheOffset: function() {
+			this.offsetCached = false;
+		},
 		
 
 		focus: function() {
@@ -951,7 +969,7 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 
 			this.closingLines = {};
 			var els = ['top', 'bottom', 'left', 'right'], i = 0, l = 4, line;
-			for(; i < l; i++) {	
+			for(; i < l; i++) {
 				var line = document.createElementNS(this.ns, 'line');
 				line.setAttribute('stroke', 'black');
 				line.setAttribute('shape-rendering', 'crispEdges');
@@ -1147,6 +1165,8 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 				return;
 			}
 
+
+
 			for(var i in pos) {
 
 				var axis = i == 'x' ? xAxis : yAxis;
@@ -1216,11 +1236,11 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 
 			var parsed;
 			
-			if(parsed = _parsePx(value)) {
+			if( ( parsed = _parsePx(value) ) !== false ) {
 				return parsed; // return integer (will be interpreted as px)
 			}
 
-			if( parsed = this._parsePercent( value ) ) {
+			if( ( parsed = this._parsePercent( value ) ) !== false ) {
 
 				return parsed / 100 * ( x ? this.graph.getDrawingWidth( ) : this.graph.getDrawingHeight( ) );
 
@@ -1265,6 +1285,7 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 
 
 			var parsed;
+
 
 			if( ( parsed = _parsePx( value ) ) !== false ) {
 
@@ -1683,7 +1704,16 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 			return;
 		}
 
-		if( ( graph.options.close === true  || graph.options.close[ mode ] ) && graph.axis[ mode ].length == 0 ) {
+		var l = 0;
+
+		graph.axis[ mode ].map( function( g ) {
+
+			if( g.isDisplayed() ) {
+				l++;
+			}
+		});
+
+		if( ( graph.options.close === true  || graph.options.close[ mode ] ) && l == 0 ) {
 
 			graph.closingLines[ mode ].setAttribute('display', 'block');
 			graph.closingLines[ mode ].setAttribute('x1', x1);

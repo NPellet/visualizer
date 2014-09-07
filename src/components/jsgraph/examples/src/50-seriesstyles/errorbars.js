@@ -30,7 +30,7 @@ define( function() {
 
 	"Scientific data often comes along with error bars. You can chose to display bars or boxes using the <code>serie.setErrorStyle();</code> method.",
 
-	[ "Defining errors", "Errors are essentially stored in mutli-level array, such as : <code>[ [ [ [ 0.5, 0.2 ], [ 0.8, 0.2 ] ] ] ]</code>"],
+	[ "Defining errors", "Errors are essentially stored in multi-level array, such as : <code>[ [ [ [ 0.5, 0.2 ], [ 0.8, 0.2 ] ] ] ]</code>"],
 	"The first level corresponds to your data. Error at index n will be assigned to dat at index n",
 	"The second level differentiates error bars in the x or the y direction. First argument is y, second is x",
 	"The third level reprensents bars or boxes. To know which one is which, refer to the order you specified in <code>serie.setErrorStyle</code> function. Use false or null not to display errors of this level for this particular point",

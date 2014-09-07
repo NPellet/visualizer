@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.9-1
+ * jsGraphs JavaScript Graphing Library v1.9.9-5
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-09-03T03:56Z
+ * Date: 2014-09-07T18:55Z
  */
 
 (function( global, factory ) {
@@ -233,6 +233,10 @@ build['./graph.axis'] = ( function( $ ) {
 			this.options.display = !!bool;
 			return this;
 		},
+
+		isDisplayed: function() {
+			return this.options.display;
+		},
 		
 		setLineAt0: function(bool) {
 			this.options.lineAt0 = !!bool;
@@ -282,8 +286,8 @@ build['./graph.axis'] = ( function( $ ) {
 		},
 
 		setMinPx: function(px) { this.minPx = px; },
-		getMinPx: function() { return this.isFlipped() ? this.maxPx : this.minPx; },
 		setMaxPx: function(px) { this.maxPx = px; },
+		getMinPx: function() { return this.isFlipped() ? this.maxPx : this.minPx; },
 		getMaxPx: function(px) { return this.isFlipped() ? this.minPx : this.maxPx; },
 		getMathMaxPx: function() { return this.maxPx; },
 
@@ -485,7 +489,7 @@ build['./graph.axis'] = ( function( $ ) {
 
 		setMinMaxToFitSeries: function() {
 
-			var interval = this.getMaxValue() - this.getMinValue();
+			var interval = this.getInterval();
 			
 			this.currentAxisMin = this.getMinValue() - (this.options.axisDataSpacing.min * interval);
 			this.currentAxisMax = this.getMaxValue() + (this.options.axisDataSpacing.max * interval);
@@ -502,6 +506,10 @@ build['./graph.axis'] = ( function( $ ) {
 
 		},
 
+		getInterval: function() {
+			return this.getMaxValue() - this.getMinValue()
+		},
+		
 		_getActualInterval: function() {
 			return this.getActualMax() - this.getActualMin();
 		},
@@ -1200,10 +1208,14 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
 	
 	
 	var GraphYAxis = function(graph, leftright, options) {
+
+
 		this.init(graph, options);
 
 		this.leftright = leftright;
 		this.left = leftright == 'left';
+
+		
 		
 	}
 
@@ -1345,6 +1357,7 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
 		},
 
 		isFlipped: function() {
+
 			return ! this.options.flipped;
 		},
 
@@ -1393,7 +1406,10 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
 
 		isXY: function() {
 			return 'y';
-		}
+		},
+
+		getMinPx: function() { return ! this.isFlipped() ? this.maxPx : this.minPx; },
+		getMaxPx: function(px) { return ! this.isFlipped() ? this.minPx : this.maxPx; },
 		
 	});
 
@@ -2650,7 +2666,8 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			mouseUp: [],
 			mouseMove: [],
 			mouseOver: [],
-			mouseOut: []
+			mouseOut: [],
+			beforeMouseMove: []
 		};
 
 		this.pluginsReady = $.Deferred();
@@ -2753,12 +2770,14 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			this.axisGroup = document.createElementNS(this.ns, 'g');
 			this.graphingZone.appendChild(this.axisGroup);
 
-			this.shapeZone = document.createElementNS(this.ns, 'g');
-			this.graphingZone.appendChild(this.shapeZone);
-
 
 			this.plotGroup = document.createElementNS(this.ns, 'g');
 			this.graphingZone.appendChild(this.plotGroup);
+
+			// 5 September 2014. I encountered a case here shapeZone must be above plotGroup
+			this.shapeZone = document.createElementNS(this.ns, 'g');
+			this.graphingZone.appendChild(this.shapeZone);
+
 			
 			this._makeClosingLines();
 
@@ -2828,9 +2847,16 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 
 		_getXY: function(e) {
 			
-			var x = e.clientX;
-			var y = e.clientY;
-			var pos = $(this._dom).offset();
+			var x = e.clientX,
+				y = e.clientY;
+
+			if( e.layerX !== undefined && e.layerY !== undefined ) {
+				return { x: e.layerX, y: e.layerY };
+			} 
+
+			y = e.clientY;
+
+			var pos = this.offsetCached || $( this._dom ).offset();
 
 			x -= pos.left - window.scrollX;
 			y -= pos.top - window.scrollY;
@@ -2838,6 +2864,14 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			return {x: x, y: y};
 		},
 
+
+		cacheOffset: function() {
+			this.offsetCached = $( this._dom ).offset();
+		},
+
+		uncacheOffset: function() {
+			this.offsetCached = false;
+		},
 		
 
 		focus: function() {
@@ -3503,7 +3537,7 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 
 			this.closingLines = {};
 			var els = ['top', 'bottom', 'left', 'right'], i = 0, l = 4, line;
-			for(; i < l; i++) {	
+			for(; i < l; i++) {
 				var line = document.createElementNS(this.ns, 'line');
 				line.setAttribute('stroke', 'black');
 				line.setAttribute('shape-rendering', 'crispEdges');
@@ -3699,6 +3733,8 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 				return;
 			}
 
+
+
 			for(var i in pos) {
 
 				var axis = i == 'x' ? xAxis : yAxis;
@@ -3715,14 +3751,21 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 
 					} else if( value.x && onSerie) {
 
-						var closest = onSerie.searchClosestValue( value.x );
+						var val;
+						if( _parsePx( value.x ) !== false ) {
+							console.warn("You have defined x in px and not y. Makes no sense. Returning 0 for y");
+							pos[ i ] = 0;
+						} else {
 
-						if( ! closest ) {
-							return;
+							var closest = onSerie.searchClosestValue( val );
+
+							if( ! closest ) {
+								console.warn("Could not find y position. Returning 0 for y.");
+								pos[ i ] = 0;
+							} else {
+								pos[ i ] = onSerie.getY( closest.yMin );	
+							}
 						}
-
-						pos[ i ] = onSerie.getY( closest.yMin );
-
 					}
 
 				} else if( value[ i ] !== undefined ) {
@@ -3768,11 +3811,11 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 
 			var parsed;
 			
-			if(parsed = _parsePx(value)) {
+			if( ( parsed = _parsePx(value) ) !== false ) {
 				return parsed; // return integer (will be interpreted as px)
 			}
 
-			if( parsed = this._parsePercent( value ) ) {
+			if( ( parsed = this._parsePercent( value ) ) !== false ) {
 
 				return parsed / 100 * ( x ? this.graph.getDrawingWidth( ) : this.graph.getDrawingHeight( ) );
 
@@ -3796,16 +3839,16 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			
 			var refPx, deltaPx;
 
-			if( refPx = _parsePx( ref ) ) {
+			if( ( refPx = _parsePx( ref ) ) !== false ) {
 
-				if( deltaPx = _parsePx( delta ) ) {
+				if( ( deltaPx = _parsePx( delta ) ) !== false ) {
 					return ( refPx + deltaPx ) + "px";	
 				} else {
 					return ( refPx + axis.getRelPx( delta ) ) + "px";
 				}
 			} else {
 
-				if( deltaPx = _parsePx( delta ) ) {
+				if( ( deltaPx = _parsePx( delta ) ) !== false ) {
 					return ( ref + axis.getRelVal( deltaPx ) );
 				} else {
 					return ( ref + delta );
@@ -3817,6 +3860,7 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 
 
 			var parsed;
+
 
 			if( ( parsed = _parsePx( value ) ) !== false ) {
 
@@ -4235,7 +4279,16 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			return;
 		}
 
-		if( ( graph.options.close === true  || graph.options.close[ mode ] ) && graph.axis[ mode ].length == 0 ) {
+		var l = 0;
+
+		graph.axis[ mode ].map( function( g ) {
+
+			if( g.isDisplayed() ) {
+				l++;
+			}
+		});
+
+		if( ( graph.options.close === true  || graph.options.close[ mode ] ) && l == 0 ) {
 
 			graph.closingLines[ mode ].setAttribute('display', 'block');
 			graph.closingLines[ mode ].setAttribute('x1', x1);
@@ -7944,10 +7997,6 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 			return this;
 		},
 
-		setMaxErrorLevel: function( maxErrorLevel ) {
-			this.maxLevel = maxErrorLevel;
-			return this;
-		},
 
 		setErrorStyle: function( errorstyles ) {
 
@@ -8535,6 +8584,8 @@ build['./shapes/graph.shape'] = ( function( ) {
 			this.rectEvent.setAttribute('pointer-events', 'fill');
 			this.rectEvent.setAttribute('fill', 'transparent');
 
+			this._movable = true;
+			
 			if( this._dom ) {
 
 				this.group.appendChild(this._dom);
@@ -8943,12 +8994,24 @@ build['./shapes/graph.shape'] = ( function( ) {
 			this._selectable = bln;
 		},
 
+		setMovable: function ( bln ) {
+			this._movable = bln;
+		},
+
 
 		select: function( mute ) {
 
+			if( ! this._selectable ) {
+				return;
+			}
+
 			this._selected = true;
 			this.selectStyle();
-			this.setHandles();
+
+			if( ! this._staticHandles ) {
+				this.addHandles();
+				this.setHandles();
+			}
 
 			if( ! mute ) {
 				this.graph.selectShape( this, true );
@@ -8957,6 +9020,10 @@ build['./shapes/graph.shape'] = ( function( ) {
 
 		unselect: function() {
 
+			if( ! this._selectable ) {
+				return;
+			}
+
 			this._selected = false;
 
 			this.setStrokeWidth();
@@ -8964,8 +9031,20 @@ build['./shapes/graph.shape'] = ( function( ) {
 			this.setDashArray();
 			this.setFillColor();
 
-			if( this.handlesInDom ) {
+			if( this.handlesInDom && ! this._staticHandles ) {
 				this.handlesInDom = false;
+				this.removeHandles();
+			}
+			
+		},
+
+		staticHandles: function( bool ) {
+			this._staticHandles = bool;
+
+			if( bool ) {
+				this.addHandles();
+				this.setHandles();
+			} else {
 				this.removeHandles();
 			}
 			
@@ -8977,7 +9056,8 @@ build['./shapes/graph.shape'] = ( function( ) {
 				return;
 			}
 
-			var self = this;
+			var self = this,
+				handles = [];
 
 			for( var i = 1; i <= nb; i ++ ) {
 
@@ -8998,9 +9078,13 @@ build['./shapes/graph.shape'] = ( function( ) {
 						self.handleMouseDown( e );
 					} );
 
+					handles.push( self[ 'handle' + j ] );
+
 				} ) ( i );
 
 			}
+
+			return this.handles = handles;
 		},
 	
 		handleMouseDownImpl: function() {},
@@ -9064,7 +9148,10 @@ build['./shapes/graph.shape'] = ( function( ) {
 					e.preventDefault();
 
 					this.graph.shapeZone.appendChild( this.group ); // Put the shape on top of the stack !
-					this.graph.elementMoving( this );
+
+					//if( this._movable !== false ) {
+						this.graph.elementMoving( this );
+					//}
 
 					if( ! this._selected ) {
 						this.preventUnselect = true;
@@ -9111,25 +9198,41 @@ build['./shapes/graph.shape'] = ( function( ) {
 		},
 
 		handleMouseDown: function( e ) {
-			this.callHandler( 'mouseDown', e );
+			return this.callHandler( 'mouseDown', e );
 		},
 
 		handleMouseMove: function( e ) {
 
-			if( this.isLocked() ) {
-				
-				this.graph.elementMoving( false );
-				this.handleSelected = false;
-				this.moving = true;
-				return;
+			if( this.isLocked() && this._movable !== false ) {
 
+				this.graph.elementMoving( false );	
+
+				if( this.isLocked() ) {
+					this.handleSelected = false;
+				}
+
+				this.moving = true;
 			}
+			
+
+			if( ! this._movable ) {
+				this.moving = false;
+			}
+
+				
+			if( this.callHandler( 'beforeMouseMove', e ) === false ) {
+				return;
+			}
+
+
 			this.callHandler( 'mouseMove', e );
+
+
 		},
 
 		handleMouseUp: function( e ) {
 			this.callHandler( 'mouseUp', e );
-		
+			this.handleSelected = false;
 //			this.triggerChange();
 		},
 
@@ -9152,8 +9255,20 @@ build['./shapes/graph.shape'] = ( function( ) {
 		callHandler: function( handlerType ) {
 			var handler = handlerType;
 			var args = Array.prototype.shift.call( arguments );
-
+			var resp;
+			
 			var handlers;
+
+			if( ( handlers = this.graph.shapeHandlers[ handler ] ) ) {
+				for( var i = 0, l = handlers.length ; i < l ; i ++ ) {
+					
+					if( ( resp = handlers[ i ].apply( this, arguments ) ) !== undefined) {
+						return resp;
+					}
+				}
+			}
+
+
 			if( ( handlers = GraphShape.prototype.handlers[ handler ] ) ) {
 				for( var i = 0, l = handlers.length ; i < l ; i ++ ) {
 					if( handlers[ i ].apply( this, arguments ) ) {
@@ -9163,15 +9278,7 @@ build['./shapes/graph.shape'] = ( function( ) {
 			}
 
 			
-			if( ( handlers = this.graph.shapeHandlers[ handler ] ) ) {
-				for( var i = 0, l = handlers.length ; i < l ; i ++ ) {
-					
-					if( handlers[ i ].apply( this, arguments ) ) {
-					//	return;
-					}
-				}
-			}
-
+			
 		},
 
 		addHandles: function() {
@@ -9626,7 +9733,7 @@ build['./shapes/graph.shape.line'] = ( function( GraphShape ) {
 		setPosition: function() {
 			var position = this._getPosition( this.getFromData('pos') );
 
-			if( ! position.x || ! position.y) {
+			if( ! position || ! position.x || ! position.y) {
 				return;
 			}
 
@@ -9694,6 +9801,17 @@ build['./shapes/graph.shape.line'] = ( function( GraphShape ) {
 
 			var pos = this.getFromData('pos');
 			var pos2 = this.getFromData('pos2');
+
+			if( pos2.dx ) {
+				
+				pos2.x = this.graph.deltaPosition( pos2.x || pos.x, pos2.dx, this.serie.getXAxis() );
+				pos2.dx = false;
+			}
+
+			if( pos2.dy ) {
+				pos2.y = this.graph.deltaPosition( pos2.x || pos.x, pos2.dx, this.serie.getXAxis() );
+				pos2.dy = false;
+			}
 
 
 			if( this.handleSelected == 1 ) {
@@ -10173,28 +10291,84 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
 		this.graph = graph;
 		this.nbHandles = 4;
 		
+		this.options.handles = this.options.handles || { type: 'corners' };
 
-		this.createHandles( this.nbHandles, 'rect', { 
-										transform: "translate(-3 -3)", 
-										width: 6, 
-										height: 6, 
-										stroke: "black", 
-										fill: "white"
-									} );
+		switch( this.options.handles.type ) {
 
-		this.handle2.setAttribute('cursor', 'nesw-resize');
-		this.handle4.setAttribute('cursor', 'nesw-resize');
+			case 'sides':
 
-		this.handle1.setAttribute('cursor', 'nwse-resize');
-		this.handle3.setAttribute('cursor', 'nwse-resize');
+				this.options.handles.sides = this.options.handles.sides || { top: true, bottom: true, left: true, right: true };
 
+				var j = 0;
+				for( var i in this.options.handles.sides ) {
+					if( this.options.handles.sides[ i ] ) {
+						j++;
+					}
+				}
+
+
+
+				this.createHandles( j, 'g' ).map( function( g ) {
+
+					var r = document.createElementNS( graph.ns, 'rect' );
+					r.setAttribute('x', '-3');
+					r.setAttribute('width', '6');
+					r.setAttribute('y', '-6');
+					r.setAttribute('height', '12');
+					r.setAttribute('stroke', 'black');
+					r.setAttribute('fill', 'white');
+					r.setAttribute('cursor', 'pointer');
+
+					g.appendChild( r );
+				});
+
+
+				var j = 1;
+				this.handles = {};
+				this.sides = [];
+				for( var i in this.options.handles.sides ) {
+					if( this.options.handles.sides[ i ] ) {
+						this.handles[ i ] = this['handle' + j ];
+						this.sides[ j ] = i;
+						j++;
+					}
+					
+				}
+
+
+			break;
+
+			default:
+			case 'corners':
+				this.createHandles( this.nbHandles, 'rect', { 
+					transform: "translate(-3 -3)", 
+					width: 6, 
+					height: 6, 
+					stroke: "black", 
+					fill: "white"
+				} );
+
+				this.handle2.setAttribute('cursor', 'nesw-resize');
+				this.handle4.setAttribute('cursor', 'nesw-resize');
+
+				this.handle1.setAttribute('cursor', 'nwse-resize');
+				this.handle3.setAttribute('cursor', 'nwse-resize');
+
+
+
+			break;
+		
+		}
+
+
+	
 	}
 
 	$.extend(GraphRect.prototype, GraphShape.prototype, {
 		
 	
 		createDom: function() {
-			this._dom = document.createElementNS(this.graph.ns, 'rect');
+			this._dom = document.createElementNS( this.graph.ns, 'rect' );
 		},
 
 		setWidthPx: function(px) {		this.set('width', px);	},
@@ -10218,19 +10392,36 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
 				x = pos.x,
 				y = pos.y;
 
+
+
 			if(width == undefined || height == undefined) {
+
 				var position2 = this._getPosition(this.getFromData('pos2'));
+
+				if( ! position2 ) {
+					throw "Position 2 was undefined";
+					return;
+				}
+
 				width = position2.x - pos.x;
 				height = position2.y - pos.y;
+
 			} else {
 				width = this.graph.getPxRel( width, this.serie.getXAxis( ) );
 				height = this.graph.getPxRel( height, this.serie.getYAxis( ) );
 			}
 
+
 			// At this stage, x and y are in px
 
 			x = pos.x,
 			y = pos.y;
+
+
+			this.currentX = x;
+			this.currentY = y;
+			this.currentW = width;
+			this.currentH = height;
 
 			if( width < 0 ) {		
 				x += width;
@@ -10244,16 +10435,13 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
 
 
 			if( !isNaN(x) && !isNaN(y) && x !== false && y !== false ) {
+				
 				this.setDom('width', width);
 				this.setDom('height', height);
 				this.setDom('x', x);
 				this.setDom('y', y);
 
 
-				this.currentX = x;
-				this.currentY = y;
-				this.currentW = width;
-				this.currentH = height;
 
 				this.setHandles();
 				
@@ -10280,9 +10468,26 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
 
 		handleMouseDownImpl: function( e ) {
 
+
+
+			var pos = this.getFromData('pos');
+			var pos2 = this.getFromData('pos2');
+
 		},
 
 		handleMouseUpImpl: function() {
+
+			var pos = this.getFromData('pos');
+			var pos2 = this.getFromData('pos2');
+
+		
+			
+		/*	if( pos2.y < pos.y ) {
+				var y = pos.y;
+				pos.y = pos2.y;
+				pos2.y = y;
+			}
+		*/	
 			this.triggerChange();
 		},
 
@@ -10292,12 +10497,23 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
 				return;
 			}
 			
-			var w = this.getFromData('width') || 0;
-			var h = this.getFromData('height') || 0;
+			var w = this.getFromData('width');
+			var h = this.getFromData('height');
 			var pos = this.getFromData('pos');
 			var pos2 = this.getFromData('pos2');
 
-			if( ! pos2 ) {
+			if( pos2.dx ) {
+				
+				pos2.x = this.graph.deltaPosition( pos2.x || pos.x, pos2.dx, this.serie.getXAxis() );
+				pos2.dx = false;
+			}
+
+			if( pos2.dy ) {
+				pos2.y = this.graph.deltaPosition( pos2.x || pos.x, pos2.dx, this.serie.getXAxis() );
+				pos2.dy = false;
+			}
+
+			if( w !== undefined && h !== undefined ) {
 				
 				if( this.moving ) {
 
@@ -10310,57 +10526,113 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
 				}
 
 
-				if( this.handleSelected == 1 ) {
 
-					pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis( ) );
-					pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis( ) );
+					switch( this.options.handles.type ) {
 
-					w = this.graph.deltaPosition( w, - deltaX, this.serie.getXAxis( ) );
-					h = this.graph.deltaPosition( h, - deltaY, this.serie.getYAxis( ) );
-				
-				}
+/*
+this.handle1.setAttribute('x', this.currentX);
+					this.handle1.setAttribute('y', this.currentY + this.currentH / 2);
 
+					this.handle2.setAttribute('x', this.currentX + this.currentW );
+					this.handle2.setAttribute('y', this.currentY + this.currentH / 2);
 
-				if( this.handleSelected == 2 ) {
+					this.handle3.setAttribute('x', this.currentX + this.currentW / 2);
+					this.handle3.setAttribute('y', this.currentY);
 
-					pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis( ) );
+					this.handle4.setAttribute('x', this.currentX + this.currentH / 2);
+					this.handle4.setAttribute('y', this.currentY + this.currentH);
+					*/
+						case 'sides':
 
-					w = this.graph.deltaPosition( w, deltaX, this.serie.getXAxis() );
-					h = this.graph.deltaPosition( h, - deltaY, this.serie.getYAxis() );	
-					
-					
-				}
-
-
-				if( this.handleSelected == 3 ) {
-
-					w = this.graph.deltaPosition( w, deltaX, this.serie.getXAxis() );
-					h = this.graph.deltaPosition( h, deltaY, this.serie.getYAxis() );	
-					
-				}
+							
+							switch( this.sides[ this.handleSelected ] ) {
 
 
-				if( this.handleSelected == 4 ) {
+								case 'left':
+									pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis( ) );
+									w = this.graph.deltaPosition( w, - deltaX, this.serie.getXAxis( ) );							
+								break;
 
-					pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis( ) );
+								case 'right':
+									w = this.graph.deltaPosition( w, deltaX, this.serie.getXAxis() );
+								break;
 
-					w = this.graph.deltaPosition( w, - deltaX, this.serie.getXAxis() );
-					h = this.graph.deltaPosition( h, deltaY, this.serie.getYAxis() );
-				}
+								case 'top':
+									pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis( ) );
+									h = this.graph.deltaPosition( h, - deltaX, this.serie.getYAxis( ) );
+								break;
+
+								case 'bottom':
+									h = this.graph.deltaPosition( h, deltaY, this.serie.getYAxis() );
+								break;
+								
+							}
+
+						break;
+
+						case 'corners':
+						default:		
+								
+							if( this.handleSelected == 1 ) {
+
+								pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis( ) );
+								pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis( ) );
+
+								w = this.graph.deltaPosition( w, - deltaX, this.serie.getXAxis( ) );
+								h = this.graph.deltaPosition( h, - deltaY, this.serie.getYAxis( ) );
+							
+							}
+
+
+							if( this.handleSelected == 2 ) {
+
+								pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis( ) );
+
+								w = this.graph.deltaPosition( w, deltaX, this.serie.getXAxis() );
+								h = this.graph.deltaPosition( h, - deltaY, this.serie.getYAxis() );	
+								
+								
+							}
+
+
+							if( this.handleSelected == 3 ) {
+
+								w = this.graph.deltaPosition( w, deltaX, this.serie.getXAxis() );
+								h = this.graph.deltaPosition( h, deltaY, this.serie.getYAxis() );	
+								
+							}
+
+
+							if( this.handleSelected == 4 ) {
+
+
+								pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis( ) );
+
+								w = this.graph.deltaPosition( w, - deltaX, this.serie.getXAxis() );
+								h = this.graph.deltaPosition( h, deltaY, this.serie.getYAxis() );
+							}
+						break;
+					}
 
 				var wpx = this.graph.getPxRel( w, this.serie.getXAxis( ) );
 				var hpx = this.graph.getPxRel( h, this.serie.getYAxis( ) );
-
+/*
 
 				if( wpx < 0 ) {
 					
 					pos.x = this.graph.deltaPosition( pos.x, w );
 					w = - w;	
 
-					if( this.handleSelected == 1 ) this.handleSelected = 2;
-					else if( this.handleSelected == 2 ) this.handleSelected = 1;
-					else if( this.handleSelected == 3 ) this.handleSelected = 4;
-					else if( this.handleSelected == 4 ) this.handleSelected = 3;	
+					switch( this.options.handles.type ) {
+
+						case 'corners':
+							if( this.handleSelected == 1 ) this.handleSelected = 2;
+							else if( this.handleSelected == 2 ) this.handleSelected = 1;
+							else if( this.handleSelected == 3 ) this.handleSelected = 4;
+							else if( this.handleSelected == 4 ) this.handleSelected = 3;	
+						break;
+					}
+					
 				}
 
 
@@ -10368,12 +10640,22 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
 					
 					pos.y = this.graph.deltaPosition( pos.y, h );
 					h = - h;
-			
-					if( this.handleSelected == 1 ) this.handleSelected = 4;
-					else if( this.handleSelected == 2 ) this.handleSelected = 3;
-					else if( this.handleSelected == 3 ) this.handleSelected = 2;
-					else if( this.handleSelected == 4 ) this.handleSelected = 1;	
-				}
+				
+
+
+					switch( this.options.handles.type ) {
+
+
+						case 'corners':
+							if( this.handleSelected == 1 ) this.handleSelected = 4;
+							else if( this.handleSelected == 2 ) this.handleSelected = 3;
+							else if( this.handleSelected == 3 ) this.handleSelected = 2;
+							else if( this.handleSelected == 4 ) this.handleSelected = 1;	
+						break;
+					}
+
+					
+				}*/
 
 				this.setData('width', w);
 				this.setData('height', h);
@@ -10400,57 +10682,81 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
 					this.setData('pos', pos);
 					this.setData('pos2', pos2);
 					this.setPosition();
+
 					return;
+
+				}
+			
+
+				switch( this.options.handles.type ) {
+
+					case 'sides':
+						// Do nothing for now
+
+							switch( this.sides[ this.handleSelected ] ) {
+
+
+								case 'left':
+									pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis( ) );									
+								break;
+
+								case 'right':
+									pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.serie.getXAxis() );
+								break;
+
+								case 'top':
+									pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis( ) );
+								break;
+
+								case 'bottom':
+									pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.serie.getYAxis( ) );
+								break;
+								
+							}
+
+
+					break;
+
+					case 'corners':
+					default:
+
+						if( this.handleSelected == 1 ) {
+
+							posX = this.graph.deltaPosition( posX, deltaX, this.serie.getXAxis( ) );	
+							posY = this.graph.deltaPosition( posY, deltaY, this.serie.getYAxis( ) );	
+
+						} else if( this.handleSelected == 2 ) {
+
+							pos2X = this.graph.deltaPosition( pos2X, deltaX, this.serie.getXAxis( ) );	
+							posY = this.graph.deltaPosition( posY, deltaY, this.serie.getYAxis( ) );	
+							
+
+						} else if( this.handleSelected == 3 ) {
+
+							pos2Y = this.graph.deltaPosition( pos2Y, deltaY, this.serie.getYAxis( ) );	
+							pos2X = this.graph.deltaPosition( pos2X, deltaX, this.serie.getXAxis( ) );	
+							
+
+						} else if( this.handleSelected == 4 ) {
+
+							posX = this.graph.deltaPosition( posX, deltaX, this.serie.getXAxis( ) );	
+							pos2Y = this.graph.deltaPosition( pos2Y, deltaY, this.serie.getYAxis( ) );	
+							
+						}
+
+
+						pos2.x = pos2X;
+						pos2.y = pos2Y;
+						
+						pos.x = posX;
+						pos.y = posY;
+
+						console.log( pos, pos2 );
+					break;
+
 				}
 
-
-				if( this.handleSelected == 1 || this.handleSelected == 4 ) {
-					var inv = ! invX;
-				} else {
-					var inv = invX;
-				}
-
-				if( ( posX < pos2X && inv ) || ( ( posX >= pos2X && ! inv ) ) ) {
-					posX = this.graph.deltaPosition( posX, deltaX, this.serie.getXAxis( ) );	
-				} else {
-					pos2X = this.graph.deltaPosition( pos2X, deltaX, this.serie.getXAxis( ) );	
-				}
-
-
-				if( this.handleSelected == 1 || this.handleSelected == 2 ) {
-					var inv = ! invY;
-				} else {
-					var inv = invY;
-				}
-
-				if( ( posY < pos2Y && inv ) || ( ( posY >= pos2Y && ! inv ) ) ) {
-					posY = this.graph.deltaPosition( posY, deltaY, this.serie.getYAxis( ) );	
-				} else {
-					pos2Y = this.graph.deltaPosition( pos2Y, deltaY, this.serie.getYAxis( ) );	
-				}
-
-				if( ( pos2Y > posY && pos2.y < pos.y ) || ( pos2Y < posY && pos2.y > pos.y) ) {
-					
-					if( this.handleSelected == 1 ) this.handleSelected = 4;
-					else if( this.handleSelected == 2 ) this.handleSelected = 3;
-					else if( this.handleSelected == 3 ) this.handleSelected = 2;
-					else if( this.handleSelected == 4 ) this.handleSelected = 1;	
-				}
-
-				if( ( pos2X > posX && pos2.x < pos.x ) || ( pos2X < posX && pos2.x > pos.x) ) {
-
-					if( this.handleSelected == 1 ) this.handleSelected = 2;
-					else if( this.handleSelected == 2 ) this.handleSelected = 1;
-					else if( this.handleSelected == 3 ) this.handleSelected = 4;
-					else if( this.handleSelected == 4 ) this.handleSelected = 3;		
-				}
-
-				pos2.x = pos2X;
-				pos2.y = pos2Y;
-				
-				pos.x = posX;
-				pos.y = posY;
-
+			
 				this.setData( 'pos2', pos2 );
 			}
 
@@ -10464,23 +10770,57 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
 
 		setHandles: function() {
 
-			if( ! this._selected || this.currentX == undefined ) {
+			if( ! this.handlesInDom ) {
 				return;
 			}
 
-			this.addHandles();
+			if( this.currentX == undefined ) {
+				return;
+			}
 
-			this.handle1.setAttribute('x', this.currentX);
-			this.handle1.setAttribute('y', this.currentY);
+			switch( this.options.handles.type ) {
 
-			this.handle2.setAttribute('x', this.currentX + this.currentW);
-			this.handle2.setAttribute('y', this.currentY);
+				case 'sides':
 
-			this.handle3.setAttribute('x', this.currentX + this.currentW);
-			this.handle3.setAttribute('y', this.currentY + this.currentH);
+					if( this.handles.left ) {
+						this.handles.left.setAttribute('transform', 'translate(' + this.currentX + ' ' + ( this.currentY + this.currentH / 2 ) + ')');
+					}
 
-			this.handle4.setAttribute('x', this.currentX);
-			this.handle4.setAttribute('y', this.currentY + this.currentH);
+					if( this.handles.right ) { 
+						this.handles.right.setAttribute('transform', 'translate( ' + ( this.currentX + this.currentW ) + ' ' + ( this.currentY + this.currentH / 2 ) + ')');
+					}
+
+					if( this.handles.top ) {
+						this.handles.top.setAttribute('transform', 'translate( ' + ( this.currentX + this.currentW / 2 ) + ' ' + this.currentY + ')');
+					}
+
+					if( this.handles.bottom ) {
+						this.handles.bottom.setAttribute('transform', 'translate( ' + ( this.currentX + this.currentW / 2 ) + ' ' + ( this.currentY + this.currentH ) + ')'); 
+					}
+					
+				
+				break;
+
+				case 'corners':
+				default:
+
+					this.handle1.setAttribute('x', this.currentX);
+					this.handle1.setAttribute('y', this.currentY);
+
+					this.handle2.setAttribute('x', this.currentX + this.currentW);
+					this.handle2.setAttribute('y', this.currentY);
+
+					this.handle3.setAttribute('x', this.currentX + this.currentW);
+					this.handle3.setAttribute('y', this.currentY + this.currentH);
+
+					this.handle4.setAttribute('x', this.currentX);
+					this.handle4.setAttribute('y', this.currentY + this.currentH);
+
+
+				break;
+
+			}
+			
 
 		},
 
@@ -10617,6 +10957,7 @@ build['./shapes/graph.shape.peakinterval'] = ( function( GraphLine ) {
 		setLabelPosition: function(labelIndex) {
 			var pos1 = this._getPosition(this.getFromData('pos'));
 			var pos2 = this._getPosition(this.getFromData('pos2'), this.getFromData('pos'));
+			
 			this._setLabelPosition(labelIndex, this._getPosition(this.get('labelPosition', labelIndex), {x: (pos1.x + pos2.x) / 2 + "px", y: (pos1.y + pos2.y) / 2 + "px" }));
 			
 		},

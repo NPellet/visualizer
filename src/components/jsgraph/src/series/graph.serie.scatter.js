@@ -352,10 +352,6 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			return this;
 		},
 
-		setMaxErrorLevel: function( maxErrorLevel ) {
-			this.maxLevel = maxErrorLevel;
-			return this;
-		},
 
 		setErrorStyle: function( errorstyles ) {
 

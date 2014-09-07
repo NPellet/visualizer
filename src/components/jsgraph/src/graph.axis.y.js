@@ -5,10 +5,14 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 	"use strict";
 	
 	var GraphYAxis = function(graph, leftright, options) {
+
+
 		this.init(graph, options);
 
 		this.leftright = leftright;
 		this.left = leftright == 'left';
+
+		
 		
 	}
 
@@ -150,6 +154,7 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 		},
 
 		isFlipped: function() {
+
 			return ! this.options.flipped;
 		},
 
@@ -198,7 +203,10 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 
 		isXY: function() {
 			return 'y';
-		}
+		},
+
+		getMinPx: function() { return ! this.isFlipped() ? this.maxPx : this.minPx; },
+		getMaxPx: function(px) { return ! this.isFlipped() ? this.minPx : this.maxPx; },
 		
 	});
 
