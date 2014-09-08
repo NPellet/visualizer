@@ -79,13 +79,15 @@ define([
         loop1: for(i in allVariables) {
             variable = allVariables[i];
             varJpath = variable.getjPath();
-            l = Math.min(varJpath.length, el);
-            for(j = 0; j < l; j++) {
-                if(eventJpath[j] !== varJpath[j]) {
-                    continue loop1;
+            if (varJpath) {
+                l = Math.min(varJpath.length, el);
+                for (j = 0; j < l; j++) {
+                    if (eventJpath[j] !== varJpath[j]) {
+                        continue loop1;
+                    }
                 }
+                variable.triggerChange();
             }
-            variable.triggerChange();
         }
     }
 
