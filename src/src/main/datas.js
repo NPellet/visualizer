@@ -289,42 +289,34 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 		}
 	};
 
-	var dataSetter = {
-		value: function(prop, value) {
-			
-			var valueTyped = DataObject.check( value, true );
-			
-			if(!valueTyped) {
-				this[ prop ] = valueTyped;
-				return;
-			}
-			
-			var type = valueTyped.getType();
+    var dataSetter = {
+        value: function(prop, value, noTrigger) {
 
-			this[ prop ] = DataObject.check( this[ prop ] );
+            var valueTyped = DataObject.check( value, true );
 
-			var typeNow = this[ prop ] !== undefined && this[ prop ].getType ? this[ prop ].getType() : undefined;
+            if(!valueTyped) {
+                this[ prop ] = valueTyped;
+            } else {
+                var type = valueTyped.getType();
 
-			if( typeNow !== type ) {
+                this[ prop ] = DataObject.check( this[ prop ] );
 
-				this[ prop ] = valueTyped;
-				
-				return this[ prop ];
-			}
+                var typeNow = this[ prop ] !== undefined && this[ prop ].getType ? this[ prop ].getType() : undefined;
 
-			if( type === "string" || type === "number" || type === "boolean" ) {
-
-				this[ prop ].setValue( valueTyped.get() );
-				return this[ prop ];
-			}
-
-			if( valueTyped !== this[ prop ] ) {
-				this[ prop ] = valueTyped;
-			}
-
-			return this[ prop ];
-		}
-	};
+                if( typeNow !== type ) {
+                    this[ prop ] = valueTyped;
+                } else if( type === "string" || type === "number" || type === "boolean" ) {
+                    this[ prop ].setValue(valueTyped.get(), noTrigger);
+                } else if( valueTyped !== this[ prop ] ) {
+                    this[ prop ] = valueTyped;
+                }
+            }
+            if (!noTrigger) {
+                this.triggerChange(false, []);
+            }
+            return this[ prop ];
+        }
+    };
 
 
     var getChild = {
@@ -501,12 +493,13 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
             var el = jpath.shift();
 
             if (jpathLength === 1) {
-                var res = self.set(el, newValue);
-                res.linkToParent(self, el);
+                var res = self.set(el, newValue, true);
                 if (res && res.linkToParent) {
                     res.linkToParent(self, el);
+                    res.triggerChange(false, triggerParams);
+                } else {
+                    self.triggerChange(false, triggerParams);
                 }
-                self.triggerChange(false, triggerParams);
                 return;
             }
 
@@ -519,7 +512,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
             return this
                 .get(el, true, elementType)
                 .then(function (val) {
-                    self.set(name, val);
+                    self.set(name, val, true);
                     val.linkToParent(self, name);
                     val.setChild.apply(val, args);
                 });
@@ -765,8 +758,11 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 	};
 	
 	var setValueNative = {
-		value: function(value) {
+		value: function(value, noTrigger) {
 			this.s_ = this.nativeConstructor(value);
+            if (!noTrigger) {
+                this.triggerChange(false, []);
+            }
 		}
 	};
 

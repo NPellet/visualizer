@@ -74,11 +74,12 @@ define([
 
     function handleChange (event) {
         var eventJpath = event.jpath,
-            l = eventJpath.length,
-            variable, varJpath, i, j;
+            el = eventJpath.length,
+            variable, varJpath, i, j, l;
         loop1: for(i in allVariables) {
             variable = allVariables[i];
             varJpath = variable.getjPath();
+            l = Math.min(varJpath.length, el);
             for(j = 0; j < l; j++) {
                 if(eventJpath[j] !== varJpath[j]) {
                     continue loop1;
