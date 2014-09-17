@@ -365,7 +365,39 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 			}
 
-		}
+		},
+
+        exportToTabDelimited: function() {
+            if( ! this.colsjPaths ) {
+                return;
+            }
+
+            var result=[];
+            var allEls = [],
+                i = 0,
+                l = this.elements.length;
+
+            var jpaths = this.colsjPaths;
+
+            var header=[];
+            for (var j=0; j<jpaths.length; j++) {
+                header.push(jpaths[j].name);
+            }
+            result.push(header.join("\t"));
+
+            for( ; i < l ; i++ ) {
+                var line=[];
+                for (var j=0; j<jpaths.length; j++) {
+                    Traversing.getValueFromJPath(this.elements[i], jpaths[j].jpath).done(function(elVal) {
+                        line.push(elVal);
+                    });
+                }
+                result.push(line.join("\t"));
+            }
+
+            return (result.join("\r\n"));
+        }
+
 	});
 
 	return View;

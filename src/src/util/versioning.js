@@ -1,8 +1,8 @@
 'use strict';
 
-define(['src/util/versionhandler', 'src/util/debug'], function(VersionHandler, Debug) {
+define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables'], function(VersionHandler, Debug, Variables) {
 
-	var version = [2, 4, 2].join('.');
+	var version = [2, 5, 1].join('.');
 
     if (!semver(version)) {
         throw new Error('Version number is invalid: ' + version);
@@ -11,7 +11,7 @@ define(['src/util/versionhandler', 'src/util/debug'], function(VersionHandler, D
 	var dataHandler = new VersionHandler(),
 			viewHandler = new VersionHandler(),
 			view = new DataObject(),
-			data = new DataObject(),
+			data = Variables.getData(),
 			lastLoaded = {
 				view: {},
 				data: {}
@@ -98,13 +98,16 @@ define(['src/util/versionhandler', 'src/util/debug'], function(VersionHandler, D
 	}
 	
 	function updateData(newData) {
-		var i;
+		var i, child;
 		for(i in data) {
 			delete data[i];
 		}
 		for(i in newData) {
-			data[i] = DataObject.check(newData[i], true);
+            child = DataObject.check(newData[i], true);
+			data[i] = child;
+            child.linkToParent(data, i);
 		}
+        data.triggerChange();
 	}
 
     function isInt(str) {

@@ -289,42 +289,34 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 		}
 	};
 
-	var dataSetter = {
-		value: function(prop, value) {
-			
-			var valueTyped = DataObject.check( value, true );
-			
-			if(!valueTyped) {
-				this[ prop ] = valueTyped;
-				return;
-			}
-			
-			var type = valueTyped.getType();
+    var dataSetter = {
+        value: function(prop, value, noTrigger) {
 
-			this[ prop ] = DataObject.check( this[ prop ] );
+            var valueTyped = DataObject.check( value, true );
 
-			var typeNow = this[ prop ] !== undefined && this[ prop ].getType ? this[ prop ].getType() : undefined;
+            if(!valueTyped) {
+                this[ prop ] = valueTyped;
+            } else {
+                var type = valueTyped.getType();
 
-			if( typeNow !== type ) {
+                this[ prop ] = DataObject.check( this[ prop ] );
 
-				this[ prop ] = valueTyped;
-				
-				return this[ prop ];
-			}
+                var typeNow = this[ prop ] !== undefined && this[ prop ].getType ? this[ prop ].getType() : undefined;
 
-			if( type === "string" || type === "number" || type === "boolean" ) {
-
-				this[ prop ].setValue( valueTyped.get() );
-				return this[ prop ];
-			}
-
-			if( valueTyped !== this[ prop ] ) {
-				this[ prop ] = valueTyped;
-			}
-
-			return this[ prop ];
-		}
-	};
+                if( typeNow !== type ) {
+                    this[ prop ] = valueTyped;
+                } else if( type === "string" || type === "number" || type === "boolean" ) {
+                    this[ prop ].setValue(valueTyped.get(), noTrigger);
+                } else if( valueTyped !== this[ prop ] ) {
+                    this[ prop ] = valueTyped;
+                }
+            }
+            if (!noTrigger) {
+                this.triggerChange(false, []);
+            }
+            return this[ prop ];
+        }
+    };
 
 
     var getChild = {
@@ -481,16 +473,9 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 	};
 
 	var setChild = {
-		value: function( jpath, newValue, noMute, constructor ) {
+		value: function( jpath, newValue, triggerParams, constructor ) {
 
             var self = this;
-
-//			var mute = false;
-//			if( noMute === undefined ) {
-//				mute = true;
-//			}
-
-//			var onChangeOptions = Array.prototype.slice.call( arguments, 2 );
 
             if (typeof jpath === 'string') { // Old version
                 jpath = jpath.split('.');
@@ -508,11 +493,13 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
             var el = jpath.shift();
 
             if (jpathLength === 1) {
-                var res = self.set(el, newValue);
+                var res = self.set(el, newValue, true);
                 if (res && res.linkToParent) {
                     res.linkToParent(self, el);
+                    res.triggerChange(false, triggerParams);
+                } else {
+                    self.triggerChange(false, triggerParams);
                 }
-                self.triggerChange();
                 return;
             }
 
@@ -520,22 +507,37 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 
             var name = el;
 
-            var args = [jpath, newValue, noMute, constructor];
+            var args = [jpath, newValue, triggerParams, constructor];
 
             return this
                 .get(el, true, elementType)
                 .then(function (val) {
-                    self.set(name, val);
+                    self.set(name, val, true);
                     val.linkToParent(self, name);
                     val.setChild.apply(val, args);
                 });
-            // 2 June 2014. This code has been removed.
-            // Bubbling should be done within the triggerElement with parenting.
-            //.done(function() {
-
-            //});
         }
 	};
+
+    var triggerBubble = {
+        value: function (args) {
+
+            if( this._dataChange ) {
+                for( var i in this._dataChange ) {
+                    this._dataChange[ i ].apply( this, args );
+                }
+            }
+
+            if( ! this.__parent ) {
+                return;
+            }
+
+            args[0].jpath.unshift(this.__name);
+
+            this.__parent._triggerBubble.call( this.__parent, args );
+
+        }
+    };
 
 
 	// 2 June 2014
@@ -544,20 +546,18 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 	var triggerChange = {
 		value: function( noBubble, args ) {
 
-			// 2 June 2014
-			// This has been removed. No reason to trigger parent before self
+            if(!Array.isArray(args)) {
+                if(args == undefined) {
+                    args = [];
+                } else {
+                    args = [args];
+                }
+            }
 
-
-			/*
-			if ( ! this._dataChange ) {
-
-				if( this.__parent ) {
-					this.__parent.triggerChange( moduleid );
-				}
-
-				return;
-			}
-			*/
+            args.unshift({
+                target: this,
+                jpath: []
+            });
 
 			if( this._dataChange ) {
 
@@ -574,7 +574,9 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 				return;
 			}
 
-			this.__parent.triggerChange.apply( this.__parent, args );
+            args[0].jpath.unshift(this.__name);
+
+			this.__parent._triggerBubble.call( this.__parent, args );
 		}
 	};
 
@@ -611,9 +613,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 				idOrFunc = idOrFunc.id;
 			}
 
-			if( ! this._dataChange ) {
-				delete this._dataChange[ idOrFunc ];
-			}
+			delete this._dataChange[ idOrFunc ];
 		}
 	};
 
@@ -729,6 +729,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 		onChange: bindChange,
 		unbindChange: unbindChange,
 		triggerChange: triggerChange,
+        _triggerBubble: triggerBubble,
 		linkToParent: linkToParent,
 		getType: getType,
 		setValue: setValue
@@ -757,8 +758,11 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 	};
 	
 	var setValueNative = {
-		value: function(value) {
+		value: function(value, noTrigger) {
 			this.s_ = this.nativeConstructor(value);
+            if (!noTrigger) {
+                this.triggerChange(false, []);
+            }
 		}
 	};
 

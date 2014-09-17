@@ -107,6 +107,7 @@ define(['modules/default/defaultcontroller','components/x2js/xml2json.min'], fun
             self.createDataFromEvent('onUpdateResult', 'result', dataobj);
             self.module.view.log(true, variable);
         };
+
         ajax.method = 'get';
         ajax.type = 'get';
 
