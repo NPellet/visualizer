@@ -45,11 +45,14 @@ define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables'], func
 			def = $.Deferred().resolve();
 		}
 		if (value.view && (lastLoaded.view.url !== value.view.url || (lastLoaded.view.urls !== value.view.urls && lastLoaded.view.branch !== value.view.branch))) {
-			def.done(function() {
-				setView(value.view.urls, value.view.branch, value.view.url);
-				lastLoaded.view = value.view;
+			return def.then(function() {
+                lastLoaded.view = value.view;
+				return setView(value.view.urls, value.view.branch, value.view.url);
 			});
 		}
+        else {
+            return def;
+        }
 		if (pushstate) {
 			require(["uri/URI.fragmentQuery"], function(URI) {
 				var uri = new URI(window.location.href);

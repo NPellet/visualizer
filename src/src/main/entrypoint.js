@@ -70,7 +70,6 @@ define(['jquery',
 		view.configuration.title = view.configuration.title || 'No title';
 
 		for (; i < l; ) {
-			
 			Grid.addModuleFromJSON(view.getChildSync( [ 'modules', i++ ], true ) );
 		}
 
@@ -700,7 +699,6 @@ define(['jquery',
            //      $('#ci-visualizer').append('<div id="browser-compatibility">' + browser.errorMessage() + '</div>');
            //      return;
            //  }
-
             var debugSet;
             if (urls['debug']) {
                 Debug.setDebugLevel(parseInt(urls['debug']));
@@ -794,9 +792,10 @@ define(['jquery',
                             }
                         };
                         window.history.replaceState({type: "viewchange", value: viewInfo}, "");
-                        Versioning.switchView(viewInfo, false);
-
-
+                        Versioning.switchView(viewInfo, false)
+                            .then(function() {
+                                Debug.info('Successfully switched view');
+                            });
                     });
                 });
             }

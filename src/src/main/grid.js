@@ -36,7 +36,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 
 		var module = ModuleFactory.newModule( json );
 		addModule( module );
-		
+		return module;
 	}
 
 	function duplicateModule( module ) {
