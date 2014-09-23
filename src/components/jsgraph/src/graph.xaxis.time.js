@@ -1,794 +1,749 @@
-
 define( [ './graph.axis' ], function( GraphAxis ) {
 
-	"use strict";
-	
-	var GraphXAxis = function(graph, topbottom, options) {
-
-		this.wrapper = { 1: document.createElementNS( graph.ns, 'g' ), 2: document.createElementNS( graph.ns, 'g' ) };
-		this.groups = { 1: [], 2: [] };
-
-
-		var rect = document.createElementNS( graph.ns, 'rect' );
-		rect.setAttribute( 'fill', '#c0c0c0');
-		rect.setAttribute( 'stroke', '#808080');
-		rect.setAttribute( 'height', '20');
-		rect.setAttribute( 'x', '0');
-		rect.setAttribute( 'y', '0');
-
-		this.rect = rect;
-
-		this.wrapper[ 1 ].appendChild( this.rect );
-		
-
-		this.init(graph, options);
-
-		this.group.appendChild( this.wrapper[ 1 ] );
-		this.group.appendChild( this.wrapper[ 2 ] );
-
-		this.wrapper[ 1 ].setAttribute( 'transform', 'translate( 0, 25 )');
-		this.wrapper[ 2 ].setAttribute( 'transform', 'translate( 0, 00 )');
-	}
-
-
-	/*
-	 * Date Format 1.2.3
-	 * (c) 2007-2009 Steven Levithan <stevenlevithan.com>
-	 * MIT license
-	 *
-	 * Includes enhancements by Scott Trenda <scott.trenda.net>
-	 * and Kris Kowal <cixar.com/~kris.kowal/>
-	 *
-	 * Accepts a date, a mask, or a date and a mask.
-	 * Returns a formatted version of the given date.
-	 * The date defaults to the current date/time.
-	 * The mask defaults to dateFormat.masks.default.
-	 */
-
-	var dateFormat = function () {
-		var	token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[WLloSZ]|"[^"]*"|'[^']*'/g,
-			timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g,
-			timezoneClip = /[^-+\dA-Z]/g,
-			pad = function (val, len) {
-				val = String(val);
-				len = len || 2;
-				while (val.length < len) val = "0" + val;
-				return val;
-			},
-			getWeek =function( d, f ) {
-				var onejan = new Date( d[ f + 'FullYear']() , 0, 1);
-        		return Math.ceil((((d - onejan) / 86400000) + onejan[ f + 'Day']() + 1) / 7);
-        	};
-
-		// Regexes and supporting functions are cached through closure
-		return function (date, mask, utc) {
-			var dF = dateFormat;
-
-			// You can't provide utc if you skip other args (use the "UTC:" mask prefix)
-			if (arguments.length == 1 && Object.prototype.toString.call(date) == "[object String]" && !/\d/.test(date)) {
-				mask = date;
-				date = undefined;
-			}
-
-			// Passing date through Date applies Date.parse, if necessary
-			date = date ? new Date(date) : new Date;
-			if (isNaN(date)) throw SyntaxError("invalid date");
-
-			mask = String(dF.masks[mask] || mask || dF.masks["default"]);
-
-			// Allow setting the utc argument via the mask
-			if (mask.slice(0, 4) == "UTC:") {
-				mask = mask.slice(4);
-				utc = true;
-			}
-
-			var	_ = utc ? "getUTC" : "get",
-				d = date[_ + "Date"](),
-				D = date[_ + "Day"](),
-				m = date[_ + "Month"](),
-				y = date[_ + "FullYear"](),
-				H = date[_ + "Hours"](),
-				M = date[_ + "Minutes"](),
-				s = date[_ + "Seconds"](),
-				L = date[_ + "Milliseconds"](),
-				o = utc ? 0 : date.getTimezoneOffset(),
-				flags = {
-					d:    d,
-					dd:   pad(d),
-					ddd:  dF.i18n.dayNames[D],
-					dddd: dF.i18n.dayNames[D + 7],
-					m:    m + 1,
-					mm:   pad(m + 1),
-					mmm:  dF.i18n.monthNames[m],
-					mmmm: dF.i18n.monthNames[m + 12],
-					yy:   String(y).slice(2),
-					yyyy: y,
-					h:    H % 12 || 12,
-					hh:   pad(H % 12 || 12),
-					H:    H,
-					HH:   pad(H),
-					M:    M,
-					MM:   pad(M),
-					s:    s,
-					ss:   pad(s),
-					l:    pad(L, 3),
-					L:    pad(L > 99 ? Math.round(L / 10) : L),
-					t:    H < 12 ? "a"  : "p",
-					tt:   H < 12 ? "am" : "pm",
-					T:    H < 12 ? "A"  : "P",
-					TT:   H < 12 ? "AM" : "PM",
-					Z:    utc ? "UTC" : (String(date).match(timezone) || [""]).pop().replace(timezoneClip, ""),
-					o:    (o > 0 ? "-" : "+") + pad(Math.floor(Math.abs(o) / 60) * 100 + Math.abs(o) % 60, 4),
-					S:    ["th", "st", "nd", "rd"][d % 10 > 3 ? 0 : (d % 100 - d % 10 != 10) * d % 10],
-					W: 	  getWeek( date, _ ), 
-				};
+  "use strict";
+
+  var GraphXAxis = function( graph, topbottom, options ) {
+
+    this.wrapper = {
+      1: document.createElementNS( graph.ns, 'g' ),
+      2: document.createElementNS( graph.ns, 'g' )
+    };
+    this.groups = {
+      1: [],
+      2: []
+    };
+
+    var rect = document.createElementNS( graph.ns, 'rect' );
+    rect.setAttribute( 'fill', '#c0c0c0' );
+    rect.setAttribute( 'stroke', '#808080' );
+    rect.setAttribute( 'height', '20' );
+    rect.setAttribute( 'x', '0' );
+    rect.setAttribute( 'y', '0' );
+
+    this.rect = rect;
+
+    this.wrapper[ 1 ].appendChild( this.rect );
+
+    this.init( graph, options );
+
+    this.group.appendChild( this.wrapper[  1 ] );
+    this.group.appendChild( this.wrapper[  2 ] );
+
+    this.wrapper[ 1 ].setAttribute( 'transform', 'translate( 0, 25 )' );
+    this.wrapper[ 2 ].setAttribute( 'transform', 'translate( 0, 00 )' );
+  }
+
+  /*
+   * Date Format 1.2.3
+   * (c) 2007-2009 Steven Levithan <stevenlevithan.com>
+   * MIT license
+   *
+   * Includes enhancements by Scott Trenda <scott.trenda.net>
+   * and Kris Kowal <cixar.com/~kris.kowal/>
+   *
+   * Accepts a date, a mask, or a date and a mask.
+   * Returns a formatted version of the given date.
+   * The date defaults to the current date/time.
+   * The mask defaults to dateFormat.masks.default.
+   */
+
+  var dateFormat = function() {
+    var token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[WLloSZ]|"[^"]*"|'[^']*'/g,
+      timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g,
+      timezoneClip = /[^-+\dA-Z]/g,
+      pad = function( val, len ) {
+        val = String( val );
+        len = len || 2;
+        while ( val.length < len ) val = "0" + val;
+        return val;
+      },
+      getWeek = function( d, f ) {
+        var onejan = new Date( d[ f + 'FullYear' ](), 0, 1 );
+        return Math.ceil( ( ( ( d - onejan ) / 86400000 ) + onejan[ f + 'Day' ]() + 1 ) / 7 );
+      };
+
+    // Regexes and supporting functions are cached through closure
+    return function( date, mask, utc ) {
+      var dF = dateFormat;
+
+      // You can't provide utc if you skip other args (use the "UTC:" mask prefix)
+      if ( arguments.length == 1 && Object.prototype.toString.call( date ) == "[object String]" && !/\d/.test( date ) ) {
+        mask = date;
+        date = undefined;
+      }
+
+      // Passing date through Date applies Date.parse, if necessary
+      date = date ? new Date( date ) : new Date;
+      if ( isNaN( date ) ) throw SyntaxError( "invalid date" );
+
+      mask = String( dF.masks[ mask ] || mask || dF.masks[ "default" ] );
+
+      // Allow setting the utc argument via the mask
+      if ( mask.slice( 0, 4 ) == "UTC:" ) {
+        mask = mask.slice( 4 );
+        utc = true;
+      }
+
+      var _ = utc ? "getUTC" : "get",
+        d = date[ _ + "Date" ](),
+        D = date[ _ + "Day" ](),
+        m = date[ _ + "Month" ](),
+        y = date[ _ + "FullYear" ](),
+        H = date[ _ + "Hours" ](),
+        M = date[ _ + "Minutes" ](),
+        s = date[ _ + "Seconds" ](),
+        L = date[ _ + "Milliseconds" ](),
+        o = utc ? 0 : date.getTimezoneOffset(),
+        flags = {
+          d: d,
+          dd: pad( d ),
+          ddd: dF.i18n.dayNames[ D ],
+          dddd: dF.i18n.dayNames[ D + 7 ],
+          m: m + 1,
+          mm: pad( m + 1 ),
+          mmm: dF.i18n.monthNames[ m ],
+          mmmm: dF.i18n.monthNames[ m + 12 ],
+          yy: String( y ).slice( 2 ),
+          yyyy: y,
+          h: H % 12 || 12,
+          hh: pad( H % 12 || 12 ),
+          H: H,
+          HH: pad( H ),
+          M: M,
+          MM: pad( M ),
+          s: s,
+          ss: pad( s ),
+          l: pad( L, 3 ),
+          L: pad( L > 99 ? Math.round( L / 10 ) : L ),
+          t: H < 12 ? "a" : "p",
+          tt: H < 12 ? "am" : "pm",
+          T: H < 12 ? "A" : "P",
+          TT: H < 12 ? "AM" : "PM",
+          Z: utc ? "UTC" : ( String( date ).match( timezone ) || [ "" ] ).pop().replace( timezoneClip, "" ),
+          o: ( o > 0 ? "-" : "+" ) + pad( Math.floor( Math.abs( o ) / 60 ) * 100 + Math.abs( o ) % 60, 4 ),
+          S: [ "th", "st", "nd", "rd" ][ d % 10 > 3 ? 0 : ( d % 100 - d % 10 != 10 ) * d % 10 ],
+          W: getWeek( date, _ ),
+        };
+
+      return mask.replace( token, function( $0 ) {
+        return $0 in flags ? flags[ $0 ] : $0.slice( 1, $0.length - 1 );
+      } );
+    };
+  }();
+
+  // Some common format strings
+  dateFormat.masks = {
+    "default": "ddd mmm dd yyyy HH:MM:ss",
+    shortDate: "m/d/yy",
+    mediumDate: "mmm d, yyyy",
+    longDate: "mmmm d, yyyy",
+    fullDate: "dddd, mmmm d, yyyy",
+    shortTime: "h:MM TT",
+    mediumTime: "h:MM:ss TT",
+    longTime: "h:MM:ss TT Z",
+    isoDate: "yyyy-mm-dd",
+    isoTime: "HH:MM:ss",
+    isoDateTime: "yyyy-mm-dd'T'HH:MM:ss",
+    isoUtcDateTime: "UTC:yyyy-mm-dd'T'HH:MM:ss'Z'"
+  };
+
+  // Internationalization strings
+  dateFormat.i18n = {
+    dayNames: [
+      "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat",
+      "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+    ],
+    monthNames: [
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+      "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
+    ]
+  };
 
-			return mask.replace(token, function ($0) {
-				return $0 in flags ? flags[$0] : $0.slice(1, $0.length - 1);
-			});
-		};
-	}();
+  /* END DATE FORMAT */
 
-	// Some common format strings
-	dateFormat.masks = {
-		"default":      "ddd mmm dd yyyy HH:MM:ss",
-		shortDate:      "m/d/yy",
-		mediumDate:     "mmm d, yyyy",
-		longDate:       "mmmm d, yyyy",
-		fullDate:       "dddd, mmmm d, yyyy",
-		shortTime:      "h:MM TT",
-		mediumTime:     "h:MM:ss TT",
-		longTime:       "h:MM:ss TT Z",
-		isoDate:        "yyyy-mm-dd",
-		isoTime:        "HH:MM:ss",
-		isoDateTime:    "yyyy-mm-dd'T'HH:MM:ss",
-		isoUtcDateTime: "UTC:yyyy-mm-dd'T'HH:MM:ss'Z'"
-	};
+  function getClosestIncrement( value, basis ) {
+    return Math.round( value / basis ) * basis;
+  }
 
-	// Internationalization strings
-	dateFormat.i18n = {
-		dayNames: [
-			"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat",
-			"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
-		],
-		monthNames: [
-			"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-			"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
-		]
-	};
+  function roundDate( date, format ) {
 
-	/* END DATE FORMAT */
+    switch ( format.unit ) {
 
+      case 's': // Round at n hour
 
+        date.setSeconds( getClosestIncrement( date.getSeconds(), format.increment ) );
+        date.setMilliseconds( 0 );
 
-	function getClosestIncrement( value, basis ) {
-		return Math.round( value / basis ) * basis;
-	}
+        break;
 
-	function roundDate( date, format ) {
+      case 'i': // Round at n hour
 
-		switch( format.unit ) {
+        date.setMinutes( getClosestIncrement( date.getMinutes(), format.increment ) );
+        date.setSeconds( 0 );
+        date.setMilliseconds( 0 );
 
-			case 's': // Round at n hour
+        break;
 
+      case 'h': // Round at n hour
 
-				date.setSeconds( getClosestIncrement( date.getSeconds(), format.increment ) );
-				date.setMilliseconds( 0 );
+        date.setHours( getClosestIncrement( date.getHours(), format.increment ) );
 
-			break;
+        date.setMinutes( 0 );
+        date.setSeconds( 0 );
+        date.setMilliseconds( 0 );
 
-			case 'i': // Round at n hour
+        break;
 
-				date.setMinutes( getClosestIncrement( date.getMinutes(), format.increment ) );
-				date.setSeconds( 0 );
-				date.setMilliseconds( 0 );
+      case 'd':
 
-			break;
+        date.setMinutes( 0 );
+        date.setSeconds( 0 );
+        date.setMilliseconds( 0 );
+        date.setHours( 0 );
 
-			case 'h': // Round at n hour
+        date.setDate( getClosestIncrement( date.getDate(), format.increment ) );
 
+        break;
 
-				date.setHours( getClosestIncrement( date.getHours(), format.increment ) );
+      case 'm':
 
-				date.setMinutes( 0 );
-				date.setSeconds( 0 );
-				date.setMilliseconds( 0 );
+        date.setMinutes( 0 );
+        date.setSeconds( 0 );
+        date.setMilliseconds( 0 );
+        date.setHours( 0 );
+        date.setDate( 1 );
 
-			break;
+        date.setMonth( getClosestIncrement( date.getMonth(), format.increment ) );
 
-			case 'd':
+        break;
 
-				date.setMinutes( 0 );
-				date.setSeconds( 0 );
-				date.setMilliseconds( 0 );
-				date.setHours( 0 );
+      case 'y':
 
-				date.setDate( getClosestIncrement( date.getDate(), format.increment ) );
+        date.setMinutes( 0 );
+        date.setSeconds( 0 );
+        date.setMilliseconds( 0 );
+        date.setHours( 0 );
+        date.setDate( 1 );
+        date.setMonth( 0 );
 
-			break;
+        //date.setYear( getClosest( date.getDate(), format.increment ) );
 
+        break;
+    }
 
-			case 'm':
+    return date;
+  }
 
-				date.setMinutes( 0 );
-				date.setSeconds( 0 );
-				date.setMilliseconds( 0 );
-				date.setHours( 0 );
-				date.setDate( 1 );
+  function incrementDate( date, format ) {
 
-				date.setMonth( getClosestIncrement( date.getMonth(), format.increment ) );
+    switch ( format.unit ) {
 
-			break;
+      case 's':
 
-			case 'y':
+        date.setSeconds( date.getSeconds() + format.increment );
+        date.setMilliseconds( 0 );
 
-				date.setMinutes( 0 );
-				date.setSeconds( 0 );
-				date.setMilliseconds( 0 );
-				date.setHours( 0 );
-				date.setDate( 1 );
-				date.setMonth( 0 );
+        break;
 
-				//date.setYear( getClosest( date.getDate(), format.increment ) );
+      case 'i':
 
+        date.setMinutes( date.getMinutes() + format.increment );
+        date.setSeconds( 0 );
+        date.setMilliseconds( 0 );
 
-			break;
-		}
+        break;
 
-		return date;
-	}
+      case 'h': // Round at n hour
 
+        date.setHours( date.getHours() + format.increment );
+        date.setMinutes( 0 );
+        date.setSeconds( 0 );
+        date.setMilliseconds( 0 );
 
-	function incrementDate( date, format ) {
+        break;
 
+      case 'd':
 
-		switch( format.unit ) {
+        date.setDate( date.getDate() + format.increment );
+        date.setMinutes( 0 );
+        date.setSeconds( 0 );
+        date.setMilliseconds( 0 );
+        date.setHours( 0 );
 
-			case 's': 
+        break;
 
-				date.setSeconds( date.getSeconds() + format.increment );				
-				date.setMilliseconds( 0 );
+      case 'm':
 
+        date.setMonth( date.getMonth() + format.increment );
+        date.setMinutes( 0 );
+        date.setSeconds( 0 );
+        date.setMilliseconds( 0 );
+        date.setHours( 0 );
+        date.setDate( 1 );
 
-			break;	
+        break;
 
-			case 'i': 
+      case 'y':
 
-				date.setMinutes( date.getMinutes() + format.increment );				
-				date.setSeconds( 0 );
-				date.setMilliseconds( 0 );
+        date.setYear( date.getYear() + format.increment );
 
+        date.setMinutes( 0 );
+        date.setSeconds( 0 );
+        date.setMilliseconds( 0 );
+        date.setHours( 0 );
+        date.setDate( 1 );
+        date.setMonth( 0 );
 
-			break;
+        break;
+    }
 
-			case 'h': // Round at n hour
+    return date;
+  }
 
-				date.setHours( date.getHours() + format.increment );				
-				date.setMinutes( 0 );
-				date.setSeconds( 0 );
-				date.setMilliseconds( 0 );
+  function getGroup( axis, level, number ) {
 
+    if ( axis.groups[ level ][ number ] ) {
+      axis.groups[  level ][  number ].group.setAttribute( 'display', 'block' );
+      return axis.groups[  level ][  number ];
+    }
 
-			break;
+    var g = {
 
-			case 'd':
+      group: document.createElementNS( axis.graph.ns, 'g' ),
+      text: document.createElementNS( axis.graph.ns, 'text' )
+    }
 
-				date.setDate( date.getDate() + format.increment );
-				date.setMinutes( 0 );
-				date.setSeconds( 0 );
-				date.setMilliseconds( 0 );
-				date.setHours( 0 );
+    var line = document.createElementNS( axis.graph.ns, 'line' );
 
-				
+    line.setAttribute( 'stroke', 'black' );
+    line.setAttribute( 'y1', 0 );
+    switch ( level ) {
 
-			break;
+      case 2:
 
+        line.setAttribute( 'y2', 6 );
+        g.text.setAttribute( 'y', 15 );
 
-			case 'm':
+        g.line = line;
 
-				date.setMonth( date.getMonth() + format.increment );
-				date.setMinutes( 0 );
-				date.setSeconds( 0 );
-				date.setMilliseconds( 0 );
-				date.setHours( 0 );
-				date.setDate( 1 );
+        g.group.appendChild( g.line );
+        break;
 
-			break;
+      case 1:
 
-			case 'y':
+        line.setAttribute( 'y2', 20 );
+        g.text.setAttribute( 'y', 10 );
 
-				date.setYear( date.getYear() + format.increment );
+        g.line1 = line;
+        g.line2 = line.cloneNode();
 
-				date.setMinutes( 0 );
-				date.setSeconds( 0 );
-				date.setMilliseconds( 0 );
-				date.setHours( 0 );
-				date.setDate( 1 );
-				date.setMonth( 0 );
+        g.group.appendChild( g.line1 );
+        g.group.appendChild( g.line2 );
 
+        break;
+    }
 
-			break;
-		}
+    g.text.setAttribute( 'text-anchor', 'middle' );
+    g.text.setAttribute( 'dominant-baseline', 'middle' );
 
-		return date;
-	}
+    g.group.appendChild( g.text );
 
+    axis.getWrapper( level ).appendChild( g.group );
 
-	
-	function getGroup( axis, level, number ) {
+    return axis.groups[ level ][ number ] = g;
+  }
 
-		if( axis.groups[ level ][ number ] ) {
-			axis.groups[ level ][ number ].group.setAttribute('display', 'block');
-			return axis.groups[ level ][ number ];
-		}
+  function hideGroups( axis, level, from ) {
 
-		var g = {
+    for ( ; from < axis.groups[ level ].length; from++ ) {
 
-			group: document.createElementNS( axis.graph.ns, 'g' ),
-			text: document.createElementNS( axis.graph.ns, 'text' )
-		}
+      hideGroup( axis.groups[  level ][ from ] )
+    }
+  }
 
-		var line = document.createElementNS( axis.graph.ns, 'line' );
+  function hideGroup( group ) {
+    group.group.setAttribute( 'display', 'none' );
+  }
 
-		line.setAttribute( 'stroke', 'black' );
-		line.setAttribute('y1', 0);
-		switch( level ) {
+  function getDateText( date, format ) {
 
-			case 2:
+    return dateFormat( date, format );
+  }
 
-				line.setAttribute('y2', 6);
-				g.text.setAttribute( 'y', 15  );
+  function renderGroup( level, group, text, minPx, maxPx, x1, x2 ) {
 
-				g.line = line;
+    switch ( level ) {
 
-				g.group.appendChild( g.line );
-			break;
+      case 1:
 
-			case 1:
-		
-				
-				line.setAttribute( 'y2', 20 );
-				g.text.setAttribute( 'y', 10  );
+        var x1B = Math.max( minPx, Math.min( maxPx, x1 ) ),
+          x2B = Math.max( minPx, Math.min( maxPx, x2 ) );
 
-				g.line1 = line;
-				g.line2 = line.cloneNode();
+        group.line1.setAttribute( 'x1', x1B );
+        group.line2.setAttribute( 'x1', x2B );
 
-				g.group.appendChild( g.line1 );
-				g.group.appendChild( g.line2 );
+        group.line1.setAttribute( 'x2', x1B );
+        group.line2.setAttribute( 'x2', x2B );
 
-			break;
-		}
+        group.text.setAttribute( 'x', ( x1B + x2B ) / 2 );
 
+        if ( text.length * 8 > x2B - x1B ) {
+          text = "";
+        }
 
-		g.text.setAttribute( 'text-anchor', 'middle' );
-		g.text.setAttribute( 'dominant-baseline', 'middle' );
-		
+        group.text.textContent = text;
+        break;
 
-		
-		g.group.appendChild( g.text );
+      case 2:
 
-		axis.getWrapper( level ).appendChild( g.group );
+        if ( x1 < minPx ||  x1 > maxPx ) {
 
-		return axis.groups[ level ][ number ] = g;
-	}
+          hideGroup( group );
+          return;
+        }
 
-	function hideGroups( axis, level, from ) {
+        group.line.setAttribute( 'x1', x1 );
+        group.line.setAttribute( 'x2', x1 );
+        group.text.setAttribute( 'x', x1 );
+        group.text.textContent = text;
 
-		for( ; from < axis.groups[ level ].length ; from ++ ) {
+        break;
+    }
 
-			hideGroup( axis.groups[ level ][ from ] )
-		}
-	}
+  }
 
-	function hideGroup( group ) {
-		group.group.setAttribute( 'display', 'none' );
-	}
+  GraphXAxis.prototype = $.extend( true, GraphXAxis.prototype, GraphAxis.prototype, {
 
+    draw: function() { // Redrawing of the axis
+      var visible;
 
-	function getDateText( date, format ) {
+      if ( this.currentAxisMin == undefined || !this.currentAxisMax == undefined ) {
+        this.setMinMaxToFitSeries(); // We reset the min max as a function of the series
+      }
 
-		return dateFormat( date, format );
-	}
+      this.line.setAttribute( 'x1', this.getMinPx() );
+      this.line.setAttribute( 'x2', this.getMaxPx() );
+      this.line.setAttribute( 'y1', 0 );
+      this.line.setAttribute( 'y2', 0 );
 
-	function renderGroup( level, group, text, minPx, maxPx, x1, x2 ) {
+      var widthPx = this.maxPx - this.minPx;
+      var widthTime = this._getActualInterval();
 
+      var timePerPx = widthTime / widthPx;
 
+      var maxVal = this.getActualMax();
+      var minVal = this.getActualMin();
 
-		switch( level ) {
+      this.rect.setAttribute( 'width', widthPx );
+      this.rect.setAttribute( 'x', this.minPx );
 
-			case 1:
+      if ( !maxVal ||  !minVal ) {
+        return 0;
+      }
 
+      var axisFormat = [
 
-			var x1B = Math.max( minPx, Math.min( maxPx, x1 ) ),
-				x2B = Math.max( minPx, Math.min( maxPx, x2 ) );
+        { // One day
 
-				group.line1.setAttribute( 'x1', x1B );
-				group.line2.setAttribute( 'x1', x2B );
+          threshold: 1000,
+          increments: {
 
-				group.line1.setAttribute( 'x2', x1B );
-				group.line2.setAttribute( 'x2', x2B );
+            1: {
+              increment: 1, // One day on the first axis
+              unit: 'd',
+              format: 'HH:MM (dd/mm)'
+            },
 
-				group.text.setAttribute( 'x', ( x1B + x2B ) / 2 );
+            2: {
+              increment: 1,
+              unit: 'i',
+              format: 'MM:ss'
+            }
+          }
+        },
 
-				if( text.length * 8 > x2B - x1B ) {
-					text = "";
-				}
+        { // One day
 
-				group.text.textContent = text;
-			break;
+          threshold: 1500,
+          increments: {
 
-			case 2:
+            1: {
+              increment: 1, // One day on the first axis
+              unit: 'd',
+              format: 'dd/mm'
+            },
 
-				if( x1 < minPx || x1 > maxPx ) {
-					
-					hideGroup( group );
-					return;
-				}
+            2: {
+              increment: 1,
+              unit: 'i',
+              format: 'H"h"MM'
+            }
+          }
+        },
 
-				group.line.setAttribute( 'x1', x1 );
-				group.line.setAttribute( 'x2', x1 );
-				group.text.setAttribute( 'x', x1 );
-				group.text.textContent = text;
+        { // One day
 
-			break;
-		}
-		
+          threshold: 4000,
+          increments: {
 
-	}
+            1: {
+              increment: 1, // One day on the first axis
+              unit: 'd',
+              format: 'dd/mm'
+            },
 
+            2: {
+              increment: 2,
+              unit: 'i',
+              format: 'H"h"MM'
+            }
+          }
+        },
 
+        { // One day
 
+          threshold: 8000,
+          increments: {
 
-	GraphXAxis.prototype = $.extend( true, GraphXAxis.prototype, GraphAxis.prototype, {
+            1: {
+              increment: 1, // One day on the first axis
+              unit: 'd',
+              format: 'dd/mm'
+            },
 
-		draw: function( ) { // Redrawing of the axis
-			var visible;
+            2: {
+              increment: 10,
+              unit: 'i',
+              format: 'H"h"MM'
+            }
+          }
+        },
 
+        { // One day
 
-			if( this.currentAxisMin == undefined || ! this.currentAxisMax == undefined ) {
-				this.setMinMaxToFitSeries(); // We reset the min max as a function of the series
-			}
+          threshold: 26400,
+          increments: {
 
-			this.line.setAttribute('x1', this.getMinPx());
-			this.line.setAttribute('x2', this.getMaxPx());
-			this.line.setAttribute('y1', 0);
-			this.line.setAttribute('y2', 0);
+            1: {
+              increment: 1, // One day on the first axis
+              unit: 'd',
+              format: 'dd/mm'
+            },
 
+            2: {
+              increment: 20,
+              unit: 'i',
+              format: 'H"h"MM'
+            }
+          }
+        },
 
-			var widthPx = this.maxPx - this.minPx;
-			var widthTime = this._getActualInterval();
+        { // One day
 
-			var timePerPx = widthTime / widthPx;
+          threshold: 86400,
+          increments: {
 
-			var maxVal = this.getActualMax();
-			var minVal = this.getActualMin();
+            1: {
+              increment: 1, // One day on the first axis
+              unit: 'd',
+              format: 'dd/mm'
+            },
 
-			this.rect.setAttribute( 'width', widthPx );
-			this.rect.setAttribute( 'x', this.minPx );			
+            2: {
+              increment: 1,
+              unit: 'h',
+              format: 'H"h"MM'
+            }
+          }
+        },
 
-			if( ! maxVal || ! minVal ) {
-				return 0 ;
-			}
+        { // One day
 
-			var axisFormat = [
+          threshold: 200000,
+          increments: {
 
+            1: {
 
-				{ // One day
+              increment: 1,
+              unit: 'd',
+              format: 'dd/mm'
+            },
 
-					threshold: 1000,
-					increments: {
+            2: {
 
-						1: {
-							increment: 1, // One day on the first axis
-							unit: 'd',
-							format: 'HH:MM (dd/mm)'
-						},
+              increment: 2, // One day on the first axis
+              unit: 'h',
+              format: 'H"h"MM'
+            }
+          }
+        },
 
-						2: {
-							increment: 1,
-							unit: 'i',
-							format: 'MM:ss'
-						}
-					}
-				},
+        { // One day
 
+          threshold: 400000,
+          increments: {
 
-				{ // One day
+            1: {
 
-					threshold: 1500,
-					increments: {
+              increment: 1,
+              unit: 'd',
+              format: 'dd/mm'
+            },
 
-						1: {
-							increment: 1, // One day on the first axis
-							unit: 'd',
-							format: 'dd/mm'
-						},
+            2: {
 
-						2: {
-							increment: 1,
-							unit: 'i',
-							format: 'H"h"MM'
-						}
-					}
-				},
+              increment: 6, // One day on the first axis
+              unit: 'h',
+              format: 'H"h"MM'
+            }
+          }
+        },
 
+        { // One day
 
-				{ // One day
+          threshold: 1400000,
+          increments: {
 
-					threshold: 4000,
-					increments: {
+            1: {
 
-						1: {
-							increment: 1, // One day on the first axis
-							unit: 'd',
-							format: 'dd/mm'
-						},
+              increment: 1,
+              unit: 'd',
+              format: 'dd/mm'
+            },
 
-						2: {
-							increment: 2,
-							unit: 'i',
-							format: 'H"h"MM'
-						}
-					}
-				},
+            2: {
 
+              increment: 12, // One day on the first axis
+              unit: 'h',
+              format: 'HH"h"MM'
+            }
+          }
+        },
 
-				{ // One day
+        { // One day
 
-					threshold: 8000,
-					increments: {
+          threshold: 6400000,
+          increments: {
 
-						1: {
-							increment: 1, // One day on the first axis
-							unit: 'd',
-							format: 'dd/mm'
-						},
+            1: {
 
-						2: {
-							increment: 10,
-							unit: 'i',
-							format: 'H"h"MM'
-						}
-					}
-				},
+              increment: 1,
+              unit: 'm',
+              format: 'mmmm'
+            },
 
+            2: {
 
-				{ // One day
+              increment: 1, // One day on the first axis
+              unit: 'd',
+              format: 'dd'
+            }
+          }
+        },
 
-					threshold: 26400,
-					increments: {
+        { // One day
 
-						1: {
-							increment: 1, // One day on the first axis
-							unit: 'd',
-							format: 'dd/mm'
-						},
+          threshold: 12400000,
+          increments: {
 
-						2: {
-							increment: 20,
-							unit: 'i',
-							format: 'H"h"MM'
-						}
-					}
-				},
+            1: {
 
+              increment: 1,
+              unit: 'm',
+              format: 'mmmm'
+            },
 
+            2: {
 
-				{ // One day
+              increment: 2, // One day on the first axis
+              unit: 'd',
+              format: 'dd'
+            }
+          }
+        },
 
-					threshold: 86400,
-					increments: {
+        { // One day
 
-						1: {
-							increment: 1, // One day on the first axis
-							unit: 'd',
-							format: 'dd/mm'
-						},
+          threshold: 86400000,
+          increments: {
 
-						2: {
-							increment: 1,
-							unit: 'h',
-							format: 'H"h"MM'
-						}
-					}
-				},
+            1: {
 
+              increment: 1,
+              unit: 'm',
+              format: 'mmmm'
+            },
 
-				{ // One day
+            2: {
 
-					threshold: 200000,
-					increments: {
+              increment: 7, // One day on the first axis
+              unit: 'd',
+              format: 'dd'
+            }
+          }
+        },
 
-						1: {
+      ];
 
-							increment: 1,
-							unit: 'd',
-							format: 'dd/mm'
-						},
+      var currentFormat;
 
-						2: {
-							
-							increment: 2, // One day on the first axis
-							unit: 'h',
-							format: 'H"h"MM'
-						}
-					}
-				},
+      for ( i = 0; i < axisFormat.length; i++ ) {
 
-				{ // One day
+        if ( axisFormat[ i ].threshold > timePerPx ) {
+          currentFormat = axisFormat[ i ];
+          break;
+        }
 
-					threshold: 400000,
-					increments: {
+      }
 
-						1: {
+      var xVal1,
+        xVal2;
 
-							increment: 1,
-							unit: 'd',
-							format: 'dd/mm'
-						},
+      var level = 0;
 
-						2: {
-							
-							increment: 6, // One day on the first axis
-							unit: 'h',
-							format: 'H"h"MM'
-						}
-					}
-				},
+      for ( level = 1; level <= 2; level++ ) {
 
-				{ // One day
+        var dateFirst = new Date( minVal );
 
-					threshold: 1400000,
-					increments: {
+        var currentDate = roundDate( dateFirst, currentFormat.increments[ level ] ),
+          i = 0;
 
-						1: {
+        do {
 
-							increment: 1,
-							unit: 'd',
-							format: 'dd/mm'
-						},
+          xVal1 = this.getPx( currentDate.getTime() );
 
-						2: {
-							
-							increment: 12, // One day on the first axis
-							unit: 'h',
-							format: 'HH"h"MM'
-						}
-					}
-				},
+          var text = getDateText( currentDate, currentFormat.increments[ level ].format );
+          var group = getGroup( this, level, i );
 
-				{ // One day
+          currentDate = incrementDate( currentDate, currentFormat.increments[ level ] );
+          xVal2 = this.getPx( currentDate.getTime() );
 
-					threshold: 6400000,
-					increments: {
+          renderGroup( level, group, text, this.getMinPx(), this.getMaxPx(), xVal1, xVal2 );
 
-						1: {
+          i++;
 
-							increment: 1,
-							unit: 'm',
-							format: 'mmmm'
-						},
+        } while ( currentDate.getTime() < maxVal );
 
-						2: {
-							
-							increment: 1, // One day on the first axis
-							unit: 'd',
-							format: 'dd'
-						}
-					}
-				},
+        hideGroups( this, level, i );
+      }
 
+    },
 
-				{ // One day
+    getWrapper: function( level ) {
+      return this.wrapper[ level ]
+    },
 
-					threshold: 12400000,
-					increments: {
+    setShift: function( shift, totalDimension ) {
+      this.shift = shift;
+      this.group.setAttribute( 'transform', 'translate(0 ' + ( this.top ? this.shift : ( this.graph.getDrawingHeight() - this.shift ) ) + ')' )
+    },
 
-						1: {
+    getAxisPosition: function() {
+      return 60;
+    },
 
-							increment: 1,
-							unit: 'm',
-							format: 'mmmm'
-						},
+    drawSeries: function() {}
+  } );
 
-						2: {
-							
-							increment: 2, // One day on the first axis
-							unit: 'd',
-							format: 'dd'
-						}
-					}
-				},
-
-				{ // One day
-
-					threshold: 86400000,
-					increments: {
-
-						1: {
-
-							increment: 1,
-							unit: 'm',
-							format: 'mmmm'
-						},
-
-						2: {
-							
-							increment: 7, // One day on the first axis
-							unit: 'd',
-							format: 'dd'
-						}
-					}
-				},
-
-
-
-			];
-
-
-			var currentFormat;
-
-			for( i = 0; i < axisFormat.length; i ++ ) {
-
-				if( axisFormat[ i ].threshold > timePerPx ) {
-					currentFormat = axisFormat[ i ];
-					break;
-				}
-
-			}
-
-			
-			var	xVal1,
-				xVal2;
-		
-			var level = 0;
-
-			for( level = 1; level <= 2 ; level ++ ) {
-
-				var dateFirst = new Date( minVal );
-
-				var currentDate = roundDate( dateFirst, currentFormat.increments[ level ] ),
-					i = 0;
-
-				
-				do {
-
-					xVal1 = this.getPx( currentDate.getTime( ) );
-
-					var text = getDateText( currentDate, currentFormat.increments[ level ].format );
-					var group = getGroup( this, level, i );
-
-					currentDate = incrementDate( currentDate, currentFormat.increments[ level ] );
-					xVal2 = this.getPx( currentDate.getTime( ) );
-
-					renderGroup( level, group, text, this.getMinPx(), this.getMaxPx(), xVal1, xVal2 );
-
-					i++;
-
-				} while ( currentDate.getTime() < maxVal );
-
-				hideGroups( this, level, i );
-			}
-
-			
-		},
-
-		getWrapper: function( level ) {
-			return this.wrapper[ level ]
-		},
-
-		setShift: function(shift, totalDimension) {
-			this.shift = shift;
-			this.group.setAttribute('transform', 'translate(0 ' + (this.top ? this.shift : (this.graph.getDrawingHeight() - this.shift)) + ')')
-		},
-
-		getAxisPosition: function() {
-			return 60;
-		},
-
-		drawSeries: function() {}
-	});
-
-	
-	return GraphXAxis;
-});
+  return GraphXAxis;
+} );

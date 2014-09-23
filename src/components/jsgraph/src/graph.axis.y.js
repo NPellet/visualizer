@@ -1,215 +1,234 @@
-
-
 define( [ './graph.axis' ], function( GraphAxis ) {
 
-	"use strict";
-	
-	var GraphYAxis = function(graph, leftright, options) {
+  "use strict";
 
+  var GraphYAxis = function( graph, leftright, options ) {
 
-		this.init(graph, options);
+    this.init( graph, options );
 
-		this.leftright = leftright;
-		this.left = leftright == 'left';
+    this.leftright = leftright;
+    this.left = leftright == 'left';
 
-		
-		
-	}
+  }
 
-	$.extend(GraphYAxis.prototype, GraphAxis.prototype, {
+  $.extend( GraphYAxis.prototype, GraphAxis.prototype, {
 
-		getAxisPosition: function() {
-			var size = 0;
-			
-			if( ! this.options.display ) {
-				return 0;
-			}
-			
-			if(this.options.allowedPxSerie && this.series.length > 0)
-				size = this.options.allowedPxSerie;
-			return size;
-		},
+    getAxisPosition: function() {
+      var size = 0;
 
-		getAxisWidthHeight: function() {
-			return 15;
-		},
+      if ( !this.options.display ) {
+        return 0;
+      }
 
-		resetTicks: function() {
-			this.longestTick = [ false, 0 ];
-		},
+      if ( this.options.allowedPxSerie && this.series.length > 0 )
+        size = this.options.allowedPxSerie;
+      return size;
+    },
 
-		getMaxSizeTick: function() {
+    getAxisWidthHeight: function() {
+      return 15;
+    },
 
-			return (this.longestTick[ 0 ] ? this.longestTick[ 0 ].getComputedTextLength() : 0) + 10;//(this.left ? 10 : 0);
-		},
+    resetTicks: function() {
+      this.longestTick = [ false, 0 ];
+    },
 
-		drawTick: function(value, label, scaling, options) {
-			var group = this.groupTicks,
-				tickLabel,
-				labelWidth = 0,
-				pos = this.getPos(value);
+    getMaxSizeTick: function() {
 
-			if(pos == undefined)
-				return;
+      return ( this.longestTick[ 0 ] ? this.longestTick[ 0 ].getComputedTextLength() : 0 ) + 10; //(this.left ? 10 : 0);
+    },
 
-			var tick = document.createElementNS(this.graph.ns, 'line');
-			tick.setAttribute('shape-rendering', 'crispEdges');	
-			tick.setAttribute('y1', pos);
-			tick.setAttribute('y2', pos);
+    drawTick: function( value, label, scaling, options ) {
+      var group = this.groupTicks,
+        tickLabel,
+        labelWidth = 0,
+        pos = this.getPos( value );
 
-			tick.setAttribute('x1', (this.left ? 1 : -1) * this.tickPx1 * scaling);
-			tick.setAttribute('x2', (this.left ? 1 : -1) * this.tickPx2 * scaling);
+      if ( pos == undefined )
+        return;
 
+      var tick = document.createElementNS( this.graph.ns, 'line' );
+      tick.setAttribute( 'shape-rendering', 'crispEdges' );
+      tick.setAttribute( 'y1', pos );
+      tick.setAttribute( 'y2', pos );
 
-			tick.setAttribute('stroke', 'black');
-		
-			if(label && this.options.primaryGrid)
-				this.doGridLine(true, 0, this.graph.getDrawingWidth(), pos, pos);
-			else if(!label && this.options.secondaryGrid)
-				this.doGridLine(false, 0, this.graph.getDrawingWidth(), pos, pos);
-			
-			this.groupTicks.appendChild(tick);
+      tick.setAttribute( 'x1', ( this.left ? 1 : -1 ) * this.tickPx1 * scaling );
+      tick.setAttribute( 'x2', ( this.left ? 1 : -1 ) * this.tickPx2 * scaling );
 
-			if(label) {
-				var groupLabel = this.groupTickLabels;
-				tickLabel = document.createElementNS(this.graph.ns, 'text');
-				tickLabel.setAttribute('y', pos );
-				tickLabel.setAttribute('x', this.left ? -10 : 10);
+      tick.setAttribute( 'stroke', 'black' );
 
-				if(this.left) {				
-					tickLabel.setAttribute('text-anchor', 'end');
-				} else {
-					tickLabel.setAttribute('text-anchor', 'start');
-				}
-				tickLabel.style.dominantBaseline = 'central';
+      if ( label && this.options.primaryGrid )
+        this.doGridLine( true, 0, this.graph.getDrawingWidth(), pos, pos );
+      else if ( !label && this.options.secondaryGrid )
+        this.doGridLine( false, 0, this.graph.getDrawingWidth(), pos, pos );
 
+      this.groupTicks.appendChild( tick );
 
-				this.setTickContent(tickLabel, value, options);
+      if ( label ) {
+        var groupLabel = this.groupTickLabels;
+        tickLabel = document.createElementNS( this.graph.ns, 'text' );
+        tickLabel.setAttribute( 'y', pos );
+        tickLabel.setAttribute( 'x', this.left ? -10 : 10 );
 
-				this.groupTickLabels.appendChild(tickLabel);
-				
-				if( String( tickLabel ).length >= this.longestTick[1]) {
-					this.longestTick[0] = tickLabel;
-					this.longestTick[1] = String(tickLabel.textContent).length;
+        if ( this.left ) {
+          tickLabel.setAttribute( 'text-anchor', 'end' );
+        } else {
+          tickLabel.setAttribute( 'text-anchor', 'start' );
+        }
+        tickLabel.style.dominantBaseline = 'central';
 
-				}
-			}
+        this.setTickContent( tickLabel, value, options );
 
-			this.ticks.push(tick);
-		},
+        this.groupTickLabels.appendChild( tickLabel );
 
-		drawSpecifics: function() {
-			// Place label correctly
-			//this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
-			this.label.setAttribute('transform', 'translate(' + ( ( this.left ? 1 : -1 ) * (-this.widthHeightTick - 10 - 5) ) + ', ' + (Math.abs(this.getMaxPx() - this.getMinPx()) / 2 + Math.min(this.getMinPx(), this.getMaxPx())) +') rotate(-90)');
+        if ( String( tickLabel ).length >= this.longestTick[ 1 ] ) {
+          this.longestTick[ 0 ] = tickLabel;
+          this.longestTick[ 1 ] = String( tickLabel.textContent ).length;
 
-			if( ! this.left ) {
-				this.labelTspan.style.dominantBaseline = 'hanging';	
-				this.expTspan.style.dominantBaseline = 'hanging';	
-				this.expTspanExp.style.dominantBaseline = 'hanging';	
-			}
-			
+        }
+      }
 
-			this.line.setAttribute('y1', this.getMinPx());
-			this.line.setAttribute('y2', this.getMaxPx());
-			this.line.setAttribute('x1', 0);
-			this.line.setAttribute('x2', 0);	
-		},
+      this.ticks.push( tick );
+    },
 
-		drawSeries: function() {
-			if(!this.shift)
-				return;
+    drawSpecifics: function() {
+      // Place label correctly
+      //this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
+      this.label.setAttribute( 'transform', 'translate(' + ( ( this.left ? 1 : -1 ) * ( -this.widthHeightTick - 10 - 5 ) ) + ', ' + ( Math.abs( this.getMaxPx() - this.getMinPx() ) / 2 + Math.min( this.getMinPx(), this.getMaxPx() ) ) + ') rotate(-90)' );
 
-			this.rectEvent.setAttribute('x', ( this.left ? -this.shift : 0 ) );
-			this.rectEvent.setAttribute('width', this.totalDimension);
-			this.rectEvent.setAttribute('y', Math.min(this.getMinPx(), this.getMaxPx()));
-			this.rectEvent.setAttribute('height', Math.abs(this.getMinPx() - this.getMaxPx()));
+      if ( !this.left ) {
+        this.labelTspan.style.dominantBaseline = 'hanging';
+        this.expTspan.style.dominantBaseline = 'hanging';
+        this.expTspanExp.style.dominantBaseline = 'hanging';
+      }
 
+      this.line.setAttribute( 'y1', this.getMinPx() );
+      this.line.setAttribute( 'y2', this.getMaxPx() );
+      this.line.setAttribute( 'x1', 0 );
+      this.line.setAttribute( 'x2', 0 );
+    },
 
-			this.clipRect.setAttribute('x', - this.shift);
-			this.clipRect.setAttribute('width', this.totalDimension);
-			this.clipRect.setAttribute('y', Math.min(this.getMinPx(), this.getMaxPx()));
-			this.clipRect.setAttribute('height', Math.abs(this.getMinPx() - this.getMaxPx()));
+    drawSeries: function() {
+      if ( !this.shift )
+        return;
 
+      this.rectEvent.setAttribute( 'x', ( this.left ? -this.shift : 0 ) );
+      this.rectEvent.setAttribute( 'width', this.totalDimension );
+      this.rectEvent.setAttribute( 'y', Math.min( this.getMinPx(), this.getMaxPx() ) );
+      this.rectEvent.setAttribute( 'height', Math.abs( this.getMinPx() - this.getMaxPx() ) );
 
-			for( var i = 0, l = this.series.length; i < l; i++ ) { // These are the series on the axis itself !!
-				this.series[i].draw();	
-			}
-			
-		},
+      this.clipRect.setAttribute( 'x', -this.shift );
+      this.clipRect.setAttribute( 'width', this.totalDimension );
+      this.clipRect.setAttribute( 'y', Math.min( this.getMinPx(), this.getMaxPx() ) );
+      this.clipRect.setAttribute( 'height', Math.abs( this.getMinPx() - this.getMaxPx() ) );
 
-		_setShift: function() {
+      for ( var i = 0, l = this.series.length; i < l; i++ ) { // These are the series on the axis itself !!
+        this.series[ i ].draw();
+      }
 
-			var xshift = this.isLeft() ? this.getShift() : this.graph.getWidth() - this.graph.getPaddingRight() - this.graph.getPaddingLeft() - this.getShift();
-			this.group.setAttribute('transform', 'translate(' + xshift + ' 0)');
+    },
 
-		},
+    _setShift: function() {
 
-		isLeft: function() {
-			return this.left;
-		},
+      var xshift = this.isLeft() ? this.getShift() : this.graph.getWidth() - this.graph.getPaddingRight() - this.graph.getPaddingLeft() - this.getShift();
+      this.group.setAttribute( 'transform', 'translate(' + xshift + ' 0)' );
 
-		isRight: function() {
-			return !this.left;
-		},
+    },
 
-		isFlipped: function() {
+    isLeft: function() {
+      return this.left;
+    },
 
-			return ! this.options.flipped;
-		},
+    isRight: function() {
+      return !this.left;
+    },
 
-		_draw0Line: function(px) {
-			this._0line = document.createElementNS(this.graph.ns, 'line');
-			this._0line.setAttribute('y1', px);
-			this._0line.setAttribute('y2', px);
+    isFlipped: function() {
+      return !this.options.flipped;
+    },
 
-			this._0line.setAttribute('x1', 0);
-			this._0line.setAttribute('x2', this.graph.getDrawingWidth());
-		
-			this._0line.setAttribute('stroke', 'black');
-			this.groupGrids.appendChild(this._0line);
-		},
+    _draw0Line: function( px ) {
+      this._0line = document.createElementNS( this.graph.ns, 'line' );
+      this._0line.setAttribute( 'y1', px );
+      this._0line.setAttribute( 'y2', px );
 
-		addSerie: function(name, options) {
-			var serie = new GraphSerieAxisY(name, options);
-			serie.init(this.graph, name, options);
-			serie.setAxis(this);
-			serie.autoAxis();
-			serie.setYAxis(this);
-			this.series.push(serie);
-			this.groupSeries.appendChild(serie.groupMain);
-			this.groupSeries.setAttribute('clip-path', 'url(#_clip' + this.axisRand + ')');
+      this._0line.setAttribute( 'x1', 0 );
+      this._0line.setAttribute( 'x2', this.graph.getDrawingWidth() );
 
-			return serie;
-		},
+      this._0line.setAttribute( 'stroke', 'black' );
+      this.groupGrids.appendChild( this._0line );
+    },
 
-		handleMouseMoveLocal: function(x, y, e) {
-			y -= this.graph.getPaddingTop();
-			this.mouseVal = this.getVal(y);
-		},
+    addSerie: function( name, options ) {
+      var serie = new GraphSerieAxisY( name, options );
+      serie.init( this.graph, name, options );
+      serie.setAxis( this );
+      serie.autoAxis();
+      serie.setYAxis( this );
+      this.series.push( serie );
+      this.groupSeries.appendChild( serie.groupMain );
+      this.groupSeries.setAttribute( 'clip-path', 'url(#_clip' + this.axisRand + ')' );
 
-		// TODO: Get the min value as well
-		scaleToFitAxis: function(axis, start, end) {
-			var max = 0;
-			for(var i = 0, l = this.graph.series.length; i < l; i++) {
-				if(!(this.graph.series[i].getXAxis() == axis)) {
-					continue;
-				}
+      return serie;
+    },
 
-				max = Math.max(max, this.graph.series[i].getMax(start, end));
-			}
-			this._doZoomVal(0, max);
-		},
+    handleMouseMoveLocal: function( x, y, e ) {
+      y -= this.graph.getPaddingTop();
+      this.mouseVal = this.getVal( y );
+    },
 
-		isXY: function() {
-			return 'y';
-		},
+    // TODO: Get the min value as well
+    scaleToFitAxis: function( axis, exclude, start, end ) {
 
-		getMinPx: function() { return ! this.isFlipped() ? this.maxPx : this.minPx; },
-		getMaxPx: function(px) { return ! this.isFlipped() ? this.minPx : this.maxPx; },
-		
-	});
+      if ( !start ) {
+        start = axis.getActualMin();
+      }
 
-	return GraphYAxis;
-	
-});
+      if ( !end ) {
+        end = axis.getActualMax();
+      }
+
+      if ( typeof exclude == "number" ) {
+        end = start;
+        start = exclude;
+        exclude = false;
+      }
+
+      var max = -Infinity,
+        j = 0;
+
+      for ( var i = 0, l = this.graph.series.length; i < l; i++ ) {
+
+        if ( !this.graph.series[ i ].isShown() ) {
+          continue;
+        }
+
+        if ( this.graph.series[ i ] == exclude ) {
+          continue;
+        }
+
+        if ( !( this.graph.series[ i ].getXAxis() == axis ) || ( this.graph.series[ i ].getYAxis() !== this ) ) {
+          continue;
+        }
+
+        j++;
+        max = Math.max( max, this.graph.series[ i ].getMax( start, end ) );
+      }
+
+      if ( j == 0 ) {
+
+        this.setMinMaxToFitSeries();
+      } else {
+        this._doZoomVal( 0, max );
+      }
+    },
+
+    isXY: function() {
+      return 'y';
+    }
+
+  } );
+
+  return GraphYAxis;
+
+} );

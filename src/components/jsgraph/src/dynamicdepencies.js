@@ -1,63 +1,62 @@
-define([ 'require' ], function( require ) {
-	
-	return function() {
+define( [ 'require' ], function( require ) {
 
-		this.caching = {};
-		this.folderMap = {};
+  return function() {
 
-		this.load = function( type, file, callback ) {
+    this.caching = {};
+    this.folderMap = {};
 
-			var self = this;
+    this.load = function( type, file, callback ) {
 
-			if( ! this.caching[ type ] ) {
-				this.caching[ type ] = {};
-			}
+      var self = this;
 
-			if( Array.isArray( file ) ) {
+      if ( !this.caching[ type ] ) {
+        this.caching[ type ] = {};
+      }
 
-				file.map( function( file ) {
+      if ( Array.isArray( file ) ) {
 
-					self.load( type, file, callback );
+        file.map( function( file ) {
 
-				} );
-				return;
-			}
-			
-			var origFile = file;
+          self.load( type, file, callback );
 
-			if( this.folderMap[ type ] ) {
+        } );
+        return;
+      }
 
-				file = this.folderMap[ type ] + file;
-			}
+      var origFile = file;
 
-			if( this.caching[ type ][ file ] ) {
+      if ( this.folderMap[ type ] ) {
 
-			//	console.log( "Found element " + file + " of type " + type + " in cache" );
+        file = this.folderMap[ type ] + file;
+      }
 
-				return ( callback( this.caching[ type ][ file ], file, origFile ) || this.caching[ type ][ file ] );
-				
+      if ( this.caching[ type ][ file ] ) {
 
-			} else if( typeof build !== "undefined" && build[ file ]) {
+        //	console.log( "Found element " + file + " of type " + type + " in cache" );
 
-				return ( callback( this.caching[ type ][ file ] = build[ file ], file, origFile ) || this.caching[ type ][ file ] );
+        return ( callback( this.caching[ type ][ file ], file, origFile ) || this.caching[ type ][ file ] );
 
-			} else if( typeof require !== "undefined" ) {
-				//console.log( "Trying to load file " + file + " of type " + type, this.folderMap );
-				require( [ file ], function( instance ) {
+      } else if ( typeof build !== "undefined" && build[ file ] ) {
 
-					callback( self.caching[ type ][ file ] = instance, file, origFile );
-				} );
-			} else {
-				console.warn("Could not load file " + file + " of type " + type );
-			}
-		}
+        return ( callback( this.caching[ type ][ file ] = build[ file ], file, origFile ) || this.caching[ type ][ file ] );
 
-		this.configure = function( map ) {
-			this.folderMap = map || {};
-		}
+      } else if ( typeof require !== "undefined" ) {
+        //console.log( "Trying to load file " + file + " of type " + type, this.folderMap );
+        require( [ file ], function( instance ) {
 
-		//return loader;
+          callback( self.caching[ type ][ file ] = instance, file, origFile );
+        } );
+      } else {
+        console.warn( "Could not load file " + file + " of type " + type );
+      }
+    }
 
-	};
-	
+    this.configure = function( map ) {
+      this.folderMap = map ||  {};
+    }
+
+    //return loader;
+
+  };
+
 } );

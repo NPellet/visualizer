@@ -1,42 +1,39 @@
+define( [ './series/graph.serie.line' ], function( GraphSerie ) {
 
+  var GraphSerieAxis = function() {};
 
-define([ './series/graph.serie.line'], function( GraphSerie ) {
+  GraphSerie.prototype,
 
-	var GraphSerieAxis = function() {};
+  $.extend( true, GraphSerieAxis.prototype, GraphSerie.prototype, {
 
-	GraphSerie.prototype,
+    initExtended1: function() {
+      if ( this.initExtended2 )
+        this.initExtended2();
+    },
 
-	$.extend( true, GraphSerieAxis.prototype, GraphSerie.prototype, {
+    setAxis: function( axis ) {
+      this.axis = axis;
+    },
 
-		initExtended1: function() {
-			if(this.initExtended2)
-				this.initExtended2();
-		},
+    kill: function( noRedraw ) {
+      this.getAxis().groupSeries.removeChild( this.groupMain );
+      this.getAxis().series.splice( this.getAxis().series.indexOf( this ), 1 );
+      if ( !noRedraw )
+        this.graph.redraw();
+    },
 
-		setAxis: function(axis) {
-			this.axis = axis;
-		},
+    getAxis: function() {
+      return this.axis;
+    },
 
+    getXAxis: function() {
+      return this.axis;
+    },
 
-		kill: function(noRedraw) {
-			this.getAxis().groupSeries.removeChild(this.groupMain);
-			this.getAxis().series.splice(this.getAxis().series.indexOf(this), 1);
-			if(!noRedraw)
-				this.graph.redraw();
-		},
+    getYAxis: function() {
+      return this.axis;
+    }
+  } );
 
-		getAxis: function() {
-			return this.axis;
-		},
-
-		getXAxis: function() {
-			return this.axis;
-		},
-
-		getYAxis: function() {
-			return this.axis;
-		}
-	});
-
-	return GraphSerieAxis;
-});
+  return GraphSerieAxis;
+} );

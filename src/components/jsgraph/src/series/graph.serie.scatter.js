@@ -1,98 +1,103 @@
+define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
-define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
+  "use strict";
 
-	"use strict";
+  var GraphSerieScatter = function() {}
+  $.extend( GraphSerieScatter.prototype, GraphSerieNonInstanciable.prototype, {
 
-	var GraphSerieScatter = function() { }
-	$.extend( GraphSerieScatter.prototype, GraphSerieNonInstanciable.prototype, {
+    defaults: {
+      label: ""
+    },
 
-		defaults: {
-			label: ""
-		},
+    /**
+     *	Possible data types
+     *	[100, 0.145, 101, 0.152, 102, 0.153]
+     *	[[100, 0.145, 101, 0.152], [104, 0.175, 106, 0.188]]
+     *	[[100, 0.145], [101, 0.152], [102, 0.153], [...]]
+     *	[{ x: 100, dx: 1, y: [0.145, 0.152, 0.153]}]
+     *
+     *	Converts every data type to a 1D array
+     */
+    setData: function( data, arg, type ) {
 
+      var z = 0,
+        x,
+        dx,
+        arg = arg || "2D",
+        type = type || 'float',
+        arr,
+        total = 0,
+        continuous;
 
+      if ( !data instanceof Array ) {
+        return this;
+      }
 
-		/**
-		 *	Possible data types
-		 *	[100, 0.145, 101, 0.152, 102, 0.153]
-		 *	[[100, 0.145, 101, 0.152], [104, 0.175, 106, 0.188]]
-		 *	[[100, 0.145], [101, 0.152], [102, 0.153], [...]]
-		 *	[{ x: 100, dx: 1, y: [0.145, 0.152, 0.153]}]
-		 *
-		 *	Converts every data type to a 1D array
-		 */
-		setData: function(data, arg, type) {
+      if ( data instanceof Array && !( data[ 0 ] instanceof Array ) ) { // [100, 103, 102, 2143, ...]
+        arg = "1D";
+      }
 
-			var z = 0,
-				x,
-				dx, 
-				arg = arg || "2D", 
-				type = type || 'float', 
-				arr, 
-				total = 0,
-				continuous;
+      var _2d = ( arg == "2D" );
 
-			if( ! data instanceof Array ) {
-				return this;
-			}
+      arr = this._addData( type, _2d ? data.length * 2 : data.length );
 
-			
-			if( data instanceof Array && ! ( data[ 0 ] instanceof Array ) ) {// [100, 103, 102, 2143, ...]
-				arg = "1D";
-			}
+      z = 0;
 
-			var _2d = ( arg == "2D" );
+      for ( var j = 0, l = data.length; j < l; j++ ) {
 
-			arr = this._addData( type, _2d ? data.length * 2 : data.length );
-			
-			z = 0;
+        if ( _2d ) {
+          arr[ z ] = ( data[ j ][ 0 ] );
+          this._checkX( arr[ z ] );
+          z++;
+          arr[ z ] = ( data[ j ][ 1 ] );
+          this._checkY( arr[ z ] );
+          z++;
+          total++;
+        } else { // 1D Array
+          arr[ z ] = data[ j ];
+          this[ j % 2 == 0 ? '_checkX' : '_checkY' ]( arr[ z ] );
+          z++;
+          total += j % 2 ? 1 : 0;
 
-			for(var j = 0, l = data.length; j < l; j++) {
+        }
+      }
 
-				if(_2d) {
-					arr[z] = (data[j][0]);
-					this._checkX(arr[z]);
-					z++;
-					arr[z] = (data[j][1]);
-					this._checkY(arr[z]);
-					z++;
-					total++;
-				} else { // 1D Array
-					arr[z] = data[j];
-					this[j % 2 == 0 ? '_checkX' : '_checkY'](arr[z]);
-					z++;
-					total += j % 2 ? 1 : 0;
+      this.graph._updateAxes();
 
-				}
-			}
+      this.data = arr;
 
-			this.graph._updateAxes();
+      return this;
+    },
 
-			this.data = arr;
+    init: function( graph, name, options ) {
 
-			return this;
-		},
-		
-		init: function( graph, name, options ) {
+      var self = this;
 
-			var self = this;
+      this.graph = graph;
+      this.name = name;
 
-			this.graph = graph;
-			this.name = name;
+      this.id = Math.random() + Date.now();
 
-			this.id = Math.random() + Date.now();
+      this.shown = true;
+      this.options = $.extend( true, {}, GraphSerieScatter.prototype.defaults, options );
+      this.data = [];
 
-			this.shown = true;
-			this.options = $.extend(true, {}, GraphSerieScatter.prototype.defaults, options);
-			this.data = [];
+      this._isMinOrMax = {
+        x: {
+          min: false,
+          max: false
+        },
+        y: {
+          min: false,
+          max: false
+        }
+      };
 
-			this._isMinOrMax = { x: { min: false, max: false}, y: { min: false, max: false} };
+      this.groupPoints = document.createElementNS( this.graph.ns, 'g' );
+      this.groupMain = document.createElementNS( this.graph.ns, 'g' );
 
-			this.groupPoints = document.createElementNS(this.graph.ns, 'g');
-			this.groupMain = document.createElementNS(this.graph.ns, 'g');
-			
-			this.additionalData = {};
-/*
+      this.additionalData = {};
+      /*
 			this.groupPoints.addEventListener('mouseover', function(e) {
 			
 			});
@@ -102,314 +107,309 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			
 			});
 */
-			this.minX = Number.MAX_VALUE;
-			this.minY = Number.MAX_VALUE;
-			this.maxX = Number.MIN_VALUE;
-			this.maxY = Number.MIN_VALUE;
-			
-			this.groupMain.appendChild(this.groupPoints);
-			this.currentAction = false;
+      this.minX = Number.MAX_VALUE;
+      this.minY = Number.MAX_VALUE;
+      this.maxX = Number.MIN_VALUE;
+      this.maxY = Number.MIN_VALUE;
 
-			if(this.initExtended1) {
-				this.initExtended1();
-			}
+      this.groupMain.appendChild( this.groupPoints );
+      this.currentAction = false;
 
-			this.stdStyle = {
-				shape: 'circle',
-				cx: 0,
-				cy: 0,
-				r: 3,
-				stroke: 'transparent',
-				fill: "black"
-			}
-		},
+      if ( this.initExtended1 ) {
+        this.initExtended1();
+      }
 
+      this.stdStyle = {
+        shape: 'circle',
+        cx: 0,
+        cy: 0,
+        r: 3,
+        stroke: 'transparent',
+        fill: "black"
+      }
+    },
 
-		empty: function() {
+    empty: function() {
 
-			while( this.group.firstChild ) {
-				this.group.removeChild( this.group.firstChild );
-			}
-		},
+      while ( this.group.firstChild ) {
+        this.group.removeChild( this.group.firstChild );
+      }
+    },
 
-		select: function() {
-			this.selected = true;
+    select: function() {
+      this.selected = true;
 
-		},
+    },
 
-		unselect: function() {
-			this.selected = false;
-		},
+    unselect: function() {
+      this.selected = false;
+    },
 
-		setDataStyle: function( std, extra ) {
+    setDataStyle: function( std, extra ) {
 
-			this.stdStylePerso = std;
-			this.extraStyle = extra;
+      this.stdStylePerso = std;
+      this.extraStyle = extra;
 
-			return this;
-		},
+      return this;
+    },
 
-		draw: function() { // Serie redrawing
+    draw: function() { // Serie redrawing
 
+      var x,
+        y,
+        xpx,
+        ypx,
+        j = 0,
+        k,
+        m,
+        currentLine,
+        max,
+        self = this;
 
-			var x, 
-				y, 
-				xpx, 
-				ypx, 
-				j = 0, 
-				k, 
-				m,
-				currentLine, 
-				max,
-				self = this;
+      this._drawn = true;
 
-			this._drawn = true;			
+      this.groupMain.removeChild( this.groupPoints );
 
-			
-			this.groupMain.removeChild( this.groupPoints );
+      var incrXFlip = 0;
+      var incrYFlip = 1;
 
-			var incrXFlip = 0;
-			var incrYFlip = 1;
+      if ( this.getFlip() ) {
+        incrXFlip = 1;
+        incrYFlip = 0;
+      }
 
-			if( this.getFlip( ) ) {
-				incrXFlip = 1;
-				incrYFlip = 0;
-			}
+      var totalLength = this.data.length / 2;
 
-			var totalLength = this.data.length / 2;
-			
-			j = 0, k = 0, m = this.data.length;
+      j = 0, k = 0, m = this.data.length;
 
-			var error;
-		//	var pathError = "M 0 0 ";
+      var error;
+      //	var pathError = "M 0 0 ";
 
-			if( this.errorstyles ) {
+      if ( this.errorstyles ) {
 
-				for( var i = 0, l = this.errorstyles.length; i < l ; i ++ ) {
-					this.errorstyles[ i ].paths = { top: "", bottom: "", left: "", right: "" };
+        for ( var i = 0, l = this.errorstyles.length; i < l; i++ ) {
+          this.errorstyles[ i ].paths = {
+            top: "",
+            bottom: "",
+            left: "",
+            right: ""
+          };
 
-				}
+        }
 
+      }
 
-			}
+      for ( ; j < m; j += 2 ) {
 
-			for( ; j < m ; j += 2 ) {
+        xpx = this.getX( this.data[ j + incrXFlip ] );
+        ypx = this.getY( this.data[ j + incrYFlip ] );
 
-				xpx = this.getX( this.data[ j + incrXFlip ] );
-				ypx = this.getY( this.data[ j + incrYFlip ] );
+        var valY = this.data[ j + incrYFlip ],
+          coordY;
 
-				var valY = this.data[ j + incrYFlip ],
-					coordY;
+        if ( this.error && ( error = this.error[ j / 2 ] ) ) {
 
-				if( this.error && ( error = this.error[ j / 2 ] ) ) {
+          //		pathError += "M " + xpx + " " + ypx;
 
-			//		pathError += "M " + xpx + " " + ypx;
+          if ( error[ 0 ] ) {
+            this.doErrorDraw( 'y', error[ 0 ], this.data[ j + incrYFlip ], ypx, xpx, ypx );
+          }
 
-					if( error[ 0 ] ) {
-						this.doErrorDraw( 'y', error[ 0 ], this.data[ j + incrYFlip ], ypx, xpx, ypx );
-					}
+          if ( error[ 1 ] ) {
+            this.doErrorDraw( 'x', error[ 1 ], this.data[ j + incrXFlip ], xpx, xpx, ypx );
+          }
 
-					if( error[ 1 ] ) {
-						this.doErrorDraw( 'x', error[ 1 ], this.data[ j + incrXFlip ], xpx, xpx, ypx );
-					}
+        }
 
-				}
-				
-				this._addPoint( xpx, ypx, j / 2 );
-			}
+        this._addPoint( xpx, ypx, j / 2 );
+      }
 
+      if ( this.errorstyles ) {
 
-			
-			if( this.errorstyles ) {
-			
-				for( var i = 0, l = this.errorstyles.length; i < l ; i ++ ) {
-				
-					for( var j in this.errorstyles[ i ].paths ) {
+        for ( var i = 0, l = this.errorstyles.length; i < l; i++ ) {
 
-						if( this.errorstyles[ i ][ j ] && this.errorstyles[ i ][ j ].dom ) {
-							this.errorstyles[ i ][ j ].dom.setAttribute( 'd', this.errorstyles[ i ].paths[ j ] );
-						}
-					}
-				}
-			}
+          for ( var j in this.errorstyles[ i ].paths ) {
 
-			this.groupMain.appendChild( this.groupPoints );
-		},
+            if ( this.errorstyles[ i ][ j ] && this.errorstyles[ i ][ j ].dom ) {
+              this.errorstyles[ i ][ j ].dom.setAttribute( 'd', this.errorstyles[ i ].paths[ j ] );
+            }
+          }
+        }
+      }
 
+      this.groupMain.appendChild( this.groupPoints );
+    },
 
-		doErrorDraw: function( orientation, error, originVal, originPx, xpx, ypx ) {
+    doErrorDraw: function( orientation, error, originVal, originPx, xpx, ypx ) {
 
-			if( ! ( error instanceof Array ) ) {
-				error = [ error ]; 
-			}
+      if ( !( error instanceof Array ) )  {
+        error = [ error ];
+      }
 
-			var functionName = orientation == 'y' ? 'getY' : 'getX';
-			var bars = orientation == 'y' ? [ 'top', 'bottom' ] : [ 'left', 'right' ];
-			var j;
+      var functionName = orientation == 'y' ? 'getY' : 'getX';
+      var bars = orientation == 'y' ? [ 'top', 'bottom' ] : [ 'left', 'right' ];
+      var j;
 
-			if( isNaN( xpx ) || isNaN( ypx ) ) {
-				return;
-			}
+      if ( isNaN( xpx ) ||  isNaN( ypx ) ) {
+        return;
+      }
 
-			for( var i = 0 , l = error.length ; i < l ; i ++ ) {
+      for ( var i = 0, l = error.length; i < l; i++ ) {
 
-				if( error[ i ] instanceof Array ) { // TOP
+        if ( error[ i ] instanceof Array ) { // TOP
 
-					j = bars[ 0 ];
-					this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
-					this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ][ 0 ] ), originPx );
+          j = bars[ 0 ];
+          this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ][ 0 ] ), originPx );
 
-					j = bars[ 1 ];
-					this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
-					this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ][ 1 ] ), originPx );
-					
+          j = bars[ 1 ];
+          this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ][ 1 ] ), originPx );
 
-				} else {
+        } else {
 
+          j = bars[ 0 ];
 
-					j = bars[ 0 ];
+          this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ] ), originPx );
+          j = bars[ 1 ];
+          this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ] ), originPx );
+        }
+      }
+    },
 
-					this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
-					this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ] ), originPx );
-					j = bars[ 1 ];
-					this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
-					this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ] ), originPx );
-				}
-			}	
-		},
+    makeError: function( orientation, level, coord, origin ) {
 
+      switch ( this.errorstyles[  level ].type ) {
 
-		makeError: function( orientation, level, coord, origin ) {
+        case 'bar':
+          return this[ "makeBar" + orientation.toUpperCase() ]( coord, origin );
+          break;
 
-			switch( this.errorstyles[ level ].type ) {
+        case 'box':
+          return this[ "makeBox" + orientation.toUpperCase() ]( coord, origin );
+          break;
+      }
+    },
 
-				case 'bar':
-					return this["makeBar" + orientation.toUpperCase() ]( coord, origin );
-				break;
+    makeBarY: function( coordY, origin ) {
 
-				case 'box':
-					return this["makeBox" + orientation.toUpperCase() ]( coord, origin );
-				break;
-			}
-		},
+      return " V " + coordY + " m -10 0 h 20 m -10 0 V " + origin + " ";
+    },
 
-		makeBarY: function( coordY, origin ) {
+    makeBoxY: function( coordY, origin ) {
+      return " m 5 0 V " + coordY + " h -10 V " + origin + " m 5 0 ";
+    },
 
-			return " V " + coordY + " m -10 0 h 20 m -10 0 V " + origin + " ";
-		},
+    makeBarX: function( coordX, origin ) {
+      return " H " + coordX + " m 0 -10 v 20 m 0 -10 H " + origin + " ";
+    },
 
+    makeBoxX: function( coordX, origin ) {
+      return " v 5 H " + coordX + " v -10 H " + origin + " v 5 ";
+    },
 
-		makeBoxY: function( coordY, origin ) {
-			return " m 5 0 V " + coordY + " h -10 V " + origin + " m 5 0 ";
-		},
+    _addPoint: function( xpx, ypx, k ) {
 
+      var g = document.createElementNS( this.graph.ns, 'g' );
+      g.setAttribute( 'transform', 'translate(' + xpx + ', ' + ypx + ')' );
 
-		makeBarX: function( coordX, origin ) {
-			return " H " + coordX + " m 0 -10 v 20 m 0 -10 H " + origin + " ";
-		},
+      if ( this.extraStyle && this.extraStyle[ k ] ) {
 
+        this.doShape( g, this.extraStyle[ k ] );
 
-		makeBoxX: function( coordX, origin ) {
-			return " v 5 H " + coordX + " v -10 H " + origin + " v 5 ";
-		},
+      } else if ( this.stdStylePerso ) {
 
+        this.doShape( g, this.stdStylePerso );
 
-		_addPoint: function( xpx, ypx, k ) {
+      } else {
 
-			var g = document.createElementNS( this.graph.ns, 'g' );
-			g.setAttribute('transform', 'translate(' + xpx + ', ' + ypx + ')');
+        this.doShape( g, this.stdStyle );
+      }
 
-			if( this.extraStyle && this.extraStyle[ k ] ) {
+      this.groupPoints.appendChild( g );
+    },
 
-				this.doShape( g, this.extraStyle[ k ] );
+    doShape: function( group, shape ) {
 
-			} else if( this.stdStylePerso ) {
+      var el = document.createElementNS( this.graph.ns, shape.shape );
+      for ( var i in shape ) {
+        if ( i !== "shape" ) {
+          el.setAttribute( i, shape[ i ] );
+        }
+      }
 
-				this.doShape( g, this.stdStylePerso );
+      group.appendChild( el );
+    },
 
-			} else {
+    setDataError: function( error ) {
+      this.error = error;
+      return this;
+    },
 
-				this.doShape( g, this.stdStyle );
-			}
+    setErrorStyle: function( errorstyles ) {
 
-			this.groupPoints.appendChild( g );
-		},
+      var self = this;
 
-		doShape: function( group, shape ) {
+      errorstyles = errorstyles ||  [ 'box', 'bar' ];
 
-			var el = document.createElementNS( this.graph.ns, shape.shape );
-			for( var i in shape ) {
-				if( i !== "shape" ) {
-					el.setAttribute( i , shape[ i ] );
-				}
-			}
+      // Ensure array
+      if ( !Array.isArray( errorstyles ) ) {
+        errorstyles = [ errorstyles ];
+      }
 
-			group.appendChild( el );
-		},
+      var styles = [];
+      var pairs = [
+        [ 'y', 'top', 'bottom' ],
+        [ 'x', 'left', 'right' ]
+      ];
 
-		setDataError: function( error ) {
-			this.error = error;
-			return this;
-		},
+      function makePath( style ) {
 
+        style.dom = document.createElementNS( self.graph.ns, 'path' );
+        style.dom.setAttribute( 'fill', style.fillColor || 'none' );
+        style.dom.setAttribute( 'stroke', style.strokeColor || 'black' );
 
-		setErrorStyle: function( errorstyles ) {
+        self.groupMain.appendChild( style.dom );
+      }
 
-			var self = this;
+      for ( var i = 0; i < errorstyles.length; i++ ) {
+        // i is bar or box
 
-			errorstyles = errorstyles || [ 'box', 'bar' ];
+        styles[ i ] = {};
 
-			// Ensure array
-			if( ! Array.isArray( errorstyles ) ) {
-				errorstyles = [ errorstyles ];
-			}
+        if ( typeof errorstyles[ i ] == "string" ) {
 
-			var styles = [];
-			var pairs = [ [ 'y', 'top', 'bottom' ], [ 'x', 'left', 'right' ] ];
+          errorstyles[ i ] = {
+            type: errorstyles[ i ],
+            y: {}
+          };
 
-			function makePath( style ) {
+        }
 
-				style.dom = document.createElementNS( self.graph.ns, 'path' );
-				style.dom.setAttribute('fill', style.fillColor || 'none');
-				style.dom.setAttribute('stroke', style.strokeColor || 'black');
+        styles[ i ].type = errorstyles[ i ].type;
 
-				self.groupMain.appendChild( style.dom );
-			}
+        for ( var j = 0, l = pairs.length; j < l; j++ ) {
 
-			for( var i = 0; i < errorstyles.length; i ++ ) {
-				// i is bar or box
+          if ( errorstyles[ i ][ pairs[ j ][ 0 ] ] ) { //.x, .y
 
-				styles[ i ] = {};
-				
+            errorstyles[ i ][ pairs[ j ][ 1 ] ] = $.extend( true, {}, errorstyles[ i ][ pairs[ j ][ 0 ] ] );
+            errorstyles[ i ][ pairs[ j ][ 2 ] ] = $.extend( true, {}, errorstyles[ i ][ pairs[ j ][ 0 ] ] );
 
-				if( typeof errorstyles[ i ] == "string" ) {
+          }
 
-					errorstyles[ i ] = { type: errorstyles[ i ], y: {} };
+          for ( var k = 1; k <= 2; k++ ) {
 
-				}
+            if ( errorstyles[ i ][ pairs[ j ][ k ] ] ) {
 
-				styles[ i ].type = errorstyles[ i ].type;
-
-				for( var j = 0, l = pairs.length ; j < l ; j ++ ) {
-
-					if( errorstyles[ i ][ pairs[ j ][ 0 ] ] ) { //.x, .y
-
-						errorstyles[ i ][ pairs[ j ][ 1 ] ] = $.extend( true, {}, errorstyles[ i ][ pairs[ j ][ 0 ] ] );
-						errorstyles[ i ][ pairs[ j ][ 2 ] ] = $.extend( true, {}, errorstyles[ i ][ pairs[ j ][ 0 ] ] );
-
-					}
-
-					for( var k = 1; k <= 2 ; k ++ ) {
-
-						if( errorstyles[ i ][ pairs[ j ][ k ] ] ) {
-
-							styles[ i ][ pairs[ j ][ k ] ] = errorstyles[ i ][ pairs[ j ][ k ] ];
-							makePath( styles[ i ][ pairs[ j ][ k ] ] );
-						}	
-					}
-				}
-			}
-/*
+              styles[ i ][ pairs[ j ][ k ] ] = errorstyles[ i ][ pairs[ j ][ k ] ];
+              makePath( styles[ i ][ pairs[ j ][ k ] ] );
+            }
+          }
+        }
+      }
+      /*
 				// None is defined
 				if( ! errorstyles[ i ].top && ! errorstyles[ i ].bottom ) {
 
@@ -432,11 +432,10 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 				}
 */
 
+      this.errorstyles = styles;
 
-			this.errorstyles = styles;
+    }
+  } );
 
-		}
-	} );
-
-	return GraphSerieScatter;
-});
+  return GraphSerieScatter;
+} );

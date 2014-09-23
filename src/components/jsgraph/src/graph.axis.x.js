@@ -1,158 +1,153 @@
-
 define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
 
-	"use strict";
-	
-	var GraphXAxis = function(graph, topbottom, options) {
-		this.init(graph, options);
-		this.top = topbottom == 'top';
-	}
+  "use strict";
 
-	$.extend( GraphXAxis.prototype, GraphAxis.prototype, {
+  var GraphXAxis = function( graph, topbottom, options ) {
+    this.init( graph, options );
+    this.top = topbottom == 'top';
+  }
 
-		getAxisPosition: function() {
+  $.extend( GraphXAxis.prototype, GraphAxis.prototype, {
 
-			if( ! this.options.display ) {
-				return 0;
-			}
+    getAxisPosition: function() {
 
-			var size = (this.options.tickPosition == 1 ? 15 : 25) + this.graph.options.fontSize * 2;	
-			if(this.options.allowedPxSerie && this.series.length > 0)
-				size += this.options.allowedPxSerie;
-			return size;
-		},
+      if ( !this.options.display ) {
+        return 0;
+      }
 
-		getAxisWidthHeight: function() {
-			return;
-		},
+      var size = ( this.options.tickPosition == 1 ? 15 : 25 ) + this.graph.options.fontSize * 2;
+      if ( this.options.allowedPxSerie && this.series.length > 0 )
+        size += this.options.allowedPxSerie;
+      return size;
+    },
 
-		_setShift: function() {
-			this.group.setAttribute('transform', 'translate(0 ' + (this.top ? this.shift : (this.graph.getDrawingHeight() - this.shift)) + ')')
-		},
+    getAxisWidthHeight: function() {
+      return;
+    },
 
-		getMaxSizeTick: function() {
-			return (this.top ? -1 : 1) * ((this.options.tickPosition == 1) ? 10 : 10)
-		},
+    _setShift: function() {
+      this.group.setAttribute( 'transform', 'translate(0 ' + ( this.top ? this.shift : ( this.graph.getDrawingHeight() - this.shift ) ) + ')' )
+    },
 
-		drawTick: function(value, label, scaling, options) {
-			var group = this.groupTicks;
-			var tick = document.createElementNS(this.graph.ns, 'line'),
-				val = this.getPos(value);
+    getMaxSizeTick: function() {
+      return ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ) ? 10 : 10 )
+    },
 
-			if(val == undefined)
-				return;
+    drawTick: function( value, label, scaling, options ) {
+      var group = this.groupTicks;
+      var tick = document.createElementNS( this.graph.ns, 'line' ),
+        val = this.getPos( value );
 
-			tick.setAttribute('shape-rendering', 'crispEdges');
-			tick.setAttribute('x1', val);
-			tick.setAttribute('x2', val);
+      if ( val == undefined )
+        return;
 
-			tick.setAttribute('y1', (this.top ? 1 : -1) * this.tickPx1 * scaling);
-			tick.setAttribute('y2', (this.top ? 1 : -1) * this.tickPx2 * scaling);
+      tick.setAttribute( 'shape-rendering', 'crispEdges' );
+      tick.setAttribute( 'x1', val );
+      tick.setAttribute( 'x2', val );
 
-			if(label && this.options.primaryGrid)
-				this.doGridLine(true, val, val, 0, this.graph.getDrawingHeight());
-			else if(!label && this.options.secondaryGrid)
-				this.doGridLine(false, val, val, 0, this.graph.getDrawingHeight());
-			
-			tick.setAttribute('stroke', 'black');
+      tick.setAttribute( 'y1', ( this.top ? 1 : -1 ) * this.tickPx1 * scaling );
+      tick.setAttribute( 'y2', ( this.top ? 1 : -1 ) * this.tickPx2 * scaling );
 
-			this.groupTicks.appendChild(tick);
-			if(label) {
-				var groupLabel = this.groupTickLabels;
-				var tickLabel = document.createElementNS(this.graph.ns, 'text');
-				tickLabel.setAttribute('x', val);
-				tickLabel.setAttribute('y', (this.top ? -1 : 1) * ( ( this.options.tickPosition == 1 ? 8 : 20) + ( this.top ? 10 : 0 ) ) );
-				tickLabel.setAttribute('text-anchor', 'middle');
-				tickLabel.style.dominantBaseline = 'hanging';
+      if ( label && this.options.primaryGrid )
+        this.doGridLine( true, val, val, 0, this.graph.getDrawingHeight() );
+      else if ( !label && this.options.secondaryGrid )
+        this.doGridLine( false, val, val, 0, this.graph.getDrawingHeight() );
 
-				this.setTickContent(tickLabel, value, options);
+      tick.setAttribute( 'stroke', 'black' );
 
-				this.groupTickLabels.appendChild(tickLabel);
-			}
-			this.ticks.push(tick);
-		},
+      this.groupTicks.appendChild( tick );
+      if ( label ) {
+        var groupLabel = this.groupTickLabels;
+        var tickLabel = document.createElementNS( this.graph.ns, 'text' );
+        tickLabel.setAttribute( 'x', val );
+        tickLabel.setAttribute( 'y', ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ? 8 : 20 ) + ( this.top ? 10 : 0 ) ) );
+        tickLabel.setAttribute( 'text-anchor', 'middle' );
+        tickLabel.style.dominantBaseline = 'hanging';
 
-		drawSpecifics: function() {
+        this.setTickContent( tickLabel, value, options );
 
-			// Adjusts group shift
-			//this.group.setAttribute('transform', 'translate(0 ' + this.getShift() + ')');
+        this.groupTickLabels.appendChild( tickLabel );
+      }
+      this.ticks.push( tick );
+    },
 
-			// Place label correctly
-			this.label.setAttribute('text-anchor', 'middle');
-			this.label.setAttribute('x', Math.abs(this.getMaxPx() - this.getMinPx()) / 2 + this.getMinPx());
-			this.label.setAttribute('y', (this.top ? -1 : 1) * ((this.options.tickPosition == 1 ? 10 : 15) + this.graph.options.fontSize));
+    drawSpecifics: function() {
 
-			this.line.setAttribute('x1', this.getMinPx());
-			this.line.setAttribute('x2', this.getMaxPx());
-			this.line.setAttribute('y1', 0);
-			this.line.setAttribute('y2', 0);
+      // Adjusts group shift
+      //this.group.setAttribute('transform', 'translate(0 ' + this.getShift() + ')');
 
-			this.labelTspan.style.dominantBaseline = 'hanging';
-			this.expTspan.style.dominantBaseline = 'hanging';
-			this.expTspanExp.style.dominantBaseline = 'hanging';	
-		},
+      // Place label correctly
+      this.label.setAttribute( 'text-anchor', 'middle' );
+      this.label.setAttribute( 'x', Math.abs( this.getMaxPx() - this.getMinPx() ) / 2 + this.getMinPx() );
+      this.label.setAttribute( 'y', ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ? 10 : 15 ) + this.graph.options.fontSize ) );
 
-		drawSeries: function() {
+      this.line.setAttribute( 'x1', this.getMinPx() );
+      this.line.setAttribute( 'x2', this.getMaxPx() );
+      this.line.setAttribute( 'y1', 0 );
+      this.line.setAttribute( 'y2', 0 );
 
-			if(!this.shift) {
-				return;
-			}
+      this.labelTspan.style.dominantBaseline = 'hanging';
+      this.expTspan.style.dominantBaseline = 'hanging';
+      this.expTspanExp.style.dominantBaseline = 'hanging';
+    },
 
-			this.rectEvent.setAttribute('y', !this.top ? 0 : -this.shift);
-			this.rectEvent.setAttribute('height', this.totalDimension);
-			this.rectEvent.setAttribute('x', Math.min(this.getMinPx(), this.getMaxPx()));
-			this.rectEvent.setAttribute('width', Math.abs(this.getMinPx() - this.getMaxPx()));
-			//this.rectEvent.setAttribute('fill', 'rgba(0, 0, 0, 0.5)');
-//console.log(this.clipRect);
-			this.clipRect.setAttribute('y', !this.top ? 0 : -this.shift);
-			this.clipRect.setAttribute('height', this.totalDimension);
-			this.clipRect.setAttribute('x', Math.min(this.getMinPx(), this.getMaxPx()));
-			this.clipRect.setAttribute('width', Math.abs(this.getMinPx() - this.getMaxPx()));
+    drawSeries: function() {
 
+      if ( !this.shift ) {
+        return;
+      }
 
-			for(var i = 0, l = this.series.length; i < l; i++) { // These are the series on the axis itself !!
-				this.series[i].draw();	
-			}
-		},
+      this.rectEvent.setAttribute( 'y', !this.top ? 0 : -this.shift );
+      this.rectEvent.setAttribute( 'height', this.totalDimension );
+      this.rectEvent.setAttribute( 'x', Math.min( this.getMinPx(), this.getMaxPx() ) );
+      this.rectEvent.setAttribute( 'width', Math.abs( this.getMinPx() - this.getMaxPx() ) );
+      //this.rectEvent.setAttribute('fill', 'rgba(0, 0, 0, 0.5)');
+      //console.log(this.clipRect);
+      this.clipRect.setAttribute( 'y', !this.top ? 0 : -this.shift );
+      this.clipRect.setAttribute( 'height', this.totalDimension );
+      this.clipRect.setAttribute( 'x', Math.min( this.getMinPx(), this.getMaxPx() ) );
+      this.clipRect.setAttribute( 'width', Math.abs( this.getMinPx() - this.getMaxPx() ) );
 
-		_draw0Line: function(px) {
-			this._0line = document.createElementNS(this.graph.ns, 'line');
-			this._0line.setAttribute('x1', px);
-			this._0line.setAttribute('x2', px);
+      for ( var i = 0, l = this.series.length; i < l; i++ ) { // These are the series on the axis itself !!
+        this.series[ i ].draw();
+      }
+    },
 
-			this._0line.setAttribute('y1', 0);
-			this._0line.setAttribute('y2', this.getMaxPx());
-		
-			this._0line.setAttribute('stroke', 'black');
-			this.groupGrids.appendChild(this._0line);
-		},
+    _draw0Line: function( px ) {
+      this._0line = document.createElementNS( this.graph.ns, 'line' );
+      this._0line.setAttribute( 'x1', px );
+      this._0line.setAttribute( 'x2', px );
 
+      this._0line.setAttribute( 'y1', 0 );
+      this._0line.setAttribute( 'y2', this.getMaxPx() );
 
+      this._0line.setAttribute( 'stroke', 'black' );
+      this.groupGrids.appendChild( this._0line );
+    },
 
-		addSerie: function(name, options) {
-			var serie = new GraphSerieAxisX(name, options);
-			serie.setAxis(this);
-			serie.init(this.graph, name, options);
-			serie.autoAxis();
-			serie.setXAxis(this);
-			this.series.push(serie);
-			this.groupSeries.appendChild(serie.groupMain);
-			this.groupSeries.setAttribute('clip-path', 'url(#_clip' + this.axisRand + ')');
+    addSerie: function( name, options ) {
+      var serie = new GraphSerieAxisX( name, options );
+      serie.setAxis( this );
+      serie.init( this.graph, name, options );
+      serie.autoAxis();
+      serie.setXAxis( this );
+      this.series.push( serie );
+      this.groupSeries.appendChild( serie.groupMain );
+      this.groupSeries.setAttribute( 'clip-path', 'url(#_clip' + this.axisRand + ')' );
 
-			return serie;
-		},
+      return serie;
+    },
 
-		handleMouseMoveLocal: function(x, y, e) {
-			x -= this.graph.getPaddingLeft();
-			this.mouseVal = this.getVal(x);
-		},
+    handleMouseMoveLocal: function( x, y, e ) {
+      x -= this.graph.getPaddingLeft();
+      this.mouseVal = this.getVal( x );
+    },
 
-		isXY: function() {
-			return 'x';
-		}
+    isXY: function() {
+      return 'x';
+    }
 
-	});
+  } );
 
-	
-	return GraphXAxis;
-});
+  return GraphXAxis;
+} );

@@ -3,7 +3,8 @@ requirejs.config({
 
 	baseUrl: '../',
 	paths: {
-		'jquery': './lib/components/jquery/dist/jquery.min'
+		'jquery': './lib/components/jquery/dist/jquery.min',
+		'graph': './dist/jsgraph'
 	}
 });
 
