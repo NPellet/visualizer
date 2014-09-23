@@ -1,47 +1,46 @@
-define([], function() {
+define( [], function() {
 
-	var plugin = function() {};
+  var plugin = function() {};
 
-	plugin.prototype = {
+  plugin.prototype = {
 
-		init: function( graph ) {
-			this.graph = graph;
-		},
-	
-		process: function() {
-			
-	//		console.log( arguments );
+    init: function( graph ) {
+      this.graph = graph;
+    },
 
-			var series = arguments;
-	//		console.log( series[ 0 ].data );
-	//		console.log( series[ 0 ].getAdditionalData() );
+    process: function() {
 
-			this.graph.newShape( {
+      //		console.log( arguments );
 
-				type: 'rect',
-				pos: {
-					x: 0,
-					y: 1000
-				},
+      var series = arguments;
+      //		console.log( series[ 0 ].data );
+      //		console.log( series[ 0 ].getAdditionalData() );
 
-				pos2: {
-					x: 10,
-					y: 100000000
-				},
+      this.graph.newShape( {
 
-				fillColor: [ 100, 100, 100, 0.3 ],
-				strokeColor: [ 100, 100, 100, 0.9 ],
-				strokeWidth: 1
+        type: 'rect',
+        pos: {
+          x: 0,
+          y: 1000
+        },
 
-			}).then( function( shape ) {
+        pos2: {
+          x: 10,
+          y: 100000000
+        },
 
-				shape.draw();
-				shape.redraw();
-			})
+        fillColor: [ 100, 100, 100, 0.3 ],
+        strokeColor: [ 100, 100, 100, 0.9 ],
+        strokeWidth: 1
 
-		}
-	}
+      } ).then( function( shape ) {
 
+        shape.draw();
+        shape.redraw();
+      } )
 
-	return plugin;
-});
+    }
+  }
+
+  return plugin;
+} );

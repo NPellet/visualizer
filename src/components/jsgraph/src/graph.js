@@ -1,51 +1,49 @@
+define( [
 
-define([ 
+    './graph.core',
+    './graph._serie',
+    './graph.axis',
+    './graph.axis.x',
+    './graph.axis.y',
+    './graph.legend',
 
-	'./graph.core',
-	'./graph._serie',
-	'./graph.axis',
-	'./graph.axis.x',
-	'./graph.axis.y',
-	'./graph.legend',
+    './plugins/graph.plugin.drag',
+    './plugins/graph.plugin.linking',
+    './plugins/graph.plugin.nmrpeakpicking',
+    './plugins/graph.plugin.range',
+    './plugins/graph.plugin.shape',
+    './plugins/graph.plugin.zoom',
 
-	'./plugins/graph.plugin.drag',
-	'./plugins/graph.plugin.linking',
-	'./plugins/graph.plugin.nmrpeakpicking',
-	'./plugins/graph.plugin.range',
-	'./plugins/graph.plugin.shape',
-	'./plugins/graph.plugin.zoom',
+    './series/graph.serie.contour',
+    './series/graph.serie.line',
+    './series/graph.serie.scatter',
+    './series/graph.serie.zone',
 
-	'./series/graph.serie.contour',
-	'./series/graph.serie.line',
-	'./series/graph.serie.scatter',
-	'./series/graph.serie.zone',
+    './graph.serieaxis',
 
-	'./graph.serieaxis',
+    './shapes/graph.shape.areaundercurve',
+    './shapes/graph.shape.arrow',
+    './shapes/graph.shape',
+    './shapes/graph.shape.label',
+    './shapes/graph.shape.line',
+    './shapes/graph.shape.nmrintegral',
+    './shapes/graph.shape.peakintegration2d',
+    './shapes/graph.shape.peakinterval',
+    './shapes/graph.shape.peakinterval2',
+    './shapes/graph.shape.rangex',
+    './shapes/graph.shape.rect',
+    './shapes/graph.shape.cross',
+    './shapes/graph.shape.zoom2d',
 
-	'./shapes/graph.shape.areaundercurve',
-	'./shapes/graph.shape.arrow',
-	'./shapes/graph.shape',
-	'./shapes/graph.shape.label',
-	'./shapes/graph.shape.line',
-	'./shapes/graph.shape.nmrintegral',
-	'./shapes/graph.shape.peakintegration2d',
-	'./shapes/graph.shape.peakinterval',
-	'./shapes/graph.shape.peakinterval2',
-	'./shapes/graph.shape.rangex',
-	'./shapes/graph.shape.rect',
-	'./shapes/graph.shape.cross',
-	
-	'./graph.toolbar',
-	'./graph.xaxis.time',
-	'./dynamicdepencies'
+    './graph.toolbar',
+    './graph.xaxis.time',
+    './dynamicdepencies'
 
-	],
+  ],
 
- function( Graph ) {
+  function( Graph ) {
 
- 	// Corrent naming is important here !
-	return Graph;
-	
-});
+    // Corrent naming is important here !
+    return Graph;
 
-
+  } );

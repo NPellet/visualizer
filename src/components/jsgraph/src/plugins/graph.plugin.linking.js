@@ -1,179 +1,174 @@
+define( [], function() {
 
-define( [  ], function( ) {
+  var plugin = function() {};
 
-	var plugin =  function() { };
+  plugin.prototype = {
 
-	plugin.prototype = {
+    init: function( graph, options, plugin ) {
 
-		init: function( graph, options, plugin ) {
+      this.options = options;
+      var self = this;
+      this.graph = graph;
+      this.plugin = plugin;
 
-			this.options = options;
-			var self = this;
-			this.graph = graph;
-			this.plugin = plugin;
+      var funcs = {
 
-			var funcs = {
+        /* Linking shapes */
 
-				/* Linking shapes */
+        linkA: function( shapeA, line ) {
+          this.linking.current.a = shapeA;
+          this.linking.current.line = line;
+        },
 
-				linkA: function( shapeA, line ) {
-					this.linking.current.a = shapeA;
-					this.linking.current.line = line;
-				},
+        linkB: function( shapeB ) {
+          this.linking.current.b = shapeB;
+        },
 
-				linkB: function( shapeB ) {
-					this.linking.current.b = shapeB;
-				},
+        getLinkingA: function() {
+          return this.linking.current.a;
+        },
 
-				getLinkingA: function() {
-					return this.linking.current.a;
-				},
+        getLinkingB: function() {
+          return this.linking.current.b;
+        },
 
-				getLinkingB: function() {
-					return this.linking.current.b;
-				},
+        isLinking: function( set ) {
+          return !!this.linking.current.a;
+        },
 
-				isLinking: function( set ) {
-					return ! ! this.linking.current.a;
-				},
+        newLinkingLine: function() {
+          var line = document.createElementNS( this.ns, 'line' );
+          line.setAttribute( 'class', 'graph-linkingline' );
+          this.shapeZone.insertBefore( line, this.shapeZone.firstChild );
+          return line;
+        },
 
-				newLinkingLine: function() {
-					var line = document.createElementNS( this.ns, 'line');
-					line.setAttribute('class', 'graph-linkingline');
-					this.shapeZone.insertBefore( line, this.shapeZone.firstChild );
-					return line;
-				},
+        getLinkingLine: function( add ) {
+          return this.linking.current.line;
+        },
 
-				getLinkingLine: function( add ) {
-					return this.linking.current.line;
-				},
+        endLinking: function() {
 
-				endLinking: function() {
+          if ( ( this.linking.current.a == this.linking.current.b && this.linking.current.a ) || ( !this.linking.current.b && this.linking.current.a ) ) {
 
-					if( ( this.linking.current.a == this.linking.current.b && this.linking.current.a ) || ( ! this.linking.current.b && this.linking.current.a )  ) {
+            this.shapeZone.removeChild( this.linking.current.line );
+            this.linking.current = {};
 
-						this.shapeZone.removeChild( this.linking.current.line );
-						this.linking.current = {};
+            return;
+          }
 
-						return;
-					}
+          if ( this.linking.current.line ) {
 
-					if( this.linking.current.line ) {
+            this.linking.current.line.style.display = "none";
+            this.linking.links.push( this.linking.current );
+            this.linking.current = {};
+          }
 
-						this.linking.current.line.style.display = "none";
-						this.linking.links.push( this.linking.current );
-						this.linking.current = {};
-					}
+          return this.linking.links[ this.linking.links.length - 1 ];
+        },
 
-					return this.linking.links[ this.linking.links.length - 1 ];
-				},
+        linkingReveal: function() {
 
-				linkingReveal: function() {
+          for ( var i = 0, l = this.linking.links.length; i < l; i++ ) {
 
-					for( var i = 0, l = this.linking.links.length ; i < l ; i ++ ) {
+            this.linking.links[ i ].line.style.display = "block";
+          }
+        },
 
-						this.linking.links[ i ].line.style.display = "block";
-					}
-				},
+        linkingHide: function() {
 
-				linkingHide: function() {
+          for ( var i = 0, l = this.linking.links.length; i < l; i++ ) {
 
-					for( var i = 0, l = this.linking.links.length ; i < l ; i ++ ) {
+            this.linking.links[ i ].line.style.display = "none";
+          }
+        }
 
-						this.linking.links[ i ].line.style.display = "none";
-					}
-				}
+      };
 
-			};
+      for ( var i in funcs ) {
+        graph[ i ] = funcs[ i ];
+      }
 
-			for( var i in funcs ) {
-				graph[ i ] = funcs[ i ];
-			}
+      function linkingStart( shape, e, clicked ) {
 
-			function linkingStart( shape, e, clicked ) {
+        self.islinking = true;
+        var linking = shape.graph.isLinking();
 
-				self.islinking = true;
-				var linking = shape.graph.isLinking();
+        if ( linking ) {
+          return;
+        }
 
-				if( linking ) {
-					return;
-				}
+        var line = shape.graph.newLinkingLine();
+        var coords = shape.getLinkingCoords();
 
-				var line = shape.graph.newLinkingLine( );
-				var coords = shape.getLinkingCoords();
+        line.setAttribute( 'x1', coords.x );
+        line.setAttribute( 'y1', coords.y );
+        line.setAttribute( 'x2', coords.x );
+        line.setAttribute( 'y2', coords.y );
 
-				line.setAttribute('x1', coords.x );
-				line.setAttribute('y1', coords.y );
-				line.setAttribute('x2', coords.x );
-				line.setAttribute('y2', coords.y );
+        shape.graph.linkA( shape, line );
+      }
 
-				shape.graph.linkA( shape, line );
-			}
+      function linkingMove( shape, e ) {
 
-			function linkingMove( shape, e ) {
+        var linking = shape.graph.isLinking();
 
-				var linking = shape.graph.isLinking();
+        if ( !linking ) {
+          return;
+        }
 
-				if( ! linking ) {
-					return;
-				}
+        if ( shape.graph.getLinkingB() ) { // Hover something else
+          return;
+        }
 
-				if( shape.graph.getLinkingB( ) ) { // Hover something else
-					return;
-				}
+        var line = shape.graph.getLinkingLine();
+        var coords = shape.graph._getXY( e );
 
-				var line = shape.graph.getLinkingLine();
-				var coords = shape.graph._getXY( e );
+        line.setAttribute( 'x2', coords.x - shape.graph.getPaddingLeft() );
+        line.setAttribute( 'y2', coords.y - shape.graph.getPaddingTop() );
+      }
 
-				line.setAttribute('x2', coords.x - shape.graph.getPaddingLeft( ) );
-				line.setAttribute('y2', coords.y - shape.graph.getPaddingTop( ) );
-			}
+      function linkingOn( shape, e ) {
 
+        var linking = shape.graph.isLinking();
+        if ( !linking ) {
+          return;
+        }
 
-			function linkingOn( shape, e ) {
+        var linkingA = shape.graph.getLinkingA();
 
-				var linking = shape.graph.isLinking();
-				if( ! linking ) {
-					return;
-				}
+        if ( linkingA == this ) {
+          return;
+        }
 
-				var linkingA = shape.graph.getLinkingA( );
+        shape.graph.linkB( shape ); // Update B element
 
-				if( linkingA == this ) {
-					return;
-				}
+        var coords = shape.getLinkingCoords();
 
-				shape.graph.linkB( shape ); // Update B element
+        var line = shape.graph.getLinkingLine();
+        line.setAttribute( 'x2', coords.x );
+        line.setAttribute( 'y2', coords.y );
+      }
 
-		
-				var coords = shape.getLinkingCoords();
+      function linkingOut( shape, e ) {
 
-				var line = shape.graph.getLinkingLine();
-				line.setAttribute('x2', coords.x );
-				line.setAttribute('y2', coords.y );
-			}
+        var linking = shape.graph.isLinking();
+        if ( !linking ) {
+          return;
+        }
+        shape.graph.linkB( undefined ); // Remove B element
+      }
 
-			function linkingOut( shape, e ) {
+      function linkingFinalize( shape ) {
 
-				var linking = shape.graph.isLinking();
-				if( ! linking ) {
-					return;
-				}
-				shape.graph.linkB( undefined ); // Remove B element
-			}
+        return shape.graph.endLinking();
+      }
 
-			function linkingFinalize( shape ) {
-				
-				return shape.graph.endLinking();
-			}
-			
-
-	
-			graph.linking = {
-				current: {},
-				links: []
-			};
-/*
+      graph.linking = {
+        current: {},
+        links: []
+      };
+      /*
 			graph._dom.addEventListener('keydown', function( e ) {
 
 				e.preventDefault();
@@ -184,71 +179,66 @@ define( [  ], function( ) {
 				}
 			});*/
 
-
-/*			graph._dom.addEventListener( 'keyup', function( e ) {
+      /*			graph._dom.addEventListener( 'keyup', function( e ) {
 
 				e.preventDefault();
 				e.stopPropagation();
 				graph.linkingHide();
 			});
 */
-			graph.shapeHandlers.mouseDown.push( function( e ) {
-			
-				if( self.graph.isPluginAllowed( e, self.plugin ) ) {
+      graph.shapeHandlers.mouseDown.push( function( e ) {
 
-					this.moving = false;
-					this.handleSelected = false;
-				
-					linkingStart( this, e, true );
-				}
-			});
+        if ( self.graph.isPluginAllowed( e, self.plugin ) ) {
 
+          this.moving = false;
+          this.handleSelected = false;
 
-			graph.shapeHandlers.mouseUp.push( function( e ) {
-				
-				var link;
-				if( ( link = linkingFinalize( this ) ) ) {
+          linkingStart( this, e, true );
+        }
+      } );
 
-					link.a.linking = link.a.linking || 0;
-					link.a.linking++;
-					
-					link.b.linking = link.b.linking || 0;
-					link.b.linking++;
+      graph.shapeHandlers.mouseUp.push( function( e ) {
 
-					link.a.addClass('linking');
-					link.b.addClass('linking');
+        var link;
+        if ( ( link = linkingFinalize( this ) ) ) {
 
-					link.a.addClass('linking' + link.a.linking );
-					link.a.removeClass('linking' + ( link.a.linking - 1 ) );
+          link.a.linking = link.a.linking ||  0;
+          link.a.linking++;
 
-					link.b.addClass('linking' + link.a.linking );
-					link.b.removeClass('linking' + ( link.a.linking - 1 ) );
+          link.b.linking = link.b.linking ||  0;
+          link.b.linking++;
 
-					if( self.options.onLinkCreate ) {
-						self.options.onLinkCreate( link.a, link.b );
-					}
-				}
-			});
+          link.a.addClass( 'linking' );
+          link.b.addClass( 'linking' );
 
+          link.a.addClass( 'linking' + link.a.linking );
+          link.a.removeClass( 'linking' + ( link.a.linking - 1 ) );
 
-			graph.shapeHandlers.mouseMove.push( function( e ) {
-				
-				linkingMove( this, e, true );
-			});
+          link.b.addClass( 'linking' + link.a.linking );
+          link.b.removeClass( 'linking' + ( link.a.linking - 1 ) );
 
+          if ( self.options.onLinkCreate ) {
+            self.options.onLinkCreate( link.a, link.b );
+          }
+        }
+      } );
 
-			graph.shapeHandlers.mouseOver.push( function( e ) {
-				
-				linkingOn( this, e, true );
-			});
+      graph.shapeHandlers.mouseMove.push( function( e ) {
 
+        linkingMove( this, e, true );
+      } );
 
-			graph.shapeHandlers.mouseOut.push( function( e ) {
-				
-				linkingOut( this, e, true );
-			});
-		}
-	};
+      graph.shapeHandlers.mouseOver.push( function( e ) {
 
-	return plugin;
-});
+        linkingOn( this, e, true );
+      } );
+
+      graph.shapeHandlers.mouseOut.push( function( e ) {
+
+        linkingOut( this, e, true );
+      } );
+    }
+  };
+
+  return plugin;
+} );

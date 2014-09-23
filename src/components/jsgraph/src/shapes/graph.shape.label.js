@@ -1,40 +1,44 @@
-
-
 define( [ './graph.shape' ], function( GraphShape ) {
 
+  var GraphLabel = function( graph, options ) {
+    this.init( graph );
+    this.options = options ||  {};
+  }
+  $.extend( GraphLabel.prototype, GraphShape.prototype, {
+    createDom: function() {
+      this._dom = false;
+    },
 
-	var GraphLabel = function(graph) {
-		this.init(graph);
-	}
-	$.extend(GraphLabel.prototype, GraphShape.prototype, {
-		createDom: function() {
-			this._dom = false;
-		},
+    setPosition: function() {
+      var pos = this._getPosition( this.get( 'labelPosition' ) );
 
-		setPosition: function() {
-			var pos = this._getPosition(this.get('labelPosition'));
-			
-			if(!pos)
-				return;
-			
-			this.everyLabel(function(i) {
-				
-				this.label[i].setAttribute('x', pos.x);
-				this.label[i].setAttribute('y', pos.y);	
-			});
+      if ( !pos )
+        return;
 
-			return true;
-			
-		},
+      if ( this.options.minPosY !== undefined ) {
+        if ( pos.y < this.options.minPosY ) {
+          pos.y = this.options.minPosY;
+        }
+      }
 
-		_setLabelPosition: function() {},
+      this.everyLabel( function( i ) {
 
-		redrawImpl: function() {
-			this.draw();
-		}
-	});
+        this.label[ i ].setAttribute( 'x', pos.x );
+        this.label[ i ].setAttribute( 'y', pos.y );
 
+      } );
 
-	return GraphLabel;
+      return true;
 
-});
+    },
+
+    _setLabelPosition: function() {},
+
+    redrawImpl: function() {
+      this.draw();
+    }
+  } );
+
+  return GraphLabel;
+
+} );

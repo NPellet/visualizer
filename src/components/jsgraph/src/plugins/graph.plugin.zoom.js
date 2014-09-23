@@ -1,265 +1,246 @@
+define( [], function() {
 
-define([], function() {
+  var plugin = function() {};
 
-	var plugin =  function() { };
+  plugin.prototype = {
 
-	plugin.prototype = {
+    init: function( graph, options ) {
 
-		init: function( graph, options ) {
+      this._zoomingGroup = document.createElementNS( graph.ns, 'g' );
+      this._zoomingSquare = document.createElementNS( graph.ns, 'rect' );
+      this._zoomingSquare.setAttribute( 'display', 'none' );
 
-			this._zoomingGroup = document.createElementNS( graph.ns, 'g' );
-			this._zoomingSquare = document.createElementNS(graph.ns, 'rect');
-			this._zoomingSquare.setAttribute('display', 'none');
+      graph.setAttributeTo( this._zoomingSquare, {
+        'display': 'none',
+        'fill': 'rgba(171,12,12,0.2)',
+        'stroke': 'rgba(171,12,12,1)',
+        'shape-rendering': 'crispEdges',
+        'x': 0,
+        'y': 0,
+        'height': 0,
+        'width': 0
+      } );
 
-			graph.setAttributeTo(this._zoomingSquare, {
-				'display': 'none',
-				'fill': 'rgba(171,12,12,0.2)',
-				'stroke': 'rgba(171,12,12,1)',
-				'shape-rendering': 'crispEdges',
-				'x': 0,
-				'y': 0,
-				'height': 0,
-				'width': 0
-			});
+      this.options = options;
+      this.graph = graph;
+      graph.dom.appendChild( this._zoomingGroup );
+      this._zoomingGroup.appendChild( this._zoomingSquare );
+    },
 
+    onMouseDown: function( graph, x, y, e, mute ) {
 
+      var zoomMode = this.options.zoomMode;
 
+      if ( !zoomMode ) {
+        return;
+      }
 
-			this.options = options;
-			this.graph = graph;
-			graph.dom.appendChild(this._zoomingGroup);
-			this._zoomingGroup.appendChild(this._zoomingSquare);
-		},
+      this._zoomingMode = zoomMode;
 
-		onMouseDown: function( graph, x, y, e, mute ) {
+      if ( x === undefined ) {
+        this._backedUpZoomMode = this._zoomingMode;
+        this._zoomingMode = 'y';
+        x = 0;
+      }
 
-			var zoomMode = this.options.zoomMode;
+      if ( y === undefined ) {
+        this._backedUpZoomMode = this._zoomingMode;
+        this._zoomingMode = 'x';
+        y = 0;
+      }
 
-			if( ! zoomMode ) {
-				return;
-			}
+      this._zoomingXStart = x;
+      this._zoomingYStart = y;
+      this.x1 = x - graph.getPaddingLeft();
+      this.y1 = y - graph.getPaddingTop();
 
-			this._zoomingMode = zoomMode;
+      this._zoomingSquare.setAttribute( 'width', 0 );
+      this._zoomingSquare.setAttribute( 'height', 0 );
+      this._zoomingSquare.setAttribute( 'display', 'block' );
 
+      switch ( this._zoomingMode ) {
 
-			if( x === undefined ) {
-				this._backedUpZoomMode = this._zoomingMode;
-				this._zoomingMode = 'y';	
-				x = 0;
-			}
+        case 'x':
+          this._zoomingSquare.setAttribute( 'y', graph.options.paddingTop );
+          this._zoomingSquare.setAttribute( 'height', graph.getDrawingHeight() - graph.shift[ 0 ] );
+          break;
 
-			if( y === undefined ) {
-				this._backedUpZoomMode = this._zoomingMode;
-				this._zoomingMode = 'x';	
-				y = 0;
-			}
+        case 'y':
+          this._zoomingSquare.setAttribute( 'x', graph.options.paddingLeft /* + this.shift[1]*/ );
+          this._zoomingSquare.setAttribute( 'width', graph.getDrawingWidth() /* - this.shift[1] - this.shift[2]*/ );
+          break;
 
-			this._zoomingXStart = x;
-			this._zoomingYStart = y;
-			this.x1 = x - graph.getPaddingLeft();
-			this.y1 = y - graph.getPaddingTop();
+      }
 
-			this._zoomingSquare.setAttribute('width', 0);
-			this._zoomingSquare.setAttribute('height', 0);
-			this._zoomingSquare.setAttribute('display', 'block');
+      if ( this.options.onZoomStart && !mute ) {
+        this.options.onZoomStart( graph, x, y, e, mute );
+      }
+    },
 
+    onMouseMove: function( graph, x, y, e, mute ) {
 
+      //	this._zoomingSquare.setAttribute('display', 'none');
 
-			switch( this._zoomingMode ) {
+      //	this._zoomingSquare.setAttribute('transform', 'translate(' + Math.random() + ', ' + Math.random() + ') scale(10, 10)');
 
-				case 'x': 
-					this._zoomingSquare.setAttribute('y', graph.options.paddingTop);
-					this._zoomingSquare.setAttribute('height', graph.getDrawingHeight() - graph.shift[0]);
-				break;
+      switch ( this._zoomingMode ) {
 
-				case 'y':
-					this._zoomingSquare.setAttribute('x', graph.options.paddingLeft/* + this.shift[1]*/);
-					this._zoomingSquare.setAttribute('width', graph.getDrawingWidth()/* - this.shift[1] - this.shift[2]*/);
-				break;
+        case 'xy':
+          this._zoomingSquare.setAttribute( 'x', Math.min( this._zoomingXStart, x ) );
+          this._zoomingSquare.setAttribute( 'y', Math.min( this._zoomingYStart, y ) );
+          this._zoomingSquare.setAttribute( 'width', Math.abs( this._zoomingXStart - x ) );
+          this._zoomingSquare.setAttribute( 'height', Math.abs( this._zoomingYStart - y ) );
 
-			}
+          break;
 
-			if( this.options.onZoomStart && ! mute ) {
-				this.options.onZoomStart( graph, x, y, e, mute );
-			}
-		},
+        case 'x':
+          this._zoomingSquare.setAttribute( 'x', Math.min( this._zoomingXStart, x ) );
+          this._zoomingSquare.setAttribute( 'width', Math.abs( this._zoomingXStart - x ) );
 
-		onMouseMove: function(graph, x, y, e, mute) {
-			
-		//	this._zoomingSquare.setAttribute('display', 'none');
+          break;
 
-	//	this._zoomingSquare.setAttribute('transform', 'translate(' + Math.random() + ', ' + Math.random() + ') scale(10, 10)');
+        case 'y':
+          this._zoomingSquare.setAttribute( 'y', Math.min( this._zoomingYStart, y ) );
+          this._zoomingSquare.setAttribute( 'height', Math.abs( this._zoomingYStart - y ) );
+          break;
+      }
 
-			switch(this._zoomingMode) {
+      if ( this.options.onZoomMove && !mute ) {
 
-				case 'xy':
-					this._zoomingSquare.setAttribute('x', Math.min(this._zoomingXStart, x));
-					this._zoomingSquare.setAttribute('y', Math.min(this._zoomingYStart, y));
-					this._zoomingSquare.setAttribute('width', Math.abs(this._zoomingXStart - x));
-					this._zoomingSquare.setAttribute('height', Math.abs(this._zoomingYStart - y));
+        this.options.onZoomMove( graph, x, y, e, mute );
+      }
+      //		this._zoomingSquare.setAttribute('display', 'block');
 
+    },
 
-				break;
+    onMouseUp: function( graph, x, y, e, mute ) {
 
-				case 'x': 
-					this._zoomingSquare.setAttribute('x', Math.min(this._zoomingXStart, x));
-					this._zoomingSquare.setAttribute('width', Math.abs(this._zoomingXStart - x));
+      this._zoomingSquare.setAttribute( 'display', 'none' );
+      var _x = x - graph.options.paddingLeft;
+      var _y = y - graph.options.paddingTop;
 
+      if ( ( x - this._zoomingXStart == 0 && this._zoomingMode != 'y' ) || ( y - this._zoomingYStart == 0 && this._zoomingMode != 'x' ) ) {
+        return;
+      }
 
-				break;
+      switch ( this._zoomingMode ) {
+        case 'x':
+          graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
+          break;
+        case 'y':
+          graph._applyToAxes( '_doZoom', [ _y, this.y1 ], false, true );
+          break;
+        case 'xy':
+          graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
+          graph._applyToAxes( '_doZoom', [ _y, this.y1 ], false, true );
+          break;
+      }
 
-				case 'y':
-					this._zoomingSquare.setAttribute('y', Math.min(this._zoomingYStart, y));
-					this._zoomingSquare.setAttribute('height', Math.abs(this._zoomingYStart - y));
-				break;
-			}	
+      graph.redraw( true );
+      graph.drawSeries();
 
+      if ( this.options.onZoomEnd && !mute ) {
+        this.options.onZoomEnd( graph, _x, _y, e, mute, this.x1, this.y1 );
+      }
 
-			if( this.options.onZoomMove && ! mute ) {
+      if ( this._backedUpZoomMode ) {
+        this._zoomingMode = this._backedUpZoomMode;
+      }
+    },
 
-				this.options.onZoomMove( graph, x, y, e, mute );
-			}
-	//		this._zoomingSquare.setAttribute('display', 'block');
+    onMouseWheel: function( delta, e ) {
 
-		},
+      var serie;
+      if ( ( serie = this.graph.getSelectedSerie() ) ) {
 
-		onMouseUp: function(graph, x, y, e, mute ) {
+        serie.getYAxis().handleMouseWheel( delta, e );
+        return;
+      }
 
-			this._zoomingSquare.setAttribute('display', 'none');
-			var _x = x - graph.options.paddingLeft;
-			var _y = y - graph.options.paddingTop;
+      this.graph._applyToAxes( 'handleMouseWheel', [ delta, e ], false, true );
+      this.graph.drawSeries();
+    },
 
-			if((x - this._zoomingXStart == 0 && this._zoomingMode != 'y') || (y - this._zoomingYStart == 0 && this._zoomingMode != 'x')) {
-				return;
-			}
+    onDblClick: function( graph, x, y, pref, e, mute ) {
 
-			switch(this._zoomingMode) {
-				case 'x':
-					graph._applyToAxes('_doZoom', [_x, this.x1], true, false);
-				break;
-				case 'y':
-					graph._applyToAxes('_doZoom', [_y, this.y1], false, true);
-				break;
-				case 'xy':
-					graph._applyToAxes('_doZoom', [_x, this.x1], true, false);
-					graph._applyToAxes('_doZoom', [_y, this.y1], false, true);
-				break;
-			}
-			
-			graph.redraw(true);
-			graph.drawSeries();
+      var xAxis = this.graph.getXAxis(),
+        yAxis = this.graph.getYAxis();
 
-			if( this.options.onZoomEnd && ! mute ) {
-				this.options.onZoomEnd( graph, x, y, e, mute );
-			}
+      if ( pref.mode == 'xtotal' ) {
 
-			if( this._backedUpZoomMode ) {
-				this._zoomingMode = this._backedUpZoomMode;
-			}
-		},
+        this.graph._applyToAxes( "setMinMaxToFitSeries", null, true, false );
+        this.graph.drawSeries();
 
-		onMouseWheel: function( delta, e ) {
+      } else if ( pref.mode == 'ytotal' ) {
 
-			var serie;
-			if( ( serie = this.graph.getSelectedSerie() ) ) {
+        this.graph._applyToAxes( "setMinMaxToFitSeries", null, false, true );
+        this.graph.drawSeries();
 
-				serie.getYAxis().handleMouseWheel( delta, e );
-				return;	
-			} 
+      } else if ( pref.mode == 'total' ) {
 
-			this.graph._applyToAxes('handleMouseWheel', [ delta, e ], false, true);	
-		},
+        this.graph.autoscaleAxes();
+        this.graph.drawSeries();
 
-		onDblClick: function( graph, x, y, pref, e, mute ) {
+        if ( yAxis.options.onZoom ) {
+          yAxis.options.onZoom( yAxis.getMinValue(), yAxis.getMaxValue() );
+        }
 
-			var	xAxis = this.graph.getXAxis(),
-				yAxis = this.graph.getYAxis();
+        if ( xAxis.options.onZoom ) {
+          xAxis.options.onZoom( xAxis.getMinValue(), xAxis.getMaxValue() );
+        }
 
-			if( pref.mode == 'xtotal' ) {
+      } else {
 
-				this.graph._applyToAxes( "setMinMaxToFitSeries", null, true, false );
-				this.graph.drawSeries();
-				
-				
-			}
+        x -= this.graph.options.paddingLeft;
+        y -= this.graph.options.paddingTop;
 
+        var
+          xMin = xAxis.getActualMin(),
+          xMax = xAxis.getActualMax(),
+          xActual = xAxis.getVal( x ),
+          diffX = xMax - xMin,
 
-			else if( pref.mode == 'ytotal' ) {
+          yMin = yAxis.getActualMin(),
+          yMax = yAxis.getActualMax(),
+          yActual = yAxis.getVal( y ),
+          diffY = yMax - yMin;
 
-				this.graph._applyToAxes( "setMinMaxToFitSeries", null, false, true );
-				this.graph.drawSeries();
-				
-				
-			}
+        if ( pref.mode == 'gradualXY' || pref.mode == 'gradualX' ) {
 
+          var ratio = ( xActual - xMin ) / ( xMax - xMin );
+          xMin = Math.max( xAxis.getMinValue(), xMin - diffX * ratio );
+          xMax = Math.min( xAxis.getMaxValue(), xMax + diffX * ( 1 - ratio ) );
+          xAxis.setCurrentMin( xMin );
+          xAxis.setCurrentMax( xMax );
 
-			else if( pref.mode == 'total' ) {
+          if ( xAxis.options.onZoom ) {
+            xAxis.options.onZoom( xMin, xMax );
+          }
+        }
 
-				this.graph.autoscaleAxes();
-				this.graph.drawSeries();
+        if ( pref.mode == 'gradualXY' || pref.mode == 'gradualY' ) {
 
-				if( yAxis.options.onZoom ) {
-					yAxis.options.onZoom( yAxis.getMinValue(), yAxis.getMaxValue() );
-				}
+          var ratio = ( yActual - yMin ) / ( yMax - yMin );
+          yMin = Math.max( yAxis.getMinValue(), yMin - diffY * ratio );
+          yMax = Math.min( yAxis.getMaxValue(), yMax + diffY * ( 1 - ratio ) );
+          yAxis.setCurrentMin( yMin );
+          yAxis.setCurrentMax( yMax );
 
-				if( xAxis.options.onZoom ) {
-					xAxis.options.onZoom( xAxis.getMinValue(), xAxis.getMaxValue() );
-				}
+          if ( yAxis.options.onZoom ) {
+            yAxis.options.onZoom( yMin, yMax );
+          }
+        }
 
-				
-			} else {
+        this.graph.redraw();
+        this.graph.drawSeries();
+      }
 
-	 			x -= this.graph.options.paddingLeft;
-	 			y -= this.graph.options.paddingTop;
+      if ( this.options.onDblClick && !mute ) {
 
-				var
-					xMin = xAxis.getActualMin(),
-					xMax = xAxis.getActualMax(),
-					xActual = xAxis.getVal(x),
-					diffX = xMax - xMin,
+        this.options.onDblClick( x, y, pref, e );
+      }
+    }
+  }
 
-					yMin = yAxis.getActualMin(),
-					yMax = yAxis.getActualMax(),
-					yActual = yAxis.getVal(y),
-					diffY = yMax - yMin;
-
-				if(pref.mode == 'gradualXY' || pref.mode == 'gradualX') {
-
-					var ratio = (xActual - xMin) / (xMax - xMin);
-					xMin = Math.max(xAxis.getMinValue(), xMin - diffX * ratio);
-					xMax = Math.min(xAxis.getMaxValue(), xMax + diffX * (1 - ratio));
-					xAxis.setCurrentMin(xMin);
-					xAxis.setCurrentMax(xMax);
-
-					if( xAxis.options.onZoom ) {
-						xAxis.options.onZoom( xMin, xMax );
-					}
-				}
-
-				if(pref.mode == 'gradualXY' || pref.mode == 'gradualY') {
-
-					var ratio = (yActual - yMin) / (yMax - yMin);
-					yMin = Math.max(yAxis.getMinValue(), yMin - diffY * ratio);
-					yMax = Math.min(yAxis.getMaxValue(), yMax + diffY * (1 - ratio));
-					yAxis.setCurrentMin(yMin);
-					yAxis.setCurrentMax(yMax);
-
-
-					if( yAxis.options.onZoom ) {
-						yAxis.options.onZoom( yMin, yMax );
-					}
-				}
-
-				this.graph.redraw( );
-				this.graph.drawSeries( );
-			}
-
-			if( this.options.onDblClick && ! mute ) {
-
-				this.options.onDblClick( x, y, pref, e );
-			}
-		}
-	}
-
-	return plugin;
-});
+  return plugin;
+} );

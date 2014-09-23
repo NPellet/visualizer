@@ -1,162 +1,148 @@
 define( [], function() {
 
-	var toolbarDefaults = {
-		
-		buttons: [ 'none', 'rect', 'line', 'areaundercurve' ]
-	
+  var toolbarDefaults = {
 
-	}
+    buttons: [ 'none', 'rect', 'line', 'areaundercurve' ]
 
+  }
 
-	var ns = 'http://www.w3.org/2000/svg';
-	var nsxlink = "http://www.w3.org/1999/xlink";
-	
-	function makeSvg() {
-		var dom = document.createElementNS(ns, 'svg');
-		dom.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
-		dom.setAttribute('xmlns', ns);
+  var ns = 'http://www.w3.org/2000/svg';
+  var nsxlink = "http://www.w3.org/1999/xlink";
 
-		
-		return dom;
-	}
-	
+  function makeSvg() {
+    var dom = document.createElementNS( ns, 'svg' );
+    dom.setAttributeNS( "http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+    dom.setAttribute( 'xmlns', ns );
 
-	function makeSvgLine() {
+    return dom;
+  }
 
-		var dom = makeSvg();
+  function makeSvgLine() {
 
-		var line = document.createElementNS( ns, 'line');
-		line.setAttribute('x1', 16);
-		line.setAttribute('y1', 3);
-		line.setAttribute('x2', 4);
-		line.setAttribute('y2', 15);
+    var dom = makeSvg();
 
-		line.setAttribute('stroke', '#aa0000');
-		
+    var line = document.createElementNS( ns, 'line' );
+    line.setAttribute( 'x1', 16 );
+    line.setAttribute( 'y1', 3 );
+    line.setAttribute( 'x2', 4 );
+    line.setAttribute( 'y2', 15 );
 
-		
+    line.setAttribute( 'stroke', '#aa0000' );
 
-		dom.appendChild( line );
-		return dom;
-	}
+    dom.appendChild( line );
+    return dom;
+  }
 
+  function makeSvgRect() {
 
+    var dom = makeSvg();
+    var line = document.createElementNS( ns, 'rect' );
+    line.setAttribute( 'x', 4 );
+    line.setAttribute( 'y', 4 );
+    line.setAttribute( 'width', 12 );
+    line.setAttribute( 'height', 12 );
+    line.setAttribute( 'stroke', 'black' );
+    line.setAttribute( 'fill', '#dd0000' );
 
-	function makeSvgRect() {
+    dom.appendChild( line );
+    return dom;
+  }
 
-		var dom = makeSvg();
-		var line = document.createElementNS( ns, 'rect');
-		line.setAttribute('x', 4);
-		line.setAttribute('y', 4);
-		line.setAttribute('width', 12);
-		line.setAttribute('height', 12);
-		line.setAttribute('stroke', 'black');
-		line.setAttribute('fill', '#dd0000');
+  function makeSvgAUC() {
 
-		dom.appendChild( line );
-		return dom;
-	}
+    var pathD = "M 4,18 C 8,10 14,1 18,18";
 
+    var dom = makeSvg();
+    var path1 = document.createElementNS( ns, 'path' );
+    path1.setAttribute( 'd', pathD );
+    path1.setAttribute( 'stroke', "black" );
+    path1.setAttribute( 'fill', "transparent" );
 
-	function makeSvgAUC() {
+    var path2 = document.createElementNS( ns, 'path' );
+    path2.setAttribute( 'd', pathD + " Z" );
+    path2.setAttribute( 'stroke', "red" );
+    path2.setAttribute( 'fill', "rgba(255, 0, 0, 0.1)" );
 
-		var pathD = "M 4,18 C 8,10 14,1 18,18";
+    dom.appendChild( path2 );
+    dom.appendChild( path1 );
 
-		var dom = makeSvg();
-		var path1 = document.createElementNS( ns, 'path' );
-		path1.setAttribute('d', pathD);
-		path1.setAttribute('stroke', "black");
-		path1.setAttribute('fill', "transparent");
+    return dom;
 
-		var path2 = document.createElementNS( ns, 'path' );
-		path2.setAttribute('d', pathD + " Z");
-		path2.setAttribute('stroke', "red");
-		path2.setAttribute('fill', "rgba(255, 0, 0, 0.1)");
+  }
 
+  var Toolbar = function( graph, options ) {
 
-		dom.appendChild( path2 );
-		dom.appendChild( path1 );
+    var self = this;
 
-		return dom;
+    this.options = $.extend( true, {}, toolbarDefaults, options );
+    this.graph = graph;
+    this.div = $( "<ul />" ).addClass( 'graph-toolbar' );
 
-	}
+    this.graph.getPlugin( './graph.plugin.shape' ).then( function( plugin ) {
 
+      self.plugin = plugin;
 
-	var Toolbar = function( graph, options ) {
+      if ( !self.plugin ) {
+        return;
+      }
 
-		var self = this;
+      self.div.on( 'click', 'li', function() {
 
-		this.options = $.extend( true, {}, toolbarDefaults, options );
-		this.graph = graph;
-		this.div = $("<ul />").addClass('graph-toolbar');
+        var shape = $( this ).attr( 'data-shape' );
+        self.plugin.setShape( shape );
 
-		this.graph.getPlugin( './graph.plugin.shape').then( function( plugin ) {
+        $( this ).parent().children().removeClass( 'selected' );
+        $( this ).addClass( 'selected' );
+      } );
 
-			self.plugin = plugin;
+      self.makeButtons();
+    } );
+  };
 
-			if( ! self.plugin ) {
-				return;
-			}
+  Toolbar.prototype = {
 
-			self.div.on('click', 'li', function( ) {
+    makeButtons: function() {
 
-				var shape = $(this).attr('data-shape');
-				self.plugin.setShape( shape );
+      var self = this;
+      for ( var i = 0, l = this.options.buttons.length; i < l; i++ ) {
 
-				$(this).parent().children().removeClass('selected');
-				$(this).addClass('selected');
-			});
+        this.div.append( this.makeButton( this.options.buttons[ i ] ) );
+      }
+    },
 
+    makeButton: function( button ) {
 
-			self.makeButtons();
-		});
-	};
+      var div = $( "<li />" );
+      switch ( button ) {
 
-	Toolbar.prototype = {
+        case 'line':
+          div
+            .html( makeSvgLine() )
+            .attr( 'data-shape', 'line' );
+          break;
 
-		makeButtons: function() {
+        case 'rect':
+          div
+            .html( makeSvgRect() )
+            .attr( 'data-shape', 'rect' );
+          break;
 
-			var self = this;
-			for( var i = 0, l = this.options.buttons.length ; i < l ; i ++ ) {
+        case 'areaundercurve':
+          div
+            .html( makeSvgAUC() )
+            .attr( 'data-shape', 'areaundercurve' );
+          break;
+      }
 
-				this.div.append( this.makeButton( this.options.buttons[ i ] ) );
-			}
-		},
+      return div;
+    },
 
-		makeButton: function( button ) {
+    getDom: function() {
+      return this.div;
+    }
 
-			var div = $("<li />");
-			switch( button ) {
+  };
 
-				case 'line':
-					div
-						.html( makeSvgLine( ) )
-						.attr('data-shape', 'line');
-				break;
+  return Toolbar;
 
-				case 'rect':
-					div
-						.html( makeSvgRect( ) )
-						.attr('data-shape', 'rect');
-				break;
-
-
-				case 'areaundercurve':
-					div
-						.html( makeSvgAUC( ) )
-						.attr('data-shape', 'areaundercurve');
-				break;
-			}
-
-			return div;
-		},
-
-		getDom: function() {
-			return this.div;
-		}
-
-	};
-
-	return Toolbar;
-
-});
+} );
