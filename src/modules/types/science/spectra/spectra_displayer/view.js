@@ -229,7 +229,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                         serie.setLineWidth(parseFloat(plotinfos[i].strokewidth) || 1);
                         serie.options.autoPeakPicking = plotinfos[i].peakpicking[0];
 
-                        if (plotinfos[i].markers[0]) {
+                        if (plotinfos[i].markers[0] && serie.showMarkers) {
                             serie.showMarkers();
                             serie.setMarkers([{
                                 type: 1,
@@ -351,7 +351,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
              },*/
 
             chart: function (moduleValue, varname) {
-
+                console.log('update...');
                 this.series[varname] = this.series[varname] || [];
                 this.removeSerie(varname);
 
@@ -368,14 +368,28 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     var serieName = data.serieLabel;
 
                     var valFinal = [];
-                    if (aData.y) {
-                        for (var j = 0, l = aData.y.length; j < l; j++) {
-                            valFinal.push(aData.x ? aData.x[j] : j);
-                            valFinal.push(aData.y[j]);
-                        }
+
+                    switch(aData.serieType) {
+                        case "zone":
+                            if(aData.yMin && aData.yMax) {
+                                for(var j= 0, l= aData.yMax.length; j<l; j++) {
+                                    valFinal.push(aData.x ? aData.x[j] : j);
+                                    valFinal.push(aData.yMin[j], aData.yMax[j]);
+                                }
+                            }
+                            break;
+                        default:
+                            if (aData.y) {
+                                for (var j = 0, l = aData.y.length; j < l; j++) {
+                                    valFinal.push(aData.x ? aData.x[j] : j);
+                                    valFinal.push(aData.y[j]);
+                                }
+                            }
+                            break;
                     }
 
-                    var serie = this.graph.newSerie(serieName, {trackMouse: true});
+
+                    var serie = this.graph.newSerie(serieName, {trackMouse: true}, aData.serieType || undefined);
 
                     this.setSerieParameters(serie, varname, aData._highlight);
 
