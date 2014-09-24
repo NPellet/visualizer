@@ -49,6 +49,8 @@ define( [ ], function( ) {
 			this.rectEvent.setAttribute('pointer-events', 'fill');
 			this.rectEvent.setAttribute('fill', 'transparent');
 
+			this._movable = true;
+			
 			if( this._dom ) {
 
 				this.group.appendChild(this._dom);
@@ -472,6 +474,7 @@ define( [ ], function( ) {
 			this.selectStyle();
 
 			if( ! this._staticHandles ) {
+				this.addHandles();
 				this.setHandles();
 			}
 
@@ -504,6 +507,7 @@ define( [ ], function( ) {
 			this._staticHandles = bool;
 
 			if( bool ) {
+				this.addHandles();
 				this.setHandles();
 			} else {
 				this.removeHandles();

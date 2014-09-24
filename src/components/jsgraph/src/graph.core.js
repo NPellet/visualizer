@@ -1183,14 +1183,21 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 
 					} else if( value.x && onSerie) {
 
-						var closest = onSerie.searchClosestValue( value.x );
+						var val;
+						if( _parsePx( value.x ) !== false ) {
+							console.warn("You have defined x in px and not y. Makes no sense. Returning 0 for y");
+							pos[ i ] = 0;
+						} else {
 
-						if( ! closest ) {
-							return;
+							var closest = onSerie.searchClosestValue( val );
+
+							if( ! closest ) {
+								console.warn("Could not find y position. Returning 0 for y.");
+								pos[ i ] = 0;
+							} else {
+								pos[ i ] = onSerie.getY( closest.yMin );	
+							}
 						}
-
-						pos[ i ] = onSerie.getY( closest.yMin );
-
 					}
 
 				} else if( value[ i ] !== undefined ) {
@@ -1264,16 +1271,16 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 			
 			var refPx, deltaPx;
 
-			if( refPx = _parsePx( ref ) ) {
+			if( ( refPx = _parsePx( ref ) ) !== false ) {
 
-				if( deltaPx = _parsePx( delta ) ) {
+				if( ( deltaPx = _parsePx( delta ) ) !== false ) {
 					return ( refPx + deltaPx ) + "px";	
 				} else {
 					return ( refPx + axis.getRelPx( delta ) ) + "px";
 				}
 			} else {
 
-				if( deltaPx = _parsePx( delta ) ) {
+				if( ( deltaPx = _parsePx( delta ) ) !== false ) {
 					return ( ref + axis.getRelVal( deltaPx ) );
 				} else {
 					return ( ref + delta );

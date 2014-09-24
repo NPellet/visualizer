@@ -95,6 +95,17 @@ define( [ './graph.shape' ], function( GraphShape ) {
 			var pos = this.getFromData('pos');
 			var pos2 = this.getFromData('pos2');
 
+			if( pos2.dx ) {
+				
+				pos2.x = this.graph.deltaPosition( pos2.x || pos.x, pos2.dx, this.serie.getXAxis() );
+				pos2.dx = false;
+			}
+
+			if( pos2.dy ) {
+				pos2.y = this.graph.deltaPosition( pos2.x || pos.x, pos2.dx, this.serie.getXAxis() );
+				pos2.dy = false;
+			}
+
 
 			if( this.handleSelected == 1 ) {
 

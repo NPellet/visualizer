@@ -111,6 +111,8 @@ define( [ './graph.shape' ], function( GraphShape ) {
 				x = pos.x,
 				y = pos.y;
 
+
+
 			if(width == undefined || height == undefined) {
 
 				var position2 = this._getPosition(this.getFromData('pos2'));
@@ -122,6 +124,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
 				width = position2.x - pos.x;
 				height = position2.y - pos.y;
+
 			} else {
 				width = this.graph.getPxRel( width, this.serie.getXAxis( ) );
 				height = this.graph.getPxRel( height, this.serie.getYAxis( ) );
@@ -213,12 +216,23 @@ define( [ './graph.shape' ], function( GraphShape ) {
 				return;
 			}
 			
-			var w = this.getFromData('width') || 0;
-			var h = this.getFromData('height') || 0;
+			var w = this.getFromData('width');
+			var h = this.getFromData('height');
 			var pos = this.getFromData('pos');
 			var pos2 = this.getFromData('pos2');
 
-			if( ! pos2 ) {
+			if( pos2.dx ) {
+				
+				pos2.x = this.graph.deltaPosition( pos2.x || pos.x, pos2.dx, this.serie.getXAxis() );
+				pos2.dx = false;
+			}
+
+			if( pos2.dy ) {
+				pos2.y = this.graph.deltaPosition( pos2.x || pos.x, pos2.dx, this.serie.getXAxis() );
+				pos2.dy = false;
+			}
+
+			if( w !== undefined && h !== undefined ) {
 				
 				if( this.moving ) {
 
@@ -425,13 +439,6 @@ this.handle1.setAttribute('x', this.currentX);
 					case 'corners':
 					default:
 
-						if( this.handleSelected == 1 || this.handleSelected == 4 ) {
-							var inv = ! invX;
-						} else {
-							var inv = invX;
-						}
-
-
 						if( this.handleSelected == 1 ) {
 
 							posX = this.graph.deltaPosition( posX, deltaX, this.serie.getXAxis( ) );	
@@ -456,13 +463,14 @@ this.handle1.setAttribute('x', this.currentX);
 							
 						}
 
+
 						pos2.x = pos2X;
 						pos2.y = pos2Y;
 						
 						pos.x = posX;
 						pos.y = posY;
 
-
+						console.log( pos, pos2 );
 					break;
 
 				}
@@ -481,17 +489,17 @@ this.handle1.setAttribute('x', this.currentX);
 
 		setHandles: function() {
 
+			if( ! this.handlesInDom ) {
+				return;
+			}
+
 			if( this.currentX == undefined ) {
 				return;
 			}
 
-			this.addHandles();
-
 			switch( this.options.handles.type ) {
 
 				case 'sides':
-
-
 
 					if( this.handles.left ) {
 						this.handles.left.setAttribute('transform', 'translate(' + this.currentX + ' ' + ( this.currentY + this.currentH / 2 ) + ')');
