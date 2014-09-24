@@ -1,241 +1,242 @@
 define( [], function() {
 
-	var legendDefaults = {
-		frame: false,
-		backgroundColor: 'transparent',
-		frameWidth: 0,
-		frameColor: 'transparent',
-		paddingTop: 10,
-		paddingLeft: 10,
-		paddingBottom: 10,
-		paddingRight: 10,
+  var legendDefaults = {
+    frame: false,
+    backgroundColor: 'transparent',
+    frameWidth: 0,
+    frameColor: 'transparent',
+    paddingTop: 10,
+    paddingLeft: 10,
+    paddingBottom: 10,
+    paddingRight: 10,
 
-		movable: false
-	}
+    movable: false
+  }
 
-	var Legend = function( graph, options ) {
+  var Legend = function( graph, options ) {
 
-		this.options = $.extend( {}, legendDefaults, options );
+    this.options = $.extend( {}, legendDefaults, options );
 
-		this.graph = graph;
-		this.svg = document.createElementNS(this.graph.ns, 'g');
-		this.rect = document.createElementNS( this.graph.ns, 'rect' );
-		this.rectBottom = document.createElementNS( this.graph.ns, 'rect' );
+    this.graph = graph;
+    this.svg = document.createElementNS( this.graph.ns, 'g' );
+    this.subG = document.createElementNS( this.graph.ns, 'g' );
 
-		this.rect.setAttribute( 'x', 0 );
-		this.rect.setAttribute( 'y', 0 );
+    this.rect = document.createElementNS( this.graph.ns, 'rect' );
+    this.rectBottom = document.createElementNS( this.graph.ns, 'rect' );
 
-		this.rectBottom.setAttribute( 'x', 0 );
-		this.rectBottom.setAttribute( 'y', 0 );
+    this.rect.setAttribute( 'x', 0 );
+    this.rect.setAttribute( 'y', 0 );
 
-		this.pos = { x: undefined, y: undefined, transformX: 0, transformY: 0 }
+    this.rectBottom.setAttribute( 'x', 0 );
+    this.rectBottom.setAttribute( 'y', 0 );
 
-		this.setEvents();
+    this.svg.appendChild( this.subG );
 
-		this.applyStyle();
-	};
+    this.pos = {
+      x: undefined,
+      y: undefined,
+      transformX: 0,
+      transformY: 0
+    }
 
-	Legend.prototype = {
+    this.setEvents();
 
-		setPosition: function( position, alignToX, alignToY ) {
+    this.applyStyle();
+  };
 
-			if( ! position ) {
-				return;
-			}
-	
-			var pos = this.graph.getPosition( position );
-	
-			if( alignToX == "right" ) {
-				pos.x -= this.width;
-			}
+  Legend.prototype = {
 
-			if( alignToY == "bottom" ) {
-				pos.y -= this.height;
-			}
-		
-			this.pos.transformX = pos.x;
-			this.pos.transformY = pos.y;
-	
-			this._setPosition();
-		},
+    setPosition: function( position, alignToX, alignToY ) {
 
-		update: function() {
+      if ( !position ) {
+        return;
+      }
 
-			var self = this;
-			this.applyStyle();
+      var pos = this.graph.getPosition( position );
 
-			while( this.svg.hasChildNodes( ) ) {
-    			this.svg.removeChild( this.svg.lastChild );
-			}
+      if ( alignToX == "right" ) {
+        pos.x -= this.width;
+      }
 
+      if ( alignToY == "bottom" ) {
+        pos.y -= this.height;
+      }
 
-			this.svg.appendChild( this.rectBottom );
+      this.pos.transformX = pos.x;
+      this.pos.transformY = pos.y;
 
-			var series = this.graph.getSeries(),
-				line,
-				text,
-				g;
+      this._setPosition();
+    },
 
-			
+    update: function() {
 
-			for( var i = 0, l = series.length ; i < l ; i ++ ) {
+      var self = this;
+      this.applyStyle();
 
+      while ( this.subG.hasChildNodes() ) {
+        this.subG.removeChild( this.subG.lastChild );
+      }
 
-				( function( j ) {
+      this.svg.insertBefore( this.rectBottom, this.svg.firstChild );
 
-					var g, line, text;
+      var series = this.graph.getSeries(),
+        line,
+        text,
+        g;
 
-					g = document.createElementNS(self.graph.ns, 'g');
-					g.setAttribute('transform', "translate(0, " + (i * 16 + self.options.paddingTop) + ")" );
+      for ( var i = 0, l = series.length; i < l; i++ ) {
 
-					self.svg.appendChild( g );
+        ( function( j ) {
 
-					var line = series[ j ].getSymbolForLegend();
-					var marker = series[ j ].getMarkerForLegend();
-					var text = series[ j ].getTextForLegend();
+          var g, line, text;
 
-					g.appendChild( line );
-					if( marker ) {
-						g.appendChild( marker );	
-					}
-	
-					g.appendChild( text );
+          g = document.createElementNS( self.graph.ns, 'g' );
+          g.setAttribute( 'transform', "translate(0, " + ( i * 16 + self.options.paddingTop ) + ")" );
 
+          self.subG.appendChild( g );
 
-					g.addEventListener('click', function( e ) {
+          var line = series[ j ].getSymbolForLegend();
+          var marker = series[ j ].getMarkerForLegend();
+          var text = series[ j ].getTextForLegend();
 
-						var serie = series[ j ];
+          g.appendChild( line );
+          if ( marker ) {
+            g.appendChild( marker );
+          }
 
-						if( serie.isSelected() ) {
-							
-							serie.hide();
-							self.graph.unselectSerie( serie );
+          g.appendChild( text );
 
-						} else if( serie.isShown() ) {
+          g.addEventListener( 'click', function( e ) {
 
-							self.graph.selectSerie( serie );
+            var serie = series[ j ];
 
+            if ( serie.isSelected() ) {
 
-						} else {
-							serie.show();
-	
-						}
-						
-					} );
+              serie.hide();
+              self.graph.unselectSerie( serie );
 
-				}) ( i );
-			}
+            } else if ( serie.isShown() ) {
 
-			var bbox = this.svg.getBBox();
+              self.graph.selectSerie( serie );
 
-			this.width = bbox.width + this.options.paddingRight + this.options.paddingLeft;
-			this.height = bbox.height + this.options.paddingBottom + this.options.paddingTop;
+            } else {
+              
+              serie.show();
 
-			this.rect.setAttribute('width', this.width );
-			this.rect.setAttribute('height', this.height);
-			this.rect.setAttribute('fill', 'none');
-			this.rect.setAttribute('pointer-events', 'fill');
+            }
 
-			this.rect.setAttribute('display', 'none');
+          } );
 
-			if( this.options.movable ) {
-				this.rectBottom.style.cursor = "move";
-			}
+        } )( i );
+      }
 
-			this.rectBottom.setAttribute('width', this.width );
-			this.rectBottom.setAttribute('height', this.height );
-			
-			this.rectBottom.setAttribute('x', bbox.x - this.options.paddingLeft );
-			this.rectBottom.setAttribute('y', bbox.y - this.options.paddingTop );
-			
+      var bbox = this.subG.getBBox();
 
+      this.width = bbox.width + this.options.paddingRight + this.options.paddingLeft;
+      this.height = bbox.height + this.options.paddingBottom + this.options.paddingTop;
 
-			this.svg.appendChild( this.rect );
-		},
+      this.rect.setAttribute( 'width', this.width );
+      this.rect.setAttribute( 'height', this.height );
+      this.rect.setAttribute( 'fill', 'none' );
+      this.rect.setAttribute( 'pointer-events', 'fill' );
 
-		getDom: function() {
-			return this.svg;
-		},
+      this.rect.setAttribute( 'display', 'none' );
 
-		setEvents: function() {
+      if ( this.options.movable ) {
+        this.rectBottom.style.cursor = "move";
+      }
 
-			var self = this;
-			var pos = this.pos;
+      this.rectBottom.setAttribute( 'width', this.width );
+      this.rectBottom.setAttribute( 'height', this.height );
 
+      this.rectBottom.setAttribute( 'x', bbox.x - this.options.paddingTop );
+      this.rectBottom.setAttribute( 'y', bbox.y - this.options.paddingLeft );
 
-			var mousedown = function( e ) {
+      this.svg.appendChild( this.rect );
+    },
 
-				if( self.options.movable ) {
-					pos.x = e.clientX;
-					pos.y = e.clientY;
-					e.stopPropagation();
-					e.preventDefault();
-					self.mousedown = true;
-					self.graph.elementMoving( self );
+    getDom: function() {
+      return this.svg;
+    },
 
-					self.rect.setAttribute('display', 'block');
-				}
-			};
+    setEvents: function() {
 
-			var mousemove = function( e ) {	
-				self.handleMouseMove( e );
-			}
+      var self = this;
+      var pos = this.pos;
 
-			this.rectBottom.addEventListener('mousedown', mousedown);
-			this.rectBottom.addEventListener('mousemove', mousemove);
-			this.rect.addEventListener('mousemove', mousemove);
-		},
+      var mousedown = function( e ) {
 
-		handleMouseUp: function( e ) {
+        if ( self.options.movable ) {
+          pos.x = e.clientX;
+          pos.y = e.clientY;
+          e.stopPropagation();
+          e.preventDefault();
+          self.mousedown = true;
+          self.graph.elementMoving( self );
 
-			e.stopPropagation();
-			e.preventDefault();
-			this.mousedown = false;
-			this.rect.setAttribute('display', 'none');
-			this.graph.elementMoving( false );
-		},
+          self.rect.setAttribute( 'display', 'block' );
+        }
+      };
 
-		handleMouseMove: function( e ) {
+      var mousemove = function( e ) {
+        self.handleMouseMove( e );
+      }
 
-			if( ! this.mousedown ) {
-				return;
-			}
+      this.rectBottom.addEventListener( 'mousedown', mousedown );
+      this.rectBottom.addEventListener( 'mousemove', mousemove );
+      this.rect.addEventListener( 'mousemove', mousemove );
+    },
 
-			var pos = this.pos;
+    handleMouseUp: function( e ) {
 
-			var deltaX =  e.clientX - pos.x;
-			var deltaY = e.clientY - pos.y;
+      e.stopPropagation();
+      e.preventDefault();
+      this.mousedown = false;
+      this.rect.setAttribute( 'display', 'none' );
+      this.graph.elementMoving( false );
+    },
 
-			pos.transformX += deltaX;
-			pos.transformY += deltaY;
+    handleMouseMove: function( e ) {
 
-			pos.x = e.clientX;
-			pos.y = e.clientY;
+      if ( !this.mousedown ) {
+        return;
+      }
 
-			e.stopPropagation();
-			e.preventDefault();
+      var pos = this.pos;
 
-			this._setPosition();
-		},
+      var deltaX = e.clientX - pos.x;
+      var deltaY = e.clientY - pos.y;
 
-		_setPosition: function() {
+      pos.transformX += deltaX;
+      pos.transformY += deltaY;
 
-			var pos = this.pos;
-			this.svg.setAttribute('transform', 'translate(' + pos.transformX + ', ' + pos.transformY + ')');
-		},
+      pos.x = e.clientX;
+      pos.y = e.clientY;
 
-		applyStyle: function() {
+      e.stopPropagation();
+      e.preventDefault();
 
-			if( this.options.frame ) {
-				this.rectBottom.setAttribute('stroke', this.options.frameColor );
-				this.rectBottom.setAttribute('stroke-width', this.options.frameWidth + "px" );
-			}
+      this._setPosition();
+    },
 
-			this.rectBottom.setAttribute('fill', this.options.backgroundColor );
+    _setPosition: function() {
 
-		}
-	};
+      var pos = this.pos;
+      this.svg.setAttribute( 'transform', 'translate(' + pos.transformX + ', ' + pos.transformY + ')' );
+    },
 
-	return Legend;
+    applyStyle: function() {
 
-});
+      if ( this.options.frame ) {
+        this.rectBottom.setAttribute( 'stroke', this.options.frameColor );
+        this.rectBottom.setAttribute( 'stroke-width', this.options.frameWidth + "px" );
+      }
+
+      this.rectBottom.setAttribute( 'fill', this.options.backgroundColor );
+
+    }
+  };
+
+  return Legend;
+
+} );

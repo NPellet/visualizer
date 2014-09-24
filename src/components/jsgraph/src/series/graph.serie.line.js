@@ -1,1168 +1,1293 @@
+define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
-define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
+  "use strict";
 
-	"use strict";
+  var GraphSerie = function() {}
+  $.extend( GraphSerie.prototype, GraphSerieNonInstanciable.prototype, {
 
-	var GraphSerie = function() { }
-	$.extend( GraphSerie.prototype, GraphSerieNonInstanciable.prototype, {
+    defaults: {
+      lineColor: 'black',
+      lineStyle: 1,
+      flip: false,
+      label: "",
 
-		defaults: {
-			lineColor: 'black',
-			lineStyle: 1,
-			flip: false,
-			label: "",
+      markers: false,
+      trackMouse: false,
+      trackMouseLabel: false,
+      trackMouseLabelRouding: 1,
+      lineToZero: false,
 
-			markers: false,
-			trackMouse: false,
-			trackMouseLabel: false,
-			trackMouseLabelRouding: 1,
-			lineToZero: false,
+      lineWidth: 1,
 
-			lineWidth: 1,
+      autoPeakPicking: false,
+      autoPeakPickingNb: 4,
+      autoPeakPickingMinDistance: 10
+    },
 
-			autoPeakPicking: false,
-			autoPeakPickingNb: 4,
-			autoPeakPickingMinDistance: 10
-		},
+    init: function( graph, name, options ) {
 
+      var self = this;
+      this.graph = graph;
+      this.name = name;
+      this.id = Math.random() + Date.now();
 
-		init: function( graph, name, options ) {
+      this.shown = true;
+      this.options = $.extend( true, {}, GraphSerie.prototype.defaults, options );
 
-			var self = this;
-			this.graph = graph;
-			this.name = name;
-			this.id = Math.random() + Date.now();
+      this.data = [];
+      this._isMinOrMax = {
+        x: {
+          min: false,
+          max: false
+        },
+        y: {
+          min: false,
+          max: false
+        }
+      };
 
-			this.shown = true;
-			this.options = $.extend(true, {}, GraphSerie.prototype.defaults, options);
+      this.groupLines = document.createElementNS( this.graph.ns, 'g' );
+      this.domMarker = document.createElementNS( this.graph.ns, 'path' );
+      this.domMarker.style.cursor = 'pointer';
 
+      this.groupMain = document.createElementNS( this.graph.ns, 'g' );
+      this.additionalData = {};
 
-			this.data = [];
-			this._isMinOrMax = { x: { min: false, max: false}, y: { min: false, max: false} };
+      this.marker = document.createElementNS( this.graph.ns, 'circle' );
+      this.marker.setAttribute( 'fill', 'black' );
+      this.marker.setAttribute( 'r', 3 );
+      this.marker.setAttribute( 'display', 'none' );
 
-			this.groupLines = document.createElementNS(this.graph.ns, 'g');
-			this.domMarker = document.createElementNS(this.graph.ns, 'path');
-			this.domMarker.style.cursor = 'pointer';
+      this.markerLabel = document.createElementNS( this.graph.ns, 'text' );
+      this.markerLabelSquare = document.createElementNS( this.graph.ns, 'rect' );
+      this.markerLabelSquare.setAttribute( 'fill', 'white' );
+      this.domMarkerHover = {};
+      this.domMarkerSelect = {};
+      this.markerHovered = 0;
+      this.groupMarkerSelected = document.createElementNS( this.graph.ns, 'g' );
 
-			this.groupMain = document.createElementNS(this.graph.ns, 'g');
-			this.additionalData = {};
+      this.groupLabels = document.createElementNS( this.graph.ns, 'g' );
+      //this.scale = 1;
+      //this.shift = 0;
+      this.lines = [];
 
-			
+      this.groupMain.appendChild( this.groupLines );
+      this.groupMain.appendChild( this.groupLabels );
+      this.groupMain.appendChild( this.marker );
 
-			this.marker = document.createElementNS(this.graph.ns, 'circle');
-			this.marker.setAttribute('fill', 'black');
-			this.marker.setAttribute('r', 3);
-			this.marker.setAttribute('display', 'none');
+      this.groupMain.appendChild( this.groupMarkerSelected );
+      this.groupMain.appendChild( this.markerLabelSquare );
+      this.groupMain.appendChild( this.markerLabel );
 
-			this.markerLabel = document.createElementNS(this.graph.ns, 'text');
-			this.markerLabelSquare = document.createElementNS(this.graph.ns, 'rect');
-			this.markerLabelSquare.setAttribute('fill', 'white');
-			this.domMarkerHover = {};
-			this.domMarkerSelect = {};
-			this.markerHovered = 0;
-			this.groupMarkerSelected = document.createElementNS(this.graph.ns, 'g');
+      this.labels = [];
 
-			this.groupLabels = document.createElementNS(this.graph.ns, 'g');
-			//this.scale = 1;
-			//this.shift = 0;
+      this.currentAction = false;
 
-			this.minX = Number.MAX_VALUE;
-			this.minY = Number.MAX_VALUE;
-			this.maxX = Number.MIN_VALUE;
-			this.maxY = Number.MIN_VALUE;
+      if ( this.initExtended1 )
+        this.initExtended1();
 
-			this.lines = [];
-			
+      if ( this.options.autoPeakPicking ) {
 
-			this.groupMain.appendChild(this.groupLines);
-			this.groupMain.appendChild(this.groupLabels);
-			this.groupMain.appendChild(this.marker);
-			
-			this.groupMain.appendChild(this.groupMarkerSelected);
-			this.groupMain.appendChild(this.markerLabelSquare);
-			this.groupMain.appendChild(this.markerLabel);
+        this.picks = this.picks || [];
 
-			this.labels = [];
+        this.picksDef = [];
 
-			this.currentAction = false;
+        for ( var n = 0, m = this.options.autoPeakPickingNb; n < m; n++ ) {
 
-			if(this.initExtended1)
-				this.initExtended1();
+          this.picksDef.push( this.graph.newShape( {
 
-			if(this.options.autoPeakPicking) {
+            type: 'label',
+            label: {
+              text: "",
+              position: {
+                x: 0
+              },
+              anchor: 'middle',
 
-				this.picks = this.picks || [];
-				
+            },
 
-				this.picksDef = [];
+            shapeOptions: {
+              minPosY: 15
+            }
 
-				for(var n = 0, m = this.options.autoPeakPickingNb; n < m; n++) {
+          } ).then( function( shape ) {
 
-					this.picksDef.push( this.graph.newShape( { 
-
-							type: 'label', 
-							label: {
-								text: "",
-								position: { x: 0 },
-								anchor: 'middle'
-							}
-
-						} ).then( function( shape ) {
-
-							shape.setSerie( self );
-							self.picks.push( shape );	
- 						} )
-					);
-				}
-
-			}
-		},
-
-		setAdditionalData: function( data ) {
-			this.additionalData = data;
-			return this;
-		},
-
-		getAdditionalData: function( ) {
-			return this.additionalData;
-		},
-
-		calculateSlots: function( ) {
-
-			var self = this;
-			this.slotsData = {};
-			this.slotWorker = new Worker('./src/slotworker.js');
-
-			this.slotWorker.onmessage = function( e ) {
-				self.slotsData[ e.data.slot ].resolve( e.data.data );
-			}
-
-			for(var i = 0, l = this.slots.length; i < l ; i ++) {
-
-				//this.slotsData[ i ] = $.Deferred();
-				this.calculateSlot( this.slots[ i ], i );
-//				this.slotsData[ this.slots[ i ] ].max = this.data[ j ][ m ];
-			}
-		},
-
-		slotCalculator: function( slot, slotNumber ) {
-			var def = $.Deferred();
-
-			this.slotWorker.postMessage( { 
-				min: this.minX, 
-				max: this.maxX, 
-				data: this.data, 
-				slot: slot, 
-				slotNumber: slotNumber, 
-				flip: this.getFlip()
-			} );
-
-			return def;
-		},
-
-		calculateSlot: function( slot, slotNumber ) {
-			var self = this;
-			this.slotsData[ slot ] = this.slotCalculator( slot, slotNumber );
-			this.slotsData[ slot ].pipe( function( data ) {
-				
-				self.slotsData[ slot ] = data;
-				return data;
-			});
-		},
-
-		kill: function( noRedraw ) {
-
-			this.graph.plotGroup.removeChild(this.groupMain);
-
-			if (this.picks && this.picks.length) {
-				for(var i = 0, l = this.picks.length; i < l; i++) {
-					this.picks[i].kill();
-				}
-			}
+            shape.setSerie( self );
+            self.picks.push( shape );
+          } ) );
+        }
 
-			this.graph._removeSerie( this );
-			
-			if( ! noRedraw ) {
-				this.graph.redraw();
-			}
+      }
+    },
 
-			if( this.graph.legend ) {
+    setAdditionalData: function( data ) {
+      this.additionalData = data;
+      return this;
+    },
 
-				this.graph.legend.update( );
-			}
-		},
+    getAdditionalData: function() {
+      return this.additionalData;
+    },
 
-		onMouseOverMarker: function(e, index) {
-			var toggledOn = this.toggleMarker(index, true, true);
-			if(this.options.onMouseOverMarker) {
-				this.options.onMouseOverMarker(index, this.infos ? (this.infos[index[0]] || false) : false, [this.data[index[1]][index[0] * 2], this.data[index[1]][index[0] * 2 + 1]]);
-			}
-		},
+    calculateSlots: function() {
 
+      var self = this;
+      this.slotsData = {};
+//      this.slotWorker = new Worker( './src/slotworker.js' );
 
-		onMouseOutMarker: function(e, index) {
-			this.markersOffHover();
-			if(this.options.onMouseOutMarker && this.infos) {
-				this.options.onMouseOutMarker(index, this.infos ? (this.infos[index[0]] || false) : false, [this.data[index[1]][index[0] * 2], this.data[index[1]][index[0] * 2 + 1]]);
-			}
-		},
 
-		toggleMarker: function(index, force, hover) {
-			var i = index[0],
-				k = index[1] || 0;
+    var workerUrl = URL.createObjectURL( new Blob(
 
-			index = index.join();
+        [
+        " ( " + 
 
-			var _on = !hover ? !this.domMarkerSelect[index] : !this.domMarkerHover[index];
-			var el = this['domMarker' + (hover ? 'Hover' : 'Select')];
-			
-			if(_on || (force === true && force !== false)) {
+            function() { 
 
-				if(!el[index]) {
+           
+          onmessage = function( e ) {
+            var data = e.data.data;
+            var slotNb = e.data.slotNumber;
+            var slot = e.data.slot;
+            var flip = e.data.flip;
+            var max = e.data.max;
+            var min = e.data.min;
+            var slotNumber;
+            var dataPerSlot = slot / (max - min);
 
-					var dom = document.createElementNS(this.graph.ns, 'path');
-					this.setMarkerStyleTo(dom, true);
+            this.slotsData = [];
 
-					var x = this.getX(this.data[k][i * 2]);
-					var y = this.getY(this.data[k][i * 2 + 1]);
+            for(var j = 0, k = data.length; j < k ; j ++ ) {
 
-					dom.setAttribute('d', "M " + x + " " + y + " " + this.getMarkerPath( this.markerFamily[ this.getMarkerCurrentFamily( i ) ], 1 ));
+              for(var m = 0, n = data[ j ].length ; m < n ; m += 2 ) {
 
-					this['domMarker' + (hover ? 'Hover' : 'Select')][index] = dom;
-					this.groupMarkerSelected.appendChild(dom);
-					
-					if(hover)
-						this.markerHovered++;
-				}
+                slotNumber = Math.floor( ( data[ j ][ m ] - min ) * dataPerSlot );
 
-			} else if(force === false || !_on) {
+                this.slotsData[ slotNumber ] = this.slotsData[ slotNumber ] || { 
+                    min: data[ j ][ m + 1], 
+                    max: data[ j ][ m + 1], 
+                    start: data[ j ][ m + 1],
+                    stop: false,
+                    x: data[ j ][ m ] };
 
-				if((hover && this.domMarkerHover[index] && !this.domMarkerSelect[index]) || this.domMarkerSelect[index]) {
-					
-					if(!el[index])
-						return;
-					this.groupMarkerSelected.removeChild(el[index]);
-					delete el[index];
+                this.slotsData[ slotNumber ].stop = data[ j ][ m + 1 ];
+                this.slotsData[ slotNumber ].min = Math.min( data[ j ][ m + 1 ], this.slotsData[ slotNumber ].min );
+                this.slotsData[ slotNumber ].max = Math.max( data[ j ][ m + 1 ], this.slotsData[ slotNumber ].max );
 
-					if(hover)
-						this.markerHovered--;
-				}
+              }
+            }
 
-			}
+            postMessage( { slotNumber: slotNb, slot: slot, data: this.slotsData } );
+          };
 
-			return _on;
-		},
 
-		markersOffHover: function() {
+            }.toString() + ")()"
 
-			for(var i in this.domMarkerHover) {
-				this.toggleMarker(i.split(','), false, true);
-			}
-		},
+        ], { type: 'application/javascript' }
 
-		onClickOnMarker: function(e, index) {
-			
-			var toggledOn = this.toggleMarker(index);
+        ) );
 
-			if(toggledOn && this.options.onSelectMarker)
-				this.options.onSelectMarker(index, this.infos ? (this.infos[index[0]] || false) : false);
 
-			if(!toggledOn && this.options.onUnselectMarker)
-				this.options.onUnselectMarker(index, this.infos ? (this.infos[index[0]] || false) : false);
+        this.slotWorker = new Worker( workerUrl );
 
-			if(this.options.onToggleMarker)
-				this.options.onToggleMarker(index, this.infos ? (this.infos[index[0]] || false) : false, toggledOn);
-		},
+      
 
+      this.slotWorker.onmessage = function( e ) {
 
-		_getMarkerIndexFromEvent: function(e) {
-			var px = this.graph._getXY(e);
-			return this.searchIndexByPxXY((px.x - this.graph.getPaddingLeft()), (px.y - this.graph.getPaddingTop()));
+        self.slotsData[ e.data.slot ].resolve( e.data.data );
+      }
 
-		},
 
-		onMouseWheel: function() {},
+      for ( var i = 0, l = this.slots.length; i < l; i++ ) {
 
-		empty: function() {
+        //this.slotsData[ i ] = $.Deferred();
+        this.calculateSlot( this.slots[ i ], i );
+        //        this.slotsData[ this.slots[ i ] ].max = this.data[ j ][ m ];
+      }
+    },
 
-			for(var i = 0, l = this.lines.length; i < l; i++) {
-				this.groupLines.removeChild(this.lines[i]);
-				
-			}
+    slotCalculator: function( slot, slotNumber ) {
+      var def = $.Deferred();
 
-			while(this.groupMarkers.firstChild) {
-				this.groupMarkers.removeChild(this.groupMarkers.firstChild);
-			}
-		},
+      this.slotWorker.postMessage( {
+        /*min: this.getFlip() ? this.minY : this.minX,
+        max: this.getFlip() ? this.maxY : this.maxX,*/
+        min: this.minX,
+        max: this.maxX,
+        data: this.data,
+        slot: slot,
+        slotNumber: slotNumber,
+        flip: this.getFlip( )
+      } );
+      return def;
+    },
 
-		select: function() {
-			this.selected = true;
+    calculateSlot: function( slot, slotNumber ) {
+      var self = this;
+      this.slotsData[ slot ] = this.slotCalculator( slot, slotNumber );
+      this.slotsData[ slot ].pipe( function( data ) {
 
-			for( var i = 0, l = this.lines.length ; i < l ; i ++ ) {
+        self.slotsData[ slot ] = data;
+        return data;
+      } );
 
-				this.applyLineStyle( this.lines[ i ] );
-			}
+    },
 
-			this.applyLineStyle( this.getSymbolForLegend() );
-		},
+    kill: function( noRedraw ) {
 
-		unselect: function() {
+      this.graph.plotGroup.removeChild( this.groupMain );
 
-			this.selected = false;
+      if ( this.picks && this.picks.length ) {
+        for ( var i = 0, l = this.picks.length; i < l; i++ ) {
+          this.picks[ i ].kill();
+        }
+      }
 
-			for( var i = 0, l = this.lines.length ; i < l ; i ++ ) {
+      this.graph._removeSerie( this );
 
-				this.applyLineStyle( this.lines[ i ] );
-			}
+      if ( !noRedraw )  {
+        this.graph.redraw();
+      }
 
-			this.applyLineStyle( this.getSymbolForLegend() );
-		},
+      if ( this.graph.legend ) {
 
-		degrade: function( pxPerP, options ) {
+        this.graph.legend.update();
+      }
+    },
 
-			var serie = this.graph.newSerie( this.name, options, 'zone' );
-			this.degradationPx = pxPerP;
+    onMouseOverMarker: function( e, index ) {
+      var toggledOn = this.toggleMarker( index, true, true );
+      if ( this.options.onMouseOverMarker ) {
+        this.options.onMouseOverMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false, [ this.data[ index[ 1 ] ][ index[ 0 ] * 2 ], this.data[ index[ 1 ] ][ index[ 0 ] * 2 + 1 ] ] );
+      }
+    },
 
-			if( ! serie ) {
-				return;
-			}
-			
-			serie.setData([]);
+    onMouseOutMarker: function( e, index ) {
+      this.markersOffHover();
+      if ( this.options.onMouseOutMarker && this.infos ) {
+        this.options.onMouseOutMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false, [ this.data[ index[ 1 ] ][ index[ 0 ] * 2 ], this.data[ index[ 1 ] ][ index[ 0 ] * 2 + 1 ] ] );
+      }
+    },
 
-			serie.setXAxis( this.getXAxis() );
-			serie.setYAxis( this.getYAxis() );
+    toggleMarker: function( index, force, hover ) {
+      var i = index[ 0 ],
+        k = index[ 1 ] || 0;
 
-			
-			this.degradationSerie = serie;
+      index = index.join();
 
-			return serie;
-		},
+      var _on = !hover ? !this.domMarkerSelect[ index ] : !this.domMarkerHover[ index ];
+      var el = this[ 'domMarker' + ( hover ? 'Hover' : 'Select' ) ];
 
+      if ( _on || ( force === true && force !== false ) ) {
 
-		draw: function() { // Serie redrawing
+        if ( !el[ index ] ) {
 
-			var data = this.data;
-			var xData = this.xData;
+          var dom = document.createElementNS( this.graph.ns, 'path' );
+          this.setMarkerStyleTo( dom, true );
 
-			if( this.degradationPx ) {
-				data = getDegradedData( this );
-				xData = data[ 1 ];
-				data = data[ 0 ];
-			}
+          var x = this.getX( this.data[ k ][ i * 2 ] );
+          var y = this.getY( this.data[ k ][ i * 2 + 1 ] );
 
+          dom.setAttribute( 'd', "M " + x + " " + y + " " + this.getMarkerPath( this.markerFamily[ this.getMarkerCurrentFamily( i ) ], 1 ) );
 
-			var x, 
-				y, 
-				xpx, 
-				ypx, 
-				xpx2,
-				ypx2,
-				i = 0, 
-				l = data.length, 
-				j = 0, 
-				k, 
-				m,
-				currentLine, 
-				max,
-				self = this;
+          this[ 'domMarker' + ( hover ? 'Hover' : 'Select' ) ][ index ] = dom;
+          this.groupMarkerSelected.appendChild( dom );
 
-			var optimizeMonotoneous = this.isXMonotoneous(), optimizeMaxPxX = this.getXAxis().getMaxPx(), optimizeBreak, buffer;
+          if ( hover )
+            this.markerHovered++;
+        }
 
-			var shape, self = this;
+      } else if ( force === false ||  !_on ) {
 
+        if ( ( hover && this.domMarkerHover[ index ] && !this.domMarkerSelect[ index ] ) || this.domMarkerSelect[ index ] ) {
 
-			this._drawn = true;			
+          if ( !el[ index ] )
+            return;
+          this.groupMarkerSelected.removeChild( el[ index ] );
+          delete el[ index ];
 
-			var next = this.groupLines.nextSibling;
-			this.groupMain.removeChild(this.groupLines);
-			
-			this.marker.setAttribute('display', 'none');
-			
-			this.markerCurrentFamily = null;
-			var markerCurrentIndex = 0;
-			var markerNextChange = -1;//this.markerPoints[ markerCurrentIndex ][ 0 ];
+          if ( hover )
+            this.markerHovered--;
+        }
 
-			var incrXFlip = 0;
-			var incrYFlip = 1;
+      }
 
-			if( this.isFlipped( ) ) {
-				incrXFlip = 1;
-				incrYFlip = 0;
-			}
+      return _on;
+    },
 
-			this.eraseMarkers();
+    markersOffHover: function() {
 
-			var totalLength = 0;
-			for( ; i < l ; i ++ ) {
-				totalLength += data[ i ].length / 2;
-			}
+      for ( var i in this.domMarkerHover ) {
+        this.toggleMarker( i.split( ',' ), false, true );
+      }
+    },
 
-			i = 0;
-			var allY = [ ],
-				slotToUse,
-				y = 0,
-				z;
+    onClickOnMarker: function( e, index ) {
 
-			if( this.options.useSlots && this.slots ) {
-				
-				var slot = this.graph.getDrawingWidth( ) * ( this.maxX - this.minX ) / ( this.getXAxis().getActualMax() - this.getXAxis().getActualMin() );
-				
-				for( var y = 0, z = this.slots.length; y < z ; y ++ ) {
+      var toggledOn = this.toggleMarker( index );
 
-					if( slot < this.slots[ y ] ) {
-						slotToUse = this.slotsData[ this.slots[ y ] ];
-						break;
-					}
-				}
-			}
+      if ( toggledOn && this.options.onSelectMarker )
+        this.options.onSelectMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false );
 
-			var degradation = [];
-			var buffer;
+      if ( !toggledOn && this.options.onUnselectMarker )
+        this.options.onUnselectMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false );
 
-			var lookForMaxima = true;
-			var lookForMinima = false;
+      if ( this.options.onToggleMarker )
+        this.options.onToggleMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false, toggledOn );
+    },
 
-			if( this.options.autoPeakPicking ) {
-				var lastYPeakPicking;
-			}
+    _getMarkerIndexFromEvent: function( e ) {
+      var px = this.graph._getXY( e );
+      return this.searchIndexByPxXY( ( px.x - this.graph.getPaddingLeft() ), ( px.y - this.graph.getPaddingTop() ) );
 
-			if( slotToUse ) {
-				if( slotToUse.done ) {
+    },
 
-					slotToUse.done( function( data ) {
-						self.drawSlot( data, y );
-					});
+    onMouseWheel: function() {},
 
-				} else {
-					this.drawSlot( slotToUse, y );	
-				}
-				
-			} else {
-				
-				if( this.mode == 'x_equally_separated' ) {
+    empty: function() {
 
-					for( ; i < l ; i ++ ) {
-						
-						currentLine = "M ";
-						j = 0, k = 0, m = data[ i ].length;
+      for ( var i = 0, l = this.lines.length; i < l; i++ ) {
+        this.groupLines.removeChild( this.lines[ i ] );
 
-						for( ; j < m ; j += 1 ) {
+      }
 
-							if( this.markersShown() ) {
+      while ( this.groupMarkers.firstChild ) {
+        this.groupMarkers.removeChild( this.groupMarkers.firstChild );
+      }
+    },
 
-								this.getMarkerCurrentFamily( k );								
-							}
+    select: function() {
+      this.selected = true;
 
-							if( ! this.isFlipped() ) {
-							
-								xpx = this.getX( xData[ i ].x + j * xData[ i ].dx );
-								ypx = this.getY( data[ i ][ j ] );								
-							} else {
-								ypx = this.getX( xData[ i ].x + j * xData[ i ].dx );
-								xpx = this.getY( data[ i ][ j ] );								
-							}
+      for ( var i = 0, l = this.lines.length; i < l; i++ ) {
 
+        this.applyLineStyle( this.lines[ i ] );
+      }
 
-							if( optimizeMonotoneous && xpx < 0 ) {
-								buffer = [ xpx, ypx ];
-								continue;
-							}
+      this.applyLineStyle( this.getSymbolForLegend() );
+    },
 
-							if( optimizeMonotoneous && buffer ) {
+    unselect: function() {
 
-								currentLine = this._addPoint( currentLine, buffer[ 0 ], buffer[ 1 ], k );
-								buffer = false;
-								k++;
-							}
+      this.selected = false;
 
-							currentLine = this._addPoint( currentLine, xpx, ypx, k );
-							k++;
+      for ( var i = 0, l = this.lines.length; i < l; i++ ) {
 
+        this.applyLineStyle( this.lines[ i ] );
+      }
 
-							if( optimizeMonotoneous && xpx > optimizeMaxPxX ) {
-								toBreak = true;
-								break;
-							}
+      this.applyLineStyle( this.getSymbolForLegend() );
+    },
 
-						}
-						
-						this._createLine(currentLine, i, k);
+    degrade: function( pxPerP, options ) {
 
-						if( toBreak ) { 
-							break;
-						}
-					}
+      var serie = this.graph.newSerie( this.name, options, 'zone' );
+      this.degradationPx = pxPerP;
 
-				} else {
+      if ( !serie ) {
+        return;
+      }
 
-					for( ; i < l ; i ++ ) {
-						
-						var toBreak = false;
+      serie.setData( [] );
 
-						currentLine = "M ";
-						j = 0, k = 0, m = data[ i ].length;
+      serie.setXAxis( this.getXAxis() );
+      serie.setYAxis( this.getYAxis() );
 
+      this.degradationSerie = serie;
 
-						for( ; j < m ; j += 2 ) {
+      return serie;
+    },
 
+    draw: function() { // Serie redrawing
 
-							if( this.markersShown() ) {
+      var data = this.data;
+      var xData = this.xData;
 
-								this.getMarkerCurrentFamily( k );
-								
-							}
+      if ( this.degradationPx ) {
+        data = getDegradedData( this );
+        xData = data[ 1 ];
+        data = data[ 0 ];
+      }
 
-							xpx2 = this.getX( data[ i ][ j + incrXFlip ] );
-							ypx2 = this.getY( data[ i ][ j + incrYFlip ] );
-							
-							if( xpx2 == xpx && ypx2 == ypx ) {
-								continue;
-							}
+      var x,
+        y,
+        xpx,
+        ypx,
+        xpx2,
+        ypx2,
+        i = 0,
+        l = data.length,
+        j = 0,
+        k,
+        m,
+        currentLine,
+        max,
+        self = this;
 
-							if( optimizeMonotoneous && xpx2 < 0 ) {
-								buffer = [ xpx2, ypx2 ]
-								continue;
-							}
+      var optimizeMonotoneous = this.isXMonotoneous(),
+        optimizeMaxPxX = this.getXAxis().getMathMaxPx(),
+        optimizeBreak, buffer;
 
-							if( optimizeMonotoneous && buffer ) {
 
-								currentLine = this._addPoint( currentLine, buffer[ 0 ], buffer[ 1 ], k );
-								buffer = false;
-								k++;
-							}
 
-							if( this.options.autoPeakPicking ) {
+      var shape, self = this;
 
-								if( ! this.options.lineToZero ) {
+      this._drawn = true;
 
-									if( ! lastYPeakPicking ) {
-										lastYPeakPicking = [ ( data[ i ][ j + incrYFlip ] ), data[ i ][ j + incrXFlip ] ];
-									} else {
+      var next = this.groupLines.nextSibling;
+      this.groupMain.removeChild( this.groupLines );
 
-										if( ( data[ i ][ j + incrYFlip ] >= lastYPeakPicking[ 0 ] && lookForMaxima ) || ( data[ i ][ j + incrYFlip ] <= lastYPeakPicking[ 0 ] && lookForMinima ) ) {
 
-											lastYPeakPicking = [ ( data[ i ][ j + incrYFlip ] ), data[ i ][ j + incrXFlip ] ]
+      this.markerCurrentFamily = null;
+      var markerCurrentIndex = 0;
+      var markerNextChange = -1; //this.markerPoints[ markerCurrentIndex ][ 0 ];
 
-										} else {
+      var incrXFlip = 0;
+      var incrYFlip = 1;
 
-											if( lookForMinima ) {
-												lookForMinima = false;
-												lookForMaxima = true;
-											} else {
+      if ( this.isFlipped() ) {
+        incrXFlip = 1;
+        incrYFlip = 0;
+      }
 
-												lookForMinima = true;
-												lookForMaxima = false;
+      this.eraseMarkers();
 
-												allY.push( lastYPeakPicking );	
-												lastYPeakPicking = false;	
-											}
-											
+      var totalLength = 0;
+      for ( ; i < l; i++ ) {
+        totalLength += data[ i ].length / 2;
+      }
 
-										}
-									} 
-	
-								} else {
-									allY.push( [ ( data[ i ][ j + incrYFlip ] ), data[ i ][ j + incrXFlip ] ] );	
-								}
-							}
-							
-							currentLine = this._addPoint( currentLine, xpx2, ypx2, k );
-							k++;
+      i = 0;
+      var allY = [],
+        slotToUse,
+        y = 0,
+        z;
 
-							if( optimizeMonotoneous && xpx2 > optimizeMaxPxX ) {
-								toBreak = true;
-								break;
-							}
+      if ( this.options.useSlots && this.slots ) {
 
-							xpx = xpx2;
-							ypx = ypx2;
-						}
-						
-						this._createLine(currentLine, i, k);
+        if( this.isFlipped() ) {
+          var slot = this.graph.getDrawingHeight() * ( this.maxY - this.minY ) / ( this.getYAxis().getActualMax() - this.getYAxis().getActualMin() );
+        } else {
+          var slot = this.graph.getDrawingWidth() * ( this.maxX - this.minX ) / ( this.getXAxis().getActualMax() - this.getXAxis().getActualMin() );  
+        }
+        
 
-						if( toBreak ) {
-							break;
-						}
-					}
-				}
-			}
+        for ( var y = 0, z = this.slots.length; y < z; y++ ) {
 
-			if( this.options.autoPeakPicking ) {
-				makePeakPicking( this, allY );
-			}
+          if ( slot < this.slots[ y ] ) {
+            slotToUse = this.slotsData[ this.slots[ y ] ];
+            break;
+          }
+        }
+      }
 
-			i++;
+      var degradation = [];
+      var buffer;
 
-			for( ; i < this.lines.length ; i++ ) {
-				this.groupLines.removeChild( this.lines[ i ] );
-				this.lines.splice(i, 1);
-			}
+      var lookForMaxima = true;
+      var lookForMinima = false;
 
-			insertMarkers( this );
+      if ( this.options.autoPeakPicking ) {
+        var lastYPeakPicking;
+      }
 
-			this.groupMain.insertBefore(this.groupLines, next);
-			var label;
-			for( var i = 0, l = this.labels.length ; i < l ; i ++ ) {
-				this.repositionLabel( this.labels[ i ] );
-			}
-		},
+      if ( slotToUse ) {
+        if ( slotToUse.done ) {
 
+          slotToUse.done( function( data ) {
+            self.drawSlot( data, y );
+          } );
 
-		
+        } else {
+          this.drawSlot( slotToUse, y );
+        }
 
-		getMarkerCurrentFamily: function( k ) {
+      } else {
 
-			for( var z = 0 ; z < this.markerPoints.length ; z ++ ) {
-				if( this.markerPoints[ z ][ 0 ] <= k ) { // This one is a possibility !
-					if( this.markerPoints[ z ][ 1 ] >= k ) { // Verify that it's in the boundary
-						this.markerCurrentFamily = this.markerPoints[z ][ 2 ];
-					}
-				} else {
-					break;
-				}
+        if ( this.mode == 'x_equally_separated' ) {
 
+          for ( ; i < l; i++ ) {
 
-			}
+            currentLine = "M ";
+            j = 0, k = 0, m = data[ i ].length;
 
-			return this.markerCurrentFamily;
+            for ( ; j < m; j += 1 ) {
 
-		},
+              if ( this.markersShown() ) {
 
-		drawSlot: function( slotToUse, y ) {
+                this.getMarkerCurrentFamily( k );
+              }
 
-			var dataPerSlot = this.slots[ y ] / (this.maxX - this.minX);
+              if ( !this.isFlipped() ) {
 
-			//console.log(slotToUse, y, this.slots[ y ]);
-			
-			var currentLine = "M ";
-			var k = 0;
-			var i = 0, xpx, max;
-			var j;
+                xpx = this.getX( xData[ i ].x + j * xData[ i ].dx );
+                ypx = this.getY( data[ i ][ j ] );
+              } else {
+                ypx = this.getX( xData[ i ].x + j * xData[ i ].dx );
+                xpx = this.getY( data[ i ][ j ] );
+              }
 
-			var slotInit = Math.floor( ( this.getXAxis( ).getActualMin( ) - this.minX ) * dataPerSlot );
-			var slotFinal = Math.ceil( ( this.getXAxis( ).getActualMax( ) - this.minX ) * dataPerSlot );
+              if ( optimizeMonotoneous && xpx < 0 ) {
+                buffer = [ xpx, ypx ];
+                continue;
+              }
 
-			for( j = slotInit ;  j <= slotFinal ; j ++ ) {
+              if ( optimizeMonotoneous && buffer ) {
 
-				if( ! slotToUse[ j ] ) {
-					continue;
-				}
+                currentLine = this._addPoint( currentLine, buffer[ 0 ], buffer[ 1 ], k );
+                buffer = false;
+                k++;
+              }
 
-				xpx = Math.floor( this.getX( slotToUse[ j ].x ) ),
-				max = this.getY( slotToUse[ j ].max );
-	
-				if(this.options.autoPeakPicking) {
-					allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
-				}
-				
-				currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].start ) , k );
-				currentLine = this._addPoint( currentLine, xpx, max , false, true );
-				currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].min ) );
-				currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].stop ), false, true );
+              currentLine = this._addPoint( currentLine, xpx, ypx, k );
+              k++;
 
-				k++;
-				
-			}
+              if ( optimizeMonotoneous && xpx > optimizeMaxPxX ) {
+                toBreak = true;
+                break;
+              }
 
-			this._createLine(currentLine, i, k);
-			i++;
-			//console.timeEnd('Slot');
-		},
+            }
 
-		setMarkerStyleTo: function( dom, family ) {
-			
-			if( ! dom ) {
-				throw "Cannot set marker style. DOM does not exist.";
-			}
+            this._createLine( currentLine, i, k );
 
-			dom.setAttribute('fill', family.fillColor || 'transparent' );
-			dom.setAttribute('stroke', family.strokeColor || this.getLineColor( ) );
-			dom.setAttribute('stroke-width', family.strokeWidth || 1 );
-		},
+            if ( toBreak ) {
+              break;
+            }
+          }
 
-		
+        } else {
 
-		hideTrackingMarker: function() {
-			this.marker.setAttribute('display', 'none');
-			this.markerLabel.setAttribute('display', 'none');
-			this.markerLabelSquare.setAttribute('display', 'none');
-		},
+          for ( ; i < l; i++ ) {
 
-		
-		_addPoint: function( currentLine, xpx, ypx, k, move ) {
-			var pos;
-			
-			if(k !== 0) {
-				if(this.options.lineToZero || move)
-					currentLine += 'M ';
-				else
-					currentLine += "L ";
-			}
+            var toBreak = false;
 
-			currentLine += xpx;
-			currentLine += " ";
-			currentLine += ypx;	
-			currentLine += " "; 
-			
-			if(this.options.lineToZero && (pos = this.getYAxis().getPos(0)) !== undefined) {
-				currentLine += "L ";
-				currentLine += xpx;
-				currentLine += " ";
-				currentLine += pos;
-				currentLine += " ";
-			}
+            currentLine = "M ";
+            j = 0, k = 0, m = data[ i ].length;
 
-			if( ! this.markerPoints ) {
-				return currentLine;
-			}
+            for ( ; j < m; j += 2 ) {
 
-			if( this.markersShown() && ! ( xpx > this.getXAxis().getMaxPx() || xpx < this.getXAxis().getMinPx() ) ) {
+              if ( this.markersShown() ) {
 
-				drawMarkerXY( this.markerFamily[ this.markerCurrentFamily ], xpx, ypx );
-			}
-			return currentLine;
-		},
+                this.getMarkerCurrentFamily( k );
 
-		// Returns the DOM
-		_createLine: function(points, i, nbPoints) {
-			
+              }
 
-			if( this.lines[ i ] ) {
-				var line = this.lines[i];
-			} else {
-				var line = document.createElementNS(this.graph.ns, 'path');
+              xpx2 = this.getX( data[ i ][ j + incrXFlip ] );
+              ypx2 = this.getY( data[ i ][ j + incrYFlip ] );
 
-				this.applyLineStyle( line );
-			}
+              if ( xpx2 == xpx && ypx2 == ypx ) {
+                continue;
+              }
 
-			if(nbPoints == 0) {
-				line.setAttribute('d', 'M 0 0');
-			} else {
-				line.setAttribute('d', points);
+              if ( optimizeMonotoneous && xpx2 < 0 ) {
+                buffer = [ xpx2, ypx2 ]
+                continue;
+              }
 
-			}
+              if ( optimizeMonotoneous && buffer ) {
 
-			if(!this.lines[i]) {			
-				this.groupLines.appendChild(line);
-				this.lines[i] = line;
+                currentLine = this._addPoint( currentLine, buffer[ 0 ], buffer[ 1 ], k );
+                buffer = false;
+                k++;
+              }
 
-			}
-			
-			return line;
-		},
+              if ( this.options.autoPeakPicking ) {
 
-		applyLineStyle: function( line ) {
-			line.setAttribute('stroke', this.getLineColor());
-			line.setAttribute('stroke-width', this.getLineWidth() + ( this.isSelected() ? 2 : 0 ) );
-			if(this.getLineDashArray())
-				line.setAttribute('stroke-dasharray', this.getLineDashArray());
-			line.setAttribute('fill', 'none');
-		//	line.setAttribute('shape-rendering', 'optimizeSpeed');
-		},
+                if ( !this.options.lineToZero ) {
 
-		// Revised August 2014. Ok
-		getMarkerPath: function( family, add ) {
+                  if ( !lastYPeakPicking ) {
+                    lastYPeakPicking = [ ( data[ i ][ j + incrYFlip ] ), data[ i ][ j + incrXFlip ] ];
+                  } else {
 
-			var z = family.zoom || 1 ,
-				add = add || 0,
-				el;
+                    if ( ( data[ i ][ j + incrYFlip ] >= lastYPeakPicking[ 0 ] && lookForMaxima ) ||  ( data[ i ][ j + incrYFlip ] <= lastYPeakPicking[ 0 ] && lookForMinima ) ) {
 
-			switch( family.type ) {
-				case 1:
-					el = ['m', -2, -2, 'l', 4, 0, 'l', 0, 4, 'l', -4, 0, 'z'];
-				break;
+                      lastYPeakPicking = [ ( data[ i ][ j + incrYFlip ] ), data[ i ][ j + incrXFlip ] ]
 
-				case 2:
-					el = ['m', -2, -2, 'l', 4, 4, 'm', -4, 0, 'l', 4, -4 ];
-				break;
+                    } else {
 
+                      if ( lookForMinima ) {
+                        lookForMinima = false;
+                        lookForMaxima = true;
+                      } else {
 
-				case 3:
-					el = ['m', -2, 0, 'l', 4, 0, 'm', -2, -2, 'l', 0, 4 ];
-				break;
+                        lookForMinima = true;
+                        lookForMaxima = false;
 
+                        allY.push( lastYPeakPicking );
+                        lastYPeakPicking = false;
+                      }
 
-				case 4:
-					el = ['m', -1, -1, 'l', 2, 0, 'l', -1, 2, 'z' ];
-				break;
+                    }
+                  }
 
-			}
+                } else {
+                  allY.push( [ ( data[ i ][ j + incrYFlip ] ), data[ i ][ j + incrXFlip ] ] );
+                }
+              }
 
+              currentLine = this._addPoint( currentLine, xpx2, ypx2, k );
+              k++;
 
-			if( ( z == 1 || ! z ) && ! add ) {
-				return  el.join(" ");
-			}
+              if ( optimizeMonotoneous && xpx2 > optimizeMaxPxX ) {
+                toBreak = true;
+                
+                break;
+              }
 
-			var num = "number";
+              xpx = xpx2;
+              ypx = ypx2;
+            }
 
-			if( ! el ) {
-				return;
-			}
+            this._createLine( currentLine, i, k );
 
+            if ( toBreak ) {
+              break;
+            }
+          }
+        }
 
-			for(var i = 0, l = el.length; i < l; i++) {
+        
+      }
 
-				if(typeof el[i] == num) {
+      if ( this.options.autoPeakPicking ) {
+        makePeakPicking( this, allY );
+      }
 
-					el[i] *= ( z + add );
-				}
-			}
+      i++;
 
-			return  el.join(" " );
+      for ( ; i < this.lines.length; i++ ) {
+        this.groupLines.removeChild( this.lines[ i ] );
+        this.lines.splice( i, 1 );
+      }
 
-		},
+      insertMarkers( this );
 
-		// Revised August 2014. Ok
-		getMarkerDom: function( family ) {
+      this.groupMain.insertBefore( this.groupLines, next );
+      var label;
+      for ( var i = 0, l = this.labels.length; i < l; i++ ) {
+        this.repositionLabel( this.labels[ i ] );
+      }
+    },
 
-			var self = this;
-			if( ! family.dom ) {
-				var dom = document.createElementNS( this.graph.ns, 'path' );
-				this.setMarkerStyleTo( dom, family );
-				family.dom = dom;
-				family.path = "";
+    hidePeakPicking: function( lock ) {
 
-				dom.addEventListener('mouseover', function(e) {
-					var closest = self._getMarkerIndexFromEvent(e);
-					self.onMouseOverMarker(e, closest);
-				});
+      if ( !this._hidePeakPickingLocked ) {
+        this._hidePeakPickingLocked = lock;
+      }
 
+      hidePeakPicking( this );
+    },
 
-				dom.addEventListener('mouseout', function(e) {
-					var closest = self._getMarkerIndexFromEvent(e);
-					self.onMouseOutMarker(e, closest);
-				});
+    showPeakPicking: function( unlock ) {
 
+      if ( this._hidePeakPickingLocked && !unlock ) {
+        return;
+      }
 
-				dom.addEventListener('click', function(e) {
-					var closest = self._getMarkerIndexFromEvent(e);
-					self.onClickOnMarker(e, closest);
-				});
+      showPeakPicking( this );
+    },
 
-			}
+    getMarkerCurrentFamily: function( k ) {
 
-			return family.dom;
-		},
+      for ( var z = 0; z < this.markerPoints.length; z++ ) {
+        if ( this.markerPoints[ z ][ 0 ] <= k )  { // This one is a possibility !
+          if ( this.markerPoints[  z ][ 1 ] >= k ) { // Verify that it's in the boundary
+            this.markerCurrentFamily = this.markerPoints[ z ][ 2 ];
+          }
+        } else {
+          break;
+        }
 
+      }
 
-	
-		/* */
-		handleLabelMove: function(x, y) {
+      return this.markerCurrentFamily;
 
-			var label = this.labelDragging;
+    },
 
-			if(!label)
-				return;
+    drawSlot: function( slotToUse, y ) {
 
-			label.labelX += x - label.draggingIniX;
-			label.draggingIniX = x;
+      
+      var currentLine = "M ";
+      var k = 0;
+      var i = 0,
+        xpx, max;
+      var j;
 
-			label.labelY += y - label.draggingIniY;
-			label.draggingIniY = y;
+      if( this.isFlipped() ) {
 
-			label.rect.setAttribute('x', label.labelX);
-			label.rect.setAttribute('y', label.labelY  - this.graph.options.fontSize);
-			label.labelDom.setAttribute('x', label.labelX);
-			label.labelDom.setAttribute('y', label.labelY);
+        var dataPerSlot = this.slots[ y ] / ( this.maxY - this.minY );
 
-			label.labelLine.setAttribute('x1', label.labelX + label.labelDom.getComputedTextLength() / 2);
-			label.labelLine.setAttribute('y1', label.labelY  - this.graph.options.fontSize / 2);
+        var slotInit = Math.floor( ( this.getYAxis().getActualMin() - this.minY ) * dataPerSlot );
+        var slotFinal = Math.ceil( ( this.getYAxis().getActualMax() - this.minY ) * dataPerSlot );  
 
-		},
+      } else {
 
-		handleLabelMainMove: function(x, y) {
-			
-			if(this.options.labelMoveFollowCurve || 1 == 1) {
-				var label = this.labelDragging;
-				label.x = this.getXAxis().getVal(x - this.graph.options.paddingLeft);
-				
-				label.y = this.handleMouseMove(label.x, false).interpolatedY;
-				this.repositionLabel(label, true);
-			}
-		},
+        var dataPerSlot = this.slots[ y ] / ( this.maxX - this.minX );
 
-		handleLabelUp: function() {
-			
-			this.labelDragging = false;
-		},
+        var slotInit = Math.floor( ( this.getXAxis().getActualMin() - this.minX ) * dataPerSlot );
+        var slotFinal = Math.ceil( ( this.getXAxis().getActualMax() - this.minX ) * dataPerSlot );
+      }
+      
 
+      for ( j = slotInit; j <= slotFinal; j++ ) {
 
-		searchIndexByPxXY: function(x,y) {
+        if ( !slotToUse[ j ] ) {
+          continue;
+        }
 
-			var oldDist = false,
-				xyindex = false,
-				dist;
+        if( this.isFlipped() ) {
 
-			for(var i = 0, l = this.data.length; i < l; i++) {
-				for(var k = 0, m = this.data[i].length; k < m; k+=2) {
+          ypx = Math.floor( this.getY( slotToUse[ j ].x ) ),
+          max = this.getX( slotToUse[ j ].max );
 
-					dist = Math.pow((this.getX(this.data[i][k]) - x), 2) + Math.pow((this.getY(this.data[i][k + 1]) - y), 2);
-					//console.log(x, y, dist, this.data[i][k], this.data[i][k + 1]);
-					if(!oldDist || dist < oldDist) {
-						oldDist = dist;
-						xyindex = [k / 2, i];
-					}
-				}
-			}
+          /*if ( this.options.autoPeakPicking ) {
+            allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
+          }
+*/
+          currentLine = this._addPoint( currentLine, this.getX( slotToUse[ j ].start ), ypx, k );
+          currentLine = this._addPoint( currentLine, max, ypx, false, true );
+          currentLine = this._addPoint( currentLine, this.getX( slotToUse[ j ].min ), ypx );
+          currentLine = this._addPoint( currentLine, this.getX( slotToUse[ j ].stop ), ypx, false, true );
 
-			return xyindex;
-		},
+          k++;
+        } else {
 
 
-		searchClosestValue: function(valX) {
+          xpx = Math.floor( this.getX( slotToUse[ j ].x ) ),
 
-			var xMinIndex;
+          
+          max = this.getY( slotToUse[ j ].max );
 
-			for(var i = 0; i < this.data.length; i++) {
+          if ( this.options.autoPeakPicking ) {
+            allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
+          }
 
-				if((valX <= this.data[i][this.data[i].length - 2] && valX > this.data[i][0])) {
-					xMinIndex = this._searchBinary(valX, this.data[i], false);
-				} else if((valX >= this.data[i][this.data[i].length - 2] && valX < this.data[i][0])) {
-					xMinIndex = this._searchBinary(valX, this.data[i], true);
-				} else 
-					continue;
-			
+          currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].start ), k );
+          currentLine = this._addPoint( currentLine, xpx, max, false, true );
+          currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].min ) );
+          currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].stop ), false, true );
 
-				return {
-					dataIndex: i,
-					xMin: this.data[i][xMinIndex],
-					xMax: this.data[i][xMinIndex + 2],
-					yMin: this.data[i][xMinIndex + 1],
-					yMax: this.data[i][xMinIndex + 3],
+          k++;
+        }
+        
 
-					xBeforeIndex: xMinIndex / 2,
-					xAfterIndex: xMinIndex / 2 + 2,
-					xBeforeIndexArr: xMinIndex
-				}	
-			}
-		},
+      }
 
+      this._createLine( currentLine, i, k );
+      i++;
+      
+    },
 
-		handleMouseMove: function(x, doMarker) {
+    setMarkerStyleTo: function( dom, family ) {
 
-			
-			var valX = x || this.getXAxis().getMouseVal(),
-				xMinIndex, 
-				xMin, 
-				yMin, 
-				xMax, 
-				yMax;
- 			
- 			var value = this.searchClosestValue(valX);
+      if ( !dom ) {
+        throw "Cannot set marker style. DOM does not exist.";
+      }
 
+      dom.setAttribute( 'fill', family.fillColor ||  'transparent' );
+      dom.setAttribute( 'stroke', family.strokeColor || this.getLineColor() );
+      dom.setAttribute( 'stroke-width', family.strokeWidth ||  1 );
+    },
 
- 			if(!value)
- 				return;
+    hideTrackingMarker: function() {
+      this.marker.setAttribute( 'display', 'none' );
+      this.markerLabel.setAttribute( 'display', 'none' );
+      this.markerLabelSquare.setAttribute( 'display', 'none' );
+    },
 
-			var ratio = (valX - value.xMin) / (value.xMax - value.xMin);
-			var intY = ((1 - ratio) * value.yMin + ratio * value.yMax);
+    _addPoint: function( currentLine, xpx, ypx, k, move ) {
+      var pos;
 
-			if(doMarker && this.options.trackMouse) {
+      if ( k !== 0 ) {
+        if ( this.options.lineToZero || move )
+          currentLine += 'M ';
+        else
+          currentLine += "L ";
+      }
 
-				if( value.xMin == undefined ) {
+      currentLine += xpx;
+      currentLine += " ";
+      currentLine += ypx;
+      currentLine += " ";
 
-					return false;
+      if ( this.options.lineToZero && ( pos = this.getYAxis().getPos( 0 ) ) !== undefined ) {
+        currentLine += "L ";
+        currentLine += xpx;
+        currentLine += " ";
+        currentLine += pos;
+        currentLine += " ";
+      }
 
-				} else {
-					
-					var x = this.getX(this.getFlip() ? intY : valX);
-					var y = this.getY(this.getFlip() ? valX : intY);
+      if ( !this.markerPoints ) {
+        return currentLine;
+      }
 
-					this.marker.setAttribute('display', 'block');
-					this.marker.setAttribute('cx', x);
-					this.marker.setAttribute('cy', y);
+      if ( this.markersShown() && !( xpx > this.getXAxis().getMaxPx() ||  xpx < this.getXAxis().getMinPx() ) ) {
 
-					this.markerLabel.setAttribute('display', 'block');
-					this.markerLabelSquare.setAttribute('display', 'block');
-					switch(this.options.trackMouseLabel) {
-						case false:
-						break;
+        drawMarkerXY( this.markerFamily[ this.markerCurrentFamily ], xpx, ypx );
+      }
+      return currentLine;
+    },
 
-						default:
-							this.markerLabel.textContent = this.options.trackMouseLabel
-																.replace('<x>', valX.toFixed(this.options.trackMouseLabelRouding))
-																.replace('<y>', intY.toFixed(this.options.trackMouseLabelRouding));
-						break;
-					}
+    // Returns the DOM
+    _createLine: function( points, i, nbPoints ) {
 
-					this.markerLabel.setAttribute('x', x + 5);
-					this.markerLabel.setAttribute('y', y - 5);
+      if ( this.lines[ i ] ) {
+        var line = this.lines[ i ];
+      } else {
+        var line = document.createElementNS( this.graph.ns, 'path' );
 
-					this.markerLabelSquare.setAttribute('x', x + 5);
-					this.markerLabelSquare.setAttribute('y', y - 5 - this.graph.options.fontSize);
-					this.markerLabelSquare.setAttribute('width', this.markerLabel.getComputedTextLength() + 2);
-					this.markerLabelSquare.setAttribute('height', this.graph.options.fontSize + 2);
-				}
-			}
+        this.applyLineStyle( line );
+      }
 
-			return {
-				xBefore: value.xMin,
-				xAfter: value.xMax,
-				yBefore: value.yMin,
-				yAfter: value.yMax,
-				trueX: valX,
-				interpolatedY: intY,
-				xBeforeIndex: value.xBeforeIndex
-			};
-		},
+      if ( nbPoints == 0 ) {
+        line.setAttribute( 'd', 'M 0 0' );
+      } else {
+        line.setAttribute( 'd', points );
 
-		_searchBinary: function(target, haystack, reverse) {
-			var seedA = 0,
-				length = haystack.length,
-				seedB = (length - 2);
+      }
 
-			if(haystack[seedA] == target)
-				return seedA;
+      if ( !this.lines[ i ] ) {
+        this.groupLines.appendChild( line );
+        this.lines[ i ] = line;
 
-			if(haystack[seedB] == target)
-				return seedB;
+      }
 
-			var seedInt;
-			var i = 0;
-			
-			while(true) {
-				i++;
-				if(i > 100)
-					throw "Error loop";
+      return line;
+    },
 
-				seedInt = (seedA + seedB) / 2;
-				seedInt -= seedInt % 2; // Always looks for an x.
+    applyLineStyles: function() {
 
-				if(seedInt == seedA || haystack[seedInt] == target)
-					return seedInt;
+      for ( var i = 0; i < this.lines.length; i++ ) {
+        this.applyLineStyle( this.lines[ i ] );
+      }
+    },
 
-		//		console.log(seedA, seedB, seedInt, haystack[seedInt]);
-				if(haystack[seedInt] <= target) {
-					if(reverse)
-						seedB = seedInt;
-					else
-						seedA = seedInt;
-				} else if(haystack[seedInt] > target) {
-					if(reverse)
-						seedA = seedInt;
-					else
-						seedB = seedInt;
-				}
-			}
-		},
+    applyLineStyle: function( line ) {
+      line.setAttribute( 'stroke', this.getLineColor() );
+      line.setAttribute( 'stroke-width', this.getLineWidth() + ( this.isSelected() ? 2 : 0 ) );
+      if ( this.getLineDashArray() )
+        line.setAttribute( 'stroke-dasharray', this.getLineDashArray() );
+      line.setAttribute( 'fill', 'none' );
+      //	line.setAttribute('shape-rendering', 'optimizeSpeed');
+    },
 
-		getMax: function(start, end) {
+    // Revised August 2014. Ok
+    getMarkerPath: function( family, add ) {
 
-			var start2 = Math.min(start, end),
-				end2 = Math.max(start, end),
-				v1 = this.searchClosestValue(start2),
-				v2 = this.searchClosestValue(end2),
-				i, j, max = 0, initJ, maxJ;
+      var z = family.zoom  ||  1,
+        add = add || 0,
+        el;
 
-			for(i = v1.dataIndex; i <= v2.dataIndex ; i++) {
-				initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
-				maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[i].length;
-				for(j = initJ; j <= maxJ; j+=2) {
-					max = Math.max(max, this.data[i][j + 1]);
-				}
-			}
+      switch ( family.type ) {
+        case 1:
+          el = [ 'm', -2, -2, 'l', 4, 0, 'l', 0, 4, 'l', -4, 0, 'z' ];
+          break;
 
-			return max;
-		},
+        case 2:
+          el = [ 'm', -2, -2, 'l', 4, 4, 'm', -4, 0, 'l', 4, -4 ];
+          break;
 
+        case 3:
+          el = [ 'm', -2, 0, 'l', 4, 0, 'm', -2, -2, 'l', 0, 4 ];
+          break;
 
-		/* LINE STYLE */
+        case 4:
+          el = [ 'm', -1, -1, 'l', 2, 0, 'l', -1, 2, 'z' ];
+          break;
 
-		setLineStyle: function(number) {
-			this.options.lineStyle = number;
-		},
+      }
 
-		getLineStyle: function() {
-			return this.options.lineStyle;
-		},
+      if ( ( z == 1 ||  !z ) && !add ) {
+        return el.join( " " );
+      }
 
-		getLineDashArray: function() {
+      var num = "number";
 
+      if ( !el ) {
+        return;
+      }
 
-			switch(this.options.lineStyle) {
-				
-				case 2: return "1, 1"; break;
-				case 3: return "2, 2"; break;
-				case 3: return "3, 3"; break;
-				case 4: return "4, 4"; break;
-				case 5: return "5, 5"; break;
+      for ( var i = 0, l = el.length; i < l; i++ ) {
 
-				case 6: return "5 2"; break
-				case 7: return "2 5"; break
+        if ( typeof el[ i ] == num ) {
 
-				case 8: return "4 2 4 4"; break;
-				case 9: return "1,3,1"; break;
-				case 10: return "9 2"; break;
-				case 11: return "2 9"; break;
+          el[ i ] *= ( z + add );
+        }
+      }
 
-				case false:
-				case 1:
-					return false;
-				break;
+      return el.join( " " );
 
-				default:
-					return this.options.lineStyle;
-				break;
-			}
-		},
+    },
 
+    // Revised August 2014. Ok
+    getMarkerDom: function( family )  {
 
-		/*  */
+      var self = this;
+      if ( !family.dom ) {
+        var dom = document.createElementNS( this.graph.ns, 'path' );
+        this.setMarkerStyleTo( dom, family );
+        family.dom = dom;
+        family.path = "";
 
+        dom.addEventListener( 'mouseover', function( e ) {
+          var closest = self._getMarkerIndexFromEvent( e );
+          self.onMouseOverMarker( e, closest );
+        } );
 
+        dom.addEventListener( 'mouseout', function( e ) {
+          var closest = self._getMarkerIndexFromEvent( e );
+          self.onMouseOutMarker( e, closest );
+        } );
 
+        dom.addEventListener( 'click', function( e ) {
+          var closest = self._getMarkerIndexFromEvent( e );
+          self.onClickOnMarker( e, closest );
+        } );
 
-		setLineWidth: function(width) {
-			this.options.lineWidth = width;
-			return this;
-		},
+      }
 
-		getLineWidth: function() {
-			return this.options.lineWidth;
-		},
+      return family.dom;
+    },
 
+    /* */
+    handleLabelMove: function( x, y ) {
 
-		/* LINE COLOR */
+      var label = this.labelDragging;
 
-		setLineColor: function(color) {
-			this.options.lineColor = color;
-			return this;
-		},
+      if ( !label )
+        return;
 
-		getLineColor: function() {
-			return this.options.lineColor;
-		},
+      label.labelX += x - label.draggingIniX;
+      label.draggingIniX = x;
 
-		/* */
+      label.labelY += y - label.draggingIniY;
+      label.draggingIniY = y;
 
+      label.rect.setAttribute( 'x', label.labelX );
+      label.rect.setAttribute( 'y', label.labelY - this.graph.options.fontSize );
+      label.labelDom.setAttribute( 'x', label.labelX );
+      label.labelDom.setAttribute( 'y', label.labelY );
 
+      label.labelLine.setAttribute( 'x1', label.labelX + label.labelDom.getComputedTextLength() / 2 );
+      label.labelLine.setAttribute( 'y1', label.labelY - this.graph.options.fontSize / 2 );
 
-		/* MARKERS */
+    },
 
-		showMarkers: function( skipRedraw ) {
-			this.options.markers = true;
+    handleLabelMainMove: function( x, y ) {
 
-			if(!skipRedraw && this._drawn) {
-				this.draw();
-			}
+      if ( this.options.labelMoveFollowCurve || 1 == 1 ) {
+        var label = this.labelDragging;
+        label.x = this.getXAxis().getVal( x - this.graph.options.paddingLeft );
 
-			return this;
-		},
+        label.y = this.handleMouseMove( label.x, false ).interpolatedY;
+        this.repositionLabel( label, true );
+      }
+    },
 
-		hideMarkers: function( skipRedraw ) {
-			this.options.markers = false;
+    handleLabelUp: function() {
 
-			if( ! skipRedraw && this._drawn ) {
-				this.draw();
-			}
+      this.labelDragging = false;
+    },
 
-			return this;
-		},
+    searchIndexByPxXY: function( x, y ) {
 
-		markersShown: function() {
-			return this.options.markers;	
-		},
-/*
+      var oldDist = false,
+        xyindex = false,
+        dist;
+
+      for ( var i = 0, l = this.data.length; i < l; i++ ) {
+        for ( var k = 0, m = this.data[ i ].length; k < m; k += 2 ) {
+
+          dist = Math.pow( ( this.getX( this.data[ i ][ k ] ) - x ), 2 ) + Math.pow( ( this.getY( this.data[ i ][ k + 1 ] ) - y ), 2 );
+          //console.log(x, y, dist, this.data[i][k], this.data[i][k + 1]);
+          if ( !oldDist || dist < oldDist ) {
+            oldDist = dist;
+            xyindex = [ k / 2, i ];
+          }
+        }
+      }
+
+      return xyindex;
+    },
+
+    searchClosestValue: function( valX ) {
+
+      var xMinIndex;
+
+      for ( var i = 0; i < this.data.length; i++ ) {
+
+        if ( ( valX <= this.data[ i ][ this.data[ i ].length - 2 ] && valX >= this.data[ i ][ 0 ] ) ) {
+          xMinIndex = this._searchBinary( valX, this.data[ i ], false );
+        } else if ( ( valX >= this.data[ i ][ this.data[ i ].length - 2 ] && valX <= this.data[ i ][ 0 ] ) ) {
+          xMinIndex = this._searchBinary( valX, this.data[ i ], true );
+        } else {
+          continue;
+        }
+
+        return {
+          dataIndex: i,
+          xMin: this.data[ i ][ xMinIndex ],
+          xMax: this.data[ i ][ xMinIndex + 2 ],
+          yMin: this.data[ i ][ xMinIndex + 1 ],
+          yMax: this.data[ i ][ xMinIndex + 3 ],
+
+          xBeforeIndex: xMinIndex / 2,
+          xAfterIndex: xMinIndex / 2 + 2,
+          xBeforeIndexArr: xMinIndex
+        }
+      }
+    },
+
+    handleMouseMove: function( x, doMarker ) {
+
+      var valX = x || this.getXAxis().getMouseVal(),
+        xMinIndex,
+        xMin,
+        yMin,
+        xMax,
+        yMax;
+
+      var value = this.searchClosestValue( valX );
+
+      if ( !value )
+        return;
+
+      var ratio = ( valX - value.xMin ) / ( value.xMax - value.xMin );
+      var intY = ( ( 1 - ratio ) * value.yMin + ratio * value.yMax );
+
+      if ( doMarker && this.options.trackMouse ) {
+
+        if ( value.xMin == undefined ) {
+
+          return false;
+
+        } else {
+
+          var x = this.getX( this.getFlip() ? intY : valX );
+          var y = this.getY( this.getFlip() ? valX : intY );
+
+          this.marker.setAttribute( 'display', 'block' );
+          this.marker.setAttribute( 'cx', x );
+          this.marker.setAttribute( 'cy', y );
+
+          this.markerLabel.setAttribute( 'display', 'block' );
+          this.markerLabelSquare.setAttribute( 'display', 'block' );
+          switch ( this.options.trackMouseLabel ) {
+            case false:
+              break;
+
+            default:
+              this.markerLabel.textContent = this.options.trackMouseLabel
+                .replace( '<x>', valX.toFixed( this.options.trackMouseLabelRouding ) )
+                .replace( '<y>', intY.toFixed( this.options.trackMouseLabelRouding ) );
+              break;
+          }
+
+          this.markerLabel.setAttribute( 'x', x + 5 );
+          this.markerLabel.setAttribute( 'y', y - 5 );
+
+          this.markerLabelSquare.setAttribute( 'x', x + 5 );
+          this.markerLabelSquare.setAttribute( 'y', y - 5 - this.graph.options.fontSize );
+          this.markerLabelSquare.setAttribute( 'width', this.markerLabel.getComputedTextLength() + 2 );
+          this.markerLabelSquare.setAttribute( 'height', this.graph.options.fontSize + 2 );
+        }
+      }
+
+      return {
+        xBefore: value.xMin,
+        xAfter: value.xMax,
+        yBefore: value.yMin,
+        yAfter: value.yMax,
+        trueX: valX,
+        interpolatedY: intY,
+        xBeforeIndex: value.xBeforeIndex
+      };
+    },
+
+    _searchBinary: function( target, haystack, reverse ) {
+      var seedA = 0,
+        length = haystack.length,
+        seedB = ( length - 2 );
+
+      if ( haystack[ seedA ] == target )
+        return seedA;
+
+      if ( haystack[ seedB ] == target )
+        return seedB;
+
+      var seedInt;
+      var i = 0;
+
+      while ( true ) {
+        i++;
+        if ( i > 100 )
+          throw "Error loop";
+
+        seedInt = ( seedA + seedB ) / 2;
+        seedInt -= seedInt % 2; // Always looks for an x.
+
+        if ( seedInt == seedA || haystack[ seedInt ] == target )
+          return seedInt;
+
+        //		console.log(seedA, seedB, seedInt, haystack[seedInt]);
+        if ( haystack[ seedInt ] <= target ) {
+          if ( reverse )
+            seedB = seedInt;
+          else
+            seedA = seedInt;
+        } else if ( haystack[ seedInt ] > target ) {
+          if ( reverse )
+            seedA = seedInt;
+          else
+            seedB = seedInt;
+        }
+      }
+    },
+
+    getMax: function( start, end ) {
+
+      var start2 = Math.min( start, end ),
+        end2 = Math.max( start, end ),
+        v1 = this.searchClosestValue( start2 ),
+        v2 = this.searchClosestValue( end2 ),
+        i, j, max = -Infinity,
+        initJ, maxJ;
+
+      if ( !v1 ) {
+        start2 = this.minX;
+        v1 = this.searchClosestValue( start2 );
+      }
+
+      if ( !v2 ) {
+        end2 = this.maxX;
+        v2 = this.searchClosestValue( end2 );
+      }
+
+      for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
+        initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
+        maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[ i ].length;
+
+        for ( j = initJ; j <= maxJ; j += 2 ) {
+          max = Math.max( max, this.data[ i ][ j + 1 ] );
+        }
+      }
+
+      return max;
+    },
+
+    /* LINE STYLE */
+
+    setLineStyle: function( number ) {
+      this.options.lineStyle = number;
+      return this;
+    },
+
+    getLineStyle: function() {
+      return this.options.lineStyle;
+    },
+
+    getLineDashArray: function() {
+
+      switch ( this.options.lineStyle ) {
+
+        case 2:
+          return "1, 1";
+          break;
+        case 3:
+          return "2, 2";
+          break;
+        case 3:
+          return "3, 3";
+          break;
+        case 4:
+          return "4, 4";
+          break;
+        case 5:
+          return "5, 5";
+          break;
+
+        case 6:
+          return "5 2";
+          break
+        case 7:
+          return "2 5";
+          break
+
+        case 8:
+          return "4 2 4 4";
+          break;
+        case 9:
+          return "1,3,1";
+          break;
+        case 10:
+          return "9 2";
+          break;
+        case 11:
+          return "2 9";
+          break;
+
+        case false:
+        case 1:
+          return false;
+          break;
+
+        default:
+          return this.options.lineStyle;
+          break;
+      }
+    },
+
+    /*  */
+
+    setLineWidth: function( width ) {
+      this.options.lineWidth = width;
+      return this;
+    },
+
+    getLineWidth: function() {
+      return this.options.lineWidth;
+    },
+
+    /* LINE COLOR */
+
+    setLineColor: function( color ) {
+      this.options.lineColor = color;
+      return this;
+    },
+
+    getLineColor: function() {
+      return this.options.lineColor;
+    },
+
+    /* */
+
+    /* MARKERS */
+
+    showMarkers: function( skipRedraw ) {
+      this.options.markers = true;
+
+      if ( !skipRedraw && this._drawn ) {
+        this.draw();
+      }
+
+      return this;
+    },
+
+    hideMarkers: function( skipRedraw ) {
+      this.options.markers = false;
+
+      if ( !skipRedraw && this._drawn ) {
+        this.draw();
+      }
+
+      return this;
+    },
+
+    markersShown: function() {
+      return this.options.markers;
+    },
+    /*
 		setMarkerType: function(type, skipRedraw) {
 			this.options.markers.type = type;
 			
@@ -1204,11 +1329,11 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 				this.draw();
 		},
 */
-		// Multiple markers
-		setMarkers: function( family ) {
-			// Family has to be an object
-			// Family looks like
-			/*
+    // Multiple markers
+    setMarkers: function( family ) {
+      // Family has to be an object
+      // Family looks like
+      /*
 				{
 					type: 1,
 					zoom: 1,
@@ -1218,63 +1343,62 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 				}
 			*/
 
-			this.showMarkers( true );
+      this.showMarkers( true );
 
-			if( ! family ) {
+      if ( !family ) {
 
-				family = [ {
-					type: 1,
-					zoom: 1,
-					points: 'all'
-				} ]
+        family = [ {
+          type: 1,
+          zoom: 1,
+          points: 'all'
+        } ]
 
-			}
-			var markerPoints = [];
+      }
+      var markerPoints = [];
 
-			markerPoints.push( [ 0, Infinity, null ] );
+      markerPoints.push( [ 0, Infinity, null ] );
 
-			for( var i = 0, k = family.length; i < k ; i ++ ) {
+      for ( var i = 0, k = family.length; i < k; i++ ) {
 
-				this.getMarkerDom( family[ i ] );
-				family[ i ].markerPath = this.getMarkerPath( family[ i ] );
+        this.getMarkerDom( family[ i ] );
+        family[ i ].markerPath = this.getMarkerPath( family[ i ] );
 
-				if( ! family[ i ].points ) {
-					continue;
-				}
+        if ( !family[ i ].points ) {
+          continue;
+        }
 
-				if( ! Array.isArray( family[ i ].points ) ) {
-					family[ i ].points = [ family[ i ].points ];
-				}
+        if ( !Array.isArray( family[ i ].points ) ) {
+          family[ i ].points = [ family[ i ].points ];
+        }
 
+        for ( var j = 0, l = family[ i ].points.length; j < l; j++ ) {
 
-				for( var j = 0, l = family[ i ].points.length ; j < l ; j ++ ) {
+          if ( family[ i ].points[ j ] == 'all' ) {
 
-					if( family[ i ].points[ j ] == 'all' ) {
+            markerPoints.push( [ 0, Infinity, i ] );
 
-						markerPoints.push( [ 0, Infinity, i ] );
+          } else if ( !Array.isArray( family[ i ].points[ j ] ) ) {
 
-					} else if ( ! Array.isArray( family[ i ].points[ j ] ) ) {
+            markerPoints.push( [ family[ i ].points[ j ], family[ i ].points[ j ], i ] );
+            //markerPoints.push( [ family[ i ].points[ j ] + 1, null ] );
+          } else {
 
-						markerPoints.push( [ family[ i ].points[ j ], family[ i ].points[ j ], i ] );
-						//markerPoints.push( [ family[ i ].points[ j ] + 1, null ] );
-					} else {
+            markerPoints.push( [ family[ i ].points[ j ][ 0 ], family[ i ].points[ j ][ 1 ], i ] );
 
-						markerPoints.push( [ family[ i ].points[ j ][ 0 ], family[ i ].points[ j ][ 1 ], i ] );
-						
-					}
-				}
-			}
+          }
+        }
+      }
 
-			this.markerFamily = family;
+      this.markerFamily = family;
 
-			// Let's sort if by the first index.
-			markerPoints.sort( function( a, b ) { 
-				return ( a[ 0 ] -  b[ 0 ] ) || ( a[ 2 ] == null ? -1 : 1 );
-			} );
+      // Let's sort if by the first index.
+      markerPoints.sort( function( a, b ) { 
+        return ( a[ 0 ] - b[ 0 ] ) ||  ( a[ 2 ] == null ? -1 : 1 );
+      } );
 
-			// OK now let's handle clashes
+      // OK now let's handle clashes
 
-/*			for( var i = 0, l = markerPoints.length ; i < l ; i ++ ) {
+      /*			for( var i = 0, l = markerPoints.length ; i < l ; i ++ ) {
 
 				// No clash
 				if( markerPoints[ i ][ 1 ] < markerPoints[ i + 1 ][ 1 ] ) {
@@ -1295,519 +1419,522 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 
 			}
 */
-			this.markerPoints = markerPoints;
-		},
-
-	
-
-		addLabelX: function(x, label) {
-			this.addLabelObj({
-				x: x,
-				label: label
-			});
-		},
-
-		addLabel: function(x, y, label) {
-			this.addLabelObj({
-				x: x,
-				y: y,
-				label: label
-			});
-		},
-
-		repositionLabel: function(label, recalculateLabel) {
-			var x = !this.getFlip() ? this.getX(label.x) : this.getY(label.x),
-				y = !this.getFlip() ? this.getY(label.y) : this.getX(label.y);
-				
-			var nan = (isNaN(x) || isNaN(y));
-			label.group.setAttribute('display', nan ? 'none' : 'block');
-
-			if(recalculateLabel) {
-				label.labelDom.textContent = this.options.label
-										.replace('<x>', label.x.toFixed(this.options.trackMouseLabelRouding) || '')
-										.replace('<label>', label.label || '');
-
-				label.rect.setAttribute('width', label.labelDom.getComputedTextLength() + 2);
-			}
-			if(nan)
-				return;
-			label.group.setAttribute('transform', 'translate(' + x + ' ' + y + ')');
-		},
-
-		addLabelObj: function(label) {
-			var self = this, group, labelDom, rect, path;
-
-			this.labels.push(label);
-			if(label.x && !label.y) {
-				label.y = this.handleMouseMove(label.x, false).interpolatedY;
-			}
-
-
-			
-			group = document.createElementNS(this.graph.ns, 'g');
-			this.groupLabels.appendChild(group);
-			
-			labelDom = document.createElementNS(this.graph.ns, 'text');
-			labelDom.setAttribute('x', 5);
-			labelDom.setAttribute('y', -5);
-			
-
-			var labelLine = document.createElementNS(this.graph.ns, 'line');
-			labelLine.setAttribute('stroke', 'black');
-			labelLine.setAttribute('x2', 0);
-			labelLine.setAttribute('x1', 0);
-
-
-			group.appendChild(labelLine);
-			group.appendChild(labelDom);
-			rect = document.createElementNS(this.graph.ns, 'rect');
-			rect.setAttribute('x', 5);
-			rect.setAttribute('y', -this.graph.options.fontSize - 5);
-			rect.setAttribute('width', labelDom.getComputedTextLength() + 2);
-			rect.setAttribute('height', this.graph.options.fontSize + 2);
-			rect.setAttribute('fill', 'white');
-			rect.style.cursor = 'move';
-			labelDom.style.cursor = 'move';
-
-			
-			path = document.createElementNS(this.graph.ns, 'path');
-			path.setAttribute('d', 'M 0 -4 l 0 8 m -4 -4 l 8 0');
-			path.setAttribute('stroke-width', '1px');
-			path.setAttribute('stroke', 'black');
-
-
-
-			path.style.cursor = 'move';
-
-			group.insertBefore(rect, labelDom);
-
-			group.appendChild(path);
-
-			label.labelLine = labelLine;
-			label.group = group;
-			label.rect = rect;
-			label.labelDom = labelDom;
-			label.path = path;
-
-			label.labelY = -5;
-			label.labelX = 5;
-
-			this.bindLabelHandlers(label);
-			this.repositionLabel(label, true);
-		},
+      this.markerPoints = markerPoints;
+    },
+
+    showImpl: function() {
+      this.showPeakPicking();
+    },
+
+    hideImpl: function() {
+      this.hidePeakPicking();
+    },
+
+    addLabelX: function( x, label ) {
+      this.addLabelObj( {
+        x: x,
+        label: label
+      } );
+    },
+
+    addLabel: function( x, y, label ) {
+      this.addLabelObj( {
+        x: x,
+        y: y,
+        label: label
+      } );
+    },
+
+    repositionLabel: function( label, recalculateLabel ) {
+      var x = !this.getFlip() ? this.getX( label.x ) : this.getY( label.x ),
+        y = !this.getFlip() ? this.getY( label.y ) : this.getX( label.y );
+
+      var nan = ( isNaN( x ) || isNaN( y ) );
+      label.group.setAttribute( 'display', nan ? 'none' : 'block' );
+
+      if ( recalculateLabel ) {
+        label.labelDom.textContent = this.options.label
+          .replace( '<x>', label.x.toFixed( this.options.trackMouseLabelRouding ) || '' )
+          .replace( '<label>', label.label || '' );
+
+        label.rect.setAttribute( 'width', label.labelDom.getComputedTextLength() + 2 );
+      }
+      if ( nan )
+        return;
+      label.group.setAttribute( 'transform', 'translate(' + x + ' ' + y + ')' );
+    },
+
+    addLabelObj: function( label ) {
+      var self = this,
+        group, labelDom, rect, path;
+
+      this.labels.push( label );
+      if ( label.x && !label.y ) {
+        label.y = this.handleMouseMove( label.x, false ).interpolatedY;
+      }
+
+      group = document.createElementNS( this.graph.ns, 'g' );
+      this.groupLabels.appendChild( group );
+
+      labelDom = document.createElementNS( this.graph.ns, 'text' );
+      labelDom.setAttribute( 'x', 5 );
+      labelDom.setAttribute( 'y', -5 );
+
+      var labelLine = document.createElementNS( this.graph.ns, 'line' );
+      labelLine.setAttribute( 'stroke', 'black' );
+      labelLine.setAttribute( 'x2', 0 );
+      labelLine.setAttribute( 'x1', 0 );
+
+      group.appendChild( labelLine );
+      group.appendChild( labelDom );
+      rect = document.createElementNS( this.graph.ns, 'rect' );
+      rect.setAttribute( 'x', 5 );
+      rect.setAttribute( 'y', -this.graph.options.fontSize - 5 );
+      rect.setAttribute( 'width', labelDom.getComputedTextLength() + 2 );
+      rect.setAttribute( 'height', this.graph.options.fontSize + 2 );
+      rect.setAttribute( 'fill', 'white' );
+      rect.style.cursor = 'move';
+      labelDom.style.cursor = 'move';
+
+      path = document.createElementNS( this.graph.ns, 'path' );
+      path.setAttribute( 'd', 'M 0 -4 l 0 8 m -4 -4 l 8 0' );
+      path.setAttribute( 'stroke-width', '1px' );
+      path.setAttribute( 'stroke', 'black' );
+
+      path.style.cursor = 'move';
+
+      group.insertBefore( rect, labelDom );
+
+      group.appendChild( path );
+
+      label.labelLine = labelLine;
+      label.group = group;
+      label.rect = rect;
+      label.labelDom = labelDom;
+      label.path = path;
+
+      label.labelY = -5;
+      label.labelX = 5;
+
+      this.bindLabelHandlers( label );
+      this.repositionLabel( label, true );
+    },
+
+    bindLabelHandlers: function( label ) {
+      var self = this;
+
+      function clickHandler( e ) {
+
+        if ( self.graph.currentAction !== false ) {
+          return;
+        }
+
+        self.graph.currentAction = 'labelDragging';
+        e.stopPropagation();
+        label.dragging = true;
+
+        var coords = self.graph._getXY( e );
+        label.draggingIniX = coords.x;
+        label.draggingIniY = coords.y;
+        self.labelDragging = label;
+      }
+
+      function clickHandlerMain( e ) {
+
+        if ( self.graph.currentAction !== false ) {
+          return;
+        }
+        e.stopPropagation();
+        e.preventDefault();
+        self.graph.currentAction = 'labelDraggingMain';
+        self.labelDragging = label;
+      }
+
+      label.labelDom.addEventListener( 'mousedown', clickHandler );
+      label.rect.addEventListener( 'mousedown', clickHandler );
+      label.rect.addEventListener( 'click', function( e ) {
+        e.preventDefault();
+        e.stopPropagation();
+      } );
+
+      label.labelDom.addEventListener( 'click', function( e ) {
+        e.preventDefault();
+        e.stopPropagation();
+      } );
+
+      label.path.addEventListener( 'mousedown', clickHandlerMain );
+      label.path.addEventListener( 'click', function( e ) {
+        e.preventDefault();
+        e.stopPropagation();
+      } );
+    },
+
+    getMarkerForLegend: function() {
 
-		bindLabelHandlers: function(label) {
-			var self = this;
+      if ( !this.markerPoints ) {
+        return;
+      }
 
-			function clickHandler(e) {
+      if ( !this.markerForLegend ) {
 
-				if(self.graph.currentAction !== false) {
-					return;
-				}
-				
-				self.graph.currentAction = 'labelDragging';
-				e.stopPropagation();
-				label.dragging = true;
-
-				var coords = self.graph._getXY(e);
-				label.draggingIniX = coords.x;
-				label.draggingIniY = coords.y;
-				self.labelDragging = label;
-			}
-
-			function clickHandlerMain(e) {
-
-				if(self.graph.currentAction !== false) {
-					return;
-				}
-				e.stopPropagation();
-				e.preventDefault();
-				self.graph.currentAction = 'labelDraggingMain';
-				self.labelDragging = label;
-			}
+        var marker = document.createElementNS( this.graph.ns, 'path' );
+        this.setMarkerStyleTo( marker, this.markerFamily[ 0 ] );
 
+        marker.setAttribute( 'd', "M 14 0 " + this.getMarkerPath( this.markerFamily[ 0 ] ) );
 
-			label.labelDom.addEventListener('mousedown', clickHandler);
-			label.rect.addEventListener('mousedown', clickHandler);
-			label.rect.addEventListener('click', function(e) {
-				e.preventDefault();
-				e.stopPropagation();
-			});
+        this.markerForLegend = marker;
+      }
 
-			label.labelDom.addEventListener('click', function(e) {
-				e.preventDefault();
-				e.stopPropagation();
-			});
+      return this.markerForLegend;
+    },
 
-			label.path.addEventListener('mousedown', clickHandlerMain);
-			label.path.addEventListener('click', function(e) {
-				e.preventDefault();
-				e.stopPropagation();
-			});
-		},
+    eraseMarkers: function() {
 
-		getMarkerForLegend: function() {
+      for ( var i in this.markerFamily ) {
+        this.markerFamily[ i ].path = "";
+      }
+    },
 
-			if( ! this.markerPoints ) {
-				return;
-			}
+    XIsMonotoneous: function() {
+      this.xmonotoneous = true;
+      return this;
+    }
+  } );
 
-			if( ! this.markerForLegend ) {
+  function drawMarkerXY( family, x, y ) {
 
-				var marker = document.createElementNS( this.graph.ns, 'path');
-				this.setMarkerStyleTo( marker , this.markerFamily[ 0 ] );
-				
-				marker.setAttribute('d', "M 14 0 " + this.getMarkerPath( this.markerFamily[ 0 ] ) );
+    if ( !family ) {
+      return;
+    }
 
-				this.markerForLegend = marker;
-			}
+    family.path = family.path ||  "";
+    family.path += 'M ' + x + ' ' + y + ' ';
 
-			return this.markerForLegend;
-		},
+    family.path += family.markerPath + ' ';
+  }
 
-		eraseMarkers: function() {
+  function getDegradedData( graph ) { // Serie redrawing
+  
+    var self = graph,
+      xpx,
+      ypx,
+      xpx2,
+      ypx2,
+      i = 0,
+      l = graph.data.length,
+      j = 0,
+      k,
+      m,
+      degradationMin, degradationMax, degradationNb, degradationValue, degradation, degradationMinMax = [],
+      incrXFlip = 0,
+      incrYFlip = 1,
+      degradeFirstX, degradeFirstXPx,
+      optimizeMonotoneous = graph.isXMonotoneous(),
+      optimizeMaxPxX = graph.getXAxis().getMaxPx(),
+      optimizeBreak, buffer;
 
-			for( var i in this.markerFamily ) {
-				this.markerFamily[ i ].path = "";
-			}
-		},
+    if ( graph.isFlipped() ) {
+      incrXFlip = 1;
+      incrYFlip = 0;
+    }
 
+    var datas = [];
+    var xData = [],
+      dataY = [],
+      sum = 0;
 
-		XIsMonotoneous: function() {
-			this.xmonotoneous = true;
-			return this;
-		}
-	} );
+    if ( graph.mode == 'x_equally_separated' ) {
 
-	function drawMarkerXY( family, x, y ) {
+      if ( graph.isFlipped() ) {
+        return [ graph.data, graph.xData ];
+      }
 
-		if( ! family ) {
-			return;
-		}
+      dataY = [];
 
-		family.path = family.path || "";
-		family.path += 'M ' + x + ' ' + y + ' ';
+      for ( ; i < l; i++ ) {
 
+        j = 0, k = 0, m = graph.data[ i ].length;
 
-		family.path += family.markerPath + ' ';
-	}
+        var delta = Math.round( graph.degradationPx / graph.getXAxis().getRelPx( graph.xData[ i ].dx ) );
 
-	function getDegradedData( graph ) { // Serie redrawing
+        if ( delta == 1 ) {
+          xData.push( graph.xData[ i ] );
+          datas.push( graph.data[ i ] );
+        }
 
+        degradationMin = Infinity;
+        degradationMax = -Infinity;
 
-		var self = graph,
-			xpx, 
-			ypx, 
-			xpx2,
-			ypx2,
-			i = 0, 
-			l = graph.data.length, 
-			j = 0, 
-			k, 
-			m,
-			degradationMin, degradationMax, degradationNb, degradationValue, degradation, degradationMinMax = [],
-			incrXFlip = 0, incrYFlip = 1,
-			degradeFirstX, degradeFirstXPx,
-			optimizeMonotoneous = graph.isXMonotoneous(), optimizeMaxPxX = graph.getXAxis().getMaxPx(), optimizeBreak, buffer;
+        for ( ; j < m; j += 1 ) {
 
-	
-		if( graph.isFlipped( ) ) {
-			incrXFlip = 1;
-			incrYFlip = 0;
-		}
+          if ( graph.markerPoints ) {
 
+            graph.getMarkerCurrentFamily( k );
+          }
 
-		var datas = [];
-		var xData = [],
-			dataY = [],
-			sum = 0;
+          xpx = graph.xData[ i ].x + j * graph.xData[ i ].dx;
 
-		if( graph.mode == 'x_equally_separated' ) {
+          if ( optimizeMonotoneous && xpx < 0 ) {
+            buffer = [ xpx, ypx, graph.data[ i ][ j ] ];
+            continue;
+          }
 
-			if( graph.isFlipped( ) ) {
-				return [ graph.data, graph.xData ];
-			}
+          if ( optimizeMonotoneous && buffer ) {
 
+            sum += buffer[ 2 ];
+            degradationMin = Math.min( degradationMin, buffer[ 2 ] );
+            degradationMax = Math.max( degradationMax, buffer[ 2 ] );
 
-			dataY = [];
+            buffer = false;
+            k++;
+          }
 
-			for( ; i < l ; i ++ ) {
-				
-				j = 0, k = 0, m = graph.data[ i ].length;
+          sum += graph.data[ i ][ j ];
+          degradationMin = Math.min( degradationMin, graph.data[ i ][ j ] );
+          degradationMax = Math.max( degradationMax, graph.data[ i ][ j ] );
 
-				var delta = Math.round( graph.degradationPx / graph.getXAxis().getRelPx( graph.xData[ i ].dx ) );
+          if ( ( j % delta == 0 && j > 0 ) || optimizeBreak ) {
 
-				if( delta == 1 ) {
-					xData.push( graph.xData[ i ] );
-					datas.push( graph.data[ i ] );
-				}
+            dataY.push( sum / delta );
 
-				degradationMin = Infinity;
-				degradationMax = - Infinity;
+            degradationMinMax.push( ( graph.xData[ i ].x + j * graph.xData[ i ].dx - ( delta / 2 ) * graph.xData[ i ].dx ), degradationMin, degradationMax );
 
+            degradationMin = Infinity;
+            degradationMax = -Infinity;
 
-				for( ; j < m ; j += 1 ) {
+            sum = 0;
+          }
 
-					if( graph.markerPoints ) {
+          if ( optimizeMonotoneous && xpx > optimizeMaxPxX ) {
+            
+            optimizeBreak = true;
+            
+            break;
+          }
 
-						graph.getMarkerCurrentFamily( k );	
-					}
+          k++;
+        }
 
+        datas.push( dataY );
+        xData.push( {
+          dx: delta * graph.xData[ i ].dx,
+          x: graph.xData[ i ].x + ( delta * graph.xData[ i ].dx / 2 )
+        } );
+      }
 
-					
-					xpx = graph.xData[ i ].x + j * graph.xData[ i ].dx;
+      if ( graph.degradationSerie ) {
+        graph.degradationSerie.setData( degradationMinMax );
+        graph.degradationSerie.draw();
+      }
 
+      return [ datas, xData ]
 
-					if( optimizeMonotoneous && xpx < 0 ) {
-						buffer = [ xpx, ypx, graph.data[ i ][ j ] ];
-						continue;
-					}
+    }
 
-					if( optimizeMonotoneous && buffer ) {
+    for ( ; i < l; i++ ) {
 
-						sum += buffer[ 2 ];
-						degradationMin = Math.min( degradationMin, buffer[ 2 ] );
-						degradationMax = Math.max( degradationMax, buffer[ 2 ] );
+      j = 0,
+      k = 0,
+      m = graph.data[ i ].length;
 
-						buffer = false;
-						k++;
-					}
+      degradationNb = 0;
+      degradationValue = 0;
 
-					sum += graph.data[ i ][ j ];
-					degradationMin = Math.min( degradationMin, graph.data[ i ][ j ] );
-					degradationMax = Math.max( degradationMax, graph.data[ i ][ j ] );
+      degradationMin = Infinity;
+      degradationMax = -Infinity;
 
+      var data = [];
 
+      for ( ; j < m; j += 2 ) {
 
-					if( ( j % delta == 0 && j > 0 ) || optimizeBreak ) {
+        xpx2 = graph.getX( graph.data[ i ][ j + incrXFlip ] );
 
-						dataY.push( sum / delta );
+        if ( optimizeMonotoneous && xpx2 < 0 ) {
 
-						degradationMinMax.push( ( graph.xData[ i ].x + j * graph.xData[ i ].dx - ( delta / 2 ) * graph.xData[ i ].dx ), degradationMin, degradationMax );
+          buffer = [
+            xpx2,
+            graph.getY( graph.data[ i ][ j + incrYFlip ] ),
+            graph.data[ i ][ j + incrXFlip ],
+            graph.data[ i ][ j + incrYFlip ]
+          ];
 
-						degradationMin = Infinity;
-						degradationMax = - Infinity;
+          continue;
+        }
 
-						
-						sum = 0;
-					}
+        if ( optimizeMonotoneous && buffer ) {
 
-					if( optimizeMonotoneous && xpx > optimizeMaxPxX ) {
-						optimizeBreak = true;
-						break;
-					}
-					
-					k++;
-				}
+          degradationValue += buffer[  3 ];
+          degradationNb++;
 
-				datas.push( dataY );
-				xData.push( { dx: delta * graph.xData[ i ].dx, x: graph.xData[ i ].x + ( delta * graph.xData[ i ].dx / 2 ) });
-			}
+          degradationMin = Math.min( degradationMin, buffer[ 3 ] );
+          degradationMax = Math.max( degradationMax, buffer[ 3 ] );
 
+          degradeFirstX = buffer[  2 ];
+          degradeFirstXPx = buffer[  0 ];
 
-			if( graph.degradationSerie ) {
-				graph.degradationSerie.setData( degradationMinMax );
-				graph.degradationSerie.draw();
-			}
+          buffer = false;
+          k++;
 
-			return [ datas, xData ] 
+        } else if ( degradeFirstX === undefined ) {
 
-		}
+          degradeFirstX = graph.data[ i ][ j + incrXFlip ];
+          degradeFirstXPx = xpx2;
+        }
 
+        if ( xpx2 - degradeFirstXPx > graph.degradationPx && j < m ) {
 
-		for(; i < l ; i++) {
-			
-			j = 0,
-			k = 0,
-			m = graph.data[ i ].length;
+          data.push(
+            ( degradeFirstX + graph.data[ i ][ j + incrXFlip ] ) / 2,
+            degradationValue / degradationNb
+          );
 
-			
-			degradationNb = 0;
-			degradationValue = 0;
+          degradationMinMax.push( ( graph.data[ i ][ j + incrXFlip ] + degradeFirstX ) / 2, degradationMin, degradationMax );
 
-			degradationMin = Infinity;
-			degradationMax = - Infinity;
+          if ( degradeFirstXPx > optimizeMaxPxX ) {
+            break;
+          }
 
-			var data = [];
+          degradeFirstX = undefined;
+          degradationNb = 0;
+          degradationValue = 0;
+          degradationMin = Infinity;
+          degradationMax = -Infinity;
 
-			for( ; j < m ; j += 2 ) {
+          k++;
+        }
 
-				xpx2 = graph.getX( graph.data[ i ][ j + incrXFlip ] );
+        degradationValue += graph.data[ i ][ j + incrYFlip ];
+        degradationNb++;
 
-				if( optimizeMonotoneous && xpx2 < 0 ) {
+        degradationMin = Math.min( degradationMin, graph.data[ i ][ j + incrYFlip ] );
+        degradationMax = Math.max( degradationMax, graph.data[ i ][ j + incrYFlip ] );
 
-					buffer = [
-						xpx2,
-						graph.getY( graph.data[ i ][ j + incrYFlip ] ),
-						graph.data[ i ][ j + incrXFlip ],
-						graph.data[ i ][ j + incrYFlip ]
-					];
+        if ( optimizeMonotoneous && xpx2 > optimizeMaxPxX ) {
 
-					continue;
-				}
+          optimizeBreak = true;
+        }
 
-				if( optimizeMonotoneous && buffer) {
+        xpx = xpx2;
+        ypx = ypx2;
 
-					degradationValue += buffer[ 3 ];
-					degradationNb ++;
+      }
 
-					degradationMin = Math.min( degradationMin, buffer[ 3 ] );
-					degradationMax = Math.max( degradationMax, buffer[ 3 ] );
+      datas.push( data );
 
-					degradeFirstX = buffer[ 2 ];
-					degradeFirstXPx = buffer[ 0 ];
+      if ( optimizeBreak ) {
 
-					buffer = false;
-					k++;
+        break;
+      }
+    }
 
+    if ( graph.degradationSerie ) {
+      graph.degradationSerie.setData( degradationMinMax );
+      graph.degradationSerie.draw();
+    }
 
-				} else if( degradeFirstX === undefined ) {
+    return [ datas ];
 
-					degradeFirstX = graph.data[ i ][ j + incrXFlip ];
-					degradeFirstXPx = xpx2;
-				}
-				
+  };
 
-				if( xpx2 - degradeFirstXPx > graph.degradationPx && j < m ) {
+  function hidePeakPicking( graph ) {
 
+    if( ! graph.picks ) {
+      return;
+    }
+    for ( var i = 0; i < graph.picks.length; i++ ) {
+      graph.picks[ i ].hide();
+    }
 
-					data.push( 
-						( degradeFirstX + graph.data[ i ][ j + incrXFlip ] ) / 2,
-						degradationValue / degradationNb
-					);
+  }
 
-					degradationMinMax.push( ( graph.data[ i ][ j + incrXFlip ] + degradeFirstX ) / 2, degradationMin, degradationMax );
+  function showPeakPicking( graph ) {
 
 
-					if( degradeFirstXPx > optimizeMaxPxX ) {
-						break;
-					}
+    if( ! graph.picks ) {
+      return;
+    }
+    
+    for ( var i = 0; i < graph.picks.length; i++ ) {
+      graph.picks[ i ].show();
+    }
+  }
 
-					degradeFirstX = undefined;
-					degradationNb = 0;
-					degradationValue = 0;
-					degradationMin = Infinity;
-					degradationMax = - Infinity;
+  function makePeakPicking( graph, allY ) {
 
-					k++;
-				} 
+    var self = graph;
 
-				degradationValue += graph.data[ i ][ j + incrYFlip ];
-				degradationNb ++;
+    $.when.apply( $, graph.picksDef ).then( function() {
 
-				degradationMin = Math.min( degradationMin, graph.data[ i ][ j + incrYFlip ] );
-				degradationMax = Math.max( degradationMax, graph.data[ i ][ j + incrYFlip ] );
+      var x,
+        px,
+        passed = [],
+        px,
+        i = 0,
+        l = allY.length,
+        k, m, y;
 
+      allY.sort( function( a, b ) {
+        return b[ 0 ] - a[ 0 ];
+      } );
 
-				if( optimizeMonotoneous && xpx2 > optimizeMaxPxX ) {
-					optimizeBreak = true;
-				}
-			
-				
-				xpx = xpx2;
-				ypx = ypx2;
+      for ( ; i < l; i++ ) {
 
-			}
-			
-			datas.push( data );
+        x = allY[ i ][ 1 ],
+        px = self.getX( x ),
+        k = 0, m = passed.length,
+        y = self.getY( allY[ i ][ 0 ] );
 
-			if( optimizeBreak ) {
-				break;
-			}
-		}
+        if ( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
+          continue;
+        }
 
+        if ( y > self.getYAxis().getMinPx() || y < self.getYAxis().getMaxPx() ) {
+          continue;
+        }
 
-		if( graph.degradationSerie ) {
-			graph.degradationSerie.setData( degradationMinMax );
-			graph.degradationSerie.draw();
-		}
+        for ( ; k < m; k++ ) {
+          if ( Math.abs( passed[ k ] - px ) < self.options.autoPeakPickingMinDistance )  {
+            break;
+          }
+        }
 
-		return [ datas ];
+        if ( k < m ) {
+          continue;
+        }
 
+        if ( !self.picks[ m ] ) {
+          return;
+        }
 
-	};
+        //    self.picks[ m ].show();
+        self.picks[ m ].set( 'labelPosition', {
+          x: x,
+          dy: "-10px"
+        } );
 
+        self.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
+        passed.push( px );
+        self.picks[ m ].redraw();
 
-	function makePeakPicking( graph, allY ) {
-			
-		var self = graph;
+        if ( passed.length == self.options.autoPeakPickingNb ) {
+          break;
+        }
+      }
 
-		$.when.apply( $, graph.picksDef ).then( function() {
+    } );
+  }
 
-			var x,
-				px,
-				passed = [],
-				px,
-				i = 0,
-				l = allY.length,
-				k, m, y;
-			
-			allY.sort(function(a, b) {
-				return b[0] - a[0];
-			});
+  function insertMarkers( graph ) {
 
-			for( ; i < l ; i ++ ) {
+    if ( !graph.markerFamily ) {
+      return;
+    }
 
-				x = allY[i][1],
-				px = self.getX(x),
-				k = 0, m = passed.length,
-				y = self.getY(allY[i][0]);
+    for ( var i = 0, l = graph.markerFamily.length; i < l; i++ ) {
+      graph.markerFamily[ i ].dom.setAttribute( 'd', graph.markerFamily[ i ].path );
+      graph.groupMain.appendChild( graph.markerFamily[ i ].dom );
+    }
+  }
 
-				if( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
-					continue;
-				}
-
-				if( y > self.getYAxis().getMinPx() || y < self.getYAxis().getMaxPx() ) {
-					continue;
-				}
-
-				for( ; k < m ; k++) {
-					if(Math.abs(passed[k] - px) < self.options.autoPeakPickingMinDistance) {
-						break;
-					}
-				}
-
-				if(k < m) {
-					continue;
-				}
-
-				if( ! self.picks[ m ] ) {
-					return;
-				}
-
-
-
-				self.picks[ m ].set('labelPosition', { 
-														x: x,
-				 										dy: "-10px"
-				 									}
-				 				);
-
-				self.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
-				passed.push( px );
-
-				if(passed.length == self.options.autoPeakPickingNb) {
-					break;
-				}
-			}
-
-			self.graph.redrawShapes();
-
-		});
-	}
-
-	function insertMarkers( graph ) {
-
-		if( ! graph.markerFamily ) {
-			return;
-		}
-
-		for( var i = 0, l = graph.markerFamily.length; i < l; i ++ ) {
-			graph.markerFamily[ i ].dom.setAttribute( 'd', graph.markerFamily[ i ].path );
-			graph.groupMain.appendChild( graph.markerFamily[ i ].dom );
-		}
-	}
-
-
-	return GraphSerie;
-});
+  return GraphSerie;
+} );

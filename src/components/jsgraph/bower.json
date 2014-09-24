@@ -1,6 +1,10 @@
 {
   "name": "jsGraph",
+<<<<<<< HEAD
   "version": "1.9.9-6",
+=======
+  "version": "1.9.11-0",
+>>>>>>> FETCH_HEAD
   "homepage": "http://jsgraph.org",
   "main": "dist/jsgraph.js", 
   "keywords": [

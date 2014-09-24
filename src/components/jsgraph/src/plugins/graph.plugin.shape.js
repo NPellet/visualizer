@@ -1,107 +1,117 @@
-define([], function() {
+define( [], function() {
 
-	"use strict";
+  "use strict";
 
-	var plugin = function() { };
+  var plugin = function() {};
 
-	plugin.prototype = {
+  plugin.prototype = {
 
-		init: function( graph, options ) {
-			
-			this.options = options;
-			this.shapeType = options.type;
-			
-		},
+    init: function( graph, options ) {
 
-		setShape: function( shapeType ) {
-			this.shapeInfo.shapeType = shapeType;
-		},
+      this.options = options;
+      this.graph = graph;
+      this.shapeType = options.type;
 
-		onMouseDown: function( graph, x, y, e, target ) {
-				
-			if( ! this.shapeType && ! this.options.url ) {
-				return;
-			}
+    },
 
-			var self = this,
-				selfPlugin = this;
-				
-			var xVal, yVal;
+    setShape: function( shapeType ) {
+      this.shapeInfo.shapeType = shapeType;
+    },
 
-			this.count = this.count || 0;
+    onMouseDown: function( graph, x, y, e, target ) {
 
-			x -= graph.getPaddingLeft( ),
-			y -= graph.getPaddingTop( ),
+      if ( !this.shapeType && !this.options.url ) {
+        return;
+      }
 
-			xVal = graph.getXAxis().getVal( x );
-			yVal = graph.getYAxis().getVal( y );
+      var self = this,
+        selfPlugin = this;
 
-			var shapeInfo = {
+      var xVal, yVal;
 
-				pos: {
-					x: xVal, 
-					y: yVal
-				}, 
+      this.count = this.count || 0;
 
-				pos2: {
-					x: xVal,
-					y: yVal
-				},
+      x -= graph.getPaddingLeft(),
+      y -= graph.getPaddingTop(),
 
-				onChange: function(newData) {
-					graph.triggerEvent('onAnnotationChange', newData);
-				}
-			};
+      xVal = graph.getXAxis().getVal( x );
+      yVal = graph.getYAxis().getVal( y );
 
+      var shapeInfo = {
 
-			var shape = graph.newShape( $.extend( shapeInfo, this.options ), {}, true ).then( function( shape ) {
+        pos: {
+          x: xVal,
+          y: yVal
+        },
 
-				if( ! shape ) {
-					return;
-				}
+        pos2: {
+          x: xVal,
+          y: yVal
+        },
 
-				self.currentShape = shape;
-				self.currentShapeEvent = e;
-			
-			} );
+        onChange: function( newData ) {
+          graph.triggerEvent( 'onAnnotationChange', newData );
+        }
+      };
 
-		},
+      var shape = graph.newShape( $.extend( shapeInfo, this.options ), {}, false );
 
-		onMouseMove: function( graph, x, y, e ) {
+      if( shape ) {
 
-			var self = this;
+          shape.then( function( shape ) {
 
-			if( self.currentShape ) {
+            if ( !shape ) {
+              return;
+            }
 
-				self.count ++;
-				
-				var shape = self.currentShape;
-				self.currentShape = false;
+            self.currentShape = shape;
+            self.currentShapeEvent = e;
 
+          } );
+      }
 
-				shape.handleCreateImpl( );
+    },
 
-				if( shape.options && shape.options.onCreate ) {
-					shape.options.onCreate.call( shape );
-				}
-				shape.draw( );
-				shape.select();
+    onMouseMove: function( graph, x, y, e ) {
 
-				shape.handleMouseDown( self.currentShapeEvent, true );
-				shape.handleMouseMove( e, true );
-			}
-		},
+      var self = this;
 
-		onMouseUp: function( ) {
-			var self = this;
-			if( self.currentShape ) {
-				self.currentShape.kill();
-				self.currentShape = false;
-			}
-		}
+      if ( self.currentShape ) {
 
-	}
+        self.count++;
 
-	return plugin;
+        var shape = self.currentShape;
+        self.currentShape = false;
 
-});
+        
+
+        if( graph.selectedSerie ) {
+          shape.setSerie( graph.selectedSerie );
+        }
+
+        shape.created();
+        
+        if ( shape.options && shape.options.onCreate ) {
+          shape.options.onCreate.call( shape );
+        }
+        shape.draw();
+        shape.select();
+
+        shape.handleMouseDown( self.currentShapeEvent, true );
+        shape.handleMouseMove( e, true );
+      }
+    },
+
+    onMouseUp: function() {
+      var self = this;
+      if ( self.currentShape ) {
+        self.currentShape.kill();
+        self.currentShape = false;
+      }
+    }
+
+  }
+
+  return plugin;
+
+} );

@@ -102,6 +102,11 @@ define(['modules/default/defaultview'], function(Default) {
 			content.push("<option value='1000'>1000 MHz</option>");
 			content.push("</select></p>");
 
+            content.push("<p>Line width: <input onchange=\"if (this.value<0.5) {alert('The minimal resolution is 0.5'); this.value=0.5;}\" type='text' value=1 name='lineWidth' size=4 id='lineWidth'> Hz.");
+
+
+            content.push("")
+
 			return "<form>"+content.join("")+"</form>";
 		},
 

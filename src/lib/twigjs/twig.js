@@ -54,6 +54,13 @@ define(['components/twig.js/twig.min', 'src/util/typerenderer', 'src/util/util']
         return '<div id="'+id+'" style="display:inline-block;"></div>';		
 		
 	});
+
+    Twig.extendFunction('toJSON', function (value, spaces) {
+
+        spaces = spaces || 2;
+        return '<pre>'+JSON.stringify(value, null, spaces)+'</pre>';
+
+    });
 	
 	Twig.extendFunction("log", function(){
 		console.log.apply(console, arguments);
