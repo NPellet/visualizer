@@ -140,9 +140,8 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 self.graph = graph;
                 self.xAxis = graph.getXAxis();
                 self.yAxis = graph.getYAxis();
-
-                //TODO this is a hack to get annotations working
-                self.series['0000000000'] = [graph.newSerie('0000000000', {}).autoAxis()];
+                
+                //self.series['0000000000'] = [graph.newSerie('0000000000', {}).autoAxis().setData([])];
 
                 self.onResize();
                 self.resolveReady();
@@ -152,10 +151,12 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
         },
 
         onResize: function () {
-            if (this.graph) {
-                this.graph.resize(this.width, this.height);
-                this.redraw(true);
+            if( ! this.graph ) {
+                return;
             }
+
+            this.graph.resize( this.width, this.height );
+            this.graph.redraw();
         },
 
         redraw: function (forceReacalculateAxis) {
