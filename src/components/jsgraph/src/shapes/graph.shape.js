@@ -48,8 +48,14 @@ define( [], function() {
       this.rectEvent.setAttribute( 'pointer-events', 'fill' );
       this.rectEvent.setAttribute( 'fill', 'transparent' );
 
+<<<<<<< HEAD
+			this._movable = true;
+			
+			if( this._dom ) {
+=======
       this._movable = true;
       this._selectable = true;
+>>>>>>> FETCH_HEAD
 
       if ( this.options.masker ) {
 
@@ -645,9 +651,16 @@ define( [], function() {
 
     created: function() {
 
+<<<<<<< HEAD
+			if( ! this._staticHandles ) {
+				this.addHandles();
+				this.setHandles();
+			}
+=======
       this.callHandler( "onCreated", this );
       this.handleCreateImpl();
     },
+>>>>>>> FETCH_HEAD
 
     handleMouseDownImpl: function() {},
     handleMouseMoveImpl: function() {},
@@ -673,9 +686,20 @@ define( [], function() {
           this.handleSelected = false;
           this.graph.elementMoving( false );
 
+<<<<<<< HEAD
+			if( bool ) {
+				this.addHandles();
+				this.setHandles();
+			} else {
+				this.removeHandles();
+			}
+			
+		},
+=======
           return this.handleMouseUpImpl( e );
         }
       ],
+>>>>>>> FETCH_HEAD
 
       mouseMove: [
 

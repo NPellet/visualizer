@@ -1220,6 +1220,24 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
 
             pos[ i ] = relTo ? relTo[ i ] : axis.getPos( 0 );
 
+<<<<<<< HEAD
+						var val;
+						if( _parsePx( value.x ) !== false ) {
+							console.warn("You have defined x in px and not y. Makes no sense. Returning 0 for y");
+							pos[ i ] = 0;
+						} else {
+
+							var closest = onSerie.searchClosestValue( val );
+
+							if( ! closest ) {
+								console.warn("Could not find y position. Returning 0 for y.");
+								pos[ i ] = 0;
+							} else {
+								pos[ i ] = onSerie.getY( closest.yMin );	
+							}
+						}
+					}
+=======
           } else if ( value.x && onSerie ) {
 
             var val;
@@ -1230,6 +1248,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
             } else {
 
               var closest = onSerie.searchClosestValue( value.x );
+>>>>>>> FETCH_HEAD
 
               if ( !closest ) {
                 console.warn( "Could not find y position. Returning 0 for y." );
@@ -1315,6 +1334,24 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
         }
       } else {
 
+<<<<<<< HEAD
+			if( ( refPx = _parsePx( ref ) ) !== false ) {
+
+				if( ( deltaPx = _parsePx( delta ) ) !== false ) {
+					return ( refPx + deltaPx ) + "px";	
+				} else {
+					return ( refPx + axis.getRelPx( delta ) ) + "px";
+				}
+			} else {
+
+				if( ( deltaPx = _parsePx( delta ) ) !== false ) {
+					return ( ref + axis.getRelVal( deltaPx ) );
+				} else {
+					return ( ref + delta );
+				}
+			}
+		},
+=======
         ref = this.getValPosition( ref, axis );
 
         if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
@@ -1326,6 +1363,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
     },
 
     getValPosition: function( rel, axis ) {
+>>>>>>> FETCH_HEAD
 
       if( rel == 'max' ) {
         return axis.getMaxValue();

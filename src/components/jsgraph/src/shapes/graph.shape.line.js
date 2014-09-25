@@ -100,10 +100,24 @@ define( [ './graph.shape' ], function( GraphShape ) {
         pos2.dx = false;
       }
 
+<<<<<<< HEAD
+			if( pos2.dx ) {
+				
+				pos2.x = this.graph.deltaPosition( pos2.x || pos.x, pos2.dx, this.serie.getXAxis() );
+				pos2.dx = false;
+			}
+
+			if( pos2.dy ) {
+				pos2.y = this.graph.deltaPosition( pos2.x || pos.x, pos2.dx, this.serie.getXAxis() );
+				pos2.dy = false;
+			}
+
+=======
       if ( pos2.dy ) {
         pos2.y = this.graph.deltaPosition( pos2.x ||  pos.x, pos2.dx, this.serie.getXAxis() );
         pos2.dy = false;
       }
+>>>>>>> FETCH_HEAD
 
       if ( this.handleSelected == 1 ) {
 
