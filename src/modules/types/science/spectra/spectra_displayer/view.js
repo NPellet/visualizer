@@ -129,6 +129,45 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                         graph.setBottomAxisAsTime();
                     }
 
+                    var legend = cfg('legend', 'none');
+                    if(legend != 'none') {
+                        var theLegend = graph.makeLegend({
+                            backgroundColor: 'rgba( 255, 255, 255, 0.8 )',
+                            frame: true,
+                            frameWidth: '1',
+                            frameColor: 'rgba( 100, 100, 100, 0.5 )',
+                            movable: true
+                        });
+                        var posX, posY;
+                        switch (legend) {
+                            case 'topright':
+                                posX = 'right';
+                                posY = 'top';
+                                break;
+                            case 'bottomright':
+                                posX = 'right';
+                                posY = 'bottom';
+                                break;
+                            case 'topleft':
+                                posX = 'left';
+                                posY = 'top';
+                                break;
+                            case 'bottomleft':
+                                posX = 'left';
+                                posY = 'bottom';
+                                break;
+                        }
+                        theLegend.setPosition({
+                                dx: '-10px',
+                                dy: '10px',
+                                x: 'max',
+                                y: 'max'
+                            },
+                            posX, // Reference point
+                            posY // Reference point)
+                        );
+                    }
+
                     resolve(graph);
 
                 }

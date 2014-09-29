@@ -328,6 +328,18 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
                                 {key: 'both', title: 'Both axis'}
                             ],
                             default: 'both'
+                        },
+
+                        legend: {
+                            type: 'combo',
+                            title: 'Show legend',
+                            options: [
+                                {key: 'none', title: 'No legend'},
+                                {key: 'topleft', title: 'Top-left'},
+                                {key: 'topright', title: 'Top-right'},
+                                {key: 'bottomleft', title: 'Bottom-left'},
+                                {key: 'bottomright', title: 'Bottom-right'},
+                            ]
                         }
                     }
                 },
@@ -503,7 +515,8 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
         displayAxis: ['groups', 'group', 0, 'displayAxis', 0],
         flipAxis: ['groups', 'group', 0, 'flip', 0],
         grid: ['groups', 'group', 0, 'grids', 0],
-        xAsTime: ['groups', 'group', 0, 'xastime', 0]
+        xAsTime: ['groups', 'group', 0, 'xastime', 0],
+        legend: ['groups', 'group', 0, 'legend', 0]
     };
 
     controller.prototype.zoomChanged = function (min, max) {
