@@ -280,6 +280,7 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
 
                         zoom: {
                             type: 'combo',
+                            multiple: true,
                             title: 'Zoom',
                             options: [
                                 {key: 'x', title: 'X only'},
@@ -400,6 +401,19 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
                             title: 'Optimize with slots',
                             options: { 'slots': '' },
                             default: []
+                        },
+
+                        degrade: {
+                            type: 'float',
+                            title: 'Degrade serie (px/pt)',
+                            'default': 0
+                        },
+
+                        monotoneous: {
+                            type: 'checkbox',
+                            title: 'X is monotoneous',
+                            options: { 'yes': '' },
+                            'default': []
                         }
                     }
                 }

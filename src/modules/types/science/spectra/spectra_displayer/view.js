@@ -240,6 +240,14 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                                 points: 'all'
                             }]);
                         }
+
+                        if(plotinfos[i].monotoneous && plotinfos[i].monotoneous[0]) {
+                            serie.XIsMonotoneous();
+                        }
+
+                        if(plotinfos[i].degrade) {
+                            serie.degrade(plotinfos[i].degrade);
+                        }
                     }
                 }
             }
