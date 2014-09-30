@@ -67,42 +67,43 @@ define(['jquery', 'components/superagent/superagent', 'src/header/components/def
         },
 
         load: function(name) {
-            console.log('load', name);
         },
 
         save: function() {
             var that = this;
             var dir = this.getDir(this.activeNode.data.path);
             var name = this.activeNode.title;
-            console.log('dir to save', dir);
-            var req = $.ajax({
-                url: '/navview/save',
-                data: {
-                    dir: dir,
-                    name: name,
-                    content: Versioning.getViewJSON("\t")
-                },
-                type: 'POST',
-                dataType: 'json'
+
+            confirm('You are about to save the current view to: ' + this.activeNode.data.path + '<br/>This operation will erase the previous content of this file and cannot be undone.').then(function(ok) {
+                if(!ok) return;
+                var req = $.ajax({
+                    url: '/navview/save',
+                    data: {
+                        dir: dir,
+                        name: name,
+                        content: Versioning.getViewJSON("\t")
+                    },
+                    type: 'POST',
+                    dataType: 'json'
+                });
+
+                req.done(function() {
+                    that.log('success-log', 'Successfully saved view');
+                    that.reloadActiveNode();
+                });
+                req.fail(function() {
+                    that.log('error-log', 'Failed to save view');
+                });
             });
 
-            req.done(function() {
-                that.log('success-log', 'Successfully saved view');
-                that.reloadActiveNode();
-            });
-            req.fail(function() {
-                that.log('error-log', 'Failed to save view');
-            });
         },
 
         mkdir: function() {
             var that = this;
-            console.log('make dir');
             var dir = this.activeNode.data.path;
             if(!this.activeNode.isFolder()) {
                 dir = this.getDir(dir);
             }
-            console.log('dir.....', dir);
             var name = this.getFormContent(this.$dirnameInput);
             if(dir && name) {
                 var req = $.ajax({
@@ -132,25 +133,29 @@ define(['jquery', 'components/superagent/superagent', 'src/header/components/def
 
             var dir = this.getDir(node.data.path);
             var name = node.title;
-            console.log(dir, name);
-            var req = $.ajax({
-                url: '/navview/file',
-                type: 'DELETE',
-                data: {
-                    dir: dir,
-                    name: name
-                },
-                dataType: 'json'
+
+            confirm('<p>You are about to remove the file: <br/>' + node.data.path + '</p>Do you really want to do this? You cannot undo this operation').then(function(ok) {
+                if(!ok) return;
+                var req = $.ajax({
+                    url: '/navview/file',
+                    type: 'DELETE',
+                    data: {
+                        dir: dir,
+                        name: name
+                    },
+                    dataType: 'json'
+                });
+
+                req.done(function() {
+                    node.remove();
+                    that.log('success-log', 'Successfully removed file');
+                });
+
+                req.fail(function() {
+                    that.log('error-log', 'Failed remove file');
+                });
             });
 
-            req.done(function() {
-                node.remove();
-                that.log('success-log', 'Successfully removed file');
-            });
-
-            req.fail(function() {
-                that.log('error-log', 'Failed remove file');
-            });
         },
 
         removeDir: function(node) {
@@ -159,28 +164,33 @@ define(['jquery', 'components/superagent/superagent', 'src/header/components/def
                 return this.log('error-log', 'Failed remove directory');
             }
 
-            var req = $.ajax({
-                url: '/navview/dir',
-                type: 'DELETE',
-                data: {
-                    dir: node.data.path
-                },
-                dataType: 'json'
+            confirm('<p>You are about to remove the directory: <br/>' + node.data.path + '</p>Do you really want to do this? You cannot undo this operation').then(function(ok) {
+                if(!ok) return;
+                var req = $.ajax({
+                    url: '/navview/dir',
+                    type: 'DELETE',
+                    data: {
+                        dir: node.data.path
+                    },
+                    dataType: 'json'
+                });
+
+                req.done(function() {
+                    node.remove();
+                    that.log('success-log', 'Successfully removed directory');
+                });
+
+                req.fail(function() {
+                    that.log('error-log', 'Failed remove directory');
+                });
             });
 
-            req.done(function() {
-                node.remove();
-                that.log('success-log', 'Successfully removed directory');
-            });
 
-            req.fail(function() {
-                that.log('error-log', 'Failed remove directory');
-            });
+
         },
 
         rename: function() {
             var that = this;
-            console.log('rename');
             var reg = new RegExp(/(^.*)\/([^\/]+$)/);
 
             var m = reg.exec(this.activeNode.data.path);
@@ -194,7 +204,6 @@ define(['jquery', 'components/superagent/superagent', 'src/header/components/def
             var newDir = dir;
             var name = m[2];
 
-            console.log(dir, name);
 
             var req = this.ajaxRename({
                 dir: dir,
@@ -229,7 +238,6 @@ define(['jquery', 'components/superagent/superagent', 'src/header/components/def
                 newName: node.title,
                 name: that.inlineOldTitle
             };
-            console.log(data);
             var req = this.ajaxRename(data);
 
             req.done(function() {
@@ -247,7 +255,7 @@ define(['jquery', 'components/superagent/superagent', 'src/header/components/def
             var that = this;
             var dir = that.activeNode.data.path;
             if(!that.activeNode.isFolder()) {
-                  dir = that.getDir(dir);
+                dir = that.getDir(dir);
             }
             var req = $.ajax({
                 url: '/navview/touch',
@@ -270,7 +278,6 @@ define(['jquery', 'components/superagent/superagent', 'src/header/components/def
         },
 
         duplicate: function() {
-            console.log('duplicate');
         },
 
         checkNode: function() {
@@ -297,7 +304,6 @@ define(['jquery', 'components/superagent/superagent', 'src/header/components/def
         },
 
         loadRootTree: function() {
-            console.log('load tree');
             return $.ajax({
                 url: '/navview/list',
                 dataType: 'json'
@@ -454,6 +460,33 @@ function fancyTreeDirStructure(list) {
             }
         }
     });
-    console.log('XXXX',  x);
     return x;
+}
+
+function confirm(message) {
+    return new Promise(function(resolve){
+        var $dialog = $('#ci-dialog');
+        if($dialog.length === 0) {
+            $dialog = $('<div/>').css('id', 'ci-dialog');
+            $('body').append($dialog);
+        }
+        $dialog.html(message);
+        $dialog.dialog({
+            modal: true,
+            buttons: {
+                Cancel: function() {
+                    $(this).dialog('close');
+                },
+                Ok: function() {
+                    resolve(true);
+                    $(this).dialog('close');
+                }
+            },
+            close: function() {
+                return resolve(false);
+            },
+            width: 400
+        });
+    });
+
 }
