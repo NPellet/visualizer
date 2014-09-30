@@ -63,6 +63,11 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             title: 'Store object in view',
                             options: {expand: 'Yes'}
                         },
+                        displayValue: {
+                            type: 'checkbox',
+                            title: 'Display value',
+                            options: {display: 'Yes'}
+                        },
                         output: {
                             type: 'combo',
                             title: 'Output result',
@@ -87,6 +92,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         editable: ['groups', 'group', 0, 'editable', 0],
         expanded: ['groups', 'group', 0, 'expanded', 0],
         storeObject: ['groups', 'group', 0, 'storeObject', 0],
+        displayValue: ['groups', 'group', 0, 'displayValue', 0],
         storedObject: ['groups', 'group', 0, 'storedObject', 0],
         output: ['groups', 'group', 0, 'output', 0]
 
