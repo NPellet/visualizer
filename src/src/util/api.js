@@ -16,13 +16,7 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
 	var loadingNumber = 0;
 
 	function setVar( name, sourceVariable, jpath, filter ) {
-
-		var self = this,
-			jpathNewVar = ( ! sourceVariable ) ? jpath : sourceVariable.getjPath().concat( jpath );
-
-			if( sourceVariable ) {
-				sourceVariable.getData().trace( jpath );		
-			}
+		var jpathNewVar = ( ! sourceVariable ) ? jpath : sourceVariable.getjPath().concat( jpath );
 
 		Variables.setVariable( name, jpathNewVar, false, filter );
 	}

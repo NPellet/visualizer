@@ -1,136 +1,124 @@
+'use strict';
 
-define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
-	"use strict";
+define(['components/superagent/superagent', 'src/util/lru', 'src/util/debug'], function (superagent, LRU, Debug) {
 
-	var pendings = {};
-	
-	function doByUrl(def, url, headers) {
-		Debug.debug('DataURL: Looking for ' + url + ' by AJAX');
-		// Nothing in the DB  -- OR -- force ajax => AJAX
-		var dataType = false;
-		if( url.indexOf('.json') > -1 ) {
-			dataType = 'json';
-		}
+    var pendings = {};
 
-		return (pendings[url] = $.ajax({
-			url: url,
-			type: 'get',
-			dataType: dataType || '',
-			timeout: 120000, // 2 minutes timeout
-			headers: headers || {}
-		}).then(function(data) {
-            Debug.info('DataURL: Found ' + url + ' by AJAX');
-            // We set 20 data in memory, 500 in local database
-            /*	if(!LRU.exists('urlData')) {
-             LRU.create('urlData', 20, 500);
-             }
+    function doByUrl(url, headers) {
+        Debug.debug('DataURL: Looking for ' + url + ' by AJAX');
+        return (pendings[url] = new Promise(function (resolve, reject) {
+            superagent.get(url)
+                .timeout(120000) // 2 minutes timeout
+                .set(headers || {})
+                .end(function (err, res) {
+                    delete pendings[url];
+                    if (err || res.status != 200) {
+                        Debug.info('DataURL: Failing in retrieving ' + url + ' by AJAX.');
+                        reject(err || res.status);
+                    } else {
+                        var data = res.body || res.text;
+                        Debug.info('DataURL: Found ' + url + ' by AJAX');
+                        // We set 20 data in memory, 500 in local database
+                        if (!LRU.exists('urlData')) {
+                            LRU.create('urlData', 20, 500);
+                        }
+                        LRU.store('urlData', url, data);
+                        resolve(data);
+                    }
+                });
+        }));
+    }
 
-             LRU.store('urlData', url, data);*/
+    function doLRUOrAjax(url, force, timeout, headers) {
+        // Check in the memory if the url exists
+        Debug.debug('DataURL: Looking in LRU for ' + url + ' with timeout of ' + timeout + ' seconds');
+        return doLRU(url).then(function (data) {
+            Debug.debug('DataURL: Found ' + url + ' in local DB. Timeout: ' + data.timeout);
 
-            delete pendings[url];
-			return data;
-		}, function() {
-			Debug.info('DataURL: Failing in retrieving ' + url + ' by AJAX.');
-			return;
-		}));
-	}
+            // If timeouted. If no timeout is defined, then the link is assumed permanent
+            if (timeout !== undefined && (Date.now() - data.timeout > timeout * 1000)) {
+                Debug.debug('DataURL: URL is over timeout threshold. Looking by AJAX');
+                return doByUrl(url, headers).catch(function () {
+                    Debug.debug('DataURL: Failed in retrieving URL by AJAX. Fallback to cached version');
+                    return data.data;
+                });
+            }
 
-	function doLRUOrAjax(def, url, force, timeout, headers) {
-		// Check in the memory if the url exists
+            Debug.info('DataURL: URL is under timeout threshold. Return cached version');
+            return (data.data || data);
 
-		Debug.debug('DataURL: Looking in LRU for ' + url + ' with timeout of ' + timeout + ' seconds');
+        }, function () {
+            Debug.debug('DataURL: URL ' + url + ' not found in LRU. Look for AJAX');
+            return doByUrl(url, headers);
+        });
+    }
 
-		return doLRU(def, url).pipe(function(data) {
+    function doLRU(url) {
+        Debug.debug('DataURL: Looking into LRU for ' + url);
+        return Promise.resolve(LRU.get('urlData', url));
+    }
 
-			Debug.debug('DataURL: Found ' + url + ' in local DB. Timeout: ' + data.timeout);
+    return {
 
-			// If timeouted. If no timeout is defined, then the link is assumed permanent
-			if(timeout !== undefined && (Date.now() - data.timeout > timeout * 1000)) {
-				Debug.debug('DataURL: URL is over timeout threshold. Looking by AJAX');
-				return doByUrl(def, url, headers ).then(function(data) { return data; }, function() {
-					Debug.debug('DataURL: Failed in retrieving URL by AJAX. Fallback to cached version');
-					def.resolve(data.data);
-				});
-			}
+        get: function (url, force, timeout, headers) {
+            if (pendings[url]) {
+                return pendings[url];
+            }
 
-			Debug.info('DataURL: URL is under timeout threshold. Return cached version');
-			def.resolve(data.data || data); 
-			
-		}, function() {
+            if (typeof force === 'number') {
+                timeout = force;
+                force = false;
+                headers = timeout;
+            } else if (typeof force === 'object') {
+                headers = force;
+                timeout = 0;
+                force = false;
+            } else if (typeof timeout === 'object') {
+                headers = timeout;
+                timeout = 0;
+            }
 
-			Debug.debug('DataURL: URL ' + url + ' not found in LRU. Look for AJAX');
-			return doByUrl(def, url, headers );
-		});
-	}
+            Debug.debug('DataURL: getting ' + url + ' with force set to ' + force + ' and timeout to ' + timeout);
 
-	function doLRU(def, url) {
-		Debug.debug('DataURL: Looking into LRU for ' + url);
-		return LRU.get('urlData', url);
-	}
+            if (force || timeout < 0 || typeof timeout === 'undefined') {
+                return doByUrl(url, headers).catch(function () {
+                    // If ajax fails (no internet), go for LRU
+                    return doLRU(url).then(function (data) {
+                        return data.data;
+                    });
+                });
+            } else {
+                return doLRUOrAjax(url, force, timeout, headers);
+            }
+        },
 
-	return {
+        post: function (url, data) {
+            return new Promise(function (resolve, reject) {
+                superagent
+                    .post(url)
+                    .send(data)
+                    .end(function (err, res) {
+                        if (err || res.status != 200) {
+                            reject(err || res.status);
+                        } else {
+                            resolve(res.body || res.text);
+                        }
+                    });
+            });
+        },
 
-		get: function(url, force, timeout, headers) {
+        emptyMemory: function () {
+            LRU.empty('urlData', true, false);
+        },
 
-			var def = $.Deferred();
+        emptyDB: function () {
+            LRU.empty('urlData', false, true);
+        },
 
-			if( pendings[ url ] ) {
-				return pendings[ url ];
-			}
+        emptyAll: function () {
+            LRU.empty('urlData', true, true);
+        }
 
-			if(typeof force === "number") {
-				timeout = force;
-				force = false;
-			} else if(typeof timeout === "object") {
-			//	data = timeout;
-				timeout = 0;
-				force = false;
-			} else if(typeof force === "object") {
-			//	data = force;
-				force = false;
-			}
+    };
 
-			Debug.debug('DataURL: getting ' + url + ' with force set to ' + force + ' and timeout to ' + timeout);
-			// If we force to do ajax first. Fallback if we 
-			if( force || timeout<0 || typeof timeout==="undefined" ) {
-
-				doByUrl(def, url, headers)
-					.then(
-						function(data) { def.resolve(data) },
-						function() {
-							// If ajax fails (no internet), go for LRU
-							return doLRU(def, url, false).then(function(data) {
-								def.resolve(data.data);
-							});
-					});
-			}
-			// Standard: first LRU, then ajax
-			else {
-				doLRUOrAjax(def, url, force, timeout, headers);
-			}
-			return def;
-		},
-
-		post: function(url, data) {
-			return $.ajax({
-				url: url,
-				timeout: 120000,
-				data: data,
-				type: 'post'
-			});
-		},
-
-		emptyMemory: function() {
-			LRU.empty('urlData', true, false);
-		},
-
-		emptyDB: function() {
-			LRU.empty('urlData', false, true);
-		},
-
-		emptyAll: function() {
-			LRU.empty('urlData', true, true);
-		}
-	};
 });
-

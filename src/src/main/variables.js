@@ -178,76 +178,68 @@ define([
             this.listeners.push( callback );
         },
 
-        triggerChange: function( callback ) {
+        triggerChange: function (callback) {
 
             var self = this;
 
-            if( this.rejectCurrentPromise ) {
+            if (this.rejectCurrentPromise) {
 
                 this.rejectCurrentPromise("latency");
                 this.rejectCurrentPromise = false;
             }
 
-            this.currentPromise = new Promise( function( resolve, reject ) {
+            this.currentPromise = new Promise(function (resolve, reject) {
 
                 self.rejectCurrentPromise = reject;
 
                 var _resolve = resolve,
                     _reject = reject;
 
-                data.trace( self._jpath ).then( function gotDataChild( value ) {
+                data.trace(self._jpath).then(function gotDataChild(value) {
 
-                    function treatValue(value) {
-                        if( callback ) {
+                    if (callback) {
 
-                            new Promise( function( resolve, reject ) {
+                        new Promise(function (resolve, reject) {
 
-                                callback( value, resolve, reject );
+                            callback(value, resolve, reject);
 
-                            } ).then( function( value ) {
+                        }).then(function (value) {
 
-                                    value = DataObject.check(value, true);
-                                    self._setValue(value);
-                                    _resolve( value );
+                                value = DataObject.check(value, true);
+                                self._setValue(value);
+                                _resolve(value);
 
-                                }, function( error ) {
+                            }, function (error) {
 
-                                    Debug.warn("Error during variable filtering : ", error);
-                                    _reject("filter");
+                                Debug.warn("Error during variable filtering : ", error);
+                                _reject("filter");
 
-                                } );
+                            });
 
-                        } else {
-
-                            self._setValue(value);
-                            _resolve( value );
-
-                        }
-                    }
-
-                    if(value && value.fetch) {
-                        value.fetch().then(treatValue);
                     } else {
-                        treatValue(value);
+
+                        self._setValue(value);
+                        _resolve(value);
+
                     }
 
-                }, function(err) {
+                }, function (err) {
                     _reject(err);
-                } );
-            } );
-            this.currentPromise.catch( function( err ) {
+                });
+            });
+            this.currentPromise.catch(function (err) {
                 if (
                     err === "filter" || // Already caught
                     err === "latency" // Expected
                     ) {
                     return;
                 }
-                Debug.error("Error in getting the variable through variable.js", err );
+                Debug.error("Error in getting the variable through variable.js", err);
             });
 
-            for( var i = 0, l = self.listeners.length ; i < l ; i ++ ) {
+            for (var i = 0, l = self.listeners.length; i < l; i++) {
 
-                self.listeners[ i ].call( self, self );
+                self.listeners[ i ].call(self, self);
             }
         },
 
