@@ -107,7 +107,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                         .setLabel(cfg('xLabel', ''))
                         .forceMin(cfg('minX', false))
                         .forceMax(cfg('maxX', false))
-                        .setAxisDataSpacing(cfg('xLeftSpacing'), cfg('xRightSpacing'));
+                        .setAxisDataSpacing(cfg('xLeftSpacing', 0), cfg('xRightSpacing', 0));
                     if(!cfgCheckbox('displayAxis', 'x')) {
                         xAxis.hide();
                     }
@@ -120,7 +120,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                         .setLabel(cfg('yLabel', ''))
                         .forceMin(cfg('minY', false))
                         .forceMax(cfg('maxY', false))
-                        .setAxisDataSpacing(cfg('yBottomSpacing'), cfg('yTopSpacing'));
+                        .setAxisDataSpacing(cfg('yBottomSpacing', 0), cfg('yTopSpacing', 0));
                     if (!cfgCheckbox('displayAxis', 'y')) {
                         yAxis.hide();
                     }
@@ -495,8 +495,8 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 var serie = self.graph.newSerie(varname, {trackMouse: true});
 
                 function buildVal(val) {
-                    var minX = self.module.getConfiguration('minX') || 0;
-                    var maxX = self.module.getConfiguration('maxX') || val.length - 1;
+                    var minX = self.module.getConfiguration('minX', 0);
+                    var maxX = self.module.getConfiguration('maxX', val.length - 1);
                     var step = (maxX - minX) / (val.length - 1);
                     var val2 = [];
                     for (var i = 0, l = val.length; i < l; i++) {
