@@ -273,9 +273,9 @@ define(['jquery', 'src/util/debug'], function($, Debug) {
 			dbname = dbtouse;
 		},
 
-		create: function(store) {
-			createStoreMemory(store);
-			createStoreDB(store);
+		create: function(store, limitMemory, limitDB) {
+			createStoreMemory(store, limitMemory);
+			createStoreDB(store, limitDB);
 		},
 
 		get: function(store, index) {

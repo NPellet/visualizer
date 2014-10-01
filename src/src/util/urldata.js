@@ -16,14 +16,14 @@ define(['components/superagent/superagent', 'src/util/lru', 'src/util/debug'], f
                         Debug.info('DataURL: Failing in retrieving ' + url + ' by AJAX.');
                         reject(err || res.status);
                     } else {
+                        var data = res.body || res.text;
                         Debug.info('DataURL: Found ' + url + ' by AJAX');
                         // We set 20 data in memory, 500 in local database
-                        /*	if(!LRU.exists('urlData')) {
-                         LRU.create('urlData', 20, 500);
-                         }
-
-                         LRU.store('urlData', url, data);*/
-                        resolve(res.body || res.text);
+                        if (!LRU.exists('urlData')) {
+                            LRU.create('urlData', 20, 500);
+                        }
+                        LRU.store('urlData', url, data);
+                        resolve(data);
                     }
                 });
         }));
