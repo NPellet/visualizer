@@ -1,5 +1,6 @@
+'use strict';
+
 define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
-    "use strict";
 
 	function DataObject( object, recursive, forceCopy ) {
 		if (! object) {
@@ -621,7 +622,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 	var fetch = {
 		value: function(forceJson) {
 
-			if (this.value || !this.url) { // No need for fetching. Still returning a promise, though.
+			if (!this.url && !this.type) { // No need for fetching. Still returning a promise, though.
 				return Promise.resolve(this);
 			}
 
