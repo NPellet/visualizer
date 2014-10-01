@@ -130,7 +130,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     }
 
                     var legend = cfg('legend', 'none');
-                    console.log('legend', legend);
                     if(legend !== 'none') {
                         var theLegend = graph.makeLegend({
                             backgroundColor: 'rgba( 255, 255, 255, 0.8 )',
@@ -400,7 +399,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
              },*/
 
             chart: function (moduleValue, varname) {
-                console.log('update...');
                 this.series[varname] = this.series[varname] || [];
                 this.removeSerie(varname);
 

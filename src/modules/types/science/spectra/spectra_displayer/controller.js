@@ -338,7 +338,7 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
                                 {key: 'topleft', title: 'Top-left'},
                                 {key: 'topright', title: 'Top-right'},
                                 {key: 'bottomleft', title: 'Bottom-left'},
-                                {key: 'bottomright', title: 'Bottom-right'},
+                                {key: 'bottomright', title: 'Bottom-right'}
                             ]
                         }
                     }
@@ -433,56 +433,33 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
         }
     };
 
-
     controller.prototype.configFunctions = {
-
-        displayYAxis: function (cfg) {
-            return cfg.indexOf('y') > -1;
-        },
-        displayXAxis: function (cfg) {
-            return cfg.indexOf('x') > -1;
-        },
-        vertGridMain: function (cfg) {
-            return cfg.indexOf('vmain') > -1;
-        },
-        vertGridSec: function (cfg) {
-            return cfg.indexOf('vsec') > -1;
-        },
-        horGridMain: function (cfg) {
-            return cfg.indexOf('hmain') > -1;
-        },
-        horGridSec: function (cfg) {
-            return cfg.indexOf('hsec') > -1;
-        },
-
-        shiftxtozero: function (cfg) {
-            return cfg.indexOf('shift') > -1
-        },
-        minX: function (cfg) {
-            return parseFloat(cfg) || false;
-        },
-        minY: function (cfg) {
-            return parseFloat(cfg) || false;
-        },
-        maxX: function (cfg) {
-            return parseFloat(cfg) || false;
-        },
-        maxY: function (cfg) {
-            return parseFloat(cfg) || false;
-        },
-
-        xastime: function (cfg) {
-            return cfg.indexOf('xastime') > -1
-        },
-
-        flipX: function (cfg) {
-            return cfg.indexOf('flipX') > -1
-        },
-        flipY: function (cfg) {
-            return cfg.indexOf('flipY') > -1
-        }
+        displayYAxis: indexOf('y'),
+        displayXAxis: indexOf('x'),
+        vertGridMain: indexOf('vmain'),
+        vertGridSec: indexOf('vsec'),
+        horGridMain: indexOf('hmain'),
+        horGridSec: indexOf('hsec'),
+        shiftxtozero: indexOf('shift'),
+        minX: getFloat,
+        minY: getFloat,
+        maxX: getFloat,
+        maxY: getFloat,
+        xastime: indexOf('xastime'),
+        flipX: indexOf('flipX'),
+        flipY: indexOf('flipY')
     };
 
+    function indexOf(name) {
+        return function (value) {
+            return value.indexOf(name) > -1;
+        };
+    }
+
+    function getFloat(value) {
+        value = parseFloat(value);
+        return isNaN(value) ? null : value;
+    }
 
     controller.prototype.configAliases = {
 
