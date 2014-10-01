@@ -368,14 +368,9 @@ define( [], function() {
     },
 
     _getPosition: function( value, relTo ) {
-      var yAxis;
-      var xAxis = yAxis = false;
-
-      if ( this.serie ) {
-        xAxis = this.serie.getXAxis();
-        yAxis = this.serie.getYAxis();
-      }
-
+      
+      var xAxis = this.getXAxis(),
+          yAxis = this.getYAxis();
       return this.graph.getPosition( value, relTo, xAxis, yAxis, this.serie );
     },
 
@@ -484,11 +479,6 @@ define( [], function() {
         }
       }
 
-      /*if( pos.x || isNaN( pos.y ) ) {
-				pos.x = -10000;
-				pos.y = -10000;
-			}*/
-      
       if ( pos.x != "NaNpx" && !isNaN( pos.x ) && pos.x !== "NaN" ) {
 
         this.label[ labelIndex ].setAttribute( 'x', pos.x );
@@ -683,8 +673,8 @@ define( [], function() {
 
           var coords = this.graph._getXY( e );
           var
-            deltaX = this.serie.getXAxis().getRelVal( coords.x - this.mouseCoords.x ),
-            deltaY = this.serie.getYAxis().getRelVal( coords.y - this.mouseCoords.y );
+            deltaX = this.getXAxis().getRelVal( coords.x - this.mouseCoords.x ),
+            deltaY = this.getYAxis().getRelVal( coords.y - this.mouseCoords.y );
 
           if ( deltaX != 0 ||  deltaY !== 0 ) {
             this.preventUnselect = true;
@@ -1042,8 +1032,56 @@ define( [], function() {
         this.maskDom.setAttribute( 'fill', 'black' );
 
       }
-    }
+    },
 
+
+    setXAxis: function( axis ) {
+      this.xAxis = axis;
+    },
+
+    setYAxis: function( axis ) {
+      this.yAxis = axis;
+    },
+
+    autoAxes: function() {
+      this.xAxis = this.graph.getXAxis();
+      this.yAxis = this.graph.getYAxis();
+    },
+
+    getXAxis: function( ) {
+
+      if( ! this.xAxis ) {
+        this.autoAxes();
+      }
+
+      return this.xAxis;
+    },
+
+
+    getYAxis: function( ) {
+
+      if( ! this.yAxis ) {
+        this.autoAxes();
+      }
+
+      return this.yAxis;
+    },
+
+    getMinX: function() {
+      return this.minX;
+    },
+
+    getMaxX: function() {
+      return this.maxX;
+    },
+
+    getMinY: function() {
+      return this.minY;
+    },
+
+    getMaxY: function() {
+      return this.maxY;
+    }
   }
 
   return GraphShape;

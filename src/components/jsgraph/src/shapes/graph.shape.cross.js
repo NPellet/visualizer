@@ -83,8 +83,8 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
       if ( this.moving ) {
 
-        pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis() );
-        pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis() );
+        pos.x = this.graph.deltaPosition( pos.x, deltaX, this.getXAxis() );
+        pos.y = this.graph.deltaPosition( pos.y, deltaY, this.getYAxis() );
       }
 
       this.redrawImpl();

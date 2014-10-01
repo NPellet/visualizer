@@ -69,16 +69,16 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
       if ( this.moving ) {
 
-        pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis() );
-        pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis() );
-        pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.serie.getXAxis() );
-        pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.serie.getYAxis() );
+        pos.x = this.graph.deltaPosition( pos.x, deltaX, this.getXAxis() );
+        pos.y = this.graph.deltaPosition( pos.y, deltaY, this.getYAxis() );
+        pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.getXAxis() );
+        pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.getYAxis() );
 
-      } else {
+      } else if( this.serie ) {
 
         this.resizingPosition = ( ( this.reversed && this.handleSelected == 2 ) || ( !this.reversed && this.handleSelected == 1 ) ) ? this.getFromData( 'pos' ) : this.getFromData( 'pos2' );
 
-        var value = this.serie.searchClosestValue( this.serie.getXAxis().getVal( this.graph._getXY( e ).x - this.graph.getPaddingLeft() ) );
+        var value = this.serie.searchClosestValue( this.getXAxis().getVal( this.graph._getXY( e ).x - this.graph.getPaddingLeft() ) );
 
         if ( !value ) {
           return;
@@ -105,6 +105,10 @@ define( [ './graph.shape' ], function( GraphShape ) {
     },
 
     setPosition: function() {
+
+      if( ! this.serie ) {
+        return;
+      }
 
       var posXY = this._getPosition( this.getFromData( 'pos' ) ),
         posXY2 = this._getPosition( this.getFromData( 'pos2' ), this.getFromData( 'pos' ) ),
@@ -172,7 +176,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
           return;
         }
 
-        currentLine += " V " + this.serie.getYAxis().getPx( 0 ) + " H " + this.firstX + " z";
+        currentLine += " V " + this.getYAxis().getPx( 0 ) + " H " + this.firstX + " z";
         this.setDom( 'd', currentLine );
       }
 
@@ -195,10 +199,10 @@ define( [ './graph.shape' ], function( GraphShape ) {
       this.handle2.setAttribute( 'x1', this.lastX );
       this.handle2.setAttribute( 'x2', this.lastX );
 
-      this.handle1.setAttribute( 'y1', this.serie.getYAxis().getMaxPx() );
+      this.handle1.setAttribute( 'y1', this.getYAxis().getMaxPx() );
       this.handle1.setAttribute( 'y2', this.serie.getY( 0 ) );
 
-      this.handle2.setAttribute( 'y1', this.serie.getYAxis().getMaxPx() );
+      this.handle2.setAttribute( 'y1', this.getYAxis().getMaxPx() );
       this.handle2.setAttribute( 'y2', this.serie.getY( 0 ) );
     },
 

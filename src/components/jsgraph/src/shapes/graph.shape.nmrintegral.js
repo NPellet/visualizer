@@ -39,14 +39,14 @@ define( [ './graph.shape.areaundercurve' ], function( GraphSurfaceUnderCurve ) {
 
       if ( !this.serie.isFlipped() ) {
 
-        baseLine = this.serie.getYAxis().getPx( 0 ) - baseLine;
+        baseLine = this.getYAxis().getPx( 0 ) - baseLine;
 
         w = Math.abs( posXY.x - posXY2.x );
         x = Math.min( posXY.x, posXY2.x );
 
       } else {
 
-        baseLine = this.serie.getXAxis().getPx( 0 ) - baseLine;
+        baseLine = this.getXAxis().getPx( 0 ) - baseLine;
 
         w = Math.abs( posXY.y - posXY2.y );
         x = Math.min( posXY.y, posXY2.y );

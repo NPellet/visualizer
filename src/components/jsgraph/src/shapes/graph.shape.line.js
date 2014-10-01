@@ -96,23 +96,23 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
       if ( pos2.dx ) {
 
-        pos2.x = this.graph.deltaPosition( pos2.x ||  pos.x, pos2.dx, this.serie.getXAxis() );
+        pos2.x = this.graph.deltaPosition( pos2.x ||  pos.x, pos2.dx, this.getXAxis() );
         pos2.dx = false;
       }
 
       if ( pos2.dy ) {
-        pos2.y = this.graph.deltaPosition( pos2.x ||  pos.x, pos2.dx, this.serie.getXAxis() );
+        pos2.y = this.graph.deltaPosition( pos2.x ||  pos.x, pos2.dx, this.getXAxis() );
         pos2.dy = false;
       }
 
       if ( this.handleSelected == 1 ) {
 
         if ( !this.options.vertical ) {
-          pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis() );
+          pos.x = this.graph.deltaPosition( pos.x, deltaX, this.getXAxis() );
         }
 
         if ( !this.options.horizontal ) {
-          pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis() );
+          pos.y = this.graph.deltaPosition( pos.y, deltaY, this.getYAxis() );
         }
 
       }
@@ -120,11 +120,11 @@ define( [ './graph.shape' ], function( GraphShape ) {
       if ( this.handleSelected == 2 ) {
 
         if ( !this.options.vertical ) {
-          pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.serie.getXAxis() );
+          pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.getXAxis() );
         }
 
         if ( !this.options.horizontal ) {
-          pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.serie.getYAxis() );
+          pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.getYAxis() );
         }
       }
 
@@ -155,10 +155,10 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
       if ( this.moving ) {
 
-        pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis() );
-        pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis() );
-        pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.serie.getXAxis() );
-        pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.serie.getYAxis() );
+        pos.x = this.graph.deltaPosition( pos.x, deltaX, this.getXAxis() );
+        pos.y = this.graph.deltaPosition( pos.y, deltaY, this.getYAxis() );
+        pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.getXAxis() );
+        pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.getYAxis() );
 
       }
 

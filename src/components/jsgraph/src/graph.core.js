@@ -597,6 +597,37 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
       return ( this.innerWidth = width );
     },
 
+    getBoundaryAxis: function( axis, xy, minmax ) {
+
+      var valSeries = this.getBoundaryAxisFromSeries( axis, xy, minmax );
+      var valShapes = this.getBoundaryAxisFromShapes( axis, xy, minmax );
+
+       return Math[ minmax ]( valSeries, valShapes );
+
+    },
+
+
+
+    getBoundaryAxisFromShapes: function( axis, xy, minmax ) {
+
+      var
+        x = xy == 'x',
+        i = 0,
+        l = this.shapes.length,
+        val = minmax == 'min' ? Infinity : - Infinity,
+        func = x ? [ 'getMinX', 'getMaxX' ] : [ 'getMinY', 'getMaxY' ],
+        func2use = func[ min ? 0 : 1 ],
+        funcGetAxis = x ? 'getXAxis' : 'getYAxis'
+
+      for( ; i < l ; i ++ ) {
+        if( shape[ funcGetAxis ]() == axis && shape[ func2use ] ) {
+          val = Math[ minmax ]( val, shape[ func2use ]( ) );  
+        }
+      }
+      return val;
+
+    },
+
     getBoundaryAxisFromSeries: function( axis, xy, minmax ) {
       var x = xy == 'x',
         min = minmax == 'min',
@@ -695,6 +726,10 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
      *	Does not perform autoscale
      *	But we need to keep track of the data min/max in case of an autoAxis.
      */
+    updateAxes: function() {
+      this._updateAxes();
+    },
+
     _updateAxes: function() {
 
       var axisvars = [ 'bottom', 'top', 'left', 'right' ],
@@ -718,8 +753,8 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
           }
 
           //console.log( axisvars[ j ], this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min'), this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
-          axis.setMinValueData( this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min' ) );
-          axis.setMaxValueData( this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max' ) );
+          axis.setMinValueData( this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], xy, 'min' ) );
+          axis.setMaxValueData( this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], xy, 'max' ) );
 
         }
       }
@@ -728,10 +763,8 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
     // Repaints the axis and series
 
     autoscaleAxes: function() {
-
       this._applyToAxes( "setMinMaxToFitSeries", null, true, true );
       this.redraw();
-
     },
 
     refreshMinOrMax: function() {
@@ -930,7 +963,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
 
         var shape = new shapeConstructor( self, shapeData.shapeOptions );
 
-        shape.setSerie( self.getSerie( 0 ) );
+        //shape.setSerie( self.getSerie( 0 ) );
 
         if ( !shape ) {
           return;
@@ -1266,12 +1299,18 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
 
           var def = ( value[ i ] !== undefined || relTo == undefined || relTo[ i ] == undefined ) ? pos[ i ] : ( this._getPositionPx( relTo[ i ], true, axis ) || 0 );
 
-          if ( i == 'y' && relTo && relTo.x ) {
+          if ( i == 'y' && relTo && relTo.x && ! relTo.y ) {
+
+            if( ! onSerie ) {
+              throw "Error. No serie exists. Cannot find y value";
+              return;
+            }
 
             var closest = onSerie.searchClosestValue( relTo.x );
             if ( closest ) {
               def = onSerie.getY( closest.yMin );
             }
+
             //console.log( relTo.x, closest, onSerie.getY( closest.yMin ), def );
           }
 

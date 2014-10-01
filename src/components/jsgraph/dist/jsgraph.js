@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.14-0
+ * jsGraphs JavaScript Graphing Library v1.9.14-1
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-10-01T11:24Z
+ * Date: 2014-10-01T11:54Z
  */
 
 (function( global, factory ) {
@@ -3726,7 +3726,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
         var shape = new shapeConstructor( self, shapeData.shapeOptions );
 
-        shape.setSerie( self.getSerie( 0 ) );
+        //shape.setSerie( self.getSerie( 0 ) );
 
         if ( !shape ) {
           return;
@@ -4062,12 +4062,18 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
           var def = ( value[ i ] !== undefined || relTo == undefined || relTo[ i ] == undefined ) ? pos[ i ] : ( this._getPositionPx( relTo[ i ], true, axis ) || 0 );
 
-          if ( i == 'y' && relTo && relTo.x ) {
+          if ( i == 'y' && relTo && relTo.x && ! relTo.y ) {
+
+            if( ! onSerie ) {
+              throw "Error. No serie exists. Cannot find y value";
+              return;
+            }
 
             var closest = onSerie.searchClosestValue( relTo.x );
             if ( closest ) {
               def = onSerie.getY( closest.yMin );
             }
+
             //console.log( relTo.x, closest, onSerie.getY( closest.yMin ), def );
           }
 
@@ -4086,7 +4092,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
           }
         }
       }
-
+console.log(pos );
       return pos;
     },
 
@@ -9572,14 +9578,9 @@ build['./shapes/graph.shape'] = ( function( ) {
     },
 
     _getPosition: function( value, relTo ) {
-      var yAxis;
-      var xAxis = yAxis = false;
-
-      if ( this.serie ) {
-        xAxis = this.serie.getXAxis();
-        yAxis = this.serie.getYAxis();
-      }
-
+      
+      var xAxis = this.getXAxis(),
+          yAxis = this.getYAxis();
       return this.graph.getPosition( value, relTo, xAxis, yAxis, this.serie );
     },
 
@@ -9887,8 +9888,8 @@ build['./shapes/graph.shape'] = ( function( ) {
 
           var coords = this.graph._getXY( e );
           var
-            deltaX = this.serie.getXAxis().getRelVal( coords.x - this.mouseCoords.x ),
-            deltaY = this.serie.getYAxis().getRelVal( coords.y - this.mouseCoords.y );
+            deltaX = this.getXAxis().getRelVal( coords.x - this.mouseCoords.x ),
+            deltaY = this.getYAxis().getRelVal( coords.y - this.mouseCoords.y );
 
           if ( deltaX != 0 ||  deltaY !== 0 ) {
             this.preventUnselect = true;
@@ -10246,8 +10247,40 @@ build['./shapes/graph.shape'] = ( function( ) {
         this.maskDom.setAttribute( 'fill', 'black' );
 
       }
-    }
+    },
 
+
+    setXAxis: function( axis ) {
+      this.xAxis = axis;
+    },
+
+    setYAxis: function( axis ) {
+      this.yAxis = axis;
+    },
+
+    autoAxes: function() {
+      this.xAxis = this.graph.getXAxis();
+      this.yAxis = this.graph.getYAxis();
+    },
+
+    getXAxis: function( ) {
+
+      if( ! this.xAxis ) {
+        this.autoAxes();
+      }
+
+      return this.xAxis;
+    },
+
+
+    getYAxis: function( ) {
+
+      if( ! this.yAxis ) {
+        this.autoAxes();
+      }
+
+      return this.yAxis;
+    }
   }
 
   return GraphShape;
@@ -10337,16 +10370,16 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
 
       if ( this.moving ) {
 
-        pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis() );
-        pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis() );
-        pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.serie.getXAxis() );
-        pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.serie.getYAxis() );
+        pos.x = this.graph.deltaPosition( pos.x, deltaX, this.getXAxis() );
+        pos.y = this.graph.deltaPosition( pos.y, deltaY, this.getYAxis() );
+        pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.getXAxis() );
+        pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.getYAxis() );
 
-      } else {
+      } else if( this.serie ) {
 
         this.resizingPosition = ( ( this.reversed && this.handleSelected == 2 ) || ( !this.reversed && this.handleSelected == 1 ) ) ? this.getFromData( 'pos' ) : this.getFromData( 'pos2' );
 
-        var value = this.serie.searchClosestValue( this.serie.getXAxis().getVal( this.graph._getXY( e ).x - this.graph.getPaddingLeft() ) );
+        var value = this.serie.searchClosestValue( this.getXAxis().getVal( this.graph._getXY( e ).x - this.graph.getPaddingLeft() ) );
 
         if ( !value ) {
           return;
@@ -10373,6 +10406,10 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
     },
 
     setPosition: function() {
+
+      if( ! this.serie ) {
+        return;
+      }
 
       var posXY = this._getPosition( this.getFromData( 'pos' ) ),
         posXY2 = this._getPosition( this.getFromData( 'pos2' ), this.getFromData( 'pos' ) ),
@@ -10440,7 +10477,7 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
           return;
         }
 
-        currentLine += " V " + this.serie.getYAxis().getPx( 0 ) + " H " + this.firstX + " z";
+        currentLine += " V " + this.getYAxis().getPx( 0 ) + " H " + this.firstX + " z";
         this.setDom( 'd', currentLine );
       }
 
@@ -10463,10 +10500,10 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
       this.handle2.setAttribute( 'x1', this.lastX );
       this.handle2.setAttribute( 'x2', this.lastX );
 
-      this.handle1.setAttribute( 'y1', this.serie.getYAxis().getMaxPx() );
+      this.handle1.setAttribute( 'y1', this.getYAxis().getMaxPx() );
       this.handle1.setAttribute( 'y2', this.serie.getY( 0 ) );
 
-      this.handle2.setAttribute( 'y1', this.serie.getYAxis().getMaxPx() );
+      this.handle2.setAttribute( 'y1', this.getYAxis().getMaxPx() );
       this.handle2.setAttribute( 'y2', this.serie.getY( 0 ) );
     },
 
@@ -10624,23 +10661,23 @@ build['./shapes/graph.shape.line'] = ( function( GraphShape ) {
 
       if ( pos2.dx ) {
 
-        pos2.x = this.graph.deltaPosition( pos2.x ||  pos.x, pos2.dx, this.serie.getXAxis() );
+        pos2.x = this.graph.deltaPosition( pos2.x ||  pos.x, pos2.dx, this.getXAxis() );
         pos2.dx = false;
       }
 
       if ( pos2.dy ) {
-        pos2.y = this.graph.deltaPosition( pos2.x ||  pos.x, pos2.dx, this.serie.getXAxis() );
+        pos2.y = this.graph.deltaPosition( pos2.x ||  pos.x, pos2.dx, this.getXAxis() );
         pos2.dy = false;
       }
 
       if ( this.handleSelected == 1 ) {
 
         if ( !this.options.vertical ) {
-          pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis() );
+          pos.x = this.graph.deltaPosition( pos.x, deltaX, this.getXAxis() );
         }
 
         if ( !this.options.horizontal ) {
-          pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis() );
+          pos.y = this.graph.deltaPosition( pos.y, deltaY, this.getYAxis() );
         }
 
       }
@@ -10648,11 +10685,11 @@ build['./shapes/graph.shape.line'] = ( function( GraphShape ) {
       if ( this.handleSelected == 2 ) {
 
         if ( !this.options.vertical ) {
-          pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.serie.getXAxis() );
+          pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.getXAxis() );
         }
 
         if ( !this.options.horizontal ) {
-          pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.serie.getYAxis() );
+          pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.getYAxis() );
         }
       }
 
@@ -10683,10 +10720,10 @@ build['./shapes/graph.shape.line'] = ( function( GraphShape ) {
 
       if ( this.moving ) {
 
-        pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis() );
-        pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis() );
-        pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.serie.getXAxis() );
-        pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.serie.getYAxis() );
+        pos.x = this.graph.deltaPosition( pos.x, deltaX, this.getXAxis() );
+        pos.y = this.graph.deltaPosition( pos.y, deltaY, this.getYAxis() );
+        pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.getXAxis() );
+        pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.getYAxis() );
 
       }
 
@@ -10876,14 +10913,14 @@ build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve )
 
       if ( !this.serie.isFlipped() ) {
 
-        baseLine = this.serie.getYAxis().getPx( 0 ) - baseLine;
+        baseLine = this.getYAxis().getPx( 0 ) - baseLine;
 
         w = Math.abs( posXY.x - posXY2.x );
         x = Math.min( posXY.x, posXY2.x );
 
       } else {
 
-        baseLine = this.serie.getXAxis().getPx( 0 ) - baseLine;
+        baseLine = this.getXAxis().getPx( 0 ) - baseLine;
 
         w = Math.abs( posXY.y - posXY2.y );
         x = Math.min( posXY.y, posXY2.y );
@@ -11193,12 +11230,12 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
       this.set( 'height', px );
     },
     setFullWidth: function() {
-      this.set( 'x', Math.min( this.serie.getXAxis().getMinPx(), this.serie.getXAxis().getMaxPx() ) );
-      this.set( 'width', Math.abs( this.serie.getXAxis().getMaxPx() - this.serie.getXAxis().getMinPx() ) );
+      this.set( 'x', Math.min( this.getXAxis().getMinPx(), this.getXAxis().getMaxPx() ) );
+      this.set( 'width', Math.abs( this.getXAxis().getMaxPx() - this.getXAxis().getMinPx() ) );
     },
     setFullHeight: function() {
-      this.set( 'y', Math.min( this.serie.getYAxis().getMinPx(), this.serie.getYAxis().getMaxPx() ) );
-      this.set( 'height', Math.abs( this.serie.getYAxis().getMaxPx() - this.serie.getYAxis().getMinPx() ) );
+      this.set( 'y', Math.min( this.getYAxis().getMinPx(), this.getYAxis().getMaxPx() ) );
+      this.set( 'height', Math.abs( this.getYAxis().getMaxPx() - this.getYAxis().getMinPx() ) );
     },
 
     setPosition: function() {
@@ -11224,8 +11261,8 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
         height = position2.y - pos.y;
 
       } else {
-        width = this.graph.getPxRel( width, this.serie.getXAxis() );
-        height = this.graph.getPxRel( height, this.serie.getYAxis() );
+        width = this.graph.getPxRel( width, this.getXAxis() );
+        height = this.graph.getPxRel( height, this.getYAxis() );
       }
 
       // At this stage, x and y are in px
@@ -11312,12 +11349,12 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
 
       if ( pos2.dx ) {
 
-        pos2.x = this.graph.deltaPosition( pos2.x ||  pos.x, pos2.dx, this.serie.getXAxis() );
+        pos2.x = this.graph.deltaPosition( pos2.x ||  pos.x, pos2.dx, this.getXAxis() );
         pos2.dx = false;
       }
 
       if ( pos2.dy ) {
-        pos2.y = this.graph.deltaPosition( pos2.x ||  pos.x, pos2.dx, this.serie.getXAxis() );
+        pos2.y = this.graph.deltaPosition( pos2.x ||  pos.x, pos2.dx, this.getXAxis() );
         pos2.dy = false;
       }
 
@@ -11325,8 +11362,8 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
 
         if ( this.moving ) {
 
-          pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis() );
-          pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis() );
+          pos.x = this.graph.deltaPosition( pos.x, deltaX, this.getXAxis() );
+          pos.y = this.graph.deltaPosition( pos.y, deltaY, this.getYAxis() );
 
           this.setData( 'pos', pos );
           this.setPosition();
@@ -11353,21 +11390,21 @@ this.handle1.setAttribute('x', this.currentX);
             switch ( this.sides[ this.handleSelected ] ) {
 
               case 'left':
-                pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis() );
-                w = this.graph.deltaPosition( w, -deltaX, this.serie.getXAxis() );
+                pos.x = this.graph.deltaPosition( pos.x, deltaX, this.getXAxis() );
+                w = this.graph.deltaPosition( w, -deltaX, this.getXAxis() );
                 break;
 
               case 'right':
-                w = this.graph.deltaPosition( w, deltaX, this.serie.getXAxis() );
+                w = this.graph.deltaPosition( w, deltaX, this.getXAxis() );
                 break;
 
               case 'top':
-                pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis() );
-                h = this.graph.deltaPosition( h, -deltaX, this.serie.getYAxis() );
+                pos.y = this.graph.deltaPosition( pos.y, deltaY, this.getYAxis() );
+                h = this.graph.deltaPosition( h, -deltaX, this.getYAxis() );
                 break;
 
               case 'bottom':
-                h = this.graph.deltaPosition( h, deltaY, this.serie.getYAxis() );
+                h = this.graph.deltaPosition( h, deltaY, this.getYAxis() );
                 break;
 
             }
@@ -11379,42 +11416,42 @@ this.handle1.setAttribute('x', this.currentX);
 
             if ( this.handleSelected == 1 ) {
 
-              pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis() );
-              pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis() );
+              pos.x = this.graph.deltaPosition( pos.x, deltaX, this.getXAxis() );
+              pos.y = this.graph.deltaPosition( pos.y, deltaY, this.getYAxis() );
 
-              w = this.graph.deltaPosition( w, -deltaX, this.serie.getXAxis() );
-              h = this.graph.deltaPosition( h, -deltaY, this.serie.getYAxis() );
+              w = this.graph.deltaPosition( w, -deltaX, this.getXAxis() );
+              h = this.graph.deltaPosition( h, -deltaY, this.getYAxis() );
 
             }
 
             if ( this.handleSelected == 2 ) {
 
-              pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis() );
+              pos.y = this.graph.deltaPosition( pos.y, deltaY, this.getYAxis() );
 
-              w = this.graph.deltaPosition( w, deltaX, this.serie.getXAxis() );
-              h = this.graph.deltaPosition( h, -deltaY, this.serie.getYAxis() );
+              w = this.graph.deltaPosition( w, deltaX, this.getXAxis() );
+              h = this.graph.deltaPosition( h, -deltaY, this.getYAxis() );
 
             }
 
             if ( this.handleSelected == 3 ) {
 
-              w = this.graph.deltaPosition( w, deltaX, this.serie.getXAxis() );
-              h = this.graph.deltaPosition( h, deltaY, this.serie.getYAxis() );
+              w = this.graph.deltaPosition( w, deltaX, this.getXAxis() );
+              h = this.graph.deltaPosition( h, deltaY, this.getYAxis() );
 
             }
 
             if ( this.handleSelected == 4 ) {
 
-              pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis() );
+              pos.x = this.graph.deltaPosition( pos.x, deltaX, this.getXAxis() );
 
-              w = this.graph.deltaPosition( w, -deltaX, this.serie.getXAxis() );
-              h = this.graph.deltaPosition( h, deltaY, this.serie.getYAxis() );
+              w = this.graph.deltaPosition( w, -deltaX, this.getXAxis() );
+              h = this.graph.deltaPosition( h, deltaY, this.getYAxis() );
             }
             break;
         }
 
-        var wpx = this.graph.getPxRel( w, this.serie.getXAxis() );
-        var hpx = this.graph.getPxRel( h, this.serie.getYAxis() );
+        var wpx = this.graph.getPxRel( w, this.getXAxis() );
+        var hpx = this.graph.getPxRel( h, this.getYAxis() );
         /*
 
 				if( wpx < 0 ) {
@@ -11461,8 +11498,8 @@ this.handle1.setAttribute('x', this.currentX);
 
       } else {
 
-        var invX = this.serie.getXAxis().isFlipped(),
-          invY = this.serie.getYAxis().isFlipped(),
+        var invX = this.getXAxis().isFlipped(),
+          invY = this.getYAxis().isFlipped(),
           posX = pos.x,
           posY = pos.y,
           pos2X = pos2.x,
@@ -11470,11 +11507,11 @@ this.handle1.setAttribute('x', this.currentX);
 
         if ( this.moving ) {
 
-          pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis() );
-          pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis() );
+          pos.x = this.graph.deltaPosition( pos.x, deltaX, this.getXAxis() );
+          pos.y = this.graph.deltaPosition( pos.y, deltaY, this.getYAxis() );
 
-          pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.serie.getXAxis() );
-          pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.serie.getYAxis() );
+          pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.getXAxis() );
+          pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.getYAxis() );
 
           this.setData( 'pos', pos );
           this.setData( 'pos2', pos2 );
@@ -11492,19 +11529,19 @@ this.handle1.setAttribute('x', this.currentX);
             switch ( this.sides[ this.handleSelected ] ) {
 
               case 'left':
-                pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis() );
+                pos.x = this.graph.deltaPosition( pos.x, deltaX, this.getXAxis() );
                 break;
 
               case 'right':
-                pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.serie.getXAxis() );
+                pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.getXAxis() );
                 break;
 
               case 'top':
-                pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis() );
+                pos.y = this.graph.deltaPosition( pos.y, deltaY, this.getYAxis() );
                 break;
 
               case 'bottom':
-                pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.serie.getYAxis() );
+                pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.getYAxis() );
                 break;
 
             }
@@ -11516,23 +11553,23 @@ this.handle1.setAttribute('x', this.currentX);
 
             if ( this.handleSelected == 1 ) {
 
-              posX = this.graph.deltaPosition( posX, deltaX, this.serie.getXAxis() );
-              posY = this.graph.deltaPosition( posY, deltaY, this.serie.getYAxis() );
+              posX = this.graph.deltaPosition( posX, deltaX, this.getXAxis() );
+              posY = this.graph.deltaPosition( posY, deltaY, this.getYAxis() );
 
             } else if ( this.handleSelected == 2 ) {
 
-              pos2X = this.graph.deltaPosition( pos2X, deltaX, this.serie.getXAxis() );
-              posY = this.graph.deltaPosition( posY, deltaY, this.serie.getYAxis() );
+              pos2X = this.graph.deltaPosition( pos2X, deltaX, this.getXAxis() );
+              posY = this.graph.deltaPosition( posY, deltaY, this.getYAxis() );
 
             } else if ( this.handleSelected == 3 ) {
 
-              pos2Y = this.graph.deltaPosition( pos2Y, deltaY, this.serie.getYAxis() );
-              pos2X = this.graph.deltaPosition( pos2X, deltaX, this.serie.getXAxis() );
+              pos2Y = this.graph.deltaPosition( pos2Y, deltaY, this.getYAxis() );
+              pos2X = this.graph.deltaPosition( pos2X, deltaX, this.getXAxis() );
 
             } else if ( this.handleSelected == 4 ) {
 
-              posX = this.graph.deltaPosition( posX, deltaX, this.serie.getXAxis() );
-              pos2Y = this.graph.deltaPosition( pos2Y, deltaY, this.serie.getYAxis() );
+              posX = this.graph.deltaPosition( posX, deltaX, this.getXAxis() );
+              pos2Y = this.graph.deltaPosition( pos2Y, deltaY, this.getYAxis() );
 
             }
 
@@ -12140,8 +12177,8 @@ build['./shapes/graph.shape.cross'] = ( function( GraphShape ) {
 
       if ( this.moving ) {
 
-        pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis() );
-        pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis() );
+        pos.x = this.graph.deltaPosition( pos.x, deltaX, this.getXAxis() );
+        pos.y = this.graph.deltaPosition( pos.y, deltaY, this.getYAxis() );
       }
 
       this.redrawImpl();
