@@ -1,6 +1,23 @@
-define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', './graph.legend', './dynamicdepencies' ], function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, GraphLegend, DynamicDepencies ) {
+define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken', './graph.axis.y.broken', './graph.xaxis.time', './graph.legend', './dynamicdepencies' ], function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken, GraphYAxisBroken, GraphXAxisTime, GraphLegend, DynamicDepencies ) {
 
   "use strict";
+
+  var _availableAxes = {
+
+    def: {
+      x: GraphXAxis,
+      y: GraphYAxis
+    },
+
+    broken: {
+      x: GraphXAxisBroken,
+      y: GraphYAxisBroken
+    },
+
+    time: {
+      x: GraphXAxisTime
+    }
+  };
 
   var graphDefaults = {
 
@@ -143,25 +160,22 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
     if ( axis ) {
       for ( var i in axis ) {
         for ( var j = 0, l = axis[ i ].length; j < l; j++ ) {
+
           switch ( i ) {
+
             case 'top':
-              funcName = 'setTopAxis';
-              var axisInstance = new GraphXAxis( this, 'top', axis[ i ][ j ] );
+              this.getTopAxis( j, axis[ i ][ j ]);
               break;
             case 'bottom':
-              funcName = 'setBottomAxis';
-              var axisInstance = new GraphXAxis( this, 'bottom', axis[ i ][ j ] );
+              this.getBottomAxis( j, axis[ i ][ j ]);
               break;
             case 'left':
-              funcName = 'setLeftAxis';
-              var axisInstance = new GraphYAxis( this, 'left', axis[ i ][ j ] );
+              this.getLeftAxis( j, axis[ i ][ j ]);
               break;
             case 'right':
-              funcName = 'setRightAxis';
-              var axisInstance = new GraphYAxis( this, 'right', axis[ i ][ j ] );
+              this.getRightAxis( j, axis[ i ][ j ]);
               break;
           }
-          this[ funcName ]( axisInstance, j );
         }
       }
     }
@@ -494,23 +508,25 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
     },
 
     getTopAxis: function( num, options ) {
-      return _getAxis( this, num, options, GraphXAxis, 'top' );
+      return _getAxis( this, num, options, 'top' );
     },
 
     getBottomAxis: function( num, options ) {
-      return _getAxis( this, num, options, GraphXAxis, 'bottom' );
+      return _getAxis( this, num, options, 'bottom' );
     },
 
     getLeftAxis: function( num, options ) {
-      return _getAxis( this, num, options, GraphYAxis, 'left' );
+      return _getAxis( this, num, options, 'left' );
     },
 
     getRightAxis: function( num, options ) {
-      return _getAxis( this, num, options, GraphYAxis, 'right' );
+      return _getAxis( this, num, options, 'right' );
     },
 
     setBottomAxisAsTime: function( num, options ) {
-      return _getAxis( this, num, options, GraphXAxisTime, 'bottom' );
+      options = options || {};
+      options.type = 'time';
+      return _getAxis( this, num, options, 'bottom' );
     },
 
     setXAxis: function( axis, num ) {
@@ -749,6 +765,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
         if ( callback ) {
           callback( serie );
         }
+
       } );
 
       return serie;
@@ -1220,24 +1237,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
 
             pos[ i ] = relTo ? relTo[ i ] : axis.getPos( 0 );
 
-<<<<<<< HEAD
-						var val;
-						if( _parsePx( value.x ) !== false ) {
-							console.warn("You have defined x in px and not y. Makes no sense. Returning 0 for y");
-							pos[ i ] = 0;
-						} else {
-
-							var closest = onSerie.searchClosestValue( val );
-
-							if( ! closest ) {
-								console.warn("Could not find y position. Returning 0 for y.");
-								pos[ i ] = 0;
-							} else {
-								pos[ i ] = onSerie.getY( closest.yMin );	
-							}
-						}
-					}
-=======
           } else if ( value.x && onSerie ) {
 
             var val;
@@ -1248,7 +1247,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
             } else {
 
               var closest = onSerie.searchClosestValue( value.x );
->>>>>>> FETCH_HEAD
 
               if ( !closest ) {
                 console.warn( "Could not find y position. Returning 0 for y." );
@@ -1334,24 +1332,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
         }
       } else {
 
-<<<<<<< HEAD
-			if( ( refPx = _parsePx( ref ) ) !== false ) {
-
-				if( ( deltaPx = _parsePx( delta ) ) !== false ) {
-					return ( refPx + deltaPx ) + "px";	
-				} else {
-					return ( refPx + axis.getRelPx( delta ) ) + "px";
-				}
-			} else {
-
-				if( ( deltaPx = _parsePx( delta ) ) !== false ) {
-					return ( ref + axis.getRelVal( deltaPx ) );
-				} else {
-					return ( ref + delta );
-				}
-			}
-		},
-=======
         ref = this.getValPosition( ref, axis );
 
         if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
@@ -1363,7 +1343,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
     },
 
     getValPosition: function( rel, axis ) {
->>>>>>> FETCH_HEAD
 
       if( rel == 'max' ) {
         return axis.getMaxValue();
@@ -1770,8 +1749,39 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
     }
   }
 
-  function _getAxis( graph, num, options, inst, pos ) {
+  function _getAxis( graph, num, options, pos ) {
 
+    var options = options || {};
+    var inst;
+
+    switch( options.type ) {
+
+      case 'time':
+        var axisInstance = _availableAxes.time;
+      break;
+
+      case 'broken':
+        var axisInstance = _availableAxes.broken;
+      break;
+
+      default:
+        var axisInstance = _availableAxes.def;
+      break;
+    }
+
+    switch( pos ) {
+
+      case 'top':
+      case 'bottom':
+        inst = axisInstance.x;
+      break;
+
+      case 'left':
+      case 'right':
+        inst = axisInstance.y;
+      break;
+    }
+    
     num = num || 0;
 
     if ( typeof num == "object" ) {

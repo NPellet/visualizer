@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.11-0
+ * jsGraphs JavaScript Graphing Library v1.9.14-0
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-09-24T14:54Z
+ * Date: 2014-10-01T11:24Z
  */
 
 (function( global, factory ) {
@@ -419,7 +419,7 @@ build['./graph.axis'] = ( function( $ ) {
       return this.options.flipped;
     },
 
-    getUnitPerTick: function( px, nbTick, valrange, max ) {
+    getUnitPerTick: function( px, nbTick, valrange ) {
 
       var pxPerTick = px / nbTicks; // 1000 / 100 = 10 px per tick
       if ( !nbTick )
@@ -635,17 +635,8 @@ build['./graph.axis'] = ( function( $ ) {
             this.scientificExp = Math.floor( Math.log( Math.max( Math.abs( this.getActualMax() ), Math.abs( this.getActualMin() ) ) ) / Math.log( 10 ) );
           }
 
-          var nbTicks1 = this.getNbTicksPrimary();
-
-          var primaryTicks = this.getUnitPerTick( widthPx, nbTicks1, valrange, this.getActualMax() );
-          var nbSecondaryTicks = this.secondaryTicks();
-          if ( nbSecondaryTicks ) {
-            var nbSecondaryTicks = nbSecondaryTicks; // Math.min(nbSecondaryTicks, primaryTicks[2] / 5);
-          }
-
-          // We need to get here the width of the ticks to display the axis properly, with the correct shift
-          var widthHeight = this.drawTicks( primaryTicks, nbSecondaryTicks );
-
+          var widthHeight = this.drawLinearTicksWrapper( widthPx, valrange );
+          
         } else {
           var widthHeight = this.drawLogTicks();
         }
@@ -683,6 +674,19 @@ build['./graph.axis'] = ( function( $ ) {
         this._draw0Line( this.getPx( 0 ) );
 
       return widthHeight + ( label ? 20 : 0 );
+    },
+
+    drawLinearTicksWrapper: function( widthPx, valrange ) {
+
+      var nbTicks1 = this.getNbTicksPrimary();
+      var primaryTicks = this.getUnitPerTick( widthPx, nbTicks1, valrange );
+      var nbSecondaryTicks = this.secondaryTicks();
+      if ( nbSecondaryTicks ) {
+        var nbSecondaryTicks = nbSecondaryTicks; // Math.min(nbSecondaryTicks, primaryTicks[2] / 5);
+      }
+
+      // We need to get here the width of the ticks to display the axis properly, with the correct shift
+      return this.drawTicks( primaryTicks, nbSecondaryTicks );
     },
 
     setTickLabelRatio: function( tickRatio ) {
@@ -1188,19 +1192,6 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
       this.groupGrids.appendChild( this._0line );
     },
 
-    addSerie: function( name, options ) {
-      var serie = new GraphSerieAxisX( name, options );
-      serie.setAxis( this );
-      serie.init( this.graph, name, options );
-      serie.autoAxis();
-      serie.setXAxis( this );
-      this.series.push( serie );
-      this.groupSeries.appendChild( serie.groupMain );
-      this.groupSeries.setAttribute( 'clip-path', 'url(#_clip' + this.axisRand + ')' );
-
-      return serie;
-    },
-
     handleMouseMoveLocal: function( x, y, e ) {
       x -= this.graph.getPaddingLeft();
       this.mouseVal = this.getVal( x );
@@ -1310,7 +1301,7 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
 
         this.groupTickLabels.appendChild( tickLabel );
 
-        if ( String( tickLabel ).length >= this.longestTick[ 1 ] ) {
+        if ( String( tickLabel.textContent ).length >= this.longestTick[ 1 ] ) {
           this.longestTick[ 0 ] = tickLabel;
           this.longestTick[ 1 ] = String( tickLabel.textContent ).length;
 
@@ -1388,19 +1379,6 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
       this.groupGrids.appendChild( this._0line );
     },
 
-    addSerie: function( name, options ) {
-      var serie = new GraphSerieAxisY( name, options );
-      serie.init( this.graph, name, options );
-      serie.setAxis( this );
-      serie.autoAxis();
-      serie.setYAxis( this );
-      this.series.push( serie );
-      this.groupSeries.appendChild( serie.groupMain );
-      this.groupSeries.setAttribute( 'clip-path', 'url(#_clip' + this.axisRand + ')' );
-
-      return serie;
-    },
-
     handleMouseMoveLocal: function( x, y, e ) {
       y -= this.graph.getPaddingTop();
       this.mouseVal = this.getVal( y );
@@ -1464,6 +1442,256 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
 
 
 // Build: End source file (graph.axis.y) 
+
+
+
+;
+/* 
+ * Build: new source file 
+ * File name : graph.axis.broken
+ * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.broken.js
+ */
+
+build['./graph.axis.broken'] = ( function( $ ) { 
+
+  var GraphAxis = function() {}
+
+  GraphAxis.prototype = {
+
+    getNbTicksPrimary: function() {
+      return this.options.nbTicksPrimary;
+    },
+
+    getNbTicksSecondary: function() {
+      return this.options.nbTicksSecondary;
+    },
+
+    // [ [ 0, 10 ], [ 50, 100 ] ]
+    setBrokenRanges: function( ranges ) {
+      this.ranges = [];
+
+      var 
+        self = this,
+        i = 0,
+        l = ranges.length,
+        total = 0;
+
+      ranges.map( function( range ) {
+          total += range[ 1 ] - range[ 0 ];
+      });
+      
+      ranges.map( function( range ) {
+          
+          self.ranges.push( {
+
+            ratio: ( range[ 1 ] - range[ 0 ] ) / total,
+            diff: range[ 1 ] - range[ 0 ],
+            min: range[ 0 ],
+            max: range[ 1 ],
+            minPx: undefined,
+            minPx: undefined
+
+          } );
+      });
+
+      self.totalValRanges = total;
+    },
+
+    drawLinearTicksWrapper: function( ) {
+
+      var nbIntervals = this.ranges.length - 1,
+          availableDrawingPxs = ( this.maxPx - this.minPx ) - nbIntervals * 5,
+          nbTicksPrimary = this.getNbTicksPrimary();
+
+      var ticksPrimary = this.getUnitPerTick( availableDrawingPxs, nbTicksPrimary, this.totalValRanges );
+      console.log( ticksPrimary, this.totalValRanges)
+      var nbSecondaryTicks = this.secondaryTicks();
+
+      // We need to get here the width of the ticks to display the axis properly, with the correct shift
+      return this.drawTicks( ticksPrimary, nbSecondaryTicks );
+    },
+
+    setTickLabelRatio: function( tickRatio ) {
+      this.options.ticklabelratio = tickRatio;
+    },
+
+    drawTicks: function( primary, secondary ) {
+
+      var self = this;
+      var unitPerTick = primary[ 0 ];
+      var minPx = this.getMinPx();
+      var maxPx = this.getMaxPx();
+      var last = minPx;
+      var nbIntervals = this.ranges.length - 1;
+      var availableDrawingPxs = ( this.getMaxPx() - this.getMinPx() ) - nbIntervals * 5 * ( self.isFlipped() ? -1 : 1 );
+
+      this.resetTicks();
+
+
+      this.ranges.map( function( range, index ) {
+
+        range.minPx = index == 0 ? minPx : last + 5 * ( self.isFlipped() ? -1 : 1 );
+        range.maxPx = range.minPx + availableDrawingPxs * range.ratio;
+
+        last = range.maxPx;
+
+        var min = range.min,
+            max = range.max,
+            secondaryIncr,
+            incrTick,
+            subIncrTick,
+            loop = 0,
+            loop2 = 0
+            ;
+
+          if ( secondary ) {
+            secondaryIncr = unitPerTick / secondary;
+          }
+
+          incrTick = Math.floor( min / unitPerTick ) * unitPerTick;
+
+          while ( incrTick < max ) {
+
+            if ( secondary ) {
+              subIncrTick = incrTick + secondaryIncr;
+              while ( subIncrTick < incrTick + unitPerTick ) {
+
+                if ( subIncrTick < min || subIncrTick > max ) {
+                  subIncrTick += secondaryIncr;
+                  continue;
+                }
+
+                self.drawTick( subIncrTick, false, Math.abs( subIncrTick - incrTick - unitPerTick / 2 ) < 1e-4 ? 3 : 2 );
+                subIncrTick += secondaryIncr;
+              }
+            }
+
+            if ( incrTick < min || incrTick > max ) {
+              incrTick += primary[ 0 ];
+              continue;
+            }
+
+            self.drawTick( incrTick, true, 4 );
+            incrTick += primary[ 0 ];
+          }
+      } );
+
+
+      this.widthHeightTick = this.getMaxSizeTick();
+      return this.widthHeightTick;
+    },
+
+    secondaryTicks: function() {
+      return this.options.nbTicksSecondary;
+    },
+
+    drawLogTicks: function() {
+      return 0;
+    },
+
+    getPx: function( value ) {
+      return this.getPos( value );
+    },
+
+    getPos: function( value ) {
+      //			if(this.getMaxPx() == undefined)
+      //				console.log(this);
+      //console.log(this.getMaxPx(), this.getMinPx(), this._getActualInterval());
+      // Ex 50 / (100) * (1000 - 700) + 700
+
+      //console.log( value, this.getActualMin(), this.getMaxPx(), this.getMinPx(), this._getActualInterval() );
+      for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
+        if( value <= this.ranges[ i ].max && value >= this.ranges[ i ].min ) {
+          return ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx
+        }
+      }
+    },
+
+    getRelPx: function( value ) {
+      return ( value / this._getActualInterval() ) * ( this.getMaxPx() - this.getMinPx() );
+    },
+
+    getRelVal: function( px ) {
+      return px / (  ( this.maxPx - this.minPx ) - nbIntervals * 5 ) * this.totalValRanges;
+    },
+
+    getVal: function( px ) {
+
+      for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
+        if( px <= this.ranges[ i ].maxPx && px >= this.ranges[ i ].minPx ) {
+          return ( px - this.ranges[ i ].minPx ) / ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) * ( this.ranges[ i ].max - this.ranges[ i ].min ) +  this.ranges[ i ].min
+        }
+      }
+      // Ex 50 / (100) * (1000 - 700) + 700
+      return ;
+    }
+  }
+
+  return GraphAxis;
+
+ } ) ( build["./jquery"] );
+
+
+// Build: End source file (graph.axis.broken) 
+
+
+
+;
+/* 
+ * Build: new source file 
+ * File name : graph.axis.x.broken
+ * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.x.broken.js
+ */
+
+build['./graph.axis.x.broken'] = ( function( GraphXAxis, GraphBrokenAxis ) { 
+
+  
+
+  var GraphXAxisBroken = function( graph, topbottom, options ) {
+	this.init( graph, options );
+    this.top = topbottom == 'top';
+  }
+
+  $.extend( GraphXAxisBroken.prototype, GraphBrokenAxis.prototype, GraphXAxis.prototype );
+
+  return GraphXAxisBroken;
+
+ } ) ( build["./graph.axis.x"],build["./graph.axis.broken"] );
+
+
+// Build: End source file (graph.axis.x.broken) 
+
+
+
+;
+/* 
+ * Build: new source file 
+ * File name : graph.axis.y.broken
+ * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.y.broken.js
+ */
+
+build['./graph.axis.y.broken'] = ( function( GraphYAxis, GraphBrokenAxis ) { 
+
+  
+
+  var GraphYAxisBroken = function( graph, leftright, options ) {
+
+    this.init( graph, options );
+
+    this.leftright = leftright;
+    this.left = leftright == 'left';
+
+  }
+
+  $.extend( GraphYAxisBroken.prototype, GraphYAxis.prototype, GraphBrokenAxis.prototype );
+
+
+  return GraphYAxisBroken;
+
+ } ) ( build["./graph.axis.y"],build["./graph.axis.broken"] );
+
+
+// Build: End source file (graph.axis.y.broken) 
 
 
 
@@ -2566,9 +2794,26 @@ build['./dynamicdepencies'] = ( function( ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/graph.core.js
  */
 
-build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, GraphLegend, DynamicDepencies ) { 
+build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken, GraphYAxisBroken, GraphXAxisTime, GraphLegend, DynamicDepencies ) { 
 
   
+
+  var _availableAxes = {
+
+    def: {
+      x: GraphXAxis,
+      y: GraphYAxis
+    },
+
+    broken: {
+      x: GraphXAxisBroken,
+      y: GraphYAxisBroken
+    },
+
+    time: {
+      x: GraphXAxisTime
+    }
+  };
 
   var graphDefaults = {
 
@@ -2711,25 +2956,22 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
     if ( axis ) {
       for ( var i in axis ) {
         for ( var j = 0, l = axis[ i ].length; j < l; j++ ) {
+
           switch ( i ) {
+
             case 'top':
-              funcName = 'setTopAxis';
-              var axisInstance = new GraphXAxis( this, 'top', axis[ i ][ j ] );
+              this.getTopAxis( j, axis[ i ][ j ]);
               break;
             case 'bottom':
-              funcName = 'setBottomAxis';
-              var axisInstance = new GraphXAxis( this, 'bottom', axis[ i ][ j ] );
+              this.getBottomAxis( j, axis[ i ][ j ]);
               break;
             case 'left':
-              funcName = 'setLeftAxis';
-              var axisInstance = new GraphYAxis( this, 'left', axis[ i ][ j ] );
+              this.getLeftAxis( j, axis[ i ][ j ]);
               break;
             case 'right':
-              funcName = 'setRightAxis';
-              var axisInstance = new GraphYAxis( this, 'right', axis[ i ][ j ] );
+              this.getRightAxis( j, axis[ i ][ j ]);
               break;
           }
-          this[ funcName ]( axisInstance, j );
         }
       }
     }
@@ -3062,23 +3304,25 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
     },
 
     getTopAxis: function( num, options ) {
-      return _getAxis( this, num, options, GraphXAxis, 'top' );
+      return _getAxis( this, num, options, 'top' );
     },
 
     getBottomAxis: function( num, options ) {
-      return _getAxis( this, num, options, GraphXAxis, 'bottom' );
+      return _getAxis( this, num, options, 'bottom' );
     },
 
     getLeftAxis: function( num, options ) {
-      return _getAxis( this, num, options, GraphYAxis, 'left' );
+      return _getAxis( this, num, options, 'left' );
     },
 
     getRightAxis: function( num, options ) {
-      return _getAxis( this, num, options, GraphYAxis, 'right' );
+      return _getAxis( this, num, options, 'right' );
     },
 
     setBottomAxisAsTime: function( num, options ) {
-      return _getAxis( this, num, options, GraphXAxisTime, 'bottom' );
+      options = options || {};
+      options.type = 'time';
+      return _getAxis( this, num, options, 'bottom' );
     },
 
     setXAxis: function( axis, num ) {
@@ -3317,6 +3561,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
         if ( callback ) {
           callback( serie );
         }
+
       } );
 
       return serie;
@@ -4300,8 +4545,39 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
     }
   }
 
-  function _getAxis( graph, num, options, inst, pos ) {
+  function _getAxis( graph, num, options, pos ) {
 
+    var options = options || {};
+    var inst;
+
+    switch( options.type ) {
+
+      case 'time':
+        var axisInstance = _availableAxes.time;
+      break;
+
+      case 'broken':
+        var axisInstance = _availableAxes.broken;
+      break;
+
+      default:
+        var axisInstance = _availableAxes.def;
+      break;
+    }
+
+    switch( pos ) {
+
+      case 'top':
+      case 'bottom':
+        inst = axisInstance.x;
+      break;
+
+      case 'left':
+      case 'right':
+        inst = axisInstance.y;
+      break;
+    }
+    
     num = num || 0;
 
     if ( typeof num == "object" ) {
@@ -4392,7 +4668,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
   }
 
   return Graph;
- } ) ( build["./jquery"],build["./graph.axis.x"],build["./graph.axis.y"],build["./graph.xaxis.time"],build["./graph.legend"],build["./dynamicdepencies"] );
+ } ) ( build["./jquery"],build["./graph.axis.x"],build["./graph.axis.y"],build["./graph.axis.x.broken"],build["./graph.axis.y.broken"],build["./graph.xaxis.time"],build["./graph.legend"],build["./dynamicdepencies"] );
 
 
 // Build: End source file (graph.core) 
@@ -6111,6 +6387,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
       var data = this.data;
       var xData = this.xData;
 
+      this.currentLine = 0;
+
       if ( this.degradationPx ) {
         data = getDegradedData( this );
         xData = data[ 1 ];
@@ -6135,8 +6413,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
       var optimizeMonotoneous = this.isXMonotoneous(),
         optimizeMaxPxX = this.getXAxis().getMathMaxPx(),
         optimizeBreak, buffer;
-
-
 
       var shape, self = this;
 
@@ -6226,7 +6502,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
                 this.getMarkerCurrentFamily( k );
               }
 
-              if ( !this.isFlipped() ) {
+              if ( ! this.isFlipped() ) {
 
                 xpx = this.getX( xData[ i ].x + j * xData[ i ].dx );
                 ypx = this.getY( data[ i ][ j ] );
@@ -6257,7 +6533,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
             }
 
-            this._createLine( currentLine, i, k );
+            this._createLine( currentLine, k );
 
             if ( toBreak ) {
               break;
@@ -6286,6 +6562,16 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
               if ( xpx2 == xpx && ypx2 == ypx ) {
                 continue;
+              }
+
+
+              if( isNaN( xpx2 ) || isNaN( ypx2 ) ) {
+                if( k > 0 ) {
+                   this._createLine( currentLine, k );
+                   currentLine = "M ";
+                   k = 0;
+                 }
+                 continue;
               }
 
               if ( optimizeMonotoneous && xpx2 < 0 ) {
@@ -6347,7 +6633,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
               ypx = ypx2;
             }
 
-            this._createLine( currentLine, i, k );
+            this._createLine( currentLine, k );
 
             if ( toBreak ) {
               break;
@@ -6364,7 +6650,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
       i++;
 
-      for ( ; i < this.lines.length; i++ ) {
+      for ( i = this.currentLine + 1; i < this.lines.length; i++ ) {
         this.groupLines.removeChild( this.lines[ i ] );
         this.lines.splice( i, 1 );
       }
@@ -6482,7 +6768,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
       }
 
-      this._createLine( currentLine, i, k );
+      this._createLine( currentLine, k );
       i++;
       
     },
@@ -6539,8 +6825,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
     },
 
     // Returns the DOM
-    _createLine: function( points, i, nbPoints ) {
+    _createLine: function( points, nbPoints ) {
 
+      var i = this.currentLine ++;
       if ( this.lines[ i ] ) {
         var line = this.lines[ i ];
       } else {
@@ -6556,10 +6843,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
       }
 
-      if ( !this.lines[ i ] ) {
+      if ( ! this.lines[ i ] ) {
         this.groupLines.appendChild( line );
         this.lines[ i ] = line;
-
       }
 
       return line;
@@ -7752,6 +8038,7 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
 
     draw: function( doNotRedrawZone ) {
 
+      this.currentLine = 0;
       var x, y, xpx, ypx, xpx2, ypx2, i = 0,
         l = this.data.length,
         j = 0,
@@ -7823,7 +8110,7 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
           k++;
         }
 
-        domLine = this._createLine( currentLine + " z", i, k );
+        domLine = this._createLine( currentLine + " z", k );
         domLine.setAttribute( 'data-zvalue', this.data[ i ].zValue );
 
         if ( this.zoneColors && this.zoneColors[ i ] ) {
@@ -7842,12 +8129,11 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
       i++;
 
       
-      for ( ; i < this.lines.length; i++ ) {
-
+      for ( i = this.currentLine + 1; i < this.lines.length; i++ ) {
         this.groupLines.removeChild( this.lines[ i ] );
         this.lines.splice( i, 1 );
-
       }
+
 
       i = 0;
 

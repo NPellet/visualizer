@@ -81,7 +81,7 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 
         this.groupTickLabels.appendChild( tickLabel );
 
-        if ( String( tickLabel ).length >= this.longestTick[ 1 ] ) {
+        if ( String( tickLabel.textContent ).length >= this.longestTick[ 1 ] ) {
           this.longestTick[ 0 ] = tickLabel;
           this.longestTick[ 1 ] = String( tickLabel.textContent ).length;
 
@@ -157,19 +157,6 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 
       this._0line.setAttribute( 'stroke', 'black' );
       this.groupGrids.appendChild( this._0line );
-    },
-
-    addSerie: function( name, options ) {
-      var serie = new GraphSerieAxisY( name, options );
-      serie.init( this.graph, name, options );
-      serie.setAxis( this );
-      serie.autoAxis();
-      serie.setYAxis( this );
-      this.series.push( serie );
-      this.groupSeries.appendChild( serie.groupMain );
-      this.groupSeries.setAttribute( 'clip-path', 'url(#_clip' + this.axisRand + ')' );
-
-      return serie;
     },
 
     handleMouseMoveLocal: function( x, y, e ) {

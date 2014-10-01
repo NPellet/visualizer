@@ -90,6 +90,7 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
 
     draw: function( doNotRedrawZone ) {
 
+      this.currentLine = 0;
       var x, y, xpx, ypx, xpx2, ypx2, i = 0,
         l = this.data.length,
         j = 0,
@@ -161,7 +162,7 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
           k++;
         }
 
-        domLine = this._createLine( currentLine + " z", i, k );
+        domLine = this._createLine( currentLine + " z", k );
         domLine.setAttribute( 'data-zvalue', this.data[ i ].zValue );
 
         if ( this.zoneColors && this.zoneColors[ i ] ) {
@@ -180,12 +181,11 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
       i++;
 
       
-      for ( ; i < this.lines.length; i++ ) {
-
+      for ( i = this.currentLine + 1; i < this.lines.length; i++ ) {
         this.groupLines.removeChild( this.lines[ i ] );
         this.lines.splice( i, 1 );
-
       }
+
 
       i = 0;
 

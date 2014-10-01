@@ -381,7 +381,7 @@ define( [ 'jquery' ], function( $ ) {
       return this.options.flipped;
     },
 
-    getUnitPerTick: function( px, nbTick, valrange, max ) {
+    getUnitPerTick: function( px, nbTick, valrange ) {
 
       var pxPerTick = px / nbTicks; // 1000 / 100 = 10 px per tick
       if ( !nbTick )
@@ -597,17 +597,8 @@ define( [ 'jquery' ], function( $ ) {
             this.scientificExp = Math.floor( Math.log( Math.max( Math.abs( this.getActualMax() ), Math.abs( this.getActualMin() ) ) ) / Math.log( 10 ) );
           }
 
-          var nbTicks1 = this.getNbTicksPrimary();
-
-          var primaryTicks = this.getUnitPerTick( widthPx, nbTicks1, valrange, this.getActualMax() );
-          var nbSecondaryTicks = this.secondaryTicks();
-          if ( nbSecondaryTicks ) {
-            var nbSecondaryTicks = nbSecondaryTicks; // Math.min(nbSecondaryTicks, primaryTicks[2] / 5);
-          }
-
-          // We need to get here the width of the ticks to display the axis properly, with the correct shift
-          var widthHeight = this.drawTicks( primaryTicks, nbSecondaryTicks );
-
+          var widthHeight = this.drawLinearTicksWrapper( widthPx, valrange );
+          
         } else {
           var widthHeight = this.drawLogTicks();
         }
@@ -645,6 +636,19 @@ define( [ 'jquery' ], function( $ ) {
         this._draw0Line( this.getPx( 0 ) );
 
       return widthHeight + ( label ? 20 : 0 );
+    },
+
+    drawLinearTicksWrapper: function( widthPx, valrange ) {
+
+      var nbTicks1 = this.getNbTicksPrimary();
+      var primaryTicks = this.getUnitPerTick( widthPx, nbTicks1, valrange );
+      var nbSecondaryTicks = this.secondaryTicks();
+      if ( nbSecondaryTicks ) {
+        var nbSecondaryTicks = nbSecondaryTicks; // Math.min(nbSecondaryTicks, primaryTicks[2] / 5);
+      }
+
+      // We need to get here the width of the ticks to display the axis properly, with the correct shift
+      return this.drawTicks( primaryTicks, nbSecondaryTicks );
     },
 
     setTickLabelRatio: function( tickRatio ) {
