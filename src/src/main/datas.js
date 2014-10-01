@@ -234,28 +234,22 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 
 				if (returnPromise) { // Returns a promise if asked
 
-                    var that = this;
-                    return new Promise(function (resolve) {
-                        that.get(true).then(function (val) {
-
-                            if(typeof val !== "object" || val === null)
-                                return resolve(val);
-                            if (typeof val[ prop ] !== "undefined") {
-                                if(!isSpecialObject(val[prop])) {
-                                    val[prop] = DataObject.check(val[prop], true);
-                                }
-                                if(val[prop] instanceof DataObject) {
-                                    return val[prop].fetch(true).then(resolve);
-                                } else {
-                                    return resolve(val[prop]);
-                                }
-                            } else if( constructor ) {
-                                val[ prop ] = new constructor();
-                                return resolve(val[prop]);
-                            }  else {
-                                return resolve();
+                    return this.get(true).then(function (val) {
+                        if(typeof val !== "object" || val === null)
+                            return val;
+                        if (typeof val[ prop ] !== "undefined") {
+                            if(!isSpecialObject(val[prop])) {
+                                val[prop] = DataObject.check(val[prop], true);
                             }
-                        });
+                            if(val[prop] instanceof DataObject) {
+                                return val[prop].fetch(true);
+                            } else {
+                                return val[prop];
+                            }
+                        } else if( constructor ) {
+                            val[ prop ] = new constructor();
+                            return val[prop];
+                        }
                     });
 
 				} else {
@@ -334,20 +328,16 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
             jpath = jpath.slice();
 
             var el = jpath.shift(); // Gets the current element and removes it from the array
-            var that = this;
 
-            return new Promise(function (resolve) {
-                that.get(el, true).then(function (subEl) {
-                    subEl = DataObject.check(subEl, true);
+            return this.get(el, true).then(function (subEl) {
+                subEl = DataObject.check(subEl, true);
 
-                    if (!subEl || (jpath.length === 0)) {
-                        resolve(subEl);
-                    } else {
-                        subEl.getChild(jpath).then(resolve);
-                    }
-                });
+                if (!subEl || (jpath.length === 0)) {
+                    return subEl;
+                } else {
+                    return subEl.getChild(jpath);
+                }
             });
-
         }
     };
 
@@ -371,8 +361,6 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 			var elementType = jpath.length == 0 ? constructor : ( typeof el == "number" ? DataArray : DataObject );
 
 			return this.get( el, true, elementType ).then(function( subEl ) {
-
-
 				// Perform check if anything...
 				self.get()[ el ] = DataObject.check( subEl );
 
@@ -660,7 +648,9 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
                         });
 
                         resolve(self);
-                    }, reject);
+                    }, function (err) {
+                        Debug.debug('Could not fetch '+self.url+' ('+err+')');
+                    });
                 });
             });
 		}
