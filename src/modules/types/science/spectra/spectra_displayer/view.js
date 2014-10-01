@@ -164,7 +164,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                                 y: 'max'
                             },
                             posX, // Reference point
-                            posY // Reference point)
+                            posY // Reference point
                         );
                     }
 
@@ -179,8 +179,14 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 self.graph = graph;
                 self.xAxis = graph.getXAxis();
                 self.yAxis = graph.getYAxis();
-                
-                //self.series['0000000000'] = [graph.newSerie('0000000000', {}).autoAxis().setData([])];
+
+                graph.shapeHandlers.mouseOver.push(function (shape) {
+                    API.highlight(shape.data, 1);
+                });
+
+                graph.shapeHandlers.mouseOut.push(function (shape) {
+                    API.highlight(shape.data, 0);
+                });
 
                 self.onResize();
                 self.resolveReady();
@@ -531,14 +537,9 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             },
 
             annotations: function (value) {
-
                 API.killHighlight(this.module.getId());
-                value = DataTraversing.getValueIfNeeded(value);
-                if (!value)
-                    return;
-
-                this.annotations = value;
-                this.resetAnnotations(true);
+                this.annotations = value.get();
+                this.resetAnnotations();
             },
 
             jcamp: function (moduleValue, varname) {
@@ -616,7 +617,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                             }, true, self.module.getId() + varname);
                         }
                         self.redraw();
-                        self.resetAnnotations(true);
+                        self.resetAnnotations();
                     });
                 });
             },
@@ -662,30 +663,19 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
         },
 
-
-        resetAnnotations: function (force) {
-
+        resetAnnotations: function () {
             if (!this.annotations) {
                 return;
             }
-
-            if (this.annotationsDone && !force)
-                return this.graph.redrawShapes();
-
-            this.annotationsDone = true;
-            // TODO handle annotations
-            // this.graph.removeAnnotations();
+            if (this.annotationShapes) {
+                for(i = 0; i < this.annotationShapes.length; i++) {
+                    this.annotationShapes[i].kill();
+                }
+            }
+            this.annotationShapes = [];
             var i = 0, l = this.annotations.length;
             for (; i < l; i++) {
                 this.doAnnotation(this.annotations[i]);
-            }
-        },
-
-        getFirstSerie: function () {
-            for (var i in this.series) {
-                if (this.series[i][0]) {
-                    return this.series[i][0];
-                }
             }
         },
 
@@ -695,42 +685,30 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             }
 
             var self = this,
-                shape = this.graph.newShape(annotation, {}, false);
+                shape = this.graph.newShape(annotation);
 
             shape.then(function (shape) {
-                shape.setSelectable(true);
-                shape.setSerie(self.getFirstSerie());
-
-                Debug.debug('annotation.onChange is disabled, need to be fixed');
-                /*annotation.onChange( annotation, function( value ) {
-
-                 shape.draw();
-                 shape.redraw();
-
-                 }, self.module.getId() );*/
-//TODO fix mouseover
-//                shape.onMouseOver(function (data) {
+                self.annotationShapes.push(shape);
+                shape.setSelectable(false);
+                shape.setMovable(false);
+//TODO annotation.onChange
+//                Debug.debug('annotation.onChange is disabled, need to be fixed');
+//                annotation.onChange( annotation, function( value ) {
 //
-//                    API.highlight(data, 1);
+//                 shape.draw();
+//                 shape.redraw();
 //
-//                });
+//                 }, self.module.getId() );
 //
-//                shape.onMouseOut(function (data) {
-//
-//                    API.highlight(data, 0);
-//
-//                });
-
-
                 API.listenHighlight(annotation, function (onOff) {
-
                     if (onOff) {
-                        shape.highlight();
+                        shape.highlight({
+                            fill:'black'
+                        });
                     } else {
                         shape.unHighlight();
                     }
                 }, false, self.module.getId());
-
 
                 shape.draw();
                 shape.redraw();
