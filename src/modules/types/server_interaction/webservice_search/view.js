@@ -6,7 +6,6 @@ define(['modules/default/defaultview'], function (Default) {
     }
 
     View.prototype = $.extend(true, {}, Default, {
-
         init: function () {
             var self = this,
                 cfg = $.proxy(this.module.getConfiguration, this.module),
@@ -16,6 +15,8 @@ define(['modules/default/defaultview'], function (Default) {
             this.search = $('<table class="Search" cellpadding="5" cellspacing="0"><col width="100"><col width="*"></table>').css('width', '90%');
 
             this.dom.append(this.search);
+            this.$feedback = $('<div id="ci-webservice-search-feedback"/>');
+            this.dom.append(this.$feedback);
             this.module.getDomContent().html(this.dom);
             this.oldVal = {};
             this._url = false;
@@ -189,6 +190,26 @@ define(['modules/default/defaultview'], function (Default) {
             doSearch: function () {
                 this.module.controller.doSearch();
             }
+        },
+
+        showError: function() {
+            this.$feedback.html('Error').css('color', 'red');
+            this._feedbackTimeout();
+        },
+
+        showSuccess: function(status) {
+            this.$feedback.html('Request successful with status ' + status).css('color', 'green');
+            this._feedbackTimeout();
+        },
+
+        _feedbackTimeout: function() {
+            var self = this;
+            if(this._ftimeout) {
+                clearTimeout(this._ftimeout);
+            }
+            this._ftimeout = setTimeout(function() {
+                self.$feedback.html('');
+            }, 5000);
         }
 
     });
