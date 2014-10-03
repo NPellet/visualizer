@@ -1,11 +1,15 @@
-define(["lib/chemistry/gc-generator"], function(GC) {
+'use strict';
 
-    return function(gc) {
+define(['lib/chemistry/gc-generator'], function (GC) {
 
-        var generator = new GC();
-        generator.appendPeaks(gc);
-        return new DataArray(generator.getSpectrum());
+    return {
+        filter: function gcFilter(gc, resolve) {
 
+            var generator = new GC();
+            generator.appendPeaks(gc);
+            resolve(generator.getSpectrum());
+
+        }
     };
 
 });
