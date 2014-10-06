@@ -93,7 +93,8 @@ module.exports = function(grunt) {
                         './jquery-cookie/jquery.cookie.js',
                         './chemcalc/lib.js',
                         './jsgraph/dist/jsgraph.js',
-                        './jqueryui-touch-punch/jquery.ui.touch-punch.min'
+                        './jqueryui-touch-punch/jquery.ui.touch-punch.min',
+                        './jcampconverter/src/jcampconverter'
                     ],
 
                     dest: './build/components/'
