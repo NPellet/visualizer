@@ -386,7 +386,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 
 	functions.jcamp.toscreen =function(def, valueChild, value, args, highlights, box) {
 
-		require(['lib/plot/plot', 'src/util/jcampconverter'], function(Graph, Converter) {
+		require(['lib/plot/plot', 'components/jcampconverter/src/jcampconverter'], function(Graph, Converter) {
 
 			var dom = $("<div />").css({width: 200, height: 200});
 			var graph = new Graph(dom.get(0), {
