@@ -548,7 +548,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     return;
                 }
 
-                moduleValue = moduleValue.get(); // Get the true jcamp value
+                moduleValue = String(moduleValue.get()); // Get the true jcamp value
 
                 var self = this,
                     serie,
