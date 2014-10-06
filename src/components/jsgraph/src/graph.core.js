@@ -601,8 +601,8 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
 
       var valSeries = this.getBoundaryAxisFromSeries( axis, xy, minmax );
       var valShapes = this.getBoundaryAxisFromShapes( axis, xy, minmax );
-
-       return Math[ minmax ]( valSeries, valShapes );
+      
+      return Math[ minmax ]( valSeries, valShapes );
 
     },
 
@@ -613,6 +613,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
       var
         x = xy == 'x',
         i = 0,
+         min = minmax == 'min',
         l = this.shapes.length,
         val = minmax == 'min' ? Infinity : - Infinity,
         func = x ? [ 'getMinX', 'getMaxX' ] : [ 'getMinY', 'getMaxY' ],

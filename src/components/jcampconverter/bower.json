@@ -1,0 +1,23 @@
+{
+  "name": "jcampconverter",
+  "version": "1.0.3",
+  "homepage": "https://github.com/cheminfo/jcampconverter",
+  "description": "convert jcamp data",
+  "main": "src/jcampconverter.js",
+  "moduleType": [
+    "amd",
+    "globals"
+  ],
+  "keywords": [
+    "jcamp",
+    "converter"
+  ],
+  "license": "MIT",
+  "ignore": [
+    ".idea",
+    "data",
+    "index.html",
+    "lib",
+    "test.js"
+  ]
+}

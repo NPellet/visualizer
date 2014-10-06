@@ -191,7 +191,7 @@ define( [
 				if(!this.gcmsInstance || !moduleValue)
 					return;
 
-				require(['src/util/jcampconverter'], function(tojcamp) {
+				require(['components/jcampconverter/src/jcampconverter'], function(tojcamp) {
 					var jcamp = tojcamp(moduleValue.get()).done( function(jcamp) {
 
 						if( jcamp.spectra ) {

@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.14-1
+ * jsGraphs JavaScript Graphing Library v1.9.14-2
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-10-01T11:54Z
+ * Date: 2014-10-05T09:01Z
  */
 
 (function( global, factory ) {
@@ -3393,6 +3393,38 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       return ( this.innerWidth = width );
     },
 
+    getBoundaryAxis: function( axis, xy, minmax ) {
+
+      var valSeries = this.getBoundaryAxisFromSeries( axis, xy, minmax );
+      var valShapes = this.getBoundaryAxisFromShapes( axis, xy, minmax );
+      
+      return Math[ minmax ]( valSeries, valShapes );
+
+    },
+
+
+
+    getBoundaryAxisFromShapes: function( axis, xy, minmax ) {
+
+      var
+        x = xy == 'x',
+        i = 0,
+         min = minmax == 'min',
+        l = this.shapes.length,
+        val = minmax == 'min' ? Infinity : - Infinity,
+        func = x ? [ 'getMinX', 'getMaxX' ] : [ 'getMinY', 'getMaxY' ],
+        func2use = func[ min ? 0 : 1 ],
+        funcGetAxis = x ? 'getXAxis' : 'getYAxis'
+
+      for( ; i < l ; i ++ ) {
+        if( shape[ funcGetAxis ]() == axis && shape[ func2use ] ) {
+          val = Math[ minmax ]( val, shape[ func2use ]( ) );  
+        }
+      }
+      return val;
+
+    },
+
     getBoundaryAxisFromSeries: function( axis, xy, minmax ) {
       var x = xy == 'x',
         min = minmax == 'min',
@@ -3491,6 +3523,10 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
      *	Does not perform autoscale
      *	But we need to keep track of the data min/max in case of an autoAxis.
      */
+    updateAxes: function() {
+      this._updateAxes();
+    },
+
     _updateAxes: function() {
 
       var axisvars = [ 'bottom', 'top', 'left', 'right' ],
@@ -3514,8 +3550,8 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
           }
 
           //console.log( axisvars[ j ], this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min'), this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
-          axis.setMinValueData( this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min' ) );
-          axis.setMaxValueData( this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max' ) );
+          axis.setMinValueData( this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], xy, 'min' ) );
+          axis.setMaxValueData( this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], xy, 'max' ) );
 
         }
       }
@@ -3524,10 +3560,8 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     // Repaints the axis and series
 
     autoscaleAxes: function() {
-
       this._applyToAxes( "setMinMaxToFitSeries", null, true, true );
       this.redraw();
-
     },
 
     refreshMinOrMax: function() {
@@ -4092,7 +4126,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
           }
         }
       }
-console.log(pos );
+
       return pos;
     },
 
@@ -7954,6 +7988,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 build['./series/graph.serie.contour'] = ( function( GraphSerie ) { 
 
+  
   // http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion
   /**
    * Converts an HSL color value to RGB. Conversion formula
@@ -8013,18 +8048,29 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
       var z = 0;
       var x, dx, arg = arg || "2D",
         type = type || 'float',
-        i, l = data.length,
+        i, l = data.length, j, k,
         arr, datas = [];
 
-      if ( !data instanceof Array ) {
-        return;
+
+      if ( ! ( data instanceof Array ) ) {
+        
+        if( typeof data == 'object' ) {
+          // Def v2
+          this.minX = data.minX;
+          this.minY = data.minY;
+          this.maxX = data.maxX;
+          this.maxY = data.maxY;
+
+          data = data.segments;
+          l = data.length;
+        }
       }
 
-      for ( var i = 0; i < l; i++ ) {
-        k = k = data[ i ].lines.length;
+      for (  i = 0; i < l; i++ ) {
+        k = data[ i ].lines.length;
         arr = this._addData( type, k );
 
-        for ( var j = 0; j < k; j += 2 ) {
+        for ( j = 0; j < k; j += 2 ) {
 
           arr[ j ] = data[ i ].lines[ j ];
           this._checkX( arr[ j ] );
@@ -8038,6 +8084,7 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
         } );
       }
       this.data = datas;
+      this.graph._updateAxes();
 
       return this;
     },
@@ -9689,11 +9736,6 @@ build['./shapes/graph.shape'] = ( function( ) {
         }
       }
 
-      /*if( pos.x || isNaN( pos.y ) ) {
-				pos.x = -10000;
-				pos.y = -10000;
-			}*/
-      
       if ( pos.x != "NaNpx" && !isNaN( pos.x ) && pos.x !== "NaN" ) {
 
         this.label[ labelIndex ].setAttribute( 'x', pos.x );
@@ -10280,6 +10322,22 @@ build['./shapes/graph.shape'] = ( function( ) {
       }
 
       return this.yAxis;
+    },
+
+    getMinX: function() {
+      return this.minX;
+    },
+
+    getMaxX: function() {
+      return this.maxX;
+    },
+
+    getMinY: function() {
+      return this.minY;
+    },
+
+    getMaxY: function() {
+      return this.maxY;
     }
   }
 
@@ -11274,6 +11332,16 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
       this.currentY = y;
       this.currentW = width;
       this.currentH = height;
+
+      this.valX = this.getXAxis().getVal( x );
+      this.valY = this.getYAxis().getVal( x );
+      this.valWidth = this.getXAxis().getRelVal( width );
+      this.valHeight = this.getYAxis().getRelVal( height );
+
+      this.minX = this.valX;
+      this.minY = this.valY;
+      this.maxX = this.valX + this.valWidth;
+      this.maxY = this.valY + this.valHeight;
 
       if ( width < 0 ) {
         x += width;
