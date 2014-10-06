@@ -381,7 +381,10 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         var variable = new DataObject({
             filename: meta.filename,
             mimetype: meta.mime,
-            content: obj
+            content: {
+                type: meta.cfg.type,
+                value: obj
+            }
         });
         if (!this.module.model.tmpVarsArray[name])
             this.module.model.tmpVarsArray[name] = new DataArray();
