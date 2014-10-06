@@ -1,5 +1,6 @@
 define( [ './graph.serie.line' ], function( GraphSerie ) {
 
+  "use strict";
   // http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion
   /**
    * Converts an HSL color value to RGB. Conversion formula
@@ -59,18 +60,29 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
       var z = 0;
       var x, dx, arg = arg || "2D",
         type = type || 'float',
-        i, l = data.length,
+        i, l = data.length, j, k,
         arr, datas = [];
 
-      if ( !data instanceof Array ) {
-        return;
+
+      if ( ! ( data instanceof Array ) ) {
+        
+        if( typeof data == 'object' ) {
+          // Def v2
+          this.minX = data.minX;
+          this.minY = data.minY;
+          this.maxX = data.maxX;
+          this.maxY = data.maxY;
+
+          data = data.segments;
+          l = data.length;
+        }
       }
 
-      for ( var i = 0; i < l; i++ ) {
-        k = k = data[ i ].lines.length;
+      for (  i = 0; i < l; i++ ) {
+        k = data[ i ].lines.length;
         arr = this._addData( type, k );
 
-        for ( var j = 0; j < k; j += 2 ) {
+        for ( j = 0; j < k; j += 2 ) {
 
           arr[ j ] = data[ i ].lines[ j ];
           this._checkX( arr[ j ] );
@@ -84,6 +96,7 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
         } );
       }
       this.data = datas;
+      this.graph._updateAxes();
 
       return this;
     },
