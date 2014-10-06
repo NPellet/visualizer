@@ -92,7 +92,8 @@ module.exports = function(grunt) {
                         './bowser/bowser.min.js',
                         './jquery-cookie/jquery.cookie.js',
                         './chemcalc/lib.js',
-                        './jsgraph/dist/jsgraph.js'
+                        './jsgraph/dist/jsgraph.js',
+                        './jqueryui-touch-punch/jquery.ui.touch-punch.min'
                     ],
 
                     dest: './build/components/'
