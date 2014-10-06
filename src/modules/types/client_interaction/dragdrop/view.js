@@ -8,6 +8,9 @@ define(['modules/default/defaultview'], function (Default) {
         init: function () {
 
             var self = this;
+            var $fileInput = $('<input/>').css('display', 'none').attr({
+                type: 'file'
+            });
             var textarea = $("<textarea>").css({
                 position: "absolute",
                 top: 0,
@@ -32,6 +35,21 @@ define(['modules/default/defaultview'], function (Default) {
             }).mouseout(function () {
                 textarea.blur();
             }).append(textarea);
+
+            //this.dom.append($fileInput);
+
+            this.dom.on('click', function(event) {
+                $fileInput.click();
+            });
+
+            $fileInput.on('change', function(e) {
+                self.module.controller.open(self.module.controller.emulDataTransfer(e));
+            });
+
+            $fileInput.on('load', function(e) {
+                debugger;
+            });
+
             this.module.getDomContent().html(this.dom);
         },
 
@@ -76,6 +94,7 @@ define(['modules/default/defaultview'], function (Default) {
             dom.addEventListener('drop', function (e) {
                 e.stopPropagation();
                 e.preventDefault();
+                console.log(e.dataTransfer);
                 self.module.controller.open(e.dataTransfer);
             });
 

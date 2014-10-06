@@ -49,7 +49,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                         label: {
                             type: 'text',
                             title: 'Text displayed by default',
-                            'default': 'Drop your file here'
+                            'default': 'Drop your file here or click to take a picture'
                         },
                         dragoverlabel: {
                             type: 'text',
@@ -216,23 +216,23 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         var cfgString = this.stringCfg;
 
         var i = 0, ii = data.items.length, item, meta, def;
-        for (; i < ii; i++) {
-            item = data.items[i];
-            def = $.Deferred();
-            defs.push(def);
-            if (item.kind === "file") {
-                item = item.getAsFile();
-                if (meta = this.checkFileMetadata(item, cfg)) {
-                    meta.def = def;
-                    this.read(item, meta);
-                } else {
-                    def.resolve();
-                }
-            } else {
-                if(meta = this.checkStringMetadata(item, cfgString)) {
-                    meta.def = def;
-                    this.treatString(item, meta);
-                } else {
+                    for (; i < ii; i++) {
+                        item = data.items[i];
+                        def = $.Deferred();
+                        defs.push(def);
+                        if (item.kind === "file") {
+                            item = item.getAsFile();
+                            if (meta = this.checkFileMetadata(item, cfg)) {
+                                meta.def = def;
+                                this.read(item, meta);
+                            } else {
+                                def.resolve();
+                            }
+                        } else {
+                            if(meta = this.checkStringMetadata(item, cfgString)) {
+                                meta.def = def;
+                                this.treatString(item, meta);
+                            } else {
                     def.resolve();
                 }
             }
@@ -390,6 +390,24 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
 
         meta.def.resolve();
     };
+
+    Controller.prototype.emulDataTransfer = function(e) {
+        var emul = {};
+        emul.files = e.target.files;
+        emul.items = [];
+        for(var i=0; i< e.target.files.length; i++) {
+            (function(i) {
+                emul.items.push({
+                    kind: 'file',
+                    getAsFile: function() {
+                        return e.target.files[i];
+                    }
+                })
+            })(i);
+
+        }
+        return emul;
+    }
 
     return Controller;
 });
