@@ -93,8 +93,8 @@ module.exports = function(grunt) {
                         './jquery-cookie/jquery.cookie.js',
                         './chemcalc/lib.js',
                         './jsgraph/dist/jsgraph.js',
-                        './jqueryui-touch-punch/jquery.ui.touch-punch.min',
-                        './jcampconverter/src/jcampconverter'
+                        './jqueryui-touch-punch/jquery.ui.touch-punch.min.js',
+                        './jcampconverter/src/jcampconverter.js'
                     ],
 
                     dest: './build/components/'
@@ -256,7 +256,7 @@ module.exports = function(grunt) {
                     "paths": {
                         "jquery": "empty:",
                         "require": "empty:",
-
+                        "lib/biojs-1.0": "empty:",
                         "ace": "empty:",
                         "d3": "empty:",
                         "fancytree": "empty:",
