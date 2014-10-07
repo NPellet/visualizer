@@ -58,6 +58,12 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                         hoverlabel: {
                             type: 'text',
                             title: 'Text displayed on hover'
+                        },
+                        showPhotoButton: {
+                            type: 'checkbox',
+                            title: 'Show \'Take Photo\'',
+                            options: {show: 'Yes'},
+                            default: []
                         }
                     }
                 },
@@ -160,7 +166,8 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         hoverlabel: ['groups', 'group', 0, 'hoverlabel', 0],
         vars: ['groups', 'vars', 0],
         string: ['groups', 'string', 0],
-        photo: ['groups', 'photo', 0]
+        photo: ['groups', 'photo', 0],
+        showPhotoButton: ['groups', 'group', 0, 'showPhotoButton', 0]
     };
 
     Controller.prototype.initImpl = function () {

@@ -37,18 +37,21 @@ define(['modules/default/defaultview'], function (Default) {
             }).append(textarea);
 
             //this.dom.append($fileInput);
-            var $takePicture = $('<input type="button" value="Take Picture"/>');
-            this.dom.append($takePicture);
 
-            $takePicture.click(function(e) {
-                e.stopPropagation();
-                confirm($('<video id="video"></video><button id="startbutton">Take photo</button><canvas id="canvas"></canvas>')).then(function(value) {
-                    console.log(value);
-                    if(value) {
-                        self.module.controller.openPhoto(value);
-                    }
+            if(this.module.getConfigurationCheckbox('showPhotoButton', 'show')) {
+                var $takePicture = $('<input type="button" value="Take Picture"/>');
+                this.dom.append($takePicture);
+                $takePicture.click(function(e) {
+                    e.stopPropagation();
+                    confirm($('<video id="video"></video><button id="startbutton">Take photo</button><canvas id="canvas"></canvas>')).then(function(value) {
+                        console.log(value);
+                        if(value) {
+                            self.module.controller.openPhoto(value);
+                        }
+                    });
                 });
-            });
+            }
+
 
             this.dom.on('click', function(event) {
                 $fileInput.click();
