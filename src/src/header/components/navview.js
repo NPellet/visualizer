@@ -446,8 +446,7 @@ define(['jquery', 'components/superagent/superagent', 'src/header/components/def
 });
 
 function fancyTreeDirStructure(list) {
-
-    var x =  list.map(function(el) {
+    return list.map(function(el) {
         return {
             title: el.name,
             folder: el.isDir,
@@ -460,7 +459,6 @@ function fancyTreeDirStructure(list) {
             }
         }
     });
-    return x;
 }
 
 function confirm(message) {

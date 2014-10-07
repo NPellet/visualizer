@@ -34,6 +34,10 @@
         {
             "file": "usr/filters/base64",
             "name": "Extract mime and value from base64 url"
+        },
+        {
+            "file": "usr/filters/decodeBarcode",
+            "name": "Decode an image of one or several barcode(s)"
         }
     ],
     "modules": {
