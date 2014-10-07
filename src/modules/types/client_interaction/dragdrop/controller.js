@@ -231,8 +231,8 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         if (!data.items.length)
             return;
 
-        this.module.model.tmpVars = new DataObject();
-        this.module.model.tmpVarsArray = new DataObject();
+        //this.module.model.tmpVars = new DataObject();
+        //this.module.model.tmpVarsArray = new DataObject();
 
         var that = this;
         var defs = [];
@@ -426,14 +426,17 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
     };
 
     Controller.prototype.tmpVar = function (obj, meta) {
+        if(typeof obj !== 'object') {
+            obj = {
+                type: meta.cfg.type,
+                value: obj
+            }
+        }
         var name = meta.cfg.variable;
         var variable = new DataObject({
             filename: meta.filename,
             mimetype: meta.mime,
-            content: {
-                type: meta.cfg.type,
-                value: obj
-            }
+            content: obj
         });
         if (!this.module.model.tmpVarsArray[name])
             this.module.model.tmpVarsArray[name] = new DataArray();
