@@ -32,10 +32,15 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
                 // Populate tmpVars with empty object so the user can set a variable out even if no file was dropped
                 var definedDrops = (this.module.getConfiguration("vars") || []).slice();
                 var definedString = this.module.getConfiguration("string");
+                var definedPhoto = this.module.getConfiguration('photo');
                 if (definedString) {
                     for(i = 0; i < definedString.length; i++) {
                         definedDrops.push(definedString[i]);
                     }
+                }
+
+                if(definedPhoto) {
+                    definedDrops.push(definedPhoto[0]);
                 }
 
                 for (i = 0; i < definedDrops.length; i++) {

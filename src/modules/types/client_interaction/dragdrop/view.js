@@ -37,6 +37,18 @@ define(['modules/default/defaultview'], function (Default) {
             }).append(textarea);
 
             //this.dom.append($fileInput);
+            var $takePicture = $('<input type="button" value="Take Picture"/>');
+            this.dom.append($takePicture);
+
+            $takePicture.click(function(e) {
+                e.stopPropagation();
+                confirm($('<video id="video"></video><button id="startbutton">Take photo</button><canvas id="canvas"></canvas>')).then(function(value) {
+                    console.log(value);
+                    if(value) {
+                        self.module.controller.openPhoto(value);
+                    }
+                });
+            });
 
             this.dom.on('click', function(event) {
                 $fileInput.click();
@@ -102,5 +114,93 @@ define(['modules/default/defaultview'], function (Default) {
         }
     });
 
+    function confirm(message) {
+        return new Promise(function(resolve){
+            var $dialog = $('#ci-dialog');
+            if($dialog.length === 0) {
+                $dialog = $('<div/>').css('id', 'ci-dialog');
+                $('body').append($dialog);
+            }
+            var imgData = null;
+            $dialog.html(message);
+            (function() {
+
+                var streaming = false,
+                    video        = document.querySelector('#video'),
+                    canvas       = document.querySelector('#canvas'),
+                    startbutton  = document.querySelector('#startbutton'),
+                    width = 320,
+                    height = 0;
+
+                navigator.getMedia = ( navigator.getUserMedia ||
+                    navigator.webkitGetUserMedia ||
+                    navigator.mozGetUserMedia ||
+                    navigator.msGetUserMedia);
+
+                navigator.getMedia(
+                    {
+                        video: true,
+                        audio: false
+                    },
+                    function(stream) {
+                        if (navigator.mozGetUserMedia) {
+                            video.mozSrcObject = stream;
+                        } else {
+                            var vendorURL = window.URL || window.webkitURL;
+                            video.src = vendorURL.createObjectURL(stream);
+                        }
+                        video.play();
+                    },
+                    function(err) {
+                        console.log("An error occured! " + err);
+                    }
+                );
+
+                video.addEventListener('canplay', function(ev){
+                    if (!streaming) {
+                        height = video.videoHeight / (video.videoWidth/width);
+                        video.setAttribute('width', width);
+                        video.setAttribute('height', height);
+                        canvas.setAttribute('width', width);
+                        canvas.setAttribute('height', height);
+                        streaming = true;
+                    }
+                }, false);
+
+                function takepicture() {
+                    canvas.width = width;
+                    canvas.height = height;
+                    canvas.getContext('2d').drawImage(video, 0, 0, width, height);
+                    imgData = canvas.toDataURL('image/png');
+                    //photo.setAttribute('src', data);
+                }
+
+                startbutton.addEventListener('click', function(ev){
+                    takepicture();
+                    ev.preventDefault();
+                }, false);
+
+            })();
+
+            $dialog.dialog({
+                modal: true,
+                buttons: {
+                    Cancel: function() {
+                        $(this).dialog('close');
+                    },
+                    Ok: function() {
+                        resolve(imgData);
+                        $(this).dialog('close');
+                    }
+                },
+                close: function() {
+                    return resolve(imgData);
+                },
+                width: 400
+            });
+        });
+    }
+
     return View;
 });
+

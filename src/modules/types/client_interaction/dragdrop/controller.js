@@ -133,6 +133,21 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                             "default": "str"
                         }
                     }
+                },
+
+                photo: {
+                    options: {
+                        type: 'table',
+                        multiple: false,
+                        title: 'For photos'
+                    },
+                    fields: {
+                        variable: {
+                            type: "text",
+                            title: "Temporary variable",
+                            "default": "photo"
+                        }
+                    }
                 }
             }
         };
@@ -144,7 +159,8 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         dragoverlabel: ['groups', 'group', 0, 'dragoverlabel', 0],
         hoverlabel: ['groups', 'group', 0, 'hoverlabel', 0],
         vars: ['groups', 'vars', 0],
-        string: ['groups', 'string', 0]
+        string: ['groups', 'string', 0],
+        photo: ['groups', 'photo', 0]
     };
 
     Controller.prototype.initImpl = function () {
@@ -186,6 +202,8 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                 }
             }
             this.stringCfg = enhancedStringCfg;
+
+            this.photoCfg = this.module.getConfiguration('photo');
 
         }
 
@@ -239,6 +257,19 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         }
 
         $.when.apply(window, defs).done(function () {
+            console.log(that.module.model.tmpVarsArray);
+            that.createDataFromEvent('onRead', 'data', that.module.model.tmpVars);
+            that.createDataFromEvent('onRead', 'dataarray', that.module.model.tmpVarsArray);
+        });
+    };
+
+    Controller.prototype.openPhoto = function(result) {
+        var that = this;
+        var meta = this.checkPhotoMetadata(this.photoCfg);
+        meta.def = $.Deferred();
+        this.fileRead(result, meta);
+
+        meta.def.done(function () {
             that.createDataFromEvent('onRead', 'data', that.module.model.tmpVars);
             that.createDataFromEvent('onRead', 'dataarray', that.module.model.tmpVarsArray);
         });
@@ -319,6 +350,17 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
             mime: lineCfg.mime || mime || "application/octet-stream",
             cfg: lineCfg
         };
+    };
+
+    Controller.prototype.checkPhotoMetadata = function(cfg) {
+        var lineCfg = cfg[0];
+
+        lineCfg.filetype = 'url';
+        lineCfg.type = 'png';
+        return {
+            mime: 'image/png',
+            cfg: lineCfg
+        }
     };
 
     Controller.prototype.fileRead = function (result, meta) {
@@ -410,7 +452,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
 
         }
         return emul;
-    }
+    };
 
     return Controller;
 });
