@@ -1,7 +1,7 @@
 {
     "lockView": false,
     "usrDir": "usr",
-    "debugLevel": -1,
+    "debugLevel": 5,
     "filters": [
         {
             "file": "usr/filters/doitourl",

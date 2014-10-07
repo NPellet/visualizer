@@ -28,8 +28,6 @@ module.exports = function(grunt) {
 
         uglify: {
             build: {
-
-
                 files: [
                     {
                         expand: true,     // Enable dynamic expansion.
@@ -37,13 +35,17 @@ module.exports = function(grunt) {
                         src: [
                             'init.js',
                             'modules/**/*.js',
-                            'lib/**/*.js',
-                            '!lib/jsmol/**/*.js',
-                            '!lib/jsme/jsme/deferredjs/**/*.js'
+                            'src/**/*.js',
+                            '!lib/**/*',
+                            'lib/forms/**/*.js',
+                            'lib/twigjs/*.js',
+                            'lib/webtoolkit/*.js',
+                            'lib/chemistry/*.js',
+                            'lib/loadingplot/*.js'
                         ], // Actual pattern(s) to match.
                         dest: './build2/',   // Destination path prefix.
                         //overwrite: true,
-                        ext: '.js',   // Dest filepaths will have this extension.
+                        ext: '.js'   // Dest filepaths will have this extension.
                     }
                 ]
             }
@@ -116,7 +118,7 @@ module.exports = function(grunt) {
                             './Aristo-jQuery-UI-Theme/css/Aristo/*.css'
                         ],
                         dest: './build/components/jqueryui/'
-                    },
+                    }
                 ]
             },
 
@@ -253,22 +255,6 @@ module.exports = function(grunt) {
                     "optimizeCss": "none",
                     "optimize": "none",
                     "removeCombined": true,
-                    "paths": {
-                        "jquery": "empty:",
-                        "require": "empty:",
-                        "lib/biojs-1.0": "empty:",
-                        "ace": "empty:",
-                        "d3": "empty:",
-                        "fancytree": "empty:",
-                        "jqgrid": "empty:",
-                        "jqueryui": "empty:",
-                        "threejs": "empty:",
-                        "ckeditor": "empty:",
-                        "forms": "empty:",
-                        "plot": "empty:",
-                        'ChemDoodle': 'empty:'
-
-                    },
                     "modules": [
                         {
                             name: 'init'
@@ -329,14 +315,15 @@ module.exports = function(grunt) {
                         }
                     }
                     var expressions;
-                    expressions = [new RegExp(/\.jpg$/), new RegExp(/\.png$/), new RegExp(/\.jpeg$/), new RegExp(/\.gif$/)];
+
+                    expressions = [/\.jpg$/, /\.png$/, /\.jpeg$/, /\.gif$/];
                     if(_.any(expressions, function(exp){
                         return fileStats.name.match(exp);
                     })) {
                         allimages.push(root+'/'+fileStats.name);
                     }
 
-                    var expressions = [new RegExp(/\.css$/), new RegExp(/\.js$/), new RegExp(/\.html$/)];
+                    expressions = [/\.css$/, /\.js$/, /\.html$/];
                     if(_.any(expressions, function(exp){
                         return fileStats.name.match(exp);
                     })) {
@@ -344,16 +331,15 @@ module.exports = function(grunt) {
                         var content = fs.readFileSync(root+'/'+fileStats.name).toString();
 
                         // Search for icons specified using the forms library
-                        if(fileStats.name.match(new RegExp(/\.js$/))) {
-                            var iconreg = RegExp(/icon:\s*['"]([a-zA-Z_\-]+)['"]/g);
+                        if(fileStats.name.match(/\.js$/)) {
+                            var iconreg = /icon:\s*['"]([a-zA-Z_\-]+)['"]/g;
                             findFormIcon(iconreg);
-                            iconreg = RegExp(/setIcon\(['"]([a-zA-Z_\-]+)['"]/g);
+                            iconreg = /setIcon\(['"]([a-zA-Z_\-]+)['"]/g;
                             findFormIcon(iconreg);
                         }
 
                         // Search for images specified in .js, .css and .html files
-                        var expression = /[\/\.a-zA-Z_\- 0-9]+\.(png|jpeg|jpg|gif)/gi;
-                        var reg = RegExp(expression);
+                        var reg = /[/\.a-zA-Z_\- 0-9]+\.(png|jpeg|jpg|gif)/gi;
                         var res = content.match(reg);
                         if(res) {
                             _.keys(res).forEach(function(i){

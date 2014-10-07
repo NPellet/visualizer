@@ -72,7 +72,7 @@ define([
             return Object.keys(allVariables).sort();
         }
 
-    function handleChange (event) {
+    function handleChange (event, moduleId) {
         var eventJpath = event.jpath,
             el = eventJpath.length,
             variable, varJpath, i, j, l;
@@ -86,7 +86,7 @@ define([
                         continue loop1;
                     }
                 }
-                variable.triggerChange();
+                variable.triggerChange(null, moduleId);
             }
         }
     }
@@ -168,17 +168,20 @@ define([
         },
 
         listen: function( module, callback ) {
-
+            var id = module.getId();
             // If the module already listens for this variable, we should definitely not listen for it again.
-            if( this.listenedBy[ module.getId() ] ) {
+            if( this.listenedBy[ id ] ) {
                 Debug.warn("This module already listens the variable " + this.getName() + ". No new listener is added");
             }
 
-            this.listenedBy[ module.getId() ] = true;
-            this.listeners.push( callback );
+            this.listenedBy[ id ] = true;
+            this.listeners.push( {
+                callback: callback,
+                id: id
+            } );
         },
 
-        triggerChange: function (callback) {
+        triggerChange: function (callback, moduleId) {
 
             var self = this;
 
@@ -238,8 +241,9 @@ define([
             });
 
             for (var i = 0, l = self.listeners.length; i < l; i++) {
-
-                self.listeners[ i ].call(self, self);
+                if (self.listeners[i].id !== moduleId) {
+                    self.listeners[ i ].callback.call(self, self);
+                }
             }
         },
 

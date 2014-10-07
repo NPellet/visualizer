@@ -1,4 +1,7 @@
-define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, Traversing) {
+'use strict';
+
+define(['jquery', 'src/util/api'], function($, API) {
+
 	return {
 
 		setModule: function(module) { this.module = module; },
@@ -32,28 +35,25 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 
 				if( actionsOut[i].rel === rel && ((event && event === actionsOut[i].event) || !event)) {
 
-					actionname = actionsOut[ i ].name,
+					actionname = actionsOut[ i ].name;
 					jpath = actionsOut[ i ].jpath;
 				
 					if( value && jpath && value.getChild ) {
+                        (function(actionname){
+                            value.getChild(jpath).done( function( returned ) {
 
-						value.getChild(jpath).done( function( returned ) {
+                                API.executeAction( actionname, returned );
+                                API.doAction( actionname, returned );
 
-							API.executeAction( actionname, returned );
-							API.doAction( actionname, returned );
-
-						});
-
+                            });
+                        })(actionname);
 					} else {
-
 						API.executeAction( actionname, value );
 						API.doAction( actionname, value );
-
 					}
 				}
 			}
 		},
-
 
 		setVarFromEvent: function( event, rel, relSource, jpath, callback ) {
 
@@ -84,7 +84,6 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 			}
 		},
 
-
 		createDataFromEvent: function( event, rel, data, callback ) {
 
 			var varsOut, i = 0, first = true;
@@ -109,7 +108,7 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 
 		allVariablesFor: function( event, rel, callback ) {
 
-			var varsOut, i = 0, first;
+			var varsOut, i = 0;
 
 			if( ! ( varsOut = this.module.vars_out() ) ) {
 				return;
@@ -124,16 +123,22 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 			}
 		},
 
-
 		"export": function() {},
+
         print: function() {
 			return this.module.getDomContent()[0].innerHTML;
 		},
+
 		configurationStructure:  function() {},
+
 		configFunctions: {},
+
 		configAliases: {},
+
 		events: {},
+
 		variablesIn: [],
+
         actionsIn: {},
 
 		resolveReady: function() {
@@ -141,4 +146,5 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 		}
 
 	}
+
 });
