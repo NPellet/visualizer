@@ -114,23 +114,27 @@ define(['modules/default/defaultview'], function (Default) {
         }
     });
 
+
+    var stream;
+    var $dialog;
     function confirm(message) {
         return new Promise(function(resolve){
-            var $dialog = $('#ci-dialog');
-            if($dialog.length === 0) {
-                $dialog = $('<div/>').css('id', 'ci-dialog');
+            if(!$dialog) {
+                $dialog = $('<div/>');
                 $('body').append($dialog);
             }
+
             var imgData = null;
             $dialog.html(message);
-            (function() {
 
-                var streaming = false,
-                    video        = document.querySelector('#video'),
-                    canvas       = document.querySelector('#canvas'),
-                    startbutton  = document.querySelector('#startbutton'),
-                    width = 320,
-                    height = 0;
+
+            var streaming = false,
+                video        = document.querySelector('#video'),
+                canvas       = document.querySelector('#canvas'),
+                startbutton  = document.querySelector('#startbutton'),
+                width = 320,
+                height = 0;
+
 
                 navigator.getMedia = ( navigator.getUserMedia ||
                     navigator.webkitGetUserMedia ||
@@ -141,46 +145,52 @@ define(['modules/default/defaultview'], function (Default) {
                     {
                         video: true,
                         audio: false
-                    },
-                    function(stream) {
-                        if (navigator.mozGetUserMedia) {
-                            video.mozSrcObject = stream;
-                        } else {
-                            var vendorURL = window.URL || window.webkitURL;
-                            video.src = vendorURL.createObjectURL(stream);
-                        }
-                        video.play();
-                    },
+                    }, treatStream,
                     function(err) {
                         console.log("An error occured! " + err);
                     }
                 );
 
-                video.addEventListener('canplay', function(ev){
-                    if (!streaming) {
-                        height = video.videoHeight / (video.videoWidth/width);
-                        video.setAttribute('width', width);
-                        video.setAttribute('height', height);
-                        canvas.setAttribute('width', width);
-                        canvas.setAttribute('height', height);
-                        streaming = true;
-                    }
-                }, false);
 
-                function takepicture() {
-                    canvas.width = width;
-                    canvas.height = height;
-                    canvas.getContext('2d').drawImage(video, 0, 0, width, height);
-                    imgData = canvas.toDataURL('image/png');
-                    //photo.setAttribute('src', data);
+
+            video.addEventListener('canplay', function(ev){
+                if (!streaming) {
+                    height = video.videoHeight / (video.videoWidth/width);
+                    video.setAttribute('width', width);
+                    video.setAttribute('height', height);
+                    canvas.setAttribute('width', width);
+                    canvas.setAttribute('height', height);
+                    console.log('streaming to true');
+                    streaming = true;
                 }
+            }, false);
 
-                startbutton.addEventListener('click', function(ev){
-                    takepicture();
-                    ev.preventDefault();
-                }, false);
+            function treatStream(s) {
+                console.log('stream started');
+                stream = s;
+                if (navigator.mozGetUserMedia) {
+                    video.mozSrcObject = stream;
+                } else {
+                    var vendorURL = window.URL || window.webkitURL;
+                    video.src = vendorURL.createObjectURL(stream);
+                }
+                video.play();
+            }
 
-            })();
+
+            function takepicture() {
+                canvas.width = width;
+                canvas.height = height;
+                canvas.getContext('2d').drawImage(video, 0, 0, width, height);
+                imgData = canvas.toDataURL('image/png');
+                //photo.setAttribute('src', data);
+            }
+
+            startbutton.addEventListener('click', function(ev){
+                takepicture();
+                ev.preventDefault();
+            }, false);
+
 
             $dialog.dialog({
                 modal: true,
@@ -194,6 +204,8 @@ define(['modules/default/defaultview'], function (Default) {
                     }
                 },
                 close: function() {
+                    console.log('stop stream');
+                    stream.stop();
                     return resolve(imgData);
                 },
                 width: 400
