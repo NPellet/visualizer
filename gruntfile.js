@@ -96,7 +96,8 @@ module.exports = function(grunt) {
                         './chemcalc/lib.js',
                         './jsgraph/dist/jsgraph.js',
                         './jqueryui-touch-punch/jquery.ui.touch-punch.min.js',
-                        './jcampconverter/src/jcampconverter.js'
+                        './jcampconverter/src/jcampconverter.js',
+                        './jsbarcode/jsBarcode.min.js'
                     ],
 
                     dest: './build/components/'

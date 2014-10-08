@@ -264,7 +264,6 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         }
 
         $.when.apply(window, defs).done(function () {
-            console.log(that.module.model.tmpVarsArray);
             that.createDataFromEvent('onRead', 'data', that.module.model.tmpVars);
             that.createDataFromEvent('onRead', 'dataarray', that.module.model.tmpVarsArray);
         });

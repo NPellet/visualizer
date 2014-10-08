@@ -37,7 +37,11 @@
         },
         {
             "file": "usr/filters/decodeBarcode",
-            "name": "Decode an image of one or several barcode(s)"
+            "name": "Decode Barcode(s)"
+        },
+        {
+            "file": "usr/filters/encodeBarcode",
+            "name": "Encode to Barcode"
         }
     ],
     "modules": {
