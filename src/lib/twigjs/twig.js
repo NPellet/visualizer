@@ -58,7 +58,7 @@ define(['components/twig.js/twig.min', 'src/util/typerenderer', 'src/util/util']
     Twig.extendFunction('toJSON', function (value, spaces) {
 
         spaces = spaces || 2;
-        return '<pre>'+JSON.stringify(value, null, spaces)+'</pre>';
+        return '<pre><code>'+JSON.stringify(value, null, spaces)+'</code></pre>';
 
     });
 	
