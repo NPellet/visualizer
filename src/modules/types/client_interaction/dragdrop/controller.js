@@ -49,7 +49,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                         label: {
                             type: 'text',
                             title: 'Text displayed by default',
-                            'default': 'Drop your file here or click to take a picture'
+                            'default': 'Drop your file here'
                         },
                         dragoverlabel: {
                             type: 'text',
@@ -59,11 +59,16 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                             type: 'text',
                             title: 'Text displayed on hover'
                         },
-                        showPhotoButton: {
-                            type: 'checkbox',
-                            title: 'Show \'Take Photo\'',
-                            options: {show: 'Yes'},
-                            default: []
+                        capture: {
+                            type: 'combo',
+                            title: 'Capture',
+                            options: [
+                                {title: "none", key: "none"},
+                                {title: 'camera', key: 'camera'},
+                                {title: 'camcorder', key: 'camcorder'},
+                                {title: 'microphone', key: 'microphone'}
+                            ],
+                            default: "none"
                         }
                     }
                 },
@@ -167,7 +172,8 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         vars: ['groups', 'vars', 0],
         string: ['groups', 'string', 0],
         photo: ['groups', 'photo', 0],
-        showPhotoButton: ['groups', 'group', 0, 'showPhotoButton', 0]
+        showPhotoButton: ['groups', 'group', 0, 'showPhotoButton', 0],
+        capture: ['groups', 'group', 0, 'capture', 0]
     };
 
     Controller.prototype.initImpl = function () {

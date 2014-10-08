@@ -1,5 +1,10 @@
-define(['modules/default/defaultview'], function (Default) {
-
+define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
+    bowser.mobileos = bowser.ios || bowser.android || bowser.blackberry || bowser.firefoxos || bowser.webos || false;
+    var hasGetUserMedia = !!(navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+    console.log(bowser);
+    console.log('get user media', hasGetUserMedia);
+    console.log('mobile', bowser.mobileos);
+    var useGetUserMedia = !bowser.mobileos && hasGetUserMedia;
     function View() {
     }
 
@@ -11,6 +16,23 @@ define(['modules/default/defaultview'], function (Default) {
             var $fileInput = $('<input/>').css('display', 'none').attr({
                 type: 'file'
             });
+            var capture = this.module.getConfiguration('capture');
+            if(capture && capture !== 'none') {
+                $fileInput.attr('capture', capture);
+                switch(capture) {
+                    case 'camera':
+                        $fileInput.attr('accept', 'image/*');
+                        break;
+                    case 'camcorder':
+                        $fileInput.attr('accept', 'video/*');
+                        break;
+                    case 'microphone':
+                        $fileInput.attr('accept', 'audio/*');
+                        break;
+                }
+                console.log($fileInput[0]);
+            }
+
             var textarea = $("<textarea>").css({
                 position: "absolute",
                 top: 0,
@@ -36,25 +58,18 @@ define(['modules/default/defaultview'], function (Default) {
                 textarea.blur();
             }).append(textarea);
 
-            //this.dom.append($fileInput);
 
-            if(this.module.getConfigurationCheckbox('showPhotoButton', 'show')) {
-                var $takePicture = $('<input type="button" value="Take Picture"/>');
-                this.dom.append($takePicture);
-                $takePicture.click(function(e) {
-                    e.stopPropagation();
+            this.dom.on('click', function(event) {
+                event.stopPropagation();
+                if(!useGetUserMedia) $fileInput.click();
+                else {
                     confirm($('<video id="video"></video><button id="startbutton">Take photo</button><canvas id="canvas"></canvas>')).then(function(value) {
                         console.log(value);
                         if(value) {
                             self.module.controller.openPhoto(value);
                         }
                     });
-                });
-            }
-
-
-            this.dom.on('click', function(event) {
-                $fileInput.click();
+                }
             });
 
             $fileInput.on('change', function(e) {
