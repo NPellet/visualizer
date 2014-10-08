@@ -140,9 +140,6 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
             if(!fsize) {
                 return;
             }
-
-            console.log(p.height());
-            console.log(f.height());
             while(p.height() - 40 < f.height() && fsize > 2) {
                 f.css('font-size', --fsize);
             }
