@@ -51,7 +51,7 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                 drag: this.module.getConfiguration('dragoverlabel') || defaultMessage,
                 hover: this.module.getConfiguration('hoverlabel') || defaultMessage
             };
-            this.messageP = $('<p>').html(this.messages.default);
+            this.messageP = $('<div>').css('display', 'inline-block').html(this.messages.default);
             this.dom = $('<div />', { class: 'dragdropzone' }).html(this.messageP).on("click mousemove", function () {
                 textarea.focus();
             }).mouseout(function () {
@@ -129,6 +129,24 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
             });
 
             this.resolveReady();
+        },
+        onResize: function() {
+            console.log('resize');
+
+            var f = this.dom.first('div');
+            var p = this.dom.parent().parent();
+            f.css('font-size', 26);
+            var fsize = 26;
+            if(!fsize) {
+                return;
+            }
+
+            console.log(p.height());
+            console.log(f.height());
+            while(p.height() - 40 < f.height() && fsize > 2) {
+                f.css('font-size', --fsize);
+            }
+
         }
     });
 
