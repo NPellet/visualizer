@@ -12,7 +12,7 @@ requirejs.config({
 		forms: "lib/forms",
 		plot: "lib/plot/plot",
 		ChemDoodle: "lib/chemdoodle/ChemDoodleWeb-unpacked",
-		pouchdb: "components/pouchdb/dist/pouchdb-nightly.min",
+		pouchdb: "components/pouchdb/dist/pouchdb.min",
 		uri: "components/uri.js/src",
 		underscore: "components/underscore/underscore",
         lodash: "components/lodash/dist/lodash.min",

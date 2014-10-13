@@ -80,7 +80,7 @@ module.exports = function(grunt) {
               './papa-parse/jquery.parse.min.js',
               ['./font-awesome/css/font-awesome.min.css', './font-awesome/fonts/*'],
               './colors/css/colors.min.css',
-              './pouchdb/dist/*',
+              './pouchdb/dist/pouchdb.min.js',
               './uri.js/src/*.js',
               './twig.js/twig.min.js',
               ['./setImmediate/setimmediate.js','./promises/promise.js','./bluebird/js/browser/bluebird.js'], // Promises polyfill
