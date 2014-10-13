@@ -7,21 +7,20 @@
     "sniff",
     "detection"
   ],
-  "version": "0.7.1",
+  "version": "0.7.2",
   "homepage": "https://github.com/ded/bowser",
   "author": "Dustin Diaz <dustin@dustindiaz.com> (http://dustindiaz.com)",
   "main": "bowser.js",
   "scripts": [
     "bowser.js"
   ],
-  "_release": "0.7.1",
+  "_release": "0.7.2",
   "_resolution": {
     "type": "version",
-    "tag": "v0.7.1",
-    "commit": "124e41c39a587af703e2cbdb62d812667350de60"
+    "tag": "v0.7.2",
+    "commit": "59279c19c41e8bf236b92eccc07771c06aa095f4"
   },
   "_source": "git://github.com/ded/bowser.git",
   "_target": "~0.7.1",
-  "_originalSource": "bowser",
-  "_direct": true
+  "_originalSource": "bowser"
 }
