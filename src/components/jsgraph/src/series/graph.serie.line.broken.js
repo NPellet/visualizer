@@ -1,4 +1,4 @@
-define( [ './graph.serie' ], function( GraphLine ) {
+define( [ './graph.serie.line' ], function( GraphLine ) {
 
   "use strict";
 
@@ -9,6 +9,9 @@ define( [ './graph.serie' ], function( GraphLine ) {
 
       var data = this.data;
       var xData = this.xData;
+
+      var lastIsDisplayed;
+      var lastX, xpxLast, lastY, ypxLast, ratioX, ratio, ratioY;
 
       if ( this.degradationPx ) {
         data = getDegradedData( this );
@@ -75,114 +78,128 @@ define( [ './graph.serie' ], function( GraphLine ) {
         var lastYPeakPicking;
       }
 
-      if ( this.mode == 'x_equally_separated' ) {
-
-        for ( ; i < l; i++ ) {
-
-          currentLine = "M ";
-          j = 0, k = 0, m = data[ i ].length;
-
-          for ( ; j < m; j += 1 ) {
-
-            if ( this.markersShown() ) {
-
-              this.getMarkerCurrentFamily( k );
-            }
-
-            if ( ! this.isFlipped() ) {
-
-              xpx = this.getX( xData[ i ].x + j * xData[ i ].dx );
-              ypx = this.getY( data[ i ][ j ] );
-            } else {
-              ypx = this.getX( xData[ i ].x + j * xData[ i ].dx );
-              xpx = this.getY( data[ i ][ j ] );
-            }
+      for ( ; i < l; i++ ) {
 
 
-            currentLine = this._addPoint( currentLine, xpx, ypx, k );
-            k++;
+        currentLine = "M ";
+        j = 0, k = 0, m = data[ i ].length;
 
+        for ( ; j < m; j += 2 ) {
+          
+          xpx2 = this.getX( data[ i ][ j + incrXFlip ] );
+          ypx2 = this.getY( data[ i ][ j + incrYFlip ] );
+
+          if ( xpx2 == xpx && ypx2 == ypx ) {
+            continue;
           }
 
-          this._createLine( currentLine, i, k );
+          if( isNaN( xpx2 ) || isNaN( ypx2 ) ) {
 
-        }
+            if( lastIsDisplayed ) {
 
-      } else {
-
-        for ( ; i < l; i++ ) {
-
-          var toBreak = false;
-
-          currentLine = "M ";
-          j = 0, k = 0, m = data[ i ].length;
-
-          for ( ; j < m; j += 2 ) {
-
-            if ( this.markersShown() ) {
-
-              this.getMarkerCurrentFamily( k );
-
-            }
-
-            xpx2 = this.getX( data[ i ][ j + incrXFlip ] );
-            ypx2 = this.getY( data[ i ][ j + incrYFlip ] );
-
-            if ( xpx2 == xpx && ypx2 == ypx ) {
-              continue;
-            }
-
-
-            if( isNaN( xpx2 ) || isNaN( ypx2 ) ) {
-              
-              if( lastX && isNaN( xpx2 ) && this.getXAxis().isBroken() ) {
-
-                var coord = this.getXAxis().getValueInRangeOf( );
+              ratioX = ratioY = undefined;
+              if( lastX && isNaN( xpx2 ) && this.getXAxis()._broken ) {
+                ratioX = this.getXAxis().getRatioInRange( lastX, data[ i ][ j + incrXFlip ] );
+                ratio = ratioX;
               }
+
+              if( lastY && isNaN( ypx2 ) && this.getYAxis()._broken ) {
+                ratioY = this.getYAxis().getRatioInRange( lastY, data[ i ][ j + incrYFlip ] );
+                ratio = ratioY;
+              }
+
+              if( ratioX && ratioY ) {
+                ratio = Math.min( ratioX, ratioY );
+              }
+
+              var xpx = this.getX( lastX ) + ( this.getXAxis().getInRange( lastX, data[ i ][ j + incrXFlip ] ) - this.getX( lastX ) ) * ratio
+              var ypx = this.getX( lastY ) + ( this.getYAxis().getInRange( lastY, data[ i ][ j + incrYFlip ] ) - this.getY( lastY ) ) * ratio
+
+              currentLine = this._addPoint( currentLine, xpx, ypx, k );
+              this._createLine( currentLine, k );
+              k = 0;
+              currentLine = "M ";
+
+              lastIsDisplayed = false;
+
+            } else {
+
+              lastX = data[ i ][ j + incrXFlip ];
+              lastY = data[ i ][ j + incrYFlip ];
+              continue;
+
             }
-
-
-            currentLine = this._addPoint( currentLine, xpx2, ypx2, k );
-            k++;
-            xpx = xpx2;
-            ypx = ypx2;
-
-            lastX = data[ i ][ j + incrXFlip ];
-            lastY = data[ i ][ j + incrYFlip ];
-
           }
 
-          this._createLine( currentLine, i, k );
+          // Display the last one
+          if( ! lastIsDisplayed ) {
 
-          if ( toBreak ) {
-            break;
+              xpxLast = this.getX( lastX );
+              ypxLast = this.getY( lastY );
+
+              ratioX = ratioY = undefined;
+
+              if( isNaN( xpxLast ) && this.getXAxis()._broken ) {
+                ratioX = this.getXAxis().getRatioInRange( data[ i ][ j + incrXFlip ], lastX );
+                ratio = ratioX;
+              }
+
+              if( isNaN( ypxLast ) && this.getYAxis()._broken ) {
+                ratioY = this.getYAxis().getRatioInRange( data[ i ][ j + incrXFlip ], lastY );
+                ratio = ratioY;
+              }
+
+              if( ratioX && ratioY ) {
+                ratio = Math.min( ratioX, ratioY );
+              }
+
+              var xpx = this.getX( lastX ) + ( this.getXAxis().getInRange( data[ i ][ j + incrXFlip ], lastX ) - this.getX( lastX ) ) * ratio
+              var ypx = this.getX( lastY ) + ( this.getYAxis().getInRange( data[ i ][ j + incrXFlip ], lastY ) - this.getY( lastY ) ) * ratio
+
+              currentLine = this._addPoint( currentLine, xpx, ypx, k );
+
+
+
           }
+         
+          lastIsDisplayed = true;
+
+          currentLine = this._addPoint( currentLine, xpx2, ypx2, k );
+          k++;
+          xpx = xpx2;
+          ypx = ypx2;
+
+          lastX = data[ i ][ j + incrXFlip ];
+          lastY = data[ i ][ j + incrYFlip ];
         }
+
+        this._createLine( currentLine, k );
+
       }
-
-      if ( this.options.autoPeakPicking ) {
-        makePeakPicking( this, allY );
-      }
-
-      i++;
-
-      for ( ; i < this.lines.length; i++ ) {
-        this.groupLines.removeChild( this.lines[ i ] );
-        this.lines.splice( i, 1 );
-      }
-
-      insertMarkers( this );
-
-      this.groupMain.insertBefore( this.groupLines, next );
-      var label;
-      for ( var i = 0, l = this.labels.length; i < l; i++ ) {
-        this.repositionLabel( this.labels[ i ] );
-      }
+    
+    if ( this.options.autoPeakPicking ) {
+      makePeakPicking( this, allY );
     }
 
+    i++;
 
-    } );
+    for ( ; i < this.lines.length; i++ ) {
+      this.groupLines.removeChild( this.lines[ i ] );
+      this.lines.splice( i, 1 );
+    }
+
+    insertMarkers( this );
+
+    this.groupMain.insertBefore( this.groupLines, next );
+    var label;
+    for ( var i = 0, l = this.labels.length; i < l; i++ ) {
+      this.repositionLabel( this.labels[ i ] );
+    }
   }
+
+
+  } );
+
 
   return GraphSerie;
 } );

@@ -329,6 +329,7 @@ define( [], function() {
     },
 
     setXAxis: function( axis ) {
+      
       if ( typeof axis == "number" )
         this.xaxis = this.isFlipped() ? this.graph.getYAxis( axis ) : this.graph.getXAxis( axis );
       else

@@ -524,9 +524,11 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
     },
 
     setBottomAxisAsTime: function( num, options ) {
-      options = options || {};
+      throw "Method deprecated. Create your axis with { type: 'time' } as options instead";
+      /*options = options || {};
       options.type = 'time';
-      return _getAxis( this, num, options, 'bottom' );
+      return _getAxis( this, num, options, 'bottom' );*/
+
     },
 
     setXAxis: function( axis, num ) {
@@ -600,9 +602,9 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
     getBoundaryAxis: function( axis, xy, minmax ) {
 
       var valSeries = this.getBoundaryAxisFromSeries( axis, xy, minmax );
-      var valShapes = this.getBoundaryAxisFromShapes( axis, xy, minmax );
-      
-      return Math[ minmax ]( valSeries, valShapes );
+    //  var valShapes = this.getBoundaryAxisFromShapes( axis, xy, minmax );
+      return valSeries;
+      //return Math[ minmax ]( valSeries, valShapes );
 
     },
 

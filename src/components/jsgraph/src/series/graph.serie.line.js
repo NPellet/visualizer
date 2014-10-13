@@ -406,6 +406,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
       if ( this.degradationPx ) {
         data = getDegradedData( this );
+        console.log( data );
         xData = data[ 1 ];
         data = data[ 0 ];
       }
@@ -1640,7 +1641,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       incrYFlip = 1,
       degradeFirstX, degradeFirstXPx,
       optimizeMonotoneous = graph.isXMonotoneous(),
-      optimizeMaxPxX = graph.getXAxis().getMaxPx(),
+      optimizeMaxPxX = graph.getXAxis().getMathMaxPx(),
       optimizeBreak, buffer;
 
     if ( graph.isFlipped() ) {
@@ -1754,7 +1755,6 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       degradationMax = -Infinity;
 
       var data = [];
-
       for ( ; j < m; j += 2 ) {
 
         xpx2 = graph.getX( graph.data[ i ][ j + incrXFlip ] );
@@ -1791,7 +1791,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
           degradeFirstXPx = xpx2;
         }
 
-        if ( xpx2 - degradeFirstXPx > graph.degradationPx && j < m ) {
+        if ( Math.abs( xpx2 - degradeFirstXPx ) > graph.degradationPx && j < m ) {
 
           data.push(
             ( degradeFirstX + graph.data[ i ][ j + incrXFlip ] ) / 2,

@@ -771,6 +771,7 @@ define( [ 'jquery' ], function( $ ) {
 
       //console.log( value, this.getActualMin(), this.getMaxPx(), this.getMinPx(), this._getActualInterval() );
       if ( !this.options.logScale ) {
+        
         return ( value - this.getActualMin() ) / ( this._getActualInterval() ) * ( this.getMaxPx() - this.getMinPx() ) + this.getMinPx();
       } else {
         // 0 if value = min

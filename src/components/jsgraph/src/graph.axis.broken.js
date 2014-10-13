@@ -15,7 +15,7 @@ define( [ 'jquery' ], function( $ ) {
     // [ [ 0, 10 ], [ 50, 100 ] ]
     setBrokenRanges: function( ranges ) {
       this.ranges = [];
-
+      this._broken = true;
       var 
         self = this,
         i = 0,
@@ -170,6 +170,40 @@ define( [ 'jquery' ], function( $ ) {
       }
       // Ex 50 / (100) * (1000 - 700) + 700
       return ;
+    },
+
+    getRatioInRange: function( inRangeOf, value ) {
+
+
+      for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
+        if( inRangeOf <= this.ranges[ i ].max && inRangeOf >= this.ranges[ i ].min ) {
+          // This range
+
+
+             return Math.abs( value - this.ranges[ i ].min ) / ( this.ranges[ i ].max - this.ranges[ i ].min );
+            
+          return;
+        }
+      }
+      
+    },
+
+
+    getInRange: function( inRangeOf, value ) {
+
+      
+
+      for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
+        if( inRangeOf <= this.ranges[ i ].max && inRangeOf >= this.ranges[ i ].min ) {
+          // This range
+
+
+             return ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx
+            
+          return;
+        }
+      }
+      
     }
   }
 

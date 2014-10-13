@@ -2,8 +2,8 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
   "use strict";
 
-  var GraphSerieScatter = function() {}
-  $.extend( GraphSerieScatter.prototype, GraphSerieNonInstanciable.prototype, {
+  var GraphSerieZone = function() {}
+  $.extend( GraphSerieZone.prototype, GraphSerieNonInstanciable.prototype, {
 
     defaults: {
       label: "",
@@ -23,7 +23,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       this.id = Math.random() + Date.now();
 
       this.shown = true;
-      this.options = $.extend( true, {}, GraphSerieScatter.prototype.defaults, options );
+      this.options = $.extend( true, {}, GraphSerieZone.prototype.defaults, options );
       this.data = [];
 
       this._isMinOrMax = {
@@ -306,7 +306,9 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
       lineBottom.reverse();
 
-      this.lineZone.setAttribute( 'd', "M " + lineTop[ 0 ] + " L " + lineTop.join( " L " ) + " L " + lineBottom.join( " L " ) + " z" );
+      if( lineTop.length > 0 && lineBottom.length > 0 ) {
+        this.lineZone.setAttribute( 'd', "M " + lineTop[ 0 ] + " L " + lineTop.join( " L " ) + " L " + lineBottom.join( " L " ) + " z" );
+      }
 
       this.applyLineStyle( this.lineZone );
       this.groupMain.appendChild( this.groupZones );
@@ -356,5 +358,5 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
   } );
 
-  return GraphSerieScatter;
+  return GraphSerieZone;
 } );

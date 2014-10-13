@@ -1,6 +1,6 @@
 {
   "name": "jsGraph",
-  "version": "1.9.14-3",
+  "version": "1.9.14-6",
   "homepage": "http://jsgraph.org",
   "main": "dist/jsgraph.js",
   "keywords": [
@@ -27,14 +27,14 @@
     "jquery": "~2.1.1",
     "requirejs": "~2.1.14"
   },
-  "_release": "1.9.14-3",
+  "_release": "1.9.14-6",
   "_resolution": {
     "type": "version",
-    "tag": "v1.9.14-3",
-    "commit": "092c9ab2b8c5e408ea612427cccc8213dc3ca842"
+    "tag": "v1.9.14-6",
+    "commit": "65d9855192a7160f477e68a819d244e5384dbece"
   },
   "_source": "git://github.com/NPellet/jsGraph.git",
-  "_target": "v1.9.14-3",
+  "_target": "1.9.14-6",
   "_originalSource": "jsgraph",
   "_direct": true
 }
