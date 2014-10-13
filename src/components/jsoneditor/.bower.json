@@ -1,6 +1,6 @@
 {
   "name": "jsoneditor",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "description": "A web-based tool to view, edit and format JSON",
   "tags": [
     "json",
@@ -13,6 +13,7 @@
     "type": "git",
     "url": "https://github.com/josdejong/jsoneditor.git"
   },
+  "main": "jsoneditor.min.js",
   "bugs": "https://github.com/josdejong/jsoneditor/issues",
   "ignore": [
     "app",
@@ -30,14 +31,13 @@
     ".gitignore"
   ],
   "dependencies": {},
-  "_release": "3.1.1",
+  "_release": "3.1.2",
   "_resolution": {
     "type": "version",
-    "tag": "v3.1.1",
-    "commit": "4d58258919c9822eae675045549d94a0d32f9b42"
+    "tag": "v3.1.2",
+    "commit": "b03dd76c8135568c88cf116d3ad97bee3452f79b"
   },
   "_source": "git://github.com/josdejong/jsoneditor.git",
   "_target": "~3.1.1",
-  "_originalSource": "jsoneditor",
-  "_direct": true
+  "_originalSource": "jsoneditor"
 }
