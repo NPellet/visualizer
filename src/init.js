@@ -47,7 +47,9 @@ requirejs.config({
         modernizr: {
             exports: "Modernizr"
         },
-
+        'components/papa-parse/papaparse.min': {
+            exports: 'Papa'
+        },
         "jquery-cookie": "jquery",
 		"components/three.js/examples/js/controls/TrackballControls": ["threejs"],
 		"jqgrid": ["jquery", "components/jqgrid_edit/js/i18n/grid.locale-en"],

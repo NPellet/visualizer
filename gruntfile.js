@@ -77,7 +77,7 @@ module.exports = function(grunt) {
               './jit/Jit/**/*',
               './jquery-ui-contextmenu/jquery.ui-contextmenu.min.js',
               './mustache/mustache.js',
-              './papa-parse/jquery.parse.min.js',
+              './papa-parse/papaparse.min.js',
               ['./font-awesome/css/font-awesome.min.css', './font-awesome/fonts/*'],
               './colors/css/colors.min.css',
               './pouchdb/dist/pouchdb.min.js',

@@ -105,8 +105,8 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
                 def.resolve(JSON.parse(value));
                 break;
             case "csv":
-                require(["components/papa-parse/jquery.parse.min"],function(){
-                    def.resolve($.parse(value,{header:false}).results);
+                require(["components/papa-parse/papaparse.min"],function(Papa){
+                    def.resolve(Papa.parse(value).data);
                 });
                 break;
             case "xml":
