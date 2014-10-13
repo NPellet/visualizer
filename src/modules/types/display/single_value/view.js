@@ -114,8 +114,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 				preformatted = this.module.getConfigurationCheckbox('preformatted', 'pre'),
                 selectable = this.module.getConfigurationCheckbox('preformatted', 'selectable');
 
-            console.log(preformatted, selectable);
-
             var valstr = val!==undefined ? val.toString() : '';
 			
 			var div = $("<div />").css( {
