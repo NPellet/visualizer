@@ -309,7 +309,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 
 			this[ prop ] = DataObject.check( this[ prop ] );
 
-			var typeNow = this[ prop ] !== undefined && this[ prop ].getType ? this[ prop ].getType() : undefined;
+			var typeNow = this[ prop ] != undefined && this[ prop ].getType ? this[ prop ].getType() : undefined;
 
 			if( typeNow !== type ) {
 
