@@ -109,6 +109,8 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 				fontsize = this.module.getConfiguration('fontsize'),
 				font = this.module.getConfiguration('font'),
 				preformatted = this.module.getConfiguration('preformatted');
+
+            var valstr = val!==undefined ? val.toString() : '';
 			
 			var div = $("<div />").css( {
 				fontFamily: font || 'Arial',
@@ -121,7 +123,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 				height: '100%',
 				'white-space': preformatted || 'normal',
 				'word-wrap':'break-word'
-			} ).html( val );
+			} ).html( valstr );
 
 //			if (preformatted) div.html("<pre />").html( val );
 
