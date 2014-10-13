@@ -98,13 +98,13 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                     var graph = new Graph(self.dom.get(0), options);
 
-
+                    var xOptions = {};
                     if (cfgCheckbox('xAsTime', 'xastime')) {
-                        graph.setBottomAxisAsTime();
+                        xOptions.type = 'time';
                     }
 
                     // Axes
-                    var xAxis = graph.getXAxis();
+                    var xAxis = graph.getXAxis(null, xOptions);
                     xAxis
                         .flip(cfgCheckbox('flipAxis', 'flipX'))
                         .togglePrimaryGrid(cfgCheckbox('grid', 'vmain'))
