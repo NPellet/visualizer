@@ -1,3 +1,19 @@
+## 2.3.4 (2014-09-27)
+
+ - `P` alias was not declared inside WebWorkers
+
+## 2.3.3 (2014-09-27)
+
+Bugfixes:
+
+ - Fix [#318](https://github.com/petkaantonov/bluebird/issues/318), [#314](https://github.com/petkaantonov/bluebird/issues/#314)
+
+## 2.3.2 (2014-08-25)
+
+Bugfixes:
+
+ - `P` alias for `Promise` now exists in global scope when using browser builds without a module loader, fixing an issue with firefox extensions
+
 ## 2.3.1 (2014-08-23)
 
 Features:

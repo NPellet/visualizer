@@ -80,6 +80,8 @@
 - [Progression migration](#progression-migration)
 - [Deferred migration](#deferred-migration)
 
+Note that every instance promise method in the API has a static counterpart. For example `Promise.map(arr, fn)` is the same as calling `Promise.resolve(arr).map(fn)`. 
+
 ##Core
 
 Core methods of `Promise` instances and core static methods of the Promise class.
@@ -720,7 +722,11 @@ Sugar for `Promise.resolve(undefined).bind(thisArg);`. See [`.bind()`](#binddyna
 
 Often it is known in certain code paths that a promise is guaranteed to be fulfilled at that point - it would then be extremely inconvenient to use `.then()` to get at the promise's value as the callback is always called asynchronously.
 
+
+**Note**: At recent versions of Bluebird a design choise was made to expose `.reason()` and `.value` as well as other inspection methods on promises directly in order to the below use case easier to work with. The `Promise.settle` method still returns a `PromiseInspection` array as its result. Every promise is now also a `PromiseInspection` and inspection methods can be used on promises freely. 
+
 For example, if you need to use values of earlier promises in the chain, you could nest:
+
 
 ```js
 // From Q Docs https://github.com/kriskowal/q/#chaining
@@ -760,6 +766,10 @@ function authenticate() {
 ```
 
 In the latter the indentation stays flat no matter how many previous variables you need, whereas with the former each additional previous value would require an additional nesting level.
+
+#### The `PromiseInspection` Interface
+
+This interface is implemented by `Promise` instances as well as `PromiseInspection` results returned by calling `Promise.settle`. 
 
 <hr>
 
@@ -904,6 +914,26 @@ Promise.join(getPictures(), getComments(), getTweets(),
 
 Given an array, or a promise of an array, which contains promises (or a mix of promises and values) return a promise that is fulfilled when all the items in the array are either fulfilled or rejected. The fulfillment value is an array of [`PromiseInspection`](#synchronous-inspection) instances at respective positions in relation to the input array.
 
+This method is useful for when you have an array of promises and you'd like to know when all of them resolve - either by fulfilling of rejecting. For example:
+
+```js
+var fs = Promise.promisify(require("fs"));
+Promise.settle(['a.txt', 'b.txt'], fs.readFileAsync).then(function(results){
+    // results is a PromiseInspection array
+    // this is reached once the operations are all done, regardless if
+    // they're successful or not. 
+    var r = results[0];
+    if(r.isFulfilled(){  // check if was successful
+        console.log(r.value()); // the promise's return value
+        r.reason(); // throws because the promise is fulfilled
+    }
+    if(r.isRejected()){ // check if the read failed
+        console.log(r.reason()); //reason
+        r.value(); // throws because the promise is rejected
+    }
+});
+```
+
 <hr>
 
 #####`.any()` -> `Promise`
@@ -958,7 +988,7 @@ Promise.some(...)
 
 #####`.map(Function mapper [, Object options])` -> `Promise`
 
-Map an array, or a promise of an array, which contains a promises (or a mix of promises and values) with the given `mapper` function with the signature `(item, index, arrayLength)` where `item` is the resolved value of a respective promise in the input array. If any promise in the input array is rejected the returned promise is rejected as well.
+Map an array, or a promise of an array, which contains promises (or a mix of promises and values) with the given `mapper` function with the signature `(item, index, arrayLength)` where `item` is the resolved value of a respective promise in the input array. If any promise in the input array is rejected the returned promise is rejected as well.
 
 The mapper function for a given item is called as soon as possible, that is, when the promise for that item's index in the input array is fulfilled. This doesn't mean that the result array has items in random order, it means that `.map` can be used for concurrency coordination unlike `.all().call("map", fn).all()`.
 
@@ -1068,7 +1098,7 @@ such concurrency
 
 #####`.reduce(Function reducer [, dynamic initialValue])` -> `Promise`
 
-Reduce an array, or a promise of an array, which contains a promises (or a mix of promises and values) with the given `reducer` function with the signature `(total, current, index, arrayLength)` where `item` is the resolved value of a respective promise in the input array. If any promise in the input array is rejected the returned promise is rejected as well.
+Reduce an array, or a promise of an array, which contains promises (or a mix of promises and values) with the given `reducer` function with the signature `(total, current, index, arrayLength)` where `item` is the resolved value of a respective promise in the input array. If any promise in the input array is rejected the returned promise is rejected as well.
 
 If the reducer function returns a promise or a thenable, the result for the promise is awaited for before continuing with next iteration.
 
@@ -1114,7 +1144,7 @@ See [`.map()`](#mapfunction-mapper--object-options---promise);
 
 #####`.each(Function iterator)` -> `Promise`
 
-Iterate over an array, or a promise of an array, which contains a promises (or a mix of promises and values) with the given `iterator` function with the signature `(item, index, value)` where `item` is the resolved value of a respective promise in the input array. If any promise in the input array is rejected the returned promise is rejected as well.
+Iterate over an array, or a promise of an array, which contains promises (or a mix of promises and values) with the given `iterator` function with the signature `(item, index, value)` where `item` is the resolved value of a respective promise in the input array. If any promise in the input array is rejected the returned promise is rejected as well.
 
 Resolves to the original array unmodified, this method is meant to be used for side effects. Items are called as soon as possible, in-order.
 

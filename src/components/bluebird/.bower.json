@@ -1,6 +1,6 @@
 {
   "name": "bluebird",
-  "version": "2.3.2",
+  "version": "2.3.5",
   "homepage": "https://github.com/petkaantonov/bluebird",
   "authors": [
     "Petka Antonov <petka_antonov@hotmail.com>"
@@ -32,14 +32,13 @@
     "dsl",
     "fluent interface"
   ],
-  "_release": "2.3.2",
+  "_release": "2.3.5",
   "_resolution": {
     "type": "version",
-    "tag": "v2.3.2",
-    "commit": "86e01256dd68d97c006cae70a9dffe9017975f69"
+    "tag": "v2.3.5",
+    "commit": "2176843432862900d3c8ee00591cffeadb14d0b4"
   },
   "_source": "git://github.com/petkaantonov/bluebird.git",
   "_target": "~2.3.2",
-  "_originalSource": "bluebird",
-  "_direct": true
+  "_originalSource": "bluebird"
 }
