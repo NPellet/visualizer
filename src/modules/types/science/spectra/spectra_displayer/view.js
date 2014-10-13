@@ -272,9 +272,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     if (varname == plotinfos[i].variable) {
 
                         options.lineToZero = !plotinfos[i].plotcontinuous[0];
-                        options.useSlots = false;
-                        // TODO enable when slots are back
-                        // (plotinfos[i].optimizeSlots ? !!plotinfos[i].optimizeSlots[0] : false);
+                        options.useSlots = (plotinfos[i].optimizeSlots ? !!plotinfos[i].optimizeSlots[0] : false);
 
                         var pp = plotinfos[i].peakpicking[0];
                         if (pp) {
