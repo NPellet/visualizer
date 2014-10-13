@@ -173,18 +173,20 @@ define( [ 'modules/default/defaultcontroller', 'src/util/util' ], function( Defa
 
 						preformatted: {
 							type: 'checkbox',
-							title: 'Preformatted',
-							options: { 'pre': 'Display as preformatted text'}
-						},
+							title: 'Display options',
+							options: {
+                                'pre': 'Display as preformatted text',
+                                'selectable': 'Make text selectable'
+                            },
+                            default: []
+						}
 					}
 				}
 			}
 		}
 	};
 
-	controller.prototype.configFunctions = {
-		'preformatted': function(cfg) { return cfg.indexOf('pre') == -1 ? 'normal' : 'pre'; }
-	};
+
 
 	controller.prototype.configAliases = {
 		'fontcolor': [ 'groups', 'group', 0, 'fontcolor', 0 ],
@@ -195,7 +197,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/util' ], function( Defa
 		'defaultvalue': [ 'groups', 'group', 0, 'defaultvalue', 0 ],
 		'sprintf': [ 'groups', 'group', 0, 'sprintf', 0 ],
 		'sprintfOrder': [ 'groups', 'group', 0, 'sprintfOrder' ],
-		'preformatted': [ 'groups', 'group', 0, 'preformatted', 0 ],
+		'preformatted': [ 'groups', 'group', 0, 'preformatted', 0 ]
 	}
 
  	return controller;

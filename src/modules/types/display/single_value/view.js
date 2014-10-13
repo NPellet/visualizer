@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domdeferred', 'src/util/api', 'src/util/typerenderer'], function(Default, Traversing, DomDeferred, API, Renderer) {
 	
 	function view() {};
@@ -107,8 +109,12 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 				align = this.module.getConfiguration('align'),
 				fontcolor = this.module.getConfiguration('fontcolor'),
 				fontsize = this.module.getConfiguration('fontsize'),
-				font = this.module.getConfiguration('font'),
-				preformatted = this.module.getConfiguration('preformatted');
+				font = this.module.getConfiguration('font');
+            var
+				preformatted = this.module.getConfigurationCheckbox('preformatted', 'pre'),
+                selectable = this.module.getConfigurationCheckbox('preformatted', 'selectable');
+
+            console.log(preformatted, selectable);
 
             var valstr = val!==undefined ? val.toString() : '';
 			
@@ -121,11 +127,11 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 				textAlign: align || 'center',
 				width: '100%',
 				height: '100%',
-				'white-space': preformatted || 'normal',
-				'word-wrap':'break-word'
+				'white-space': preformatted ? 'pre' : 'normal',
+				'word-wrap':'break-word',
+                'user-select': selectable ? 'text' : 'none'
 			} ).html( valstr );
 
-//			if (preformatted) div.html("<pre />").html( val );
 
 			this.dom.html( div );
 			
