@@ -73,6 +73,9 @@ define([
         }
 
     function handleChange (event, moduleId) {
+        if (event.jpath.length === 0) {
+            return; // Direct change of data. Can happen with API.createData using undefined value
+        }
         var eventJpath = event.jpath,
             el = eventJpath.length,
             variable, varJpath, i, j, l;
