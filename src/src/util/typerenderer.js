@@ -17,12 +17,26 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
         }
         def.resolve( val );	
 	};
-    
+
+    functions.color = {};
+    functions.color.toscreen = function(def, val) {
+
+        var $bg = $('<div><div/></div>')
+        $bg.children().css({
+            backgroundColor: val,
+            width: '100%',
+            height: '100%',
+            padding:0,
+            margin:0
+        });
+        def.resolve($bg.html());
+    };
+
     functions.html = {};
     functions.html.toscreen = function(def, val) {
         def.resolve( val.toString() );
     };
-		
+
 	functions.matrix = {};
 	functions.matrix.toscreen = function(def, val) {
 		def.resolve( val );

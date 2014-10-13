@@ -17,6 +17,7 @@ define(function() {
         'png': "string",
         'svg': "string",
         'number': "number",
+        'color': "string",
         'mf': 'string',
         'jcamp': "string",
         "downloadLink": "string",
@@ -619,7 +620,6 @@ define(function() {
 
         result.value = val;
         return DataObject.check(result, true);
-
     };
 
     Object.defineProperty(structures, '_getList', {
