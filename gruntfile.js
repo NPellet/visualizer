@@ -67,7 +67,7 @@ module.exports = function(grunt) {
               ['./ckeditor/skins/**','./ckeditor/ckeditor.js','./ckeditor/styles.js','./ckeditor/contents.css','./ckeditor/adapters/jquery.js','./ckeditor/lang/en.js','./ckeditor/plugins/**','./ckeditor/config.js'],
               './farbtastic/src/farbtastic.js',
               './jquery.threedubmedia/event.drag/jquery.event.drag.js',
-              './sprintf/src/sprintf.min.js',
+              './sprintf/dist/sprintf.min.js',
               './requirejs/require.js',
               './jquery-throttle-debounce/jquery.ba-throttle-debounce.min.js',
               ['./Aristo-jQuery-UI-Theme/css/Aristo/images/*', './Aristo-jQuery-UI-Theme/css/Aristo/*.css'],
