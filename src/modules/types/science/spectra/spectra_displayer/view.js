@@ -98,6 +98,11 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                     var graph = new Graph(self.dom.get(0), options);
 
+
+                    if (cfgCheckbox('xAsTime', 'xastime')) {
+                        graph.setBottomAxisAsTime();
+                    }
+
                     // Axes
                     var xAxis = graph.getXAxis();
                     xAxis
@@ -125,9 +130,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                         yAxis.hide();
                     }
 
-                    if (cfgCheckbox('xAsTime', 'xastime')) {
-                        graph.setBottomAxisAsTime();
-                    }
 
                     var legend = cfg('legend', 'none');
                     if(legend !== 'none') {
@@ -472,15 +474,16 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                     var serie = this.graph.newSerie(serieName, this.getSerieOptions(varname, aData._highlight), aData.serieType || undefined);
 
-                    this.setSerieParameters(serie, varname, aData._highlight);
-
                     this.normalize(valFinal, varname);
                     serie.setData(valFinal);
 
                     if (aData.infos) {
                         serie.setInfos(aData.infos);
                     }
+
                     serie.autoAxis();
+                    this.setSerieParameters(serie, varname, aData._highlight);
+
                     this.series[varname].push(serie);
                 }
 
@@ -499,11 +502,12 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 var val = moduleValue.get();
 
                 var serie = this.graph.newSerie(varname, this.getSerieOptions(varname));
-                this.setSerieParameters(serie, varname);
-
+             
                 this.normalize(val, varname);
                 serie.setData(val);
                 serie.autoAxis();
+                this.setSerieParameters(serie, varname);
+
                 this.series[varname].push(serie);
                 this.redraw();
             },
@@ -553,11 +557,12 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 $.when(val).then(function (value) {
 
                     // lineToZero: !continuous}
-                    self.setSerieParameters(serie, varname);
+                   
 
                     serie.setData(buildVal(value));
 
                     serie.autoAxis();
+                    self.setSerieParameters(serie, varname);
                     self.series[ varname ].push(serie);
                     self.redraw();
                 });
@@ -612,9 +617,10 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                         if (spectra.contourLines) {
 
                             serie = self.graph.newSerie(varname, self.getSerieOptions(varname), 'contour');
-                            self.setSerieParameters(serie, varname);
+                            
                             serie.setData(spectra.contourLines);
                             serie.autoAxis();
+                            self.setSerieParameters(serie, varname);
                             self.series[ varname ].push(serie);
 
                         } else {
@@ -625,10 +631,11 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                                 var data = spectra[i].data[spectra[i].data.length - 1];
 
-                                self.setSerieParameters(serie, varname);
+                                
                                 self.normalize(data, varname);
                                 serie.setData(data);
                                 serie.autoAxis();
+                                self.setSerieParameters(serie, varname);
                                 self.series[varname].push(serie);
                                 break;
                             }
