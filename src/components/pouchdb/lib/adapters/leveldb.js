@@ -9,6 +9,7 @@ var errors = require('../deps/errors');
 var merge = require('../merge');
 var utils = require('../utils');
 var migrate = require('../deps/migrate');
+var vuvuzela = require('vuvuzela');
 
 var DOC_STORE = 'document-store';
 var BY_SEQ_STORE = 'by-sequence';
@@ -27,6 +28,15 @@ var dbStores = new utils.Map();
 var UPDATE_SEQ_KEY = '_local_last_update_seq';
 var DOC_COUNT_KEY = '_local_doc_count';
 var UUID_KEY = '_local_uuid';
+
+var MD5_PREFIX = 'md5-';
+
+var vuvuEncoding = {
+  encode: vuvuzela.stringify,
+  decode: vuvuzela.parse,
+  buffer: false,
+  type: 'cheap-json'
+};
 
 function LevelPouch(opts, callback) {
   opts = utils.clone(opts);
@@ -75,7 +85,7 @@ function LevelPouch(opts, callback) {
   }
 
   function afterDBCreated() {
-    stores.docStore = db.sublevel(DOC_STORE, {valueEncoding: 'json'});
+    stores.docStore = db.sublevel(DOC_STORE, {valueEncoding: vuvuEncoding});
     stores.bySeqStore = db.sublevel(BY_SEQ_STORE, {valueEncoding: 'json'});
     stores.attachmentStore =
       db.sublevel(ATTACHMENT_STORE, {valueEncoding: 'json'});
@@ -289,9 +299,9 @@ function LevelPouch(opts, callback) {
 
       if (process.browser) {
         if (opts.encode) {
-          data = utils.btoa(global.unescape(attach));
+          data = utils.btoa(attach);
         } else {
-          data = utils.createBlob([utils.fixBinary(global.unescape(attach))],
+          data = utils.createBlob([utils.fixBinary(attach)],
             {type: attachment.content_type});
         }
       } else {
@@ -490,18 +500,17 @@ function LevelPouch(opts, callback) {
         collectResults(err);
       }
 
-      function onMD5Load(doc, prefix, key, data, attachmentSaved) {
+      function onMD5Load(doc, key, data, attachmentSaved) {
         return function (result) {
-          saveAttachment(doc, prefix + result, key, data, attachmentSaved);
+          saveAttachment(doc, MD5_PREFIX + result, key, data, attachmentSaved);
         };
       }
 
-      function onLoadEnd(doc, prefix, key, attachmentSaved) {
+      function onLoadEnd(doc, key, attachmentSaved) {
         return function (e) {
-          var data = global.escape(
-            utils.arrayBufferToBinaryString(e.target.result));
+          var data = utils.arrayBufferToBinaryString(e.target.result);
           utils.MD5(data).then(
-            onMD5Load(doc, prefix, key, data, attachmentSaved)
+            onMD5Load(doc, key, data, attachmentSaved)
           );
         };
       }
@@ -516,30 +525,24 @@ function LevelPouch(opts, callback) {
         }
         var att = doc.data._attachments[key];
         var data;
-        var prefix;
         if (typeof att.data === 'string') {
           try {
             data = utils.atob(att.data);
-            if (process.browser) {
-              data = global.escape(data);
-            }
           } catch (e) {
             callback(utils.extend({}, errors.BAD_ARG,
               {reason: "Attachments need to be base64 encoded"}));
             return;
           }
-          prefix = process.browser ? 'md5-' : '';
         } else if (!process.browser) {
           data = att.data;
-          prefix = '';
         } else { // browser
           var reader = new FileReader();
-          reader.onloadend = onLoadEnd(doc, 'md5-', key, attachmentSaved);
+          reader.onloadend = onLoadEnd(doc, key, attachmentSaved);
           reader.readAsArrayBuffer(att.data);
-          return;
+          continue;
         }
         utils.MD5(data).then(
-          onMD5Load(doc, prefix, key, data, attachmentSaved)
+          onMD5Load(doc, key, data, attachmentSaved)
         );
       }
 
@@ -565,7 +568,7 @@ function LevelPouch(opts, callback) {
           value: doc.metadata,
           prefix: stores.docStore,
           type: 'put',
-          valueEncoding: 'json'
+          valueEncoding: vuvuEncoding
         }], function (err) {
           if (!err) {
             db.emit('pouchdb-id-' + doc.metadata.id, doc);
@@ -659,7 +662,6 @@ function LevelPouch(opts, callback) {
 
     processDocs();
   };
-
   api._allDocs = function (opts, callback) {
     opts = utils.clone(opts);
     countDocs(function (err, docCount) {
@@ -929,7 +931,7 @@ function LevelPouch(opts, callback) {
         key: metadata.id,
         value: metadata,
         type: 'put',
-        valueEncoding: 'json',
+        valueEncoding: vuvuEncoding,
         prefix: stores.docStore
       });
       revs.forEach(function (rev) {

@@ -3,6 +3,7 @@
 var utils = require('../utils');
 var merge = require('../merge');
 var errors = require('../deps/errors');
+var vuvuzela = require('vuvuzela');
 
 var cachedDBs = {};
 var taskQueue = {
@@ -63,6 +64,35 @@ function isModernIdb() {
     global.localStorage[cacheKey] = JSON.stringify(result); // cache
   }
   return result;
+}
+
+// Unfortunately, the metadata has to be stringified
+// when it is put into the database, because otherwise
+// IndexedDB can throw errors for deeply-nested objects.
+// Originally we just used JSON.parse/JSON.stringify; now
+// we use this custom vuvuzela library that avoids recursion.
+// If we could do it all over again, we'd probably use a
+// format for the revision trees other than JSON.
+function encodeMetadata(metadata, winningRev, deleted) {
+  var storedObject = {data: vuvuzela.stringify(metadata)};
+  storedObject.winningRev = winningRev;
+  storedObject.deletedOrLocal = deleted ? '1' : '0';
+  storedObject.id = metadata.id;
+  return storedObject;
+}
+
+function decodeMetadata(storedObject) {
+  if (!storedObject) {
+    return null;
+  }
+  if (!storedObject.data) {
+    // old format, when we didn't store it stringified
+    return storedObject;
+  }
+  var metadata = vuvuzela.parse(storedObject.data);
+  metadata.winningRev = storedObject.winningRev;
+  metadata.deletedOrLocal = storedObject.deletedOrLocal === '1';
+  return metadata;
 }
 
 function IdbPouch(opts, callback) {
@@ -312,7 +342,7 @@ function init(api, opts, callback) {
         var id = docInfo.metadata.id;
         var req = txn.objectStore(DOC_STORE).get(id);
         req.onsuccess = function process_docRead(event) {
-          var metadata = event.target.result;
+          var metadata = decodeMetadata(event.target.result);
           if (metadata) {
             fetchedDocs.set(id, metadata);
           }
@@ -374,7 +404,7 @@ function init(api, opts, callback) {
       }
       var reader = new FileReader();
       reader.onloadend = function (e) {
-        var binary = utils.arrayBufferToBinaryString(this.result);
+        var binary = utils.arrayBufferToBinaryString(this.result || '');
         if (!blobSupport) {
           att.data = btoa(binary);
         }
@@ -476,9 +506,8 @@ function init(api, opts, callback) {
           metadata.seq = e.target.result;
           // Current _rev is calculated from _rev_tree on read
           delete metadata.rev;
-          metadata.deletedOrLocal = deleted ? "1" : "0";
-          metadata.winningRev = winningRev;
-          var metaDataReq = txn.objectStore(DOC_STORE).put(metadata);
+          var metadataToStore = encodeMetadata(metadata, winningRev, deleted);
+          var metaDataReq = txn.objectStore(DOC_STORE).put(metadataToStore);
           metaDataReq.onsuccess = function () {
             delete metadata.deletedOrLocal;
             delete metadata.winningRev;
@@ -599,7 +628,7 @@ function init(api, opts, callback) {
     }
 
     txn.objectStore(DOC_STORE).get(id).onsuccess = function (e) {
-      metadata = e.target.result;
+      metadata = decodeMetadata(e.target.result);
       // we can determine the result here if:
       // 1. there is no such document
       // 2. the document is deleted and we don't ask about specific rev
@@ -634,7 +663,6 @@ function init(api, opts, callback) {
   };
 
   api._getAttachment = function (attachment, opts, callback) {
-    var result;
     var txn;
     opts = utils.clone(opts);
     if (opts.ctx) {
@@ -649,26 +677,27 @@ function init(api, opts, callback) {
     txn.objectStore(ATTACH_STORE).get(digest).onsuccess = function (e) {
       var data = e.target.result.body;
       if (opts.encode) {
-        if (blobSupport) {
+        if (!data) {
+          callback(null, '');
+        } else if (typeof data !== 'string') { // we have blob support
           var reader = new FileReader();
           reader.onloadend = function (e) {
-            var binary = utils.arrayBufferToBinaryString(this.result);
-            result = btoa(binary);
-            callback(null, result);
+            var binary = utils.arrayBufferToBinaryString(this.result || '');
+            callback(null, btoa(binary));
           };
           reader.readAsArrayBuffer(data);
-        } else {
-          result = data;
-          callback(null, result);
+        } else { // no blob support
+          callback(null, data);
         }
       } else {
-        if (blobSupport) {
-          result = data;
-        } else {
+        if (!data) {
+          callback(null, utils.createBlob([''], {type: type}));
+        } else if (typeof data !== 'string') { // we have blob support
+          callback(null, data);
+        } else { // no blob support
           data = utils.fixBinary(atob(data));
-          result = utils.createBlob([data], {type: type});
+          callback(null, utils.createBlob([data], {type: type}));
         }
-        callback(null, result);
       }
     };
   };
@@ -741,7 +770,7 @@ function init(api, opts, callback) {
         return;
       }
       var cursor = e.target.result;
-      var metadata = cursor.value;
+      var metadata = decodeMetadata(cursor.value);
       // metadata.winningRev added later, some dbs might be missing it
       var winningRev = metadata.winningRev || merge.winningRev(metadata);
 
@@ -798,7 +827,7 @@ function init(api, opts, callback) {
         var index = transaction.objectStore(BY_SEQ_STORE).index('_doc_id_rev');
         var key = metadata.id + "::" + winningRev;
         index.get(key).onsuccess = function (event) {
-          allDocsInner(cursor.value, event.target.result);
+          allDocsInner(decodeMetadata(cursor.value), event.target.result);
         };
       }
     };
@@ -940,7 +969,7 @@ function init(api, opts, callback) {
 
       var index = txn.objectStore(DOC_STORE);
       index.get(doc._id).onsuccess = function (event) {
-        var metadata = event.target.result;
+        var metadata = decodeMetadata(event.target.result);
 
         if (lastSeq < metadata.seq) {
           lastSeq = metadata.seq;
@@ -995,7 +1024,7 @@ function init(api, opts, callback) {
     var txn = idb.transaction([DOC_STORE], 'readonly');
     var req = txn.objectStore(DOC_STORE).get(docId);
     req.onsuccess = function (event) {
-      var doc = event.target.result;
+      var doc = decodeMetadata(event.target.result);
       if (!doc) {
         callback(errors.MISSING_DOC);
       } else {
@@ -1012,7 +1041,7 @@ function init(api, opts, callback) {
 
     var index = txn.objectStore(DOC_STORE);
     index.get(docId).onsuccess = function (event) {
-      var metadata = event.target.result;
+      var metadata = decodeMetadata(event.target.result);
       metadata.rev_tree = rev_tree;
 
       var count = revs.length;
@@ -1028,7 +1057,14 @@ function init(api, opts, callback) {
 
           count--;
           if (!count) {
-            txn.objectStore(DOC_STORE).put(metadata);
+            // winningRev is not guaranteed to be there, since it's
+            // not formally migrated. deletedOrLocal is a
+            // now-unfortunate name that really just means "deleted"
+            var winningRev = metadata.winningRev ||
+              merge.winningRev(metadata);
+            var deleted = metadata.deletedOrLocal;
+            txn.objectStore(DOC_STORE).put(
+              encodeMetadata(metadata, winningRev, deleted));
           }
         };
       });
@@ -1236,14 +1272,40 @@ function init(api, opts, callback) {
         };
       }
 
-      // detect blob support
+      // Detect blob support. Chrome didn't support it until version 38.
+      // in version 37 they had a broken version where PNGs (and possibly
+      // other binary types) aren't stored correctly.
       try {
-        txn.objectStore(DETECT_BLOB_SUPPORT_STORE).put(utils.createBlob(),
-          "key");
-        blobSupport = true;
+        var blob = utils.createBlob([''], {type: 'image/png'});
+        txn.objectStore(DETECT_BLOB_SUPPORT_STORE).put(blob, 'key');
+        txn.oncomplete = function () {
+          // have to do it in a separate transaction, else the correct
+          // content type is always returned
+          txn = idb.transaction([META_STORE, DETECT_BLOB_SUPPORT_STORE],
+            'readwrite');
+          var getBlobReq = txn.objectStore(
+            DETECT_BLOB_SUPPORT_STORE).get('key');
+          getBlobReq.onsuccess = function (e) {
+            var storedBlob = e.target.result;
+            var url = URL.createObjectURL(storedBlob);
+            utils.ajax({
+              url: url,
+              cache: true,
+              binary: true
+            }, function (err, res) {
+              if (err && err.status === 405) {
+                // firefox won't let us do that. but firefox doesn't
+                // have the blob type bug that Chrome does, so that's ok
+                blobSupport = true;
+              } else {
+                blobSupport = !!(res && res.type === 'image/png');
+              }
+              checkSetupComplete();
+            });
+          };
+        };
       } catch (err) {
         blobSupport = false;
-      } finally {
         checkSetupComplete();
       }
     };
@@ -1254,7 +1316,13 @@ function init(api, opts, callback) {
 }
 
 IdbPouch.valid = function () {
-  return global.indexedDB && isModernIdb();
+  // Issue #2533, we finally gave up on doing bug
+  // detection instead of browser sniffing. Safari brought us
+  // to our knees.
+  var isSafari = typeof openDatabase !== 'undefined' &&
+    /Safari/.test(navigator.userAgent) &&
+    !/Chrome/.test(navigator.userAgent);
+  return !isSafari && global.indexedDB && isModernIdb();
 };
 
 function destroy(name, opts, callback) {

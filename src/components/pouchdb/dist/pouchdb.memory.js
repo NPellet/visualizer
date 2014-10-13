@@ -1,4 +1,4 @@
-//    PouchDB in-memory plugin 3.0.3
+//    PouchDB in-memory plugin 3.0.6
 //    Based on MemDOWN: https://github.com/rvagg/memdown
 //    
 //    (c) 2012-2014 Dale Harvey and the PouchDB team
@@ -6,7 +6,7 @@
 //    For all details and documentation:
 //    http://pouchdb.com
 require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-(function (process,global,Buffer){
+(function (process,Buffer){
 'use strict';
 
 var levelup = require('levelup');
@@ -18,6 +18,7 @@ var errors = require('../deps/errors');
 var merge = require('../merge');
 var utils = require('../utils');
 var migrate = require('../deps/migrate');
+var vuvuzela = require('vuvuzela');
 
 var DOC_STORE = 'document-store';
 var BY_SEQ_STORE = 'by-sequence';
@@ -36,6 +37,15 @@ var dbStores = new utils.Map();
 var UPDATE_SEQ_KEY = '_local_last_update_seq';
 var DOC_COUNT_KEY = '_local_doc_count';
 var UUID_KEY = '_local_uuid';
+
+var MD5_PREFIX = 'md5-';
+
+var vuvuEncoding = {
+  encode: vuvuzela.stringify,
+  decode: vuvuzela.parse,
+  buffer: false,
+  type: 'cheap-json'
+};
 
 function LevelPouch(opts, callback) {
   opts = utils.clone(opts);
@@ -84,7 +94,7 @@ function LevelPouch(opts, callback) {
   }
 
   function afterDBCreated() {
-    stores.docStore = db.sublevel(DOC_STORE, {valueEncoding: 'json'});
+    stores.docStore = db.sublevel(DOC_STORE, {valueEncoding: vuvuEncoding});
     stores.bySeqStore = db.sublevel(BY_SEQ_STORE, {valueEncoding: 'json'});
     stores.attachmentStore =
       db.sublevel(ATTACHMENT_STORE, {valueEncoding: 'json'});
@@ -298,9 +308,9 @@ function LevelPouch(opts, callback) {
 
       if (process.browser) {
         if (opts.encode) {
-          data = utils.btoa(global.unescape(attach));
+          data = utils.btoa(attach);
         } else {
-          data = utils.createBlob([utils.fixBinary(global.unescape(attach))],
+          data = utils.createBlob([utils.fixBinary(attach)],
             {type: attachment.content_type});
         }
       } else {
@@ -499,18 +509,17 @@ function LevelPouch(opts, callback) {
         collectResults(err);
       }
 
-      function onMD5Load(doc, prefix, key, data, attachmentSaved) {
+      function onMD5Load(doc, key, data, attachmentSaved) {
         return function (result) {
-          saveAttachment(doc, prefix + result, key, data, attachmentSaved);
+          saveAttachment(doc, MD5_PREFIX + result, key, data, attachmentSaved);
         };
       }
 
-      function onLoadEnd(doc, prefix, key, attachmentSaved) {
+      function onLoadEnd(doc, key, attachmentSaved) {
         return function (e) {
-          var data = global.escape(
-            utils.arrayBufferToBinaryString(e.target.result));
+          var data = utils.arrayBufferToBinaryString(e.target.result);
           utils.MD5(data).then(
-            onMD5Load(doc, prefix, key, data, attachmentSaved)
+            onMD5Load(doc, key, data, attachmentSaved)
           );
         };
       }
@@ -525,30 +534,24 @@ function LevelPouch(opts, callback) {
         }
         var att = doc.data._attachments[key];
         var data;
-        var prefix;
         if (typeof att.data === 'string') {
           try {
             data = utils.atob(att.data);
-            if (process.browser) {
-              data = global.escape(data);
-            }
           } catch (e) {
             callback(utils.extend({}, errors.BAD_ARG,
               {reason: "Attachments need to be base64 encoded"}));
             return;
           }
-          prefix = process.browser ? 'md5-' : '';
         } else if (!process.browser) {
           data = att.data;
-          prefix = '';
         } else { // browser
           var reader = new FileReader();
-          reader.onloadend = onLoadEnd(doc, 'md5-', key, attachmentSaved);
+          reader.onloadend = onLoadEnd(doc, key, attachmentSaved);
           reader.readAsArrayBuffer(att.data);
-          return;
+          continue;
         }
         utils.MD5(data).then(
-          onMD5Load(doc, prefix, key, data, attachmentSaved)
+          onMD5Load(doc, key, data, attachmentSaved)
         );
       }
 
@@ -574,7 +577,7 @@ function LevelPouch(opts, callback) {
           value: doc.metadata,
           prefix: stores.docStore,
           type: 'put',
-          valueEncoding: 'json'
+          valueEncoding: vuvuEncoding
         }], function (err) {
           if (!err) {
             db.emit('pouchdb-id-' + doc.metadata.id, doc);
@@ -668,7 +671,6 @@ function LevelPouch(opts, callback) {
 
     processDocs();
   };
-
   api._allDocs = function (opts, callback) {
     opts = utils.clone(opts);
     countDocs(function (err, docCount) {
@@ -938,7 +940,7 @@ function LevelPouch(opts, callback) {
         key: metadata.id,
         value: metadata,
         type: 'put',
-        valueEncoding: 'json',
+        valueEncoding: vuvuEncoding,
         prefix: stores.docStore
       });
       revs.forEach(function (rev) {
@@ -1056,8 +1058,8 @@ LevelPouch.Changes = new utils.Changes();
 
 module.exports = LevelPouch;
 
-}).call(this,require("/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"../deps/errors":5,"../deps/migrate":"JpIkFB","../merge":8,"../utils":15,"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"buffer":20,"level-sublevel":35,"leveldown":"RQL87X","levelup":49,"through2":111}],2:[function(require,module,exports){
+}).call(this,require("/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),require("buffer").Buffer)
+},{"../deps/errors":5,"../deps/migrate":"JpIkFB","../merge":8,"../utils":15,"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"buffer":20,"level-sublevel":35,"leveldown":"RQL87X","levelup":49,"through2":112,"vuvuzela":113}],2:[function(require,module,exports){
 "use strict";
 
 var createBlob = require('./blob.js');
@@ -1539,12 +1541,18 @@ var setImmediateShim = global.setImmediate || global.setTimeout;
 
 function sliceShim(arrayBuffer, begin, end) {
   if (typeof arrayBuffer.slice === 'function') {
-    return arrayBuffer.slice(begin, end);
+    if (!begin) {
+      return arrayBuffer.slice();
+    } else if (!end) {
+      return arrayBuffer.slice(begin);
+    } else {
+      return arrayBuffer.slice(begin, end);
+    }
   }
   //
   // shim for IE courtesy of http://stackoverflow.com/a/21440217
   //
-  
+
   //If `begin`/`end` is unspecified, Chrome assumes 0, so we do the same
   //Chrome also converts the values to integers via flooring
   begin = Math.floor(begin || 0);
@@ -1574,15 +1582,50 @@ function sliceShim(arrayBuffer, begin, end) {
   return result;
 }
 
+// convert a 64-bit int to a binary string
+function intToString(int) {
+  var bytes = [
+    (int & 0xff),
+    ((int >>> 8) & 0xff),
+    ((int >>> 16) & 0xff),
+    ((int >>> 24) & 0xff)
+  ];
+  return bytes.map(function (byte) {
+    return String.fromCharCode(byte);
+  }).join('');
+}
+
+// convert an array of 64-bit ints into
+// a base64-encoded string
+function rawToBase64(raw) {
+  var res = '';
+  for (var i = 0; i < raw.length; i++) {
+    res += intToString(raw[i]);
+  }
+  return global.btoa(res);
+}
+
 module.exports = function (data, callback) {
   if (!process.browser) {
-    callback(null, crypto.createHash('md5').update(data).digest('hex'));
+    var base64 = crypto.createHash('md5').update(data).digest('base64');
+    callback(null, base64);
     return;
   }
-  var chunkSize = Math.min(524288, data.length);
-  var chunks = Math.ceil(data.length / chunkSize);
+  var inputIsString = typeof data === 'string';
+  var len = inputIsString ? data.length : data.byteLength;
+  var chunkSize = Math.min(524288, len);
+  var chunks = Math.ceil(len / chunkSize);
   var currentChunk = 0;
-  var buffer = new Md5();
+  var buffer = inputIsString ? new Md5() : new Md5.ArrayBuffer();
+
+  function append(buffer, data, start, end) {
+    if (inputIsString) {
+      buffer.appendBinary(data.substring(start, end));
+    } else {
+      buffer.append(sliceShim(data, start, end));
+    }
+  }
+
   function loadNextChunk() {
     var start = currentChunk * chunkSize;
     var end = start + chunkSize;
@@ -1591,11 +1634,13 @@ module.exports = function (data, callback) {
     }
     currentChunk++;
     if (currentChunk < chunks) {
-      buffer.append(sliceShim(data, start, end));
+      append(buffer, data, start, end);
       setImmediateShim(loadNextChunk);
     } else {
-      buffer.append(sliceShim(data, start, end));
-      callback(null, buffer.end());
+      append(buffer, data, start, end);
+      var raw = buffer.end(true);
+      var base64 = rawToBase64(raw);
+      callback(null, base64);
       buffer.destroy();
     }
   }
@@ -1603,7 +1648,7 @@ module.exports = function (data, callback) {
 };
 
 }).call(this,require("/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"crypto":17,"spark-md5":96}],7:[function(require,module,exports){
+},{"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"crypto":17,"spark-md5":97}],7:[function(require,module,exports){
 "use strict";
 
 // BEGIN Math.uuid.js
@@ -1964,7 +2009,7 @@ PouchMerge.rootToLeaf = function (tree) {
 
 module.exports = PouchMerge;
 
-},{"pouchdb-extend":95}],"adapter-config":[function(require,module,exports){
+},{"pouchdb-extend":96}],"adapter-config":[function(require,module,exports){
 module.exports=require('kPrcxC');
 },{}],"kPrcxC":[function(require,module,exports){
 'use strict';
@@ -2089,6 +2134,18 @@ var reservedWords = toObject([
   '_replication_state_reason',
   '_replication_stats'
 ]);
+
+// List of reserved words that should end up the document
+var dataWords = toObject([
+  '_attachments',
+  //replication documents
+  '_replication_id',
+  '_replication_state',
+  '_replication_state_time',
+  '_replication_state_reason',
+  '_replication_stats'
+]);
+
 exports.clone = function (obj) {
   return exports.extend(true, {}, obj);
 };
@@ -2262,7 +2319,7 @@ exports.parseDoc = function (doc, newEdits) {
         error = new Error(errors.DOC_VALIDATION.message + ': ' + key);
         error.status = errors.DOC_VALIDATION.status;
         throw error;
-      } else if (specialKey && key !== '_attachments') {
+      } else if (specialKey && !dataWords[key]) {
         result.metadata[key.slice(1)] = doc[key];
       } else {
         result.data[key] = doc[key];
@@ -2597,8 +2654,9 @@ exports.cancellableFun = function (fun, self, opts) {
 };
 
 exports.MD5 = exports.toPromise(require('./deps/md5'));
+
 }).call(this,require("/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./deps/ajax":2,"./deps/blob":3,"./deps/buffer":17,"./deps/collections":4,"./deps/errors":5,"./deps/md5":6,"./deps/uuid":7,"./merge":8,"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"argsarray":16,"bluebird":75,"events":18,"inherits":33,"pouchdb-extend":95}],16:[function(require,module,exports){
+},{"./deps/ajax":2,"./deps/blob":3,"./deps/buffer":17,"./deps/collections":4,"./deps/errors":5,"./deps/md5":6,"./deps/uuid":7,"./merge":8,"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"argsarray":16,"bluebird":75,"events":18,"inherits":33,"pouchdb-extend":96}],16:[function(require,module,exports){
 'use strict';
 
 module.exports = argsArray;
@@ -12979,10 +13037,10 @@ var reject = require('./reject');
 var resolve = require('./resolve');
 var INTERNAL = require('./INTERNAL');
 var handlers = require('./handlers');
-var noArray = reject(new TypeError('must be an array'));
-module.exports = function all(iterable) {
+module.exports = all;
+function all(iterable) {
   if (Object.prototype.toString.call(iterable) !== '[object Array]') {
-    return noArray;
+    return reject(new TypeError('must be an array'));
   }
 
   var len = iterable.length;
@@ -13015,8 +13073,8 @@ module.exports = function all(iterable) {
       }
     }
   }
-};
-},{"./INTERNAL":72,"./handlers":74,"./promise":76,"./reject":78,"./resolve":79}],74:[function(require,module,exports){
+}
+},{"./INTERNAL":72,"./handlers":74,"./promise":76,"./reject":79,"./resolve":80}],74:[function(require,module,exports){
 'use strict';
 var tryCatch = require('./tryCatch');
 var resolveThenable = require('./resolveThenable');
@@ -13062,13 +13120,14 @@ function getThen(obj) {
     };
   }
 }
-},{"./resolveThenable":80,"./states":81,"./tryCatch":82}],75:[function(require,module,exports){
+},{"./resolveThenable":81,"./states":82,"./tryCatch":83}],75:[function(require,module,exports){
 module.exports = exports = require('./promise');
 
 exports.resolve = require('./resolve');
 exports.reject = require('./reject');
 exports.all = require('./all');
-},{"./all":73,"./promise":76,"./reject":78,"./resolve":79}],76:[function(require,module,exports){
+exports.race = require('./race');
+},{"./all":73,"./promise":76,"./race":78,"./reject":79,"./resolve":80}],76:[function(require,module,exports){
 'use strict';
 
 var unwrap = require('./unwrap');
@@ -13114,7 +13173,7 @@ Promise.prototype.then = function (onFulfilled, onRejected) {
   return promise;
 };
 
-},{"./INTERNAL":72,"./queueItem":77,"./resolveThenable":80,"./states":81,"./unwrap":83}],77:[function(require,module,exports){
+},{"./INTERNAL":72,"./queueItem":77,"./resolveThenable":81,"./states":82,"./unwrap":84}],77:[function(require,module,exports){
 'use strict';
 var handlers = require('./handlers');
 var unwrap = require('./unwrap');
@@ -13143,7 +13202,48 @@ QueueItem.prototype.callRejected = function (value) {
 QueueItem.prototype.otherCallRejected = function (value) {
   unwrap(this.promise, this.onRejected, value);
 };
-},{"./handlers":74,"./unwrap":83}],78:[function(require,module,exports){
+},{"./handlers":74,"./unwrap":84}],78:[function(require,module,exports){
+'use strict';
+var Promise = require('./promise');
+var reject = require('./reject');
+var resolve = require('./resolve');
+var INTERNAL = require('./INTERNAL');
+var handlers = require('./handlers');
+module.exports = race;
+function race(iterable) {
+  if (Object.prototype.toString.call(iterable) !== '[object Array]') {
+    return reject(new TypeError('must be an array'));
+  }
+
+  var len = iterable.length;
+  var called = false;
+  if (!len) {
+    return resolve([]);
+  }
+
+  var resolved = 0;
+  var i = -1;
+  var promise = new Promise(INTERNAL);
+  
+  while (++i < len) {
+    resolver(iterable[i]);
+  }
+  return promise;
+  function resolver(value) {
+    resolve(value).then(function (response) {
+      if (!called) {
+        called = true;
+        handlers.resolve(promise, response);
+      }
+    }, function (error) {
+      if (!called) {
+        called = true;
+        handlers.reject(promise, error);
+      }
+    });
+  }
+}
+},{"./INTERNAL":72,"./handlers":74,"./promise":76,"./reject":79,"./resolve":80}],79:[function(require,module,exports){
 'use strict';
 
 var Promise = require('./promise');
@@ -13155,7 +13255,7 @@ function reject(reason) {
 	var promise = new Promise(INTERNAL);
 	return handlers.reject(promise, reason);
 }
-},{"./INTERNAL":72,"./handlers":74,"./promise":76}],79:[function(require,module,exports){
+},{"./INTERNAL":72,"./handlers":74,"./promise":76}],80:[function(require,module,exports){
 'use strict';
 
 var Promise = require('./promise');
@@ -13190,7 +13290,7 @@ function resolve(value) {
       return EMPTYSTRING;
   }
 }
-},{"./INTERNAL":72,"./handlers":74,"./promise":76}],80:[function(require,module,exports){
+},{"./INTERNAL":72,"./handlers":74,"./promise":76}],81:[function(require,module,exports){
 'use strict';
 var handlers = require('./handlers');
 var tryCatch = require('./tryCatch');
@@ -13223,13 +13323,13 @@ function safelyResolveThenable(self, thenable) {
   }
 }
 exports.safely = safelyResolveThenable;
-},{"./handlers":74,"./tryCatch":82}],81:[function(require,module,exports){
+},{"./handlers":74,"./tryCatch":83}],82:[function(require,module,exports){
 // Lazy man's symbols for states
 
 exports.REJECTED = ['REJECTED'];
 exports.FULFILLED = ['FULFILLED'];
 exports.PENDING = ['PENDING'];
-},{}],82:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 'use strict';
 
 module.exports = tryCatch;
@@ -13245,7 +13345,7 @@ function tryCatch(func, value) {
   }
   return out;
 }
-},{}],83:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 'use strict';
 
 var immediate = require('immediate');
@@ -13267,7 +13367,7 @@ function unwrap(promise, func, value) {
     }
   });
 }
-},{"./handlers":74,"immediate":84}],84:[function(require,module,exports){
+},{"./handlers":74,"immediate":85}],85:[function(require,module,exports){
 'use strict';
 var types = [
   require('./nextTick'),
@@ -13308,7 +13408,7 @@ function immediate(task) {
     scheduleDrain();
   }
 }
-},{"./messageChannel":85,"./mutation.js":86,"./nextTick":17,"./stateChange":87,"./timeout":88}],85:[function(require,module,exports){
+},{"./messageChannel":86,"./mutation.js":87,"./nextTick":17,"./stateChange":88,"./timeout":89}],86:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -13329,7 +13429,7 @@ exports.install = function (func) {
   };
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],86:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 (function (global){
 'use strict';
 //based off rsvp https://github.com/tildeio/rsvp.js
@@ -13354,7 +13454,7 @@ exports.install = function (handle) {
   };
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],87:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -13381,7 +13481,7 @@ exports.install = function (handle) {
   };
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],88:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 'use strict';
 exports.test = function () {
   return true;
@@ -13573,17 +13673,17 @@ MemDOWN.prototype._isBuffer = function (obj) {
 module.exports = MemDOWN
 
 }).call(this,require("/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"abstract-leveldown":93,"buffer":20,"util":32}],"leveldown":[function(require,module,exports){
+},{"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"abstract-leveldown":94,"buffer":20,"util":32}],"leveldown":[function(require,module,exports){
 module.exports=require('RQL87X');
-},{}],91:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 module.exports=require(55)
-},{"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19}],92:[function(require,module,exports){
-module.exports=require(56)
 },{"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19}],93:[function(require,module,exports){
+module.exports=require(56)
+},{"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19}],94:[function(require,module,exports){
 module.exports=require(57)
-},{"./abstract-chained-batch":91,"./abstract-iterator":92,"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"buffer":20,"xtend":94}],94:[function(require,module,exports){
+},{"./abstract-chained-batch":92,"./abstract-iterator":93,"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"buffer":20,"xtend":95}],95:[function(require,module,exports){
 module.exports=require(70)
-},{}],95:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 "use strict";
 
 // Extends method
@@ -13655,10 +13755,30 @@ var isArray = Array.isArray || function (obj) {
 };
 
 function extend() {
+  // originally extend() was recursive, but this ended up giving us
+  // "call stack exceeded", so it's been unrolled to use a literal stack
+  // (see https://github.com/pouchdb/pouchdb/issues/2543)
+  var stack = [];
+  var i = -1;
+  var len = arguments.length;
+  var args = new Array(len);
+  while (++i < len) {
+    args[i] = arguments[i];
+  }
+  var container = {};
+  stack.push({args: args, result: {container: container, key: 'key'}});
+  var next;
+  while ((next = stack.pop())) {
+    extendInner(stack, next.args, next.result);
+  }
+  return container.key;
+}
+
+function extendInner(stack, args, result) {
   var options, name, src, copy, copyIsArray, clone,
-    target = arguments[0] || {},
+    target = args[0] || {},
     i = 1,
-    length = arguments.length,
+    length = args.length,
     deep = false,
     numericStringRegex = /\d+/,
     optionsIsArray;
@@ -13666,7 +13786,7 @@ function extend() {
   // Handle a deep copy situation
   if (typeof target === "boolean") {
     deep = target;
-    target = arguments[1] || {};
+    target = args[1] || {};
     // skip the boolean and the target
     i = 2;
   }
@@ -13685,7 +13805,7 @@ function extend() {
 
   for (; i < length; i++) {
     // Only deal with non-null/undefined values
-    if ((options = arguments[i]) != null) {
+    if ((options = args[i]) != null) {
       optionsIsArray = isArray(options);
       // Extend the base object
       for (name in options) {
@@ -13715,7 +13835,13 @@ function extend() {
             }
 
             // Never move original objects, clone them
-            target[name] = extend(deep, clone, copy);
+            stack.push({
+              args: [deep, clone, copy],
+              result: {
+                container: target,
+                key: name
+              }
+            });
 
           // Don't bring in undefined values
           } else if (copy !== undefined) {
@@ -13728,8 +13854,9 @@ function extend() {
     }
   }
 
-  // Return the modified object
-  return target;
+  // "Return" the modified object by setting the key
+  // on the given container
+  result.container[result.key] = target;
 }
 
 
@@ -13737,7 +13864,7 @@ module.exports = extend;
 
 
 
-},{}],96:[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 /*jshint bitwise:false*/
 /*global unescape*/
 
@@ -14338,28 +14465,28 @@ module.exports = extend;
     return SparkMD5;
 }));
 
-},{}],97:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 arguments[4][61][0].apply(exports,arguments)
-},{"./_stream_readable":98,"./_stream_writable":100,"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"core-util-is":101,"inherits":33}],98:[function(require,module,exports){
+},{"./_stream_readable":99,"./_stream_writable":101,"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"core-util-is":102,"inherits":33}],99:[function(require,module,exports){
 module.exports=require(63)
-},{"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"buffer":20,"core-util-is":101,"events":18,"inherits":33,"isarray":102,"stream":24,"string_decoder/":103}],99:[function(require,module,exports){
+},{"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"buffer":20,"core-util-is":102,"events":18,"inherits":33,"isarray":103,"stream":24,"string_decoder/":104}],100:[function(require,module,exports){
 arguments[4][64][0].apply(exports,arguments)
-},{"./_stream_duplex":97,"core-util-is":101,"inherits":33}],100:[function(require,module,exports){
+},{"./_stream_duplex":98,"core-util-is":102,"inherits":33}],101:[function(require,module,exports){
 arguments[4][65][0].apply(exports,arguments)
-},{"./_stream_duplex":97,"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"buffer":20,"core-util-is":101,"inherits":33,"stream":24}],101:[function(require,module,exports){
+},{"./_stream_duplex":98,"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"buffer":20,"core-util-is":102,"inherits":33,"stream":24}],102:[function(require,module,exports){
 module.exports=require(66)
-},{"buffer":20}],102:[function(require,module,exports){
+},{"buffer":20}],103:[function(require,module,exports){
 module.exports=require(67)
-},{}],103:[function(require,module,exports){
+},{}],104:[function(require,module,exports){
 module.exports=require(68)
-},{"buffer":20}],104:[function(require,module,exports){
+},{"buffer":20}],105:[function(require,module,exports){
 module.exports = require("./lib/_stream_transform.js")
 
-},{"./lib/_stream_transform.js":99}],105:[function(require,module,exports){
+},{"./lib/_stream_transform.js":100}],106:[function(require,module,exports){
 module.exports=require(40)
-},{}],106:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 arguments[4][41][0].apply(exports,arguments)
-},{"./has-keys":105,"object-keys":108}],107:[function(require,module,exports){
+},{"./has-keys":106,"object-keys":109}],108:[function(require,module,exports){
 var hasOwn = Object.prototype.hasOwnProperty;
 var toString = Object.prototype.toString;
 
@@ -14401,9 +14528,9 @@ module.exports = function forEach(obj, fn) {
 };
 
 
-},{}],108:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 arguments[4][42][0].apply(exports,arguments)
-},{"./shim":110}],109:[function(require,module,exports){
+},{"./shim":111}],110:[function(require,module,exports){
 var toString = Object.prototype.toString;
 
 module.exports = function isArguments(value) {
@@ -14421,7 +14548,7 @@ module.exports = function isArguments(value) {
 };
 
 
-},{}],110:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 (function () {
 	"use strict";
 
@@ -14485,7 +14612,7 @@ module.exports = function isArguments(value) {
 }());
 
 
-},{"./foreach":107,"./isArguments":109}],111:[function(require,module,exports){
+},{"./foreach":108,"./isArguments":110}],112:[function(require,module,exports){
 var Transform = require('readable-stream/transform')
   , inherits  = require('util').inherits
   , xtend     = require('xtend')
@@ -14565,4 +14692,179 @@ module.exports.obj = through2(function (options, transform, flush) {
   return t2
 })
 
-},{"readable-stream/transform":104,"util":32,"xtend":106}]},{},[11])
+},{"readable-stream/transform":105,"util":32,"xtend":107}],113:[function(require,module,exports){
+'use strict';
+
+/**
+ * Stringify/parse functions that don't operate
+ * recursively, so they avoid call stack exceeded
+ * errors.
+ */
+exports.stringify = function stringify(input) {
+  var queue = [];
+  queue.push({obj: input});
+
+  var res = '';
+  var next, obj, prefix, val, i, arrayPrefix, keys, k, key, value, objPrefix;
+  while ((next = queue.pop())) {
+    obj = next.obj;
+    prefix = next.prefix || '';
+    val = next.val || '';
+    res += prefix;
+    if (val) {
+      res += val;
+    } else if (typeof obj !== 'object') {
+      res += typeof obj === 'undefined' ? null : JSON.stringify(obj);
+    } else if (obj === null) {
+      res += 'null';
+    } else if (Array.isArray(obj)) {
+      queue.push({val: ']'});
+      for (i = obj.length - 1; i >= 0; i--) {
+        arrayPrefix = i === 0 ? '' : ',';
+        queue.push({obj: obj[i], prefix: arrayPrefix});
+      }
+      queue.push({val: '['});
+    } else { // object
+      keys = [];
+      for (k in obj) {
+        if (obj.hasOwnProperty(k)) {
+          keys.push(k);
+        }
+      }
+      queue.push({val: '}'});
+      for (i = keys.length - 1; i >= 0; i--) {
+        key = keys[i];
+        value = obj[key];
+        objPrefix = (i > 0 ? ',' : '');
+        objPrefix += JSON.stringify(key) + ':';
+        queue.push({obj: value, prefix: objPrefix});
+      }
+      queue.push({val: '{'});
+    }
+  }
+  return res;
+};
+
+// Convenience function for the parse function.
+// This pop function is basically copied from
+// pouchCollate.parseIndexableString
+function pop(obj, stack, metaStack) {
+  var lastMetaElement = metaStack[metaStack.length - 1];
+  if (obj === lastMetaElement.element) {
+    // popping a meta-element, e.g. an object whose value is another object
+    metaStack.pop();
+    lastMetaElement = metaStack[metaStack.length - 1];
+  }
+  var element = lastMetaElement.element;
+  var lastElementIndex = lastMetaElement.index;
+  if (Array.isArray(element)) {
+    element.push(obj);
+  } else if (lastElementIndex === stack.length - 2) { // obj with key+value
+    var key = stack.pop();
+    element[key] = obj;
+  } else {
+    stack.push(obj); // obj with key only
+  }
+}
+
+exports.parse = function (str) {
+  var stack = [];
+  var metaStack = []; // stack for arrays and objects
+  var i = 0;
+  var collationIndex,parsedNum,numChar;
+  var parsedString,lastCh,numConsecutiveSlashes,ch;
+  var arrayElement, objElement;
+  while (true) {
+    collationIndex = str[i++];
+    if (collationIndex === '}' ||
+        collationIndex === ']' ||
+        typeof collationIndex === 'undefined') {
+      if (stack.length === 1) {
+        return stack.pop();
+      } else {
+        pop(stack.pop(), stack, metaStack);
+        continue;
+      }
+    }
+    switch (collationIndex) {
+      case ' ':
+      case '\t':
+      case '\n':
+      case ':':
+      case ',':
+        break;
+      case 'n':
+        i += 3; // 'ull'
+        pop(null, stack, metaStack);
+        break;
+      case 't':
+        i += 3; // 'rue'
+        pop(true, stack, metaStack);
+        break;
+      case 'f':
+        i += 4; // 'alse'
+        pop(false, stack, metaStack);
+        break;
+      case '0':
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9':
+      case '-':
+        parsedNum = '';
+        i--;
+        while (true) {
+          numChar = str[i++];
+          if (/[\d\.\-e\+]/.test(numChar)) {
+            parsedNum += numChar;
+          } else {
+            i--;
+            break;
+          }
+        }
+        pop(parseFloat(parsedNum), stack, metaStack);
+        break;
+      case '"':
+        parsedString = '';
+        lastCh = void 0;
+        numConsecutiveSlashes = 0;
+        while (true) {
+          ch = str[i++];
+          if (ch !== '"' || (lastCh === '\\' &&
+              numConsecutiveSlashes % 2 === 1)) {
+            parsedString += ch;
+            lastCh = ch;
+            if (lastCh === '\\') {
+              numConsecutiveSlashes++;
+            } else {
+              numConsecutiveSlashes = 0;
+            }
+          } else {
+            break;
+          }
+        }
+        pop(JSON.parse('"' + parsedString + '"'), stack, metaStack);
+        break;
+      case '[':
+        arrayElement = { element: [], index: stack.length };
+        stack.push(arrayElement.element);
+        metaStack.push(arrayElement);
+        break;
+      case '{':
+        objElement = { element: {}, index: stack.length };
+        stack.push(objElement.element);
+        metaStack.push(objElement);
+        break;
+      default:
+        throw new Error(
+          'unexpectedly reached end of input: ' + collationIndex);
+    }
+  }
+};
+
+},{}]},{},[11])

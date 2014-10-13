@@ -1,7 +1,6 @@
 'use strict';
 
 var utils = require('./utils');
-var Pouch = require('./index');
 var EE = require('events').EventEmitter;
 
 var MAX_SIMULTANEOUS_REVS = 50;
@@ -57,6 +56,10 @@ function genReplicationId(src, target, opts) {
       var queryData = src_id + target_id + filterFun +
         JSON.stringify(opts.query_params) + opts.doc_ids;
       return utils.MD5(queryData).then(function (md5) {
+        // can't use straight-up md5 alphabet, because
+        // the char '/' is interpreted as being for attachments,
+        // and + is also not url-safe
+        md5 = md5.replace(/\//g, '.').replace(/\+/g, '_');
         return '_local/' + md5;
       });
     });
@@ -159,7 +162,6 @@ function replicate(repId, src, target, opts, returnValue) {
   var batch_size = opts.batch_size || 100;
   var batches_limit = opts.batches_limit || 10;
   var changesPending = false;     // true while src.changes is running
-  var changesCount = 0; // number of changes received since calling src.changes
   var doc_ids = opts.doc_ids;
   var checkpointer = new Checkpointer(src, target, repId, returnValue);
   var result = {
@@ -190,12 +192,19 @@ function replicate(repId, src, target, opts, returnValue) {
       }
       var errors = [];
       res.forEach(function (res) {
-        if (!res.ok) {
+        if (res.error) {
           result.doc_write_failures++;
-          errors.push(new Error(res.reason || res.message || 'Unknown reason'));
+          var error = new Error(res.reason || res.message || 'Unknown reason');
+          error.name = res.name || res.error;
+          errors.push(error);
         }
       });
-      if (errors.length > 0) {
+      result.errors = result.errors.concat(errors);
+      result.docs_written += currentBatch.docs.length - errors.length;
+      var non403s = errors.filter(function (error) {
+        return error.name !== 'unauthorized' && error.name !== 'forbidden';
+      });
+      if (non403s.length > 0) {
         var error = new Error('bulkDocs error');
         error.other_errors = errors;
         abortReplication('target.bulkDocs failed to write docs', error);
@@ -294,7 +303,6 @@ function replicate(repId, src, target, opts, returnValue) {
         throw new Error('cancelled');
       }
       result.last_seq = last_seq = currentBatch.seq;
-      result.docs_written += currentBatch.docs.length;
       returnValue.emit('change', utils.clone(result));
       currentBatch = undefined;
       getChanges();
@@ -404,7 +412,10 @@ function replicate(repId, src, target, opts, returnValue) {
     result.end_time = new Date();
     result.last_seq = last_seq;
     replicationCompleted = returnValue.cancelled = true;
-    if (result.errors.length > 0) {
+    var non403s = result.errors.filter(function (error) {
+      return error.name !== 'unauthorized' && error.name !== 'forbidden';
+    });
+    if (non403s.length > 0) {
       var error = result.errors.pop();
       if (result.errors.length > 0) {
         error.other_errors = result.errors;
@@ -422,7 +433,6 @@ function replicate(repId, src, target, opts, returnValue) {
     if (returnValue.cancelled) {
       return completeReplication();
     }
-    changesCount++;
     if (
       pendingBatch.changes.length === 0 &&
       batches.length === 0 &&
@@ -441,7 +451,7 @@ function replicate(repId, src, target, opts, returnValue) {
     if (returnValue.cancelled) {
       return completeReplication();
     }
-    if (changesCount > 0) {
+    if (changesOpts.since < changes.last_seq) {
       changesOpts.since = changes.last_seq;
       getChanges();
     } else {
@@ -474,7 +484,6 @@ function replicate(repId, src, target, opts, returnValue) {
       return;
     }
     changesPending = true;
-    changesCount = 0;
     function abortChanges() {
       changes.cancel();
     }
@@ -547,8 +556,9 @@ function replicate(repId, src, target, opts, returnValue) {
   }
 }
 
-
-function toPouch(db, PouchConstructor) {
+exports.toPouch = toPouch;
+function toPouch(db, opts) {
+  var PouchConstructor = opts.PouchConstructor;
   if (typeof db === 'string') {
     return new PouchConstructor(db);
   } else if (db.then) {
@@ -559,6 +569,7 @@ function toPouch(db, PouchConstructor) {
 }
 
 
+exports.replicate = replicateWrapper;
 function replicateWrapper(src, target, opts, callback) {
   if (typeof opts === 'function') {
     callback = opts;
@@ -572,10 +583,11 @@ function replicateWrapper(src, target, opts, callback) {
   }
   opts = utils.clone(opts);
   opts.continuous = opts.continuous || opts.live;
+  /*jshint validthis:true */
+  opts.PouchConstructor = opts.PouchConstructor || this;
   var replicateRet = new Replication(opts);
-  var PouchConstructor = opts.pouchConstructor || Pouch;
-  toPouch(src, PouchConstructor).then(function (src) {
-    return toPouch(target, PouchConstructor).then(function (target) {
+  toPouch(src, opts).then(function (src) {
+    return toPouch(target, opts).then(function (target) {
       return genReplicationId(src, target, opts).then(function (repId) {
         replicate(repId, src, target, opts, replicateRet);
       });
@@ -586,5 +598,3 @@ function replicateWrapper(src, target, opts, callback) {
   });
   return replicateRet;
 }
-
-exports.replicate = replicateWrapper;
