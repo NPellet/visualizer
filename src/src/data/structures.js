@@ -582,6 +582,7 @@ define(function() {
         "geojson": "object",
 
         "pdb": "string",
+        "cif": "string",
         "magres": "string",
         "jsmolscript": "string"
     };

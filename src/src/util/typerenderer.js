@@ -443,6 +443,11 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 		return def.resolve(value);
 	};
 
+    functions.cif = {};
+    functions.cif.toscreen = function(def, value) {
+        return def.resolve(value);
+    };
+
 	functions.downloadLink = {};
 	functions.downloadLink.toscreen = function(def, value) {
 		return def.resolve(value.replace(/^(.*)$/,'<a href="$1">⤵</a>'));
