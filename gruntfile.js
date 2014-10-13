@@ -62,7 +62,7 @@ module.exports = function(grunt) {
               ['./jqgrid_edit/js/*.js', './jqgrid_edit/js/i18n/grid.locale-en.js', './jqgrid_edit/css/*.css'],
               ['./jquery/jquery.min.js', './jquery/jquery-migrate.min.js'],
               './jquery-ui/ui/minified/jquery-ui.min.js',
-              './three.js/build/three.min.js',
+              './threejs/build/three.min.js',
               './ace/lib/ace/**',
               ['./ckeditor/skins/**','./ckeditor/ckeditor.js','./ckeditor/styles.js','./ckeditor/contents.css','./ckeditor/adapters/jquery.js','./ckeditor/lang/en.js','./ckeditor/plugins/**','./ckeditor/config.js'],
               './farbtastic/src/farbtastic.js',

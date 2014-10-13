@@ -8,7 +8,7 @@ requirejs.config({
 		jquery: "components/jquery/jquery.min",
 		jqueryui: "components/jquery-ui/ui/minified/jquery-ui.min",
 		ckeditor: "components/ckeditor/ckeditor",
-		threejs: "components/three.js/build/three.min",
+		threejs: "components/threejs/build/three.min",
 		forms: "lib/forms",
 		plot: "lib/plot/plot",
 		ChemDoodle: "lib/chemdoodle/ChemDoodleWeb-unpacked",
@@ -51,7 +51,7 @@ requirejs.config({
             exports: 'Papa'
         },
         "jquery-cookie": "jquery",
-		"components/three.js/examples/js/controls/TrackballControls": ["threejs"],
+		"lib/threejs/TrackballControls": ["threejs"],
 		"jqgrid": ["jquery", "components/jqgrid_edit/js/i18n/grid.locale-en"],
 		"libs/jsmol/js/JSmolApplet": ["libs/jsmol/JSmol.min.nojq"],
 		"lib/flot/jquery.flot.pie": ["jquery", "lib/flot/jquery.flot"],

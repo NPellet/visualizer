@@ -1,4 +1,4 @@
-define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util', 'underscore', 'threejs', 'components/three.js/examples/js/controls/TrackballControls'], function(Default, Traversing, API, Util, _) {
+define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util', 'underscore', 'threejs', 'lib/threejs/TrackballControls'], function(Default, Traversing, API, Util, _, THREE) {
   function generateRandomArray(n, min, max) {
     var result = [];
     for(var i=0; i<n; i++) {
@@ -1397,7 +1397,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       }
 
       // particle system
-      var object = new THREE.ParticleSystem( geometry, shaderMaterial );
+      var object = new THREE.PointCloud( geometry, shaderMaterial );
       object.indexes = indexes;
       // self._highlightParticleObjects[key].drawn = true;
       // highlightObjectBis.dynamic = true;

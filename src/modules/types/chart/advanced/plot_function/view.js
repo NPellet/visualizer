@@ -1,4 +1,4 @@
-define(['require','modules/default/defaultview','src/util/util','src/util/api','components/three.js/build/three.min'], function(require, Default, Util, API) {
+define(['require','modules/default/defaultview','src/util/util','threejs'], function(require, Default, Util, THREE) {
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
 
