@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.14-2
+ * jsGraphs JavaScript Graphing Library v1.9.14-5
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-10-05T09:01Z
+ * Date: 2014-10-13T10:44Z
  */
 
 (function( global, factory ) {
@@ -809,6 +809,7 @@ build['./graph.axis'] = ( function( $ ) {
 
       //console.log( value, this.getActualMin(), this.getMaxPx(), this.getMinPx(), this._getActualInterval() );
       if ( !this.options.logScale ) {
+        
         return ( value - this.getActualMin() ) / ( this._getActualInterval() ) * ( this.getMaxPx() - this.getMinPx() ) + this.getMinPx();
       } else {
         // 0 if value = min
@@ -1469,7 +1470,7 @@ build['./graph.axis.broken'] = ( function( $ ) {
     // [ [ 0, 10 ], [ 50, 100 ] ]
     setBrokenRanges: function( ranges ) {
       this.ranges = [];
-
+      this._broken = true;
       var 
         self = this,
         i = 0,
@@ -1624,6 +1625,40 @@ build['./graph.axis.broken'] = ( function( $ ) {
       }
       // Ex 50 / (100) * (1000 - 700) + 700
       return ;
+    },
+
+    getRatioInRange: function( inRangeOf, value ) {
+
+
+      for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
+        if( inRangeOf <= this.ranges[ i ].max && inRangeOf >= this.ranges[ i ].min ) {
+          // This range
+
+
+             return Math.abs( value - this.ranges[ i ].min ) / ( this.ranges[ i ].max - this.ranges[ i ].min );
+            
+          return;
+        }
+      }
+      
+    },
+
+
+    getInRange: function( inRangeOf, value ) {
+
+      
+
+      for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
+        if( inRangeOf <= this.ranges[ i ].max && inRangeOf >= this.ranges[ i ].min ) {
+          // This range
+
+
+             return ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx
+            
+          return;
+        }
+      }
+      
     }
   }
 
@@ -3320,9 +3355,11 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     },
 
     setBottomAxisAsTime: function( num, options ) {
-      options = options || {};
+      throw "Method deprecated. Create your axis with { type: 'time' } as options instead";
+      /*options = options || {};
       options.type = 'time';
-      return _getAxis( this, num, options, 'bottom' );
+      return _getAxis( this, num, options, 'bottom' );*/
+
     },
 
     setXAxis: function( axis, num ) {
@@ -3396,9 +3433,9 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     getBoundaryAxis: function( axis, xy, minmax ) {
 
       var valSeries = this.getBoundaryAxisFromSeries( axis, xy, minmax );
-      var valShapes = this.getBoundaryAxisFromShapes( axis, xy, minmax );
-      
-      return Math[ minmax ]( valSeries, valShapes );
+    //  var valShapes = this.getBoundaryAxisFromShapes( axis, xy, minmax );
+      return valSeries;
+      //return Math[ minmax ]( valSeries, valShapes );
 
     },
 
@@ -5053,6 +5090,7 @@ build['./graph._serie'] = ( function( ) {
     },
 
     setXAxis: function( axis ) {
+      
       if ( typeof axis == "number" )
         this.xaxis = this.isFlipped() ? this.graph.getYAxis( axis ) : this.graph.getXAxis( axis );
       else
@@ -6431,6 +6469,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
       if ( this.degradationPx ) {
         data = getDegradedData( this );
+        console.log( data );
         xData = data[ 1 ];
         data = data[ 0 ];
       }
@@ -7665,7 +7704,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
       incrYFlip = 1,
       degradeFirstX, degradeFirstXPx,
       optimizeMonotoneous = graph.isXMonotoneous(),
-      optimizeMaxPxX = graph.getXAxis().getMaxPx(),
+      optimizeMaxPxX = graph.getXAxis().getMathMaxPx(),
       optimizeBreak, buffer;
 
     if ( graph.isFlipped() ) {
@@ -7779,7 +7818,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
       degradationMax = -Infinity;
 
       var data = [];
-
       for ( ; j < m; j += 2 ) {
 
         xpx2 = graph.getX( graph.data[ i ][ j + incrXFlip ] );
@@ -7816,7 +7854,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
           degradeFirstXPx = xpx2;
         }
 
-        if ( xpx2 - degradeFirstXPx > graph.degradationPx && j < m ) {
+        if ( Math.abs( xpx2 - degradeFirstXPx ) > graph.degradationPx && j < m ) {
 
           data.push(
             ( degradeFirstX + graph.data[ i ][ j + incrXFlip ] ) / 2,
@@ -8834,8 +8872,8 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
 
   
 
-  var GraphSerieScatter = function() {}
-  $.extend( GraphSerieScatter.prototype, GraphSerieNonInstanciable.prototype, {
+  var GraphSerieZone = function() {}
+  $.extend( GraphSerieZone.prototype, GraphSerieNonInstanciable.prototype, {
 
     defaults: {
       label: "",
@@ -8855,7 +8893,7 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
       this.id = Math.random() + Date.now();
 
       this.shown = true;
-      this.options = $.extend( true, {}, GraphSerieScatter.prototype.defaults, options );
+      this.options = $.extend( true, {}, GraphSerieZone.prototype.defaults, options );
       this.data = [];
 
       this._isMinOrMax = {
@@ -9138,7 +9176,9 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
 
       lineBottom.reverse();
 
-      this.lineZone.setAttribute( 'd', "M " + lineTop[ 0 ] + " L " + lineTop.join( " L " ) + " L " + lineBottom.join( " L " ) + " z" );
+      if( lineTop.length > 0 && lineBottom.length > 0 ) {
+        this.lineZone.setAttribute( 'd', "M " + lineTop[ 0 ] + " L " + lineTop.join( " L " ) + " L " + lineBottom.join( " L " ) + " z" );
+      }
 
       this.applyLineStyle( this.lineZone );
       this.groupMain.appendChild( this.groupZones );
@@ -9188,7 +9228,7 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
 
   } );
 
-  return GraphSerieScatter;
+  return GraphSerieZone;
  } ) ( build["./graph._serie"] );
 
 
