@@ -51,10 +51,8 @@ define(['modules/default/defaultview','src/util/api','src/util/util','src/util/d
 				this._lastMol = moduleValue;
 				
 				var self = this,
-					type = Traversing.getType(moduleValue),
-					def = Renderer.toScreen(moduleValue, this.module, this._id);
-
-				this.def = def;
+					type = Traversing.getType(moduleValue);
+                this.def = Renderer.toScreen(moduleValue, this.module, this._id);
 				this.def.always(function(mol) {
 
 					self.module.getDomContent( ).empty( );
@@ -76,7 +74,7 @@ define(['modules/default/defaultview','src/util/api','src/util/util','src/util/d
 							}
 						}
 					} else {
-						this._atomLabels = false;
+						self._atomLabels = false;
 					}
 
 					self.def.canvas.CIOnMouseMove(function(e) {

@@ -1,4 +1,6 @@
-define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/util/debug'], function($, Entry, Traversing, API, Debug) {
+'use strict';
+
+define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/util/debug'], function(Entry, Traversing, API, Debug) {
 
 	return {
 
@@ -6,7 +8,6 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 
 		init: function() {
 
-			var sourceName, sourceAccepts;
 			this.module.model = this;
 			this.data = new DataObject();
 			
@@ -38,10 +39,9 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 			
 			var list = this.getVarNameList();
 			for( var i = 0, l = list.length ; i < l ; i ++ ) {
-				API.getVar( list[ i ] ).listen( this.module, $.proxy( this.onVarChange, this ) );
+				API.getVar( list[ i ] ).listen( this.module, this.onVarChange.bind(this) );
 			}
-			//this._varlisten = API.getRepositoryData().listen( this.getVarNameList(), $.proxy(this.onVarGet, this) );
-			this._actionlisten = API.getRepositoryActions().listen( this.getActionNameList(), $.proxy(this.onActionTrigger, this) );
+			this._actionlisten = API.getRepositoryActions().listen( this.getActionNameList(), this.onActionTrigger.bind(this));
 		},
 
 		mapVars: function() {
@@ -81,7 +81,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				return names;
 			}
 
-			l = list.length,
+			l = list.length;
 			i = l - 1;
 
 			for( ; i >= 0; i--) {
@@ -149,8 +149,8 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 
 				rel = self.module.getDataRelFromName( varName );
 				
-				i = 0,
-				l = rel.length,
+				i = 0;
+				l = rel.length;
 				k = 0;
 
 				var vars = self.module.vars_in();
@@ -208,7 +208,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 
 				
 
-			}, function(e) {
+			}, function() {
 				rejectLatency();
 			} ).catch( function( err ) {
 				

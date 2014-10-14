@@ -1,3 +1,5 @@
+'use strict';
+
 define(['jquery', 'modules/module', 'src/util/debug'], function($, Module, Debug) {
 
 	var incrementalId = 0;

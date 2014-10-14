@@ -49,8 +49,6 @@ define(['require','modules/default/defaultview','src/util/util','threejs'], func
 				delete this.floor;
 				// console.log(this.scene.__webglObjects);
 			}
-			this.graphGeometry;
-			this.graphMesh;
 
 			require(['./TrackballControls','lib/parser/Parser'], function() {
 				

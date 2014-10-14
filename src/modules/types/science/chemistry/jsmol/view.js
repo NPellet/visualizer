@@ -15,7 +15,6 @@ function(require,Default, UTIL, DataTraversing) {
 	 	init: function() {
             var self = this;
 
-            this.highlightedAtom;
             this.dom = $('<iframe>',{src:require.toUrl('./jsmol.html')}).css("border",0);
             this.module.getDomContent().html(this.dom).css('overflow', 'hidden');
 

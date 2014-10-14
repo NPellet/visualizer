@@ -1,5 +1,6 @@
+'use strict';
+
 define(['require', 'jquery', 'src/util/versioning'], function(require, $, Versioning) {
-	"use strict";
 
 	var elements = [];
 	return {

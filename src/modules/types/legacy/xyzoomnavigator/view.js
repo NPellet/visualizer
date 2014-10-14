@@ -119,7 +119,6 @@ define(['modules/default/defaultview'], function(Default) {
 			for(var i = 0, length = source.length; i < length; i++) {
 				var element = {};
 				element.data = {};
-				element._color;
 
 				if(colorJPath)
 					element._color = CI.DataType.asyncToScreenAttribute(source[i], 'bgcolor', colorJPath).done(function(val) {

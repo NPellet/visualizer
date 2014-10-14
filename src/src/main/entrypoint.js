@@ -1,3 +1,5 @@
+'use strict';
+
 define(['jquery',
 	'src/header/header',
 	'src/util/repository',
@@ -29,7 +31,6 @@ define(['jquery',
 		Debug,
         browser
     ) {
-	"use strict";
 
 	var _viewLoaded, _dataLoaded;
 

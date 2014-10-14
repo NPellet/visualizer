@@ -1,8 +1,9 @@
+'use strict';
+
 define(function() {
 	return {
 		
 		initDefault: function() {
-
 			this.onReady = true;
 		},
 

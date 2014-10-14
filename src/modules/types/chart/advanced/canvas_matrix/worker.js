@@ -1,3 +1,5 @@
+'use strict';
+
 var count = 0;
 
  
@@ -53,7 +55,7 @@ function getRGB(color) {
 function generate(indexX, indexY, buffer, nbValX) {
 	
 	var startX = indexX * squareLoading, 
-	    startY = indexY * squareLoading
+	    startY = indexY * squareLoading,
 	    endX = startX + squareLoading,
 	    endY = startY + squareLoading;
 	
@@ -90,7 +92,7 @@ function drawCell(value, startX, startY, color, bufferData, nbValX) {
 	var squareWidth = nbValX * pxPerCell;
 	
 
-	var i = 0; j = 0;
+	var i = 0, j = 0, pixelNum;
 	while (j < pxPerCell) {
 		while (i < pxPerCell) {
 			count++;

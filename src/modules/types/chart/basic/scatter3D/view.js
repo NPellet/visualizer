@@ -1083,11 +1083,9 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       }
       
       function unicodeSuperscript(num) {
-        var num = num.toString();
+        num = num.toString();
         var result = '';
         for(var i=0; i<num.length; i++) {
-          if(parseInt(num[i] === NaN))
-          continue;
           if(num[i] === '2' || num[i] === '3') {
             result += String.fromCharCode(176 + parseInt(num[i]));
           }

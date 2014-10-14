@@ -1,7 +1,6 @@
+'use strict';
 
 define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/util/context', 'src/util/versioning', 'src/util/api', 'forms/form'], function($, ui, Util, ModuleFactory, Context, Versioning, API, Form) {
-	"use strict";
-
 
 	var definition, jqdom, self = this, moduleMove, isInit = false;
 	var activeLayer = "Default layer";
