@@ -1,5 +1,3 @@
-
-
 module.exports = function(grunt) {
 
     var walk = require('walk');
@@ -14,10 +12,8 @@ module.exports = function(grunt) {
             mapped = usrPath+path.substr(3);
         else
             mapped = './src/'+path;
-
         if(mapped.indexOf('.js')===-1)
             mapped += ".js";
-
         return mapped;
     }
 
@@ -64,12 +60,12 @@ module.exports = function(grunt) {
                         ['./jqgrid_edit/js/*.js', './jqgrid_edit/js/i18n/grid.locale-en.js', './jqgrid_edit/css/*.css'],
                         ['./jquery/jquery.min.js', './jquery/jquery-migrate.min.js'],
                         './jquery-ui/ui/minified/jquery-ui.min.js',
-                        './three.js/build/three.min.js',
+                        './threejs/build/three.min.js',
                         './ace/lib/ace/**',
                         ['./ckeditor/skins/**','./ckeditor/ckeditor.js','./ckeditor/styles.js','./ckeditor/contents.css','./ckeditor/adapters/jquery.js','./ckeditor/lang/en.js','./ckeditor/plugins/**','./ckeditor/config.js'],
                         './farbtastic/src/farbtastic.js',
                         './jquery.threedubmedia/event.drag/jquery.event.drag.js',
-                        './sprintf/src/sprintf.min.js',
+                        './sprintf/dist/sprintf.min.js',
                         './requirejs/require.js',
                         './jquery-throttle-debounce/jquery.ba-throttle-debounce.min.js',
                         ['./Aristo-jQuery-UI-Theme/css/Aristo/images/*', './Aristo-jQuery-UI-Theme/css/Aristo/*.css'],
@@ -78,14 +74,13 @@ module.exports = function(grunt) {
                         ['./jsoneditor/jsoneditor.min*', './jsoneditor/img/*'],
                         './jit/Jit/**/*',
                         './jquery-ui-contextmenu/jquery.ui-contextmenu.min.js',
-                        './mustache/mustache.js',
-                        './papa-parse/jquery.parse.min.js',
+                        './papa-parse/papaparse.min.js',
                         ['./font-awesome/css/font-awesome.min.css', './font-awesome/fonts/*'],
                         './colors/css/colors.min.css',
-                        './pouchdb/dist/*',
+                        './pouchdb/dist/pouchdb.min.js',
                         './uri.js/src/*.js',
                         './twig.js/twig.min.js',
-                        ['./setImmediate/setimmediate.js','./promises/promise.js','./bluebird/js/browser/bluebird.js'], // Promises polyfill
+                        './bluebird/js/browser/bluebird.js',
                         './onde/src/*',
                         ['./spectrum/spectrum.js', './spectrum/spectrum.css'],
                         './superagent/superagent.js',

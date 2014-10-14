@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0
- * @date 2014-05-01T21:48
+ * @version 2.3.0
+ * @date 2014-08-17T10:39
  */
 
 ;(function($, window, document, undefined) {
@@ -117,6 +117,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.editStart = function(){
 				node.editEnd(true, event);
 				return false; // so we don't start editmode on Mac
 			}
+			event.stopPropagation();
 		}).blur(function(event){
 			return node.editEnd(true, event);
 		});
@@ -231,7 +232,7 @@ $.ui.fancytree._FancytreeNodeClass.prototype.endEdit = function(){
  * [ext-edit] Check if any node in this tree  in edit mode.
  *
  * @returns {FancytreeNode | null}
- * @lends Fancytree.prototype
+ * @alias Fancytree#isEditing
  * @requires jquery.fancytree.edit.js
  */
 $.ui.fancytree._FancytreeClass.prototype.isEditing = function(){
@@ -242,7 +243,7 @@ $.ui.fancytree._FancytreeClass.prototype.isEditing = function(){
 /**
  * [ext-edit] Check if this node is in edit mode.
  * @returns {Boolean} true if node is currently beeing edited
- * @lends FancytreeNode.prototype
+ * @alias FancytreeNode#isEditing
  * @requires jquery.fancytree.edit.js
  */
 $.ui.fancytree._FancytreeNodeClass.prototype.isEditing = function(){

@@ -58,6 +58,9 @@ $.jgrid.extend({
 			}
 			if ( idx !== -1 ){
 				var sort = $t.p.colModel[idx].sortable;
+				if(!sobj) {
+					sobj = $t.grid.headers[idx].el;
+				}
 				if ( typeof sort !== 'boolean' ) { sort =  true; }
 				if ( typeof reload !=='boolean' ) { reload = false; }
 				if ( sort ) { $t.sortData("jqgh_"+$t.p.id+"_" + colname, idx, reload, sor, sobj); }
@@ -67,7 +70,9 @@ $.jgrid.extend({
 	clearBeforeUnload : function () {
 		return this.each(function(){
 			var grid = this.grid;
-			grid.emptyRows.call(this, true, true); // this work quick enough and reduce the size of memory leaks if we have someone
+			if ($.isFunction(grid.emptyRows)) {
+				grid.emptyRows.call(this, true, true); // this work quick enough and reduce the size of memory leaks if we have someone
+			}
 
 			$(document).unbind("mouseup.jqGrid" + this.p.id ); 
 			$(grid.hDiv).unbind("mousemove"); // TODO add namespace
@@ -100,6 +105,7 @@ $.jgrid.extend({
 			this.formatter = null;
 			this.addXmlData = null;
 			this.addJSONData = null;
+			this.grid = null;
 		});
 	},
 	GridDestroy : function () {
@@ -120,7 +126,7 @@ $.jgrid.extend({
 			if ( !this.grid ) {return;}
 			var defgrid = {id: $(this).attr('id'),cl: $(this).attr('class')};
 			if (this.p.pager) {
-				$(this.p.pager).empty().removeClass("ui-state-default ui-jqgrid-pager corner-bottom");
+				$(this.p.pager).empty().removeClass("ui-state-default ui-jqgrid-pager ui-corner-bottom");
 			}
 			var newtable = document.createElement('table');
 			$(newtable).attr({id:defgrid.id});
@@ -184,7 +190,7 @@ $.jgrid.extend({
 			groupOp: 'AND',
 			defaultSearch : "bw",
 			searchOperators : false,
-			operandTitle : "Click to select search operation.",
+			resetIcon : "x",
 			operands : { "eq" :"==", "ne":"!","lt":"<","le":"<=","gt":">","ge":">=","bw":"^","bn":"!^","in":"=","ni":"!=","ew":"|","en":"!@","cn":"~","nc":"!~","nu":"#","nn":"!#"}
 		}, $.jgrid.search , p  || {});
 		return this.each(function(){
@@ -272,7 +278,7 @@ $.jgrid.extend({
 							}
 							break;
 						case 'text':
-							$elem.val(v);
+							$elem.val(v || "");
 							if(v !== undefined) {
 								sdata[nm] = v;
 								j++;
@@ -284,12 +290,13 @@ $.jgrid.extend({
 							break;
 						case 'custom':
 							if ($.isFunction(this.searchoptions.custom_value) && $elem.length > 0 && $elem[0].nodeName.toUpperCase() === "SPAN") {
-								this.searchoptions.custom_value.call($t, $elem.children(".customelement:first"), "set", v);
+								this.searchoptions.custom_value.call($t, $elem.children(".customelement:first"), "set", v || "");
 							}
 							break;
 					}
 				});
 				var sd =  j>0 ? true : false;
+				$t.p.resetsearch =  true;
 				if(p.stringResult === true || $t.p.datatype === "local") {
 					var ruleGroup = "{\"groupOp\":\"" + p.groupOp + "\",\"rules\":[";
 					var gi=0;
@@ -419,7 +426,10 @@ $.jgrid.extend({
 						soptions.clearSearch = true;
 					}
 					if(soptions.clearSearch) {
-						$("td:eq(2)",stbl).append("<a title='Clear Search Value' style='padding-right: 0.3em;padding-left: 0.3em;' class='clearsearchclass'>x</a>");
+						var csv = p.resetTitle || 'Clear Search Value';
+						$("td:eq(2)",stbl).append("<a title='"+csv+"' style='padding-right: 0.3em;padding-left: 0.3em;' class='clearsearchclass'>"+p.resetIcon+"</a>");
+					} else {
+						$("td:eq(2)", stbl).hide();
 					}
 					switch (this.stype)
 					{
@@ -734,7 +744,7 @@ $.jgrid.extend({
 					// The text will be over the cVisibleColumns columns
 					$colHeader = $('<th>').attr({role: "columnheader"})
 						.addClass("ui-state-default ui-th-column-header ui-th-"+ts.p.direction)
-						.css({'height':'22px', 'border-top': '0px none'})
+						.css({'height':'22px', 'border-top': '0 none'})
 						.html(titleText);
 					if(cVisibleColumns > 0) {
 						$colHeader.attr("colspan", String(cVisibleColumns));
@@ -760,7 +770,7 @@ $.jgrid.extend({
 						} else {
 							$('<th>', {role: "columnheader"})
 								.addClass("ui-state-default ui-th-column-header ui-th-"+ts.p.direction)
-								.css({"display": cmi.hidden ? 'none' : '', 'border-top': '0px none'})
+								.css({"display": cmi.hidden ? 'none' : '', 'border-top': '0 none'})
 								.insertBefore($th);
 							$tr.append(th);
 						}
@@ -808,7 +818,7 @@ $.jgrid.extend({
 			if ( !this.grid ) {return;}
 			var $t = this, cm = $t.p.colModel,i=0, len = cm.length, maxfrozen = -1, frozen= false;
 			// TODO treeGrid and grouping  Support
-			if($t.p.subGrid === true || $t.p.treeGrid === true || $t.p.cellEdit === true || $t.p.sortable || $t.p.scroll || $t.p.grouping )
+			if($t.p.subGrid === true || $t.p.treeGrid === true || $t.p.cellEdit === true || $t.p.sortable || $t.p.scroll )
 			{
 				return;
 			}

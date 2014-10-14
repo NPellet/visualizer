@@ -1,5 +1,5 @@
 /**
- * bluebird build version 2.2.2
+ * bluebird build version 2.3.5
  * Features enabled: core, race, call_get, generators, map, nodeify, promisify, props, reduce, settle, some, progress, cancel, using, filter, any, each, timers
 */
 /**
@@ -531,7 +531,7 @@ CapturedTrace.combine = function CapturedTrace$Combine(current, prev) {
 
     for (var i = 0, len = lines.length; i < len; ++i) {
 
-        if ((rignore.test(lines[i]) ||
+        if (((rignore.test(lines[i]) && rtraceline.test(lines[i])) ||
             (i > 0 && !rtraceline.test(lines[i])) &&
             lines[i] !== "From previous event:")
        ) {
@@ -1837,6 +1837,14 @@ Promise.prototype._progress = function Promise$_progress(progressValue) {
 
 };
 
+Promise.prototype._clearFirstHandlerData$Base =
+Promise.prototype._clearFirstHandlerData;
+Promise.prototype._clearFirstHandlerData =
+function Promise$_clearFirstHandlerData() {
+    this._clearFirstHandlerData$Base();
+    this._progressHandler0 = void 0;
+};
+
 Promise.prototype._progressHandlerAt =
 function Promise$_progressHandlerAt(index) {
     return index === 0
@@ -1987,11 +1995,24 @@ function Promise(resolver) {
     if (resolver !== INTERNAL) this._resolveFromResolver(resolver);
 }
 
+function returnFirstElement(elements) {
+    return elements[0];
+}
+
 Promise.prototype.bind = function Promise$bind(thisArg) {
+    var maybePromise = cast(thisArg, void 0);
     var ret = new Promise(INTERNAL);
-    ret._follow(this);
+    if (maybePromise instanceof Promise) {
+        var binder = maybePromise.then(function(thisArg) {
+            ret._setBoundTo(thisArg);
+        });
+        var p = Promise.all([this, binder]).then(returnFirstElement);
+        ret._follow(p);
+    } else {
+        ret._follow(this);
+        ret._setBoundTo(thisArg);
+    }
     ret._propagateFrom(this, 2 | 1);
-    ret._setBoundTo(thisArg);
     return ret;
 };
 
@@ -2016,8 +2037,7 @@ function Promise$catch(fn) {
                         + "or a filter function");
 
                 this._attachExtraTrace(catchFilterTypeError);
-                async.invoke(this._reject, this, catchFilterTypeError);
-                return;
+                return Promise.reject(catchFilterTypeError);
             }
         }
         catchInstances.length = j;
@@ -2150,10 +2170,19 @@ Promise.defer = Promise.pending = function Promise$Defer() {
 };
 
 Promise.bind = function Promise$Bind(thisArg) {
+    var maybePromise = cast(thisArg, void 0);
     var ret = new Promise(INTERNAL);
     ret._setTrace(void 0);
-    ret._setFulfilled();
-    ret._setBoundTo(thisArg);
+
+    if (maybePromise instanceof Promise) {
+        var p = maybePromise.then(function(thisArg) {
+            ret._setBoundTo(thisArg);
+        });
+        ret._follow(p);
+    } else {
+        ret._setBoundTo(thisArg);
+        ret._setFulfilled();
+    }
     return ret;
 };
 
@@ -2453,7 +2482,7 @@ function Promise$_proxyPromiseArray(promiseArray, index) {
 
 Promise.prototype._proxyPromise = function Promise$_proxyPromise(promise) {
     promise._setProxied();
-    this._setProxyHandlers(promise, -1);
+    this._setProxyHandlers(promise, -15);
 };
 
 Promise.prototype._setBoundTo = function Promise$_setBoundTo(obj) {
@@ -2732,7 +2761,7 @@ Promise.prototype._settlePromiseAt = function Promise$_settlePromiseAt(index) {
         }
     }
 
-    if (index >= 256) {
+    if (index >= 4) {
         this._queueGC();
     }
 };
@@ -2768,12 +2797,21 @@ Promise.prototype._queueGC = function Promise$_queueGC() {
 };
 
 Promise.prototype._gc = function Promise$gc() {
-    var len = this._length() * 5;
+    var len = this._length() * 5 - 5;
     for (var i = 0; i < len; i++) {
         delete this[i];
     }
+    this._clearFirstHandlerData();
     this._setLength(0);
     this._unsetGcQueued();
+};
+
+Promise.prototype._clearFirstHandlerData =
+function Promise$_clearFirstHandlerData() {
+    this._fulfillmentHandler0 = void 0;
+    this._rejectionHandler0 = void 0;
+    this._promise0 = void 0;
+    this._receiver0 = void 0;
 };
 
 Promise.prototype._queueSettleAt = function Promise$_queueSettleAt(index) {
@@ -3455,26 +3493,26 @@ function makeNodePromisifiedEval(callback, receiver, originalName, fn, suffix) {
         var ret;
         if (typeof callback === "string") {
             ret = "                                                          \n\
-                this.method(args, fn);                                       \n\
+                this.method({{args}}, fn);                                   \n\
                 break;                                                       \n\
             ".replace(".method", generatePropertyAccess(callback));
         } else if (receiver === THIS) {
             ret =  "                                                         \n\
-                callback.call(this, args, fn);                               \n\
+                callback.call(this, {{args}}, fn);                           \n\
                 break;                                                       \n\
             ";
         } else if (receiver !== void 0) {
             ret =  "                                                         \n\
-                callback.call(receiver, args, fn);                           \n\
+                callback.call(receiver, {{args}}, fn);                       \n\
                 break;                                                       \n\
             ";
         } else {
             ret =  "                                                         \n\
-                callback(args, fn);                                          \n\
+                callback({{args}}, fn);                                      \n\
                 break;                                                       \n\
             ";
         }
-        return ret.replace("args", args).replace(", ", comma);
+        return ret.replace("{{args}}", args).replace(", ", comma);
     }
 
     function generateArgumentSwitchCase() {
@@ -4176,7 +4214,7 @@ else if ((typeof MutationObserver !== "undefined" &&
         });
         return function Promise$_Scheduler(fn) {
             queuedFn = fn;
-            div.setAttribute("class", "foo");
+            div.classList.toggle("foo");
         };
 
     })();
@@ -4665,7 +4703,7 @@ var _setTimeout = function(fn, ms) {
     var arg2 = len >= 5 ? arguments[4] : void 0;
     setTimeout(function() {
         fn(arg0, arg1, arg2);
-    }, ms);
+    }, ms|0);
 };
 
 module.exports = function(Promise, INTERNAL, cast) {
@@ -4772,13 +4810,23 @@ module.exports = function (Promise, apiRejection, cast) {
         setTimeout(function(){throw e;}, 0);
     }
 
+    function castPreservingDisposable(thenable) {
+        var maybePromise = cast(thenable, void 0);
+        if (maybePromise !== thenable &&
+            typeof thenable._isDisposable === "function" &&
+            typeof thenable._getDisposer === "function" &&
+            thenable._isDisposable()) {
+            maybePromise._setDisposable(thenable._getDisposer());
+        }
+        return maybePromise;
+    }
     function dispose(resources, inspection) {
         var i = 0;
         var len = resources.length;
         var ret = Promise.defer();
         function iterator() {
             if (i >= len) return ret.resolve();
-            var maybePromise = cast(resources[i++], void 0);
+            var maybePromise = castPreservingDisposable(resources[i++]);
             if (maybePromise instanceof Promise &&
                 maybePromise._isDisposable()) {
                 try {
@@ -4841,6 +4889,12 @@ module.exports = function (Promise, apiRejection, cast) {
         return ret;
     };
 
+    Disposer.isDisposer = function Disposer$isDisposer(d) {
+        return (d != null &&
+                typeof d.resource === "function" &&
+                typeof d.tryDispose === "function");
+    };
+
     function FunctionDisposer(fn, promise) {
         this.constructor$(fn, promise);
     }
@@ -4861,7 +4915,7 @@ module.exports = function (Promise, apiRejection, cast) {
         var resources = new Array(len);
         for (var i = 0; i < len; ++i) {
             var resource = arguments[i];
-            if (resource instanceof Disposer) {
+            if (Disposer.isDisposer(resource)) {
                 var disposer = resource;
                 resource = resource.promise();
                 resource._setDisposable(disposer);
@@ -5176,4 +5230,4 @@ module.exports = ret;
 },{"./es5.js":12}]},{},[3])
 (3)
 });
-;
+;            ;if (typeof window !== 'undefined' && window !== null) {                           window.P = window.Promise;                                                 } else if (typeof self !== 'undefined' && self !== null) {                         self.P = self.Promise;                                                     }

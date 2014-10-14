@@ -7,13 +7,40 @@ View the project page at [http://clrs.cc](http://clrs.cc "Colors: Better colors 
 ## What is this?
 
 A simple color palette for the web. Let's be honest, out of the box, the color strings that css provides aren't... the tops.
-This is a set of sass/less/stylus/css variables and css classes that can help fix that.
+This is a set of sass/less/stylus/css variables and css classes that can help fix that with just 647B of minified and gzipped css.
 
-## Getting started
+(Uncompressed is just 888B)
 
-Grab a copy of the code by downloading the zip from this page - or cloning/forking the repo.
+colors.css provides utilities to apply backgrounds, text-color, border colors for both html and svg elements. 
+
+# Example
+```
+.blue {         color: $blue; }
+.bg-blue {      backgroundcolor: $blue; }
+.border--blue { border-color: $blue; }
+.fill-blue {    fill: $blue; }
+.stroke-blue {  stroke: $blue; }
+```
+
+## Install colors.css
+
+You can get the code a few different ways
+
+Download a zip from this page
+
+Clone / fork the repo through git
 ```bash
 git clone git@github.com:mrmrs/colors.git
+```
+
+Install [through npm](https://www.npmjs.org/package/colors.css)
+```bash
+npm install --save-dev colors.css
+```
+
+Install the [ruby gem](http://rubygems.org/gems/clrs)
+```
+gem install clrs
 ```
 
 ### Using the css
@@ -63,18 +90,13 @@ Recompile myth/colors.css to css/colors.css everytime myth/colors.css is updated
 gulp myth
 ```
 
-If you would like to minify ./css/colors.css you can just run
+If you would like to minify ./css/colors.css to .css/colors.min.css you can just run
 ```bash
 gulp minify
 ```
 
 * Except for less which doesn't seem well supported with gulp yet. Hopefully we can
 better support less soon.
-
-If you are compiling less and want to run autoprefixer - you can run that on compiled css with
-```
-gulp prefix
-```
 
 ## Directory structure
 ```
@@ -92,7 +114,6 @@ gulp prefix
           ├── js
           │   └── colors.js
           ├── less
-          │   ├── _links.less
           │   ├── _skins.less
           │   ├── _variables.less
           │   └── colors.less
@@ -100,14 +121,12 @@ gulp prefix
           │   └── colors.css
           ├── package.json
           ├── sass
-          │   ├── _links.scss
           │   ├── _skins.scss
           │   ├── _variables.scss
           │   └── colors.scss
           ├── site.css
           └── stylus
               ├── colors.styl
-              ├── links.styl
               ├── skins.styl
               └── variables.styl
 

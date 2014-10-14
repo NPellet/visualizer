@@ -66,7 +66,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
             if (sprintfVal && sprintfVal != '') {
 
                 try {
-                    require([ 'components/sprintf/src/sprintf.min' ], function () {
+                    require([ 'components/sprintf/dist/sprintf.min' ], function () {
 
                         var args = [ sprintfVal ];
                         for (var i in view.values) {
