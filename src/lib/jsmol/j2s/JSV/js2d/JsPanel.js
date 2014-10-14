@@ -1,67 +1,70 @@
 Clazz.declarePackage ("JSV.js2d");
-Clazz.load (["JSV.api.JSVPanel"], "JSV.js2d.JsPanel", ["javajs.awt.Font", "JSV.common.PDFWriter", "$.PanelData", "J.util.Logger"], function () {
+Clazz.load (["JSV.api.JSVPanel"], "JSV.js2d.JsPanel", ["javajs.awt.Font", "JSV.common.JSViewer", "$.PanelData", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.apiPlatform = null;
 this.pd = null;
 this.mouse = null;
-this.viewer = null;
+this.vwr = null;
 this.name = null;
+this.bgcolor = null;
 Clazz.instantialize (this, arguments);
 }, JSV.js2d, "JsPanel", null, JSV.api.JSVPanel);
-$_V(c$, "finalize", 
+Clazz.overrideMethod (c$, "finalize", 
 function () {
-J.util.Logger.info ("JSVPanel " + this + " finalized");
+JU.Logger.info ("JSVPanel " + this + " finalized");
 });
-$_V(c$, "getApiPlatform", 
+Clazz.overrideMethod (c$, "getApiPlatform", 
 function () {
 return this.apiPlatform;
 });
-$_V(c$, "getPanelData", 
+Clazz.overrideMethod (c$, "getPanelData", 
 function () {
 return this.pd;
 });
-c$.getPanelOne = $_M(c$, "getPanelOne", 
-function (viewer, spectrum) {
-var p =  new JSV.js2d.JsPanel (viewer);
-p.pd.initOne (spectrum);
+c$.getEmptyPanel = Clazz.defineMethod (c$, "getEmptyPanel", 
+function (viewer) {
+var p =  new JSV.js2d.JsPanel (viewer, false);
+p.pd = null;
 return p;
-}, "JSV.common.JSViewer,JSV.common.JDXSpectrum");
-c$.getPanelMany = $_M(c$, "getPanelMany", 
-function (viewer, spectra, startIndex, endIndex) {
-var p =  new JSV.js2d.JsPanel (viewer);
-p.pd.initMany (spectra, startIndex, endIndex);
+}, "JSV.common.JSViewer");
+c$.getPanelMany = Clazz.defineMethod (c$, "getPanelMany", 
+function (viewer, spectra) {
+var p =  new JSV.js2d.JsPanel (viewer, true);
+p.pd.initMany (spectra, viewer.initialStartIndex, viewer.initialEndIndex);
 return p;
-}, "JSV.common.JSViewer,JU.List,~N,~N");
+}, "JSV.common.JSViewer,JU.Lst");
 Clazz.makeConstructor (c$, 
-($fz = function (viewer) {
-this.viewer = viewer;
-this.pd =  new JSV.common.PanelData (this, viewer);
+ function (viewer, withPd) {
+this.vwr = viewer;
+this.pd = (withPd ?  new JSV.common.PanelData (this, viewer) : null);
 this.apiPlatform = viewer.apiPlatform;
 this.mouse = this.apiPlatform.getMouseManager (0, this);
-}, $fz.isPrivate = true, $fz), "JSV.common.JSViewer");
-$_V(c$, "getTitle", 
+}, "JSV.common.JSViewer,~B");
+Clazz.overrideMethod (c$, "getTitle", 
 function () {
 return this.pd.getTitle ();
 });
-$_V(c$, "dispose", 
+Clazz.overrideMethod (c$, "dispose", 
 function () {
 if (this.pd != null) this.pd.dispose ();
 this.pd = null;
 this.mouse.dispose ();
+this.mouse = null;
 });
-$_V(c$, "setTitle", 
+Clazz.overrideMethod (c$, "setTitle", 
 function (title) {
 this.pd.title = title;
 this.name = title;
 }, "~S");
-$_M(c$, "setColorOrFont", 
+Clazz.defineMethod (c$, "setColorOrFont", 
 function (ds, st) {
 this.pd.setColorOrFont (ds, st);
 }, "JSV.common.ColorParameters,JSV.common.ScriptToken");
-$_V(c$, "setBackgroundColor", 
+Clazz.overrideMethod (c$, "setBackgroundColor", 
 function (color) {
+this.bgcolor = color;
 }, "javajs.api.GenericColor");
-$_V(c$, "getInput", 
+Clazz.overrideMethod (c$, "getInput", 
 function (message, title, sval) {
 var ret = null;
 {
@@ -69,43 +72,54 @@ ret = prompt(message, sval);
 }this.getFocusNow (true);
 return ret;
 }, "~S,~S,~S");
-$_V(c$, "showMessage", 
+Clazz.overrideMethod (c$, "showMessage", 
 function (msg, title) {
-J.util.Logger.info (msg);
+JU.Logger.info (msg);
+var applet = this.vwr.html5Applet;
 {
-alert(msg);
+applet._showStatus(msg, title);
 }this.getFocusNow (true);
 }, "~S,~S");
-$_V(c$, "getFocusNow", 
+Clazz.overrideMethod (c$, "getFocusNow", 
 function (asThread) {
-this.pd.dialogsToFront ();
+if (this.pd != null) this.pd.dialogsToFront (null);
 }, "~B");
-$_V(c$, "getFontFaceID", 
+Clazz.overrideMethod (c$, "getFontFaceID", 
 function (name) {
 return javajs.awt.Font.getFontFaceID ("SansSerif");
 }, "~S");
-$_V(c$, "doRepaint", 
+Clazz.overrideMethod (c$, "doRepaint", 
 function (andTaintAll) {
+if (this.pd == null) return;
 this.pd.taintedAll = new Boolean (this.pd.taintedAll | andTaintAll).valueOf ();
-if (!this.pd.isPrinting) this.viewer.requestRepaint ();
+if (!this.pd.isPrinting) this.vwr.requestRepaint ();
 }, "~B");
-$_M(c$, "paintComponent", 
+Clazz.overrideMethod (c$, "paintComponent", 
 function (context) {
-if (this.viewer == null || this.pd == null || this.pd.graphSets == null || this.pd.isPrinting) return;
-var context2 = null;
+var contextFront = null;
+var contextRear = null;
 {
-context2 = context.canvas.topLayer.getContext("2d");
-}this.pd.g2d = this.pd.g2d0;
-this.pd.drawGraph (context, context2, this.getWidth (), this.getHeight (), false);
-this.viewer.repaintDone ();
+contextFront = context.canvas.frontLayer.getContext("2d");
+contextRear = context;
+}if (this.vwr == null) return;
+if (this.pd == null) {
+if (this.bgcolor == null) this.bgcolor = this.vwr.g2d.getColor1 (-1);
+this.vwr.g2d.fillBackground (context, this.bgcolor);
+this.vwr.g2d.fillBackground (contextRear, this.bgcolor);
+this.vwr.g2d.fillBackground (contextFront, this.bgcolor);
+return;
+}if (this.pd.graphSets == null || this.pd.isPrinting) return;
+this.pd.g2d = this.pd.g2d0;
+this.pd.drawGraph (context, contextFront, contextRear, this.getWidth (), this.getHeight (), false);
+this.vwr.repaintDone ();
 }, "~O");
-$_V(c$, "printPanel", 
+Clazz.overrideMethod (c$, "printPanel", 
 function (pl, os, title) {
 pl.title = title;
-pl.date = this.apiPlatform.getDateFormat (true);
+pl.date = this.apiPlatform.getDateFormat ("8824");
 this.pd.setPrint (pl, "Helvetica");
 try {
-( new JSV.common.PDFWriter ()).createPdfDocument (this, pl, os);
+(JSV.common.JSViewer.getInterface ("JSV.common.PDFWriter")).createPdfDocument (this, pl, os);
 } catch (ex) {
 if (Clazz.exceptionOf (ex, Exception)) {
 this.showMessage (ex.toString (), "creating PDF");
@@ -116,56 +130,60 @@ throw ex;
 this.pd.setPrint (null, null);
 }
 }, "JSV.common.PrintLayout,java.io.OutputStream,~S");
-$_V(c$, "saveImage", 
+Clazz.overrideMethod (c$, "saveImage", 
 function (type, file) {
 return null;
 }, "~S,javajs.api.GenericFileInterface");
-$_V(c$, "hasFocus", 
+Clazz.overrideMethod (c$, "hasFocus", 
 function () {
 return false;
 });
-$_V(c$, "repaint", 
+Clazz.overrideMethod (c$, "repaint", 
 function () {
 });
-$_V(c$, "setToolTipText", 
+Clazz.overrideMethod (c$, "setToolTipText", 
 function (s) {
 }, "~S");
-$_V(c$, "getHeight", 
+Clazz.overrideMethod (c$, "getHeight", 
 function () {
-return this.viewer.getHeight ();
+return this.vwr.getHeight ();
 });
-$_V(c$, "getWidth", 
+Clazz.overrideMethod (c$, "getWidth", 
 function () {
-return this.viewer.getWidth ();
+return this.vwr.getWidth ();
 });
-$_V(c$, "isEnabled", 
-function () {
-return false;
-});
-$_V(c$, "isFocusable", 
+Clazz.overrideMethod (c$, "isEnabled", 
 function () {
 return false;
 });
-$_V(c$, "isVisible", 
+Clazz.overrideMethod (c$, "isFocusable", 
 function () {
 return false;
 });
-$_V(c$, "setEnabled", 
+Clazz.overrideMethod (c$, "isVisible", 
+function () {
+return false;
+});
+Clazz.overrideMethod (c$, "setEnabled", 
 function (b) {
 }, "~B");
-$_V(c$, "setFocusable", 
+Clazz.overrideMethod (c$, "setFocusable", 
 function (b) {
 }, "~B");
-$_V(c$, "toString", 
+Clazz.overrideMethod (c$, "toString", 
 function () {
-return this.pd.getSpectrumAt (0).toString ();
+return (this.pd == null ? "<closed>" : "" + this.pd.getSpectrumAt (0));
 });
-$_V(c$, "processMouseEvent", 
+Clazz.overrideMethod (c$, "processMouseEvent", 
 function (id, x, y, modifiers, time) {
-return this.mouse.processEvent (id, x, y, modifiers, time);
+return this.mouse != null && this.mouse.processEvent (id, x, y, modifiers, time);
 }, "~N,~N,~N,~N,~N");
-$_V(c$, "processTwoPointGesture", 
+Clazz.overrideMethod (c$, "processTwoPointGesture", 
 function (touches) {
-this.mouse.processTwoPointGesture (touches);
+if (this.mouse != null) this.mouse.processTwoPointGesture (touches);
 }, "~A");
+Clazz.overrideMethod (c$, "showMenu", 
+function (x, y) {
+this.vwr.showMenu (x, y);
+}, "~N,~N");
 });

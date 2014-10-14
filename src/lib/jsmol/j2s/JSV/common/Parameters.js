@@ -6,6 +6,7 @@ this.integralMinY = 0.1;
 this.integralRange = 50.0;
 this.integralOffset = 30.0;
 this.integralDrawAll = false;
+this.viewOffset = 0;
 this.peakListThreshold = NaN;
 this.peakListInterpolation = "parabolic";
 this.precision = 2;
@@ -25,33 +26,33 @@ this.setBoolean (JSV.common.ScriptToken.YSCALEON, true);
 this.setBoolean (JSV.common.ScriptToken.XUNITSON, true);
 this.setBoolean (JSV.common.ScriptToken.YUNITSON, true);
 });
-$_M(c$, "setName", 
+Clazz.defineMethod (c$, "setName", 
 function (name) {
 this.name = name;
 return this;
 }, "~S");
-$_M(c$, "getBooleans", 
+Clazz.defineMethod (c$, "getBooleans", 
 function () {
 return this.htBooleans;
 });
-$_M(c$, "setBoolean", 
+Clazz.defineMethod (c$, "setBoolean", 
 function (st, val) {
 this.htBooleans.put (st, Boolean.$valueOf (val));
 return val;
 }, "JSV.common.ScriptToken,~B");
-$_M(c$, "getBoolean", 
+Clazz.defineMethod (c$, "getBoolean", 
 function (t) {
 return Boolean.TRUE === this.htBooleans.get (t);
 }, "JSV.common.ScriptToken");
-c$.isTrue = $_M(c$, "isTrue", 
+c$.isTrue = Clazz.defineMethod (c$, "isTrue", 
 function (value) {
 return (value.length == 0 || Boolean.parseBoolean (value));
 }, "~S");
-c$.getTFToggle = $_M(c$, "getTFToggle", 
+c$.getTFToggle = Clazz.defineMethod (c$, "getTFToggle", 
 function (value) {
 return (value.equalsIgnoreCase ("TOGGLE") ? null : JSV.common.Parameters.isTrue (value) ? Boolean.TRUE : Boolean.FALSE);
 }, "~S");
-$_M(c$, "setP", 
+Clazz.defineMethod (c$, "setP", 
 function (pd, st, value) {
 switch (st) {
 default:
@@ -92,11 +93,11 @@ break;
 if (pd == null) return;
 pd.setBooleans (this, st);
 }, "JSV.common.PanelData,JSV.common.ScriptToken,~S");
-c$.isMatch = $_M(c$, "isMatch", 
+c$.isMatch = Clazz.defineMethod (c$, "isMatch", 
 function (match, key) {
 return match == null || key.equalsIgnoreCase (match);
 }, "~S,~S");
-c$.putInfo = $_M(c$, "putInfo", 
+c$.putInfo = Clazz.defineMethod (c$, "putInfo", 
 function (match, info, key, value) {
 if (value != null && JSV.common.Parameters.isMatch (match, key)) info.put (match == null ? key : match, value);
 }, "~S,java.util.Map,~S,~O");

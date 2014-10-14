@@ -9,11 +9,11 @@ function (protocol) {
 Clazz.superConstructor (this, JU.AjaxURLStreamHandler, []);
 this.protocol = protocol;
 }, "~S");
-$_V(c$, "openConnection", 
+Clazz.overrideMethod (c$, "openConnection", 
 function (url) {
 return  new JU.AjaxURLConnection (url);
 }, "java.net.URL");
-$_V(c$, "toExternalForm", 
+Clazz.overrideMethod (c$, "toExternalForm", 
 function (u) {
 var result =  new JU.SB ();
 result.append (u.getProtocol ());

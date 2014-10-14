@@ -1136,37 +1136,34 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug, Variables ) {
 		},
 
 
-		getConfiguration: function( aliasName, fallbackValue ) {
+        getConfiguration: function (aliasName, fallbackValue) {
 
+            var cfgEl = this.definition.configuration,
+                alias = this.controller.configAliases[ aliasName ],
+                toReturn;
 
-			var cfgEl = this.definition.configuration,
-				alias = this.controller.configAliases[ aliasName ],
-                                toReturn;
+            if (alias) {
+                for (var i = 0, l = alias.length; i < l; i++) {
+                    cfgEl = cfgEl[ alias[ i ] ];
 
+                    if (typeof cfgEl === 'undefined') {
 
-			if( alias ) {
+                        toReturn = this._getConfigurationDefault(alias, aliasName);
+                        break;
+                    }
+                }
+            } else {
+                console.warn('Alias ' + alias + ' not defined ');
+                console.trace();
+            }
+            if (toReturn == undefined)
+                toReturn = this._doConfigurationFunction(cfgEl, aliasName);
+            if (toReturn == undefined)
+                toReturn = fallbackValue;
 
-				for( var i = 0, l = alias.length ; i < l ; i ++) {
-					cfgEl = cfgEl[ alias[ i ] ];
+            return toReturn;
 
-					if( typeof cfgEl === 'undefined' ) {
-
-						toReturn = this._getConfigurationDefault( alias, aliasName );
-                                                break;
-					}
-				}
-			} else {
-				console.warn( 'Alias ' + alias + ' not defined ');
-				console.trace();
-			}
-			if(typeof toReturn === "undefined")
-                            toReturn = this._doConfigurationFunction( cfgEl, aliasName );
-                        if(typeof toReturn === "undefined")
-                            toReturn = fallbackValue;
-                        
-                        return toReturn;
-                        
-		},
+        },
         
         getConfigurationCheckbox: function(aliasName, optionName) {
             var conf = this.getConfiguration(aliasName);

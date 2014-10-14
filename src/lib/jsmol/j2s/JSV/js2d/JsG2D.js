@@ -10,66 +10,25 @@ Clazz.instantialize (this, arguments);
 Clazz.makeConstructor (c$, 
 function () {
 });
-$_V(c$, "getColor4", 
+Clazz.overrideMethod (c$, "getColor4", 
 function (r, g, b, a) {
 return javajs.awt.Color.get4 (r, g, b, a);
 }, "~N,~N,~N,~N");
-$_V(c$, "getColor3", 
+Clazz.overrideMethod (c$, "getColor3", 
 function (r, g, b) {
 return javajs.awt.Color.get3 (r, g, b);
 }, "~N,~N,~N");
-$_V(c$, "getColor1", 
+Clazz.overrideMethod (c$, "getColor1", 
 function (rgb) {
 return javajs.awt.Color.get1 (rgb);
 }, "~N");
-$_V(c$, "newGrayScaleImage", 
+Clazz.overrideMethod (c$, "newGrayScaleImage", 
 function (context, image, width, height, grayBuffer) {
 {
-var id, canvas;
-if (image == null) {
-id = ("" + Math.random()).substring(3);
-canvas = document.createElement("canvas");
-canvas.id = id;
-canvas.style.width = width + "px";
-canvas.style.height = height + "px";
-canvas.width = width;
-canvas.height = height;
-var appId = context.canvas.applet._id;
-var layer = document.getElementById(appId + "_imagelayer");
-image = new Image();
-image.canvas = canvas;
-image.appId = appId;
-image.id = appId + "_image";
-image.layer = layer;
-image.w = width;
-image.h = height;
-image.onload = function(e) {
-try {
-URL.revokeObjectURL(image.src);
-} catch (e) {}
-};
-var div = document.createElement("div");
-image.div = div;
-div.style.position="relative";
-layer.appendChild(div);
-div.appendChild(image);
-} else {
-canvas = image.canvas;
-}
-var c = canvas.getContext("2d");
-var imageData = c.getImageData(0, 0, width, height);
-var buf = imageData.data;
-var ng = grayBuffer.length;
-var pt = 0;
-for (var i = 0; i < ng; i++) {
-buf[pt++] = buf[pt++] = buf[pt++] = grayBuffer[i];
-buf[pt++] = 0xFF;
-}
-c.putImageData(imageData, 0, 0);
-canvas.toBlob(function(blob){image.src = URL.createObjectURL(blob)});
+image = Jmol._newGrayScaleImage(context, image, width, height, grayBuffer);
 }return image;
 }, "~O,~O,~N,~N,~A");
-$_V(c$, "drawGrayScaleImage", 
+Clazz.overrideMethod (c$, "drawGrayScaleImage", 
 function (g, image, destX0, destY0, destX1, destY1, srcX0, srcY0, srcX1, srcY1) {
 var iw;
 var ih;
@@ -98,15 +57,16 @@ div.style.top = y + "px";
 div.style.width = w + "px";
 div.style.height = h + "px";
 }}, "~O,~O,~N,~N,~N,~N,~N,~N,~N,~N");
-$_V(c$, "drawLine", 
+Clazz.overrideMethod (c$, "drawLine", 
 function (g, x0, y0, x1, y1) {
+var inPath = this.inPath;
 {
-if (!this.inPath) g.beginPath();
+if (!inPath) g.beginPath();
 g.moveTo(x0, y0);
 g.lineTo(x1, y1);
-if (!this.inPath) g.stroke();
+if (!inPath) g.stroke();
 }}, "~O,~N,~N,~N,~N");
-$_V(c$, "drawCircle", 
+Clazz.overrideMethod (c$, "drawCircle", 
 function (g, x, y, diameter) {
 {
 var r = diameter/2;
@@ -114,12 +74,12 @@ g.beginPath();
 g.arc(x + r, y + r, r, 0, 2 * Math.PI, false);
 g.stroke();
 }}, "~O,~N,~N,~N");
-$_V(c$, "drawPolygon", 
+Clazz.overrideMethod (c$, "drawPolygon", 
 function (g, ayPoints, axPoints, nPoints) {
 this.doPoly (g, ayPoints, axPoints, nPoints, false);
 }, "~O,~A,~A,~N");
-$_M(c$, "doPoly", 
-($fz = function (g, axPoints, ayPoints, nPoints, doFill) {
+Clazz.defineMethod (c$, "doPoly", 
+ function (g, axPoints, ayPoints, nPoints, doFill) {
 {
 g.beginPath();
 g.moveTo(axPoints[0], ayPoints[0]);
@@ -129,23 +89,23 @@ if (doFill)
 g.fill();
 else
 g.stroke();
-}}, $fz.isPrivate = true, $fz), "~O,~A,~A,~N,~B");
-$_V(c$, "drawRect", 
+}}, "~O,~A,~A,~N,~B");
+Clazz.overrideMethod (c$, "drawRect", 
 function (g, x, y, width, height) {
 {
 g.beginPath();
 g.rect(x ,y, width, height);
 g.stroke();
 }}, "~O,~N,~N,~N,~N");
-$_V(c$, "drawString", 
+Clazz.overrideMethod (c$, "drawString", 
 function (g, s, x, y) {
 {
 g.fillText(s,x,y);
 }}, "~O,~S,~N,~N");
-$_V(c$, "drawStringRotated", 
+Clazz.overrideMethod (c$, "drawStringRotated", 
 function (g, s, x, y, angle) {
 }, "~O,~S,~N,~N,~N");
-$_V(c$, "fillBackground", 
+Clazz.overrideMethod (c$, "fillBackground", 
 function (g, bgcolor) {
 if (bgcolor == null) {
 {
@@ -158,7 +118,7 @@ return;
 }}this.setGraphicsColor (g, bgcolor);
 this.fillRect (g, 0, 0, this.windowWidth, this.windowHeight);
 }, "~O,javajs.api.GenericColor");
-$_V(c$, "fillCircle", 
+Clazz.overrideMethod (c$, "fillCircle", 
 function (g, x, y, diameter) {
 {
 var r = diameter/2;
@@ -166,22 +126,22 @@ g.beginPath();
 g.arc(x + r, y + r, r, 0, 2 * Math.PI, false);
 g.fill();
 }}, "~O,~N,~N,~N");
-$_V(c$, "fillPolygon", 
+Clazz.overrideMethod (c$, "fillPolygon", 
 function (g, ayPoints, axPoints, nPoints) {
 this.doPoly (g, ayPoints, axPoints, nPoints, true);
 }, "~O,~A,~A,~N");
-$_V(c$, "fillRect", 
+Clazz.overrideMethod (c$, "fillRect", 
 function (g, x, y, width, height) {
 {
 g.fillRect(x, y, width, height);
 }}, "~O,~N,~N,~N,~N");
-$_V(c$, "setGraphicsColor", 
+Clazz.overrideMethod (c$, "setGraphicsColor", 
 function (g, c) {
 var s = JU.CU.toCSSString (c);
 {
 g.fillStyle = g.strokeStyle = s;
 }}, "~O,javajs.api.GenericColor");
-$_V(c$, "setFont", 
+Clazz.overrideMethod (c$, "setFont", 
 function (g, font) {
 var s = font.getInfo ();
 var pt = s.indexOf (" ");
@@ -190,34 +150,34 @@ s = s.substring (0, pt) + "px" + s.substring (pt);
 g.font = s;
 }return font;
 }, "~O,javajs.awt.Font");
-$_V(c$, "setStrokeBold", 
+Clazz.overrideMethod (c$, "setStrokeBold", 
 function (g, tf) {
 {
 g.lineWidth = (tf ? 2 : 1);
 }}, "~O,~B");
-$_V(c$, "setWindowParameters", 
+Clazz.overrideMethod (c$, "setWindowParameters", 
 function (width, height) {
 this.windowWidth = width;
 this.windowHeight = height;
 }, "~N,~N");
-$_V(c$, "translateScale", 
+Clazz.overrideMethod (c$, "translateScale", 
 function (g, x, y, scale) {
 }, "~O,~N,~N,~N");
-$_V(c$, "canDoLineTo", 
+Clazz.overrideMethod (c$, "canDoLineTo", 
 function () {
 return true;
 });
-$_V(c$, "doStroke", 
+Clazz.overrideMethod (c$, "doStroke", 
 function (g, isBegin) {
-{
 this.inPath = isBegin;
+{
 if (isBegin) {
 g.beginPath();
 } else {
 g.stroke();
 }
 }}, "~O,~B");
-$_V(c$, "lineTo", 
+Clazz.overrideMethod (c$, "lineTo", 
 function (g, x2, y2) {
 {
 g.lineTo(x2, y2);

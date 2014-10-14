@@ -1,0 +1,277 @@
+{
+    "grid": {
+        "layers": {
+            "Default layer": {
+                "name": "Default layer"
+            }
+        },
+        "xWidth": 10,
+        "yHeight": 10
+    },
+    "version": "2.4.2",
+    "modules": [
+        {
+            "url": "modules/types/science/chemistry/jsme/",
+            "configuration": {
+                "sections": {},
+                "groups": {
+                    "group": [
+                        {
+                            "prefs": [
+                                [
+                                    "oldlook"
+                                ]
+                            ],
+                            "labelsize": [
+                                14
+                            ],
+                            "bondwidth": [
+                                1
+                            ]
+                        }
+                    ]
+                }
+            },
+            "layers": {
+                "Default layer": {
+                    "position": {
+                        "left": 0,
+                        "top": 28
+                    },
+                    "size": {
+                        "width": 41.96666666269302,
+                        "height": 31.966666662693022
+                    },
+                    "zIndex": 0,
+                    "display": true,
+                    "title": "Untitled",
+                    "bgColor": [
+                        255,
+                        255,
+                        255,
+                        0
+                    ],
+                    "wrapper": true,
+                    "created": true,
+                    "name": "Default layer"
+                }
+            },
+            "id": 2,
+            "vars_in": [
+                {}
+            ],
+            "actions_in": {},
+            "title": "Untitled",
+            "vars_out": [
+                {
+                    "event": "onStructureChange",
+                    "rel": "mol",
+                    "jpath": [],
+                    "filter": "",
+                    "name": "molfile"
+                }
+            ],
+            "actions_out": {}
+        },
+        {
+            "url": "modules/types/science/chemistry/jsmol/",
+            "configuration": {
+                "sections": {},
+                "groups": {
+                    "group": [
+                        {
+                            "script": [
+                                null
+                            ]
+                        }
+                    ]
+                }
+            },
+            "layers": {
+                "Default layer": {
+                    "position": {
+                        "left": 43,
+                        "top": 0
+                    },
+                    "size": {
+                        "width": 82.96666666269303,
+                        "height": 69.96666666269303
+                    },
+                    "zIndex": 0,
+                    "display": true,
+                    "title": "Untitled",
+                    "bgColor": [
+                        255,
+                        255,
+                        255,
+                        0
+                    ],
+                    "wrapper": true,
+                    "created": true,
+                    "name": "Default layer"
+                }
+            },
+            "id": 3,
+            "vars_in": [
+                {
+                    "rel": "data",
+                    "name": "molfile"
+                },
+                {}
+            ],
+            "actions_in": [
+                {
+                    "rel": "jsmolscript",
+                    "name": "script"
+                }
+            ],
+            "title": "Untitled",
+            "vars_out": {},
+            "actions_out": {}
+        },
+        {
+            "url": "modules/types/client_interaction/code_editor/",
+            "configuration": {
+                "sections": {},
+                "groups": {
+                    "group": [
+                        {
+                            "mode": [
+                                "text"
+                            ],
+                            "btnvalue": [
+                                "Send script"
+                            ],
+                            "iseditable": [
+                                [
+                                    "editable"
+                                ]
+                            ],
+                            "hasButton": [
+                                [
+                                    "button"
+                                ]
+                            ],
+                            "script": [
+                                " set forceField \"UFF\"\n minimize addhydrogens;\nminimize steps 20;"
+                            ]
+                        }
+                    ]
+                }
+            },
+            "layers": {
+                "Default layer": {
+                    "position": {
+                        "left": 11,
+                        "top": 4
+                    },
+                    "size": {
+                        "width": 27.966666662693022,
+                        "height": 15.966666662693024
+                    },
+                    "zIndex": 0,
+                    "display": true,
+                    "title": "Untitled",
+                    "bgColor": [
+                        255,
+                        255,
+                        255,
+                        0
+                    ],
+                    "wrapper": true,
+                    "created": true,
+                    "name": "Default layer"
+                }
+            },
+            "id": 4,
+            "vars_in": [
+                {}
+            ],
+            "actions_in": {},
+            "title": "Untitled",
+            "vars_out": [
+                {
+                    "jpath": []
+                }
+            ],
+            "actions_out": [
+                {
+                    "event": "onButtonClick",
+                    "rel": "value",
+                    "jpath": [],
+                    "name": "script"
+                }
+            ]
+        }
+    ],
+    "variables": [
+        {}
+    ],
+    "pouchvariables": [
+        {}
+    ],
+    "configuration": {
+        "title": "Retrieve a chemical structure"
+    },
+    "actionscripts": [
+        {
+            "sections": {},
+            "groups": {
+                "action": [
+                    {
+                        "name": [
+                            null
+                        ],
+                        "script": [
+                            null
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "crons": {
+        "0": {}
+    },
+    "couch_replication": [
+        {
+            "sections": {},
+            "groups": {
+                "couch": [
+                    [
+                        {
+                            "direction": "both",
+                            "continuous": []
+                        }
+                    ]
+                ]
+            }
+        }
+    ],
+    "init_script": [
+        {
+            "sections": {},
+            "groups": {
+                "general": [
+                    {
+                        "script": [
+                            null
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "actionfiles": [
+        {
+            "sections": {},
+            "groups": {
+                "action": [
+                    [
+                        {}
+                    ]
+                ]
+            }
+        }
+    ]
+}

@@ -1,11 +1,11 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (null, "J.jvxl.readers.XmlReader", ["java.lang.Character", "JU.P3", "$.SB", "J.io.XmlUtil", "J.util.Escape"], function () {
+Clazz.load (null, "J.jvxl.readers.XmlReader", ["java.lang.Character", "JU.P3", "$.SB", "$.XmlUtil", "JU.Escape"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.br = null;
 this.line = null;
 Clazz.instantialize (this, arguments);
 }, J.jvxl.readers, "XmlReader");
-$_M(c$, "getLine", 
+Clazz.defineMethod (c$, "getLine", 
 function () {
 return this.line;
 });
@@ -13,7 +13,7 @@ Clazz.makeConstructor (c$,
 function (br) {
 this.br = br;
 }, "java.io.BufferedReader");
-$_M(c$, "toTag", 
+Clazz.defineMethod (c$, "toTag", 
 function (name) {
 this.skipTo ("<" + name);
 if (this.line == null) return "";
@@ -23,11 +23,11 @@ if (this.line.charAt (i) == ' ' || this.line.charAt (i) == '>') return this.line
 this.line = null;
 return this.toTag (name);
 }, "~S");
-$_M(c$, "skipTag", 
+Clazz.defineMethod (c$, "skipTag", 
 function (name) {
 this.skipTo ("</" + name + ">");
 }, "~S");
-$_M(c$, "getXmlData", 
+Clazz.defineMethod (c$, "getXmlData", 
 function (name, data, withTag, allowSelfCloseOption) {
 var closer = "</" + name + ">";
 var tag = "<" + name;
@@ -55,12 +55,12 @@ while (this.line.indexOf (closer) < 0 && (!selfClosed || this.line.indexOf ("/>"
 data = sb.toString ();
 }return J.jvxl.readers.XmlReader.extractTag (data, tag, closer, withTag);
 }, "~S,~S,~B,~B");
-c$.extractTagOnly = $_M(c$, "extractTagOnly", 
+c$.extractTagOnly = Clazz.defineMethod (c$, "extractTagOnly", 
 function (data, tag) {
 return J.jvxl.readers.XmlReader.extractTag (data, "<" + tag + ">", "</" + tag + ">", false);
 }, "~S,~S");
-c$.extractTag = $_M(c$, "extractTag", 
-($fz = function (data, tag, closer, withTag) {
+c$.extractTag = Clazz.defineMethod (c$, "extractTag", 
+ function (data, tag, closer, withTag) {
 var pt1 = data.indexOf (tag);
 if (pt1 < 0) return "";
 var pt2 = data.indexOf (closer, pt1);
@@ -81,9 +81,9 @@ if ((ch = data.charAt (pt1)) == '"') quoted = !quoted;
 if (pt1 >= pt2) return "";
 while (Character.isWhitespace (data.charAt (++pt1))) {
 }
-return J.io.XmlUtil.unwrapCdata (data.substring (pt1, pt2));
-}, $fz.isPrivate = true, $fz), "~S,~S,~S,~B");
-c$.getXmlAttrib = $_M(c$, "getXmlAttrib", 
+return JU.XmlUtil.unwrapCdata (data.substring (pt1, pt2));
+}, "~S,~S,~S,~B");
+c$.getXmlAttrib = Clazz.defineMethod (c$, "getXmlAttrib", 
 function (data, what) {
 var nexta =  Clazz.newIntArray (1, 0);
 var pt = J.jvxl.readers.XmlReader.setNext (data, what, nexta, 1);
@@ -91,29 +91,29 @@ if (pt < 2 || (pt = J.jvxl.readers.XmlReader.setNext (data, "\"", nexta, 0)) < 2
 var pt1 = J.jvxl.readers.XmlReader.setNext (data, "\"", nexta, -1);
 return (pt1 <= 0 ? "" : data.substring (pt, pt1));
 }, "~S,~S");
-$_M(c$, "getXmlPoint", 
+Clazz.defineMethod (c$, "getXmlPoint", 
 function (data, key) {
 var spt = J.jvxl.readers.XmlReader.getXmlAttrib (data, key).$replace ('(', '{').$replace (')', '}');
-var value = J.util.Escape.uP (spt);
+var value = JU.Escape.uP (spt);
 if (Clazz.instanceOf (value, JU.P3)) return value;
 return  new JU.P3 ();
 }, "~S,~S");
-c$.setNext = $_M(c$, "setNext", 
-($fz = function (data, what, next, offset) {
+c$.setNext = Clazz.defineMethod (c$, "setNext", 
+ function (data, what, next, offset) {
 var ipt = next[0];
 if (ipt < 0 || (ipt = data.indexOf (what, next[0])) < 0) return -1;
 ipt += what.length;
 next[0] = ipt + offset;
 if (offset > 0 && ipt < data.length && data.charAt (ipt) != '=') return J.jvxl.readers.XmlReader.setNext (data, what, next, offset);
 return next[0];
-}, $fz.isPrivate = true, $fz), "~S,~S,~A,~N");
-$_M(c$, "skipTo", 
-($fz = function (key) {
+}, "~S,~S,~A,~N");
+Clazz.defineMethod (c$, "skipTo", 
+ function (key) {
 if (this.line == null) this.line = this.br.readLine ();
 while (this.line != null && this.line.indexOf (key) < 0) this.line = this.br.readLine ();
 
-}, $fz.isPrivate = true, $fz), "~S");
-$_M(c$, "isNext", 
+}, "~S");
+Clazz.defineMethod (c$, "isNext", 
 function (name) {
 if (this.line == null || this.line.indexOf ("</") >= 0 && this.line.indexOf ("</") == this.line.indexOf ("<")) this.line = this.br.readLine ();
 return (this.line.indexOf ("<" + name) >= 0);

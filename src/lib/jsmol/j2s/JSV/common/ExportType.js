@@ -1,7 +1,7 @@
 Clazz.declarePackage ("JSV.common");
 Clazz.load (["java.lang.Enum"], "JSV.common.ExportType", null, function () {
 c$ = Clazz.declareType (JSV.common, "ExportType", Enum);
-c$.getType = $_M(c$, "getType", 
+c$.getType = Clazz.defineMethod (c$, "getType", 
 function (type) {
 type = type.toUpperCase ();
 if (type.equalsIgnoreCase ("Original...")) return JSV.common.ExportType.SOURCE;
@@ -10,7 +10,7 @@ for (var mode, $mode = 0, $$mode = JSV.common.ExportType.values (); $mode < $$mo
 
 return JSV.common.ExportType.UNK;
 }, "~S");
-c$.isExportMode = $_M(c$, "isExportMode", 
+c$.isExportMode = Clazz.defineMethod (c$, "isExportMode", 
 function (ext) {
 return (JSV.common.ExportType.getType (ext) !== JSV.common.ExportType.UNK);
 }, "~S");

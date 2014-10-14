@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.more");
-Clazz.load (["J.adapter.readers.more.BinaryReader"], "J.adapter.readers.more.BinaryDcdReader", ["JU.P3", "$.SB", "J.util.BSUtil", "$.Escape", "$.Logger"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.more.BinaryDcdReader", ["JU.BS", "$.P3", "$.SB", "JU.Escape", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.nModels = 0;
 this.nAtoms = 0;
@@ -9,12 +9,17 @@ this.xAll = null;
 this.yAll = null;
 this.zAll = null;
 Clazz.instantialize (this, arguments);
-}, J.adapter.readers.more, "BinaryDcdReader", J.adapter.readers.more.BinaryReader);
-$_V(c$, "initializeReader", 
+}, J.adapter.readers.more, "BinaryDcdReader", J.adapter.smarter.AtomSetCollectionReader);
+Clazz.overrideMethod (c$, "setup", 
+function (fullPath, htParams, reader) {
+this.isBinary = true;
+this.setupASCR (fullPath, htParams, reader);
+}, "~S,java.util.Map,~O");
+Clazz.overrideMethod (c$, "initializeReader", 
 function () {
 this.initializeTrajectoryFile ();
 });
-$_V(c$, "readDocument", 
+Clazz.overrideMethod (c$, "processBinaryDocument", 
 function () {
 var bytes =  Clazz.newByteArray (40, 0);
 var n = this.binaryDoc.readInt ();
@@ -40,35 +45,35 @@ var sb =  new JU.SB ();
 for (var i = 0; i < n; i++) sb.append (this.binaryDoc.readString (80).trim ()).appendC ('\n');
 
 n = this.binaryDoc.readInt ();
-J.util.Logger.info ("BinaryDcdReadaer:\n" + sb);
+JU.Logger.info ("BinaryDcdReadaer:\n" + sb);
 n = this.binaryDoc.readInt ();
 this.nAtoms = this.binaryDoc.readInt ();
 n = this.binaryDoc.readInt ();
 this.nFree = this.nAtoms - nFixed;
 if (nFixed != 0) {
 this.binaryDoc.readInt ();
-this.bsFree = J.util.BSUtil.newBitSet (this.nFree);
+this.bsFree = JU.BS.newN (this.nFree);
 for (var i = 0; i < this.nFree; i++) this.bsFree.set (this.binaryDoc.readInt () - 1);
 
 n = Clazz.doubleToInt (this.binaryDoc.readInt () / 4);
-J.util.Logger.info ("free: " + this.bsFree.cardinality () + " " + J.util.Escape.eBS (this.bsFree));
+JU.Logger.info ("free: " + this.bsFree.cardinality () + " " + JU.Escape.eBS (this.bsFree));
 }this.readCoordinates ();
-J.util.Logger.info ("Total number of trajectory steps=" + this.trajectorySteps.size ());
+JU.Logger.info ("Total number of trajectory steps=" + this.trajectorySteps.size ());
 });
-$_M(c$, "readFloatArray", 
-($fz = function () {
+Clazz.defineMethod (c$, "readFloatArray", 
+ function () {
 var n = Clazz.doubleToInt (this.binaryDoc.readInt () / 4);
 var data =  Clazz.newFloatArray (n, 0);
 for (var i = 0; i < n; i++) data[i] = this.binaryDoc.readFloat ();
 
 n = Clazz.doubleToInt (this.binaryDoc.readInt () / 4);
 return data;
-}, $fz.isPrivate = true, $fz));
-$_M(c$, "readCoordinates", 
-($fz = function () {
-var atomCount = (this.bsFilter == null ? this.templateAtomCount : (this.htParams.get ("filteredAtomCount")).intValue ());
+});
+Clazz.defineMethod (c$, "readCoordinates", 
+ function () {
+var ac = (this.bsFilter == null ? this.templateAtomCount : (this.htParams.get ("filteredAtomCount")).intValue ());
 for (var i = 0; i < this.nModels; i++) if (this.doGetModel (++this.modelNumber, null)) {
-var trajectoryStep =  new Array (atomCount);
+var trajectoryStep =  new Array (ac);
 if (!this.getTrajectoryStep (trajectoryStep)) return;
 this.trajectorySteps.addLast (trajectoryStep);
 if (this.isLastModel (this.modelNumber)) return;
@@ -77,11 +82,11 @@ this.readFloatArray ();
 this.readFloatArray ();
 this.readFloatArray ();
 }
-}, $fz.isPrivate = true, $fz));
-$_M(c$, "getTrajectoryStep", 
-($fz = function (trajectoryStep) {
+});
+Clazz.defineMethod (c$, "getTrajectoryStep", 
+ function (trajectoryStep) {
 try {
-var atomCount = trajectoryStep.length;
+var ac = trajectoryStep.length;
 var n = -1;
 var x = this.readFloatArray ();
 var y = this.readFloatArray ();
@@ -99,7 +104,7 @@ vpt++;
 } else {
 pt.set (this.xAll[i], this.yAll[i], this.zAll[i]);
 }if (this.bsFilter == null || this.bsFilter.get (i)) {
-if (++n == atomCount) return true;
+if (++n == ac) return true;
 trajectoryStep[n] = pt;
 }}
 return true;
@@ -110,5 +115,5 @@ return false;
 throw e;
 }
 }
-}, $fz.isPrivate = true, $fz), "~A");
+}, "~A");
 });

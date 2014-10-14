@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JSV.source");
-Clazz.load (["JSV.source.JDXHeader"], "JSV.source.JDXSource", ["JU.List"], function () {
+Clazz.load (["JSV.source.JDXHeader"], "JSV.source.JDXSource", ["JU.Lst"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.type = 0;
 this.isCompoundSource = false;
@@ -10,7 +10,7 @@ this.peakCount = 0;
 this.isView = false;
 Clazz.instantialize (this, arguments);
 }, JSV.source, "JDXSource", JSV.source.JDXHeader);
-$_M(c$, "dispose", 
+Clazz.defineMethod (c$, "dispose", 
 function () {
 this.headerTable = null;
 this.jdxSpectra = null;
@@ -20,58 +20,58 @@ function (type, filePath) {
 Clazz.superConstructor (this, JSV.source.JDXSource, []);
 this.type = type;
 this.setFilePath (filePath);
-this.headerTable =  new JU.List ();
-this.jdxSpectra =  new JU.List ();
+this.headerTable =  new JU.Lst ();
+this.jdxSpectra =  new JU.Lst ();
 this.isCompoundSource = (type != 0);
 }, "~N,~S");
-$_M(c$, "getJDXSpectrum", 
+Clazz.defineMethod (c$, "getJDXSpectrum", 
 function (index) {
 return (this.jdxSpectra.size () <= index ? null : this.jdxSpectra.get (index));
 }, "~N");
-$_M(c$, "addJDXSpectrum", 
+Clazz.defineMethod (c$, "addJDXSpectrum", 
 function (filePath, spectrum, forceSub) {
 if (filePath == null) filePath = this.filePath;
 spectrum.setFilePath (filePath);
 var n = this.jdxSpectra.size ();
 if (n == 0 || !this.jdxSpectra.get (n - 1).addSubSpectrum (spectrum, forceSub)) this.jdxSpectra.addLast (spectrum);
-}, "~S,JSV.common.JDXSpectrum,~B");
-$_M(c$, "getNumberOfSpectra", 
+}, "~S,JSV.common.Spectrum,~B");
+Clazz.defineMethod (c$, "getNumberOfSpectra", 
 function () {
 return this.jdxSpectra.size ();
 });
-$_M(c$, "getSpectra", 
+Clazz.defineMethod (c$, "getSpectra", 
 function () {
 return this.jdxSpectra;
 });
-$_M(c$, "getSpectraAsArray", 
+Clazz.defineMethod (c$, "getSpectraAsArray", 
 function () {
 return (this.jdxSpectra == null ? null : this.jdxSpectra.toArray ());
 });
-$_M(c$, "getErrorLog", 
+Clazz.defineMethod (c$, "getErrorLog", 
 function () {
 return this.errors;
 });
-$_M(c$, "setErrorLog", 
+Clazz.defineMethod (c$, "setErrorLog", 
 function (errors) {
 this.errors = errors;
 }, "~S");
-$_M(c$, "setFilePath", 
+Clazz.defineMethod (c$, "setFilePath", 
 function (filePath) {
 this.filePath = filePath;
 }, "~S");
-$_M(c$, "getFilePath", 
+Clazz.defineMethod (c$, "getFilePath", 
 function () {
 return this.filePath;
 });
-c$.createView = $_M(c$, "createView", 
+c$.createView = Clazz.defineMethod (c$, "createView", 
 function (specs) {
 var source =  new JSV.source.JDXSource (-2, "view");
 source.isView = true;
 for (var i = 0; i < specs.size (); i++) source.addJDXSpectrum (specs.get (i).getFilePath (), specs.get (i), false);
 
 return source;
-}, "JU.List");
-$_M(c$, "getHeaderRowDataAsArray", 
+}, "JU.Lst");
+Clazz.defineMethod (c$, "getHeaderRowDataAsArray", 
 function (addDataClass, rowData) {
 if (rowData == null) rowData =  Clazz.newArray (0, 0, null);
 var data = this.getHeaderRowDataAsArray (addDataClass, rowData.length);
@@ -79,6 +79,10 @@ for (var i = rowData.length; --i >= 0; ) data[data.length - rowData.length + i] 
 
 return data;
 }, "~B,~A");
+Clazz.defineMethod (c$, "setID", 
+function (id) {
+this.jdxSpectra.get (0).sourceID = id;
+}, "~S");
 Clazz.defineStatics (c$,
 "TYPE_VIEW", -2,
 "TYPE_UNKNOWN", -1,

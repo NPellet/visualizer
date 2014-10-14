@@ -72,6 +72,9 @@ define(['modules/default/defaultview', 'src/util/util', 'components/jsoneditor/j
         },
         update: {
             value: function (value) {
+                if(this.module.getConfigurationCheckbox('displayValue', 'display')) {
+                    value = value.get();
+                }
                 this.changeInputData(value);
                 var valNative = this.inputData.resurrect();
                 this.editor.set(valNative);

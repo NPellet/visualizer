@@ -292,13 +292,13 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 			}
 
 			var self = this,
-				proxiedCallback = function( moduleId ) {
+				proxiedCallback = function( target, moduleId ) {
 
 					if( moduleId == self.module.getId( ) ) {
 						return;// Do not update itself;
 					}
 
-					callback.call( data );
+					callback.call( data, target );
 				};
 
 			if( this.addChangeListener( bindToRel, data, proxiedCallback ) ) {

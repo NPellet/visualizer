@@ -138,20 +138,22 @@ define( [
 				}
 
 				moduleValue = moduleValue.get();
-				require(['src/util/jcampconverter'], function( tojcamp ) {
+				require( [ 'src/util/jcampconverter' ], function( tojcamp ) {
 
-					var jcamp = tojcamp(moduleValue).done( function( jcamp ) {
+					var jcamp = tojcamp( moduleValue ).done( function( jcamp ) {
 
 //						console.log(JSON.stringify(jcamp.profiling,true));
 
-						if(jcamp.gcms) {
-							self.gcmsInstance.setGC(jcamp.gcms.gc);
-							self.gcmsInstance.setMS(jcamp.gcms.ms);
+						if( jcamp.gcms ) {
+
+							self.gcmsInstance.setGC( jcamp.gcms.gc );
+							self.gcmsInstance.setMS( jcamp.gcms.ms );
 
 							self.module.controller.createDataFromEvent( "onJCampParsed", "msdata", jcamp.gcms.ms );
 							self.module.controller.createDataFromEvent( "onJCampParsed", "gcdata", jcamp.gcms.gc );
 
-							self.resetAnnotationsGC();
+							self.resetAnnotationsGC( );
+							self.jcamp = jcamp;
 						}
 					});
 					
@@ -189,7 +191,7 @@ define( [
 				if(!this.gcmsInstance || !moduleValue)
 					return;
 
-				require(['src/util/jcampconverter'], function(tojcamp) {
+				require(['components/jcampconverter/src/jcampconverter'], function(tojcamp) {
 					var jcamp = tojcamp(moduleValue.get()).done( function(jcamp) {
 
 						if( jcamp.spectra ) {
@@ -229,11 +231,14 @@ define( [
 
 		onActionReceive: {
 			fromtoGC: function(value, name) {
-				this.gcmsInstance.getGC().getBottomAxis()._doZoomVal(value.value.from, value.value.to, true);
+				value = value.get();
+				this.gcmsInstance.getGC().getBottomAxis()._doZoomVal(value.from, value.to, true);
+				this.gcmsInstance.getGC().redraw( true, true, false );
+				this.gcmsInstance.getGC().drawSeries();
 			},
 
 			fromtoMS: function(value, name) {
-				this.gcmsInstance.getMS().getBottomAxis()._doZoomVal(value.value.from, value.value.to, true);
+				this.gcmsInstance.getMS().getBottomAxis()._doZoomVal(value.from, value.to, true);
 			},
 
 			zoomOnAnnotation: function(value, name) {

@@ -7,7 +7,7 @@ Clazz.instantialize (this, arguments);
 Clazz.prepareFields (c$, function () {
 this.htFactories =  new java.util.Hashtable ();
 });
-$_V(c$, "createURLStreamHandler", 
+Clazz.overrideMethod (c$, "createURLStreamHandler", 
 function (protocol) {
 var fac = this.htFactories.get (protocol);
 if (fac == null) this.htFactories.put (protocol, fac =  new JU.AjaxURLStreamHandler (protocol));

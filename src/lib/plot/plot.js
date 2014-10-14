@@ -459,7 +459,7 @@ define(['jquery', 'src/util/util'], function($, Util) {
 			}
 
 			this.redraw( true );
-			this.drawSeries( true );
+			this.drawSeries( );
 		},
 
 		handleClick: function(x, y, e) {
@@ -869,7 +869,7 @@ define(['jquery', 'src/util/util'], function($, Util) {
 				// First we need to draw it in order to determine the width to allocate
 				// This is done to accomodate 0 and 100000 without overlapping any element in the DOM (label, ...)
 
-				var drawn = axis.draw(doNotRecalculateMinMax) || 0,
+				var drawn = axis.draw(doNotRecalculateMinMax || noY ) || 0,
 					axisIndex = axisvars.indexOf(arguments[1]),
 					axisDim = axis.getAxisPosition();
 
@@ -886,7 +886,7 @@ define(['jquery', 'src/util/util'], function($, Util) {
 					return;
 				axis.setMinPx(shift[2]);
 				axis.setMaxPx(this.getDrawingWidth(true) - shift[3]);
-				axis.draw(doNotRecalculateMinMax);
+				axis.draw(doNotRecalculateMinMax || noX );
 				axis.drawSeries();
 			}, false, true, false);
 
@@ -2011,6 +2011,7 @@ define(['jquery', 'src/util/util'], function($, Util) {
 		},
 
 		getActualMin: function() {
+
 			return this._realMin == this._realMax ? this._realMin - 1 : this._realMin;
 		},
 
@@ -3364,6 +3365,7 @@ define(['jquery', 'src/util/util'], function($, Util) {
 
 
 			if( slotToUse ) {
+
 				if( slotToUse.done ) {
 
 					slotToUse.done( function( data ) {

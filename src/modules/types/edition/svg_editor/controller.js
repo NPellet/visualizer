@@ -109,13 +109,13 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
 				}
 			}
 		}		
-	}
+	};
 
 	controller.prototype.configAliases = {
 		'svgcode': [ 'groups', 'group', 0, 'svgcode', 0 ],
         'editable': [ 'groups', 'group', 0, 'editable', 0 ],
         'sanitize': [ 'groups', 'group', 0, 'sanitize', 0 ]
-	}
+	};
 
 	
 	return controller;

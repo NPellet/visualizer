@@ -1,5 +1,6 @@
+'use strict';
+
 define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
-    "use strict";
 
 	function DataObject( object, recursive, forceCopy ) {
 		if (! object) {
@@ -126,12 +127,8 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 		}
 	};
 
-
-
-
 	function DataString( s ) {
-		String.call(this, s);
-    	this.s_ = s;
+		this.s_ = String(s);
     }
 
 	var StringProperties = ["charAt", "charCodeAt", "concat", "fromCharCode", "indexOf", "lastIndexOf", "localCompare", 
@@ -155,9 +152,8 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 	DataString.prototype.nativeConstructor = String;
 
 	function DataNumber( s ) {
-		Number.call(this, s);
-    	this.s_ = s;
-    }
+		this.s_ = Number(s);
+	}
 
 	DataNumber.prototype.getType = function() {
 		return "number";
@@ -166,8 +162,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 	DataNumber.prototype.nativeConstructor = Number;
 
 	function DataBoolean( s ) {
-		Boolean.call(this, s);
-		this.s_ = s;
+		this.s_ = Boolean(s);
 	}
 	
 	DataBoolean.prototype.getType = function() {
@@ -240,28 +235,22 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 
 				if (returnPromise) { // Returns a promise if asked
 
-                    var that = this;
-                    return new Promise(function (resolve) {
-                        that.get(true).then(function (val) {
-
-                            if(typeof val !== "object" || val === null)
-                                return resolve(val);
-                            if (typeof val[ prop ] !== "undefined") {
-                                if(!isSpecialObject(val[prop])) {
-                                    val[prop] = DataObject.check(val[prop], true);
-                                }
-                                if(val[prop] instanceof DataObject) {
-                                    return val[prop].fetch(true).then(resolve);
-                                } else {
-                                    return resolve(val[prop]);
-                                }
-                            } else if( constructor ) {
-                                val[ prop ] = new constructor();
-                                return resolve(val[prop]);
-                            }  else {
-                                return resolve();
+                    return this.get(true).then(function (val) {
+                        if(typeof val !== "object" || val === null)
+                            return val;
+                        if (typeof val[ prop ] !== "undefined") {
+                            if(!isSpecialObject(val[prop])) {
+                                val[prop] = DataObject.check(val[prop], true);
                             }
-                        });
+                            if(val[prop] instanceof DataObject) {
+                                return val[prop].fetch(true);
+                            } else {
+                                return val[prop];
+                            }
+                        } else if( constructor ) {
+                            val[ prop ] = new constructor();
+                            return val[prop];
+                        }
                     });
 
 				} else {
@@ -295,42 +284,34 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 		}
 	};
 
-	var dataSetter = {
-		value: function(prop, value) {
-			
-			var valueTyped = DataObject.check( value, true );
-			
-			if(!valueTyped) {
-				this[ prop ] = valueTyped;
-				return;
-			}
-			
-			var type = valueTyped.getType();
+    var dataSetter = {
+        value: function(prop, value, noTrigger) {
 
-			this[ prop ] = DataObject.check( this[ prop ] );
+            var valueTyped = DataObject.check( value, true );
 
-			var typeNow = this[ prop ] != undefined && this[ prop ].getType ? this[ prop ].getType() : undefined;
+            if(!valueTyped) {
+                this[ prop ] = valueTyped;
+            } else {
+                var type = valueTyped.getType();
 
-			if( typeNow !== type ) {
+                this[ prop ] = DataObject.check( this[ prop ] );
 
-				this[ prop ] = valueTyped;
-				
-				return this[ prop ];
-			}
+                var typeNow = this[ prop ] != undefined && this[ prop ].getType ? this[ prop ].getType() : undefined;
 
-			if( type === "string" || type === "number" || type === "boolean" ) {
-
-				this[ prop ].setValue( value );
-				return this[ prop ];
-			}
-
-			if( valueTyped !== this[ prop ] ) {
-				this[ prop ] = valueTyped;
-			}
-
-			return this[ prop ];
-		}
-	};
+                if( typeNow !== type ) {
+                    this[ prop ] = valueTyped;
+                } else if( type === "string" || type === "number" || type === "boolean" ) {
+                    this[ prop ].setValue(valueTyped.get(), noTrigger);
+                } else if( valueTyped !== this[ prop ] ) {
+                    this[ prop ] = valueTyped;
+                }
+            }
+            if (!noTrigger) {
+                this.triggerChange(false, []);
+            }
+            return this[ prop ];
+        }
+    };
 
 
     var getChild = {
@@ -348,20 +329,16 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
             jpath = jpath.slice();
 
             var el = jpath.shift(); // Gets the current element and removes it from the array
-            var that = this;
 
-            return new Promise(function (resolve) {
-                that.get(el, true).then(function (subEl) {
-                    subEl = DataObject.check(subEl, true);
+            return this.get(el, true).then(function (subEl) {
+                subEl = DataObject.check(subEl, true);
 
-                    if (!subEl || (jpath.length === 0)) {
-                        resolve(subEl);
-                    } else {
-                        subEl.getChild(jpath).then(resolve);
-                    }
-                });
+                if (!subEl || (jpath.length === 0)) {
+                    return subEl;
+                } else {
+                    return subEl.getChild(jpath);
+                }
             });
-
         }
     };
 
@@ -385,8 +362,6 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 			var elementType = jpath.length == 0 ? constructor : ( typeof el == "number" ? DataArray : DataObject );
 
 			return this.get( el, true, elementType ).then(function( subEl ) {
-
-
 				// Perform check if anything...
 				self.get()[ el ] = DataObject.check( subEl );
 
@@ -487,56 +462,71 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 	};
 
 	var setChild = {
-		value: function( jpath, newValue, noMute, constructor ) {
-			var self = this;
+		value: function( jpath, newValue, triggerParams, constructor ) {
 
-			var mute = false;
-			if( noMute === undefined ) {
-				mute = true;
-			}
+            var self = this;
 
-			
-			var onChangeOptions = Array.prototype.slice.call( arguments, 2 );
+            if (typeof jpath === 'string') { // Old version
+                jpath = jpath.split('.');
+                jpath.shift();
+            }
 
-			if( jpath && jpath.split ) { // Old version
-				jpath = jpath.split('.');
-				jpath.shift();
-			}
-			
-			jpath = jpath.slice();
+            jpath = jpath.slice();
 
-			var jpathLength = jpath.length;
-			var el = jpath.shift();
+            var jpathLength = jpath.length;
 
-			if( jpathLength === 1 ) {
-				var res = self.set(el, newValue);
-				if(res) {
-					res.triggerChange();
-				}
-				return;
-			}							
+            if (jpathLength === 0) {
+                throw new Error('setChild cannot be called with an empty jPath');
+            }
 
-			var elementType = jpath.length === 0 ? constructor : ( typeof el === "number" ? DataArray : DataObject );
+            var el = jpath.shift();
 
-			var name = el;
-			arguments[ 0 ] = jpath;
-			var args = arguments;
+            if (jpathLength === 1) {
+                var res = self.set(el, newValue, true);
+                if (res && res.linkToParent) {
+                    res.linkToParent(self, el);
+                    res.triggerChange(false, triggerParams);
+                } else {
+                    self.triggerChange(false, triggerParams);
+                }
+                return;
+            }
 
-			return this
-					.get(el, true, elementType)
-					.then(function( val ) {
-					
-						self.set( name, val );
-						val.linkToParent( self, name );
-						val.setChild.apply( val, args );
-					});
-					// 2 June 2014. This code has been removed.
-					// Bubbling should be done within the triggerElement with parenting.
-					//.done(function() {
-						
-					//});
-		}
+            var elementType = jpath.length === 0 ? constructor : ( typeof jpath[0] === "number" ? DataArray : DataObject );
+
+            var name = el;
+
+            var args = [jpath, newValue, triggerParams, constructor];
+
+            return this
+                .get(el, true, elementType)
+                .then(function (val) {
+                    self.set(name, val, true);
+                    val.linkToParent(self, name);
+                    val.setChild.apply(val, args);
+                });
+        }
 	};
+
+    var triggerBubble = {
+        value: function (args) {
+
+            if( this._dataChange ) {
+                for( var i in this._dataChange ) {
+                    this._dataChange[ i ].apply( this, args );
+                }
+            }
+
+            if( ! this.__parent ) {
+                return;
+            }
+
+            args[0].jpath.unshift(this.__name);
+
+            this.__parent._triggerBubble.call( this.__parent, args );
+
+        }
+    };
 
 
 	// 2 June 2014
@@ -545,20 +535,18 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 	var triggerChange = {
 		value: function( noBubble, args ) {
 
-			// 2 June 2014
-			// This has been removed. No reason to trigger parent before self
+            if(!Array.isArray(args)) {
+                if(args == undefined) {
+                    args = [];
+                } else {
+                    args = [args];
+                }
+            }
 
-
-			/*
-			if ( ! this._dataChange ) {
-
-				if( this.__parent ) {
-					this.__parent.triggerChange( moduleid );
-				}
-
-				return;
-			}
-			*/
+            args.unshift({
+                target: this,
+                jpath: []
+            });
 
 			if( this._dataChange ) {
 
@@ -575,7 +563,9 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 				return;
 			}
 
-			this.__parent.triggerChange.apply( this.__parent, args );
+            args[0].jpath.unshift(this.__name);
+
+			this.__parent._triggerBubble.call( this.__parent, args );
 		}
 	};
 
@@ -612,9 +602,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 				idOrFunc = idOrFunc.id;
 			}
 
-			if( ! this._dataChange ) {
-				delete this._dataChange[ idOrFunc ];
-			}
+			delete this._dataChange[ idOrFunc ];
 		}
 	};
 
@@ -634,7 +622,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 	var fetch = {
 		value: function(forceJson) {
 
-			if (this.value || !this.url) { // No need for fetching. Still returning a promise, though.
+			if (!this.url || !this.type) { // No need for fetching. Still returning a promise, though.
 				return Promise.resolve(this);
 			}
 
@@ -661,7 +649,9 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
                         });
 
                         resolve(self);
-                    }, reject);
+                    }, function (err) {
+                        Debug.debug('Could not fetch '+self.url+' ('+err+')');
+                    });
                 });
             });
 		}
@@ -730,6 +720,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 		onChange: bindChange,
 		unbindChange: unbindChange,
 		triggerChange: triggerChange,
+        _triggerBubble: triggerBubble,
 		linkToParent: linkToParent,
 		getType: getType,
 		setValue: setValue
@@ -758,8 +749,11 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 	};
 	
 	var setValueNative = {
-		value: function(value) {
+		value: function(value, noTrigger) {
 			this.s_ = this.nativeConstructor(value);
+            if (!noTrigger) {
+                this.triggerChange(false, []);
+            }
 		}
 	};
 

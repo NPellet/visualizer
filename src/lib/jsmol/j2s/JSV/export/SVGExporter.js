@@ -1,12 +1,12 @@
 Clazz.declarePackage ("JSV.export");
-Clazz.load (["JSV.export.FormExporter"], "JSV.export.SVGExporter", ["java.lang.Boolean", "$.Double", "java.util.Hashtable", "JU.CU", "$.DF", "$.List", "JSV.common.ColorParameters", "$.ExportType", "$.ScaleData", "$.ScriptToken", "J.util.Logger"], function () {
+Clazz.load (["JSV.export.FormExporter"], "JSV.export.SVGExporter", ["java.lang.Boolean", "$.Double", "java.util.Hashtable", "JU.CU", "$.DF", "$.Lst", "JSV.common.ColorParameters", "$.ExportType", "$.ScaleData", "$.ScriptToken", "JU.Logger"], function () {
 c$ = Clazz.declareType (JSV["export"], "SVGExporter", JSV["export"].FormExporter);
 Clazz.makeConstructor (c$, 
 function () {
 Clazz.superConstructor (this, JSV["export"].SVGExporter, []);
 });
-$_V(c$, "exportTheSpectrum", 
-function (viewer, mode, out, spec, startIndex, endIndex, pd) {
+Clazz.overrideMethod (c$, "exportTheSpectrum", 
+function (viewer, mode, out, spec, startIndex, endIndex, pd, asBase64) {
 this.initForm (viewer, out);
 var plotAreaColor;
 var backgroundColor;
@@ -47,8 +47,8 @@ var xPt;
 var yPt;
 var xStr;
 var yStr;
-var vertGridCoords =  new JU.List ();
-var horizGridCoords =  new JU.List ();
+var vertGridCoords =  new JU.Lst ();
+var horizGridCoords =  new JU.Lst ();
 for (var i = minXOnScale; i < maxXOnScale + xStep / 2; i += xStep) {
 xPt = leftPlotArea + ((i - minXOnScale) * xScaleFactor);
 yPt = topPlotArea;
@@ -69,9 +69,9 @@ hash.put ("xVal", xStr);
 hash.put ("yVal", yStr);
 horizGridCoords.addLast (hash);
 }
-var xScaleList =  new JU.List ();
-var xScaleListReversed =  new JU.List ();
-var yScaleList =  new JU.List ();
+var xScaleList =  new JU.Lst ();
+var xScaleListReversed =  new JU.Lst ();
+var yScaleList =  new JU.Lst ();
 var precisionX = scaleData.precision[0];
 var precisionY = scaleData.precision[1];
 for (var i = minXOnScale; i < (maxXOnScale + xStep / 2); i += xStep) {
@@ -162,7 +162,7 @@ this.context.put ("yScaleFactor",  new Double (yScaleFactor));
 this.context.put ("increasing",  new Boolean (increasing));
 this.context.put ("verticalGridCoords", vertGridCoords);
 this.context.put ("horizontalGridCoords", horizGridCoords);
-var newXYCoords =  new JU.List ();
+var newXYCoords =  new JU.Lst ();
 for (var i = startIndex; i <= endIndex; i++) newXYCoords.addLast (xyCoords[i]);
 
 var firstX;
@@ -206,9 +206,9 @@ this.context.put ("yUnitLabelY", "" + yUnitLabelY);
 this.context.put ("numDecimalPlacesX",  new Integer (Math.abs (scaleData.exportPrecision[0])));
 this.context.put ("numDecimalPlacesY",  new Integer (Math.abs (scaleData.exportPrecision[1])));
 var vm = (mode === JSV.common.ExportType.SVGI ? "plot_ink.vm" : "plot.vm");
-J.util.Logger.info ("SVGExporter using " + vm);
+JU.Logger.info ("SVGExporter using " + vm);
 return this.writeForm (vm);
-}, "JSV.common.JSViewer,JSV.common.ExportType,JU.OC,JSV.common.JDXSpectrum,~N,~N,JSV.common.PanelData");
+}, "JSV.common.JSViewer,JSV.common.ExportType,JU.OC,JSV.common.Spectrum,~N,~N,JSV.common.PanelData,~B");
 Clazz.defineStatics (c$,
 "svgWidth", 850,
 "svgHeight", 400,

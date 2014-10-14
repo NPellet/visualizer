@@ -1,23 +1,23 @@
 Clazz.declarePackage ("J.awtjs2d");
 c$ = Clazz.declareType (J.awtjs2d, "Image");
-c$.getWidth = $_M(c$, "getWidth", 
+c$.getWidth = Clazz.defineMethod (c$, "getWidth", 
 function (canvas) {
 {
 return (canvas.imageWidth ? canvas.imageWidth : canvas.width);
 }}, "~O");
-c$.getHeight = $_M(c$, "getHeight", 
+c$.getHeight = Clazz.defineMethod (c$, "getHeight", 
 function (canvas) {
 {
 return (canvas.imageHeight ? canvas.imageHeight : canvas.height);
 }}, "~O");
-c$.grabPixels = $_M(c$, "grabPixels", 
+c$.grabPixels = Clazz.defineMethod (c$, "grabPixels", 
 function (context, width, height) {
 {
 if (context._buf32) return context._buf32; // non-canvas internal buffer for image writing
 var data = context.getImageData(0, 0, width, height).data;
 return this.toIntARGB(data);
 }}, "~O,~N,~N");
-c$.toIntARGB = $_M(c$, "toIntARGB", 
+c$.toIntARGB = Clazz.defineMethod (c$, "toIntARGB", 
 function (imgData) {
 var n = Clazz.doubleToInt (imgData.length / 4);
 var iData =  Clazz.newIntArray (n, 0);
@@ -26,7 +26,7 @@ iData[i++] = (imgData[j++] << 16) | (imgData[j++] << 8) | imgData[j++] | 0xFF000
 }
 return iData;
 }, "~A");
-c$.getTextPixels = $_M(c$, "getTextPixels", 
+c$.getTextPixels = Clazz.defineMethod (c$, "getTextPixels", 
 function (text, font3d, context, width, height, ascent) {
 {
 context.fillStyle = "#000000";
@@ -36,7 +36,7 @@ context.font = font3d.font;
 context.fillText(text, 0, ascent);
 return this.grabPixels(context, width, height);
 }}, "~S,javajs.awt.Font,~O,~N,~N,~N");
-c$.allocateRgbImage = $_M(c$, "allocateRgbImage", 
+c$.allocateRgbImage = Clazz.defineMethod (c$, "allocateRgbImage", 
 function (windowWidth, windowHeight, pBuffer, windowSize, backgroundTransparent, canvas) {
 {
 if (canvas == null)
@@ -44,29 +44,13 @@ canvas = {width:windowWidth,height:windowHeight};
 canvas.buf32 = pBuffer;
 return canvas;
 }}, "~N,~N,~A,~N,~B,~O");
-c$.getStaticGraphics = $_M(c$, "getStaticGraphics", 
+c$.getStaticGraphics = Clazz.defineMethod (c$, "getStaticGraphics", 
 function (canvas, backgroundTransparent) {
 {
 return this.getGraphics(canvas);
 }}, "~O,~B");
-c$.getGraphics = $_M(c$, "getGraphics", 
+c$.getGraphics = Clazz.defineMethod (c$, "getGraphics", 
 function (canvas) {
 {
 return canvas.getContext("2d");
 }}, "~O");
-c$.drawImage = $_M(c$, "drawImage", 
-function (context, canvas, x, y, width, height) {
-{
-var buf8 = canvas.buf8;
-var buf32 = canvas.buf32;
-var n = width * height;
-var dw = (canvas.width - width) * 4;
-for (var i = 0, j = x * 4; i < n;) {
-buf8[j++] = (buf32[i] >> 16) & 0xFF;
-buf8[j++] = (buf32[i] >> 8) & 0xFF;
-buf8[j++] = buf32[i] & 0xFF;
-buf8[j++] = 0xFF;
-if (((++i)%width)==0) j += dw;
-}
-context.putImageData(canvas.imgdata,x,y);
-}}, "~O,~O,~N,~N,~N,~N");

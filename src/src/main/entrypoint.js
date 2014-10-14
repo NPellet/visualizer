@@ -70,7 +70,6 @@ define(['jquery',
 		view.configuration.title = view.configuration.title || 'No title';
 
 		for (; i < l; ) {
-			
 			Grid.addModuleFromJSON(view.getChildSync( [ 'modules', i++ ], true ) );
 		}
 
@@ -140,6 +139,41 @@ define(['jquery',
 		def.then(function() {
 
 			ActionManager.viewHasChanged(view);
+
+            // Load custom filters
+            if (view.custom_filters) {
+                var filters = view.custom_filters[0].sections.filters,
+                    allFilters = API.getAllFilters();
+                for (var i = 0; i < filters.length; i++) {
+                    var filter = filters[i].groups.filter[0];
+                    if (filter.name[0]) {
+                        var deps = filters[i].groups.libs,
+                            depsA = ['src/util/api'],
+                            defineStr = 'filterDef = function filterDefinition(API',
+                            dep;
+                        for (var j = 0; j < deps.length; j++) {
+                            dep = deps[j][0];
+                            if (dep.lib) {
+                                depsA.push(dep.lib);
+                                defineStr += ', ' + dep.alias;
+                            }
+                        }
+                        defineStr += ') { \n ' + filter.script[0] + ' \n}';
+
+                        try {
+                            var filterDef = undefined;
+                            eval(defineStr);
+                            define(filter.name[0], depsA, filterDef);
+                            allFilters.push({
+                                file: filter.name[0],
+                                name: filter.name[0]
+                            })
+                        } catch (e) {
+                            Debug.warn('Problem with custom filter definition', e);
+                        }
+                    }
+                }
+            }
 
 			// If no variable is defined in the view, we start browsing the data and add all the first level
 			if (view.variables.length === 0) {
@@ -530,6 +564,54 @@ define(['jquery',
 							}
 						}
 					},
+                    custom_filters: {
+                        options: {
+                            title: 'Custom filters',
+                            icon: 'script_go'
+                        },
+                        sections: {
+                            filters: {
+                                options: {
+                                    multiple: true,
+                                    title: "Filter"
+                                },
+                                groups: {
+                                    filter: {
+                                        options: {
+                                            type: 'list'
+                                        },
+                                        fields: {
+                                            name: {
+                                                type: 'text',
+                                                title: 'Filter name'
+                                            },
+                                            script: {
+                                                type: 'jscode',
+                                                title: 'Script'
+                                            }
+                                        }
+                                    },
+                                    libs: {
+                                        options: {
+                                            type: 'table',
+                                            multiple: 'true',
+                                            title: 'Dependencies'
+                                        },
+                                        fields: {
+                                            lib: {
+                                                type : 'text',
+                                                title: 'URL'
+                                            },
+                                            alias: {
+                                                type : 'text',
+                                                title: 'Alias'
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
 					init_script: {
 						options: {
 							title: 'Initialization script',
@@ -605,6 +687,7 @@ define(['jquery',
 								}
 							}],
 						init_script: view.init_script,
+                        custom_filters: view.custom_filters,
 						actionfiles: ActionManager.getFilesForm(),
 						webcron: [{
 								groups: {
@@ -639,6 +722,7 @@ define(['jquery',
 
 				view.couch_replication = value.sections.couch_replication;
 				view.init_script = value.sections.init_script;
+                view.custom_filters = value.sections.custom_filters;
 
 				// PouchDB variables
 				var data = new DataArray(value.sections.cfg[ 0 ].groups.pouchvars[ 0 ]);
@@ -700,7 +784,6 @@ define(['jquery',
            //      $('#ci-visualizer').append('<div id="browser-compatibility">' + browser.errorMessage() + '</div>');
            //      return;
            //  }
-
             var debugSet;
             if (urls['debug']) {
                 Debug.setDebugLevel(parseInt(urls['debug']));
@@ -794,9 +877,10 @@ define(['jquery',
                             }
                         };
                         window.history.replaceState({type: "viewchange", value: viewInfo}, "");
-                        Versioning.switchView(viewInfo, false);
-
-
+                        Versioning.switchView(viewInfo, false)
+                            .then(function() {
+                                Debug.info('Successfully switched view');
+                            });
                     });
                 });
             }

@@ -3,17 +3,17 @@ c$ = Clazz.declareType (JU, "BC");
 Clazz.makeConstructor (c$, 
 function () {
 });
-$_M(c$, "bytesToFloat", 
+c$.bytesToFloat = Clazz.defineMethod (c$, "bytesToFloat", 
 function (bytes, j, isBigEndian) {
-return this.intToFloat (this.bytesToInt (bytes, j, isBigEndian));
+return JU.BC.intToFloat (JU.BC.bytesToInt (bytes, j, isBigEndian));
 }, "~A,~N,~B");
-$_M(c$, "bytesToInt", 
+c$.bytesToInt = Clazz.defineMethod (c$, "bytesToInt", 
 function (bytes, j, isBigEndian) {
-if (isBigEndian) {
-return ((bytes[j + 3] & 0xff) | (bytes[j + 2] & 0xff) << 8 | (bytes[j + 1] & 0xff) << 16 | (bytes[j] & 0xff) << 24);
-}return ((bytes[j++] & 0xff) | (bytes[j++] & 0xff) << 8 | (bytes[j++] & 0xff) << 16 | (bytes[j++] & 0xff) << 24);
-}, "~A,~N,~B");
-$_M(c$, "intToFloat", 
+var n = (isBigEndian ? (bytes[j + 3] & 0xff) | (bytes[j + 2] & 0xff) << 8 | (bytes[j + 1] & 0xff) << 16 | (bytes[j] & 0xff) << 24 : (bytes[j++] & 0xff) | (bytes[j++] & 0xff) << 8 | (bytes[j++] & 0xff) << 16 | (bytes[j++] & 0xff) << 24);
+{
+return (n > 0x7FFFFFFF ? n - 0x100000000 : n);
+}}, "~A,~N,~B");
+c$.intToFloat = Clazz.defineMethod (c$, "intToFloat", 
 function (x) {
 {
 if (x == 0) return 0;
@@ -23,7 +23,7 @@ o.setFracIEEE();
 var m = ((x & 0x7F800000) >> 23);
 return ((x & 0x80000000) == 0 ? 1 : -1) * o.shiftIEEE((x & 0x7FFFFF) | 0x800000, m - 149);
 }}, "~N");
-$_M(c$, "bytesToDoubleToFloat", 
+c$.bytesToDoubleToFloat = Clazz.defineMethod (c$, "bytesToDoubleToFloat", 
 function (bytes, j, isBigEndian) {
 {
 if (JU.BC.fracIEEE == null) JU.BC.setFracIEEE ();
@@ -49,13 +49,13 @@ b2 = (b2 & 0xF) | 0x10;
 return s * (o.shiftIEEE(b2, e) + o.shiftIEEE(b3, e - 8) + o.shiftIEEE(b4, e - 16)
 + o.shiftIEEE(b5, e - 24));
 }}}, "~A,~N,~B");
-c$.setFracIEEE = $_M(c$, "setFracIEEE", 
-($fz = function () {
+c$.setFracIEEE = Clazz.defineMethod (c$, "setFracIEEE", 
+ function () {
 JU.BC.fracIEEE =  Clazz.newFloatArray (270, 0);
 for (var i = 0; i < 270; i++) JU.BC.fracIEEE[i] = Math.pow (2, i - 141);
 
-}, $fz.isPrivate = true, $fz));
-c$.shiftIEEE = $_M(c$, "shiftIEEE", 
+});
+c$.shiftIEEE = Clazz.defineMethod (c$, "shiftIEEE", 
 function (f, i) {
 if (f == 0 || i < -140) return 0;
 if (i > 128) return 3.4028235E38;

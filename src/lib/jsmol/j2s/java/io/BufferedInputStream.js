@@ -7,28 +7,28 @@ this.markpos = -1;
 this.marklimit = 0;
 Clazz.instantialize (this, arguments);
 }, java.io, "BufferedInputStream", java.io.FilterInputStream);
-$_M(c$, "getInIfOpen", 
-($fz = function () {
+Clazz.defineMethod (c$, "getInIfOpen", 
+ function () {
 var input = this.$in;
 if (input == null) throw  new java.io.IOException ("Stream closed");
 return input;
-}, $fz.isPrivate = true, $fz));
-$_M(c$, "getBufIfOpen", 
-($fz = function () {
+});
+Clazz.defineMethod (c$, "getBufIfOpen", 
+ function () {
 var buffer = this.buf;
 if (buffer == null) throw  new java.io.IOException ("Stream closed");
 return buffer;
-}, $fz.isPrivate = true, $fz));
-$_V(c$, "resetStream", 
+});
+Clazz.overrideMethod (c$, "resetStream", 
 function () {
 });
 Clazz.makeConstructor (c$, 
 function ($in) {
 Clazz.superConstructor (this, java.io.BufferedInputStream, [$in]);
-this.buf =  Clazz.newByteArray (java.io.BufferedInputStream.defaultBufferSize, 0);
+this.buf =  Clazz.newByteArray (8192, 0);
 }, "java.io.InputStream");
-$_M(c$, "fill", 
-($fz = function () {
+Clazz.defineMethod (c$, "fill", 
+ function () {
 var buffer = this.getBufIfOpen ();
 if (this.markpos < 0) this.pos = 0;
  else if (this.pos >= buffer.length) if (this.markpos > 0) {
@@ -48,16 +48,16 @@ buffer = this.buf = nbuf;
 }this.count = this.pos;
 var n = this.getInIfOpen ().read (buffer, this.pos, buffer.length - this.pos);
 if (n > 0) this.count = n + this.pos;
-}, $fz.isPrivate = true, $fz));
-$_V(c$, "readByteAsInt", 
+});
+Clazz.overrideMethod (c$, "readByteAsInt", 
 function () {
 if (this.pos >= this.count) {
 this.fill ();
 if (this.pos >= this.count) return -1;
 }return this.getBufIfOpen ()[this.pos++] & 0xff;
 });
-$_M(c$, "read1", 
-($fz = function (b, off, len) {
+Clazz.defineMethod (c$, "read1", 
+ function (b, off, len) {
 var avail = this.count - this.pos;
 if (avail <= 0) {
 if (len >= this.getBufIfOpen ().length && this.markpos < 0) {
@@ -69,8 +69,8 @@ if (avail <= 0) return -1;
 System.arraycopy (this.getBufIfOpen (), this.pos, b, off, cnt);
 this.pos += cnt;
 return cnt;
-}, $fz.isPrivate = true, $fz), "~A,~N,~N");
-$_V(c$, "read", 
+}, "~A,~N,~N");
+Clazz.overrideMethod (c$, "read", 
 function (b, off, len) {
 this.getBufIfOpen ();
 if ((off | len | (off + len) | (b.length - (off + len))) < 0) {
@@ -87,7 +87,7 @@ var input = this.$in;
 if (input != null && input.available () <= 0) return n;
 }
 }, "~A,~N,~N");
-$_V(c$, "skip", 
+Clazz.overrideMethod (c$, "skip", 
 function (n) {
 this.getBufIfOpen ();
 if (n <= 0) {
@@ -102,28 +102,28 @@ if (avail <= 0) return 0;
 this.pos += skipped;
 return skipped;
 }, "~N");
-$_V(c$, "available", 
+Clazz.overrideMethod (c$, "available", 
 function () {
 var n = this.count - this.pos;
 var avail = this.getInIfOpen ().available ();
 return n > (2147483647 - avail) ? 2147483647 : n + avail;
 });
-$_V(c$, "mark", 
+Clazz.overrideMethod (c$, "mark", 
 function (readlimit) {
 this.marklimit = readlimit;
 this.markpos = this.pos;
 }, "~N");
-$_V(c$, "reset", 
+Clazz.overrideMethod (c$, "reset", 
 function () {
 this.getBufIfOpen ();
 if (this.markpos < 0) throw  new java.io.IOException ("Resetting to invalid mark");
 this.pos = this.markpos;
 });
-$_V(c$, "markSupported", 
+Clazz.overrideMethod (c$, "markSupported", 
 function () {
 return true;
 });
-$_V(c$, "close", 
+Clazz.overrideMethod (c$, "close", 
 function () {
 var input = this.$in;
 this.$in = null;
@@ -131,5 +131,5 @@ if (input != null) input.close ();
 return;
 });
 Clazz.defineStatics (c$,
-"defaultBufferSize", 8192);
+"DEFAULT_BUFFER_SIZE", 8192);
 });

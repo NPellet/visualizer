@@ -14,11 +14,11 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.IsoFxyReader, []);
 });
-$_V(c$, "init", 
+Clazz.overrideMethod (c$, "init", 
 function (sg) {
 this.initIFR (sg);
 }, "J.jvxl.readers.SurfaceGenerator");
-$_M(c$, "initIFR", 
+Clazz.defineMethod (c$, "initIFR", 
 function (sg) {
 this.initADR (sg);
 this.isXLowToHigh = true;
@@ -28,12 +28,12 @@ this.params.fullyLit = true;
 this.isPlanarMapping = (this.params.thePlane != null || this.params.state == 3);
 if (this.params.func != null) this.volumeData.sr = this;
 }, "J.jvxl.readers.SurfaceGenerator");
-$_V(c$, "setup", 
+Clazz.overrideMethod (c$, "setup", 
 function (isMapData) {
 if (this.params.functionInfo.size () > 5) this.data = this.params.functionInfo.get (5);
 this.setupType ("functionXY");
 }, "~B");
-$_M(c$, "setupType", 
+Clazz.defineMethod (c$, "setupType", 
 function (type) {
 this.func = this.params.func;
 var functionName = this.params.functionInfo.get (0);
@@ -44,7 +44,7 @@ if (this.params.thePlane != null || this.data == null && !this.useOriginStepsPoi
  else this.setVolumeData ();
 J.jvxl.data.JvxlCoder.jvxlCreateHeaderWithoutTitleOrAtoms (this.volumeData, this.jvxlFileHeaderBuffer);
 }, "~S");
-$_V(c$, "setVolumeData", 
+Clazz.overrideMethod (c$, "setVolumeData", 
 function () {
 if (this.data == null) {
 this.setVolumeDataADR ();
@@ -57,24 +57,24 @@ this.volumetricVectors[i].set (info.y, info.z, info.w);
 }
 if (this.isAnisotropic) this.setVolumetricAnisotropy ();
 });
-$_V(c$, "readSurfaceData", 
+Clazz.overrideMethod (c$, "readSurfaceData", 
 function (isMapData) {
 if (this.volumeData.sr != null) return;
 this.readSurfaceDataVDR (isMapData);
 }, "~B");
-$_V(c$, "getPlane", 
+Clazz.overrideMethod (c$, "getPlane", 
 function (x) {
 var plane = this.getPlane2 (x);
 this.setPlane (x, plane);
 return plane;
 }, "~N");
-$_M(c$, "setPlane", 
-($fz = function (x, plane) {
+Clazz.defineMethod (c$, "setPlane", 
+ function (x, plane) {
 for (var y = 0, ptyz = 0; y < this.nPointsY; ++y) for (var z = 0; z < this.nPointsZ; ++z) plane[ptyz++] = this.getValue (x, y, z);
 
 
-}, $fz.isPrivate = true, $fz), "~N,~A");
-$_M(c$, "getValue", 
+}, "~N,~A");
+Clazz.defineMethod (c$, "getValue", 
 function (x, y, z) {
 var value;
 if (this.data == null) {
@@ -84,15 +84,15 @@ this.volumeData.voxelPtToXYZ (x, y, z, this.ptTemp);
 value = this.data[x][y];
 }return (this.isPlanarMapping ? value : value - this.ptTemp.z);
 }, "~N,~N,~N");
-$_V(c$, "getValueAtPoint", 
+Clazz.overrideMethod (c$, "getValueAtPoint", 
 function (pt, getSource) {
 if (this.params.func == null) return 0;
 this.values[0] = pt.x;
 this.values[1] = pt.y;
 this.values[2] = pt.z;
 return this.atomDataServer.evalFunctionFloat (this.func[0], this.func[1], this.values);
-}, "JU.P3,~B");
-$_M(c$, "evaluateValue", 
+}, "JU.T3,~B");
+Clazz.defineMethod (c$, "evaluateValue", 
 function (x, y, z) {
 this.volumeData.voxelPtToXYZ (x, y, z, this.ptTemp);
 return this.getValueAtPoint (this.ptTemp, false);

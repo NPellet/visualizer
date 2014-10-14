@@ -79,6 +79,11 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
                             ],
                             'default': 'form'
                         },
+                        showStatus: {
+                            type: 'checkbox',
+                            title: 'Show response status',
+                            options: { display: 'Yes'}
+                        },
                         button: {
                             type: 'checkbox',
                             title: 'Search button',
@@ -229,6 +234,7 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
 
     Controller.prototype.configAliases = {
         button: [ 'groups', 'group', 0, 'button', 0 ],
+        showStatus: [ 'groups', 'group', 0, 'showStatus', 0 ],
         url: [ 'groups', 'group', 0, 'url', 0 ],
         method: [ 'groups', 'group', 0, 'method', 0 ],
         searchparams: [ 'groups', 'searchparams', 0 ],
@@ -239,7 +245,7 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
         postvariables: [ 'sections', 'postvariables', 0, 'groups', 'postvariables', 0 ],
         headers: [ 'groups', 'headers', 0 ],
         dataType: [ 'groups', 'group', 0, 'dataType', 0 ],
-        debounce: [ 'groups', 'group', 0, 'debounce', 0 ],
+        debounce: [ 'groups', 'group', 0, 'debounce', 0 ]
     };
 
     Controller.prototype.initImpl = function () {
@@ -343,7 +349,11 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
         this.request.end(function (err, response) {
             if (err) {
                 Debug.warn('Webservice search: request failed', err);
+                self.module.view.showError();
             } else {
+                if(self.module.getConfigurationCheckbox('showStatus', 'display')) {
+                     self.module.view.showSuccess(response.status);
+                }
                 var body = response.body;
                 if (body == null) {
                     body = response.text;
@@ -370,3 +380,4 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
     return Controller;
 
 });
+

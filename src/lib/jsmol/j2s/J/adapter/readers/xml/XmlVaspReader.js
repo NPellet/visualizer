@@ -1,9 +1,9 @@
 Clazz.declarePackage ("J.adapter.readers.xml");
-Clazz.load (["J.adapter.readers.xml.XmlReader"], "J.adapter.readers.xml.XmlVaspReader", ["java.lang.Double", "JU.PT", "$.SB", "$.V3", "J.util.Logger"], function () {
+Clazz.load (["J.adapter.readers.xml.XmlReader"], "J.adapter.readers.xml.XmlVaspReader", ["java.lang.Double", "JU.PT", "$.SB", "$.V3", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.data = null;
 this.name = null;
-this.atomCount = 0;
+this.ac = 0;
 this.iAtom = 0;
 this.isE_wo_entrp = false;
 this.isE_fr_energy = false;
@@ -30,18 +30,18 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.adapter.readers.xml.XmlVaspReader, []);
 });
-$_V(c$, "getDOMAttributes", 
+Clazz.overrideMethod (c$, "getDOMAttributes", 
 function () {
 return this.myAttributes;
 });
-$_V(c$, "processXml", 
+Clazz.overrideMethod (c$, "processXml", 
 function (parent, saxReader) {
 parent.doProcessLines = true;
 this.PX (parent, saxReader);
 }, "J.adapter.readers.xml.XmlReader,~O");
-$_V(c$, "processStartElement", 
+Clazz.overrideMethod (c$, "processStartElement", 
 function (localName) {
-if (J.util.Logger.debugging) J.util.Logger.debug ("xmlvasp: start " + localName);
+if (JU.Logger.debugging) JU.Logger.debug ("xmlvasp: start " + localName);
 if (!this.parent.continuing) return;
 if ("calculation".equals (localName)) {
 this.enthalpy = null;
@@ -59,21 +59,21 @@ if (!this.parent.doGetModel (++this.parent.modelNumber, null)) {
 this.parent.checkLastModel ();
 return;
 }this.parent.setFractionalCoordinates (true);
-this.atomSetCollection.setDoFixPeriodic ();
-this.atomSetCollection.newAtomSet ();
+this.asc.doFixPeriodic = true;
+this.asc.newAtomSet ();
 if (this.enthalpy != null) {
-this.atomSetCollection.setAtomSetAuxiliaryInfo ("enthalpy", Double.$valueOf (JU.PT.dVal (this.enthalpy)));
+this.asc.setAtomSetAuxiliaryInfo ("enthalpy", Double.$valueOf (JU.PT.dVal (this.enthalpy)));
 }if (this.gibbsEnergy != null) {
-this.atomSetCollection.setAtomSetEnergy ("" + this.gibbsEnergy, this.parseFloatStr (this.gibbsEnergy));
-this.atomSetCollection.setAtomSetAuxiliaryInfo ("gibbsEnergy", Double.$valueOf (JU.PT.dVal (this.gibbsEnergy)));
-}if (this.enthalpy != null && this.gibbsEnergy != null) this.atomSetCollection.setAtomSetName ("Enthalpy = " + this.enthalpy + " eV Gibbs Energy = " + this.gibbsEnergy + " eV");
+this.asc.setAtomSetEnergy ("" + this.gibbsEnergy, this.parseFloatStr (this.gibbsEnergy));
+this.asc.setAtomSetAuxiliaryInfo ("gibbsEnergy", Double.$valueOf (JU.PT.dVal (this.gibbsEnergy)));
+}if (this.enthalpy != null && this.gibbsEnergy != null) this.asc.setAtomSetName ("Enthalpy = " + this.enthalpy + " eV Gibbs Energy = " + this.gibbsEnergy + " eV");
 return;
 }if (!this.parent.doProcessLines) return;
 if ("v".equals (localName)) {
 this.keepChars = (this.data != null);
 return;
 }if ("c".equals (localName)) {
-this.keepChars = (this.iAtom < this.atomCount);
+this.keepChars = (this.iAtom < this.ac);
 return;
 }if ("varray".equals (localName)) {
 this.name = this.atts.get ("name");
@@ -83,9 +83,9 @@ return;
 this.keepChars = true;
 return;
 }}, "~S");
-$_V(c$, "processEndElement", 
+Clazz.overrideMethod (c$, "processEndElement", 
 function (localName) {
-if (J.util.Logger.debugging) J.util.Logger.debug ("xmlvasp: end " + localName);
+if (JU.Logger.debugging) JU.Logger.debug ("xmlvasp: end " + localName);
 while (true) {
 if (!this.parent.doProcessLines) break;
 if (this.isE_wo_entrp) {
@@ -100,7 +100,7 @@ break;
 this.data.append (this.chars);
 break;
 }if ("c".equals (localName)) {
-if (this.iAtom < this.atomCount) {
+if (this.iAtom < this.ac) {
 if (this.atomName == null) {
 this.atomName = this.atomSym = this.chars.trim ();
 } else {
@@ -108,9 +108,9 @@ this.atomNames[this.iAtom++] = this.atomName + this.chars.trim ();
 this.atomName = null;
 }}break;
 }if ("atoms".equals (localName)) {
-this.atomCount = this.parseIntStr (this.chars);
-this.atomNames =  new Array (this.atomCount);
-this.atomSyms =  new Array (this.atomCount);
+this.ac = this.parseIntStr (this.chars);
+this.atomNames =  new Array (this.ac);
+this.atomSyms =  new Array (this.ac);
 this.iAtom = 0;
 break;
 }if ("varray".equals (localName) && this.data != null) {
@@ -132,21 +132,21 @@ this.beta = (Math.acos (va.dot (vc)) * 180 / 3.141592653589793);
 this.gamma = (Math.acos (va.dot (vb)) * 180 / 3.141592653589793);
 } else if ("positions".equals (this.name)) {
 this.parent.setUnitCell (this.a, this.b, this.c, this.alpha, this.beta, this.gamma);
-var fdata =  Clazz.newFloatArray (this.atomCount * 3, 0);
-J.adapter.smarter.AtomSetCollectionReader.getTokensFloat (this.data.toString (), fdata, this.atomCount * 3);
+var fdata =  Clazz.newFloatArray (this.ac * 3, 0);
+J.adapter.smarter.AtomSetCollectionReader.getTokensFloat (this.data.toString (), fdata, this.ac * 3);
 var fpt = 0;
-for (var i = 0; i < this.atomCount; i++) {
-var atom = this.atomSetCollection.addNewAtom ();
+for (var i = 0; i < this.ac; i++) {
+var atom = this.asc.addNewAtom ();
 this.parent.setAtomCoordXYZ (atom, fdata[fpt++], fdata[fpt++], fdata[fpt++]);
 atom.elementSymbol = this.atomSyms[i];
 atom.atomName = this.atomNames[i];
 }
 } else if ("forces".equals (this.name)) {
-var fdata =  Clazz.newFloatArray (this.atomCount * 3, 0);
-J.adapter.smarter.AtomSetCollectionReader.getTokensFloat (this.data.toString (), fdata, this.atomCount * 3);
+var fdata =  Clazz.newFloatArray (this.ac * 3, 0);
+J.adapter.smarter.AtomSetCollectionReader.getTokensFloat (this.data.toString (), fdata, this.ac * 3);
 var fpt = 0;
-var i0 = this.atomSetCollection.getLastAtomSetAtomIndex ();
-for (var i = 0; i < this.atomCount; i++) this.atomSetCollection.addVibrationVector (i0 + i, fdata[fpt++], fdata[fpt++], fdata[fpt++]);
+var i0 = this.asc.getLastAtomSetAtomIndex ();
+for (var i = 0; i < this.ac; i++) this.asc.addVibrationVector (i0 + i, fdata[fpt++], fdata[fpt++], fdata[fpt++]);
 
 }this.data = null;
 break;

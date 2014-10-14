@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JSV.common");
-Clazz.load (["java.lang.Enum", "JSV.common.MeasurementData", "$.IntegralComparator"], "JSV.common.IntegralData", ["java.lang.Double", "java.util.Collections", "$.StringTokenizer", "JU.AU", "$.BS", "$.DF", "$.List", "$.PT", "JSV.common.Annotation", "$.Coordinate", "$.Integral", "$.ScriptToken"], function () {
+Clazz.load (["java.lang.Enum", "JSV.common.MeasurementData", "$.IntegralComparator"], "JSV.common.IntegralData", ["java.lang.Double", "java.util.Collections", "$.StringTokenizer", "JU.AU", "$.BS", "$.DF", "$.Lst", "$.PT", "JSV.common.Annotation", "$.Coordinate", "$.Integral", "$.ScriptToken"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.percentMinY = 0;
 this.percentOffset = 0;
@@ -12,15 +12,15 @@ this.haveRegions = false;
 this.xyCoords = null;
 Clazz.instantialize (this, arguments);
 }, JSV.common, "IntegralData", JSV.common.MeasurementData);
-$_M(c$, "getPercentMinimumY", 
+Clazz.defineMethod (c$, "getPercentMinimumY", 
 function () {
 return this.percentMinY;
 });
-$_M(c$, "getPercentOffset", 
+Clazz.defineMethod (c$, "getPercentOffset", 
 function () {
 return this.percentOffset;
 });
-$_M(c$, "getIntegralFactor", 
+Clazz.defineMethod (c$, "getIntegralFactor", 
 function () {
 return this.intRange;
 });
@@ -31,7 +31,7 @@ this.percentMinY = integralMinY;
 this.percentOffset = integralOffset;
 this.percentRange = integralRange;
 this.calculateIntegral ();
-}, "~N,~N,~N,JSV.common.JDXSpectrum");
+}, "~N,~N,~N,JSV.common.Spectrum");
 Clazz.makeConstructor (c$, 
 function (spec, p) {
 Clazz.superConstructor (this, JSV.common.IntegralData, [JSV.common.Annotation.AType.Integration, spec]);
@@ -41,12 +41,12 @@ return;
 }this.percentOffset = p.integralOffset;
 this.percentRange = p.integralRange;
 this.calculateIntegral ();
-}, "JSV.common.JDXSpectrum,JSV.common.Parameters");
-$_M(c$, "update", 
+}, "JSV.common.Spectrum,JSV.common.Parameters");
+Clazz.defineMethod (c$, "update", 
 function (parameters) {
 this.update (parameters.integralMinY, parameters.integralOffset, parameters.integralRange);
 }, "JSV.common.Parameters");
-$_M(c$, "update", 
+Clazz.defineMethod (c$, "update", 
 function (integralMinY, integralOffset, integralRange) {
 var percentRange0 = this.percentRange;
 if (integralRange <= 0 || integralRange == this.percentRange && integralOffset == this.percentOffset) return;
@@ -73,11 +73,11 @@ ir.setValue (Math.abs (y2 - y1) * 100 * this.normalizationFactor);
 }this.intRange = intRangeNew;
 this.offset = offsetNew;
 }, "~N,~N,~N");
-$_M(c$, "getYValueAt", 
+Clazz.defineMethod (c$, "getYValueAt", 
 function (x) {
 return JSV.common.Coordinate.getYValueAt (this.xyCoords, x);
 }, "~N");
-$_M(c$, "addIntegralRegion", 
+Clazz.defineMethod (c$, "addIntegralRegion", 
 function (x1, x2) {
 if (Double.isNaN (x1)) {
 this.haveRegions = false;
@@ -93,18 +93,18 @@ this.addLast ($in);
 java.util.Collections.sort (this, JSV.common.IntegralData.c);
 return $in;
 }, "~N,~N");
-$_V(c$, "setSpecShift", 
+Clazz.overrideMethod (c$, "setSpecShift", 
 function (dx) {
 JSV.common.Coordinate.shiftX (this.xyCoords, dx);
 for (var i = this.size (); --i >= 1; ) {
 this.get (i).addSpecShift (dx);
 }
 }, "~N");
-$_M(c$, "addMarks", 
+Clazz.defineMethod (c$, "addMarks", 
 function (ppms) {
-ppms = JU.PT.simpleReplace (" " + ppms, ",", " ");
-ppms = JU.PT.simpleReplace (ppms, " -", " #");
-ppms = JU.PT.simpleReplace (ppms, "--", "-#");
+ppms = JU.PT.rep (" " + ppms, ",", " ");
+ppms = JU.PT.rep (ppms, " -", " #");
+ppms = JU.PT.rep (ppms, "--", "-#");
 ppms = ppms.$replace ('-', '^');
 ppms = ppms.$replace ('#', '-');
 var tokens = JSV.common.ScriptToken.getTokens (ppms);
@@ -133,7 +133,7 @@ throw e;
 }
 }
 }, "~S");
-$_M(c$, "calculateIntegral", 
+Clazz.defineMethod (c$, "calculateIntegral", 
 function () {
 var specXyCoords = this.spec.getXYCoords ();
 this.xyCoords =  new Array (specXyCoords.length);
@@ -159,14 +159,14 @@ this.xyCoords[i] =  new JSV.common.Coordinate ().set (specXyCoords[i].getXVal ()
 }
 return this.xyCoords;
 });
-$_M(c$, "checkRange", 
-($fz = function () {
+Clazz.defineMethod (c$, "checkRange", 
+ function () {
 this.percentOffset = Math.max (5, this.percentOffset);
 this.percentRange = Math.max (10, this.percentRange);
-}, $fz.isPrivate = true, $fz));
-c$.getIntegrationRatiosFromString = $_M(c$, "getIntegrationRatiosFromString", 
+});
+c$.getIntegrationRatiosFromString = Clazz.defineMethod (c$, "getIntegrationRatiosFromString", 
 function (spec, value) {
-var ratios =  new JU.List ();
+var ratios =  new JU.Lst ();
 var allParamTokens =  new java.util.StringTokenizer (value, ",");
 while (allParamTokens.hasMoreTokens ()) {
 var token = allParamTokens.nextToken ();
@@ -175,35 +175,35 @@ var ratio =  new JSV.common.Annotation ().setA (Double.parseDouble (eachParam.ne
 ratios.addLast (ratio);
 }
 return ratios;
-}, "JSV.common.JDXSpectrum,~S");
-$_M(c$, "getXYCoords", 
+}, "JSV.common.Spectrum,~S");
+Clazz.defineMethod (c$, "getXYCoords", 
 function () {
 return this.xyCoords;
 });
-$_M(c$, "getPercentYValueAt", 
+Clazz.defineMethod (c$, "getPercentYValueAt", 
 function (x) {
 return this.getYValueAt (x) * 100;
 }, "~N");
-$_M(c$, "dispose", 
+Clazz.defineMethod (c$, "dispose", 
 function () {
 this.spec = null;
 this.xyCoords = null;
 });
-$_M(c$, "setSelectedIntegral", 
+Clazz.defineMethod (c$, "setSelectedIntegral", 
 function (integral, val) {
 var val0 = integral.getValue ();
 var factor = (val <= 0 ? 1 / this.normalizationFactor : val / val0);
 this.factorAllIntegrals (factor, val <= 0);
 }, "JSV.common.Measurement,~N");
-$_M(c$, "factorAllIntegrals", 
-($fz = function (factor, isReset) {
+Clazz.defineMethod (c$, "factorAllIntegrals", 
+ function (factor, isReset) {
 for (var i = 0; i < this.size (); i++) {
 var m = this.get (i);
 m.setValue (factor * m.getValue ());
 }
 this.normalizationFactor = (isReset ? 1 : this.normalizationFactor * factor);
-}, $fz.isPrivate = true, $fz), "~N,~B");
-$_M(c$, "getBitSet", 
+}, "~N,~B");
+Clazz.defineMethod (c$, "getBitSet", 
 function () {
 var bs = JU.BS.newN (this.xyCoords.length);
 if (this.size () == 0) {
@@ -217,25 +217,25 @@ bs.setBits (Math.min (x1, x2), Math.max (x1, x2));
 }
 return bs;
 });
-$_V(c$, "getMeasurementListArray", 
+Clazz.overrideMethod (c$, "getMeasurementListArray", 
 function (units) {
 var data =  new Array (this.size ());
 for (var pt = 0, i = this.size (); --i >= 0; ) data[pt++] = ["" + pt, JU.DF.formatDecimalDbl (this.get (i).getXVal (), 2), JU.DF.formatDecimalDbl (this.get (i).getXVal2 (), 2), this.get (i).text];
 
 return data;
 }, "~S");
-$_V(c$, "getMeasurementListArrayReal", 
+Clazz.overrideMethod (c$, "getMeasurementListArrayReal", 
 function (units) {
 var data = JU.AU.newDouble2 (this.size ());
 for (var pt = 0, i = this.size (); --i >= 0; pt++) data[pt] = [this.get (i).getXVal (), this.get (i).getXVal2 (), this.get (i).getValue ()];
 
 return data;
 }, "~S");
-$_V(c$, "getDataHeader", 
+Clazz.overrideMethod (c$, "getDataHeader", 
 function () {
 return JSV.common.IntegralData.$HEADER;
 });
-$_M(c$, "shiftY", 
+Clazz.defineMethod (c$, "shiftY", 
 function (yOld, yNew, yPixel0, yPixels) {
 var pt = Clazz.doubleToInt (100.0 * (yPixel0 + yPixels - yNew) / yPixels);
 if (yOld < 0) pt -= this.percentOffset;
@@ -244,7 +244,7 @@ this.update (0, this.percentOffset, pt);
 } else {
 this.update (0, pt, this.percentRange);
 }}, "~N,~N,~N,~N");
-$_M(c$, "autoIntegrate", 
+Clazz.defineMethod (c$, "autoIntegrate", 
 function () {
 if (this.xyCoords == null) this.calculateIntegral ();
 if (this.xyCoords.length == 0) return;
@@ -280,7 +280,7 @@ y0 = y;
 }}
 if (this.spec.nH > 0) this.factorAllIntegrals (this.spec.nH / this.percentRange, false);
 });
-$_M(c$, "getInfo", 
+Clazz.defineMethod (c$, "getInfo", 
 function (info) {
 info.put ("offset", Double.$valueOf (this.myParams.integralOffset));
 info.put ("range", Double.$valueOf (this.myParams.integralRange));
@@ -288,14 +288,14 @@ info.put ("normalizationFactor", Double.$valueOf (this.normalizationFactor));
 info.put ("integralTotal", Double.$valueOf (this.integralTotal));
 Clazz.superCall (this, JSV.common.IntegralData, "getInfo", [info]);
 }, "java.util.Map");
-$_M(c$, "setMinimumIntegral", 
+Clazz.defineMethod (c$, "setMinimumIntegral", 
 function (val) {
 for (var i = this.size (); --i >= 0; ) if (this.get (i).getValue () < val) this.remove (i);
 
 }, "~N");
-Clazz.pu$h ();
+Clazz.pu$h(self.c$);
 c$ = Clazz.declareType (JSV.common.IntegralData, "IntMode", Enum);
-c$.getMode = $_M(c$, "getMode", 
+c$.getMode = Clazz.defineMethod (c$, "getMode", 
 function (a) {
 for (var mode, $mode = 0, $$mode = JSV.common.IntegralData.IntMode.values (); $mode < $$mode.length && ((mode = $$mode[$mode]) || true); $mode++) if (a.startsWith (mode.name ())) return mode;
 

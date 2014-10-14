@@ -1,11 +1,11 @@
 Clazz.declarePackage ("J.shape");
 Clazz.load (["J.shape.Object2dShape"], "J.shape.TextShape", null, function () {
 c$ = Clazz.declareType (J.shape, "TextShape", J.shape.Object2dShape);
-$_V(c$, "setProperty", 
+Clazz.overrideMethod (c$, "setProperty", 
 function (propertyName, value, bsSelected) {
 this.setPropTS (propertyName, value, bsSelected);
 }, "~S,~O,JU.BS");
-$_M(c$, "setPropTS", 
+Clazz.defineMethod (c$, "setPropTS", 
 function (propertyName, value, bsSelected) {
 if ("text" === propertyName) {
 var text = value;

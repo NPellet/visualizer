@@ -1,0 +1,263 @@
+{
+    "modules": [
+        {
+            "configuration": {
+                "sections": {},
+                "groups": {
+                    "group": [
+                        {
+                            "nblines": [
+                                20
+                            ],
+                            "toggle": [
+                                null
+                            ],
+                            "colorjpath": [
+                                null
+                            ],
+                            "filterRow": [
+                                null
+                            ]
+                        }
+                    ],
+                    "cols": [
+                        [
+                            {
+                                "name": "Name",
+                                "jpath": "element.name",
+                                "number": [],
+                                "editable": "none"
+                            }
+                        ]
+                    ]
+                }
+            },
+            "id": 1,
+            "url": "./modules/types/display/jqgrid/",
+            "layers": {
+                "Default layer": {
+                    "position": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0
+                    },
+                    "size": {
+                        "width": 23,
+                        "height": 14
+                    },
+                    "display": true,
+                    "title": "1D spectra",
+                    "bgColor": [
+                        255,
+                        255,
+                        255,
+                        0
+                    ],
+                    "wrapper": true,
+                    "created": true,
+                    "name": "Default layer"
+                }
+            },
+            "actions_out": [
+                {
+                    "jpath": []
+                }
+            ],
+            "vars_in": [
+                {
+                    "rel": "list",
+                    "name": "1D"
+                }
+            ],
+            "actions_in": [
+                {}
+            ],
+            "title": "1D spectra",
+            "vars_out": [
+                {
+                    "event": "onSelect",
+                    "rel": "row",
+                    "jpath": [
+                        "jcamp"
+                    ],
+                    "name": "jcamp1D"
+                }
+            ]
+        },
+        {
+            "configuration": {
+                "sections": {},
+                "groups": {
+                    "group": [
+                        {
+                            "nblines": [
+                                20
+                            ],
+                            "toggle": [
+                                null
+                            ],
+                            "colorjpath": [
+                                null
+                            ],
+                            "filterRow": [
+                                null
+                            ]
+                        }
+                    ],
+                    "cols": [
+                        [
+                            {
+                                "name": "Name",
+                                "jpath": "element.name",
+                                "number": [],
+                                "editable": "none"
+                            }
+                        ]
+                    ]
+                }
+            },
+            "id": 2,
+            "url": "./modules/types/display/jqgrid/",
+            "layers": {
+                "Default layer": {
+                    "position": {
+                        "left": 0,
+                        "top": 15,
+                        "right": 0
+                    },
+                    "size": {
+                        "width": 23,
+                        "height": 17
+                    },
+                    "display": true,
+                    "title": "2D spectra",
+                    "bgColor": [
+                        255,
+                        255,
+                        255,
+                        0
+                    ],
+                    "wrapper": true,
+                    "created": true,
+                    "name": "Default layer"
+                }
+            },
+            "actions_out": [
+                {
+                    "jpath": []
+                }
+            ],
+            "vars_in": [
+                {
+                    "rel": "list",
+                    "name": "2D"
+                }
+            ],
+            "actions_in": [
+                {}
+            ],
+            "title": "2D spectra",
+            "vars_out": [
+                {
+                    "event": "onSelect",
+                    "rel": "row",
+                    "jpath": [
+                        "jcamp"
+                    ],
+                    "name": "jcamp2D"
+                }
+            ]
+        },
+        {
+            "configuration": {},
+            "id": 3,
+            "url": "./modules/types/science/spectra/nmr/2dnmr/",
+            "layers": {
+                "Default layer": {
+                    "position": {
+                        "left": 24,
+                        "top": 0,
+                        "right": 0
+                    },
+                    "size": {
+                        "width": 140,
+                        "height": 84
+                    },
+                    "display": true,
+                    "title": "NMR 2D",
+                    "bgColor": "",
+                    "wrapper": true,
+                    "created": true,
+                    "name": "Default layer"
+                }
+            },
+            "vars_in": [
+                {
+                    "rel": "jcampx",
+                    "name": "jcamp1D"
+                },
+                {
+                    "rel": "jcampy",
+                    "name": "jcamp1D"
+                },
+                {
+                    "rel": "jcamp2d",
+                    "name": "jcamp2D"
+                }
+            ],
+            "actions_in": [
+                {
+                    "rel": "",
+                    "name": ""
+                }
+            ],
+            "title": "NMR 2D",
+            "vars_out": [
+                {
+                    "event": "",
+                    "rel": "",
+                    "jpath": "",
+                    "name": ""
+                }
+            ],
+            "actions_out": [
+                {
+                    "event": "",
+                    "rel": "",
+                    "jpath": "",
+                    "name": ""
+                }
+            ]
+        }
+    ],
+    "variables": [
+        {
+            "varname": "1D",
+            "jpath": [
+                "1D"
+            ],
+            "url": ""
+        },
+        {
+            "varname": "2D",
+            "jpath": [
+                "2D"
+            ],
+            "url": ""
+        }
+    ],
+    "configuration": {
+        "title": "2D NMR"
+    },
+    "version": "2.5.1",
+    "grid": {
+        "layers": {
+            "Default layer": {
+                "name": "Default layer"
+            }
+        },
+        "xWidth": 10,
+        "yHeight": 10
+    },
+    "pouchvariables": []
+}

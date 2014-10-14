@@ -1,16 +1,16 @@
 Clazz.declarePackage ("JU");
 Clazz.load (["java.lang.Boolean"], "JU.DF", ["java.lang.Double", "$.Float", "JU.PT", "$.SB"], function () {
 c$ = Clazz.declareType (JU, "DF");
-c$.setUseNumberLocalization = $_M(c$, "setUseNumberLocalization", 
+c$.setUseNumberLocalization = Clazz.defineMethod (c$, "setUseNumberLocalization", 
 function (TF) {
 JU.DF.useNumberLocalization[0] = (TF ? Boolean.TRUE : Boolean.FALSE);
 }, "~B");
-c$.formatDecimalDbl = $_M(c$, "formatDecimalDbl", 
+c$.formatDecimalDbl = Clazz.defineMethod (c$, "formatDecimalDbl", 
 function (value, decimalDigits) {
 if (decimalDigits == 2147483647 || value == -Infinity || value == Infinity || Double.isNaN (value)) return "" + value;
 return JU.DF.formatDecimal (value, decimalDigits);
 }, "~N,~N");
-c$.formatDecimal = $_M(c$, "formatDecimal", 
+c$.formatDecimal = Clazz.defineMethod (c$, "formatDecimal", 
 function (value, decimalDigits) {
 if (decimalDigits == 2147483647 || value == -Infinity || value == Infinity || Float.isNaN (value)) return "" + value;
 var n;
@@ -59,7 +59,7 @@ if (pt < len) sb.appendC (s1.charAt (pt));
 s1 = (isNeg ? "-" : "") + sb;
 return (Boolean.TRUE.equals (JU.DF.useNumberLocalization[0]) ? s1 : s1.$replace (',', '.'));
 }, "~N,~N");
-c$.formatDecimalTrimmed = $_M(c$, "formatDecimalTrimmed", 
+c$.formatDecimalTrimmed = Clazz.defineMethod (c$, "formatDecimalTrimmed", 
 function (x, precision) {
 var str = JU.DF.formatDecimalDbl (x, precision);
 var m = str.length - 1;

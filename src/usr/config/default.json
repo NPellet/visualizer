@@ -1,35 +1,47 @@
 {
     "lockView": false,
     "usrDir": "usr",
-    "debugLevel": -1,
+    "debugLevel": 5,
     "filters": [
         {
-            "file": "usr/filters/doitourl.js",
+            "file": "usr/filters/doitourl",
             "name": "DOI to URL"
         },
         {
-            "file": "usr/filters/getfirstelement.js",
+            "file": "usr/filters/getfirstelement",
             "name": "Get first element in array"
         },
         {
-            "file": "usr/filters/flickr.js",
+            "file": "usr/filters/flickr",
             "name": "Flickr image"
         },
         {
-            "file": "usr/filters/gcgenerator.js",
+            "file": "usr/filters/gcgenerator",
             "name": "Generate GC"
         },
         {
-            "file": "usr/filters/hclust.js",
+            "file": "usr/filters/hclust",
             "name": "Hierarchical clustering"
         },
         {
-            "file": "usr/filters/histogram.js",
+            "file": "usr/filters/histogram",
             "name": "Color histogram"
         },
         {
-            "file": "usr/filters/testdelay.js",
+            "file": "usr/filters/testdelay",
             "name": "Delay test"
+        },
+        {
+            "file": "usr/filters/base64",
+            "name": "Extract mime and value from base64 url"
+        },
+        {
+            "file": "usr/filters/decodeBarcode",
+            "name": "Decode Barcode(s)"
+        },
+        {
+            "file": "usr/filters/encodeBarcode",
+            "name": "Encode to Barcode"
         }
     ],
     "modules": {

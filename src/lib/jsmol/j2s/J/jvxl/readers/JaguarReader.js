@@ -11,12 +11,12 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.JaguarReader, []);
 });
-$_V(c$, "init2", 
+Clazz.overrideMethod (c$, "init2", 
 function (sg, br) {
 this.init2VFR (sg, br);
 this.nSurfaces = 1;
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
-$_V(c$, "readParameters", 
+Clazz.overrideMethod (c$, "readParameters", 
 function () {
 this.jvxlFileHeaderBuffer =  new JU.SB ();
 this.jvxlFileHeaderBuffer.append ("Jaguar data\n");
@@ -48,9 +48,9 @@ this.volumetricVectors[2].set (0, 0, d * factor);
 this.jvxlFileHeaderBuffer.append (this.voxelCounts[2] + " 0.0 0.0 " + d + "\n");
 this.readLine ();
 });
-$_M(c$, "readExtents", 
-($fz = function (voxelVectorIndex) {
+Clazz.defineMethod (c$, "readExtents", 
+ function (voxelVectorIndex) {
 var tokens = JU.PT.getTokens (this.readLine ());
 this.extents[voxelVectorIndex] = this.parseFloatStr (tokens[voxelVectorIndex + 1]);
-}, $fz.isPrivate = true, $fz), "~N");
+}, "~N");
 });

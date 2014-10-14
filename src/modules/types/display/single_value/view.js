@@ -1,145 +1,133 @@
-define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domdeferred', 'src/util/api', 'src/util/typerenderer'], function(Default, Traversing, DomDeferred, API, Renderer) {
-	
-	function view() {};
-	view.prototype = $.extend(true, {}, Default, {
+'use strict';
 
-		init: function() {	
-			var html = "";
-			html += '<div></div>';
-			
-			this.dom = $( html ).css( { 
-				display: 'table',
-				'table-layout': 'fixed',
-				height: '100%',
-				width: '100%'
-			} );
+define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domdeferred', 'src/util/api', 'src/util/typerenderer'], function (Default, Traversing, DomDeferred, API, Renderer) {
 
-			this.values = {};
-			this.module.getDomContent( ).html( this.dom );
-			this.fillWithVal( this.module.getConfiguration( 'defaultvalue' ) );
-			this.resolveReady();
-			this._relsForLoading = [ 'value' ];
-		},
-		
-		blank: {
-			value: function(varName) {
-				this.dom.empty();
-			}
-		},
-		
-		update: {
-			'color': function(color) {
+    function View() {
+    }
 
-				if( color === undefined ) {
-					return;
-				}
+    View.prototype = $.extend(true, {}, Default, {
 
-				this.module.getDomContent( ).css( 'background-color', color.get() );
-			},
+        init: function () {
+            var html = '<div></div>';
+            this.dom = $(html).css({
+                display: 'table',
+                'table-layout': 'fixed',
+                height: '100%',
+                width: '100%'
+            });
 
-			'value': function( varValue, varName ) {
+            this.values = {};
+            this.module.getDomContent().html(this.dom);
+            this.fillWithVal(this.module.getConfiguration('defaultvalue'));
+            this.resolveReady();
+            this._relsForLoading = ['value'];
+        },
 
-				var view = this;
-				
-				/*if( varValue.onChange ) {
-					varValue.onChange( function( value ) {
-						view.render( value, varName );
-					});
-				}*/
+        blank: {
+            value: function () {
+                this.dom.empty();
+            }
+        },
 
-				if( varValue == undefined ) {
+        update: {
+            color: function (color) {
+                if (color === undefined) {
+                    return;
+                }
 
-					this.fillWithVal( this.module.getConfiguration('defaultvalue') || '' );
+                this.module.getDomContent().css('background-color', color.get());
+            },
 
-				} else {
+            value: function (varValue, varName) {
+                if (varValue == undefined) {
+                    this.fillWithVal(this.module.getConfiguration('defaultvalue') || '');
+                } else {
+                    this.render(varValue, varName);
+                }
+            }
+        },
 
-					this.render( varValue, varName );
-				}
-			}
-		},
+        render: function (varValue, varName) {
+            var self = this;
 
-		render: function( varValue, varName ) {
+            var def = Renderer.toScreen(varValue, this.module);
+            def.always(function (val) {
+                self.values[ varName ] = val;
+                self.renderAll(val, def);
+            });
+        },
 
-			var self = this;
-			
-			var def = Renderer.toScreen( varValue, this.module );
-			def.always( function( val ) {
-				self.values[ varName ] = val;
-				self.renderAll( val, def );
-			} );
-		},
-		
-		renderAll: function( val, def ) {
+        renderAll: function (val, def) {
 
-			var view = this,
-				sprintfVal = this.module.getConfiguration('sprintf'),
-				sprintfOrder = this.module.getConfiguration('sprintfOrder');
+            var view = this,
+                sprintfVal = this.module.getConfiguration('sprintf'),
+                sprintfOrder = this.module.getConfiguration('sprintfOrder');
 
-			if ( sprintfVal && sprintfVal != "" ) {
+            if (sprintfVal && sprintfVal != '') {
 
-				try {
-					require( [ 'components/sprintf/dist/sprintf.min' ], function( ) {
+                try {
+                    require([ 'components/sprintf/dist/sprintf.min' ], function () {
 
-						var args = [ sprintfVal ];
-						for( var i in view.values ) {
-							args.push( view.values[ i ] );	
-						}
+                        var args = [ sprintfVal ];
+                        for (var i in view.values) {
+                            args.push(view.values[ i ]);
+                        }
 
-						val = sprintf.apply( this, args );
+                        val = sprintf.apply(this, args);
 
-						view.fillWithVal( val, def );	
-					});
+                        view.fillWithVal(val, def);
+                    });
 
-				} catch( e ) {
+                } catch (e) {
 
-					view.fillWithVal( val, def );
+                    view.fillWithVal(val, def);
 
-				}
+                }
 
-			} else {
-				view.fillWithVal( val, def );
-			}
-		},
+            } else {
+                view.fillWithVal(val, def);
+            }
+        },
 
-		fillWithVal: function(val, def) {
-			
-			var valign = this.module.getConfiguration('valign'),
-				align = this.module.getConfiguration('align'),
-				fontcolor = this.module.getConfiguration('fontcolor'),
-				fontsize = this.module.getConfiguration('fontsize'),
-				font = this.module.getConfiguration('font'),
-				preformatted = this.module.getConfiguration('preformatted');
-			
-			var div = $("<div />").css( {
-				fontFamily: font || 'Arial',
-				fontSize: fontsize || '10pt',
-				color: fontcolor || '#000000',
-				display: 'table-cell',
-				'vertical-align': valign || 'top',
-				textAlign: align || 'center',
-				width: '100%',
-				height: '100%',
-				'white-space': preformatted || 'normal',
-				'word-wrap':'break-word'
-			} ).html( val );
+        fillWithVal: function (val, def) {
 
-//			if (preformatted) div.html("<pre />").html( val );
+            var valign = this.module.getConfiguration('valign'),
+                align = this.module.getConfiguration('align'),
+                fontcolor = this.module.getConfiguration('fontcolor'),
+                fontsize = this.module.getConfiguration('fontsize'),
+                font = this.module.getConfiguration('font');
+            var
+                preformatted = this.module.getConfigurationCheckbox('preformatted', 'pre'),
+                selectable = this.module.getConfigurationCheckbox('preformatted', 'selectable');
 
-			this.dom.html( div );
-			
-			if(def && def.build) {
-				def.build();
-			}
-			
-			DomDeferred.notify( div );
-		},
-		
-		getDom: function() {
-			return this.dom;
-		},
-		
-		typeToScreen: {}
-	});
+            var valstr = val != undefined ? val.toString() : '';
 
-	return view;
+            var div = $('<div />').css({
+                fontFamily: font || 'Arial',
+                fontSize: fontsize || '10pt',
+                color: fontcolor || '#000000',
+                display: 'table-cell',
+                'vertical-align': valign || 'top',
+                textAlign: align || 'center',
+                width: '100%',
+                height: '100%',
+                'white-space': preformatted ? 'pre' : 'normal',
+                'word-wrap': 'break-word',
+                'user-select': selectable ? 'text' : 'none'
+            }).html(valstr);
+
+
+            this.dom.html(div);
+
+            if (def && def.build) {
+                def.build();
+            }
+
+            DomDeferred.notify(div);
+        }
+
+    });
+
+    return View;
+
 });

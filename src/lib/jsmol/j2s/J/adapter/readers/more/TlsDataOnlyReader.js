@@ -1,30 +1,30 @@
 Clazz.declarePackage ("J.adapter.readers.more");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.more.TlsDataOnlyReader", ["java.lang.Float", "java.util.Hashtable", "JU.List", "$.P3", "$.PT", "$.SB", "J.util.Escape", "$.Logger"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.more.TlsDataOnlyReader", ["java.lang.Float", "java.util.Hashtable", "JU.Lst", "$.P3", "$.PT", "$.SB", "JU.Escape", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.vTlsModels = null;
 this.sbTlsErrors = null;
 this.tlsGroupID = 0;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.more, "TlsDataOnlyReader", J.adapter.smarter.AtomSetCollectionReader);
-$_V(c$, "initializeReader", 
+Clazz.overrideMethod (c$, "initializeReader", 
 function () {
 this.readTlsData ();
 this.continuing = false;
 });
-$_M(c$, "readTlsData", 
-($fz = function () {
-this.vTlsModels =  new JU.List ();
+Clazz.defineMethod (c$, "readTlsData", 
+ function () {
+this.vTlsModels =  new JU.Lst ();
 var tlsGroups;
 var tlsGroup = null;
 var ranges = null;
 var range = null;
-tlsGroups =  new JU.List ();
-while (this.readLine () != null) {
+tlsGroups =  new JU.Lst ();
+while (this.rd () != null) {
 var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line.$replace ('\'', ' '));
 if (tokens.length == 0) continue;
 if (tokens[0].equals ("TLS")) {
 tlsGroup =  new java.util.Hashtable ();
-ranges =  new JU.List ();
+ranges =  new JU.Lst ();
 tlsGroup.put ("ranges", ranges);
 tlsGroups.addLast (tlsGroup);
 tlsGroup.put ("id", Integer.$valueOf (++this.tlsGroupID));
@@ -63,22 +63,22 @@ if (ti < tj) tensor[tj][ti] = tensor[ti][tj];
 }
 if (tensorType == 'S') tensor[0][0] = -tensor[0][0];
 for (var i = 0; i < 3; i++) for (var j = 0; j < 3; j++) if (Float.isNaN (tensor[i][j])) {
-this.tlsAddError ("invalid tensor: " + J.util.Escape.escapeFloatAA (tensor, false));
+this.tlsAddError ("invalid tensor: " + JU.Escape.escapeFloatAA (tensor, false));
 }
 
 }}
-J.util.Logger.info (this.tlsGroupID + " TLS groups read");
+JU.Logger.info (this.tlsGroupID + " TLS groups read");
 var groups =  new java.util.Hashtable ();
 groups.put ("groupCount", Integer.$valueOf (this.tlsGroupID));
 groups.put ("groups", tlsGroups);
 this.vTlsModels.addLast (groups);
 this.htParams.put ("vTlsModels", this.vTlsModels);
-}, $fz.isPrivate = true, $fz));
-$_M(c$, "tlsAddError", 
-($fz = function (error) {
+});
+Clazz.defineMethod (c$, "tlsAddError", 
+ function (error) {
 if (this.sbTlsErrors == null) this.sbTlsErrors =  new JU.SB ();
 this.sbTlsErrors.append (this.fileName).appendC ('\t').append ("TLS group ").appendI (this.tlsGroupID).appendC ('\t').append (error).appendC ('\n');
-}, $fz.isPrivate = true, $fz), "~S");
+}, "~S");
 c$.TLnn = c$.prototype.TLnn = ["11", "22", "33", "12", "13", "23"];
 c$.Snn = c$.prototype.Snn = ["22", "11", "12", "13", "23", "21", "31", "32"];
 });

@@ -1,4 +1,4 @@
-define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versioning', 'src/data/structures'], function (Default, API, Versioning, Structure) {
+define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versioning', 'src/data/structures', 'src/util/debug'], function (Default, API, Versioning, Structure, Debug) {
 
     function Controller() {
     }
@@ -58,6 +58,17 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                         hoverlabel: {
                             type: 'text',
                             title: 'Text displayed on hover'
+                        },
+                        capture: {
+                            type: 'combo',
+                            title: 'Capture',
+                            options: [
+                                {title: "none", key: "none"},
+                                {title: 'camera', key: 'camera'},
+                                {title: 'camcorder', key: 'camcorder'},
+                                {title: 'microphone', key: 'microphone'}
+                            ],
+                            default: "none"
                         }
                     }
                 },
@@ -112,7 +123,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                 string: {
                     options: {
                         type: 'table',
-                        multiple: false,
+                        multiple: true,
                         title: 'For strings'
                     },
                     fields: {
@@ -122,10 +133,30 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                             options: typeList,
                             "default": "string"
                         },
+                        filter: {
+                            type: 'text',
+                            title: 'filter (mime-type)',
+                            'default': 'text/plain'
+                        },
                         variable: {
                             type: "text",
                             title: "Temporary variable",
                             "default": "str"
+                        }
+                    }
+                },
+
+                photo: {
+                    options: {
+                        type: 'table',
+                        multiple: false,
+                        title: 'For photos'
+                    },
+                    fields: {
+                        variable: {
+                            type: "text",
+                            title: "Temporary variable",
+                            "default": "photo"
                         }
                     }
                 }
@@ -139,7 +170,10 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         dragoverlabel: ['groups', 'group', 0, 'dragoverlabel', 0],
         hoverlabel: ['groups', 'group', 0, 'hoverlabel', 0],
         vars: ['groups', 'vars', 0],
-        string: ['groups', 'string', 0, 0]
+        string: ['groups', 'string', 0],
+        photo: ['groups', 'photo', 0],
+        showPhotoButton: ['groups', 'group', 0, 'showPhotoButton', 0],
+        capture: ['groups', 'group', 0, 'capture', 0]
     };
 
     Controller.prototype.initImpl = function () {
@@ -156,7 +190,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                 if(cfgEl.extension) {
                     eCfgEl.match = new RegExp('^' + cfgEl.extension.replace(/\*/g, '.*').replace(/\?/g, '.') + '$', 'i');
                 } else {
-                    ecfgEl.match = /^.*$/i;
+                    eCfgEl.match = /^.*$/i;
                 }
                 if(!cfgEl.filter) {
                     eCfgEl.filter = "ext";
@@ -166,7 +200,25 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
 
         }
 
-        this.stringCfg = this.module.getConfiguration('string');
+        var stringCfg = this.module.getConfiguration('string');
+        if(stringCfg) {
+
+            var enhancedStringCfg = [];
+            for(i = 0, ii = stringCfg.length; i < ii; i++) {
+                cfgEl = stringCfg[i];
+                eCfgEl = $.extend({}, cfgEl);
+                enhancedStringCfg.push(eCfgEl);
+                if(cfgEl.filter) {
+                    eCfgEl.match = new RegExp('^' + cfgEl.filter.replace(/\*/g, '.*').replace(/\?/g, '.') + '$', 'i');
+                } else {
+                    eCfgEl.match = /^text\/plain$/i;
+                }
+            }
+            this.stringCfg = enhancedStringCfg;
+
+            this.photoCfg = this.module.getConfiguration('photo');
+
+        }
 
         this.resolveReady();
 
@@ -180,13 +232,13 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         }
     };
 
-    Controller.prototype.open = function (data, transferType) {
+    Controller.prototype.open = function (data) {
 
         if (!data.items.length)
             return;
 
-        this.module.model.tmpVars = new DataObject();
-        this.module.model.tmpVarsArray = new DataObject();
+        //this.module.model.tmpVars = new DataObject();
+        //this.module.model.tmpVarsArray = new DataObject();
 
         var that = this;
         var defs = [];
@@ -195,29 +247,41 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         var cfgString = this.stringCfg;
 
         var i = 0, ii = data.items.length, item, meta, def;
-        for (; i < ii; i++) {
-            item = data.items[i];
-            def = $.Deferred();
-            defs.push(def);
-            if (item.kind === "file") {
-                item = item.getAsFile();
-                if (meta = this.checkMetadata(item, cfg)) {
-                    meta.def = def;
-                    this.read(item, meta);
-                } else {
+                    for (; i < ii; i++) {
+                        item = data.items[i];
+                        def = $.Deferred();
+                        defs.push(def);
+                        if (item.kind === "file") {
+                            item = item.getAsFile();
+                            if (meta = this.checkFileMetadata(item, cfg)) {
+                                meta.def = def;
+                                this.read(item, meta);
+                            } else {
+                                def.resolve();
+                            }
+                        } else {
+                            if(meta = this.checkStringMetadata(item, cfgString)) {
+                                meta.def = def;
+                                this.treatString(item, meta);
+                            } else {
                     def.resolve();
                 }
-            } else {
-                this.treatString(item, {
-                    filename: "",
-                    mime: "",
-                    def: def,
-                    cfg: cfgString
-                });
             }
         }
 
         $.when.apply(window, defs).done(function () {
+            that.createDataFromEvent('onRead', 'data', that.module.model.tmpVars);
+            that.createDataFromEvent('onRead', 'dataarray', that.module.model.tmpVarsArray);
+        });
+    };
+
+    Controller.prototype.openPhoto = function(result) {
+        var that = this;
+        var meta = this.checkPhotoMetadata(this.photoCfg);
+        meta.def = $.Deferred();
+        this.fileRead(result, meta);
+
+        meta.def.done(function () {
             that.createDataFromEvent('onRead', 'data', that.module.model.tmpVars);
             that.createDataFromEvent('onRead', 'dataarray', that.module.model.tmpVarsArray);
         });
@@ -230,13 +294,42 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         });
     };
 
-    Controller.prototype.checkMetadata = function (item, cfg) {
+    Controller.prototype.checkStringMetadata = function (item, cfg) {
         if (!cfg) {
-            return console.warn("No filter configured");
+            return Debug.warn('No string filter configured');
         }
 
-        item.name = item.name || "";
-        var split = item.name.split("."), ext, lineCfg;
+        var mime = item.type || 'text/plain',
+            lineCfg;
+
+        for (var i = 0, l = cfg.length; i < l; i++) {
+            var matcher = cfg[i].match;
+            if(matcher.test(mime)) {
+                lineCfg = cfg[i];
+                break;
+            }
+        }
+
+        if(!lineCfg) {
+            return Debug.warn("String item's mime-type doesn't match: " + mime);
+        }
+
+        return {
+            filename: '',
+            mime: mime,
+            cfg: lineCfg
+        };
+    };
+
+    Controller.prototype.checkFileMetadata = function (item, cfg) {
+        if (!cfg) {
+            return Debug.warn("No file filter configured");
+        }
+
+        var name = item.name || '',
+            mime = item.type,
+            split = name.split('.'),
+            ext, lineCfg;
         if (split.length < 2) {
             ext = "";
         } else {
@@ -252,24 +345,34 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                 }
             } else {
                 var matcher = cfg[i].match;
-                var mime = item.type;
                 if(matcher.test(mime)) {
                     lineCfg = cfg[i];
                     break;
                 }
             }
         }
-        if (!lineCfg && item.name) {
-            return console.warn("Extension " + ext + " not configured (filename: " + item.name + ")");
+        if (!lineCfg && name) {
+            return Debug.warn("Extension " + ext + " not configured (filename: " + name + ")");
         } else if(!lineCfg) {
-            return console.warn("Item has no filename and mime-type doesn't match: " + item.type);
+            return Debug.warn("Item has no filename and mime-type doesn't match: " + mime);
         }
 
         return {
-            filename: item.name,
-            mime: lineCfg.mime || item.type || "application/octet-stream",
+            filename: name,
+            mime: lineCfg.mime || mime || "application/octet-stream",
             cfg: lineCfg
         };
+    };
+
+    Controller.prototype.checkPhotoMetadata = function(cfg) {
+        var lineCfg = cfg[0];
+
+        lineCfg.filetype = 'url';
+        lineCfg.type = 'png';
+        return {
+            mime: 'image/png',
+            cfg: lineCfg
+        }
     };
 
     Controller.prototype.fileRead = function (result, meta) {
@@ -328,18 +431,42 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
     };
 
     Controller.prototype.tmpVar = function (obj, meta) {
+        if(typeof obj !== 'object') {
+            obj = {
+                type: meta.cfg.type,
+                value: obj
+            }
+        }
         var name = meta.cfg.variable;
         var variable = new DataObject({
             filename: meta.filename,
             mimetype: meta.mime,
             content: obj
-        }, true);
+        });
         if (!this.module.model.tmpVarsArray[name])
             this.module.model.tmpVarsArray[name] = new DataArray();
         this.module.model.tmpVarsArray[name].push(variable);
         this.module.model.tmpVars[name] = variable;
 
         meta.def.resolve();
+    };
+
+    Controller.prototype.emulDataTransfer = function(e) {
+        var emul = {};
+        emul.files = e.target.files;
+        emul.items = [];
+        for(var i=0; i< e.target.files.length; i++) {
+            (function(i) {
+                emul.items.push({
+                    kind: 'file',
+                    getAsFile: function() {
+                        return e.target.files[i];
+                    }
+                })
+            })(i);
+
+        }
+        return emul;
     };
 
     return Controller;

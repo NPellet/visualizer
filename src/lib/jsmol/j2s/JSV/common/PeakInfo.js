@@ -19,6 +19,7 @@ this.atoms = null;
 this.id = null;
 this.spectrum = null;
 this._match = null;
+this.atomKey = null;
 Clazz.instantialize (this, arguments);
 }, JSV.common, "PeakInfo");
 Clazz.makeConstructor (c$, 
@@ -42,6 +43,7 @@ this.filePathForwardSlash = (this.file == null ? null : this.file.$replace ('\\'
 this.model = JU.PT.getQuotedAttribute (s, "model");
 var isBaseModel = s.contains ("baseModel=\"\"");
 if (!isBaseModel) this.atoms = JU.PT.getQuotedAttribute (s, "atoms");
+this.atomKey = "," + this.atoms + ",";
 this.title = JU.PT.getQuotedAttribute (s, "title");
 this._match = JU.PT.getQuotedAttribute (s, "_match");
 this.xMax = JU.PT.parseFloat (JU.PT.getQuotedAttribute (s, "xMax"));
@@ -49,110 +51,110 @@ this.xMin = JU.PT.parseFloat (JU.PT.getQuotedAttribute (s, "xMin"));
 this.yMax = JU.PT.parseFloat (JU.PT.getQuotedAttribute (s, "yMax"));
 this.yMin = JU.PT.parseFloat (JU.PT.getQuotedAttribute (s, "yMin"));
 }, "~S");
-$_M(c$, "isClearAll", 
+Clazz.defineMethod (c$, "isClearAll", 
 function () {
 return (this.spectrum == null);
 });
-$_M(c$, "getType", 
+Clazz.defineMethod (c$, "getType", 
 function () {
 return this.type;
 });
-$_M(c$, "getAtoms", 
+Clazz.defineMethod (c$, "getAtoms", 
 function () {
 return this.atoms;
 });
-$_M(c$, "getXMax", 
+Clazz.defineMethod (c$, "getXMax", 
 function () {
 return this.xMax;
 });
-$_M(c$, "getXMin", 
+Clazz.defineMethod (c$, "getXMin", 
 function () {
 return this.xMin;
 });
-$_M(c$, "getYMin", 
+Clazz.defineMethod (c$, "getYMin", 
 function () {
 return this.yMin;
 });
-$_M(c$, "getYMax", 
+Clazz.defineMethod (c$, "getYMax", 
 function () {
 return this.yMax;
 });
-$_M(c$, "getX", 
+Clazz.defineMethod (c$, "getX", 
 function () {
 return (this.xMax + this.xMin) / 2;
 });
-$_M(c$, "getMatch", 
+Clazz.defineMethod (c$, "getMatch", 
 function () {
 return this._match;
 });
-c$.fixType = $_M(c$, "fixType", 
-($fz = function (type) {
+c$.fixType = Clazz.defineMethod (c$, "fixType", 
+ function (type) {
 return (type.equals ("HNMR") ? "1HNMR" : type.equals ("CNMR") ? "13CNMR" : type);
-}, $fz.isPrivate = true, $fz), "~S");
-$_V(c$, "toString", 
+}, "~S");
+Clazz.overrideMethod (c$, "toString", 
 function () {
 return this.stringInfo;
 });
-$_M(c$, "getIndex", 
+Clazz.defineMethod (c$, "getIndex", 
 function () {
 return this.index;
 });
-$_M(c$, "getTitle", 
+Clazz.defineMethod (c$, "getTitle", 
 function () {
 return this.title;
 });
-$_M(c$, "checkFileIndex", 
-function (filePath, sIndex) {
-return (sIndex.equals (this.index) && (filePath.equals (this.file) || filePath.equals (this.filePathForwardSlash)));
-}, "~S,~S");
-$_M(c$, "checkFileTypeModel", 
+Clazz.defineMethod (c$, "checkFileIndex", 
+function (filePath, sIndex, sAtomKey) {
+return (sAtomKey != null ? this.atomKey.indexOf (sAtomKey) >= 0 : sIndex.equals (this.index) && (filePath.equals (this.file) || filePath.equals (this.filePathForwardSlash)));
+}, "~S,~S,~S");
+Clazz.defineMethod (c$, "checkFileTypeModel", 
 function (filePath, type, model) {
 return filePath.equals (this.file) && this.checkModel (model) && this.type.endsWith (type);
 }, "~S,~S,~S");
-$_M(c$, "checkTypeModel", 
+Clazz.defineMethod (c$, "checkTypeModel", 
 function (type, model) {
 return this.checkType (type) && this.checkModel (model);
 }, "~S,~S");
-$_M(c$, "checkModel", 
-($fz = function (model) {
+Clazz.defineMethod (c$, "checkModel", 
+ function (model) {
 return (model != null && model.equals (this.model));
-}, $fz.isPrivate = true, $fz), "~S");
-$_M(c$, "checkType", 
-($fz = function (type) {
+}, "~S");
+Clazz.defineMethod (c$, "checkType", 
+ function (type) {
 return (type.endsWith (this.type));
-}, $fz.isPrivate = true, $fz), "~S");
-$_M(c$, "checkTypeMatch", 
+}, "~S");
+Clazz.defineMethod (c$, "checkTypeMatch", 
 function (pi) {
 return (this.checkType (pi.type) && (this.checkId (pi._match) || this.checkModel (pi._match) || this.title.toUpperCase ().indexOf (pi._match) >= 0));
 }, "JSV.common.PeakInfo");
-$_M(c$, "checkId", 
-($fz = function (match) {
-return (this.id != null && match != null && match.toUpperCase ().startsWith ("ID=") && match.substring (3).equals (this.id));
-}, $fz.isPrivate = true, $fz), "~S");
-$_M(c$, "getModel", 
+Clazz.defineMethod (c$, "checkId", 
+ function (match) {
+return (this.id != null && match != null && match.toUpperCase ().startsWith ("ID=") && ((match = match.substring (3)).equals (this.id) || match.startsWith ("#") && match.equals ("#" + this.index)));
+}, "~S");
+Clazz.defineMethod (c$, "getModel", 
 function () {
 return this.model;
 });
-$_M(c$, "getFilePath", 
+Clazz.defineMethod (c$, "getFilePath", 
 function () {
 return this.file;
 });
-$_M(c$, "autoSelectOnLoad", 
+Clazz.defineMethod (c$, "autoSelectOnLoad", 
 function () {
 return (this.type.startsWith ("GC"));
 });
-$_M(c$, "setPixelRange", 
+Clazz.defineMethod (c$, "setPixelRange", 
 function (x0, x1) {
 this.px0 = x0;
 this.px1 = x1;
 }, "~N,~N");
-$_M(c$, "checkRange", 
+Clazz.defineMethod (c$, "checkRange", 
 function (xPixel, xVal) {
 if (xPixel != 2147483647 ? (this.px0 <= xPixel && this.px1 >= xPixel) : xVal >= this.xMin && xVal <= this.xMax) {
 return Math.abs (xVal - this.getX ());
 }return 1e100;
 }, "~N,~N");
-$_M(c$, "getXPixel", 
+Clazz.defineMethod (c$, "getXPixel", 
 function () {
 return Clazz.doubleToInt ((this.px0 + this.px1) / 2);
 });

@@ -1,12 +1,17 @@
-// Versioning file
+'use strict';
 
-define(['src/util/versionhandler'], function(VersionHandler) {
-	"use strict";
-	var version = [2, 4, 2].join('.');
+define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables'], function(VersionHandler, Debug, Variables) {
+
+	var version = [2, 5, 1].join('.');
+
+    if (!semver(version)) {
+        throw new Error('Version number is invalid: ' + version);
+    }
+
 	var dataHandler = new VersionHandler(),
 			viewHandler = new VersionHandler(),
 			view = new DataObject(),
-			data = new DataObject(),
+			data = Variables.getData(),
 			lastLoaded = {
 				view: {},
 				data: {}
@@ -40,9 +45,9 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 			def = $.Deferred().resolve();
 		}
 		if (value.view && (lastLoaded.view.url !== value.view.url || (lastLoaded.view.urls !== value.view.urls && lastLoaded.view.branch !== value.view.branch))) {
-			def.done(function() {
-				setView(value.view.urls, value.view.branch, value.view.url);
-				lastLoaded.view = value.view;
+			def =  def.then(function() {
+                lastLoaded.view = value.view;
+				return setView(value.view.urls, value.view.branch, value.view.url);
 			});
 		}
 		if (pushstate) {
@@ -71,8 +76,10 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 					}
 				}
 				window.history.pushState({type: "viewchange", value: value}, "", uri.href());
+
 			});
 		}
+        return def;
 	}
 
 	function setView(url, branch, defUrl) {
@@ -93,14 +100,53 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 	}
 	
 	function updateData(newData) {
-		var i;
+		var i, child;
 		for(i in data) {
 			delete data[i];
 		}
 		for(i in newData) {
-			data[i] = DataObject.check(newData[i], true);
+            child = DataObject.check(newData[i], true);
+			data[i] = child;
+            child.linkToParent(data, i);
 		}
+        data.triggerChange();
 	}
+
+    function isInt(str) {
+        return isNaN(str) ? NaN : parseInt(str);
+    }
+
+    function semver(versionStr) {
+
+        if (!versionStr) {
+            return Debug.error('no version');
+        }
+
+        var version = versionStr.split('.');
+        if (version.length !== 3) {
+            return Debug.error('version number is invalid: '+versionStr);
+        }
+
+        var semver = {
+            major: isInt(version[0]),
+            minor: isInt(version[1]),
+            patch: isInt(version[2]),
+            prerelease: false
+        };
+
+        var split = version[2].split('-');
+        if (split.length > 1) {
+            semver.patch = parseInt(split[0]);
+            semver.prerelease = split[1];
+        }
+
+        if (semver.major >= 0 && semver.minor >= 0 && semver.patch >= 0) {
+            return semver;
+        } else {
+            return Debug.error('version number is invalid: '+versionStr);
+        }
+
+    }
 
 	return {
 		get version() {
@@ -169,6 +215,7 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 		},
 		isViewLocked: function() {
 			return this.getView().configuration.lockView || false;
-		}
+		},
+        semver: semver
 	};
 });

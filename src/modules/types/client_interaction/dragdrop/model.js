@@ -26,15 +26,24 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
 
         getjPath: function (rel, accepts) {
             var jpaths = [];
+            var i;
 
             if (rel === 'data' || rel === 'dataarray') {
                 // Populate tmpVars with empty object so the user can set a variable out even if no file was dropped
                 var definedDrops = (this.module.getConfiguration("vars") || []).slice();
                 var definedString = this.module.getConfiguration("string");
-                if (definedString)
-                    definedDrops.push(definedString);
+                var definedPhoto = this.module.getConfiguration('photo');
+                if (definedString) {
+                    for(i = 0; i < definedString.length; i++) {
+                        definedDrops.push(definedString[i]);
+                    }
+                }
 
-                for (var i = 0; i < definedDrops.length; i++) {
+                if(definedPhoto) {
+                    definedDrops.push(definedPhoto[0]);
+                }
+
+                for (i = 0; i < definedDrops.length; i++) {
                     var def = definedDrops[i];
                     if (!def.variable)
                         continue;

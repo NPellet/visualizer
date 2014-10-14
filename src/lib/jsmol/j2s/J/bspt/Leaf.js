@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.bspt");
-Clazz.load (["J.bspt.Element"], "J.bspt.Leaf", ["J.bspt.Node", "J.util.Escape"], function () {
+Clazz.load (["J.bspt.Element"], "J.bspt.Leaf", ["J.bspt.Node", "JU.Escape"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.tuples = null;
 Clazz.instantialize (this, arguments);
@@ -17,7 +17,7 @@ leaf.tuples[i] = null;
 }
 leaf.count = countToKeep;
 }, "J.bspt.Bspt,J.bspt.Leaf,~N");
-$_M(c$, "sort", 
+Clazz.defineMethod (c$, "sort", 
 function (dim) {
 for (var i = this.count; --i > 0; ) {
 var champion = this.tuples[i];
@@ -33,7 +33,7 @@ championValue = challengerValue;
 }}
 }
 }, "~N");
-$_V(c$, "addTuple", 
+Clazz.overrideMethod (c$, "addTuple", 
 function (level, tuple) {
 if (this.count < 2) {
 this.tuples[this.count++] = tuple;
@@ -41,16 +41,16 @@ return this;
 }var node =  new J.bspt.Node (this.bspt, level, this);
 return node.addTuple (level, tuple);
 }, "~N,JU.P3");
-$_V(c$, "dump", 
+Clazz.overrideMethod (c$, "dump", 
 function (level, sb) {
 for (var i = 0; i < this.count; ++i) {
 var t = this.tuples[i];
 for (var j = 0; j < level; ++j) sb.append (".");
 
-sb.append (J.util.Escape.eP (t)).append ("Leaf ").appendI (i).append (": ").append ((t).getInfo ());
+sb.append (JU.Escape.eP (t)).append ("Leaf ").appendI (i).append (": ").append ((t).getInfo ());
 }
 }, "~N,JU.SB");
-$_V(c$, "toString", 
+Clazz.overrideMethod (c$, "toString", 
 function () {
 return "leaf:" + this.count + "\n";
 });

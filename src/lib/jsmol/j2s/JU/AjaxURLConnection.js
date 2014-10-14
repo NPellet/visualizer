@@ -5,23 +5,23 @@ this.bytesOut = null;
 this.postOut = "";
 Clazz.instantialize (this, arguments);
 }, JU, "AjaxURLConnection", java.net.URLConnection);
-$_M(c$, "doAjax", 
-($fz = function () {
+Clazz.defineMethod (c$, "doAjax", 
+ function () {
 {
 return Jmol._doAjax(this.url, this.postOut, this.bytesOut);
-}}, $fz.isPrivate = true, $fz));
-$_V(c$, "connect", 
+}});
+Clazz.overrideMethod (c$, "connect", 
 function () {
 });
-$_M(c$, "outputBytes", 
+Clazz.defineMethod (c$, "outputBytes", 
 function (bytes) {
 this.bytesOut = bytes;
 }, "~A");
-$_M(c$, "outputString", 
+Clazz.defineMethod (c$, "outputString", 
 function (post) {
 this.postOut = post;
 }, "~S");
-$_M(c$, "getSB", 
+Clazz.defineMethod (c$, "getContents", 
 function () {
 return this.doAjax ();
 });

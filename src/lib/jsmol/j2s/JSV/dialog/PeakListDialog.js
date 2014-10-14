@@ -6,17 +6,17 @@ function () {
 Clazz.superConstructor (this, JSV.dialog.PeakListDialog, []);
 this.type = JSV.common.Annotation.AType.PeakList;
 });
-$_V(c$, "getPosXY", 
+Clazz.overrideMethod (c$, "getPosXY", 
 function () {
 return JSV.dialog.PeakListDialog.posXY;
 });
-$_M(c$, "addUniqueControls", 
+Clazz.defineMethod (c$, "addUniqueControls", 
 function () {
 this.txt1 = this.dialog.addTextField ("txtThreshold", "Threshold", null, "", "", true);
 this.setThreshold (NaN);
 this.combo1 = this.dialog.addSelectOption ("cmbInterpolation", "Interpolation", ["parabolic", "none"], 0, true);
 });
-$_V(c$, "callback", 
+Clazz.overrideMethod (c$, "callback", 
 function (id, msg) {
 if (id.equals ("cmbInterpolation") || id.equals ("txtThreshold")) id = "btnApply";
 return this.callbackAD (id, msg);

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.rendercgo");
-Clazz.load (["J.renderspecial.DrawRenderer", "JU.P3"], "J.rendercgo.CGORenderer", ["J.shapecgo.CGOMesh", "J.util.C", "$.Logger"], function () {
+Clazz.load (["J.renderspecial.DrawRenderer", "JU.P3"], "J.rendercgo.CGORenderer", ["J.shapecgo.CGOMesh", "JU.C", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.cgoMesh = null;
 this.cmds = null;
@@ -19,21 +19,21 @@ Clazz.instantialize (this, arguments);
 Clazz.prepareFields (c$, function () {
 this.pt3 =  new JU.P3 ();
 });
-$_V(c$, "render", 
+Clazz.overrideMethod (c$, "render", 
 function () {
 this.needTranslucent = false;
-this.imageFontScaling = this.viewer.getImageFontScaling ();
+this.imageFontScaling = this.vwr.getImageFontScaling ();
 var cgo = this.shape;
 for (var i = cgo.meshCount; --i >= 0; ) this.renderMesh (this.cgoMesh = cgo.meshes[i]);
 
 return this.needTranslucent;
 });
-$_V(c$, "renderMesh", 
+Clazz.overrideMethod (c$, "renderMesh", 
 function (mesh) {
 this.mesh = mesh;
 this.cmds = this.cgoMesh.cmds;
 if (this.cmds == null || !this.cgoMesh.visible) return false;
-if (!this.g3d.setColix (this.cgoMesh.colix)) return this.needTranslucent = true;
+if (!this.g3d.setC (this.cgoMesh.colix)) return this.needTranslucent = true;
 var n = this.cmds.size ();
 var glMode = -1;
 var nPts = 0;
@@ -42,12 +42,13 @@ this.ptColor = 0;
 this.doColor = !mesh.useColix;
 var pt;
 var spt;
+this.g3d.addRenderer (1073742182);
 for (var i = 0; i < n; i++) {
 var type = this.cgoMesh.getInt (i);
 if (type == 0) break;
 var len = J.shapecgo.CGOMesh.getSize (type);
 if (len < 0) {
-J.util.Logger.error ("CGO unknown type: " + type);
+JU.Logger.error ("CGO unknown type: " + type);
 return false;
 }switch (type) {
 default:
@@ -197,25 +198,24 @@ i += len;
 }
 return true;
 }, "J.shape.Mesh");
-$_M(c$, "getNormix", 
-($fz = function () {
+Clazz.defineMethod (c$, "getNormix", 
+ function () {
 return this.cgoMesh.nList.get (this.ptNormal++).shortValue ();
-}, $fz.isPrivate = true, $fz));
-$_M(c$, "getColix", 
-($fz = function (doSet) {
+});
+Clazz.defineMethod (c$, "getColix", 
+ function (doSet) {
 if (this.doColor) {
-this.colix = J.util.C.copyColixTranslucency (this.cgoMesh.colix, this.cgoMesh.cList.get (this.ptColor++).shortValue ());
-if (doSet) this.g3d.setColix (this.colix);
+this.colix = JU.C.copyColixTranslucency (this.cgoMesh.colix, this.cgoMesh.cList.get (this.ptColor++).shortValue ());
+if (doSet) this.g3d.setC (this.colix);
 }return this.colix;
-}, $fz.isPrivate = true, $fz), "~B");
-$_M(c$, "getPoint", 
-($fz = function (i, pt, pti) {
+}, "~B");
+Clazz.defineMethod (c$, "getPoint", 
+ function (i, pt, pti) {
 this.cgoMesh.getPoint (i, pt);
-this.viewer.transformPtScr (pt, pti);
-}, $fz.isPrivate = true, $fz), "~N,JU.P3,JU.P3i");
-$_M(c$, "fillTriangle", 
-($fz = function () {
-this.g3d.addRenderer (1073742182);
+this.tm.transformPtScr (pt, pti);
+}, "~N,JU.P3,JU.P3i");
+Clazz.defineMethod (c$, "fillTriangle", 
+ function () {
 this.g3d.fillTriangle3CN (this.pt0i, this.colix0, this.normix0, this.pt1i, this.colix1, this.normix1, this.pt2i, this.colix2, this.normix2);
-}, $fz.isPrivate = true, $fz));
+});
 });

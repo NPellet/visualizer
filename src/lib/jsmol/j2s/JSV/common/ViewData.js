@@ -7,11 +7,11 @@ this.nSpectra = 0;
 this.iThisScale = 0;
 Clazz.instantialize (this, arguments);
 }, JSV.common, "ViewData");
-$_M(c$, "getScaleData", 
+Clazz.defineMethod (c$, "getScaleData", 
 function () {
 return this.scaleData;
 });
-$_M(c$, "getScale", 
+Clazz.defineMethod (c$, "getScale", 
 function () {
 return this.thisScale;
 });
@@ -22,7 +22,7 @@ this.scaleData =  new Array (this.nSpectra);
 for (var j = 0; j < this.nSpectra; j++) this.scaleData[j] =  new JSV.common.ScaleData (startList[j], endList[j]);
 
 this.init (spectra, yPt1, yPt2, isContinuous);
-}, "JU.List,~N,~N,~A,~A,~B,~B");
+}, "JU.Lst,~N,~N,~A,~A,~B,~B");
 Clazz.makeConstructor (c$, 
 function (spectra, yPt1, yPt2, isContinuous) {
 this.nSpectra = spectra.size ();
@@ -30,9 +30,9 @@ var n = spectra.get (0).getXYCoords ().length;
 this.scaleData =  new Array (1);
 this.scaleData[0] =  new JSV.common.ScaleData (0, n - 1);
 this.init (spectra, yPt1, yPt2, isContinuous);
-}, "JU.List,~N,~N,~B");
-$_M(c$, "init", 
-($fz = function (spectra, yPt1, yPt2, isContinuous) {
+}, "JU.Lst,~N,~N,~B");
+Clazz.defineMethod (c$, "init", 
+ function (spectra, yPt1, yPt2, isContinuous) {
 this.thisScale = this.scaleData[this.iThisScale = 0];
 for (var i = 0; i < this.scaleData.length; i++) {
 this.scaleData[i].userYFactor = spectra.get (i).getUserYFactor ();
@@ -55,17 +55,17 @@ for (var i = 0; i < this.scaleData.length; i++) {
 this.scaleData[i].setMinMax (minX, maxX, minY, maxY);
 this.scaleData[i].setScale (isContinuous, isInverted);
 }
-}, $fz.isPrivate = true, $fz), "JU.List,~N,~N,~B");
-$_M(c$, "newSpectrum", 
+}, "JU.Lst,~N,~N,~B");
+Clazz.defineMethod (c$, "newSpectrum", 
 function (spectra) {
 this.init (spectra, 0, 0, false);
-}, "JU.List");
-$_M(c$, "setXRangeForSubSpectrum", 
+}, "JU.Lst");
+Clazz.defineMethod (c$, "setXRangeForSubSpectrum", 
 function (xyCoords) {
 this.setXRange (0, xyCoords, this.scaleData[0].minX, this.scaleData[0].maxX, 0, xyCoords.length - 1);
 }, "~A");
-$_M(c$, "setXRange", 
-($fz = function (i, xyCoords, initX, finalX, iStart, iEnd) {
+Clazz.defineMethod (c$, "setXRange", 
+ function (i, xyCoords, initX, finalX, iStart, iEnd) {
 var index = 0;
 var ptCount = 0;
 for (index = iStart; index <= iEnd; index++) {
@@ -82,33 +82,33 @@ break;
 }}
 this.scaleData[i % this.scaleData.length].endDataPointIndex = index - 1;
 return ptCount;
-}, $fz.isPrivate = true, $fz), "~N,~A,~N,~N,~N,~N");
-$_M(c$, "getStartingPointIndex", 
+}, "~N,~A,~N,~N,~N,~N");
+Clazz.defineMethod (c$, "getStartingPointIndex", 
 function (i) {
 return this.scaleData[i % this.scaleData.length].startDataPointIndex;
 }, "~N");
-$_M(c$, "getEndingPointIndex", 
+Clazz.defineMethod (c$, "getEndingPointIndex", 
 function (i) {
 return this.scaleData[i % this.scaleData.length].endDataPointIndex;
 }, "~N");
-$_M(c$, "areYScalesSame", 
+Clazz.defineMethod (c$, "areYScalesSame", 
 function (i, j) {
 i %= this.scaleData.length;
 j %= this.scaleData.length;
 return (this.scaleData[i].minYOnScale == this.scaleData[j].minYOnScale && this.scaleData[i].maxYOnScale == this.scaleData[j].maxYOnScale);
 }, "~N,~N");
-$_M(c$, "setScale", 
+Clazz.defineMethod (c$, "setScale", 
 function (i, xPixels, yPixels, isInverted) {
 this.iThisScale = i % this.scaleData.length;
 this.thisScale = this.scaleData[this.iThisScale];
 this.thisScale.setXYScale (xPixels, yPixels, isInverted);
 }, "~N,~N,~N,~B");
-$_M(c$, "resetScaleFactors", 
+Clazz.defineMethod (c$, "resetScaleFactors", 
 function () {
 for (var i = 0; i < this.scaleData.length; i++) this.scaleData[i].spectrumScaleFactor = 1;
 
 });
-$_M(c$, "scaleSpectrum", 
+Clazz.defineMethod (c$, "scaleSpectrum", 
 function (i, f) {
 if (f <= 0 || i >= this.nSpectra) return;
 if (i == -2) {
@@ -118,7 +118,7 @@ return;
 
  else this.scaleData[i % this.scaleData.length].scaleBy (f);
 }, "~N,~N");
-$_M(c$, "getNewScales", 
+Clazz.defineMethod (c$, "getNewScales", 
 function (iSelected, isXOnly, y1, y2) {
 if (isXOnly) return this.scaleData;
 iSelected %= this.scaleData.length;

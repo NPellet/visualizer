@@ -17,12 +17,26 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
         }
         def.resolve( val );	
 	};
-    
+
+    functions.color = {};
+    functions.color.toscreen = function(def, val) {
+
+        var $bg = $('<div><div/></div>')
+        $bg.children().css({
+            backgroundColor: val,
+            width: '100%',
+            height: '100%',
+            padding:0,
+            margin:0
+        });
+        def.resolve($bg.html());
+    };
+
     functions.html = {};
     functions.html.toscreen = function(def, val) {
         def.resolve( val.toString() );
     };
-		
+
 	functions.matrix = {};
 	functions.matrix.toscreen = function(def, val) {
 		def.resolve( val );
@@ -386,7 +400,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 
 	functions.jcamp.toscreen =function(def, valueChild, value, args, highlights, box) {
 
-		require(['lib/plot/plot', 'src/util/jcampconverter'], function(Graph, Converter) {
+		require(['lib/plot/plot', 'components/jcampconverter/src/jcampconverter'], function(Graph, Converter) {
 
 			var dom = $("<div />").css({width: 200, height: 200});
 			var graph = new Graph(dom.get(0), {
@@ -442,6 +456,11 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 	functions.pdb.toscreen = function(def, value) {
 		return def.resolve(value);
 	};
+
+    functions.cif = {};
+    functions.cif.toscreen = function(def, value) {
+        return def.resolve(value);
+    };
 
 	functions.downloadLink = {};
 	functions.downloadLink.toscreen = function(def, value) {

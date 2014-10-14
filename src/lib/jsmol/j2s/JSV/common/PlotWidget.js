@@ -19,7 +19,7 @@ Clazz.instantialize (this, arguments);
 Clazz.prepareFields (c$, function () {
 this.color = JSV.common.ScriptToken.PLOTCOLOR;
 });
-$_V(c$, "toString", 
+Clazz.overrideMethod (c$, "toString", 
 function () {
 return this.name + (!this.isPinOrCursor ? "" + this.xPixel0 + " " + this.yPixel0 + " / " + this.xPixel1 + " " + this.yPixel1 : " x=" + this.getXVal () + "/" + this.xPixel0 + " y=" + this.getYVal () + "/" + this.yPixel0);
 });
@@ -33,25 +33,25 @@ this.isXtype = (name.indexOf ("x") >= 0);
 this.is2D = (name.indexOf ("2D") >= 0);
 this.is2Donly = (this.is2D && name.charAt (0) == 'p');
 }, "~S");
-$_M(c$, "selected", 
+Clazz.defineMethod (c$, "selected", 
 function (xPixel, yPixel) {
 return (this.isVisible && Math.abs (xPixel - this.xPixel0) < 5 && Math.abs (yPixel - this.yPixel0) < 5);
 }, "~N,~N");
-$_M(c$, "setX", 
+Clazz.defineMethod (c$, "setX", 
 function (x, xPixel) {
 this.setXVal (x);
 this.xPixel0 = this.xPixel1 = xPixel;
 }, "~N,~N");
-$_M(c$, "setY", 
+Clazz.defineMethod (c$, "setY", 
 function (y, yPixel) {
 this.setYVal (y);
 this.yPixel0 = this.yPixel1 = yPixel;
 }, "~N,~N");
-$_M(c$, "getValue", 
+Clazz.defineMethod (c$, "getValue", 
 function () {
 return (this.isXtype ? this.getXVal () : this.getYVal ());
 });
-$_M(c$, "setEnabled", 
+Clazz.defineMethod (c$, "setEnabled", 
 function (enabled) {
 this.isEnabled = enabled;
 }, "~B");

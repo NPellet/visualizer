@@ -28,7 +28,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
 	*/
 	controller.prototype.references = {
 		data: {
-			type: ['pdb', 'mol3d', 'magres'],
+			type: ['cif', 'pdb', 'mol3d', 'magres', 'mol2d'],
 			label: 'A molecule/protein data'
 		}
 	};

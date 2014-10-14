@@ -9,43 +9,43 @@ function () {
 {
 this.s = "";
 }});
-c$.newN = $_M(c$, "newN", 
+c$.newN = Clazz.defineMethod (c$, "newN", 
 function (n) {
 {
 return new JU.SB();
 }}, "~N");
-c$.newS = $_M(c$, "newS", 
+c$.newS = Clazz.defineMethod (c$, "newS", 
 function (s) {
 {
 var sb = new JU.SB();
 sb.s = s;
 return sb;
 }}, "~S");
-$_M(c$, "append", 
+Clazz.defineMethod (c$, "append", 
 function (s) {
 {
 this.s += s
 }return this;
 }, "~S");
-$_M(c$, "appendC", 
+Clazz.defineMethod (c$, "appendC", 
 function (c) {
 {
 this.s += c;
 }return this;
 }, "~S");
-$_M(c$, "appendI", 
+Clazz.defineMethod (c$, "appendI", 
 function (i) {
 {
 this.s += i
 }return this;
 }, "~N");
-$_M(c$, "appendB", 
+Clazz.defineMethod (c$, "appendB", 
 function (b) {
 {
 this.s += b
 }return this;
 }, "~B");
-$_M(c$, "appendF", 
+Clazz.defineMethod (c$, "appendF", 
 function (f) {
 {
 var sf = "" + f;
@@ -54,7 +54,7 @@ sf += ".0" ;
 this.s += sf;
 }return this;
 }, "~N");
-$_M(c$, "appendD", 
+Clazz.defineMethod (c$, "appendD", 
 function (d) {
 {
 var sf = "" + d;
@@ -63,70 +63,76 @@ sf += ".0" ;
 this.s += sf;
 }return this;
 }, "~N");
-$_M(c$, "appendSB", 
+Clazz.defineMethod (c$, "appendSB", 
 function (buf) {
 {
 this.s += buf.s;
 }return this;
 }, "JU.SB");
-$_M(c$, "appendO", 
+Clazz.defineMethod (c$, "appendO", 
 function (data) {
+if (data != null) {
 {
 this.s += data.toString();
-}return this;
+}}return this;
 }, "~O");
-$_M(c$, "appendCB", 
+Clazz.defineMethod (c$, "appendCB", 
 function (cb, off, len) {
 {
 for (var i = len,j=off; --i >= 0;)
 this.s += cb[j++];
 }}, "~A,~N,~N");
-$_V(c$, "toString", 
+Clazz.overrideMethod (c$, "toString", 
 function () {
 {
 return this.s;
 }});
-$_M(c$, "length", 
+Clazz.defineMethod (c$, "length", 
 function () {
 {
 return this.s.length;
 }});
-$_M(c$, "indexOf", 
+Clazz.defineMethod (c$, "indexOf", 
 function (s) {
 {
 return this.s.indexOf(s);
 }}, "~S");
-$_M(c$, "charAt", 
+Clazz.defineMethod (c$, "charAt", 
 function (i) {
 {
 return this.s.charAt(i);
 }}, "~N");
-$_M(c$, "setLength", 
+Clazz.defineMethod (c$, "charCodeAt", 
+function (i) {
+{
+return this.s.charCodeAt(i);
+}}, "~N");
+Clazz.defineMethod (c$, "setLength", 
 function (n) {
 {
 this.s = this.s.substring(0, n);
 }}, "~N");
-$_M(c$, "lastIndexOf", 
+Clazz.defineMethod (c$, "lastIndexOf", 
 function (s) {
 {
 return this.s.lastIndexOf(s);
 }}, "~S");
-$_M(c$, "indexOf2", 
+Clazz.defineMethod (c$, "indexOf2", 
 function (s, i) {
 {
 return this.s.indexOf(s, i);
 }}, "~S,~N");
-$_M(c$, "substring", 
+Clazz.defineMethod (c$, "substring", 
 function (i) {
 {
 return this.s.substring(i);
 }}, "~N");
-$_M(c$, "substring2", 
+Clazz.defineMethod (c$, "substring2", 
 function (i, j) {
 {
 return this.s.substring(i, j);
 }}, "~N,~N");
-$_M(c$, "toBytes", 
+Clazz.defineMethod (c$, "toBytes", 
 function (off, len) {
 if (len < 0) len = this.length () - off;
 var b =  Clazz.newByteArray (len, 0);

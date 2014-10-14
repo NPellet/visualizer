@@ -37,19 +37,21 @@ if (this.options == null) this.options =  new java.util.Hashtable ();
 this.getContentPane ().setBackground (javajs.awt.Color.get3 (230, 230, 230));
 this.setFront ();
 }, "JSV.dialog.DialogManager,JSV.dialog.JSVDialog,~S");
-$_M(c$, "onFocus", 
+Clazz.defineMethod (c$, "onFocus", 
 function () {
 this.setFront ();
 });
-$_M(c$, "setFront", 
-($fz = function () {
+Clazz.overrideMethod (c$, "setFocus", 
+function (tf) {
+if (tf) {
+this.setFront ();
+}}, "~B");
+Clazz.defineMethod (c$, "setFront", 
+ function () {
 {
-if (this.zIndex != Jmol._z.dialog)
-this.zIndex = ++Jmol._z.dialog;
-if (this.container)
-this.container.style.zIndex = this.zIndex;
-}}, $fz.isPrivate = true, $fz));
-$_V(c$, "addButton", 
+SwingController.setFront(this);
+}});
+Clazz.overrideMethod (c$, "addButton", 
 function (name, text) {
 var btn =  new javajs.swing.JButton ();
 btn.setPreferredSize ( new javajs.awt.Dimension (120, 25));
@@ -59,7 +61,7 @@ btn.addActionListener (this.manager);
 this.thisPanel.add (btn,  new javajs.swing.GridBagConstraints (0, this.iRow++, 3, 1, 0.0, 0.0, 10, 0, this.buttonInsets, 0, 0));
 return btn;
 }, "~S,~S");
-$_V(c$, "addCheckBox", 
+Clazz.overrideMethod (c$, "addCheckBox", 
 function (name, title, level, isSelected) {
 if (name == null) {
 this.iRow = 0;
@@ -69,12 +71,13 @@ return null;
 cb.setSelected (isSelected);
 cb.setText (title);
 cb.setName (this.registryKey + "/" + name);
+cb.addActionListener (this.manager);
 var insets =  new javajs.swing.Insets (0, 20 * level, 2, 2);
 this.thisPanel.add (cb,  new javajs.swing.GridBagConstraints (0, this.iRow++, 1, 1, 0.0, 0.0, 17, 0, insets, 0, 0));
 return cb;
 }, "~S,~S,~N,~B");
-$_M(c$, "addPanelLine", 
-($fz = function (name, label, obj, units) {
+Clazz.defineMethod (c$, "addPanelLine", 
+ function (name, label, obj, units) {
 this.thisPanel.add ( new javajs.swing.JLabel (label == null ? name : label),  new javajs.swing.GridBagConstraints (0, this.iRow, 1, 1, 0.0, 0.0, 13, 0, this.panelInsets, 0, 0));
 if (units == null) {
 this.thisPanel.add (obj,  new javajs.swing.GridBagConstraints (1, this.iRow, 2, 1, 0.0, 0.0, 17, 0, this.panelInsets, 0, 0));
@@ -82,8 +85,8 @@ this.thisPanel.add (obj,  new javajs.swing.GridBagConstraints (1, this.iRow, 2, 
 this.thisPanel.add (obj,  new javajs.swing.GridBagConstraints (1, this.iRow, 1, 1, 0.0, 0.0, 10, 0, this.panelInsets, 0, 0));
 this.thisPanel.add ( new javajs.swing.JLabel (units),  new javajs.swing.GridBagConstraints (2, this.iRow, 1, 1, 0.0, 0.0, 17, 0, this.panelInsets, 0, 0));
 }this.iRow++;
-}, $fz.isPrivate = true, $fz), "~S,~S,javajs.swing.JComponent,~S");
-$_V(c$, "addSelectOption", 
+}, "~S,~S,javajs.swing.JComponent,~S");
+Clazz.overrideMethod (c$, "addSelectOption", 
 function (name, label, info, iPt, visible) {
 var combo =  new javajs.swing.JComboBox (info);
 combo.setSelectedIndex (iPt);
@@ -93,7 +96,7 @@ combo.addActionListener (this.manager);
 this.addPanelLine (name, label, combo, null);
 }return combo;
 }, "~S,~S,~A,~N,~B");
-$_V(c$, "addTextField", 
+Clazz.overrideMethod (c$, "addTextField", 
 function (name, label, value, units, defaultValue, visible) {
 var key = this.optionKey + "_" + name;
 if (value == null) {
@@ -107,7 +110,7 @@ obj.addActionListener (this.manager);
 this.addPanelLine (name, label, obj, units);
 }return obj;
 }, "~S,~S,~S,~S,~S,~B");
-$_V(c$, "createTable", 
+Clazz.overrideMethod (c$, "createTable", 
 function (data, header, widths) {
 try {
 var scrollPane =  new javajs.swing.JScrollPane (this.dataTable = this.getDataTable (data, header, widths, (this.leftPanel == null ? this.$defaultHeight : this.leftPanel.getHeight () - 50)));
@@ -124,14 +127,14 @@ throw e;
 this.validate ();
 this.repaint ();
 }, "~A,~A,~A");
-$_V(c$, "endLayout", 
+Clazz.overrideMethod (c$, "endLayout", 
 function () {
 this.getContentPane ().removeAll ();
 this.getContentPane ().add (this.mainSplitPane);
 this.pack ();
 });
-$_M(c$, "getDataTable", 
-($fz = function (data, columnNames, columnWidths, height) {
+Clazz.defineMethod (c$, "getDataTable", 
+ function (data, columnNames, columnWidths, height) {
 this.selectedRow = -1;
 var tableModel =  new JSV.js2d.DialogTableModel (columnNames, data, !this.haveColors, this.tableCellAlignLeft);
 var table =  new javajs.swing.JTable (tableModel);
@@ -147,24 +150,24 @@ table.getColumnModel ().getColumn (i).setPreferredWidth (columnWidths[i]);
 n += columnWidths[i];
 }
 return table;
-}, $fz.isPrivate = true, $fz), "~A,~A,~A,~N");
-$_V(c$, "getSelectedIndex", 
+}, "~A,~A,~A,~N");
+Clazz.overrideMethod (c$, "getSelectedIndex", 
 function (c) {
 return (c).getSelectedIndex ();
 }, "~O");
-$_V(c$, "getSelectedItem", 
+Clazz.overrideMethod (c$, "getSelectedItem", 
 function (combo) {
 return (combo).getSelectedItem ();
 }, "~O");
-$_M(c$, "getText", 
+Clazz.defineMethod (c$, "getText", 
 function (o) {
 return (o).getText ();
 }, "~O");
-$_V(c$, "isSelected", 
+Clazz.overrideMethod (c$, "isSelected", 
 function (chkbox) {
 return (chkbox).isSelected ();
 }, "~O");
-$_V(c$, "selectTableRow", 
+Clazz.overrideMethod (c$, "selectTableRow", 
 function (i) {
 this.selectedRow = i;
 this.dataTable.clearSelection ();
@@ -173,15 +176,15 @@ this.dataTable.setRowSelectionAllowed (true);
 this.dataTable.setRowSelectionInterval (this.selectedRow, this.selectedRow + 1);
 this.repaint ();
 }}, "~N");
-$_V(c$, "setCellSelectionEnabled", 
+Clazz.overrideMethod (c$, "setCellSelectionEnabled", 
 function (enabled) {
 this.dataTable.setCellSelectionEnabled (enabled);
 }, "~B");
-$_M(c$, "setEnabled", 
+Clazz.defineMethod (c$, "setEnabled", 
 function (btn, b) {
 (btn).setEnabled (b);
 }, "~O,~B");
-$_V(c$, "setIntLocation", 
+Clazz.overrideMethod (c$, "setIntLocation", 
 function (loc) {
 var d =  new javajs.awt.Dimension (0, 0);
 {
@@ -190,23 +193,23 @@ SwingController.getScreenDimensions(d);
 loc[1] = Math.min (d.height - 50, loc[1]);
 this.setLocation (loc);
 }, "~A");
-$_M(c$, "setPreferredSize", 
+Clazz.defineMethod (c$, "setPreferredSize", 
 function (width, height) {
 this.setPreferredSize ( new javajs.awt.Dimension (width, height));
 }, "~N,~N");
-$_V(c$, "setSelected", 
+Clazz.overrideMethod (c$, "setSelected", 
 function (chkbox, b) {
 (chkbox).setSelected (b);
 }, "~O,~B");
-$_V(c$, "setSelectedIndex", 
+Clazz.overrideMethod (c$, "setSelectedIndex", 
 function (combo, i) {
 (combo).setSelectedIndex (i);
 }, "~O,~N");
-$_M(c$, "setText", 
+Clazz.defineMethod (c$, "setText", 
 function (o, text) {
 (o).setText (text);
 }, "~O,~S");
-$_V(c$, "startLayout", 
+Clazz.overrideMethod (c$, "startLayout", 
 function () {
 this.setPreferredSize ( new javajs.awt.Dimension (600, 370));
 this.getContentPane ().removeAll ();
@@ -232,7 +235,7 @@ this.mainSplitPane =  new javajs.swing.JSplitPane (1);
 this.mainSplitPane.setLeftComponent (this.leftPanel);
 this.mainSplitPane.setRightComponent ( new javajs.swing.JScrollPane (this.rightPanel));
 }});
-$_M(c$, "getColumnCentering", 
+Clazz.defineMethod (c$, "getColumnCentering", 
 function (column) {
 return this.tableCellAlignLeft ? 2 : column == 0 ? 0 : 4;
 }, "~N");

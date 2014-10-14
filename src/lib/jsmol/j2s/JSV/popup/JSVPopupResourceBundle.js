@@ -1,47 +1,29 @@
 Clazz.declarePackage ("JSV.popup");
-Clazz.load (["JSV.popup.PopupResource"], "JSV.popup.JSVPopupResourceBundle", ["JU.SB"], function () {
-c$ = Clazz.declareType (JSV.popup, "JSVPopupResourceBundle", JSV.popup.PopupResource);
-$_V(c$, "getMenuName", 
+Clazz.load (["J.popup.PopupResource"], "JSV.popup.JSVPopupResourceBundle", null, function () {
+c$ = Clazz.declareType (JSV.popup, "JSVPopupResourceBundle", J.popup.PopupResource);
+Clazz.overrideMethod (c$, "getMenuName", 
 function () {
 return "appMenu";
 });
-$_V(c$, "buildStructure", 
+Clazz.makeConstructor (c$, 
 function () {
+Clazz.superConstructor (this, JSV.popup.JSVPopupResourceBundle, [null, null]);
+});
+Clazz.overrideMethod (c$, "buildStructure", 
+function (menuStructure) {
 this.addItems (JSV.popup.JSVPopupResourceBundle.menuContents);
 this.addItems (JSV.popup.JSVPopupResourceBundle.structureContents);
-});
-$_V(c$, "getWordContents", 
-function () {
-var words = [];
-return words;
-});
-$_V(c$, "getMenuAsText", 
-function (title) {
-return "# Jmol.mnu " + title + "\n\n" + "# Part I -- Menu Structure\n" + "# ------------------------\n\n" + this.dumpStructure (JSV.popup.JSVPopupResourceBundle.menuContents) + "\n\n" + "# Part II -- Key Definitions\n" + "# --------------------------\n\n" + this.dumpStructure (JSV.popup.JSVPopupResourceBundle.structureContents) + "\n\n" + "# Part III -- Word Translations\n" + "# -----------------------------\n\n" + this.dumpWords ();
+if (menuStructure != null) this.setStructure (menuStructure, null);
 }, "~S");
-$_M(c$, "dumpWords", 
-($fz = function () {
-var wordContents = this.getWordContents ();
-var s =  new JU.SB ();
-for (var i = 0; i < wordContents.length; i++) {
-var key = wordContents[i++];
-if (this.structure.getProperty (key) == null) s.append (key).append (" | ").append (wordContents[i]).appendC ('\n');
-}
-return s.toString ();
-}, $fz.isPrivate = true, $fz));
-$_M(c$, "dumpStructure", 
-($fz = function (items) {
-var previous = "";
-var s =  new JU.SB ();
-for (var i = 0; i < items.length; i++) {
-var key = items[i][0];
-var label = this.words.getProperty (key);
-if (label != null) key += " | " + label;
-s.append (key).append (" = ").append (items[i][1] == null ? previous : (previous = items[i][1])).appendC ('\n');
-}
-return s.toString ();
-}, $fz.isPrivate = true, $fz), "~A");
+Clazz.overrideMethod (c$, "getWordContents", 
+function () {
+return [];
+});
+Clazz.overrideMethod (c$, "getMenuAsText", 
+function (title) {
+return this.getStuctureAsText (title, JSV.popup.JSVPopupResourceBundle.menuContents, JSV.popup.JSVPopupResourceBundle.structureContents);
+}, "~S");
 Clazz.defineStatics (c$,
-"menuContents", [["appMenu", "Toggle_Grid Toggle_X_Axis Toggle_Y_Axis Toggle_Coordinates Reverse_Plot - Next_View Previous_View Clear_Views Reset_View Set_Zoom... - Views... Overlay_Offset... Script... - Properties"], ["appletMenu", "_SIGNED_FileMenu ViewMenu ZoomMenu Views... Overlay_Offset... - Measurements Peaks Integration Toggle_Trans/Abs Predicted_Solution_Colour - Script... - Print... - AboutMenu"], ["_SIGNED_FileMenu", "SaveAsMenu ExportAsMenu"], ["SaveAsMenu", "Original... JDXMenu CML XML(AnIML)"], ["JDXMenu", "XY DIF DIFDUP FIX PAC SQZ"], ["ExportAsMenu", "JPG PNG SVG PDF"], ["ViewMenu", "Toggle_Grid Toggle_X_Axis Toggle_Y_Axis Toggle_Coordinates Reverse_Plot Show_Header... Show_Overlay_Key... Window"], ["ZoomMenu", "Next_View Previous_View Reset_View Clear_Views Set_Zoom..."], ["AboutMenu", "VERSION"]],
-"structureContents", [["Show_Header...", "showProperties"], ["Window", "window"], ["Show_Overlay_Key...", "showKey"], ["Next_View", "zoom next;showMenu"], ["Previous_View", "zoom prev;showMenu"], ["Clear_Views", "zoom clear"], ["Reset_View", "zoom out"], ["Views...", "view"], ["Overlay_Offset...", "stackOffsetY"], ["Script...", "script INLINE"], ["Set_Zoom...", "zoom"], ["Properties", "showProperties"], ["Toggle_X_Axis", "XSCALEON toggle;showMenu"], ["Toggle_Y_Axis", "YSCALEON toggle;showMenu"], ["Toggle_Grid", "GRIDON toggle;showMenu"], ["Toggle_Coordinates", "COORDINATESON toggle;showMenu"], ["Reverse_Plot", "REVERSEPLOT toggle;showMenu"], ["Measurements", "SHOWMEASUREMENTS"], ["Peaks", "SHOWPEAKLIST"], ["Integration", "SHOWINTEGRATION"], ["Toggle_Trans/Abs", "IRMODE TOGGLE"], ["Predicted_Solution_Colour", "GETSOLUTIONCOLOR"], ["Print...", "print"], ["Original...", "write SOURCE"], ["CML", "write CML"], ["XML(AnIML)", "write XML"], ["XY", "write XY"], ["DIF", "write DIF"], ["DIFDUP", "write DIFDUP"], ["FIX", "write FIX"], ["PAC", "write PAC"], ["SQZ", "write SQZ"], ["JPG", "write JPG"], ["SVG", "write SVG"], ["PNG", "write PNG"], ["PDF", "write PDF"]]);
+"menuContents", [["appMenu", "_SIGNED_FileMenu Spectra... ShowMenu OptionsMenu ZoomMenu - Integration Peaks Measurements - Script... Properties"], ["appletMenu", "_SIGNED_FileMenu Spectra... - OptionsMenu ZoomMenu - Integration Peaks Measurements - Script... - Print... - AboutMenu"], ["_SIGNED_FileMenu", "Open_File... Open_Simulation... Open_URL... - Add_File... Add_Simulation... Add_URL... - Save_AsMenu Export_AsMenu - Close_Views Close_Simulations Close_All"], ["Save_AsMenu", "Original... JDXMenu CML XML(AnIML)"], ["JDXMenu", "XY DIF DIFDUP FIX PAC SQZ"], ["Export_AsMenu", "PDF - JAVAJPG PNG"], ["ShowMenu", "Show_Header Show_Source Show_Overlay_Key"], ["OptionsMenu", "Toggle_Grid Toggle_X_Axis Toggle_Y_Axis Toggle_Coordinates Toggle_Trans/Abs Reverse_Plot - Predicted_Solution_Colour Fill_Solution_Colour_(all)  Fill_Solution_Colour_(none)"], ["ZoomMenu", "Next_Zoom Previous_Zoom Reset_Zoom - Set_X_Scale... Reset_X_Scale"], ["AboutMenu", "VERSION"]],
+"structureContents", [["Open_File...", "load ?"], ["Open_URL...", "load http://?"], ["Open_Simulation...", "load $?"], ["Add_File...", "load append ?"], ["Add_URL...", "load append http://?"], ["Add_Simulation...", "load append $?; view \"1HNMR\""], ["Close_All", "close all"], ["Close_Views", "close views"], ["Close Simulations", "close simulations"], ["Show_Header", "showProperties"], ["Show_Source", "showSource"], ["Show_Overlay_Key...", "showKey"], ["Next_Zoom", "zoom next;showMenu"], ["Previous_Zoom", "zoom prev;showMenu"], ["Reset_Zoom", "zoom clear"], ["Reset_X_Scale", "zoom out"], ["Set_X_Scale...", "zoom"], ["Spectra...", "view"], ["Overlay_Offset...", "stackOffsetY"], ["Script...", "script INLINE"], ["Properties", "showProperties"], ["Toggle_X_Axis", "XSCALEON toggle;showMenu"], ["Toggle_Y_Axis", "YSCALEON toggle;showMenu"], ["Toggle_Grid", "GRIDON toggle;showMenu"], ["Toggle_Coordinates", "COORDINATESON toggle;showMenu"], ["Reverse_Plot", "REVERSEPLOT toggle;showMenu"], ["Measurements", "SHOWMEASUREMENTS"], ["Peaks", "SHOWPEAKLIST"], ["Integration", "SHOWINTEGRATION"], ["Toggle_Trans/Abs", "IRMODE TOGGLE"], ["Predicted_Solution_Colour", "GETSOLUTIONCOLOR"], ["Fill_Solution_Colour_(all)", "GETSOLUTIONCOLOR fillall"], ["Fill_Solution_Colour_(none)", "GETSOLUTIONCOLOR fillallnone"], ["Print...", "print"], ["Original...", "write SOURCE"], ["CML", "write CML"], ["XML(AnIML)", "write XML"], ["XY", "write XY"], ["DIF", "write DIF"], ["DIFDUP", "write DIFDUP"], ["FIX", "write FIX"], ["PAC", "write PAC"], ["SQZ", "write SQZ"], ["JPG", "write JPG"], ["SVG", "write SVG"], ["PNG", "write PNG"], ["PDF", "write PDF"]]);
 });

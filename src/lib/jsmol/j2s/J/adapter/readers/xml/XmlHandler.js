@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.xml");
-Clazz.load (["J.adapter.readers.xml.JmolXmlHandler", "org.xml.sax.helpers.DefaultHandler"], "J.adapter.readers.xml.XmlHandler", ["J.util.Logger", "org.xml.sax.InputSource"], function () {
+Clazz.load (["J.adapter.readers.xml.JmolXmlHandler", "org.xml.sax.helpers.DefaultHandler"], "J.adapter.readers.xml.XmlHandler", ["JU.Logger", "org.xml.sax.InputSource"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.xmlReader = null;
 this.debugContext = "";
@@ -9,7 +9,7 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.adapter.readers.xml.XmlHandler, []);
 });
-$_V(c$, "parseXML", 
+Clazz.overrideMethod (c$, "parseXML", 
 function (xmlReader, saxReaderObj, reader) {
 this.xmlReader = xmlReader;
 var saxReader = saxReaderObj;
@@ -22,30 +22,30 @@ var is =  new org.xml.sax.InputSource (reader);
 is.setSystemId ("foo");
 saxReader.parse (is);
 }, "J.adapter.readers.xml.XmlReader,~O,java.io.BufferedReader");
-$_V(c$, "startDocument", 
+Clazz.overrideMethod (c$, "startDocument", 
 function () {
 });
-$_V(c$, "endDocument", 
+Clazz.overrideMethod (c$, "endDocument", 
 function () {
 });
-$_V(c$, "startElement", 
+Clazz.overrideMethod (c$, "startElement", 
 function (namespaceURI, localName, qName, attributes) {
 this.xmlReader.atts.clear ();
 for (var i = attributes.getLength (); --i >= 0; ) this.xmlReader.atts.put (attributes.getLocalName (i), attributes.getValue (i));
 
-if (J.util.Logger.debugging) {
+if (JU.Logger.debugging) {
 this.debugContext += " " + localName;
-J.util.Logger.debug (this.debugContext);
+JU.Logger.debug (this.debugContext);
 }this.xmlReader.processStartElement (localName);
 }, "~S,~S,~S,org.xml.sax.Attributes");
-$_V(c$, "endElement", 
+Clazz.overrideMethod (c$, "endElement", 
 function (uri, localName, qName) {
-if (J.util.Logger.debugging) {
-J.util.Logger.debug ("");
+if (JU.Logger.debugging) {
+JU.Logger.debug ("");
 this.debugContext = this.debugContext.substring (0, this.debugContext.lastIndexOf (" "));
 }this.xmlReader.processEndElement (localName);
 }, "~S,~S,~S");
-$_V(c$, "characters", 
+Clazz.overrideMethod (c$, "characters", 
 function (ch, start, length) {
 if (this.xmlReader.keepChars) {
 if (this.xmlReader.chars == null) {
@@ -53,28 +53,28 @@ this.xmlReader.chars =  String.instantialize (ch, start, length);
 } else {
 this.xmlReader.chars +=  String.instantialize (ch, start, length);
 }}}, "~A,~N,~N");
-$_M(c$, "resolveEntity", 
+Clazz.defineMethod (c$, "resolveEntity", 
 function (name, publicId, baseURI, systemId) {
-if (J.util.Logger.debugging) {
-J.util.Logger.debug ("Not resolving this:\n      name: " + name + "\n  systemID: " + systemId + "\n  publicID: " + publicId + "\n   baseURI: " + baseURI);
+if (JU.Logger.debugging) {
+JU.Logger.debug ("Not resolving this:\n      name: " + name + "\n  systemID: " + systemId + "\n  publicID: " + publicId + "\n   baseURI: " + baseURI);
 }return null;
 }, "~S,~S,~S,~S");
-$_M(c$, "resolveEntity", 
+Clazz.defineMethod (c$, "resolveEntity", 
 function (publicID, systemID) {
-if (J.util.Logger.debugging) {
-J.util.Logger.debug ("Jmol SAX EntityResolver not resolving:\n  publicID: " + publicID + "\n  systemID: " + systemID);
+if (JU.Logger.debugging) {
+JU.Logger.debug ("Jmol SAX EntityResolver not resolving:\n  publicID: " + publicID + "\n  systemID: " + systemID);
 }return null;
 }, "~S,~S");
-$_V(c$, "error", 
+Clazz.overrideMethod (c$, "error", 
 function (exception) {
-J.util.Logger.error ("SAX ERROR:" + exception.getMessage ());
+JU.Logger.error ("SAX ERROR:" + exception.getMessage ());
 }, "org.xml.sax.SAXParseException");
-$_V(c$, "fatalError", 
+Clazz.overrideMethod (c$, "fatalError", 
 function (exception) {
-J.util.Logger.error ("SAX FATAL:" + exception.getMessage ());
+JU.Logger.error ("SAX FATAL:" + exception.getMessage ());
 }, "org.xml.sax.SAXParseException");
-$_V(c$, "warning", 
+Clazz.overrideMethod (c$, "warning", 
 function (exception) {
-J.util.Logger.warn ("SAX WARNING:" + exception.getMessage ());
+JU.Logger.warn ("SAX WARNING:" + exception.getMessage ());
 }, "org.xml.sax.SAXParseException");
 });

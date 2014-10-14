@@ -1,8 +1,8 @@
 Clazz.declarePackage ("JSV.export");
 Clazz.load (["JSV.export.XMLExporter"], "JSV.export.AMLExporter", null, function () {
 c$ = Clazz.declareType (JSV["export"], "AMLExporter", JSV["export"].XMLExporter);
-$_V(c$, "exportTheSpectrum", 
-function (viewer, mode, out, spec, startIndex, endIndex, pd) {
+Clazz.overrideMethod (c$, "exportTheSpectrum", 
+function (viewer, mode, out, spec, startIndex, endIndex, pd, asBase64) {
 if (!this.setup (viewer, spec, out, startIndex, endIndex)) return null;
 if (this.solvName == null || this.solvName.equals ("")) this.solvName = "unknown";
 if (this.datatype.contains ("MASS")) {
@@ -19,5 +19,5 @@ if (this.model == null || this.model.equals ("")) this.model = "not available fr
 if (this.resolution == null || this.resolution.equals ("")) this.resolution = "not available in JCAMP-DX file";
 this.setContext ();
 return this.writeFormType ("animl");
-}, "JSV.common.JSViewer,JSV.common.ExportType,JU.OC,JSV.common.JDXSpectrum,~N,~N,JSV.common.PanelData");
+}, "JSV.common.JSViewer,JSV.common.ExportType,JU.OC,JSV.common.Spectrum,~N,~N,JSV.common.PanelData,~B");
 });

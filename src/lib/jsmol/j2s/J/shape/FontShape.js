@@ -5,11 +5,11 @@ this.myType = null;
 this.font3d = null;
 Clazz.instantialize (this, arguments);
 }, J.shape, "FontShape", J.shape.Shape);
-$_V(c$, "initShape", 
+Clazz.overrideMethod (c$, "initShape", 
 function () {
 this.translucentAllowed = false;
 });
-$_M(c$, "setPropFS", 
+Clazz.defineMethod (c$, "setPropFS", 
 function (propertyName, value) {
 if ("font" === propertyName) {
 this.font3d = value;

@@ -1,5 +1,8 @@
 (function(Clazz
+,Clazz_newLongArray
+,Clazz_doubleToByte
 ,Clazz_doubleToInt
+,Clazz_doubleToLong
 ,Clazz_declarePackage
 ,Clazz_instanceOf
 ,Clazz_load
@@ -33,12 +36,8 @@
 ,Clazz_implementOf
 ,Clazz_newDoubleArray
 ,Clazz_overrideConstructor
-,Clazz_supportsNativeObject
-,Clazz_extendedObjectMethods
-,Clazz_callingStackTraces
 ,Clazz_clone
 ,Clazz_doubleToShort
-,Clazz_innerFunctions
 ,Clazz_getInheritedLevel
 ,Clazz_getParamsType
 ,Clazz_isAF
@@ -51,72 +50,865 @@
 ,Clazz_isAFF
 ,Clazz_isAFFF
 ,Clazz_tryToSearchAndExecute
-,$_A
-,$_Ab
-,$_AB
-,$_AC
-,$_AD
-,$_AF
-,$_AI
-,$_AL
-,$_AS
-,$_B
-,$_C
-,$_D
-,$_E
-,$_F
-,$_G
-,$_H
-,$_I
-,$_J
-,$_K
-,$_k
-,$_L
-,$_M
-,$_N
-,$_O
-,$_P
-,$_Q
-,$_R
-,$_S
-,$_s
-,$_T
-,$_U
-,$_V
-,$_W
-,$_X
-,$_Y
-,$_Z
+,Clazz_getStackTrace
+,Clazz_inheritArgs
+,Clazz_alert
+,Clazz_defineMethod
+,Clazz_overrideMethod
+,Clazz_declareAnonymous
+//,Clazz_checkPrivateMethod
+,Clazz_cloneFinals
 ){
 var $t$;
 //var c$;
-Clazz_declarePackage ("J.api");
-Clazz_declareInterface (J.api, "JmolZipUtility");
-Clazz_declarePackage ("J.io2");
-Clazz_load (["J.api.JmolZipUtility"], "J.io2.ZipUtil", ["java.io.BufferedInputStream", "$.BufferedReader", "$.ByteArrayInputStream", "$.StringReader", "java.lang.Character", "java.util.Hashtable", "$.StringTokenizer", "java.util.zip.CRC32", "$.GZIPInputStream", "$.ZipEntry", "$.ZipInputStream", "javajs.api.ZInputStream", "JU.List", "$.PT", "$.SB", "J.adapter.smarter.AtomSetCollection", "J.api.Interface", "J.io.JmolBinary", "J.io2.JmolZipInputStream", "J.util.Escape", "$.Logger", "$.Txt"], function () {
-c$ = Clazz_declareType (J.io2, "ZipUtil", null, J.api.JmolZipUtility);
+Clazz_load (["java.io.FilterInputStream"], "java.io.PushbackInputStream", ["java.io.IOException", "java.lang.IllegalArgumentException", "$.IndexOutOfBoundsException", "$.NullPointerException"], function () {
+c$ = Clazz_decorateAsClass (function () {
+this.buf = null;
+this.pos = 0;
+Clazz_instantialize (this, arguments);
+}, java.io, "PushbackInputStream", java.io.FilterInputStream);
+Clazz_defineMethod (c$, "ensureOpen", 
+ function () {
+if (this.$in == null) throw  new java.io.IOException ("Stream closed");
+});
+Clazz_makeConstructor (c$, 
+function ($in, size) {
+Clazz_superConstructor (this, java.io.PushbackInputStream, [$in]);
+if (size <= 0) {
+throw  new IllegalArgumentException ("size <= 0");
+}this.buf =  Clazz_newByteArray (size, 0);
+this.pos = size;
+}, "java.io.InputStream,~N");
+Clazz_overrideMethod (c$, "readByteAsInt", 
+function () {
+this.ensureOpen ();
+if (this.pos < this.buf.length) {
+return this.buf[this.pos++] & 0xff;
+}return this.$in.readByteAsInt ();
+});
+Clazz_overrideMethod (c$, "read", 
+function (b, off, len) {
+this.ensureOpen ();
+if (b == null) {
+throw  new NullPointerException ();
+} else if (off < 0 || len < 0 || len > b.length - off) {
+throw  new IndexOutOfBoundsException ();
+} else if (len == 0) {
+return 0;
+}var avail = this.buf.length - this.pos;
+if (avail > 0) {
+if (len < avail) {
+avail = len;
+}System.arraycopy (this.buf, this.pos, b, off, avail);
+this.pos += avail;
+off += avail;
+len -= avail;
+}if (len > 0) {
+len = this.$in.read (b, off, len);
+if (len == -1) {
+return avail == 0 ? -1 : avail;
+}return avail + len;
+}return avail;
+}, "~A,~N,~N");
+Clazz_defineMethod (c$, "unreadByte", 
+function (b) {
+this.ensureOpen ();
+if (this.pos == 0) {
+throw  new java.io.IOException ("Push back buffer is full");
+}this.buf[--this.pos] = b;
+}, "~N");
+Clazz_defineMethod (c$, "unread", 
+function (b, off, len) {
+this.ensureOpen ();
+if (len > this.pos) {
+throw  new java.io.IOException ("Push back buffer is full");
+}this.pos -= len;
+System.arraycopy (b, off, this.buf, this.pos, len);
+}, "~A,~N,~N");
+Clazz_overrideMethod (c$, "available", 
+function () {
+this.ensureOpen ();
+var n = this.buf.length - this.pos;
+var avail = this.$in.available ();
+return n > (2147483647 - avail) ? 2147483647 : n + avail;
+});
+Clazz_overrideMethod (c$, "skip", 
+function (n) {
+this.ensureOpen ();
+if (n <= 0) {
+return 0;
+}var pskip = this.buf.length - this.pos;
+if (pskip > 0) {
+if (n < pskip) {
+pskip = n;
+}this.pos += pskip;
+n -= pskip;
+}if (n > 0) {
+pskip += this.$in.skip (n);
+}return pskip;
+}, "~N");
+Clazz_overrideMethod (c$, "markSupported", 
+function () {
+return false;
+});
+Clazz_overrideMethod (c$, "mark", 
+function (readlimit) {
+}, "~N");
+Clazz_overrideMethod (c$, "reset", 
+function () {
+throw  new java.io.IOException ("mark/reset not supported");
+});
+Clazz_overrideMethod (c$, "close", 
+function () {
+if (this.$in == null) return;
+this.$in.close ();
+this.$in = null;
+this.buf = null;
+});
+});
+Clazz_load(["java.io.Closeable","$.InputStream"],"java.io.FileInputStream",["java.lang.IndexOutOfBoundsException","$.NullPointerException"],function(){
+c$=Clazz_decorateAsClass(function(){
+this.fd=null;
+this.innerFD=false;
+Clazz_instantialize(this,arguments);
+},java.io,"FileInputStream",java.io.InputStream,java.io.Closeable);
+Clazz_makeConstructor(c$,
+function(file){
+Clazz_superConstructor(this,java.io.FileInputStream);
+},"java.io.File");
+Clazz_makeConstructor(c$,
+function(fd){
+Clazz_superConstructor(this,java.io.FileInputStream);
+if(fd==null){
+throw new NullPointerException();
+}},"java.io.FileDescriptor");
+Clazz_makeConstructor(c$,
+function(fileName){
+this.construct(null==fileName?null:null);
+},"~S");
+Clazz_overrideMethod(c$,"available",
+function(){
+return 0;
+});
+Clazz_overrideMethod(c$,"close",
+function(){
+if(this.fd==null){
+return;
+}});
+Clazz_overrideMethod(c$,"finalize",
+function(){
+this.close();
+});
+Clazz_defineMethod(c$,"getFD",
+function(){
+return this.fd;
+});
+Clazz_defineMethod(c$,"read",
+function(){
+var readed=Clazz_newArray(1,0);
+var result=this.read(readed,0,1);
+return result==-1?-1:readed[0]&0xff;
+});
+Clazz_defineMethod(c$,"read",
+function(buffer){
+return this.read(buffer,0,buffer.length);
+},"~A");
+Clazz_defineMethod(c$,"read",
+function(buffer,offset,count){
+if(count>buffer.length-offset||count<0||offset<0){
+throw new IndexOutOfBoundsException();
+}if(0==count){
+return 0;
+}return 0;
+},"~A,~N,~N");
+Clazz_overrideMethod(c$,"skip",
+function(count){
+return 0;
+},"~N");
+});
+Clazz_declarePackage ("java.util.zip");
+Clazz_load (["java.io.FilterInputStream"], "java.util.zip.CheckedInputStream", null, function () {
+c$ = Clazz_decorateAsClass (function () {
+this.cksum = null;
+Clazz_instantialize (this, arguments);
+}, java.util.zip, "CheckedInputStream", java.io.FilterInputStream);
+Clazz_defineMethod (c$, "set", 
+function (cksum) {
+this.$in = this.$in;
+this.cksum = cksum;
+return this;
+}, "JU.Checksum");
+Clazz_overrideMethod (c$, "readByteAsInt", 
+function () {
+var b = this.$in.readByteAsInt ();
+if (b != -1) {
+this.cksum.updateByteAsInt (b);
+}return b;
+});
+Clazz_overrideMethod (c$, "read", 
+function (buf, off, len) {
+len = this.$in.read (buf, off, len);
+if (len != -1) {
+this.cksum.update (buf, off, len);
+}return len;
+}, "~A,~N,~N");
+Clazz_overrideMethod (c$, "skip", 
+function (n) {
+var buf =  Clazz_newByteArray (512, 0);
+var total = 0;
+while (total < n) {
+var len = n - total;
+len = this.read (buf, 0, len < buf.length ? len : buf.length);
+if (len == -1) {
+return total;
+}total += len;
+}
+return total;
+}, "~N");
+Clazz_defineMethod (c$, "getChecksum", 
+function () {
+return this.cksum;
+});
+});
+Clazz_declarePackage ("java.util.zip");
+Clazz_load (["JU.Inflater"], "java.util.zip.Inflater", null, function () {
+c$ = Clazz_declareType (java.util.zip, "Inflater", JU.Inflater);
+Clazz_defineMethod (c$, "initialize", 
+function (nowrap) {
+return this.init (0, nowrap);
+}, "~B");
+});
+Clazz_declarePackage ("java.util.zip");
+Clazz_load (["java.io.IOException"], "java.util.zip.ZipException", null, function () {
+c$ = Clazz_declareType (java.util.zip, "ZipException", java.io.IOException);
+});
+Clazz_declarePackage ("java.util.zip");
+c$ = Clazz_declareInterface (java.util.zip, "ZipConstants");
+Clazz_defineStatics (c$,
+"LOCSIG", 0x04034b50,
+"EXTSIG", 0x08074b50,
+"CENSIG", 0x02014b50,
+"ENDSIG", 0x06054b50,
+"LOCHDR", 30,
+"EXTHDR", 16,
+"CENHDR", 46,
+"ENDHDR", 22,
+"LOCVER", 4,
+"LOCFLG", 6,
+"LOCHOW", 8,
+"LOCTIM", 10,
+"LOCCRC", 14,
+"LOCSIZ", 18,
+"LOCLEN", 22,
+"LOCNAM", 26,
+"LOCEXT", 28,
+"EXTCRC", 4,
+"EXTSIZ", 8,
+"EXTLEN", 12,
+"CENVEM", 4,
+"CENVER", 6,
+"CENFLG", 8,
+"CENHOW", 10,
+"CENTIM", 12,
+"CENCRC", 16,
+"CENSIZ", 20,
+"CENLEN", 24,
+"CENNAM", 28,
+"CENEXT", 30,
+"CENCOM", 32,
+"CENDSK", 34,
+"CENATT", 36,
+"CENATX", 38,
+"CENOFF", 42,
+"ENDSUB", 8,
+"ENDTOT", 10,
+"ENDSIZ", 12,
+"ENDOFF", 16,
+"ENDCOM", 20);
+Clazz_declarePackage ("java.util.zip");
+Clazz_load (["java.util.zip.ZipConstants"], "java.util.zip.ZipEntry", ["java.lang.IllegalArgumentException", "$.InternalError", "$.NullPointerException", "java.util.Date"], function () {
+c$ = Clazz_decorateAsClass (function () {
+this.offset = 0;
+this.name = null;
+this.time = -1;
+this.crc = -1;
+this.size = -1;
+this.csize = -1;
+this.method = -1;
+this.flag = 0;
+this.extra = null;
+this.comment = null;
+Clazz_instantialize (this, arguments);
+}, java.util.zip, "ZipEntry", null, [java.util.zip.ZipConstants, Cloneable]);
+Clazz_makeConstructor (c$, 
+function (name) {
+if (name == null) {
+throw  new NullPointerException ();
+}if (name.length > 0xFFFF) {
+throw  new IllegalArgumentException ("entry name too long");
+}this.name = name;
+}, "~S");
+Clazz_defineMethod (c$, "getName", 
+function () {
+return this.name;
+});
+Clazz_defineMethod (c$, "setTime", 
+function (time) {
+this.time = java.util.zip.ZipEntry.javaToDosTime (time);
+}, "~N");
+Clazz_defineMethod (c$, "getTime", 
+function () {
+return this.time != -1 ? java.util.zip.ZipEntry.dosToJavaTime (this.time) : -1;
+});
+Clazz_defineMethod (c$, "setSize", 
+function (size) {
+if (size < 0) {
+throw  new IllegalArgumentException ("invalid entry size");
+}this.size = size;
+}, "~N");
+Clazz_defineMethod (c$, "getSize", 
+function () {
+return this.size;
+});
+Clazz_defineMethod (c$, "getCompressedSize", 
+function () {
+return this.csize;
+});
+Clazz_defineMethod (c$, "setCompressedSize", 
+function (csize) {
+this.csize = csize;
+}, "~N");
+Clazz_defineMethod (c$, "setCrc", 
+function (crc) {
+if (crc < 0 || crc > 0xFFFFFFFF) {
+throw  new IllegalArgumentException ("invalid entry crc-32");
+}this.crc = crc;
+}, "~N");
+Clazz_defineMethod (c$, "getCrc", 
+function () {
+return this.crc;
+});
+Clazz_defineMethod (c$, "setMethod", 
+function (method) {
+if (method != 0 && method != 8) {
+throw  new IllegalArgumentException ("invalid compression method");
+}this.method = method;
+}, "~N");
+Clazz_defineMethod (c$, "getMethod", 
+function () {
+return this.method;
+});
+Clazz_defineMethod (c$, "setExtra", 
+function (extra) {
+if (extra != null && extra.length > 0xFFFF) {
+throw  new IllegalArgumentException ("invalid extra field length");
+}this.extra = extra;
+}, "~A");
+Clazz_defineMethod (c$, "getExtra", 
+function () {
+return this.extra;
+});
+Clazz_defineMethod (c$, "setComment", 
+function (comment) {
+this.comment = comment;
+}, "~S");
+Clazz_defineMethod (c$, "getComment", 
+function () {
+return this.comment;
+});
+Clazz_defineMethod (c$, "isDirectory", 
+function () {
+return this.name.endsWith ("/");
+});
+Clazz_overrideMethod (c$, "toString", 
+function () {
+return this.getName ();
+});
+c$.dosToJavaTime = Clazz_defineMethod (c$, "dosToJavaTime", 
+ function (dtime) {
+var d =  new java.util.Date ((((dtime >> 25) & 0x7f) + 80), (((dtime >> 21) & 0x0f) - 1), ((dtime >> 16) & 0x1f), ((dtime >> 11) & 0x1f), ((dtime >> 5) & 0x3f), ((dtime << 1) & 0x3e));
+return d.getTime ();
+}, "~N");
+c$.javaToDosTime = Clazz_defineMethod (c$, "javaToDosTime", 
+ function (time) {
+var d =  new java.util.Date (time);
+var year = d.getYear () + 1900;
+if (year < 1980) {
+return 2162688;
+}return (year - 1980) << 25 | (d.getMonth () + 1) << 21 | d.getDate () << 16 | d.getHours () << 11 | d.getMinutes () << 5 | d.getSeconds () >> 1;
+}, "~N");
+Clazz_overrideMethod (c$, "hashCode", 
+function () {
+return this.name.hashCode ();
+});
+Clazz_defineMethod (c$, "clone", 
+function () {
+try {
+var e = Clazz_superCall (this, java.util.zip.ZipEntry, "clone", []);
+if (this.extra != null) {
+e.extra =  Clazz_newByteArray (this.extra.length, 0);
+System.arraycopy (this.extra, 0, e.extra, 0, this.extra.length);
+}return e;
+} catch (e) {
+if (Clazz_exceptionOf (e, CloneNotSupportedException)) {
+throw  new InternalError ();
+} else {
+throw e;
+}
+}
+});
+Clazz_defineStatics (c$,
+"STORED", 0,
+"DEFLATED", 8);
+});
+Clazz_declarePackage ("java.util.zip");
+c$ = Clazz_declareType (java.util.zip, "ZipConstants64");
+Clazz_defineStatics (c$,
+"ZIP64_ENDSIG", 0x06064b50,
+"ZIP64_LOCSIG", 0x07064b50,
+"ZIP64_ENDHDR", 56,
+"ZIP64_LOCHDR", 20,
+"ZIP64_EXTHDR", 24,
+"ZIP64_EXTID", 0x0001,
+"ZIP64_MAGICCOUNT", 0xFFFF,
+"ZIP64_MAGICVAL", 0xFFFFFFFF,
+"ZIP64_ENDLEN", 4,
+"ZIP64_ENDVEM", 12,
+"ZIP64_ENDVER", 14,
+"ZIP64_ENDNMD", 16,
+"ZIP64_ENDDSK", 20,
+"ZIP64_ENDTOD", 24,
+"ZIP64_ENDTOT", 32,
+"ZIP64_ENDSIZ", 40,
+"ZIP64_ENDOFF", 48,
+"ZIP64_ENDEXT", 56,
+"ZIP64_LOCDSK", 4,
+"ZIP64_LOCOFF", 8,
+"ZIP64_LOCTOT", 16,
+"ZIP64_EXTCRC", 4,
+"ZIP64_EXTSIZ", 8,
+"ZIP64_EXTLEN", 16,
+"EFS", 0x800);
+Clazz_declarePackage ("java.util.zip");
+Clazz_load (["java.util.zip.InflaterInputStream", "$.ZipConstants", "$.CRC32"], "java.util.zip.ZipInputStream", ["java.io.EOFException", "$.IOException", "$.PushbackInputStream", "java.lang.IllegalArgumentException", "$.IndexOutOfBoundsException", "$.Long", "$.NullPointerException", "java.util.zip.Inflater", "$.ZipEntry", "$.ZipException"], function () {
+c$ = Clazz_decorateAsClass (function () {
+this.entry = null;
+this.flag = 0;
+this.crc = null;
+this.remaining = 0;
+this.tmpbuf = null;
+this.$closed = false;
+this.entryEOF = false;
+this.zc = null;
+this.byteTest = null;
+this.$b = null;
+Clazz_instantialize (this, arguments);
+}, java.util.zip, "ZipInputStream", java.util.zip.InflaterInputStream, java.util.zip.ZipConstants);
+Clazz_prepareFields (c$, function () {
+this.crc =  new java.util.zip.CRC32 ();
+this.tmpbuf =  Clazz_newByteArray (512, 0);
+this.byteTest = [0x20];
+this.$b =  Clazz_newByteArray (256, 0);
+});
+Clazz_defineMethod (c$, "ensureOpen", 
+ function () {
+if (this.$closed) {
+throw  new java.io.IOException ("Stream closed");
+}});
+Clazz_makeConstructor (c$, 
+function ($in) {
+Clazz_superConstructor (this, java.util.zip.ZipInputStream, [ new java.io.PushbackInputStream ($in, 1024), java.util.zip.ZipInputStream.newInflater (), 512]);
+var charset = "UTF-8";
+try {
+ String.instantialize (this.byteTest, charset);
+} catch (e) {
+if (Clazz_exceptionOf (e, java.io.UnsupportedEncodingException)) {
+throw  new NullPointerException ("charset is invalid");
+} else {
+throw e;
+}
+}
+this.zc = charset;
+}, "java.io.InputStream");
+c$.newInflater = Clazz_defineMethod (c$, "newInflater", 
+ function () {
+return  new java.util.zip.Inflater ().init (0, true);
+});
+Clazz_defineMethod (c$, "getNextEntry", 
+function () {
+this.ensureOpen ();
+if (this.entry != null) {
+this.closeEntry ();
+}this.crc.reset ();
+this.inflater = this.inf = java.util.zip.ZipInputStream.newInflater ();
+if ((this.entry = this.readLOC ()) == null) {
+return null;
+}if (this.entry.method == 0) {
+this.remaining = this.entry.size;
+}this.entryEOF = false;
+return this.entry;
+});
+Clazz_defineMethod (c$, "closeEntry", 
+function () {
+this.ensureOpen ();
+while (this.read (this.tmpbuf, 0, this.tmpbuf.length) != -1) {
+}
+this.entryEOF = true;
+});
+Clazz_overrideMethod (c$, "available", 
+function () {
+this.ensureOpen ();
+return (this.entryEOF ? 0 : 1);
+});
+Clazz_overrideMethod (c$, "read", 
+function (b, off, len) {
+this.ensureOpen ();
+if (off < 0 || len < 0 || off > b.length - len) {
+throw  new IndexOutOfBoundsException ();
+} else if (len == 0) {
+return 0;
+}if (this.entry == null) {
+return -1;
+}switch (this.entry.method) {
+case 8:
+len = this.readInf (b, off, len);
+if (len == -1) {
+this.readEnd (this.entry);
+this.entryEOF = true;
+this.entry = null;
+} else {
+this.crc.update (b, off, len);
+}return len;
+case 0:
+if (this.remaining <= 0) {
+this.entryEOF = true;
+this.entry = null;
+return -1;
+}if (len > this.remaining) {
+len = this.remaining;
+}len = this.$in.read (b, off, len);
+if (len == -1) {
+throw  new java.util.zip.ZipException ("unexpected EOF");
+}this.crc.update (b, off, len);
+this.remaining -= len;
+if (this.remaining == 0 && this.entry.crc != this.crc.getValue ()) {
+throw  new java.util.zip.ZipException ("invalid entry CRC (expected 0x" + Long.toHexString (this.entry.crc) + " but got 0x" + Long.toHexString (this.crc.getValue ()) + ")");
+}return len;
+default:
+throw  new java.util.zip.ZipException ("invalid compression method");
+}
+}, "~A,~N,~N");
+Clazz_overrideMethod (c$, "skip", 
+function (n) {
+if (n < 0) {
+throw  new IllegalArgumentException ("negative skip length");
+}this.ensureOpen ();
+var max = Math.min (n, 2147483647);
+var total = 0;
+while (total < max) {
+var len = max - total;
+if (len > this.tmpbuf.length) {
+len = this.tmpbuf.length;
+}len = this.read (this.tmpbuf, 0, len);
+if (len == -1) {
+this.entryEOF = true;
+break;
+}total += len;
+}
+return total;
+}, "~N");
+Clazz_defineMethod (c$, "close", 
+function () {
+if (!this.$closed) {
+Clazz_superCall (this, java.util.zip.ZipInputStream, "close", []);
+this.$closed = true;
+}});
+Clazz_defineMethod (c$, "readLOC", 
+ function () {
+try {
+this.readFully (this.tmpbuf, 0, 30);
+} catch (e) {
+if (Clazz_exceptionOf (e, java.io.EOFException)) {
+return null;
+} else {
+throw e;
+}
+}
+if (java.util.zip.ZipInputStream.get32 (this.tmpbuf, 0) != 67324752) {
+return null;
+}this.flag = java.util.zip.ZipInputStream.get16 (this.tmpbuf, 6);
+var len = java.util.zip.ZipInputStream.get16 (this.tmpbuf, 26);
+var blen = this.$b.length;
+if (len > blen) {
+do blen = blen * 2;
+ while (len > blen);
+this.$b =  Clazz_newByteArray (blen, 0);
+}this.readFully (this.$b, 0, len);
+var e = this.createZipEntry (((this.flag & 2048) != 0) ? this.toStringUTF8 (this.$b, len) : this.toStringb2 (this.$b, len));
+if ((this.flag & 1) == 1) {
+throw  new java.util.zip.ZipException ("encrypted ZIP entry not supported");
+}e.method = java.util.zip.ZipInputStream.get16 (this.tmpbuf, 8);
+e.time = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 10);
+if ((this.flag & 8) == 8) {
+if (e.method != 8) {
+throw  new java.util.zip.ZipException ("only DEFLATED entries can have EXT descriptor");
+}} else {
+e.crc = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 14);
+e.csize = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 18);
+e.size = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 22);
+}len = java.util.zip.ZipInputStream.get16 (this.tmpbuf, 28);
+if (len > 0) {
+var bb =  Clazz_newByteArray (len, 0);
+this.readFully (bb, 0, len);
+e.setExtra (bb);
+if (e.csize == 4294967295 || e.size == 4294967295) {
+var off = 0;
+while (off + 4 < len) {
+var sz = java.util.zip.ZipInputStream.get16 (bb, off + 2);
+if (java.util.zip.ZipInputStream.get16 (bb, off) == 1) {
+off += 4;
+if (sz < 16 || (off + sz) > len) {
+return e;
+}e.size = java.util.zip.ZipInputStream.get64 (bb, off);
+e.csize = java.util.zip.ZipInputStream.get64 (bb, off + 8);
+break;
+}off += (sz + 4);
+}
+}}return e;
+});
+Clazz_defineMethod (c$, "toStringUTF8", 
+ function (b2, len) {
+try {
+return  String.instantialize (b2, 0, len, this.zc);
+} catch (e) {
+if (Clazz_exceptionOf (e, java.io.UnsupportedEncodingException)) {
+return this.toStringb2 (b2, len);
+} else {
+throw e;
+}
+}
+}, "~A,~N");
+Clazz_defineMethod (c$, "toStringb2", 
+ function (b2, len) {
+return  String.instantialize (b2, 0, len);
+}, "~A,~N");
+Clazz_defineMethod (c$, "createZipEntry", 
+function (name) {
+return  new java.util.zip.ZipEntry (name);
+}, "~S");
+Clazz_defineMethod (c$, "readEnd", 
+ function (e) {
+var n = this.inf.getAvailIn ();
+if (n > 0) {
+(this.$in).unread (this.buf, this.len - n, n);
+this.eof = false;
+}if ((this.flag & 8) == 8) {
+if (this.inf.getTotalOut () > 4294967295 || this.inf.getTotalIn () > 4294967295) {
+this.readFully (this.tmpbuf, 0, 24);
+var sig = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 0);
+if (sig != 134695760) {
+e.crc = sig;
+e.csize = java.util.zip.ZipInputStream.get64 (this.tmpbuf, 4);
+e.size = java.util.zip.ZipInputStream.get64 (this.tmpbuf, 12);
+(this.$in).unread (this.tmpbuf, 19, 4);
+} else {
+e.crc = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 4);
+e.csize = java.util.zip.ZipInputStream.get64 (this.tmpbuf, 8);
+e.size = java.util.zip.ZipInputStream.get64 (this.tmpbuf, 16);
+}} else {
+this.readFully (this.tmpbuf, 0, 16);
+var sig = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 0);
+if (sig != 134695760) {
+e.crc = sig;
+e.csize = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 4);
+e.size = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 8);
+(this.$in).unread (this.tmpbuf, 11, 4);
+} else {
+e.crc = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 4);
+e.csize = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 8);
+e.size = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 12);
+}}}if (e.size != this.inf.getTotalOut ()) {
+throw  new java.util.zip.ZipException ("invalid entry size (expected " + e.size + " but got " + this.inf.getTotalOut () + " bytes)");
+}if (e.csize != this.inf.getTotalIn ()) {
+throw  new java.util.zip.ZipException ("invalid entry compressed size (expected " + e.csize + " but got " + this.inf.getTotalIn () + " bytes)");
+}if (e.crc != this.crc.getValue ()) {
+throw  new java.util.zip.ZipException ("invalid entry CRC (expected 0x" + Long.toHexString (e.crc) + " but got 0x" + Long.toHexString (this.crc.getValue ()) + ")");
+}}, "java.util.zip.ZipEntry");
+Clazz_defineMethod (c$, "readFully", 
+ function (b, off, len) {
+while (len > 0) {
+var n = this.$in.read (b, off, len);
+if (n == -1) {
+throw  new java.io.EOFException ();
+}off += n;
+len -= n;
+}
+}, "~A,~N,~N");
+c$.get16 = Clazz_defineMethod (c$, "get16", 
+ function (b, off) {
+return (b[off] & 0xff) | ((b[off + 1] & 0xff) << 8);
+}, "~A,~N");
+c$.get32 = Clazz_defineMethod (c$, "get32", 
+ function (b, off) {
+return (java.util.zip.ZipInputStream.get16 (b, off) | (java.util.zip.ZipInputStream.get16 (b, off + 2) << 16)) & 0xffffffff;
+}, "~A,~N");
+c$.get64 = Clazz_defineMethod (c$, "get64", 
+ function (b, off) {
+return java.util.zip.ZipInputStream.get32 (b, off) | (java.util.zip.ZipInputStream.get32 (b, off + 4) << 32);
+}, "~A,~N");
+Clazz_defineStatics (c$,
+"STORED", 0,
+"DEFLATED", 8);
+});
+Clazz_declarePackage ("java.util.zip");
+Clazz_load (["JU.CRC32"], "java.util.zip.CRC32", null, function () {
+c$ = Clazz_declareType (java.util.zip, "CRC32", JU.CRC32);
+});
+Clazz_declarePackage ("java.util.zip");
+Clazz_load (["JU.InflaterInputStream"], "java.util.zip.InflaterInputStream", null, function () {
+c$ = Clazz_decorateAsClass (function () {
+this.inf = null;
+Clazz_instantialize (this, arguments);
+}, java.util.zip, "InflaterInputStream", JU.InflaterInputStream);
+Clazz_makeConstructor (c$, 
+function ($in, inflater, size) {
+Clazz_superConstructor (this, java.util.zip.InflaterInputStream, [$in, inflater, size, true]);
+this.inf = inflater;
+}, "java.io.InputStream,java.util.zip.Inflater,~N");
+});
+Clazz_declarePackage ("java.util.zip");
+Clazz_load (["java.util.zip.InflaterInputStream", "$.CRC32"], "java.util.zip.GZIPInputStream", ["java.io.EOFException", "$.IOException", "java.util.zip.CheckedInputStream", "$.Inflater", "$.ZipException"], function () {
+c$ = Clazz_decorateAsClass (function () {
+this.crc = null;
+this.eos = false;
+this.$closed = false;
+this.tmpbuf = null;
+Clazz_instantialize (this, arguments);
+}, java.util.zip, "GZIPInputStream", java.util.zip.InflaterInputStream);
+Clazz_prepareFields (c$, function () {
+this.crc =  new java.util.zip.CRC32 ();
+this.tmpbuf =  Clazz_newByteArray (128, 0);
+});
+Clazz_defineMethod (c$, "ensureOpen", 
+ function () {
+if (this.$closed) {
+throw  new java.io.IOException ("Stream closed");
+}});
+Clazz_makeConstructor (c$, 
+function ($in, size) {
+Clazz_superConstructor (this, java.util.zip.GZIPInputStream, [$in,  new java.util.zip.Inflater ().init (0, true), size]);
+this.readHeader ($in);
+}, "java.io.InputStream,~N");
+Clazz_overrideMethod (c$, "read", 
+function (buf, off, len) {
+this.ensureOpen ();
+if (this.eos) {
+return -1;
+}var n = this.readInf (buf, off, len);
+if (n == -1) {
+if (this.readTrailer ()) this.eos = true;
+ else return this.read (buf, off, len);
+} else {
+this.crc.update (buf, off, n);
+}return n;
+}, "~A,~N,~N");
+Clazz_defineMethod (c$, "close", 
+function () {
+if (!this.$closed) {
+Clazz_superCall (this, java.util.zip.GZIPInputStream, "close", []);
+this.eos = true;
+this.$closed = true;
+}});
+Clazz_defineMethod (c$, "readHeader", 
+ function (this_in) {
+var $in =  new java.util.zip.CheckedInputStream (this_in).set (this.crc);
+this.crc.reset ();
+if (this.readUShort ($in) != 35615) {
+throw  new java.util.zip.ZipException ("Not in GZIP format");
+}if (this.readUByte ($in) != 8) {
+throw  new java.util.zip.ZipException ("Unsupported compression method");
+}var flg = this.readUByte ($in);
+this.skipBytes ($in, 6);
+var n = 10;
+if ((flg & 4) == 4) {
+var m = this.readUShort ($in);
+this.skipBytes ($in, m);
+n += m + 2;
+}if ((flg & 8) == 8) {
+do {
+n++;
+} while (this.readUByte ($in) != 0);
+}if ((flg & 16) == 16) {
+do {
+n++;
+} while (this.readUByte ($in) != 0);
+}if ((flg & 2) == 2) {
+var v = this.crc.getValue () & 0xffff;
+if (this.readUShort ($in) != v) {
+throw  new java.util.zip.ZipException ("Corrupt GZIP header");
+}n += 2;
+}this.crc.reset ();
+return n;
+}, "java.io.InputStream");
+Clazz_defineMethod (c$, "readTrailer", 
+ function () {
+return true;
+});
+Clazz_defineMethod (c$, "readUShort", 
+ function ($in) {
+var b = this.readUByte ($in);
+return (this.readUByte ($in) << 8) | b;
+}, "java.io.InputStream");
+Clazz_defineMethod (c$, "readUByte", 
+ function ($in) {
+var b = $in.readByteAsInt ();
+if (b == -1) {
+throw  new java.io.EOFException ();
+}if (b < -1 || b > 255) {
+throw  new java.io.IOException (this.$in.getClass ().getName () + ".read() returned value out of range -1..255: " + b);
+}return b;
+}, "java.io.InputStream");
+Clazz_defineMethod (c$, "skipBytes", 
+ function ($in, n) {
+while (n > 0) {
+var len = $in.read (this.tmpbuf, 0, n < this.tmpbuf.length ? n : this.tmpbuf.length);
+if (len == -1) {
+throw  new java.io.EOFException ();
+}n -= len;
+}
+}, "java.io.InputStream,~N");
+Clazz_defineStatics (c$,
+"GZIP_MAGIC", 0x8b1f,
+"FHCRC", 2,
+"FEXTRA", 4,
+"FNAME", 8,
+"FCOMMENT", 16);
+});
+Clazz_declarePackage ("javajs.api");
+Clazz_load (["java.util.zip.ZipInputStream", "javajs.api.ZInputStream"], "javajs.api.GenericZipInputStream", null, function () {
+c$ = Clazz_declareType (javajs.api, "GenericZipInputStream", java.util.zip.ZipInputStream, javajs.api.ZInputStream);
+});
+Clazz_declarePackage ("JU");
+Clazz_load (["javajs.api.GenericZipTools"], "JU.ZipTools", ["java.io.BufferedInputStream", "$.IOException", "java.lang.Boolean", "java.util.zip.CRC32", "$.GZIPInputStream", "$.ZipEntry", "$.ZipInputStream", "javajs.api.GenericZipInputStream", "$.ZInputStream", "JU.BArray", "$.Lst", "$.PT", "$.Rdr", "$.SB"], function () {
+c$ = Clazz_declareType (JU, "ZipTools", null, javajs.api.GenericZipTools);
 Clazz_makeConstructor (c$, 
 function () {
 });
-$_V(c$, "newZipInputStream", 
+Clazz_overrideMethod (c$, "newZipInputStream", 
 function (is) {
-return J.io2.ZipUtil.newZIS (is);
+return JU.ZipTools.newZIS (is);
 }, "java.io.InputStream");
-c$.newZIS = $_M(c$, "newZIS", 
-function (is) {
-return (Clazz_instanceOf (is, javajs.api.ZInputStream) ? is : Clazz_instanceOf (is, java.io.BufferedInputStream) ?  new J.io2.JmolZipInputStream (is) :  new J.io2.JmolZipInputStream ( new java.io.BufferedInputStream (is)));
+c$.newZIS = Clazz_defineMethod (c$, "newZIS", 
+ function (is) {
+return (Clazz_instanceOf (is, javajs.api.ZInputStream) ? is : Clazz_instanceOf (is, java.io.BufferedInputStream) ?  new javajs.api.GenericZipInputStream (is) :  new javajs.api.GenericZipInputStream ( new java.io.BufferedInputStream (is)));
 }, "java.io.InputStream");
-$_V(c$, "getAllZipData", 
+Clazz_overrideMethod (c$, "getAllZipData", 
 function (is, subfileList, name0, binaryFileList, fileData) {
-J.io2.ZipUtil.getAllZipDataStatic (is, subfileList, name0, binaryFileList, fileData);
-}, "java.io.InputStream,~A,~S,~S,java.util.Map");
-c$.getAllZipDataStatic = $_M(c$, "getAllZipDataStatic", 
-function (is, subfileList, name0, binaryFileList, fileData) {
-var zis = J.io2.ZipUtil.newZIS (is);
+var zis = JU.ZipTools.newZIS (is);
 var ze;
 var listing =  new JU.SB ();
 binaryFileList = "|" + binaryFileList + "|";
-var prefix = J.util.Txt.join (subfileList, '/', 1);
+var prefix = JU.PT.join (subfileList, '/', 1);
 var prefixd = null;
 if (prefix != null) {
 prefixd = prefix.substring (0, prefix.indexOf ("/") + 1);
@@ -128,13 +920,13 @@ if (prefix != null && prefixd != null && !(name.equals (prefix) || name.startsWi
 listing.append (name).appendC ('\n');
 var sname = "|" + name.substring (name.lastIndexOf ("/") + 1) + "|";
 var asBinaryString = (binaryFileList.indexOf (sname) >= 0);
-var bytes = J.io.JmolBinary.getStreamBytes (zis, ze.getSize ());
+var bytes = JU.Rdr.getLimitedStreamBytes (zis, ze.getSize ());
 var str;
 if (asBinaryString) {
-str = J.io2.ZipUtil.getBinaryStringForBytes (bytes);
+str = this.getBinaryStringForBytes (bytes);
 name += ":asBinaryString";
 } else {
-str = J.io.JmolBinary.fixUTF (bytes);
+str = JU.Rdr.fixUTF (bytes);
 }str = "BEGIN Directory Entry " + name + "\n" + str + "\nEND Directory Entry " + name + "\n";
 fileData.put (name0 + "|" + name, str);
 }
@@ -146,17 +938,18 @@ throw e;
 }
 fileData.put ("#Directory_Listing", listing.toString ());
 }, "java.io.InputStream,~A,~S,~S,java.util.Map");
-c$.getBinaryStringForBytes = $_M(c$, "getBinaryStringForBytes", 
-function (bytes) {
+Clazz_defineMethod (c$, "getBinaryStringForBytes", 
+ function (bytes) {
 var ret =  new JU.SB ();
 for (var i = 0; i < bytes.length; i++) ret.append (Integer.toHexString (bytes[i] & 0xFF)).appendC (' ');
 
 return ret.toString ();
 }, "~A");
-$_V(c$, "getZipFileContents", 
+Clazz_overrideMethod (c$, "getZipFileDirectory", 
 function (bis, list, listPtr, asBufferedInputStream) {
 var ret;
 if (list == null || listPtr >= list.length) return this.getZipDirectoryAsStringAndClose (bis);
+bis = JU.Rdr.getPngZipStream (bis, true);
 var fileName = list[listPtr];
 var zis =  new java.util.zip.ZipInputStream (bis);
 var ze;
@@ -169,25 +962,26 @@ var name = ze.getName ();
 if (isAll || name.startsWith (fileName)) ret.append (name).appendC ('\n');
 }
 var str = ret.toString ();
-if (asBufferedInputStream) return  new java.io.BufferedInputStream ( new java.io.ByteArrayInputStream (str.getBytes ()));
-return str;
+return (asBufferedInputStream ? JU.Rdr.getBIS (str.getBytes ()) : str);
 }var pt = fileName.indexOf (":asBinaryString");
 var asBinaryString = (pt > 0);
 if (asBinaryString) fileName = fileName.substring (0, pt);
+fileName = fileName.$replace ('\\', '/');
 while ((ze = zis.getNextEntry ()) != null && !fileName.equals (ze.getName ())) {
 }
-var bytes = (ze == null ? null : J.io.JmolBinary.getStreamBytes (zis, ze.getSize ()));
+var bytes = (ze == null ? null : JU.Rdr.getLimitedStreamBytes (zis, ze.getSize ()));
 ze = null;
 zis.close ();
 if (bytes == null) return "";
-if (J.io.JmolBinary.isZipB (bytes)) return this.getZipFileContents ( new java.io.BufferedInputStream ( new java.io.ByteArrayInputStream (bytes)), list, ++listPtr, asBufferedInputStream);
-if (asBufferedInputStream) return  new java.io.BufferedInputStream ( new java.io.ByteArrayInputStream (bytes));
+if (JU.Rdr.isZipB (bytes) || JU.Rdr.isPngZipB (bytes)) return this.getZipFileDirectory (JU.Rdr.getBIS (bytes), list, ++listPtr, asBufferedInputStream);
+if (asBufferedInputStream) return JU.Rdr.getBIS (bytes);
 if (asBinaryString) {
 ret =  new JU.SB ();
 for (var i = 0; i < bytes.length; i++) ret.append (Integer.toHexString (bytes[i] & 0xFF)).appendC (' ');
 
 return ret.toString ();
-}return J.io.JmolBinary.fixUTF (bytes);
+}if (JU.Rdr.isGzipB (bytes)) bytes = JU.Rdr.getLimitedStreamBytes (JU.ZipTools.getUnGzippedInputStream (bytes), -1);
+return JU.Rdr.fixUTF (bytes);
 } catch (e) {
 if (Clazz_exceptionOf (e, Exception)) {
 return "";
@@ -196,20 +990,19 @@ throw e;
 }
 }
 }, "java.io.BufferedInputStream,~A,~N,~B");
-$_V(c$, "getZipFileContentsAsBytes", 
+Clazz_overrideMethod (c$, "getZipFileContentsAsBytes", 
 function (bis, list, listPtr) {
 var ret =  Clazz_newByteArray (0, 0);
 var fileName = list[listPtr];
 if (fileName.lastIndexOf ("/") == fileName.length - 1) return ret;
 try {
-bis = J.io.JmolBinary.checkPngZipStream (bis);
+bis = JU.Rdr.getPngZipStream (bis, true);
 var zis =  new java.util.zip.ZipInputStream (bis);
 var ze;
 while ((ze = zis.getNextEntry ()) != null) {
 if (!fileName.equals (ze.getName ())) continue;
-var bytes = J.io.JmolBinary.getStreamBytes (zis, ze.getSize ());
-if (J.io.JmolBinary.isZipB (bytes) && ++listPtr < list.length) return this.getZipFileContentsAsBytes ( new java.io.BufferedInputStream ( new java.io.ByteArrayInputStream (bytes)), list, listPtr);
-return bytes;
+var bytes = JU.Rdr.getLimitedStreamBytes (zis, ze.getSize ());
+return ((JU.Rdr.isZipB (bytes) || JU.Rdr.isPngZipB (bytes)) && ++listPtr < list.length ? this.getZipFileContentsAsBytes (JU.Rdr.getBIS (bytes), list, listPtr) : bytes);
 }
 } catch (e) {
 if (Clazz_exceptionOf (e, Exception)) {
@@ -219,16 +1012,16 @@ throw e;
 }
 return ret;
 }, "java.io.BufferedInputStream,~A,~N");
-$_V(c$, "getZipDirectoryAsStringAndClose", 
+Clazz_overrideMethod (c$, "getZipDirectoryAsStringAndClose", 
 function (bis) {
 var sb =  new JU.SB ();
 var s =  new Array (0);
 try {
-s = this.getZipDirectoryOrErrorAndClose (bis, false);
+s = this.getZipDirectoryOrErrorAndClose (bis, null);
 bis.close ();
 } catch (e) {
 if (Clazz_exceptionOf (e, Exception)) {
-J.util.Logger.error (e.toString ());
+System.out.println (e.toString ());
 } else {
 throw e;
 }
@@ -237,59 +1030,129 @@ for (var i = 0; i < s.length; i++) sb.append (s[i]).appendC ('\n');
 
 return sb.toString ();
 }, "java.io.BufferedInputStream");
-$_V(c$, "getZipDirectoryAndClose", 
-function (bis, addManifest) {
+Clazz_overrideMethod (c$, "getZipDirectoryAndClose", 
+function (bis, manifestID) {
 var s =  new Array (0);
 try {
-s = this.getZipDirectoryOrErrorAndClose (bis, addManifest);
+s = this.getZipDirectoryOrErrorAndClose (bis, manifestID);
 bis.close ();
 } catch (e) {
 if (Clazz_exceptionOf (e, Exception)) {
-J.util.Logger.error (e.toString ());
+System.out.println (e.toString ());
 } else {
 throw e;
 }
 }
 return s;
-}, "java.io.BufferedInputStream,~B");
-$_M(c$, "getZipDirectoryOrErrorAndClose", 
-function (bis, addManifest) {
-bis = J.io.JmolBinary.checkPngZipStream (bis);
-var v =  new JU.List ();
+}, "java.io.BufferedInputStream,~S");
+Clazz_defineMethod (c$, "getZipDirectoryOrErrorAndClose", 
+ function (bis, manifestID) {
+bis = JU.Rdr.getPngZipStream (bis, true);
+var v =  new JU.Lst ();
 var zis =  new java.util.zip.ZipInputStream (bis);
 var ze;
 var manifest = null;
 while ((ze = zis.getNextEntry ()) != null) {
 var fileName = ze.getName ();
-if (addManifest && J.io2.ZipUtil.isJmolManifest (fileName)) manifest = J.io2.ZipUtil.getZipEntryAsString (zis);
+if (manifestID != null && fileName.startsWith (manifestID)) manifest = JU.ZipTools.getStreamAsString (zis);
  else if (!fileName.startsWith ("__MACOS")) v.addLast (fileName);
 }
 zis.close ();
-if (addManifest) v.add (0, manifest == null ? "" : manifest + "\n############\n");
+if (manifestID != null) v.add (0, manifest == null ? "" : manifest + "\n############\n");
 return v.toArray ( new Array (v.size ()));
-}, "java.io.BufferedInputStream,~B");
-c$.getZipEntryAsString = $_M(c$, "getZipEntryAsString", 
+}, "java.io.BufferedInputStream,~S");
+c$.getStreamAsString = Clazz_defineMethod (c$, "getStreamAsString", 
 function (is) {
-return J.io.JmolBinary.fixUTF (J.io.JmolBinary.getStreamBytes (is, -1));
+return JU.Rdr.fixUTF (JU.Rdr.getLimitedStreamBytes (is, -1));
 }, "java.io.InputStream");
-c$.isJmolManifest = $_M(c$, "isJmolManifest", 
-function (thisEntry) {
-return thisEntry.startsWith ("JmolManifest");
-}, "~S");
-$_V(c$, "cacheZipContents", 
-function (bis, fileName, cache) {
-var zis = this.newZipInputStream (bis);
+Clazz_overrideMethod (c$, "newGZIPInputStream", 
+function (is) {
+return  new java.io.BufferedInputStream ( new java.util.zip.GZIPInputStream (is, 512));
+}, "java.io.InputStream");
+c$.getUnGzippedInputStream = Clazz_defineMethod (c$, "getUnGzippedInputStream", 
+function (bytes) {
+try {
+return JU.Rdr.getUnzippedInputStream (JU.Rdr.getBIS (bytes));
+} catch (e) {
+if (Clazz_exceptionOf (e, Exception)) {
+return null;
+} else {
+throw e;
+}
+}
+}, "~A");
+Clazz_overrideMethod (c$, "addZipEntry", 
+function (zos, fileName) {
+(zos).putNextEntry ( new java.util.zip.ZipEntry (fileName));
+}, "~O,~S");
+Clazz_overrideMethod (c$, "closeZipEntry", 
+function (zos) {
+(zos).closeEntry ();
+}, "~O");
+Clazz_overrideMethod (c$, "getZipOutputStream", 
+function (bos) {
+{
+return javajs.api.Interface.getInterface(
+"java.util.zip.ZipOutputStream").setZOS(bos);
+}}, "~O");
+Clazz_overrideMethod (c$, "getCrcValue", 
+function (bytes) {
+var crc =  new java.util.zip.CRC32 ();
+crc.update (bytes, 0, bytes.length);
+return crc.getValue ();
+}, "~A");
+Clazz_overrideMethod (c$, "readFileAsMap", 
+function (bis, bdata, name) {
+var pt = (name == null ? -1 : name.indexOf ("|"));
+name = (pt >= 0 ? name.substring (pt + 1) : null);
+try {
+if (JU.Rdr.isPngZipStream (bis)) {
+var isImage = "_IMAGE_".equals (name);
+if (name == null || isImage) bdata.put ((isImage ? "_DATA_" : "_IMAGE_"),  new JU.BArray (JU.ZipTools.getPngImageBytes (bis)));
+if (!isImage) this.cacheZipContents (bis, name, bdata, true);
+} else if (JU.Rdr.isZipS (bis)) {
+this.cacheZipContents (bis, name, bdata, true);
+} else if (name == null) {
+bdata.put ("_DATA_",  new JU.BArray (JU.Rdr.getLimitedStreamBytes (bis, -1)));
+} else {
+throw  new java.io.IOException ("ZIP file " + name + " not found");
+}bdata.put ("$_BINARY_$", Boolean.TRUE);
+} catch (e) {
+if (Clazz_exceptionOf (e, java.io.IOException)) {
+bdata.clear ();
+bdata.put ("_ERROR_", e.getMessage ());
+} else {
+throw e;
+}
+}
+}, "java.io.BufferedInputStream,java.util.Map,~S");
+Clazz_overrideMethod (c$, "cacheZipContents", 
+function (bis, fileName, cache, asByteArray) {
+var zis = JU.ZipTools.newZIS (bis);
 var ze;
 var listing =  new JU.SB ();
 var n = 0;
+var oneFile = (asByteArray && fileName != null);
+var pt = (oneFile ? fileName.indexOf ("|") : -1);
+var file0 = (pt >= 0 ? fileName : null);
+if (pt >= 0) fileName = fileName.substring (0, pt);
 try {
 while ((ze = zis.getNextEntry ()) != null) {
 var name = ze.getName ();
+if (fileName != null) {
+if (oneFile) {
+if (!name.equalsIgnoreCase (fileName)) continue;
+} else {
 listing.append (name).appendC ('\n');
-var nBytes = ze.getSize ();
-var bytes = J.io.JmolBinary.getStreamBytes (zis, nBytes);
-n += bytes.length;
-cache.put (fileName + "|" + name, bytes);
+}}var nBytes = ze.getSize ();
+var bytes = JU.Rdr.getLimitedStreamBytes (zis, nBytes);
+if (file0 != null) {
+this.readFileAsMap (JU.Rdr.getBIS (bytes), cache, file0);
+return null;
+}n += bytes.length;
+var o = (asByteArray ?  new JU.BArray (bytes) : bytes);
+cache.put ((oneFile ? "_DATA_" : (fileName == null ? "" : fileName + "|") + name), o);
+if (oneFile) break;
 }
 zis.close ();
 } catch (e) {
@@ -307,449 +1170,64 @@ return null;
 throw e;
 }
 }
-if (n == 0) return null;
-J.util.Logger.info ("ZipUtil cached " + n + " bytes from " + fileName);
+if (n == 0 || fileName == null) return null;
+System.out.println ("ZipTools cached " + n + " bytes from " + fileName);
 return listing.toString ();
-}, "java.io.BufferedInputStream,~S,java.util.Map");
-$_V(c$, "getGzippedBytesAsString", 
-function (bytes) {
-return J.io2.ZipUtil.staticGetGzippedBytesAsString (bytes);
-}, "~A");
-c$.staticGetGzippedBytesAsString = $_M(c$, "staticGetGzippedBytesAsString", 
-function (bytes) {
+}, "java.io.BufferedInputStream,~S,java.util.Map,~B");
+c$.getPngImageBytes = Clazz_defineMethod (c$, "getPngImageBytes", 
+ function (bis) {
 try {
-var is =  new java.io.ByteArrayInputStream (bytes);
-do {
-is =  new java.io.BufferedInputStream ( new java.util.zip.GZIPInputStream (is, 512));
-} while (J.io.JmolBinary.isGzipS (is));
-var s = J.io2.ZipUtil.getZipEntryAsString (is);
-is.close ();
-return s;
+if (JU.Rdr.isPngZipStream (bis)) {
+var pt_count =  Clazz_newIntArray (2, 0);
+JU.Rdr.getPngZipPointAndCount (bis, pt_count);
+if (pt_count[1] != 0) return JU.ZipTools.deActivatePngZipB (JU.Rdr.getLimitedStreamBytes (bis, pt_count[0]));
+}return JU.Rdr.getLimitedStreamBytes (bis, -1);
 } catch (e) {
-if (Clazz_exceptionOf (e, Exception)) {
-return "";
-} else {
-throw e;
-}
-}
-}, "~A");
-$_M(c$, "getUnGzippedInputStream", 
-function (bytes) {
-try {
-var is =  new java.io.ByteArrayInputStream (bytes);
-do {
-is =  new java.io.BufferedInputStream ( new java.util.zip.GZIPInputStream (is, 512));
-} while (J.io.JmolBinary.isGzipS (is));
-return is;
-} catch (e) {
-if (Clazz_exceptionOf (e, Exception)) {
+if (Clazz_exceptionOf (e, java.io.IOException)) {
 return null;
 } else {
 throw e;
 }
 }
-}, "~A");
-$_V(c$, "newGZIPInputStream", 
-function (bis) {
-return  new java.util.zip.GZIPInputStream (bis, 512);
 }, "java.io.BufferedInputStream");
-$_V(c$, "getAtomSetCollectionOrBufferedReaderFromZip", 
-function (adapter, is, fileName, zipDirectory, htParams, subFilePtr, asBufferedReader) {
-var doCombine = (subFilePtr == 1);
-htParams.put ("zipSet", fileName);
-var subFileList = htParams.get ("subFileList");
-if (subFileList == null) subFileList = J.io2.ZipUtil.checkSpecialInZip (zipDirectory);
-var subFileName = (subFileList == null || subFilePtr >= subFileList.length ? null : subFileList[subFilePtr]);
-if (subFileName != null && (subFileName.startsWith ("/") || subFileName.startsWith ("\\"))) subFileName = subFileName.substring (1);
-var selectedFile = 0;
-if (subFileName == null && htParams.containsKey ("modelNumber")) {
-selectedFile = (htParams.get ("modelNumber")).intValue ();
-if (selectedFile > 0 && doCombine) htParams.remove ("modelNumber");
-}var manifest = htParams.get ("manifest");
-var useFileManifest = (manifest == null);
-if (useFileManifest) manifest = (zipDirectory.length > 0 ? zipDirectory[0] : "");
-var haveManifest = (manifest.length > 0);
-if (haveManifest) {
-if (J.util.Logger.debugging) J.util.Logger.debug ("manifest for  " + fileName + ":\n" + manifest);
-}var ignoreErrors = (manifest.indexOf ("IGNORE_ERRORS") >= 0);
-var selectAll = (manifest.indexOf ("IGNORE_MANIFEST") >= 0);
-var exceptFiles = (manifest.indexOf ("EXCEPT_FILES") >= 0);
-if (selectAll || subFileName != null) haveManifest = false;
-if (useFileManifest && haveManifest) {
-var path = J.io.JmolBinary.getManifestScriptPath (manifest);
-if (path != null) return "NOTE: file recognized as a script file: " + fileName + path + "\n";
-}var vCollections =  new JU.List ();
-var htCollections = (haveManifest ?  new java.util.Hashtable () : null);
-var nFiles = 0;
-var ret = J.io2.ZipUtil.checkSpecialData (is, zipDirectory);
-if (Clazz_instanceOf (ret, String)) return ret;
-var data = ret;
-try {
-if (data != null) {
-var reader =  new java.io.BufferedReader ( new java.io.StringReader (data.toString ()));
-if (asBufferedReader) {
-return reader;
-}ret = adapter.getAtomSetCollectionFromReader (fileName, reader, htParams);
-if (Clazz_instanceOf (ret, String)) return ret;
-if (Clazz_instanceOf (ret, J.adapter.smarter.AtomSetCollection)) {
-var atomSetCollection = ret;
-if (atomSetCollection.errorMessage != null) {
-if (ignoreErrors) return null;
-return atomSetCollection.errorMessage;
-}return atomSetCollection;
-}if (ignoreErrors) return null;
-return "unknown reader error";
-}if (Clazz_instanceOf (is, java.io.BufferedInputStream)) is = J.io.JmolBinary.checkPngZipStream (is);
-var zis = J.io.JmolBinary.newZipInputStream (is);
-var ze;
-if (haveManifest) manifest = '|' + manifest.$replace ('\r', '|').$replace ('\n', '|') + '|';
-while ((ze = zis.getNextEntry ()) != null && (selectedFile <= 0 || vCollections.size () < selectedFile)) {
-if (ze.isDirectory ()) continue;
-var thisEntry = ze.getName ();
-if (subFileName != null && !thisEntry.equals (subFileName)) continue;
-if (subFileName != null) htParams.put ("subFileName", subFileName);
-if (J.io2.ZipUtil.isJmolManifest (thisEntry) || haveManifest && exceptFiles == manifest.indexOf ("|" + thisEntry + "|") >= 0) continue;
-var bytes = J.io.JmolBinary.getStreamBytes (zis, ze.getSize ());
-if (J.io.JmolBinary.isZipB (bytes)) {
-var bis =  new java.io.BufferedInputStream ( new java.io.ByteArrayInputStream (bytes));
-var zipDir2 = J.io.JmolBinary.getZipDirectoryAndClose (bis, true);
-bis =  new java.io.BufferedInputStream ( new java.io.ByteArrayInputStream (bytes));
-var atomSetCollections = this.getAtomSetCollectionOrBufferedReaderFromZip (adapter, bis, fileName + "|" + thisEntry, zipDir2, htParams, ++subFilePtr, asBufferedReader);
-if (Clazz_instanceOf (atomSetCollections, String)) {
-if (ignoreErrors) continue;
-return atomSetCollections;
-} else if (Clazz_instanceOf (atomSetCollections, J.adapter.smarter.AtomSetCollection) || Clazz_instanceOf (atomSetCollections, JU.List)) {
-if (haveManifest && !exceptFiles) htCollections.put (thisEntry, atomSetCollections);
- else vCollections.addLast (atomSetCollections);
-} else if (Clazz_instanceOf (atomSetCollections, java.io.BufferedReader)) {
-if (doCombine) zis.close ();
-return atomSetCollections;
-} else {
-if (ignoreErrors) continue;
-zis.close ();
-return "unknown zip reader error";
-}} else if (J.io.JmolBinary.isGzipB (bytes)) {
-return this.getUnGzippedInputStream (bytes);
-} else if (J.io.JmolBinary.isPickleB (bytes)) {
-var bis =  new java.io.BufferedInputStream ( new java.io.ByteArrayInputStream (bytes));
-if (doCombine) zis.close ();
-return bis;
-} else {
-var sData;
-if (J.io.JmolBinary.isCompoundDocumentB (bytes)) {
-var jd = J.api.Interface.getInterface ("jmol.util.CompoundDocument");
-jd.setStream ( new java.io.BufferedInputStream ( new java.io.ByteArrayInputStream (bytes)), true);
-sData = jd.getAllDataFiles ("Molecule", "Input").toString ();
-} else if (J.io.JmolBinary.isGzipB (bytes)) {
-sData = J.io.JmolBinary.getGzippedBytesAsString (bytes);
-} else {
-sData = J.io.JmolBinary.fixUTF (bytes);
-}var reader =  new java.io.BufferedReader ( new java.io.StringReader (sData));
-if (asBufferedReader) {
-if (doCombine) zis.close ();
-return reader;
-}var fname = fileName + "|" + ze.getName ();
-ret = adapter.getAtomSetCollectionFromReader (fname, reader, htParams);
-if (!(Clazz_instanceOf (ret, J.adapter.smarter.AtomSetCollection))) {
-if (ignoreErrors) continue;
-zis.close ();
-return "" + ret;
-}if (haveManifest && !exceptFiles) htCollections.put (thisEntry, ret);
- else vCollections.addLast (ret);
-var a = ret;
-if (a.errorMessage != null) {
-if (ignoreErrors) continue;
-zis.close ();
-return a.errorMessage;
-}}}
-if (doCombine) zis.close ();
-if (haveManifest && !exceptFiles) {
-var list = JU.PT.split (manifest, "|");
-for (var i = 0; i < list.length; i++) {
-var file = list[i];
-if (file.length == 0 || file.indexOf ("#") == 0) continue;
-if (htCollections.containsKey (file)) vCollections.addLast (htCollections.get (file));
- else if (J.util.Logger.debugging) J.util.Logger.debug ("manifested file " + file + " was not found in " + fileName);
-}
-}if (!doCombine) return vCollections;
-var result =  new J.adapter.smarter.AtomSetCollection ("Array", null, null, vCollections);
-if (result.errorMessage != null) {
-if (ignoreErrors) return null;
-return result.errorMessage;
-}if (nFiles == 1) selectedFile = 1;
-if (selectedFile > 0 && selectedFile <= vCollections.size ()) return vCollections.get (selectedFile - 1);
-return result;
-} catch (e$$) {
-if (Clazz_exceptionOf (e$$, Exception)) {
-var e = e$$;
-{
-if (ignoreErrors) return null;
-J.util.Logger.error ("" + e);
-return "" + e;
-}
-} else if (Clazz_exceptionOf (e$$, Error)) {
-var er = e$$;
-{
-J.util.Logger.errorEx (null, er);
-return "" + er;
-}
-} else {
-throw e$$;
-}
-}
-}, "J.api.JmolAdapter,java.io.InputStream,~S,~A,java.util.Map,~N,~B");
-c$.checkSpecialData = $_M(c$, "checkSpecialData", 
-function (is, zipDirectory) {
-var isSpartan = false;
-for (var i = 1; i < zipDirectory.length; i++) {
-if (zipDirectory[i].endsWith (".spardir/") || zipDirectory[i].indexOf ("_spartandir") >= 0) {
-isSpartan = true;
-break;
-}}
-if (!isSpartan) return null;
-var data =  new JU.SB ();
-data.append ("Zip File Directory: ").append ("\n").append (J.util.Escape.eAS (zipDirectory, true)).append ("\n");
-var fileData =  new java.util.Hashtable ();
-J.io2.ZipUtil.getAllZipDataStatic (is, [], "", "Molecule", fileData);
-var prefix = "|";
-var outputData = fileData.get (prefix + "output");
-if (outputData == null) outputData = fileData.get ((prefix = "|" + zipDirectory[1]) + "output");
-data.append (outputData);
-var files = J.io2.ZipUtil.getSpartanFileList (prefix, J.io2.ZipUtil.getSpartanDirs (outputData));
-for (var i = 2; i < files.length; i++) {
-var name = files[i];
-if (fileData.containsKey (name)) data.append (fileData.get (name));
- else data.append (name + "\n");
-}
-return data;
-}, "java.io.InputStream,~A");
-$_V(c$, "spartanFileList", 
-function (name, type) {
-var dirNums = J.io2.ZipUtil.getSpartanDirs (type);
-if (dirNums.length == 0 && name.endsWith (".spardir.zip") && type.indexOf (".zip|output") >= 0) {
-var sname = name.$replace ('\\', '/');
-var pt = name.lastIndexOf (".spardir");
-pt = sname.lastIndexOf ("/");
-sname = name + "|" + name.substring (pt + 1, name.length - 4);
-return ["SpartanSmol", sname, sname + "/output"];
-}return J.io2.ZipUtil.getSpartanFileList (name, dirNums);
-}, "~S,~S");
-c$.getSpartanDirs = $_M(c$, "getSpartanDirs", 
-function (outputFileData) {
-if (outputFileData == null) return [];
-if (outputFileData.startsWith ("java.io.FileNotFoundException") || outputFileData.startsWith ("FILE NOT FOUND") || outputFileData.indexOf ("<html") >= 0) return ["M0001"];
-var v =  new JU.List ();
-var token;
-var lasttoken = "";
-try {
-var tokens =  new java.util.StringTokenizer (outputFileData, " \t\r\n");
-while (tokens.hasMoreTokens ()) {
-if ((token = tokens.nextToken ()).equals (")")) v.addLast (lasttoken);
- else if (token.equals ("Start-") && tokens.nextToken ().equals ("Molecule")) v.addLast (JU.PT.split (tokens.nextToken (), "\"")[1]);
-lasttoken = token;
-}
-} catch (e) {
-if (Clazz_exceptionOf (e, Exception)) {
-} else {
-throw e;
-}
-}
-return v.toArray ( new Array (v.size ()));
-}, "~S");
-c$.getSpartanFileList = $_M(c$, "getSpartanFileList", 
-function (name, dirNums) {
-var files =  new Array (2 + dirNums.length * 5);
-files[0] = "SpartanSmol";
-files[1] = "Directory Entry ";
-var pt = 2;
-name = name.$replace ('\\', '/');
-if (name.endsWith ("/")) name = name.substring (0, name.length - 1);
-for (var i = 0; i < dirNums.length; i++) {
-var path = name + (Character.isDigit (dirNums[i].charAt (0)) ? "/Profile." + dirNums[i] : "/" + dirNums[i]);
-files[pt++] = path + "/#JMOL_MODEL " + dirNums[i];
-files[pt++] = path + "/input";
-files[pt++] = path + "/archive";
-files[pt++] = path + "/Molecule:asBinaryString";
-files[pt++] = path + "/proparc";
-}
-return files;
-}, "~S,~A");
-c$.checkSpecialInZip = $_M(c$, "checkSpecialInZip", 
-function (zipDirectory) {
-var name;
-return (zipDirectory.length < 2 ? null : (name = zipDirectory[1]).endsWith (".spardir/") || zipDirectory.length == 2 ? ["", (name.endsWith ("/") ? name.substring (0, name.length - 1) : name)] : null);
-}, "~A");
-$_V(c$, "getCachedPngjBytes", 
-function (fm, pathName) {
-if (pathName.indexOf (".png") < 0) return null;
-J.util.Logger.info ("FileManager checking PNGJ cache for " + pathName);
-var shortName = J.io2.ZipUtil.shortSceneFilename (pathName);
-if (fm.pngjCache == null && !this.cachePngjFile (fm, [pathName, null])) return null;
-var pngjCache = fm.pngjCache;
-var isMin = (pathName.indexOf (".min.") >= 0);
-if (!isMin) {
-var cName = fm.getCanonicalName (J.io.JmolBinary.getZipRoot (pathName));
-if (!pngjCache.containsKey (cName) && !this.cachePngjFile (fm, [pathName, null])) return null;
-if (pathName.indexOf ("|") < 0) shortName = cName;
-}if (pngjCache.containsKey (shortName)) {
-J.util.Logger.info ("FileManager using memory cache " + shortName);
-return pngjCache.get (shortName);
-}if (!isMin || !this.cachePngjFile (fm, [pathName, null])) return null;
-J.util.Logger.info ("FileManager using memory cache " + shortName);
-return pngjCache.get (shortName);
-}, "J.viewer.FileManager,~S");
-$_V(c$, "cachePngjFile", 
-function (fm, data) {
-var pngjCache = fm.pngjCache =  new java.util.Hashtable ();
-if (data == null) return false;
-data[1] = null;
-if (data[0] == null) return false;
-data[0] = J.io.JmolBinary.getZipRoot (data[0]);
-var shortName = J.io2.ZipUtil.shortSceneFilename (data[0]);
-try {
-data[1] = this.cacheZipContents (J.io.JmolBinary.checkPngZipStream (fm.getBufferedInputStreamOrErrorMessageFromName (data[0], null, false, false, null, false)), shortName, fm.pngjCache);
-} catch (e) {
-if (Clazz_exceptionOf (e, Exception)) {
-return false;
-} else {
-throw e;
-}
-}
-if (data[1] == null) return false;
-var bytes = data[1].getBytes ();
-pngjCache.put (fm.getCanonicalName (data[0]), bytes);
-if (shortName.indexOf ("_scene_") >= 0) {
-pngjCache.put (J.io2.ZipUtil.shortSceneFilename (data[0]), bytes);
-bytes = pngjCache.remove (shortName + "|state.spt");
-if (bytes != null) pngjCache.put (J.io2.ZipUtil.shortSceneFilename (data[0] + "|state.spt"), bytes);
-}for (var key, $key = pngjCache.keySet ().iterator (); $key.hasNext () && ((key = $key.next ()) || true);) System.out.println (key);
-
-return true;
-}, "J.viewer.FileManager,~A");
-c$.shortSceneFilename = $_M(c$, "shortSceneFilename", 
-function (pathName) {
-var pt = pathName.indexOf ("_scene_") + 7;
-if (pt < 7) return pathName;
-var s = "";
-if (pathName.endsWith ("|state.spt")) {
-var pt1 = pathName.indexOf ('.', pt);
-if (pt1 < 0) return pathName;
-s = pathName.substring (pt, pt1);
-}var pt2 = pathName.lastIndexOf ("|");
-return pathName.substring (0, pt) + s + (pt2 > 0 ? pathName.substring (pt2) : "");
-}, "~S");
-$_V(c$, "addZipEntry", 
-function (zos, fileName) {
-(zos).putNextEntry ( new java.util.zip.ZipEntry (fileName));
-}, "~O,~S");
-$_V(c$, "closeZipEntry", 
-function (zos) {
-(zos).closeEntry ();
-}, "~O");
-$_V(c$, "getZipOutputStream", 
-function (bos) {
-{
-return J.api.Interface.getInterface("java.util.zip.ZipOutputStream").setZOS(bos);
-}}, "~O");
-$_V(c$, "getCrcValue", 
-function (bytes) {
-var crc =  new java.util.zip.CRC32 ();
-crc.update (bytes, 0, bytes.length);
-return crc.getValue ();
+c$.deActivatePngZipB = Clazz_defineMethod (c$, "deActivatePngZipB", 
+ function (bytes) {
+if (JU.Rdr.isPngZipB (bytes)) bytes[51] = 32;
+return bytes;
 }, "~A");
 });
-$_L(["java.io.Closeable","$.InputStream"],"java.io.FileInputStream",["java.lang.IndexOutOfBoundsException","$.NullPointerException"],function(){
-c$=$_C(function(){
-this.fd=null;
-this.innerFD=false;
-$_Z(this,arguments);
-},java.io,"FileInputStream",java.io.InputStream,java.io.Closeable);
-$_K(c$,
-function(file){
-$_R(this,java.io.FileInputStream);
-},"java.io.File");
-$_K(c$,
-function(fd){
-$_R(this,java.io.FileInputStream);
-if(fd==null){
-throw new NullPointerException();
-}},"java.io.FileDescriptor");
-$_K(c$,
-function(fileName){
-this.construct(null==fileName?null:null);
-},"~S");
-$_V(c$,"available",
-function(){
-return 0;
-});
-$_V(c$,"close",
-function(){
-if(this.fd==null){
-return;
-}});
-$_V(c$,"finalize",
-function(){
-this.close();
-});
-$_M(c$,"getFD",
-function(){
-return this.fd;
-});
-$_M(c$,"read",
-function(){
-var readed=$_A(1,0);
-var result=this.read(readed,0,1);
-return result==-1?-1:readed[0]&0xff;
-});
-$_M(c$,"read",
-function(buffer){
-return this.read(buffer,0,buffer.length);
-},"~A");
-$_M(c$,"read",
-function(buffer,offset,count){
-if(count>buffer.length-offset||count<0||offset<0){
-throw new IndexOutOfBoundsException();
-}if(0==count){
-return 0;
-}return 0;
-},"~A,~N,~N");
-$_V(c$,"skip",
-function(count){
-return 0;
-},"~N");
-});
-Clazz_declarePackage ("JZ");
-Clazz_declareInterface (JZ, "Checksum");
-Clazz_declarePackage ("JZ");
-Clazz_load (["JZ.Checksum"], "JZ.CRC32", null, function () {
+Clazz_declarePackage ("JU");
+Clazz_declareInterface (JU, "Checksum");
+Clazz_declarePackage ("JU");
+Clazz_load (["JU.Checksum"], "JU.CRC32", null, function () {
 c$ = Clazz_decorateAsClass (function () {
 this.crc = 0;
 this.b1 = null;
 Clazz_instantialize (this, arguments);
-}, JZ, "CRC32", null, JZ.Checksum);
+}, JU, "CRC32", null, JU.Checksum);
 Clazz_prepareFields (c$, function () {
 this.b1 =  Clazz_newByteArray (1, 0);
 });
-$_V(c$, "update", 
+Clazz_overrideMethod (c$, "update", 
 function (buf, index, len) {
 var c = ~this.crc;
-while (--len >= 0) c = JZ.CRC32.crc_table[(c ^ buf[index++]) & 0xff] ^ (c >>> 8);
+while (--len >= 0) c = JU.CRC32.crc_table[(c ^ buf[index++]) & 0xff] ^ (c >>> 8);
 
 this.crc = ~c;
 }, "~A,~N,~N");
-$_V(c$, "reset", 
+Clazz_overrideMethod (c$, "reset", 
 function () {
 this.crc = 0;
 });
-$_V(c$, "resetLong", 
+Clazz_overrideMethod (c$, "resetLong", 
 function (vv) {
 this.crc = (vv & 0xffffffff);
 }, "~N");
-$_V(c$, "getValue", 
+Clazz_overrideMethod (c$, "getValue", 
 function () {
 return this.crc & 0xffffffff;
 });
-$_V(c$, "updateByteAsInt", 
+Clazz_overrideMethod (c$, "updateByteAsInt", 
 function (b) {
 this.b1[0] = b;
 this.update (this.b1, 0, 1);
@@ -757,12 +1235,8 @@ this.update (this.b1, 0, 1);
 Clazz_defineStatics (c$,
 "crc_table", [0, 1996959894, -301047508, -1727442502, 124634137, 1886057615, -379345611, -1637575261, 249268274, 2044508324, -522852066, -1747789432, 162941995, 2125561021, -407360249, -1866523247, 498536548, 1789927666, -205950648, -2067906082, 450548861, 1843258603, -187386543, -2083289657, 325883990, 1684777152, -43845254, -1973040660, 335633487, 1661365465, -99664541, -1928851979, 997073096, 1281953886, -715111964, -1570279054, 1006888145, 1258607687, -770865667, -1526024853, 901097722, 1119000684, -608450090, -1396901568, 853044451, 1172266101, -589951537, -1412350631, 651767980, 1373503546, -925412992, -1076862698, 565507253, 1454621731, -809855591, -1195530993, 671266974, 1594198024, -972236366, -1324619484, 795835527, 1483230225, -1050600021, -1234817731, 1994146192, 31158534, -1731059524, -271249366, 1907459465, 112637215, -1614814043, -390540237, 2013776290, 251722036, -1777751922, -519137256, 2137656763, 141376813, -1855689577, -429695999, 1802195444, 476864866, -2056965928, -228458418, 1812370925, 453092731, -2113342271, -183516073, 1706088902, 314042704, -1950435094, -54949764, 1658658271, 366619977, -1932296973, -69972891, 1303535960, 984961486, -1547960204, -725929758, 1256170817, 1037604311, -1529756563, -740887301, 1131014506, 879679996, -1385723834, -631195440, 1141124467, 855842277, -1442165665, -586318647, 1342533948, 654459306, -1106571248, -921952122, 1466479909, 544179635, -1184443383, -832445281, 1591671054, 702138776, -1328506846, -942167884, 1504918807, 783551873, -1212326853, -1061524307, -306674912, -1698712650, 62317068, 1957810842, -355121351, -1647151185, 81470997, 1943803523, -480048366, -1805370492, 225274430, 2053790376, -468791541, -1828061283, 167816743, 2097651377, -267414716, -2029476910, 503444072, 1762050814, -144550051, -2140837941, 426522225, 1852507879, -19653770, -1982649376, 282753626, 1742555852, -105259153, -1900089351, 397917763, 1622183637, -690576408, -1580100738, 953729732, 1340076626, -776247311, -1497606297, 1068828381, 1219638859, -670225446, -1358292148, 906185462, 1090812512, -547295293, -1469587627, 829329135, 1181335161, -882789492, -1134132454, 628085408, 1382605366, -871598187, -1156888829, 570562233, 1426400815, -977650754, -1296233688, 733239954, 1555261956, -1026031705, -1244606671, 752459403, 1541320221, -1687895376, -328994266, 1969922972, 40735498, -1677130071, -351390145, 1913087877, 83908371, -1782625662, -491226604, 2075208622, 213261112, -1831694693, -438977011, 2094854071, 198958881, -2032938284, -237706686, 1759359992, 534414190, -2118248755, -155638181, 1873836001, 414664567, -2012718362, -15766928, 1711684554, 285281116, -1889165569, -127750551, 1634467795, 376229701, -1609899400, -686959890, 1308918612, 956543938, -1486412191, -799009033, 1231636301, 1047427035, -1362007478, -640263460, 1088359270, 936918000, -1447252397, -558129467, 1202900863, 817233897, -1111625188, -893730166, 1404277552, 615818150, -1160759803, -841546093, 1423857449, 601450431, -1285129682, -1000256840, 1567103746, 711928724, -1274298825, -1022587231, 1510334235, 755167117]);
 });
-Clazz_declarePackage ("java.util.zip");
-Clazz_load (["JZ.CRC32"], "java.util.zip.CRC32", null, function () {
-c$ = Clazz_declareType (java.util.zip, "CRC32", JZ.CRC32);
-});
-Clazz_declarePackage ("JZ");
-Clazz_load (["java.io.FilterInputStream"], "JZ.InflaterInputStream", ["java.io.EOFException", "$.IOException", "java.lang.IllegalArgumentException", "$.IndexOutOfBoundsException", "$.NullPointerException"], function () {
+Clazz_declarePackage ("JU");
+Clazz_load (["java.io.FilterInputStream"], "JU.InflaterInputStream", ["java.io.EOFException", "$.IOException", "java.lang.IllegalArgumentException", "$.IndexOutOfBoundsException", "$.NullPointerException"], function () {
 c$ = Clazz_decorateAsClass (function () {
 this.inflater = null;
 this.buf = null;
@@ -774,29 +1248,29 @@ this.myinflater = false;
 this.byte1 = null;
 this.b = null;
 Clazz_instantialize (this, arguments);
-}, JZ, "InflaterInputStream", java.io.FilterInputStream);
+}, JU, "InflaterInputStream", java.io.FilterInputStream);
 Clazz_prepareFields (c$, function () {
 this.byte1 =  Clazz_newByteArray (1, 0);
 this.b =  Clazz_newByteArray (512, 0);
 });
 Clazz_makeConstructor (c$, 
 function ($in, inflater, size, close_in) {
-Clazz_superConstructor (this, JZ.InflaterInputStream, [$in]);
+Clazz_superConstructor (this, JU.InflaterInputStream, [$in]);
 this.inflater = inflater;
 this.buf =  Clazz_newByteArray (size, 0);
 this.close_in = close_in;
-}, "java.io.InputStream,JZ.Inflater,~N,~B");
-$_V(c$, "readByteAsInt", 
+}, "java.io.InputStream,JU.Inflater,~N,~B");
+Clazz_overrideMethod (c$, "readByteAsInt", 
 function () {
 if (this.closed) {
 throw  new java.io.IOException ("Stream closed");
 }return this.read (this.byte1, 0, 1) == -1 ? -1 : this.byte1[0] & 0xff;
 });
-$_V(c$, "read", 
+Clazz_overrideMethod (c$, "read", 
 function (b, off, len) {
 return this.readInf (b, off, len);
 }, "~A,~N,~N");
-$_M(c$, "readInf", 
+Clazz_defineMethod (c$, "readInf", 
 function (b, off, len) {
 if (this.closed) {
 throw  new java.io.IOException ("Stream closed");
@@ -829,13 +1303,13 @@ if (this.inflater.avail_out == 0) break;
 }
 return n;
 }, "~A,~N,~N");
-$_V(c$, "available", 
+Clazz_overrideMethod (c$, "available", 
 function () {
 if (this.closed) {
 throw  new java.io.IOException ("Stream closed");
 }return (this.eof ? 0 : 1);
 });
-$_V(c$, "skip", 
+Clazz_overrideMethod (c$, "skip", 
 function (n) {
 if (n < 0) {
 throw  new IllegalArgumentException ("negative skip length");
@@ -855,14 +1329,14 @@ break;
 }
 return total;
 }, "~N");
-$_V(c$, "close", 
+Clazz_overrideMethod (c$, "close", 
 function () {
 if (!this.closed) {
 if (this.myinflater) this.inflater.end ();
 if (this.close_in) this.$in.close ();
 this.closed = true;
 }});
-$_M(c$, "fill", 
+Clazz_defineMethod (c$, "fill", 
 function () {
 if (this.closed) {
 throw  new java.io.IOException ("Stream closed");
@@ -877,33 +1351,33 @@ throw  new java.io.IOException ("footer is not found");
 throw  new java.io.EOFException ("Unexpected end of ZLIB input stream");
 }}this.inflater.setInput (this.buf, 0, this.len, true);
 });
-$_V(c$, "markSupported", 
+Clazz_overrideMethod (c$, "markSupported", 
 function () {
 return false;
 });
-$_V(c$, "mark", 
+Clazz_overrideMethod (c$, "mark", 
 function (readlimit) {
 }, "~N");
-$_V(c$, "reset", 
+Clazz_overrideMethod (c$, "reset", 
 function () {
 throw  new java.io.IOException ("mark/reset not supported");
 });
-$_M(c$, "getTotalIn", 
+Clazz_defineMethod (c$, "getTotalIn", 
 function () {
 return this.inflater.getTotalIn ();
 });
-$_M(c$, "getTotalOut", 
+Clazz_defineMethod (c$, "getTotalOut", 
 function () {
 return this.inflater.getTotalOut ();
 });
-$_M(c$, "getAvailIn", 
+Clazz_defineMethod (c$, "getAvailIn", 
 function () {
 if (this.inflater.avail_in <= 0) return null;
 var tmp =  Clazz_newByteArray (this.inflater.avail_in, 0);
 System.arraycopy (this.inflater.next_in, this.inflater.next_in_index, tmp, 0, this.inflater.avail_in);
 return tmp;
 });
-$_M(c$, "readHeader", 
+Clazz_defineMethod (c$, "readHeader", 
 function () {
 var empty = "".getBytes ();
 this.inflater.setInput (empty, 0, 0, false);
@@ -920,135 +1394,15 @@ err = this.inflater.inflate (0);
 if (err != 0) throw  new java.io.IOException (this.inflater.msg);
 } while (this.inflater.istate.inParsingHeader ());
 });
-$_M(c$, "getInflater", 
+Clazz_defineMethod (c$, "getInflater", 
 function () {
 return this.inflater;
 });
 Clazz_defineStatics (c$,
 "DEFAULT_BUFSIZE", 512);
 });
-Clazz_declarePackage ("java.util.zip");
-Clazz_load (["JZ.InflaterInputStream"], "java.util.zip.InflaterInputStream", null, function () {
-c$ = Clazz_decorateAsClass (function () {
-this.inf = null;
-Clazz_instantialize (this, arguments);
-}, java.util.zip, "InflaterInputStream", JZ.InflaterInputStream);
-Clazz_makeConstructor (c$, 
-function ($in, inflater, size) {
-Clazz_superConstructor (this, java.util.zip.InflaterInputStream, [$in, inflater, size, true]);
-this.inf = inflater;
-}, "java.io.InputStream,java.util.zip.Inflater,~N");
-});
-Clazz_declarePackage ("java.util.zip");
-Clazz_load (["java.util.zip.InflaterInputStream", "$.CRC32"], "java.util.zip.GZIPInputStream", ["java.io.EOFException", "$.IOException", "java.util.zip.CheckedInputStream", "$.Inflater", "$.ZipException"], function () {
-c$ = Clazz_decorateAsClass (function () {
-this.crc = null;
-this.eos = false;
-this.$closed = false;
-this.tmpbuf = null;
-Clazz_instantialize (this, arguments);
-}, java.util.zip, "GZIPInputStream", java.util.zip.InflaterInputStream);
-Clazz_prepareFields (c$, function () {
-this.crc =  new java.util.zip.CRC32 ();
-this.tmpbuf =  Clazz_newByteArray (128, 0);
-});
-$_M(c$, "ensureOpen", 
-function () {
-if (this.$closed) {
-throw  new java.io.IOException ("Stream closed");
-}});
-Clazz_makeConstructor (c$, 
-function ($in, size) {
-Clazz_superConstructor (this, java.util.zip.GZIPInputStream, [$in,  new java.util.zip.Inflater ().init (0, true), size]);
-this.readHeader ($in);
-}, "java.io.InputStream,~N");
-$_V(c$, "read", 
-function (buf, off, len) {
-this.ensureOpen ();
-if (this.eos) {
-return -1;
-}var n = this.readInf (buf, off, len);
-if (n == -1) {
-if (this.readTrailer ()) this.eos = true;
- else return this.read (buf, off, len);
-} else {
-this.crc.update (buf, off, n);
-}return n;
-}, "~A,~N,~N");
-$_M(c$, "close", 
-function () {
-if (!this.$closed) {
-Clazz_superCall (this, java.util.zip.GZIPInputStream, "close", []);
-this.eos = true;
-this.$closed = true;
-}});
-$_M(c$, "readHeader", 
-function (this_in) {
-var $in =  new java.util.zip.CheckedInputStream (this_in, this.crc);
-this.crc.reset ();
-if (this.readUShort ($in) != 35615) {
-throw  new java.util.zip.ZipException ("Not in GZIP format");
-}if (this.readUByte ($in) != 8) {
-throw  new java.util.zip.ZipException ("Unsupported compression method");
-}var flg = this.readUByte ($in);
-this.skipBytes ($in, 6);
-var n = 10;
-if ((flg & 4) == 4) {
-var m = this.readUShort ($in);
-this.skipBytes ($in, m);
-n += m + 2;
-}if ((flg & 8) == 8) {
-do {
-n++;
-} while (this.readUByte ($in) != 0);
-}if ((flg & 16) == 16) {
-do {
-n++;
-} while (this.readUByte ($in) != 0);
-}if ((flg & 2) == 2) {
-var v = this.crc.getValue () & 0xffff;
-if (this.readUShort ($in) != v) {
-throw  new java.util.zip.ZipException ("Corrupt GZIP header");
-}n += 2;
-}this.crc.reset ();
-return n;
-}, "java.io.InputStream");
-$_M(c$, "readTrailer", 
-function () {
-return true;
-});
-$_M(c$, "readUShort", 
-function ($in) {
-var b = this.readUByte ($in);
-return (this.readUByte ($in) << 8) | b;
-}, "java.io.InputStream");
-$_M(c$, "readUByte", 
-function ($in) {
-var b = $in.readByteAsInt ();
-if (b == -1) {
-throw  new java.io.EOFException ();
-}if (b < -1 || b > 255) {
-throw  new java.io.IOException (this.$in.getClass ().getName () + ".read() returned value out of range -1..255: " + b);
-}return b;
-}, "java.io.InputStream");
-$_M(c$, "skipBytes", 
-function ($in, n) {
-while (n > 0) {
-var len = $in.read (this.tmpbuf, 0, n < this.tmpbuf.length ? n : this.tmpbuf.length);
-if (len == -1) {
-throw  new java.io.EOFException ();
-}n -= len;
-}
-}, "java.io.InputStream,~N");
-Clazz_defineStatics (c$,
-"GZIP_MAGIC", 0x8b1f,
-"FHCRC", 2,
-"FEXTRA", 4,
-"FNAME", 8,
-"FCOMMENT", 16);
-});
-Clazz_declarePackage ("JZ");
-Clazz_load (null, "JZ.ZStream", ["JZ.Adler32"], function () {
+Clazz_declarePackage ("JU");
+Clazz_load (null, "JU.ZStream", ["JU.Adler32"], function () {
 c$ = Clazz_decorateAsClass (function () {
 this.next_in = null;
 this.next_in_index = 0;
@@ -1064,23 +1418,23 @@ this.istate = null;
 this.data_type = 0;
 this.checksum = null;
 Clazz_instantialize (this, arguments);
-}, JZ, "ZStream");
-$_M(c$, "setAdler32", 
+}, JU, "ZStream");
+Clazz_defineMethod (c$, "setAdler32", 
 function () {
-this.checksum =  new JZ.Adler32 ();
+this.checksum =  new JU.Adler32 ();
 });
-$_M(c$, "inflate", 
+Clazz_defineMethod (c$, "inflate", 
 function (f) {
 if (this.istate == null) return -2;
 return this.istate.inflate (f);
 }, "~N");
-$_M(c$, "deflate", 
+Clazz_defineMethod (c$, "deflate", 
 function (flush) {
 if (this.dstate == null) {
 return -2;
 }return this.dstate.deflate (flush);
 }, "~N");
-$_M(c$, "flush_pending", 
+Clazz_defineMethod (c$, "flush_pending", 
 function () {
 var len = this.dstate.pending;
 if (len > this.avail_out) len = this.avail_out;
@@ -1094,7 +1448,7 @@ this.dstate.pending -= len;
 if (this.dstate.pending == 0) {
 this.dstate.pending_out = 0;
 }});
-$_M(c$, "read_buf", 
+Clazz_defineMethod (c$, "read_buf", 
 function (buf, start, size) {
 var len = this.avail_in;
 if (len > size) len = size;
@@ -1107,23 +1461,23 @@ this.next_in_index += len;
 this.total_in += len;
 return len;
 }, "~A,~N,~N");
-$_M(c$, "getAdler", 
+Clazz_defineMethod (c$, "getAdler", 
 function () {
 return this.checksum.getValue ();
 });
-$_M(c$, "free", 
+Clazz_defineMethod (c$, "free", 
 function () {
 this.next_in = null;
 this.next_out = null;
 this.msg = null;
 });
-$_M(c$, "setOutput", 
+Clazz_defineMethod (c$, "setOutput", 
 function (buf, off, len) {
 this.next_out = buf;
 this.next_out_index = off;
 this.avail_out = len;
 }, "~A,~N,~N");
-$_M(c$, "setInput", 
+Clazz_defineMethod (c$, "setInput", 
 function (buf, off, len, append) {
 if (len <= 0 && append && this.next_in != null) return;
 if (this.avail_in > 0 && append) {
@@ -1138,19 +1492,19 @@ this.next_in = buf;
 this.next_in_index = off;
 this.avail_in = len;
 }}, "~A,~N,~N,~B");
-$_M(c$, "getAvailIn", 
+Clazz_defineMethod (c$, "getAvailIn", 
 function () {
 return this.avail_in;
 });
-$_M(c$, "getTotalOut", 
+Clazz_defineMethod (c$, "getTotalOut", 
 function () {
 return this.total_out;
 });
-$_M(c$, "getTotalIn", 
+Clazz_defineMethod (c$, "getTotalIn", 
 function () {
 return this.total_in;
 });
-c$.getBytes = $_M(c$, "getBytes", 
+c$.getBytes = Clazz_defineMethod (c$, "getBytes", 
 function (s) {
 {
 var x = [];
@@ -1174,49 +1528,49 @@ return (Int32Array != Array ? new Int32Array(x) : x);
 Clazz_defineStatics (c$,
 "Z_STREAM_ERROR", -2);
 });
-Clazz_declarePackage ("JZ");
-Clazz_load (["JZ.ZStream"], "JZ.Inflater", ["JZ.Inflate"], function () {
-c$ = Clazz_declareType (JZ, "Inflater", JZ.ZStream);
-$_M(c$, "init", 
+Clazz_declarePackage ("JU");
+Clazz_load (["JU.ZStream"], "JU.Inflater", ["JU.Inflate"], function () {
+c$ = Clazz_declareType (JU, "Inflater", JU.ZStream);
+Clazz_defineMethod (c$, "init", 
 function (w, nowrap) {
 this.setAdler32 ();
 if (w == 0) w = 15;
-this.istate =  new JZ.Inflate (this);
+this.istate =  new JU.Inflate (this);
 this.istate.inflateInit (nowrap ? -w : w);
 return this;
 }, "~N,~B");
-$_V(c$, "inflate", 
+Clazz_overrideMethod (c$, "inflate", 
 function (f) {
 if (this.istate == null) return -2;
 var ret = this.istate.inflate (f);
 return ret;
 }, "~N");
-$_V(c$, "end", 
+Clazz_overrideMethod (c$, "end", 
 function () {
 if (this.istate == null) return -2;
 var ret = this.istate.inflateEnd ();
 return ret;
 });
-$_M(c$, "sync", 
+Clazz_defineMethod (c$, "sync", 
 function () {
 if (this.istate == null) return -2;
 return this.istate.inflateSync ();
 });
-$_M(c$, "syncPoint", 
+Clazz_defineMethod (c$, "syncPoint", 
 function () {
 if (this.istate == null) return -2;
 return this.istate.inflateSyncPoint ();
 });
-$_M(c$, "setDictionary", 
+Clazz_defineMethod (c$, "setDictionary", 
 function (dictionary, dictLength) {
 if (this.istate == null) return -2;
 return this.istate.inflateSetDictionary (dictionary, dictLength);
 }, "~A,~N");
-$_V(c$, "finished", 
+Clazz_overrideMethod (c$, "finished", 
 function () {
 return this.istate.mode == 12;
 });
-$_M(c$, "reset", 
+Clazz_defineMethod (c$, "reset", 
 function () {
 this.avail_in = 0;
 if (this.istate != null) this.istate.reset ();
@@ -1226,32 +1580,32 @@ Clazz_defineStatics (c$,
 "DEF_WBITS", 15,
 "$Z_STREAM_ERROR", -2);
 });
-Clazz_declarePackage ("JZ");
-Clazz_load (["JZ.Checksum"], "JZ.Adler32", null, function () {
+Clazz_declarePackage ("JU");
+Clazz_load (["JU.Checksum"], "JU.Adler32", null, function () {
 c$ = Clazz_decorateAsClass (function () {
 this.s1 = 1;
 this.s2 = 0;
 this.b1 = null;
 Clazz_instantialize (this, arguments);
-}, JZ, "Adler32", null, JZ.Checksum);
+}, JU, "Adler32", null, JU.Checksum);
 Clazz_prepareFields (c$, function () {
 this.b1 =  Clazz_newByteArray (1, 0);
 });
-$_V(c$, "resetLong", 
+Clazz_overrideMethod (c$, "resetLong", 
 function (init) {
 this.s1 = init & 0xffff;
 this.s2 = (init >> 16) & 0xffff;
 }, "~N");
-$_V(c$, "reset", 
+Clazz_overrideMethod (c$, "reset", 
 function () {
 this.s1 = 1;
 this.s2 = 0;
 });
-$_V(c$, "getValue", 
+Clazz_overrideMethod (c$, "getValue", 
 function () {
 return ((this.s2 << 16) | this.s1);
 });
-$_V(c$, "update", 
+Clazz_overrideMethod (c$, "update", 
 function (buf, index, len) {
 if (len == 1) {
 this.s1 += buf[index++] & 0xff;
@@ -1280,7 +1634,7 @@ this.s2 += this.s1;
 this.s1 %= 65521;
 this.s2 %= 65521;
 }, "~A,~N,~N");
-$_V(c$, "updateByteAsInt", 
+Clazz_overrideMethod (c$, "updateByteAsInt", 
 function (b) {
 this.b1[0] = b;
 this.update (this.b1, 0, 1);
@@ -1289,18 +1643,18 @@ Clazz_defineStatics (c$,
 "BASE", 65521,
 "NMAX", 5552);
 });
-Clazz_declarePackage ("JZ");
+Clazz_declarePackage ("JU");
 c$ = Clazz_decorateAsClass (function () {
 this.dyn_tree = null;
 this.max_code = 0;
 this.stat_desc = null;
 Clazz_instantialize (this, arguments);
-}, JZ, "Tree");
-c$.d_code = $_M(c$, "d_code", 
+}, JU, "Tree");
+c$.d_code = Clazz_defineMethod (c$, "d_code", 
 function (dist) {
-return ((dist) < 256 ? JZ.Tree._dist_code[dist] : JZ.Tree._dist_code[256 + ((dist) >>> 7)]);
+return ((dist) < 256 ? JU.Tree._dist_code[dist] : JU.Tree._dist_code[256 + ((dist) >>> 7)]);
 }, "~N");
-$_M(c$, "gen_bitlen", 
+Clazz_defineMethod (c$, "gen_bitlen", 
 function (s) {
 var tree = this.dyn_tree;
 var stree = this.stat_desc.static_tree;
@@ -1353,8 +1707,8 @@ tree[m * 2 + 1] = bits;
 }n--;
 }
 }
-}, "JZ.Deflate");
-$_M(c$, "build_tree", 
+}, "JU.Deflate");
+Clazz_defineMethod (c$, "build_tree", 
 function (s) {
 var tree = this.dyn_tree;
 var stree = this.stat_desc.static_tree;
@@ -1398,24 +1752,24 @@ s.pqdownheap (tree, 1);
 } while (s.heap_len >= 2);
 s.heap[--s.heap_max] = s.heap[1];
 this.gen_bitlen (s);
-JZ.Tree.gen_codes (tree, max_code, s.bl_count);
-}, "JZ.Deflate");
-c$.gen_codes = $_M(c$, "gen_codes", 
+JU.Tree.gen_codes (tree, max_code, s.bl_count);
+}, "JU.Deflate");
+c$.gen_codes = Clazz_defineMethod (c$, "gen_codes", 
 function (tree, max_code, bl_count) {
 var code = 0;
 var bits;
 var n;
-JZ.Tree.next_code[0] = 0;
+JU.Tree.next_code[0] = 0;
 for (bits = 1; bits <= 15; bits++) {
-JZ.Tree.next_code[bits] = code = ((code + bl_count[bits - 1]) << 1);
+JU.Tree.next_code[bits] = code = ((code + bl_count[bits - 1]) << 1);
 }
 for (n = 0; n <= max_code; n++) {
 var len = tree[n * 2 + 1];
 if (len == 0) continue;
-tree[n * 2] = (JZ.Tree.bi_reverse (JZ.Tree.next_code[len]++, len));
+tree[n * 2] = (JU.Tree.bi_reverse (JU.Tree.next_code[len]++, len));
 }
 }, "~A,~N,~A");
-c$.bi_reverse = $_M(c$, "bi_reverse", 
+c$.bi_reverse = Clazz_defineMethod (c$, "bi_reverse", 
 function (code, len) {
 var res = 0;
 do {
@@ -1447,8 +1801,8 @@ Clazz_defineStatics (c$,
 "base_length", [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 20, 24, 28, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 0],
 "base_dist", [0, 1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 256, 384, 512, 768, 1024, 1536, 2048, 3072, 4096, 6144, 8192, 12288, 16384, 24576],
 "next_code",  Clazz_newShortArray (16, 0));
-Clazz_declarePackage ("JZ");
-Clazz_load (["JZ.Tree"], "JZ.StaticTree", null, function () {
+Clazz_declarePackage ("JU");
+Clazz_load (["JU.Tree"], "JU.StaticTree", null, function () {
 c$ = Clazz_decorateAsClass (function () {
 this.static_tree = null;
 this.extra_bits = null;
@@ -1456,9 +1810,9 @@ this.extra_base = 0;
 this.elems = 0;
 this.max_length = 0;
 Clazz_instantialize (this, arguments);
-}, JZ, "StaticTree");
+}, JU, "StaticTree");
 Clazz_makeConstructor (c$, 
-function (static_tree, extra_bits, extra_base, elems, max_length) {
+ function (static_tree, extra_bits, extra_base, elems, max_length) {
 this.static_tree = static_tree;
 this.extra_bits = extra_bits;
 this.extra_base = extra_base;
@@ -1475,12 +1829,12 @@ Clazz_defineStatics (c$,
 "MAX_BL_BITS", 7,
 "static_ltree", [12, 8, 140, 8, 76, 8, 204, 8, 44, 8, 172, 8, 108, 8, 236, 8, 28, 8, 156, 8, 92, 8, 220, 8, 60, 8, 188, 8, 124, 8, 252, 8, 2, 8, 130, 8, 66, 8, 194, 8, 34, 8, 162, 8, 98, 8, 226, 8, 18, 8, 146, 8, 82, 8, 210, 8, 50, 8, 178, 8, 114, 8, 242, 8, 10, 8, 138, 8, 74, 8, 202, 8, 42, 8, 170, 8, 106, 8, 234, 8, 26, 8, 154, 8, 90, 8, 218, 8, 58, 8, 186, 8, 122, 8, 250, 8, 6, 8, 134, 8, 70, 8, 198, 8, 38, 8, 166, 8, 102, 8, 230, 8, 22, 8, 150, 8, 86, 8, 214, 8, 54, 8, 182, 8, 118, 8, 246, 8, 14, 8, 142, 8, 78, 8, 206, 8, 46, 8, 174, 8, 110, 8, 238, 8, 30, 8, 158, 8, 94, 8, 222, 8, 62, 8, 190, 8, 126, 8, 254, 8, 1, 8, 129, 8, 65, 8, 193, 8, 33, 8, 161, 8, 97, 8, 225, 8, 17, 8, 145, 8, 81, 8, 209, 8, 49, 8, 177, 8, 113, 8, 241, 8, 9, 8, 137, 8, 73, 8, 201, 8, 41, 8, 169, 8, 105, 8, 233, 8, 25, 8, 153, 8, 89, 8, 217, 8, 57, 8, 185, 8, 121, 8, 249, 8, 5, 8, 133, 8, 69, 8, 197, 8, 37, 8, 165, 8, 101, 8, 229, 8, 21, 8, 149, 8, 85, 8, 213, 8, 53, 8, 181, 8, 117, 8, 245, 8, 13, 8, 141, 8, 77, 8, 205, 8, 45, 8, 173, 8, 109, 8, 237, 8, 29, 8, 157, 8, 93, 8, 221, 8, 61, 8, 189, 8, 125, 8, 253, 8, 19, 9, 275, 9, 147, 9, 403, 9, 83, 9, 339, 9, 211, 9, 467, 9, 51, 9, 307, 9, 179, 9, 435, 9, 115, 9, 371, 9, 243, 9, 499, 9, 11, 9, 267, 9, 139, 9, 395, 9, 75, 9, 331, 9, 203, 9, 459, 9, 43, 9, 299, 9, 171, 9, 427, 9, 107, 9, 363, 9, 235, 9, 491, 9, 27, 9, 283, 9, 155, 9, 411, 9, 91, 9, 347, 9, 219, 9, 475, 9, 59, 9, 315, 9, 187, 9, 443, 9, 123, 9, 379, 9, 251, 9, 507, 9, 7, 9, 263, 9, 135, 9, 391, 9, 71, 9, 327, 9, 199, 9, 455, 9, 39, 9, 295, 9, 167, 9, 423, 9, 103, 9, 359, 9, 231, 9, 487, 9, 23, 9, 279, 9, 151, 9, 407, 9, 87, 9, 343, 9, 215, 9, 471, 9, 55, 9, 311, 9, 183, 9, 439, 9, 119, 9, 375, 9, 247, 9, 503, 9, 15, 9, 271, 9, 143, 9, 399, 9, 79, 9, 335, 9, 207, 9, 463, 9, 47, 9, 303, 9, 175, 9, 431, 9, 111, 9, 367, 9, 239, 9, 495, 9, 31, 9, 287, 9, 159, 9, 415, 9, 95, 9, 351, 9, 223, 9, 479, 9, 63, 9, 319, 9, 191, 9, 447, 9, 127, 9, 383, 9, 255, 9, 511, 9, 0, 7, 64, 7, 32, 7, 96, 7, 16, 7, 80, 7, 48, 7, 112, 7, 8, 7, 72, 7, 40, 7, 104, 7, 24, 7, 88, 7, 56, 7, 120, 7, 4, 7, 68, 7, 36, 7, 100, 7, 20, 7, 84, 7, 52, 7, 116, 7, 3, 8, 131, 8, 67, 8, 195, 8, 35, 8, 163, 8, 99, 8, 227, 8],
 "static_dtree", [0, 5, 16, 5, 8, 5, 24, 5, 4, 5, 20, 5, 12, 5, 28, 5, 2, 5, 18, 5, 10, 5, 26, 5, 6, 5, 22, 5, 14, 5, 30, 5, 1, 5, 17, 5, 9, 5, 25, 5, 5, 5, 21, 5, 13, 5, 29, 5, 3, 5, 19, 5, 11, 5, 27, 5, 7, 5, 23, 5]);
-c$.static_l_desc = c$.prototype.static_l_desc =  new JZ.StaticTree (JZ.StaticTree.static_ltree, JZ.Tree.extra_lbits, 257, 286, 15);
-c$.static_d_desc = c$.prototype.static_d_desc =  new JZ.StaticTree (JZ.StaticTree.static_dtree, JZ.Tree.extra_dbits, 0, 30, 15);
-c$.static_bl_desc = c$.prototype.static_bl_desc =  new JZ.StaticTree (null, JZ.Tree.extra_blbits, 0, 19, 7);
+c$.static_l_desc = c$.prototype.static_l_desc =  new JU.StaticTree (JU.StaticTree.static_ltree, JU.Tree.extra_lbits, 257, 286, 15);
+c$.static_d_desc = c$.prototype.static_d_desc =  new JU.StaticTree (JU.StaticTree.static_dtree, JU.Tree.extra_dbits, 0, 30, 15);
+c$.static_bl_desc = c$.prototype.static_bl_desc =  new JU.StaticTree (null, JU.Tree.extra_blbits, 0, 19, 7);
 });
-Clazz_declarePackage ("JZ");
-Clazz_load (null, "JZ.GZIPHeader", ["JZ.ZStream", "java.lang.IllegalArgumentException", "$.InternalError"], function () {
+Clazz_declarePackage ("JU");
+Clazz_load (null, "JU.GZIPHeader", ["JU.ZStream", "java.lang.IllegalArgumentException", "$.InternalError"], function () {
 c$ = Clazz_decorateAsClass (function () {
 this.text = false;
 this.fhcrc = false;
@@ -1495,29 +1849,29 @@ this.crc = 0;
 this.done = false;
 this.mtime = 0;
 Clazz_instantialize (this, arguments);
-}, JZ, "GZIPHeader", null, Cloneable);
-$_M(c$, "setModifiedTime", 
+}, JU, "GZIPHeader", null, Cloneable);
+Clazz_defineMethod (c$, "setModifiedTime", 
 function (mtime) {
 this.mtime = mtime;
 }, "~N");
-$_M(c$, "getModifiedTime", 
+Clazz_defineMethod (c$, "getModifiedTime", 
 function () {
 return this.mtime;
 });
-$_M(c$, "setOS", 
+Clazz_defineMethod (c$, "setOS", 
 function (os) {
 if ((0 <= os && os <= 13) || os == 255) this.os = os;
  else throw  new IllegalArgumentException ("os: " + os);
 }, "~N");
-$_M(c$, "getOS", 
+Clazz_defineMethod (c$, "getOS", 
 function () {
 return this.os;
 });
-$_M(c$, "setName", 
+Clazz_defineMethod (c$, "setName", 
 function (name) {
-this.name = JZ.ZStream.getBytes (name);
+this.name = JU.ZStream.getBytes (name);
 }, "~S");
-$_M(c$, "getName", 
+Clazz_defineMethod (c$, "getName", 
 function () {
 if (this.name == null) return "";
 try {
@@ -1530,11 +1884,11 @@ throw e;
 }
 }
 });
-$_M(c$, "setComment", 
+Clazz_defineMethod (c$, "setComment", 
 function (comment) {
-this.comment = JZ.ZStream.getBytes (comment);
+this.comment = JU.ZStream.getBytes (comment);
 }, "~S");
-$_M(c$, "getComment", 
+Clazz_defineMethod (c$, "getComment", 
 function () {
 if (this.comment == null) return "";
 try {
@@ -1547,15 +1901,15 @@ throw e;
 }
 }
 });
-$_M(c$, "setCRC", 
+Clazz_defineMethod (c$, "setCRC", 
 function (crc) {
 this.crc = crc;
 }, "~N");
-$_M(c$, "getCRC", 
+Clazz_defineMethod (c$, "getCRC", 
 function () {
 return this.crc;
 });
-$_M(c$, "put", 
+Clazz_defineMethod (c$, "put", 
 function (d) {
 var flag = 0;
 if (this.text) {
@@ -1592,10 +1946,10 @@ d.put_byteB (0);
 }if (this.comment != null) {
 d.put_byte (this.comment, 0, this.comment.length);
 d.put_byteB (0);
-}}, "JZ.Deflate");
-$_M(c$, "clone", 
+}}, "JU.Deflate");
+Clazz_defineMethod (c$, "clone", 
 function () {
-var gheader = Clazz_superCall (this, JZ.GZIPHeader, "clone", []);
+var gheader = Clazz_superCall (this, JU.GZIPHeader, "clone", []);
 var tmp;
 if (gheader.extra != null) {
 tmp =  Clazz_newByteArray (gheader.extra.length, 0);
@@ -1628,8 +1982,8 @@ Clazz_defineStatics (c$,
 "OS_RISCOS", 0x0d,
 "OS_UNKNOWN", 0xff);
 });
-Clazz_declarePackage ("JZ");
-Clazz_load (["java.lang.Exception"], "JZ.Inflate", ["JZ.Adler32", "$.CRC32", "$.GZIPHeader", "$.InfBlocks", "java.io.ByteArrayOutputStream"], function () {
+Clazz_declarePackage ("JU");
+Clazz_load (["java.lang.Exception"], "JU.Inflate", ["JU.Adler32", "$.CRC32", "$.GZIPHeader", "$.InfBlocks", "java.io.ByteArrayOutputStream"], function () {
 c$ = Clazz_decorateAsClass (function () {
 this.mode = 0;
 this.method = 0;
@@ -1644,20 +1998,20 @@ this.flags = 0;
 this.need_bytes = -1;
 this.crcbuf = null;
 this.gheader = null;
-if (!Clazz_isClassDefined ("JZ.Inflate.Return")) {
-JZ.Inflate.$Inflate$Return$ ();
+if (!Clazz_isClassDefined ("JU.Inflate.Return")) {
+JU.Inflate.$Inflate$Return$ ();
 }
 this.tmp_string = null;
 Clazz_instantialize (this, arguments);
-}, JZ, "Inflate");
+}, JU, "Inflate");
 Clazz_prepareFields (c$, function () {
 this.crcbuf =  Clazz_newByteArray (4, 0);
 });
-$_M(c$, "reset", 
+Clazz_defineMethod (c$, "reset", 
 function () {
 this.inflateReset ();
 });
-$_M(c$, "inflateReset", 
+Clazz_defineMethod (c$, "inflateReset", 
 function () {
 if (this.z == null) return -2;
 this.z.total_in = this.z.total_out = 0;
@@ -1667,7 +2021,7 @@ this.need_bytes = -1;
 this.blocks.reset ();
 return 0;
 });
-$_M(c$, "inflateEnd", 
+Clazz_defineMethod (c$, "inflateEnd", 
 function () {
 if (this.blocks != null) {
 this.blocks.free ();
@@ -1676,8 +2030,8 @@ this.blocks.free ();
 Clazz_makeConstructor (c$, 
 function (z) {
 this.z = z;
-}, "JZ.ZStream");
-$_M(c$, "inflateInit", 
+}, "JU.ZStream");
+Clazz_defineMethod (c$, "inflateInit", 
 function (w) {
 this.z.msg = null;
 this.blocks = null;
@@ -1694,11 +2048,11 @@ return -2;
 this.blocks.free ();
 this.blocks = null;
 }this.wbits = w;
-this.blocks =  new JZ.InfBlocks (this.z, 1 << w);
+this.blocks =  new JU.InfBlocks (this.z, 1 << w);
 this.inflateReset ();
 return 0;
 }, "~N");
-$_M(c$, "inflate", 
+Clazz_defineMethod (c$, "inflate", 
 function (f) {
 var r;
 var b;
@@ -1716,16 +2070,16 @@ break;
 }try {
 r = this.readBytes (2, r, f);
 } catch (e) {
-if (Clazz_exceptionOf (e, JZ.Inflate.Return)) {
+if (Clazz_exceptionOf (e, JU.Inflate.Return)) {
 return e.r;
 } else {
 throw e;
 }
 }
 if ((this.wrap & 2) != 0 && this.need == 0x8b1f) {
-this.z.checksum =  new JZ.CRC32 ();
+this.z.checksum =  new JU.CRC32 ();
 this.checksum (2, this.need);
-if (this.gheader == null) this.gheader =  new JZ.GZIPHeader ();
+if (this.gheader == null) this.gheader =  new JU.GZIPHeader ();
 this.mode = 23;
 break;
 }this.flags = 0;
@@ -1743,7 +2097,7 @@ break;
 this.mode = 13;
 this.z.msg = "invalid window size";
 break;
-}this.z.checksum =  new JZ.Adler32 ();
+}this.z.checksum =  new JU.Adler32 ();
 if ((b & 32) == 0) {
 this.mode = 7;
 break;
@@ -1839,7 +2193,7 @@ if (this.wrap != 0 && this.flags != 0) {
 try {
 r = this.readBytes (4, r, f);
 } catch (e) {
-if (Clazz_exceptionOf (e, JZ.Inflate.Return)) {
+if (Clazz_exceptionOf (e, JU.Inflate.Return)) {
 return e.r;
 } else {
 throw e;
@@ -1868,7 +2222,7 @@ case 23:
 try {
 r = this.readBytes (2, r, f);
 } catch (e) {
-if (Clazz_exceptionOf (e, JZ.Inflate.Return)) {
+if (Clazz_exceptionOf (e, JU.Inflate.Return)) {
 return e.r;
 } else {
 throw e;
@@ -1890,7 +2244,7 @@ case 16:
 try {
 r = this.readBytes (4, r, f);
 } catch (e) {
-if (Clazz_exceptionOf (e, JZ.Inflate.Return)) {
+if (Clazz_exceptionOf (e, JU.Inflate.Return)) {
 return e.r;
 } else {
 throw e;
@@ -1904,7 +2258,7 @@ case 17:
 try {
 r = this.readBytes (2, r, f);
 } catch (e) {
-if (Clazz_exceptionOf (e, JZ.Inflate.Return)) {
+if (Clazz_exceptionOf (e, JU.Inflate.Return)) {
 return e.r;
 } else {
 throw e;
@@ -1921,7 +2275,7 @@ if ((this.flags & 0x0400) != 0) {
 try {
 r = this.readBytes (2, r, f);
 } catch (e) {
-if (Clazz_exceptionOf (e, JZ.Inflate.Return)) {
+if (Clazz_exceptionOf (e, JU.Inflate.Return)) {
 return e.r;
 } else {
 throw e;
@@ -1948,7 +2302,7 @@ this.z.msg = "bad extra field length";
 this.mode = 13;
 break;
 }}} catch (e) {
-if (Clazz_exceptionOf (e, JZ.Inflate.Return)) {
+if (Clazz_exceptionOf (e, JU.Inflate.Return)) {
 return e.r;
 } else {
 throw e;
@@ -1965,7 +2319,7 @@ if (this.gheader != null) {
 this.gheader.name = this.tmp_string.toByteArray ();
 }this.tmp_string = null;
 } catch (e) {
-if (Clazz_exceptionOf (e, JZ.Inflate.Return)) {
+if (Clazz_exceptionOf (e, JU.Inflate.Return)) {
 return e.r;
 } else {
 throw e;
@@ -1982,7 +2336,7 @@ if (this.gheader != null) {
 this.gheader.comment = this.tmp_string.toByteArray ();
 }this.tmp_string = null;
 } catch (e) {
-if (Clazz_exceptionOf (e, JZ.Inflate.Return)) {
+if (Clazz_exceptionOf (e, JU.Inflate.Return)) {
 return e.r;
 } else {
 throw e;
@@ -1996,7 +2350,7 @@ if ((this.flags & 0x0200) != 0) {
 try {
 r = this.readBytes (2, r, f);
 } catch (e) {
-if (Clazz_exceptionOf (e, JZ.Inflate.Return)) {
+if (Clazz_exceptionOf (e, JU.Inflate.Return)) {
 return e.r;
 } else {
 throw e;
@@ -2009,7 +2363,7 @@ this.mode = 13;
 this.z.msg = "header crc mismatch";
 this.marker = 5;
 break;
-}}this.z.checksum =  new JZ.CRC32 ();
+}}this.z.checksum =  new JU.CRC32 ();
 this.mode = 7;
 break;
 default:
@@ -2017,7 +2371,7 @@ return -2;
 }
 }
 }, "~N");
-$_M(c$, "inflateSetDictionary", 
+Clazz_defineMethod (c$, "inflateSetDictionary", 
 function (dictionary, dictLength) {
 if (this.z == null || (this.mode != 6 && this.wrap != 0)) {
 return -2;
@@ -2037,7 +2391,7 @@ index = dictLength - length;
 this.mode = 7;
 return 0;
 }, "~A,~N");
-$_M(c$, "inflateSync", 
+Clazz_defineMethod (c$, "inflateSync", 
 function () {
 var n;
 var p;
@@ -2052,7 +2406,7 @@ this.marker = 0;
 p = this.z.next_in_index;
 m = this.marker;
 while (n != 0 && m < 4) {
-if (this.z.next_in[p] == JZ.Inflate.mark[m]) {
+if (this.z.next_in[p] == JU.Inflate.mark[m]) {
 m++;
 } else if (this.z.next_in[p] != 0) {
 m = 0;
@@ -2075,19 +2429,19 @@ this.z.total_out = w;
 this.mode = 7;
 return 0;
 });
-$_M(c$, "inflateSyncPoint", 
+Clazz_defineMethod (c$, "inflateSyncPoint", 
 function () {
 if (this.z == null || this.blocks == null) return -2;
 return this.blocks.sync_point ();
 });
-$_M(c$, "readBytes", 
-function (n, r, f) {
+Clazz_defineMethod (c$, "readBytes", 
+ function (n, r, f) {
 if (this.need_bytes == -1) {
 this.need_bytes = n;
 this.need = 0;
 }while (this.need_bytes > 0) {
 if (this.z.avail_in == 0) {
-throw Clazz_innerTypeInstance (JZ.Inflate.Return, this, null, r);
+throw Clazz_innerTypeInstance (JU.Inflate.Return, this, null, r);
 }r = f;
 this.z.avail_in--;
 this.z.total_in++;
@@ -2101,14 +2455,14 @@ this.need &= 0xffffffff;
 }this.need_bytes = -1;
 return r;
 }, "~N,~N,~N");
-$_M(c$, "readString", 
-function (r, f) {
+Clazz_defineMethod (c$, "readString", 
+ function (r, f) {
 if (this.tmp_string == null) {
 this.tmp_string =  new java.io.ByteArrayOutputStream ();
 }var b = 0;
 do {
 if (this.z.avail_in == 0) {
-throw Clazz_innerTypeInstance (JZ.Inflate.Return, this, null, r);
+throw Clazz_innerTypeInstance (JU.Inflate.Return, this, null, r);
 }r = f;
 this.z.avail_in--;
 this.z.total_in++;
@@ -2119,13 +2473,13 @@ this.z.next_in_index++;
 } while (b != 0);
 return r;
 }, "~N,~N");
-$_M(c$, "readBytes", 
-function (r, f) {
+Clazz_defineMethod (c$, "readBytes", 
+ function (r, f) {
 if (this.tmp_string == null) {
 this.tmp_string =  new java.io.ByteArrayOutputStream ();
 }while (this.need > 0) {
 if (this.z.avail_in == 0) {
-throw Clazz_innerTypeInstance (JZ.Inflate.Return, this, null, r);
+throw Clazz_innerTypeInstance (JU.Inflate.Return, this, null, r);
 }r = f;
 this.z.avail_in--;
 this.z.total_in++;
@@ -2136,19 +2490,19 @@ this.need--;
 }
 return r;
 }, "~N,~N");
-$_M(c$, "checksum", 
-function (n, v) {
+Clazz_defineMethod (c$, "checksum", 
+ function (n, v) {
 for (var i = 0; i < n; i++) {
 this.crcbuf[i] = (v & 0xff);
 v >>= 8;
 }
 this.z.checksum.update (this.crcbuf, 0, n);
 }, "~N,~N");
-$_M(c$, "getGZIPHeader", 
+Clazz_defineMethod (c$, "getGZIPHeader", 
 function () {
 return this.gheader;
 });
-$_M(c$, "inParsingHeader", 
+Clazz_defineMethod (c$, "inParsingHeader", 
 function () {
 switch (this.mode) {
 case 14:
@@ -2170,15 +2524,15 @@ return false;
 }
 });
 c$.$Inflate$Return$ = function () {
-Clazz_pu$h ();
+Clazz_pu$h(self.c$);
 c$ = Clazz_decorateAsClass (function () {
 Clazz_prepareCallback (this, arguments);
 this.r = 0;
 Clazz_instantialize (this, arguments);
-}, JZ.Inflate, "Return", Exception);
+}, JU.Inflate, "Return", Exception);
 Clazz_makeConstructor (c$, 
 function (a) {
-Clazz_superConstructor (this, JZ.Inflate.Return, []);
+Clazz_superConstructor (this, JU.Inflate.Return, []);
 this.r = a;
 }, "~N");
 c$ = Clazz_p0p ();
@@ -2221,7 +2575,7 @@ Clazz_defineStatics (c$,
 "FLAGS", 23,
 "mark", [0, 0, 0xff, 0xff]);
 });
-Clazz_declarePackage ("JZ");
+Clazz_declarePackage ("JU");
 c$ = Clazz_decorateAsClass (function () {
 this.hn = null;
 this.v = null;
@@ -2230,9 +2584,9 @@ this.r = null;
 this.u = null;
 this.x = null;
 Clazz_instantialize (this, arguments);
-}, JZ, "InfTree");
-$_M(c$, "huft_build", 
-function (b, bindex, n, s, d, e, t, m, hp, hn, v) {
+}, JU, "InfTree");
+Clazz_defineMethod (c$, "huft_build", 
+ function (b, bindex, n, s, d, e, t, m, hp, hn, v) {
 var a;
 var f;
 var g;
@@ -2360,7 +2714,7 @@ mask = (1 << w) - 1;
 }
 return y != 0 && g != 1 ? -5 : 0;
 }, "~A,~N,~N,~N,~A,~A,~A,~A,~A,~A,~A");
-$_M(c$, "inflate_trees_bits", 
+Clazz_defineMethod (c$, "inflate_trees_bits", 
 function (c, bb, tb, hp, z) {
 var result;
 this.initWorkArea (19);
@@ -2372,13 +2726,13 @@ z.msg = "oversubscribed dynamic bit lengths tree";
 z.msg = "incomplete dynamic bit lengths tree";
 result = -3;
 }return result;
-}, "~A,~A,~A,~A,JZ.ZStream");
-$_M(c$, "inflate_trees_dynamic", 
+}, "~A,~A,~A,~A,JU.ZStream");
+Clazz_defineMethod (c$, "inflate_trees_dynamic", 
 function (nl, nd, c, bl, bd, tl, td, hp, z) {
 var result;
 this.initWorkArea (288);
 this.hn[0] = 0;
-result = this.huft_build (c, 0, nl, 257, JZ.InfTree.cplens, JZ.InfTree.cplext, tl, bl, hp, this.hn, this.v);
+result = this.huft_build (c, 0, nl, 257, JU.InfTree.cplens, JU.InfTree.cplext, tl, bl, hp, this.hn, this.v);
 if (result != 0 || bl[0] == 0) {
 if (result == -3) {
 z.msg = "oversubscribed literal/length tree";
@@ -2387,7 +2741,7 @@ z.msg = "incomplete literal/length tree";
 result = -3;
 }return result;
 }this.initWorkArea (288);
-result = this.huft_build (c, nl, nd, 0, JZ.InfTree.cpdist, JZ.InfTree.cpdext, td, bd, hp, this.hn, this.v);
+result = this.huft_build (c, nl, nd, 0, JU.InfTree.cpdist, JU.InfTree.cpdext, td, bd, hp, this.hn, this.v);
 if (result != 0 || (bd[0] == 0 && nl > 257)) {
 if (result == -3) {
 z.msg = "oversubscribed distance tree";
@@ -2399,17 +2753,17 @@ z.msg = "empty distance tree with lengths";
 result = -3;
 }return result;
 }return 0;
-}, "~N,~N,~A,~A,~A,~A,~A,~A,JZ.ZStream");
-c$.inflate_trees_fixed = $_M(c$, "inflate_trees_fixed", 
+}, "~N,~N,~A,~A,~A,~A,~A,~A,JU.ZStream");
+c$.inflate_trees_fixed = Clazz_defineMethod (c$, "inflate_trees_fixed", 
 function (bl, bd, tl, td, z) {
 bl[0] = 9;
 bd[0] = 5;
-tl[0] = JZ.InfTree.fixed_tl;
-td[0] = JZ.InfTree.fixed_td;
+tl[0] = JU.InfTree.fixed_tl;
+td[0] = JU.InfTree.fixed_td;
 return 0;
-}, "~A,~A,~A,~A,JZ.ZStream");
-$_M(c$, "initWorkArea", 
-function (vsize) {
+}, "~A,~A,~A,~A,JU.ZStream");
+Clazz_defineMethod (c$, "initWorkArea", 
+ function (vsize) {
 if (this.hn == null) {
 this.hn =  Clazz_newIntArray (1, 0);
 this.v =  Clazz_newIntArray (vsize, 0);
@@ -2446,8 +2800,8 @@ Clazz_defineStatics (c$,
 "cpdist", [1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193, 257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577],
 "cpdext", [0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13],
 "BMAX", 15);
-Clazz_declarePackage ("JZ");
-Clazz_load (["JZ.InfTree"], "JZ.InfBlocks", ["JZ.InfCodes"], function () {
+Clazz_declarePackage ("JU");
+Clazz_load (["JU.InfTree"], "JU.InfBlocks", ["JU.InfCodes"], function () {
 c$ = Clazz_decorateAsClass (function () {
 this.mode = 0;
 this.left = 0;
@@ -2475,7 +2829,7 @@ this.check = false;
 this.inftree = null;
 this.z = null;
 Clazz_instantialize (this, arguments);
-}, JZ, "InfBlocks");
+}, JU, "InfBlocks");
 Clazz_prepareFields (c$, function () {
 this.bb =  Clazz_newIntArray (1, 0);
 this.tb =  Clazz_newIntArray (1, 0);
@@ -2483,12 +2837,12 @@ this.bl =  Clazz_newIntArray (1, 0);
 this.bd =  Clazz_newIntArray (1, 0);
 this.tli =  Clazz_newIntArray (1, 0);
 this.tdi =  Clazz_newIntArray (1, 0);
-this.inftree =  new JZ.InfTree ();
+this.inftree =  new JU.InfTree ();
 });
 Clazz_makeConstructor (c$, 
 function (z, w) {
 this.z = z;
-this.codes =  new JZ.InfCodes (this.z, this);
+this.codes =  new JU.InfCodes (this.z, this);
 this.hufts =  Clazz_newIntArray (4320, 0);
 this.window =  Clazz_newByteArray (w, 0);
 this.end = w;
@@ -2498,8 +2852,8 @@ this.mode = 0;
 this.tl = Clazz_newArray(1, null);
 this.td = Clazz_newArray(1, null);
 }this.reset ();
-}, "JZ.ZStream,~N");
-$_M(c$, "reset", 
+}, "JU.ZStream,~N");
+Clazz_defineMethod (c$, "reset", 
 function () {
 if (this.mode == 6) {
 this.codes.free (this.z);
@@ -2510,7 +2864,7 @@ this.read = this.write = 0;
 if (this.check) {
 this.z.checksum.reset ();
 }});
-$_M(c$, "proc", 
+Clazz_defineMethod (c$, "proc", 
 function (r) {
 var t;
 var b;
@@ -2559,7 +2913,7 @@ k -= (t);
 }this.mode = 1;
 break;
 case 1:
-JZ.InfTree.inflate_trees_fixed (this.bl, this.bd, this.tl, this.td, this.z);
+JU.InfTree.inflate_trees_fixed (this.bl, this.bd, this.tl, this.td, this.z);
 this.codes.init (this.bl[0], this.bd[0], this.tl[0], 0, this.td[0], 0);
 {
 b >>>= (3);
@@ -2717,13 +3071,13 @@ return this.inflate_flush (r);
 b |= (this.z.next_in[p++] & 0xff) << k;
 k += 8;
 }
-this.blens[JZ.InfBlocks.border[this.index++]] = b & 7;
+this.blens[JU.InfBlocks.border[this.index++]] = b & 7;
 {
 b >>>= (3);
 k -= (3);
 }}
 while (this.index < 19) {
-this.blens[JZ.InfBlocks.border[this.index++]] = 0;
+this.blens[JU.InfBlocks.border[this.index++]] = 0;
 }
 this.bb[0] = 7;
 t = this.inftree.inflate_trees_bits (this.blens, this.bb, this.tb, this.hufts, this.z);
@@ -2765,8 +3119,8 @@ return this.inflate_flush (r);
 b |= (this.z.next_in[p++] & 0xff) << k;
 k += 8;
 }
-t = this.hufts[(this.tb[0] + (b & JZ.InfBlocks.inflate_mask[t])) * 3 + 1];
-c = this.hufts[(this.tb[0] + (b & JZ.InfBlocks.inflate_mask[t])) * 3 + 2];
+t = this.hufts[(this.tb[0] + (b & JU.InfBlocks.inflate_mask[t])) * 3 + 1];
+c = this.hufts[(this.tb[0] + (b & JU.InfBlocks.inflate_mask[t])) * 3 + 2];
 if (c < 16) {
 b >>>= (t);
 k -= (t);
@@ -2791,7 +3145,7 @@ k += 8;
 }
 b >>>= (t);
 k -= (t);
-j += (b & JZ.InfBlocks.inflate_mask[i]);
+j += (b & JU.InfBlocks.inflate_mask[i]);
 b >>>= (i);
 k -= (i);
 i = this.index;
@@ -2899,22 +3253,22 @@ return this.inflate_flush (r);
 }
 }
 }, "~N");
-$_M(c$, "free", 
+Clazz_defineMethod (c$, "free", 
 function () {
 this.reset ();
 this.window = null;
 this.hufts = null;
 });
-$_M(c$, "set_dictionary", 
+Clazz_defineMethod (c$, "set_dictionary", 
 function (d, start, n) {
 System.arraycopy (d, start, this.window, 0, n);
 this.read = this.write = n;
 }, "~A,~N,~N");
-$_M(c$, "sync_point", 
+Clazz_defineMethod (c$, "sync_point", 
 function () {
 return this.mode == 1 ? 1 : 0;
 });
-$_M(c$, "inflate_flush", 
+Clazz_defineMethod (c$, "inflate_flush", 
 function (r) {
 var n;
 var p;
@@ -2968,7 +3322,7 @@ Clazz_defineStatics (c$,
 "DONE", 8,
 "BAD", 9);
 });
-Clazz_declarePackage ("JZ");
+Clazz_declarePackage ("JU");
 c$ = Clazz_decorateAsClass (function () {
 this.mode = 0;
 this.len = 0;
@@ -2987,13 +3341,13 @@ this.dtree_index = 0;
 this.z = null;
 this.s = null;
 Clazz_instantialize (this, arguments);
-}, JZ, "InfCodes");
+}, JU, "InfCodes");
 Clazz_makeConstructor (c$, 
 function (z, s) {
 this.z = z;
 this.s = s;
-}, "JZ.ZStream,JZ.InfBlocks");
-$_M(c$, "init", 
+}, "JU.ZStream,JU.InfBlocks");
+Clazz_defineMethod (c$, "init", 
 function (bl, bd, tl, tl_index, td, td_index) {
 this.mode = 0;
 this.lbits = bl;
@@ -3004,7 +3358,7 @@ this.dtree = td;
 this.dtree_index = td_index;
 this.tree = null;
 }, "~N,~N,~A,~N,~A,~N");
-$_M(c$, "proc", 
+Clazz_defineMethod (c$, "proc", 
 function (r) {
 var j;
 var tindex;
@@ -3062,7 +3416,7 @@ return this.s.inflate_flush (r);
 b |= (this.z.next_in[p++] & 0xff) << k;
 k += 8;
 }
-tindex = (this.tree_index + (b & JZ.InfCodes.inflate_mask[j])) * 3;
+tindex = (this.tree_index + (b & JU.InfCodes.inflate_mask[j])) * 3;
 b >>>= (this.tree[tindex + 1]);
 k -= (this.tree[tindex + 1]);
 e = this.tree[tindex];
@@ -3108,7 +3462,7 @@ return this.s.inflate_flush (r);
 b |= (this.z.next_in[p++] & 0xff) << k;
 k += 8;
 }
-this.len += (b & JZ.InfCodes.inflate_mask[j]);
+this.len += (b & JU.InfCodes.inflate_mask[j]);
 b >>= j;
 k -= j;
 this.need = this.dbits;
@@ -3131,7 +3485,7 @@ return this.s.inflate_flush (r);
 b |= (this.z.next_in[p++] & 0xff) << k;
 k += 8;
 }
-tindex = (this.tree_index + (b & JZ.InfCodes.inflate_mask[j])) * 3;
+tindex = (this.tree_index + (b & JU.InfCodes.inflate_mask[j])) * 3;
 b >>= this.tree[tindex + 1];
 k -= this.tree[tindex + 1];
 e = (this.tree[tindex]);
@@ -3170,7 +3524,7 @@ return this.s.inflate_flush (r);
 b |= (this.z.next_in[p++] & 0xff) << k;
 k += 8;
 }
-this.dist += (b & JZ.InfCodes.inflate_mask[j]);
+this.dist += (b & JU.InfCodes.inflate_mask[j]);
 b >>= j;
 k -= j;
 this.mode = 5;
@@ -3281,10 +3635,10 @@ return this.s.inflate_flush (r);
 }
 }
 }, "~N");
-$_M(c$, "free", 
+Clazz_defineMethod (c$, "free", 
 function (z) {
-}, "JZ.ZStream");
-$_M(c$, "inflate_fast", 
+}, "JU.ZStream");
+Clazz_defineMethod (c$, "inflate_fast", 
 function (bl, bd, tl, tl_index, td, td_index, s, z) {
 var t;
 var tp;
@@ -3308,8 +3662,8 @@ b = s.bitb;
 k = s.bitk;
 q = s.write;
 m = q < s.read ? s.read - q - 1 : s.end - q;
-ml = JZ.InfCodes.inflate_mask[bl];
-md = JZ.InfCodes.inflate_mask[bd];
+ml = JU.InfCodes.inflate_mask[bl];
+md = JU.InfCodes.inflate_mask[bd];
 do {
 while (k < (20)) {
 n--;
@@ -3331,7 +3685,7 @@ b >>= (tp[tp_index_t_3 + 1]);
 k -= (tp[tp_index_t_3 + 1]);
 if ((e & 16) != 0) {
 e &= 15;
-c = tp[tp_index_t_3 + 2] + (b & JZ.InfCodes.inflate_mask[e]);
+c = tp[tp_index_t_3 + 2] + (b & JU.InfCodes.inflate_mask[e]);
 b >>= e;
 k -= e;
 while (k < (15)) {
@@ -3354,7 +3708,7 @@ n--;
 b |= (z.next_in[p++] & 0xff) << k;
 k += 8;
 }
-d = tp[tp_index_t_3 + 2] + (b & JZ.InfCodes.inflate_mask[e]);
+d = tp[tp_index_t_3 + 2] + (b & JU.InfCodes.inflate_mask[e]);
 b >>= (e);
 k -= (e);
 m -= c;
@@ -3399,7 +3753,7 @@ c = 0;
 }break;
 } else if ((e & 64) == 0) {
 t += tp[tp_index_t_3 + 2];
-t += (b & JZ.InfCodes.inflate_mask[e]);
+t += (b & JU.InfCodes.inflate_mask[e]);
 tp_index_t_3 = (tp_index + t) * 3;
 e = tp[tp_index_t_3];
 } else {
@@ -3420,7 +3774,7 @@ return -3;
 break;
 }if ((e & 64) == 0) {
 t += tp[tp_index_t_3 + 2];
-t += (b & JZ.InfCodes.inflate_mask[e]);
+t += (b & JU.InfCodes.inflate_mask[e]);
 tp_index_t_3 = (tp_index + t) * 3;
 if ((e = tp[tp_index_t_3]) == 0) {
 b >>= (tp[tp_index_t_3 + 1]);
@@ -3469,7 +3823,7 @@ z.total_in += p - z.next_in_index;
 z.next_in_index = p;
 s.write = q;
 return 0;
-}, "~N,~N,~A,~N,~A,~N,JZ.InfBlocks,JZ.ZStream");
+}, "~N,~N,~A,~N,~A,~N,JU.InfBlocks,JU.ZStream");
 Clazz_defineStatics (c$,
 "inflate_mask", [0x00000000, 0x00000001, 0x00000003, 0x00000007, 0x0000000f, 0x0000001f, 0x0000003f, 0x0000007f, 0x000000ff, 0x000001ff, 0x000003ff, 0x000007ff, 0x00000fff, 0x00001fff, 0x00003fff, 0x00007fff, 0x0000ffff],
 "Z_OK", 0,
@@ -3486,650 +3840,408 @@ Clazz_defineStatics (c$,
 "WASH", 7,
 "END", 8,
 "BADCODE", 9);
-Clazz_declarePackage ("java.util.zip");
-Clazz_load (["java.io.FilterInputStream"], "java.util.zip.CheckedInputStream", null, function () {
-c$ = Clazz_decorateAsClass (function () {
-this.cksum = null;
-Clazz_instantialize (this, arguments);
-}, java.util.zip, "CheckedInputStream", java.io.FilterInputStream);
+Clazz_declarePackage ("J.io");
+Clazz_load (["J.api.JmolZipUtilities"], "J.io.JmolUtil", ["java.io.BufferedInputStream", "$.BufferedReader", "java.lang.Character", "java.net.URL", "java.util.Hashtable", "$.StringTokenizer", "JU.LimitedLineReader", "$.Lst", "$.PT", "$.Rdr", "$.SB", "$.ZipTools", "J.adapter.smarter.AtomSetCollection", "J.api.Interface", "J.io.JmolBinary", "JU.Escape", "$.Logger", "JV.FileManager"], function () {
+c$ = Clazz_declareType (J.io, "JmolUtil", null, J.api.JmolZipUtilities);
 Clazz_makeConstructor (c$, 
-function ($in, cksum) {
-Clazz_superConstructor (this, java.util.zip.CheckedInputStream, [$in]);
-this.cksum = cksum;
-}, "java.io.InputStream,JZ.Checksum");
-$_V(c$, "readByteAsInt", 
 function () {
-var b = this.$in.readByteAsInt ();
-if (b != -1) {
-this.cksum.updateByteAsInt (b);
-}return b;
 });
-$_V(c$, "read", 
-function (buf, off, len) {
-len = this.$in.read (buf, off, len);
-if (len != -1) {
-this.cksum.update (buf, off, len);
-}return len;
-}, "~A,~N,~N");
-$_V(c$, "skip", 
-function (n) {
-var buf =  Clazz_newByteArray (512, 0);
-var total = 0;
-while (total < n) {
-var len = n - total;
-len = this.read (buf, 0, len < buf.length ? len : buf.length);
-if (len == -1) {
-return total;
-}total += len;
+c$.checkSpecialData = Clazz_defineMethod (c$, "checkSpecialData", 
+ function (zpt, is, zipDirectory) {
+var isSpartan = false;
+for (var i = 1; i < zipDirectory.length; i++) {
+if (zipDirectory[i].endsWith (".spardir/") || zipDirectory[i].indexOf ("_spartandir") >= 0) {
+isSpartan = true;
+break;
+}}
+if (!isSpartan) return null;
+var data =  new JU.SB ();
+data.append ("Zip File Directory: ").append ("\n").append (JU.Escape.eAS (zipDirectory, true)).append ("\n");
+var fileData =  new java.util.Hashtable ();
+zpt.getAllZipData (is, [], "", "Molecule", fileData);
+var prefix = "|";
+var outputData = fileData.get (prefix + "output");
+if (outputData == null) outputData = fileData.get ((prefix = "|" + zipDirectory[1]) + "output");
+data.append (outputData);
+var files = J.io.JmolUtil.getSpartanFileList (prefix, J.io.JmolUtil.getSpartanDirs (outputData));
+for (var i = 2; i < files.length; i++) {
+var name = files[i];
+if (fileData.containsKey (name)) data.append (fileData.get (name));
+ else data.append (name + "\n");
 }
-return total;
-}, "~N");
-$_M(c$, "getChecksum", 
-function () {
-return this.cksum;
-});
-});
-Clazz_declarePackage ("java.util.zip");
-Clazz_load (["JZ.Inflater"], "java.util.zip.Inflater", null, function () {
-c$ = Clazz_declareType (java.util.zip, "Inflater", JZ.Inflater);
-$_M(c$, "initialize", 
-function (nowrap) {
-return this.init (0, nowrap);
-}, "~B");
-});
-Clazz_declarePackage ("java.util.zip");
-Clazz_load (["java.io.IOException"], "java.util.zip.ZipException", null, function () {
-c$ = Clazz_declareType (java.util.zip, "ZipException", java.io.IOException);
-});
-Clazz_declarePackage ("java.util.zip");
-c$ = Clazz_declareInterface (java.util.zip, "ZipConstants");
-Clazz_defineStatics (c$,
-"LOCSIG", 0x04034b50,
-"EXTSIG", 0x08074b50,
-"CENSIG", 0x02014b50,
-"ENDSIG", 0x06054b50,
-"LOCHDR", 30,
-"EXTHDR", 16,
-"CENHDR", 46,
-"ENDHDR", 22,
-"LOCVER", 4,
-"LOCFLG", 6,
-"LOCHOW", 8,
-"LOCTIM", 10,
-"LOCCRC", 14,
-"LOCSIZ", 18,
-"LOCLEN", 22,
-"LOCNAM", 26,
-"LOCEXT", 28,
-"EXTCRC", 4,
-"EXTSIZ", 8,
-"EXTLEN", 12,
-"CENVEM", 4,
-"CENVER", 6,
-"CENFLG", 8,
-"CENHOW", 10,
-"CENTIM", 12,
-"CENCRC", 16,
-"CENSIZ", 20,
-"CENLEN", 24,
-"CENNAM", 28,
-"CENEXT", 30,
-"CENCOM", 32,
-"CENDSK", 34,
-"CENATT", 36,
-"CENATX", 38,
-"CENOFF", 42,
-"ENDSUB", 8,
-"ENDTOT", 10,
-"ENDSIZ", 12,
-"ENDOFF", 16,
-"ENDCOM", 20);
-Clazz_declarePackage ("java.util.zip");
-Clazz_load (["java.util.zip.ZipConstants"], "java.util.zip.ZipEntry", ["java.lang.IllegalArgumentException", "$.InternalError", "$.NullPointerException", "java.util.Date"], function () {
-c$ = Clazz_decorateAsClass (function () {
-this.offset = 0;
-this.name = null;
-this.time = -1;
-this.crc = -1;
-this.size = -1;
-this.csize = -1;
-this.method = -1;
-this.flag = 0;
-this.extra = null;
-this.comment = null;
-Clazz_instantialize (this, arguments);
-}, java.util.zip, "ZipEntry", null, [java.util.zip.ZipConstants, Cloneable]);
-Clazz_makeConstructor (c$, 
-function (name) {
-if (name == null) {
-throw  new NullPointerException ();
-}if (name.length > 0xFFFF) {
-throw  new IllegalArgumentException ("entry name too long");
-}this.name = name;
-}, "~S");
-$_M(c$, "getName", 
-function () {
-return this.name;
-});
-$_M(c$, "setTime", 
-function (time) {
-this.time = java.util.zip.ZipEntry.javaToDosTime (time);
-}, "~N");
-$_M(c$, "getTime", 
-function () {
-return this.time != -1 ? java.util.zip.ZipEntry.dosToJavaTime (this.time) : -1;
-});
-$_M(c$, "setSize", 
-function (size) {
-if (size < 0) {
-throw  new IllegalArgumentException ("invalid entry size");
-}this.size = size;
-}, "~N");
-$_M(c$, "getSize", 
-function () {
-return this.size;
-});
-$_M(c$, "getCompressedSize", 
-function () {
-return this.csize;
-});
-$_M(c$, "setCompressedSize", 
-function (csize) {
-this.csize = csize;
-}, "~N");
-$_M(c$, "setCrc", 
-function (crc) {
-if (crc < 0 || crc > 0xFFFFFFFF) {
-throw  new IllegalArgumentException ("invalid entry crc-32");
-}this.crc = crc;
-}, "~N");
-$_M(c$, "getCrc", 
-function () {
-return this.crc;
-});
-$_M(c$, "setMethod", 
-function (method) {
-if (method != 0 && method != 8) {
-throw  new IllegalArgumentException ("invalid compression method");
-}this.method = method;
-}, "~N");
-$_M(c$, "getMethod", 
-function () {
-return this.method;
-});
-$_M(c$, "setExtra", 
-function (extra) {
-if (extra != null && extra.length > 0xFFFF) {
-throw  new IllegalArgumentException ("invalid extra field length");
-}this.extra = extra;
+return data;
+}, "javajs.api.GenericZipTools,java.io.InputStream,~A");
+c$.checkSpecialInZip = Clazz_defineMethod (c$, "checkSpecialInZip", 
+function (zipDirectory) {
+var name;
+return (zipDirectory.length < 2 ? null : (name = zipDirectory[1]).endsWith (".spardir/") || zipDirectory.length == 2 ? ["", (name.endsWith ("/") ? name.substring (0, name.length - 1) : name)] : null);
 }, "~A");
-$_M(c$, "getExtra", 
-function () {
-return this.extra;
-});
-$_M(c$, "setComment", 
-function (comment) {
-this.comment = comment;
+c$.getSpartanDirs = Clazz_defineMethod (c$, "getSpartanDirs", 
+ function (outputFileData) {
+if (outputFileData == null) return [];
+var v =  new JU.Lst ();
+var token;
+var lasttoken = "";
+if (!outputFileData.startsWith ("java.io.FileNotFoundException") && !outputFileData.startsWith ("FILE NOT FOUND") && outputFileData.indexOf ("<html") < 0) try {
+var tokens =  new java.util.StringTokenizer (outputFileData, " \t\r\n");
+while (tokens.hasMoreTokens ()) {
+if ((token = tokens.nextToken ()).equals (")")) v.addLast (lasttoken);
+ else if (token.equals ("Start-") && tokens.nextToken ().equals ("Molecule")) v.addLast (JU.PT.split (tokens.nextToken (), "\"")[1]);
+lasttoken = token;
+}
+} catch (e) {
+if (Clazz_exceptionOf (e, Exception)) {
+} else {
+throw e;
+}
+}
+return (v.size () == 0 ? ["M0001"] : v.toArray ( new Array (v.size ())));
 }, "~S");
-$_M(c$, "getComment", 
-function () {
-return this.comment;
-});
-$_M(c$, "isDirectory", 
-function () {
-return this.name.endsWith ("/");
-});
-$_V(c$, "toString", 
-function () {
-return this.getName ();
-});
-c$.dosToJavaTime = $_M(c$, "dosToJavaTime", 
-function (dtime) {
-var d =  new java.util.Date ((((dtime >> 25) & 0x7f) + 80), (((dtime >> 21) & 0x0f) - 1), ((dtime >> 16) & 0x1f), ((dtime >> 11) & 0x1f), ((dtime >> 5) & 0x3f), ((dtime << 1) & 0x3e));
-return d.getTime ();
-}, "~N");
-c$.javaToDosTime = $_M(c$, "javaToDosTime", 
-function (time) {
-var d =  new java.util.Date (time);
-var year = d.getYear () + 1900;
-if (year < 1980) {
-return 2162688;
-}return (year - 1980) << 25 | (d.getMonth () + 1) << 21 | d.getDate () << 16 | d.getHours () << 11 | d.getMinutes () << 5 | d.getSeconds () >> 1;
-}, "~N");
-$_V(c$, "hashCode", 
-function () {
-return this.name.hashCode ();
-});
-$_M(c$, "clone", 
-function () {
-try {
-var e = Clazz_superCall (this, java.util.zip.ZipEntry, "clone", []);
-if (this.extra != null) {
-e.extra =  Clazz_newByteArray (this.extra.length, 0);
-System.arraycopy (this.extra, 0, e.extra, 0, this.extra.length);
-}return e;
-} catch (e) {
-if (Clazz_exceptionOf (e, CloneNotSupportedException)) {
-throw  new InternalError ();
-} else {
-throw e;
+c$.getSpartanFileList = Clazz_defineMethod (c$, "getSpartanFileList", 
+ function (name, dirNums) {
+var files =  new Array (2 + dirNums.length * 5);
+files[0] = "SpartanSmol";
+files[1] = "Directory Entry ";
+var pt = 2;
+name = name.$replace ('\\', '/');
+if (name.endsWith ("/")) name = name.substring (0, name.length - 1);
+var sep = (name.endsWith (".zip") ? "|" : "/");
+for (var i = 0; i < dirNums.length; i++) {
+var path = name + sep;
+path += (Character.isDigit (dirNums[i].charAt (0)) ? "Profile." + dirNums[i] : dirNums[i]) + "/";
+files[pt++] = path + "#JMOL_MODEL " + dirNums[i];
+files[pt++] = path + "input";
+files[pt++] = path + "archive";
+files[pt++] = path + "Molecule:asBinaryString";
+files[pt++] = path + "proparc";
 }
-}
-});
-Clazz_defineStatics (c$,
-"STORED", 0,
-"DEFLATED", 8);
-});
-Clazz_declarePackage ("java.util.zip");
-c$ = Clazz_declareType (java.util.zip, "ZipConstants64");
-Clazz_defineStatics (c$,
-"ZIP64_ENDSIG", 0x06064b50,
-"ZIP64_LOCSIG", 0x07064b50,
-"ZIP64_ENDHDR", 56,
-"ZIP64_LOCHDR", 20,
-"ZIP64_EXTHDR", 24,
-"ZIP64_EXTID", 0x0001,
-"ZIP64_MAGICCOUNT", 0xFFFF,
-"ZIP64_MAGICVAL", 0xFFFFFFFF,
-"ZIP64_ENDLEN", 4,
-"ZIP64_ENDVEM", 12,
-"ZIP64_ENDVER", 14,
-"ZIP64_ENDNMD", 16,
-"ZIP64_ENDDSK", 20,
-"ZIP64_ENDTOD", 24,
-"ZIP64_ENDTOT", 32,
-"ZIP64_ENDSIZ", 40,
-"ZIP64_ENDOFF", 48,
-"ZIP64_ENDEXT", 56,
-"ZIP64_LOCDSK", 4,
-"ZIP64_LOCOFF", 8,
-"ZIP64_LOCTOT", 16,
-"ZIP64_EXTCRC", 4,
-"ZIP64_EXTSIZ", 8,
-"ZIP64_EXTLEN", 16,
-"EFS", 0x800);
-Clazz_declarePackage ("java.util.zip");
-Clazz_load (["java.util.zip.InflaterInputStream", "$.ZipConstants", "$.CRC32"], "java.util.zip.ZipInputStream", ["java.io.EOFException", "$.IOException", "$.PushbackInputStream", "java.lang.IllegalArgumentException", "$.IndexOutOfBoundsException", "$.Long", "$.NullPointerException", "java.util.zip.Inflater", "$.ZipEntry", "$.ZipException"], function () {
-c$ = Clazz_decorateAsClass (function () {
-this.entry = null;
-this.flag = 0;
-this.crc = null;
-this.remaining = 0;
-this.tmpbuf = null;
-this.$closed = false;
-this.entryEOF = false;
-this.zc = null;
-this.byteTest = null;
-this.$b = null;
-Clazz_instantialize (this, arguments);
-}, java.util.zip, "ZipInputStream", java.util.zip.InflaterInputStream, java.util.zip.ZipConstants);
-Clazz_prepareFields (c$, function () {
-this.crc =  new java.util.zip.CRC32 ();
-this.tmpbuf =  Clazz_newByteArray (512, 0);
-this.byteTest = [0x20];
-this.$b =  Clazz_newByteArray (256, 0);
-});
-$_M(c$, "ensureOpen", 
-function () {
-if (this.$closed) {
-throw  new java.io.IOException ("Stream closed");
-}});
-Clazz_makeConstructor (c$, 
-function ($in) {
-Clazz_superConstructor (this, java.util.zip.ZipInputStream, [ new java.io.PushbackInputStream ($in, 1024), java.util.zip.ZipInputStream.newInflater (), 512]);
-var charset = "UTF-8";
-try {
- String.instantialize (this.byteTest, charset);
-} catch (e) {
-if (Clazz_exceptionOf (e, java.io.UnsupportedEncodingException)) {
-throw  new NullPointerException ("charset is invalid");
-} else {
-throw e;
-}
-}
-this.zc = charset;
-}, "java.io.InputStream");
-c$.newInflater = $_M(c$, "newInflater", 
-function () {
-return  new java.util.zip.Inflater ().init (0, true);
-});
-$_M(c$, "getNextEntry", 
-function () {
-this.ensureOpen ();
-if (this.entry != null) {
-this.closeEntry ();
-}this.crc.reset ();
-this.inflater = this.inf = java.util.zip.ZipInputStream.newInflater ();
-if ((this.entry = this.readLOC ()) == null) {
-return null;
-}if (this.entry.method == 0) {
-this.remaining = this.entry.size;
-}this.entryEOF = false;
-return this.entry;
-});
-$_M(c$, "closeEntry", 
-function () {
-this.ensureOpen ();
-while (this.read (this.tmpbuf, 0, this.tmpbuf.length) != -1) {
-}
-this.entryEOF = true;
-});
-$_V(c$, "available", 
-function () {
-this.ensureOpen ();
-return (this.entryEOF ? 0 : 1);
-});
-$_V(c$, "read", 
-function (b, off, len) {
-this.ensureOpen ();
-if (off < 0 || len < 0 || off > b.length - len) {
-throw  new IndexOutOfBoundsException ();
-} else if (len == 0) {
-return 0;
-}if (this.entry == null) {
-return -1;
-}switch (this.entry.method) {
-case 8:
-len = this.readInf (b, off, len);
-if (len == -1) {
-this.readEnd (this.entry);
-this.entryEOF = true;
-this.entry = null;
-} else {
-this.crc.update (b, off, len);
-}return len;
-case 0:
-if (this.remaining <= 0) {
-this.entryEOF = true;
-this.entry = null;
-return -1;
-}if (len > this.remaining) {
-len = this.remaining;
-}len = this.$in.read (b, off, len);
-if (len == -1) {
-throw  new java.util.zip.ZipException ("unexpected EOF");
-}this.crc.update (b, off, len);
-this.remaining -= len;
-if (this.remaining == 0 && this.entry.crc != this.crc.getValue ()) {
-throw  new java.util.zip.ZipException ("invalid entry CRC (expected 0x" + Long.toHexString (this.entry.crc) + " but got 0x" + Long.toHexString (this.crc.getValue ()) + ")");
-}return len;
-default:
-throw  new java.util.zip.ZipException ("invalid compression method");
-}
-}, "~A,~N,~N");
-$_V(c$, "skip", 
-function (n) {
-if (n < 0) {
-throw  new IllegalArgumentException ("negative skip length");
-}this.ensureOpen ();
-var max = Math.min (n, 2147483647);
-var total = 0;
-while (total < max) {
-var len = max - total;
-if (len > this.tmpbuf.length) {
-len = this.tmpbuf.length;
-}len = this.read (this.tmpbuf, 0, len);
-if (len == -1) {
-this.entryEOF = true;
-break;
-}total += len;
-}
-return total;
-}, "~N");
-$_M(c$, "close", 
-function () {
-if (!this.$closed) {
-Clazz_superCall (this, java.util.zip.ZipInputStream, "close", []);
-this.$closed = true;
-}});
-$_M(c$, "readLOC", 
-function () {
-try {
-this.readFully (this.tmpbuf, 0, 30);
-} catch (e) {
-if (Clazz_exceptionOf (e, java.io.EOFException)) {
-return null;
-} else {
-throw e;
-}
-}
-if (java.util.zip.ZipInputStream.get32 (this.tmpbuf, 0) != 67324752) {
-return null;
-}this.flag = java.util.zip.ZipInputStream.get16 (this.tmpbuf, 6);
-var len = java.util.zip.ZipInputStream.get16 (this.tmpbuf, 26);
-var blen = this.$b.length;
-if (len > blen) {
-do blen = blen * 2;
- while (len > blen);
-this.$b =  Clazz_newByteArray (blen, 0);
-}this.readFully (this.$b, 0, len);
-var e = this.createZipEntry (((this.flag & 2048) != 0) ? this.toStringUTF8 (this.$b, len) : this.toStringb2 (this.$b, len));
-if ((this.flag & 1) == 1) {
-throw  new java.util.zip.ZipException ("encrypted ZIP entry not supported");
-}e.method = java.util.zip.ZipInputStream.get16 (this.tmpbuf, 8);
-e.time = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 10);
-if ((this.flag & 8) == 8) {
-if (e.method != 8) {
-throw  new java.util.zip.ZipException ("only DEFLATED entries can have EXT descriptor");
-}} else {
-e.crc = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 14);
-e.csize = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 18);
-e.size = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 22);
-}len = java.util.zip.ZipInputStream.get16 (this.tmpbuf, 28);
-if (len > 0) {
-var bb =  Clazz_newByteArray (len, 0);
-this.readFully (bb, 0, len);
-e.setExtra (bb);
-if (e.csize == 4294967295 || e.size == 4294967295) {
-var off = 0;
-while (off + 4 < len) {
-var sz = java.util.zip.ZipInputStream.get16 (bb, off + 2);
-if (java.util.zip.ZipInputStream.get16 (bb, off) == 1) {
-off += 4;
-if (sz < 16 || (off + sz) > len) {
-return e;
-}e.size = java.util.zip.ZipInputStream.get64 (bb, off);
-e.csize = java.util.zip.ZipInputStream.get64 (bb, off + 8);
-break;
-}off += (sz + 4);
-}
-}}return e;
-});
-$_M(c$, "toStringUTF8", 
-function (b2, len) {
-try {
-return  String.instantialize (b2, 0, len, this.zc);
-} catch (e) {
-if (Clazz_exceptionOf (e, java.io.UnsupportedEncodingException)) {
-return this.toStringb2 (b2, len);
-} else {
-throw e;
-}
-}
-}, "~A,~N");
-$_M(c$, "toStringb2", 
-function (b2, len) {
-return  String.instantialize (b2, 0, len);
-}, "~A,~N");
-$_M(c$, "createZipEntry", 
-function (name) {
-return  new java.util.zip.ZipEntry (name);
+return files;
+}, "~S,~A");
+c$.shortSceneFilename = Clazz_defineMethod (c$, "shortSceneFilename", 
+ function (pathName) {
+var pt = pathName.indexOf ("_scene_") + 7;
+if (pt < 7) return pathName;
+var s = "";
+if (pathName.endsWith ("|state.spt")) {
+var pt1 = pathName.indexOf ('.', pt);
+if (pt1 < 0) return pathName;
+s = pathName.substring (pt, pt1);
+}var pt2 = pathName.lastIndexOf ("|");
+return pathName.substring (0, pt) + s + (pt2 > 0 ? pathName.substring (pt2) : "");
 }, "~S");
-$_M(c$, "readEnd", 
-function (e) {
-var n = this.inf.getAvailIn ();
-if (n > 0) {
-(this.$in).unread (this.buf, this.len - n, n);
-this.eof = false;
-}if ((this.flag & 8) == 8) {
-if (this.inf.getTotalOut () > 4294967295 || this.inf.getTotalIn () > 4294967295) {
-this.readFully (this.tmpbuf, 0, 24);
-var sig = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 0);
-if (sig != 134695760) {
-e.crc = sig;
-e.csize = java.util.zip.ZipInputStream.get64 (this.tmpbuf, 4);
-e.size = java.util.zip.ZipInputStream.get64 (this.tmpbuf, 12);
-(this.$in).unread (this.tmpbuf, 19, 4);
-} else {
-e.crc = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 4);
-e.csize = java.util.zip.ZipInputStream.get64 (this.tmpbuf, 8);
-e.size = java.util.zip.ZipInputStream.get64 (this.tmpbuf, 16);
-}} else {
-this.readFully (this.tmpbuf, 0, 16);
-var sig = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 0);
-if (sig != 134695760) {
-e.crc = sig;
-e.csize = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 4);
-e.size = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 8);
-(this.$in).unread (this.tmpbuf, 11, 4);
-} else {
-e.crc = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 4);
-e.csize = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 8);
-e.size = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 12);
-}}}if (e.size != this.inf.getTotalOut ()) {
-throw  new java.util.zip.ZipException ("invalid entry size (expected " + e.size + " but got " + this.inf.getTotalOut () + " bytes)");
-}if (e.csize != this.inf.getTotalIn ()) {
-throw  new java.util.zip.ZipException ("invalid entry compressed size (expected " + e.csize + " but got " + this.inf.getTotalIn () + " bytes)");
-}if (e.crc != this.crc.getValue ()) {
-throw  new java.util.zip.ZipException ("invalid entry CRC (expected 0x" + Long.toHexString (e.crc) + " but got 0x" + Long.toHexString (this.crc.getValue ()) + ")");
-}}, "java.util.zip.ZipEntry");
-$_M(c$, "readFully", 
-function (b, off, len) {
-while (len > 0) {
-var n = this.$in.read (b, off, len);
-if (n == -1) {
-throw  new java.io.EOFException ();
-}off += n;
-len -= n;
-}
-}, "~A,~N,~N");
-c$.get16 = $_M(c$, "get16", 
-function (b, off) {
-return (b[off] & 0xff) | ((b[off + 1] & 0xff) << 8);
-}, "~A,~N");
-c$.get32 = $_M(c$, "get32", 
-function (b, off) {
-return (java.util.zip.ZipInputStream.get16 (b, off) | (java.util.zip.ZipInputStream.get16 (b, off + 2) << 16)) & 0xffffffff;
-}, "~A,~N");
-c$.get64 = $_M(c$, "get64", 
-function (b, off) {
-return java.util.zip.ZipInputStream.get32 (b, off) | (java.util.zip.ZipInputStream.get32 (b, off + 4) << 32);
-}, "~A,~N");
-Clazz_defineStatics (c$,
-"STORED", 0,
-"DEFLATED", 8);
-});
-Clazz_load (["java.io.FilterInputStream"], "java.io.PushbackInputStream", ["java.io.IOException", "java.lang.IllegalArgumentException", "$.IndexOutOfBoundsException", "$.NullPointerException"], function () {
-c$ = Clazz_decorateAsClass (function () {
-this.buf = null;
-this.pos = 0;
-Clazz_instantialize (this, arguments);
-}, java.io, "PushbackInputStream", java.io.FilterInputStream);
-$_M(c$, "ensureOpen", 
-function () {
-if (this.$in == null) throw  new java.io.IOException ("Stream closed");
-});
-Clazz_makeConstructor (c$, 
-function ($in, size) {
-Clazz_superConstructor (this, java.io.PushbackInputStream, [$in]);
-if (size <= 0) {
-throw  new IllegalArgumentException ("size <= 0");
-}this.buf =  Clazz_newByteArray (size, 0);
-this.pos = size;
-}, "java.io.InputStream,~N");
-$_V(c$, "readByteAsInt", 
-function () {
-this.ensureOpen ();
-if (this.pos < this.buf.length) {
-return this.buf[this.pos++] & 0xff;
-}return this.$in.readByteAsInt ();
-});
-$_V(c$, "read", 
-function (b, off, len) {
-this.ensureOpen ();
-if (b == null) {
-throw  new NullPointerException ();
-} else if (off < 0 || len < 0 || len > b.length - off) {
-throw  new IndexOutOfBoundsException ();
-} else if (len == 0) {
-return 0;
-}var avail = this.buf.length - this.pos;
-if (avail > 0) {
-if (len < avail) {
-avail = len;
-}System.arraycopy (this.buf, this.pos, b, off, avail);
-this.pos += avail;
-off += avail;
-len -= avail;
-}if (len > 0) {
-len = this.$in.read (b, off, len);
-if (len == -1) {
-return avail == 0 ? -1 : avail;
-}return avail + len;
-}return avail;
-}, "~A,~N,~N");
-$_M(c$, "unreadByte", 
-function (b) {
-this.ensureOpen ();
-if (this.pos == 0) {
-throw  new java.io.IOException ("Push back buffer is full");
-}this.buf[--this.pos] = b;
-}, "~N");
-$_M(c$, "unread", 
-function (b, off, len) {
-this.ensureOpen ();
-if (len > this.pos) {
-throw  new java.io.IOException ("Push back buffer is full");
-}this.pos -= len;
-System.arraycopy (b, off, this.buf, this.pos, len);
-}, "~A,~N,~N");
-$_V(c$, "available", 
-function () {
-this.ensureOpen ();
-var n = this.buf.length - this.pos;
-var avail = this.$in.available ();
-return n > (2147483647 - avail) ? 2147483647 : n + avail;
-});
-$_V(c$, "skip", 
-function (n) {
-this.ensureOpen ();
-if (n <= 0) {
-return 0;
-}var pskip = this.buf.length - this.pos;
-if (pskip > 0) {
-if (n < pskip) {
-pskip = n;
-}this.pos += pskip;
-n -= pskip;
-}if (n > 0) {
-pskip += this.$in.skip (n);
-}return pskip;
-}, "~N");
-$_V(c$, "markSupported", 
-function () {
+Clazz_overrideMethod (c$, "cachePngjFile", 
+function (jmb, data) {
+data[0] = JU.Rdr.getZipRoot (data[0]);
+var shortName = J.io.JmolUtil.shortSceneFilename (data[0]);
+try {
+data[1] = JU.Rdr.getJzt ().cacheZipContents (JU.Rdr.getPngZipStream (jmb.fm.getBufferedInputStreamOrErrorMessageFromName (data[0], null, false, false, null, false, true), true), shortName, jmb.pngjCache, false);
+} catch (e) {
+if (Clazz_exceptionOf (e, Exception)) {
 return false;
-});
-$_V(c$, "mark", 
-function (readlimit) {
-}, "~N");
-$_V(c$, "reset", 
-function () {
-throw  new java.io.IOException ("mark/reset not supported");
-});
-$_V(c$, "close", 
-function () {
-if (this.$in == null) return;
-this.$in.close ();
-this.$in = null;
-this.buf = null;
-});
-});
-Clazz_declarePackage ("J.io2");
-Clazz_load (["java.util.zip.ZipInputStream", "javajs.api.ZInputStream"], "J.io2.JmolZipInputStream", null, function () {
-c$ = Clazz_declareType (J.io2, "JmolZipInputStream", java.util.zip.ZipInputStream, javajs.api.ZInputStream);
+} else {
+throw e;
+}
+}
+if (data[1] == null) return false;
+var bytes = data[1].getBytes ();
+jmb.pngjCache.put (jmb.fm.getCanonicalName (data[0]), bytes);
+if (shortName.indexOf ("_scene_") >= 0) {
+jmb.pngjCache.put (J.io.JmolUtil.shortSceneFilename (data[0]), bytes);
+bytes = jmb.pngjCache.remove (shortName + "|state.spt");
+if (bytes != null) jmb.pngjCache.put (J.io.JmolUtil.shortSceneFilename (data[0] + "|state.spt"), bytes);
+}for (var key, $key = jmb.pngjCache.keySet ().iterator (); $key.hasNext () && ((key = $key.next ()) || true);) System.out.println (key);
+
+return true;
+}, "J.io.JmolBinary,~A");
+Clazz_overrideMethod (c$, "determineSurfaceFileType", 
+function (bufferedReader) {
+var line = null;
+var br = null;
+try {
+br =  new JU.LimitedLineReader (bufferedReader, 16000);
+line = br.getHeader (0);
+} catch (e) {
+if (Clazz_exceptionOf (e, Exception)) {
+} else {
+throw e;
+}
+}
+if (br == null || line == null || line.length == 0) return null;
+switch (line.charAt (0)) {
+case '@':
+if (line.indexOf ("@text") == 0) return "Kinemage";
+break;
+case '#':
+if (line.indexOf (".obj") >= 0) return "Obj";
+if (line.indexOf ("MSMS") >= 0) return "Msms";
+break;
+case '&':
+if (line.indexOf ("&plot") == 0) return "Jaguar";
+break;
+case '\r':
+case '\n':
+if (line.indexOf ("ZYX") >= 0) return "Xplor";
+break;
+}
+if (line.indexOf ("Here is your gzipped map") >= 0) return "UPPSALA" + line;
+if (line.startsWith ("4MESHC")) return "Pmesh4";
+if (line.indexOf ("! nspins") >= 0) return "CastepDensity";
+if (line.indexOf ("<jvxl") >= 0 && line.indexOf ("<?xml") >= 0) return "JvxlXml";
+if (line.indexOf ("#JVXL+") >= 0) return "Jvxl+";
+if (line.indexOf ("#JVXL") >= 0) return "Jvxl";
+if (line.indexOf ("<efvet ") >= 0) return "Efvet";
+if (line.indexOf ("usemtl") >= 0) return "Obj";
+if (line.indexOf ("# object with") == 0) return "Nff";
+if (line.indexOf ("BEGIN_DATAGRID_3D") >= 0 || line.indexOf ("BEGIN_BANDGRID_3D") >= 0) return "Xsf";
+var pt0 = line.indexOf ('\0');
+if (pt0 >= 0) {
+if (line.indexOf ("PM\u0001\u0000") == 0) return "Pmesh";
+if (line.indexOf ("\u0014\u0000\u0000\u0000") == 0) return "DelPhi";
+if (line.indexOf ("MAP ") == 208) return "Mrc";
+if (line.length > 37 && (line.charCodeAt (36) == 0 && line.charCodeAt (37) == 100 || line.charCodeAt (36) == 0 && line.charCodeAt (37) == 100)) {
+return "Dsn6";
+}}if (line.indexOf (" 0.00000e+00 0.00000e+00      0      0\n") >= 0) return "Uhbd";
+line = br.readLineWithNewline ();
+if (line.indexOf ("object 1 class gridpositions counts") == 0) return "Apbs";
+var tokens = JU.PT.getTokens (line);
+var line2 = br.readLineWithNewline ();
+if (tokens.length == 2 && JU.PT.parseInt (tokens[0]) == 3 && JU.PT.parseInt (tokens[1]) != -2147483648) {
+tokens = JU.PT.getTokens (line2);
+if (tokens.length == 3 && JU.PT.parseInt (tokens[0]) != -2147483648 && JU.PT.parseInt (tokens[1]) != -2147483648 && JU.PT.parseInt (tokens[2]) != -2147483648) return "PltFormatted";
+}var line3 = br.readLineWithNewline ();
+if (line.startsWith ("v ") && line2.startsWith ("v ") && line3.startsWith ("v ")) return "Obj";
+var nAtoms = JU.PT.parseInt (line3);
+if (nAtoms == -2147483648) return (line3.indexOf ("+") == 0 ? "Jvxl+" : null);
+if (nAtoms >= 0) return (line3.length < 60 ? "Cube" : null);
+nAtoms = -nAtoms;
+for (var i = 4 + nAtoms; --i >= 0; ) if ((line = br.readLineWithNewline ()) == null) return null;
+
+var nSurfaces = JU.PT.parseInt (line);
+if (nSurfaces == -2147483648) return null;
+return (nSurfaces < 0 ? "Jvxl" : "Cube");
+}, "java.io.BufferedReader");
+Clazz_overrideMethod (c$, "getAtomSetCollectionOrBufferedReaderFromZip", 
+function (zpt, adapter, is, fileName, zipDirectory, htParams, subFilePtr, asBufferedReader) {
+var doCombine = (subFilePtr == 1);
+htParams.put ("zipSet", fileName);
+var subFileList = htParams.get ("subFileList");
+if (subFileList == null) subFileList = J.io.JmolUtil.checkSpecialInZip (zipDirectory);
+var subFileName = (subFileList == null || subFilePtr >= subFileList.length ? null : subFileList[subFilePtr]);
+if (subFileName != null && (subFileName.startsWith ("/") || subFileName.startsWith ("\\"))) subFileName = subFileName.substring (1);
+var selectedFile = 0;
+if (subFileName == null && htParams.containsKey ("modelNumber")) {
+selectedFile = (htParams.get ("modelNumber")).intValue ();
+if (selectedFile > 0 && doCombine) htParams.remove ("modelNumber");
+}var manifest = htParams.get ("manifest");
+var useFileManifest = (manifest == null);
+if (useFileManifest) manifest = (zipDirectory.length > 0 ? zipDirectory[0] : "");
+var haveManifest = (manifest.length > 0);
+if (haveManifest) {
+if (JU.Logger.debugging) JU.Logger.debug ("manifest for  " + fileName + ":\n" + manifest);
+}var ignoreErrors = (manifest.indexOf ("IGNORE_ERRORS") >= 0);
+var selectAll = (manifest.indexOf ("IGNORE_MANIFEST") >= 0);
+var exceptFiles = (manifest.indexOf ("EXCEPT_FILES") >= 0);
+if (selectAll || subFileName != null) haveManifest = false;
+if (useFileManifest && haveManifest) {
+var path = J.io.JmolBinary.getManifestScriptPath (manifest);
+if (path != null) return "NOTE: file recognized as a script file: " + fileName + path + "\n";
+}var vCollections =  new JU.Lst ();
+var htCollections = (haveManifest ?  new java.util.Hashtable () : null);
+var nFiles = 0;
+var ret = J.io.JmolUtil.checkSpecialData (zpt, is, zipDirectory);
+if (Clazz_instanceOf (ret, String)) return ret;
+var data = ret;
+try {
+if (data != null) {
+var reader = JU.Rdr.getBR (data.toString ());
+if (asBufferedReader) return reader;
+ret = adapter.getAtomSetCollectionFromReader (fileName, reader, htParams);
+if (Clazz_instanceOf (ret, String)) return ret;
+if (Clazz_instanceOf (ret, J.adapter.smarter.AtomSetCollection)) {
+var atomSetCollection = ret;
+if (atomSetCollection.errorMessage != null) {
+if (ignoreErrors) return null;
+return atomSetCollection.errorMessage;
+}return atomSetCollection;
+}if (ignoreErrors) return null;
+return "unknown reader error";
+}if (Clazz_instanceOf (is, java.io.BufferedInputStream)) is = JU.Rdr.getPngZipStream (is, true);
+var zis = JU.Rdr.newZipInputStream (is);
+var ze;
+if (haveManifest) manifest = '|' + manifest.$replace ('\r', '|').$replace ('\n', '|') + '|';
+while ((ze = zis.getNextEntry ()) != null && (selectedFile <= 0 || vCollections.size () < selectedFile)) {
+if (ze.isDirectory ()) continue;
+var thisEntry = ze.getName ();
+if (subFileName != null && !thisEntry.equals (subFileName)) continue;
+if (subFileName != null) htParams.put ("subFileName", subFileName);
+if (thisEntry.startsWith ("JmolManifest") || haveManifest && exceptFiles == manifest.indexOf ("|" + thisEntry + "|") >= 0) continue;
+var bytes = JU.Rdr.getLimitedStreamBytes (zis, ze.getSize ());
+if (JU.Rdr.isGzipB (bytes)) bytes = JU.Rdr.getLimitedStreamBytes (JU.ZipTools.getUnGzippedInputStream (bytes), -1);
+if (JU.Rdr.isZipB (bytes) || JU.Rdr.isPngZipB (bytes)) {
+var bis = JU.Rdr.getBIS (bytes);
+var zipDir2 = JU.Rdr.getZipDirectoryAndClose (bis, "JmolManifest");
+bis = JU.Rdr.getBIS (bytes);
+var atomSetCollections = this.getAtomSetCollectionOrBufferedReaderFromZip (zpt, adapter, bis, fileName + "|" + thisEntry, zipDir2, htParams, ++subFilePtr, asBufferedReader);
+if (Clazz_instanceOf (atomSetCollections, String)) {
+if (ignoreErrors) continue;
+return atomSetCollections;
+} else if (Clazz_instanceOf (atomSetCollections, J.adapter.smarter.AtomSetCollection) || Clazz_instanceOf (atomSetCollections, JU.Lst)) {
+if (haveManifest && !exceptFiles) htCollections.put (thisEntry, atomSetCollections);
+ else vCollections.addLast (atomSetCollections);
+} else if (Clazz_instanceOf (atomSetCollections, java.io.BufferedReader)) {
+if (doCombine) zis.close ();
+return atomSetCollections;
+} else {
+if (ignoreErrors) continue;
+zis.close ();
+return "unknown zip reader error";
+}} else if (JU.Rdr.isPickleB (bytes)) {
+var bis = JU.Rdr.getBIS (bytes);
+if (doCombine) zis.close ();
+return bis;
+} else {
+var sData;
+if (JU.Rdr.isCompoundDocumentB (bytes)) {
+var jd = J.api.Interface.getInterface ("JU.CompoundDocument");
+jd.setStream (JU.Rdr.getBIS (bytes), true);
+sData = jd.getAllDataFiles ("Molecule", "Input").toString ();
+} else {
+sData = JU.Rdr.fixUTF (bytes);
+}var reader = JU.Rdr.getBR (sData);
+if (asBufferedReader) {
+if (doCombine) zis.close ();
+return reader;
+}var fname = fileName + "|" + ze.getName ();
+ret = adapter.getAtomSetCollectionFromReader (fname, reader, htParams);
+if (!(Clazz_instanceOf (ret, J.adapter.smarter.AtomSetCollection))) {
+if (ignoreErrors) continue;
+zis.close ();
+return "" + ret;
+}if (haveManifest && !exceptFiles) htCollections.put (thisEntry, ret);
+ else vCollections.addLast (ret);
+var a = ret;
+if (a.errorMessage != null) {
+if (ignoreErrors) continue;
+zis.close ();
+return a.errorMessage;
+}}}
+if (doCombine) zis.close ();
+if (haveManifest && !exceptFiles) {
+var list = JU.PT.split (manifest, "|");
+for (var i = 0; i < list.length; i++) {
+var file = list[i];
+if (file.length == 0 || file.indexOf ("#") == 0) continue;
+if (htCollections.containsKey (file)) vCollections.addLast (htCollections.get (file));
+ else if (JU.Logger.debugging) JU.Logger.debug ("manifested file " + file + " was not found in " + fileName);
+}
+}if (!doCombine) return vCollections;
+var result = (vCollections.size () == 1 && Clazz_instanceOf (vCollections.get (0), J.adapter.smarter.AtomSetCollection) ? vCollections.get (0) :  new J.adapter.smarter.AtomSetCollection ("Array", null, null, vCollections));
+if (result.errorMessage != null) {
+if (ignoreErrors) return null;
+return result.errorMessage;
+}if (nFiles == 1) selectedFile = 1;
+if (selectedFile > 0 && selectedFile <= vCollections.size ()) return vCollections.get (selectedFile - 1);
+return result;
+} catch (e$$) {
+if (Clazz_exceptionOf (e$$, Exception)) {
+var e = e$$;
+{
+if (ignoreErrors) return null;
+JU.Logger.error ("" + e);
+return "" + e;
+}
+} else if (Clazz_exceptionOf (e$$, Error)) {
+var er = e$$;
+{
+JU.Logger.errorEx (null, er);
+return "" + er;
+}
+} else {
+throw e$$;
+}
+}
+}, "javajs.api.GenericZipTools,J.api.JmolAdapter,java.io.InputStream,~S,~A,java.util.Map,~N,~B");
+Clazz_overrideMethod (c$, "getCachedPngjBytes", 
+function (jmb, pathName) {
+if (pathName.startsWith ("file:///")) pathName = "file:" + pathName.substring (7);
+JU.Logger.info ("JmolUtil checking PNGJ cache for " + pathName);
+var shortName = J.io.JmolUtil.shortSceneFilename (pathName);
+if (jmb.pngjCache == null && !jmb.clearAndCachePngjFile ([pathName, null])) return null;
+var isMin = (pathName.indexOf (".min.") >= 0);
+if (!isMin) {
+var cName = jmb.fm.getCanonicalName (JU.Rdr.getZipRoot (pathName));
+if (!jmb.pngjCache.containsKey (cName) && !jmb.clearAndCachePngjFile ([pathName, null])) return null;
+if (pathName.indexOf ("|") < 0) shortName = cName;
+}if (jmb.pngjCache.containsKey (shortName)) {
+JU.Logger.info ("FileManager using memory cache " + shortName);
+return jmb.pngjCache.get (shortName);
+}if (!isMin || !jmb.clearAndCachePngjFile ([pathName, null])) return null;
+JU.Logger.info ("FileManager using memory cache " + shortName);
+return jmb.pngjCache.get (shortName);
+}, "J.io.JmolBinary,~S");
+Clazz_overrideMethod (c$, "spartanFileList", 
+function (zpt, name, type) {
+var dirNums = J.io.JmolUtil.getSpartanDirs (type);
+if (dirNums.length == 0 && name.endsWith (".spardir.zip") && type.indexOf (".zip|output") >= 0) {
+var sname = name.$replace ('\\', '/');
+var pt = name.lastIndexOf (".spardir");
+pt = sname.lastIndexOf ("/");
+sname = name + "|" + name.substring (pt + 1, name.length - 4);
+return ["SpartanSmol", sname, sname + "/output"];
+}return J.io.JmolUtil.getSpartanFileList (name, dirNums);
+}, "javajs.api.GenericZipTools,~S,~S");
+Clazz_overrideMethod (c$, "getImage", 
+function (vwr, fullPathNameOrBytes, echoName) {
+var image = null;
+var info = null;
+var apiPlatform = vwr.apiPlatform;
+var createImage = false;
+var fullPathName = "" + fullPathNameOrBytes;
+if (Clazz_instanceOf (fullPathNameOrBytes, String)) {
+if (fullPathName.indexOf ("|") > 0) {
+var ret = vwr.fm.getFileAsBytes (fullPathName, null, true);
+if (!JU.PT.isAB (ret)) return "" + ret;
+image = (vwr.isJS ? ret : apiPlatform.createImage (ret));
+} else if (vwr.isJS) {
+} else if (JV.FileManager.urlTypeIndex (fullPathName) >= 0) {
+try {
+image = apiPlatform.createImage ( new java.net.URL (Clazz_castNullAs ("java.net.URL"), fullPathName, null));
+} catch (e) {
+if (Clazz_exceptionOf (e, Exception)) {
+return "bad URL: " + fullPathName;
+} else {
+throw e;
+}
+}
+} else {
+createImage = true;
+}} else if (vwr.isJS) {
+image = fullPathNameOrBytes;
+} else {
+createImage = true;
+}if (createImage) image = apiPlatform.createImage (fullPathNameOrBytes);
+{
+info = [echoName, fullPathNameOrBytes];
+}try {
+if (!apiPlatform.waitForDisplay (info, image)) return null;
+{
+return null;
+}} catch (e) {
+if (Clazz_exceptionOf (e, Exception)) {
+return e.toString () + " opening " + fullPathName;
+} else {
+throw e;
+}
+}
+}, "JV.Viewer,~O,~S");
+Clazz_defineStatics (c$,
+"DELPHI_BINARY_MAGIC_NUMBER", "\24\0\0\0");
 });
 })(Clazz
+,Clazz.newLongArray
+,Clazz.doubleToByte
 ,Clazz.doubleToInt
+,Clazz.doubleToLong
 ,Clazz.declarePackage
 ,Clazz.instanceOf
 ,Clazz.load
@@ -4163,12 +4275,8 @@ c$ = Clazz_declareType (J.io2, "JmolZipInputStream", java.util.zip.ZipInputStrea
 ,Clazz.implementOf
 ,Clazz.newDoubleArray
 ,Clazz.overrideConstructor
-,Clazz.supportsNativeObject
-,Clazz.extendedObjectMethods
-,Clazz.callingStackTraces
 ,Clazz.clone
 ,Clazz.doubleToShort
-,Clazz.innerFunctions
 ,Clazz.getInheritedLevel
 ,Clazz.getParamsType
 ,Clazz.isAF
@@ -4181,40 +4289,12 @@ c$ = Clazz_declareType (J.io2, "JmolZipInputStream", java.util.zip.ZipInputStrea
 ,Clazz.isAFF
 ,Clazz.isAFFF
 ,Clazz.tryToSearchAndExecute
-,Clazz.newArray
-,Clazz.newBooleanArray
-,Clazz.newByteArray
-,Clazz.newCharArray
-,Clazz.newDoubleArray
-,Clazz.newFloatArray
-,Clazz.newIntArray
-,Clazz.newLongArray
-,Clazz.newShortArray
-,Clazz.prepareCallback
-,Clazz.decorateAsClass
-,Clazz.isClassDefined
-,Clazz.defineEnumConstant
-,Clazz.cloneFinals
+,Clazz.getStackTrace
 ,Clazz.inheritArgs
-,Clazz.pu$h
-,Clazz.declareInterface
-,Clazz.declarePackage
-,Clazz.makeConstructor
-,Clazz.overrideConstructor
-,Clazz.load
+,Clazz.alert
 ,Clazz.defineMethod
-,Clazz.innerTypeInstance
-,Clazz.instanceOf
-,Clazz.p0p
-,Clazz.makeFunction
-,Clazz.superConstructor
-,Clazz.defineStatics
-,Clazz.registerSerializableFields
-,Clazz.declareType
-,Clazz.superCall
 ,Clazz.overrideMethod
 ,Clazz.declareAnonymous
-,Clazz.checkPrivateMethod
-,Clazz.prepareFields
-,Clazz.instantialize
+//,Clazz.checkPrivateMethod
+,Clazz.cloneFinals
 );

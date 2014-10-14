@@ -1,11 +1,15 @@
-define(['lib/pixastic/pixastic'], function( ) {
-	
-	return function( dataObject ) {
+'use strict';
+
+define(['lib/pixastic/pixastic'], function () {
+
+    return {
+        filter: function histogramFilter(dataObject, resolve) {
             var image = new Image();
             image.src = dataObject.get();
-            var hist={};
-            Pixastic.process(image,"colorhistogram",{returnValue:hist});
-            return new DataObject(hist);
-	};
-	
+            var hist = {};
+            Pixastic.process(image, 'colorhistogram', {returnValue: hist});
+            resolve(hist);
+        }
+    };
+
 });

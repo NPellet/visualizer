@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.VolumeFileReader"], "J.jvxl.readers.XsfReader", ["JU.SB", "J.util.Logger"], function () {
+Clazz.load (["J.jvxl.readers.VolumeFileReader"], "J.jvxl.readers.XsfReader", ["JU.SB", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.isBXSF = false;
 Clazz.instantialize (this, arguments);
@@ -8,11 +8,11 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.XsfReader, []);
 });
-$_V(c$, "init2", 
+Clazz.overrideMethod (c$, "init2", 
 function (sg, br) {
 this.init2VFR (sg, br);
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
-$_V(c$, "readParameters", 
+Clazz.overrideMethod (c$, "readParameters", 
 function () {
 this.isAngstroms = false;
 this.params.blockCubeData = true;
@@ -23,7 +23,7 @@ this.isAngstroms = true;
 var beginKey = "BEGIN_DATAGRID_3D";
 this.nSurfaces = 1;
 while (this.readLine () != null && this.line.indexOf (beginKey) < 0) {
-J.util.Logger.info (this.line);
+JU.Logger.info (this.line);
 if (this.line.indexOf ("Fermi Energy:") >= 0) {
 this.isBXSF = true;
 beginKey = "BEGIN_BANDGRID_3D";
@@ -52,17 +52,17 @@ this.voxelCounts[0] = this.voxelCounts[2];
 this.voxelCounts[2] = n;
 this.params.insideOut = !this.params.insideOut;
 }});
-$_V(c$, "gotoData", 
+Clazz.overrideMethod (c$, "gotoData", 
 function (n, nPoints) {
 if (!this.params.blockCubeData) return;
-if (n > 0) J.util.Logger.info ("skipping " + n + " data sets, " + nPoints + " points each");
-if (this.isBXSF) J.util.Logger.info (this.readLine ());
+if (n > 0) JU.Logger.info ("skipping " + n + " data sets, " + nPoints + " points each");
+if (this.isBXSF) JU.Logger.info (this.readLine ());
 for (var i = 0; i < n; i++) this.skipData (nPoints);
 
 }, "~N,~N");
-$_V(c$, "skipData", 
+Clazz.overrideMethod (c$, "skipData", 
 function (nPoints) {
 this.skipDataVFR (nPoints);
-if (this.isBXSF) J.util.Logger.info (this.readLine ());
+if (this.isBXSF) JU.Logger.info (this.readLine ());
 }, "~N");
 });

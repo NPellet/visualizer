@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JSV.source");
-Clazz.load (["JU.List"], "JSV.source.JDXHeader", null, function () {
+Clazz.load (["JU.Lst"], "JSV.source.JDXHeader", null, function () {
 c$ = Clazz.decorateAsClass (function () {
 this.title = "";
 this.jcampdx = "5.01";
@@ -15,49 +15,49 @@ this.headerTable = null;
 Clazz.instantialize (this, arguments);
 }, JSV.source, "JDXHeader");
 Clazz.prepareFields (c$, function () {
-this.headerTable =  new JU.List ();
+this.headerTable =  new JU.Lst ();
 });
-$_M(c$, "setTitle", 
+Clazz.defineMethod (c$, "setTitle", 
 function (title) {
 this.title = title;
 }, "~S");
-$_M(c$, "setJcampdx", 
+Clazz.defineMethod (c$, "setJcampdx", 
 function (versionNum) {
 this.jcampdx = versionNum;
 }, "~S");
-$_M(c$, "setDataType", 
+Clazz.defineMethod (c$, "setDataType", 
 function (dataType) {
 this.dataType = dataType;
 }, "~S");
-$_M(c$, "setDataClass", 
+Clazz.defineMethod (c$, "setDataClass", 
 function (dataClass) {
 this.dataClass = dataClass;
 }, "~S");
-$_M(c$, "setOrigin", 
+Clazz.defineMethod (c$, "setOrigin", 
 function (origin) {
 this.origin = origin;
 }, "~S");
-$_M(c$, "setOwner", 
+Clazz.defineMethod (c$, "setOwner", 
 function (owner) {
 this.owner = owner;
 }, "~S");
-$_M(c$, "setLongDate", 
+Clazz.defineMethod (c$, "setLongDate", 
 function (longDate) {
 this.longDate = longDate;
 }, "~S");
-$_M(c$, "setDate", 
+Clazz.defineMethod (c$, "setDate", 
 function (date) {
 this.date = date;
 }, "~S");
-$_M(c$, "setTime", 
+Clazz.defineMethod (c$, "setTime", 
 function (time) {
 this.time = time;
 }, "~S");
-$_M(c$, "getTitle", 
+Clazz.defineMethod (c$, "getTitle", 
 function () {
 return this.title;
 });
-c$.getTypeName = $_M(c$, "getTypeName", 
+c$.getTypeName = Clazz.defineMethod (c$, "getTypeName", 
 function (type) {
 type = type.toUpperCase ();
 for (var i = 0; i < JSV.source.JDXHeader.typeNames.length; i++) if (JSV.source.JDXHeader.typeNames[i].startsWith (type)) {
@@ -65,51 +65,51 @@ return JSV.source.JDXHeader.typeNames[i].substring (18);
 }
 return type;
 }, "~S");
-$_M(c$, "getQualifiedDataType", 
+Clazz.defineMethod (c$, "getQualifiedDataType", 
 function () {
 return (this.qualifiedType == null ? (this.qualifiedType = JSV.source.JDXHeader.getTypeName (this.dataType)) : this.qualifiedType);
 });
-$_M(c$, "getJcampdx", 
+Clazz.defineMethod (c$, "getJcampdx", 
 function () {
 return this.jcampdx;
 });
-$_M(c$, "getDataType", 
+Clazz.defineMethod (c$, "getDataType", 
 function () {
 return this.dataType;
 });
-$_M(c$, "getOrigin", 
+Clazz.defineMethod (c$, "getOrigin", 
 function () {
 return this.origin;
 });
-$_M(c$, "getOwner", 
+Clazz.defineMethod (c$, "getOwner", 
 function () {
 return this.owner;
 });
-$_M(c$, "getLongDate", 
+Clazz.defineMethod (c$, "getLongDate", 
 function () {
 return this.longDate;
 });
-$_M(c$, "getDate", 
+Clazz.defineMethod (c$, "getDate", 
 function () {
 return this.date;
 });
-$_M(c$, "getTime", 
+Clazz.defineMethod (c$, "getTime", 
 function () {
 return this.time;
 });
-$_M(c$, "getDataClass", 
+Clazz.defineMethod (c$, "getDataClass", 
 function () {
 return this.dataClass;
 });
-$_M(c$, "setHeaderTable", 
+Clazz.defineMethod (c$, "setHeaderTable", 
 function (table) {
 this.headerTable = table;
-}, "JU.List");
-$_M(c$, "getHeaderTable", 
+}, "JU.Lst");
+Clazz.defineMethod (c$, "getHeaderTable", 
 function () {
 return this.headerTable;
 });
-$_M(c$, "getHeaderRowDataAsArray", 
+Clazz.defineMethod (c$, "getHeaderRowDataAsArray", 
 function (addDataClass, nMore) {
 var rowData =  new Array ((addDataClass ? 6 : 5) + this.headerTable.size () + nMore);
 var i = 0;
@@ -119,10 +119,16 @@ rowData[i++] = ["##DATA TYPE", this.dataType];
 if (addDataClass) rowData[i++] = ["##DATA CLASS", this.dataClass];
 rowData[i++] = ["##ORIGIN", this.origin];
 rowData[i++] = ["##OWNER", this.owner];
-for (var j = 0; j < this.headerTable.size (); j++) rowData[i++] = this.headerTable.get (j);
+for (var j = 0; j < this.headerTable.size (); j++) rowData[i++] = this.getRow (j);
 
 return rowData;
 }, "~B,~N");
+Clazz.defineMethod (c$, "getRow", 
+ function (j) {
+var s = this.headerTable.get (j);
+{
+return [s[0], JU.PT.rep(s[1], "<", "&lt;")];
+}}, "~N");
 Clazz.defineStatics (c$,
 "typeNames", ["ND NMR SPECTRUM   NMR", "NMR SPECTRUM      NMR", "INFRARED SPECTRUM IR", "MASS SPECTRUM     MS", "RAMAN SPECTRUM    RAMAN", "GAS CHROMATOGRAM  GC", "UV/VIS SPECTRUM   UV/VIS"]);
 });

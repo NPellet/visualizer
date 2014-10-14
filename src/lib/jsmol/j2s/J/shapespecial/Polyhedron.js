@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shapespecial");
-Clazz.load (null, "J.shapespecial.Polyhedron", ["JU.BS", "J.util.Escape"], function () {
+Clazz.load (null, "J.shapespecial.Polyhedron", ["JU.BS", "JU.Escape"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.modelIndex = 0;
 this.centralAtom = null;
@@ -33,12 +33,12 @@ for (var i = planeCount * 3; --i >= 0; ) this.planes[i] = planes[i];
 this.collapsed = collapsed;
 this.faceCenterOffset = faceCenterOffset;
 this.distanceFactor = distanceFactor;
-}, "J.modelset.Atom,~N,~N,~N,~A,~A,~A,~B,~N,~N");
-$_M(c$, "getState", 
+}, "JM.Atom,~N,~N,~N,~A,~A,~A,~B,~N,~N");
+Clazz.defineMethod (c$, "getState", 
 function () {
 var bs =  new JU.BS ();
-for (var i = 0; i < this.ptCenter; i++) bs.set ((this.vertices[i]).getIndex ());
+for (var i = 0; i < this.ptCenter; i++) bs.set ((this.vertices[i]).i);
 
-return "  polyhedra ({" + this.centralAtom.getIndex () + "}) to " + J.util.Escape.eBS (bs) + (this.collapsed ? " collapsed" : "") + " distanceFactor " + this.distanceFactor + " faceCenterOffset " + this.faceCenterOffset + (this.isFullyLit ? " fullyLit" : "") + ";" + (this.visible ? "" : "polyhedra off;") + "\n";
+return "  polyhedra ({" + this.centralAtom.i + "}) to " + JU.Escape.eBS (bs) + (this.collapsed ? " collapsed" : "") + " distanceFactor " + this.distanceFactor + " faceCenterOffset " + this.faceCenterOffset + (this.isFullyLit ? " fullyLit" : "") + ";" + (this.visible ? "" : "polyhedra off;") + "\n";
 });
 });

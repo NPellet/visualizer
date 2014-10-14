@@ -1,7 +1,7 @@
 
 })();
 
-Clazz.coreLoaded = true;
+Clazz._coreLoaded = true;
 
 
 
