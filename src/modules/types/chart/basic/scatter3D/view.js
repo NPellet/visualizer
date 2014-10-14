@@ -174,7 +174,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         intersects.sort(descSort);
         intersects = _.filter(intersects, function(val){
           return val.distance > CAMERA_NEAR;
-        })
+        });
         intersects = _.map(intersects, function(val){
           return val.index;
         });
@@ -486,9 +486,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       
       self.headlight = new THREE.PointLight ( 0xaaaaaa, 1.5 );
       // self.headlight.position = self.camera.position;
-      self.headlight.position.x = 1000;
-      self.headlight.position.y = 1000;
-      self.headlight.position.z = 1000;
+      self.headlight.position.set(1000, 1000, 1000);
       self.scene.add(self.headlight);
       // ===================================================
       
@@ -497,17 +495,21 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       
       self._mathPoints();
       self._drawPointsQuick();
+
+        self._drawAxes();
+        self._drawFaces();
+        self._drawGrid();
+        self._drawSecondaryGrid();
+        self._drawTicks();
+        self._drawTickLabels();
+        self._drawAxisLabels();
+        self._drawGraphTitle();
+
+
       // self._drawPointsQuick();
       
-      self._drawAxes();
-      self._drawFaces();
-      self._drawGrid();
-      self._drawSecondaryGrid();
-      self._drawTicks();
-      self._drawTickLabels(); 
-      self._drawAxisLabels();
-      self._drawGraphTitle();
-      self._render()
+
+      self._render();
       console.log('end plot points', new Date().getTime()-tstart);
     },
     
@@ -1276,11 +1278,11 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       var phi = Math.PI/4;
       var r = NORM_CONSTANT * ZOOM_START;
       var eye = this._polarToCartesian(theta, phi, r);
-      eye = new THREE.Vector3(eye[0], eye[1], eye[2]);
+
      
       // Lookat the middle of the cube
       var target = new THREE.Vector3(NORM_CONSTANT/2, NORM_CONSTANT/2, NORM_CONSTANT/2);
-      self.camera.position = eye;
+      self.camera.position.set(eye[0], eye[1], eye[2]);
       self.camera.lookAt(target);
     },
     
