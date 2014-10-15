@@ -16,23 +16,26 @@ require.config({
         dragevent:     ['jquery'],
         dropevent:     ['jquery'],
         slickcore:     ['jqueryui', 'components/jquery/jquery-migrate.min'],
-        slickgrid:     ['slickcore', 'dragevent', 'dropevent'],
+        slickgrid:     ['slickcore', 'dragevent', 'dropevent','components/slickgrid/plugins/slick.cellrangedecorator',
+            'components/slickgrid/plugins/slick.cellrangeselector' ,
+            'components/slickgrid/plugins/slick.cellselectionmodel' ,
+            'components/slickgrid/slick.formatters',
+            'components/slickgrid/slick.editors'],
         slickdataview: ['slickgrid'],
-        'components/slickgrid/plugins/slick.cellrangedecorator': ['slickcore'],
-        'components/slickgrid/plugins/slick.cellrangeselector' : ['slickcore'],
-        'components/slickgrid/plugins/slick.cellselectionmodel' : ['slickcore'],
-        'components/slickgrid/slick.formatters' : ['slickcore'],
-        'components/slickgrid/slick.editors' : ['slickcore']
+
     }
 });
 
 
-define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api', 'src/util/typerenderer', 'slickgrid', 'slickdataview', 'components/slickgrid/plugins/slick.cellrangedecorator', 'components/slickgrid/plugins/slick.cellrangeselector',
-    'components/slickgrid/plugins/slick.cellselectionmodel',
-    'components/slickgrid/slick.formatters',
-    'components/slickgrid/slick.editors'], function(require, Default, Util, API, Renderer) {
-    Util.loadCss('./components/slickgrid/slick.grid.css');
+define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api', 'src/util/typerenderer','src/util/datatraversing', 'slickgrid', 'slickdataview'], function(require, Default, Util, API, Renderer, Traversing) {
     function View() {}
+    Util.loadCss('./components/slickgrid/slick.grid.css');
+
+
+    var formatters = {
+        typerenderer: waitingFormatter,
+        'slick.text': Slick.Formatters.Text
+    };
 
     View.prototype = $.extend(true, {}, Default, {
 
@@ -48,7 +51,53 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                 //$('body').append(this.$dom);
             }
 
+
+            this.slick = {};
+            this.colConfig = this.module.getConfiguration('colsjPaths');
             this.resolveReady();
+        },
+
+        getSlickColumns: function() {
+            return this.colConfig.map(function(row) {
+                return {
+                    id: row.name,
+                    name: row.name,
+                    field: row.name.trim(),
+                    width: row.width,
+                    minWidth: row.minWidth || 10,
+                    maxWidth: row.maxWidth,
+                    resizable: !!(row.resizable),
+                    editor: Slick.Editors.Text,
+                    formatter: formatters[row.formatter] || waitingFormatter
+                }
+            });
+        },
+
+        getSlickOptions: function() {
+            var that = this;
+            console.log('slickcheck config', that.module.getConfiguration('slickCheck'));
+            return {
+                editable: that.module.getConfigurationCheckbox('slickCheck', 'editable'),
+                enableAddRow: that.module.getConfigurationCheckbox('slickCheck', 'enableAddRow'),
+                enableCellNavigation: that.module.getConfigurationCheckbox('slickCheck', 'enableCellNavigation'),
+                autoEdit: that.module.getConfigurationCheckbox('slickCheck', 'autoEdit'),
+                asyncEditorLoading: true,
+                enableAsyncPostRender: true,
+                asyncPostRenderDelay: 0
+            };
+        },
+
+        getSlickData: function(value) {
+            var data = [];
+            for(var i=0; i<value.length; i++) {
+                var d;
+                data[i] = (d={});
+                for(var j=0; j<this.colConfig.length; j++) {
+                    d[this.slick.columns[j].field] = value.get(i).getChildSync(this.colConfig[j].jpath);
+                }
+
+            }
+            return data;
         },
 
         inDom: function(){
@@ -58,19 +107,45 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
         },
 
-
-
-        blank: {
-
-        },
-
         update: {
 
             list: function( moduleValue ) {
 
+                var that =  this;
+                console.log('update list', moduleValue);
 
+                console.log('col config', this.colConfig);
+                this.slick.columns = this.getSlickColumns();
+                this.slick.options = this.getSlickOptions();
+                this.slick.data = this.getSlickData(moduleValue);
+
+                console.log('slick data: ', this.slick.data);
+                console.log('slick columns: ', this.slick.columns);
+                console.log('slick options: ', this.slick.options);
+
+                this.grid = new Slick.Grid("#"+this._id, this.slick.data, this.slick.columns, this.slick.options);
+
+                this.grid.setSelectionModel(new Slick.CellSelectionModel());
+
+                this.grid.onAddNewRow.subscribe(function (e, args) {
+                    var item = args.item;
+                    that.grid.invalidateRow(data.length);
+                    data.push(item);
+                    that.grid.updateRowCount();
+                    that.grid.render();
+                });
+
+                this.grid.onMouseEnter.subscribe(function(e) {
+                    var cell = that.grid.getCellFromEvent(e);
+                    console.log('mouse enter cell', cell);
+                });
+
+                this.grid.onCellChange.subscribe(function(e, args) {
+                    console.log('cell changed', e,args);
+                });
             },
             showList: function( value ) {
+                console.log('update showList');
                 if(!(value instanceof Array)) {
                     return;
                 }
@@ -88,23 +163,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
         onResize: function() {
             var that = this;
-            function waitingFormatter(value) {
-                return "wait...";
-            }
 
-            function renderAsync(cellNode, row, dataContext, colDef) {
-                setTimeout(function() {
-                    $(cellNode).empty().html('done');
-                },4000);
-            }
-
-            function requiredFieldValidator(value) {
-                if (value == null || value == undefined || !value.length) {
-                    return {valid: false, msg: "This is a required field"};
-                } else {
-                    return {valid: true, msg: null};
-                }
-            }
 
             var grid;
             var data = [];
@@ -139,26 +198,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                     d["effortDriven"] = (i % 5 == 0);
                 }
 
-                grid = new Slick.Grid("#"+this._id, data, columns, options);
 
-                grid.setSelectionModel(new Slick.CellSelectionModel());
-
-                grid.onAddNewRow.subscribe(function (e, args) {
-                    var item = args.item;
-                    grid.invalidateRow(data.length);
-                    data.push(item);
-                    grid.updateRowCount();
-                    grid.render();
-                });
-
-                grid.onMouseEnter.subscribe(function(e) {
-                    var cell = grid.getCellFromEvent(e);
-                    console.log('mouse enter cell', cell);
-                });
-
-                grid.onCellChange.subscribe(function(e, args) {
-                    console.log('cell changed', e,args);
-                });
         }
 
 
@@ -171,6 +211,24 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
         console.log(sheets.length);
         for (var i = 0; i < sheets.length; i++) {
             console.log(sheets[i]);
+        }
+    }
+
+    function waitingFormatter(value) {
+        return "wait...";
+    }
+
+    function renderAsync(cellNode, row, dataContext, colDef) {
+        setTimeout(function() {
+            $(cellNode).empty().html('done');
+        },4000);
+    }
+
+    function requiredFieldValidator(value) {
+        if (value == null || value == undefined || !value.length) {
+            return {valid: false, msg: "This is a required field"};
+        } else {
+            return {valid: true, msg: null};
         }
     }
     return View;
