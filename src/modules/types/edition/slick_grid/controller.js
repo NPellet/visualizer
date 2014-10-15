@@ -88,7 +88,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
                             type: 'combo',
                             title: 'Editor',
                             default: 'none',
-                            options: [{key: 'none', title: 'None'}, {key: 'text', title: 'Text'}, {key: 'checkbox', title: 'Checkbox'}]
+                            options: [{key: 'none', title: 'None'}, {key: 'auto', title: 'Auto'}, {key: 'slick.text', title: 'Text'}, {key: 'slick.checkbox', title: 'Checkbox'}]
                         },
 
                         formatter: {
