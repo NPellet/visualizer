@@ -21,7 +21,7 @@ require.config({
             'components/slickgrid/plugins/slick.cellselectionmodel' ,
             'components/slickgrid/slick.formatters',
             'components/slickgrid/slick.editors'],
-        slickdataview: ['slickgrid'],
+        slickdataview: ['slickgrid']
 
     }
 });
@@ -58,6 +58,8 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
         },
 
         getSlickColumns: function() {
+            var that = this;
+            var tp = $.proxy(typeRenderer, this);
             return this.colConfig.map(function(row) {
                 return {
                     id: row.name,
@@ -68,7 +70,8 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                     maxWidth: row.maxWidth,
                     resizable: !!(row.resizable),
                     editor: Slick.Editors.Text,
-                    formatter: formatters[row.formatter] || waitingFormatter
+                    formatter: formatters[row.formatter],
+                    asyncPostRender: (row.formatter === 'typerenderer') ? tp : undefined
                 }
             });
         },
@@ -87,15 +90,25 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
             };
         },
 
-        getSlickData: function(value) {
-            var data = [];
-            for(var i=0; i<value.length; i++) {
-                var d;
-                data[i] = (d={});
-                for(var j=0; j<this.colConfig.length; j++) {
-                    d[this.slick.columns[j].field] = value.get(i).getChildSync(this.colConfig[j].jpath);
-                }
+        getSlickData: function(value, idx) {
+            var data;
+            if(idx == undefined) {
+                data = [];
+                for(var i=0; i<value.length; i++) {
+                    var d;
+                    data[i] = (d={});
+                    for(var j=0; j<this.colConfig.length; j++) {
+                        d[this.slick.columns[j].field] = value.get(i).getChildSync(this.colConfig[j].jpath);
+                    }
 
+                }
+            }
+            else {
+                var d;
+                data = d = {};
+                for(var j=0; j<this.colConfig.length; j++) {
+                    d[this.slick.columns[j].field] = value.get(idx).getChildSync(this.colConfig[j].jpath);
+                }
             }
             return data;
         },
@@ -112,16 +125,28 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
             list: function( moduleValue ) {
 
                 var that =  this;
-                console.log('update list', moduleValue);
+                var l = moduleValue.get().length;
+                this.module.model.data = moduleValue;
 
                 console.log('col config', this.colConfig);
                 this.slick.columns = this.getSlickColumns();
                 this.slick.options = this.getSlickOptions();
                 this.slick.data = this.getSlickData(moduleValue);
 
-                console.log('slick data: ', this.slick.data);
-                console.log('slick columns: ', this.slick.columns);
-                console.log('slick options: ', this.slick.options);
+                console.log('update list in slickgrid');
+                for(var i=0; i< l; i++) {
+                    (function(j) {
+                        that.module.model.dataListenChange( that.module.model.data.get( j ), function() {
+                            var item = that.grid.getDataItem(j);
+                            console.log('An element changed...', item);
+                            console.log(that.module.model.data.get(j));
+                            item = that.getSlickData(that.module.model.data, j);
+                            that.grid.invalidateRow(j);
+                            that.grid.render();
+                        }, 'list');
+                    })(i);
+                }
+
 
                 this.grid = new Slick.Grid("#"+this._id, this.slick.data, this.slick.columns, this.slick.options);
 
@@ -142,6 +167,9 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
                 this.grid.onCellChange.subscribe(function(e, args) {
                     console.log('cell changed', e,args);
+                    var row = args.row;
+                    var cell = args.cell;
+                    that.module.model.data.get(row).setChild(that.colConfig[cell].jpath, args.item[that.slick.columns[cell].field]);
                 });
             },
             showList: function( value ) {
@@ -231,6 +259,15 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
             return {valid: true, msg: null};
         }
     }
+
+    function typeRenderer(cellNode, row, dataContext, colDef) {
+        var def = Renderer.toScreen(dataContext[colDef.field]);
+
+        def.always(function(value) {
+            $(cellNode).html(value);
+        });
+    }
+
     return View;
 
 });
