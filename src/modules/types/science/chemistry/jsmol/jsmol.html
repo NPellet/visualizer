@@ -1,8 +1,7 @@
-
 <!doctype html>
 <html>
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <title></title>
 
     <script type="text/javascript" language="javascript" src="../../../../../components/jquery/jquery.min.js"></script>
@@ -18,24 +17,20 @@
 
 <script type="text/javascript">
 
-    console.warn("JSMOL Called");
-
     var jsmolApplet;
-    var deferred=$.Deferred();
-    var Jmol ;
-    var self=this;
+    var deferred = $.Deferred();
+    var self = window;
 
-    this.setController = function(controller) {
-        this.controller = controller ;
+    window.setController = function (controller) {
+        this.controller = controller;
     };
 
 
-    this.setInDom = function(inDom,JmolIn){
-        this.inDom = inDom ;
-        Jmol = JmolIn ;
-    }
+    window.setInDom = function (inDom) {
+        this.inDom = inDom;
+    };
 
-    this.setInDom = function(a){
+    window.setInDom = function () {
         var useSignedApplet = false, self = this;
         var info = {
             width: window.innerWidth,
@@ -54,11 +49,11 @@
             disableJ2SLoadMonitor: true,
             disableInitialConsole: true,
 
-            readyFunction: function() {
-                deferred.done(function() {
+            readyFunction: function () {
+                deferred.done(function () {
                     self.view.resolveReady();
                 });
-                
+
             },
             allowjavascript: true,
             script: "set antialiasDisplay"
@@ -72,21 +67,20 @@
         Jmol._XhtmlElement = $('#appletContainer').get(0);
         Jmol._XhtmlAppendChild = true;
         this.applet = Jmol.getApplet("appletContainer", info);
+    };
 
-    }
-
-    this.setView = function(view) {
+    window.setView = function (view) {
         this.view = view;
         deferred.resolve();
-    }
+    };
 
-    this.executeScript = function(actions){
-        if(this.applet)
+    window.executeScript = function (actions) {
+        if (this.applet)
             Jmol.script(this.applet, actions.join('\r\n'));
     };
 
-    this.setMolFile = function(data) {
-        if(!data)
+    window.setMolFile = function (data) {
+        if (!data)
             return;
         data = data.get();
         var actions = [];
@@ -94,36 +88,35 @@
         actions.push(data);
         actions.push("end 'model';");
         this.executeScript(actions);
-    }
+    };
 
-    this.setSize = function(w, h) {
-        Jmol.resizeApplet(this.applet, [w ,h ]);
-    }
+    window.setSize = function (w, h) {
+        Jmol.resizeApplet(this.applet, [w , h ]);
+    };
 
-    this.clear = function() {
+    window.clear = function () {
         this.applet.reset();
-    }
+    };
 
-
-// TODO !!!!
-    this.setHighlight = function(atoms, onOff) { 
-        var molIndex=1;
-        if(!onOff) {
+    // TODO !!!!
+    window.setHighlight = function (atoms, onOff) {
+        var molIndex = 1;
+        if (!onOff) {
             jsmeApplet.resetAtomColors(1);
         } else {
-            var highlight=[];
-            for (var i=0; i<atoms.length; i++) {
-                highlight.push(atoms[i]+1);
+            var highlight = [];
+            for (var i = 0; i < atoms.length; i++) {
+                highlight.push(atoms[i] + 1);
                 highlight.push(3);
             }
-            jsmeApplet.setAtomBackgroundColors(molIndex,highlight.join(","))
+            jsmeApplet.setAtomBackgroundColors(molIndex, highlight.join(","))
         }
-    }
-// TODO !!!!
-    this.clearHighlight = function(molIndex, atomsIndex) {
-        jsmeApplet.resetAtomColors(molIndex);
-    }
+    };
 
+    // TODO !!!!
+    window.clearHighlight = function (molIndex, atomsIndex) {
+        jsmeApplet.resetAtomColors(molIndex);
+    };
 
 </script>
 </body>
