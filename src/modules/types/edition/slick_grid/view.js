@@ -88,6 +88,16 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
         onResize: function() {
             var that = this;
+            function waitingFormatter(value) {
+                return "wait...";
+            }
+
+            function renderAsync(cellNode, row, dataContext, colDef) {
+                setTimeout(function() {
+                    $(cellNode).empty().html('done');
+                },4000);
+            }
+
             function requiredFieldValidator(value) {
                 if (value == null || value == undefined || !value.length) {
                     return {valid: false, msg: "This is a required field"};
@@ -105,17 +115,19 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                 {id: "%", name: "% Complete", field: "percentComplete", width: 80, resizable: false, formatter: Slick.Formatters.PercentCompleteBar, editor: Slick.Editors.PercentComplete},
                 {id: "start", name: "Start", field: "start", minWidth: 60, editor: Slick.Editors.Date},
                 {id: "finish", name: "Finish", field: "finish", minWidth: 60, editor: Slick.Editors.Date},
-                {id: "effort-driven", name: "Effort Driven", width: 80, minWidth: 20, maxWidth: 80, cssClass: "cell-effort-driven", field: "effortDriven", formatter: Slick.Formatters.YesNo, editor: Slick.Editors.Checkbox}
+                {id: "effort-driven", name: "Effort Driven", width: 80, minWidth: 20, maxWidth: 80, cssClass: "cell-effort-driven", field: "effortDriven", formatter: waitingFormatter, rerenderOnResize: true, asyncPostRender: renderAsync, editor: Slick.Editors.Checkbox}
             ];
             var options = {
                 editable: true,
                 enableAddRow: true,
                 enableCellNavigation: true,
-                asyncEditorLoading: false,
-                autoEdit: false
+                asyncEditorLoading: true,
+                enableAsyncPostRender: true,
+                autoEdit: false,
+                asyncPostRenderDelay: 0
             };
 
-                for (var i = 0; i < 500; i++) {
+                for (var i = 0; i < 10; i++) {
                     var d = (data[i] = {});
 
                     d["title"] = "Task " + i;
@@ -139,7 +151,14 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                     grid.render();
                 });
 
+                grid.onMouseEnter.subscribe(function(e) {
+                    var cell = grid.getCellFromEvent(e);
+                    console.log('mouse enter cell', cell);
+                });
 
+                grid.onCellChange.subscribe(function(e, args) {
+                    console.log('cell changed', e,args);
+                });
         }
 
 

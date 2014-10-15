@@ -1,13 +1,13 @@
-define(['modules/types/display/jqgrid/controller'], function(controller) {
+define(['modules/default/defaultcontroller'], function(Default) {
 
-	var controllerExtended = function() {};
+	var controller = function() {};
 
-	controllerExtended.prototype = new controller();
+    controller.prototype = $.extend(true, {}, Default);
 
 	/*
 		Information about the module
 	*/
-	controllerExtended.prototype.moduleInformation = {
+	controller.prototype.moduleInformation = {
 		moduleName: 'Slick Grid',
 		description: 'Table editor based on SlickGrid',
 		author: 'Daniel Kostro',
@@ -15,12 +15,91 @@ define(['modules/types/display/jqgrid/controller'], function(controller) {
 		license: 'MIT',
 		cssClass: 'slickgrid'
 	};
-	
-	controller.prototype.references.showList = {
-		label: 'Array of display flags',
-		type: 'array'
-	};
-	
-	controller.prototype.variablesIn.push("showList");
-	return controllerExtended;
+
+controller.prototype.configurationStructure = function(section) {
+
+    var jpaths = this.module.model.getjPath('row', false );
+
+
+    return {
+        groups: {
+
+            group: {
+                options: {
+                    type: 'list',
+                    multiple: false
+                },
+
+                fields: {
+
+                    toggle: {
+                        type: 'combo',
+                        title: 'Line toggling',
+                        options: [{key: "0", title: "No"}, {key: "single", title:"Single row"}, {key: "multiple", title:"Multiple rows"}]
+                    },
+
+                    colorjpath: {
+                        type: 'combo',
+                        title: 'Color jPath',
+                        options: jpaths
+                    },
+
+                    filterRow: {
+                        type: 'jscode',
+                        title: 'Filter'
+                    }
+
+                }
+            },
+
+            cols: {
+                options: {
+                    type: 'table',
+                    multiple: true,
+                    title: 'Columns'
+                },
+
+                fields: {
+
+                    name: {
+                        type: 'text',
+                        title: 'Columns title'
+                    },
+
+                    jpath: {
+                        type: 'combo',
+                        title: 'jPath',
+                        options: jpaths
+                    },
+
+                    number: {
+                        type: 'checkbox',
+                        title: 'Number ?',
+                        options: {number: 'Yes'}
+                    },
+
+                    editable: {
+                        type: 'combo',
+                        title: 'Editable',
+                        default: 'none',
+                        options: [{key: 'none', title: 'No'}, {key: 'text', title: 'Text'}, {key: 'checkbox', title: 'Checkbox'}, {key: 'select', title: 'Combo'}]
+                    },
+
+                    options: {
+                        type: 'text',
+                        title: 'Options (; separated)'
+                    },
+
+                    width: {
+                        type: 'text',
+                        title: 'Width'
+                    }
+                }
+            }
+        }
+    }
+};
+
+
+	return controller;
 });
