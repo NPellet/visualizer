@@ -90,27 +90,27 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
             };
         },
 
-        getSlickData: function(value, idx) {
+        getSlickData: function(value) {
             var data;
-            if(idx == undefined) {
-                data = [];
-                for(var i=0; i<value.length; i++) {
-                    var d;
-                    data[i] = (d={});
-                    for(var j=0; j<this.colConfig.length; j++) {
-                        d[this.slick.columns[j].field] = value.get(i).getChildSync(this.colConfig[j].jpath);
-                    }
-
-                }
-            }
-            else {
+            data = [];
+            for(var i=0; i<value.length; i++) {
                 var d;
-                data = d = {};
+                data[i] = (d={});
                 for(var j=0; j<this.colConfig.length; j++) {
-                    d[this.slick.columns[j].field] = value.get(idx).getChildSync(this.colConfig[j].jpath);
+                    d[this.slick.columns[j].field] = value.get(i).getChildSync(this.colConfig[j].jpath);
                 }
+
             }
             return data;
+        },
+
+        updateSlickItem: function(value, idx, item) {
+            var d;
+            data = d = {};
+            for(var j=0; j<this.colConfig.length; j++) {
+                item[this.slick.columns[j].field] = value.get(idx).getChildSync(this.colConfig[j].jpath);
+            }
+            return d;
         },
 
         inDom: function(){
@@ -138,9 +138,8 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                     (function(j) {
                         that.module.model.dataListenChange( that.module.model.data.get( j ), function() {
                             var item = that.grid.getDataItem(j);
-                            console.log('An element changed...', item);
-                            console.log(that.module.model.data.get(j));
                             item = that.getSlickData(that.module.model.data, j);
+                            console.log('item changed', item);
                             that.grid.invalidateRow(j);
                             that.grid.render();
                         }, 'list');
@@ -154,10 +153,10 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
                 this.grid.onAddNewRow.subscribe(function (e, args) {
                     var item = args.item;
-                    that.grid.invalidateRow(data.length);
-                    data.push(item);
-                    that.grid.updateRowCount();
-                    that.grid.render();
+                    //that.grid.invalidateRow(data.length);
+                    //data.push(item);
+                    //that.grid.updateRowCount();
+                    //that.grid.render();
                 });
 
                 this.grid.onMouseEnter.subscribe(function(e) {
@@ -169,7 +168,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                     console.log('cell changed', e,args);
                     var row = args.row;
                     var cell = args.cell;
-                    that.module.model.data.get(row).setChild(that.colConfig[cell].jpath, args.item[that.slick.columns[cell].field]);
+                    that.module.model.dataSetChild(that.module.model.data.get(row), that.colConfig[cell].jpath, args.item[that.slick.columns[cell].field]);
                 });
             },
             showList: function( value ) {
@@ -214,17 +213,17 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                 asyncPostRenderDelay: 0
             };
 
-                for (var i = 0; i < 10; i++) {
-                    var d = (data[i] = {});
+            for (var i = 0; i < 10; i++) {
+                var d = (data[i] = {});
 
-                    d["title"] = "Task " + i;
-                    d["description"] = "This is a sample task description.\n  It can be multiline";
-                    d["duration"] = "5 days";
-                    d["percentComplete"] = Math.round(Math.random() * 100);
-                    d["start"] = "01/01/2009";
-                    d["finish"] = "01/05/2009";
-                    d["effortDriven"] = (i % 5 == 0);
-                }
+                d["title"] = "Task " + i;
+                d["description"] = "This is a sample task description.\n  It can be multiline";
+                d["duration"] = "5 days";
+                d["percentComplete"] = Math.round(Math.random() * 100);
+                d["start"] = "01/01/2009";
+                d["finish"] = "01/05/2009";
+                d["effortDriven"] = (i % 5 == 0);
+            }
 
 
         }
