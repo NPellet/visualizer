@@ -13,7 +13,7 @@
 }
 
 .ci-module-slickgrid li {
-    background: url("../images/arrow_right_spearmint.png") no-repeat center left;
+    background: url("../../../../components/slickgrid/images/arrow_right_spearmint.png") no-repeat center left;
     padding: 0 0 0 14px;
 
     list-style: none;
@@ -30,7 +30,7 @@
     border: 1px solid gray;
     border-bottom: 0;
     border-top: 0;
-    background: url('../images/header-bg.gif') repeat-x center top;
+    background: url('../../../../components/slickgrid/images/header-bg.gif') repeat-x center top;
     color: black;
     height: 24px;
     line-height: 24px;
@@ -152,7 +152,7 @@
     display: inline-block;
     width: 16px;
     height: 100%;
-    background: url("../images/pencil.gif") no-repeat center center;
+    background: url("../../../../components/slickgrid/images/pencil.gif") no-repeat center center;
     overflow: visible;
     z-index: 1000;
     float: right;
@@ -163,7 +163,7 @@
     position: absolute;
     top: -2px;
     left: -9px;
-    background: url("../images/editor-helper-bg.gif") no-repeat top left;
+    background: url("../../../../components/slickgrid/images/editor-helper-bg.gif") no-repeat top left;
     padding-left: 9px;
 
     width: 120px;
@@ -173,7 +173,7 @@
 }
 
 .ci-module-slickgrid .editor-percentcomplete-wrapper {
-    background: beige;
+    background: white;
     padding: 20px 8px;
 
     width: 100%;
