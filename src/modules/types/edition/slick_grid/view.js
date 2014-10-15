@@ -126,7 +126,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
                 var that =  this;
                 var l = moduleValue.get().length;
-                this.module.model.data = moduleValue;
+                this.module.data = moduleValue;
 
                 console.log('col config', this.colConfig);
                 this.slick.columns = this.getSlickColumns();
@@ -136,9 +136,9 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                 console.log('update list in slickgrid');
                 for(var i=0; i< l; i++) {
                     (function(j) {
-                        that.module.model.dataListenChange( that.module.model.data.get( j ), function() {
+                        that.module.model.dataListenChange( that.module.data.get( j ), function() {
                             var item = that.grid.getDataItem(j);
-                            item = that.getSlickData(that.module.model.data, j);
+                            item = that.getSlickData(that.module.data, j);
                             console.log('item changed', item);
                             that.grid.invalidateRow(j);
                             that.grid.render();
@@ -168,7 +168,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                     console.log('cell changed', e,args);
                     var row = args.row;
                     var cell = args.cell;
-                    that.module.model.dataSetChild(that.module.model.data.get(row), that.colConfig[cell].jpath, args.item[that.slick.columns[cell].field]);
+                    that.module.model.dataSetChild(that.module.data.get(row), that.colConfig[cell].jpath, args.item[that.slick.columns[cell].field]);
                 });
             },
             showList: function( value ) {
