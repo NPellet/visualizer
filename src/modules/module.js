@@ -14,7 +14,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug, Variables ) {
 
 	function init( module ) {
 		//define object properties
-		var moduleURL = module.definition.getChildSync('url', true).get(),
+		var moduleURL = module.definition.getChildSync(['url'], true).get(),
 			ext = '';
 
 		if( moduleURL.toString ) {

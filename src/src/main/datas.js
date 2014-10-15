@@ -418,9 +418,10 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 	var getChildSync = {
 		value: function(jpath, setParents) {
 
-			if( ! Array.isArray( jpath ) ) {
-				jpath = [ jpath ];
-			}
+            if (typeof jpath === 'string') { // Old version
+                jpath = jpath.split('.');
+                jpath.shift();
+            }
 
 			if (!jpath) {
 				return;

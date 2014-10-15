@@ -67,7 +67,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 
 	function addModule( module ) {
 		
-		module.setLayers( definition.getChildSync('layers', true), true );
+		module.setLayers( definition.getChildSync(['layers'], true), true );
 	
 		module.ready.then( function( ) {
 

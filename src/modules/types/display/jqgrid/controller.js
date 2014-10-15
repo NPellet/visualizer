@@ -210,7 +210,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 
 	controller.prototype.configFunctions = {
 		'colsjPaths': function(cfg) { return cfg || [] }
-	},
+	};
 
 
 

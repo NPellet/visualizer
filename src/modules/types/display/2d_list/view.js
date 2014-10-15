@@ -82,7 +82,7 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer', 'src/util/api' 
 				
 				for( ; i < l ; i ++ ) {
 
-					td = this.renderElement( view.list.getChildSync( i ), cols );
+					td = this.renderElement( view.list.getChildSync( [i] ), cols );
 					colId = done % cols;
 
 					if( colId === 0 ) {

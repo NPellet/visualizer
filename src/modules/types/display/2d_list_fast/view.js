@@ -69,7 +69,7 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer', 'src/util/api' 
 				
 				for( ; i < l ; i ++ ) {
 
-					dataDivs[i] = this.renderElement( view.list.getChildSync( i ), dimensions, colorJpath, valJpath ).appendTo(view.dom);
+					dataDivs[i] = this.renderElement( view.list.getChildSync( [i] ), dimensions, colorJpath, valJpath ).appendTo(view.dom);
 					
 				}
 				

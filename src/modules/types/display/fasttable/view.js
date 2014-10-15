@@ -189,7 +189,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 				for( i = 0 ; i < l ; i ++ ) {
 
-					html += this.buildElement( moduleValue.getChildSync( i ), i );
+					html += this.buildElement( moduleValue.getChildSync( [i] ), i );
 				}
 
 				this.domBody.html( html );
