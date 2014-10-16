@@ -4,11 +4,9 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <title></title>
 
-    <script type="text/javascript" language="javascript" src="../../../../../components/jquery/jquery.min.js"></script>
-    <script type="text/javascript" language="javascript" src="../../../../../lib/jsmol/JSmol.min.nojq.js"></script>
-    <!--
-    <script type="text/javascript" language="javascript" src="./libs/jsme/jsme.nocache.js"></script>
-    -->
+    <script type="text/javascript" language="javascript" src="./lib/jquery.min.js"></script>
+    <script type="text/javascript" language="javascript" src="./lib/JSmol.min.nojq.js"></script>
+
 
 </head>
 <body style="margin: 0; padding: 0; overflow: hidden;">
@@ -42,7 +40,7 @@
             use: "HTML5",
             //language: "fr", // NOTE: LOCALIZATION REQUIRES <meta charset="utf-8"> (see JSmolCore Jmol.featureDetection.supportsLocalization)
             jarPath: "java",
-            j2sPath: "../../../../../lib/jsmol/j2s",
+            j2sPath: "./lib/j2s",
 
             jarFile: (useSignedApplet ? "JmolAppletSigned.jar" : "JmolApplet.jar"),
             isSigned: useSignedApplet,
