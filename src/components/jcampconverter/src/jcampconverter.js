@@ -45,7 +45,12 @@
                 return floatArray;
             };
 
+                /*
+                 options.keepSpectra: keep the original spectra for a 2D
+                */
+
             function convert(jcamp, options) {
+                var options = options || {};
                 var start = new Date();
 
                 var ntuples={},
@@ -245,16 +250,19 @@
 
                 if (result.twoD) {
                     add2D(result);
+                    if (result.profiling) result.profiling.push({action: "Finished countour plot calculation",time:new Date()-start});
+                    if (! options.keepSpectra) {
+                        delete result.spectra;
+                    }
                 }
 
-                if (result.profiling) result.profiling.push({action: "Finished countour plot calculation",time:new Date()-start});
+
 
                 // maybe it is a GC (HPLC) / MS. In this case we add a new format
                 if (spectra.length>1 && spectra[0].dataType.toLowerCase().match(/.*mass./)) {
                     addGCMS(result);
+                    if (result.profiling) result.profiling.push({action: "Finished GCMS calculation",time:new Date()-start});
                 }
-
-                if (result.profiling) result.profiling.push({action: "Finished GCMS calculation",time:new Date()-start});
 
                 if (result.profiling) {
                     result.profiling.push({action: "Total time",time:new Date()-start});
