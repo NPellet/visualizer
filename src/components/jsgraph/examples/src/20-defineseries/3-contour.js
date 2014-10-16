@@ -10,14 +10,14 @@ define( function() {
 				.autoAxis()
 				.setData( contour );
 				
-
+/*
 			var colors = [];
 			for( var i = 0, l = contour.length ; i < l ; i ++ ) {
 				colors.push( hslToRgb(0 + i / l, 1, 0.5) );
 			}
 
 			serie.setColors( colors );
-
+*/
 			graphinstance.getXAxis().forceMin( -5 );
 			graphinstance.getXAxis().forceMax( 5 );
 

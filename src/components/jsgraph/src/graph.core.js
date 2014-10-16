@@ -96,17 +96,17 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
     this._doDom();
 
     var w, h;
-    if( dom.style.width ) {
+    if( dom.style.width && dom.style.width.indexOf("%") == -1 ) {
       w = parseInt( dom.style.width.replace('px', '') );
     } else {
-       w = $( dom ).width()
+       w = $( dom ).width();
     }
 
 
-    if( dom.style.height ) {
+    if( dom.style.height && dom.style.height.indexOf("%") == -1 ) {
       h = parseInt( dom.style.height.replace('px', '') );
     } else {
-       h = $( dom ).height()
+      h = $( dom ).height();
     }
     
 

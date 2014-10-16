@@ -28,10 +28,10 @@ window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequest
 		domGraph.appendChild( div1 );
 		domGraph.appendChild( div2 );
 
-		div2.style.width = '100%';
+		div2.style.width = '400px';
 		div2.style.height = '100px';
 
-		div1.style.width = '100%';
+		div1.style.width = '400px';
 		div1.style.height = '250px';
 		
 
@@ -69,7 +69,7 @@ window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequest
 
 		var rectOptions = {
 			type: 'rect',
-			pos: { x: "min", y: "0px" },
+			pos: { x: "min", y: "min" },
 			pos2: { x: r, y: "max" },
 			fillColor: 'rgba(100, 100, 100, 0.6)',
 

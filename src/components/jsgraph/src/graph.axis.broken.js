@@ -168,42 +168,49 @@ define( [ 'jquery' ], function( $ ) {
           return ( px - this.ranges[ i ].minPx ) / ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) * ( this.ranges[ i ].max - this.ranges[ i ].min ) +  this.ranges[ i ].min
         }
       }
-      // Ex 50 / (100) * (1000 - 700) + 700
-      return ;
     },
 
-    getRatioInRange: function( inRangeOf, value ) {
+    sign: function( v ) {
+      return v > 0 ? 1 : -1;
+    },
 
-
+    getBoundary: function( inRangeOf, value ) {
+ 
       for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
         if( inRangeOf <= this.ranges[ i ].max && inRangeOf >= this.ranges[ i ].min ) {
           // This range
+          if( value > this.ranges[ i ].max ) {
+            return this.ranges[ i ].max;
+          }
 
+          return this.ranges[ i ].min;
 
-             return Math.abs( value - this.ranges[ i ].min ) / ( this.ranges[ i ].max - this.ranges[ i ].min );
-            
-          return;
+             //return Math.abs( value - this.ranges[ i ].min ) / ( this.ranges[ i ].max - this.ranges[ i ].min );
         }
       }
-      
     },
 
 
     getInRange: function( inRangeOf, value ) {
-
-      
-
       for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
         if( inRangeOf <= this.ranges[ i ].max && inRangeOf >= this.ranges[ i ].min ) {
           // This range
-
-
              return ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx
             
           return;
         }
       }
       
+    },
+
+    getRange: function( value ) {
+      for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
+        if( value <= this.ranges[ i ].max && value >= this.ranges[ i ].min ) {
+          return [ i, ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx ]
+        }
+      }
+
+      return [ undefined, undefined ];
     }
   }
 

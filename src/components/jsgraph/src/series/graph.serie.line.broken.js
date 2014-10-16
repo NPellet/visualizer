@@ -5,197 +5,213 @@ define( [ './graph.serie.line' ], function( GraphLine ) {
   var GraphSerie = function() {}
   $.extend( GraphSerie.prototype, GraphLine.prototype, {
 
+
+
+
     draw: function() { // Serie redrawing
 
-      var data = this.data;
-      var xData = this.xData;
+      this.drawInit();
 
-      var lastIsDisplayed;
-      var lastX, xpxLast, lastY, ypxLast, ratioX, ratio, ratioY;
-
-      if ( this.degradationPx ) {
-        data = getDegradedData( this );
-        xData = data[ 1 ];
-        data = data[ 0 ];
-      }
-
-      var x,
-        y,
-        xpx,
-        ypx,
-        xpx2,
-        ypx2,
-        i = 0,
-        l = data.length,
-        j = 0,
-        k,
-        m,
-        currentLine,
-        max,
-        self = this;
+      var data = this._dataToUse;
+      var xData = this._xDataToUse;
+      var slotToUse = this._slotToUse;
 
       var shape, self = this;
 
-      this._drawn = true;
-
-      var next = this.groupLines.nextSibling;
-      this.groupMain.removeChild( this.groupLines );
+      this.removeLinesGroup();
 
 
-      this.markerCurrentFamily = null;
-      var markerCurrentIndex = 0;
-      var markerNextChange = -1; //this.markerPoints[ markerCurrentIndex ][ 0 ];
+      this.eraseMarkers();
+
+      this.lookForMaxima = true;
+      this.lookForMinima = false;
+
+
+      
+
+      if ( this.mode == 'x_equally_separated' ) {
+
+          throw "Not supported";
+
+      } else {
+
+        this._draw_standard();
+
+      }
+    
+      i++;
+
+      this.removeExtraLines();
+      
+      //insertMarkers( this );
+
+      this.insertLinesGroup();
+
+      
+      var label;
+      for ( var i = 0, l = this.labels.length; i < l; i++ ) {
+        this.repositionLabel( this.labels[ i ] );
+      }
+    },
+
+
+
+
+
+    _draw_standard: function() { // Serie redrawing
+
+
+    var self = this,
+          data = this._dataToUse,
+          toBreak,
+          i = 0,
+          l = data.length,
+          j,
+          k,
+          m,
+          x,
+          y,
+          xpx,
+          ypx,
+          xpx2,
+          ypx2;
+
+      var lastRangeX, lastRangeY, lastX, lastY, lastXPx, lastYPx, insertMarkers;
+
 
       var incrXFlip = 0;
       var incrYFlip = 1;
 
       if ( this.isFlipped() ) {
+
         incrXFlip = 1;
         incrYFlip = 0;
-      }
 
-      this.eraseMarkers();
-
-      var totalLength = 0;
-      for ( ; i < l; i++ ) {
-        totalLength += data[ i ].length / 2;
-      }
-
-      i = 0;
-      var allY = [],
-        slotToUse,
-        y = 0,
-        z;
-
-
-      var degradation = [];
-      var buffer;
-
-      var lookForMaxima = true;
-      var lookForMinima = false;
-
-      if ( this.options.autoPeakPicking ) {
-        var lastYPeakPicking;
       }
 
       for ( ; i < l; i++ ) {
 
+        toBreak = false;
 
-        currentLine = "M ";
+        this.currentLine = "";
         j = 0, k = 0, m = data[ i ].length;
+
 
         for ( ; j < m; j += 2 ) {
           
-          xpx2 = this.getX( data[ i ][ j + incrXFlip ] );
-          ypx2 = this.getY( data[ i ][ j + incrYFlip ] );
+          x = data[ i ][ j + incrXFlip ];
+          y = data[ i ][ j + incrYFlip ];
 
-          if ( xpx2 == xpx && ypx2 == ypx ) {
-            continue;
+          var rangeX = this.getXAxis().getRange ? this.getXAxis().getRange( x ) : [ 1, this.getX( x ) ];
+          var rangeY = this.getYAxis().getRange ? this.getYAxis().getRange( y ) : [ 1, this.getY( y ) ];
+
+//console.log( rangeX, rangeY );
+
+
+          // We just gets into a new range, we must get the old point and draw it in the current range
+          if( 
+            ( rangeX[ 0 ] != lastRangeX || rangeY[ 0 ] != lastRangeY ) && 
+              rangeX[ 0 ] !== undefined && 
+              rangeY[ 0 ] !== undefined && 
+              j > 0
+            ) {
+
+              // Direct range change => add the new point to the old range
+              if( 
+                lastRangeX !== undefined && 
+                lastRangeY !== undefined
+              ) {
+
+                this.break( lastX, lastY, lastXPx, lastYPx, x, y, k );
+                this._createLine( );
+              }
+
+
+              this.break( x, y, rangeX[ 1 ], rangeY[ 1 ], lastX, lastY, k );
+              
+              // We must add the old point to the current range
+              // use lastX, lastY for the last point
+
+              this._addPoint( rangeX[ 1 ], rangeY[ 1 ] )
+              
+
+              // Just breaks
+          } else if( rangeX[ 0 ] == undefined || rangeY[ 0 ] == undefined && lastRangeX && lastRangeY ) {
+
+            //currentLine = this.break( x, y, rangeX[ 1 ], rangeY[ 1 ], lastX, lastY, currentLine, k );
+            this.break( lastX, lastY, lastXPx, lastYPx, x, y, k );
+            this._createLine( );
+            
+          
+            // Adds the current point to the old range and break it
+          } else if( ! isNaN( rangeX[ 1 ] ) && ! isNaN( rangeY[ 1 ] ) ) {
+            
+            this._addPoint( rangeX[ 1 ], rangeY[ 1 ] )
+            
+          } else {
+
+            //continue;
           }
 
-          if( isNaN( xpx2 ) || isNaN( ypx2 ) ) {
+          lastRangeX = rangeX[ 0 ];
+          lastRangeY = rangeY[ 0 ];
 
-            if( lastIsDisplayed ) {
+          lastX = x;
+          lastY = y;
 
-              ratioX = ratioY = undefined;
-              if( lastX && isNaN( xpx2 ) && this.getXAxis()._broken ) {
-                ratioX = this.getXAxis().getRatioInRange( lastX, data[ i ][ j + incrXFlip ] );
-                ratio = ratioX;
-              }
-
-              if( lastY && isNaN( ypx2 ) && this.getYAxis()._broken ) {
-                ratioY = this.getYAxis().getRatioInRange( lastY, data[ i ][ j + incrYFlip ] );
-                ratio = ratioY;
-              }
-
-              if( ratioX && ratioY ) {
-                ratio = Math.min( ratioX, ratioY );
-              }
-
-              var xpx = this.getX( lastX ) + ( this.getXAxis().getInRange( lastX, data[ i ][ j + incrXFlip ] ) - this.getX( lastX ) ) * ratio
-              var ypx = this.getX( lastY ) + ( this.getYAxis().getInRange( lastY, data[ i ][ j + incrYFlip ] ) - this.getY( lastY ) ) * ratio
-
-              currentLine = this._addPoint( currentLine, xpx, ypx, k );
-              this._createLine( currentLine, k );
-              k = 0;
-              currentLine = "M ";
-
-              lastIsDisplayed = false;
-
-            } else {
-
-              lastX = data[ i ][ j + incrXFlip ];
-              lastY = data[ i ][ j + incrYFlip ];
-              continue;
-
-            }
-          }
-
-          // Display the last one
-          if( ! lastIsDisplayed ) {
-
-              xpxLast = this.getX( lastX );
-              ypxLast = this.getY( lastY );
-
-              ratioX = ratioY = undefined;
-
-              if( isNaN( xpxLast ) && this.getXAxis()._broken ) {
-                ratioX = this.getXAxis().getRatioInRange( data[ i ][ j + incrXFlip ], lastX );
-                ratio = ratioX;
-              }
-
-              if( isNaN( ypxLast ) && this.getYAxis()._broken ) {
-                ratioY = this.getYAxis().getRatioInRange( data[ i ][ j + incrXFlip ], lastY );
-                ratio = ratioY;
-              }
-
-              if( ratioX && ratioY ) {
-                ratio = Math.min( ratioX, ratioY );
-              }
-
-              var xpx = this.getX( lastX ) + ( this.getXAxis().getInRange( data[ i ][ j + incrXFlip ], lastX ) - this.getX( lastX ) ) * ratio
-              var ypx = this.getX( lastY ) + ( this.getYAxis().getInRange( data[ i ][ j + incrXFlip ], lastY ) - this.getY( lastY ) ) * ratio
-
-              currentLine = this._addPoint( currentLine, xpx, ypx, k );
-
-
-
-          }
-         
-          lastIsDisplayed = true;
-
-          currentLine = this._addPoint( currentLine, xpx2, ypx2, k );
-          k++;
-          xpx = xpx2;
-          ypx = ypx2;
-
-          lastX = data[ i ][ j + incrXFlip ];
-          lastY = data[ i ][ j + incrYFlip ];
-        }
-
-        this._createLine( currentLine, k );
-
+          lastXPx = rangeX[ 1 ];
+          lastYPx = rangeY[ 1 ];
       }
+
+      this._createLine(  );
+    }
+  },
+
+
+
+  break: function( refX, refY, refXPx, refYPx, x, y ) {
+
+    var xRatio, yRatio, ratio, xPotential, yPotential, xBoundary, yBoundary;
+    var xpx, ypx;
+
+    if( this.getXAxis()._broken ) {
+      //xPotential = this.getXAxis().getInRange( refX, x );
+      xBoundary = this.getXAxis().getBoundary( refX, x );
+      xRatio = ( xBoundary - refX ) / ( x - refXPx );
+    } else {
+      xRatio = 1;
+      xPotential = x;
+    }
+
+    if( this.getYAxis()._broken ) {
+      //yPotential = this.getYAxis().getInRange( refY, y );
+
+      yBoundary = this.getYAxis().getBoundary( refY, y );
+      yRatio = ( yBoundary - refY ) / ( y - refY );
+    } else {
+      yRatio = 1;
+      yPotential = y;
+    }
+
+    var ratio = Math.min( yRatio, xRatio ),
+        x = ratio * ( x - refX ) + refX,
+        y = ratio * ( y - refY ) + refY;
+
+    if( this.getXAxis()._broken ) {
+      xpx = this.getXAxis().getInRange( refX, x );
+    } else {
+      xpx = this.getX( x );
+    }
+
+    if( this.getYAxis()._broken ) {
+      ypx = this.getYAxis().getInRange( refY, y );
+    } else {
+      ypx = this.getY( y );
+    }
     
-    if ( this.options.autoPeakPicking ) {
-      makePeakPicking( this, allY );
-    }
-
-    i++;
-
-    for ( ; i < this.lines.length; i++ ) {
-      this.groupLines.removeChild( this.lines[ i ] );
-      this.lines.splice( i, 1 );
-    }
-
-    insertMarkers( this );
-
-    this.groupMain.insertBefore( this.groupLines, next );
-    var label;
-    for ( var i = 0, l = this.labels.length; i < l; i++ ) {
-      this.repositionLabel( this.labels[ i ] );
-    }
-  }
+    return this._addPoint( xpx, ypx );
+  },
+  
 
 
   } );

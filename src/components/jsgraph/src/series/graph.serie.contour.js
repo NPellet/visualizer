@@ -128,9 +128,12 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
       var maxX = this.getXAxis().getActualMax();
       var maxY = this.getYAxis().getActualMax();
 
-      for ( ; i < l; i++ ) {
+      this.counter = 0;
+      this.currentLineId = 0;
 
-        j = 0, k = 0, currentLine = "";
+      for ( ; i < l; i++ ) {
+        this.currentLine = "";
+        j = 0, k = 0;
 
         for ( arr = this.data[ i ].lines, m = arr.length; j < m; j += 4 ) {
 
@@ -159,15 +162,17 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
 					}
 */
 
-          currentLine += "M";
-          currentLine += xpx2;
-          currentLine += " ";
-          currentLine += ypx2;
+          this.currentLine += "M ";
+          this.currentLine += xpx2;
+          this.currentLine += " ";
+          this.currentLine += ypx2;
 
-          currentLine += "L";
-          currentLine += xpx;
-          currentLine += " ";
-          currentLine += ypx;
+          this.currentLine += "L ";
+          this.currentLine += xpx;
+          this.currentLine += " ";
+          this.currentLine += ypx;
+
+          this.counter++;
 
           lastxpx = xpx;
           lastypx = ypx;
@@ -175,7 +180,9 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
           k++;
         }
 
-        domLine = this._createLine( currentLine + " z", k );
+        this.currentLine += " z";
+
+        domLine = this._createLine( );
         domLine.setAttribute( 'data-zvalue', this.data[ i ].zValue );
 
         if ( this.zoneColors && this.zoneColors[ i ] ) {
