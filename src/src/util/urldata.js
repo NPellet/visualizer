@@ -92,10 +92,12 @@ define(['components/superagent/superagent', 'src/util/lru', 'src/util/debug'], f
             }
         },
 
-        post: function urldataPost(url, data) {
+        post: function urldataPost(url, data, type) {
+            type = type || 'form';
             return new Promise(function (resolve, reject) {
                 superagent
                     .post(url)
+                    .type(type)
                     .send(data)
                     .end(function urldataPostResult(err, res) {
                         if (err || res.status != 200) {
