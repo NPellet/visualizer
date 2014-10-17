@@ -338,7 +338,7 @@ module.exports = function (grunt) {
                         }
 
                         // Search for images specified in .js, .css and .html files
-                        var reg = new RegExp('/[/\\.a-zA-Z_\\- 0-9]+\\.(png|jpeg|jpg|gif)/','gi');
+                        var reg = new RegExp('[/\\.a-zA-Z_\\- 0-9]+\\.(png|jpeg|jpg|gif)','gi');
                         var res = content.match(reg);
                         if (res) {
                             _.keys(res).forEach(function (i) {
