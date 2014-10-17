@@ -18,7 +18,7 @@ define( function() {
 	
 		},
 
-		"Broken axis", 
+		"Broken axis and serie", 
 		[ 
 
 		]

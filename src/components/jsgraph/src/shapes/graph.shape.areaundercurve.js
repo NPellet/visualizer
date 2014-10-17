@@ -147,8 +147,10 @@ define( [ './graph.shape' ], function( GraphShape ) {
         v2 = v3;
       }
 
+      this.counter = 0;
+
       for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
-        currentLine = "M ";
+        this.currentLine = "";
         init = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
         max = i == v2.dataIndex ? v2.xBeforeIndexArr : this.serie.data[ i ].length;
         k = 0;
@@ -165,8 +167,16 @@ define( [ './graph.shape' ], function( GraphShape ) {
             this.firstX = x;
             this.firstY = y;
           }
-          currentLine = this.serie._addPoint( currentLine, x, y, k );
+
+          if( k > 0 ) {
+            this.currentLine += " L " + x + " " + y + " "  
+          } else {
+            this.currentLine += " M " + x + " " + y + " ";
+          }
+          
+          //this.serie._addPoint( x, y, false, this.currentLine );
           k++;
+
         }
 
         this.lastX = x;
@@ -176,8 +186,8 @@ define( [ './graph.shape' ], function( GraphShape ) {
           return;
         }
 
-        currentLine += " V " + this.getYAxis().getPx( 0 ) + " H " + this.firstX + " z";
-        this.setDom( 'd', currentLine );
+        this.currentLine += " V " + this.getYAxis().getPx( 0 ) + " H " + this.firstX + " z";
+        this.setDom( 'd', this.currentLine );
       }
 
       this.maxY = this.serie.getY( maxY );

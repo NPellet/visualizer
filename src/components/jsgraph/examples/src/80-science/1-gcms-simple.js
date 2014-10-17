@@ -1,4 +1,4 @@
-/*
+
 define( function( ) {
 
 	return [ function( domGraph ) {
@@ -31,7 +31,6 @@ define( function( ) {
 		// END IGNORE ON BUILD
 
 		$.get( '../../../examples/science/_lib/gcms.jdx', {}, function( data ) {
-
 			JcampConverter( data ).then( function( gcmsData ) {
 
 				domGraph.appendChild( div1 );
@@ -42,15 +41,17 @@ define( function( ) {
 
 				div1.style.width = '100%';
 				div1.style.height = '250px';
-				
-				var gcmsinstance = new GCMS( div1, div2, {
+
+				var gcms = new GCMS( div1, div2, {
+
 					onlyOneMS: true
 				} );
-				
-				gcmsinstance.setGC( gcmsData.gcms.gc );
-				gcmsinstance.setMS( gcmsData.gcms.ms );
-			})
 
+				
+				gcms.setGC( gcmsData.gcms.gc );
+				gcms.setMS( gcmsData.gcms.ms );
+
+			} );
 		} )
 		
 
@@ -64,11 +65,11 @@ define( function( ) {
 	];
 
 });
-*/
+
 
 // BEGIN INGORE ON BUILD
 
-
+/*
 define( ['require'], function( require ) {
 
 	return [ function( domGraph ) {
@@ -125,4 +126,4 @@ define( ['require'], function( require ) {
 	];
 
 });
-
+*/

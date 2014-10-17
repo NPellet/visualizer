@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.10.0
+ * jsGraphs JavaScript Graphing Library v1.10.1-3
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-10-15T19:16Z
+ * Date: 2014-10-17T08:52Z
  */
 
 (function( global, factory ) {
@@ -1106,8 +1106,9 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
       var tick = document.createElementNS( this.graph.ns, 'line' ),
         val = this.getPos( value );
 
-      if ( val == undefined )
+      if ( val == undefined ) {
         return;
+      }
 
       tick.setAttribute( 'shape-rendering', 'crispEdges' );
       tick.setAttribute( 'x1', val );
@@ -1116,10 +1117,15 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
       tick.setAttribute( 'y1', ( this.top ? 1 : -1 ) * this.tickPx1 * scaling );
       tick.setAttribute( 'y2', ( this.top ? 1 : -1 ) * this.tickPx2 * scaling );
 
-      if ( label && this.options.primaryGrid )
+      if ( label && this.options.primaryGrid ) {
+
         this.doGridLine( true, val, val, 0, this.graph.getDrawingHeight() );
-      else if ( !label && this.options.secondaryGrid )
+
+      } else if ( !label && this.options.secondaryGrid ) {
+
         this.doGridLine( false, val, val, 0, this.graph.getDrawingHeight() );
+        
+      }
 
       tick.setAttribute( 'stroke', 'black' );
 
@@ -1455,6 +1461,8 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
 
 build['./graph.axis.broken'] = ( function( $ ) { 
 
+  
+
   var GraphAxis = function() {}
 
   GraphAxis.prototype = {
@@ -1465,6 +1473,10 @@ build['./graph.axis.broken'] = ( function( $ ) {
 
     getNbTicksSecondary: function() {
       return this.options.nbTicksSecondary;
+    },
+
+    getBreakingSpacing: function() {
+      return this.options.breakingSpacing || 5;
     },
 
     // [ [ 0, 10 ], [ 50, 100 ] ]
@@ -1490,7 +1502,7 @@ build['./graph.axis.broken'] = ( function( $ ) {
             min: range[ 0 ],
             max: range[ 1 ],
             minPx: undefined,
-            minPx: undefined
+            maxPx: undefined
 
           } );
       });
@@ -1501,11 +1513,10 @@ build['./graph.axis.broken'] = ( function( $ ) {
     drawLinearTicksWrapper: function( ) {
 
       var nbIntervals = this.ranges.length - 1,
-          availableDrawingPxs = ( this.maxPx - this.minPx ) - nbIntervals * 5,
+          availableDrawingPxs = ( this.maxPx - this.minPx ) - nbIntervals * this.getBreakingSpacing(),
           nbTicksPrimary = this.getNbTicksPrimary();
 
       var ticksPrimary = this.getUnitPerTick( availableDrawingPxs, nbTicksPrimary, this.totalValRanges );
-      console.log( ticksPrimary, this.totalValRanges)
       var nbSecondaryTicks = this.secondaryTicks();
 
       // We need to get here the width of the ticks to display the axis properly, with the correct shift
@@ -1524,17 +1535,34 @@ build['./graph.axis.broken'] = ( function( $ ) {
       var maxPx = this.getMaxPx();
       var last = minPx;
       var nbIntervals = this.ranges.length - 1;
-      var availableDrawingPxs = ( this.getMaxPx() - this.getMinPx() ) - nbIntervals * 5 * ( self.isFlipped() ? -1 : 1 );
+      var availableDrawingPxs = ( this.getMaxPx() - this.getMinPx() ) - nbIntervals * this.getBreakingSpacing() * ( self.isFlipped() ? -1 : 1 );
 
       this.resetTicks();
 
 
       this.ranges.map( function( range, index ) {
 
-        range.minPx = index == 0 ? minPx : last + 5 * ( self.isFlipped() ? -1 : 1 );
+        range.minPx = index == 0 ? minPx : last + self.getBreakingSpacing() * ( self.isFlipped() ? -1 : 1 );
         range.maxPx = range.minPx + availableDrawingPxs * range.ratio;
 
         last = range.maxPx;
+
+        if( index > 0 ) {
+          if( ! range.brokenMin ) {
+            range.brokenMin = self.createBrokenLine( range );
+            self.group.appendChild( range.brokenMin );
+          } 
+          self.placeBrokenLine( range, range.brokenMin, range.minPx );
+        }
+
+        if( index < self.ranges.length - 1 ) {
+          if( ! range.brokenMax ) {
+            range.brokenMax = self.createBrokenLine( range );
+            self.group.appendChild( range.brokenMax );
+          } 
+          self.placeBrokenLine( range, range.brokenMax, range.maxPx );
+        }
+
 
         var min = range.min,
             max = range.max,
@@ -1595,12 +1623,7 @@ build['./graph.axis.broken'] = ( function( $ ) {
     },
 
     getPos: function( value ) {
-      //			if(this.getMaxPx() == undefined)
-      //				console.log(this);
-      //console.log(this.getMaxPx(), this.getMinPx(), this._getActualInterval());
-      // Ex 50 / (100) * (1000 - 700) + 700
-
-      //console.log( value, this.getActualMin(), this.getMaxPx(), this.getMinPx(), this._getActualInterval() );
+      
       for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
         if( value <= this.ranges[ i ].max && value >= this.ranges[ i ].min ) {
           return ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx
@@ -1613,7 +1636,7 @@ build['./graph.axis.broken'] = ( function( $ ) {
     },
 
     getRelVal: function( px ) {
-      return px / (  ( this.maxPx - this.minPx ) - nbIntervals * 5 ) * this.totalValRanges;
+      return px / (  ( this.maxPx - this.minPx ) - nbIntervals * this.getBreakingSpacing() ) * this.totalValRanges;
     },
 
     getVal: function( px ) {
@@ -1694,7 +1717,24 @@ build['./graph.axis.x.broken'] = ( function( GraphXAxis, GraphBrokenAxis ) {
     this.top = topbottom == 'top';
   }
 
-  $.extend( GraphXAxisBroken.prototype, GraphBrokenAxis.prototype, GraphXAxis.prototype );
+  $.extend( GraphXAxisBroken.prototype, GraphXAxis.prototype, GraphBrokenAxis.prototype, {
+
+  	createBrokenLine: function( range ) {
+
+  		var line = document.createElementNS( this.graph.ns, 'line' );
+        line.setAttribute('x1', '-3');
+        line.setAttribute('x2', '3');
+        line.setAttribute('y1', '-5');
+        line.setAttribute('y2', '5');
+        line.setAttribute('stroke', 'black');
+
+        return line;
+  	},
+
+  	placeBrokenLine: function( range, line, px ) {
+		line.setAttribute('transform', 'translate(' + px + ', ' + 0 + ')');
+  	}
+  } );
 
   return GraphXAxisBroken;
 
@@ -1725,7 +1765,26 @@ build['./graph.axis.y.broken'] = ( function( GraphYAxis, GraphBrokenAxis ) {
 
   }
 
-  $.extend( GraphYAxisBroken.prototype, GraphYAxis.prototype, GraphBrokenAxis.prototype );
+  $.extend( GraphYAxisBroken.prototype, GraphYAxis.prototype, GraphBrokenAxis.prototype, {
+
+
+  	createBrokenLine: function( range ) {
+
+  		var line = document.createElementNS( this.graph.ns, 'line' );
+        line.setAttribute('x1', '-5');
+        line.setAttribute('x2', '5');
+        line.setAttribute('y1', '-3');
+        line.setAttribute('y2', '3');
+        line.setAttribute('stroke', 'black');
+
+        return line;
+  	},
+
+  	placeBrokenLine: function( range, line, px ) {
+		line.setAttribute('transform', 'translate(' + 0 + ', ' + px + ')');
+  	}
+
+  } );
 
 
   return GraphYAxisBroken;
@@ -3152,40 +3211,19 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       this.bypassHandleMouse = false;
     },
 
+
+    getDom: function() {
+      return this.dom;
+    },
+
     setOption: function( name, val ) {
       this.options[ name ] = val;
     },
 
     kill: function() {
       this._dom.removeChild( this.dom );
-
     },
 
-    _getXY: function( e ) {
-
-      var x = e.clientX,
-        y = e.clientY;
-
-      if ( e.offsetX !== undefined && e.offsetY !== undefined ) {
-
-        return {
-          x: e.offsetX,
-          y: e.offsetY
-        };
-      }
-
-      y = e.clientY;
-
-      var pos = this.offsetCached || $( this._dom ).offset();
-
-      x -= pos.left - window.scrollX;
-      y -= pos.top - window.scrollY;
-
-      return {
-        x: x,
-        y: y
-      };
-    },
 
     cacheOffset: function() {
       this.offsetCached = $( this._dom ).offset();
@@ -3199,48 +3237,68 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       this._dom.focus();
     },
 
-    isPluginAllowed: function( e, plugin ) {
-
-      if ( this.forcedPlugin == plugin ) {
-        return true;
-      }
-
-      var act = this.options.pluginAction[ plugin ] || plugin,
-        shift = e.shiftKey,
-        ctrl = e.ctrlKey;
-
-      if ( act.shift === undefined ) {
-        act.shift = false;
-      }
-
-      if ( act.ctrl === undefined ) {
-        act.ctrl = false;
-      }
-
-      if ( shift !== act.shift ) {
-        return false;
-      }
-
-      if ( ctrl !== act.ctrl ) {
-        return false;
-      }
-
-      return true;
-    },
-
-    forcePlugin: function( plugin ) {
-      this.forcedPlugin = plugin;
-    },
-
-    unforcePlugin: function() {
-      this.forcedPlugin = false;
-    },
-
     elementMoving: function( movingElement ) {
       this.bypassHandleMouse = movingElement;
     },
 
-    _resetAxes: function() {
+ 
+
+    /* SIZING */
+    setWidth: function( width, skipResize ) {
+      this.width = width;
+
+      if ( !skipResize )
+        this._resize();
+    },
+
+    setHeight: function( height, skipResize ) {
+      this.height = height;
+
+      if ( !skipResize )
+        this._resize();
+    },
+
+    resize: function( w, h ) {
+      this.setSize( w, h );
+      this._resize();
+    },
+
+    setSize: function( w, h ) {
+      this.setWidth( w, true );
+      this.setHeight( h, true );
+      this.getDrawingHeight();
+      this.getDrawingWidth();
+    },
+
+
+    getWidth: function() {
+      return this.width;
+    },
+
+    getHeight: function() {
+      return this.height;
+    },
+
+
+    getPaddingTop: function() {
+      return this.options.paddingTop;
+    },
+
+    getPaddingLeft: function() {
+      return this.options.paddingLeft;
+    },
+
+    getPaddingBottom: function() {
+      return this.options.paddingTop;
+    },
+
+    getPaddingRight: function() {
+      return this.options.paddingRight;
+    },
+    /* END SIZING */
+
+
+   _resetAxes: function() {
 
       while ( this.axisGroup.firstChild ) {
         this.axisGroup.removeChild( this.axisGroup.firstChild );
@@ -3253,7 +3311,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
     _applyToAxis: {
       'string': function( type, func, params ) {
-        //		params.splice(1, 0, type);
+        //    params.splice(1, 0, type);
 
         for ( var i = 0; i < this.axis[ type ].length; i++ ) {
           this.axis[ type ][ i ][ func ].apply( this.axis[ type ][ i ], params );
@@ -3286,47 +3344,6 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       }
     },
 
-    setWidth: function( width, skipResize ) {
-      this.width = width;
-
-      if ( !skipResize )
-        this._resize();
-    },
-
-    getWidth: function() {
-      return this.width;
-    },
-
-    setHeight: function( height, skipResize ) {
-      this.height = height;
-
-      if ( !skipResize )
-        this._resize();
-    },
-
-    getHeight: function() {
-      return this.height;
-    },
-
-    resize: function( w, h ) {
-
-      this.setSize( w, h );
-      this._resize();
-    },
-
-    setSize: function( w, h ) {
-
-      this.setWidth( w, true );
-      this.setHeight( h, true );
-
-      this.getDrawingHeight();
-      this.getDrawingWidth();
-
-    },
-
-    getDom: function() {
-      return this.dom;
-    },
 
     getXAxis: function( num, options ) {
       if ( this.axis.top.length > 0 && this.axis.bottom.length == 0 ) {
@@ -3393,21 +3410,6 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       this.axis.bottom[ num ] = axis;
     },
 
-    getPaddingTop: function() {
-      return this.options.paddingTop;
-    },
-
-    getPaddingLeft: function() {
-      return this.options.paddingLeft;
-    },
-
-    getPaddingBottom: function() {
-      return this.options.paddingTop;
-    },
-
-    getPaddingRight: function() {
-      return this.options.paddingRight;
-    },
 
     // Title
     setTitle: function( title ) {
@@ -3424,15 +3426,17 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     },
 
     getDrawingHeight: function( useCache ) {
-      if ( useCache && this.innerHeight )
+      if ( useCache && this.innerHeight ) {
         return this.innerHeight;
+      }
       var height = this.height - this.options.paddingTop - this.options.paddingBottom;
       return ( this.innerHeight = height );
     },
 
     getDrawingWidth: function( useCache ) {
-      if ( useCache && this.innerWidth )
+      if ( useCache && this.innerWidth ) {
         return this.innerWidth;
+      }
       var width = this.width - this.options.paddingLeft - this.options.paddingRight;
       return ( this.innerWidth = width );
     },
@@ -3446,10 +3450,8 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
     },
 
-
-
     getBoundaryAxisFromShapes: function( axis, xy, minmax ) {
-
+/*
       var
         x = xy == 'x',
         i = 0,
@@ -3466,7 +3468,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
         }
       }
       return val;
-
+*/
     },
 
     getBoundaryAxisFromSeries: function( axis, xy, minmax ) {
@@ -3546,11 +3548,11 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
     redraw: function( noX, noY ) {
 
-      if ( !this.canRedraw() ) {
+      if ( ! this.canRedraw() ) {
         return;
       }
 
-      if ( !this.sizeSet ) {
+      if ( ! this.sizeSet ) {
 
         this._resize();
 
@@ -3941,6 +3943,48 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       this.seriesReady.resolve();
     },
 
+
+
+
+    isPluginAllowed: function( e, plugin ) {
+
+      if ( this.forcedPlugin == plugin ) {
+        return true;
+      }
+
+      var act = this.options.pluginAction[ plugin ] || plugin,
+        shift = e.shiftKey,
+        ctrl = e.ctrlKey;
+
+      if ( act.shift === undefined ) {
+        act.shift = false;
+      }
+
+      if ( act.ctrl === undefined ) {
+        act.ctrl = false;
+      }
+
+      if ( shift !== act.shift ) {
+        return false;
+      }
+
+      if ( ctrl !== act.ctrl ) {
+        return false;
+      }
+
+      return true;
+    },
+
+    forcePlugin: function( plugin ) {
+      this.forcedPlugin = plugin;
+    },
+
+    unforcePlugin: function() {
+      this.forcedPlugin = false;
+    },
+
+
+
     _pluginsExecute: function( funcName, args ) {
 
       //			Array.prototype.splice.apply(args, [0, 0, this]);
@@ -4305,7 +4349,34 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     unlockShapes: function() {
       //		console.log('unlock');
       this.shapesLocked = false;
-    }
+    },
+
+
+    _getXY: function( e ) {
+
+      var x = e.clientX,
+        y = e.clientY;
+
+      if ( e.offsetX !== undefined && e.offsetY !== undefined ) {
+
+        return {
+          x: e.offsetX,
+          y: e.offsetY
+        };
+      }
+
+      y = e.clientY;
+
+      var pos = this.offsetCached || $( this._dom ).offset();
+
+      x -= pos.left - window.scrollX;
+      y -= pos.top - window.scrollY;
+
+      return {
+        x: x,
+        y: y
+      };
+    },
   }
 
   function makeSerie( graph, name, options, type, callback ) {
@@ -10920,8 +10991,10 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
         v2 = v3;
       }
 
+      this.counter = 0;
+
       for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
-        currentLine = "M ";
+        this.currentLine = "";
         init = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
         max = i == v2.dataIndex ? v2.xBeforeIndexArr : this.serie.data[ i ].length;
         k = 0;
@@ -10938,8 +11011,16 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
             this.firstX = x;
             this.firstY = y;
           }
-          currentLine = this.serie._addPoint( currentLine, x, y, k );
+
+          if( k > 0 ) {
+            this.currentLine += " L " + x + " " + y + " "  
+          } else {
+            this.currentLine += " M " + x + " " + y + " ";
+          }
+          
+          //this.serie._addPoint( x, y, false, this.currentLine );
           k++;
+
         }
 
         this.lastX = x;
@@ -10949,8 +11030,8 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
           return;
         }
 
-        currentLine += " V " + this.getYAxis().getPx( 0 ) + " H " + this.firstX + " z";
-        this.setDom( 'd', currentLine );
+        this.currentLine += " V " + this.getYAxis().getPx( 0 ) + " H " + this.firstX + " z";
+        this.setDom( 'd', this.currentLine );
       }
 
       this.maxY = this.serie.getY( maxY );

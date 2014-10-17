@@ -314,40 +314,19 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
       this.bypassHandleMouse = false;
     },
 
+
+    getDom: function() {
+      return this.dom;
+    },
+
     setOption: function( name, val ) {
       this.options[ name ] = val;
     },
 
     kill: function() {
       this._dom.removeChild( this.dom );
-
     },
 
-    _getXY: function( e ) {
-
-      var x = e.clientX,
-        y = e.clientY;
-
-      if ( e.offsetX !== undefined && e.offsetY !== undefined ) {
-
-        return {
-          x: e.offsetX,
-          y: e.offsetY
-        };
-      }
-
-      y = e.clientY;
-
-      var pos = this.offsetCached || $( this._dom ).offset();
-
-      x -= pos.left - window.scrollX;
-      y -= pos.top - window.scrollY;
-
-      return {
-        x: x,
-        y: y
-      };
-    },
 
     cacheOffset: function() {
       this.offsetCached = $( this._dom ).offset();
@@ -361,48 +340,68 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
       this._dom.focus();
     },
 
-    isPluginAllowed: function( e, plugin ) {
-
-      if ( this.forcedPlugin == plugin ) {
-        return true;
-      }
-
-      var act = this.options.pluginAction[ plugin ] || plugin,
-        shift = e.shiftKey,
-        ctrl = e.ctrlKey;
-
-      if ( act.shift === undefined ) {
-        act.shift = false;
-      }
-
-      if ( act.ctrl === undefined ) {
-        act.ctrl = false;
-      }
-
-      if ( shift !== act.shift ) {
-        return false;
-      }
-
-      if ( ctrl !== act.ctrl ) {
-        return false;
-      }
-
-      return true;
-    },
-
-    forcePlugin: function( plugin ) {
-      this.forcedPlugin = plugin;
-    },
-
-    unforcePlugin: function() {
-      this.forcedPlugin = false;
-    },
-
     elementMoving: function( movingElement ) {
       this.bypassHandleMouse = movingElement;
     },
 
-    _resetAxes: function() {
+ 
+
+    /* SIZING */
+    setWidth: function( width, skipResize ) {
+      this.width = width;
+
+      if ( !skipResize )
+        this._resize();
+    },
+
+    setHeight: function( height, skipResize ) {
+      this.height = height;
+
+      if ( !skipResize )
+        this._resize();
+    },
+
+    resize: function( w, h ) {
+      this.setSize( w, h );
+      this._resize();
+    },
+
+    setSize: function( w, h ) {
+      this.setWidth( w, true );
+      this.setHeight( h, true );
+      this.getDrawingHeight();
+      this.getDrawingWidth();
+    },
+
+
+    getWidth: function() {
+      return this.width;
+    },
+
+    getHeight: function() {
+      return this.height;
+    },
+
+
+    getPaddingTop: function() {
+      return this.options.paddingTop;
+    },
+
+    getPaddingLeft: function() {
+      return this.options.paddingLeft;
+    },
+
+    getPaddingBottom: function() {
+      return this.options.paddingTop;
+    },
+
+    getPaddingRight: function() {
+      return this.options.paddingRight;
+    },
+    /* END SIZING */
+
+
+   _resetAxes: function() {
 
       while ( this.axisGroup.firstChild ) {
         this.axisGroup.removeChild( this.axisGroup.firstChild );
@@ -415,7 +414,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
 
     _applyToAxis: {
       'string': function( type, func, params ) {
-        //		params.splice(1, 0, type);
+        //    params.splice(1, 0, type);
 
         for ( var i = 0; i < this.axis[ type ].length; i++ ) {
           this.axis[ type ][ i ][ func ].apply( this.axis[ type ][ i ], params );
@@ -448,47 +447,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
       }
     },
 
-    setWidth: function( width, skipResize ) {
-      this.width = width;
-
-      if ( !skipResize )
-        this._resize();
-    },
-
-    getWidth: function() {
-      return this.width;
-    },
-
-    setHeight: function( height, skipResize ) {
-      this.height = height;
-
-      if ( !skipResize )
-        this._resize();
-    },
-
-    getHeight: function() {
-      return this.height;
-    },
-
-    resize: function( w, h ) {
-
-      this.setSize( w, h );
-      this._resize();
-    },
-
-    setSize: function( w, h ) {
-
-      this.setWidth( w, true );
-      this.setHeight( h, true );
-
-      this.getDrawingHeight();
-      this.getDrawingWidth();
-
-    },
-
-    getDom: function() {
-      return this.dom;
-    },
 
     getXAxis: function( num, options ) {
       if ( this.axis.top.length > 0 && this.axis.bottom.length == 0 ) {
@@ -555,21 +513,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
       this.axis.bottom[ num ] = axis;
     },
 
-    getPaddingTop: function() {
-      return this.options.paddingTop;
-    },
-
-    getPaddingLeft: function() {
-      return this.options.paddingLeft;
-    },
-
-    getPaddingBottom: function() {
-      return this.options.paddingTop;
-    },
-
-    getPaddingRight: function() {
-      return this.options.paddingRight;
-    },
 
     // Title
     setTitle: function( title ) {
@@ -586,15 +529,17 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
     },
 
     getDrawingHeight: function( useCache ) {
-      if ( useCache && this.innerHeight )
+      if ( useCache && this.innerHeight ) {
         return this.innerHeight;
+      }
       var height = this.height - this.options.paddingTop - this.options.paddingBottom;
       return ( this.innerHeight = height );
     },
 
     getDrawingWidth: function( useCache ) {
-      if ( useCache && this.innerWidth )
+      if ( useCache && this.innerWidth ) {
         return this.innerWidth;
+      }
       var width = this.width - this.options.paddingLeft - this.options.paddingRight;
       return ( this.innerWidth = width );
     },
@@ -608,10 +553,8 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
 
     },
 
-
-
     getBoundaryAxisFromShapes: function( axis, xy, minmax ) {
-
+/*
       var
         x = xy == 'x',
         i = 0,
@@ -628,7 +571,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
         }
       }
       return val;
-
+*/
     },
 
     getBoundaryAxisFromSeries: function( axis, xy, minmax ) {
@@ -708,11 +651,11 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
 
     redraw: function( noX, noY ) {
 
-      if ( !this.canRedraw() ) {
+      if ( ! this.canRedraw() ) {
         return;
       }
 
-      if ( !this.sizeSet ) {
+      if ( ! this.sizeSet ) {
 
         this._resize();
 
@@ -1103,6 +1046,48 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
       this.seriesReady.resolve();
     },
 
+
+
+
+    isPluginAllowed: function( e, plugin ) {
+
+      if ( this.forcedPlugin == plugin ) {
+        return true;
+      }
+
+      var act = this.options.pluginAction[ plugin ] || plugin,
+        shift = e.shiftKey,
+        ctrl = e.ctrlKey;
+
+      if ( act.shift === undefined ) {
+        act.shift = false;
+      }
+
+      if ( act.ctrl === undefined ) {
+        act.ctrl = false;
+      }
+
+      if ( shift !== act.shift ) {
+        return false;
+      }
+
+      if ( ctrl !== act.ctrl ) {
+        return false;
+      }
+
+      return true;
+    },
+
+    forcePlugin: function( plugin ) {
+      this.forcedPlugin = plugin;
+    },
+
+    unforcePlugin: function() {
+      this.forcedPlugin = false;
+    },
+
+
+
     _pluginsExecute: function( funcName, args ) {
 
       //			Array.prototype.splice.apply(args, [0, 0, this]);
@@ -1467,7 +1452,34 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
     unlockShapes: function() {
       //		console.log('unlock');
       this.shapesLocked = false;
-    }
+    },
+
+
+    _getXY: function( e ) {
+
+      var x = e.clientX,
+        y = e.clientY;
+
+      if ( e.offsetX !== undefined && e.offsetY !== undefined ) {
+
+        return {
+          x: e.offsetX,
+          y: e.offsetY
+        };
+      }
+
+      y = e.clientY;
+
+      var pos = this.offsetCached || $( this._dom ).offset();
+
+      x -= pos.left - window.scrollX;
+      y -= pos.top - window.scrollY;
+
+      return {
+        x: x,
+        y: y
+      };
+    },
   }
 
   function makeSerie( graph, name, options, type, callback ) {

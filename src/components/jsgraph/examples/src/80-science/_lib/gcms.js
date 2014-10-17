@@ -181,7 +181,6 @@
 
 
 							if( self.firstMsSerie ) {
-								console.log('ds');
 								self.msGraph.getBottomAxis().setMinMaxToFitSeries();
 								self.firstMsSerie = false;
 							}
@@ -382,6 +381,7 @@
 				this.msGraph.redraw();
 
 				this.gcGraph.shapeHandlers.onCreated.push( function( shape ) {
+					shape.setSerie( self.gcGraph.getSerie( 0 ) );
 					self.trigger('AUCCreated', shape );
 				} );
 
