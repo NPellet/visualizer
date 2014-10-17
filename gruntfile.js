@@ -29,6 +29,7 @@ module.exports = function (grunt) {
                         src: [
                             'init.js',
                             'modules/**/*.js',
+                            '!modules/**/lib/**/*.js',
                             'src/**/*.js',
                             '!lib/**/*',
                             'lib/forms/**/*.js',
