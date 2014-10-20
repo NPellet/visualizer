@@ -1,4 +1,4 @@
-define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
+define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanciable, SlotOptimizer ) {
 
   "use strict";
 
@@ -134,67 +134,8 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       var self = this;
       this.slotsData = {};
 //      this.slotWorker = new Worker( './src/slotworker.js' );
+  
 
-
-    var workerUrl = URL.createObjectURL( new Blob(
-
-        [
-        " ( " + 
-
-            function() { 
-
-           
-          onmessage = function( e ) {
-            var data = e.data.data;
-            var slotNb = e.data.slotNumber;
-            var slot = e.data.slot;
-            var flip = e.data.flip;
-            var max = e.data.max;
-            var min = e.data.min;
-            var slotNumber;
-            var dataPerSlot = slot / (max - min);
-
-            this.slotsData = [];
-
-            for(var j = 0, k = data.length; j < k ; j ++ ) {
-
-              for(var m = 0, n = data[ j ].length ; m < n ; m += 2 ) {
-
-                slotNumber = Math.floor( ( data[ j ][ m ] - min ) * dataPerSlot );
-
-                this.slotsData[ slotNumber ] = this.slotsData[ slotNumber ] || { 
-                    min: data[ j ][ m + 1], 
-                    max: data[ j ][ m + 1], 
-                    start: data[ j ][ m + 1],
-                    stop: false,
-                    x: data[ j ][ m ] };
-
-                this.slotsData[ slotNumber ].stop = data[ j ][ m + 1 ];
-                this.slotsData[ slotNumber ].min = Math.min( data[ j ][ m + 1 ], this.slotsData[ slotNumber ].min );
-                this.slotsData[ slotNumber ].max = Math.max( data[ j ][ m + 1 ], this.slotsData[ slotNumber ].max );
-
-              }
-            }
-
-            postMessage( { slotNumber: slotNb, slot: slot, data: this.slotsData } );
-          };
-
-
-            }.toString() + ")()"
-
-        ], { type: 'application/javascript' }
-
-        ) );
-
-
-        this.slotWorker = new Worker( workerUrl );
-
-      
-
-      this.slotWorker.onmessage = function( e ) {
-
-        self.slotsData[ e.data.slot ].resolve( e.data.data );
-      }
 
 
       for ( var i = 0, l = this.slots.length; i < l; i++ ) {
@@ -207,9 +148,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
     slotCalculator: function( slot, slotNumber ) {
 
-      var def = $.Deferred();
-
-      this.slotWorker.postMessage( {
+      return SlotOptimizer( {
         
         min: this.minX,
         max: this.maxX,
@@ -220,14 +159,13 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
       } );
 
-      return def;
     },
 
     calculateSlot: function( slot, slotNumber ) {
       var self = this;
       this.slotsData[ slot ] = this.slotCalculator( slot, slotNumber );
       this.slotsData[ slot ].pipe( function( data ) {
-
+console.log( data );
         self.slotsData[ slot ] = data;
         return data;
       } );
