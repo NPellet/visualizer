@@ -28,23 +28,32 @@ require.config({
 });
 
 
-define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api', 'src/util/typerenderer','src/util/datatraversing', 'slickgrid', 'slickdataview'], function(require, Default, Util, API, Renderer, Traversing) {
+define(['require', 'modules/default/defaultview', 'lodash', 'src/util/util', 'src/util/api', 'src/util/typerenderer','src/util/datatraversing', 'slickgrid', 'slickdataview'], function(require, Default, _, Util, API, Renderer, Traversing) {
     function View() {}
     Util.loadCss('./components/slickgrid/slick.grid.css');
 
 
     var formatters = {
         typerenderer: waitingFormatter,
-        'slick.text': Slick.Formatters.Text
+        'slick.text': Slick.Formatters.Text,
+        'slick.percent': Slick.Formatters.PercentComplete,
+        'slick.percentbar': Slick.Formatters.PercentCompleteBar,
+        'slick.yesno': Slick.Formatters.YesNoSelect
     };
 
     var editors = {
         'slick.text': Slick.Editors.Text,
-        'slick.checkbox': Slick.Editors.Checkbox
+        'slick.longtext': Slick.Editors.LongText,
+        'slick.checkbox': Slick.Editors.Checkbox,
+        'slick.date': Slick.Editors.Date,
+        'slick.yesno': Slick.Editors.YesNoSelect,
+        'slick.percent': Slick.Editors.PercentComplete,
+        'slick.integer': Slick.Editors.Integer
     };
     var typeEditors = {
         boolean: Slick.Editors.Checkbox,
-        mf: Slick.Editors.TextValue
+        mf: Slick.Editors.TextValue,
+        color: Slick.Editors.ColorValue,
     };
 
     View.prototype = $.extend(true, {}, Default, {
@@ -75,14 +84,13 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                     var type = that.module.data.get(0).getChildSync(row.jpath).type;
                     var editor = typeEditors[type];
                 }
-                console.log('editor', editor);
                 return {
                     id: row.name,
                     name: row.name,
                     field: row.name.trim(),
-                    width: row.width,
-                    minWidth: row.minWidth || 10,
-                    maxWidth: row.maxWidth,
+                    width: +row.width || undefined,
+                    minWidth: +row.minWidth || undefined,
+                    maxWidth: +row.maxWidth || undefined,
                     resizable: !!(row.resizable),
                     editor: editor || editors[row.editor],
                     formatter: formatters[row.formatter],
@@ -154,7 +162,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                         that.module.model.dataListenChange( that.module.data.get( j ), function() {
                             var item = that.grid.getDataItem(j);
                             item = that.getSlickData(that.module.data, j);
-                            console.log('item changed', item);
                             that.grid.invalidateRow(j);
                             that.grid.render();
                         }, 'list');
@@ -176,7 +183,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
                 this.grid.onMouseEnter.subscribe(function(e) {
                     var cell = that.grid.getCellFromEvent(e);
-                    console.log('mouse enter cell', cell);
                 });
 
                 this.grid.onCellChange.subscribe(function(e, args) {

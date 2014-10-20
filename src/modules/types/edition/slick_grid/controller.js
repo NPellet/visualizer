@@ -88,7 +88,16 @@ define(['modules/default/defaultcontroller'], function(Default) {
                             type: 'combo',
                             title: 'Editor',
                             default: 'none',
-                            options: [{key: 'none', title: 'None'}, {key: 'auto', title: 'Auto'}, {key: 'slick.text', title: 'Text'}, {key: 'slick.checkbox', title: 'Checkbox'}]
+                            options: [{key: 'none', title: 'None'},
+                                {key: 'auto', title: 'Auto'},
+                                {key: 'slick.text', title: 'Text'},
+                                {key: 'slick.checkbox', title: 'Checkbox'},
+                                {key: 'slick.longtext', title: 'Long text'},
+                                {key: 'slick.date', title: 'Date'},
+                                {key: 'slick.integer', title: 'Integer'},
+                                {key: 'slick.yesno', title: 'Yes/No'},
+                                {key: 'slick.percent', title: 'Percent'}
+                            ]
                         },
 
                         formatter: {
@@ -96,13 +105,26 @@ define(['modules/default/defaultcontroller'], function(Default) {
                             title: 'Formatter',
                             options: [
                                 {key: 'typerenderer', title: 'Type Renderer'},
-                                {key: 'slick.text', title: 'Text'}
+                                {key: 'slick.text', title: 'Text'},
+                                {key: 'slick.percentbar', title: 'Percent bar'},
+                                {key: 'slick.percent', title: 'Percent'},
+                                {key: 'slick.yesno', title: 'Yes/No'}
                             ]
                         },
 
                         width: {
                             type: 'text',
                             title: 'Width'
+                        },
+
+                        minWidth: {
+                            type: 'text',
+                            title: 'Min Width'
+                        },
+
+                        maxWidth: {
+                            type: 'text',
+                            title: 'Max Width'
                         },
 
                         resizable: {
