@@ -1,12 +1,13 @@
 {
   "name": "jcampconverter",
-  "version": "1.0.4",
+  "version": "2.0.1",
   "homepage": "https://github.com/cheminfo/jcampconverter",
-  "description": "convert jcamp data",
-  "main": "src/jcampconverter.js",
+  "description": "Parse and convert JCAMP data",
+  "main": "build/jcampconverter.js",
   "moduleType": [
     "amd",
-    "globals"
+    "globals",
+    "node"
   ],
   "keywords": [
     "jcamp",
@@ -15,18 +16,19 @@
   "license": "MIT",
   "ignore": [
     ".idea",
-    "data",
-    "index.html",
-    "lib",
-    "test.js"
+    "test",
+    "src",
+    "node_modules",
+    "Gruntfile.js"
   ],
-  "_release": "1.0.4",
+  "_release": "2.0.1",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.4",
-    "commit": "537425856993a237d2cd2aeffdcf03f0ecebc708"
+    "tag": "v2.0.1",
+    "commit": "b17631949d6a92625c544963324f619970ac601e"
   },
   "_source": "git://github.com/cheminfo/jcampconverter.git",
-  "_target": "~1.0.3",
-  "_originalSource": "jcampconverter"
+  "_target": "v2.0.1",
+  "_originalSource": "jcampconverter",
+  "_direct": true
 }
