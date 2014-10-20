@@ -2,7 +2,7 @@
 
 define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables'], function(VersionHandler, Debug, Variables) {
 
-	var version = [2, 5, 1].join('.');
+	var version = [2, 5, 2].join('.');
 
     if (!semver(version)) {
         throw new Error('Version number is invalid: ' + version);
