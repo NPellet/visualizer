@@ -172,6 +172,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     })(i);
                 }
 
+                this._activateHighlights();
 
                 this.grid = new Slick.Grid("#"+this._id, this.slick.data, this.slick.columns, this.slick.options);
 
@@ -187,6 +188,12 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
                 this.grid.onMouseEnter.subscribe(function(e) {
                     var cell = that.grid.getCellFromEvent(e);
+                    var hl = that.module.data[cell.row]._highlight;
+                    if(hl && lastHighlight !== hl) {
+                        API.highlightId(hl,1);
+                        API.highlightId(lastHighlight, 0);
+                        lastHighlight = hl;
+                    }
                 });
 
                 this.grid.onCellChange.subscribe(function(e, args) {
@@ -225,9 +232,34 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
         },
 
+        _drawHighlight: function(key) {
+            console.log('draw highlight', key);
+        },
 
-        doHighlight: function( i, val ) {
+        _undrawHighlight: function(key) {
+            console.log('undraw highlight', key);
+        },
 
+
+        _activateHighlights: function() {
+            var that = this;
+            var hl = _(this.module.data).pluck('_highlight').uniq().value();
+            console.log('highlight: ', hl);
+
+            API.killHighlight(this.module.getId());
+
+            for(var i=0; i<hl.length; i++) {
+                (function(i) {
+                    API.listenHighlight({_highlight: hl[i]}, function(onOff, key) {
+                        if(onOff) {
+                            that._drawHighlight(key);
+                        }
+                        else {
+                            that._undrawHighlight(key);
+                        }
+                    });
+                })(i);
+            }
         },
 
         onResize: function() {
@@ -261,6 +293,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         });
     }
 
+    var lastHighlight = '';
     return View;
 
 });
