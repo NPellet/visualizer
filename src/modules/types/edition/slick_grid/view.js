@@ -101,12 +101,14 @@ define(['require', 'modules/default/defaultview', 'lodash', 'src/util/util', 'sr
 
         getSlickOptions: function() {
             var that = this;
-            console.log('slickcheck config', that.module.getConfiguration('slickCheck'));
             return {
                 editable: that.module.getConfigurationCheckbox('slickCheck', 'editable'),
                 enableAddRow: that.module.getConfigurationCheckbox('slickCheck', 'enableAddRow'),
                 enableCellNavigation: that.module.getConfigurationCheckbox('slickCheck', 'enableCellNavigation'),
                 autoEdit: that.module.getConfigurationCheckbox('slickCheck', 'autoEdit'),
+                enableTextSelectionOnCells: that.module.getConfigurationCheckbox('slickCheck', 'enableTextSelectionOnCells'),
+                enableColumnReorder: that.module.getConfigurationCheckbox('slickCheck', 'enableColumnReorder'),
+                forceFitColumns: that.module.getConfigurationCheckbox('slickCheck', 'forceFitColumns'),
                 asyncEditorLoading: true,
                 enableAsyncPostRender: true,
                 asyncPostRenderDelay: 0
@@ -190,6 +192,14 @@ define(['require', 'modules/default/defaultview', 'lodash', 'src/util/util', 'sr
                     var row = args.row;
                     var cell = args.cell;
                     that.module.model.dataSetChild(that.module.data.get(row), that.colConfig[cell].jpath, args.item[that.slick.columns[cell].field]);
+                });
+
+                this.grid.onColumnsResized.subscribe(function(e, args) {
+                    var cols = that.grid.getColumns();
+                    for(var i=0; i<cols.length; i++) {
+                        that.module.definition.configuration.groups.cols[0][i].width = cols[i].width;
+                    }
+
                 });
             },
             showList: function( value ) {

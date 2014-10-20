@@ -214,7 +214,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 							var dom = self.domBody.find('#' + self.module.getId() + '_' + j);
 
 							self.module.model.dataListenChange( self.module.data.get( j ), function() {
-                                console.log('data changed... fasttable');
 								dom.replaceWith( ( dom = $( self.buildElement( this, j, true ) ) ) );
 								
 							}, 'list');

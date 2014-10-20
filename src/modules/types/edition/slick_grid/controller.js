@@ -51,10 +51,14 @@ define(['modules/default/defaultcontroller'], function(Default) {
                                 editable: 'Editable',
                                 enableAddRow: 'Enable add row',
                                 enableCellNavigation: 'Enable Cell Navigation',
-                                autoEdit: 'Enable Auto Edit'
+                                autoEdit: 'Enable Auto Edit',
+                                enableTextSelectionOnCells: 'Enable Text Selection',
+                                enableColumnReorder: 'Enable Column reorder',
+                                forceFitColumns: 'Force fit Columns'
                             },
                             default: ['editable', 'enableAddRow', 'enableCellNavigation']
                         },
+
 
                         filterRow: {
                             type: 'jscode',
@@ -129,8 +133,9 @@ define(['modules/default/defaultcontroller'], function(Default) {
 
                         resizable: {
                             type: 'checkbox',
-                            default: true,
-                            title: 'Resizable'
+                            title: 'Resizable',
+                            options: {yes: 'Yes'},
+                            default: ['yes']
                         }
                     }
                 }
