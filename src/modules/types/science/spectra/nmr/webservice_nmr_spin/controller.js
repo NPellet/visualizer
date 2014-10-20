@@ -38,33 +38,26 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/datatrave
         }
 
         this.url = url;
-        if (this.request && this.request.abort) {
-            this.request.abort();
-        }
 
         var data = this.module.view.system.serializeArray();
+        var toSend = {};
+        for(var i = 0; i < data.length; i++) {
+            toSend[data[i].name] = data[i].value;
+        }
 
         this.module.view.lock();
 
-        this.request = URL.post(url, data);
-
-        this.request.done(function (data) {
-            self.request = null;
-
+        URL.post(url, toSend).then(function (data) {
             self.module.view.unlock();
-
-            if (typeof data === 'object') {
-                data = DataObject.check(data, true);
-            }
             self.onAnalysisDone(data);
         });
+
     };
 
 
     Controller.prototype.onAnalysisDone = function (elements) {
-        var self = this;
         this.createDataFromEvent('onSearchReturn', 'results', elements);
-        this.createDataFromEvent('onSearchReturn', 'url', self.url);
+        this.createDataFromEvent('onSearchReturn', 'url', this.url);
 
     };
 
