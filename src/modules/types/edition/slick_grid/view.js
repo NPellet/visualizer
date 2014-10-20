@@ -91,10 +91,14 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     width: +row.width || undefined,
                     minWidth: +row.minWidth || undefined,
                     maxWidth: +row.maxWidth || undefined,
-                    resizable: !!(row.resizable),
+                    resizable: row.resizable.indexOf('yes') > -1 ? true : undefined,
+                    selectable: row.selectable.indexOf('yes') > -1 ,
+                    focusable: row.focusable.indexOf('yes') > -1,
+                    sortable: row.sortable.indexOf('yes') > -1,
+                    defaultSortAsc: row.defaultSortAsc.indexOf('yes') > -1,
                     editor: editor || editors[row.editor],
                     formatter: formatters[row.formatter],
-                    asyncPostRender: (row.formatter === 'typerenderer') ? tp : undefined
+                    asyncPostRender: (row.formatter === 'typerenderer') ? tp : undefined,
                 }
             });
         },

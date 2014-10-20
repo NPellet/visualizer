@@ -131,9 +131,39 @@ define(['modules/default/defaultcontroller'], function(Default) {
                             title: 'Max Width'
                         },
 
+                        selectable: {
+                            type: 'checkbox',
+                            title: 'Selectable',
+                            options: {yes: 'Yes'},
+                            default: ['yes']
+                        },
+
                         resizable: {
                             type: 'checkbox',
                             title: 'Resizable',
+                            options: {abc: 'Yes'},
+                            default: ['yes']
+                        },
+
+
+
+                        sortable: {
+                            type: 'checkbox',
+                            title: 'Sortable',
+                            options: {yes: 'Yes'},
+                            default: ['yes']
+                        },
+
+                        focusable: {
+                            type: 'checkbox',
+                            title: 'Focusable',
+                            options: {yes: 'Yes'},
+                            default: ['yes']
+                        },
+
+                        defaultSortAsc: {
+                            type: 'checkbox',
+                            title: 'Sort Asc on first click',
                             options: {yes: 'Yes'},
                             default: ['yes']
                         }
