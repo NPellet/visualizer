@@ -134,12 +134,9 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         },
 
         updateSlickItem: function(value, idx, item) {
-            var d;
-            data = d = {};
             for(var j=0; j<this.colConfig.length; j++) {
                 item[this.slick.columns[j].field] = value.get(idx).getChildSync(this.colConfig[j].jpath);
             }
-            return d;
         },
 
         inDom: function(){
@@ -165,16 +162,18 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     (function(j) {
                         that.module.model.dataListenChange( that.module.data.get( j ), function() {
                             var item = that.grid.getDataItem(j);
-                            item = that.getSlickData(that.module.data, j);
+                            that.updateSlickItem(that.module.data, j, item);
                             that.grid.invalidateRow(j);
                             that.grid.render();
                         }, 'list');
                     })(i);
                 }
 
-                this._activateHighlights();
+
 
                 this.grid = new Slick.Grid("#"+this._id, this.slick.data, this.slick.columns, this.slick.options);
+
+                this._activateHighlights();
 
                 this.grid.setSelectionModel(new Slick.CellSelectionModel());
 
@@ -189,10 +188,20 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 this.grid.onMouseEnter.subscribe(function(e) {
                     var cell = that.grid.getCellFromEvent(e);
                     var hl = that.module.data[cell.row]._highlight;
-                    if(hl && lastHighlight !== hl) {
+                    if(hl) {
                         API.highlightId(hl,1);
-                        API.highlightId(lastHighlight, 0);
                         lastHighlight = hl;
+                    }
+                });
+
+                this.grid.onMouseLeave.subscribe(function(e) {
+                    var cell = that.grid.getCellFromEvent(e);
+                    var hl = that.module.data[cell.row]._highlight;
+                    if(hl) {
+                        API.highlightId(hl,0);
+                    }
+                    else if(lastHighlight) {
+                        API.highlightId(lastHighlight,0);
                     }
                 });
 
@@ -233,22 +242,39 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         },
 
         _drawHighlight: function(key) {
-            console.log('draw highlight', key);
+            this.grid.setCellCssStyles(key, this.cellStyles[key]);
         },
 
         _undrawHighlight: function(key) {
-            console.log('undraw highlight', key);
+            this.grid.removeCellCssStyles(key);
         },
 
 
         _activateHighlights: function() {
             var that = this;
             var hl = _(this.module.data).pluck('_highlight').uniq().value();
-            console.log('highlight: ', hl);
+            var cols = this.grid.getColumns();
+            var base = {};
+            for(var i=0; i<cols.length; i++) {
+                base[cols[i].id] = 'highlighted-cell';
+            }
+
+            console.log('base', base);
+            var r = {};
+            for(var j=0; j<this.module.data.length; j++) {
+                var h= this.module.data[j]._highlight;
+                if(!h) continue;
+                if(!r[h]) r[h] = {};
+
+                r[h][j.toString()] = base;
+            }
+
+            this.cellStyles = r;
+
 
             API.killHighlight(this.module.getId());
 
-            for(var i=0; i<hl.length; i++) {
+            for(i=0; i<hl.length; i++) {
                 (function(i) {
                     API.listenHighlight({_highlight: hl[i]}, function(onOff, key) {
                         if(onOff) {

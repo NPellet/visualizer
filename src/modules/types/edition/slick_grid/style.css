@@ -217,4 +217,8 @@
     border: 0;
 }
 
+.highlighted-cell {
+    background-color: rgb(240,176,36);
+}
+
 
