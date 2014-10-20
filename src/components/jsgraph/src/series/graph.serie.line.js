@@ -405,6 +405,8 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
     drawInit: function() {
 
+      var data, xData;
+
       this.currentLineId = 0;
       this.counter = 0;
       this._drawn = true;
@@ -676,7 +678,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
           } else {
 
-            this.drawSlot( this._slotToUse, self.y );
+            this.drawSlot( this._slotToUse, self._slotId );
 
           }
           return true;
@@ -845,7 +847,6 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
         var slotInit = Math.floor( ( this.getXAxis().getActualMin() - this.minX ) * dataPerSlot );
         var slotFinal = Math.ceil( ( this.getXAxis().getActualMax() - this.minX ) * dataPerSlot );
       }
-      
 
       for ( j = slotInit; j <= slotFinal; j++ ) {
 
