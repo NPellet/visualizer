@@ -220,6 +220,10 @@ define(['require', 'modules/default/defaultview', 'lodash', 'src/util/util', 'sr
         },
 
         onResize: function() {
+            if(this.grid) {
+                this.grid.resizeCanvas();
+            }
+
         }
 
 
