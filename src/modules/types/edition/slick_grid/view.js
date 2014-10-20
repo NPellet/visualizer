@@ -28,7 +28,7 @@ require.config({
 });
 
 
-define(['require', 'modules/default/defaultview', 'lodash', 'src/util/util', 'src/util/api', 'src/util/typerenderer','src/util/datatraversing', 'slickgrid', 'slickdataview'], function(require, Default, _, Util, API, Renderer, Traversing) {
+define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 'src/util/util', 'src/util/api', 'src/util/typerenderer','src/util/datatraversing', 'slickgrid', 'slickdataview'], function(require, Default, Debug, _, Util, API, Renderer, Traversing) {
     function View() {}
     Util.loadCss('./components/slickgrid/slick.grid.css');
 
@@ -65,7 +65,6 @@ define(['require', 'modules/default/defaultview', 'lodash', 'src/util/util', 'sr
                     width: '100%',
                     height: '100%'
                 });
-                console.log(this.module.getDomContent(), this.$dom);
                 this.module.getDomContent().html(this.$dom);
                 //$('body').append(this.$dom);
             }
@@ -75,6 +74,7 @@ define(['require', 'modules/default/defaultview', 'lodash', 'src/util/util', 'sr
             this.colConfig = this.module.getConfiguration('colsjPaths');
             this.resolveReady();
         },
+
 
         getSlickColumns: function() {
             var that = this;
@@ -153,12 +153,10 @@ define(['require', 'modules/default/defaultview', 'lodash', 'src/util/util', 'sr
                 var l = moduleValue.get().length;
                 this.module.data = moduleValue;
 
-                console.log('col config', this.colConfig);
                 this.slick.columns = this.getSlickColumns();
                 this.slick.options = this.getSlickOptions();
                 this.slick.data = this.getSlickData(moduleValue);
 
-                console.log('update list in slickgrid');
                 for(var i=0; i< l; i++) {
                     (function(j) {
                         that.module.model.dataListenChange( that.module.data.get( j ), function() {
@@ -188,7 +186,6 @@ define(['require', 'modules/default/defaultview', 'lodash', 'src/util/util', 'sr
                 });
 
                 this.grid.onCellChange.subscribe(function(e, args) {
-                    console.log('cell changed', e,args);
                     var row = args.row;
                     var cell = args.cell;
                     that.module.model.dataSetChild(that.module.data.get(row), that.colConfig[cell].jpath, args.item[that.slick.columns[cell].field]);
@@ -201,15 +198,25 @@ define(['require', 'modules/default/defaultview', 'lodash', 'src/util/util', 'sr
                     }
 
                 });
-            },
-            showList: function( value ) {
-                console.log('update showList');
-                if(!(value instanceof Array)) {
-                    return;
-                }
 
-                this.showList = value;
-                this.updateVisibility();
+                this.grid.onColumnsReordered.subscribe(function(e, args) {
+                    var cols = that.grid.getColumns();
+                    var conf = that.module.definition.configuration.groups.cols[0];
+                    var names = _.pluck(conf, 'name');
+                    var ids = _.pluck(cols, 'id');
+
+                    if(names.concat().sort().join() !== ids.concat().sort().join()) {
+                        Debug.warn('Something might be wrong, number of columns in grid and in configuration do not match');
+                        return;
+                    }
+                    that.module.definition.configuration.groups.cols[0] = [];
+                    for(var i=0; i<cols.length; i++) {
+                        var idx = names.indexOf(ids[i]);
+                        if(idx > -1) {
+                            that.module.definition.configuration.groups.cols[0].push(conf[idx]);
+                        }
+                    }
+                });
             }
 
         },
@@ -229,15 +236,6 @@ define(['require', 'modules/default/defaultview', 'lodash', 'src/util/util', 'sr
 
 
     });
-
-
-    function waitForSheet() {
-        var sheets = document.styleSheets;
-        console.log(sheets.length);
-        for (var i = 0; i < sheets.length; i++) {
-            console.log(sheets[i]);
-        }
-    }
 
     function waitingFormatter(value) {
         return "wait...";
