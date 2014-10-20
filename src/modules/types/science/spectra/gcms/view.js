@@ -138,9 +138,9 @@ define( [
 				}
 
 				moduleValue = moduleValue.get();
-				require( [ 'src/util/jcampconverter' ], function( tojcamp ) {
+				require( [ 'components/jcampconverter/build/jcampconverter' ], function( tojcamp ) {
 
-					var jcamp = tojcamp( moduleValue ).done( function( jcamp ) {
+					var jcamp = tojcamp.convert( moduleValue, true ).then( function( jcamp ) {
 
 //						console.log(JSON.stringify(jcamp.profiling,true));
 
@@ -191,8 +191,8 @@ define( [
 				if(!this.gcmsInstance || !moduleValue)
 					return;
 
-				require(['components/jcampconverter/src/jcampconverter'], function(tojcamp) {
-					var jcamp = tojcamp(moduleValue.get()).done( function(jcamp) {
+				require(['components/jcampconverter/build/jcampconverter'], function(tojcamp) {
+					var jcamp = tojcamp.convert(moduleValue.get(), true).then( function(jcamp) {
 
 						if( jcamp.spectra ) {
 							self.gcmsInstance.setExternalMS( jcamp.spectra[ 0 ].data[ 0 ], cont );

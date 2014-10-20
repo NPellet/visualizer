@@ -600,9 +600,9 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 self.deferreds[ varname ] = $.Deferred();
                 var def = self.deferreds[ varname ];
 
-                require([ 'components/jcampconverter/src/jcampconverter' ], function (JcampConverter) {
+                require([ 'components/jcampconverter/build/jcampconverter' ], function (JcampConverter) {
 
-                    JcampConverter(moduleValue, { lowRes: 1024 }).done(function (spectra) {
+                    JcampConverter.convert(moduleValue, { lowRes: 1024 }, true).then(function (spectra) {
 
                         if (def.state() == "rejected") {
                             return;

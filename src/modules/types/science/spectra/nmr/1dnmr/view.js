@@ -1,4 +1,4 @@
-define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing', 'components/jcampconverter/src/jcampconverter'], function(Default, Graph, Traversing, JcampConverter) {
+define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing', 'components/jcampconverter/build/jcampconverter'], function(Default, Graph, Traversing, JcampConverter) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -107,7 +107,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 					this.deferred.reject();
 				}
 
-				this.deferred = JcampConverter( moduleValue.get(), {lowRes: 1024}).done( function( spectra ) {
+				this.deferred = JcampConverter.convert( moduleValue.get(), {lowRes: 1024}, true).then( function( spectra ) {
 
 					self.series[ varname ] = [];
 					spectra = spectra.spectra;

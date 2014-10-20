@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 'src/util/datatraversing', 'components/jcampconverter/src/jcampconverter'], function (Default, Graph, Traversing, JcampConverter) {
+define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 'src/util/datatraversing', 'components/jcampconverter/build/jcampconverter'], function (Default, Graph, Traversing, JcampConverter) {
 
     function View() {
     }
@@ -67,20 +67,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
                 }
             });
 
-            // Create 2D serie
-            this.series['_2d'] = this.graphs['_2d'].newSerie('serie2d', {}, 'contour')
-                .autoAxis();
-            this.series['_2d'].getXAxis()
-                .setLabel('ppm')
-                .togglePrimaryGrid(false)
-                .toggleSecondaryGrid(false)
-                .setDisplay(false)
-                .flip(true);
-            this.series['_2d'].getYAxis()
-                .togglePrimaryGrid(false)
-                .toggleSecondaryGrid(false)
-                .setDisplay(false)
-                .flip(true);
+            this.series['_2d'] = {};
 
             // Create 1D x graph
             this.graphs['x'] = new Graph(this.dom.find('.nmr-1d-x').get(0), {
@@ -124,7 +111,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
             });
 
             // Created 1D y serie
-            this.series['x'] = this.graphs['x'].newSerie('serieX', { useSlots: true })
+            this.series['x'] = this.graphs['x'].newSerie('serieX', { useSlots: false })
                 .autoAxis();
             this.series['x'].getYAxis()
                 .setDisplay(false)
@@ -132,7 +119,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
                 .toggleSecondaryGrid(false);
             this.series['x'].getXAxis()
                 .flip(true)
-                .setLabel('ppm')
                 .togglePrimaryGrid(false)
                 .toggleSecondaryGrid(false).
                 setTickPosition('outside');
@@ -186,11 +172,10 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
             });
 
             // Create 1D y serie
-            this.series['y'] = this.graphs['y'].newSerie('serieY', { flip: true, useSlots: true })
+            this.series['y'] = this.graphs['y'].newSerie('serieY', { flip: true, useSlots: false })
                 .setXAxis(self.graphs['y'].getBottomAxis())
                 .setYAxis(self.graphs['y'].getRightAxis());
             this.series['y'].getYAxis()
-                .setLabel('ppm')
                 .togglePrimaryGrid(false)
                 .toggleSecondaryGrid(false)
                 .flip(true)
@@ -207,13 +192,13 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
 
         onResize: function () {
             if (this.graphs['_2d']) {
-                this.graphs['_2d'].resize(this.width - 60, this.height - 60);
+                this.graphs['_2d'].resize(this.width - 160, this.height - 160);
             }
             if (this.graphs['x']) {
-                this.graphs['x'].resize(this.width - 60, 50);
+                this.graphs['x'].resize(this.width - 160, 150);
             }
             if (this.graphs['y']) {
-                this.graphs['y'].resize(50, this.height - 60);
+                this.graphs['y'].resize(150, this.height - 160);
             }
             this.redraw();
         },
@@ -232,11 +217,11 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
                 this.addSerieJcampXOrY(moduleValue, true, true);
             },
 
-            jcamp2d: function (moduleValue) {
+            jcamp2d: function (moduleValue, varName) {
                 var self = this;
-                JcampConverter(String(moduleValue.get())).then(function (result) {
+                JcampConverter.convert(String(moduleValue.get()), true).then(function (result) {
                     var data = result.contourLines;
-                    self.series['_2d'].setData(data);
+                    self.get2dSerie(varName).setData(data);
                     self.redraw();
                 });
             },
@@ -259,7 +244,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
 
         addSerieJcampXOrY: function (value, x, y) {
             var self = this;
-            JcampConverter(String(value.get())).then(function (result) {
+            JcampConverter.convert(String(value.get()), true).then(function (result) {
                 var data = result.spectra[0].data[0];
                 if (x) {
                     self.series['x'].setData(data);
@@ -272,20 +257,112 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
         },
 
         redraw: function () {
-            if (this.graphs['y']) {
-                this.graphs['y'].redraw();
-                this.graphs['y'].autoscaleAxes();
-                this.graphs['y'].drawSeries();
+            var graphY = this.graphs['y'],
+                graphX = this.graphs['x'],
+                graph2D = this.graphs['_2d'];
+            var serieY,
+                serieX;
+            if (graphY) {
+                graphY.redraw();
+                graphY.autoscaleAxes();
+                graphY.drawSeries();
+                serieY = this.series['y'];
             }
-            if (this.graphs['x']) {
-                this.graphs['x'].redraw();
-                this.graphs['x'].autoscaleAxes();
-                this.graphs['x'].drawSeries();
+            if (graphX) {
+                graphX.redraw();
+                graphX.autoscaleAxes();
+                graphX.drawSeries();
+                serieX = this.series['x'];
             }
-            if (this.graphs['_2d']) {
-                this.graphs['_2d'].redraw();
-                this.graphs['_2d'].autoscaleAxes();
-                this.graphs['_2d'].drawSeries();
+            if (graph2D) {
+
+                if (serieX) {
+                    var twoDX = this.get2d('X');
+                    if(serieX.getMinX() < twoDX.min) {
+                        serieX.getXAxis().forceMin(serieX.getMinX());
+                        this.force('X', 'Min', serieX.getMinX())
+                    } else {
+                        serieX.getXAxis().forceMin(twoDX.min);
+                        this.force('X', 'Min', twoDX.min);
+                    }
+                    if(serieX.getMaxX() > twoDX.max) {
+                        serieX.getXAxis().forceMax(serieX.getMaxX());
+                        this.force('X', 'Max', serieX.getMaxX());
+                    } else {
+                        serieX.getXAxis().forceMax(twoDX.max);
+                        this.force('X', 'Max', twoDX.max);
+                    }
+                }
+
+                if (serieY) {
+                    var twoDY = this.get2d('Y');
+                    if(serieY.getMinY() < twoDY.min) {
+                        serieY.getYAxis().forceMin(serieY.getMinY());
+                        this.force('Y', 'Min', serieY.getMinY());
+                    } else {
+                        serieY.getYAxis().forceMin(twoDY.min);
+                        this.force('Y', 'Min', twoDY.min);
+                    }
+                    if(serieY.getMaxY() > twoDY.max) {
+                        serieY.getYAxis().forceMax(serieY.getMaxY());
+                        this.force('Y', 'Max', serieY.getMaxY());
+                    } else {
+                        serieY.getYAxis().forceMax(twoDY.max);
+                        this.force('Y', 'Max', twoDY.max);
+                    }
+                }
+
+                graph2D.redraw();
+                graph2D.autoscaleAxes();
+                graph2D.drawSeries();
+            }
+        },
+
+        get2dSerie: function (name) {
+            if (!this.series['_2d'][name]) {
+                // Create 2D serie
+                var serie = this.graphs['_2d'].newSerie('serie2d_' + 'name', {}, 'contour')
+                    .autoAxis();
+                serie.getXAxis()
+                    .togglePrimaryGrid(false)
+                    .toggleSecondaryGrid(false)
+                    .setDisplay(false)
+                    .flip(true);
+                serie.getYAxis()
+                    .togglePrimaryGrid(false)
+                    .toggleSecondaryGrid(false)
+                    .setDisplay(false)
+                    .flip(true);
+                this.series['_2d'][name] = serie;
+            }
+            return this.series['_2d'][name];
+        },
+
+        get2d: function (XY) {
+            var min = Infinity,
+                max = -Infinity,
+                series = this.series['_2d'],
+                minVal, maxVal;
+            for (var i in series) {
+                minVal = series[i]['getMin'+XY]();
+                if(minVal < min) {
+                    min = minVal;
+                }
+                maxVal = series[i]['getMax'+XY]();
+                if(maxVal > max) {
+                    max = maxVal;
+                }
+            }
+            return {
+                min: min,
+                max: max
+            };
+        },
+
+        force: function (axis, minMax, value) {
+            var series = this.series['_2d'];
+            for (var i in series) {
+                series[i]['get'+axis+'Axis']()['force'+minMax](value);
             }
         }
 
