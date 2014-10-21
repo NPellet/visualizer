@@ -1,6 +1,6 @@
 'use strict';
 
-define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/util/context', 'src/util/versioning', 'src/util/api', 'forms/form'], function($, ui, Util, ModuleFactory, Context, Versioning, API, Form) {
+define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/util/context', 'src/util/versioning', 'src/util/api', 'forms/form', 'src/main/variables'], function($, ui, Util, ModuleFactory, Context, Versioning, API, Form, Variables) {
 
 	var definition, jqdom, self = this, moduleMove, isInit = false;
 	var activeLayer = "Default layer";
@@ -373,6 +373,8 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 		if( module.controller && module.controller.onRemove ) {
 			module.controller.onRemove( );
 		}
+
+        Variables.unlisten(module);
 	};
 
 

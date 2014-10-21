@@ -9,6 +9,13 @@ define([
 
 	var allVariables = {};
 
+    function unlisten(module) {
+        var moduleId = module.getId();
+        for (var i in allVariables) {
+            allVariables[i].unlisten(moduleId);
+        }
+    }
+
 	function getVariable( varName ) {
 
 		if( allVariables[ varName ] ) {
@@ -184,6 +191,18 @@ define([
             } );
         },
 
+        unlisten: function(moduleId) {
+            if (this.listenedBy[moduleId]) {
+                delete this.listenedBy[moduleId];
+                for (var i = 0, ii = this.listeners.length; i < ii; i++) {
+                    if(this.listeners[i].id === moduleId) {
+                        this.listeners.splice(i, 1);
+                        break; // There should only be one listener per id, do not check further
+                    }
+                }
+            }
+        },
+
         triggerChange: function (callback, moduleId) {
 
             var self = this;
@@ -261,7 +280,8 @@ define([
         getNames: getNames,
         getData: function () {
             return data;
-        }
+        },
+        unlisten: unlisten
 	};
 	
 });
