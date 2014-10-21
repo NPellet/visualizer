@@ -61,6 +61,11 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                             default: ['editable', 'enableAddRow', 'enableCellNavigation']
                         },
 
+                        "slick.rowHeight": {
+                            type: 'text',
+                            title: 'Row Height'
+                        },
+
 
                         filterRow: {
                             type: 'jscode',
@@ -97,7 +102,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                             title: 'Editor',
                             default: 'none',
                             options: [{key: 'none', title: 'None'},
-                                {key: 'auto', title: 'Auto'},
+                                {key: 'auto', title: 'Based on type'},
                                 {key: 'slick.text', title: 'Text'},
                                 {key: 'slick.checkbox', title: 'Checkbox'},
                                 {key: 'slick.longtext', title: 'Long text'},
@@ -183,6 +188,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
         'colorjPath': [ 'groups', 'group', 0, 'colorjpath', 0 ],
         'filterRow': [ 'groups', 'group', 0, 'filterRow', 0 ],
         'slickCheck': [ 'groups', 'group', 0, 'slickCheck', 0 ],
+        'slick.rowHeight': [ 'groups', 'group', 0, 'slick.rowHeight', 0 ],
         'cols': ['groups', 'cols', 0]
     };
 

@@ -98,7 +98,8 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     editor: editor || editors[row.editor],
                     formatter: formatters[row.formatter],
                     asyncPostRender: (row.formatter === 'typerenderer') ? tp : undefined,
-                    jpath: row.jpath
+                    jpath: row.jpath,
+                    dataType: type
                 }
             });
         },
@@ -118,7 +119,8 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 asyncPostRenderDelay: 0,
                 dataItemColumnValueExtractor: function(item, coldef) {
                     return item;
-                }
+                },
+                rowHeight: that.module.getConfiguration('slick.rowHeight')
             };
         },
 
@@ -220,14 +222,19 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
                     that.grid.onAddNewRow.subscribe(function (e, args) {
                         var item = args.item;
-                        //that.grid.invalidateRow(data.length);
-                        //data.push(item);
-                        //that.grid.updateRowCount();
-                        //that.grid.render();
+                        var jpath = args.column.jpath.slice();
+                        jpath.unshift(that.module.data.length);
+                        that.module.model.dataSetChild(that.module.data, jpath, item);
+                        that.grid.updateRowCount();
+                        that.grid.invalidateRow(that.module.data.length);
+                        that.grid.render();
                     });
 
                     that.grid.onMouseEnter.subscribe(function(e) {
                         var cell = that.grid.getCellFromEvent(e);
+                        if(cell.row >= that.module.data.length) {
+                            return;
+                        }
                         var hl = that.module.data[cell.row]._highlight;
                         if(hl) {
                             API.highlightId(hl,1);
@@ -237,6 +244,9 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
                     that.grid.onMouseLeave.subscribe(function(e) {
                         var cell = that.grid.getCellFromEvent(e);
+                        if(cell.row >= that.module.data.length) {
+                            return;
+                        }
                         var hl = that.module.data[cell.row]._highlight;
                         if(hl) {
                             API.highlightId(hl,0);
@@ -358,10 +368,13 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
     }
 
     function typeRenderer(cellNode, row, dataContext, colDef) {
-        var def = Renderer.toScreen(dataContext, null, null, colDef.jpath);
+        var def = Renderer.toScreen(dataContext, this.module, {}, colDef.jpath);
         console.log('type renderer');
         def.always(function(value) {
             $(cellNode).html(value);
+            if(def.build) {
+                def.build();
+            }
         });
     }
 

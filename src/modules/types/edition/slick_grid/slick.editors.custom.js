@@ -152,7 +152,21 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
             };
 
             this.applyValue = function (item, state) {
-                item.getChildSync(args.column.jpath).setValue(state);
+
+                if(_.isEmpty(item)) {
+                    if(args.column.dataType) {
+                        item.type = args.column.dataType;
+                        item.value = state;
+                        DataObject.check(item, true);
+                    }
+                    else {
+                        return new DataString(state);
+                    }
+                }
+                else {
+                    item.getChildSync(args.column.jpath).setValue(state);
+                }
+
             };
 
             this.isValueChanged = function () {

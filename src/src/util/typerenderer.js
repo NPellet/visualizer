@@ -118,7 +118,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 		
 		var id = Util.getNextUniqueId();
 		var id2 = Util.getNextUniqueId();
-		var div = '<div id="' + id + '" />';
+		var div = '<div id="' + id + '" style="width:100%; height:100%" />';
 		// Find the dom in here
 		var can = $( '<canvas />', { id: id2 } ).get( 0 );
 		
