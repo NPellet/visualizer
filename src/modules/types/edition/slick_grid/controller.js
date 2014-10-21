@@ -1,4 +1,4 @@
-define(['modules/default/defaultcontroller'], function(Default) {
+define(['modules/default/defaultcontroller', 'src/util/util'], function(Default, Util) {
 
     var controller = function() {};
 
@@ -41,7 +41,9 @@ define(['modules/default/defaultcontroller'], function(Default) {
                         colorjpath: {
                             type: 'combo',
                             title: 'Color jPath',
-                            options: jpaths
+                            options: jpaths,
+                            extractValue: Util.jpathToArray,
+                            insertValue: Util.jpathToString
                         },
 
                         slickCheck: {
@@ -85,7 +87,9 @@ define(['modules/default/defaultcontroller'], function(Default) {
                         jpath: {
                             type: 'combo',
                             title: 'jPath',
-                            options: jpaths
+                            options: jpaths,
+                            extractValue: Util.jpathToArray,
+                            insertValue: Util.jpathToString
                         },
 
                         editor: {
