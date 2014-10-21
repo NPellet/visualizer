@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.10.1-4
+ * jsGraphs JavaScript Graphing Library v1.10.1-8
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-10-20T09:30Z
+ * Date: 2014-10-21T12:52Z
  */
 
 (function( global, factory ) {
@@ -33,7 +33,7 @@
 /* 
  * Build: new source file 
  * File name : graph.axis
- * File path : /Users/lpatiny/git/npellet/graph/src/graph.axis.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.axis.js
  */
 
 build['./graph.axis'] = ( function( $ ) { 
@@ -1063,7 +1063,7 @@ build['./graph.axis'] = ( function( $ ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.x
- * File path : /Users/lpatiny/git/npellet/graph/src/graph.axis.x.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.axis.x.js
  */
 
 build['./graph.axis.x'] = ( function( $, GraphAxis ) { 
@@ -1222,7 +1222,7 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.y
- * File path : /Users/lpatiny/git/npellet/graph/src/graph.axis.y.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.axis.y.js
  */
 
 build['./graph.axis.y'] = ( function( GraphAxis ) { 
@@ -1456,7 +1456,7 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.broken
- * File path : /Users/lpatiny/git/npellet/graph/src/graph.axis.broken.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.axis.broken.js
  */
 
 build['./graph.axis.broken'] = ( function( $ ) { 
@@ -1705,7 +1705,7 @@ build['./graph.axis.broken'] = ( function( $ ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.x.broken
- * File path : /Users/lpatiny/git/npellet/graph/src/graph.axis.x.broken.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.axis.x.broken.js
  */
 
 build['./graph.axis.x.broken'] = ( function( GraphXAxis, GraphBrokenAxis ) { 
@@ -1749,7 +1749,7 @@ build['./graph.axis.x.broken'] = ( function( GraphXAxis, GraphBrokenAxis ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.y.broken
- * File path : /Users/lpatiny/git/npellet/graph/src/graph.axis.y.broken.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.axis.y.broken.js
  */
 
 build['./graph.axis.y.broken'] = ( function( GraphYAxis, GraphBrokenAxis ) { 
@@ -1800,7 +1800,7 @@ build['./graph.axis.y.broken'] = ( function( GraphYAxis, GraphBrokenAxis ) {
 /* 
  * Build: new source file 
  * File name : graph.xaxis.time
- * File path : /Users/lpatiny/git/npellet/graph/src/graph.xaxis.time.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.xaxis.time.js
  */
 
 build['./graph.xaxis.time'] = ( function( GraphAxis ) { 
@@ -2562,7 +2562,7 @@ build['./graph.xaxis.time'] = ( function( GraphAxis ) {
 /* 
  * Build: new source file 
  * File name : graph.legend
- * File path : /Users/lpatiny/git/npellet/graph/src/graph.legend.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.legend.js
  */
 
 build['./graph.legend'] = ( function( ) { 
@@ -2817,7 +2817,7 @@ build['./graph.legend'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : dynamicdepencies
- * File path : /Users/lpatiny/git/npellet/graph/src/dynamicdepencies.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/dynamicdepencies.js
  */
 
 build['./dynamicdepencies'] = ( function( ) { 
@@ -2892,7 +2892,7 @@ build['./dynamicdepencies'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : graph.core
- * File path : /Users/lpatiny/git/npellet/graph/src/graph.core.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.core.js
  */
 
 build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken, GraphYAxisBroken, GraphXAxisTime, GraphLegend, DynamicDepencies ) { 
@@ -4834,7 +4834,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 /* 
  * Build: new source file 
  * File name : graph._serie
- * File path : /Users/lpatiny/git/npellet/graph/src/graph._serie.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph._serie.js
  */
 
 build['./graph._serie'] = ( function( ) { 
@@ -5312,7 +5312,7 @@ build['./graph._serie'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.drag
- * File path : /Users/lpatiny/git/npellet/graph/src/plugins/graph.plugin.drag.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/plugins/graph.plugin.drag.js
  */
 
 build['./plugins/graph.plugin.drag'] = ( function( ) { 
@@ -5364,7 +5364,7 @@ build['./plugins/graph.plugin.drag'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.linking
- * File path : /Users/lpatiny/git/npellet/graph/src/plugins/graph.plugin.linking.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/plugins/graph.plugin.linking.js
  */
 
 build['./plugins/graph.plugin.linking'] = ( function( ) { 
@@ -5621,7 +5621,7 @@ build['./plugins/graph.plugin.linking'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.nmrpeakpicking
- * File path : /Users/lpatiny/git/npellet/graph/src/plugins/graph.plugin.nmrpeakpicking.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/plugins/graph.plugin.nmrpeakpicking.js
  */
 
 build['./plugins/graph.plugin.nmrpeakpicking'] = ( function( ) { 
@@ -5680,7 +5680,7 @@ build['./plugins/graph.plugin.nmrpeakpicking'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.range
- * File path : /Users/lpatiny/git/npellet/graph/src/plugins/graph.plugin.range.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/plugins/graph.plugin.range.js
  */
 
 build['./plugins/graph.plugin.range'] = ( function( ) { 
@@ -5748,7 +5748,7 @@ build['./plugins/graph.plugin.range'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.shape
- * File path : /Users/lpatiny/git/npellet/graph/src/plugins/graph.plugin.shape.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/plugins/graph.plugin.shape.js
  */
 
 build['./plugins/graph.plugin.shape'] = ( function( ) { 
@@ -5878,7 +5878,7 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.zoom
- * File path : /Users/lpatiny/git/npellet/graph/src/plugins/graph.plugin.zoom.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/plugins/graph.plugin.zoom.js
  */
 
 build['./plugins/graph.plugin.zoom'] = ( function( ) { 
@@ -6136,11 +6136,108 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
 ;
 /* 
  * Build: new source file 
- * File name : series/graph.serie.line
- * File path : /Users/lpatiny/git/npellet/graph/src/series/graph.serie.line.js
+ * File name : series/slotoptimizer
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/series/slotoptimizer.js
  */
 
-build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) { 
+build['./series/slotoptimizer'] = ( function( ) { 
+
+
+    var slotWorker;
+    var queue = {};
+
+    function createWorker() {
+
+        var workerUrl = URL.createObjectURL( new Blob(
+            [ " ( " + 
+            function() { 
+              onmessage = function( e ) {
+
+                var data = e.data.data,
+                    slotNb = e.data.slotNumber,
+                    slot = e.data.slot,
+                    flip = e.data.flip,
+                    max = e.data.max,
+                    min = e.data.min,
+                    slotNumber,
+                    dataPerSlot = slot / (max - min);
+
+                    var slotsData = [];
+
+                for(var j = 0, k = data.length; j < k ; j ++ ) {
+
+                  for(var m = 0, n = data[ j ].length ; m < n ; m += 2 ) {
+
+                    slotNumber = Math.floor( ( data[ j ][ m ] - min ) * dataPerSlot );
+
+                    slotsData[ slotNumber ] = slotsData[ slotNumber ] || { 
+                        min: data[ j ][ m + 1], 
+                        max: data[ j ][ m + 1], 
+                        start: data[ j ][ m + 1],
+                        stop: false,
+                        x: data[ j ][ m ] };
+
+                    slotsData[ slotNumber ].stop = data[ j ][ m + 1 ];
+                    slotsData[ slotNumber ].min = Math.min( data[ j ][ m + 1 ], slotsData[ slotNumber ].min );
+                    slotsData[ slotNumber ].max = Math.max( data[ j ][ m + 1 ], slotsData[ slotNumber ].max );
+
+                  }
+                }
+
+                postMessage( { slotNumber: slotNb, slot: slot, data: slotsData, _queueId: e.data._queueId } );
+              };
+
+            }.toString() + ")()" ]
+
+        , { type: 'application/javascript' } ) );
+
+        slotWorker = new Worker( workerUrl );
+
+        slotWorker.onmessage = function( e ) {
+            var id = e.data._queueId;
+            delete e.data._queueId;
+            queue[ id ].resolve( e.data.data );
+            delete queue[ id ];
+        }
+    }
+
+    // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
+    function guid() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+            return v.toString(16);
+        });
+    }
+
+    return function( toOptimize ) {
+
+        if( ! slotWorker ) {
+            createWorker();
+        }
+
+        var requestId = guid();
+        toOptimize._queueId = requestId;
+        queue[ requestId ] = $.Deferred();
+
+        slotWorker.postMessage( toOptimize );
+        return queue[ requestId ];
+    }
+
+ } ) (  );
+
+
+// Build: End source file (series/slotoptimizer) 
+
+
+
+;
+/* 
+ * Build: new source file 
+ * File name : series/graph.serie.line
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/series/graph.serie.line.js
+ */
+
+build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, SlotOptimizer ) { 
 
   
 
@@ -6276,67 +6373,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
       var self = this;
       this.slotsData = {};
 //      this.slotWorker = new Worker( './src/slotworker.js' );
+  
 
-
-    var workerUrl = URL.createObjectURL( new Blob(
-
-        [
-        " ( " + 
-
-            function() { 
-
-           
-          onmessage = function( e ) {
-            var data = e.data.data;
-            var slotNb = e.data.slotNumber;
-            var slot = e.data.slot;
-            var flip = e.data.flip;
-            var max = e.data.max;
-            var min = e.data.min;
-            var slotNumber;
-            var dataPerSlot = slot / (max - min);
-
-            this.slotsData = [];
-
-            for(var j = 0, k = data.length; j < k ; j ++ ) {
-
-              for(var m = 0, n = data[ j ].length ; m < n ; m += 2 ) {
-
-                slotNumber = Math.floor( ( data[ j ][ m ] - min ) * dataPerSlot );
-
-                this.slotsData[ slotNumber ] = this.slotsData[ slotNumber ] || { 
-                    min: data[ j ][ m + 1], 
-                    max: data[ j ][ m + 1], 
-                    start: data[ j ][ m + 1],
-                    stop: false,
-                    x: data[ j ][ m ] };
-
-                this.slotsData[ slotNumber ].stop = data[ j ][ m + 1 ];
-                this.slotsData[ slotNumber ].min = Math.min( data[ j ][ m + 1 ], this.slotsData[ slotNumber ].min );
-                this.slotsData[ slotNumber ].max = Math.max( data[ j ][ m + 1 ], this.slotsData[ slotNumber ].max );
-
-              }
-            }
-
-            postMessage( { slotNumber: slotNb, slot: slot, data: this.slotsData } );
-          };
-
-
-            }.toString() + ")()"
-
-        ], { type: 'application/javascript' }
-
-        ) );
-
-
-        this.slotWorker = new Worker( workerUrl );
-
-      
-
-      this.slotWorker.onmessage = function( e ) {
-
-        self.slotsData[ e.data.slot ].resolve( e.data.data );
-      }
 
 
       for ( var i = 0, l = this.slots.length; i < l; i++ ) {
@@ -6349,9 +6387,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
     slotCalculator: function( slot, slotNumber ) {
 
-      var def = $.Deferred();
-
-      this.slotWorker.postMessage( {
+      return SlotOptimizer( {
         
         min: this.minX,
         max: this.maxX,
@@ -6362,14 +6398,13 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
       } );
 
-      return def;
     },
 
     calculateSlot: function( slot, slotNumber ) {
       var self = this;
       this.slotsData[ slot ] = this.slotCalculator( slot, slotNumber );
       this.slotsData[ slot ].pipe( function( data ) {
-
+console.log( data );
         self.slotsData[ slot ] = data;
         return data;
       } );
@@ -8215,7 +8250,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 
   return GraphSerie;
- } ) ( build["./graph._serie"] );
+ } ) ( build["./graph._serie"],build["./series/slotoptimizer"] );
 
 
 // Build: End source file (series/graph.serie.line) 
@@ -8226,7 +8261,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 /* 
  * Build: new source file 
  * File name : series/graph.serie.contour
- * File path : /Users/lpatiny/git/npellet/graph/src/series/graph.serie.contour.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/series/graph.serie.contour.js
  */
 
 build['./series/graph.serie.contour'] = ( function( GraphSerie ) { 
@@ -8623,7 +8658,7 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
 /* 
  * Build: new source file 
  * File name : series/graph.serie.line.broken
- * File path : /Users/lpatiny/git/npellet/graph/src/series/graph.serie.line.broken.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/series/graph.serie.line.broken.js
  */
 
 build['./series/graph.serie.line.broken'] = ( function( GraphLine ) { 
@@ -8857,7 +8892,7 @@ build['./series/graph.serie.line.broken'] = ( function( GraphLine ) {
 /* 
  * Build: new source file 
  * File name : series/graph.serie.scatter
- * File path : /Users/lpatiny/git/npellet/graph/src/series/graph.serie.scatter.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/series/graph.serie.scatter.js
  */
 
 build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) { 
@@ -9311,7 +9346,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 /* 
  * Build: new source file 
  * File name : series/graph.serie.zone
- * File path : /Users/lpatiny/git/npellet/graph/src/series/graph.serie.zone.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/series/graph.serie.zone.js
  */
 
 build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) { 
@@ -9686,7 +9721,7 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
 /* 
  * Build: new source file 
  * File name : graph.serieaxis
- * File path : /Users/lpatiny/git/npellet/graph/src/graph.serieaxis.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.serieaxis.js
  */
 
 build['./graph.serieaxis'] = ( function( GraphSerie ) { 
@@ -9738,7 +9773,7 @@ build['./graph.serieaxis'] = ( function( GraphSerie ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape
- * File path : /Users/lpatiny/git/npellet/graph/src/shapes/graph.shape.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.js
  */
 
 build['./shapes/graph.shape'] = ( function( ) { 
@@ -10840,7 +10875,7 @@ build['./shapes/graph.shape'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.areaundercurve
- * File path : /Users/lpatiny/git/npellet/graph/src/shapes/graph.shape.areaundercurve.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.areaundercurve.js
  */
 
 build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) { 
@@ -11114,7 +11149,7 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.line
- * File path : /Users/lpatiny/git/npellet/graph/src/shapes/graph.shape.line.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.line.js
  */
 
 build['./shapes/graph.shape.line'] = ( function( GraphShape ) { 
@@ -11326,7 +11361,7 @@ build['./shapes/graph.shape.line'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.arrow
- * File path : /Users/lpatiny/git/npellet/graph/src/shapes/graph.shape.arrow.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.arrow.js
  */
 
 build['./shapes/graph.shape.arrow'] = ( function( GraphLine ) { 
@@ -11366,7 +11401,7 @@ build['./shapes/graph.shape.arrow'] = ( function( GraphLine ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.label
- * File path : /Users/lpatiny/git/npellet/graph/src/shapes/graph.shape.label.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.label.js
  */
 
 build['./shapes/graph.shape.label'] = ( function( GraphShape ) { 
@@ -11423,7 +11458,7 @@ build['./shapes/graph.shape.label'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.nmrintegral
- * File path : /Users/lpatiny/git/npellet/graph/src/shapes/graph.shape.nmrintegral.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.nmrintegral.js
  */
 
 build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve ) { 
@@ -11686,7 +11721,7 @@ build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve )
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.rect
- * File path : /Users/lpatiny/git/npellet/graph/src/shapes/graph.shape.rect.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.rect.js
  */
 
 build['./shapes/graph.shape.rect'] = ( function( GraphShape ) { 
@@ -12231,7 +12266,7 @@ this.handle1.setAttribute('x', this.currentX);
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.peakintegration2d
- * File path : /Users/lpatiny/git/npellet/graph/src/shapes/graph.shape.peakintegration2d.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.peakintegration2d.js
  */
 
 build['./shapes/graph.shape.peakintegration2d'] = ( function( GraphRect ) { 
@@ -12283,7 +12318,7 @@ build['./shapes/graph.shape.peakintegration2d'] = ( function( GraphRect ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.peakinterval
- * File path : /Users/lpatiny/git/npellet/graph/src/shapes/graph.shape.peakinterval.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.peakinterval.js
  */
 
 build['./shapes/graph.shape.peakinterval'] = ( function( GraphLine ) { 
@@ -12329,7 +12364,7 @@ build['./shapes/graph.shape.peakinterval'] = ( function( GraphLine ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.peakinterval2
- * File path : /Users/lpatiny/git/npellet/graph/src/shapes/graph.shape.peakinterval2.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.peakinterval2.js
  */
 
 build['./shapes/graph.shape.peakinterval2'] = ( function( GraphLine ) { 
@@ -12554,7 +12589,7 @@ build['./shapes/graph.shape.peakinterval2'] = ( function( GraphLine ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.rangex
- * File path : /Users/lpatiny/git/npellet/graph/src/shapes/graph.shape.rangex.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.rangex.js
  */
 
 build['./shapes/graph.shape.rangex'] = ( function( GraphSurfaceUnderCurve ) { 
@@ -12653,7 +12688,7 @@ build['./shapes/graph.shape.rangex'] = ( function( GraphSurfaceUnderCurve ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.cross
- * File path : /Users/lpatiny/git/npellet/graph/src/shapes/graph.shape.cross.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.cross.js
  */
 
 build['./shapes/graph.shape.cross'] = ( function( GraphShape ) { 
@@ -12787,7 +12822,7 @@ build['./shapes/graph.shape.cross'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.zoom2d
- * File path : /Users/lpatiny/git/npellet/graph/src/shapes/graph.shape.zoom2d.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.zoom2d.js
  */
 
 build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) { 
@@ -12985,7 +13020,7 @@ build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : graph.toolbar
- * File path : /Users/lpatiny/git/npellet/graph/src/graph.toolbar.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.toolbar.js
  */
 
 build['./graph.toolbar'] = ( function( ) { 
@@ -13146,7 +13181,7 @@ build['./graph.toolbar'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : graph
- * File path : /Users/lpatiny/git/npellet/graph/src/graph.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.js
  */
 
 build[ './graph.core' ].getBuild = function( b ) { return build[ b ]; }
