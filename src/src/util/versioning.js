@@ -148,6 +148,33 @@ define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables'], func
 
     }
 
+    function semverCompare(v1, v2) {
+        if (typeof v1 === 'string') {
+            v1 = semver(v1);
+        }
+        if (typeof v2 === 'string') {
+            v2 = semver(v2);
+        }
+        if (!v1 || !v2) {
+            return Debug.error('Invalid version number:' + v1 ? v2 : v1);
+        }
+        if (v1.major < v2.major) {
+            return -1;
+        } else if (v2.major < v1.major) {
+            return 1;
+        } else if (v1.minor < v2.minor) {
+            return -1;
+        } else if (v2.minor < v1.minor) {
+            return 1;
+        } else if (v1.patch < v2.patch) {
+            return -1;
+        } else if (v2.patch < v1.patch) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
 	return {
 		get version() {
 			return String(version);
@@ -216,6 +243,7 @@ define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables'], func
 		isViewLocked: function() {
 			return this.getView().configuration.lockView || false;
 		},
-        semver: semver
+        semver: semver,
+        semverCompare: semverCompare
 	};
 });
