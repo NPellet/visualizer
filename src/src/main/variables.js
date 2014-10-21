@@ -174,7 +174,7 @@ define([
             var id = module.getId();
             // If the module already listens for this variable, we should definitely not listen for it again.
             if( this.listenedBy[ id ] ) {
-                Debug.warn("This module already listens the variable " + this.getName() + ". No new listener is added");
+                return Debug.warn("This module already listens the variable " + this.getName() + ". No new listener is added");
             }
 
             this.listenedBy[ id ] = true;
