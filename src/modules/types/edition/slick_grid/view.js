@@ -20,7 +20,6 @@ require.config({
             'components/slickgrid/plugins/slick.cellrangeselector' ,
             'components/slickgrid/plugins/slick.cellselectionmodel' ,
             'components/slickgrid/slick.formatters',
-            'components/slickgrid/slick.editors',
             'modules/types/edition/slick_grid/slick.editors.custom'],
         slickdataview: ['slickgrid']
 
@@ -87,7 +86,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 return {
                     id: row.name,
                     name: row.name,
-                    field: row.name.trim(),
+                    field: row.name,
                     width: +row.width || undefined,
                     minWidth: +row.minWidth || undefined,
                     maxWidth: +row.maxWidth || undefined,
@@ -99,6 +98,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     editor: editor || editors[row.editor],
                     formatter: formatters[row.formatter],
                     asyncPostRender: (row.formatter === 'typerenderer') ? tp : undefined,
+                    jpath: row.jpath
                 }
             });
         },
@@ -115,7 +115,10 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 forceFitColumns: that.module.getConfigurationCheckbox('slickCheck', 'forceFitColumns'),
                 asyncEditorLoading: true,
                 enableAsyncPostRender: true,
-                asyncPostRenderDelay: 0
+                asyncPostRenderDelay: 0,
+                dataItemColumnValueExtractor: function(item, coldef) {
+                    return item;
+                }
             };
         },
 
@@ -128,10 +131,41 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 for(var j=0; j<this.colConfig.length; j++) {
                     d[this.slick.columns[j].field] = value.get(i).getChildSync(this.colConfig[j].jpath);
                 }
-
             }
             return data;
         },
+
+/*
+        getSlickData: function(value) {
+            var that = this;
+            var data;
+            data = [];
+            var promises = [];
+            for(var i=0; i<value.length; i++) {
+                var d;
+                data[i] = (d={});
+                for(var j=0; j<this.colConfig.length; j++) {
+                    promises.push(value.get(i).getChild(this.colConfig[j].jpath));
+                }
+
+            }
+
+            return Promise.all(promises).then(function(x) {
+                var data = [];
+                for(var i=0; i<value.length; i++) {
+                    var d;
+                    data[i] = (d={});
+                    for(var j=0; j<data.length; j++) {
+                        d[that.slick.columns[j].field] = x[i*value.length+j];
+                    }
+                }
+                return data;
+            });
+
+
+        },
+*/
+
 
         updateSlickItem: function(value, idx, item) {
             for(var j=0; j<this.colConfig.length; j++) {
@@ -156,87 +190,99 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
                 this.slick.columns = this.getSlickColumns();
                 this.slick.options = this.getSlickOptions();
-                this.slick.data = this.getSlickData(moduleValue);
+                this.slick.data = this.module.data;
+                //this.slick.data = this.getSlickData(moduleValue);
 
-                for(var i=0; i< l; i++) {
-                    (function(j) {
-                        that.module.model.dataListenChange( that.module.data.get( j ), function() {
-                            var item = that.grid.getDataItem(j);
-                            that.updateSlickItem(that.module.data, j, item);
-                            that.grid.invalidateRow(j);
-                            that.grid.render();
-                        }, 'list');
-                    })(i);
-                }
+                //this.slick.data = this.getSlickData(moduleValue).then(function(data) {
+                    //that.slick.data = data;
 
+                that.module.model.dataListenChange( that.module.data, function(event) {
+                    var jpath = event.jpath;
 
-
-                this.grid = new Slick.Grid("#"+this._id, this.slick.data, this.slick.columns, this.slick.options);
-
-                this._activateHighlights();
-
-                this.grid.setSelectionModel(new Slick.CellSelectionModel());
-
-                this.grid.onAddNewRow.subscribe(function (e, args) {
-                    var item = args.item;
-                    //that.grid.invalidateRow(data.length);
-                    //data.push(item);
-                    //that.grid.updateRowCount();
-                    //that.grid.render();
-                });
-
-                this.grid.onMouseEnter.subscribe(function(e) {
-                    var cell = that.grid.getCellFromEvent(e);
-                    var hl = that.module.data[cell.row]._highlight;
-                    if(hl) {
-                        API.highlightId(hl,1);
-                        lastHighlight = hl;
-                    }
-                });
-
-                this.grid.onMouseLeave.subscribe(function(e) {
-                    var cell = that.grid.getCellFromEvent(e);
-                    var hl = that.module.data[cell.row]._highlight;
-                    if(hl) {
-                        API.highlightId(hl,0);
-                    }
-                    else if(lastHighlight) {
-                        API.highlightId(lastHighlight,0);
-                    }
-                });
-
-                this.grid.onCellChange.subscribe(function(e, args) {
-                    var row = args.row;
-                    var cell = args.cell;
-                    that.module.model.dataSetChild(that.module.data.get(row), that.colConfig[cell].jpath, args.item[that.slick.columns[cell].field]);
-                });
-
-                this.grid.onColumnsResized.subscribe(function(e, args) {
-                    var cols = that.grid.getColumns();
-                    for(var i=0; i<cols.length; i++) {
-                        that.module.definition.configuration.groups.cols[0][i].width = cols[i].width;
+                    if(jpath && jpath[0]) {
+                        //var item = that.module.data[jpath[0]];
+                        //that.updateSlickItem(that.module.data, j, item);
+                        that.grid.invalidateRow(+jpath[0]);
+                        that.grid.render();
                     }
 
-                });
+                }, 'list');
 
-                this.grid.onColumnsReordered.subscribe(function(e, args) {
-                    var cols = that.grid.getColumns();
-                    var conf = that.module.definition.configuration.groups.cols[0];
-                    var names = _.pluck(conf, 'name');
-                    var ids = _.pluck(cols, 'id');
 
-                    if(names.concat().sort().join() !== ids.concat().sort().join()) {
-                        Debug.warn('Something might be wrong, number of columns in grid and in configuration do not match');
-                        return;
-                    }
-                    that.module.definition.configuration.groups.cols[0] = [];
-                    for(var i=0; i<cols.length; i++) {
-                        var idx = names.indexOf(ids[i]);
-                        if(idx > -1) {
-                            that.module.definition.configuration.groups.cols[0].push(conf[idx]);
+
+
+
+                    that.grid = new Slick.Grid("#"+that._id, that.slick.data, that.slick.columns, that.slick.options);
+
+                    that._activateHighlights();
+
+                    that.grid.setSelectionModel(new Slick.CellSelectionModel());
+
+                    that.grid.onAddNewRow.subscribe(function (e, args) {
+                        var item = args.item;
+                        //that.grid.invalidateRow(data.length);
+                        //data.push(item);
+                        //that.grid.updateRowCount();
+                        //that.grid.render();
+                    });
+
+                    that.grid.onMouseEnter.subscribe(function(e) {
+                        var cell = that.grid.getCellFromEvent(e);
+                        var hl = that.module.data[cell.row]._highlight;
+                        if(hl) {
+                            API.highlightId(hl,1);
+                            lastHighlight = hl;
                         }
-                    }
-                });
+                    });
+
+                    that.grid.onMouseLeave.subscribe(function(e) {
+                        var cell = that.grid.getCellFromEvent(e);
+                        var hl = that.module.data[cell.row]._highlight;
+                        if(hl) {
+                            API.highlightId(hl,0);
+                        }
+                        else if(lastHighlight) {
+                            API.highlightId(lastHighlight,0);
+                        }
+                    });
+
+                    that.grid.onCellChange.subscribe(function(e, args) {
+                        var row = args.row;
+                        var cell = args.cell;
+                        var jpath = that.colConfig[cell].jpath.slice();
+                        jpath.unshift(row);
+                        that.module.model.dataSetChild(that.module.data, jpath, that.module.data.getChildSync(jpath));
+                    });
+
+                    that.grid.onColumnsResized.subscribe(function(e, args) {
+                        var cols = that.grid.getColumns();
+                        for(var i=0; i<cols.length; i++) {
+                            that.module.definition.configuration.groups.cols[0][i].width = cols[i].width;
+                        }
+
+                    });
+
+                    that.grid.onColumnsReordered.subscribe(function(e, args) {
+                        var cols = that.grid.getColumns();
+                        var conf = that.module.definition.configuration.groups.cols[0];
+                        var names = _.pluck(conf, 'name');
+                        var ids = _.pluck(cols, 'id');
+
+                        if(names.concat().sort().join() !== ids.concat().sort().join()) {
+                            Debug.warn('Something might be wrong, number of columns in grid and in configuration do not match');
+                            return;
+                        }
+                        that.module.definition.configuration.groups.cols[0] = [];
+                        for(var i=0; i<cols.length; i++) {
+                            var idx = names.indexOf(ids[i]);
+                            if(idx > -1) {
+                                that.module.definition.configuration.groups.cols[0].push(conf[idx]);
+                            }
+                        }
+                    });
+                //});
+
+
             }
 
         },
@@ -312,8 +358,8 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
     }
 
     function typeRenderer(cellNode, row, dataContext, colDef) {
-        var def = Renderer.toScreen(dataContext[colDef.field]);
-
+        var def = Renderer.toScreen(dataContext, null, null, colDef.jpath);
+        console.log('type renderer');
         def.always(function(value) {
             $(cellNode).html(value);
         });

@@ -12,7 +12,8 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
             "Slick": {
                 "Editors": {
                     "TextValue": TextValueEditor,
-                    "ColorValue": ColorEditor
+                    "ColorValue": ColorEditor,
+                    "Text": TextValueEditor
                 }
             }
         });
@@ -70,7 +71,7 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
             };
 
             this.loadValue = function(item) {
-                defaultValue = item[args.column.field].value || "";
+                defaultValue = item.getChildSync(args.column.jpath).value || "";
                 $input.val(defaultValue);
                 $input.spectrum('set', defaultValue);
                 $input[0].defaultValue = defaultValue;
@@ -82,7 +83,7 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
             };
 
             this.applyValue = function (item, state) {
-                item[args.column.field].value = state;
+                item.getChildSync(args.column.jpath).setValue(state);
             };
 
             this.isValueChanged = function () {
@@ -140,7 +141,7 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
             };
 
             this.loadValue = function (item) {
-                defaultValue = item[args.column.field].value || "";
+                defaultValue = item.getChildSync(args.column.jpath).get() || "";
                 $input.val(defaultValue);
                 $input[0].defaultValue = defaultValue;
                 $input.select();
@@ -151,7 +152,7 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
             };
 
             this.applyValue = function (item, state) {
-                item[args.column.field].value = state;
+                item.getChildSync(args.column.jpath).setValue(state);
             };
 
             this.isValueChanged = function () {
