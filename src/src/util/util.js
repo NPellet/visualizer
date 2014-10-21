@@ -248,6 +248,23 @@ define(function () {
             stack[ jpath ] = makejPathFunction(jpath)
         },
 
+        jpathToArray: function( val ) {
+            if(val){
+                var val2 = val.split('.');
+                val2.shift();
+                return val2;
+            }
+            else {
+                return [];
+            }
+        },
+
+        jpathToString: function( val ) {
+            val = val || [];
+            val.unshift('element')
+            return val.join('.');
+        },
+
         getWebsafeFonts: function () {
             return [
                 {title: "Arial", key: "Arial"},
