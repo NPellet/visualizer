@@ -604,8 +604,8 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 	return {
 		toScreen: function(element, box, opts, jpath) {
 			var deferred = $.Deferred();
-
-			if( ! element.getChild || ! jpath ) {
+            element = DataObject.check(element, true)
+			if(! jpath ) {
 
 				_valueToScreen(deferred, element, box, opts, jpath);
 				return deferred;
