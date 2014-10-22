@@ -52,7 +52,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
     var typeEditors = {
         boolean: Slick.Editors.Checkbox,
         mf: Slick.Editors.TextValue,
-        color: Slick.Editors.ColorValue,
+        color: Slick.Editors.ColorValue
     };
 
     View.prototype = $.extend(true, {}, Default, {
@@ -124,56 +124,6 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             };
         },
 
-        getSlickData: function(value) {
-            var data;
-            data = [];
-            for(var i=0; i<value.length; i++) {
-                var d;
-                data[i] = (d={});
-                for(var j=0; j<this.colConfig.length; j++) {
-                    d[this.slick.columns[j].field] = value.get(i).getChildSync(this.colConfig[j].jpath);
-                }
-            }
-            return data;
-        },
-
-/*
-        getSlickData: function(value) {
-            var that = this;
-            var data;
-            data = [];
-            var promises = [];
-            for(var i=0; i<value.length; i++) {
-                var d;
-                data[i] = (d={});
-                for(var j=0; j<this.colConfig.length; j++) {
-                    promises.push(value.get(i).getChild(this.colConfig[j].jpath));
-                }
-
-            }
-
-            return Promise.all(promises).then(function(x) {
-                var data = [];
-                for(var i=0; i<value.length; i++) {
-                    var d;
-                    data[i] = (d={});
-                    for(var j=0; j<data.length; j++) {
-                        d[that.slick.columns[j].field] = x[i*value.length+j];
-                    }
-                }
-                return data;
-            });
-
-
-        },
-*/
-
-
-        updateSlickItem: function(value, idx, item) {
-            for(var j=0; j<this.colConfig.length; j++) {
-                item[this.slick.columns[j].field] = value.get(idx).getChildSync(this.colConfig[j].jpath);
-            }
-        },
 
         inDom: function(){
 
@@ -193,10 +143,6 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 this.slick.columns = this.getSlickColumns();
                 this.slick.options = this.getSlickOptions();
                 this.slick.data = this.module.data;
-                //this.slick.data = this.getSlickData(moduleValue);
-
-                //this.slick.data = this.getSlickData(moduleValue).then(function(data) {
-                    //that.slick.data = data;
 
                 that.module.model.dataListenChange( that.module.data, function(event) {
                     var jpath = event.jpath;
@@ -204,8 +150,8 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     if(jpath && jpath[0]) {
                         //var item = that.module.data[jpath[0]];
                         //that.updateSlickItem(that.module.data, j, item);
-                        that.grid.invalidateRow(+jpath[0]);
-                        that.grid.render();
+                        //that.grid.invalidateRow(+jpath[0]);
+                        //that.grid.render();
                     }
 
                 }, 'list');
@@ -214,82 +160,84 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
 
 
-                    that.grid = new Slick.Grid("#"+that._id, that.slick.data, that.slick.columns, that.slick.options);
+                that.grid = new Slick.Grid("#"+that._id, that.slick.data, that.slick.columns, that.slick.options);
 
-                    that._activateHighlights();
+                that._activateHighlights();
 
-                    that.grid.setSelectionModel(new Slick.CellSelectionModel());
+                that.grid.setSelectionModel(new Slick.CellSelectionModel());
 
-                    that.grid.onAddNewRow.subscribe(function (e, args) {
-                        var item = args.item;
-                        var jpath = args.column.jpath.slice();
-                        jpath.unshift(that.module.data.length);
-                        that.module.model.dataSetChild(that.module.data, jpath, item);
+                that.grid.onAddNewRow.subscribe(function (e, args) {
+                    var item = args.item;
+                    var jpath = args.column.jpath.slice();
+                    jpath.unshift(that.module.data.length);
+                    that.module.model.dataSetChild(that.module.data, jpath, item).then(function() {
                         that.grid.updateRowCount();
                         that.grid.invalidateRow(that.module.data.length);
                         that.grid.render();
                     });
 
-                    that.grid.onMouseEnter.subscribe(function(e) {
-                        var cell = that.grid.getCellFromEvent(e);
-                        if(cell.row >= that.module.data.length) {
-                            return;
-                        }
-                        var hl = that.module.data[cell.row]._highlight;
-                        if(hl) {
-                            API.highlightId(hl,1);
-                            lastHighlight = hl;
-                        }
-                    });
+                });
 
-                    that.grid.onMouseLeave.subscribe(function(e) {
-                        var cell = that.grid.getCellFromEvent(e);
-                        if(cell.row >= that.module.data.length) {
-                            return;
-                        }
-                        var hl = that.module.data[cell.row]._highlight;
-                        if(hl) {
-                            API.highlightId(hl,0);
-                        }
-                        else if(lastHighlight) {
-                            API.highlightId(lastHighlight,0);
-                        }
-                    });
+                that.grid.onMouseEnter.subscribe(function(e) {
+                    var cell = that.grid.getCellFromEvent(e);
+                    if(cell.row >= that.module.data.length) {
+                        return;
+                    }
+                    var hl = that.module.data[cell.row]._highlight;
+                    if(hl) {
+                        API.highlightId(hl,1);
+                        lastHighlight = hl;
+                    }
+                });
 
-                    that.grid.onCellChange.subscribe(function(e, args) {
-                        var row = args.row;
-                        var cell = args.cell;
-                        var jpath = that.colConfig[cell].jpath.slice();
-                        jpath.unshift(row);
-                        that.module.model.dataSetChild(that.module.data, jpath, that.module.data.getChildSync(jpath));
-                    });
+                that.grid.onMouseLeave.subscribe(function(e) {
+                    var cell = that.grid.getCellFromEvent(e);
+                    if(cell.row >= that.module.data.length) {
+                        return;
+                    }
+                    var hl = that.module.data[cell.row]._highlight;
+                    if(hl) {
+                        API.highlightId(hl,0);
+                    }
+                    else if(lastHighlight) {
+                        API.highlightId(lastHighlight,0);
+                    }
+                });
 
-                    that.grid.onColumnsResized.subscribe(function(e, args) {
-                        var cols = that.grid.getColumns();
-                        for(var i=0; i<cols.length; i++) {
-                            that.module.definition.configuration.groups.cols[0][i].width = cols[i].width;
+                that.grid.onCellChange.subscribe(function(e, args) {
+                    var row = args.row;
+                    var cell = args.cell;
+                    var jpath = that.colConfig[cell].jpath.slice();
+                    jpath.unshift(row);
+                    that.module.model.dataSetChild(that.module.data, jpath, that.module.data.getChildSync(jpath));
+                });
+
+                that.grid.onColumnsResized.subscribe(function(e, args) {
+                    var cols = that.grid.getColumns();
+                    for(var i=0; i<cols.length; i++) {
+                        that.module.definition.configuration.groups.cols[0][i].width = cols[i].width;
+                    }
+
+                });
+
+                that.grid.onColumnsReordered.subscribe(function(e, args) {
+                    var cols = that.grid.getColumns();
+                    var conf = that.module.definition.configuration.groups.cols[0];
+                    var names = _.pluck(conf, 'name');
+                    var ids = _.pluck(cols, 'id');
+
+                    if(names.concat().sort().join() !== ids.concat().sort().join()) {
+                        Debug.warn('Something might be wrong, number of columns in grid and in configuration do not match');
+                        return;
+                    }
+                    that.module.definition.configuration.groups.cols[0] = [];
+                    for(var i=0; i<cols.length; i++) {
+                        var idx = names.indexOf(ids[i]);
+                        if(idx > -1) {
+                            that.module.definition.configuration.groups.cols[0].push(conf[idx]);
                         }
-
-                    });
-
-                    that.grid.onColumnsReordered.subscribe(function(e, args) {
-                        var cols = that.grid.getColumns();
-                        var conf = that.module.definition.configuration.groups.cols[0];
-                        var names = _.pluck(conf, 'name');
-                        var ids = _.pluck(cols, 'id');
-
-                        if(names.concat().sort().join() !== ids.concat().sort().join()) {
-                            Debug.warn('Something might be wrong, number of columns in grid and in configuration do not match');
-                            return;
-                        }
-                        that.module.definition.configuration.groups.cols[0] = [];
-                        for(var i=0; i<cols.length; i++) {
-                            var idx = names.indexOf(ids[i]);
-                            if(idx > -1) {
-                                that.module.definition.configuration.groups.cols[0].push(conf[idx]);
-                            }
-                        }
-                    });
+                    }
+                });
                 //});
 
 

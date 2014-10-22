@@ -318,7 +318,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 
 		dataSetChild: function( data, jpath, value ) {
 
-			data.setChild( jpath, value, this.module.getId( ) );
+			return data.setChild( jpath, value, this.module.getId( ) );
 		},
 
 		addChangeListener: function( rel, data, callback ) {

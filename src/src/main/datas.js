@@ -490,7 +490,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
                 } else {
                     self.triggerChange(false, triggerParams);
                 }
-                return;
+                return Promise.resolve();
             }
 
             var elementType = jpath.length === 0 ? constructor : ( typeof jpath[0] === "number" ? DataArray : DataObject );
