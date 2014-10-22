@@ -300,7 +300,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 
                 if( typeNow !== type ) {
                     this[ prop ] = valueTyped;
-                } else if( type === "string" || type === "number" || type === "boolean" ) {
+                } else if (isSpecialNativeObject(this) || isTypedObject(this)) {
                     this[ prop ].setValue(valueTyped.get(), noTrigger);
                 } else if( valueTyped !== this[ prop ] ) {
                     this[ prop ] = valueTyped;
@@ -613,7 +613,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 				return type;
 			if (this instanceof Array)
 				return "array";
-			if (this.hasOwnProperty("type") && (this.hasOwnProperty("value") || this.hasOwnProperty("url")))
+			if (isTypedObject(this))
 				return this.type;
 			return type;
 		}
@@ -789,6 +789,10 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 	function isSpecialNativeObject( object ) {
 		return ( object instanceof DataString || object instanceof DataNumber || object instanceof DataBoolean) ;
 	}
+
+    function isTypedObject(object) {
+        return object.hasOwnProperty("type") && (object.hasOwnProperty("value") || object.hasOwnProperty("url"));
+    }
 
 	function transformNative( object ) {
 
