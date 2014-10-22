@@ -37,8 +37,10 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
                     .select();
                 $input.spectrum({
                     color: $input.val(),
+                    preferredFormat: 'hex',
                     change: function(color) {
                         console.log('color: ', color);
+                        args.commitChanges();
                     },
                     move: function(color) {
                         console.log('color: ', color);
@@ -71,7 +73,13 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
             };
 
             this.loadValue = function(item) {
-                defaultValue = item.getChildSync(args.column.jpath).value || "";
+                defaultValue = item.getChildSync(args.column.jpath);
+                if(defaultValue) {
+                    defaultValue = defaultValue.value || '#000000';
+                }
+                else {
+                    defaultValue = '#000000';
+                }
                 $input.val(defaultValue);
                 $input.spectrum('set', defaultValue);
                 $input[0].defaultValue = defaultValue;
@@ -82,8 +90,23 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
                 return $input.val();
             };
 
+
             this.applyValue = function (item, state) {
-                item.getChildSync(args.column.jpath).setValue(state);
+                var isNew = _.isEmpty(item);
+                DataObject.check(item, true);
+                var newState = {
+                    type: 'color',
+                    value: state
+                };
+
+                if(isNew) {
+                    return newState;
+                }
+                else {
+                    args.grid.module.model.dataSetChildSync(item, args.column.jpath, newState);
+                }
+
+
             };
 
             this.isValueChanged = function () {
@@ -141,7 +164,8 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
             };
 
             this.loadValue = function (item) {
-                defaultValue = item.getChildSync(args.column.jpath).get() || "";
+                defaultValue = item.getChildSync(args.column.jpath);
+                defaultValue = defaultValue ? defaultValue.get() || "" : "";
                 $input.val(defaultValue);
                 $input[0].defaultValue = defaultValue;
                 $input.select();
@@ -152,20 +176,29 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
             };
 
             this.applyValue = function (item, state) {
+                var isNew = _.isEmpty(item);
+                DataObject.check(item, true);
+                var newState;
 
-                if(_.isEmpty(item)) {
-                    if(args.column.dataType) {
-                        item.type = args.column.dataType;
-                        item.value = state;
-                        DataObject.check(item, true);
-                    }
-                    else {
-                        return new DataString(state);
-                    }
+                if(args.column.dataType) {
+                    newState = {
+                        type: args.column.dataType,
+                        value: state
+                    };
+
                 }
                 else {
-                    item.getChildSync(args.column.jpath).setValue(state);
+                    newState = state;
                 }
+
+                if(isNew) {
+                    return newState;
+                }
+                else {
+                    args.grid.module.model.dataSetChildSync(item, args.column.jpath, newState);
+                }
+
+
 
             };
 

@@ -229,42 +229,48 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 
 	var dataGetter = {
 		value: function( prop, returnPromise, constructor ) {
-
+            function processVal(val) {
+                if(typeof val !== "object" || val === null)
+                    return val;
+                if (typeof val[ prop ] !== "undefined") {
+                    if(!isSpecialObject(val[prop])) {
+                        val[prop] = DataObject.check(val[prop], true);
+                    }
+                    if(val[prop] instanceof DataObject) {
+                        return val[prop].fetch(true);
+                    } else {
+                        return val[prop];
+                    }
+                } else if( constructor ) {
+                    val[ prop ] = new constructor();
+                    return val[prop];
+                }
+            }
 			// Looking for this[ prop ]
 			if ((typeof prop === "string") || (typeof prop === "number")) {
 
 				if (returnPromise) { // Returns a promise if asked
 
-                    return this.get(true).then(function (val) {
-                        if(typeof val !== "object" || val === null)
-                            return val;
-                        if (typeof val[ prop ] !== "undefined") {
-                            if(!isSpecialObject(val[prop])) {
-                                val[prop] = DataObject.check(val[prop], true);
-                            }
-                            if(val[prop] instanceof DataObject) {
-                                return val[prop].fetch(true);
-                            } else {
-                                return val[prop];
-                            }
-                        } else if( constructor ) {
-                            val[ prop ] = new constructor();
-                            return val[prop];
-                        }
-                    });
+                    return this.get(true).then(processVal);
 
-				} else {
-
+				}
+                else {
                     var val = this.get(); // Current value
-					
-					if(typeof val !== "object" || val === null)
-						return val;
-					
-					if (typeof val[ prop ] !== "undefined") {
-						val[ prop ] = DataObject.check( val[ prop ], 1 ); // Single recursion
-					}
-					return val[prop];
 
+
+                    if(typeof val !== "object" || val === null)
+                        return val;
+                    if (typeof val[ prop ] !== "undefined") {
+                        if(!isSpecialObject(val[prop])) {
+                            val[prop] = DataObject.check(val[prop], true);
+                        }
+                        return val[prop];
+                    }
+                    else if( constructor ) {
+                        val[ prop ] = new constructor();
+                        return val[prop];
+                    }
+                    return val[prop];
 				}
 			} else {
                 if(prop === true) {
@@ -300,7 +306,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 
                 if( typeNow !== type ) {
                     this[ prop ] = valueTyped;
-                } else if( type === "string" || type === "number" || type === "boolean" ) {
+                } else if (isSpecialNativeObject(this) || isTypedObject(this)) {
                     this[ prop ].setValue(valueTyped.get(), noTrigger);
                 } else if( valueTyped !== this[ prop ] ) {
                     this[ prop ] = valueTyped;
@@ -509,6 +515,49 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
         }
 	};
 
+    var setChildSync = {
+        value: function( jpath, newValue, triggerParams, constructor ) {
+            var self = this;
+
+            if (typeof jpath === 'string') { // Old version
+                jpath = jpath.split('.');
+                jpath.shift();
+            }
+
+            jpath = jpath.slice();
+
+            var jpathLength = jpath.length;
+
+            if (jpathLength === 0) {
+                throw new Error('setChild cannot be called with an empty jPath');
+            }
+
+            var el = jpath.shift();
+
+            if (jpathLength === 1) {
+                var res = self.set(el, newValue, true);
+                if (res && res.linkToParent) {
+                    res.linkToParent(self, el);
+                    res.triggerChange(false, triggerParams);
+                } else {
+                    self.triggerChange(false, triggerParams);
+                }
+                return;
+            }
+
+            var elementType = jpath.length === 0 ? constructor : ( typeof jpath[0] === "number" ? DataArray : DataObject );
+
+            var name = el;
+
+            var args = [jpath, newValue, triggerParams, constructor];
+
+            var val = this.get(el, false, elementType);
+            this.set(name, val, true);
+            val.linkToParent(self, name);
+            val.setChildSync.apply(val, args);
+        }
+    };
+
     var triggerBubble = {
         value: function (args) {
 
@@ -614,7 +663,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 				return type;
 			if (this instanceof Array)
 				return "array";
-			if (this.hasOwnProperty("type") && (this.hasOwnProperty("value") || this.hasOwnProperty("url")))
+			if (isTypedObject(this))
 				return this.type;
 			return type;
 		}
@@ -713,6 +762,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 		set: dataSetter,
 		get: dataGetter,
 		setChild: setChild,
+        setChildSync: setChildSync,
 		getChild: getChild,
 		getChildSync: getChildSync,
 		trace: trace,
@@ -790,6 +840,10 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 	function isSpecialNativeObject( object ) {
 		return ( object instanceof DataString || object instanceof DataNumber || object instanceof DataBoolean) ;
 	}
+
+    function isTypedObject(object) {
+        return object.hasOwnProperty("type") && (object.hasOwnProperty("value") || object.hasOwnProperty("url"));
+    }
 
 	function transformNative( object ) {
 

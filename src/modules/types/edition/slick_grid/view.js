@@ -47,7 +47,8 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         'slick.date': Slick.Editors.Date,
         'slick.yesno': Slick.Editors.YesNoSelect,
         'slick.percent': Slick.Editors.PercentComplete,
-        'slick.integer': Slick.Editors.Integer
+        'slick.integer': Slick.Editors.Integer,
+        'TextValue': Slick.Editors.TextValue
     };
     var typeEditors = {
         boolean: Slick.Editors.Checkbox,
@@ -165,6 +166,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 that._activateHighlights();
 
                 that.grid.setSelectionModel(new Slick.CellSelectionModel());
+                that.grid.module = that.module;
 
                 that.grid.onAddNewRow.subscribe(function (e, args) {
                     var item = args.item;
@@ -172,11 +174,12 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     jpath.unshift(that.module.data.length);
                     that.module.model.dataSetChild(that.module.data, jpath, item).then(function() {
                         that.grid.updateRowCount();
-                        that.grid.invalidateRow(that.module.data.length);
+                        that.grid.invalidateRow(that.module.data.length-1);
                         that.grid.render();
                     });
 
                 });
+
 
                 that.grid.onMouseEnter.subscribe(function(e) {
                     var cell = that.grid.getCellFromEvent(e);
@@ -209,7 +212,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     var cell = args.cell;
                     var jpath = that.colConfig[cell].jpath.slice();
                     jpath.unshift(row);
-                    that.module.model.dataSetChild(that.module.data, jpath, that.module.data.getChildSync(jpath));
+                    //that.module.model.dataSetChild(that.module.data, jpath, that.module.data.getChildSync(jpath));
                 });
 
                 that.grid.onColumnsResized.subscribe(function(e, args) {
@@ -219,6 +222,8 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     }
 
                 });
+
+
 
                 that.grid.onColumnsReordered.subscribe(function(e, args) {
                     var cols = that.grid.getColumns();
@@ -316,8 +321,8 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
     }
 
     function typeRenderer(cellNode, row, dataContext, colDef) {
+        this.module.data.traceSync([row]);
         var def = Renderer.toScreen(dataContext, this.module, {}, colDef.jpath);
-        console.log('type renderer');
         def.always(function(value) {
             $(cellNode).html(value);
             if(def.build) {

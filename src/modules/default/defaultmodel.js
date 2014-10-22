@@ -321,6 +321,11 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 			return data.setChild( jpath, value, this.module.getId( ) );
 		},
 
+        dataSetChildSync: function( data, jpath, value ) {
+
+            return data.setChildSync( jpath, value, this.module.getId( ) );
+        },
+
 		addChangeListener: function( rel, data, callback ) {
 
 			if( ! rel ) {
