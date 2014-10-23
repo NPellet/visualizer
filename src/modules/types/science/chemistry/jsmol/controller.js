@@ -18,7 +18,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.references = {
         data: {
-            type: ['cif', 'pdb', 'mol3d', 'magres', 'mol2d'],
+            type: ['cif', 'pdb', 'mol3d', 'magres', 'mol2d', 'jme'],
             label: 'A molecule/protein data'
         }
     };
