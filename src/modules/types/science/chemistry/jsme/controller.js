@@ -108,8 +108,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.onChange = function (mol, smiles, jme) {
         this.createDataFromEvent('onStructureChange', 'smiles', smiles);
-        this.createDataFromEvent('onStructureChange', 'mol', new DataObject({ type: 'mol2d', value: mol }));
-        this.createDataFromEvent('onStructureChange', 'jme', new DataObject({ type: 'jme', value: jme }));
+        this.createDataFromEvent('onStructureChange', 'mol', { type: 'mol2d', value: mol });
+        this.createDataFromEvent('onStructureChange', 'jme', { type: 'jme', value: jme });
     };
 
     Controller.prototype.configAliases = {
