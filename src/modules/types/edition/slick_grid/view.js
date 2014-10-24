@@ -145,22 +145,6 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 this.slick.options = this.getSlickOptions();
                 this.slick.data = this.module.data;
 
-                that.module.model.dataListenChange( that.module.data, function(event) {
-                    var jpath = event.jpath;
-
-                    if(jpath && jpath[0]) {
-                        //var item = that.module.data[jpath[0]];
-                        //that.updateSlickItem(that.module.data, j, item);
-                        //that.grid.invalidateRow(+jpath[0]);
-                        //that.grid.render();
-                    }
-
-                }, 'list');
-
-
-
-
-
                 that.grid = new Slick.Grid("#"+that._id, that.slick.data, that.slick.columns, that.slick.options);
 
                 that._activateHighlights();
@@ -182,22 +166,20 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
 
                 that.grid.onMouseEnter.subscribe(function(e) {
-                    var cell = that.grid.getCellFromEvent(e);
-                    if(cell.row >= that.module.data.length) {
-                        return;
-                    }
+                    var cell = that._checkCellFromEvent(e);
+                    if(!cell) return;
                     var hl = that.module.data[cell.row]._highlight;
                     if(hl) {
                         API.highlightId(hl,1);
                         lastHighlight = hl;
                     }
+                    that.module.controller.onHover(cell.row);
+
                 });
 
                 that.grid.onMouseLeave.subscribe(function(e) {
-                    var cell = that.grid.getCellFromEvent(e);
-                    if(cell.row >= that.module.data.length) {
-                        return;
-                    }
+                    var cell = that._checkCellFromEvent(e);
+                    if(!cell) return;
                     var hl = that.module.data[cell.row]._highlight;
                     if(hl) {
                         API.highlightId(hl,0);
@@ -205,14 +187,14 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     else if(lastHighlight) {
                         API.highlightId(lastHighlight,0);
                     }
+
                 });
 
-                that.grid.onCellChange.subscribe(function(e, args) {
-                    var row = args.row;
-                    var cell = args.cell;
-                    var jpath = that.colConfig[cell].jpath.slice();
-                    jpath.unshift(row);
-                    //that.module.model.dataSetChild(that.module.data, jpath, that.module.data.getChildSync(jpath));
+                that.grid.onClick.subscribe(function(e) {
+                    var cell = that._checkCellFromEvent(e);
+                    if(!cell) return;
+
+                    that.module.controller.onClick(cell.row);
                 });
 
                 that.grid.onColumnsResized.subscribe(function(e, args) {
@@ -243,11 +225,16 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         }
                     }
                 });
-                //});
-
-
             }
 
+        },
+
+        _checkCellFromEvent: function(e) {
+            var cell = this.grid.getCellFromEvent(e);
+            if(cell.row >= this.module.data.length) {
+                return null;
+            }
+            return cell;
         },
 
         _drawHighlight: function(key) {

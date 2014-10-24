@@ -262,5 +262,18 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
     };
 
 
+    controller.prototype.onHover = function(row) {
+        console.log('on hover', row);
+        this.setVarFromEvent( 'onHover', 'row', 'list', [ row ] );
+        this.sendAction( 'row', this.module.data.get(row), 'onHover' );
+
+    };
+
+    controller.prototype.onClick = function(row) {
+        this.setVarFromEvent( 'onSelect', 'row', 'list', [ row ] );
+        this.sendAction( 'row', this.module.data.get( row ), 'onSelect' );
+    };
+
+
     return controller;
 });
