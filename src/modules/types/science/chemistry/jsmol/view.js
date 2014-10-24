@@ -14,7 +14,6 @@ define(['require', 'modules/default/defaultview'], function (require, Default) {
             this.module.getDomContent().html(this.dom).css('overflow', 'hidden');
 
             this.dom.bind('load', function () {
-     //           self.dom.get(0).contentWindow.setInDom(self.module.inDom);
                 self.dom.get(0).contentWindow.setController(self.module.controller);
                 self.dom.get(0).contentWindow.setView(self);
             });
