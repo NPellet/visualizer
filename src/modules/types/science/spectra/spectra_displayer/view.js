@@ -512,59 +512,29 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
 // in fact it is a Y array ...
             xArray: function (moduleValue, varname) {
-                var self = this,
-                    val;
-
-
-                //			self.graph.setOption('zoomMode', self.module.getConfiguration( 'zoom' ) );
+                var val = moduleValue.get();
 
                 this.series[varname] = this.series[varname] || [];
                 this.removeSerie(varname);
 
-                if (!moduleValue)
-                    return;
+                var serie = this.graph.newSerie(varname, this.getSerieOptions(varname));
 
-                val = DataTraversing.getValueIfNeeded(moduleValue);
-
-                var serie = self.graph.newSerie(varname, this.getSerieOptions(varname));
-
-                function buildVal(val) {
-                    var minX = self.module.getConfiguration('minX', 0);
-                    var maxX = self.module.getConfiguration('maxX', val.length - 1);
-                    var step = (maxX - minX) / (val.length - 1);
-                    var val2 = [];
-                    for (var i = 0, l = val.length; i < l; i++) {
-                        val2.push(minX + step * i);
-                        val2.push(val[i]);
-                    }
-
-                    self.normalize(val2, varname);
-
-                    return val2;
+                var minX = this.module.getConfiguration('minX', 0);
+                var maxX = this.module.getConfiguration('maxX', val.length - 1);
+                var step = (maxX - minX) / (val.length - 1);
+                var val2 = [];
+                for (var i = 0, l = val.length; i < l; i++) {
+                    val2.push(minX + step * i);
+                    val2.push(val[i]);
                 }
 
-                var changeid = moduleValue.onChange(function () {
+                this.normalize(val2, varname);
 
-                    serie.setData(buildVal(this.get()));
-                    self.redraw();
-                });
-
-                this.setOnChange(changeid, varname, moduleValue);
-
-
-                $.when(val).then(function (value) {
-
-                    // lineToZero: !continuous}
-                   
-
-                    serie.setData(buildVal(value));
-
-                    serie.autoAxis();
-                    self.setSerieParameters(serie, varname);
-                    self.series[ varname ].push(serie);
-                    self.redraw();
-                });
-
+                serie.setData(val2);
+                serie.autoAxis();
+                this.setSerieParameters(serie, varname);
+                this.series[ varname ].push(serie);
+                this.redraw();
             },
 
             annotations: function (value) {
