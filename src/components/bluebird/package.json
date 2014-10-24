@@ -1,7 +1,7 @@
 {
     "name": "bluebird",
     "description": "Full featured Promises/A+ implementation with exceptionally good performance",
-    "version": "2.2.2",
+    "version": "2.3.5",
     "keywords": [
         "promise",
         "performance",
@@ -18,7 +18,8 @@
         "fluent interface"
     ],
     "scripts": {
-        "test": "grunt test"
+        "test": "grunt test",
+        "prepublish": "grunt build"
     },
     "homepage": "https://github.com/petkaantonov/bluebird",
     "repository": {
@@ -40,7 +41,7 @@
         "grunt-contrib-watch": "latest",
         "grunt-contrib-connect": "latest",
         "grunt-contrib-concat": "latest",
-        "grunt-saucelabs": "latest",
+        "grunt-saucelabs": "~8.3.1",
         "acorn": "~0.6.0",
         "mocha": "~1.20.1",
         "q": "~1.0.1",

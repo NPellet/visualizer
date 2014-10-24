@@ -1,4 +1,4 @@
-define(['modules/default/defaultview', 'src/util/util', 'lib/loadingplot/libs/jquery.mousewheel.min', 'lib/loadingplot/svg', 'lib/loadingplot/point', , 'lib/loadingplot/springs'], function(Default, Util) {
+define(['modules/default/defaultview', 'src/util/util', 'lib/loadingplot/libs/jquery.mousewheel.min', 'lib/loadingplot/svg', 'lib/loadingplot/point', 'lib/loadingplot/springs'], function(Default, Util) {
 	
 	Util.loadCss('lib/loadingplot/svg.css');
 

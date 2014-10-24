@@ -1,6 +1,6 @@
 'use strict';
 
-define(['jquery', 'src/util/api'], function($, API) {
+define(['src/util/api'], function (API) {
 
 	return {
 

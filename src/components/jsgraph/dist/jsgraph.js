@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.14-5
+ * jsGraphs JavaScript Graphing Library v1.10.1-8
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-10-13T10:44Z
+ * Date: 2014-10-21T12:52Z
  */
 
 (function( global, factory ) {
@@ -33,7 +33,7 @@
 /* 
  * Build: new source file 
  * File name : graph.axis
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.axis.js
  */
 
 build['./graph.axis'] = ( function( $ ) { 
@@ -1063,7 +1063,7 @@ build['./graph.axis'] = ( function( $ ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.x
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.x.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.axis.x.js
  */
 
 build['./graph.axis.x'] = ( function( $, GraphAxis ) { 
@@ -1106,8 +1106,9 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
       var tick = document.createElementNS( this.graph.ns, 'line' ),
         val = this.getPos( value );
 
-      if ( val == undefined )
+      if ( val == undefined ) {
         return;
+      }
 
       tick.setAttribute( 'shape-rendering', 'crispEdges' );
       tick.setAttribute( 'x1', val );
@@ -1116,10 +1117,15 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
       tick.setAttribute( 'y1', ( this.top ? 1 : -1 ) * this.tickPx1 * scaling );
       tick.setAttribute( 'y2', ( this.top ? 1 : -1 ) * this.tickPx2 * scaling );
 
-      if ( label && this.options.primaryGrid )
+      if ( label && this.options.primaryGrid ) {
+
         this.doGridLine( true, val, val, 0, this.graph.getDrawingHeight() );
-      else if ( !label && this.options.secondaryGrid )
+
+      } else if ( !label && this.options.secondaryGrid ) {
+
         this.doGridLine( false, val, val, 0, this.graph.getDrawingHeight() );
+        
+      }
 
       tick.setAttribute( 'stroke', 'black' );
 
@@ -1216,7 +1222,7 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.y
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.y.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.axis.y.js
  */
 
 build['./graph.axis.y'] = ( function( GraphAxis ) { 
@@ -1450,10 +1456,12 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.broken
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.broken.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.axis.broken.js
  */
 
 build['./graph.axis.broken'] = ( function( $ ) { 
+
+  
 
   var GraphAxis = function() {}
 
@@ -1465,6 +1473,10 @@ build['./graph.axis.broken'] = ( function( $ ) {
 
     getNbTicksSecondary: function() {
       return this.options.nbTicksSecondary;
+    },
+
+    getBreakingSpacing: function() {
+      return this.options.breakingSpacing || 5;
     },
 
     // [ [ 0, 10 ], [ 50, 100 ] ]
@@ -1490,7 +1502,7 @@ build['./graph.axis.broken'] = ( function( $ ) {
             min: range[ 0 ],
             max: range[ 1 ],
             minPx: undefined,
-            minPx: undefined
+            maxPx: undefined
 
           } );
       });
@@ -1501,11 +1513,10 @@ build['./graph.axis.broken'] = ( function( $ ) {
     drawLinearTicksWrapper: function( ) {
 
       var nbIntervals = this.ranges.length - 1,
-          availableDrawingPxs = ( this.maxPx - this.minPx ) - nbIntervals * 5,
+          availableDrawingPxs = ( this.maxPx - this.minPx ) - nbIntervals * this.getBreakingSpacing(),
           nbTicksPrimary = this.getNbTicksPrimary();
 
       var ticksPrimary = this.getUnitPerTick( availableDrawingPxs, nbTicksPrimary, this.totalValRanges );
-      console.log( ticksPrimary, this.totalValRanges)
       var nbSecondaryTicks = this.secondaryTicks();
 
       // We need to get here the width of the ticks to display the axis properly, with the correct shift
@@ -1524,17 +1535,34 @@ build['./graph.axis.broken'] = ( function( $ ) {
       var maxPx = this.getMaxPx();
       var last = minPx;
       var nbIntervals = this.ranges.length - 1;
-      var availableDrawingPxs = ( this.getMaxPx() - this.getMinPx() ) - nbIntervals * 5 * ( self.isFlipped() ? -1 : 1 );
+      var availableDrawingPxs = ( this.getMaxPx() - this.getMinPx() ) - nbIntervals * this.getBreakingSpacing() * ( self.isFlipped() ? -1 : 1 );
 
       this.resetTicks();
 
 
       this.ranges.map( function( range, index ) {
 
-        range.minPx = index == 0 ? minPx : last + 5 * ( self.isFlipped() ? -1 : 1 );
+        range.minPx = index == 0 ? minPx : last + self.getBreakingSpacing() * ( self.isFlipped() ? -1 : 1 );
         range.maxPx = range.minPx + availableDrawingPxs * range.ratio;
 
         last = range.maxPx;
+
+        if( index > 0 ) {
+          if( ! range.brokenMin ) {
+            range.brokenMin = self.createBrokenLine( range );
+            self.group.appendChild( range.brokenMin );
+          } 
+          self.placeBrokenLine( range, range.brokenMin, range.minPx );
+        }
+
+        if( index < self.ranges.length - 1 ) {
+          if( ! range.brokenMax ) {
+            range.brokenMax = self.createBrokenLine( range );
+            self.group.appendChild( range.brokenMax );
+          } 
+          self.placeBrokenLine( range, range.brokenMax, range.maxPx );
+        }
+
 
         var min = range.min,
             max = range.max,
@@ -1595,12 +1623,7 @@ build['./graph.axis.broken'] = ( function( $ ) {
     },
 
     getPos: function( value ) {
-      //			if(this.getMaxPx() == undefined)
-      //				console.log(this);
-      //console.log(this.getMaxPx(), this.getMinPx(), this._getActualInterval());
-      // Ex 50 / (100) * (1000 - 700) + 700
-
-      //console.log( value, this.getActualMin(), this.getMaxPx(), this.getMinPx(), this._getActualInterval() );
+      
       for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
         if( value <= this.ranges[ i ].max && value >= this.ranges[ i ].min ) {
           return ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx
@@ -1613,7 +1636,7 @@ build['./graph.axis.broken'] = ( function( $ ) {
     },
 
     getRelVal: function( px ) {
-      return px / (  ( this.maxPx - this.minPx ) - nbIntervals * 5 ) * this.totalValRanges;
+      return px / (  ( this.maxPx - this.minPx ) - nbIntervals * this.getBreakingSpacing() ) * this.totalValRanges;
     },
 
     getVal: function( px ) {
@@ -1623,42 +1646,49 @@ build['./graph.axis.broken'] = ( function( $ ) {
           return ( px - this.ranges[ i ].minPx ) / ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) * ( this.ranges[ i ].max - this.ranges[ i ].min ) +  this.ranges[ i ].min
         }
       }
-      // Ex 50 / (100) * (1000 - 700) + 700
-      return ;
     },
 
-    getRatioInRange: function( inRangeOf, value ) {
+    sign: function( v ) {
+      return v > 0 ? 1 : -1;
+    },
 
-
+    getBoundary: function( inRangeOf, value ) {
+ 
       for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
         if( inRangeOf <= this.ranges[ i ].max && inRangeOf >= this.ranges[ i ].min ) {
           // This range
+          if( value > this.ranges[ i ].max ) {
+            return this.ranges[ i ].max;
+          }
 
+          return this.ranges[ i ].min;
 
-             return Math.abs( value - this.ranges[ i ].min ) / ( this.ranges[ i ].max - this.ranges[ i ].min );
-            
-          return;
+             //return Math.abs( value - this.ranges[ i ].min ) / ( this.ranges[ i ].max - this.ranges[ i ].min );
         }
       }
-      
     },
 
 
     getInRange: function( inRangeOf, value ) {
-
-      
-
       for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
         if( inRangeOf <= this.ranges[ i ].max && inRangeOf >= this.ranges[ i ].min ) {
           // This range
-
-
              return ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx
             
           return;
         }
       }
       
+    },
+
+    getRange: function( value ) {
+      for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
+        if( value <= this.ranges[ i ].max && value >= this.ranges[ i ].min ) {
+          return [ i, ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx ]
+        }
+      }
+
+      return [ undefined, undefined ];
     }
   }
 
@@ -1675,7 +1705,7 @@ build['./graph.axis.broken'] = ( function( $ ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.x.broken
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.x.broken.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.axis.x.broken.js
  */
 
 build['./graph.axis.x.broken'] = ( function( GraphXAxis, GraphBrokenAxis ) { 
@@ -1687,7 +1717,24 @@ build['./graph.axis.x.broken'] = ( function( GraphXAxis, GraphBrokenAxis ) {
     this.top = topbottom == 'top';
   }
 
-  $.extend( GraphXAxisBroken.prototype, GraphBrokenAxis.prototype, GraphXAxis.prototype );
+  $.extend( GraphXAxisBroken.prototype, GraphXAxis.prototype, GraphBrokenAxis.prototype, {
+
+  	createBrokenLine: function( range ) {
+
+  		var line = document.createElementNS( this.graph.ns, 'line' );
+        line.setAttribute('x1', '-3');
+        line.setAttribute('x2', '3');
+        line.setAttribute('y1', '-5');
+        line.setAttribute('y2', '5');
+        line.setAttribute('stroke', 'black');
+
+        return line;
+  	},
+
+  	placeBrokenLine: function( range, line, px ) {
+		line.setAttribute('transform', 'translate(' + px + ', ' + 0 + ')');
+  	}
+  } );
 
   return GraphXAxisBroken;
 
@@ -1702,7 +1749,7 @@ build['./graph.axis.x.broken'] = ( function( GraphXAxis, GraphBrokenAxis ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.y.broken
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.y.broken.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.axis.y.broken.js
  */
 
 build['./graph.axis.y.broken'] = ( function( GraphYAxis, GraphBrokenAxis ) { 
@@ -1718,7 +1765,26 @@ build['./graph.axis.y.broken'] = ( function( GraphYAxis, GraphBrokenAxis ) {
 
   }
 
-  $.extend( GraphYAxisBroken.prototype, GraphYAxis.prototype, GraphBrokenAxis.prototype );
+  $.extend( GraphYAxisBroken.prototype, GraphYAxis.prototype, GraphBrokenAxis.prototype, {
+
+
+  	createBrokenLine: function( range ) {
+
+  		var line = document.createElementNS( this.graph.ns, 'line' );
+        line.setAttribute('x1', '-5');
+        line.setAttribute('x2', '5');
+        line.setAttribute('y1', '-3');
+        line.setAttribute('y2', '3');
+        line.setAttribute('stroke', 'black');
+
+        return line;
+  	},
+
+  	placeBrokenLine: function( range, line, px ) {
+		line.setAttribute('transform', 'translate(' + 0 + ', ' + px + ')');
+  	}
+
+  } );
 
 
   return GraphYAxisBroken;
@@ -1734,7 +1800,7 @@ build['./graph.axis.y.broken'] = ( function( GraphYAxis, GraphBrokenAxis ) {
 /* 
  * Build: new source file 
  * File name : graph.xaxis.time
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.xaxis.time.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.xaxis.time.js
  */
 
 build['./graph.xaxis.time'] = ( function( GraphAxis ) { 
@@ -2496,7 +2562,7 @@ build['./graph.xaxis.time'] = ( function( GraphAxis ) {
 /* 
  * Build: new source file 
  * File name : graph.legend
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.legend.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.legend.js
  */
 
 build['./graph.legend'] = ( function( ) { 
@@ -2751,7 +2817,7 @@ build['./graph.legend'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : dynamicdepencies
- * File path : /Users/normanpellet/Documents/Web/graph/src/dynamicdepencies.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/dynamicdepencies.js
  */
 
 build['./dynamicdepencies'] = ( function( ) { 
@@ -2826,7 +2892,7 @@ build['./dynamicdepencies'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : graph.core
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.core.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.core.js
  */
 
 build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken, GraphYAxisBroken, GraphXAxisTime, GraphLegend, DynamicDepencies ) { 
@@ -2927,17 +2993,17 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     this._doDom();
 
     var w, h;
-    if( dom.style.width ) {
+    if( dom.style.width && dom.style.width.indexOf("%") == -1 ) {
       w = parseInt( dom.style.width.replace('px', '') );
     } else {
-       w = $( dom ).width()
+       w = $( dom ).width();
     }
 
 
-    if( dom.style.height ) {
+    if( dom.style.height && dom.style.height.indexOf("%") == -1 ) {
       h = parseInt( dom.style.height.replace('px', '') );
     } else {
-       h = $( dom ).height()
+      h = $( dom ).height();
     }
     
 
@@ -3145,40 +3211,19 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       this.bypassHandleMouse = false;
     },
 
+
+    getDom: function() {
+      return this.dom;
+    },
+
     setOption: function( name, val ) {
       this.options[ name ] = val;
     },
 
     kill: function() {
       this._dom.removeChild( this.dom );
-
     },
 
-    _getXY: function( e ) {
-
-      var x = e.clientX,
-        y = e.clientY;
-
-      if ( e.offsetX !== undefined && e.offsetY !== undefined ) {
-
-        return {
-          x: e.offsetX,
-          y: e.offsetY
-        };
-      }
-
-      y = e.clientY;
-
-      var pos = this.offsetCached || $( this._dom ).offset();
-
-      x -= pos.left - window.scrollX;
-      y -= pos.top - window.scrollY;
-
-      return {
-        x: x,
-        y: y
-      };
-    },
 
     cacheOffset: function() {
       this.offsetCached = $( this._dom ).offset();
@@ -3192,48 +3237,68 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       this._dom.focus();
     },
 
-    isPluginAllowed: function( e, plugin ) {
-
-      if ( this.forcedPlugin == plugin ) {
-        return true;
-      }
-
-      var act = this.options.pluginAction[ plugin ] || plugin,
-        shift = e.shiftKey,
-        ctrl = e.ctrlKey;
-
-      if ( act.shift === undefined ) {
-        act.shift = false;
-      }
-
-      if ( act.ctrl === undefined ) {
-        act.ctrl = false;
-      }
-
-      if ( shift !== act.shift ) {
-        return false;
-      }
-
-      if ( ctrl !== act.ctrl ) {
-        return false;
-      }
-
-      return true;
-    },
-
-    forcePlugin: function( plugin ) {
-      this.forcedPlugin = plugin;
-    },
-
-    unforcePlugin: function() {
-      this.forcedPlugin = false;
-    },
-
     elementMoving: function( movingElement ) {
       this.bypassHandleMouse = movingElement;
     },
 
-    _resetAxes: function() {
+ 
+
+    /* SIZING */
+    setWidth: function( width, skipResize ) {
+      this.width = width;
+
+      if ( !skipResize )
+        this._resize();
+    },
+
+    setHeight: function( height, skipResize ) {
+      this.height = height;
+
+      if ( !skipResize )
+        this._resize();
+    },
+
+    resize: function( w, h ) {
+      this.setSize( w, h );
+      this._resize();
+    },
+
+    setSize: function( w, h ) {
+      this.setWidth( w, true );
+      this.setHeight( h, true );
+      this.getDrawingHeight();
+      this.getDrawingWidth();
+    },
+
+
+    getWidth: function() {
+      return this.width;
+    },
+
+    getHeight: function() {
+      return this.height;
+    },
+
+
+    getPaddingTop: function() {
+      return this.options.paddingTop;
+    },
+
+    getPaddingLeft: function() {
+      return this.options.paddingLeft;
+    },
+
+    getPaddingBottom: function() {
+      return this.options.paddingTop;
+    },
+
+    getPaddingRight: function() {
+      return this.options.paddingRight;
+    },
+    /* END SIZING */
+
+
+   _resetAxes: function() {
 
       while ( this.axisGroup.firstChild ) {
         this.axisGroup.removeChild( this.axisGroup.firstChild );
@@ -3246,7 +3311,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
     _applyToAxis: {
       'string': function( type, func, params ) {
-        //		params.splice(1, 0, type);
+        //    params.splice(1, 0, type);
 
         for ( var i = 0; i < this.axis[ type ].length; i++ ) {
           this.axis[ type ][ i ][ func ].apply( this.axis[ type ][ i ], params );
@@ -3279,47 +3344,6 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       }
     },
 
-    setWidth: function( width, skipResize ) {
-      this.width = width;
-
-      if ( !skipResize )
-        this._resize();
-    },
-
-    getWidth: function() {
-      return this.width;
-    },
-
-    setHeight: function( height, skipResize ) {
-      this.height = height;
-
-      if ( !skipResize )
-        this._resize();
-    },
-
-    getHeight: function() {
-      return this.height;
-    },
-
-    resize: function( w, h ) {
-
-      this.setSize( w, h );
-      this._resize();
-    },
-
-    setSize: function( w, h ) {
-
-      this.setWidth( w, true );
-      this.setHeight( h, true );
-
-      this.getDrawingHeight();
-      this.getDrawingWidth();
-
-    },
-
-    getDom: function() {
-      return this.dom;
-    },
 
     getXAxis: function( num, options ) {
       if ( this.axis.top.length > 0 && this.axis.bottom.length == 0 ) {
@@ -3386,21 +3410,6 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       this.axis.bottom[ num ] = axis;
     },
 
-    getPaddingTop: function() {
-      return this.options.paddingTop;
-    },
-
-    getPaddingLeft: function() {
-      return this.options.paddingLeft;
-    },
-
-    getPaddingBottom: function() {
-      return this.options.paddingTop;
-    },
-
-    getPaddingRight: function() {
-      return this.options.paddingRight;
-    },
 
     // Title
     setTitle: function( title ) {
@@ -3417,15 +3426,17 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     },
 
     getDrawingHeight: function( useCache ) {
-      if ( useCache && this.innerHeight )
+      if ( useCache && this.innerHeight ) {
         return this.innerHeight;
+      }
       var height = this.height - this.options.paddingTop - this.options.paddingBottom;
       return ( this.innerHeight = height );
     },
 
     getDrawingWidth: function( useCache ) {
-      if ( useCache && this.innerWidth )
+      if ( useCache && this.innerWidth ) {
         return this.innerWidth;
+      }
       var width = this.width - this.options.paddingLeft - this.options.paddingRight;
       return ( this.innerWidth = width );
     },
@@ -3439,10 +3450,8 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
     },
 
-
-
     getBoundaryAxisFromShapes: function( axis, xy, minmax ) {
-
+/*
       var
         x = xy == 'x',
         i = 0,
@@ -3459,7 +3468,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
         }
       }
       return val;
-
+*/
     },
 
     getBoundaryAxisFromSeries: function( axis, xy, minmax ) {
@@ -3539,11 +3548,11 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
     redraw: function( noX, noY ) {
 
-      if ( !this.canRedraw() ) {
+      if ( ! this.canRedraw() ) {
         return;
       }
 
-      if ( !this.sizeSet ) {
+      if ( ! this.sizeSet ) {
 
         this._resize();
 
@@ -3934,6 +3943,48 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       this.seriesReady.resolve();
     },
 
+
+
+
+    isPluginAllowed: function( e, plugin ) {
+
+      if ( this.forcedPlugin == plugin ) {
+        return true;
+      }
+
+      var act = this.options.pluginAction[ plugin ] || plugin,
+        shift = e.shiftKey,
+        ctrl = e.ctrlKey;
+
+      if ( act.shift === undefined ) {
+        act.shift = false;
+      }
+
+      if ( act.ctrl === undefined ) {
+        act.ctrl = false;
+      }
+
+      if ( shift !== act.shift ) {
+        return false;
+      }
+
+      if ( ctrl !== act.ctrl ) {
+        return false;
+      }
+
+      return true;
+    },
+
+    forcePlugin: function( plugin ) {
+      this.forcedPlugin = plugin;
+    },
+
+    unforcePlugin: function() {
+      this.forcedPlugin = false;
+    },
+
+
+
     _pluginsExecute: function( funcName, args ) {
 
       //			Array.prototype.splice.apply(args, [0, 0, this]);
@@ -4298,7 +4349,34 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     unlockShapes: function() {
       //		console.log('unlock');
       this.shapesLocked = false;
-    }
+    },
+
+
+    _getXY: function( e ) {
+
+      var x = e.clientX,
+        y = e.clientY;
+
+      if ( e.offsetX !== undefined && e.offsetY !== undefined ) {
+
+        return {
+          x: e.offsetX,
+          y: e.offsetY
+        };
+      }
+
+      y = e.clientY;
+
+      var pos = this.offsetCached || $( this._dom ).offset();
+
+      x -= pos.left - window.scrollX;
+      y -= pos.top - window.scrollY;
+
+      return {
+        x: x,
+        y: y
+      };
+    },
   }
 
   function makeSerie( graph, name, options, type, callback ) {
@@ -4756,7 +4834,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 /* 
  * Build: new source file 
  * File name : graph._serie
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph._serie.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph._serie.js
  */
 
 build['./graph._serie'] = ( function( ) { 
@@ -4932,6 +5010,7 @@ build['./graph._serie'] = ( function( ) {
         this.slots = ws;
 
         if ( this.options.useSlots ) {
+
           this.calculateSlots();
         }
       }
@@ -5233,7 +5312,7 @@ build['./graph._serie'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.drag
- * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.drag.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/plugins/graph.plugin.drag.js
  */
 
 build['./plugins/graph.plugin.drag'] = ( function( ) { 
@@ -5285,7 +5364,7 @@ build['./plugins/graph.plugin.drag'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.linking
- * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.linking.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/plugins/graph.plugin.linking.js
  */
 
 build['./plugins/graph.plugin.linking'] = ( function( ) { 
@@ -5542,7 +5621,7 @@ build['./plugins/graph.plugin.linking'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.nmrpeakpicking
- * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.nmrpeakpicking.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/plugins/graph.plugin.nmrpeakpicking.js
  */
 
 build['./plugins/graph.plugin.nmrpeakpicking'] = ( function( ) { 
@@ -5601,7 +5680,7 @@ build['./plugins/graph.plugin.nmrpeakpicking'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.range
- * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.range.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/plugins/graph.plugin.range.js
  */
 
 build['./plugins/graph.plugin.range'] = ( function( ) { 
@@ -5669,7 +5748,7 @@ build['./plugins/graph.plugin.range'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.shape
- * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.shape.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/plugins/graph.plugin.shape.js
  */
 
 build['./plugins/graph.plugin.shape'] = ( function( ) { 
@@ -5799,7 +5878,7 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.zoom
- * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.zoom.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/plugins/graph.plugin.zoom.js
  */
 
 build['./plugins/graph.plugin.zoom'] = ( function( ) { 
@@ -6057,11 +6136,108 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
 ;
 /* 
  * Build: new source file 
- * File name : series/graph.serie.line
- * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.line.js
+ * File name : series/slotoptimizer
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/series/slotoptimizer.js
  */
 
-build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) { 
+build['./series/slotoptimizer'] = ( function( ) { 
+
+
+    var slotWorker;
+    var queue = {};
+
+    function createWorker() {
+
+        var workerUrl = URL.createObjectURL( new Blob(
+            [ " ( " + 
+            function() { 
+              onmessage = function( e ) {
+
+                var data = e.data.data,
+                    slotNb = e.data.slotNumber,
+                    slot = e.data.slot,
+                    flip = e.data.flip,
+                    max = e.data.max,
+                    min = e.data.min,
+                    slotNumber,
+                    dataPerSlot = slot / (max - min);
+
+                    var slotsData = [];
+
+                for(var j = 0, k = data.length; j < k ; j ++ ) {
+
+                  for(var m = 0, n = data[ j ].length ; m < n ; m += 2 ) {
+
+                    slotNumber = Math.floor( ( data[ j ][ m ] - min ) * dataPerSlot );
+
+                    slotsData[ slotNumber ] = slotsData[ slotNumber ] || { 
+                        min: data[ j ][ m + 1], 
+                        max: data[ j ][ m + 1], 
+                        start: data[ j ][ m + 1],
+                        stop: false,
+                        x: data[ j ][ m ] };
+
+                    slotsData[ slotNumber ].stop = data[ j ][ m + 1 ];
+                    slotsData[ slotNumber ].min = Math.min( data[ j ][ m + 1 ], slotsData[ slotNumber ].min );
+                    slotsData[ slotNumber ].max = Math.max( data[ j ][ m + 1 ], slotsData[ slotNumber ].max );
+
+                  }
+                }
+
+                postMessage( { slotNumber: slotNb, slot: slot, data: slotsData, _queueId: e.data._queueId } );
+              };
+
+            }.toString() + ")()" ]
+
+        , { type: 'application/javascript' } ) );
+
+        slotWorker = new Worker( workerUrl );
+
+        slotWorker.onmessage = function( e ) {
+            var id = e.data._queueId;
+            delete e.data._queueId;
+            queue[ id ].resolve( e.data.data );
+            delete queue[ id ];
+        }
+    }
+
+    // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
+    function guid() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+            return v.toString(16);
+        });
+    }
+
+    return function( toOptimize ) {
+
+        if( ! slotWorker ) {
+            createWorker();
+        }
+
+        var requestId = guid();
+        toOptimize._queueId = requestId;
+        queue[ requestId ] = $.Deferred();
+
+        slotWorker.postMessage( toOptimize );
+        return queue[ requestId ];
+    }
+
+ } ) (  );
+
+
+// Build: End source file (series/slotoptimizer) 
+
+
+
+;
+/* 
+ * Build: new source file 
+ * File name : series/graph.serie.line
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/series/graph.serie.line.js
+ */
+
+build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, SlotOptimizer ) { 
 
   
 
@@ -6197,67 +6373,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
       var self = this;
       this.slotsData = {};
 //      this.slotWorker = new Worker( './src/slotworker.js' );
+  
 
-
-    var workerUrl = URL.createObjectURL( new Blob(
-
-        [
-        " ( " + 
-
-            function() { 
-
-           
-          onmessage = function( e ) {
-            var data = e.data.data;
-            var slotNb = e.data.slotNumber;
-            var slot = e.data.slot;
-            var flip = e.data.flip;
-            var max = e.data.max;
-            var min = e.data.min;
-            var slotNumber;
-            var dataPerSlot = slot / (max - min);
-
-            this.slotsData = [];
-
-            for(var j = 0, k = data.length; j < k ; j ++ ) {
-
-              for(var m = 0, n = data[ j ].length ; m < n ; m += 2 ) {
-
-                slotNumber = Math.floor( ( data[ j ][ m ] - min ) * dataPerSlot );
-
-                this.slotsData[ slotNumber ] = this.slotsData[ slotNumber ] || { 
-                    min: data[ j ][ m + 1], 
-                    max: data[ j ][ m + 1], 
-                    start: data[ j ][ m + 1],
-                    stop: false,
-                    x: data[ j ][ m ] };
-
-                this.slotsData[ slotNumber ].stop = data[ j ][ m + 1 ];
-                this.slotsData[ slotNumber ].min = Math.min( data[ j ][ m + 1 ], this.slotsData[ slotNumber ].min );
-                this.slotsData[ slotNumber ].max = Math.max( data[ j ][ m + 1 ], this.slotsData[ slotNumber ].max );
-
-              }
-            }
-
-            postMessage( { slotNumber: slotNb, slot: slot, data: this.slotsData } );
-          };
-
-
-            }.toString() + ")()"
-
-        ], { type: 'application/javascript' }
-
-        ) );
-
-
-        this.slotWorker = new Worker( workerUrl );
-
-      
-
-      this.slotWorker.onmessage = function( e ) {
-
-        self.slotsData[ e.data.slot ].resolve( e.data.data );
-      }
 
 
       for ( var i = 0, l = this.slots.length; i < l; i++ ) {
@@ -6269,26 +6386,25 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
     },
 
     slotCalculator: function( slot, slotNumber ) {
-      var def = $.Deferred();
 
-      this.slotWorker.postMessage( {
-        /*min: this.getFlip() ? this.minY : this.minX,
-        max: this.getFlip() ? this.maxY : this.maxX,*/
+      return SlotOptimizer( {
+        
         min: this.minX,
         max: this.maxX,
         data: this.data,
         slot: slot,
         slotNumber: slotNumber,
         flip: this.getFlip( )
+
       } );
-      return def;
+
     },
 
     calculateSlot: function( slot, slotNumber ) {
       var self = this;
       this.slotsData[ slot ] = this.slotCalculator( slot, slotNumber );
       this.slotsData[ slot ].pipe( function( data ) {
-
+console.log( data );
         self.slotsData[ slot ] = data;
         return data;
       } );
@@ -6363,9 +6479,12 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
         if ( ( hover && this.domMarkerHover[ index ] && !this.domMarkerSelect[ index ] ) || this.domMarkerSelect[ index ] ) {
 
-          if ( !el[ index ] )
+          if ( ! el[ index ] ) {
             return;
+          }
+
           this.groupMarkerSelected.removeChild( el[ index ] );
+          
           delete el[ index ];
 
           if ( hover )
@@ -6460,287 +6579,392 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
       return serie;
     },
 
-    draw: function() { // Serie redrawing
 
-      var data = this.data;
-      var xData = this.xData;
+    drawInit: function() {
 
-      this.currentLine = 0;
+      var data, xData;
 
+      this.currentLineId = 0;
+      this.counter = 0;
+      this._drawn = true;
+      this.currentLine = "";
+
+      // Degradation
       if ( this.degradationPx ) {
+
         data = getDegradedData( this );
-        console.log( data );
         xData = data[ 1 ];
         data = data[ 0 ];
+        this._dataToUse = data;
+        this._xDataToUse = xData;
+
+      } else {
+
+        this._dataToUse = this.data;
+        this._xDataToUse = this.xData;
       }
 
-      var x,
-        y,
-        xpx,
-        ypx,
-        xpx2,
-        ypx2,
-        i = 0,
-        l = data.length,
-        j = 0,
-        k,
-        m,
-        currentLine,
-        max,
-        self = this;
-
-      var optimizeMonotoneous = this.isXMonotoneous(),
-        optimizeMaxPxX = this.getXAxis().getMathMaxPx(),
-        optimizeBreak, buffer;
-
-      var shape, self = this;
-
-      this._drawn = true;
-
-      var next = this.groupLines.nextSibling;
-      this.groupMain.removeChild( this.groupLines );
+      this._optimizeMonotoneous = this.isXMonotoneous(),
+      this._optimizeMaxPxX = this.getXAxis().getMathMaxPx(),
+      this._optimizeBreak,
+      this._optimizeBuffer;
 
 
-      this.markerCurrentFamily = null;
-      var markerCurrentIndex = 0;
-      var markerNextChange = -1; //this.markerPoints[ markerCurrentIndex ][ 0 ];
 
-      var incrXFlip = 0;
-      var incrYFlip = 1;
-
-      if ( this.isFlipped() ) {
-        incrXFlip = 1;
-        incrYFlip = 0;
-      }
-
-      this.eraseMarkers();
-
-      var totalLength = 0;
-      for ( ; i < l; i++ ) {
-        totalLength += data[ i ].length / 2;
-      }
-
-      i = 0;
-      var allY = [],
-        slotToUse,
-        y = 0,
-        z;
-
-      if ( this.options.useSlots && this.slots ) {
-
+      // Slots
+      this._slotToUse = false;
+      if ( this.options.useSlots && this.slots && this.slots.length > 0 ) {
         if( this.isFlipped() ) {
           var slot = this.graph.getDrawingHeight() * ( this.maxY - this.minY ) / ( this.getYAxis().getActualMax() - this.getYAxis().getActualMin() );
         } else {
           var slot = this.graph.getDrawingWidth() * ( this.maxX - this.minX ) / ( this.getXAxis().getActualMax() - this.getXAxis().getActualMin() );  
         }
-        
-
+      
         for ( var y = 0, z = this.slots.length; y < z; y++ ) {
-
           if ( slot < this.slots[ y ] ) {
-            slotToUse = this.slotsData[ this.slots[ y ] ];
+            this._slotToUse = this.slotsData[ this.slots[ y ] ];
+            this._slotId = y;
             break;
           }
         }
       }
 
-      var degradation = [];
-      var buffer;
+      // Init markers
+      this._markerCurrentFamily = null;
 
-      var lookForMaxima = true;
-      var lookForMinima = false;
+      this.detectedPeaks = [];
+      this.lastYPeakPicking = false;
+      
+    },
 
-      if ( this.options.autoPeakPicking ) {
-        var lastYPeakPicking;
+    removeLinesGroup: function() {
+      this._afterLinesGroup = this.groupLines.nextSibling;
+      this.groupMain.removeChild( this.groupLines );
+    },
+
+    insertLinesGroup: function() {
+
+      if( ! this._afterLinesGroup ) {
+        throw "Could not find group after lines to insertion."
       }
 
-      if ( slotToUse ) {
-        if ( slotToUse.done ) {
+      this.groupMain.insertBefore( this.groupLines, this._afterLinesGroup );
+      this._afterLinesGroup = false;
+    },
 
-          slotToUse.done( function( data ) {
-            self.drawSlot( data, y );
-          } );
+    removeExtraLines: function() {
 
-        } else {
-          this.drawSlot( slotToUse, y );
-        }
+      var i = this.currentLineId + 1,
+          l = this.lines.length;
 
-      } else {
+      for ( ; i < l ; i ++ ) {
 
-        if ( this.mode == 'x_equally_separated' ) {
-
-          for ( ; i < l; i++ ) {
-
-            currentLine = "M ";
-            j = 0, k = 0, m = data[ i ].length;
-
-            for ( ; j < m; j += 1 ) {
-
-              if ( this.markersShown() ) {
-
-                this.getMarkerCurrentFamily( k );
-              }
-
-              if ( ! this.isFlipped() ) {
-
-                xpx = this.getX( xData[ i ].x + j * xData[ i ].dx );
-                ypx = this.getY( data[ i ][ j ] );
-              } else {
-                ypx = this.getX( xData[ i ].x + j * xData[ i ].dx );
-                xpx = this.getY( data[ i ][ j ] );
-              }
-
-              if ( optimizeMonotoneous && xpx < 0 ) {
-                buffer = [ xpx, ypx ];
-                continue;
-              }
-
-              if ( optimizeMonotoneous && buffer ) {
-
-                currentLine = this._addPoint( currentLine, buffer[ 0 ], buffer[ 1 ], k );
-                buffer = false;
-                k++;
-              }
-
-              currentLine = this._addPoint( currentLine, xpx, ypx, k );
-              k++;
-
-              if ( optimizeMonotoneous && xpx > optimizeMaxPxX ) {
-                toBreak = true;
-                break;
-              }
-
-            }
-
-            this._createLine( currentLine, k );
-
-            if ( toBreak ) {
-              break;
-            }
-          }
-
-        } else {
-
-          for ( ; i < l; i++ ) {
-
-            var toBreak = false;
-
-            currentLine = "M ";
-            j = 0, k = 0, m = data[ i ].length;
-
-            for ( ; j < m; j += 2 ) {
-
-              if ( this.markersShown() ) {
-
-                this.getMarkerCurrentFamily( k );
-
-              }
-
-              xpx2 = this.getX( data[ i ][ j + incrXFlip ] );
-              ypx2 = this.getY( data[ i ][ j + incrYFlip ] );
-
-              if ( xpx2 == xpx && ypx2 == ypx ) {
-                continue;
-              }
-
-
-              if( isNaN( xpx2 ) || isNaN( ypx2 ) ) {
-                if( k > 0 ) {
-                   this._createLine( currentLine, k );
-                   currentLine = "M ";
-                   k = 0;
-                 }
-                 continue;
-              }
-
-              if ( optimizeMonotoneous && xpx2 < 0 ) {
-                buffer = [ xpx2, ypx2 ]
-                continue;
-              }
-
-              if ( optimizeMonotoneous && buffer ) {
-
-                currentLine = this._addPoint( currentLine, buffer[ 0 ], buffer[ 1 ], k );
-                buffer = false;
-                k++;
-              }
-
-              if ( this.options.autoPeakPicking ) {
-
-                if ( !this.options.lineToZero ) {
-
-                  if ( !lastYPeakPicking ) {
-                    lastYPeakPicking = [ ( data[ i ][ j + incrYFlip ] ), data[ i ][ j + incrXFlip ] ];
-                  } else {
-
-                    if ( ( data[ i ][ j + incrYFlip ] >= lastYPeakPicking[ 0 ] && lookForMaxima ) ||  ( data[ i ][ j + incrYFlip ] <= lastYPeakPicking[ 0 ] && lookForMinima ) ) {
-
-                      lastYPeakPicking = [ ( data[ i ][ j + incrYFlip ] ), data[ i ][ j + incrXFlip ] ]
-
-                    } else {
-
-                      if ( lookForMinima ) {
-                        lookForMinima = false;
-                        lookForMaxima = true;
-                      } else {
-
-                        lookForMinima = true;
-                        lookForMaxima = false;
-
-                        allY.push( lastYPeakPicking );
-                        lastYPeakPicking = false;
-                      }
-
-                    }
-                  }
-
-                } else {
-                  allY.push( [ ( data[ i ][ j + incrYFlip ] ), data[ i ][ j + incrXFlip ] ] );
-                }
-              }
-
-              currentLine = this._addPoint( currentLine, xpx2, ypx2, k );
-              k++;
-
-              if ( optimizeMonotoneous && xpx2 > optimizeMaxPxX ) {
-                toBreak = true;
-                
-                break;
-              }
-
-              xpx = xpx2;
-              ypx = ypx2;
-            }
-
-            this._createLine( currentLine, k );
-
-            if ( toBreak ) {
-              break;
-            }
-          }
-        }
-
-        
-      }
-
-      if ( this.options.autoPeakPicking ) {
-        makePeakPicking( this, allY );
-      }
-
-      i++;
-
-      for ( i = this.currentLine + 1; i < this.lines.length; i++ ) {
         this.groupLines.removeChild( this.lines[ i ] );
         this.lines.splice( i, 1 );
       }
 
-      insertMarkers( this );
+      this.currentLineId = 0;
+    },
 
-      this.groupMain.insertBefore( this.groupLines, next );
+    detectPeaks: function( x, y ) {
+
+      if ( this.options.autoPeakPicking ) {
+
+        if ( ! this.options.lineToZero ) {
+
+          if ( ! this.lastYPeakPicking ) {
+
+            this.lastYPeakPicking = [ y, x ];
+
+          } else {
+
+            if ( ( y >= this.lastYPeakPicking[ 0 ] && this.lookForMaxima ) ||  ( y <= this.lastYPeakPicking[ 0 ] && this.lookForMinima ) ) {
+
+              this.lastYPeakPicking = [ y, x ]
+
+            } else {
+
+              if ( this.lookForMinima ) {
+                this.lookForMinima = false;
+                this.lookForMaxima = true;
+              } else {
+
+                this.lookForMinima = true;
+                this.lookForMaxima = false;
+
+                this.detectedPeaks.push( this.lastYPeakPicking );
+                this.lastYPeakPicking = false;
+              }
+
+            }
+          }
+
+        } else {
+          this.detectedPeaks.push( [ y, x ] );
+        }
+      }
+    },
+
+    draw: function() { // Serie redrawing
+
+      this.drawInit();
+
+      var data = this._dataToUse;
+      var xData = this._xDataToUse;
+      var slotToUse = this._slotToUse;
+
+      var shape, self = this;
+
+      this.removeLinesGroup();
+
+
+      this.eraseMarkers();
+
+      this.lookForMaxima = true;
+      this.lookForMinima = false;
+
+
+      if( ! this._draw_slot() ) {
+
+        if ( this.mode == 'x_equally_separated' ) {
+
+            this._draw_equally_separated();
+
+        } else {
+
+          this._draw_standard();
+
+        }
+      }
+
+      this.makePeakPicking( );
+      this.removeExtraLines();
+      this.insertMarkers( );
+      this.insertLinesGroup();
+
+      
       var label;
       for ( var i = 0, l = this.labels.length; i < l; i++ ) {
         this.repositionLabel( this.labels[ i ] );
       }
+    },
+
+
+    _draw_standard: function() {
+
+      var self = this,
+          data = this._dataToUse,
+          toBreak,
+          i = 0,
+          l = data.length,
+          j,
+          k,
+          m,
+          x,
+          y,
+          xpx,
+          ypx,
+          xpx2,
+          ypx2;
+
+
+      var incrXFlip = 0;
+      var incrYFlip = 1;
+
+      if ( this.isFlipped() ) {
+
+        incrXFlip = 1;
+        incrYFlip = 0;
+
+      }
+
+      for ( ; i < l; i++ ) {
+
+        toBreak = false;
+
+        this.currentLine = "";
+        j = 0, k = 0, m = data[ i ].length;
+
+        for ( ; j < m; j += 2 ) {
+
+          if ( this.markersShown() ) {
+            this.getMarkerCurrentFamily( this.counter );
+          }
+
+          x = data[ i ][ j + incrXFlip ];
+          y = data[ i ][ j + incrYFlip ];
+
+          xpx2 = this.getX( x );
+          ypx2 = this.getY( y );
+
+          if ( xpx2 == xpx && ypx2 == ypx ) {
+            continue;
+          }
+  
+
+          if( isNaN( xpx2 ) || isNaN( ypx2 ) ) {
+            if( this.counter > 0 ) {
+               this._createLine( );
+             }
+             continue;
+          }
+
+  
+
+          // OPTIMIZATION START
+          if( ! this._optimize_before( xpx, ypx ) ) {
+            continue;
+          }
+          // OPTIMIZATION END
+
+          this._addPoint( xpx2, ypx2 );
+
+
+          // OPTIMIZATION START
+          if( ! this._optimize_after( xpx, ypx ) ) {
+            toBreak = true;
+            break;  
+          }
+          // OPTIMIZATION END
+
+          this.detectPeaks( x, y );
+
+          xpx = xpx2;
+          ypx = ypx2;
+        }
+
+        this._createLine( );
+
+        if ( toBreak ) {
+          break;
+        }
+      }
+    },
+
+    _draw_slot: function() {
+
+        var self = this;
+        if( this._slotToUse ) {
+
+
+          if ( this._slotToUse.done ) {
+
+            this._slotToUse.done( function( data ) {
+              self.drawSlot( data, self._slotId );
+            } );
+
+          } else {
+
+            this.drawSlot( this._slotToUse, self._slotId );
+
+          }
+          return true;
+
+        }
+
+        return false;
+    },
+
+
+    _draw_equally_separated: function() {
+
+      var i = 0,
+          data = this._dataToUse,
+          xData = this._xDataToUse,
+          l = data.length,
+          j,
+          k,
+          m,
+          xpx,
+          ypx,
+          toBreak,
+          currentLine;
+      
+      for ( ; i < l; i++ ) {
+
+        currentLine = "M ";
+        j = 0, k = 0, m = data[ i ].length;
+
+        for ( ; j < m; j += 1 ) {
+
+          if ( this.markersShown() ) {
+
+            this.getMarkerCurrentFamily( k );
+          }
+
+          if ( ! this.isFlipped() ) {
+
+            xpx = this.getX( xData[ i ].x + j * xData[ i ].dx );
+            ypx = this.getY( data[ i ][ j ] );
+
+          } else {
+
+            ypx = this.getX( xData[ i ].x + j * xData[ i ].dx );
+            xpx = this.getY( data[ i ][ j ] );
+
+          }
+
+          
+
+          // OPTIMIZATION START
+          if( ! this._optimize_before( xpx, ypx ) ) {
+            continue;
+          }
+          // OPTIMIZATION END
+
+          this._addPoint( xpx, ypx );
+          
+
+
+          // OPTIMIZATION START
+          if( ! this._optimize_after( xpx, ypx ) ) {
+            toBreak = true;
+            break;  
+          }
+          // OPTIMIZATION END
+
+        }
+
+        this._createLine();
+
+        if ( toBreak ) {
+          break;
+        }
+      }
+
+
+    },
+
+    _optimize_before: function( xpx, ypx ) {
+
+      if( ! this.optimizeMonotoneous ) {
+        return true;
+      }
+
+      if( xpx < 0 ) {
+        this._optimizeBuffer = [ xpx, ypx ];
+        return false;
+      }
+
+      if( this._optimizeBuffer ) {
+
+        this._addPoint( this._optimizeBuffer[ 0 ], this._optimizeBuffer[ 1 ] );
+        this._optimizeBuffer = false;
+        
+      }
+
+      return true;
+    },
+
+    _optimize_after: function() {
+
+      if ( this.optimizeMonotoneous && xpx > this.optimizeMaxPxX ) {
+        toBreak = true;
+        return false;
+      }
+
+      return true;
+
     },
 
     hidePeakPicking: function( lock ) {
@@ -6781,7 +7005,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
     drawSlot: function( slotToUse, y ) {
 
       
-      var currentLine = "M ";
       var k = 0;
       var i = 0,
         xpx, max;
@@ -6801,7 +7024,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
         var slotInit = Math.floor( ( this.getXAxis().getActualMin() - this.minX ) * dataPerSlot );
         var slotFinal = Math.ceil( ( this.getXAxis().getActualMax() - this.minX ) * dataPerSlot );
       }
-      
 
       for ( j = slotInit; j <= slotFinal; j++ ) {
 
@@ -6818,12 +7040,12 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
             allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
           }
 */
-          currentLine = this._addPoint( currentLine, this.getX( slotToUse[ j ].start ), ypx, k );
-          currentLine = this._addPoint( currentLine, max, ypx, false, true );
-          currentLine = this._addPoint( currentLine, this.getX( slotToUse[ j ].min ), ypx );
-          currentLine = this._addPoint( currentLine, this.getX( slotToUse[ j ].stop ), ypx, false, true );
+          this._addPoint( this.getX( slotToUse[ j ].start ), ypx );
+          this._addPoint( max, ypx, true );
+          this._addPoint( this.getX( slotToUse[ j ].min ), ypx );
+          this._addPoint( this.getX( slotToUse[ j ].stop ), ypx, true );
 
-          k++;
+      //    k++;
         } else {
 
 
@@ -6836,18 +7058,18 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
             allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
           }
 
-          currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].start ), k );
-          currentLine = this._addPoint( currentLine, xpx, max, false, true );
-          currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].min ) );
-          currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].stop ), false, true );
+          this._addPoint( xpx, this.getY( slotToUse[ j ].start ) );
+          this._addPoint( xpx, max, true );
+          this._addPoint( xpx, this.getY( slotToUse[ j ].min ) );
+          this._addPoint( xpx, this.getY( slotToUse[ j ].stop ), true );
 
-          k++;
+          //this.counter ++;
         }
         
 
       }
 
-      this._createLine( currentLine, k );
+      this._createLine(  );
       i++;
       
     },
@@ -6869,63 +7091,75 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
       this.markerLabelSquare.setAttribute( 'display', 'none' );
     },
 
-    _addPoint: function( currentLine, xpx, ypx, k, move ) {
+    _addPoint: function( xpx, ypx, move ) {
       var pos;
 
-      if ( k !== 0 ) {
+      /*if( ! this.currentLineId ) {
+        throw "No current line"
+      }*/
+
+      if ( this.counter == 0 ) {
+         this.currentLine = 'M ';
+      } else {
+
         if ( this.options.lineToZero || move )
-          currentLine += 'M ';
+          this.currentLine += 'M ';
         else
-          currentLine += "L ";
+          this.currentLine += "L ";
       }
 
-      currentLine += xpx;
-      currentLine += " ";
-      currentLine += ypx;
-      currentLine += " ";
+      this.currentLine += xpx;
+      this.currentLine += " ";
+      this.currentLine += ypx;
+      this.currentLine += " ";
 
       if ( this.options.lineToZero && ( pos = this.getYAxis().getPos( 0 ) ) !== undefined ) {
-        currentLine += "L ";
-        currentLine += xpx;
-        currentLine += " ";
-        currentLine += pos;
-        currentLine += " ";
+
+        this.currentLine += "L ";
+        this.currentLine += xpx;
+        this.currentLine += " ";
+        this.currentLine += pos;
+        this.currentLine += " ";
+
       }
 
-      if ( !this.markerPoints ) {
-        return currentLine;
+      this.counter++;
+
+      if ( ! this.markerPoints ) {
+        return;
       }
 
       if ( this.markersShown() && !( xpx > this.getXAxis().getMaxPx() ||  xpx < this.getXAxis().getMinPx() ) ) {
 
         drawMarkerXY( this.markerFamily[ this.markerCurrentFamily ], xpx, ypx );
       }
-      return currentLine;
+
     },
 
     // Returns the DOM
-    _createLine: function( points, nbPoints ) {
+    _createLine: function(  ) {
 
-      var i = this.currentLine ++;
+      var i = this.currentLineId ++,
+          line;
+
+      // Creates a line if needed
       if ( this.lines[ i ] ) {
-        var line = this.lines[ i ];
+        line = this.lines[ i ];
       } else {
-        var line = document.createElementNS( this.graph.ns, 'path' );
-
+        line = document.createElementNS( this.graph.ns, 'path' );
         this.applyLineStyle( line );
-      }
-
-      if ( nbPoints == 0 ) {
-        line.setAttribute( 'd', 'M 0 0' );
-      } else {
-        line.setAttribute( 'd', points );
-
-      }
-
-      if ( ! this.lines[ i ] ) {
         this.groupLines.appendChild( line );
         this.lines[ i ] = line;
       }
+
+      if ( this.counter == 0 ) {
+        line.setAttribute( 'd', '' );
+      } else {
+        line.setAttribute( 'd', this.currentLine );
+      }
+
+      this.currentLine = "M ";
+      this.counter = 0;
 
       return line;
     },
@@ -7672,7 +7906,89 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
     XIsMonotoneous: function() {
       this.xmonotoneous = true;
       return this;
+    },
+
+
+  makePeakPicking: function( ) {
+
+    var self = this;
+    var ys = this.detectedPeaks;
+    $.when.apply( $, self.picksDef ).then( function() {
+
+      var x,
+        px,
+        passed = [],
+        px,
+        i = 0,
+        l = ys.length,
+        k, m, y;
+
+      ys.sort( function( a, b ) {
+        return b[ 0 ] - a[ 0 ];
+      } );
+
+      for ( ; i < l; i++ ) {
+
+        x = ys[ i ][ 1 ],
+        px = self.getX( x ),
+        k = 0, m = passed.length,
+        y = self.getY( ys[ i ][ 0 ] );
+
+        if ( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
+          continue;
+        }
+
+        if ( y > self.getYAxis().getMinPx() || y < self.getYAxis().getMaxPx() ) {
+          continue;
+        }
+
+        for ( ; k < m; k++ ) {
+          if ( Math.abs( passed[ k ] - px ) < self.options.autoPeakPickingMinDistance )  {
+            break;
+          }
+        }
+
+        if ( k < m ) {
+          continue;
+        }
+
+        if ( !self.picks[ m ] ) {
+          return;
+        }
+
+        //    self.picks[ m ].show();
+        self.picks[ m ].set( 'labelPosition', {
+          x: x,
+          dy: "-10px"
+        } );
+
+        self.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
+        passed.push( px );
+        self.picks[ m ].redraw();
+
+        if ( passed.length == self.options.autoPeakPickingNb ) {
+          break;
+        }
+      }
+
+    } );
+  },
+
+
+  insertMarkers: function( ) {
+
+    if ( ! this.markerFamily ) {
+      return;
     }
+
+    for ( var i = 0, l = this.markerFamily.length; i < l; i++ ) {
+      this.markerFamily[ i ].dom.setAttribute( 'd', this.markerFamily[ i ].path );
+      this.groupMain.appendChild( this.markerFamily[ i ].dom );
+    }
+  }
+
+
+
   } );
 
   function drawMarkerXY( family, x, y ) {
@@ -7932,85 +8248,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
     }
   }
 
-  function makePeakPicking( graph, allY ) {
-
-    var self = graph;
-
-    $.when.apply( $, graph.picksDef ).then( function() {
-
-      var x,
-        px,
-        passed = [],
-        px,
-        i = 0,
-        l = allY.length,
-        k, m, y;
-
-      allY.sort( function( a, b ) {
-        return b[ 0 ] - a[ 0 ];
-      } );
-
-      for ( ; i < l; i++ ) {
-
-        x = allY[ i ][ 1 ],
-        px = self.getX( x ),
-        k = 0, m = passed.length,
-        y = self.getY( allY[ i ][ 0 ] );
-
-        if ( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
-          continue;
-        }
-
-        if ( y > self.getYAxis().getMinPx() || y < self.getYAxis().getMaxPx() ) {
-          continue;
-        }
-
-        for ( ; k < m; k++ ) {
-          if ( Math.abs( passed[ k ] - px ) < self.options.autoPeakPickingMinDistance )  {
-            break;
-          }
-        }
-
-        if ( k < m ) {
-          continue;
-        }
-
-        if ( !self.picks[ m ] ) {
-          return;
-        }
-
-        //    self.picks[ m ].show();
-        self.picks[ m ].set( 'labelPosition', {
-          x: x,
-          dy: "-10px"
-        } );
-
-        self.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
-        passed.push( px );
-        self.picks[ m ].redraw();
-
-        if ( passed.length == self.options.autoPeakPickingNb ) {
-          break;
-        }
-      }
-
-    } );
-  }
-
-  function insertMarkers( graph ) {
-
-    if ( !graph.markerFamily ) {
-      return;
-    }
-
-    for ( var i = 0, l = graph.markerFamily.length; i < l; i++ ) {
-      graph.markerFamily[ i ].dom.setAttribute( 'd', graph.markerFamily[ i ].path );
-      graph.groupMain.appendChild( graph.markerFamily[ i ].dom );
-    }
-  }
 
   return GraphSerie;
- } ) ( build["./graph._serie"] );
+ } ) ( build["./graph._serie"],build["./series/slotoptimizer"] );
 
 
 // Build: End source file (series/graph.serie.line) 
@@ -8021,7 +8261,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 /* 
  * Build: new source file 
  * File name : series/graph.serie.contour
- * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.contour.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/series/graph.serie.contour.js
  */
 
 build['./series/graph.serie.contour'] = ( function( GraphSerie ) { 
@@ -8154,9 +8394,12 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
       var maxX = this.getXAxis().getActualMax();
       var maxY = this.getYAxis().getActualMax();
 
-      for ( ; i < l; i++ ) {
+      this.counter = 0;
+      this.currentLineId = 0;
 
-        j = 0, k = 0, currentLine = "";
+      for ( ; i < l; i++ ) {
+        this.currentLine = "";
+        j = 0, k = 0;
 
         for ( arr = this.data[ i ].lines, m = arr.length; j < m; j += 4 ) {
 
@@ -8185,15 +8428,17 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
 					}
 */
 
-          currentLine += "M";
-          currentLine += xpx2;
-          currentLine += " ";
-          currentLine += ypx2;
+          this.currentLine += "M ";
+          this.currentLine += xpx2;
+          this.currentLine += " ";
+          this.currentLine += ypx2;
 
-          currentLine += "L";
-          currentLine += xpx;
-          currentLine += " ";
-          currentLine += ypx;
+          this.currentLine += "L ";
+          this.currentLine += xpx;
+          this.currentLine += " ";
+          this.currentLine += ypx;
+
+          this.counter++;
 
           lastxpx = xpx;
           lastypx = ypx;
@@ -8201,7 +8446,9 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
           k++;
         }
 
-        domLine = this._createLine( currentLine + " z", k );
+        this.currentLine += " z";
+
+        domLine = this._createLine( );
         domLine.setAttribute( 'data-zvalue', this.data[ i ].zValue );
 
         if ( this.zoneColors && this.zoneColors[ i ] ) {
@@ -8410,8 +8657,242 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
 ;
 /* 
  * Build: new source file 
+ * File name : series/graph.serie.line.broken
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/series/graph.serie.line.broken.js
+ */
+
+build['./series/graph.serie.line.broken'] = ( function( GraphLine ) { 
+
+  
+
+  var GraphSerie = function() {}
+  $.extend( GraphSerie.prototype, GraphLine.prototype, {
+
+
+
+
+    draw: function() { // Serie redrawing
+
+      this.drawInit();
+
+      var data = this._dataToUse;
+      var xData = this._xDataToUse;
+      var slotToUse = this._slotToUse;
+
+      var shape, self = this;
+
+      this.removeLinesGroup();
+
+
+      this.eraseMarkers();
+
+      this.lookForMaxima = true;
+      this.lookForMinima = false;
+
+
+      
+
+      if ( this.mode == 'x_equally_separated' ) {
+
+          throw "Not supported";
+
+      } else {
+
+        this._draw_standard();
+
+      }
+    
+      i++;
+
+      this.removeExtraLines();
+      
+      //insertMarkers( this );
+
+      this.insertLinesGroup();
+
+      
+      var label;
+      for ( var i = 0, l = this.labels.length; i < l; i++ ) {
+        this.repositionLabel( this.labels[ i ] );
+      }
+    },
+
+
+
+
+
+    _draw_standard: function() { // Serie redrawing
+
+
+    var self = this,
+          data = this._dataToUse,
+          toBreak,
+          i = 0,
+          l = data.length,
+          j,
+          k,
+          m,
+          x,
+          y,
+          xpx,
+          ypx,
+          xpx2,
+          ypx2;
+
+      var lastRangeX, lastRangeY, lastX, lastY, lastXPx, lastYPx, insertMarkers;
+
+
+      var incrXFlip = 0;
+      var incrYFlip = 1;
+
+      if ( this.isFlipped() ) {
+
+        incrXFlip = 1;
+        incrYFlip = 0;
+
+      }
+
+      for ( ; i < l; i++ ) {
+
+        toBreak = false;
+
+        this.currentLine = "";
+        j = 0, k = 0, m = data[ i ].length;
+
+
+        for ( ; j < m; j += 2 ) {
+          
+          x = data[ i ][ j + incrXFlip ];
+          y = data[ i ][ j + incrYFlip ];
+
+          var rangeX = this.getXAxis().getRange ? this.getXAxis().getRange( x ) : [ 1, this.getX( x ) ];
+          var rangeY = this.getYAxis().getRange ? this.getYAxis().getRange( y ) : [ 1, this.getY( y ) ];
+
+//console.log( rangeX, rangeY );
+
+
+          // We just gets into a new range, we must get the old point and draw it in the current range
+          if( 
+            ( rangeX[ 0 ] != lastRangeX || rangeY[ 0 ] != lastRangeY ) && 
+              rangeX[ 0 ] !== undefined && 
+              rangeY[ 0 ] !== undefined && 
+              j > 0
+            ) {
+
+              // Direct range change => add the new point to the old range
+              if( 
+                lastRangeX !== undefined && 
+                lastRangeY !== undefined
+              ) {
+
+                this.break( lastX, lastY, lastXPx, lastYPx, x, y, k );
+                this._createLine( );
+              }
+
+
+              this.break( x, y, rangeX[ 1 ], rangeY[ 1 ], lastX, lastY, k );
+              
+              // We must add the old point to the current range
+              // use lastX, lastY for the last point
+
+              this._addPoint( rangeX[ 1 ], rangeY[ 1 ] )
+              
+
+              // Just breaks
+          } else if( rangeX[ 0 ] == undefined || rangeY[ 0 ] == undefined && lastRangeX && lastRangeY ) {
+
+            //currentLine = this.break( x, y, rangeX[ 1 ], rangeY[ 1 ], lastX, lastY, currentLine, k );
+            this.break( lastX, lastY, lastXPx, lastYPx, x, y, k );
+            this._createLine( );
+            
+          
+            // Adds the current point to the old range and break it
+          } else if( ! isNaN( rangeX[ 1 ] ) && ! isNaN( rangeY[ 1 ] ) ) {
+            
+            this._addPoint( rangeX[ 1 ], rangeY[ 1 ] )
+            
+          } else {
+
+            //continue;
+          }
+
+          lastRangeX = rangeX[ 0 ];
+          lastRangeY = rangeY[ 0 ];
+
+          lastX = x;
+          lastY = y;
+
+          lastXPx = rangeX[ 1 ];
+          lastYPx = rangeY[ 1 ];
+      }
+
+      this._createLine(  );
+    }
+  },
+
+
+
+  break: function( refX, refY, refXPx, refYPx, x, y ) {
+
+    var xRatio, yRatio, ratio, xPotential, yPotential, xBoundary, yBoundary;
+    var xpx, ypx;
+
+    if( this.getXAxis()._broken ) {
+      //xPotential = this.getXAxis().getInRange( refX, x );
+      xBoundary = this.getXAxis().getBoundary( refX, x );
+      xRatio = ( xBoundary - refX ) / ( x - refXPx );
+    } else {
+      xRatio = 1;
+      xPotential = x;
+    }
+
+    if( this.getYAxis()._broken ) {
+      //yPotential = this.getYAxis().getInRange( refY, y );
+
+      yBoundary = this.getYAxis().getBoundary( refY, y );
+      yRatio = ( yBoundary - refY ) / ( y - refY );
+    } else {
+      yRatio = 1;
+      yPotential = y;
+    }
+
+    var ratio = Math.min( yRatio, xRatio ),
+        x = ratio * ( x - refX ) + refX,
+        y = ratio * ( y - refY ) + refY;
+
+    if( this.getXAxis()._broken ) {
+      xpx = this.getXAxis().getInRange( refX, x );
+    } else {
+      xpx = this.getX( x );
+    }
+
+    if( this.getYAxis()._broken ) {
+      ypx = this.getYAxis().getInRange( refY, y );
+    } else {
+      ypx = this.getY( y );
+    }
+    
+    return this._addPoint( xpx, ypx );
+  },
+  
+
+
+  } );
+
+
+  return GraphSerie;
+ } ) ( build["./series/graph.serie.line"] );
+
+
+// Build: End source file (series/graph.serie.line.broken) 
+
+
+
+;
+/* 
+ * Build: new source file 
  * File name : series/graph.serie.scatter
- * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.scatter.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/series/graph.serie.scatter.js
  */
 
 build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) { 
@@ -8865,7 +9346,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 /* 
  * Build: new source file 
  * File name : series/graph.serie.zone
- * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.zone.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/series/graph.serie.zone.js
  */
 
 build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) { 
@@ -9240,7 +9721,7 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
 /* 
  * Build: new source file 
  * File name : graph.serieaxis
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.serieaxis.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.serieaxis.js
  */
 
 build['./graph.serieaxis'] = ( function( GraphSerie ) { 
@@ -9292,7 +9773,7 @@ build['./graph.serieaxis'] = ( function( GraphSerie ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.js
  */
 
 build['./shapes/graph.shape'] = ( function( ) { 
@@ -10394,7 +10875,7 @@ build['./shapes/graph.shape'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.areaundercurve
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.areaundercurve.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.areaundercurve.js
  */
 
 build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) { 
@@ -10546,8 +11027,10 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
         v2 = v3;
       }
 
+      this.counter = 0;
+
       for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
-        currentLine = "M ";
+        this.currentLine = "";
         init = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
         max = i == v2.dataIndex ? v2.xBeforeIndexArr : this.serie.data[ i ].length;
         k = 0;
@@ -10564,8 +11047,16 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
             this.firstX = x;
             this.firstY = y;
           }
-          currentLine = this.serie._addPoint( currentLine, x, y, k );
+
+          if( k > 0 ) {
+            this.currentLine += " L " + x + " " + y + " "  
+          } else {
+            this.currentLine += " M " + x + " " + y + " ";
+          }
+          
+          //this.serie._addPoint( x, y, false, this.currentLine );
           k++;
+
         }
 
         this.lastX = x;
@@ -10575,8 +11066,8 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
           return;
         }
 
-        currentLine += " V " + this.getYAxis().getPx( 0 ) + " H " + this.firstX + " z";
-        this.setDom( 'd', currentLine );
+        this.currentLine += " V " + this.getYAxis().getPx( 0 ) + " H " + this.firstX + " z";
+        this.setDom( 'd', this.currentLine );
       }
 
       this.maxY = this.serie.getY( maxY );
@@ -10658,7 +11149,7 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.line
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.line.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.line.js
  */
 
 build['./shapes/graph.shape.line'] = ( function( GraphShape ) { 
@@ -10870,7 +11361,7 @@ build['./shapes/graph.shape.line'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.arrow
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.arrow.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.arrow.js
  */
 
 build['./shapes/graph.shape.arrow'] = ( function( GraphLine ) { 
@@ -10910,7 +11401,7 @@ build['./shapes/graph.shape.arrow'] = ( function( GraphLine ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.label
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.label.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.label.js
  */
 
 build['./shapes/graph.shape.label'] = ( function( GraphShape ) { 
@@ -10967,7 +11458,7 @@ build['./shapes/graph.shape.label'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.nmrintegral
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.nmrintegral.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.nmrintegral.js
  */
 
 build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve ) { 
@@ -11230,7 +11721,7 @@ build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve )
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.rect
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.rect.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.rect.js
  */
 
 build['./shapes/graph.shape.rect'] = ( function( GraphShape ) { 
@@ -11775,7 +12266,7 @@ this.handle1.setAttribute('x', this.currentX);
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.peakintegration2d
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakintegration2d.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.peakintegration2d.js
  */
 
 build['./shapes/graph.shape.peakintegration2d'] = ( function( GraphRect ) { 
@@ -11827,7 +12318,7 @@ build['./shapes/graph.shape.peakintegration2d'] = ( function( GraphRect ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.peakinterval
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakinterval.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.peakinterval.js
  */
 
 build['./shapes/graph.shape.peakinterval'] = ( function( GraphLine ) { 
@@ -11873,7 +12364,7 @@ build['./shapes/graph.shape.peakinterval'] = ( function( GraphLine ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.peakinterval2
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakinterval2.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.peakinterval2.js
  */
 
 build['./shapes/graph.shape.peakinterval2'] = ( function( GraphLine ) { 
@@ -12098,7 +12589,7 @@ build['./shapes/graph.shape.peakinterval2'] = ( function( GraphLine ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.rangex
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.rangex.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.rangex.js
  */
 
 build['./shapes/graph.shape.rangex'] = ( function( GraphSurfaceUnderCurve ) { 
@@ -12197,7 +12688,7 @@ build['./shapes/graph.shape.rangex'] = ( function( GraphSurfaceUnderCurve ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.cross
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.cross.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.cross.js
  */
 
 build['./shapes/graph.shape.cross'] = ( function( GraphShape ) { 
@@ -12331,7 +12822,7 @@ build['./shapes/graph.shape.cross'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.zoom2d
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.zoom2d.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.zoom2d.js
  */
 
 build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) { 
@@ -12529,7 +13020,7 @@ build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : graph.toolbar
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.toolbar.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.toolbar.js
  */
 
 build['./graph.toolbar'] = ( function( ) { 
@@ -12690,7 +13181,7 @@ build['./graph.toolbar'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : graph
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.js
+ * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.js
  */
 
 build[ './graph.core' ].getBuild = function( b ) { return build[ b ]; }

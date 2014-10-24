@@ -94,7 +94,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 		}
 		API.highlight( element, 1 );
 		this._highlighted=element;
-	},
+	};
 
 	controller.prototype.elementOut = function() {
 		if (this._highlighted) {

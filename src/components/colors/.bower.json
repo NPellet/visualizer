@@ -1,6 +1,6 @@
 {
   "name": "Colors",
-  "version": "0.2.0",
+  "version": "2.0.0",
   "homepage": "https://github.com/mrmrs/colors",
   "authors": [
     "@mrmrs <hi@mrmmrs.cc>"
@@ -24,14 +24,14 @@
     "index.html",
     "site.css"
   ],
-  "_release": "0.2.0",
+  "_release": "2.0.0",
   "_resolution": {
     "type": "version",
-    "tag": "v0.2.0",
-    "commit": "004891b6b7a0b2a6b32015b0b54004f6bb257dd5"
+    "tag": "2.0.0",
+    "commit": "1177d70bb49ccc8a00a5a6c58814b3e52f55f363"
   },
   "_source": "git://github.com/mrmrs/colors.git",
-  "_target": "~0.2.0",
+  "_target": "~2.0.0",
   "_originalSource": "colors",
   "_direct": true
 }

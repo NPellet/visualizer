@@ -12,13 +12,13 @@ define( [ './listexamples' ], function() {
 
 			functions[ i ][ 0 ]("example-" + ( i ) + "-graph");
 
-			$("#example-" + ( i ) + "-details").html(
+			/*$("#example-" + ( i ) + "-details").html(
 
 				functions[ i ][ 2 ].map( function( val ) {
 					return '<li>' + val + '</li>';
 				} ).join("")
 
-			);
+			);*/
 		}
 
 

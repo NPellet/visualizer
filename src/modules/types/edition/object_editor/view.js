@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultview', 'src/util/util', 'components/jsoneditor/jsoneditor.min', 'src/util/context', 'jquery'], function (Default, Util, jsoneditor, Context, $) {
 
     function View() {

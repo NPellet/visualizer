@@ -16,6 +16,7 @@ define( [
 
     './series/graph.serie.contour',
     './series/graph.serie.line',
+    './series/graph.serie.line.broken',
     './series/graph.serie.scatter',
     './series/graph.serie.zone',
 

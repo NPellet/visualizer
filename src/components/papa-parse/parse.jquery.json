@@ -1,8 +1,8 @@
 {
 	"name": "parse",
-	"version": "2.0.3",
+	"version": "3.1.2",
 	"title": "Papa Parse",
-	"description": "Papa is a powerful CSV (delimited text) parser that streams handles large files and gracefully handles malformed input.",
+	"description": "Powerful CSV parser that converts CSV to JSON and JSON to CSV. Supports web workers and streaming large files. Gracefully handles malformed input.",
 	"keywords": [
 		"csv",
 		"parse",
@@ -17,12 +17,17 @@
 		"pipe",
 		"file",
 		"filereader",
-		"stream"
+		"stream",
+		"encoding",
+		"workers",
+		"multi-threaded",
+		"threading",
+		"ajax"
 	],
 	"author": {
 		"name": "Matthew Holt",
 		"email": "mholt@users.noreply.github.com",
-		"url": "http://mwholt.com"
+		"url": "https://twitter.com/mholt6"
 	},
 	"licenses": [
 		{
@@ -32,9 +37,9 @@
 	],
 	"homepage":"http://papaparse.com",
 	"docs": "http://papaparse.com/docs.html",
-	"demo": "http://papaparse.com/#demo",
-	"download": "https://raw.github.com/mholt/jquery.parse/master/jquery.parse.min.js",
+	"demo": "http://papaparse.com/demo.html",
+	"download": "https://raw.github.com/mholt/PapaParse/master/papaparse.min.js",
 	"dependencies": {
-		"jquery": ">=1.5"
+		"jquery": ">=1.6.0"
 	}
 }

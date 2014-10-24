@@ -1,85 +1,86 @@
 'use strict';
 
-define([
-    'jquery',
-    'src/util/util',
-    'src/main/datas',
-    'src/util/debug'
-], function( $, Util, Datas, Debug ) {
+define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function ($, Util, Datas, Debug) {
 
-	var allVariables = {};
+    var allVariables = {};
 
-	function getVariable( varName ) {
+    function unlisten(module) {
+        var moduleId = module.getId();
+        for (var i in allVariables) {
+            allVariables[i].unlisten(moduleId);
+        }
+    }
 
-		if( allVariables[ varName ] ) {
-			return allVariables[ varName ];
-		}
+    function getVariable(varName) {
 
-		return newVariable( varName );		
-	}
-
-	function newVariable( varName ) {
-
-		allVariables[ varName ] = new Variable( varName );
-		return allVariables[ varName ];
-	}
-
-	function setVariable( name, jpath, newData, filter ) {
-
-		var variable = getVariable( name );
-		var filterFunction = false;
-
-		if( variable.killFilter ) {
-			variable.killFilter();
-		}
-
-		variable.killFilter = false;
-
-		if( filter ) {
-			filterFunction = function( value, resolve, reject ) {
-				
-				require( [ filter ], function( filterFunction ) {
-				
-					if( filterFunction.kill ) {
-						
-						variable.killFilter = filterFunction.kill;
-					}	
-
-					if( filterFunction.filter ) {
-						return filterFunction.filter( value, resolve, reject );
-					}
-					
-					reject("No filter function defined");
-				} );
-
-			};
-		}
-
-
-
-		if( jpath ) {
-
-			variable.setjPath( jpath, filterFunction );
-
-		} else {
-			
-			variable.createData( [ name ], newData, filterFunction );
-			
-		}
-	}
-
-        function getNames () {
-            return Object.keys(allVariables).sort();
+        if (allVariables[varName]) {
+            return allVariables[varName];
         }
 
-    function handleChange (event, moduleId) {
+        return newVariable(varName);
+    }
+
+    function newVariable(varName) {
+
+        allVariables[varName] = new Variable(varName);
+        return allVariables[varName];
+    }
+
+    function setVariable(name, jpath, newData, filter) {
+
+        var variable = getVariable(name);
+        var filterFunction = false;
+
+        if (variable.killFilter) {
+            variable.killFilter();
+        }
+
+        variable.killFilter = false;
+
+        if (filter) {
+            filterFunction = function (value, resolve, reject) {
+
+                require([filter], function (filterFunction) {
+
+                    if (filterFunction.kill) {
+
+                        variable.killFilter = filterFunction.kill;
+                    }
+
+                    if (filterFunction.filter) {
+                        return filterFunction.filter(value, resolve, reject);
+                    }
+
+                    reject("No filter function defined");
+                });
+
+            };
+        }
+
+
+        if (jpath) {
+
+            variable.setjPath(jpath, filterFunction);
+
+        } else {
+
+            variable.createData([name], newData, filterFunction);
+
+        }
+    }
+
+    function getNames() {
+        return Object.keys(allVariables).sort();
+    }
+
+    function handleChange(event, moduleId) {
         if (event.jpath.length === 0) {
             return; // Direct change of data. Can happen with API.createData using undefined value
         }
         var eventJpath = event.jpath,
             el = eventJpath.length,
             variable, varJpath, i, j, l;
-        loop1: for(i in allVariables) {
+        loop1: for (i in allVariables) {
             variable = allVariables[i];
             varJpath = variable.getjPath();
             if (varJpath) {
@@ -97,67 +98,66 @@ define([
     var data = new DataObject;
     data.onChange(handleChange);
 
-    var Variable = function Variable( name ) {
+    var Variable = function Variable(name) {
 
         var attributes = {
             writable: true,
             enumerable: false
         };
 
-        Object.defineProperties( this, {
+        Object.defineProperties(this, {
             "_name": attributes,
             "_jpath": attributes,
             "_value": attributes,
             "listenedBy": attributes,
             "listeners": attributes
-        } );
+        });
 
 
-        this.setName( name );
+        this.setName(name);
         this.listenedBy = {};
         this.listeners = [];
     };
 
-    $.extend( true, Variable.prototype, {
+    $.extend(true, Variable.prototype, {
 
-        setName: function( name ) {
+        setName: function (name) {
             this._name = name;
         },
 
-        getName: function( ) {
+        getName: function () {
             return this._name;
         },
 
-        setjPath: function( jpath, callback ) { // Reroute variable to some other place in the data
+        setjPath: function (jpath, callback) { // Reroute variable to some other place in the data
 
             this._jpath = jpath;
 
-            if( typeof this._jpath == "string" ) {
+            if (typeof this._jpath == "string") {
                 this._jpath = this._jpath.split('.');
                 this._jpath.shift();
             }
 
-            this.triggerChange( callback );
+            this.triggerChange(callback);
         },
 
 
-        getjPath: function( ) {
+        getjPath: function () {
             return this._jpath;
         },
 
 
-
-        createData: function( jpath, dataToCreate, callback ) {
-            data.setChild( jpath, dataToCreate );
-            this.setjPath( jpath, callback );
+        createData: function (jpath, dataToCreate, callback) {
+            data.setChild(jpath, dataToCreate);
+            this.setjPath(jpath, callback);
         },
 
-        getData: function() {
+        getData: function () {
             return this._value;
         },
 
-        setData: function( newData ) { // CAUTION. This function will overwrite source data
-            data.setChild( this.getjPath(), newData );
+        setData: function (newData) { // CAUTION. This function will overwrite source data
+            data.setChild(this.getjPath(), newData);
             this._setValue(newData);
             newData.triggerChange();
         },
@@ -166,22 +166,34 @@ define([
             this._value = value;
         },
 
-        getValue: function() {
+        getValue: function () {
             return this._value;
         },
 
-        listen: function( module, callback ) {
+        listen: function (module, callback) {
             var id = module.getId();
             // If the module already listens for this variable, we should definitely not listen for it again.
-            if( this.listenedBy[ id ] ) {
-                Debug.warn("This module already listens the variable " + this.getName() + ". No new listener is added");
+            if (this.listenedBy[id]) {
+                return Debug.warn("This module already listens the variable " + this.getName() + ". No new listener is added");
             }
 
-            this.listenedBy[ id ] = true;
-            this.listeners.push( {
+            this.listenedBy[id] = true;
+            this.listeners.push({
                 callback: callback,
                 id: id
-            } );
+            });
+        },
+
+        unlisten: function (moduleId) {
+            if (this.listenedBy[moduleId]) {
+                delete this.listenedBy[moduleId];
+                for (var i = 0, ii = this.listeners.length; i < ii; i++) {
+                    if (this.listeners[i].id === moduleId) {
+                        this.listeners.splice(i, 1);
+                        break; // There should only be one listener per id, do not check further
+                    }
+                }
+            }
         },
 
         triggerChange: function (callback, moduleId) {
@@ -237,7 +249,7 @@ define([
                 if (
                     err === "filter" || // Already caught
                     err === "latency" // Expected
-                    ) {
+                ) {
                     return;
                 }
                 Debug.error("Error in getting the variable through variable.js", err);
@@ -245,23 +257,24 @@ define([
 
             for (var i = 0, l = self.listeners.length; i < l; i++) {
                 if (self.listeners[i].id !== moduleId) {
-                    self.listeners[ i ].callback.call(self, self);
+                    self.listeners[i].callback.call(self, self);
                 }
             }
         },
 
-        onReady: function() {
+        onReady: function () {
             return this.currentPromise;
         }
     });
 
-	return {
-		getVariable: getVariable,
-		setVariable: setVariable,
+    return {
+        getVariable: getVariable,
+        setVariable: setVariable,
         getNames: getNames,
         getData: function () {
             return data;
-        }
-	};
-	
+        },
+        unlisten: unlisten
+    };
+
 });

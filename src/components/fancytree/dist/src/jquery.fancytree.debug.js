@@ -9,8 +9,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0
- * @date 2014-05-01T21:48
+ * @version 2.3.0
+ * @date 2014-08-17T10:39
  */
 
 ;(function($, window, document, undefined) {

@@ -15,7 +15,6 @@ define( function() {
 			date.setSeconds( date.getSeconds() + 1 );
 		}
 
-		console.log( serie.length );
 
 		var graphinstance = new Graph( domGraph, {
 
@@ -38,9 +37,8 @@ define( function() {
 			},
 
 
-		} );
+		}, { bottom: [ { type: 'time' } ] } );
 
-		graphinstance.setBottomAxisAsTime();
 	
 		graphinstance.newSerie()
 			.autoAxis()

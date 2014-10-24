@@ -171,6 +171,7 @@ define( [], function() {
         this.slots = ws;
 
         if ( this.options.useSlots ) {
+
           this.calculateSlots();
         }
       }

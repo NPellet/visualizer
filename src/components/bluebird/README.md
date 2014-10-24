@@ -75,7 +75,7 @@ Download the [bluebird.js](https://github.com/petkaantonov/bluebird/tree/master/
 <script type="text/javascript" src="/scripts/bluebird.js"></script>
 ```
 
-The global variable `Promise` becomes available after the above script tag.
+The global variables `Promise` and `P` (alias for `Promise`) become available after the above script tag.
 
 A [minimal bluebird browser build](#custom-builds) is ̃38.92KB minified*, 11.65KB gzipped and has no external dependencies.
 
@@ -278,7 +278,7 @@ BLUEBIRD_DEBUG=1 node server.js
 
 to enable long stack traces in all instances of bluebird.
 
-Long stack traces cannot be disabled after being enabled, and cannot be enabled after promises have alread been created. Long stack traces imply a substantial performance penalty, even after using every trick to optimize them.
+Long stack traces cannot be disabled after being enabled, and cannot be enabled after promises have already been created. Long stack traces imply a substantial performance penalty, even after using every trick to optimize them.
 
 Long stack traces are enabled by default in the debug build.
 

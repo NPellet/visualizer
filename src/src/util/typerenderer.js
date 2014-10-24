@@ -433,7 +433,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 				]}
 			);
 			graph.resize(200, 200);
-			value = Converter(value.value);
+			value = Converter.convert(value.value);
 			var serie = graph.newSerie('serie', {lineToZero: true});
 			serie.autoAxis();
 			serie.setData(value.spectra[0].data[0]);

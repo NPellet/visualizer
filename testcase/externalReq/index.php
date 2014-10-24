@@ -12,12 +12,6 @@
       molfile: 'mol2d'
     };
     
-    // docIDs for service views, indexed by service name
-    var views = {
-      'nmr-spectra-predictor': '../../src/index.html?config=../testcase/config/default.json&viewURL=../testcase/externalReq/views/nmrpredictall.json',
-	  'nmr-predictor': '../../src/index.html?config=../testcase/config/default.json&viewURL=../testcase/externalReq/views/nmrpredict.json'
-    };
-    
     // Creating data object
     var data = {};
     try {
@@ -44,17 +38,22 @@
       alert("Something went wrong");
     }
     
-    var service = data.name;
-    delete data.name;
+    var view = data.view;
+    delete data.view;
     
-    if(!service || typeof service !== "string" || !views[service]) {
-        writeBody('Error: '+service+' service does not exist');
+    if(!view || typeof view !== "string") {
+        writeBody('Error: view parameter must be specified');
     } else {
-
+        if(window.localStorage) {
+	    window.localStorage.setItem('external_cache', JSON.stringify(data));
+        }
         var deletePouch;
         if(Object.keys(data).length) {
             deletePouch = new Promise(function(resolve){
-                PouchDB.destroy('external_infos').then(resolve);
+                PouchDB.destroy('external_infos').then(resolve,function() {
+                    writeBody('PouchDB failed... Redirecting...');
+                    doRedirect();
+                });               
             });
         }
         else {
@@ -78,12 +77,11 @@
                                 _id: i,
                                 _rev: rev,
                                 type: types[i] || "string",
-                                value: data[i],
-								timestamp: new Date().getTime()
+                                value: data[i]
                             };
                             db.put(x, function(err){
                                 if(err)
-                                    reject();
+                                    reject(err);
                                 else
                                     resolve();
                             });
@@ -93,14 +91,21 @@
             }
             Promise.all(docs).then(function(){
                 writeBody('Document written to database. Redirecting...');
-                setTimeout(function() {
-                    window.location = views[service];
-                }, 500);
-            }, function(){
-                writeBody('Error: Could not write to database.');
+                doRedirect();
+            }, function(err){
+		console.log(err);
+                writeBody('Error: Could not write to database.',err);
             });
         
         });
+    }
+
+    function doRedirect() {
+        setTimeout(function() {
+            var flavor = data.flavor || "default";
+            var version = data.version || "visualizer_201405281409";
+            window.location = '/cheminfo/'+version+'/index.html?config=../_design/flavor/_list/config/alldocs%3Fkey%3D%22'+flavor+'%22&viewURL='+escape(view);
+        }, 100);
     }
     
     function writeBody(text) {

@@ -1,4 +1,4 @@
-define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util', 'underscore', 'threejs', 'components/three.js/examples/js/controls/TrackballControls'], function(Default, Traversing, API, Util, _) {
+define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util', 'underscore', 'threejs', 'lib/threejs/TrackballControls'], function(Default, Traversing, API, Util, _, THREE) {
   function generateRandomArray(n, min, max) {
     var result = [];
     for(var i=0; i<n; i++) {
@@ -174,7 +174,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         intersects.sort(descSort);
         intersects = _.filter(intersects, function(val){
           return val.distance > CAMERA_NEAR;
-        })
+        });
         intersects = _.map(intersects, function(val){
           return val.index;
         });
@@ -486,9 +486,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       
       self.headlight = new THREE.PointLight ( 0xaaaaaa, 1.5 );
       // self.headlight.position = self.camera.position;
-      self.headlight.position.x = 1000;
-      self.headlight.position.y = 1000;
-      self.headlight.position.z = 1000;
+      self.headlight.position.set(1000, 1000, 1000);
       self.scene.add(self.headlight);
       // ===================================================
       
@@ -497,17 +495,21 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       
       self._mathPoints();
       self._drawPointsQuick();
+
+        self._drawAxes();
+        self._drawFaces();
+        self._drawGrid();
+        self._drawSecondaryGrid();
+        self._drawTicks();
+        self._drawTickLabels();
+        self._drawAxisLabels();
+        self._drawGraphTitle();
+
+
       // self._drawPointsQuick();
       
-      self._drawAxes();
-      self._drawFaces();
-      self._drawGrid();
-      self._drawSecondaryGrid();
-      self._drawTicks();
-      self._drawTickLabels(); 
-      self._drawAxisLabels();
-      self._drawGraphTitle();
-      self._render()
+
+      self._render();
       console.log('end plot points', new Date().getTime()-tstart);
     },
     
@@ -1081,11 +1083,9 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       }
       
       function unicodeSuperscript(num) {
-        var num = num.toString();
+        num = num.toString();
         var result = '';
         for(var i=0; i<num.length; i++) {
-          if(parseInt(num[i] === NaN))
-          continue;
           if(num[i] === '2' || num[i] === '3') {
             result += String.fromCharCode(176 + parseInt(num[i]));
           }
@@ -1276,11 +1276,11 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       var phi = Math.PI/4;
       var r = NORM_CONSTANT * ZOOM_START;
       var eye = this._polarToCartesian(theta, phi, r);
-      eye = new THREE.Vector3(eye[0], eye[1], eye[2]);
+
      
       // Lookat the middle of the cube
       var target = new THREE.Vector3(NORM_CONSTANT/2, NORM_CONSTANT/2, NORM_CONSTANT/2);
-      self.camera.position = eye;
+      self.camera.position.set(eye[0], eye[1], eye[2]);
       self.camera.lookAt(target);
     },
     
@@ -1397,7 +1397,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       }
 
       // particle system
-      var object = new THREE.ParticleSystem( geometry, shaderMaterial );
+      var object = new THREE.PointCloud( geometry, shaderMaterial );
       object.indexes = indexes;
       // self._highlightParticleObjects[key].drawn = true;
       // highlightObjectBis.dynamic = true;

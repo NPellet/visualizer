@@ -64,6 +64,7 @@ var axisProperties = { primaryGrid: false, secondaryGrid: false, nbTicksPrimary:
 
 }).then( function( shape ) {
 
+  shape.setSerie( graphinstance.getSerie( 0 ) );
   shape.draw();
   shape.redraw();
 } );

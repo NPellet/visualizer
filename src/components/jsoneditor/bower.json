@@ -1,6 +1,6 @@
 {
   "name": "jsoneditor",
-  "version": "3.0.0",
+  "version": "3.1.2",
   "description": "A web-based tool to view, edit and format JSON",
   "tags": [
     "json",
@@ -13,18 +13,19 @@
     "type": "git",
     "url": "https://github.com/josdejong/jsoneditor.git"
   },
+  "main": "jsoneditor.min.js",
   "bugs": "https://github.com/josdejong/jsoneditor/issues",
   "ignore": [
     "app",
     "build",
     "downloads",
-    "jsoneditor",
+    "src",
     "misc",
     "node_modules",
     "test",
     "tools",
     ".idea",
-    "Jakefile.js",
+    "gulpfile.js",
     "package.json",
     ".npmignore",
     ".gitignore"

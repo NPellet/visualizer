@@ -228,7 +228,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 		this.setVarFromEvent( 'onHover', 'row', 'list', [ row ] );
 		this.sendAction( 'row', elements.get( row ), 'onHover' );
 		API.highlight( elements[ row ], 1 );
-	},
+	};
 
 	controller.prototype.lineOut = function(elements, row) {
 

@@ -10,7 +10,7 @@ define(['components/superagent/superagent', 'src/util/lru', 'src/util/debug'], f
             superagent.get(url)
                 .timeout(120000) // 2 minutes timeout
                 .set(headers || {})
-                .end(function (err, res) {
+                .end(function urldataGetResult(err, res) {
                     delete pendings[url];
                     if (err || res.status != 200) {
                         Debug.info('DataURL: Failing in retrieving ' + url + ' by AJAX.');
@@ -32,13 +32,13 @@ define(['components/superagent/superagent', 'src/util/lru', 'src/util/debug'], f
     function doLRUOrAjax(url, force, timeout, headers) {
         // Check in the memory if the url exists
         Debug.debug('DataURL: Looking in LRU for ' + url + ' with timeout of ' + timeout + ' seconds');
-        return doLRU(url).then(function (data) {
+        return doLRU(url).then(function foundLRU(data) {
             Debug.debug('DataURL: Found ' + url + ' in local DB. Timeout: ' + data.timeout);
 
             // If timeouted. If no timeout is defined, then the link is assumed permanent
             if (timeout !== undefined && (Date.now() - data.timeout > timeout * 1000)) {
                 Debug.debug('DataURL: URL is over timeout threshold. Looking by AJAX');
-                return doByUrl(url, headers).catch(function () {
+                return doByUrl(url, headers).catch(function notFoundAjax() {
                     Debug.debug('DataURL: Failed in retrieving URL by AJAX. Fallback to cached version');
                     return data.data;
                 });
@@ -47,7 +47,7 @@ define(['components/superagent/superagent', 'src/util/lru', 'src/util/debug'], f
             Debug.info('DataURL: URL is under timeout threshold. Return cached version');
             return (data.data || data);
 
-        }, function () {
+        }, function notFoundLRU() {
             Debug.debug('DataURL: URL ' + url + ' not found in LRU. Look for AJAX');
             return doByUrl(url, headers);
         });
@@ -60,7 +60,7 @@ define(['components/superagent/superagent', 'src/util/lru', 'src/util/debug'], f
 
     return {
 
-        get: function (url, force, timeout, headers) {
+        get: function urldataGet(url, force, timeout, headers) {
             if (pendings[url]) {
                 return pendings[url];
             }
@@ -81,9 +81,9 @@ define(['components/superagent/superagent', 'src/util/lru', 'src/util/debug'], f
             Debug.debug('DataURL: getting ' + url + ' with force set to ' + force + ' and timeout to ' + timeout);
 
             if (force || timeout < 0 || typeof timeout === 'undefined') {
-                return doByUrl(url, headers).catch(function () {
+                return doByUrl(url, headers).catch(function notFoundForceAjax() {
                     // If ajax fails (no internet), go for LRU
-                    return doLRU(url).then(function (data) {
+                    return doLRU(url).then(function foundLRUForceAjax(data) {
                         return data.data;
                     });
                 });
@@ -92,12 +92,14 @@ define(['components/superagent/superagent', 'src/util/lru', 'src/util/debug'], f
             }
         },
 
-        post: function (url, data) {
+        post: function urldataPost(url, data, type) {
+            type = type || 'form';
             return new Promise(function (resolve, reject) {
                 superagent
                     .post(url)
+                    .type(type)
                     .send(data)
-                    .end(function (err, res) {
+                    .end(function urldataPostResult(err, res) {
                         if (err || res.status != 200) {
                             reject(err || res.status);
                         } else {
@@ -107,15 +109,15 @@ define(['components/superagent/superagent', 'src/util/lru', 'src/util/debug'], f
             });
         },
 
-        emptyMemory: function () {
+        emptyMemory: function emptyMemory() {
             LRU.empty('urlData', true, false);
         },
 
-        emptyDB: function () {
+        emptyDB: function emptyDB() {
             LRU.empty('urlData', false, true);
         },
 
-        emptyAll: function () {
+        emptyAll: function emptyAll() {
             LRU.empty('urlData', true, true);
         }
 

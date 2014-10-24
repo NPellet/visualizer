@@ -1,3 +1,4 @@
+'use strict';
 
 define(['jquery', 'lib/plot/plot'], function($, Graph) {
 
@@ -198,19 +199,19 @@ define(['jquery', 'lib/plot/plot'], function($, Graph) {
 
 				onAnnotationChange: function( annot ) {
 
-					var annot = new DataObject(annot, true);
+					annot = new DataObject(annot, true);
 
 					var val = annot.pos.x, 
 						index, 
-						index2, 
-						val, 
+						index2,
+                        valAdd,
 						target = [];
 
 					
 					for(var i = 0, l = self.msData.length; i < l; i++) {
 
-						index = self.searchBinaryIndexMs(i, val),
-						index2 = index,
+						index = self.searchBinaryIndexMs(i, val);
+						index2 = index;
 						valAdd = 0;
 
 						while(self.msData[i][index2] > val - 0.3) {
@@ -268,7 +269,7 @@ define(['jquery', 'lib/plot/plot'], function($, Graph) {
 						scientificTicks: true,
 						nbTicksPrimary: 3,
 						forcedMin: 0,
-						axisDataSpacing: { min: 0, max: 0.2 },
+						axisDataSpacing: { min: 0, max: 0.2 }
 					}
 				],
 
@@ -277,7 +278,7 @@ define(['jquery', 'lib/plot/plot'], function($, Graph) {
 						primaryGrid: false,
 						secondaryGrid: false,
 						nbTicksSecondary: 5,
-						axisDataSpacing: { min: 0, max: 0.2 },
+						axisDataSpacing: { min: 0, max: 0.2 }
 					}
 				]
 			};

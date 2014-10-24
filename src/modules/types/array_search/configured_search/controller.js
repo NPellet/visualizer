@@ -1,21 +1,12 @@
+'use strict';
+
 define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/formcreator/formcreator'], function (Default, Traversing, FormCreator) {
 
-
-    /**
-     * Creates a new empty controller
-     * @class Controller
-     * @name Controller
-     * @constructor
-     */
     function Controller() {
     }
 
-    // Extends the default properties of the default controller
     Controller.prototype = $.extend(true, {}, Default);
 
-    /*
-     Information about the module
-     */
     Controller.prototype.moduleInformation = {
         moduleName: 'Configured search',
         description: 'Filters an array with configured UI criterias',
@@ -25,9 +16,6 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
         cssClass: 'configured_search'
     };
 
-    /*
-     Configuration of the input/output references of the module
-     */
     Controller.prototype.references = {
         array: {
             label: 'An input array', // The input array is never modified
@@ -49,30 +37,21 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
         }
     };
 
-    /*
-     Configuration of the module for sending events, as a static object
-     */
     Controller.prototype.events = {
-
-        // List of all possible events
-        'onSearchDone': {
+        onSearchDone: {
             label: 'When a search is performed',
             refVariable: [ 'filteredArray', 'flagArray' ],
             refAction: [ 'filteredArray', 'flagArray', 'countResult' ]
         }
     };
 
-    /*
-     Configuration of the module for receiving events, as a static object
-     In the form of
-     */
     Controller.prototype.variablesIn = [ 'array' ];
 
     Controller.prototype.actionsIn = {
-        disable: "Disable the search"
+        disable: 'Disable the search'
     };
 
-    Controller.prototype.configurationStructure = function (section) {
+    Controller.prototype.configurationStructure = function () {
 
         var all_jpaths = [],
             arr = this.module.getDataFromRel('array');
@@ -103,7 +82,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
                 }
             },
             sections: {
-                searchFields: FormCreator.makeConfig({ name: 'Search on', jpaths: all_jpaths }, { name: "Comparison" })
+                searchFields: FormCreator.makeConfig({ name: 'Search on', jpaths: all_jpaths }, { name: 'Comparison' })
             }
         };
     };
@@ -122,7 +101,6 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
     };
 
     Controller.prototype.configFunctions = {
-
         searchfields: function (cfg) {
             if (!( cfg instanceof Array )) {
                 return [];

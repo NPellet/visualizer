@@ -38,8 +38,9 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
       var tick = document.createElementNS( this.graph.ns, 'line' ),
         val = this.getPos( value );
 
-      if ( val == undefined )
+      if ( val == undefined ) {
         return;
+      }
 
       tick.setAttribute( 'shape-rendering', 'crispEdges' );
       tick.setAttribute( 'x1', val );
@@ -48,10 +49,15 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
       tick.setAttribute( 'y1', ( this.top ? 1 : -1 ) * this.tickPx1 * scaling );
       tick.setAttribute( 'y2', ( this.top ? 1 : -1 ) * this.tickPx2 * scaling );
 
-      if ( label && this.options.primaryGrid )
+      if ( label && this.options.primaryGrid ) {
+
         this.doGridLine( true, val, val, 0, this.graph.getDrawingHeight() );
-      else if ( !label && this.options.secondaryGrid )
+
+      } else if ( !label && this.options.secondaryGrid ) {
+
         this.doGridLine( false, val, val, 0, this.graph.getDrawingHeight() );
+        
+      }
 
       tick.setAttribute( 'stroke', 'black' );
 

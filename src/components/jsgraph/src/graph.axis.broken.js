@@ -1,5 +1,7 @@
 define( [ 'jquery' ], function( $ ) {
 
+  "use strict";
+
   var GraphAxis = function() {}
 
   GraphAxis.prototype = {
@@ -10,6 +12,10 @@ define( [ 'jquery' ], function( $ ) {
 
     getNbTicksSecondary: function() {
       return this.options.nbTicksSecondary;
+    },
+
+    getBreakingSpacing: function() {
+      return this.options.breakingSpacing || 5;
     },
 
     // [ [ 0, 10 ], [ 50, 100 ] ]
@@ -35,7 +41,7 @@ define( [ 'jquery' ], function( $ ) {
             min: range[ 0 ],
             max: range[ 1 ],
             minPx: undefined,
-            minPx: undefined
+            maxPx: undefined
 
           } );
       });
@@ -46,11 +52,10 @@ define( [ 'jquery' ], function( $ ) {
     drawLinearTicksWrapper: function( ) {
 
       var nbIntervals = this.ranges.length - 1,
-          availableDrawingPxs = ( this.maxPx - this.minPx ) - nbIntervals * 5,
+          availableDrawingPxs = ( this.maxPx - this.minPx ) - nbIntervals * this.getBreakingSpacing(),
           nbTicksPrimary = this.getNbTicksPrimary();
 
       var ticksPrimary = this.getUnitPerTick( availableDrawingPxs, nbTicksPrimary, this.totalValRanges );
-      console.log( ticksPrimary, this.totalValRanges)
       var nbSecondaryTicks = this.secondaryTicks();
 
       // We need to get here the width of the ticks to display the axis properly, with the correct shift
@@ -69,17 +74,34 @@ define( [ 'jquery' ], function( $ ) {
       var maxPx = this.getMaxPx();
       var last = minPx;
       var nbIntervals = this.ranges.length - 1;
-      var availableDrawingPxs = ( this.getMaxPx() - this.getMinPx() ) - nbIntervals * 5 * ( self.isFlipped() ? -1 : 1 );
+      var availableDrawingPxs = ( this.getMaxPx() - this.getMinPx() ) - nbIntervals * this.getBreakingSpacing() * ( self.isFlipped() ? -1 : 1 );
 
       this.resetTicks();
 
 
       this.ranges.map( function( range, index ) {
 
-        range.minPx = index == 0 ? minPx : last + 5 * ( self.isFlipped() ? -1 : 1 );
+        range.minPx = index == 0 ? minPx : last + self.getBreakingSpacing() * ( self.isFlipped() ? -1 : 1 );
         range.maxPx = range.minPx + availableDrawingPxs * range.ratio;
 
         last = range.maxPx;
+
+        if( index > 0 ) {
+          if( ! range.brokenMin ) {
+            range.brokenMin = self.createBrokenLine( range );
+            self.group.appendChild( range.brokenMin );
+          } 
+          self.placeBrokenLine( range, range.brokenMin, range.minPx );
+        }
+
+        if( index < self.ranges.length - 1 ) {
+          if( ! range.brokenMax ) {
+            range.brokenMax = self.createBrokenLine( range );
+            self.group.appendChild( range.brokenMax );
+          } 
+          self.placeBrokenLine( range, range.brokenMax, range.maxPx );
+        }
+
 
         var min = range.min,
             max = range.max,
@@ -140,12 +162,7 @@ define( [ 'jquery' ], function( $ ) {
     },
 
     getPos: function( value ) {
-      //			if(this.getMaxPx() == undefined)
-      //				console.log(this);
-      //console.log(this.getMaxPx(), this.getMinPx(), this._getActualInterval());
-      // Ex 50 / (100) * (1000 - 700) + 700
-
-      //console.log( value, this.getActualMin(), this.getMaxPx(), this.getMinPx(), this._getActualInterval() );
+      
       for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
         if( value <= this.ranges[ i ].max && value >= this.ranges[ i ].min ) {
           return ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx
@@ -158,7 +175,7 @@ define( [ 'jquery' ], function( $ ) {
     },
 
     getRelVal: function( px ) {
-      return px / (  ( this.maxPx - this.minPx ) - nbIntervals * 5 ) * this.totalValRanges;
+      return px / (  ( this.maxPx - this.minPx ) - nbIntervals * this.getBreakingSpacing() ) * this.totalValRanges;
     },
 
     getVal: function( px ) {
@@ -168,42 +185,49 @@ define( [ 'jquery' ], function( $ ) {
           return ( px - this.ranges[ i ].minPx ) / ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) * ( this.ranges[ i ].max - this.ranges[ i ].min ) +  this.ranges[ i ].min
         }
       }
-      // Ex 50 / (100) * (1000 - 700) + 700
-      return ;
     },
 
-    getRatioInRange: function( inRangeOf, value ) {
+    sign: function( v ) {
+      return v > 0 ? 1 : -1;
+    },
 
-
+    getBoundary: function( inRangeOf, value ) {
+ 
       for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
         if( inRangeOf <= this.ranges[ i ].max && inRangeOf >= this.ranges[ i ].min ) {
           // This range
+          if( value > this.ranges[ i ].max ) {
+            return this.ranges[ i ].max;
+          }
 
+          return this.ranges[ i ].min;
 
-             return Math.abs( value - this.ranges[ i ].min ) / ( this.ranges[ i ].max - this.ranges[ i ].min );
-            
-          return;
+             //return Math.abs( value - this.ranges[ i ].min ) / ( this.ranges[ i ].max - this.ranges[ i ].min );
         }
       }
-      
     },
 
 
     getInRange: function( inRangeOf, value ) {
-
-      
-
       for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
         if( inRangeOf <= this.ranges[ i ].max && inRangeOf >= this.ranges[ i ].min ) {
           // This range
-
-
              return ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx
             
           return;
         }
       }
       
+    },
+
+    getRange: function( value ) {
+      for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
+        if( value <= this.ranges[ i ].max && value >= this.ranges[ i ].min ) {
+          return [ i, ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx ]
+        }
+      }
+
+      return [ undefined, undefined ];
     }
   }
 

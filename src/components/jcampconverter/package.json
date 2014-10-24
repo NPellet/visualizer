@@ -1,0 +1,27 @@
+{
+  "name": "jcampconverter",
+  "version": "2.0.1",
+  "description": "Parse and convert JCAMP data",
+  "main": "build/jcampconverter.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "keywords": [
+    "jcamp",
+    "converter"
+  ],
+  "repository": "cheminfo/jcampconverter",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cheminfo/jcampconverter/issues"
+  },
+  "homepage": "https://github.com/cheminfo/jcampconverter",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
+    "grunt-mocha-test": "^0.12.1",
+    "grunt-urequire": "^0.6.1",
+    "mocha": "^1.21.5",
+    "should": "^4.1.0"
+  }
+}

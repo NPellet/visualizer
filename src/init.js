@@ -10,11 +10,11 @@ requirejs.config({
 		jquery:             'components/jquery/jquery.min',
 		jqueryui:           'components/jqueryui-touch-punch/jquery.ui.touch-punch.min',
 		ckeditor:           'components/ckeditor/ckeditor',
-		threejs:            'components/three.js/build/three.min',
+		threejs:            'components/threejs/build/three.min',
 		forms:              'lib/forms',
 		plot:               'lib/plot/plot',
 		ChemDoodle:         'lib/chemdoodle/ChemDoodleWeb-unpacked',
-		pouchdb:            'components/pouchdb/dist/pouchdb-nightly.min',
+		pouchdb:            'components/pouchdb/dist/pouchdb.min',
 		uri:                'components/uri.js/src',
 		underscore:         'components/underscore/underscore',
         lodash:             'components/lodash/dist/lodash.min',
@@ -49,8 +49,11 @@ requirejs.config({
         modernizr: {
             exports: 'Modernizr'
         },
+        'components/papa-parse/papaparse.min': {
+            exports: 'Papa'
+        },
         'jquery-cookie': 'jquery',
-		'components/three.js/examples/js/controls/TrackballControls': ['threejs'],
+		'lib/threejs/TrackballControls': ['threejs'],
 		jqgrid: ['jquery', 'components/jqgrid_edit/js/i18n/grid.locale-en'],
 		'libs/jsmol/js/JSmolApplet': ['libs/jsmol/JSmol.min.nojq'],
 		'lib/flot/jquery.flot.pie': ['jquery', 'lib/flot/jquery.flot'],
