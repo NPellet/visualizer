@@ -60,9 +60,9 @@ if (atomName.length <= 2 && group3.equals (atomName)) return atomName;
 var ch1 = (atomName.length == 4 ? atomName.charAt (0) : '\0');
 var ch2 = atomName.charAt (atomName.length == 4 ? 1 : 0);
 var isHetero = J.api.JmolAdapter.isHetero (group3);
-if (J.adapter.smarter.Atom.isValidElementSymbolNoCaseSecondChar2 (ch1, ch2)) return (isHetero || ch1 != 'H' ? "" + ch1 + ch2 : "H");
-if (J.adapter.smarter.Atom.isValidElementSymbol (ch2)) return "" + ch2;
-if (J.adapter.smarter.Atom.isValidElementSymbol (ch1)) return "" + ch1;
+if (J.adapter.smarter.Atom.isValidSymNoCase (ch1, ch2)) return (isHetero || ch1 != 'H' ? "" + ch1 + ch2 : "H");
+if (J.adapter.smarter.Atom.isValidSym1 (ch2)) return "" + ch2;
+if (J.adapter.smarter.Atom.isValidSym1 (ch1)) return "" + ch1;
 return "Xx";
 }, "~S,~S");
 Clazz.defineMethod (c$, "readUnitCell", 

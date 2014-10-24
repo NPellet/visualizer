@@ -52,7 +52,7 @@ this.readMdyn ();
 this.readFrequency ();
 }return true;
 });
-Clazz.overrideMethod (c$, "finalizeReader", 
+Clazz.overrideMethod (c$, "finalizeSubclassReader", 
 function () {
 this.setSymmetry ();
 });

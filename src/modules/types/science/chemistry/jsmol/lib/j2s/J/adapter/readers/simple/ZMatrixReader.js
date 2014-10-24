@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.simple");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader", "java.util.Hashtable", "JU.Lst", "$.P3", "$.P4", "$.V3"], "J.adapter.readers.simple.ZMatrixReader", ["java.lang.Character", "$.Exception", "$.Float", "JU.Measure", "$.Quat", "J.adapter.smarter.Atom", "$.Bond", "J.api.JmolAdapter", "JU.Logger"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader", "java.util.Hashtable", "JU.Lst", "$.P3", "$.P4", "$.V3"], "J.adapter.readers.simple.ZMatrixReader", ["java.lang.Exception", "$.Float", "JU.Measure", "$.PT", "$.Quat", "J.adapter.smarter.Atom", "$.Bond", "J.api.JmolAdapter", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.ac = 0;
 this.vAtoms = null;
@@ -54,7 +54,7 @@ while ((pt1 = this.line.indexOf ('(')) >= 0 && (pt2 = this.line.indexOf ('(', pt
 
 this.line = this.line.trim ();
 });
-Clazz.overrideMethod (c$, "finalizeReader", 
+Clazz.overrideMethod (c$, "finalizeSubclassReader", 
 function () {
 var firstLine = 0;
 for (var i = firstLine; i < this.lineBuffer.size (); i++) if ((this.tokens = this.lineBuffer.get (i)).length > 0) this.getAtom ();
@@ -74,7 +74,7 @@ var f;
 var atom =  new J.adapter.smarter.Atom ();
 var element = this.tokens[0];
 var i = element.length;
-while (--i >= 0 && Character.isDigit (element.charAt (i))) {
+while (--i >= 0 && JU.PT.isDigit (element.charAt (i))) {
 }
 if (++i == 0) throw  new Exception ("Bad Z-matrix atom name");
 if (i == element.length) {
@@ -156,14 +156,14 @@ return f;
 Clazz.defineMethod (c$, "getAtomIndex", 
  function (i) {
 var name;
-if (i >= this.tokens.length || (name = this.tokens[i]).indexOf (".") >= 0 || !Character.isLetterOrDigit (name.charAt (0))) return -1;
+if (i >= this.tokens.length || (name = this.tokens[i]).indexOf (".") >= 0 || !JU.PT.isLetterOrDigit (name.charAt (0))) return -1;
 var ia = this.parseIntStr (name);
 if (ia <= 0 || name.length != ("" + ia).length) {
 var I = this.atomMap.get (name);
 if (I == null) {
 for (i = this.vAtoms.size (); --i >= 0; ) {
 var atom = this.vAtoms.get (i);
-if (atom.atomName.startsWith (name) && atom.atomName.length > name.length && Character.isDigit (atom.atomName.charAt (name.length))) {
+if (atom.atomName.startsWith (name) && atom.atomName.length > name.length && JU.PT.isDigit (atom.atomName.charAt (name.length))) {
 I = this.atomMap.get (atom.atomName);
 break;
 }}

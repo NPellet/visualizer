@@ -392,7 +392,7 @@ this.text = this.getLabel (i);
 if (this.text != null) {
 this.text.setFontFromFid (fid);
 }}, "~N,~N");
-Clazz.overrideMethod (c$, "setModelClickability", 
+Clazz.overrideMethod (c$, "setAtomClickability", 
 function () {
 if (this.strings == null) return;
 for (var i = this.strings.length; --i >= 0; ) {
@@ -462,7 +462,7 @@ if (isBg) {
 colix = (this.bgcolixes == null || i >= this.bgcolixes.length) ? 0 : this.bgcolixes[i];
 } else {
 colix = (this.colixes == null || i >= this.colixes.length) ? 0 : this.colixes[i];
-colix = JU.C.getColixInherited (colix, atom.getColix ());
+colix = JU.C.getColixInherited (colix, atom.colixAtom);
 if (JU.C.isColixTranslucent (colix)) colix = JU.C.getColixTranslucent3 (colix, false, 0);
 }return colix;
 }, "~N,JM.Atom,~B");

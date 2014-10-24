@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shape");
-Clazz.load (["J.shape.TextShape"], "J.shape.Echo", ["JM.Object2d", "$.Text", "JU.Txt"], function () {
+Clazz.load (["J.shape.TextShape"], "J.shape.Echo", ["JU.PT", "JM.Object2d", "$.Text"], function () {
 c$ = Clazz.declareType (J.shape, "Echo", J.shape.TextShape);
 Clazz.defineMethod (c$, "initShape", 
 function () {
@@ -38,12 +38,12 @@ return;
 }if ("thisID" === propertyName) {
 var target = value;
 this.currentObject = this.objects.get (target);
-if (this.currentObject == null && JU.Txt.isWild (target)) this.thisID = target.toUpperCase ();
+if (this.currentObject == null && JU.PT.isWild (target)) this.thisID = target.toUpperCase ();
 return;
 }if ("hidden" === propertyName) {
 var isHidden = (value).booleanValue ();
 if (this.currentObject == null) {
-if (this.isAll || this.thisID != null) for (var t, $t = this.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) if (this.isAll || JU.Txt.isMatch (t.target.toUpperCase (), this.thisID, true, true)) t.hidden = isHidden;
+if (this.isAll || this.thisID != null) for (var t, $t = this.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) if (this.isAll || JU.PT.isMatch (t.target.toUpperCase (), this.thisID, true, true)) t.hidden = isHidden;
 
 return;
 }(this.currentObject).hidden = isHidden;
@@ -85,10 +85,10 @@ if ("currentTarget" === property) {
 return (this.currentObject != null && (data[0] = this.currentObject.target) != null);
 }if (property === "checkID") {
 var key = (data[0]).toUpperCase ();
-var isWild = JU.Txt.isWild (key);
+var isWild = JU.PT.isWild (key);
 for (var t, $t = this.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) {
 var id = t.target;
-if (id.equalsIgnoreCase (key) || isWild && JU.Txt.isMatch (id.toUpperCase (), key, true, true)) {
+if (id.equalsIgnoreCase (key) || isWild && JU.PT.isMatch (id.toUpperCase (), key, true, true)) {
 data[1] = id;
 return true;
 }}

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.VolumeDataReader", "JU.BS", "$.P3", "$.P3i", "J.atomdata.AtomData"], "J.jvxl.readers.AtomDataReader", ["java.lang.Float", "java.util.Date", "JU.AU", "$.SB", "$.V3", "J.atomdata.RadiusData", "J.c.VDW", "J.jvxl.data.JvxlCoder", "JU.BSUtil", "$.Logger", "$.Txt"], function () {
+Clazz.load (["J.jvxl.readers.VolumeDataReader", "JU.BS", "$.P3", "$.P3i", "J.atomdata.AtomData"], "J.jvxl.readers.AtomDataReader", ["java.lang.Float", "java.util.Date", "JU.AU", "$.PT", "$.SB", "$.V3", "J.atomdata.RadiusData", "J.c.VDW", "J.jvxl.data.JvxlCoder", "JU.BSUtil", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.maxDistance = 0;
 this.contactPair = null;
@@ -272,8 +272,8 @@ Clazz.defineMethod (c$, "fixTitleLine",
 function (iLine) {
 if (this.params.title == null) return false;
 var line = this.params.title[iLine];
-if (line.indexOf ("%F") > 0) line = this.params.title[iLine] = JU.Txt.formatStringS (line, "F", this.atomData.fileName);
-if (line.indexOf ("%M") > 0) this.params.title[iLine] = JU.Txt.formatStringS (line, "M", this.atomData.modelName);
+if (line.indexOf ("%F") > 0) line = this.params.title[iLine] = JU.PT.formatStringS (line, "F", this.atomData.fileName);
+if (line.indexOf ("%M") > 0) this.params.title[iLine] = JU.PT.formatStringS (line, "M", this.atomData.modelName);
 return true;
 }, "~N");
 Clazz.defineMethod (c$, "setVertexSource", 

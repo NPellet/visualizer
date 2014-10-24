@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JU");
-Clazz.load (["java.io.OutputStream"], "JU.OC", ["java.io.BufferedWriter", "$.ByteArrayOutputStream", "$.FileOutputStream", "$.OutputStreamWriter", "JU.Base64", "$.SB"], function () {
+Clazz.load (["java.io.OutputStream"], "JU.OC", ["java.io.BufferedWriter", "$.ByteArrayOutputStream", "$.OutputStreamWriter", "JU.Base64", "$.SB"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.bytePoster = null;
 this.fileName = null;
@@ -81,12 +81,10 @@ Clazz.defineMethod (c$, "reset",
 function () {
 this.sb = null;
 try {
-if (Clazz.instanceOf (this.os, java.io.FileOutputStream)) {
-this.os.close ();
-this.os =  new java.io.FileOutputStream (this.fileName);
-} else {
-this.os =  new java.io.ByteArrayOutputStream ();
-}if (this.bw != null) {
+{
+this.os = null;
+}if (this.os == null) this.os =  new java.io.ByteArrayOutputStream ();
+if (this.bw != null) {
 this.bw.close ();
 this.bw =  new java.io.BufferedWriter ( new java.io.OutputStreamWriter (this.os));
 }} catch (e) {

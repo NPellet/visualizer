@@ -12,7 +12,6 @@ Clazz.instantialize (this, arguments);
 }, J.bspt, "Node", J.bspt.Element);
 Clazz.makeConstructor (c$, 
 function (bspt, level, leafLeft) {
-Clazz.superConstructor (this, J.bspt.Node, []);
 this.bspt = bspt;
 if (level == bspt.treeDepth) {
 bspt.treeDepth = level + 1;

@@ -81,14 +81,15 @@ function () {
 Clazz.superConstructor (this, J.g3d.Graphics3D, []);
 });
 Clazz.overrideMethod (c$, "initialize", 
-function (apiPlatform) {
+function (vwr, apiPlatform) {
+this.vwr = vwr;
 this.apiPlatform = apiPlatform;
 this.platform =  new J.g3d.Platform3D (apiPlatform);
 this.graphicsForMetrics = this.platform.getGraphicsForMetrics ();
 this.line3d =  new J.g3d.LineRenderer (this);
 this.sphere3d =  new J.g3d.SphereRenderer (this);
 this.cylinder3d =  new J.g3d.CylinderRenderer (this);
-}, "javajs.api.GenericPlatform");
+}, "JV.Viewer,javajs.api.GenericPlatform");
 Clazz.overrideMethod (c$, "addRenderer", 
 function (tok) {
 switch (tok) {
@@ -104,7 +105,10 @@ break;
 }, "~N");
 Clazz.defineMethod (c$, "getRenderer", 
  function (type) {
-return (J.api.Interface.getOption ("g3d." + type + "Renderer")).set (this);
+var r = (J.api.Interface.getOption ("g3d." + type + "Renderer", this.vwr, "render"));
+if (r == null) throw  new NullPointerException ("Interface");
+r.set (this);
+return r;
 }, "~S");
 Clazz.overrideMethod (c$, "currentlyRendering", 
 function () {
@@ -149,6 +153,7 @@ this.aobuf = null;
 }this.setWidthHeight (this.antialiasThisFrame);
 this.platform.clearBuffer ();
 if (this.backgroundImage != null) this.plotImage (-2147483648, 0, -2147483648, this.backgroundImage, null, 0, 0, 0);
+this.textY = 0;
 }, "JU.M3,~B,~B,~B");
 Clazz.overrideMethod (c$, "setBackgroundTransparent", 
 function (TF) {

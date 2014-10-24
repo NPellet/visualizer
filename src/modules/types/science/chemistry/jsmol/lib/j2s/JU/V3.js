@@ -3,7 +3,6 @@ Clazz.load (["JU.T3"], "JU.V3", null, function () {
 c$ = Clazz.declareType (JU, "V3", JU.T3);
 Clazz.makeConstructor (c$, 
 function () {
-Clazz.superConstructor (this, JU.V3, []);
 });
 c$.newV = Clazz.defineMethod (c$, "newV", 
 function (t) {

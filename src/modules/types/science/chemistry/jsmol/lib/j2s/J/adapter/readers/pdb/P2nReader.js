@@ -14,7 +14,7 @@ if (altName.length == 0) altName = atom.atomName;
 if (this.useAltNames) atom.atomName = altName;
  else this.altNames.addLast (altName);
 }, "J.adapter.smarter.Atom");
-Clazz.overrideMethod (c$, "finalizeReader", 
+Clazz.overrideMethod (c$, "finalizeSubclassReader", 
 function () {
 this.finalizeReaderPDB ();
 if (!this.useAltNames) this.asc.setAtomSetAuxiliaryInfo ("altName", this.altNames.toArray ( new Array (this.altNames.size ())));

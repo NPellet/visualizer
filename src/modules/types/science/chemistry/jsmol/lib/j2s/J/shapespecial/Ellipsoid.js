@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shapespecial");
-Clazz.load (["JU.P3"], "J.shapespecial.Ellipsoid", ["J.api.Interface"], function () {
+Clazz.load (["JU.P3"], "J.shapespecial.Ellipsoid", null, function () {
 c$ = Clazz.decorateAsClass (function () {
 this.colix = 23;
 this.visible = false;
@@ -71,18 +71,12 @@ c$.getThermalRadius = Clazz.defineMethod (c$, "getThermalRadius",
 function (prob) {
 return J.shapespecial.Ellipsoid.crtval[prob < 1 ? 0 : prob > 99 ? 98 : prob - 1];
 }, "~N");
-Clazz.defineMethod (c$, "setEquation", 
-function (coef) {
+Clazz.defineMethod (c$, "setTensor", 
+function (tensor) {
 this.isValid = false;
-this.tensor = (J.api.Interface.getUtil ("Tensor")).setFromThermalEquation (coef, null);
-this.validate (true);
-}, "~A");
-Clazz.defineMethod (c$, "setAxes", 
-function (axes) {
-this.isValid = false;
-this.tensor = (J.api.Interface.getUtil ("Tensor")).setFromAxes (axes);
-this.validate ((this.tensor != null));
-}, "~A");
+this.tensor = tensor;
+this.validate (tensor != null);
+}, "JU.Tensor");
 Clazz.defineMethod (c$, "validate", 
  function (andSetLengths) {
 if (this.tensor == null) return;

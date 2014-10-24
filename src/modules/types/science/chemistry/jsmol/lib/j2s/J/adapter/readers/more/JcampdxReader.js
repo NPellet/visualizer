@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.more");
-Clazz.load (["J.adapter.readers.molxyz.MolReader", "J.api.JmolJDXMOLReader", "JU.Lst"], "J.adapter.readers.more.JcampdxReader", ["java.lang.Float", "JU.BS", "$.PT", "$.Rdr", "J.adapter.smarter.SmarterJmolAdapter", "J.api.Interface", "JU.Logger"], function () {
+Clazz.load (["J.adapter.readers.molxyz.MolReader", "J.api.JmolJDXMOLReader", "JU.Lst"], "J.adapter.readers.more.JcampdxReader", ["java.lang.Float", "JU.BS", "$.PT", "$.Rdr", "J.adapter.smarter.SmarterJmolAdapter", "J.api.Interface", "JU.Logger", "JV.JC"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.selectedModel = 0;
 this.mpr = null;
@@ -37,7 +37,7 @@ var label = JU.PT.replaceAllCharacters (this.line.substring (0, i).trim (), " ",
 if (label.length > 12) label = label.substring (0, 12);
 var pt = ("##$MODELS   ##$PEAKS    ##$SIGNALS  ##$MOLFILE  ##NPOINTS   ##TITLE     ##PEAKASSIGN##$UVIR_ASSI##$MS_FRAGME##.OBSERVENU##DATATYPE  ").indexOf (label);
 if (pt < 0) return true;
-if (this.mpr == null) this.mpr = (J.api.Interface.getOption ("jsv.JDXMOLParser")).set (this, this.filePath, this.htParams);
+if (this.mpr == null) this.mpr = (J.api.Interface.getOption ("jsv.JDXMOLParser", this.vwr, "file")).set (this, this.filePath, this.htParams);
 var value = this.line.substring (i + 1).trim ();
 this.mpr.setLine (value);
 switch (pt) {
@@ -51,7 +51,10 @@ break;
 case 36:
 this.acdMolFile = this.mpr.readACDMolFile ();
 this.processModelData (this.acdMolFile, this.title + " (assigned)", "MOL", "mol", "", 0.01, NaN, true);
-break;
+if (this.asc.errorMessage != null) {
+this.continuing = false;
+return false;
+}break;
 case 48:
 this.nPeaks = JU.PT.parseInt (value);
 break;
@@ -73,7 +76,7 @@ break;
 }
 return true;
 });
-Clazz.overrideMethod (c$, "finalizeReader", 
+Clazz.overrideMethod (c$, "finalizeSubclassReader", 
 function () {
 if (this.mpr != null) this.processPeakData ();
 this.finalizeReaderMR ();
@@ -86,6 +89,7 @@ while (true) {
 var ret = J.adapter.smarter.SmarterJmolAdapter.staticGetAtomSetCollectionReader (this.filePath, type, JU.Rdr.getBR (data), this.htParams);
 if (Clazz.instanceOf (ret, String)) {
 JU.Logger.warn ("" + ret);
+if ((ret).startsWith (JV.JC.READER_NOT_FOUND)) this.asc.errorMessage = ret;
 break;
 }ret = J.adapter.smarter.SmarterJmolAdapter.staticGetAtomSetCollection (ret);
 if (Clazz.instanceOf (ret, String)) {
@@ -104,8 +108,9 @@ if (model.bondCount == 0) this.setBonding (model, ibase);
 }}if (!Float.isNaN (vibScale)) {
 JU.Logger.info ("JcampdxReader applying vibration scaling of " + vibScale + " to " + model.ac + " atoms");
 var atoms = model.atoms;
-for (var i = model.ac; --i >= 0; ) atoms[i].scaleVector (vibScale);
-
+for (var i = model.ac; --i >= 0; ) {
+if (atoms[i].vib != null && !Float.isNaN (atoms[i].vib.z)) atoms[i].vib.scale (vibScale);
+}
 }if (!Float.isNaN (modelScale)) {
 JU.Logger.info ("JcampdxReader applying model scaling of " + modelScale + " to " + model.ac + " atoms");
 var atoms = model.atoms;

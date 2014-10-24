@@ -49,7 +49,7 @@ this.br.read (buf, 0, 5);
 if (( String.instantialize (buf)).startsWith ("PM\u0001\u0000")) {
 this.br.close ();
 this.binarydoc = this.newBinaryDocument ();
-this.binarydoc.setStream (this.sg.getAtomDataServer ().getBufferedInputStream (fileName), (buf[4] == '\0'));
+this.setStream (fileName, (buf[4] == '\0'));
 return true;
 }this.br.reset ();
 } catch (e) {
@@ -139,6 +139,8 @@ return false;
 var vertices =  Clazz.newIntArray (5, 0);
 for (var iPoly = 0; iPoly < this.nPolygons; iPoly++) {
 var intCount = (this.fixedCount == 0 ? this.getInt () : this.fixedCount);
+var haveColor = (intCount < 0);
+if (haveColor) intCount = -intCount;
 var vertexCount = intCount - (this.isClosedFace ? 1 : 0);
 if (vertexCount < 1 || vertexCount > 4) {
 this.pmeshError = this.type + " ERROR: bad polygon (must have 1-4 vertices) at #" + (iPoly + 1);
@@ -154,13 +156,14 @@ if (this.onePerLine) this.iToken = 2147483647;
 if (!isOK) continue;
 if (vertexCount < 3) for (var i = vertexCount; i < 3; ++i) vertices[i] = vertices[i - 1];
 
+var color = (haveColor ? this.getInt () : 0);
 if (vertexCount == 4) {
 this.nTriangles += 2;
-this.addTriangleCheck (vertices[0], vertices[1], vertices[3], 5, 0, false, 0);
-this.addTriangleCheck (vertices[1], vertices[2], vertices[3], 3, 0, false, 0);
+this.addTriangleCheck (vertices[0], vertices[1], vertices[3], 5, 0, false, color);
+this.addTriangleCheck (vertices[1], vertices[2], vertices[3], 3, 0, false, color);
 } else {
 this.nTriangles++;
-this.addTriangleCheck (vertices[0], vertices[1], vertices[2], 7, 0, false, 0);
+this.addTriangleCheck (vertices[0], vertices[1], vertices[2], 7, 0, false, color);
 }}
 if (this.isBinary) this.nBytes = this.binarydoc.getPosition ();
 return true;

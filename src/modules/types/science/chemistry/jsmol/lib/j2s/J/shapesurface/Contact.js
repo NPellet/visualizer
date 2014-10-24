@@ -44,7 +44,8 @@ var bsB = value[5];
 var rd = value[6];
 var saProbeRadius = (value[7]).floatValue ();
 var parameters = value[8];
-var command = value[9];
+var modelIndex = (value[9]).intValue ();
+var command = value[10];
 if (Float.isNaN (saProbeRadius)) saProbeRadius = 0;
 if (rd == null) rd =  new J.atomdata.RadiusData (null, saProbeRadius, J.atomdata.RadiusData.EnumType.OFFSET, J.c.VDW.AUTO);
 if (colorDensity) {
@@ -143,6 +144,7 @@ this.mergeMesh (null);
 break;
 }
 this.thisMesh.setMerged (false);
+if (modelIndex != -2147483648) this.thisMesh.modelIndex = modelIndex;
 this.thisMesh.jvxlData.vertexDataOnly = true;
 this.thisMesh.reinitializeLightingAndColor (this.vwr);
 if (contactType != 1073742036) {
@@ -245,7 +247,9 @@ var bs = JU.BSUtil.copy (bsA);
 bs.or (bsB);
 if (bs.isEmpty ()) return list;
 ad.bsSelected = bs;
-var isMultiModel = (this.atoms[bs.nextSetBit (0)].mi != this.atoms[bs.length () - 1].mi);
+var iModel = this.atoms[bs.nextSetBit (0)].mi;
+var isMultiModel = (iModel != this.atoms[bs.length () - 1].mi);
+ad.modelIndex = (isMultiModel ? -1 : iModel);
 var isSelf = bsA.equals (bsB);
 this.vwr.fillAtomData (ad, 2 | (isMultiModel ? 16 : 0) | 4);
 var maxRadius = 0;
@@ -262,7 +266,7 @@ var ib = iter.next ();
 if (isMultiModel && !bsB.get (ib)) continue;
 var atomB = this.atoms[ib];
 var isSameMolecule = (ad.atomMolecule[ia] == ad.atomMolecule[ib]);
-if (ia == ib || isSameMolecule && atomA.isWithinFourBonds (atomB)) continue;
+if (ia == ib || isSameMolecule && this.isWithinFourBonds (atomA, atomB)) continue;
 switch (intramolecularMode) {
 case 0:
 break;
@@ -317,6 +321,20 @@ if (JU.Logger.debugging) for (var i = 0; i < list.size (); i++) JU.Logger.debug 
 JU.Logger.info ("Contact pairs: " + list.size ());
 return list;
 }, "JU.BS,JU.BS,J.atomdata.RadiusData,~N,~B");
+Clazz.defineMethod (c$, "isWithinFourBonds", 
+ function (atomA, atomB) {
+if (atomA.mi != atomB.mi) return false;
+if (atomA.isCovalentlyBonded (atomB)) return true;
+var bondsOther = atomB.getBonds ();
+var bonds = atomA.getBonds ();
+for (var i = 0; i < bondsOther.length; i++) {
+var atom2 = bondsOther[i].getOtherAtom (atomB);
+if (atomA.isCovalentlyBonded (atom2)) return true;
+for (var j = 0; j < bonds.length; j++) if (bonds[j].getOtherAtom (atomA).isCovalentlyBonded (atom2)) return true;
+
+}
+return false;
+}, "JM.Atom,JM.Atom");
 c$.checkCp = Clazz.defineMethod (c$, "checkCp", 
  function (cp1, cp2, i1, i2) {
 if (cp1.myAtoms[i1] !== cp2.myAtoms[i2]) return 0;

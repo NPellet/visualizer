@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shapespecial");
-Clazz.load (["J.shape.Shape", "java.util.Hashtable"], "J.shapespecial.Ellipsoids", ["JU.BS", "$.Lst", "$.PT", "$.SB", "$.V3", "J.c.PAL", "J.shapespecial.Ellipsoid", "JU.BSUtil", "$.C", "$.Escape", "$.Txt"], function () {
+Clazz.load (["J.shape.Shape", "java.util.Hashtable"], "J.shapespecial.Ellipsoids", ["JU.BS", "$.Lst", "$.PT", "$.SB", "$.V3", "J.api.Interface", "J.c.PAL", "J.shapespecial.Ellipsoid", "JU.BSUtil", "$.C", "$.Escape"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.simpleEllipsoids = null;
 this.atomEllipsoids = null;
@@ -49,10 +49,10 @@ Clazz.defineMethod (c$, "checkID",
 this.ellipsoidSet =  new JU.Lst ();
 if (thisID == null) return false;
 thisID = thisID.toLowerCase ();
-if (JU.Txt.isWild (thisID)) {
+if (JU.PT.isWild (thisID)) {
 for (var e, $e = this.simpleEllipsoids.entrySet ().iterator (); $e.hasNext () && ((e = $e.next ()) || true);) {
 var key = e.getKey ().toLowerCase ();
-if (JU.Txt.isMatch (key, thisID, true, true)) this.ellipsoidSet.addLast (e.getValue ());
+if (JU.PT.isMatch (key, thisID, true, true)) this.ellipsoidSet.addLast (e.getValue ());
 }
 }var e = this.simpleEllipsoids.get (thisID);
 if (e != null) this.ellipsoidSet.addLast (e);
@@ -151,7 +151,7 @@ Clazz.defineMethod (c$, "setProp",
  function (e, mode, value) {
 switch (mode) {
 case 0:
-e.setAxes (value);
+e.setTensor ((J.api.Interface.getUtil ("Tensor", this.vwr, "script")).setFromAxes (value));
 return;
 case 1:
 e.setCenter (value);
@@ -163,7 +163,7 @@ case 3:
 this.simpleEllipsoids.remove (e.id);
 return;
 case 4:
-e.setEquation (value);
+e.setTensor ((J.api.Interface.getUtil ("Tensor", this.vwr, "script")).setFromThermalEquation (value, null));
 return;
 case 5:
 e.tensor.modelIndex = (value).intValue ();
@@ -230,7 +230,7 @@ if (e2.colix != 0) JU.BSUtil.setMapBitSet (temp2, i, i, J.shape.Shape.getColorCo
 }
 sb.append (this.vwr.getCommands (temp, temp2, "select"));
 }, "JU.SB");
-Clazz.overrideMethod (c$, "setVisibilityFlags", 
+Clazz.overrideMethod (c$, "setModelVisibilityFlags", 
 function (bsModels) {
 if (!this.isActive ()) return;
 var atoms = this.vwr.ms.at;
@@ -254,7 +254,7 @@ isOK = (!isModTensor && !isUnmodTensor || isModTensor == isModAtom);
 }e.visible = isOK && (e.modelIndex < 0 || bs.get (e.modelIndex));
 }
 }, "java.util.Map,JU.BS,~A");
-Clazz.overrideMethod (c$, "setModelClickability", 
+Clazz.overrideMethod (c$, "setAtomClickability", 
 function () {
 if (this.atomEllipsoids.isEmpty ()) return;
 for (var e, $e = this.atomEllipsoids.values ().iterator (); $e.hasNext () && ((e = $e.next ()) || true);) {

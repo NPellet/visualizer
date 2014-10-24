@@ -12,6 +12,10 @@ this.mu = NaN;
 this.theta = NaN;
 Clazz.instantialize (this, arguments);
 }, JM, "Monomer", JM.Group);
+Clazz.makeConstructor (c$, 
+function () {
+Clazz.superConstructor (this, JM.Monomer, []);
+});
 c$.have = Clazz.defineMethod (c$, "have", 
 function (offsets, n) {
 return (offsets[n] & 0xFF) != 0xFF;
@@ -263,7 +267,7 @@ Clazz.defineMethod (c$, "getUniqueID",
 function () {
 var cid = this.getChainID ();
 var a = this.getLeadAtom ();
-var id = (a == null ? "" : "_" + a.getModelIndex ()) + "_" + this.getResno () + (cid == 0 ? "" : "_" + cid);
+var id = (a == null ? "" : "_" + a.mi) + "_" + this.getResno () + (cid == 0 ? "" : "_" + cid);
 var aid = (a == null ? '\0' : this.getLeadAtom ().getAlternateLocationID ());
 if (aid != '\0') id += "_" + aid;
 return id;
@@ -294,7 +298,7 @@ var haveCrossLink = false;
 var checkPrevious = (vReturn == null && group == null);
 for (var j = 0; j < bonds.length; j++) {
 var a = bonds[j].getOtherAtom (atom);
-var g = a.getGroup ();
+var g = a.group;
 if (group != null && g !== group) continue;
 var iPolymer = g.getBioPolymerIndexInModel ();
 var igroup = g.getMonomerIndex ();

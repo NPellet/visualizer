@@ -11,7 +11,7 @@ var bsOK = this.vwr.getRenderableBitSet ();
 for (var i = bsOK.nextSetBit (0); i >= 0; i = bsOK.nextSetBit (i + 1)) {
 var atom = atoms[i];
 if (atom.sD > 0 && (atom.shapeVisibilityFlags & this.myVisibilityFlag) != 0) {
-if (this.g3d.setC (colixes == null ? atom.getColix () : J.shape.Shape.getColix (colixes, i, atom))) {
+if (this.g3d.setC (colixes == null ? atom.colixAtom : J.shape.Shape.getColix (colixes, i, atom))) {
 this.g3d.drawAtom (atom);
 } else {
 needTranslucent = true;

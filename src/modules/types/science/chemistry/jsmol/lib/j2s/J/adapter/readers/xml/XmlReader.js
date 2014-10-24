@@ -43,7 +43,7 @@ var thisReader = null;
 var pt = this.readerName.indexOf ("(");
 var name = (pt < 0 ? this.readerName : this.readerName.substring (0, pt));
 className = J.adapter.smarter.Resolver.getReaderClassBase (name);
-if ((thisReader = J.api.Interface.getInterface (className)) == null) return "File reader was not found: " + className;
+if ((thisReader = this.getInterface (className)) == null) return "File reader was not found: " + className;
 try {
 thisReader.processXml (this, saxReader);
 } catch (e) {
@@ -81,7 +81,7 @@ parent.vwr.html5Applet._createDomNode("xmlReader",o);
 this.walkDOMTree();
 parent.vwr.html5Applet._createDomNode("xmlReader",null);
 }} else {
-var saxHandler = J.api.Interface.getOption ("adapter.readers.xml.XmlHandler");
+var saxHandler = J.api.Interface.getOption ("adapter.readers.xml.XmlHandler", this.vwr, "file");
 saxHandler.parseXML (this, saxReader, this.reader);
 }}, "J.adapter.readers.xml.XmlReader,~O");
 Clazz.overrideMethod (c$, "applySymmetryAndSetTrajectory", 

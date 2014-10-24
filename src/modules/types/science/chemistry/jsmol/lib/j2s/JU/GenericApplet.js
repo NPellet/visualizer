@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JU");
-Clazz.load (["J.api.JmolAppletInterface", "$.JmolStatusListener", "java.util.Hashtable"], "JU.GenericApplet", ["java.lang.Boolean", "java.net.URL", "javajs.awt.Dimension", "JU.Lst", "$.PT", "$.SB", "J.c.CBK", "J.i18n.GT", "JU.Logger", "JV.JC", "$.Viewer"], function () {
+Clazz.load (["J.api.JmolAppletInterface", "$.JmolStatusListener"], "JU.GenericApplet", ["java.lang.Boolean", "java.net.URL", "java.util.Hashtable", "javajs.awt.Dimension", "JU.Lst", "$.PT", "$.SB", "J.c.CBK", "J.i18n.GT", "JU.Logger", "JV.JC", "$.Viewer"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.isJS = false;
 this.codeBase = null;
@@ -27,11 +27,10 @@ this.syncId = null;
 this.outputBuffer = null;
 Clazz.instantialize (this, arguments);
 }, JU, "GenericApplet", null, [J.api.JmolAppletInterface, J.api.JmolStatusListener]);
-Clazz.prepareFields (c$, function () {
-this.b$ =  new java.util.Hashtable ();
-});
 Clazz.defineMethod (c$, "init", 
 function (applet) {
+this.b$ =  new java.util.Hashtable ();
+if (JU.GenericApplet.htRegistry == null) JU.GenericApplet.htRegistry =  new java.util.Hashtable ();
 this.appletObject = applet;
 this.htmlName = JU.PT.split ("" + this.getJmolParameter ("name"), "_object")[0];
 this.syncId = this.getJmolParameter ("syncId");
@@ -49,7 +48,8 @@ Clazz.defineMethod (c$, "initApplication",
  function () {
 this.vwrOptions.put ("applet", Boolean.TRUE);
 if (this.getJmolParameter ("statusListener") == null) this.vwrOptions.put ("statusListener", this);
-this.viewer =  new JV.Viewer (this.vwrOptions);
+this.viewer =  new JV.Viewer (null);
+this.viewer.setOptions (this.vwrOptions);
 this.viewer.pushHoldRepaint ();
 var emulate = this.getValueLowerCase ("emulate", "jmol");
 this.setStringProperty ("defaults", emulate.equals ("chime") ? "RasMol" : "Jmol");
@@ -83,7 +83,7 @@ if ((loadParam = this.getValue ("load", null)) != null) script = "load \"" + loa
 loadParam = null;
 }this.viewer.popHoldRepaint ("applet init");
 if (loadParam != null && this.viewer.loadInline (loadParam) != null) script = "";
-if (script.length > 0) this.scriptProcessor (script, null, 2);
+if (script.length > 0) this.scriptProcessor (script, null, 1);
 this.viewer.notifyStatusReady (true);
 });
 Clazz.overrideMethod (c$, "destroy", 
@@ -533,8 +533,8 @@ if (!JU.GenericApplet.htRegistry.containsKey (appletName)) appletName = "jmolApp
 if (!appletName.equals (excludeName) && JU.GenericApplet.htRegistry.containsKey (appletName)) {
 apps.addLast (appletName);
 }}, "~S,~S,~S,JU.Lst");
-c$.htRegistry = c$.prototype.htRegistry =  new java.util.Hashtable ();
 Clazz.defineStatics (c$,
+"htRegistry", null,
 "SCRIPT_CHECK", 0,
 "SCRIPT_WAIT", 1,
 "SCRIPT_NOWAIT", 2);

@@ -142,7 +142,7 @@ this.colix = ellipsoid.colix;
 } else {
 atom = this.ms.at[ellipsoid.tensor.atomIndex1];
 if (atom.sZ <= 1 || !this.isVisibleForMe (atom)) continue;
-this.colix = JU.C.getColixInherited (ellipsoid.colix, atom.getColix ());
+this.colix = JU.C.getColixInherited (ellipsoid.colix, atom.colixAtom);
 }if (!this.g3d.setC (this.colix)) {
 needTranslucent = true;
 continue;

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JU");
-Clazz.load (["javajs.api.GenericCifDataParser", "java.util.Hashtable", "JU.SB"], "JU.CifDataParser", ["java.lang.Character", "JU.Lst", "$.PT"], function () {
+Clazz.load (["javajs.api.GenericCifDataParser", "java.util.Hashtable", "JU.SB"], "JU.CifDataParser", ["JU.Lst", "$.PT"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.reader = null;
 this.br = null;
@@ -171,9 +171,9 @@ Clazz.overrideMethod (c$, "fullTrim",
 function (str) {
 var pt0 = -1;
 var pt1 = str.length;
-while (++pt0 < pt1 && Character.isWhitespace (str.charAt (pt0))) {
+while (++pt0 < pt1 && JU.PT.isWhitespace (str.charAt (pt0))) {
 }
-while (--pt1 > pt0 && Character.isWhitespace (str.charAt (pt1))) {
+while (--pt1 > pt0 && JU.PT.isWhitespace (str.charAt (pt1))) {
 }
 return str.substring (pt0, pt1 + 1);
 }, "~S");
@@ -224,10 +224,9 @@ if ((propertyOf[pt] = i) != -1) fieldOf[i] = pt;
 if (this.fieldCount > 0) this.loopData =  new Array (this.fieldCount);
 return propertyCount;
 }, "~A,~A,~A");
-Clazz.defineMethod (c$, "fixKey", 
- function (key) {
-if (key.startsWith ("_magnetic")) key = key.substring (9);
-return (JU.PT.rep (key, ".", "_").toLowerCase ());
+Clazz.overrideMethod (c$, "fixKey", 
+function (key) {
+return (JU.PT.rep (key.startsWith ("_magnetic") ? key.substring (9) : key.startsWith ("_jana") ? key.substring (5) : key, ".", "_").toLowerCase ());
 }, "~S");
 Clazz.defineMethod (c$, "setString", 
  function (str) {

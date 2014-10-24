@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (null, "J.jvxl.readers.XmlReader", ["java.lang.Character", "JU.P3", "$.SB", "$.XmlUtil", "JU.Escape"], function () {
+Clazz.load (null, "J.jvxl.readers.XmlReader", ["JU.P3", "$.PT", "$.SB", "$.XmlUtil", "JU.Escape"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.br = null;
 this.line = null;
@@ -79,7 +79,7 @@ if ((ch = data.charAt (pt1)) == '"') quoted = !quoted;
  else if (!quoted && (ch == '>' || ch == '/')) break;
 }
 if (pt1 >= pt2) return "";
-while (Character.isWhitespace (data.charAt (++pt1))) {
+while (JU.PT.isWhitespace (data.charAt (++pt1))) {
 }
 return JU.XmlUtil.unwrapCdata (data.substring (pt1, pt2));
 }, "~S,~S,~S,~B");

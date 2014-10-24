@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shapebio");
-Clazz.load (["J.shapebio.BioShapeCollection"], "J.shapebio.Trace", ["J.atomdata.RadiusData", "J.c.VDW", "JM.Atom"], function () {
+Clazz.load (["J.shapebio.BioShapeCollection"], "J.shapebio.Trace", ["J.atomdata.RadiusData", "J.c.VDW"], function () {
 c$ = Clazz.declareType (J.shapebio, "Trace", J.shapebio.BioShapeCollection);
 Clazz.defineMethod (c$, "initShape", 
 function () {
@@ -26,7 +26,7 @@ var sumsq = 0.0;
 var min = 3.4028235E38;
 var max = 0;
 for (var i = bsAtoms.nextSetBit (0); i >= 0; i = bsAtoms.nextSetBit (i + 1)) {
-var value = JM.Atom.atomPropertyFloat (null, this.atoms[i], 1112541199, null);
+var value = this.atoms[i].atomPropertyFloat (null, 1112541196, null);
 sum += value;
 sumsq += (value * value);
 if (value < min) min = value;
@@ -51,7 +51,7 @@ nonlinear = true;
 break;
 }
 for (var i = bsAtoms.nextSetBit (0); i >= 0; i = bsAtoms.nextSetBit (i + 1)) {
-var scale = JM.Atom.atomPropertyFloat (null, this.atoms[i], 1112541199, null);
+var scale = this.atoms[i].atomPropertyFloat (null, 1112541196, null);
 switch (transform) {
 case 3:
 case 7:

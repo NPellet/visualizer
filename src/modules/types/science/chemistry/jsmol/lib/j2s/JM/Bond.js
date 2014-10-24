@@ -10,7 +10,6 @@ Clazz.instantialize (this, arguments);
 }, JM, "Bond", JU.Edge);
 Clazz.makeConstructor (c$, 
 function (atom1, atom2, order, mad, colix) {
-Clazz.superConstructor (this, JM.Bond, []);
 this.atom1 = atom1;
 this.atom2 = atom2;
 this.colix = colix;

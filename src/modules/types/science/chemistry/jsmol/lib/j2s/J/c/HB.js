@@ -3,7 +3,7 @@ Clazz.load (["java.lang.Enum"], "J.c.HB", null, function () {
 c$ = Clazz.declareType (J.c, "HB", Enum);
 c$.getType = Clazz.defineMethod (c$, "getType", 
 function (atom) {
-var group = atom.getGroup ();
+var group = atom.group;
 var groupID = group.getGroupID ();
 var considerHydrogens = !atom.isHetero ();
 switch (atom.getElementNumber ()) {

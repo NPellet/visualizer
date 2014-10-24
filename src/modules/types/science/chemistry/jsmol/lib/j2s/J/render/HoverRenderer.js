@@ -34,6 +34,6 @@ return true;
 Clazz.defineMethod (c$, "fixLabel", 
 function (atom, label) {
 if (label == null) return null;
-return (this.vwr.ms.isJmolDataFrameForModel (atom.getModelIndex ()) && label.equals ("%U") ? "%W" : label);
+return (this.vwr.ms.isJmolDataFrameForModel (atom.mi) && label.equals ("%U") ? "%W" : label);
 }, "JM.Atom,~S");
 });

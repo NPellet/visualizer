@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.io");
-Clazz.load (["J.api.JmolFilesReaderInterface"], "J.io.FilesReader", ["java.io.BufferedInputStream", "$.BufferedReader", "java.util.zip.ZipInputStream", "javajs.api.GenericBinaryDocument", "JU.PT", "J.api.Interface", "J.io.JmolBinary", "JU.Logger"], function () {
+Clazz.load (["J.api.JmolFilesReaderInterface"], "J.io.FilesReader", ["java.io.BufferedInputStream", "$.BufferedReader", "java.util.zip.ZipInputStream", "javajs.api.GenericBinaryDocument", "JU.PT", "J.api.Interface", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.fm = null;
 this.vwr = null;
@@ -54,10 +54,10 @@ if (Clazz.instanceOf (t, java.util.zip.ZipInputStream)) {
 if (subFileList != null) this.htParams.put ("subFileList", subFileList);
 var zipDirectory = this.fm.getZipDirectory (name, true, true);
 t = this.fm.getBufferedInputStreamOrErrorMessageFromName (name, this.fullPathNamesIn[i], false, false, null, false, true);
-t = J.io.JmolBinary.getAtomSetCollectionOrBufferedReaderFromZip (this.vwr.getModelAdapter (), t, name, zipDirectory, this.htParams, true);
+t = this.fm.jmb.getAtomSetCollectionOrBufferedReaderFromZip (this.vwr.getModelAdapter (), t, name, zipDirectory, this.htParams, true);
 }if (Clazz.instanceOf (t, java.io.BufferedInputStream)) {
-var jd = J.api.Interface.getInterface ("JU.BinaryDocument");
-jd.setStream (t, true);
+var jd = J.api.Interface.getInterface ("JU.BinaryDocument", this.vwr, "file");
+jd.setStream (this.vwr.getJzt (), t, true);
 return jd;
 }return (Clazz.instanceOf (t, java.io.BufferedReader) || Clazz.instanceOf (t, javajs.api.GenericBinaryDocument) ? t : t == null ? "error opening:" + this.namesAsGivenIn[i] : t);
 }, "~N,~B");

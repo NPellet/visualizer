@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JU");
-Clazz.load (["JU.BS"], "JU.Elements", ["java.lang.Character", "java.util.Hashtable", "JU.PT", "JU.Logger"], function () {
+Clazz.load (["JU.BS"], "JU.Elements", ["java.util.Hashtable", "JU.PT", "JU.Logger"], function () {
 c$ = Clazz.declareType (JU, "Elements");
 c$.getAtomicMass = Clazz.defineMethod (c$, "getAtomicMass", 
 function (i) {
@@ -25,9 +25,9 @@ JU.Elements.htElementMap = map;
 }if (elementSymbol == null) return 0;
 var boxedAtomicNumber = JU.Elements.htElementMap.get (elementSymbol);
 if (boxedAtomicNumber != null) return boxedAtomicNumber.intValue ();
-if (Character.isDigit (elementSymbol.charAt (0))) {
+if (JU.PT.isDigit (elementSymbol.charAt (0))) {
 var pt = elementSymbol.length - 2;
-if (pt >= 0 && Character.isDigit (elementSymbol.charAt (pt))) pt++;
+if (pt >= 0 && JU.PT.isDigit (elementSymbol.charAt (pt))) pt++;
 var isotope = (pt > 0 ? JU.PT.parseInt (elementSymbol.substring (0, pt)) : 0);
 if (isotope > 0) {
 var n = JU.Elements.elementNumberFromSymbol (elementSymbol.substring (pt), true);

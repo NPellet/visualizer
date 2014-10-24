@@ -96,7 +96,7 @@ this.bsAddedHydrogens.setBits (ac, ac + nH);
 var isHetero = this.ms.at[iFirst].isHetero ();
 var xyz = JU.P3.new3 (NaN, NaN, NaN);
 var a = this.ms.at[iFirst];
-for (var i = 0; i < nH; i++) this.ms.addAtom (a.mi, a.getGroup (), 1, "H", 0, a.getSeqID (), 0, xyz, NaN, null, 0, 0, 1, 0, null, isHetero, 0, null).deleteBonds (null);
+for (var i = 0; i < nH; i++) this.ms.addAtom (a.mi, a.group, 1, "H", 0, a.getSeqID (), 0, xyz, NaN, null, 0, 0, 1, 0, null, isHetero, 0, null).deleteBonds (null);
 
 }, "J.api.JmolAdapter,~N,~N");
 Clazz.defineMethod (c$, "getBondInfo", 
@@ -190,7 +190,7 @@ var ipt = 0;
 for (var i = 0; i < pts.length; i++) {
 if (pts[i] == null) continue;
 var atom = this.ms.at[i];
-var g = atom.getGroup ();
+var g = atom.group;
 if (g !== groupLast) {
 groupLast = g;
 ipt = g.lastAtomIndex;
@@ -337,7 +337,7 @@ Clazz.defineMethod (c$, "finalizePdbCharges",
 var atoms = this.ms.at;
 for (var i = this.bsAtomsForHs.nextSetBit (0); i >= 0; i = this.bsAtomsForHs.nextSetBit (i + 1)) {
 var a = atoms[i];
-if (a.getGroup ().getNitrogenAtom () === a && a.getCovalentBondCount () == 1) a.setFormalCharge (1);
+if (a.group.getNitrogenAtom () === a && a.getCovalentBondCount () == 1) a.setFormalCharge (1);
 if ((i = this.bsAtomsForHs.nextClearBit (i + 1)) < 0) break;
 }
 });
@@ -349,8 +349,8 @@ var bonds = this.ms.bo;
 for (var i = this.baseBondIndex; i < bondCount; i++) {
 var a1 = bonds[i].getAtom1 ();
 var a2 = bonds[i].getAtom2 ();
-var g = a1.getGroup ();
-if (g !== a2.getGroup ()) continue;
+var g = a1.group;
+if (g !== a2.group) continue;
 var key =  new JU.SB ().append (g.getGroup3 ());
 key.append (":");
 var n1 = a1.getAtomName ();
@@ -383,7 +383,7 @@ if (htKeysBad.isEmpty ()) return;
 for (var i = 0; i < bondCount; i++) {
 var a1 = bonds[i].getAtom1 ();
 var a2 = bonds[i].getAtom2 ();
-if (a1.getGroup () === a2.getGroup ()) continue;
+if (a1.group === a2.group) continue;
 var value;
 if ((value = htKeysBad.get (a1.getGroup3 (false) + ":" + a1.getAtomName ())) == null && ((value = htKeysBad.get (a2.getGroup3 (false) + ":" + a2.getAtomName ())) == null)) continue;
 bonds[i].setOrder (JU.PT.parseInt (value));

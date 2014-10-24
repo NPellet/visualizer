@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JU");
-Clazz.load (null, "JU.SimpleUnitCell", ["java.lang.Float", "JU.AU", "$.M4", "$.V3"], function () {
+Clazz.load (null, "JU.SimpleUnitCell", ["java.lang.Float", "JU.AU", "$.M4", "$.P3", "$.V3"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.notionalUnitcell = null;
 this.matrixCartesianToFractional = null;
@@ -26,6 +26,7 @@ this.a_ = 0;
 this.b_ = 0;
 this.c_ = 0;
 this.dimension = 0;
+this.fractionalOrigin = null;
 this.matrixCtoFANoOffset = null;
 this.matrixFtoCNoOffset = null;
 Clazz.instantialize (this, arguments);
@@ -40,6 +41,7 @@ return (parameters != null && (parameters[0] > 0 || parameters.length > 14 && !F
 }, "~A");
 Clazz.makeConstructor (c$, 
 function () {
+this.fractionalOrigin =  new JU.P3 ();
 });
 c$.newA = Clazz.defineMethod (c$, "newA", 
 function (parameters) {
@@ -65,15 +67,7 @@ if (this.a <= 0) {
 var va = JU.V3.new3 (parameters[6], parameters[7], parameters[8]);
 var vb = JU.V3.new3 (parameters[9], parameters[10], parameters[11]);
 var vc = JU.V3.new3 (parameters[12], parameters[13], parameters[14]);
-this.a = va.length ();
-this.b = vb.length ();
-this.c = vc.length ();
-if (this.a == 0) return;
-if (this.b == 0) this.b = this.c = -1;
- else if (this.c == 0) this.c = -1;
-this.alpha = (this.b < 0 || this.c < 0 ? 90 : vb.angle (vc) / 0.017453292);
-this.beta = (this.c < 0 ? 90 : va.angle (vc) / 0.017453292);
-this.gamma = (this.b < 0 ? 90 : va.angle (vb) / 0.017453292);
+this.setABC (va, vb, vc);
 if (this.c < 0) {
 var n = JU.AU.arrayCopyF (parameters, -1);
 if (this.b < 0) {
@@ -103,19 +97,7 @@ this.dimension = 2;
 this.b *= this.nb;
 this.c *= this.nc;
 this.dimension = 3;
-}this.cosAlpha = Math.cos (0.017453292 * this.alpha);
-this.sinAlpha = Math.sin (0.017453292 * this.alpha);
-this.cosBeta = Math.cos (0.017453292 * this.beta);
-this.sinBeta = Math.sin (0.017453292 * this.beta);
-this.cosGamma = Math.cos (0.017453292 * this.gamma);
-this.sinGamma = Math.sin (0.017453292 * this.gamma);
-var unitVolume = Math.sqrt (this.sinAlpha * this.sinAlpha + this.sinBeta * this.sinBeta + this.sinGamma * this.sinGamma + 2.0 * this.cosAlpha * this.cosBeta * this.cosGamma - 2);
-this.volume = this.a * this.b * this.c * unitVolume;
-this.cA_ = (this.cosAlpha - this.cosBeta * this.cosGamma) / this.sinGamma;
-this.cB_ = unitVolume / this.sinGamma;
-this.a_ = this.b * this.c * this.sinAlpha / this.volume;
-this.b_ = this.a * this.c * this.sinBeta / this.volume;
-this.c_ = this.a * this.b * this.sinGamma / this.volume;
+}this.setCellParams ();
 if (parameters.length > 21 && !Float.isNaN (parameters[21])) {
 var scaleMatrix =  Clazz.newFloatArray (16, 0);
 for (var i = 0; i < 16; i++) {
@@ -137,8 +119,10 @@ break;
 scaleMatrix[i] = parameters[6 + i] * f;
 }
 this.matrixCartesianToFractional = JU.M4.newA16 (scaleMatrix);
+this.matrixCartesianToFractional.getTranslation (this.fractionalOrigin);
 this.matrixFractionalToCartesian =  new JU.M4 ();
 this.matrixFractionalToCartesian.invertM (this.matrixCartesianToFractional);
+if (parameters[0] == 1) this.setParamsFromMatrix ();
 } else if (parameters.length > 14 && !Float.isNaN (parameters[14])) {
 var m = this.matrixFractionalToCartesian =  new JU.M4 ();
 m.setColumn4 (0, parameters[6] * this.na, parameters[7] * this.na, parameters[8] * this.na, 0);
@@ -158,6 +142,49 @@ this.matrixCartesianToFractional.invertM (this.matrixFractionalToCartesian);
 }this.matrixCtoFANoOffset = this.matrixCartesianToFractional;
 this.matrixFtoCNoOffset = this.matrixFractionalToCartesian;
 }, "~A");
+Clazz.defineMethod (c$, "setParamsFromMatrix", 
+ function () {
+var va = JU.V3.new3 (1, 0, 0);
+var vb = JU.V3.new3 (0, 1, 0);
+var vc = JU.V3.new3 (0, 0, 1);
+this.matrixFractionalToCartesian.rotate (va);
+this.matrixFractionalToCartesian.rotate (vb);
+this.matrixFractionalToCartesian.rotate (vc);
+this.setABC (va, vb, vc);
+this.setCellParams ();
+});
+Clazz.defineMethod (c$, "setABC", 
+ function (va, vb, vc) {
+this.a = va.length ();
+this.b = vb.length ();
+this.c = vc.length ();
+if (this.a == 0) return;
+if (this.b == 0) this.b = this.c = -1;
+ else if (this.c == 0) this.c = -1;
+this.alpha = (this.b < 0 || this.c < 0 ? 90 : vb.angle (vc) / 0.017453292);
+this.beta = (this.c < 0 ? 90 : va.angle (vc) / 0.017453292);
+this.gamma = (this.b < 0 ? 90 : va.angle (vb) / 0.017453292);
+}, "JU.V3,JU.V3,JU.V3");
+Clazz.defineMethod (c$, "setCellParams", 
+ function () {
+this.cosAlpha = Math.cos (0.017453292 * this.alpha);
+this.sinAlpha = Math.sin (0.017453292 * this.alpha);
+this.cosBeta = Math.cos (0.017453292 * this.beta);
+this.sinBeta = Math.sin (0.017453292 * this.beta);
+this.cosGamma = Math.cos (0.017453292 * this.gamma);
+this.sinGamma = Math.sin (0.017453292 * this.gamma);
+var unitVolume = Math.sqrt (this.sinAlpha * this.sinAlpha + this.sinBeta * this.sinBeta + this.sinGamma * this.sinGamma + 2.0 * this.cosAlpha * this.cosBeta * this.cosGamma - 2);
+this.volume = this.a * this.b * this.c * unitVolume;
+this.cA_ = (this.cosAlpha - this.cosBeta * this.cosGamma) / this.sinGamma;
+this.cB_ = unitVolume / this.sinGamma;
+this.a_ = this.b * this.c * this.sinAlpha / this.volume;
+this.b_ = this.a * this.c * this.sinBeta / this.volume;
+this.c_ = this.a * this.b * this.sinGamma / this.volume;
+});
+Clazz.defineMethod (c$, "getFractionalOrigin", 
+function () {
+return this.fractionalOrigin;
+});
 Clazz.defineMethod (c$, "toSupercell", 
 function (fpt) {
 fpt.x /= this.na;
@@ -220,6 +247,14 @@ cell.x = ((Clazz.doubleToInt (nnn / f2)) % f) + offset;
 cell.y = Clazz.doubleToInt ((nnn % f2) / f) + offset;
 cell.z = (nnn % f) + offset;
 }, "~N,JU.P3,~N");
+c$.getCellWeight = Clazz.defineMethod (c$, "getCellWeight", 
+function (pt) {
+var f = 1;
+if (pt.x == 0) f /= 2;
+if (pt.y == 0) f /= 2;
+if (pt.z == 0) f /= 2;
+return f;
+}, "JU.P3");
 Clazz.defineStatics (c$,
 "toRadians", 0.017453292,
 "INFO_DIMENSIONS", 6,

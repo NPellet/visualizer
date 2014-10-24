@@ -53,9 +53,6 @@ this.mergePolygonCount0 = 0;
 this.isMerged = false;
 Clazz.instantialize (this, arguments);
 }, JU, "MeshSurface");
-Clazz.makeConstructor (c$, 
-function () {
-});
 c$.newMesh = Clazz.defineMethod (c$, "newMesh", 
 function (isAlt, vertices, vertexCount, polygonIndexes, normals, nNormals) {
 var ms =  new JU.MeshSurface ();

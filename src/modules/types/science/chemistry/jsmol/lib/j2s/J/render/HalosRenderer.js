@@ -26,11 +26,11 @@ if (isHidden && !showHiddenSelections) continue;
 if (this.mad == 0) this.mad = -1;
 if (this.colix == 0) this.colix = halos.colixSelection;
 if (this.colix == 2) this.colix = 23;
- else if (this.colix == 0) this.colix = JU.C.getColixInherited (this.colix, atom.getColix ());
+ else if (this.colix == 0) this.colix = JU.C.getColixInherited (this.colix, atom.colixAtom);
 } else if (isHidden) {
 continue;
 } else {
-this.colix = JU.C.getColixInherited (this.colix, atom.getColix ());
+this.colix = JU.C.getColixInherited (this.colix, atom.colixAtom);
 }if (this.mad != 0) {
 if (this.render1 (atom)) needTranslucent = true;
 }if (!isHidden && halos.bsHighlight != null && halos.bsHighlight.get (i)) {

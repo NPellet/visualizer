@@ -1,6 +1,299 @@
-// modified by Bob Hanson 3/21/2014 6:44:21 AM  to reduce this.b$[....] phrases to simply this.b$H
 
-Clazz.load(["java.util.Dictionary","$.Enumeration","$.Iterator","$.Map","$.MapEntry","$.NoSuchElementException"],"java.util.Hashtable",["java.lang.IllegalArgumentException","$.IllegalStateException","$.NullPointerException","$.StringBuilder","java.util.AbstractCollection","$.AbstractSet","$.Arrays","$.Collections","$.ConcurrentModificationException","java.util.MapEntry.Type"],function(){
+// modified by Bob Hanson 3/21/2014 6:44:21 AM  to reduce this.b$[....] phrases to simply this.h$
+// BH added ability to use a non-Java key for HTML elements, for example.
+// BH 8/24/2014 8:48:58 PM all synchronization and inner classes removed
+
+
+Clazz.load([],"java.util.HashtableIterator",[],function(){
+c$=Clazz.decorateAsClass(function(){
+this.position=0;
+this.expectedModCount=0;
+this.type=null;
+this.lastEntry=null;
+this.lastPosition=0;
+this.canRemove=false;
+Clazz.instantialize(this,arguments);
+},java.util,"HashtableIterator",null,java.util.Iterator);
+Clazz.makeConstructor(c$,
+function(a){
+this.type=a;
+this.h$ = a.h$;
+this.position=this.h$.lastSlot;
+this.expectedModCount=this.h$.modCount;
+},"java.util.AbstractSet");
+Clazz.overrideMethod(c$,"hasNext",
+function(){
+if(this.lastEntry&&this.lastEntry.next){
+return true;
+}while(this.position>=this.h$.firstSlot){
+if(this.h$.elementData[this.position]==null){
+this.position--;
+}else{
+return true;
+}}
+return false;
+});
+Clazz.overrideMethod(c$,"next",
+function(){
+if(this.expectedModCount==this.h$.modCount){
+if(this.lastEntry){
+this.lastEntry=this.lastEntry.next;
+}if(this.lastEntry==null){
+while(this.position>=this.h$.firstSlot&&(this.lastEntry=this.h$.elementData[this.position])==null){
+this.position--;
+}
+if(this.lastEntry){
+this.lastPosition=this.position;
+this.position--;
+}}if(this.lastEntry){
+this.canRemove=true;
+return this.type.get(this.lastEntry);
+}throw new java.util.NoSuchElementException();
+}throw new java.util.ConcurrentModificationException();
+});
+Clazz.overrideMethod(c$,"remove",
+function(){
+if(this.expectedModCount==this.h$.modCount){
+if(this.canRemove){
+this.canRemove=false;
+{
+var a=false;
+var b=this.h$.elementData[this.lastPosition];
+if(b===this.lastEntry){
+this.h$.elementData[this.lastPosition]=b.next;
+a=true;
+}else{
+while(b&&b.next!==this.lastEntry){
+b=b.next;
+}
+if(b){
+b.next=this.lastEntry.next;
+a=true;
+}}if(a){
+this.h$.modCount++;
+this.h$.elementCount--;
+this.expectedModCount++;
+return;
+}}}else{
+throw new IllegalStateException();
+}}throw new java.util.ConcurrentModificationException();
+});
+});
+
+
+
+////////////////////////////
+
+
+Clazz.load([],"java.util.HashtableEnumerator",[],function(){
+c$=Clazz.decorateAsClass(function(){
+this.key=false;
+this.start=0;
+this.entry=null;
+Clazz.instantialize(this,arguments);
+},java.util,"HashtableEnumerator",null,java.util.Enumeration);
+
+Clazz.makeConstructor(c$,
+function(a, b){
+this.key = a;
+this.h$ = b;
+if (this.h$)this.start=this.h$.lastSlot+1;
+},"~B,java.util.Hashtable");
+Clazz.overrideMethod(c$,"hasMoreElements",
+function(){
+if (!this.h$)return false;
+if(this.entry)return true;
+
+while(--this.start>=this.h$.firstSlot){
+if(this.h$.elementData[this.start]){
+this.entry=this.h$.elementData[this.start];
+return true;
+}}
+return false;
+});
+Clazz.overrideMethod(c$,"nextElement",
+function(){
+if(this.hasMoreElements()){
+var a=this.key?this.entry.key:this.entry.value;
+this.entry=this.entry.next;
+return a;
+}
+throw new java.util.NoSuchElementException();
+});
+});
+
+////////////////////////////
+
+Clazz.load([],"java.util.HashtableEntrySet",[],function(){
+c$=Clazz.decorateAsClass(function(){
+Clazz.instantialize(this,arguments);
+},java.util,"HashtableEntrySet",null,java.util.AbstractSet);
+
+Clazz.makeConstructor(c$,
+function(a){
+this.h$ = a;
+},"java.util.Hashtable");
+Clazz.overrideMethod(c$,"size",
+function(){
+return this.h$.elementCount;
+});
+Clazz.overrideMethod(c$,"clear",
+function(){
+this.h$.clear();
+});
+Clazz.overrideMethod(c$,"remove",
+function(object){
+if(this.contains(object)){
+this.h$.remove((object).getKey());
+return true;
+}return false;
+},"~O");
+Clazz.defineMethod(c$,"contains",
+function(object){
+var entry=this.h$.getEntry((object).getKey());
+return object.equals(entry);
+},"~O");
+
+Clazz.overrideMethod(c$,"get",
+function(entry){
+return entry;
+},"java.util.MapEntry");
+
+Clazz.defineMethod(c$,"iterator",
+function(){
+return new java.util.HashtableIterator(this);
+});
+});
+
+
+////////////////////////////
+
+Clazz.load([],"java.util.HashtableKeySet",[],function(){
+c$=Clazz.decorateAsClass(function(){
+Clazz.instantialize(this,arguments);
+},java.util,"HashtableKeySet",null,java.util.AbstractSet);
+
+Clazz.makeConstructor(c$,
+function(a){
+this.h$ = a;
+},"java.util.Hashtable");
+
+Clazz.overrideMethod(c$,"contains",
+function(object){
+return this.h$.containsKey(object);
+},"~O");
+Clazz.overrideMethod(c$,"size",
+function(){
+return this.h$.elementCount;
+});
+Clazz.overrideMethod(c$,"clear",
+function(){
+this.h$.clear();
+});
+Clazz.overrideMethod(c$,"remove",
+function(key){
+if(this.h$.containsKey(key)){
+this.h$.remove(key);
+return true;
+}return false;
+},"~O");
+
+Clazz.overrideMethod(c$,"get",
+function(entry){
+return entry.key;
+},"java.util.MapEntry");
+
+Clazz.overrideMethod(c$,"iterator",
+function(){
+return new java.util.HashtableIterator(this);
+});
+});
+
+////////////////////////////
+
+Clazz.load([],"java.util.HashtableValueCollection",[],function(){
+c$=Clazz.decorateAsClass(function(){
+Clazz.instantialize(this,arguments);
+},java.util,"HashtableValueCollection",null,java.util.AbstractCollection);
+
+Clazz.makeConstructor(c$,
+function(a){
+this.h$ = a;
+},"java.util.Hashtable");
+Clazz.overrideMethod(c$,"contains",
+function(object){
+return this.h$.contains(object);
+},"~O");
+Clazz.overrideMethod(c$,"size",
+function(){
+return this.h$.elementCount;
+});
+Clazz.overrideMethod(c$,"clear",
+function(){
+this.h$.clear();
+});
+
+Clazz.overrideMethod(c$,"get",
+function(entry){
+return entry.value;
+},"java.util.MapEntry");
+
+Clazz.overrideMethod(c$,"iterator",
+function(){
+return new java.util.HashtableIterator(this);
+});
+});
+////////////////////////////
+
+
+Clazz.load(["java.util.MapEntry"],"java.util.HashtableEntry",[],function(){
+c$=Clazz.decorateAsClass(function(){
+this.next=null;
+this.hashcode=0;
+Clazz.instantialize(this,arguments);
+},java.util,"HashtableEntry",java.util.MapEntry);
+Clazz.overrideConstructor(c$,
+function(a,b){
+this.key = a;
+this.value = b;
+this.hashcode=a.hashCode();
+});
+Clazz.defineMethod(c$,"clone",
+function(){
+var a=Clazz.superCall(this,java.util.HashtableEntry,"clone",[]);
+if(this.next!=null){
+a.next=this.next.clone();
+}
+return a;
+});
+Clazz.overrideMethod(c$,"setValue",
+function(a){
+if(a==null){
+throw new NullPointerException();
+}var b=this.value;
+this.value=a;
+return b;
+},"~O");
+Clazz.defineMethod(c$,"getKeyHash",
+function(){
+return this.key.hashCode();
+});
+Clazz.defineMethod(c$,"equalsKey",
+function(a,b){
+return this.hashcode==(!a.hashCode || a.hashCode())&&this.key.equals(a);
+},"~O,~N");
+Clazz.overrideMethod(c$,"toString",
+function(){
+return this.key+"="+this.value;
+});
+});
+
+
+
+////////////////////////////
+
+
+Clazz.load(["java.util.Dictionary","$.Enumeration","$.HashtableEnumerator","$.Iterator","$.Map","$.MapEntry","$.NoSuchElementException"],"java.util.Hashtable",["java.lang.IllegalArgumentException","$.IllegalStateException","$.NullPointerException","$.StringBuilder","java.util.AbstractCollection","$.AbstractSet","$.Arrays","$.Collections","$.ConcurrentModificationException","java.util.MapEntry.Type","java.util.HashtableEntry"],function(){
 c$=Clazz.decorateAsClass(function(){
 this.elementCount=0;
 this.elementData=null;
@@ -9,20 +302,12 @@ this.threshold=0;
 this.firstSlot=0;
 this.lastSlot=-1;
 this.modCount=0;
-if(!Clazz.isClassDefined("java.util.Hashtable.HashIterator")){
-java.util.Hashtable.$Hashtable$HashIterator$();
-
-}
-if(!Clazz.isClassDefined("java.util.Hashtable.HashEnumerator")){
-java.util.Hashtable.$Hashtable$HashEnumerator$();
-}
 Clazz.instantialize(this,arguments);
-},java.util,"Hashtable",java.util.Dictionary,[java.util.Map,Cloneable,java.io.Serializable]);
+},java.util,"Hashtable",java.util.Dictionary,[java.util.Map,Cloneable,java.io.Serializable]);	
 c$.newEntry=Clazz.defineMethod(c$,"newEntry",
 ($fz=function(key,value,hash){
-return new java.util.Hashtable.Entry(key,value);
+return new java.util.HashtableEntry(key,value);
 },$fz.isPrivate=true,$fz),"~O,~O,~N");
-
 Clazz.overrideConstructor(c$,
 function(){
 this.elementCount=0;
@@ -31,7 +316,6 @@ this.firstSlot=this.elementData.length;
 this.loadFactor=0.75;
 this.computeMaxSize();
 });
-
 Clazz.defineMethod(c$,"newElementArray",
 ($fz=function(size){
 return new Array(size);
@@ -50,7 +334,7 @@ var hashtable=Clazz.superCall(this,java.util.Hashtable,"clone",[]);
 hashtable.elementData=this.elementData.clone();
 var entry;
 for(var i=this.elementData.length;--i>=0;){
-if((entry=this.elementData[i])!=null){
+if((entry=this.elementData[i])){
 hashtable.elementData[i]=entry.clone();
 }}
 return hashtable;
@@ -72,7 +356,7 @@ if(value==null){
 throw new NullPointerException();
 }for(var i=this.elementData.length;--i>=0;){
 var entry=this.elementData[i];
-while(entry!=null){
+while(entry){
 if(value.equals(entry.value)){
 return true;
 }entry=entry.next;
@@ -82,7 +366,12 @@ return false;
 },"~O");
 Clazz.overrideMethod(c$,"containsKey",
 function(key){
-return this.getEntry(key)!=null;
+	if(!key.hashCode)  {
+	  key.hashCode = function(){return 1};
+	  if (!key.equals)
+	  	key.equals = function(a) {return this == a};
+	}
+return this.getEntry(key)!=null	;
 },"~O");
 Clazz.overrideMethod(c$,"containsValue",
 function(value){
@@ -92,14 +381,12 @@ Clazz.overrideMethod(c$,"elements",
 function(){
 if(this.elementCount==0){
 return java.util.Hashtable.EMPTY_ENUMERATION;
-}return Clazz.innerTypeInstance(java.util.Hashtable.HashEnumerator,this,null,false);
+}
+return new java.util.HashtableEnumerator(false, this);
 });
 Clazz.overrideMethod(c$,"entrySet",
 function(){
-var b
-var a = new java.util.Collections.SynchronizedSet(((Clazz.isClassDefined("java.util.Hashtable$2")?0:java.util.Hashtable.$Hashtable$2$()),b=Clazz.innerTypeInstance(java.util.Hashtable$2,this,null)),this);
-b && (b.b$H = b.b$["java.util.Hashtable"]);
-return a;
+return new java.util.HashtableEntrySet(this);
 });
 Clazz.overrideMethod(c$,"equals",
 function(object){
@@ -119,10 +406,15 @@ return true;
 },"~O");
 Clazz.overrideMethod(c$,"get",
 function(key){
+	if(!key.hashCode) { 
+	  key.hashCode = function(){return 1};
+  	if (!key.equals)
+  		key.equals = function(a) {return this == a};
+	}
 var hash=key.hashCode();
 var index=(hash&0x7FFFFFFF)%this.elementData.length;
 var entry=this.elementData[index];
-while(entry!=null){
+while(entry){
 if(entry.equalsKey(key,hash)){
 return entry.value;
 }entry=entry.next;
@@ -134,7 +426,7 @@ function(key){
 var hash=key.hashCode();
 var index=(hash&0x7FFFFFFF)%this.elementData.length;
 var entry=this.elementData[index];
-while(entry!=null){
+while(entry){
 if(entry.equalsKey(key,hash)){
 return entry;
 }entry=entry.next;
@@ -162,29 +454,26 @@ Clazz.overrideMethod(c$,"keys",
 function(){
 if(this.elementCount==0){
 return java.util.Hashtable.EMPTY_ENUMERATION;
-}return Clazz.innerTypeInstance(java.util.Hashtable.HashEnumerator,this,null,true);
+}
+return new java.util.HashtableEnumerator(true, this); 
 });
 Clazz.overrideMethod(c$,"keySet",
 function(){
-var b
-var a = new java.util.Collections.SynchronizedSet(((Clazz.isClassDefined("java.util.Hashtable$3")?0:java.util.Hashtable.$Hashtable$3$()),(b=Clazz.innerTypeInstance(java.util.Hashtable$3,this,null))),this);
-b && (b.b$H = b.b$["java.util.Hashtable"]);
-return a;
+return new java.util.HashtableKeySet(this);
 });
 Clazz.overrideMethod(c$,"put",
 function(key,value){
 if(key!=null&&value!=null){
-	// BH added ability to use a non-Java key for HTML elements, for example.
-	if(!key.hashCode) {
-		  var hc = Math.floor(Math.random()*10000000);
-		  key.hashCode = function(){return hc};
-		  key.equals = function(a){return this.hashCode() == a.hashCode()};
+	if(!key.hashCode)  {
+	  key.hashCode = function(){return 1};
+	  if (!key.equals)
+	  	key.equals = function(a) {return this == a};
 	}
-var hash=key.hashCode();
-var index=(hash&0x7FFFFFFF)%this.elementData.length;
-var entry=this.elementData[index];
-while(entry!=null&&!entry.equalsKey(key,hash)){
-entry=entry.next;
+	var hash=key.hashCode();
+	var index=(hash&0x7FFFFFFF)%this.elementData.length;
+	var entry=this.elementData[index];
+	while(entry!=null&&!entry.equalsKey(key,hash)){
+	entry=entry.next;
 }
 if(entry==null){
 this.modCount++;
@@ -295,295 +584,7 @@ return buffer.toString();
 });
 Clazz.overrideMethod(c$,"values",
 function(){
-var b
-var a = new java.util.Collections.SynchronizedCollection(((Clazz.isClassDefined("java.util.Hashtable$4")?0:java.util.Hashtable.$Hashtable$4$()),(b=Clazz.innerTypeInstance(java.util.Hashtable$4,this,null))),this);
-b && (b.b$H = b.b$["java.util.Hashtable"]);
-return a;
+return new java.util.HashtableValueCollection(this);
 });
-c$.$Hashtable$HashIterator$=function(){
-Clazz.pu$h(self.c$);
-c$=Clazz.decorateAsClass(function(){
-Clazz.prepareCallback(this,arguments);
-this.position=0;
-this.expectedModCount=0;
-this.type=null;
-this.lastEntry=null;
-this.lastPosition=0;
-this.canRemove=false;
-Clazz.instantialize(this,arguments);
-},java.util.Hashtable,"HashIterator",null,java.util.Iterator);
-Clazz.makeConstructor(c$,
-function(a){
-this.type=a;
-this.b$H = this.b$["java.util.Hashtable"];
-this.position=this.b$H.lastSlot;
-this.expectedModCount=this.b$H.modCount;
-},"java.util.MapEntry.Type");
-Clazz.overrideMethod(c$,"hasNext",
-function(){
-if(this.lastEntry!=null&&this.lastEntry.next!=null){
-return true;
-}while(this.position>=this.b$H.firstSlot){
-if(this.b$H.elementData[this.position]==null){
-this.position--;
-}else{
-return true;
-}}
-return false;
-});
-Clazz.overrideMethod(c$,"next",
-function(){
-if(this.expectedModCount==this.b$H.modCount){
-if(this.lastEntry!=null){
-this.lastEntry=this.lastEntry.next;
-}if(this.lastEntry==null){
-while(this.position>=this.b$H.firstSlot&&(this.lastEntry=this.b$H.elementData[this.position])==null){
-this.position--;
-}
-if(this.lastEntry!=null){
-this.lastPosition=this.position;
-this.position--;
-}}if(this.lastEntry!=null){
-this.canRemove=true;
-return this.type.get(this.lastEntry);
-}throw new java.util.NoSuchElementException();
-}throw new java.util.ConcurrentModificationException();
-});
-Clazz.overrideMethod(c$,"remove",
-function(){
-if(this.expectedModCount==this.b$H.modCount){
-if(this.canRemove){
-this.canRemove=false;
-{
-var a=false;
-var b=this.b$H.elementData[this.lastPosition];
-if(b===this.lastEntry){
-this.b$H.elementData[this.lastPosition]=b.next;
-a=true;
-}else{
-while(b!=null&&b.next!==this.lastEntry){
-b=b.next;
-}
-if(b!=null){
-b.next=this.lastEntry.next;
-a=true;
-}}if(a){
-this.b$H.modCount++;
-this.b$H.elementCount--;
-this.expectedModCount++;
-return;
-}}}else{
-throw new IllegalStateException();
-}}throw new java.util.ConcurrentModificationException();
-});
-c$=Clazz.p0p();
-};
-c$.$Hashtable$HashEnumerator$=function(){
-Clazz.pu$h(self.c$);
-c$=Clazz.decorateAsClass(function(){
-Clazz.prepareCallback(this,arguments);
-this.key=false;
-this.start=0;
-this.entry=null;
-Clazz.instantialize(this,arguments);
-},java.util.Hashtable,"HashEnumerator",null,java.util.Enumeration);
-Clazz.makeConstructor(c$,
-function(a){
-this.key=a;
-this.b$H = this.b$["java.util.Hashtable"];
-this.start=this.b$H.lastSlot+1;
-},"~B");
-Clazz.overrideMethod(c$,"hasMoreElements",
-function(){
-if(this.entry!=null){
-return true;
-}
-while(--this.start>=this.b$H.firstSlot){
-if(this.b$H.elementData[this.start]!=null){
-this.entry=this.b$H.elementData[this.start];
-return true;
-}}
-return false;
-});
-Clazz.overrideMethod(c$,"nextElement",
-function(){
-if(this.hasMoreElements()){
-var a=this.key?this.entry.key:this.entry.value;
-this.entry=this.entry.next;
-return a;
-}throw new java.util.NoSuchElementException();
-});
-c$=Clazz.p0p();
-};
-c$.$Hashtable$2$=function(){
-// private class EntrySet extends AbstractSet<Map.Entry<K,V>>  
-Clazz.pu$h(self.c$);
-c$=Clazz.declareAnonymous(java.util,"Hashtable$2",java.util.AbstractSet);
-Clazz.overrideMethod(c$,"size",
-function(){
-return this.b$H.elementCount;
-});
-Clazz.overrideMethod(c$,"clear",
-function(){
-this.b$H.clear();
-});
-Clazz.overrideMethod(c$,"remove",
-function(object){
-if(this.contains(object)){
-this.b$H.remove((object).getKey());
-return true;
-}return false;
-},"~O");
-Clazz.defineMethod(c$,"contains",
-function(object){
-var entry=this.b$H.getEntry((object).getKey());
-return object.equals(entry);
-},"~O");
-Clazz.defineMethod(c$,"iterator",
-function(){
-return Clazz.innerTypeInstance(java.util.Hashtable.HashIterator,this,null,((Clazz.isClassDefined("java.util.Hashtable$2$1")?0:java.util.Hashtable.$Hashtable$2$1$()),Clazz.innerTypeInstance(java.util.Hashtable$2$1,this,null)));
-});
-c$=Clazz.p0p();
-};
-c$.$Hashtable$2$1$=function(){
-// EntrySet.HashIterator
-Clazz.pu$h(self.c$);
-c$=Clazz.declareAnonymous(java.util,"Hashtable$2$1",null,java.util.MapEntry.Type);
-Clazz.overrideMethod(c$,"get",
-function(entry){
-return entry;
-},"java.util.MapEntry");
-c$=Clazz.p0p();
-};
-c$.$Hashtable$3$=function(){
-// private class KeySet extends AbstractSet<K>
-Clazz.pu$h(self.c$);
-c$=Clazz.declareAnonymous(java.util,"Hashtable$3",java.util.AbstractSet);
-Clazz.overrideMethod(c$,"contains",
-function(object){
-return this.b$H.containsKey(object);
-},"~O");
-Clazz.overrideMethod(c$,"size",
-function(){
-return this.b$H.elementCount;
-});
-Clazz.overrideMethod(c$,"clear",
-function(){
-this.b$H.clear();
-});
-Clazz.overrideMethod(c$,"remove",
-function(key){
-if(this.b$H.containsKey(key)){
-this.b$H.remove(key);
-return true;
-}return false;
-},"~O");
-Clazz.overrideMethod(c$,"iterator",
-function(){
-return Clazz.innerTypeInstance(java.util.Hashtable.HashIterator,this,null,((Clazz.isClassDefined("java.util.Hashtable$3$1")?0:java.util.Hashtable.$Hashtable$3$1$()),Clazz.innerTypeInstance(java.util.Hashtable$3$1,this,null)));
-});
-c$=Clazz.p0p();
-};
-c$.$Hashtable$3$1$=function(){
-// KeySet.HashIterator
-Clazz.pu$h(self.c$);
-c$=Clazz.declareAnonymous(java.util,"Hashtable$3$1",null,java.util.MapEntry.Type);
-Clazz.overrideMethod(c$,"get",
-function(entry){
-return entry.key;
-},"java.util.MapEntry");
-c$=Clazz.p0p();
-};
-c$.$Hashtable$4$=function(){
-// private class ValueCollection extends AbstractCollection<V> 
-Clazz.pu$h(self.c$);
-c$=Clazz.declareAnonymous(java.util,"Hashtable$4",java.util.AbstractCollection);
-Clazz.overrideMethod(c$,"contains",
-function(object){
-return this.b$H.contains(object);
-},"~O");
-Clazz.overrideMethod(c$,"size",
-function(){
-return this.b$H.elementCount;
-});
-Clazz.overrideMethod(c$,"clear",
-function(){
-this.b$H.clear();
-});
-Clazz.overrideMethod(c$,"iterator",
-function(){
-return Clazz.innerTypeInstance(java.util.Hashtable.HashIterator,this,null,((Clazz.isClassDefined("java.util.Hashtable$4$1")?0:java.util.Hashtable.$Hashtable$4$1$()),Clazz.innerTypeInstance(java.util.Hashtable$4$1,this,null)));
-});
-c$=Clazz.p0p();
-};
-c$.$Hashtable$4$1$=function(){
-// ValueCollection.HashIterator
-Clazz.pu$h(self.c$);
-c$=Clazz.declareAnonymous(java.util,"Hashtable$4$1",null,java.util.MapEntry.Type);
-Clazz.overrideMethod(c$,"get",
-function(entry){
-return entry.value;
-},"java.util.MapEntry");
-c$=Clazz.p0p();
-};
-c$.$Hashtable$1$=function(){
-// private class Enumerator<T> implements Enumeration<T>, Iterator<T>
-Clazz.pu$h(self.c$);
-c$=Clazz.declareAnonymous(java.util,"Hashtable$1",null,java.util.Enumeration);
-Clazz.overrideMethod(c$,"hasMoreElements",
-function(){
-return false;
-});
-Clazz.overrideMethod(c$,"nextElement",
-function(){
-throw new java.util.NoSuchElementException();
-});
-c$=Clazz.p0p();
-};
-Clazz.pu$h(self.c$);
-c$=Clazz.decorateAsClass(function(){
-this.next=null;
-this.hashcode=0;
-Clazz.instantialize(this,arguments);
-},java.util.Hashtable,"Entry",java.util.MapEntry);
-Clazz.overrideConstructor(c$,
-function(a,b){
-	// _k for @j2sOverride
-this.key = a;
-this.value = b;
-
-//Clazz.superConstructor(this,java.util.Hashtable.Entry,[a,b]);
-this.hashcode=a.hashCode();
-});
-Clazz.defineMethod(c$,"clone",
-function(){
-var a=Clazz.superCall(this,java.util.Hashtable.Entry,"clone",[]);
-if(this.next!=null){
-a.next=this.next.clone();
-
-}
-return a;
-});
-Clazz.overrideMethod(c$,"setValue",
-function(a){
-if(a==null){
-throw new NullPointerException();
-}var b=this.value;
-this.value=a;
-return b;
-},"~O");
-Clazz.defineMethod(c$,"getKeyHash",
-function(){
-return this.key.hashCode();
-});
-Clazz.defineMethod(c$,"equalsKey",
-function(a,b){
-return this.hashcode==a.hashCode()&&this.key.equals(a);
-},"~O,~N");
-Clazz.overrideMethod(c$,"toString",
-function(){
-return this.key+"="+this.value;
-});
-c$=Clazz.p0p();
-c$.EMPTY_ENUMERATION=c$.prototype.EMPTY_ENUMERATION=((Clazz.isClassDefined("java.util.Hashtable$1")?0:java.util.Hashtable.$Hashtable$1$()),Clazz.innerTypeInstance(java.util.Hashtable$1,this,null));
+java.util.Hashtable.EMPTY_ENUMERATION = new java.util.HashtableEnumerator();
 });

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.cif");
-Clazz.load (null, "J.adapter.readers.cif.MMCifValidationParser", ["java.lang.Character", "java.util.Hashtable", "JS.SV"], function () {
+Clazz.load (null, "J.adapter.readers.cif.MMCifValidationParser", ["java.lang.Character", "java.util.Hashtable", "JU.Lst", "$.PT", "JS.SV", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.asResidues = false;
 this.reader = null;
@@ -25,6 +25,49 @@ var note = (retProps == null || retProps.size () == 0 ? null : this.setPropertie
 svMap.getMap ().put ("_note", JS.SV.newS (note));
 return note;
 }, "java.util.Map");
+Clazz.defineMethod (c$, "finalizeRna3d", 
+function (modelMap) {
+this.mapAtomResIDs (modelMap);
+var svMap = this.getRna3dMap (this.reader.addedData);
+var note = this.reader.vwr.getAnnotationParser ().catalogStructureUnits (this.reader.vwr, svMap, this.getModelAtomIndices (), this.resMap, null, modelMap);
+svMap.getMap ().put ("_note", JS.SV.newS (note));
+for (var i = this.reader.asc.atomSetCount; --i >= 0; ) {
+var info = this.reader.asc.getAtomSetAuxiliaryInfo (i);
+info.put ("rna3d", svMap);
+}
+return note;
+}, "java.util.Map");
+Clazz.defineMethod (c$, "getRna3dMap", 
+ function (addedData) {
+var map =  new java.util.Hashtable ();
+var next =  Clazz.newIntArray (1, 0);
+var id = "";
+while ((id = JU.PT.getQuotedStringNext (addedData, next)).length > 0) {
+var units = JU.PT.getQuotedStringNext (addedData, next);
+var type = "?";
+switch (id.charAt (0)) {
+case 'H':
+type = "hairpinLoops";
+break;
+case 'I':
+type = "internalLoops";
+break;
+case 'J':
+type = "junctions";
+break;
+default:
+JU.Logger.error ("MMCif could not read: " + id + " " + units);
+continue;
+}
+var list = map.get (type);
+if (list == null) map.put (type, list =  new JU.Lst ());
+var m =  new java.util.Hashtable ();
+m.put ("index", Integer.$valueOf (JU.PT.parseInt (id.substring (id.lastIndexOf ("_") + 1))));
+m.put ("units", units);
+list.addLast (m);
+}
+return JS.SV.getVariableMap (map);
+}, "~S");
 Clazz.defineMethod (c$, "mapAtomResIDs", 
  function (modelMap) {
 var atoms = this.reader.asc.atoms;

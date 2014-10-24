@@ -43,7 +43,7 @@ var map = maps[i];
 if (map == null || !this.isVisibleForMe (atom) || !this.g3d.isInDisplayRange (atom.sX, atom.sY)) continue;
 try {
 var nPoints = this.calcScreenPoints (map, dots.ec.getAppropriateRadius (i) + this.testRadiusAdjust, atom.sX, atom.sY, atom.sZ);
-if (nPoints != 0) this.renderConvex (JU.C.getColixInherited (dots.colixes[i], atom.getColix ()), map, nPoints);
+if (nPoints != 0) this.renderConvex (JU.C.getColixInherited (dots.colixes[i], atom.colixAtom), map, nPoints);
 } catch (e) {
 if (Clazz.exceptionOf (e, Exception)) {
 System.out.println ("Dots rendering error");

@@ -22,6 +22,7 @@ this.fileHeader = null;
 this.jbr = null;
 this.groups = null;
 this.groupCount = 0;
+this.modulationTUV = null;
 this.htAtomMap = null;
 this.chainOf = null;
 this.group3Of = null;
@@ -90,7 +91,7 @@ this.ms.msInfo = info;
 this.ms.modelSetProperties = this.ms.getInfoM ("properties");
 this.isPDB = this.ms.isPDB = this.ms.getMSInfoB ("isPDB");
 if (this.isPDB) {
-this.jbr = J.api.Interface.getInterface ("JM.Resolver");
+this.jbr = J.api.Interface.getInterface ("JM.Resolver", this.vwr, "file");
 this.jbr.initialize (this);
 }this.jmolData = this.ms.getInfoM ("jmolData");
 this.fileHeader = this.ms.getInfoM ("fileHeader");
@@ -103,9 +104,14 @@ info.remove ("pdbNoHydrogens");
 info.remove ("pdbAddHydrogens");
 info.remove ("trajectorySteps");
 if (this.isTrajectory) this.ms.vibrationSteps = info.remove ("vibrationSteps");
-}this.htGroup1 = this.ms.getInfoM ("htGroup1");
-this.modulationOn = this.ms.getMSInfoB ("modulationOn");
-this.noAutoBond = this.ms.getMSInfoB ("noAutoBond");
+if (info.containsKey ("legacyJavaFloat")) {
+this.vwr.setBooleanProperty ("legacyJavaFloat", true);
+}}this.htGroup1 = this.ms.getInfoM ("htGroup1");
+var mod = this.ms.getInfoM ("modulationOn");
+if (mod != null) {
+this.modulationOn = true;
+this.modulationTUV = (mod === Boolean.TRUE ? null : mod);
+}this.noAutoBond = this.ms.getMSInfoB ("noAutoBond");
 this.is2D = this.ms.getMSInfoB ("is2D");
 this.doMinimize = this.is2D && this.ms.getMSInfoB ("doMinimize");
 this.adapterTrajectoryCount = (this.ms.trajectorySteps == null ? 0 : this.ms.trajectorySteps.size ());
@@ -592,7 +598,7 @@ for (var i = 0, pt = 0; i < this.ms.mc; i++) {
 if (haveMergeCells && i < this.baseModelCount) {
 this.ms.unitCells[i] = this.mergeModelSet.unitCells[i];
 } else {
-this.ms.unitCells[i] = J.api.Interface.getSymmetry ();
+this.ms.unitCells[i] = J.api.Interface.getSymmetry (this.vwr, "file");
 var notionalCell = null;
 if (this.isTrajectory) {
 var lst = this.ms.getInfoM ("unitCells");
@@ -612,13 +618,17 @@ i0 = this.baseAtomIndex + this.ms.getInfoI (iModel, "presymmetryAtomIndex") + th
 var atoms = this.ms.at;
 var modelIndex = -1;
 var c = null;
+var isFractional = false;
+var roundCoords = !this.vwr.getBoolean (603979875);
 for (var i = this.baseAtomIndex; i < this.ms.ac; i++) {
 if (atoms[i].mi != modelIndex) {
 modelIndex = atoms[i].mi;
 c = this.ms.getUnitCell (modelIndex);
-}if (c != null && c.getCoordinatesAreFractional ()) {
+isFractional = (c != null && c.getCoordinatesAreFractional ());
+}if (isFractional) {
 c = atoms[i].getUnitCell ();
 c.toCartesian (c.toSupercell (atoms[i]), false);
+if (roundCoords) JU.PT.fixPtFloats (atoms[i], 10000.0);
 }}
 for (var imodel = this.baseModelIndex; imodel < this.ms.mc; imodel++) {
 if (this.ms.isTrajectory (imodel)) {
@@ -655,9 +665,9 @@ if (this.merging || modelCount > 1) {
 if (bs == null) bs = JU.BS.newN (this.ms.ac);
 if (i == this.baseModelIndex || !this.isTrajectory) bs.or (models[i].bsAtoms);
 }}
+if (this.modulationOn) this.ms.setModulation (null, true, this.modulationTUV, false);
 if (autoBonding) {
-if (this.modulationOn) this.ms.setModulation (null, true, null, false);
-this.ms.autoBondBs4 (bs, bs, bsExclude, null, this.ms.defaultCovalentMad, this.vwr.getBoolean (603979874));
+this.ms.autoBondBs4 (bs, bs, bsExclude, null, this.ms.defaultCovalentMad, this.vwr.getBoolean (603979873));
 JU.Logger.info ("ModelSet: autobonding; use  autobond=false  to not generate bonds automatically");
 } else {
 this.ms.initializeBspf ();
@@ -883,10 +893,10 @@ break;
 case 1129318401:
 modelSet.setAtomProperty (bs, tokType, 0, iterAtom.getOccupancy (), null, null, null);
 break;
-case 1112541196:
+case 1112541195:
 modelSet.setAtomProperty (bs, tokType, 0, iterAtom.getPartialCharge (), null, null, null);
 break;
-case 1112541199:
+case 1112541196:
 modelSet.setAtomProperty (bs, tokType, 0, iterAtom.getBfactor (), null, null, null);
 break;
 }

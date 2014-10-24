@@ -8,7 +8,6 @@ Clazz.instantialize (this, arguments);
 }, JS, "ScriptQueueThread", J.thread.JmolThread);
 Clazz.makeConstructor (c$, 
 function (scriptManager, vwr, startedByCommandThread, pt) {
-Clazz.superConstructor (this, JS.ScriptQueueThread);
 this.setViewer (vwr, "QueueThread" + pt);
 this.scriptManager = scriptManager;
 this.vwr = vwr;
@@ -42,12 +41,11 @@ if (scriptItem == null) return false;
 var script = scriptItem.get (0);
 var statusList = scriptItem.get (1);
 var returnType = scriptItem.get (2);
-var isScriptFile = (scriptItem.get (3)).booleanValue ();
-var isQuiet = (scriptItem.get (4)).booleanValue ();
+var isQuiet = (scriptItem.get (3)).booleanValue ();
 if (JU.Logger.debugging) {
 JU.Logger.debug ("Queue[" + this.pt + "][" + queue.size () + "] scripts; running: " + script);
 }queue.remove (0);
-this.vwr.evalStringWaitStatusQueued (returnType, script, statusList, isScriptFile, isQuiet, true);
+this.vwr.evalStringWaitStatusQueued (returnType, script, statusList, isQuiet, true);
 if (queue.size () == 0) {
 return false;
 }return true;

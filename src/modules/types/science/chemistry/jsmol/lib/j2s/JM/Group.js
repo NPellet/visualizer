@@ -206,10 +206,6 @@ Clazz.defineMethod (c$, "isCursorOnTopOf",
 function (atom, x, y, radius, champ) {
 return this.chain.model.ms.isCursorOnTopOf (atom, x, y, radius, champ);
 }, "JM.Atom,~N,~N,~N,JM.Atom");
-Clazz.defineMethod (c$, "isAtomHidden", 
-function (atomIndex) {
-return this.chain.model.ms.isAtomHidden (atomIndex);
-}, "~N");
 Clazz.defineMethod (c$, "getModel", 
 function () {
 return this.chain.model;

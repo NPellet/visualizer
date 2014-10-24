@@ -9,7 +9,6 @@ Clazz.instantialize (this, arguments);
 }, J.thread, "HoverWatcherThread", J.thread.JmolThread);
 Clazz.makeConstructor (c$, 
 function (actionManager, current, moved, vwr) {
-Clazz.superConstructor (this, J.thread.HoverWatcherThread);
 this.setViewer (vwr, "HoverWatcher");
 this.actionManager = actionManager;
 this.current = current;

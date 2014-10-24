@@ -2,6 +2,7 @@
 
 // Note that this was written before I had Swing working. But this works fine. -- BH
 
+// BH 8/12/2014 12:35:07 PM 14.2.5 console problems with key events
 // BH 6/27/2014 8:23:49 AM 14.2.0 console broken for Safari and Chrome
 // BH 6/1/2014 8:32:12 AM added Help button; better mouse/keypress handling
 // BH 1/5/2013 12:45:19 PM
@@ -55,8 +56,7 @@ Jmol.Console.JSConsole = function(appletConsole) {
 		+ setBtn(console, appletConsole.historyButton)
 		+ setBtn(console, appletConsole.stateButton);
 	Jmol.$html(id + "_buttondiv", s);
-	Jmol.$bind("#" + id + "_input", "keypress", function(event) { console.input.keyPressed(event) });
-	Jmol.$bind("#" + id + "_input", "keyup", function(event) { console.input.keyReleased(event) });
+	Jmol.$bind("#" + id + "_input", "keydown keypress keyup", function(event) { console.input.keyEvent(event) });
 	Jmol.$bind("#" + id + "_input", "mousedown touchstart", function(event) { console.ignoreMouse=true });
 	Jmol.$bind("#" + id + "_output", "mousedown touchstart", function(event) { console.ignoreMouse=true });
 
@@ -96,60 +96,85 @@ Jmol.Console.Input = function(console) {
 		Jmol.$val(this.id, text);
 	}
 
-	this.keyPressed = function(ev) {
-	  // ev.which is 0 for press and ev.keyCode for release
-	  // for up and down arrows (38,40), but not for left/right (37,39)
-
-		var kcode = (ev.keyCode !=8 && ev.keyCode != 9 && ev.keyCode != 10 && ev.keyCode != 13 && ev.which == ev.keyCode ? 0 : ev.keyCode);
-		var isCtrl = ev.ctrlKey;
-		if (kcode == 13)kcode=10;
+	this.keyEvent = function(ev) {
+		// chrome/safari 
+		// for left paren:
+		//             keyCode   which   key    originalEvent.keyIdentifier
+		//  keydown     57         57     -      U+0039      
+		//  keypress    40         40     -      Down    // why Down??
+	  //
+		// for down arrow
+		//  keydown     40         40     -      Down
+			
+		// ff, msie
+		// for left paren:
+		//             keyCode   which   key    originalEvent.keyIdentifier
+		//  keydown     57         57     (      -      
+		//  keypress    0          40     (      -
+		//
+		// for down arrow
+		//  keydown     40         40     Down   -
+	
+		// in all cases: normal keys (as well as backspace[8] and delete[46]) are keydown keypress keyup 
+		//               special keys just keydown keyup
+	  //               keyup is only once when repeated; same as keydown
+	
+		// ff/msie delivers key, chrome/safari does not 
+		// chrome/safari has "feature" that keyIdentifier for "(" is reported as "Down" and similar issues for many other keys
 		
-		var mode = this.console.appletConsole.processKey(kcode, 401/*java.awt.event.KeyEvent.KEY_PRESSED*/, isCtrl);
-				
-			if (isCtrl && kcode == 10)
-				this.setText(this.getText() + "\n")
+    //System.out.println(ev.type + " key:" + (!ev.key) + " keyCode:" + ev.keyCode + " which:" + ev.which + " " + ev.key + "--" + ev.originalEvent.keyIdentifier);
 
-//document.title=mode + " " + ev.which + " " + ev.keyCode + " " + kcode
-
-			if (ev.keyCode == 9 || kcode == 9) {
-			// tab         
-				ev.preventDefault();
-				if (mode == 0) {
-					var me = this;
-					setTimeout(function(){me.setText(me.getText() + "\t"); Jmol.$focus(me.id)},10);
-				}
-				return;	
-			}
-
-// which, keyCode
-// standard key: n 0
-// left arrow    0 37
-// up arrow      0 38, then 38 38 upon release
-// backspace:    8 8
-
-// safari/chrome: ev.which == ev.keyCode for standard letters
-		if ((mode & 1) == 1 || ev.which == ev.keyCode && kcode != 8 && kcode != 10 && ev.keyCode < 32 || ev.keyCode == 38 || ev.keyCode == 40) {
-			ev.preventDefault();
-		}
-	}
-
-	this.keyReleased = function(ev) {
-		var kcode = ev.which;
+		var mode;
+		var type = ev.type;
 		var isCtrl = ev.ctrlKey;
-		if (kcode == 13)kcode=10;                                  
-		if (kcode == 38 || kcode == 40) {
-			this.keyPressed(ev);
-			ev.preventDefault();
+		var kcode = ev.keyCode;
+		if (kcode == 13)
+			kcode=10; 
+		// keycode is deprecated, but is essential still
+		if (type == "keyup") { 
+			mode = (kcode == 38 || kcode == 40 ? 1 : this.console.appletConsole.processKey(kcode, 402/*java.awt.event.KeyEvent.KEY_RELEASED*/, isCtrl));
+			if ((mode & 1) == 1)
+				ev.preventDefault();
 			return;
 		}
-		var mode = this.console.appletConsole.processKey(kcode, 402/*java.awt.event.KeyEvent.KEY_RELEASED*/, isCtrl);
 
-		if ((mode & 1) == 1)
+		// includes keypress and keydown
+
+		// only  assign "key" for keydown, as keypress gives erroneous identifier in chrome/safari
+		var isKeydown = (type == "keydown");
+		var key = (isKeydown ? (ev.key || ev.originalEvent.keyIdentifier) : "");
+
+		switch (kcode) {
+		case 38: // up-arrow, possibly
+		case 40: // down-arrow, possibly
+			// must be keydown, not keypress to be arrow key				
+			if (!isKeydown)
+				kcode = 0;
+			break;
+		case 8: // bs
+		case 9: // tab
+		case 10: // CR
+		case 27: // esc
+		// only these are of interest to Jmol
+			break;
+		default:
+			kcode = 0; // nothing to report
+		}					
+		mode = this.console.appletConsole.processKey(kcode, 401/*java.awt.event.KeyEvent.KEY_PRESSED*/, isCtrl);
+		if (isCtrl && kcode == 10)
+			this.setText(this.getText() + "\n")
+		if (mode == 0 && ev.keyCode == 9) {
+			var me = this;
+			setTimeout(function(){me.setText(me.getText() + "\t"); Jmol.$focus(me.id)},10);
+		}
+		// ignore if...
+		if ((mode & 1) == 1 // Jmol has handled the key press
+			|| key == "Up" || key == "Down" // up and down arrows
+			|| isKeydown && ev.keyCode != 8 && ev.keyCode < 32 // a special character other than backspace, when keyDown 
+			) {
 			ev.preventDefault();
-		//if ((mode & 2) == 2) {
-		//}
+		}
 	}
-
 
 	this.getCaretPosition = function() {
 		var el = Jmol._$(this.id)[0];

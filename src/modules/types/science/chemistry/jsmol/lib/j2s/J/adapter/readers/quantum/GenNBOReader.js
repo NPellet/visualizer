@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.MOReader"], "J.adapter.readers.quantum.GenNBOReader", ["java.lang.Boolean", "$.Character", "$.Exception", "$.Float", "java.util.Hashtable", "JU.AU", "$.Lst", "$.Rdr", "$.SB", "J.api.JmolAdapter", "JU.Logger"], function () {
+Clazz.load (["J.adapter.readers.quantum.MOReader"], "J.adapter.readers.quantum.GenNBOReader", ["java.lang.Boolean", "$.Exception", "$.Float", "java.util.Hashtable", "JU.AU", "$.Lst", "$.PT", "$.Rdr", "$.SB", "J.api.JmolAdapter", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.isOutputFile = false;
 this.moType = "";
@@ -63,7 +63,7 @@ var fileName = this.htParams.get ("fullPathName");
 var pt = fileName.lastIndexOf (".");
 if (pt < 0) pt = fileName.length;
 fileName = fileName.substring (0, pt) + ext;
-var data = this.vwr.getFileAsString (fileName, false);
+var data = this.vwr.getFileAsString3 (fileName, false, null);
 if (data.length == 0 || data.indexOf ("java.io.FileNotFound") >= 0) throw  new Exception (" supplemental file " + fileName + " was not found");
 return data;
 }, "~S");
@@ -206,7 +206,7 @@ case '-':
 if (data.charAt (i + 1) == ' ') i++;
 break;
 case ' ':
-if (Character.isDigit (data.charAt (i + 1)) || data.charAt (i + 1) == '(') continue;
+if (JU.PT.isDigit (data.charAt (i + 1)) || data.charAt (i + 1) == '(') continue;
 break;
 }
 sb.appendC (c);

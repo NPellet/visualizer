@@ -122,7 +122,7 @@ function (xMouse, yMouse, closest, bsNot) {
 for (var i = this.bioShapes.length; --i >= 0; ) this.bioShapes[i].findNearestAtomIndex (xMouse, yMouse, closest, bsNot);
 
 }, "~N,~N,~A,JU.BS");
-Clazz.overrideMethod (c$, "setVisibilityFlags", 
+Clazz.overrideMethod (c$, "setModelVisibilityFlags", 
 function (bsModels) {
 if (this.bioShapes == null) return;
 bsModels = JU.BSUtil.copy (bsModels);
@@ -133,10 +133,10 @@ var b = this.bioShapes[i];
 b.modelVisibilityFlags = (bsModels.get (b.modelIndex) ? this.vf : 0);
 }
 }, "JU.BS");
-Clazz.overrideMethod (c$, "setModelClickability", 
+Clazz.overrideMethod (c$, "setAtomClickability", 
 function () {
 if (this.bioShapes == null) return;
-for (var i = this.bioShapes.length; --i >= 0; ) this.bioShapes[i].setModelClickability ();
+for (var i = this.bioShapes.length; --i >= 0; ) this.bioShapes[i].setAtomClickability ();
 
 });
 Clazz.defineMethod (c$, "getMpsShapeCount", 

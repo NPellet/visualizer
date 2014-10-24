@@ -19,5 +19,6 @@ for (var i = 0; i < this.mesh.title.length; i++) if (this.mesh.title[i].length >
 this.g3d.drawStringNoSlab (this.mesh.title[i], null, x, y, 0, 0);
 y += lineheight;
 }
+this.g3d.setTextPosition (y);
 });
 });

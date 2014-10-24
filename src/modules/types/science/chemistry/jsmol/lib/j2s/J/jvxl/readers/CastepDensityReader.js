@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.VolumeFileReader"], "J.jvxl.readers.CastepDensityReader", ["java.lang.Character", "JU.SB"], function () {
+Clazz.load (["J.jvxl.readers.VolumeFileReader"], "J.jvxl.readers.CastepDensityReader", ["JU.PT", "$.SB"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.nFilePoints = 0;
 this.nSkip = 0;
@@ -93,9 +93,9 @@ Clazz.defineMethod (c$, "skipPoints",
  function (n) {
 var pt = this.next[0];
 for (var i = 0; i < n; i++) {
-while (pt < this.line.length && Character.isWhitespace (this.line.charAt (pt++))) {
+while (pt < this.line.length && JU.PT.isWhitespace (this.line.charAt (pt++))) {
 }
-while (pt < this.line.length && !Character.isWhitespace (this.line.charAt (pt++))) {
+while (pt < this.line.length && !JU.PT.isWhitespace (this.line.charAt (pt++))) {
 }
 }
 this.next[0] = pt;

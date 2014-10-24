@@ -1,15 +1,13 @@
 Clazz.declarePackage ("J.appletjs");
-Clazz.load (["javajs.api.JSInterface", "JU.GenericApplet", "java.util.Hashtable"], "J.appletjs.Jmol", ["JU.PT", "JU.Logger", "$.Parser"], function () {
+Clazz.load (["javajs.api.JSInterface", "JU.GenericApplet"], "J.appletjs.Jmol", ["java.util.Hashtable", "JU.PT", "JU.Logger", "$.Parser"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.htParams = null;
 Clazz.instantialize (this, arguments);
 }, J.appletjs, "Jmol", JU.GenericApplet, javajs.api.JSInterface);
-Clazz.prepareFields (c$, function () {
-this.htParams =  new java.util.Hashtable ();
-});
 Clazz.makeConstructor (c$, 
 function (vwrOptions) {
 Clazz.superConstructor (this, J.appletjs.Jmol, []);
+this.htParams =  new java.util.Hashtable ();
 if (vwrOptions == null) vwrOptions =  new java.util.Hashtable ();
 this.vwrOptions = vwrOptions;
 for (var entry, $entry = vwrOptions.entrySet ().iterator (); $entry.hasNext () && ((entry = $entry.next ()) || true);) this.htParams.put (entry.getKey ().toLowerCase (), entry.getValue ());

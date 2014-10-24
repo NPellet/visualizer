@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["JU.P3", "$.V3"], "J.jvxl.readers.SurfaceGenerator", ["java.lang.Float", "java.util.Map", "JU.AU", "$.BS", "$.Measure", "$.P4", "$.PT", "$.Rdr", "J.io.JmolBinary", "J.jvxl.data.JvxlCoder", "$.JvxlData", "$.MeshData", "$.VolumeData", "J.jvxl.readers.Parameters", "$.SurfaceReader", "JU.Logger"], function () {
+Clazz.load (["JU.P3", "$.V3"], "J.jvxl.readers.SurfaceGenerator", ["java.lang.Float", "java.util.Map", "JU.AU", "$.BS", "$.Measure", "$.P4", "$.PT", "$.Rdr", "J.jvxl.data.JvxlCoder", "$.JvxlData", "$.MeshData", "$.VolumeData", "J.jvxl.readers.Parameters", "$.SurfaceReader", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.jvxlData = null;
 this.meshData = null;
@@ -581,7 +581,7 @@ return true;
 this.out = value;
 return true;
 }if ("readFile" === propertyName) {
-if ((this.surfaceReader = this.setFileData (value)) == null) {
+if ((this.surfaceReader = this.setFileData (this.atomDataServer, value)) == null) {
 JU.Logger.error ("Could not set the surface data");
 return true;
 }this.surfaceReader.setOutputChannel (this.out);
@@ -591,7 +591,7 @@ return true;
 this.getSurfaceSets ();
 return true;
 }if ("mapColor" === propertyName) {
-if ((this.surfaceReader = this.setFileData (value)) == null) {
+if ((this.surfaceReader = this.setFileData (this.atomDataServer, value)) == null) {
 JU.Logger.error ("Could not set the mapping data");
 return true;
 }this.surfaceReader.setOutputChannel (this.out);
@@ -774,7 +774,7 @@ if (property === "jvxlFileInfo") return J.jvxl.data.JvxlCoder.jvxlGetInfo (this.
 return null;
 }, "~S,~N");
 Clazz.defineMethod (c$, "setFileData", 
- function (value) {
+ function (vwr, value) {
 var fileType = this.fileType;
 this.fileType = null;
 if (Clazz.instanceOf (value, J.jvxl.data.VolumeData)) {
@@ -792,7 +792,7 @@ if (Clazz.instanceOf (value, String)) {
 data = value;
 value = JU.Rdr.getBR (value);
 }var br = value;
-if (fileType == null) fileType = J.io.JmolBinary.determineSurfaceFileType (br);
+if (fileType == null) fileType = vwr.fm.jmb.determineSurfaceFileType (br);
 if (fileType != null && fileType.startsWith ("UPPSALA")) {
 var fname = this.params.fileName;
 fname = fname.substring (0, fname.indexOf ("/", 10));
@@ -810,7 +810,7 @@ if (Clazz.exceptionOf (e, Exception)) {
 throw e;
 }
 }
-fileType = J.io.JmolBinary.determineSurfaceFileType (br);
+fileType = vwr.fm.jmb.determineSurfaceFileType (br);
 }if (fileType == null) fileType = "UNKNOWN";
 JU.Logger.info ("data file type was determined to be " + fileType);
 if (fileType.equals ("Jvxl+")) return this.newReaderBr ("JvxlReader", br);
@@ -827,7 +827,7 @@ throw e;
 br = null;
 fileType += "Binary";
 }return this.newReaderBr (fileType + "Reader", br);
-}, "~O");
+}, "JV.Viewer,~O");
 Clazz.defineMethod (c$, "getReaderData", 
 function () {
 var o = this.readerData;

@@ -18,6 +18,7 @@ this.vibs = (this.ms.vibrations != null && this.tm.vibrationOn);
 var colixes = polyhedra.colixes;
 var needTranslucent = false;
 for (var i = polyhedra.polyhedronCount; --i >= 0; ) {
+if (!polyhedrons[i].isValid) continue;
 var iAtom = polyhedrons[i].centralAtom.i;
 var colix = (colixes == null || iAtom >= colixes.length ? 0 : polyhedra.colixes[iAtom]);
 if (this.render1 (polyhedrons[i], colix)) needTranslucent = true;
@@ -27,7 +28,7 @@ return needTranslucent;
 Clazz.defineMethod (c$, "render1", 
  function (p, colix) {
 if (p.visibilityFlags == 0) return false;
-colix = JU.C.getColixInherited (colix, p.centralAtom.getColix ());
+colix = JU.C.getColixInherited (colix, p.centralAtom.colixAtom);
 var needTranslucent = false;
 if (JU.C.isColixTranslucent (colix)) {
 needTranslucent = true;

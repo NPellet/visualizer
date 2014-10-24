@@ -1,9 +1,8 @@
 Clazz.declarePackage ("JM");
 Clazz.load (["JM.ProteinStructure"], "JM.Helix", ["JU.Measure", "$.P3", "$.V3", "J.c.STR"], function () {
 c$ = Clazz.declareType (JM, "Helix", JM.ProteinStructure);
-Clazz.makeConstructor (c$, 
+Clazz.overrideConstructor (c$, 
 function (apolymer, monomerIndex, monomerCount, subtype) {
-Clazz.superConstructor (this, JM.Helix, []);
 this.setupPS (apolymer, J.c.STR.HELIX, monomerIndex, monomerCount);
 this.subtype = subtype;
 }, "JM.AlphaPolymer,~N,~N,J.c.STR");

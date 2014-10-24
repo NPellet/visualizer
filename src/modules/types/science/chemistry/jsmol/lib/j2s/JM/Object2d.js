@@ -39,9 +39,6 @@ this.boxXY = null;
 this.scalePixelsPerMicron = 0;
 Clazz.instantialize (this, arguments);
 }, JM, "Object2d");
-Clazz.prepareFields (c$, function () {
-this.boxXY =  Clazz.newFloatArray (5, 0);
-});
 Clazz.defineMethod (c$, "getScalePixelsPerMicron", 
 function () {
 return this.scalePixelsPerMicron;

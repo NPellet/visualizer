@@ -75,7 +75,7 @@ if (this.equivalentAtomSets != 0) this.readMOs ();
 return true;
 }return true;
 });
-Clazz.overrideMethod (c$, "finalizeReader", 
+Clazz.overrideMethod (c$, "finalizeSubclassReader", 
 function () {
 this.checkMOs ();
 this.finalizeReaderASCR ();

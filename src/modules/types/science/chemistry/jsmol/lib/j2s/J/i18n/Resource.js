@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.i18n");
-Clazz.load (null, "J.i18n.Resource", ["java.util.Hashtable", "JU.PT", "J.api.Interface", "J.i18n.GT", "JU.Logger", "JV.Viewer"], function () {
+Clazz.load (null, "J.i18n.Resource", ["java.util.Hashtable", "JU.PT", "J.api.Interface", "JU.Logger", "JV.Viewer"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.resource = null;
 this.resourceMap = null;
@@ -11,17 +11,17 @@ if (className == null) this.resourceMap = resource;
  else this.resource = resource;
 }, "~O,~S");
 c$.getResource = Clazz.defineMethod (c$, "getResource", 
-function (className, name) {
+function (vwr, className, name) {
 var poData = null;
-if (J.i18n.GT.vwr != null && J.i18n.GT.vwr.isApplet ()) {
+if (vwr != null && vwr.isApplet ()) {
 var fname = JV.Viewer.appletIdiomaBase + "/" + name + ".po";
 JU.Logger.info ("Loading language resource " + fname);
-poData = J.i18n.GT.vwr.getFileAsString (fname, false);
+poData = vwr.getFileAsString3 (fname, false, "gt");
 return J.i18n.Resource.getResourceFromPO (poData);
 }className += name + ".Messages_" + name;
-var o = J.api.Interface.getInterface (className);
+var o = J.api.Interface.getInterface (className, vwr, "gt");
 return (o == null ? null :  new J.i18n.Resource (o, className));
-}, "~S,~S");
+}, "JV.Viewer,~S,~S");
 Clazz.defineMethod (c$, "getString", 
 function (string) {
 try {

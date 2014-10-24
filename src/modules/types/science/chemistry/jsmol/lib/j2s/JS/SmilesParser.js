@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JS");
-Clazz.load (["java.util.Hashtable"], "JS.SmilesParser", ["java.lang.Character", "JU.Lst", "$.PT", "$.SB", "JS.InvalidSmilesException", "$.SmilesAtom", "$.SmilesBond", "$.SmilesMeasure", "$.SmilesSearch", "JU.Elements", "$.Logger", "$.Txt"], function () {
+Clazz.load (["java.util.Hashtable"], "JS.SmilesParser", ["java.lang.Character", "JU.Lst", "$.PT", "$.SB", "JS.InvalidSmilesException", "$.SmilesAtom", "$.SmilesBond", "$.SmilesMeasure", "$.SmilesSearch", "JU.Elements", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.isSmarts = false;
 this.isBioSequence = false;
@@ -271,8 +271,8 @@ if (ch == '~' && bond.order == 0) {
 index = this.checkBioType (pattern, index);
 ch = JS.SmilesParser.getChar (pattern, index);
 }if (ch == '\0' && bond.order == 0) return;
-var isRing = (Character.isDigit (ch) || ch == '%');
-var isAtom = (!isRing && (ch == '_' || ch == '[' || ch == '*' || Character.isLetter (ch)));
+var isRing = (JU.PT.isDigit (ch) || ch == '%');
+var isAtom = (!isRing && (ch == '_' || ch == '[' || ch == '*' || JU.PT.isLetter (ch)));
 if (isRing) {
 var ringNumber;
 switch (ch) {
@@ -303,11 +303,11 @@ currentAtom = this.parseAtom (molecule, null, subPattern, currentAtom, bond, ch 
 if (bond.order != -1 && bond.order != 0) bond.set2a (null, currentAtom);
 break;
 default:
-var ch2 = (!this.isBioSequence && Character.isUpperCase (ch) ? JS.SmilesParser.getChar (pattern, index + 1) : '\0');
-if (ch != 'X' || ch2 != 'x') if (!Character.isLowerCase (ch2) || JU.Elements.elementNumberFromSymbol (pattern.substring (index, index + 2), true) == 0) ch2 = '\0';
+var ch2 = (!this.isBioSequence && JU.PT.isUpperCase (ch) ? JS.SmilesParser.getChar (pattern, index + 1) : '\0');
+if (ch != 'X' || ch2 != 'x') if (!JU.PT.isLowerCase (ch2) || JU.Elements.elementNumberFromSymbol (pattern.substring (index, index + 2), true) == 0) ch2 = '\0';
 if (ch2 != '\0' && "NA CA BA PA SC AC".indexOf (pattern.substring (index, index + 2)) >= 0) {
 ch2 = '\0';
-}var size = (Character.isUpperCase (ch) && Character.isLowerCase (ch2) ? 2 : 1);
+}var size = (JU.PT.isUpperCase (ch) && JU.PT.isLowerCase (ch2) ? 2 : 1);
 currentAtom = this.parseAtom (molecule, null, pattern.substring (index, index + size), currentAtom, bond, false, false, isBranchAtom);
 index += size;
 }
@@ -326,7 +326,7 @@ if (this.isBioSequence) {
 index++;
 this.bioType = '*';
 var ch = JS.SmilesParser.getChar (pattern, 2);
-if (ch == '~' && ((ch = pattern.charAt (1)) == '*' || Character.isLowerCase (ch))) {
+if (ch == '~' && ((ch = pattern.charAt (1)) == '*' || JU.PT.isLowerCase (ch))) {
 this.bioType = ch;
 index = 3;
 }}return index;
@@ -430,7 +430,7 @@ ipt = JS.SmilesParser.skipTo (pattern, ipt, ';');
 iptLast = ++ipt;
 }
 if (iptLast < 0) return pattern;
-return JU.Txt.replaceStrings (pattern.substring (iptLast), keys, values);
+return JU.PT.replaceStrings (pattern.substring (iptLast), keys, values);
 }, "~S");
 Clazz.defineMethod (c$, "parseAtom", 
  function (molecule, atomSet, pattern, currentAtom, bond, isBracketed, isPrimitive, isBranchAtom) {
@@ -465,7 +465,7 @@ ch = '\0';
 }newAtom.setBioAtom (this.bioType);
 while (ch != '\0') {
 newAtom.setAtomName (this.isBioSequence ? "0" : "");
-if (Character.isDigit (ch)) {
+if (JU.PT.isDigit (ch)) {
 index = JS.SmilesParser.getDigits (pattern, index, ret);
 var mass = ret[0];
 if (mass == -2147483648) throw  new JS.InvalidSmilesException ("Non numeric atomic mass");
@@ -505,16 +505,16 @@ index = this.checkChirality (pattern, index, molecule.patternAtoms[newAtom.index
 break;
 default:
 var nextChar = JS.SmilesParser.getChar (pattern, index + 1);
-var sym2 = pattern.substring (index + 1, index + (Character.isLowerCase (nextChar) && (!isBracketed || !Character.isDigit (JS.SmilesParser.getChar (pattern, index + 2))) ? 2 : 1));
+var sym2 = pattern.substring (index + 1, index + (JU.PT.isLowerCase (nextChar) && (!isBracketed || !JU.PT.isDigit (JS.SmilesParser.getChar (pattern, index + 2))) ? 2 : 1));
 var symbol = Character.toUpperCase (ch) + sym2;
 var mustBeSymbol = true;
-var checkForPrimitive = (isBracketed && Character.isLetter (ch));
+var checkForPrimitive = (isBracketed && JU.PT.isLetter (ch));
 if (checkForPrimitive) {
 if (!isNot && (isPrimitive ? atomSet : newAtom).hasSymbol) {
 mustBeSymbol = false;
 } else if (ch == 'H') {
-mustBeSymbol = !Character.isDigit (nextChar) || JS.SmilesParser.getChar (pattern, index + 2) == '?';
-} else if ("DdhRrvXx".indexOf (ch) >= 0 && Character.isDigit (nextChar)) {
+mustBeSymbol = !JU.PT.isDigit (nextChar) || JS.SmilesParser.getChar (pattern, index + 2) == '?';
+} else if ("DdhRrvXx".indexOf (ch) >= 0 && JU.PT.isDigit (nextChar)) {
 mustBeSymbol = false;
 } else if (!symbol.equals ("A") && !symbol.equals ("Xx")) {
 mustBeSymbol = (JU.Elements.elementNumberFromSymbol (symbol, true) > 0);
@@ -625,7 +625,7 @@ var count = 1;
 ++index;
 if (index < len) {
 var nextChar = pattern.charAt (index);
-if (Character.isDigit (nextChar)) {
+if (JU.PT.isDigit (nextChar)) {
 var ret =  Clazz.newIntArray (1, 0);
 index = JS.SmilesParser.getDigits (pattern, index, ret);
 count = ret[0];
@@ -664,11 +664,11 @@ stereoClass = (index + 1 < len ? JS.SmilesAtom.getChiralityClass (pattern.substr
 index += 2;
 break;
 default:
-order = (Character.isDigit (ch) ? 1 : -1);
+order = (JU.PT.isDigit (ch) ? 1 : -1);
 }
 var pt = index;
 if (order == 1) {
-while (pt < len && Character.isDigit (pattern.charAt (pt))) pt++;
+while (pt < len && JU.PT.isDigit (pattern.charAt (pt))) pt++;
 
 if (pt > index) {
 try {
@@ -820,7 +820,7 @@ c$.getDigits = Clazz.defineMethod (c$, "getDigits",
  function (pattern, index, ret) {
 var pt = index;
 var len = pattern.length;
-while (pt < len && Character.isDigit (pattern.charAt (pt))) pt++;
+while (pt < len && JU.PT.isDigit (pattern.charAt (pt))) pt++;
 
 try {
 ret[0] = Integer.parseInt (pattern.substring (index, pt));

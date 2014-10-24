@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JS");
-Clazz.load (["JU.P3", "$.V3"], "JS.PointGroup", ["java.lang.Float", "java.util.Hashtable", "JU.Lst", "$.Quat", "$.SB", "JU.BSUtil", "$.Escape", "$.Logger", "$.Txt"], function () {
+Clazz.load (["JU.P3", "$.V3"], "JS.PointGroup", ["java.lang.Float", "java.util.Hashtable", "JU.Lst", "$.PT", "$.Quat", "$.SB", "JU.BSUtil", "$.Escape", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.drawInfo = null;
 this.info = null;
@@ -608,16 +608,16 @@ sb.append ("\n").append (this.name).append ("\tE\t  1\t  1");
 n = (this.haveInversionCenter ? 1 : 0);
 sb.append ("\n").append (this.name).append ("\tCi\t  ").appendI (n).append ("\t  ").appendI (n);
 sb.append ("\n").append (this.name).append ("\tCs\t");
-JU.Txt.rightJustify (sb, "    ", this.nAxes[0] + "\t");
-JU.Txt.rightJustify (sb, "    ", this.nAxes[0] + "\n");
+JU.PT.rightJustify (sb, "    ", this.nAxes[0] + "\t");
+JU.PT.rightJustify (sb, "    ", this.nAxes[0] + "\n");
 sb.append (this.name).append ("\tCn\t");
-JU.Txt.rightJustify (sb, "    ", nType[1][0] + "\t");
-JU.Txt.rightJustify (sb, "    ", nType[1][1] + "\n");
+JU.PT.rightJustify (sb, "    ", nType[1][0] + "\t");
+JU.PT.rightJustify (sb, "    ", nType[1][1] + "\n");
 sb.append (this.name).append ("\tSn\t");
-JU.Txt.rightJustify (sb, "    ", nType[2][0] + "\t");
-JU.Txt.rightJustify (sb, "    ", nType[2][1] + "\n");
+JU.PT.rightJustify (sb, "    ", nType[2][0] + "\t");
+JU.PT.rightJustify (sb, "    ", nType[2][1] + "\n");
 sb.append (this.name).append ("\t\tTOTAL\t");
-JU.Txt.rightJustify (sb, "    ", nTotal + "\n");
+JU.PT.rightJustify (sb, "    ", nTotal + "\n");
 this.textInfo = sb.toString ();
 return this.textInfo;
 }this.info.put ("name", this.name);

@@ -26,7 +26,7 @@ this.vf = JV.JC.getShapeVisibilityFlag (shapeID);
 this.setModelSet (modelSet);
 this.initShape ();
 }, "JV.Viewer,JU.GData,JM.ModelSet,~N");
-Clazz.defineMethod (c$, "setVisibilityFlags", 
+Clazz.defineMethod (c$, "setModelVisibilityFlags", 
 function (bsModels) {
 }, "JU.BS");
 Clazz.defineMethod (c$, "getSize", 
@@ -105,7 +105,7 @@ function (xMouse, yMouse, closest, bsNot) {
 Clazz.defineMethod (c$, "checkBoundsMinMax", 
 function (pointMin, pointMax) {
 }, "JU.P3,JU.P3");
-Clazz.defineMethod (c$, "setModelClickability", 
+Clazz.defineMethod (c$, "setAtomClickability", 
 function () {
 });
 Clazz.defineMethod (c$, "checkObjectClicked", 
@@ -144,7 +144,7 @@ return null;
 });
 c$.getColix = Clazz.defineMethod (c$, "getColix", 
 function (colixes, i, atom) {
-return JU.C.getColixInherited ((colixes == null || i >= colixes.length ? 0 : colixes[i]), atom.getColix ());
+return JU.C.getColixInherited ((colixes == null || i >= colixes.length ? 0 : colixes[i]), atom.colixAtom);
 }, "~A,~N,JM.Atom");
 c$.getFontCommand = Clazz.defineMethod (c$, "getFontCommand", 
 function (type, font) {

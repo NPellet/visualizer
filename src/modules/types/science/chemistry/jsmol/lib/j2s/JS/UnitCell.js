@@ -157,8 +157,8 @@ function () {
 return this.fractionalOffset;
 });
 Clazz.defineMethod (c$, "getTensor", 
-function (parBorU) {
-var t = (J.api.Interface.getUtil ("Tensor"));
+function (vwr, parBorU) {
+var t = (J.api.Interface.getUtil ("Tensor", vwr, "file"));
 if (parBorU[0] == 0 && parBorU[1] == 0 && parBorU[2] == 0) {
 var f = parBorU[7];
 var eigenValues = [f, f, f];
@@ -192,7 +192,7 @@ Bcart[3] = 2 * this.b * this.b * this.cosGamma * this.sinGamma * B22 + 2 * this.
 Bcart[4] = 2 * this.c * this.c * this.cB_ * this.cosBeta * B33 + this.b * this.c * this.cosGamma * B23 + this.a * this.c * this.cB_ * B13;
 Bcart[5] = 2 * this.c * this.c * this.cA_ * this.cB_ * B33 + this.b * this.c * this.cB_ * this.sinGamma * B23;
 }return t.setFromThermalEquation (Bcart, JU.Escape.eAF (parBorU));
-}, "~A");
+}, "JV.Viewer,~A");
 Clazz.defineMethod (c$, "getCanonicalCopy", 
 function (scale, withOffset) {
 var pts =  new Array (8);
@@ -280,9 +280,9 @@ return s;
 });
 Clazz.defineMethod (c$, "getQuaternionRotation", 
 function (abc) {
-var a = this.vertices[4];
-var b = this.vertices[2];
-var c = this.vertices[1];
+var a = JU.V3.newVsub (this.vertices[4], this.vertices[0]);
+var b = JU.V3.newVsub (this.vertices[2], this.vertices[0]);
+var c = JU.V3.newVsub (this.vertices[1], this.vertices[0]);
 var x =  new JU.V3 ();
 var v =  new JU.V3 ();
 switch ("abc".indexOf (abc)) {

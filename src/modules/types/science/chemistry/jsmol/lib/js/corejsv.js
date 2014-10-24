@@ -9,6 +9,7 @@
 ,Clazz_instantialize
 ,Clazz_decorateAsClass
 ,Clazz_floatToInt
+,Clazz_floatToLong
 ,Clazz_makeConstructor
 ,Clazz_defineEnumConstant
 ,Clazz_exceptionOf
@@ -61,9 +62,9 @@
 ){
 var $t$;
 //var c$;
-___JmolDate="$Date: 2014-08-03 08:56:51 -0500 (Sun, 03 Aug 2014) $"
-___fullJmolProperties="src/org/jmol/viewer/Jmol.properties"
-___JmolVersion="14.2.4_2014.08.03"
+Jmol.___JmolDate="$Date: 2014-10-13 19:33:47 -0500 (Mon, 13 Oct 2014) $"
+Jmol.___fullJmolProperties="src/org/jmol/viewer/Jmol.properties"
+Jmol.___JmolVersion="14.2.7_2014.10.13"
 // JSmolJavaExt.js
 
 // This library will be wrapped by an additional anonymous function using ANT in 
@@ -72,6 +73,7 @@ ___JmolVersion="14.2.4_2014.08.03"
 // (local scope) Clazz_xxx, allowing them to be further compressed using
 // Google Closure Compiler in that same ANT task.
 
+// BH 8/14/2014 6:49:22 PM Character class efficiencies
 // BH 7/24/2014 9:02:18 AM most browsers do not support String.codePointAt()
 // BH 7/11/2014 4:17:22 PM fix for Boolean.valueOf("false") not being false 
 // BH 5/27/2014 6:29:59 AM ensure floats and doubles have decimal point in toString
@@ -1722,39 +1724,34 @@ return(""+c).toUpperCase().charAt(0);
 },"~N");
 c$.isDigit=Clazz_defineMethod(c$,"isDigit",
 function(c){
-if(('0').charCodeAt (0) <= (c).charCodeAt (0) && (c).charCodeAt (0) <= ('9').charCodeAt(0))return true;
-if((c).charCodeAt(0)<1632)return false;
-return false;
+c = c.charCodeAt(0);
+return (48 <= c && c <= 57);
 },"~N");
 c$.isUpperCase=Clazz_defineMethod(c$,"isUpperCase",
 function(c){
-if(('A').charCodeAt (0) <= (c).charCodeAt (0) && (c).charCodeAt (0) <= ('Z').charCodeAt(0)){
-return true;
-}return false;
+c = c.charCodeAt(0);
+return (65 <= c && c <= 90);
 },"~N");
 c$.isLowerCase=Clazz_defineMethod(c$,"isLowerCase",
 function(c){
-if(('a').charCodeAt (0) <= (c).charCodeAt (0) && (c).charCodeAt (0) <= ('z').charCodeAt(0)){
-return true;
-}return false;
+c = c.charCodeAt(0);
+return (97 <= c && c <= 122);
 },"~N");
 c$.isWhitespace=Clazz_defineMethod(c$,"isWhitespace",
 function(c){
- var i = (c).charCodeAt (0);
-if((i>=0x1c&&i<=0x20)||(i>=0x9&&i<=0xd))return true;
-if(i==0x1680)return true;
-if(i<0x2000||i==0x2007)return false;
-returni<=0x200b||i==0x2028||i==0x2029||i==0x3000;
+c = (c).charCodeAt(0);
+return (c >= 0x1c && c <= 0x20 || c >= 0x9 && c <= 0xd || c == 0x1680
+	|| c >= 0x2000 && c != 0x2007 && (c <= 0x200b || c == 0x2028 || c == 0x2029 || c == 0x3000));
 },"~N");
 c$.isLetter=Clazz_defineMethod(c$,"isLetter",
 function(c){
- var i = c.charCodeAt(0);
-return ((('A').charCodeAt (0) <= i && i <= ('Z').charCodeAt (0)) 
-  || (('a').charCodeAt (0) <= i && i <= ('z').charCodeAt(0)))
+c = c.charCodeAt(0);
+return (65 <= c && c <= 90 || 97 <= c && c <= 122);
 },"~N");
 c$.isLetterOrDigit=Clazz_defineMethod(c$,"isLetterOrDigit",
 function(c){
-return Character.isLetter(c)||Character.isDigit(c);
+c = c.charCodeAt(0);
+return (65 <= c && c <= 90 || 97 <= c && c <= 122 || 48 <= c && c <= 57);
 },"~N");
 c$.isSpaceChar=Clazz_defineMethod(c$,"isSpaceChar",
 function(c){
@@ -1765,18 +1762,21 @@ returni<=0x200b||i==0x2028||i==0x2029||i==0x202f||i==0x3000;
 },"~N");
 c$.digit=Clazz_defineMethod(c$,"digit",
 function(c,radix){
- var i = c.charCodeAt(0);
-if(radix>=2&&radix<=36){
-if(i<128){
-var result=-1;
-if(('0').charCodeAt (0) <= i && i <= ('9').charCodeAt(0)){
-result=i-('0').charCodeAt(0);
-}else if(('a').charCodeAt (0) <= i && i <= ('z').charCodeAt(0)){
-result=i-(87);
-}else if(('A').charCodeAt (0) <= i && i <= ('Z').charCodeAt(0)){
-result=i-(55);
-}return result<radix?result:-1;
-}}return-1;
+var i = c.charCodeAt(0);
+if(radix >= 2 && radix <= 36){
+	if(i < 128){
+		var result = -1;
+		if(48 <= i && i <= 57){
+		result = i - 48;
+		}else if(97 <= i && i <= 122){
+		result = i - 87;
+		}else if(65 <= i && i <= 90){
+		result=i-(55);
+		}
+		return (result < radix ? result : -1);
+	}
+}
+return -1;
 },"~N,~N");
 Clazz_overrideMethod(c$,"toString",
 function(){
@@ -2885,7 +2885,6 @@ return null;
 });
 
 })(Clazz);
-
 ;(function() {
 
 if (Jmol._debugCode)return;
@@ -3304,7 +3303,8 @@ this.shared=false;
 Clazz_defineStatics(c$,
 "INITIAL_CAPACITY",16);
 });
-Clazz_load(null,"java.lang.Enum",["java.lang.CloneNotSupportedException","$.IllegalArgumentException","$.NullPointerException","java.security.AccessController","$.PrivilegedExceptionAction"],function(){
+// BH removed inner class 
+Clazz_load(null,"java.lang.Enum",["java.lang.CloneNotSupportedException","$.IllegalArgumentException","$.NullPointerException"],function(){
 c$=Clazz_decorateAsClass(function(){
 this.$name=null;
 this.$ordinal=0;
@@ -3366,28 +3366,23 @@ throw new IllegalArgumentException(("KA006"));
 },"Class,~S");
 c$.getValues=Clazz_defineMethod(c$,"getValues",
 function(enumType){
-try{
-var values=java.security.AccessController.doPrivileged(((Clazz_isClassDefined("Enum$1")?0:java.lang.Enum.$Enum$1$()),Clazz_innerTypeInstance(Enum$1,this,Clazz_cloneFinals("enumType",enumType))));
-return values.invoke(enumType,Clazz_castNullAs("Array"));
-}catch(e){
-if(Clazz_instanceOf(e,Exception)){
-return null;
-}else{
-throw e;
-}
-}
+return enumType.values();
 },"Class");
-c$.$Enum$1$=function(){
-Clazz_pu$h(self.c$);
-c$=Clazz_declareAnonymous(null,"Enum$1",null,java.security.PrivilegedExceptionAction);
-Clazz_overrideMethod(c$,"run",
-function(){
-var valsMethod=this.f$.enumType.getMethod("values",null);
-valsMethod.setAccessible(true);
-return valsMethod;
-});
-c$=Clazz_p0p();
-};
+
+//c$.$Enum$1$=function(){
+//Clazz_pu$h(self.c$);
+
+//c$=Clazz_declareAnonymous(null,"Enum$1",null,java.security.PrivilegedExceptionAction);
+//Clazz_overrideMethod(c$,"run",
+//function(){
+//var valsMethod=this.f$.enumType.getMethod("values",null);
+//valsMethod.setAccessible(true);
+//return valsMethod;
+//});
+//c$=Clazz_p0p();
+//};
+
+
 });
 Clazz_load(["java.lang.AbstractStringBuilder","$.Appendable"],"java.lang.StringBuffer",["java.lang.Character","$.Double","$.Float","$.Long"],function(){
 c$=Clazz_declareType(java.lang,"StringBuffer",AbstractStringBuilder,[Appendable,java.io.Serializable,CharSequence]);
@@ -5515,15 +5510,23 @@ buffer.append(']');
 return buffer.toString();
 });
 });
+// BH 8/25/2014 1:10:59 AM  - removed indirect access/inner class business.
+
 Clazz_load(["java.util.AbstractCollection","$.Iterator","$.List","$.ListIterator","$.RandomAccess","$.NoSuchElementException"],"java.util.AbstractList",["java.lang.IllegalArgumentException","$.IllegalStateException","$.IndexOutOfBoundsException","$.UnsupportedOperationException","java.util.ConcurrentModificationException"],function(){
 c$=Clazz_decorateAsClass(function(){
 this.modCount=0;
-if(!Clazz_isClassDefined("java.util.AbstractList.SimpleListIterator")){
-java.util.AbstractList.$AbstractList$SimpleListIterator$();
-}
-if(!Clazz_isClassDefined("java.util.AbstractList.FullListIterator")){
-java.util.AbstractList.$AbstractList$FullListIterator$();
-}
+
+
+
+//if(!Clazz_isClassDefined("java.util.AbstractList.SimpleListIterator")){
+//java.util.AbstractList.$AbstractList$SimpleListIterator$();
+//}
+//if(!Clazz_isClassDefined("java.util.AbstractList.FullListIterator")){
+//java.util.AbstractList.$AbstractList$FullListIterator$();
+//}
+
+
+
 Clazz_instantialize(this,arguments);
 },java.util,"AbstractList",java.util.AbstractCollection,java.util.List);
 Clazz_defineMethod(c$,"add",
@@ -5593,7 +5596,7 @@ return it.previousIndex();
 },"~O");
 Clazz_overrideMethod(c$,"iterator",
 function(){
-return Clazz_innerTypeInstance(java.util.AbstractList.SimpleListIterator,this,null);
+return new java.util.AbstractListSimpleListIterator(this); // Clazz_innerTypeInstance(java.util.AbstractList.SimpleListIterator,this,null);
 });
 Clazz_overrideMethod(c$,"lastIndexOf",
 function(object){
@@ -5610,13 +5613,14 @@ return it.nextIndex();
 }}
 }return-1;
 },"~O");
-Clazz_defineMethod(c$,"listIterator",
-function(){
-return this.listIterator(0);
-});
+//Clazz_defineMethod(c$,"listIterator",
+//function(){
+//return this.listIterator(0);
+//});
 Clazz_defineMethod(c$,"listIterator",
 function(location){
-return Clazz_innerTypeInstance(java.util.AbstractList.FullListIterator,this,null,location);
+location || (location = 0);
+return new java.util.AbstractListFullListIterator(this, location);//Clazz_innerTypeInstance(java.util.AbstractList.FullListIterator,this,null,location);
 },"~N");
 Clazz_defineMethod(c$,"remove",
 function(location){
@@ -5644,28 +5648,37 @@ return new java.util.AbstractList.SubAbstractListRandomAccess(this,start,end);
 }throw new IllegalArgumentException();
 }throw new IndexOutOfBoundsException();
 },"~N,~N");
-c$.$AbstractList$SimpleListIterator$=function(){
+
+
+
+//c$.$AbstractList$SimpleListIterator$=function(){
+
 Clazz_pu$h(self.c$);
+
 c$=Clazz_decorateAsClass(function(){
-Clazz_prepareCallback(this,arguments);
+//Clazz_prepareCallback(this,arguments);
 this.pos=-1;
 this.expectedModCount=0;
 this.lastPosition=-1;
 Clazz_instantialize(this,arguments);
-},java.util.AbstractList,"SimpleListIterator",null,java.util.Iterator);
+},java.util,"AbstractListSimpleListIterator",null,java.util.Iterator);
+
+
 Clazz_makeConstructor(c$,
-function(){
-this.expectedModCount=this.b$["java.util.AbstractList"].modCount;
-});
+function(a){
+this._list = a;
+this.expectedModCount=a.modCount;
+}, "java.util.AbstractList");
+
 Clazz_overrideMethod(c$,"hasNext",
 function(){
-return this.pos+1<this.b$["java.util.AbstractList"].size();
+return this.pos+1<this._list.size();
 });
 Clazz_overrideMethod(c$,"next",
 function(){
-if(this.expectedModCount==this.b$["java.util.AbstractList"].modCount){
+if(this.expectedModCount==this._list.modCount){
 try{
-var a=this.b$["java.util.AbstractList"].get(this.pos+1);
+var a=this._list.get(this.pos+1);
 this.lastPosition=++this.pos;
 return a;
 }catch(e){
@@ -5679,9 +5692,9 @@ throw e;
 });
 Clazz_overrideMethod(c$,"remove",
 function(){
-if(this.expectedModCount==this.b$["java.util.AbstractList"].modCount){
+if(this.expectedModCount==this._list.modCount){
 try{
-this.b$["java.util.AbstractList"].remove(this.lastPosition);
+this._list.remove(this.lastPosition);
 }catch(e){
 if(Clazz_instanceOf(e,IndexOutOfBoundsException)){
 throw new IllegalStateException();
@@ -5689,7 +5702,7 @@ throw new IllegalStateException();
 throw e;
 }
 }
-if(this.b$["java.util.AbstractList"].modCount!=this.expectedModCount){
+if(this._list.modCount!=this.expectedModCount){
 this.expectedModCount++;
 }if(this.pos==this.lastPosition){
 this.pos--;
@@ -5697,27 +5710,33 @@ this.pos--;
 }else{
 throw new java.util.ConcurrentModificationException();
 }});
+
 c$=Clazz_p0p();
-};
-c$.$AbstractList$FullListIterator$=function(){
+//};
+
+
+//c$.$AbstractList$FullListIterator$=function(){
 Clazz_pu$h(self.c$);
 c$=Clazz_decorateAsClass(function(){
-Clazz_prepareCallback(this,arguments);
+//Clazz_prepareCallback(this,arguments);
 Clazz_instantialize(this,arguments);
-},java.util.AbstractList,"FullListIterator",java.util.AbstractList.SimpleListIterator,java.util.ListIterator,Clazz_innerTypeInstance(java.util.AbstractList.SimpleListIterator,this,null,Clazz_inheritArgs));
+},java.util,"AbstractListFullListIterator",java.util.AbstractListSimpleListIterator,java.util.ListIterator);
+
+//,Clazz_innerTypeInstance(java.util.AbstractList.SimpleListIterator,this,null,Clazz_inheritArgs));
+
 Clazz_makeConstructor(c$,
-function(a){
-Clazz_superConstructor(this,java.util.AbstractList.FullListIterator);
-if(0<=a&&a<=this.b$["java.util.AbstractList"].size()){
-this.pos=a-1;
+function(a,b){
+Clazz_superConstructor(this,java.util.AbstractListFullListIterator,[a]);
+if(0<=b&&b<=this._list.size()){
+this.pos=b-1;
 }else{
 throw new IndexOutOfBoundsException();
-}},"~N");
+}},"java.util.AbstractList,~N");
 Clazz_overrideMethod(c$,"add",
 function(a){
-if(this.expectedModCount==this.b$["java.util.AbstractList"].modCount){
+if(this.expectedModCount==this._list.modCount){
 try{
-this.b$["java.util.AbstractList"].add(this.pos+1,a);
+this._list.add(this.pos+1,a);
 }catch(e){
 if(Clazz_instanceOf(e,IndexOutOfBoundsException)){
 throw new java.util.NoSuchElementException();
@@ -5727,7 +5746,7 @@ throw e;
 }
 this.pos++;
 this.lastPosition=-1;
-if(this.b$["java.util.AbstractList"].modCount!=this.expectedModCount){
+if(this._list.modCount!=this.expectedModCount){
 this.expectedModCount++;
 }}else{
 throw new java.util.ConcurrentModificationException();
@@ -5742,9 +5761,9 @@ return this.pos+1;
 });
 Clazz_overrideMethod(c$,"previous",
 function(){
-if(this.expectedModCount==this.b$["java.util.AbstractList"].modCount){
+if(this.expectedModCount==this._list.modCount){
 try{
-var a=this.b$["java.util.AbstractList"].get(this.pos);
+var a=this._list.get(this.pos);
 this.lastPosition=this.pos;
 this.pos--;
 return a;
@@ -5763,9 +5782,9 @@ return this.pos;
 });
 Clazz_overrideMethod(c$,"set",
 function(a){
-if(this.expectedModCount==this.b$["java.util.AbstractList"].modCount){
+if(this.expectedModCount==this._list.modCount){
 try{
-this.b$["java.util.AbstractList"].set(this.lastPosition,a);
+this._list.set(this.lastPosition,a);
 }catch(e){
 if(Clazz_instanceOf(e,IndexOutOfBoundsException)){
 throw new IllegalStateException();
@@ -5777,10 +5796,18 @@ throw e;
 throw new java.util.ConcurrentModificationException();
 }},"~O");
 c$=Clazz_p0p();
-};
+//};
+
+
+
+
 Clazz_pu$h(self.c$);
 c$=Clazz_declareType(java.util.AbstractList,"SubAbstractListRandomAccess",java.util.AbstractList.SubAbstractList,java.util.RandomAccess);
 c$=Clazz_p0p();
+
+
+
+
 Clazz_pu$h(self.c$);
 c$=Clazz_decorateAsClass(function(){
 this.fullList=null;
@@ -6261,7 +6288,7 @@ this.setup(0);
 
 Clazz_defineMethod(c$, "setup",
 function(capacity){
-Clazz_superConstructor(this,java.util.ArrayList,[]);
+//Clazz_superConstructor(this,java.util.ArrayList,[]);
 this.firstIndex=this.lastIndex=0;
 try{
 this.array=this.newElementArray(capacity);
@@ -7833,14 +7860,15 @@ function(a){
 {
 return this.list.lastIndexOf(a);
 }},"~O");
-Clazz_defineMethod(c$,"listIterator",
-function(){
-{
-return this.list.listIterator();
-}});
+//Clazz_defineMethod(c$,"listIterator",
+//function(){
+//{
+//return this.list.listIterator();
+//}});
 Clazz_defineMethod(c$,"listIterator",
 function(a){
 {
+a || (a = 0);
 return this.list.listIterator(a);
 }},"~N");
 Clazz_defineMethod(c$,"remove",
@@ -8191,12 +8219,13 @@ Clazz_defineMethod(c$,"lastIndexOf",
 function(a){
 return this.list.lastIndexOf(a);
 },"~O");
-Clazz_defineMethod(c$,"listIterator",
-function(){
-return this.listIterator(0);
-});
+//Clazz_defineMethod(c$,"listIterator",
+//function(){
+//return this.listIterator(0);
+//});
 Clazz_defineMethod(c$,"listIterator",
 function(a){
+a || (a = 0);
 return((Clazz_isClassDefined("java.util.Collections$UnmodifiableList$1")?0:java.util.Collections.UnmodifiableList.$Collections$UnmodifiableList$1$()),Clazz_innerTypeInstance(java.util.Collections$UnmodifiableList$1,this,null));
 },"~N");
 Clazz_defineMethod(c$,"remove",
@@ -8680,12 +8709,13 @@ Clazz_defineMethod(c$,"lastIndexOf",
 function(a){
 return this.l.lastIndexOf(a);
 },"~O");
-Clazz_defineMethod(c$,"listIterator",
-function(){
-return new java.util.Collections.CheckedListIterator(this.l.listIterator(),this.type);
-});
+//Clazz_defineMethod(c$,"listIterator",
+//function(){
+//return new java.util.Collections.CheckedListIterator(this.l.listIterator(),this.type);
+//});
 Clazz_defineMethod(c$,"listIterator",
 function(a){
+a || (a = 0);
 return new java.util.Collections.CheckedListIterator(this.l.listIterator(a),this.type);
 },"~N");
 Clazz_defineMethod(c$,"subList",
@@ -9028,9 +9058,302 @@ c$=Clazz_declareType(java.util,"Dictionary");
 Clazz_makeConstructor(c$,
 function(){
 });
-// modified by Bob Hanson 3/21/2014 6:44:21 AM  to reduce this.b$[....] phrases to simply this.b$H
 
-Clazz_load(["java.util.Dictionary","$.Enumeration","$.Iterator","$.Map","$.MapEntry","$.NoSuchElementException"],"java.util.Hashtable",["java.lang.IllegalArgumentException","$.IllegalStateException","$.NullPointerException","$.StringBuilder","java.util.AbstractCollection","$.AbstractSet","$.Arrays","$.Collections","$.ConcurrentModificationException","java.util.MapEntry.Type"],function(){
+// modified by Bob Hanson 3/21/2014 6:44:21 AM  to reduce this.b$[....] phrases to simply this.h$
+// BH added ability to use a non-Java key for HTML elements, for example.
+// BH 8/24/2014 8:48:58 PM all synchronization and inner classes removed
+
+
+Clazz_load([],"java.util.HashtableIterator",[],function(){
+c$=Clazz_decorateAsClass(function(){
+this.position=0;
+this.expectedModCount=0;
+this.type=null;
+this.lastEntry=null;
+this.lastPosition=0;
+this.canRemove=false;
+Clazz_instantialize(this,arguments);
+},java.util,"HashtableIterator",null,java.util.Iterator);
+Clazz_makeConstructor(c$,
+function(a){
+this.type=a;
+this.h$ = a.h$;
+this.position=this.h$.lastSlot;
+this.expectedModCount=this.h$.modCount;
+},"java.util.AbstractSet");
+Clazz_overrideMethod(c$,"hasNext",
+function(){
+if(this.lastEntry&&this.lastEntry.next){
+return true;
+}while(this.position>=this.h$.firstSlot){
+if(this.h$.elementData[this.position]==null){
+this.position--;
+}else{
+return true;
+}}
+return false;
+});
+Clazz_overrideMethod(c$,"next",
+function(){
+if(this.expectedModCount==this.h$.modCount){
+if(this.lastEntry){
+this.lastEntry=this.lastEntry.next;
+}if(this.lastEntry==null){
+while(this.position>=this.h$.firstSlot&&(this.lastEntry=this.h$.elementData[this.position])==null){
+this.position--;
+}
+if(this.lastEntry){
+this.lastPosition=this.position;
+this.position--;
+}}if(this.lastEntry){
+this.canRemove=true;
+return this.type.get(this.lastEntry);
+}throw new java.util.NoSuchElementException();
+}throw new java.util.ConcurrentModificationException();
+});
+Clazz_overrideMethod(c$,"remove",
+function(){
+if(this.expectedModCount==this.h$.modCount){
+if(this.canRemove){
+this.canRemove=false;
+{
+var a=false;
+var b=this.h$.elementData[this.lastPosition];
+if(b===this.lastEntry){
+this.h$.elementData[this.lastPosition]=b.next;
+a=true;
+}else{
+while(b&&b.next!==this.lastEntry){
+b=b.next;
+}
+if(b){
+b.next=this.lastEntry.next;
+a=true;
+}}if(a){
+this.h$.modCount++;
+this.h$.elementCount--;
+this.expectedModCount++;
+return;
+}}}else{
+throw new IllegalStateException();
+}}throw new java.util.ConcurrentModificationException();
+});
+});
+
+
+
+////////////////////////////
+
+
+Clazz_load([],"java.util.HashtableEnumerator",[],function(){
+c$=Clazz_decorateAsClass(function(){
+this.key=false;
+this.start=0;
+this.entry=null;
+Clazz_instantialize(this,arguments);
+},java.util,"HashtableEnumerator",null,java.util.Enumeration);
+
+Clazz_makeConstructor(c$,
+function(a, b){
+this.key = a;
+this.h$ = b;
+if (this.h$)this.start=this.h$.lastSlot+1;
+},"~B,java.util.Hashtable");
+Clazz_overrideMethod(c$,"hasMoreElements",
+function(){
+if (!this.h$)return false;
+if(this.entry)return true;
+
+while(--this.start>=this.h$.firstSlot){
+if(this.h$.elementData[this.start]){
+this.entry=this.h$.elementData[this.start];
+return true;
+}}
+return false;
+});
+Clazz_overrideMethod(c$,"nextElement",
+function(){
+if(this.hasMoreElements()){
+var a=this.key?this.entry.key:this.entry.value;
+this.entry=this.entry.next;
+return a;
+}
+throw new java.util.NoSuchElementException();
+});
+});
+
+////////////////////////////
+
+Clazz_load([],"java.util.HashtableEntrySet",[],function(){
+c$=Clazz_decorateAsClass(function(){
+Clazz_instantialize(this,arguments);
+},java.util,"HashtableEntrySet",null,java.util.AbstractSet);
+
+Clazz_makeConstructor(c$,
+function(a){
+this.h$ = a;
+},"java.util.Hashtable");
+Clazz_overrideMethod(c$,"size",
+function(){
+return this.h$.elementCount;
+});
+Clazz_overrideMethod(c$,"clear",
+function(){
+this.h$.clear();
+});
+Clazz_overrideMethod(c$,"remove",
+function(object){
+if(this.contains(object)){
+this.h$.remove((object).getKey());
+return true;
+}return false;
+},"~O");
+Clazz_defineMethod(c$,"contains",
+function(object){
+var entry=this.h$.getEntry((object).getKey());
+return object.equals(entry);
+},"~O");
+
+Clazz_overrideMethod(c$,"get",
+function(entry){
+return entry;
+},"java.util.MapEntry");
+
+Clazz_defineMethod(c$,"iterator",
+function(){
+return new java.util.HashtableIterator(this);
+});
+});
+
+
+////////////////////////////
+
+Clazz_load([],"java.util.HashtableKeySet",[],function(){
+c$=Clazz_decorateAsClass(function(){
+Clazz_instantialize(this,arguments);
+},java.util,"HashtableKeySet",null,java.util.AbstractSet);
+
+Clazz_makeConstructor(c$,
+function(a){
+this.h$ = a;
+},"java.util.Hashtable");
+
+Clazz_overrideMethod(c$,"contains",
+function(object){
+return this.h$.containsKey(object);
+},"~O");
+Clazz_overrideMethod(c$,"size",
+function(){
+return this.h$.elementCount;
+});
+Clazz_overrideMethod(c$,"clear",
+function(){
+this.h$.clear();
+});
+Clazz_overrideMethod(c$,"remove",
+function(key){
+if(this.h$.containsKey(key)){
+this.h$.remove(key);
+return true;
+}return false;
+},"~O");
+
+Clazz_overrideMethod(c$,"get",
+function(entry){
+return entry.key;
+},"java.util.MapEntry");
+
+Clazz_overrideMethod(c$,"iterator",
+function(){
+return new java.util.HashtableIterator(this);
+});
+});
+
+////////////////////////////
+
+Clazz_load([],"java.util.HashtableValueCollection",[],function(){
+c$=Clazz_decorateAsClass(function(){
+Clazz_instantialize(this,arguments);
+},java.util,"HashtableValueCollection",null,java.util.AbstractCollection);
+
+Clazz_makeConstructor(c$,
+function(a){
+this.h$ = a;
+},"java.util.Hashtable");
+Clazz_overrideMethod(c$,"contains",
+function(object){
+return this.h$.contains(object);
+},"~O");
+Clazz_overrideMethod(c$,"size",
+function(){
+return this.h$.elementCount;
+});
+Clazz_overrideMethod(c$,"clear",
+function(){
+this.h$.clear();
+});
+
+Clazz_overrideMethod(c$,"get",
+function(entry){
+return entry.value;
+},"java.util.MapEntry");
+
+Clazz_overrideMethod(c$,"iterator",
+function(){
+return new java.util.HashtableIterator(this);
+});
+});
+////////////////////////////
+
+
+Clazz_load(["java.util.MapEntry"],"java.util.HashtableEntry",[],function(){
+c$=Clazz_decorateAsClass(function(){
+this.next=null;
+this.hashcode=0;
+Clazz_instantialize(this,arguments);
+},java.util,"HashtableEntry",java.util.MapEntry);
+Clazz_overrideConstructor(c$,
+function(a,b){
+this.key = a;
+this.value = b;
+this.hashcode=a.hashCode();
+});
+Clazz_defineMethod(c$,"clone",
+function(){
+var a=Clazz_superCall(this,java.util.HashtableEntry,"clone",[]);
+if(this.next!=null){
+a.next=this.next.clone();
+}
+return a;
+});
+Clazz_overrideMethod(c$,"setValue",
+function(a){
+if(a==null){
+throw new NullPointerException();
+}var b=this.value;
+this.value=a;
+return b;
+},"~O");
+Clazz_defineMethod(c$,"getKeyHash",
+function(){
+return this.key.hashCode();
+});
+Clazz_defineMethod(c$,"equalsKey",
+function(a,b){
+return this.hashcode==(!a.hashCode || a.hashCode())&&this.key.equals(a);
+},"~O,~N");
+Clazz_overrideMethod(c$,"toString",
+function(){
+return this.key+"="+this.value;
+});
+});
+
+
+
+////////////////////////////
+
+
+Clazz_load(["java.util.Dictionary","$.Enumeration","$.HashtableEnumerator","$.Iterator","$.Map","$.MapEntry","$.NoSuchElementException"],"java.util.Hashtable",["java.lang.IllegalArgumentException","$.IllegalStateException","$.NullPointerException","$.StringBuilder","java.util.AbstractCollection","$.AbstractSet","$.Arrays","$.Collections","$.ConcurrentModificationException","java.util.MapEntry.Type","java.util.HashtableEntry"],function(){
 c$=Clazz_decorateAsClass(function(){
 this.elementCount=0;
 this.elementData=null;
@@ -9039,20 +9362,12 @@ this.threshold=0;
 this.firstSlot=0;
 this.lastSlot=-1;
 this.modCount=0;
-if(!Clazz_isClassDefined("java.util.Hashtable.HashIterator")){
-java.util.Hashtable.$Hashtable$HashIterator$();
-
-}
-if(!Clazz_isClassDefined("java.util.Hashtable.HashEnumerator")){
-java.util.Hashtable.$Hashtable$HashEnumerator$();
-}
 Clazz_instantialize(this,arguments);
-},java.util,"Hashtable",java.util.Dictionary,[java.util.Map,Cloneable,java.io.Serializable]);
+},java.util,"Hashtable",java.util.Dictionary,[java.util.Map,Cloneable,java.io.Serializable]);	
 c$.newEntry=Clazz_defineMethod(c$,"newEntry",
 ($fz=function(key,value,hash){
-return new java.util.Hashtable.Entry(key,value);
+return new java.util.HashtableEntry(key,value);
 },$fz.isPrivate=true,$fz),"~O,~O,~N");
-
 Clazz_overrideConstructor(c$,
 function(){
 this.elementCount=0;
@@ -9061,7 +9376,6 @@ this.firstSlot=this.elementData.length;
 this.loadFactor=0.75;
 this.computeMaxSize();
 });
-
 Clazz_defineMethod(c$,"newElementArray",
 ($fz=function(size){
 return new Array(size);
@@ -9080,7 +9394,7 @@ var hashtable=Clazz_superCall(this,java.util.Hashtable,"clone",[]);
 hashtable.elementData=this.elementData.clone();
 var entry;
 for(var i=this.elementData.length;--i>=0;){
-if((entry=this.elementData[i])!=null){
+if((entry=this.elementData[i])){
 hashtable.elementData[i]=entry.clone();
 }}
 return hashtable;
@@ -9102,7 +9416,7 @@ if(value==null){
 throw new NullPointerException();
 }for(var i=this.elementData.length;--i>=0;){
 var entry=this.elementData[i];
-while(entry!=null){
+while(entry){
 if(value.equals(entry.value)){
 return true;
 }entry=entry.next;
@@ -9112,7 +9426,12 @@ return false;
 },"~O");
 Clazz_overrideMethod(c$,"containsKey",
 function(key){
-return this.getEntry(key)!=null;
+	if(!key.hashCode)  {
+	  key.hashCode = function(){return 1};
+	  if (!key.equals)
+	  	key.equals = function(a) {return this == a};
+	}
+return this.getEntry(key)!=null	;
 },"~O");
 Clazz_overrideMethod(c$,"containsValue",
 function(value){
@@ -9122,14 +9441,12 @@ Clazz_overrideMethod(c$,"elements",
 function(){
 if(this.elementCount==0){
 return java.util.Hashtable.EMPTY_ENUMERATION;
-}return Clazz_innerTypeInstance(java.util.Hashtable.HashEnumerator,this,null,false);
+}
+return new java.util.HashtableEnumerator(false, this);
 });
 Clazz_overrideMethod(c$,"entrySet",
 function(){
-var b
-var a = new java.util.Collections.SynchronizedSet(((Clazz_isClassDefined("java.util.Hashtable$2")?0:java.util.Hashtable.$Hashtable$2$()),b=Clazz_innerTypeInstance(java.util.Hashtable$2,this,null)),this);
-b && (b.b$H = b.b$["java.util.Hashtable"]);
-return a;
+return new java.util.HashtableEntrySet(this);
 });
 Clazz_overrideMethod(c$,"equals",
 function(object){
@@ -9149,10 +9466,15 @@ return true;
 },"~O");
 Clazz_overrideMethod(c$,"get",
 function(key){
+	if(!key.hashCode) { 
+	  key.hashCode = function(){return 1};
+  	if (!key.equals)
+  		key.equals = function(a) {return this == a};
+	}
 var hash=key.hashCode();
 var index=(hash&0x7FFFFFFF)%this.elementData.length;
 var entry=this.elementData[index];
-while(entry!=null){
+while(entry){
 if(entry.equalsKey(key,hash)){
 return entry.value;
 }entry=entry.next;
@@ -9164,7 +9486,7 @@ function(key){
 var hash=key.hashCode();
 var index=(hash&0x7FFFFFFF)%this.elementData.length;
 var entry=this.elementData[index];
-while(entry!=null){
+while(entry){
 if(entry.equalsKey(key,hash)){
 return entry;
 }entry=entry.next;
@@ -9192,29 +9514,26 @@ Clazz_overrideMethod(c$,"keys",
 function(){
 if(this.elementCount==0){
 return java.util.Hashtable.EMPTY_ENUMERATION;
-}return Clazz_innerTypeInstance(java.util.Hashtable.HashEnumerator,this,null,true);
+}
+return new java.util.HashtableEnumerator(true, this); 
 });
 Clazz_overrideMethod(c$,"keySet",
 function(){
-var b
-var a = new java.util.Collections.SynchronizedSet(((Clazz_isClassDefined("java.util.Hashtable$3")?0:java.util.Hashtable.$Hashtable$3$()),(b=Clazz_innerTypeInstance(java.util.Hashtable$3,this,null))),this);
-b && (b.b$H = b.b$["java.util.Hashtable"]);
-return a;
+return new java.util.HashtableKeySet(this);
 });
 Clazz_overrideMethod(c$,"put",
 function(key,value){
 if(key!=null&&value!=null){
-	// BH added ability to use a non-Java key for HTML elements, for example.
-	if(!key.hashCode) {
-		  var hc = Math.floor(Math.random()*10000000);
-		  key.hashCode = function(){return hc};
-		  key.equals = function(a){return this.hashCode() == a.hashCode()};
+	if(!key.hashCode)  {
+	  key.hashCode = function(){return 1};
+	  if (!key.equals)
+	  	key.equals = function(a) {return this == a};
 	}
-var hash=key.hashCode();
-var index=(hash&0x7FFFFFFF)%this.elementData.length;
-var entry=this.elementData[index];
-while(entry!=null&&!entry.equalsKey(key,hash)){
-entry=entry.next;
+	var hash=key.hashCode();
+	var index=(hash&0x7FFFFFFF)%this.elementData.length;
+	var entry=this.elementData[index];
+	while(entry!=null&&!entry.equalsKey(key,hash)){
+	entry=entry.next;
 }
 if(entry==null){
 this.modCount++;
@@ -9325,298 +9644,11 @@ return buffer.toString();
 });
 Clazz_overrideMethod(c$,"values",
 function(){
-var b
-var a = new java.util.Collections.SynchronizedCollection(((Clazz_isClassDefined("java.util.Hashtable$4")?0:java.util.Hashtable.$Hashtable$4$()),(b=Clazz_innerTypeInstance(java.util.Hashtable$4,this,null))),this);
-b && (b.b$H = b.b$["java.util.Hashtable"]);
-return a;
+return new java.util.HashtableValueCollection(this);
 });
-c$.$Hashtable$HashIterator$=function(){
-Clazz_pu$h(self.c$);
-c$=Clazz_decorateAsClass(function(){
-Clazz_prepareCallback(this,arguments);
-this.position=0;
-this.expectedModCount=0;
-this.type=null;
-this.lastEntry=null;
-this.lastPosition=0;
-this.canRemove=false;
-Clazz_instantialize(this,arguments);
-},java.util.Hashtable,"HashIterator",null,java.util.Iterator);
-Clazz_makeConstructor(c$,
-function(a){
-this.type=a;
-this.b$H = this.b$["java.util.Hashtable"];
-this.position=this.b$H.lastSlot;
-this.expectedModCount=this.b$H.modCount;
-},"java.util.MapEntry.Type");
-Clazz_overrideMethod(c$,"hasNext",
-function(){
-if(this.lastEntry!=null&&this.lastEntry.next!=null){
-return true;
-}while(this.position>=this.b$H.firstSlot){
-if(this.b$H.elementData[this.position]==null){
-this.position--;
-}else{
-return true;
-}}
-return false;
+java.util.Hashtable.EMPTY_ENUMERATION = new java.util.HashtableEnumerator();
 });
-Clazz_overrideMethod(c$,"next",
-function(){
-if(this.expectedModCount==this.b$H.modCount){
-if(this.lastEntry!=null){
-this.lastEntry=this.lastEntry.next;
-}if(this.lastEntry==null){
-while(this.position>=this.b$H.firstSlot&&(this.lastEntry=this.b$H.elementData[this.position])==null){
-this.position--;
-}
-if(this.lastEntry!=null){
-this.lastPosition=this.position;
-this.position--;
-}}if(this.lastEntry!=null){
-this.canRemove=true;
-return this.type.get(this.lastEntry);
-}throw new java.util.NoSuchElementException();
-}throw new java.util.ConcurrentModificationException();
-});
-Clazz_overrideMethod(c$,"remove",
-function(){
-if(this.expectedModCount==this.b$H.modCount){
-if(this.canRemove){
-this.canRemove=false;
-{
-var a=false;
-var b=this.b$H.elementData[this.lastPosition];
-if(b===this.lastEntry){
-this.b$H.elementData[this.lastPosition]=b.next;
-a=true;
-}else{
-while(b!=null&&b.next!==this.lastEntry){
-b=b.next;
-}
-if(b!=null){
-b.next=this.lastEntry.next;
-a=true;
-}}if(a){
-this.b$H.modCount++;
-this.b$H.elementCount--;
-this.expectedModCount++;
-return;
-}}}else{
-throw new IllegalStateException();
-}}throw new java.util.ConcurrentModificationException();
-});
-c$=Clazz_p0p();
-};
-c$.$Hashtable$HashEnumerator$=function(){
-Clazz_pu$h(self.c$);
-c$=Clazz_decorateAsClass(function(){
-Clazz_prepareCallback(this,arguments);
-this.key=false;
-this.start=0;
-this.entry=null;
-Clazz_instantialize(this,arguments);
-},java.util.Hashtable,"HashEnumerator",null,java.util.Enumeration);
-Clazz_makeConstructor(c$,
-function(a){
-this.key=a;
-this.b$H = this.b$["java.util.Hashtable"];
-this.start=this.b$H.lastSlot+1;
-},"~B");
-Clazz_overrideMethod(c$,"hasMoreElements",
-function(){
-if(this.entry!=null){
-return true;
-}
-while(--this.start>=this.b$H.firstSlot){
-if(this.b$H.elementData[this.start]!=null){
-this.entry=this.b$H.elementData[this.start];
-return true;
-}}
-return false;
-});
-Clazz_overrideMethod(c$,"nextElement",
-function(){
-if(this.hasMoreElements()){
-var a=this.key?this.entry.key:this.entry.value;
-this.entry=this.entry.next;
-return a;
-}throw new java.util.NoSuchElementException();
-});
-c$=Clazz_p0p();
-};
-c$.$Hashtable$2$=function(){
-// private class EntrySet extends AbstractSet<Map.Entry<K,V>>  
-Clazz_pu$h(self.c$);
-c$=Clazz_declareAnonymous(java.util,"Hashtable$2",java.util.AbstractSet);
-Clazz_overrideMethod(c$,"size",
-function(){
-return this.b$H.elementCount;
-});
-Clazz_overrideMethod(c$,"clear",
-function(){
-this.b$H.clear();
-});
-Clazz_overrideMethod(c$,"remove",
-function(object){
-if(this.contains(object)){
-this.b$H.remove((object).getKey());
-return true;
-}return false;
-},"~O");
-Clazz_defineMethod(c$,"contains",
-function(object){
-var entry=this.b$H.getEntry((object).getKey());
-return object.equals(entry);
-},"~O");
-Clazz_defineMethod(c$,"iterator",
-function(){
-return Clazz_innerTypeInstance(java.util.Hashtable.HashIterator,this,null,((Clazz_isClassDefined("java.util.Hashtable$2$1")?0:java.util.Hashtable.$Hashtable$2$1$()),Clazz_innerTypeInstance(java.util.Hashtable$2$1,this,null)));
-});
-c$=Clazz_p0p();
-};
-c$.$Hashtable$2$1$=function(){
-// EntrySet.HashIterator
-Clazz_pu$h(self.c$);
-c$=Clazz_declareAnonymous(java.util,"Hashtable$2$1",null,java.util.MapEntry.Type);
-Clazz_overrideMethod(c$,"get",
-function(entry){
-return entry;
-},"java.util.MapEntry");
-c$=Clazz_p0p();
-};
-c$.$Hashtable$3$=function(){
-// private class KeySet extends AbstractSet<K>
-Clazz_pu$h(self.c$);
-c$=Clazz_declareAnonymous(java.util,"Hashtable$3",java.util.AbstractSet);
-Clazz_overrideMethod(c$,"contains",
-function(object){
-return this.b$H.containsKey(object);
-},"~O");
-Clazz_overrideMethod(c$,"size",
-function(){
-return this.b$H.elementCount;
-});
-Clazz_overrideMethod(c$,"clear",
-function(){
-this.b$H.clear();
-});
-Clazz_overrideMethod(c$,"remove",
-function(key){
-if(this.b$H.containsKey(key)){
-this.b$H.remove(key);
-return true;
-}return false;
-},"~O");
-Clazz_overrideMethod(c$,"iterator",
-function(){
-return Clazz_innerTypeInstance(java.util.Hashtable.HashIterator,this,null,((Clazz_isClassDefined("java.util.Hashtable$3$1")?0:java.util.Hashtable.$Hashtable$3$1$()),Clazz_innerTypeInstance(java.util.Hashtable$3$1,this,null)));
-});
-c$=Clazz_p0p();
-};
-c$.$Hashtable$3$1$=function(){
-// KeySet.HashIterator
-Clazz_pu$h(self.c$);
-c$=Clazz_declareAnonymous(java.util,"Hashtable$3$1",null,java.util.MapEntry.Type);
-Clazz_overrideMethod(c$,"get",
-function(entry){
-return entry.key;
-},"java.util.MapEntry");
-c$=Clazz_p0p();
-};
-c$.$Hashtable$4$=function(){
-// private class ValueCollection extends AbstractCollection<V> 
-Clazz_pu$h(self.c$);
-c$=Clazz_declareAnonymous(java.util,"Hashtable$4",java.util.AbstractCollection);
-Clazz_overrideMethod(c$,"contains",
-function(object){
-return this.b$H.contains(object);
-},"~O");
-Clazz_overrideMethod(c$,"size",
-function(){
-return this.b$H.elementCount;
-});
-Clazz_overrideMethod(c$,"clear",
-function(){
-this.b$H.clear();
-});
-Clazz_overrideMethod(c$,"iterator",
-function(){
-return Clazz_innerTypeInstance(java.util.Hashtable.HashIterator,this,null,((Clazz_isClassDefined("java.util.Hashtable$4$1")?0:java.util.Hashtable.$Hashtable$4$1$()),Clazz_innerTypeInstance(java.util.Hashtable$4$1,this,null)));
-});
-c$=Clazz_p0p();
-};
-c$.$Hashtable$4$1$=function(){
-// ValueCollection.HashIterator
-Clazz_pu$h(self.c$);
-c$=Clazz_declareAnonymous(java.util,"Hashtable$4$1",null,java.util.MapEntry.Type);
-Clazz_overrideMethod(c$,"get",
-function(entry){
-return entry.value;
-},"java.util.MapEntry");
-c$=Clazz_p0p();
-};
-c$.$Hashtable$1$=function(){
-// private class Enumerator<T> implements Enumeration<T>, Iterator<T>
-Clazz_pu$h(self.c$);
-c$=Clazz_declareAnonymous(java.util,"Hashtable$1",null,java.util.Enumeration);
-Clazz_overrideMethod(c$,"hasMoreElements",
-function(){
-return false;
-});
-Clazz_overrideMethod(c$,"nextElement",
-function(){
-throw new java.util.NoSuchElementException();
-});
-c$=Clazz_p0p();
-};
-Clazz_pu$h(self.c$);
-c$=Clazz_decorateAsClass(function(){
-this.next=null;
-this.hashcode=0;
-Clazz_instantialize(this,arguments);
-},java.util.Hashtable,"Entry",java.util.MapEntry);
-Clazz_overrideConstructor(c$,
-function(a,b){
-	// _k for @j2sOverride
-this.key = a;
-this.value = b;
-
-//Clazz_superConstructor(this,java.util.Hashtable.Entry,[a,b]);
-this.hashcode=a.hashCode();
-});
-Clazz_defineMethod(c$,"clone",
-function(){
-var a=Clazz_superCall(this,java.util.Hashtable.Entry,"clone",[]);
-if(this.next!=null){
-a.next=this.next.clone();
-
-}
-return a;
-});
-Clazz_overrideMethod(c$,"setValue",
-function(a){
-if(a==null){
-throw new NullPointerException();
-}var b=this.value;
-this.value=a;
-return b;
-},"~O");
-Clazz_defineMethod(c$,"getKeyHash",
-function(){
-return this.key.hashCode();
-});
-Clazz_defineMethod(c$,"equalsKey",
-function(a,b){
-return this.hashcode==a.hashCode()&&this.key.equals(a);
-},"~O,~N");
-Clazz_overrideMethod(c$,"toString",
-function(){
-return this.key+"="+this.value;
-});
-c$=Clazz_p0p();
-c$.EMPTY_ENUMERATION=c$.prototype.EMPTY_ENUMERATION=((Clazz_isClassDefined("java.util.Hashtable$1")?0:java.util.Hashtable.$Hashtable$1$()),Clazz_innerTypeInstance(java.util.Hashtable$1,this,null));
-});Clazz_load(["java.util.Map"],"java.util.MapEntry",null,function(){
+Clazz_load(["java.util.Map"],"java.util.MapEntry",null,function(){
 c$=Clazz_decorateAsClass(function(){
 this.key=null;
 this.value=null;
@@ -10777,7 +10809,7 @@ Clazz_defineStatics (c$,
 "decode64", [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 62, 0, 62, 0, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 0, 0, 0, 0, 63, 0, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 0, 0, 0, 0, 0]);
 });
 Clazz_declarePackage ("JU");
-Clazz_load (["javajs.api.JSONEncodable"], "JU.BS", ["java.lang.Character", "$.IndexOutOfBoundsException", "$.NegativeArraySizeException", "JU.SB"], function () {
+Clazz_load (["javajs.api.JSONEncodable"], "JU.BS", ["java.lang.IndexOutOfBoundsException", "$.NegativeArraySizeException", "JU.PT", "$.SB"], function () {
 c$ = Clazz_decorateAsClass (function () {
 this.words = null;
 this.wordsInUse = 0;
@@ -11083,10 +11115,10 @@ var ch;
 var len;
 if (str == null || (len = (str = str.trim ()).length) < 4 || str.equalsIgnoreCase ("({null})") || (ch = str.charAt (0)) != '(' && ch != '[' || str.charAt (len - 1) != (ch == '(' ? ')' : ']') || str.charAt (1) != '{' || str.indexOf ('}') != len - 2) return null;
 len -= 2;
-for (var i = len; --i >= 2; ) if (!Character.isDigit (ch = str.charAt (i)) && ch != ' ' && ch != '\t' && ch != ':') return null;
+for (var i = len; --i >= 2; ) if (!JU.PT.isDigit (ch = str.charAt (i)) && ch != ' ' && ch != '\t' && ch != ':') return null;
 
 var lastN = len;
-while (Character.isDigit (str.charAt (--lastN))) {
+while (JU.PT.isDigit (str.charAt (--lastN))) {
 }
 if (++lastN == len) lastN = 0;
  else try {
@@ -11120,7 +11152,7 @@ iPrev = lastN = iThis;
 iThis = -2;
 break;
 default:
-if (Character.isDigit (ch)) {
+if (JU.PT.isDigit (ch)) {
 if (iThis < 0) iThis = 0;
 iThis = (iThis * 10) + (ch.charCodeAt (0) - 48);
 }}
@@ -11714,10 +11746,6 @@ throw  new ArrayIndexOutOfBoundsException ("matrix column/row out of bounds");
 Clazz_declarePackage ("JU");
 Clazz_load (["JU.M34"], "JU.M3", ["JU.T3"], function () {
 c$ = Clazz_declareType (JU, "M3", JU.M34, java.io.Serializable);
-Clazz_makeConstructor (c$, 
-function () {
-Clazz_superConstructor (this, JU.M3, []);
-});
 c$.newA9 = Clazz_defineMethod (c$, "newA9", 
 function (v) {
 var m =  new JU.M3 ();
@@ -12025,10 +12053,6 @@ this.m32 = 0;
 this.m33 = 0;
 Clazz_instantialize (this, arguments);
 }, JU, "M4", JU.M34);
-Clazz_makeConstructor (c$, 
-function () {
-Clazz_superConstructor (this, JU.M4, []);
-});
 c$.newA16 = Clazz_defineMethod (c$, "newA16", 
 function (v) {
 var m =  new JU.M4 ();
@@ -12482,7 +12506,7 @@ return "[\n  [" + this.m00 + "\t" + this.m01 + "\t" + this.m02 + "\t" + this.m03
 });
 });
 Clazz_declarePackage ("JU");
-Clazz_load (["java.io.OutputStream"], "JU.OC", ["java.io.BufferedWriter", "$.ByteArrayOutputStream", "$.FileOutputStream", "$.OutputStreamWriter", "JU.Base64", "$.SB"], function () {
+Clazz_load (["java.io.OutputStream"], "JU.OC", ["java.io.BufferedWriter", "$.ByteArrayOutputStream", "$.OutputStreamWriter", "JU.Base64", "$.SB"], function () {
 c$ = Clazz_decorateAsClass (function () {
 this.bytePoster = null;
 this.fileName = null;
@@ -12564,12 +12588,10 @@ Clazz_defineMethod (c$, "reset",
 function () {
 this.sb = null;
 try {
-if (Clazz_instanceOf (this.os, java.io.FileOutputStream)) {
-this.os.close ();
-this.os =  new java.io.FileOutputStream (this.fileName);
-} else {
-this.os =  new java.io.ByteArrayOutputStream ();
-}if (this.bw != null) {
+{
+this.os = null;
+}if (this.os == null) this.os =  new java.io.ByteArrayOutputStream ();
+if (this.bw != null) {
 this.bw.close ();
 this.bw =  new java.io.BufferedWriter ( new java.io.OutputStreamWriter (this.os));
 }} catch (e) {
@@ -12679,10 +12701,6 @@ return this.bytePoster.postByteArray (this.fileName, bytes);
 Clazz_declarePackage ("JU");
 Clazz_load (["JU.T3"], "JU.P3", null, function () {
 c$ = Clazz_declareType (JU, "P3", JU.T3);
-Clazz_makeConstructor (c$, 
-function () {
-Clazz_superConstructor (this, JU.P3, []);
-});
 c$.newP = Clazz_defineMethod (c$, "newP", 
 function (t) {
 var p =  new JU.P3 ();
@@ -12737,7 +12755,7 @@ return Math.sqrt (dx * dx + dy * dy + dz * dz + dw * dw);
 }, "JU.P4");
 });
 Clazz_declarePackage ("JU");
-Clazz_load (null, "JU.PT", ["java.lang.Boolean", "$.Character", "$.Float", "$.Number", "java.util.Map", "javajs.api.JSONEncodable", "JU.AU", "$.DF", "$.Lst", "$.M34", "$.M4", "$.SB"], function () {
+Clazz_load (null, "JU.PT", ["java.lang.Boolean", "$.Double", "$.Float", "$.Number", "java.util.Map", "javajs.api.JSONEncodable", "JU.AU", "$.DF", "$.Lst", "$.M34", "$.M4", "$.SB"], function () {
 c$ = Clazz_declareType (JU, "PT");
 c$.parseInt = Clazz_defineMethod (c$, "parseInt", 
 function (str) {
@@ -12847,7 +12865,7 @@ return (!isStrict || (!isExponent || isDecimal) && JU.PT.checkTrailingText (str,
 c$.checkTrailingText = Clazz_defineMethod (c$, "checkTrailingText", 
 function (str, ich, ichMax) {
 var ch;
-while (ich < ichMax && (Character.isWhitespace (ch = str.charAt (ich)) || ch == ';')) ++ich;
+while (ich < ichMax && (JU.PT.isWhitespace (ch = str.charAt (ich)) || ch == ';')) ++ich;
 
 return (ich == ichMax);
 }, "~S,~N,~N");
@@ -13404,11 +13422,328 @@ c$.clean = Clazz_defineMethod (c$, "clean",
 function (s) {
 return JU.PT.rep (JU.PT.replaceAllCharacters (s, " \t\n\r", " "), "  ", " ").trim ();
 }, "~S");
+c$.fdup = Clazz_defineMethod (c$, "fdup", 
+function (f, pt, n) {
+var ch;
+var count = 0;
+for (var i = pt; --i >= 1; ) {
+if (JU.PT.isDigit (ch = f.charAt (i))) continue;
+switch (ch) {
+case '.':
+if (count++ != 0) return f;
+continue;
+case '-':
+if (i != 1 && f.charAt (i - 1) != '.') return f;
+continue;
+default:
+return f;
+}
+}
+var s = f.substring (0, pt + 1);
+var sb =  new JU.SB ();
+for (var i = 0; i < n; i++) sb.append (s);
+
+sb.append (f.substring (pt + 1));
+return sb.toString ();
+}, "~S,~N,~N");
+c$.formatString = Clazz_defineMethod (c$, "formatString", 
+function (strFormat, key, strT, floatT, doubleT, doOne) {
+if (strFormat == null) return null;
+if ("".equals (strFormat)) return "";
+var len = key.length;
+if (strFormat.indexOf ("%") < 0 || len == 0 || strFormat.indexOf (key) < 0) return strFormat;
+var strLabel = "";
+var ich;
+var ichPercent;
+var ichKey;
+for (ich = 0; (ichPercent = strFormat.indexOf ('%', ich)) >= 0 && (ichKey = strFormat.indexOf (key, ichPercent + 1)) >= 0; ) {
+if (ich != ichPercent) strLabel += strFormat.substring (ich, ichPercent);
+ich = ichPercent + 1;
+if (ichKey > ichPercent + 6) {
+strLabel += '%';
+continue;
+}try {
+var alignLeft = false;
+if (strFormat.charAt (ich) == '-') {
+alignLeft = true;
+++ich;
+}var zeroPad = false;
+if (strFormat.charAt (ich) == '0') {
+zeroPad = true;
+++ich;
+}var ch;
+var width = 0;
+while ((ch = strFormat.charAt (ich)) >= '0' && (ch <= '9')) {
+width = (10 * width) + (ch.charCodeAt (0) - 48);
+++ich;
+}
+var precision = 2147483647;
+var isExponential = false;
+if (strFormat.charAt (ich) == '.') {
+++ich;
+if ((ch = strFormat.charAt (ich)) == '-') {
+isExponential = true;
+++ich;
+}if ((ch = strFormat.charAt (ich)) >= '0' && ch <= '9') {
+precision = ch.charCodeAt (0) - 48;
+++ich;
+}if (isExponential) precision = -precision - (strT == null ? 1 : 0);
+}var st = strFormat.substring (ich, ich + len);
+if (!st.equals (key)) {
+ich = ichPercent + 1;
+strLabel += '%';
+continue;
+}ich += len;
+if (!Float.isNaN (floatT)) strLabel += JU.PT.formatF (floatT, width, precision, alignLeft, zeroPad);
+ else if (strT != null) strLabel += JU.PT.formatS (strT, width, precision, alignLeft, zeroPad);
+ else if (!Double.isNaN (doubleT)) strLabel += JU.PT.formatD (doubleT, width, precision, alignLeft, zeroPad, true);
+if (doOne) break;
+} catch (ioobe) {
+if (Clazz_exceptionOf (ioobe, IndexOutOfBoundsException)) {
+ich = ichPercent;
+break;
+} else {
+throw ioobe;
+}
+}
+}
+strLabel += strFormat.substring (ich);
+return strLabel;
+}, "~S,~S,~S,~N,~N,~B");
+c$.formatStringS = Clazz_defineMethod (c$, "formatStringS", 
+function (strFormat, key, strT) {
+return JU.PT.formatString (strFormat, key, strT, NaN, NaN, false);
+}, "~S,~S,~S");
+c$.formatStringF = Clazz_defineMethod (c$, "formatStringF", 
+function (strFormat, key, floatT) {
+return JU.PT.formatString (strFormat, key, null, floatT, NaN, false);
+}, "~S,~S,~N");
+c$.formatStringI = Clazz_defineMethod (c$, "formatStringI", 
+function (strFormat, key, intT) {
+return JU.PT.formatString (strFormat, key, "" + intT, NaN, NaN, false);
+}, "~S,~S,~N");
+c$.sprintf = Clazz_defineMethod (c$, "sprintf", 
+function (strFormat, list, values) {
+if (values == null) return strFormat;
+var n = list.length;
+if (n == values.length) try {
+for (var o = 0; o < n; o++) {
+if (values[o] == null) continue;
+switch (list.charAt (o)) {
+case 's':
+strFormat = JU.PT.formatString (strFormat, "s", values[o], NaN, NaN, true);
+break;
+case 'f':
+strFormat = JU.PT.formatString (strFormat, "f", null, (values[o]).floatValue (), NaN, true);
+break;
+case 'i':
+strFormat = JU.PT.formatString (strFormat, "d", "" + values[o], NaN, NaN, true);
+strFormat = JU.PT.formatString (strFormat, "i", "" + values[o], NaN, NaN, true);
+break;
+case 'd':
+strFormat = JU.PT.formatString (strFormat, "e", null, NaN, (values[o]).doubleValue (), true);
+break;
+case 'p':
+var pVal = values[o];
+strFormat = JU.PT.formatString (strFormat, "p", null, pVal.x, NaN, true);
+strFormat = JU.PT.formatString (strFormat, "p", null, pVal.y, NaN, true);
+strFormat = JU.PT.formatString (strFormat, "p", null, pVal.z, NaN, true);
+break;
+case 'q':
+var qVal = values[o];
+strFormat = JU.PT.formatString (strFormat, "q", null, qVal.x, NaN, true);
+strFormat = JU.PT.formatString (strFormat, "q", null, qVal.y, NaN, true);
+strFormat = JU.PT.formatString (strFormat, "q", null, qVal.z, NaN, true);
+strFormat = JU.PT.formatString (strFormat, "q", null, qVal.w, NaN, true);
+break;
+case 'S':
+var sVal = values[o];
+for (var i = 0; i < sVal.length; i++) strFormat = JU.PT.formatString (strFormat, "s", sVal[i], NaN, NaN, true);
+
+break;
+case 'F':
+var fVal = values[o];
+for (var i = 0; i < fVal.length; i++) strFormat = JU.PT.formatString (strFormat, "f", null, fVal[i], NaN, true);
+
+break;
+case 'I':
+var iVal = values[o];
+for (var i = 0; i < iVal.length; i++) strFormat = JU.PT.formatString (strFormat, "d", "" + iVal[i], NaN, NaN, true);
+
+for (var i = 0; i < iVal.length; i++) strFormat = JU.PT.formatString (strFormat, "i", "" + iVal[i], NaN, NaN, true);
+
+break;
+case 'D':
+var dVal = values[o];
+for (var i = 0; i < dVal.length; i++) strFormat = JU.PT.formatString (strFormat, "e", null, NaN, dVal[i], true);
+
+}
+}
+return JU.PT.rep (strFormat, "%%", "%");
+} catch (e) {
+if (Clazz_exceptionOf (e, Exception)) {
+} else {
+throw e;
+}
+}
+System.out.println ("TextFormat.sprintf error " + list + " " + strFormat);
+return JU.PT.rep (strFormat, "%", "?");
+}, "~S,~S,~A");
+c$.formatCheck = Clazz_defineMethod (c$, "formatCheck", 
+function (strFormat) {
+if (strFormat == null || strFormat.indexOf ('p') < 0 && strFormat.indexOf ('q') < 0) return strFormat;
+strFormat = JU.PT.rep (strFormat, "%%", "\1");
+strFormat = JU.PT.rep (strFormat, "%p", "%6.2p");
+strFormat = JU.PT.rep (strFormat, "%q", "%6.2q");
+var format = JU.PT.split (strFormat, "%");
+var sb =  new JU.SB ();
+sb.append (format[0]);
+for (var i = 1; i < format.length; i++) {
+var f = "%" + format[i];
+var pt;
+if (f.length >= 3) {
+if ((pt = f.indexOf ('p')) >= 0) f = JU.PT.fdup (f, pt, 3);
+if ((pt = f.indexOf ('q')) >= 0) f = JU.PT.fdup (f, pt, 4);
+}sb.append (f);
+}
+return sb.toString ().$replace ('\1', '%');
+}, "~S");
+c$.leftJustify = Clazz_defineMethod (c$, "leftJustify", 
+function (s, s1, s2) {
+s.append (s2);
+var n = s1.length - s2.length;
+if (n > 0) s.append (s1.substring (0, n));
+}, "JU.SB,~S,~S");
+c$.rightJustify = Clazz_defineMethod (c$, "rightJustify", 
+function (s, s1, s2) {
+var n = s1.length - s2.length;
+if (n > 0) s.append (s1.substring (0, n));
+s.append (s2);
+}, "JU.SB,~S,~S");
+c$.safeTruncate = Clazz_defineMethod (c$, "safeTruncate", 
+function (f, n) {
+if (f > -0.001 && f < 0.001) f = 0;
+return (f + "         ").substring (0, n);
+}, "~N,~N");
+c$.isWild = Clazz_defineMethod (c$, "isWild", 
+function (s) {
+return s != null && (s.indexOf ("*") >= 0 || s.indexOf ("?") >= 0);
+}, "~S");
+c$.isMatch = Clazz_defineMethod (c$, "isMatch", 
+function (search, match, checkStar, allowInitialStar) {
+if (search.equals (match)) return true;
+var mLen = match.length;
+if (mLen == 0) return false;
+var isStar0 = (checkStar && allowInitialStar ? match.charAt (0) == '*' : false);
+if (mLen == 1 && isStar0) return true;
+var isStar1 = (checkStar && match.endsWith ("*"));
+var haveQ = (match.indexOf ('?') >= 0);
+if (!haveQ) {
+if (isStar0) return (isStar1 ? (mLen < 3 || search.indexOf (match.substring (1, mLen - 1)) >= 0) : search.endsWith (match.substring (1)));
+ else if (isStar1) return search.startsWith (match.substring (0, mLen - 1));
+}var sLen = search.length;
+var qqqq = "????";
+var nq = 4;
+while (nq < sLen) {
+qqqq += qqqq;
+nq += 4;
+}
+if (checkStar) {
+if (isStar0) {
+match = qqqq + match.substring (1);
+mLen += nq - 1;
+}if (isStar1) {
+match = match.substring (0, mLen - 1) + qqqq;
+mLen += nq - 1;
+}}if (mLen < sLen) return false;
+var ich = 0;
+while (mLen > sLen) {
+if (allowInitialStar && match.charAt (ich) == '?') {
+++ich;
+} else if (match.charAt (ich + mLen - 1) != '?') {
+return false;
+}--mLen;
+}
+for (var i = sLen; --i >= 0; ) {
+var chm = match.charAt (ich + i);
+if (chm == '?') continue;
+var chs = search.charAt (i);
+if (chm != chs && (chm != '\1' || chs != '?')) return false;
+}
+return true;
+}, "~S,~S,~B,~B");
+c$.replaceQuotedStrings = Clazz_defineMethod (c$, "replaceQuotedStrings", 
+function (s, list, newList) {
+var n = list.size ();
+for (var i = 0; i < n; i++) {
+var name = list.get (i);
+var newName = newList.get (i);
+if (!newName.equals (name)) s = JU.PT.rep (s, "\"" + name + "\"", "\"" + newName + "\"");
+}
+return s;
+}, "~S,JU.Lst,JU.Lst");
+c$.replaceStrings = Clazz_defineMethod (c$, "replaceStrings", 
+function (s, list, newList) {
+var n = list.size ();
+for (var i = 0; i < n; i++) {
+var name = list.get (i);
+var newName = newList.get (i);
+if (!newName.equals (name)) s = JU.PT.rep (s, name, newName);
+}
+return s;
+}, "~S,JU.Lst,JU.Lst");
+c$.isDigit = Clazz_defineMethod (c$, "isDigit", 
+function (ch) {
+var c = (ch).charCodeAt (0);
+return (48 <= c && c <= 57);
+}, "~S");
+c$.isUpperCase = Clazz_defineMethod (c$, "isUpperCase", 
+function (ch) {
+var c = (ch).charCodeAt (0);
+return (65 <= c && c <= 90);
+}, "~S");
+c$.isLowerCase = Clazz_defineMethod (c$, "isLowerCase", 
+function (ch) {
+var c = (ch).charCodeAt (0);
+return (97 <= c && c <= 122);
+}, "~S");
+c$.isLetter = Clazz_defineMethod (c$, "isLetter", 
+function (ch) {
+var c = (ch).charCodeAt (0);
+return (65 <= c && c <= 90 || 97 <= c && c <= 122);
+}, "~S");
+c$.isLetterOrDigit = Clazz_defineMethod (c$, "isLetterOrDigit", 
+function (ch) {
+var c = (ch).charCodeAt (0);
+return (65 <= c && c <= 90 || 97 <= c && c <= 122 || 48 <= c && c <= 57);
+}, "~S");
+c$.isWhitespace = Clazz_defineMethod (c$, "isWhitespace", 
+function (ch) {
+var c = (ch).charCodeAt (0);
+return (c >= 0x1c && c <= 0x20 || c >= 0x9 && c <= 0xd);
+}, "~S");
+c$.fixPtFloats = Clazz_defineMethod (c$, "fixPtFloats", 
+function (pt, f) {
+pt.x = Math.round (pt.x * f) / f;
+pt.y = Math.round (pt.y * f) / f;
+pt.z = Math.round (pt.z * f) / f;
+}, "JU.T3,~N");
+c$.fixDouble = Clazz_defineMethod (c$, "fixDouble", 
+function (d, f) {
+return Math.round (d * f) / f;
+}, "~N,~N");
+c$.parseFloatFraction = Clazz_defineMethod (c$, "parseFloatFraction", 
+function (s) {
+var pt = s.indexOf ("/");
+return (pt < 0 ? JU.PT.parseFloat (s) : JU.PT.parseFloat (s.substring (0, pt)) / JU.PT.parseFloat (s.substring (pt + 1)));
+}, "~S");
 Clazz_defineStatics (c$,
 "tensScale", [10, 100, 1000, 10000, 100000, 1000000],
 "decimalScale", [0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001, 0.0000001, 0.00000001, 0.000000001],
 "FLOAT_MIN_SAFE", 2E-45,
-"escapable", "\\\\\tt\rr\nn\"\"");
+"escapable", "\\\\\tt\rr\nn\"\"",
+"FRACTIONAL_PRECISION", 100000,
+"CARTESIAN_PRECISION", 10000);
 });
 Clazz_declarePackage ("JU");
 c$ = Clazz_decorateAsClass (function () {
@@ -13783,7 +14118,6 @@ Clazz_load (["JU.T3"], "JU.V3", null, function () {
 c$ = Clazz_declareType (JU, "V3", JU.T3);
 Clazz_makeConstructor (c$, 
 function () {
-Clazz_superConstructor (this, JU.V3, []);
 });
 c$.newV = Clazz_defineMethod (c$, "newV", 
 function (t) {
@@ -17019,19 +17353,22 @@ Clazz_defineMethod (c$, "drawPlot",
  function (g, index, spec, isContinuous, yOffset, isGrey, ig, isSelected) {
 var xyCoords = (ig == null ? spec.getXYCoords () : this.getIntegrationGraph (index).getXYCoords ());
 var isIntegral = (ig != null);
-var bsDraw = (ig == null ? null : ig.getBitSet ());
-var fillPeaks = (!isIntegral && !isGrey && this.pendingIntegral != null && this.pendingIntegral.spec === this.spectra.get (index) || spec.fillColor != null && isSelected);
+var bsDraw = (isIntegral ? ig.getBitSet () : null);
+var hasPendingIntegral = (!isIntegral && !isGrey && this.pendingIntegral != null && this.pendingIntegral.spec === this.spectra.get (index));
+var fillPeaks = (hasPendingIntegral || spec.fillColor != null && isSelected);
 var iColor = (isGrey ? -2 : isIntegral ? -1 : !this.allowStacking ? 0 : index);
 this.setPlotColor (g, iColor);
 var plotOn = true;
 var y0 = this.toPixelY (0);
 if (isIntegral) fillPeaks = new Boolean (fillPeaks & (y0 == this.fixY (y0))).valueOf ();
  else y0 = this.fixY (y0);
+var cInt = (isIntegral || fillPeaks ? this.pd.getColor (JSV.common.ScriptToken.INTEGRALPLOTCOLOR) : null);
+var cFill = (cInt == null || spec.fillColor == null ? cInt : spec.fillColor);
 var iFirst = this.viewData.getStartingPointIndex (index);
 var iLast = this.viewData.getEndingPointIndex (index);
 if (isContinuous) {
 iLast--;
-var doLineTo = !fillPeaks && this.g2d.canDoLineTo ();
+var doLineTo = (isIntegral || this.pendingIntegral != null) && this.g2d.canDoLineTo ();
 if (doLineTo) this.g2d.doStroke (g, true);
 var isDown = false;
 for (var i = iFirst; i <= iLast; i++) {
@@ -17041,8 +17378,10 @@ var y1 = (isIntegral ? this.toPixelYint (point1.getYVal ()) : this.toPixelY (poi
 if (y1 == -2147483648) continue;
 var y2 = (isIntegral ? this.toPixelYint (point2.getYVal ()) : this.toPixelY (point2.getYVal ()));
 if (y2 == -2147483648) continue;
-var x1 = this.toPixelX (point1.getXVal ());
-var x2 = this.toPixelX (point2.getXVal ());
+var xv1 = point1.getXVal ();
+var xv2 = point2.getXVal ();
+var x1 = this.toPixelX (xv1);
+var x2 = this.toPixelX (xv2);
 y1 = this.fixY (yOffset + y1);
 y2 = this.fixY (yOffset + y2);
 if (isIntegral) {
@@ -17052,20 +17391,26 @@ this.yPixelPlot0 = y1;
 }this.xPixelPlot0 = x2;
 this.yPixelPlot1 = y2;
 }if (x2 == x1 && y1 == y2) continue;
-if (fillPeaks && (!isIntegral || this.pendingIntegral.overlaps (point1.getXVal (), point2.getXVal ()))) {
-if (isIntegral) {
-this.g2d.setGraphicsColor (g, this.pd.getColor (JSV.common.ScriptToken.INTEGRALPLOTCOLOR));
-this.g2d.drawLine (g, x1, y0, x1, y1);
-} else {
-this.g2d.setGraphicsColor (g, spec.fillColor);
-this.g2d.fillRect (g, x1, Math.min (y0, y1), x2 - x1, Math.abs (y0 - y1));
-}this.setPlotColor (g, iColor);
-continue;
+if (fillPeaks && hasPendingIntegral && this.pendingIntegral.overlaps (xv1, xv2)) {
+if (cFill != null) {
+this.g2d.doStroke (g, false);
+this.g2d.setGraphicsColor (g, cFill);
+}this.g2d.fillRect (g, Math.min (x1, x2), Math.min (y0, y1), Math.max (1, Math.abs (x2 - x1)), Math.abs (y0 - y1));
+if (cFill != null) {
+this.g2d.doStroke (g, false);
+this.g2d.doStroke (g, true);
+isDown = false;
+this.setPlotColor (g, iColor);
+}continue;
 }if (y1 == y2 && (y1 == this.yPixel0)) {
 continue;
 }if (bsDraw != null && bsDraw.get (i) != plotOn) {
 plotOn = bsDraw.get (i);
-if (!this.pd.isPrinting && this.pd.integralShiftMode != 0) this.setPlotColor (g, 0);
+if (doLineTo && isDown) {
+this.g2d.doStroke (g, false);
+this.g2d.doStroke (g, true);
+isDown = false;
+}if (!this.pd.isPrinting && this.pd.integralShiftMode != 0) this.setPlotColor (g, 0);
  else if (plotOn) this.setColorFromToken (g, JSV.common.ScriptToken.INTEGRALPLOTCOLOR);
  else this.setPlotColor (g, -3);
 }if (this.pd.isPrinting && !plotOn) continue;
@@ -19767,9 +20112,6 @@ c$ = Clazz_p0p ();
 Clazz_defineStatics (c$,
 "MAXABS", 4);
 });
-___date="$Date: 2014-06-28 02:24:08 -0500 (Sat, 28 Jun 2014) $"
-___svnRev="$LastChangedRevision: 1655 $"
-___version="14.2.1"
 Clazz_declarePackage ("JSV.common");
 c$ = Clazz_declareType (JSV.common, "JSVersion");
 Clazz_defineStatics (c$,
@@ -28182,6 +28524,7 @@ Clazz._coreLoaded = true;
 ,Clazz.instantialize
 ,Clazz.decorateAsClass
 ,Clazz.floatToInt
+,Clazz.floatToLong
 ,Clazz.makeConstructor
 ,Clazz.defineEnumConstant
 ,Clazz.exceptionOf

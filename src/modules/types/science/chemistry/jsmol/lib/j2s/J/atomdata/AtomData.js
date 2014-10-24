@@ -27,6 +27,7 @@ Clazz.makeConstructor (c$,
 function () {
 });
 Clazz.defineStatics (c$,
+"MODE_FILL_MODEL", 0,
 "MODE_FILL_COORDS", 1,
 "MODE_FILL_RADII", 2,
 "MODE_FILL_MOLECULES", 4,

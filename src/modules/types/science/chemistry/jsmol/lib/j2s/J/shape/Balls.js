@@ -76,7 +76,7 @@ return;
 propertyName = propertyName.substring (4).intern ();
 }this.setPropAS (propertyName, value, bs);
 }, "~S,~O,JU.BS");
-Clazz.overrideMethod (c$, "setModelClickability", 
+Clazz.overrideMethod (c$, "setAtomClickability", 
 function () {
 var bsDeleted = this.vwr.getDeletedAtoms ();
 for (var i = this.ac; --i >= 0; ) {

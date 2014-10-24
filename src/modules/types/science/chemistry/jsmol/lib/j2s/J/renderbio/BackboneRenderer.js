@@ -26,8 +26,8 @@ if (iAtom > i) this.drawSegment (atomA, this.ms.at[iAtom], cA, cA, 1000);
 Clazz.defineMethod (c$, "drawSegment", 
  function (atomA, atomB, colixA, colixB, max) {
 if (atomA.getNBackbonesDisplayed () == 0 || atomB.getNBackbonesDisplayed () == 0 || this.ms.isAtomHidden (atomB.i) || !this.isDataFrame && atomA.distanceSquared (atomB) > max) return;
-colixA = JU.C.getColixInherited (colixA, atomA.getColix ());
-colixB = JU.C.getColixInherited (colixB, atomB.getColix ());
+colixA = JU.C.getColixInherited (colixA, atomA.colixAtom);
+colixB = JU.C.getColixInherited (colixB, atomB.colixAtom);
 if (!this.isExport && !this.isPass2 && !this.setBioColix (colixA) && !this.setBioColix (colixB)) return;
 var xA = atomA.sX;
 var yA = atomA.sY;

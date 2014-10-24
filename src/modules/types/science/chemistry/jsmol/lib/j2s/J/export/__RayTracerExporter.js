@@ -16,7 +16,7 @@ function (pt, offset) {
 J["export"].___Exporter.setTempVertex (pt, offset, this.tempP1);
 this.tm.transformPt3f (this.tempP1, this.tempP1);
 this.output (this.tempP1);
-}, "JU.P3,JU.P3");
+}, "JU.T3,JU.T3");
 Clazz.defineMethod (c$, "getScreenNormal", 
 function (pt, normal, factor) {
 if (Float.isNaN (normal.x)) {
@@ -28,7 +28,7 @@ this.tm.transformPt3f (this.tempP1, this.tempP3);
 this.tempP3.sub (this.tempP2);
 this.tempP3.scale (factor);
 return this.tempP3;
-}, "JU.P3,JU.V3,~N");
+}, "JU.T3,JU.T3,~N");
 Clazz.defineMethod (c$, "initVars", 
 function () {
 this.isSlabEnabled = this.tm.slabEnabled;
@@ -36,7 +36,7 @@ this.minScreenDimension = Math.min (this.screenWidth, this.screenHeight);
 });
 Clazz.overrideMethod (c$, "drawAtom", 
 function (atom) {
-this.outputSphere (atom.sX, atom.sY, atom.sZ, atom.sD / 2, atom.getColix ());
+this.outputSphere (atom.sX, atom.sY, atom.sZ, atom.sD / 2, atom.colixAtom);
 }, "JM.Atom");
 Clazz.overrideMethod (c$, "drawCircle", 
 function (x, y, z, diameter, colix, doFill) {

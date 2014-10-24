@@ -118,12 +118,12 @@ return this.ce.getColorIndexFromPalette (atom.getPolymerIndexInModel (), 0, m.ge
 case 76:
 return this.ce.getColorIndexFromPalette (atom.getSelectedMonomerIndexWithinPolymer (), 0, atom.getSelectedMonomerCountWithinPolymer () - 1, 1, false);
 case 77:
-return this.ce.getColorIndexFromPalette (modelSet.getMoleculeIndex (atom.i, true), 0, modelSet.getMoleculeCountInModel (atom.getModelIndex ()) - 1, 0, false);
+return this.ce.getColorIndexFromPalette (modelSet.getMoleculeIndex (atom.i, true), 0, modelSet.getMoleculeCountInModel (atom.mi) - 1, 0, false);
 case 14:
-modelIndex = atom.getModelIndex ();
+modelIndex = atom.mi;
 return this.ce.getColorIndexFromPalette (modelSet.getAltLocIndexInModel (modelIndex, atom.getAlternateLocationID ()), 0, modelSet.getAltLocCountInModel (modelIndex), 0, false);
 case 15:
-modelIndex = atom.getModelIndex ();
+modelIndex = atom.mi;
 return this.ce.getColorIndexFromPalette (modelSet.getInsertionCodeIndexInModel (modelIndex, atom.getInsertionCode ()), 0, modelSet.getInsertionCountInModel (modelIndex), 0, false);
 case 16:
 id = atom.getAtomicAndIsotopeNumber ();

@@ -50,7 +50,7 @@ J.awtjs2d.Display.getFullScreenDimensions (canvas, widthHeight);
 Clazz.overrideMethod (c$, "getMenuPopup", 
 function (menuStructure, type) {
 var c = (type == 'j' ? "awtjs2d.JmolJSPopup" : "awtjs2d.JSModelKitPopup");
-var jmolpopup = J.api.Interface.getOption (c);
+var jmolpopup = J.api.Interface.getOption (c, this.vwr, "popup");
 try {
 if (jmolpopup != null) jmolpopup.jpiInitialize (this.vwr, menuStructure);
 } catch (e) {

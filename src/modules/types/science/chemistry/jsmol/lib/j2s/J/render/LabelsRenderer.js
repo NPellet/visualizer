@@ -72,7 +72,7 @@ if (this.zCutoff > 0 && this.zSlab > this.zCutoff) continue;
 if (this.zSlab < 1) this.zSlab = 1;
 this.zBox = this.zSlab;
 if (labelsGroup) {
-var group = this.atom.getGroup ();
+var group = this.atom.group;
 var ig = group.getGroupIndex ();
 if (ig != iGroup) {
 group.getMinZ (atoms, this.minZ);

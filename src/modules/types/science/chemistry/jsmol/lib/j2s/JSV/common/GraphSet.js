@@ -1203,19 +1203,22 @@ Clazz.defineMethod (c$, "drawPlot",
  function (g, index, spec, isContinuous, yOffset, isGrey, ig, isSelected) {
 var xyCoords = (ig == null ? spec.getXYCoords () : this.getIntegrationGraph (index).getXYCoords ());
 var isIntegral = (ig != null);
-var bsDraw = (ig == null ? null : ig.getBitSet ());
-var fillPeaks = (!isIntegral && !isGrey && this.pendingIntegral != null && this.pendingIntegral.spec === this.spectra.get (index) || spec.fillColor != null && isSelected);
+var bsDraw = (isIntegral ? ig.getBitSet () : null);
+var hasPendingIntegral = (!isIntegral && !isGrey && this.pendingIntegral != null && this.pendingIntegral.spec === this.spectra.get (index));
+var fillPeaks = (hasPendingIntegral || spec.fillColor != null && isSelected);
 var iColor = (isGrey ? -2 : isIntegral ? -1 : !this.allowStacking ? 0 : index);
 this.setPlotColor (g, iColor);
 var plotOn = true;
 var y0 = this.toPixelY (0);
 if (isIntegral) fillPeaks = new Boolean (fillPeaks & (y0 == this.fixY (y0))).valueOf ();
  else y0 = this.fixY (y0);
+var cInt = (isIntegral || fillPeaks ? this.pd.getColor (JSV.common.ScriptToken.INTEGRALPLOTCOLOR) : null);
+var cFill = (cInt == null || spec.fillColor == null ? cInt : spec.fillColor);
 var iFirst = this.viewData.getStartingPointIndex (index);
 var iLast = this.viewData.getEndingPointIndex (index);
 if (isContinuous) {
 iLast--;
-var doLineTo = !fillPeaks && this.g2d.canDoLineTo ();
+var doLineTo = (isIntegral || this.pendingIntegral != null) && this.g2d.canDoLineTo ();
 if (doLineTo) this.g2d.doStroke (g, true);
 var isDown = false;
 for (var i = iFirst; i <= iLast; i++) {
@@ -1225,8 +1228,10 @@ var y1 = (isIntegral ? this.toPixelYint (point1.getYVal ()) : this.toPixelY (poi
 if (y1 == -2147483648) continue;
 var y2 = (isIntegral ? this.toPixelYint (point2.getYVal ()) : this.toPixelY (point2.getYVal ()));
 if (y2 == -2147483648) continue;
-var x1 = this.toPixelX (point1.getXVal ());
-var x2 = this.toPixelX (point2.getXVal ());
+var xv1 = point1.getXVal ();
+var xv2 = point2.getXVal ();
+var x1 = this.toPixelX (xv1);
+var x2 = this.toPixelX (xv2);
 y1 = this.fixY (yOffset + y1);
 y2 = this.fixY (yOffset + y2);
 if (isIntegral) {
@@ -1236,20 +1241,26 @@ this.yPixelPlot0 = y1;
 }this.xPixelPlot0 = x2;
 this.yPixelPlot1 = y2;
 }if (x2 == x1 && y1 == y2) continue;
-if (fillPeaks && (!isIntegral || this.pendingIntegral.overlaps (point1.getXVal (), point2.getXVal ()))) {
-if (isIntegral) {
-this.g2d.setGraphicsColor (g, this.pd.getColor (JSV.common.ScriptToken.INTEGRALPLOTCOLOR));
-this.g2d.drawLine (g, x1, y0, x1, y1);
-} else {
-this.g2d.setGraphicsColor (g, spec.fillColor);
-this.g2d.fillRect (g, x1, Math.min (y0, y1), x2 - x1, Math.abs (y0 - y1));
-}this.setPlotColor (g, iColor);
-continue;
+if (fillPeaks && hasPendingIntegral && this.pendingIntegral.overlaps (xv1, xv2)) {
+if (cFill != null) {
+this.g2d.doStroke (g, false);
+this.g2d.setGraphicsColor (g, cFill);
+}this.g2d.fillRect (g, Math.min (x1, x2), Math.min (y0, y1), Math.max (1, Math.abs (x2 - x1)), Math.abs (y0 - y1));
+if (cFill != null) {
+this.g2d.doStroke (g, false);
+this.g2d.doStroke (g, true);
+isDown = false;
+this.setPlotColor (g, iColor);
+}continue;
 }if (y1 == y2 && (y1 == this.yPixel0)) {
 continue;
 }if (bsDraw != null && bsDraw.get (i) != plotOn) {
 plotOn = bsDraw.get (i);
-if (!this.pd.isPrinting && this.pd.integralShiftMode != 0) this.setPlotColor (g, 0);
+if (doLineTo && isDown) {
+this.g2d.doStroke (g, false);
+this.g2d.doStroke (g, true);
+isDown = false;
+}if (!this.pd.isPrinting && this.pd.integralShiftMode != 0) this.setPlotColor (g, 0);
  else if (plotOn) this.setColorFromToken (g, JSV.common.ScriptToken.INTEGRALPLOTCOLOR);
  else this.setPlotColor (g, -3);
 }if (this.pd.isPrinting && !plotOn) continue;

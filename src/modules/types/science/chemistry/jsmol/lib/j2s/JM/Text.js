@@ -34,8 +34,8 @@ function () {
 return this.text;
 });
 Clazz.makeConstructor (c$, 
-function () {
-Clazz.superConstructor (this, JM.Text, []);
+ function () {
+this.boxXY =  Clazz.newFloatArray (5, 0);
 });
 c$.newLabel = Clazz.defineMethod (c$, "newLabel", 
 function (gdata, font, text, colix, bgcolix, align, scalePixelsPerMicron, value) {

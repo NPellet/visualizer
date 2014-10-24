@@ -24,7 +24,8 @@ Clazz.superConstructor (this, JU.CompoundDocument);
 this.isBigEndian = true;
 });
 Clazz.overrideMethod (c$, "setStream", 
-function (bis, isBigEndian) {
+function (jzt, bis, isBigEndian) {
+this.jzt = jzt;
 if (!this.isRandom) {
 this.stream =  new java.io.DataInputStream (bis);
 }this.stream.mark (2147483647);
@@ -32,7 +33,7 @@ if (!this.readHeader ()) return;
 this.getSectorAllocationTable ();
 this.getShortSectorAllocationTable ();
 this.getDirectoryTable ();
-}, "java.io.BufferedInputStream,~B");
+}, "javajs.api.GenericZipTools,java.io.BufferedInputStream,~B");
 Clazz.defineMethod (c$, "getDirectory", 
 function () {
 return this.directory;
@@ -232,7 +233,7 @@ System.out.println (e.toString ());
 throw e;
 }
 }
-if (gzipData.isEnabled) gzipData.addTo (data);
+if (gzipData.isEnabled) gzipData.addTo (this.jzt, data);
 return data;
 }, "~N,~N,~B");
 Clazz.defineMethod (c$, "getSectorData", 
@@ -279,7 +280,7 @@ System.out.println ("reader error in CompoundDocument " + e.toString ());
 throw e;
 }
 }
-if (gzipData.isEnabled) gzipData.addTo (data);
+if (gzipData.isEnabled) gzipData.addTo (this.jzt, data);
 return data;
 }, "~N,~N,~B");
 });

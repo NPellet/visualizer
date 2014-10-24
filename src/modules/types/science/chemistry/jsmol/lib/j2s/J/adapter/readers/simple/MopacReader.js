@@ -1,7 +1,6 @@
 Clazz.declarePackage ("J.adapter.readers.simple");
 Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.simple.MopacReader", ["java.lang.Exception", "$.Float", "JU.BS", "$.PT", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
-this.$baseAtomIndex = 0;
 this.chargesFound = false;
 this.haveHeader = false;
 this.mopacVersion = 0;
@@ -54,7 +53,7 @@ Clazz.defineMethod (c$, "processAtomicCharges",
 function () {
 this.readLines (2);
 this.asc.newAtomSet ();
-this.$baseAtomIndex = this.asc.ac;
+this.baseAtomIndex = this.asc.ac;
 var expectedAtomNumber = 0;
 while (this.rd () != null) {
 var atomNumber = this.parseIntStr (this.line);
@@ -72,7 +71,7 @@ function () {
 this.readLines (3);
 if (!this.chargesFound) {
 this.asc.newAtomSet ();
-this.$baseAtomIndex = this.asc.ac;
+this.baseAtomIndex = this.asc.ac;
 } else {
 this.chargesFound = false;
 }var atoms = this.asc.atoms;
@@ -80,7 +79,7 @@ var atomNumber;
 while (this.rd () != null) {
 var tokens = this.getTokens ();
 if (tokens.length == 0 || (atomNumber = this.parseIntStr (tokens[0])) == -2147483648) break;
-var atom = atoms[this.$baseAtomIndex + atomNumber - 1];
+var atom = atoms[this.baseAtomIndex + atomNumber - 1];
 if (atom == null) atom = this.asc.addNewAtom ();
 atom.atomSerial = atomNumber;
 this.setAtomCoordTokens (atom, tokens, 2);

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JM.FF");
-Clazz.load (["JM.FF.ForceField"], "JM.FF.ForceFieldMMFF", ["java.lang.Float", "java.util.Hashtable", "JU.AU", "$.BS", "$.Lst", "$.PT", "JM.MinAtom", "$.MinObject", "JM.FF.AtomType", "$.CalculationsMMFF", "JU.BSUtil", "$.Elements", "$.Escape", "$.Logger"], function () {
+Clazz.load (["JM.FF.ForceField"], "JM.FF.ForceFieldMMFF", ["java.lang.Float", "java.util.Hashtable", "JU.AU", "$.BS", "$.Lst", "$.PT", "JM.MinAtom", "$.MinObject", "JM.FF.AtomType", "$.CalculationsMMFF", "JU.BSUtil", "$.Elements", "$.Escape", "$.Logger", "JV.JmolAsyncException"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.useEmpiricalRules = true;
 this.rawAtomTypes = null;
@@ -71,17 +71,25 @@ if ((dataType = JM.FF.ForceFieldMMFF.types[Clazz.doubleToInt ("END.BCI.CHG.ANG.N
 this.readParams (br, dataType, data);
 }
 br.close ();
-} catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
+} catch (e$$) {
+if (Clazz.exceptionOf (e$$, JV.JmolAsyncException)) {
+var e = e$$;
+{
+throw  new JV.JmolAsyncException (e.getFileName ());
+}
+} else if (Clazz.exceptionOf (e$$, Exception)) {
+var e = e$$;
+{
 System.err.println ("Exception " + e.toString () + " in getResource " + resourceName + " line=" + line);
+}
 } else {
-throw e;
+throw e$$;
 }
 } finally {
 try {
 br.close ();
 } catch (e) {
-if (Clazz.exceptionOf (e, java.io.IOException)) {
+if (Clazz.exceptionOf (e, Exception)) {
 } else {
 throw e;
 }
@@ -243,11 +251,19 @@ types.addLast (at =  new JM.FF.AtomType (elemNo, mmType, hType, formalCharge, va
 JM.FF.ForceFieldMMFF.setFlags (at);
 }
 br.close ();
-} catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
+} catch (e$$) {
+if (Clazz.exceptionOf (e$$, JV.JmolAsyncException)) {
+var e = e$$;
+{
+throw  new JV.JmolAsyncException (e.getFileName ());
+}
+} else if (Clazz.exceptionOf (e$$, Exception)) {
+var e = e$$;
+{
 System.err.println ("Exception " + e.toString () + " in getResource " + resourceName + " line=" + this.line);
+}
 } else {
-throw e;
+throw e$$;
 }
 }
 JU.Logger.info ((types.size () - 1) + " SMARTS-based atom types read");

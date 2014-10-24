@@ -58,7 +58,7 @@ bioShape.bsSizeDefault.setBitTo (i, mad == -1);
 }
 if (useThisBsSelected) this.bsSelected = null;
 }, "~N,J.atomdata.RadiusData,JU.BS");
-Clazz.overrideMethod (c$, "setModelClickability", 
+Clazz.overrideMethod (c$, "setAtomClickability", 
 function () {
 if (this.bioShapes == null) return;
 for (var iShape = this.bioShapes.length; --iShape >= 0; ) {

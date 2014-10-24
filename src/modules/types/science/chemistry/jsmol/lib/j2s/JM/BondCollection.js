@@ -1,12 +1,12 @@
 Clazz.declarePackage ("JM");
 Clazz.load (["JM.AtomCollection", "JU.BS"], "JM.BondCollection", ["JU.AU", "JM.Bond", "$.BondIteratorSelected", "$.HBond", "JU.BSUtil", "$.Edge", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
-this.molecules = null;
-this.moleculeCount = 0;
 this.bo = null;
 this.bondCount = 0;
 this.numCached = null;
 this.freeBonds = null;
+this.molecules = null;
+this.moleculeCount = 0;
 this.haveWarned = false;
 this.defaultCovalentMad = 0;
 this.bsAromaticSingle = null;
@@ -16,12 +16,15 @@ this.haveHiddenBonds = false;
 Clazz.instantialize (this, arguments);
 }, JM, "BondCollection", JM.AtomCollection);
 Clazz.prepareFields (c$, function () {
+this.bsAromatic =  new JU.BS ();
+});
+Clazz.defineMethod (c$, "setupBC", 
+function () {
 this.numCached =  Clazz.newIntArray (5, 0);
 this.freeBonds =  new Array (5);
-{
 for (var i = 5; --i > 0; ) this.freeBonds[i] =  new Array (200);
 
-}this.bsAromatic =  new JU.BS ();
+this.setupAC ();
 });
 Clazz.overrideMethod (c$, "releaseModelSet", 
 function () {
@@ -185,7 +188,7 @@ return false;
 if (formalChargeA != 0) {
 var formalChargeB = atomB.getFormalCharge ();
 if ((formalChargeA < 0 && formalChargeB < 0) || (formalChargeA > 0 && formalChargeB > 0)) return false;
-}if (atomA.altloc != atomB.altloc && atomA.altloc != '\0' && atomB.altloc != '\0' && this.getVibration (atomA.i, false) == null) return false;
+}if (atomA.altloc != atomB.altloc && atomA.altloc != '\0' && atomB.altloc != '\0' && this.getModulation (atomA.i) == null) return false;
 this.getOrAddBond (atomA, atomB, order, mad, bsBonds, 0, false);
 return true;
 }, "JM.Atom,JM.Atom,~N,~N,JU.BS");

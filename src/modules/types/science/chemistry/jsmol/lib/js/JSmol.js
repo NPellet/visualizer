@@ -1,3 +1,4 @@
+// BH 9/6/2014 5:42:32 PM  two-point gestures broken
 // BH 5/8/2014 11:16:40 AM j2sPath starting with "/" fails to add idiom
 // BH 1/16/2014 8:44:03 PM   Jmol.__execDelayMS = 100; // FF bug when loading into a tab that is not 
 //                           immediately focused and not using jQuery for adding the applet and having  
@@ -29,6 +30,9 @@
 
 ;(function (Jmol) {
 
+	Jmol._isAsync = false; // testing only
+	Jmol._asyncCallbacks = {};
+	
 	Jmol._coreFiles = []; // required for package.js
 
 
@@ -66,6 +70,37 @@
 			Jmol._coreFiles.push(Jmol.__coreMore[i]);			 
 	}      		
 
+  Jmol._loadZJars = function(i) {
+    if (i < Jmol._coreFiles.length) {
+		  Clazz._Loader.loadZJar(Jmol._coreFiles[i], Clazz._Loader.runtimeKeyClass, function() {Jmol._loadZJars(i + 1)});
+		} else {
+			window["java.registered"] = true;
+			Jmol._nextExecution();
+		}
+	}
+	
+	    /*
+ClazzLoader._loadZJars = function(i) { 
+	if (Jmol._isAsync) {
+		if (i < Jmol._coreFiles.length) {
+		  ClazzLoader.loadZJar(Jmol._coreFiles[i], ClazzLoader.runtimeKeyClass, function() {ClazzLoader._loadZJars(i + 1)});
+		} else {
+			Jmol._nextExecution();
+		}
+		return;	
+	} else {
+		for (var i = 0; i < Jmol._coreFiles.length; i++)
+		  ClazzLoader.loadZJar(Jmol._coreFiles[i], ClazzLoader.runtimeKeyClass);
+		window["java.registered"] = true;
+	}
+}
+
+ClazzLoader._loadZJars(0);
+
+    */
+    
+
+
 	Jmol.__nextExecution = function(trigger) {
 		delete Jmol.__execTimer;
 		var es = Jmol.__execStack;
@@ -74,35 +109,39 @@
 			es.shift();
 		if (es.length == 0)
 			return;
-		if (!trigger) {
+		if (!Jmol._isAsync && !trigger) {
 			setTimeout("Jmol.__nextExecution(true)",10)
 			return;
 		}
 		e.push("done");
 		var s = "JSmol exec " + e[0]._id + " " + e[3] + " " + e[2];
+		if (self.System)
+			System.out.println(s);
+			//alert(s)
 		if (self.console)console.log(s + " -- OK")
 		Jmol.__execLog.push(s);
 		e[1](e[0],e[2]);	
 	};
 
 	Jmol.__loadClazz = function(applet) {
-		// problems with multiple applets?
 		if (!Jmol.__clazzLoaded) {
 			Jmol.__clazzLoaded = true;
+			// create the Clazz object
 			LoadClazz();
 			if (applet._noMonitor)
 				Clazz._LoaderProgressMonitor.showStatus = function() {}
 			LoadClazz = null;
 
-			Clazz._Loader.globalLoaded = function (file) {
+			Clazz._Loader.onGlobalLoaded = function (file) {
 			 // not really.... just nothing more yet to do yet
-				Clazz._LoaderProgressMonitor.showStatus ("Application loaded.", true);
+				Clazz._LoaderProgressMonitor.showStatus("Application loaded.", true);
 				if (!Jmol._debugCode || !Jmol.haveCore) {
 					Jmol.haveCore = true;
 					Jmol.__nextExecution();
 				}
 			};
-			Clazz._Loader.packageClasspath ("java", null, true);
+		  // load package.js and j2s/core/core.z.js
+			Clazz._Loader.loadPackageClasspath("java", null, true, Jmol.__nextExecution);
 			return;
 		}
 		Jmol.__nextExecution();
@@ -200,13 +239,15 @@
 			this._script(s, true);
 			if (this._deferUncover && this._coverTitle == "activate 3D model")
 				Jmol._getElement(this, "coverimage").title = "3D model is loading...";
-			if (this._deferApplet)
+			if (!this._isJava)
 				this._newCanvas(false);
 			if (this._defaultModel)	
 				Jmol._search(this, this._defaultModel);
 			this._showInfo(false);
 			if (!this._deferUncover)
-				this._displayCoverImage(doCover);
+				this._displayCoverImage(false);
+			if (this._isJava)
+				Jmol.$html(Jmol.$(this, "appletdiv"), this._javaCode);
 			if (this._init)
 				this._init();
 		};
@@ -279,6 +320,7 @@
 			return c;	
     }
     
+    
 		proto._setupJS = function() {
 			window["j2s.lib"] = {
 				base : this._j2sPath + "/",
@@ -328,14 +370,17 @@
 	//		Jmol.GLmol.addExportHook(applet);
 		//	Jmol.__nextExecution();
 		//};
-
 		proto.__startAppletJS = function(applet) {
-			var viewerOptions =  new java.util.Hashtable ();
+			if (Jmol._version.indexOf("$Date: ") == 0)
+				Jmol._version = (Jmol._version.substring(7) + " -").split(" -")[0] + " (JSmol/j2s)"
+			var viewerOptions = Clazz._4Name("java.util.Hashtable").newInstance();
 			Jmol._setAppletParams(applet._availableParams, viewerOptions, applet.__Info, true);
 			viewerOptions.put("appletReadyCallback","Jmol._readyCallback");
 			viewerOptions.put("applet", true);
 			viewerOptions.put("name", applet._id);// + "_object");
-			viewerOptions.put("syncId", Jmol._syncId);      
+			viewerOptions.put("syncId", Jmol._syncId);
+			if (Jmol._isAsync)
+				viewerOptions.put("async", true);
 			if (applet._color) 
 				viewerOptions.put("bgcolor", applet._color);
 			if (!applet._is2D)  
@@ -365,17 +410,57 @@
 			viewerOptions.put ("codePath", codePath);
 
 			Jmol._registerApplet(applet._id, applet);
-			applet._applet = (applet._isAstex ? new astex.MoleculeViewerAppletJS(viewerOptions) 
-			  : !applet._isJSV ? new J.appletjs.Jmol(viewerOptions) 
-				: applet._isPro ? new JSV.appletjs.JSVAppletPro(viewerOptions) 
-				: new JSV.appletjs.JSVApplet(viewerOptions));
-
-			if (!applet._is2D)
-				applet._GLmol.applet = applet;
+			//if (!applet._is2D)
+				//applet._GLmol.applet = applet;
+			try {
+				applet._newApplet(viewerOptions);
+			} catch (e) {
+				System.out.println((Jmol._isAsync ? "normal async abort from " : "") + e);
+				return;
+			}
 			applet._jsSetScreenDimensions();      
 			Jmol.__nextExecution();
 		};
 
+		proto._restoreState = function(clazzName, state) {
+			System.out.println("\n\nasynchronous restore state for " + clazzName + " " + state)
+			var applet = this;
+			var vwr = applet._applet && applet._applet.viewer;
+			switch (state) {
+			case "setOptions":
+				return function(_setOptions) {applet.__startAppletJS(applet)};
+			case "render":
+				return function() {setTimeout(function(){vwr.refresh(2)},10)};
+			default:
+				switch (clazzName) {
+				// debug mode only, when core.z.js has not been loaded and prior to start
+				case "J.shape.Balls":
+				case "J.shape.Sticks":
+				case "J.shape.Frank":
+					return null;
+				}
+				
+				//if (vwr.rm.repaintPending)
+					//return function() {setTimeout(function(){vwr.refresh(2)},10)};
+				if (vwr && vwr.isScriptExecuting && vwr.isScriptExecuting()) {
+					if (Jmol._asyncCallbacks[clazzName]) {
+						System.out.println("...ignored");
+						return 1;
+					}
+					var sc = vwr.getEvalContextAndHoldQueue(vwr.eval);
+					var pc = sc.pc - 1;
+					sc.asyncID = clazzName;
+					Jmol._asyncCallbacks[clazzName] = function(pc) {sc.pc=pc; System.out.println("sc.asyncID="+sc.asyncID+" sc.pc = " + sc.pc);vwr.eval.resumeEval(sc)};
+					vwr.eval.pc = vwr.eval.pcEnd;
+					System.out.println("setting resume for pc=" + sc.pc + " " + clazzName + " to " + Jmol._asyncCallbacks[clazzName] + "//" )
+					return function() {System.out.println("resuming " + clazzName + " " + Jmol._asyncCallbacks[clazzName]);Jmol._asyncCallbacks[clazzName](pc)};					
+				}
+				System.out.println(clazzName + "?????????????????????" + state)
+				return function() {setTimeout(function(){vwr.refresh(2)},10)};
+				//return null;
+			}
+		}
+	
 		proto._jsSetScreenDimensions = function() {
 				if (!this._applet)return
 				// strangely, if CTRL+/CTRL- are used repeatedly, then the
@@ -446,7 +531,7 @@
 
 
 		proto._processGesture = function(touches) {
-			return this._applet.mouse.processTwoPointGesture(touches);
+			return this._applet.processTwoPointGesture(touches);
 		}
 
 		proto._processEvent = function(type, xym) {

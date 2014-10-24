@@ -9,6 +9,7 @@
 ,Clazz_instantialize
 ,Clazz_decorateAsClass
 ,Clazz_floatToInt
+,Clazz_floatToLong
 ,Clazz_makeConstructor
 ,Clazz_defineEnumConstant
 ,Clazz_exceptionOf
@@ -146,7 +147,7 @@ Clazz_load (["J.jvxl.api.VertexDataServer"], "J.jvxl.api.MeshDataServer", null, 
 Clazz_declareInterface (J.jvxl.api, "MeshDataServer", J.jvxl.api.VertexDataServer);
 });
 Clazz_declarePackage ("J.shapesurface");
-Clazz_load (["J.jvxl.api.MeshDataServer", "J.shape.MeshCollection", "JU.P3i", "$.P4"], "J.shapesurface.Isosurface", ["java.io.BufferedReader", "java.lang.Boolean", "$.Float", "java.util.Hashtable", "JU.A4", "$.AU", "$.BS", "$.CU", "$.Lst", "$.M3", "$.P3", "$.PT", "$.Quat", "$.Rdr", "$.SB", "$.V3", "J.jvxl.data.JvxlCoder", "$.JvxlData", "$.MeshData", "J.jvxl.readers.SurfaceGenerator", "J.shape.Mesh", "J.shapesurface.IsosurfaceMesh", "JU.C", "$.Escape", "$.Logger", "$.MeshSurface", "$.Txt", "JV.JC", "$.Viewer"], function () {
+Clazz_load (["J.jvxl.api.MeshDataServer", "J.shape.MeshCollection", "JU.P3i", "$.P4"], "J.shapesurface.Isosurface", ["java.io.BufferedReader", "java.lang.Boolean", "$.Float", "java.util.Hashtable", "JU.A4", "$.AU", "$.BS", "$.CU", "$.Lst", "$.M3", "$.P3", "$.PT", "$.Quat", "$.Rdr", "$.SB", "$.V3", "J.jvxl.data.JvxlCoder", "$.JvxlData", "$.MeshData", "J.jvxl.readers.SurfaceGenerator", "J.shape.Mesh", "J.shapesurface.IsosurfaceMesh", "JU.C", "$.Escape", "$.Logger", "$.MeshSurface", "JV.JC", "$.Viewer"], function () {
 c$ = Clazz_decorateAsClass (function () {
 this.isomeshes = null;
 this.thisMesh = null;
@@ -283,7 +284,7 @@ this.thisMesh.colorVertices (JU.C.getColixO (value), bs, false);
 var colors = value;
 var colix0 = JU.C.getColix ((colors[0]).intValue ());
 var colix1 = JU.C.getColix ((colors[1]).intValue ());
-var id = (this.thisMesh != null ? this.thisMesh.thisID : JU.Txt.isWild (this.previousMeshID) ? this.previousMeshID : null);
+var id = (this.thisMesh != null ? this.thisMesh.thisID : JU.PT.isWild (this.previousMeshID) ? this.previousMeshID : null);
 var list = this.getMeshList (id, false);
 for (var i = list.size (); --i >= 0; ) this.setColorPhase (list.get (i), colix0, colix1);
 
@@ -293,7 +294,7 @@ var color = JU.C.getHexCode (JU.C.getColixO (value));
 if (this.thisMesh != null) {
 this.setIsoMeshColor (this.thisMesh, color);
 } else {
-var list = this.getMeshList (JU.Txt.isWild (this.previousMeshID) ? this.previousMeshID : null, false);
+var list = this.getMeshList (JU.PT.isWild (this.previousMeshID) ? this.previousMeshID : null, false);
 for (var i = list.size (); --i >= 0; ) this.setIsoMeshColor (list.get (i), color);
 
 }this.setPropertySuper (propertyName, value, bs);
@@ -611,7 +612,7 @@ data[2] = d;
 }return true;
 }if (property === "unitCell") {
 var m = this.getMesh (data[0]);
-return (m != null && (data[1] = m.getUnitCell ()) != null);
+return (m != null && (data[1] = m.getUnitCell (this.vwr)) != null);
 }if (property === "getCenter") {
 var index = (data[1]).intValue ();
 if (index == -2147483648) {
@@ -687,6 +688,7 @@ var f = this.thisMesh.jvxlData.voxelVolume;
 f *= (this.thisMesh.bsSlabDisplay == null ? this.thisMesh.vc : this.thisMesh.bsSlabDisplay.cardinality ());
 return this.thisMesh.calculatedVolume = Float.$valueOf (f);
 }var ret = meshData.calculateVolumeOrArea (this.thisMesh.jvxlData.thisSet, isArea, false);
+if (this.thisMesh.nSets <= 0) this.thisMesh.nSets = -meshData.nSets;
 if (isArea) this.thisMesh.calculatedArea = ret;
  else this.thisMesh.calculatedVolume = ret;
 return ret;
@@ -1308,7 +1310,7 @@ Clazz_defineStatics (c$,
 "MAX_OBJECT_CLICK_DISTANCE_SQUARED", 100);
 });
 Clazz_declarePackage ("J.jvxl.data");
-Clazz_load (null, "J.jvxl.data.JvxlCoder", ["java.lang.Character", "$.Float", "JU.BS", "$.Lst", "$.P3", "$.PT", "$.SB", "$.XmlUtil", "J.jvxl.data.VolumeData", "JU.BSUtil", "$.C", "$.Escape", "$.Logger"], function () {
+Clazz_load (null, "J.jvxl.data.JvxlCoder", ["java.lang.Float", "JU.BS", "$.Lst", "$.P3", "$.PT", "$.SB", "$.XmlUtil", "J.jvxl.data.VolumeData", "JU.BSUtil", "$.C", "$.Escape", "$.Logger"], function () {
 c$ = Clazz_declareType (J.jvxl.data, "JvxlCoder");
 c$.jvxlGetFile = Clazz_defineMethod (c$, "jvxlGetFile", 
 function (volumeData, jvxlData, title) {
@@ -1541,12 +1543,12 @@ var c1 = ' ';
 var c2 = ' ';
 for (var i = bs.nextSetBit (0); i >= 0; i = bs.nextSetBit (i + 1)) {
 var vertexIndexes = polygonIndexes[i];
-while (pt < nBuf && !Character.isDigit (c1 = fData.charAt (pt++))) {
+while (pt < nBuf && !JU.PT.isDigit (c1 = fData.charAt (pt++))) {
 }
 type = c1.charCodeAt (0) - 48;
-while (pt < nBuf && Character.isWhitespace (c1 = fData.charAt (pt++))) {
+while (pt < nBuf && JU.PT.isWhitespace (c1 = fData.charAt (pt++))) {
 }
-while (pt < nBuf && Character.isWhitespace (c2 = fData.charAt (pt++))) {
+while (pt < nBuf && JU.PT.isWhitespace (c2 = fData.charAt (pt++))) {
 }
 var f1 = J.jvxl.data.JvxlCoder.jvxlFractionFromCharacter (c1.charCodeAt (0), 35, 90, 0);
 var f2 = J.jvxl.data.JvxlCoder.jvxlFractionFromCharacter (c2.charCodeAt (0), 35, 90, 0);
@@ -1846,13 +1848,13 @@ var value = 0;
 var ich = next[0];
 var ichMax = str.length;
 if (ich < 0) return -2147483648;
-while (ich < ichMax && Character.isWhitespace (str.charAt (ich))) ++ich;
+while (ich < ichMax && JU.PT.isWhitespace (str.charAt (ich))) ++ich;
 
 if (ich >= ichMax) return -2147483648;
 var factor = 1;
 var isLong = (str.charCodeAt (ich) == (offset + base));
 if (isLong) ich++;
-while (ich < ichMax && !Character.isWhitespace (str.charAt (ich))) {
+while (ich < ichMax && !JU.PT.isWhitespace (str.charAt (ich))) {
 var i = str.charCodeAt (ich);
 if (i < offset) i = 92;
 value += (i - offset) * factor;
@@ -2603,19 +2605,15 @@ this.nSets = n;
 this.surfaceSet = temp;
 if (!this.setsSuccessful && level < 2) this.getSurfaceSetForLevel (level + 1);
 if (level == 0) {
-this.sortSurfaceSets ();
-this.setVertexSets (false);
-}return this.surfaceSet;
-}, "~N");
-Clazz_defineMethod (c$, "sortSurfaceSets", 
- function () {
 var sets =  new Array (this.nSets);
 for (var i = 0; i < this.nSets; i++) sets[i] = Clazz_innerTypeInstance (J.jvxl.data.MeshData.SSet, this, null, this.surfaceSet[i]);
 
 java.util.Arrays.sort (sets, Clazz_innerTypeInstance (J.jvxl.data.MeshData.SortSet, this, null));
 for (var i = 0; i < this.nSets; i++) this.surfaceSet[i] = sets[i].bs;
 
-});
+this.setVertexSets (false);
+}return this.surfaceSet;
+}, "~N");
 Clazz_defineMethod (c$, "setVertexSets", 
 function (onlyIfNull) {
 if (this.surfaceSet == null) return;
@@ -2676,16 +2674,16 @@ return (val1 >= 0 && val2 >= 0 && val3 >= 0 || val1 <= 0 && val2 <= 0 && val3 <=
 }, "~N,~N,~N,~A");
 Clazz_defineMethod (c$, "calculateVolumeOrArea", 
 function (thisSet, isArea, getSets) {
-if (getSets || this.nSets == 0) this.getSurfaceSet ();
+if (getSets || this.nSets <= 0) this.getSurfaceSet ();
 var justOne = (thisSet >= -1);
-var n = (justOne || this.nSets == 0 ? 1 : this.nSets);
+var n = (justOne || this.nSets <= 0 ? 1 : this.nSets);
 var v =  Clazz_newDoubleArray (n, 0);
 var vAB =  new JU.V3 ();
 var vAC =  new JU.V3 ();
 var vTemp =  new JU.V3 ();
 for (var i = this.pc; --i >= 0; ) {
 if (!this.setABC (i)) continue;
-var iSet = (this.nSets == 0 ? 0 : this.vertexSets[this.iA]);
+var iSet = (this.nSets <= 0 ? 0 : this.vertexSets[this.iA]);
 if (thisSet >= 0 && iSet != thisSet) continue;
 if (isArea) {
 vAB.sub2 (this.vs[this.iB], this.vs[this.iA]);
@@ -2750,7 +2748,7 @@ Clazz_defineStatics (c$,
 "MODE_PUT_VERTICES", 4);
 });
 Clazz_declarePackage ("J.jvxl.readers");
-Clazz_load (null, "J.jvxl.readers.XmlReader", ["java.lang.Character", "JU.P3", "$.SB", "$.XmlUtil", "JU.Escape"], function () {
+Clazz_load (null, "J.jvxl.readers.XmlReader", ["JU.P3", "$.PT", "$.SB", "$.XmlUtil", "JU.Escape"], function () {
 c$ = Clazz_decorateAsClass (function () {
 this.br = null;
 this.line = null;
@@ -2830,7 +2828,7 @@ if ((ch = data.charAt (pt1)) == '"') quoted = !quoted;
  else if (!quoted && (ch == '>' || ch == '/')) break;
 }
 if (pt1 >= pt2) return "";
-while (Character.isWhitespace (data.charAt (++pt1))) {
+while (JU.PT.isWhitespace (data.charAt (++pt1))) {
 }
 return JU.XmlUtil.unwrapCdata (data.substring (pt1, pt2));
 }, "~S,~S,~S,~B");
@@ -2871,7 +2869,7 @@ return (this.line.indexOf ("<" + name) >= 0);
 }, "~S");
 });
 Clazz_declarePackage ("J.jvxl.readers");
-Clazz_load (["JU.P3", "$.V3"], "J.jvxl.readers.SurfaceGenerator", ["java.lang.Float", "java.util.Map", "JU.AU", "$.BS", "$.Measure", "$.P4", "$.PT", "$.Rdr", "J.io.JmolBinary", "J.jvxl.data.JvxlCoder", "$.JvxlData", "$.MeshData", "$.VolumeData", "J.jvxl.readers.Parameters", "$.SurfaceReader", "JU.Logger"], function () {
+Clazz_load (["JU.P3", "$.V3"], "J.jvxl.readers.SurfaceGenerator", ["java.lang.Float", "java.util.Map", "JU.AU", "$.BS", "$.Measure", "$.P4", "$.PT", "$.Rdr", "J.jvxl.data.JvxlCoder", "$.JvxlData", "$.MeshData", "$.VolumeData", "J.jvxl.readers.Parameters", "$.SurfaceReader", "JU.Logger"], function () {
 c$ = Clazz_decorateAsClass (function () {
 this.jvxlData = null;
 this.meshData = null;
@@ -3453,7 +3451,7 @@ return true;
 this.out = value;
 return true;
 }if ("readFile" === propertyName) {
-if ((this.surfaceReader = this.setFileData (value)) == null) {
+if ((this.surfaceReader = this.setFileData (this.atomDataServer, value)) == null) {
 JU.Logger.error ("Could not set the surface data");
 return true;
 }this.surfaceReader.setOutputChannel (this.out);
@@ -3463,7 +3461,7 @@ return true;
 this.getSurfaceSets ();
 return true;
 }if ("mapColor" === propertyName) {
-if ((this.surfaceReader = this.setFileData (value)) == null) {
+if ((this.surfaceReader = this.setFileData (this.atomDataServer, value)) == null) {
 JU.Logger.error ("Could not set the mapping data");
 return true;
 }this.surfaceReader.setOutputChannel (this.out);
@@ -3646,7 +3644,7 @@ if (property === "jvxlFileInfo") return J.jvxl.data.JvxlCoder.jvxlGetInfo (this.
 return null;
 }, "~S,~N");
 Clazz_defineMethod (c$, "setFileData", 
- function (value) {
+ function (vwr, value) {
 var fileType = this.fileType;
 this.fileType = null;
 if (Clazz_instanceOf (value, J.jvxl.data.VolumeData)) {
@@ -3664,7 +3662,7 @@ if (Clazz_instanceOf (value, String)) {
 data = value;
 value = JU.Rdr.getBR (value);
 }var br = value;
-if (fileType == null) fileType = J.io.JmolBinary.determineSurfaceFileType (br);
+if (fileType == null) fileType = vwr.fm.jmb.determineSurfaceFileType (br);
 if (fileType != null && fileType.startsWith ("UPPSALA")) {
 var fname = this.params.fileName;
 fname = fname.substring (0, fname.indexOf ("/", 10));
@@ -3682,7 +3680,7 @@ if (Clazz_exceptionOf (e, Exception)) {
 throw e;
 }
 }
-fileType = J.io.JmolBinary.determineSurfaceFileType (br);
+fileType = vwr.fm.jmb.determineSurfaceFileType (br);
 }if (fileType == null) fileType = "UNKNOWN";
 JU.Logger.info ("data file type was determined to be " + fileType);
 if (fileType.equals ("Jvxl+")) return this.newReaderBr ("JvxlReader", br);
@@ -3699,7 +3697,7 @@ throw e;
 br = null;
 fileType += "Binary";
 }return this.newReaderBr (fileType + "Reader", br);
-}, "~O");
+}, "JV.Viewer,~O");
 Clazz_defineMethod (c$, "getReaderData", 
 function () {
 var o = this.readerData;
@@ -4940,7 +4938,7 @@ if (this.params.colorBySets) return (this.minMax = [0, Math.max (this.meshData.n
 var min = 3.4028235E38;
 var max = -3.4028235E38;
 if (this.params.usePropertyForColorRange && this.params.theProperty != null) {
-for (var i = 0; i < this.params.theProperty.length; i++) {
+for (var i = this.params.theProperty.length; --i >= 0; ) {
 if (this.params.rangeSelected && !this.params.bsSelected.get (i)) continue;
 var p = this.params.theProperty[i];
 if (Float.isNaN (p)) continue;
@@ -5667,7 +5665,7 @@ Clazz_defineStatics (c$,
 "defaultContourCount", 9);
 });
 Clazz_declarePackage ("J.shapesurface");
-Clazz_load (["J.shape.Mesh", "J.jvxl.data.JvxlData"], "J.shapesurface.IsosurfaceMesh", ["java.lang.Character", "$.Float", "java.util.Hashtable", "JU.AU", "$.BS", "$.CU", "$.Lst", "$.M4", "$.Measure", "$.P3", "$.P4", "$.PT", "$.SB", "$.V3", "J.api.Interface", "J.jvxl.data.JvxlCoder", "JS.T", "JU.BoxInfo", "$.C", "$.ColorEncoder", "$.Escape", "$.Logger", "JV.Viewer"], function () {
+Clazz_load (["J.shape.Mesh"], "J.shapesurface.IsosurfaceMesh", ["java.lang.Float", "java.util.Hashtable", "JU.AU", "$.BS", "$.CU", "$.Lst", "$.M4", "$.Measure", "$.P3", "$.P4", "$.PT", "$.SB", "$.V3", "J.api.Interface", "J.jvxl.data.JvxlCoder", "$.JvxlData", "JS.T", "JU.BoxInfo", "$.C", "$.ColorEncoder", "$.Escape", "$.Logger", "JV.Viewer"], function () {
 c$ = Clazz_decorateAsClass (function () {
 this.jvxlData = null;
 this.vertexIncrement = 1;
@@ -5688,13 +5686,10 @@ this.bsVdw = null;
 this.colorPhased = false;
 Clazz_instantialize (this, arguments);
 }, J.shapesurface, "IsosurfaceMesh", J.shape.Mesh);
-Clazz_prepareFields (c$, function () {
-this.jvxlData =  new J.jvxl.data.JvxlData ();
-});
 Clazz_makeConstructor (c$, 
 function (thisID, colix, index) {
-Clazz_superConstructor (this, J.shapesurface.IsosurfaceMesh, []);
 this.mesh1 (thisID, colix, index);
+this.jvxlData =  new J.jvxl.data.JvxlData ();
 this.checkByteCount = 2;
 this.jvxlData.version = JV.Viewer.getJmolVersion ();
 }, "~S,~N,~N");
@@ -5989,9 +5984,9 @@ var atoms = vwr.ms.at;
 for (var i = this.mergeVertexCount0; i < this.vc; i++) {
 var iAtom = this.vertexSource[i];
 if (iAtom < 0 || !bs.get (iAtom)) continue;
-this.jvxlData.vertexColors[i] = vwr.getColorArgbOrGray (this.vcs[i] = JU.C.copyColixTranslucency (this.colix, atoms[iAtom].getColix ()));
+this.jvxlData.vertexColors[i] = vwr.getColorArgbOrGray (this.vcs[i] = JU.C.copyColixTranslucency (this.colix, atoms[iAtom].colixAtom));
 var colix = (colixes == null ? 0 : colixes[atomMap[iAtom]]);
-if (colix == 0) colix = atoms[iAtom].getColix ();
+if (colix == 0) colix = atoms[iAtom].colixAtom;
 this.vcs[i] = JU.C.copyColixTranslucency (this.colix, colix);
 }
 }, "JV.Viewer,~A,~A,JU.BS");
@@ -6062,7 +6057,7 @@ if (this.colorCommand.equals ("inherit")) {
 this.colorCommand = "#inherit;";
 return;
 }if (this.colorCommand == null) return;
-this.colorCommand = "color $" + (Character.isLetter (this.thisID.charAt (0)) && this.thisID.indexOf (" ") < 0 ? this.thisID : "\"" + this.thisID + "\"") + " \"" + this.colorCommand + "\" range " + (this.jvxlData.isColorReversed ? this.jvxlData.valueMappedToBlue + " " + this.jvxlData.valueMappedToRed : this.jvxlData.valueMappedToRed + " " + this.jvxlData.valueMappedToBlue);
+this.colorCommand = "color $" + (JU.PT.isLetter (this.thisID.charAt (0)) && this.thisID.indexOf (" ") < 0 ? this.thisID : "\"" + this.thisID + "\"") + " \"" + this.colorCommand + "\" range " + (this.jvxlData.isColorReversed ? this.jvxlData.valueMappedToBlue + " " + this.jvxlData.valueMappedToRed : this.jvxlData.valueMappedToRed + " " + this.jvxlData.valueMappedToBlue);
 });
 Clazz_defineMethod (c$, "setColorsFromJvxlData", 
 function (colorRgb) {
@@ -6129,7 +6124,7 @@ this.jvxlData.nVertexColors = this.vc;
 var atoms = vwr.ms.at;
 for (var i = this.mergeVertexCount0; i < this.vc; i++) {
 var pt = this.vertexSource[i];
-if (pt >= 0 && pt < atoms.length) this.jvxlData.vertexColors[i] = vwr.getColorArgbOrGray (this.vcs[i] = JU.C.copyColixTranslucency (this.colix, atoms[pt].getColix ()));
+if (pt >= 0 && pt < atoms.length) this.jvxlData.vertexColors[i] = vwr.getColorArgbOrGray (this.vcs[i] = JU.C.copyColixTranslucency (this.colix, atoms[pt].colixAtom));
 }
 return;
 }this.jvxlData.vertexColors = null;
@@ -6240,9 +6235,9 @@ if (vertexCount > 0) for (var j = 0; j < 3; j++) p[j] += vertexCount;
 return ipt;
 }, "JU.MeshSurface,~N,~N,~A");
 Clazz_overrideMethod (c$, "getUnitCell", 
-function () {
-return (this.spanningVectors == null ? null : J.api.Interface.getSymmetry ().getUnitCell (this.spanningVectors, true, null));
-});
+function (vwr) {
+return (this.spanningVectors == null ? null : J.api.Interface.getSymmetry (vwr, "symmetry").getUnitCell (this.spanningVectors, true, null));
+}, "JV.Viewer");
 Clazz_overrideMethod (c$, "slabBrillouin", 
 function (unitCellPoints) {
 var vectors = (unitCellPoints == null ? this.spanningVectors : unitCellPoints);
@@ -6496,7 +6491,7 @@ function () {
 });
 });
 Clazz_declarePackage ("J.jvxl.readers");
-Clazz_load (["J.jvxl.readers.VolumeDataReader", "JU.BS", "$.P3", "$.P3i", "J.atomdata.AtomData"], "J.jvxl.readers.AtomDataReader", ["java.lang.Float", "java.util.Date", "JU.AU", "$.SB", "$.V3", "J.atomdata.RadiusData", "J.c.VDW", "J.jvxl.data.JvxlCoder", "JU.BSUtil", "$.Logger", "$.Txt"], function () {
+Clazz_load (["J.jvxl.readers.VolumeDataReader", "JU.BS", "$.P3", "$.P3i", "J.atomdata.AtomData"], "J.jvxl.readers.AtomDataReader", ["java.lang.Float", "java.util.Date", "JU.AU", "$.PT", "$.SB", "$.V3", "J.atomdata.RadiusData", "J.c.VDW", "J.jvxl.data.JvxlCoder", "JU.BSUtil", "$.Logger"], function () {
 c$ = Clazz_decorateAsClass (function () {
 this.maxDistance = 0;
 this.contactPair = null;
@@ -6769,8 +6764,8 @@ Clazz_defineMethod (c$, "fixTitleLine",
 function (iLine) {
 if (this.params.title == null) return false;
 var line = this.params.title[iLine];
-if (line.indexOf ("%F") > 0) line = this.params.title[iLine] = JU.Txt.formatStringS (line, "F", this.atomData.fileName);
-if (line.indexOf ("%M") > 0) this.params.title[iLine] = JU.Txt.formatStringS (line, "M", this.atomData.modelName);
+if (line.indexOf ("%F") > 0) line = this.params.title[iLine] = JU.PT.formatStringS (line, "F", this.atomData.fileName);
+if (line.indexOf ("%M") > 0) this.params.title[iLine] = JU.PT.formatStringS (line, "M", this.atomData.modelName);
 return true;
 }, "~N");
 Clazz_defineMethod (c$, "setVertexSource", 
@@ -7014,9 +7009,10 @@ function (cutoff, isCutoffAbsolute, valueA, valueB, pointA, edgeVector, x, y, z,
 var vA = this.marchingCubes.getLinearOffset (x, y, z, vA0);
 var vB = this.marchingCubes.getLinearOffset (x, y, z, vB0);
 this.isSurfacePoint = (this.bsSurfaceVoxels != null && (this.bsSurfaceVoxels.get (vA) || this.bsSurfaceVoxels.get (vB)));
-if (J.jvxl.readers.IsoSolventReader.testLinear || this.voxelSource == null || this.voxelSource[vA] == 0 || this.voxelSource[vA] != this.voxelSource[vB]) return this.getSPF (cutoff, isCutoffAbsolute, valueA, valueB, pointA, edgeVector, x, y, z, vA, vB, fReturn, ptReturn);
-var iAtom = Math.abs (valueA < valueB ? this.voxelSource[vA] : this.voxelSource[vB]);
-this.iAtomSurface = this.atomIndex[iAtom - 1];
+if (this.voxelSource != null) {
+var vs = Math.abs (Float.isNaN (valueB) || valueA < valueB ? this.voxelSource[vA] : this.voxelSource[vB]);
+if (vs > 0) this.iAtomSurface = this.atomIndex[vs - 1];
+}if (J.jvxl.readers.IsoSolventReader.testLinear || this.voxelSource == null || this.voxelSource[vA] == 0 || this.voxelSource[vA] != this.voxelSource[vB]) return this.getSPF (cutoff, isCutoffAbsolute, valueA, valueB, pointA, edgeVector, x, y, z, vA, vB, fReturn, ptReturn);
 var fraction = fReturn[0] = JU.MeshSurface.getSphericalInterpolationFraction ((this.voxelSource[vA] < 0 ? this.sr : this.atomRadius[this.voxelSource[vA] - 1]), valueA, valueB, edgeVector.length ());
 ptReturn.scaleAdd2 (fraction, edgeVector, pointA);
 var diff = valueB - valueA;
@@ -7420,7 +7416,6 @@ function (pt, getSource) {
 if (this.contactPair != null) return pt.distance (this.contactPair.myAtoms[1]) - this.contactPair.radii[1];
 var value = 3.4028235E38;
 for (var iAtom = 0; iAtom < this.firstNearbyAtom; iAtom++) {
-if (this.rs == null || this.atomXyz == null || this.atomXyz[iAtom] == null || pt == null) System.out.println ("HOH");
 var r = pt.distance (this.atomXyz[iAtom]) - this.rs[iAtom];
 if (r < value) value = r;
 }
@@ -7534,6 +7529,10 @@ Clazz_makeConstructor (c$,
 function () {
 Clazz_superConstructor (this, J.jvxl.readers.SurfaceFileReader, []);
 });
+Clazz_defineMethod (c$, "setStream", 
+function (fileName, isBigEndian) {
+this.binarydoc.setStream ((this.sg.getAtomDataServer ()).getJzt (), fileName == null ? null : this.sg.getAtomDataServer ().getBufferedInputStream (fileName), isBigEndian);
+}, "~S,~B");
 Clazz_overrideMethod (c$, "init", 
 function (sg) {
 this.initSR (sg);
@@ -7549,7 +7548,7 @@ this.br = br;
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
 Clazz_defineMethod (c$, "newBinaryDocument", 
 function () {
-return J.api.Interface.getInterface ("JU.BinaryDocument");
+return J.api.Interface.getInterface ("JU.BinaryDocument", this.sg.getAtomDataServer (), "file");
 });
 Clazz_overrideMethod (c$, "setOutputChannel", 
 function (out) {
@@ -7845,7 +7844,7 @@ Clazz_defineMethod (c$, "getPlaneProcessed",
 function (x) {
 var plane;
 if (this.iPlaneRaw == 0) {
-this.qpc = J.api.Interface.getOption ("quantum.NciCalculation");
+this.qpc = J.api.Interface.getOption ("quantum.NciCalculation", this.sg.getAtomDataServer (), null);
 var atomData =  new J.atomdata.AtomData ();
 atomData.modelIndex = -1;
 atomData.bsSelected = this.params.bsSelected;
@@ -8762,7 +8761,7 @@ this.showNumbers = this.vwr.getTestFlag (3);
 this.isosurface = this.shape;
 this.exportPass = (this.isExport ? 2 : 0);
 this.isNavigationMode = this.vwr.getBoolean (603979887);
-this.$showKey = (this.vwr.getBoolean (603979870) ? Boolean.TRUE : null);
+this.$showKey = (this.vwr.getBoolean (603979869) ? Boolean.TRUE : null);
 this.isosurface.keyXy = null;
 this.meshScale = -1;
 this.globalSlabValue = this.g3d.getSlab ();
@@ -9090,6 +9089,7 @@ this.g3d.drawLineAB (this.screens[i], this.ptTempi);
 ,Clazz.instantialize
 ,Clazz.decorateAsClass
 ,Clazz.floatToInt
+,Clazz.floatToLong
 ,Clazz.makeConstructor
 ,Clazz.defineEnumConstant
 ,Clazz.exceptionOf

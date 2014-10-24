@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.quantum");
-Clazz.load (["J.api.JmolNMRInterface", "java.util.Hashtable"], "J.quantum.NMRCalculation", ["java.lang.Character", "$.Double", "$.Float", "$.NullPointerException", "JU.BS", "$.Lst", "$.PT", "$.V3", "J.io.JmolBinary", "JU.Escape", "$.Logger", "$.Tensor"], function () {
+Clazz.load (["J.api.JmolNMRInterface", "java.util.Hashtable"], "J.quantum.NMRCalculation", ["java.lang.Double", "$.Float", "$.NullPointerException", "JU.BS", "$.Lst", "$.PT", "$.V3", "J.io.JmolBinary", "JU.Escape", "$.Logger", "$.Tensor"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.vwr = null;
 this.isotopeData = null;
@@ -190,11 +190,11 @@ var map =  new java.util.Hashtable ();
 map.put ("isotopes", this.isotopeData);
 map.put ("shiftRefsPPM", this.shiftRefsPPM);
 return map;
-}if (Character.isDigit (what.charAt (0))) return this.isotopeData.get (what);
+}if (JU.PT.isDigit (what.charAt (0))) return this.isotopeData.get (what);
 var info =  new JU.Lst ();
 for (var e, $e = this.isotopeData.entrySet ().iterator (); $e.hasNext () && ((e = $e.next ()) || true);) {
 var key = e.getKey ();
-if (Character.isDigit (key.charAt (0)) && key.endsWith (what)) info.addLast (e.getValue ());
+if (JU.PT.isDigit (key.charAt (0)) && key.endsWith (what)) info.addLast (e.getValue ());
 }
 return info;
 }, "~S");

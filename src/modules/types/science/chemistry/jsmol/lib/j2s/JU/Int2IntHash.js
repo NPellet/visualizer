@@ -2,9 +2,6 @@ Clazz.declarePackage ("JU");
 c$ = Clazz.decorateAsClass (function () {
 this.entryCount = 0;
 this.entries = null;
-if (!Clazz.isClassDefined ("JU.Int2IntHash.Entry")) {
-JU.Int2IntHash.$Int2IntHash$Entry$ ();
-}
 Clazz.instantialize (this, arguments);
 }, JU, "Int2IntHash");
 Clazz.makeConstructor (c$, 
@@ -43,23 +40,18 @@ newEntries[hash] = t;
 }
 entries = this.entries = newEntries;
 hash = (key & 0x7FFFFFFF) % n;
-}entries[hash] = Clazz.innerTypeInstance (JU.Int2IntHash.Entry, this, null, key, value, entries[hash]);
+}entries[hash] =  new JU.Int2IntHashEntry (key, value, entries[hash]);
 ++this.entryCount;
 }, "~N,~N");
-c$.$Int2IntHash$Entry$ = function () {
-Clazz.pu$h(self.c$);
 c$ = Clazz.decorateAsClass (function () {
-Clazz.prepareCallback (this, arguments);
 this.key = 0;
 this.value = 0;
 this.next = null;
 Clazz.instantialize (this, arguments);
-}, JU.Int2IntHash, "Entry");
+}, JU, "Int2IntHashEntry");
 Clazz.makeConstructor (c$, 
-function (a, b, c) {
-this.key = a;
-this.value = b;
-this.next = c;
-}, "~N,~N,JU.Int2IntHash.Entry");
-c$ = Clazz.p0p ();
-};
+function (key, value, next) {
+this.key = key;
+this.value = value;
+this.next = next;
+}, "~N,~N,JU.Int2IntHashEntry");

@@ -10,10 +10,6 @@ this.m32 = 0;
 this.m33 = 0;
 Clazz.instantialize (this, arguments);
 }, JU, "M4", JU.M34);
-Clazz.makeConstructor (c$, 
-function () {
-Clazz.superConstructor (this, JU.M4, []);
-});
 c$.newA16 = Clazz.defineMethod (c$, "newA16", 
 function (v) {
 var m =  new JU.M4 ();

@@ -33,7 +33,7 @@ atom.atomName = name;
 atom.elementSymbol = name.substring (0, 1);
 var c1 = name.charAt (0);
 var c2 = ' ';
-var nChar = (name.length == 2 && (J.adapter.smarter.Atom.isValidElementSymbol2 (c1, c2 = Character.toLowerCase (name.charAt (1))) || name.equals ("Du")) ? 2 : 1);
+var nChar = (name.length == 2 && (J.adapter.smarter.Atom.isValidSym2 (c1, c2 = Character.toLowerCase (name.charAt (1))) || name.equals ("Du")) ? 2 : 1);
 name = (nChar == 1 ? "" + c1 : "" + c1 + c2);
 }atom.elementSymbol = name;
 this.setAtomCoordTokens (atom, tokens, pt);

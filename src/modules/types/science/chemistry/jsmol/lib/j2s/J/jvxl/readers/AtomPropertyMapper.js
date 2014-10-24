@@ -38,7 +38,7 @@ this.smoothingPower = (this.smoothingPower - 11) / 2;
 if (this.mepType != null) {
 this.doSmoothProperty = true;
 if (this.params.mep_calcType >= 0) this.calcType = this.params.mep_calcType;
-this.mepCalc = J.api.Interface.getOption ("quantum." + this.mepType + "Calculation");
+this.mepCalc = J.api.Interface.getOption ("quantum." + this.mepType + "Calculation", this.sg.getAtomDataServer (), "file");
 }if (!this.doSmoothProperty && this.maxDistance == 2147483647) this.maxDistance = 5;
 this.getAtoms (this.params.bsSelected, this.doAddHydrogens, true, false, false, true, false, NaN);
 if (this.meshDataServer != null) this.meshDataServer.fillMeshData (this.meshData, 1, null);

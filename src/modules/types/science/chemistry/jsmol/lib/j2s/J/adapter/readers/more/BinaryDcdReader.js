@@ -23,7 +23,7 @@ Clazz.overrideMethod (c$, "processBinaryDocument",
 function () {
 var bytes =  Clazz.newByteArray (40, 0);
 var n = this.binaryDoc.readInt ();
-this.binaryDoc.setStream (null, n != 0x54);
+this.binaryDoc.setStream (this.vwr.getJzt (), null, n != 0x54);
 n = this.binaryDoc.readInt ();
 this.nModels = this.binaryDoc.readInt ();
 this.binaryDoc.readInt ();

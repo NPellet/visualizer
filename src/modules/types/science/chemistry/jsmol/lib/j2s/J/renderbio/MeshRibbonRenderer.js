@@ -15,9 +15,9 @@ this.renderStrands ();
 });
 Clazz.defineMethod (c$, "render2Strand", 
 function (doFill, offsetTop, offsetBottom) {
-this.getScreenControlPoints ();
-this.ribbonTopScreens = this.calcScreens (offsetTop);
-this.ribbonBottomScreens = this.calcScreens (-offsetBottom);
+this.calcScreenControlPoints ();
+this.ribbonTopScreens = this.calcScreens (offsetTop, this.mads);
+this.ribbonBottomScreens = this.calcScreens (-offsetBottom, this.mads);
 for (var i = this.bsVisible.nextSetBit (0); i >= 0; i = this.bsVisible.nextSetBit (i + 1)) this.renderHermiteRibbon (doFill, i, false);
 
 this.vwr.freeTempScreens (this.ribbonTopScreens);

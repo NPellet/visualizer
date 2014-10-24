@@ -14,7 +14,7 @@ Clazz.superCall (this, J.shape.Bbcage, "initShape", []);
 this.font3d = this.gdata.getFont3D (14);
 this.myType = "boundBox";
 });
-Clazz.overrideMethod (c$, "setVisibilityFlags", 
+Clazz.overrideMethod (c$, "setModelVisibilityFlags", 
 function (bs) {
 var bboxModels;
 this.isVisible = ((this.mad = this.vwr.getObjectMad (4)) != 0 && ((bboxModels = this.vwr.ms.getBoundBoxModels ()) == null || bs.intersects (bboxModels)));

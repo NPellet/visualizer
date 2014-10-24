@@ -547,7 +547,7 @@ data[i] = val;
 }, "J.adapter.smarter.Atom,~N,~N");
 Clazz.defineMethod (c$, "getXSymmetry", 
 function () {
-if (this.xtalSymmetry == null) this.xtalSymmetry = (J.api.Interface.getOption ("adapter.smarter.XtalSymmetry")).set (this);
+if (this.xtalSymmetry == null) this.xtalSymmetry = (J.api.Interface.getOption ("adapter.smarter.XtalSymmetry", this.reader.vwr, "file")).set (this.reader);
 return this.xtalSymmetry;
 });
 Clazz.defineMethod (c$, "getSymmetry", 

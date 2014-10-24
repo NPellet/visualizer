@@ -151,6 +151,7 @@ this.maxRadius = maxRadius;
 this.bsSurface =  new JU.BS ();
 var isAll = (bsSelected == null);
 var iter = this.vwr.getSelectedAtomIterator (this.bsMySelected, false, this.modelZeroBased, false);
+this.checkNewDotsArray ();
 var i0 = (isAll ? this.ac - 1 : bsSelected.nextSetBit (0));
 for (var i = i0; i >= 0; i = (isAll ? i - 1 : bsSelected.nextSetBit (i + 1))) if (bsIgnore == null || !bsIgnore.get (i)) {
 this.setAtomI (i);
@@ -212,7 +213,6 @@ this.radiiIP2 *= this.radiiIP2;
 }, "~N");
 Clazz.defineMethod (c$, "calcConvexMap", 
  function (isSurface) {
-if (this.dotsConvexMaps == null) this.dotsConvexMaps =  new Array (this.ac);
 this.calcConvexBits ();
 var map;
 if (this.geodesicMap.isEmpty ()) map = J.geodesic.EnvelopeCalculation.EMPTY_SET;
@@ -311,6 +311,16 @@ this.mapT.set (vect);
 }
 }
 });
+Clazz.defineMethod (c$, "checkNewDotsArray", 
+ function () {
+if (this.dotsConvexMaps == null) {
+this.dotsConvexMaps =  new Array (this.ac);
+} else if (this.dotsConvexMaps.length != this.ac) {
+var a =  new Array (this.ac);
+for (var i = 0; i < this.ac && i < this.dotsConvexMaps.length; i++) a[i] = this.dotsConvexMaps[i];
+
+this.dotsConvexMaps = a;
+}});
 Clazz.defineMethod (c$, "getNeighbors", 
  function (iter) {
 this.neighborCount = 0;

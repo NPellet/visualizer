@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JV");
-Clazz.load (["java.util.Hashtable", "JU.P3", "J.c.AXES", "$.CBK"], "JV.GlobalSettings", ["java.lang.Boolean", "$.Float", "JU.BS", "$.DF", "$.Lst", "$.PT", "$.SB", "J.c.STR", "JS.SV", "JU.BSUtil", "$.Escape", "$.Logger", "$.Txt", "JV.JC", "$.StateManager", "$.Viewer"], function () {
+Clazz.load (["java.util.Hashtable", "JU.P3", "J.c.AXES", "$.CBK"], "JV.GlobalSettings", ["java.lang.Boolean", "$.Float", "JU.BS", "$.DF", "$.Lst", "$.PT", "$.SB", "J.c.STR", "JS.SV", "JU.BSUtil", "$.Escape", "$.Logger", "JV.JC", "$.StateManager", "$.Viewer"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.vwr = null;
 this.htNonbooleanParameterValues = null;
@@ -58,6 +58,7 @@ this.smartAromatic = true;
 this.zeroBasedXyzRasmol = false;
 this.legacyAutoBonding = false;
 this.legacyHAddition = false;
+this.legacyJavaFloat = false;
 this.allowRotateSelected = false;
 this.allowMoveAtoms = false;
 this.defaultPerspectiveDepth = true;
@@ -182,8 +183,8 @@ this.preserveState = true;
 this.propertyColorScheme = "roygb";
 this.quaternionFrame = "p";
 this.saveProteinStructureState = true;
+this.showModVecs = false;
 this.showUnitCellDetails = true;
-this.showUnitCellInfo = true;
 this.solventProbeRadius = 1.2;
 this.scriptDelay = 0;
 this.selectAllModels = true;
@@ -283,6 +284,7 @@ this.allowMultiTouch = g.allowMultiTouch;
 this.allowKeyStrokes = g.allowKeyStrokes;
 this.legacyAutoBonding = g.legacyAutoBonding;
 this.legacyHAddition = g.legacyHAddition;
+this.legacyJavaFloat = g.legacyJavaFloat;
 this.bondingVersion = g.bondingVersion;
 this.platformSpeed = g.platformSpeed;
 this.useScriptQueue = g.useScriptQueue;
@@ -474,6 +476,7 @@ this.setI ("isosurfacePropertySmoothingPower", this.isosurfacePropertySmoothingP
 this.setB ("justifyMeasurements", this.justifyMeasurements);
 this.setB ("legacyAutoBonding", this.legacyAutoBonding);
 this.setB ("legacyHAddition", this.legacyHAddition);
+this.setB ("legacyJavaFloat", this.legacyJavaFloat);
 this.setF ("loadAtomDataTolerance", this.loadAtomDataTolerance);
 this.setO ("loadFormat", this.loadFormat);
 this.setO ("loadLigandFormat", this.loadLigandFormat);
@@ -531,6 +534,7 @@ this.setB ("showHiddenSelectionHalos", this.showHiddenSelectionHalos);
 this.setB ("showHydrogens", this.showHydrogens);
 this.setB ("showKeyStrokes", this.showKeyStrokes);
 this.setB ("showMeasurements", this.showMeasurements);
+this.setB ("showModulationVectors", this.showModVecs);
 this.setB ("showMultipleBonds", this.showMultipleBonds);
 this.setB ("showNavigationPointAlways", this.showNavigationPointAlways);
 this.setI ("showScript", this.scriptDelay);
@@ -543,7 +547,6 @@ this.setO ("smilesUrlFormat", this.smilesUrlFormat);
 this.setO ("nihResolverFormat", this.nihResolverFormat);
 this.setO ("pubChemFormat", this.pubChemFormat);
 this.setB ("showUnitCellDetails", this.showUnitCellDetails);
-this.setB ("showUnitCellInfo", this.showUnitCellInfo);
 this.setB ("solventProbe", this.solventOn);
 this.setF ("solventProbeRadius", this.solventProbeRadius);
 this.setB ("specular", this.specular);
@@ -638,10 +641,10 @@ return;
 }, "~S");
 Clazz.defineMethod (c$, "setUserVariable", 
 function (key, $var) {
-if ($var == null) return null;
+if ($var != null) {
 key = key.toLowerCase ();
 this.htUserVariables.put (key, $var.setName (key));
-return $var;
+}return $var;
 }, "~S,JS.SV");
 Clazz.defineMethod (c$, "unsetUserVariable", 
 function (key) {
@@ -740,7 +743,7 @@ if (format == null) return null;
 if (id.indexOf ("/") < 0) {
 if (database.equals ("pubchem")) id = "name/" + id;
  else if (database.equals ("nci")) id += "/file?format=sdf&get3d=True";
-}return (format.indexOf ("%FILE") < 0 ? format + id : JU.Txt.formatStringS (format, "FILE", id));
+}return (format.indexOf ("%FILE") < 0 ? format + id : JU.PT.formatStringS (format, "FILE", id));
 }, "~S,~S");
 c$.doReportProperty = Clazz.defineMethod (c$, "doReportProperty", 
 function (name) {
@@ -793,6 +796,7 @@ this.app (str, "#set edsUrlCutoff " + JU.PT.esc (this.edsUrlCutoff));
 this.app (str, "set bondingVersion " + this.bondingVersion);
 this.app (str, "set legacyAutoBonding " + this.legacyAutoBonding);
 this.app (str, "set legacyHAddition " + this.legacyHAddition);
+this.app (str, "set legacyJavaFloat " + this.legacyJavaFloat);
 this.app (str, "set minBondDistance " + this.minBondDistance);
 this.app (str, "set minimizationCriterion  " + this.minimizationCriterion);
 this.app (str, "set minimizationSteps  " + this.minimizationSteps);
@@ -810,5 +814,5 @@ Clazz.defineMethod (c$, "app",
 if (cmd.length == 0) return;
 s.append ("  ").append (cmd).append (";\n");
 }, "JU.SB,~S");
-c$.unreportedProperties = c$.prototype.unreportedProperties = (";ambientpercent;animationfps;antialiasdisplay;antialiasimages;antialiastranslucent;appendnew;axescolor;axesposition;axesmolecular;axesorientationrasmol;axesunitcell;axeswindow;axis1color;axis2color;axis3color;backgroundcolor;backgroundmodel;bondsymmetryatoms;boundboxcolor;cameradepth;bondingversion;debug;debugscript;defaultlatttice;defaults;defaultdropscript;diffusepercent;;exportdrivers;exportscale;_filecaching;_filecache;fontcaching;fontscaling;forcefield;language;legacyautobonding;legacyhaddition;loglevel;logfile;loggestures;logcommands;measurestylechime;loadformat;loadligandformat;smilesurlformat;pubchemformat;nihresolverformat;edsurlformat;edsurlcutoff;multiprocessor;navigationmode;;pathforallfiles;perspectivedepth;phongexponent;perspectivemodel;platformspeed;preservestate;refreshing;repaintwaitms;rotationradius;showaxes;showaxis1;showaxis2;showaxis3;showboundbox;showfrank;showtiming;showunitcell;slabenabled;slab;slabrange;depth;zshade;zshadepower;specular;specularexponent;specularpercent;celshading;celshadingpower;specularpower;stateversion;statusreporting;stereo;stereostate;vibrationperiod;unitcellcolor;visualrange;windowcentered;zerobasedxyzrasmol;zoomenabled;mousedragfactor;mousewheelfactor;scriptqueue;scriptreportinglevel;syncscript;syncmouse;syncstereo;;defaultdirectory;currentlocalpath;defaultdirectorylocal;ambient;bonds;colorrasmol;diffuse;fractionalrelative;frank;hetero;hidenotselected;hoverlabel;hydrogen;languagetranslation;measurementunits;navigationdepth;navigationslab;picking;pickingstyle;propertycolorschemeoverload;radius;rgbblue;rgbgreen;rgbred;scaleangstromsperinch;selectionhalos;showscript;showselections;solvent;strandcount;spinx;spiny;spinz;spinfps;navx;navy;navz;navfps;" + J.c.CBK.getNameList () + ";undo;atompicking;drawpicking;bondpicking;pickspinrate;picklabel" + ";modelkitmode;allowgestures;allowkeystrokes;allowmultitouch;allowmodelkit" + ";").toLowerCase ();
+c$.unreportedProperties = c$.prototype.unreportedProperties = (";ambientpercent;animationfps;antialiasdisplay;antialiasimages;antialiastranslucent;appendnew;axescolor;axesposition;axesmolecular;axesorientationrasmol;axesunitcell;axeswindow;axis1color;axis2color;axis3color;backgroundcolor;backgroundmodel;bondsymmetryatoms;boundboxcolor;cameradepth;bondingversion;debug;debugscript;defaultlatttice;defaults;defaultdropscript;diffusepercent;;exportdrivers;exportscale;_filecaching;_filecache;fontcaching;fontscaling;forcefield;language;legacyautobonding;legacyhaddition;legacyjavafloat;loglevel;logfile;loggestures;logcommands;measurestylechime;loadformat;loadligandformat;smilesurlformat;pubchemformat;nihresolverformat;edsurlformat;edsurlcutoff;multiprocessor;navigationmode;;pathforallfiles;perspectivedepth;phongexponent;perspectivemodel;platformspeed;preservestate;refreshing;repaintwaitms;rotationradius;showaxes;showaxis1;showaxis2;showaxis3;showboundbox;showfrank;showtiming;showunitcell;slabenabled;slab;slabrange;depth;zshade;zshadepower;specular;specularexponent;specularpercent;celshading;celshadingpower;specularpower;stateversion;statusreporting;stereo;stereostate;vibrationperiod;unitcellcolor;visualrange;windowcentered;zerobasedxyzrasmol;zoomenabled;mousedragfactor;mousewheelfactor;scriptqueue;scriptreportinglevel;syncscript;syncmouse;syncstereo;;defaultdirectory;currentlocalpath;defaultdirectorylocal;ambient;bonds;colorrasmol;diffuse;fractionalrelative;frank;hetero;hidenotselected;hoverlabel;hydrogen;languagetranslation;measurementunits;navigationdepth;navigationslab;picking;pickingstyle;propertycolorschemeoverload;radius;rgbblue;rgbgreen;rgbred;scaleangstromsperinch;selectionhalos;showscript;showselections;solvent;strandcount;spinx;spiny;spinz;spinfps;navx;navy;navz;navfps;" + J.c.CBK.getNameList () + ";undo;atompicking;drawpicking;bondpicking;pickspinrate;picklabel" + ";modelkitmode;allowgestures;allowkeystrokes;allowmultitouch;allowmodelkit" + ";dodrop;hovered" + ";").toLowerCase ();
 });

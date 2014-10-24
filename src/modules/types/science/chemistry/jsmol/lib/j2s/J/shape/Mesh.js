@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shape");
-Clazz.load (["JU.MeshSurface", "JU.P3", "$.V3"], "J.shape.Mesh", ["java.lang.Boolean", "$.Float", "java.util.Hashtable", "JU.AU", "$.BS", "$.M3", "$.M4", "$.Measure", "$.PT", "$.SB", "JS.T", "JU.BSUtil", "$.C", "$.Escape", "$.Normix"], function () {
+Clazz.load (["JU.MeshSurface"], "J.shape.Mesh", ["java.lang.Boolean", "$.Float", "java.util.Hashtable", "JU.AU", "$.BS", "$.M3", "$.M4", "$.Measure", "$.P3", "$.PT", "$.SB", "$.V3", "JS.T", "JU.BSUtil", "$.C", "$.Escape", "$.Normix"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.title = null;
 this.meshColix = 0;
@@ -21,6 +21,9 @@ this.width = 0;
 this.ptCenter = null;
 this.linkedMesh = null;
 this.vertexColorMap = null;
+this.vAB = null;
+this.vAC = null;
+this.vTemp = null;
 this.color = 0;
 this.useColix = true;
 this.unitCell = null;
@@ -40,9 +43,6 @@ this.frontOnly = false;
 this.isTwoSided = true;
 this.havePlanarContours = false;
 this.bsTemp = null;
-this.vAB = null;
-this.vAC = null;
-this.vTemp = null;
 this.colorDensity = false;
 this.cappingObject = null;
 this.slabbingObject = null;
@@ -52,26 +52,20 @@ this.recalcAltVertices = false;
 this.symopColixes = null;
 Clazz.instantialize (this, arguments);
 }, J.shape, "Mesh", JU.MeshSurface);
-Clazz.prepareFields (c$, function () {
-this.ptCenter = JU.P3.new3 (0, 0, 0);
-this.vAB =  new JU.V3 ();
-this.vAC =  new JU.V3 ();
-this.vTemp =  new JU.V3 ();
-});
 Clazz.defineMethod (c$, "setVisibilityFlags", 
 function (n) {
 this.visibilityFlags = n;
 }, "~N");
-Clazz.makeConstructor (c$, 
-function () {
-Clazz.superConstructor (this, J.shape.Mesh, []);
-});
 Clazz.defineMethod (c$, "mesh1", 
 function (thisID, colix, index) {
 if ("+PREVIOUS_MESH+".equals (thisID)) thisID = null;
 this.thisID = thisID;
 this.colix = colix;
 this.index = index;
+this.ptCenter =  new JU.P3 ();
+this.vAB =  new JU.V3 ();
+this.vAC =  new JU.V3 ();
+this.vTemp =  new JU.V3 ();
 return this;
 }, "~S,~N,~N");
 Clazz.defineMethod (c$, "clear", 
@@ -359,9 +353,9 @@ function () {
 return null;
 });
 Clazz.defineMethod (c$, "getUnitCell", 
-function () {
+function (vwr) {
 return null;
-});
+}, "JV.Viewer");
 Clazz.defineMethod (c$, "rotateTranslate", 
 function (q, offset, isAbsolute) {
 if (q == null && offset == null) {

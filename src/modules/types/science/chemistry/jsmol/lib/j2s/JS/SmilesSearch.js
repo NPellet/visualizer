@@ -64,7 +64,7 @@ this.v =  new JS.VTemp ();
 Clazz.defineMethod (c$, "toString", 
 function () {
 var sb =  new JU.SB ().append (this.pattern);
-sb.append ("\nmolecular formula: " + this.getMolecularFormula (true));
+sb.append ("\nmolecular formula: " + this.getMolecularFormula (true, null, false));
 return sb.toString ();
 });
 Clazz.defineMethod (c$, "setSelected", 

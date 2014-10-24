@@ -982,14 +982,15 @@ function(a){
 {
 return this.list.lastIndexOf(a);
 }},"~O");
-Clazz.defineMethod(c$,"listIterator",
-function(){
-{
-return this.list.listIterator();
-}});
+//Clazz.defineMethod(c$,"listIterator",
+//function(){
+//{
+//return this.list.listIterator();
+//}});
 Clazz.defineMethod(c$,"listIterator",
 function(a){
 {
+a || (a = 0);
 return this.list.listIterator(a);
 }},"~N");
 Clazz.defineMethod(c$,"remove",
@@ -1340,12 +1341,13 @@ Clazz.defineMethod(c$,"lastIndexOf",
 function(a){
 return this.list.lastIndexOf(a);
 },"~O");
-Clazz.defineMethod(c$,"listIterator",
-function(){
-return this.listIterator(0);
-});
+//Clazz.defineMethod(c$,"listIterator",
+//function(){
+//return this.listIterator(0);
+//});
 Clazz.defineMethod(c$,"listIterator",
 function(a){
+a || (a = 0);
 return((Clazz.isClassDefined("java.util.Collections$UnmodifiableList$1")?0:java.util.Collections.UnmodifiableList.$Collections$UnmodifiableList$1$()),Clazz.innerTypeInstance(java.util.Collections$UnmodifiableList$1,this,null));
 },"~N");
 Clazz.defineMethod(c$,"remove",
@@ -1829,12 +1831,13 @@ Clazz.defineMethod(c$,"lastIndexOf",
 function(a){
 return this.l.lastIndexOf(a);
 },"~O");
-Clazz.defineMethod(c$,"listIterator",
-function(){
-return new java.util.Collections.CheckedListIterator(this.l.listIterator(),this.type);
-});
+//Clazz.defineMethod(c$,"listIterator",
+//function(){
+//return new java.util.Collections.CheckedListIterator(this.l.listIterator(),this.type);
+//});
 Clazz.defineMethod(c$,"listIterator",
 function(a){
+a || (a = 0);
 return new java.util.Collections.CheckedListIterator(this.l.listIterator(a),this.type);
 },"~N");
 Clazz.defineMethod(c$,"subList",

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.data");
-Clazz.load (null, "J.jvxl.data.JvxlCoder", ["java.lang.Character", "$.Float", "JU.BS", "$.Lst", "$.P3", "$.PT", "$.SB", "$.XmlUtil", "J.jvxl.data.VolumeData", "JU.BSUtil", "$.C", "$.Escape", "$.Logger"], function () {
+Clazz.load (null, "J.jvxl.data.JvxlCoder", ["java.lang.Float", "JU.BS", "$.Lst", "$.P3", "$.PT", "$.SB", "$.XmlUtil", "J.jvxl.data.VolumeData", "JU.BSUtil", "$.C", "$.Escape", "$.Logger"], function () {
 c$ = Clazz.declareType (J.jvxl.data, "JvxlCoder");
 c$.jvxlGetFile = Clazz.defineMethod (c$, "jvxlGetFile", 
 function (volumeData, jvxlData, title) {
@@ -232,12 +232,12 @@ var c1 = ' ';
 var c2 = ' ';
 for (var i = bs.nextSetBit (0); i >= 0; i = bs.nextSetBit (i + 1)) {
 var vertexIndexes = polygonIndexes[i];
-while (pt < nBuf && !Character.isDigit (c1 = fData.charAt (pt++))) {
+while (pt < nBuf && !JU.PT.isDigit (c1 = fData.charAt (pt++))) {
 }
 type = c1.charCodeAt (0) - 48;
-while (pt < nBuf && Character.isWhitespace (c1 = fData.charAt (pt++))) {
+while (pt < nBuf && JU.PT.isWhitespace (c1 = fData.charAt (pt++))) {
 }
-while (pt < nBuf && Character.isWhitespace (c2 = fData.charAt (pt++))) {
+while (pt < nBuf && JU.PT.isWhitespace (c2 = fData.charAt (pt++))) {
 }
 var f1 = J.jvxl.data.JvxlCoder.jvxlFractionFromCharacter (c1.charCodeAt (0), 35, 90, 0);
 var f2 = J.jvxl.data.JvxlCoder.jvxlFractionFromCharacter (c2.charCodeAt (0), 35, 90, 0);
@@ -537,13 +537,13 @@ var value = 0;
 var ich = next[0];
 var ichMax = str.length;
 if (ich < 0) return -2147483648;
-while (ich < ichMax && Character.isWhitespace (str.charAt (ich))) ++ich;
+while (ich < ichMax && JU.PT.isWhitespace (str.charAt (ich))) ++ich;
 
 if (ich >= ichMax) return -2147483648;
 var factor = 1;
 var isLong = (str.charCodeAt (ich) == (offset + base));
 if (isLong) ich++;
-while (ich < ichMax && !Character.isWhitespace (str.charAt (ich))) {
+while (ich < ichMax && !JU.PT.isWhitespace (str.charAt (ich))) {
 var i = str.charCodeAt (ich);
 if (i < offset) i = 92;
 value += (i - offset) * factor;

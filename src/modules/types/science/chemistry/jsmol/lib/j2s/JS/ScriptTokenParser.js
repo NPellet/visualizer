@@ -441,6 +441,7 @@ if (isWithin && distance == 3.4028235E38) switch (tok0) {
 case 1060866:
 break;
 case 1073741916:
+case 1073742128:
 case 135267335:
 case 135267336:
 case 1238369286:
@@ -750,7 +751,7 @@ if (this.tokPeekIs (269484209)) this.getToken ();
  else if (!this.clauseSequenceSpec ()) return false;
 specSeen = true;
 tok = this.tokPeek ();
-}if (tok == 269484066 || tok == 269484209 || tok == 1073741824 || tok == 1112541205 || tok == 1112541206 || tok == 1112541207 || tok == 1141899280 || tok == 2 && !wasInteger) {
+}if (tok == 269484066 || tok == 269484209 || tok == 1073741824 || tok == 1112541205 || tok == 1112541206 || tok == 1112541207 || tok == 1141899281 || tok == 2 && !wasInteger) {
 if (!this.clauseChainSpec (tok)) return false;
 specSeen = true;
 tok = this.tokPeek ();
@@ -837,12 +838,12 @@ case 2:
 this.getToken ();
 var val = this.theToken.intValue;
 if (val < 0 || val > 9999) return this.error (8);
-chain = this.vwr.getChainID ("" + val);
+chain = this.vwr.getChainID ("" + val, false);
 break;
 default:
 var strChain = "" + this.getToken ().value;
 if (strChain.equals ("?")) return true;
-chain = this.vwr.getChainID (strChain);
+chain = this.vwr.getChainID (strChain, false);
 break;
 }
 return this.generateResidueSpecCode (JS.T.tv (1048609, chain, "spec_chain"));

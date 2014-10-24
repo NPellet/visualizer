@@ -176,10 +176,10 @@ this.attrList = this.parser.getCharacters ();
 var dataArray = JU.Base64.decodeBase64 (this.attrList);
 if (dataArray.length != 0) {
 if (vectorType.equals ("float64")) {
-for (var i = 0, pt = 0; i < this.npoints; i++, pt += 8) this.yaxisData[i] = bc.bytesToDoubleToFloat (dataArray, pt, false);
+for (var i = 0, pt = 0; i < this.npoints; i++, pt += 8) this.yaxisData[i] = JU.BC.bytesToDoubleToFloat (dataArray, pt, false);
 
 } else {
-for (var i = 0, pt = 0; i < this.npoints; i++, pt += 4) this.yaxisData[i] = bc.bytesToFloat (dataArray, pt, false);
+for (var i = 0, pt = 0; i < this.npoints; i++, pt += 4) this.yaxisData[i] = JU.BC.bytesToFloat (dataArray, pt, false);
 
 }}}this.parser.nextStartTag ();
 this.tagName = this.parser.getTagName ();

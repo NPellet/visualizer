@@ -130,7 +130,7 @@ this.colixes[atomIndex] = colix = this.getColixI (colix, paletteID, atomIndex);
 this.bsColixSet.setBitTo (atomIndex, colix != 0);
 this.paletteIDs[atomIndex] = paletteID;
 }, "~N,~N,~N");
-Clazz.overrideMethod (c$, "setModelClickability", 
+Clazz.overrideMethod (c$, "setAtomClickability", 
 function () {
 if (!this.isActive) return;
 for (var i = this.ac; --i >= 0; ) {

@@ -6,7 +6,6 @@ Clazz.instantialize (this, arguments);
 }, J.bspt, "Leaf", J.bspt.Element);
 Clazz.makeConstructor (c$, 
 function (bspt, leaf, countToKeep) {
-Clazz.superConstructor (this, J.bspt.Leaf, []);
 this.bspt = bspt;
 this.count = 0;
 this.tuples =  new Array (2);

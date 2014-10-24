@@ -95,7 +95,7 @@ var polymerIndex = a1.getPolymerIndexInModel ();
 var monomerIndex = a1.getMonomerIndex ();
 var bpt = monomerIndex;
 if (bpt < nEndMin) biopolymerStartsEnds[polymerIndex][bpt] = i + 1;
-bpt = (a1.getGroup ()).getBioPolymerLength () - monomerIndex - 1;
+bpt = (a1.group).getBioPolymerLength () - monomerIndex - 1;
 if (bpt < nEndMin) biopolymerStartsEnds[polymerIndex][nEndMin + bpt] = i + 1;
 }
 var d2 =  Clazz.newFloatArray (Clazz.doubleToInt (n * (n - 1) / 2), 0);

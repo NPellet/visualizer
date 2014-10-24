@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JS");
-Clazz.load (["javajs.api.JSONEncodable", "JS.T", "JU.P3"], "JS.SV", ["java.lang.Boolean", "$.Float", "java.util.Arrays", "$.Collections", "$.Hashtable", "$.Map", "JU.AU", "$.BArray", "$.BS", "$.Base64", "$.Lst", "$.M3", "$.M34", "$.M4", "$.Measure", "$.P4", "$.PT", "$.Quat", "$.SB", "$.T3", "$.V3", "JM.BondSet", "JS.ScriptContext", "JU.BSUtil", "$.Escape", "$.Txt"], function () {
+Clazz.load (["javajs.api.JSONEncodable", "JS.T", "JU.P3"], "JS.SV", ["java.lang.Boolean", "$.Float", "java.util.Arrays", "$.Collections", "$.Hashtable", "$.Map", "JU.AU", "$.BArray", "$.BS", "$.Base64", "$.Lst", "$.M3", "$.M34", "$.M4", "$.Measure", "$.P4", "$.PT", "$.Quat", "$.SB", "$.T3", "$.V3", "JM.BondSet", "JS.ScriptContext", "JU.BSUtil", "$.Escape"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.index = 2147483647;
 this.flags = 2;
@@ -852,7 +852,7 @@ if (ve != null) ve[0] = JS.SV.fValue ($var);
 if (getS) of[3] = JS.SV.sValue ($var);
 if (getP) of[4] = $var.value;
 if (getQ) of[5] = $var.value;
-return JU.Txt.sprintf (strFormat, "IFDspq", of);
+return JU.PT.sprintf (strFormat, "IFDspq", of);
 }, "~S,JS.SV,~A,~A,~A,~A,~B,~B,~B");
 c$.getFormatType = Clazz.defineMethod (c$, "getFormatType", 
 function (format) {
@@ -904,7 +904,7 @@ var sb =  new JU.SB ();
 var format = JU.PT.split (JU.PT.rep (JS.SV.sValue (args[0]), "%%", "\1"), "%");
 sb.append (format[0]);
 for (var i = 1; i < format.length; i++) {
-var ret = JS.SV.sprintf (JU.Txt.formatCheck ("%" + format[i]), (i < args.length ? args[i] : null));
+var ret = JS.SV.sprintf (JU.PT.formatCheck ("%" + format[i]), (i < args.length ? args[i] : null));
 if (JU.PT.isAS (ret)) {
 var list = ret;
 for (var j = 0; j < list.length; j++) sb.append (list[j]).append ("\n");

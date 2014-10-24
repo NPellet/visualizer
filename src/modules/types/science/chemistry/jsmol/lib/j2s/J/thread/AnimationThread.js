@@ -8,10 +8,6 @@ this.intThread = 0;
 this.isFirst = false;
 Clazz.instantialize (this, arguments);
 }, J.thread, "AnimationThread", J.thread.JmolThread);
-Clazz.makeConstructor (c$, 
-function () {
-Clazz.superConstructor (this, J.thread.AnimationThread, []);
-});
 Clazz.overrideMethod (c$, "setManager", 
 function (manager, vwr, params) {
 var options = params;

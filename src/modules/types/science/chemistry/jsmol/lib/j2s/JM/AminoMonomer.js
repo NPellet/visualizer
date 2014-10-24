@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JM");
-Clazz.load (["JM.AlphaMonomer"], "JM.AminoMonomer", ["JU.A4", "$.BS", "$.M3", "$.P3", "$.Quat", "$.V3", "J.c.STR", "JU.Escape", "$.Logger", "$.Txt"], function () {
+Clazz.load (["JM.AlphaMonomer"], "JM.AminoMonomer", ["JU.A4", "$.BS", "$.M3", "$.P3", "$.PT", "$.Quat", "$.V3", "J.c.STR", "JU.Escape", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.nhChecked = false;
 this.ptTemp = null;
@@ -198,9 +198,9 @@ Clazz.overrideMethod (c$, "getProteinStructureTag",
 function () {
 if (this.proteinStructure == null || this.proteinStructure.structureID == null) return null;
 var tag = "%3N %3ID";
-tag = JU.Txt.formatStringI (tag, "N", this.proteinStructure.serialID);
-tag = JU.Txt.formatStringS (tag, "ID", this.proteinStructure.structureID);
-if (this.proteinStructure.type === J.c.STR.SHEET) tag += JU.Txt.formatStringI ("%2SC", "SC", this.proteinStructure.strandCount);
+tag = JU.PT.formatStringI (tag, "N", this.proteinStructure.serialID);
+tag = JU.PT.formatStringS (tag, "ID", this.proteinStructure.structureID);
+if (this.proteinStructure.type === J.c.STR.SHEET) tag += JU.PT.formatStringI ("%2SC", "SC", this.proteinStructure.strandCount);
 return tag;
 });
 Clazz.overrideMethod (c$, "getBSSideChain", 

@@ -13,12 +13,13 @@ this.collapsed = false;
 this.faceCenterOffset = 0;
 this.distanceFactor = 0;
 this.isFullyLit = false;
+this.isValid = true;
 Clazz.instantialize (this, arguments);
 }, J.shapespecial, "Polyhedron");
 Clazz.makeConstructor (c$, 
 function (centralAtom, ptCenter, nPoints, planeCount, otherAtoms, normixes, planes, collapsed, faceCenterOffset, distanceFactor) {
 this.centralAtom = centralAtom;
-this.modelIndex = centralAtom.getModelIndex ();
+this.modelIndex = centralAtom.mi;
 this.ptCenter = ptCenter;
 this.vertices =  new Array (nPoints);
 this.visible = true;

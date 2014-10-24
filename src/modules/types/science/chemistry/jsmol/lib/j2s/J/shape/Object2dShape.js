@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shape");
-Clazz.load (["J.shape.Shape", "java.util.Hashtable"], "J.shape.Object2dShape", ["JU.P3", "JU.Logger", "$.Txt"], function () {
+Clazz.load (["J.shape.Shape", "java.util.Hashtable"], "J.shape.Object2dShape", ["JU.P3", "$.PT", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.objects = null;
 this.currentObject = null;
@@ -29,7 +29,7 @@ if (this.isAll || this.thisID != null) {
 var e = this.objects.values ().iterator ();
 while (e.hasNext ()) {
 var text = e.next ();
-if (this.isAll || JU.Txt.isMatch (text.target.toUpperCase (), this.thisID, true, true)) {
+if (this.isAll || JU.PT.isMatch (text.target.toUpperCase (), this.thisID, true, true)) {
 e.remove ();
 }}
 }return;
@@ -80,7 +80,7 @@ if (this.isAll || this.thisID != null) {
 var e = this.objects.values ().iterator ();
 while (e.hasNext ()) {
 var text = e.next ();
-if (this.isAll || JU.Txt.isMatch (text.target.toUpperCase (), this.thisID, true, true)) {
+if (this.isAll || JU.PT.isMatch (text.target.toUpperCase (), this.thisID, true, true)) {
 text.setColixO (value);
 }}
 }return;
@@ -124,7 +124,7 @@ function () {
 this.currentObject = null;
 this.isAll = false;
 });
-Clazz.overrideMethod (c$, "setVisibilityFlags", 
+Clazz.overrideMethod (c$, "setModelVisibilityFlags", 
 function (bsModels) {
 if (!this.isHover) for (var t, $t = this.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) t.setVisibility (t.modelIndex < 0 || bsModels.get (t.modelIndex));
 

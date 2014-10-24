@@ -18,7 +18,7 @@ function () {
 this.setFractionalCoordinates (false);
 this.ignoreFileSpaceGroupName = true;
 });
-Clazz.overrideMethod (c$, "finalizeReader", 
+Clazz.overrideMethod (c$, "finalizeSubclassReader", 
 function () {
 this.asc.setInfo ("fileHeader", this.header.toString ());
 this.finalizeReaderASCR ();

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JM.FF");
-Clazz.load (["JM.FF.ForceField", "JS.T"], "JM.FF.ForceFieldUFF", ["java.util.Hashtable", "JU.BS", "$.Lst", "$.PT", "JM.FF.CalculationsUFF", "$.FFParam", "JU.Elements", "$.Logger"], function () {
+Clazz.load (["JM.FF.ForceField", "JS.T"], "JM.FF.ForceFieldUFF", ["java.util.Hashtable", "JU.BS", "$.Lst", "$.PT", "JM.FF.CalculationsUFF", "$.FFParam", "JU.Elements", "$.Logger", "JV.JmolAsyncException"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.bsAromatic = null;
 Clazz.instantialize (this, arguments);
@@ -173,11 +173,19 @@ var info = [vs[1], vs[2]];
 types.addLast (info);
 }}
 br.close ();
-} catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
+} catch (e$$) {
+if (Clazz.exceptionOf (e$$, JV.JmolAsyncException)) {
+var e = e$$;
+{
+throw  new JV.JmolAsyncException (e.getFileName ());
+}
+} else if (Clazz.exceptionOf (e$$, Exception)) {
+var e = e$$;
+{
 System.err.println ("Exception " + e.toString () + " in getResource " + fileName);
+}
 } else {
-throw e;
+throw e$$;
 }
 }
 JU.Logger.info (types.size () + " UFF parameters read");

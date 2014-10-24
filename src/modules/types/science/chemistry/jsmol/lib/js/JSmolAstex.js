@@ -216,6 +216,10 @@
 		applet._code = Jmol._documentWrite(t);
 	}
 
+	proto._newApplet = function(viewerOptions) {
+		return new astex.MoleculeViewerAppletJS(viewerOptions);
+	}
+
 	proto._create = function(id, Info){
 		Jmol._setObject(this, id, Info);
 		var params = {

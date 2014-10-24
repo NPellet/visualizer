@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.MOReader", "JU.BS"], "J.adapter.readers.quantum.GaussianReader", ["java.lang.Character", "$.Exception", "$.Float", "java.util.Hashtable", "JU.AU", "$.Lst", "$.PT", "$.V3", "J.adapter.smarter.SmarterJmolAdapter", "J.api.JmolAdapter", "JU.Escape", "$.Logger"], function () {
+Clazz.load (["J.adapter.readers.quantum.MOReader", "JU.BS"], "J.adapter.readers.quantum.GaussianReader", ["java.lang.Exception", "$.Float", "java.util.Hashtable", "JU.AU", "$.Lst", "$.PT", "$.V3", "J.adapter.smarter.SmarterJmolAdapter", "J.api.JmolAdapter", "JU.Escape", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.energyString = "";
 this.energyKey = "";
@@ -217,13 +217,13 @@ for (var i = 0; i < nThisLine; i++) {
 mos[i].put ("energy", Float.$valueOf (JU.PT.fVal (tokens[i])));
 }
 continue;
-} else if (this.line.length < 21 || (this.line.charAt (5) != ' ' && !Character.isDigit (this.line.charAt (5)))) {
+} else if (this.line.length < 21 || (this.line.charAt (5) != ' ' && !JU.PT.isDigit (this.line.charAt (5)))) {
 continue;
 }try {
 this.line = JU.PT.rep (this.line, " 0 ", "0  ");
 tokens = this.getTokens ();
 var type = tokens[tokens.length - nThisLine - 1].substring (1);
-if (Character.isDigit (type.charAt (0))) type = type.substring (1);
+if (JU.PT.isDigit (type.charAt (0))) type = type.substring (1);
 if (!this.isQuantumBasisSupported (type.charAt (0)) && "XYZ".indexOf (type.charAt (0)) >= 0) type = (type.length == 2 ? "D" : "F") + type;
 if (!this.isQuantumBasisSupported (type.charAt (0))) continue;
 tokens = J.adapter.smarter.AtomSetCollectionReader.getStrings (this.line.substring (this.line.length - 10 * nThisLine), nThisLine, 10);

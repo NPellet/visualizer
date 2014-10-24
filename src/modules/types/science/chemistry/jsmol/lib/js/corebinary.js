@@ -9,6 +9,7 @@
 ,Clazz_instantialize
 ,Clazz_decorateAsClass
 ,Clazz_floatToInt
+,Clazz_floatToLong
 ,Clazz_makeConstructor
 ,Clazz_defineEnumConstant
 ,Clazz_exceptionOf
@@ -441,6 +442,7 @@ c$ = Clazz_decorateAsClass (function () {
 this.stream = null;
 this.isRandom = false;
 this.isBigEndian = true;
+this.jzt = null;
 this.t8 = null;
 this.nBytes = 0;
 this.out = null;
@@ -448,10 +450,6 @@ Clazz_instantialize (this, arguments);
 }, JU, "BinaryDocument", JU.BC, javajs.api.GenericBinaryDocument);
 Clazz_prepareFields (c$, function () {
 this.t8 =  Clazz_newByteArray (8, 0);
-});
-Clazz_makeConstructor (c$, 
-function () {
-Clazz_superConstructor (this, JU.BinaryDocument, []);
 });
 Clazz_overrideMethod (c$, "close", 
 function () {
@@ -466,10 +464,11 @@ throw e;
 if (this.out != null) this.out.closeChannel ();
 });
 Clazz_overrideMethod (c$, "setStream", 
-function (bis, isBigEndian) {
+function (jzt, bis, isBigEndian) {
+if (jzt != null) this.jzt = jzt;
 if (bis != null) this.stream =  new java.io.DataInputStream (bis);
 this.isBigEndian = isBigEndian;
-}, "java.io.BufferedInputStream,~B");
+}, "javajs.api.GenericZipTools,java.io.BufferedInputStream,~B");
 Clazz_overrideMethod (c$, "setStreamData", 
 function (stream, isBigEndian) {
 if (stream != null) this.stream = stream;
@@ -493,22 +492,21 @@ return b;
 Clazz_overrideMethod (c$, "readByteArray", 
 function (b, off, len) {
 var n = this.ioRead (b, off, len);
-if (n > 0) this.nBytes += n;
-var nBytesRead = n;
-if (n > 0 && n < len) {
-while (nBytesRead < len && n > 0) {
-n = this.ioRead (b, nBytesRead, len - nBytesRead);
-if (n > 0) {
 this.nBytes += n;
-nBytesRead += n;
-}}
-}return nBytesRead;
+return n;
 }, "~A,~N,~N");
 Clazz_defineMethod (c$, "ioRead", 
  function (b, off, len) {
+var m = 0;
+while (len > 0) {
 var n = this.stream.read (b, off, len);
+m += n;
 if (n > 0 && this.out != null) this.writeBytes (b, off, n);
-return n;
+if (n >= len) break;
+off += n;
+len -= n;
+}
+return m;
 }, "~A,~N,~N");
 Clazz_defineMethod (c$, "writeBytes", 
 function (b, off, n) {
@@ -667,6 +665,7 @@ function (replace, string, fileData) {
 ,Clazz.instantialize
 ,Clazz.decorateAsClass
 ,Clazz.floatToInt
+,Clazz.floatToLong
 ,Clazz.makeConstructor
 ,Clazz.defineEnumConstant
 ,Clazz.exceptionOf

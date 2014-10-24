@@ -8,16 +8,19 @@ if (!window["java.registered"])
 
 (function (ClazzLoader) {
 
-if (window["java.packaged"]) return;
-window["java.packaged"] = true;
+	if (window["java.packaged"]) return;
+	window["java.packaged"] = true;
 
-var	base = ClazzLoader.fastGetJ2SLibBase() + "core/";
-
-for (var i = 0; i < Jmol._coreFiles.length; i++)
-  ClazzLoader.loadZJar (Jmol._coreFiles[i], ClazzLoader.runtimeKeyClass);
-
+	//if (!Jmol._isAsync) {
+		for (var i = 0; i < Jmol._coreFiles.length; i++)
+		  ClazzLoader.loadZJar(Jmol._coreFiles[i], ClazzLoader.runtimeKeyClass);
+	//}
+		
   if (Jmol._debugCode)
     return;
+
+	var	base = ClazzLoader.getJ2SLibBase() + "core/";
+
 
 // note - we don't need to list ALL the classes -- only the ones that are entry points.
 // several more classe are in each of these files -- see build_03_tojs.xml

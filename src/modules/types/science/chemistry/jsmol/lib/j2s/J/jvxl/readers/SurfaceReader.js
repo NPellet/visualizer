@@ -514,7 +514,7 @@ if (this.params.colorBySets) return (this.minMax = [0, Math.max (this.meshData.n
 var min = 3.4028235E38;
 var max = -3.4028235E38;
 if (this.params.usePropertyForColorRange && this.params.theProperty != null) {
-for (var i = 0; i < this.params.theProperty.length; i++) {
+for (var i = this.params.theProperty.length; --i >= 0; ) {
 if (this.params.rangeSelected && !this.params.bsSelected.get (i)) continue;
 var p = this.params.theProperty[i];
 if (Float.isNaN (p)) continue;

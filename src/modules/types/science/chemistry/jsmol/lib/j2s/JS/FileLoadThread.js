@@ -8,7 +8,6 @@ Clazz.instantialize (this, arguments);
 }, JS, "FileLoadThread", J.thread.JmolThread);
 Clazz.makeConstructor (c$, 
 function (eval, vwr, fileName, key, cacheName) {
-Clazz.superConstructor (this, JS.FileLoadThread, []);
 this.setViewer (vwr, "FileLoadThread");
 this.fileName = fileName;
 this.key = key;
@@ -23,12 +22,16 @@ case -1:
 mode = 0;
 break;
 case 0:
-if (this.stopped || this.eval.isStopped ()) {
+if (this.stopped || !this.vwr.testAsync && this.eval.isStopped ()) {
 mode = -2;
 break;
 }{
 return Jmol._loadFileAsynchronously(this, this.vwr.html5Applet, this.fileName, null);
-}break;
+}return;
+case 1:
+var data = this.vwr.getFileAsBytes (this.fileName, null);
+this.setData (this.fileName, this.fileName, data, null);
+return;
 case -2:
 this.resumeEval ();
 return;
@@ -36,9 +39,12 @@ return;
 
 }, "~N");
 Clazz.defineMethod (c$, "setData", 
-function (fileName, data, myData) {
-if (fileName != null) this.sc.parentContext.htFileCache.put (this.key, this.cacheName = this.cacheName.substring (0, this.cacheName.lastIndexOf ("_") + 1) + fileName);
+function (fileName, fileName0, data, myData) {
+var isCanceled = fileName.equals ("#CANCELED#");
+this.sc.parentContext.htFileCache.put (this.key, (isCanceled ? fileName : (this.cacheName = this.cacheName.substring (0, this.cacheName.lastIndexOf ("_") + 1) + fileName)));
 this.vwr.cachePut (this.cacheName, data);
-this.run1 (-2);
-}, "~S,~O,~O");
+if (fileName0 != null) {
+this.vwr.cachePut (this.vwr.fm.getFilePath (fileName, true, false), data);
+}this.run1 (-2);
+}, "~S,~S,~O,~O");
 });

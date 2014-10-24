@@ -121,7 +121,7 @@ this.appendLoadNote ("Multipole Analysis");
 return true;
 }return true;
 });
-Clazz.overrideMethod (c$, "finalizeReader", 
+Clazz.overrideMethod (c$, "finalizeSubclassReader", 
 function () {
 this.createAtomsFromCoordLines ();
 if (this.energy != null) this.setEnergy ();
@@ -159,14 +159,9 @@ Clazz.defineMethod (c$, "readShift",
  function () {
 var tokens = this.getTokens ();
 var pt = tokens.length - 3;
-this.ptOriginShift.set (this.fraction (tokens[pt++]), this.fraction (tokens[pt++]), this.fraction (tokens[pt]));
+this.ptOriginShift.set (JU.PT.parseFloatFraction (tokens[pt++]), JU.PT.parseFloatFraction (tokens[pt++]), JU.PT.parseFloatFraction (tokens[pt]));
 return true;
 });
-Clazz.defineMethod (c$, "fraction", 
- function (f) {
-var ab = JU.PT.split (f, "/");
-return (ab.length == 2 ? this.parseFloatStr (ab[0]) / this.parseFloatStr (ab[1]) : 0);
-}, "~S");
 Clazz.defineMethod (c$, "setPrimitiveVolumeAndDensity", 
  function () {
 if (this.primitiveVolume != 0) this.asc.setAtomSetModelProperty ("volumePrimitive", JU.DF.formatDecimal (this.primitiveVolume, 3));
@@ -313,7 +308,7 @@ return true;
 });
 c$.fixAtomName = Clazz.defineMethod (c$, "fixAtomName", 
  function (s) {
-return (s.length > 1 && Character.isLetter (s.charAt (1)) ? s.substring (0, 1) + Character.toLowerCase (s.charAt (1)) + s.substring (2) : s);
+return (s.length > 1 && JU.PT.isLetter (s.charAt (1)) ? s.substring (0, 1) + Character.toLowerCase (s.charAt (1)) + s.substring (2) : s);
 }, "~S");
 Clazz.defineMethod (c$, "getAtomicNumber", 
  function (token) {
@@ -508,7 +503,7 @@ var f =  Clazz.newFloatArray (this.ac, 0);
 for (var i = 0; i < this.ac; i++) f[i] = 0;
 
 var data = "";
-while (this.rd () != null && (this.line.length < 4 || Character.isDigit (this.line.charAt (3)))) data += this.line;
+while (this.rd () != null && (this.line.length < 4 || JU.PT.isDigit (this.line.charAt (3)))) data += this.line;
 
 data = JU.PT.rep (data, "-", " -");
 var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (data);

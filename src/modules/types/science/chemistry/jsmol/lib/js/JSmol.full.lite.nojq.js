@@ -16,6 +16,65 @@
 			/^(get|post|head|put|delete|options)$/i.test( this.type ) &&
 			createXHR() || createXHR(1);
 	});
+
+
+// Bind script tag hack transport
+		$.ajaxTransport( "+script", function(s) {
+
+	// This transport only deals with cross domain requests
+	// BH: No! This is not compatible with Chrome
+	if ( true || s.crossDomain ) {
+
+		var script,
+			head = document.head || jQuery("head")[0] || document.documentElement;
+
+		return {
+
+			send: function( _, callback ) {
+				script = document.createElement("script");
+				//script.async = true;
+
+				if ( s.scriptCharset ) {
+					script.charset = s.scriptCharset;
+				}
+
+				script.src = s.url;
+
+				// Attach handlers for all browsers
+				script.onload = script.onreadystatechange = function( _, isAbort ) {
+
+					if ( isAbort || !script.readyState || /loaded|complete/.test( script.readyState ) ) {
+
+						// Handle memory leak in IE
+						script.onload = script.onreadystatechange = null;
+						// Remove the script
+						if ( script.parentNode ) {
+							script.parentNode.removeChild( script );
+						}
+
+						// Dereference the script
+						script = null;
+
+						// Callback if not abort
+						if ( !isAbort ) {
+							callback( 200, "success" );
+						}
+					}
+				};
+
+				// Circumvent IE6 bugs with base elements (#2709 and #4378) by prepending
+				// Use native DOM manipulation to avoid our domManip AJAX trickery
+				head.insertBefore( script, head.firstChild );
+			},
+
+			abort: function() {
+				if ( script ) {
+					script.onload( undefined, true );
+				}
+			}
+		};
+	}
+});
  
 	// incorporates jquery.iecors MSIE asynchronous cross-domain request for MSIE < 10
 
@@ -25,8 +84,9 @@
 		// source: https://github.com/dkastner/jquery.iecors
 		// author: Derek Kastner dkastner@gmail.com http://dkastner.github.com    
 		$.ajaxTransport(function(s) {
+		
 			return {
-				send: function( headers, complete ) {
+				send: function( headers, complete ) {				
 					// Note that xdr is not synchronous.
 					// This is only being used in JSmol for transport of java code packages.
 					var xdr = new window.XDomainRequest();
@@ -56,12 +116,15 @@
 			responseFields: { binary: "response" }
 		})
 
+
 		$.ajaxTransport('binary', function(s) {
+		
 			var callback;
 			return {
 				// synchronous or asynchronous binary transfer only
 				send: function( headers, complete ) {        
 					var xhr = s.xhr();
+					console.log("xhr.open binary async=" + s.async + " url=" + s.url);
 					xhr.open( s.type, s.url, s.async );					
 					var isOK = false;
 					try {
@@ -226,10 +289,14 @@
 		};
 	};
 })(jQuery,document,"click mousemove mouseup touchmove touchend", "outjsmol");
-// JSmolCore.js -- Jmol core capability  7/23/2014 5:34:47 PM
+// JSmolCore.js -- Jmol core capability 
 
 // see JSmolApi.js for public user-interface. All these are private functions
 
+// BH 9/13/2014 2:15:51 PM embedded JSME loads from SEARCH when Jmol should 
+// BH 8/14/2014 2:52:38 PM drag-drop cache should not be cleared if SPT file is dropped
+// BH 8/5/2014 6:39:54 AM unnecessary messages about binary for PDB finally removed
+// BH 8/4/2014 5:30:00 AM automatically switch to no document after page loading
 // BH 8/2/2014 5:22:40 PM drag-drop broken in JSmol/HTML5 
 // BH 7/23/2014 5:34:08 PM setting a parameter such as readyFunction to null stops file loading
 // BH 7/3/2014 12:30:28 AM lost drag-drop of models
@@ -351,7 +418,7 @@ Jmol = (function(document) {
 		}
 	};
 	var j = {
-		_version: 'JSmol 14.2.3 July 23, 2014',
+		_version: "$Date: 2014-10-05 20:16:30 -0500 (Sun, 05 Oct 2014) $", // svn.keywords:lastUpdated
 		_alertNoBinary: true,
 		// this url is used to Google Analytics tracking of Jmol use. You may remove it or modify it if you wish. 
 		_allowedJmolSize: [25, 2048, 300],   // min, max, default (pixels)
@@ -443,8 +510,11 @@ Jmol = (function(document) {
 	// hooks to jQuery -- if you have a different AJAX tool, feel free to adapt.
 	// There should be no other references to jQuery in all the JSmol libraries.
 
+	// automatically switch to returning HTML after the page is loaded
+	$(document).ready(function(){ Jmol._document = null });
+
 	Jmol.$ = function(objectOrId, subdiv) {
-		// if a subdivv, then return $("#objectOrId_subdiv") 
+		// if a subdiv, then return $("#objectOrId._id_subdiv") 
 		// or if no subdiv, then just $(objectOrId)
 		if (objectOrId == null)alert (subdiv + arguments.callee.caller.toString());
 			return $(subdiv ? "#" + objectOrId._id + "_" + subdiv : objectOrId);
@@ -469,10 +539,7 @@ Jmol = (function(document) {
 	}
 
 	Jmol._getNCIInfo = function(identifier, what, fCallback) {
-		if (what == "name")
-			what = "names"
-		url = "http://cactus.nci.nih.gov/chemical/structure/"+identifier +"/" + what; 
-		return Jmol._getFileData(url);
+		return Jmol._getFileData("http://cactus.nci.nih.gov/chemical/structure/"+identifier +"/" + (what == "name" ? "names" : what));
 	}
 	
 
@@ -1040,6 +1107,7 @@ Jmol = (function(document) {
 	Jmol._syncBinaryOK="?";
 
 	Jmol._canSyncBinary = function(isSilent) {
+		if (Jmol._isAsync) return true;
 		if (self.VBArray) return (Jmol._syncBinaryOK = false);
 		if (Jmol._syncBinaryOK != "?") return Jmol._syncBinaryOK;
 		Jmol._syncBinaryOK = true;
@@ -1069,16 +1137,15 @@ Jmol = (function(document) {
 		return false;
 	}
 
-	Jmol._getFileData = function(fileName, fSuccess) {
+	Jmol._getFileData = function(fileName, fSuccess, doProcess) {
 		// use host-server PHP relay if not from this host
-		var type = (Jmol._isBinaryUrl(fileName) ? "binary" : "text");
+		var isBinary = Jmol._isBinaryUrl(fileName);
 		var isPDB = (fileName.indexOf("pdb.gz") >= 0 && fileName.indexOf("http://www.rcsb.org/pdb/files/") == 0);
-		var asBase64 = (type == "binary" && !Jmol._canSyncBinary(isPDB));
+		var asBase64 = (isBinary && !Jmol._canSyncBinary(isPDB));
 		if (asBase64 && isPDB) {
 			// avoid unnecessary binary transfer
 			fileName = fileName.replace(/pdb\.gz/,"pdb");
-			asBase64 = false;
-			type = "text";
+			asBase64 = isBinary = false;
 		}
 		var isPost = (fileName.indexOf("?POST?") >= 0);
 		if (fileName.indexOf("file:/") == 0 && fileName.indexOf("file:///") != 0)
@@ -1088,26 +1155,37 @@ Jmol = (function(document) {
 		//if (fileName.indexOf("http://pubchem.ncbi.nlm.nih.gov/") == 0)isDirectCall = false;
 
 		var cantDoSynchronousLoad = (!isMyHost && Jmol.$supportsIECrossDomainScripting());
-		if (!fSuccess || asBase64)
-			if (cantDoSynchronousLoad || asBase64 || !isMyHost && !isDirectCall)
-				return Jmol._getRawDataFromServer("_",fileName, fSuccess, fSuccess, asBase64, true);
-		fileName = fileName.replace(/file:\/\/\/\//, "file://"); // opera
-		var info = {dataType:type,async:!!fSuccess};
-		if (isPost) {
-			info.type = "POST";
-			info.url = fileName.split("?POST?")[0]
-			info.data = fileName.split("?POST?")[1]
+		var data = null;
+		if ((!fSuccess || asBase64) && (cantDoSynchronousLoad || asBase64 || !isMyHost && !isDirectCall)) {
+				data = Jmol._getRawDataFromServer("_",fileName, fSuccess, fSuccess, asBase64, true);
 		} else {
-			info.type = "GET";
-			info.url = fileName;
+			fileName = fileName.replace(/file:\/\/\/\//, "file://"); // opera
+			var info = {dataType:(isBinary ? "binary" : "text"),async:!!fSuccess};
+			if (isPost) {
+				info.type = "POST";
+				info.url = fileName.split("?POST?")[0]
+				info.data = fileName.split("?POST?")[1]
+			} else {
+				info.type = "GET";
+				info.url = fileName;
+			}
+			if (fSuccess) {
+				info.success = function(data) { fSuccess(Jmol._xhrReturn(info.xhr))};
+				info.error = function() { xxi = info;fSuccess(info.xhr.statusText)};
+			}
+			info.xhr = Jmol.$ajax(info);
+			if (!fSuccess) {
+				data = Jmol._xhrReturn(info.xhr);
+			}
 		}
-		if (fSuccess) {
-			info.success = function(data) { fSuccess(Jmol._xhrReturn(info.xhr))};
-			info.error = function() { fSuccess(xhr.statusText)};
+		if (!doProcess)
+			return data;
+		if (data == null) {
+			data = "";
+			isBinary = false;
 		}
-		info.xhr = Jmol.$ajax(info);
-		if (!fSuccess) 
-			return Jmol._xhrReturn(info.xhr);			
+		isBinary && (isBinary = Jmol._canSyncBinary(true));
+		return (isBinary ? Jmol._strToBytes(data) : JU.SB.newS(data));
 	}
 	
 	Jmol._xhrReturn = function(xhr){
@@ -1158,14 +1236,17 @@ Jmol = (function(document) {
 	Jmol._loadFileAsynchronously = function(fileLoadThread, applet, fileName, appData) {
 		if (fileName.indexOf("?") != 0) {
 			// LOAD ASYNC command
+			var fileName0 = fileName;
 			fileName = Jmol._checkFileName(applet, fileName);
-			var fSuccess = function(data) {Jmol._setData(fileLoadThread, fileName, data, appData)};
+			var fSuccess = function(data) {Jmol._setData(fileLoadThread, fileName, fileName0, data, appData)};
 			fSuccess = Jmol._checkCache(applet, fileName, fSuccess);
+			if (fileName.indexOf("|") >= 0)
+				fileName = fileName.split("|")[0];
 			return (fSuccess == null ? null : Jmol._getFileData(fileName, fSuccess));		
 		}
 		// we actually cannot suggest a fileName, I believe.
 		if (!Jmol.featureDetection.hasFileReader)
-				return fileLoadThread.setData("Local file reading is not enabled in your browser", null, appData);
+				return fileLoadThread.setData("Local file reading is not enabled in your browser", null, null, appData);
 		if (!applet._localReader) {
 			var div = '<div id="ID" style="z-index:'+Jmol._getZ(applet, "fileOpener") + ';position:absolute;background:#E0E0E0;left:10px;top:10px"><div style="margin:5px 5px 5px 5px;"><input type="file" id="ID_files" /><button id="ID_loadfile">load</button><button id="ID_cancel">cancel</button></div><div>'
 			Jmol.$after("#" + applet._id + "_appletdiv", div.replace(/ID/g, applet._id + "_localReader"));
@@ -1178,7 +1259,7 @@ Jmol = (function(document) {
 			reader.onloadend = function(evt) {
 				if (evt.target.readyState == FileReader.DONE) { // DONE == 2
 					Jmol.$css(Jmol.$(applet, "localReader"), {display : "none"});
-					Jmol._setData(fileLoadThread, file.name, evt.target.result, appData);
+					Jmol._setData(fileLoadThread, file.name, file.name, evt.target.result, appData);
 				}
 			};
 			reader.readAsArrayBuffer(file);
@@ -1186,16 +1267,16 @@ Jmol = (function(document) {
 		Jmol.$appEvent(applet, "localReader_cancel", "click");
 		Jmol.$appEvent(applet, "localReader_cancel", "click", function(evt) {
 			Jmol.$css(Jmol.$(applet, "localReader"), {display: "none"});
-			fileLoadThread.setData(null, appData);
+			fileLoadThread.setData(null, null, null, appData);
 		});
 		Jmol.$css(Jmol.$(applet, "localReader"), {display : "block"});
 	}
 
-  Jmol._setData = function(fileLoadThread, filename, data, appData) {
+  Jmol._setData = function(fileLoadThread, filename, filename0, data, appData) {
   	data = Jmol._strToBytes(data);
 		if (filename.indexOf(".jdx") >= 0)
 			Jmol.Cache.put("cache://" + filename, data);
-		fileLoadThread.setData(filename, data, appData);
+		fileLoadThread.setData(filename, filename0, data, appData);
   }
   
 	Jmol._toBytes = function(data) {
@@ -1217,8 +1298,7 @@ Jmol = (function(document) {
 			return Jmol._saveFile(url, dataOut);
 		if (postOut)
 			url += "?POST?" + postOut;
-		var data = Jmol._getFileData(url)
-		return Jmol._processData(data, Jmol._isBinaryUrl(url));
+		return Jmol._getFileData(url, null, true);
 	}
 
 	// Jmol._localFileSaveFunction --  // do something local here; Maybe try the FileSave interface? return true if successful
@@ -1271,16 +1351,6 @@ Jmol = (function(document) {
 		}
 		return "OK";
 	}
-
-	Jmol._processData = function(data, isBinary) {
-		if (typeof data == "undefined") {
-			data = "";
-			isBinary = false;
-		}
-		if (isBinary)
-			isBinary = Jmol._canSyncBinary();
-		return (isBinary ? Jmol._strToBytes(data) : JU.SB.newS(data));
-	};
 
 	Jmol._strToBytes = function(s) {
 		if (Clazz.instanceOf(s, self.ArrayBuffer))
@@ -1493,8 +1563,8 @@ Jmol = (function(document) {
 		Jmol._j2sPath && (Info.j2sPath = Jmol._j2sPath);
 		obj._j2sPath = Info.j2sPath;
 		obj._deferApplet = Info.deferApplet;
-		obj._deferUncover = Info.deferUncover;
-		obj._coverImage = !obj._isJava && Info.coverImage;
+		obj._deferUncover = !obj._isJava && Info.deferUncover;
+		obj._coverImage = Info.coverImage;
 		obj._isCovered = !!obj._coverImage; 
 		obj._coverScript = Info.coverScript;
 		obj._coverTitle = Info.coverTitle;
@@ -2107,7 +2177,7 @@ Jmol._track = function(applet) {
 	if (Jmol._tracker){
 		try {  
 			var url = Jmol._tracker + "&applet=" + applet._jmolType + "&version=" + Jmol._version 
-				+ "&appver=" + self.___JmolVersion + "&url=" + encodeURIComponent(document.location.href);
+				+ "&appver=" + Jmol.___JmolVersion + "&url=" + encodeURIComponent(document.location.href);
 			var s = '<iframe style="display:none" width="0" height="0" frameborder="0" tabindex="-1" src="' + url + '"></iframe>'
 			Jmol.$after("body", s);
 		} catch (e) {
@@ -2368,7 +2438,8 @@ Jmol.Cache.put = function(filename, data) {
 				if (evt.target.readyState == FileReader.DONE) {
 					var cacheName = "cache://DROP_" + file.name;
 					var bytes = Jmol._toBytes(evt.target.result);
-					me._applet.cacheFileByName("cache://DROP_*",false);
+					if (!cacheName.endsWith(".spt"))
+						me._applet.cacheFileByName("cache://DROP_*",false);
 					if (me._viewType == "JSV" || cacheName.endsWith(".jdx")) // shared by Jmol and JSV
 						Jmol.Cache.put(cacheName, bytes);
 					else

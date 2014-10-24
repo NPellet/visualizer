@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shapesurface");
-Clazz.load (["J.shape.Mesh", "J.jvxl.data.JvxlData"], "J.shapesurface.IsosurfaceMesh", ["java.lang.Character", "$.Float", "java.util.Hashtable", "JU.AU", "$.BS", "$.CU", "$.Lst", "$.M4", "$.Measure", "$.P3", "$.P4", "$.PT", "$.SB", "$.V3", "J.api.Interface", "J.jvxl.data.JvxlCoder", "JS.T", "JU.BoxInfo", "$.C", "$.ColorEncoder", "$.Escape", "$.Logger", "JV.Viewer"], function () {
+Clazz.load (["J.shape.Mesh"], "J.shapesurface.IsosurfaceMesh", ["java.lang.Float", "java.util.Hashtable", "JU.AU", "$.BS", "$.CU", "$.Lst", "$.M4", "$.Measure", "$.P3", "$.P4", "$.PT", "$.SB", "$.V3", "J.api.Interface", "J.jvxl.data.JvxlCoder", "$.JvxlData", "JS.T", "JU.BoxInfo", "$.C", "$.ColorEncoder", "$.Escape", "$.Logger", "JV.Viewer"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.jvxlData = null;
 this.vertexIncrement = 1;
@@ -20,13 +20,10 @@ this.bsVdw = null;
 this.colorPhased = false;
 Clazz.instantialize (this, arguments);
 }, J.shapesurface, "IsosurfaceMesh", J.shape.Mesh);
-Clazz.prepareFields (c$, function () {
-this.jvxlData =  new J.jvxl.data.JvxlData ();
-});
 Clazz.makeConstructor (c$, 
 function (thisID, colix, index) {
-Clazz.superConstructor (this, J.shapesurface.IsosurfaceMesh, []);
 this.mesh1 (thisID, colix, index);
+this.jvxlData =  new J.jvxl.data.JvxlData ();
 this.checkByteCount = 2;
 this.jvxlData.version = JV.Viewer.getJmolVersion ();
 }, "~S,~N,~N");
@@ -321,9 +318,9 @@ var atoms = vwr.ms.at;
 for (var i = this.mergeVertexCount0; i < this.vc; i++) {
 var iAtom = this.vertexSource[i];
 if (iAtom < 0 || !bs.get (iAtom)) continue;
-this.jvxlData.vertexColors[i] = vwr.getColorArgbOrGray (this.vcs[i] = JU.C.copyColixTranslucency (this.colix, atoms[iAtom].getColix ()));
+this.jvxlData.vertexColors[i] = vwr.getColorArgbOrGray (this.vcs[i] = JU.C.copyColixTranslucency (this.colix, atoms[iAtom].colixAtom));
 var colix = (colixes == null ? 0 : colixes[atomMap[iAtom]]);
-if (colix == 0) colix = atoms[iAtom].getColix ();
+if (colix == 0) colix = atoms[iAtom].colixAtom;
 this.vcs[i] = JU.C.copyColixTranslucency (this.colix, colix);
 }
 }, "JV.Viewer,~A,~A,JU.BS");
@@ -394,7 +391,7 @@ if (this.colorCommand.equals ("inherit")) {
 this.colorCommand = "#inherit;";
 return;
 }if (this.colorCommand == null) return;
-this.colorCommand = "color $" + (Character.isLetter (this.thisID.charAt (0)) && this.thisID.indexOf (" ") < 0 ? this.thisID : "\"" + this.thisID + "\"") + " \"" + this.colorCommand + "\" range " + (this.jvxlData.isColorReversed ? this.jvxlData.valueMappedToBlue + " " + this.jvxlData.valueMappedToRed : this.jvxlData.valueMappedToRed + " " + this.jvxlData.valueMappedToBlue);
+this.colorCommand = "color $" + (JU.PT.isLetter (this.thisID.charAt (0)) && this.thisID.indexOf (" ") < 0 ? this.thisID : "\"" + this.thisID + "\"") + " \"" + this.colorCommand + "\" range " + (this.jvxlData.isColorReversed ? this.jvxlData.valueMappedToBlue + " " + this.jvxlData.valueMappedToRed : this.jvxlData.valueMappedToRed + " " + this.jvxlData.valueMappedToBlue);
 });
 Clazz.defineMethod (c$, "setColorsFromJvxlData", 
 function (colorRgb) {
@@ -461,7 +458,7 @@ this.jvxlData.nVertexColors = this.vc;
 var atoms = vwr.ms.at;
 for (var i = this.mergeVertexCount0; i < this.vc; i++) {
 var pt = this.vertexSource[i];
-if (pt >= 0 && pt < atoms.length) this.jvxlData.vertexColors[i] = vwr.getColorArgbOrGray (this.vcs[i] = JU.C.copyColixTranslucency (this.colix, atoms[pt].getColix ()));
+if (pt >= 0 && pt < atoms.length) this.jvxlData.vertexColors[i] = vwr.getColorArgbOrGray (this.vcs[i] = JU.C.copyColixTranslucency (this.colix, atoms[pt].colixAtom));
 }
 return;
 }this.jvxlData.vertexColors = null;
@@ -572,9 +569,9 @@ if (vertexCount > 0) for (var j = 0; j < 3; j++) p[j] += vertexCount;
 return ipt;
 }, "JU.MeshSurface,~N,~N,~A");
 Clazz.overrideMethod (c$, "getUnitCell", 
-function () {
-return (this.spanningVectors == null ? null : J.api.Interface.getSymmetry ().getUnitCell (this.spanningVectors, true, null));
-});
+function (vwr) {
+return (this.spanningVectors == null ? null : J.api.Interface.getSymmetry (vwr, "symmetry").getUnitCell (this.spanningVectors, true, null));
+}, "JV.Viewer");
 Clazz.overrideMethod (c$, "slabBrillouin", 
 function (unitCellPoints) {
 var vectors = (unitCellPoints == null ? this.spanningVectors : unitCellPoints);

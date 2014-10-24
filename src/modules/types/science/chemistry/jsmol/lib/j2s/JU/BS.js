@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JU");
-Clazz.load (["javajs.api.JSONEncodable"], "JU.BS", ["java.lang.Character", "$.IndexOutOfBoundsException", "$.NegativeArraySizeException", "JU.SB"], function () {
+Clazz.load (["javajs.api.JSONEncodable"], "JU.BS", ["java.lang.IndexOutOfBoundsException", "$.NegativeArraySizeException", "JU.PT", "$.SB"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.words = null;
 this.wordsInUse = 0;
@@ -305,10 +305,10 @@ var ch;
 var len;
 if (str == null || (len = (str = str.trim ()).length) < 4 || str.equalsIgnoreCase ("({null})") || (ch = str.charAt (0)) != '(' && ch != '[' || str.charAt (len - 1) != (ch == '(' ? ')' : ']') || str.charAt (1) != '{' || str.indexOf ('}') != len - 2) return null;
 len -= 2;
-for (var i = len; --i >= 2; ) if (!Character.isDigit (ch = str.charAt (i)) && ch != ' ' && ch != '\t' && ch != ':') return null;
+for (var i = len; --i >= 2; ) if (!JU.PT.isDigit (ch = str.charAt (i)) && ch != ' ' && ch != '\t' && ch != ':') return null;
 
 var lastN = len;
-while (Character.isDigit (str.charAt (--lastN))) {
+while (JU.PT.isDigit (str.charAt (--lastN))) {
 }
 if (++lastN == len) lastN = 0;
  else try {
@@ -342,7 +342,7 @@ iPrev = lastN = iThis;
 iThis = -2;
 break;
 default:
-if (Character.isDigit (ch)) {
+if (JU.PT.isDigit (ch)) {
 if (iThis < 0) iThis = 0;
 iThis = (iThis * 10) + (ch.charCodeAt (0) - 48);
 }}

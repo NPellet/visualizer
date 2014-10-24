@@ -11,7 +11,7 @@ JS.InvalidSmilesException.clear ();
 var search = JS.SmilesParser.getMolecule (pattern, isSmarts);
 search.createTopoMap (null);
 search.nodes = search.jmolAtoms;
-return search.getMolecularFormula (!isSmarts);
+return search.getMolecularFormula (!isSmarts, null, false);
 }, "~S,~B");
 Clazz.overrideMethod (c$, "getSmiles", 
 function (atoms, ac, bsSelected, asBioSmiles, bioAllowUnmatchedRings, bioAddCrossLinks, bioComment, explicitH) {

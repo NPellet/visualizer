@@ -218,7 +218,9 @@
 				+ " code='" + params.code + "' codebase='" + applet._jarPath + "' archive='" + jarFile + "' mayscript='true'>\n"
 				+ t + "<table bgcolor='yellow'><tr><td align='center' valign='middle' " + widthAndHeight + ">\n"
 				+ Applet._noJavaMsg + "</td></tr></table></applet>\n";
-		}	
+		}
+		if (applet._deferApplet)
+			applet._javaCode = t, t="";
 		t = Jmol._getWrapper(applet, true) + t + Jmol._getWrapper(applet, false) 
 			+ (Info.addSelectionOptions ? Jmol._getGrabberOptions(applet) : "");
 		if (Jmol._debugAlert)
@@ -226,6 +228,11 @@
 		applet._code = Jmol._documentWrite(t);
 	}
 
+	proto._newApplet = function(viewerOptions) {
+		this._viewerOptions = viewerOptions;
+		return new J.appletjs.Jmol(viewerOptions);
+	}
+	
 	proto._create = function(id, Info){
 		Jmol._setObject(this, id, Info);
 		var params = {
@@ -304,6 +311,8 @@
 		if (this._2dapplet._isEmbedded) {
 			this._showInfo(false);
 			this._show(!tf);
+			// for whatever reason this must be here
+			this._2dapplet.__showContainer(true, true);
 		}
 	}
 
@@ -537,7 +546,7 @@
 	}
 
 	proto._searchDatabase = function(query, database, script, _jmol_searchDatabase){
-		if (this._2dapplet && this._2dapplet._isEmbedded && Jmol.$(this, "2dappletdiv:visible")[0])
+		if (this._2dapplet && this._2dapplet._isEmbedded && !Jmol.$(this, "appletdiv:visible")[0])
 			return this._2dapplet._searchDatabase(query, database, script); 
 		this._showInfo(false);
 		if (query.indexOf("?") >= 0) {

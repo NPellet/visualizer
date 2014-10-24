@@ -14,7 +14,7 @@ function (sg, brNull) {
 var fileName = (sg.getReaderData ())[0];
 this.init2VFR (sg, this.br);
 this.binarydoc = this.newBinaryDocument ();
-this.binarydoc.setStream (sg.getAtomDataServer ().getBufferedInputStream (fileName), false);
+this.setStream (fileName, false);
 this.nSurfaces = 1;
 if (this.params.thePlane == null) this.params.insideOut = !this.params.insideOut;
 this.allowSigma = false;

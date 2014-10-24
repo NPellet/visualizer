@@ -86,19 +86,23 @@ return true;
 });
 Clazz.overrideMethod (c$, "doPreSymmetry", 
 function () {
-if (this.ms != null) this.ms.setModulation (false);
+if (this.ms != null) this.ms.setModulation (false, null);
+if (this.vibsFractional) this.asc.getXSymmetry ().scaleFractionalVibs ();
 });
-Clazz.overrideMethod (c$, "finalizeReader", 
+Clazz.overrideMethod (c$, "finalizeSubclassReader", 
 function () {
 if (!this.haveM40Data) this.readM40Data (false);
 if (this.lattvecs != null && this.lattvecs.size () > 0) this.asc.getSymmetry ().addLatticeVectors (this.lattvecs);
 this.applySymmetryAndSetTrajectory ();
-this.adjustM40Occupancies ();
-if (this.ms != null) {
-this.ms.setModulation (true);
-this.ms.finalizeModulation ();
-}this.finalizeReaderASCR ();
+this.finalizeReaderASCR ();
 });
+Clazz.overrideMethod (c$, "finalizeSubclassSymmetry", 
+function (haveSymmetry) {
+this.adjustM40Occupancies ();
+if (this.ms != null && haveSymmetry) {
+this.ms.setModulation (true, this.asc.getXSymmetry ().getBaseSymmetry ());
+this.ms.finalizeModulation ();
+}}, "~B");
 Clazz.defineMethod (c$, "cell", 
  function () {
 for (var ipt = 0; ipt < 6; ipt++) this.setUnitCellItem (ipt, this.parseFloat ());
@@ -106,14 +110,18 @@ for (var ipt = 0; ipt < 6; ipt++) this.setUnitCellItem (ipt, this.parseFloat ())
 });
 Clazz.defineMethod (c$, "ndim", 
  function () {
-this.ms = J.api.Interface.getOption ("adapter.readers.cif.MSRdr");
+this.ms = J.api.Interface.getOption ("adapter.readers.cif.MSRdr", this.vwr, "file");
 this.modDim = this.ms.initialize (this, (this.parseIntStr (this.getTokens ()[1]) - 3));
 });
 Clazz.defineMethod (c$, "qi", 
  function () {
 var pt =  Clazz.newDoubleArray (this.modDim, 0);
 pt[this.qicount] = 1;
-this.ms.addModulation (null, "W_" + (++this.qicount), [this.parseFloat (), this.parseFloat (), this.parseFloat ()], -1);
+var a = [this.parseFloat (), this.parseFloat (), this.parseFloat ()];
+this.parseTokenStr (this.rd ());
+for (var i = 0; i < 3; i++) a[i] += this.parseFloat ();
+
+this.ms.addModulation (null, "W_" + (++this.qicount), a, -1);
 this.ms.addModulation (null, "F_" + this.qicount + "_coefs_", pt, -1);
 });
 Clazz.defineMethod (c$, "symmetry", 

@@ -7,48 +7,61 @@ this.a2 = 0;
 this.center = 0;
 this.left = 0;
 this.right = 0;
+this.order = 0;
 this.axis = '\0';
 this.type = '\0';
 this.params = null;
 this.utens = null;
+this.delta2 = 0;
 Clazz.instantialize (this, arguments);
 }, JU, "Modulation");
 Clazz.makeConstructor (c$, 
 function (axis, type, params, utens, qCoefs) {
-if (JU.Logger.debuggingHigh) JU.Logger.debug ("MOD create " + JU.Escape.e (qCoefs) + " axis=" + axis + " type=" + type + " params=" + JU.Escape.e (params) + " utens=" + utens);
+JU.Logger.info ("MOD create " + JU.Escape.e (qCoefs) + " axis=" + axis + " type=" + type + " params=" + JU.Escape.e (params) + " utens=" + utens);
 this.axis = axis;
 this.type = type;
 this.utens = utens;
 this.params = params;
 this.qCoefs = qCoefs;
 switch (type) {
+case 'm':
 case 'f':
 case 'o':
 case 'u':
 this.a1 = params[0];
 this.a2 = params[1];
 break;
+case 'l':
+case 'L':
+this.a1 = params[2];
+this.order = Clazz.doubleToInt (params[3]);
+this.calcLegendre (this.order);
+case 't':
 case 's':
 case 'c':
 this.center = params[0];
-var width = params[1];
-if (width > 1) width = 1;
-this.left = this.center - width / 2;
-this.right = this.center + width / 2;
+this.delta2 = params[1] / 2;
+if (this.delta2 > 0.5) this.delta2 = 0.5;
+this.left = this.center - this.delta2;
+this.right = this.center + this.delta2;
 if (this.left < 0) this.left += 1;
 if (this.right > 1) this.right -= 1;
 if (this.left >= this.right && this.left - this.right < 0.01) this.left = this.right + 0.01;
-this.a1 = 2 * params[2] / params[1];
-break;
+if (this.a1 == 0) {
+this.a1 = params[2] / this.delta2;
+}break;
 }
 }, "~S,~S,~A,~S,~A");
 Clazz.defineMethod (c$, "apply", 
 function (ms, t) {
 var v = 0;
 var nt = 0;
+var isSpin = false;
 for (var i = this.qCoefs.length; --i >= 0; ) nt += this.qCoefs[i] * t[i][0];
 
 switch (this.type) {
+case 'm':
+isSpin = true;
 case 'f':
 case 'o':
 case 'u':
@@ -57,11 +70,31 @@ if (this.a1 != 0) v += this.a1 * Math.sin (theta);
 if (this.a2 != 0) v += this.a2 * Math.cos (theta);
 if (JU.Logger.debuggingHigh) JU.Logger.info ("MOD " + ms.id + " " + JU.Escape.e (this.qCoefs) + " axis=" + this.axis + " v=" + v + " csin,ccos=" + this.a1 + "," + this.a2 + " / theta=" + theta);
 break;
-case 'c':
+case 'L':
+case 'l':
+ms.vOcc0 = NaN;
 nt -= Math.floor (nt);
-ms.vOcc = (this.range (nt) ? 1 : 0);
+if (!this.range (nt)) return;
+ms.vOcc = 1;
+var x = (nt - this.center) / this.delta2;
+x = ((x + 1) % 2) + (x < -1 ? 1 : -1);
+var xp = 1;
+var p = JU.Modulation.legendre[this.order];
+var i = 0;
+var n = p.length;
+while (true) {
+v += p[i] * xp;
+if (++i == n) break;
+xp *= x;
+}
+v *= this.a1;
+break;
+case 'c':
+ms.vOcc = (this.range (nt - Math.floor (nt)) ? 1 : 0);
 ms.vOcc0 = NaN;
 return;
+case 't':
+isSpin = true;
 case 's':
 nt -= Math.floor (nt);
 if (!this.range (nt)) return;
@@ -71,6 +104,20 @@ if (nt < this.left && this.left < this.center) nt += 1;
 }v = this.a1 * (nt - this.center);
 break;
 }
+if (isSpin) {
+var f = ms.getAxesLengths ();
+switch (this.axis) {
+case 'x':
+ms.mxyz.x += v / f[0];
+break;
+case 'y':
+ms.mxyz.y += v / f[1];
+break;
+case 'z':
+ms.mxyz.z += v / f[2];
+break;
+}
+} else {
 switch (this.axis) {
 case 'x':
 ms.x += v;
@@ -88,7 +135,7 @@ default:
 if (Float.isNaN (ms.vOcc)) ms.vOcc = 0;
 ms.vOcc += v;
 }
-}, "JU.ModulationSet,~A");
+}}, "JU.ModulationSet,~A");
 Clazz.defineMethod (c$, "range", 
  function (x4) {
 return (this.left < this.right ? this.left <= x4 && x4 <= this.right : this.left <= x4 || x4 <= this.right);
@@ -102,11 +149,32 @@ info.put ("qCoefs", this.qCoefs);
 if (this.utens != null) info.put ("Utens", this.utens);
 return info;
 });
+Clazz.defineMethod (c$, "calcLegendre", 
+function (m) {
+if (JU.Modulation.legendre != null && JU.Modulation.legendre.length > m) return;
+JU.Modulation.legendre =  Clazz.newDoubleArray (m + 5, 0);
+var pn_1 = JU.Modulation.legendre[0] = [1];
+var pn = JU.Modulation.legendre[1] = [0, 1];
+for (var n = 1; n < m + 3; n++) {
+var p = JU.Modulation.legendre[n + 1] =  Clazz.newDoubleArray (n + 2, 0);
+for (var i = 0; i <= n; i++) {
+p[i + 1] = (2 * n + 1) * pn[i] / (n + 1);
+if (i < n) p[i] += -n * pn_1[i] / (n + 1);
+}
+pn_1 = pn;
+pn = p;
+}
+}, "~N");
 Clazz.defineStatics (c$,
 "TWOPI", 6.283185307179586,
 "TYPE_DISP_FOURIER", 'f',
+"TYPE_SPIN_FOURIER", 'm',
+"TYPE_SPIN_SAWTOOTH", 't',
 "TYPE_DISP_SAWTOOTH", 's',
 "TYPE_OCC_FOURIER", 'o',
 "TYPE_OCC_CRENEL", 'c',
-"TYPE_U_FOURIER", 'u');
+"TYPE_U_FOURIER", 'u',
+"TYPE_DISP_LEGENDRE", 'l',
+"TYPE_U_LEGENDRE", 'L',
+"legendre", null);
 });

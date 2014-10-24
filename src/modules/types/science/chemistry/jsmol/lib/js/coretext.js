@@ -9,6 +9,7 @@
 ,Clazz_instantialize
 ,Clazz_decorateAsClass
 ,Clazz_floatToInt
+,Clazz_floatToLong
 ,Clazz_makeConstructor
 ,Clazz_defineEnumConstant
 ,Clazz_exceptionOf
@@ -102,9 +103,6 @@ this.boxXY = null;
 this.scalePixelsPerMicron = 0;
 Clazz_instantialize (this, arguments);
 }, JM, "Object2d");
-Clazz_prepareFields (c$, function () {
-this.boxXY =  Clazz_newFloatArray (5, 0);
-});
 Clazz_defineMethod (c$, "getScalePixelsPerMicron", 
 function () {
 return this.scalePixelsPerMicron;
@@ -331,8 +329,8 @@ function () {
 return this.text;
 });
 Clazz_makeConstructor (c$, 
-function () {
-Clazz_superConstructor (this, JM.Text, []);
+ function () {
+this.boxXY =  Clazz_newFloatArray (5, 0);
 });
 c$.newLabel = Clazz_defineMethod (c$, "newLabel", 
 function (gdata, font, text, colix, bgcolix, align, scalePixelsPerMicron, value) {
@@ -608,7 +606,7 @@ xy[1] += this.lineHeight;
 }, "~A,~N");
 });
 Clazz_declarePackage ("J.shape");
-Clazz_load (["J.shape.Shape", "java.util.Hashtable"], "J.shape.Object2dShape", ["JU.P3", "JU.Logger", "$.Txt"], function () {
+Clazz_load (["J.shape.Shape", "java.util.Hashtable"], "J.shape.Object2dShape", ["JU.P3", "$.PT", "JU.Logger"], function () {
 c$ = Clazz_decorateAsClass (function () {
 this.objects = null;
 this.currentObject = null;
@@ -638,7 +636,7 @@ if (this.isAll || this.thisID != null) {
 var e = this.objects.values ().iterator ();
 while (e.hasNext ()) {
 var text = e.next ();
-if (this.isAll || JU.Txt.isMatch (text.target.toUpperCase (), this.thisID, true, true)) {
+if (this.isAll || JU.PT.isMatch (text.target.toUpperCase (), this.thisID, true, true)) {
 e.remove ();
 }}
 }return;
@@ -689,7 +687,7 @@ if (this.isAll || this.thisID != null) {
 var e = this.objects.values ().iterator ();
 while (e.hasNext ()) {
 var text = e.next ();
-if (this.isAll || JU.Txt.isMatch (text.target.toUpperCase (), this.thisID, true, true)) {
+if (this.isAll || JU.PT.isMatch (text.target.toUpperCase (), this.thisID, true, true)) {
 text.setColixO (value);
 }}
 }return;
@@ -733,7 +731,7 @@ function () {
 this.currentObject = null;
 this.isAll = false;
 });
-Clazz_overrideMethod (c$, "setVisibilityFlags", 
+Clazz_overrideMethod (c$, "setModelVisibilityFlags", 
 function (bsModels) {
 if (!this.isHover) for (var t, $t = this.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) t.setVisibility (t.modelIndex < 0 || bsModels.get (t.modelIndex));
 
@@ -1199,7 +1197,7 @@ this.text = this.getLabel (i);
 if (this.text != null) {
 this.text.setFontFromFid (fid);
 }}, "~N,~N");
-Clazz_overrideMethod (c$, "setModelClickability", 
+Clazz_overrideMethod (c$, "setAtomClickability", 
 function () {
 if (this.strings == null) return;
 for (var i = this.strings.length; --i >= 0; ) {
@@ -1269,7 +1267,7 @@ if (isBg) {
 colix = (this.bgcolixes == null || i >= this.bgcolixes.length) ? 0 : this.bgcolixes[i];
 } else {
 colix = (this.colixes == null || i >= this.colixes.length) ? 0 : this.colixes[i];
-colix = JU.C.getColixInherited (colix, atom.getColix ());
+colix = JU.C.getColixInherited (colix, atom.colixAtom);
 if (JU.C.isColixTranslucent (colix)) colix = JU.C.getColixTranslucent3 (colix, false, 0);
 }return colix;
 }, "~N,JM.Atom,~B");
@@ -1278,7 +1276,7 @@ Clazz_defineStatics (c$,
 c$.nullToken = c$.prototype.nullToken = [null];
 });
 Clazz_declarePackage ("J.shape");
-Clazz_load (["J.api.JmolMeasurementClient", "J.shape.AtomShape", "JU.Lst"], "J.shape.Measures", ["java.lang.Float", "java.util.Hashtable", "JU.BS", "$.PT", "JM.Measurement", "$.MeasurementData", "JU.BSUtil", "$.C", "$.Escape", "$.Txt"], function () {
+Clazz_load (["J.api.JmolMeasurementClient", "J.shape.AtomShape", "JU.Lst"], "J.shape.Measures", ["java.lang.Float", "java.util.Hashtable", "JU.BS", "$.PT", "JM.Measurement", "$.MeasurementData", "JU.BSUtil", "$.C", "$.Escape"], function () {
 c$ = Clazz_decorateAsClass (function () {
 this.bsSelected = null;
 this.strFormat = null;
@@ -1653,10 +1651,10 @@ this.vwr.setStatusMeasuring ("measureDeleted", i, msg, 0);
 Clazz_defineMethod (c$, "doAction", 
  function (md, s, tok) {
 s = s.toUpperCase ().$replace ('?', '*');
-var isWild = JU.Txt.isWild (s);
+var isWild = JU.PT.isWild (s);
 for (var i = this.measurements.size (); --i >= 0; ) {
 var m = this.measurements.get (i);
-if (m.thisID != null && (m.thisID.equalsIgnoreCase (s) || isWild && JU.Txt.isMatch (m.thisID.toUpperCase (), s, true, true))) switch (tok) {
+if (m.thisID != null && (m.thisID.equalsIgnoreCase (s) || isWild && JU.PT.isMatch (m.thisID.toUpperCase (), s, true, true))) switch (tok) {
 case 1666189314:
 m.mad = md.mad;
 break;
@@ -1759,7 +1757,7 @@ return this.vwr.getMeasurementState (this, this.measurements, this.measurementCo
 });
 });
 Clazz_declarePackage ("J.shape");
-Clazz_load (["J.shape.TextShape"], "J.shape.Echo", ["JM.Object2d", "$.Text", "JU.Txt"], function () {
+Clazz_load (["J.shape.TextShape"], "J.shape.Echo", ["JU.PT", "JM.Object2d", "$.Text"], function () {
 c$ = Clazz_declareType (J.shape, "Echo", J.shape.TextShape);
 Clazz_defineMethod (c$, "initShape", 
 function () {
@@ -1798,12 +1796,12 @@ return;
 }if ("thisID" === propertyName) {
 var target = value;
 this.currentObject = this.objects.get (target);
-if (this.currentObject == null && JU.Txt.isWild (target)) this.thisID = target.toUpperCase ();
+if (this.currentObject == null && JU.PT.isWild (target)) this.thisID = target.toUpperCase ();
 return;
 }if ("hidden" === propertyName) {
 var isHidden = (value).booleanValue ();
 if (this.currentObject == null) {
-if (this.isAll || this.thisID != null) for (var t, $t = this.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) if (this.isAll || JU.Txt.isMatch (t.target.toUpperCase (), this.thisID, true, true)) t.hidden = isHidden;
+if (this.isAll || this.thisID != null) for (var t, $t = this.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) if (this.isAll || JU.PT.isMatch (t.target.toUpperCase (), this.thisID, true, true)) t.hidden = isHidden;
 
 return;
 }(this.currentObject).hidden = isHidden;
@@ -1845,10 +1843,10 @@ if ("currentTarget" === property) {
 return (this.currentObject != null && (data[0] = this.currentObject.target) != null);
 }if (property === "checkID") {
 var key = (data[0]).toUpperCase ();
-var isWild = JU.Txt.isWild (key);
+var isWild = JU.PT.isWild (key);
 for (var t, $t = this.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) {
 var id = t.target;
-if (id.equalsIgnoreCase (key) || isWild && JU.Txt.isMatch (id.toUpperCase (), key, true, true)) {
+if (id.equalsIgnoreCase (key) || isWild && JU.PT.isMatch (id.toUpperCase (), key, true, true)) {
 data[1] = id;
 return true;
 }}
@@ -2068,7 +2066,7 @@ if (this.zCutoff > 0 && this.zSlab > this.zCutoff) continue;
 if (this.zSlab < 1) this.zSlab = 1;
 this.zBox = this.zSlab;
 if (labelsGroup) {
-var group = this.atom.getGroup ();
+var group = this.atom.group;
 var ig = group.getGroupIndex ();
 if (ig != iGroup) {
 group.getMinZ (atoms, this.minZ);
@@ -2165,7 +2163,7 @@ function () {
 if (!this.g3d.checkTranslucent (false)) return false;
 if (this.atomPt == null) this.atomPt =  new JU.Point3fi ();
 var measures = this.shape;
-this.doJustify = this.vwr.getBoolean (603979872);
+this.doJustify = this.vwr.getBoolean (603979871);
 this.modulating = this.ms.bsModulated != null;
 this.imageFontScaling = this.vwr.getImageFontScaling ();
 this.mad0 = measures.mad;
@@ -2210,13 +2208,12 @@ Clazz_defineMethod (c$, "getModAtom",
 var ii = Integer.$valueOf (i);
 var pt = this.mpts.get (ii);
 if (pt != null) ii = null;
-var v = this.ms.getVibration (i, false);
-var a = this.ms.at[i];
+var v = this.ms.getModulation (i);
 if (v == null) {
-pt = a;
+pt = this.ms.at[i];
 } else {
 if (pt == null) pt =  new JU.Point3fi ();
-pt.setT (a);
+pt.setT (this.ms.at[i]);
 if (this.vwr.tm.vibrationOn) this.vwr.tm.getVibrationPoint (v, pt, NaN);
 pt.sD = -1;
 }if (ii != null) this.mpts.put (ii, pt);
@@ -2468,7 +2465,7 @@ return true;
 Clazz_defineMethod (c$, "fixLabel", 
 function (atom, label) {
 if (label == null) return null;
-return (this.vwr.ms.isJmolDataFrameForModel (atom.getModelIndex ()) && label.equals ("%U") ? "%W" : label);
+return (this.vwr.ms.isJmolDataFrameForModel (atom.mi) && label.equals ("%U") ? "%W" : label);
 }, "JM.Atom,~S");
 });
 })(Clazz
@@ -2482,6 +2479,7 @@ return (this.vwr.ms.isJmolDataFrameForModel (atom.getModelIndex ()) && label.equ
 ,Clazz.instantialize
 ,Clazz.decorateAsClass
 ,Clazz.floatToInt
+,Clazz.floatToLong
 ,Clazz.makeConstructor
 ,Clazz.defineEnumConstant
 ,Clazz.exceptionOf

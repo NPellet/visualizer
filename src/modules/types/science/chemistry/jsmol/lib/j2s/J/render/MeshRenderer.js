@@ -70,7 +70,7 @@ this.render2 (this.isExport);
 } else {
 var vTemp =  new JU.P3 ();
 var unitcell;
-if ((unitcell = mesh.unitCell) == null && (unitcell = this.vwr.ms.am[mesh.modelIndex].biosymmetry) == null && (unitcell = this.vwr.getModelUnitCell (mesh.modelIndex)) == null) unitcell = mesh.getUnitCell ();
+if ((unitcell = mesh.unitCell) == null && (unitcell = this.vwr.ms.am[mesh.modelIndex].biosymmetry) == null && (unitcell = this.vwr.getModelUnitCell (mesh.modelIndex)) == null) unitcell = mesh.getUnitCell (this.vwr);
 if (mesh.symops != null) {
 if (mesh.symopNormixes == null) mesh.symopNormixes = JU.AU.newShort2 (mesh.symops.length);
 var verticesTemp = null;

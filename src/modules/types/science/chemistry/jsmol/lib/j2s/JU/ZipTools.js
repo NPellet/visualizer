@@ -56,7 +56,7 @@ for (var i = 0; i < bytes.length; i++) ret.append (Integer.toHexString (bytes[i]
 return ret.toString ();
 }, "~A");
 Clazz.overrideMethod (c$, "getZipFileDirectory", 
-function (bis, list, listPtr, asBufferedInputStream) {
+function (jzt, bis, list, listPtr, asBufferedInputStream) {
 var ret;
 if (list == null || listPtr >= list.length) return this.getZipDirectoryAsStringAndClose (bis);
 bis = JU.Rdr.getPngZipStream (bis, true);
@@ -83,14 +83,14 @@ var bytes = (ze == null ? null : JU.Rdr.getLimitedStreamBytes (zis, ze.getSize (
 ze = null;
 zis.close ();
 if (bytes == null) return "";
-if (JU.Rdr.isZipB (bytes) || JU.Rdr.isPngZipB (bytes)) return this.getZipFileDirectory (JU.Rdr.getBIS (bytes), list, ++listPtr, asBufferedInputStream);
+if (JU.Rdr.isZipB (bytes) || JU.Rdr.isPngZipB (bytes)) return this.getZipFileDirectory (jzt, JU.Rdr.getBIS (bytes), list, ++listPtr, asBufferedInputStream);
 if (asBufferedInputStream) return JU.Rdr.getBIS (bytes);
 if (asBinaryString) {
 ret =  new JU.SB ();
 for (var i = 0; i < bytes.length; i++) ret.append (Integer.toHexString (bytes[i] & 0xFF)).appendC (' ');
 
 return ret.toString ();
-}if (JU.Rdr.isGzipB (bytes)) bytes = JU.Rdr.getLimitedStreamBytes (JU.ZipTools.getUnGzippedInputStream (bytes), -1);
+}if (JU.Rdr.isGzipB (bytes)) bytes = JU.Rdr.getLimitedStreamBytes (this.getUnGzippedInputStream (bytes), -1);
 return JU.Rdr.fixUTF (bytes);
 } catch (e) {
 if (Clazz.exceptionOf (e, Exception)) {
@@ -99,7 +99,7 @@ return "";
 throw e;
 }
 }
-}, "java.io.BufferedInputStream,~A,~N,~B");
+}, "javajs.api.GenericZipTools,java.io.BufferedInputStream,~A,~N,~B");
 Clazz.overrideMethod (c$, "getZipFileContentsAsBytes", 
 function (bis, list, listPtr) {
 var ret =  Clazz.newByteArray (0, 0);
@@ -179,10 +179,10 @@ Clazz.overrideMethod (c$, "newGZIPInputStream",
 function (is) {
 return  new java.io.BufferedInputStream ( new java.util.zip.GZIPInputStream (is, 512));
 }, "java.io.InputStream");
-c$.getUnGzippedInputStream = Clazz.defineMethod (c$, "getUnGzippedInputStream", 
+Clazz.overrideMethod (c$, "getUnGzippedInputStream", 
 function (bytes) {
 try {
-return JU.Rdr.getUnzippedInputStream (JU.Rdr.getBIS (bytes));
+return JU.Rdr.getUnzippedInputStream (this, JU.Rdr.getBIS (bytes));
 } catch (e) {
 if (Clazz.exceptionOf (e, Exception)) {
 return null;

@@ -5,9 +5,8 @@ this.widthUnitVector = null;
 this.heightUnitVector = null;
 Clazz.instantialize (this, arguments);
 }, JM, "Sheet", JM.ProteinStructure);
-Clazz.makeConstructor (c$, 
+Clazz.overrideConstructor (c$, 
 function (apolymer, monomerIndex, monomerCount, subtype) {
-Clazz.superConstructor (this, JM.Sheet, []);
 this.setupPS (apolymer, J.c.STR.SHEET, monomerIndex, monomerCount);
 this.subtype = subtype;
 }, "JM.AlphaPolymer,~N,~N,J.c.STR");
@@ -27,17 +26,17 @@ this.axisUnitVector.sub2 (this.axisB, this.axisA);
 this.axisUnitVector.normalize ();
 var tempA =  new JU.P3 ();
 this.apolymer.getLeadMidPoint (this.monomerIndexFirst, tempA);
-if (this.lowerNeighborIsHelixOrSheet ()) {
-} else {
-JU.Measure.projectOntoAxis (tempA, this.axisA, this.axisUnitVector, this.vectorProjection);
-}var tempB =  new JU.P3 ();
+if (this.notHelixOrSheet (this.monomerIndexFirst - 1)) JU.Measure.projectOntoAxis (tempA, this.axisA, this.axisUnitVector, this.vectorProjection);
+var tempB =  new JU.P3 ();
 this.apolymer.getLeadMidPoint (this.monomerIndexFirst + this.nRes, tempB);
-if (this.upperNeighborIsHelixOrSheet ()) {
-} else {
-JU.Measure.projectOntoAxis (tempB, this.axisA, this.axisUnitVector, this.vectorProjection);
-}this.axisA = tempA;
+if (this.notHelixOrSheet (this.monomerIndexFirst + this.nRes)) JU.Measure.projectOntoAxis (tempB, this.axisA, this.axisUnitVector, this.vectorProjection);
+this.axisA = tempA;
 this.axisB = tempB;
 });
+Clazz.defineMethod (c$, "notHelixOrSheet", 
+ function (i) {
+return (i < 0 || i >= this.apolymer.monomerCount || !this.apolymer.monomers[i].isHelix () && !this.apolymer.monomers[i].isSheet ());
+}, "~N");
 Clazz.defineMethod (c$, "calcSheetUnitVectors", 
 function () {
 if (!(Clazz.instanceOf (this.apolymer, JM.AminoPolymer))) return;
@@ -58,14 +57,14 @@ this.heightUnitVector.normalize ();
 this.widthUnitVector = vectorCOSum;
 this.widthUnitVector.cross (this.axisUnitVector, this.heightUnitVector);
 }});
-Clazz.defineMethod (c$, "getWidthUnitVector", 
-function () {
-if (this.widthUnitVector == null) this.calcSheetUnitVectors ();
-return this.widthUnitVector;
-});
-Clazz.defineMethod (c$, "getHeightUnitVector", 
-function () {
+Clazz.defineMethod (c$, "setBox", 
+function (w, h, pt, vW, vH, ptC, scale) {
 if (this.heightUnitVector == null) this.calcSheetUnitVectors ();
-return this.heightUnitVector;
-});
+vW.setT (this.widthUnitVector);
+vW.scale (scale * w);
+vH.setT (this.heightUnitVector);
+vH.scale (scale * h);
+ptC.ave (vW, vH);
+ptC.sub2 (pt, ptC);
+}, "~N,~N,JU.P3,JU.V3,JU.V3,JU.P3,~N");
 });

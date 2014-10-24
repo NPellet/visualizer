@@ -337,7 +337,7 @@ return (this.jsl == null ? null : this.jsl.getRegistryInfo ());
 Clazz.defineMethod (c$, "dialogAsk", 
 function (type, fileName) {
 var isImage = type.equals ("Save Image");
-var sd = J.api.Interface.getOption ("dialog.Dialog");
+var sd = J.api.Interface.getOption ("dialog.Dialog", this.vwr, "status");
 if (sd == null) return null;
 sd.setupUI (false);
 if (isImage) sd.setImageInfo (this.qualityJPG, this.qualityPNG, this.imageType);

@@ -64,7 +64,7 @@ if (this.shapes[shapeID] != null) return this.shapes[shapeID];
 if (shapeID == 2 || shapeID == 3 || shapeID == 4) return null;
 var className = JV.JC.getShapeClassName (shapeID, false);
 var shape;
-if ((shape = J.api.Interface.getInterface (className)) == null) return null;
+if ((shape = J.api.Interface.getInterface (className, this.vwr, "shape")) == null) return null;
 this.vwr.setShapeErrorState (shapeID, "allocate");
 shape.initializeShape (this.vwr, this.gdata, this.ms, shapeID);
 this.vwr.setShapeErrorState (-1, null);
@@ -83,7 +83,7 @@ if (this.shapes != null) this.shapes[shapeID] = null;
 }, "~N");
 Clazz.defineMethod (c$, "resetShapes", 
 function () {
-if (!this.vwr.noGraphicsAllowed ()) this.shapes =  new Array (36);
+if (!this.vwr.noGraphicsAllowed) this.shapes =  new Array (36);
 });
 Clazz.defineMethod (c$, "setShapeSizeBs", 
 function (shapeID, size, rd, bsSelected) {
@@ -215,7 +215,7 @@ function () {
 var shapes = this.shapes;
 if (shapes == null || shapes[0] == null) return;
 var bs = this.vwr.getVisibleFramesBitSet ();
-for (var i = 8; i < 32; i++) if (shapes[i] != null) shapes[i].setVisibilityFlags (bs);
+for (var i = 8; i < 32; i++) if (shapes[i] != null) shapes[i].setModelVisibilityFlags (bs);
 
 var showHydrogens = this.vwr.getBoolean (603979922);
 var bsDeleted = this.vwr.getDeletedAtoms ();
@@ -224,17 +224,17 @@ for (var i = this.ms.ac; --i >= 0; ) {
 var atom = atoms[i];
 atom.shapeVisibilityFlags &= -64;
 if (bsDeleted != null && bsDeleted.get (i) || !showHydrogens && atom.getElementNumber () == 1) continue;
-var modelIndex = atom.getModelIndex ();
-if (bs.get (modelIndex)) {
+if (bs.get (atom.mi)) {
 var f = 1;
 if (!this.ms.isAtomHidden (i)) {
 f |= 8;
 if (atom.madAtom != 0) f |= 16;
 atom.setShapeVisibility (f, true);
 }}}
+this.ms.clearVisibleSets ();
 for (var i = 0; i < 36; ++i) {
 var shape = shapes[i];
-if (shape != null) shape.setModelClickability ();
+if (shape != null) shape.setAtomClickability ();
 }
 });
 Clazz.defineMethod (c$, "finalizeAtoms", 

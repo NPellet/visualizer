@@ -229,7 +229,7 @@ return;
 this.animationPaused = false;
 if (this.animationThread == null) {
 this.intAnimThread++;
-this.animationThread = J.api.Interface.getOption ("thread.AnimationThread");
+this.animationThread = J.api.Interface.getOption ("thread.AnimationThread", this.vwr, "script");
 this.animationThread.setManager (this, this.vwr, [this.firstFrameIndex, this.lastFrameIndex, this.intAnimThread]);
 this.animationThread.start ();
 }});

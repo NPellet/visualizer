@@ -16,6 +16,65 @@
 			/^(get|post|head|put|delete|options)$/i.test( this.type ) &&
 			createXHR() || createXHR(1);
 	});
+
+
+// Bind script tag hack transport
+		$.ajaxTransport( "+script", function(s) {
+
+	// This transport only deals with cross domain requests
+	// BH: No! This is not compatible with Chrome
+	if ( true || s.crossDomain ) {
+
+		var script,
+			head = document.head || jQuery("head")[0] || document.documentElement;
+
+		return {
+
+			send: function( _, callback ) {
+				script = document.createElement("script");
+				//script.async = true;
+
+				if ( s.scriptCharset ) {
+					script.charset = s.scriptCharset;
+				}
+
+				script.src = s.url;
+
+				// Attach handlers for all browsers
+				script.onload = script.onreadystatechange = function( _, isAbort ) {
+
+					if ( isAbort || !script.readyState || /loaded|complete/.test( script.readyState ) ) {
+
+						// Handle memory leak in IE
+						script.onload = script.onreadystatechange = null;
+						// Remove the script
+						if ( script.parentNode ) {
+							script.parentNode.removeChild( script );
+						}
+
+						// Dereference the script
+						script = null;
+
+						// Callback if not abort
+						if ( !isAbort ) {
+							callback( 200, "success" );
+						}
+					}
+				};
+
+				// Circumvent IE6 bugs with base elements (#2709 and #4378) by prepending
+				// Use native DOM manipulation to avoid our domManip AJAX trickery
+				head.insertBefore( script, head.firstChild );
+			},
+
+			abort: function() {
+				if ( script ) {
+					script.onload( undefined, true );
+				}
+			}
+		};
+	}
+});
  
 	// incorporates jquery.iecors MSIE asynchronous cross-domain request for MSIE < 10
 
@@ -25,8 +84,9 @@
 		// source: https://github.com/dkastner/jquery.iecors
 		// author: Derek Kastner dkastner@gmail.com http://dkastner.github.com    
 		$.ajaxTransport(function(s) {
+		
 			return {
-				send: function( headers, complete ) {
+				send: function( headers, complete ) {				
 					// Note that xdr is not synchronous.
 					// This is only being used in JSmol for transport of java code packages.
 					var xdr = new window.XDomainRequest();
@@ -56,12 +116,15 @@
 			responseFields: { binary: "response" }
 		})
 
+
 		$.ajaxTransport('binary', function(s) {
+		
 			var callback;
 			return {
 				// synchronous or asynchronous binary transfer only
 				send: function( headers, complete ) {        
 					var xhr = s.xhr();
+					console.log("xhr.open binary async=" + s.async + " url=" + s.url);
 					xhr.open( s.type, s.url, s.async );					
 					var isOK = false;
 					try {

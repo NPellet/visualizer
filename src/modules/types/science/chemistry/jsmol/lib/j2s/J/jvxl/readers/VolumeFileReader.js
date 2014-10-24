@@ -203,7 +203,7 @@ Clazz.defineMethod (c$, "getPlaneProcessed",
 function (x) {
 var plane;
 if (this.iPlaneRaw == 0) {
-this.qpc = J.api.Interface.getOption ("quantum.NciCalculation");
+this.qpc = J.api.Interface.getOption ("quantum.NciCalculation", this.sg.getAtomDataServer (), null);
 var atomData =  new J.atomdata.AtomData ();
 atomData.modelIndex = -1;
 atomData.bsSelected = this.params.bsSelected;

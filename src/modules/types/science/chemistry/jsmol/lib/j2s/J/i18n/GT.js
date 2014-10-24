@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.i18n");
-Clazz.load (["J.api.Translator", "java.util.Hashtable", "J.i18n.Language", "$.Resource"], "J.i18n.GT", ["java.text.MessageFormat", "JU.Logger"], function () {
+Clazz.load (["J.api.Translator", "java.text.MessageFormat", "java.util.Hashtable", "JU.PT", "J.i18n.Language", "$.Resource"], "J.i18n.GT", ["JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.resources = null;
 this.resourceCount = 0;
@@ -16,7 +16,6 @@ return J.i18n.GT._ (s);
 }, "~S");
 Clazz.makeConstructor (c$, 
 function (vwr, langCode) {
-J.i18n.GT.vwr = vwr;
 {
 }this.resources = null;
 this.resourceCount = 0;
@@ -62,9 +61,9 @@ if (la === la_co || "en_US".equals (la)) la = null;
 if (la_co === la_co_va) la_co = null;
 if ("en_US".equals (la_co)) return;
 if (J.i18n.GT.allowDebug && JU.Logger.debugging) JU.Logger.debug ("Instantiating gettext wrapper for " + this.language + " using files for language:" + la + " country:" + la_co + " variant:" + la_co_va);
-if (!J.i18n.GT.$ignoreApplicationBundle) this.addBundles ("Jmol", la_co_va, la_co, la);
-this.addBundles ("JmolApplet", la_co_va, la_co, la);
-}, "J.api.JmolViewer,~S");
+if (!J.i18n.GT.$ignoreApplicationBundle) this.addBundles (vwr, "Jmol", la_co_va, la_co, la);
+this.addBundles (vwr, "JmolApplet", la_co_va, la_co, la);
+}, "JV.Viewer,~S");
 c$.getLanguageList = Clazz.defineMethod (c$, "getLanguageList", 
 function (gt) {
 if (J.i18n.GT.languageList == null) {
@@ -96,12 +95,14 @@ return J.i18n.GT.getTextWrapper ().getString (string);
 }, "~S");
 c$.o = Clazz.defineMethod (c$, "o", 
 function (s, o) {
-if (!(Clazz.instanceOf (o, Array))) o = [o];
-return java.text.MessageFormat.format (s, o);
+if (Clazz.instanceOf (o, Array)) {
+if ((o).length != 1) return java.text.MessageFormat.format (s, o);
+o = (o)[0];
+}return JU.PT.rep (s, "{0}", o.toString ());
 }, "~S,~O");
 c$.i = Clazz.defineMethod (c$, "i", 
 function (s, n) {
-return J.i18n.GT.o (s, "" + n);
+return JU.PT.rep (s, "{0}", "" + n);
 }, "~S,~N");
 c$.escapeHTML = Clazz.defineMethod (c$, "escapeHTML", 
 function (msg) {
@@ -132,12 +133,12 @@ J.i18n.GT.htLanguages.put (code, (s == null ? "" : s));
 return s;
 }, "~S");
 Clazz.defineMethod (c$, "addBundles", 
- function (type, la_co_va, la_co, la) {
+ function (vwr, type, la_co_va, la_co, la) {
 try {
 var className = "J.translation." + type + ".";
-if (la_co_va != null) this.addBundle (className, la_co_va);
-if (la_co != null) this.addBundle (className, la_co);
-if (la != null) this.addBundle (className, la);
+if (la_co_va != null) this.addBundle (vwr, className, la_co_va);
+if (la_co != null) this.addBundle (vwr, className, la_co);
+if (la != null) this.addBundle (vwr, className, la);
 } catch (exception) {
 if (Clazz.exceptionOf (exception, Exception)) {
 if (J.i18n.GT.allowDebug) JU.Logger.errorEx ("Some exception occurred!", exception);
@@ -147,10 +148,10 @@ this.resourceCount = 0;
 throw exception;
 }
 }
-}, "~S,~S,~S,~S");
+}, "JV.Viewer,~S,~S,~S,~S");
 Clazz.defineMethod (c$, "addBundle", 
- function (className, name) {
-var resource = J.i18n.Resource.getResource (className, name);
+ function (vwr, className, name) {
+var resource = J.i18n.Resource.getResource (vwr, className, name);
 if (resource != null) {
 if (this.resources == null) {
 this.resources =  new Array (8);
@@ -158,7 +159,7 @@ this.resourceCount = 0;
 }this.resources[this.resourceCount] = resource;
 this.resourceCount++;
 if (J.i18n.GT.allowDebug) JU.Logger.debug ("GT adding " + className);
-}}, "~S,~S");
+}}, "JV.Viewer,~S,~S");
 Clazz.defineMethod (c$, "getString", 
  function (s) {
 var trans = null;

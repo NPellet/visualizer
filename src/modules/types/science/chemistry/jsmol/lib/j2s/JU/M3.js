@@ -1,10 +1,6 @@
 Clazz.declarePackage ("JU");
 Clazz.load (["JU.M34"], "JU.M3", ["JU.T3"], function () {
 c$ = Clazz.declareType (JU, "M3", JU.M34, java.io.Serializable);
-Clazz.makeConstructor (c$, 
-function () {
-Clazz.superConstructor (this, JU.M3, []);
-});
 c$.newA9 = Clazz.defineMethod (c$, "newA9", 
 function (v) {
 var m =  new JU.M3 ();

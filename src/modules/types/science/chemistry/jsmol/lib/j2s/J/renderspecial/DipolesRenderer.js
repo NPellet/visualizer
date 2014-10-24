@@ -33,7 +33,7 @@ function () {
 var dipoles = this.shape;
 this.dipoleVectorScale = this.vwr.getFloat (570425355);
 var needTranslucent = false;
-var vis = this.vwr.ms.getVisibleSet ();
+var vis = this.vwr.ms.getVisibleSet (false);
 for (var i = dipoles.dipoleCount; --i >= 0; ) {
 var dipole = dipoles.dipoles[i];
 if (dipole.visibilityFlags != 0 && (dipole.atoms[0] == null || !this.ms.isAtomHidden (dipole.atoms[0].i)) && (dipole.bsMolecule == null || dipole.bsMolecule.intersects (vis)) && this.renderDipoleVector (dipole, vis)) needTranslucent = true;
@@ -48,8 +48,8 @@ this.noCross = dipole.noCross;
 this.colixA = (dipole.bond == null ? dipole.colix : JU.C.getColixInherited (dipole.colix, dipole.bond.colix));
 this.colixB = this.colixA;
 if (dipole.atoms[0] != null) {
-this.colixA = JU.C.getColixInherited (this.colixA, dipole.atoms[0].getColix ());
-this.colixB = JU.C.getColixInherited (this.colixB, dipole.atoms[1].getColix ());
+this.colixA = JU.C.getColixInherited (this.colixA, dipole.atoms[0].colixAtom);
+this.colixB = JU.C.getColixInherited (this.colixB, dipole.atoms[1].colixAtom);
 }if (this.colixA == 0) this.colixA = 5;
 if (this.colixB == 0) this.colixB = 5;
 if (this.dipoleVectorScale < 0) {

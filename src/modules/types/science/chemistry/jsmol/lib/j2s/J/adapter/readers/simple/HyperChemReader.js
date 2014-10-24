@@ -2,7 +2,6 @@ Clazz.declarePackage ("J.adapter.readers.simple");
 Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.simple.HyperChemReader", ["java.lang.Exception"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.atomIndex = 0;
-this.$baseAtomIndex = 0;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.simple, "HyperChemReader", J.adapter.smarter.AtomSetCollectionReader);
 Clazz.overrideMethod (c$, "checkLine", 
@@ -27,7 +26,7 @@ this.asc.newAtomSet ();
 var molName = this.getMolName ();
 this.asc.setAtomSetName (molName);
 this.atomIndex = 0;
-this.$baseAtomIndex = this.asc.ac;
+this.baseAtomIndex = this.asc.ac;
 });
 Clazz.defineMethod (c$, "getMolName", 
  function () {
@@ -69,7 +68,7 @@ break;
 default:
 throw  new Exception ("unrecognized bond type:" + bondTypeToken + " atom #" + fileAtomNumber);
 }
-this.asc.addNewBondWithOrder (this.$baseAtomIndex + this.atomIndex, this.$baseAtomIndex + otherAtomNumber - 1, bondOrder);
+this.asc.addNewBondWithOrder (this.baseAtomIndex + this.atomIndex, this.baseAtomIndex + otherAtomNumber - 1, bondOrder);
 }
 ++this.atomIndex;
 });

@@ -46,11 +46,11 @@ this.isPolymer = unitcell.isPolymer ();
 this.isSlab = unitcell.isSlab ();
 var vertices = unitcell.getUnitCellVertices ();
 this.offset.setT (unitcell.getCartesianOffset ());
-this.offsetT.set (0, 0, 0);
+this.offsetT.setT (unitcell.getFractionalOrigin ());
 unitcell.toCartesian (this.offsetT, true);
 this.offset.sub (this.offsetT);
 var fset = unitcell.getUnitCellMultiplier ();
-var haveMultiple = (fset != null);
+var haveMultiple = (fset != null && fset.distanceSquared (this.fset0) != 0);
 if (!haveMultiple) fset = this.fset0;
 JU.SimpleUnitCell.ijkToPoint3f (Clazz.floatToInt (fset.x), this.cell0, 0);
 JU.SimpleUnitCell.ijkToPoint3f (Clazz.floatToInt (fset.y), this.cell1, 1);
@@ -100,7 +100,7 @@ this.renderCage (mad, this.verticesT, aPoints, firstLine, allow0, allow1, scale)
 }
 }
 }
-if (this.vwr.getBoolean (603979828) && !this.vwr.isPreviewOnly () && !unitcell.isPeriodic ()) this.renderInfo (unitcell);
+if (!this.isExport && this.vwr.getBoolean (603979828) && !this.vwr.isPreviewOnly () && !unitcell.isPeriodic () && this.g3d.setC (this.vwr.getColixBackgroundContrast ()) && this.g3d.getTextPosition () == 0) this.renderInfo (unitcell);
 }, "~N");
 Clazz.defineMethod (c$, "nfformat", 
  function (x) {
@@ -108,7 +108,6 @@ return (JU.DF.formatDecimal (x, 3));
 }, "~N");
 Clazz.defineMethod (c$, "renderInfo", 
  function (symmetry) {
-if (this.isExport || !this.g3d.setC (this.vwr.getColixBackgroundContrast ()) || !this.vwr.getBoolean (603979938)) return;
 this.fid = this.g3d.getFontFidFS ("Monospaced", 14 * this.imageFontScaling);
 this.g3d.setFontFid (this.fid);
 var lineheight = Clazz.doubleToInt (Math.floor (15 * this.imageFontScaling));

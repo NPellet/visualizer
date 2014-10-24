@@ -101,7 +101,7 @@ c$.setTempVertex = Clazz.defineMethod (c$, "setTempVertex",
 function (pt, offset, ptTemp) {
 ptTemp.setT (pt);
 if (offset != null) ptTemp.add (offset);
-}, "JU.P3,JU.P3,JU.P3");
+}, "JU.T3,JU.T3,JU.T3");
 Clazz.defineMethod (c$, "outputVertices", 
 function (vertices, nVertices, offset) {
 for (var i = 0; i < nVertices; i++) {
@@ -109,12 +109,12 @@ if (Float.isNaN (vertices[i].x)) continue;
 this.outputVertex (vertices[i], offset);
 this.output ("\n");
 }
-}, "~A,~N,JU.P3");
+}, "~A,~N,JU.T3");
 Clazz.defineMethod (c$, "outputVertex", 
 function (pt, offset) {
 J["export"].___Exporter.setTempVertex (pt, offset, this.tempP1);
 this.output (this.tempP1);
-}, "JU.P3,JU.P3");
+}, "JU.T3,JU.T3");
 Clazz.defineMethod (c$, "outputJmolPerspective", 
 function () {
 this.outputComment (this.getJmolPerspective ());

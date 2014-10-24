@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JM");
-Clazz.load (null, "JM.LabelToken", ["java.lang.Character", "$.Float", "java.util.Hashtable", "JU.PT", "$.SB", "JM.Atom", "JS.T"], function () {
+Clazz.load (null, "JM.LabelToken", ["java.lang.Float", "java.util.Hashtable", "JU.PT", "$.SB", "JS.T"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.text = null;
 this.key = null;
@@ -140,7 +140,7 @@ lt.alignLeft = true;
 }if (ich < cch && strFormat.charAt (ich) == '0') {
 lt.zeroPad = true;
 ++ich;
-}while (ich < cch && Character.isDigit (ch = strFormat.charAt (ich))) {
+}while (ich < cch && JU.PT.isDigit (ch = strFormat.charAt (ich))) {
 lt.width = (10 * lt.width) + (ch.charCodeAt (0) - 48);
 ++ich;
 }
@@ -151,7 +151,7 @@ if (ich < cch && strFormat.charAt (ich) == '.') {
 if (ich < cch && (ch = strFormat.charAt (ich)) == '-') {
 isNegative = true;
 ++ich;
-}if (ich < cch && Character.isDigit (ch = strFormat.charAt (ich))) {
+}if (ich < cch && JU.PT.isDigit (ch = strFormat.charAt (ich))) {
 lt.precision = ch.charCodeAt (0) - 48;
 if (isNegative) lt.precision = -1 - lt.precision;
 ++ich;
@@ -204,11 +204,11 @@ var i1;
 if (ich < cch && (i = "fuv".indexOf (ch)) >= 0 && (i1 = "xyz".indexOf (strFormat.charAt (ich))) >= 0) {
 lt.tok = JM.LabelToken.twoCharLabelTokenIds[i * 3 + i1];
 ich++;
-} else if ((i = "AaBbCcDEefGgIiLlMmNnoPpQqRrSsTtUuVvWXxxYyyZzz%%%gqW".indexOf (ch)) >= 0) {
+} else if ((i = "AaBbCcDEefGgIiLlMmNnOoPpQqRrSsTtUuVvWXxxYyyZzz%%%gqW".indexOf (ch)) >= 0) {
 lt.tok = JM.LabelToken.labelTokenIds[i];
 }}
 lt.text = strFormat.substring (lt.pt, ich);
-if (ich < cch && chAtom != 0 && Character.isDigit (ch = strFormat.charAt (ich))) {
+if (ich < cch && chAtom != 0 && JU.PT.isDigit (ch = strFormat.charAt (ich))) {
 ich++;
 lt.ch1 = ch;
 if (ch.charCodeAt (0) != chAtom && chAtom != 1) lt.tok = 0;
@@ -225,7 +225,7 @@ case 1095761923:
 strT = "" + (indices == null ? atom.i : indices[atom.i]);
 break;
 case 1766856708:
-ptT = JM.Atom.atomPropertyTuple (atom, t.tok, ptTemp);
+ptT = atom.atomPropertyTuple (vwr, t.tok, ptTemp);
 break;
 case 135270408:
 case 1073742189:
@@ -262,14 +262,17 @@ break;
 case 1095766030:
 strT = atom.getModelNumberForLabel ();
 break;
+case 'O':
+strT = atom.getSymmetryOperatorList (false);
+break;
 case 1129318401:
-strT = "" + JM.Atom.atomPropertyInt (atom, t.tok);
+strT = "" + atom.atomPropertyInt (t.tok);
 break;
 case 'Q':
 floatT = atom.getOccupancy100 () / 100;
 break;
 case 1666189314:
-floatT = JM.Atom.atomPropertyFloat (vwr, atom, t.tok, ptTemp);
+floatT = atom.atomPropertyFloat (vwr, t.tok, ptTemp);
 break;
 case 'r':
 strT = atom.getSeqcodeString ();
@@ -288,9 +291,19 @@ break;
 case 4:
 strT = vwr.ms.getAtomProp (atom, t.text.substring (2, t.text.length - 1));
 break;
+case 1112541202:
+case 1112541203:
+case 1112541204:
+case 1112539159:
+case 1112539160:
+case 1112539161:
+case 1112539162:
+floatT = atom.atomPropertyFloat (vwr, t.tok, ptTemp);
+if (Float.isNaN (floatT)) strT = "";
+break;
 case 1641025539:
 case 1238369286:
-strT = JM.Atom.atomPropertyString (vwr, atom, t.tok);
+strT = atom.atomPropertyString (vwr, t.tok);
 break;
 case 'W':
 strT = atom.getIdentityXYZ (false, ptTemp);
@@ -298,17 +311,18 @@ break;
 default:
 switch (t.tok & 1137704960) {
 case 1095761920:
-if (t.intAsFloat) floatT = JM.Atom.atomPropertyInt (atom, t.tok);
- else strT = "" + JM.Atom.atomPropertyInt (atom, t.tok);
+if (t.intAsFloat) floatT = atom.atomPropertyInt (t.tok);
+ else strT = "" + atom.atomPropertyInt (t.tok);
 break;
 case 1112539136:
-floatT = JM.Atom.atomPropertyFloat (vwr, atom, t.tok, ptTemp);
+floatT = atom.atomPropertyFloat (vwr, t.tok, ptTemp);
 break;
 case 1087373312:
-strT = JM.Atom.atomPropertyString (vwr, atom, t.tok);
+strT = atom.atomPropertyString (vwr, t.tok);
 break;
 case 1078984704:
-ptT = JM.Atom.atomPropertyTuple (atom, t.tok, ptTemp);
+ptT = atom.atomPropertyTuple (vwr, t.tok, ptTemp);
+if (ptT == null) strT = "";
 break;
 default:
 }
@@ -341,8 +355,8 @@ this.precision = 2;
 return this.text;
 }}, "~N,~S,JU.T3");
 Clazz.defineStatics (c$,
-"labelTokenParams", "AaBbCcDEefGgIiLlMmNnoPpQqRrSsTtUuVvWXxxYyyZzz%%%gqW",
-"labelTokenIds", [1087373315, 1087375362, 1087375361, 1112541199, 1632634891, 1087373316, 1095761923, 1087373322, 1087375365, 1112539145, 1095761933, 'g', 1112541195, 1095763969, 1095761938, 1095763978, 1095766030, 1087373319, 1095761936, 1087373318, 1089470478, 1112541196, 1112539146, 'Q', 1129318401, 1095761939, 'r', 1095761941, 1087373316, 1112539150, 1112541199, 1087373321, 1112539151, 1649412120, 1146095631, 'W', 1112541188, 1112541185, 1112541205, 1112541189, 1112541186, 1112541206, 1112541190, 1112541187, 1112541207, 1115297793, 1113200642, 1113198595, 1113198596, 1113198597, 1113200646, 1113200647, 1113200649, 1113200650, 1113200652, 1650071565, 1113200654, 1112539137, 1112539138, 1095761922, 1095761924, 1766856708, 1095761932, 1112539140, 1229984263, 1288701959, 1826248716, 1112539143, 1095761935, 1112539141, 1112539144, 1095761937, 1716520985, 1666189314, 1114638363, 1087373323, 1087373320, 1113200651, 1641025539, 1238369286, 1095761942, 1087373324, 1087375373, 1112539152, 1112539153, 1112539154, 1112539155, 1095763991, 1649410049, 1112541202, 1112541203, 1112541204, 1313866249, 1146093582, 1146095627, 1146095626, 1146095629, 1112541191, 1112541192, 1112541193, 1114638362, 1112539147, 1112539148, 1112539149, 1146095628, 1112539142, 1112539139, 1095761927, 1095761940],
+"labelTokenParams", "AaBbCcDEefGgIiLlMmNnOoPpQqRrSsTtUuVvWXxxYyyZzz%%%gqW",
+"labelTokenIds", [1087373315, 1087375362, 1087375361, 1112541196, 1632634891, 1087373316, 1095761923, 1087373322, 1087375365, 1112539145, 1095761933, 'g', 1112541194, 1095763969, 1095761938, 1095763978, 1095766030, 1087373319, 1095761936, 1087373318, 'O', 1089470478, 1112541195, 1112539146, 'Q', 1129318401, 1095761939, 'r', 1095761941, 1087373316, 1112539150, 1112541196, 1087373321, 1112539151, 1649412120, 1146095631, 'W', 1112541188, 1112541185, 1112541205, 1112541189, 1112541186, 1112541206, 1112541190, 1112541187, 1112541207, 1115297793, 1113200642, 1113198595, 1113198596, 1113198597, 1113200646, 1113200647, 1113200649, 1113200650, 1113200652, 1650071565, 1113200654, 1112539137, 1112539138, 1095761922, 1095761924, 1766856708, 1095761932, 1112539140, 1229984263, 1288701959, 1826248716, 1112539143, 1095761935, 1112539141, 1112539144, 1095761937, 1716520985, 1666189314, 1114638363, 1087373323, 1087373320, 1113200651, 1641025539, 1238369286, 1095761942, 1087373324, 1087375373, 1112539152, 1112539153, 1112539154, 1112539155, 1095763991, 1649410049, 1112541202, 1112541203, 1112541204, 1313866249, 1146093582, 1146095627, 1146095626, 1146095629, 1112541191, 1112541192, 1112541193, 1114638362, 1112539147, 1112539148, 1112539149, 1146095628, 1112539142, 1112539139, 1095761927, 1095761940, 1112539159, 1112539160, 1112539161, 1112539162, 1146093584, 1297090050],
 "STANDARD_LABEL", "%[identify]",
 "twoCharLabelTokenParams", "fuv",
 "twoCharLabelTokenIds", [1112541188, 1112541189, 1112541190, 1112539153, 1112539154, 1112539155, 1112541202, 1112541203, 1112541204]);

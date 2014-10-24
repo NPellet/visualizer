@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.thread");
-Clazz.load (["J.thread.JmolThread", "JU.A4", "$.M3", "$.V3"], "J.thread.MoveToThread", ["java.lang.Float", "JU.P3"], function () {
+Clazz.load (["J.thread.JmolThread"], "J.thread.MoveToThread", ["java.lang.Float", "JU.A4", "$.M3", "$.P3", "$.V3"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.isMove = false;
 this.aaStepCenter = null;
@@ -50,7 +50,8 @@ J.thread.MoveToThread.$MoveToThread$Slider$ ();
 }
 Clazz.instantialize (this, arguments);
 }, J.thread, "MoveToThread", J.thread.JmolThread);
-Clazz.prepareFields (c$, function () {
+Clazz.makeConstructor (c$, 
+function () {
 this.aaStepCenter =  new JU.V3 ();
 this.aaStepNavCenter =  new JU.V3 ();
 this.aaStep =  new JU.A4 ();
@@ -59,10 +60,6 @@ this.matrixStart =  new JU.M3 ();
 this.matrixStartInv =  new JU.M3 ();
 this.matrixStep =  new JU.M3 ();
 this.matrixEnd =  new JU.M3 ();
-});
-Clazz.makeConstructor (c$, 
-function () {
-Clazz.superConstructor (this, J.thread.MoveToThread, []);
 });
 Clazz.overrideMethod (c$, "setManager", 
 function (manager, vwr, params) {

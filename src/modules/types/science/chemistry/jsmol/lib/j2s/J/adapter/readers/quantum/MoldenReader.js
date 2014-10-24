@@ -45,13 +45,42 @@ if (this.line.indexOf ("[STO]") == 0) return this.readSlaterBasis ();
 if (this.line.indexOf ("[MO]") == 0) return (!this.doReadMolecularOrbitals || this.readMolecularOrbitals ());
 if (this.line.indexOf ("[FREQ]") == 0) return (!this.loadVibrations || this.readFreqsAndModes ());
 if (this.line.indexOf ("[GEOCONV]") == 0) return (!this.loadGeometries || this.readGeometryOptimization ());
-this.checkOrbitalType (this.line);
+if (this.checkOrbitalType (this.line)) return true;
+if (this.checkSymmetry ()) return false;
 return true;
 });
-Clazz.overrideMethod (c$, "finalizeReader", 
+Clazz.defineMethod (c$, "checkSymmetry", 
+ function () {
+if (this.line.startsWith ("[SPACEGROUP]")) {
+this.setSpaceGroupName (this.rd ());
+this.rd ();
+return true;
+}if (this.line.startsWith ("[OPERATORS]")) {
+while (this.rd () != null && this.line.indexOf ("[") < 0) if (this.line.length > 0) {
+JU.Logger.info ("adding operator " + this.line);
+this.setSymmetryOperator (this.line);
+}
+return true;
+}if (this.line.startsWith ("[CELL]")) {
+this.rd ();
+JU.Logger.info ("setting cell dimensions " + this.line);
+this.next[0] = 0;
+for (var i = 0; i < 6; i++) this.setUnitCellItem (i, this.parseFloat ());
+
+this.rd ();
+return true;
+}if (this.line.startsWith ("[CELLAXES]")) {
+var f =  Clazz.newFloatArray (9, 0);
+this.fillFloatArray (null, 0, f);
+this.addPrimitiveLatticeVector (0, f, 0);
+this.addPrimitiveLatticeVector (1, f, 3);
+this.addPrimitiveLatticeVector (2, f, 6);
+return true;
+}return false;
+});
+Clazz.overrideMethod (c$, "finalizeSubclassReader", 
 function () {
-if (this.bsBadIndex.isEmpty ()) return;
-try {
+if (!this.bsBadIndex.isEmpty ()) try {
 var ilast = 0;
 var atoms = this.asc.atoms;
 var nAtoms = this.asc.ac;
@@ -81,14 +110,16 @@ this.asc.setAtomSetAuxiliaryInfo ("moData", null);
 throw e;
 }
 }
+this.finalizeReaderASCR ();
 });
 Clazz.defineMethod (c$, "readAtoms", 
  function () {
 var coordUnit = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line.$replace (']', ' '))[1];
-var isAU = (coordUnit.indexOf ("ANGS") < 0);
-if (isAU && coordUnit.indexOf ("AU") < 0) {
-throw  new Exception ("invalid coordinate unit " + coordUnit + " in [Atoms]");
-}var f = (isAU ? 0.5291772 : 1);
+var isFractional = (coordUnit.indexOf ("FRACTIONAL") >= 0);
+var isAU = (!isFractional && coordUnit.indexOf ("ANGS") < 0);
+if (isAU && coordUnit.indexOf ("AU") < 0) JU.Logger.error ("Molden atom line does not indicate units ANGS, AU, or FRACTIONAL -- AU assumed: " + this.line);
+this.setFractionalCoordinates (isFractional);
+var f = (isAU ? 0.5291772 : 1);
 while (this.rd () != null && this.line.indexOf ('[') < 0) {
 var tokens = this.getTokens ();
 if (tokens.length < 6) continue;

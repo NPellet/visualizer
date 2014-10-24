@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JM");
-Clazz.load (["JU.V3"], "JM.BioPolymer", ["java.lang.Float", "java.util.Hashtable", "JU.BS", "$.Lst", "$.P3", "$.Quat", "JU.Escape", "$.Logger", "$.Txt"], function () {
+Clazz.load (["JU.V3"], "JM.BioPolymer", ["java.lang.Float", "java.util.Hashtable", "JU.BS", "$.Lst", "$.P3", "$.PT", "$.Quat", "JU.Escape", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.monomers = null;
 this.hasStructure = false;
@@ -442,7 +442,7 @@ q = null;
 q = dq.rightDifference (dqprev);
 val1 = JM.BioPolymer.getQuaternionStraightness (id, dqprev, dq);
 val2 = JM.BioPolymer.get3DStraightness (id, dqprev, dq);
-(aprev.getGroup ()).setGroupParameter (1112539150, useQuaternionStraightness ? val1 : val2);
+(aprev.group).setGroupParameter (1112539150, useQuaternionStraightness ? val1 : val2);
 }dqprev = dq;
 }aprev = anext;
 qprev = qnext;
@@ -491,17 +491,17 @@ continue;
 }pt.set (x * 2, y * 2, z * 2);
 pdbATOM.append ("draw ID \"").append (prefix).append ("a").append (id).append ("\" VECTOR ").append (JU.Escape.eP (ptCenter)).append (JU.Escape.eP (pt)).append (" \">").append (String.valueOf (deg)).append ("\" color ").append (JM.BioPolymer.qColor[derivType]).append ("\n");
 continue;
-}strExtra = JM.BioPolymer.getQInfo (q) + JU.Txt.sprintf ("  %10.5p %10.5p %10.5p", "p", [ptCenter]);
+}strExtra = JM.BioPolymer.getQInfo (q) + JU.PT.sprintf ("  %10.5p %10.5p %10.5p", "p", [ptCenter]);
 if (qtype == 'n' && isAmino) {
-strExtra += JU.Txt.sprintf ("  %10.5p %10.5p %10.5p", "p", [(monomer).getNitrogenHydrogenPoint ()]);
+strExtra += JU.PT.sprintf ("  %10.5p %10.5p %10.5p", "p", [(monomer).getNitrogenHydrogenPoint ()]);
 } else if (derivType == 2 && !Float.isNaN (val1)) {
-strExtra += JU.Txt.sprintf (" %10.5f %10.5f", "F", [[val1, val2]]);
+strExtra += JU.PT.sprintf (" %10.5f %10.5f", "F", [[val1, val2]]);
 }}if (pdbATOM == null) continue;
-bsWritten.set ((a.getGroup ()).leadAtomIndex);
+bsWritten.set ((a.group).leadAtomIndex);
 pdbATOM.append (vwr.ms.getLabeler ().formatLabelAtomArray (vwr, a, tokens, '\0', null, ptTemp));
-pdbATOM.append (JU.Txt.sprintf ("%8.2f%8.2f%8.2f      %6.3f          %2s    %s\n", "ssF", [a.getElementSymbolIso (false).toUpperCase (), strExtra, [x * factor, y * factor, z * factor, w * factor]]));
+pdbATOM.append (JU.PT.sprintf ("%8.2f%8.2f%8.2f      %6.3f          %2s    %s\n", "ssF", [a.getElementSymbolIso (false).toUpperCase (), strExtra, [x * factor, y * factor, z * factor, w * factor]]));
 if (atomLast != null && atomLast.getPolymerIndexInModel () == a.getPolymerIndexInModel ()) {
-pdbCONECT.append ("CONECT").append (JU.Txt.formatStringI ("%5i", "i", atomLast.getAtomNumber ())).append (JU.Txt.formatStringI ("%5i", "i", a.getAtomNumber ())).appendC ('\n');
+pdbCONECT.append ("CONECT").append (JU.PT.formatStringI ("%5i", "i", atomLast.getAtomNumber ())).append (JU.PT.formatStringI ("%5i", "i", a.getAtomNumber ())).appendC ('\n');
 }atomLast = a;
 }}
 }, "JV.Viewer,~N,~N,JM.BioPolymer,~S,~S,~N,JU.BS,JU.BS,~B,~B,~B,~B,~B,~B,~N,~B,~B,~A,JU.OC,JU.SB,JU.BS,JU.P3");
@@ -514,7 +514,7 @@ return "draw " + prefix + "x" + id + strV + JU.Escape.eP (q.getVectorScaled (0, 
 c$.getQInfo = Clazz.defineMethod (c$, "getQInfo", 
  function (q) {
 var axis = q.toAxisAngle4f ();
-return JU.Txt.sprintf ("%10.6f%10.6f%10.6f%10.6f  %6.2f  %10.5f %10.5f %10.5f", "F", [[q.q0, q.q1, q.q2, q.q3, (axis.angle * 180 / 3.141592653589793), axis.x, axis.y, axis.z]]);
+return JU.PT.sprintf ("%10.6f%10.6f%10.6f%10.6f  %6.2f  %10.5f %10.5f %10.5f", "F", [[q.q0, q.q1, q.q2, q.q3, (axis.angle * 180 / 3.141592653589793), axis.x, axis.y, axis.z]]);
 }, "JU.Quat");
 Clazz.defineMethod (c$, "calculateRamachandranHelixAngle", 
 function (m, qtype) {

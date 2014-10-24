@@ -99,11 +99,11 @@ this.b = atomB0 = this.bond.getAtom2 ();
 var order = this.bond.order & -131073;
 if (this.bondsBackbone) {
 if (this.ssbondsBackbone && (order & 256) != 0) {
-this.a = this.a.getGroup ().getLeadAtomOr (this.a);
-this.b = this.b.getGroup ().getLeadAtomOr (this.b);
+this.a = this.a.group.getLeadAtomOr (this.a);
+this.b = this.b.group.getLeadAtomOr (this.b);
 } else if (this.hbondsBackbone && JM.Bond.isOrderH (order)) {
-this.a = this.a.getGroup ().getLeadAtomOr (this.a);
-this.b = this.b.getGroup ().getLeadAtomOr (this.b);
+this.a = this.a.group.getLeadAtomOr (this.a);
+this.b = this.b.group.getLeadAtomOr (this.b);
 }}if (!this.isPass2 && (!this.a.isVisible (9) || !this.b.isVisible (9) || !this.g3d.isInDisplayRange (this.a.sX, this.a.sY) || !this.g3d.isInDisplayRange (this.b.sX, this.b.sY))) return false;
 if (this.slabbing) {
 if (this.g3d.isClippedZ (this.a.sZ) && this.g3d.isClippedZ (this.b.sZ)) return false;
@@ -111,8 +111,8 @@ if (this.slabByAtom && (this.g3d.isClippedZ (this.a.sZ) || this.g3d.isClippedZ (
 }this.zA = this.a.sZ;
 this.zB = this.b.sZ;
 if (this.zA == 1 || this.zB == 1) return false;
-this.colixA = atomA0.getColix ();
-this.colixB = atomB0.getColix ();
+this.colixA = atomA0.colixAtom;
+this.colixB = atomB0.colixAtom;
 if (((this.colix = this.bond.colix) & -30721) == 2) {
 this.colix = (this.colix & 30720);
 this.colixA = JU.C.getColixInherited ((this.colix | this.vwr.getColixAtomPalette (atomA0, J.c.PAL.CPK.id)), this.colixA);

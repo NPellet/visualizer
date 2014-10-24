@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.api");
-Clazz.load (["J.c.QS"], "J.api.JmolAdapter", ["java.util.Hashtable", "J.api.JmolViewer", "JU.Elements", "JV.JC"], function () {
+Clazz.load (["J.c.QS"], "J.api.JmolAdapter", ["java.util.Hashtable", "JU.PT", "J.api.JmolViewer", "JU.Elements", "JV.JC"], function () {
 c$ = Clazz.declareType (J.api, "JmolAdapter");
 c$.getShellEnumeration = Clazz.defineMethod (c$, "getShellEnumeration", 
 function (i) {
@@ -63,7 +63,7 @@ return this.getAtomSetCollectionFromReader (name, type, bufferedReader, null);
 }, "~S,~S,java.io.BufferedReader");
 c$.canonizeAlphaDigit = Clazz.defineMethod (c$, "canonizeAlphaDigit", 
  function (ch) {
-return ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') ? ch : '\0');
+return (JU.PT.isLetterOrDigit (ch) ? ch : '\0');
 }, "~S");
 c$.canonizeInsertionCode = Clazz.defineMethod (c$, "canonizeInsertionCode", 
 function (insertionCode) {

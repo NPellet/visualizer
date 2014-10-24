@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JV");
-Clazz.load (["JV.JmolStateCreator", "java.util.Hashtable"], "JV.StateCreator", ["java.lang.Float", "java.util.Arrays", "$.Date", "javajs.awt.Font", "JU.BS", "$.P3", "$.PT", "$.SB", "$.V3", "J.c.AXES", "$.PAL", "$.STER", "$.STR", "$.VDW", "JM.Atom", "$.AtomCollection", "$.Bond", "$.BondSet", "J.shape.Shape", "JU.BSUtil", "$.C", "$.ColorEncoder", "$.Edge", "$.Escape", "$.Logger", "JV.GlobalSettings", "$.JC", "$.StateManager", "$.Viewer"], function () {
+Clazz.load (["JV.JmolStateCreator", "java.util.Hashtable"], "JV.StateCreator", ["java.lang.Float", "java.util.Arrays", "$.Date", "javajs.awt.Font", "JU.BS", "$.P3", "$.PT", "$.SB", "J.c.AXES", "$.PAL", "$.STER", "$.STR", "$.VDW", "JM.Atom", "$.AtomCollection", "$.Bond", "$.BondSet", "J.shape.Shape", "JU.BSUtil", "$.C", "$.ColorEncoder", "$.Edge", "$.Escape", "$.Logger", "JV.GlobalSettings", "$.JC", "$.StateManager", "$.Viewer"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.vwr = null;
 this.temp = null;
@@ -120,7 +120,7 @@ var sb =  new JU.SB ();
 for (var i = 0; i < ms.bondCount; i++) if (!models[bonds[i].atom1.mi].isModelKit) if (bonds[i].isHydrogen () || (bonds[i].order & 131072) != 0) {
 var bond = bonds[i];
 var index = bond.atom1.i;
-if (bond.atom1.getGroup ().isAdded (index)) index = -1 - index;
+if (bond.atom1.group.isAdded (index)) index = -1 - index;
 sb.appendI (index).appendC ('\t').appendI (bond.atom2.i).appendC ('\t').appendI (bond.order & -131073).appendC ('\t').appendF (bond.mad / 1000).appendC ('\t').appendF (bond.getEnergy ()).appendC ('\t').append (JU.Edge.getBondOrderNameFromOrder (bond.order)).append (";\n");
 }
 if (sb.length () > 0) commands.append ("data \"connect_atoms\"\n").appendSB (sb).append ("end \"connect_atoms\";\n");
@@ -168,7 +168,7 @@ if (pt != null) {
 commands.append ("; set unitcell ").append (JU.Escape.eP (pt));
 loadUC = true;
 }commands.append (";\n");
-haveModulation = new Boolean (haveModulation | (this.vwr.modelGetLastVibrationIndex (i, 1276121113) >= 0)).valueOf ();
+haveModulation = new Boolean (haveModulation | (this.vwr.ms.getLastVibrationVector (i, 1276121113) >= 0)).valueOf ();
 }
 if (loadUC) this.vwr.shm.loadShape (32);
 this.getShapeState (commands, isAll, 32);
@@ -176,8 +176,8 @@ if (haveModulation) {
 var temp =  new java.util.Hashtable ();
 var ivib;
 for (var i = modelCount; --i >= 0; ) {
-if ((ivib = this.vwr.modelGetLastVibrationIndex (i, 1276121113)) >= 0) for (var j = models[i].firstAtomIndex; j <= ivib; j++) {
-var mset = ms.getVibration (j, false);
+if ((ivib = this.vwr.ms.getLastVibrationVector (i, 1276121113)) >= 0) for (var j = models[i].firstAtomIndex; j <= ivib; j++) {
+var mset = ms.getModulation (j);
 if (mset != null) JU.BSUtil.setMapBitSet (temp, j, j, mset.getState ());
 }
 }
@@ -752,8 +752,8 @@ if (shape.bsSizeSet != null && shape.bsSizeSet.get (i)) {
 if ((r = atoms[i].madAtom) < 0) JU.BSUtil.setMapBitSet (this.temp, i, i, "Spacefill on");
  else JU.BSUtil.setMapBitSet (this.temp, i, i, "Spacefill " + (r / 2000));
 }if (shape.bsColixSet != null && shape.bsColixSet.get (i)) {
-var pid = atoms[i].getPaletteID ();
-if (pid != J.c.PAL.CPK.id || atoms[i].isTranslucent ()) JU.BSUtil.setMapBitSet (this.temp, i, i, J.shape.Shape.getColorCommand ("atoms", pid, atoms[i].getColix (), shape.translucentAllowed));
+var pid = atoms[i].paletteID;
+if (pid != J.c.PAL.CPK.id || atoms[i].isTranslucent ()) JU.BSUtil.setMapBitSet (this.temp, i, i, J.shape.Shape.getColorCommand ("atoms", pid, atoms[i].colixAtom, shape.translucentAllowed));
 if (colixes != null && i < colixes.length) JU.BSUtil.setMapBitSet (this.temp2, i, i, J.shape.Shape.getColorCommand ("balls", pids[i], colixes[i], shape.translucentAllowed));
 }}
 s = this.getCommands (this.temp, this.temp2, "select");
@@ -939,8 +939,9 @@ s.appendF (atoms[i].x).append (" ").appendF (atoms[i].y).append (" ").appendF (a
 break;
 case 12:
 var v = atoms[i].getVibrationVector ();
-if (v == null) v =  new JU.V3 ();
-s.appendF (v.x).append (" ").appendF (v.y).append (" ").appendF (v.z);
+if (v == null) s.append ("0 0 0");
+ else if (Float.isNaN (v.modScale)) s.appendF (v.x).append (" ").appendF (v.y).append (" ").appendF (v.z);
+ else s.appendF (1.4E-45).append (" ").appendF (1.4E-45).append (" ").appendF (v.modScale);
 break;
 case 3:
 s.appendI (atoms[i].getAtomicAndIsotopeNumber ());
@@ -976,14 +977,6 @@ commands.append ("\n  DATA \"" + dataLabel + "\"\n").appendI (n).append (" ;\nJm
 commands.appendSB (s);
 commands.append ("  end \"" + dataLabel + "\";\n");
 }, "JU.SB,~N,JU.BS,~S,~A");
-Clazz.overrideMethod (c$, "getAtomDefs", 
-function (names) {
-var sb =  new JU.SB ();
-for (var e, $e = names.entrySet ().iterator (); $e.hasNext () && ((e = $e.next ()) || true);) {
-if (Clazz.instanceOf (e.getValue (), JU.BS)) sb.append ("{" + e.getKey () + "} <" + (e.getValue ()).cardinality () + " atoms>\n");
-}
-return sb.append ("\n").toString ();
-}, "java.util.Map");
 Clazz.overrideMethod (c$, "undoMoveAction", 
 function (action, n) {
 switch (action) {

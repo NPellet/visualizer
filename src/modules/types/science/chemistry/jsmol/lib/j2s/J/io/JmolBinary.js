@@ -1,16 +1,17 @@
 Clazz.declarePackage ("J.io");
-Clazz.load (null, "J.io.JmolBinary", ["java.io.BufferedInputStream", "java.util.Hashtable", "JU.PT", "$.Rdr", "J.api.Interface", "JU.Logger", "JV.FileManager"], function () {
+Clazz.load (null, "J.io.JmolBinary", ["java.io.BufferedInputStream", "java.util.Hashtable", "JU.PT", "$.Rdr", "J.api.Interface", "JU.Logger", "JV.FileManager", "$.JmolAsyncException"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.fm = null;
 this.pngjCache = null;
 this.spardirCache = null;
+this.jzu = null;
 Clazz.instantialize (this, arguments);
 }, J.io, "JmolBinary");
 Clazz.makeConstructor (c$, 
 function (fm) {
 this.fm = fm;
 }, "JV.FileManager");
-c$.determineSurfaceTypeIs = Clazz.defineMethod (c$, "determineSurfaceTypeIs", 
+Clazz.defineMethod (c$, "determineSurfaceTypeIs", 
 function (is) {
 var br;
 try {
@@ -22,7 +23,7 @@ return null;
 throw e;
 }
 }
-return J.io.JmolBinary.determineSurfaceFileType (br);
+return this.determineSurfaceFileType (br);
 }, "java.io.InputStream");
 c$.getEmbeddedScript = Clazz.defineMethod (c$, "getEmbeddedScript", 
 function (script) {
@@ -37,21 +38,18 @@ while ((pt1 = script.indexOf (" #Jmol...\u0000")) >= 0) script = script.substrin
 if (JU.Logger.debugging) JU.Logger.debug (script);
 return script;
 }, "~S");
-c$.getJzu = Clazz.defineMethod (c$, "getJzu", 
-function () {
-return (J.io.JmolBinary.jzu == null ? J.io.JmolBinary.jzu = J.api.Interface.getOption ("io.JmolUtil") : J.io.JmolBinary.jzu);
+Clazz.defineMethod (c$, "getJzu", 
+ function () {
+return (this.jzu == null ? this.jzu = J.api.Interface.getOption ("io.JmolUtil", this.fm.vwr, "file") : this.jzu);
 });
 Clazz.defineMethod (c$, "getCachedPngjBytes", 
 function (pathName) {
-return (pathName.indexOf (".png") < 0 ? null : J.io.JmolBinary.getJzu ().getCachedPngjBytes (this, pathName));
+return (pathName.indexOf (".png") < 0 ? null : this.getJzu ().getCachedPngjBytes (this, pathName));
 }, "~S");
 Clazz.defineMethod (c$, "clearAndCachePngjFile", 
 function (data) {
 this.pngjCache =  new java.util.Hashtable ();
-if (data == null) return false;
-data[1] = null;
-if (data[0] == null) return false;
-return J.io.JmolBinary.getJzu ().cachePngjFile (this, data);
+return (data == null || data[0] == null ? false : this.getJzu ().cachePngjFile (this, data));
 }, "~A");
 Clazz.defineMethod (c$, "spardirPut", 
 function (name, bytes) {
@@ -60,25 +58,31 @@ this.spardirCache.put (name, bytes);
 }, "~S,~A");
 Clazz.defineMethod (c$, "clearPngjCache", 
 function (fileName) {
-if (fileName != null && (this.pngjCache == null || !this.pngjCache.containsKey (fileName))) return;
+if (this.pngjCache == null || fileName != null && !this.pngjCache.containsKey (fileName)) return;
 this.pngjCache = null;
 JU.Logger.info ("PNGJ cache cleared");
 }, "~S");
-c$.getAtomSetCollectionOrBufferedReaderFromZip = Clazz.defineMethod (c$, "getAtomSetCollectionOrBufferedReaderFromZip", 
+Clazz.defineMethod (c$, "recachePngjBytes", 
+function (fileName, bytes) {
+if (this.pngjCache == null || !this.pngjCache.containsKey (fileName)) return;
+this.pngjCache.put (fileName, bytes);
+JU.Logger.info ("PNGJ recaching " + fileName + " (" + bytes.length + ")");
+}, "~S,~A");
+Clazz.defineMethod (c$, "getAtomSetCollectionOrBufferedReaderFromZip", 
 function (adapter, is, fileName, zipDirectory, htParams, asBufferedReader) {
-return J.io.JmolBinary.getJzu ().getAtomSetCollectionOrBufferedReaderFromZip (JU.Rdr.getJzt (), adapter, is, fileName, zipDirectory, htParams, 1, asBufferedReader);
+return this.getJzu ().getAtomSetCollectionOrBufferedReaderFromZip (this.fm.vwr, adapter, is, fileName, zipDirectory, htParams, 1, asBufferedReader);
 }, "J.api.JmolAdapter,java.io.InputStream,~S,~A,java.util.Map,~B");
-c$.spartanFileList = Clazz.defineMethod (c$, "spartanFileList", 
+Clazz.defineMethod (c$, "spartanFileList", 
 function (name, zipDirectory) {
-return J.io.JmolBinary.getJzu ().spartanFileList (JU.Rdr.getJzt (), name, zipDirectory);
+return this.getJzu ().spartanFileList (this.fm.vwr.getJzt (), name, zipDirectory);
 }, "~S,~S");
-c$.determineSurfaceFileType = Clazz.defineMethod (c$, "determineSurfaceFileType", 
+Clazz.defineMethod (c$, "determineSurfaceFileType", 
 function (br) {
-return J.io.JmolBinary.getJzu ().determineSurfaceFileType (br);
+return this.getJzu ().determineSurfaceFileType (br);
 }, "java.io.BufferedReader");
 Clazz.defineMethod (c$, "getImage", 
 function (vwr, fullPathNameOrBytes, echoName) {
-return J.io.JmolBinary.getJzu ().getImage (vwr, fullPathNameOrBytes, echoName);
+return this.getJzu ().getImage (vwr, fullPathNameOrBytes, echoName);
 }, "JV.Viewer,~O,~S");
 c$.getFileReferences = Clazz.defineMethod (c$, "getFileReferences", 
 function (script, fileList) {
@@ -104,13 +108,16 @@ for (var i = s.length; --i >= 0; ) if (s[i].indexOf (".spt") >= 0) return "|" + 
 }, "~S");
 c$.getBufferedReaderForResource = Clazz.defineMethod (c$, "getBufferedReaderForResource", 
 function (vwr, resourceClass, classPath, resourceName) {
+var url;
 {
-resourceName = vwr.vwrOptions.get("codePath") +
-classPath + resourceName;
+}resourceName = (url == null ? vwr.vwrOptions.get ("codePath") + classPath + resourceName : url.getFile ());
+if (vwr.async) {
+var bytes = vwr.cacheGet (resourceName);
+if (bytes == null) throw  new JV.JmolAsyncException (resourceName);
+return JU.Rdr.getBufferedReader (JU.Rdr.getBIS (bytes), null);
 }return vwr.getBufferedReaderOrErrorMessageFromName (resourceName, [null, null], false);
 }, "JV.Viewer,~O,~S,~S");
 Clazz.defineStatics (c$,
 "JPEG_CONTINUE_STRING", " #Jmol...\0",
-"PMESH_BINARY_MAGIC_NUMBER", "PM\1\0",
-"jzu", null);
+"PMESH_BINARY_MAGIC_NUMBER", "PM\1\0");
 });

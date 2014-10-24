@@ -158,7 +158,7 @@ this.paletteIDs =  Clazz.newByteArray (this.ac, 0);
 }this.ec.calculate (rd, maxRadius, this.bsOn, this.bsIgnore, !this.vwr.getBoolean (603979830), this.vwr.getBoolean (603979829), this.isSurface, true);
 this.rdLast = rd;
 }, "J.atomdata.RadiusData,JU.BS");
-Clazz.overrideMethod (c$, "setModelClickability", 
+Clazz.overrideMethod (c$, "setAtomClickability", 
 function () {
 for (var i = this.ac; --i >= 0; ) {
 var atom = this.atoms[i];

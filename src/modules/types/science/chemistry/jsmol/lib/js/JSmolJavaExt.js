@@ -6,6 +6,7 @@
 // (local scope) Clazz_xxx, allowing them to be further compressed using
 // Google Closure Compiler in that same ANT task.
 
+// BH 8/14/2014 6:49:22 PM Character class efficiencies
 // BH 7/24/2014 9:02:18 AM most browsers do not support String.codePointAt()
 // BH 7/11/2014 4:17:22 PM fix for Boolean.valueOf("false") not being false 
 // BH 5/27/2014 6:29:59 AM ensure floats and doubles have decimal point in toString
@@ -1656,39 +1657,34 @@ return(""+c).toUpperCase().charAt(0);
 },"~N");
 c$.isDigit=Clazz.defineMethod(c$,"isDigit",
 function(c){
-if(('0').charCodeAt (0) <= (c).charCodeAt (0) && (c).charCodeAt (0) <= ('9').charCodeAt(0))return true;
-if((c).charCodeAt(0)<1632)return false;
-return false;
+c = c.charCodeAt(0);
+return (48 <= c && c <= 57);
 },"~N");
 c$.isUpperCase=Clazz.defineMethod(c$,"isUpperCase",
 function(c){
-if(('A').charCodeAt (0) <= (c).charCodeAt (0) && (c).charCodeAt (0) <= ('Z').charCodeAt(0)){
-return true;
-}return false;
+c = c.charCodeAt(0);
+return (65 <= c && c <= 90);
 },"~N");
 c$.isLowerCase=Clazz.defineMethod(c$,"isLowerCase",
 function(c){
-if(('a').charCodeAt (0) <= (c).charCodeAt (0) && (c).charCodeAt (0) <= ('z').charCodeAt(0)){
-return true;
-}return false;
+c = c.charCodeAt(0);
+return (97 <= c && c <= 122);
 },"~N");
 c$.isWhitespace=Clazz.defineMethod(c$,"isWhitespace",
 function(c){
- var i = (c).charCodeAt (0);
-if((i>=0x1c&&i<=0x20)||(i>=0x9&&i<=0xd))return true;
-if(i==0x1680)return true;
-if(i<0x2000||i==0x2007)return false;
-returni<=0x200b||i==0x2028||i==0x2029||i==0x3000;
+c = (c).charCodeAt(0);
+return (c >= 0x1c && c <= 0x20 || c >= 0x9 && c <= 0xd || c == 0x1680
+	|| c >= 0x2000 && c != 0x2007 && (c <= 0x200b || c == 0x2028 || c == 0x2029 || c == 0x3000));
 },"~N");
 c$.isLetter=Clazz.defineMethod(c$,"isLetter",
 function(c){
- var i = c.charCodeAt(0);
-return ((('A').charCodeAt (0) <= i && i <= ('Z').charCodeAt (0)) 
-  || (('a').charCodeAt (0) <= i && i <= ('z').charCodeAt(0)))
+c = c.charCodeAt(0);
+return (65 <= c && c <= 90 || 97 <= c && c <= 122);
 },"~N");
 c$.isLetterOrDigit=Clazz.defineMethod(c$,"isLetterOrDigit",
 function(c){
-return Character.isLetter(c)||Character.isDigit(c);
+c = c.charCodeAt(0);
+return (65 <= c && c <= 90 || 97 <= c && c <= 122 || 48 <= c && c <= 57);
 },"~N");
 c$.isSpaceChar=Clazz.defineMethod(c$,"isSpaceChar",
 function(c){
@@ -1699,18 +1695,21 @@ returni<=0x200b||i==0x2028||i==0x2029||i==0x202f||i==0x3000;
 },"~N");
 c$.digit=Clazz.defineMethod(c$,"digit",
 function(c,radix){
- var i = c.charCodeAt(0);
-if(radix>=2&&radix<=36){
-if(i<128){
-var result=-1;
-if(('0').charCodeAt (0) <= i && i <= ('9').charCodeAt(0)){
-result=i-('0').charCodeAt(0);
-}else if(('a').charCodeAt (0) <= i && i <= ('z').charCodeAt(0)){
-result=i-(87);
-}else if(('A').charCodeAt (0) <= i && i <= ('Z').charCodeAt(0)){
-result=i-(55);
-}return result<radix?result:-1;
-}}return-1;
+var i = c.charCodeAt(0);
+if(radix >= 2 && radix <= 36){
+	if(i < 128){
+		var result = -1;
+		if(48 <= i && i <= 57){
+		result = i - 48;
+		}else if(97 <= i && i <= 122){
+		result = i - 87;
+		}else if(65 <= i && i <= 90){
+		result=i-(55);
+		}
+		return (result < radix ? result : -1);
+	}
+}
+return -1;
 },"~N,~N");
 Clazz.overrideMethod(c$,"toString",
 function(){
@@ -2819,4 +2818,3 @@ return null;
 });
 
 })(Clazz);
-

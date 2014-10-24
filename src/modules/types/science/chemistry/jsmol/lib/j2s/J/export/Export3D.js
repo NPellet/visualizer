@@ -34,7 +34,7 @@ Clazz.overrideMethod (c$, "initializeExporter",
 function (vwr, privateKey, gdata, params) {
 this.exportName = params.get ("type");
 this.isWebGL = this.exportName.equals ("JS");
-if ((this.exporter = J.api.Interface.getOption ("export." + (this.isWebGL ? "" : "_") + this.exportName + "Exporter")) == null) return null;
+if ((this.exporter = J.api.Interface.getOption ("export." + (this.isWebGL ? "" : "_") + this.exportName + "Exporter", vwr, "export")) == null) return null;
 this.g3d = gdata;
 this.exporter.setRenderer (this);
 this.g3d.setNewWindowParametersForExport ();
@@ -516,4 +516,11 @@ if (this.isWebGL) {
 return;
 }this.g3d.renderAllStrings (this);
 }, "~O");
+Clazz.overrideMethod (c$, "setTextPosition", 
+function (y) {
+}, "~N");
+Clazz.overrideMethod (c$, "getTextPosition", 
+function () {
+return -1;
+});
 });

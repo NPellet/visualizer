@@ -131,9 +131,10 @@ function (cutoff, isCutoffAbsolute, valueA, valueB, pointA, edgeVector, x, y, z,
 var vA = this.marchingCubes.getLinearOffset (x, y, z, vA0);
 var vB = this.marchingCubes.getLinearOffset (x, y, z, vB0);
 this.isSurfacePoint = (this.bsSurfaceVoxels != null && (this.bsSurfaceVoxels.get (vA) || this.bsSurfaceVoxels.get (vB)));
-if (J.jvxl.readers.IsoSolventReader.testLinear || this.voxelSource == null || this.voxelSource[vA] == 0 || this.voxelSource[vA] != this.voxelSource[vB]) return this.getSPF (cutoff, isCutoffAbsolute, valueA, valueB, pointA, edgeVector, x, y, z, vA, vB, fReturn, ptReturn);
-var iAtom = Math.abs (valueA < valueB ? this.voxelSource[vA] : this.voxelSource[vB]);
-this.iAtomSurface = this.atomIndex[iAtom - 1];
+if (this.voxelSource != null) {
+var vs = Math.abs (Float.isNaN (valueB) || valueA < valueB ? this.voxelSource[vA] : this.voxelSource[vB]);
+if (vs > 0) this.iAtomSurface = this.atomIndex[vs - 1];
+}if (J.jvxl.readers.IsoSolventReader.testLinear || this.voxelSource == null || this.voxelSource[vA] == 0 || this.voxelSource[vA] != this.voxelSource[vB]) return this.getSPF (cutoff, isCutoffAbsolute, valueA, valueB, pointA, edgeVector, x, y, z, vA, vB, fReturn, ptReturn);
 var fraction = fReturn[0] = JU.MeshSurface.getSphericalInterpolationFraction ((this.voxelSource[vA] < 0 ? this.sr : this.atomRadius[this.voxelSource[vA] - 1]), valueA, valueB, edgeVector.length ());
 ptReturn.scaleAdd2 (fraction, edgeVector, pointA);
 var diff = valueB - valueA;
@@ -537,7 +538,6 @@ function (pt, getSource) {
 if (this.contactPair != null) return pt.distance (this.contactPair.myAtoms[1]) - this.contactPair.radii[1];
 var value = 3.4028235E38;
 for (var iAtom = 0; iAtom < this.firstNearbyAtom; iAtom++) {
-if (this.rs == null || this.atomXyz == null || this.atomXyz[iAtom] == null || pt == null) System.out.println ("HOH");
 var r = pt.distance (this.atomXyz[iAtom]) - this.rs[iAtom];
 if (r < value) value = r;
 }

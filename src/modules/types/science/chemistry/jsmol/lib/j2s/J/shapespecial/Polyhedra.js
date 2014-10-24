@@ -349,18 +349,19 @@ var w = JU.Measure.getNormalThroughPoints (pt1, pt2, pt3, norm, this.vAB, this.v
 var d = JU.Measure.distanceToPlaneV (norm, w, ptX);
 return (Math.abs (d) < J.shapespecial.Polyhedra.minDistanceForPlanarity);
 }, "JU.P3,JU.P3,JU.P3,JU.P3");
-Clazz.overrideMethod (c$, "setVisibilityFlags", 
+Clazz.overrideMethod (c$, "setModelVisibilityFlags", 
 function (bsModels) {
 for (var i = this.polyhedronCount; --i >= 0; ) {
 var p = this.polyhedrons[i];
-p.visibilityFlags = (p.visible && bsModels.get (p.modelIndex) && !this.ms.isAtomHidden (p.centralAtom.i) ? this.vf : 0);
+if (this.ms.at[p.centralAtom.i].isDeleted ()) p.isValid = false;
+p.visibilityFlags = (p.visible && bsModels.get (p.modelIndex) && !this.ms.isAtomHidden (p.centralAtom.i) && !this.ms.at[p.centralAtom.i].isDeleted () ? this.vf : 0);
 }
 }, "JU.BS");
 Clazz.overrideMethod (c$, "getShapeState", 
 function () {
 if (this.polyhedronCount == 0) return "";
 var s =  new JU.SB ();
-for (var i = 0; i < this.polyhedronCount; i++) s.append (this.polyhedrons[i].getState ());
+for (var i = 0; i < this.polyhedronCount; i++) if (this.polyhedrons[i].isValid) s.append (this.polyhedrons[i].getState ());
 
 if (this.drawEdges == 2) J.shape.Shape.appendCmd (s, "polyhedra frontedges");
  else if (this.drawEdges == 1) J.shape.Shape.appendCmd (s, "polyhedra edges");

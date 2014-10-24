@@ -436,7 +436,7 @@ return (this.theToken.value).floatValue ();
 return 0;
 }, "~N");
 Clazz.defineMethod (c$, "getPointArray", 
-function (i, nPoints) {
+function (i, nPoints, allowNull) {
 var points = (nPoints < 0 ? null :  new Array (nPoints));
 var vp = (nPoints < 0 ?  new JU.Lst () : null);
 var tok = (i < 0 ? 7 : this.getToken (i++).tok);
@@ -446,7 +446,7 @@ var v = (this.theToken).getList ();
 if (nPoints >= 0 && v.size () != nPoints) this.invArg ();
 nPoints = v.size ();
 if (points == null) points =  new Array (nPoints);
-for (var j = 0; j < nPoints; j++) if ((points[j] = JS.SV.ptValue (v.get (j))) == null) this.invArg ();
+for (var j = 0; j < nPoints; j++) if ((points[j] = JS.SV.ptValue (v.get (j))) == null && !allowNull) this.invArg ();
 
 return points;
 case 1073742195:
@@ -479,7 +479,7 @@ if (tok != 269484097) this.invArg ();
 if (points == null) points = vp.toArray ( new Array (vp.size ()));
 if (nPoints > 0 && points[nPoints - 1] == null) this.invArg ();
 return points;
-}, "~N,~N");
+}, "~N,~N,~B");
 Clazz.defineMethod (c$, "listParameter", 
 function (i, nMin, nMax) {
 var v =  new JU.Lst ();

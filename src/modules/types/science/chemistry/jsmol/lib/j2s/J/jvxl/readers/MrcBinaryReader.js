@@ -13,7 +13,7 @@ function (sg, brNull) {
 var fileName = (sg.getReaderData ())[0];
 this.init2MFR (sg, this.br);
 this.binarydoc = this.newBinaryDocument ();
-this.binarydoc.setStream (sg.getAtomDataServer ().getBufferedInputStream (fileName), true);
+this.setStream (fileName, true);
 this.nSurfaces = 1;
 if (this.params.thePlane == null) this.params.insideOut = !this.params.insideOut;
 this.allowSigma = true;
@@ -29,7 +29,7 @@ var rmsDeviation;
 var nlabel;
 this.nx = this.binarydoc.readInt ();
 if (this.nx < 0 || this.nx > 256) {
-this.binarydoc.setStream (null, false);
+this.setStream (null, false);
 this.nx = this.binarydoc.swapBytesI (this.nx);
 if (this.params.thePlane == null) this.params.insideOut = !this.params.insideOut;
 if (this.nx < 0 || this.nx > 1000) {
@@ -40,7 +40,7 @@ throw  new Exception ("MRC file type not readable");
 this.nz = this.binarydoc.readInt ();
 this.mode = this.binarydoc.readInt ();
 if (this.mode < 0 || this.mode > 6) {
-this.binarydoc.setStream (null, false);
+this.setStream (null, false);
 this.nx = this.binarydoc.swapBytesI (this.nx);
 this.ny = this.binarydoc.swapBytesI (this.ny);
 this.nz = this.binarydoc.swapBytesI (this.nz);
@@ -141,6 +141,7 @@ voxelValue = this.binarydoc.readUnsignedShort ();
 break;
 }
 this.nBytes = this.binarydoc.getPosition ();
+if (voxelValue > 1000) System.out.println (this.nBytes + " " + voxelValue);
 return voxelValue;
 });
 Clazz.overrideMethod (c$, "skipData", 

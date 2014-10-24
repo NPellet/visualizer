@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JV");
-Clazz.load (["java.util.Hashtable"], "JV.StateManager", ["java.util.Arrays", "JU.BS", "$.SB", "JM.Orientation", "JU.BSUtil", "JV.GlobalSettings"], function () {
+Clazz.load (["java.util.Hashtable"], ["JV.Connections", "$.Connection", "$.StateManager", "$.Scene"], ["java.util.Arrays", "JU.BS", "$.SB", "JM.Orientation", "JU.BSUtil", "JV.GlobalSettings"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.vwr = null;
 this.saved = null;
@@ -11,15 +11,6 @@ this.lastSelected = "";
 this.lastState = "";
 this.lastShape = "";
 this.lastCoordinates = "";
-if (!Clazz.isClassDefined ("JV.StateManager.Scene")) {
-JV.StateManager.$StateManager$Scene$ ();
-}
-if (!Clazz.isClassDefined ("JV.StateManager.Connections")) {
-JV.StateManager.$StateManager$Connections$ ();
-}
-if (!Clazz.isClassDefined ("JV.StateManager.Connection")) {
-JV.StateManager.$StateManager$Connection$ ();
-}
 Clazz.instantialize (this, arguments);
 }, JV, "StateManager");
 Clazz.prepareFields (c$, function () {
@@ -217,14 +208,14 @@ function (saveName, scene) {
 if (saveName.equalsIgnoreCase ("DELETE")) {
 this.deleteSavedType ("Scene_");
 return;
-}var o = Clazz.innerTypeInstance (JV.StateManager.Scene, this, null, scene);
+}var o =  new JV.Scene (scene);
 o.saveName = this.lastScene = "Scene_" + saveName;
 this.saved.put (o.saveName, o);
 }, "~S,java.util.Map");
 Clazz.defineMethod (c$, "restoreScene", 
 function (saveName, timeSeconds) {
 var o = JV.StateManager.getNoCase (this.saved, (saveName.length > 0 ? "Scene_" + saveName : this.lastScene));
-return (o != null && o.restore (timeSeconds));
+return (o != null && o.restore (this.vwr, timeSeconds));
 }, "~S,~N");
 Clazz.defineMethod (c$, "saveOrientation", 
 function (saveName, pymolView) {
@@ -261,7 +252,7 @@ function (saveName) {
 if (saveName.equalsIgnoreCase ("DELETE")) {
 this.deleteSavedType ("Bonds_");
 return;
-}var b = Clazz.innerTypeInstance (JV.StateManager.Connections, this, null);
+}var b =  new JV.Connections (this.vwr);
 b.saveName = this.lastConnections = "Bonds_" + saveName;
 this.saved.put (b.saveName, b);
 }, "~S");
@@ -277,93 +268,6 @@ function (name, sv, nMax) {
 if (nMax > 0 && sv.length > nMax) sv = sv.substring (0, nMax) + " #...more (" + sv.length + " bytes -- use SHOW " + name + " or MESSAGE @" + name + " to view)";
 return sv;
 }, "~S,~S,~N");
-c$.$StateManager$Scene$ = function () {
-Clazz.pu$h(self.c$);
-c$ = Clazz.decorateAsClass (function () {
-Clazz.prepareCallback (this, arguments);
-this.saveName = null;
-this.scene = null;
-Clazz.instantialize (this, arguments);
-}, JV.StateManager, "Scene");
-Clazz.makeConstructor (c$, 
-function (a) {
-this.scene = a;
-}, "java.util.Map");
-Clazz.defineMethod (c$, "restore", 
-function (a) {
-var b = this.scene.get ("generator");
-if (b != null) b.generateScene (this.scene);
-var c = this.scene.get ("pymolView");
-return (c != null && this.b$["JV.StateManager"].vwr.tm.moveToPyMOL (this.b$["JV.StateManager"].vwr.eval, a, c));
-}, "~N");
-c$ = Clazz.p0p ();
-};
-c$.$StateManager$Connections$ = function () {
-Clazz.pu$h(self.c$);
-c$ = Clazz.decorateAsClass (function () {
-Clazz.prepareCallback (this, arguments);
-this.saveName = null;
-this.bondCount = 0;
-this.connections = null;
-Clazz.instantialize (this, arguments);
-}, JV.StateManager, "Connections");
-Clazz.makeConstructor (c$, 
-function () {
-var a = this.b$["JV.StateManager"].vwr.ms;
-if (a == null) return;
-this.bondCount = a.bondCount;
-this.connections =  new Array (this.bondCount + 1);
-var b = a.bo;
-for (var c = this.bondCount; --c >= 0; ) {
-var d = b[c];
-this.connections[c] = Clazz.innerTypeInstance (JV.StateManager.Connection, this, null, d.getAtomIndex1 (), d.getAtomIndex2 (), d.mad, d.colix, d.order, d.getEnergy (), d.getShapeVisibilityFlags ());
-}
-});
-Clazz.defineMethod (c$, "restore", 
-function () {
-var a = this.b$["JV.StateManager"].vwr.ms;
-if (a == null) return false;
-a.deleteAllBonds ();
-for (var b = this.bondCount; --b >= 0; ) {
-var c = this.connections[b];
-var d = a.getAtomCount ();
-if (c.atomIndex1 >= d || c.atomIndex2 >= d) continue;
-var e = a.bondAtoms (a.at[c.atomIndex1], a.at[c.atomIndex2], c.order, c.mad, null, c.energy, false, true);
-e.setColix (c.colix);
-e.setShapeVisibilityFlags (c.shapeVisibilityFlags);
-}
-for (var c = this.bondCount; --c >= 0; ) a.getBondAt (c).setIndex (c);
-
-this.b$["JV.StateManager"].vwr.setShapeProperty (1, "reportAll", null);
-return true;
-});
-c$ = Clazz.p0p ();
-};
-c$.$StateManager$Connection$ = function () {
-Clazz.pu$h(self.c$);
-c$ = Clazz.decorateAsClass (function () {
-Clazz.prepareCallback (this, arguments);
-this.atomIndex1 = 0;
-this.atomIndex2 = 0;
-this.mad = 0;
-this.colix = 0;
-this.order = 0;
-this.energy = 0;
-this.shapeVisibilityFlags = 0;
-Clazz.instantialize (this, arguments);
-}, JV.StateManager, "Connection");
-Clazz.makeConstructor (c$, 
-function (a, b, c, d, e, f, g) {
-this.atomIndex1 = a;
-this.atomIndex2 = b;
-this.mad = c;
-this.colix = d;
-this.order = e;
-this.energy = f;
-this.shapeVisibilityFlags = g;
-}, "~N,~N,~N,~N,~N,~N,~N");
-c$ = Clazz.p0p ();
-};
 Clazz.defineStatics (c$,
 "OBJ_BACKGROUND", 0,
 "OBJ_AXIS1", 1,
@@ -374,4 +278,78 @@ Clazz.defineStatics (c$,
 "OBJ_FRANK", 6,
 "OBJ_MAX", 8,
 "objectNameList", "background axis1      axis2      axis3      boundbox   unitcell   frank      ");
+c$ = Clazz.decorateAsClass (function () {
+this.saveName = null;
+this.scene = null;
+Clazz.instantialize (this, arguments);
+}, JV, "Scene");
+Clazz.makeConstructor (c$, 
+function (scene) {
+this.scene = scene;
+}, "java.util.Map");
+Clazz.defineMethod (c$, "restore", 
+function (vwr, timeSeconds) {
+var gen = this.scene.get ("generator");
+if (gen != null) gen.generateScene (this.scene);
+var pv = this.scene.get ("pymolView");
+return (pv != null && vwr.tm.moveToPyMOL (vwr.eval, timeSeconds, pv));
+}, "JV.Viewer,~N");
+c$ = Clazz.decorateAsClass (function () {
+this.saveName = null;
+this.bondCount = 0;
+this.connections = null;
+this.vwr = null;
+Clazz.instantialize (this, arguments);
+}, JV, "Connections");
+Clazz.makeConstructor (c$, 
+function (vwr) {
+var modelSet = vwr.ms;
+if (modelSet == null) return;
+this.vwr = vwr;
+this.bondCount = modelSet.bondCount;
+this.connections =  new Array (this.bondCount + 1);
+var bonds = modelSet.bo;
+for (var i = this.bondCount; --i >= 0; ) {
+var b = bonds[i];
+this.connections[i] =  new JV.Connection (b.getAtomIndex1 (), b.getAtomIndex2 (), b.mad, b.colix, b.order, b.getEnergy (), b.getShapeVisibilityFlags ());
+}
+}, "JV.Viewer");
+Clazz.defineMethod (c$, "restore", 
+function () {
+var modelSet = this.vwr.ms;
+if (modelSet == null) return false;
+modelSet.deleteAllBonds ();
+for (var i = this.bondCount; --i >= 0; ) {
+var c = this.connections[i];
+var ac = modelSet.getAtomCount ();
+if (c.atomIndex1 >= ac || c.atomIndex2 >= ac) continue;
+var b = modelSet.bondAtoms (modelSet.at[c.atomIndex1], modelSet.at[c.atomIndex2], c.order, c.mad, null, c.energy, false, true);
+b.setColix (c.colix);
+b.setShapeVisibilityFlags (c.shapeVisibilityFlags);
+}
+for (var i = this.bondCount; --i >= 0; ) modelSet.getBondAt (i).setIndex (i);
+
+this.vwr.setShapeProperty (1, "reportAll", null);
+return true;
+});
+c$ = Clazz.decorateAsClass (function () {
+this.atomIndex1 = 0;
+this.atomIndex2 = 0;
+this.mad = 0;
+this.colix = 0;
+this.order = 0;
+this.energy = 0;
+this.shapeVisibilityFlags = 0;
+Clazz.instantialize (this, arguments);
+}, JV, "Connection");
+Clazz.makeConstructor (c$, 
+function (atom1, atom2, mad, colix, order, energy, shapeVisibilityFlags) {
+this.atomIndex1 = atom1;
+this.atomIndex2 = atom2;
+this.mad = mad;
+this.colix = colix;
+this.order = order;
+this.energy = energy;
+this.shapeVisibilityFlags = shapeVisibilityFlags;
+}, "~N,~N,~N,~N,~N,~N,~N");
 });

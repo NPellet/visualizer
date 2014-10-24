@@ -13,7 +13,7 @@ this.setup(0);
 
 Clazz.defineMethod(c$, "setup",
 function(capacity){
-Clazz.superConstructor(this,java.util.ArrayList,[]);
+//Clazz.superConstructor(this,java.util.ArrayList,[]);
 this.firstIndex=this.lastIndex=0;
 try{
 this.array=this.newElementArray(capacity);

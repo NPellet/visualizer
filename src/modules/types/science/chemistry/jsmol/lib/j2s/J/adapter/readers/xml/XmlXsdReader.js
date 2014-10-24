@@ -41,7 +41,7 @@ this.atom =  new J.adapter.smarter.Atom ();
 this.atom.elementSymbol = this.atts.get ("Components");
 this.atom.atomName = this.atts.get ("ID");
 this.atom.atomSerial = ++this.iAtom;
-if (this.iChain >= 0) this.parent.setChainID (this.atom, String.fromCharCode ((this.iChain - 1) % 26 + 65));
+if (this.iChain >= 0) this.parent.setChainID (this.atom, "" + String.fromCharCode ((this.iChain - 1) % 26 + 65));
 this.atom.group3 = "UNK";
 if (this.iGroup == 0) this.iGroup = 1;
 this.atom.sequenceNumber = this.iGroup;

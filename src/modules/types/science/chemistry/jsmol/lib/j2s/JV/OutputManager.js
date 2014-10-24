@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JV");
-Clazz.load (null, "JV.OutputManager", ["java.lang.Boolean", "java.util.Date", "$.Hashtable", "$.Map", "JU.Lst", "$.PT", "$.Rdr", "$.SB", "J.api.Interface", "J.i18n.GT", "J.io.JmolBinary", "JU.Logger", "$.Txt", "JV.FileManager", "$.JC", "$.Viewer"], function () {
+Clazz.load (null, "JV.OutputManager", ["java.lang.Boolean", "java.util.Date", "$.Hashtable", "$.Map", "JU.Lst", "$.PT", "$.Rdr", "$.SB", "J.api.Interface", "J.i18n.GT", "J.io.JmolBinary", "JU.Logger", "JV.FileManager", "$.JC", "$.Viewer"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.vwr = null;
 this.privateKey = 0;
@@ -116,14 +116,13 @@ return fileName;
 return (errMsg == null ? bytes : errMsg);
 }, "java.util.Map");
 Clazz.defineMethod (c$, "getWrappedState", 
-function (fileName, scripts, objImage, out) {
+function (pngjName, scripts, objImage, pgjOut) {
 var width = this.vwr.apiPlatform.getImageWidth (objImage);
 var height = this.vwr.apiPlatform.getImageHeight (objImage);
-if (width > 0 && !this.vwr.g.imageState && out == null || !this.vwr.g.preserveState) return "";
+if (width > 0 && !this.vwr.g.imageState && pgjOut == null || !this.vwr.g.preserveState) return "";
 var s = this.vwr.getStateInfo3 (null, width, height);
-if (out != null) {
-if (fileName != null) this.vwr.fm.clearPngjCache (fileName);
-return this.createZipSet (s, scripts, true, out);
+if (pgjOut != null) {
+return this.createZipSet (s, scripts, true, pgjOut, pngjName);
 }try {
 s = JV.JC.embedScript (JV.FileManager.setScriptFileReferences (s, ".", null, null));
 } catch (e) {
@@ -142,7 +141,7 @@ objImage = null;
 v.remove (0);
 params.put ("pngImgData", v.remove (0));
 var oz = this.getOutputChannel (null, null);
-errRet[0] = this.writeZipFile (oz, v, "OK JMOL");
+errRet[0] = this.writeZipFile (oz, v, "OK JMOL", null);
 params.put ("type", "PNGJ");
 type = "Png";
 params.put ("pngAppPrefix", "Jmol Type");
@@ -152,9 +151,9 @@ var b = v.remove (0);
 out.write (b, 0, b.length);
 return true;
 } else {
-errRet[0] = this.writeZipFile (out, v, "OK JMOL");
+errRet[0] = this.writeZipFile (out, v, "OK JMOL", null);
 return true;
-}}var ie = J.api.Interface.getInterface ("javajs.img." + type + "Encoder");
+}}var ie = J.api.Interface.getInterface ("javajs.img." + type + "Encoder", this.vwr, "file");
 if (ie == null) {
 errRet[0] = "Image encoder type " + type + " not available";
 return false;
@@ -335,7 +334,7 @@ if (asBytes) {
 pathName = this.vwr.getModelSetPathName ();
 if (pathName == null) return null;
 }out.setType (type);
-var msg = (type.equals ("PDB") || type.equals ("PQR") ? this.vwr.getPdbAtomData (null, out) : type.startsWith ("PLOT") ? this.vwr.getPdbData (modelIndex, type.substring (5), null, parameters, out, true) : getCurrentFile ? out.append (this.vwr.getCurrentFileAsString ()).toString () : this.vwr.getFileAsBytes (pathName, out));
+var msg = (type.equals ("PDB") || type.equals ("PQR") ? this.vwr.getPdbAtomData (null, out) : type.startsWith ("PLOT") ? this.vwr.getPdbData (modelIndex, type.substring (5), null, parameters, out, true) : getCurrentFile ? out.append (this.vwr.getCurrentFileAsString ("write")).toString () : this.vwr.getFileAsBytes (pathName, out));
 out.closeChannel ();
 if (msg != null) msg = "OK " + msg + " " + fileName;
 return msg;
@@ -395,7 +394,7 @@ if (type.equals ("ZIP") || type.equals ("ZIPALL")) {
 var scripts = params.get ("scripts");
 if (scripts != null && type.equals ("ZIP")) type = "ZIPALL";
 var out = this.getOutputChannel (fileName, null);
-sret = this.createZipSet (text, scripts, type.equals ("ZIPALL"), out);
+sret = this.createZipSet (text, scripts, type.equals ("ZIPALL"), out, null);
 } else if (type.equals ("SCENE")) {
 sret = this.createSceneSet (fileName, text, width, height);
 } else {
@@ -519,7 +518,7 @@ throw e;
 }
 }, "~S");
 Clazz.defineMethod (c$, "createZipSet", 
- function (script, scripts, includeRemoteFiles, out) {
+ function (script, scripts, includeRemoteFiles, out, pngjName) {
 var v =  new JU.Lst ();
 var fm = this.vwr.fm;
 var fileNames =  new JU.Lst ();
@@ -559,7 +558,7 @@ newName = this.addPngFileBytes (name, ret, iFile, crcMap, isSparDir, newName, pt
 newFileNames.addLast (name);
 }
 if (!sceneScriptOnly) {
-script = JU.Txt.replaceQuotedStrings (script, fileNames, newFileNames);
+script = JU.PT.replaceQuotedStrings (script, fileNames, newFileNames);
 v.addLast ("state.spt");
 v.addLast (null);
 v.addLast (script.getBytes ());
@@ -570,7 +569,7 @@ v.addLast (null);
 v.addLast (scripts[0].getBytes ());
 }v.addLast ("scene.spt");
 v.addLast (null);
-script = JU.Txt.replaceQuotedStrings (scripts[1], fileNames, newFileNames);
+script = JU.PT.replaceQuotedStrings (scripts[1], fileNames, newFileNames);
 v.addLast (script.getBytes ());
 }var sname = (haveSceneScript ? "scene.spt" : "state.spt");
 v.addLast ("JmolManifest.txt");
@@ -586,11 +585,11 @@ if (bytes != null) {
 v.addLast ("preview.png");
 v.addLast (null);
 v.addLast (bytes);
-}}return this.writeZipFile (out, v, "OK JMOL");
-}, "~S,~A,~B,JU.OC");
+}}return this.writeZipFile (out, v, "OK JMOL", pngjName);
+}, "~S,~A,~B,JU.OC,~S");
 Clazz.defineMethod (c$, "addPngFileBytes", 
  function (name, ret, iFile, crcMap, isSparDir, newName, ptSlash, v) {
-var crcValue = Integer.$valueOf (JU.Rdr.getCrcValue (ret));
+var crcValue = Integer.$valueOf (JU.Rdr.getCrcValue (this.vwr.getJzt (), ret));
 if (crcMap.containsKey (crcValue)) {
 newName = crcMap.get (crcValue);
 } else {
@@ -606,11 +605,12 @@ crcMap.put (crcValue, newName);
 }return newName;
 }, "~S,~A,~N,java.util.Hashtable,~B,~S,~N,JU.Lst");
 Clazz.defineMethod (c$, "writeZipFile", 
- function (out, fileNamesAndByteArrays, msg) {
+ function (out, fileNamesAndByteArrays, msg, pngjName) {
 var buf =  Clazz.newByteArray (1024, 0);
 var nBytesOut = 0;
 var nBytes = 0;
 var outFileName = out.getFileName ();
+if (pngjName != null && pngjName.startsWith ("//")) pngjName = "file:" + pngjName.substring (1);
 JU.Logger.info ("creating zip file " + (outFileName == null ? "" : outFileName) + "...");
 var fileList = "";
 try {
@@ -618,7 +618,7 @@ var bos;
 {
 bos = out;
 }var fm = this.vwr.fm;
-var zos = JU.Rdr.getZipOutputStream (bos);
+var zos = JU.Rdr.getZipOutputStream (this.vwr.getJzt (), bos);
 for (var i = 0; i < fileNamesAndByteArrays.size (); i += 3) {
 var fname = fileNamesAndByteArrays.get (i);
 var bytes = null;
@@ -638,7 +638,7 @@ if (fileList.indexOf (key) >= 0) {
 JU.Logger.info ("duplicate entry");
 continue;
 }fileList += key;
-JU.Rdr.addZipEntry (zos, fnameShort);
+JU.Rdr.addZipEntry (this.vwr.getJzt (), zos, fnameShort);
 var nOut = 0;
 if (bytes == null) {
 var $in = this.vwr.getBufferedInputStream (fname);
@@ -650,9 +650,10 @@ nOut += len;
 $in.close ();
 } else {
 zos.write (bytes, 0, bytes.length);
+if (pngjName != null) this.vwr.fm.recachePngjBytes (pngjName + "|" + fnameShort, bytes);
 nOut += bytes.length;
 }nBytesOut += nOut;
-JU.Rdr.closeZipEntry (zos);
+JU.Rdr.closeZipEntry (this.vwr.getJzt (), zos);
 JU.Logger.info ("...added " + fname + " (" + nOut + " bytes)");
 }
 zos.flush ();
@@ -673,7 +674,7 @@ throw e;
 }
 var fileName = out.getFileName ();
 return (fileName == null ? null : msg + " " + nBytes + " " + fileName);
-}, "JU.OC,JU.Lst,~S");
+}, "JU.OC,JU.Lst,~S,~S");
 Clazz.defineMethod (c$, "wrapPathForAllFiles", 
 function (cmd, strCatch) {
 var vname = "v__" + ("" + Math.random ()).substring (3);

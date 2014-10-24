@@ -66,14 +66,20 @@ Clazz.defineMethod (c$, "readBilbaoFormat",
 this.setFractionalCoordinates (true);
 if (!this.doGetModel (++this.modelNumber, title)) return;
 this.asc.newAtomSet ();
-this.setTitle (title);
+if (this.line.startsWith ("Bilbao Crys:")) {
+title = this.line.substring (13).trim ();
+this.rdLine ();
+}this.setTitle (title);
 var ptPre = this.line.indexOf ("<pre>");
 if (ptPre >= 0) this.line = this.line.substring (ptPre + 5);
 var intTableNo = this.parseIntStr (this.line);
+if (intTableNo == 0) {
+this.setSpaceGroupName ("bilbao:" + this.line.substring (2));
+} else {
 while (intTableNo < 0 && this.rdLine () != null) intTableNo = this.parseIntStr (this.line);
 
 this.setSpaceGroupName ("bilbao:" + intTableNo);
-var data =  Clazz.newFloatArray (6, 0);
+}var data =  Clazz.newFloatArray (6, 0);
 this.fillFloatArray (null, 0, data);
 for (var i = 0; i < 6; i++) this.setUnitCellItem (i, data[i]);
 
@@ -82,7 +88,8 @@ this.nAtoms = this.parseIntStr (this.rdLine ());
 for (var i = this.nAtoms; --i >= 0; ) {
 var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rdLine ());
 if (!this.getSym && tokens[1].contains ("_")) continue;
-this.addAtomXYZSymName (tokens, 3, tokens[0], tokens[0] + tokens[1]);
+if (tokens.length == 3) this.addAtomXYZSymName (tokens, 0, "Be", "Be1");
+ else this.addAtomXYZSymName (tokens, 3, tokens[0], tokens[0] + tokens[1]);
 }
 if (Float.isNaN (fAmp)) {
 if (ptPre >= 0) this.applySymmetryAndSetTrajectory ();

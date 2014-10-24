@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shapesurface");
-Clazz.load (["J.jvxl.api.MeshDataServer", "J.shape.MeshCollection", "JU.P3i", "$.P4"], "J.shapesurface.Isosurface", ["java.io.BufferedReader", "java.lang.Boolean", "$.Float", "java.util.Hashtable", "JU.A4", "$.AU", "$.BS", "$.CU", "$.Lst", "$.M3", "$.P3", "$.PT", "$.Quat", "$.Rdr", "$.SB", "$.V3", "J.jvxl.data.JvxlCoder", "$.JvxlData", "$.MeshData", "J.jvxl.readers.SurfaceGenerator", "J.shape.Mesh", "J.shapesurface.IsosurfaceMesh", "JU.C", "$.Escape", "$.Logger", "$.MeshSurface", "$.Txt", "JV.JC", "$.Viewer"], function () {
+Clazz.load (["J.jvxl.api.MeshDataServer", "J.shape.MeshCollection", "JU.P3i", "$.P4"], "J.shapesurface.Isosurface", ["java.io.BufferedReader", "java.lang.Boolean", "$.Float", "java.util.Hashtable", "JU.A4", "$.AU", "$.BS", "$.CU", "$.Lst", "$.M3", "$.P3", "$.PT", "$.Quat", "$.Rdr", "$.SB", "$.V3", "J.jvxl.data.JvxlCoder", "$.JvxlData", "$.MeshData", "J.jvxl.readers.SurfaceGenerator", "J.shape.Mesh", "J.shapesurface.IsosurfaceMesh", "JU.C", "$.Escape", "$.Logger", "$.MeshSurface", "JV.JC", "$.Viewer"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.isomeshes = null;
 this.thisMesh = null;
@@ -136,7 +136,7 @@ this.thisMesh.colorVertices (JU.C.getColixO (value), bs, false);
 var colors = value;
 var colix0 = JU.C.getColix ((colors[0]).intValue ());
 var colix1 = JU.C.getColix ((colors[1]).intValue ());
-var id = (this.thisMesh != null ? this.thisMesh.thisID : JU.Txt.isWild (this.previousMeshID) ? this.previousMeshID : null);
+var id = (this.thisMesh != null ? this.thisMesh.thisID : JU.PT.isWild (this.previousMeshID) ? this.previousMeshID : null);
 var list = this.getMeshList (id, false);
 for (var i = list.size (); --i >= 0; ) this.setColorPhase (list.get (i), colix0, colix1);
 
@@ -146,7 +146,7 @@ var color = JU.C.getHexCode (JU.C.getColixO (value));
 if (this.thisMesh != null) {
 this.setIsoMeshColor (this.thisMesh, color);
 } else {
-var list = this.getMeshList (JU.Txt.isWild (this.previousMeshID) ? this.previousMeshID : null, false);
+var list = this.getMeshList (JU.PT.isWild (this.previousMeshID) ? this.previousMeshID : null, false);
 for (var i = list.size (); --i >= 0; ) this.setIsoMeshColor (list.get (i), color);
 
 }this.setPropertySuper (propertyName, value, bs);
@@ -464,7 +464,7 @@ data[2] = d;
 }return true;
 }if (property === "unitCell") {
 var m = this.getMesh (data[0]);
-return (m != null && (data[1] = m.getUnitCell ()) != null);
+return (m != null && (data[1] = m.getUnitCell (this.vwr)) != null);
 }if (property === "getCenter") {
 var index = (data[1]).intValue ();
 if (index == -2147483648) {
@@ -540,6 +540,7 @@ var f = this.thisMesh.jvxlData.voxelVolume;
 f *= (this.thisMesh.bsSlabDisplay == null ? this.thisMesh.vc : this.thisMesh.bsSlabDisplay.cardinality ());
 return this.thisMesh.calculatedVolume = Float.$valueOf (f);
 }var ret = meshData.calculateVolumeOrArea (this.thisMesh.jvxlData.thisSet, isArea, false);
+if (this.thisMesh.nSets <= 0) this.thisMesh.nSets = -meshData.nSets;
 if (isArea) this.thisMesh.calculatedArea = ret;
  else this.thisMesh.calculatedVolume = ret;
 return ret;

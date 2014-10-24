@@ -1,6 +1,6 @@
 'use strict';
 
-define(['require','modules/default/defaultview', 'src/util/api'], function (require, Default, API) {
+define(['modules/default/defaultview', 'src/util/api'], function (Default, API) {
 
     function View() {
     }
@@ -11,6 +11,8 @@ define(['require','modules/default/defaultview', 'src/util/api'], function (requ
             var self = this;
 
             this.dom = $('<iframe>', {src: require.toUrl('./lib/jsme.html')}).css('border', 0);
+
+            this.dom = $('<iframe />').attr('src', require.toUrl('lib/jsme/jsme.html'));
             this.module.getDomContent().html(this.dom);
 
             this.dom.bind('load', function () {

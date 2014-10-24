@@ -27,16 +27,18 @@ this.height = 0;
 this.zSlab = 0;
 this.zDepth = 0;
 this.zShadePower = 3;
+this.ambientOcclusion = 0;
 this.colixCurrent = 0;
 this.argbCurrent = 0;
+this.$isPass2 = false;
+this.textY = 0;
 this.bufferSize = 0;
 this.shader = null;
+this.vwr = null;
 this.zShadeR = 0;
 this.zShadeG = 0;
 this.zShadeB = 0;
 this.graphicsForMetrics = null;
-this.$isPass2 = false;
-this.ambientOcclusion = 0;
 Clazz.instantialize (this, arguments);
 }, JU, "GData", null, J.api.JmolGraphicsInterface);
 Clazz.prepareFields (c$, function () {
@@ -55,9 +57,10 @@ function () {
 this.shader =  new JU.Shader ();
 });
 Clazz.defineMethod (c$, "initialize", 
-function (apiPlatform) {
+function (vwr, apiPlatform) {
+this.vwr = vwr;
 this.apiPlatform = apiPlatform;
-}, "javajs.api.GenericPlatform");
+}, "JV.Viewer,javajs.api.GenericPlatform");
 Clazz.overrideMethod (c$, "setDepth", 
 function (depthValue) {
 this.depth = depthValue < 0 ? 0 : depthValue;
@@ -491,6 +494,14 @@ var z = (h1 * z1 + h2 * z2 + h3 * zT1 + h4 * zT2);
 list[index0 + i] = (isPt ? JU.P3.new3 (x, y, z) : JU.V3.new3 (x, y, z));
 }
 }, "~N,JU.T3,JU.T3,JU.T3,JU.T3,JU.T3,~A,~N,~N,~B");
+Clazz.defineMethod (c$, "setTextPosition", 
+function (y) {
+this.textY = y;
+}, "~N");
+Clazz.defineMethod (c$, "getTextPosition", 
+function () {
+return this.textY;
+});
 Clazz.defineStatics (c$,
 "ENDCAPS_NONE", 0,
 "ENDCAPS_OPEN", 1,

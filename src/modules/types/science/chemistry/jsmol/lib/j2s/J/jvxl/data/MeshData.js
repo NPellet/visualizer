@@ -62,19 +62,15 @@ this.nSets = n;
 this.surfaceSet = temp;
 if (!this.setsSuccessful && level < 2) this.getSurfaceSetForLevel (level + 1);
 if (level == 0) {
-this.sortSurfaceSets ();
-this.setVertexSets (false);
-}return this.surfaceSet;
-}, "~N");
-Clazz.defineMethod (c$, "sortSurfaceSets", 
- function () {
 var sets =  new Array (this.nSets);
 for (var i = 0; i < this.nSets; i++) sets[i] = Clazz.innerTypeInstance (J.jvxl.data.MeshData.SSet, this, null, this.surfaceSet[i]);
 
 java.util.Arrays.sort (sets, Clazz.innerTypeInstance (J.jvxl.data.MeshData.SortSet, this, null));
 for (var i = 0; i < this.nSets; i++) this.surfaceSet[i] = sets[i].bs;
 
-});
+this.setVertexSets (false);
+}return this.surfaceSet;
+}, "~N");
 Clazz.defineMethod (c$, "setVertexSets", 
 function (onlyIfNull) {
 if (this.surfaceSet == null) return;
@@ -135,16 +131,16 @@ return (val1 >= 0 && val2 >= 0 && val3 >= 0 || val1 <= 0 && val2 <= 0 && val3 <=
 }, "~N,~N,~N,~A");
 Clazz.defineMethod (c$, "calculateVolumeOrArea", 
 function (thisSet, isArea, getSets) {
-if (getSets || this.nSets == 0) this.getSurfaceSet ();
+if (getSets || this.nSets <= 0) this.getSurfaceSet ();
 var justOne = (thisSet >= -1);
-var n = (justOne || this.nSets == 0 ? 1 : this.nSets);
+var n = (justOne || this.nSets <= 0 ? 1 : this.nSets);
 var v =  Clazz.newDoubleArray (n, 0);
 var vAB =  new JU.V3 ();
 var vAC =  new JU.V3 ();
 var vTemp =  new JU.V3 ();
 for (var i = this.pc; --i >= 0; ) {
 if (!this.setABC (i)) continue;
-var iSet = (this.nSets == 0 ? 0 : this.vertexSets[this.iA]);
+var iSet = (this.nSets <= 0 ? 0 : this.vertexSets[this.iA]);
 if (thisSet >= 0 && iSet != thisSet) continue;
 if (isArea) {
 vAB.sub2 (this.vs[this.iB], this.vs[this.iA]);

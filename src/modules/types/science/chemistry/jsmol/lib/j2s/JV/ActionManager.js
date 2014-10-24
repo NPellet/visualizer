@@ -1,8 +1,9 @@
 Clazz.declarePackage ("JV");
-Clazz.load (["javajs.api.EventManager", "JU.Rectangle", "JV.MouseState"], "JV.ActionManager", ["java.lang.Character", "$.Float", "JU.P3", "$.PT", "J.api.Interface", "J.i18n.GT", "J.thread.HoverWatcherThread", "JU.BSUtil", "$.Escape", "$.Logger", "$.Point3fi", "JV.binding.Binding", "$.JmolBinding"], function () {
+Clazz.load (["javajs.api.EventManager", "J.i18n.GT", "JU.Rectangle", "JV.MouseState"], ["JV.ActionManager", "$.Gesture", "$.MotionPoint"], ["java.lang.Character", "$.Float", "JU.P3", "$.PT", "J.api.Interface", "J.thread.HoverWatcherThread", "JU.BSUtil", "$.Escape", "$.Logger", "$.Point3fi", "JV.binding.Binding", "$.JmolBinding"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.vwr = null;
 this.haveMultiTouchInput = false;
+this.isMultiTouch = false;
 this.b = null;
 this.jmolBinding = null;
 this.pfaatBinding = null;
@@ -12,13 +13,7 @@ this.predragBinding = null;
 this.LEFT_CLICKED = 0;
 this.LEFT_DRAGGED = 0;
 this.hoverWatcherThread = null;
-if (!Clazz.isClassDefined ("JV.ActionManager.MotionPoint")) {
-JV.ActionManager.$ActionManager$MotionPoint$ ();
-}
 this.dragGesture = null;
-if (!Clazz.isClassDefined ("JV.ActionManager.Gesture")) {
-JV.ActionManager.$ActionManager$Gesture$ ();
-}
 this.apm = 1;
 this.bondPickingMode = 0;
 this.pickingStyle = 0;
@@ -61,7 +56,6 @@ this.selectionWorking = false;
 Clazz.instantialize (this, arguments);
 }, JV, "ActionManager", null, javajs.api.EventManager);
 Clazz.prepareFields (c$, function () {
-this.dragGesture = Clazz.innerTypeInstance (JV.ActionManager.Gesture, this, null, 20);
 this.current =  new JV.MouseState ("current");
 this.moved =  new JV.MouseState ("moved");
 this.clicked =  new JV.MouseState ("clicked");
@@ -75,6 +69,7 @@ this.vwr = vwr;
 this.setBinding (this.jmolBinding =  new JV.binding.JmolBinding ());
 this.LEFT_CLICKED = JV.binding.Binding.getMouseAction (1, 16, 2);
 this.LEFT_DRAGGED = JV.binding.Binding.getMouseAction (1, 16, 1);
+this.dragGesture =  new JV.Gesture (20, vwr);
 }, "JV.Viewer,~S");
 Clazz.defineMethod (c$, "checkHover", 
 function () {
@@ -234,14 +229,14 @@ this.pickingStyleSelect = pickingStyle;
 }this.rubberbandSelectionMode = false;
 switch (this.pickingStyleSelect) {
 case 2:
-if (!this.b.name.equals ("extendedSelect")) this.setBinding (this.pfaatBinding == null ? this.pfaatBinding = JV.binding.Binding.newBinding ("Pfaat") : this.pfaatBinding);
+if (!this.b.name.equals ("extendedSelect")) this.setBinding (this.pfaatBinding == null ? this.pfaatBinding = JV.binding.Binding.newBinding (this.vwr, "Pfaat") : this.pfaatBinding);
 break;
 case 3:
-if (!this.b.name.equals ("drag")) this.setBinding (this.dragBinding == null ? this.dragBinding = JV.binding.Binding.newBinding ("Drag") : this.dragBinding);
+if (!this.b.name.equals ("drag")) this.setBinding (this.dragBinding == null ? this.dragBinding = JV.binding.Binding.newBinding (this.vwr, "Drag") : this.dragBinding);
 this.rubberbandSelectionMode = true;
 break;
 case 1:
-if (!this.b.name.equals ("selectOrToggle")) this.setBinding (this.rasmolBinding == null ? this.rasmolBinding = JV.binding.Binding.newBinding ("Rasmol") : this.rasmolBinding);
+if (!this.b.name.equals ("selectOrToggle")) this.setBinding (this.rasmolBinding == null ? this.rasmolBinding = JV.binding.Binding.newBinding (this.vwr, "Rasmol") : this.rasmolBinding);
 break;
 default:
 if (this.b !== this.jmolBinding) this.setBinding (this.jmolBinding);
@@ -421,7 +416,6 @@ break;
 Clazz.overrideMethod (c$, "mouseEnterExit", 
 function (time, x, y, isExit) {
 this.setCurrent (time, x, y, 0);
-if (isExit) this.exitMeasurementMode ("mouseExit");
 }, "~N,~N,~N,~B");
 Clazz.defineMethod (c$, "setMouseActions", 
  function (count, buttonMods, isRelease) {
@@ -467,7 +461,6 @@ var deltaX = x - this.dragged.x;
 var deltaY = y - this.dragged.y;
 this.setCurrent (time, x, y, buttonMods);
 this.dragged.setCurrent (this.current, -1);
-if (this.apm != 32) this.exitMeasurementMode (null);
 this.dragGesture.add (this.dragAction, x, y, time);
 this.checkDragWheelAction (this.dragAction, x, y, deltaX, deltaY, time, 1);
 return;
@@ -819,9 +812,9 @@ this.setMotion (cursor, isDrag);
 return (isZoom || isSlideZoom);
 }, "~N,~N,~N,~N,~B");
 Clazz.defineMethod (c$, "getExitRate", 
-function () {
+ function () {
 var dt = this.dragGesture.getTimeDifference (2);
-return (dt > 10 ? 0 : this.dragGesture.getSpeedPixelsPerMillisecond (4, 2));
+return (this.isMultiTouch ? (dt > (80) ? 0 : this.dragGesture.getSpeedPixelsPerMillisecond (2, 1)) : (dt > 10 ? 0 : this.dragGesture.getSpeedPixelsPerMillisecond (4, 2)));
 });
 Clazz.defineMethod (c$, "isRubberBandSelect", 
  function (action) {
@@ -886,7 +879,7 @@ this.measurementQueued = this.mp;
 }, "~N");
 Clazz.defineMethod (c$, "getMP", 
  function () {
-return (J.api.Interface.getInterface ("JM.MeasurementPending")).set (this.vwr.ms);
+return (J.api.Interface.getInterface ("JM.MeasurementPending", this.vwr, "mouse")).set (this.vwr.ms);
 });
 Clazz.defineMethod (c$, "addToMeasurement", 
  function (atomIndex, nearestPoint, dblClick) {
@@ -927,11 +920,9 @@ throw e;
 });
 Clazz.defineMethod (c$, "minimize", 
  function (dragDone) {
-this.vwr.stopMinimization ();
 var iAtom = this.dragAtomIndex;
 if (dragDone) this.dragAtomIndex = -1;
-var bs = (this.vwr.getMotionFixedAtoms ().cardinality () == 0 ? this.vwr.ms.getAtoms ((this.vwr.isAtomPDB (iAtom) ? 1087373318 : 1095761936), JU.BSUtil.newAndSetBit (iAtom)) : JU.BSUtil.setAll (this.vwr.getAtomCount ()));
-this.vwr.minimize (2147483647, 0, bs, null, 0, false, false, false, false);
+this.vwr.dragMinimizeAtom (iAtom);
 }, "~B");
 Clazz.defineMethod (c$, "queueAtom", 
  function (atomIndex, ptClicked) {
@@ -1230,117 +1221,6 @@ Clazz.overrideMethod (c$, "keyTyped",
 function (keyChar, modifiers) {
 return false;
 }, "~N,~N");
-c$.$ActionManager$MotionPoint$ = function () {
-Clazz.pu$h(self.c$);
-c$ = Clazz.decorateAsClass (function () {
-Clazz.prepareCallback (this, arguments);
-this.index = 0;
-this.x = 0;
-this.y = 0;
-this.time = 0;
-Clazz.instantialize (this, arguments);
-}, JV.ActionManager, "MotionPoint");
-Clazz.defineMethod (c$, "set", 
-function (a, b, c, d) {
-this.index = a;
-this.x = b;
-this.y = c;
-this.time = d;
-}, "~N,~N,~N,~N");
-Clazz.overrideMethod (c$, "toString", 
-function () {
-return "[x = " + this.x + " y = " + this.y + " time = " + this.time + " ]";
-});
-c$ = Clazz.p0p ();
-};
-c$.$ActionManager$Gesture$ = function () {
-Clazz.pu$h(self.c$);
-c$ = Clazz.decorateAsClass (function () {
-Clazz.prepareCallback (this, arguments);
-this.action = 0;
-this.nodes = null;
-this.ptNext = 0;
-this.time0 = 0;
-Clazz.instantialize (this, arguments);
-}, JV.ActionManager, "Gesture");
-Clazz.makeConstructor (c$, 
-function (a) {
-this.nodes =  new Array (a);
-for (var b = 0; b < a; b++) this.nodes[b] = Clazz.innerTypeInstance (JV.ActionManager.MotionPoint, this, null);
-
-}, "~N");
-Clazz.defineMethod (c$, "setAction", 
-function (a, b) {
-this.action = a;
-this.ptNext = 0;
-this.time0 = b;
-for (var c = 0; c < this.nodes.length; c++) this.nodes[c].index = -1;
-
-}, "~N,~N");
-Clazz.defineMethod (c$, "add", 
-function (a, b, c, d) {
-this.action = a;
-this.getNode (this.ptNext).set (this.ptNext, b, c, d - this.time0);
-this.ptNext++;
-return this.ptNext;
-}, "~N,~N,~N,~N");
-Clazz.defineMethod (c$, "getTimeDifference", 
-function (a) {
-a = this.getPointCount2 (a, 0);
-if (a < 2) return 0;
-var b = this.getNode (this.ptNext - 1);
-var c = this.getNode (this.ptNext - a);
-return b.time - c.time;
-}, "~N");
-Clazz.defineMethod (c$, "getSpeedPixelsPerMillisecond", 
-function (a, b) {
-a = this.getPointCount2 (a, b);
-if (a < 2) return 0;
-var c = this.getNode (this.ptNext - 1 - b);
-var d = this.getNode (this.ptNext - a - b);
-var e = ((c.x - d.x)) / this.b$["JV.ActionManager"].vwr.getScreenWidth () * 360;
-var f = ((c.y - d.y)) / this.b$["JV.ActionManager"].vwr.getScreenHeight () * 360;
-return Math.sqrt (e * e + f * f) / (c.time - d.time);
-}, "~N,~N");
-Clazz.defineMethod (c$, "getDX", 
-function (a, b) {
-a = this.getPointCount2 (a, b);
-if (a < 2) return 0;
-var c = this.getNode (this.ptNext - 1 - b);
-var d = this.getNode (this.ptNext - a - b);
-return c.x - d.x;
-}, "~N,~N");
-Clazz.defineMethod (c$, "getDY", 
-function (a, b) {
-a = this.getPointCount2 (a, b);
-if (a < 2) return 0;
-var c = this.getNode (this.ptNext - 1 - b);
-var d = this.getNode (this.ptNext - a - b);
-return c.y - d.y;
-}, "~N,~N");
-Clazz.defineMethod (c$, "getPointCount", 
-function () {
-return this.ptNext;
-});
-Clazz.defineMethod (c$, "getPointCount2", 
- function (a, b) {
-if (a > this.nodes.length - b) a = this.nodes.length - b;
-var c = a + 1;
-for (; --c >= 0; ) if (this.getNode (this.ptNext - c - b).index >= 0) break;
-
-return c;
-}, "~N,~N");
-Clazz.defineMethod (c$, "getNode", 
-function (a) {
-return this.nodes[(a + this.nodes.length + this.nodes.length) % this.nodes.length];
-}, "~N");
-Clazz.overrideMethod (c$, "toString", 
-function () {
-if (this.nodes.length == 0) return "" + this;
-return JV.binding.Binding.getMouseActionName (this.action, false) + " nPoints = " + this.ptNext + " " + this.nodes[0];
-});
-c$ = Clazz.p0p ();
-};
 Clazz.defineStatics (c$,
 "ACTION_assignNew", 0,
 "ACTION_center", 1,
@@ -1499,4 +1379,107 @@ JV.ActionManager.pickingStyleNames = "toggle selectOrToggle extendedSelect drag 
 "DEFAULT_MOUSE_DRAG_FACTOR", 1,
 "DEFAULT_MOUSE_WHEEL_FACTOR", 1.15,
 "DEFAULT_GESTURE_SWIPE_FACTOR", 1);
+c$ = Clazz.decorateAsClass (function () {
+this.index = 0;
+this.x = 0;
+this.y = 0;
+this.time = 0;
+Clazz.instantialize (this, arguments);
+}, JV, "MotionPoint");
+Clazz.defineMethod (c$, "set", 
+function (index, x, y, time) {
+this.index = index;
+this.x = x;
+this.y = y;
+this.time = time;
+}, "~N,~N,~N,~N");
+Clazz.overrideMethod (c$, "toString", 
+function () {
+return "[x = " + this.x + " y = " + this.y + " time = " + this.time + " ]";
+});
+c$ = Clazz.decorateAsClass (function () {
+this.action = 0;
+this.nodes = null;
+this.ptNext = 0;
+this.time0 = 0;
+this.vwr = null;
+Clazz.instantialize (this, arguments);
+}, JV, "Gesture");
+Clazz.makeConstructor (c$, 
+function (nPoints, vwr) {
+this.vwr = vwr;
+this.nodes =  new Array (nPoints);
+for (var i = 0; i < nPoints; i++) this.nodes[i] =  new JV.MotionPoint ();
+
+}, "~N,JV.Viewer");
+Clazz.defineMethod (c$, "setAction", 
+function (action, time) {
+this.action = action;
+this.ptNext = 0;
+this.time0 = time;
+for (var i = 0; i < this.nodes.length; i++) this.nodes[i].index = -1;
+
+}, "~N,~N");
+Clazz.defineMethod (c$, "add", 
+function (action, x, y, time) {
+this.action = action;
+this.getNode (this.ptNext).set (this.ptNext, x, y, time - this.time0);
+this.ptNext++;
+return this.ptNext;
+}, "~N,~N,~N,~N");
+Clazz.defineMethod (c$, "getTimeDifference", 
+function (nPoints) {
+nPoints = this.getPointCount2 (nPoints, 0);
+if (nPoints < 2) return 0;
+var mp1 = this.getNode (this.ptNext - 1);
+var mp0 = this.getNode (this.ptNext - nPoints);
+return mp1.time - mp0.time;
+}, "~N");
+Clazz.defineMethod (c$, "getSpeedPixelsPerMillisecond", 
+function (nPoints, nPointsPrevious) {
+nPoints = this.getPointCount2 (nPoints, nPointsPrevious);
+if (nPoints < 2) return 0;
+var mp1 = this.getNode (this.ptNext - 1 - nPointsPrevious);
+var mp0 = this.getNode (this.ptNext - nPoints - nPointsPrevious);
+var dx = ((mp1.x - mp0.x)) / this.vwr.getScreenWidth () * 360;
+var dy = ((mp1.y - mp0.y)) / this.vwr.getScreenHeight () * 360;
+return Math.sqrt (dx * dx + dy * dy) / (mp1.time - mp0.time);
+}, "~N,~N");
+Clazz.defineMethod (c$, "getDX", 
+function (nPoints, nPointsPrevious) {
+nPoints = this.getPointCount2 (nPoints, nPointsPrevious);
+if (nPoints < 2) return 0;
+var mp1 = this.getNode (this.ptNext - 1 - nPointsPrevious);
+var mp0 = this.getNode (this.ptNext - nPoints - nPointsPrevious);
+return mp1.x - mp0.x;
+}, "~N,~N");
+Clazz.defineMethod (c$, "getDY", 
+function (nPoints, nPointsPrevious) {
+nPoints = this.getPointCount2 (nPoints, nPointsPrevious);
+if (nPoints < 2) return 0;
+var mp1 = this.getNode (this.ptNext - 1 - nPointsPrevious);
+var mp0 = this.getNode (this.ptNext - nPoints - nPointsPrevious);
+return mp1.y - mp0.y;
+}, "~N,~N");
+Clazz.defineMethod (c$, "getPointCount", 
+function () {
+return this.ptNext;
+});
+Clazz.defineMethod (c$, "getPointCount2", 
+ function (nPoints, nPointsPrevious) {
+if (nPoints > this.nodes.length - nPointsPrevious) nPoints = this.nodes.length - nPointsPrevious;
+var n = nPoints + 1;
+for (; --n >= 0; ) if (this.getNode (this.ptNext - n - nPointsPrevious).index >= 0) break;
+
+return n;
+}, "~N,~N");
+Clazz.defineMethod (c$, "getNode", 
+function (i) {
+return this.nodes[(i + this.nodes.length + this.nodes.length) % this.nodes.length];
+}, "~N");
+Clazz.overrideMethod (c$, "toString", 
+function () {
+if (this.nodes.length == 0) return "" + this;
+return JV.binding.Binding.getMouseActionName (this.action, false) + " nPoints = " + this.ptNext + " " + this.nodes[0];
+});
 });

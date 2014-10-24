@@ -86,7 +86,7 @@ Clazz.defineMethod (c$, "parseSfacRecord",
 var allElementSymbols = true;
 for (var i = this.tokens.length; allElementSymbols && --i >= 1; ) {
 var token = this.tokens[i];
-allElementSymbols = J.adapter.smarter.Atom.isValidElementSymbolNoCaseSecondChar (token);
+allElementSymbols = J.adapter.readers.xtal.ShelxReader.isValidElementSymbolNoCaseSecondChar (token);
 }
 var sfacTokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line.substring (4));
 if (allElementSymbols) this.parseSfacElementSymbols (sfacTokens);
@@ -165,6 +165,17 @@ if (len < 2) return sym;
 var ch1 = sym.charAt (1);
 if (ch1 >= 'a' && ch1 <= 'z') return sym.substring (0, 2);
 return "" + sym.charAt (0);
+}, "~S");
+c$.isValidElementSymbolNoCaseSecondChar = Clazz.defineMethod (c$, "isValidElementSymbolNoCaseSecondChar", 
+function (str) {
+if (str == null) return false;
+var length = str.length;
+if (length == 0) return false;
+var chFirst = str.charAt (0);
+if (length == 1) return J.adapter.smarter.Atom.isValidSym1 (chFirst);
+if (length > 2) return false;
+var chSecond = str.charAt (1);
+return J.adapter.smarter.Atom.isValidSymNoCase (chFirst, chSecond);
 }, "~S");
 Clazz.defineStatics (c$,
 "unsupportedRecordTypes", ";ZERR;DISP;UNIT;LAUE;REM;MORE;TIME;HKLF;OMIT;SHEL;BASF;TWIN;EXTI;SWAT;HOPE;MERG;SPEC;RESI;MOVE;ANIS;AFIX;HFIX;FRAG;FEND;EXYZ;EXTI;EADP;EQIV;CONN;PART;BIND;FREE;DFIX;DANG;BUMP;SAME;SADI;CHIV;FLAT;DELU;SIMU;DEFS;ISOR;NCSY;SUMP;L.S.;CGLS;BLOC;DAMP;STIR;WGHT;FVAR;BOND;CONF;MPLA;RTAB;HTAB;LIST;ACTA;SIZE;TEMP;WPDB;FMAP;GRID;PLAN;MOLE;",

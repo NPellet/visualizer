@@ -100,7 +100,7 @@ this.g3d.plotImage (x, y, z, image, this.jmolRenderer, bgcolix, width, height);
 }, "~N,~N,~N,~O,~N,~N,~N");
 Clazz.overrideMethod (c$, "drawAtom", 
 function (atom) {
-var colix = atom.getColix ();
+var colix = atom.colixAtom;
 this.outputSphere (atom, atom.madAtom / 2000, colix, JU.C.isColixTranslucent (colix));
 }, "JM.Atom");
 Clazz.overrideMethod (c$, "drawCircle", 

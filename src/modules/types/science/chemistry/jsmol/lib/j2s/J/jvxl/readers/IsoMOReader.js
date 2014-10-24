@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.AtomDataReader"], "J.jvxl.readers.IsoMOReader", ["java.lang.Float", "java.util.Random", "JU.AU", "$.Measure", "$.P3", "$.V3", "J.api.Interface", "J.c.QS", "JU.Logger", "$.Txt"], function () {
+Clazz.load (["J.jvxl.readers.AtomDataReader"], "J.jvxl.readers.IsoMOReader", ["java.lang.Float", "java.util.Random", "JU.AU", "$.Measure", "$.P3", "$.PT", "$.V3", "J.api.Interface", "J.c.QS", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.random = null;
 this.vDist = null;
@@ -50,7 +50,7 @@ if (haveVolumeData) {
 for (var i = this.params.title.length; --i >= 0; ) this.fixTitleLine2 (i, mo);
 
 } else {
-this.q = J.api.Interface.getOption (className);
+this.q = J.api.Interface.getOption (className, this.sg.getAtomDataServer (), "file");
 if (this.isNci) {
 this.qpc = this.q;
 } else if (this.linearCombination == null) {
@@ -93,9 +93,9 @@ var line = this.params.title[iLine];
 var pt = line.indexOf ("%");
 if (line.length == 0 || pt < 0) return;
 var rep = 0;
-if (line.indexOf ("%F") >= 0) line = JU.Txt.formatStringS (line, "F", this.params.fileName);
-if (line.indexOf ("%I") >= 0) line = JU.Txt.formatStringS (line, "I", this.params.qm_moLinearCombination == null ? "" + this.params.qm_moNumber : J.c.QS.getMOString (this.params.qm_moLinearCombination));
-if (line.indexOf ("%N") >= 0) line = JU.Txt.formatStringS (line, "N", "" + this.params.qmOrbitalCount);
+if (line.indexOf ("%F") >= 0) line = JU.PT.formatStringS (line, "F", this.params.fileName);
+if (line.indexOf ("%I") >= 0) line = JU.PT.formatStringS (line, "I", this.params.qm_moLinearCombination == null ? "" + this.params.qm_moNumber : J.c.QS.getMOString (this.params.qm_moLinearCombination));
+if (line.indexOf ("%N") >= 0) line = JU.PT.formatStringS (line, "N", "" + this.params.qmOrbitalCount);
 var energy = null;
 if (mo == null) {
 for (var i = 0; i < this.linearCombination.length; i += 2) if (this.linearCombination[i] != 0) {
@@ -110,11 +110,11 @@ break;
 }}
 } else {
 if (mo.containsKey ("energy")) energy = mo.get ("energy");
-}if (line.indexOf ("%E") >= 0) line = JU.Txt.formatStringS (line, "E", energy != null && ++rep != 0 ? "" + energy : "");
-if (line.indexOf ("%U") >= 0) line = JU.Txt.formatStringS (line, "U", energy != null && this.params.moData.containsKey ("energyUnits") && ++rep != 0 ? this.params.moData.get ("energyUnits") : "");
-if (line.indexOf ("%S") >= 0) line = JU.Txt.formatStringS (line, "S", mo != null && mo.containsKey ("symmetry") && ++rep != 0 ? "" + mo.get ("symmetry") : "");
-if (line.indexOf ("%O") >= 0) line = JU.Txt.formatStringS (line, "O", mo != null && mo.containsKey ("occupancy") && ++rep != 0 ? "" + mo.get ("occupancy") : "");
-if (line.indexOf ("%T") >= 0) line = JU.Txt.formatStringS (line, "T", mo != null && mo.containsKey ("type") && ++rep != 0 ? "" + mo.get ("type") : "");
+}if (line.indexOf ("%E") >= 0) line = JU.PT.formatStringS (line, "E", energy != null && ++rep != 0 ? "" + energy : "");
+if (line.indexOf ("%U") >= 0) line = JU.PT.formatStringS (line, "U", energy != null && this.params.moData.containsKey ("energyUnits") && ++rep != 0 ? this.params.moData.get ("energyUnits") : "");
+if (line.indexOf ("%S") >= 0) line = JU.PT.formatStringS (line, "S", mo != null && mo.containsKey ("symmetry") && ++rep != 0 ? "" + mo.get ("symmetry") : "");
+if (line.indexOf ("%O") >= 0) line = JU.PT.formatStringS (line, "O", mo != null && mo.containsKey ("occupancy") && ++rep != 0 ? "" + mo.get ("occupancy") : "");
+if (line.indexOf ("%T") >= 0) line = JU.PT.formatStringS (line, "T", mo != null && mo.containsKey ("type") && ++rep != 0 ? "" + mo.get ("type") : "");
 if (line.equals ("string")) {
 this.params.title[iLine] = "";
 return;

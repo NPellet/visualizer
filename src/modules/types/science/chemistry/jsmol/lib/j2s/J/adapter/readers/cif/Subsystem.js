@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.cif");
-Clazz.load (null, "J.adapter.readers.cif.Subsystem", ["JU.Lst", "$.Matrix", "$.V3", "J.api.Interface", "JU.Logger"], function () {
+Clazz.load (null, "J.adapter.readers.cif.Subsystem", ["JU.Lst", "$.Matrix", "$.V3", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.msRdr = null;
 this.code = null;
@@ -61,7 +61,7 @@ uc_nu[0] = vu43[0];
 for (var i = 0; i < 3; i++) uc_nu[i + 1] = JU.V3.new3 (a[i][0], a[i][1], a[i][2]);
 
 uc_nu = this.reciprocalsOf (uc_nu);
-this.symmetry = J.api.Interface.getSymmetry ().getUnitCell (uc_nu, false, null);
+this.symmetry = (this.msRdr.cr.getInterface ("JS.Symmetry")).getUnitCell (uc_nu, false, null);
 this.modMatrices = [sigma_nu, tFactor];
 if (!setOperators) return;
 this.isFinalized = true;

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JS");
-Clazz.load (null, "JS.ScriptMathProcessor", ["java.lang.Character", "$.Float", "java.util.Arrays", "$.Hashtable", "JU.A4", "$.AU", "$.BS", "$.CU", "$.DF", "$.Lst", "$.M3", "$.M4", "$.P3", "$.P4", "$.PT", "$.Quat", "$.V3", "JM.BondSet", "JS.SV", "$.T", "JU.BSUtil", "$.Escape", "$.Logger"], function () {
+Clazz.load (null, "JS.ScriptMathProcessor", ["java.lang.Float", "java.util.Arrays", "$.Hashtable", "JU.A4", "$.AU", "$.BS", "$.CU", "$.DF", "$.Lst", "$.M3", "$.M4", "$.P3", "$.P4", "$.PT", "$.Quat", "$.V3", "JM.BondSet", "JS.SV", "$.T", "JU.BSUtil", "$.Escape", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.wasX = false;
 this.asBitSet = false;
@@ -622,7 +622,7 @@ case 6:
 case 14:
 switch (iv) {
 case 1141899272:
-case 1141899281:
+case 1141899282:
 case 1141899270:
 break;
 default:
@@ -636,7 +636,7 @@ case 1073741824:
 return (x2.tok == 10 && this.getAllProperties (x2, op.value));
 case 1141899272:
 return this.addXStr (JS.ScriptMathProcessor.typeOf (x2));
-case 1141899281:
+case 1141899282:
 return this.getKeys (x2, (op.intValue & 480) == 480);
 case 1141899267:
 case 1276117012:
@@ -717,7 +717,7 @@ if ((lst = x2.getList ()) != null && (n = lst.size ()) > 0) this.getKeyList (lst
 }return;
 }for (var e, $e = map.entrySet ().iterator (); $e.hasNext () && ((e = $e.next ()) || true);) {
 var k = e.getKey ();
-if (isAll && (k.length == 0 || !Character.isLetter (k.charAt (0)))) {
+if (isAll && (k.length == 0 || !JU.PT.isLetter (k.charAt (0)))) {
 if (prefix.endsWith (".")) prefix = prefix.substring (0, prefix.length - 1);
 k = "[" + JU.PT.esc (k) + "]";
 }keys.addLast (prefix + k);
@@ -1278,7 +1278,7 @@ return this.addXFloat ((x2.value).y);
 case 1112541187:
 case 1112541207:
 return this.addXFloat ((x2.value).z);
-case 1141899280:
+case 1141899281:
 return this.addXFloat ((x2.value).w);
 }
 break;

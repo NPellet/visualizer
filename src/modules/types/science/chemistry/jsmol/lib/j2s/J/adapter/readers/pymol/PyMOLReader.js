@@ -36,7 +36,6 @@ this.frames = null;
 this.uniqueSettings = null;
 this.atoms = null;
 this.haveScenes = false;
-this.$baseAtomIndex = 0;
 this.baseModelIndex = 0;
 this.sceneOrder = null;
 this.bondCount = 0;
@@ -55,7 +54,7 @@ this.setupASCR (fullPath, htParams, reader);
 }, "~S,java.util.Map,~O");
 Clazz.defineMethod (c$, "initializeReader", 
 function () {
-this.$baseAtomIndex = (this.htParams.get ("baseAtomIndex")).intValue ();
+this.baseAtomIndex = (this.htParams.get ("baseAtomIndex")).intValue ();
 this.baseModelIndex = (this.htParams.get ("baseModelIndex")).intValue ();
 this.asc.setInfo ("noAutoBond", Boolean.TRUE);
 this.asc.setAtomSetAuxiliaryInfo ("pdbNoHydrogens", Boolean.TRUE);
@@ -82,7 +81,7 @@ this.process (map);
 Clazz.overrideMethod (c$, "setAdditionalAtomParameters", 
 function (atom) {
 }, "J.adapter.smarter.Atom");
-Clazz.overrideMethod (c$, "finalizeReader", 
+Clazz.overrideMethod (c$, "finalizeSubclassReader", 
 function () {
 this.finalizeReaderPDB ();
 this.asc.setTensors ();
@@ -121,7 +120,7 @@ this.haveScenes = this.getFrameScenes (map);
 var file = this.listAt (settings, 440);
 if (file != null) JU.Logger.info ("PyMOL session file: " + file.get (2));
 this.setUniqueSettings (J.adapter.readers.pymol.PyMOLReader.getMapList (map, "unique_settings"));
-this.pymolScene =  new J.adapter.readers.pymol.PyMOLScene (this, this.vwr, settings, this.uniqueSettings, this.pymolVersion, this.haveScenes, this.$baseAtomIndex, this.baseModelIndex, this.doCache, this.filePath);
+this.pymolScene =  new J.adapter.readers.pymol.PyMOLScene (this, this.vwr, settings, this.uniqueSettings, this.pymolVersion, this.haveScenes, this.baseAtomIndex, this.baseModelIndex, this.doCache, this.filePath);
 this.logging = (this.vwr.getLogFileName ().length > 0);
 var names = J.adapter.readers.pymol.PyMOLReader.getMapList (map, "names");
 for (var e, $e = map.entrySet ().iterator (); $e.hasNext () && ((e = $e.next ()) || true);) {
@@ -556,7 +555,7 @@ if (group3.equals (" ")) group3 = "UNK";
 var sym = J.adapter.readers.pymol.PyMOLReader.stringAt (a, 7);
 if (sym.equals ("A")) sym = "C";
 var isHetero = (J.adapter.readers.pymol.PyMOLReader.intAt (a, 19) != 0);
-var ichain = this.vwr.getChainID (chainID);
+var ichain = this.vwr.getChainID (chainID, true);
 var atom = this.processAtom ( new J.adapter.smarter.Atom (), name, altLoc.charAt (0), group3, ichain, seqNo, insCode.charAt (0), isHetero, sym);
 if (!this.filterPDBAtom (atom, this.fileAtomIndex++)) return null;
 icoord *= 3;

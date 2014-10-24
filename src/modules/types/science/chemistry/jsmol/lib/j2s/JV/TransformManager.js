@@ -182,7 +182,7 @@ function () {
 });
 c$.getTransformManager = Clazz.defineMethod (c$, "getTransformManager", 
 function (vwr, width, height, is4D) {
-var me = (is4D ? J.api.Interface.getInterface ("JV.TransformManager4D") :  new JV.TransformManager ());
+var me = (is4D ? J.api.Interface.getInterface ("JV.TransformManager4D", vwr, "tm") :  new JV.TransformManager ());
 me.vwr = vwr;
 me.setScreenParameters (width, height, true, false, true, true);
 return me;
@@ -326,7 +326,7 @@ this.isSpinInternal = false;
 this.isSpinFixed = true;
 this.isSpinSelected = (bsAtoms != null);
 this.setSpin (eval, true, endDegrees, null, null, bsAtoms, false);
-return false;
+return (endDegrees != 3.4028235E38);
 }var radians = endDegrees * 0.017453292;
 this.fixedRotationAxis.setVA (rotAxis, endDegrees);
 this.rotateAxisAngleRadiansFixed (radians, bsAtoms);
@@ -711,7 +711,6 @@ var pt = JU.P3.new3 (Clazz.doubleToInt (this.screenWidth / 2), Clazz.doubleToInt
 this.vwr.tm.unTransformPoint (pt, pt);
 pt.sub (this.fixedRotationCenter);
 ptCamera.add (pt);
-System.out.println ("TM no " + this.navigationOffset + " rpo " + this.referencePlaneOffset + " aa " + this.aperatureAngle + " sppa " + this.scalePixelsPerAngstrom + " vr " + this.visualRange + " sw/vr " + this.screenWidth / this.visualRange + " " + ptRef + " " + this.fixedRotationCenter);
 return [ptRef, ptCamera, this.fixedRotationCenter, JU.P3.new3 (this.cameraDistanceFromCenter, this.aperatureAngle, this.scalePixelsPerAngstrom)];
 });
 Clazz.defineMethod (c$, "setPerspectiveDepth", 
@@ -993,7 +992,7 @@ this.matrixTransform.rotate2 (vectorAngstroms, vectorTransformed);
 }, "JU.V3,JU.V3");
 Clazz.defineMethod (c$, "move", 
 function (eval, dRot, dZoom, dTrans, dSlab, floatSecondsTotal, fps) {
-this.movetoThread = J.api.Interface.getOption ("thread.MoveToThread");
+this.movetoThread = J.api.Interface.getOption ("thread.MoveToThread", this.vwr, "tm");
 this.movetoThread.setManager (this, this.vwr, [dRot, dTrans, [dZoom, dSlab, floatSecondsTotal, fps]]);
 if (floatSecondsTotal > 0) this.movetoThread.setEval (eval);
 this.movetoThread.run ();
@@ -1074,7 +1073,7 @@ this.vwr.moveUpdate (floatSecondsTotal);
 this.vwr.finalizeTransformParameters ();
 return;
 }try {
-if (this.movetoThread == null) this.movetoThread = J.api.Interface.getOption ("thread.MoveToThread");
+if (this.movetoThread == null) this.movetoThread = J.api.Interface.getOption ("thread.MoveToThread", this.vwr, "tm");
 var nSteps = this.movetoThread.setManager (this, this.vwr, [center, matrixEnd, navCenter, [floatSecondsTotal, zoom, xTrans, yTrans, newRotationRadius, pixelScale, navDepth, xNav, yNav, cameraDepth, cameraX, cameraY]]);
 if (nSteps <= 0 || this.vwr.g.waitForMoveTo) {
 if (nSteps > 0) this.movetoThread.setEval (eval);
@@ -1287,10 +1286,10 @@ this.spinOn = spinOn;
 this.vwr.g.setB ("_spinning", spinOn);
 if (spinOn) {
 if (this.spinThread == null) {
-this.spinThread = J.api.Interface.getOption ("thread.SpinThread");
+this.spinThread = J.api.Interface.getOption ("thread.SpinThread", this.vwr, "tm");
 this.spinThread.setManager (this, this.vwr, [Float.$valueOf (endDegrees), endPositions, dihedralList, bsAtoms, isGesture ? Boolean.TRUE : null]);
 this.spinIsGesture = isGesture;
-if (bsAtoms == null && dihedralList == null) {
+if (bsAtoms == null && dihedralList == null && (endDegrees == 3.4028235E38 || !this.vwr.g.waitForMoveTo)) {
 this.spinThread.start ();
 } else {
 this.spinThread.setEval (eval);
@@ -1311,7 +1310,7 @@ if (navOn) {
 if (this.navX == 0 && this.navY == 0 && this.navZ == 0) this.navZ = 1;
 if (this.navFps == 0) this.navFps = 10;
 if (this.spinThread == null) {
-this.spinThread = J.api.Interface.getOption ("thread.SpinThread");
+this.spinThread = J.api.Interface.getOption ("thread.SpinThread", this.vwr, "tm");
 this.spinThread.setManager (this, this.vwr, null);
 this.spinThread.start ();
 }} else if (wasOn) {
@@ -1335,7 +1334,7 @@ this.vibrationPeriod = Math.abs (period);
 this.vibrationPeriodMs = Clazz.floatToInt (this.vibrationPeriod * 1000);
 if (period > 0) return;
 period = -period;
-}this.setVibrationOn (period > 0 && this.vwr.modelGetLastVibrationIndex (this.vwr.am.cmi, 0) >= 0);
+}this.setVibrationOn (period > 0 && (this.vwr.ms.getLastVibrationVector (this.vwr.am.cmi, 0) >= 0));
 }, "~N");
 Clazz.defineMethod (c$, "setVibrationT", 
 function (t) {
@@ -1360,7 +1359,7 @@ this.vibrationOn = false;
 this.vibrationT.x = 0;
 return;
 }if (this.vibrationThread == null) {
-this.vibrationThread = J.api.Interface.getOption ("thread.VibrationThread");
+this.vibrationThread = J.api.Interface.getOption ("thread.VibrationThread", this.vwr, "tm");
 this.vibrationThread.setManager (this, this.vwr, null);
 this.vibrationThread.start ();
 }this.vibrationOn = true;
@@ -1647,7 +1646,7 @@ if (this.nav != null) this.nav.interrupt ();
 Clazz.defineMethod (c$, "getNav", 
  function () {
 if (this.nav != null) return true;
-this.nav = J.api.Interface.getOption ("navigate.Navigator");
+this.nav = J.api.Interface.getOption ("navigate.Navigator", this.vwr, "tm");
 if (this.nav == null) return false;
 this.nav.set (this, this.vwr);
 return true;

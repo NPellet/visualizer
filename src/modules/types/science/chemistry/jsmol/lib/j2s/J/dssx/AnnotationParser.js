@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.dssx");
-Clazz.load (["J.api.JmolAnnotationParser"], "J.dssx.AnnotationParser", ["java.lang.Boolean", "$.Character", "$.Float", "java.util.Hashtable", "JU.AU", "$.BS", "$.Lst", "$.P3", "$.PT", "$.Rdr", "$.SB", "JM.HBond", "JM.BasePair", "$.NucleicPolymer", "JS.SV", "JU.BSUtil", "$.Logger", "JV.JC"], function () {
+Clazz.load (["J.api.JmolAnnotationParser"], "J.dssx.AnnotationParser", ["java.lang.Boolean", "$.Float", "java.util.Hashtable", "JU.AU", "$.BS", "$.Lst", "$.P3", "$.PT", "$.Rdr", "$.SB", "JM.HBond", "JM.BasePair", "$.NucleicPolymer", "JS.SV", "JU.BSUtil", "$.Logger", "JV.JC"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.reader = null;
 this.line = null;
@@ -37,6 +37,7 @@ while (this.rd () != null) {
 if (this.line.startsWith ("List of")) {
 var n = JU.PT.parseInt (this.line.substring (8));
 if (n < 0 || this.line.endsWith ("files")) continue;
+if (this.line.indexOf ("lone WC") >= 0) this.line = JU.PT.rep (this.line, "lone WC", "isolated WC");
 this.addMessage (this.line);
 this.line = JU.PT.rep (JU.PT.trim (this.line, "s"), " interaction", "");
 var pt = "pair elix lice plet stem tack loop ulge tion ment otif pper turn bond file".indexOf (this.line.trim ().substring (this.line.length - 4));
@@ -289,15 +290,15 @@ turns.addLast (turn);
 Clazz.defineMethod (c$, "readPairs", 
  function (n) {
 var pairs;
-if (this.line.indexOf ("lone ") >= 0) {
+if (this.line.indexOf ("lone ") >= 0 || this.line.indexOf ("isolated ") >= 0) {
 this.rd ();
 this.skipHeader ();
-pairs = this.newList ("lonePairs");
+pairs = this.newList ("isolatedPairs");
 for (var i = 0; i < n; i++) {
 var tokens = JU.PT.getTokens (this.line);
 var data = this.htTemp.get (tokens[1] + tokens[2]);
 this.htTemp.put ("#" + this.line.substring (0, 5).trim (), data);
-data.put ("lonePair", Boolean.TRUE);
+data.put ("isolatedPair", Boolean.TRUE);
 pairs.addLast (data);
 this.rd ();
 }
@@ -489,7 +490,7 @@ return (nt.substring (nt.indexOf ("]") + 1));
 var chain = nt.substring (0, pt1);
 var pt = nt.length;
 var ch;
-while (Character.isDigit (ch = nt.charAt (--pt))) {
+while (JU.PT.isDigit (ch = nt.charAt (--pt))) {
 }
 var ptn = chain.indexOf ("@");
 if (ptn >= 0) chain = chain.substring (ptn + 1) + (withName ? "." + chain.substring (0, ptn) : "");
@@ -541,7 +542,7 @@ Clazz.defineMethod (c$, "setDSSRRes",
  function (vwr, res, bs, htChains) {
 bs.clearAll ();
 this.getDSSRAtoms (vwr, res, null, bs, htChains);
-var group = vwr.ms.at[bs.nextSetBit (0)].getGroup ();
+var group = vwr.ms.at[bs.nextSetBit (0)].group;
 (group.bioPolymer).isDssrSet = true;
 return group;
 }, "JV.Viewer,~S,JU.BS,java.util.Map");
@@ -595,7 +596,7 @@ var name = vwr.setLoadFormat ("=dssrModel/", '=', false);
 name = JU.PT.rep (name, "%20", " ");
 JU.Logger.info ("fetching " + name + "[pdb data]");
 var data = vwr.getPdbAtomData (bs, null);
-data = vwr.getFileAsString (name + data, false);
+data = vwr.getFileAsString3 (name + data, false, null);
 this.processDSSR (info,  new JU.Rdr (JU.Rdr.getBR (data)), null, null);
 } catch (e) {
 if (Clazz.exceptionOf (e, Exception)) {
@@ -647,6 +648,56 @@ return "outliers";
 }
 return null;
 }, "~N");
+Clazz.overrideMethod (c$, "catalogStructureUnits", 
+function (viewer, map0, modelAtomIndices, resMap, object, modelMap) {
+var note = "Use within(rna3d, TYPE) where TYPE is one of: ";
+var data = map0.getMap ();
+if (data == null) return null;
+try {
+map0.getMap ().put ("_map", JS.SV.newV (6, data));
+var list =  new JU.Lst ();
+var set = data.entrySet ();
+var sv;
+var map;
+for (var e, $e = set.iterator (); $e.hasNext () && ((e = $e.next ()) || true);) {
+sv = e.getValue ();
+var structures = sv.getList ();
+if (structures != null) {
+var key = e.getKey ();
+note += "\"" + key + "\" ";
+var svPath = JS.SV.newS (key);
+for (var j = structures.size (); --j >= 0; ) {
+var struc = structures.get (j);
+map = struc.getMap ();
+sv = map.get ("units");
+map.put ("_isres", JS.SV.vT);
+var units = (sv == null || sv.tok == 7 ? sv.getList () : sv.tok == 4 ?  new JU.Lst () : null);
+if (units != null) {
+if (sv.tok == 4) {
+var svl = JU.PT.split (sv.asString (), ",");
+for (var i = svl.length; --i >= 0; ) units.addLast (JS.SV.newS (svl[i].trim ()));
+
+}if (units.size () > 0) {
+var bsAtoms =  new JU.BS ();
+map.put ("_atoms", JS.SV.getVariable (bsAtoms));
+map.put ("_path", svPath);
+list.addLast (struc);
+for (var k = units.size (); --k >= 0; ) {
+this.catalogUnit (viewer, null, units.get (k).asString (), 0, bsAtoms, modelAtomIndices, resMap, null, modelMap);
+}
+}}}
+}}
+map0.getMap ().put ("_list", JS.SV.newV (7, list));
+} catch (e) {
+if (Clazz.exceptionOf (e, Exception)) {
+JU.Logger.info (e + " while cataloging structures");
+return null;
+} else {
+throw e;
+}
+}
+return note;
+}, "JV.Viewer,JS.SV,~A,java.util.Map,~O,java.util.Map");
 Clazz.overrideMethod (c$, "catalogValidations", 
 function (viewer, map0, modelAtomIndices, resMap, atomMap, modelMap) {
 var data = map0.getMap ();
@@ -804,21 +855,21 @@ _atoms.value = bs2;
 }, "JV.Viewer,java.util.Map,~N");
 Clazz.defineMethod (c$, "catalogUnit", 
  function (viewer, vals, unitID, val, bsAtoms, modelAtomIndices, resMap, atomMap, modelMap) {
-var s = JU.PT.split (unitID + "|||", "|");
+var s = JU.PT.split (unitID + (vals == null ? "||||" : "|||"), "|");
 if (s.length < 8 || s[1].length == 0 || s[2].length == 0 || s[3].length == 0 || s[4].length == 0) return false;
 var sm = (s[1].length == 0 ? "1" : s[1]);
 var m = (modelMap == null ? JU.PT.parseInt (sm) - 1 : -1);
 var im = (m >= 0 ? null : modelMap.get (sm));
 if (im != null) m = im.intValue ();
 if (m >= modelAtomIndices.length) return false;
-var res = s[1] + "_" + viewer.getChainID (s[2]) + "_" + s[4] + "_" + s[7].toLowerCase ();
+var res = s[1] + "_" + viewer.getChainID (s[2], true) + "_" + s[4] + "_" + s[7].toLowerCase ();
 var i0 = modelAtomIndices[m];
 var isRes = (atomMap == null || s[5].length == 0);
 if (isRes) {
 var a2 = resMap.get (res);
 if (a2 != null) for (var j = a2[1], j0 = a2[0]; --j >= j0; ) {
 bsAtoms.set (i0 + j);
-vals[m][j] += Math.abs (val);
+if (vals != null) vals[m][j] += Math.abs (val);
 }
 } else {
 if (s[5].charAt (0) == 'H') s[5] = this.getAttachedAtomForPDBH (s[3], s[5]);
@@ -827,12 +878,15 @@ var ia = atomMap.get (atom);
 if (ia != null) {
 var j = ia.intValue ();
 bsAtoms.set (i0 + j);
-vals[m][j] += Math.abs (val);
+if (vals != null) vals[m][j] += Math.abs (val);
 }}return isRes;
 }, "JV.Viewer,~A,~S,~N,JU.BS,~A,java.util.Map,java.util.Map,java.util.Map");
 Clazz.defineMethod (c$, "fixKeyDSSR", 
  function (key) {
 var s = key.toLowerCase ();
+var pt;
+while ((pt = s.indexOf ("lonepair")) >= 0) s = (key = key.substring (0, pt) + "isolatedPair" + key.substring (pt + 8)).toLowerCase ();
+
 if (s.indexOf ("pairs") < 0 && s.indexOf ("kissingloops") < 0 && s.indexOf ("linkedby") < 0 && s.indexOf ("multiplets") < 0 && s.indexOf ("singlestrand") < 0) key += ".basePairs";
 if (s.indexOf (".nt") < 0 && s.indexOf (".res") < 0 && s.indexOf ("[select res") < 0 && s.indexOf ("[select nt") < 0) key += ".res*";
 return key;
@@ -863,7 +917,7 @@ if (pt < 0 || pt + 1 == t.length) continue;
 var chain = t.substring (pt + 1);
 var bsChain = htChains.get (chain);
 try {
-if (bsChain == null) htChains.put (chain, bsChain = vwr.ms.getAtoms (1048609, Integer.$valueOf (vwr.getChainID (chain))));
+if (bsChain == null) htChains.put (chain, bsChain = vwr.ms.getAtoms (1048609, Integer.$valueOf (vwr.getChainID (chain, true))));
 var bsRes = vwr.ms.getAtoms (1095761939, Integer.$valueOf (t.substring (0, pt)));
 bsRes.and (bsChain);
 bs.or (bsRes);
@@ -878,13 +932,11 @@ throw e;
 Clazz.overrideMethod (c$, "getAtomBits", 
 function (vwr, key, dbObj, annotationCache, type, modelIndex, bsModel) {
 if (dbObj == null) return  new JU.BS ();
-var isDomains = (type == 1073741925);
-var isValidation = (type == 1073742189);
 var isDSSR = (type == 1073741916);
 var doCache = !key.contains ("NOCACHE");
 if (!doCache) {
 key = JU.PT.rep (key, "NOCACHE", "").trim ();
-}if (!isDomains && !isValidation) key = this.fixKeyDSSR (key);
+}if (isDSSR) key = this.fixKeyDSSR (key);
 var bs = (doCache ? annotationCache.get (key) : null);
 if (bs != null) return bs;
 bs =  new JU.BS ();

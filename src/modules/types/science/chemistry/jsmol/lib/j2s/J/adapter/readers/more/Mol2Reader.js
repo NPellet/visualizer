@@ -84,7 +84,7 @@ if (atom.sequenceNumber < this.lastSequenceNumber) {
 if (this.chainID == 90) this.chainID = 96;
 this.chainID++;
 }this.lastSequenceNumber = atom.sequenceNumber;
-this.setChainID (atom, String.fromCharCode (this.chainID));
+this.setChainID (atom, "" + String.fromCharCode (this.chainID));
 }if (tokens.length > 7) atom.group3 = tokens[7];
 if (tokens.length > 8) {
 atom.partialCharge = this.parseFloatStr (tokens[8]);

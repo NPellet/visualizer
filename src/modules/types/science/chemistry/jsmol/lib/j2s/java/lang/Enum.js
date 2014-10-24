@@ -1,4 +1,5 @@
-Clazz.load(null,"java.lang.Enum",["java.lang.CloneNotSupportedException","$.IllegalArgumentException","$.NullPointerException","java.security.AccessController","$.PrivilegedExceptionAction"],function(){
+// BH removed inner class 
+Clazz.load(null,"java.lang.Enum",["java.lang.CloneNotSupportedException","$.IllegalArgumentException","$.NullPointerException"],function(){
 c$=Clazz.decorateAsClass(function(){
 this.$name=null;
 this.$ordinal=0;
@@ -60,26 +61,21 @@ throw new IllegalArgumentException(("KA006"));
 },"Class,~S");
 c$.getValues=Clazz.defineMethod(c$,"getValues",
 function(enumType){
-try{
-var values=java.security.AccessController.doPrivileged(((Clazz.isClassDefined("Enum$1")?0:java.lang.Enum.$Enum$1$()),Clazz.innerTypeInstance(Enum$1,this,Clazz.cloneFinals("enumType",enumType))));
-return values.invoke(enumType,Clazz.castNullAs("Array"));
-}catch(e){
-if(Clazz.instanceOf(e,Exception)){
-return null;
-}else{
-throw e;
-}
-}
+return enumType.values();
 },"Class");
-c$.$Enum$1$=function(){
-Clazz.pu$h(self.c$);
-c$=Clazz.declareAnonymous(null,"Enum$1",null,java.security.PrivilegedExceptionAction);
-Clazz.overrideMethod(c$,"run",
-function(){
-var valsMethod=this.f$.enumType.getMethod("values",null);
-valsMethod.setAccessible(true);
-return valsMethod;
-});
-c$=Clazz.p0p();
-};
+
+//c$.$Enum$1$=function(){
+//Clazz.pu$h(self.c$);
+
+//c$=Clazz.declareAnonymous(null,"Enum$1",null,java.security.PrivilegedExceptionAction);
+//Clazz.overrideMethod(c$,"run",
+//function(){
+//var valsMethod=this.f$.enumType.getMethod("values",null);
+//valsMethod.setAccessible(true);
+//return valsMethod;
+//});
+//c$=Clazz.p0p();
+//};
+
+
 });

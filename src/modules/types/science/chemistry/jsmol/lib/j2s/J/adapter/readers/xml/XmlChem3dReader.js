@@ -76,7 +76,7 @@ voxelData[x][y][z] *= sum;
 }
 
 
-var vd = J.api.Interface.getOption ("jvxl.data.VolumeData");
+var vd = J.api.Interface.getOption ("jvxl.data.VolumeData", this.vwr, "file");
 vd.setVoxelCounts (nPointsX, nPointsY, nPointsZ);
 vd.setVolumetricVector (0, xStep, 0, 0);
 vd.setVolumetricVector (1, 0, yStep, 0);
