@@ -323,7 +323,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
             }
 
             if (!jpath || jpath.length === 0) {
-                return this.get(true);
+                return Promise.resolve(this);
             }
 
             jpath = jpath.slice();

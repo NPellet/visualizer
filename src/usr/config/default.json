@@ -40,6 +40,10 @@
             "name": "Decode Barcode(s)"
         },
         {
+            "file": "usr/filters/sdfParser",
+            "name": "Parse SDF files"
+        },
+        {
             "file": "usr/filters/encodeBarcode",
             "name": "Encode to Barcode"
         }
