@@ -44,6 +44,8 @@ define(function() {
 
         var labelsArray=[];
 
+        return molecules;
+
         return {
             molecules: molecules,
             labels: Object.keys(labels)
