@@ -16,6 +16,7 @@ define(function() {
         var molecules=[];
         var labels={};
 
+        var start=(new Date()).getTime();
 
         for (var i=0; i<sdfParts.length; i++) {
             var sdfPart=sdfParts[i];
@@ -29,26 +30,39 @@ define(function() {
                     var from=lines[0].indexOf("<");
                     var to=lines[0].indexOf(">");
                     var label=lines[0].substring(from+1,to);
-                    labels[label]=true;
+                    if (labels[label]) {
+                        labels[label]++;
+                    } else {
+                        labels[label]=1;
+                    }
                     for (var k=1; k<lines.length-1; k++) {
                         if (molecule[label]) {
                             molecule[label]+=crlf+lines[k];
                         } else {
                             molecule[label]=lines[k];
                         }
-
                     }
                 }
             }
         }
 
-        var labelsArray=[];
+        var statistics=[];
 
-        return molecules;
+        for (var key in labels) {
+            var statistic={
+                label: key,
+                number: labels[key]
+            }
+            statistics.push(statistic);
+        }
+
+        console.log((new Date()).getTime()-start);
+
 
         return {
             molecules: molecules,
-            labels: Object.keys(labels)
+            labels: Object.keys(labels),
+            statistics: statistics
         };
     }
 
