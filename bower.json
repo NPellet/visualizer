@@ -34,6 +34,7 @@
     "jsoneditor": "~3.1.1",
     "leaflet": "~0.7.3",
     "lodash": "~2.4.1",
+    "ml": "~0.0.4",
     "modernizr": "~2.8.3",
     "onde": "git@github.com:targos/onde.git",
     "papa-parse": "~3.1.2",
