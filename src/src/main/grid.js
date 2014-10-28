@@ -692,6 +692,16 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
             checkDimensions();
             switchToLayer(activeLayer);
         },
+        switchToLayer: function (name) {
+            if(definition.layers[name]) {
+                switchToLayer(name);
+            } else {
+                Debug.warn('Layer ' + name + ' is not defined');
+            }
+        },
+        getLayerNames: function () {
+            return Object.keys(definition.layers);
+        },
         addModule: addModule,
         addModuleFromJSON: addModuleFromJSON,
         checkDimensions: checkDimensions,
