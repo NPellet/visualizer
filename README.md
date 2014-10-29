@@ -8,4 +8,3 @@ You may now set constraints to forms by setting validation regular expressions. 
 
 Also don't forget that the type "float" also exists now. It sends a number back and not a string.
 
-
