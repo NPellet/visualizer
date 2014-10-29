@@ -329,7 +329,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
             }
 
             if (!jpath || jpath.length === 0) {
-                return this.get(true);
+                return Promise.resolve(this);
             }
 
             jpath = jpath.slice();
@@ -349,75 +349,69 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
     };
 
 	var trace = {
-		value: function( jpath, constructor ) {
+		value: function (jpath) {
 
-			if (jpath && jpath.split) { // Old version
+			if (jpath && jpath.split) {
 				jpath = jpath.split('.');
 				jpath.shift();
 			}
 
-			if ( ! jpath || jpath.length === 0 ) {
+			if (!jpath || jpath.length === 0) {
 				return Promise.resolve(this);
 			}
-			
+
 			jpath = jpath.slice();
 
-			var el = jpath.shift(); // Gets the current element and removes it from the array
+			var el = jpath.shift();
 			var self = this;
 
-			var elementType = jpath.length == 0 ? constructor : ( typeof el == "number" ? DataArray : DataObject );
-
-			return this.get( el, true, elementType ).then(function( subEl ) {
-				// Perform check if anything...
-				self.get()[ el ] = DataObject.check( subEl );
-
-				if( subEl && subEl.linkToParent ) {
-					subEl.linkToParent(self, el);
+			return this.get(el, true).then(function (subEl) {
+				if (typeof subEl !== 'undefined') {
+					self.get()[el] = DataObject.check(subEl, true);
+					if (subEl && subEl.linkToParent) {
+						subEl.linkToParent(self, el);
+					}
+					if (!subEl || jpath.length === 0) {
+						return subEl;
+					}
+					return subEl.trace(jpath);
 				}
-
-				if (!subEl || (jpath.length === 0)) {
-					return subEl;
-				}
-
-				return subEl.trace( jpath, constructor );
+				return subEl;
 			});
 		}
 	};
 
-
 	var traceSync = {
-		value: function( jpath, constructor ) {
+		value: function (jpath) {
 
-			if (jpath && jpath.split) { // Old version
+			if (jpath && jpath.split) {
 				jpath = jpath.split('.');
 				jpath.shift();
 			}
 
-			if ( ! jpath || jpath.length === 0 ) {
+			if (!jpath || jpath.length === 0) {
 				return this;
 			}
-			
+
 			jpath = jpath.slice();
 
-			var el = jpath.shift(); // Gets the current element and removes it from the array
-			var self = this;
+			var el = jpath.shift();
 
-			var elementType = jpath.length == 0 ? constructor : ( typeof el == "number" ? DataArray : DataObject );
+			var subEl = this.get(el, false);
 
-			var subEl = this.get( el, false, elementType );
-
-			// Perform check if anything...
-			self.get()[ el ] = DataObject.check( subEl );
-
-			if( subEl && subEl.linkToParent ) {
-				subEl.linkToParent(self, el);
+			if (typeof subEl !== 'undefined') {
+				this.get()[el] = DataObject.check(subEl, true);
+				if (subEl && subEl.linkToParent) {
+					subEl.linkToParent(this, el);
+				}
+				if (!subEl || (jpath.length === 0)) {
+					return subEl;
+				}
+				return subEl.traceSync(jpath);
 			}
 
-			if (!subEl || (jpath.length === 0)) {
-				return subEl;
-			}
+			return subEl;
 
-			return subEl.traceSync( jpath, constructor );
 		}
 	};
 

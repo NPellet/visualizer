@@ -1,0 +1,40 @@
+{
+  "name": "ml",
+  "version": "0.0.5",
+  "main": [
+    "dist/ml.js",
+    "dist/ml.min.js"
+  ],
+  "homepage": "https://github.com/mljs/ml",
+  "authors": [
+    "Michaël Zasso"
+  ],
+  "description": "Machine learning tools",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "machine",
+    "learning",
+    "data",
+    "mining",
+    "datamining"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "node_modules",
+    "gulpfile.js",
+    "index.js"
+  ],
+  "_release": "0.0.5",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.5",
+    "commit": "5b903f63631f3881e766afc67f4af3b2f9ba688f"
+  },
+  "_source": "git://github.com/mljs/ml.git",
+  "_target": "~0.0.4",
+  "_originalSource": "ml"
+}
