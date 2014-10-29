@@ -287,7 +287,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-ftp');
 
     var path = require('path');
-    var $ = require('jQuery');
+    var extend = require('extend');
 
     grunt.registerTask('upload', [ 'ftp' ]);
 
@@ -594,9 +594,9 @@ module.exports = function (grunt) {
                     console.log(typeof cfg.modules[ i ]);
                     console.log(cfg.modules[ i ]);
                     if (typeof cfg.modules[ i ] == 'object') {
-                        $.extend(true, modulesFinal, oldLoadFile(cfg.modules[ i ]));
+                        extend(true, modulesFinal, oldLoadFile(cfg.modules[ i ]));
                     } else {
-                        $.extend(true, modulesFinal, oldLoadFile(cfg.modules[ i ]));
+                        extend(true, modulesFinal, oldLoadFile(cfg.modules[ i ]));
                         //        console.log( oldLoadFile( './src/' + cfg.modules[ i ] ) );
                         //       console.log( "___" );
                     }
@@ -613,7 +613,7 @@ module.exports = function (grunt) {
                 }
                 modulesFinal.folders = {};
                 for (var i = 0; i < list.folders.length; i++) {
-                    $.extend(true, modulesFinal, loadFile(getRealPath(list.folders[i])));
+                    extend(true, modulesFinal, loadFile(getRealPath(list.folders[i])));
                 }
             }
             else {
