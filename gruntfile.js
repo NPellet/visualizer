@@ -1,8 +1,11 @@
 module.exports = function (grunt) {
 
-    var walk = require('walk');
-    var fs = require('fs');
-    var _ = require('underscore');
+    var walk = require('walk'),
+        fs = require('fs'),
+        _ = require('underscore'),
+        mkpath = require('mkpath'),
+        path = require('path'),
+        extend = require('extend');
 
     var usrPath = grunt.option('usr') || './src/usr';
 
@@ -285,9 +288,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-text-replace');
     grunt.loadNpmTasks('grunt-rename');
     grunt.loadNpmTasks('grunt-ftp');
-
-    var path = require('path');
-    var extend = require('extend');
 
     grunt.registerTask('upload', [ 'ftp' ]);
 
@@ -633,8 +633,6 @@ module.exports = function (grunt) {
 
         //fs.writeFileSync( './build/modules.json', JSON.stringify( jsonStructure, false, '\t' ) );
         //cfg.modules = jsonStructure;//'./modules.json';
-
-        var mkpath = require('mkpath');
 
         mkpath.sync('./build/modules/types/');
         fs.writeFileSync('./build/modules/types/folder.json', JSON.stringify(cfg.modules));
