@@ -91,6 +91,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 				return (currentColSort.asc ? 1 : -1) * ( self.jpaths[ jpaths[ jpathId ].jpath ]( a ) > self.jpaths[ jpaths[ jpathId ].jpath ]( b ) ? 1 : -1 );
 	 			} );
 
+				self.module.model.dataTriggerChange(data);
 	 			self.blank.list.call( self );
 	 			self.update.list.call( self, data );
 	 		});
