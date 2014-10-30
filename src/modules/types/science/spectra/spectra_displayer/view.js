@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/util/datatraversing', 'src/util/api', 'src/util/util', 'src/util/debug'], function (Default, Graph, DataTraversing, API, Util, Debug) {
+define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/util/datatraversing', 'src/util/api', 'src/util/util'], function (Default, Graph, DataTraversing, API, Util) {
 
     function View() {
     }
@@ -9,10 +9,9 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
         init: function () {
             this.series = {};
-            this.colorvars = [];
+            this.annotations = {};
             this.dom = $('<div />');
             this.zones = {};
-            this._currentHighlights = { };
             this.module.getDomContent().html(this.dom);
             this.seriesActions = [ ];
 
@@ -27,7 +26,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
             var self = this;
 
-            var prom = new Promise(function (resolve, reject) {
+            var prom = new Promise(function (resolve) {
 
                 var cfg = self.module.getConfiguration.bind(self.module),
                     cfgCheckbox = self.module.getConfigurationCheckbox.bind(self.module),
@@ -234,7 +233,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
         doZone: function (varname, zone, value, color) {
             if (value && !zone[2]) {
 
-                var serie = this.series[varname][0];
                 var rect = this.graph.makeShape({
                     type: 'rect',
                     pos: {
@@ -368,7 +366,12 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             chart: function (varName) {
 
                 this.removeSerie(varName);
+            },
+
+            annotations: function (varName) {
+                this.removeAnnotations(varName);
             }
+
         },
 
 
@@ -541,10 +544,46 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 this.redraw();
             },
 
-            annotations: function (value) {
+            annotations: function (value, varName) {
                 API.killHighlight(this.module.getId());
-                this.annotations = value.get();
-                this.resetAnnotations();
+                this.annotations[varName] = this.annotations[varName] || [];
+                this.removeAnnotations(varName);
+                var annotations = value.get();
+                var i = 0, l = annotations.length;
+                var self = this;
+                for (; i < l; i++) {
+                    (function (i) {
+                        var annotation = annotations[i]
+                        var shape = self.graph.newShape(annotation);
+
+                        shape.then(function (shape) {
+                            self.annotations[varName][i] = shape;
+                            shape.setSelectable(false);
+                            shape.setMovable(false);
+//TODO annotation.onChange
+//                Debug.debug('annotation.onChange is disabled, need to be fixed');
+//                annotation.onChange( annotation, function( value ) {
+//
+//                 shape.draw();
+//                 shape.redraw();
+//
+//                 }, self.module.getId() );
+//
+                            API.listenHighlight(annotation, function (onOff) {
+                                if (onOff) {
+                                    shape.highlight({
+                                        fill: 'black'
+                                    });
+                                } else {
+                                    shape.unHighlight();
+                                }
+                            }, false, self.module.getId());
+
+                            shape.draw();
+                            shape.redraw();
+                        });
+                    })(i);
+                }
             },
 
             jcamp: function (moduleValue, varname) {
@@ -624,7 +663,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                             }, true, self.module.getId() + varname);
                         }
                         self.redraw();
-                        self.resetAnnotations();
                     });
                 });
             },
@@ -670,59 +708,14 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
         },
 
-        resetAnnotations: function () {
-            if (!this.annotations) {
-                return;
-            }
-            if (this.annotationShapes) {
-                for(i = 0; i < this.annotationShapes.length; i++) {
-                    this.annotationShapes[i].kill();
+        removeAnnotations: function (varName) {
+            if (this.annotations[varName]) {
+                for(var i = 0; i < this.annotations[varName].length; i++) {
+                    this.annotations[varName].kill();
                 }
             }
-            this.annotationShapes = [];
-            var i = 0, l = this.annotations.length;
-            for (; i < l; i++) {
-                this.doAnnotation(this.annotations[i]);
-            }
+            this.annotations[varName] = [];
         },
-
-        doAnnotation: function (annotation) {
-            if (!this.graph) {
-                return;
-            }
-
-            var self = this,
-                shape = this.graph.newShape(annotation);
-
-            shape.then(function (shape) {
-                self.annotationShapes.push(shape);
-                shape.setSelectable(false);
-                shape.setMovable(false);
-//TODO annotation.onChange
-//                Debug.debug('annotation.onChange is disabled, need to be fixed');
-//                annotation.onChange( annotation, function( value ) {
-//
-//                 shape.draw();
-//                 shape.redraw();
-//
-//                 }, self.module.getId() );
-//
-                API.listenHighlight(annotation, function (onOff) {
-                    if (onOff) {
-                        shape.highlight({
-                            fill:'black'
-                        });
-                    } else {
-                        shape.unHighlight();
-                    }
-                }, false, self.module.getId());
-
-                shape.draw();
-                shape.redraw();
-            });
-
-        },
-
 
         removeSerie: function (serieName) {
             if (this.series[serieName]) {
