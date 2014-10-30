@@ -488,7 +488,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
                     res.linkToParent(self, el);
                     res.triggerChange(false, triggerParams);
                 } else {
-                    self.triggerChange(false, triggerParams);
+                    self.triggerChange(false, triggerParams, el, res);
                 }
                 return Promise.resolve();
             }
@@ -577,7 +577,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 	// In order to prevent looping, the trigger and bind change should only be called via the module model.
 
 	var triggerChange = {
-		value: function( noBubble, args ) {
+		value: function( noBubble, args, jpath, target ) {
 
             if(!Array.isArray(args)) {
                 if(args == undefined) {
@@ -587,10 +587,17 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
                 }
             }
 
-            args.unshift({
-                target: this,
-                jpath: []
-            });
+			if ( jpath) {
+				args.unshift({
+					target: target,
+					jpath: [jpath]
+				});
+			} else {
+				args.unshift({
+					target: this,
+					jpath: []
+				});
+			}
 
 			if( this._dataChange ) {
 
