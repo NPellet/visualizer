@@ -203,9 +203,8 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             if( ! this.graph ) {
                 return;
             }
-
             this.graph.resize( this.width, this.height );
-            this.graph.redraw();
+            this.graph.redraw(true);
         },
 
         redraw: function (forceReacalculateAxis) {
@@ -214,17 +213,20 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
             if (forceReacalculateAxis) {
                 this.graph.redraw();
+                this.graph.autoscaleAxes();
             } else if (cfg('fullOut') == "none") {
                 this.graph.redraw(true, true);
             } else if (cfg('fullOut') == "xAxis") {
                 this.graph.redraw(false, true);
+                this.xAxis.setMinMaxToFitSeries();
             } else if (cfg('fullOut') == "yAxis") {
                 this.graph.redraw(true, false);
+                this.yAxis.setMinMaxToFitSeries();
             } else {
                 this.graph.redraw();
+                this.graph.autoscaleAxes();
             }
 
-            this.graph.autoscaleAxes();
             this.graph.drawSeries();
 
         },
