@@ -9,6 +9,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
         init: function () {
             this.series = {};
+            this.seriesDrawn = {};
             this.annotations = {};
             this.dom = $('<div />');
             this.zones = {};
@@ -206,19 +207,35 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             this.redraw(true);
         },
 
-        redraw: function (forceReacalculateAxis) {
+        shouldAutoscale: function (varName) {
+            if (this.seriesDrawn[varName]) {
+                return false;
+            } else {
+                this.seriesDrawn[varName] = true;
+                return true;
+            }
+        },
 
-            var cfg = $.proxy(this.module.getConfiguration, this.module);
+        redraw: function (forceReacalculateAxis, varName) {
+
+            var fullOut = this.module.getConfiguration('fullOut');
+            if (varName && fullOut === 'once') {
+                if (!this.shouldAutoscale(varName)) {
+                    fullOut = 'none';
+                } else {
+                    fullOut = 'both';
+                }
+            }
 
             if (forceReacalculateAxis) {
                 this.graph.redraw();
                 this.graph.autoscaleAxes();
-            } else if (cfg('fullOut') == "none") {
+            } else if (fullOut == "none") {
                 this.graph.redraw(true, true);
-            } else if (cfg('fullOut') == "xAxis") {
+            } else if (fullOut == "xAxis") {
                 this.graph.redraw(false, true);
                 this.xAxis.setMinMaxToFitSeries();
-            } else if (cfg('fullOut') == "yAxis") {
+            } else if (fullOut == "yAxis") {
                 this.graph.redraw(true, false);
                 this.yAxis.setMinMaxToFitSeries();
             } else {
@@ -436,7 +453,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
              this.series[varname].push(serie);
              }
 
-             this.redraw();
+             this.redraw(false, varname);
              },*/
 
             chart: function (moduleValue, varname) {
@@ -492,7 +509,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     this.series[varname].push(serie);
                 }
 
-                this.redraw();
+                this.redraw(false, varname);
             },
 
             xyArray: function (moduleValue, varname) {
@@ -514,7 +531,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 this.setSerieParameters(serie, varname);
 
                 this.series[varname].push(serie);
-                this.redraw();
+                this.redraw(false, varname);
             },
 
 // in fact it is a Y array ...
@@ -541,7 +558,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 serie.autoAxis();
                 this.setSerieParameters(serie, varname);
                 this.series[ varname ].push(serie);
-                this.redraw();
+                this.redraw(false, varname);
             },
 
             annotations: function (value, varName) {
@@ -662,7 +679,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                                 }
                             }, true, self.module.getId() + varname);
                         }
-                        self.redraw();
+                        self.redraw(false, varname);
                     });
                 });
             },

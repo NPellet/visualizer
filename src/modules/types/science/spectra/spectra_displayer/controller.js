@@ -325,7 +325,8 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
                                 {key: 'none', title: 'Never'},
                                 {key: 'xAxis', title: 'X axis'},
                                 {key: 'yAxis', title: 'Y axis'},
-                                {key: 'both', title: 'Both axis'}
+                                {key: 'both', title: 'Both axis'},
+                                {key: 'once', title: 'Once per input variable'}
                             ],
                             default: 'both'
                         },
