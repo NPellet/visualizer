@@ -10,8 +10,6 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
 
 			this.module.model = this;
 			this.data = new DataObject();
-			
-			this.checkBlank = {};
 		
 			this.triggerChangeCallbacksByRels = {};
 			this.mapVars();
@@ -107,10 +105,7 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
 			}
 			
 			this.module.onReady().then( function() {
-				if(!self.checkBlank[varName]) {
 					self.module.blankVariable( varName );
-					self.checkBlank[varName] = true;
-				}
 			});
 
 			// Show loading state if it takes more than 500ms to get the data
@@ -183,16 +178,10 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
 									resolve( varValue );
 								}
 							} ).then( function( varValue ) {
-									
-						//		if(self.checkBlank[varName]) {
-									
-									self.checkBlank[varName] = false;
 								
 									self.data[ vars[ j ].rel ] = varValue;
 									self.removeAllChangeListeners( vars[ j ].rel );
 									self.module.view.update[ vars[ j ].rel ].call( self.module.view, self.data[ vars[ j ].rel ], varName );
-									
-						//		}
 
 							}, function(err) {
 								Debug.error("Error while filtering the data", err );
