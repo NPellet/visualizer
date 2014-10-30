@@ -204,7 +204,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 return;
             }
             this.graph.resize( this.width, this.height );
-            this.graph.redraw(true);
+            this.redraw(true);
         },
 
         redraw: function (forceReacalculateAxis) {
