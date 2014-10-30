@@ -280,7 +280,7 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 				var length = Math.min(5, element.length );
 
 				for(var i = 0; i < length; i++) {
-					structure.elements[ i ] = this.getStructureFromElement( element.get( i, false, true ) );
+					structure.elements[ i ] = this.getStructureFromElement( element.get( i, false ) );
 				}
 
 			} else if( type =="object" ) {
@@ -290,7 +290,7 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 
 				for( var i in element ) {
 
-					structure.elements[ i ] = this.getStructureFromElement( element.get( i, false, true ) );
+					structure.elements[ i ] = this.getStructureFromElement( element.get( i, false ) );
 				}
 
 			} else if( type && Structures[ type ] && ( element.value || element.url ) ) {
