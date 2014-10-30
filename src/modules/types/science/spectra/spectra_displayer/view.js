@@ -69,7 +69,9 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                             zoomOptions.zoomMode = 'xy';
                         }
                         options.plugins['graph.plugin.zoom'] = zoomOptions;
+                        options.plugins['graph.plugin.drag'] = {};
                         options.pluginAction['graph.plugin.zoom'] = {shift: false, ctrl: false};
+                        options.pluginAction['graph.plugin.drag'] = {shift: true, ctrl: false};
                         options.dblclick = {
                             type: 'plugin',
                             plugin: 'graph.plugin.zoom',
