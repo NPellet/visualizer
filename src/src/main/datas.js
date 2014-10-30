@@ -788,8 +788,12 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 	};
 	
 	var getChildNative = {
-		value: function() {
-			return Promise.resolve( this );
+		value: function(jpath) {
+			if (!jpath || jpath.length === 0) {
+				return Promise.resolve(this);
+			} else {
+				return Promise.resolve();
+			}
 		}
 	};
 	
