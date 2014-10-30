@@ -148,6 +148,10 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 	blank: {
 
 	 		list: function() {
+
+				if (this.domBody) {
+					this.domBody.empty();
+				}
 				
 				if( ! this.module.data ) {
 	 				return;
