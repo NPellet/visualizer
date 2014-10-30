@@ -1113,6 +1113,8 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug, Variables ) {
 						module.view.unload();
 					}
 
+					module.resetReady();
+
                     module.controller.init();
 
 					module.view.init();
@@ -1135,6 +1137,19 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug, Variables ) {
 					form.inDom();
 				});
 			});
+		},
+
+
+		resetReady: function () {
+			var module = this;
+			module.viewReady = new Promise( function( res ) {
+				module._resolveView = res;
+			});
+
+			module.controllerReady = new Promise( function( res ) {
+				module._resolveController = res;
+			});
+			module._onReady = Promise.all( [ module.viewReady, module.controllerReady ] );
 		},
 
 
