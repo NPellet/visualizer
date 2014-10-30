@@ -99,6 +99,19 @@ define(['modules/default/defaultcontroller'], function (Default) {
                                 {title: '2px', key: '2'}
                             ],
                             'default': 1
+                        },
+                        highlightColor: {
+                            type: 'combo',
+                            title: 'Atom highlight color',
+                            options : [
+                                {title: 'red', key: '1'},
+                                {title: 'orange', key: '2'},
+                                {title: 'yellow', key: '3'},
+                                {title: 'cyan', key: '4'},
+                                {title: 'blue', key: '5'},
+                                {title: 'purple', key: '6'}
+                            ],
+                            'default': '3'
                         }
                     }
                 }
@@ -115,7 +128,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype.configAliases = {
         prefs: [ 'groups', 'group', 0, 'prefs', 0 ],
         labelsize: [ 'groups', 'group', 0, 'labelsize', 0 ],
-        bondwidth: [ 'groups', 'group', 0, 'bondwidth', 0 ]
+        bondwidth: [ 'groups', 'group', 0, 'bondwidth', 0 ],
+        highlightColor: [ 'groups', 'group', 0, 'highlightColor', 0 ]
     };
 
     return Controller;

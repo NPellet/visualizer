@@ -24,6 +24,10 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
             return this.module.getConfiguration('prefs').join();
         },
 
+        getHighlightColor: function () {
+            return this.module.getConfiguration('highlightColor', '3');
+        },
+
         onResize: function () {
             this.dom.attr('width', this.width);
             this.dom.attr('height', this.height);

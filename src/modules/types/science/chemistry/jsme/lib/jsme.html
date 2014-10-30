@@ -46,6 +46,11 @@
 			jsmeApplet.reset();
 		}
 
+		var highlightColor;
+		this.setHighlightColor = function (color) {
+			highlightColor = color;
+		};
+
 		this.setHighlight = function(atoms, onOff) {
 			var molIndex=1;
 
@@ -57,7 +62,7 @@
 				var highlight=[];
 				for (var i=0; i<atoms.length; i++) {
 					highlight.push(atoms[i]+1);
-					highlight.push(3);
+					highlight.push(highlightColor);
 				}
 				jsmeApplet.setAtomBackgroundColors(molIndex,highlight.join(","))	
 			}
@@ -79,7 +84,7 @@
 
 			deferred.done(function() {
 				jsmeApplet.options(window.view.getPrefs());
-
+				setHighlightColor(window.view.getHighlightColor());
 
 				jsmeApplet.setMolecularAreaLineWidth(parseFloat(window.view.module.getConfiguration( 'bondwidth' )));
 				jsmeApplet.setAtomMolecularAreaFontSize(parseFloat(window.view.module.getConfiguration( 'labelsize' )));
