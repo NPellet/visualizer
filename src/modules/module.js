@@ -1316,7 +1316,12 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug, Variables ) {
 				delete this.definition.dataSource;
 			}
 
-			return this.definition.vars_in = this.definition.vars_in || new DataArray();
+			this.definition.vars_in = this.definition.vars_in || new DataArray();
+
+			return this.definition.vars_in.filter(function (val) {
+				return val ? (val.name && val.rel ? true : false) : false;
+			});
+
 		},
 
 
