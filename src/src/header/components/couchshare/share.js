@@ -6,8 +6,9 @@ define(["lib/webtoolkit/base64", "src/util/versioning", "lib/couchdb/jquery.couc
         var tinyPrefix = (options.tinyUrl || window.location.origin+"/x/_design/x/_show/x").replace(/\/$/,"")+"/";
         $.couch.urlPrefix = urlPrefix;
         var db = $.couch.db(database);
-        
-        var encodedView = Base64.encode(Versioning.getViewJSON());
+
+        var view = Versioning.getView();
+        var encodedView = Base64.encode(JSON.stringify(view));
         var encodedData = Base64.encode(Versioning.getDataJSON());
         
         var docid = guid();
@@ -24,6 +25,7 @@ define(["lib/webtoolkit/base64", "src/util/versioning", "lib/couchdb/jquery.couc
                     "data": encodedData
                 }
             },
+            version: view.version,
             visualizer: window.location.origin+window.location.pathname,
             couchdb: urlPrefix+"/"+database+"/"
         };
