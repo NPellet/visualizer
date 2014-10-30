@@ -1,3 +1,12 @@
+2.6.0 / HEAD
+===================
+
+* View sharing (and feedback) : version is exported and redirection is done to lactame.com. It is now possible to share a view on localhost / private network !
+* spectra_displayer : 
+ * added shift+drag to move the spectra
+ * added option to autoscale once per input variable
+* jsme :
+ * added highlight color option
 
 2.6.0-0 / 2014-10-29
 ===================
