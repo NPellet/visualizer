@@ -711,7 +711,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
         removeAnnotations: function (varName) {
             if (this.annotations[varName]) {
                 for(var i = 0; i < this.annotations[varName].length; i++) {
-                    this.annotations[varName].kill();
+                    this.annotations[varName][i].kill();
                 }
             }
             this.annotations[varName] = [];
