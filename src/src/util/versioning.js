@@ -2,7 +2,7 @@
 
 define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables'], function(VersionHandler, Debug, Variables) {
 
-	var version = '2.6.0-0';
+	var version = '2.6.0-1';
 
     if (!semver(version)) {
         throw new Error('Version number is invalid: ' + version);
