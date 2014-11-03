@@ -94,7 +94,8 @@ module.exports = function (grunt) {
                             './jsgraph/dist/jsgraph.js',
                             './jqueryui-touch-punch/jquery.ui.touch-punch.min.js',
                             './jcampconverter/src/jcampconverter.js',
-                            './jsbarcode/jsBarcode.min.js'
+                            './jsbarcode/jsBarcode.min.js',
+                            './slickgrid/**'
                         ],
 
                         dest: './build/components/'
