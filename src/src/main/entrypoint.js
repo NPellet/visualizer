@@ -14,7 +14,8 @@ define(['jquery',
     'src/util/cron',
     'src/util/pouchtovar',
     'src/util/debug',
-    'src/util/browser'
+    'src/util/browser',
+    'src/util/util'
 ], function ($,
              Header,
              Repository,
@@ -29,7 +30,8 @@ define(['jquery',
              Cron,
              PouchDBUtil,
              Debug,
-             browser) {
+             browser,
+             Util) {
 
     var _viewLoaded, _dataLoaded;
 
@@ -781,12 +783,32 @@ define(['jquery',
 
             // Sets the header
             function doInit(errorMessage) {
+
+                var visualizerDiv = $('#ci-visualizer');
+
                 if (errorMessage) {
-                    $('#ci-visualizer').append('<div id="browser-compatibility">' + errorMessage + '</div>');
+                    visualizerDiv.append('<div id="browser-compatibility">' + errorMessage + '</div>');
                     return;
                 }
 
-                var configJson = require.toUrl(urls['config'] || $('#ci-visualizer').attr('config') || 'usr/config/default.json');
+                var css = [
+                    'css/main.css',
+                    'components/colors/css/colors.min.css',
+                    'components/Aristo-jQuery-UI-Theme/css/Aristo/Aristo.css',
+                    'lib/forms/style.css',
+                    'components/fancytree/dist/skin-lion/ui.fancytree.css',
+                    'components/jqgrid_edit/css/ui.jqgrid.css',
+                    'css/overwrite_styles.css'
+                ];
+
+                css.forEach(function (css) {
+                    Util.loadCss(css);
+                });
+
+
+                visualizerDiv.html('<table id="viewport" cellpadding="0" cellspacing="0">\n    <tr>\n        <td id="ci-center">\n            <div id="modules-grid">\n                <div id="ci-dialog"></div>\n            </div>\n        </td>\n    </tr>\n</table>');
+
+                var configJson = require.toUrl(urls['config'] || visualizerDiv.attr('config') || 'usr/config/default.json');
 
                 $.getJSON(configJson, {}, function (cfgJson) {
 

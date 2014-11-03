@@ -224,6 +224,8 @@ define(['src/util/debug'], function (Debug) {
         },
         loadCss: function (url) {
 
+            url = require.toUrl(url);
+
             this.loadedCss = this.loadedCss || {};
 
             if (this.loadedCss[url]) { // element is already loaded
