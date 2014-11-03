@@ -1,5 +1,8 @@
-2.6.0 / HEAD
+2.7.0 / 2014-11-03
 ===================
+
+* jsmol / jsme : change communication with iframe to allow cross-origin loading
+* core: load main css and js files in entry point. Now only two lines are necessary to boot the visualizer
 
 2.6.0-1 / 2014-10-31
 ===================
