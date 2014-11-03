@@ -14,18 +14,10 @@
 	<div id="appletContainer"></div>
 
 	<script type="text/javascript">
+
 		var jsmeApplet;
-		var deferred=$.Deferred();
 		var previousHighlight;
-
-		this.setController = function(controller) {
-			this.controller = controller;
-		}
-
-		this.setView = function(view) {
-			this.view = view;
-			deferred.resolve();
-		}
+		var def = $.Deferred();
 
 		this.setMolFile = function(mol) {
 			jsmeApplet.readMolFile(mol);
@@ -81,26 +73,63 @@
 			//var __self = window;
 			jsmeApplet = new JSApplet.JSME("appletContainer", w + "px", h + "px");
 
+			def.done(function(message) {
+				jsmeApplet.options(message.prefs);
+				setHighlightColor(message.highlightColor);
+				jsmeApplet.setMolecularAreaLineWidth(message.bondwidth);
+				jsmeApplet.setAtomMolecularAreaFontSize(message.labelsize);
+				doPostMessage('ready');
+			});
 
-			deferred.done(function() {
-				jsmeApplet.options(window.view.getPrefs());
-				setHighlightColor(window.view.getHighlightColor());
-
-				jsmeApplet.setMolecularAreaLineWidth(parseFloat(window.view.module.getConfiguration( 'bondwidth' )));
-				jsmeApplet.setAtomMolecularAreaFontSize(parseFloat(window.view.module.getConfiguration( 'labelsize' )));
-
-				self.view.resolveReady();
-			})
-
-			jsmeApplet.setNotifyStructuralChangeJSfunction('(function() { var mol = this.jsmeApplet.molFile(); var jme = this.jsmeApplet.jmeFile(); var smiles = this.jsmeApplet.smiles(); this.controller.onChange(mol, smiles, jme); })');
+			jsmeApplet.setNotifyStructuralChangeJSfunction('(function() { var mol = this.jsmeApplet.molFile(); var jme = this.jsmeApplet.jmeFile(); var smiles = this.jsmeApplet.smiles(); this.doPostMessage("onChange", {mol: mol, smiles: smiles, jme: jme}); })');
 
 			// The notifyAtomHighLightJSfunction will receive two arguments: the molecule index and the atom index, both start at 1
-			jsmeApplet.setNotifyAtomHighLightChangeJSfunction('(function(mol,atom) {this.view._doHighlight(mol,atom);})');
-
-
-			
+			jsmeApplet.setNotifyAtomHighLightChangeJSfunction('(function(mol,atom) {this.doPostMessage("doHighlight", {mol: mol, atom:atom});})');
 
 		}
+
+		var parent;
+
+		this.doPostMessage = function (type, message) {
+			if (parent) {
+				parent.window.postMessage(JSON.stringify({
+					type: type,
+					message: message,
+					id: parent.id
+				}), '*');
+			}
+		};
+
+		window.addEventListener('message', function (event) {
+
+			var message = JSON.parse(event.data);
+
+			switch(message.type) {
+				case 'init':
+					parent = {
+						window: event.source,
+						id: message.message.id
+					};
+					def.resolve(message.message);
+					break;
+				case 'clear':
+					this.clear();
+					break;
+				case 'setMolFile':
+					setMolFile(message.message);
+					break;
+				case 'setJme':
+					setJmeFile(message.message);
+					break;
+				case 'setHighlight':
+					setHighlight(message.message.atoms, message.message.onOff);
+					break;
+				default:
+					console.error('Message type not handled: ', message.type);
+					break;
+			}
+
+		});
 	</script>
 
 

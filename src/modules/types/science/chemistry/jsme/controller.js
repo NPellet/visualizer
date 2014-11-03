@@ -132,6 +132,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
         highlightColor: [ 'groups', 'group', 0, 'highlightColor', 0 ]
     };
 
+    Controller.prototype.onRemove = function () {
+        this.module.view.remove(this.module.getId());
+    };
+
     return Controller;
 
 });

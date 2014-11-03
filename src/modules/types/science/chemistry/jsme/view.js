@@ -5,19 +5,55 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
     function View() {
     }
 
+    var views = {};
+
+    window.addEventListener('message', function (event) {
+
+        var message = JSON.parse(event.data);
+        var id = message.id;
+        if (!views[id]) {
+            console.error('No view with ID '+ id);
+            return;
+        }
+        var view = views[id];
+        switch(message.type) {
+            case 'ready':
+                view.resolveReady();
+                break;
+            case 'onChange':
+                view.module.controller.onChange(message.message.mol, message.message.smiles, message.message.jme);
+                break;
+            case 'doHighlight':
+                view._doHighlight(message.message.mol, message.message.atom);
+                break;
+            default:
+                console.error('Message type not handled: ', message.type);
+                break;
+        }
+    });
+
     View.prototype = $.extend(true, {}, Default, {
 
         init: function () {
             var self = this;
+
+            var id = this.module.getId();
+            views[id] = this;
 
             this.dom = $('<iframe>', {src: require.toUrl('./lib/jsme.html')}).css('border', 0);
 
             this.module.getDomContent().html(this.dom);
 
             this.dom.bind('load', function () {
-                self.dom.get(0).contentWindow.setController(self.module.controller);
-                self.dom.get(0).contentWindow.setView(self);
+                self.postMessage('init', {
+                    prefs: self.getPrefs(),
+                    highlightColor: self.getHighlightColor(),
+                    bondwidth: self.module.getConfiguration('bondwidth'),
+                    labelsize: self.module.getConfiguration('labelsize'),
+                    id: id
+                });
             });
+
         },
 
         getPrefs: function () {
@@ -47,14 +83,10 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
 
         blank: {
             mol: function () {
-                if (this.dom.get(0).contentWindow.clear) {
-                    this.dom.get(0).contentWindow.clear();
-                }
+                this.postMessage('clear', '*');
             },
             jme: function () {
-                if (this.dom.get(0).contentWindow.clear) {
-                    this.dom.get(0).contentWindow.clear();
-                }
+                this.postMessage('clear', '*');
             }
         },
 
@@ -63,7 +95,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
                 if (!moduleValue) return;
 
                 var contentWindow = this.dom.get(0).contentWindow;
-                contentWindow.setMolFile(moduleValue.get());
+                this.postMessage('setMolFile', moduleValue.get());
 
                 this._currentValue = moduleValue;
                 this._initHighlight(moduleValue, contentWindow);
@@ -71,7 +103,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
             jme: function (moduleValue) {
                 if (!moduleValue) return;
                 var contentWindow = this.dom.get(0).contentWindow;
-                contentWindow.setJmeFile(moduleValue.get());
+                this.postMessage('setJmeFile', moduleValue.get());
 
                 this._currentValue = moduleValue;
                 this._initHighlight(moduleValue, contentWindow);
@@ -79,6 +111,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
         },
 
         _initHighlight: function (moduleValue, contentWindow) {
+            var self = this;
             API.killHighlight(this.module.getId());
             API.listenHighlight(moduleValue, function (onOff, highlightId) {
                 var atoms = [];
@@ -87,7 +120,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
                         moduleValue._atoms[highlightId[i]] = [moduleValue._atoms[highlightId[i]]];
                     atoms = atoms.concat(moduleValue._atoms[highlightId[i]]);
                 }
-                contentWindow.setHighlight(atoms, onOff);
+                self.postMessage('setHighlight', {atoms:atoms, onOff:onOff});
 
             }, false, this.module.getId());
         },
@@ -113,6 +146,20 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
             }
 
             this.highlightedAtom = id - 1;
+        },
+
+        postMessage: function (type, message) {
+            var cw = this.dom.get(0).contentWindow;
+            if(cw) {
+                cw.postMessage(JSON.stringify({
+                    type: type,
+                    message: message
+                }), '*');
+            }
+        },
+
+        remove: function (id) {
+            delete views[id];
         }
 
     });
