@@ -53,7 +53,9 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
     var typeEditors = {
         boolean: Slick.Editors.Checkbox,
         mf: Slick.Editors.TextValue,
-        color: Slick.Editors.ColorValue
+        color: Slick.Editors.ColorValue,
+        string: Slick.Editors.TextValue,
+        number: Slick.Editors.TextValue
     };
 
     View.prototype = $.extend(true, {}, Default, {
@@ -80,9 +82,18 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             var that = this;
             var tp = $.proxy(typeRenderer, this);
             return this.colConfig.map(function(row) {
+                var editor, type;
                 if(row.editor === 'auto' && that.module.data) {
-                    var type = that.module.data.get(0).getChildSync(row.jpath).type;
-                    var editor = typeEditors[type];
+                    var obj = that.module.data.get(0).getChildSync(row.jpath);
+                    if(obj instanceof DataString || obj instanceof DataNumber) {
+                        editor = Slick.Editors.SpecialNativeObject;
+                    }
+                    else {
+                        type = that.module.data.get(0).getChildSync(row.jpath).type;
+                        editor = typeEditors[type];
+                    }
+
+
                 }
                 return {
                     id: row.name,
