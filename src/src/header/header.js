@@ -66,7 +66,13 @@ define(['require', 'jquery', 'src/util/versioning'], function (require, $, Versi
 
         createElement: function (source) {
             return new Promise(function (resolve, reject) {
-                require(['./components/' + source.type], function (El) {
+                var url;
+                if (source.type.indexOf('/') >-1) {
+                    url = source.type;
+                } else {
+                    url = './components/' + source.type;
+                }
+                require([url], function (El) {
                     var el = new El();
                     el.init(source);
                     resolve(el);
