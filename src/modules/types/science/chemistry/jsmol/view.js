@@ -5,40 +5,63 @@ define(['require', 'modules/default/defaultview'], function (require, Default) {
     function View() {
     }
 
+    var views = {};
+
+    window.addEventListener('message', function (event) {
+
+        var message = JSON.parse(event.data);
+        if (message.module !== 'jsmol') {
+            return;
+        }
+        var id = message.id;
+        if (!views[id]) {
+            console.error('No view with ID ' + id);
+            return;
+        }
+        var view = views[id];
+        switch (message.type) {
+            case 'ready':
+                view.resolveReady();
+                break;
+            default:
+                console.error('Message type not handled: ', message.type);
+                break;
+        }
+    });
+
     View.prototype = $.extend(true, {}, Default, {
 
         init: function () {
             var self = this;
 
+            var id = this.module.getId();
+            views[id] = this;
+
             this.dom = $('<iframe>', {src: require.toUrl('./jsmol.html')}).css('border', 0);
             this.module.getDomContent().html(this.dom).css('overflow', 'hidden');
 
+            this._highlights = this._highlights || [];
+
             this.dom.bind('load', function () {
-                self.dom.get(0).contentWindow.setController(self.module.controller);
-                self.dom.get(0).contentWindow.setView(self);
+                self.postMessage('init', {
+                    id: id
+                });
             });
 
-            this._highlights = this._highlights || [];
         },
 
         onResize: function () {
             this.dom.height(this.height).width(this.width);
-
-            var jsmolWindow = this.dom.get(0).contentWindow;
-
-            if (jsmolWindow && jsmolWindow.setSize) {
-                jsmolWindow.setSize(this.width, this.height);
-            }
+            this.postMessage('setSize', {width: this.width, height: this.height});
         },
 
         update: {
             data: function (data) {
                 var self = this;
-                self.dom.get(0).contentWindow.setMolFile(data);
+                self.postMessage('setMolFile', data.get());
 
-                var cfg = $.proxy(self.module.getConfiguration, self.module);
-                if (cfg('script')) {
-                    self.dom.get(0).contentWindow.executeScript([cfg('script')]);
+                if (self.module.getConfiguration('script')) {
+                    self.postMessage('executeScript', [self.module.getConfiguration('script')]);
                 }
             }
         },
@@ -50,7 +73,21 @@ define(['require', 'modules/default/defaultview'], function (require, Default) {
         },
 
         executeScript: function (src) {
-            this.dom.get(0).contentWindow.executeScript([src]);
+            this.postMessage('executeScript', [src]);
+        },
+
+        postMessage: function (type, message) {
+            var cw = this.dom.get(0).contentWindow;
+            if (cw) {
+                cw.postMessage(JSON.stringify({
+                    type: type,
+                    message: message
+                }), '*');
+            }
+        },
+
+        remove: function (id) {
+            delete views[id];
         }
 
     });

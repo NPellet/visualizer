@@ -18,10 +18,6 @@
     var deferred = $.Deferred();
     var self = window;
 
-    window.setController = function (controller) {
-        this.controller = controller;
-    };
-
     window.setInDom = function () {
         var useSignedApplet = false, self = this;
         var info = {
@@ -38,21 +34,16 @@
 
             readyFunction: function (applet) {
                 deferred.done(function () {
-                    self.view.resolveReady();
+                    self.doPostMessage('ready');
                 });
             },
             allowjavascript: true,
             script: "set antialiasDisplay"
         };
 
-     //   Jmol._XhtmlElement = $('#appletContainer').get(0);
-     //   Jmol._XhtmlAppendChild = true;
-        window.applet=Jmol.getApplet("appletContainer", info);
-    };
-
-    window.setView = function (view) {
-        this.view = view;
-        deferred.resolve();
+        //   Jmol._XhtmlElement = $('#appletContainer').get(0);
+        //   Jmol._XhtmlAppendChild = true;
+        window.applet = Jmol.getApplet("appletContainer", info);
     };
 
     window.executeScript = function (actions) {
@@ -62,9 +53,6 @@
     };
 
     window.setMolFile = function (data) {
-        if (!data) return;
-
-        data = data.get();
 
         var actions = [];
         actions.push("load data 'model'");
@@ -74,7 +62,7 @@
     };
 
     window.setSize = function (w, h) {
-        Jmol.resizeApplet(this.applet, [w , h ]);
+        Jmol.resizeApplet(this.applet, [w, h]);
     };
 
     window.clear = function () {
@@ -101,7 +89,48 @@
         jsmeApplet.resetAtomColors(molIndex);
     };
 
-   window.setInDom();
+    window.setInDom();
+
+    var parent;
+
+    window.doPostMessage = function (type, message) {
+        if (parent) {
+            parent.window.postMessage(JSON.stringify({
+                type: type,
+                message: message,
+                id: parent.id,
+                module: 'jsmol'
+            }), '*');
+        }
+    };
+
+    window.addEventListener('message', function (event) {
+
+        var message = JSON.parse(event.data);
+
+        switch (message.type) {
+            case 'init':
+                parent = {
+                    window: event.source,
+                    id: message.message.id
+                };
+                deferred.resolve();
+                break;
+            case 'setMolFile':
+                setMolFile(message.message);
+                break;
+            case 'executeScript':
+                executeScript(message.message);
+                break;
+            case 'setSize':
+                setSize(message.message.width, message.message.height);
+                break;
+            default:
+                console.error('Message type not handled: ', message.type);
+                break;
+        }
+
+    });
 
 </script>
 </body>

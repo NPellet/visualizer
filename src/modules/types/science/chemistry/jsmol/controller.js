@@ -56,6 +56,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
         jsmolscript: 'Some JSMol Script received'
     };
 
+    Controller.prototype.onRemove = function () {
+        this.module.view.remove(this.module.getId());
+    };
+
     return Controller;
 
 });
