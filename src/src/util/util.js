@@ -260,8 +260,10 @@ define(function () {
         },
 
         jpathToString: function( val ) {
+
             val = val || [];
-            val.unshift('element')
+            val = val.slice();
+            val.unshift('element');
             return val.join('.');
         },
 
