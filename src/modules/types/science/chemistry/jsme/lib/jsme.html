@@ -1,137 +1,139 @@
-
 <!doctype html>
 <html>
-	<head>
-		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-		<title></title>
-		<script type="text/javascript" language="javascript" src="./jsme/jsme.nocache.js"></script>
-		<script type="text/javascript" language="javascript" src="./jquery.min.js"></script>
-		
-		
-	</head>
-	<body style="margin: 0; padding: 0; overflow: hidden;">
 
-	<div id="appletContainer"></div>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <title></title>
+    <script type="text/javascript" language="javascript" src="./jsme/jsme.nocache.js"></script>
+    <script type="text/javascript" language="javascript" src="./jquery.min.js"></script>
+</head>
 
-	<script type="text/javascript">
+<body style="margin: 0; padding: 0; overflow: hidden;">
 
-		var jsmeApplet;
-		var previousHighlight;
-		var def = $.Deferred();
+<div id="appletContainer"></div>
 
-		this.setMolFile = function(mol) {
-			jsmeApplet.readMolFile(mol);
-		}
+<script type="text/javascript">
 
-		this.setJmeFile = function(mol) {
-			jsmeApplet.readMolecule(mol);
-		}
+    var jsmeApplet;
+    var previousHighlight;
+    var def = $.Deferred();
 
-		this.setSize = function(w, h) {
-			var width=w+"px";
-			var height=h+"px";
-			jsmeApplet.setSize(width, height);
+    window.setMolFile = function (mol) {
+        jsmeApplet.readMolFile(mol);
+    }
+
+    window.setJmeFile = function (mol) {
+        jsmeApplet.readMolecule(mol);
+    }
+
+    window.setSize = function (w, h) {
+        var width = w + "px";
+        var height = h + "px";
+        jsmeApplet.setSize(width, height);
 //			jsmeApplet.repaint();
-		}
+    }
 
-		this.clear = function() {
-			jsmeApplet.reset();
-		}
+    window.clear = function () {
+        jsmeApplet.reset();
+    }
 
-		var highlightColor;
-		this.setHighlightColor = function (color) {
-			highlightColor = color;
-		};
+    var highlightColor;
+    window.setHighlightColor = function (color) {
+        highlightColor = color;
+    };
 
-		this.setHighlight = function(atoms, onOff) {
-			var molIndex=1;
+    window.setHighlight = function (atoms, onOff) {
+        var molIndex = 1;
 
-			// before highlight we systematically reset all the colors because there is a problem in case of
-			// overlapping atoms and events
-			if (!onOff) {
-				jsmeApplet.resetAtomColors(1);
-			} else {
-				var highlight=[];
-				for (var i=0; i<atoms.length; i++) {
-					highlight.push(atoms[i]+1);
-					highlight.push(highlightColor);
-				}
-				jsmeApplet.setAtomBackgroundColors(molIndex,highlight.join(","))	
-			}
-		}
-		
-		this.clearHighlight = function(molIndex, atomsIndex) {
-			jsmeApplet.resetAtomColors(molIndex);
-		}
+        // before highlight we systematically reset all the colors because there is a problem in case of
+        // overlapping atoms and events
+        if (!onOff) {
+            jsmeApplet.resetAtomColors(1);
+        } else {
+            var highlight = [];
+            for (var i = 0; i < atoms.length; i++) {
+                highlight.push(atoms[i] + 1);
+                highlight.push(highlightColor);
+            }
+            jsmeApplet.setAtomBackgroundColors(molIndex, highlight.join(","))
+        }
+    }
 
-		function jsmeOnLoad() {
-			var w = window.innerWidth;
-			var h = window.innerHeight;
-			
-			var self=this;
+    window.clearHighlight = function (molIndex, atomsIndex) {
+        jsmeApplet.resetAtomColors(molIndex);
+    }
 
-			//var __self = window;
-			jsmeApplet = new JSApplet.JSME("appletContainer", w + "px", h + "px");
+    function jsmeOnLoad() {
+        var w = window.innerWidth;
+        var h = window.innerHeight;
 
-			def.done(function(message) {
-				jsmeApplet.options(message.prefs);
-				setHighlightColor(message.highlightColor);
-				jsmeApplet.setMolecularAreaLineWidth(message.bondwidth);
-				jsmeApplet.setAtomMolecularAreaFontSize(message.labelsize);
-				doPostMessage('ready');
-			});
+        var self = this;
 
-			jsmeApplet.setNotifyStructuralChangeJSfunction('(function() { var mol = this.jsmeApplet.molFile(); var jme = this.jsmeApplet.jmeFile(); var smiles = this.jsmeApplet.smiles(); this.doPostMessage("onChange", {mol: mol, smiles: smiles, jme: jme}); })');
+        //var __self = window;
+        jsmeApplet = new JSApplet.JSME("appletContainer", w + "px", h + "px");
 
-			// The notifyAtomHighLightJSfunction will receive two arguments: the molecule index and the atom index, both start at 1
-			jsmeApplet.setNotifyAtomHighLightChangeJSfunction('(function(mol,atom) {this.doPostMessage("doHighlight", {mol: mol, atom:atom});})');
+        def.done(function (message) {
+            jsmeApplet.options(message.prefs);
+            setHighlightColor(message.highlightColor);
+            jsmeApplet.setMolecularAreaLineWidth(message.bondwidth);
+            jsmeApplet.setAtomMolecularAreaFontSize(message.labelsize);
+            doPostMessage('ready');
+        });
 
-		}
+        jsmeApplet.setNotifyStructuralChangeJSfunction('(function() { var mol = this.jsmeApplet.molFile(); var jme = this.jsmeApplet.jmeFile(); var smiles = this.jsmeApplet.smiles(); this.doPostMessage("onChange", {mol: mol, smiles: smiles, jme: jme}); })');
 
-		var parent;
+        // The notifyAtomHighLightJSfunction will receive two arguments: the molecule index and the atom index, both start at 1
+        jsmeApplet.setNotifyAtomHighLightChangeJSfunction('(function(mol,atom) {this.doPostMessage("doHighlight", {mol: mol, atom:atom});})');
 
-		this.doPostMessage = function (type, message) {
-			if (parent) {
-				parent.window.postMessage(JSON.stringify({
-					type: type,
-					message: message,
-					id: parent.id
-				}), '*');
-			}
-		};
+    }
 
-		window.addEventListener('message', function (event) {
+    var parent;
 
-			var message = JSON.parse(event.data);
+    window.doPostMessage = function (type, message) {
+        if (parent) {
+            parent.window.postMessage(JSON.stringify({
+                type: type,
+                message: message,
+                id: parent.id,
+                module: 'jsme'
+            }), '*');
+        }
+    };
 
-			switch(message.type) {
-				case 'init':
-					parent = {
-						window: event.source,
-						id: message.message.id
-					};
-					def.resolve(message.message);
-					break;
-				case 'clear':
-					this.clear();
-					break;
-				case 'setMolFile':
-					setMolFile(message.message);
-					break;
-				case 'setJme':
-					setJmeFile(message.message);
-					break;
-				case 'setHighlight':
-					setHighlight(message.message.atoms, message.message.onOff);
-					break;
-				default:
-					console.error('Message type not handled: ', message.type);
-					break;
-			}
+    window.addEventListener('message', function (event) {
 
-		});
-	</script>
+        var message = JSON.parse(event.data);
 
+        switch (message.type) {
+            case 'init':
+                parent = {
+                    window: event.source,
+                    id: message.message.id
+                };
+                def.resolve(message.message);
+                break;
+            case 'clear':
+                clear();
+                break;
+            case 'setMolFile':
+                setMolFile(message.message);
+                break;
+            case 'setJme':
+                setJmeFile(message.message);
+                break;
+            case 'setHighlight':
+                setHighlight(message.message.atoms, message.message.onOff);
+                break;
+            case 'setSize':
+                setSize(message.message.width, message.message.height);
+                break;
+            default:
+                console.error('Message type not handled: ', message.type);
+                break;
+        }
 
-	</body>
+    });
+</script>
+
+</body>
 </html>

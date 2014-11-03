@@ -10,13 +10,16 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
     window.addEventListener('message', function (event) {
 
         var message = JSON.parse(event.data);
+        if (message.module !== 'jsme') {
+            return;
+        }
         var id = message.id;
         if (!views[id]) {
-            console.error('No view with ID '+ id);
+            console.error('No view with ID ' + id);
             return;
         }
         var view = views[id];
-        switch(message.type) {
+        switch (message.type) {
             case 'ready':
                 view.resolveReady();
                 break;
@@ -70,11 +73,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
 
             this.module.getDomContent().css('overflow', 'hidden');
 
-            var jsmeWindow = this.dom.get(0).contentWindow;
-
-            if (jsmeWindow && jsmeWindow.setSize) {
-                jsmeWindow.setSize(this.width, this.height);
-            }
+            this.postMessage('setSize', {width: this.width, height: this.height});
         },
 
         onProgress: function () {
@@ -94,23 +93,21 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
             mol: function (moduleValue) {
                 if (!moduleValue) return;
 
-                var contentWindow = this.dom.get(0).contentWindow;
                 this.postMessage('setMolFile', moduleValue.get());
 
                 this._currentValue = moduleValue;
-                this._initHighlight(moduleValue, contentWindow);
+                this._initHighlight(moduleValue);
             },
             jme: function (moduleValue) {
                 if (!moduleValue) return;
-                var contentWindow = this.dom.get(0).contentWindow;
                 this.postMessage('setJmeFile', moduleValue.get());
 
                 this._currentValue = moduleValue;
-                this._initHighlight(moduleValue, contentWindow);
+                this._initHighlight(moduleValue);
             }
         },
 
-        _initHighlight: function (moduleValue, contentWindow) {
+        _initHighlight: function (moduleValue) {
             var self = this;
             API.killHighlight(this.module.getId());
             API.listenHighlight(moduleValue, function (onOff, highlightId) {
@@ -120,7 +117,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
                         moduleValue._atoms[highlightId[i]] = [moduleValue._atoms[highlightId[i]]];
                     atoms = atoms.concat(moduleValue._atoms[highlightId[i]]);
                 }
-                self.postMessage('setHighlight', {atoms:atoms, onOff:onOff});
+                self.postMessage('setHighlight', {atoms: atoms, onOff: onOff});
 
             }, false, this.module.getId());
         },
@@ -150,7 +147,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
 
         postMessage: function (type, message) {
             var cw = this.dom.get(0).contentWindow;
-            if(cw) {
+            if (cw) {
                 cw.postMessage(JSON.stringify({
                     type: type,
                     message: message

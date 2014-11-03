@@ -103,7 +103,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                         highlightColor: {
                             type: 'combo',
                             title: 'Atom highlight color',
-                            options : [
+                            options: [
                                 {title: 'red', key: '1'},
                                 {title: 'orange', key: '2'},
                                 {title: 'yellow', key: '3'},
@@ -121,15 +121,15 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.onChange = function (mol, smiles, jme) {
         this.createDataFromEvent('onStructureChange', 'smiles', smiles);
-        this.createDataFromEvent('onStructureChange', 'mol', { type: 'mol2d', value: mol });
-        this.createDataFromEvent('onStructureChange', 'jme', { type: 'jme', value: jme });
+        this.createDataFromEvent('onStructureChange', 'mol', {type: 'mol2d', value: mol});
+        this.createDataFromEvent('onStructureChange', 'jme', {type: 'jme', value: jme});
     };
 
     Controller.prototype.configAliases = {
-        prefs: [ 'groups', 'group', 0, 'prefs', 0 ],
-        labelsize: [ 'groups', 'group', 0, 'labelsize', 0 ],
-        bondwidth: [ 'groups', 'group', 0, 'bondwidth', 0 ],
-        highlightColor: [ 'groups', 'group', 0, 'highlightColor', 0 ]
+        prefs: ['groups', 'group', 0, 'prefs', 0],
+        labelsize: ['groups', 'group', 0, 'labelsize', 0],
+        bondwidth: ['groups', 'group', 0, 'bondwidth', 0],
+        highlightColor: ['groups', 'group', 0, 'highlightColor', 0]
     };
 
     Controller.prototype.onRemove = function () {
