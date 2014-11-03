@@ -103,14 +103,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                             default: 'none',
                             options: [{key: 'none', title: 'None'},
                                 {key: 'auto', title: 'Based on type'},
-                                {key: 'TextValue', title: 'Text Value'},
-                                {key: 'slick.text', title: 'Text'},
-                                {key: 'slick.checkbox', title: 'Checkbox'},
-                                {key: 'slick.longtext', title: 'Long text'},
-                                {key: 'slick.date', title: 'Date'},
-                                {key: 'slick.integer', title: 'Integer'},
-                                {key: 'slick.yesno', title: 'Yes/No'},
-                                {key: 'slick.percent', title: 'Percent'}
+                                {key: 'TextValue', title: 'Text Value'}
                             ]
                         },
 
@@ -118,11 +111,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                             type: 'combo',
                             title: 'Formatter',
                             options: [
-                                {key: 'typerenderer', title: 'Type Renderer'},
-                                {key: 'slick.text', title: 'Text'},
-                                {key: 'slick.percentbar', title: 'Percent bar'},
-                                {key: 'slick.percent', title: 'Percent'},
-                                {key: 'slick.yesno', title: 'Yes/No'}
+                                {key: 'typerenderer', title: 'Type Renderer'}
                             ]
                         },
 

@@ -344,9 +344,10 @@ define(['src/util/debug'], function (Debug) {
             }
         },
 
-        jpathToString: function (val) {
+        jpathToString: function(val) {
             val = val || [];
-            val.unshift('element')
+            val = val.slice();
+            val.unshift('element');
             return val.join('.');
         },
 

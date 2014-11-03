@@ -40,20 +40,12 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         'slick.yesno': Slick.Formatters.YesNoSelect
     };
 
-    var editors = {
-        'slick.text': Slick.Editors.Text,
-        'slick.longtext': Slick.Editors.LongText,
-        'slick.checkbox': Slick.Editors.Checkbox,
-        'slick.date': Slick.Editors.Date,
-        'slick.yesno': Slick.Editors.YesNoSelect,
-        'slick.percent': Slick.Editors.PercentComplete,
-        'slick.integer': Slick.Editors.Integer,
-        'TextValue': Slick.Editors.TextValue
-    };
     var typeEditors = {
         boolean: Slick.Editors.Checkbox,
         mf: Slick.Editors.TextValue,
-        color: Slick.Editors.ColorValue
+        color: Slick.Editors.ColorValue,
+        string: Slick.Editors.TextValue,
+        number: Slick.Editors.TextValue
     };
 
     View.prototype = $.extend(true, {}, Default, {
@@ -80,9 +72,18 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             var that = this;
             var tp = $.proxy(typeRenderer, this);
             return this.colConfig.map(function(row) {
+                var editor, type;
                 if(row.editor === 'auto' && that.module.data) {
-                    var type = that.module.data.get(0).getChildSync(row.jpath).type;
-                    var editor = typeEditors[type];
+                    var obj = that.module.data.get(0).getChildSync(row.jpath);
+                    if(obj instanceof DataString || obj instanceof DataNumber) {
+                        editor = Slick.Editors.SpecialNativeObject;
+                    }
+                    else {
+                        type = that.module.data.get(0).getChildSync(row.jpath).type;
+                        editor = typeEditors[type];
+                    }
+
+
                 }
                 return {
                     id: row.name,
@@ -96,7 +97,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     focusable: row.focusable.indexOf('yes') > -1,
                     sortable: row.sortable.indexOf('yes') > -1,
                     defaultSortAsc: row.defaultSortAsc.indexOf('yes') > -1,
-                    editor: editor || editors[row.editor],
+                    editor: editor,
                     formatter: formatters[row.formatter],
                     asyncPostRender: (row.formatter === 'typerenderer') ? tp : undefined,
                     jpath: row.jpath,
