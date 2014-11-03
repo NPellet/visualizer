@@ -786,7 +786,7 @@ define(['jquery',
                     return;
                 }
 
-                var configJson = urls['config'] || $('#ci-visualizer').attr('config') || 'usr/config/default.json';
+                var configJson = require.toUrl(urls['config'] || $('#ci-visualizer').attr('config') || 'usr/config/default.json');
 
                 $.getJSON(configJson, {}, function (cfgJson) {
 
