@@ -1,6 +1,6 @@
-define(function () {
+'use strict';
 
-    "use strict";
+define(['src/util/debug'], function (Debug) {
 
     var uniqueid = 0;
 
@@ -27,7 +27,7 @@ define(function () {
             ifElement = 'el';
 
         for (var i = 0; i < l; i++) {
-            ifElement += '["' + splitted[ i ].replace(regQuote, '\\"') + '"]';
+            ifElement += '["' + splitted[i].replace(regQuote, '\\"') + '"]';
             ifArray.push(ifElement + ' != undefined');
         }
 
@@ -53,11 +53,11 @@ define(function () {
         var i = 0, stylesheet, ii, cssRule;
 
         for (; i < document.styleSheets.length; i++) {
-            stylesheet = document.styleSheets[ i ];
+            stylesheet = document.styleSheets[i];
             ii = 0;
             cssRule = false;
             do {                                             // For each rule in stylesheet
-                cssRule = stylesheet.cssRules ? stylesheet.cssRules[ ii ] : stylesheet.rules[ ii ];
+                cssRule = stylesheet.cssRules ? stylesheet.cssRules[ii] : stylesheet.rules[ii];
                 if (!cssRule || !cssRule.selectorText) {
                     ii++;
                     continue;
@@ -85,6 +85,91 @@ define(function () {
         return false;
     }
 
+    function isInt(str) {
+        return isNaN(str) ? NaN : parseInt(str);
+    }
+
+    function semver(versionStr) {
+
+        if (!versionStr) {
+            return Debug.error('no version');
+        }
+
+        if (versionStr[0] === 'v') {
+            versionStr = versionStr.substr(1);
+        }
+
+        var version = versionStr.split('.');
+        if (version.length > 3) {
+            return Debug.error('version number is invalid: ' + versionStr);
+        }
+
+        switch (version.length) {
+            case 1:
+                version[1] = '0';
+            case 2:
+                version[2] = '0';
+        }
+
+        var semver = {
+            major: isInt(version[0]),
+            minor: isInt(version[1]),
+            patch: isInt(version[2]),
+            prerelease: false
+        };
+
+        var split = version[2].split('-');
+        if (split.length > 1) {
+            semver.patch = parseInt(split[0]);
+            semver.prerelease = split[1];
+        }
+
+        if (semver.major >= 0 && semver.minor >= 0 && semver.patch >= 0) {
+            return semver;
+        } else {
+            return Debug.error('version number is invalid: ' + versionStr);
+        }
+
+    }
+
+    function semverCompare(v1, v2) {
+        if (typeof v1 === 'string') {
+            v1 = semver(v1);
+        }
+        if (typeof v2 === 'string') {
+            v2 = semver(v2);
+        }
+        if (!v1 || !v2) {
+            return Debug.error('Invalid version number:' + v1 ? v2 : v1);
+        }
+        if (v1.major < v2.major) {
+            return -1;
+        } else if (v2.major < v1.major) {
+            return 1;
+        } else if (v1.minor < v2.minor) {
+            return -1;
+        } else if (v2.minor < v1.minor) {
+            return 1;
+        } else if (v1.patch < v2.patch) {
+            return -1;
+        } else if (v2.patch < v1.patch) {
+            return 1;
+        } else if (v1.prerelease && !v2.prerelease){
+            return -1;
+        } else if (v2.prerelease && !v1.prerelease) {
+            return 1;
+        } else if (v1.prerelease && v2.prerelease) {
+            if (v1.prerelease < v2.prerelease) {
+                return -1;
+            } else if(v2.prerelease < v1.prerelease) {
+                return 1;
+            } else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
+    }
 
     return {
         getCurrentLang: function () {
@@ -141,11 +226,11 @@ define(function () {
 
             this.loadedCss = this.loadedCss || {};
 
-            if (this.loadedCss[ url ]) { // element is already loaded
+            if (this.loadedCss[url]) { // element is already loaded
                 return;
             }
 
-            this.loadedCss[ url ] = true;
+            this.loadedCss[url] = true;
 
             var link = document.createElement("link");
             link.type = "text/css";
@@ -245,11 +330,11 @@ define(function () {
         makejPathFunction: makejPathFunction,
 
         addjPathFunction: function (stack, jpath) {
-            stack[ jpath ] = makejPathFunction(jpath)
+            stack[jpath] = makejPathFunction(jpath)
         },
 
-        jpathToArray: function( val ) {
-            if(val){
+        jpathToArray: function (val) {
+            if (val) {
                 var val2 = val.split('.');
                 val2.shift();
                 return val2;
@@ -259,7 +344,7 @@ define(function () {
             }
         },
 
-        jpathToString: function( val ) {
+        jpathToString: function (val) {
             val = val || [];
             val.unshift('element')
             return val.join('.');
@@ -331,18 +416,20 @@ define(function () {
 
         safeAccess: function () {
 
-            var access = arguments[ 0 ];
+            var access = arguments[0];
 
             for (var i = 1; i < arguments.length; i++) {
-                if (!( access = access[ arguments[ i ] ] )) {
+                if (!( access = access[arguments[i]] )) {
                     return false;
                 }
             }
 
             return access;
-        }
+        },
+
+        semver: semver,
+        semverCompare: semverCompare
 
     };
 
 });
-	

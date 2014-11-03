@@ -1,6 +1,6 @@
 'use strict';
 
-define(['src/util/versioning', 'src/util/debug'], function (Versioning, Debug) {
+define(['src/util/versioning', 'src/util/debug', 'src/util/util'], function (Versioning, Debug, Util) {
 
     var migrators = [
 
@@ -400,7 +400,7 @@ define(['src/util/versioning', 'src/util/debug'], function (Versioning, Debug) {
                 break;
         }
 
-        var versionSem = Versioning.semver(view.version);
+        var versionSem = Util.semver(view.version);
 
         if (!versionSem) {
             return view;
@@ -410,7 +410,7 @@ define(['src/util/versioning', 'src/util/debug'], function (Versioning, Debug) {
             Debug.warn('Migrating a prerelease view, anything can happen !');
         }
 
-        if (Versioning.semver(Versioning.version).prerelease) {
+        if (Util.semver(Versioning.version).prerelease) {
             Debug.warn('Migrating to a prerelease version of the visualizer, anything can happen !');
         }
 
@@ -467,7 +467,7 @@ define(['src/util/versioning', 'src/util/debug'], function (Versioning, Debug) {
 
     function addMigrationFunction(version, func) {
 
-        var semVer = Versioning.semver(version);
+        var semVer = Util.semver(version);
 
         if (!semVer) {
             throw new Error('invalid semver for migration function: ' + version);

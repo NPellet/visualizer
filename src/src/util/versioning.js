@@ -1,10 +1,10 @@
 'use strict';
 
-define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables'], function(VersionHandler, Debug, Variables) {
+define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'src/util/util'], function(VersionHandler, Debug, Variables, Util) {
 
 	var version = '2.6.0-1';
 
-    if (!semver(version)) {
+    if (!Util.semver(version)) {
         throw new Error('Version number is invalid: ' + version);
     }
 
@@ -112,69 +112,6 @@ define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables'], func
         data.triggerChange();
 	}
 
-    function isInt(str) {
-        return isNaN(str) ? NaN : parseInt(str);
-    }
-
-    function semver(versionStr) {
-
-        if (!versionStr) {
-            return Debug.error('no version');
-        }
-
-        var version = versionStr.split('.');
-        if (version.length !== 3) {
-            return Debug.error('version number is invalid: '+versionStr);
-        }
-
-        var semver = {
-            major: isInt(version[0]),
-            minor: isInt(version[1]),
-            patch: isInt(version[2]),
-            prerelease: false
-        };
-
-        var split = version[2].split('-');
-        if (split.length > 1) {
-            semver.patch = parseInt(split[0]);
-            semver.prerelease = split[1];
-        }
-
-        if (semver.major >= 0 && semver.minor >= 0 && semver.patch >= 0) {
-            return semver;
-        } else {
-            return Debug.error('version number is invalid: '+versionStr);
-        }
-
-    }
-
-    function semverCompare(v1, v2) {
-        if (typeof v1 === 'string') {
-            v1 = semver(v1);
-        }
-        if (typeof v2 === 'string') {
-            v2 = semver(v2);
-        }
-        if (!v1 || !v2) {
-            return Debug.error('Invalid version number:' + v1 ? v2 : v1);
-        }
-        if (v1.major < v2.major) {
-            return -1;
-        } else if (v2.major < v1.major) {
-            return 1;
-        } else if (v1.minor < v2.minor) {
-            return -1;
-        } else if (v2.minor < v1.minor) {
-            return 1;
-        } else if (v1.patch < v2.patch) {
-            return -1;
-        } else if (v2.patch < v1.patch) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-
 	return {
 		get version() {
 			return String(version);
@@ -242,8 +179,6 @@ define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables'], func
 		},
 		isViewLocked: function() {
 			return this.getView().configuration.lockView || false;
-		},
-        semver: semver,
-        semverCompare: semverCompare
+		}
 	};
 });
