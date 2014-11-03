@@ -132,58 +132,25 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
         }
 
         function TextValueEditor(args) {
-            var $input;
-            var defaultValue;
-            var scope = this;
+            this.args = args;
+            this.init = defaultInit;
+            this.destroy = defaultDestroy;
+            this.focus = defaultFocus;
+            this.getValue = defaultGetValue;
+            this.setValue = defaultSetValue;
+            this.loadValue = defaultLoadValue;
+            this.serializeValue = defaultSerializeValue;
+            this.isValueChanged = defaultIsValueChanged;
+            this.validate = defaultValidate;
 
-            this.init = function () {
-                $input = $("<INPUT type=text class='editor-text' />")
-                    .appendTo(args.container)
-                    .bind("keydown.nav", function (e) {
-                        if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
-                            e.stopImmediatePropagation();
-                        }
-                    })
-                    .focus()
-                    .select();
-            };
-
-            this.destroy = function () {
-                $input.remove();
-            };
-
-            this.focus = function () {
-                $input.focus();
-            };
-
-            this.getValue = function () {
-                return $input.val();
-            };
-
-            this.setValue = function (val) {
-                $input.val(val);
-            };
-
-            this.loadValue = function (item) {
-                defaultValue = item.getChildSync(args.column.jpath);
-                defaultValue = defaultValue ? defaultValue.get() || "" : "";
-                $input.val(defaultValue);
-                $input[0].defaultValue = defaultValue;
-                $input.select();
-            };
-
-            this.serializeValue = function () {
-                return $input.val();
-            };
-
-            this.applyValue = function (item, state) {
+            this.applyValue = function(item, state) {
                 var isNew = _.isEmpty(item);
                 DataObject.check(item, true);
                 var newState;
 
-                if(args.column.dataType) {
+                if(this.args.column.dataType) {
                     newState = {
-                        type: args.column.dataType,
+                        type: this.args.column.dataType,
                         value: state
                     };
 
@@ -196,29 +163,8 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
                     return newState;
                 }
                 else {
-                    args.grid.module.model.dataSetChildSync(item, args.column.jpath, newState);
+                    this.args.grid.module.model.dataSetChildSync(item, this.args.column.jpath, newState);
                 }
-
-
-
-            };
-
-            this.isValueChanged = function () {
-                return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
-            };
-
-            this.validate = function () {
-                if (args.column.validator) {
-                    var validationResults = args.column.validator($input.val());
-                    if (!validationResults.valid) {
-                        return validationResults;
-                    }
-                }
-
-                return {
-                    valid: true,
-                    msg: null
-                };
             };
 
             this.init();
@@ -226,87 +172,93 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
 
 
         function SpecialNativeObjectEditor(args) {
-            var $input;
-            var defaultValue;
-            var scope = this;
-
-            this.init = function () {
-                $input = $("<INPUT type=text class='editor-text' />")
-                    .appendTo(args.container)
-                    .bind("keydown.nav", function (e) {
-                        if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
-                            e.stopImmediatePropagation();
-                        }
-                    })
-                    .focus()
-                    .select();
-            };
-
-            this.destroy = function () {
-                $input.remove();
-            };
-
-            this.focus = function () {
-                $input.focus();
-            };
-
-            this.getValue = function () {
-                return $input.val();
-            };
-
-            this.setValue = function (val) {
-                $input.val(val);
-            };
-
-            this.loadValue = function (item) {
-                defaultValue = item.getChildSync(args.column.jpath);
-                defaultValue = defaultValue ? defaultValue.get() || "" : "";
-                $input.val(defaultValue);
-                $input[0].defaultValue = defaultValue;
-                $input.select();
-            };
-
-            this.serializeValue = function () {
-                return $input.val();
-            };
-
-            this.applyValue = function (item, state) {
-                var isNew = _.isEmpty(item);
-                DataObject.check(item, true);
-                var newState = state;
-
-                if(isNew) {
-                    return newState;
-                }
-                else {
-                    args.grid.module.model.dataSetChildSync(item, args.column.jpath, newState);
-                }
-
-
-
-            };
-
-            this.isValueChanged = function () {
-                return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
-            };
-
-            this.validate = function () {
-                if (args.column.validator) {
-                    var validationResults = args.column.validator($input.val());
-                    if (!validationResults.valid) {
-                        return validationResults;
-                    }
-                }
-
-                return {
-                    valid: true,
-                    msg: null
-                };
-            };
-
+            this.args = args;
+            this.init = defaultInit;
+            this.destroy = defaultDestroy;
+            this.focus = defaultFocus;
+            this.getValue = defaultGetValue;
+            this.setValue = defaultSetValue;
+            this.loadValue = defaultLoadValue;
+            this.serializeValue = defaultSerializeValue;
+            this.applyValue = defaultApplyValue;
+            this.isValueChanged = defaultIsValueChanged;
+            this.validate = defaultValidate;
             this.init();
         }
     })(jQuery);
+
+    function defaultValidate() {
+        if (this.args.column.validator) {
+            var validationResults = this.args.column.validator(this.$input.val());
+            if (!validationResults.valid) {
+                return validationResults;
+            }
+        }
+
+        return {
+            valid: true,
+            msg: null
+        };
+    }
+
+    function defaultIsValueChanged() {
+        return (!(this.$input.val() == "" && this.defaultValue == null)) && (this.$input.val() != this.defaultValue);
+    }
+
+    function defaultApplyValue(item, state) {
+        var isNew = _.isEmpty(item);
+        DataObject.check(item, true);
+        var newState = state;
+
+        if(isNew) {
+            return newState;
+        }
+        else {
+            this.args.grid.module.model.dataSetChildSync(item, this.args.column.jpath, newState);
+        }
+    }
+
+    function defaultSerializeValue() {
+        return this.$input.val();
+    }
+
+    function defaultLoadValue(item) {
+        this.defaultValue = item.getChildSync(this.args.column.jpath);
+        this.defaultValue = this.defaultValue ? this.defaultValue.get() || "" : "";
+        this.$input.val(this.defaultValue);
+        this.$input[0].defaultValue = this.defaultValue;
+        this.$input.select();
+    }
+
+    function defaultSetValue(val) {
+        this.$input.val(val);
+    }
+
+    function defaultGetValue() {
+        return this.$input.val();
+    }
+
+    function defaultInit(args) {
+        this.$input = $("<INPUT type=text class='editor-text' />")
+            .appendTo(this.args.container)
+            .bind("keydown.nav", function (e) {
+                if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
+                    e.stopImmediatePropagation();
+                }
+            })
+            .focus()
+            .select();
+    }
+
+    function defaultDestroy() {
+        this.$input.remove();
+    }
+
+    function defaultFocus() {
+        this.$input.focus();
+    }
+
+
 
 });
 

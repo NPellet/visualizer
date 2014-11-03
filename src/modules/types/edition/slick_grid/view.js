@@ -40,16 +40,6 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         'slick.yesno': Slick.Formatters.YesNoSelect
     };
 
-    var editors = {
-        'slick.text': Slick.Editors.Text,
-        'slick.longtext': Slick.Editors.LongText,
-        'slick.checkbox': Slick.Editors.Checkbox,
-        'slick.date': Slick.Editors.Date,
-        'slick.yesno': Slick.Editors.YesNoSelect,
-        'slick.percent': Slick.Editors.PercentComplete,
-        'slick.integer': Slick.Editors.Integer,
-        'TextValue': Slick.Editors.TextValue
-    };
     var typeEditors = {
         boolean: Slick.Editors.Checkbox,
         mf: Slick.Editors.TextValue,
@@ -107,7 +97,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     focusable: row.focusable.indexOf('yes') > -1,
                     sortable: row.sortable.indexOf('yes') > -1,
                     defaultSortAsc: row.defaultSortAsc.indexOf('yes') > -1,
-                    editor: editor || editors[row.editor],
+                    editor: editor,
                     formatter: formatters[row.formatter],
                     asyncPostRender: (row.formatter === 'typerenderer') ? tp : undefined,
                     jpath: row.jpath,
