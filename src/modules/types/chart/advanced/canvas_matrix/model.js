@@ -1,59 +1,58 @@
-define(['modules/default/defaultmodel', 'src/util/datatraversing'], function(Default, Traversing) {
-	
-	function model() {};
-	model.prototype = $.extend(true, {}, Default, {
+'use strict';
 
-		getValue: function() {
-			return this.dataValue;
-		},
-		
-		
-		getjPath: function(rel, accepts) {
-			
-			function getjPath(data) {
-				
-				if(data == null)
-					return [];
+define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (Default, Traversing) {
 
-				var jpaths = [];
-				Traversing.getJPathsFromElement(data, jpaths);
-				
-				return jpaths;
-			}
-			
-			var data = this.module.getDataFromRel('matrix');
-			
-			if(!data)
-				return;
-			
-			data = data.value;
-			if(!data)
-				return;
-				
-			switch(rel) {
-				case 'row':
+    function Model() {
+    }
 
-					var data = data.yLabel[0];
-					return getjPath(data, accepts);
-				break;
-				case 'col':
-					var data = data.xLabel[0];
-					return getjPath(data, accepts);
-				break;
-				
-				case 'intersect':
+    function getjPath(data) {
+        if (data == null)
+            return [];
 
-					var data = data.data[0][0];
-					return getjPath(data, accepts);
-				break;
+        var jpaths = [];
+        Traversing.getJPathsFromElement(data, jpaths);
 
-				default:
-					return false;
-				break;
-			}
-		}
+        return jpaths;
+    }
 
-	});
+    Model.prototype = $.extend(true, {}, Default, {
 
-	return model;
+        getValue: function () {
+            return this.dataValue;
+        },
+
+        getjPath: function (rel, accepts) {
+
+            var data = this.module.getDataFromRel('matrix');
+
+            if (!data)
+                return;
+
+            data = data.value;
+            if (!data)
+                return;
+
+            switch (rel) {
+                case 'row':
+                    data = data.yLabel[0];
+                    return getjPath(data, accepts);
+                    break;
+                case 'col':
+                    data = data.xLabel[0];
+                    return getjPath(data, accepts);
+                    break;
+                case 'intersect':
+                    data = data.data[0][0];
+                    return getjPath(data, accepts);
+                    break;
+                default:
+                    return false;
+                    break;
+            }
+        }
+
+    });
+
+    return Model;
+
 });
