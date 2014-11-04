@@ -12,70 +12,72 @@ define( [ './graph.shape' ], function( GraphShape ) {
       type: 'corners'
     };
 
-    switch ( this.options.handles.type ) {
+    if( ! this.isLocked() ) {
+      switch ( this.options.handles.type ) {
 
-      case 'sides':
+        case 'sides':
 
-        this.options.handles.sides = this.options.handles.sides || {
-          top: true,
-          bottom: true,
-          left: true,
-          right: true
-        };
+          this.options.handles.sides = this.options.handles.sides || {
+            top: true,
+            bottom: true,
+            left: true,
+            right: true
+          };
 
-        var j = 0;
-        for ( var i in this.options.handles.sides ) {
-          if ( this.options.handles.sides[ i ] ) {
-            j++;
-          }
-        }
-
-        this.createHandles( j, 'g' ).map( function( g ) {
-
-          var r = document.createElementNS( graph.ns, 'rect' );
-          r.setAttribute( 'x', '-3' );
-          r.setAttribute( 'width', '6' );
-          r.setAttribute( 'y', '-6' );
-          r.setAttribute( 'height', '12' );
-          r.setAttribute( 'stroke', 'black' );
-          r.setAttribute( 'fill', 'white' );
-          r.setAttribute( 'cursor', 'pointer' );
-
-          g.appendChild( r );
-        } );
-
-        var j = 1;
-        this.handles = {};
-        this.sides = [];
-        for ( var i in this.options.handles.sides ) {
-          if ( this.options.handles.sides[ i ] ) {
-            this.handles[ i ] = this[ 'handle' + j ];
-            this.sides[ j ] = i;
-            j++;
+          var j = 0;
+          for ( var i in this.options.handles.sides ) {
+            if ( this.options.handles.sides[ i ] ) {
+              j++;
+            }
           }
 
-        }
+          this.createHandles( j, 'g' ).map( function( g ) {
 
-        break;
+            var r = document.createElementNS( graph.ns, 'rect' );
+            r.setAttribute( 'x', '-3' );
+            r.setAttribute( 'width', '6' );
+            r.setAttribute( 'y', '-6' );
+            r.setAttribute( 'height', '12' );
+            r.setAttribute( 'stroke', 'black' );
+            r.setAttribute( 'fill', 'white' );
+            r.setAttribute( 'cursor', 'pointer' );
 
-      default:
-      case 'corners':
-        this.createHandles( this.nbHandles, 'rect', {
-          transform: "translate(-3 -3)",
-          width: 6,
-          height: 6,
-          stroke: "black",
-          fill: "white"
-        } );
+            g.appendChild( r );
+          } );
 
-        this.handle2.setAttribute( 'cursor', 'nesw-resize' );
-        this.handle4.setAttribute( 'cursor', 'nesw-resize' );
+          var j = 1;
+          this.handles = {};
+          this.sides = [];
+          for ( var i in this.options.handles.sides ) {
+            if ( this.options.handles.sides[ i ] ) {
+              this.handles[ i ] = this[ 'handle' + j ];
+              this.sides[ j ] = i;
+              j++;
+            }
 
-        this.handle1.setAttribute( 'cursor', 'nwse-resize' );
-        this.handle3.setAttribute( 'cursor', 'nwse-resize' );
+          }
 
-        break;
+          break;
 
+        default:
+        case 'corners':
+          this.createHandles( this.nbHandles, 'rect', {
+            transform: "translate(-3 -3)",
+            width: 6,
+            height: 6,
+            stroke: "black",
+            fill: "white"
+          } );
+
+          this.handle2.setAttribute( 'cursor', 'nesw-resize' );
+          this.handle4.setAttribute( 'cursor', 'nesw-resize' );
+
+          this.handle1.setAttribute( 'cursor', 'nwse-resize' );
+          this.handle3.setAttribute( 'cursor', 'nwse-resize' );
+
+          break;
+
+      }
     }
 
   }
@@ -468,7 +470,11 @@ this.handle1.setAttribute('x', this.currentX);
 
     setHandles: function() {
 
-      if ( !this.handlesInDom ) {
+      if( this.isLocked() ) {
+        return;
+      }
+      
+      if ( ! this.handlesInDom ) {
         return;
       }
 

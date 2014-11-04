@@ -258,6 +258,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
       // 5 September 2014. I encountered a case here shapeZone must be above plotGroup
       this.shapeZone = document.createElementNS( this.ns, 'g' );
       this.graphingZone.appendChild( this.shapeZone );
+      this.shapeLayers = [];
 
       this._makeClosingLines();
 
@@ -884,11 +885,14 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
       return deferred;
     },
 
-    newShape: function( shapeData, events, mute ) {
+    newShape: function( shapeData, events, mute, noDeferred ) {
 
       var self = this,
-        response,
-        deferred = $.Deferred();
+        response;
+
+      if( ! noDeferred ) {
+        var deferred = $.Deferred();
+      }
 
       shapeData.id = Math.random();
 
@@ -932,6 +936,10 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
           shape.set( 'strokeWidth', shapeData.strokeWidth || ( shapeData.strokeColor ? 1 : 0 ) );
         }
 
+        if ( shapeData.layer ) {
+          shape.setLayer( shapeData.layer );
+        }
+
         if ( shapeData.label ) {
 
           if ( !( shapeData.label instanceof Array ) ) {
@@ -953,32 +961,31 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
           shape.setLabelNumber( l );
         }
 
-        /*switch(shape.type) {
-					case 'rect':
-					case 'rectangle':
-						shape.set('width', shape.width);
-						shape.set('height', shape.height);
-					break;
-				}*/
         self.shapes.push( shape );
-
         self.triggerEvent( 'onShapeMake', shape, shapeData );
 
-        deferred.resolve( shape );
+        if( ! noDeferred ) {
+          deferred.resolve( shape );
+        }
 
-        if ( !mute ) {
+        if ( ! mute ) {
           self.triggerEvent( 'onNewShape', shapeData );
         }
 
       }
 
       if ( shapeData.url ) {
-        this.dynamicLoader.load( 'external', shapeData.url, callback );
+        var dynamicLoaderResponse = this.dynamicLoader.load( 'external', shapeData.url, callback );
       } else {
-        this.dynamicLoader.load( 'shapes', 'graph.shape.' + shapeData.type, callback );
+        var dynamicLoaderResponse = this.dynamicLoader.load( 'shapes', 'graph.shape.' + shapeData.type, callback );
       }
 
-      return deferred;
+
+      if( ! noDeferred ) {
+        return deferred;
+      }
+
+      return dynamicLoaderResponse;
     },
 
     redrawShapes: function() {
@@ -1001,6 +1008,31 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
       this.shapes.splice( this.shapes.indexOf( shape ), 1 );
     },
 
+    appendShapeToDom: function( shape ) {
+
+      var shapeLayer = shape.getLayer();
+      
+      if( ! this.shapeLayers[ shapeLayer ] ) {
+        this.shapeLayers[ shapeLayer ] = document.createElementNS( this.ns, 'g' );
+        var i = 1,
+            prevLayer;
+
+        while( ! ( prevLayer = this.shapeLayers[ shapeLayer - i ] ) && shapeLayer - i >= 0 ) {
+          i ++;
+        }
+
+        if( ! prevLayer ) {
+          this.shapeZone.insertBefore( this.shapeLayers[ shapeLayer ], this.shapeZone.firstChild );
+        } else if( prevLayer.nextSibling ) {
+          this.shapeZone.insertBefore( this.shapeLayers[ shapeLayer ], prevLayer.nextSibling );
+        } else {
+          this.shapeZone.appendChild( this.shapeLayers[ shapeLayer ] );
+        }
+      }
+
+      this.shapeLayers[ shapeLayer ].appendChild( shape.group );
+    },
+    
     _makeClosingLines: function() {
 
       this.closingLines = {};

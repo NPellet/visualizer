@@ -44,10 +44,6 @@ define( [], function() {
 
       this.classes = [];
 
-      this.rectEvent = document.createElementNS( this.graph.ns, 'rect' );
-      this.rectEvent.setAttribute( 'pointer-events', 'fill' );
-      this.rectEvent.setAttribute( 'fill', 'transparent' );
-
       this._movable = true;
       this._selectable = true;
 
@@ -76,17 +72,12 @@ define( [], function() {
         this._dom.addEventListener( 'mouseover', function( e ) {
 
           self.handleMouseOver( e );
-          //self.doHover( true, e );
-          //	e.stopPropagation();
 
         } );
 
         this._dom.addEventListener( 'mouseout', function( e ) {
 
           self.handleMouseOut( e );
-
-          //self.doHover( false, e );
-          //e.stopPropagation();
 
         } );
 
@@ -114,7 +105,7 @@ define( [], function() {
 
       //			this.group.appendChild(this.rectEvent);
 
-      this.graph.shapeZone.appendChild( this.group );
+      
       this.initImpl();
     },
 
@@ -189,6 +180,12 @@ define( [], function() {
 
     setBBox: function() {
 
+      if( ! this.rectEvent ) {
+        this.rectEvent = document.createElementNS( this.graph.ns, 'rect' );
+        this.rectEvent.setAttribute( 'pointer-events', 'fill' );
+        this.rectEvent.setAttribute( 'fill', 'transparent' );
+      }
+
       this.group.removeChild( this.rectEvent );
       var box = this.group.getBBox();
       this.rectEvent.setAttribute( 'x', box.x );
@@ -199,9 +196,6 @@ define( [], function() {
       this.group.appendChild( this.rectEvent );
     },
 
-    setMouseOver: function( callback ) {
-      this.rectEvent.addEventListener( 'mouseover', callback );
-    },
 
     kill: function() {
 
@@ -221,6 +215,11 @@ define( [], function() {
 
       if ( this.labelNumber == undefined ) {
         this.setLabelNumber( 1 );
+      }
+
+      if( ! this._inDom ) {
+        this.graph.appendShapeToDom( this );
+        this._inDom = true;
       }
 
       this.setFillColor();
@@ -391,7 +390,16 @@ define( [], function() {
       }
     },
 
+    checkMinMax: function() {
+
+      var pos = this.get
+
+
+
+    },
+
     _makeLabel: function() {
+
       var self = this;
       this.label = this.label || [];
 
@@ -715,16 +723,17 @@ define( [], function() {
 
           this.graph.shapeZone.appendChild( this.group ); // Put the shape on top of the stack !
 
-          //if( this._movable !== false ) {
-          this.graph.elementMoving( this );
-          //}
+          if( ! this.isLocked() ) {
+            this.graph.elementMoving( this );
+          }
 
-          if ( !this._selected ) {
+          if ( ! this._selected && ! this.isLocked( ) ) {
             this.preventUnselect = true;
             this.timeoutSelect = window.setTimeout( function() { // Tweak needed to select the shape.
 
-              self.select();
-              self.timeoutSelect = false;
+                self.select();
+                self.timeoutSelect = false;
+
             }, 100 );
           }
           this.mouseCoords = this.graph._getXY( e );
@@ -1081,6 +1090,16 @@ define( [], function() {
 
     getMaxY: function() {
       return this.maxY;
+    },
+
+    // Layers
+
+    getLayer: function() {
+      return this._layer || 1;
+    },
+
+    setLayer: function( layer ) {
+      this._layer = layer;
     }
   }
 
