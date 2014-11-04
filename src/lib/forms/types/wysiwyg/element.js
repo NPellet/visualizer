@@ -23,8 +23,13 @@ define( [ 'require', 'jquery', 'src/util/util', 'ckeditor' ], function( require,
 
 		var self = this;
 
+		var uri = require.toUrl('./ckeditor_config.js');
+		if (uri.indexOf('http') !== 0) {
+			uri = '../../' + uri;
+		}
+
 		this._editor = CKEDITOR.replace(this._id, {
-			customConfig: "../../" + require.toUrl('./') + 'ckeditor_config.js',
+			customConfig: uri,
 			extraPlugins: 'onchange'
 		});
 
