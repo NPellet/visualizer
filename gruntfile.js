@@ -93,7 +93,7 @@ module.exports = function (grunt) {
                             './chemcalc/lib.js',
                             './jsgraph/dist/jsgraph.js',
                             './jqueryui-touch-punch/jquery.ui.touch-punch.min.js',
-                            './jcampconverter/src/jcampconverter.js',
+                            './jcampconverter/build/jcampconverter.js',
                             './jsbarcode/jsBarcode.min.js',
                             './slickgrid/**'
                         ],
