@@ -305,14 +305,10 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             if(this.grid) {
                 this.grid.resizeCanvas();
             }
-
         }
-
-
-
     });
 
-    function waitingFormatter(value) {
+    function waitingFormatter() {
         return "wait...";
     }
 
@@ -325,6 +321,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
     }
 
     function typeRenderer(cellNode, row, dataContext, colDef) {
+        console.log('type renderer');
         this.module.data.traceSync([row]);
         var def = Renderer.toScreen(dataContext, this.module, {}, colDef.jpath);
         def.always(function(value) {

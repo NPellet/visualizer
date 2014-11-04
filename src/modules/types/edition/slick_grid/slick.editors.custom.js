@@ -40,10 +40,13 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
                     color: $input.val(),
                     preferredFormat: 'hex',
                     change: function(color) {
+                        console.log('change');
                         console.log('color: ', color);
+                        $input.spectrum('hide');
                         args.commitChanges();
                     },
                     move: function(color) {
+                        console.log('move');
                         console.log('color: ', color);
                     },
                     show: function() {
@@ -51,7 +54,12 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
                     },
                     hide: function() {
                         console.log('hide');
-                    }
+                        args.commitChanges();
+                    },
+                    localStorageKey: 'visualizer-spectrum',
+                    showPalette: true,
+                    showSelectionPalette: true,
+                    palette: []
                 });
 
                 $input.next().first().click();
