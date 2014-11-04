@@ -106,8 +106,10 @@ define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'src/
 		}
 		for(i in newData) {
             child = DataObject.check(newData[i], true);
-			data[i] = child;
-            child.linkToParent(data, i);
+			if (child) {
+				data[i] = child;
+				child.linkToParent(data, i);
+			}
 		}
         data.triggerChange();
 	}
