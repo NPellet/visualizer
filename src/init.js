@@ -66,7 +66,7 @@ requirejs.config({
 	}
 });
 
-require(['jquery', 'src/main/datas', 'src/main/entrypoint', 'uri/URI.fragmentQuery', 'components/bluebird/js/browser/bluebird.js', 'lib/IndexedDBShim/IndexedDBShim.js'], function($, Datas, EntryPoint, URI, Promise) {
+require(['jquery', 'src/main/datas', 'src/main/entrypoint', 'uri/URI.fragmentQuery', 'components/bluebird/js/browser/bluebird', 'lib/IndexedDBShim/IndexedDBShim'], function($, Datas, EntryPoint, URI, Promise) {
 	window.Promise = Promise;
 	$(document).ready(function() {
 			var url = new URI(window.location.href);
