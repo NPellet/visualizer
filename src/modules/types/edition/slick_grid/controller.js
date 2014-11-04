@@ -237,17 +237,12 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
             refAction: [ 'row' ]
         },
 
-        onToggleOn: {
-            label: 'On Toggle On',
-            refVariable: [ 'selectedrows' ],
-            refAction: [ 'row' ]
-        },
-
-        onToggleOff: {
-            label: 'On Toggle Off',
-            refVariable: [ 'selectedrows' ],
-            refAction: [ 'row' ]
+        onRowChange: {
+            label: 'A row has been edited',
+            refVariable: ['row'],
+            refAction: ['row']
         }
+
     };
 
 
@@ -261,6 +256,11 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
     controller.prototype.onClick = function(row) {
         this.setVarFromEvent( 'onSelect', 'row', 'list', [ row ] );
         this.sendAction( 'row', this.module.data.get( row ), 'onSelect' );
+    };
+
+    controller.prototype.onRowChange = function(row) {
+        this.setVarFromEvent('onRowChange', 'row', 'list', [row]);
+        this.sendAction('row', this.module.data.get(row), 'onRowChange');
     };
 
 

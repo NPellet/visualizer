@@ -203,10 +203,11 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     for(var i=0; i<cols.length; i++) {
                         that.module.definition.configuration.groups.cols[0][i].width = cols[i].width;
                     }
-
                 });
 
-
+                that.grid.onCellChange.subscribe(function (e, args) {
+                    that.module.controller.onRowChange(args.row);
+                });
 
                 that.grid.onColumnsReordered.subscribe(function(e, args) {
                     var cols = that.grid.getColumns();
