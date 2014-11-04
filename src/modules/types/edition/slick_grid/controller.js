@@ -56,7 +56,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                                 autoEdit: 'Enable Auto Edit',
                                 enableTextSelectionOnCells: 'Enable Text Selection',
                                 enableColumnReorder: 'Enable Column reorder',
-                                forceFitColumns: 'Force fit Columns'
+                                forceFitColumns: 'Force fit Columns',
                             },
                             default: ['editable', 'enableAddRow', 'enableCellNavigation']
                         },
@@ -64,6 +64,15 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                         "slick.rowHeight": {
                             type: 'text',
                             title: 'Row Height'
+                        },
+
+                        autofocus: {
+                            type: 'checkbox',
+                            title: 'Auto Focus',
+                            options: {
+                                yes: 'Yes'
+                            },
+                            default: []
                         },
 
 
@@ -179,6 +188,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
         'filterRow': [ 'groups', 'group', 0, 'filterRow', 0 ],
         'slickCheck': [ 'groups', 'group', 0, 'slickCheck', 0 ],
         'slick.rowHeight': [ 'groups', 'group', 0, 'slick.rowHeight', 0 ],
+        'autofocus': [ 'groups', 'group', 0, 'autofocus', 0 ],
         'cols': ['groups', 'cols', 0]
     };
 

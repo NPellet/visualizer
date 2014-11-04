@@ -137,6 +137,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         update: {
 
             list: function( moduleValue ) {
+                console.log('UPDATE');
 
                 var that =  this;
                 var l = moduleValue.get().length;
@@ -152,6 +153,15 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
                 that.grid.setSelectionModel(new Slick.CellSelectionModel());
                 that.grid.module = that.module;
+
+                if(!_.isUndefined(that.lastActiveRow)) {
+                    if(that.module.getConfigurationCheckbox('autofocus', 'yes')) {
+                        that.grid.gotoCell(that.lastActiveRow, that.lastActiveCell);
+                    }
+                    else {
+                        that.grid.setActiveCell(that.lastActiveRow, that.lastActiveCell);
+                    }
+                }
 
                 that.grid.onAddNewRow.subscribe(function (e, args) {
                     var item = args.item;
@@ -207,6 +217,11 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
                 that.grid.onCellChange.subscribe(function (e, args) {
                     that.module.controller.onRowChange(args.row);
+                });
+
+                that.grid.onActiveCellChanged.subscribe(function(e, args) {
+                    that.lastActiveCell = args.cell;
+                    that.lastActiveRow = args.row;
                 });
 
                 that.grid.onColumnsReordered.subscribe(function(e, args) {
