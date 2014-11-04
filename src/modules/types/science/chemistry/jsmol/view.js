@@ -9,7 +9,11 @@ define(['require', 'modules/default/defaultview'], function (require, Default) {
 
     window.addEventListener('message', function (event) {
 
-        var message = JSON.parse(event.data);
+        try {
+            var message = JSON.parse(event.data);
+        } catch(e) {
+            return;
+        }
         if (message.module !== 'jsmol') {
             return;
         }

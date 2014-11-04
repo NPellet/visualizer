@@ -106,7 +106,11 @@
 
     window.addEventListener('message', function (event) {
 
-        var message = JSON.parse(event.data);
+        try {
+            var message = JSON.parse(event.data);
+        } catch(e) {
+            return;
+        }
 
         switch (message.type) {
             case 'init':
