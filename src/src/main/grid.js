@@ -225,6 +225,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
         module.view.width = module.getDomContent().width();
         module.view.height = containerHeight;
         module.view.onResize();
+        window.dispatchEvent(new UIEvent('resize')); // Required by ace editor.
     }
 
     function newModule(url) {

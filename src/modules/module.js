@@ -387,8 +387,6 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug, Variables ) {
                 var Grid = require('src/main/grid');
                 Grid.setModuleSize(this);
                 Grid.moduleResize(this);
-
-                window.dispatchEvent(new Event('resize')); // Required by ace editor.
 				
 				return layer;
 			}
