@@ -103,8 +103,8 @@
     function doRedirect() {
         setTimeout(function() {
             var flavor = data.flavor || "default";
-            var version = data.version || "visualizer_201405281409";
-            window.location = '/cheminfo/'+version+'/index.html?config=../_design/flavor/_list/config/alldocs%3Fkey%3D%22'+flavor+'%22&viewURL='+escape(view);
+//            var version = data.version || "visualizer_201405281409";
+            window.location = '/cheminfo/home/load.html?config=../_design/flavor/_list/config/alldocs%3Fkey%3D%22'+flavor+'%22&viewURL='+escape(view);
         }, 100);
     }
     
