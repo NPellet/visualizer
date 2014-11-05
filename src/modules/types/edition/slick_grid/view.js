@@ -168,9 +168,11 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     var jpath = args.column.jpath.slice();
                     jpath.unshift(that.module.data.length);
                     that.module.model.dataSetChild(that.module.data, jpath, item).then(function() {
+                        var row = that.module.data.length - 1;
                         that.grid.updateRowCount();
-                        that.grid.invalidateRow(that.module.data.length-1);
+                        that.grid.invalidateRow(row);
                         that.grid.render();
+                        that.module.controller.onRowNew(row);
                     });
 
                 });

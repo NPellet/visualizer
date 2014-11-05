@@ -261,6 +261,12 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
             label: 'A row has been edited',
             refVariable: ['row'],
             refAction: ['row']
+        },
+
+        onRowNew: {
+            label: 'A new row has been edited',
+            refVariable: ['row'],
+            refAction: ['row']
         }
 
     };
@@ -283,6 +289,11 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
         this.sendAction('row', this.module.data.get(row), 'onRowChange');
     };
 
+
+    controller.prototype.onRowNew = function(row) {
+        this.setVarFromEvent('onRowNew', 'row', 'list', [row]);
+        this.sendAction('row', this.module.data.get(row), 'onRowNew');
+    };
 
     return controller;
 });
