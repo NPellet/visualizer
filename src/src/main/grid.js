@@ -689,6 +689,9 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
                 definition.yHeight = 10;
             }
 
+            var modules = ModuleFactory.getModules();
+            modules.forEach(removeModule);
+
             $(jqdom).empty();
             checkDimensions();
             switchToLayer(activeLayer);
