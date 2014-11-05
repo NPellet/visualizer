@@ -24,7 +24,7 @@ define(['require', 'modules/default/defaultview', 'src/util/webworker', 'src/uti
             this.module.getDomContent().html(this.dom);
 
             this.squareLoading = 250;
-            this.availableZooms = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10/*,11,12,13,14,15*//*,16,17,18,19,20*/];
+            this.availableZooms = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
             this.buffers = {};
 
@@ -46,7 +46,6 @@ define(['require', 'modules/default/defaultview', 'src/util/webworker', 'src/uti
                 self.changeZoom(self.accumulatedDelta / 1000, (e.offsetX || e.pageX - $(e.target).offset().left), (e.offsetY || e.pageY - $(e.target).offset().top))
 
             });
-
 
             $(this.canvasContainer).drag(function (e1, e2) {
 
@@ -70,6 +69,7 @@ define(['require', 'modules/default/defaultview', 'src/util/webworker', 'src/uti
             this.canvasContainer.width(this.dom.width() - 55);
             this.onResize(true);
             this.initWorkers();
+            this.module.controller.initEvents();
             this.resolveReady();
         },
 
@@ -79,8 +79,10 @@ define(['require', 'modules/default/defaultview', 'src/util/webworker', 'src/uti
             this.canvas.width = this.canvasContainer.width();
             this.canvas.height = this.canvasContainer.height();
 
-            if (!doNotRedraw)
+            if (!doNotRedraw) {
+                this.doCanvasErase();
                 this.doCanvasRedraw();
+            }
         },
 
         doCanvasErase: function () {
@@ -139,12 +141,6 @@ define(['require', 'modules/default/defaultview', 'src/util/webworker', 'src/uti
             }
 
             return currentIndices;
-            /*
-             else if(currentPxPerCell < pxPerCell) {
-             return currentIndices;
-             } else
-             return currentIndices;
-             */
 
         },
 
@@ -173,9 +169,8 @@ define(['require', 'modules/default/defaultview', 'src/util/webworker', 'src/uti
 
         resetZoomPrefetch: function () {
 
-            var currentIndex;
-            //console.log(this.pxPerCell);
-            for (var i = 0; i < this.availableZooms.length; i++) {
+            var currentIndex, i, len;
+            for (i = 0; i < this.availableZooms.length; i++) {
                 if (this.availableZooms[i] == this.pxPerCell) {
                     currentIndex = i;
                     break;
@@ -186,7 +181,7 @@ define(['require', 'modules/default/defaultview', 'src/util/webworker', 'src/uti
             var arrAfter = this.availableZooms.slice(currentIndex + 1, currentIndex + 3);
             this.availableZoomsForFetch = [];
 
-            for (var i = 0, len = (arrBefore.length + arrAfter.length); i < len; i++) {
+            for (i = 0, len = (arrBefore.length + arrAfter.length); i < len; i++) {
 
                 if ((i % 2 && arrBefore.length > 0) || arrAfter.length == 0)
                     this.availableZoomsForFetch.push(arrBefore.shift());
@@ -238,8 +233,7 @@ define(['require', 'modules/default/defaultview', 'src/util/webworker', 'src/uti
         },
 
         tanh: function (arg) {
-            var scaleX = 15;
-            arg /= scaleX;
+            arg /= 15;
             return this.availableZooms[this.availableZooms.length - 1] * 2.5 * arg;
         },
 
@@ -272,23 +266,19 @@ define(['require', 'modules/default/defaultview', 'src/util/webworker', 'src/uti
                 moduleValue = moduleValue.get();
 
 
-                var gridData;
                 // Get the new module value
                 this.gridData = moduleValue.data;
                 this.canvasNbX = this.gridData[0].length;
                 this.canvasNbY = this.gridData.length;
-                var timeStart = Date.now();
 
                 var self = this;
 
                 if (!this.minmaxworker) {
                     this.minmaxworker = new Worker('src/util/workers/getminmaxmatrix.js');
                     this.minmaxworker.addEventListener('message', function (event) {
-                        //console.log('Get message');
-                        var data = event.data.message;
 
-                        self.minValue = data.min;
-                        self.maxValue = data.max;
+                        self.minValue = event.data.min;
+                        self.maxValue = event.data.max;
                         self.doChangeWorkersData();
                         // We can keep the actual workers, not a problem. We just need to erase the buffers array
                         self.buffers = [];
@@ -298,22 +288,18 @@ define(['require', 'modules/default/defaultview', 'src/util/webworker', 'src/uti
                             self.maxValue = 1;
                         }
                         self.redoScale(self.minValue, self.maxValue);
-                        self.launchWorkers();
+                        self.launchWorkers(true);
                     });
                 }
 
-                this.minmaxworker.postMessage({time: Date.now(), message: moduleValue.data});
+                this.minmaxworker.postMessage(JSON.stringify(moduleValue.data));
             }
 
 
         },
 
         initWorkers: function () {
-
-            //for(var i = 0, len = this.availableZooms.length; i < len; i++) {
-            //	if(!this.workers[this.availableZooms[i]])
-            this.workers/*[this.availableZooms[i]]*/ = this.initWorker(/*this.availableZooms[i]*/);
-            //	}
+            this.workers = this.initWorker();
         },
 
         getCurrentPxPerCellFetch: function () {
@@ -327,16 +313,16 @@ define(['require', 'modules/default/defaultview', 'src/util/webworker', 'src/uti
 
         launchWorkers: function (restartAtNormal) {
 
+            var pxPerCell;
             this.cachedPxPerCell = this.pxPerCell;
             if (restartAtNormal) {
-                var pxPerCell = this.getPxPerCell();
+                pxPerCell = this.getPxPerCell();
                 this.resetZoomPrefetch(pxPerCell);
                 this.pxPerCell = this.cachedPxPerCell;
 
             } else
-                var pxPerCell = this.getCurrentPxPerCellFetch();
+                pxPerCell = this.getCurrentPxPerCellFetch();
 
-            //for(var i = 0, len = this.availableZooms.length; i < len; i++)
             if (!this.postNextMessageToWorker(pxPerCell)) {
                 if (this.incrementPxPerCellFetch())
                     this.launchWorkers();
@@ -397,11 +383,9 @@ define(['require', 'modules/default/defaultview', 'src/util/webworker', 'src/uti
         },
 
         doChangeWorkersData: function () {
-
-            //for(var i in this.workers)
             this.workers.postMessage({
                 title: 'changeData',
-                message: {data: this.gridData, min: this.minValue, max: this.maxValue}
+                message: {data: JSON.stringify(this.gridData), min: this.minValue, max: this.maxValue}
             });
         },
 
@@ -466,7 +450,7 @@ define(['require', 'modules/default/defaultview', 'src/util/webworker', 'src/uti
 
             for (var i = 0; i < colors.length; i++) {
                 lineargradient.addColorStop(i / (colors.length - 1), Util.getColor(colors[i]));
-                this.scaleCanvasContext.fillText(Math.round(100 * (i * step + min)) / 100, 5, stepPx * i <= 0 ? 15 : stepPx * i - 5);
+                this.scaleCanvasContext.fillText(String(Math.round(100 * (i * step + min)) / 100), 5, stepPx * i <= 0 ? 15 : stepPx * i - 5);
             }
 
             this.scaleCanvasContext.fillStyle = lineargradient;

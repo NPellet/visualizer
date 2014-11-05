@@ -80,8 +80,6 @@ function generate(indexX, indexY, buffer, nbValX) {
         }
     }
 
-    buffer.data = bufferData;
-
     return buffer;
 }
 
@@ -119,7 +117,7 @@ onmessage = function (event) {
         highContrast = d.message.highcontrast;
 
     } else if (d.title == 'changeData') {
-        data = d.message.data;
+        data = JSON.parse(d.message.data);
         min = d.message.min;
         max = d.message.max;
 

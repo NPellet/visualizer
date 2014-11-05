@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/util/api'], function (Default, API) {
+define(['modules/default/defaultcontroller'], function (Default) {
 
     function Controller() {
     }
@@ -19,8 +19,9 @@ define(['modules/default/defaultcontroller', 'src/util/api'], function (Default,
     Controller.prototype.getMatrixElementFromEvent = function (e) {
 
         var moduleValue;
-        if (!(moduleValue = this.module.getDataFromRel('matrix')))
+        if (!(moduleValue = this.module.getDataFromRel('matrix'))) {
             return false;
+        }
 
         var pxPerCell = this.module.view.getPxPerCell();
         var shift = this.module.view.getXYShift();
@@ -32,93 +33,37 @@ define(['modules/default/defaultcontroller', 'src/util/api'], function (Default,
         var x = Math.floor((e.offsetX - shift.x) / pxPerCell);
         var y = Math.floor((e.offsetY - shift.y) / pxPerCell);
 
-        moduleValue = moduleValue.value;
-        var xLabel = moduleValue.xLabel;
-        var yLabel = moduleValue.yLabel;
-        var gridData = moduleValue.data;
+        var gridData = moduleValue.get().data;
 
-        if (!gridData || !gridData[0] || x < 0 || y < 0 || y > gridData.length || x > gridData[0].length)
-            return false;
-
-        if (isNaN(x) || isNaN(y) || !gridData[y][x]) {
+        if (!gridData || !gridData[0] || x < 0 || y < 0 || y > gridData.length || x > gridData[0].length) {
             return false;
         }
 
-        return [xLabel[x], yLabel[y], gridData[y][x]];
+        return [x, y];
+
     };
 
-    Controller.prototype.initimpl = function () {
-
-        var controller = this;
-        var actions;
-
-        if (!(actions = this.module.vars_out()))
-            return;
-
-        $(this.module.getDomContent()).on('mousemove', 'canvas',
-            // Debounce the hover event
-            $.debounce(25, function (e) {
-                var keyed = controller.getMatrixElementFromEvent(e);
-                if (!keyed)
-                    return;
-
-                var value = false;
-                for (var i in actions) {
-                    if (actions[i].event == 'onPixelHover') {
-                        if (actions[i].rel == 'col')
-                            value = keyed[0];
-                        else if (actions[i].rel == 'row')
-                            value = keyed[1];
-                        else if (actions[i].rel == 'intersect')
-                            value = keyed[2];
-
-                        if (value === undefined) {
-                            return;
-                        }
-
-                        API.setVariable(actions[i].name, value, actions[i].jpath);
-                    }
-                }
-            }))//.on('mousemove', 'canvas', function() {
-
-
-        $(this.module.getDomContent()).on('mousedown', 'canvas', function (e) {
-
-            // No need to blank the var here
-            // No event debouncing
-
+    function getHandlerForEvent(controller, name) {
+        return function handleEvent(e) {
             var keyed = controller.getMatrixElementFromEvent(e);
 
             if (!keyed) {
                 return;
             }
 
-            var value = false,
-                i;
+            controller.setVarFromEvent(name, 'row', 'matrix', ['xLabel', keyed[0]]);
+            controller.setVarFromEvent(name, 'col', 'matrix', ['yLabel', keyed[1]]);
+            controller.setVarFromEvent(name, 'intersect', 'matrix', ['data', keyed[0], keyed[1]]);
+        }
+    }
 
-            for (i in actions) {
+    Controller.prototype.initEvents = function () {
 
-                if (actions[i].event == 'onPixelHover') {
+        var dom = $(this.module.getDomContent());
 
-                    if (actions[i].rel == 'col') {
+        dom.on('mousemove', 'canvas', $.debounce(25, getHandlerForEvent(this, 'onPixelHover')));
+        dom.on('click', 'canvas', getHandlerForEvent(this, 'onPixelClick'));
 
-                        value = keyed[0];
-
-                    } else if (actions[i].rel == 'row') {
-
-                        value = keyed[1];
-
-                    } else if (actions[i].rel == 'intersect') {
-
-                        value = keyed[2];
-
-                    }
-
-                    API.setVariable(actions[i].name, value, actions[i].jpath);
-                }
-            }
-        });
-        this.resolveReady();
     };
 
     Controller.prototype.references = {
@@ -152,12 +97,12 @@ define(['modules/default/defaultcontroller', 'src/util/api'], function (Default,
             label: 'click on a pixel',
             description: 'When the users click on any pixel',
             refVariable: ['row', 'col', 'intersect']
-        },
+        }/*,
         onPixelDblClick: {
             label: 'double click on a pixel',
             description: 'When the user double clics on any pixel',
             refVariable: ['row', 'col', 'intersect']
-        }
+        }*/
     };
 
     Controller.prototype.configurationStructure = function () {
