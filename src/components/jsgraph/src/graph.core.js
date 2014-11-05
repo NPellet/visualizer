@@ -256,9 +256,11 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
       this.graphingZone.appendChild( this.plotGroup );
 
       // 5 September 2014. I encountered a case here shapeZone must be above plotGroup
-      this.shapeZone = document.createElementNS( this.ns, 'g' );
+      /*this.shapeZone = document.createElementNS( this.ns, 'g' );
       this.graphingZone.appendChild( this.shapeZone );
-      this.shapeLayers = [];
+*/
+
+      this.layers = [];
 
       this._makeClosingLines();
 
@@ -1009,28 +1011,58 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
     },
 
     appendShapeToDom: function( shape ) {
+      this.getLayer( shape.getLayer(), 'shape' ).appendChild( shape.group );
+    },
 
-      var shapeLayer = shape.getLayer();
-      
-      if( ! this.shapeLayers[ shapeLayer ] ) {
-        this.shapeLayers[ shapeLayer ] = document.createElementNS( this.ns, 'g' );
+    removeShapeFromDom: function( shape ) {
+      this.getLayer( shape.getLayer(), 'shape' ).removeChild( shape.group );  
+    },
+    
+    appendSerieToDom: function( serie ) {
+      this.getLayer( serie.getLayer(), 'serie' ).appendChild( serie.groupMain );
+    },
+
+    removeSerieFromDom: function( serie ) {
+      this.getLayer( serie.getLayer(), 'serie' ).removeChild( serie.groupMain );  
+    },
+
+    getLayer: function( layer, mode ) {
+
+      if( ! this.layers[ layer] ) {
+
+        this.layers[ layer ] = [];
+
+        this.layers[ layer ][ 0 ] = document.createElementNS( this.ns, 'g' );
+        this.layers[ layer ][ 1 ] = document.createElementNS( this.ns, 'g' );
+        this.layers[ layer ][ 2 ] = document.createElementNS( this.ns, 'g' );
+
+        this.layers[ layer ][ 0 ].appendChild( this.layers[ layer ][ 1 ] );
+        this.layers[ layer ][ 0 ].appendChild( this.layers[ layer ][ 2 ] );
+
         var i = 1,
             prevLayer;
 
-        while( ! ( prevLayer = this.shapeLayers[ shapeLayer - i ] ) && shapeLayer - i >= 0 ) {
+        while( ! ( prevLayer = this.layers[ layer - i ] ) && layer - i >= 0 ) {
           i ++;
         }
 
         if( ! prevLayer ) {
-          this.shapeZone.insertBefore( this.shapeLayers[ shapeLayer ], this.shapeZone.firstChild );
+
+          this.plotGroup.insertBefore( this.layers[ layer ][ 0 ], this.plotGroup.firstChild );
+
         } else if( prevLayer.nextSibling ) {
-          this.shapeZone.insertBefore( this.shapeLayers[ shapeLayer ], prevLayer.nextSibling );
+
+          this.plotGroup.insertBefore( this.layers[ layer][ 0 ], prevLayer.nextSibling );
+
         } else {
-          this.shapeZone.appendChild( this.shapeLayers[ shapeLayer ] );
+
+          this.plotGroup.appendChild( this.layers[ layer ][ 0 ] );
+
         }
       }
 
-      this.shapeLayers[ shapeLayer ].appendChild( shape.group );
+      return this.layers[ layer ][ mode == 'shape' ? 2 : 1 ];
+
     },
     
     _makeClosingLines: function() {
@@ -1520,7 +1552,10 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
 
       var serie = new Serie();
       serie.init( graph, name, options );
-      graph.plotGroup.appendChild( serie.groupMain );
+
+      graph.appendSerieToDom( serie );
+
+      //graph.plotGroup.appendChild( serie.groupMain );
       callback( serie );
       return serie;
 

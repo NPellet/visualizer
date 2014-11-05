@@ -165,33 +165,11 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       var self = this;
       this.slotsData[ slot ] = this.slotCalculator( slot, slotNumber );
       this.slotsData[ slot ].pipe( function( data ) {
-console.log( data );
+
         self.slotsData[ slot ] = data;
         return data;
       } );
 
-    },
-
-    kill: function( noRedraw ) {
-
-      this.graph.plotGroup.removeChild( this.groupMain );
-
-      if ( this.picks && this.picks.length ) {
-        for ( var i = 0, l = this.picks.length; i < l; i++ ) {
-          this.picks[ i ].kill();
-        }
-      }
-
-      this.graph._removeSerie( this );
-
-      if ( !noRedraw )  {
-        this.graph.redraw();
-      }
-
-      if ( this.graph.legend ) {
-
-        this.graph.legend.update();
-      }
     },
 
     onMouseOverMarker: function( e, index ) {

@@ -199,7 +199,7 @@ define( [], function() {
 
     kill: function() {
 
-      this.graph.shapeZone.removeChild( this.group );
+      this.graph.removeShapeFromDom( this );
       this.graph._removeShape( this );
 
       this.callHandler( "onRemoved", this );
@@ -721,7 +721,7 @@ define( [], function() {
           //	e.stopPropagation();
           e.preventDefault();
 
-          this.graph.shapeZone.appendChild( this.group ); // Put the shape on top of the stack !
+          this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
 
           if( ! this.isLocked() ) {
             this.graph.elementMoving( this );

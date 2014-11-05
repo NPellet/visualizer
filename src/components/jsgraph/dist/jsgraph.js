@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.10.1-10
+ * jsGraphs JavaScript Graphing Library v1.10.1-12
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-11-03T22:00Z
+ * Date: 2014-11-05T09:53Z
  */
 
 (function( global, factory ) {
@@ -3153,9 +3153,11 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       this.graphingZone.appendChild( this.plotGroup );
 
       // 5 September 2014. I encountered a case here shapeZone must be above plotGroup
-      this.shapeZone = document.createElementNS( this.ns, 'g' );
+      /*this.shapeZone = document.createElementNS( this.ns, 'g' );
       this.graphingZone.appendChild( this.shapeZone );
-      this.shapeLayers = [];
+*/
+
+      this.layers = [];
 
       this._makeClosingLines();
 
@@ -3906,28 +3908,58 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     },
 
     appendShapeToDom: function( shape ) {
+      this.getLayer( shape.getLayer(), 'shape' ).appendChild( shape.group );
+    },
 
-      var shapeLayer = shape.getLayer();
-      
-      if( ! this.shapeLayers[ shapeLayer ] ) {
-        this.shapeLayers[ shapeLayer ] = document.createElementNS( this.ns, 'g' );
+    removeShapeFromDom: function( shape ) {
+      this.getLayer( shape.getLayer(), 'shape' ).removeChild( shape.group );  
+    },
+    
+    appendSerieToDom: function( serie ) {
+      this.getLayer( serie.getLayer(), 'serie' ).appendChild( serie.groupMain );
+    },
+
+    removeSerieFromDom: function( serie ) {
+      this.getLayer( serie.getLayer(), 'serie' ).removeChild( serie.groupMain );  
+    },
+
+    getLayer: function( layer, mode ) {
+
+      if( ! this.layers[ layer] ) {
+
+        this.layers[ layer ] = [];
+
+        this.layers[ layer ][ 0 ] = document.createElementNS( this.ns, 'g' );
+        this.layers[ layer ][ 1 ] = document.createElementNS( this.ns, 'g' );
+        this.layers[ layer ][ 2 ] = document.createElementNS( this.ns, 'g' );
+
+        this.layers[ layer ][ 0 ].appendChild( this.layers[ layer ][ 1 ] );
+        this.layers[ layer ][ 0 ].appendChild( this.layers[ layer ][ 2 ] );
+
         var i = 1,
             prevLayer;
 
-        while( ! ( prevLayer = this.shapeLayers[ shapeLayer - i ] ) && shapeLayer - i >= 0 ) {
+        while( ! ( prevLayer = this.layers[ layer - i ] ) && layer - i >= 0 ) {
           i ++;
         }
 
         if( ! prevLayer ) {
-          this.shapeZone.insertBefore( this.shapeLayers[ shapeLayer ], this.shapeZone.firstChild );
+
+          this.plotGroup.insertBefore( this.layers[ layer ][ 0 ], this.plotGroup.firstChild );
+
         } else if( prevLayer.nextSibling ) {
-          this.shapeZone.insertBefore( this.shapeLayers[ shapeLayer ], prevLayer.nextSibling );
+
+          this.plotGroup.insertBefore( this.layers[ layer][ 0 ], prevLayer.nextSibling );
+
         } else {
-          this.shapeZone.appendChild( this.shapeLayers[ shapeLayer ] );
+
+          this.plotGroup.appendChild( this.layers[ layer ][ 0 ] );
+
         }
       }
 
-      this.shapeLayers[ shapeLayer ].appendChild( shape.group );
+      return this.layers[ layer ][ mode == 'shape' ? 2 : 1 ];
+
     },
     
     _makeClosingLines: function() {
@@ -4417,7 +4449,10 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
       var serie = new Serie();
       serie.init( graph, name, options );
-      graph.plotGroup.appendChild( serie.groupMain );
+
+      graph.appendSerieToDom( serie );
+
+      //graph.plotGroup.appendChild( serie.groupMain );
       callback( serie );
       return serie;
 
@@ -5092,8 +5127,7 @@ build['./graph._serie'] = ( function( ) {
     },
 
     kill: function( noRedraw ) {
-
-      this.graph.plotGroup.removeChild( this.groupMain );
+      this.graph.removeSerieFromDom( this );
 
       if ( this.picks && this.picks.length ) {
         for ( var i = 0, l = this.picks.length; i < l; i++ ) {
@@ -5101,10 +5135,15 @@ build['./graph._serie'] = ( function( ) {
         }
       }
 
-      this.graph.series.splice( this.graph.series.indexOf( this ), 1 );
+      this.graph._removeSerie( this );
 
-      if ( !noRedraw )  {
+      if ( ! noRedraw )  {
         this.graph.redraw();
+      }
+
+      if ( this.graph.legend ) {
+
+        this.graph.legend.update();
       }
     },
 
@@ -5328,6 +5367,15 @@ build['./graph._serie'] = ( function( ) {
 
     isXMonotoneous: function() {
       return this.xmonotoneous ||  false;
+    },
+
+
+    getLayer: function() {
+      return this.options.layer || 1;
+    },
+
+    setLayer: function( layer ) {
+      this.options.layer = layer;
     }
 
   };
@@ -5407,6 +5455,8 @@ build['./plugins/graph.plugin.linking'] = ( function( ) {
 
     init: function( graph, options, plugin ) {
 
+      throw "Plugin deprecated. Use wrapper code instead (see jsNMR)";
+      
       this.options = options;
       var self = this;
       this.graph = graph;
@@ -6436,33 +6486,11 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       var self = this;
       this.slotsData[ slot ] = this.slotCalculator( slot, slotNumber );
       this.slotsData[ slot ].pipe( function( data ) {
-console.log( data );
+
         self.slotsData[ slot ] = data;
         return data;
       } );
 
-    },
-
-    kill: function( noRedraw ) {
-
-      this.graph.plotGroup.removeChild( this.groupMain );
-
-      if ( this.picks && this.picks.length ) {
-        for ( var i = 0, l = this.picks.length; i < l; i++ ) {
-          this.picks[ i ].kill();
-        }
-      }
-
-      this.graph._removeSerie( this );
-
-      if ( !noRedraw )  {
-        this.graph.redraw();
-      }
-
-      if ( this.graph.legend ) {
-
-        this.graph.legend.update();
-      }
     },
 
     onMouseOverMarker: function( e, index ) {
@@ -10009,7 +10037,7 @@ build['./shapes/graph.shape'] = ( function( ) {
 
     kill: function() {
 
-      this.graph.shapeZone.removeChild( this.group );
+      this.graph.removeShapeFromDom( this );
       this.graph._removeShape( this );
 
       this.callHandler( "onRemoved", this );
@@ -10531,7 +10559,7 @@ build['./shapes/graph.shape'] = ( function( ) {
           //	e.stopPropagation();
           e.preventDefault();
 
-          this.graph.shapeZone.appendChild( this.group ); // Put the shape on top of the stack !
+          this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
 
           if( ! this.isLocked() ) {
             this.graph.elementMoving( this );
