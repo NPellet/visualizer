@@ -74,7 +74,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
         pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.getXAxis() );
         pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.getYAxis() );
 
-      } else if( this.serie ) {
+      } else if ( this.serie ) {
 
         this.resizingPosition = ( ( this.reversed && this.handleSelected == 2 ) || ( !this.reversed && this.handleSelected == 1 ) ) ? this.getFromData( 'pos' ) : this.getFromData( 'pos2' );
 
@@ -106,7 +106,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
     setPosition: function() {
 
-      if( ! this.serie ) {
+      if ( !this.serie ) {
         return;
       }
 
@@ -168,12 +168,12 @@ define( [ './graph.shape' ], function( GraphShape ) {
             this.firstY = y;
           }
 
-          if( k > 0 ) {
-            this.currentLine += " L " + x + " " + y + " "  
+          if ( k > 0 ) {
+            this.currentLine += " L " + x + " " + y + " "
           } else {
             this.currentLine += " M " + x + " " + y + " ";
           }
-          
+
           //this.serie._addPoint( x, y, false, this.currentLine );
           k++;
 

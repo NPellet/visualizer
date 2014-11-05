@@ -7,7 +7,7 @@ define( [], function() {
     init: function( graph, options, plugin ) {
 
       throw "Plugin deprecated. Use wrapper code instead (see jsNMR)";
-      
+
       this.options = options;
       var self = this;
       this.graph = graph;

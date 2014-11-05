@@ -134,22 +134,22 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
         if ( forced.y !== undefined ) {
 
-        	if( typeof forced.y == "function" ) {
-        		pos2.y = pos.y = forced.y( this );
-        	} else {
-          		pos2.y = forced.y;
-          		pos.y = forced.y;
-          	}
+          if ( typeof forced.y == "function" ) {
+            pos2.y = pos.y = forced.y( this );
+          } else {
+            pos2.y = forced.y;
+            pos.y = forced.y;
+          }
         }
 
         if ( forced.x !== undefined ) {
 
-        	if( typeof forced.x == "function" ) {
-        		pos2.x = pos.x = forced.x( this );
-        	} else {
-	          pos2.x = forced.x;
-	          pos.x = forced.x;
-	         }
+          if ( typeof forced.x == "function" ) {
+            pos2.x = pos.x = forced.x( this );
+          } else {
+            pos2.x = forced.x;
+            pos.x = forced.x;
+          }
         }
       }
 

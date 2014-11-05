@@ -1,4 +1,4 @@
-define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken', './graph.axis.y.broken', './graph.xaxis.time', './graph.legend', './dynamicdepencies' ], function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken, GraphYAxisBroken, GraphXAxisTime, GraphLegend, DynamicDepencies ) {
+define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken', './graph.axis.y.broken', './graph.xaxis.time', './graph.legend', './dynamicdepencies' ], function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken, GraphYAxisBroken, GraphXAxisTime, GraphLegend, DynamicDepencies ) {
 
   "use strict";
 
@@ -96,20 +96,22 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
     this._doDom();
 
     var w, h;
-    if( dom.style.width && dom.style.width.indexOf("%") == -1 ) {
-      w = parseInt( dom.style.width.replace('px', '') );
+
+    if ( dom.style.width && dom.style.width.indexOf( "%" ) == -1 ) {
+      w = parseInt( dom.style.width.replace( 'px', '' ) );
+    } else if ( dom.style.minWidth && dom.style.minWidth.indexOf( "%" ) == -1 ) {
+      w = parseInt( dom.style.minWidth.replace( 'px', '' ) );
     } else {
-       w = $( dom ).width();
+      w = $( dom ).width();
     }
 
-
-    if( dom.style.height && dom.style.height.indexOf("%") == -1 ) {
-      h = parseInt( dom.style.height.replace('px', '') );
+    if ( dom.style.height && dom.style.height.indexOf( "%" ) == -1 ) {
+      h = parseInt( dom.style.height.replace( 'px', '' ) );
+    } else if ( dom.style.minWidth && dom.style.minWidth.indexOf( "%" ) == -1 ) {
+      h = parseInt( dom.style.minHeight.replace( 'px', '' ) );
     } else {
       h = $( dom ).height();
     }
-    
-
 
     this.setSize( w, h );
     this._resize();
@@ -164,16 +166,16 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
           switch ( i ) {
 
             case 'top':
-              this.getTopAxis( j, axis[ i ][ j ]);
+              this.getTopAxis( j, axis[ i ][ j ] );
               break;
             case 'bottom':
-              this.getBottomAxis( j, axis[ i ][ j ]);
+              this.getBottomAxis( j, axis[ i ][ j ] );
               break;
             case 'left':
-              this.getLeftAxis( j, axis[ i ][ j ]);
+              this.getLeftAxis( j, axis[ i ][ j ] );
               break;
             case 'right':
-              this.getRightAxis( j, axis[ i ][ j ]);
+              this.getRightAxis( j, axis[ i ][ j ] );
               break;
           }
         }
@@ -317,7 +319,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
       this.bypassHandleMouse = false;
     },
 
-
     getDom: function() {
       return this.dom;
     },
@@ -329,7 +330,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
     kill: function() {
       this._dom.removeChild( this.dom );
     },
-
 
     cacheOffset: function() {
       this.offsetCached = $( this._dom ).offset();
@@ -346,8 +346,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
     elementMoving: function( movingElement ) {
       this.bypassHandleMouse = movingElement;
     },
-
- 
 
     /* SIZING */
     setWidth: function( width, skipResize ) {
@@ -376,7 +374,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
       this.getDrawingWidth();
     },
 
-
     getWidth: function() {
       return this.width;
     },
@@ -384,7 +381,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
     getHeight: function() {
       return this.height;
     },
-
 
     getPaddingTop: function() {
       return this.options.paddingTop;
@@ -403,8 +399,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
     },
     /* END SIZING */
 
-
-   _resetAxes: function() {
+    _resetAxes: function() {
 
       while ( this.axisGroup.firstChild ) {
         this.axisGroup.removeChild( this.axisGroup.firstChild );
@@ -449,7 +444,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
         this._applyToAxis[ typeof func ].call( this, ax[ i ], func, params );
       }
     },
-
 
     getXAxis: function( num, options ) {
       if ( this.axis.top.length > 0 && this.axis.bottom.length == 0 ) {
@@ -516,7 +510,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
       this.axis.bottom[ num ] = axis;
     },
 
-
     // Title
     setTitle: function( title ) {
       this.options.title = title;
@@ -550,14 +543,14 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
     getBoundaryAxis: function( axis, xy, minmax ) {
 
       var valSeries = this.getBoundaryAxisFromSeries( axis, xy, minmax );
-    //  var valShapes = this.getBoundaryAxisFromShapes( axis, xy, minmax );
+      //  var valShapes = this.getBoundaryAxisFromShapes( axis, xy, minmax );
       return valSeries;
       //return Math[ minmax ]( valSeries, valShapes );
 
     },
 
     getBoundaryAxisFromShapes: function( axis, xy, minmax ) {
-/*
+      /*
       var
         x = xy == 'x',
         i = 0,
@@ -654,11 +647,11 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
 
     redraw: function( noX, noY ) {
 
-      if ( ! this.canRedraw() ) {
+      if ( !this.canRedraw() ) {
         return;
       }
 
-      if ( ! this.sizeSet ) {
+      if ( !this.sizeSet ) {
 
         this._resize();
 
@@ -892,20 +885,18 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
       var self = this,
         response;
 
-      if( ! noDeferred ) {
+      if ( !noDeferred ) {
         var deferred = $.Deferred();
       }
 
       shapeData.id = Math.random();
 
-      if ( ! mute ) {
+      if ( !mute ) {
 
         if ( false === ( response = this.triggerEvent( 'onBeforeNewShape', shapeData ) ) ) {
           return false;
         }
       }
-
-
 
       if ( response ) {
         shapeData = response;
@@ -966,11 +957,11 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
         self.shapes.push( shape );
         self.triggerEvent( 'onShapeMake', shape, shapeData );
 
-        if( ! noDeferred ) {
+        if ( !noDeferred ) {
           deferred.resolve( shape );
         }
 
-        if ( ! mute ) {
+        if ( !mute ) {
           self.triggerEvent( 'onNewShape', shapeData );
         }
 
@@ -982,8 +973,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
         var dynamicLoaderResponse = this.dynamicLoader.load( 'shapes', 'graph.shape.' + shapeData.type, callback );
       }
 
-
-      if( ! noDeferred ) {
+      if ( !noDeferred ) {
         return deferred;
       }
 
@@ -1015,20 +1005,20 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
     },
 
     removeShapeFromDom: function( shape ) {
-      this.getLayer( shape.getLayer(), 'shape' ).removeChild( shape.group );  
+      this.getLayer( shape.getLayer(), 'shape' ).removeChild( shape.group );
     },
-    
+
     appendSerieToDom: function( serie ) {
       this.getLayer( serie.getLayer(), 'serie' ).appendChild( serie.groupMain );
     },
 
     removeSerieFromDom: function( serie ) {
-      this.getLayer( serie.getLayer(), 'serie' ).removeChild( serie.groupMain );  
+      this.getLayer( serie.getLayer(), 'serie' ).removeChild( serie.groupMain );
     },
 
     getLayer: function( layer, mode ) {
 
-      if( ! this.layers[ layer] ) {
+      if ( !this.layers[ layer ] ) {
 
         this.layers[ layer ] = [];
 
@@ -1040,19 +1030,19 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
         this.layers[ layer ][ 0 ].appendChild( this.layers[ layer ][ 2 ] );
 
         var i = 1,
-            prevLayer;
+          prevLayer;
 
-        while( ! ( prevLayer = this.layers[ layer - i ] ) && layer - i >= 0 ) {
-          i ++;
+        while ( !( prevLayer = this.layers[ layer - i ] ) && layer - i >= 0 ) {
+          i++;
         }
 
-        if( ! prevLayer ) {
+        if ( !prevLayer ) {
 
           this.plotGroup.insertBefore( this.layers[ layer ][ 0 ], this.plotGroup.firstChild );
 
-        } else if( prevLayer.nextSibling ) {
+        } else if ( prevLayer.nextSibling ) {
 
-          this.plotGroup.insertBefore( this.layers[ layer][ 0 ], prevLayer.nextSibling );
+          this.plotGroup.insertBefore( this.layers[ layer ][ 0 ], prevLayer.nextSibling );
 
         } else {
 
@@ -1064,7 +1054,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
       return this.layers[ layer ][ mode == 'shape' ? 2 : 1 ];
 
     },
-    
+
     _makeClosingLines: function() {
 
       this.closingLines = {};
@@ -1110,9 +1100,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
       this.seriesReady.resolve();
     },
 
-
-
-
     isPluginAllowed: function( e, plugin ) {
 
       if ( this.forcedPlugin == plugin ) {
@@ -1149,8 +1136,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
     unforcePlugin: function() {
       this.forcedPlugin = false;
     },
-
-
 
     _pluginsExecute: function( funcName, args ) {
 
@@ -1351,9 +1336,9 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
 
           var def = ( value[ i ] !== undefined || relTo == undefined || relTo[ i ] == undefined ) ? pos[ i ] : ( this._getPositionPx( relTo[ i ], true, axis ) || 0 );
 
-          if ( i == 'y' && relTo && relTo.x && ! relTo.y ) {
+          if ( i == 'y' && relTo && relTo.x && !relTo.y ) {
 
-            if( ! onSerie ) {
+            if ( !onSerie ) {
               throw "Error. No serie exists. Cannot find y value";
               return;
             }
@@ -1435,11 +1420,11 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
 
     getValPosition: function( rel, axis ) {
 
-      if( rel == 'max' ) {
+      if ( rel == 'max' ) {
         return axis.getMaxValue();
       }
 
-      if( rel == 'min' ) {
+      if ( rel == 'min' ) {
         return axis.getMinValue();
       }
 
@@ -1517,7 +1502,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
       //		console.log('unlock');
       this.shapesLocked = false;
     },
-
 
     _getXY: function( e ) {
 
@@ -1875,34 +1859,34 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
     var options = options || {};
     var inst;
 
-    switch( options.type ) {
+    switch ( options.type ) {
 
       case 'time':
         var axisInstance = _availableAxes.time;
-      break;
+        break;
 
       case 'broken':
         var axisInstance = _availableAxes.broken;
-      break;
+        break;
 
       default:
         var axisInstance = _availableAxes.def;
-      break;
+        break;
     }
 
-    switch( pos ) {
+    switch ( pos ) {
 
       case 'top':
       case 'bottom':
         inst = axisInstance.x;
-      break;
+        break;
 
       case 'left':
       case 'right':
         inst = axisInstance.y;
-      break;
+        break;
     }
-    
+
     num = num || 0;
 
     if ( typeof num == "object" ) {
@@ -1976,7 +1960,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
     }
 
     // Redraw not obvious at all !!
-/*
+    /*
     graph.redraw();
     graph.drawSeries( true );
 

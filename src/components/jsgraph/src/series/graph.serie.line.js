@@ -133,10 +133,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
       var self = this;
       this.slotsData = {};
-//      this.slotWorker = new Worker( './src/slotworker.js' );
-  
-
-
+      //      this.slotWorker = new Worker( './src/slotworker.js' );
 
       for ( var i = 0, l = this.slots.length; i < l; i++ ) {
 
@@ -149,13 +146,13 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
     slotCalculator: function( slot, slotNumber ) {
 
       return SlotOptimizer( {
-        
+
         min: this.minX,
         max: this.maxX,
         data: this.data,
         slot: slot,
         slotNumber: slotNumber,
-        flip: this.getFlip( )
+        flip: this.getFlip()
 
       } );
 
@@ -218,12 +215,12 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
         if ( ( hover && this.domMarkerHover[ index ] && !this.domMarkerSelect[ index ] ) || this.domMarkerSelect[ index ] ) {
 
-          if ( ! el[ index ] ) {
+          if ( !el[ index ] ) {
             return;
           }
 
           this.groupMarkerSelected.removeChild( el[ index ] );
-          
+
           delete el[ index ];
 
           if ( hover )
@@ -318,7 +315,6 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       return serie;
     },
 
-
     drawInit: function() {
 
       var data, xData;
@@ -348,17 +344,15 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       this._optimizeBreak,
       this._optimizeBuffer;
 
-
-
       // Slots
       this._slotToUse = false;
       if ( this.options.useSlots && this.slots && this.slots.length > 0 ) {
-        if( this.isFlipped() ) {
+        if ( this.isFlipped() ) {
           var slot = this.graph.getDrawingHeight() * ( this.maxY - this.minY ) / ( this.getYAxis().getActualMax() - this.getYAxis().getActualMin() );
         } else {
-          var slot = this.graph.getDrawingWidth() * ( this.maxX - this.minX ) / ( this.getXAxis().getActualMax() - this.getXAxis().getActualMin() );  
+          var slot = this.graph.getDrawingWidth() * ( this.maxX - this.minX ) / ( this.getXAxis().getActualMax() - this.getXAxis().getActualMin() );
         }
-      
+
         for ( var y = 0, z = this.slots.length; y < z; y++ ) {
           if ( slot < this.slots[ y ] ) {
             this._slotToUse = this.slotsData[ this.slots[ y ] ];
@@ -373,7 +367,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
       this.detectedPeaks = [];
       this.lastYPeakPicking = false;
-      
+
     },
 
     removeLinesGroup: function() {
@@ -383,7 +377,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
     insertLinesGroup: function() {
 
-      if( ! this._afterLinesGroup ) {
+      if ( !this._afterLinesGroup ) {
         throw "Could not find group after lines to insertion."
       }
 
@@ -394,9 +388,9 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
     removeExtraLines: function() {
 
       var i = this.currentLineId + 1,
-          l = this.lines.length;
+        l = this.lines.length;
 
-      for ( ; i < l ; i ++ ) {
+      for ( ; i < l; i++ ) {
 
         this.groupLines.removeChild( this.lines[ i ] );
         this.lines.splice( i, 1 );
@@ -409,9 +403,9 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
       if ( this.options.autoPeakPicking ) {
 
-        if ( ! this.options.lineToZero ) {
+        if ( !this.options.lineToZero ) {
 
-          if ( ! this.lastYPeakPicking ) {
+          if ( !this.lastYPeakPicking ) {
 
             this.lastYPeakPicking = [ y, x ];
 
@@ -456,18 +450,16 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
       this.removeLinesGroup();
 
-
       this.eraseMarkers();
 
       this.lookForMaxima = true;
       this.lookForMinima = false;
 
-
-      if( ! this._draw_slot() ) {
+      if ( !this._draw_slot() ) {
 
         if ( this.mode == 'x_equally_separated' ) {
 
-            this._draw_equally_separated();
+          this._draw_equally_separated();
 
         } else {
 
@@ -476,36 +468,33 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         }
       }
 
-      this.makePeakPicking( );
+      this.makePeakPicking();
       this.removeExtraLines();
-      this.insertMarkers( );
+      this.insertMarkers();
       this.insertLinesGroup();
 
-      
       var label;
       for ( var i = 0, l = this.labels.length; i < l; i++ ) {
         this.repositionLabel( this.labels[ i ] );
       }
     },
 
-
     _draw_standard: function() {
 
       var self = this,
-          data = this._dataToUse,
-          toBreak,
-          i = 0,
-          l = data.length,
-          j,
-          k,
-          m,
-          x,
-          y,
-          xpx,
-          ypx,
-          xpx2,
-          ypx2;
-
+        data = this._dataToUse,
+        toBreak,
+        i = 0,
+        l = data.length,
+        j,
+        k,
+        m,
+        x,
+        y,
+        xpx,
+        ypx,
+        xpx2,
+        ypx2;
 
       var incrXFlip = 0;
       var incrYFlip = 1;
@@ -539,30 +528,26 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
           if ( xpx2 == xpx && ypx2 == ypx ) {
             continue;
           }
-  
 
-          if( isNaN( xpx2 ) || isNaN( ypx2 ) ) {
-            if( this.counter > 0 ) {
-               this._createLine( );
-             }
-             continue;
+          if ( isNaN( xpx2 ) ||  isNaN( ypx2 ) ) {
+            if ( this.counter > 0 ) {
+              this._createLine();
+            }
+            continue;
           }
 
-  
-
           // OPTIMIZATION START
-          if( ! this._optimize_before( xpx, ypx ) ) {
+          if ( !this._optimize_before( xpx, ypx ) ) {
             continue;
           }
           // OPTIMIZATION END
 
           this._addPoint( xpx2, ypx2 );
 
-
           // OPTIMIZATION START
-          if( ! this._optimize_after( xpx, ypx ) ) {
+          if ( !this._optimize_after( xpx, ypx ) ) {
             toBreak = true;
-            break;  
+            break;
           }
           // OPTIMIZATION END
 
@@ -572,7 +557,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
           ypx = ypx2;
         }
 
-        this._createLine( );
+        this._createLine();
 
         if ( toBreak ) {
           break;
@@ -582,43 +567,41 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
     _draw_slot: function() {
 
-        var self = this;
-        if( this._slotToUse ) {
+      var self = this;
+      if ( this._slotToUse ) {
 
+        if ( this._slotToUse.done ) {
 
-          if ( this._slotToUse.done ) {
+          this._slotToUse.done( function( data ) {
+            self.drawSlot( data, self._slotId );
+          } );
 
-            this._slotToUse.done( function( data ) {
-              self.drawSlot( data, self._slotId );
-            } );
+        } else {
 
-          } else {
-
-            this.drawSlot( this._slotToUse, self._slotId );
-
-          }
-          return true;
+          this.drawSlot( this._slotToUse, self._slotId );
 
         }
+        return true;
 
-        return false;
+      }
+
+      return false;
     },
-
 
     _draw_equally_separated: function() {
 
       var i = 0,
-          data = this._dataToUse,
-          xData = this._xDataToUse,
-          l = data.length,
-          j,
-          k,
-          m,
-          xpx,
-          ypx,
-          toBreak,
-          currentLine;
-      
+        data = this._dataToUse,
+        xData = this._xDataToUse,
+        l = data.length,
+        j,
+        k,
+        m,
+        xpx,
+        ypx,
+        toBreak,
+        currentLine;
+
       for ( ; i < l; i++ ) {
 
         currentLine = "M ";
@@ -631,7 +614,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
             this.getMarkerCurrentFamily( k );
           }
 
-          if ( ! this.isFlipped() ) {
+          if ( !this.isFlipped() ) {
 
             xpx = this.getX( xData[ i ].x + j * xData[ i ].dx );
             ypx = this.getY( data[ i ][ j ] );
@@ -643,22 +626,18 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
           }
 
-          
-
           // OPTIMIZATION START
-          if( ! this._optimize_before( xpx, ypx ) ) {
+          if ( !this._optimize_before( xpx, ypx ) ) {
             continue;
           }
           // OPTIMIZATION END
 
           this._addPoint( xpx, ypx );
-          
-
 
           // OPTIMIZATION START
-          if( ! this._optimize_after( xpx, ypx ) ) {
+          if ( !this._optimize_after( xpx, ypx ) ) {
             toBreak = true;
-            break;  
+            break;
           }
           // OPTIMIZATION END
 
@@ -671,25 +650,24 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         }
       }
 
-
     },
 
     _optimize_before: function( xpx, ypx ) {
 
-      if( ! this.optimizeMonotoneous ) {
+      if ( !this.optimizeMonotoneous ) {
         return true;
       }
 
-      if( xpx < 0 ) {
+      if ( xpx < 0 ) {
         this._optimizeBuffer = [ xpx, ypx ];
         return false;
       }
 
-      if( this._optimizeBuffer ) {
+      if ( this._optimizeBuffer ) {
 
         this._addPoint( this._optimizeBuffer[ 0 ], this._optimizeBuffer[ 1 ] );
         this._optimizeBuffer = false;
-        
+
       }
 
       return true;
@@ -743,18 +721,17 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
     drawSlot: function( slotToUse, y ) {
 
-      
       var k = 0;
       var i = 0,
         xpx, max;
       var j;
 
-      if( this.isFlipped() ) {
+      if ( this.isFlipped() ) {
 
         var dataPerSlot = this.slots[ y ] / ( this.maxY - this.minY );
 
         var slotInit = Math.floor( ( this.getYAxis().getActualMin() - this.minY ) * dataPerSlot );
-        var slotFinal = Math.ceil( ( this.getYAxis().getActualMax() - this.minY ) * dataPerSlot );  
+        var slotFinal = Math.ceil( ( this.getYAxis().getActualMax() - this.minY ) * dataPerSlot );
 
       } else {
 
@@ -770,7 +747,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
           continue;
         }
 
-        if( this.isFlipped() ) {
+        if ( this.isFlipped() ) {
 
           ypx = Math.floor( this.getY( slotToUse[ j ].x ) ),
           max = this.getX( slotToUse[ j ].max );
@@ -784,13 +761,11 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
           this._addPoint( this.getX( slotToUse[ j ].min ), ypx );
           this._addPoint( this.getX( slotToUse[ j ].stop ), ypx, true );
 
-      //    k++;
+          //    k++;
         } else {
-
 
           xpx = Math.floor( this.getX( slotToUse[ j ].x ) ),
 
-          
           max = this.getY( slotToUse[ j ].max );
 
           if ( this.options.autoPeakPicking ) {
@@ -804,13 +779,12 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
           //this.counter ++;
         }
-        
 
       }
 
-      this._createLine(  );
+      this._createLine();
       i++;
-      
+
     },
 
     setMarkerStyleTo: function( dom, family ) {
@@ -838,7 +812,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       }*/
 
       if ( this.counter == 0 ) {
-         this.currentLine = 'M ';
+        this.currentLine = 'M ';
       } else {
 
         if ( this.options.lineToZero || move )
@@ -864,7 +838,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
       this.counter++;
 
-      if ( ! this.markerPoints ) {
+      if ( !this.markerPoints ) {
         return;
       }
 
@@ -876,10 +850,10 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
     },
 
     // Returns the DOM
-    _createLine: function(  ) {
+    _createLine: function() {
 
-      var i = this.currentLineId ++,
-          line;
+      var i = this.currentLineId++,
+        line;
 
       // Creates a line if needed
       if ( this.lines[ i ] ) {
@@ -1647,86 +1621,82 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       return this;
     },
 
+    makePeakPicking: function() {
 
-  makePeakPicking: function( ) {
+      var self = this;
+      var ys = this.detectedPeaks;
+      $.when.apply( $, self.picksDef ).then( function() {
 
-    var self = this;
-    var ys = this.detectedPeaks;
-    $.when.apply( $, self.picksDef ).then( function() {
+        var x,
+          px,
+          passed = [],
+          px,
+          i = 0,
+          l = ys.length,
+          k, m, y;
 
-      var x,
-        px,
-        passed = [],
-        px,
-        i = 0,
-        l = ys.length,
-        k, m, y;
+        ys.sort( function( a, b ) {
+          return b[ 0 ] - a[ 0 ];
+        } );
 
-      ys.sort( function( a, b ) {
-        return b[ 0 ] - a[ 0 ];
-      } );
+        for ( ; i < l; i++ ) {
 
-      for ( ; i < l; i++ ) {
+          x = ys[ i ][ 1 ],
+          px = self.getX( x ),
+          k = 0, m = passed.length,
+          y = self.getY( ys[ i ][ 0 ] );
 
-        x = ys[ i ][ 1 ],
-        px = self.getX( x ),
-        k = 0, m = passed.length,
-        y = self.getY( ys[ i ][ 0 ] );
+          if ( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
+            continue;
+          }
 
-        if ( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
-          continue;
-        }
+          if ( y > self.getYAxis().getMinPx() || y < self.getYAxis().getMaxPx() ) {
+            continue;
+          }
 
-        if ( y > self.getYAxis().getMinPx() || y < self.getYAxis().getMaxPx() ) {
-          continue;
-        }
+          for ( ; k < m; k++ ) {
+            if ( Math.abs( passed[ k ] - px ) < self.options.autoPeakPickingMinDistance )  {
+              break;
+            }
+          }
 
-        for ( ; k < m; k++ ) {
-          if ( Math.abs( passed[ k ] - px ) < self.options.autoPeakPickingMinDistance )  {
+          if ( k < m ) {
+            continue;
+          }
+
+          if ( !self.picks[ m ] ) {
+            return;
+          }
+
+          //    self.picks[ m ].show();
+          self.picks[ m ].set( 'labelPosition', {
+            x: x,
+            dy: "-10px"
+          } );
+
+          self.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
+          passed.push( px );
+          self.picks[ m ].redraw();
+
+          if ( passed.length == self.options.autoPeakPickingNb ) {
             break;
           }
         }
 
-        if ( k < m ) {
-          continue;
-        }
+      } );
+    },
 
-        if ( !self.picks[ m ] ) {
-          return;
-        }
+    insertMarkers: function() {
 
-        //    self.picks[ m ].show();
-        self.picks[ m ].set( 'labelPosition', {
-          x: x,
-          dy: "-10px"
-        } );
-
-        self.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
-        passed.push( px );
-        self.picks[ m ].redraw();
-
-        if ( passed.length == self.options.autoPeakPickingNb ) {
-          break;
-        }
+      if ( !this.markerFamily ) {
+        return;
       }
 
-    } );
-  },
-
-
-  insertMarkers: function( ) {
-
-    if ( ! this.markerFamily ) {
-      return;
+      for ( var i = 0, l = this.markerFamily.length; i < l; i++ ) {
+        this.markerFamily[ i ].dom.setAttribute( 'd', this.markerFamily[ i ].path );
+        this.groupMain.appendChild( this.markerFamily[ i ].dom );
+      }
     }
-
-    for ( var i = 0, l = this.markerFamily.length; i < l; i++ ) {
-      this.markerFamily[ i ].dom.setAttribute( 'd', this.markerFamily[ i ].path );
-      this.groupMain.appendChild( this.markerFamily[ i ].dom );
-    }
-  }
-
-
 
   } );
 
@@ -1743,7 +1713,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
   }
 
   function getDegradedData( graph ) { // Serie redrawing
-  
+
     var self = graph,
       xpx,
       ypx,
@@ -1835,9 +1805,9 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
           }
 
           if ( optimizeMonotoneous && xpx > optimizeMaxPxX ) {
-            
+
             optimizeBreak = true;
-            
+
             break;
           }
 
@@ -1966,7 +1936,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
   function hidePeakPicking( graph ) {
 
-    if( ! graph.picks ) {
+    if ( !graph.picks ) {
       return;
     }
     for ( var i = 0; i < graph.picks.length; i++ ) {
@@ -1977,16 +1947,14 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
   function showPeakPicking( graph ) {
 
-
-    if( ! graph.picks ) {
+    if ( !graph.picks ) {
       return;
     }
-    
+
     for ( var i = 0; i < graph.picks.length; i++ ) {
       graph.picks[ i ].show();
     }
   }
-
 
   return GraphSerie;
 } );

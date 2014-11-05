@@ -306,7 +306,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
       lineBottom.reverse();
 
-      if( lineTop.length > 0 && lineBottom.length > 0 ) {
+      if ( lineTop.length > 0 && lineBottom.length > 0 ) {
         this.lineZone.setAttribute( 'd', "M " + lineTop[ 0 ] + " L " + lineTop.join( " L " ) + " L " + lineBottom.join( " L " ) + " z" );
       }
 

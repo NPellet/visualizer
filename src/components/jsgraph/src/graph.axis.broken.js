@@ -22,38 +22,38 @@ define( [ 'jquery' ], function( $ ) {
     setBrokenRanges: function( ranges ) {
       this.ranges = [];
       this._broken = true;
-      var 
+      var
         self = this,
         i = 0,
         l = ranges.length,
         total = 0;
 
       ranges.map( function( range ) {
-          total += range[ 1 ] - range[ 0 ];
-      });
-      
+        total += range[ 1 ] - range[ 0 ];
+      } );
+
       ranges.map( function( range ) {
-          
-          self.ranges.push( {
 
-            ratio: ( range[ 1 ] - range[ 0 ] ) / total,
-            diff: range[ 1 ] - range[ 0 ],
-            min: range[ 0 ],
-            max: range[ 1 ],
-            minPx: undefined,
-            maxPx: undefined
+        self.ranges.push( {
 
-          } );
-      });
+          ratio: ( range[ 1 ] - range[ 0 ] ) / total,
+          diff: range[ 1 ] - range[ 0 ],
+          min: range[ 0 ],
+          max: range[ 1 ],
+          minPx: undefined,
+          maxPx: undefined
+
+        } );
+      } );
 
       self.totalValRanges = total;
     },
 
-    drawLinearTicksWrapper: function( ) {
+    drawLinearTicksWrapper: function() {
 
       var nbIntervals = this.ranges.length - 1,
-          availableDrawingPxs = ( this.maxPx - this.minPx ) - nbIntervals * this.getBreakingSpacing(),
-          nbTicksPrimary = this.getNbTicksPrimary();
+        availableDrawingPxs = ( this.maxPx - this.minPx ) - nbIntervals * this.getBreakingSpacing(),
+        nbTicksPrimary = this.getNbTicksPrimary();
 
       var ticksPrimary = this.getUnitPerTick( availableDrawingPxs, nbTicksPrimary, this.totalValRanges );
       var nbSecondaryTicks = this.secondaryTicks();
@@ -78,7 +78,6 @@ define( [ 'jquery' ], function( $ ) {
 
       this.resetTicks();
 
-
       this.ranges.map( function( range, index ) {
 
         range.minPx = index == 0 ? minPx : last + self.getBreakingSpacing() * ( self.isFlipped() ? -1 : 1 );
@@ -86,64 +85,61 @@ define( [ 'jquery' ], function( $ ) {
 
         last = range.maxPx;
 
-        if( index > 0 ) {
-          if( ! range.brokenMin ) {
+        if ( index > 0 ) {
+          if ( !range.brokenMin ) {
             range.brokenMin = self.createBrokenLine( range );
             self.group.appendChild( range.brokenMin );
-          } 
+          }
           self.placeBrokenLine( range, range.brokenMin, range.minPx );
         }
 
-        if( index < self.ranges.length - 1 ) {
-          if( ! range.brokenMax ) {
+        if ( index < self.ranges.length - 1 ) {
+          if ( !range.brokenMax ) {
             range.brokenMax = self.createBrokenLine( range );
             self.group.appendChild( range.brokenMax );
-          } 
+          }
           self.placeBrokenLine( range, range.brokenMax, range.maxPx );
         }
 
-
         var min = range.min,
-            max = range.max,
-            secondaryIncr,
-            incrTick,
-            subIncrTick,
-            loop = 0,
-            loop2 = 0
-            ;
+          max = range.max,
+          secondaryIncr,
+          incrTick,
+          subIncrTick,
+          loop = 0,
+          loop2 = 0;
+
+        if ( secondary ) {
+          secondaryIncr = unitPerTick / secondary;
+        }
+
+        incrTick = Math.floor( min / unitPerTick ) * unitPerTick;
+
+        while ( incrTick < max ) {
 
           if ( secondary ) {
-            secondaryIncr = unitPerTick / secondary;
-          }
+            subIncrTick = incrTick + secondaryIncr;
+            while ( subIncrTick < incrTick + unitPerTick ) {
 
-          incrTick = Math.floor( min / unitPerTick ) * unitPerTick;
-
-          while ( incrTick < max ) {
-
-            if ( secondary ) {
-              subIncrTick = incrTick + secondaryIncr;
-              while ( subIncrTick < incrTick + unitPerTick ) {
-
-                if ( subIncrTick < min || subIncrTick > max ) {
-                  subIncrTick += secondaryIncr;
-                  continue;
-                }
-
-                self.drawTick( subIncrTick, false, Math.abs( subIncrTick - incrTick - unitPerTick / 2 ) < 1e-4 ? 3 : 2 );
+              if ( subIncrTick < min || subIncrTick > max ) {
                 subIncrTick += secondaryIncr;
+                continue;
               }
-            }
 
-            if ( incrTick < min || incrTick > max ) {
-              incrTick += primary[ 0 ];
-              continue;
+              self.drawTick( subIncrTick, false, Math.abs( subIncrTick - incrTick - unitPerTick / 2 ) < 1e-4 ? 3 : 2 );
+              subIncrTick += secondaryIncr;
             }
-
-            self.drawTick( incrTick, true, 4 );
-            incrTick += primary[ 0 ];
           }
-      } );
 
+          if ( incrTick < min || incrTick > max ) {
+            incrTick += primary[ 0 ];
+            continue;
+          }
+
+          self.drawTick( incrTick, true, 4 );
+          incrTick += primary[ 0 ];
+        }
+      } );
 
       this.widthHeightTick = this.getMaxSizeTick();
       return this.widthHeightTick;
@@ -162,9 +158,9 @@ define( [ 'jquery' ], function( $ ) {
     },
 
     getPos: function( value ) {
-      
-      for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
-        if( value <= this.ranges[ i ].max && value >= this.ranges[ i ].min ) {
+
+      for ( var i = 0, l = this.ranges.length; i < l; i++ ) {
+        if ( value <= this.ranges[  i ].max && value >= this.ranges[  i ].min ) {
           return ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx
         }
       }
@@ -175,14 +171,14 @@ define( [ 'jquery' ], function( $ ) {
     },
 
     getRelVal: function( px ) {
-      return px / (  ( this.maxPx - this.minPx ) - nbIntervals * this.getBreakingSpacing() ) * this.totalValRanges;
+      return px / ( ( this.maxPx - this.minPx ) - nbIntervals * this.getBreakingSpacing() ) * this.totalValRanges;
     },
 
     getVal: function( px ) {
 
-      for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
-        if( px <= this.ranges[ i ].maxPx && px >= this.ranges[ i ].minPx ) {
-          return ( px - this.ranges[ i ].minPx ) / ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) * ( this.ranges[ i ].max - this.ranges[ i ].min ) +  this.ranges[ i ].min
+      for ( var i = 0, l = this.ranges.length; i < l; i++ ) {
+        if ( px <= this.ranges[  i ].maxPx && px >= this.ranges[  i ].minPx ) {
+          return ( px - this.ranges[ i ].minPx ) / ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) * ( this.ranges[ i ].max - this.ranges[ i ].min ) + this.ranges[ i ].min
         }
       }
     },
@@ -192,37 +188,36 @@ define( [ 'jquery' ], function( $ ) {
     },
 
     getBoundary: function( inRangeOf, value ) {
- 
-      for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
-        if( inRangeOf <= this.ranges[ i ].max && inRangeOf >= this.ranges[ i ].min ) {
+
+      for ( var i = 0, l = this.ranges.length; i < l; i++ ) {
+        if ( inRangeOf <= this.ranges[  i ].max && inRangeOf >= this.ranges[  i ].min ) {
           // This range
-          if( value > this.ranges[ i ].max ) {
-            return this.ranges[ i ].max;
+          if ( value > this.ranges[  i ].max ) {
+            return this.ranges[  i ].max;
           }
 
-          return this.ranges[ i ].min;
+          return this.ranges[  i ].min;
 
-             //return Math.abs( value - this.ranges[ i ].min ) / ( this.ranges[ i ].max - this.ranges[ i ].min );
+          //return Math.abs( value - this.ranges[ i ].min ) / ( this.ranges[ i ].max - this.ranges[ i ].min );
         }
       }
     },
 
-
     getInRange: function( inRangeOf, value ) {
-      for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
-        if( inRangeOf <= this.ranges[ i ].max && inRangeOf >= this.ranges[ i ].min ) {
+      for ( var i = 0, l = this.ranges.length; i < l; i++ ) {
+        if ( inRangeOf <= this.ranges[  i ].max && inRangeOf >= this.ranges[  i ].min ) {
           // This range
-             return ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx
-            
+          return ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx
+
           return;
         }
       }
-      
+
     },
 
     getRange: function( value ) {
-      for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
-        if( value <= this.ranges[ i ].max && value >= this.ranges[ i ].min ) {
+      for ( var i = 0, l = this.ranges.length; i < l; i++ ) {
+        if ( value <= this.ranges[  i ].max && value >= this.ranges[  i ].min ) {
           return [ i, ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx ]
         }
       }

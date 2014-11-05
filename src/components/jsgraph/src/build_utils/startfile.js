@@ -1,6 +1,6 @@
 /*!
- * jsGraphs JavaScript Graphing Library v@VERSION
- * http://github.com/NPellet/jsGraphs
+ * jsGraph JavaScript Graphing Library v@VERSION
+ * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license

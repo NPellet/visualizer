@@ -221,6 +221,7 @@ define( [], function() {
     },
 
     kill: function( noRedraw ) {
+
       this.graph.removeSerieFromDom( this );
 
       if ( this.picks && this.picks.length ) {
@@ -231,7 +232,7 @@ define( [], function() {
 
       this.graph._removeSerie( this );
 
-      if ( ! noRedraw )  {
+      if ( !noRedraw )  {
         this.graph.redraw();
       }
 
@@ -334,7 +335,7 @@ define( [], function() {
     },
 
     setXAxis: function( axis ) {
-      
+
       if ( typeof axis == "number" )
         this.xaxis = this.isFlipped() ? this.graph.getYAxis( axis ) : this.graph.getXAxis( axis );
       else
@@ -435,7 +436,7 @@ define( [], function() {
     getIndex: function() {
       return this.graph.series.indexOf( this );
     },
-    
+
     getLabel: function() {
       return this.options.label || this.name;
     },
@@ -463,9 +464,8 @@ define( [], function() {
       return this.xmonotoneous ||  false;
     },
 
-
     getLayer: function() {
-      return this.options.layer || 1;
+      return this.options.layer ||  1;
     },
 
     setLayer: function( layer ) {

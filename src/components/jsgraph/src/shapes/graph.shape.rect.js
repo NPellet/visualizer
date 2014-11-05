@@ -12,7 +12,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
       type: 'corners'
     };
 
-    if( ! this.isLocked() ) {
+    if ( !this.isLocked() ) {
       switch ( this.options.handles.type ) {
 
         case 'sides':
@@ -107,7 +107,6 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
       var width = this.getFromData( 'width' ),
         height = this.getFromData( 'height' );
-      
 
       var pos = this._getPosition( this.getFromData( 'pos' ) ),
         x = pos.x,
@@ -454,7 +453,6 @@ this.handle1.setAttribute('x', this.currentX);
             pos.x = posX;
             pos.y = posY;
 
-            
             break;
 
         }
@@ -470,11 +468,11 @@ this.handle1.setAttribute('x', this.currentX);
 
     setHandles: function() {
 
-      if( this.isLocked() ) {
+      if ( this.isLocked() ) {
         return;
       }
-      
-      if ( ! this.handlesInDom ) {
+
+      if ( !this.handlesInDom ) {
         return;
       }
 

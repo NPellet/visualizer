@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.10.1-12
- * http://github.com/NPellet/jsGraphs
+ * jsGraph JavaScript Graphing Library v1.10.2-3
+ * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-11-05T09:53Z
+ * Date: 2014-11-05T11:23Z
  */
 
 (function( global, factory ) {
@@ -361,7 +361,7 @@ build['./graph.axis'] = ( function( $ ) {
         ( ( this.getActualMax() - baseline ) * ( 1 + delta ) ) + baseline, ( ( this.getActualMin() - baseline ) * ( 1 + delta ) ) + baseline
       );
 
-      this.graph.redraw( );
+      this.graph.redraw();
       //	this.graph.drawSeries(true);
 
     },
@@ -636,7 +636,7 @@ build['./graph.axis'] = ( function( $ ) {
           }
 
           var widthHeight = this.drawLinearTicksWrapper( widthPx, valrange );
-          
+
         } else {
           var widthHeight = this.drawLogTicks();
         }
@@ -809,7 +809,7 @@ build['./graph.axis'] = ( function( $ ) {
 
       //console.log( value, this.getActualMin(), this.getMaxPx(), this.getMinPx(), this._getActualInterval() );
       if ( !this.options.logScale ) {
-        
+
         return ( value - this.getActualMin() ) / ( this._getActualInterval() ) * ( this.getMaxPx() - this.getMinPx() ) + this.getMinPx();
       } else {
         // 0 if value = min
@@ -1124,7 +1124,7 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
       } else if ( !label && this.options.secondaryGrid ) {
 
         this.doGridLine( false, val, val, 0, this.graph.getDrawingHeight() );
-        
+
       }
 
       tick.setAttribute( 'stroke', 'black' );
@@ -1483,38 +1483,38 @@ build['./graph.axis.broken'] = ( function( $ ) {
     setBrokenRanges: function( ranges ) {
       this.ranges = [];
       this._broken = true;
-      var 
+      var
         self = this,
         i = 0,
         l = ranges.length,
         total = 0;
 
       ranges.map( function( range ) {
-          total += range[ 1 ] - range[ 0 ];
-      });
-      
+        total += range[ 1 ] - range[ 0 ];
+      } );
+
       ranges.map( function( range ) {
-          
-          self.ranges.push( {
 
-            ratio: ( range[ 1 ] - range[ 0 ] ) / total,
-            diff: range[ 1 ] - range[ 0 ],
-            min: range[ 0 ],
-            max: range[ 1 ],
-            minPx: undefined,
-            maxPx: undefined
+        self.ranges.push( {
 
-          } );
-      });
+          ratio: ( range[ 1 ] - range[ 0 ] ) / total,
+          diff: range[ 1 ] - range[ 0 ],
+          min: range[ 0 ],
+          max: range[ 1 ],
+          minPx: undefined,
+          maxPx: undefined
+
+        } );
+      } );
 
       self.totalValRanges = total;
     },
 
-    drawLinearTicksWrapper: function( ) {
+    drawLinearTicksWrapper: function() {
 
       var nbIntervals = this.ranges.length - 1,
-          availableDrawingPxs = ( this.maxPx - this.minPx ) - nbIntervals * this.getBreakingSpacing(),
-          nbTicksPrimary = this.getNbTicksPrimary();
+        availableDrawingPxs = ( this.maxPx - this.minPx ) - nbIntervals * this.getBreakingSpacing(),
+        nbTicksPrimary = this.getNbTicksPrimary();
 
       var ticksPrimary = this.getUnitPerTick( availableDrawingPxs, nbTicksPrimary, this.totalValRanges );
       var nbSecondaryTicks = this.secondaryTicks();
@@ -1539,7 +1539,6 @@ build['./graph.axis.broken'] = ( function( $ ) {
 
       this.resetTicks();
 
-
       this.ranges.map( function( range, index ) {
 
         range.minPx = index == 0 ? minPx : last + self.getBreakingSpacing() * ( self.isFlipped() ? -1 : 1 );
@@ -1547,64 +1546,61 @@ build['./graph.axis.broken'] = ( function( $ ) {
 
         last = range.maxPx;
 
-        if( index > 0 ) {
-          if( ! range.brokenMin ) {
+        if ( index > 0 ) {
+          if ( !range.brokenMin ) {
             range.brokenMin = self.createBrokenLine( range );
             self.group.appendChild( range.brokenMin );
-          } 
+          }
           self.placeBrokenLine( range, range.brokenMin, range.minPx );
         }
 
-        if( index < self.ranges.length - 1 ) {
-          if( ! range.brokenMax ) {
+        if ( index < self.ranges.length - 1 ) {
+          if ( !range.brokenMax ) {
             range.brokenMax = self.createBrokenLine( range );
             self.group.appendChild( range.brokenMax );
-          } 
+          }
           self.placeBrokenLine( range, range.brokenMax, range.maxPx );
         }
 
-
         var min = range.min,
-            max = range.max,
-            secondaryIncr,
-            incrTick,
-            subIncrTick,
-            loop = 0,
-            loop2 = 0
-            ;
+          max = range.max,
+          secondaryIncr,
+          incrTick,
+          subIncrTick,
+          loop = 0,
+          loop2 = 0;
+
+        if ( secondary ) {
+          secondaryIncr = unitPerTick / secondary;
+        }
+
+        incrTick = Math.floor( min / unitPerTick ) * unitPerTick;
+
+        while ( incrTick < max ) {
 
           if ( secondary ) {
-            secondaryIncr = unitPerTick / secondary;
-          }
+            subIncrTick = incrTick + secondaryIncr;
+            while ( subIncrTick < incrTick + unitPerTick ) {
 
-          incrTick = Math.floor( min / unitPerTick ) * unitPerTick;
-
-          while ( incrTick < max ) {
-
-            if ( secondary ) {
-              subIncrTick = incrTick + secondaryIncr;
-              while ( subIncrTick < incrTick + unitPerTick ) {
-
-                if ( subIncrTick < min || subIncrTick > max ) {
-                  subIncrTick += secondaryIncr;
-                  continue;
-                }
-
-                self.drawTick( subIncrTick, false, Math.abs( subIncrTick - incrTick - unitPerTick / 2 ) < 1e-4 ? 3 : 2 );
+              if ( subIncrTick < min || subIncrTick > max ) {
                 subIncrTick += secondaryIncr;
+                continue;
               }
-            }
 
-            if ( incrTick < min || incrTick > max ) {
-              incrTick += primary[ 0 ];
-              continue;
+              self.drawTick( subIncrTick, false, Math.abs( subIncrTick - incrTick - unitPerTick / 2 ) < 1e-4 ? 3 : 2 );
+              subIncrTick += secondaryIncr;
             }
-
-            self.drawTick( incrTick, true, 4 );
-            incrTick += primary[ 0 ];
           }
-      } );
 
+          if ( incrTick < min || incrTick > max ) {
+            incrTick += primary[ 0 ];
+            continue;
+          }
+
+          self.drawTick( incrTick, true, 4 );
+          incrTick += primary[ 0 ];
+        }
+      } );
 
       this.widthHeightTick = this.getMaxSizeTick();
       return this.widthHeightTick;
@@ -1623,9 +1619,9 @@ build['./graph.axis.broken'] = ( function( $ ) {
     },
 
     getPos: function( value ) {
-      
-      for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
-        if( value <= this.ranges[ i ].max && value >= this.ranges[ i ].min ) {
+
+      for ( var i = 0, l = this.ranges.length; i < l; i++ ) {
+        if ( value <= this.ranges[  i ].max && value >= this.ranges[  i ].min ) {
           return ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx
         }
       }
@@ -1636,14 +1632,14 @@ build['./graph.axis.broken'] = ( function( $ ) {
     },
 
     getRelVal: function( px ) {
-      return px / (  ( this.maxPx - this.minPx ) - nbIntervals * this.getBreakingSpacing() ) * this.totalValRanges;
+      return px / ( ( this.maxPx - this.minPx ) - nbIntervals * this.getBreakingSpacing() ) * this.totalValRanges;
     },
 
     getVal: function( px ) {
 
-      for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
-        if( px <= this.ranges[ i ].maxPx && px >= this.ranges[ i ].minPx ) {
-          return ( px - this.ranges[ i ].minPx ) / ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) * ( this.ranges[ i ].max - this.ranges[ i ].min ) +  this.ranges[ i ].min
+      for ( var i = 0, l = this.ranges.length; i < l; i++ ) {
+        if ( px <= this.ranges[  i ].maxPx && px >= this.ranges[  i ].minPx ) {
+          return ( px - this.ranges[ i ].minPx ) / ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) * ( this.ranges[ i ].max - this.ranges[ i ].min ) + this.ranges[ i ].min
         }
       }
     },
@@ -1653,37 +1649,36 @@ build['./graph.axis.broken'] = ( function( $ ) {
     },
 
     getBoundary: function( inRangeOf, value ) {
- 
-      for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
-        if( inRangeOf <= this.ranges[ i ].max && inRangeOf >= this.ranges[ i ].min ) {
+
+      for ( var i = 0, l = this.ranges.length; i < l; i++ ) {
+        if ( inRangeOf <= this.ranges[  i ].max && inRangeOf >= this.ranges[  i ].min ) {
           // This range
-          if( value > this.ranges[ i ].max ) {
-            return this.ranges[ i ].max;
+          if ( value > this.ranges[  i ].max ) {
+            return this.ranges[  i ].max;
           }
 
-          return this.ranges[ i ].min;
+          return this.ranges[  i ].min;
 
-             //return Math.abs( value - this.ranges[ i ].min ) / ( this.ranges[ i ].max - this.ranges[ i ].min );
+          //return Math.abs( value - this.ranges[ i ].min ) / ( this.ranges[ i ].max - this.ranges[ i ].min );
         }
       }
     },
 
-
     getInRange: function( inRangeOf, value ) {
-      for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
-        if( inRangeOf <= this.ranges[ i ].max && inRangeOf >= this.ranges[ i ].min ) {
+      for ( var i = 0, l = this.ranges.length; i < l; i++ ) {
+        if ( inRangeOf <= this.ranges[  i ].max && inRangeOf >= this.ranges[  i ].min ) {
           // This range
-             return ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx
-            
+          return ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx
+
           return;
         }
       }
-      
+
     },
 
     getRange: function( value ) {
-      for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
-        if( value <= this.ranges[ i ].max && value >= this.ranges[ i ].min ) {
+      for ( var i = 0, l = this.ranges.length; i < l; i++ ) {
+        if ( value <= this.ranges[  i ].max && value >= this.ranges[  i ].min ) {
           return [ i, ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx ]
         }
       }
@@ -1713,27 +1708,27 @@ build['./graph.axis.x.broken'] = ( function( GraphXAxis, GraphBrokenAxis ) {
   
 
   var GraphXAxisBroken = function( graph, topbottom, options ) {
-	this.init( graph, options );
+    this.init( graph, options );
     this.top = topbottom == 'top';
   }
 
   $.extend( GraphXAxisBroken.prototype, GraphXAxis.prototype, GraphBrokenAxis.prototype, {
 
-  	createBrokenLine: function( range ) {
+    createBrokenLine: function( range ) {
 
-  		var line = document.createElementNS( this.graph.ns, 'line' );
-        line.setAttribute('x1', '-3');
-        line.setAttribute('x2', '3');
-        line.setAttribute('y1', '-5');
-        line.setAttribute('y2', '5');
-        line.setAttribute('stroke', 'black');
+      var line = document.createElementNS( this.graph.ns, 'line' );
+      line.setAttribute( 'x1', '-3' );
+      line.setAttribute( 'x2', '3' );
+      line.setAttribute( 'y1', '-5' );
+      line.setAttribute( 'y2', '5' );
+      line.setAttribute( 'stroke', 'black' );
 
-        return line;
-  	},
+      return line;
+    },
 
-  	placeBrokenLine: function( range, line, px ) {
-		line.setAttribute('transform', 'translate(' + px + ', ' + 0 + ')');
-  	}
+    placeBrokenLine: function( range, line, px ) {
+      line.setAttribute( 'transform', 'translate(' + px + ', ' + 0 + ')' );
+    }
   } );
 
   return GraphXAxisBroken;
@@ -1767,25 +1762,23 @@ build['./graph.axis.y.broken'] = ( function( GraphYAxis, GraphBrokenAxis ) {
 
   $.extend( GraphYAxisBroken.prototype, GraphYAxis.prototype, GraphBrokenAxis.prototype, {
 
+    createBrokenLine: function( range ) {
 
-  	createBrokenLine: function( range ) {
+      var line = document.createElementNS( this.graph.ns, 'line' );
+      line.setAttribute( 'x1', '-5' );
+      line.setAttribute( 'x2', '5' );
+      line.setAttribute( 'y1', '-3' );
+      line.setAttribute( 'y2', '3' );
+      line.setAttribute( 'stroke', 'black' );
 
-  		var line = document.createElementNS( this.graph.ns, 'line' );
-        line.setAttribute('x1', '-5');
-        line.setAttribute('x2', '5');
-        line.setAttribute('y1', '-3');
-        line.setAttribute('y2', '3');
-        line.setAttribute('stroke', 'black');
+      return line;
+    },
 
-        return line;
-  	},
-
-  	placeBrokenLine: function( range, line, px ) {
-		line.setAttribute('transform', 'translate(' + 0 + ', ' + px + ')');
-  	}
+    placeBrokenLine: function( range, line, px ) {
+      line.setAttribute( 'transform', 'translate(' + 0 + ', ' + px + ')' );
+    }
 
   } );
-
 
   return GraphYAxisBroken;
 
@@ -2687,7 +2680,7 @@ build['./graph.legend'] = ( function( ) {
               self.graph.selectSerie( serie );
 
             } else {
-              
+
               serie.show();
 
             }
@@ -2993,20 +2986,22 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     this._doDom();
 
     var w, h;
-    if( dom.style.width && dom.style.width.indexOf("%") == -1 ) {
-      w = parseInt( dom.style.width.replace('px', '') );
+
+    if ( dom.style.width && dom.style.width.indexOf( "%" ) == -1 ) {
+      w = parseInt( dom.style.width.replace( 'px', '' ) );
+    } else if ( dom.style.minWidth && dom.style.minWidth.indexOf( "%" ) == -1 ) {
+      w = parseInt( dom.style.minWidth.replace( 'px', '' ) );
     } else {
-       w = $( dom ).width();
+      w = $( dom ).width();
     }
 
-
-    if( dom.style.height && dom.style.height.indexOf("%") == -1 ) {
-      h = parseInt( dom.style.height.replace('px', '') );
+    if ( dom.style.height && dom.style.height.indexOf( "%" ) == -1 ) {
+      h = parseInt( dom.style.height.replace( 'px', '' ) );
+    } else if ( dom.style.minWidth && dom.style.minWidth.indexOf( "%" ) == -1 ) {
+      h = parseInt( dom.style.minHeight.replace( 'px', '' ) );
     } else {
       h = $( dom ).height();
     }
-    
-
 
     this.setSize( w, h );
     this._resize();
@@ -3061,16 +3056,16 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
           switch ( i ) {
 
             case 'top':
-              this.getTopAxis( j, axis[ i ][ j ]);
+              this.getTopAxis( j, axis[ i ][ j ] );
               break;
             case 'bottom':
-              this.getBottomAxis( j, axis[ i ][ j ]);
+              this.getBottomAxis( j, axis[ i ][ j ] );
               break;
             case 'left':
-              this.getLeftAxis( j, axis[ i ][ j ]);
+              this.getLeftAxis( j, axis[ i ][ j ] );
               break;
             case 'right':
-              this.getRightAxis( j, axis[ i ][ j ]);
+              this.getRightAxis( j, axis[ i ][ j ] );
               break;
           }
         }
@@ -3214,7 +3209,6 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       this.bypassHandleMouse = false;
     },
 
-
     getDom: function() {
       return this.dom;
     },
@@ -3226,7 +3220,6 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     kill: function() {
       this._dom.removeChild( this.dom );
     },
-
 
     cacheOffset: function() {
       this.offsetCached = $( this._dom ).offset();
@@ -3243,8 +3236,6 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     elementMoving: function( movingElement ) {
       this.bypassHandleMouse = movingElement;
     },
-
- 
 
     /* SIZING */
     setWidth: function( width, skipResize ) {
@@ -3273,7 +3264,6 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       this.getDrawingWidth();
     },
 
-
     getWidth: function() {
       return this.width;
     },
@@ -3281,7 +3271,6 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     getHeight: function() {
       return this.height;
     },
-
 
     getPaddingTop: function() {
       return this.options.paddingTop;
@@ -3300,8 +3289,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     },
     /* END SIZING */
 
-
-   _resetAxes: function() {
+    _resetAxes: function() {
 
       while ( this.axisGroup.firstChild ) {
         this.axisGroup.removeChild( this.axisGroup.firstChild );
@@ -3346,7 +3334,6 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
         this._applyToAxis[ typeof func ].call( this, ax[ i ], func, params );
       }
     },
-
 
     getXAxis: function( num, options ) {
       if ( this.axis.top.length > 0 && this.axis.bottom.length == 0 ) {
@@ -3413,7 +3400,6 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       this.axis.bottom[ num ] = axis;
     },
 
-
     // Title
     setTitle: function( title ) {
       this.options.title = title;
@@ -3447,14 +3433,14 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     getBoundaryAxis: function( axis, xy, minmax ) {
 
       var valSeries = this.getBoundaryAxisFromSeries( axis, xy, minmax );
-    //  var valShapes = this.getBoundaryAxisFromShapes( axis, xy, minmax );
+      //  var valShapes = this.getBoundaryAxisFromShapes( axis, xy, minmax );
       return valSeries;
       //return Math[ minmax ]( valSeries, valShapes );
 
     },
 
     getBoundaryAxisFromShapes: function( axis, xy, minmax ) {
-/*
+      /*
       var
         x = xy == 'x',
         i = 0,
@@ -3551,11 +3537,11 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
     redraw: function( noX, noY ) {
 
-      if ( ! this.canRedraw() ) {
+      if ( !this.canRedraw() ) {
         return;
       }
 
-      if ( ! this.sizeSet ) {
+      if ( !this.sizeSet ) {
 
         this._resize();
 
@@ -3789,20 +3775,18 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       var self = this,
         response;
 
-      if( ! noDeferred ) {
+      if ( !noDeferred ) {
         var deferred = $.Deferred();
       }
 
       shapeData.id = Math.random();
 
-      if ( ! mute ) {
+      if ( !mute ) {
 
         if ( false === ( response = this.triggerEvent( 'onBeforeNewShape', shapeData ) ) ) {
           return false;
         }
       }
-
-
 
       if ( response ) {
         shapeData = response;
@@ -3863,11 +3847,11 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
         self.shapes.push( shape );
         self.triggerEvent( 'onShapeMake', shape, shapeData );
 
-        if( ! noDeferred ) {
+        if ( !noDeferred ) {
           deferred.resolve( shape );
         }
 
-        if ( ! mute ) {
+        if ( !mute ) {
           self.triggerEvent( 'onNewShape', shapeData );
         }
 
@@ -3879,8 +3863,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
         var dynamicLoaderResponse = this.dynamicLoader.load( 'shapes', 'graph.shape.' + shapeData.type, callback );
       }
 
-
-      if( ! noDeferred ) {
+      if ( !noDeferred ) {
         return deferred;
       }
 
@@ -3912,20 +3895,20 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     },
 
     removeShapeFromDom: function( shape ) {
-      this.getLayer( shape.getLayer(), 'shape' ).removeChild( shape.group );  
+      this.getLayer( shape.getLayer(), 'shape' ).removeChild( shape.group );
     },
-    
+
     appendSerieToDom: function( serie ) {
       this.getLayer( serie.getLayer(), 'serie' ).appendChild( serie.groupMain );
     },
 
     removeSerieFromDom: function( serie ) {
-      this.getLayer( serie.getLayer(), 'serie' ).removeChild( serie.groupMain );  
+      this.getLayer( serie.getLayer(), 'serie' ).removeChild( serie.groupMain );
     },
 
     getLayer: function( layer, mode ) {
 
-      if( ! this.layers[ layer] ) {
+      if ( !this.layers[ layer ] ) {
 
         this.layers[ layer ] = [];
 
@@ -3937,19 +3920,19 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
         this.layers[ layer ][ 0 ].appendChild( this.layers[ layer ][ 2 ] );
 
         var i = 1,
-            prevLayer;
+          prevLayer;
 
-        while( ! ( prevLayer = this.layers[ layer - i ] ) && layer - i >= 0 ) {
-          i ++;
+        while ( !( prevLayer = this.layers[ layer - i ] ) && layer - i >= 0 ) {
+          i++;
         }
 
-        if( ! prevLayer ) {
+        if ( !prevLayer ) {
 
           this.plotGroup.insertBefore( this.layers[ layer ][ 0 ], this.plotGroup.firstChild );
 
-        } else if( prevLayer.nextSibling ) {
+        } else if ( prevLayer.nextSibling ) {
 
-          this.plotGroup.insertBefore( this.layers[ layer][ 0 ], prevLayer.nextSibling );
+          this.plotGroup.insertBefore( this.layers[ layer ][ 0 ], prevLayer.nextSibling );
 
         } else {
 
@@ -3961,7 +3944,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       return this.layers[ layer ][ mode == 'shape' ? 2 : 1 ];
 
     },
-    
+
     _makeClosingLines: function() {
 
       this.closingLines = {};
@@ -4007,9 +3990,6 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       this.seriesReady.resolve();
     },
 
-
-
-
     isPluginAllowed: function( e, plugin ) {
 
       if ( this.forcedPlugin == plugin ) {
@@ -4046,8 +4026,6 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     unforcePlugin: function() {
       this.forcedPlugin = false;
     },
-
-
 
     _pluginsExecute: function( funcName, args ) {
 
@@ -4248,9 +4226,9 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
           var def = ( value[ i ] !== undefined || relTo == undefined || relTo[ i ] == undefined ) ? pos[ i ] : ( this._getPositionPx( relTo[ i ], true, axis ) || 0 );
 
-          if ( i == 'y' && relTo && relTo.x && ! relTo.y ) {
+          if ( i == 'y' && relTo && relTo.x && !relTo.y ) {
 
-            if( ! onSerie ) {
+            if ( !onSerie ) {
               throw "Error. No serie exists. Cannot find y value";
               return;
             }
@@ -4332,11 +4310,11 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
     getValPosition: function( rel, axis ) {
 
-      if( rel == 'max' ) {
+      if ( rel == 'max' ) {
         return axis.getMaxValue();
       }
 
-      if( rel == 'min' ) {
+      if ( rel == 'min' ) {
         return axis.getMinValue();
       }
 
@@ -4414,7 +4392,6 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       //		console.log('unlock');
       this.shapesLocked = false;
     },
-
 
     _getXY: function( e ) {
 
@@ -4772,34 +4749,34 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     var options = options || {};
     var inst;
 
-    switch( options.type ) {
+    switch ( options.type ) {
 
       case 'time':
         var axisInstance = _availableAxes.time;
-      break;
+        break;
 
       case 'broken':
         var axisInstance = _availableAxes.broken;
-      break;
+        break;
 
       default:
         var axisInstance = _availableAxes.def;
-      break;
+        break;
     }
 
-    switch( pos ) {
+    switch ( pos ) {
 
       case 'top':
       case 'bottom':
         inst = axisInstance.x;
-      break;
+        break;
 
       case 'left':
       case 'right':
         inst = axisInstance.y;
-      break;
+        break;
     }
-    
+
     num = num || 0;
 
     if ( typeof num == "object" ) {
@@ -4873,7 +4850,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     }
 
     // Redraw not obvious at all !!
-/*
+    /*
     graph.redraw();
     graph.drawSeries( true );
 
@@ -5127,6 +5104,7 @@ build['./graph._serie'] = ( function( ) {
     },
 
     kill: function( noRedraw ) {
+
       this.graph.removeSerieFromDom( this );
 
       if ( this.picks && this.picks.length ) {
@@ -5137,7 +5115,7 @@ build['./graph._serie'] = ( function( ) {
 
       this.graph._removeSerie( this );
 
-      if ( ! noRedraw )  {
+      if ( !noRedraw )  {
         this.graph.redraw();
       }
 
@@ -5240,7 +5218,7 @@ build['./graph._serie'] = ( function( ) {
     },
 
     setXAxis: function( axis ) {
-      
+
       if ( typeof axis == "number" )
         this.xaxis = this.isFlipped() ? this.graph.getYAxis( axis ) : this.graph.getXAxis( axis );
       else
@@ -5341,7 +5319,7 @@ build['./graph._serie'] = ( function( ) {
     getIndex: function() {
       return this.graph.series.indexOf( this );
     },
-    
+
     getLabel: function() {
       return this.options.label || this.name;
     },
@@ -5369,9 +5347,8 @@ build['./graph._serie'] = ( function( ) {
       return this.xmonotoneous ||  false;
     },
 
-
     getLayer: function() {
-      return this.options.layer || 1;
+      return this.options.layer ||  1;
     },
 
     setLayer: function( layer ) {
@@ -5456,7 +5433,7 @@ build['./plugins/graph.plugin.linking'] = ( function( ) {
     init: function( graph, options, plugin ) {
 
       throw "Plugin deprecated. Use wrapper code instead (see jsNMR)";
-      
+
       this.options = options;
       var self = this;
       this.graph = graph;
@@ -5891,18 +5868,18 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
 
       var shape = graph.newShape( $.extend( shapeInfo, this.options ), {}, false );
 
-      if( shape ) {
+      if ( shape ) {
 
-          shape.then( function( shape ) {
+        shape.then( function( shape ) {
 
-            if ( !shape ) {
-              return;
-            }
+          if ( !shape ) {
+            return;
+          }
 
-            self.currentShape = shape;
-            self.currentShapeEvent = e;
+          self.currentShape = shape;
+          self.currentShapeEvent = e;
 
-          } );
+        } );
       }
 
     },
@@ -5918,14 +5895,12 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
         var shape = self.currentShape;
         self.currentShape = false;
 
-        
-
-        if( graph.selectedSerie ) {
+        if ( graph.selectedSerie ) {
           shape.setSerie( graph.selectedSerie );
         }
 
         shape.created();
-        
+
         if ( shape.options && shape.options.onCreate ) {
           shape.options.onCreate.call( shape );
         }
@@ -6224,86 +6199,95 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
 
 build['./series/slotoptimizer'] = ( function( ) { 
 
+  var slotWorker;
+  var queue = {};
 
-    var slotWorker;
-    var queue = {};
+  function createWorker() {
 
-    function createWorker() {
+    var workerUrl = URL.createObjectURL( new Blob(
+      [ " ( " +
+        function() {
+          onmessage = function( e ) {
 
-        var workerUrl = URL.createObjectURL( new Blob(
-            [ " ( " + 
-            function() { 
-              onmessage = function( e ) {
+            var data = e.data.data,
+              slotNb = e.data.slotNumber,
+              slot = e.data.slot,
+              flip = e.data.flip,
+              max = e.data.max,
+              min = e.data.min,
+              slotNumber,
+              dataPerSlot = slot / ( max - min );
 
-                var data = e.data.data,
-                    slotNb = e.data.slotNumber,
-                    slot = e.data.slot,
-                    flip = e.data.flip,
-                    max = e.data.max,
-                    min = e.data.min,
-                    slotNumber,
-                    dataPerSlot = slot / (max - min);
+            var slotsData = [];
 
-                    var slotsData = [];
+            for ( var j = 0, k = data.length; j < k; j++ ) {
 
-                for(var j = 0, k = data.length; j < k ; j ++ ) {
+              for ( var m = 0, n = data[ j ].length; m < n; m += 2 ) {
 
-                  for(var m = 0, n = data[ j ].length ; m < n ; m += 2 ) {
+                slotNumber = Math.floor( ( data[ j ][ m ] - min ) * dataPerSlot );
 
-                    slotNumber = Math.floor( ( data[ j ][ m ] - min ) * dataPerSlot );
+                slotsData[ slotNumber ] = slotsData[ slotNumber ] || {
+                  min: data[ j ][ m + 1 ],
+                  max: data[ j ][ m + 1 ],
+                  start: data[ j ][ m + 1 ],
+                  stop: false,
+                  x: data[ j ][ m ]
+                };
 
-                    slotsData[ slotNumber ] = slotsData[ slotNumber ] || { 
-                        min: data[ j ][ m + 1], 
-                        max: data[ j ][ m + 1], 
-                        start: data[ j ][ m + 1],
-                        stop: false,
-                        x: data[ j ][ m ] };
+                slotsData[ slotNumber ].stop = data[ j ][ m + 1 ];
+                slotsData[ slotNumber ].min = Math.min( data[ j ][ m + 1 ], slotsData[ slotNumber ].min );
+                slotsData[ slotNumber ].max = Math.max( data[ j ][ m + 1 ], slotsData[ slotNumber ].max );
 
-                    slotsData[ slotNumber ].stop = data[ j ][ m + 1 ];
-                    slotsData[ slotNumber ].min = Math.min( data[ j ][ m + 1 ], slotsData[ slotNumber ].min );
-                    slotsData[ slotNumber ].max = Math.max( data[ j ][ m + 1 ], slotsData[ slotNumber ].max );
+              }
+            }
 
-                  }
-                }
+            postMessage( {
+              slotNumber: slotNb,
+              slot: slot,
+              data: slotsData,
+              _queueId: e.data._queueId
+            } );
+          };
 
-                postMessage( { slotNumber: slotNb, slot: slot, data: slotsData, _queueId: e.data._queueId } );
-              };
+        }.toString() + ")()"
+      ]
 
-            }.toString() + ")()" ]
+      , {
+        type: 'application/javascript'
+      } ) );
 
-        , { type: 'application/javascript' } ) );
+    slotWorker = new Worker( workerUrl );
 
-        slotWorker = new Worker( workerUrl );
+    slotWorker.onmessage = function( e ) {
+      var id = e.data._queueId;
+      delete e.data._queueId;
+      queue[ id ].resolve( e.data.data );
+      delete queue[ id ];
+    }
+  }
 
-        slotWorker.onmessage = function( e ) {
-            var id = e.data._queueId;
-            delete e.data._queueId;
-            queue[ id ].resolve( e.data.data );
-            delete queue[ id ];
-        }
+  // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
+  function guid() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace( /[xy]/g, function( c ) {
+      var r = Math.random() * 16 | 0,
+        v = c == 'x' ? r : ( r & 0x3 | 0x8 );
+      return v.toString( 16 );
+    } );
+  }
+
+  return function( toOptimize ) {
+
+    if ( !slotWorker ) {
+      createWorker();
     }
 
-    // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
-    function guid() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
-            return v.toString(16);
-        });
-    }
+    var requestId = guid();
+    toOptimize._queueId = requestId;
+    queue[ requestId ] = $.Deferred();
 
-    return function( toOptimize ) {
-
-        if( ! slotWorker ) {
-            createWorker();
-        }
-
-        var requestId = guid();
-        toOptimize._queueId = requestId;
-        queue[ requestId ] = $.Deferred();
-
-        slotWorker.postMessage( toOptimize );
-        return queue[ requestId ];
-    }
+    slotWorker.postMessage( toOptimize );
+    return queue[ requestId ];
+  }
 
  } ) (  );
 
@@ -6454,10 +6438,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
       var self = this;
       this.slotsData = {};
-//      this.slotWorker = new Worker( './src/slotworker.js' );
-  
-
-
+      //      this.slotWorker = new Worker( './src/slotworker.js' );
 
       for ( var i = 0, l = this.slots.length; i < l; i++ ) {
 
@@ -6470,13 +6451,13 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
     slotCalculator: function( slot, slotNumber ) {
 
       return SlotOptimizer( {
-        
+
         min: this.minX,
         max: this.maxX,
         data: this.data,
         slot: slot,
         slotNumber: slotNumber,
-        flip: this.getFlip( )
+        flip: this.getFlip()
 
       } );
 
@@ -6539,12 +6520,12 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
         if ( ( hover && this.domMarkerHover[ index ] && !this.domMarkerSelect[ index ] ) || this.domMarkerSelect[ index ] ) {
 
-          if ( ! el[ index ] ) {
+          if ( !el[ index ] ) {
             return;
           }
 
           this.groupMarkerSelected.removeChild( el[ index ] );
-          
+
           delete el[ index ];
 
           if ( hover )
@@ -6639,7 +6620,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       return serie;
     },
 
-
     drawInit: function() {
 
       var data, xData;
@@ -6669,17 +6649,15 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       this._optimizeBreak,
       this._optimizeBuffer;
 
-
-
       // Slots
       this._slotToUse = false;
       if ( this.options.useSlots && this.slots && this.slots.length > 0 ) {
-        if( this.isFlipped() ) {
+        if ( this.isFlipped() ) {
           var slot = this.graph.getDrawingHeight() * ( this.maxY - this.minY ) / ( this.getYAxis().getActualMax() - this.getYAxis().getActualMin() );
         } else {
-          var slot = this.graph.getDrawingWidth() * ( this.maxX - this.minX ) / ( this.getXAxis().getActualMax() - this.getXAxis().getActualMin() );  
+          var slot = this.graph.getDrawingWidth() * ( this.maxX - this.minX ) / ( this.getXAxis().getActualMax() - this.getXAxis().getActualMin() );
         }
-      
+
         for ( var y = 0, z = this.slots.length; y < z; y++ ) {
           if ( slot < this.slots[ y ] ) {
             this._slotToUse = this.slotsData[ this.slots[ y ] ];
@@ -6694,7 +6672,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
       this.detectedPeaks = [];
       this.lastYPeakPicking = false;
-      
+
     },
 
     removeLinesGroup: function() {
@@ -6704,7 +6682,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
     insertLinesGroup: function() {
 
-      if( ! this._afterLinesGroup ) {
+      if ( !this._afterLinesGroup ) {
         throw "Could not find group after lines to insertion."
       }
 
@@ -6715,9 +6693,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
     removeExtraLines: function() {
 
       var i = this.currentLineId + 1,
-          l = this.lines.length;
+        l = this.lines.length;
 
-      for ( ; i < l ; i ++ ) {
+      for ( ; i < l; i++ ) {
 
         this.groupLines.removeChild( this.lines[ i ] );
         this.lines.splice( i, 1 );
@@ -6730,9 +6708,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
       if ( this.options.autoPeakPicking ) {
 
-        if ( ! this.options.lineToZero ) {
+        if ( !this.options.lineToZero ) {
 
-          if ( ! this.lastYPeakPicking ) {
+          if ( !this.lastYPeakPicking ) {
 
             this.lastYPeakPicking = [ y, x ];
 
@@ -6777,18 +6755,16 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
       this.removeLinesGroup();
 
-
       this.eraseMarkers();
 
       this.lookForMaxima = true;
       this.lookForMinima = false;
 
-
-      if( ! this._draw_slot() ) {
+      if ( !this._draw_slot() ) {
 
         if ( this.mode == 'x_equally_separated' ) {
 
-            this._draw_equally_separated();
+          this._draw_equally_separated();
 
         } else {
 
@@ -6797,36 +6773,33 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         }
       }
 
-      this.makePeakPicking( );
+      this.makePeakPicking();
       this.removeExtraLines();
-      this.insertMarkers( );
+      this.insertMarkers();
       this.insertLinesGroup();
 
-      
       var label;
       for ( var i = 0, l = this.labels.length; i < l; i++ ) {
         this.repositionLabel( this.labels[ i ] );
       }
     },
 
-
     _draw_standard: function() {
 
       var self = this,
-          data = this._dataToUse,
-          toBreak,
-          i = 0,
-          l = data.length,
-          j,
-          k,
-          m,
-          x,
-          y,
-          xpx,
-          ypx,
-          xpx2,
-          ypx2;
-
+        data = this._dataToUse,
+        toBreak,
+        i = 0,
+        l = data.length,
+        j,
+        k,
+        m,
+        x,
+        y,
+        xpx,
+        ypx,
+        xpx2,
+        ypx2;
 
       var incrXFlip = 0;
       var incrYFlip = 1;
@@ -6860,30 +6833,26 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
           if ( xpx2 == xpx && ypx2 == ypx ) {
             continue;
           }
-  
 
-          if( isNaN( xpx2 ) || isNaN( ypx2 ) ) {
-            if( this.counter > 0 ) {
-               this._createLine( );
-             }
-             continue;
+          if ( isNaN( xpx2 ) ||  isNaN( ypx2 ) ) {
+            if ( this.counter > 0 ) {
+              this._createLine();
+            }
+            continue;
           }
 
-  
-
           // OPTIMIZATION START
-          if( ! this._optimize_before( xpx, ypx ) ) {
+          if ( !this._optimize_before( xpx, ypx ) ) {
             continue;
           }
           // OPTIMIZATION END
 
           this._addPoint( xpx2, ypx2 );
 
-
           // OPTIMIZATION START
-          if( ! this._optimize_after( xpx, ypx ) ) {
+          if ( !this._optimize_after( xpx, ypx ) ) {
             toBreak = true;
-            break;  
+            break;
           }
           // OPTIMIZATION END
 
@@ -6893,7 +6862,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
           ypx = ypx2;
         }
 
-        this._createLine( );
+        this._createLine();
 
         if ( toBreak ) {
           break;
@@ -6903,43 +6872,41 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
     _draw_slot: function() {
 
-        var self = this;
-        if( this._slotToUse ) {
+      var self = this;
+      if ( this._slotToUse ) {
 
+        if ( this._slotToUse.done ) {
 
-          if ( this._slotToUse.done ) {
+          this._slotToUse.done( function( data ) {
+            self.drawSlot( data, self._slotId );
+          } );
 
-            this._slotToUse.done( function( data ) {
-              self.drawSlot( data, self._slotId );
-            } );
+        } else {
 
-          } else {
-
-            this.drawSlot( this._slotToUse, self._slotId );
-
-          }
-          return true;
+          this.drawSlot( this._slotToUse, self._slotId );
 
         }
+        return true;
 
-        return false;
+      }
+
+      return false;
     },
-
 
     _draw_equally_separated: function() {
 
       var i = 0,
-          data = this._dataToUse,
-          xData = this._xDataToUse,
-          l = data.length,
-          j,
-          k,
-          m,
-          xpx,
-          ypx,
-          toBreak,
-          currentLine;
-      
+        data = this._dataToUse,
+        xData = this._xDataToUse,
+        l = data.length,
+        j,
+        k,
+        m,
+        xpx,
+        ypx,
+        toBreak,
+        currentLine;
+
       for ( ; i < l; i++ ) {
 
         currentLine = "M ";
@@ -6952,7 +6919,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
             this.getMarkerCurrentFamily( k );
           }
 
-          if ( ! this.isFlipped() ) {
+          if ( !this.isFlipped() ) {
 
             xpx = this.getX( xData[ i ].x + j * xData[ i ].dx );
             ypx = this.getY( data[ i ][ j ] );
@@ -6964,22 +6931,18 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
           }
 
-          
-
           // OPTIMIZATION START
-          if( ! this._optimize_before( xpx, ypx ) ) {
+          if ( !this._optimize_before( xpx, ypx ) ) {
             continue;
           }
           // OPTIMIZATION END
 
           this._addPoint( xpx, ypx );
-          
-
 
           // OPTIMIZATION START
-          if( ! this._optimize_after( xpx, ypx ) ) {
+          if ( !this._optimize_after( xpx, ypx ) ) {
             toBreak = true;
-            break;  
+            break;
           }
           // OPTIMIZATION END
 
@@ -6992,25 +6955,24 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         }
       }
 
-
     },
 
     _optimize_before: function( xpx, ypx ) {
 
-      if( ! this.optimizeMonotoneous ) {
+      if ( !this.optimizeMonotoneous ) {
         return true;
       }
 
-      if( xpx < 0 ) {
+      if ( xpx < 0 ) {
         this._optimizeBuffer = [ xpx, ypx ];
         return false;
       }
 
-      if( this._optimizeBuffer ) {
+      if ( this._optimizeBuffer ) {
 
         this._addPoint( this._optimizeBuffer[ 0 ], this._optimizeBuffer[ 1 ] );
         this._optimizeBuffer = false;
-        
+
       }
 
       return true;
@@ -7064,18 +7026,17 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
     drawSlot: function( slotToUse, y ) {
 
-      
       var k = 0;
       var i = 0,
         xpx, max;
       var j;
 
-      if( this.isFlipped() ) {
+      if ( this.isFlipped() ) {
 
         var dataPerSlot = this.slots[ y ] / ( this.maxY - this.minY );
 
         var slotInit = Math.floor( ( this.getYAxis().getActualMin() - this.minY ) * dataPerSlot );
-        var slotFinal = Math.ceil( ( this.getYAxis().getActualMax() - this.minY ) * dataPerSlot );  
+        var slotFinal = Math.ceil( ( this.getYAxis().getActualMax() - this.minY ) * dataPerSlot );
 
       } else {
 
@@ -7091,7 +7052,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
           continue;
         }
 
-        if( this.isFlipped() ) {
+        if ( this.isFlipped() ) {
 
           ypx = Math.floor( this.getY( slotToUse[ j ].x ) ),
           max = this.getX( slotToUse[ j ].max );
@@ -7105,13 +7066,11 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
           this._addPoint( this.getX( slotToUse[ j ].min ), ypx );
           this._addPoint( this.getX( slotToUse[ j ].stop ), ypx, true );
 
-      //    k++;
+          //    k++;
         } else {
-
 
           xpx = Math.floor( this.getX( slotToUse[ j ].x ) ),
 
-          
           max = this.getY( slotToUse[ j ].max );
 
           if ( this.options.autoPeakPicking ) {
@@ -7125,13 +7084,12 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
           //this.counter ++;
         }
-        
 
       }
 
-      this._createLine(  );
+      this._createLine();
       i++;
-      
+
     },
 
     setMarkerStyleTo: function( dom, family ) {
@@ -7159,7 +7117,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       }*/
 
       if ( this.counter == 0 ) {
-         this.currentLine = 'M ';
+        this.currentLine = 'M ';
       } else {
 
         if ( this.options.lineToZero || move )
@@ -7185,7 +7143,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
       this.counter++;
 
-      if ( ! this.markerPoints ) {
+      if ( !this.markerPoints ) {
         return;
       }
 
@@ -7197,10 +7155,10 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
     },
 
     // Returns the DOM
-    _createLine: function(  ) {
+    _createLine: function() {
 
-      var i = this.currentLineId ++,
-          line;
+      var i = this.currentLineId++,
+        line;
 
       // Creates a line if needed
       if ( this.lines[ i ] ) {
@@ -7968,86 +7926,82 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       return this;
     },
 
+    makePeakPicking: function() {
 
-  makePeakPicking: function( ) {
+      var self = this;
+      var ys = this.detectedPeaks;
+      $.when.apply( $, self.picksDef ).then( function() {
 
-    var self = this;
-    var ys = this.detectedPeaks;
-    $.when.apply( $, self.picksDef ).then( function() {
+        var x,
+          px,
+          passed = [],
+          px,
+          i = 0,
+          l = ys.length,
+          k, m, y;
 
-      var x,
-        px,
-        passed = [],
-        px,
-        i = 0,
-        l = ys.length,
-        k, m, y;
+        ys.sort( function( a, b ) {
+          return b[ 0 ] - a[ 0 ];
+        } );
 
-      ys.sort( function( a, b ) {
-        return b[ 0 ] - a[ 0 ];
-      } );
+        for ( ; i < l; i++ ) {
 
-      for ( ; i < l; i++ ) {
+          x = ys[ i ][ 1 ],
+          px = self.getX( x ),
+          k = 0, m = passed.length,
+          y = self.getY( ys[ i ][ 0 ] );
 
-        x = ys[ i ][ 1 ],
-        px = self.getX( x ),
-        k = 0, m = passed.length,
-        y = self.getY( ys[ i ][ 0 ] );
+          if ( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
+            continue;
+          }
 
-        if ( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
-          continue;
-        }
+          if ( y > self.getYAxis().getMinPx() || y < self.getYAxis().getMaxPx() ) {
+            continue;
+          }
 
-        if ( y > self.getYAxis().getMinPx() || y < self.getYAxis().getMaxPx() ) {
-          continue;
-        }
+          for ( ; k < m; k++ ) {
+            if ( Math.abs( passed[ k ] - px ) < self.options.autoPeakPickingMinDistance )  {
+              break;
+            }
+          }
 
-        for ( ; k < m; k++ ) {
-          if ( Math.abs( passed[ k ] - px ) < self.options.autoPeakPickingMinDistance )  {
+          if ( k < m ) {
+            continue;
+          }
+
+          if ( !self.picks[ m ] ) {
+            return;
+          }
+
+          //    self.picks[ m ].show();
+          self.picks[ m ].set( 'labelPosition', {
+            x: x,
+            dy: "-10px"
+          } );
+
+          self.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
+          passed.push( px );
+          self.picks[ m ].redraw();
+
+          if ( passed.length == self.options.autoPeakPickingNb ) {
             break;
           }
         }
 
-        if ( k < m ) {
-          continue;
-        }
+      } );
+    },
 
-        if ( !self.picks[ m ] ) {
-          return;
-        }
+    insertMarkers: function() {
 
-        //    self.picks[ m ].show();
-        self.picks[ m ].set( 'labelPosition', {
-          x: x,
-          dy: "-10px"
-        } );
-
-        self.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
-        passed.push( px );
-        self.picks[ m ].redraw();
-
-        if ( passed.length == self.options.autoPeakPickingNb ) {
-          break;
-        }
+      if ( !this.markerFamily ) {
+        return;
       }
 
-    } );
-  },
-
-
-  insertMarkers: function( ) {
-
-    if ( ! this.markerFamily ) {
-      return;
+      for ( var i = 0, l = this.markerFamily.length; i < l; i++ ) {
+        this.markerFamily[ i ].dom.setAttribute( 'd', this.markerFamily[ i ].path );
+        this.groupMain.appendChild( this.markerFamily[ i ].dom );
+      }
     }
-
-    for ( var i = 0, l = this.markerFamily.length; i < l; i++ ) {
-      this.markerFamily[ i ].dom.setAttribute( 'd', this.markerFamily[ i ].path );
-      this.groupMain.appendChild( this.markerFamily[ i ].dom );
-    }
-  }
-
-
 
   } );
 
@@ -8064,7 +8018,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
   }
 
   function getDegradedData( graph ) { // Serie redrawing
-  
+
     var self = graph,
       xpx,
       ypx,
@@ -8156,9 +8110,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
           }
 
           if ( optimizeMonotoneous && xpx > optimizeMaxPxX ) {
-            
+
             optimizeBreak = true;
-            
+
             break;
           }
 
@@ -8287,7 +8241,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
   function hidePeakPicking( graph ) {
 
-    if( ! graph.picks ) {
+    if ( !graph.picks ) {
       return;
     }
     for ( var i = 0; i < graph.picks.length; i++ ) {
@@ -8298,16 +8252,14 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
   function showPeakPicking( graph ) {
 
-
-    if( ! graph.picks ) {
+    if ( !graph.picks ) {
       return;
     }
-    
+
     for ( var i = 0; i < graph.picks.length; i++ ) {
       graph.picks[ i ].show();
     }
   }
-
 
   return GraphSerie;
  } ) ( build["./graph._serie"],build["./series/slotoptimizer"] );
@@ -8339,34 +8291,31 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
    * @param   Number  l       The lightness
    * @return  Array           The RGB representation
    */
-   function hue2rgb(p, q, t){
-        if(t < 0) t += 1;
-        if(t > 1) t -= 1;
-        if(t < 1/6) return p + (q - p) * 6 * t;
-        if(t < 1/2) return q;
-        if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-        return p;
-    }
-    
-  function hslToRgb(h, s, l){
-      var r, g, b;
-
-      if(s == 0){
-          r = g = b = l; // achromatic
-      }else{
-          
-          var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-          var p = 2 * l - q;
-          r = hue2rgb(p, q, h + 1/3);
-          g = hue2rgb(p, q, h);
-          b = hue2rgb(p, q, h - 1/3);
-      }
-
-      return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+  function hue2rgb( p, q, t ) {
+    if ( t < 0 ) t += 1;
+    if ( t > 1 ) t -= 1;
+    if ( t < 1 / 6 ) return p + ( q - p ) * 6 * t;
+    if ( t < 1 / 2 ) return q;
+    if ( t < 2 / 3 ) return p + ( q - p ) * ( 2 / 3 - t ) * 6;
+    return p;
   }
 
+  function hslToRgb( h, s, l ) {
+    var r, g, b;
 
+    if ( s == 0 ) {
+      r = g = b = l; // achromatic
+    } else {
 
+      var q = l < 0.5 ? l * ( 1 + s ) : l + s - l * s;
+      var p = 2 * l - q;
+      r = hue2rgb( p, q, h + 1 / 3 );
+      g = hue2rgb( p, q, h );
+      b = hue2rgb( p, q, h - 1 / 3 );
+    }
+
+    return [ Math.round( r * 255 ), Math.round( g * 255 ), Math.round( b * 255 ) ];
+  }
 
   var GraphSerieContour = function() {
 
@@ -8375,7 +8324,6 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
 
     this.negativeThreshold = 0;
     this.positiveThreshold = 0;
-
 
   };
 
@@ -8386,13 +8334,13 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
       var z = 0;
       var x, dx, arg = arg || "2D",
         type = type || 'float',
-        i, l = data.length, j, k,
+        i, l = data.length,
+        j, k,
         arr, datas = [];
 
+      if ( !( data instanceof Array ) ) {
 
-      if ( ! ( data instanceof Array ) ) {
-        
-        if( typeof data == 'object' ) {
+        if ( typeof data == 'object' ) {
           // Def v2
           this.minX = data.minX;
           this.minY = data.minY;
@@ -8404,7 +8352,7 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
         }
       }
 
-      for (  i = 0; i < l; i++ ) {
+      for ( i = 0; i < l; i++ ) {
         k = data[ i ].lines.length;
         arr = this._addData( type, k );
 
@@ -8435,7 +8383,7 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
         j = 0,
         k, m, currentLine, domLine, arr;
       this.minZ = Infinity;
-      this.maxZ = - Infinity;
+      this.maxZ = -Infinity;
 
       var next = this.groupLines.nextSibling;
       this.groupMain.removeChild( this.groupLines );
@@ -8465,8 +8413,7 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
 
           var lastxpx, lastypx;
 
-
-          if( ( arr[ j + incrXFlip ] < minX && arr[ j + 2 + incrXFlip ] < minX ) ||  ( arr[ j + incrYFlip ] < minY && arr[ j + 2 + incrYFlip ] < minY ) || ( arr[ j + incrYFlip ] > maxY && arr[ j + 2 + incrYFlip ] > maxY || ( arr[ j + incrXFlip ] > maxX && arr[ j + 2 + incrXFlip ] > maxX )))  {
+          if ( ( arr[ j + incrXFlip ] < minX && arr[ j + 2 + incrXFlip ] < minX ) ||  ( arr[ j + incrYFlip ] < minY && arr[ j + 2 + incrYFlip ] < minY ) ||  ( arr[ j + incrYFlip ] > maxY && arr[ j + 2 + incrYFlip ] > maxY || ( arr[ j + incrXFlip ] > maxX && arr[ j + 2 + incrXFlip ] > maxX ) ) ) {
             continue;
           }
 
@@ -8479,7 +8426,6 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
           if ( xpx == xpx2 && ypx == ypx2 ) {
             continue;
           }
-
 
           /*	if( j > 0 && ( lastxpx !== undefined && lastypx !== undefined && Math.abs( xpx2 - lastxpx ) <= 30 && Math.abs( ypx2 - lastypx ) <= 30 ) ) {
 						currentLine += "L";
@@ -8508,7 +8454,7 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
 
         this.currentLine += " z";
 
-        domLine = this._createLine( );
+        domLine = this._createLine();
         domLine.setAttribute( 'data-zvalue', this.data[ i ].zValue );
 
         if ( this.zoneColors && this.zoneColors[ i ] ) {
@@ -8526,12 +8472,10 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
 
       i++;
 
-      
       for ( i = this.currentLine + 1; i < this.lines.length; i++ ) {
         this.groupLines.removeChild( this.lines[ i ] );
         this.lines.splice( i, 1 );
       }
-
 
       i = 0;
 
@@ -8543,14 +8487,15 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
         this.graph.legend.update();
       }
 
-
-      this.onMouseWheel( 0, { shiftKey: false } );
+      this.onMouseWheel( 0, {
+        shiftKey: false
+      } );
       this.groupMain.insertBefore( this.groupLines, next );
     },
 
     initimpl: function() {
 
-      if( ! this.options.hasNegative ) {
+      if ( !this.options.hasNegative ) {
         this.negativeThreshold = 0;
       }
 
@@ -8560,60 +8505,58 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
 
       delta /= 250;
 
-      if( fixed !== undefined ) {
+      if ( fixed !== undefined ) {
 
-        if( ! positive ) {
-          this.negativeThreshold = - fixed * this.minZ;
-          this.negativeDelta = - Math.pow( Math.abs( ( this.negativeThreshold / ( - this.minZ ) ) ), 1/3);
+        if ( !positive ) {
+          this.negativeThreshold = -fixed * this.minZ;
+          this.negativeDelta = -Math.pow( Math.abs( ( this.negativeThreshold / ( -this.minZ ) ) ), 1 / 3 );
         }
 
-        if( positive ) {
+        if ( positive ) {
           this.positiveThreshold = fixed * this.maxZ;
-          this.positiveDelta = Math.pow( this.positiveThreshold / ( this.maxZ ), 1/3);
+          this.positiveDelta = Math.pow( this.positiveThreshold / ( this.maxZ ), 1 / 3 );
         }
 
       } else {
 
-        if( ( ! e.shiftKey ) || ! this.options.hasNegative ) {
+        if ( ( !e.shiftKey ) ||  !this.options.hasNegative ) {
 
           this.positiveDelta = Math.min( 1, Math.max( 0, this.positiveDelta + Math.min( 0.1, Math.max( -0.1, delta ) ) ) );
           this.positiveThreshold = this.maxZ * ( Math.pow( this.positiveDelta, 3 ) );
-      
+
         } else {
 
-          this.negativeDelta = Math.min( 0, Math.max( -1, this.negativeDelta + Math.min( 0.1, Math.max( -0.1, delta ) ) ) ); 
-          this.negativeThreshold = - this.minZ * ( Math.pow( this.negativeDelta, 3 ) );
-      
+          this.negativeDelta = Math.min( 0, Math.max( -1, this.negativeDelta + Math.min( 0.1, Math.max( -0.1, delta ) ) ) );
+          this.negativeThreshold = -this.minZ * ( Math.pow( this.negativeDelta, 3 ) );
+
         }
 
       }
 
-      if( isNaN( this.positiveDelta ) ) {
+      if ( isNaN( this.positiveDelta ) ) {
         this.positiveDelta = 0;
       }
 
-      if( isNaN( this.negativeDelta ) ) {
+      if ( isNaN( this.negativeDelta ) ) {
         this.negativeDelta = 0;
       }
 
       for ( var i in this.zValues ) {
 
-        this.zValues[ i ].dom.setAttribute( 'display', ( ( i >= 0 && i >= this.positiveThreshold ) || ( i <= 0 && i <= this.negativeThreshold ) ) ? 'block' : 'none' );
+        this.zValues[ i ].dom.setAttribute( 'display', ( ( i >= 0 && i >= this.positiveThreshold ) ||  ( i <= 0 && i <= this.negativeThreshold ) ) ? 'block' : 'none' );
 
       }
-      
 
-      if( this._shapeZoom ) {
+      if ( this._shapeZoom ) {
 
-
-        if( ! this.options.hasNegative ) {
-          this._shapeZoom.hideHandleNeg(); 
+        if ( !this.options.hasNegative ) {
+          this._shapeZoom.hideHandleNeg();
         } else {
-          
-          this._shapeZoom.setHandleNeg( - ( Math.pow( this.negativeDelta, 3 ) ), this.minZ );  
+
+          this._shapeZoom.setHandleNeg( -( Math.pow( this.negativeDelta, 3 ) ), this.minZ );
           this._shapeZoom.showHandleNeg();
         }
-        
+
         this._shapeZoom.setHandlePos( ( Math.pow( this.positiveDelta, 3 ) ), this.maxZ );
       }
     },
@@ -8628,40 +8571,43 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
 
     },
 
-
     setNegative: function( bln ) {
       this.options.hasNegative = bln;
 
-      if( bln ) {
+      if ( bln ) {
         this.negativeThreshold = 0;
       }
     },
 
     setColorTo: function( line, zValue, min, max ) {
 
-      if( ! this.lineColors ) {
+      if ( !this.lineColors ) {
         return;
       }
 
-      var hsl = { h: 0, s: 0, l: 0 };
+      var hsl = {
+        h: 0,
+        s: 0,
+        l: 0
+      };
 
-      for( var i in hsl ) {
+      for ( var i in hsl ) {
 
-        if( zValue > 0 ) {
-          hsl[ i ] = this.lineColors.fromPositive[ i ] + ( ( this.lineColors.toPositive[ i ] - this.lineColors.fromPositive[ i ] ) * ( zValue / max ) );  
+        if ( zValue > 0 ) {
+          hsl[ i ] = this.lineColors.fromPositive[ i ] + ( ( this.lineColors.toPositive[ i ] - this.lineColors.fromPositive[ i ] ) * ( zValue / max ) );
         } else {
-          hsl[ i ] = this.lineColors.fromNegative[ i ] + ( ( this.lineColors.toNegative[ i ] - this.lineColors.fromNegative[ i ] ) * ( zValue / min ) );  
+          hsl[ i ] = this.lineColors.fromNegative[ i ] + ( ( this.lineColors.toNegative[ i ] - this.lineColors.fromNegative[ i ] ) * ( zValue / min ) );
         }
       }
 
       hsl.h /= 360;
 
       var rgb = hslToRgb( hsl.h, hsl.s, hsl.l );
-      
-      line.setAttribute( 'stroke', 'rgb(' + rgb.join() + ')');
+
+      line.setAttribute( 'stroke', 'rgb(' + rgb.join() + ')' );
     },
 
-     getSymbolForLegend: function() {
+    getSymbolForLegend: function() {
 
       if ( !this.lineForLegend ) {
 
@@ -8675,15 +8621,12 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
         line.setAttribute( 'cursor', 'pointer' );
         this.lineForLegend = line;
 
-        
       }
 
       this.applyLineStyle( this.lineForLegend, this.maxZ );
 
       return this.lineForLegend;
     },
-
-
 
     applyLineStyle: function( line, overwriteValue ) {
       line.setAttribute( 'stroke', this.getLineColor() );
@@ -8696,12 +8639,9 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
       //  line.setAttribute('shape-rendering', 'optimizeSpeed');
     },
 
-
     setShapeZoom: function( shape ) {
       this._shapeZoom = shape;
     }
-
-
 
   } );
 
@@ -8728,9 +8668,6 @@ build['./series/graph.serie.line.broken'] = ( function( GraphLine ) {
   var GraphSerie = function() {}
   $.extend( GraphSerie.prototype, GraphLine.prototype, {
 
-
-
-
     draw: function() { // Serie redrawing
 
       this.drawInit();
@@ -8743,64 +8680,53 @@ build['./series/graph.serie.line.broken'] = ( function( GraphLine ) {
 
       this.removeLinesGroup();
 
-
       this.eraseMarkers();
 
       this.lookForMaxima = true;
       this.lookForMinima = false;
 
-
-      
-
       if ( this.mode == 'x_equally_separated' ) {
 
-          throw "Not supported";
+        throw "Not supported";
 
       } else {
 
         this._draw_standard();
 
       }
-    
+
       i++;
 
       this.removeExtraLines();
-      
+
       //insertMarkers( this );
 
       this.insertLinesGroup();
 
-      
       var label;
       for ( var i = 0, l = this.labels.length; i < l; i++ ) {
         this.repositionLabel( this.labels[ i ] );
       }
     },
 
-
-
-
-
     _draw_standard: function() { // Serie redrawing
 
-
-    var self = this,
-          data = this._dataToUse,
-          toBreak,
-          i = 0,
-          l = data.length,
-          j,
-          k,
-          m,
-          x,
-          y,
-          xpx,
-          ypx,
-          xpx2,
-          ypx2;
+      var self = this,
+        data = this._dataToUse,
+        toBreak,
+        i = 0,
+        l = data.length,
+        j,
+        k,
+        m,
+        x,
+        y,
+        xpx,
+        ypx,
+        xpx2,
+        ypx2;
 
       var lastRangeX, lastRangeY, lastX, lastY, lastXPx, lastYPx, insertMarkers;
-
 
       var incrXFlip = 0;
       var incrYFlip = 1;
@@ -8819,58 +8745,53 @@ build['./series/graph.serie.line.broken'] = ( function( GraphLine ) {
         this.currentLine = "";
         j = 0, k = 0, m = data[ i ].length;
 
-
         for ( ; j < m; j += 2 ) {
-          
+
           x = data[ i ][ j + incrXFlip ];
           y = data[ i ][ j + incrYFlip ];
 
           var rangeX = this.getXAxis().getRange ? this.getXAxis().getRange( x ) : [ 1, this.getX( x ) ];
           var rangeY = this.getYAxis().getRange ? this.getYAxis().getRange( y ) : [ 1, this.getY( y ) ];
 
-//console.log( rangeX, rangeY );
-
+          //console.log( rangeX, rangeY );
 
           // We just gets into a new range, we must get the old point and draw it in the current range
-          if( 
-            ( rangeX[ 0 ] != lastRangeX || rangeY[ 0 ] != lastRangeY ) && 
-              rangeX[ 0 ] !== undefined && 
-              rangeY[ 0 ] !== undefined && 
-              j > 0
+          if (
+            ( rangeX[ 0 ] != lastRangeX ||  rangeY[ 0 ] != lastRangeY ) &&
+            rangeX[ 0 ] !== undefined &&
+            rangeY[ 0 ] !== undefined &&
+            j > 0
+          ) {
+
+            // Direct range change => add the new point to the old range
+            if (
+              lastRangeX !== undefined &&
+              lastRangeY !== undefined
             ) {
 
-              // Direct range change => add the new point to the old range
-              if( 
-                lastRangeX !== undefined && 
-                lastRangeY !== undefined
-              ) {
+              this.break( lastX, lastY, lastXPx, lastYPx, x, y, k );
+              this._createLine();
+            }
 
-                this.break( lastX, lastY, lastXPx, lastYPx, x, y, k );
-                this._createLine( );
-              }
+            this.break( x, y, rangeX[ 1 ], rangeY[ 1 ], lastX, lastY, k );
 
+            // We must add the old point to the current range
+            // use lastX, lastY for the last point
 
-              this.break( x, y, rangeX[ 1 ], rangeY[ 1 ], lastX, lastY, k );
-              
-              // We must add the old point to the current range
-              // use lastX, lastY for the last point
+            this._addPoint( rangeX[  1 ], rangeY[  1 ] )
 
-              this._addPoint( rangeX[ 1 ], rangeY[ 1 ] )
-              
-
-              // Just breaks
-          } else if( rangeX[ 0 ] == undefined || rangeY[ 0 ] == undefined && lastRangeX && lastRangeY ) {
+            // Just breaks
+          } else if ( rangeX[ 0 ] == undefined ||  rangeY[ 0 ] == undefined && lastRangeX && lastRangeY ) {
 
             //currentLine = this.break( x, y, rangeX[ 1 ], rangeY[ 1 ], lastX, lastY, currentLine, k );
             this.break( lastX, lastY, lastXPx, lastYPx, x, y, k );
-            this._createLine( );
-            
-          
+            this._createLine();
+
             // Adds the current point to the old range and break it
-          } else if( ! isNaN( rangeX[ 1 ] ) && ! isNaN( rangeY[ 1 ] ) ) {
-            
-            this._addPoint( rangeX[ 1 ], rangeY[ 1 ] )
-            
+          } else if ( !isNaN( rangeX[  1 ] ) && !isNaN( rangeY[  1 ] ) ) {
+
+            this._addPoint( rangeX[  1 ], rangeY[  1 ] )
+
           } else {
 
             //continue;
@@ -8884,61 +8805,56 @@ build['./series/graph.serie.line.broken'] = ( function( GraphLine ) {
 
           lastXPx = rangeX[ 1 ];
           lastYPx = rangeY[ 1 ];
+        }
+
+        this._createLine();
+      }
+    },
+
+    break: function( refX, refY, refXPx, refYPx, x, y ) {
+
+      var xRatio, yRatio, ratio, xPotential, yPotential, xBoundary, yBoundary;
+      var xpx, ypx;
+
+      if ( this.getXAxis()._broken ) {
+        //xPotential = this.getXAxis().getInRange( refX, x );
+        xBoundary = this.getXAxis().getBoundary( refX, x );
+        xRatio = ( xBoundary - refX ) / ( x - refXPx );
+      } else {
+        xRatio = 1;
+        xPotential = x;
       }
 
-      this._createLine(  );
-    }
-  },
+      if ( this.getYAxis()._broken ) {
+        //yPotential = this.getYAxis().getInRange( refY, y );
 
+        yBoundary = this.getYAxis().getBoundary( refY, y );
+        yRatio = ( yBoundary - refY ) / ( y - refY );
+      } else {
+        yRatio = 1;
+        yPotential = y;
+      }
 
-
-  break: function( refX, refY, refXPx, refYPx, x, y ) {
-
-    var xRatio, yRatio, ratio, xPotential, yPotential, xBoundary, yBoundary;
-    var xpx, ypx;
-
-    if( this.getXAxis()._broken ) {
-      //xPotential = this.getXAxis().getInRange( refX, x );
-      xBoundary = this.getXAxis().getBoundary( refX, x );
-      xRatio = ( xBoundary - refX ) / ( x - refXPx );
-    } else {
-      xRatio = 1;
-      xPotential = x;
-    }
-
-    if( this.getYAxis()._broken ) {
-      //yPotential = this.getYAxis().getInRange( refY, y );
-
-      yBoundary = this.getYAxis().getBoundary( refY, y );
-      yRatio = ( yBoundary - refY ) / ( y - refY );
-    } else {
-      yRatio = 1;
-      yPotential = y;
-    }
-
-    var ratio = Math.min( yRatio, xRatio ),
+      var ratio = Math.min( yRatio, xRatio ),
         x = ratio * ( x - refX ) + refX,
         y = ratio * ( y - refY ) + refY;
 
-    if( this.getXAxis()._broken ) {
-      xpx = this.getXAxis().getInRange( refX, x );
-    } else {
-      xpx = this.getX( x );
-    }
+      if ( this.getXAxis()._broken ) {
+        xpx = this.getXAxis().getInRange( refX, x );
+      } else {
+        xpx = this.getX( x );
+      }
 
-    if( this.getYAxis()._broken ) {
-      ypx = this.getYAxis().getInRange( refY, y );
-    } else {
-      ypx = this.getY( y );
-    }
-    
-    return this._addPoint( xpx, ypx );
-  },
-  
+      if ( this.getYAxis()._broken ) {
+        ypx = this.getYAxis().getInRange( refY, y );
+      } else {
+        ypx = this.getY( y );
+      }
 
+      return this._addPoint( xpx, ypx );
+    },
 
   } );
-
 
   return GraphSerie;
  } ) ( build["./series/graph.serie.line"] );
@@ -9717,7 +9633,7 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
 
       lineBottom.reverse();
 
-      if( lineTop.length > 0 && lineBottom.length > 0 ) {
+      if ( lineTop.length > 0 && lineBottom.length > 0 ) {
         this.lineZone.setAttribute( 'd', "M " + lineTop[ 0 ] + " L " + lineTop.join( " L " ) + " L " + lineBottom.join( " L " ) + " z" );
       }
 
@@ -9943,7 +9859,6 @@ build['./shapes/graph.shape'] = ( function( ) {
 
       //			this.group.appendChild(this.rectEvent);
 
-      
       this.initImpl();
     },
 
@@ -9999,7 +9914,7 @@ build['./shapes/graph.shape'] = ( function( ) {
     },
 
     triggerChange: function() {
-      
+
       this.graph.triggerEvent( 'onAnnotationChange', this.data, this );
     },
 
@@ -10018,7 +9933,7 @@ build['./shapes/graph.shape'] = ( function( ) {
 
     setBBox: function() {
 
-      if( ! this.rectEvent ) {
+      if ( !this.rectEvent ) {
         this.rectEvent = document.createElementNS( this.graph.ns, 'rect' );
         this.rectEvent.setAttribute( 'pointer-events', 'fill' );
         this.rectEvent.setAttribute( 'fill', 'transparent' );
@@ -10033,7 +9948,6 @@ build['./shapes/graph.shape'] = ( function( ) {
 
       this.group.appendChild( this.rectEvent );
     },
-
 
     kill: function() {
 
@@ -10055,7 +9969,7 @@ build['./shapes/graph.shape'] = ( function( ) {
         this.setLabelNumber( 1 );
       }
 
-      if( ! this._inDom ) {
+      if ( !this._inDom ) {
         this.graph.appendShapeToDom( this );
         this._inDom = true;
       }
@@ -10205,9 +10119,9 @@ build['./shapes/graph.shape'] = ( function( ) {
     },
 
     _getPosition: function( value, relTo ) {
-      
+
       var xAxis = this.getXAxis(),
-          yAxis = this.getYAxis();
+        yAxis = this.getYAxis();
       return this.graph.getPosition( value, relTo, xAxis, yAxis, this.serie );
     },
 
@@ -10231,8 +10145,6 @@ build['./shapes/graph.shape'] = ( function( ) {
     checkMinMax: function() {
 
       var pos = this.get
-
-
 
     },
 
@@ -10318,7 +10230,7 @@ build['./shapes/graph.shape'] = ( function( ) {
         var parsedCurrPos = this._getPosition( currPos );
 
         if ( !pos ) {
-          
+
           var pos = this._getPosition( this.get( 'labelPosition', labelIndex ), currPos );
         } else {
           pos = this._getPosition( pos );
@@ -10544,7 +10456,7 @@ build['./shapes/graph.shape'] = ( function( ) {
               }
             }
 
-            this.callHandler('onChange', this );
+            this.callHandler( 'onChange', this );
           }
 
           return ret;
@@ -10561,16 +10473,16 @@ build['./shapes/graph.shape'] = ( function( ) {
 
           this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
 
-          if( ! this.isLocked() ) {
+          if ( !this.isLocked() ) {
             this.graph.elementMoving( this );
           }
 
-          if ( ! this._selected && ! this.isLocked( ) ) {
+          if ( !this._selected && !this.isLocked() ) {
             this.preventUnselect = true;
             this.timeoutSelect = window.setTimeout( function() { // Tweak needed to select the shape.
 
-                self.select();
-                self.timeoutSelect = false;
+              self.select();
+              self.timeoutSelect = false;
 
             }, 100 );
           }
@@ -10842,7 +10754,7 @@ build['./shapes/graph.shape'] = ( function( ) {
     },
 
     maskWith: function( otherShape ) {
-      
+
       var maskingId;
       if ( maskingId = otherShape.getMaskingID() ) {
         this._dom.setAttribute( 'mask', 'url(#' + maskingId + ')' );
@@ -10881,7 +10793,6 @@ build['./shapes/graph.shape'] = ( function( ) {
       }
     },
 
-
     setXAxis: function( axis ) {
       this.xAxis = axis;
     },
@@ -10895,19 +10806,18 @@ build['./shapes/graph.shape'] = ( function( ) {
       this.yAxis = this.graph.getYAxis();
     },
 
-    getXAxis: function( ) {
+    getXAxis: function() {
 
-      if( ! this.xAxis ) {
+      if ( !this.xAxis ) {
         this.autoAxes();
       }
 
       return this.xAxis;
     },
 
+    getYAxis: function() {
 
-    getYAxis: function( ) {
-
-      if( ! this.yAxis ) {
+      if ( !this.yAxis ) {
         this.autoAxes();
       }
 
@@ -10933,7 +10843,7 @@ build['./shapes/graph.shape'] = ( function( ) {
     // Layers
 
     getLayer: function() {
-      return this._layer || 1;
+      return this._layer ||  1;
     },
 
     setLayer: function( layer ) {
@@ -11033,7 +10943,7 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
         pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.getXAxis() );
         pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.getYAxis() );
 
-      } else if( this.serie ) {
+      } else if ( this.serie ) {
 
         this.resizingPosition = ( ( this.reversed && this.handleSelected == 2 ) || ( !this.reversed && this.handleSelected == 1 ) ) ? this.getFromData( 'pos' ) : this.getFromData( 'pos2' );
 
@@ -11065,7 +10975,7 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
 
     setPosition: function() {
 
-      if( ! this.serie ) {
+      if ( !this.serie ) {
         return;
       }
 
@@ -11127,12 +11037,12 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
             this.firstY = y;
           }
 
-          if( k > 0 ) {
-            this.currentLine += " L " + x + " " + y + " "  
+          if ( k > 0 ) {
+            this.currentLine += " L " + x + " " + y + " "
           } else {
             this.currentLine += " M " + x + " " + y + " ";
           }
-          
+
           //this.serie._addPoint( x, y, false, this.currentLine );
           k++;
 
@@ -11367,22 +11277,22 @@ build['./shapes/graph.shape.line'] = ( function( GraphShape ) {
 
         if ( forced.y !== undefined ) {
 
-        	if( typeof forced.y == "function" ) {
-        		pos2.y = pos.y = forced.y( this );
-        	} else {
-          		pos2.y = forced.y;
-          		pos.y = forced.y;
-          	}
+          if ( typeof forced.y == "function" ) {
+            pos2.y = pos.y = forced.y( this );
+          } else {
+            pos2.y = forced.y;
+            pos.y = forced.y;
+          }
         }
 
         if ( forced.x !== undefined ) {
 
-        	if( typeof forced.x == "function" ) {
-        		pos2.x = pos.x = forced.x( this );
-        	} else {
-	          pos2.x = forced.x;
-	          pos.x = forced.x;
-	         }
+          if ( typeof forced.x == "function" ) {
+            pos2.x = pos.x = forced.x( this );
+          } else {
+            pos2.x = forced.x;
+            pos.x = forced.x;
+          }
         }
       }
 
@@ -11817,7 +11727,7 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
       type: 'corners'
     };
 
-    if( ! this.isLocked() ) {
+    if ( !this.isLocked() ) {
       switch ( this.options.handles.type ) {
 
         case 'sides':
@@ -11912,7 +11822,6 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
 
       var width = this.getFromData( 'width' ),
         height = this.getFromData( 'height' );
-      
 
       var pos = this._getPosition( this.getFromData( 'pos' ) ),
         x = pos.x,
@@ -12259,7 +12168,6 @@ this.handle1.setAttribute('x', this.currentX);
             pos.x = posX;
             pos.y = posY;
 
-            
             break;
 
         }
@@ -12275,11 +12183,11 @@ this.handle1.setAttribute('x', this.currentX);
 
     setHandles: function() {
 
-      if( this.isLocked() ) {
+      if ( this.isLocked() ) {
         return;
       }
-      
-      if ( ! this.handlesInDom ) {
+
+      if ( !this.handlesInDom ) {
         return;
       }
 
@@ -12919,53 +12827,50 @@ build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) {
     this.series = [];
   }
 
-
   $.extend( Zoom2DShape.prototype, GraphShape.prototype, {
 
     createDom: function() {
       this._dom = document.createElementNS( this.graph.ns, 'g' );
 
-      var rect = document.createElementNS( this.graph.ns, 'rect');
-      rect.setAttribute('rx', 3 );
-      rect.setAttribute('ry', 3 );
+      var rect = document.createElementNS( this.graph.ns, 'rect' );
+      rect.setAttribute( 'rx', 3 );
+      rect.setAttribute( 'ry', 3 );
 
-      rect.setAttribute('height', 100 );
-      rect.setAttribute('width', 6 );
-      rect.setAttribute('fill', 'rgb(150, 140, 180)' );
-      rect.setAttribute('stroke', 'rgb( 40, 40, 40 )' );
-      rect.setAttribute('stroke-width', '1px' );
-      rect.setAttribute('x', 0 );
-      rect.setAttribute('y', 0 );
+      rect.setAttribute( 'height', 100 );
+      rect.setAttribute( 'width', 6 );
+      rect.setAttribute( 'fill', 'rgb(150, 140, 180)' );
+      rect.setAttribute( 'stroke', 'rgb( 40, 40, 40 )' );
+      rect.setAttribute( 'stroke-width', '1px' );
+      rect.setAttribute( 'x', 0 );
+      rect.setAttribute( 'y', 0 );
 
       this.rect = rect;
 
-      
       this._dom.appendChild( rect );
 
-      var handlePos = document.createElementNS( this.graph.ns, 'rect');
-      
-      handlePos.setAttribute('height', 5 );
-      handlePos.setAttribute('width', 12 );
-      handlePos.setAttribute('fill', 'rgb(190, 180, 220)' );
-      handlePos.setAttribute('stroke', 'rgb( 40, 40, 40 )' );
-      handlePos.setAttribute('stroke-width', '1px' );
-      handlePos.setAttribute('x', -3 );
-      handlePos.setAttribute('y', 0 );
-      handlePos.setAttribute('class', 'positive');
-      handlePos.setAttribute('cursor', 'pointer' );
+      var handlePos = document.createElementNS( this.graph.ns, 'rect' );
 
+      handlePos.setAttribute( 'height', 5 );
+      handlePos.setAttribute( 'width', 12 );
+      handlePos.setAttribute( 'fill', 'rgb(190, 180, 220)' );
+      handlePos.setAttribute( 'stroke', 'rgb( 40, 40, 40 )' );
+      handlePos.setAttribute( 'stroke-width', '1px' );
+      handlePos.setAttribute( 'x', -3 );
+      handlePos.setAttribute( 'y', 0 );
+      handlePos.setAttribute( 'class', 'positive' );
+      handlePos.setAttribute( 'cursor', 'pointer' );
 
-      var handleNeg = document.createElementNS( this.graph.ns, 'rect');
-      
-      handleNeg.setAttribute('height', 5 );
-      handleNeg.setAttribute('width', 12 );
-      handleNeg.setAttribute('fill', 'rgb(190, 180, 220)' );
-      handleNeg.setAttribute('stroke', 'rgb( 40, 40, 40 )' );
-      handleNeg.setAttribute('stroke-width', '1px' );
-      handleNeg.setAttribute('x', -3 );
-      handleNeg.setAttribute('y', 0 );
-      handleNeg.setAttribute('class', 'negative');
-      handleNeg.setAttribute('cursor', 'pointer' );
+      var handleNeg = document.createElementNS( this.graph.ns, 'rect' );
+
+      handleNeg.setAttribute( 'height', 5 );
+      handleNeg.setAttribute( 'width', 12 );
+      handleNeg.setAttribute( 'fill', 'rgb(190, 180, 220)' );
+      handleNeg.setAttribute( 'stroke', 'rgb( 40, 40, 40 )' );
+      handleNeg.setAttribute( 'stroke-width', '1px' );
+      handleNeg.setAttribute( 'x', -3 );
+      handleNeg.setAttribute( 'y', 0 );
+      handleNeg.setAttribute( 'class', 'negative' );
+      handleNeg.setAttribute( 'cursor', 'pointer' );
 
       this._dom.appendChild( handlePos );
       this._dom.appendChild( handleNeg );
@@ -12981,7 +12886,7 @@ build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) {
         return;
       }
 
-      this.setDom( 'transform', 'translate(' + position.x +', ' + position.y + ')' );
+      this.setDom( 'transform', 'translate(' + position.x + ', ' + position.y + ')' );
       return true;
     },
 
@@ -12992,7 +12897,7 @@ build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) {
 
     setHandlePos: function( value, max ) {
 
-      this.handlePos.setAttribute( 'y', ( 1- value  ) * 45 )
+      this.handlePos.setAttribute( 'y', ( 1 - value ) * 45 )
     },
 
     redrawImpl: function() {
@@ -13008,7 +12913,7 @@ build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) {
 
     handleMouseDownImpl: function( e ) {
 
-      this.selected = e.target.getAttribute('class') == 'positive' ? 'positive' : ( e.target.getAttribute('class') == 'negative'  ? 'negative' : false );
+      this.selected = e.target.getAttribute( 'class' ) == 'positive' ? 'positive' : ( e.target.getAttribute( 'class' ) == 'negative' ? 'negative' : false );
       return true;
     },
 
@@ -13025,52 +12930,45 @@ build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) {
 
     handleMouseMoveImpl: function( e ) {
 
-      
-      var o = $(this._dom).offset();
+      var o = $( this._dom ).offset();
       var cY = e.pageY - o.top;
-//console.log( this.selected );
+      //console.log( this.selected );
 
+      if ( this.selected == "negative" ) {
 
-      if( this.selected == "negative" ) {
-
-        if( cY > 100 ) {
+        if ( cY > 100 ) {
           cY = 100;
-        } else if( cY < 55) {
-         cY = 55;
-        } 
+        } else if ( cY < 55 ) {
+          cY = 55;
+        }
 
         //this.handleNeg.setAttribute('y', cY);
         //console.log( cY);
-        cY = - ( cY - 55 ) / 45; 
-        
-        this.series.map( function ( s ) {
-          s.onMouseWheel( false, false, cY, false );
-        });
+        cY = -( cY - 55 ) / 45;
 
+        this.series.map( function( s ) {
+          s.onMouseWheel( false, false, cY, false );
+        } );
 
       }
 
+      if ( this.selected == "positive" ) {
 
-      if( this.selected == "positive" ) {
-
-        if( cY < 0 ) {
+        if ( cY < 0 ) {
           cY = 0;
-        } else if( cY > 45) {
+        } else if ( cY > 45 ) {
           cY = 45;
         }
 
-       // this.handlePos.setAttribute('y', cY);  
+        // this.handlePos.setAttribute('y', cY);  
         cY = ( 45 - cY ) / 45;
 
-        this.series.map( function ( s ) {
+        this.series.map( function( s ) {
           s.onMouseWheel( false, false, cY, true );
-        });
-
+        } );
 
       }
 
-
-      
     },
 
     selectStyle: function() {
@@ -13079,13 +12977,13 @@ build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) {
     },
 
     hideHandleNeg: function() {
-      this.handleNeg.setAttribute('display', 'none');
-      this.rect.setAttribute('height', 45);
+      this.handleNeg.setAttribute( 'display', 'none' );
+      this.rect.setAttribute( 'height', 45 );
     },
 
     showHandleNeg: function() {
-      this.handleNeg.setAttribute('display', 'block');
-      this.rect.setAttribute('height', 100);
+      this.handleNeg.setAttribute( 'display', 'block' );
+      this.rect.setAttribute( 'height', 100 );
     },
 
     setHandles: function() {}

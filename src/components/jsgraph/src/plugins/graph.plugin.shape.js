@@ -56,18 +56,18 @@ define( [], function() {
 
       var shape = graph.newShape( $.extend( shapeInfo, this.options ), {}, false );
 
-      if( shape ) {
+      if ( shape ) {
 
-          shape.then( function( shape ) {
+        shape.then( function( shape ) {
 
-            if ( !shape ) {
-              return;
-            }
+          if ( !shape ) {
+            return;
+          }
 
-            self.currentShape = shape;
-            self.currentShapeEvent = e;
+          self.currentShape = shape;
+          self.currentShapeEvent = e;
 
-          } );
+        } );
       }
 
     },
@@ -83,14 +83,12 @@ define( [], function() {
         var shape = self.currentShape;
         self.currentShape = false;
 
-        
-
-        if( graph.selectedSerie ) {
+        if ( graph.selectedSerie ) {
           shape.setSerie( graph.selectedSerie );
         }
 
         shape.created();
-        
+
         if ( shape.options && shape.options.onCreate ) {
           shape.options.onCreate.call( shape );
         }

@@ -56,7 +56,7 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
       } else if ( !label && this.options.secondaryGrid ) {
 
         this.doGridLine( false, val, val, 0, this.graph.getDrawingHeight() );
-        
+
       }
 
       tick.setAttribute( 'stroke', 'black' );

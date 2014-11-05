@@ -7,53 +7,50 @@ define( [ './graph.shape' ], function( GraphShape ) {
     this.series = [];
   }
 
-
   $.extend( Zoom2DShape.prototype, GraphShape.prototype, {
 
     createDom: function() {
       this._dom = document.createElementNS( this.graph.ns, 'g' );
 
-      var rect = document.createElementNS( this.graph.ns, 'rect');
-      rect.setAttribute('rx', 3 );
-      rect.setAttribute('ry', 3 );
+      var rect = document.createElementNS( this.graph.ns, 'rect' );
+      rect.setAttribute( 'rx', 3 );
+      rect.setAttribute( 'ry', 3 );
 
-      rect.setAttribute('height', 100 );
-      rect.setAttribute('width', 6 );
-      rect.setAttribute('fill', 'rgb(150, 140, 180)' );
-      rect.setAttribute('stroke', 'rgb( 40, 40, 40 )' );
-      rect.setAttribute('stroke-width', '1px' );
-      rect.setAttribute('x', 0 );
-      rect.setAttribute('y', 0 );
+      rect.setAttribute( 'height', 100 );
+      rect.setAttribute( 'width', 6 );
+      rect.setAttribute( 'fill', 'rgb(150, 140, 180)' );
+      rect.setAttribute( 'stroke', 'rgb( 40, 40, 40 )' );
+      rect.setAttribute( 'stroke-width', '1px' );
+      rect.setAttribute( 'x', 0 );
+      rect.setAttribute( 'y', 0 );
 
       this.rect = rect;
 
-      
       this._dom.appendChild( rect );
 
-      var handlePos = document.createElementNS( this.graph.ns, 'rect');
-      
-      handlePos.setAttribute('height', 5 );
-      handlePos.setAttribute('width', 12 );
-      handlePos.setAttribute('fill', 'rgb(190, 180, 220)' );
-      handlePos.setAttribute('stroke', 'rgb( 40, 40, 40 )' );
-      handlePos.setAttribute('stroke-width', '1px' );
-      handlePos.setAttribute('x', -3 );
-      handlePos.setAttribute('y', 0 );
-      handlePos.setAttribute('class', 'positive');
-      handlePos.setAttribute('cursor', 'pointer' );
+      var handlePos = document.createElementNS( this.graph.ns, 'rect' );
 
+      handlePos.setAttribute( 'height', 5 );
+      handlePos.setAttribute( 'width', 12 );
+      handlePos.setAttribute( 'fill', 'rgb(190, 180, 220)' );
+      handlePos.setAttribute( 'stroke', 'rgb( 40, 40, 40 )' );
+      handlePos.setAttribute( 'stroke-width', '1px' );
+      handlePos.setAttribute( 'x', -3 );
+      handlePos.setAttribute( 'y', 0 );
+      handlePos.setAttribute( 'class', 'positive' );
+      handlePos.setAttribute( 'cursor', 'pointer' );
 
-      var handleNeg = document.createElementNS( this.graph.ns, 'rect');
-      
-      handleNeg.setAttribute('height', 5 );
-      handleNeg.setAttribute('width', 12 );
-      handleNeg.setAttribute('fill', 'rgb(190, 180, 220)' );
-      handleNeg.setAttribute('stroke', 'rgb( 40, 40, 40 )' );
-      handleNeg.setAttribute('stroke-width', '1px' );
-      handleNeg.setAttribute('x', -3 );
-      handleNeg.setAttribute('y', 0 );
-      handleNeg.setAttribute('class', 'negative');
-      handleNeg.setAttribute('cursor', 'pointer' );
+      var handleNeg = document.createElementNS( this.graph.ns, 'rect' );
+
+      handleNeg.setAttribute( 'height', 5 );
+      handleNeg.setAttribute( 'width', 12 );
+      handleNeg.setAttribute( 'fill', 'rgb(190, 180, 220)' );
+      handleNeg.setAttribute( 'stroke', 'rgb( 40, 40, 40 )' );
+      handleNeg.setAttribute( 'stroke-width', '1px' );
+      handleNeg.setAttribute( 'x', -3 );
+      handleNeg.setAttribute( 'y', 0 );
+      handleNeg.setAttribute( 'class', 'negative' );
+      handleNeg.setAttribute( 'cursor', 'pointer' );
 
       this._dom.appendChild( handlePos );
       this._dom.appendChild( handleNeg );
@@ -69,7 +66,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
         return;
       }
 
-      this.setDom( 'transform', 'translate(' + position.x +', ' + position.y + ')' );
+      this.setDom( 'transform', 'translate(' + position.x + ', ' + position.y + ')' );
       return true;
     },
 
@@ -80,7 +77,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
     setHandlePos: function( value, max ) {
 
-      this.handlePos.setAttribute( 'y', ( 1- value  ) * 45 )
+      this.handlePos.setAttribute( 'y', ( 1 - value ) * 45 )
     },
 
     redrawImpl: function() {
@@ -96,7 +93,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
     handleMouseDownImpl: function( e ) {
 
-      this.selected = e.target.getAttribute('class') == 'positive' ? 'positive' : ( e.target.getAttribute('class') == 'negative'  ? 'negative' : false );
+      this.selected = e.target.getAttribute( 'class' ) == 'positive' ? 'positive' : ( e.target.getAttribute( 'class' ) == 'negative' ? 'negative' : false );
       return true;
     },
 
@@ -113,52 +110,45 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
     handleMouseMoveImpl: function( e ) {
 
-      
-      var o = $(this._dom).offset();
+      var o = $( this._dom ).offset();
       var cY = e.pageY - o.top;
-//console.log( this.selected );
+      //console.log( this.selected );
 
+      if ( this.selected == "negative" ) {
 
-      if( this.selected == "negative" ) {
-
-        if( cY > 100 ) {
+        if ( cY > 100 ) {
           cY = 100;
-        } else if( cY < 55) {
-         cY = 55;
-        } 
+        } else if ( cY < 55 ) {
+          cY = 55;
+        }
 
         //this.handleNeg.setAttribute('y', cY);
         //console.log( cY);
-        cY = - ( cY - 55 ) / 45; 
-        
-        this.series.map( function ( s ) {
-          s.onMouseWheel( false, false, cY, false );
-        });
+        cY = -( cY - 55 ) / 45;
 
+        this.series.map( function( s ) {
+          s.onMouseWheel( false, false, cY, false );
+        } );
 
       }
 
+      if ( this.selected == "positive" ) {
 
-      if( this.selected == "positive" ) {
-
-        if( cY < 0 ) {
+        if ( cY < 0 ) {
           cY = 0;
-        } else if( cY > 45) {
+        } else if ( cY > 45 ) {
           cY = 45;
         }
 
-       // this.handlePos.setAttribute('y', cY);  
+        // this.handlePos.setAttribute('y', cY);  
         cY = ( 45 - cY ) / 45;
 
-        this.series.map( function ( s ) {
+        this.series.map( function( s ) {
           s.onMouseWheel( false, false, cY, true );
-        });
-
+        } );
 
       }
 
-
-      
     },
 
     selectStyle: function() {
@@ -167,13 +157,13 @@ define( [ './graph.shape' ], function( GraphShape ) {
     },
 
     hideHandleNeg: function() {
-      this.handleNeg.setAttribute('display', 'none');
-      this.rect.setAttribute('height', 45);
+      this.handleNeg.setAttribute( 'display', 'none' );
+      this.rect.setAttribute( 'height', 45 );
     },
 
     showHandleNeg: function() {
-      this.handleNeg.setAttribute('display', 'block');
-      this.rect.setAttribute('height', 100);
+      this.handleNeg.setAttribute( 'display', 'block' );
+      this.rect.setAttribute( 'height', 100 );
     },
 
     setHandles: function() {}

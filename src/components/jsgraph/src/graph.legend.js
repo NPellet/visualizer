@@ -120,7 +120,7 @@ define( [], function() {
               self.graph.selectSerie( serie );
 
             } else {
-              
+
               serie.show();
 
             }

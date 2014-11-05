@@ -105,7 +105,6 @@ define( [], function() {
 
       //			this.group.appendChild(this.rectEvent);
 
-      
       this.initImpl();
     },
 
@@ -161,7 +160,7 @@ define( [], function() {
     },
 
     triggerChange: function() {
-      
+
       this.graph.triggerEvent( 'onAnnotationChange', this.data, this );
     },
 
@@ -180,7 +179,7 @@ define( [], function() {
 
     setBBox: function() {
 
-      if( ! this.rectEvent ) {
+      if ( !this.rectEvent ) {
         this.rectEvent = document.createElementNS( this.graph.ns, 'rect' );
         this.rectEvent.setAttribute( 'pointer-events', 'fill' );
         this.rectEvent.setAttribute( 'fill', 'transparent' );
@@ -195,7 +194,6 @@ define( [], function() {
 
       this.group.appendChild( this.rectEvent );
     },
-
 
     kill: function() {
 
@@ -217,7 +215,7 @@ define( [], function() {
         this.setLabelNumber( 1 );
       }
 
-      if( ! this._inDom ) {
+      if ( !this._inDom ) {
         this.graph.appendShapeToDom( this );
         this._inDom = true;
       }
@@ -367,9 +365,9 @@ define( [], function() {
     },
 
     _getPosition: function( value, relTo ) {
-      
+
       var xAxis = this.getXAxis(),
-          yAxis = this.getYAxis();
+        yAxis = this.getYAxis();
       return this.graph.getPosition( value, relTo, xAxis, yAxis, this.serie );
     },
 
@@ -393,8 +391,6 @@ define( [], function() {
     checkMinMax: function() {
 
       var pos = this.get
-
-
 
     },
 
@@ -480,7 +476,7 @@ define( [], function() {
         var parsedCurrPos = this._getPosition( currPos );
 
         if ( !pos ) {
-          
+
           var pos = this._getPosition( this.get( 'labelPosition', labelIndex ), currPos );
         } else {
           pos = this._getPosition( pos );
@@ -706,7 +702,7 @@ define( [], function() {
               }
             }
 
-            this.callHandler('onChange', this );
+            this.callHandler( 'onChange', this );
           }
 
           return ret;
@@ -723,16 +719,16 @@ define( [], function() {
 
           this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
 
-          if( ! this.isLocked() ) {
+          if ( !this.isLocked() ) {
             this.graph.elementMoving( this );
           }
 
-          if ( ! this._selected && ! this.isLocked( ) ) {
+          if ( !this._selected && !this.isLocked() ) {
             this.preventUnselect = true;
             this.timeoutSelect = window.setTimeout( function() { // Tweak needed to select the shape.
 
-                self.select();
-                self.timeoutSelect = false;
+              self.select();
+              self.timeoutSelect = false;
 
             }, 100 );
           }
@@ -1004,7 +1000,7 @@ define( [], function() {
     },
 
     maskWith: function( otherShape ) {
-      
+
       var maskingId;
       if ( maskingId = otherShape.getMaskingID() ) {
         this._dom.setAttribute( 'mask', 'url(#' + maskingId + ')' );
@@ -1043,7 +1039,6 @@ define( [], function() {
       }
     },
 
-
     setXAxis: function( axis ) {
       this.xAxis = axis;
     },
@@ -1057,19 +1052,18 @@ define( [], function() {
       this.yAxis = this.graph.getYAxis();
     },
 
-    getXAxis: function( ) {
+    getXAxis: function() {
 
-      if( ! this.xAxis ) {
+      if ( !this.xAxis ) {
         this.autoAxes();
       }
 
       return this.xAxis;
     },
 
+    getYAxis: function() {
 
-    getYAxis: function( ) {
-
-      if( ! this.yAxis ) {
+      if ( !this.yAxis ) {
         this.autoAxes();
       }
 
@@ -1095,7 +1089,7 @@ define( [], function() {
     // Layers
 
     getLayer: function() {
-      return this._layer || 1;
+      return this._layer ||  1;
     },
 
     setLayer: function( layer ) {

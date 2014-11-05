@@ -323,7 +323,7 @@ define( [ 'jquery' ], function( $ ) {
         ( ( this.getActualMax() - baseline ) * ( 1 + delta ) ) + baseline, ( ( this.getActualMin() - baseline ) * ( 1 + delta ) ) + baseline
       );
 
-      this.graph.redraw( );
+      this.graph.redraw();
       //	this.graph.drawSeries(true);
 
     },
@@ -598,7 +598,7 @@ define( [ 'jquery' ], function( $ ) {
           }
 
           var widthHeight = this.drawLinearTicksWrapper( widthPx, valrange );
-          
+
         } else {
           var widthHeight = this.drawLogTicks();
         }
@@ -771,7 +771,7 @@ define( [ 'jquery' ], function( $ ) {
 
       //console.log( value, this.getActualMin(), this.getMaxPx(), this.getMinPx(), this._getActualInterval() );
       if ( !this.options.logScale ) {
-        
+
         return ( value - this.getActualMin() ) / ( this._getActualInterval() ) * ( this.getMaxPx() - this.getMinPx() ) + this.getMinPx();
       } else {
         // 0 if value = min

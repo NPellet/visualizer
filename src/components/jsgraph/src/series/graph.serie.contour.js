@@ -13,34 +13,31 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
    * @param   Number  l       The lightness
    * @return  Array           The RGB representation
    */
-   function hue2rgb(p, q, t){
-        if(t < 0) t += 1;
-        if(t > 1) t -= 1;
-        if(t < 1/6) return p + (q - p) * 6 * t;
-        if(t < 1/2) return q;
-        if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-        return p;
-    }
-    
-  function hslToRgb(h, s, l){
-      var r, g, b;
-
-      if(s == 0){
-          r = g = b = l; // achromatic
-      }else{
-          
-          var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-          var p = 2 * l - q;
-          r = hue2rgb(p, q, h + 1/3);
-          g = hue2rgb(p, q, h);
-          b = hue2rgb(p, q, h - 1/3);
-      }
-
-      return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+  function hue2rgb( p, q, t ) {
+    if ( t < 0 ) t += 1;
+    if ( t > 1 ) t -= 1;
+    if ( t < 1 / 6 ) return p + ( q - p ) * 6 * t;
+    if ( t < 1 / 2 ) return q;
+    if ( t < 2 / 3 ) return p + ( q - p ) * ( 2 / 3 - t ) * 6;
+    return p;
   }
 
+  function hslToRgb( h, s, l ) {
+    var r, g, b;
 
+    if ( s == 0 ) {
+      r = g = b = l; // achromatic
+    } else {
 
+      var q = l < 0.5 ? l * ( 1 + s ) : l + s - l * s;
+      var p = 2 * l - q;
+      r = hue2rgb( p, q, h + 1 / 3 );
+      g = hue2rgb( p, q, h );
+      b = hue2rgb( p, q, h - 1 / 3 );
+    }
+
+    return [ Math.round( r * 255 ), Math.round( g * 255 ), Math.round( b * 255 ) ];
+  }
 
   var GraphSerieContour = function() {
 
@@ -49,7 +46,6 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
 
     this.negativeThreshold = 0;
     this.positiveThreshold = 0;
-
 
   };
 
@@ -60,13 +56,13 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
       var z = 0;
       var x, dx, arg = arg || "2D",
         type = type || 'float',
-        i, l = data.length, j, k,
+        i, l = data.length,
+        j, k,
         arr, datas = [];
 
+      if ( !( data instanceof Array ) ) {
 
-      if ( ! ( data instanceof Array ) ) {
-        
-        if( typeof data == 'object' ) {
+        if ( typeof data == 'object' ) {
           // Def v2
           this.minX = data.minX;
           this.minY = data.minY;
@@ -78,7 +74,7 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
         }
       }
 
-      for (  i = 0; i < l; i++ ) {
+      for ( i = 0; i < l; i++ ) {
         k = data[ i ].lines.length;
         arr = this._addData( type, k );
 
@@ -109,7 +105,7 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
         j = 0,
         k, m, currentLine, domLine, arr;
       this.minZ = Infinity;
-      this.maxZ = - Infinity;
+      this.maxZ = -Infinity;
 
       var next = this.groupLines.nextSibling;
       this.groupMain.removeChild( this.groupLines );
@@ -139,8 +135,7 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
 
           var lastxpx, lastypx;
 
-
-          if( ( arr[ j + incrXFlip ] < minX && arr[ j + 2 + incrXFlip ] < minX ) ||  ( arr[ j + incrYFlip ] < minY && arr[ j + 2 + incrYFlip ] < minY ) || ( arr[ j + incrYFlip ] > maxY && arr[ j + 2 + incrYFlip ] > maxY || ( arr[ j + incrXFlip ] > maxX && arr[ j + 2 + incrXFlip ] > maxX )))  {
+          if ( ( arr[ j + incrXFlip ] < minX && arr[ j + 2 + incrXFlip ] < minX ) ||  ( arr[ j + incrYFlip ] < minY && arr[ j + 2 + incrYFlip ] < minY ) ||  ( arr[ j + incrYFlip ] > maxY && arr[ j + 2 + incrYFlip ] > maxY || ( arr[ j + incrXFlip ] > maxX && arr[ j + 2 + incrXFlip ] > maxX ) ) ) {
             continue;
           }
 
@@ -153,7 +148,6 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
           if ( xpx == xpx2 && ypx == ypx2 ) {
             continue;
           }
-
 
           /*	if( j > 0 && ( lastxpx !== undefined && lastypx !== undefined && Math.abs( xpx2 - lastxpx ) <= 30 && Math.abs( ypx2 - lastypx ) <= 30 ) ) {
 						currentLine += "L";
@@ -182,7 +176,7 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
 
         this.currentLine += " z";
 
-        domLine = this._createLine( );
+        domLine = this._createLine();
         domLine.setAttribute( 'data-zvalue', this.data[ i ].zValue );
 
         if ( this.zoneColors && this.zoneColors[ i ] ) {
@@ -200,12 +194,10 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
 
       i++;
 
-      
       for ( i = this.currentLine + 1; i < this.lines.length; i++ ) {
         this.groupLines.removeChild( this.lines[ i ] );
         this.lines.splice( i, 1 );
       }
-
 
       i = 0;
 
@@ -217,14 +209,15 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
         this.graph.legend.update();
       }
 
-
-      this.onMouseWheel( 0, { shiftKey: false } );
+      this.onMouseWheel( 0, {
+        shiftKey: false
+      } );
       this.groupMain.insertBefore( this.groupLines, next );
     },
 
     initimpl: function() {
 
-      if( ! this.options.hasNegative ) {
+      if ( !this.options.hasNegative ) {
         this.negativeThreshold = 0;
       }
 
@@ -234,60 +227,58 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
 
       delta /= 250;
 
-      if( fixed !== undefined ) {
+      if ( fixed !== undefined ) {
 
-        if( ! positive ) {
-          this.negativeThreshold = - fixed * this.minZ;
-          this.negativeDelta = - Math.pow( Math.abs( ( this.negativeThreshold / ( - this.minZ ) ) ), 1/3);
+        if ( !positive ) {
+          this.negativeThreshold = -fixed * this.minZ;
+          this.negativeDelta = -Math.pow( Math.abs( ( this.negativeThreshold / ( -this.minZ ) ) ), 1 / 3 );
         }
 
-        if( positive ) {
+        if ( positive ) {
           this.positiveThreshold = fixed * this.maxZ;
-          this.positiveDelta = Math.pow( this.positiveThreshold / ( this.maxZ ), 1/3);
+          this.positiveDelta = Math.pow( this.positiveThreshold / ( this.maxZ ), 1 / 3 );
         }
 
       } else {
 
-        if( ( ! e.shiftKey ) || ! this.options.hasNegative ) {
+        if ( ( !e.shiftKey ) ||  !this.options.hasNegative ) {
 
           this.positiveDelta = Math.min( 1, Math.max( 0, this.positiveDelta + Math.min( 0.1, Math.max( -0.1, delta ) ) ) );
           this.positiveThreshold = this.maxZ * ( Math.pow( this.positiveDelta, 3 ) );
-      
+
         } else {
 
-          this.negativeDelta = Math.min( 0, Math.max( -1, this.negativeDelta + Math.min( 0.1, Math.max( -0.1, delta ) ) ) ); 
-          this.negativeThreshold = - this.minZ * ( Math.pow( this.negativeDelta, 3 ) );
-      
+          this.negativeDelta = Math.min( 0, Math.max( -1, this.negativeDelta + Math.min( 0.1, Math.max( -0.1, delta ) ) ) );
+          this.negativeThreshold = -this.minZ * ( Math.pow( this.negativeDelta, 3 ) );
+
         }
 
       }
 
-      if( isNaN( this.positiveDelta ) ) {
+      if ( isNaN( this.positiveDelta ) ) {
         this.positiveDelta = 0;
       }
 
-      if( isNaN( this.negativeDelta ) ) {
+      if ( isNaN( this.negativeDelta ) ) {
         this.negativeDelta = 0;
       }
 
       for ( var i in this.zValues ) {
 
-        this.zValues[ i ].dom.setAttribute( 'display', ( ( i >= 0 && i >= this.positiveThreshold ) || ( i <= 0 && i <= this.negativeThreshold ) ) ? 'block' : 'none' );
+        this.zValues[ i ].dom.setAttribute( 'display', ( ( i >= 0 && i >= this.positiveThreshold ) ||  ( i <= 0 && i <= this.negativeThreshold ) ) ? 'block' : 'none' );
 
       }
-      
 
-      if( this._shapeZoom ) {
+      if ( this._shapeZoom ) {
 
-
-        if( ! this.options.hasNegative ) {
-          this._shapeZoom.hideHandleNeg(); 
+        if ( !this.options.hasNegative ) {
+          this._shapeZoom.hideHandleNeg();
         } else {
-          
-          this._shapeZoom.setHandleNeg( - ( Math.pow( this.negativeDelta, 3 ) ), this.minZ );  
+
+          this._shapeZoom.setHandleNeg( -( Math.pow( this.negativeDelta, 3 ) ), this.minZ );
           this._shapeZoom.showHandleNeg();
         }
-        
+
         this._shapeZoom.setHandlePos( ( Math.pow( this.positiveDelta, 3 ) ), this.maxZ );
       }
     },
@@ -302,40 +293,43 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
 
     },
 
-
     setNegative: function( bln ) {
       this.options.hasNegative = bln;
 
-      if( bln ) {
+      if ( bln ) {
         this.negativeThreshold = 0;
       }
     },
 
     setColorTo: function( line, zValue, min, max ) {
 
-      if( ! this.lineColors ) {
+      if ( !this.lineColors ) {
         return;
       }
 
-      var hsl = { h: 0, s: 0, l: 0 };
+      var hsl = {
+        h: 0,
+        s: 0,
+        l: 0
+      };
 
-      for( var i in hsl ) {
+      for ( var i in hsl ) {
 
-        if( zValue > 0 ) {
-          hsl[ i ] = this.lineColors.fromPositive[ i ] + ( ( this.lineColors.toPositive[ i ] - this.lineColors.fromPositive[ i ] ) * ( zValue / max ) );  
+        if ( zValue > 0 ) {
+          hsl[ i ] = this.lineColors.fromPositive[ i ] + ( ( this.lineColors.toPositive[ i ] - this.lineColors.fromPositive[ i ] ) * ( zValue / max ) );
         } else {
-          hsl[ i ] = this.lineColors.fromNegative[ i ] + ( ( this.lineColors.toNegative[ i ] - this.lineColors.fromNegative[ i ] ) * ( zValue / min ) );  
+          hsl[ i ] = this.lineColors.fromNegative[ i ] + ( ( this.lineColors.toNegative[ i ] - this.lineColors.fromNegative[ i ] ) * ( zValue / min ) );
         }
       }
 
       hsl.h /= 360;
 
       var rgb = hslToRgb( hsl.h, hsl.s, hsl.l );
-      
-      line.setAttribute( 'stroke', 'rgb(' + rgb.join() + ')');
+
+      line.setAttribute( 'stroke', 'rgb(' + rgb.join() + ')' );
     },
 
-     getSymbolForLegend: function() {
+    getSymbolForLegend: function() {
 
       if ( !this.lineForLegend ) {
 
@@ -349,15 +343,12 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
         line.setAttribute( 'cursor', 'pointer' );
         this.lineForLegend = line;
 
-        
       }
 
       this.applyLineStyle( this.lineForLegend, this.maxZ );
 
       return this.lineForLegend;
     },
-
-
 
     applyLineStyle: function( line, overwriteValue ) {
       line.setAttribute( 'stroke', this.getLineColor() );
@@ -370,12 +361,9 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
       //  line.setAttribute('shape-rendering', 'optimizeSpeed');
     },
 
-
     setShapeZoom: function( shape ) {
       this._shapeZoom = shape;
     }
-
-
 
   } );
 
