@@ -190,6 +190,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         that.grid.invalidateRow(row);
                         that.grid.render();
                         that.module.controller.onRowNew(row);
+                        that._resetDeleteRowListeners();
                     });
 
                 });
