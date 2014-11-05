@@ -71,7 +71,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         getSlickColumns: function() {
             var that = this;
             var tp = $.proxy(typeRenderer, this);
-            return this.colConfig.map(function(row) {
+            var slickCols = this.colConfig.map(function(row) {
                 var editor, type;
                 if(row.editor === 'auto' && that.module.data) {
                     var obj = that.module.data.get(0).getChildSync(row.jpath);
@@ -104,6 +104,19 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     dataType: type
                 }
             });
+            if(this.module.getConfigurationCheckbox('row_delete', 'yes')) {
+                slickCols.unshift({
+                    id: 'rowDeletion',
+                    width: 30,
+                    field: 'rowDeletion',
+                    selectable: false,
+                    resizable: false,
+                    focusable: false,
+                    sortable: false,
+                    formatter: binFormatter
+                });
+            }
+            return slickCols;
         },
 
         getSlickOptions: function() {
@@ -162,7 +175,11 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         that.grid.setActiveCell(that.lastActiveRow, that.lastActiveCell);
                     }
                 }
+                if(that.lastViewport) {
+                    that.grid.scrollRowToTop(that.lastViewport.top);
+                }
 
+                that._resetDeleteRowListeners();
                 that.grid.onAddNewRow.subscribe(function (e, args) {
                     var item = args.item;
                     var jpath = args.column.jpath.slice();
@@ -175,6 +192,17 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         that.module.controller.onRowNew(row);
                     });
 
+                });
+
+                that.grid.onViewportChanged.subscribe(function(args) {
+                    // onViewportChange is not really working properly, so we hack by having a settimeout
+                    // Acceptable since it is unlikely that someone click the delete button only 300 ms after
+                    // the viewport has changed...
+                    setTimeout(function() {
+                        that.lastViewport = that.grid.getViewport();
+                        that._resetDeleteRowListeners();
+                    }, 300);
+                    that.lastViewport = that.grid.getViewport();
                 });
 
 
@@ -203,11 +231,13 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
                 });
 
-                that.grid.onClick.subscribe(function(e) {
-                    var cell = that._checkCellFromEvent(e);
-                    if(!cell) return;
-
-                    that.module.controller.onClick(cell.row);
+                that.grid.onClick.subscribe(function(e,args) {
+                    var columns = that.grid.getColumns();
+                    if(!_.isUndefined(args.row)) {
+                        if(columns[args.cell] && columns[args.cell].id !== 'rowDeletion') {
+                            that.module.controller.onClick(args.row);
+                        }
+                    }
                 });
 
                 that.grid.onColumnsResized.subscribe(function(e, args) {
@@ -252,6 +282,23 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
         },
 
+        _resetDeleteRowListeners: function() {
+            var that = this;
+            var $rb = that.$rb = $('a.recycle-bin');
+            $rb.off('click');
+            $rb.on('click', function(e) {
+                var columns = that.grid.getColumns();
+                var args = that._checkCellFromEvent(e);
+                that.lastViewport = that.grid.getViewport();
+                if(columns[args.cell] && columns[args.cell].id === 'rowDeletion') {
+                    // delete the row...
+                    that.module.data.splice(args.row, 1);
+                    that.module.data.triggerChange();
+                }
+
+            });
+        },
+
         _checkCellFromEvent: function(e) {
             var cell = this.grid.getCellFromEvent(e);
             if(cell.row >= this.module.data.length) {
@@ -278,7 +325,6 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 base[cols[i].id] = 'highlighted-cell';
             }
 
-            console.log('base', base);
             var r = {};
             for(var j=0; j<this.module.data.length; j++) {
                 var h= this.module.data[j]._highlight;
@@ -318,6 +364,10 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         return "wait...";
     }
 
+    function binFormatter() {
+        return '<div style="width:100%; height: 100%; display: table-cell"><a class="recycle-bin"></a></div>';
+    }
+
     function requiredFieldValidator(value) {
         if (value == null || value == undefined || !value.length) {
             return {valid: false, msg: "This is a required field"};
@@ -327,7 +377,6 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
     }
 
     function typeRenderer(cellNode, row, dataContext, colDef) {
-        console.log('type renderer');
         this.module.data.traceSync([row]);
         var def = Renderer.toScreen(dataContext, this.module, {}, colDef.jpath);
         def.always(function(value) {

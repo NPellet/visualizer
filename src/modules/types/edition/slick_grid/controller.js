@@ -84,6 +84,14 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                             default: ['yes']
                         },
 
+                        row_delete: {
+                            type: 'checkbox',
+                            title: 'Can delete rows',
+                            options: {
+                                yes: 'Yes'
+                            },
+                            default: []
+                        },
 
                         filterRow: {
                             type: 'jscode',
@@ -199,6 +207,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
         'slick.rowHeight': [ 'groups', 'group', 0, 'slick.rowHeight', 0 ],
         'autofocus': [ 'groups', 'group', 0, 'autofocus', 0 ],
         'resize_rerender': [ 'groups', 'group', 0, 'resize_rerender', 0 ],
+        'row_delete': [ 'groups', 'group', 0, 'row_delete', 0 ],
         'cols': ['groups', 'cols', 0]
     };
 
@@ -273,7 +282,6 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
 
 
     controller.prototype.onHover = function(row) {
-        console.log('on hover', row);
         this.setVarFromEvent( 'onHover', 'row', 'list', [ row ] );
         this.sendAction( 'row', this.module.data.get(row), 'onHover' );
 
