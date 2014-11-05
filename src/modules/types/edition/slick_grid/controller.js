@@ -75,6 +75,15 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                             default: []
                         },
 
+                        resize_rerender: {
+                            type: 'checkbox',
+                            title: 'Re-render on resize',
+                            options: {
+                                yes: 'Yes'
+                            },
+                            default: ['yes']
+                        },
+
 
                         filterRow: {
                             type: 'jscode',
@@ -189,6 +198,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
         'slickCheck': [ 'groups', 'group', 0, 'slickCheck', 0 ],
         'slick.rowHeight': [ 'groups', 'group', 0, 'slick.rowHeight', 0 ],
         'autofocus': [ 'groups', 'group', 0, 'autofocus', 0 ],
+        'resize_rerender': [ 'groups', 'group', 0, 'resize_rerender', 0 ],
         'cols': ['groups', 'cols', 0]
     };
 
