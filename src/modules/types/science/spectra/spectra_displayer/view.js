@@ -570,13 +570,12 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 var self = this;
                 for (; i < l; i++) {
                     (function (i) {
-                        var annotation = annotations[i]
-                        var shape = self.graph.newShape(annotation);
+                        var annotation = annotations[i];
+                        var shape = self.graph.newShape(annotation, null, null, true);
 
-                        shape.then(function (shape) {
-                            self.annotations[varName][i] = shape;
-                            shape.setSelectable(false);
-                            shape.setMovable(false);
+                        self.annotations[varName][i] = shape;
+                        shape.setSelectable(false);
+                        shape.setMovable(false);
 //TODO annotation.onChange
 //                Debug.debug('annotation.onChange is disabled, need to be fixed');
 //                annotation.onChange( annotation, function( value ) {
@@ -586,19 +585,19 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 //
 //                 }, self.module.getId() );
 //
-                            API.listenHighlight(annotation, function (onOff) {
-                                if (onOff) {
-                                    shape.highlight({
-                                        fill: 'black'
-                                    });
-                                } else {
-                                    shape.unHighlight();
-                                }
-                            }, false, self.module.getId());
+                        API.listenHighlight(annotation, function (onOff) {
+                            if (onOff) {
+                                shape.highlight({
+                                    fill: 'black'
+                                });
+                            } else {
+                                shape.unHighlight();
+                            }
+                        }, false, self.module.getId());
 
-                            shape.draw();
-                            shape.redraw();
-                        });
+                        shape.draw();
+                        shape.redraw();
+
                     })(i);
                 }
             },
