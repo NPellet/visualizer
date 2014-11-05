@@ -1,5 +1,5 @@
 
-define( [ require, '../../field', 'jqueryui', 'components/farbtastic/src/farbtastic', 'components/spectrum/spectrum' ], function( require, FieldDefaultConstructor, ui, spectrum ) {
+define( [ require, '../../field', 'jquery-ui', 'components/farbtastic/src/farbtastic', 'components/spectrum/spectrum' ], function( require, FieldDefaultConstructor, ui, spectrum ) {
   var felement = null;
 
 

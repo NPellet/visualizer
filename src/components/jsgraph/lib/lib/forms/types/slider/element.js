@@ -1,5 +1,5 @@
 
-define( [ 'jquery', 'jqueryui' ], function( $, jqueryui ) {
+define( [ 'jquery', 'jquery-ui' ], function( $, jqueryui ) {
 
 	var FieldConstructor = function() {};
 	

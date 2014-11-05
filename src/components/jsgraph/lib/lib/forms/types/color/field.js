@@ -1,5 +1,5 @@
 
-define( [ require, '../../field', 'jqueryui', 'components/farbtastic/src/farbtastic' ], function( require, FieldDefaultConstructor, ui ) {
+define( [ require, '../../field', 'jquery-ui', 'components/farbtastic/src/farbtastic' ], function( require, FieldDefaultConstructor, ui ) {
 
 
 	function hexToRgb( hex ) {

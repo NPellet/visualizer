@@ -1,4 +1,4 @@
-define(['jquery', 'jqueryui', 'src/header/components/default', 'src/util/versioning'], function($, ui, Default, Versioning) {
+define(['jquery', 'jquery-ui', 'src/header/components/default', 'src/util/versioning'], function($, ui, Default, Versioning) {
 
 
 	var Element = function() {};

@@ -25,6 +25,10 @@
             "url": "modules/types/edition/onde/"
         },
         {
+            "moduleName": "Alpaca",
+            "url": "modules/types/edition/alpaca/"
+        },
+        {
             "moduleName": "Var Editor",
             "url": "modules/types/edition/var_editor/"
         },

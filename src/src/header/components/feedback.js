@@ -1,4 +1,4 @@
-define(['jquery', 'jqueryui', 'src/header/components/default', './couchshare/share', 'forms/button', 'src/util/util'], function($, ui, Default, Sharer, Button, Util) {
+define(['jquery', 'jquery-ui', 'src/header/components/default', './couchshare/share', 'forms/button', 'src/util/util'], function($, ui, Default, Sharer, Button, Util) {
 
 	var Element = function() {};
         
