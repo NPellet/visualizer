@@ -165,6 +165,7 @@ define(['jquery',
                         try {
                             var filterDef = undefined;
                             eval(defineStr);
+                            require.undef(filter.name[0]);
                             define(filter.name[0], depsA, filterDef);
                             allFilters.push({
                                 file: filter.name[0],
