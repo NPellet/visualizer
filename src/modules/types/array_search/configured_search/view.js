@@ -256,7 +256,10 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                         var opts = {};
                         if (searchfields[ i ].groups.general[ 0 ].type[ 0 ] === 'float') opts.number = true;
                         if (searchfields[ i ].groups.text && searchfields[ i ].groups.text[ 0 ].case_sensitive[ 0 ][ 0 ] === 'case_sensitive') opts.caseSensitive = true;
-                        var allow_undefined = !!(searchfields[ i ].groups.general[ 0 ].allow_undefined ? searchfields[ i ].groups.general[ 0 ].allow_undefined[0].length : 0);
+                        var allow_undefined = false;
+                        if (searchfields[ i ].groups.general[ 0 ].allow_undefined && searchfields[ i ].groups.general[ 0 ].allow_undefined[0]) {
+                            allow_undefined = !!searchfields[ i ].groups.general[ 0 ].allow_undefined[0].length;
+                        }
                         toEval += ' ( ( el = self.getJpath( "' + searchOn[ j ] + '", row ) ) ? ( ';
                         toEval += this._makeOp(searchfields[ i ].groups.general[ 0 ].operator[ 0 ], searchfields[ i ].groups.general[ 0 ].name[ 0 ], opts);
                         toEval += ' ) : ' + allow_undefined + ' ) ';
