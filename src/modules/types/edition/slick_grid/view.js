@@ -104,7 +104,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     dataType: type
                 }
             });
-            if(this.module.getConfigurationCheckbox('row_delete', 'yes')) {
+            if(this.module.getConfigurationCheckbox('slickCheck', 'rowDelete')) {
                 slickCols.unshift({
                     id: 'rowDeletion',
                     width: 30,
@@ -168,7 +168,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 that.grid.module = that.module;
 
                 if(!_.isUndefined(that.lastActiveRow)) {
-                    if(that.module.getConfigurationCheckbox('autofocus', 'yes')) {
+                    if(that.module.getConfigurationCheckbox('slickCheck', 'autoFocus')) {
                         that.grid.gotoCell(that.lastActiveRow, that.lastActiveCell);
                     }
                     else {
@@ -245,7 +245,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     for(var i=0; i<cols.length; i++) {
                         that.module.definition.configuration.groups.cols[0][i].width = cols[i].width;
                     }
-                    if(that.module.getConfigurationCheckbox('resize_rerender', 'yes')) {
+                    if(that.module.getConfigurationCheckbox('slickCheck', 'resizeRerender')) {
                         that.grid.invalidate();
                     }
 

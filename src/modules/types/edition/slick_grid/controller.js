@@ -57,40 +57,16 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                                 enableTextSelectionOnCells: 'Enable Text Selection',
                                 enableColumnReorder: 'Enable Column reorder',
                                 forceFitColumns: 'Force fit Columns',
+                                rowDelete: 'Can delete rows',
+                                resizeRerender: 'Re-render on resize',
+                                autoFocus: 'Auto Focus'
                             },
-                            default: ['editable', 'enableAddRow', 'enableCellNavigation']
+                            default: ['editable', 'enableAddRow', 'enableCellNavigation', 'resizeRerender']
                         },
 
                         "slick.rowHeight": {
                             type: 'text',
                             title: 'Row Height'
-                        },
-
-                        autofocus: {
-                            type: 'checkbox',
-                            title: 'Auto Focus',
-                            options: {
-                                yes: 'Yes'
-                            },
-                            default: []
-                        },
-
-                        resize_rerender: {
-                            type: 'checkbox',
-                            title: 'Re-render on resize',
-                            options: {
-                                yes: 'Yes'
-                            },
-                            default: ['yes']
-                        },
-
-                        row_delete: {
-                            type: 'checkbox',
-                            title: 'Can delete rows',
-                            options: {
-                                yes: 'Yes'
-                            },
-                            default: []
                         },
 
                         filterRow: {
