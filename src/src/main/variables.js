@@ -274,6 +274,9 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
         getData: function () {
             return data;
         },
+        exist: function (varName) {
+            return allVariables.hasOwnProperty(varName);
+        },
         unlisten: unlisten
     };
 

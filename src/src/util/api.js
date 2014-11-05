@@ -95,6 +95,10 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
 			this.repositoryActions = repo;
 		},
 
+		existVar: function (varName) {
+			return Variables.exist(varName);
+		},
+
 		setVar: setVar,
 		setVariable: setVar,
 		resetVariables: function() {
