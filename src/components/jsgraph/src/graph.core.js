@@ -93,25 +93,20 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
     this._dom = dom;
     // DOM
 
-    this._doDom();
-
     var w, h;
-
     if ( dom.style.width && dom.style.width.indexOf( "%" ) == -1 ) {
       w = parseInt( dom.style.width.replace( 'px', '' ) );
-    } else if ( dom.style.minWidth && dom.style.minWidth.indexOf( "%" ) == -1 ) {
-      w = parseInt( dom.style.minWidth.replace( 'px', '' ) );
     } else {
       w = $( dom ).width();
     }
 
     if ( dom.style.height && dom.style.height.indexOf( "%" ) == -1 ) {
       h = parseInt( dom.style.height.replace( 'px', '' ) );
-    } else if ( dom.style.minWidth && dom.style.minWidth.indexOf( "%" ) == -1 ) {
-      h = parseInt( dom.style.minHeight.replace( 'px', '' ) );
     } else {
       h = $( dom ).height();
     }
+
+    this._doDom();
 
     this.setSize( w, h );
     this._resize();
@@ -965,6 +960,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
           self.triggerEvent( 'onNewShape', shapeData );
         }
 
+        return shape;
       }
 
       if ( shapeData.url ) {
@@ -978,6 +974,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
       }
 
       return dynamicLoaderResponse;
+
     },
 
     redrawShapes: function() {

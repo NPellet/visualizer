@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.2-3
+ * jsGraph JavaScript Graphing Library v1.10.2-5
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-11-05T11:23Z
+ * Date: 2014-11-05T13:09Z
  */
 
 (function( global, factory ) {
@@ -2983,25 +2983,20 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     this._dom = dom;
     // DOM
 
-    this._doDom();
-
     var w, h;
-
     if ( dom.style.width && dom.style.width.indexOf( "%" ) == -1 ) {
       w = parseInt( dom.style.width.replace( 'px', '' ) );
-    } else if ( dom.style.minWidth && dom.style.minWidth.indexOf( "%" ) == -1 ) {
-      w = parseInt( dom.style.minWidth.replace( 'px', '' ) );
     } else {
       w = $( dom ).width();
     }
 
     if ( dom.style.height && dom.style.height.indexOf( "%" ) == -1 ) {
       h = parseInt( dom.style.height.replace( 'px', '' ) );
-    } else if ( dom.style.minWidth && dom.style.minWidth.indexOf( "%" ) == -1 ) {
-      h = parseInt( dom.style.minHeight.replace( 'px', '' ) );
     } else {
       h = $( dom ).height();
     }
+
+    this._doDom();
 
     this.setSize( w, h );
     this._resize();
@@ -3855,6 +3850,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
           self.triggerEvent( 'onNewShape', shapeData );
         }
 
+        return shape;
       }
 
       if ( shapeData.url ) {
@@ -3868,6 +3864,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       }
 
       return dynamicLoaderResponse;
+      
     },
 
     redrawShapes: function() {
