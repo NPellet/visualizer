@@ -58,6 +58,8 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
                 this._code = val;
                 if (this.editable) {
                     this.editor.setValue(val);
+                    this.editor.scrollToLine(0);
+                    this.editor.clearSelection();
                     this.editorChanged();
                 }
             }
