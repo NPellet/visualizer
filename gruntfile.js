@@ -279,6 +279,17 @@ module.exports = function (grunt) {
                     '/usr/local/www/sites/cheminfo.epfl.ch/site/firmenich/build/': 'build/**/*.*'                // remote destination : source
                 }
             }
+        },
+
+        jsdoc: {
+            build: {
+                src: ['src/src/util/api.js'],
+                options: {
+                    destination: 'doc',
+                    template : 'node_modules/grunt-jsdoc/node_modules/ink-docstrap/template',
+                    configure : 'node_modules/grunt-jsdoc/node_modules/ink-docstrap/template/jsdoc.conf.json'
+                }
+            }
         }
     });
 
@@ -290,6 +301,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-text-replace');
     grunt.loadNpmTasks('grunt-rename');
     grunt.loadNpmTasks('grunt-ftp');
+    grunt.loadNpmTasks('grunt-jsdoc');
 
     grunt.registerTask('upload', [ 'ftp' ]);
 

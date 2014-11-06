@@ -18,6 +18,7 @@
     "grunt-contrib-requirejs": "~0.4.1",
     "grunt-contrib-uglify": "^0.2.7",
     "grunt-ftp": "^0.1.0",
+    "grunt-jsdoc": "^0.5.7",
     "grunt-rename": "^0.1.4",
     "grunt-text-replace": "~0.3.10",
     "mkpath": "^0.1.0",
