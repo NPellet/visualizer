@@ -166,28 +166,34 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
             return contextMenu;
         },
 
-		loading: function( message ) {
+		loading: function( id, message ) {
 
-			if( loadingNumber == 0) {
+			if (!message) {
+				message = id;
+			}
+
+			if( loadingNumber == 0 ) {
 				$("#ci-visualizer").append( loadingHtml );	
 			}
 
-			if( ! loading[ message ] ) {
-				loading[ message ] = $("<div>" + message + "</div>");
+			if( ! loading[ id ] ) {
+				loading[ id ] = $("<div>" + message + "</div>");
 				loadingNumber++;
 				
-				$("#loading-message").append( loading[ message ] );
+				$("#loading-message").append( loading[ id ] );
+			} else {
+				loading [ id ].html( message );
 			}
 
 		},
 
-		stopLoading: function( message ) {
+		stopLoading: function( id ) {
 			
-			if( loading[ message ] ) {
+			if( loading[ id ] ) {
 				
 				loadingNumber--;
-				loading[ message ].detach();
-				loading[ message ] = null;
+				loading[ id ].detach();
+				loading[ id ] = null;
 
 				if( loadingNumber == 0) {
 					loadingHtml.detach();
