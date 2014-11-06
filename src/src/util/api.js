@@ -155,6 +155,11 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
      * @param {string} [filter] - Url of the filter to use with this variable
      */
     exports.setVariable = function setVariable(name, sourceVariable, jpath, filter) {
+        if (sourceVariable instanceof Array) {
+            filter = jpath;
+            jpath = sourceVariable;
+            sourceVariable = null;
+        }
         jpath = jpath || [];
         var jpathNewVar = ( !sourceVariable ) ? jpath : sourceVariable.getjPath().concat(jpath);
 
