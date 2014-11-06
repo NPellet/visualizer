@@ -7,6 +7,8 @@ define(function () {
         'mol2d': 'string',
         'molfile2D': 'string',
         'jme': 'string',
+        'smiles': 'string',
+        'actelionID': 'string',
         'doi': 'string',
         'gif': 'string',
         'picture': 'string',

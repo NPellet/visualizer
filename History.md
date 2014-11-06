@@ -1,3 +1,10 @@
+2.7.4 / HEAD
+===================
+
+* API : add possibility to change loading message
+* API : add doc
+* add smiles and actelionID types and renderers
+
 2.7.3 / 2014-11-05
 ===================
 

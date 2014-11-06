@@ -113,6 +113,31 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 		});
 	};
 
+	functions.smiles = {};
+	functions.smiles.toscreen = function(def, val, root, options, highlights, box) {
+		require(["http://www.lactame.com/lib/actelion/1.1.0/actelion.js"], function(ACT){
+			var mol = ACT.Molecule.fromSmiles(val.toString());
+			var molfile = {
+				type:"mol2d",
+				value: mol.toMolfile()
+			};
+			functions.mol2d.toscreen(def, mol, molfile, options, highlights, box);
+		});
+	};
+
+	functions.actelionID = {};
+	functions.actelionID.toscreen = function(def, val, root, options, highlights, box) {
+		require(["http://www.lactame.com/lib/actelion/1.1.0/actelion.js"], function(ACT){
+			var mol = ACT.Molecule.fromIDCode(val.toString());
+			mol.inventCoordinates();
+			var molfile = {
+				type:"mol2d",
+				value: mol.toMolfile()
+			};
+			functions.mol2d.toscreen(def, mol, molfile, options, highlights, box);
+		});
+	};
+
 	functions.mol2d = {};
 	functions.mol2d.toscreen = function(def, molfileChild, molfile, options, highlights, box) {
 		
