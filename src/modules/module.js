@@ -1,18 +1,6 @@
 'use strict';
 
-define([
-	'jquery',
-	'src/util/context',
-	'src/util/api',
-	'src/util/util',
-	'src/util/fullscreen',
-	'src/util/debug',
-    'src/main/variables',
-    'src/main/grid'
-], 
-
-function( $, ContextMenu, API, Util, Fullscreen, Debug, Variables ) {
-	"use strict";
+define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util/fullscreen', 'src/util/debug', 'src/main/variables', 'src/main/grid'], function( $, ContextMenu, API, Util, Fullscreen, Debug, Variables ) {
 
 	function init( module ) {
 		//define object properties
@@ -803,17 +791,8 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug, Variables ) {
 										type: 'combo',
 										title: 'jPath',
 										options: {},
-										extractValue: function( val ) {
-											var val2 = (val || "").split(".");
-											val2.shift();
-											return val2;
-										},
-
-										insertValue: function( val ) {
-											val = (val || []).slice(0);
-											val.unshift("element");
-											return val.join(".");
-										}
+										extractValue: Util.jpathToArray,
+										insertValue: Util.jpathToString
 									},
 
 
@@ -904,20 +883,8 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug, Variables ) {
 										type: 'combo',
 										title: 'jPath',
 										options: {},
-										extractValue: function( val ) {
-											if(val){
-												var val2 = val.split(".");
-												val2.shift();
-												return val2;
-											}
-										},
-
-										
-										insertValue: function( val ) {
-											val = (val || []).slice(0);
-											val.unshift("element");
-											return val.join(".");
-										}
+										extractValue: Util.jpathToArray,
+										insertValue: Util.jpathToString
 									},
 
 									name: {
@@ -1107,23 +1074,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug, Variables ) {
 						module.definition.configuration =	value.module_specific_config[ 0 ];
 					}
 
-					if( module.view.unload ) {
-						module.view.unload();
-					}
-
-					module.resetReady();
-
-                    module.controller.init();
-
-					module.view.init();
-
-					module.view.inDom();
-
-					module.toggleLayer( module.getActiveLayerName() );
-
-					module.model.resetListeners( );
-
-					module.updateAllView( );
+					module.reload();
 
 					div.dialog('close');
 					document.getElementById('header').scrollIntoView( true );
@@ -1439,12 +1390,33 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug, Variables ) {
                 size: { width: 20, height: 20},
                 zIndex: 0,
                 display: true,
-                title: "",
+                title: '',
                 bgColor: [ 255, 255, 255, 0 ],
                 wrapper: true,
                 created: true
             })
-        }
+        },
+
+		reload: function () {
+			if( this.view.unload ) {
+				this.view.unload();
+			}
+
+			this.resetReady();
+
+			this.controller.init();
+
+			this.view.init();
+
+			this.view.inDom();
+
+			this.toggleLayer( this.getActiveLayerName() );
+
+			this.model.resetListeners( );
+
+			this.updateAllView( );
+		}
+
 	};
 
 	return Module;
