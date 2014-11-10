@@ -65,7 +65,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
 
             this.slick = {};
-            this.colConfig = this.module.getConfiguration('colsjPaths');
+            this.colConfig = this.module.getConfiguration('cols');
             this.resolveReady();
         },
 

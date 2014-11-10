@@ -175,7 +175,6 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
     };
 
     controller.prototype.configAliases = {
-        'colsjPaths': [ 'groups', 'cols', 0 ],
         'toggle': [ 'groups', 'group', 0, 'toggle', 0 ],
         'colorjPath': [ 'groups', 'group', 0, 'colorjpath', 0 ],
         'filterRow': [ 'groups', 'group', 0, 'filterRow', 0 ],
@@ -213,12 +212,12 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
     /*
      Received actions
      */
-    controller.prototype.actionsIn = {
+    controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {
         addRow: 'Add a new row',
         addColumn: 'Add a new column',
         removeColumn: 'Remove a column',
         removeRow: 'Remove a row'
-    };
+    });
 
     /*
      Configuration of the module for sending events, as a static object
