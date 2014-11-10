@@ -18,7 +18,7 @@ define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'jquery-cookie'], fun
         }
     };
 
-    for(var f in features) {
+    _.keys(features).forEach(function(f) {
         if(modernizr[f]) {
             features[f].has = true;
             features[f].color = 'green';
@@ -27,7 +27,7 @@ define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'jquery-cookie'], fun
             features[f].has = false;
             features[f].color = 'red';
         }
-    }
+    }) ;
 
     var browserHasAllFeatures = _.every(_.map(features, function(val) {
         return val.has;
@@ -71,9 +71,9 @@ define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'jquery-cookie'], fun
 
         var bowserKey = browserKeys[bmap.indexOf(true)];
         // Required version is more recent than actual version
-        if(browsers[bowserKey] > +bowser.version) return false;
+        return browsers[bowserKey] <= +bowser.version;
 
-        return true;
+
     }
 
     var browserIsCompatible = checkBrowser();
