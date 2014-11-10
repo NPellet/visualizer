@@ -8,6 +8,7 @@
 * add module.reload method
 * add new action for all modules : edit preferences
  * add module.getConfigExample and context menu to show what should be sent with the action
+* code_editor : new type of output (JSON-parsed value)
 
 2.7.3 / 2014-11-05
 ===================

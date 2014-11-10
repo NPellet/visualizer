@@ -16,18 +16,21 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype.references = {
         value: {
             label: 'String containing the code'
+        },
+        jsonValue: {
+            label: 'JSON-parsed value'
         }
     };
 
     Controller.prototype.events = {
         onEditorChange: {
             label: 'The value in the editor has changed',
-            refVariable: ['value']
+            refVariable: ['value', 'jsonValue']
         },
         onButtonClick: {
             label: 'The button was clicked',
-            refAction: ['value'],
-            refVariable: ['value']
+            refAction: ['value', 'jsonValue'],
+            refVariable: ['value', 'jsonValue']
         }
     };
 
@@ -95,12 +98,27 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.onEditorChanged = function (value) {
         this.createDataFromEvent('onEditorChange', 'value', value);
+
+        var json = getJsonValue(value);
+        this.createDataFromEvent('onEditorChange', 'jsonValue', json);
     };
 
     Controller.prototype.onButtonClick = function (value) {
         this.createDataFromEvent('onButtonClick', 'value', value);
         this.sendAction('value', value, 'onButtonClick');
+
+        var json = getJsonValue(value);
+        this.createDataFromEvent('onButtonClick', 'jsonValue', json);
+        this.sendAction('jsonValue', json, 'onButtonClick');
     };
+
+    function getJsonValue(str) {
+        try {
+            return JSON.parse(str);
+        } catch(e) {
+            return null;
+        }
+    }
 
     return Controller;
 
