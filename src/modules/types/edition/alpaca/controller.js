@@ -60,12 +60,6 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
                             default: ['show'],
                             options: {show: 'Show'}
                         },
-                        sendOnChange: {
-                            type: 'checkbox',
-                            title: 'Send on change',
-                            options: {yes: 'Yes'},
-                            default: ['yes']
-                        },
                         button_text: {
                             type: 'text',
                             title: 'Text of the export button',

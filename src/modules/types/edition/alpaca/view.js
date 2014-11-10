@@ -49,7 +49,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'forms/button'
                 }
             });
 
-            if(this.module.getConfiguration('hasButton', 'show')) {
+            if(this.module.getConfigurationCheckbox('hasButton', 'show')) {
                 this.module.getDomContent().append(new Button(this.module.getConfiguration('button_text'), function () {
                     if(that._form) {
                         that.module.controller.onSubmit(that._form.getValue());
@@ -59,18 +59,16 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'forms/button'
                     }));
             }
 
-            if(this.module.getConfiguration('sendOnChange', 'yes')) {
-                var debouncing = this.module.getConfiguration('debouncing', -1);
-                if (debouncing > -1) {
-                    var cb = function () {
-                        that.module.controller.onSubmit(that._form.getValue());
-                    };
-                    if (debouncing > 0) {
-                        cb = _.debounce(cb, debouncing);
-                    }
-                    this.$alpaca.off('input change', cb);
-                    this.$alpaca.on('input change', cb);
+            var debouncing = this.module.getConfiguration('debouncing', -1);
+            if (debouncing > -1) {
+                var cb = function () {
+                    that.module.controller.onSubmit(that._form.getValue());
+                };
+                if (debouncing > 0) {
+                    cb = _.debounce(cb, debouncing);
                 }
+                this.$alpaca.off('input change', cb);
+                this.$alpaca.on('input change', cb);
             }
 
 
