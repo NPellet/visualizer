@@ -116,7 +116,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 					fields: {
 
 						nblines: {
-							type: 'text',
+							type: 'float',
 							title: 'Lines per page',
 							default: 20
 						},
