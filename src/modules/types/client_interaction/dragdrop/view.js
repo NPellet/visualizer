@@ -59,6 +59,7 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                 if(!useGetUserMedia || !self.module.getConfigurationCheckbox('getusermedia', 'yes')) $fileInput.click();
                 else {
                     confirm($('<video id="video"></video><button id="startbutton">Take photo</button><canvas id="canvas"></canvas>')).then(function(value) {
+                        if(!value) return;
                         if(value) {
                             self.module.controller.openPhoto(value);
                         }
@@ -228,6 +229,9 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                     }
                 },
                 close: function() {
+                    if(!stream) {
+                        return resolve(false);
+                    }
                     stream.stop();
                     return resolve(imgData);
                 },
