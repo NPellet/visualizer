@@ -60,6 +60,12 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
                             default: ['show'],
                             options: {show: 'Show'}
                         },
+                        sendOnChange: {
+                            type: 'checkbox',
+                            title: 'Send on change',
+                            options: {yes: 'Yes'},
+                            default: ['yes']
+                        },
                         button_text: {
                             type: 'text',
                             title: 'Text of the export button',
@@ -123,6 +129,7 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
     Controller.prototype.configAliases = {
         output: ['groups', 'group', 0, 'output', 0],
         mode: ['groups', 'group', 0, 'mode', 0],
+        sendOnChange: ['groups', 'group', 0, 'sendOnChange', 0],
         schemaSource: ['groups', 'group', 0, 'schemaSource', 0],
         schema: ['groups', 'group', 0, 'schema', 0],
         button_text: ['groups', 'group', 0, 'button_text', 0],
@@ -160,7 +167,7 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
             if (this.module.view.inputObj) {
                 this.module.view.inputObj.mergeWith(data, this.module.getId());
             }
-        };
+        }
     };
 
     return Controller;

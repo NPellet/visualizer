@@ -22,8 +22,10 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'forms/button'
 
     View.prototype = $.extend(true, {}, Default, {
         init: function () {
+            var that = this;
             if(_.isEmpty(JSON.parse(this.module.getConfiguration('schema'))))
                 this.module.definition.configuration.groups.group[0].schema = '{\n  "title": "Main Title",\n  "description": "What does this form do?",\n  "type": "object",\n  "properties": {\n    "name": {\n      "type": "string",\n      "title": "Name"\n    },\n    "ranking": {\n      "type": "string",\n      "title": "Ranking",\n      "enum":\n      ["excellent", "not too shabby", "alpaca built my hotrod"]\n    }\n  }\n}'
+
         },
         inDom: function () {
             this.renderForm();
@@ -47,13 +49,30 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'forms/button'
                 }
             });
 
-            this.module.getDomContent().append(new Button(this.module.getConfiguration('button_text'), function () {
-                if(that._form) {
-                    that.module.controller.onSubmit(that._form.getValue());
+            if(this.module.getConfiguration('hasButton', 'show')) {
+                this.module.getDomContent().append(new Button(this.module.getConfiguration('button_text'), function () {
+                    if(that._form) {
+                        that.module.controller.onSubmit(that._form.getValue());
+                    }
+                }, {color: 'green'}).render().css({
+                        marginTop: "10px"
+                    }));
+            }
+
+            if(this.module.getConfiguration('sendOnChange', 'yes')) {
+                var debouncing = this.module.getConfiguration('debouncing', -1);
+                if (debouncing > -1) {
+                    var cb = function () {
+                        that.module.controller.onSubmit(that._form.getValue());
+                    };
+                    if (debouncing > 0) {
+                        cb = _.debounce(cb, debouncing);
+                    }
+                    this.$alpaca.off('input change', cb);
+                    this.$alpaca.on('input change', cb);
                 }
-            }, {color: 'green'}).render().css({
-                    marginTop: "10px"
-                }));
+            }
+
 
         },
 
