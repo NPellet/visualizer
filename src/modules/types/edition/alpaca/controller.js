@@ -134,7 +134,9 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
         var mode = this.module.getConfiguration('mode');
         var schema = {};
         if (mode === 'object' || mode === 'both') {
-            schema = Schema.fromObject(this.module.view.inputObj);
+            if(this.module.view.inputObj) {
+                schema = Schema.fromObject(this.module.view.inputObj);
+            }
         }
         if (mode === 'schema' || mode === 'both') {
             var schemaSource = this.module.getConfiguration('schemaSource');
@@ -158,7 +160,7 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
             if (this.module.view.inputObj) {
                 this.module.view.inputObj.mergeWith(data, this.module.getId());
             }
-        }
+        };
     };
 
     return Controller;
