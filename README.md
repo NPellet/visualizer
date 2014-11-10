@@ -1,9 +1,10 @@
-Visualizer
-============
+# Visualizer
+
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/NPellet/visualizer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-News for dev
-------------
+## [Changelog](https://github.com/NPellet/visualizer/blob/gh-pages/History.md)
+
+## News for dev
 
 ### February 24
 
