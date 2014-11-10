@@ -103,7 +103,8 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                             type: 'combo',
                             title: 'Editor',
                             default: 'none',
-                            options: [{key: 'none', title: 'None'},
+                            options: [
+                                {key: 'none', title: 'None'},
                                 {key: 'auto', title: 'Based on type'},
                                 {key: 'TextValue', title: 'Text Value'}
                             ]
@@ -114,7 +115,8 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                             title: 'Formatter',
                             options: [
                                 {key: 'typerenderer', title: 'Type Renderer'}
-                            ]
+                            ],
+                            default: 'typerenderer'
                         },
 
                         width: {
