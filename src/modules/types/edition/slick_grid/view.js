@@ -29,7 +29,9 @@ require.config({
 
 define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 'src/util/util', 'src/util/api', 'src/util/typerenderer','src/util/datatraversing', 'slickgrid', 'slickdataview'], function(require, Default, Debug, _, Util, API, Renderer, Traversing) {
     function View() {}
-    Util.loadCss('./components/slickgrid/slick.grid.css');
+    var cssPromises = [];
+    cssPromises.push(Util.loadCss('./components/slickgrid/slick.grid.css'));
+    var cssLoaded = Promise.all(cssPromises);
 
 
     var formatters = {
@@ -135,6 +137,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 dataItemColumnValueExtractor: function(item, coldef) {
                     return item;
                 },
+                explicitInitialization: true,
                 rowHeight: that.module.getConfiguration('slick.rowHeight')
             };
         },
@@ -153,7 +156,6 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 console.log('UPDATE');
 
                 var that =  this;
-                var l = moduleValue.get().length;
                 this.module.data = moduleValue;
 
                 this.slick.columns = this.getSlickColumns();
@@ -162,6 +164,12 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
                 that.grid = new Slick.Grid("#"+that._id, that.slick.data, that.slick.columns, that.slick.options);
 
+                cssLoaded.then(function() {
+                    return that.cssLoaded;
+                })
+                .then(function() {
+                    that.grid.init();
+                });
                 that._activateHighlights();
 
                 that.grid.setSelectionModel(new Slick.CellSelectionModel());
