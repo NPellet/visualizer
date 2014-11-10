@@ -1,6 +1,7 @@
-2.7.4 / HEAD
+2.8.0 / 2014-11-10
 ===================
 
+* New module : Edition / Alpaca (create forms using JSON Schema)
 * API : add possibility to change loading message
 * API : add doc
 * Util: add doc
