@@ -91,15 +91,6 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
 
         highlightId: setHighlightId,
 
-        doAction: function (key, value) {
-            this.repositoryActions.set(key, value);
-        },
-
-        executeAction: function (name, value) {
-
-            ActionManager.execute(name, value);
-        },
-
         getAllFilters: function () {
             return variableFilters;
         },
@@ -249,6 +240,24 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
                 loadingHtml.detach();
             }
         }
+    };
+
+    /**
+     * Send an action to all modules that are listening to it
+     * @param {string} name - Action name
+     * @param {*} [value] - Action value
+     */
+    exports.doAction = function doAction(name, value) {
+        this.repositoryActions.set(name, value);
+    };
+
+    /**
+     * Execute a global visualizer action
+     * @param {string} name - Action name
+     * @param {*} value - Action value
+     */
+    exports.executeAction = function executeAction(name, value) {
+        ActionManager.execute(name, value);
     };
 
     return exports;

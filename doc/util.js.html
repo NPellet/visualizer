@@ -1,4 +1,63 @@
-'use strict';
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>DocStrap Source: util.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.cosmo.css">
+
+</head>
+
+<body>
+<div class="container-fluid">
+	<div class="navbar navbar-fixed-top navbar-inverse">
+		<div class="navbar-inner">
+			<a class="brand" href="index.html">DocStrap</a>
+			<ul class="nav">
+				
+				<li class="dropdown">
+					<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b
+						class="caret"></b></a>
+
+					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="api.html">src/util/api</a>
+						</li>
+						
+						<li>
+							<a href="util.html">src/util/util</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+
+	<div class="row-fluid">
+
+		
+			<div class="span12">
+				
+				<div id="main">
+					
+
+
+		<h1 class="page-title">Source: util.js</h1>
+    
+<section>
+	<article>
+		<pre
+			class="sunlight-highlight-javascript linenums">'use strict';
 
 /**
  * Global utility methods
@@ -30,7 +89,7 @@ define(['src/util/debug'], function (Debug) {
             ifString,
             ifElement = 'el';
 
-        for (var i = 0; i < l; i++) {
+        for (var i = 0; i &lt; l; i++) {
             ifElement += '["' + splitted[i].replace(regQuote, '\\"') + '"]';
             ifArray.push(ifElement + ' != undefined');
         }
@@ -56,7 +115,7 @@ define(['src/util/debug'], function (Debug) {
 
         var i = 0, stylesheet, ii, cssRule;
 
-        for (; i < document.styleSheets.length; i++) {
+        for (; i &lt; document.styleSheets.length; i++) {
             stylesheet = document.styleSheets[i];
             ii = 0;
             cssRule = false;
@@ -99,7 +158,7 @@ define(['src/util/debug'], function (Debug) {
                 var pos = iframe.position();
                 var width = iframe.width();
                 var height = iframe.height();
-                iframe.before($('<div />').css({
+                iframe.before($('&lt;div />').css({
                     position: 'absolute',
                     width: width,
                     height: height,
@@ -132,7 +191,7 @@ define(['src/util/debug'], function (Debug) {
             return (Math.round(size * 10) / 10) + ' ' + units[i];
         },
         pad: function (val) {
-            return val < 10 ? '0' + val : val;
+            return val &lt; 10 ? '0' + val : val;
         },
         getMonth: function (month) {
             return months[month];
@@ -165,7 +224,7 @@ define(['src/util/debug'], function (Debug) {
         getDistinctColors: function (numColors) {
 
             var colors = [], j = 0;
-            for (var i = 0; i < 360; i += 360 / numColors) {
+            for (var i = 0; i &lt; 360; i += 360 / numColors) {
                 j++;
                 var color = this.hsl2rgb(i, 100, 30 + j % 4 * 15);
                 colors.push([Math.round(color.r * 255), Math.round(color.g * 255), Math.round(color.b * 255)]);
@@ -183,7 +242,7 @@ define(['src/util/debug'], function (Debug) {
             if (s === 0)
                 r = g = b = (l * 255);
             else {
-                if (l <= 0.5)
+                if (l &lt;= 0.5)
                     m2 = l * (s + 1);
                 else
                     m2 = l + s - l * s;
@@ -197,15 +256,15 @@ define(['src/util/debug'], function (Debug) {
             return {r: r, g: g, b: b};
         },
         hueToRgb: function (p, q, t) {
-            if (t < 0)
+            if (t &lt; 0)
                 t += 1;
             if (t > 1)
                 t -= 1;
-            if (t < 1 / 6)
+            if (t &lt; 1 / 6)
                 return p + (q - p) * 6 * t;
-            if (t < 1 / 2)
+            if (t &lt; 1 / 2)
                 return q;
-            if (t < 2 / 3)
+            if (t &lt; 2 / 3)
                 return p + (q - p) * (2 / 3 - t) * 6;
             return p;
         },
@@ -219,7 +278,7 @@ define(['src/util/debug'], function (Debug) {
             ] : [0, 0, 0];
         },
         rgbToHex: function (r, g, b) {
-            return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+            return '#' + ((1 &lt;&lt; 24) + (r &lt;&lt; 16) + (g &lt;&lt; 8) + b).toString(16).slice(1);
         },
         getColor: function (color) {
 
@@ -319,7 +378,7 @@ define(['src/util/debug'], function (Debug) {
             decSeparator = decSeparator == undefined ? '.' : decSeparator;
             thouSeparator = thouSeparator == undefined ? ',' : thouSeparator;
 
-            var sign = n < 0 ? '-' : '',
+            var sign = n &lt; 0 ? '-' : '',
                 i = parseInt(n = Math.abs(+n || 0).toFixed(decPlaces)) + '',
                 j = i.length;
             j = j > 3 ? j % 3 : 0;
@@ -330,7 +389,7 @@ define(['src/util/debug'], function (Debug) {
 
             var access = arguments[0];
 
-            for (var i = 1; i < arguments.length; i++) {
+            for (var i = 1; i &lt; arguments.length; i++) {
                 if (!( access = access[arguments[i]] )) {
                     return false;
                 }
@@ -427,26 +486,26 @@ define(['src/util/debug'], function (Debug) {
         if (!v1 || !v2) {
             return Debug.error('Invalid version number:' + v1 ? v2 : v1);
         }
-        if (v1.major < v2.major) {
+        if (v1.major &lt; v2.major) {
             return -1;
-        } else if (v2.major < v1.major) {
+        } else if (v2.major &lt; v1.major) {
             return 1;
-        } else if (v1.minor < v2.minor) {
+        } else if (v1.minor &lt; v2.minor) {
             return -1;
-        } else if (v2.minor < v1.minor) {
+        } else if (v2.minor &lt; v1.minor) {
             return 1;
-        } else if (v1.patch < v2.patch) {
+        } else if (v1.patch &lt; v2.patch) {
             return -1;
-        } else if (v2.patch < v1.patch) {
+        } else if (v2.patch &lt; v1.patch) {
             return 1;
         } else if (v1.prerelease && !v2.prerelease) {
             return -1;
         } else if (v2.prerelease && !v1.prerelease) {
             return 1;
         } else if (v1.prerelease && v2.prerelease) {
-            if (v1.prerelease < v2.prerelease) {
+            if (v1.prerelease &lt; v2.prerelease) {
                 return -1;
-            } else if (v2.prerelease < v1.prerelease) {
+            } else if (v2.prerelease &lt; v1.prerelease) {
                 return 1;
             } else {
                 return 0;
@@ -459,3 +518,105 @@ define(['src/util/debug'], function (Debug) {
     return exports;
 
 });
+</pre>
+	</article>
+</section>
+
+
+
+
+
+				</div>
+
+				<div class="clearfix"></div>
+				<footer>
+					
+					
+		<span class="copyright">
+		DocStrap Copyright © 2012-2014 The contributors to the JSDoc3 and DocStrap projects.
+		</span>
+					<br />
+					
+		<span class="jsdoc-message">
+		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
+		on Mon Nov 10th 2014 using the <a
+			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+		</span>
+				</footer>
+			</div>
+
+			
+			<br clear="both">
+		</div>
+
+	</div>
+	<!--<script src="scripts/sunlight.js"></script>-->
+	<script src="scripts/docstrap.lib.js"></script>
+	<script src="scripts/bootstrap-dropdown.js"></script>
+	<script src="scripts/toc.js"></script>
+
+	<script>
+		$( function () {
+			$( "[id*='$']" ).each( function () {
+				var $this = $( this );
+
+				$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+			} );
+
+			$( "#toc" ).toc( {
+				anchorName  : function ( i, heading, prefix ) {
+					return $( heading ).attr( "id" ) || ( prefix + i );
+				},
+				selectors   : "h1,h2,h3,h4",
+				showAndHide : false,
+				scrollTo    : "100px"
+			} );
+
+			$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
+			$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+			$( '.dropdown-toggle' ).dropdown();
+//			$( ".tutorial-section pre, .readme-section pre" ).addClass( "sunlight-highlight-javascript" ).addClass( "linenums" );
+
+			$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+				var $this = $( this );
+
+				var example = $this.find( "code" );
+				exampleText = example.html();
+				var lang = /{@lang (.*?)}/.exec( exampleText );
+				if ( lang && lang[1] ) {
+					exampleText = exampleText.replace( lang[0], "" );
+					example.html( exampleText );
+					lang = lang[1];
+				} else {
+					lang = "javascript";
+				}
+
+				if ( lang ) {
+
+					$this
+						.addClass( "sunlight-highlight-" + lang )
+						.addClass( "linenums" )
+						.html( example.html() );
+
+				}
+			} );
+
+			Sunlight.highlightAll( {
+				lineNumbers : true,
+				showMenu : true,
+				enableDoclinks : true
+			} );
+		} );
+	 </script>
+
+
+
+	<!--Navigation and Symbol Display-->
+	
+
+
+	<!--Google Analytics-->
+	
+
+</body>
+</html>

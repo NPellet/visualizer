@@ -283,7 +283,7 @@ module.exports = function (grunt) {
 
         jsdoc: {
             build: {
-                src: ['src/src/util/api.js'],
+                src: ['src/src/util/*'],
                 options: {
                     destination: 'doc',
                     template : 'node_modules/grunt-jsdoc/node_modules/ink-docstrap/template',
