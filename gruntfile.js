@@ -97,7 +97,8 @@ module.exports = function (grunt) {
                             './jsbarcode/jsBarcode.min.js',
                             './slickgrid/**',
                             './ml/dist/*',
-                            './alpaca/**'
+                            './alpaca/**',
+                            './jquery-tmpl/**'
                         ],
 
                         dest: './build/components/'
