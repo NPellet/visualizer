@@ -59,6 +59,12 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                             type: 'text',
                             title: 'Text displayed on hover'
                         },
+                        getusermedia: {
+                            type: 'checkbox',
+                            title: 'Use getUserMedia',
+                            options: {yes: 'Yes'},
+                            default: []
+                        },
                         capture: {
                             type: 'combo',
                             title: 'Capture',
@@ -169,6 +175,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         label: ['groups', 'group', 0, 'label', 0],
         dragoverlabel: ['groups', 'group', 0, 'dragoverlabel', 0],
         hoverlabel: ['groups', 'group', 0, 'hoverlabel', 0],
+        getusermedia: ['groups', 'group', 0, 'getusermedia', 0],
         vars: ['groups', 'vars', 0],
         string: ['groups', 'string', 0],
         photo: ['groups', 'photo', 0],
