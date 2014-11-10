@@ -181,9 +181,6 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
         'filterRow': [ 'groups', 'group', 0, 'filterRow', 0 ],
         'slickCheck': [ 'groups', 'group', 0, 'slickCheck', 0 ],
         'slick.rowHeight': [ 'groups', 'group', 0, 'slick.rowHeight', 0 ],
-        'autofocus': [ 'groups', 'group', 0, 'autofocus', 0 ],
-        'resize_rerender': [ 'groups', 'group', 0, 'resize_rerender', 0 ],
-        'row_delete': [ 'groups', 'group', 0, 'row_delete', 0 ],
         'cols': ['groups', 'cols', 0]
     };
 
