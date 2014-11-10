@@ -141,26 +141,35 @@ define(['src/util/debug'], function (Debug) {
             return days[day];
         },
         loadCss: function (url) {
+            var self = this;
+            return new Promise(function(resolve, reject) {
+                url = require.toUrl(url);
 
-            url = require.toUrl(url);
+                self.loadedCss = self.loadedCss || {};
 
-            this.loadedCss = this.loadedCss || {};
+                if (self.loadedCss[url]) { // element is already loaded
+                    return resolve(self.loadedCss[url]);
+                }
 
-            if (this.loadedCss[url]) { // element is already loaded
-                return;
-            }
+                self.loadedCss[url] = true;
 
-            this.loadedCss[url] = true;
+                var link = document.createElement('link');
+                link.type = 'text/css';
+                link.rel = 'stylesheet';
+                link.href = require.toUrl(url);
+                link.onload = function() {
+                    self.loadedCss[url] = link;
+                    resolve(link);
+                };
 
-            var link = document.createElement('link');
-            link.type = 'text/css';
-            link.rel = 'stylesheet';
-            link.href = require.toUrl(url);
+                try {
+                    document.getElementsByTagName('head')[0].appendChild(link);
+                } catch (e) {
+                    reject(e);
+                }
+            });
 
-            try {
-                document.getElementsByTagName('head')[0].appendChild(link);
-            } catch (e) {
-            }
+
         },
         getDistinctColors: function (numColors) {
 

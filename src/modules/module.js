@@ -47,7 +47,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 					return;
 				}
 
-				Util.loadCss( moduleURL + "style.css" );
+				module._cssLoaded = Util.loadCss( moduleURL + "style.css" );
 
 				require( [
 					

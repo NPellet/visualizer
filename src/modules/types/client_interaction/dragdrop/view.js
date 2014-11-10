@@ -47,8 +47,7 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                 drag: this.module.getConfiguration('dragoverlabel') || defaultMessage,
                 hover: this.module.getConfiguration('hoverlabel') || defaultMessage
             };
-            this.messageP = $('<div>').css('display', 'inline-block').html(this.messages.default);
-            this.dom = $('<div />', { class: 'dragdropzone' }).html(this.messageP).on("click mousemove", function () {
+            this.dom = $('<div />', { class: 'dragdropzone' }).html(this.messages.default).on("click mousemove", function () {
                 textarea.focus();
             }).mouseout(function () {
                 textarea.blur();
@@ -57,9 +56,10 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
 
             this.dom.on('click', function(event) {
                 event.stopPropagation();
-                if(!useGetUserMedia) $fileInput.click();
+                if(!useGetUserMedia || !self.module.getConfigurationCheckbox('getusermedia', 'yes')) $fileInput.click();
                 else {
                     confirm($('<video id="video"></video><button id="startbutton">Take photo</button><canvas id="canvas"></canvas>')).then(function(value) {
+                        if(!value) return;
                         if(value) {
                             self.module.controller.openPhoto(value);
                         }
@@ -81,19 +81,19 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
         inDom: function () {
 
             var self = this,
-                dom = this.dom.get(0);
+                dom = this.dom.parent().get(0);
 
             dom.addEventListener('mouseenter', function (e) {
                 e.stopPropagation();
                 e.preventDefault();
-                self.messageP.html(self.messages.hover);
-                self.dom.addClass('dragdrop-over');
+                self.dom.html(self.messages.hover);
+                self.dom.addClass('mouse-over');
             });
 
             dom.addEventListener('dragenter', function (e) {
                 e.stopPropagation();
                 e.preventDefault();
-                self.messageP.html(self.messages.drag);
+                self.dom.html(self.messages.drag);
                 self.dom.addClass('dragdrop-over');
             });
 
@@ -105,20 +105,21 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
             dom.addEventListener('dragleave', function (e) {
                 e.stopPropagation();
                 e.preventDefault();
-                self.messageP.html(self.messages.default);
+                self.dom.html(self.messages.default);
                 self.dom.removeClass('dragdrop-over');
             });
 
             dom.addEventListener('mouseleave', function (e) {
                 e.stopPropagation();
                 e.preventDefault();
-                self.messageP.html(self.messages.default);
-                self.dom.removeClass('dragdrop-over');
+                self.dom.html(self.messages.default);
+                self.dom.removeClass('mouse-over');
             });
 
             dom.addEventListener('drop', function (e) {
                 e.stopPropagation();
                 e.preventDefault();
+                self.dom.removeClass('dragdrop-over');
                 self.module.controller.open(e.dataTransfer);
             });
 
@@ -228,6 +229,9 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                     }
                 },
                 close: function() {
+                    if(!stream) {
+                        return resolve(false);
+                    }
                     stream.stop();
                     return resolve(imgData);
                 },
