@@ -428,10 +428,10 @@ define(['src/util/debug'], function (Debug) {
      */
     exports.semverCompare = function semverCompare(v1, v2) {
         if (typeof v1 === 'string') {
-            v1 = semver(v1);
+            v1 = exports.semver(v1);
         }
         if (typeof v2 === 'string') {
-            v2 = semver(v2);
+            v2 = exports.semver(v2);
         }
         if (!v1 || !v2) {
             return Debug.error('Invalid version number:' + v1 ? v2 : v1);
