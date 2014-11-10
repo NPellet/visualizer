@@ -42,14 +42,14 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
                             type: 'wysiwyg',
                             title: 'Default value'
                         },
-                        fontcolor: {
-                            type: 'spectrum',
-                            title: 'Foreground color'
-                        },
                         font: {
                             type: 'combo',
                             title: 'Font',
                             options: Util.getWebsafeFonts()
+                        },
+                        fontcolor: {
+                            type: 'spectrum',
+                            title: 'Font color'
                         },
                         fontsize: {
                             type: 'combo',
