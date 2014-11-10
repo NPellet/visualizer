@@ -330,6 +330,11 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 					function() {
 						self.exportData();
 					}],
+
+					['<li name="config-example"><a><span class="ui-icon ui-icon-suitcase"></span> Config example</a></li>',
+					function() {
+						self.exportConfigExample();
+					}],
 	                
 					['<li name="print"><a><span class="ui-icon ui-icon-print"></span> Print</a></li>',
 					function() {
@@ -1415,9 +1420,105 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 			this.model.resetListeners( );
 
 			this.updateAllView( );
+		},
+
+		getConfigExample: function() {
+			var aliases = this.controller.configAliases,
+				definition = this.controller.configurationStructure();
+
+			var result = {};
+
+			for (var i in aliases) {
+				if(aliases.hasOwnProperty(i)) {
+					result[i] = getExampleFromAlias(definition, aliases[i])
+				}
+			}
+
+			return result;
+		},
+
+		exportConfigExample: function() {
+			var module = this;
+			$('<div class="ci-module-export"><textarea></textarea></div>').dialog({
+				modal: true,
+				title: 'Config example',
+				width: '70%',
+				height: 500
+			}).children('textarea').text(JSON.stringify(module.getConfigExample(), null, 4));
 		}
 
 	};
+
+	function getExampleFromAlias(element, alias) {
+		var l = alias.length,
+			name;
+		for(var i = 0; i < l; i++) {
+			name = alias[i];
+			if (typeof name === 'string') {
+				element = element[name];
+			} else if(i === l - 1) {
+				if (element.options) {
+					if (element.options.type === 'table') {
+						var tableElement = getTableFieldExample(element.fields);
+						if (element.options.multiple) {
+							tableElement = [tableElement];
+						}
+						return tableElement;
+					} else {
+						return getFieldExample(element);
+					}
+				} else {
+					return getFieldExample(element);
+				}
+			} else {
+				element = element.fields;
+			}
+		}
+	}
+
+	function getTableFieldExample(field) {
+		var result = {};
+		for (var i in field) {
+			if (field.hasOwnProperty(i)) {
+				result[i] = getFieldExample(field[i]);
+			}
+		}
+		return result;
+	}
+
+	function getFieldExample(field) {
+		switch(field.type) {
+			case 'checkbox': {
+				var result = [];
+				for(var i in field.options) {
+					result.push(i);
+				}
+				return result;
+			}
+			case 'color':
+			case 'spectrum':
+				return [0, 0, 0, 1];
+			case 'combo': {
+				var val = field.options[0].key;
+				if(field.extractValue) {
+					val = field.extractValue(val);
+				}
+				return val;
+			}
+			case 'float':
+				return field.default || 0;
+			case 'jscode':
+			case 'text':
+			case 'textarea':
+			case 'wysiwyg':
+				return field.default || '';
+			case 'slider':
+			case 'textstyle':
+			default:
+				Debug.error('Unknow field type: ' + field.type);
+				return field.default || '';
+		}
+	}
 
 	return Module;
 });
