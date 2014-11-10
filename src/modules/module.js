@@ -1499,7 +1499,12 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 			case 'spectrum':
 				return [0, 0, 0, 1];
 			case 'combo': {
-				var val = field.options[0].key;
+				var val = field.options[0];
+				if (val) {
+					val = val.key;
+				} else {
+					val = '';
+				}
 				if(field.extractValue) {
 					val = field.extractValue(val);
 				}
