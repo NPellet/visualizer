@@ -1,28 +1,26 @@
-define(['modules/types/display/jqgrid/controller'], function(controller) {
+define(['modules/types/display/jqgrid/controller'], function (Controller) {
 
-	var controllerExtended = function() {};
+    function ControllerExtended() {
+    }
 
-	controllerExtended.prototype = new controller();
+    ControllerExtended.prototype = new Controller();
 
-	/*
-		Information about the module
-	*/
-	controllerExtended.prototype.moduleInformation = {
-		moduleName: 'Fast table',
-		description: 'Displays a fast grid',
-		author: 'Norman Pellet',
-		date: '24.12.2013',
-		license: 'MIT',
-		cssClass: 'fasttable'
-	};
-	
-	controller.prototype.references.showList = {
-		label: 'Array of display flags',
-		type: 'array'
-	};
-	
-	controller.prototype.variablesIn.push("showList");
-	controller.prototype.actionsIn.toggleOff = "Toggle row off";
+    ControllerExtended.prototype.moduleInformation = {
+        moduleName: 'Fast table',
+        description: 'Displays a fast grid',
+        author: 'Norman Pellet',
+        date: '24.12.2013',
+        license: 'MIT',
+        cssClass: 'fasttable'
+    };
 
-	return controllerExtended;
+    ControllerExtended.prototype.references.showList = {
+        label: 'Array of display flags',
+        type: 'array'
+    };
+
+    ControllerExtended.prototype.variablesIn.push('showList');
+    ControllerExtended.prototype.actionsIn.toggleOff = 'Toggle row off';
+
+    return ControllerExtended;
 });
