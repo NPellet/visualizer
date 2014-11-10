@@ -112,6 +112,15 @@ define(['modules/default/defaultcontroller'], function (Default) {
                                 {title: 'purple', key: '6'}
                             ],
                             'default': '3'
+                        },
+                        outputResult: {
+                            type: 'combo',
+                            title: 'Output result',
+                            options: [
+                                {title: 'Create Output variable', key: 'outputVar'},
+                                {title: 'Modify Input variable', key: 'inputVar'}
+                            ],
+                            default: 'outputVar'
                         }
                     }
                 }
@@ -120,16 +129,32 @@ define(['modules/default/defaultcontroller'], function (Default) {
     };
 
     Controller.prototype.onChange = function (mol, smiles, jme) {
+        if(this.module.view._currentValue && this.module.getConfiguration('outputResult') === 'inputVar') {
+            if(this.module.view._currentValue.type === 'mol2d') {
+                this.module.view._currentValue.setValue(mol);
+            }
+            else if(this.module.view._currentValue.type === 'jme') {
+                this.module.view._currentValue.setValue(jme);
+            }
+            this.module.model.dataTriggerChange(this.module.view._currentValue);
+        }
+
+        else {
+            this.createDataFromEvent('onStructureChange', 'mol', {type: 'mol2d', value: mol});
+            this.createDataFromEvent('onStructureChange', 'jme', {type: 'jme', value: jme});
+        }
+
+        // Always create smiles because smiles is not a possible input variable
         this.createDataFromEvent('onStructureChange', 'smiles', smiles);
-        this.createDataFromEvent('onStructureChange', 'mol', {type: 'mol2d', value: mol});
-        this.createDataFromEvent('onStructureChange', 'jme', {type: 'jme', value: jme});
+
     };
 
     Controller.prototype.configAliases = {
         prefs: ['groups', 'group', 0, 'prefs', 0],
         labelsize: ['groups', 'group', 0, 'labelsize', 0],
         bondwidth: ['groups', 'group', 0, 'bondwidth', 0],
-        highlightColor: ['groups', 'group', 0, 'highlightColor', 0]
+        highlightColor: ['groups', 'group', 0, 'highlightColor', 0],
+        outputResult: ['groups', 'group', 0, 'outputResult', 0]
     };
 
     Controller.prototype.onRemove = function () {

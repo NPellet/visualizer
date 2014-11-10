@@ -100,6 +100,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
                 this.postMessage('setMolFile', moduleValue.get());
 
                 this._currentValue = moduleValue;
+                this._currentType = 'mol';
                 this._initHighlight(moduleValue);
             },
             jme: function (moduleValue) {
@@ -107,6 +108,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
                 this.postMessage('setJmeFile', moduleValue.get());
 
                 this._currentValue = moduleValue;
+                this._currentType = 'jme';
                 this._initHighlight(moduleValue);
             }
         },
