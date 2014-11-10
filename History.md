@@ -3,7 +3,11 @@
 
 * API : add possibility to change loading message
 * API : add doc
+* Util: add doc
 * add smiles and actelionID types and renderers
+* add module.reload method
+* add new action for all modules : edit preferences
+ * add module.getConfigExample and context menu to show what should be sent with the action
 
 2.7.3 / 2014-11-05
 ===================
