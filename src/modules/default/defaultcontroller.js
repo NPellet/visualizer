@@ -2,149 +2,154 @@
 
 define(['src/util/api'], function (API) {
 
-	return {
+    return {
 
-		setModule: function(module) { this.module = module; },
+        setModule: function (module) {
+            this.module = module;
+        },
 
-		init: function() {
-			this.initImpl( );
-		},
+        init: function () {
+            this.initImpl();
+        },
 
-		initImpl: function() {
-			this.resolveReady();
-		},
+        initImpl: function () {
+            this.resolveReady();
+        },
 
-		inDom: function() {
+        inDom: function () {
+        },
 
-		},
+        sendAction: function (rel, value, event) {
 
-		sendAction: function(rel, value, event) {
-
-			var actionsOut = this.module.actions_out(),
-				i,
-				jpath,
+            var actionsOut = this.module.actions_out(),
+                i,
+                jpath,
                 actionname;
 
-			if( ! actionsOut ) {
-				return;
-			}
+            if (!actionsOut) {
+                return;
+            }
 
-			i = actionsOut.length - 1;
- 
-			for( ; i >= 0; i-- ) {
+            i = actionsOut.length - 1;
 
-				if( actionsOut[i].rel === rel && ((event && event === actionsOut[i].event) || !event)) {
+            for (; i >= 0; i--) {
 
-					actionname = actionsOut[ i ].name;
-					jpath = actionsOut[ i ].jpath;
-				
-					if( value && jpath && value.getChild ) {
-                        (function(actionname){
-                            value.getChild(jpath).done( function( returned ) {
+                if (actionsOut[i].rel === rel && ((event && event === actionsOut[i].event) || !event)) {
 
-                                API.executeAction( actionname, returned );
-                                API.doAction( actionname, returned );
+                    actionname = actionsOut[i].name;
+                    jpath = actionsOut[i].jpath;
+
+                    if (value && jpath && value.getChild) {
+                        (function (actionname) {
+                            value.getChild(jpath).done(function (returned) {
+
+                                API.executeAction(actionname, returned);
+                                API.doAction(actionname, returned);
 
                             });
                         })(actionname);
-					} else {
-						API.executeAction( actionname, value );
-						API.doAction( actionname, value );
-					}
-				}
-			}
-		},
+                    } else {
+                        API.executeAction(actionname, value);
+                        API.doAction(actionname, value);
+                    }
+                }
+            }
+        },
 
-		setVarFromEvent: function( event, rel, relSource, jpath, callback ) {
+        setVarFromEvent: function (event, rel, relSource, jpath, callback) {
 
-			var varsOut, i = 0, first = true;
+            var varsOut, i = 0, first = true;
 
-			if( ! ( varsOut = this.module.vars_out() ) ) {
-				return;
-			}
-			
-			for( ; i < varsOut.length; i++ ) {
-				
-				if( varsOut[ i ].event == event  && ( varsOut[ i ].rel == rel || ! rel ) ) {
+            if (!( varsOut = this.module.vars_out() )) {
+                return;
+            }
 
-					if( first && callback ) {
-						first = false;
-						callback.call( this );
-					}
-					
-					varsOut[ i ].jpath = varsOut[ i ].jpath || []; // Need not be undefined
+            for (; i < varsOut.length; i++) {
 
-					if( typeof varsOut[ i ].jpath == "string" ) {
-						varsOut[ i ].jpath = varsOut[ i ].jpath.split('.');
-						varsOut[ i ].jpath.shift();
-					}
+                if (varsOut[i].event == event && ( varsOut[i].rel == rel || !rel )) {
 
-					API.setVar( varsOut[ i ].name, this.module.getVariableFromRel( relSource ), jpath.concat( varsOut[ i ].jpath ), varsOut[ i ].filter );
-				}
-			}
-		},
+                    if (first && callback) {
+                        first = false;
+                        callback.call(this);
+                    }
 
-		createDataFromEvent: function( event, rel, data, callback ) {
+                    varsOut[i].jpath = varsOut[i].jpath || []; // Need not be undefined
 
-			var varsOut, i = 0, first = true;
+                    if (typeof varsOut[i].jpath == "string") {
+                        varsOut[i].jpath = varsOut[i].jpath.split('.');
+                        varsOut[i].jpath.shift();
+                    }
 
-			if( ! ( varsOut = this.module.vars_out() ) ) {
-				return;
-			}
-			
-			for( ; i < varsOut.length; i++ ) {
-				
-				if( varsOut[ i ].event == event  && ( varsOut[ i ].rel == rel || ! rel ) ) {
+                    API.setVar(varsOut[i].name, this.module.getVariableFromRel(relSource), jpath.concat(varsOut[i].jpath), varsOut[i].filter);
+                }
+            }
+        },
 
-					if( first && callback ) {
-						first = false;
-						data = callback.call( this );
-					}
+        createDataFromEvent: function (event, rel, data, callback) {
 
-					API.createDataJpath( varsOut[ i ].name, data, varsOut[ i ].jpath, varsOut[ i ].filter );
-				}
-			}
-		},
+            var varsOut, i = 0, first = true;
 
-		allVariablesFor: function( event, rel, callback ) {
+            if (!( varsOut = this.module.vars_out() )) {
+                return;
+            }
 
-			var varsOut, i = 0;
+            for (; i < varsOut.length; i++) {
 
-			if( ! ( varsOut = this.module.vars_out() ) ) {
-				return;
-			}
-			
-			for( ; i < varsOut.length; i++ ) {
-				
-				if( varsOut[ i ].event == event  && ( varsOut[ i ].rel == rel || ! rel ) ) {
+                if (varsOut[i].event == event && ( varsOut[i].rel == rel || !rel )) {
 
-					callback( varsOut[ i ] );
-				} 
-			}
-		},
+                    if (first && callback) {
+                        first = false;
+                        data = callback.call(this);
+                    }
 
-		"export": function() {},
+                    API.createDataJpath(varsOut[i].name, data, varsOut[i].jpath, varsOut[i].filter);
+                }
+            }
+        },
 
-        print: function() {
-			return this.module.getDomContent()[0].innerHTML;
-		},
+        allVariablesFor: function (event, rel, callback) {
 
-		configurationStructure:  function() {},
+            var varsOut, i = 0;
 
-		configFunctions: {},
+            if (!( varsOut = this.module.vars_out() )) {
+                return;
+            }
 
-		configAliases: {},
+            for (; i < varsOut.length; i++) {
 
-		events: {},
+                if (varsOut[i].event == event && ( varsOut[i].rel == rel || !rel )) {
 
-		variablesIn: [],
+                    callback(varsOut[i]);
+                }
+            }
+        },
 
-        actionsIn: {},
+        'export': function () {
+        },
 
-		resolveReady: function() {
-			this.module._resolveController();
-		}
+        print: function () {
+            return this.module.getDomContent()[0].innerHTML;
+        },
 
-	}
+        configurationStructure: function () {
+        },
+
+        configFunctions: {},
+
+        configAliases: {},
+
+        events: {},
+
+        variablesIn: [],
+
+        actionsIn: {
+            _editPreferences: 'Edit preferences'
+        },
+
+        resolveReady: function () {
+            this.module._resolveController();
+        }
+
+    };
 
 });

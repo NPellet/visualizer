@@ -1,69 +1,102 @@
 'use strict';
 
-define(function() {
-	return {
-		
-		initDefault: function() {
-			this.onReady = true;
-		},
+define(function () {
 
-		init: function() {
-			this.resolveReady();
-		},
-		
-		setModule: function( module ) {
-			this.module = module;
-		},
+    return {
 
-		update: {},
-		blank: {},
-		onResize: function() {},
-        onActionReceive: {},
-		inDom: function() {
-	
-		},
+        initDefault: function () {
+            this.onReady = true;
+        },
 
-		resolveReady: function() {
+        init: function () {
+            this.resolveReady();
+        },
 
-			this.module._resolveView();
-		},
+        setModule: function (module) {
+            this.module = module;
+        },
 
-		startLoading: function( rel ) {
+        update: {},
 
-			this.loadingElements = this.loadingElements || [];
-			if( this.relsForLoading().indexOf( rel ) > -1 && this.loadingElements.indexOf( rel ) == -1 ) {
+        blank: {},
 
-				this.loadingElements.push( rel );
-				this.showLoading();
-			}
-		},
+        onResize: function () {
+        },
 
-		endLoading: function( rel ) {
+        onActionReceive: {
+            _editPreferences: function (values) {
 
-			this.loadingElements = this.loadingElements || [];
-			
-			if( this.relsForLoading().indexOf( rel ) > -1 && this.loadingElements.indexOf( rel ) > -1 ) {
+                var currentPreferences = this.module.definition.configuration,
+                    aliases = this.module.controller.configAliases;
 
-				this.loadingElements.splice( this.loadingElements.indexOf( rel ), 1 );
+                var cfgEl;
 
-				if( this.loadingElements.length == 0 ) {
-					this.hideLoading();
-				}
-			}
-		},
+                function getCfgEl(alias) {
+                    var cfgEl = currentPreferences;
+                    for (var i = 0, l = alias.length - 1; i < l; i++) {
+                        cfgEl = cfgEl[alias[i]];
+                        if (typeof cfgEl === 'undefined') {
+                            break;
+                        }
+                    }
+                    return cfgEl;
+                }
 
-		showLoading: function() {
-			
-			this.module.domLoading.show();
-		},
+                for (var i in values) {
+                    if (values.hasOwnProperty(i)) {
+                        var alias = aliases[i];
+                        if (alias) {
+                            cfgEl = getCfgEl(aliases[i]);
+                            cfgEl[0] = values[i];
+                        }
+                    }
+                }
 
-		hideLoading: function() {
-			
-			this.module.domLoading.hide();
-		},
+                this.module.reload();
 
-		relsForLoading: function() {
-			return this._relsForLoading || ( this._relsForLoading = [] );
-		}
-	};
+            }
+        },
+
+        inDom: function () {
+        },
+
+        resolveReady: function () {
+            this.module._resolveView();
+        },
+
+        startLoading: function (rel) {
+            this.loadingElements = this.loadingElements || [];
+            if (this.relsForLoading().indexOf(rel) > -1 && this.loadingElements.indexOf(rel) == -1) {
+
+                this.loadingElements.push(rel);
+                this.showLoading();
+            }
+        },
+
+        endLoading: function (rel) {
+            this.loadingElements = this.loadingElements || [];
+
+            if (this.relsForLoading().indexOf(rel) > -1 && this.loadingElements.indexOf(rel) > -1) {
+
+                this.loadingElements.splice(this.loadingElements.indexOf(rel), 1);
+
+                if (this.loadingElements.length == 0) {
+                    this.hideLoading();
+                }
+            }
+        },
+
+        showLoading: function () {
+            this.module.domLoading.show();
+        },
+
+        hideLoading: function () {
+            this.module.domLoading.hide();
+        },
+
+        relsForLoading: function () {
+            return this._relsForLoading || ( this._relsForLoading = [] );
+        }
+    };
+
 });

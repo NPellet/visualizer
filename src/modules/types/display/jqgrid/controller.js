@@ -91,12 +91,12 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 	/*
 		Received actions
 	*/
-	controller.prototype.actionsIn = {
+	controller.prototype.actionsIn = $.extend({}, controller.prototype.actionsIn, {
 		addRow: 'Add a new row',
 		addColumn: 'Add a new column',
 		removeColumn: 'Remove a column',
 		removeRow: 'Remove a row'
-	};
+	});
 	
 		
 	controller.prototype.configurationStructure = function(section) {
