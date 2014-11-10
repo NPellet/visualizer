@@ -96,7 +96,8 @@ module.exports = function (grunt) {
                             './jcampconverter/build/jcampconverter.js',
                             './jsbarcode/jsBarcode.min.js',
                             './slickgrid/**',
-                            './ml/dist/*'
+                            './ml/dist/*',
+                            './alpaca/**'
                         ],
 
                         dest: './build/components/'
