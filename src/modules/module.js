@@ -59,7 +59,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug, Variables ) {
 					return;
 				}
 
-				Util.loadCss( moduleURL + "style.css" );
+				module._cssLoaded = Util.loadCss( moduleURL + "style.css" );
 
 				require( [
 					
