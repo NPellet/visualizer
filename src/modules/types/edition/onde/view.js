@@ -14,7 +14,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
             this.dom = $('<form id="' + this._id + '">').css({
                 height: '100%',
                 width: '100%',
-                textAlign: 'center'
+                textAlign: 'left'
             }).append($('<div class="onde-panel">'));
 
             if (this.module.getConfigurationCheckbox('hasButton', 'show')) {
