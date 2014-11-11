@@ -61,8 +61,10 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     width: '100%',
                     height: '100%'
                 });
-                this.module.getDomContent().html(this.$dom);
-                //$('body').append(this.$dom);
+
+                this.$rowHelp = $('<div>').attr('class', 'rowHelp');
+                this.module.getDomContent().html(this.$rowHelp);
+                this.module.getDomContent().append(this.$dom);
             }
 
 
@@ -214,6 +216,15 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         that._resetDeleteRowListeners();
                     }, 300);
                     that.lastViewport = that.grid.getViewport();
+                    that.$rowHelp.html(that.lastViewport.bottom.toString() + '/' + that.grid.getDataLength());
+
+                    that.$rowHelp.fadeIn();
+                    clearTimeout(that.lastRowHelp);
+                    that.lastRowHelp = setTimeout(function() {
+                        that.$rowHelp.fadeOut();
+                    }, 1000);
+
+
                 });
 
 
@@ -368,6 +379,9 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             if(this.grid) {
                 this.grid.resizeCanvas();
             }
+            this.$rowHelp.css( {
+                bottom: 0
+            })
         }
     });
 
