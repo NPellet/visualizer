@@ -95,7 +95,10 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
 
         update: {
             mol: function (moduleValue) {
-                if (!moduleValue) return;
+                if (!moduleValue || !moduleValue.get()) {
+                    this.postMessage('clear', '*');
+                    return;
+                }
 
                 this.postMessage('setMolFile', moduleValue.get());
 
@@ -104,7 +107,11 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
                 this._initHighlight(moduleValue);
             },
             jme: function (moduleValue) {
-                if (!moduleValue) return;
+                if (!moduleValue || !moduleValue.get()) {
+                    this.postMessage('clear', '*');
+                    return;
+                }
+
                 this.postMessage('setJmeFile', moduleValue.get());
 
                 this._currentValue = moduleValue;
