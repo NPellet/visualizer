@@ -82,8 +82,11 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 var editor, type;
                 if(row.editor === 'auto' && that.module.data) {
                     var obj = that.module.data.get(0).getChildSync(row.jpath);
-                    if(obj instanceof DataString || obj instanceof DataNumber) {
+                    if(obj instanceof DataString) {
                         editor = Slick.Editors.SpecialNativeObject;
+                    }
+                    else if(obj instanceof DataNumber) {
+                        editor = Slick.Editors.DataNumberEditor
                     }
                     else {
                         type = that.module.data.get(0).getChildSync(row.jpath).type;

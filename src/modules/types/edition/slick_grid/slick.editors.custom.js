@@ -14,7 +14,8 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
                     "TextValue": TextValueEditor,
                     "ColorValue": ColorEditor,
                     "Text": TextValueEditor,
-                    "SpecialNativeObject": SpecialNativeObjectEditor
+                    "SpecialNativeObject": SpecialNativeObjectEditor,
+                    "DataNumberEditor": DataNumberEditor
                 }
             }
         });
@@ -193,6 +194,21 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
             this.validate = defaultValidate;
             this.init();
         }
+
+        function DataNumberEditor(args) {
+            this.args = args;
+            this.init = defaultInit;
+            this.destroy = defaultDestroy;
+            this.focus = defaultFocus;
+            this.getValue = numberGetValue;
+            this.setValue = defaultSetValue;
+            this.loadValue = defaultLoadValue;
+            this.serializeValue = defaultSerializeValue;
+            this.applyValue = numberApplyValue;
+            this.isValueChanged = defaultIsValueChanged;
+            this.validate = defaultValidate;
+            this.init();
+        }
     })(jQuery);
 
     function defaultValidate() {
@@ -226,6 +242,11 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
         }
     }
 
+    function numberApplyValue(item, state) {
+        state = +state;
+        return defaultApplyValue.call(this, item, state);
+    }
+
     function defaultSerializeValue() {
         return this.$input.val();
     }
@@ -240,6 +261,10 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
 
     function defaultSetValue(val) {
         this.$input.val(val);
+    }
+
+    function numberGetValue() {
+        return +this.$input.val();
     }
 
     function defaultGetValue() {
