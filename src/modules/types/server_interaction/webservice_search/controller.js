@@ -302,7 +302,7 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
                 this.urlValues[option.name] = value;
                 break;
             case 'data':
-                this.dataValues[option.name] = value;
+                this.dataValues[option.name] = (this.dataType === 'form') ? JSON.stringify(value) : value;
                 break;
         }
     };
