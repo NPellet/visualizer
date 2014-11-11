@@ -109,7 +109,8 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
                         },
                         resultfilter: {
                             type: 'jscode',
-                            title: 'Result data filter'
+                            title: 'Result data filter',
+                            'default': '// console.log(data);'
                         }
                     }
                 },
