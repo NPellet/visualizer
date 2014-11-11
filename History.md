@@ -1,6 +1,6 @@
 2.8.4
 ===================
-* Slickgrid: row numbering overlay. Selected Row & Cell highlighting.
+* Slickgrid: row numbering overlay. Selected Row & Cell highlighting. Added DataNumber and DataBoolean edition.
 
 2.8.0 / 2014-11-10
 ===================
