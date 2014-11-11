@@ -29,7 +29,7 @@ require.config({
 });
 
 
-define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 'src/util/util', 'src/util/api', 'src/util/typerenderer','src/util/datatraversing', 'slickgrid', 'slickdataview'], function(require, Default, Debug, _, Util, API, Renderer, Traversing) {
+define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 'src/util/util', 'src/util/api', 'src/util/typerenderer', 'slickgrid', 'slickdataview'], function(require, Default, Debug, _, Util, API, Renderer) {
     function View() {}
     var cssPromises = [];
     cssPromises.push(Util.loadCss('./components/slickgrid/slick.grid.css'));
@@ -207,7 +207,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
                         });
 
-                        that.grid.onViewportChanged.subscribe(function(args) {
+                        that.grid.onViewportChanged.subscribe(function() {
                             // onViewportChange is not really working properly, so we hack by having a settimeout
                             // Acceptable since it is unlikely that someone click the delete button only 300 ms after
                             // the viewport has changed...
@@ -216,7 +216,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                                 that._resetDeleteRowListeners();
                             }, 300);
                             that.lastViewport = that.grid.getViewport();
-                            that.$rowHelp.html(that.lastViewport.bottom.toString() + '/' + that.grid.getDataLength());
+                            that.$rowHelp.html((that.lastViewport.bottom - 2).toString() + '/' + that.grid.getDataLength());
 
                             that.$rowHelp.fadeIn();
                             clearTimeout(that.lastRowHelp);
@@ -262,7 +262,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             }
                         });
 
-                        that.grid.onColumnsResized.subscribe(function(e, args) {
+                        that.grid.onColumnsResized.subscribe(function() {
                             var cols = that.grid.getColumns();
                             for(var i=0; i<cols.length; i++) {
                                 that.module.definition.configuration.groups.cols[0][i].width = cols[i].width;
@@ -282,7 +282,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             that.lastActiveRow = args.row;
                         });
 
-                        that.grid.onColumnsReordered.subscribe(function(e, args) {
+                        that.grid.onColumnsReordered.subscribe(function() {
                             var cols = that.grid.getColumns();
                             var conf = that.module.definition.configuration.groups.cols[0];
                             var names = _.pluck(conf, 'name');
