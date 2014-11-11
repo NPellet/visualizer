@@ -313,6 +313,12 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
         },
 
+        blank: {
+            list: function() {
+                this.$dom.html('');
+            }
+        },
+
         _resetDeleteRowListeners: function() {
             var that = this;
             var $rb = that.$rb = $('a.recycle-bin');
