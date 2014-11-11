@@ -332,7 +332,8 @@ h2 .form-duplicator-wrapper {
 
 
 .form-button span:nth-child(2) {
-	line-height: 30px;	
+	line-height: 30px;
+    white-space: pre;
 }
 
 
