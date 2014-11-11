@@ -149,12 +149,12 @@ define(['jquery',
                 for (var i = 0; i < filters.length; i++) {
                     var filter = filters[i].groups.filter[0];
                     if (filter.name[0]) {
-                        var deps = filters[i].groups.libs,
+                        var deps = filters[i].groups.libs[0],
                             depsA = ['src/util/api'],
                             defineStr = 'filterDef = function filterDefinition(API',
                             dep;
                         for (var j = 0; j < deps.length; j++) {
-                            dep = deps[j][0];
+                            dep = deps[j];
                             if (dep.lib) {
                                 depsA.push(dep.lib);
                                 defineStr += ', ' + dep.alias;
