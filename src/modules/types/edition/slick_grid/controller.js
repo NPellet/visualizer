@@ -69,6 +69,16 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                             title: 'Row Height'
                         },
 
+                        "slick.selectionModel": {
+                            type: 'combo',
+                            title: 'Selection',
+                            options: [
+                                {key: 'row', title: 'Row Selection Model'},
+                                {key: 'cell', title: 'Cell Selection Model'}
+                            ],
+                            default: ['cell']
+                        },
+
                         filterRow: {
                             type: 'jscode',
                             title: 'Filter'
@@ -182,6 +192,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
         'filterRow': [ 'groups', 'group', 0, 'filterRow', 0 ],
         'slickCheck': [ 'groups', 'group', 0, 'slickCheck', 0 ],
         'slick.rowHeight': [ 'groups', 'group', 0, 'slick.rowHeight', 0 ],
+        'slick.selectionModel': [ 'groups', 'group', 0, 'slick.selectionModel', 0 ],
         'cols': ['groups', 'cols', 0]
     };
 

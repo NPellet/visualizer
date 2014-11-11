@@ -20,6 +20,7 @@ require.config({
         slickgrid:     ['slickcore', 'dragevent', 'dropevent','components/slickgrid/plugins/slick.cellrangedecorator',
             'components/slickgrid/plugins/slick.cellrangeselector' ,
             'components/slickgrid/plugins/slick.cellselectionmodel' ,
+            'components/slickgrid/plugins/slick.rowselectionmodel',
             'components/slickgrid/slick.formatters',
             'modules/types/edition/slick_grid/slick.editors.custom'],
         slickdataview: ['slickgrid', 'slickgroupitemmetadataprovider'],
@@ -174,9 +175,16 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     })
                     .then(function() {
                         that.grid.init();
+                        if(that.module.getConfiguration('slick.selectionModel') === 'row') {
+                            that.grid.setSelectionModel(new Slick.RowSelectionModel());
+                        }
+                        else {
+                            that.grid.setSelectionModel(new Slick.CellSelectionModel());
+                        }
+
                         that._activateHighlights();
 
-                        that.grid.setSelectionModel(new Slick.CellSelectionModel());
+
                         that.grid.module = that.module;
 
                         if(!_.isUndefined(that.lastActiveRow)) {
