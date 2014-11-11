@@ -117,7 +117,11 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                             options: [
                                 {key: 'none', title: 'None'},
                                 {key: 'auto', title: 'Based on type'},
-                                {key: 'TextValue', title: 'Text Value'}
+                                {key: 'DataString', title: 'DataString'},
+                                {key: 'DataNumber', title: 'DataNumber'},
+                                {key: 'DataBoolean', title: 'DataBoolean'},
+                                {key: 'mf', title: 'Molecular Formula'},
+                                {key: 'color', title: 'Color'}
                             ]
                         },
 

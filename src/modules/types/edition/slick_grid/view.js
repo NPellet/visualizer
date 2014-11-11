@@ -50,7 +50,10 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         mf: Slick.Editors.TextValue,
         color: Slick.Editors.ColorValue,
         string: Slick.Editors.TextValue,
-        number: Slick.Editors.TextValue
+        number: Slick.Editors.TextValue,
+        DataString: Slick.Editors.SpecialNativeObject,
+        DataNumber: Slick.Editors.DataNumberEditor,
+        DataBoolean: Slick.Editors.DataBooleanEditor
     };
 
     View.prototype = $.extend(true, {}, Default, {
@@ -81,22 +84,30 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             var slickCols = this.colConfig.map(function(row) {
                 var editor, type;
                 if(row.editor === 'auto' && that.module.data) {
-                    var obj = that.module.data.get(0).getChildSync(row.jpath);
-                    if(obj instanceof DataString) {
+                    if(!that.module.data.length) {
                         editor = Slick.Editors.SpecialNativeObject;
-                    }
-                    else if(obj instanceof DataNumber) {
-                        editor = Slick.Editors.DataNumberEditor
-                    }
-                    else if(obj instanceof DataBoolean) {
-                        editor = Slick.Editors.DataBooleanEditor
+                        Debug.warn('Slick grid: using editor based on type when the input variable is empty. Cannot determine type');
                     }
                     else {
-                        type = that.module.data.get(0).getChildSync(row.jpath).type;
-                        editor = typeEditors[type];
+                        var obj = that.module.data.get(0).getChildSync(row.jpath);
+                        if(obj instanceof DataString) {
+                            editor = Slick.Editors.SpecialNativeObject;
+                        }
+                        else if(obj instanceof DataNumber) {
+                            editor = Slick.Editors.DataNumberEditor
+                        }
+                        else if(obj instanceof DataBoolean) {
+                            editor = Slick.Editors.DataBooleanEditor
+                        }
+                        else {
+                            type = that.module.data.get(0).getChildSync(row.jpath).type;
+                            editor = typeEditors[type];
+                        }
                     }
-
-
+                }
+                else {
+                    editor = typeEditors[row.editor];
+                    type = row.editor;
                 }
                 return {
                     id: row.name,
