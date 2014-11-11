@@ -10,7 +10,8 @@ require.config({
         // SlickGrid
         slickcore:     'components/slickgrid/slick.core',
         slickgrid:     'components/slickgrid/slick.grid',
-        slickdataview: 'components/slickgrid/slick.dataview'
+        slickdataview: 'components/slickgrid/slick.dataview',
+        slickgroupitemmetadataprovider: 'components/slickgrid/slick.groupitemmetadataprovider'
     },
     shim: {
         dragevent:     ['jquery'],
@@ -21,7 +22,8 @@ require.config({
             'components/slickgrid/plugins/slick.cellselectionmodel' ,
             'components/slickgrid/slick.formatters',
             'modules/types/edition/slick_grid/slick.editors.custom'],
-        slickdataview: ['slickgrid']
+        slickdataview: ['slickgrid', 'slickgroupitemmetadataprovider'],
+        slickgroupitemmetadataprovider: ['slickgrid']
 
     }
 });
