@@ -114,13 +114,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             'default': '3'
                         },
                         outputResult: {
-                            type: 'combo',
-                            title: 'Output result',
-                            options: [
-                                {title: 'Create Output variable', key: 'outputVar'},
-                                {title: 'Modify Input variable', key: 'inputVar'}
-                            ],
-                            default: 'outputVar'
+                            type: 'checkbox',
+                            title: 'Modify Input Variable',
+                            options: { yes: 'Yes'},
+                            default: []
                         }
                     }
                 }
@@ -129,7 +126,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     };
 
     Controller.prototype.onChange = function (mol, smiles, jme) {
-        if(this.module.view._currentValue && this.module.getConfiguration('outputResult') === 'inputVar') {
+        if(this.module.view._currentValue && this.module.getConfigurationCheckbox('outputResult', 'yes')) {
             if(this.module.view._currentValue.type === 'mol2d') {
                 this.module.view._currentValue.setValue(mol);
             }
