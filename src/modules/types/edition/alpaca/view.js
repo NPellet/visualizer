@@ -22,9 +22,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'forms/button'
 
     View.prototype = $.extend(true, {}, Default, {
         init: function () {
-            var that = this;
-            if(_.isEmpty(JSON.parse(this.module.getConfiguration('schema'))))
-                this.module.definition.configuration.groups.group[0].schema = '{\n  "title": "Main Title",\n  "description": "What does this form do?",\n  "type": "object",\n  "properties": {\n    "name": {\n      "type": "string",\n      "title": "Name"\n    },\n    "ranking": {\n      "type": "string",\n      "title": "Ranking",\n      "enum":\n      ["excellent", "not too shabby", "alpaca built my hotrod"]\n    }\n  }\n}'
+
 
         },
         inDom: function () {
@@ -46,7 +44,8 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'forms/button'
                 data: that.inputVal,
                 postRender: function(form) {
                     that._form = form;
-                }
+                },
+                options: JSON.parse(that.module.getConfiguration('options'))
             });
 
             if(this.module.getConfigurationCheckbox('hasButton', 'show')) {

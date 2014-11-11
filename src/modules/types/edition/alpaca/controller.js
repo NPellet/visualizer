@@ -113,6 +113,12 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
                             title: 'JSON schema',
                             default: '{}',
                             displayTarget: ['c']
+                        },
+                        options: {
+                            type: 'jscode',
+                            mode: 'json',
+                            title: 'Form options',
+                            default: '{}'
                         }
                     }
                 }
@@ -128,7 +134,8 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
         schema: ['groups', 'group', 0, 'schema', 0],
         button_text: ['groups', 'group', 0, 'button_text', 0],
         hasButton: ['groups', 'group', 0, 'hasButton', 0],
-        debouncing: ['groups', 'group', 0, 'debouncing', 0]
+        debouncing: ['groups', 'group', 0, 'debouncing', 0],
+        options: ['groups', 'group', 0, 'options', 0]
     };
 
     Controller.prototype.getSchema = function () {
