@@ -88,6 +88,9 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     else if(obj instanceof DataNumber) {
                         editor = Slick.Editors.DataNumberEditor
                     }
+                    else if(obj instanceof DataBoolean) {
+                        editor = Slick.Editors.DataBooleanEditor
+                    }
                     else {
                         type = that.module.data.get(0).getChildSync(row.jpath).type;
                         editor = typeEditors[type];

@@ -15,14 +15,14 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
                     "ColorValue": ColorEditor,
                     "Text": TextValueEditor,
                     "SpecialNativeObject": SpecialNativeObjectEditor,
-                    "DataNumberEditor": DataNumberEditor
+                    "DataNumberEditor": DataNumberEditor,
+                    "DataBooleanEditor": DataBooleanEditor
                 }
             }
         });
 
         function ColorEditor(args) {
             var $cont, $input, defaultValue;
-            var that = this;
             this.init = function() {
 
                 console.log('INIT!');
@@ -209,11 +209,28 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
             this.validate = defaultValidate;
             this.init();
         }
+
+        function DataBooleanEditor(args) {
+            this.args = args;
+            this.init = booleanInit;
+            this.destroy = defaultDestroy;
+            this.focus = defaultFocus;
+            this.getValue = numberGetValue;
+            this.setValue = defaultSetValue;
+            this.loadValue = booleanLoadValue;
+            this.serializeValue = booleanSerializeValue;
+            this.applyValue = booleanApplyValue;
+            this.isValueChanged = booleanIsValueChanged;
+            this.validate = defaultValidate;
+            this.init();
+        }
     })(jQuery);
 
+
+    // ======== DEFAULT EDITOR FUNCTIONS ===============
     function defaultValidate() {
         if (this.args.column.validator) {
-            var validationResults = this.args.column.validator(this.$input.val());
+            var validationResults = this.args.column.validator(this.serializeValue());
             if (!validationResults.valid) {
                 return validationResults;
             }
@@ -242,11 +259,6 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
         }
     }
 
-    function numberApplyValue(item, state) {
-        state = +state;
-        return defaultApplyValue.call(this, item, state);
-    }
-
     function defaultSerializeValue() {
         return this.$input.val();
     }
@@ -263,15 +275,11 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
         this.$input.val(val);
     }
 
-    function numberGetValue() {
-        return +this.$input.val();
-    }
-
     function defaultGetValue() {
         return this.$input.val();
     }
 
-    function defaultInit(args) {
+    function defaultInit() {
         this.$input = $("<INPUT type=text class='editor-text' />")
             .appendTo(this.args.container)
             .bind("keydown.nav", function (e) {
@@ -291,6 +299,44 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
         this.$input.focus();
     }
 
+    // =========== DATA NUMBER ===============
+    function numberGetValue() {
+        return +this.$input.val();
+    }
+
+    function numberApplyValue(item, state) {
+        state = +state;
+        return defaultApplyValue.call(this, item, state);
+    }
+
+    // =========== DATA BOOLEAN ==============
+    function booleanInit() {
+        this.$input = $("<INPUT type=checkbox value='true' class='editor-checkbox' hideFocus>");
+        this.$input.appendTo(this.args.container);
+        this.$input.focus();
+    }
+
+    function booleanLoadValue(item) {
+        this.defaultValue = item.getChildSync(this.args.column.jpath);
+        if (this.defaultValue) {
+            this.$input.attr("checked", "checked");
+        } else {
+            this.$input.removeAttr("checked");
+        }
+    }
+
+    function booleanSerializeValue() {
+        return !!this.$input.attr("checked");
+    }
+
+    function booleanIsValueChanged() {
+        return this.serializeValue !== this.defaultValue;
+    }
+
+    function booleanApplyValue(item, state) {
+        state = !!state;
+        defaultApplyValue.call(this, item, state);
+    }
 
 
 });
