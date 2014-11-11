@@ -139,13 +139,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
             this.module.model.dataTriggerChange(this.module.view._currentValue);
         }
 
-        else {
-            this.createDataFromEvent('onStructureChange', 'mol', {type: 'mol2d', value: mol});
-            this.createDataFromEvent('onStructureChange', 'jme', {type: 'jme', value: jme});
-        }
-
         // Always create smiles because smiles is not a possible input variable
         this.createDataFromEvent('onStructureChange', 'smiles', smiles);
+        this.createDataFromEvent('onStructureChange', 'mol', {type: 'mol2d', value: mol});
+        this.createDataFromEvent('onStructureChange', 'jme', {type: 'jme', value: jme});
 
     };
 
