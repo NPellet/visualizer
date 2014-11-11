@@ -59,9 +59,10 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                                 forceFitColumns: 'Force fit Columns',
                                 rowDelete: 'Can delete rows',
                                 resizeRerender: 'Re-render on resize',
-                                autoFocus: 'Auto Focus'
+                                autoFocus: 'Auto Focus',
+                                rowNumbering: 'Show row number when scrolling'
                             },
-                            default: ['editable', 'enableAddRow', 'enableCellNavigation', 'resizeRerender']
+                            default: ['editable', 'enableAddRow', 'enableCellNavigation', 'resizeRerender', 'rowNumbering']
                         },
 
                         "slick.rowHeight": {

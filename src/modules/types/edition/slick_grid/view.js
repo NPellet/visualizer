@@ -225,14 +225,13 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             }, 300);
                             that.lastViewport = that.grid.getViewport();
                             that.$rowHelp.html((that.lastViewport.bottom - 2).toString() + '/' + that.grid.getDataLength());
-
-                            that.$rowHelp.fadeIn();
-                            clearTimeout(that.lastRowHelp);
-                            that.lastRowHelp = setTimeout(function() {
-                                that.$rowHelp.fadeOut();
-                            }, 1000);
-
-
+                            if(this.module.getConfigurationCheckbox('slickCheck', 'rowNumbering')) {
+                                that.$rowHelp.fadeIn();
+                                clearTimeout(that.lastRowHelp);
+                                that.lastRowHelp = setTimeout(function() {
+                                    that.$rowHelp.fadeOut();
+                                }, 1000);
+                            }
                         });
 
 
