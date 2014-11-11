@@ -168,138 +168,139 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
                 that.grid = new Slick.Grid("#"+that._id, that.slick.data, that.slick.columns, that.slick.options);
 
-                cssLoaded.then(function() {
-                    return that.cssLoaded;
-                })
-                .then(function() {
-                    that.grid.init();
-                });
-                that._activateHighlights();
+                cssLoaded
+                    .then(function() {
+                        return that.cssLoaded;
+                    })
+                    .then(function() {
+                        that.grid.init();
+                        that._activateHighlights();
 
-                that.grid.setSelectionModel(new Slick.CellSelectionModel());
-                that.grid.module = that.module;
+                        that.grid.setSelectionModel(new Slick.CellSelectionModel());
+                        that.grid.module = that.module;
 
-                if(!_.isUndefined(that.lastActiveRow)) {
-                    if(that.module.getConfigurationCheckbox('slickCheck', 'autoFocus')) {
-                        that.grid.gotoCell(that.lastActiveRow, that.lastActiveCell);
-                    }
-                    else {
-                        that.grid.setActiveCell(that.lastActiveRow, that.lastActiveCell);
-                    }
-                }
-                if(that.lastViewport) {
-                    that.grid.scrollRowToTop(that.lastViewport.top);
-                }
+                        if(!_.isUndefined(that.lastActiveRow)) {
+                            if(that.module.getConfigurationCheckbox('slickCheck', 'autoFocus')) {
+                                that.grid.gotoCell(that.lastActiveRow, that.lastActiveCell);
+                            }
+                            else {
+                                that.grid.setActiveCell(that.lastActiveRow, that.lastActiveCell);
+                            }
+                        }
+                        if(that.lastViewport) {
+                            that.grid.scrollRowToTop(that.lastViewport.top);
+                        }
 
-                that._resetDeleteRowListeners();
-                that.grid.onAddNewRow.subscribe(function (e, args) {
-                    var item = args.item;
-                    var jpath = args.column.jpath.slice();
-                    jpath.unshift(that.module.data.length);
-                    that.module.model.dataSetChild(that.module.data, jpath, item).then(function() {
-                        var row = that.module.data.length - 1;
-                        that.grid.updateRowCount();
-                        that.grid.invalidateRow(row);
-                        that.grid.render();
-                        that.module.controller.onRowNew(row);
                         that._resetDeleteRowListeners();
+                        that.grid.onAddNewRow.subscribe(function (e, args) {
+                            var item = args.item;
+                            var jpath = args.column.jpath.slice();
+                            jpath.unshift(that.module.data.length);
+                            that.module.model.dataSetChild(that.module.data, jpath, item).then(function() {
+                                var row = that.module.data.length - 1;
+                                that.grid.updateRowCount();
+                                that.grid.invalidateRow(row);
+                                that.grid.render();
+                                that.module.controller.onRowNew(row);
+                                that._resetDeleteRowListeners();
+                            });
+
+                        });
+
+                        that.grid.onViewportChanged.subscribe(function(args) {
+                            // onViewportChange is not really working properly, so we hack by having a settimeout
+                            // Acceptable since it is unlikely that someone click the delete button only 300 ms after
+                            // the viewport has changed...
+                            setTimeout(function() {
+                                that.lastViewport = that.grid.getViewport();
+                                that._resetDeleteRowListeners();
+                            }, 300);
+                            that.lastViewport = that.grid.getViewport();
+                            that.$rowHelp.html(that.lastViewport.bottom.toString() + '/' + that.grid.getDataLength());
+
+                            that.$rowHelp.fadeIn();
+                            clearTimeout(that.lastRowHelp);
+                            that.lastRowHelp = setTimeout(function() {
+                                that.$rowHelp.fadeOut();
+                            }, 1000);
+
+
+                        });
+
+
+                        that.grid.onMouseEnter.subscribe(function(e) {
+                            var cell = that._checkCellFromEvent(e);
+                            if(!cell) return;
+                            var hl = that.module.data[cell.row]._highlight;
+                            if(hl) {
+                                API.highlightId(hl,1);
+                                lastHighlight = hl;
+                            }
+                            that.module.controller.onHover(cell.row);
+
+                        });
+
+                        that.grid.onMouseLeave.subscribe(function(e) {
+                            var cell = that._checkCellFromEvent(e);
+                            if(!cell) return;
+                            var hl = that.module.data[cell.row]._highlight;
+                            if(hl) {
+                                API.highlightId(hl,0);
+                            }
+                            else if(lastHighlight) {
+                                API.highlightId(lastHighlight,0);
+                            }
+
+                        });
+
+                        that.grid.onClick.subscribe(function(e,args) {
+                            var columns = that.grid.getColumns();
+                            if(!_.isUndefined(args.row)) {
+                                if(columns[args.cell] && columns[args.cell].id !== 'rowDeletion') {
+                                    that.module.controller.onClick(args.row);
+                                }
+                            }
+                        });
+
+                        that.grid.onColumnsResized.subscribe(function(e, args) {
+                            var cols = that.grid.getColumns();
+                            for(var i=0; i<cols.length; i++) {
+                                that.module.definition.configuration.groups.cols[0][i].width = cols[i].width;
+                            }
+                            if(that.module.getConfigurationCheckbox('slickCheck', 'resizeRerender')) {
+                                that.grid.invalidate();
+                            }
+
+                        });
+
+                        that.grid.onCellChange.subscribe(function (e, args) {
+                            that.module.controller.onRowChange(args.row);
+                        });
+
+                        that.grid.onActiveCellChanged.subscribe(function(e, args) {
+                            that.lastActiveCell = args.cell;
+                            that.lastActiveRow = args.row;
+                        });
+
+                        that.grid.onColumnsReordered.subscribe(function(e, args) {
+                            var cols = that.grid.getColumns();
+                            var conf = that.module.definition.configuration.groups.cols[0];
+                            var names = _.pluck(conf, 'name');
+                            var ids = _.pluck(cols, 'id');
+
+                            if(names.concat().sort().join() !== ids.concat().sort().join()) {
+                                Debug.warn('Something might be wrong, number of columns in grid and in configuration do not match');
+                                return;
+                            }
+                            that.module.definition.configuration.groups.cols[0] = [];
+                            for(var i=0; i<cols.length; i++) {
+                                var idx = names.indexOf(ids[i]);
+                                if(idx > -1) {
+                                    that.module.definition.configuration.groups.cols[0].push(conf[idx]);
+                                }
+                            }
+                        });
                     });
-
-                });
-
-                that.grid.onViewportChanged.subscribe(function(args) {
-                    // onViewportChange is not really working properly, so we hack by having a settimeout
-                    // Acceptable since it is unlikely that someone click the delete button only 300 ms after
-                    // the viewport has changed...
-                    setTimeout(function() {
-                        that.lastViewport = that.grid.getViewport();
-                        that._resetDeleteRowListeners();
-                    }, 300);
-                    that.lastViewport = that.grid.getViewport();
-                    that.$rowHelp.html(that.lastViewport.bottom.toString() + '/' + that.grid.getDataLength());
-
-                    that.$rowHelp.fadeIn();
-                    clearTimeout(that.lastRowHelp);
-                    that.lastRowHelp = setTimeout(function() {
-                        that.$rowHelp.fadeOut();
-                    }, 1000);
-
-
-                });
-
-
-                that.grid.onMouseEnter.subscribe(function(e) {
-                    var cell = that._checkCellFromEvent(e);
-                    if(!cell) return;
-                    var hl = that.module.data[cell.row]._highlight;
-                    if(hl) {
-                        API.highlightId(hl,1);
-                        lastHighlight = hl;
-                    }
-                    that.module.controller.onHover(cell.row);
-
-                });
-
-                that.grid.onMouseLeave.subscribe(function(e) {
-                    var cell = that._checkCellFromEvent(e);
-                    if(!cell) return;
-                    var hl = that.module.data[cell.row]._highlight;
-                    if(hl) {
-                        API.highlightId(hl,0);
-                    }
-                    else if(lastHighlight) {
-                        API.highlightId(lastHighlight,0);
-                    }
-
-                });
-
-                that.grid.onClick.subscribe(function(e,args) {
-                    var columns = that.grid.getColumns();
-                    if(!_.isUndefined(args.row)) {
-                        if(columns[args.cell] && columns[args.cell].id !== 'rowDeletion') {
-                            that.module.controller.onClick(args.row);
-                        }
-                    }
-                });
-
-                that.grid.onColumnsResized.subscribe(function(e, args) {
-                    var cols = that.grid.getColumns();
-                    for(var i=0; i<cols.length; i++) {
-                        that.module.definition.configuration.groups.cols[0][i].width = cols[i].width;
-                    }
-                    if(that.module.getConfigurationCheckbox('slickCheck', 'resizeRerender')) {
-                        that.grid.invalidate();
-                    }
-
-                });
-
-                that.grid.onCellChange.subscribe(function (e, args) {
-                    that.module.controller.onRowChange(args.row);
-                });
-
-                that.grid.onActiveCellChanged.subscribe(function(e, args) {
-                    that.lastActiveCell = args.cell;
-                    that.lastActiveRow = args.row;
-                });
-
-                that.grid.onColumnsReordered.subscribe(function(e, args) {
-                    var cols = that.grid.getColumns();
-                    var conf = that.module.definition.configuration.groups.cols[0];
-                    var names = _.pluck(conf, 'name');
-                    var ids = _.pluck(cols, 'id');
-
-                    if(names.concat().sort().join() !== ids.concat().sort().join()) {
-                        Debug.warn('Something might be wrong, number of columns in grid and in configuration do not match');
-                        return;
-                    }
-                    that.module.definition.configuration.groups.cols[0] = [];
-                    for(var i=0; i<cols.length; i++) {
-                        var idx = names.indexOf(ids[i]);
-                        if(idx > -1) {
-                            that.module.definition.configuration.groups.cols[0].push(conf[idx]);
-                        }
-                    }
-                });
             }
 
         },
