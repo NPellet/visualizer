@@ -159,7 +159,6 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 dataItemColumnValueExtractor: function(item, coldef) {
                     return item;
                 },
-                explicitInitialization: true,
                 rowHeight: that.module.getConfiguration('slick.rowHeight')
             };
         },
@@ -175,23 +174,35 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         update: {
 
             list: function( moduleValue ) {
-                console.log('UPDATE');
-
                 var that =  this;
                 this.module.data = moduleValue;
 
                 this.slick.columns = this.getSlickColumns();
                 this.slick.options = this.getSlickOptions();
                 this.slick.data = this.module.data;
+                this.generateUniqIds('id');
 
-                that.grid = new Slick.Grid("#"+that._id, that.slick.data, that.slick.columns, that.slick.options);
+
+
+
 
                 cssLoaded
                     .then(function() {
                         return that.cssLoaded;
                     })
                     .then(function() {
-                        that.grid.init();
+
+                        that.slick.groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
+                        that.slick.dataView = new Slick.Data.DataView({
+                            groupItemMetadataProvider: that.slick.groupItemMetadataProvider
+                        });
+
+
+                        that.grid = new Slick.Grid("#"+that._id, that.slick.dataView, that.slick.columns, that.slick.options);
+                        that.grid.registerPlugin(that.slick.groupItemMetadataProvider);
+
+
+
                         if(that.module.getConfiguration('slick.selectionModel') === 'row') {
                             that.grid.setSelectionModel(new Slick.RowSelectionModel());
                         }
@@ -204,19 +215,19 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
                         that.grid.module = that.module;
 
-                        if(!_.isUndefined(that.lastActiveRow)) {
-                            if(that.module.getConfigurationCheckbox('slickCheck', 'autoFocus')) {
-                                that.grid.gotoCell(that.lastActiveRow, that.lastActiveCell);
-                            }
-                            else {
-                                that.grid.setActiveCell(that.lastActiveRow, that.lastActiveCell);
-                            }
-                        }
-                        if(that.lastViewport) {
-                            that.grid.scrollRowToTop(that.lastViewport.top);
-                        }
 
-                        that._resetDeleteRowListeners();
+
+                        // wire up model events to drive the grid
+                        that.slick.dataView.onRowCountChanged.subscribe(function (e, args) {
+                            that.grid.updateRowCount();
+                            that.grid.render();
+                        });
+                        that.slick.dataView.onRowsChanged.subscribe(function (e, args) {
+                            that.grid.invalidateRows(args.rows);
+                            that.grid.render();
+                        });
+
+
                         that.grid.onAddNewRow.subscribe(function (e, args) {
                             var item = args.item;
                             var jpath = args.column.jpath.slice();
@@ -241,8 +252,8 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                                 that._resetDeleteRowListeners();
                             }, 300);
                             that.lastViewport = that.grid.getViewport();
-                            that.$rowHelp.html((that.lastViewport.bottom - 2).toString() + '/' + that.grid.getDataLength());
-                            if(this.module.getConfigurationCheckbox('slickCheck', 'rowNumbering')) {
+                            if(that.module.getConfigurationCheckbox('slickCheck', 'rowNumbering')) {
+                                that.$rowHelp.html((that.lastViewport.bottom - 2).toString() + '/' + that.grid.getDataLength());
                                 that.$rowHelp.fadeIn();
                                 clearTimeout(that.lastRowHelp);
                                 that.lastRowHelp = setTimeout(function() {
@@ -324,6 +335,39 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                                 }
                             }
                         });
+
+
+
+                        that.slick.dataView.beginUpdate();
+                        var ids = _.pluck(that.slick.columns, 'id');
+                        var groupings = _.chain(that.module.getConfiguration('groupings'))
+                            .filter(function(val) {
+                                return val.getter && ids.indexOf(val.getter) > -1;
+                            })
+                            .map(function(val) {
+                                return {
+                                    getter: val.getter.toLowerCase(),
+                                    formatter: function(g) {
+                                        return val.groupName + ': ' + g.value + "  <span style='color:green'>(" + g.count + " items)</span>";
+                                    },
+                                    aggregateCollapsed: true,
+                                    lazyTotalsCalculation: true
+                                }
+                            }).value();
+
+                        if(groupings.length) that.slick.dataView.setGrouping(groupings);
+
+                        that.slick.dataView.setItems(that.slick.data, 'id');
+                        that.slick.dataView.endUpdate();
+
+                        // get back state before last update
+                        if(!_.isUndefined(that.lastActiveRow)) {
+                                that.grid.setActiveCell(that.lastActiveRow, that.lastActiveCell);
+                        }
+                        if(that.lastViewport) {
+                            that.grid.scrollRowToTop(that.lastViewport.top);
+                        }
+                        that._resetDeleteRowListeners();
                     });
             }
 
@@ -413,6 +457,14 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             this.$rowHelp.css( {
                 bottom: 0
             })
+        },
+
+        generateUniqIds: function(propertyName) {
+            propertyName = propertyName || 'sgid';
+            if(!this.slick.data) return;
+            for(var i=0; i<this.slick.data.length; i++) {
+                this.slick.data[i][propertyName] = 'id_' + i;
+            }
         }
     });
 
@@ -433,6 +485,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
     }
 
     function typeRenderer(cellNode, row, dataContext, colDef) {
+        if(dataContext.__group) return;
         this.module.data.traceSync([row]);
         var def = Renderer.toScreen(dataContext, this.module, {}, colDef.jpath);
         def.always(function(value) {

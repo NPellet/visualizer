@@ -96,7 +96,6 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                     },
 
                     fields: {
-
                         name: {
                             type: 'text',
                             title: 'Columns title'
@@ -186,6 +185,24 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                             default: ['yes']
                         }
                     }
+                },
+                groupings: {
+                    options: {
+                        type: 'table',
+                        multiple: true,
+                        title: 'Groupings'
+                    },
+
+                    fields: {
+                        getter: {
+                            type: 'text',
+                            title: 'Getter'
+                        },
+                        groupName: {
+                            type: 'text',
+                            title: 'Group Name'
+                        }
+                    }
                 }
             }
         }
@@ -198,7 +215,8 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
         'slickCheck': [ 'groups', 'group', 0, 'slickCheck', 0 ],
         'slick.rowHeight': [ 'groups', 'group', 0, 'slick.rowHeight', 0 ],
         'slick.selectionModel': [ 'groups', 'group', 0, 'slick.selectionModel', 0 ],
-        'cols': ['groups', 'cols', 0]
+        'cols': ['groups', 'cols', 0],
+        'groupings': ['groups', 'groupings', 0]
     };
 
 
