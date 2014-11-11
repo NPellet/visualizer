@@ -63,6 +63,16 @@
         jsmeApplet.resetAtomColors(molIndex);
     }
 
+    var changeCallback=function(result) {
+        // action is currently null + reset when we add a molecule from outside ... this could change in the future !!!!
+        if (result.action!=null && result.action!='reset') {
+            var mol = window.jsmeApplet.molFile();
+            var jme = window.jsmeApplet.jmeFile();
+            var smiles = window.jsmeApplet.smiles();
+            window.doPostMessage("onChange", {mol: mol, smiles: smiles, jme: jme});
+        }
+    }
+
     function jsmeOnLoad() {
         var w = window.innerWidth;
         var h = window.innerHeight;
@@ -80,7 +90,11 @@
             doPostMessage('ready');
         });
 
-        jsmeApplet.setNotifyStructuralChangeJSfunction('(function() { var mol = this.jsmeApplet.molFile(); var jme = this.jsmeApplet.jmeFile(); var smiles = this.jsmeApplet.smiles(); this.doPostMessage("onChange", {mol: mol, smiles: smiles, jme: jme}); })');
+
+
+
+
+        jsmeApplet.setAfterStructureModifiedCallback(changeCallback);
 
         // The notifyAtomHighLightJSfunction will receive two arguments: the molecule index and the atom index, both start at 1
         jsmeApplet.setNotifyAtomHighLightChangeJSfunction('(function(mol,atom) {this.doPostMessage("doHighlight", {mol: mol, atom:atom});})');
