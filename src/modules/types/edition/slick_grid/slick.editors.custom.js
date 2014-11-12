@@ -24,8 +24,6 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
         function ColorEditor(args) {
             var $cont, $input, defaultValue;
             this.init = function() {
-
-                console.log('INIT!');
                 $cont = $('<div/>');
                 $cont.append('<input type="text">');
                 $input = $cont.find('input');
@@ -109,7 +107,13 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
                     value: state
                 };
 
+
                 if(isNew) {
+                    var newItem = {};
+                    newItem[args.grid.module.view.idPropertyName] = 'id_'+args.grid.module.view.getNextIncrementalId();
+                    newItem = DataObject.check(newItem, true);
+                    newItem.setChildSync(args.column.jpath, newState);
+                    args.grid.module.view.slick.data.addItem(newItem);
                     return newState;
                 }
                 else {
@@ -155,20 +159,18 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
             this.applyValue = function(item, state) {
                 var isNew = _.isEmpty(item);
                 DataObject.check(item, true);
-                var newState;
+                var newState = {
+                    type: this.args.column.dataType,
+                    value: state
+                };
 
-                if(this.args.column.dataType) {
-                    newState = {
-                        type: this.args.column.dataType,
-                        value: state
-                    };
-
-                }
-                else {
-                    newState = state;
-                }
 
                 if(isNew) {
+                    var newItem = {};
+                    newItem[this.args.grid.module.view.idPropertyName] = 'id_'+this.args.grid.module.view.getNextIncrementalId();
+                    newItem = DataObject.check(newItem, true);
+                    newItem.setChildSync(this.args.column.jpath, newState);
+                    this.args.grid.module.view.slick.data.addItem(newItem);
                     return newState;
                 }
                 else {
@@ -251,7 +253,13 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
         DataObject.check(item, true);
         var newState = state;
 
+
         if(isNew) {
+            var newItem = {};
+            newItem[this.args.grid.module.view.idPropertyName] = 'id_'+this.args.grid.module.view.getNextIncrementalId();
+            newItem = DataObject.check(newItem, true);
+            newItem.setChildSync(this.args.column.jpath, state);
+            this.args.grid.module.view.slick.data.addItem(newItem);
             return newState;
         }
         else {

@@ -60,7 +60,9 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                                 rowDelete: 'Can delete rows',
                                 resizeRerender: 'Re-render on resize',
                                 autoFocus: 'Auto Focus',
-                                rowNumbering: 'Show row number when scrolling'
+                                rowNumbering: 'Show row number when scrolling',
+                                multiColumnSort: 'Multi-column sorting',
+                                oneUncollapsed: 'Maximum One group uncollapsed (per level)'
                             },
                             default: ['editable', 'enableAddRow', 'enableCellNavigation', 'resizeRerender', 'rowNumbering']
                         },
@@ -289,26 +291,26 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
     };
 
 
-    controller.prototype.onHover = function(row) {
+    controller.prototype.onHover = function(row, item) {
         this.setVarFromEvent( 'onHover', 'row', 'list', [ row ] );
-        this.sendAction( 'row', this.module.data.get(row), 'onHover' );
+        this.sendAction( 'row', item, 'onHover' );
 
     };
 
-    controller.prototype.onClick = function(row) {
+    controller.prototype.onClick = function(row, item) {
         this.setVarFromEvent( 'onSelect', 'row', 'list', [ row ] );
-        this.sendAction( 'row', this.module.data.get( row ), 'onSelect' );
+        this.sendAction( 'row', item, 'onSelect' );
     };
 
-    controller.prototype.onRowChange = function(row) {
+    controller.prototype.onRowChange = function(row, item) {
         this.setVarFromEvent('onRowChange', 'row', 'list', [row]);
-        this.sendAction('row', this.module.data.get(row), 'onRowChange');
+        this.sendAction('row', item, 'onRowChange');
     };
 
 
-    controller.prototype.onRowNew = function(row) {
+    controller.prototype.onRowNew = function(row, item) {
         this.setVarFromEvent('onRowNew', 'row', 'list', [row]);
-        this.sendAction('row', this.module.data.get(row), 'onRowNew');
+        this.sendAction('row', item, 'onRowNew');
     };
 
     return controller;

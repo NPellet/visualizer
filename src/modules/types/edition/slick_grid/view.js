@@ -10,8 +10,8 @@ require.config({
         // SlickGrid
         slickcore:     'components/slickgrid/slick.core',
         slickgrid:     'components/slickgrid/slick.grid',
-        slickdataview: 'components/slickgrid/slick.dataview',
-        slickgroupitemmetadataprovider: 'components/slickgrid/slick.groupitemmetadataprovider'
+        slickdataview: 'modules/types/edition/slick_grid/slick.dataview.custom',
+        slickgroupitemmetadataprovider: 'modules/types/edition/slick_grid/slick.groupitemmetadataprovider.custom'
     },
     shim: {
         dragevent:     ['jquery'],
@@ -74,6 +74,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
             this.slick = {};
             this.colConfig = this.module.getConfiguration('cols');
+            this.idPropertyName = 'sgid';
             this.resolveReady();
         },
 
@@ -153,6 +154,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 enableTextSelectionOnCells: that.module.getConfigurationCheckbox('slickCheck', 'enableTextSelectionOnCells'),
                 enableColumnReorder: that.module.getConfigurationCheckbox('slickCheck', 'enableColumnReorder'),
                 forceFitColumns: that.module.getConfigurationCheckbox('slickCheck', 'forceFitColumns'),
+                multiColumnSort: that.module.getConfigurationCheckbox('slickCheck', 'multiColumnSort'),
                 asyncEditorLoading: true,
                 enableAsyncPostRender: true,
                 asyncPostRenderDelay: 0,
@@ -179,8 +181,8 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
                 this.slick.columns = this.getSlickColumns();
                 this.slick.options = this.getSlickOptions();
-                this.slick.data = this.module.data;
-                this.generateUniqIds('id');
+                this.incrementalId = 0;
+                this.generateUniqIds();
 
 
 
@@ -193,12 +195,12 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     .then(function() {
 
                         that.slick.groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
-                        that.slick.dataView = new Slick.Data.DataView({
+                        that.slick.data = new Slick.Data.DataView({
                             groupItemMetadataProvider: that.slick.groupItemMetadataProvider
                         });
 
-
-                        that.grid = new Slick.Grid("#"+that._id, that.slick.dataView, that.slick.columns, that.slick.options);
+                        that.slick.data.setModule(that.module);
+                        that.grid = new Slick.Grid("#"+that._id, that.slick.data, that.slick.columns, that.slick.options);
                         that.grid.registerPlugin(that.slick.groupItemMetadataProvider);
 
 
@@ -216,30 +218,40 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         that.grid.module = that.module;
 
 
+                        // listen to group expansion...
+                        if(that.module.getConfigurationCheckbox('slickCheck', 'oneUncollapsed')) {
+                            that.slick.groupItemMetadataProvider.onGroupExpanded.subscribe(function(e, args) {
+                                this.getData().collapseAllGroups(args.item.level);
+                                this.getData().expandGroup(args.item.groupingKey);
+                                console.log('expanded', e, args);
+                            });
+                        }
 
                         // wire up model events to drive the grid
-                        that.slick.dataView.onRowCountChanged.subscribe(function (e, args) {
+                        that.slick.data.onRowCountChanged.subscribe(function (e, args) {
                             that.grid.updateRowCount();
                             that.grid.render();
                         });
-                        that.slick.dataView.onRowsChanged.subscribe(function (e, args) {
+
+                        that.slick.data.onRowsChanged.subscribe(function (e, args) {
                             that.grid.invalidateRows(args.rows);
                             that.grid.render();
                         });
 
 
                         that.grid.onAddNewRow.subscribe(function (e, args) {
-                            var item = args.item;
-                            var jpath = args.column.jpath.slice();
-                            jpath.unshift(that.module.data.length);
-                            that.module.model.dataSetChild(that.module.data, jpath, item).then(function() {
-                                var row = that.module.data.length - 1;
-                                that.grid.updateRowCount();
-                                that.grid.invalidateRow(row);
-                                that.grid.render();
-                                that.module.controller.onRowNew(row);
-                                that._resetDeleteRowListeners();
-                            });
+                            that.module.model.dataTriggerChange(that.module.data);
+                            //var item = args.item;
+                            //var jpath = args.column.jpath.slice();
+                            //jpath.unshift(that.module.data.length);
+                            //that.module.model.dataSetChild(that.module.data, jpath, item).then(function() {
+                            //    var row = that.module.data.length - 1;
+                            //    that.grid.updateRowCount();
+                            //    that.grid.invalidateRow(row);
+                            //    that.grid.render();
+                            //    that.module.controller.onRowNew(row);
+                            //    that._resetDeleteRowListeners();
+                            //});
 
                         });
 
@@ -248,7 +260,9 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             // Acceptable since it is unlikely that someone click the delete button only 300 ms after
                             // the viewport has changed...
                             setTimeout(function() {
+
                                 that.lastViewport = that.grid.getViewport();
+                                console.log('viewport changed', that.lastViewport);
                                 that._resetDeleteRowListeners();
                             }, 300);
                             that.lastViewport = that.grid.getViewport();
@@ -264,21 +278,23 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
 
                         that.grid.onMouseEnter.subscribe(function(e) {
-                            var cell = that._checkCellFromEvent(e);
-                            if(!cell) return;
-                            var hl = that.module.data[cell.row]._highlight;
+                            var itemInfo = that._getItemInfoFromEvent(e);
+                            if(!itemInfo) return;
+
+
+                            var hl = itemInfo.item._highlight;
                             if(hl) {
                                 API.highlightId(hl,1);
                                 lastHighlight = hl;
                             }
-                            that.module.controller.onHover(cell.row);
+                            that.module.controller.onHover(itemInfo.idx, itemInfo.item);
 
                         });
 
                         that.grid.onMouseLeave.subscribe(function(e) {
-                            var cell = that._checkCellFromEvent(e);
-                            if(!cell) return;
-                            var hl = that.module.data[cell.row]._highlight;
+                            var itemInfo = that._getItemInfoFromEvent(e);
+                            if(!itemInfo) return;
+                            var hl = itemInfo.item._highlight;
                             if(hl) {
                                 API.highlightId(hl,0);
                             }
@@ -290,9 +306,10 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
                         that.grid.onClick.subscribe(function(e,args) {
                             var columns = that.grid.getColumns();
-                            if(!_.isUndefined(args.row)) {
+                            var itemInfo = that._getItemInfoFromRow(args.row);
+                            if(itemInfo) {
                                 if(columns[args.cell] && columns[args.cell].id !== 'rowDeletion') {
-                                    that.module.controller.onClick(args.row);
+                                    that.module.controller.onClick(itemInfo.idx, itemInfo.item);
                                 }
                             }
                         });
@@ -305,16 +322,21 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             if(that.module.getConfigurationCheckbox('slickCheck', 'resizeRerender')) {
                                 that.grid.invalidate();
                             }
-
                         });
 
                         that.grid.onCellChange.subscribe(function (e, args) {
-                            that.module.controller.onRowChange(args.row);
+                            var itemInfo = that._getItemInfoFromRow(args.row);
+                            if(itemInfo) {
+                                that.module.controller.onRowChange(itemInfo.idx, itemInfo.item);
+                            }
+
                         });
 
                         that.grid.onActiveCellChanged.subscribe(function(e, args) {
                             that.lastActiveCell = args.cell;
                             that.lastActiveRow = args.row;
+
+                            console.log('active row changed', args.row);
                         });
 
                         that.grid.onColumnsReordered.subscribe(function() {
@@ -336,37 +358,69 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             }
                         });
 
+                        //var sortjpath;
+                        //function comparer(a, b) {
+                        //    var x = a.get(sortjpath), y = b.get(sortjpath);
+                        //    return (x == y ? 0 : (x > y ? 1 : -1));
+                        //}
+                        //
+                        //that.grid.onSort.subscribe(function (e, args) {
+                        //    if(!args.multiColumnSort) {
+                        //        sortjpath = args.sortCol.jpath;
+                        //        // using native sort with comparer
+                        //        // can be very slow in IE with huge datasets
+                        //        that.slick.data.sort(comparer, args.sortAsc);
+                        //    }
+                        //    else {
+                        //        var cols = args.sortCols;
+                        //        that.slick.data.sort(function (dataRow1, dataRow2) {
+                        //            for (var i = 0, l = cols.length; i < l; i++) {
+                        //                var jpath = cols[i].sortCol.jpath;
+                        //                var sign = cols[i].sortAsc ? 1 : -1;
+                        //                var value1 = dataRow1.get(jpath), value2 = dataRow2.get(jpath);
+                        //                var result = (value1 == value2 ? 0 : (value1 > value2 ? 1 : -1)) * sign;
+                        //                if (result != 0) {
+                        //                    return result;
+                        //                }
+                        //            }
+                        //            return 0;
+                        //        });
+                        //    }
+                        //    grid.invalidate();
+                        //    grid.render();
+                        //
+                        //});
 
-
-                        that.slick.dataView.beginUpdate();
+                        that.slick.data.beginUpdate();
                         var ids = _.pluck(that.slick.columns, 'id');
                         var groupings = _.chain(that.module.getConfiguration('groupings'))
-                            .filter(function(val) {
-                                return val.getter && ids.indexOf(val.getter) > -1;
-                            })
                             .map(function(val) {
                                 return {
-                                    getter: val.getter.toLowerCase(),
+                                    getter: val.getter,
                                     formatter: function(g) {
                                         return val.groupName + ': ' + g.value + "  <span style='color:green'>(" + g.count + " items)</span>";
                                     },
-                                    aggregateCollapsed: true,
+                                    aggregateCollapsed: false,
                                     lazyTotalsCalculation: true
                                 }
                             }).value();
 
-                        if(groupings.length) that.slick.dataView.setGrouping(groupings);
+                        if(groupings.length) that.slick.data.setGrouping(groupings);
 
-                        that.slick.dataView.setItems(that.slick.data, 'id');
-                        that.slick.dataView.endUpdate();
+                        that.slick.data.setItems(that.module.data, that.idPropertyName);
+                        that.slick.data.endUpdate();
 
                         // get back state before last update
-                        if(!_.isUndefined(that.lastActiveRow)) {
-                                that.grid.setActiveCell(that.lastActiveRow, that.lastActiveCell);
-                        }
                         if(that.lastViewport) {
+                            console.log('last viewport', that.lastViewport);
                             that.grid.scrollRowToTop(that.lastViewport.top);
                         }
+                        if(!_.isUndefined(that.lastActiveRow)) {
+                            console.log('resetting last active row', that.lastActiveRow)
+                                that.grid.setActiveCell(that.lastActiveRow, that.lastActiveCell);
+                        }
+
+                        that.grid.render();
                         that._resetDeleteRowListeners();
                     });
             }
@@ -381,15 +435,17 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
         _resetDeleteRowListeners: function() {
             var that = this;
-            var $rb = that.$rb = $('a.recycle-bin');
+            var $rb = that.$rb = $('#'+that._id).find('a.recycle-bin');
             $rb.off('click');
             $rb.on('click', function(e) {
                 var columns = that.grid.getColumns();
                 var args = that._checkCellFromEvent(e);
                 that.lastViewport = that.grid.getViewport();
                 if(columns[args.cell] && columns[args.cell].id === 'rowDeletion') {
+                    console.log('row:', args.row);
                     // delete the row...
-                    that.module.data.splice(args.row, 1);
+                    var itemInfo = that._getItemInfoFromRow(args.row);
+                    that.module.data.splice(itemInfo.idx, 1);
                     that.module.data.triggerChange();
                 }
 
@@ -402,6 +458,31 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 return null;
             }
             return cell;
+        },
+
+        _getItemInfoFromEvent: function(e) {
+            var that = this;
+            var cell = this.grid.getCellFromEvent(e);
+            if(!cell) return null;
+            var id = that.slick.data.mapRowsToIds([cell.row])[0];
+            if(!id) return null;
+            return {
+                id: id,
+                idx: that.slick.data.getIdxById(id),
+                item: that.slick.data.getItemById(id)
+            };
+        },
+
+        _getItemInfoFromRow: function(row) {
+            var that = this;
+            if(_.isUndefined(row)) return null;
+            var id = that.slick.data.mapRowsToIds([row])[0];
+            if(!id) return null;
+            return {
+                id: id,
+                idx: that.slick.data.getIdxById(id),
+                item: that.slick.data.getItemById(id)
+            };
         },
 
         _drawHighlight: function(key) {
@@ -459,11 +540,15 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             })
         },
 
-        generateUniqIds: function(propertyName) {
-            propertyName = propertyName || 'sgid';
-            if(!this.slick.data) return;
-            for(var i=0; i<this.slick.data.length; i++) {
-                this.slick.data[i][propertyName] = 'id_' + i;
+        getNextIncrementalId: function() {
+            return this.incrementalId++;
+        },
+
+        generateUniqIds: function() {
+            if(!this.module.data) return;
+            for(var i=0; i<this.module.data.length; i++) {
+                this.module.data[i][this.idPropertyName] = 'id_' + this.incrementalId;
+                this.incrementalId++;
             }
         }
     });
