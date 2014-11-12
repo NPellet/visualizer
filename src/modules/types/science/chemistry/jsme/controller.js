@@ -126,7 +126,9 @@ define(['modules/default/defaultcontroller'], function (Default) {
     };
 
     Controller.prototype.onChange = function (mol, smiles, jme) {
+
         if(this.module.view._currentValue && this.module.getConfigurationCheckbox('outputResult', 'yes')) {
+
             if(this.module.view._currentValue.type === 'mol2d') {
                 this.module.view._currentValue.setValue(mol);
             }
@@ -135,6 +137,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
             }
             this.module.model.dataTriggerChange(this.module.view._currentValue);
         }
+
+
 
         // Always create smiles because smiles is not a possible input variable
         this.createDataFromEvent('onStructureChange', 'smiles', smiles);

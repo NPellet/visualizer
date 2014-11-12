@@ -95,27 +95,19 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
 
         update: {
             mol: function (moduleValue) {
-                if (!moduleValue || !moduleValue.get()) {
-                    this.postMessage('clear', '*');
-                    return;
-                }
-
-                this.postMessage('setMolFile', moduleValue.get());
-
                 this._currentValue = moduleValue;
                 this._currentType = 'mol';
+                if (!moduleValue.get()) return;
+
+                this.postMessage('setMolFile', moduleValue.get());
                 this._initHighlight(moduleValue);
             },
             jme: function (moduleValue) {
-                if (!moduleValue || !moduleValue.get()) {
-                    this.postMessage('clear', '*');
-                    return;
-                }
-
-                this.postMessage('setJmeFile', moduleValue.get());
-
                 this._currentValue = moduleValue;
                 this._currentType = 'jme';
+                if (!moduleValue.get()) return;
+
+                this.postMessage('setJmeFile', moduleValue.get());
                 this._initHighlight(moduleValue);
             }
         },
