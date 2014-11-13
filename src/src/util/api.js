@@ -260,6 +260,29 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
         ActionManager.execute(name, value);
     };
 
+    var cache = {};
+
+    /**
+     * Cache a value in memory or retrieve it. The value can be retrieved anywhere API is available
+     * @param {string} name - Name of the cached value
+     * @param {*} [value] - New value to set
+     * @returns {*} The cached value or undefined if used as a setter
+     */
+    exports.cache = function cacheHandler(name, value) {
+        if (arguments.length === 1) {
+            return cache[name];
+        } else {
+            cache[name] = value;
+        }
+    };
+
+    /**
+     * Set the cache to an empty object
+     */
+    exports.cache.empty = function emptyCache() {
+        cache = {};
+    };
+
     return exports;
 
 });
