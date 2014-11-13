@@ -60,6 +60,7 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                 if(!useGetUserMedia || !self.module.getConfigurationCheckbox('getusermedia', 'yes')) $fileInput.click();
                 else {
                     confirm($('<video id="video"></video><button id="startbutton">Take photo</button><canvas id="canvas"></canvas>')).then(function(value) {
+                        if(!value) return;
                         if(value) {
                             self.module.controller.openPhoto(value);
                         }
@@ -92,12 +93,10 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                 e.preventDefault();
                 self.messageP.html(self.messages.hover);
                 self.dom.addClass('dragdrop-over');
-                console.log('mouse enter');
             });
 
             dom.addEventListener('dragenter', function (e) {
                 dragCount++;
-                console.log('drag count: ', dragCount);
                 e.stopPropagation();
                 e.preventDefault();
                 if(dragCount === 1) {
@@ -114,7 +113,6 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
 
             dom.addEventListener('dragleave', function (e) {
                 dragCount--;
-                console.log('drag count: ', dragCount);
                 e.stopPropagation();
                 e.preventDefault();
                 if(!dragCount) {
@@ -129,7 +127,6 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                 e.preventDefault();
                 self.messageP.html(self.messages.default);
                 self.dom.removeClass('dragdrop-over');
-                console.log('mouse leave');
             });
 
             dom.addEventListener('drop', function (e) {
@@ -245,6 +242,9 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                     }
                 },
                 close: function() {
+                    if(!stream) {
+                        return resolve(false);
+                    }
                     stream.stop();
                     return resolve(imgData);
                 },
