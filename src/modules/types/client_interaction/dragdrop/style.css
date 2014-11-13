@@ -14,8 +14,9 @@
     box-sizing: border-box;
     text-align: center;
     display: table-cell;
+    vertical-align: middle;
 }
 
 .dragdrop-over {
-    background-color: rgba(100, 242, 100, 0.2) !important;
+    background-color: rgba(231, 242, 196, 0.2);
 }

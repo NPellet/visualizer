@@ -47,7 +47,8 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                 drag: this.module.getConfiguration('dragoverlabel') || defaultMessage,
                 hover: this.module.getConfiguration('hoverlabel') || defaultMessage
             };
-            this.dom = $('<div />', { class: 'dragdropzone' }).html(this.messages.default).on("click mousemove", function () {
+            this.messageP = $('<div>').css('display', 'inline-block').html(this.messages.default);
+            this.dom = $('<div />', { class: 'dragdropzone' }).html(this.messageP).on("click mousemove", function () {
                 textarea.focus();
             }).mouseout(function () {
                 textarea.blur();
@@ -59,7 +60,6 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                 if(!useGetUserMedia || !self.module.getConfigurationCheckbox('getusermedia', 'yes')) $fileInput.click();
                 else {
                     confirm($('<video id="video"></video><button id="startbutton">Take photo</button><canvas id="canvas"></canvas>')).then(function(value) {
-                        if(!value) return;
                         if(value) {
                             self.module.controller.openPhoto(value);
                         }
@@ -81,20 +81,30 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
         inDom: function () {
 
             var self = this,
-                dom = this.dom.parent().get(0);
+                dom = this.dom.get(0);
 
+            // We use a drag count to circumvent the fact that
+            // The dragleave event is fired when entering a child element
+            // See http://stackoverflow.com/q/7110353/1247233
+            var dragCount = 0;
             dom.addEventListener('mouseenter', function (e) {
                 e.stopPropagation();
                 e.preventDefault();
-                self.dom.html(self.messages.hover);
-                self.dom.addClass('mouse-over');
+                self.messageP.html(self.messages.hover);
+                self.dom.addClass('dragdrop-over');
+                console.log('mouse enter');
             });
 
             dom.addEventListener('dragenter', function (e) {
+                dragCount++;
+                console.log('drag count: ', dragCount);
                 e.stopPropagation();
                 e.preventDefault();
-                self.dom.html(self.messages.drag);
-                self.dom.addClass('dragdrop-over');
+                if(dragCount === 1) {
+                    self.messageP.html(self.messages.drag);
+                    self.dom.addClass('dragdrop-over');
+                }
+
             });
 
             dom.addEventListener('dragover', function (e) {
@@ -103,23 +113,29 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
             });
 
             dom.addEventListener('dragleave', function (e) {
+                dragCount--;
+                console.log('drag count: ', dragCount);
                 e.stopPropagation();
                 e.preventDefault();
-                self.dom.html(self.messages.default);
-                self.dom.removeClass('dragdrop-over');
+                if(!dragCount) {
+                    self.messageP.html(self.messages.default);
+                    self.dom.removeClass('dragdrop-over');
+                }
+
             });
 
             dom.addEventListener('mouseleave', function (e) {
                 e.stopPropagation();
                 e.preventDefault();
-                self.dom.html(self.messages.default);
-                self.dom.removeClass('mouse-over');
+                self.messageP.html(self.messages.default);
+                self.dom.removeClass('dragdrop-over');
+                console.log('mouse leave');
             });
 
             dom.addEventListener('drop', function (e) {
+                dragCount = 0;
                 e.stopPropagation();
                 e.preventDefault();
-                self.dom.removeClass('dragdrop-over');
                 self.module.controller.open(e.dataTransfer);
             });
 
@@ -229,9 +245,6 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                     }
                 },
                 close: function() {
-                    if(!stream) {
-                        return resolve(false);
-                    }
                     stream.stop();
                     return resolve(imgData);
                 },
