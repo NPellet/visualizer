@@ -393,7 +393,12 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
                         that.slick.data.beginUpdate();
                         var ids = _.pluck(that.slick.columns, 'id');
+
                         var groupings = _.chain(that.module.getConfiguration('groupings'))
+                            .filter(function(val) {
+                                if (val && val.groupName && val.getter) return true;
+                                return false;
+                            })
                             .map(function(val) {
                                 return {
                                     getter: val.getter,
