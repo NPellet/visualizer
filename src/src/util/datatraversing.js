@@ -271,7 +271,7 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 
 
 			var type = element.getType();
-			//element = element.get();
+			element = element.get();
 
 			if( type == "array") {
 
