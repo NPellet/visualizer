@@ -43,7 +43,8 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
     Controller.prototype.variablesIn = [ 'vartrigger', 'url' ];
 
     Controller.prototype.actionsIn = {
-        doSearch: 'Trigger search'
+        doSearch: 'Trigger search',
+        buttonColor: 'Change button color'
     };
 
     Controller.prototype.configurationStructure = function () {

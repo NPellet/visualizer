@@ -189,6 +189,11 @@ define(['modules/default/defaultview'], function (Default) {
         onActionReceive: {
             doSearch: function () {
                 this.module.controller.doSearch();
+            },
+            buttonColor: function (newColor) {
+                if (this.buttonInst) {
+                    this.buttonInst.setColor(newColor);
+                }
             }
         },
 
