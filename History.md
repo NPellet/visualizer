@@ -1,6 +1,9 @@
-2.8.4
+HEAD
 ===================
 * Slickgrid: row numbering overlay. Selected Row & Cell highlighting. Added DataNumber and DataBoolean edition.
+* button_action : add option to disable toggle
+* datas : fix several issues with DataObject
+* add API.cache
 
 2.8.0 / 2014-11-10
 ===================
