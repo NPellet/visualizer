@@ -15,7 +15,8 @@ define(['jquery',
     'src/util/pouchtovar',
     'src/util/debug',
     'src/util/browser',
-    'src/util/util'
+    'src/util/util',
+    'src/util/urldata'
 ], function ($,
              Header,
              Repository,
@@ -31,7 +32,8 @@ define(['jquery',
              PouchDBUtil,
              Debug,
              browser,
-             Util) {
+             Util,
+             UrlData) {
 
     var _viewLoaded, _dataLoaded;
 
@@ -192,37 +194,39 @@ define(['jquery',
 
             // Entry point variables
             API.loading("Fetching remote variables");
-            var entryVar;
             var fetching = [];
             for (var i = 0, l = view.variables.length; i < l; i++) {
-                entryVar = view.traceSync(['variables', i]);
-                if (entryVar.varname) {
-                    // Defined by an URL
-                    if (entryVar.url) {
+                (function (i) {
+                    var entryVar = view.traceSync(['variables', i]);
+                    if (entryVar.varname) {
+                        // Defined by an URL
+                        if (entryVar.url) {
 
-                        fetching.push(entryVar.fetch(true).then(function (v) {
-                            var varname = v.varname;
-                            data[varname] = v.value;
+                            fetching.push(UrlData.get(entryVar.url, {
+                                Accept: 'application/json'
+                            }).then(function (v) {
+                                var varname = entryVar.varname;
+                                data.setChild([varname], v, true);
+                                API.setVariable(varname, false, [varname]);
+                            }));
 
-                            API.setVariable(varname, false, [varname]);
-                        }));
+                        } else if (!entryVar.jpath) {
 
-                    } else if (!entryVar.jpath) {
+                            // If there is no jpath, we assume the variable is an object and we add it in the data stack
+                            // Note: if that's not an object, we will have a problem...
+                            API.createData(name, false);
 
-                        // If there is no jpath, we assume the variable is an object and we add it in the data stack
-                        // Note: if that's not an object, we will have a problem...
-                        API.createData(name, false);
+                        } else {
 
-                    } else {
+                            if (typeof entryVar.jpath === "string") {
+                                entryVar.jpath = entryVar.jpath.split('.');
+                                entryVar.jpath.shift();
+                            }
 
-                        if (typeof entryVar.jpath === "string") {
-                            entryVar.jpath = entryVar.jpath.split('.');
-                            entryVar.jpath.shift();
+                            API.setVariable(entryVar.varname, false, entryVar.jpath);
                         }
-
-                        API.setVariable(entryVar.varname, false, entryVar.jpath);
                     }
-                }
+                })(i);
             }
 
             Promise.all(fetching).then(function () {
