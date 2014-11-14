@@ -23,6 +23,7 @@ define(['require', 'jquery', 'forms/title'], function(require, $, title) {
 */
 
 		this.options = options || {};
+		this.color = this.options.color;
 		// Store button in the stack
 		stack[this.id] = this;
 	};
@@ -46,6 +47,7 @@ define(['require', 'jquery', 'forms/title'], function(require, $, title) {
 			this.onclick = func;
 		},
 		setColor: function(color) {
+			this.oldColor = this.color;
 			this.color = color;
 			this.applyStyle();
 		},
@@ -76,8 +78,9 @@ define(['require', 'jquery', 'forms/title'], function(require, $, title) {
 				return;
 			}
 
-			if( this.options.color ) {
-				this.dom.addClass(this.options.color);
+			if( this.color ) {
+				this.dom.removeClass(this.oldColor);
+				this.dom.addClass(this.color);
 			}
 
 			if( this.options.disabled ) {
