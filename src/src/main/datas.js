@@ -699,22 +699,22 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
             var el = from[i];
             if (typeof el === 'object') {
                 if (el instanceof Array) {
-                    to[i] = el;
+                    to.set(i, el, true);
                 }
                 else if (el !== null) {
-                    if (!to[i])
-                        to[i] = {};
-                    merge(to[i], el);
+                    if (!to.get(i))
+                        to.set(i, new DataObject(), true);
+                    merge(to.get(i), el);
                 }
             } else {
-                to[i] = el;
+                to.set(i, el, true);
             }
         }
     }
 
     var mergeWithObject = {
         value: function (objectToMerge, moduleId, noBubble) {
-            if ((typeof (objectToMerge) !== 'object') || (objectToMerge instanceof Array))
+            if ((typeof (objectToMerge) !== 'object') || (objectToMerge instanceof Array) || (objectToMerge == null ))
                 return;
             merge(this, objectToMerge);
             this.triggerChange(noBubble, [moduleId]);
