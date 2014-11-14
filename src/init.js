@@ -23,7 +23,6 @@ requirejs.config({
         bowser:             'components/bowser/bowser.min',
         'jquery-cookie':    'components/jquery-cookie/jquery.cookie',
         chemcalc:           'components/chemcalc/lib',
-		actelion:           'http://www.lactame.com/lib/actelion/1.2.0/actelion'
 	},
 	shim: {
 		d3: {
