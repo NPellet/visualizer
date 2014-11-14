@@ -544,6 +544,13 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
                 }
             }
 
+            if (this.type && this.url && this.hasOwnProperty('value')) {
+                delete this.url;
+                Object.defineProperty(this, 'value', {
+                    enumerable: true
+                });
+            }
+
             if (!this.__parent) {
                 return;
             }
@@ -586,6 +593,13 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
                 for (var i in this._dataChange) {
                     this._dataChange[i].apply(this, args);
                 }
+            }
+
+            if (this.type && this.url && this.hasOwnProperty('value')) {
+                delete this.url;
+                Object.defineProperty(this, 'value', {
+                    enumerable: true
+                });
             }
 
             if (noBubble) {
@@ -677,7 +691,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
                         Object.defineProperty(self, 'value', {// Sets the value to the object
                             enumerable: self._keep || false, // If this._keep is true, then we will save the fetched data
                             writable: true,
-                            configurable: false,
+                            configurable: true,
                             value: data
                         });
 
