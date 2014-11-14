@@ -36,7 +36,7 @@ define(['jquery', 'jquery-ui', 'src/header/components/default', './couchshare/sh
                                     var description = $("#"+uniqid+"-description").val();
                                     var json = {
                                         title: title,
-                                        body: description+"\n\nTestcase: "+tinyUrl
+                                        body: description+"\n\nTestcase: "+tinyUrl+"\nOriginal URL: "+document.location.href
                                     };
                                     $.ajax({
                                         type: "POST",
