@@ -1,128 +1,85 @@
-define(['modules/default/defaultcontroller','src/util/datatraversing'], function(Default,Traversing) {
-	
+'use strict';
 
-	/**
-	 * Creates a new empty controller
-	 * @class Controller
-	 * @name Controller
-	 * @constructor
-	 */
-	function controller() { };
-
-	// Extends the default properties of the default controller
-	controller.prototype = $.extend( true, {}, Default );
+define(['modules/default/defaultcontroller'], function (Default) {
 
 
-	/*
-		Information about the module
-	*/
-	controller.prototype.moduleInformation = {
-		moduleName: 'Button action',
-		description: 'Shows a button that will trigger a text action',
-		author: 'Norman Pellet',
-		date: '24.12.2013',
-		license: 'MIT',
-		cssClass: 'button_action'
-	};
-	
+    function Controller() {
+    }
 
+    Controller.prototype = $.extend(true, {}, Default);
 
-	/*
-		Configuration of the input/output references of the module
-	*/
-	controller.prototype.references = {
-		
-		'actionText': {
-			label: 'The action text to send',
-			type: 'string'
-		}
-	};
+    Controller.prototype.moduleInformation = {
+        moduleName: 'Button action',
+        description: 'Shows a button that will trigger a text action',
+        author: 'Norman Pellet',
+        date: '24.12.2013',
+        license: 'MIT',
+        cssClass: 'button_action'
+    };
 
+    Controller.prototype.references = {
+        actionText: {
+            label: 'The action text to send',
+            type: 'string'
+        }
+    };
 
-	/*
-		Configuration of the module for sending events, as a static object
-	*/
-	controller.prototype.events = {
+    Controller.prototype.events = {
+        onToggleOn: {
+            label: 'Button is toggled on',
+            refAction: ['actionText']
+        },
+        onToggleOff: {
+            label: 'Button is toggled off',
+            refAction: ['actionText']
+        },
+        onClick: {
+            label: 'Button is clicked',
+            refAction: ['actionText']
+        }
+    };
 
-		// List of all possible events
-		'onToggleOn': {
-			label: 'Button is toggled on',
-			refAction: [ 'actionText' ]
-		},
+    Controller.prototype.onClick = function (on) {
+        var text = this.module.getConfiguration('text');
+        this.sendAction('actionText', text, 'onClick');
+        this.sendAction('actionText', text, (on ? 'onToggleOn' : 'onToggleOff'));
+    };
 
-		'onToggleOff': {
-			label: 'Button is toggled off',
-			refAction: [ 'actionText' ]
-		},
+    Controller.prototype.configurationStructure = function () {
+        return {
+            groups: {
+                group: {
+                    options: {
+                        type: 'list'
+                    },
+                    fields: {
+                        label: {
+                            type: 'text',
+                            title: 'Button label',
+                            'default': 'Action'
+                        },
+                        text: {
+                            type: 'text',
+                            title: 'Action text to send'
+                        },
+                        toggle: {
+                            type: 'combo',
+                            title: 'Button type',
+                            'default': 'toggle',
+                            options: [{key: 'click', title: 'Click'}, {key: 'toggle', title: 'Toggle'}]
+                        }
+                    }
+                }
+            }
+        };
+    };
 
-		'onClick': {
-			label: 'Button is clicked',
-			refAction: [ 'actionText' ]
-		}
-	};
-	
+    Controller.prototype.configAliases = {
+        label: ['groups', 'group', 0, 'label', 0],
+        text: ['groups', 'group', 0, 'text', 0],
+        toggle: ['groups', 'group', 0, 'toggle', 0]
+    };
 
-	/*
-		Configuration of the module for receiving events, as a static object
-		In the form of 
-	*/
-	controller.prototype.variablesIn = [ ];
+    return Controller;
 
-
-	/*
-		Received actions
-	*/
-	controller.prototype.actionsIn = {
-	};
-	
-		
-	/**
-	 *	Triggered when the button is clicked
-	 *
-	 *	@param {Boolean} on Button state
-	 */
-	controller.prototype.onClick = function( on ) {
-
-		var text = this.module.getConfiguration( 'text' );
-		this.sendAction('actionText', text, 'onClick');
-		this.sendAction('actionText', text, (on ? 'onToggleOn' : 'onToggleOff'));
-	};
-		
-
-	controller.prototype.configurationStructure = function(section) {
-		
-		return {
-
-			groups: {
-
-				group: {
-
-					options: {
-						type: 'list'
-					},
-
-					fields: {
-
-						label: {
-							type: 'text',								
-							title: 'Button label',
-							default: 'Action'
-						},
-
-						text: {
-							type: 'text',
-							title: 'Action text to send'
-						}
-					}
-				}
-			}
-		};
-	};
-		
-	controller.prototype.configAliases = {
-		'label': [ 'groups', 'group', 0, 'label', 0 ],
-		'text': [ 'groups', 'group', 0, 'text', 0 ]
-	};
-
-	return controller;
 });
