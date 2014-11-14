@@ -58,7 +58,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
         update: {
             inputValue: function (value) {
                 this.inputObj = value;
-                this.inputVal = value.resurrect();
+                this.inputVal = value.get().resurrect();
                 this.renderForm();
             },
             schema: function (value) {
