@@ -19,7 +19,6 @@ requirejs.config({
 		uri:                'components/uri.js/src',
 		underscore:         'components/underscore/underscore',
         lodash:             'components/lodash/dist/lodash.min',
-		leaflet:            'components/leaflet/dist/leaflet',
         modernizr:          'components/modernizr/modernizr',
         bowser:             'components/bowser/bowser.min',
         'jquery-cookie':    'components/jquery-cookie/jquery.cookie',
@@ -34,12 +33,6 @@ requirejs.config({
 		},
 		'components/x2js/xml2json.min': {
 			exports: 'X2JS'
-		},
-		leaflet: {
-			exports: 'L',
-			init: function() {
-				return this.L.noConflict();
-			}
 		},
 		'components/jit/Jit/jit': {
 			exports: '$jit'

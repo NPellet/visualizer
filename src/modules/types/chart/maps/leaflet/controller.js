@@ -1,15 +1,13 @@
-define(['modules/default/defaultcontroller','src/util/api'], function(Default,API) {
+'use strict';
 
-    function controller() {
-        
+define(['modules/default/defaultcontroller', 'src/util/api'], function (Default, API) {
+
+    function Controller() {
     }
 
-    controller.prototype = $.extend(true, {}, Default);
+    Controller.prototype = $.extend(true, {}, Default);
 
-    /*
-     Information about the module
-     */
-    controller.prototype.moduleInformation = {
+    Controller.prototype.moduleInformation = {
         moduleName: 'Leaflet map',
         description: 'Display a map with objects in it',
         author: 'Michaeël Zasso',
@@ -17,76 +15,57 @@ define(['modules/default/defaultcontroller','src/util/api'], function(Default,AP
         license: 'MIT'
     };
 
-
-
-    /*
-     Configuration of the input/output references of the module
-     */
-    controller.prototype.references = {
-        "geojson": {
+    Controller.prototype.references = {
+        geojson: {
             type: 'geojson',
             label: 'A GeoJSON object'
         },
-        "viewport": {
+        viewport: {
             type: 'geojson',
             label: 'Current map view'
         },
-        "position": {
-            label : 'Geo coordinates',
+        position: {
+            label: 'Geo coordinates',
             type: 'array'
         },
-        "zoom" : {
-            label : 'Zoom level',
-            type : 'number'
+        zoom: {
+            label: 'Zoom level',
+            type: 'number'
         },
-        "item" : {
-            label : "Object on the map",
-            type : "object"
+        item: {
+            label: 'Object on the map',
+            type: 'object'
         }
     };
 
-
-    /*
-     Configuration of the module for sending events, as a static object
-     */
-    controller.prototype.events = {
-        onMapMove : {
+    Controller.prototype.events = {
+        onMapMove: {
             label: 'The map has moved',
-            refAction: [ 'position' ],
+            refAction: ['position'],
             refVariable: ['viewport']
         },
-        onZoomChange : {
-            label : 'The zoom level has changed',
+        onZoomChange: {
+            label: 'The zoom level has changed',
             refAction: ['zoom']
         },
-        onHoverElement : {
-            label : 'Hovers an object',
-            refVariable : ['item']
+        onHoverElement: {
+            label: 'Hovers an object',
+            refVariable: ['item']
         },
-        onClickElement : {
-            label : 'Click an object',
-            refVariable : ['item']
+        onClickElement: {
+            label: 'Click an object',
+            refVariable: ['item']
         }
     };
 
+    Controller.prototype.variablesIn = ['geojson', 'position'];
 
-    /*
-     Configuration of the module for receiving events, as a static object
-     In the form of 
-     */
-    controller.prototype.variablesIn = ['geojson','position'];
-
-    /*
-     Received actions
-     */
-    controller.prototype.actionsIn = {
-        position : "Move the map",
-        zoom : "Change zoom"
+    Controller.prototype.actionsIn = {
+        position: 'Move the map',
+        zoom: 'Change zoom'
     };
 
-
-    controller.prototype.configurationStructure = function() {
-
+    Controller.prototype.configurationStructure = function () {
         return {
             groups: {
                 group: {
@@ -99,8 +78,8 @@ define(['modules/default/defaultcontroller','src/util/api'], function(Default,AP
                             type: 'combo',
                             title: 'Base tile source',
                             options: [
-                                {title: "OpenStreetMap", key: 'osm'},
-                                {title: "HikeBike", key: 'hb'}
+                                {title: 'OpenStreetMap', key: 'osm'},
+                                {title: 'HikeBike', key: 'hb'}
                             ],
                             default: 'osm'
                         },
@@ -134,9 +113,9 @@ define(['modules/default/defaultcontroller','src/util/api'], function(Default,AP
                             type: 'combo',
                             title: 'Default marker kind',
                             options: [
-                                {title: "Square", key: 'square'},
-                                {title: "Circle", key: 'circle'},
-                                {title: "Image", key: 'image'}
+                                {title: 'Square', key: 'square'},
+                                {title: 'Circle', key: 'circle'},
+                                {title: 'Image', key: 'image'}
                             ],
                             'default': 'image'
                         },
@@ -156,72 +135,73 @@ define(['modules/default/defaultcontroller','src/util/api'], function(Default,AP
         };
     };
 
-    controller.prototype.configFunctions = {
-        'mapcenter': function(cfg) {
-            var split = cfg.split(",");
+    Controller.prototype.configFunctions = {
+        mapcenter: function (cfg) {
+            var split = cfg.split(',');
             return [parseFloat(split[0]), parseFloat(split[1])];
         }
     };
 
-    controller.prototype.configAliases = {
+    Controller.prototype.configAliases = {
         mapcenter: ['groups', 'group', 0, 'mapcenter', 0],
-        mapzoom : ['groups', 'group', 0, 'mapzoom', 0],
-        maptiles : ['groups', 'group', 0, 'maptiles', 0],
-        markerjpath : ['groups', 'markers', 0, 'markerjpath', 0],
-        markerkind : ['groups', 'markers', 0, 'markerkind', 0],
-        markercolor : ['groups', 'markers', 0, 'markercolor', 0],
-        markersize : ['groups', 'markers', 0, 'markersize', 0]
+        mapzoom: ['groups', 'group', 0, 'mapzoom', 0],
+        maptiles: ['groups', 'group', 0, 'maptiles', 0],
+        markerjpath: ['groups', 'markers', 0, 'markerjpath', 0],
+        markerkind: ['groups', 'markers', 0, 'markerkind', 0],
+        markercolor: ['groups', 'markers', 0, 'markercolor', 0],
+        markersize: ['groups', 'markers', 0, 'markersize', 0]
     };
-    
-    controller.prototype.hoverElement = function(data) {
+
+    Controller.prototype.hoverElement = function (data) {
         this.createDataFromEvent('onHoverElement', 'item', data);
         API.highlight(data, 1);
     };
-    
-    controller.prototype.clickElement = function(data) {
+
+    Controller.prototype.clickElement = function (data) {
         this.createDataFromEvent('onClickElement', 'item', data);
     };
-    
-    controller.prototype.moveAction = function(){
-        
+
+    Controller.prototype.moveAction = function () {
         var center = this.map.getCenter();
 
-        this.module.controller.sendAction('position', [center.lat,center.lng] ,'onMapMove');
-        
+        this.module.controller.sendAction('position', [center.lat, center.lng], 'onMapMove');
+
         boundUpdate.call(this);
     };
-    
-    controller.prototype.zoomAction = function() {
-        
+
+    Controller.prototype.zoomAction = function () {
         this.module.controller.sendAction('zoom', this.map.getZoom(), 'onZoomChange');
-        
+
         boundUpdate.call(this);
     };
-    
+
     function boundUpdate() {
         var map = this.map;
-        this.module.controller.setVarFromEvent('onMapMove', function() {
+        this.module.controller.setVarFromEvent('onMapMove', function () {
             var bounds = map.getBounds();
             var arr = new Array(4);
-        
+
             arr[0] = getGeoCoords(bounds.getSouthWest());
             arr[1] = getGeoCoords(bounds.getNorthWest());
             arr[2] = getGeoCoords(bounds.getNorthEast());
             arr[3] = getGeoCoords(bounds.getSouthEast());
 
             return new DataObject({
-                type: "geojson",
-                value: {type:"Feature",geometry:{
-                    type: "Polygon",
-                    coordinates: [arr]}
+                type: 'geojson',
+                value: {
+                    type: 'Feature', geometry: {
+                        type: 'Polygon',
+                        coordinates: [arr]
+                    }
                 }
             });
         }, 'viewport');
     }
-    
+
     function getGeoCoords(latLng) { // return coordinates in geojson order
-        return [latLng.lng,latLng.lat];
+        return [latLng.lng, latLng.lat];
     }
 
-    return controller;
+    return Controller;
+
 });
