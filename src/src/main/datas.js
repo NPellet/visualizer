@@ -290,34 +290,37 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 		}
 	};
 
-    var dataSetter = {
-        value: function(prop, value, noTrigger) {
+	var dataSetter = {
+		value: function (prop, value, noTrigger) {
 
-            var valueTyped = DataObject.check( value, true );
+			var valueTyped = DataObject.check(value, true);
+			var self = this.get();
 
-            if(!valueTyped) {
-                this[ prop ] = valueTyped;
-            } else {
-                var type = valueTyped.getType();
+			if (!valueTyped) {
+				self[prop] = valueTyped;
+			} else {
+				var type = valueTyped.getType();
 
-                this[ prop ] = DataObject.check( this[ prop ] );
+				self[prop] = DataObject.check(self[prop]);
 
-                var typeNow = this[ prop ] != undefined && this[ prop ].getType ? this[ prop ].getType() : undefined;
+				var typeNow = self[prop] != undefined && self[prop].getType ? self[prop].getType() : undefined;
 
-                if( typeNow !== type ) {
-                    this[ prop ] = valueTyped;
-                } else if (isSpecialNativeObject(this) || isTypedObject(this)) {
-                    this[ prop ].setValue(valueTyped.get(), noTrigger);
-                } else if( valueTyped !== this[ prop ] ) {
-                    this[ prop ] = valueTyped;
-                }
-            }
-            if (!noTrigger) {
-                this.triggerChange(false, []);
-            }
-            return this[ prop ];
-        }
-    };
+				if (typeNow !== type) {
+					self[prop] = valueTyped;
+				} else if (isSpecialNativeObject(self[prop]) || isTypedObject(self[prop])) {
+					self[prop].linkToParent(this, prop);
+					self[prop].setValue(valueTyped.get(), noTrigger);
+					noTrigger = true;
+				} else if (valueTyped !== self[prop]) {
+					self[prop] = valueTyped;
+				}
+			}
+			if (!noTrigger) {
+				this.triggerChange(false, []);
+			}
+			return self[prop];
+		}
+	};
 
 
     var getChild = {
@@ -383,65 +386,37 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 
 	var traceSync = {
 		value: function (jpath) {
-
-			if (jpath && jpath.split) {
-				jpath = jpath.split('.');
-				jpath.shift();
-			}
-
-			if (!jpath || jpath.length === 0) {
-				return this;
-			}
-
-			jpath = jpath.slice();
-
-			var el = jpath.shift();
-
-			var subEl = this.get(el, false);
-
-			if (typeof subEl !== 'undefined') {
-				this.get()[el] = DataObject.check(subEl, true);
-				if (subEl && subEl.linkToParent) {
-					subEl.linkToParent(this, el);
-				}
-				if (!subEl || (jpath.length === 0)) {
-					return subEl;
-				}
-				return subEl.traceSync(jpath);
-			}
-
-			return subEl;
-
+			return this.getChildSync(jpath, true);
 		}
 	};
 
 	var getChildSync = {
-		value: function(jpath, setParents) {
+		value: function (jpath, setParents) {
 
-            if (typeof jpath === 'string') { // Old version
-                jpath = jpath.split('.');
-                jpath.shift();
-            }
+			if (typeof jpath === 'string') { // Old version
+				jpath = jpath.split('.');
+				jpath.shift();
+			}
 
 			if (!jpath) {
 				return;
 			}
-			
+
 			jpath = jpath.slice();
 
-			var el = jpath.shift( ); // Gets the current element and removes it from the array
-			var subEl = this.get( el );
+			var el = jpath.shift(); // Gets the current element and removes it from the array
+			var subEl = this.get(el);
 
-			if( subEl === null ) {
+			if (subEl == null) {
 				return;
 			}
 
-			if( jpath.length === 0 ) {
-				return subEl;
+			if (setParents) {
+				subEl.linkToParent(this, el);
 			}
 
-			if( subEl === undefined ) {
-				return undefined;
+			if (jpath.length === 0) {
+				return subEl;
 			}
 
 			return subEl.getChildSync(jpath, setParents);
@@ -449,16 +424,24 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 	};
 
 	var linkToParent = {
-		value: function(parent, name) {
+		value: function (parent, name) {
 
 			if (this.__parent) {
 				return;
 			}
 
-			parent[ name ] = this;
-
-			Object.defineProperty(this, '__parent', {value: parent, writable: false, configurable: false, enumerable: false});
-			Object.defineProperty(this, '__name', {value: name, writable: false, configurable: false, enumerable: false});
+			Object.defineProperty(this, '__parent', {
+				value: parent,
+				writable: false,
+				configurable: false,
+				enumerable: false
+			});
+			Object.defineProperty(this, '__name', {
+				value: name,
+				writable: false,
+				configurable: false,
+				enumerable: false
+			});
 		}
 	};
 
@@ -671,40 +654,40 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 	};
 
 	var fetch = {
-		value: function(forceJson) {
+		value: function (forceJson) {
 
-			if (!this.url || !this.type) { // No need for fetching. Still returning a promise, though.
+			if (!this.url || !this.type || this.hasOwnProperty('value')) { // No need for fetching. Still returning a promise, though.
 				return Promise.resolve(this);
 			}
 
-            var self = this;
-            return new Promise(function (resolve, reject) {
-                require(['src/util/urldata'], function (urlData) { // We don't know yet if URLData has been loaded
+			var self = this;
+			return new Promise(function (resolve, reject) {
+				require(['src/util/urldata'], function (urlData) { // We don't know yet if URLData has been loaded
 
-                    var headers;
-                    if (forceJson) {
-                        headers = {
-                            Accept: "application/json"
-                        };
-                    }
+					var headers;
+					if (forceJson) {
+						headers = {
+							Accept: "application/json"
+						};
+					}
 
-                    urlData.get(self.url, false, self.timeout, headers).then(function (data) {
+					urlData.get(self.url, false, self.timeout, headers).then(function (data) {
 
-                        data = DataObject.check(data, true);	// Transform the input into a DataObject
+						data = DataObject.check(data, true);	// Transform the input into a DataObject
 
-                        Object.defineProperty(self, 'value', {// Sets the value to the object
-                            enumerable: self._keep || false, // If this._keep is true, then we will save the fetched data
-                            writable: true,
-                            configurable: false,
-                            value: data
-                        });
+						Object.defineProperty(self, 'value', {// Sets the value to the object
+							enumerable: self._keep || false, // If this._keep is true, then we will save the fetched data
+							writable: true,
+							configurable: false,
+							value: data
+						});
 
-                        resolve(self);
-                    }, function (err) {
-                        Debug.debug('Could not fetch '+self.url+' ('+err+')');
-                    });
-                });
-            });
+						resolve(self);
+					}, function (err) {
+						Debug.debug('Could not fetch ' + self.url + ' (' + err + ')');
+					});
+				});
+			});
 		}
 	};
 	/*
@@ -803,6 +786,14 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 			}
 		}
 	};
+
+	var getChildSyncNative = {
+		value: function (jpath) {
+			if (!jpath || jpath.length === 0) {
+				return this;
+			}
+		}
+	};
 	
 	var setValueNative = {
 		value: function(value, noTrigger) {
@@ -829,6 +820,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 		get: nativeGetter,
 		resurrect: nativeGetter,
 		getChild: getChildNative,
+		getChildSync: getChildSyncNative,
 		valueOf: nativeGetter,
 		setValue: setValueNative,
 		toString: nativeToString
