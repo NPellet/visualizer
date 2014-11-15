@@ -1138,7 +1138,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
         
         getConfigurationCheckbox: function(aliasName, optionName) {
             var conf = this.getConfiguration(aliasName);
-            if(!(conf instanceof Array)) {
+            if(!Array.isArray(conf)) {
                 return undefined;
             }
             

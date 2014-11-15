@@ -243,7 +243,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                 this.updateVisibility();
             },
             showList: function (value) {
-                if (!(value instanceof Array)) {
+                if (!Array.isArray(value)) {
                     return;
                 }
 

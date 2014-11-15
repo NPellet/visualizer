@@ -53,7 +53,7 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
             },
             columns: function (value) {
 
-                if (!(value instanceof Array))
+                if (!Array.isArray(value))
                     return;
 
                 var i;

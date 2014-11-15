@@ -24,7 +24,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
 
             return object;
 
-        } else if (object instanceof Array) {
+        } else if (Array.isArray(object)) {
 
             object.__proto__ = DataArray.prototype;
             return object;
@@ -56,7 +56,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
         object = DataObject.check(object, transformNatives);
         var i, l;
 
-        if (object instanceof Array) {
+        if (Array.isArray(object)) {
 
             for (i = 0, l = object.length; i < l; i++) {
                 object[i] = DataObject.check(object[i], transformNatives);
@@ -92,7 +92,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
 
             return transformNative(object);
 
-        } else if (object instanceof Array) {
+        } else if (Array.isArray(object)) {
 
             l = object.length;
             target = new Array(l);
@@ -179,7 +179,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
     function DataArray(arr, recursive, forceCopy) {
         var newArr = [];
         if (arr) {
-            if (!(arr instanceof Array))
+            if (!Array.isArray(arr))
                 throw 'DataArray can only be constructed from arrays';
             for (var i = 0, l = arr.length; i < l; i++) {
                 if (recursive) {
@@ -658,7 +658,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
             var type = typeof this;
             if (type !== 'object') // Native types: number, string, boolean
                 return type;
-            if (this instanceof Array)
+            if (Array.isArray(this))
                 return 'array';
             if (isTypedObject(this))
                 return this.type;
@@ -712,7 +712,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
         for (var i in from) {
             var el = from[i];
             if (typeof el === 'object') {
-                if (el instanceof Array) {
+                if (Array.isArray(el)) {
                     to.set(i, el, true);
                 }
                 else if (el !== null) {
@@ -728,7 +728,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
 
     var mergeWithObject = {
         value: function (objectToMerge, moduleId, noBubble) {
-            if ((typeof (objectToMerge) !== 'object') || (objectToMerge instanceof Array) || (objectToMerge == null ))
+            if ((typeof (objectToMerge) !== 'object') || Array.isArray(objectToMerge) || (objectToMerge == null ))
                 return;
             merge(this, objectToMerge);
             this.triggerChange(noBubble, [moduleId]);

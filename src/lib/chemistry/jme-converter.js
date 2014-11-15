@@ -164,7 +164,7 @@ define(function() {
 			var valence = parseInt(line.substr(48, 3).trim());
 			var newAtom;
 
-			if (newLabels instanceof Array && newLabels[i - 4]) {
+			if (Array.isArray(newLabels) && newLabels[i - 4]) {
 				newAtom = newLabels[i - 4];
 			} else {
 				newAtom = getJmeAtom(atom, massDifference, charge);

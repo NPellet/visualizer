@@ -5,7 +5,7 @@ define(['jquery', 'src/util/event'], function($, Event) {
 	var bindKeysRecursively = function(repository, keys, callbackId, add) {
 
 		for(var i = 0, l = keys.length; i < l; i++) {
-			if(keys[i] instanceof Array) {
+			if(Array.isArray(keys[i])) {
 				bindKeysRecursively(repository, keys[i], callbackId, add)
 				continue;
 			}
@@ -37,7 +37,7 @@ define(['jquery', 'src/util/event'], function($, Event) {
 		var i = 0, l, set2el, set3 = [];	
 		for(i = 0, l = set2.length; i < l; i++) {
 			set2el = set2[i];
-			if(set2el instanceof Array)
+			if(Array.isArray(set2el))
 				set2el = compareKeysRecursively(set1, set2el, !or);
 			if(!set1[set2el] && !or)
 				return null;
@@ -60,7 +60,7 @@ define(['jquery', 'src/util/event'], function($, Event) {
 
 			var callbacks = {};
 			this._keys = this._keys || [];
-			sourcekeys = sourcekeys instanceof Array ? sourcekeys : [sourcekeys];
+			sourcekeys = Array.isArray(sourcekeys) ? sourcekeys : [sourcekeys];
 
 			for(var i = 0; i < sourcekeys.length; i++) {
 				if(this._keys[sourcekeys[i]] == undefined)
@@ -97,7 +97,7 @@ define(['jquery', 'src/util/event'], function($, Event) {
 
 	Repository.prototype.set = function(keys, value, noTrigger) {
 		
-		if(!(keys instanceof Array))
+		if(!Array.isArray(keys))
 			keys = [keys];
 		else if(!keys.length)
 			keys = [];
@@ -119,7 +119,7 @@ define(['jquery', 'src/util/event'], function($, Event) {
 		this._keys = this._keys || {};
 		this._callbacks = this._callbacks || [];
 
-		if(!(keys instanceof Array)) {
+		if(!Array.isArray(keys)) {
 			keys = [keys];
 		}
 		

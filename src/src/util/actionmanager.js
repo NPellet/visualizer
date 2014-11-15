@@ -104,7 +104,7 @@ define(['require'], function( require ) {
 					switch( event.data.method ) {
 
 						case 'getVar':
-							if( ! ( event.data.variables instanceof Array ) ) {
+							if( ! Array.isArray(event.data.variables) ) {
 								return;
 							}
 

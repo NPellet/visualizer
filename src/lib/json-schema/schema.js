@@ -8,7 +8,7 @@ define(function(){
 					schema.type = "string";
 					break;
 				}
-                if(object instanceof Array) {
+                if(Array.isArray(object)) {
                     schema.type = "array";
                     if(object.length) {
                         schema.items = generate_schema_from_object(object[0]);

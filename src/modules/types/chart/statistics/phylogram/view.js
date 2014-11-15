@@ -29,7 +29,7 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.phylogram', '
             if (currentNode.id) {
                 this._idHash[currentNode.id] = currentNode;
             }
-            if (currentNode.children instanceof Array) {
+            if (Array.isArray(currentNode.children)) {
                 for (var i = 0; i < currentNode.children.length; i++) {
                     this.getIdHash(currentNode.children[i]);
                 }

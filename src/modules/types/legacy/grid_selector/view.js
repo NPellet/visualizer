@@ -116,7 +116,7 @@ define(['modules/default/defaultview','src/util/util'], function(Default, Util) 
 		changeSelectors: function(colId, values) {
 			var self = this;
 			var dom = this.dom.children('table').find('td[data-colid="' + colId + '"][data-lineid]');
-			if(values instanceof Array) {
+			if(Array.isArray(values)) {
 				var el = dom.find('.ci-rangebar').slider('values', values);
 				el.each(function() {
 					self.sliderUpdateValue($(this), values, colId, $(this).data('lineid'))

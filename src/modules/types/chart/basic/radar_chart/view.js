@@ -117,7 +117,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 		_convertChartToData: function(value) {
 			var data=[];
-			if (value && value.data instanceof Array) {
+			if (value && Array.isArray(value.data)) {
 				for (var j = 0; j < value.data[0].x.length; j++) 
 				{
 					data[j] = {};

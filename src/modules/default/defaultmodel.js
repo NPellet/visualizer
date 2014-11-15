@@ -227,7 +227,7 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
 				return data;
 			}
 
-			if( ! ( sourceTypes instanceof Array ) ) {
+			if( ! Array.isArray( sourceTypes ) ) {
 				sourceTypes = [ sourceTypes ]; 
 			}
 

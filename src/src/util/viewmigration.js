@@ -257,7 +257,7 @@ define(['src/util/versioning', 'src/util/debug', 'src/util/util'], function (Ver
         if (view.modules) {
             if (typeof(moduleNames) === 'string') {
                 moduleNames = [moduleNames];
-            } else if (!(moduleNames instanceof Array)) {
+            } else if (!Array.isArray(moduleNames)) {
                 moduleNames = [''];
             }
             var i = 0, ii = view.modules.length, module, url;

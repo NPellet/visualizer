@@ -172,7 +172,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 			// When we got it !
 			return $.when(toOpen).pipe(function(toOpen) {
 				// It's still an object
-				if(!(toOpen instanceof Array))
+				if(!Array.isArray(toOpen))
 					return self.objectToMenu(toOpen, level, self.currentPath[level - 1] || null, self.currentPath[level - 2] || null);
 				else
 					return self.arrayToMenu(toOpen, level, self.currentPath[level - 1] || null, self.currentPath[level - 2] || null);

@@ -102,7 +102,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
 
     Controller.prototype.configFunctions = {
         searchfields: function (cfg) {
-            if (!( cfg instanceof Array )) {
+            if (!Array.isArray( cfg )) {
                 return [];
             }
             return cfg;

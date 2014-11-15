@@ -103,7 +103,7 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 		
 		var type = typeof element;
 		if(type == 'object') {
-			if(element instanceof Array)
+			if(Array.isArray(element))
 				return "array";
 			if(Structures[element.type] && (element.value || element.url))
 				return element.type;
@@ -209,7 +209,7 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 					case 'array':
 
 						// Array which length is nown => Then it's an object type
-						if(! ( structure.elements instanceof Array ) ) {
+						if(!Array.isArray(structure.elements)) {
 							structure.elements = [ structure.elements ];
 						}
 						

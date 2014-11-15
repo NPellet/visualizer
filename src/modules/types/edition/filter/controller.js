@@ -104,7 +104,7 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator' ], 
 		
 	controller.prototype.configFunctions = {
 		varsout: function( cfg ) {
-			if( ! ( cfg instanceof Array ) ) {
+			if( ! Array.isArray( cfg ) ) {
 				return [];
 			}
 			return cfg;
@@ -119,7 +119,7 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator' ], 
 		},
 
 		filters: function( cfg ) {
-			if( ! ( cfg instanceof Array ) ) {
+			if( ! Array.isArray( cfg ) ) {
 				return [];
 			}
 			return cfg;

@@ -50,7 +50,7 @@ define(['jquery', 'modules/module', 'src/util/debug'], function($, Module, Debug
 			$.getJSON(require.toUrl(folder+"/folder.json")).then(function(folderContent){
 				result.name = folderContent.name;
 				result.modules = folderContent.modules;
-				if(folderContent.folders && (folderContent.folders instanceof Array)) {
+				if(folderContent.folders && Array.isArray(folderContent.folders)) {
 					var defs = [];
 					for(var i = 0; i < folderContent.folders.length; i++) {
 						defs.push(getSubFoldersFrom(folder+"/"+folderContent.folders[i]));
@@ -82,11 +82,11 @@ define(['jquery', 'modules/module', 'src/util/debug'], function($, Module, Debug
 		},
 		setModules: function(list) {
 
-			if (list instanceof Array) { // backwards compatibility
+			if (Array.isArray(list)) { // backwards compatibility
 				return this.oldSetModules(list);
 			}
 
-			if (list.folders instanceof Array) { // folders to retreive
+			if (Array.isArray(list.folders)) { // folders to retreive
 				var finalList = {};
 
 				if (list.modules) {
@@ -121,7 +121,7 @@ define(['jquery', 'modules/module', 'src/util/debug'], function($, Module, Debug
 			var i = 0,
 					l;
 
-			if (!(list instanceof Array)) {
+			if (!Array.isArray(list)) {
 				allModules = list;
 				return;
 			}

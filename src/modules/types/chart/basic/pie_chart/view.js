@@ -113,7 +113,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		_convertChartToData: function(value) {
 			this._data = [];
 			var self=this;
-			if ( ! value.data instanceof Array || ! value.data[0] || ! value.data[0].y instanceof Array) return;
+			if ( ! Array.isArray(value.data) || ! value.data[0] || ! Array.isArray(value.data[0].y)) return;
 			if (value.data.length>0) {
 				console.log("Pie Chart module can only display the first serie of data")
 			}
@@ -124,14 +124,14 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				this._data[i] = {
 					data: y[i]
 				}
-				if (highlight instanceof Array && highlight.length>i) {
-					if (highlight[i] instanceof Array) {
+				if (Array.isArray(highlight) && highlight.length>i) {
+					if (Array.isArray(highlight[i])) {
 						this._data[i]._highlight=highlight[i];
 					} else {
 						this._data[i]._highlight=[highlight[i]];
 					}
 				}
-				if (infos instanceof Array && infos.length>i) {
+				if (Array.isArray(infos) && infos.length>i) {
 					// Data can be retrieved async so to fetch an information from the "info" object we need this strange code
 					Traversing.getValueFromJPath(infos[i],"element.name").done(function(elVal) {
 						self._data[i].label=elVal;

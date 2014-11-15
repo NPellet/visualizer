@@ -57,7 +57,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			if (currentNode.id) {
 				this._idHash[currentNode.id]=currentNode;
 			}
-			if (currentNode.children instanceof Array) {
+			if (Array.isArray(currentNode.children)) {
 				for (var i=0; i<currentNode.children.length; i++) {
 					this.getIdHash(currentNode.children[i]);
 				}

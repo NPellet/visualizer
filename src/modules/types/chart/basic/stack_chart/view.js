@@ -112,7 +112,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			this._data = [];
 			var self=this;
 			self._data = this._data;
-			if ( ! value instanceof Array || ! value || ! value.x instanceof Array) return;
+			if ( ! Array.isArray(value) || ! value || ! Array.isArray(value.x)) return;
 			
 			for (var j = 0; j < value.length; j++) 
 			{
@@ -159,7 +159,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			ymax = axis[1].max;
 			xmin = axis[0].min;
 			ymin = axis[1].min;
-			if(x instanceof Array)
+			if(Array.isArray(x))
 			{
 			u = [];
 			for(i=0;i<x.length;i++)
@@ -168,7 +168,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			}
 			xunit = u;
 			}
-			if(axis[1].unit instanceof Array)
+			if(Array.isArray(axis[1].unit))
 			{
 			u = [];
 			for(i=0;i<axis[1].unit.length;i++)

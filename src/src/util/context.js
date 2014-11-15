@@ -7,7 +7,7 @@ define(['jquery', 'src/util/api', 'modules/modulefactory'], function($, API, Mod
     return {
 
         listen: function(dom, elements, onBeforeShow, onAfterShow) {
-            if(!(elements[0] instanceof Array))
+            if(!Array.isArray(elements[0]))
                 elements = [elements];
 
             dom.addEventListener('contextmenu', function(e) {

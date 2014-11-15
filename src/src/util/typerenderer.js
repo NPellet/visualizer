@@ -557,7 +557,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 	};
     functions.indicator.toscreen = function(def, value) {
 		
-        if(!(value instanceof Array))
+        if(!Array.isArray(value))
         	def.reject('');
         var html = '<table cellpadding="0" cellspacing="0" style="text-align: center; height:100%; width:100%"><tr>';
 

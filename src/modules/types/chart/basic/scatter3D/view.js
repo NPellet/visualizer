@@ -1596,7 +1596,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
     
     _convertData3dToData: function(value) {
       var self = this;
-      if(! value instanceof Array || value.length === 0) {
+      if(! Array.isArray(value) || value.length === 0) {
         console.error('Data 3D not valid');
       }
       self._data = {};
@@ -1624,14 +1624,14 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			this._data = {};
       this._meta = {};
 			var self=this;
-			if ( ! value.data instanceof Array || ! value.data[0] || ! value.data[0].y instanceof Array) return;
+			if ( ! Array.isArray(value.data) || ! value.data[0] || ! Array.isArray(value.data[0].y)) return;
 			if (value.data.length>0) {
 				console.log("Scatter 3D module will merge series together");
 			}
       
       for(var j=0; j<value.data.length; j++) {
         _.keys(value.data[j]).forEach(function(key){
-          if(value.data[j][key] instanceof Array) {
+          if(Array.isArray(value.data[j][key])) {
             self._data[key] = self._data[key] || [];
             self._data[key].push(value.data[j][key]);
             self._data[key] = _.flatten(self._data[key], true);

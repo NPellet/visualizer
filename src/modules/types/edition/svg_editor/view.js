@@ -179,7 +179,7 @@ define([
                 var id = $svgEl.attr('id');
                 anim.tag = anim.tag || 'animate';
                 if(animationTags.indexOf(anim.tag) === -1) return;
-                if(!(anim.attributes instanceof Array)) {
+                if(!Array.isArray(anim.attributes)) {
                     anim.attributes = [anim.attributes];
                 }
                 anim = _.defaults(anim, defaultAnimAttributes);
@@ -261,7 +261,7 @@ define([
             addAnimations: function($svgEl, animation) {
                 // First, remove all animations
                 // $svgEl.find(animationTags.join(',')).remove();
-                if(animation instanceof Array) {
+                if(Array.isArray(animation)) {
                     for(var i=0; i<animation.length; i++) {
                         this.addAnimation($svgEl, animation[i]);
                     }
@@ -299,7 +299,7 @@ define([
                 var self = this;
 
                 // Convert to array if necessary
-                if(!(arr instanceof Array)) {
+                if(!Array.isArray(arr)) {
                     arr = [arr];
                 }
                 // if(isPrimaryCall) {

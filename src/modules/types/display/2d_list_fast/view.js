@@ -40,7 +40,7 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer', 'src/util/api' 
 			list: function( moduleValue ) {
 
 				this.defs = [];
-				if(!(moduleValue instanceof Array)) {
+				if(!Array.isArray(moduleValue)) {
 					return;
 				}
 
@@ -93,7 +93,7 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer', 'src/util/api' 
 			},
 			
 			showList: function( value ) {
-				if(!(value instanceof Array)) {
+				if(!Array.isArray(value)) {
 					return;
 				}
 				
