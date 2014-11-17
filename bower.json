@@ -48,6 +48,7 @@
     "underscore": "~1.7.0",
     "uri.js": "~1.13.2",
     "x2js": "*",
-    "alpaca": "*"
+    "alpaca": "*",
+    "setImmediate": "YuzuJS/setImmediate#~1.0.2"
   }
 }

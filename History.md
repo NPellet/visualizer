@@ -5,6 +5,7 @@ HEAD
 * datas : fix several issues with DataObject
 * add API.cache
 * webservice_search : add action to change button color
+* add setImmediate and clearImmediate
 
 2.8.0 / 2014-11-10
 ===================

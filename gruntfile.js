@@ -98,7 +98,8 @@ module.exports = function (grunt) {
                             './slickgrid/**',
                             './ml/dist/*',
                             './alpaca/**',
-                            './jquery-tmpl/**'
+                            './jquery-tmpl/**',
+                            './setImmediate/setImmediate.js'
                         ],
 
                         dest: './build/components/'
