@@ -1,41 +1,39 @@
-define(['jquery', 'src/header/components/default', 'src/util/versioning'], function($, Default, Versioning, Button, Util) {
+'use strict';
 
+define(['jquery', 'src/header/components/default', 'src/util/versioning'], function ($, Default, Versioning) {
 
-	var Element = function() {};
-	$.extend(Element.prototype, Default, {
+    function Element() {
+    }
 
-		initImpl: function() {
-			this.viewHandler = Versioning.getViewHandler();
-		},
+    $.extend(Element.prototype, Default, {
 
-		_onClick: function() { // Overwrite usual onclick which loads a list / loads views/datas
-			
-			if(this._open) {
-				this.open();
-			} else {
-				this.close();
-			}
-		},
+        initImpl: function () {
+            this.viewHandler = Versioning.getViewHandler();
+        },
 
-		open: function() {
+        _onClick: function () { // Overwrite usual onclick which loads a list / loads views/datas
+            var self = this;
+            clearTimeout(this.timeout);
+            self.$_dom.css({color: '#000'});
+            self.viewHandler.serverPush(Versioning.getView()).then(function () {
+                self.$_dom.css({color: '#357535'});
+                self.returnToBlack();
+            }, function () {
+                self.$_dom.css({color: '#872A2A'});
+                self.returnToBlack();
+            });
+        },
 
-			var self = this;
-			self.$_dom.css({ color: '' });
-			console.log( Versioning.getView() );
-			self.viewHandler.serverPush(Versioning.getView()).then(function() {
+        returnToBlack: function () {
+            var self = this;
+            this.timeout = setTimeout(function () {
+                self.$_dom.animate({
+                    color: '#000'
+                }, 500);
+            }, 500);
+        }
 
-				self.$_dom.css({ color: '#357535' });
-			}, function() {
-				self.$_dom.css({ color: '#872A2A' });
-			});
-		},
+    });
 
-		close: function() {
-			window.clearTimeout(this.interval);
-			this.$_dom.css({ color: '' });
-			//this.$_dom.removeClass('toggledOn');
-		}
-	});
-
-	return Element;
+    return Element;
 });
