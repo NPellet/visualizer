@@ -758,12 +758,15 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
     };
 
     var setValue = {
-        value: function (newValue) {
+        value: function (newValue, noTrigger) {
             if (this.hasOwnProperty('type') && this.hasOwnProperty('value')) {
                 if (this.value instanceof DataString || this.value instanceof DataNumber || this.value instanceof DataBoolean) {
-                    this.value.setValue(newValue);
+                    this.value.setValue(newValue, noTrigger);
                 } else {
                     this.value = newValue;
+                    if (!noTrigger) {
+                        this.triggerChange(false, []);
+                    }
                 }
             } else {
                 Debug.warn('Cannot set value of untyped DataObject');
