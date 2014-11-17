@@ -302,7 +302,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
             } else {
                 var type = valueTyped.getType();
 
-                self[prop] = DataObject.check(self[prop]);
+                self[prop] = DataObject.check(self[prop], true);
 
                 var typeNow = self[prop] != undefined && self[prop].getType ? self[prop].getType() : undefined;
 
