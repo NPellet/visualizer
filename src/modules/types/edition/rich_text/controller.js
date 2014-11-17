@@ -29,7 +29,11 @@ define(['modules/default/defaultcontroller'], function(Default) {
 
     Controller.prototype.variablesIn = [ 'html' ];
 
-
+    Controller.prototype.onRemove = function() {
+        if (CKEDITOR.instances[this.module.view._id]) {
+            CKEDITOR.instances[this.module.view._id].destroy();
+        }
+    };
 
     Controller.prototype.valueChanged = function(value) {
         this.module.definition.richtext = value;
