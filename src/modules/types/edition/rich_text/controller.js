@@ -58,6 +58,22 @@ define(['modules/default/defaultController'], function(Default) {
                             title: 'Modify Input Variable',
                             options: {yes: 'Yes'},
                             default: []
+                        },
+                        autoHeight: {
+                            type: 'checkbox',
+                            title: 'Automatic Height',
+                            options: {yes: 'Yes'},
+                            default: []
+                        },
+                        bgColor: {
+                            type: 'spectrum',
+                            title: 'Background color'
+                        },
+                        postit: {
+                            type: 'checkbox',
+                            title: 'Looks like a postit',
+                            options: {yes: 'Yes'},
+                            default: []
                         }
                     }
                 }
@@ -67,7 +83,9 @@ define(['modules/default/defaultController'], function(Default) {
 
 	Controller.prototype.configAliases = {
         'editable': [ 'groups', 'group', 0, 'editable', 0 ],
-        'modifyInVariable': [ 'groups', 'group', 0, 'modifyInVariable', 0 ]
+        'modifyInVariable': [ 'groups', 'group', 0, 'modifyInVariable', 0 ],
+        'autoHeight': [ 'groups', 'group', 0, 'autoHeight', 0 ],
+        'bgColor': [ 'groups', 'group', 0, 'bgColor', 0 ]
 	};
 
     return Controller;

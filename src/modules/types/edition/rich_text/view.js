@@ -3,8 +3,9 @@ define([
     'src/util/util',
     'ckeditor',
     'lodash',
-    'src/util/typerenderer'
-    ], function(Default, Util, CKEDITOR, _, Renderer) {
+    'src/util/typerenderer',
+    'src/main/grid'
+    ], function(Default, Util, CKEDITOR, _, Renderer, Grid) {
 
     function View() {
         this._id = Util.getNextUniqueId();
@@ -47,7 +48,8 @@ define([
                 });
             }
             else {
-                this.dom = $(' <div id="'+this._id+'" contenteditable="true">');
+                var bgColor = this.module.getConfiguration('backgroundColor');
+                this.dom = $(' <div id="'+this._id+'" contenteditable="true">').css('background-color', 'white');
                 this._setCss();
                 this.dom.html(initText);
                 this.module.getDomContent().html(this.dom);
@@ -61,12 +63,25 @@ define([
                 });
                 this.instance.on("change",function(){
                     self.module.controller.valueChanged(self.instance.getData());
+                    if(self.module.getConfigurationCheckbox('autoHeight', 'yes')) {
+                        self.module.getDomWrapper().height(self.getContentHeight() + 70);
+                        Grid.moduleResize(self.module);
+                    }
+
                 });
             }
         },
 
         updateEditor: function(html) {
             this.instance.setData(html);
+        },
+
+        getContentHeight: function() {
+            var height = 0;
+            this.dom.children().each(function() {
+                height += $(this).height();
+            });
+            return height;
         },
         
         _setCss: function() {
