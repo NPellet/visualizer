@@ -48,8 +48,8 @@ define([
                 });
             }
             else {
-                var bgColor = this.module.getConfiguration('backgroundColor');
-                this.dom = $(' <div id="'+this._id+'" contenteditable="true">').css('background-color', 'white');
+                var bgColor = this.module.getConfiguration('bgColor');
+                this.dom = $(' <div id="'+this._id+'" contenteditable="true">').css('background-color', 'rgba(' + bgColor.join(',') + ')');
                 this._setCss();
                 this.dom.html(initText);
                 this.module.getDomContent().html(this.dom);

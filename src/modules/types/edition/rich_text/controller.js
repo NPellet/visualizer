@@ -67,7 +67,8 @@ define(['modules/default/defaultController'], function(Default) {
                         },
                         bgColor: {
                             type: 'spectrum',
-                            title: 'Background color'
+                            title: 'Background color',
+                            default: [255,255,255,1]
                         },
                         postit: {
                             type: 'checkbox',
