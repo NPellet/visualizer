@@ -132,6 +132,10 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
         this.s_ = String(s);
     }
 
+    DataString.cast = function (value) {
+        return String(value);
+    };
+
     var StringProperties = ['charAt', 'charCodeAt', 'concat', 'fromCharCode', 'indexOf', 'lastIndexOf', 'localCompare',
         'match', 'replace', 'search', 'slice', 'split', 'substr', 'substring', 'toLocaleLowerCase', 'toLocaleUpperCase',
         'toLowerCase', 'toUpperCase', 'trim'];
@@ -156,6 +160,10 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
         this.s_ = Number(s);
     }
 
+    DataNumber.cast = function (value) {
+        return Number(value);
+    };
+
     DataNumber.prototype.getType = function () {
         return 'number';
     };
@@ -165,6 +173,13 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
     function DataBoolean(s) {
         this.s_ = Boolean(s);
     }
+
+    DataBoolean.cast = function (value) {
+        if (value instanceof DataBoolean) {
+            return value.s_;
+        }
+        return Boolean(value);
+    };
 
     DataBoolean.prototype.getType = function () {
         return 'boolean';
