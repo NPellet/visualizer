@@ -179,6 +179,15 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
     exports.getVar = exports.getVariable;
 
     /**
+     * Get the DataObject associated to a variable
+     * @param {string} varName - Name of the variable
+     * @returns {*} - DataObject or undefined
+     */
+    exports.getData = function getData(varName) {
+        return exports.getVariable(varName).getData();
+    };
+
+    /**
      * Change the state of a highlight
      * @param {object|array} element - Object with a _highlight property or array of highlight IDs
      * @param {boolean} onOff
