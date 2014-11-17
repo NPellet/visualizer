@@ -552,42 +552,28 @@ div.ci-module-wrapper.ci-module-jqgrid .ci-module-content .ui-jqgrid tr.ui-state
 }
 
 .header-button-list li {
-	color: #c0c0c0;
-}
-
-.header-button-list li:hover {
-	color: #c0c0c0;
+	cursor: default;
+	font-weight: bold;
+	color: #666;
 }
 
 .header-button-list li.hasEvent {
 	cursor: pointer;
+	font-weight: 500;
+	color: #444;
 }
 
 .header-button-list > li {
 	font-size: 15px;
 }
 
-.header-button-list > li.hasEvent {
-	color: #333333;
-}
-
 .header-button-list > ul > li {
 	font-size: 13px;
-}
-
-.header-button-list > ul > li.hasEvent {
-	color: #555555;
 }
 
 .header-button-list > ul > ul > li {
 	font-size: 12px;
 }
-
-
-.header-button-list > ul > ul > li.hasEvent {
-	color: #888888;
-}
-
 
 .ci-module-export textarea {
 	width: 100%;
