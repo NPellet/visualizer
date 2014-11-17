@@ -84,7 +84,7 @@ define(['require', 'jquery', 'src/util/versioning'], function (require, $, Versi
             if (this.ul)
                 this.ul.empty();
 
-            this.ul = this.ul || $('<ul />').appendTo(this.dom);
+            this.ul = this.ul || $('<ul class="noselect" />').appendTo(this.dom);
             var i = 0, l = elements.length;
             for (; i < l; i++) {
                 this.ul.append(elements[i].getDom());

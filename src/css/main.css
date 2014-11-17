@@ -1036,3 +1036,10 @@ li.safari {
     background: url('../bin/logo/safari.png') left center no-repeat;
 }
 
+.noselect {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
