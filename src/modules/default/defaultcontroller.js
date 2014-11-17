@@ -1,6 +1,6 @@
 'use strict';
 
-define(['src/util/api'], function (API) {
+define(['src/util/api', 'src/util/util'], function (API, Util) {
 
     return {
 
@@ -16,8 +16,7 @@ define(['src/util/api'], function (API) {
             this.resolveReady();
         },
 
-        inDom: function () {
-        },
+        inDom: Util.noop,
 
         sendAction: function (rel, value, event) {
 
@@ -124,8 +123,7 @@ define(['src/util/api'], function (API) {
             }
         },
 
-        'export': function () {
-        },
+        'export': Util.noop,
 
         print: function () {
             return this.module.getDomContent()[0].innerHTML;
@@ -148,7 +146,13 @@ define(['src/util/api'], function (API) {
 
         resolveReady: function () {
             this.module._resolveController();
-        }
+        },
+
+        onBeforeRemove: function () {
+            return true;
+        },
+
+        onRemove: Util.noop
 
     };
 
