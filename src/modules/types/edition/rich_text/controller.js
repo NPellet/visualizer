@@ -1,4 +1,4 @@
-define(['modules/default/defaultController'], function(Default) {
+define(['modules/default/defaultcontroller'], function(Default) {
 
     function Controller() {
     }
@@ -86,7 +86,8 @@ define(['modules/default/defaultController'], function(Default) {
         'editable': [ 'groups', 'group', 0, 'editable', 0 ],
         'modifyInVariable': [ 'groups', 'group', 0, 'modifyInVariable', 0 ],
         'autoHeight': [ 'groups', 'group', 0, 'autoHeight', 0 ],
-        'bgColor': [ 'groups', 'group', 0, 'bgColor', 0 ]
+        'bgColor': [ 'groups', 'group', 0, 'bgColor', 0 ],
+        'postit': [ 'groups', 'group', 0, 'postit', 0 ]
 	};
 
     return Controller;
