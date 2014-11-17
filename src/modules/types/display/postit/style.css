@@ -57,7 +57,7 @@
   background: -ms-radial-gradient(center, ellipse cover, #f4f39e 0%,#f2f079 100%); /* IE10+ */
   background: radial-gradient(ellipse at center, #f4f39e 0%,#f2f079 100%); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f4f39e', endColorstr='#f2f079',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
-     
+
   margin-top: 20px;
 }
 

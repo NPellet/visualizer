@@ -4,8 +4,9 @@ define([
     'ckeditor',
     'lodash',
     'src/util/typerenderer',
-    'src/main/grid'
-    ], function(Default, Util, CKEDITOR, _, Renderer, Grid) {
+    'src/main/grid',
+    'components/chroma-js/chroma'
+    ], function(Default, Util, CKEDITOR, _, Renderer, Grid, chroma) {
 
     function View() {
         this._id = Util.getNextUniqueId();
@@ -92,17 +93,27 @@ define([
                 height: '100%',
                 width: '100%',
                 padding: "5px",
-                boxSizing: "border-box",
-                'background-color': 'rgba(' + bgColor.join(',') + ')'
+                boxSizing: "border-box"
             });
 
             if(this.module.getConfigurationCheckbox('postit', 'yes')) {
-                this.dom.addClass('postit');
-                this.dom.parents('.ci-module-wrapper').addClass('ci-module-postit');
+                var ch = chroma(bgColor[0], bgColor[1], bgColor[2]);
+                this.dom.addClass('richtext-postit');
+                this.dom.parents('.ci-module-wrapper').addClass('ci-module-richtext-postit');
+                this.dom.css({
+                    background: Util.getCssVendorPrefix() + 'radial-gradient(center, ellipse cover, ' + ch.brighter().hex() + ' 0%, ' + ch.hex() + ' 100%)'
+                    //background: 'radial-gradient(ellipse at center, ' + ch.brighter().hex() + ' 0%,' + ch.hex() + ' 100%)',
+                })
             }
             else {
-                this.dom.removeClass('postit');
-                this.dom.parents('.ci-module-wrapper').removeClass('ci-module-postit');
+                this.dom.css({
+                    background: ''
+                });
+                this.dom.css({
+                    'background-color': 'rgba(' + bgColor.join(',') + ')'
+                });
+                this.dom.removeClass('richtext-postit');
+                this.dom.parents('.ci-module-wrapper').removeClass('ci-module-richtext-postit');
             }
         }
     });

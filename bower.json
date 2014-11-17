@@ -49,6 +49,7 @@
     "uri.js": "~1.13.2",
     "x2js": "*",
     "alpaca": "*",
-    "setImmediate": "YuzuJS/setImmediate#~1.0.2"
+    "setImmediate": "YuzuJS/setImmediate#~1.0.2",
+    "chroma-js": "~0.6.1"
   }
 }
