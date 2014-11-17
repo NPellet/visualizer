@@ -251,6 +251,8 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
      Received actions
      */
     controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {
+        hoverRow: 'Mimic hover row',
+        selectRow: 'Mimic select row',
         addRow: 'Add a new row',
         addColumn: 'Add a new column',
         removeColumn: 'Remove a column',

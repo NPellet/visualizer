@@ -555,6 +555,44 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 this.module.data[i][this.idPropertyName] = 'id_' + this.incrementalId;
                 this.incrementalId++;
             }
+        },
+
+        onActionReceive: {
+            hoverRow: function(row) {
+                // row can be the row itself or the array's index
+                var item;
+                if(_.isNumber(row) || row instanceof DataNumber) {
+                    item = this.module.data[row];
+                }
+                else {
+                    item = row;
+                }
+
+                if(item && item[this.idPropertyName]) {
+                    var gridRow = this.slick.data.mapIdsToRows([row[this.idPropertyName]])[0];
+                    var dataIdx = this.slick.data.getIdxById(item[this.idPropertyName]);
+                    this.module.controller.onHover(dataIdx, item);
+                    this.grid.scrollRowToTop(gridRow);
+                }
+            },
+
+            selectRow: function(row) {
+                var item;
+                if(_.isNumber(row) || row instanceof DataNumber) {
+                    item = this.module.data[row];
+                }
+                else {
+                    item = row;
+                }
+
+                if(item && item[this.idPropertyName]) {
+                    var gridRow = this.slick.data.mapIdsToRows([row[this.idPropertyName]])[0];
+                    var dataIdx = this.slick.data.getIdxById(item[this.idPropertyName]);
+                    this.module.controller.onClick(dataIdx, item);
+                    this.grid.scrollRowToTop(gridRow);
+                    this.grid.setActiveCell(gridRow, 0);
+                }
+            }
         }
     });
 
