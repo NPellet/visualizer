@@ -24,7 +24,8 @@ define([
                 this.module.data = moduleValue;
 
                 this.module.definition.richtext = moduleValue.get();
-                this.initEditor();
+                //this.initEditor();
+                this.updateEditor(moduleValue.get());
             }
         },
 
@@ -56,12 +57,16 @@ define([
             if(this.module.getConfigurationCheckbox('editable', 'isEditable')) {
                 CKEDITOR.disableAutoInline = true;
                 this.instance = CKEDITOR.inline(this._id, {
-                    extraPlugins:"mathjax"
+                    extraPlugins:"mathjax,smiley"
                 });
                 this.instance.on("change",function(){
                     self.module.controller.valueChanged(self.instance.getData());
                 });
             }
+        },
+
+        updateEditor: function(html) {
+            this.instance.setData(html);
         },
         
         _setCss: function() {

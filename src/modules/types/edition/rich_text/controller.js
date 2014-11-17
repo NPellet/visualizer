@@ -31,7 +31,7 @@ define(['modules/default/defaultController'], function(Default) {
 
     Controller.prototype.valueChanged = function(value) {
         this.module.definition.richtext = value;
-        if(this.module.getConfigurationCheckbox('modifyInVariable', 'yes')) {
+        if(this.module.getConfigurationCheckbox('modifyInVariable', 'yes') && this.module.data) {
             this.module.data.setValue(value);
             this.module.model.dataTriggerChange(this.module.data);
         }
