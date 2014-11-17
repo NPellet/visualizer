@@ -570,7 +570,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 }
 
                 if(item && item[this.idPropertyName]) {
-                    var gridRow = this.slick.data.mapIdsToRows([row[this.idPropertyName]])[0];
+                    var gridRow = this.slick.data.mapIdsToRows([item[this.idPropertyName]])[0];
                     var dataIdx = this.slick.data.getIdxById(item[this.idPropertyName]);
                     this.module.controller.onHover(dataIdx, item);
                     this.grid.scrollRowToTop(gridRow);
@@ -587,7 +587,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 }
 
                 if(item && item[this.idPropertyName]) {
-                    var gridRow = this.slick.data.mapIdsToRows([row[this.idPropertyName]])[0];
+                    var gridRow = this.slick.data.mapIdsToRows([item[this.idPropertyName]])[0];
                     var dataIdx = this.slick.data.getIdxById(item[this.idPropertyName]);
                     this.module.controller.onClick(dataIdx, item);
                     this.grid.scrollRowToTop(gridRow);
