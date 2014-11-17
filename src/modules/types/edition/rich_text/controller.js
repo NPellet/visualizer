@@ -27,8 +27,14 @@ define(['modules/default/defaultController'], function(Default) {
         }
     };
 
+    Controller.prototype.variablesIn = [ 'html' ];
+
     Controller.prototype.valueChanged = function(value) {
         this.module.definition.richtext = value;
+        if(this.module.getConfigurationCheckbox('modifyInVariable', 'yes')) {
+            this.module.data.setValue(value);
+            this.module.model.dataTriggerChange(this.module.data);
+        }
         this.createDataFromEvent("onEditorChange", "html", DataObject.check({type:"html", value: value}, true));
     };
     
@@ -46,6 +52,12 @@ define(['modules/default/defaultController'], function(Default) {
                             title: 'Is Editable',
                             options: {isEditable: 'Yes'},
                             default: ['isEditable']
+                        },
+                        modifyInVariable: {
+                            type: 'checkbox',
+                            title: 'Modify Input Variable',
+                            options: {yes: 'Yes'},
+                            default: []
                         }
                     }
                 }
@@ -54,7 +66,8 @@ define(['modules/default/defaultController'], function(Default) {
     };
 
 	Controller.prototype.configAliases = {
-        'editable': [ 'groups', 'group', 0, 'editable', 0 ]
+        'editable': [ 'groups', 'group', 0, 'editable', 0 ],
+        'modifyInVariable': [ 'groups', 'group', 0, 'modifyInVariable', 0 ]
 	};
 
     return Controller;

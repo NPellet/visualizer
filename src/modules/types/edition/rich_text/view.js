@@ -12,9 +12,27 @@ define([
 
     View.prototype = $.extend(true, {}, Default, {
         init: function() {
+
+        },
+        inDom: function() {
+            this.initEditor();
+            this.resolveReady();
+        },
+
+        update: {
+            html: function(moduleValue) {
+                this.module.data = moduleValue;
+
+                this.module.definition.richtext = moduleValue.get();
+                this.initEditor();
+            }
+        },
+
+        initEditor: function() {
             var self = this;
+
+
             var initText = this.module.definition.richtext || '';
-            
             if(!this.module.getConfigurationCheckbox('editable', 'isEditable')) {
                 var def = Renderer.toScreen({
                     type: 'html',
@@ -25,7 +43,7 @@ define([
                     self._setCss();
                     self.dom.html(initText);
                     self.module.getDomContent().html(self.dom);
-                });   
+                });
             }
             else {
                 this.dom = $(' <div id="'+this._id+'" contenteditable="true">');
@@ -34,9 +52,7 @@ define([
                 this.module.getDomContent().html(this.dom);
                 this.module.controller.valueChanged(initText);
             }
-        },
-        inDom: function() {
-            var self = this;
+
             if(this.module.getConfigurationCheckbox('editable', 'isEditable')) {
                 CKEDITOR.disableAutoInline = true;
                 this.instance = CKEDITOR.inline(this._id, {
@@ -46,7 +62,6 @@ define([
                     self.module.controller.valueChanged(self.instance.getData());
                 });
             }
-            this.resolveReady();
         },
         
         _setCss: function() {
