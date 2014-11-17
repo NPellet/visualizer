@@ -2024,7 +2024,7 @@ if (typeof Slick === "undefined") {
         }
 
         //h_postrender = setTimeout(asyncPostProcessRows, options.asyncPostRenderDelay);
-        h_postrender = setImmediate(asycPostProcessRows);
+        h_postrender = setImmediate(asyncPostProcessRows);
         return;
       }
     }
