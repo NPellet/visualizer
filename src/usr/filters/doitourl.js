@@ -10,7 +10,7 @@ define(function () {
             // we can change the type of the object so that it can be easily displayed in another module or rendered the
             // expected way
             if (value)
-                value = value.get().toString().replace(reg, '');
+                value = String(value.get()).replace(reg, '');
             resolve({ type: 'string', value: 'http://dx.doi.org/' + value });
         }
     };

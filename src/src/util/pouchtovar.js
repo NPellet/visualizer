@@ -351,7 +351,7 @@ define(['pouchdb', 'uri/URI', 'src/util/debug'], function(PouchDB, URI, Debug) {
 				break;
 			}
 		}
-		return uri.toString();
+		return String(uri);
 	}
 	
 	function doSync(fromCouch, pouch, couchURL, continuous) {

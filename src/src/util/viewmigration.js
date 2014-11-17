@@ -269,7 +269,7 @@ define(['src/util/versioning', 'src/util/debug', 'src/util/util'], function (Ver
                 if (url) {
                     for (j = 0; j < jj; j++) {
 
-                        if (url.toString().indexOf(moduleNames[j]) >= 0) {
+                        if (String(url).indexOf(moduleNames[j]) >= 0) {
                             callback(module);
                             break;
                         }

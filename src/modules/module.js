@@ -4,12 +4,8 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 
 	function init( module ) {
 		//define object properties
-		var moduleURL = module.definition.getChildSync(['url'], true).get(),
+		var moduleURL = String(module.definition.getChildSync(['url'], true).get()),
 			ext = '';
-
-		if( moduleURL.toString ) {
-			moduleURL = moduleURL.toString();
-		}
 		
 		if( moduleURL.indexOf('http://') > -1 ) {
 			ext = '.js';

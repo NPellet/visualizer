@@ -8,7 +8,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 
 	functions.string = {};
 	functions.string.toscreen = function(def, val) {
-        val = val.toString();
+        val = String(val);
         while( true ) {
             val = val.replace('<', '&lt;' ).replace('>', '&gt;');
             if( val.indexOf('<') === -1 && val.indexOf('>') === -1) {
@@ -34,7 +34,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 
     functions.html = {};
     functions.html.toscreen = function(def, val) {
-        def.resolve( val.toString() );
+        def.resolve( String(val) );
     };
 
 	functions.matrix = {};
@@ -116,7 +116,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 	functions.smiles = {};
 	functions.smiles.toscreen = function(def, val, root, options, highlights, box) {
 		require(["http://www.lactame.com/lib/actelion/1.2.0/actelion.js"], function(ACT){
-			var mol = ACT.Molecule.fromSmiles(val.toString());
+			var mol = ACT.Molecule.fromSmiles(String(val));
 			var molfile = {
 				type:"mol2d",
 				value: mol.toMolfile()
@@ -128,7 +128,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 	functions.actelionID = {};
 	functions.actelionID.toscreen = function(def, val, root, options, highlights, box) {
 		require(["http://www.lactame.com/lib/actelion/1.2.0/actelion.js"], function(ACT){
-			var mol = ACT.Molecule.fromIDCode(root.value.toString(), root.coordinates ? root.coordinates.toString() : true);
+			var mol = ACT.Molecule.fromIDCode(String(root.value), root.coordinates ? String(root.coordinates) : true);
 			var molfile = {
 				type:"mol2d",
 				value: mol.toMolfile()
