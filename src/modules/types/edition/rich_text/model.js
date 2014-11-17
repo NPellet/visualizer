@@ -1,6 +1,6 @@
 define(['modules/default/defaultmodel'], function(Default) {
-	function model() {};
-	model.prototype = $.extend(true, {}, Default, {
+	function Model() {}
+	Model.prototype = $.extend(true, {}, Default, {
 	});
-	return model;
+	return Model;
 });

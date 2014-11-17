@@ -6,11 +6,11 @@ define([
     'src/util/typerenderer'
     ], function(Default, Util, CKEDITOR, _, Renderer) {
 
-    function view() {
+    function View() {
         this._id = Util.getNextUniqueId();
     }
 
-    view.prototype = $.extend(true, {}, Default, {
+    View.prototype = $.extend(true, {}, Default, {
         init: function() {
             var self = this;
             var initText = this.module.definition.richtext || '';
@@ -20,7 +20,7 @@ define([
                     type: 'html',
                     value: initText
                 }, this.module );
-                def.always( function( val ) {
+                def.always( function() {
                     self.dom = $( '<div id="'+this._id+ '">');
                     self._setCss();
                     self.dom.html(initText);
@@ -59,5 +59,5 @@ define([
         }
     });
 
-    return view;
+    return View;
 });

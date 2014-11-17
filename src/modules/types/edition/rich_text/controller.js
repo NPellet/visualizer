@@ -1,12 +1,11 @@
-define(['modules/default/defaultcontroller'], function(Default) {
+define(['modules/default/defaultController'], function(Default) {
 
-    function controller() {
+    function Controller() {
     }
-    ;
 
-    controller.prototype = $.extend(true, {}, Default);
+    Controller.prototype = $.extend(true, {}, Default);
 
-    controller.prototype.moduleInformation = {
+    Controller.prototype.moduleInformation = {
         moduleName: 'Rich text editor',
         description: 'Edit rich text in a wysiwyg interface.',
         author: 'Michaël Zasso',
@@ -15,25 +14,25 @@ define(['modules/default/defaultcontroller'], function(Default) {
         cssClass: 'rich_text'
     };
 
-    controller.prototype.references = {
+    Controller.prototype.references = {
         html: {
             label: 'Content as HTML'
         }
     };
 
-    controller.prototype.events = {
+    Controller.prototype.events = {
         onEditorChange: {
             label: 'The value in the editor has changed',
             refVariable: ['html']
         }
     };
 
-    controller.prototype.valueChanged = function(value) {
+    Controller.prototype.valueChanged = function(value) {
         this.module.definition.richtext = value;
         this.createDataFromEvent("onEditorChange", "html", DataObject.check({type:"html", value: value}, true));
     };
     
-    controller.prototype.configurationStructure = function(section) {
+    Controller.prototype.configurationStructure = function() {
         return {
             groups: {
                 group: {
@@ -52,11 +51,11 @@ define(['modules/default/defaultcontroller'], function(Default) {
                 }
             }
         }		
-    }
+    };
 
-	controller.prototype.configAliases = {
+	Controller.prototype.configAliases = {
         'editable': [ 'groups', 'group', 0, 'editable', 0 ]
-	}
+	};
 
-    return controller;
+    return Controller;
 });
