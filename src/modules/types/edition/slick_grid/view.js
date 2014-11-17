@@ -200,6 +200,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         });
 
                         that.slick.data.setModule(that.module);
+                        that.$dom = $('#'+that._id);
                         that.grid = new Slick.Grid("#"+that._id, that.slick.data, that.slick.columns, that.slick.options);
                         that.grid.registerPlugin(that.slick.groupItemMetadataProvider);
 
@@ -597,7 +598,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
     });
 
     function waitingFormatter() {
-        return "wait...";
+        return "...";
     }
 
     function binFormatter() {
