@@ -1885,8 +1885,11 @@ if (typeof Slick === "undefined") {
       if (!options.enableAsyncPostRender) {
         return;
       }
-      clearTimeout(h_postrender);
-      h_postrender = setTimeout(asyncPostProcessRows, options.asyncPostRenderDelay);
+
+      //clearTimeout(h_postrender);
+      //h_postrender = setTimeout(asyncPostProcessRows, options.asyncPostRenderDelay);
+      clearImmediate(h_postrender);
+      h_postrender = setImmediate(asyncPostProcessRows);
     }
 
     function invalidatePostProcessingResults(row) {
@@ -2020,7 +2023,8 @@ if (typeof Slick === "undefined") {
           }
         }
 
-        h_postrender = setTimeout(asyncPostProcessRows, options.asyncPostRenderDelay);
+        //h_postrender = setTimeout(asyncPostProcessRows, options.asyncPostRenderDelay);
+        h_postrender = setImmediate(asycPostProcessRows);
         return;
       }
     }
