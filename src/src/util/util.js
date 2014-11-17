@@ -142,7 +142,7 @@ define(['src/util/debug'], function (Debug) {
         },
         loadCss: function (url) {
             var self = this;
-            return new Promise(function(resolve, reject) {
+            return new Promise(function (resolve, reject) {
                 url = require.toUrl(url);
 
                 self.loadedCss = self.loadedCss || {};
@@ -157,7 +157,7 @@ define(['src/util/debug'], function (Debug) {
                 link.type = 'text/css';
                 link.rel = 'stylesheet';
                 link.href = require.toUrl(url);
-                link.onload = function() {
+                link.onload = function () {
                     self.loadedCss[url] = link;
                     resolve(link);
                 };
@@ -348,6 +348,12 @@ define(['src/util/debug'], function (Debug) {
             return access;
         }
 
+    };
+
+    /**
+     * No-op function
+     */
+    exports.noop = function () {
     };
 
     function isInt(str) {
