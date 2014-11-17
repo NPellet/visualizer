@@ -247,6 +247,20 @@ define(['src/util/debug'], function (Debug) {
 
             return color;
         },
+
+        getCssVendorPrefix: function() {
+            var vendors = ['webkit', 'moz', 'ms', 'o'] ;
+            var d = $('<div>');
+            for(var i=0; i<vendors.length; i++) {
+                var vp = '-'+vendors[i]+'-';
+                console.log(vp + 'transform');
+                if(d[0].style[vp + 'transform'] !== undefined) {
+                    return vp;
+                }
+            }
+            return null;
+        },
+
         makejPathFunction: makejPathFunction,
 
         addjPathFunction: function (stack, jpath) {
