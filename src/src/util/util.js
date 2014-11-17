@@ -249,16 +249,13 @@ define(['src/util/debug'], function (Debug) {
         },
 
         getCssVendorPrefix: function() {
-            var vendors = ['webkit', 'moz', 'ms', 'o'] ;
-            var d = $('<div>');
-            for(var i=0; i<vendors.length; i++) {
-                var vp = '-'+vendors[i]+'-';
-                console.log(vp + 'transform');
-                if(d[0].style[vp + 'transform'] !== undefined) {
-                    return vp;
-                }
-            }
-            return null;
+            var styles = window.getComputedStyle(document.documentElement, '');
+            var pre = (Array.prototype.slice
+                .call(styles)
+                .join('')
+                .match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
+            )[1];
+            return '-' + pre + '-';
         },
 
         makejPathFunction: makejPathFunction,
