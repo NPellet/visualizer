@@ -1,176 +1,106 @@
 'use strict';
 
-define(['jquery', 'modules/module', 'src/util/debug'], function($, Module, Debug) {
+define(['jquery', 'modules/module', 'src/util/debug'], function ($, Module, Debug) {
 
-	var incrementalId = 0;
+    var incrementalId = 0;
 
-	var modules = [],
-			definitions = new DataArray(),
-			modulesDeferred = [],
-			allModules;
+    var modules = [],
+        definitions = new DataArray(),
+        allModules;
 
+    function getSubFoldersFrom(folder) {
+        return new Promise(function (resolve) {
+            var result = {
+                folders: {}
+            };
+            $.getJSON(require.toUrl(folder + '/folder.json')).then(function (folderContent) {
+                result.name = folderContent.name;
+                result.modules = folderContent.modules;
+                if (folderContent.folders && Array.isArray(folderContent.folders)) {
+                    var defs = [];
+                    for (var i = 0; i < folderContent.folders.length; i++) {
+                        defs.push(getSubFoldersFrom(folder + '/' + folderContent.folders[i]));
+                    }
+                    Promise.all(defs).then(function (results) {
+                        for (var i = 0; i < results.length; i++) {
+                            var res = results[i];
+                            result.folders[res.name] = res;
+                        }
+                        resolve(result);
+                    }, function (err) {
+                        Debug.error('Caught error in ModuleFactory', err);
+                    });
+                }
+                else {
+                    if (typeof folderContent.folders === 'object')
+                        result.folders = folderContent.folders;
+                    resolve(result);
+                }
+            });
+        });
+    }
 
-	function oldGetSubFoldersFrom(folder) {
-		return $.getJSON(require.toUrl(folder), {}).pipe(function(data) {
-			return getModules(data);
-		});
-	}
+    return {
+        getTypes: function () {
+            return allModules;
+        },
+        setModules: function (list) {
 
-	function getModules(folderInfo) {
+            if (Array.isArray(list)) {
+                throw new Error('Module configuration error : list of folders must be defined in a "folders" array.');
+            }
 
-		var defs = [];
+            if (Array.isArray(list.folders)) { // folders to retreive
+                var finalList = {};
 
-		for(var i in folderInfo.folders) {
-			(function(j) {
+                if (list.modules) {
+                    finalList.modules = list.modules;
+                }
 
-				if (typeof folderInfo.folders[ j ] === "object") {
-					var folder = folderInfo.folders[ j ];
-					delete folderInfo.folders[ j ];
-					folderInfo.folders[ folder.name || j ] = folder;
+                finalList.folders = {};
+                for (var i = 0; i < list.folders.length; i++) {
+                    if (typeof list.folders[i] === 'object') {
+                        var folder = list.folders[i];
+                        $.extend(true, finalList.folders, folder.folders);
 
-				} else {
-					defs.push(oldGetSubFoldersFrom(folderInfo.folders[ j ] + "folder.json").done(function(folder) {
-						delete folderInfo.folders[ j ];
-						folderInfo.folders[ folder.name ] = folder;
-					}));
-				}
+                    } else { // Folder is a string, start recursive lookup
+                        getSubFoldersFrom(list.folders[i]).then(function (folder) {
+                            $.extend(true, finalList, folder);
+                        }, function (err) {
+                            Debug.error('Caught error in ModuleFactory', err);
+                        });
+                    }
+                }
 
-			})(i);
-		}
+                allModules = finalList;
+            }
 
-		return $.when.apply($, defs).pipe(function() {
-			return folderInfo;
-		});
-	}
-	function getSubFoldersFrom(folder){
-		return new Promise(function(resolve){
-			var result = {
-				folders:{}
-			};
-			$.getJSON(require.toUrl(folder+"/folder.json")).then(function(folderContent){
-				result.name = folderContent.name;
-				result.modules = folderContent.modules;
-				if(folderContent.folders && Array.isArray(folderContent.folders)) {
-					var defs = [];
-					for(var i = 0; i < folderContent.folders.length; i++) {
-						defs.push(getSubFoldersFrom(folder+"/"+folderContent.folders[i]));
-					}
-					Promise.all(defs).then(function(results){
-						for(var i = 0; i < results.length; i++) {
-							var res = results[i];
-							result.folders[res.name] = res;
-						}
-						resolve(result);
-					}, function(err){
-						Debug.error("Caught error in ModuleFactory", err);
-					});
-				}
-				else {
-					if(typeof folderContent.folders === "object")
-						result.folders = folderContent.folders;
-					resolve(result);
-				}
-			});
-		});
-	}
+            else {
+                allModules = list;
+            }
 
-	return {
-		getTypes: function() {
-			return $.when.apply($, modulesDeferred).pipe(function() {
-				return allModules;
-			});
-		},
-		setModules: function(list) {
+        },
+        newModule: function (definition) {
+            var module = new Module(definition);
+            module.setId(++incrementalId);
+            modules.push(module);
+            definitions.push(definition);
 
-			if (Array.isArray(list)) { // backwards compatibility
-				return this.oldSetModules(list);
-			}
-
-			if (Array.isArray(list.folders)) { // folders to retreive
-				var finalList = {};
-
-				if (list.modules) {
-					finalList.modules = list.modules;
-				}
-
-				finalList.folders = {};
-				for (var i = 0; i < list.folders.length; i++) {
-					if (typeof list.folders[ i ] === "object") {
-						var folder = list.folders[ i ];
-						$.extend(true, finalList.folders, folder.folders);
-
-					} else { // Folder is a string, start recursive lookup
-						getSubFoldersFrom(list.folders[ i ]).then(function(folder) {
-							$.extend(true, finalList, folder);
-						}, function(err) {
-							Debug.error("Caught error in ModuleFactory", err);
-						});
-					}
-				}
-
-				allModules = finalList;
-			}
-
-			else {
-				allModules = list;
-			}
-
-		},
-		oldSetModules: function(list) {
-
-			var i = 0,
-					l;
-
-			if (!Array.isArray(list)) {
-				allModules = list;
-				return;
-			}
-
-			l = list.length;
-			var finalList = {};
-
-			for (; i < l; i++) {
-
-				if (typeof list[ i ] === "string") { // url
-
-					(function(j) {
-						oldGetSubFoldersFrom(list[ j ]).then(function(data) {
-							$.extend(true, finalList, data);
-						});
-					})(i);
-
-				} else { // It's a folder type structure
-					getModules(list[ i ]).then(function(data) {
-						$.extend(true, finalList, data);
-					});
-				}
-			}
-			
-			allModules = finalList;
-			
-		},
-		newModule: function(definition) {
-
-			var module = new Module(definition);
-			module.setId(++incrementalId);
-			modules.push(module);
-			definitions.push(definition);
-
-			return module;
-		},
-		removeModule: function(module) {
-			modules.splice(modules.indexOf(module), 1);
-			definitions.splice(definitions.indexOf(module.definition), 1);
-		},
-		empty: function() {
-			definitions = new DataArray();
-			modules = [];
-		},
-		getModules: function() {
-			return modules;
-		},
-		getDefinitions: function() {
-			return definitions;
-		}
-	};
+            return module;
+        },
+        removeModule: function (module) {
+            modules.splice(modules.indexOf(module), 1);
+            definitions.splice(definitions.indexOf(module.definition), 1);
+        },
+        empty: function () {
+            definitions = new DataArray();
+            modules = [];
+        },
+        getModules: function () {
+            return modules;
+        },
+        getDefinitions: function () {
+            return definitions;
+        }
+    };
 });
