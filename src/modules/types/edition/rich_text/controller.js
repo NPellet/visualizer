@@ -29,6 +29,8 @@ define(['modules/default/defaultcontroller'], function(Default) {
 
     Controller.prototype.variablesIn = [ 'html' ];
 
+
+
     Controller.prototype.valueChanged = function(value) {
         this.module.definition.richtext = value;
         if(this.module.getConfigurationCheckbox('modifyInVariable', 'yes') && this.module.data) {

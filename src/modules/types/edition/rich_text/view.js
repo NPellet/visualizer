@@ -42,20 +42,22 @@ define([
                 }, this.module );
                 def.always( function() {
                     self.dom = $( '<div id="'+this._id+ '">');
-                    self._setCss();
                     self.dom.html(initText);
                     self.module.getDomContent().html(self.dom);
+                    self._setCss();
                 });
             }
             else {
-                var bgColor = this.module.getConfiguration('bgColor');
-                this.dom = $(' <div id="'+this._id+'" contenteditable="true">').css('background-color', 'rgba(' + bgColor.join(',') + ')');
-                this._setCss();
+                this.dom = $(' <div id="'+this._id+'" contenteditable="true">');
                 this.dom.html(initText);
                 this.module.getDomContent().html(this.dom);
+                this._setCss();
                 this.module.controller.valueChanged(initText);
             }
 
+            if(CKEDITOR.instances[this._id]) {
+                CKEDITOR.instances[this._id].destroy();
+            }
             if(this.module.getConfigurationCheckbox('editable', 'isEditable')) {
                 CKEDITOR.disableAutoInline = true;
                 this.instance = CKEDITOR.inline(this._id, {
@@ -85,12 +87,23 @@ define([
         },
         
         _setCss: function() {
+            var bgColor = this.module.getConfiguration('bgColor');
             this.dom.css({
                 height: '100%',
                 width: '100%',
                 padding: "5px",
-                boxSizing: "border-box"
+                boxSizing: "border-box",
+                'background-color': 'rgba(' + bgColor.join(',') + ')'
             });
+
+            if(this.module.getConfigurationCheckbox('postit', 'yes')) {
+                this.dom.addClass('postit');
+                this.dom.parents('.ci-module-wrapper').addClass('ci-module-postit');
+            }
+            else {
+                this.dom.removeClass('postit');
+                this.dom.parents('.ci-module-wrapper').removeClass('ci-module-postit');
+            }
         }
     });
 
