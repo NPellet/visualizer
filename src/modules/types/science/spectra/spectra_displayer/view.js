@@ -828,42 +828,74 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
         normalize: function (array, varname) {
 
             var plotinfos = this.module.getConfiguration('plotinfos');
-            var maxValue, minValue, i, l;
+            var maxValue, minValue, total, ratio, i, l;
 
             if (!plotinfos) return;
-            var normalize = "";
+            var normalize = '';
             for (i = 0, l = plotinfos.length; i < l; i++) {
                 if (varname == plotinfos[i].variable) {
                     normalize = plotinfos[i].normalize
                 }
             }
             if (!normalize) return;
-            if (normalize == "max1") {
-                maxValue = Number.MIN_VALUE;
-                for (i = 1; i < array.length; i = i + 2) {
-                    if (array[i] > maxValue) maxValue = array[i];
+
+            if(Array.isArray(array[0])) { // Normalize from [[x1,y1],[x2,y2]]
+                if (normalize == 'max1') {
+                    maxValue = -Infinity;
+                    for (i = 0; i < array.length; i++) {
+                        if (array[i][1] > maxValue) maxValue = array[i][1];
+                    }
+                    for (i = 0; i < array.length; i++) {
+                        array[i][1] /= maxValue;
+                    }
+                } else if (normalize == 'sum1') {
+                    total = 0;
+                    for (i = 0; i < array.length; i++) {
+                        total += array[i][1];
+                    }
+                    for (i = 0; i < array.length; i++) {
+                        array[i][1] /= total;
+                    }
+                } else if (normalize == 'max1min0') {
+                    maxValue = -Infinity;
+                    minValue = Infinity;
+                    for (i = 0; i < array.length; i++) {
+                        if (array[i][1] > maxValue) maxValue = array[i][1];
+                        if (array[i][1] < minValue) minValue = array[i][1];
+                    }
+                    ratio = 1 / (maxValue - minValue);
+                    for (i = 0; i < array.length; i++) {
+                        array[i][1] = (array[i][1] - minValue) * ratio;
+                    }
                 }
-                for (i = 1; i < array.length; i = i + 2) {
-                    array[i] /= maxValue;
-                }
-            } else if (normalize == "sum1") {
-                var total = 0;
-                for (i = 1; i < array.length; i = i + 2) {
-                    total += array[i];
-                }
-                for (i = 1; i < array.length; i = i + 2) {
-                    array[i] /= total;
-                }
-            } else if (normalize == "max1min0") {
-                maxValue = Number.MIN_VALUE;
-                minValue = Number.MAX_VALUE;
-                for (i = 1; i < array.length; i = i + 2) {
-                    if (array[i] > maxValue) maxValue = array[i];
-                    if (array[i] < minValue) minValue = array[i];
-                }
-                var ratio = 1 / (maxValue - minValue);
-                for (i = 1; i < array.length; i = i + 2) {
-                    array[i] = (array[i] - minValue) * ratio;
+            } else { // Normalize from [x1,y1,x2,y2]
+                if (normalize == 'max1') {
+                    maxValue = -Infinity;
+                    for (i = 1; i < array.length; i = i + 2) {
+                        if (array[i] > maxValue) maxValue = array[i];
+                    }
+                    for (i = 1; i < array.length; i = i + 2) {
+                        array[i] /= maxValue;
+                    }
+                } else if (normalize == 'sum1') {
+                    total = 0;
+                    for (i = 1; i < array.length; i = i + 2) {
+                        total += array[i];
+                    }
+                    for (i = 1; i < array.length; i = i + 2) {
+                        array[i] /= total;
+                    }
+                } else if (normalize == 'max1min0') {
+                    maxValue = -Infinity;
+                    minValue = Infinity;
+                    for (i = 1; i < array.length; i = i + 2) {
+                        if (array[i] > maxValue) maxValue = array[i];
+                        if (array[i] < minValue) minValue = array[i];
+                    }
+                    ratio = 1 / (maxValue - minValue);
+                    for (i = 1; i < array.length; i = i + 2) {
+                        array[i] = (array[i] - minValue) * ratio;
+                    }
                 }
             }
         }
