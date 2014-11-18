@@ -88,7 +88,8 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
                         button: {
                             type: 'checkbox',
                             title: 'Search button',
-                            options: { button: '' }
+                            options: { button: '' },
+                            displaySource: {button: 'b'}
                         },
                         buttonlabel: {
                             type: 'text',
@@ -112,6 +113,21 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
                             type: 'jscode',
                             title: 'Result data filter',
                             'default': '// console.log(data);'
+                        },
+                        askConfirm: {
+                            type: 'checkbox',
+                            title: 'Ask for confirmation',
+                            options: {yes: 'Yes'},
+                            default: [],
+                            displaySource: {yes: 'y'},
+                            displayTarget: ['b']
+                        },
+                        confirmText: {
+                            type: 'jscode',
+                            mode: 'html',
+                            title: 'Confirmation text',
+                            default: 'Are you sure?',
+                            displayTarget: ['y']
                         }
                     }
                 },
@@ -247,7 +263,9 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
         postvariables: [ 'sections', 'postvariables', 0, 'groups', 'postvariables', 0 ],
         headers: [ 'groups', 'headers', 0 ],
         dataType: [ 'groups', 'group', 0, 'dataType', 0 ],
-        debounce: [ 'groups', 'group', 0, 'debounce', 0 ]
+        debounce: [ 'groups', 'group', 0, 'debounce', 0 ],
+        askConfirm: ['groups', 'group', 0, 'askConfirm', 0],
+        confirmText: ['groups', 'group', 0, 'confirmText', 0]
     };
 
     Controller.prototype.initImpl = function () {

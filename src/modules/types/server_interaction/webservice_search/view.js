@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview'], function (Default) {
+define(['modules/default/defaultview', 'src/util/ui'], function (Default, ui) {
 
     function View() {
     }
@@ -38,8 +38,16 @@ define(['modules/default/defaultview'], function (Default) {
                     require([ 'forms/button' ], function (Button) {
 
                         self.search.append((self.buttonInst = new Button(cfg('buttonlabel') || 'Search', function () {
+                            var prom = Promise.resolve(true);
+                            if(self.module.getConfigurationCheckbox('askConfirm', 'yes')) {
+                                prom = ui.confirm(self.module.getConfiguration('confirmText'));
+                            }
+                            prom.then(function(ok) {
+                                if(ok) {
+                                    self.module.controller.doSearch();
+                                }
+                            });
 
-                            self.module.controller.doSearch();
 
                         }) ).render());
                     });

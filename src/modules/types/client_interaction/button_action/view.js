@@ -12,7 +12,7 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/ui'], function 
 
             var self = this,
                 button = new Button(this.module.getConfiguration('label'), function (e, val) {
-                        var prom = Promise.resolve();
+                        var prom = Promise.resolve(true);
                         if(that.module.getConfigurationCheckbox('askConfirm', 'yes')) {
                             prom = ui.confirm(that.module.getConfiguration('confirmText'));
                         }
