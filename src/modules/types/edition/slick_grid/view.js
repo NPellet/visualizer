@@ -184,7 +184,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 this.slick.options = this.getSlickOptions();
                 this.incrementalId = 0;
                 this.generateUniqIds();
-
+                this.addRowAllowed = this.module.getConfigurationCheckbox('slickCheck', 'enableAddRow');
 
 
 
@@ -269,7 +269,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             }, 300);
                             that.lastViewport = that.grid.getViewport();
                             if(that.module.getConfigurationCheckbox('slickCheck', 'rowNumbering')) {
-                                that.$rowHelp.html((that.lastViewport.bottom - 2).toString() + '/' + that.grid.getDataLength());
+                                that.$rowHelp.html((that.lastViewport.bottom - (that.addRowAllowed ? 2 : 1)).toString() + '/' + that.grid.getDataLength());
                                 that.$rowHelp.fadeIn();
                                 clearTimeout(that.lastRowHelp);
                                 that.lastRowHelp = setTimeout(function() {
