@@ -5,7 +5,7 @@ define([
     'lodash',
     'src/util/typerenderer',
     'src/main/grid',
-    'components/chroma-js/chroma'
+    'chroma'
     ], function(Default, Util, CKEDITOR, _, Renderer, Grid, chroma) {
 
     function View() {

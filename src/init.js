@@ -23,6 +23,7 @@ requirejs.config({
         bowser:             'components/bowser/bowser.min',
         'jquery-cookie':    'components/jquery-cookie/jquery.cookie',
         chemcalc:           'components/chemcalc/lib',
+		chroma:             'components/chroma-js/chroma.min'
 	},
 	shim: {
 		d3: {
