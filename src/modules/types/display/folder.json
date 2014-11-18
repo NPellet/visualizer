@@ -24,6 +24,11 @@
 			"moduleName": "Complex grid",
 			"url": "modules/types/display/jqgrid/"
 		},
+	    {
+		    "moduleName": "Sticky note",
+		    "url": "modules/types/display/postit/",
+		    "hidden": true
+	    },
 		{
 			"moduleName": "Display value",
 			"url": "modules/types/display/single_value/"
