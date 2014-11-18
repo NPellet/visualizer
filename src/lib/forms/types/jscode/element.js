@@ -14,16 +14,27 @@ define( [ 'require', 'jquery', 'src/util/util', 'ace/ace' ], function( require, 
 			input = $( "<div />", { id: this._id, tabindex: 1 } )
 					.css({
 						width: '100%',
-						height: '200px',
+						height: '100%',
 					    position: 'relative',
-					    padding: 0,
+					    padding: 20,
 					    margin: 0
 					})
 					.addClass( 'field-list' )
 					.appendTo( dom );
-		
+
 		this.fieldElement = input;
 		this.input = input;
+		dom.addClass('ui-widget-content');
+		dom.resizable({
+			handles: "s",
+			stop: function() {
+				self.editor.resize();
+			}
+		});
+		dom.css({
+			height: '200px',
+			width: '100%'
+		});
 		this.dom = dom;
 		return dom;
 	};
@@ -34,7 +45,7 @@ define( [ 'require', 'jquery', 'src/util/util', 'ace/ace' ], function( require, 
 			this.editor.focus();
 		}
 		
-	}
+	};
 
 	FieldConstructor.prototype.inDom = function() {
 
@@ -46,7 +57,7 @@ define( [ 'require', 'jquery', 'src/util/util', 'ace/ace' ], function( require, 
 	    editor.setPrintMarginColumn( false );
 	    editor.getSession( ).setMode( "./mode/"+mode );
 		
-		editor.getSession( ).on( 'change', function(e) {
+		editor.getSession( ).on( 'change', function() {
 			
 			self.setValueSilent( editor.getValue( ) );
 		} );
@@ -54,14 +65,14 @@ define( [ 'require', 'jquery', 'src/util/util', 'ace/ace' ], function( require, 
 		this.editor = editor;
 
 		this.checkValue( );
-	}
+	};
 
 	FieldConstructor.prototype.checkValue = function() {
 
 		if( this.editor ) {
 			this.editor.setValue( this.value );
 		}
-	}
+	};
 
 	return FieldConstructor;
 });
