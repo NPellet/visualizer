@@ -238,7 +238,8 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
         },
 
         list: {
-            label: 'Table'
+            label: 'Table',
+            type: 'array'
         },
 
         selectedrows: {
