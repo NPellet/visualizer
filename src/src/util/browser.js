@@ -56,6 +56,11 @@ define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'jquery-cookie'], fun
     };
 
     function checkBrowser() {
+        // Check that it's not a google bot
+        var reg = /Googlebot|Mediapartners\-Google|AdsBot-Google/i;
+        if(navigator.userAgent.match(reg)) {
+            return true;
+        }
         var browserKeys = _.keys(browsers);
         var bmap = _.map(browserKeys, function(val){
             return bowser[val];
