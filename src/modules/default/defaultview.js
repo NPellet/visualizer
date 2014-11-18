@@ -1,6 +1,6 @@
 'use strict';
 
-define(function () {
+define(['src/util/util'], function (Util) {
 
     return {
 
@@ -20,8 +20,7 @@ define(function () {
 
         blank: {},
 
-        onResize: function () {
-        },
+        onResize: Util.noop,
 
         onActionReceive: {
             _editPreferences: function (values) {
@@ -57,8 +56,7 @@ define(function () {
             }
         },
 
-        inDom: function () {
-        },
+        inDom: Util.noop,
 
         resolveReady: function () {
             this.module._resolveView();

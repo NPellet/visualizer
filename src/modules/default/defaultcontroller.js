@@ -129,8 +129,7 @@ define(['src/util/api', 'src/util/util'], function (API, Util) {
             return this.module.getDomContent()[0].innerHTML;
         },
 
-        configurationStructure: function () {
-        },
+        configurationStructure: Util.noop,
 
         configFunctions: {},
 
