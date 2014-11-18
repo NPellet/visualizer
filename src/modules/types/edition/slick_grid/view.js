@@ -158,6 +158,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 asyncEditorLoading: true,
                 enableAsyncPostRender: true,
                 asyncPostRenderDelay: 0,
+                defaultColumnWidth: that.module.getConfiguration('slick.defaultColumnWidth') || 80,
                 dataItemColumnValueExtractor: function(item, coldef) {
                     return item;
                 },

@@ -67,6 +67,11 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                             default: ['editable', 'enableAddRow', 'enableCellNavigation', 'resizeRerender', 'rowNumbering']
                         },
 
+                        "slick.defaultColumnWidth": {
+                            type: 'float',
+                            title: 'Default Column Width'
+                        },
+
                         "slick.rowHeight": {
                             type: 'text',
                             title: 'Row Height'
@@ -217,6 +222,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
         'slickCheck': [ 'groups', 'group', 0, 'slickCheck', 0 ],
         'slick.rowHeight': [ 'groups', 'group', 0, 'slick.rowHeight', 0 ],
         'slick.selectionModel': [ 'groups', 'group', 0, 'slick.selectionModel', 0 ],
+        'slick.defaultColumnWidth': [ 'groups', 'group', 0, 'slick.defaultColumnWidth', 0 ],
         'cols': ['groups', 'cols', 0],
         'groupings': ['groups', 'groupings', 0]
     };
