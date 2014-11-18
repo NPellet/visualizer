@@ -296,15 +296,16 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
         if ('function' === typeof value.resurrect) {
             value = value.resurrect();
         }
+        var str = typeof value === 'string';
         switch (option.destination) {
             case 'query':
-                this.queryValues[option.name] = value;
+                this.queryValues[option.name] = str ? value : JSON.stringify(value);
                 break;
             case 'url':
-                this.urlValues[option.name] = value;
+                this.urlValues[option.name] = str ? value : JSON.stringify(value);
                 break;
             case 'data':
-                this.dataValues[option.name] = (this.dataType === 'form') ? JSON.stringify(value) : value;
+                this.dataValues[option.name] = str ? value : ((this.dataType === 'form') ? JSON.stringify(value) : value);
                 break;
         }
     };
