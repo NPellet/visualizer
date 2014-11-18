@@ -33,7 +33,8 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
 
             var debouncing = this.module.getConfiguration('debouncing', -1);
             if (debouncing > -1) {
-                var cb = function () {
+                var cb = function (e) {
+                    if(e.type === 'change' && (e.target.type === 'text' || e.target.type === 'textarea')) return;
                     that.exportForm();
                 };
                 if (debouncing > 0) {
