@@ -25,10 +25,6 @@
 			"url": "modules/types/display/jqgrid/"
 		},
 		{
-			"moduleName": "Sticky note",
-			"url": "modules/types/display/postit/"
-		},
-		{
 			"moduleName": "Display value",
 			"url": "modules/types/display/single_value/"
 		},
