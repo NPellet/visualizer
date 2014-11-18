@@ -7,6 +7,7 @@ HEAD
 * webservice_search : add action to change button color
 * add setImmediate and clearImmediate
 * Merge postit module into richtext module
+* New library: [chroma](https://github.com/gka/chroma.js). Small library for color edition. 
 
 2.8.0 / 2014-11-10
 ===================
