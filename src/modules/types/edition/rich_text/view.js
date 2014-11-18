@@ -67,7 +67,7 @@ define([
                 this.instance.on("change",function(){
                     self.module.controller.valueChanged(self.instance.getData());
                     if(self.module.getConfigurationCheckbox('autoHeight', 'yes')) {
-                        self.module.getDomWrapper().height(self.getContentHeight() + 70);
+                        self.module.getDomWrapper().height(self.getContentHeight() +50);
                         Grid.moduleResize(self.module);
                     }
 
