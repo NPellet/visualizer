@@ -2,12 +2,17 @@ HEAD
 ===================
 * Slickgrid: Bug fixes.Row numbering overlay. Selected Row & Cell highlighting. DataNumber and DataBoolean edition. Hierarchical grouping. Hover and click actions in.
 * button_action : add option to disable toggle
-* datas : fix several issues with DataObject
-* add API.cache
+* datas
+ * fix several issues with DataObject and triggers
+ * add DataBoolean.cast
+* add API.cache, API.getData
 * webservice_search : add action to change button color
 * add setImmediate and clearImmediate
 * Merge postit module into richtext module
-* New library: [chroma](https://github.com/gka/chroma.js). Small library for color edition. 
+* New library: [chroma](https://github.com/gka/chroma.js). Small library for color edition.
+* :arrow_up: ml (v0.1.0)
+* add util.noop
+* add [setImmediate](https://github.com/YuzuJS/setImmediate) library
 
 2.8.0 / 2014-11-10
 ===================
