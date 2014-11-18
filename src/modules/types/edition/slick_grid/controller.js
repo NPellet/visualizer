@@ -58,13 +58,12 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                                 enableColumnReorder: 'Enable Column reorder',
                                 forceFitColumns: 'Force fit Columns',
                                 rowDelete: 'Can delete rows',
-                                resizeRerender: 'Re-render on resize',
                                 autoFocus: 'Auto Focus',
                                 rowNumbering: 'Show row number when scrolling',
                                 multiColumnSort: 'Multi-column sorting',
                                 oneUncollapsed: 'Maximum One group uncollapsed (per level)'
                             },
-                            default: ['editable', 'enableAddRow', 'enableCellNavigation', 'resizeRerender', 'rowNumbering']
+                            default: ['editable', 'enableAddRow', 'enableCellNavigation', 'rowNumbering']
                         },
 
                         "slick.defaultColumnWidth": {

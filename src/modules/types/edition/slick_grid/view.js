@@ -321,9 +321,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             for(var i=0; i<cols.length; i++) {
                                 that.module.definition.configuration.groups.cols[0][i].width = cols[i].width;
                             }
-                            if(that.module.getConfigurationCheckbox('slickCheck', 'resizeRerender')) {
-                                that.grid.invalidate();
-                            }
+                            that.grid.invalidate();
                         });
 
                         that.grid.onCellChange.subscribe(function (e, args) {
