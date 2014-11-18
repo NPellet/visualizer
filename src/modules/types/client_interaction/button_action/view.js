@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'forms/button'], function (Default, Button) {
+define(['modules/default/defaultview', 'forms/button', 'src/util/ui'], function (Default, Button, ui) {
 
     function View() {
     }
@@ -14,7 +14,7 @@ define(['modules/default/defaultview', 'forms/button'], function (Default, Butto
                 button = new Button(this.module.getConfiguration('label'), function (e, val) {
                         var prom = Promise.resolve();
                         if(that.module.getConfigurationCheckbox('askConfirm', 'yes')) {
-                            prom = confirm(that.module.getConfiguration('confirmText'));
+                            prom = ui.confirm(that.module.getConfiguration('confirmText'));
                         }
                         prom.then(function(ok) {
                             if(ok) {
@@ -37,38 +37,6 @@ define(['modules/default/defaultview', 'forms/button'], function (Default, Butto
             this.resolveReady();
         }
     });
-
-    var $dialog;
-    function confirm(html) {
-        return new Promise(function (resolve) {
-            if(!$dialog) {
-                $dialog = $('<div/>');
-                $('body').append($dialog);
-            }
-            if(html) {
-                $dialog.html(html);
-            }
-
-            $dialog.dialog({
-                modal: true,
-                buttons: {
-                    Cancel: function() {
-                        resolve(false);
-                        $(this).dialog('close');
-                    },
-                    Ok: function() {
-                        resolve(true);
-                        $(this).dialog('close');
-                    }
-                },
-                close: function() {
-                    resolve(false);
-                },
-                width: 400
-            });
-        });
-
-    }
 
     return View;
 
