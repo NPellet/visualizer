@@ -1,4 +1,4 @@
-HEAD
+2.9.0 / 2014-11-18
 ===================
 * Slickgrid: Bug fixes.Row numbering overlay. Selected Row & Cell highlighting. DataNumber and DataBoolean edition. Hierarchical grouping. Hover and click actions in.
 * button_action : add option to disable toggle
