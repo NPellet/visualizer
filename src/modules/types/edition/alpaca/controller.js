@@ -12,7 +12,8 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
         description: 'Create a form base on a schema and output an object',
         author: 'Daniel Kostro',
         date: '04.11.2014',
-        license: 'MIT'
+        license: 'MIT',
+        cssClass: 'alpaca'
     };
 
     Controller.prototype.initImpl = function () {
