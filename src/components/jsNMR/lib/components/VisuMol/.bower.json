@@ -1,0 +1,14 @@
+{
+  "name": "VisuMol",
+  "homepage": "https://github.com/NPellet/VisuMol",
+  "_release": "e09a834c8f",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "e09a834c8f4c3c19dd53a010af20d006f5ac2dac"
+  },
+  "_source": "git://github.com/NPellet/VisuMol.git",
+  "_target": "*",
+  "_originalSource": "git://github.com/NPellet/VisuMol",
+  "_direct": true
+}

@@ -59,6 +59,16 @@ requirejs.config({
 		'lib/pixastic/pixastic': ['lib/pixastic/pixastic/pixastic.core'],
 		'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer.js': ['lib/biojs-1.0/src/main/javascript/Biojs.js'],
 		'lib/biojs-1.0/src/main/javascript/Biojs.DasProteinFeatureViewer.js': ['lib/biojs-1.0/src/main/javascript/Biojs.js', 'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer.js']
+	},
+
+	map: {
+
+		'components/jsNMR/src/nmr': {
+		 'graph': 'components/jsgraph/dist/jsgraph.min',
+		 'assignation': 'components/jsNMR/src/assignation',
+		 'jcampconverter': 'components/jcampconverter/build/jcampconverter',
+		 'lib/components/VisuMol/src/molecule': 'components/jsNMR/lib/components/VisuMol/src/molecule'
+		}
 	}
 });
 

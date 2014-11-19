@@ -1,0 +1,11 @@
+{
+  "name": "graphs",
+  "version": "0.1.0",
+  "devDependencies": {
+    "bower": "^1.3.5",
+    "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
+    "grunt-requirejs": "^0.4.2",
+    "grunt-sass": "^0.14.0"
+  }
+}

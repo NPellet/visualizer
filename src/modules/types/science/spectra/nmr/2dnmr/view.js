@@ -1,6 +1,13 @@
 'use strict';
 
-define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 'src/util/datatraversing', 'components/jcampconverter/build/jcampconverter'], function (Default, Graph, Traversing, JcampConverter) {
+define([
+    'modules/default/defaultview',
+
+    'components/jsNMR/src/nmr',
+    
+
+
+    ], function (Default, NMR) {
 
     function View() {
     }
@@ -8,204 +15,90 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
     View.prototype = $.extend(true, {}, Default, {
 
         init: function () {
-            this.dom = $('<table cellpadding="0" cellspacing="0" class="nmr-wrapper"><tr><td></td><td class="nmr-1d nmr-1d-x nmr-main"></td></tr><tr class="nmr-main"><td class="nmr-1d nmr-1d-y"></td><td class="nmr-2d"></td></tr></table>');
+            this.dom = $('<div />');
             this.module.getDomContent().html(this.dom);
+            this.resolveReady();
         },
 
         inDom: function () {
 
-            var self = this;
+            function hue2rgb(p, q, t){
+                  if(t < 0) t += 1;
+                  if(t > 1) t -= 1;
+                  if(t < 1/6) return p + (q - p) * 6 * t;
+                  if(t < 1/2) return q;
+                  if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                  return p;
+              }
 
-            this.graphs = {};
-            this.series = {};
+             function hslToRgb(h, s, l){
+                  var r, g, b;
 
-            // Create 2D graph
-            this.graphs['_2d'] = new Graph(this.dom.find('.nmr-2d').get(0), {
-                close: {
-                    left: false,
-                    top: false,
-                    right: false
-                },
-                paddingBottom: 0,
-                paddingTop: 0,
-                paddingLeft: 0,
-                paddingRight: 0,
-                plugins: {
-                    'graph.plugin.zoom': {
-                        zoomMode: 'xy',
-                        onZoomStart: function (graph, x, y, e) {
-                            self.graphs['x']._pluginExecute('graph.plugin.zoom', 'onMouseDown', [ self.graphs['x'], x, y, e, true ]);
-                            self.graphs['y']._pluginExecute('graph.plugin.zoom', 'onMouseDown', [ self.graphs['y'], x, y, e, true ]);
-                        },
-                        onZoomMove: function (graph, x, y, e) {
-                            self.graphs['x']._pluginExecute('graph.plugin.zoom', 'onMouseMove', [ self.graphs['x'], x, y, e, true ]);
-                            self.graphs['y']._pluginExecute('graph.plugin.zoom', 'onMouseMove', [ self.graphs['y'], x, y, e, true ]);
-                        },
-                        onZoomEnd: function (graph, x, y, e) {
-                            self.graphs['x']._pluginExecute('graph.plugin.zoom', 'onMouseUp', [ self.graphs['x'], x, y, e, true ]);
-                            self.graphs['y']._pluginExecute('graph.plugin.zoom', 'onMouseUp', [ self.graphs['y'], x, y, e, true ]);
-                        },
-                        onDblClick: function (x, y, prefs, e) {
-                            self.graphs['y']._pluginExecute('graph.plugin.zoom', 'onDblClick', [ self.graphs['y'], x, y, { mode: 'total' }, e, true ]);
-                            self.graphs['x']._pluginExecute('graph.plugin.zoom', 'onDblClick', [ self.graphs['x'], x, y, { mode: 'total' }, e, true ]);
-                        }
-                    }
-                },
-                dblclick: {
-                    type: 'plugin',
-                    plugin: 'graph.plugin.zoom',
-                    options: {
-                        mode: 'total'
-                    }
-                },
-                pluginAction: {
-                    'graph.plugin.zoom': { shift: false, ctrl: false },
-                    'graph.plugin.shape': { shift: true, ctrl: false }
-                },
-                wheel: {
-                    type: 'toSeries'
-                }
+                  if(s == 0){
+                      r = g = b = l; // achromatic
+                  }else{
+                   
+                      var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                      var p = 2 * l - q;
+                      r = hue2rgb(p, q, h + 1/3);
+                      g = hue2rgb(p, q, h);
+                      b = hue2rgb(p, q, h - 1/3);
+                  }
+
+                  return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+              }
+
+            var nmr = new NMR({
+                dom: this.dom,
+                mode: '2d',
+                symmetric: true,
+                minimap: false
             });
 
-            this.series['_2d'] = {};
+            this.nmr = nmr;
 
-            // Create 1D x graph
-            this.graphs['x'] = new Graph(this.dom.find('.nmr-1d-x').get(0), {
-                close: {
-                    left: false,
-                    top: false,
-                    right: false
+        /*    nmr.load( {
+
+                urls: {
+                    twoD: 'components/jsNMR/test/cosy/84-74-2_cosygpppqf.jdx',
+                    x: 'components/jsNMR/test/cosy/84-74-2_zg.jdx'
                 },
-                paddingBottom: 0,
-                paddingTop: 0,
-                paddingLeft: 0,
-                paddingRight: 0,
-                plugins: {
-                    'graph.plugin.zoom': {
-                        zoomMode: 'x',
-                        onZoomStart: function (graph, x, y, e) {
-                            self.graphs[ '_2d' ]._pluginExecute('graph.plugin.zoom', 'onMouseDown', [ self.graphs[ '_2d' ], x, undefined, e, true ]);
-                        },
-                        onZoomMove: function (graph, x, y, e) {
-                            self.graphs[ '_2d' ]._pluginExecute('graph.plugin.zoom', 'onMouseMove', [ self.graphs[ '_2d' ], x, undefined, e, true ]);
-                        },
-                        onZoomEnd: function (graph, x, y, e) {
-                            self.graphs[ '_2d' ]._pluginExecute('graph.plugin.zoom', 'onMouseUp', [ self.graphs[ '_2d' ], x, undefined, e, true ]);
-                        },
-                        onDblClick: function (x, y, prefs, e) {
-                            self.graphs[ '_2d' ]._pluginExecute('graph.plugin.zoom', 'onDblClick', [ self.graphs[ '_2d' ], x, y, { mode: 'xtotal' }, e, true ]);
-                        }
-                    }
+
+                lineColor: 'rgb(' + hslToRgb( 100 / 360, 0.8, 0.4 ).join() + ')',
+                twoDColor: {
+
+                    fromPositive: { h: 100, s: 0.3, l: 0.7 },
+                    toPositive: { h: 100, s: 1, l: 0.5},
+
+                    fromNegative: { h: 100, s: 0.3, l: 0.5  },
+                    toNegative: { h: 100, s: 1, l: 0.3 }
                 },
-                dblclick: {
-                    type: 'plugin',
-                    plugin: 'graph.plugin.zoom',
-                    options: {
-                        mode: 'total'
-                    }
-                },
-                pluginAction: {
-                    'graph.plugin.zoom': { shift: false, ctrl: false },
-                    'graph.plugin.shape': { shift: true, ctrl: false }
-                }
+                label: 'Chemical 1'
             });
-
-            // Created 1D y serie
-            this.series['x'] = this.graphs['x'].newSerie('serieX', { useSlots: false })
-                .autoAxis();
-            this.series['x'].getYAxis()
-                .setDisplay(false)
-                .togglePrimaryGrid(false)
-                .toggleSecondaryGrid(false);
-            this.series['x'].getXAxis()
-                .flip(true)
-                .togglePrimaryGrid(false)
-                .toggleSecondaryGrid(false).
-                setTickPosition('outside');
-
-            // Create 1D y graph
-            this.graphs['y'] = new Graph(this.dom.find('.nmr-1d-y').get(0), {
-                close: {
-                    left: false,
-                    top: false,
-                    right: false
-                },
-                paddingBottom: 0,
-                paddingTop: 0,
-                paddingLeft: 0,
-                paddingRight: 10,
-                plugins: {
-                    'graph.plugin.zoom': {
-                        zoomMode: 'y',
-                        onZoomStart: function (graph, x, y, e) {
-                            self.graphs[ '_2d' ]._pluginExecute('graph.plugin.zoom', 'onMouseDown', [ self.graphs[ '_2d' ], undefined , y, e, true ]);
-                        },
-                        onZoomMove: function (graph, x, y, e) {
-                            self.graphs[ '_2d' ]._pluginExecute('graph.plugin.zoom', 'onMouseMove', [ self.graphs[ '_2d' ], undefined , y, e, true ]);
-                        },
-                        onZoomEnd: function (graph, x, y, e) {
-                            self.graphs[ '_2d' ]._pluginExecute('graph.plugin.zoom', 'onMouseUp', [ self.graphs[ '_2d' ], undefined, y, e, true ]);
-                        },
-                        onDblClick: function (x, y, prefs, e) {
-                            self.graphs[ '_2d' ]._pluginExecute('graph.plugin.zoom', 'onDblClick', [ self.graphs[ '_2d' ], x, y, { mode: 'ytotal' }, e, true ]);
-                        }
-                    }
-                },
-                dblclick: {
-                    type: 'plugin',
-                    plugin: 'graph.plugin.zoom',
-                    options: {
-                        mode: 'total'
-                    }
-                },
-                pluginAction: {
-                    'graph.plugin.zoom': { shift: false, ctrl: false },
-                    'graph.plugin.shape': { shift: true, ctrl: false }
-                },
-                wheel: {
-                    type: 'plugin',
-                    plugin: 'graph.plugin.zoom',
-                    options: {
-                        direction: 'x'
-                    }
-                }
-            });
-
-            // Create 1D y serie
-            this.series['y'] = this.graphs['y'].newSerie('serieY', { flip: true, useSlots: false })
-                .setXAxis(self.graphs['y'].getBottomAxis())
-                .setYAxis(self.graphs['y'].getRightAxis());
-            this.series['y'].getYAxis()
-                .togglePrimaryGrid(false)
-                .toggleSecondaryGrid(false)
-                .flip(true)
-                .setTickPosition('outside');
-            this.series['y'].getXAxis()
-                .togglePrimaryGrid(false)
-                .toggleSecondaryGrid(false)
-                .setDisplay(false)
-                .flip(true);
-
-            this.resolveReady();
+*/
 
         },
 
         onResize: function () {
-            if (this.graphs['_2d']) {
-                this.graphs['_2d'].resize(this.width - 160, this.height - 160);
+
+            this.nmr.resize2DTo( this.width, this.height );
+/*
+            if (this.nmr.graphs['_2d']) {
+                this.nmr.graphs['_2d'].resize(this.width - 160, this.height - 160);
             }
-            if (this.graphs['x']) {
-                this.graphs['x'].resize(this.width - 160, 150);
+            if (this.nmr.graphs['x']) {
+                this.nmr.graphs['x'].resize(this.width - 160, 150);
             }
-            if (this.graphs['y']) {
-                this.graphs['y'].resize(150, this.height - 160);
+            if (this.nmr.graphs['y']) {
+                this.nmr.graphs['y'].resize(150, this.height - 160);
             }
-            this.redraw();
+            this.redraw();*/
         },
 
         update: {
 
             jcampx: function (moduleValue) {
+                console.log( moduleValue );
                 this.addSerieJcampXOrY(moduleValue, true, false);
             },
 
@@ -221,7 +114,9 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
                 var self = this;
                 JcampConverter.convert(String(moduleValue.get()), true).then(function (result) {
                     var data = result.contourLines;
-                    self.get2dSerie(varName).setData(data);
+
+
+                    self.nmr.setSerie2D( "SomeName", data, {} );
                     self.redraw();
                 });
             },
@@ -242,83 +137,36 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
         },
 
 
-        addSerieJcampXOrY: function (value, x, y) {
+        addSerieJcampXOrY: function( value, x, y ) {
             var self = this;
+
+            name = "SomeName";
+            var options = {
+                 label: 'Chemical 1'
+            };
+
             JcampConverter.convert(String(value.get()), true).then(function (result) {
                 var data = result.spectra[0].data[0];
+
                 if (x) {
-                    self.series['x'].setData(data);
+                    self.nmr.setSerie2DX( name, data, options );
                 }
+
                 if (y) {
-                    self.series['y'].setData(data);
+
+                    self.nmr.setSerie2DY( name, data, options );
+
                 }
                 self.redraw();
             });
         },
 
         redraw: function () {
-            var graphY = this.graphs['y'],
-                graphX = this.graphs['x'],
-                graph2D = this.graphs['_2d'];
-            var serieY,
-                serieX;
-            if (graphY) {
-                graphY.redraw();
-                graphY.autoscaleAxes();
-                graphY.drawSeries();
-                serieY = this.series['y'];
-            }
-            if (graphX) {
-                graphX.redraw();
-                graphX.autoscaleAxes();
-                graphX.drawSeries();
-                serieX = this.series['x'];
-            }
-            if (graph2D) {
-
-                if (serieX) {
-                    var twoDX = this.get2d('X');
-                    if(serieX.getMinX() < twoDX.min) {
-                        serieX.getXAxis().forceMin(serieX.getMinX());
-                        this.force('X', 'Min', serieX.getMinX())
-                    } else {
-                        serieX.getXAxis().forceMin(twoDX.min);
-                        this.force('X', 'Min', twoDX.min);
-                    }
-                    if(serieX.getMaxX() > twoDX.max) {
-                        serieX.getXAxis().forceMax(serieX.getMaxX());
-                        this.force('X', 'Max', serieX.getMaxX());
-                    } else {
-                        serieX.getXAxis().forceMax(twoDX.max);
-                        this.force('X', 'Max', twoDX.max);
-                    }
-                }
-
-                if (serieY) {
-                    var twoDY = this.get2d('Y');
-                    if(serieY.getMinY() < twoDY.min) {
-                        serieY.getYAxis().forceMin(serieY.getMinY());
-                        this.force('Y', 'Min', serieY.getMinY());
-                    } else {
-                        serieY.getYAxis().forceMin(twoDY.min);
-                        this.force('Y', 'Min', twoDY.min);
-                    }
-                    if(serieY.getMaxY() > twoDY.max) {
-                        serieY.getYAxis().forceMax(serieY.getMaxY());
-                        this.force('Y', 'Max', serieY.getMaxY());
-                    } else {
-                        serieY.getYAxis().forceMax(twoDY.max);
-                        this.force('Y', 'Max', twoDY.max);
-                    }
-                }
-
-                graph2D.redraw();
-                graph2D.autoscaleAxes();
-                graph2D.drawSeries();
-            }
+           this.nmr.redrawAll2D();
         },
 
         get2dSerie: function (name) {
+            return;
             if (!this.series['_2d'][name]) {
                 // Create 2D serie
                 var serie = this.graphs['_2d'].newSerie('serie2d_' + 'name', {}, 'contour')
@@ -339,6 +187,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
         },
 
         get2d: function (XY) {
+            return;
             var min = Infinity,
                 max = -Infinity,
                 series = this.series['_2d'],
@@ -360,6 +209,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
         },
 
         force: function (axis, minMax, value) {
+            return;
             var series = this.series['_2d'];
             for (var i in series) {
                 series[i]['get'+axis+'Axis']()['force'+minMax](value);
