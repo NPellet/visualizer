@@ -36,7 +36,7 @@ var EventEmitter = require("./lib/event_emitter").EventEmitter;
 
 /**
  *
- * Defines the floating pointer in the document. Whenever text is inserted or deleted before the cursor, the position of the cursor is updated.
+ * Defines a floating pointer in the document. Whenever text is inserted or deleted before the cursor, the position of the anchor is updated.
  *
  * @class Anchor
  **/
@@ -201,7 +201,7 @@ var Anchor = exports.Anchor = function(doc, row, column) {
     };
 
     /**
-     * When called, the `'change'` event listener is removed.
+     * When called, the `"change"` event listener is removed.
      *
      **/
     this.detach = function() {

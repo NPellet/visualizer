@@ -184,7 +184,7 @@ function jsFileList(path, filter) {
         filter = /_test/;
 
     return fs.readdirSync(path).map(function(x) {
-        if (x.slice(-3) == ".js" && !filter.test(x) && !/\s/.test(x))
+        if (x.slice(-3) == ".js" && !filter.test(x) && !/\s|BASE|(\b|_)dummy(\b|_)/.test(x))
             return x.slice(0, -3);
     }).filter(Boolean);
 }
@@ -502,7 +502,7 @@ function exportAce(ns, modules, requireBase, extModules) {
         if (typeof modules == "string")
             modules = [modules];
             
-        return (text + ";" + template
+        return (text.replace(/;\s*$/, "") + ";" + template
             .toString()
             .replace(/MODULES/g, JSON.stringify(modules))
             .replace(/REQUIRE_NS/g, requireBase)
