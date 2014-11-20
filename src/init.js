@@ -23,7 +23,8 @@ requirejs.config({
         bowser:             'components/bowser/bowser.min',
         'jquery-cookie':    'components/jquery-cookie/jquery.cookie',
         chemcalc:           'components/chemcalc/lib',
-		chroma:             'components/chroma-js/chroma.min'
+		chroma:             'components/chroma-js/chroma.min',
+		'src/shape.1dnmr': 'components/jsNMR/src/shape.1dnmr'
 	},
 	shim: {
 		d3: {
@@ -68,7 +69,11 @@ requirejs.config({
 		 'assignation': 'components/jsNMR/src/assignation',
 		 'jcampconverter': 'components/jcampconverter/build/jcampconverter',
 		 'lib/components/VisuMol/src/molecule': 'components/jsNMR/lib/components/VisuMol/src/molecule'
-		}
+		},
+
+			'src/shape.1dnmr': {
+ 'graph': 'components/jsgraph/dist/jsgraph.min',
+			}//'components/jsNMR/src/shape.1dnmr'
 	}
 });
 

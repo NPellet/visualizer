@@ -1,5 +1,5 @@
 
-define( [ 'require' ], function( require ) {
+define( [ 'require', 'graph' ], function( require, Graph ) {
 
 	"use strict";
 	var lineHeight = 5;
@@ -82,7 +82,7 @@ define( [ 'require' ], function( require ) {
 			//this.lines = [];
 			for(var i=peaks.length-1;i>=0;i--){
 			    //TODO How to know the base of the spectrum?????
-			    var baseLine = this._getPosition( { x: 12 } );
+			    var baseLine = this._getPosition( { x: 10 } );
 				var x1 = this._getPosition( { x: peaks[i][0] } );
 				if( this.lines[i] && x1.x && this.currentPos2y && this.currentPos1y && i<this.maxLines ) {
 					this.lines[i].setAttribute('stroke', 'green');

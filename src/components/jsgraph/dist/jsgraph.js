@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.2-5
+ * jsGraph JavaScript Graphing Library v1.10.2-6
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-11-05T13:09Z
+ * Date: 2014-11-20T09:02Z
  */
 
 (function( global, factory ) {
@@ -88,8 +88,6 @@ build['./graph.axis'] = ( function( $ ) {
       this.rectEvent.setAttribute( 'pointer-events', 'fill' );
       this.rectEvent.setAttribute( 'fill', 'transparent' );
       this.group.appendChild( this.rectEvent );
-
-      this.setEvents();
 
       this.graph.axisGroup.appendChild( this.group ); // Adds to the main axiszone
 
@@ -177,41 +175,6 @@ build['./graph.axis'] = ( function( $ ) {
     },
 
     handleMouseMoveLocal: function() {},
-
-    setEvents: function() {
-      var self = this;
-      this.rectEvent.addEventListener( 'mousedown', function( e ) {
-
-        e.stopPropagation();
-        e.preventDefault();
-        if ( e.which == 3 || e.ctrlKey ) {
-          return;
-        }
-        var coords = self.graph._getXY( e );
-
-        self.graph.currentAction = 'zooming';
-        self.graph._zoomingMode = self instanceof GraphXAxis ? 'x' : 'y';
-        self.graph._zoomingXStart = coords.x;
-        self.graph._zoomingYStart = coords.y;
-        self.graph._zoomingXStartRel = coords.x - self.graph.getPaddingLeft();
-        self.graph._zoomingYStartRel = coords.y - self.graph.getPaddingTop();
-        self.this._zoomingSquare.setAttribute( 'width', 0 );
-        self.this._zoomingSquare.setAttribute( 'height', 0 );
-
-        switch ( self.graph._zoomingMode ) {
-          case 'x':
-            self.this._zoomingSquare.setAttribute( 'y', self.graph.getPaddingTop() + self.shift - self.totalDimension );
-            self.this._zoomingSquare.setAttribute( 'height', self.totalDimension );
-            break;
-          case 'y':
-            self.this._zoomingSquare.setAttribute( 'x', self.graph.getPaddingLeft() + self.shift - self.totalDimension );
-            self.this._zoomingSquare.setAttribute( 'width', self.totalDimension );
-            break;
-        }
-
-        self.this._zoomingSquare.setAttribute( 'display', 'block' );
-      } );
-    },
 
     addLabel: function( x ) {
 
@@ -846,10 +809,12 @@ build['./graph.axis'] = ( function( $ ) {
       } else {
 
         value = value * Math.pow( 10, this.getExponentialFactor() ) * Math.pow( 10, this.getExponentialLabelFactor() );
-        if ( this.options.shiftToZero )
+        if ( this.options.shiftToZero ) {
           value -= this.dataMin;
-        if ( this.options.ticklabelratio )
+        }
+        if ( this.options.ticklabelratio ) {
           value *= this.options.ticklabelratio;
+        }
         if ( this.options.unitModification ) {
           value = this.modifyUnit( value, this.options.unitModification );
           return value;
@@ -2570,7 +2535,10 @@ build['./graph.legend'] = ( function( ) {
     paddingBottom: 10,
     paddingRight: 10,
 
-    movable: false
+    movable: false,
+
+    shapesToggleable: true,
+    isSerieHideable: true
   }
 
   var Legend = function( graph, options ) {
@@ -2631,6 +2599,7 @@ build['./graph.legend'] = ( function( ) {
     update: function() {
 
       var self = this;
+
       this.applyStyle();
 
       while ( this.subG.hasChildNodes() ) {
@@ -2670,18 +2639,18 @@ build['./graph.legend'] = ( function( ) {
 
             var serie = series[ j ];
 
-            if ( serie.isSelected() ) {
+            if ( serie.isSelected() && self.isHideable() ) {
 
-              serie.hide();
+              serie.hide( self.isToggleShapes() );
               self.graph.unselectSerie( serie );
 
             } else if ( serie.isShown() ) {
 
               self.graph.selectSerie( serie );
 
-            } else {
+            } else if ( self.isHideable() ) {
 
-              serie.show();
+              serie.show( self.isToggleShapes() );
 
             }
 
@@ -2713,6 +2682,14 @@ build['./graph.legend'] = ( function( ) {
       this.rectBottom.setAttribute( 'y', bbox.y - this.options.paddingLeft );
 
       this.svg.appendChild( this.rect );
+    },
+
+    isHideable: function() {
+      return this.options.isSerieHideable;
+    },
+
+    isToggleShapes: function() {
+      return this.options.shapesToggleable;
     },
 
     getDom: function() {
@@ -3502,14 +3479,22 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
         }
       }
 
-      if ( series ) {
+      return series;
+    },
 
-        for ( i = 0; i < axis.series.length; i++ ) {
-          series.push( axis.series[ i ] );
+    getShapesOfSerie: function( serie ) {
+
+      var shapes = [];
+      var i = this.shapes.length - 1;
+
+      for ( ; i >= 0; i-- ) {
+
+        if ( this.shapes[ i ].getSerie() == serie ) {
+          shapes.push( this.shapes[ i ] );
         }
       }
 
-      return series;
+      return shapes;
     },
 
     _resize: function() {
@@ -3632,6 +3617,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     },
 
     getSerie: function( name ) {
+
       if ( typeof name == 'number' ) {
         return this.series[ name ];
       }
@@ -3864,7 +3850,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       }
 
       return dynamicLoaderResponse;
-      
+
     },
 
     redrawShapes: function() {
@@ -5139,7 +5125,7 @@ build['./graph._serie'] = ( function( ) {
       }
     },
 
-    hide: function() {
+    hide: function( hideShapes ) {
       this.hidden = true;
       this.groupMain.setAttribute( 'display', 'none' );
 
@@ -5147,9 +5133,17 @@ build['./graph._serie'] = ( function( ) {
       this.getTextForLegend().setAttribute( 'opacity', 0.5 );
 
       this.hideImpl();
+
+      if ( hideShapes ) {
+        var shapes = this.graph.getShapesOfSerie( this );
+        for ( var i = 0, l = shapes.length; i < l; i++ ) {
+          shapes[ i ].hide();
+        }
+      }
+
     },
 
-    show: function() {
+    show: function( showShapes ) {
       this.hidden = false;
       this.groupMain.setAttribute( 'display', 'block' );
 
@@ -5159,6 +5153,13 @@ build['./graph._serie'] = ( function( ) {
       this.showImpl();
 
       this.draw();
+
+      if ( showShapes ) {
+        var shapes = this.graph.getShapesOfSerie( this );
+        for ( var i = 0, l = shapes.length; i < l; i++ ) {
+          shapes[ i ].show();
+        }
+      }
     },
 
     hideImpl: function() {},
@@ -6689,15 +6690,14 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
     removeExtraLines: function() {
 
-      var i = this.currentLineId + 1,
+      var i = this.currentLineId,
         l = this.lines.length;
 
       for ( ; i < l; i++ ) {
-
         this.groupLines.removeChild( this.lines[ i ] );
-        this.lines.splice( i, 1 );
       }
 
+      this.lines.splice( this.currentLineId, l - ( this.currentLineId ) );
       this.currentLineId = 0;
     },
 
@@ -6796,16 +6796,16 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         xpx,
         ypx,
         xpx2,
-        ypx2;
+        ypx2,
+        xAxis = this.getXAxis(),
+        yAxis = this.getYAxis();
 
       var incrXFlip = 0;
       var incrYFlip = 1;
 
       if ( this.isFlipped() ) {
-
         incrXFlip = 1;
         incrYFlip = 0;
-
       }
 
       for ( ; i < l; i++ ) {
@@ -6824,6 +6824,18 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
           x = data[ i ][ j + incrXFlip ];
           y = data[ i ][ j + incrYFlip ];
 
+          /*   if ( x < xAxis.getMin() || y < yAxis.getMin() || ( ( x > xAxis.getMax() ||  y > yAxis.getMax() ) && !this._optimizeMonotoneous ) ) {
+
+            lastPointX = x;
+            lastPointY = y;
+            continue;
+          }
+
+          if ( lastPoint ) {
+            xpx2 = this.getX( lastPointX );
+            ypx2 = this.getY( lastPointY );
+          }
+*/
           xpx2 = this.getX( x );
           ypx2 = this.getY( y );
 
@@ -6833,6 +6845,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
           if ( isNaN( xpx2 ) ||  isNaN( ypx2 ) ) {
             if ( this.counter > 0 ) {
+
               this._createLine();
             }
             continue;
@@ -6864,6 +6877,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         if ( toBreak ) {
           break;
         }
+
       }
     },
 
@@ -7189,8 +7203,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
     applyLineStyle: function( line ) {
       line.setAttribute( 'stroke', this.getLineColor() );
       line.setAttribute( 'stroke-width', this.getLineWidth() + ( this.isSelected() ? 2 : 0 ) );
-      if ( this.getLineDashArray() )
+      if ( this.getLineDashArray() ) {
         line.setAttribute( 'stroke-dasharray', this.getLineDashArray() );
+      }
       line.setAttribute( 'fill', 'none' );
       //	line.setAttribute('shape-rendering', 'optimizeSpeed');
     },
@@ -8405,7 +8420,7 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
       for ( ; i < l; i++ ) {
         this.currentLine = "";
         j = 0, k = 0;
-
+        
         for ( arr = this.data[ i ].lines, m = arr.length; j < m; j += 4 ) {
 
           var lastxpx, lastypx;
@@ -11092,7 +11107,7 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
 
       var x = ( this.firstX + this.lastX ) / 2 + "px";
       var y = ( this.lastPointY + this.firstPointY ) / 2 + "px";
-      var flip = this.serie.isFlipped();
+      var flip = this.serie ? this.serie.isFlipped() :  false;
 
       this._setLabelPosition( labelIndex, {
         x: flip ? y : x,

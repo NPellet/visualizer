@@ -211,13 +211,11 @@
 			}
 
 			if( peak.syncTo ) {
-
 				peak.syncTo.kill();
 				nmr.integrals[ getOtherMode( mode ) ].splice( nmr.integrals[ getOtherMode( nmr, mode ) ].indexOf( peak.syncTo.integral ), 1 );
 			}
 
 			integral_resizemove( nmr, mode );
-
 		}
 
 		function getOtherMode( nmr, mode ) {
@@ -504,6 +502,9 @@
 
 		NMR.prototype.setSerie2DX = function( name, data, options ) {
 
+			if( this.graphs[ 'x'].getSerie( name ) ) {
+				return;
+			}
 			var serie_x = this.graphs['x'].newSerie(name, { label: options.label, useSlots: true })
 				.setLabel( "My serie" )
 				.autoAxis()
@@ -529,6 +530,9 @@
 		NMR.prototype.setSerie2DY = function( name, data, options ) {
 
 	
+			if( this.graphs[ 'y'].getSerie( name ) ) {
+				return;
+			}
 
 			var serie_y = this.graphs['y'].newSerie(name, { label: options.label, flip: true, useSlots: true } )
 				.setLabel( "My serie" )
@@ -552,37 +556,42 @@
 			if( options.setLineStyle ) {
 				serie_y.setLineStyle( options.lineStyle );
 			}
+
+
 					
 		}
 
 		NMR.prototype.setSerie2D = function( name, data, options ) {
 
+			if( this.graphs[ '_2d'].getSerie( name ) ) {
+				return;
+			}
 
 			var serie_2d = this.graphs[ '_2d' ].newSerie(name, { label: options.label }, 'contour' )
 				.setLabel( "My serie" )
 				.autoAxis()
-				.setData( series.twoD.contourLines )
-
+				.setData( data )
+/*
 			serie_2d.getXAxis().forceMin( serie_x.getXAxis().getMinValue( ) );
 			serie_2d.getXAxis().forceMax( serie_x.getXAxis().getMaxValue( ) );
 
 			serie_2d.getYAxis().forceMin( serie_y.getYAxis().getMinValue( ) );
 			serie_2d.getYAxis().forceMax( serie_y.getYAxis().getMaxValue( ) );
 
-
-			if( this.options.minimap && this.graphs[ '_2d-minimap' ] ) {
+*/
+			if( this.options.minimap && this.graphs[ '_2d-minimap' ] && 1 == 0) {
 
 				
 				var serie_2d_minimap = this.graphs[ '_2d-minimap' ].newSerie("serie2d", { label: options.label }, 'contour' )
 					.autoAxis()
 					.setData( series.twoD.contourLines )
-
+/*
 				serie_2d_minimap.getXAxis().forceMin( serie_x.getXAxis().getMinValue( ) );
 				serie_2d_minimap.getXAxis().forceMax( serie_x.getXAxis().getMaxValue( ) );
 
 				serie_2d_minimap.getYAxis().forceMin( serie_y.getYAxis().getMinValue( ) );
 				serie_2d_minimap.getYAxis().forceMax( serie_y.getYAxis().getMaxValue( ) );
-
+*/
 				this.minimapClip.setSerie( serie_2d_minimap );
 
 				this.graphs[ '_2d-minimap' ].redraw( );
@@ -622,6 +631,10 @@
 
 		NMR.prototype.redrawAll2D = function() {
 
+			this.graphs[ 'y' ].updateAxes();
+			this.graphs[ 'x' ].updateAxes();
+
+
 			this.graphs['y'].redraw( );
 			this.graphs['y'].drawSeries();	
 
@@ -631,6 +644,13 @@
 			this.graphs[ '_2d' ].redraw( );
 			this.graphs[ '_2d' ].drawSeries();
 
+
+
+			this.graphs[ '_2d' ].getXAxis().forceMin( this.graphs['x'].getXAxis().getMinValue() );
+			this.graphs[ '_2d' ].getXAxis().forceMax( this.graphs['x'].getXAxis().getMaxValue() );
+//console.log( this.graphs['y'].getYAxis().getMinValue() );
+			this.graphs[ '_2d' ].getYAxis().forceMin( this.graphs['y'].getRightAxis().getMinValue() );
+			this.graphs[ '_2d' ].getYAxis().forceMax( this.graphs['y'].getRightAxis().getMaxValue() );
 		}
 
 
@@ -681,7 +701,7 @@
 
 					this.setSerie2DX( name, series.x.spectra[ 0 ].data[ 0 ], options );
 					this.setSerie2DY( name, series.y.spectra[ 0 ].data[ 0 ], options );
-					this.setSerie2D( name, series.x.spectra[ 0 ].data[ 0 ], options );
+					this.setSerie2D( name, series.twoD.contourLines, options );
 
 
 					/********************************************/
@@ -999,7 +1019,7 @@
 
 				onAnnotationChange: function( data, shape ) {
 
-					if( data.url == "src/shape.1dnmr" ) {
+					if( data.url.indexOf("shape.1dnmr") > -1 ) {
 
 						if( ! self.integralBasis ) {
 							self.integralBasis = shape.integral.lastSum;
@@ -1087,7 +1107,7 @@
 
 			  self.graphs[ 'x' ].shapeHandlers.onCreated.push( function( shape ) {
 
-			  	if( shape.data.url == "src/shape.1dnmr") {
+			  	if( shape.data.url.indexOf("src/shape.1dnmr") > -1) {
 
 			  		shape.set('strokeColor', shape.serie.getLineColor() );
 			  		shape.setStrokeColor();
@@ -1189,7 +1209,7 @@
 				onAnnotationChange: function( data, shape ) {
 
 
-					if( data.url == "src/shape.1dnmr" ) {
+					if( data.url.indexOf("shape.1dnmr") > -1 ) {
 
 						if( ! self.integralBasis ) {
 							self.integralBasis = shape.integral.lastSum;

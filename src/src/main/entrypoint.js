@@ -205,6 +205,7 @@ define(['jquery',
                             fetching.push(UrlData.get(entryVar.url, {
                                 Accept: 'application/json'
                             }).then(function (v) {
+
                                 var varname = entryVar.varname;
                                 data.setChild([varname], v, true);
                                 API.setVariable(varname, false, [varname]);

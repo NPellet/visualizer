@@ -1,4 +1,4 @@
-##TITLE=121-97-1
+{type:"jcamp",value:"##TITLE=121-97-1
 ##JCAMPDX= 6.0         $$ Bruker NMR JCAMP-DX V2.0
 ##DATA TYPE= nD NMR SPECTRUM
 ##DATA CLASS= NTUPLES
@@ -68,250 +68,250 @@ $$ ED_ENTRY        ACQU
 $$ ORDER           FILE
 $$ 
 $$ 
-$$ HEADER		"F2 - Acquisition Parameters"
+$$ HEADER		\"F2 - Acquisition Parameters\"
 $$ T_NAME		Date_
 $$ 		TYPE	R64
 $$ 		CLASS	ACQU
 $$ 		SUBRANGE 0.0 50000000
-$$ 		REL	"Date_=itodate(DATE)"
-$$ 		INV_REL	"DATE=datetoi(Date_,DATE)"
-$$ 		FORMAT	"%14.0f"
-$$ 		TEXT	" "
+$$ 		REL	\"Date_=itodate(DATE)\"
+$$ 		INV_REL	\"DATE=datetoi(Date_,DATE)\"
+$$ 		FORMAT	\"%14.0f\"
+$$ 		TEXT	\" \"
 $$ END
 $$ T_NAME		Time
 $$ 		TYPE	R32
 $$ 		CLASS	ACQU
 $$ 		SUBRANGE 0.0 1000000
-$$ 		REL	"Time=itotime(DATE)"
-$$ 		INV_REL	"DATE=timetoi(Time,DATE)"
-$$ 		FORMAT	"%14.2f"
-$$ 		TEXT	" "
+$$ 		REL	\"Time=itotime(DATE)\"
+$$ 		INV_REL	\"DATE=timetoi(Time,DATE)\"
+$$ 		FORMAT	\"%14.2f\"
+$$ 		TEXT	\" \"
 $$ END
 $$ NAME		INSTRUM
-$$ 		TEXT	" "
+$$ 		TEXT	\" \"
 $$ END
 $$ NAME		PROBHD
-$$ 		FORMAT	"%14.14s"
-$$ 		TEXT	" "
+$$ 		FORMAT	\"%14.14s\"
+$$ 		TEXT	\" \"
 $$ END
 $$ NAME		PULPROG
-$$ 		TEXT	" "
+$$ 		TEXT	\" \"
 $$ END
 $$ NAME		TD
-$$ 		TEXT	" "
+$$ 		TEXT	\" \"
 $$ END
 $$ NAME		SOLVENT
-$$ 		TEXT	" "
+$$ 		TEXT	\" \"
 $$ END
 $$ NAME		NS
-$$ 		TEXT	" "
+$$ 		TEXT	\" \"
 $$ END
 $$ NAME		DS
-$$ 		TEXT	" "
+$$ 		TEXT	\" \"
 $$ END
 $$ T_NAME		SWH
 $$ 		TYPE	R32
 $$ 		CLASS	ACQU
 $$ 		SUBRANGE 0.0 1e8
-$$ 		REL	"SWH=SW*SFO1"
-$$ 		INV_REL "SW=SWH/SFO1"
-$$ 		UNIT	"Hz"
-$$ 		FORMAT	"%14.3f Hz"
-$$ 		TEXT	" "
+$$ 		REL	\"SWH=SW*SFO1\"
+$$ 		INV_REL \"SW=SWH/SFO1\"
+$$ 		UNIT	\"Hz\"
+$$ 		FORMAT	\"%14.3f Hz\"
+$$ 		TEXT	\" \"
 $$ END
 $$ T_NAME          FIDRES
 $$                 TYPE    R32
 $$                 CLASS   ACQU
 $$                 SUBRANGE 0.0 100000
-$$                 REL     "FIDRES=SW*SFO1/TD"
-$$                 INV_REL "TD = nextpow(SW*SFO1/FIDRES)"
-$$ 		UNIT	"Hz"
-$$ 		FORMAT	"%14.6f Hz"
-$$ 		TEXT	" "
+$$                 REL     \"FIDRES=SW*SFO1/TD\"
+$$                 INV_REL \"TD = nextpow(SW*SFO1/FIDRES)\"
+$$ 		UNIT	\"Hz\"
+$$ 		FORMAT	\"%14.6f Hz\"
+$$ 		TEXT	\" \"
 $$ END
 $$ T_NAME          AQ
 $$ 		TYPE	R32
 $$ 		CLASS	ACQU
 $$ 		SUBRANGE 0.0 1000
-$$ 		REL	"AQ=aqcalc(SW,SFO1,TD,DIGTYP)"
-$$ 		INV_REL	"TD=tdcalc(SW,SFO1,1.0e6*AQ,DIGTYP)"
-$$ 		UNIT	"sec"
-$$ 		FORMAT	"%14.7f sec"
-$$ 		TEXT	" "
+$$ 		REL	\"AQ=aqcalc(SW,SFO1,TD,DIGTYP)\"
+$$ 		INV_REL	\"TD=tdcalc(SW,SFO1,1.0e6*AQ,DIGTYP)\"
+$$ 		UNIT	\"sec\"
+$$ 		FORMAT	\"%14.7f sec\"
+$$ 		TEXT	\" \"
 $$ END
 $$ NAME		RG
-$$ 		TEXT	" "
+$$ 		TEXT	\" \"
 $$ END
 $$ T_NAME          DW
 $$ 		TYPE	R32
 $$ 		CLASS	ACQU
 $$ 		SUBRANGE 0.0 1000000
-$$ 		REL	"DW=1/(2*SW*SFO1)"
-$$ 		INV_REL	"SW=1000000/(2*(0.005+DW)*SFO1)"
-$$ 		UNIT	"usec"
-$$ 		FORMAT	"%14.3lf usec"
-$$ 		TEXT	" "
+$$ 		REL	\"DW=1/(2*SW*SFO1)\"
+$$ 		INV_REL	\"SW=1000000/(2*(0.005+DW)*SFO1)\"
+$$ 		UNIT	\"usec\"
+$$ 		FORMAT	\"%14.3lf usec\"
+$$ 		TEXT	\" \"
 $$ END
 $$ NAME		DE
-$$ 		FORMAT	"%14.2f usec"
-$$ 		TEXT	" "
+$$ 		FORMAT	\"%14.2f usec\"
+$$ 		TEXT	\" \"
 $$ END
 $$ NAME		TE
-$$ 		FORMAT	"%14.1f K"
-$$ 		TEXT	" "
+$$ 		FORMAT	\"%14.1f K\"
+$$ 		TEXT	\" \"
 $$ END
 $$ T_NAME		D0
 $$ 		TYPE	R32
 $$ 		CLASS	ACQU
 $$ 		SUBRANGE 0.0 1e38
-$$ 		REL	"D0=D[0]"
-$$ 		INV_REL	"D[0]=D0"
-$$ 		UNIT	"sec"
-$$ 		FORMAT	"%14.8f sec"
-$$ 		TEXT	" "
+$$ 		REL	\"D0=D[0]\"
+$$ 		INV_REL	\"D[0]=D0\"
+$$ 		UNIT	\"sec\"
+$$ 		FORMAT	\"%14.8f sec\"
+$$ 		TEXT	\" \"
 $$ END
 $$ T_NAME		D1
 $$ 		TYPE	R32
 $$ 		CLASS	ACQU
 $$ 		SUBRANGE 0.0 1e38
-$$ 		REL	"D1=D[1]"
-$$ 		INV_REL	"D[1]=D1"
-$$ 		UNIT	"sec"
-$$ 		FORMAT	"%14.8f sec"
-$$ 		TEXT	" "
+$$ 		REL	\"D1=D[1]\"
+$$ 		INV_REL	\"D[1]=D1\"
+$$ 		UNIT	\"sec\"
+$$ 		FORMAT	\"%14.8f sec\"
+$$ 		TEXT	\" \"
 $$ END
 $$ T_NAME		D11
 $$ 		TYPE	R32
 $$ 		CLASS	ACQU
 $$ 		SUBRANGE 0.0 1e38
-$$ 		REL	"D11=D[11]"
-$$ 		INV_REL	"D[11]=D11"
-$$ 		UNIT	"sec"
-$$ 		FORMAT	"%14.8f sec"
-$$ 		TEXT	" "
+$$ 		REL	\"D11=D[11]\"
+$$ 		INV_REL	\"D[11]=D11\"
+$$ 		UNIT	\"sec\"
+$$ 		FORMAT	\"%14.8f sec\"
+$$ 		TEXT	\" \"
 $$ END
 $$ T_NAME		D12
 $$ 		TYPE	R32
 $$ 		CLASS	ACQU
 $$ 		SUBRANGE 0.0 1e38
-$$ 		REL	"D12=D[12]"
-$$ 		INV_REL	"D[12]=D12"
-$$ 		UNIT	"sec"
-$$ 		FORMAT	"%14.8f sec"
-$$ 		TEXT	" "
+$$ 		REL	\"D12=D[12]\"
+$$ 		INV_REL	\"D[12]=D12\"
+$$ 		UNIT	\"sec\"
+$$ 		FORMAT	\"%14.8f sec\"
+$$ 		TEXT	\" \"
 $$ END
 $$ T_NAME		D13
 $$ 		TYPE	R32
 $$ 		CLASS	ACQU
 $$ 		SUBRANGE 0.0 1e38
-$$ 		REL	"D13=D[13]"
-$$ 		INV_REL	"D[13]=D13"
-$$ 		UNIT	"sec"
-$$ 		FORMAT	"%14.8f sec"
-$$ 		TEXT	" "
+$$ 		REL	\"D13=D[13]\"
+$$ 		INV_REL	\"D[13]=D13\"
+$$ 		UNIT	\"sec\"
+$$ 		FORMAT	\"%14.8f sec\"
+$$ 		TEXT	\" \"
 $$ END
 $$ T_NAME		D16
 $$ 		TYPE	R32
 $$ 		CLASS	ACQU
 $$ 		SUBRANGE 0.0 1e38
-$$ 		REL	"D16=D[16]"
-$$ 		INV_REL	"D[16]=D16"
-$$ 		UNIT	"sec"
-$$ 		FORMAT	"%14.8f sec"
-$$ 		TEXT	" "
+$$ 		REL	\"D16=D[16]\"
+$$ 		INV_REL	\"D[16]=D16\"
+$$ 		UNIT	\"sec\"
+$$ 		FORMAT	\"%14.8f sec\"
+$$ 		TEXT	\" \"
 $$ END
 $$ T_NAME		IN0
 $$ 		TYPE	R32
 $$ 		CLASS	ACQU
 $$ 		SUBRANGE 0.0 1e38
-$$ 		REL	"IN0=IN[0]"
-$$ 		INV_REL	"IN[0]=IN0"
-$$ 		UNIT	"sec"
-$$ 		FORMAT	"%14.8f sec"
-$$ 		TEXT	" "
+$$ 		REL	\"IN0=IN[0]\"
+$$ 		INV_REL	\"IN[0]=IN0\"
+$$ 		UNIT	\"sec\"
+$$ 		FORMAT	\"%14.8f sec\"
+$$ 		TEXT	\" \"
 $$ END
-$$ HEADER		"======== CHANNEL f1 ========"
+$$ HEADER		\"======== CHANNEL f1 ========\"
 $$ NAME		SFO1
-$$ 		FORMAT	"%14.7f MHz"
-$$ 		TEXT	" "
+$$ 		FORMAT	\"%14.7f MHz\"
+$$ 		TEXT	\" \"
 $$ END
 $$ NAME		NUC1
 $$ 		NONEDIT
-$$ 		TEXT	" "
+$$ 		TEXT	\" \"
 $$ END
 $$ T_NAME		P0
 $$ 		TYPE	R32
 $$ 		CLASS	ACQU
 $$ 		SUBRANGE 0.0 1.0e10
-$$ 		REL	"P0=P[0]"
-$$ 		INV_REL	"P[0]=P0"
-$$ 		UNIT	"usec"
-$$ 		FORMAT	"%14.2f usec"
-$$ 		TEXT	" "
+$$ 		REL	\"P0=P[0]\"
+$$ 		INV_REL	\"P[0]=P0\"
+$$ 		UNIT	\"usec\"
+$$ 		FORMAT	\"%14.2f usec\"
+$$ 		TEXT	\" \"
 $$ END
 $$ T_NAME		P1
 $$ 		TYPE	R32
 $$ 		CLASS	ACQU
 $$ 		SUBRANGE 0.0 1.0e10
-$$ 		REL	"P1=P[1]"
-$$ 		INV_REL	"P[1]=P1"
-$$ 		UNIT	"usec"
-$$ 		FORMAT	"%14.2f usec"
-$$ 		TEXT	" "
+$$ 		REL	\"P1=P[1]\"
+$$ 		INV_REL	\"P[1]=P1\"
+$$ 		UNIT	\"usec\"
+$$ 		FORMAT	\"%14.2f usec\"
+$$ 		TEXT	\" \"
 $$ END
 $$ T_NAME		P17
 $$ 		TYPE	R32
 $$ 		CLASS	ACQU
 $$ 		SUBRANGE 0.0 1.0e10
-$$ 		REL	"P17=P[17]"
-$$ 		INV_REL	"P[17]=P17"
-$$ 		UNIT	"usec"
-$$ 		FORMAT	"%14.2f usec"
-$$ 		TEXT	" "
+$$ 		REL	\"P17=P[17]\"
+$$ 		INV_REL	\"P[17]=P17\"
+$$ 		UNIT	\"usec\"
+$$ 		FORMAT	\"%14.2f usec\"
+$$ 		TEXT	\" \"
 $$ END
 $$ T_NAME		PLW1
 $$ 		TYPE	R32
 $$ 		CLASS	ACQU
 $$ 		SUBRANGE 0 34.9878
-$$ 		REL	"PLW1=PLW[1]"
-$$ 		INV_REL	"PLW[1]=PLW1"
-$$ 		UNIT	"W"
-$$ 		FORMAT	"%14.8f W"
-$$ 		TEXT	"power PLW1 "
+$$ 		REL	\"PLW1=PLW[1]\"
+$$ 		INV_REL	\"PLW[1]=PLW1\"
+$$ 		UNIT	\"W\"
+$$ 		FORMAT	\"%14.8f W\"
+$$ 		TEXT	\"power PLW1 \"
 $$ END
 $$ T_NAME		PLW10
 $$ 		TYPE	R32
 $$ 		CLASS	ACQU
 $$ 		SUBRANGE 0 34.9878
-$$ 		REL	"PLW10=PLW[10]"
-$$ 		INV_REL	"PLW[10]=PLW10"
-$$ 		UNIT	"W"
-$$ 		FORMAT	"%14.8f W"
-$$ 		TEXT	"power PLW10 "
+$$ 		REL	\"PLW10=PLW[10]\"
+$$ 		INV_REL	\"PLW[10]=PLW10\"
+$$ 		UNIT	\"W\"
+$$ 		FORMAT	\"%14.8f W\"
+$$ 		TEXT	\"power PLW10 \"
 $$ END
-$$ HEADER		"====== GRADIENT CHANNEL ====="
+$$ HEADER		\"====== GRADIENT CHANNEL =====\"
 $$ NAME		GPNAM[1]
-$$ 		TEXT	" "
+$$ 		TEXT	\" \"
 $$ END
 $$ T_NAME		GPZ1
 $$ 		TYPE	R32
 $$ 		CLASS	ACQU
 $$ 		SUBRANGE -100.0 100.0
-$$ 		REL	"GPZ1=GPZ[1]"
-$$ 		INV_REL	"GPZ[1]=GPZ1"
-$$ 		UNIT	"%"
-$$ 		FORMAT	"%14.2f %"
-$$ 		TEXT	" "
+$$ 		REL	\"GPZ1=GPZ[1]\"
+$$ 		INV_REL	\"GPZ[1]=GPZ1\"
+$$ 		UNIT	\"%\"
+$$ 		FORMAT	\"%14.2f %\"
+$$ 		TEXT	\" \"
 $$ END
 $$ T_NAME		P16
 $$ 		TYPE	R32
 $$ 		CLASS	ACQU
 $$ 		SUBRANGE 0.0 1.0e10
-$$ 		REL	"P16=P[16]"
-$$ 		INV_REL	"P[16]=P16"
-$$ 		UNIT	"usec"
-$$ 		FORMAT	"%14.2f usec"
-$$ 		TEXT	" "
+$$ 		REL	\"P16=P[16]\"
+$$ 		INV_REL	\"P[16]=P16\"
+$$ 		UNIT	\"usec\"
+$$ 		FORMAT	\"%14.2f usec\"
+$$ 		TEXT	\" \"
 $$ END
 ##$RELAX= 
 ##$BRUKER FILE EXP=fq1list
@@ -860,7 +860,7 @@ $$ ##END=
 ##$BRUKER FILE EXP=prosol_History
 ##$RELAX= 
 ##$BRUKER FILE EXP=pulseprogram
-$$ # 1 "/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf"
+$$ # 1 \"/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf\"
 $$ ;cosygpppqf
 $$ ;avance-version (10/02/09)
 $$ ;2D homonuclear shift correlation
@@ -875,7 +875,7 @@ $$ ;$COMMENT=
 $$ ;$RECOMMEND=y
 $$ 
 $$ 
-$$ # 1 "/opt/topspin/exp/stan/nmr/lists/pp/Avance.incl" 1
+$$ # 1 \"/opt/topspin/exp/stan/nmr/lists/pp/Avance.incl\" 1
 $$ ;Avance3.incl
 $$ ;   for AV III
 $$ ;
@@ -883,11 +883,11 @@ $$ ;avance-version (07/12/14)
 $$ ;
 $$ ;$CLASS=HighRes Incl
 $$ ;$COMMENT=
-$$ # 165 "/opt/topspin/exp/stan/nmr/lists/pp/Avance.incl"
+$$ # 165 \"/opt/topspin/exp/stan/nmr/lists/pp/Avance.incl\"
 $$ ;$Id: Avance3.incl,v 1.9 2009/07/02 16:40:43 ber Exp $
-$$ # 15 "/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf" 2
+$$ # 15 \"/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf\" 2
 $$ 
-$$ # 1 "/opt/topspin/exp/stan/nmr/lists/pp/Grad.incl" 1
+$$ # 1 \"/opt/topspin/exp/stan/nmr/lists/pp/Grad.incl\" 1
 $$ ;Grad2.incl  -  include file for Gradient Spectroscopy
 $$ ;   for TCU3
 $$ ;
@@ -896,51 +896,51 @@ $$ ;
 $$ ;$CLASS=HighRes Incl
 $$ ;$COMMENT=
 $$ 
-$$ # 27 "/opt/topspin/exp/stan/nmr/lists/pp/Grad.incl"
+$$ # 27 \"/opt/topspin/exp/stan/nmr/lists/pp/Grad.incl\"
 $$ define list<gradient> EA=<EA>
 $$ 
 $$ 
-$$ # 31 "/opt/topspin/exp/stan/nmr/lists/pp/Grad.incl"
+$$ # 31 \"/opt/topspin/exp/stan/nmr/lists/pp/Grad.incl\"
 $$ ;$Id: Grad2.incl,v 1.13 2009/07/02 16:40:43 ber Exp $
-$$ # 16 "/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf" 2
+$$ # 16 \"/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf\" 2
 $$ 
 $$ 
-$$ # 19 "/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf"
-$$ "d11=30m"
-$$ "d12=20u"
-$$ "d13=4u"
+$$ # 19 \"/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf\"
+$$ \"d11=30m\"
+$$ \"d12=20u\"
+$$ \"d13=4u\"
 $$ 
 $$ 
-$$ "in0=inf1"
-$$ # 26 "/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf"
-$$ "d0=3u"
+$$ \"in0=inf1\"
+$$ # 26 \"/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf\"
+$$ \"d0=3u\"
 $$ 
 $$ 
-$$ # 1 "mc_line 29 file /opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf exp. def. part of mc cmd. before ze"
+$$ # 1 \"mc_line 29 file /opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf exp. def. part of mc cmd. before ze\"
 $$ define delay MCWRK
 $$ define delay MCREST
 $$ define delay d0orig
-$$ "d0orig=d0"
+$$ \"d0orig=d0\"
 $$ define loopcounter t1loop
-$$ "t1loop=0"
+$$ \"t1loop=0\"
 $$ define loopcounter ph1loop
-$$ "ph1loop=0"
+$$ \"ph1loop=0\"
 $$ define loopcounter ST1CNT
-$$ "ST1CNT = td1/(1)"
-$$ "MCWRK = 0.500000*d11"
-$$ "MCREST = d11 - d11"
+$$ \"ST1CNT = td1/(1)\"
+$$ \"MCWRK = 0.500000*d11\"
+$$ \"MCREST = d11 - d11\"
 $$ 
 $$     dccorr
-$$ # 29 "/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf"
+$$ # 29 \"/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf\"
 $$ 1 ze
-$$ # 1 "mc_line 29 file /opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf exp. def. of mc cmd. after ze"
-$$ # 30 "/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf"
-$$ # 1 "mc_line 30 file /opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf exp. start label for mc cmd."
+$$ # 1 \"mc_line 29 file /opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf exp. def. of mc cmd. after ze\"
+$$ # 30 \"/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf\"
+$$ # 1 \"mc_line 30 file /opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf exp. start label for mc cmd.\"
 $$ 2 MCWRK 
 $$ LBLST1, MCWRK
 $$   MCREST
-$$ # 31 "/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf"
-$$ # 32 "/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf"
+$$ # 31 \"/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf\"
+$$ # 32 \"/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf\"
 $$ 3 d12 pl10:f1
 $$   p17 ph3
 $$   p17*2 ph4
@@ -957,19 +957,19 @@ $$   p16:gp1
 $$   d16
 $$   4u setnmr3^0 setnmr0^34^32^33 ctrlgrad 7
 $$   go=2 ph31
-$$ # 1 "mc_line 48 file /opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf exp. mc cmd. in line"
+$$ # 1 \"mc_line 48 file /opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf exp. mc cmd. in line\"
 $$   MCWRK  wr #0 if #0 zd 
 $$ 
-$$   "t1loop+=1"
-$$       "d0=d0orig + t1loop * in0 "
+$$   \"t1loop+=1\"
+$$       \"d0=d0orig + t1loop * in0 \"
 $$   lo to LBLST1 times ST1CNT
 $$   MCWRK 
-$$   "t1loop=0"
+$$   \"t1loop=0\"
 $$   MCWRK
-$$ # 49 "/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf"
+$$ # 49 \"/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf\"
 $$ exit
 $$ 
-$$ # 52 "/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf"
+$$ # 52 \"/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf\"
 $$ ph1=0 2
 $$ ph2=0 0 2 2
 $$ ph3=0
@@ -996,7 +996,7 @@ $$ ;NS: 1 * n
 $$ ;DS: 16
 $$ ;td1: number of experiments
 $$ ;FnMODE: QF
-$$ # 79 "/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf"
+$$ # 79 \"/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf\"
 $$ ;use gradient ratio:	gp 1
 $$ ;			  10
 $$ 
@@ -1005,7 +1005,7 @@ $$ ;gpz1: 10%
 $$ 
 $$ ;use gradient files:   
 $$ ;gpnam1: SMSQ10.100
-$$ # 90 "/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf"
+$$ # 90 \"/opt/topspin/exp/stan/nmr/lists/pp/cosygpppqf\"
 $$ ;$Id: cosygpppqf,v 1.7 2010/02/10 16:23:03 ber Exp $
 ##$RELAX= 
 ##$BRUKER FILE EXP=shimvalues
@@ -62383,3 +62383,4 @@ $$ ---------------------------------
 15f266K307e06Q3a05j9A07a909D23J06r7b057q76J329B54A14
 ##END NTUPLES=nD NMR SPECTRUM
 ##END=
+"}
