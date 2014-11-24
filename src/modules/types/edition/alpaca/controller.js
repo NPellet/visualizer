@@ -30,6 +30,9 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
         },
         schema: {
             label: 'JSON schema'
+        },
+        options: {
+            label: 'Alpaca options'
         }
     };
 
@@ -41,7 +44,7 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
         }
     };
 
-    Controller.prototype.variablesIn = ['inputValue', 'schema'];
+    Controller.prototype.variablesIn = ['inputValue', 'schema', 'options'];
 
     Controller.prototype.actionsIn = {};
 
@@ -108,6 +111,19 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
                             },
                             default: 'config'
                         },
+                        optionsSource: {
+                            type: 'combo',
+                            title: 'Options source',
+                            options: [
+                                {title: 'Input variable', key: 'variable'},
+                                {title: 'Config', key: 'config'}
+                            ],
+                            displaySource: {
+                                config: 'co'
+                            },
+                            default: 'config'
+                        },
+
                         schema: {
                             type: 'jscode',
                             mode: 'json',
@@ -118,8 +134,9 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
                         options: {
                             type: 'jscode',
                             mode: 'json',
-                            title: 'Form options',
-                            default: '{}'
+                            title: 'Alpaca form options',
+                            default: '{}',
+                            displayTarget: ['co']
                         }
                     }
                 }
@@ -132,6 +149,7 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
         mode: ['groups', 'group', 0, 'mode', 0],
         sendOnChange: ['groups', 'group', 0, 'sendOnChange', 0],
         schemaSource: ['groups', 'group', 0, 'schemaSource', 0],
+        optionsSource: ['groups', 'group', 0, 'optionsSource', 0],
         schema: ['groups', 'group', 0, 'schema', 0],
         button_text: ['groups', 'group', 0, 'button_text', 0],
         hasButton: ['groups', 'group', 0, 'hasButton', 0],
@@ -157,6 +175,16 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
             $.extend(true, schema, intSchema);
         }
         return schema;
+    };
+
+    Controller.prototype.getOptions = function() {
+        var options;
+        var optionsSource = this.module.getConfiguration('optionsSource');
+        if (optionsSource === 'variable')
+            options = this.inputOptions;
+        else
+            options = JSON.parse(this.module.getConfiguration('options'));
+        return options || {};
     };
 
     Controller.prototype.onSubmit = function (data) {

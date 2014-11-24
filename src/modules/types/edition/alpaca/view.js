@@ -9,12 +9,52 @@ require.config({
     ]
 });
 
-define(['modules/default/defaultview', 'src/util/util', 'jquery', 'forms/button', 'lodash', 'alpaca'], function (Default, Util, $, Button, _, Alpaca) {
+define(['modules/default/defaultview', 'src/util/util', 'jquery', 'forms/button', 'lodash', 'alpaca'], function (Default, Util, $, Button, _) {
 
     Util.loadCss('components/alpaca/alpaca.css');
     Util.loadCss('components/alpaca/alpaca-jqueryui.css', function() {
         console.log('css loaded');
     });
+
+    var renderForm = function(that) {
+        var schema = that.module.controller.getSchema();
+        var options = that.module.controller.getOptions();
+        that.$alpaca = $('<div>').attr('id', that._id);
+        that.module.getDomContent().html(that.$alpaca);
+        that.$alpaca.html('');
+        that.$alpaca.alpaca({
+            schema: schema,
+            data: that.inputVal,
+            postRender: function(form) {
+                that._form = form;
+            },
+            options: options
+        });
+
+        if(that.module.getConfigurationCheckbox('hasButton', 'show')) {
+            that.module.getDomContent().append(new Button(that.module.getConfiguration('button_text'), function () {
+                if(that._form) {
+                    that.module.controller.onSubmit(that._form.getValue());
+                }
+            }, {color: 'green'}).render().css({
+                    marginTop: "10px"
+                }));
+        }
+
+        var debouncing = that.module.getConfiguration('debouncing', -1);
+        if (debouncing > -1) {
+            var cb = function () {
+                that.module.controller.onSubmit(that._form.getValue());
+            };
+            if (debouncing > 0) {
+                cb = _.debounce(cb, debouncing);
+            }
+            that.$alpaca.off('input change', cb);
+            that.$alpaca.on('input change', cb);
+        }
+    };
+
+    var renderFormDebounce = _.debounce(renderForm, 100);
 
     function View() {
         this._id = Util.getNextUniqueId();
@@ -26,71 +66,26 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'forms/button'
 
         },
         inDom: function () {
-            this.renderForm();
+            renderForm(this);
             this.resolveReady();
         },
         initForm: function () {
 
         },
 
-        renderForm: function() {
-            var that = this;
-            var schema = this.module.controller.getSchema();
-            this.$alpaca = $('<div>').attr('id', this._id);
-            this.module.getDomContent().html(this.$alpaca);
-            this.$alpaca.html('');
-            this.$alpaca.alpaca({
-                schema: schema,
-                data: that.inputVal,
-                postRender: function(form) {
-                    that._form = form;
-                },
-                options: JSON.parse(that.module.getConfiguration('options'))
-            });
-
-            if(this.module.getConfigurationCheckbox('hasButton', 'show')) {
-                this.module.getDomContent().append(new Button(this.module.getConfiguration('button_text'), function () {
-                    if(that._form) {
-                        that.module.controller.onSubmit(that._form.getValue());
-                    }
-                }, {color: 'green'}).render().css({
-                        marginTop: "10px"
-                    }));
-            }
-
-            var debouncing = this.module.getConfiguration('debouncing', -1);
-            if (debouncing > -1) {
-                var cb = function () {
-                    that.module.controller.onSubmit(that._form.getValue());
-                };
-                if (debouncing > 0) {
-                    cb = _.debounce(cb, debouncing);
-                }
-                this.$alpaca.off('input change', cb);
-                this.$alpaca.on('input change', cb);
-            }
-
-
-        },
-
-        updateFormData: function() {
-            this.$alpaca.alpaca({
-                data: this.inputVal
-            })
-        },
-
         update: {
             inputValue: function (value) {
                 this.inputObj = value;
                 this.inputVal = value.resurrect();
-                this.renderForm();
+                renderFormDebounce(this);
             },
             schema: function (value) {
                 this.module.controller.inputSchema = value;
-                this.renderForm();
+                renderFormDebounce(this);
             },
             options: function(value) {
-
+                this.module.controller.inputOptions = value;
+                renderFormDebounce(this);
             }
         },
         exportForm: function () {
