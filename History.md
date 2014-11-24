@@ -1,9 +1,10 @@
-HEAD
+2.9.1 / 2014-11-24
 ==================
 * New file: util/ui.js ui-related utility function.
 * util/ui.js: confirm dialog box
 * webservice_search: confirmation option
 * action_button: confirmation option
+* add support for hidden option in module's folder.json
 
 2.9.0 / 2014-11-18
 ===================
