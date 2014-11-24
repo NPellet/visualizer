@@ -607,15 +607,21 @@
 			},
 
 			blank: function() {
-
+/*
 				var i = 0,
 					l = this.gcData.length;
+*/
 
+				if( this.gcData && this.gcData.kill ) {
+					this.gcData.kill();
+				}
+
+/*
 				for( ; i < l ; i++ ) {
 					this.gcData[i].kill();
 				}
 				this.gcData = [];
-
+*/
 				if( this.msSerieMouseTrack ) {
 					this.msSerieMouseTrack.kill( true );
 					this.msSerieMouseTrack = false;

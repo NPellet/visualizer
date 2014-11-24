@@ -592,6 +592,8 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             },
 
             annotations: function (value, varName) {
+
+                console.log('Receive new annotations', value, varName )
                 API.killHighlight(this.module.getId());
                 this.annotations[varName] = this.annotations[varName] || [];
                 this.removeAnnotations(varName);
@@ -734,7 +736,13 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     var serie = this.graph.newSerie();
 
                     serie.autoAxis();
-                    serie.setData(data[ i ].data);
+                    
+
+                    if( data[ i ].data ) {
+                        serie.setData(data[ i ].data);
+                    } else {
+                        console.log( data[ i ].data );
+                    }
                     //	serie.setLabel( data[ i ].label.toString( ) );
                     serie.setLineWidth(data[ i ].lineWidth || 1);
                     serie.setLineColor(data[ i ].lineColor || Util.getColor(Util.getNextColorRGB(i, l)));

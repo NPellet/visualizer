@@ -16,7 +16,7 @@ define( [
 
 	) {
 	
-	console.log( GCMS );
+	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
 		
