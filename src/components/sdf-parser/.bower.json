@@ -1,0 +1,28 @@
+{
+  "name": "sdf-parser",
+  "main": [
+    "dist/sdf-parser.js"
+  ],
+  "description": "SDF Parser",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "keywords": [],
+  "license": "MIT",
+  "ignore": [
+    "src/*",
+    "test/*"
+  ],
+  "homepage": "https://github.com/cheminfo/sdf-parser",
+  "_release": "243f10e209",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "243f10e2094f3eb0b8b843692f84b6d53204ecda"
+  },
+  "_source": "git://github.com/cheminfo/sdf-parser.git",
+  "_target": "*",
+  "_originalSource": "cheminfo/sdf-parser"
+}

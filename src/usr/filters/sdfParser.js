@@ -1,6 +1,6 @@
 'use strict';
 
-define(['lib/chemistry/sdf-parser'], function (parse) {
+define(['components/sdf-parser/dist/sdf-parser'], function (parse) {
 
     return {
         filter: function (dataObject, resolve, reject) {
