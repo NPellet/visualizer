@@ -71,7 +71,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
 						for( i = 0, l = structure.length ; i < l ; i ++ ) {
 							jpath = structure[ i ].groups.general[ 0 ].searchOnField[ 0 ];
-							input.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value, true );
+							input.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value, [self.module.getId()] );
 						}
 
 						self.module.model.dataTriggerChange( input );
@@ -137,7 +137,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
 		update: {
 			input_object: function( varValue ) {
-
+console.log('input');
 				var self = this;
 				this.newValue( varValue );
 				
@@ -151,7 +151,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 		},
 
 		newValue: function( varValue ) {
-
+console.log( 'new');
 			var self = this,
 				structure = this.module.getConfiguration('structure') || [],
 				jpath;

@@ -481,9 +481,10 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
             var el = jpath.shift();
 
             if (jpathLength === 1) {
-                var res = self.set(el, newValue, true);
+                var res = self.set(el, newValue, true); // noTrigger
                 if (res && res.linkToParent) {
                     res.linkToParent(self, el);
+                   // console.warn("TriggerChange removed. This can loop infinitely. Trigger should be done from the module");
                     res.triggerChange(false, triggerParams);
                 } else {
                     self.triggerChange(false, triggerParams, el, res);

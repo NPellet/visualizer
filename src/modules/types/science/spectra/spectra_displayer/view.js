@@ -207,16 +207,15 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 });
 
                 graph.shapeHandlers.onAfterResized.push( function( shape ) {
-                    if( shape.data.triggerChange ) {
-                        shape.data.triggerChange();
-                    }
+
+                    self.module.model.dataTriggerChange( shape.data );
                     
                 } );
 
                 graph.shapeHandlers.onSelected.push( function( shape ) {
-                    if( shape.data.triggerChange ) {
-                        shape.data.triggerChange();
-                    }
+
+                    self.module.model.dataTriggerChange( shape.data );
+                    
                 } );
 
 
@@ -628,6 +627,12 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                                 shape.unHighlight();
                             }
                         }, false, self.module.getId());
+
+                        self.module.model.dataListenChange( annotations[ i ], function( v ) {
+console.log('redraw');
+                             shape.redraw();
+
+                        }, 'annotations');
 
                         shape.draw();
                         shape.redraw();
