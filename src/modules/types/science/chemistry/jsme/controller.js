@@ -57,7 +57,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                                 rbutton: 'Show R button',
                                 nohydrogens: 'Hide hydrogens',
                                 query: 'Enable query features',
-                                autoez: 'Automatic generation of SMULES with E,Z stereochemistry',
+                                autoez: 'Automatic generation of SMILES with E,Z stereochemistry',
                                 nocanonize: 'Prevent canonicalization and detection of aromaticity',
                                 nostereo: 'No stereochemistry in SMILES',
                                 reaction: 'Enable reaction input',

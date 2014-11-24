@@ -72,6 +72,20 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                         options.plugins['graph.plugin.drag'] = {};
                         options.pluginAction['graph.plugin.zoom'] = {shift: false, ctrl: false};
                         options.pluginAction['graph.plugin.drag'] = {shift: true, ctrl: false};
+
+/*
+                        // UPDATE NORMAN FOR DEV
+                        
+                        options.plugins['graph.plugin.shape'] = { type: 'rangex', color: [ 0, 100, 100 ], fillColor: 'rgba(0,100,100,0.3)', strokeColor: 'rgba(0,100,100,1)', strokeWidth: 2 }
+                        
+                        options.pluginAction[ 'graph.plugin.zoom'] = {};
+                        options.pluginAction[ 'graph.plugin.drag'] = {};
+                        options.pluginAction[ 'graph.plugin.shape'] = { shift: true, ctrl: false };
+
+                        // END UPDATE NORMAN FOR DEV
+
+*/
+
                         options.dblclick = {
                             type: 'plugin',
                             plugin: 'graph.plugin.zoom',
@@ -191,6 +205,22 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 graph.shapeHandlers.mouseOut.push(function (shape) {
                     API.highlight(shape.data, 0);
                 });
+
+                graph.shapeHandlers.onAfterResized.push( function( shape ) {
+                    if( shape.data.triggerChange ) {
+                        shape.data.triggerChange();
+                    }
+                    
+                } );
+
+                graph.shapeHandlers.onSelected.push( function( shape ) {
+                    if( shape.data.triggerChange ) {
+                        shape.data.triggerChange();
+                    }
+                } );
+
+
+
 
                 self.onResize();
                 self.resolveReady();
@@ -574,8 +604,10 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                         var shape = self.graph.newShape(annotation, null, null, true);
 
                         self.annotations[varName][i] = shape;
-                        shape.setSelectable(false);
-                        shape.setMovable(false);
+
+                        console.warn('Norman modification: spectra displayer. What if I want to change the annotation ? You should pass a lock directly to the shape info');
+                        //shape.setSelectable(false);
+                        //shape.setMovable(false);
 //TODO annotation.onChange
 //                Debug.debug('annotation.onChange is disabled, need to be fixed');
 //                annotation.onChange( annotation, function( value ) {
@@ -775,7 +807,9 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
         onActionReceive: {
             fromTo: function (value) {
-                this.graph.getBottomAxis()._doZoomVal(value.value.from, value.value.to, true);
+
+                value = value.get();
+                this.graph.getBottomAxis()._doZoomVal(value.from, value.to, true);
 
                 this.graph.redraw(true);
                 this.graph.drawSeries();

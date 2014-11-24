@@ -2,7 +2,7 @@ define( [
 
 	'modules/default/defaultview', 
 	'src/util/datatraversing', 
-	'./gcms', 
+	'lib/gcms/gcms', 
 	'src/util/util', 
 	'src/util/api'
 
@@ -10,33 +10,127 @@ define( [
 
 		Default, 
 		Traversing, 
-		gcms, 
+		GCMS, 
 		Util, 
 		API
 
 	) {
 	
+	console.log( GCMS );
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
 		
 		init: function() {
 
-			var html = [];
-			html.push('<div class="gcms"><div class="gc"></div><div class="ms"></div></div>');
+			
 			this.namedSeries = {};
-			this.dom = $(html.join(''));
-			this.module.getDomContent().html(this.dom);
+			
+			var div1 = document.createElement('div');
+			var div2 = document.createElement('div');
+
+			var domGraph = document.createElement("div");
+
+			domGraph.appendChild( div1 );
+			domGraph.appendChild( div2 );
+
+			div2.style.width = '100%';
+			div2.style.height = '100px';
+
+			div1.style.width = '100%';
+			div1.style.height = '250px';
+			
+			this.div1 = div1;
+			this.div2 = div2;
+
+			this.dom = domGraph;
+			this.module.getDomContent().html( domGraph );
 			this.resolveReady();
 		},
 
 		unload: function() {
-			this.gcmsInstance.unload();
+			//this.gcmsInstance.unload();
 			this.dom.remove();
 		},
 
 		inDom: function() {
 
 			var self = this;
+
+			var gcmsinstance = new GCMS( this.div1, this.div2, {
+
+										
+				AUCCreated: function( auc ) {
+
+					var self = this;
+					var pos = Math.round( auc.data.pos.x );
+					var pos2 = Math.round( auc.data.pos2.x );
+//					var color = rgbToHex.apply( this, auc.data.color );
+
+
+				},
+
+				AUCChange: function( auc ) {
+
+					var pos = Math.round( auc.data.pos.x );
+					var pos2 = Math.round( auc.data.pos2.x );
+
+					if( auc.msFromAucSerie ) {
+						auc.msFromAucSerie.setLineColor( 'rgba(255, 0, 0, 1)' );
+						auc.msFromAucSerie.applyLineStyles();
+
+//									auc.msFromAucSerie.showPeakPicking();
+					}
+
+					if( auc.data._originalSource ) {
+
+						auc.data._originalSource.set('from', pos );
+						auc.data._originalSource.set('to', pos2 );
+
+						auc.data._originalSource.triggerChange();
+					}
+				},
+
+				AUCSelected: function( auc ) {
+
+					if( auc.msFromAucSerie ) {
+						auc.msFromAucSerie.setLineColor( 'rgba(255, 0, 0, 1)' );
+						auc.msFromAucSerie.applyLineStyles();
+
+						auc.msFromAucSerie.showPeakPicking( true );
+					}
+				},
+
+				AUCUnselected: function( auc ) {
+
+					var rgb = auc.data.color;
+
+					auc.set('fillColor', 'rgba(' + rgb[ 0 ] + ', ' + rgb[ 1 ] + ', ' + rgb[ 2 ] + ', 0.3)');
+					auc.set( 'strokeColor', 'rgba(' + rgb[ 0 ]+ ', ' + rgb[ 1 ] + ', ' + rgb[ 2 ] + ', 1)');
+
+					auc.setFillColor();
+					auc.setStrokeColor();
+
+					if( auc.msFromAucSerie ) {
+						auc.msFromAucSerie.setLineColor( 'rgba(' + rgb[ 0 ] + ', ' + rgb[ 1 ] + ', ' + rgb[ 2 ] + ', 0.3)' );
+						auc.msFromAucSerie.applyLineStyles();
+						auc.msFromAucSerie.hidePeakPicking( true );
+					}
+
+				},
+
+				AUCRemoved: function( auc ) {
+
+
+					if( auc.msFromAucSerie ) {
+						auc.msFromAucSerie.kill();
+					}
+
+				}
+
+			} );
+
+
+/*
 			var _gcms = new gcms();
 			_gcms.setMSContinuous( this.module.getConfiguration( 'continuous' ) );
 			_gcms.inDom(this.dom.find('.gc').get(0), this.dom.find('.ms').get(0));
@@ -109,23 +203,23 @@ define( [
 
 			_gcms.msIonAdded = function( el ) {
 				
-			};
+			};*/
 				
-			this.gcmsInstance = _gcms;
+			this.gcmsInstance = gcmsinstance;
 		},
 
 		unload: function() {
 			this.dom.remove();
-			this.gcmsInstance = false;
+			//this.gcmsInstance = false;
 		},
 
 		onResize: function() {
-			this.gcmsInstance.resize(this.width, this.height);
+		//	this.gcmsInstance.resize(this.width, this.height);
 		},
 		
 		blank: {
 			jcamp: function(varname) {
-				this.gcmsInstance.blank();
+			//	this.gcmsInstance.blank();
 			}
 		},
 
@@ -152,7 +246,6 @@ define( [
 							self.module.controller.createDataFromEvent( "onJCampParsed", "msdata", jcamp.gcms.ms );
 							self.module.controller.createDataFromEvent( "onJCampParsed", "gcdata", jcamp.gcms.gc );
 
-							self.resetAnnotationsGC( );
 							self.jcamp = jcamp;
 						}
 					});
@@ -161,16 +254,17 @@ define( [
 			},
 
 			'annotationgc': function(value) {
-				if(!value)
+				if( ! value ) {
 					return;
-				this.annotations = value.get();
-				this.resetAnnotationsGC();
+				}
+		
+				this.resetAnnotationsGC( );
+				this.addAnnotations( value );
 			},
 
 			'gcms': function(moduleValue) {
 				this.gcmsInstance.setGC(moduleValue.gc);
 				this.gcmsInstance.setMS(moduleValue.ms);
-				this.resetAnnotationsGC();
 			},
 
 			'gc': function(moduleValue) {
@@ -213,19 +307,22 @@ define( [
 
 		resetAnnotationsGC: function() {
 
-			if(!this.gcmsInstance || !this.annotations)
+
+			if( ! this.gcmsInstance ) {
 				return;
-
-			if ( this.shapes ) {
-				for( var i = 0, l = this.shapes.length; i < l; i++) {
-					this.shapes[i].kill();
-				}
 			}
 
-			this.shapes = [];
-			for(var i = 0, l = this.annotations.length; i < l; i++) {
-				this.shapes.push(this.doAnnotation(this.annotations[i]));
-			}
+			this.gcmsInstance.killAllAUC();
+		},
+
+		addAnnotations: function( a ) {
+
+			var self = this;
+			a.map( function( source ) {
+
+				var shapeData = self.gcmsInstance.addAUC( source.from, source.to );
+				shapeData._originalSource = source;
+			});
 		},
 
 
@@ -249,6 +346,7 @@ define( [
 			},
 
 			displayChemicalLabels: function() {
+				return;
 				var i = 0, 
 					l = this.shapes.length;
 
@@ -258,6 +356,7 @@ define( [
 			},
 
 			hideChemicalLabels: function() {
+				return;
 				var i = 0, 
 					l = this.shapes.length;
 
@@ -269,6 +368,11 @@ define( [
 		},
 
 		doAnnotation: function(annotation) {
+
+			return;
+
+
+
 			var self = this;
 			var shape = this.gcmsInstance.getGC().makeShape(annotation, {}, false);
 

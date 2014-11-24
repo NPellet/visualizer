@@ -50,6 +50,7 @@
     "x2js": "*",
     "alpaca": "*",
     "setImmediate": "YuzuJS/setImmediate#~1.0.2",
-    "chroma-js": "~0.6.1"
+    "chroma-js": "~0.6.1",
+    "sdf-parser": "cheminfo/sdf-parser"
   }
 }
