@@ -74,6 +74,12 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
                             title: 'Debouncing',
                             default: -1
                         },
+                        sendOnLoad: {
+                            type: 'checkbox',
+                            title: 'Send on load',
+                            options: {yes: 'Yes'},
+                            default: []
+                        },
                         output: {
                             type: 'combo',
                             title: 'Output result',
@@ -148,6 +154,7 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
         output: ['groups', 'group', 0, 'output', 0],
         mode: ['groups', 'group', 0, 'mode', 0],
         sendOnChange: ['groups', 'group', 0, 'sendOnChange', 0],
+        sendOnLoad: ['groups', 'group', 0, 'sendOnLoad', 0],
         schemaSource: ['groups', 'group', 0, 'schemaSource', 0],
         optionsSource: ['groups', 'group', 0, 'optionsSource', 0],
         schema: ['groups', 'group', 0, 'schema', 0],

@@ -27,6 +27,9 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'forms/button'
             data: that.inputVal,
             postRender: function(form) {
                 that._form = form;
+                if(that.module.getConfigurationCheckbox('sendOnLoad', 'yes')) {
+                    that.module.controller.onSubmit(that._form.getValue());
+                }
             },
             options: options
         });
