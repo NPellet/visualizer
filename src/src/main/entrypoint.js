@@ -125,25 +125,29 @@ define(['jquery',
         var view = Versioning.getView();
         var data = Versioning.getData();
 
-        var def = new Promise(function (resolve, reject) {
-            if (view.init_script) {
-                var prefix = '(function init_script(init_deferred){"use strict";\n';
-                var script = view.init_script[0].groups.general[0].script[0] || "";
-                var suffix = "\n})({resolve:resolve});";
-                if (script.indexOf("init_deferred") === -1) {
-                    suffix += "resolve();";
-                }
-                eval(prefix + script + suffix);
-            } else {
-                resolve();
-            }
+        Promise.all([loadCustomFilters(), loadMainVariables(), loadPouchVariables()]).then(doInitScript).then(function() {
+            ActionManager.viewHasChanged(view);
+        }, function(e) {
+            console.error('View loading problem', e);
         });
 
+        function doInitScript() {
+            return new Promise(function (resolve, reject) {
+                if (view.init_script) {
+                    var prefix = '(function init_script(init_deferred){"use strict";\n';
+                    var script = view.init_script[0].groups.general[0].script[0] || "";
+                    var suffix = "\n})({resolve:resolve});";
+                    if (script.indexOf("init_deferred") === -1) {
+                        suffix += "resolve();";
+                    }
+                    eval(prefix + script + suffix);
+                } else {
+                    resolve();
+                }
+            });
+        }
 
-        def.then(function () {
-
-            ActionManager.viewHasChanged(view);
-
+        function loadCustomFilters() {
             // Load custom filters
             if (view.custom_filters) {
                 var filters = view.custom_filters[0].sections.filters,
@@ -179,7 +183,9 @@ define(['jquery',
                     }
                 }
             }
+        }
 
+        function loadMainVariables() {
             // If no variable is defined in the view, we start browsing the data and add all the first level
             if (view.variables.length === 0) {
                 for (var i in data) {
@@ -230,10 +236,12 @@ define(['jquery',
                 })(i);
             }
 
-            Promise.all(fetching).then(function () {
+            return Promise.all(fetching).then(function () {
                 API.stopLoading("Fetching remote variables");
             });
+        }
 
+        function loadPouchVariables() {
             API.loading("Fetching local variables");
             var pouching = [], pouchVariable;
             for (var i = 0, l = view.pouchvariables.length; i < l; i++) {
@@ -252,12 +260,6 @@ define(['jquery',
                 }
             }
 
-            Promise.all(pouching).then(function () {
-                API.stopLoading("Fetching local variables");
-            }, function (err) {
-                Debug.error("Unable to fetch local variables", err)
-            });
-
             // Pouch DB replication
             PouchDBUtil.abortReplications();
             if (view.couch_replication) {
@@ -271,9 +273,15 @@ define(['jquery',
                     }
                 }
             }
-        }, function (e) {
-            Debug.error("Error executing the init script", e);
-        });
+
+            return Promise.all(pouching).then(function () {
+                API.stopLoading("Fetching local variables");
+            }, function (err) {
+                Debug.error("Unable to fetch local variables", err)
+            });
+
+        }
+
     }
 
     function configureEntryPoint() {
