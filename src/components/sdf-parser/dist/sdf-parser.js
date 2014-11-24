@@ -61,10 +61,9 @@ function parse(sdf, options) {
     var statistics = [];
 
     for (var key in labels) {
-        statistics.push({
-            label: key,
-            number: labels[key]
-        });
+        var statistic=labels[key];
+        statistic.label=key;
+        statistics.push(statistic);
     }
 
     return {
