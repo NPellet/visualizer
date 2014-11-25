@@ -15,7 +15,7 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
             });
             var editorRow = $('<tr>').appendTo(table).css('height', 'auto');
             this.buttonRow = $('<tr>').appendTo(table).css('height', '30px');
-            this.editorCell = $('<td>').appendTo(editorRow);
+            this.editorCell = $('<td>').css('height', '100%').appendTo(editorRow);
             this.buttonCell = $('<td>').appendTo(this.buttonRow).css('text-align', 'center');
 
             this.module.getDomContent().html(table);
