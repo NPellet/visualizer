@@ -1,3 +1,7 @@
+HEAD
+=================
+Slickgrid: option that provides an input on the header of each column where you can just type in to search something.
+
 2.9.2 / 2014-11-25
 ==================
 * fix sdf-parser not being in the build
