@@ -1,3 +1,7 @@
+2.9.2 / 2014-11-25
+==================
+* fix sdf-parser not being in the build
+
 2.9.1 / 2014-11-24
 ==================
 * New file: util/ui.js ui-related utility function.
