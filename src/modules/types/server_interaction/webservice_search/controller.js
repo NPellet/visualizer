@@ -111,8 +111,7 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
                         },
                         resultfilter: {
                             type: 'jscode',
-                            title: 'Result data filter',
-                            'default': '// console.log(data);'
+                            title: 'Result data filter'
                         },
                         askConfirm: {
                             type: 'checkbox',
