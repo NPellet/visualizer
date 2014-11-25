@@ -1,0 +1,25 @@
+{
+    "1D": [
+        {
+            "name": "zg30.jdx",
+            "jcamp": {
+                "type": "jcamp",
+                "url": "../testcase/data/jsnmr1d/jcamp/zg.jdx"
+            }
+        },
+        {
+            "name": "zggd.jdx",
+            "jcamp": {
+                "type": "jcamp",
+                "url": "../testcase/data/jsnmr1d/jcamp/zggd.jdx"
+            }
+        },
+        {
+            "name": "zgpg.jdx",
+            "jcamp": {
+                "type": "jcamp",
+                "url": "../testcase/data/jsnmr1d/jcamp/zgpg.jdx"
+            }
+        }
+    ]
+}

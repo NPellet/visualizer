@@ -4,21 +4,21 @@
             "name": "ethylbenzene/cosy.jdx",
             "jcamp": {
                 "type": "jcamp",
-                "url": "../testcase/data/nmr2d/jcamp/cosy.jdx"
+                "url": "../testcase/data/jsnmr2d/jcamp/cosy.jdx"
             }
         },
         {
             "name": "ethylbenzene/hsqc.jdx",
             "jcamp": {
                 "type": "jcamp",
-                "url": "../testcase/data/nmr2d/jcamp/hsqc.jdx"
+                "url": "../testcase/data/jsnmr2d/jcamp/hsqc.jdx"
             }
         },
         {
             "name": "ethylbenzene/hmbc.jdx",
             "jcamp": {
                 "type": "jcamp",
-                "url": "../testcase/data/nmr2d/jcamp/hmbc.jdx"
+                "url": "../testcase/data/jsnmr2d/jcamp/hmbc.jdx"
             }
         }
     ],
@@ -27,14 +27,14 @@
             "name": "ethylbenzene/zg30.jdx",
             "jcamp": {
                 "type": "jcamp",
-                "url": "../testcase/data/nmr2d/jcamp/zg30.jdx"
+                "url": "../testcase/data/jsnmr2d/jcamp/zg30.jdx"
             }
         },
         {
             "name": "ethylbenzene/zgpg30.jdx",
             "jcamp": {
                 "type": "jcamp",
-                "url": "../testcase/data/nmr2d/jcamp/zgpg30.jdx"
+                "url": "../testcase/data/jsnmr2d/jcamp/zgpg30.jdx"
             }
         }
     ]

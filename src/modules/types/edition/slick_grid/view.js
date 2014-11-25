@@ -36,6 +36,10 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
     cssPromises.push(Util.loadCss('./components/slickgrid/slick.grid.css'));
     var cssLoaded = Promise.all(cssPromises);
 
+    // A simple filter
+    var columnFilters = {};
+
+
 
     var formatters = {
         typerenderer: waitingFormatter,
@@ -162,7 +166,10 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 dataItemColumnValueExtractor: function(item, coldef) {
                     return item;
                 },
-                rowHeight: that.module.getConfiguration('slick.rowHeight')
+                explicitInitialization: true,
+                rowHeight: that.module.getConfiguration('slick.rowHeight'),
+                showHeaderRow: that.module.getConfigurationCheckbox('slickCheck', 'filterColumns'),
+                headerRowHeight: 30
             };
         },
 
@@ -186,7 +193,20 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 this.generateUniqIds();
                 this.addRowAllowed = this.module.getConfigurationCheckbox('slickCheck', 'enableAddRow');
 
-
+                function filter(item) {
+                    for (var columnId in columnFilters) {
+                        if (columnId !== undefined && columnFilters[columnId] !== "") {
+                            var idx = that.slick.data.getIdxById(item.sgid)
+                            var c = that.grid.getColumns()[that.grid.getColumnIndex(columnId)];
+                            var jpath = _.clone(c.jpath);
+                            jpath.unshift(idx);
+                            if (!that.module.data.getChildSync(jpath).get().toString().match(columnFilters[columnId])) {
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                }
 
 
                 cssLoaded
@@ -358,6 +378,24 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             }
                         });
 
+
+                        $(that.grid.getHeaderRow()).delegate(":input", "change keyup", function (e) {
+                            var columnId = $(this).data("columnId");
+                            if (columnId != null) {
+                                columnFilters[columnId] = $.trim($(this).val());
+                                that.slick.data.refresh();
+                            }
+                        });
+
+                        that.grid.onHeaderRowCellRendered.subscribe(function(e, args) {
+                            $(args.node).empty();
+                            $("<input type='text'>")
+                                .css('width', '100%')
+                                .data("columnId", args.column.id)
+                                .val(columnFilters[args.column.id])
+                                .appendTo(args.node);
+                        });
+
                         //var sortjpath;
                         //function comparer(a, b) {
                         //    var x = a.get(sortjpath), y = b.get(sortjpath);
@@ -390,7 +428,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         //    grid.render();
                         //
                         //});
-
+                        that.grid.init();
                         that.slick.data.beginUpdate();
                         var ids = _.pluck(that.slick.columns, 'id');
 
@@ -411,6 +449,11 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             }).value();
 
                         if(groupings.length) that.slick.data.setGrouping(groupings);
+
+
+                        if(that.module.getConfigurationCheckbox('slickCheck', 'filterColumns')) {
+                            that.slick.data.setFilter(filter);
+                        }
 
                         that.slick.data.setItems(that.module.data, that.idPropertyName);
                         that.slick.data.endUpdate();
