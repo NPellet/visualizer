@@ -61,7 +61,8 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                                 autoFocus: 'Auto Focus',
                                 rowNumbering: 'Show row number when scrolling',
                                 multiColumnSort: 'Multi-column sorting',
-                                oneUncollapsed: 'Maximum One group uncollapsed (per level)'
+                                oneUncollapsed: 'Maximum One group uncollapsed (per level)',
+                                filterColumns: 'Provides search input for each column',
                             },
                             default: ['editable', 'enableAddRow', 'enableCellNavigation', 'rowNumbering']
                         },

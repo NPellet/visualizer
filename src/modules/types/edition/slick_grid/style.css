@@ -217,6 +217,22 @@
     border: 0;
 }
 
+.ci-module-slickgrid .slick-headerrow-column {
+    background: lightgray;
+    text-overflow: clip;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.ci-module-slickgrid .slick-headerrow-column input {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
 .highlighted-cell {
     background-color: rgb(240,176,36);
 }
