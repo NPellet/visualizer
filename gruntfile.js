@@ -100,7 +100,8 @@ module.exports = function (grunt) {
                             './alpaca/**',
                             './jquery-tmpl/**',
                             './setImmediate/setImmediate.js',
-                            './chroma-js/chroma.min.js'
+                            './chroma-js/chroma.min.js',
+                            './sdf-parser/**'
                         ],
 
                         dest: './build/components/'
