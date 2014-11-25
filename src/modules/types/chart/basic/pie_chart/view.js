@@ -102,12 +102,14 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 				// data are ready to be ploteed
 				this.loadedData.resolve();
+				
 				this.onResize();
 			},
 			'yArray': function(moduleValue) {
 				if (this.DEBUG) console.log("Pie Chart: update from array");
 				this._data=moduleValue.get();
 				this.loadedData.resolve();
+				
 				this.onResize();
 			}
 		},
