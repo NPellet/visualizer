@@ -196,7 +196,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 function filter(item) {
                     for (var columnId in columnFilters) {
                         if (columnId !== undefined && columnFilters[columnId] !== "") {
-                            var idx = that.slick.data.getIdxById(item.sgid)
+                            var idx = that.slick.data.getIdxById(item[that.idPropertyName]);
                             var c = that.grid.getColumns()[that.grid.getColumnIndex(columnId)];
                             var jpath = _.clone(c.jpath);
                             jpath.unshift(idx);
