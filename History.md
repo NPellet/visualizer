@@ -1,6 +1,7 @@
-HEAD
+2.9.3 / 2014-11-26
 =================
-Slickgrid: option that provides an input on the header of each column where you can just type in to search something.
+* Slickgrid: option that provides an input on the header of each column where you can just type in to search something.
+* :arrow_up: chemcalc (v2.0.0)
 
 2.9.2 / 2014-11-25
 ==================
