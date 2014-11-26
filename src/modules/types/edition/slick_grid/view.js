@@ -465,11 +465,13 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         }
                         if(!_.isUndefined(that.lastActiveRow)) {
                             //console.log('resetting last active row', that.lastActiveRow)
-                                that.grid.setActiveCell(that.lastActiveRow, that.lastActiveCell);
+                            that.grid.setActiveCell(that.lastActiveRow, that.lastActiveCell);
                         }
 
                         that.grid.render();
                         that._resetDeleteRowListeners();
+                        that._setBaseCellCssStyle();
+
                     });
             }
 
@@ -478,6 +480,14 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         blank: {
             list: function() {
                 this.$dom.html('');
+            }
+        },
+
+        _setBaseCellCssStyle: function() {
+            var cols = this.grid.getColumns();
+            this.baseCellCssStyle = {};
+            for(var i=0; i<cols.length; i++) {
+                this.baseCellCssStyle[cols[i].id] = 'highlighted-cell';
             }
         },
 
@@ -534,7 +544,22 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         },
 
         _drawHighlight: function(key) {
-            this.grid.setCellCssStyles(key, this.cellStyles[key]);
+            var that = this;
+            if(!key instanceof Array) {
+                key = [key];
+            }
+            var tmp = {};
+            this.lastViewport = this.grid.getViewport();
+            for(var i=this.lastViewport.top; i<=this.lastViewport.bottom; i++ ) {
+                var item = this.grid.getDataItem(i);
+                if(!item) continue;
+                if(_.any(key, function(k) {
+                        return k === item._highlight;
+                    })) {
+                    tmp[i] = that.baseCellCssStyle;
+                }
+            }
+            this.grid.setCellCssStyles(key.join(''), tmp);
         },
 
         _undrawHighlight: function(key) {
