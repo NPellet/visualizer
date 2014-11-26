@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.2-6
+ * jsGraph JavaScript Graphing Library v1.10.2-7
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-11-23T15:47Z
+ * Date: 2014-11-26T11:47Z
  */
 
 (function( global, factory ) {
@@ -3874,7 +3874,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
     removeShapes: function() {
       for ( var i = 0, l = this.shapes.length; i < l; i++ ) {
-        this.shapes[ i ].kill();
+        this.shapes[ i ].kill( true );
       }
       this.shapes = [];
     },
@@ -9978,10 +9978,13 @@ build['./shapes/graph.shape'] = ( function( ) {
       this.group.appendChild( this.rectEvent );
     },
 
-    kill: function() {
+    kill: function( keepInStack ) {
 
       this.graph.removeShapeFromDom( this );
-      this.graph._removeShape( this );
+
+      if ( !keepInStack ) {
+        this.graph._removeShape( this );
+      }
 
       this.callHandler( "onRemoved", this );
 
@@ -9997,6 +10000,7 @@ build['./shapes/graph.shape'] = ( function( ) {
       if ( this.labelNumber == undefined ) {
         this.setLabelNumber( 1 );
       }
+      
 
       if ( !this._inDom ) {
         this.graph.appendShapeToDom( this );

@@ -629,7 +629,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                         }, false, self.module.getId());
 
                         self.module.model.dataListenChange( annotations.traceSync([ i ]), function( v ) {
-console.log('redraw');
+
                              shape.redraw();
 
                         }, 'annotations');

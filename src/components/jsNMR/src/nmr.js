@@ -118,7 +118,12 @@
 
 		function integralCreated( nmr, mode, integral ) {
 
-			integral.setSerie( nmr.graphs[ mode ].selectedSerie );
+			if( nmr.graphs[ mode ].selectedSerie ) {
+				integral.setSerie( nmr.graphs[ mode ].selectedSerie );	
+			} else {
+				integral.setSerie( nmr.graphs[ mode ].getSerie( 0 ) );	
+			}
+			
 
 			makeNMRIntegral( nmr, mode, integral ).then( function( nmrint ) {
 
@@ -476,6 +481,7 @@
 
 		NMR.prototype.resize1DTo = function( w, h ) {
 			this.graphs[ 'x' ].resize( w, h );
+			this.graphs[ 'x' ].drawSeries();
 		}
 
 		NMR.prototype.resize2DTo = function( w, h ) {
@@ -664,6 +670,8 @@
 			if( this.graphs[ 'x' ].getSerie( name ) ) {
 
 				this.graphs[ 'x' ].getSerie( name ).kill();
+				this.graphs[ 'x' ].removeShapes();
+				this.integralBasis = false;
 
 			}
 

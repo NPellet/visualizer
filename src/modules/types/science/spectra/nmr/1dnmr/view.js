@@ -81,7 +81,7 @@ define([
 
 //					self.series[ varname ] = [];
 					//if( spectra && spectra[ 0 ] && spectra.spectra[ 0 ].data[ 0 ] )
-					self.nmr.setSerieX("someName" + Math.random(), spectra.spectra[ 0 ].data[ 0 ], { label: 'SomeMol'} );
+					self.nmr.setSerieX("someName", spectra.spectra[ 0 ].data[ 0 ], { label: 'SomeMol'} );
 
 
 				});
