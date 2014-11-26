@@ -473,6 +473,11 @@
 			return this.options.dom;
 		}
 
+
+		NMR.prototype.resize1DTo = function( w, h ) {
+			this.graphs[ 'x' ].resize( w, h );
+		}
+
 		NMR.prototype.resize2DTo = function( w, h ) {
 
 			this.options.dom.find('.nmr-1d-y').css( {
@@ -655,6 +660,12 @@
 
 
 		NMR.prototype.setSerieX = function( name, data, options ) {
+
+			if( this.graphs[ 'x' ].getSerie( name ) ) {
+
+				this.graphs[ 'x' ].getSerie( name ).kill();
+
+			}
 
 			var serie_x = this.graphs[ 'x' ].newSerie(name, { label: options.label, useSlots: true } )
 				.setLabel( "My serie" )
@@ -1265,7 +1276,7 @@
 
 				onBeforeNewShape: function() {
 
-					if( ! this.selectedSerie ) {
+					if( ! this.selectedSerie && this.series.length > 1 ) {
 						return false;
 					}
 				}

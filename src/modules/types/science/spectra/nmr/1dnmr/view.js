@@ -55,7 +55,7 @@ define([
 
         onResize: function () {
 
-            //this.nmr.resize2DTo( this.width, this.height );
+            this.nmr.resize1DTo( this.width, this.height );
 /*
             if (this.nmr.graphs['_2d']) {
                 this.nmr.graphs['_2d'].resize(this.width - 160, this.height - 160);
@@ -79,9 +79,10 @@ define([
 
 				JcampConverter.convert( moduleValue.get().toString(), {lowRes: 1024}, true).then( function( spectra ) {
 
-					self.series[ varname ] = [];
+//					self.series[ varname ] = [];
 					//if( spectra && spectra[ 0 ] && spectra.spectra[ 0 ].data[ 0 ] )
 					self.nmr.setSerieX("someName" + Math.random(), spectra.spectra[ 0 ].data[ 0 ], { label: 'SomeMol'} );
+
 
 				});
 			}
