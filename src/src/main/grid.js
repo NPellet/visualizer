@@ -4,7 +4,6 @@ define(['jquery', 'jquery-ui', 'src/util/util', 'modules/modulefactory', 'src/ut
 
     var definition, jqdom, moduleMove, isInit = false;
     var activeLayer = "Default layer";
-    var modules = [];
     var layersUl, layersLi;
 
     var defaults = {
@@ -13,7 +12,7 @@ define(['jquery', 'jquery-ui', 'src/util/util', 'modules/modulefactory', 'src/ut
     };
 
     function checkDimensions(extend) {
-
+        var modules = ModuleFactory.getModules();
         var bottomMax = 0;
         for (var i in modules) {
             var pos = modules[i].getPosition(getActiveLayer()),
@@ -70,9 +69,6 @@ define(['jquery', 'jquery-ui', 'src/util/util', 'modules/modulefactory', 'src/ut
 
             module.getDomWrapper().appendTo(jqdom);
 
-            var grid = this;
-
-            modules.push(module);
             setModuleSize(module);
 
             if (!API.isViewLocked()) {
@@ -425,9 +421,7 @@ define(['jquery', 'jquery-ui', 'src/util/util', 'modules/modulefactory', 'src/ut
 
     var eachModules = function (callback) {
 
-        if (!modules) {
-            return;
-        }
+        var modules = ModuleFactory.getModules();
 
         for (var i = 0, l = modules.length; i < l; i++) {
             callback(modules[i]);
@@ -556,16 +550,11 @@ define(['jquery', 'jquery-ui', 'src/util/util', 'modules/modulefactory', 'src/ut
     }
 
     return {
-        init: function (def, dom, _modules) {
+        init: function (def, dom) {
 
             if (isInit) {
                 return;
             }
-
-            if (_modules) {
-                modules = _modules;
-            }
-
 
             jqdom = $(dom);
             isInit = true;
@@ -693,7 +682,9 @@ define(['jquery', 'jquery-ui', 'src/util/util', 'modules/modulefactory', 'src/ut
             }
 
             var modules = ModuleFactory.getModules();
-            modules.forEach(removeModule);
+            while (modules.length) {
+                removeModule(modules[0]);
+            }
 
             $(jqdom).empty();
             checkDimensions();
