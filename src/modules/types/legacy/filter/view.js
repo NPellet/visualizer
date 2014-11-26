@@ -1,4 +1,4 @@
-define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api', 'src/util/typerenderer', 'lib/formcreator/formcreator'], function(Default, Traversing, API, Renderer, FormCreator) {
+define(['../../../default/defaultview', 'src/util/datatraversing', 'src/util/api', 'src/util/typerenderer', 'lib/formcreator/formcreator'], function(Default, Traversing, API, Renderer, FormCreator) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {

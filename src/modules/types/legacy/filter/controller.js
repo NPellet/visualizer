@@ -1,4 +1,4 @@
-define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator' ], function( Default, FormCreator ) {
+define( [ '../../../default/defaultcontroller', 'lib/formcreator/formcreator' ], function( Default, FormCreator ) {
 	
 	/**
 	 * Creates a new empty controller

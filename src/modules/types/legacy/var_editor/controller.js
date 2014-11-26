@@ -1,5 +1,5 @@
 
-define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/datatraversing', 'src/util/urldata'], function(Default, API, Traversing, URL) {
+define(['../../../default/defaultcontroller', 'src/util/api', 'src/util/datatraversing', 'src/util/urldata'], function(Default, API, Traversing, URL) {
 	
 	function controller() {};
 	controller.prototype = $.extend(true, {}, Default, {

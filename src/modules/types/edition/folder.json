@@ -1,10 +1,6 @@
 {
     "modules": [
         {
-            "moduleName": "Filter",
-            "url": "modules/types/edition/filter/"
-        },
-        {
             "moduleName": "Filter editor",
             "url": "modules/types/edition/filter_editor/"
         },
@@ -27,10 +23,6 @@
         {
             "moduleName": "Alpaca",
             "url": "modules/types/edition/alpaca/"
-        },
-        {
-            "moduleName": "Var Editor",
-            "url": "modules/types/edition/var_editor/"
         },
         {
             "moduleName": "Edit/Display",

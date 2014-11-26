@@ -1,4 +1,4 @@
-define(['modules/default/defaultview'], function(Default) {
+define(['../../../default/defaultview'], function(Default) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
