@@ -1234,7 +1234,7 @@
 				onAnnotationChange: function( data, shape ) {
 
 
-					if( data.url.indexOf("shape.1dnmr") > -1 ) {
+					if( data.url && data.url.indexOf("shape.1dnmr") > -1 ) {
 
 						if( ! self.integralBasis ) {
 							self.integralBasis = shape.integral.lastSum;
