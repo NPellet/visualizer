@@ -654,6 +654,38 @@
 		}
 
 
+		NMR.prototype.setSerieX = function( name, data, options ) {
+
+			var serie_x = this.graphs[ 'x' ].newSerie(name, { label: options.label, useSlots: true } )
+				.setLabel( "My serie" )
+				.autoAxis()
+				.setData( data )
+				.XIsMonotoneous();
+
+			if( options.lineColor ) {
+				serie_x.setLineColor( options.lineColor );
+			}
+
+
+			if( options.lineWidth ) {
+				serie_x.setLineWidth( options.lineWidth );
+			}
+
+
+			if( options.setLineStyle ) {
+				serie_x.setLineStyle( options.lineStyle );
+			}
+
+			//serie_x.degrade( 1 ).kill()
+
+			serie_x.getYAxis().setDisplay( false ).togglePrimaryGrid( false ).toggleSecondaryGrid( false );
+			serie_x.getXAxis().flip(true).setLabel('ppm').togglePrimaryGrid( false ).toggleSecondaryGrid( false ).setTickPosition( 'outside' )
+
+			this.graphs.x.autoscaleAxes();
+			this.graphs.x.drawSeries();
+		}
+
+
 		NMR.prototype.loaded = function( series, options, name ) {
 
 
@@ -661,34 +693,8 @@
 
 				case '1d':
 
+					this.setSerieX( name, spectra.x.spectra[ 0 ].data[ 0 ], { label: "SomeLabel" } );
 
-					var serie_x = this.graphs[ 'x' ].newSerie(name, { label: options.label, useSlots: true } )
-						.setLabel( "My serie" )
-						.autoAxis()
-						.setData( series.x.spectra[ 0 ].data[ 0 ] )
-						.XIsMonotoneous();
-
-					if( options.lineColor ) {
-						serie_x.setLineColor( options.lineColor );
-					}
-
-
-					if( options.lineWidth ) {
-						serie_x.setLineWidth( options.lineWidth );
-					}
-
-
-					if( options.setLineStyle ) {
-						serie_x.setLineStyle( options.lineStyle );
-					}
-
-					//serie_x.degrade( 1 ).kill()
-
-					serie_x.getYAxis().setDisplay( false ).togglePrimaryGrid( false ).toggleSecondaryGrid( false );
-					serie_x.getXAxis().flip(true).setLabel('ppm').togglePrimaryGrid( false ).toggleSecondaryGrid( false ).setTickPosition( 'outside' )
-
-					this.graphs.x.autoscaleAxes();
-					this.graphs.x.drawSeries();
 
 				break;
 

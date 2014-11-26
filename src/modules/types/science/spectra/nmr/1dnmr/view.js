@@ -1,95 +1,74 @@
-define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing', 'components/jcampconverter/build/jcampconverter'], function(Default, Graph, Traversing, JcampConverter) {
+'use strict';
+
+define([
+    'modules/default/defaultview',
+    'components/jsNMR/src/nmr',
+    'components/jcampconverter/build/jcampconverter'
+
+    ], function (Default, NMR, JcampConverter) {
+
+    function View() {
+    }
+
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
 		
-		init: function() {
+		 init: function () {
+            this.dom = $('<div />');
+            this.module.getDomContent().html(this.dom);
+            this.resolveReady();
+        },
 
-			var html = [];
-			html.push('<div class="2drmn"></div>');
-			
-			this.integrals = [];
+        inDom: function () {
 
-			this.dom = $(html.join(''));
-			this.module.getDomContent().html(this.dom);
-			this.resolveReady();
+            var nmr = new NMR({
+                dom: this.dom,
+                mode: '1d',
+                symmetric: false
+            });
 
-		},
+            this.series = {};
+            this.nmr = nmr;
 
-		redrawIntegrals: function() {
+        /*    nmr.load( {
 
-			if( typeof this.currentMaxSumAnnot == "undefined" ) {
-				return;
-			}
+                urls: {
+                    twoD: 'components/jsNMR/test/cosy/84-74-2_cosygpppqf.jdx',
+                    x: 'components/jsNMR/test/cosy/84-74-2_zg.jdx'
+                },
 
-			for(var i = 0, l = this.integrals.length ; i < l ; i ++ ) {
-//console.log( 100 / ( this.currentMaxSumAnnot.lastSum ) / ( this.currentMaxSumAnnot.lastSum / this.integrals[ i ].lastSum )  );
-				this.integrals[ i ].setScale( this._instance.getDrawingHeight() - 100, this.currentMaxSumAnnot.lastSum );
+                lineColor: 'rgb(' + hslToRgb( 100 / 360, 0.8, 0.4 ).join() + ')',
+                twoDColor: {
 
-				//this.integrals[ i ].setPosition();
-				this.integrals[ i ].redraw();
+                    fromPositive: { h: 100, s: 0.3, l: 0.7 },
+                    toPositive: { h: 100, s: 1, l: 0.5},
 
-			}
-		},
+                    fromNegative: { h: 100, s: 0.3, l: 0.5  },
+                    toNegative: { h: 100, s: 1, l: 0.3 }
+                },
+                label: 'Chemical 1'
+            });
+*/
 
-		inDom: function() {
-			var self = this;
-			this._instance = new Graph(this.dom.get(0), {
+        },
 
-				plugins: ['zoom', 'nmrintegral'],
-				zoomMode: 'x',
+        onResize: function () {
 
-				keyCombinations: {
-					zoom: { shift: false, ctrl: false },
-					nmrintegral: { shift: true, ctrl: false }
-				},
+            //this.nmr.resize2DTo( this.width, this.height );
+/*
+            if (this.nmr.graphs['_2d']) {
+                this.nmr.graphs['_2d'].resize(this.width - 160, this.height - 160);
+            }
+            if (this.nmr.graphs['x']) {
+                this.nmr.graphs['x'].resize(this.width - 160, 150);
+            }
+            if (this.nmr.graphs['y']) {
+                this.nmr.graphs['y'].resize(150, this.height - 160);
+            }
+            this.redraw();*/
+        },
 
-				onAnnotationMake: function( annot, shape ) {
-						
-					if( ! self.currentMaxSumAnnot ) {
-						self.currentMaxSumAnnot = shape;
-					}
-					
-					self.integrals.push( shape );
-					self.redrawIntegrals();
-				},
-
-				onAnnotationChange: function( annot, shape ) {
-					
-					if( ! self.currentMaxSumAnnot || self.currentMaxSumAnnot == shape || ( self.currentMaxSumAnnot != shape && shape.lastSum > self.currentMaxSumAnnot.lastSum ) ) {
-
-						self.currentMaxSumAnnot = shape;
-						self.redrawIntegrals();
-					} 
-				}
-			},
-			{
-
-				bottom: [{ 
-					primaryGrid: false,
-					secondaryGrid: false,
-					flipped: true
-
-				}],
-
-				left: [{
-					primaryGrid: false,
-					secondaryGrid: false,
-					display: false
-				}]
-
-			});
-
-			this.series = {};
-			
-			this._instance.getLeftAxis(0, { flipped: true } ).setLabel( 'ppm' );
-		},
-
-		onResize: function() {
-			this._instance.resize(this.width - 20, this.height - 20);
-
-
-		},
 		
 		update: {
 		
@@ -98,36 +77,12 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 
 				var self = this;
 
-				if( ! this._instance ) {
-					return;
-				}
-
-
-				if( this.deferred ) {
-					this.deferred.reject();
-				}
-
-				this.deferred = JcampConverter.convert( moduleValue.get(), {lowRes: 1024}, true).then( function( spectra ) {
+				JcampConverter.convert( moduleValue.get().toString(), {lowRes: 1024}, true).then( function( spectra ) {
 
 					self.series[ varname ] = [];
-					spectra = spectra.spectra;
+					//if( spectra && spectra[ 0 ] && spectra.spectra[ 0 ].data[ 0 ] )
+					self.nmr.setSerieX("someName" + Math.random(), spectra.spectra[ 0 ].data[ 0 ], { label: 'SomeMol'} );
 
-					for (var i = 0, l = spectra.length; i < l; i ++ ) {
-
-						serie = self._instance.newSerie( varname , { trackMouse: true } );
-
-						var data = spectra[ i ].data[ spectra[ i ].data.length - 1 ];
-
-						//self.setSerieParameters(serie, varname);
-						serie.setData( data );
-						serie.autoAxis( );
-						self.series[ varname ].push( serie );
-
-						self.redraw();
-
-						break;
-					}
-				
 				});
 			}
 		},
