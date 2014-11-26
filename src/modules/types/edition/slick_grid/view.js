@@ -570,27 +570,10 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         _activateHighlights: function() {
             var that = this;
             var hl = _(this.module.data).pluck('_highlight').uniq().value();
-            var cols = this.grid.getColumns();
-            var base = {};
-            for(var i=0; i<cols.length; i++) {
-                base[cols[i].id] = 'highlighted-cell';
-            }
-
-            var r = {};
-            for(var j=0; j<this.module.data.length; j++) {
-                var h= this.module.data[j]._highlight;
-                if(!h) continue;
-                if(!r[h]) r[h] = {};
-
-                r[h][j.toString()] = base;
-            }
-
-            this.cellStyles = r;
-
 
             API.killHighlight(this.module.getId());
 
-            for(i=0; i<hl.length; i++) {
+            for(var i=0; i<hl.length; i++) {
                 (function(i) {
                     API.listenHighlight({_highlight: hl[i]}, function(onOff, key) {
                         if(onOff) {
