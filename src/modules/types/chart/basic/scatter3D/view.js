@@ -1,4 +1,4 @@
-define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util', 'underscore', 'threejs', 'lib/threejs/TrackballControls'], function(Default, Traversing, API, Util, _, THREE) {
+define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util', 'underscore', 'threejs', 'src/util/debug', 'lib/threejs/TrackballControls'], function(Default, Traversing, API, Util, _, THREE, Debug) {
   function generateRandomArray(n, min, max) {
     var result = [];
     for(var i=0; i<n; i++) {
@@ -6,16 +6,16 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
     }
     return result;
   }
-  
+
   function generateRandomFromArray(arr, n) {
     var x = generateRandomArray(n, 0, arr.length-0.001);
     x = x.map(function(a) {
       return arr[Math.floor(a)];
-    }); 
+    });
     return x;
   }
-  
-  
+
+
   function generateRandomColors(n) {
     var result = [];
     var letters = '0123456789ABCDEF'.split('');
@@ -30,29 +30,29 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
   }
 
   function hexToRgb(hex) {
-      // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
-      var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-      hex = hex.replace(shorthandRegex, function(m, r, g, b) {
-          return r + r + g + g + b + b;
-      });
+    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+      return r + r + g + g + b + b;
+    });
 
-      var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-      return result ? {
-          r: parseInt(result[1], 16),
-          g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16)
-      } : null;
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : null;
   }
-  
+
   function componentToHex(c) {
-      var hex = c.toString(16);
-      return hex.length == 1 ? "0" + hex : hex;
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
   }
 
   function rgbToHex(r, g, b) {
-      return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
   }
-  
+
   function arrayToRgba(arr) {
     if(arr.length === 3) {
       return 'rgba(' + arr[0] + ',' + arr[1] + ',' + arr[2] + ',1)';
@@ -63,9 +63,9 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
     else {
       return 'rgba(0,0,0,1)';
     }
-    
+
   }
-  
+
   function rgbStringToHex(rgbString) {
     var shorthandRegex = /^rgba?\(\s*(\d+),\s*(\d+),\s*(\d+)/
     var m = shorthandRegex.exec(rgbString);
@@ -77,13 +77,12 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       return '#ffffff'
     }
   }
-  
+
   function rotateAroundObjectAxis(object, axis, radians) {
-      var rotObjectMatrix = new THREE.Matrix4();
-      rotObjectMatrix.makeRotationAxis(axis.normalize(), radians);
-      console.log('rotation matrix', rotObjectMatrix);
-      object.applyMatrix(rotObjectMatrix);
-      // object.rotation.setEulerFromRotationMatrix(object.matrix);
+    var rotObjectMatrix = new THREE.Matrix4();
+    rotObjectMatrix.makeRotationAxis(axis.normalize(), radians);
+    object.applyMatrix(rotObjectMatrix);
+    // object.rotation.setEulerFromRotationMatrix(object.matrix);
   }
 
   var NORM_CONSTANT = 1000;
@@ -101,16 +100,16 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
   var DELTA = NORM_CONSTANT / 1000;
   var CAMERA_NEAR = 2;
   var CAMERA_FAR = 10000;
-  
+
   var shapeImages = {
     'sphere': "modules/types/chart/basic/scatter3D/img/ball.png",
     'tetrahedron': 'modules/types/chart/basic/scatter3D/img/tetrahedron2.png'
   }
-  
+
   $.fn.listHandlers = function(events, outputFunction) {
     return this.each(function(i){
       var elem = this,
-      dEvents = $(this).data('events');
+          dEvents = $(this).data('events');
       if(!dEvents) return;
       $.each(dEvents, function(name, handler){
         if((new RegExp('^(' + (events === '*' ? '.+' : events.replace(',','|').replace(/^on/i,'')) + ')$' ,'i')).test(name)) {
@@ -121,18 +120,18 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       });
     });
   };
-	
-	function view() {
-	  this._firstLoad = true;
-	};
-	view.prototype = $.extend(true, {}, Default, {
-    
-		DEBUG: true,
+
+  function view() {
+    this._firstLoad = true;
+  };
+  view.prototype = $.extend(true, {}, Default, {
+
+    DEBUG: true,
 
 
     _initThreejs: function() {
       var self = this;
-			var container;
+      var container;
       var pointedObjects = [];
       var lastMouseMoveEvent = null;
       var currentPoint = null;
@@ -140,26 +139,26 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       var drawAxisLabelsThrottled = $.proxy(_.throttle(self._drawAxisLabels, 500), self);
       var drawGraphTitleThrottled = $.proxy(_.throttle(self._drawGraphTitle, 500), self);
       var projections = [];
-      
-			init();
-			animate();
-      
+
+      init();
+      animate();
+
       var descSort = function ( a, b ) {
-      		return a.distance - b.distance;
+        return a.distance - b.distance;
       };
-      
+
       function getIntersectsBis(event) {
         var vector = new THREE.Vector3(
-          ( event.offsetX / $(self.renderer.domElement).width() ) * 2 - 1,
-          - ( event.offsetY / $(self.renderer.domElement).height() ) * 2 + 1,
-          0.5
+            ( event.offsetX / $(self.renderer.domElement).width() ) * 2 - 1,
+            - ( event.offsetY / $(self.renderer.domElement).height() ) * 2 + 1,
+            0.5
         );
         projector = new THREE.Projector();
         projector.unprojectVector( vector, self.camera );
-        
+
         var ray = new THREE.Ray( self.camera.position,
-          vector.sub(self.camera.position).normalize());
-          
+            vector.sub(self.camera.position).normalize());
+
         var count = 0;
         var intersects = [];
         for(var i=0; i<self.mathPoints.length; i++) {
@@ -180,7 +179,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         });
         return intersects;
       }
-      
+
       function showPointCoordinates(index) {
         if(self._configCheckBox('displayPointCoordinates', 'onhover')) {
           var arr = [];
@@ -191,13 +190,13 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
           $('#legend_point_coordinates').show();
         }
       }
-      
+
       function hidePointCoordinates() {
         if(self._configCheckBox('displayPointCoordinates', 'onhover')) {
           $('#legend_point_coordinates').hide();
         }
       }
-      
+
       function onMouseMove(event) {
         var intersects;
         intersects = getIntersectsBis(event);
@@ -208,11 +207,11 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
           var newPoint = index;
           var pointChanged = (newPoint !== currentPoint);
           if( currentPoint && pointChanged) {
-           // rehighlight currentPoint -> newPoint
-           API.highlightId(self._data._highlight[currentPoint], 0);
-           API.highlightId(self._data._highlight[newPoint], 1);
-           showPointCoordinates(index);
-         }
+            // rehighlight currentPoint -> newPoint
+            API.highlightId(self._data._highlight[currentPoint], 0);
+            API.highlightId(self._data._highlight[newPoint], 1);
+            showPointCoordinates(index);
+          }
           else if(pointChanged){
             // highlight newPoint
             API.highlightId(self._data._highlight[newPoint], 1);
@@ -228,9 +227,9 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
           }
           currentPoint = null;
         }
-        
+
       }
-      
+
       function showTooltip() {
         if(pointedObjects.length === 0) {
           return;
@@ -239,13 +238,13 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         if(!jpath) {
           return;
         }
-        
+
         var data = self._data;
-        
+
         if(!data.info){
           return;
         }
-        
+
         var info = data.info[pointedObjects[0]];
         var label = info.getChildSync(jpath);
         $('#scatter3D_tooltip').css('left', lastMouseMoveEvent.offsetX - TOOLTIP_WIDTH);
@@ -254,17 +253,17 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         $('#scatter3D_tooltip').html(label.value);
         $('#scatter3D_tooltip').show();
       }
-      
+
       function hideTooltip() {
         $('#scatter3D_tooltip').hide();
       }
-      
+
       function showProjection() {
-        
+
         if(pointedObjects.length === 0) {
           return;
         }
-        
+
         var index = pointedObjects[0];
         if(projections.length > 0) {
           hideProjection();
@@ -279,11 +278,11 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         projections.push(self._drawCircle({
           color: '#000000',
           radius: self._data.size[index],
-          x: self._data.normalizedData.x[index], 
+          x: self._data.normalizedData.x[index],
           y: self._data.normalizedData.y[index],
           z: DELTA+self.gorigin.z
         }));
-        
+
         // xz projection
         p2 = new THREE.Vector3(self._data.normalizedData.x[index], 0, self._data.normalizedData.z[index]);
         projections.push(self._drawLine(p1, p2, options));
@@ -292,11 +291,11 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
           rotationAxis: {x: 1},
           color: '#000000',
           radius: self._data.size[index],
-          x: self._data.normalizedData.x[index], 
+          x: self._data.normalizedData.x[index],
           y: DELTA + self.gorigin.y,
           z: self._data.normalizedData.z[index]
         }));
-        
+
         // yz projection
         p2 = new THREE.Vector3(0, self._data.normalizedData.y[index], self._data.normalizedData.z[index]);
         projections.push(self._drawLine(p1, p2, options));
@@ -306,12 +305,12 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
           color: '#000000',
           radius: self._data.size[index],
           x: DELTA + self.gorigin.x,
-          y: self._data.normalizedData.y[index], 
+          y: self._data.normalizedData.y[index],
           z: self._data.normalizedData.z[index]
         }));
         render();
       }
-      
+
       function hideProjection() {
         for(var i=0; i<projections.length; i++) {
           self.scene.remove(projections[i]);
@@ -320,43 +319,43 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         render();
       }
 
-			function init() {
+      function init() {
         self.camera = self.camera || new THREE.PerspectiveCamera( 60, self.dom.width() / self.dom.height(), CAMERA_NEAR, CAMERA_FAR );
         if(self.controls) {
           // self.controls.reset();
         }
         else {
-				self.controls = new THREE.TrackballControls( self.camera, self.dom.get(0) );
+          self.controls = new THREE.TrackballControls( self.camera, self.dom.get(0) );
 
-				self.controls.rotateSpeed = 1.0;
-				self.controls.zoomSpeed = 1.2;
-				self.controls.panSpeed = 0.8;
-				self.controls.noZoom = false;
-				self.controls.noPan = false;
-				self.controls.staticMoving = true;
-				self.controls.dynamicDampingFactor = 0.3;
-				self.controls.keys = [ 65, 83, 68 ];
-				self.controls.addEventListener( 'change', render );
-      }
+          self.controls.rotateSpeed = 1.0;
+          self.controls.zoomSpeed = 1.2;
+          self.controls.panSpeed = 0.8;
+          self.controls.noZoom = false;
+          self.controls.noPan = false;
+          self.controls.staticMoving = true;
+          self.controls.dynamicDampingFactor = 0.3;
+          self.controls.keys = [ 65, 83, 68 ];
+          self.controls.addEventListener( 'change', render );
+        }
 
         // Init scene
-				self.scene = new THREE.Scene();
+        self.scene = new THREE.Scene();
 
-				// renderer
+        // renderer
 
-				self.renderer = new THREE.WebGLRenderer( { antialias: false } );
+        self.renderer = new THREE.WebGLRenderer( { antialias: false } );
         // self.renderer.setClearColor( self.scene.fog.color, 1 );
         var bgColor = self.module.getConfiguration('backgroundColor');
         self.renderer.setClearColor(rgbToHex(bgColor[0], bgColor[1], bgColor[2]) || DEFAULT_BACKGROUND_COLOR, 1);
-				self.renderer.setSize( window.innerWidth, window.innerHeight );
+        self.renderer.setSize( window.innerWidth, window.innerHeight );
 
-				container = document.getElementById(self.dom.attr('id'));
+        container = document.getElementById(self.dom.attr('id'));
         container.innerHTML = '';
-				container.appendChild(self.renderer.domElement);
-        
+        container.appendChild(self.renderer.domElement);
+
         $(self.dom).append( '<div id="scatter3D_tooltip" style="z-index: 10000; position:absolute; top: 20px; width:' + TOOLTIP_WIDTH + 100 + 'px; height: auto; background-color: #f9edbe;"> </div>');
         $('#scatter3D_tooltip').hide();
-        
+
         $(self.dom).append( '<div id="legend" style="z-index: 10000; right:10px ;position:absolute; top: 25px; height: auto; background-color: #ffffff;"> </div>');
         $('#legend').append( '<div id="legend_titles"></div>');
         $('#legend').append( '<div id="legend_point_coordinates"></div>');
@@ -366,7 +365,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
         onWindowResize();
 
-        
+
         function onHover() {
           if(pointedObjects.length > 0) {
             var j = pointedObjects[0];
@@ -377,60 +376,58 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
             ], ['info', 'coordinates']);
           }
         }
-        
-        console.log('Init three js');
+
         // self.renderer is recreated each time in init() so we don't need to 'off' events
         $(self.renderer.domElement).on('mousemove', _.throttle(onMouseMove, 100));
         $(self.renderer.domElement).on('mousemove', _.throttle(onHover, 300));
-        console.log('tooltip config: ', self.module.getConfiguration('tooltip'));
-        console.log('tooltip jpath: ', self.module.getConfiguration('tooltipJpath'));
         if(self._configCheckBox('tooltip', 'show')) {
-          console.log('Activating tooltip');
           $(self.renderer.domElement).on('mousemove', _.debounce(showTooltip, 500));
           $(self.renderer.domElement).on('mousemove', _.throttle(hideTooltip, 500));
         }
-        
+
         if(self._configCheckBox('projection', 'show')) {
-          console.log('Activating projections');
           $(self.renderer.domElement).on('mousemove', _.debounce(showProjection, 500));
           $(self.renderer.domElement).on('mousemove', _.throttle(hideProjection, 500));
         }
-        
-        $(self.renderer.domElement).listHandlers('mousemove', function(a, b) { console.log('handler list: ', a,b);});
 
-			}
+        $(self.renderer.domElement).listHandlers('mousemove', function(a, b) {
+          // List jquery handlers (to debug...)
+          console.log('handler list: ', a,b);
+        });
 
-			function onWindowResize() {
-				self.camera.aspect = self.dom.width() / self.dom.height();
-				self.camera.updateProjectionMatrix();
-				self.renderer.setSize(self.dom.width(), self.dom.height());
-				self.controls.handleResize();
-				render();
-			}
+      }
 
-			function animate() {
+      function onWindowResize() {
+        self.camera.aspect = self.dom.width() / self.dom.height();
+        self.camera.updateProjectionMatrix();
+        self.renderer.setSize(self.dom.width(), self.dom.height());
+        self.controls.handleResize();
+        render();
+      }
 
-				requestAnimationFrame( animate );
-				self.controls.update();
+      function animate() {
 
-			}
+        requestAnimationFrame( animate );
+        self.controls.update();
 
-			function render() {
-				self._render();
+      }
+
+      function render() {
+        self._render();
         if(self.headlight) {
-         self.headlight.position.x = self.camera.position.x +200;
-         self.headlight.position.y = self.camera.position.y +200;
-         self.headlight.position.z = self.camera.position.z +200; 
+          self.headlight.position.x = self.camera.position.x +200;
+          self.headlight.position.y = self.camera.position.y +200;
+          self.headlight.position.z = self.camera.position.z +200;
         }
         if(self.tickLabels) {
           drawTickLabelsThrottled();
           drawAxisLabelsThrottled();
           drawGraphTitleThrottled();
         }
-			}
-      
+      }
+
     },
-    
+
     _drawGraph: function() {
       var self = this;
       var tstart = new Date().getTime();
@@ -438,11 +435,10 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       _.keys(self.scene.children).forEach(function(key){
         self.scene.remove(self.scene.children[key]);
       });
-      console.log('objects removed', new Date().getTime());
       // this.scene.traverse(function(obj) {
       //   self.scene.remove(obj);
       // });
-      
+
       // textGeo = new THREE.TextGeometry( 'hello', {
       // 
       //   size: 70,
@@ -466,9 +462,9 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       //   ] );
       // textMesh1 = new THREE.Mesh( textGeo, material );
       // this.scene.add(textMesh1)
-      
+
       var light;
-			// 8 DIRECTIONAL LIGHTS =======================
+      // 8 DIRECTIONAL LIGHTS =======================
       // for(var i=0; i<8; i++) {
       //   var a = i%2 ? 1 : -1;
       //   var b = parseInt(i/2)%2 ? 1 : -1;
@@ -483,36 +479,35 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       // HEADLIGHT ============
       light = new THREE.AmbientLight( 0x222222, 1 );
       self.scene.add(light);
-      
+
       self.headlight = new THREE.PointLight ( 0xaaaaaa, 1.5 );
       // self.headlight.position = self.camera.position;
       self.headlight.position.set(1000, 1000, 1000);
       self.scene.add(self.headlight);
       // ===================================================
-      
+
       // 2 Directional light with diff intensities =========
       // ===================================================
-      
+
       self._mathPoints();
       self._drawPointsQuick();
 
-        self._drawAxes();
-        self._drawFaces();
-        self._drawGrid();
-        self._drawSecondaryGrid();
-        self._drawTicks();
-        self._drawTickLabels();
-        self._drawAxisLabels();
-        self._drawGraphTitle();
+      self._drawAxes();
+      self._drawFaces();
+      self._drawGrid();
+      self._drawSecondaryGrid();
+      self._drawTicks();
+      self._drawTickLabels();
+      self._drawAxisLabels();
+      self._drawGraphTitle();
 
 
       // self._drawPointsQuick();
-      
+
 
       self._render();
-      console.log('end plot points', new Date().getTime()-tstart);
     },
-    
+
     _drawPointsQuick: function() {
       var self = this;
       if(self._mainParticleObjects) {
@@ -526,30 +521,30 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         m[self._data.shape[i]] = m[self._data.shape[i]] || [];
         m[self._data.shape[i]].push(i);
       }
-      
+
       for(var shape in m) {
         self._mainParticleObjects[shape] = self._newParticleObject(m[shape], {
           shape: shape
-        });      
+        });
         self._updateParticleObject(self._mainParticleObjects[shape]);
-  			self.scene.add(self._mainParticleObjects[shape]);
+        self.scene.add(self._mainParticleObjects[shape]);
       }
       self.renderer.render(self.scene, self.camera);
     },
-    
+
     _configCheckBox: function(config, option) {
       return this.module.getConfiguration(config) && _.find(this.module.getConfiguration(config), function(val){
-        return val === option;
-      });
+            return val === option;
+          });
     },
-    
+
     _getDataField: function(field) {
       if(!this._data) {
         return [];
       }
       return _.flatten(_.pluck(this._data.data, field));
     },
-    
+
     _normalizeData: function() {
       var self = this;
       if(!this._data) {
@@ -565,9 +560,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       self._data.normalizedData.z = _.map(self._data.z, function(z){
         return NORM_CONSTANT * (z - self._data.realMin.z)/self._data.realLen.z;
       });
-      console.log('Data normalized');
     },
-    
+
     _computeMinMax: function() {
       var self = this;
       if(!self._data) {
@@ -577,11 +571,11 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       var x = self._data.x
       var y = self._data.y;
       var z = self._data.z;
-      
+
       self._data.min = {};
       self._data.max = {};
       self._data.len = {};
-      
+
       self._data.min.x = parseFloat(self.module.getConfiguration('minX')) || Math.min.apply(null, x);
       self._data.min.y = parseFloat(self.module.getConfiguration('minY')) || Math.min.apply(null, y);
       self._data.min.z = parseFloat(self.module.getConfiguration('minZ')) || Math.min.apply(null, z);
@@ -593,7 +587,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       self._data.len.z = self._data.max.z - self._data.min.z;
 
     },
-    
+
     _getUnitPerTick: function(px, nbTick, valrange, axis) {
       var self = this;
       var pxPerTick = px / nbTicks; // 1000 / 100 = 10 px per tick
@@ -610,41 +604,41 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       // We take the log
       var decimals = Math.floor(Math.log(unitPerTick) / Math.log(10));
       /*
-      Example:
-      13'453 => Math.log10() = 4.12 => 4
-      0.0000341 => Math.log10() = -4.46 => -5
-      */
+       Example:
+       13'453 => Math.log10() = 4.12 => 4
+       0.0000341 => Math.log10() = -4.46 => -5
+       */
 
       var numberToNatural = unitPerTick * Math.pow(10, - decimals);
-				
+
       /*
-      Example:
-      13'453 (4) => 1.345
-      0.0000341 (-5) => 3.41
-      */
+       Example:
+       13'453 (4) => 1.345
+       0.0000341 (-5) => 3.41
+       */
 
 
       var possibleTicks = [1,2,5,10];
       var closest = false;
       for(var i = possibleTicks.length - 1; i >= 0; i--)
-      if(!closest || (Math.abs(possibleTicks[i] - numberToNatural) < Math.abs(closest - numberToNatural))) {
-        closest = possibleTicks[i];
-      }
-				
+        if(!closest || (Math.abs(possibleTicks[i] - numberToNatural) < Math.abs(closest - numberToNatural))) {
+          closest = possibleTicks[i];
+        }
+
       // Ok now closest is the number of unit per tick in the natural number
       /*
-      Example:
-      13'453 (4) (1.345) => 1
-      0.0000341 (-5) (3.41) => 5 
-      */
+       Example:
+       13'453 (4) (1.345) => 1
+       0.0000341 (-5) (3.41) => 5
+       */
 
       // Let's scale it back
       var unitPerTickCorrect = closest * Math.pow(10, decimals);
       /*
-      Example:
-      13'453 (4) (1.345) (1) => 10'000
-      0.0000341 (-5) (3.41) (5) => 0.00005
-      */
+       Example:
+       13'453 (4) (1.345) (1) => 10'000
+       0.0000341 (-5) (3.41) (5) => 0.00005
+       */
 
       var nbTicks = valrange / unitPerTickCorrect;
       var pxPerTick = px / nbTick;
@@ -652,16 +646,15 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
       self._data.realMin[axis] = Math.floor(self._data.min[axis] / unitPerTickCorrect) * unitPerTickCorrect;
       self._data.realMax[axis] = Math.ceil(self._data.max[axis] / unitPerTickCorrect) * unitPerTickCorrect;
-      
-      console.log('Real min x', self._data.realMin.x, 'Min x', self._data.min.x)
+
       if(self._data.realMin[axis] !== self._data.min[axis]) {
         nbTicks++;
       }
 
       if(self._data.realMax[axis] !== self._data.max[axis]) {
         nbTicks++;
-      }      
-      
+      }
+
       // self._data.nbTicks[axis] = Math.floor(nbTicks) + 1;
       self._data.intervalVal[axis] = unitPerTickCorrect;
       self._data.realLen[axis] = self._data.realMax[axis] - self._data.realMin[axis];
@@ -675,51 +668,50 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       else {
         self._data.intervalFactor[axis] = Math.pow(10, intdec);
       }
-		},
-    
+    },
+
     _computeTickInfo: function() {
-      console.log('compute tick info');
       var self = this;
       self._data.realMin = {};
       self._data.realMax = {};
       self._data.realLen = {};
-      
+
       self._data.intervalPx = {};
       self._data.nbTicks = {};
-      self._data.intervalVal = {}; 
+      self._data.intervalVal = {};
       self._data.decimals = {};
       self._data.intervalFactor = {};
-      
+
       self._getUnitPerTick(NORM_CONSTANT, 3, self._data.len.x, 'x');
       self._getUnitPerTick(NORM_CONSTANT, 3, self._data.len.y, 'y');
       self._getUnitPerTick(NORM_CONSTANT, 3, self._data.len.z, 'z');
     },
-    
+
     _drawAxes: function() {
       var self = this;
       if(!self._data) {
         return;
       }
-      
+
       self._reinitObject3DArray('axes');
-      
+
       var vX = new THREE.Vector3(1, 0, 0);
       var vY = new THREE.Vector3(0, 1, 0);
       var vZ = new THREE.Vector3(0, 0, -1);
       var origin = new THREE.Vector3(0, 0, 0);
       var color = 0x000000;
-      
+
       var axX = new THREE.ArrowHelper( vX, new THREE.Vector3(0,0,NORM_CONSTANT), NORM_CONSTANT, color, 1, 1);
       var axY = new THREE.ArrowHelper( vY, new THREE.Vector3(0,0,NORM_CONSTANT), NORM_CONSTANT, color, 1, 1);
       var axZ = new THREE.ArrowHelper( vZ, new THREE.Vector3(NORM_CONSTANT,0,NORM_CONSTANT), NORM_CONSTANT, color, 1, 1);
-      
+
       self.axes.push(axX, axY, axZ);
-      
+
       this.scene.add(axX);
       this.scene.add(axY);
       this.scene.add(axZ);
     },
-    
+
     _drawCircle: function(options) {
       var self = this;
       var options = options || {};
@@ -742,11 +734,11 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       var geometry = circle.makeGeometry();
       var material = new THREE.MeshBasicMaterial({ color: options.color || DEFAULT_PROJECTION_COLOR , side:THREE.DoubleSide});
       var mesh = new THREE.Mesh(geometry, material);
-      
+
       var m1 = new THREE.Matrix4();
       var m2 = new THREE.Matrix4();
       if(options.rotationAxis) {
-       m1.makeRotationAxis(new THREE.Vector3(options.rotationAxis.x || 0, options.rotationAxis.y || 0, options.rotationAxis.z || 0), options.rotationAngle || 0); 
+        m1.makeRotationAxis(new THREE.Vector3(options.rotationAxis.x || 0, options.rotationAxis.y || 0, options.rotationAxis.z || 0), options.rotationAngle || 0);
       }
       m2.makeTranslation(options.x || 0, options.y || 0, options.z || 0);
       m2.multiplyMatrices(m2,m1);
@@ -754,12 +746,12 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       this.scene.add(mesh);
       return mesh;
     },
-    
+
     _drawLine: function(p1, p2, options) {
       options = options || {};
       var self = this;
       var material = new THREE.LineBasicMaterial({
-      	color: options.color || 0x000000
+        color: options.color || 0x000000
       });
       var geometry = new THREE.Geometry();
       geometry.vertices.push(p1);
@@ -768,7 +760,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       self.scene.add(line);
       return line;
     },
-    
+
     _reinitObject3DArray: function(name) {
       this[name] = this[name] || [];
       for(var i=0; i<this[name].length; i++) {
@@ -776,7 +768,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       }
       this[name] = [];
     },
-    
+
     _setGridOrigin: function() {
       var self = this;
       self.gorigin = {};
@@ -786,163 +778,161 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       self.gorigin.x = NORM_CONSTANT * (self.gorigin.x - self._data.realMin.x)/self._data.realLen.x;
       self.gorigin.y = NORM_CONSTANT * (self.gorigin.y - self._data.realMin.y)/self._data.realLen.y;
       self.gorigin.z = NORM_CONSTANT * (self.gorigin.z - self._data.realMin.z)/self._data.realLen.z;
-      console.log('GRID ORIGIN', self.gorigin.x, self.gorigin.y, self.gorigin.z);
     },
-    
+
     _drawSecondaryGrid: function() {
       var self = this;
       self._reinitObject3DArray('secondaryGrid');
-      console.log('secondary grid', self._data.nbTicks.x);
       var options = { color: 0x888888 };
-      
+
       // x lines
       var jmax = self.module.getConfiguration('secondaryGrids') || 2;
       for(var i=0; i<self._data.nbTicks.x-1; i++) {
         for(var j=1; j<jmax; j++) {
           if(this._configCheckBox('grid', 'xysec'))
-          self.secondaryGrid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x/jmax * j, 0, DELTA+self.gorigin.z), 
-            new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x/jmax * j, NORM_CONSTANT, DELTA+self.gorigin.z), options));
+            self.secondaryGrid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x/jmax * j, 0, DELTA+self.gorigin.z),
+                new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x/jmax * j, NORM_CONSTANT, DELTA+self.gorigin.z), options));
           if(this._configCheckBox('grid', 'xzsec'))
-          self.secondaryGrid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x/jmax * j, DELTA+self.gorigin.y, 0), 
-            new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x/jmax * j, DELTA+self.gorigin.y, NORM_CONSTANT), options));
+            self.secondaryGrid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x/jmax * j, DELTA+self.gorigin.y, 0),
+                new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x/jmax * j, DELTA+self.gorigin.y, NORM_CONSTANT), options));
         }
       }
-      
+
       // y lines
       for(var i=0; i<self._data.nbTicks.y-1; i++) {
         for(var j=1; j<jmax; j++){
           if(this._configCheckBox('grid', 'yzsec'))
-          self.secondaryGrid.push(self._drawLine(new THREE.Vector3(DELTA+self.gorigin.x, self._data.intervalPx.y * i + self._data.intervalPx.y/jmax * j, 0),
-            new THREE.Vector3(DELTA+self.gorigin.x, self._data.intervalPx.y * i + self._data.intervalPx.y/jmax * j, NORM_CONSTANT), options));
+            self.secondaryGrid.push(self._drawLine(new THREE.Vector3(DELTA+self.gorigin.x, self._data.intervalPx.y * i + self._data.intervalPx.y/jmax * j, 0),
+                new THREE.Vector3(DELTA+self.gorigin.x, self._data.intervalPx.y * i + self._data.intervalPx.y/jmax * j, NORM_CONSTANT), options));
           if(this._configCheckBox('grid', 'xysec'))
-          self.secondaryGrid.push(self._drawLine(new THREE.Vector3(0, self._data.intervalPx.y * i + self._data.intervalPx.y/jmax * j, DELTA+self.gorigin.z),
-            new THREE.Vector3(NORM_CONSTANT, self._data.intervalPx.y * i + self._data.intervalPx.y/jmax * j, DELTA+self.gorigin.z), options));
+            self.secondaryGrid.push(self._drawLine(new THREE.Vector3(0, self._data.intervalPx.y * i + self._data.intervalPx.y/jmax * j, DELTA+self.gorigin.z),
+                new THREE.Vector3(NORM_CONSTANT, self._data.intervalPx.y * i + self._data.intervalPx.y/jmax * j, DELTA+self.gorigin.z), options));
         }
       }
-      
+
       // z lines
       for(var i=0; i<self._data.nbTicks.z-1; i++) {
         for(var j=1; j<jmax; j++) {
           if(this._configCheckBox('grid', 'yzsec'))
-          self.secondaryGrid.push(self._drawLine(new THREE.Vector3(DELTA+self.gorigin.x, 0, self._data.intervalPx.z * i + self._data.intervalPx.z/jmax * j),
-            new THREE.Vector3(DELTA+self.gorigin.x, NORM_CONSTANT, self._data.intervalPx.z * i + self._data.intervalPx.z/jmax * j), options));
+            self.secondaryGrid.push(self._drawLine(new THREE.Vector3(DELTA+self.gorigin.x, 0, self._data.intervalPx.z * i + self._data.intervalPx.z/jmax * j),
+                new THREE.Vector3(DELTA+self.gorigin.x, NORM_CONSTANT, self._data.intervalPx.z * i + self._data.intervalPx.z/jmax * j), options));
           if(this._configCheckBox('grid', 'xzsec'))
-          self.secondaryGrid.push(self._drawLine(new THREE.Vector3( 0, DELTA+self.gorigin.y, self._data.intervalPx.z * i + self._data.intervalPx.z/jmax * j),
-            new THREE.Vector3( NORM_CONSTANT, DELTA+self.gorigin.y, self._data.intervalPx.z * i + self._data.intervalPx.z/jmax * j), options));
+            self.secondaryGrid.push(self._drawLine(new THREE.Vector3( 0, DELTA+self.gorigin.y, self._data.intervalPx.z * i + self._data.intervalPx.z/jmax * j),
+                new THREE.Vector3( NORM_CONSTANT, DELTA+self.gorigin.y, self._data.intervalPx.z * i + self._data.intervalPx.z/jmax * j), options));
         }
       }
     },
-    
+
     _drawGrid: function() {
       var self = this;
       self._reinitObject3DArray('grid');
       // x lines
       for(var i=0; i<self._data.nbTicks.x; i++) {
         if(this._configCheckBox('grid', 'xy'))
-        self.grid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i, 0, DELTA+self.gorigin.z),
-          new THREE.Vector3(self._data.intervalPx.x * i, NORM_CONSTANT, DELTA+self.gorigin.z)));
+          self.grid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i, 0, DELTA+self.gorigin.z),
+              new THREE.Vector3(self._data.intervalPx.x * i, NORM_CONSTANT, DELTA+self.gorigin.z)));
         if(this._configCheckBox('grid', 'xz'))
-        self.grid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i, DELTA+self.gorigin.y, 0), 
-          new THREE.Vector3(self._data.intervalPx.x * i, DELTA+self.gorigin.y, NORM_CONSTANT)));
+          self.grid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i, DELTA+self.gorigin.y, 0),
+              new THREE.Vector3(self._data.intervalPx.x * i, DELTA+self.gorigin.y, NORM_CONSTANT)));
       }
 
 
-      
+
       // y lines
       for(var i=0; i<self._data.nbTicks.y; i++) {
         if(this._configCheckBox('grid', 'yz'))
-        self.grid.push(self._drawLine(new THREE.Vector3(DELTA+self.gorigin.x, self._data.intervalPx.y * i, 0),
-          new THREE.Vector3(DELTA+self.gorigin.x, self._data.intervalPx.y * i, NORM_CONSTANT)));
+          self.grid.push(self._drawLine(new THREE.Vector3(DELTA+self.gorigin.x, self._data.intervalPx.y * i, 0),
+              new THREE.Vector3(DELTA+self.gorigin.x, self._data.intervalPx.y * i, NORM_CONSTANT)));
         if(this._configCheckBox('grid', 'xy'))
-        self.grid.push(self._drawLine(new THREE.Vector3(0, self._data.intervalPx.y * i, DELTA+self.gorigin.z),
-          new THREE.Vector3(NORM_CONSTANT, self._data.intervalPx.y * i, DELTA+self.gorigin.z)));
+          self.grid.push(self._drawLine(new THREE.Vector3(0, self._data.intervalPx.y * i, DELTA+self.gorigin.z),
+              new THREE.Vector3(NORM_CONSTANT, self._data.intervalPx.y * i, DELTA+self.gorigin.z)));
       }
-      
-      
+
+
       // z lines
       for(var i=0; i<self._data.nbTicks.z; i++) {
         if(this._configCheckBox('grid', 'yz'))
-        self.grid.push(self._drawLine(new THREE.Vector3(DELTA+self.gorigin.x, 0, self._data.intervalPx.z * i),
-          new THREE.Vector3(DELTA+self.gorigin.x, NORM_CONSTANT, self._data.intervalPx.z * i)));
+          self.grid.push(self._drawLine(new THREE.Vector3(DELTA+self.gorigin.x, 0, self._data.intervalPx.z * i),
+              new THREE.Vector3(DELTA+self.gorigin.x, NORM_CONSTANT, self._data.intervalPx.z * i)));
         if(this._configCheckBox('grid', 'xz'))
-        self.grid.push(self._drawLine(new THREE.Vector3( 0, DELTA+self.gorigin.y, self._data.intervalPx.z * i),
-          new THREE.Vector3( NORM_CONSTANT, DELTA+self.gorigin.y, self._data.intervalPx.z * i)));
+          self.grid.push(self._drawLine(new THREE.Vector3( 0, DELTA+self.gorigin.y, self._data.intervalPx.z * i),
+              new THREE.Vector3( NORM_CONSTANT, DELTA+self.gorigin.y, self._data.intervalPx.z * i)));
 
       }
     },
-    
+
     _drawTicks: function() {
       var self = this;
       self._reinitObject3DArray('ticks');
-      
+
       // x ticks
       if(self._configCheckBox('ticks', 'x')) {
         for(var i=0; i<self._data.nbTicks.x; i++) {
-          self.ticks.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i, 0, NORM_CONSTANT), 
-          new THREE.Vector3(self._data.intervalPx.x * i, 0, NORM_CONSTANT*1.05)));
+          self.ticks.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i, 0, NORM_CONSTANT),
+              new THREE.Vector3(self._data.intervalPx.x * i, 0, NORM_CONSTANT*1.05)));
         }
       }
       // y ticks
       if(self._configCheckBox('ticks', 'y')) {
         for(var i=0; i<self._data.nbTicks.y; i++) {
           self.ticks.push(self._drawLine(new THREE.Vector3(0, self._data.intervalPx.y * i, NORM_CONSTANT),
-          new THREE.Vector3(-0.05*NORM_CONSTANT, self._data.intervalPx.y * i, NORM_CONSTANT)));
+              new THREE.Vector3(-0.05*NORM_CONSTANT, self._data.intervalPx.y * i, NORM_CONSTANT)));
         }
       }
-      
+
       // z ticks
       if(self._configCheckBox('ticks', 'z')) {
         for(var i=0; i<self._data.nbTicks.z; i++) {
           self.ticks.push(self._drawLine(new THREE.Vector3( NORM_CONSTANT, 0, self._data.intervalPx.z * i),
-          new THREE.Vector3( NORM_CONSTANT*1.05, 0, self._data.intervalPx.z * i)));
+              new THREE.Vector3( NORM_CONSTANT*1.05, 0, self._data.intervalPx.z * i)));
         }
       }
     },
-    
+
     _addText: function(text, x,y,z, options) {
       var self = this;
       var options = options || {};
-      
+
       // Set default options
       options.size = options.size || 50;
       options.fillStyle = options.fillStyle || arrayToRgba(self.module.getConfiguration('annotationColor')) || DEFAULT_TEXT_COLOR;
-      options.textAlign = options.textAlign || "left";  
+      options.textAlign = options.textAlign || "left";
       options.font = options.font || "Arial";
       // Stange, opacity of 1 will dispaly a black background on the text
       options.opacity = options.opacity || 0.99;
-      
-      
+
+
       // create a canvas element
       var canvas = document.createElement('canvas');
       canvas.height = options.size *1.2;
       canvas.width = options.size * text.length / 2 + options.size / 2;
-      
+
       switch(options.textAlign) {
-      case "left":
-        x += canvas.width/2;
-        break;
-      case "right":
-        x -= canvas.width /2;
-        break;
+        case "left":
+          x += canvas.width/2;
+          break;
+        case "right":
+          x -= canvas.width /2;
+          break;
       }
-  
+
       var ctx = canvas.getContext('2d');
       ctx.font = "Bold " + options.size + "px " + options.font;
       ctx.fillStyle = options.fillStyle;
       ctx.fillText(text, 0, options.size);
-      
+
       // canvas contents will be used for a texture
-      var texture = new THREE.Texture(canvas) 
+      var texture = new THREE.Texture(canvas)
       texture.needsUpdate = true;
-      
+
       var material = new THREE.MeshBasicMaterial({
         map: texture,
         transparent: (options.opacity === 1) ? false : true,
         opacity: options.opacity
       });
       var mesh = new THREE.Mesh(
-        new THREE.PlaneGeometry(canvas.width, canvas.height),
-        material
+          new THREE.PlaneGeometry(canvas.width, canvas.height),
+          material
       );
       // mesh.position.set(0,50,0);
       var textOrientation = self.camera.matrix.clone();
@@ -954,13 +944,13 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       self.scene.add(mesh);
       return mesh;
     },
-    
+
     _drawTickLabels: function() {
       var self = this;
-      
+
       self._reinitObject3DArray('tickLabels');
-      
-      
+
+
       // z labels
       if(self._configCheckBox('ticks', 'zlab')) {
         for(var i=0; i<self._data.nbTicks.z; i++) {
@@ -989,10 +979,10 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         }
       }
     },
-    
+
     _drawGraphTitle: function() {
       var self = this;
-      
+
       self._reinitObject3DArray('graphTitle');
       var mode = self.module.getConfiguration('labels');
       var title = self._meta.title || '';
@@ -1008,45 +998,42 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
           break;
       }
     },
-    
+
     _drawAxisLabels: function() {
       var self = this;
-      
+
       self._reinitObject3DArray('axisLabels');
-      
+
       var mode = self.module.getConfiguration('labels');
       var xkey = (self._data.xAxis) ? self._data.xAxis : null;
       var ykey = (self._data.yAxis) ? self._data.xAxis : null;
       var zkey = (self._data.yAxis) ? self._data.xAxis : null;
-      
-      console.log('xAxis', self._data);
-      console.log('meta', self._meta);
+
       var xtitle = (xkey && self._meta.axis && self._meta.axis[xkey]) ? self._meta.axis[xkey].name : 'X';
       var ytitle = (ykey && self._meta.axis && self._meta.axis[ykey]) ? self._meta.axis[ykey].name : 'Y';
       var ztitle = (zkey && self._meta.axis && self._meta.axis[zkey]) ? self._meta.axis[zkey].name : 'Z';
-      
-      console.log('xtitle', xtitle);
+
       switch(mode) {
-      case 'axis':
-        drawOnAxis(xtitle, ytitle, ztitle);
-        $('#legend_titles').hide();
-        break;
-      case 'alegend':
-        drawOnAxis('X', 'Y', 'Z');
-        drawLegend(xtitle, ytitle, ztitle);
-        $('#legend_titles').show();
-        break;
-      case 'both':
-        drawOnAxis(xtitle, ytitle, ztitle);
-        drawLegend(xtitle, ytitle, ztitle);
-        $('#legend_titles').show();
-        break;
-      default:
-        return;
-        break;
+        case 'axis':
+          drawOnAxis(xtitle, ytitle, ztitle);
+          $('#legend_titles').hide();
+          break;
+        case 'alegend':
+          drawOnAxis('X', 'Y', 'Z');
+          drawLegend(xtitle, ytitle, ztitle);
+          $('#legend_titles').show();
+          break;
+        case 'both':
+          drawOnAxis(xtitle, ytitle, ztitle);
+          drawLegend(xtitle, ytitle, ztitle);
+          $('#legend_titles').show();
+          break;
+        default:
+          return;
+          break;
       }
-      
-      
+
+
       function drawLegend(tx, ty, tz) {
         var arr = [];
         arr.push('X: '+ tx);
@@ -1054,34 +1041,34 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         arr.push('Z: '+ tz);
         $('#legend_titles').html(arr.join('<br/>'));
       }
-      
+
       function drawOnAxis(tx, ty, tz) {
         // x label
         self.tickLabels.push(self._addText(addFactor(tx, 'x'), NORM_CONSTANT/2, 0, NORM_CONSTANT *1.4, {
           textAlign: "right"
         }));
-      
+
         // y label
         self.tickLabels.push(self._addText(addFactor(ty,'y'), -0.4*NORM_CONSTANT, NORM_CONSTANT/2, NORM_CONSTANT, {
           textAlign: "right"
         }));
-      
+
         // z label
         self.tickLabels.push(self._addText(addFactor(tz,'z'), NORM_CONSTANT *1.4,0,NORM_CONSTANT/2, {
           textAlign: "left"
         }));
-        
+
       }
-      
+
       function addFactor(text, axis) {
         if(self._data.intervalFactor[axis] === 1)
-        return text;
+          return text;
         else if(self._data.intervalFactor[axis] > 1)
-        return text + ' (\u00D7 10' + unicodeSuperscript(Math.round(Math.log(self._data.intervalFactor[axis])/Math.LN10)) + ')';
+          return text + ' (\u00D7 10' + unicodeSuperscript(Math.round(Math.log(self._data.intervalFactor[axis])/Math.LN10)) + ')';
         else
-        return text + ' (\u00D7 10' + unicodeSuperscript('-'+(-Math.round(Math.log(self._data.intervalFactor[axis])/Math.LN10))) + ')';
+          return text + ' (\u00D7 10' + unicodeSuperscript('-'+(-Math.round(Math.log(self._data.intervalFactor[axis])/Math.LN10))) + ')';
       }
-      
+
       function unicodeSuperscript(num) {
         num = num.toString();
         var result = '';
@@ -1099,29 +1086,29 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         return result;
       }
     },
-    
+
     _drawFaces: function() {
       var self = this;
       if(!self._data) {
         return;
       }
       self._reinitObject3DArray('faces');
-      
+
       //                  _________        y
       //                 /|       /|       |
       //                /_|______/ |       |___ x
       //               |  |______|_|      /
       //               | /       | /     /  
       //               |/________|/      z
-      
+
       // 1: xy back
       // 2: yz left
       // 3: xz bottom
       // 4: xy front
       // 5: yz right
       // 6: xz top
-      
-      
+
+
       var geometry1 = new THREE.PlaneGeometry(NORM_CONSTANT, NORM_CONSTANT);
       var geometry2 = new THREE.PlaneGeometry(NORM_CONSTANT, NORM_CONSTANT);
       var geometry3 = new THREE.PlaneGeometry(NORM_CONSTANT, NORM_CONSTANT);
@@ -1137,8 +1124,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       var mesh5 = new THREE.Mesh(geometry5, material);
       var mesh6 = new THREE.Mesh(geometry6, material);
 
-      
-      
+
+
       var m1, m2, m3;
       // Face 1
       m1 = new THREE.Matrix4();
@@ -1149,8 +1136,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       mesh1.applyMatrix(m1);
       m2.multiplyMatrices(m1,m2);
       mesh4.applyMatrix(m2);
-      
-      
+
+
       // Face 2
       m1 = new THREE.Matrix4();
       m2 = new THREE.Matrix4();
@@ -1163,7 +1150,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       mesh2.applyMatrix(m2);
       m3.multiplyMatrices(m2, m3);
       mesh5.applyMatrix(m3);
-      
+
       // Face 3
       m1 = new THREE.Matrix4();
       m2 = new THREE.Matrix4();
@@ -1176,11 +1163,11 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       m3.makeTranslation(0, 0, -NORM_CONSTANT);
       m3.multiplyMatrices(m2, m3);
       mesh6.applyMatrix(m3);
-      
+
       mesh4.visible = false;
       mesh5.visible = false;
       mesh6.visible = false;
-      
+
       self.faces.push(mesh1);
       self.faces.push(mesh2);
       self.faces.push(mesh3);
@@ -1189,19 +1176,19 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         self.scene.add(self.faces[i]);
       }
     },
-    
+
     _inBoundary: function(point) {
       var self = this;
       if(_.isObject(point)) {
         if(point.x < self._data.realMin.x || point.x > self._data.realMax.x)
-        return false;
-        
+          return false;
+
         if(point.y < self._data.realMin.y || point.y > self._data.realMax.y)
-        return false;
-          
+          return false;
+
         if(point.z < self._data.realMin.z || point.z > self._data.realMax.z)
-        return false;
-        
+          return false;
+
         return true;
       }
       else if(_.isArray(point)) {
@@ -1215,7 +1202,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         return false;
       }
     },
-    
+
     _computeInBoundaryIndexes: function() {
       var self = this;
       self._data.inBoundary = [];
@@ -1227,28 +1214,28 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         }) ? self._data.inBoundary.push(true) : self._data.inBoundary.push(false);
       }
     },
-    
-    
+
+
     _mathPoints: function() {
       var self = this;
       if(!self._data) return;
       self.mathPoints = [];
-      
+
       for(var i=0; i<self._data.x.length; i++) {
         if(!self._data.inBoundary[i]) continue;
-                
+
         var radius = DEFAULT_POINT_RADIUS;
         if(self._data.size && self._data.size[i]){
           var radius = self._data.size[i];
         }
-        
+
         var sphere = new THREE.Sphere(new THREE.Vector3(self._data.normalizedData.x[i], self._data.normalizedData.y[i], self._data.normalizedData.z[i]), radius*NORM_CONSTANT);
         sphere.index = i;
         self.mathPoints.push(sphere);
       }
-      
+
     },
-    
+
     _updateMathPoints: function(options) {
       var self = this;
       var filter;
@@ -1261,78 +1248,69 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       else {
         filter = self._data.inBoundary;
       }
-      
+
       for( var i = 0; i < self._data.x.length; i++ ) {
         self.mathPoints[i].radius = filter[i]
-        ? self._data.size[i] * NORM_CONSTANT
-        : 0;
+            ? self._data.size[i] * NORM_CONSTANT
+            : 0;
       }
     },
-    
+
     _zoomToFit: function() {
-      console.log('Zoom to fit');
       var self = this;
       var theta = Math.PI/3;
       var phi = Math.PI/4;
       var r = NORM_CONSTANT * ZOOM_START;
       var eye = this._polarToCartesian(theta, phi, r);
 
-     
+
       // Lookat the middle of the cube
       var target = new THREE.Vector3(NORM_CONSTANT/2, NORM_CONSTANT/2, NORM_CONSTANT/2);
       self.camera.position.set(eye[0], eye[1], eye[2]);
       self.camera.lookAt(target);
     },
-    
+
     _polarToCartesian: function(theta, phi, r) {
       var x = Math.sin(phi) * Math.cos(theta) * r;
       var y = Math.sin(phi) * Math.sin(theta) * r;
       var z = Math.cos(phi) * r;
       return [x, y, z];
     },
-    
-    
-		init: function() {
-			if (this.DEBUG) console.log("Scatter 3D: init");
 
-			// When we change configuration the method init is called again. Also the case when we change completely of view
-			if (! this.dom) {
-				this._id = Util.getNextUniqueId();
-				this.dom = $(' <div id="' + this._id + '"></div>').css('height', '100%').css('width', '100%');
-				this.module.getDomContent().html(this.dom);
-			}
-      
 
-			if (this.dom) {
-				// in the dom exists and the preferences has been changed we need to clean the canvas
-				this.dom.empty();
-				
-			}
-			if (this._flot) { // if the dom existedd there was probably a rgraph or when changing of view
-				delete this._flot;
-			}
+    init: function() {
+      // When we change configuration the method init is called again. Also the case when we change completely of view
+      if (! this.dom) {
+        this._id = Util.getNextUniqueId();
+        this.dom = $(' <div id="' + this._id + '"></div>').css('height', '100%').css('width', '100%');
+        this.module.getDomContent().html(this.dom);
+      }
 
-			// Adding a deferred allows to wait to get actually the data before we draw the chart
-			// we decided here to plot the chart in the "onResize" event
-			this.loadedData=$.Deferred();
-			
-			this.resolveReady();
 
-      // this.updateOptions();
+      if (this.dom) {
+        // in the dom exists and the preferences has been changed we need to clean the canvas
+        this.dom.empty();
 
-			if (this.DEBUG) console.log("Scatter 3D: ID: "+this._id);      
-		},
+      }
+      if (this._flot) { // if the dom existedd there was probably a rgraph or when changing of view
+        delete this._flot;
+      }
 
-		onResize: function() {
-      console.log("In onResize");
+      // Adding a deferred allows to wait to get actually the data before we draw the chart
+      // we decided here to plot the chart in the "onResize" event
+      this.loadedData=$.Deferred();
+
+      this.resolveReady();
+    },
+
+    onResize: function() {
       var highlightObjects = {};
       var highlightObjectBis = null;
       var self = this;
-      
-			if (this.DEBUG) console.log("Scatter 3D: onResize");
-			// the size is now really defined (we are after inDom)
-			// and we received the data ...
-			this.loadedData.done(function() {
+
+      // the size is now really defined (we are after inDom)
+      // and we received the data ...
+      this.loadedData.done(function() {
         self._initThreejs();
         if(self._firstLoad) {
           self._activateHighlights();
@@ -1342,10 +1320,9 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         if(self._data) {
           self._drawGraph();
         }
-        console.log('loadedData done');
       });
     },
-    
+
     _newParticleObject: function(indexes, options) {
       var self = this;
       options = options || {};
@@ -1353,7 +1330,6 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       if(options.transparent) {
         image = image.replace(/\.(png|svg|jpeg|jpg|gif)$/i, "t.$1");
       }
-      console.log('IMAGE repalce:', image);
       attributes = {
         size: {	type: 'f', value: [] },
         ca:   {	type: 'c', value: [] }
@@ -1403,7 +1379,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       // highlightObjectBis.dynamic = true;
       return object;
     },
-    
+
     _updateParticleObject: function(object, options) {
       if(!object) {
         return;
@@ -1432,44 +1408,44 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       if(indexes) {
         for( var v = 0; v < vertices.length; v ++ ) {
           values_size[ v ] = filter[indexes[v]]
-            ? (size[indexes[v]] || DEFAULT_POINT_RADIUS) * factor
-            : -1;
-            if(forcedColor){
-              values_color[v] = forcedColor;
-            }
-            else if(updateColor){
-             values_color[ v ] = new THREE.Color(color[v] || DEFAULT_POINT_COLOR); 
-            }
+              ? (size[indexes[v]] || DEFAULT_POINT_RADIUS) * factor
+              : -1;
+          if(forcedColor){
+            values_color[v] = forcedColor;
+          }
+          else if(updateColor){
+            values_color[ v ] = new THREE.Color(color[v] || DEFAULT_POINT_COLOR);
+          }
         }
       }
       else {
         for( var v = 0; v < vertices.length; v ++ ) {
           values_size[ v ] = filter[v]
-            ?(size[v] || DEFAULT_POINT_RADIUS) * factor
-            : 0;
-            if(forcedColor) {
-              values_color[ v ] = forcedColor
-            }
-            else if(updateColor) {
-              values_color[ v ] = new THREE.Color(color[v] || DEFAULT_POINT_COLOR);
-            }
+              ?(size[v] || DEFAULT_POINT_RADIUS) * factor
+              : 0;
+          if(forcedColor) {
+            values_color[ v ] = forcedColor
+          }
+          else if(updateColor) {
+            values_color[ v ] = new THREE.Color(color[v] || DEFAULT_POINT_COLOR);
+          }
         }
       }
       object.material.attributes.size.needsUpdate = true;
       self.renderer.render(self.scene, self.camera);
     },
-    
+
     _prepareHighlights: function(hl) {
       var self = this;
       self._highlightParticleObjects = self._highlightParticleObjects || {};
       var m = {};
-      
+
       for(var i=0; i<hl.length; i++) {
         m[self._data.shape[i]] = m[self._data.shape[i]] || {};
         m[self._data.shape[i]][hl[i]] = m[self._data.shape[i]][hl[i]] || [];
         m[self._data.shape[i]][hl[i]].push(i);
       }
-      
+
       for(var shape in m){
         for(var hlkey in m[shape]) {
           var tstart = new Date().getTime();
@@ -1478,31 +1454,28 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
             shape: shape || DEFAULT_POINT_SHAPE,
             transparent: true
           });
-        
+
           self._updateParticleObject(self._highlightParticleObjects[shape][hlkey], {
             sizeFactor: 1.5,
             forcedColor: '#e5be39'
           });
-          console.log('highlight time:', new Date().getTime() - tstart);
         }
       }
-        
+
     },
-    
+
     _updatePoints: function() {
-      
+
     },
-		
-		/* When a value changes this method is called. It will be called for all 
-		possible received variable of this module.
-		It will also be called at the beginning and in this case the value is null !
-		*/
-		update: {
-			'chart': function(moduleValue) {
-				if (this.DEBUG) console.log("Scatter 3D: update from chart object");
-        
-        console.log('module value on update', moduleValue);
-				if (! moduleValue.get() ){ 
+
+    /* When a value changes this method is called. It will be called for all
+     possible received variable of this module.
+     It will also be called at the beginning and in this case the value is null !
+     */
+    update: {
+      'chart': function(moduleValue) {
+
+        if (! moduleValue.get() ){
           console.error('Unvalid value', moduleValue);
           return;
         }
@@ -1516,32 +1489,23 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         this._setGridOrigin();
         this._updateChartData();
         if(!this._firstLoad) this._activateHighlights();
-        
-        console.log('moduleValue.get(): ', this._data);
 
-				// data are ready to be ploted
-        console.log('state:', this.loadedData.state());
+        // data are ready to be ploted
         if(this.loadedData.state() === 'pending') {
-  				this.loadedData.resolve();
+          this.loadedData.resolve();
         }
         else {
-          console.log("points changed");
           this._drawGraph();
         }
-			},
+      },
       'data3D': function(moduleValue) {
-        console.log('data3d received');
-        console.log('Scatter 3D: update from data3D object');
         if(!moduleValue || !moduleValue.get()) {
-          console.error('Unvalid value', moduleValue);
+          Debug.error('Unvalid value' + moduleValue);
           return;
         }
-        
+
         // Convert data
         this._convertData3dToData(moduleValue.get());
-        console.log(this._data);
-        
-        
         this._computeMinMax();
         this._computeTickInfo();
         this._computeInBoundaryIndexes();
@@ -1549,22 +1513,18 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         this._setGridOrigin();
         this._updateChartData();
         if(!this._firstLoad) this._activateHighlights();
-        
-        console.log('moduleValue.get(): ', this._data);
 
-				// data are ready to be ploted
-        console.log('state:', this.loadedData.state());
+
+        // data are ready to be ploted
         if(this.loadedData.state() === 'pending') {
-  				this.loadedData.resolve();
+          this.loadedData.resolve();
         }
         else {
-          console.log("points changed");
           this._drawGraph();
         }
       },
-      
+
       'boolArray': function(moduleValue) {
-        console.log('bool array received');
         if(!this._data || !this._mainParticleObjects) {
           return;
         }
@@ -1577,7 +1537,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         for(var shape in self._mainParticleObjects) {
           self._updateParticleObject(self._mainParticleObjects[shape], {applyFilter: true, updateColor: false});
         }
-        
+
         self._updateMathPoints({applyFilter: true});
         for(var shape in self._highlightParticleObjects) {
           for(var hlkey in self._highlightParticleObjects[shape]) {
@@ -1585,15 +1545,15 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
           }
         }
       }
-		},
-    
+    },
+
     _render: function () {
       var self = this;
       setTimeout(function() {
         self.renderer.render(self.scene, self.camera, 0);
       }, 20);
     },
-    
+
     _convertData3dToData: function(value) {
       var self = this;
       if(! Array.isArray(value) || value.length === 0) {
@@ -1606,10 +1566,13 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         }
       }
       self._meta = {};
+      self._data.x = self._data.x || [];
+      self._data.y = self._data.y || [];
+      self._data.z = self._data.z || [];
       self._data._highlight = self._data._highlight || [];
       self._data.info = self._data._info || [];
       self._dispFilter = self._dispFilter || [];
-      
+
       // generate random x,y z
       // var n = 1000;
       // self._data.x =       generateRandomArray(n,0,5);
@@ -1619,23 +1582,23 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       // self._data.color =  generateRandomColors(n);
       // self._data._highlight = generateRandomFromArray(['A','B','C','D'], n);
     },
-		
-		_convertChartToData: function(value) {
-			this._data = {};
+
+    _convertChartToData: function(value) {
+      this._data = {};
       this._meta = {};
-			var self=this;
-			if ( ! Array.isArray(value.data) || ! value.data[0] || ! Array.isArray(value.data[0].y)) return;
-			if (value.data.length>0) {
-				console.log("Scatter 3D module will merge series together");
-			}
-      
+      var self=this;
+      if ( ! Array.isArray(value.data) || ! value.data[0] || ! Array.isArray(value.data[0].y)) return;
+      if (value.data.length>0) {
+        Debug.warn("Scatter 3D module will merge series together");
+      }
+
       for(var j=0; j<value.data.length; j++) {
         _.keys(value.data[j]).forEach(function(key){
           if(Array.isArray(value.data[j][key])) {
             self._data[key] = self._data[key] || [];
             self._data[key].push(value.data[j][key]);
             self._data[key] = _.flatten(self._data[key], true);
-            
+
           }
           else {
             self._data[key] = value.data[j][key];
@@ -1645,15 +1608,14 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
           });
         });
       }
-      
+
       _.keys(value).forEach(function(key){
         if(key === 'data') return;
         else self._meta[key] = value[key];
       });
-      
+
       self._dispFilter = self._dispFilter || [];
-      console.log('meta: ', self._meta);
-      
+
       // generate random x,y z
       var n = 1000;
       self._data.x =       generateRandomArray(n,0,5);
@@ -1662,9 +1624,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       self._data.size =    generateRandomArray(n, 0.01, 0.02);
       self._data.color =  generateRandomColors(n);
       self._data._highlight = generateRandomFromArray(['A','B','C','D'], n);
-      console.log('Converted data: ', self._data);
-		},
-    
+    },
+
     _completeDataInfo: function(name, defaultValue) {
       var self = this;
       self._data[name] = self._data[name] || [];
@@ -1672,21 +1633,19 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         if(!self._data[name][i]) self._data[name][i] = defaultValue;
       }
     },
-    
+
     _updateChartData: function() {
       this._completeDataInfo('size', DEFAULT_POINT_RADIUS);
       this._completeDataInfo('color', DEFAULT_POINT_COLOR);
       this._completeDataInfo('shape', DEFAULT_POINT_SHAPE);
     },
-    
+
     _activateHighlights: function() {
       var self = this;
-      if(self._data) {        
+      if(self._data) {
         API.killHighlight( self.module.getId());
         var highlightSet = {};
-        console.log("-----");
         if(self._data._highlight) {
-          console.log('listen highlights');
           listenHighlightsBis(self._data._highlight);
         }
         var infoHighlights = _.flatten(_.pluck(self._data.info, '_highlight'))
@@ -1695,7 +1654,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         }
       }
 
-      
+
       function listenHighlightsBis(hl) {
         self._prepareHighlights(hl);
         var hlset = _.uniq(hl);
@@ -1712,7 +1671,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
           });
         });
       }
-      
+
       function undrawHighlightBis(hl) {
         var doDraw = false;
         for(var shape in self._highlightParticleObjects) {
@@ -1724,9 +1683,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         }
         if(doDraw) self._render();
       }
-      
+
       function drawHighlightBis(hl) {
-        console.log('draw highlights', hl);
         for(var shape in self._highlightParticleObjects) {
           if(self._highlightParticleObjects[shape][hl]) {
             if(self._highlightParticleObjects[shape][hl].drawn === true) {
@@ -1738,26 +1696,25 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
               self._render();
             }
           }
-        }  
+        }
       }
     },
 
-		updateOptions: function() {
-      console.log('update options');
-			this._options = {
-				grid: {
-					clickable:true,
-					hoverable:true
-				},
-				series: {
-					pie: {
-						show:true
-					}
-				}
-			};
-       // var cfg = $.proxy( this.module.getConfiguration, this.module );
-		}
-	});
+    updateOptions: function() {
+      this._options = {
+        grid: {
+          clickable:true,
+          hoverable:true
+        },
+        series: {
+          pie: {
+            show:true
+          }
+        }
+      };
+      // var cfg = $.proxy( this.module.getConfiguration, this.module );
+    }
+  });
 
-	return view;
+  return view;
 });
