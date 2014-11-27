@@ -1,50 +1,85 @@
-define(['modules/default/defaultcontroller', 'src/util/datatraversing'], function(Default, Traversing) {
+'use strict';
 
+define(['modules/default/defaultcontroller'], function (Default) {
 
-	function controller() {
+    function Controller() {
+    }
 
-	};
+    Controller.prototype = $.extend(true, {}, Default);
 
-	// Extends the default properties of the default controller
-	controller.prototype = $.extend( true, {}, Default );
+    Controller.prototype.moduleInformation = {
+        moduleName: '1D NMR',
+        description: 'Displays NMR jcamp files in the style of standard NMRs',
+        author: 'Norman Pellet',
+        date: '24.12.2013',
+        license: 'MIT',
+        cssClass: '1dnmr'
+    };
 
+    Controller.prototype.references = {
+        jcamp: {
+            label: 'The jcamp file',
+            type: 'jcamp'
+        },
 
-	controller.prototype.moduleInformation = {
-		moduleName: '1D NMR',
-		description: 'Displays NMR jcamp files in the style of standard NMRs',
-		author: 'Norman Pellet',
-		date: '24.12.2013',
-		license: 'MIT',
-		cssClass: '1dnmr'
-	};
-	
+        plot: {
+            label: 'The Plot object',
+            type: 'object'
+        }
+    };
 
-	controller.prototype.references = {
-		'jcamp': {
-			label: 'The jcamp file',
-			type: 'jcamp'
-		},
+    Controller.prototype.variablesIn = ['jcamp'];
 
-		'plot': {
-			label: 'The Plot object',
-			type: 'object'
-		}
-	};
+    Controller.prototype.configurationStructure = function () {
 
-	controller.prototype.events = {
+        var vars = [];
+        var currentCfg = this.module.definition.vars_in;
 
-	};
-	
-	controller.prototype.variablesIn = [ 'jcamp' ];
-		
+        if (currentCfg) {
+            var i = 0,
+                l = currentCfg.length;
+            for (; i < l; i++) {
+                vars.push({
+                    title: currentCfg[i].name,
+                    key: currentCfg[i].name
+                });
+            }
+        }
 
-	controller.prototype.actionsIn = {
+        return {
+            groups: {
+                lines: {
+                    options: {
+                        type: 'table',
+                        multiple: true
+                    },
+                    fields: {
+                        varname: {
+                            type: 'combo',
+                            title: 'Variable',
+                            options: vars,
+                            'default': ''
+                        },
+                        color: {
+                            type: 'spectrum',
+                            title: 'Color',
+                            'default': [0, 0, 0, 1]
+                        },
+                        width: {
+                            type: 'float',
+                            title: 'Width (px)',
+                            'default': 1
+                        }
+                    }
+                }
+            }
+        }
+    };
 
-	};
-	
-	controller.prototype.configurationStructure = function(section) {
+    Controller.prototype.configAliases = {
+        lines: ['groups', 'lines', 0]
+    };
 
-	}
+    return Controller;
 
-	return controller;
 });
