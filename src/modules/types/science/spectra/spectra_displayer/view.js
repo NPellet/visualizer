@@ -754,7 +754,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 }
 
                 this.redraw();
-                this.drawSeries();
+                
             }
         },
 
