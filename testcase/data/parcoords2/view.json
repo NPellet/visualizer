@@ -18,7 +18,7 @@
 		  "group": [
 			{
 			  "script": [
-				"// Change this variable to modify the number of generated colors\nvar l = 10000;\n\n\nvar i = 0,\n    a = Array(l);\n\nfunction rnd() {\n    return Math.floor(Math.random()*256);\n}\n\nvar o;\nfor(; i < l; i++) {\n    o = {\n        r: rnd(),\n        g: rnd(),\n        b: rnd(),\n        a: Math.random()\n    };\n    o.color = \"rgba(\"+o.r+\",\"+o.g+\",\"+o.b+\",\"+o.a+\")\";\n    o.colorC = {type:'color',value:o.color};\n    a[i] = o;\n}\n\nresolve(a);"
+				"// Change this variable to modify the number of generated colors\nvar l = 10000;\n\n\nvar i = 0,\n    a = Array(l);\n\nfunction rnd() {\n    return Math.floor(Math.random()*256);\n}\n\nvar o;\nfor(; i < l; i++) {\n    o = {\n        r: rnd(),\n        g: rnd(),\n        b: rnd(),\n        a: Math.random()\n    };\n    o.color = \"rgba(\"+o.r+\",\"+o.g+\",\"+o.b+\",\"+o.a+\")\";\n    o.colorC = {type:'color',value:o.color};\n    o._highlight = [i];\n    a[i] = o;\n}\n\nresolve(a);"
 			  ]
 			}
 		  ],

@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing', 'src/util/context', 'lib/d3/d3.parcoords'], function (Default, Util, Traversing, Context, d3) {
+define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing', 'src/util/context', 'lib/d3/d3.parcoords', 'src/util/api'], function (Default, Util, Traversing, Context, d3, API) {
 
     function View() {
         this._id = Util.getNextUniqueId();
@@ -100,8 +100,8 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing
                 var cfg = this.module.getConfiguration.bind(this.module),
                     cfgCb = this.module.getConfigurationCheckbox.bind(this.module);
 
-                var parcoords = d3.parcoords()('#' + (this._id));
-                window.x=parcoords;
+                var parcoords = this.parcoords = d3.parcoords()('#' + (this._id));
+
                 parcoords.data(this._data);
                 parcoords.detectDimensions();
                 if (this._names) {
@@ -125,10 +125,10 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing
                     parcoords.brushPredicate(cfg('brushPredicate'));
                 }
 
-                if(cfgCb('options', 'reorder')){
+                if (cfgCb('options', 'reorder')) {
                     parcoords.reorderable();
                 }
-                if(cfgCb('options', 'shadow')){
+                if (cfgCb('options', 'shadow')) {
                     parcoords.shadows();
                 }
 
@@ -143,8 +143,11 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing
             }
         },
         createIntermediateData: function () {
-            var columns = this.getColumns(), l = columns.length;
-            var colorJpath = this.module.getConfiguration('colorjpath');
+            var columns = this.getColumns(),
+                l = columns.length,
+                colorJpath = this.module.getConfiguration('colorjpath'),
+                that = this;
+
             if (colorJpath) {
                 colorJpath = Util.makejPathFunction(colorJpath);
                 this._color = function getItemColor(item) {
@@ -153,6 +156,9 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing
             }
 
             var value = this._value, vl = value.length;
+
+            API.killHighlight(this.module.getId());
+            this._highlighted = [];
 
             if (!l || !vl) {
                 this._data = [];
@@ -173,6 +179,17 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing
                 newVal = {};
                 val = value[i];
                 newValue[i] = newVal;
+
+                (function (i) {
+                    API.listenHighlight(val, function (onOff) {
+                        if (onOff) { // add highlight
+                            that._highlighted.push(that._data[i]);
+                        } else {
+                            that._highlighted.splice(that._highlighted.indexOf(that._data[i], 1));
+                        }
+                        that.updateHighlight();
+                    }, false, that.module.getId());
+                })(i);
 
                 for (var j = 0; j < l; j++) {
                     var theVal = columns[j].jpathF(val);
@@ -217,6 +234,12 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing
             if (this._parcoords) {
                 this._parcoords.brushReset();
                 this.module.controller.onBrushSelection(this._data);
+            }
+        },
+        updateHighlight: function () {
+            this.parcoords.unhighlight();
+            if (this._highlighted.length) {
+                this.parcoords.highlight(this._highlighted);
             }
         }
 

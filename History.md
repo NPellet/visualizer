@@ -5,6 +5,7 @@ HEAD
   * new brush mode : 2D strums
   * brushes can be combined with AND but also OR
   * options for reorderable axes and shadows
+  * add highlight support
 
 2.9.3 / 2014-11-26
 =================
