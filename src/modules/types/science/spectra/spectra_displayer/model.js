@@ -20,7 +20,12 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function(Def
 					data = this.module.controller.infos;
 
 					break;
-
+				case 'shapeInfos':
+					var annot = this.module.getDataFromRel('annotations');
+					if(annot) {
+						data = annot[0];
+						break;
+					}
 				default:
 					data = this.module.data;
 				break;

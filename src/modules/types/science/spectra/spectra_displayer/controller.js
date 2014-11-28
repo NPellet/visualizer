@@ -47,6 +47,11 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
             type: 'array'
         },
 
+        shapeInfos: {
+            label: 'Shape infos',
+            type: 'object'
+        },
+
         // input
         chart: {
             type: 'chart',
@@ -114,6 +119,11 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
 
         onMouseOutMarker: {
             label: 'Mouse out of a marker'
+        },
+
+        onMouseOverShape: {
+            label: 'Mouse over a shape',
+            refVariable: ['shapeInfos']
         }
     };
 

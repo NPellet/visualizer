@@ -199,6 +199,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 self.yAxis = graph.getYAxis();
 
                 graph.shapeHandlers.mouseOver.push(function (shape) {
+                    self.module.controller.createDataFromEvent('onMouseOverShape', 'shapeInfos', shape.data);
                     API.highlight(shape.data, 1);
                 });
 
@@ -592,7 +593,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
             annotations: function (value, varName) {
 
-                console.log('Receive new annotations', value, varName )
                 API.killHighlight(this.module.getId());
                 this.annotations[varName] = this.annotations[varName] || [];
                 this.removeAnnotations(varName);
@@ -606,9 +606,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                         self.annotations[varName][i] = shape;
 
-                        console.warn('Norman modification: spectra displayer. What if I want to change the annotation ? You should pass a lock directly to the shape info');
-                        //shape.setSelectable(false);
-                        //shape.setMovable(false);
 //TODO annotation.onChange
 //                Debug.debug('annotation.onChange is disabled, need to be fixed');
 //                annotation.onChange( annotation, function( value ) {
