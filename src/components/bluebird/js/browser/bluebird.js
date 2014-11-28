@@ -1,20 +1,22 @@
 /**
- * bluebird build version 2.3.5
+ * bluebird build version 2.3.11
  * Features enabled: core, race, call_get, generators, map, nodeify, promisify, props, reduce, settle, some, progress, cancel, using, filter, any, each, timers
 */
 /**
- * @preserve Copyright (c) 2014 Petka Antonov
- * 
+ * @preserve The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Petka Antonov
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:</p>
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -22,10 +24,12 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
- * 
+ *
  */
 !function(e){"object"==typeof exports?module.exports=e():"function"==typeof define&&define.amd?define(e):"undefined"!=typeof window?window.Promise=e():"undefined"!=typeof global?global.Promise=e():"undefined"!=typeof self&&(self.Promise=e())}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -74,6 +78,8 @@ Promise.prototype.any = function Promise$any() {
 
 },{}],2:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -187,6 +193,8 @@ module.exports = new Async();
 
 },{"./queue.js":25,"./schedule.js":28,"./util.js":35}],3:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -213,6 +221,8 @@ var Promise = require("./promise.js")();
 module.exports = Promise;
 },{"./promise.js":20}],4:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -334,6 +344,8 @@ Promise.prototype.get = function Promise$get(propertyName) {
 
 },{"./util.js":35}],5:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -370,6 +382,7 @@ Promise.prototype._cancel = function Promise$_cancel(reason) {
         parent.isCancellable()) {
         promiseToReject = parent;
     }
+    this._unsetCancellable();
     promiseToReject._attachExtraTrace(reason);
     promiseToReject._rejectUnchecked(reason);
 };
@@ -411,6 +424,8 @@ function Promise$fork(didFulfill, didReject, didProgress) {
 
 },{"./async.js":2,"./errors.js":10}],6:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -513,12 +528,21 @@ function CapturedTrace$PossiblyUnhandledRejection(reason) {
 };
 
 CapturedTrace.combine = function CapturedTrace$Combine(current, prev) {
-    var curLast = current.length - 1;
+    var currentLastIndex = current.length - 1;
+    var currentLastLine = current[currentLastIndex];
+    var commonRootMeetPoint = -1;
     for (var i = prev.length - 1; i >= 0; --i) {
+        if (prev[i] === currentLastLine) {
+            commonRootMeetPoint = i;
+            break;
+        }
+    }
+
+    for (var i = commonRootMeetPoint; i >= 0; --i) {
         var line = prev[i];
-        if (current[curLast] === line) {
+        if (current[currentLastIndex] === line) {
             current.pop();
-            curLast--;
+            currentLastIndex--;
         } else {
             break;
         }
@@ -646,6 +670,8 @@ return CapturedTrace;
 
 },{"./es5.js":12,"./util.js":35}],7:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -742,6 +768,8 @@ return CatchFilter;
 
 },{"./errors.js":10,"./es5.js":12,"./util.js":35}],8:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -822,6 +850,8 @@ function Promise$thenThrow(reason) {
 
 },{"./util.js":35}],9:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -858,6 +888,8 @@ Promise.each = function Promise$Each(promises, fn) {
 
 },{}],10:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -1005,6 +1037,8 @@ module.exports = {
 
 },{"./es5.js":12,"./util.js":35}],11:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -1045,6 +1079,8 @@ return apiRejection;
 
 },{"./errors.js":10}],12:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -1134,6 +1170,8 @@ if (isES5) {
 
 },{}],13:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -1170,6 +1208,8 @@ Promise.filter = function Promise$Filter(promises, fn, options) {
 
 },{}],14:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -1292,6 +1332,8 @@ Promise.prototype.tap = function Promise$tap(handler) {
 
 },{"./util.js":35}],15:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -1445,6 +1487,8 @@ Promise.spawn = function Promise$Spawn(generatorFunction) {
 
 },{"./errors.js":10,"./util.js":35}],16:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -1526,8 +1570,9 @@ if (canEvaluate) {
     };
 }
 
-
-
+function reject(reason) {
+    this._reject(reason);
+}
 
 Promise.join = function Promise$Join() {
     var last = arguments.length - 1;
@@ -1538,7 +1583,6 @@ Promise.join = function Promise$Join() {
             var ret = new Promise(INTERNAL);
             ret._setTrace(void 0);
             var holder = new Holder(last, fn);
-            var reject = ret._reject;
             var callbacks = thenCallbacks;
             for (var i = 0; i < last; ++i) {
                 var maybePromise = cast(arguments[i], void 0);
@@ -1569,6 +1613,8 @@ Promise.join = function Promise$Join() {
 
 },{"./util.js":35}],17:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -1720,6 +1766,8 @@ Promise.map = function Promise$Map(promises, fn, options, _filter) {
 
 },{"./util.js":35}],18:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -1798,6 +1846,8 @@ Promise.prototype.nodeify = function Promise$nodeify(nodeback, options) {
 
 },{"./async.js":2,"./util.js":35}],19:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -1912,6 +1962,8 @@ function Promise$_progressUnchecked(progressValue) {
 
 },{"./async.js":2,"./errors.js":10,"./util.js":35}],20:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -2051,6 +2103,14 @@ function Promise$catch(fn) {
     return this._then(void 0, fn, void 0, void 0, void 0);
 };
 
+function reflect() {
+    return new Promise.PromiseInspection(this);
+}
+
+Promise.prototype.reflect = function Promise$reflect() {
+    return this._then(reflect, reflect, void 0, this, void 0);
+};
+
 Promise.prototype.then =
 function Promise$then(didFulfill, didReject, didProgress) {
     return this._then(didFulfill, didReject, didProgress,
@@ -2114,7 +2174,9 @@ function Promise$_resolveFromSyncValue(value) {
     if (value === errorObj) {
         this._cleanValues();
         this._setRejected();
-        this._settledValue = value.e;
+        var reason = value.e;
+        this._settledValue = reason;
+        this._tryAttachExtraTrace(reason);
         this._ensurePossibleRejectionHandled();
     } else {
         var maybePromise = cast(value, void 0);
@@ -2572,6 +2634,7 @@ function Promise$_settlePromiseFromHandler(
         handler.call(receiver, value, promise);
         return;
     }
+    if (promise.isResolved()) return;
     var x = this._callHandler(handler, receiver, promise, value);
     if (promise._isFollowing()) return;
 
@@ -2655,6 +2718,13 @@ Promise.prototype._setTrace = function Promise$_setTrace(parent) {
         }
     }
     return this;
+};
+
+Promise.prototype._tryAttachExtraTrace =
+function Promise$_tryAttachExtraTrace(error) {
+    if (canAttach(error)) {
+        this._attachExtraTrace(error);
+    }
 };
 
 Promise.prototype._attachExtraTrace =
@@ -2990,6 +3060,8 @@ return Promise;
 
 },{"./any.js":1,"./async.js":2,"./call_get.js":4,"./cancel.js":5,"./captured_trace.js":6,"./catch_filter.js":7,"./direct_resolve.js":8,"./each.js":9,"./errors.js":10,"./errors_api_rejection":11,"./filter.js":13,"./finally.js":14,"./generators.js":15,"./join.js":16,"./map.js":17,"./nodeify.js":18,"./progress.js":19,"./promise_array.js":21,"./promise_resolver.js":22,"./promisify.js":23,"./props.js":24,"./race.js":26,"./reduce.js":27,"./settle.js":29,"./some.js":30,"./synchronous_inspection.js":31,"./thenables.js":32,"./timers.js":33,"./using.js":34,"./util.js":35}],21:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -3194,6 +3266,8 @@ return PromiseArray;
 
 },{"./errors.js":10,"./util.js":35}],22:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -3354,6 +3428,8 @@ module.exports = PromiseResolver;
 
 },{"./async.js":2,"./errors.js":10,"./es5.js":12,"./util.js":35}],23:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -3682,6 +3758,8 @@ Promise.promisifyAll = function Promise$PromisifyAll(target, options) {
 
 },{"./errors":10,"./promise_resolver.js":22,"./util.js":35}],24:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -3792,6 +3870,8 @@ Promise.props = function Promise$Props(promises) {
 
 },{"./errors_api_rejection":11,"./es5.js":12,"./util.js":35}],25:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -3909,6 +3989,8 @@ module.exports = Queue;
 
 },{}],26:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -3983,6 +4065,8 @@ Promise.prototype.race = function Promise$race() {
 
 },{"./errors_api_rejection.js":11,"./util.js":35}],27:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -4166,6 +4250,8 @@ Promise.reduce = function Promise$Reduce(promises, fn, initialValue, _each) {
 
 },{"./util.js":35}],28:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -4229,6 +4315,8 @@ module.exports = schedule;
 
 },{}],29:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -4298,6 +4386,8 @@ Promise.prototype.settle = function Promise$settle() {
 
 },{"./util.js":35}],30:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -4461,6 +4551,8 @@ Promise._SomePromiseArray = SomePromiseArray;
 
 },{"./errors.js":10,"./util.js":35}],31:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -4539,6 +4631,8 @@ Promise.PromiseInspection = PromiseInspection;
 
 },{}],32:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -4674,6 +4768,8 @@ return Promise$_Cast;
 
 },{"./errors.js":10,"./util.js":35}],33:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -4701,7 +4797,7 @@ var _setTimeout = function(fn, ms) {
     var arg0 = arguments[2];
     var arg1 = arguments[3];
     var arg2 = len >= 5 ? arguments[4] : void 0;
-    setTimeout(function() {
+    return setTimeout(function() {
         fn(arg0, arg1, arg2);
     }, ms|0);
 };
@@ -4753,20 +4849,37 @@ Promise.prototype.delay = function Promise$delay(ms) {
     return delay(this, ms);
 };
 
+function successClear(value) {
+    var handle = this;
+    if (handle instanceof Number) handle = +handle;
+    clearTimeout(handle);
+    return value;
+}
+
+function failureClear(reason) {
+    var handle = this;
+    if (handle instanceof Number) handle = +handle;
+    clearTimeout(handle);
+    throw reason;
+}
+
 Promise.prototype.timeout = function Promise$timeout(ms, message) {
     ms = +ms;
 
     var ret = new Promise(INTERNAL);
     ret._propagateFrom(this, 7);
     ret._follow(this);
-    _setTimeout(afterTimeout, ms, ret, message, ms);
-    return ret.cancellable();
+    var handle = _setTimeout(afterTimeout, ms, ret, message, ms);
+    return ret.cancellable()
+              ._then(successClear, failureClear, void 0, handle, void 0);
 };
 
 };
 
 },{"./errors.js":10,"./errors_api_rejection":11,"./util.js":35}],34:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -4959,6 +5072,8 @@ module.exports = function (Promise, apiRejection, cast) {
 
 },{"./errors.js":10,"./util.js":35}],35:[function(require,module,exports){
 /**
+ * The MIT License (MIT)
+ * 
  * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy

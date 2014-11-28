@@ -1,3 +1,28 @@
+## 2.3.10 (2014-10-28)
+
+Features: 
+
+ - `Promise.method` no longer wraps primitive errors
+ - `Promise.try` no longer wraps primitive errors
+
+## 2.3.7 (2014-10-25)
+
+Bugfixes:
+
+ - Fix [#359](https://github.com/petkaantonov/bluebird/issues/359), [#362](https://github.com/petkaantonov/bluebird/issues/362) and [#364](https://github.com/petkaantonov/bluebird/issues/364)
+
+## 2.3.6 (2014-10-15)
+
+Features:
+
+ - Implement [`.reflect()`](API.md#reflect---promisepromiseinspection)
+
+## 2.3.5 (2014-10-06)
+
+Bugfixes:
+
+ - Fix issue when promisifying methods whose names contain the string 'args'
+
 ## 2.3.4 (2014-09-27)
 
  - `P` alias was not declared inside WebWorkers

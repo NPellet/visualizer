@@ -1,7 +1,7 @@
 {
     "name": "bluebird",
     "description": "Full featured Promises/A+ implementation with exceptionally good performance",
-    "version": "2.3.5",
+    "version": "2.3.11",
     "keywords": [
         "promise",
         "performance",
@@ -65,6 +65,7 @@
     "readmeFilename": "README.md",
     "main": "./js/main/bluebird.js",
     "files": [
+        "js/browser",
         "js/main",
         "js/zalgo",
         "LICENSE",

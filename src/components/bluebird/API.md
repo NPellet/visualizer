@@ -23,6 +23,7 @@
     - [`.isPending()`](#ispending---boolean)
     - [`.value()`](#value---dynamic)
     - [`.reason()`](#reason---dynamic)
+    - [`.reflect()`](#reflect---promisepromiseinspection)
 - [Collections](#collections)
     - [`.all()`](#all---promise)
     - [`.props()`](#props---promise)
@@ -136,7 +137,7 @@ function getPromiseResolveFn() {
     return res;
 }
 ```
-        
+
 
 <hr>
 
@@ -167,7 +168,7 @@ Promise.delay(500).then(function() {
    return [fs.readFileAsync("file1.txt"),
            fs.readFileAsync("file2.txt")] ;
 }).spread(function(file1text, file2text) {
-    if (file1.text !== file2text) {
+    if (file1text !== file2text) {
         console.log("files are equal");
     }
     else {
@@ -296,7 +297,7 @@ request("http://www.google.com").then(function(contents) {
 
 #####`.error( [rejectedHandler] )` -> `Promise`
 
-Like [`.catch`](#catchfunction-handler---promise) but instead of catching all types of exceptions, it only catches those that don't originate from thrown errors but rather from explicit rejections.
+Like [`.catch`](#catchfunction-handler---promise) but instead of catching all types of exceptions, it only catches [operational errors](#operationalerror)
 
 *Note, "errors" mean errors, as in objects that are `instanceof Error` - not strings, numbers and so on. See [a string is not an error](http://www.devthought.com/2011/12/22/a-string-is-not-an-error/).*
 
@@ -304,13 +305,13 @@ It is equivalent to the following [`.catch`](#catchfunction-errorclassfunction-p
 
 ```js
 // Assumes OperationalError has been made global
-function originatesFromRejection(e) {
+function isOperationalError(e) {
     if (e == null) return false;
     return (e instanceof OperationalError) || (e.isOperational === true);
 }
 
 // Now this bit:
-.catch(originatesFromRejection, function(e) {
+.catch(isOperationalError, function(e) {
     // ...
 })
 
@@ -723,7 +724,7 @@ Sugar for `Promise.resolve(undefined).bind(thisArg);`. See [`.bind()`](#binddyna
 Often it is known in certain code paths that a promise is guaranteed to be fulfilled at that point - it would then be extremely inconvenient to use `.then()` to get at the promise's value as the callback is always called asynchronously.
 
 
-**Note**: At recent versions of Bluebird a design choise was made to expose `.reason()` and `.value` as well as other inspection methods on promises directly in order to the below use case easier to work with. The `Promise.settle` method still returns a `PromiseInspection` array as its result. Every promise is now also a `PromiseInspection` and inspection methods can be used on promises freely. 
+**Note**: At recent versions of Bluebird a design choise was made to expose `.reason()` and `.value` as well as other inspection methods on promises directly in order to make the below use case easier to work with. The `Promise.settle` method still returns a `PromiseInspection` array as its result. Every promise is now also a `PromiseInspection` and inspection methods can be used on promises freely. 
 
 For example, if you need to use values of earlier promises in the chain, you could nest:
 
@@ -806,6 +807,10 @@ Get the rejection reason of this promise. Throws an error if the promise isn't r
 You should check if this promise is `.isRejected()` before calling `.reason()` - or only call `.reason()` in code paths where it's guaranteed that this promise is rejected.
 
 <hr>
+
+#####`.reflect()` -> `Promise<PromiseInspection>`
+
+The `.reflect()` method returns a promise that is always successful when this promise is settled. Its fulfillment value is a `PromiseInspection` instance that reflects the resolution this promise. See [this issue](https://github.com/petkaantonov/bluebird/issues/346) for example usage.
 
 ##Collections
 
@@ -917,17 +922,20 @@ Given an array, or a promise of an array, which contains promises (or a mix of p
 This method is useful for when you have an array of promises and you'd like to know when all of them resolve - either by fulfilling of rejecting. For example:
 
 ```js
-var fs = Promise.promisify(require("fs"));
-Promise.settle(['a.txt', 'b.txt'], fs.readFileAsync).then(function(results){
+var fs = Promise.promisifyAll(require("fs"));
+// map array into array of promises
+var files = ['a.txt', 'b.txt'].map(function(fileName) {
+    return fs.readFileAsync(fileName, "utf8");
+});
+Promise.settle(files).then(function(results) {
     // results is a PromiseInspection array
     // this is reached once the operations are all done, regardless if
     // they're successful or not. 
     var r = results[0];
-    if(r.isFulfilled(){  // check if was successful
+    if (r.isFulfilled()) {  // check if was successful
         console.log(r.value()); // the promise's return value
         r.reason(); // throws because the promise is fulfilled
-    }
-    if(r.isRejected()){ // check if the read failed
+    } else if (r.isRejected()) { // check if the read failed
         console.log(r.reason()); //reason
         r.value(); // throws because the promise is rejected
     }
@@ -1146,7 +1154,7 @@ See [`.map()`](#mapfunction-mapper--object-options---promise);
 
 Iterate over an array, or a promise of an array, which contains promises (or a mix of promises and values) with the given `iterator` function with the signature `(item, index, value)` where `item` is the resolved value of a respective promise in the input array. If any promise in the input array is rejected the returned promise is rejected as well.
 
-Resolves to the original array unmodified, this method is meant to be used for side effects. Items are called as soon as possible, in-order.
+Resolves to the original array unmodified, this method is meant to be used for side effects. If the iterator function returns a promise or a thenable, the result for the promise is awaited for before continuing with next iteration.
 
 Example where you might want to utilize `.each`:
 
@@ -1208,10 +1216,10 @@ using(getConnection(),
 
 #####`Promise.using(Promise|Disposer promise, Promise|Disposer promise ..., Function handler)` -> `Promise`
 
-In conjunction with [`.disposer()`](#disposerstring-methodname---disposer), `using` will make sure that no matter what, the specified disposer will be called
+In conjunction with [`.disposer()`](#disposerfunction-disposer---disposer), `using` will make sure that no matter what, the specified disposer will be called
 when appropriate. The disposer is necessary because there is no standard interface in node for disposing resources.
 
-Simplest example (where `getConnection()` [has been defined] to return a proper [`Disposer`](#disposerstring-methodname---disposer))
+Simplest example (where `getConnection()` [has been defined] to return a proper [`Disposer`](#disposerfunction-disposer---disposer)))
 
 
 ```js
@@ -1336,7 +1344,7 @@ Example:
 ```js
 function getTransaction() {
     return db.getTransactionAsync().disposer(function(tx, promise) {
-        promise.isFulfilled() ? tx.commit() : tx.rollback();
+        return promise.isFulfilled() ? tx.commitAsync() : tx.rollbackAsync();
     });
 }
 
@@ -1351,6 +1359,39 @@ using(getTransaction(), function(tx) {
     });
 });
 ```
+
+Real example 3, transactions with postgres:
+
+```js
+var pg = require('pg');
+var Promise = require('bluebird');
+Promise.promisifyAll(pg);
+
+function getTransaction(connectionString) {
+    var close;
+    return pg.connectAsync(connectionString).spread(function(client, done) {
+        close = done;
+        return client.queryAsync('BEGIN').then(function () {
+            return client;
+        });
+    }).disposer(function(client, promise) {
+        if (promise.isFulfilled()) {
+            return client.queryAsync('COMMIT').then(closeSilently);
+        } else {
+            return client.queryAsync('ROLLBACK').then(closeSilently);
+        }
+        function closeSilently() {
+            try {
+                if (close) close();
+            } catch (e) {
+            }
+        }
+    });
+}
+
+exports.getTransaction = getTransaction;
+```
+
 
 <hr>
 
