@@ -1,4 +1,6 @@
-define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing", "src/util/context", "lib/d3/d3.parcoords"], function (Default, Util, Traversing, Context, d3) {
+'use strict';
+
+define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing', 'src/util/context', 'lib/d3/d3.parcoords'], function (Default, Util, Traversing, Context, d3) {
 
     function View() {
         this._id = Util.getNextUniqueId();
@@ -28,7 +30,7 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
                 ]
             );
 
-            this.jpathConfig = $.extend(true, [], this.module.getConfiguration("colsjPaths"));
+            this.jpathConfig = $.extend(true, [], this.module.getConfiguration('colsjPaths'));
 
             this.module.getDomContent().html(this.dom);
 
@@ -47,7 +49,7 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
                 if (!value.length)
                     return;
 
-                this._value = value;
+                this._value = value.resurrect();
 
                 this.redrawChart();
             },
@@ -94,38 +96,61 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
             this.dom.empty();
 
             if (this._data) {
-                var parcoords = d3.parcoords()("#" + (this._id));
+
+                var cfg = this.module.getConfiguration.bind(this.module),
+                    cfgCb = this.module.getConfigurationCheckbox.bind(this.module);
+
+                var parcoords = d3.parcoords()('#' + (this._id));
+                window.x=parcoords;
                 parcoords.data(this._data);
                 parcoords.detectDimensions();
-                if (this._names)
+                if (this._names) {
                     parcoords.dimensions(this._names);
+                }
 
-                parcoords.color(function (item) {
-                    return item.__color ? item.__color : "#000";
-                });
+                if (this._color) {
+                    parcoords.color(this._color);
+                }
 
                 if (this._data.length > 1000) {
-                    parcoords.mode("queue");
+                    parcoords.mode('queue');
                     parcoords.rate(200);
                 }
 
-                parcoords.render()
-                    .brushable()
-                    .reorderable();
-                parcoords.on("brush", function (d) {
+                parcoords.render();
+
+                var mode = cfg('brushMode');
+                parcoords.brushMode(mode);
+                if (mode != 'None') {
+                    parcoords.brushPredicate(cfg('brushPredicate'));
+                }
+
+                if(cfgCb('options', 'reorder')){
+                    parcoords.reorderable();
+                }
+                if(cfgCb('options', 'shadow')){
+                    parcoords.shadows();
+                }
+
+                parcoords.on('brush', function (d) {
                     that.module.controller.onBrushSelection(d);
                 });
                 this._parcoords = parcoords;
 
                 this.module.controller.onBrushSelection(this._data);
             } else {
-                this.dom.html("No column to display");
+                this.dom.html('No column to display');
             }
         },
         createIntermediateData: function () {
             var columns = this.getColumns(), l = columns.length;
-            var colorJpath = this.module.getConfiguration("colorjpath");
-            if (colorJpath) colorJpath = Util.makejPathFunction(colorJpath);
+            var colorJpath = this.module.getConfiguration('colorjpath');
+            if (colorJpath) {
+                colorJpath = Util.makejPathFunction(colorJpath);
+                this._color = function getItemColor(item) {
+                    return item.__color ? item.__color : '#000';
+                };
+            }
 
             var value = this._value, vl = value.length;
 
@@ -150,7 +175,7 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
                 newValue[i] = newVal;
 
                 for (var j = 0; j < l; j++) {
-                    var theVal = columns[j].jpath(val);
+                    var theVal = columns[j].jpathF(val);
                     newVal[columns[j].name] = theVal ? theVal.valueOf() : theVal;
                 }
                 if (colorJpath) {
@@ -179,9 +204,11 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
             }
 
             for (i = 0; i < totalConfig.length; i++) {
-                if (typeof totalConfig[i].jpath === "function")
+                if (typeof totalConfig[i].jpathF === 'function')
                     continue;
-                totalConfig[i].jpath = Util.makejPathFunction(totalConfig[i].jpath);
+                Object.defineProperty(totalConfig[i], 'jpathF', {
+                    value: Util.makejPathFunction(totalConfig[i].jpath)
+                });
             }
 
             return totalConfig;
@@ -196,4 +223,5 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
     });
 
     return View;
+
 });

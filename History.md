@@ -1,3 +1,11 @@
+HEAD
+=================
+* 1D nmr module is back
+* parallel coordinates :
+  * new brush mode : 2D strums
+  * brushes can be combined with AND but also OR
+  * options for reorderable axes and shadows
+
 2.9.3 / 2014-11-26
 =================
 * Slickgrid: option that provides an input on the header of each column where you can just type in to search something.

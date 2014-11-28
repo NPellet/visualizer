@@ -1,4 +1,6 @@
-define(['modules/default/defaultcontroller', "src/util/datatraversing"], function (Default, Traversing) {
+'use strict';
+
+define(['modules/default/defaultcontroller', 'src/util/datatraversing'], function (Default, Traversing) {
 
     function Controller() {
     }
@@ -53,14 +55,48 @@ define(['modules/default/defaultcontroller', "src/util/datatraversing"], functio
             groups: {
                 group: {
                     options: {
-                        type: "list",
-                        multiple: "false"
+                        type: 'list',
+                        multiple: 'false'
                     },
                     fields: {
                         colJPath: {
                             type: 'combo',
                             title: 'Color jPath',
                             options: jpaths
+                        },
+                        options: {
+                            type: 'checkbox',
+                            title: 'Options',
+                            options: {
+                                reorder: 'Reorderable',
+                                shadow: 'Keep shadows while brushing'
+                            },
+                            'default': ['reorder']
+                        },
+                        brushMode: {
+                            type: 'combo',
+                            title: 'Brush mode',
+                            options: [
+                                {key: 'None', title: 'None'},
+                                {key: '1D-axes', title:'1D axes'},
+                                {key: '2D-strums', title:'2D strums'}
+                            ],
+                            'default': '1D-axes',
+                            displaySource: {
+                                None: 'n',
+                                '1D-axes': 'y',
+                                '2D-strums': 'y'
+                            }
+                        },
+                        predicate: {
+                            type: 'combo',
+                            title: 'Predicate',
+                            options: [
+                                {key: 'and', title: 'AND'},
+                                {key: 'or', title: 'OR'}
+                            ],
+                            'default': 'and',
+                            displayTarget: ['y']
                         }
                     }
                 },
@@ -88,7 +124,10 @@ define(['modules/default/defaultcontroller', "src/util/datatraversing"], functio
 
     Controller.prototype.configAliases = {
         colsjPaths: ['groups', 'cols', 0],
-        colorjpath: ['groups', 'group', 0, 'colJPath', 0]
+        colorjpath: ['groups', 'group', 0, 'colJPath', 0],
+        brushMode: ['groups', 'group', 0, 'brushMode', 0],
+        brushPredicate: ['groups', 'group', 0, 'predicate', 0],
+        options: ['groups', 'group', 0, 'options', 0]
     };
 
     Controller.prototype.onBrushSelection = function (value) {
@@ -107,10 +146,11 @@ define(['modules/default/defaultcontroller', "src/util/datatraversing"], functio
                 flags[index] = true;
             }
         }
-        this.createDataFromEvent("onBrushSelection", "value", toSend);
-        this.createDataFromEvent("onBrushSelection", "flagResult", flags);
-        this.createDataFromEvent("onBrushSelection", "countResult", l);
+        this.createDataFromEvent('onBrushSelection', 'value', toSend);
+        this.createDataFromEvent('onBrushSelection', 'flagResult', flags);
+        this.createDataFromEvent('onBrushSelection', 'countResult', l);
     };
 
     return Controller;
+
 });
