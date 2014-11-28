@@ -5,6 +5,11 @@
 .parcoords > canvas {
   pointer-events: none;
 }
+
+.parcoords text.label {
+  cursor: default;
+}
+
 .parcoords rect.background {
   fill: transparent;
 }
