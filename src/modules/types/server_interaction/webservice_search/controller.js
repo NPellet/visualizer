@@ -293,7 +293,12 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
         this.dataType = this.module.getConfiguration('dataType');
 
         if (this.module.getConfiguration('resultfilter')) {
-            eval('this.module.resultfilter = function(data) { try { \n ' + this.module.getConfiguration('resultfilter') + '\n } catch(_) { console.log(_); } }');
+            var filter= this.module.getConfiguration('resultfilter');
+            if (filter.replace(/^\/\/.*$/,"")=="") { // if there is just a comment, it there is no filter in fact
+                delete this.module.resultfilter;
+            } else {
+                eval('this.module.resultfilter = function(data) { try { \n ' + this.module.getConfiguration('resultfilter') + '\n } catch(_) { console.log(_); } }');
+            }
         } else {
             delete this.module.resultfilter;
         }
