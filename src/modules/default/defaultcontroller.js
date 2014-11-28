@@ -40,7 +40,7 @@ define(['src/util/api', 'src/util/util'], function (API, Util) {
 
                     if (value && jpath && value.getChild) {
                         (function (actionname) {
-                            value.getChild(jpath).done(function (returned) {
+                            value.getChild(jpath).then(function (returned) {
 
                                 API.executeAction(actionname, returned);
                                 API.doAction(actionname, returned);
