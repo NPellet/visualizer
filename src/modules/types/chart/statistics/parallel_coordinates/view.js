@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing', 'src/util/context', 'lib/d3/d3.parcoords', 'src/util/api'], function (Default, Util, Traversing, Context, d3, API) {
+define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing', 'src/util/context', 'lib/d3/d3.parcoords', 'src/util/api', 'lodash'], function (Default, Util, Traversing, Context, d3, API, _) {
 
     function View() {
         this._id = Util.getNextUniqueId();
@@ -236,12 +236,12 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing
                 this.module.controller.onBrushSelection(this._data);
             }
         },
-        updateHighlight: function () {
+        updateHighlight: _.throttle(function () {
             this.parcoords.unhighlight();
             if (this._highlighted.length) {
                 this.parcoords.highlight(this._highlighted);
             }
-        }
+        }, 20)
 
     });
 
