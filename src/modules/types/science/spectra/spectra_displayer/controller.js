@@ -310,10 +310,10 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
                         },
 
 
-                        xastime: {
-                            type: 'checkbox',
-                            title: 'X axis as time',
-                            options: {'xastime': ''},
+                        xaxismodification: {
+                            type: 'combo',
+                            title: 'X axis modification',
+                            options: [{key:'timestamptotime', title:'Timestamp to time'}, {key:'valtotime', title:'Value to time from 0'}],
                             default: []
                         },
 
@@ -456,7 +456,7 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
         minY: getFloat,
         maxX: getFloat,
         maxY: getFloat,
-        xastime: indexOf('xastime'),
+     //   xaxismodification: indexOf('xaxismodification'),
         flipX: indexOf('flipX'),
         flipY: indexOf('flipY')
     };
@@ -503,7 +503,7 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
         displayAxis: ['groups', 'group', 0, 'displayAxis', 0],
         flipAxis: ['groups', 'group', 0, 'flip', 0],
         grid: ['groups', 'group', 0, 'grids', 0],
-        xAsTime: ['groups', 'group', 0, 'xastime', 0],
+        xaxismodification: ['groups', 'group', 0, 'xaxismodification', 0],
         legend: ['groups', 'group', 0, 'legend', 0]
     };
 

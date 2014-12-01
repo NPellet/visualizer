@@ -129,82 +129,6 @@ define( [
 
 			} );
 
-
-/*
-			var _gcms = new gcms();
-			_gcms.setMSContinuous( this.module.getConfiguration( 'continuous' ) );
-			_gcms.inDom(this.dom.find('.gc').get(0), this.dom.find('.ms').get(0));
-			_gcms.onAnnotationChange = function(annot) {
-
-				switch(annot.type) {
-
-					case 'verticalLine':
-					break;
-
-					case 'surfaceUnderCurve':
-						self.module.controller.sendAction('GCIntegration', annot, 'onGCIntegralChange');
-					break;
-
-				}
-
-				if(annot) {
-					annot.triggerChange( self.module.getId( ) );
-				}
-			}
-
-			_gcms.onAnnotationMake = function(annot) {
-
-				switch( annot.type ) {
-
-					case 'verticalLine':
-						// We are on the MS
-						if( annot._msIon ) {
-							self.module.controller.sendAction('MSIon', annot._msIon, 'onMSTrackingAdded');	
-						}
-
-					break;
-
-					// We are on the GC
-					case 'surfaceUnderCurve':
-						self.module.controller.sendAction('GCIntegration', annot, 'onGCIntegralAdd');
-					break;
-				}
-			}
-
-			_gcms.onAnnotationRemove = function(annot) {
-
-				switch(annot.type) {
-					case 'verticalLine':
-						
-					break;
-
-					case 'surfaceUnderCurve':
-						self.module.controller.sendAction('GCIntegration', annot, 'onGCIntegralRemove');
-					break;
-				}
-			}
-
-			_gcms.onMSSelect = function(ms, annot) {
-				self.module.controller.createDataFromEvent('onGCIntegralSelect', 'MSTrace', new DataArray( ms ) );
-				// Sends out an MS Trace (integrated and averaged MS data over the integral)
-			}
-
-			_gcms.onIntegralSelect = function(annot) {
-				self.module.controller.createDataFromEvent('onGCIntegralSelect', 'GCIntegration', annot );
-			}
-
-			_gcms.onZoomGC = function(from, to) {
-				self.module.controller.sendAction('fromtoGC', new DataObject({type: 'fromTo', value: new DataObject ({ from: from, to: to })}), 'onZoomGCChange');
-			}
-
-			_gcms.onZoomMS = function(from, to) {
-				self.module.controller.sendAction('fromtoMS', new DataObject({type: 'fromTo', value: new DataObject ({ from: from, to: to })}), 'onZoomMSChange');
-			}
-
-			_gcms.msIonAdded = function( el ) {
-				
-			};*/
-				
 			this.gcmsInstance = gcmsinstance;
 		},
 
@@ -214,7 +138,7 @@ define( [
 		},
 
 		onResize: function() {
-		//	this.gcmsInstance.resize(this.width, this.height);
+			this.gcmsInstance.resize(this.width, this.height);
 		},
 		
 		blank: {

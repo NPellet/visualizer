@@ -115,8 +115,10 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     var graph = new Graph(self.dom.get(0), options);
 
                     var xOptions = {};
-                    if (cfgCheckbox('xAsTime', 'xastime')) {
+                    if (cfg('xaxismodification') == 'timestamptotime') {
                         xOptions.type = 'time';
+                    } else if( cfg('xaxismodification') == 'valtotime') {
+                        xOptions.unitModification = 'time';
                     }
 
                     // Axes

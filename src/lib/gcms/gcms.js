@@ -410,6 +410,13 @@
 				this.gcGraph.shapeHandlers.onRemoved.push( function( shape ) {
 					self.trigger('AUCRemoved', shape );
 				} );
+
+
+			
+				this.gcGraph.getXAxis().on("zoom", function( ) {
+					self.gcGraph.getYAxis().scaleToFitAxis();
+				})
+
 /*
 				this.gcGraph.shapeHandlers.onSelected.push( function( shape ) {
 					self.doMsFromAUC( shape.data, shape );
@@ -417,6 +424,23 @@
 */
 
 			},
+
+
+			resize: function( w, h ) {
+
+				var h1 = h * 0.7;
+				var h2 = h * 0.3;
+
+				this.gcGraph.resize( w, h1 );
+				this.msGraph.resize( w, h2 );
+
+				this.gcGraph.drawSeries();
+				this.msGraph.drawSeries();
+
+				this.gcGraph._dom.style.height = h1 + "px";
+				this.msGraph._dom.style.height = h2 + "px";
+			},
+
 
 			doMsFromAUC: function( annot, shape ) { // Creating an averaged MS on the fly
 
@@ -590,13 +614,13 @@
 				this.options.msIsContinuous = cont;
 			},
 
-			resize: function(width, height) {
+			/*resize: function(width, height) {
 				this.gcGraph.resize(width - 10, height / 2 - 10);
 				this.msGraph.resize(width - 10, height / 2 - 10);
 
 				this.gcGraph.drawSeries();
 				this.msGraph.drawSeries();
-			},
+			},*/
 
 			getGC: function() {
 				return this.gcGraph;
