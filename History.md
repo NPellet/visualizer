@@ -6,6 +6,7 @@ HEAD
   * brushes can be combined with AND but also OR
   * options for reorderable axes and shadows
   * add highlight support
+* spectra displayer : add mouse over shape event and variable out
 
 2.9.3 / 2014-11-26
 =================
