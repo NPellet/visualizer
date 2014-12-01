@@ -31,7 +31,6 @@ define(['modules/default/defaultview'], function(Default) {
 			doi: function(moduleValue) {
 				if(!moduleValue)
 					return;
-				console.log(moduleValue);
 				this.dom.attr('src', "http://dx.doi.org/"+moduleValue.get());
 			}
 		},

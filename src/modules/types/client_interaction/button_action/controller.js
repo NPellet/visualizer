@@ -40,7 +40,6 @@ define(['modules/default/defaultcontroller'], function (Default) {
     };
 
     Controller.prototype.onClick = function (on) {
-        console.log('clicked.......');
         var text = this.module.getConfiguration('text');
         this.sendAction('actionText', text, 'onClick');
         this.sendAction('actionText', text, (on ? 'onToggleOn' : 'onToggleOff'));

@@ -12,9 +12,7 @@ require.config({
 define(['modules/default/defaultview', 'src/util/util', 'jquery', 'forms/button', 'lodash', 'alpaca'], function (Default, Util, $, Button, _) {
 
     Util.loadCss('components/alpaca/alpaca.css');
-    Util.loadCss('components/alpaca/alpaca-jqueryui.css', function() {
-        console.log('css loaded');
-    });
+    Util.loadCss('components/alpaca/alpaca-jqueryui.css');
 
     var renderForm = function(that) {
         var schema = that.module.controller.getSchema();
