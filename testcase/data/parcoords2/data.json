@@ -1,1 +1,10 @@
-{}
+{
+  "defaultColors": {
+    "num": 10000,
+    "high": 1000
+  },
+  "colors": {
+    "num": 10000,
+    "high": 1000
+  }
+}

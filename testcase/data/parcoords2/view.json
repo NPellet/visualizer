@@ -3,6 +3,9 @@
 	"layers": {
 	  "Default layer": {
 		"name": "Default layer"
+	  },
+	  "admin": {
+		"name": "admin"
 	  }
 	},
 	"xWidth": 10,
@@ -18,7 +21,7 @@
 		  "group": [
 			{
 			  "script": [
-				"// Change this variable to modify the number of generated colors\nvar l = 10000;\n\n\nvar i = 0,\n    a = Array(l);\n\nfunction rnd() {\n    return Math.floor(Math.random()*256);\n}\n\nvar o;\nfor(; i < l; i++) {\n    o = {\n        r: rnd(),\n        g: rnd(),\n        b: rnd(),\n        a: Math.random()\n    };\n    o.color = \"rgba(\"+o.r+\",\"+o.g+\",\"+o.b+\",\"+o.a+\")\";\n    o.colorC = {type:'color',value:o.color};\n    o._highlight = [i];\n    a[i] = o;\n}\n\nresolve(a);"
+				"// Change this variable to modify the number of generated colors\n\nvar l = value.num || 10000,\n    high = value.high | 1000;\n\nvar i = 0,\n    a = Array(l);\n\nfunction rnd(n) {\n    return Math.floor(Math.random()*n);\n}\n\nvar o;\nfor(; i < l; i++) {\n    o = {\n        r: rnd(256),\n        g: rnd(256),\n        b: rnd(256),\n        a: Math.random()\n    };\n    o.color = \"rgba(\"+o.r+\",\"+o.g+\",\"+o.b+\",\"+o.a+\")\";\n    o.colorC = {type:'color',value:o.color};\n    o._highlight = [rnd(high)];\n    a[i] = o;\n}\n\nresolve(a);"
 			  ]
 			}
 		  ],
@@ -41,6 +44,31 @@
 			"height": 70
 		  },
 		  "zIndex": 0,
+		  "display": false,
+		  "title": "Data generation",
+		  "wrapper": true,
+		  "created": true,
+		  "name": "Default layer",
+		  "bgColor": [
+			[
+			  255,
+			  255,
+			  255,
+			  0
+			]
+		  ]
+		},
+		"admin": {
+		  "position": {
+			"left": 0,
+			"right": 0,
+			"top": 21
+		  },
+		  "size": {
+			"width": 52,
+			"height": 49
+		  },
+		  "zIndex": 0,
 		  "display": true,
 		  "title": "Data generation",
 		  "wrapper": true,
@@ -58,7 +86,10 @@
 	  },
 	  "id": 1,
 	  "vars_in": [
-		{}
+		{
+		  "rel": "dataobject",
+		  "name": "colors"
+		}
 	  ],
 	  "actions_in": [
 		{}
@@ -121,6 +152,31 @@
 	  },
 	  "layers": {
 		"Default layer": {
+		  "position": {
+			"left": 39,
+			"right": 0,
+			"top": 0
+		  },
+		  "size": {
+			"width": 111,
+			"height": 70
+		  },
+		  "zIndex": 0,
+		  "display": true,
+		  "title": "Parallel coordinates",
+		  "wrapper": true,
+		  "created": true,
+		  "name": "Default layer",
+		  "bgColor": [
+			[
+			  255,
+			  255,
+			  255,
+			  0
+			]
+		  ]
+		},
+		"admin": {
 		  "position": {
 			"left": 53,
 			"right": 0,
@@ -246,6 +302,28 @@
 		  "wrapper": true,
 		  "created": true,
 		  "name": "Default layer"
+		},
+		"admin": {
+		  "position": {
+			"left": 151,
+			"top": 0
+		  },
+		  "size": {
+			"width": 30,
+			"height": 70
+		  },
+		  "zIndex": 0,
+		  "display": true,
+		  "title": "Color list",
+		  "bgColor": [
+			255,
+			255,
+			255,
+			0
+		  ],
+		  "wrapper": true,
+		  "created": true,
+		  "name": "Default layer"
 		}
 	  },
 	  "id": 3,
@@ -262,6 +340,109 @@
 	  "vars_out": [
 		{
 		  "jpath": []
+		}
+	  ],
+	  "actions_out": [
+		{
+		  "jpath": []
+		}
+	  ]
+	},
+	{
+	  "url": "modules/types/edition/onde/",
+	  "configuration": {
+		"sections": {},
+		"groups": {
+		  "group": [
+			{
+			  "hasButton": [
+				[
+				  "show"
+				]
+			  ],
+			  "button_text": [
+				"Generate"
+			  ],
+			  "debouncing": [
+				-1
+			  ],
+			  "output": [
+				"new"
+			  ],
+			  "mode": [
+				"schema"
+			  ],
+			  "schemaSource": [
+				"config"
+			  ],
+			  "schema": [
+				"{\n    \"type\": \"object\",\n    \"properties\": {\n        \"num\": {\n            \"type\": \"number\",\n            \"label\": \"Number of generated colors\",\n            \"default\": 10000\n        },\n        \"high\": {\n            \"type\": \"number\",\n            \"label\": \"Number of different highlight IDs\",\n            \"default\": 1000\n        }\n    }\n}"
+			  ]
+			}
+		  ]
+		}
+	  },
+	  "layers": {
+		"Default layer": {
+		  "position": {
+			"left": 0,
+			"top": 0
+		  },
+		  "size": {
+			"width": 38,
+			"height": 14
+		  },
+		  "zIndex": 0,
+		  "display": true,
+		  "title": "Data generation",
+		  "bgColor": [
+			255,
+			255,
+			255,
+			0
+		  ],
+		  "wrapper": true,
+		  "created": true,
+		  "name": "Default layer"
+		},
+		"admin": {
+		  "position": {
+			"left": 0,
+			"top": 0
+		  },
+		  "size": {
+			"width": 52,
+			"height": 20
+		  },
+		  "zIndex": 0,
+		  "display": true,
+		  "title": "",
+		  "bgColor": [
+			255,
+			255,
+			255,
+			0
+		  ],
+		  "wrapper": true,
+		  "created": true,
+		  "name": "admin"
+		}
+	  },
+	  "id": 4,
+	  "vars_in": [
+		{
+		  "rel": "inputValue",
+		  "name": "defaultColors"
+		}
+	  ],
+	  "actions_in": {},
+	  "title": "Data generation",
+	  "vars_out": [
+		{
+		  "event": "onFormSubmit",
+		  "rel": "outputValue",
+		  "jpath": [],
+		  "name": "colors"
 		}
 	  ],
 	  "actions_out": [
