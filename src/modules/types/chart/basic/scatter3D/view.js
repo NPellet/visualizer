@@ -433,6 +433,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
     },
 
+
+
     _drawGraph: function() {
       var self = this;
       var tstart = new Date().getTime();
@@ -1311,6 +1313,23 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
           self._activateHighlights();
           self._zoomToFit();
           self._firstLoad = false;
+        }
+        else {
+          self.camera.aspect = self.dom.width() / self.dom.height();
+          self.camera.updateProjectionMatrix();
+          self.renderer.setSize(self.dom.width(), self.dom.height());
+          self.controls.handleResize();
+          self._render();
+          if(self.headlight) {
+            self.headlight.position.x = self.camera.position.x +200;
+            self.headlight.position.y = self.camera.position.y +200;
+            self.headlight.position.z = self.camera.position.z +200;
+          }
+          if(self.tickLabels) {
+            self._drawTickLabels();
+            self._drawAxisLabels();
+            self._drawGraphTitle();
+          }
         }
         if(self._data) {
           self._drawGraph();
