@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util', 'underscore', 'threejs', 'src/util/debug', 'lib/threejs/TrackballControls'], function(Default, Traversing, API, Util, _, THREE, Debug) {
+define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util', 'lodash', 'threejs', 'src/util/debug', 'lib/threejs/TrackballControls'], function(Default, Traversing, API, Util, _, THREE, Debug) {
   function generateRandomArray(n, min, max) {
     var result = [];
     for(var i=0; i<n; i++) {
@@ -1583,18 +1583,24 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       self._data.size = [];
       self._data.color = [];
       self._data._highlight = [];
-      var jp = _.clone(jpaths);
+      var jp = _.cloneDeep(jpaths);
+      _.each(jp, function(v) {
+        v.unshift(0);
+      });
 
 
+      function validate(x) {
+        return (_.isObject(x) || _.isArray(x)) ? null : x;
+      }
       for (var i = 0; i < value.length; i++) {
         _.each(jp, function(v){
           v[0] = i;
         });
-        self._data.x.push(value.getChildSync(jp.x).get());
-        self._data.y.push(value.getChildSync(jp.y).get());
-        self._data.z.push(value.getChildSync(jp.z).get());
-        self._data.color.push(value.getChildSync(jp.color).get());
-        self._data.size.push(value.getChildSync(jp.size).get());
+        self._data.x.push(validate(value.getChildSync(jp.x).get()));
+        self._data.y.push(validate(value.getChildSync(jp.y).get()));
+        self._data.z.push(validate(value.getChildSync(jp.z).get()));
+        self._data.color.push(validate(value.getChildSync(jp.color).get()));
+        self._data.size.push(validate(value.getChildSync(jp.size).get()));
         self._data._highlight.push(value.getChildSync(jp.highlight).get());
       }
       self._meta = {};
