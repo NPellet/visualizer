@@ -6,6 +6,7 @@ d3.parcoords = function(config) {
     highlighted: [],
     dimensions: [],
     dimensionTitles: {},
+    dimensionTitleRotation: 0,
     types: {},
     brushed: false,
     mode: "default",
@@ -486,6 +487,30 @@ pc.clear = function(layer) {
   ctx[layer].clearRect(0,0,w()+2,h()+2);
   return this;
 };
+function flipAxisAndUpdatePCP(dimension, i) {
+  var g = pc.svg.selectAll(".dimension");
+
+  pc.flip(dimension);
+  d3.select(g[0][i])
+    .transition()
+      .duration(1100)
+      .call(axis.scale(yscale[dimension]));
+
+  pc.render();
+  if (flags.shadows) paths(__.data, ctx.shadows);
+}
+
+function rotateLabels() {
+  var delta = d3.event.deltaY;
+  delta = delta < 0 ? -5 : delta;
+  delta = delta > 0 ? 5 : delta;
+
+  __.dimensionTitleRotation += delta;
+  pc.svg.selectAll("text.label")
+    .attr("transform", "translate(0,-5) rotate(" + __.dimensionTitleRotation + ")");
+  d3.event.preventDefault();
+}
+
 pc.createAxes = function() {
   if (g) pc.removeAxes();
 
@@ -505,21 +530,15 @@ pc.createAxes = function() {
       .attr({
         "text-anchor": "middle",
         "y": 0,
-        "transform": "translate(0,-12)",
+        "transform": "translate(0,-5) rotate(" + __.dimensionTitleRotation + ")",
         "x": 0,
         "class": "label"
       })
       .text(function(d) {
         return d in __.dimensionTitles ? __.dimensionTitles[d] : d;  // dimension display names
       })
-      .on("dblclick", function(d) {
-        var scale = yscale[d],
-            domain = scale.domain(),
-            newdomain = [domain[1], domain[0]];
-
-        scale.domain(newdomain);
-        pc.updateAxes().render();
-      });
+      .on("dblclick", flipAxisAndUpdatePCP)
+      .on("wheel", rotateLabels);
 
   flags.axes= true;
   return this;
@@ -531,9 +550,9 @@ pc.removeAxes = function() {
 };
 
 pc.updateAxes = function() {
-  var g_data = pc.svg.selectAll(".dimension")
-      .data(__.dimensions, function(d) { return d; });
+  var g_data = pc.svg.selectAll(".dimension").data(__.dimensions);
 
+  // Enter
   g_data.enter().append("svg:g")
       .attr("class", "dimension")
       .attr("transform", function(p) { return "translate(" + position(p) + ")"; })
@@ -546,22 +565,40 @@ pc.updateAxes = function() {
       .attr({
         "text-anchor": "middle",
         "y": 0,
-        "transform": "translate(0,-12)",
+        "transform": "translate(0,-5) rotate(" + __.dimensionTitleRotation + ")",
         "x": 0,
         "class": "label"
       })
-      .text(String);
+      .text(String)
+      .on("dblclick", flipAxisAndUpdatePCP)
+      .on("wheel", rotateLabels);
 
+  // Update
+  g_data.attr("opacity", 0);
+  g_data.select(".axis")
+    .transition()
+      .duration(1100)
+      .each(function(d) {
+        d3.select(this).call(axis.scale(yscale[d]));
+      });
+  g_data.select(".label")
+    .transition()
+      .duration(1100)
+      .text(String)
+      .attr("transform", "translate(0,-5) rotate(" + __.dimensionTitleRotation + ")");
+
+  // Exit
   g_data.exit().remove();
 
   g = pc.svg.selectAll(".dimension");
-
   g.transition().duration(1100)
     .attr("transform", function(p) { return "translate(" + position(p) + ")"; })
     .style("opacity", 1);
 
-  pc.svg.selectAll(".axis").transition().duration(1100)
-  	.each(function(d) { d3.select(this).call(axis.scale(yscale[d])); });
+  pc.svg.selectAll(".axis")
+    .transition()
+      .duration(1100)
+      .each(function(d) { d3.select(this).call(axis.scale(yscale[d])); });
 
   if (flags.shadows) paths(__.data, ctx.shadows);
   if (flags.brushable) pc.brushable();
@@ -1034,9 +1071,9 @@ pc.brushMode = function(mode) {
 
       brushed = selected(strums);
       strums.active = undefined;
-      __.brushed = brushed.length === __.data.length ? false : brushed;
-      events.brushend.call(pc, __.brushed);
+      __.brushed = brushed;
       pc.render();
+      events.brushend.call(pc, __.brushed);
     };
   }
 

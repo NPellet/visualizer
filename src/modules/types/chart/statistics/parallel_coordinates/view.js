@@ -88,7 +88,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing
             this.resolveReady();
         },
         onResize: function () {
-            this.redrawChart();
+            this.parcoords && this.parcoords.width(this.width).height(this.height).resize().render();
         },
         redrawChart: function () {
             var that = this;
@@ -237,9 +237,10 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing
             }
         },
         updateHighlight: _.throttle(function () {
-            this.parcoords.unhighlight();
             if (this._highlighted.length) {
                 this.parcoords.highlight(this._highlighted);
+            } else {
+                this.parcoords.unhighlight();
             }
         }, 20)
 
