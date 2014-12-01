@@ -362,9 +362,10 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         $('#scatter3D_tooltip').hide();
 
         $(self.dom).append( '<div id="legend" style="z-index: 10000; right:10px ;position:absolute; top: 25px; height: auto; background-color: #ffffff;"> </div>');
-        $('#legend').append( '<div id="legend_titles"></div>');
-        $('#legend').append( '<div id="legend_point_coordinates"></div>');
-        $('#legend').css('background-color', self.module.getConfiguration('backgroundColor')).css('text-align', 'right');
+        var $legend = $('#legend');
+        $legend.append( '<div id="legend_titles"></div>');
+        $legend.append( '<div id="legend_point_coordinates"></div>');
+        $legend.css('background-color', self.module.getConfiguration('backgroundColor')).css('text-align', 'right');
         $('#legend_titles').hide();
         $('#legend_point_coordinates').hide();
 
@@ -374,11 +375,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         function onHover() {
           if(pointedObjects.length > 0) {
             var j = pointedObjects[0];
-            self.module.controller.onHover([self._data.info[j], [
-              self._data.x[j],
-              self._data.y[j],
-              self._data.z[j]]
-            ], ['info', 'coordinates']);
+            self.module.controller.onHover(j);
           }
         }
 
@@ -1482,17 +1479,13 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
     },
 
-    _updatePoints: function() {
-
-    },
-
     /* When a value changes this method is called. It will be called for all
      possible received variable of this module.
      It will also be called at the beginning and in this case the value is null !
      */
     update: {
-      'chart': function(moduleValue) {
-
+      chart: function(moduleValue) {
+        this.module.data = moduleValue;
         if (! moduleValue.get() ){
           console.error('Unvalid value', moduleValue);
           return;
@@ -1506,6 +1499,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         this._normalizeData();
         this._setGridOrigin();
         this._updateChartData();
+
         if(!this._firstLoad) this._activateHighlights();
 
         // data are ready to be ploted
@@ -1517,13 +1511,14 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         }
       },
       'data3D': function(moduleValue) {
+        this.module.data = moduleValue;
         if(!moduleValue || !moduleValue.get()) {
           Debug.error('Unvalid value' + moduleValue);
           return;
         }
 
         // Convert data
-        this._convertData3dToData(moduleValue.get());
+        this._convertData3dToData(moduleValue);
         this._computeMinMax();
         this._computeTickInfo();
         this._computeInBoundaryIndexes();
@@ -1577,18 +1572,36 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       if(! Array.isArray(value) || value.length === 0) {
         console.error('Data 3D not valid');
       }
+
+
       self._data = {};
+
+      var jpaths = self.module.getConfiguration('dataJpaths');
+      self._data.x = [];
+      self._data.y = [];
+      self._data.z = [];
+      self._data.size = [];
+      self._data.color = [];
+      self._data._highlight = [];
+      var jp = _.clone(jpaths);
+
+
       for (var i = 0; i < value.length; i++) {
-        for(var key in value[i]) {
-          self._data[key] ? self._data[key].push(value[i][key]) : (self._data[key] = [value[i][key]]);
-        }
+        _.each(jp, function(v){
+          v[0] = i;
+        });
+        self._data.x.push(value.getChildSync(jp.x).get());
+        self._data.y.push(value.getChildSync(jp.y).get());
+        self._data.z.push(value.getChildSync(jp.z).get());
+        self._data.color.push(value.getChildSync(jp.color).get());
+        self._data.size.push(value.getChildSync(jp.size).get());
+        self._data._highlight.push(value.getChildSync(jp.highlight).get());
       }
       self._meta = {};
       self._data.x = self._data.x || [];
       self._data.y = self._data.y || [];
       self._data.z = self._data.z || [];
       self._data._highlight = self._data._highlight || [];
-      self._data.info = self._data._info || [];
       self._dispFilter = self._dispFilter || [];
 
       // generate random x,y z
