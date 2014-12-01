@@ -1,6 +1,9 @@
 'use strict';
 
-define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util', 'lodash', 'threejs', 'src/util/debug', 'lib/threejs/TrackballControls'], function(Default, Traversing, API, Util, _, THREE, Debug) {
+define(['modules/default/defaultview','src/util/datatraversing',
+  'src/util/api','src/util/util',
+  'lodash', 'threejs', 'src/util/debug', 'chroma',
+  'lib/threejs/TrackballControls'], function(Default, Traversing, API, Util, _, THREE, Debug, chroma) {
   function generateRandomArray(n, min, max) {
     var result = [];
     for(var i=0; i<n; i++) {
@@ -564,6 +567,28 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       self._data.normalizedData.z = _.map(self._data.z, function(z){
         return NORM_CONSTANT * (z - self._data.realMin.z)/self._data.realLen.z;
       });
+
+      // size normalization
+      var sizeConstant = this.module.getConfiguration('sizeNormalization');
+      var sizeMin = Math.min.apply(null, self._data.size);
+      var sizeMax = Math.max.apply(null, self._data.size);
+      var sizeInt = sizeMax-sizeMin;
+      self._data.size = _.map(self._data.size, function(s) {
+        return sizeInt === 0 ? sizeConstant/2 : sizeConstant * (s -sizeMin)/sizeInt;
+      });
+
+      // color normalization
+      if(_.all(self._data.color, _.isNumber)) {
+        var colorMin = Math.min.apply(null, self._data.color);
+        var colorMax = Math.max.apply(null, self._data.color);
+        var colorInt = colorMax - colorMin;
+        self._data.color = _.map(self._data.color, function(c) {
+          var hue = colorInt === 0 ? 180 : 360 * (c - colorMin) / colorInt;
+          var color = chroma('hsl(' + hue + ', 65%, 65%)');
+          return color.hex();
+        })
+      }
+
     },
 
     _computeMinMax: function() {
@@ -572,7 +597,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         return;
       }
       self.minMax = {};
-      var x = self._data.x
+      var x = self._data.x;
       var y = self._data.y;
       var z = self._data.z;
 
@@ -1601,13 +1626,12 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         self._data.z.push(validate(value.getChildSync(jp.z).get()));
         self._data.color.push(validate(value.getChildSync(jp.color).get()));
         self._data.size.push(validate(value.getChildSync(jp.size).get()));
-        self._data._highlight.push(value.getChildSync(jp.highlight).get());
       }
       self._meta = {};
       self._data.x = self._data.x || [];
       self._data.y = self._data.y || [];
       self._data.z = self._data.z || [];
-      self._data._highlight = self._data._highlight || [];
+      self._data._highlight = value._highlight || [];
       self._dispFilter = self._dispFilter || [];
 
       // generate random x,y z

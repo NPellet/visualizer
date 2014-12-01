@@ -260,6 +260,11 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
                             type: 'color',
                             title: 'Annotation color',
                             default: [50,50,50,1]
+                        },
+                        sizeNormalization: {
+                            type: 'float',
+                            title: 'Size normalization',
+                            default: 0.02
                         }
                     }
                 },
@@ -339,6 +344,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
         'gridOriginX': ['groups', 'group', 0, 'gridOriginX', 0],
         'gridOriginY': ['groups', 'group', 0, 'gridOriginY', 0],
         'gridOriginZ': ['groups', 'group', 0, 'gridOriginZ', 0],
+        'sizeNormalization': ['groups', 'group', 0, 'sizeNormalization', 0],
         'optimize': ['groups', 'group', 0, 'optimize', 0],
         'dataJpaths': ['groups', 'dataJpaths', 0, 0]
     };
