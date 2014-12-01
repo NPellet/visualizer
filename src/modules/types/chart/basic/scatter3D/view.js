@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util', 'underscore', 'threejs', 'src/util/debug', 'lib/threejs/TrackballControls'], function(Default, Traversing, API, Util, _, THREE, Debug) {
   function generateRandomArray(n, min, max) {
     var result = [];
@@ -20,7 +22,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
     var result = [];
     var letters = '0123456789ABCDEF'.split('');
     for(var i=0; i<n; i++) {
-      var color = '#'
+      var color = '#';
       for(var j=0; j<3; j++) {
         color += letters[Math.floor(Math.random() * 16)];
       }
@@ -123,7 +125,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
   function view() {
     this._firstLoad = true;
-  };
+  }
+
   view.prototype = $.extend(true, {}, Default, {
 
     DEBUG: true,
@@ -153,7 +156,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
             - ( event.offsetY / $(self.renderer.domElement).height() ) * 2 + 1,
             0.5
         );
-        projector = new THREE.Projector();
+        var projector = new THREE.Projector();
         projector.unprojectVector( vector, self.camera );
 
         var ray = new THREE.Ray( self.camera.position,
@@ -186,8 +189,9 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
           arr.push('X: ' + parseFloat(self._data.x[index].toPrecision(3)).toExponential());
           arr.push('Y: ' + parseFloat(self._data.y[index].toPrecision(3)).toExponential());
           arr.push('Z: ' + parseFloat(self._data.z[index].toPrecision(3)).toExponential());
-          $('#legend_point_coordinates').html(arr.join('<br/>'));
-          $('#legend_point_coordinates').show();
+          var $legend = $('#legend_point_coordinates');
+          $legend.html(arr.join('<br/>'));
+          $legend.show();
         }
       }
 
@@ -247,11 +251,12 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
         var info = data.info[pointedObjects[0]];
         var label = info.getChildSync(jpath);
-        $('#scatter3D_tooltip').css('left', lastMouseMoveEvent.offsetX - TOOLTIP_WIDTH);
-        $('#scatter3D_tooltip').css('top', lastMouseMoveEvent.offsetY);
-        $('#scatter3D_tooltip').css('width', TOOLTIP_WIDTH);
-        $('#scatter3D_tooltip').html(label.value);
-        $('#scatter3D_tooltip').show();
+        var $tooltip = $('#scatter3D_tooltip');
+        $tooltip.css('left', lastMouseMoveEvent.offsetX - TOOLTIP_WIDTH);
+        $tooltip.css('top', lastMouseMoveEvent.offsetY);
+        $tooltip.css('width', TOOLTIP_WIDTH);
+        $tooltip.html(label.value);
+        $tooltip.show();
       }
 
       function hideTooltip() {
@@ -1226,7 +1231,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
         var radius = DEFAULT_POINT_RADIUS;
         if(self._data.size && self._data.size[i]){
-          var radius = self._data.size[i];
+          radius = self._data.size[i];
         }
 
         var sphere = new THREE.Sphere(new THREE.Vector3(self._data.normalizedData.x[i], self._data.normalizedData.y[i], self._data.normalizedData.z[i]), radius*NORM_CONSTANT);
@@ -1280,39 +1285,29 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
     init: function() {
       // When we change configuration the method init is called again. Also the case when we change completely of view
+
+
       if (! this.dom) {
         this._id = Util.getNextUniqueId();
         this.dom = $(' <div id="' + this._id + '"></div>').css('height', '100%').css('width', '100%');
         this.module.getDomContent().html(this.dom);
       }
 
-
-      if (this.dom) {
-        // in the dom exists and the preferences has been changed we need to clean the canvas
-        this.dom.empty();
-
-      }
-      if (this._flot) { // if the dom existedd there was probably a rgraph or when changing of view
-        delete this._flot;
-      }
-
       // Adding a deferred allows to wait to get actually the data before we draw the chart
       // we decided here to plot the chart in the "onResize" event
-      this.loadedData=$.Deferred();
+      this.loadedData = $.Deferred();
 
       this.resolveReady();
     },
 
     onResize: function() {
-      var highlightObjects = {};
-      var highlightObjectBis = null;
       var self = this;
 
       // the size is now really defined (we are after inDom)
       // and we received the data ...
       this.loadedData.done(function() {
-        self._initThreejs();
         if(self._firstLoad) {
+          self._initThreejs();
           self._activateHighlights();
           self._zoomToFit();
           self._firstLoad = false;
@@ -1330,14 +1325,14 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       if(options.transparent) {
         image = image.replace(/\.(png|svg|jpeg|jpg|gif)$/i, "t.$1");
       }
-      attributes = {
+      var attributes = {
         size: {	type: 'f', value: [] },
         ca:   {	type: 'c', value: [] }
       };
-      uniforms = {
+      var uniforms = {
         amplitude: { type: "f", value: 1 },
         color:     { type: "c", value: new THREE.Color('#e5be39') },
-        texture:   { type: "t", value: THREE.ImageUtils.loadTexture(image) },
+        texture:   { type: "t", value: THREE.ImageUtils.loadTexture(image) }
       };
 
       //uniforms.texture.value.wrapS = uniforms.texture.value.wrapT = THREE.RepeatWrapping;
