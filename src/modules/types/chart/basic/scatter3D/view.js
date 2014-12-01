@@ -1291,7 +1291,11 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
       if (! this.dom) {
         this._id = Util.getNextUniqueId();
-        this.dom = $(' <div id="' + this._id + '"></div>').css('height', '100%').css('width', '100%');
+        this.dom = $(' <div id="' + this._id + '"></div>').css({
+          height: '100%',
+          width: '100%',
+          overflow: 'hidden'
+        });
         this.module.getDomContent().html(this.dom);
       }
 
