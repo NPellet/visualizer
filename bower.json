@@ -51,6 +51,7 @@
     "alpaca": "*",
     "setImmediate": "YuzuJS/setImmediate#~1.0.2",
     "chroma-js": "~0.6.1",
-    "sdf-parser": "cheminfo/sdf-parser"
+    "sdf-parser": "cheminfo/sdf-parser",
+    "async": "~0.9.0"
   }
 }
