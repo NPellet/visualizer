@@ -62,7 +62,8 @@ define([
             if(this.module.getConfigurationCheckbox('editable', 'isEditable')) {
                 CKEDITOR.disableAutoInline = true;
                 this.instance = CKEDITOR.inline(this._id, {
-                    extraPlugins:"mathjax,font,sourcedialog,codesnippet"
+                    extraPlugins:"mathjax,font,sourcedialog,codesnippet",
+                    removeButtons:''
                 });
                 this.instance.on("change",function(){
                     self.module.controller.valueChanged(self.instance.getData());
