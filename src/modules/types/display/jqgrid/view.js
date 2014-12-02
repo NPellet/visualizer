@@ -19,6 +19,9 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 		this.dom = $('<div class="ci-displaylist-list"></div>');
 	 		this.domTable = $("<table />").attr('id', this.uniqId).css({width: '100%'});
 
+            this.dataSize=0;    // we remember the last arraySize
+            this.currentPage=1; // we remember the last selected page
+
 	 		this.dom.on('mouseover', 'tr.jqgrow', function() {
 
 	 			if(this !== lastTr) {
@@ -245,6 +248,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 	blank: {
 
 	 		list: function() {
+                this.currentPage=this.jqGrid('getGridParam','page');
 	 			API.killHighlight( this.module.getId() );
 				this.jqGrid( 'clearGridData' );
 				$( this.domTable ).trigger( 'reloadGrid' );
@@ -285,8 +289,16 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 					allEls.push( elements[ i ] );
 				}
 
-				this.jqGrid('setGridParam', { datatype: 'local', data: allEls });
+                if (this.dataSize!=l) { // if the size of the data change we reset the page
+                    this.currentPage=1;
+                    this.dataSize=l;
+                }
+				this.jqGrid('setGridParam', { datatype: 'local', data: allEls, page: this.currentPage });
+
 				$( this.domTable ).trigger( 'reloadGrid' );
+
+
+
 
 				this.module.model.getjPath('list', [ 0 ] );
 				
