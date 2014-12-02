@@ -164,6 +164,8 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 asyncPostRenderDelay: 0,
                 defaultColumnWidth: that.module.getConfiguration('slick.defaultColumnWidth') || 80,
                 dataItemColumnValueExtractor: function(item, coldef) {
+                    // In order to use jpath, we return the row instead of the column
+                    // TODO: use jpath in coldef here?
                     return item;
                 },
                 explicitInitialization: true,
@@ -301,12 +303,21 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
 
                         that.grid.onMouseEnter.subscribe(function(e) {
-                            this.hovering = true;
+                            // When scrolling fast, no mouseLeave event takes place
+                            // Therefore we also have to un-highlight here
+                            if(that._hl) {
+                                API.highlightId(that._hl, 0);
+                            }
+
+                            that.count = that.count === undefined ? 0 : that.count;
+                            that.count++;
+                            that.hovering = true;
                             var itemInfo = that._getItemInfoFromEvent(e);
                             if(!itemInfo) return;
 
 
                             var hl = itemInfo.item._highlight;
+                            that._hl = hl;
                             if(hl) {
                                 API.highlightId(hl,1);
                                 lastHighlight = hl;
@@ -316,7 +327,10 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         });
 
                         that.grid.onMouseLeave.subscribe(function(e) {
-                            this.hovering = false;
+                            that._e = e;
+                            that.count--;
+                            console.log('count', that.count);
+                            that.hovering = false;
                             var itemInfo = that._getItemInfoFromEvent(e);
                             if(!itemInfo) return;
                             var hl = itemInfo.item._highlight;
