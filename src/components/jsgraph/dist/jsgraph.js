@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-02T22:36Z
+ * Date: 2014-12-02T22:48Z
  */
 
 (function( global, factory ) {
@@ -6599,11 +6599,14 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
       var serie;
       if ( ( serie = this.graph.getSelectedSerie() ) ) {
 
-        serie.getYAxis().handleMouseWheel( delta, e );
-        return;
+        if ( serie.getYAxis().handleMouseWheel( delta, e ) ) {
+          return;
+        }
       }
 
       this.graph._applyToAxes( 'handleMouseWheel', [ delta, e ], false, true );
+
+      
       this.graph.drawSeries();
     },
 

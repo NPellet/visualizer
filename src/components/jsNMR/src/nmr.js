@@ -217,10 +217,10 @@
 				peak.integral = false;
 				i.originalShape = false;
 
-				if( peak.integral._inDom ) {
+				if( i._inDom ) {
 					i.kill();
 				}
-				
+
 				nmr.integrals[ mode ].splice( nmr.integrals[ mode ].indexOf( i ), 1 );
 			}
 
@@ -1155,6 +1155,16 @@
 					'graph.plugin.shape': { shift: true, ctrl: false }
 				},
 
+
+				wheel: {
+					type: 'plugin',
+					plugin: 'graph.plugin.zoom',
+					options: {
+						direction: 'x'
+					}
+				},
+
+
 				onBeforeNewShape: function() {
 
 					if( ! self.graphs['_2d'].selectedSerie ) {
@@ -1232,7 +1242,7 @@
 					type: 'plugin',
 					plugin: 'graph.plugin.zoom',
 					options: {
-						direction: 'x'
+						direction: 'y'
 					}
 				},
 
@@ -1311,6 +1321,16 @@
 						mode: 'total'
 					}
 				},
+
+
+				wheel: {
+					type: 'plugin',
+					plugin: 'graph.plugin.zoom',
+					options: {
+						direction: 'x'
+					}
+				},
+
 
 				pluginAction: {
 					'graph.plugin.zoom': { shift: false, ctrl: false },
