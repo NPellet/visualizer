@@ -23,12 +23,20 @@ define( [ 'require', 'graph' ], function( require, Graph ) {
 	$.extend(GraphNmrSignal1D.prototype, GraphLine.prototype, {
 		
 		createDom: function() {
+			
+
 
 			this._dom = document.createElementNS(this.graph.ns, 'line');
 			this.maxLines = 64;
 			this.nbLines = 0;
+
+			this.maxLines = 0;
+
+
 			this.lines = new Array(this.maxLines);
 			
+
+
 			//I dont know how to remove the previous lines, so, I'll create an array of
 			//empty lines that can be filled up by the system.
 			for(var i=this.maxLines-1;i>=0;i--){
@@ -65,6 +73,7 @@ define( [ 'require', 'graph' ], function( require, Graph ) {
 
 		redrawImpl: function() {
 
+
 			this.setPosition();
 			this.setPosition2();
 			this.setHandles();
@@ -77,6 +86,10 @@ define( [ 'require', 'graph' ], function( require, Graph ) {
 
 
 		redrawLines: function( height ) {
+
+			if( this.maxLines == 0 ) {
+				return;
+			}
 
 			var peaks = this.findxs();
 			//this.lines = [];

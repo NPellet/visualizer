@@ -6606,7 +6606,6 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
 
       this.graph._applyToAxes( 'handleMouseWheel', [ delta, e ], false, true );
 
-      
       this.graph.drawSeries();
     },
 
