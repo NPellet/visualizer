@@ -1472,7 +1472,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
         }
       }
       object.material.attributes.size.needsUpdate = true;
-      self.renderer.render(self.scene, self.camera);
+      //self.renderer.render(self.scene, self.camera);
     },
 
     _prepareHighlights: function(hl) {
@@ -1501,6 +1501,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
           });
         }
       }
+      self.renderer.render(self.scene, self.camera);
 
     },
 
@@ -1582,6 +1583,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
             self._updateParticleObject(self._highlightParticleObjects[shape][hlkey], {applyFilter: true, updateColor: false, sizeFactor: 1.5});
           }
         }
+        self.renderer.render(self.scene, self.camera);
       }
     },
 
@@ -1631,7 +1633,8 @@ define(['modules/default/defaultview','src/util/datatraversing',
       self._data.x = self._data.x || [];
       self._data.y = self._data.y || [];
       self._data.z = self._data.z || [];
-      self._data._highlight = value._highlight || [];
+      self._data._highlight = _.pluck(value, '_highlight');
+      if(!_.any(self._data._highlight)) self._data._highlight = [];
       self._dispFilter = self._dispFilter || [];
 
       // generate random x,y z
