@@ -1363,6 +1363,8 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 			for( var i = 0; i < rels.length ; i ++ ) {
 				if( this.view.blank[ rels[ i ] ] ) {
 					this.view.blank[ rels[ i ] ].call( this.view, variableName );
+				} else {
+					Debug.info('Module ' + this.controller.moduleInformation.moduleName + ': no blank method defined for rel ' + rels[i]);
 				}
 			}
 		},
