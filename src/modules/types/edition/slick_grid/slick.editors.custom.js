@@ -342,7 +342,7 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
 
     function booleanLoadValue(item) {
         this.defaultValue = item.getChildSync(this.args.column.jpath);
-        if (this.defaultValue) {
+        if (this.defaultValue.get()) {
             this.$input.attr("checked", "checked");
         } else {
             this.$input.removeAttr("checked");
