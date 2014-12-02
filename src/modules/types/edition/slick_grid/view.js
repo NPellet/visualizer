@@ -186,6 +186,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             list: function( moduleValue ) {
                 var that =  this;
                 this.module.data = moduleValue;
+                this._highlights = _.pluck(this.module.data, '_highlight');
 
                 this.slick.columns = this.getSlickColumns();
                 this.slick.options = this.getSlickOptions();
@@ -300,6 +301,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
 
                         that.grid.onMouseEnter.subscribe(function(e) {
+                            this.hovering = true;
                             var itemInfo = that._getItemInfoFromEvent(e);
                             if(!itemInfo) return;
 
@@ -314,6 +316,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         });
 
                         that.grid.onMouseLeave.subscribe(function(e) {
+                            this.hovering = false;
                             var itemInfo = that._getItemInfoFromEvent(e);
                             if(!itemInfo) return;
                             var hl = itemInfo.item._highlight;
@@ -543,12 +546,33 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             };
         },
 
+        _selectHighlight: function(key) {
+            if(this.hovering) {
+                return;
+            }
+            var that = this;
+            var idx = this._highlights.indexOf(key[0]);
+            this.lastViewport = this.grid.getViewport();
+            if(idx > -1) {
+                var item = that.slick.data.getItemByIdx(idx);
+                var gridRow = that.slick.data.mapIdsToRows([item[that.idPropertyName]])[0];
+                if(!gridRow) return;
+                if (gridRow < this.lastViewport.top || gridRow > this.lastViewport.bottom) {
+                    // navigate
+                    this.grid.scrollRowToTop(gridRow);
+                }
+
+                this.grid.setActiveCell(gridRow, 0);
+            }
+        },
+
         _drawHighlight: function(key) {
             var that = this;
             if(!key instanceof Array) {
                 key = [key];
             }
             var tmp = {};
+            this._selectHighlight(key);
             this.lastViewport = this.grid.getViewport();
             for(var i=this.lastViewport.top; i<=this.lastViewport.bottom; i++ ) {
                 var item = this.grid.getDataItem(i);
@@ -559,11 +583,13 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     tmp[i] = that.baseCellCssStyle;
                 }
             }
+
             this.grid.setCellCssStyles(key.join(''), tmp);
         },
 
         _undrawHighlight: function(key) {
             this.grid.removeCellCssStyles(key);
+
         },
 
 
