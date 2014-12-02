@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-02T22:48Z
+ * Date: 2014-12-02T22:55Z
  */
 
 (function( global, factory ) {
@@ -4370,7 +4370,9 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
     removeShapes: function() {
       for ( var i = 0, l = this.shapes.length; i < l; i++ ) {
-        this.shapes[ i ].kill( true );
+        if ( this.shapes[ i ] && this.shapes[ i ].kill ) {
+          this.shapes[ i ].kill( true );
+        }
       }
       this.shapes = [];
     },
