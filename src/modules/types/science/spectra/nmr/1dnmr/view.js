@@ -33,6 +33,16 @@ define([
             this.nmr.resize1DTo(this.width, this.height);
         },
 
+        blank: {
+            jcamp: function (varname) {
+                var serie = this.nmr.graphs['x'].getSerie(varname);
+                if (serie) {
+                    serie.kill();
+                    this.nmr.graphs['x'].removeShapes();
+                }
+            }
+        },
+
         update: {
             jcamp: function (moduleValue, varname) {
                 var self = this;
