@@ -263,6 +263,7 @@
 			return { 
 
 				shapeOptions: {
+
 					onCreate: function() {
 						integralCreated( nmr, mode, this );
 					},
@@ -282,7 +283,14 @@
 			}
 		}
 
+		function removeSerie( nmr, axis, name ) {
 
+			var serie;
+			if( ( serie = nmr.graphs[ axis ].getSerie( name ) ) ) {
+				serie.kill();
+			}
+
+		}
 
 			
 		function doNMR( nmr ) { 
@@ -516,13 +524,18 @@
 			if( this.graphs[ 'x'].getSerie( name ) ) {
 				return;
 			}
-			var serie_x = this.graphs['x'].newSerie(name, { label: options.label, useSlots: true })
+			var serie_x = this.graphs['x'].newSerie(name, { 
+					label: options.label,
+					useSlots: true 
+				})
 				.setLabel( "My serie" )
 				.autoAxis()
 				.setData( data );
 
 			serie_x.getYAxis().setDisplay( false ).togglePrimaryGrid( false ).toggleSecondaryGrid( false );
 			serie_x.getXAxis().flip(true).setLabel('ppm').togglePrimaryGrid( false ).toggleSecondaryGrid( false ).setTickPosition( 'outside' )
+
+			serie_x.XIsMonotoneous();
 
 			if( options.lineColor ) {
 				serie_x.setLineColor( options.lineColor );
@@ -537,7 +550,6 @@
 			}
 		}
 
-
 		NMR.prototype.setSerie2DY = function( name, data, options ) {
 
 	
@@ -545,7 +557,12 @@
 				return;
 			}
 
-			var serie_y = this.graphs['y'].newSerie(name, { label: options.label, flip: true, useSlots: true } )
+			var serie_y = this.graphs['y']
+				.newSerie(name, { 
+					label: options.label,
+					flip: true,
+					useSlots: true
+				} )
 				.setLabel( "My serie" )
 				.setXAxis( this.graphs['y'].getBottomAxis( ) )
 				.setYAxis( this.graphs['y'].getRightAxis( ) )
@@ -554,6 +571,7 @@
 			serie_y.getYAxis().setLabel('ppm').togglePrimaryGrid( false ).toggleSecondaryGrid( false ).flip( true ).setTickPosition( 'outside' );
 			serie_y.getXAxis().togglePrimaryGrid( false ).toggleSecondaryGrid( false ).setDisplay( false ).flip( true );
 
+			serie_y.XIsMonotoneous();
 
 			if( options.lineColor ) {
 				serie_y.setLineColor( options.lineColor );
@@ -627,7 +645,6 @@
 			this.shapeZoom.setSerie( serie_2d );
 			this.shapeZoom.addSerie( serie_2d );
 
-
 			if( options.lineWidth ) {
 				serie_2d.setLineWidth( options.lineWidth );
 			}
@@ -635,9 +652,23 @@
 			if( options.setLineStyle ) {
 				serie_2d.setLineStyle( options.lineStyle );
 			}
+		}
 
 
+		NMR.prototype.removeSerie2DX = function( name ) {
+			removeSerie( this, 'x', name );
+		}
 
+		NMR.prototype.removeSerie2DY = function( name ) {
+			removeSerie( this, 'y', name );
+		}
+
+		NMR.prototype.removeSerie2D = function( name ) {
+			removeSerie( this, '_2d', name );
+		}
+
+		NMR.prototype.removeSerieX = function( name ) {
+			removeSerie( this, 'x', name );
 		}
 
 		NMR.prototype.redrawAll2D = function() {
@@ -696,6 +727,8 @@
 			}
 
 			//serie_x.degrade( 1 ).kill()
+
+			serie_x.XIsMonotoneous();
 
 			serie_x.getYAxis().setDisplay( false ).togglePrimaryGrid( false ).toggleSecondaryGrid( false );
 			serie_x.getXAxis().flip(true).setLabel('ppm').togglePrimaryGrid( false ).toggleSecondaryGrid( false ).setTickPosition( 'outside' )

@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-01T08:44Z
+ * Date: 2014-12-02T21:19Z
  */
 
 (function( global, factory ) {
@@ -30,14 +30,20 @@
 		var build = [ ];
 
 		build[ './jquery' ] = $;
-build['./dependencies/eventEmitter/EventEmitter'] = ( function() { /*!
+/* 
+ * Build: new source file 
+ * File name : dependencies/eventEmitter/EventEmitter
+ * File path : /Users/normanpellet/Documents/Web/graph/src/dependencies/eventEmitter/EventEmitter.js
+ */
+
+build['./dependencies/eventEmitter/EventEmitter'] = ( function( ) { /*!
  * EventEmitter v4.2.9 - git.io/ee
  * Oliver Caldwell
  * MIT license
  * @preserve
  */
 
-( function() {
+
   
 
   /**
@@ -482,7 +488,7 @@ build['./dependencies/eventEmitter/EventEmitter'] = ( function() { /*!
     exports.EventEmitter = originalGlobalValue;
     return EventEmitter;
   };
-/*
+  /*
   // Expose the class either via AMD, CommonJS or the global object
   if ( typeof define === 'function' && define.amd ) {
     define( function() {
@@ -495,11 +501,17 @@ build['./dependencies/eventEmitter/EventEmitter'] = ( function() { /*!
   }*/
 
   exports.EventEmitter = EventEmitter;
-  
-}.call( this ) ); return this.EventEmitter; } ) ();
 
-define("dependencies/eventEmitter/EventEmitter", function(){});
+  return EventEmitter;
 
+ } ) ( build["./dependencies/eventEmitter/jquery"] );
+
+
+// Build: End source file (dependencies/eventEmitter/EventEmitter) 
+
+
+
+;
 /* 
  * Build: new source file 
  * File name : graph.axis
@@ -1796,14 +1808,11 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
       for ( var i = 0, l = this.series.length; i < l; i++ ) { // These are the series on the axis itself !!
         this.series[ i ].draw();
       }
-
     },
 
     _setShift: function() {
-
       var xshift = this.isLeft() ? this.getShift() : this.graph.getWidth() - this.graph.getPaddingRight() - this.graph.getPaddingLeft() - this.getShift();
       this.group.setAttribute( 'transform', 'translate(' + xshift + ' 0)' );
-
     },
 
     isLeft: function() {
@@ -5601,7 +5610,6 @@ build['./graph._serie'] = ( function( ) {
       }
 
       if ( this.graph.legend ) {
-
         this.graph.legend.update();
       }
     },
@@ -7307,7 +7315,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         incrXFlip = 1;
         incrYFlip = 0;
       }
-
+      var z = 0;
+      console.time( "startDraw" );
       for ( ; i < l; i++ ) {
 
         toBreak = false;
@@ -7352,17 +7361,19 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
           }
 
           // OPTIMIZATION START
-          if ( !this._optimize_before( xpx, ypx ) ) {
+          if ( !this._optimize_before( xpx2, ypx2 ) ) {
             continue;
+
           }
           // OPTIMIZATION END
 
           this._addPoint( xpx2, ypx2 );
-
+          z++;
           // OPTIMIZATION START
-          if ( !this._optimize_after( xpx, ypx ) ) {
+          if ( !this._optimize_after( xpx2, ypx2 ) ) {
             toBreak = true;
             break;
+
           }
           // OPTIMIZATION END
 
@@ -7379,6 +7390,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         }
 
       }
+
     },
 
     _draw_slot: function() {
@@ -7470,11 +7482,12 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
     _optimize_before: function( xpx, ypx ) {
 
-      if ( !this.optimizeMonotoneous ) {
+      if ( !this._optimizeMonotoneous ) {
         return true;
       }
 
       if ( xpx < 0 ) {
+
         this._optimizeBuffer = [ xpx, ypx ];
         return false;
       }
@@ -7489,10 +7502,10 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       return true;
     },
 
-    _optimize_after: function() {
+    _optimize_after: function( xpx, ypx ) {
 
-      if ( this.optimizeMonotoneous && xpx > this.optimizeMaxPxX ) {
-        toBreak = true;
+      if ( this._optimizeMonotoneous && xpx > this._optimizeMaxPxX ) {
+        console.log( xpx, this._optimizeMaxPxX );
         return false;
       }
 
