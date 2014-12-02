@@ -79,9 +79,10 @@
 				sumMax = Math.max( sumMax, nmr.integrals[ mode ][ i ].lastSum );
 			}
 
+
 			for( var i = 0, l = nmr.integrals[ mode ].length; i < l ; i ++ ) {
 
-				nmr.integrals[ mode ][ i ].ratio = nmr.integrals[ mode ][ i ].lastSum / sumMax;
+				nmr.integrals[ mode ][ i ].ratio = sumMax == 0 ? 1 : nmr.integrals[ mode ][ i ].lastSum / sumMax;
 				nmr.integrals[ mode ][ i ].setPosition();
 
 				if( nmr.integralBasis ) {
@@ -131,7 +132,8 @@
 				integral.integral = nmrint;
 				nmrint.data.pos = integral.getFromData( 'pos' );
 				nmrint.data.pos2 = integral.getFromData( 'pos2' );//integral.getFromData( 'pos2' );
-			
+				nmrint.originalShape = integral;
+
 			} );
 
 		//	 poses.push( integral.getFromData('pos') );
@@ -163,7 +165,7 @@
 
 						nmrint.data.pos = shape.getFromData( 'pos' );
 						nmrint.data.pos2 = shape.getFromData( 'pos2' );
-
+						nmrint.originalShape = shape;
 					});	
 				});
 			}
@@ -210,9 +212,16 @@
 
 		function integralRemoved( nmr, mode, peak ) {
 
-			if( peak.integral ) {
-				peak.integral.kill();
-				nmr.integrals[ mode ].splice( nmr.integrals[ mode ].indexOf( peak.integral ), 1 );
+			if( peak.integral) {
+				var i = peak.integral;
+				peak.integral = false;
+				i.originalShape = false;
+
+				if( peak.integral._inDom ) {
+					i.kill();
+				}
+				
+				nmr.integrals[ mode ].splice( nmr.integrals[ mode ].indexOf( i ), 1 );
 			}
 
 			if( peak.syncTo ) {
@@ -274,11 +283,11 @@
 
 					onMove: function() {
 						integralMoved( nmr, mode, this );
-					},
+					}/*,
 
 					onRemove: function() {
 						integralRemoved( nmr, mode, this );
-					}
+					}*/
 				}
 			}
 		}
@@ -524,10 +533,7 @@
 			if( this.graphs[ 'x'].getSerie( name ) ) {
 				return;
 			}
-			var serie_x = this.graphs['x'].newSerie(name, { 
-					label: options.label,
-					useSlots: true 
-				})
+			var serie_x = this.graphs['x'].newSerie(name, $.extend( { useSlots: true }, options ) )
 				.setLabel( "My serie" )
 				.autoAxis()
 				.setData( data );
@@ -558,11 +564,7 @@
 			}
 
 			var serie_y = this.graphs['y']
-				.newSerie(name, { 
-					label: options.label,
-					flip: true,
-					useSlots: true
-				} )
+				.newSerie(name, $.extend( { useSlots: true }, options ) )
 				.setLabel( "My serie" )
 				.setXAxis( this.graphs['y'].getBottomAxis( ) )
 				.setYAxis( this.graphs['y'].getRightAxis( ) )
@@ -596,7 +598,7 @@
 				return;
 			}
 
-			var serie_2d = this.graphs[ '_2d' ].newSerie(name, { label: options.label }, 'contour' )
+			var serie_2d = this.graphs[ '_2d' ].newSerie(name, options, 'contour' )
 				.setLabel( "My serie" )
 				.autoAxis()
 				.setData( data )
@@ -706,7 +708,7 @@
 
 			}
 
-			var serie_x = this.graphs[ 'x' ].newSerie(name, { label: options.label, useSlots: true } )
+			var serie_x = this.graphs[ 'x' ].newSerie(name, $.extend( { useSlots: true }, options ) )
 				.setLabel( "My serie" )
 				.autoAxis()
 				.setData( data )
@@ -1326,6 +1328,21 @@
 
 
 			this.graphs[ 'x' ].setHeight(300);
+
+			this.graphs[ 'x' ].shapeHandlers.onRemoved.push( function( shape ) {
+
+
+				if( shape.integral ) {
+
+					integralRemoved( self, 'x', shape );
+
+				} else if( shape.originalShape ) {
+					
+					shape.originalShape.kill();
+					
+				}
+		
+			});
 
 		
 		

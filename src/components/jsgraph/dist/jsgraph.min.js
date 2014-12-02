@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-02T21:19Z
+ * Date: 2014-12-02T22:36Z
  */
 
 (function( global, factory ) {
@@ -3116,7 +3116,7 @@ build['./graph.legend'] = ( function( ) {
           g.setAttribute( 'transform', "translate(0, " + ( i * 16 + self.options.paddingTop ) + ")" );
 
           self.subG.appendChild( g );
-
+          console.log( series[ j ].getName(), j, series[ j ].options.lineColor );
           var line = series[ j ].getSymbolForLegend();
           var marker = series[ j ].getMarkerForLegend();
           var text = series[ j ].getTextForLegend();
@@ -5783,7 +5783,7 @@ build['./graph._serie'] = ( function( ) {
     getSymbolForLegend: function() {
 
       if ( !this.lineForLegend ) {
-
+        console.log( this.options.lineColor );
         var line = document.createElementNS( this.graph.ns, 'line' );
         this.applyLineStyle( line );
 
@@ -6844,7 +6844,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
       this.shown = true;
       this.options = $.extend( true, {}, GraphSerie.prototype.defaults, options );
-
+      console.log( this.name, this.options.lineColor );
       this.data = [];
       this._isMinOrMax = {
         x: {
@@ -10487,6 +10487,7 @@ build['./shapes/graph.shape'] = ( function( ) {
         this.graph._removeShape( this );
       }
 
+      this._inDom = false;
       this.callHandler( "onRemoved", this );
 
     },
@@ -12141,8 +12142,15 @@ build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve )
             continue;
           }
 
-          sum += Math.abs( ( this.serie.data[ i ][ j + incrXFlip ] - lastXVal ) * ( this.serie.data[ i ][ j + incrYFlip ] - firstYVal ) * 0.5 );
-
+          sum += ( this.serie.data[ i ][ j + incrXFlip ] - lastXVal ) * ( this.serie.data[ i ][ j + incrYFlip ] ) * 0.5;
+          /*   if ( isNaN( sum ) ||  sum == Infinity ) {
+            console.log( sum );
+            console.log( ( this.serie.data[ i ][ j + incrXFlip ] - lastXVal ) );
+            console.log( ( this.serie.data[ i ][ j + incrYFlip ] ) );
+            throw "isdjf";
+          } else {
+            console.log( sum );
+          }*/
           if ( x == lastX && y == lastY ) {
             continue;
           }
@@ -12176,9 +12184,13 @@ build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve )
       var integration = this.maxIntegration || sum;
 
       for ( var i = 0, l = points.length; i < l; i++ ) {
-
+        //   console.log( points[ i ][ 1 ] / sum );
         points[ i ][ 1 ] = baseLine - ( points[ i ][ 1 ] / sum ) * ( this.maxPx ) * ( sum / integration ) * this.ratio;
 
+        /* console.log( this.ratio, integration );
+        console.log( this.maxPx );
+        console.log( points[ i ][ 1 ] );
+*/
         if ( i == 0 ) {
           this.firstPointY = points[ i ][ 1 ];
         }
