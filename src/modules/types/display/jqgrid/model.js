@@ -1,24 +1,27 @@
-define(['modules/default/defaultmodel', 'src/util/datatraversing'], function(Default, Traversing) {
+'use strict';
 
-    function model() {};
-    model.prototype = $.extend(true, {}, Default, {
+define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (Default, Traversing) {
 
-        getValue: function() {
+    function Model() {
+    }
+
+    Model.prototype = $.extend(true, {}, Default, {
+
+        getValue: function () {
             return this.dataValue;
         },
 
-        getjPath: function(rel, temporary, sub) {
+        getjPath: function (rel, temporary, sub) {
             var data;
 
-            switch(rel) {
-
+            switch (rel) {
                 case 'selectedrows':
                 case 'row':
                 case 'element': // Wants to get the row ?
                     data = (temporary && temporary['list']) ? temporary['list'] : (this.module.getDataFromRel('list') || new DataArray());
                     data = data.get(0);
 
-                    if(!data)
+                    if (!data)
                         return [];
                     break;
 
@@ -31,7 +34,9 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function(Def
             Traversing.getJPathsFromElement(data, jpaths);
             return jpaths;
         }
+
     });
 
-    return model;
+    return Model;
+
 });
