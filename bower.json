@@ -38,7 +38,7 @@
     "modernizr": "~2.8.3",
     "onde": "git@github.com:targos/onde.git",
     "papa-parse": "~3.1.2",
-    "pouchdb": "~3.0.3",
+    "pouchdb": "^3.1.0",
     "requirejs": "~2.1.11",
     "spectrum": "~1.5.0",
     "sprintf": "~1.0.0",

@@ -1,4 +1,4 @@
-//    PouchDB in-memory plugin 3.0.6
+//    PouchDB in-memory plugin 3.1.0
 //    Based on MemDOWN: https://github.com/rvagg/memdown
 //    
 //    (c) 2012-2014 Dale Harvey and the PouchDB team
@@ -19,6 +19,7 @@ var merge = require('../merge');
 var utils = require('../utils');
 var migrate = require('../deps/migrate');
 var vuvuzela = require('vuvuzela');
+var Deque = require("double-ended-queue");
 
 var DOC_STORE = 'document-store';
 var BY_SEQ_STORE = 'by-sequence';
@@ -79,12 +80,12 @@ function LevelPouch(opts, callback) {
         return callback(err);
       }
       db = dbStore.get(name);
-      db._locks = db._locks || new utils.Set();
       db._docCountQueue = {
         queue : [],
         running : false,
         docCount : -1
       };
+      db._writeQueue = new Deque();
       if (opts.db || opts.noMigrate) {
         afterDBCreated();
       } else {
@@ -192,6 +193,34 @@ function LevelPouch(opts, callback) {
       });
     });
   };
+
+  // all read/write operations to the database are done in a queue,
+  // similar to how websql/idb works. this avoids problems such
+  // as e.g. compaction needing to have a lock on the database while
+  // it updates stuff. in the future we can revisit this.
+  function writeLock(fun) {
+    return utils.getArguments(function (args) {
+
+      var callback = args[args.length - 1];
+      args[args.length - 1] = utils.getArguments(function (cbArgs) {
+        callback.apply(null, cbArgs);
+        process.nextTick(function () {
+          db._writeQueue.shift();
+          if (db._writeQueue.length) {
+            db._writeQueue.peekFront()();
+          }
+        });
+      });
+
+      db._writeQueue.push(function () {
+        fun.apply(null, args);
+      });
+
+      if (db._writeQueue.length === 1) {
+        db._writeQueue.peekFront()();
+      }
+    });
+  }
 
   function formatSeq(n) {
     return ('0000000000000000' + n).slice(-16);
@@ -320,26 +349,10 @@ function LevelPouch(opts, callback) {
     });
   };
 
-  api.lock = function (id) {
-    if (db._locks.has(id)) {
-      return false;
-    } else {
-      db._locks.add(id);
-      return true;
-    }
-  };
-
-  api.unlock = function (id) {
-    if (db._locks.has(id)) {
-      db._locks["delete"](id);
-      return true;
-    }
-    return false;
-  };
-
-  api._bulkDocs = function (req, opts, callback) {
+  api._bulkDocs = writeLock(function (req, opts, callback) {
     var newEdits = opts.new_edits;
     var results = new Array(req.docs.length);
+    var lock = new utils.Set();
 
     // parse the docs and give each a sequence number
     var userDocs = req.docs;
@@ -364,6 +377,54 @@ function LevelPouch(opts, callback) {
     if (infoErrors.length) {
       return callback(infoErrors[0]);
     }
+
+    // verify any stub attachments as a precondition test
+
+    function verifyAttachment(digest, callback) {
+      stores.attachmentStore.get(digest, function (levelErr) {
+        if (levelErr) {
+          var err = new Error('unknown stub attachment with digest ' + digest);
+          err.status = 412;
+          callback(err);
+        } else {
+          callback();
+        }
+      });
+    }
+
+    function verifyAttachments(finish) {
+      var digests = [];
+      userDocs.forEach(function (doc) {
+        if (doc && doc._attachments) {
+          Object.keys(doc._attachments).forEach(function (filename) {
+            var att = doc._attachments[filename];
+            if (att.stub) {
+              digests.push(att.digest);
+            }
+          });
+        }
+      });
+      if (!digests.length) {
+        return finish();
+      }
+      var numDone = 0;
+      var err;
+
+      function checkDone() {
+        if (++numDone === digests.length) {
+          finish(err);
+        }
+      }
+      digests.forEach(function (digest) {
+        verifyAttachment(digest, function (attErr) {
+          if (attErr && !err) {
+            err = attErr;
+          }
+          checkDone();
+        });
+      });
+    }
+
     var inProgress = 0;
     function processDocs() {
       var index = current;
@@ -381,7 +442,7 @@ function LevelPouch(opts, callback) {
       current++;
       inProgress++;
       if (currentDoc._id && utils.isLocalId(currentDoc._id)) {
-        api[currentDoc._deleted ? '_removeLocal' : '_putLocal'](
+        api[currentDoc._deleted ? '_removeLocalNoLock' : '_putLocalNoLock'](
             currentDoc, function (err, resp) {
           if (err) {
             results[index] = err;
@@ -394,31 +455,32 @@ function LevelPouch(opts, callback) {
         return;
       }
 
-      if (!api.lock(currentDoc.metadata.id)) {
+      if (lock.has(currentDoc.metadata.id)) {
         results[index] = makeErr(errors.REV_CONFLICT,
-                                 'someobody else is accessing this');
+                                 'somebody else is accessing this');
         inProgress--;
         return processDocs();
       }
+      lock.add(currentDoc.metadata.id);
 
       stores.docStore.get(currentDoc.metadata.id, function (err, oldDoc) {
         if (err) {
           if (err.name === 'NotFoundError') {
             insertDoc(currentDoc, index, function () {
-              api.unlock(currentDoc.metadata.id);
+              lock["delete"](currentDoc.metadata.id);
               inProgress--;
               processDocs();
             });
           } else {
             err.error = true;
             results[index] = err;
-            api.unlock(currentDoc.metadata.id);
+            lock["delete"](currentDoc.metadata.id);
             inProgress--;
             processDocs();
           }
         } else {
           updateDoc(oldDoc, currentDoc, index, function () {
-            api.unlock(currentDoc.metadata.id);
+            lock["delete"](currentDoc.metadata.id);
             inProgress--;
             processDocs();
           });
@@ -448,27 +510,39 @@ function LevelPouch(opts, callback) {
     }
 
     function updateDoc(oldDoc, docInfo, index, callback) {
+
+      if (utils.revExists(oldDoc, docInfo.metadata.rev)) {
+        results[index] = docInfo;
+        callback();
+        return;
+      }
+
       var merged =
         merge.merge(oldDoc.rev_tree, docInfo.metadata.rev_tree[0], 1000);
 
-      var conflict = (utils.isDeleted(oldDoc) &&
-                      utils.isDeleted(docInfo.metadata) &&
-                      newEdits) ||
-        (!utils.isDeleted(oldDoc) &&
-         newEdits && merged.conflicts !== 'new_leaf');
+      var previouslyDeleted = utils.isDeleted(oldDoc);
+      var deleted = utils.isDeleted(docInfo.metadata);
+      var inConflict = (previouslyDeleted && deleted && newEdits) ||
+        (!previouslyDeleted && newEdits && merged.conflicts !== 'new_leaf') ||
+        (previouslyDeleted && !deleted && merged.conflicts === 'new_branch');
 
-
-      if (conflict) {
+      if (inConflict) {
         results[index] = makeErr(errors.REV_CONFLICT, docInfo._bulk_seq);
         return callback();
       }
+      var newRev = docInfo.metadata.rev;
       docInfo.metadata.rev_tree = merged.tree;
       docInfo.metadata.rev_map = oldDoc.rev_map;
+
       var delta = 0;
-      var oldDeleted = utils.isDeleted(oldDoc);
-      var newDeleted = utils.isDeleted(docInfo.metadata);
-      delta = (oldDeleted === newDeleted) ? 0 :
-        oldDeleted < newDeleted ? -1 : 1;
+      if (newEdits || merge.winningRev(docInfo.metadata) === newRev) {
+        // if newEdits==false and we're pushing existing revisions,
+        // then the only thing that matters is whether this revision
+        // is the winning one, and thus replaces an old one
+        delta = (previouslyDeleted === deleted) ? 0 :
+          previouslyDeleted < deleted ? -1 : 1;
+      }
+
       incrementDocCount(delta, function (err) {
         if (err) {
           return callback(err);
@@ -516,8 +590,7 @@ function LevelPouch(opts, callback) {
       }
 
       function onLoadEnd(doc, key, attachmentSaved) {
-        return function (e) {
-          var data = utils.arrayBufferToBinaryString(e.target.result);
+        return function (data) {
           utils.MD5(data).then(
             onMD5Load(doc, key, data, attachmentSaved)
           );
@@ -526,13 +599,15 @@ function LevelPouch(opts, callback) {
 
       for (var i = 0; i < attachments.length; i++) {
         var key = attachments[i];
+        var att = doc.data._attachments[key];
 
-        if (doc.data._attachments[key].stub) {
-          recv++;
-          collectResults();
+        if (att.stub) {
+          // still need to update the refs mapping
+          var id = doc.data._id;
+          var rev = doc.data._rev;
+          saveAttachmentRefs(id, rev, att.digest, attachmentSaved);
           continue;
         }
-        var att = doc.data._attachments[key];
         var data;
         if (typeof att.data === 'string') {
           try {
@@ -545,9 +620,8 @@ function LevelPouch(opts, callback) {
         } else if (!process.browser) {
           data = att.data;
         } else { // browser
-          var reader = new FileReader();
-          reader.onloadend = onLoadEnd(doc, key, attachmentSaved);
-          reader.readAsArrayBuffer(att.data);
+          utils.readAsBinaryString(att.data,
+            onLoadEnd(doc, key, attachmentSaved));
           continue;
         }
         utils.MD5(data).then(
@@ -599,16 +673,19 @@ function LevelPouch(opts, callback) {
         finish();
       }
     }
-
-    function saveAttachment(docInfo, digest, key, data, callback) {
-      delete docInfo.data._attachments[key].data;
-      docInfo.data._attachments[key].digest = digest;
+    
+    function saveAttachmentRefs(id, rev, digest, callback) {
       stores.attachmentStore.get(digest, function (err, oldAtt) {
-        if (err && err.name !== 'NotFoundError') {
-          return callback(err);
+        var newAttachment = false;
+        if (err) {
+          if (err.name !== 'NotFoundError') {
+            return callback(err);
+          } else {
+            newAttachment = true;
+          }
         }
 
-        var ref = [docInfo.metadata.id, docInfo.metadata.rev].join('@');
+        var ref = [id, rev].join('@');
         var newAtt = {};
 
         if (oldAtt) {
@@ -625,14 +702,37 @@ function LevelPouch(opts, callback) {
         }
 
         stores.attachmentStore.put(digest, newAtt, function (err) {
-          // do not try to store empty attachments
-          if (data.length === 0) {
+          if (err) {
             return callback(err);
           }
-          // doing this in batch causes a test to fail, wtf?
-          stores.binaryStore.put(digest, data, function (err) {
-            callback(err);
-          });
+          callback(null, newAttachment);
+        });
+      });
+    }
+
+    function saveAttachment(docInfo, digest, key, data, callback) {
+      var att = docInfo.data._attachments[key];
+      delete att.data;
+      att.digest = digest;
+      att.length = data.length;
+      var id = docInfo.metadata.id;
+      var rev = docInfo.metadata.rev;
+
+      saveAttachmentRefs(id, rev, digest, function (err, newAttachment) {
+        if (err) {
+          return callback(err);
+        }
+        // do not try to store empty attachments
+        if (data.length === 0) {
+          return callback(err);
+        }
+        if (!newAttachment) {
+          // small optimization - don't bother writing it again
+          return callback(err);
+        }
+        // doing this in batch causes a test to fail, wtf?
+        stores.binaryStore.put(digest, data, function (err) {
+          callback(err);
         });
       });
     }
@@ -661,7 +761,9 @@ function LevelPouch(opts, callback) {
         };
       });
       LevelPouch.Changes.notify(name);
-      process.nextTick(function () { callback(null, aresults); });
+      process.nextTick(function () {
+        callback(null, aresults);
+      });
     }
 
     function makeErr(err, seq) {
@@ -669,8 +771,13 @@ function LevelPouch(opts, callback) {
       return err;
     }
 
-    processDocs();
-  };
+    verifyAttachments(function (err) {
+      if (err) {
+        return callback(err);
+      }
+      processDocs();
+    });
+  });
   api._allDocs = function (opts, callback) {
     opts = utils.clone(opts);
     countDocs(function (err, docCount) {
@@ -925,16 +1032,22 @@ function LevelPouch(opts, callback) {
     });
   };
 
-  api._doCompaction = function (docId, rev_tree, revs, callback) {
+  api._doCompaction = writeLock(function (docId, revs, callback) {
+    if (!revs.length) {
+      return callback();
+    }
     stores.docStore.get(docId, function (err, metadata) {
       if (err) {
         return callback(err);
       }
       var seqs = metadata.rev_map; // map from rev to seq
-      metadata.rev_tree = rev_tree;
-      if (!revs.length) {
-        return callback();
-      }
+      merge.traverseRevTree(metadata.rev_tree, function (isLeaf, pos,
+                                                         revHash, ctx, opts) {
+        var rev = pos + '-' + revHash;
+        if (revs.indexOf(rev) !== -1) {
+          opts.status = 'missing';
+        }
+      });
       var batch = [];
       batch.push({
         key: metadata.id,
@@ -943,6 +1056,88 @@ function LevelPouch(opts, callback) {
         valueEncoding: vuvuEncoding,
         prefix: stores.docStore
       });
+
+      var digestMap = {};
+      var numDone = 0;
+      var overallErr;
+      function checkDone(err) {
+        if (err) {
+          overallErr = err;
+        }
+        if (++numDone === revs.length) { // done
+          if (overallErr) {
+            return callback(err);
+          }
+          deleteOrphanedAttachments();
+        }
+      }
+
+      function finish(err) {
+        if (err) {
+          return callback(err);
+        }
+        db.batch(batch, callback);
+      }
+
+      function deleteOrphanedAttachments() {
+        var possiblyOrphanedAttachments = Object.keys(digestMap);
+        if (!possiblyOrphanedAttachments.length) {
+          return finish();
+        }
+        var numDone = 0;
+        var overallErr;
+        function checkDone(err) {
+          if (err) {
+            overallErr = err;
+          }
+          if (++numDone === possiblyOrphanedAttachments.length) {
+            finish(overallErr);
+          }
+        }
+        var refsToDelete = new utils.Map();
+        revs.forEach(function (rev) {
+          refsToDelete.set(docId + '@' + rev, true);
+        });
+        possiblyOrphanedAttachments.forEach(function (digest) {
+          stores.attachmentStore.get(digest, function (err, attData) {
+            if (err) {
+              if (err.name === 'NotFoundError') {
+                return checkDone();
+              } else {
+                return checkDone(err);
+              }
+            }
+            var refs = Object.keys(attData.refs || {}).filter(function (ref) {
+              return !refsToDelete.has(ref);
+            });
+            var newRefs = {};
+            refs.forEach(function (ref) {
+              newRefs[ref] = true;
+            });
+            if (refs.length) { // not orphaned
+              batch.push({
+                key: digest,
+                type: 'put',
+                valueEncoding: 'json',
+                value: {refs: newRefs},
+                prefix: stores.attachmentStore
+              });
+            } else { // orphaned, can safely delete
+              batch = batch.concat([{
+                key: digest,
+                type: 'del',
+                prefix: stores.attachmentStore
+              }, {
+                key: digest,
+                type: 'del',
+                prefix: stores.binaryStore
+              }]);
+            }
+            checkDone();
+          });
+        });
+      }
+
       revs.forEach(function (rev) {
         var seq = seqs[rev];
         if (!seq) {
@@ -953,10 +1148,24 @@ function LevelPouch(opts, callback) {
           type: 'del',
           prefix: stores.bySeqStore
         });
+        stores.bySeqStore.get(formatSeq(seq), function (err, doc) {
+          if (err) {
+            if (err.name === 'NotFoundError') {
+              return checkDone();
+            } else {
+              return checkDone(err);
+            }
+          }
+          var atts = Object.keys(doc._attachments || {});
+          atts.forEach(function (attName) {
+            var digest = doc._attachments[attName].digest;
+            digestMap[digest] = true;
+          });
+          checkDone();
+        });
       });
-      db.batch(batch, callback);
     });
-  };
+  });
 
   api._getLocal = function (id, callback) {
     stores.localStore.get(id, function (err, doc) {
@@ -968,7 +1177,12 @@ function LevelPouch(opts, callback) {
     });
   };
 
-  api._putLocal = function (doc, callback) {
+  api._putLocal = writeLock(function (doc, callback) {
+    api._putLocalNoLock(doc, callback);
+  });
+
+  // the NoLock version is for use by bulkDocs
+  api._putLocalNoLock = function (doc, callback) {
     delete doc._revisions; // ignore this, trust the rev
     var oldRev = doc._rev;
     var id = doc._id;
@@ -996,7 +1210,12 @@ function LevelPouch(opts, callback) {
     });
   };
 
-  api._removeLocal = function (doc, callback) {
+  api._removeLocal = writeLock(function (doc, callback) {
+    api._removeLocalNoLock(doc, callback);
+  });
+
+  // the NoLock version is for use by bulkDocs
+  api._removeLocalNoLock = function (doc, callback) {
     stores.localStore.get(doc._id, function (err, resp) {
       if (err) {
         return callback(err);
@@ -1058,8 +1277,8 @@ LevelPouch.Changes = new utils.Changes();
 
 module.exports = LevelPouch;
 
-}).call(this,require("/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),require("buffer").Buffer)
-},{"../deps/errors":5,"../deps/migrate":"JpIkFB","../merge":8,"../utils":15,"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"buffer":20,"level-sublevel":35,"leveldown":"RQL87X","levelup":49,"through2":112,"vuvuzela":113}],2:[function(require,module,exports){
+}).call(this,require("/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),require("buffer").Buffer)
+},{"../deps/errors":5,"../deps/migrate":"x33H+M","../merge":9,"../utils":16,"/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":20,"buffer":21,"double-ended-queue":34,"level-sublevel":37,"leveldown":"KbJPwE","levelup":51,"through2":116,"vuvuzela":117}],2:[function(require,module,exports){
 "use strict";
 
 var createBlob = require('./blob.js');
@@ -1281,21 +1500,9 @@ function ajax(options, adapterCallback) {
     }
   }
   if (options.body && (options.body instanceof Blob)) {
-    var reader = new FileReader();
-    reader.onloadend = function (e) {
-
-      var binary = "";
-      var bytes = new Uint8Array(this.result);
-      var length = bytes.byteLength;
-
-      for (var i = 0; i < length; i++) {
-        binary += String.fromCharCode(bytes[i]);
-      }
-
-      binary = utils.fixBinary(binary);
-      xhr.send(binary);
-    };
-    reader.readAsArrayBuffer(options.body);
+    utils.readAsBinaryString(options.body, function (binary) {
+      xhr.send(utils.fixBinary(binary));
+    });
   } else {
     xhr.send(options.body);
   }
@@ -1304,7 +1511,7 @@ function ajax(options, adapterCallback) {
 
 module.exports = ajax;
 
-},{"../utils":15,"./blob.js":3,"./errors":5}],3:[function(require,module,exports){
+},{"../utils":16,"./blob.js":3,"./errors":5}],3:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -1538,6 +1745,7 @@ exports.error = function (error, reason, name) {
 var crypto = require('crypto');
 var Md5 = require('spark-md5');
 var setImmediateShim = global.setImmediate || global.setTimeout;
+var MD5_CHUNK_SIZE = 32768;
 
 function sliceShim(arrayBuffer, begin, end) {
   if (typeof arrayBuffer.slice === 'function') {
@@ -1613,7 +1821,7 @@ module.exports = function (data, callback) {
   }
   var inputIsString = typeof data === 'string';
   var len = inputIsString ? data.length : data.byteLength;
-  var chunkSize = Math.min(524288, len);
+  var chunkSize = Math.min(MD5_CHUNK_SIZE, len);
   var chunks = Math.ceil(len / chunkSize);
   var currentChunk = 0;
   var buffer = inputIsString ? new Md5() : new Md5.ArrayBuffer();
@@ -1647,8 +1855,54 @@ module.exports = function (data, callback) {
   loadNextChunk();
 };
 
-}).call(this,require("/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"crypto":17,"spark-md5":97}],7:[function(require,module,exports){
+}).call(this,require("/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":20,"crypto":18,"spark-md5":101}],7:[function(require,module,exports){
+'use strict';
+
+// originally parseUri 1.2.2, now patched by us
+// (c) Steven Levithan <stevenlevithan.com>
+// MIT License
+var options = {
+  strictMode: false,
+  key: ["source", "protocol", "authority", "userInfo", "user", "password",
+    "host", "port", "relative", "path", "directory", "file", "query",
+    "anchor"],
+  q:   {
+    name:   "queryKey",
+    parser: /(?:^|&)([^&=]*)=?([^&]*)/g
+  },
+  parser: {
+    /* jshint maxlen: false */
+    strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
+    loose:  /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
+  }
+};
+function parseUri(str) {
+  var o = options;
+  var m = o.parser[o.strictMode ? "strict" : "loose"].exec(str);
+  var uri = {};
+  var i = 14;
+
+  while (i--) {
+    var key = o.key[i];
+    var value = m[i] || "";
+    var encoded = ['user', 'password'].indexOf(key) !== -1;
+    uri[key] = encoded ? decodeURIComponent(value) : value;
+  }
+
+  uri[o.q.name] = {};
+  uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
+    if ($1) {
+      uri[o.q.name][$1] = $2;
+    }
+  });
+
+  return uri;
+}
+
+
+module.exports = parseUri;
+},{}],8:[function(require,module,exports){
 "use strict";
 
 // BEGIN Math.uuid.js
@@ -1733,7 +1987,7 @@ function uuid(len, radix) {
 module.exports = uuid;
 
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 'use strict';
 var extend = require('pouchdb-extend');
 
@@ -2009,9 +2263,7 @@ PouchMerge.rootToLeaf = function (tree) {
 
 module.exports = PouchMerge;
 
-},{"pouchdb-extend":96}],"adapter-config":[function(require,module,exports){
-module.exports=require('kPrcxC');
-},{}],"kPrcxC":[function(require,module,exports){
+},{"pouchdb-extend":100}],"Rl6L1i":[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -2021,7 +2273,9 @@ module.exports = {
   },
   use_prefix: false
 };
-},{}],11:[function(require,module,exports){
+},{}],"adapter-config":[function(require,module,exports){
+module.exports=require('Rl6L1i');
+},{}],12:[function(require,module,exports){
 "use strict";
 
 var adapterConfig = require('adapter-config');
@@ -2031,7 +2285,7 @@ var adapter = require('./levelalt');
 window.PouchDB.adapter(adapterName, adapter);
 window.PouchDB.preferredAdapters.push(adapterName);
 
-},{"./levelalt":12,"adapter-config":"kPrcxC"}],12:[function(require,module,exports){
+},{"./levelalt":13,"adapter-config":"Rl6L1i"}],13:[function(require,module,exports){
 'use strict';
 
 var LevelPouch = require('../adapters/leveldb');
@@ -2067,7 +2321,7 @@ LevelPouchAlt.destroy = utils.toPromise(function (name, opts, callback) {
 
 module.exports = LevelPouchAlt;
 
-},{"../adapters/leveldb":1,"../utils":15,"adapter-config":"kPrcxC","leveldown":"RQL87X"}],"JpIkFB":[function(require,module,exports){
+},{"../adapters/leveldb":1,"../utils":16,"adapter-config":"Rl6L1i","leveldown":"KbJPwE"}],"x33H+M":[function(require,module,exports){
 (function (process){
 'use strict';
 // LevelAlt doesn't need the pre-2.2.0 LevelDB-specific migrations
@@ -2083,10 +2337,10 @@ exports.localAndMetaStores = function (db, stores, callback) {
   });
 };
 
-}).call(this,require("/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19}],"../adapters/../deps/migrate":[function(require,module,exports){
-module.exports=require('JpIkFB');
-},{}],15:[function(require,module,exports){
+}).call(this,require("/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
+},{"/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":20}],"../adapters/../deps/migrate":[function(require,module,exports){
+module.exports=require('x33H+M');
+},{}],16:[function(require,module,exports){
 (function (process,global){
 /*jshint strict: false */
 /*global chrome */
@@ -2146,6 +2400,14 @@ var dataWords = toObject([
   '_replication_stats'
 ]);
 
+exports.lastIndexOf = function (str, char) {
+  for (var i = str.length - 1; i >= 0; i--) {
+    if (str.charAt(i) === char) {
+      return i;
+    }
+  }
+  return -1;
+};
 exports.clone = function (obj) {
   return exports.extend(true, {}, obj);
 };
@@ -2214,6 +2476,16 @@ exports.isDeleted = function (metadata, rev) {
   });
 
   return deleted;
+};
+
+exports.revExists = function (metadata, rev) {
+  var found = false;
+  merge.traverseRevTree(metadata.rev_tree, function (leaf, pos, id, acc, opts) {
+    if ((pos + '-' + id) === rev) {
+      found = true;
+    }
+  });
+  return found;
 };
 
 exports.filterChange = function (opts) {
@@ -2473,13 +2745,28 @@ exports.fixBinary = function (bin) {
   return buf;
 };
 
+// shim for browsers that don't support it
+exports.readAsBinaryString = function (blob, callback) {
+  var reader = new FileReader();
+  var hasBinaryString = typeof reader.readAsBinaryString === 'function';
+  reader.onloadend = function (e) {
+    var result = e.target.result || '';
+    if (hasBinaryString) {
+      return callback(result);
+    }
+    callback(exports.arrayBufferToBinaryString(result));
+  };
+  if (hasBinaryString) {
+    reader.readAsBinaryString(blob);
+  } else {
+    reader.readAsArrayBuffer(blob);
+  }
+};
+
 exports.once = function (fun) {
   var called = false;
   return exports.getArguments(function (args) {
     if (called) {
-      if (typeof console.trace === 'function') {
-        console.trace();
-      }
       throw new Error('once called  more than once');
     } else {
       called = true;
@@ -2655,8 +2942,22 @@ exports.cancellableFun = function (fun, self, opts) {
 
 exports.MD5 = exports.toPromise(require('./deps/md5'));
 
-}).call(this,require("/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./deps/ajax":2,"./deps/blob":3,"./deps/buffer":17,"./deps/collections":4,"./deps/errors":5,"./deps/md5":6,"./deps/uuid":7,"./merge":8,"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"argsarray":16,"bluebird":75,"events":18,"inherits":33,"pouchdb-extend":96}],16:[function(require,module,exports){
+// designed to give info to browser users, who are disturbed
+// when they see 404s in the console
+exports.explain404 = function (str) {
+  if (process.browser && 'console' in global && 'info' in console) {
+    console.info('The above 404 is totally normal. ' +
+      str + '\n\u2665 the PouchDB team');
+  }
+};
+
+exports.parseUri = require('./deps/parse-uri');
+
+exports.compare = function (left, right) {
+  return left < right ? -1 : left > right ? 1 : 0;
+};
+}).call(this,require("/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./deps/ajax":2,"./deps/blob":3,"./deps/buffer":18,"./deps/collections":4,"./deps/errors":5,"./deps/md5":6,"./deps/parse-uri":7,"./deps/uuid":8,"./merge":9,"/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":20,"argsarray":17,"bluebird":77,"events":19,"inherits":35,"pouchdb-extend":100}],17:[function(require,module,exports){
 'use strict';
 
 module.exports = argsArray;
@@ -2676,9 +2977,9 @@ function argsArray(fun) {
     }
   };
 }
-},{}],17:[function(require,module,exports){
-
 },{}],18:[function(require,module,exports){
+
+},{}],19:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2981,7 +3282,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -3036,7 +3337,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 var base64 = require('base64-js')
 var ieee754 = require('ieee754')
 
@@ -4094,7 +4395,7 @@ function assert (test, message) {
   if (!test) throw new Error(message || 'Failed assertion')
 }
 
-},{"base64-js":21,"ieee754":22}],21:[function(require,module,exports){
+},{"base64-js":22,"ieee754":23}],22:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -4216,7 +4517,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 exports.read = function(buffer, offset, isLE, mLen, nBytes) {
   var e, m,
       eLen = nBytes * 8 - mLen - 1,
@@ -4302,7 +4603,7 @@ exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128;
 };
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4376,7 +4677,7 @@ function onend() {
   });
 }
 
-},{"./readable.js":27,"./writable.js":29,"inherits":33,"process/browser.js":25}],24:[function(require,module,exports){
+},{"./readable.js":28,"./writable.js":30,"inherits":35,"process/browser.js":26}],25:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4505,9 +4806,9 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"./duplex.js":23,"./passthrough.js":26,"./readable.js":27,"./transform.js":28,"./writable.js":29,"events":18,"inherits":33}],25:[function(require,module,exports){
-module.exports=require(19)
-},{}],26:[function(require,module,exports){
+},{"./duplex.js":24,"./passthrough.js":27,"./readable.js":28,"./transform.js":29,"./writable.js":30,"events":19,"inherits":35}],26:[function(require,module,exports){
+module.exports=require(20)
+},{}],27:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4550,7 +4851,7 @@ PassThrough.prototype._transform = function(chunk, encoding, cb) {
   cb(null, chunk);
 };
 
-},{"./transform.js":28,"inherits":33}],27:[function(require,module,exports){
+},{"./transform.js":29,"inherits":35}],28:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -5486,8 +5787,8 @@ function indexOf (xs, x) {
   return -1;
 }
 
-}).call(this,require("/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"./index.js":24,"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"buffer":20,"events":18,"inherits":33,"process/browser.js":25,"string_decoder":30}],28:[function(require,module,exports){
+}).call(this,require("/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
+},{"./index.js":25,"/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":20,"buffer":21,"events":19,"inherits":35,"process/browser.js":26,"string_decoder":31}],29:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5693,7 +5994,7 @@ function done(stream, er) {
   return stream.push(null);
 }
 
-},{"./duplex.js":23,"inherits":33}],29:[function(require,module,exports){
+},{"./duplex.js":24,"inherits":35}],30:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -6081,7 +6382,7 @@ function endWritable(stream, state, cb) {
   state.ended = true;
 }
 
-},{"./index.js":24,"buffer":20,"inherits":33,"process/browser.js":25}],30:[function(require,module,exports){
+},{"./index.js":25,"buffer":21,"inherits":35,"process/browser.js":26}],31:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -6274,14 +6575,14 @@ function base64DetectIncompleteChar(buffer) {
   return incomplete;
 }
 
-},{"buffer":20}],31:[function(require,module,exports){
+},{"buffer":21}],32:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -6870,8 +7171,297 @@ function hasOwnProperty(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
-}).call(this,require("/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":31,"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"inherits":33}],33:[function(require,module,exports){
+}).call(this,require("/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./support/isBuffer":32,"/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":20,"inherits":35}],34:[function(require,module,exports){
+/**
+ * Copyright (c) 2013 Petka Antonov
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:</p>
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+"use strict";
+function Deque(capacity) {
+    this._capacity = getCapacity(capacity);
+    this._length = 0;
+    this._front = 0;
+    this._makeCapacity();
+    if (isArray(capacity)) {
+        var len = capacity.length;
+        for (var i = 0; i < len; ++i) {
+            this[i] = capacity[i];
+        }
+        this._length = len;
+    }
+}
+
+Deque.prototype.toArray = function Deque$toArray() {
+    var len = this._length;
+    var ret = new Array(len);
+    var front = this._front;
+    var capacity = this._capacity;
+    for (var j = 0; j < len; ++j) {
+        ret[j] = this[(front + j) & (capacity - 1)];
+    }
+    return ret;
+};
+
+Deque.prototype.push = function Deque$push(item) {
+    var argsLength = arguments.length;
+    var length = this._length;
+    if (argsLength > 1) {
+        var capacity = this._capacity;
+        if (length + argsLength > capacity) {
+            for (var i = 0; i < argsLength; ++i) {
+                this._checkCapacity(length + 1);
+                var j = (this._front + length) & (this._capacity - 1);
+                this[j] = arguments[i];
+                length++;
+                this._length = length;
+            }
+            return length;
+        }
+        else {
+            var j = this._front;
+            for (var i = 0; i < argsLength; ++i) {
+                this[(j + length) & (capacity - 1)] = arguments[i];
+                j++;
+            }
+            this._length = length + argsLength;
+            return length + argsLength;
+        }
+
+    }
+
+    if (argsLength === 0) return length;
+
+    this._checkCapacity(length + 1);
+    var i = (this._front + length) & (this._capacity - 1);
+    this[i] = item;
+    this._length = length + 1;
+    return length + 1;
+};
+
+Deque.prototype.pop = function Deque$pop() {
+    var length = this._length;
+    if (length === 0) {
+        return void 0;
+    }
+    var i = (this._front + length - 1) & (this._capacity - 1);
+    var ret = this[i];
+    this[i] = void 0;
+    this._length = length - 1;
+    return ret;
+};
+
+Deque.prototype.shift = function Deque$shift() {
+    var length = this._length;
+    if (length === 0) {
+        return void 0;
+    }
+    var front = this._front;
+    var ret = this[front];
+    this[front] = void 0;
+    this._front = (front + 1) & (this._capacity - 1);
+    this._length = length - 1;
+    return ret;
+};
+
+Deque.prototype.unshift = function Deque$unshift(item) {
+    var length = this._length;
+    var argsLength = arguments.length;
+
+
+    if (argsLength > 1) {
+        var capacity = this._capacity;
+        if (length + argsLength > capacity) {
+            for (var i = argsLength - 1; i >= 0; i--) {
+                this._checkCapacity(length + 1);
+                var capacity = this._capacity;
+                var j = (((( this._front - 1 ) &
+                    ( capacity - 1) ) ^ capacity ) - capacity );
+                this[j] = arguments[i];
+                length++;
+                this._length = length;
+                this._front = j;
+            }
+            return length;
+        }
+        else {
+            var front = this._front;
+            for (var i = argsLength - 1; i >= 0; i--) {
+                var j = (((( front - 1 ) &
+                    ( capacity - 1) ) ^ capacity ) - capacity );
+                this[j] = arguments[i];
+                front = j;
+            }
+            this._front = front;
+            this._length = length + argsLength;
+            return length + argsLength;
+        }
+    }
+
+    if (argsLength === 0) return length;
+
+    this._checkCapacity(length + 1);
+    var capacity = this._capacity;
+    var i = (((( this._front - 1 ) &
+        ( capacity - 1) ) ^ capacity ) - capacity );
+    this[i] = item;
+    this._length = length + 1;
+    this._front = i;
+    return length + 1;
+};
+
+Deque.prototype.peekBack = function Deque$peekBack() {
+    var length = this._length;
+    if (length === 0) {
+        return void 0;
+    }
+    var index = (this._front + length - 1) & (this._capacity - 1);
+    return this[index];
+};
+
+Deque.prototype.peekFront = function Deque$peekFront() {
+    if (this._length === 0) {
+        return void 0;
+    }
+    return this[this._front];
+};
+
+Deque.prototype.get = function Deque$get(index) {
+    var i = index;
+    if ((i !== (i | 0))) {
+        return void 0;
+    }
+    var len = this._length;
+    if (i < 0) {
+        i = i + len;
+    }
+    if (i < 0 || i >= len) {
+        return void 0;
+    }
+    return this[(this._front + i) & (this._capacity - 1)];
+};
+
+Deque.prototype.isEmpty = function Deque$isEmpty() {
+    return this._length === 0;
+};
+
+Deque.prototype.clear = function Deque$clear() {
+    this._length = 0;
+    this._front = 0;
+    this._makeCapacity();
+};
+
+Deque.prototype.toString = function Deque$toString() {
+    return this.toArray().toString();
+};
+
+Deque.prototype.valueOf = Deque.prototype.toString;
+Deque.prototype.removeFront = Deque.prototype.shift;
+Deque.prototype.removeBack = Deque.prototype.pop;
+Deque.prototype.insertFront = Deque.prototype.unshift;
+Deque.prototype.insertBack = Deque.prototype.push;
+Deque.prototype.enqueue = Deque.prototype.push;
+Deque.prototype.dequeue = Deque.prototype.shift;
+Deque.prototype.toJSON = Deque.prototype.toArray;
+
+Object.defineProperty(Deque.prototype, "length", {
+    get: function() {
+        return this._length;
+    },
+    set: function() {
+        throw new RangeError("");
+    }
+});
+
+Deque.prototype._makeCapacity = function Deque$_makeCapacity() {
+    var len = this._capacity;
+    for (var i = 0; i < len; ++i) {
+        this[i] = void 0;
+    }
+};
+
+Deque.prototype._checkCapacity = function Deque$_checkCapacity(size) {
+    if (this._capacity < size) {
+        this._resizeTo(getCapacity(this._capacity * 1.5 + 16));
+    }
+};
+
+Deque.prototype._resizeTo = function Deque$_resizeTo(capacity) {
+    var oldFront = this._front;
+    var oldCapacity = this._capacity;
+    var oldDeque = new Array(oldCapacity);
+    var length = this._length;
+
+    arrayCopy(this, 0, oldDeque, 0, oldCapacity);
+    this._capacity = capacity;
+    this._makeCapacity();
+    this._front = 0;
+    if (oldFront + length <= oldCapacity) {
+        arrayCopy(oldDeque, oldFront, this, 0, length);
+    } else {        var lengthBeforeWrapping =
+            length - ((oldFront + length) & (oldCapacity - 1));
+
+        arrayCopy(oldDeque, oldFront, this, 0, lengthBeforeWrapping);
+        arrayCopy(oldDeque, 0, this, lengthBeforeWrapping,
+            length - lengthBeforeWrapping);
+    }
+};
+
+
+var isArray = Array.isArray;
+
+function arrayCopy(src, srcIndex, dst, dstIndex, len) {
+    for (var j = 0; j < len; ++j) {
+        dst[j + dstIndex] = src[j + srcIndex];
+    }
+}
+
+function pow2AtLeast(n) {
+    n = n >>> 0;
+    n = n - 1;
+    n = n | (n >> 1);
+    n = n | (n >> 2);
+    n = n | (n >> 4);
+    n = n | (n >> 8);
+    n = n | (n >> 16);
+    return n + 1;
+}
+
+function getCapacity(capacity) {
+    if (typeof capacity !== "number") {
+        if (isArray(capacity)) {
+            capacity = capacity.length;
+        }
+        else {
+            return 16;
+        }
+    }
+    return pow2AtLeast(
+        Math.min(
+            Math.max(16, capacity), 1073741824)
+    );
+}
+
+module.exports = Deque;
+
+},{}],35:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -6896,7 +7486,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],34:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 function addOperation (type, key, value, options) {
   var operation = {
     type: type,
@@ -6936,7 +7526,7 @@ B.write = function (cb) {
 
 module.exports = Batch
 
-},{}],35:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 (function (process){
 var EventEmitter = require('events').EventEmitter
 var next         = process.nextTick
@@ -7029,8 +7619,8 @@ module.exports   = function (_db, options) {
 }
 
 
-}).call(this,require("/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"./batch":34,"./sub":46,"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"events":18,"level-fix-range":36,"level-hooks":38}],36:[function(require,module,exports){
+}).call(this,require("/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
+},{"./batch":36,"./sub":48,"/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":20,"events":19,"level-fix-range":38,"level-hooks":40}],38:[function(require,module,exports){
 var clone = require('clone')
 
 module.exports = 
@@ -7056,7 +7646,7 @@ function fixRange(opts) {
   return opts
 }
 
-},{"clone":37}],37:[function(require,module,exports){
+},{"clone":39}],39:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -7189,7 +7779,7 @@ clone.clonePrototype = function(parent) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":20}],38:[function(require,module,exports){
+},{"buffer":21}],40:[function(require,module,exports){
 var ranges = require('string-range')
 
 module.exports = function (db) {
@@ -7359,7 +7949,7 @@ module.exports = function (db) {
   }
 }
 
-},{"string-range":39}],39:[function(require,module,exports){
+},{"string-range":41}],41:[function(require,module,exports){
 
 //force to a valid range
 var range = exports.range = function (obj) {
@@ -7433,7 +8023,7 @@ var satifies = exports.satisfies = function (key, range) {
 
 
 
-},{}],40:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 module.exports = hasKeys
 
 function hasKeys(source) {
@@ -7442,7 +8032,7 @@ function hasKeys(source) {
         typeof source === "function")
 }
 
-},{}],41:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 var Keys = require("object-keys")
 var hasKeys = require("./has-keys")
 
@@ -7469,11 +8059,11 @@ function extend() {
     return target
 }
 
-},{"./has-keys":40,"object-keys":42}],42:[function(require,module,exports){
+},{"./has-keys":42,"object-keys":44}],44:[function(require,module,exports){
 module.exports = Object.keys || require('./shim');
 
 
-},{"./shim":45}],43:[function(require,module,exports){
+},{"./shim":47}],45:[function(require,module,exports){
 
 var hasOwn = Object.prototype.hasOwnProperty;
 var toString = Object.prototype.toString;
@@ -7497,7 +8087,7 @@ module.exports = function forEach (obj, fn, ctx) {
 };
 
 
-},{}],44:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 
 /**!
  * is
@@ -8201,7 +8791,7 @@ is.string = function (value) {
 };
 
 
-},{}],45:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 (function () {
 	"use strict";
 
@@ -8247,7 +8837,7 @@ is.string = function (value) {
 }());
 
 
-},{"foreach":43,"is":44}],46:[function(require,module,exports){
+},{"foreach":45,"is":46}],48:[function(require,module,exports){
 var EventEmitter = require('events').EventEmitter
 var inherits     = require('util').inherits
 var ranges       = require('string-range')
@@ -8526,7 +9116,7 @@ SDB.post = function (range, hook) {
 var exports = module.exports = SubDB
 
 
-},{"./batch":34,"events":18,"level-fix-range":36,"string-range":39,"util":32,"xtend":41}],47:[function(require,module,exports){
+},{"./batch":36,"events":19,"level-fix-range":38,"string-range":41,"util":33,"xtend":43}],49:[function(require,module,exports){
 /* Copyright (c) 2012-2014 LevelUP contributors
  * See list at <https://github.com/rvagg/node-levelup#contributing>
  * MIT License
@@ -8606,7 +9196,7 @@ Batch.prototype.write = function (callback) {
 
 module.exports = Batch
 
-},{"./errors":48,"./util":51}],48:[function(require,module,exports){
+},{"./errors":50,"./util":53}],50:[function(require,module,exports){
 /* Copyright (c) 2012-2014 LevelUP contributors
  * See list at <https://github.com/rvagg/node-levelup#contributing>
  * MIT License
@@ -8630,7 +9220,7 @@ module.exports = {
   , EncodingError       : createError('EncodingError', LevelUPError)
 }
 
-},{"errno":59}],49:[function(require,module,exports){
+},{"errno":61}],51:[function(require,module,exports){
 (function (process){
 /* Copyright (c) 2012-2014 LevelUP contributors
  * See list at <https://github.com/rvagg/node-levelup#contributing>
@@ -9068,8 +9658,8 @@ module.exports.destroy = utilStatic('destroy')
 // DEPRECATED: prefer accessing LevelDOWN for this: require('leveldown').repair()
 module.exports.repair  = utilStatic('repair')
 
-}).call(this,require("/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"./batch":47,"./errors":48,"./read-stream":50,"./util":51,"./write-stream":52,"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"deferred-leveldown":54,"events":18,"prr":60,"util":32,"xtend":70}],50:[function(require,module,exports){
+}).call(this,require("/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
+},{"./batch":49,"./errors":50,"./read-stream":52,"./util":53,"./write-stream":54,"/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":20,"deferred-leveldown":56,"events":19,"prr":62,"util":33,"xtend":72}],52:[function(require,module,exports){
 /* Copyright (c) 2012-2014 LevelUP contributors
  * See list at <https://github.com/rvagg/node-levelup#contributing>
  * MIT License <https://github.com/rvagg/node-levelup/blob/master/LICENSE.md>
@@ -9197,7 +9787,7 @@ ReadStream.prototype.toString = function () {
 
 module.exports = ReadStream
 
-},{"./errors":48,"./util":51,"readable-stream":69,"util":32,"xtend":70}],51:[function(require,module,exports){
+},{"./errors":50,"./util":53,"readable-stream":71,"util":33,"xtend":72}],53:[function(require,module,exports){
 (function (process,Buffer){
 /* Copyright (c) 2012-2014 LevelUP contributors
  * See list at <https://github.com/rvagg/node-levelup#contributing>
@@ -9382,8 +9972,8 @@ module.exports = {
   , decodeKey       : decodeKey
 }
 
-}).call(this,require("/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),require("buffer").Buffer)
-},{"../package.json":71,"./errors":48,"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"buffer":20,"leveldown":"RQL87X","leveldown/package":17,"semver":17,"xtend":70}],52:[function(require,module,exports){
+}).call(this,require("/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),require("buffer").Buffer)
+},{"../package.json":73,"./errors":50,"/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":20,"buffer":21,"leveldown":"KbJPwE","leveldown/package":18,"semver":18,"xtend":72}],54:[function(require,module,exports){
 (function (process,global){
 /* Copyright (c) 2012-2014 LevelUP contributors
  * See list at <https://github.com/rvagg/node-levelup#contributing>
@@ -9564,8 +10154,8 @@ WriteStream.prototype.toString = function () {
 
 module.exports = WriteStream
 
-}).call(this,require("/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./util":51,"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"bl":53,"stream":24,"util":32,"xtend":70}],53:[function(require,module,exports){
+}).call(this,require("/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./util":53,"/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":20,"bl":55,"stream":25,"util":33,"xtend":72}],55:[function(require,module,exports){
 (function (Buffer){
 var DuplexStream = require('readable-stream').Duplex
   , util         = require('util')
@@ -9782,7 +10372,7 @@ BufferList.prototype.destroy = function () {
 module.exports = BufferList
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":20,"readable-stream":69,"util":32}],54:[function(require,module,exports){
+},{"buffer":21,"readable-stream":71,"util":33}],56:[function(require,module,exports){
 (function (process,Buffer){
 var util              = require('util')
   , AbstractLevelDOWN = require('abstract-leveldown').AbstractLevelDOWN
@@ -9832,8 +10422,8 @@ DeferredLevelDOWN.prototype._iterator = function () {
 
 module.exports = DeferredLevelDOWN
 
-}).call(this,require("/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),require("buffer").Buffer)
-},{"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"abstract-leveldown":57,"buffer":20,"util":32}],55:[function(require,module,exports){
+}).call(this,require("/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),require("buffer").Buffer)
+},{"/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":20,"abstract-leveldown":59,"buffer":21,"util":33}],57:[function(require,module,exports){
 (function (process){
 /* Copyright (c) 2013 Rod Vagg, MIT License */
 
@@ -9916,8 +10506,8 @@ AbstractChainedBatch.prototype.write = function (options, callback) {
 }
 
 module.exports = AbstractChainedBatch
-}).call(this,require("/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19}],56:[function(require,module,exports){
+}).call(this,require("/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
+},{"/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":20}],58:[function(require,module,exports){
 (function (process){
 /* Copyright (c) 2013 Rod Vagg, MIT License */
 
@@ -9969,8 +10559,8 @@ AbstractIterator.prototype.end = function (callback) {
 
 module.exports = AbstractIterator
 
-}).call(this,require("/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19}],57:[function(require,module,exports){
+}).call(this,require("/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
+},{"/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":20}],59:[function(require,module,exports){
 (function (process,Buffer){
 /* Copyright (c) 2013 Rod Vagg, MIT License */
 
@@ -10229,8 +10819,8 @@ module.exports.AbstractLevelDOWN    = AbstractLevelDOWN
 module.exports.AbstractIterator     = AbstractIterator
 module.exports.AbstractChainedBatch = AbstractChainedBatch
 
-}).call(this,require("/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),require("buffer").Buffer)
-},{"./abstract-chained-batch":55,"./abstract-iterator":56,"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"buffer":20,"xtend":70}],58:[function(require,module,exports){
+}).call(this,require("/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),require("buffer").Buffer)
+},{"./abstract-chained-batch":57,"./abstract-iterator":58,"/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":20,"buffer":21,"xtend":72}],60:[function(require,module,exports){
 var prr = require('prr')
 
 function init (type, message, cause) {
@@ -10287,7 +10877,7 @@ module.exports = function (errno) {
   }
 }
 
-},{"prr":60}],59:[function(require,module,exports){
+},{"prr":62}],61:[function(require,module,exports){
 var all = module.exports.all = [
  {
   "errno": -1,
@@ -10715,7 +11305,7 @@ module.exports.code = {
 
 module.exports.custom = require("./custom")(module.exports)
 module.exports.create = module.exports.custom.createError
-},{"./custom":58}],60:[function(require,module,exports){
+},{"./custom":60}],62:[function(require,module,exports){
 /*!
   * prr
   * (c) 2013 Rod Vagg <rod@vagg.org>
@@ -10779,7 +11369,7 @@ module.exports.create = module.exports.custom.createError
 
   return prr
 })
-},{}],61:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -10871,8 +11461,8 @@ function forEach (xs, f) {
   }
 }
 
-}).call(this,require("/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"./_stream_readable":63,"./_stream_writable":65,"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"core-util-is":66,"inherits":33}],62:[function(require,module,exports){
+}).call(this,require("/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
+},{"./_stream_readable":65,"./_stream_writable":67,"/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":20,"core-util-is":68,"inherits":35}],64:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -10920,7 +11510,7 @@ PassThrough.prototype._transform = function(chunk, encoding, cb) {
   cb(null, chunk);
 };
 
-},{"./_stream_transform":64,"core-util-is":66,"inherits":33}],63:[function(require,module,exports){
+},{"./_stream_transform":66,"core-util-is":68,"inherits":35}],65:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -11905,8 +12495,8 @@ function indexOf (xs, x) {
   return -1;
 }
 
-}).call(this,require("/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"buffer":20,"core-util-is":66,"events":18,"inherits":33,"isarray":67,"stream":24,"string_decoder/":68}],64:[function(require,module,exports){
+}).call(this,require("/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
+},{"/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":20,"buffer":21,"core-util-is":68,"events":19,"inherits":35,"isarray":69,"stream":25,"string_decoder/":70}],66:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -12118,7 +12708,7 @@ function done(stream, er) {
   return stream.push(null);
 }
 
-},{"./_stream_duplex":61,"core-util-is":66,"inherits":33}],65:[function(require,module,exports){
+},{"./_stream_duplex":63,"core-util-is":68,"inherits":35}],67:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -12507,8 +13097,8 @@ function endWritable(stream, state, cb) {
   state.ended = true;
 }
 
-}).call(this,require("/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"./_stream_duplex":61,"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"buffer":20,"core-util-is":66,"inherits":33,"stream":24}],66:[function(require,module,exports){
+}).call(this,require("/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
+},{"./_stream_duplex":63,"/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":20,"buffer":21,"core-util-is":68,"inherits":35,"stream":25}],68:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -12618,12 +13208,12 @@ function objectToString(o) {
   return Object.prototype.toString.call(o);
 }
 }).call(this,require("buffer").Buffer)
-},{"buffer":20}],67:[function(require,module,exports){
+},{"buffer":21}],69:[function(require,module,exports){
 module.exports = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
-},{}],68:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -12846,15 +13436,17 @@ function base64DetectIncompleteChar(buffer) {
   this.charLength = this.charReceived ? 3 : 0;
 }
 
-},{"buffer":20}],69:[function(require,module,exports){
+},{"buffer":21}],71:[function(require,module,exports){
+var Stream = require('stream'); // hack to fix a circular dependency issue when used with browserify
 exports = module.exports = require('./lib/_stream_readable.js');
+exports.Stream = Stream;
 exports.Readable = exports;
 exports.Writable = require('./lib/_stream_writable.js');
 exports.Duplex = require('./lib/_stream_duplex.js');
 exports.Transform = require('./lib/_stream_transform.js');
 exports.PassThrough = require('./lib/_stream_passthrough.js');
 
-},{"./lib/_stream_duplex.js":61,"./lib/_stream_passthrough.js":62,"./lib/_stream_readable.js":63,"./lib/_stream_transform.js":64,"./lib/_stream_writable.js":65}],70:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":63,"./lib/_stream_passthrough.js":64,"./lib/_stream_readable.js":65,"./lib/_stream_transform.js":66,"./lib/_stream_writable.js":67,"stream":25}],72:[function(require,module,exports){
 module.exports = extend
 
 function extend() {
@@ -12873,7 +13465,7 @@ function extend() {
     return target
 }
 
-},{}],71:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 module.exports={
   "name": "levelup",
   "description": "Fast & simple storage - a Node.js-style LevelDB wrapper",
@@ -12998,39 +13590,22 @@ module.exports={
     "alltests": "npm test && npm run-script functionaltests"
   },
   "license": "MIT",
-  "gitHead": "213e989e2b75273e2b44c23f84f95e35bff7ea11",
+  "readme": "LevelUP\n=======\n\n![LevelDB Logo](https://0.gravatar.com/avatar/a498b122aecb7678490a38bb593cc12d)\n\n**Fast & simple storage - a Node.js-style LevelDB wrapper**\n\n[![Build Status](https://secure.travis-ci.org/rvagg/node-levelup.png)](http://travis-ci.org/rvagg/node-levelup)\n\n[![NPM](https://nodei.co/npm/levelup.png?stars&downloads)](https://nodei.co/npm/levelup/) [![NPM](https://nodei.co/npm-dl/levelup.png)](https://nodei.co/npm/levelup/)\n\n\n  * <a href=\"#intro\">Introduction</a>\n  * <a href=\"#leveldown\">Relationship to LevelDOWN</a>\n  * <a href=\"#platforms\">Tested &amp; supported platforms</a>\n  * <a href=\"#basic\">Basic usage</a>\n  * <a href=\"#api\">API</a>\n  * <a href=\"#events\">Events</a>\n  * <a href=\"#json\">JSON data</a>\n  * <a href=\"#custom_encodings\">Custom encodings</a>\n  * <a href=\"#extending\">Extending LevelUP</a>\n  * <a href=\"#multiproc\">Multi-process access</a>\n  * <a href=\"#support\">Getting support</a>\n  * <a href=\"#contributing\">Contributing</a>\n  * <a href=\"#licence\">Licence &amp; copyright</a>\n\n<a name=\"intro\"></a>\nIntroduction\n------------\n\n**[LevelDB](http://code.google.com/p/leveldb/)** is a simple key/value data store built by Google, inspired by BigTable. It's used in Google Chrome and many other products. LevelDB supports arbitrary byte arrays as both keys and values, singular *get*, *put* and *delete* operations, *batched put and delete*, bi-directional iterators and simple compression using the very fast [Snappy](http://code.google.com/p/snappy/) algorithm.\n\n**LevelUP** aims to expose the features of LevelDB in a **Node.js-friendly way**. All standard `Buffer` encoding types are supported, as is a special JSON encoding. LevelDB's iterators are exposed as a Node.js-style **readable stream** a matching **writeable stream** converts writes to *batch* operations.\n\nLevelDB stores entries **sorted lexicographically by keys**. This makes LevelUP's <a href=\"#createReadStream\"><code>ReadStream</code></a> interface a very powerful query mechanism.\n\n**LevelUP** is an **OPEN Open Source Project**, see the <a href=\"#contributing\">Contributing</a> section to find out what this means.\n\n<a name=\"leveldown\"></a>\nRelationship to LevelDOWN\n-------------------------\n\nLevelUP is designed to be backed by **[LevelDOWN](https://github.com/rvagg/node-leveldown/)** which provides a pure C++ binding to LevelDB and can be used as a stand-alone package if required.\n\n**As of version 0.9, LevelUP no longer requires LevelDOWN as a dependency so you must `npm install leveldown` when you install LevelUP.**\n\nLevelDOWN is now optional because LevelUP can be used with alternative backends, such as **[level.js](https://github.com/maxogden/level.js)** in the browser or [MemDOWN](https://github.com/rvagg/node-memdown) for a pure in-memory store.\n\nLevelUP will look for LevelDOWN and throw an error if it can't find it in its Node `require()` path. It will also tell you if the installed version of LevelDOWN is incompatible.\n\n**The [level](https://github.com/level/level) package is available as an alternative installation mechanism.** Install it instead to automatically get both LevelUP & LevelDOWN. It exposes LevelUP on its export (i.e. you can `var leveldb = require('level')`).\n\n\n<a name=\"platforms\"></a>\nTested & supported platforms\n----------------------------\n\n  * **Linux**: including ARM platforms such as Raspberry Pi *and Kindle!*\n  * **Mac OS**\n  * **Solaris**: including Joyent's SmartOS & Nodejitsu\n  * **Windows**: Node 0.10 and above only. See installation instructions for *node-gyp's* dependencies [here](https://github.com/TooTallNate/node-gyp#installation), you'll need these (free) components from Microsoft to compile and run any native Node add-on in Windows.\n\n<a name=\"basic\"></a>\nBasic usage\n-----------\n\nFirst you need to install LevelUP!\n\n```sh\n$ npm install levelup leveldown\n```\n\nOr\n\n```sh\n$ npm install level\n```\n\n*(this second option requires you to use LevelUP by calling `var levelup = require('level')`)*\n\n\nAll operations are asynchronous although they don't necessarily require a callback if you don't need to know when the operation was performed.\n\n```js\nvar levelup = require('levelup')\n\n// 1) Create our database, supply location and options.\n//    This will create or open the underlying LevelDB store.\nvar db = levelup('./mydb')\n\n// 2) put a key & value\ndb.put('name', 'LevelUP', function (err) {\n  if (err) return console.log('Ooops!', err) // some kind of I/O error\n\n  // 3) fetch by key\n  db.get('name', function (err, value) {\n    if (err) return console.log('Ooops!', err) // likely the key was not found\n\n    // ta da!\n    console.log('name=' + value)\n  })\n})\n```\n\n<a name=\"api\"></a>\n## API\n\n  * <a href=\"#ctor\"><code><b>levelup()</b></code></a>\n  * <a href=\"#open\"><code>db.<b>open()</b></code></a>\n  * <a href=\"#close\"><code>db.<b>close()</b></code></a>\n  * <a href=\"#put\"><code>db.<b>put()</b></code></a>\n  * <a href=\"#get\"><code>db.<b>get()</b></code></a>\n  * <a href=\"#del\"><code>db.<b>del()</b></code></a>\n  * <a href=\"#batch\"><code>db.<b>batch()</b></code> *(array form)*</a>\n  * <a href=\"#batch_chained\"><code>db.<b>batch()</b></code> *(chained form)*</a>\n  * <a href=\"#isOpen\"><code>db.<b>isOpen()</b></code></a>\n  * <a href=\"#isClosed\"><code>db.<b>isClosed()</b></code></a>\n  * <a href=\"#createReadStream\"><code>db.<b>createReadStream()</b></code></a>\n  * <a href=\"#createKeyStream\"><code>db.<b>createKeyStream()</b></code></a>\n  * <a href=\"#createValueStream\"><code>db.<b>createValueStream()</b></code></a>\n  * <a href=\"#createWriteStream\"><code>db.<b>createWriteStream()</b></code></a>\n\n### Special operations exposed by LevelDOWN\n\n  * <a href=\"#approximateSize\"><code>db.db.<b>approximateSize()</b></code></a>\n  * <a href=\"#getProperty\"><code>db.db.<b>getProperty()</b></code></a>\n  * <a href=\"#destroy\"><code><b>leveldown.destroy()</b></code></a>\n  * <a href=\"#repair\"><code><b>leveldown.repair()</b></code></a>\n\n\n--------------------------------------------------------\n<a name=\"ctor\"></a>\n### levelup(location[, options[, callback]])\n### levelup(options[, callback ])\n### levelup(db[, callback ])\n<code>levelup()</code> is the main entry point for creating a new LevelUP instance and opening the underlying store with LevelDB.\n\nThis function returns a new instance of LevelUP and will also initiate an <a href=\"#open\"><code>open()</code></a> operation. Opening the database is an asynchronous operation which will trigger your callback if you provide one. The callback should take the form: `function (err, db) {}` where the `db` is the LevelUP instance. If you don't provide a callback, any read & write operations are simply queued internally until the database is fully opened.\n\nThis leads to two alternative ways of managing a new LevelUP instance:\n\n```js\nlevelup(location, options, function (err, db) {\n  if (err) throw err\n  db.get('foo', function (err, value) {\n    if (err) return console.log('foo does not exist')\n    console.log('got foo =', value)\n  })\n})\n\n// vs the equivalent:\n\nvar db = levelup(location, options) // will throw if an error occurs\ndb.get('foo', function (err, value) {\n  if (err) return console.log('foo does not exist')\n  console.log('got foo =', value)\n})\n```\n\nThe `location` argument is available as a read-only property on the returned LevelUP instance.\n\nThe `levelup(options, callback)` form (with optional `callback`) is only available where you provide a valid `'db'` property on the options object (see below). Only for back-ends that don't require a `location` argument, such as [MemDOWN](https://github.com/rvagg/memdown).\n\nFor example:\n\n```js\nvar levelup = require('levelup')\nvar memdown = require('memdown')\nvar db = levelup({ db: memdown })\n```\n\nThe `levelup(db, callback)` form (with optional `callback`) is only available where `db` is a factory function, as would be provided as a `'db'` property on an `options` object (see below). Only for back-ends that don't require a `location` argument, such as [MemDOWN](https://github.com/rvagg/memdown).\n\nFor example:\n\n```js\nvar levelup = require('levelup')\nvar memdown = require('memdown')\nvar db = levelup(memdown)\n```\n\n#### `options`\n\n`levelup()` takes an optional options object as its second argument; the following properties are accepted:\n\n* `'createIfMissing'` *(boolean, default: `true`)*: If `true`, will initialise an empty database at the specified location if one doesn't already exist. If `false` and a database doesn't exist you will receive an error in your `open()` callback and your database won't open.\n\n* `'errorIfExists'` *(boolean, default: `false`)*: If `true`, you will receive an error in your `open()` callback if the database exists at the specified location.\n\n* `'compression'` *(boolean, default: `true`)*: If `true`, all *compressible* data will be run through the Snappy compression algorithm before being stored. Snappy is very fast and shouldn't gain much speed by disabling so leave this on unless you have good reason to turn it off.\n\n* `'cacheSize'` *(number, default: `8 * 1024 * 1024`)*: The size (in bytes) of the in-memory [LRU](http://en.wikipedia.org/wiki/Cache_algorithms#Least_Recently_Used) cache with frequently used uncompressed block contents. \n\n* `'keyEncoding'` and `'valueEncoding'` *(string, default: `'utf8'`)*: The encoding of the keys and values passed through Node.js' `Buffer` implementation (see [Buffer#toString()](http://nodejs.org/docs/latest/api/buffer.html#buffer_buf_tostring_encoding_start_end)).\n  <p><code>'utf8'</code> is the default encoding for both keys and values so you can simply pass in strings and expect strings from your <code>get()</code> operations. You can also pass <code>Buffer</code> objects as keys and/or values and conversion will be performed.</p>\n  <p>Supported encodings are: hex, utf8, ascii, binary, base64, ucs2, utf16le.</p>\n  <p><code>'json'</code> encoding is also supported, see below.</p>\n\n* `'db'` *(object, default: LevelDOWN)*: LevelUP is backed by [LevelDOWN](https://github.com/rvagg/node-leveldown/) to provide an interface to LevelDB. You can completely replace the use of LevelDOWN by providing a \"factory\" function that will return a LevelDOWN API compatible object given a `location` argument. For further information, see [MemDOWN](https://github.com/rvagg/node-memdown/), a fully LevelDOWN API compatible replacement that uses a memory store rather than LevelDB. Also see [Abstract LevelDOWN](http://github.com/rvagg/node-abstract-leveldown), a partial implementation of the LevelDOWN API that can be used as a base prototype for a LevelDOWN substitute.\n\nAdditionally, each of the main interface methods accept an optional options object that can be used to override `'keyEncoding'` and `'valueEncoding'`.\n\n--------------------------------------------------------\n<a name=\"open\"></a>\n### db.open([callback])\n<code>open()</code> opens the underlying LevelDB store. In general **you should never need to call this method directly** as it's automatically called by <a href=\"#ctor\"><code>levelup()</code></a>.\n\nHowever, it is possible to *reopen* a database after it has been closed with <a href=\"#close\"><code>close()</code></a>, although this is not generally advised.\n\n--------------------------------------------------------\n<a name=\"close\"></a>\n### db.close([callback])\n<code>close()</code> closes the underlying LevelDB store. The callback will receive any error encountered during closing as the first argument.\n\nYou should always clean up your LevelUP instance by calling `close()` when you no longer need it to free up resources. A LevelDB store cannot be opened by multiple instances of LevelDB/LevelUP simultaneously.\n\n--------------------------------------------------------\n<a name=\"put\"></a>\n### db.put(key, value[, options][, callback])\n<code>put()</code> is the primary method for inserting data into the store. Both the `key` and `value` can be arbitrary data objects.\n\nThe callback argument is optional but if you don't provide one and an error occurs then expect the error to be thrown.\n\n#### `options`\n\nEncoding of the `key` and `value` objects will adhere to `'keyEncoding'` and `'valueEncoding'` options provided to <a href=\"#ctor\"><code>levelup()</code></a>, although you can provide alternative encoding settings in the options for `put()` (it's recommended that you stay consistent in your encoding of keys and values in a single store).\n\nIf you provide a `'sync'` value of `true` in your `options` object, LevelDB will perform a synchronous write of the data; although the operation will be asynchronous as far as Node is concerned. Normally, LevelDB passes the data to the operating system for writing and returns immediately, however a synchronous write will use `fsync()` or equivalent so your callback won't be triggered until the data is actually on disk. Synchronous filesystem writes are **significantly** slower than asynchronous writes but if you want to be absolutely sure that the data is flushed then you can use `'sync': true`.\n\n--------------------------------------------------------\n<a name=\"get\"></a>\n### db.get(key[, options][, callback])\n<code>get()</code> is the primary method for fetching data from the store. The `key` can be an arbitrary data object. If it doesn't exist in the store then the callback will receive an error as its first argument. A not-found err object will be of type `'NotFoundError'` so you can `err.type == 'NotFoundError'` or you can perform a truthy test on the property `err.notFound`.\n\n```js\ndb.get('foo', function (err, value) {\n  if (err) {\n    if (err.notFound) {\n      // handle a 'NotFoundError' here\n      return\n    }\n    // I/O or other error, pass it up the callback chain\n    return callback(err)\n  }\n\n  // .. handle `value` here\n})\n```\n\n#### `options`\n\nEncoding of the `key` object will adhere to the `'keyEncoding'` option provided to <a href=\"#ctor\"><code>levelup()</code></a>, although you can provide alternative encoding settings in the options for `get()` (it's recommended that you stay consistent in your encoding of keys and values in a single store).\n\nLevelDB will by default fill the in-memory LRU Cache with data from a call to get. Disabling this is done by setting `fillCache` to `false`. \n\n--------------------------------------------------------\n<a name=\"del\"></a>\n### db.del(key[, options][, callback])\n<code>del()</code> is the primary method for removing data from the store.\n\n#### `options`\n\nEncoding of the `key` object will adhere to the `'keyEncoding'` option provided to <a href=\"#ctor\"><code>levelup()</code></a>, although you can provide alternative encoding settings in the options for `del()` (it's recommended that you stay consistent in your encoding of keys and values in a single store).\n\nA `'sync'` option can also be passed, see <a href=\"#put\"><code>put()</code></a> for details on how this works.\n\n--------------------------------------------------------\n<a name=\"batch\"></a>\n### db.batch(array[, options][, callback]) *(array form)*\n<code>batch()</code> can be used for very fast bulk-write operations (both *put* and *delete*). The `array` argument should contain a list of operations to be executed sequentially, although as a whole they are performed as an atomic operation inside LevelDB. Each operation is contained in an object having the following properties: `type`, `key`, `value`, where the *type* is either `'put'` or `'del'`. In the case of `'del'` the `'value'` property is ignored. Any entries with a `'key'` of `null` or `undefined` will cause an error to be returned on the `callback` and any `'type': 'put'` entry with a `'value'` of `null` or `undefined` will return an error.\n\n```js\nvar ops = [\n    { type: 'del', key: 'father' }\n  , { type: 'put', key: 'name', value: 'Yuri Irsenovich Kim' }\n  , { type: 'put', key: 'dob', value: '16 February 1941' }\n  , { type: 'put', key: 'spouse', value: 'Kim Young-sook' }\n  , { type: 'put', key: 'occupation', value: 'Clown' }\n]\n\ndb.batch(ops, function (err) {\n  if (err) return console.log('Ooops!', err)\n  console.log('Great success dear leader!')\n})\n```\n\n#### `options`\n\nSee <a href=\"#put\"><code>put()</code></a> for a discussion on the `options` object. You can overwrite default `'keyEncoding'` and `'valueEncoding'` and also specify the use of `sync` filesystem operations.\n\nIn addition to encoding options for the whole batch you can also overwrite the encoding per operation, like:\n\n```js\nvar ops = [{\n    type          : 'put'\n  , key           : new Buffer([1, 2, 3])\n  , value         : { some: 'json' }\n  , keyEncoding   : 'binary'\n  , valueEncoding : 'json'\n}]\n```\n\n--------------------------------------------------------\n<a name=\"batch_chained\"></a>\n### db.batch() *(chained form)*\n<code>batch()</code>, when called with no arguments will return a `Batch` object which can be used to build, and eventually commit, an atomic LevelDB batch operation. Depending on how it's used, it is possible to obtain greater performance when using the chained form of `batch()` over the array form.\n\n```js\ndb.batch()\n  .del('father')\n  .put('name', 'Yuri Irsenovich Kim')\n  .put('dob', '16 February 1941')\n  .put('spouse', 'Kim Young-sook')\n  .put('occupation', 'Clown')\n  .write(function () { console.log('Done!') })\n```\n\n<b><code>batch.put(key, value[, options])</code></b>\n\nQueue a *put* operation on the current batch, not committed until a `write()` is called on the batch.\n\nThe optional `options` argument can be used to override the default `'keyEncoding'` and/or `'valueEncoding'`.\n\nThis method may `throw` a `WriteError` if there is a problem with your put (such as the `value` being `null` or `undefined`).\n\n<b><code>batch.del(key[, options])</code></b>\n\nQueue a *del* operation on the current batch, not committed until a `write()` is called on the batch.\n\nThe optional `options` argument can be used to override the default `'keyEncoding'`.\n\nThis method may `throw` a `WriteError` if there is a problem with your delete.\n\n<b><code>batch.clear()</code></b>\n\nClear all queued operations on the current batch, any previous operations will be discarded.\n\n<b><code>batch.write([callback])</code></b>\n\nCommit the queued operations for this batch. All operations not *cleared* will be written to the database atomically, that is, they will either all succeed or fail with no partial commits. The optional `callback` will be called when the operation has completed with an *error* argument if an error has occurred; if no `callback` is supplied and an error occurs then this method will `throw` a `WriteError`.\n\n\n--------------------------------------------------------\n<a name=\"isOpen\"></a>\n### db.isOpen()\n\nA LevelUP object can be in one of the following states:\n\n  * *\"new\"*     - newly created, not opened or closed\n  * *\"opening\"* - waiting for the database to be opened\n  * *\"open\"*    - successfully opened the database, available for use\n  * *\"closing\"* - waiting for the database to be closed\n  * *\"closed\"*  - database has been successfully closed, should not be used\n\n`isOpen()` will return `true` only when the state is \"open\".\n\n--------------------------------------------------------\n<a name=\"isClosed\"></a>\n### db.isClosed()\n\n*See <a href=\"#put\"><code>isOpen()</code></a>*\n\n`isClosed()` will return `true` only when the state is \"closing\" *or* \"closed\", it can be useful for determining if read and write operations are permissible.\n\n--------------------------------------------------------\n<a name=\"createReadStream\"></a>\n### db.createReadStream([options])\n\nYou can obtain a **ReadStream** of the full database by calling the `createReadStream()` method. The resulting stream is a complete Node.js-style [Readable Stream](http://nodejs.org/docs/latest/api/stream.html#stream_readable_stream) where `'data'` events emit objects with `'key'` and `'value'` pairs. You can also use the `start`, `end` and `limit` options to control the range of keys that are streamed.\n\n```js\ndb.createReadStream()\n  .on('data', function (data) {\n    console.log(data.key, '=', data.value)\n  })\n  .on('error', function (err) {\n    console.log('Oh my!', err)\n  })\n  .on('close', function () {\n    console.log('Stream closed')\n  })\n  .on('end', function () {\n    console.log('Stream closed')\n  })\n```\n\nThe standard `pause()`, `resume()` and `destroy()` methods are implemented on the ReadStream, as is `pipe()` (see below). `'data'`, '`error'`, `'end'` and `'close'` events are emitted.\n\nAdditionally, you can supply an options object as the first parameter to `createReadStream()` with the following options:\n\n* `'start'`: the key you wish to start the read at. By default it will start at the beginning of the store. Note that the *start* doesn't have to be an actual key that exists, LevelDB will simply find the *next* key, greater than the key you provide.\n\n* `'end'`: the key you wish to end the read on. By default it will continue until the end of the store. Again, the *end* doesn't have to be an actual key as an (inclusive) `<=`-type operation is performed to detect the end. You can also use the `destroy()` method instead of supplying an `'end'` parameter to achieve the same effect.\n\n* `'reverse'` *(boolean, default: `false`)*: a boolean, set to true if you want the stream to go in reverse order. Beware that due to the way LevelDB works, a reverse seek will be slower than a forward seek.\n\n* `'keys'` *(boolean, default: `true`)*: whether the `'data'` event should contain keys. If set to `true` and `'values'` set to `false` then `'data'` events will simply be keys, rather than objects with a `'key'` property. Used internally by the `createKeyStream()` method.\n\n* `'values'` *(boolean, default: `true`)*: whether the `'data'` event should contain values. If set to `true` and `'keys'` set to `false` then `'data'` events will simply be values, rather than objects with a `'value'` property. Used internally by the `createValueStream()` method.\n\n* `'limit'` *(number, default: `-1`)*: limit the number of results collected by this stream. This number represents a *maximum* number of results and may not be reached if you get to the end of the store or your `'end'` value first. A value of `-1` means there is no limit.\n\n* `'fillCache'` *(boolean, default: `false`)*: wheather LevelDB's LRU-cache should be filled with data read.\n\n* `'keyEncoding'` / `'valueEncoding'` *(string)*: the encoding applied to each read piece of data.\n\n--------------------------------------------------------\n<a name=\"createKeyStream\"></a>\n### db.createKeyStream([options])\n\nA **KeyStream** is a **ReadStream** where the `'data'` events are simply the keys from the database so it can be used like a traditional stream rather than an object stream.\n\nYou can obtain a KeyStream either by calling the `createKeyStream()` method on a LevelUP object or by passing passing an options object to `createReadStream()` with `keys` set to `true` and `values` set to `false`.\n\n```js\ndb.createKeyStream()\n  .on('data', function (data) {\n    console.log('key=', data)\n  })\n\n// same as:\ndb.createReadStream({ keys: true, values: false })\n  .on('data', function (data) {\n    console.log('key=', data)\n  })\n```\n\n--------------------------------------------------------\n<a name=\"createValueStream\"></a>\n### db.createValueStream([options])\n\nA **ValueStream** is a **ReadStream** where the `'data'` events are simply the values from the database so it can be used like a traditional stream rather than an object stream.\n\nYou can obtain a ValueStream either by calling the `createValueStream()` method on a LevelUP object or by passing passing an options object to `createReadStream()` with `values` set to `true` and `keys` set to `false`.\n\n```js\ndb.createValueStream()\n  .on('data', function (data) {\n    console.log('value=', data)\n  })\n\n// same as:\ndb.createReadStream({ keys: false, values: true })\n  .on('data', function (data) {\n    console.log('value=', data)\n  })\n```\n\n--------------------------------------------------------\n<a name=\"createWriteStream\"></a>\n### db.createWriteStream([options])\n\nA **WriteStream** can be obtained by calling the `createWriteStream()` method. The resulting stream is a complete Node.js-style [Writable Stream](http://nodejs.org/docs/latest/api/stream.html#stream_writable_stream) which accepts objects with `'key'` and `'value'` pairs on its `write()` method.\n\nThe WriteStream will buffer writes and submit them as a `batch()` operations where writes occur *within the same tick*.\n\n```js\nvar ws = db.createWriteStream()\n\nws.on('error', function (err) {\n  console.log('Oh my!', err)\n})\nws.on('close', function () {\n  console.log('Stream closed')\n})\n\nws.write({ key: 'name', value: 'Yuri Irsenovich Kim' })\nws.write({ key: 'dob', value: '16 February 1941' })\nws.write({ key: 'spouse', value: 'Kim Young-sook' })\nws.write({ key: 'occupation', value: 'Clown' })\nws.end()\n```\n\nThe standard `write()`, `end()`, `destroy()` and `destroySoon()` methods are implemented on the WriteStream. `'drain'`, `'error'`, `'close'` and `'pipe'` events are emitted.\n\nYou can specify encodings both for the whole stream and individual entries:\n\nTo set the encoding for the whole stream, provide an options object as the first parameter to `createWriteStream()` with `'keyEncoding'` and/or `'valueEncoding'`.\n\nTo set the encoding for an individual entry:\n\n```js\nwriteStream.write({\n    key           : new Buffer([1, 2, 3])\n  , value         : { some: 'json' }\n  , keyEncoding   : 'binary'\n  , valueEncoding : 'json'\n})\n```\n\n#### write({ type: 'put' })\n\nIf individual `write()` operations are performed with a `'type'` property of `'del'`, they will be passed on as `'del'` operations to the batch.\n\n```js\nvar ws = db.createWriteStream()\n\nws.on('error', function (err) {\n  console.log('Oh my!', err)\n})\nws.on('close', function () {\n  console.log('Stream closed')\n})\n\nws.write({ type: 'del', key: 'name' })\nws.write({ type: 'del', key: 'dob' })\nws.write({ type: 'put', key: 'spouse' })\nws.write({ type: 'del', key: 'occupation' })\nws.end()\n```\n\n#### db.createWriteStream({ type: 'del' })\n\nIf the *WriteStream* is created with a `'type'` option of `'del'`, all `write()` operations will be interpreted as `'del'`, unless explicitly specified as `'put'`.\n\n```js\nvar ws = db.createWriteStream({ type: 'del' })\n\nws.on('error', function (err) {\n  console.log('Oh my!', err)\n})\nws.on('close', function () {\n  console.log('Stream closed')\n})\n\nws.write({ key: 'name' })\nws.write({ key: 'dob' })\n// but it can be overridden\nws.write({ type: 'put', key: 'spouse', value: 'Ri Sol-ju' })\nws.write({ key: 'occupation' })\nws.end()\n```\n\n#### Pipes and Node Stream compatibility\n\nA ReadStream can be piped directly to a WriteStream, allowing for easy copying of an entire database. A simple `copy()` operation is included in LevelUP that performs exactly this on two open databases:\n\n```js\nfunction copy (srcdb, dstdb, callback) {\n  srcdb.createReadStream().pipe(dstdb.createWriteStream()).on('close', callback)\n}\n```\n\nThe ReadStream is also [fstream](https://github.com/isaacs/fstream)-compatible which means you should be able to pipe to and from fstreams. So you can serialize and deserialize an entire database to a directory where keys are filenames and values are their contents, or even into a *tar* file using [node-tar](https://github.com/isaacs/node-tar). See the [fstream functional test](https://github.com/rvagg/node-levelup/blob/master/test/functional/fstream-test.js) for an example. *(Note: I'm not really sure there's a great use-case for this but it's a fun example and it helps to harden the stream implementations.)*\n\nKeyStreams and ValueStreams can be treated like standard streams of raw data. If `'keyEncoding'` or `'valueEncoding'` is set to `'binary'` the `'data'` events will simply be standard Node `Buffer` objects straight out of the data store.\n\n\n--------------------------------------------------------\n<a name='approximateSize'></a>\n### db.db.approximateSize(start, end, callback)\n<code>approximateSize()</code> can used to get the approximate number of bytes of file system space used by the range `[start..end)`. The result may not include recently written data.\n\n```js\nvar db = require('level')('./huge.db')\n\ndb.db.approximateSize('a', 'c', function (err, size) {\n  if (err) return console.error('Ooops!', err)\n  console.log('Approximate size of range is %d', size)\n})\n```\n\n**Note:** `approximateSize()` is available via [LevelDOWN](https://github.com/rvagg/node-leveldown/), which by default is accessible as the `db` property of your LevelUP instance. This is a specific LevelDB operation and is not likely to be available where you replace LevelDOWN with an alternative back-end via the `'db'` option.\n\n\n--------------------------------------------------------\n<a name='getProperty'></a>\n### db.db.getProperty(property)\n<code>getProperty</code> can be used to get internal details from LevelDB. When issued with a valid property string, a readable string will be returned (this method is synchronous).\n\nCurrently, the only valid properties are:\n\n* <b><code>'leveldb.num-files-at-levelN'</code></b>: returns the number of files at level *N*, where N is an integer representing a valid level (e.g. \"0\").\n\n* <b><code>'leveldb.stats'</code></b>: returns a multi-line string describing statistics about LevelDB's internal operation.\n\n* <b><code>'leveldb.sstables'</code></b>: returns a multi-line string describing all of the *sstables* that make up contents of the current database.\n\n\n```js\nvar db = require('level')('./huge.db')\nconsole.log(db.db.getProperty('leveldb.num-files-at-level3'))\n// → '243'\n```\n\n**Note:** `getProperty()` is available via [LevelDOWN](https://github.com/rvagg/node-leveldown/), which by default is accessible as the `db` property of your LevelUP instance. This is a specific LevelDB operation and is not likely to be available where you replace LevelDOWN with an alternative back-end via the `'db'` option.\n\n\n--------------------------------------------------------\n<a name=\"destroy\"></a>\n### leveldown.destroy(location, callback)\n<code>destroy()</code> is used to completely remove an existing LevelDB database directory. You can use this function in place of a full directory *rm* if you want to be sure to only remove LevelDB-related files. If the directory only contains LevelDB files, the directory itself will be removed as well. If there are additional, non-LevelDB files in the directory, those files, and the directory, will be left alone.\n\nThe callback will be called when the destroy operation is complete, with a possible `error` argument.\n\n**Note:** `destroy()` is available via [LevelDOWN](https://github.com/rvagg/node-leveldown/) which you will have to install seperately, e.g.:\n\n```js\nrequire('leveldown').destroy('./huge.db', function (err) { console.log('done!') })\n```\n\n--------------------------------------------------------\n<a name=\"repair\"></a>\n### leveldown.repair(location, callback)\n<code>repair()</code> can be used to attempt a restoration of a damaged LevelDB store. From the LevelDB documentation:\n\n> If a DB cannot be opened, you may attempt to call this method to resurrect as much of the contents of the database as possible. Some data may be lost, so be careful when calling this function on a database that contains important information.\n\nYou will find information on the *repair* operation in the *LOG* file inside the store directory. \n\nA `repair()` can also be used to perform a compaction of the LevelDB log into table files.\n\nThe callback will be called when the repair operation is complete, with a possible `error` argument.\n\n**Note:** `repair()` is available via [LevelDOWN](https://github.com/rvagg/node-leveldown/) which you will have to install seperately, e.g.:\n\n```js\nrequire('leveldown').repair('./huge.db', function (err) { console.log('done!') })\n```\n\n--------------------------------------------------------\n\n<a name=\"events\"></a>\nEvents\n------\n\nLevelUP emits events when the callbacks to the corresponding methods are called.\n\n* `db.emit('put', key, value)` emitted when a new value is `'put'`\n* `db.emit('del', key)` emitted when a value is deleted\n* `db.emit('batch', ary)` emitted when a batch operation has executed\n* `db.emit('ready')` emitted when the database has opened (`'open'` is synonym)\n* `db.emit('closed')` emitted when the database has closed\n* `db.emit('opening')` emitted when the database is opening\n* `db.emit('closing')` emitted when the database is closing\n\nIf you do not pass a callback to an async function, and there is an error, LevelUP will `emit('error', err)` instead.\n\n<a name=\"json\"></a>\nJSON data\n---------\n\nYou specify `'json'` encoding for both keys and/or values, you can then supply JavaScript objects to LevelUP and receive them from all fetch operations, including ReadStreams. LevelUP will automatically *stringify* your objects and store them as *utf8* and parse the strings back into objects before passing them back to you.\n\n<a name=\"custom_encodings\"></a>\nCustom encodings\n----------------\n\nA custom encoding may be provided by passing in an object as an value for `keyEncoding` or `valueEncoding` (wherever accepted), it must have the following properties:\n\n```js\n{\n    encode : function (val) { ... }\n  , decode : function (val) { ... }\n  , buffer : boolean // encode returns a buffer-like and decode accepts a buffer\n  , type   : String  // name of this encoding type.\n}\n```\n\n*\"buffer-like\"* means either a `Buffer` if running in Node, or a Uint8Array if in a browser. Use [bops](https://github.com/chrisdickinson/bops) to get portable binary operations.\n\n<a name=\"extending\"></a>\nExtending LevelUP\n-----------------\n\nA list of <a href=\"https://github.com/rvagg/node-levelup/wiki/Modules\"><b>Node.js LevelDB modules and projects</b></a> can be found in the wiki.\n\nWhen attempting to extend the functionality of LevelUP, it is recommended that you consider using [level-hooks](https://github.com/dominictarr/level-hooks) and/or [level-sublevel](https://github.com/dominictarr/level-sublevel). **level-sublevel** is particularly helpful for keeping additional, extension-specific, data in a LevelDB store. It allows you to partition a LevelUP instance into multiple sub-instances that each correspond to discrete namespaced key ranges.\n\n<a name=\"multiproc\"></a>\nMulti-process access\n--------------------\n\nLevelDB is thread-safe but is **not** suitable for accessing with multiple processes. You should only ever have a LevelDB database open from a single Node.js process. Node.js clusters are made up of multiple processes so a LevelUP instance cannot be shared between them either.\n\nSee the <a href=\"https://github.com/rvagg/node-levelup/wiki/Modules\"><b>wiki</b></a> for some LevelUP extensions, including [multilevel](https://github.com/juliangruber/multilevel), that may help if you require a single data store to be shared across processes.\n\n<a name=\"support\"></a>\nGetting support\n---------------\n\nThere are multiple ways you can find help in using LevelDB in Node.js:\n\n * **IRC:** you'll find an active group of LevelUP users in the **##leveldb** channel on Freenode, including most of the contributors to this project.\n * **Mailing list:** there is an active [Node.js LevelDB](https://groups.google.com/forum/#!forum/node-levelup) Google Group.\n * **GitHub:** you're welcome to open an issue here on this GitHub repository if you have a question.\n\n<a name=\"contributing\"></a>\nContributing\n------------\n\nLevelUP is an **OPEN Open Source Project**. This means that:\n\n> Individuals making significant and valuable contributions are given commit-access to the project to contribute as they see fit. This project is more like an open wiki than a standard guarded open source project.\n\nSee the [CONTRIBUTING.md](https://github.com/rvagg/node-levelup/blob/master/CONTRIBUTING.md) file for more details.\n\n### Contributors\n\nLevelUP is only possible due to the excellent work of the following contributors:\n\n<table><tbody>\n<tr><th align=\"left\">Rod Vagg</th><td><a href=\"https://github.com/rvagg\">GitHub/rvagg</a></td><td><a href=\"http://twitter.com/rvagg\">Twitter/@rvagg</a></td></tr>\n<tr><th align=\"left\">John Chesley</th><td><a href=\"https://github.com/chesles/\">GitHub/chesles</a></td><td><a href=\"http://twitter.com/chesles\">Twitter/@chesles</a></td></tr>\n<tr><th align=\"left\">Jake Verbaten</th><td><a href=\"https://github.com/raynos\">GitHub/raynos</a></td><td><a href=\"http://twitter.com/raynos2\">Twitter/@raynos2</a></td></tr>\n<tr><th align=\"left\">Dominic Tarr</th><td><a href=\"https://github.com/dominictarr\">GitHub/dominictarr</a></td><td><a href=\"http://twitter.com/dominictarr\">Twitter/@dominictarr</a></td></tr>\n<tr><th align=\"left\">Max Ogden</th><td><a href=\"https://github.com/maxogden\">GitHub/maxogden</a></td><td><a href=\"http://twitter.com/maxogden\">Twitter/@maxogden</a></td></tr>\n<tr><th align=\"left\">Lars-Magnus Skog</th><td><a href=\"https://github.com/ralphtheninja\">GitHub/ralphtheninja</a></td><td><a href=\"http://twitter.com/ralphtheninja\">Twitter/@ralphtheninja</a></td></tr>\n<tr><th align=\"left\">David Björklund</th><td><a href=\"https://github.com/kesla\">GitHub/kesla</a></td><td><a href=\"http://twitter.com/david_bjorklund\">Twitter/@david_bjorklund</a></td></tr>\n<tr><th align=\"left\">Julian Gruber</th><td><a href=\"https://github.com/juliangruber\">GitHub/juliangruber</a></td><td><a href=\"http://twitter.com/juliangruber\">Twitter/@juliangruber</a></td></tr>\n<tr><th align=\"left\">Paolo Fragomeni</th><td><a href=\"https://github.com/hij1nx\">GitHub/hij1nx</a></td><td><a href=\"http://twitter.com/hij1nx\">Twitter/@hij1nx</a></td></tr>\n<tr><th align=\"left\">Anton Whalley</th><td><a href=\"https://github.com/No9\">GitHub/No9</a></td><td><a href=\"https://twitter.com/antonwhalley\">Twitter/@antonwhalley</a></td></tr>\n<tr><th align=\"left\">Matteo Collina</th><td><a href=\"https://github.com/mcollina\">GitHub/mcollina</a></td><td><a href=\"https://twitter.com/matteocollina\">Twitter/@matteocollina</a></td></tr>\n<tr><th align=\"left\">Pedro Teixeira</th><td><a href=\"https://github.com/pgte\">GitHub/pgte</a></td><td><a href=\"https://twitter.com/pgte\">Twitter/@pgte</a></td></tr>\n<tr><th align=\"left\">James Halliday</th><td><a href=\"https://github.com/substack\">GitHub/substack</a></td><td><a href=\"https://twitter.com/substack\">Twitter/@substack</a></td></tr>\n</tbody></table>\n\n### Windows\n\nA large portion of the Windows support comes from code by [Krzysztof Kowalczyk](http://blog.kowalczyk.info/) [@kjk](https://twitter.com/kjk), see his Windows LevelDB port [here](http://code.google.com/r/kkowalczyk-leveldb/). If you're using LevelUP on Windows, you should give him your thanks!\n\n\n<a name=\"license\"></a>\nLicense &amp; copyright\n-------------------\n\nCopyright (c) 2012-2014 LevelUP contributors (listed above).\n\nLevelUP is licensed under the MIT license. All rights not explicitly granted in the MIT license are reserved. See the included LICENSE.md file for more details.\n\n=======\n*LevelUP builds on the excellent work of the LevelDB and Snappy teams from Google and additional contributors. LevelDB and Snappy are both issued under the [New BSD Licence](http://opensource.org/licenses/BSD-3-Clause).*\n",
+  "readmeFilename": "README.md",
   "bugs": {
     "url": "https://github.com/rvagg/node-levelup/issues"
   },
   "_id": "levelup@0.18.6",
-  "_shasum": "e6a01cb089616c8ecc0291c2a9bd3f0c44e3e5eb",
-  "_from": "levelup@~0.18.4",
-  "_npmVersion": "1.4.14",
-  "_npmUser": {
-    "name": "rvagg",
-    "email": "rod@vagg.org"
-  },
-  "maintainers": [
-    {
-      "name": "rvagg",
-      "email": "rod@vagg.org"
-    }
-  ],
-  "dist": {
-    "shasum": "e6a01cb089616c8ecc0291c2a9bd3f0c44e3e5eb",
-    "tarball": "http://127.0.0.1:5080/tarballs/levelup/0.18.6.tgz"
-  },
-  "_resolved": "http://127.0.0.1:5080/tarballs/levelup/0.18.6.tgz",
-  "readme": "ERROR: No README data found!"
+  "_from": "levelup@~0.18.4"
 }
 
-},{}],72:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 'use strict';
 
 module.exports = INTERNAL;
 
 function INTERNAL() {}
-},{}],73:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 'use strict';
 var Promise = require('./promise');
 var reject = require('./reject');
@@ -13074,7 +13649,7 @@ function all(iterable) {
     }
   }
 }
-},{"./INTERNAL":72,"./handlers":74,"./promise":76,"./reject":79,"./resolve":80}],74:[function(require,module,exports){
+},{"./INTERNAL":74,"./handlers":76,"./promise":78,"./reject":81,"./resolve":82}],76:[function(require,module,exports){
 'use strict';
 var tryCatch = require('./tryCatch');
 var resolveThenable = require('./resolveThenable');
@@ -13120,14 +13695,14 @@ function getThen(obj) {
     };
   }
 }
-},{"./resolveThenable":81,"./states":82,"./tryCatch":83}],75:[function(require,module,exports){
+},{"./resolveThenable":83,"./states":84,"./tryCatch":85}],77:[function(require,module,exports){
 module.exports = exports = require('./promise');
 
 exports.resolve = require('./resolve');
 exports.reject = require('./reject');
 exports.all = require('./all');
 exports.race = require('./race');
-},{"./all":73,"./promise":76,"./race":78,"./reject":79,"./resolve":80}],76:[function(require,module,exports){
+},{"./all":75,"./promise":78,"./race":80,"./reject":81,"./resolve":82}],78:[function(require,module,exports){
 'use strict';
 
 var unwrap = require('./unwrap');
@@ -13173,7 +13748,7 @@ Promise.prototype.then = function (onFulfilled, onRejected) {
   return promise;
 };
 
-},{"./INTERNAL":72,"./queueItem":77,"./resolveThenable":81,"./states":82,"./unwrap":84}],77:[function(require,module,exports){
+},{"./INTERNAL":74,"./queueItem":79,"./resolveThenable":83,"./states":84,"./unwrap":86}],79:[function(require,module,exports){
 'use strict';
 var handlers = require('./handlers');
 var unwrap = require('./unwrap');
@@ -13202,7 +13777,7 @@ QueueItem.prototype.callRejected = function (value) {
 QueueItem.prototype.otherCallRejected = function (value) {
   unwrap(this.promise, this.onRejected, value);
 };
-},{"./handlers":74,"./unwrap":84}],78:[function(require,module,exports){
+},{"./handlers":76,"./unwrap":86}],80:[function(require,module,exports){
 'use strict';
 var Promise = require('./promise');
 var reject = require('./reject');
@@ -13243,7 +13818,7 @@ function race(iterable) {
     });
   }
 }
-},{"./INTERNAL":72,"./handlers":74,"./promise":76,"./reject":79,"./resolve":80}],79:[function(require,module,exports){
+},{"./INTERNAL":74,"./handlers":76,"./promise":78,"./reject":81,"./resolve":82}],81:[function(require,module,exports){
 'use strict';
 
 var Promise = require('./promise');
@@ -13255,7 +13830,7 @@ function reject(reason) {
 	var promise = new Promise(INTERNAL);
 	return handlers.reject(promise, reason);
 }
-},{"./INTERNAL":72,"./handlers":74,"./promise":76}],80:[function(require,module,exports){
+},{"./INTERNAL":74,"./handlers":76,"./promise":78}],82:[function(require,module,exports){
 'use strict';
 
 var Promise = require('./promise');
@@ -13290,7 +13865,7 @@ function resolve(value) {
       return EMPTYSTRING;
   }
 }
-},{"./INTERNAL":72,"./handlers":74,"./promise":76}],81:[function(require,module,exports){
+},{"./INTERNAL":74,"./handlers":76,"./promise":78}],83:[function(require,module,exports){
 'use strict';
 var handlers = require('./handlers');
 var tryCatch = require('./tryCatch');
@@ -13323,13 +13898,13 @@ function safelyResolveThenable(self, thenable) {
   }
 }
 exports.safely = safelyResolveThenable;
-},{"./handlers":74,"./tryCatch":83}],82:[function(require,module,exports){
+},{"./handlers":76,"./tryCatch":85}],84:[function(require,module,exports){
 // Lazy man's symbols for states
 
 exports.REJECTED = ['REJECTED'];
 exports.FULFILLED = ['FULFILLED'];
 exports.PENDING = ['PENDING'];
-},{}],83:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 'use strict';
 
 module.exports = tryCatch;
@@ -13345,7 +13920,7 @@ function tryCatch(func, value) {
   }
   return out;
 }
-},{}],84:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 'use strict';
 
 var immediate = require('immediate');
@@ -13367,7 +13942,7 @@ function unwrap(promise, func, value) {
     }
   });
 }
-},{"./handlers":74,"immediate":85}],85:[function(require,module,exports){
+},{"./handlers":76,"immediate":87}],87:[function(require,module,exports){
 'use strict';
 var types = [
   require('./nextTick'),
@@ -13378,7 +13953,8 @@ var types = [
 ];
 var draining;
 var queue = [];
-function drainQueue() {
+//named nextTick for less confusing stack traces
+function nextTick() {
   draining = true;
   var i, oldQueue;
   var len = queue.length;
@@ -13398,7 +13974,7 @@ var i = -1;
 var len = types.length;
 while (++ i < len) {
   if (types[i] && types[i].test && types[i].test()) {
-    scheduleDrain = types[i].install(drainQueue);
+    scheduleDrain = types[i].install(nextTick);
     break;
   }
 }
@@ -13408,7 +13984,7 @@ function immediate(task) {
     scheduleDrain();
   }
 }
-},{"./messageChannel":86,"./mutation.js":87,"./nextTick":17,"./stateChange":88,"./timeout":89}],86:[function(require,module,exports){
+},{"./messageChannel":88,"./mutation.js":89,"./nextTick":18,"./stateChange":90,"./timeout":91}],88:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -13429,7 +14005,7 @@ exports.install = function (func) {
   };
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],87:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 (function (global){
 'use strict';
 //based off rsvp https://github.com/tildeio/rsvp.js
@@ -13454,7 +14030,7 @@ exports.install = function (handle) {
   };
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],88:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -13481,7 +14057,7 @@ exports.install = function (handle) {
   };
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],89:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 'use strict';
 exports.test = function () {
   return true;
@@ -13492,173 +14068,210 @@ exports.install = function (t) {
     setTimeout(t, 0);
   };
 };
-},{}],"RQL87X":[function(require,module,exports){
+},{}],"leveldown":[function(require,module,exports){
+module.exports=require('KbJPwE');
+},{}],"KbJPwE":[function(require,module,exports){
 (function (process,global,Buffer){
-var util              = require('util')
+var inherits          = require('inherits')
   , AbstractLevelDOWN = require('abstract-leveldown').AbstractLevelDOWN
   , AbstractIterator  = require('abstract-leveldown').AbstractIterator
-  , noop              = function () {}
+  , ltgt              = require('ltgt')
   , setImmediate      = global.setImmediate || process.nextTick
+  , createRBT = require('functional-red-black-tree')
+  , globalStore       = {}
 
 function toKey (key) {
   return typeof key == 'string' ? '$' + key : JSON.stringify(key)
 }
 
-function sortedIndexOf (arr, item) {
-  var low = 0, high = arr.length, mid
-  while (low < high) {
-    mid = (low + high) >>> 1
-    arr[mid] < item ? low = mid + 1 : high = mid
-  }
-  return low
+function gt(value) {
+  return value > this._end
 }
+
+function gte(value) {
+  return value >= this._end
+}
+
+function lt(value) {
+  return value < this._end
+}
+
+function lte(value) {
+  return value <= this._end
+}
+
 
 function MemIterator (db, options) {
   AbstractIterator.call(this, db)
-  this._reverse = options.reverse
   this._limit   = options.limit
-  this._count   = 0
-  this._end     = options.end
-  this._start   = options.start
-  this._gt      = options.gt
-  this._gte     = options.gte
-  this._lt      = options.lt
-  this._lte     = options.lte
-  this._keys    = []
 
-  var i
+  if (this._limit === -1)
+    this._limit = Infinity
 
-  if (this._start) {
-    for (i = 0; i < this.db._keys.length; i++) {
-      if (this.db._keys[i] >= this._start) {
-        this._pos = i
-        if (this.db._keys[i] != this._start) {
-          if (this._reverse) {
-            // going backwards and key doesn't match, jump back one
-            --this._pos
-          }
-        } else {
-          if (options.exclusiveStart) {
-            // key matches but it's a gt or lt
-            this._pos += (this._reverse ? -1 : 1)
-          }
-        }
-        break
-      }
+  var tree = db._store[db._location];
+
+  this.keyAsBuffer = options.keyAsBuffer !== false
+  this.valueAsBuffer = options.valueAsBuffer !== false
+  this._reverse   = options.reverse
+  this._options = options
+  this._done = 0
+  
+  if (!this._reverse) {
+    this._incr = 'next';
+    this._start = ltgt.lowerBound(options);
+    this._end = ltgt.upperBound(options)
+    
+    if (typeof this._start === 'undefined')
+      this._tree = tree.begin;
+    else if (ltgt.lowerBoundInclusive(options))
+      this._tree = tree.ge(this._start);
+    else
+      this._tree = tree.gt(this._start);
+    
+    if (this._end) {
+      if (ltgt.upperBoundInclusive(options))
+        this._test = lte
+      else
+        this._test = lt
+    }
+  
+  } else {
+    this._incr = 'prev';
+    this._start = ltgt.upperBound(options)
+    this._end = ltgt.lowerBound(options)
+  
+    if (typeof this._start === 'undefined')
+      this._tree = tree.end;
+    else if (ltgt.upperBoundInclusive(options))
+      this._tree = tree.le(this._start)
+    else
+      this._tree = tree.lt(this._start)
+  
+    if (this._end) {
+      if (ltgt.lowerBoundInclusive(options))
+        this._test = gte
+      else
+        this._test = gt
     }
 
-    if (this._pos == null && !this._reverse) // no matching keys, non starter
-      this._pos = -1
   }
 
-  if (!options.start || this._pos === undefined)
-    this._pos = this._reverse ? this.db._keys.length - 1 : 0
-
-  // copy the keys that we need so that they're not affected by puts/deletes
-  if (this._pos >= 0) {
-    this._keys = this._reverse ? this.db._keys.slice(0, this._pos + 1) : this.db._keys.slice(this._pos)
-    this._pos = this._reverse ? this._keys.length - 1 : 0
-  }
 }
 
-util.inherits(MemIterator, AbstractIterator)
+inherits(MemIterator, AbstractIterator)
 
 MemIterator.prototype._next = function (callback) {
-  var self  = this
-    , key   = self._keys[self._pos]
+  var key
     , value
 
-  if (self._pos >= self._keys.length || self._pos < 0)
+  if (this._done++ >= this._limit)
     return setImmediate(callback)
 
-  if (!!self._end && (self._reverse ? key < self._end : key > self._end))
+  if (!this._tree.valid)
     return setImmediate(callback)
 
+  key = this._tree.key
+  value = this._tree.value
 
-  if (!!self._limit && self._limit > 0 && self._count++ >= self._limit)
+  if (!this._test(key))
     return setImmediate(callback)
 
-  if (  (this._lt  && key >= this._lt)
-     || (this._lte && key > this._lte)
-     || (this._gt  && key <= this._gt)
-     || (this._gte && key < this._gte))
-    return setImmediate(callback)
+  if (this.keyAsBuffer)
+    key = new Buffer(key)
 
-  value = self.db._store[toKey(key)]
-  self._pos += self._reverse ? -1 : 1
+  if (this.valueAsBuffer)
+    value = new Buffer(value)
 
-  setImmediate(function () { callback(null, key, value) })
+  this._tree[this._incr]()
+
+  setImmediate(function callNext() {
+    callback(null, key, value)
+  })
 }
+
+MemIterator.prototype._test = function () {return true}
 
 function MemDOWN (location) {
   if (!(this instanceof MemDOWN))
     return new MemDOWN(location)
 
   AbstractLevelDOWN.call(this, typeof location == 'string' ? location : '')
-  this._store = {}
-  this._keys  = []
+
+  this._location = this.location ? toKey(this.location) : '_tree'
+  this._store = this.location ? globalStore: this
+  this._store[this._location] = this._store[this._location] || createRBT()
 }
 
-util.inherits(MemDOWN, AbstractLevelDOWN)
+inherits(MemDOWN, AbstractLevelDOWN)
 
 MemDOWN.prototype._open = function (options, callback) {
   var self = this
-  setImmediate(function () { callback(null, self) })
+  setImmediate(function callNext() { callback(null, self) })
 }
 
 MemDOWN.prototype._put = function (key, value, options, callback) {
-  var ix = sortedIndexOf(this._keys, key)
-  if (this._keys[ix] != key)
-    this._keys.splice(ix, 0, key)
-  key = toKey(key) // safety, to avoid key='__proto__'-type skullduggery 
-  this._store[key] = value
+  this._store[this._location] = this._store[this._location].remove(key).insert(key, value)
   setImmediate(callback)
 }
 
 MemDOWN.prototype._get = function (key, options, callback) {
-  var value = this._store[toKey(key)]
+  var value = this._store[this._location].get(key)
+
   if (value === undefined) {
     // 'NotFound' error, consistent with LevelDOWN API
-    return setImmediate(function () { callback(new Error('NotFound')) })
+    var err = new Error('NotFound')
+    return setImmediate(function callNext() { callback(err) })
   }
-  if (options.asBuffer !== false && !Buffer.isBuffer(value))
+
+  if (options.asBuffer !== false && !this._isBuffer(value))
     value = new Buffer(String(value))
-  setImmediate(function () {
+  
+  setImmediate(function callNext () {
     callback(null, value)
   })
+
 }
 
 MemDOWN.prototype._del = function (key, options, callback) {
-  var ix = sortedIndexOf(this._keys, key)
-  if (this._keys[ix] == key)
-    this._keys.splice(ix, 1)
-  delete this._store[toKey(key)]
+  this._store[this._location] = this._store[this._location].remove(key)
   setImmediate(callback)
 }
 
 MemDOWN.prototype._batch = function (array, options, callback) {
   var err
-    , i = 0
+    , i = -1
     , key
     , value
+    , len = array.length
+    , tree = this._store[this._location]
 
-  if (Array.isArray(array)) {
-    for (; i < array.length; i++) {
-      if (array[i]) {
-        key = Buffer.isBuffer(array[i].key) ? array[i].key : String(array[i].key)
-        err = this._checkKeyValue(key, 'key')
-        if (err) return setImmediate(function () { callback(err) })
-        if (array[i].type === 'del') {
-          this._del(array[i].key, options, noop)
-        } else if (array[i].type === 'put') {
-          value = Buffer.isBuffer(array[i].value) ? array[i].value : String(array[i].value)
-          err = this._checkKeyValue(value, 'value')
-          if (err) return setImmediate(function () { callback(err) })
-          this._put(key, value, options, noop)
-        }
-      }
+  while (++i < len) {
+    if (!array[i])
+      continue;
+    
+    key = this._isBuffer(array[i].key) ? array[i].key : String(array[i].key)
+    err = this._checkKey(key, 'key')
+    if (err)
+      return setImmediate(function errorCall() { callback(err) })
+    
+    tree = tree.remove(array[i].key)
+    // we always remove as insert doesn't replace
+
+    if (array[i].type === 'put') {
+
+      value = this._isBuffer(array[i].value) ? array[i].value : String(array[i].value)
+      err = this._checkKey(value, 'value')
+
+      if (err)
+        return setImmediate(function errorCall() { callback(err) })
+
+      tree = tree.insert(key, value)
     }
+  
   }
+  
+  this._store[this._location] = tree;
+
   setImmediate(callback)
 }
 
@@ -13670,20 +14283,1453 @@ MemDOWN.prototype._isBuffer = function (obj) {
   return Buffer.isBuffer(obj)
 }
 
+MemDOWN.destroy = function (name, callback) {
+  var key = toKey(name)
+
+  if (key in globalStore)
+    delete globalStore[key]
+
+  setImmediate(callback)
+}
+
 module.exports = MemDOWN
 
-}).call(this,require("/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"abstract-leveldown":94,"buffer":20,"util":32}],"leveldown":[function(require,module,exports){
-module.exports=require('RQL87X');
-},{}],92:[function(require,module,exports){
-module.exports=require(55)
-},{"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19}],93:[function(require,module,exports){
-module.exports=require(56)
-},{"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19}],94:[function(require,module,exports){
-module.exports=require(57)
-},{"./abstract-chained-batch":92,"./abstract-iterator":93,"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"buffer":20,"xtend":95}],95:[function(require,module,exports){
-module.exports=require(70)
-},{}],96:[function(require,module,exports){
+}).call(this,require("/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
+},{"/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":20,"abstract-leveldown":96,"buffer":21,"functional-red-black-tree":98,"inherits":35,"ltgt":99}],94:[function(require,module,exports){
+(function (process){
+/* Copyright (c) 2013 Rod Vagg, MIT License */
+
+function AbstractChainedBatch (db) {
+  this._db         = db
+  this._operations = []
+  this._written    = false
+}
+
+AbstractChainedBatch.prototype._checkWritten = function () {
+  if (this._written)
+    throw new Error('write() already called on this batch')
+}
+
+AbstractChainedBatch.prototype.put = function (key, value) {
+  this._checkWritten()
+
+  var err = this._db._checkKey(key, 'key', this._db._isBuffer)
+  if (err)
+    throw err
+
+  if (!this._db._isBuffer(key)) key = String(key)
+  if (!this._db._isBuffer(value)) value = String(value)
+
+  if (typeof this._put == 'function' )
+    this._put(key, value)
+  else
+    this._operations.push({ type: 'put', key: key, value: value })
+
+  return this
+}
+
+AbstractChainedBatch.prototype.del = function (key) {
+  this._checkWritten()
+
+  var err = this._db._checkKey(key, 'key', this._db._isBuffer)
+  if (err) throw err
+
+  if (!this._db._isBuffer(key)) key = String(key)
+
+  if (typeof this._del == 'function' )
+    this._del(key)
+  else
+    this._operations.push({ type: 'del', key: key })
+
+  return this
+}
+
+AbstractChainedBatch.prototype.clear = function () {
+  this._checkWritten()
+
+  this._operations = []
+
+  if (typeof this._clear == 'function' )
+    this._clear()
+
+  return this
+}
+
+AbstractChainedBatch.prototype.write = function (options, callback) {
+  this._checkWritten()
+
+  if (typeof options == 'function')
+    callback = options
+  if (typeof callback != 'function')
+    throw new Error('write() requires a callback argument')
+  if (typeof options != 'object')
+    options = {}
+
+  this._written = true
+
+  if (typeof this._write == 'function' )
+    return this._write(callback)
+
+  if (typeof this._db._batch == 'function')
+    return this._db._batch(this._operations, options, callback)
+
+  process.nextTick(callback)
+}
+
+module.exports = AbstractChainedBatch
+}).call(this,require("/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
+},{"/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":20}],95:[function(require,module,exports){
+module.exports=require(58)
+},{"/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":20}],96:[function(require,module,exports){
+(function (process,Buffer){
+/* Copyright (c) 2013 Rod Vagg, MIT License */
+
+var xtend                = require('xtend')
+  , AbstractIterator     = require('./abstract-iterator')
+  , AbstractChainedBatch = require('./abstract-chained-batch')
+
+function AbstractLevelDOWN (location) {
+  if (!arguments.length || location === undefined)
+    throw new Error('constructor requires at least a location argument')
+
+  if (typeof location != 'string')
+    throw new Error('constructor requires a location string argument')
+
+  this.location = location
+}
+
+AbstractLevelDOWN.prototype.open = function (options, callback) {
+  if (typeof options == 'function')
+    callback = options
+
+  if (typeof callback != 'function')
+    throw new Error('open() requires a callback argument')
+
+  if (typeof options != 'object')
+    options = {}
+
+  options.createIfMissing = options.createIfMissing != false
+  options.errorIfExists = !!options.errorIfExists
+
+  if (typeof this._open == 'function')
+    return this._open(options, callback)
+
+  process.nextTick(callback)
+}
+
+AbstractLevelDOWN.prototype.close = function (callback) {
+  if (typeof callback != 'function')
+    throw new Error('close() requires a callback argument')
+
+  if (typeof this._close == 'function')
+    return this._close(callback)
+
+  process.nextTick(callback)
+}
+
+AbstractLevelDOWN.prototype.get = function (key, options, callback) {
+  var err
+
+  if (typeof options == 'function')
+    callback = options
+
+  if (typeof callback != 'function')
+    throw new Error('get() requires a callback argument')
+
+  if (err = this._checkKey(key, 'key', this._isBuffer))
+    return callback(err)
+
+  if (!this._isBuffer(key))
+    key = String(key)
+
+  if (typeof options != 'object')
+    options = {}
+
+  options.asBuffer = options.asBuffer != false
+
+  if (typeof this._get == 'function')
+    return this._get(key, options, callback)
+
+  process.nextTick(function () { callback(new Error('NotFound')) })
+}
+
+AbstractLevelDOWN.prototype.put = function (key, value, options, callback) {
+  var err
+
+  if (typeof options == 'function')
+    callback = options
+
+  if (typeof callback != 'function')
+    throw new Error('put() requires a callback argument')
+
+  if (err = this._checkKey(key, 'key', this._isBuffer))
+    return callback(err)
+
+  if (!this._isBuffer(key))
+    key = String(key)
+
+  // coerce value to string in node, don't touch it in browser
+  // (indexeddb can store any JS type)
+  if (value != null && !this._isBuffer(value) && !process.browser)
+    value = String(value)
+
+  if (typeof options != 'object')
+    options = {}
+
+  if (typeof this._put == 'function')
+    return this._put(key, value, options, callback)
+
+  process.nextTick(callback)
+}
+
+AbstractLevelDOWN.prototype.del = function (key, options, callback) {
+  var err
+
+  if (typeof options == 'function')
+    callback = options
+
+  if (typeof callback != 'function')
+    throw new Error('del() requires a callback argument')
+
+  if (err = this._checkKey(key, 'key', this._isBuffer))
+    return callback(err)
+
+  if (!this._isBuffer(key))
+    key = String(key)
+
+  if (typeof options != 'object')
+    options = {}
+
+  if (typeof this._del == 'function')
+    return this._del(key, options, callback)
+
+  process.nextTick(callback)
+}
+
+AbstractLevelDOWN.prototype.batch = function (array, options, callback) {
+  if (!arguments.length)
+    return this._chainedBatch()
+
+  if (typeof options == 'function')
+    callback = options
+
+  if (typeof array == 'function')
+    callback = array
+
+  if (typeof callback != 'function')
+    throw new Error('batch(array) requires a callback argument')
+
+  if (!Array.isArray(array))
+    return callback(new Error('batch(array) requires an array argument'))
+
+  if (!options || typeof options != 'object')
+    options = {}
+
+  var i = 0
+    , l = array.length
+    , e
+    , err
+
+  for (; i < l; i++) {
+    e = array[i]
+    if (typeof e != 'object')
+      continue
+
+    if (err = this._checkKey(e.type, 'type', this._isBuffer))
+      return callback(err)
+
+    if (err = this._checkKey(e.key, 'key', this._isBuffer))
+      return callback(err)
+  }
+
+  if (typeof this._batch == 'function')
+    return this._batch(array, options, callback)
+
+  process.nextTick(callback)
+}
+
+//TODO: remove from here, not a necessary primitive
+AbstractLevelDOWN.prototype.approximateSize = function (start, end, callback) {
+  if (   start == null
+      || end == null
+      || typeof start == 'function'
+      || typeof end == 'function') {
+    throw new Error('approximateSize() requires valid `start`, `end` and `callback` arguments')
+  }
+
+  if (typeof callback != 'function')
+    throw new Error('approximateSize() requires a callback argument')
+
+  if (!this._isBuffer(start))
+    start = String(start)
+
+  if (!this._isBuffer(end))
+    end = String(end)
+
+  if (typeof this._approximateSize == 'function')
+    return this._approximateSize(start, end, callback)
+
+  process.nextTick(function () {
+    callback(null, 0)
+  })
+}
+
+AbstractLevelDOWN.prototype._setupIteratorOptions = function (options) {
+  var self = this
+
+  options = xtend(options)
+
+  ;[ 'start', 'end', 'gt', 'gte', 'lt', 'lte' ].forEach(function (o) {
+    if (options[o] && self._isBuffer(options[o]) && options[o].length === 0)
+      delete options[o]
+  })
+
+  options.reverse = !!options.reverse
+  options.keys = options.keys != false
+  options.values = options.values != false
+  options.limit = 'limit' in options ? options.limit : -1
+  options.keyAsBuffer = options.keyAsBuffer != false
+  options.valueAsBuffer = options.valueAsBuffer != false
+
+  return options
+}
+
+AbstractLevelDOWN.prototype.iterator = function (options) {
+  if (typeof options != 'object')
+    options = {}
+
+  options = this._setupIteratorOptions(options)
+
+  if (typeof this._iterator == 'function')
+    return this._iterator(options)
+
+  return new AbstractIterator(this)
+}
+
+AbstractLevelDOWN.prototype._chainedBatch = function () {
+  return new AbstractChainedBatch(this)
+}
+
+AbstractLevelDOWN.prototype._isBuffer = function (obj) {
+  return Buffer.isBuffer(obj)
+}
+
+AbstractLevelDOWN.prototype._checkKey = function (obj, type) {
+
+  if (obj === null || obj === undefined)
+    return new Error(type + ' cannot be `null` or `undefined`')
+
+  if (this._isBuffer(obj)) {
+    if (obj.length === 0)
+      return new Error(type + ' cannot be an empty Buffer')
+  } else if (String(obj) === '')
+    return new Error(type + ' cannot be an empty String')
+}
+
+module.exports.AbstractLevelDOWN    = AbstractLevelDOWN
+module.exports.AbstractIterator     = AbstractIterator
+module.exports.AbstractChainedBatch = AbstractChainedBatch
+
+}).call(this,require("/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),require("buffer").Buffer)
+},{"./abstract-chained-batch":94,"./abstract-iterator":95,"/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":20,"buffer":21,"xtend":97}],97:[function(require,module,exports){
+module.exports=require(72)
+},{}],98:[function(require,module,exports){
+"use strict"
+
+module.exports = createRBTree
+
+var RED   = 0
+var BLACK = 1
+
+function RBNode(color, key, value, left, right, count) {
+  this._color = color
+  this.key = key
+  this.value = value
+  this.left = left
+  this.right = right
+  this._count = count
+}
+
+function cloneNode(node) {
+  return new RBNode(node._color, node.key, node.value, node.left, node.right, node._count)
+}
+
+function repaint(color, node) {
+  return new RBNode(color, node.key, node.value, node.left, node.right, node._count)
+}
+
+function recount(node) {
+  node._count = 1 + (node.left ? node.left._count : 0) + (node.right ? node.right._count : 0)
+}
+
+function RedBlackTree(compare, root) {
+  this._compare = compare
+  this.root = root
+}
+
+var proto = RedBlackTree.prototype
+
+Object.defineProperty(proto, "keys", {
+  get: function() {
+    var result = []
+    this.forEach(function(k,v) {
+      result.push(k)
+    })
+    return result
+  }
+})
+
+Object.defineProperty(proto, "values", {
+  get: function() {
+    var result = []
+    this.forEach(function(k,v) {
+      result.push(v)
+    })
+    return result
+  }
+})
+
+//Returns the number of nodes in the tree
+Object.defineProperty(proto, "length", {
+  get: function() {
+    if(this.root) {
+      return this.root._count
+    }
+    return 0
+  }
+})
+
+//Insert a new item into the tree
+proto.insert = function(key, value) {
+  var cmp = this._compare
+  //Find point to insert new node at
+  var n = this.root
+  var n_stack = []
+  var d_stack = []
+  while(n) {
+    var d = cmp(key, n.key)
+    n_stack.push(n)
+    d_stack.push(d)
+    if(d <= 0) {
+      n = n.left
+    } else {
+      n = n.right
+    }
+  }
+  //Rebuild path to leaf node
+  n_stack.push(new RBNode(RED, key, value, null, null, 1))
+  for(var s=n_stack.length-2; s>=0; --s) {
+    var n = n_stack[s]
+    if(d_stack[s] <= 0) {
+      n_stack[s] = new RBNode(n._color, n.key, n.value, n_stack[s+1], n.right, n._count+1)
+    } else {
+      n_stack[s] = new RBNode(n._color, n.key, n.value, n.left, n_stack[s+1], n._count+1)
+    }
+  }
+  //Rebalance tree using rotations
+  //console.log("start insert", key, d_stack)
+  for(var s=n_stack.length-1; s>1; --s) {
+    var p = n_stack[s-1]
+    var n = n_stack[s]
+    if(p._color === BLACK || n._color === BLACK) {
+      break
+    }
+    var pp = n_stack[s-2]
+    if(pp.left === p) {
+      if(p.left === n) {
+        var y = pp.right
+        if(y && y._color === RED) {
+          //console.log("LLr")
+          p._color = BLACK
+          pp.right = repaint(BLACK, y)
+          pp._color = RED
+          s -= 1
+        } else {
+          //console.log("LLb")
+          pp._color = RED
+          pp.left = p.right
+          p._color = BLACK
+          p.right = pp
+          n_stack[s-2] = p
+          n_stack[s-1] = n
+          recount(pp)
+          recount(p)
+          if(s >= 3) {
+            var ppp = n_stack[s-3]
+            if(ppp.left === pp) {
+              ppp.left = p
+            } else {
+              ppp.right = p
+            }
+          }
+          break
+        }
+      } else {
+        var y = pp.right
+        if(y && y._color === RED) {
+          //console.log("LRr")
+          p._color = BLACK
+          pp.right = repaint(BLACK, y)
+          pp._color = RED
+          s -= 1
+        } else {
+          //console.log("LRb")
+          p.right = n.left
+          pp._color = RED
+          pp.left = n.right
+          n._color = BLACK
+          n.left = p
+          n.right = pp
+          n_stack[s-2] = n
+          n_stack[s-1] = p
+          recount(pp)
+          recount(p)
+          recount(n)
+          if(s >= 3) {
+            var ppp = n_stack[s-3]
+            if(ppp.left === pp) {
+              ppp.left = n
+            } else {
+              ppp.right = n
+            }
+          }
+          break
+        }
+      }
+    } else {
+      if(p.right === n) {
+        var y = pp.left
+        if(y && y._color === RED) {
+          //console.log("RRr", y.key)
+          p._color = BLACK
+          pp.left = repaint(BLACK, y)
+          pp._color = RED
+          s -= 1
+        } else {
+          //console.log("RRb")
+          pp._color = RED
+          pp.right = p.left
+          p._color = BLACK
+          p.left = pp
+          n_stack[s-2] = p
+          n_stack[s-1] = n
+          recount(pp)
+          recount(p)
+          if(s >= 3) {
+            var ppp = n_stack[s-3]
+            if(ppp.right === pp) {
+              ppp.right = p
+            } else {
+              ppp.left = p
+            }
+          }
+          break
+        }
+      } else {
+        var y = pp.left
+        if(y && y._color === RED) {
+          //console.log("RLr")
+          p._color = BLACK
+          pp.left = repaint(BLACK, y)
+          pp._color = RED
+          s -= 1
+        } else {
+          //console.log("RLb")
+          p.left = n.right
+          pp._color = RED
+          pp.right = n.left
+          n._color = BLACK
+          n.right = p
+          n.left = pp
+          n_stack[s-2] = n
+          n_stack[s-1] = p
+          recount(pp)
+          recount(p)
+          recount(n)
+          if(s >= 3) {
+            var ppp = n_stack[s-3]
+            if(ppp.right === pp) {
+              ppp.right = n
+            } else {
+              ppp.left = n
+            }
+          }
+          break
+        }
+      }
+    }
+  }
+  //Return new tree
+  n_stack[0]._color = BLACK
+  return new RedBlackTree(cmp, n_stack[0])
+}
+
+
+//Visit all nodes inorder
+function doVisitFull(visit, node) {
+  if(node.left) {
+    var v = doVisitFull(visit, node.left)
+    if(v) { return v }
+  }
+  var v = visit(node.key, node.value)
+  if(v) { return v }
+  if(node.right) {
+    return doVisitFull(visit, node.right)
+  }
+}
+
+//Visit half nodes in order
+function doVisitHalf(lo, compare, visit, node) {
+  var l = compare(lo, node.key)
+  if(l <= 0) {
+    if(node.left) {
+      var v = doVisitHalf(lo, compare, visit, node.left)
+      if(v) { return v }
+    }
+    var v = visit(node.key, node.value)
+    if(v) { return v }
+  }
+  if(node.right) {
+    return doVisitHalf(lo, compare, visit, node.right)
+  }
+}
+
+//Visit all nodes within a range
+function doVisit(lo, hi, compare, visit, node) {
+  var l = compare(lo, node.key)
+  var h = compare(hi, node.key)
+  var v
+  if(l <= 0) {
+    if(node.left) {
+      v = doVisit(lo, hi, compare, visit, node.left)
+      if(v) { return v }
+    }
+    if(h > 0) {
+      v = visit(node.key, node.value)
+      if(v) { return v }
+    }
+  }
+  if(h > 0 && node.right) {
+    return doVisit(lo, hi, compare, visit, node.right)
+  }
+}
+
+
+proto.forEach = function rbTreeForEach(visit, lo, hi) {
+  if(!this.root) {
+    return
+  }
+  switch(arguments.length) {
+    case 1:
+      return doVisitFull(visit, this.root)
+    break
+
+    case 2:
+      return doVisitHalf(lo, this._compare, visit, this.root)
+    break
+
+    case 3:
+      if(this._compare(lo, hi) >= 0) {
+        return
+      }
+      return doVisit(lo, hi, this._compare, visit, this.root)
+    break
+  }
+}
+
+//First item in list
+Object.defineProperty(proto, "begin", {
+  get: function() {
+    var stack = []
+    var n = this.root
+    while(n) {
+      stack.push(n)
+      n = n.left
+    }
+    return new RedBlackTreeIterator(this, stack)
+  }
+})
+
+//Last item in list
+Object.defineProperty(proto, "end", {
+  get: function() {
+    var stack = []
+    var n = this.root
+    while(n) {
+      stack.push(n)
+      n = n.right
+    }
+    return new RedBlackTreeIterator(this, stack)
+  }
+})
+
+//Find the ith item in the tree
+proto.at = function(idx) {
+  if(idx < 0) {
+    return new RedBlackTreeIterator(this, [])
+  }
+  var n = this.root
+  var stack = []
+  while(true) {
+    stack.push(n)
+    if(n.left) {
+      if(idx < n.left._count) {
+        n = n.left
+        continue
+      }
+      idx -= n.left._count
+    }
+    if(!idx) {
+      return new RedBlackTreeIterator(this, stack)
+    }
+    idx -= 1
+    if(n.right) {
+      if(idx >= n.right._count) {
+        break
+      }
+      n = n.right
+    } else {
+      break
+    }
+  }
+  return new RedBlackTreeIterator(this, [])
+}
+
+proto.ge = function(key) {
+  var cmp = this._compare
+  var n = this.root
+  var stack = []
+  var last_ptr = 0
+  while(n) {
+    var d = cmp(key, n.key)
+    stack.push(n)
+    if(d <= 0) {
+      last_ptr = stack.length
+    }
+    if(d <= 0) {
+      n = n.left
+    } else {
+      n = n.right
+    }
+  }
+  stack.length = last_ptr
+  return new RedBlackTreeIterator(this, stack)
+}
+
+proto.gt = function(key) {
+  var cmp = this._compare
+  var n = this.root
+  var stack = []
+  var last_ptr = 0
+  while(n) {
+    var d = cmp(key, n.key)
+    stack.push(n)
+    if(d < 0) {
+      last_ptr = stack.length
+    }
+    if(d < 0) {
+      n = n.left
+    } else {
+      n = n.right
+    }
+  }
+  stack.length = last_ptr
+  return new RedBlackTreeIterator(this, stack)
+}
+
+proto.lt = function(key) {
+  var cmp = this._compare
+  var n = this.root
+  var stack = []
+  var last_ptr = 0
+  while(n) {
+    var d = cmp(key, n.key)
+    stack.push(n)
+    if(d > 0) {
+      last_ptr = stack.length
+    }
+    if(d <= 0) {
+      n = n.left
+    } else {
+      n = n.right
+    }
+  }
+  stack.length = last_ptr
+  return new RedBlackTreeIterator(this, stack)
+}
+
+proto.le = function(key) {
+  var cmp = this._compare
+  var n = this.root
+  var stack = []
+  var last_ptr = 0
+  while(n) {
+    var d = cmp(key, n.key)
+    stack.push(n)
+    if(d >= 0) {
+      last_ptr = stack.length
+    }
+    if(d < 0) {
+      n = n.left
+    } else {
+      n = n.right
+    }
+  }
+  stack.length = last_ptr
+  return new RedBlackTreeIterator(this, stack)
+}
+
+//Finds the item with key if it exists
+proto.find = function(key) {
+  var cmp = this._compare
+  var n = this.root
+  var stack = []
+  while(n) {
+    var d = cmp(key, n.key)
+    stack.push(n)
+    if(d === 0) {
+      return new RedBlackTreeIterator(this, stack)
+    }
+    if(d <= 0) {
+      n = n.left
+    } else {
+      n = n.right
+    }
+  }
+  return new RedBlackTreeIterator(this, [])
+}
+
+//Removes item with key from tree
+proto.remove = function(key) {
+  var iter = this.find(key)
+  if(iter) {
+    return iter.remove()
+  }
+  return this
+}
+
+//Returns the item at `key`
+proto.get = function(key) {
+  var cmp = this._compare
+  var n = this.root
+  while(n) {
+    var d = cmp(key, n.key)
+    if(d === 0) {
+      return n.value
+    }
+    if(d <= 0) {
+      n = n.left
+    } else {
+      n = n.right
+    }
+  }
+  return
+}
+
+//Iterator for red black tree
+function RedBlackTreeIterator(tree, stack) {
+  this.tree = tree
+  this._stack = stack
+}
+
+var iproto = RedBlackTreeIterator.prototype
+
+//Test if iterator is valid
+Object.defineProperty(iproto, "valid", {
+  get: function() {
+    return this._stack.length > 0
+  }
+})
+
+//Node of the iterator
+Object.defineProperty(iproto, "node", {
+  get: function() {
+    if(this._stack.length > 0) {
+      return this._stack[this._stack.length-1]
+    }
+    return null
+  },
+  enumerable: true
+})
+
+//Makes a copy of an iterator
+iproto.clone = function() {
+  return new RedBlackTreeIterator(this.tree, this._stack.slice())
+}
+
+//Swaps two nodes
+function swapNode(n, v) {
+  n.key = v.key
+  n.value = v.value
+  n.left = v.left
+  n.right = v.right
+  n._color = v._color
+  n._count = v._count
+}
+
+//Fix up a double black node in a tree
+function fixDoubleBlack(stack) {
+  var n, p, s, z
+  for(var i=stack.length-1; i>=0; --i) {
+    n = stack[i]
+    if(i === 0) {
+      n._color = BLACK
+      return
+    }
+    //console.log("visit node:", n.key, i, stack[i].key, stack[i-1].key)
+    p = stack[i-1]
+    if(p.left === n) {
+      //console.log("left child")
+      s = p.right
+      if(s.right && s.right._color === RED) {
+        //console.log("case 1: right sibling child red")
+        s = p.right = cloneNode(s)
+        z = s.right = cloneNode(s.right)
+        p.right = s.left
+        s.left = p
+        s.right = z
+        s._color = p._color
+        n._color = BLACK
+        p._color = BLACK
+        z._color = BLACK
+        recount(p)
+        recount(s)
+        if(i > 1) {
+          var pp = stack[i-2]
+          if(pp.left === p) {
+            pp.left = s
+          } else {
+            pp.right = s
+          }
+        }
+        stack[i-1] = s
+        return
+      } else if(s.left && s.left._color === RED) {
+        //console.log("case 1: left sibling child red")
+        s = p.right = cloneNode(s)
+        z = s.left = cloneNode(s.left)
+        p.right = z.left
+        s.left = z.right
+        z.left = p
+        z.right = s
+        z._color = p._color
+        p._color = BLACK
+        s._color = BLACK
+        n._color = BLACK
+        recount(p)
+        recount(s)
+        recount(z)
+        if(i > 1) {
+          var pp = stack[i-2]
+          if(pp.left === p) {
+            pp.left = z
+          } else {
+            pp.right = z
+          }
+        }
+        stack[i-1] = z
+        return
+      }
+      if(s._color === BLACK) {
+        if(p._color === RED) {
+          //console.log("case 2: black sibling, red parent", p.right.value)
+          p._color = BLACK
+          p.right = repaint(RED, s)
+          return
+        } else {
+          //console.log("case 2: black sibling, black parent", p.right.value)
+          p.right = repaint(RED, s)
+          continue  
+        }
+      } else {
+        //console.log("case 3: red sibling")
+        s = cloneNode(s)
+        p.right = s.left
+        s.left = p
+        s._color = p._color
+        p._color = RED
+        recount(p)
+        recount(s)
+        if(i > 1) {
+          var pp = stack[i-2]
+          if(pp.left === p) {
+            pp.left = s
+          } else {
+            pp.right = s
+          }
+        }
+        stack[i-1] = s
+        stack[i] = p
+        if(i+1 < stack.length) {
+          stack[i+1] = n
+        } else {
+          stack.push(n)
+        }
+        i = i+2
+      }
+    } else {
+      //console.log("right child")
+      s = p.left
+      if(s.left && s.left._color === RED) {
+        //console.log("case 1: left sibling child red", p.value, p._color)
+        s = p.left = cloneNode(s)
+        z = s.left = cloneNode(s.left)
+        p.left = s.right
+        s.right = p
+        s.left = z
+        s._color = p._color
+        n._color = BLACK
+        p._color = BLACK
+        z._color = BLACK
+        recount(p)
+        recount(s)
+        if(i > 1) {
+          var pp = stack[i-2]
+          if(pp.right === p) {
+            pp.right = s
+          } else {
+            pp.left = s
+          }
+        }
+        stack[i-1] = s
+        return
+      } else if(s.right && s.right._color === RED) {
+        //console.log("case 1: right sibling child red")
+        s = p.left = cloneNode(s)
+        z = s.right = cloneNode(s.right)
+        p.left = z.right
+        s.right = z.left
+        z.right = p
+        z.left = s
+        z._color = p._color
+        p._color = BLACK
+        s._color = BLACK
+        n._color = BLACK
+        recount(p)
+        recount(s)
+        recount(z)
+        if(i > 1) {
+          var pp = stack[i-2]
+          if(pp.right === p) {
+            pp.right = z
+          } else {
+            pp.left = z
+          }
+        }
+        stack[i-1] = z
+        return
+      }
+      if(s._color === BLACK) {
+        if(p._color === RED) {
+          //console.log("case 2: black sibling, red parent")
+          p._color = BLACK
+          p.left = repaint(RED, s)
+          return
+        } else {
+          //console.log("case 2: black sibling, black parent")
+          p.left = repaint(RED, s)
+          continue  
+        }
+      } else {
+        //console.log("case 3: red sibling")
+        s = cloneNode(s)
+        p.left = s.right
+        s.right = p
+        s._color = p._color
+        p._color = RED
+        recount(p)
+        recount(s)
+        if(i > 1) {
+          var pp = stack[i-2]
+          if(pp.right === p) {
+            pp.right = s
+          } else {
+            pp.left = s
+          }
+        }
+        stack[i-1] = s
+        stack[i] = p
+        if(i+1 < stack.length) {
+          stack[i+1] = n
+        } else {
+          stack.push(n)
+        }
+        i = i+2
+      }
+    }
+  }
+}
+
+//Removes item at iterator from tree
+iproto.remove = function() {
+  var stack = this._stack
+  if(stack.length === 0) {
+    return this.tree
+  }
+  //First copy path to node
+  var cstack = new Array(stack.length)
+  var n = stack[stack.length-1]
+  cstack[cstack.length-1] = new RBNode(n._color, n.key, n.value, n.left, n.right, n._count)
+  for(var i=stack.length-2; i>=0; --i) {
+    var n = stack[i]
+    if(n.left === stack[i+1]) {
+      cstack[i] = new RBNode(n._color, n.key, n.value, cstack[i+1], n.right, n._count)
+    } else {
+      cstack[i] = new RBNode(n._color, n.key, n.value, n.left, cstack[i+1], n._count)
+    }
+  }
+
+  //Get node
+  n = cstack[cstack.length-1]
+  //console.log("start remove: ", n.value)
+
+  //If not leaf, then swap with previous node
+  if(n.left && n.right) {
+    //console.log("moving to leaf")
+
+    //First walk to previous leaf
+    var split = cstack.length
+    n = n.left
+    while(n.right) {
+      cstack.push(n)
+      n = n.right
+    }
+    //Copy path to leaf
+    var v = cstack[split-1]
+    cstack.push(new RBNode(n._color, v.key, v.value, n.left, n.right, n._count))
+    cstack[split-1].key = n.key
+    cstack[split-1].value = n.value
+
+    //Fix up stack
+    for(var i=cstack.length-2; i>=split; --i) {
+      n = cstack[i]
+      cstack[i] = new RBNode(n._color, n.key, n.value, n.left, cstack[i+1], n._count)
+    }
+    cstack[split-1].left = cstack[split]
+  }
+  //console.log("stack=", cstack.map(function(v) { return v.value }))
+
+  //Remove leaf node
+  n = cstack[cstack.length-1]
+  if(n._color === RED) {
+    //Easy case: removing red leaf
+    //console.log("RED leaf")
+    var p = cstack[cstack.length-2]
+    if(p.left === n) {
+      p.left = null
+    } else if(p.right === n) {
+      p.right = null
+    }
+    cstack.pop()
+    for(var i=0; i<cstack.length; ++i) {
+      cstack[i]._count--
+    }
+    return new RedBlackTree(this.tree._compare, cstack[0])
+  } else {
+    if(n.left || n.right) {
+      //Second easy case:  Single child black parent
+      //console.log("BLACK single child")
+      if(n.left) {
+        swapNode(n, n.left)
+      } else if(n.right) {
+        swapNode(n, n.right)
+      }
+      //Child must be red, so repaint it black to balance color
+      n._color = BLACK
+      for(var i=0; i<cstack.length-1; ++i) {
+        cstack[i]._count--
+      }
+      return new RedBlackTree(this.tree._compare, cstack[0])
+    } else if(cstack.length === 1) {
+      //Third easy case: root
+      //console.log("ROOT")
+      return new RedBlackTree(this.tree._compare, null)
+    } else {
+      //Hard case: Repaint n, and then do some nasty stuff
+      //console.log("BLACK leaf no children")
+      for(var i=0; i<cstack.length; ++i) {
+        cstack[i]._count--
+      }
+      var parent = cstack[cstack.length-2]
+      fixDoubleBlack(cstack)
+      //Fix up links
+      if(parent.left === n) {
+        parent.left = null
+      } else {
+        parent.right = null
+      }
+    }
+  }
+  return new RedBlackTree(this.tree._compare, cstack[0])
+}
+
+//Returns key
+Object.defineProperty(iproto, "key", {
+  get: function() {
+    if(this._stack.length > 0) {
+      return this._stack[this._stack.length-1].key
+    }
+    return
+  },
+  enumerable: true
+})
+
+//Returns value
+Object.defineProperty(iproto, "value", {
+  get: function() {
+    if(this._stack.length > 0) {
+      return this._stack[this._stack.length-1].value
+    }
+    return
+  },
+  enumerable: true
+})
+
+
+//Returns the position of this iterator in the sorted list
+Object.defineProperty(iproto, "index", {
+  get: function() {
+    var idx = 0
+    var stack = this._stack
+    if(stack.length === 0) {
+      var r = this.tree.root
+      if(r) {
+        return r._count
+      }
+      return 0
+    } else if(stack[stack.length-1].left) {
+      idx = stack[stack.length-1].left._count
+    }
+    for(var s=stack.length-2; s>=0; --s) {
+      if(stack[s+1] === stack[s].right) {
+        ++idx
+        if(stack[s].left) {
+          idx += stack[s].left._count
+        }
+      }
+    }
+    return idx
+  },
+  enumerable: true
+})
+
+//Advances iterator to next element in list
+iproto.next = function() {
+  var stack = this._stack
+  if(stack.length === 0) {
+    return
+  }
+  var n = stack[stack.length-1]
+  if(n.right) {
+    n = n.right
+    while(n) {
+      stack.push(n)
+      n = n.left
+    }
+  } else {
+    stack.pop()
+    while(stack.length > 0 && stack[stack.length-1].right === n) {
+      n = stack[stack.length-1]
+      stack.pop()
+    }
+  }
+}
+
+//Checks if iterator is at end of tree
+Object.defineProperty(iproto, "hasNext", {
+  get: function() {
+    var stack = this._stack
+    if(stack.length === 0) {
+      return false
+    }
+    if(stack[stack.length-1].right) {
+      return true
+    }
+    for(var s=stack.length-1; s>0; --s) {
+      if(stack[s-1].left === stack[s]) {
+        return true
+      }
+    }
+    return false
+  }
+})
+
+//Update value
+iproto.update = function(value) {
+  var stack = this._stack
+  if(stack.length === 0) {
+    throw new Error("Can't update empty node!")
+  }
+  var cstack = new Array(stack.length)
+  var n = stack[stack.length-1]
+  cstack[cstack.length-1] = new RBNode(n._color, n.key, value, n.left, n.right, n._count)
+  for(var i=stack.length-2; i>=0; --i) {
+    n = stack[i]
+    if(n.left === stack[i+1]) {
+      cstack[i] = new RBNode(n._color, n.key, n.value, cstack[i+1], n.right, n._count)
+    } else {
+      cstack[i] = new RBNode(n._color, n.key, n.value, n.left, cstack[i+1], n._count)
+    }
+  }
+  return new RedBlackTree(this.tree._compare, cstack[0])
+}
+
+//Moves iterator backward one element
+iproto.prev = function() {
+  var stack = this._stack
+  if(stack.length === 0) {
+    return
+  }
+  var n = stack[stack.length-1]
+  if(n.left) {
+    n = n.left
+    while(n) {
+      stack.push(n)
+      n = n.right
+    }
+  } else {
+    stack.pop()
+    while(stack.length > 0 && stack[stack.length-1].left === n) {
+      n = stack[stack.length-1]
+      stack.pop()
+    }
+  }
+}
+
+//Checks if iterator is at start of tree
+Object.defineProperty(iproto, "hasPrev", {
+  get: function() {
+    var stack = this._stack
+    if(stack.length === 0) {
+      return false
+    }
+    if(stack[stack.length-1].left) {
+      return true
+    }
+    for(var s=stack.length-1; s>0; --s) {
+      if(stack[s-1].right === stack[s]) {
+        return true
+      }
+    }
+    return false
+  }
+})
+
+//Default comparison function
+function defaultCompare(a, b) {
+  if(a < b) {
+    return -1
+  }
+  if(a > b) {
+    return 1
+  }
+  return 0
+}
+
+//Build a tree
+function createRBTree(compare) {
+  return new RedBlackTree(compare || defaultCompare, null)
+}
+},{}],99:[function(require,module,exports){
+(function (Buffer){
+
+exports.compare = function (a, b) {
+
+  if(Buffer.isBuffer(a)) {
+    var l = Math.min(a.length, b.length)
+    for(var i = 0; i < l; i++) {
+      var cmp = a[i] - b[i]
+      if(cmp) return cmp
+    }
+    return a.length - b.length
+  }
+
+  return a < b ? -1 : a > b ? 1 : 0
+}
+
+function has(obj, key) {
+  return Object.hasOwnProperty.call(obj, key)
+}
+
+// to be compatible with the current abstract-leveldown tests
+// nullish or empty strings.
+// I could use !!val but I want to permit numbers and booleans,
+// if possible.
+
+function isDef (val) {
+  return val != null && val !== ''
+}
+
+var lowerBound = exports.lowerBound = function (range) {
+  return (
+      isDef(range.gt)                      ? range.gt
+    : isDef(range.gte)                     ? range.gte
+    : isDef(range.min)                     ? range.min
+    : isDef(range.start) && !range.reverse ? range.start
+    : isDef(range.end) && range.reverse    ? range.end
+    :                                        undefined
+  )
+}
+
+exports.lowerBoundInclusive = function (range) {
+  return isDef(range.gt) ? false : true
+}
+
+exports.upperBoundInclusive =
+  function (range) {
+    return isDef(range.lt) ? false : true
+  }
+
+var lowerBoundExclusive = exports.lowerBoundExclusive =
+  function (range) {
+    return isDef(range.gt) ? true : false
+  }
+
+var upperBoundExclusive = exports.upperBoundExclusive =
+  function (range) {
+    return isDef(range.lt) ? true : false
+  }
+
+var upperBound = exports.upperBound = function (range) {
+  return (
+      isDef(range.lt)                     ? range.lt
+    : isDef(range.lte)                    ? range.lte
+    : isDef(range.max)                    ? range.max
+    : isDef(range.start) && range.reverse ? range.start
+    : isDef(range.end) && !range.reverse  ? range.end
+    :                                       undefined
+  )
+}
+
+
+exports.contains = function (range, key, compare) {
+  compare = compare || exports.compare
+
+  var lb = lowerBound(range)
+  if(isDef(lb)) {
+    var cmp = compare(key, lb)
+    if(cmp < 0 || (cmp === 0 && lowerBoundExclusive(range)))
+      return false
+  }
+
+  var ub = upperBound(range)
+  if(isDef(ub)) {
+    var cmp = compare(key, ub)
+    if(cmp > 0 || (cmp === 0) && upperBoundExclusive(range))
+      return false
+  }
+
+  return true
+}
+
+exports.filter = function (range, compare) {
+  return function (key) {
+    return exports.contains(range, key, compare)
+  }
+}
+
+}).call(this,require("buffer").Buffer)
+},{"buffer":21}],100:[function(require,module,exports){
 "use strict";
 
 // Extends method
@@ -13864,7 +15910,7 @@ module.exports = extend;
 
 
 
-},{}],97:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 /*jshint bitwise:false*/
 /*global unescape*/
 
@@ -14465,28 +16511,28 @@ module.exports = extend;
     return SparkMD5;
 }));
 
-},{}],98:[function(require,module,exports){
-arguments[4][61][0].apply(exports,arguments)
-},{"./_stream_readable":99,"./_stream_writable":101,"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"core-util-is":102,"inherits":33}],99:[function(require,module,exports){
-module.exports=require(63)
-},{"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"buffer":20,"core-util-is":102,"events":18,"inherits":33,"isarray":103,"stream":24,"string_decoder/":104}],100:[function(require,module,exports){
-arguments[4][64][0].apply(exports,arguments)
-},{"./_stream_duplex":98,"core-util-is":102,"inherits":33}],101:[function(require,module,exports){
-arguments[4][65][0].apply(exports,arguments)
-},{"./_stream_duplex":98,"/Users/nolan/workspace/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":19,"buffer":20,"core-util-is":102,"inherits":33,"stream":24}],102:[function(require,module,exports){
-module.exports=require(66)
-},{"buffer":20}],103:[function(require,module,exports){
-module.exports=require(67)
-},{}],104:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
+arguments[4][63][0].apply(exports,arguments)
+},{"./_stream_readable":103,"./_stream_writable":105,"/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":20,"core-util-is":106,"inherits":35}],103:[function(require,module,exports){
+module.exports=require(65)
+},{"/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":20,"buffer":21,"core-util-is":106,"events":19,"inherits":35,"isarray":107,"stream":25,"string_decoder/":108}],104:[function(require,module,exports){
+arguments[4][66][0].apply(exports,arguments)
+},{"./_stream_duplex":102,"core-util-is":106,"inherits":35}],105:[function(require,module,exports){
+arguments[4][67][0].apply(exports,arguments)
+},{"./_stream_duplex":102,"/Users/daleharvey/src/pouchdb/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":20,"buffer":21,"core-util-is":106,"inherits":35,"stream":25}],106:[function(require,module,exports){
 module.exports=require(68)
-},{"buffer":20}],105:[function(require,module,exports){
+},{"buffer":21}],107:[function(require,module,exports){
+module.exports=require(69)
+},{}],108:[function(require,module,exports){
+module.exports=require(70)
+},{"buffer":21}],109:[function(require,module,exports){
 module.exports = require("./lib/_stream_transform.js")
 
-},{"./lib/_stream_transform.js":100}],106:[function(require,module,exports){
-module.exports=require(40)
-},{}],107:[function(require,module,exports){
-arguments[4][41][0].apply(exports,arguments)
-},{"./has-keys":106,"object-keys":109}],108:[function(require,module,exports){
+},{"./lib/_stream_transform.js":104}],110:[function(require,module,exports){
+module.exports=require(42)
+},{}],111:[function(require,module,exports){
+arguments[4][43][0].apply(exports,arguments)
+},{"./has-keys":110,"object-keys":113}],112:[function(require,module,exports){
 var hasOwn = Object.prototype.hasOwnProperty;
 var toString = Object.prototype.toString;
 
@@ -14528,9 +16574,9 @@ module.exports = function forEach(obj, fn) {
 };
 
 
-},{}],109:[function(require,module,exports){
-arguments[4][42][0].apply(exports,arguments)
-},{"./shim":111}],110:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
+arguments[4][44][0].apply(exports,arguments)
+},{"./shim":115}],114:[function(require,module,exports){
 var toString = Object.prototype.toString;
 
 module.exports = function isArguments(value) {
@@ -14548,7 +16594,7 @@ module.exports = function isArguments(value) {
 };
 
 
-},{}],111:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
 (function () {
 	"use strict";
 
@@ -14612,7 +16658,7 @@ module.exports = function isArguments(value) {
 }());
 
 
-},{"./foreach":108,"./isArguments":110}],112:[function(require,module,exports){
+},{"./foreach":112,"./isArguments":114}],116:[function(require,module,exports){
 var Transform = require('readable-stream/transform')
   , inherits  = require('util').inherits
   , xtend     = require('xtend')
@@ -14692,7 +16738,7 @@ module.exports.obj = through2(function (options, transform, flush) {
   return t2
 })
 
-},{"readable-stream/transform":105,"util":32,"xtend":107}],113:[function(require,module,exports){
+},{"readable-stream/transform":109,"util":33,"xtend":111}],117:[function(require,module,exports){
 'use strict';
 
 /**
@@ -14867,4 +16913,4 @@ exports.parse = function (str) {
   }
 };
 
-},{}]},{},[11])
+},{}]},{},[12])

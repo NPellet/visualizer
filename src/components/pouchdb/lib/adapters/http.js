@@ -4,28 +4,6 @@ var CHANGES_BATCH_SIZE = 25;
 
 var utils = require('../utils');
 var errors = require('../deps/errors');
-// parseUri 1.2.2
-// (c) Steven Levithan <stevenlevithan.com>
-// MIT License
-function parseUri(str) {
-  var o = parseUri.options;
-  var m = o.parser[o.strictMode ? "strict" : "loose"].exec(str);
-  var uri = {};
-  var i = 14;
-
-  while (i--) {
-    uri[o.key[i]] = m[i] || "";
-  }
-
-  uri[o.q.name] = {};
-  uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
-    if ($1) {
-      uri[o.q.name][$1] = $2;
-    }
-  });
-
-  return uri;
-}
 
 function encodeDocId(id) {
   if (/^_(design|local)/.test(id)) {
@@ -44,13 +22,10 @@ function preprocessAttachments(doc) {
     if (attachment.data && typeof attachment.data !== 'string') {
       if (typeof process === undefined || process.browser) {
         return new utils.Promise(function (resolve) {
-          var reader = new FileReader();
-          reader.onloadend = function (e) {
-            attachment.data = utils.btoa(
-              utils.arrayBufferToBinaryString(e.target.result));
+          utils.readAsBinaryString(attachment.data, function (binary) {
+            attachment.data = utils.btoa(binary);
             resolve();
-          };
-          reader.readAsArrayBuffer(attachment.data);
+          });
         });
       } else {
         attachment.data = attachment.data.toString('base64');
@@ -59,29 +34,13 @@ function preprocessAttachments(doc) {
   }));
 }
 
-parseUri.options = {
-  strictMode: false,
-  key: ["source", "protocol", "authority", "userInfo", "user", "password",
-        "host", "port", "relative", "path", "directory", "file", "query",
-        "anchor"],
-  q:   {
-    name:   "queryKey",
-    parser: /(?:^|&)([^&=]*)=?([^&]*)/g
-  },
-  parser: {
-    /* jshint maxlen: false */
-    strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
-    loose:  /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
-  }
-};
-
 // Get all the information you possibly can about the URI given by name and
 // return it as a suitable object.
 function getHost(name, opts) {
   // If the given name contains "http:"
   if (/http(s?):/.test(name)) {
     // Prase the URI into all its little bits
-    var uri = parseUri(name);
+    var uri = utils.parseUri(name);
 
     // Store the fact that it is a remote URI
     uri.remote = true;
@@ -201,6 +160,8 @@ function HttpPouch(opts, callback) {
       //check if the db exists
       if (err) {
         if (err.status === 404) {
+          utils.explain404(
+            'PouchDB is just detecting if the remote DB exists.');
           //if it doesn't, create it
           createDB();
         } else {
@@ -390,7 +351,8 @@ function HttpPouch(opts, callback) {
   });
 
   // Delete the document given by doc from the database given by host.
-  api.remove = utils.adapterFun('remove', function (docOrId, optsOrRev, opts, callback) {
+  api.remove = utils.adapterFun('remove',
+      function (docOrId, optsOrRev, opts, callback) {
     var doc;
     if (typeof optsOrRev === 'string') {
       // id, rev, opts, callback style
@@ -424,6 +386,10 @@ function HttpPouch(opts, callback) {
     }, callback);
   });
 
+  function encodeAttachmentId(attachmentId) {
+    return attachmentId.split("/").map(encodeURIComponent).join("/");
+  }
+
   // Get the attachment
   api.getAttachment =
     utils.adapterFun('getAttachment', function (docId, attachmentId, opts,
@@ -440,18 +406,21 @@ function HttpPouch(opts, callback) {
       docId = encodeDocId(docId);
     }
     opts.auto_encode = false;
-    api.get(docId + '/' + attachmentId, opts, callback);
+    api.get(docId + '/' + encodeAttachmentId(attachmentId), opts, callback);
   });
 
   // Remove the attachment given by the id and rev
   api.removeAttachment =
     utils.adapterFun('removeAttachment', function (docId, attachmentId, rev,
                                                    callback) {
+
+    var url = genDBUrl(host, encodeDocId(docId) + '/' +
+      encodeAttachmentId(attachmentId)) + '?rev=' + rev;
+
     ajax({
       headers: host.headers,
       method: 'DELETE',
-      url: genDBUrl(host, encodeDocId(docId) + '/' + attachmentId) + '?rev=' +
-           rev
+      url: url
     }, callback);
   });
 
@@ -472,10 +441,20 @@ function HttpPouch(opts, callback) {
       blob = rev;
       rev = null;
     }
-    var id = encodeDocId(docId) + '/' + attachmentId;
+    var id = encodeDocId(docId) + '/' + encodeAttachmentId(attachmentId);
     var url = genDBUrl(host, id);
     if (rev) {
       url += '?rev=' + rev;
+    }
+
+    if (typeof blob === 'string') {
+      try {
+        blob = utils.atob(blob);
+      } catch (err) {
+        // it's not base64-encoded, so throw error
+        return callback(utils.extend({}, errors.BAD_ARG,
+          {reason: "Attachments need to be base64 encoded"}));
+      }
     }
 
     var opts = {
@@ -784,7 +763,9 @@ function HttpPouch(opts, callback) {
         }
       }
     }
-
+    if (opts.continuous && api._useSSE) {
+      return  api.sse(opts, params, returnDocs);
+    }
     var xhr;
     var lastFetchedSeq;
 
@@ -911,6 +892,63 @@ function HttpPouch(opts, callback) {
       }
     };
   };
+
+  api.sse = function (opts, params, returnDocs) {
+    params.feed = 'eventsource';
+    params.since = opts.since || 0;
+    params.limit = opts.limit;
+    delete params.timeout;
+    var paramStr = '?' + Object.keys(params).map(function (k) {
+      return k + '=' + params[k];
+    }).join('&');
+    var url = genDBUrl(host, '_changes' + paramStr);
+    var source = new EventSource(url);
+    var results = {
+      results: [],
+      last_seq: false
+    };
+    var dispatched = false;
+    var open = false;
+    source.addEventListener('message', msgHandler, false);
+    source.onopen = function () {
+      open = true;
+    };
+    source.onerror = errHandler;
+    return {
+      cancel: function () {
+        if (dispatched) {
+          return dispatched.cancel();
+        }
+        source.removeEventListener('message', msgHandler, false);
+        source.close();
+      }
+    };
+    function msgHandler(e) {
+      var data = JSON.parse(e.data);
+      if (returnDocs) {
+        results.results.push(data);
+      }
+      results.last_seq = data.seq;
+      utils.call(opts.onChange, data);
+    }
+    function errHandler(err) {
+      source.removeEventListener('message', msgHandler, false);
+      if (open === false) {
+        // errored before it opened
+        // likely doesn't support EventSource
+        api._useSSE = false;
+        dispatched = api._changes(opts);
+        return;
+      }
+      source.close();
+      utils.call(opts.complete, err);
+    }
+    
+  };
+
+  api._useSSE = false;
+  // Currently disabled due to failing chrome tests in saucelabs
+  // api._useSSE = typeof global.EventSource === 'function';
 
   // Given a set of document/revision IDs (given by req), tets the subset of
   // those that do NOT correspond to revisions stored in the database.
