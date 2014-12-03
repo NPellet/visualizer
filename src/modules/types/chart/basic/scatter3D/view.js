@@ -1477,7 +1477,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
 
     _prepareHighlights: function(hl) {
       var self = this;
-      self._highlightParticleObjects = self._highlightParticleObjects || {};
+      self._highlightParticleObjects = {};
       var m = {};
 
       for(var i=0; i<hl.length; i++) {
@@ -1708,13 +1708,8 @@ define(['modules/default/defaultview','src/util/datatraversing',
       var self = this;
       if(self._data) {
         API.killHighlight( self.module.getId());
-        var highlightSet = {};
         if(self._data._highlight) {
           listenHighlightsBis(self._data._highlight);
-        }
-        var infoHighlights = _.flatten(_.pluck(self._data.info, '_highlight'))
-        if(infoHighlights) {
-          listenHighlightsBis(infoHighlights);
         }
       }
 
