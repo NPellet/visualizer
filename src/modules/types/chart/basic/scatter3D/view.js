@@ -4,6 +4,10 @@ define(['modules/default/defaultview','src/util/datatraversing',
   'src/util/api','src/util/util',
   'lodash', 'threejs', 'src/util/debug', 'chroma',
   'lib/threejs/TrackballControls'], function(Default, Traversing, API, Util, _, THREE, Debug, chroma) {
+
+  // Allow cross-origin images
+  THREE.ImageUtils.crossOrigin = '';
+
   function generateRandomArray(n, min, max) {
     var result = [];
     for(var i=0; i<n; i++) {
