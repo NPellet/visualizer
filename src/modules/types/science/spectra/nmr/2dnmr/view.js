@@ -72,15 +72,12 @@ define([
         blank: {
             jcampx: function (varname) {
                 this.nmr.removeSerie2DX(varname);
-                this.redraw();
             },
             jcampy: function (varname) {
                 this.nmr.removeSerie2DY(varname);
-                this.redraw();
             },
             jcamp2d: function (varname) {
                 this.nmr.removeSerie2D(varname);
-                this.redraw();
             }
         },
 
