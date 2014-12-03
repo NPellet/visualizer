@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-02T22:59Z
+ * Date: 2014-12-03T13:26Z
  */
 
 (function( global, factory ) {
@@ -12200,7 +12200,7 @@ build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve )
       }
 
       this.points = points;
-      this.lastSum = sum;
+      this.lastSum = Math.abs( sum );
 
       var lastY = firstY,
         lastX = this.lastX;

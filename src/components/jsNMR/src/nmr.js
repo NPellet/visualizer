@@ -82,7 +82,8 @@
 
 			for( var i = 0, l = nmr.integrals[ mode ].length; i < l ; i ++ ) {
 
-				nmr.integrals[ mode ][ i ].ratio = sumMax == 0 ? 1 : nmr.integrals[ mode ][ i ].lastSum / sumMax;
+				nmr.integrals[ mode ][ i ].ratio = Math.abs( sumMax == 0 ? 1 : nmr.integrals[ mode ][ i ].lastSum / sumMax );
+
 				nmr.integrals[ mode ][ i ].setPosition();
 
 				if( nmr.integralBasis ) {
