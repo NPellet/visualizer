@@ -1,6 +1,6 @@
 {
   "name": "ml",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": [
     "dist/ml.js",
     "dist/ml.min.js"
@@ -28,13 +28,14 @@
     "gulpfile.js",
     "index.js"
   ],
-  "_release": "0.1.1",
+  "_release": "0.1.2",
   "_resolution": {
     "type": "version",
-    "tag": "v0.1.1",
-    "commit": "ecc0d1117652ec075d58d8fe0cf33c7a3276c243"
+    "tag": "v0.1.2",
+    "commit": "7067a1176fe968c62354bea12768e84e96f61ae3"
   },
   "_source": "git://github.com/mljs/ml.git",
-  "_target": "0.1.1",
-  "_originalSource": "ml"
+  "_target": "0.1.2",
+  "_originalSource": "ml",
+  "_direct": true
 }
