@@ -1,3 +1,8 @@
+HEAD
+================
+
+* parallel_coordinates : add option to prevent highlight of hidden lines
+
 2.9.6 / 2014-12-03
 ================
 * fix cross-origin image loading issue in scatter 3d
