@@ -36,7 +36,7 @@
     "lodash": "~2.4.1",
     "ml": "0.1.1",
     "modernizr": "~2.8.3",
-    "onde": "git@github.com:targos/onde.git",
+    "onde": "cheminfo/onde",
     "papa-parse": "~3.1.2",
     "pouchdb": "^3.1.0",
     "requirejs": "~2.1.11",

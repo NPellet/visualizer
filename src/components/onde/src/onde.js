@@ -463,6 +463,7 @@ onde.Onde.prototype.renderFieldValue = function (fieldName, fieldInfo, parentNod
             if (fieldInfo['default']) {
                 //TODO: Check the type
                 fieldValueNode.attr('placeholder', fieldInfo['default']);
+                fieldValueNode.val(fieldInfo['default']);
             }
             /*if (fieldInfo.format) {
                 fieldValueNode.addClass(fieldInfo.format);
@@ -509,6 +510,7 @@ onde.Onde.prototype.renderFieldValue = function (fieldName, fieldInfo, parentNod
             if (fieldInfo['default']) {
                 //TODO: Check the type
                 fieldValueNode.attr('placeholder', fieldInfo['default']);
+                fieldValueNode.val(fieldInfo['default']);
             }
         }
         fieldValueNode.attr('data-type', fieldInfo.type);
