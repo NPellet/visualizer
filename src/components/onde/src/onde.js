@@ -701,7 +701,6 @@ onde.Onde.prototype.renderObjectPropertyField = function (namespace, baseId, fie
             attr('title', this.tr("Required field")).
             text('*'));
     }
-    labelN.append(': ');
     var actionMenu = '';
     //TODO: More actions (only if qualified)
     if (fieldInfo._deletable) {
