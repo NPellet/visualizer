@@ -17,7 +17,7 @@ requirejs.config({
 		ChemDoodle:         'lib/chemdoodle/ChemDoodleWeb-unpacked',
 		pouchdb:            'components/pouchdb/dist/pouchdb.min',
 		uri:                'components/uri.js/src',
-		underscore:         'components/underscore/underscore',
+		underscore:         'components/underscore/underscore-min',
         lodash:             'components/lodash/dist/lodash.min',
         modernizr:          'components/modernizr/modernizr',
         bowser:             'components/bowser/bowser.min',
