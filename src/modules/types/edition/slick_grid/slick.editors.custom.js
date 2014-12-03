@@ -6,6 +6,16 @@
 
 define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Util) {
     Util.loadCss("./components/spectrum/spectrum.css");
+
+    function setItemId(newItem, grid) {
+        Object.defineProperty(newItem, grid.module.view.idPropertyName, {
+            value: 'id_'+grid.module.view.getNextIncrementalId(),
+            enumerable: false,
+            writable: false,
+            configurable: false
+        });
+    }
+
     (function ($) {
         // register namespace
         $.extend(true, window, {
@@ -21,7 +31,10 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
             }
         });
 
+
+
         function ColorEditor(args) {
+            this.args = args;
             var $cont, $input, defaultValue;
             this.init = function() {
                 $cont = $('<div/>');
@@ -110,7 +123,8 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
 
                 if(isNew) {
                     var newItem = {};
-                    newItem[args.grid.module.view.idPropertyName] = 'id_'+args.grid.module.view.getNextIncrementalId();
+                    setItemId(newItem, this.args.grid);
+                    //newItem[args.grid.module.view.idPropertyName] = 'id_'+args.grid.module.view.getNextIncrementalId();
                     newItem = DataObject.check(newItem, true);
                     newItem.setChildSync(args.column.jpath, newState);
                     args.grid.module.view.slick.data.addItem(newItem);
@@ -167,7 +181,8 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
 
                 if(isNew) {
                     var newItem = {};
-                    newItem[this.args.grid.module.view.idPropertyName] = 'id_'+this.args.grid.module.view.getNextIncrementalId();
+                    setItemId(newItem, this.args.grid);
+                    //newItem[this.args.grid.module.view.idPropertyName] = 'id_'+this.args.grid.module.view.getNextIncrementalId();
                     newItem = DataObject.check(newItem, true);
                     newItem.setChildSync(this.args.column.jpath, newState);
                     this.args.grid.module.view.slick.data.addItem(newItem);
@@ -256,7 +271,8 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
 
         if(isNew) {
             var newItem = {};
-            newItem[this.args.grid.module.view.idPropertyName] = 'id_'+this.args.grid.module.view.getNextIncrementalId();
+            setItemId(newItem, this.args.grid);
+            //newItem[this.args.grid.module.view.idPropertyName] = 'id_'+this.args.grid.module.view.getNextIncrementalId();
             newItem = DataObject.check(newItem, true);
             newItem.setChildSync(this.args.column.jpath, state);
             this.args.grid.module.view.slick.data.addItem(newItem);
@@ -326,7 +342,7 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
 
     function booleanLoadValue(item) {
         this.defaultValue = item.getChildSync(this.args.column.jpath);
-        if (this.defaultValue) {
+        if (this.defaultValue.get()) {
             this.$input.attr("checked", "checked");
         } else {
             this.$input.removeAttr("checked");
@@ -345,7 +361,7 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
         state = !!state;
         defaultApplyValue.call(this, item, state);
     }
-
-
 });
+
+
 

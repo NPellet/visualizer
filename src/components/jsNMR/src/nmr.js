@@ -79,9 +79,10 @@
 				sumMax = Math.max( sumMax, nmr.integrals[ mode ][ i ].lastSum );
 			}
 
+
 			for( var i = 0, l = nmr.integrals[ mode ].length; i < l ; i ++ ) {
 
-				nmr.integrals[ mode ][ i ].ratio = nmr.integrals[ mode ][ i ].lastSum / sumMax;
+				nmr.integrals[ mode ][ i ].ratio = sumMax == 0 ? 1 : nmr.integrals[ mode ][ i ].lastSum / sumMax;
 				nmr.integrals[ mode ][ i ].setPosition();
 
 				if( nmr.integralBasis ) {
@@ -131,7 +132,8 @@
 				integral.integral = nmrint;
 				nmrint.data.pos = integral.getFromData( 'pos' );
 				nmrint.data.pos2 = integral.getFromData( 'pos2' );//integral.getFromData( 'pos2' );
-			
+				nmrint.originalShape = integral;
+
 			} );
 
 		//	 poses.push( integral.getFromData('pos') );
@@ -163,7 +165,7 @@
 
 						nmrint.data.pos = shape.getFromData( 'pos' );
 						nmrint.data.pos2 = shape.getFromData( 'pos2' );
-
+						nmrint.originalShape = shape;
 					});	
 				});
 			}
@@ -210,9 +212,16 @@
 
 		function integralRemoved( nmr, mode, peak ) {
 
-			if( peak.integral ) {
-				peak.integral.kill();
-				nmr.integrals[ mode ].splice( nmr.integrals[ mode ].indexOf( peak.integral ), 1 );
+			if( peak.integral) {
+				var i = peak.integral;
+				peak.integral = false;
+				i.originalShape = false;
+
+				if( i._inDom ) {
+					i.kill();
+				}
+
+				nmr.integrals[ mode ].splice( nmr.integrals[ mode ].indexOf( i ), 1 );
 			}
 
 			if( peak.syncTo ) {
@@ -263,6 +272,7 @@
 			return { 
 
 				shapeOptions: {
+
 					onCreate: function() {
 						integralCreated( nmr, mode, this );
 					},
@@ -273,16 +283,26 @@
 
 					onMove: function() {
 						integralMoved( nmr, mode, this );
-					},
+					}/*,
 
 					onRemove: function() {
 						integralRemoved( nmr, mode, this );
-					}
+					}*/
 				}
 			}
 		}
 
+		function removeSerie( nmr, axis, name ) {
 
+			var serie;
+			if( ( serie = nmr.graphs[ axis ].getSerie( name ) ) ) {
+				serie.kill();
+			}
+
+			nmr.graphs[ axis ].redraw();
+			nmr.graphs[ axis ].drawSeries();
+
+		}
 
 			
 		function doNMR( nmr ) { 
@@ -516,13 +536,15 @@
 			if( this.graphs[ 'x'].getSerie( name ) ) {
 				return;
 			}
-			var serie_x = this.graphs['x'].newSerie(name, { label: options.label, useSlots: true })
+			var serie_x = this.graphs['x'].newSerie(name, $.extend( { useSlots: true }, options ) )
 				.setLabel( "My serie" )
 				.autoAxis()
 				.setData( data );
 
 			serie_x.getYAxis().setDisplay( false ).togglePrimaryGrid( false ).toggleSecondaryGrid( false );
 			serie_x.getXAxis().flip(true).setLabel('ppm').togglePrimaryGrid( false ).toggleSecondaryGrid( false ).setTickPosition( 'outside' )
+
+			serie_x.XIsMonotoneous();
 
 			if( options.lineColor ) {
 				serie_x.setLineColor( options.lineColor );
@@ -537,7 +559,6 @@
 			}
 		}
 
-
 		NMR.prototype.setSerie2DY = function( name, data, options ) {
 
 	
@@ -545,7 +566,8 @@
 				return;
 			}
 
-			var serie_y = this.graphs['y'].newSerie(name, { label: options.label, flip: true, useSlots: true } )
+			var serie_y = this.graphs['y']
+				.newSerie(name, $.extend( { useSlots: true }, options ) )
 				.setLabel( "My serie" )
 				.setXAxis( this.graphs['y'].getBottomAxis( ) )
 				.setYAxis( this.graphs['y'].getRightAxis( ) )
@@ -554,6 +576,7 @@
 			serie_y.getYAxis().setLabel('ppm').togglePrimaryGrid( false ).toggleSecondaryGrid( false ).flip( true ).setTickPosition( 'outside' );
 			serie_y.getXAxis().togglePrimaryGrid( false ).toggleSecondaryGrid( false ).setDisplay( false ).flip( true );
 
+			serie_y.XIsMonotoneous();
 
 			if( options.lineColor ) {
 				serie_y.setLineColor( options.lineColor );
@@ -578,7 +601,7 @@
 				return;
 			}
 
-			var serie_2d = this.graphs[ '_2d' ].newSerie(name, { label: options.label }, 'contour' )
+			var serie_2d = this.graphs[ '_2d' ].newSerie(name, options, 'contour' )
 				.setLabel( "My serie" )
 				.autoAxis()
 				.setData( data )
@@ -627,7 +650,6 @@
 			this.shapeZoom.setSerie( serie_2d );
 			this.shapeZoom.addSerie( serie_2d );
 
-
 			if( options.lineWidth ) {
 				serie_2d.setLineWidth( options.lineWidth );
 			}
@@ -635,9 +657,23 @@
 			if( options.setLineStyle ) {
 				serie_2d.setLineStyle( options.lineStyle );
 			}
+		}
 
 
+		NMR.prototype.removeSerie2DX = function( name ) {
+			removeSerie( this, 'x', name );
+		}
 
+		NMR.prototype.removeSerie2DY = function( name ) {
+			removeSerie( this, 'y', name );
+		}
+
+		NMR.prototype.removeSerie2D = function( name ) {
+			removeSerie( this, '_2d', name );
+		}
+
+		NMR.prototype.removeSerieX = function( name ) {
+			removeSerie( this, 'x', name );
 		}
 
 		NMR.prototype.redrawAll2D = function() {
@@ -675,7 +711,7 @@
 
 			}
 
-			var serie_x = this.graphs[ 'x' ].newSerie(name, { label: options.label, useSlots: true } )
+			var serie_x = this.graphs[ 'x' ].newSerie(name, $.extend( { useSlots: true }, options ) )
 				.setLabel( "My serie" )
 				.autoAxis()
 				.setData( data )
@@ -696,6 +732,8 @@
 			}
 
 			//serie_x.degrade( 1 ).kill()
+
+			serie_x.XIsMonotoneous();
 
 			serie_x.getYAxis().setDisplay( false ).togglePrimaryGrid( false ).toggleSecondaryGrid( false );
 			serie_x.getXAxis().flip(true).setLabel('ppm').togglePrimaryGrid( false ).toggleSecondaryGrid( false ).setTickPosition( 'outside' )
@@ -1120,6 +1158,16 @@
 					'graph.plugin.shape': { shift: true, ctrl: false }
 				},
 
+
+				wheel: {
+					type: 'plugin',
+					plugin: 'graph.plugin.zoom',
+					options: {
+						direction: 'x'
+					}
+				},
+
+
 				onBeforeNewShape: function() {
 
 					if( ! self.graphs['_2d'].selectedSerie ) {
@@ -1197,7 +1245,7 @@
 					type: 'plugin',
 					plugin: 'graph.plugin.zoom',
 					options: {
-						direction: 'x'
+						direction: 'y'
 					}
 				},
 
@@ -1277,6 +1325,16 @@
 					}
 				},
 
+
+				wheel: {
+					type: 'plugin',
+					plugin: 'graph.plugin.zoom',
+					options: {
+						direction: 'x'
+					}
+				},
+
+
 				pluginAction: {
 					'graph.plugin.zoom': { shift: false, ctrl: false },
 					'graph.plugin.shape': { shift: true, ctrl: false }
@@ -1293,6 +1351,21 @@
 
 
 			this.graphs[ 'x' ].setHeight(300);
+
+			this.graphs[ 'x' ].shapeHandlers.onRemoved.push( function( shape ) {
+
+
+				if( shape.integral ) {
+
+					integralRemoved( self, 'x', shape );
+
+				} else if( shape.originalShape ) {
+					
+					shape.originalShape.kill();
+					
+				}
+		
+			});
 
 		
 		

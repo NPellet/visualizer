@@ -38,7 +38,7 @@ define([ ], function () {
             this.div.css('background-color', color);
 
             // from http://www.w3.org/WAI/ER/WD-AERT/#color-contrast
-            var brightness = (this.value[0]/255*299)+(this.value[1]/255*587)+(this.value[2]/255*114);
+            var brightness = ((this.value[0]/255*299)+(this.value[1]/255*587)+(this.value[2]/255*114))/this.value[3];
             this.div.css('color', (brightness < 500) ? 'white' : 'black');
 
         }

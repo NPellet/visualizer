@@ -78,7 +78,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
             this.slick = {};
             this.colConfig = this.module.getConfiguration('cols');
-            this.idPropertyName = 'sgid';
+            this.idPropertyName = '_sgid';
             this.resolveReady();
         },
 
@@ -164,6 +164,8 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 asyncPostRenderDelay: 0,
                 defaultColumnWidth: that.module.getConfiguration('slick.defaultColumnWidth') || 80,
                 dataItemColumnValueExtractor: function(item, coldef) {
+                    // In order to use jpath, we return the row instead of the column
+                    // TODO: use jpath in coldef here?
                     return item;
                 },
                 explicitInitialization: true,
@@ -186,6 +188,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             list: function( moduleValue ) {
                 var that =  this;
                 this.module.data = moduleValue;
+                this._highlights = _.pluck(this.module.data, '_highlight');
 
                 this.slick.columns = this.getSlickColumns();
                 this.slick.options = this.getSlickOptions();
@@ -274,7 +277,6 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             //    that.module.controller.onRowNew(row);
                             //    that._resetDeleteRowListeners();
                             //});
-
                         });
 
                         that.grid.onViewportChanged.subscribe(function() {
@@ -300,11 +302,21 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
 
                         that.grid.onMouseEnter.subscribe(function(e) {
+                            // When scrolling fast, no mouseLeave event takes place
+                            // Therefore we also have to un-highlight here
+                            if(that._hl) {
+                                API.highlightId(that._hl, 0);
+                            }
+
+                            that.count = that.count === undefined ? 0 : that.count;
+                            that.count++;
+                            that.hovering = true;
                             var itemInfo = that._getItemInfoFromEvent(e);
                             if(!itemInfo) return;
 
 
                             var hl = itemInfo.item._highlight;
+                            that._hl = hl;
                             if(hl) {
                                 API.highlightId(hl,1);
                                 lastHighlight = hl;
@@ -314,6 +326,10 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         });
 
                         that.grid.onMouseLeave.subscribe(function(e) {
+                            that._e = e;
+                            that.count--;
+                            console.log('count', that.count);
+                            that.hovering = false;
                             var itemInfo = that._getItemInfoFromEvent(e);
                             if(!itemInfo) return;
                             var hl = itemInfo.item._highlight;
@@ -543,12 +559,33 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             };
         },
 
+        _selectHighlight: function(key) {
+            if(this.hovering) {
+                return;
+            }
+            var that = this;
+            var idx = this._highlights.indexOf(key[0]);
+            this.lastViewport = this.grid.getViewport();
+            if(idx > -1) {
+                var item = that.slick.data.getItemByIdx(idx);
+                var gridRow = that.slick.data.mapIdsToRows([item[that.idPropertyName]])[0];
+                if(!gridRow) return;
+                if (gridRow < this.lastViewport.top || gridRow > this.lastViewport.bottom) {
+                    // navigate
+                    this.grid.scrollRowToTop(gridRow);
+                }
+
+                this.grid.setActiveCell(gridRow, 0);
+            }
+        },
+
         _drawHighlight: function(key) {
             var that = this;
             if(!key instanceof Array) {
                 key = [key];
             }
             var tmp = {};
+            this._selectHighlight(key);
             this.lastViewport = this.grid.getViewport();
             for(var i=this.lastViewport.top; i<=this.lastViewport.bottom; i++ ) {
                 var item = this.grid.getDataItem(i);
@@ -559,38 +596,23 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     tmp[i] = that.baseCellCssStyle;
                 }
             }
+
             this.grid.setCellCssStyles(key.join(''), tmp);
         },
 
         _undrawHighlight: function(key) {
             this.grid.removeCellCssStyles(key);
+
         },
 
 
         _activateHighlights: function() {
             var that = this;
             var hl = _(this.module.data).pluck('_highlight').uniq().value();
-            var cols = this.grid.getColumns();
-            var base = {};
-            for(var i=0; i<cols.length; i++) {
-                base[cols[i].id] = 'highlighted-cell';
-            }
-
-            var r = {};
-            for(var j=0; j<this.module.data.length; j++) {
-                var h= this.module.data[j]._highlight;
-                if(!h) continue;
-                if(!r[h]) r[h] = {};
-
-                r[h][j.toString()] = base;
-            }
-
-            this.cellStyles = r;
-
 
             API.killHighlight(this.module.getId());
 
-            for(i=0; i<hl.length; i++) {
+            for(var i=0; i<hl.length; i++) {
                 (function(i) {
                     API.listenHighlight({_highlight: hl[i]}, function(onOff, key) {
                         if(onOff) {
@@ -620,7 +642,13 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         generateUniqIds: function() {
             if(!this.module.data) return;
             for(var i=0; i<this.module.data.length; i++) {
-                this.module.data[i][this.idPropertyName] = 'id_' + this.incrementalId;
+                Object.defineProperty(this.module.data[i], this.idPropertyName, {
+                    value: 'id_' + this.incrementalId,
+                    writable: false,
+                    configurable: false,
+                    enumerable: false
+                });
+                //this.module.data[i][this.idPropertyName] = 'id_' + this.incrementalId;
                 this.incrementalId++;
             }
         },

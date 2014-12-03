@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-01T08:44Z
+ * Date: 2014-12-02T22:59Z
  */
 
 (function( global, factory ) {
@@ -30,14 +30,20 @@
 		var build = [ ];
 
 		build[ './jquery' ] = $;
-build['./dependencies/eventEmitter/EventEmitter'] = ( function() { /*!
+/* 
+ * Build: new source file 
+ * File name : dependencies/eventEmitter/EventEmitter
+ * File path : /Users/normanpellet/Documents/Web/graph/src/dependencies/eventEmitter/EventEmitter.js
+ */
+
+build['./dependencies/eventEmitter/EventEmitter'] = ( function( ) { /*!
  * EventEmitter v4.2.9 - git.io/ee
  * Oliver Caldwell
  * MIT license
  * @preserve
  */
 
-( function() {
+
   
 
   /**
@@ -482,7 +488,7 @@ build['./dependencies/eventEmitter/EventEmitter'] = ( function() { /*!
     exports.EventEmitter = originalGlobalValue;
     return EventEmitter;
   };
-/*
+  /*
   // Expose the class either via AMD, CommonJS or the global object
   if ( typeof define === 'function' && define.amd ) {
     define( function() {
@@ -495,11 +501,17 @@ build['./dependencies/eventEmitter/EventEmitter'] = ( function() { /*!
   }*/
 
   exports.EventEmitter = EventEmitter;
-  
-}.call( this ) ); return this.EventEmitter; } ) ();
 
-define("dependencies/eventEmitter/EventEmitter", function(){});
+  return EventEmitter;
 
+ } ) ( build["./dependencies/eventEmitter/jquery"] );
+
+
+// Build: End source file (dependencies/eventEmitter/EventEmitter) 
+
+
+
+;
 /* 
  * Build: new source file 
  * File name : graph.axis
@@ -4361,7 +4373,9 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
     removeShapes: function() {
       for ( var i = 0, l = this.shapes.length; i < l; i++ ) {
-        this.shapes[ i ].kill( true );
+        if ( this.shapes[ i ] && this.shapes[ i ].kill ) {
+          this.shapes[ i ].kill( true );
+        }
       }
       this.shapes = [];
     },
@@ -6591,11 +6605,13 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
       var serie;
       if ( ( serie = this.graph.getSelectedSerie() ) ) {
 
-        serie.getYAxis().handleMouseWheel( delta, e );
-        return;
+        if ( serie.getYAxis().handleMouseWheel( delta, e ) ) {
+          return;
+        }
       }
 
       this.graph._applyToAxes( 'handleMouseWheel', [ delta, e ], false, true );
+
       this.graph.drawSeries();
     },
 
@@ -7352,17 +7368,19 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
           }
 
           // OPTIMIZATION START
-          if ( !this._optimize_before( xpx, ypx ) ) {
+          if ( !this._optimize_before( xpx2, ypx2 ) ) {
             continue;
+
           }
           // OPTIMIZATION END
 
           this._addPoint( xpx2, ypx2 );
 
           // OPTIMIZATION START
-          if ( !this._optimize_after( xpx, ypx ) ) {
+          if ( !this._optimize_after( xpx2, ypx2 ) ) {
             toBreak = true;
             break;
+
           }
           // OPTIMIZATION END
 
@@ -7379,6 +7397,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         }
 
       }
+
     },
 
     _draw_slot: function() {
@@ -7470,11 +7489,12 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
     _optimize_before: function( xpx, ypx ) {
 
-      if ( !this.optimizeMonotoneous ) {
+      if ( !this._optimizeMonotoneous ) {
         return true;
       }
 
       if ( xpx < 0 ) {
+
         this._optimizeBuffer = [ xpx, ypx ];
         return false;
       }
@@ -7489,10 +7509,10 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       return true;
     },
 
-    _optimize_after: function() {
+    _optimize_after: function( xpx, ypx ) {
 
-      if ( this.optimizeMonotoneous && xpx > this.optimizeMaxPxX ) {
-        toBreak = true;
+      if ( this._optimizeMonotoneous && xpx > this._optimizeMaxPxX ) {
+
         return false;
       }
 
@@ -10474,6 +10494,7 @@ build['./shapes/graph.shape'] = ( function( ) {
         this.graph._removeShape( this );
       }
 
+      this._inDom = false;
       this.callHandler( "onRemoved", this );
 
     },
@@ -12128,7 +12149,7 @@ build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve )
             continue;
           }
 
-          sum += Math.abs( ( this.serie.data[ i ][ j + incrXFlip ] - lastXVal ) * ( this.serie.data[ i ][ j + incrYFlip ] - firstYVal ) * 0.5 );
+          sum += ( this.serie.data[ i ][ j + incrXFlip ] - lastXVal ) * ( this.serie.data[ i ][ j + incrYFlip ] ) * 0.5;
 
           if ( x == lastX && y == lastY ) {
             continue;
@@ -12163,9 +12184,13 @@ build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve )
       var integration = this.maxIntegration || sum;
 
       for ( var i = 0, l = points.length; i < l; i++ ) {
-
+        //   console.log( points[ i ][ 1 ] / sum );
         points[ i ][ 1 ] = baseLine - ( points[ i ][ 1 ] / sum ) * ( this.maxPx ) * ( sum / integration ) * this.ratio;
 
+        /* console.log( this.ratio, integration );
+        console.log( this.maxPx );
+        console.log( points[ i ][ 1 ] );
+*/
         if ( i == 0 ) {
           this.firstPointY = points[ i ][ 1 ];
         }

@@ -91,7 +91,7 @@ module.exports = function (grunt) {
                             './bowser/bowser.min.js',
                             './jquery-cookie/jquery.cookie.js',
                             './chemcalc/lib.js',
-                            './jsgraph/dist/jsgraph.js',
+                            './jsgraph/dist/**',
                             './jqueryui-touch-punch/jquery.ui.touch-punch.min.js',
                             './jcampconverter/build/jcampconverter.js',
                             './jsbarcode/jsBarcode.min.js',
@@ -101,7 +101,9 @@ module.exports = function (grunt) {
                             './jquery-tmpl/**',
                             './setImmediate/setImmediate.js',
                             './chroma-js/chroma.min.js',
-                            './sdf-parser/**'
+                            './sdf-parser/**',
+                            './async/lib/async.js',
+                            ['./jsNMR/lib/components/VisuMol/**', './jsNMR/src/**', './jsNMR/dist/**']
                         ],
 
                         dest: './build/components/'

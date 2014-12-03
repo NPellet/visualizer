@@ -69,6 +69,22 @@ define([
             this.redraw();*/
         },
 
+        blank: {
+            jcampx: function (varname) {
+                this.nmr.removeSerie2DX(varname);
+            },
+            jcampy: function (varname) {
+                this.nmr.removeSerie2DY(varname);
+            },
+            jcamp2d: function (varname) {
+                this.nmr.removeSerie2D(varname);
+            },
+            jcampxy: function (varname) {
+                this.nmr.removeSerie2DX(varname);
+                this.nmr.removeSerie2DY(varname);
+            }
+        },
+
         update: {
 
             jcampx: function (moduleValue) {
@@ -82,7 +98,7 @@ define([
             },
 
             jcampxy: function (moduleValue) {
-             //   this.addSerieJcampXOrY(moduleValue, true, true);
+                this.addSerieJcampXOrY(moduleValue, true, true);
             },
 
             jcamp2d: function (moduleValue, varName) {

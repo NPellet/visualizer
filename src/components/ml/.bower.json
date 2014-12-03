@@ -35,7 +35,6 @@
     "commit": "ecc0d1117652ec075d58d8fe0cf33c7a3276c243"
   },
   "_source": "git://github.com/mljs/ml.git",
-  "_target": "v0.1.1",
-  "_originalSource": "ml",
-  "_direct": true
+  "_target": "0.1.1",
+  "_originalSource": "ml"
 }

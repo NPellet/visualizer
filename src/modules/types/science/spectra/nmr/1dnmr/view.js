@@ -33,6 +33,12 @@ define([
             this.nmr.resize1DTo(this.width, this.height);
         },
 
+        blank: {
+            jcamp: function (varname) {
+                this.nmr.removeSerieX(varname);
+            }
+        },
+
         update: {
             jcamp: function (moduleValue, varname) {
                 var self = this;
