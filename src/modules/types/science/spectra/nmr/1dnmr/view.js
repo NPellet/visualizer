@@ -35,11 +35,7 @@ define([
 
         blank: {
             jcamp: function (varname) {
-                var serie = this.nmr.graphs['x'].getSerie(varname);
-                if (serie) {
-                    serie.kill();
-                    this.nmr.graphs['x'].removeShapes();
-                }
+                this.nmr.removeSerieX(varname);
             }
         },
 

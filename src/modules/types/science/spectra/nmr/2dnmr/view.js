@@ -71,13 +71,16 @@ define([
 
         blank: {
             jcampx: function (varname) {
-                this.removeSerieJcamp(varname, 'x');
+                this.nmr.removeSerie2DX(varname);
+                this.redraw();
             },
             jcampy: function (varname) {
-                this.removeSerieJcamp(varname, 'y');
+                this.nmr.removeSerie2DY(varname);
+                this.redraw();
             },
             jcamp2d: function (varname) {
-                this.removeSerieJcamp(varname, '_2d');
+                this.nmr.removeSerie2D(varname);
+                this.redraw();
             }
         },
 
@@ -185,15 +188,6 @@ define([
 
                 self.redraw();
             });
-        },
-
-        removeSerieJcamp: function (varname, axis) {
-            var serie = this.nmr.graphs[axis].getSerie(varname);
-            if (serie) {
-                serie.kill();
-                this.nmr.graphs[axis].removeShapes();
-            }
-            this.redraw();
         },
 
         redraw: function () {
