@@ -10,6 +10,8 @@
 * spectra displayer : add mouse over shape event and variable out
 * New library : [async](https://github.com/caolan/async)
 * modules : view.onResize now receives width and height arguments
+* scatter3D: Can set x,y,z,color,size with jpaths. Performance fix. Better testcase.
+* slickgrid: Highlighted row is scrolled to.
 
 2.9.3 / 2014-11-26
 =================
