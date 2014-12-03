@@ -31,7 +31,10 @@ requirejs.config({
 			exports: 'd3'
 		},
 		threejs: {
-			exports: 'THREE'
+			exports: 'THREE',
+			init: function() {
+				this.THREE.ImageUtils.crossOrigin = '';
+			}
 		},
 		'components/x2js/xml2json.min': {
 			exports: 'X2JS'
