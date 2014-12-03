@@ -1,4 +1,5 @@
 2.9.6 / 2014-12-03
+================
 * fix cross-origin image loading issue in scatter 3d
 * function plotter: make pref editable with action in
 
