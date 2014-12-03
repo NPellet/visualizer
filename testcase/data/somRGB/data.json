@@ -1,0 +1,24 @@
+{
+  "defaultOptions": {
+    "colors": {
+      "train": 1000,
+      "test": 100
+    },
+    "som": {
+      "x": 10,
+      "y": 10,
+      "it": 5
+    }
+  },
+  "options": {
+    "colors": {
+      "train": 1000,
+      "test": 100
+    },
+    "som": {
+      "x": 10,
+      "y": 10,
+      "it": 5
+    }
+  }
+}
