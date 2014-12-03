@@ -299,6 +299,9 @@
 				serie.kill();
 			}
 
+			nmr.graphs[ axis ].redraw();
+			nmr.graphs[ axis ].drawSeries();
+
 		}
 
 			

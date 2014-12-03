@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-02T22:55Z
+ * Date: 2014-12-02T22:59Z
  */
 
 (function( global, factory ) {
@@ -1808,11 +1808,14 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
       for ( var i = 0, l = this.series.length; i < l; i++ ) { // These are the series on the axis itself !!
         this.series[ i ].draw();
       }
+
     },
 
     _setShift: function() {
+
       var xshift = this.isLeft() ? this.getShift() : this.graph.getWidth() - this.graph.getPaddingRight() - this.graph.getPaddingLeft() - this.getShift();
       this.group.setAttribute( 'transform', 'translate(' + xshift + ' 0)' );
+
     },
 
     isLeft: function() {
@@ -3116,7 +3119,7 @@ build['./graph.legend'] = ( function( ) {
           g.setAttribute( 'transform', "translate(0, " + ( i * 16 + self.options.paddingTop ) + ")" );
 
           self.subG.appendChild( g );
-          console.log( series[ j ].getName(), j, series[ j ].options.lineColor );
+
           var line = series[ j ].getSymbolForLegend();
           var marker = series[ j ].getMarkerForLegend();
           var text = series[ j ].getTextForLegend();
@@ -5612,6 +5615,7 @@ build['./graph._serie'] = ( function( ) {
       }
 
       if ( this.graph.legend ) {
+
         this.graph.legend.update();
       }
     },
@@ -5785,7 +5789,7 @@ build['./graph._serie'] = ( function( ) {
     getSymbolForLegend: function() {
 
       if ( !this.lineForLegend ) {
-        console.log( this.options.lineColor );
+
         var line = document.createElementNS( this.graph.ns, 'line' );
         this.applyLineStyle( line );
 
@@ -6848,7 +6852,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
       this.shown = true;
       this.options = $.extend( true, {}, GraphSerie.prototype.defaults, options );
-      console.log( this.name, this.options.lineColor );
+
       this.data = [];
       this._isMinOrMax = {
         x: {
@@ -7319,8 +7323,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         incrXFlip = 1;
         incrYFlip = 0;
       }
-      var z = 0;
-      console.time( "startDraw" );
+
       for ( ; i < l; i++ ) {
 
         toBreak = false;
@@ -7372,7 +7375,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
           // OPTIMIZATION END
 
           this._addPoint( xpx2, ypx2 );
-          z++;
+
           // OPTIMIZATION START
           if ( !this._optimize_after( xpx2, ypx2 ) ) {
             toBreak = true;
@@ -7509,7 +7512,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
     _optimize_after: function( xpx, ypx ) {
 
       if ( this._optimizeMonotoneous && xpx > this._optimizeMaxPxX ) {
-        console.log( xpx, this._optimizeMaxPxX );
+
         return false;
       }
 
@@ -12147,14 +12150,7 @@ build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve )
           }
 
           sum += ( this.serie.data[ i ][ j + incrXFlip ] - lastXVal ) * ( this.serie.data[ i ][ j + incrYFlip ] ) * 0.5;
-          /*   if ( isNaN( sum ) ||  sum == Infinity ) {
-            console.log( sum );
-            console.log( ( this.serie.data[ i ][ j + incrXFlip ] - lastXVal ) );
-            console.log( ( this.serie.data[ i ][ j + incrYFlip ] ) );
-            throw "isdjf";
-          } else {
-            console.log( sum );
-          }*/
+
           if ( x == lastX && y == lastY ) {
             continue;
           }
