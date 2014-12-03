@@ -1,5 +1,5 @@
 {
-    "version": "2.4.2",
+    "version": "2.9.3",
     "modules": [
         {
             "url": "modules/types/chart/basic/scatter3D/",
@@ -92,8 +92,35 @@
                                     50,
                                     1
                                 ]
+                            ],
+                            "sizeNormalization": [
+                                0.02
                             ]
                         }
+                    ],
+                    "dataJpaths": [
+                        [
+                            {
+                                "x": [
+                                    "x"
+                                ],
+                                "y": [
+                                    "y"
+                                ],
+                                "z": [
+                                    "z"
+                                ],
+                                "color": [
+                                    "color"
+                                ],
+                                "size": [
+                                    "size"
+                                ],
+                                "highlight": [
+                                    "_highlight"
+                                ]
+                            }
+                        ]
                     ]
                 }
             },
@@ -108,9 +135,16 @@
                     "name": "pointsToDraw"
                 }
             ],
-            "actions_in": {},
-            "vars_out": [
+            "actions_in": [
                 {}
+            ],
+            "vars_out": [
+                {
+                    "event": "onHover",
+                    "rel": "point",
+                    "jpath": [],
+                    "name": "clicked"
+                }
             ],
             "actions_out": {},
             "layers": {
@@ -121,11 +155,35 @@
                         "right": 0
                     },
                     "size": {
+                        "width": 77,
+                        "height": 61
+                    },
+                    "display": true,
+                    "title": "3D Scatter plot",
+                    "wrapper": true,
+                    "created": true,
+                    "name": "Default layer",
+                    "bgColor": [
+                        [
+                            255,
+                            255,
+                            255,
+                            0
+                        ]
+                    ]
+                },
+                "admin": {
+                    "position": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0
+                    },
+                    "size": {
                         "width": 66,
                         "height": 55
                     },
                     "display": true,
-                    "title": "Untitled module",
+                    "title": "3D plot",
                     "wrapper": true,
                     "created": true,
                     "name": "Default layer",
@@ -139,7 +197,7 @@
                     ]
                 }
             },
-            "title": "Untitled module",
+            "title": "3D Scatter plot",
             "zindex": 2
         },
         {
@@ -179,20 +237,46 @@
             "vars_in": [
                 {
                     "rel": "list",
-                    "name": "highlight"
+                    "name": "table"
                 }
             ],
             "actions_in": [
                 {}
             ],
             "vars_out": [
-                {}
+                {
+                    "jpath": []
+                }
             ],
             "actions_out": [
-                {}
+                {
+                    "jpath": []
+                }
             ],
             "layers": {
                 "Default layer": {
+                    "position": {
+                        "left": 111,
+                        "top": 0,
+                        "right": 0
+                    },
+                    "size": {
+                        "width": 10,
+                        "height": 61
+                    },
+                    "display": true,
+                    "title": "Highlights",
+                    "wrapper": true,
+                    "created": true,
+                    "name": "Default layer",
+                    "bgColor": [
+                        255,
+                        255,
+                        255,
+                        0
+                    ]
+                },
+                "admin": {
                     "position": {
                         "left": 67,
                         "top": 0,
@@ -203,7 +287,7 @@
                         "height": 25
                     },
                     "display": true,
-                    "title": "Untitled module",
+                    "title": "Highlights",
                     "wrapper": true,
                     "created": true,
                     "name": "Default layer",
@@ -215,7 +299,7 @@
                     ]
                 }
             },
-            "title": "Untitled module",
+            "title": "Highlights",
             "zindex": 2
         },
         {
@@ -227,6 +311,17 @@
                         {
                             "colJPath": [
                                 null
+                            ],
+                            "options": [
+                                [
+                                    "reorder"
+                                ]
+                            ],
+                            "brushMode": [
+                                "1D-axes"
+                            ],
+                            "predicate": [
+                                "and"
                             ]
                         }
                     ],
@@ -251,6 +346,31 @@
             "layers": {
                 "Default layer": {
                     "position": {
+                        "left": 0,
+                        "right": 0,
+                        "top": 62
+                    },
+                    "size": {
+                        "width": 121,
+                        "height": 24
+                    },
+                    "zIndex": 0,
+                    "display": true,
+                    "title": "Parallel coordinates",
+                    "wrapper": true,
+                    "created": true,
+                    "name": "Default layer",
+                    "bgColor": [
+                        [
+                            255,
+                            255,
+                            255,
+                            0
+                        ]
+                    ]
+                },
+                "admin": {
+                    "position": {
                         "left": 67,
                         "right": 0,
                         "top": 26
@@ -261,7 +381,7 @@
                     },
                     "zIndex": 0,
                     "display": true,
-                    "title": "Untitled",
+                    "title": "Parallel coordinates",
                     "wrapper": true,
                     "created": true,
                     "name": "Default layer",
@@ -285,11 +405,12 @@
             "actions_in": [
                 {}
             ],
-            "title": "Untitled",
+            "title": "Parallel coordinates",
             "vars_out": [
                 {
                     "event": "onBrushSelection",
                     "rel": "flagResult",
+                    "jpath": [],
                     "name": "pointsToDraw"
                 }
             ],
@@ -304,13 +425,20 @@
                     "group": [
                         {
                             "script": [
-                                "function generateRandomArray(n, min, max) {\nvar result = [];\nfor(var i=0; i<n; i++) {\n  result.push(Math.random()*(max-min) + min);\n}\nreturn result;\n}\nfunction generateRandomColors(n) {\nvar result = [];\nvar letters = '0123456789ABCDEF'.split('');\nfor(var i=0; i<n; i++) {\n  var color = '#'\n  for(var j=0; j<3; j++) {\n    color += letters[Math.floor(Math.random() * 16)];\n  }\n  result.push(color);\n}\nreturn result;\n}\nfunction generateRandomFromArray(arr, n) {\nvar x = generateRandomArray(n, 0, arr.length-0.001);\nx = x.map(function(a) {\n  return arr[Math.floor(a)];\n}); \nreturn x;\n}\nvar n = 10000;\nvar x = generateRandomArray(n, 0, 5);\nvar y = generateRandomArray(n, 0, 5);\nvar z = generateRandomArray(n, -0.005, 0.005);\nvar color = generateRandomColors(n);\n//var shape = generateRandomFromArray(['sphere', 'tetrahedron'], n);\nvar highlight = generateRandomFromArray(['A','B','C','D'], n);\nvar size = generateRandomArray(n, 0.005, 0.01);\nvar result = [];\nfor(var i=0; i<n; i++) {\nresult.push({});\nresult[i].x = x[i];\nresult[i].y = y[i];\nresult[i].z = z[i];\nresult[i].color = color[i];\n//result[i].shape = shape[i];\nresult[i].size = size[i];\nresult[i]._highlight = highlight[i];\n}\nconsole.log(result);\nresolve(result);"
+                                "value = value.resurrect(true);\nfunction generateRandomArray(n, min, max) {\n    var result = [];\n    for(var i=0; i<n; i++) {\n      result.push(Math.random()*(max-min) + min);\n    }\n    return result;\n}\nfunction generateRandomColors(d, n) {\n    var arr = new Array(d);\n    arr = _(arr).map(function(val, key) {\n        return key/d;\n    }).map(function(val) {\n        return 'hsl(' + val*360 + ',65%,65%)';\n    }).map(function(val) {\n        return chroma(val).hex();    \n    }).value();\n    \n    var result = new Array(n);\n    result = _(result).map(function(val) {\n        return Math.floor(Math.random() * d);\n    }).map(function(val){\n        return arr[val];\n    }).value();\n    return result;\n}\n\nfunction generateRandomFromArray(arr, n) {\n    var x = generateRandomArray(n, 0, arr.length-0.001);\n    x = x.map(function(a) {\n        return arr[Math.floor(a)];\n    }); \n    return x;\n}\n\nvar n = value.points;\nvar x = generateRandomArray(n, 0, 5);\nvar y = generateRandomArray(n, 0, 5);\nvar z = generateRandomArray(n, -0.005, 0.005);\nvar color = generateRandomColors(value.colors, n);\n//var shape = generateRandomFromArray(['sphere', 'tetrahedron'], n);\n\nvar arr = [];\nfor(var i=0; i<value.highlights; i++) {\n    arr.push(i.toString());\n}\nvar highlight = generateRandomFromArray(arr, n);\nvar size = generateRandomArray(n, value.minSize, value.maxSize);\n\n\nvar result = [];\nfor(var i=0; i<n; i++) {\n    result.push({});\n    result[i].x = x[i];\n    result[i].y = y[i];\n    result[i].z = z[i];\n    result[i].color = color[i];\n    result[i].size = size[i];\n    if(value.useHighlights) {\n        result[i]._highlight = highlight[i];    \n    }\n    \n}\n\nvar table = _(highlight).uniq().sort().map(function(val) {\n    return {\n        label: val,\n        _highlight: val\n    }\n}).value();\nAPI.createData('table', table);\nresolve(result);"
                             ]
                         }
                     ],
                     "libs": [
                         [
-                            {}
+                            {
+                                "lib": "chroma",
+                                "alias": "chroma"
+                            },
+                            {
+                                "lib": "lodash",
+                                "alias": "_"
+                            }
                         ]
                     ]
                 }
@@ -318,13 +446,38 @@
             "layers": {
                 "Default layer": {
                     "position": {
-                        "left": 80,
+                        "left": 115,
                         "right": 0,
                         "top": 0
                     },
                     "size": {
-                        "width": 55,
-                        "height": 25
+                        "width": 57,
+                        "height": 73
+                    },
+                    "zIndex": 0,
+                    "display": false,
+                    "title": "Untitled",
+                    "wrapper": true,
+                    "created": true,
+                    "name": "Default layer",
+                    "bgColor": [
+                        [
+                            255,
+                            255,
+                            255,
+                            0
+                        ]
+                    ]
+                },
+                "admin": {
+                    "position": {
+                        "left": 0,
+                        "right": 0,
+                        "top": 56
+                    },
+                    "size": {
+                        "width": 89,
+                        "height": 65
                     },
                     "zIndex": 0,
                     "display": true,
@@ -344,19 +497,223 @@
             },
             "id": 4,
             "vars_in": [
+                {
+                    "rel": "dataobject",
+                    "name": "defaultParams"
+                }
+            ],
+            "actions_in": [
                 {}
             ],
-            "actions_in": {},
             "title": "Untitled",
             "vars_out": [
                 {
                     "event": "onButtonClick",
                     "rel": "filteredObject",
+                    "jpath": [],
                     "name": "test"
                 }
             ],
             "actions_out": {},
             "zindex": 2
+        },
+        {
+            "url": "modules/types/edition/onde/",
+            "configuration": {
+                "sections": {},
+                "groups": {
+                    "group": [
+                        {
+                            "hasButton": [
+                                [
+                                    "show"
+                                ]
+                            ],
+                            "button_text": [
+                                "Generate Graph"
+                            ],
+                            "debouncing": [
+                                -1
+                            ],
+                            "output": [
+                                "modified"
+                            ],
+                            "mode": [
+                                "schema"
+                            ],
+                            "schemaSource": [
+                                "config"
+                            ],
+                            "schema": [
+                                "{\n    \"type\": \"object\",\n    \"properties\": {\n        \"points\": {\n            \"type\": \"number\",\n            \"label\": \"Number of points\",\n            \"default\": 200\n        },\n        \"highlights\": {\n            \"type\": \"number\",\n            \"label\": \"Number of highlights\",\n            \"default\": \"4\"\n        },\n        \"colors\": {\n            \"type\": \"number\",\n            \"label\": \"Number of colors\",\n            \"default\": 5\n        },\n        \"minSize\": {\n            \"type\": \"number\",\n            \"label\": \"Minimum size\",\n            \"default\": 0.05\n        },\n        \"maxSize\": {\n            \"type\": \"number\",\n            \"label\": \"Maximum size\",\n            \"default\": 0.05\n        },\n        \"useHighlights\": {\n            \"type\": \"boolean\",\n            \"label\": \"Use Highlights\",\n            \"default\": false\n        }\n    }\n}"
+                            ]
+                        }
+                    ]
+                }
+            },
+            "layers": {
+                "Default layer": {
+                    "position": {
+                        "left": 78,
+                        "top": 0
+                    },
+                    "size": {
+                        "width": 32,
+                        "height": 61
+                    },
+                    "zIndex": 0,
+                    "display": true,
+                    "title": "Parameters",
+                    "bgColor": [
+                        255,
+                        255,
+                        255,
+                        0
+                    ],
+                    "wrapper": true,
+                    "created": true,
+                    "name": "Default layer"
+                },
+                "admin": {
+                    "position": {
+                        "left": 80,
+                        "top": 0
+                    },
+                    "size": {
+                        "width": 55,
+                        "height": 25
+                    },
+                    "zIndex": 0,
+                    "display": true,
+                    "title": "Parameters",
+                    "bgColor": [
+                        255,
+                        255,
+                        255,
+                        0
+                    ],
+                    "wrapper": true,
+                    "created": true,
+                    "name": "admin"
+                }
+            },
+            "id": 5,
+            "vars_in": [
+                {
+                    "rel": "inputValue",
+                    "name": "defaultParams"
+                }
+            ],
+            "actions_in": {},
+            "title": "Parameters",
+            "vars_out": [
+                {
+                    "event": "onFormSubmit",
+                    "rel": "outputValue",
+                    "jpath": [],
+                    "name": "params"
+                }
+            ],
+            "actions_out": [
+                {
+                    "jpath": []
+                }
+            ]
+        },
+        {
+            "url": "modules/types/edition/object_editor/",
+            "configuration": {
+                "sections": {},
+                "groups": {
+                    "group": [
+                        {
+                            "editable": [
+                                "text"
+                            ],
+                            "expanded": [
+                                []
+                            ],
+                            "storeObject": [
+                                [
+                                    "expand"
+                                ]
+                            ],
+                            "displayValue": [
+                                []
+                            ],
+                            "output": [
+                                "new"
+                            ],
+                            "storedObject": [
+                                "{\"minSize\":1,\"maxSize\":1,\"useHighlights\":true,\"colors\":3,\"points\":200,\"highlights\":4}"
+                            ]
+                        }
+                    ]
+                }
+            },
+            "layers": {
+                "Default layer": {
+                    "position": {
+                        "left": 177,
+                        "top": 47
+                    },
+                    "size": {
+                        "width": 45,
+                        "height": 29
+                    },
+                    "zIndex": 0,
+                    "display": false,
+                    "title": "Untitled",
+                    "bgColor": [
+                        255,
+                        255,
+                        255,
+                        0
+                    ],
+                    "wrapper": true,
+                    "created": true,
+                    "name": "Default layer"
+                },
+                "admin": {
+                    "position": {
+                        "left": 90,
+                        "top": 56
+                    },
+                    "size": {
+                        "width": 20,
+                        "height": 20
+                    },
+                    "zIndex": 0,
+                    "display": true,
+                    "title": "",
+                    "bgColor": [
+                        255,
+                        255,
+                        255,
+                        0
+                    ],
+                    "wrapper": true,
+                    "created": true,
+                    "name": "admin"
+                }
+            },
+            "id": 6,
+            "vars_in": [
+                {}
+            ],
+            "actions_in": [
+                {}
+            ],
+            "vars_out": [
+                {
+                    "event": "onObjectChange",
+                    "rel": "output",
+                    "jpath": [],
+                    "name": "defaultParams"
+                }
+            ],
+            "title": "",
+            "actions_out": {}
         }
     ],
     "variables": [
@@ -377,12 +734,15 @@
         {}
     ],
     "configuration": {
-        "title": "No title"
+        "title": "Scatter 3D"
     },
     "grid": {
         "layers": {
             "Default layer": {
                 "name": "Default layer"
+            },
+            "admin": {
+                "name": "admin"
             }
         },
         "xWidth": 10,
