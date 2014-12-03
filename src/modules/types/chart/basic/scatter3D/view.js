@@ -106,10 +106,14 @@ define(['modules/default/defaultview','src/util/datatraversing',
   var CAMERA_NEAR = 2;
   var CAMERA_FAR = 10000;
 
+
+  var baseURL = require.toUrl('modules/types/chart/basic/scatter3D') + '/';
   var shapeImages = {
-    'sphere': "modules/types/chart/basic/scatter3D/img/ball.png",
-    'tetrahedron': 'modules/types/chart/basic/scatter3D/img/tetrahedron2.png'
-  }
+    'sphere': baseURL + 'img/ball.png',
+    'spheret': baseURL + 'img/ballt.png',
+    'tetrahedron': baseURL + 'img/tetrahedron2.png',
+    'tetrahedront': baseURL + 'img/tetrahedron2t.png'
+  };
 
   $.fn.listHandlers = function(events, outputFunction) {
     return this.each(function(i){
@@ -437,7 +441,6 @@ define(['modules/default/defaultview','src/util/datatraversing',
 
     _drawGraph: function() {
       var self = this;
-      var tstart = new Date().getTime();
       // Remove all objects
       _.keys(self.scene.children).forEach(function(key){
         self.scene.remove(self.scene.children[key]);
