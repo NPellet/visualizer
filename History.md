@@ -1,5 +1,6 @@
-HEAD
+2.9.4 / 2014-12-03
 =================
+
 * 1D nmr module is back
 * parallel coordinates :
   * new brush mode : 2D strums
@@ -7,18 +8,23 @@ HEAD
   * options for reorderable axes and shadows
   * add highlight support
 * spectra displayer : add mouse over shape event and variable out
+* New library : [async](https://github.com/caolan/async)
+* modules : view.onResize now receives width and height arguments
 
 2.9.3 / 2014-11-26
 =================
+
 * Slickgrid: option that provides an input on the header of each column where you can just type in to search something.
 * :arrow_up: chemcalc (v2.0.0)
 
 2.9.2 / 2014-11-25
 ==================
+
 * fix sdf-parser not being in the build
 
 2.9.1 / 2014-11-24
 ==================
+
 * New file: util/ui.js ui-related utility function.
 * util/ui.js: confirm dialog box
 * webservice_search: confirmation option
@@ -27,6 +33,7 @@ HEAD
 
 2.9.0 / 2014-11-18
 ===================
+
 * Slickgrid: Bug fixes.Row numbering overlay. Selected Row & Cell highlighting. DataNumber and DataBoolean edition. Hierarchical grouping. Hover and click actions in.
 * button_action : add option to disable toggle
 * datas
