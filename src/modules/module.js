@@ -681,7 +681,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 
 
 												bgcolor: {
-													type: 'color',
+													type: 'spectrum',
 													multiple: false,
 													title: 'Background color'
 												},
