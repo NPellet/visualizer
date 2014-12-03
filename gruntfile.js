@@ -101,7 +101,8 @@ module.exports = function (grunt) {
                             './jquery-tmpl/**',
                             './setImmediate/setImmediate.js',
                             './chroma-js/chroma.min.js',
-                            './sdf-parser/**'
+                            './sdf-parser/**',
+                            './async/lib/async.js'
                         ],
 
                         dest: './build/components/'
