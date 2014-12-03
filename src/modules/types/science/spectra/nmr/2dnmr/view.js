@@ -78,6 +78,10 @@ define([
             },
             jcamp2d: function (varname) {
                 this.nmr.removeSerie2D(varname);
+            },
+            jcampxy: function (varname) {
+                this.nmr.removeSerie2DX(varname);
+                this.nmr.removeSerie2DY(varname);
             }
         },
 
@@ -94,7 +98,7 @@ define([
             },
 
             jcampxy: function (moduleValue) {
-             //   this.addSerieJcampXOrY(moduleValue, true, true);
+                this.addSerieJcampXOrY(moduleValue, true, true);
             },
 
             jcamp2d: function (moduleValue, varName) {
