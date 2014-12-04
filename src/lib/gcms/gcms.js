@@ -558,7 +558,7 @@
 				}
 				
 
-				if( options.lineColor ) {
+				if( options.linecolor ) {
 					obj.strokeColor = options.linecolor;
 				}
 				
