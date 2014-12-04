@@ -531,7 +531,7 @@
 			},
 
 
-			addAUC: function( from, to ) {
+			addAUC: function( from, to, options ) {
 
 
 				
@@ -551,7 +551,12 @@
 					fillColor: 'rgba(0,100,100,0.3)',
 					strokeColor: 'rgba(0,100,100,1)',
 					strokeWidth: 2				
+				};
+
+				if( options.color ) {
+					obj.fillColor = options.color;
 				}
+				
 
 				this.gcGraph.newShape( obj ).then( function( shape ) {
 

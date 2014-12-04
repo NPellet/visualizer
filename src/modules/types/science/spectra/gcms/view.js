@@ -244,7 +244,7 @@ define( [
 			var self = this;
 			a.map( function( source ) {
 
-				var shapeData = self.gcmsInstance.addAUC( source.from, source.to );
+				var shapeData = self.gcmsInstance.addAUC( source.from, source.to, source );
 				shapeData._originalSource = source;
 			});
 		},

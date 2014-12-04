@@ -160,7 +160,7 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
                 l = currentCfg.length;
 
             for (; i < l; i++) {
-                if (currentCfg[i].rel == 'jcamp' || currentCfg[i].rel == 'xArray' || currentCfg[i].rel == 'xyArray' || currentCfg[i].rel == 'chart') {
+                if (currentCfg[i].rel == 'jcamp' || currentCfg[i].rel == 'xArray' || currentCfg[i].rel == 'xyArray' || currentCfg[i].rel == 'chart' || currentCfg[ i ].rel == "series_xy1d") {
                     vars.push({
                         title: currentCfg[i].name,
                         key: currentCfg[i].name

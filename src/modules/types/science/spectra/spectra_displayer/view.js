@@ -627,7 +627,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                             }
                         }, false, self.module.getId());
 
-                        self.module.model.dataListenChange( annotations.traceSync([ i ]), function( v ) {
+                        self.module.model.dataListenChange( annotations.traceSync( [ i ] ), function( v ) {
 
                              shape.redraw();
 
@@ -722,7 +722,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             },
 
 
-            series_xy1d: function (data) { // Receives an array of series. Blank the other ones.
+            series_xy1d: function (data, varname) { // Receives an array of series. Blank the other ones.
 
                 /*if( ! data.data ) {
                  return;
@@ -737,7 +737,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                 for (; i < l; i++) {
 
-                    var serie = this.graph.newSerie();
+                    var serie = this.graph.newSerie( varname + "_" + i, this.getSerieOptions(varname) );
 
                     serie.autoAxis();
                     
