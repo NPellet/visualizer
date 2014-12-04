@@ -558,6 +558,11 @@
 				}
 				
 
+				if( options.lineColor ) {
+					obj.strokeColor = options.linecolor;
+				}
+				
+
 				this.gcGraph.newShape( obj ).then( function( shape ) {
 
 					shape.setSerie( self.gcGraph.getSerie( 0 ) );
