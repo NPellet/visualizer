@@ -253,7 +253,11 @@ define( [
 		onActionReceive: {
 			fromtoGC: function(value, name) {
 				value = value.get();
-				this.gcmsInstance.getGC().getBottomAxis()._doZoomVal(value.from, value.to, true);
+
+				var from = value.from - Math.abs( value.to - value.from ) * 0.1;
+				var to = value.to + Math.abs( value.to - value.from ) * 0.1;
+				
+				this.gcmsInstance.getGC().getBottomAxis()._doZoomVal( from, to, true);
 				this.gcmsInstance.getGC().redraw( true, true, false );
 				this.gcmsInstance.getGC().drawSeries();
 			},

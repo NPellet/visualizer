@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-03T13:26Z
+ * Date: 2014-12-03T22:57Z
  */
 
 (function( global, factory ) {
@@ -5863,6 +5863,10 @@ build['./graph._serie'] = ( function( ) {
 
     setLayer: function( layer ) {
       this.options.layer = layer;
+    },
+
+    updateStyle: function() {
+      this.setLegendSymbolStyle();
     }
 
   };
@@ -7728,6 +7732,11 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       }
       line.setAttribute( 'fill', 'none' );
       //	line.setAttribute('shape-rendering', 'optimizeSpeed');
+    },
+
+    updateStyle: function() {
+      this.applyLineStyles();
+      this.setLegendSymbolStyle();
     },
 
     // Revised August 2014. Ok
