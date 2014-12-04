@@ -407,6 +407,13 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 this.removeSerie(varName);
             },
 
+
+            series_xy1d: function (varName) {
+
+                this.graph.removeSeries();
+            },
+
+
             jcamp: function (varName) {
 
                 this.removeSerie(varName);

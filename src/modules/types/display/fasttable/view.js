@@ -329,6 +329,10 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
                 this.elements = this.elements || [];
 
+                if( this.module.getDataFromRel('list').indexOf( source ) > -1 ) {
+                    return;
+                }
+
                 this.module.getDataFromRel('list').push(source);
                 var l = this.elements.length - 1;
 
