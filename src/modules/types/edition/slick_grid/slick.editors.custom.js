@@ -8,12 +8,14 @@ define(['src/util/util', 'components/spectrum/spectrum', 'jquery'], function(Uti
     Util.loadCss("./components/spectrum/spectrum.css");
 
     function setItemId(newItem, grid) {
-        Object.defineProperty(newItem, grid.module.view.idPropertyName, {
-            value: 'id_'+grid.module.view.getNextIncrementalId(),
-            enumerable: false,
-            writable: false,
-            configurable: false
-        });
+        if(!newItem[grid.module.view.idPropertyName]) {
+            Object.defineProperty(newItem, grid.module.view.idPropertyName, {
+                value: 'id_'+grid.module.view.getNextIncrementalId(),
+                enumerable: false,
+                writable: false,
+                configurable: false
+            });
+        }
     }
 
     (function ($) {

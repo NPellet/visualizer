@@ -33,6 +33,7 @@ requirejs.config({
 		threejs: {
 			exports: 'THREE',
 			init: function() {
+				// Allow cross-origin images
 				this.THREE.ImageUtils.crossOrigin = '';
 			}
 		},
