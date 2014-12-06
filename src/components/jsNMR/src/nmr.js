@@ -1130,7 +1130,15 @@
 
 						onZoomEnd: function( graph, x, y, e, target ) {
 
-							self.graphs[ '_2d' ]._pluginExecute( 'graph.plugin.zoom', 'onMouseUp', [ self.graphs[ '_2d' ], x, undefined, e, true ] );
+
+							var xaxis = self.graphs['x'].getXAxis();
+							var from = xaxis.getActualMin();
+							var to = xaxis.getActualMax();
+
+ 							self.graphs['_2d']._applyToAxes( '_doZoomVal', [ from, to ], true, false );
+ 							self.graphs['_2d'].redraw();
+ 							self.graphs['_2d'].drawSeries();
+							self.graphs[ '_2d' ]._pluginExecute( 'graph.plugin.zoom', 'removeZone', [ ] );
 
 						},
 
@@ -1214,7 +1222,27 @@
 
 						onZoomEnd: function( graph, x, y, e, target ) {
 
-							self.graphs[ '_2d' ]._pluginExecute( 'graph.plugin.zoom', 'onMouseUp', [ self.graphs[ '_2d' ], undefined, y, e, true ] );
+
+							var yaxis = self.graphs['y'].getYAxis();
+							var from = yaxis.getActualMin();
+							var to = yaxis.getActualMax();
+
+ 							self.graphs['_2d']._applyToAxes( '_doZoomVal', [ from, to ], false, true );
+ 							self.graphs['_2d'].redraw();
+ 							self.graphs['_2d'].drawSeries();
+							self.graphs[ '_2d' ]._pluginExecute( 'graph.plugin.zoom', 'removeZone', [ ] );
+
+/*
+
+							var xaxis = self.graphs['y'].getYAxis();
+							var from = xaxis.getCurrentMin();
+							var to = xaxis.getCurrentMax();
+console.log( from, to );
+ 							self.graphs['_2d']._applyToAxes( '_doZoomVal', [ from, to ], false, true );
+
+ 							*/
+
+							//self.graphs[ '_2d' ]._pluginExecute( 'graph.plugin.zoom', 'onMouseUp', [ self.graphs[ '_2d' ], undefined, y, e, true ] );
 
 						},
 
