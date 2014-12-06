@@ -568,7 +568,7 @@
 			}
 
 			var serie_y = this.graphs['y']
-				.newSerie(name, $.extend( { useSlots: true }, options ) )
+				.newSerie(name, $.extend( { useSlots: true, flip: true }, options ) )
 				.setLabel( "My serie" )
 				.setXAxis( this.graphs['y'].getBottomAxis( ) )
 				.setYAxis( this.graphs['y'].getRightAxis( ) )
