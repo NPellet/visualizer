@@ -40,7 +40,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
                 if (debouncing > 0) {
                     cb = _.debounce(cb, debouncing);
                 }
-                this.dom.on('input change', cb);
+                this.dom.on('keyup change', cb);
             }
 
             this.inputVal = {};
