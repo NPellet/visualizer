@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.2-9
+ * jsGraph JavaScript Graphing Library v1.10.2-12
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-06T11:16Z
+ * Date: 2014-12-08T15:37Z
  */
 
 (function( global, factory ) {
@@ -4913,6 +4913,27 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       };
     },
 
+    mapEventEmission: function( options, source ) {
+
+      if ( !source ) {
+        source = this;
+      }
+
+      var eventName;
+
+      for ( var i in options ) {
+
+        // Starts with onXXX
+        if ( i.indexOf( "on" ) == 0 && typeof options[ i ] == "function" ) {
+          eventName = i.substring( 2 );
+          eventName = eventName.substring( 0, 1 ).toLowerCase() + eventName.substring( 1 );
+
+          if ( source.on ) {
+            source.on( eventName, options[ i ] );
+          }
+        }
+      }
+    }
   } );
 
   function makeSerie( graph, name, options, type, callback ) {
@@ -5376,7 +5397,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
  * File path : /Users/normanpellet/Documents/Web/graph/src/graph._serie.js
  */
 
-build['./graph._serie'] = ( function( ) { 
+build['./graph._serie'] = ( function( EventEmitter ) { 
 
   
 
@@ -5384,7 +5405,7 @@ build['./graph._serie'] = ( function( ) {
     throw "This serie is not instanciable";
   }
 
-  GraphSerieNonInstanciable.prototype = {
+  GraphSerieNonInstanciable.prototype = $.extend( {}, EventEmitter.prototype, {
 
     setAdditionalData: function( data ) {
       this.additionalData = data;
@@ -5869,10 +5890,10 @@ build['./graph._serie'] = ( function( ) {
       this.setLegendSymbolStyle();
     }
 
-  };
+  } );
 
   return GraphSerieNonInstanciable;
- } ) (  );
+ } ) ( build["./dependencies/eventEmitter/EventEmitter"] );
 
 
 // Build: End source file (graph._serie) 
@@ -6860,6 +6881,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
       this.shown = true;
       this.options = $.extend( true, {}, GraphSerie.prototype.defaults, options );
+
+      this.graph.mapEventEmission( this.options, this );
 
       this.data = [];
       this._isMinOrMax = {
@@ -9424,7 +9447,80 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
   $.extend( GraphSerieScatter.prototype, GraphSerieNonInstanciable.prototype, {
 
     defaults: {
-      label: ""
+      label: "",
+      onHover: false
+    },
+
+    init: function( graph, name, options ) {
+
+      var self = this;
+
+      this.graph = graph;
+      this.name = name;
+
+      this.id = Math.random() + Date.now();
+
+      this.shown = true;
+      this.options = $.extend( true, {}, GraphSerieScatter.prototype.defaults, options );
+      this.data = [];
+      this.graph.mapEventEmission( this.options, this );
+
+      this._isMinOrMax = {
+        x: {
+          min: false,
+          max: false
+        },
+        y: {
+          min: false,
+          max: false
+        }
+      };
+
+      this.groupPoints = document.createElementNS( this.graph.ns, 'g' );
+      this.groupMain = document.createElementNS( this.graph.ns, 'g' );
+
+      this.additionalData = {};
+      /*
+      this.groupPoints.addEventListener('mouseover', function(e) {
+      
+      });
+
+
+      this.groupPoints.addEventListener('mouseout', function(e) {
+      
+      });
+*/
+
+      this.groupPoints.addEventListener( 'mouseover', function( e ) {
+        var id = parseInt( $( e.target ).parent().attr( 'data-shapeid' ) );
+        self.emit( "mouseover", id, self.data[ id * 2 ], self.data[ id * 2 + 1 ] );
+      } );
+
+      this.groupPoints.addEventListener( 'mouseout', function( e ) {
+        var id = parseInt( $( e.target ).parent().attr( 'data-shapeid' ) );
+        self.emit( "mouseout", id, self.data[ id * 2 ], self.data[ id * 2 + 1 ] );
+      } );
+
+      this.minX = Number.MAX_VALUE;
+      this.minY = Number.MAX_VALUE;
+      this.maxX = Number.MIN_VALUE;
+      this.maxY = Number.MIN_VALUE;
+
+      this.groupMain.appendChild( this.groupPoints );
+      this.currentAction = false;
+
+      if ( this.initExtended1 ) {
+        this.initExtended1();
+      }
+
+      this.stdStyle = {
+        shape: 'circle',
+        cx: 0,
+        cy: 0,
+        r: 3,
+        stroke: 'transparent',
+        fill: "black"
+      }
     },
 
     /**
@@ -9487,66 +9583,6 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
       return this;
     },
 
-    init: function( graph, name, options ) {
-
-      var self = this;
-
-      this.graph = graph;
-      this.name = name;
-
-      this.id = Math.random() + Date.now();
-
-      this.shown = true;
-      this.options = $.extend( true, {}, GraphSerieScatter.prototype.defaults, options );
-      this.data = [];
-
-      this._isMinOrMax = {
-        x: {
-          min: false,
-          max: false
-        },
-        y: {
-          min: false,
-          max: false
-        }
-      };
-
-      this.groupPoints = document.createElementNS( this.graph.ns, 'g' );
-      this.groupMain = document.createElementNS( this.graph.ns, 'g' );
-
-      this.additionalData = {};
-      /*
-			this.groupPoints.addEventListener('mouseover', function(e) {
-			
-			});
-
-
-			this.groupPoints.addEventListener('mouseout', function(e) {
-			
-			});
-*/
-      this.minX = Number.MAX_VALUE;
-      this.minY = Number.MAX_VALUE;
-      this.maxX = Number.MIN_VALUE;
-      this.maxY = Number.MIN_VALUE;
-
-      this.groupMain.appendChild( this.groupPoints );
-      this.currentAction = false;
-
-      if ( this.initExtended1 ) {
-        this.initExtended1();
-      }
-
-      this.stdStyle = {
-        shape: 'circle',
-        cx: 0,
-        cy: 0,
-        r: 3,
-        stroke: 'transparent',
-        fill: "black"
-      }
-    },
-
     empty: function() {
 
       while ( this.group.firstChild ) {
@@ -9606,6 +9642,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
       if ( this.errorstyles ) {
 
         for ( var i = 0, l = this.errorstyles.length; i < l; i++ ) {
+
           this.errorstyles[ i ].paths = {
             top: "",
             bottom: "",
@@ -9732,6 +9769,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 
       var g = document.createElementNS( this.graph.ns, 'g' );
       g.setAttribute( 'transform', 'translate(' + xpx + ', ' + ypx + ')' );
+      g.setAttribute( 'data-shapeid', k );
 
       if ( this.extraStyle && this.extraStyle[ k ] ) {
 
@@ -12167,6 +12205,8 @@ build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve )
           if ( x == lastX && y == lastY ) {
             continue;
           }
+
+          lastXVal = this.serie.data[ i ][ j + incrXFlip ];
 
           lastX = x;
           lastY = y;
