@@ -496,8 +496,8 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     this.normalize(valFinal, varname);
                     serie.setData(valFinal);
 
-                    if (aData.infos) {
-                        serie.setInfos(aData.infos);
+                    if (aData.info) {
+                        serie.infos = aData.info;
                     }
 
                     serie.autoAxis();
