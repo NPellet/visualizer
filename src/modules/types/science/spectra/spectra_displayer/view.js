@@ -356,8 +356,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
         setSerieParameters: function (serie, varname, highlight) {
             var plotinfos = this.module.getConfiguration('plotinfos');
 
-            highlight = highlight || [];
-
             if (plotinfos) {
 
                 for (var i = 0, l = plotinfos.length; i < l; i++) {
@@ -388,9 +386,19 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 }
             }
 
-            API.listenHighlight(highlight, function (value, commonKeys) {
-                serie.toggleMarker([ highlight.indexOf(commonKeys[0]), 0 ], value, true);
-            });
+            if (highlight) {
+                API.listenHighlight({_highlight: highlight}, function (value, commonKeys) {
+                    for (var i = 0, ii = commonKeys.length; i < ii; i++) {
+                        var key = Number(commonKeys[i]);
+                        for(var j = 0, jj = highlight.length; j < jj; j++) {
+                            var high = highlight[j];
+                            if ((isNaN(Number(high) && (high.indexOf(key) > -1))) || (Number(high) === key)) {
+                                serie.toggleMarker([j, 0], !!value, false);
+                            }
+                        }
+                    }
+                }, false, this.module.getId());
+            }
 
         },
 
