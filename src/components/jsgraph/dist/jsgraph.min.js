@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.2-12
+ * jsGraph JavaScript Graphing Library v1.10.3-0
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-08T15:37Z
+ * Date: 2014-12-08T16:22Z
  */
 
 (function( global, factory ) {
@@ -789,15 +789,16 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       this.mouseVal = this.getVal( px );
     },
 
+
     handleMouseWheel: function( delta, e ) {
 
       delta = Math.min( 0.2, Math.max( -0.2, delta ) );
       var baseline;
 
       if ( this.options.wheelBaseline == "min" ) {
-        baseline = this.getActualMin();
+        baseline = this.getMinValue();
       } else if ( this.options.wheelBaseline == "max" ) {
-        baseline = this.getActualMax();
+        baseline = this.getMaxValue();
       } else {
         baseline = this.options.wheelBaseline;
       }
