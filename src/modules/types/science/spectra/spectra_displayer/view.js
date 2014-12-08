@@ -453,56 +453,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
             },
 
-            /* OLD FORMAT
-             * chart: function(moduleValue, varname) {
-
-<<<<<<< HEAD
-				if( this.graph ) {
-
-					this.graph.getBottomAxis()._doZoomVal(moduleValue.value.from, moduleValue.value.to, true);
-					this.graph.redraw( false, true, false );
-					this.graph.drawSeries();
-				}
-=======
-             this.series[varname] = this.series[varname] || [];
-             this.removeSerie( varname );
->>>>>>> jsgraph
-
-             if(!moduleValue)
-             return;
-
-             var newSeries=moduleValue.series || moduleValue;
-             if (!(newSeries instanceof Array)) {
-             newSeries=[newSeries];
-             }
-
-             for (var i=0; i<newSeries.length; i++) {
-             var newSerie = newSeries[i];
-             var valFinal=[];
-             if(newSerie.y) {
-             for(var j = 0, l = newSerie.y.length; j < l; j++) {
-             valFinal.push(newSerie.x ? newSerie.x[j] : j);
-             valFinal.push(newSerie.y[j]);
-             }
-             }
-
-             var serie = this.graph.newSerie(varname, {trackMouse: true});
-
-             this.setSerieParameters(serie, varname, newSerie._highlight);
-
-             this.normalize( valFinal, varname );
-             serie.setData( valFinal );
-
-             if( newSerie.infos ) {
-             serie.setInfos( newSerie.infos );
-             }
-             serie.autoAxis();
-             this.series[varname].push(serie);
-             }
-
-             this.redraw(false, varname);
-             },*/
-
             chart: function (moduleValue, varname) {
                 this.series[varname] = this.series[varname] || [];
                 this.removeSerie(varname);
