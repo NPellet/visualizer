@@ -787,6 +787,22 @@ define(['jquery',
             //      $('#ci-visualizer').append('<div id="browser-compatibility">' + browser.errorMessage() + '</div>');
             //      return;
             //  }
+
+            var css = [
+                'css/main.css',
+                'components/colors/css/colors.min.css',
+                'components/Aristo-jQuery-UI-Theme/css/Aristo/Aristo.css',
+                'lib/forms/style.css',
+                'components/fancytree/dist/skin-lion/ui.fancytree.css',
+                'components/jqgrid_edit/css/ui.jqgrid.css',
+                'css/overwrite_styles.css'
+            ];
+
+            css.forEach(function (css) {
+                Util.loadCss(css);
+            });
+
+
             var debugSet;
             if (urls['debug']) {
                 Debug.setDebugLevel(parseInt(urls['debug']));
@@ -804,20 +820,6 @@ define(['jquery',
                     visualizerDiv.append('<div id="browser-compatibility">' + errorMessage + '</div>');
                     return;
                 }
-
-                var css = [
-                    'css/main.css',
-                    'components/colors/css/colors.min.css',
-                    'components/Aristo-jQuery-UI-Theme/css/Aristo/Aristo.css',
-                    'lib/forms/style.css',
-                    'components/fancytree/dist/skin-lion/ui.fancytree.css',
-                    'components/jqgrid_edit/css/ui.jqgrid.css',
-                    'css/overwrite_styles.css'
-                ];
-
-                css.forEach(function (css) {
-                    Util.loadCss(css);
-                });
 
 
                 visualizerDiv.html('<table id="viewport" cellpadding="0" cellspacing="0">\n    <tr>\n        <td id="ci-center">\n            <div id="modules-grid">\n                <div id="ci-dialog"></div>\n            </div>\n        </td>\n    </tr>\n</table>');
