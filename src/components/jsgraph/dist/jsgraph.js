@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-03T22:57Z
+ * Date: 2014-12-06T11:16Z
  */
 
 (function( global, factory ) {
@@ -6571,7 +6571,7 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
 
     onMouseUp: function( graph, x, y, e, mute ) {
 
-      this._zoomingSquare.setAttribute( 'display', 'none' );
+      this.removeZone();
       var _x = x - graph.options.paddingLeft;
       var _y = y - graph.options.paddingTop;
 
@@ -6602,6 +6602,10 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
       if ( this._backedUpZoomMode ) {
         this._zoomingMode = this._backedUpZoomMode;
       }
+    },
+
+    removeZone: function() {
+      this._zoomingSquare.setAttribute( 'display', 'none' );
     },
 
     onMouseWheel: function( delta, e ) {

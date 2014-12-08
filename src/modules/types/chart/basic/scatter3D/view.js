@@ -5,8 +5,6 @@ define(['modules/default/defaultview','src/util/datatraversing',
   'lodash', 'threejs', 'src/util/debug', 'chroma',
   'lib/threejs/TrackballControls'], function(Default, Traversing, API, Util, _, THREE, Debug, chroma) {
 
-  // Allow cross-origin images
-  THREE.ImageUtils.crossOrigin = '';
 
   function generateRandomArray(n, min, max) {
     var result = [];
@@ -99,7 +97,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
   var ZOOM_START = 3;
   var DEFAULT_BACKGROUND_COLOR = '#eeeeee';
   var DEFAULT_PROJECTION_COLOR = '#888888';
-  var DEFAULT_POINT_COLOR = '#0000ff';
+  var DEFAULT_POINT_COLOR = '#FFFFFF';
   var DEFAULT_POINT_RADIUS = 0.03;
   var DEFAULT_POINT_GEOMETRY = "sphere";
   var DEFAULT_POINT_APPEARANCE = "none";
@@ -1383,7 +1381,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
       };
       var uniforms = {
         amplitude: { type: "f", value: 1 },
-        color:     { type: "c", value: new THREE.Color('#e5be39') },
+        color:     { type: "c", value: new THREE.Color('#ffffff') },
         texture:   { type: "t", value: THREE.ImageUtils.loadTexture(image) }
       };
 
@@ -1495,7 +1493,6 @@ define(['modules/default/defaultview','src/util/datatraversing',
 
       for(var shape in m){
         for(var hlkey in m[shape]) {
-          var tstart = new Date().getTime();
           self._highlightParticleObjects[shape] = self._highlightParticleObjects[shape] || {};
           self._highlightParticleObjects[shape][hlkey] = self._newParticleObject(m[shape][hlkey], {
             shape: shape || DEFAULT_POINT_SHAPE,
