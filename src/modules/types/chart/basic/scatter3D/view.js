@@ -4,6 +4,8 @@ define(['modules/default/defaultview','src/util/datatraversing',
   'src/util/api','src/util/util',
   'lodash', 'threejs', 'src/util/debug', 'chroma',
   'lib/threejs/TrackballControls'], function(Default, Traversing, API, Util, _, THREE, Debug, chroma) {
+
+
   function generateRandomArray(n, min, max) {
     var result = [];
     for(var i=0; i<n; i++) {
@@ -95,7 +97,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
   var ZOOM_START = 3;
   var DEFAULT_BACKGROUND_COLOR = '#eeeeee';
   var DEFAULT_PROJECTION_COLOR = '#888888';
-  var DEFAULT_POINT_COLOR = '#0000ff';
+  var DEFAULT_POINT_COLOR = '#FFFFFF';
   var DEFAULT_POINT_RADIUS = 0.03;
   var DEFAULT_POINT_GEOMETRY = "sphere";
   var DEFAULT_POINT_APPEARANCE = "none";
@@ -106,10 +108,14 @@ define(['modules/default/defaultview','src/util/datatraversing',
   var CAMERA_NEAR = 2;
   var CAMERA_FAR = 10000;
 
+
+  var baseURL = require.toUrl('modules/types/chart/basic/scatter3D') + '/';
   var shapeImages = {
-    'sphere': "modules/types/chart/basic/scatter3D/img/ball.png",
-    'tetrahedron': 'modules/types/chart/basic/scatter3D/img/tetrahedron2.png'
-  }
+    'sphere': baseURL + 'img/ball.png',
+    'spheret': baseURL + 'img/ballt.png',
+    'tetrahedron': baseURL + 'img/tetrahedron2.png',
+    'tetrahedront': baseURL + 'img/tetrahedron2t.png'
+  };
 
   $.fn.listHandlers = function(events, outputFunction) {
     return this.each(function(i){
@@ -437,7 +443,6 @@ define(['modules/default/defaultview','src/util/datatraversing',
 
     _drawGraph: function() {
       var self = this;
-      var tstart = new Date().getTime();
       // Remove all objects
       _.keys(self.scene.children).forEach(function(key){
         self.scene.remove(self.scene.children[key]);
@@ -1376,7 +1381,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
       };
       var uniforms = {
         amplitude: { type: "f", value: 1 },
-        color:     { type: "c", value: new THREE.Color('#e5be39') },
+        color:     { type: "c", value: new THREE.Color('#ffffff') },
         texture:   { type: "t", value: THREE.ImageUtils.loadTexture(image) }
       };
 
@@ -1488,7 +1493,6 @@ define(['modules/default/defaultview','src/util/datatraversing',
 
       for(var shape in m){
         for(var hlkey in m[shape]) {
-          var tstart = new Date().getTime();
           self._highlightParticleObjects[shape] = self._highlightParticleObjects[shape] || {};
           self._highlightParticleObjects[shape][hlkey] = self._newParticleObject(m[shape][hlkey], {
             shape: shape || DEFAULT_POINT_SHAPE,

@@ -463,6 +463,7 @@ onde.Onde.prototype.renderFieldValue = function (fieldName, fieldInfo, parentNod
             if (fieldInfo['default']) {
                 //TODO: Check the type
                 fieldValueNode.attr('placeholder', fieldInfo['default']);
+                fieldValueNode.val(fieldInfo['default']);
             }
             /*if (fieldInfo.format) {
                 fieldValueNode.addClass(fieldInfo.format);
@@ -509,6 +510,7 @@ onde.Onde.prototype.renderFieldValue = function (fieldName, fieldInfo, parentNod
             if (fieldInfo['default']) {
                 //TODO: Check the type
                 fieldValueNode.attr('placeholder', fieldInfo['default']);
+                fieldValueNode.val(fieldInfo['default']);
             }
         }
         fieldValueNode.attr('data-type', fieldInfo.type);
@@ -699,7 +701,6 @@ onde.Onde.prototype.renderObjectPropertyField = function (namespace, baseId, fie
             attr('title', this.tr("Required field")).
             text('*'));
     }
-    labelN.append(': ');
     var actionMenu = '';
     //TODO: More actions (only if qualified)
     if (fieldInfo._deletable) {

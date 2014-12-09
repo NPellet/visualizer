@@ -356,8 +356,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
         setSerieParameters: function (serie, varname, highlight) {
             var plotinfos = this.module.getConfiguration('plotinfos');
 
-            highlight = highlight || [];
-
             if (plotinfos) {
 
                 for (var i = 0, l = plotinfos.length; i < l; i++) {
@@ -388,9 +386,19 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 }
             }
 
-            API.listenHighlight(highlight, function (value, commonKeys) {
-                serie.toggleMarker([ highlight.indexOf(commonKeys[0]), 0 ], value, true);
-            });
+            if (highlight) {
+                API.listenHighlight({_highlight: highlight}, function (value, commonKeys) {
+                    for (var i = 0, ii = commonKeys.length; i < ii; i++) {
+                        var key = Number(commonKeys[i]);
+                        for(var j = 0, jj = highlight.length; j < jj; j++) {
+                            var high = highlight[j];
+                            if ((isNaN(Number(high) && (high.indexOf(key) > -1))) || (Number(high) === key)) {
+                                serie.toggleMarker([j, 0], !!value, false);
+                            }
+                        }
+                    }
+                }, false, this.module.getId());
+            }
 
         },
 
@@ -406,6 +414,13 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                 this.removeSerie(varName);
             },
+
+
+            series_xy1d: function (varName) {
+
+                this.graph.removeSeries();
+            },
+
 
             jcamp: function (varName) {
 
@@ -437,56 +452,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 }
 
             },
-
-            /* OLD FORMAT
-             * chart: function(moduleValue, varname) {
-
-<<<<<<< HEAD
-				if( this.graph ) {
-
-					this.graph.getBottomAxis()._doZoomVal(moduleValue.value.from, moduleValue.value.to, true);
-					this.graph.redraw( false, true, false );
-					this.graph.drawSeries();
-				}
-=======
-             this.series[varname] = this.series[varname] || [];
-             this.removeSerie( varname );
->>>>>>> jsgraph
-
-             if(!moduleValue)
-             return;
-
-             var newSeries=moduleValue.series || moduleValue;
-             if (!(newSeries instanceof Array)) {
-             newSeries=[newSeries];
-             }
-
-             for (var i=0; i<newSeries.length; i++) {
-             var newSerie = newSeries[i];
-             var valFinal=[];
-             if(newSerie.y) {
-             for(var j = 0, l = newSerie.y.length; j < l; j++) {
-             valFinal.push(newSerie.x ? newSerie.x[j] : j);
-             valFinal.push(newSerie.y[j]);
-             }
-             }
-
-             var serie = this.graph.newSerie(varname, {trackMouse: true});
-
-             this.setSerieParameters(serie, varname, newSerie._highlight);
-
-             this.normalize( valFinal, varname );
-             serie.setData( valFinal );
-
-             if( newSerie.infos ) {
-             serie.setInfos( newSerie.infos );
-             }
-             serie.autoAxis();
-             this.series[varname].push(serie);
-             }
-
-             this.redraw(false, varname);
-             },*/
 
             chart: function (moduleValue, varname) {
                 this.series[varname] = this.series[varname] || [];
@@ -531,8 +496,8 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     this.normalize(valFinal, varname);
                     serie.setData(valFinal);
 
-                    if (aData.infos) {
-                        serie.setInfos(aData.infos);
+                    if (aData.info) {
+                        serie.infos = aData.info;
                     }
 
                     serie.autoAxis();
@@ -627,7 +592,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                             }
                         }, false, self.module.getId());
 
-                        self.module.model.dataListenChange( annotations.traceSync([ i ]), function( v ) {
+                        self.module.model.dataListenChange( annotations.traceSync( [ i ] ), function( v ) {
 
                              shape.redraw();
 
@@ -722,7 +687,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             },
 
 
-            series_xy1d: function (data) { // Receives an array of series. Blank the other ones.
+            series_xy1d: function (data, varname) { // Receives an array of series. Blank the other ones.
 
                 /*if( ! data.data ) {
                  return;
@@ -737,7 +702,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                 for (; i < l; i++) {
 
-                    var serie = this.graph.newSerie();
+                    var serie = this.graph.newSerie( varname + "_" + i, this.getSerieOptions(varname) );
 
                     serie.autoAxis();
                     

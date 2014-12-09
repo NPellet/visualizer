@@ -642,12 +642,15 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         generateUniqIds: function() {
             if(!this.module.data) return;
             for(var i=0; i<this.module.data.length; i++) {
-                Object.defineProperty(this.module.data[i], this.idPropertyName, {
-                    value: 'id_' + this.incrementalId,
-                    writable: false,
-                    configurable: false,
-                    enumerable: false
-                });
+                if(!this.module.data[i][this.idPropertyName]) {
+                    Object.defineProperty(this.module.data[i], this.idPropertyName, {
+                        value: 'id_' + this.incrementalId,
+                        writable: false,
+                        configurable: false,
+                        enumerable: false
+                    });
+                }
+
                 //this.module.data[i][this.idPropertyName] = 'id_' + this.incrementalId;
                 this.incrementalId++;
             }

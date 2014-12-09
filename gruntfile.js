@@ -87,6 +87,7 @@ module.exports = function (grunt) {
                             ['./spectrum/spectrum.js', './spectrum/spectrum.css'],
                             './superagent/superagent.js',
                             './modernizr/modernizr.js',
+                            './underscore/underscore-min',
                             './lodash/dist/lodash.min.js',
                             './bowser/bowser.min.js',
                             './jquery-cookie/jquery.cookie.js',

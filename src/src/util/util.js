@@ -156,7 +156,7 @@ define(['src/util/debug'], function (Debug) {
                 var link = document.createElement('link');
                 link.type = 'text/css';
                 link.rel = 'stylesheet';
-                link.href = require.toUrl(url);
+                link.href = url;
                 link.onload = function () {
                     self.loadedCss[url] = link;
                     resolve(link);

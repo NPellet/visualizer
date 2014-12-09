@@ -51,18 +51,6 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
         In the form of 
     */
     controller.prototype.variablesIn = [ 'function' ];
-
-    /*
-        Received actions
-        In the form of
-
-        {
-            actionRef: 'actionLabel'
-        }
-    */
-    controller.prototype.actionsIn = {
-    
-    };
     
         
     controller.prototype.configurationStructure = function(section) {

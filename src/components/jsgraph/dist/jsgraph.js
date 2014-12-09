@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.2-9
+ * jsGraph JavaScript Graphing Library v1.10.3-3
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-02T22:59Z
+ * Date: 2014-12-09T07:57Z
  */
 
 (function( global, factory ) {
@@ -542,7 +542,6 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       ticklabelratio: 1,
       exponentialFactor: 0,
       exponentialLabelFactor: 0,
-      wheelBaseline: "min",
       logScale: false,
       allowedPxSerie: 100,
       forcedMin: false,
@@ -777,6 +776,13 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       return this;
     },
 
+    force: function( axis ) {
+      if ( axis.getMaxValue && axis.getMinValue ) {
+        this.options.forcedMin = axis.getMinValue();
+        this.options.forcedMax = axis.getMaxValue();
+      }
+    },
+
     getNbTicksPrimary: function() {
       return this.options.nbTicksPrimary;
     },
@@ -789,17 +795,16 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       this.mouseVal = this.getVal( px );
     },
 
-    handleMouseWheel: function( delta, e ) {
+    handleMouseWheel: function( delta, e, baseline ) {
 
       delta = Math.min( 0.2, Math.max( -0.2, delta ) );
-      var baseline;
 
-      if ( this.options.wheelBaseline == "min" ) {
-        baseline = this.getActualMin();
-      } else if ( this.options.wheelBaseline == "max" ) {
-        baseline = this.getActualMax();
-      } else {
-        baseline = this.options.wheelBaseline;
+      if ( baseline == "min" ) {
+        baseline = this.getMinValue();
+      } else if ( baseline == "max" ) {
+        baseline = this.getMaxValue();
+      } else if ( !baseline ) {
+        baseline = 0;
       }
 
       this._doZoomVal(
@@ -3454,8 +3459,12 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     this.nsxlink = "http://www.w3.org/1999/xlink";
     this.series = [];
     this._dom = dom;
-    // DOM
 
+    if ( this.options.hasOwnProperty( 'padding' ) ) {
+      this.options.paddingTop = this.options.paddingBottom = this.options.paddingLeft = this.options.paddingRight = this.options.padding;
+    }
+
+    // DOM
     var w, h;
     if ( dom.style.width && dom.style.width.indexOf( "%" ) == -1 ) {
       w = parseInt( dom.style.width.replace( 'px', '' ) );
@@ -3749,7 +3758,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     },
 
     getPaddingBottom: function() {
-      return this.options.paddingTop;
+      return this.options.paddingBottom;
     },
 
     getPaddingRight: function() {
@@ -3785,6 +3794,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     },
 
     _applyToAxes: function( func, params, tb, lr ) {
+
       var ax = [],
         i = 0,
         l;
@@ -4913,6 +4923,27 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       };
     },
 
+    mapEventEmission: function( options, source ) {
+
+      if ( !source ) {
+        source = this;
+      }
+
+      var eventName;
+
+      for ( var i in options ) {
+
+        // Starts with onXXX
+        if ( i.indexOf( "on" ) == 0 && typeof options[ i ] == "function" ) {
+          eventName = i.substring( 2 );
+          eventName = eventName.substring( 0, 1 ).toLowerCase() + eventName.substring( 1 );
+
+          if ( source.on ) {
+            source.on( eventName, options[ i ] );
+          }
+        }
+      }
+    }
   } );
 
   function makeSerie( graph, name, options, type, callback ) {
@@ -4938,7 +4969,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     return false;
   };
 
-  function refreshDrawingZone( graph, noX, noY ) {
+  function refreshDrawingZone( graph ) {
 
     var i, j, l, xy, min, max;
     var axisvars = [ 'bottom', 'top', 'left', 'right' ],
@@ -5329,7 +5360,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
         if ( plugin = graph._plugins[ graph.options.wheel.plugin ] ) {
 
-          plugin.onMouseWheel( delta, e );
+          plugin.onMouseWheel( delta, e, graph.options.wheel.options );
         }
 
         break;
@@ -5376,7 +5407,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
  * File path : /Users/normanpellet/Documents/Web/graph/src/graph._serie.js
  */
 
-build['./graph._serie'] = ( function( ) { 
+build['./graph._serie'] = ( function( EventEmitter ) { 
 
   
 
@@ -5384,7 +5415,7 @@ build['./graph._serie'] = ( function( ) {
     throw "This serie is not instanciable";
   }
 
-  GraphSerieNonInstanciable.prototype = {
+  GraphSerieNonInstanciable.prototype = $.extend( {}, EventEmitter.prototype, {
 
     setAdditionalData: function( data ) {
       this.additionalData = data;
@@ -5863,12 +5894,16 @@ build['./graph._serie'] = ( function( ) {
 
     setLayer: function( layer ) {
       this.options.layer = layer;
+    },
+
+    updateStyle: function() {
+      this.setLegendSymbolStyle();
     }
 
-  };
+  } );
 
   return GraphSerieNonInstanciable;
- } ) (  );
+ } ) ( build["./dependencies/eventEmitter/EventEmitter"] );
 
 
 // Build: End source file (graph._serie) 
@@ -6567,7 +6602,7 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
 
     onMouseUp: function( graph, x, y, e, mute ) {
 
-      this._zoomingSquare.setAttribute( 'display', 'none' );
+      this.removeZone();
       var _x = x - graph.options.paddingLeft;
       var _y = y - graph.options.paddingTop;
 
@@ -6600,7 +6635,19 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
       }
     },
 
-    onMouseWheel: function( delta, e ) {
+    removeZone: function() {
+      this._zoomingSquare.setAttribute( 'display', 'none' );
+    },
+
+    onMouseWheel: function( delta, e, options ) {
+
+      if ( !options ) {
+        options = {};
+      }
+
+      if ( !options.baseline ) {
+        options.baseline = 0;
+      }
 
       var serie;
       if ( ( serie = this.graph.getSelectedSerie() ) ) {
@@ -6610,9 +6657,13 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
         }
       }
 
-      this.graph._applyToAxes( 'handleMouseWheel', [ delta, e ], false, true );
+      var doX = ( options.direction == 'x' );
+      var doY = !( options.direction !== 'y' );
+
+      this.graph._applyToAxes( 'handleMouseWheel', [ delta, e, options.baseline ], doX, doY );
 
       this.graph.drawSeries();
+
     },
 
     onDblClick: function( graph, x, y, pref, e, mute ) {
@@ -6852,6 +6903,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
       this.shown = true;
       this.options = $.extend( true, {}, GraphSerie.prototype.defaults, options );
+
+      this.graph.mapEventEmission( this.options, this );
 
       this.data = [];
       this._isMinOrMax = {
@@ -7728,6 +7781,11 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       }
       line.setAttribute( 'fill', 'none' );
       //	line.setAttribute('shape-rendering', 'optimizeSpeed');
+    },
+
+    updateStyle: function() {
+      this.applyLineStyles();
+      this.setLegendSymbolStyle();
     },
 
     // Revised August 2014. Ok
@@ -9411,7 +9469,85 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
   $.extend( GraphSerieScatter.prototype, GraphSerieNonInstanciable.prototype, {
 
     defaults: {
-      label: ""
+      label: "",
+      onHover: false
+    },
+
+    init: function( graph, name, options ) {
+
+      var self = this;
+
+      this.graph = graph;
+      this.name = name;
+
+      this.id = Math.random() + Date.now();
+
+      this.shapes = []; // Stores all shapes
+
+      this.shown = true;
+      this.options = $.extend( true, {}, GraphSerieScatter.prototype.defaults, options );
+      this.data = [];
+      this.graph.mapEventEmission( this.options, this );
+
+      this._isMinOrMax = {
+        x: {
+          min: false,
+          max: false
+        },
+        y: {
+          min: false,
+          max: false
+        }
+      };
+
+      this.groupPoints = document.createElementNS( this.graph.ns, 'g' );
+      this.groupMain = document.createElementNS( this.graph.ns, 'g' );
+
+      this.additionalData = {};
+
+      this.selectedStyleGeneral = {};
+      this.selectedStyleModifiers = {};
+      /*
+      this.groupPoints.addEventListener('mouseover', function(e) {
+      
+      });
+
+
+      this.groupPoints.addEventListener('mouseout', function(e) {
+      
+      });
+*/
+
+      this.groupPoints.addEventListener( 'mouseover', function( e ) {
+        var id = parseInt( $( e.target ).parent().attr( 'data-shapeid' ) );
+        self.emit( "mouseover", id, self.data[ id * 2 ], self.data[ id * 2 + 1 ] );
+      } );
+
+      this.groupPoints.addEventListener( 'mouseout', function( e ) {
+        var id = parseInt( $( e.target ).parent().attr( 'data-shapeid' ) );
+        self.emit( "mouseout", id, self.data[ id * 2 ], self.data[ id * 2 + 1 ] );
+      } );
+
+      this.minX = Number.MAX_VALUE;
+      this.minY = Number.MAX_VALUE;
+      this.maxX = Number.MIN_VALUE;
+      this.maxY = Number.MIN_VALUE;
+
+      this.groupMain.appendChild( this.groupPoints );
+      this.currentAction = false;
+
+      if ( this.initExtended1 ) {
+        this.initExtended1();
+      }
+
+      this.stdStyle = {
+        shape: 'circle',
+        cx: 0,
+        cy: 0,
+        r: 3,
+        stroke: 'transparent',
+        fill: "black"
+      }
     },
 
     /**
@@ -9433,6 +9569,9 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
         arr,
         total = 0,
         continuous;
+
+      this.shapes = [];
+      this.empty();
 
       if ( !data instanceof Array ) {
         return this;
@@ -9474,70 +9613,10 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
       return this;
     },
 
-    init: function( graph, name, options ) {
-
-      var self = this;
-
-      this.graph = graph;
-      this.name = name;
-
-      this.id = Math.random() + Date.now();
-
-      this.shown = true;
-      this.options = $.extend( true, {}, GraphSerieScatter.prototype.defaults, options );
-      this.data = [];
-
-      this._isMinOrMax = {
-        x: {
-          min: false,
-          max: false
-        },
-        y: {
-          min: false,
-          max: false
-        }
-      };
-
-      this.groupPoints = document.createElementNS( this.graph.ns, 'g' );
-      this.groupMain = document.createElementNS( this.graph.ns, 'g' );
-
-      this.additionalData = {};
-      /*
-			this.groupPoints.addEventListener('mouseover', function(e) {
-			
-			});
-
-
-			this.groupPoints.addEventListener('mouseout', function(e) {
-			
-			});
-*/
-      this.minX = Number.MAX_VALUE;
-      this.minY = Number.MAX_VALUE;
-      this.maxX = Number.MIN_VALUE;
-      this.maxY = Number.MIN_VALUE;
-
-      this.groupMain.appendChild( this.groupPoints );
-      this.currentAction = false;
-
-      if ( this.initExtended1 ) {
-        this.initExtended1();
-      }
-
-      this.stdStyle = {
-        shape: 'circle',
-        cx: 0,
-        cy: 0,
-        r: 3,
-        stroke: 'transparent',
-        fill: "black"
-      }
-    },
-
     empty: function() {
 
-      while ( this.group.firstChild ) {
-        this.group.removeChild( this.group.firstChild );
+      while ( this.groupPoints.firstChild ) {
+        this.groupPoints.removeChild( this.groupPoints.firstChild );
       }
     },
 
@@ -9593,6 +9672,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
       if ( this.errorstyles ) {
 
         for ( var i = 0, l = this.errorstyles.length; i < l; i++ ) {
+
           this.errorstyles[ i ].paths = {
             top: "",
             bottom: "",
@@ -9719,33 +9799,57 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 
       var g = document.createElementNS( this.graph.ns, 'g' );
       g.setAttribute( 'transform', 'translate(' + xpx + ', ' + ypx + ')' );
+      g.setAttribute( 'data-shapeid', k );
 
       if ( this.extraStyle && this.extraStyle[ k ] ) {
 
-        this.doShape( g, this.extraStyle[ k ] );
+        shape = this.doShape( g, this.extraStyle[ k ] );
 
       } else if ( this.stdStylePerso ) {
 
-        this.doShape( g, this.stdStylePerso );
+        shape = this.doShape( g, this.stdStylePerso );
 
       } else {
 
-        this.doShape( g, this.stdStyle );
+        shape = this.doShape( g, this.stdStyle );
       }
 
+      this.shapes[ k ] = shape;
+      this.setStyle( k );
       this.groupPoints.appendChild( g );
     },
 
     doShape: function( group, shape ) {
-
       var el = document.createElementNS( this.graph.ns, shape.shape );
-      for ( var i in shape ) {
+      group.appendChild( el );
+      return el;
+    },
+
+    setStyle: function( index ) {
+
+      var style;
+      var shape = this.shapes[ index ];
+
+      if ( this.extraStyle && this.extraStyle[ index ] ) {
+
+        style = this.extraStyle[ index ];
+
+      } else if ( this.stdStylePerso ) {
+
+        style = this.stdStylePerso;
+
+      } else {
+
+        style = this.stdStyle;
+
+      }
+
+      for ( var i in style ) {
         if ( i !== "shape" ) {
-          el.setAttribute( i, shape[ i ] );
+          shape.setAttribute( i, style[ i ] );
         }
       }
 
-      group.appendChild( el );
     },
 
     setDataError: function( error ) {
@@ -9839,7 +9943,57 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 
       this.errorstyles = styles;
 
+    },
+
+    selectPoint: function( index, setOn ) {
+
+      if ( Array.isArray( index ) ) {
+        return this.selectPoints( index );
+      }
+
+      if ( this.shapes[ index ] ) {
+
+        if ( ( this.shapes[ index ]._selected || setOn === false ) && setOn !== true ) {
+
+          for ( var i in this.selectedStyleGeneral ) {
+            this.shapes[ index ].removeAttribute( i );
+          }
+
+          if ( this.selectedStyleModifiers[ index ] ) {
+            for ( var i in this.selectedStyleModifiers[ index ] ) {
+              this.shapes[ index ].removeAttribute( i );
+            }
+          }
+
+          this.shapes[ index ]._selected = false;
+          this.setStyle( index );
+
+        } else {
+
+          this.shapes[ index ]._selected = true;
+
+          for ( var i in this.selectedStyleGeneral ) {
+            this.shapes[ index ].setAttribute( i, this.selectedStyleGeneral[ i ] );
+          }
+
+          if ( this.selectedStyleModifiers[ index ] ) {
+            for ( var i in this.selectedStyleModifiers[ index ] ) {
+              this.shapes[ index ].setAttribute( i, this.selectedStyleModifiers[ index ][ i ] );
+            }
+          }
+
+        }
+
+      }
+
+    },
+
+    setSelectedStyle: function( general, modifiers ) {
+
+      this.selectedStyleGeneral = general;
+      this.selectedStyleModifiers = modifiers || {};
     }
+
   } );
 
   return GraphSerieScatter;
@@ -12155,6 +12309,8 @@ build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve )
             continue;
           }
 
+          lastXVal = this.serie.data[ i ][ j + incrXFlip ];
+
           lastX = x;
           lastY = y;
 
@@ -12200,7 +12356,7 @@ build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve )
       }
 
       this.points = points;
-      this.lastSum = sum;
+      this.lastSum = Math.abs( sum );
 
       var lastY = firstY,
         lastX = this.lastX;

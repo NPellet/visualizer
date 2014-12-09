@@ -1,4 +1,5 @@
-define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'jquery-cookie'], function(Debug, bowser, _, modernizr) {
+define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'src/util/util', 'jquery-cookie'], function(Debug, bowser, _, modernizr, Util) {
+
     var features = {
         canvas: {
             name: 'Canvas',
@@ -126,6 +127,10 @@ define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'jquery-cookie'], fun
                 }
 
                 var $dialog = $('#ci-dialog');
+                if(!$dialog.length) {
+                    $dialog = $('<div>').attr('id', 'ci-dialog');
+                    $('body').append($dialog);
+                }
                 $dialog.html(featureErrorMessage());
                 $dialog.append($('<input id="skip-warning-checkbox" type="checkbox">Don\'t show this again</input>'));
                 $dialog.dialog({

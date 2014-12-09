@@ -160,7 +160,7 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
                 l = currentCfg.length;
 
             for (; i < l; i++) {
-                if (currentCfg[i].rel == 'jcamp' || currentCfg[i].rel == 'xArray' || currentCfg[i].rel == 'xyArray' || currentCfg[i].rel == 'chart') {
+                if (currentCfg[i].rel == 'jcamp' || currentCfg[i].rel == 'xArray' || currentCfg[i].rel == 'xyArray' || currentCfg[i].rel == 'chart' || currentCfg[ i ].rel == "series_xy1d") {
                     vars.push({
                         title: currentCfg[i].name,
                         key: currentCfg[i].name
@@ -522,14 +522,13 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
 
     controller.prototype.onMouseOverMarker = function (xy, infos) {
         this.infos = infos;
-        this.createDataFromEvent('onMouseOverMarker', 'markerInfos', DataObject.check(infos));
-        this.createDataFromEvent('onMouseOverMarker', 'markerXY', new DataArray(xy));
+        this.createDataFromEvent('onMouseOverMarker', 'markerInfos', infos);
+        this.createDataFromEvent('onMouseOverMarker', 'markerXY', xy);
     };
 
     controller.prototype.onMouseOutMarker = function (xy, infos) {
-
-        this.createDataFromEvent('onMouseOutMarker', 'markerInfos', DataObject.check(infos));
-        this.createDataFromEvent('onMouseOutMarker', 'markerXY', new DataArray(xy));
+        this.createDataFromEvent('onMouseOutMarker', 'markerInfos', infos);
+        this.createDataFromEvent('onMouseOutMarker', 'markerXY', xy);
     };
 
     controller.prototype.print = function () {

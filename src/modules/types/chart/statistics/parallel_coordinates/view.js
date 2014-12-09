@@ -32,6 +32,8 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing
 
             this.jpathConfig = $.extend(true, [], this.module.getConfiguration('colsjPaths'));
 
+            this.preventHighlight = this.module.getConfigurationCheckbox('options', 'hide');
+
             this.module.getDomContent().html(this.dom);
 
         },
@@ -237,13 +239,22 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing
             }
         },
         updateHighlight: _.throttle(function () {
-            if (this._highlighted.length) {
-                this.parcoords.highlight(this._highlighted);
+            var toHighlight = this._highlighted;
+            if (this.preventHighlight) {
+                toHighlight = [];
+                var brushed = this.parcoords.brushed();
+                for (var i = 0, ii = this._highlighted.length; i < ii; i++) {
+                    if (brushed.indexOf(this._highlighted[i]) > -1) {
+                        toHighlight.push(this._highlighted[i]);
+                    }
+                }
+            }
+            if (toHighlight.length) {
+                this.parcoords.highlight(toHighlight);
             } else {
                 this.parcoords.unhighlight();
             }
         }, 20)
-
     });
 
     return View;
