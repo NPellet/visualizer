@@ -45,6 +45,10 @@ define(['modules/types/client_interaction/code_editor/view', 'src/util/util', 'a
         this.module.definition.configuration.groups.group[0].script[0] = val;
     };
 
+    View.prototype.blank.dataobject = function () {
+        this._object = null;
+    };
+
     View.prototype.update.dataobject = function (value) {
         this._object = value;
         this.module.controller.onButtonClick(this._code, this._object);
