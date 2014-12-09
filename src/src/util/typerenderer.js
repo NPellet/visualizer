@@ -18,6 +18,17 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
         def.resolve( val );	
 	};
 
+	functions.epoch = {};
+	functions.epoch.toscreen = function(def, val) {
+		try {
+			var d = new Date(val);
+			def.resolve(d.toLocaleString());
+		}
+		catch(e) {
+			def.resolve('Invalid epoch');
+		}
+	};
+
     functions.color = {};
     functions.color.toscreen = function(def, val) {
 
