@@ -50,10 +50,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 'd
                 left: [axisOptions]
             }, function (graph) {
                 graph.shapeHandlers.mouseOver.push(function (shape) {
-                    console.log('mouse over shape')
-                });
-                graph.shapeHandlers.mouseOut.push(function (shape) {
-                    console.log('mouse out of shape')
+                    self.module.controller.onCellHover(shape.data);
                 });
                 graph.getXAxis().hide().setAxisDataSpacing(0, 0);
                 graph.getYAxis().hide().setAxisDataSpacing(0, 0);
@@ -76,8 +73,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 'd
                 if (String(value.get('name')) !== 'SOM') {
                     return;
                 }
-                var data = value.get('data'),
-                    fields = value.get('fields');
+                var data = value.get('data');
                 var x = data.length,
                     y = data[0].length;
                 var graph = this.graph;
@@ -102,7 +98,8 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 'd
                                 locked: true
                             },
                             fillColor: 'rgba(0,0,0,0.3)',
-                            layer: 1
+                            layer: 1,
+                            info: data[i][j]
                         }, null, null, true);
                         shape.draw();
                         shape.redraw();
@@ -112,6 +109,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 'd
                 this.redraw();
             },
             dataset: function (value, name) {
+                var self = this;
                 var data = value.getChildSync(['data', '0']);
                 var l = data.x.length;
                 var theData = new Array(l * 2);
@@ -119,17 +117,30 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 'd
                     theData[i * 2] = data.x[i];
                     theData[i * 2 + 1] = data.y[i];
                 }
-                this.series[name] = this.graph.newSerie(name, {
+                var serie = this.series[name] = this.graph.newSerie(name, {
                     layer: 2
                 }, 'scatter')
                     .autoAxis()
                     .setData(theData)
                     .setDataStyle({
                         shape: 'circle',
-                        r: 2,
+                        r: 2.5,
                         fill: 'rgba(255, 0, 0, 0.3)',
                         stroke: 'rgb(255, 100, 0)'
                     });
+                if (data.info) {
+                    serie.on('mouseover', function (id) {
+                        serie.selectPoint(id);
+                        self.module.controller.onElementHover(data.x[id], data.y[id], data.info[id]);
+                    });
+                    serie.on('mouseout', function (id) {
+                        serie.selectPoint(id, false);
+                    });
+                }
+                serie.setSelectedStyle({
+                    r: 5
+                });
+
                 this.redraw();
             }
         },
