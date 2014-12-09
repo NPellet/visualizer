@@ -245,10 +245,9 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 				return;
 			}
 
-			var data = this.model.data[rel], keys = Object.keys(data);
-
-			if (keys.length) {
-				return data[keys[0]];
+			var data = this.model.data[rel];
+			if (data) {
+				return data[Object.keys(data)[0]];
 			}
 
 			return false;
