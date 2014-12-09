@@ -499,6 +499,17 @@
 			return this.options.dom;
 		}
 
+		NMR.prototype.getGraph2D = function() {
+			return this.graphs['_2d'];
+		}
+
+		NMR.prototype.getGraphX = function() {
+			return this.graphs['x'];
+		}
+
+		NMR.prototype.getGraphY = function() {
+			return this.graphs['y'];
+		}
 
 		NMR.prototype.resize1DTo = function( w, h ) {
 			this.graphs[ 'x' ].resize( w, h );
