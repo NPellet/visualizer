@@ -21,7 +21,7 @@ define(function () {
         'color': 'string',
         'mf': 'string',
         'jcamp': 'string',
-        'epoch': 'string',
+        'date': 'string',
         'downloadLink': 'string',
         'html': 'string',
         'boolean': 'boolean',
