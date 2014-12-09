@@ -46,7 +46,15 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
             this.inputVal = {};
 
         },
-        blank: {},
+        blank: {
+            inputValue: function () {
+                this.inputObj = null;
+                this.inputVal = null;
+            },
+            schema: function () {
+                this.module.controller.inputSchema = {};
+            }
+        },
         inDom: function () {
             this.module.getDomContent().html(this.dom);
             this.initForm();
