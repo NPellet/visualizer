@@ -153,6 +153,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 'd
         },
         redraw: function () {
             this.graph.redraw();
+            this.graph.autoscaleAxes();
             this.graph.drawSeries();
         }
     });
