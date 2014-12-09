@@ -682,6 +682,11 @@
 			this.graphs[ 'y' ].updateAxes();
 			this.graphs[ 'x' ].updateAxes();
 
+			var yaxis = this.graphs[ 'y' ].getXAxis();
+			var xaxis = this.graphs[ 'x' ].getYAxis();
+
+			this.graphs[ '_2d' ].getXAxis().force( xaxis );
+			this.graphs[ '_2d' ].getYAxis().force( yaxis );
 
 			this.graphs['y'].redraw( );
 			this.graphs['y'].drawSeries();	
@@ -855,8 +860,6 @@
 
 						} );
 
-						// ANDRES
-						// You can do here your processing and create new shapes
 						shape.kill();
 					}
 				},
@@ -878,8 +881,10 @@
 						},
 
 						onZoomEnd: function( graph, x, y, e, target, x1, y1 ) {
-							self.graphs['x']._pluginExecute( 'graph.plugin.zoom', 'onMouseUp', [ self.graphs['x'], x, y, e, true ] );
-							self.graphs['y']._pluginExecute( 'graph.plugin.zoom', 'onMouseUp', [ self.graphs['y'], x, y, e, true ] );
+
+ 							// Remove shapes
+							self.graphs[ 'x' ]._pluginExecute( 'graph.plugin.zoom', 'removeZone', [ ] );
+							self.graphs[ 'y' ]._pluginExecute( 'graph.plugin.zoom', 'removeZone', [ ] );
 
 							var x = graph.getBottomAxis().getVal( x1 );
 							var x2 = graph.getBottomAxis().getVal( x );
@@ -887,10 +892,21 @@
 							var y = graph.getLeftAxis().getVal( y1 );
 							var y2 = graph.getLeftAxis().getVal( y );
 
+							// Resize x
+ 							self.graphs['x']._applyToAxes( '_doZoomVal', [ x, x2 ], false, true );
+ 							self.graphs['x'].redraw();
+ 							self.graphs['x'].drawSeries();
+
+
+							// Resize y
+ 							self.graphs['x']._applyToAxes( '_doZoomVal', [ y, y2 ], false, true );
+ 							self.graphs['x'].redraw();
+ 							self.graphs['x'].drawSeries();
+
 							if( self.options.minimap ) {
+
 								self.minimapClip.data.pos = { x: x, y: y };
 								self.minimapClip.data.pos2 = { x: x2, y: y2 };
-
 								self.minimapClip.redraw();
 							}
 						},
@@ -1054,6 +1070,7 @@
 			self.graphs[ '_2d' ].getXAxis().setAxisDataSpacing( 0 );
 			self.graphs[ '_2d' ].getYAxis().setAxisDataSpacing( 0 );
 
+
 	
 			var legend = this.graphs[ '_2d' ].makeLegend( { frame: true, frameColor: 'grey', frameWidth: 1, movable: true } );
 			legend.setPosition( { x: '20px', y: '20px' } );
@@ -1172,7 +1189,8 @@
 					type: 'plugin',
 					plugin: 'graph.plugin.zoom',
 					options: {
-						direction: 'x'
+						direction: 'y',
+						baseline: 0
 					}
 				},
 
@@ -1196,6 +1214,8 @@
 			  	}
 
 			} );
+
+		//	self.graphs[ 'x' ].getXAxis().options.wheelBaseline = 0;
 
 
 
@@ -1221,7 +1241,6 @@
 						},
 
 						onZoomEnd: function( graph, x, y, e, target ) {
-
 
 							var yaxis = self.graphs['y'].getYAxis();
 							var from = yaxis.getActualMin();
@@ -1274,7 +1293,8 @@ console.log( from, to );
 					type: 'plugin',
 					plugin: 'graph.plugin.zoom',
 					options: {
-						direction: 'y'
+						direction: 'y',
+						baseline: 0
 					}
 				},
 
@@ -1359,7 +1379,8 @@ console.log( from, to );
 					type: 'plugin',
 					plugin: 'graph.plugin.zoom',
 					options: {
-						direction: 'x'
+						direction: 'y',
+						baseline: 0
 					}
 				},
 
@@ -1380,7 +1401,8 @@ console.log( from, to );
 
 
 			this.graphs[ 'x' ].setHeight(300);
-
+	//		this.graphs[ 'x' ].getXAxis().options.wheelBaseline = 0;
+			
 			this.graphs[ 'x' ].shapeHandlers.onRemoved.push( function( shape ) {
 
 
