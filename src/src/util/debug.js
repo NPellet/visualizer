@@ -1,5 +1,14 @@
 define(function () {
 
+    var Levels = {
+        NODEBUG: -1,
+        ERROR: 0,
+        WARN: 1,
+        INFO: 2,
+        DEBUG: 3,
+        TRACE: 4
+    };
+
     var debugLevel = -1,
         console = window.console,
         entries = [];
@@ -10,12 +19,18 @@ define(function () {
 
     var Debug = {
 
+        Levels: Levels,
+
         setDebugLevel: function (level) {
             debugLevel = level;
         },
 
+        getDebugLevel: function () {
+            return debugLevel;
+        },
+
         error: function (message, error) {
-            if (debugLevel >= 0) {
+            if (debugLevel >= Levels.ERROR) {
                 if (error instanceof Error && error.stack) {
                     arguments[1] = "\n" + error.stack;
                 } else {
@@ -23,39 +38,39 @@ define(function () {
                 }
                 console.error.apply(console, arguments);
             }
-            if (debugLevel > -1)
+            if (debugLevel > Levels.NODEBUG)
                 addEntry('ERROR : ' + message);
         },
 
         warn: function (message) {
-            if (debugLevel >= 1) {
+            if (debugLevel >= Levels.WARN) {
                 console.warn.apply(console, arguments);
             }
-            if (debugLevel > -1)
+            if (debugLevel > Levels.NODEBUG)
                 addEntry('WARN  : ' + message);
         },
 
         info: function (message) {
-            if (debugLevel >= 2) {
+            if (debugLevel >= Levels.INFO) {
                 console.info.apply(console, arguments);
             }
-            if (debugLevel > -1)
+            if (debugLevel > Levels.NODEBUG)
                 addEntry('INFO  : ' + message);
         },
 
         debug: function (message) {
-            if (debugLevel >= 3) {
+            if (debugLevel >= Levels.DEBUG) {
                 console.debug.apply(console, arguments);
             }
-            if (debugLevel > -1)
+            if (debugLevel > Levels.NODEBUG)
                 addEntry('DEBUG : ' + message);
         },
 
         trace: function (message) {
-            if (debugLevel >= 4) {
+            if (debugLevel >= Levels.TRACE) {
                 console.log.apply(console, arguments);
             }
-            if (debugLevel > -1)
+            if (debugLevel > Levels.NODEBUG)
                 addEntry('TRACE : ' + message);
         },
 
