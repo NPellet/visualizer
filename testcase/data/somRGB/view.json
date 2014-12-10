@@ -130,7 +130,7 @@
                 "config"
               ],
               "schema": [
-                "{\n    \"type\": \"object\",\n    \"properties\": {\n        \"colors\": {\n            \"type\": \"object\",\n            \"label\": \"Color generation\",\n            \"properties\": {\n                \"train\": {\n                    \"type\": \"number\",\n                    \"label\": \"Number of training colors\",\n                    \"default\": 1000\n                },\n                \"test\": {\n                    \"type\": \"number\",\n                    \"label\": \"Number of test colors\",\n                    \"default\": 100\n                }\n            }\n        },\n        \"som\": {\n            \"type\": \"object\",\n            \"label\": \"SOM\",\n            \"properties\": {\n                \"x\": {\n                    \"type\": \"number\",\n                    \"label\": \"Grid x\",\n                    \"default\": 10\n                },\n                \"y\": {\n                    \"type\": \"number\",\n                    \"label\": \"Grid y\",\n                    \"default\": 10\n                },\n                \"it\": {\n                    \"type\": \"number\",\n                    \"label\": \"Iterations\",\n                    \"default\": 5\n                }\n            }\n        }\n    }\n}"
+                "{\n    \"type\": \"object\",\n    \"properties\": {\n        \"colors\": {\n            \"type\": \"object\",\n            \"label\": \"Color generation\",\n            \"properties\": {\n                \"train\": {\n                    \"type\": \"number\",\n                    \"label\": \"Number of training colors\",\n                    \"default\": 1000\n                },\n                \"test\": {\n                    \"type\": \"number\",\n                    \"label\": \"Number of test colors\",\n                    \"default\": 100\n                }\n            }\n        },\n        \"som\": {\n            \"type\": \"object\",\n            \"label\": \"SOM\",\n            \"properties\": {\n                \"x\": {\n                    \"type\": \"number\",\n                    \"label\": \"Grid x\",\n                    \"default\": 20\n                },\n                \"y\": {\n                    \"type\": \"number\",\n                    \"label\": \"Grid y\",\n                    \"default\": 20\n                },\n                \"it\": {\n                    \"type\": \"number\",\n                    \"label\": \"Iterations\",\n                    \"default\": 5\n                }\n            }\n        }\n    }\n}"
               ]
             }
           ]
@@ -208,44 +208,143 @@
     {
       "url": "modules/types/chart/advanced/som/",
       "configuration": {
-        "sections": {},
-        "groups": {
+        "sections": {
           "background": [
             {
-              "colorType": [
-                "inter"
-              ],
-              "colorSpace": [
-                "rgb"
-              ],
-              "color1": [
-                [
-                  0,
-                  0,
-                  0,
-                  1
+              "sections": {},
+              "groups": {
+                "group": [
+                  {
+                    "colorType": [
+                      "inter"
+                    ],
+                    "colorSpace": [
+                      "rgb"
+                    ],
+                    "color1": [
+                      [
+                        0,
+                        0,
+                        0,
+                        1
+                      ]
+                    ],
+                    "color2": [
+                      [
+                        255,
+                        255,
+                        255,
+                        0.99
+                      ]
+                    ],
+                    "field1": [
+                      "r"
+                    ],
+                    "field2": [
+                      "g"
+                    ],
+                    "field3": [
+                      "b"
+                    ]
+                  }
                 ]
-              ],
-              "color2": [
-                [
-                  255,
-                  255,
-                  255,
-                  0.96
+              }
+            }
+          ],
+          "dataset": [
+            {
+              "sections": {},
+              "groups": {
+                "group": [
+                  {
+                    "dataset": [
+                      "somTest"
+                    ],
+                    "colorType": [
+                      "jpath"
+                    ],
+                    "colorSpace": [
+                      "rgb"
+                    ],
+                    "color1": [
+                      [
+                        255,
+                        0,
+                        0,
+                        1
+                      ]
+                    ],
+                    "color2": [
+                      [
+                        0,
+                        0,
+                        0,
+                        1
+                      ]
+                    ],
+                    "jpath1": [
+                      [
+                        "color"
+                      ]
+                    ],
+                    "jpath2": [
+                      []
+                    ],
+                    "jpath3": [
+                      []
+                    ]
+                  }
                 ]
-              ],
-              "field1": [
-                "r"
-              ],
-              "field2": [
-                "g"
-              ],
-              "field3": [
-                "b"
-              ]
+              }
+            },
+            {
+              "sections": {},
+              "groups": {
+                "group": [
+                  {
+                    "dataset": [
+                      "somTraining"
+                    ],
+                    "colorType": [
+                      "jpath"
+                    ],
+                    "colorSpace": [
+                      "rgb"
+                    ],
+                    "color1": [
+                      [
+                        255,
+                        0,
+                        0,
+                        1
+                      ]
+                    ],
+                    "color2": [
+                      [
+                        0,
+                        0,
+                        0,
+                        1
+                      ]
+                    ],
+                    "jpath1": [
+                      [
+                        "color"
+                      ]
+                    ],
+                    "jpath2": [
+                      []
+                    ],
+                    "jpath3": [
+                      []
+                    ]
+                  }
+                ]
+              }
             }
           ]
-        }
+        },
+        "groups": {}
       },
       "layers": {
         "Default layer": {
@@ -302,10 +401,6 @@
         {
           "rel": "dataset",
           "name": "somTest"
-        },
-        {
-          "rel": "dataset",
-          "name": "somTraining"
         }
       ],
       "actions_in": [
