@@ -681,8 +681,13 @@ div.ci-module-display_value div.ci-module-content img {
 }
 
 .ci-navigation-navigarrow {
-	background: url('../images/arrownavig.png') top left no-repeat;
-	width: 12px;
+	
+	border-top-width: 0px;
+	border-left: 4px solid transparent;
+	border-right: 4px solid transparent;
+	border-bottom: 8px solid black;
+	
+	width: 0px;
 	height: 8px;
 	position: absolute;
 }

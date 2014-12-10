@@ -125,6 +125,11 @@ define( [
 						auc.msFromAucSerie.kill();
 					}
 
+				},
+
+				onZoomGC: function( from, to ) {
+
+					self.module.controller.sendAction('fromtoGC', [ from, to ], 'onZoomGCChange');
 				}
 
 			} );
@@ -292,6 +297,21 @@ define( [
 					this.shapes[i].toggleLabel( 1 , false );
 				}
 
+			},
+
+			centerGC: function( value ) {
+
+				value = value[ 0 ]; // x value
+				var a = this.gcmsInstance.getGC().getBottomAxis();
+
+				var mi = a.getActualMin();
+				var ma = a.getActualMax();
+
+				var interval = Math.abs( ma - mi ) / 2;
+
+				a._doZoomVal( value - interval, value + interval, true);
+				this.gcmsInstance.getGC().redraw( true, true, false );
+				this.gcmsInstance.getGC().drawSeries();
 			}
 		},
 
