@@ -32,7 +32,7 @@ define(function () {
         error: function (message, error) {
             if (debugLevel >= Levels.ERROR) {
                 if (error instanceof Error && error.stack) {
-                    arguments[1] = "\n" + error.stack;
+                    arguments[1] = '\n' + error.stack;
                 } else {
                     entries.push.call(arguments, '\n' + Error().stack);
                 }
