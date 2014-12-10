@@ -21,7 +21,7 @@
           "group": [
             {
               "script": [
-                "function rnd(n) {\n    return Math.floor(Math.random()*n);\n}\n\nfunction rndColors(n) {\n    var i = 0,\n        a = new Array(n),\n        o;\n    for(; i < n; i++) {\n        o = {\n            r: rnd(256),\n            g: rnd(256),\n            b: rnd(256)\n        };\n        o.color = \"rgb(\"+o.r+\",\"+o.g+\",\"+o.b+\")\";\n        o.colorC = {type:'color',value:o.color};\n        a[i] = o;\n    }\n    return a;\n}\n\nfunction getChart(theSet, prediction) {\n    var chart = {\n        x: [],\n        y: [],\n        info: []\n    };\n    var result = {\n        type: 'chart',\n        value: {\n            data: [chart]\n        }\n    };\n    \n    var i = 0,\n        l = theSet.length;\n\n    for (; i < l; i++) {\n        chart.x[i] = prediction[i][0] + prediction[i][2][0];\n        chart.y[i] = prediction[i][1] + prediction[i][2][1];\n        chart.info[i] = theSet[i]\n    }\n    return result;\n}\n\nvar def = API.cache('def');\nif (!def) {\n    def = API.getData('defaultOptions').resurrect();\n    API.cache('def', def);\n}\n\nvar options = $.extend(true, {}, def, value.resurrect());\n\nvar trainingSet = rndColors(options.colors.train);\nvar testSet = rndColors(options.colors.test);\n\nvar som = new ML.nn.SOM(options.som.x, options.som.y, {\n    iterations: options.som.it,\n    fields: {\n        r: [0, 255],\n        g: [0, 255],\n        b: [0, 255]\n    }\n});\n\nsom.train(trainingSet);\n\nvar predTraining = som.predict(true);\nvar predTest = som.predict(testSet, true);\n\nvar model = som.export();\n\nAPI.createData('somModel', model);\nAPI.createData('somTraining', getChart(trainingSet, predTraining));\nAPI.createData('somTest', getChart(testSet, predTest));\n\nresolve();"
+                "function rnd(n) {\n    return Math.floor(Math.random()*n);\n}\n\nfunction rndColors(n) {\n    var i = 0,\n        a = new Array(n),\n        o;\n    for(; i < n; i++) {\n        o = {\n            r: rnd(256),\n            g: rnd(256),\n            b: rnd(256)\n        };\n        o.color = \"rgb(\"+o.r+\",\"+o.g+\",\"+o.b+\")\";\n        o.colorC = {type:'color',value:o.color};\n        a[i] = o;\n    }\n    return a;\n}\n\nfunction getChart(theSet, prediction) {\n    var chart = {\n        x: [],\n        y: [],\n        info: []\n    };\n    var result = {\n        type: 'chart',\n        value: {\n            data: [chart]\n        }\n    };\n    \n    var i = 0,\n        l = theSet.length;\n\n    for (; i < l; i++) {\n        chart.x[i] = prediction[i][0] + prediction[i][2][0];\n        chart.y[i] = prediction[i][1] + prediction[i][2][1];\n        chart.info[i] = theSet[i]\n    }\n    return result;\n}\n\nvar def = API.cache('def');\nif (!def) {\n    def = API.getData('defaultOptions').resurrect();\n    API.cache('def', def);\n}\n\nvar options = $.extend(true, {}, def, value.resurrect());\n\nvar trainingSet = rndColors(options.colors.train);\nvar testSet = rndColors(options.colors.test);\n\nvar som = new ML.nn.SOM(options.som.x, options.som.y, {\n    iterations: options.som.it,\n    fields: [{\n        name: 'r',\n        range: [0, 255]\n    }, {\n        name: 'g',\n        range: [0, 255]\n    }, {\n        name: 'b',\n        range: [0, 255]\n    }]\n});\n\nsom.train(trainingSet);\n\nvar predTraining = som.predict(true);\nvar predTest = som.predict(testSet, true);\n\nvar model = som.export();\n\nAPI.createData('somModel', model);\nAPI.createData('somTraining', getChart(trainingSet, predTraining));\nAPI.createData('somTest', getChart(testSet, predTest));\n\nresolve();"
               ]
             }
           ],
@@ -207,7 +207,46 @@
     },
     {
       "url": "modules/types/chart/advanced/som/",
-      "configuration": {},
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "background": [
+            {
+              "colorType": [
+                "inter"
+              ],
+              "colorSpace": [
+                "rgb"
+              ],
+              "color1": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "color2": [
+                [
+                  255,
+                  255,
+                  255,
+                  0.96
+                ]
+              ],
+              "field1": [
+                "r"
+              ],
+              "field2": [
+                "g"
+              ],
+              "field3": [
+                "b"
+              ]
+            }
+          ]
+        }
+      },
       "layers": {
         "Default layer": {
           "position": {
@@ -233,12 +272,12 @@
         },
         "Admin": {
           "position": {
-            "left": 0,
+            "left": 125,
             "top": 0
           },
           "size": {
-            "width": 20,
-            "height": 20
+            "width": 64,
+            "height": 39
           },
           "zIndex": 0,
           "display": true,
@@ -357,8 +396,8 @@
         },
         "Admin": {
           "position": {
-            "left": 0,
-            "top": 0
+            "left": 188,
+            "top": 40
           },
           "size": {
             "width": 20,
@@ -450,8 +489,8 @@
         },
         "Admin": {
           "position": {
-            "left": 0,
-            "top": 0
+            "left": 167,
+            "top": 40
           },
           "size": {
             "width": 20,
@@ -545,8 +584,8 @@
         },
         "Admin": {
           "position": {
-            "left": 0,
-            "top": 0
+            "left": 125,
+            "top": 40
           },
           "size": {
             "width": 20,
@@ -638,8 +677,8 @@
         },
         "Admin": {
           "position": {
-            "left": 0,
-            "top": 0
+            "left": 146,
+            "top": 40
           },
           "size": {
             "width": 20,
