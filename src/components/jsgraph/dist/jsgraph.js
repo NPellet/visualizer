@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-11T09:39Z
+ * Date: 2014-12-11T09:41Z
  */
 
 (function( global, factory ) {
@@ -8101,6 +8101,10 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         v2 = this.searchClosestValue( end2 );
       }
 
+      if( ! v1 || ! v2 ) {
+        return - Infinity;
+      }
+
       for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
         initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
         maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[ i ].length;
@@ -8132,6 +8136,11 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         v2 = this.searchClosestValue( end2 );
       }
 
+
+      if( ! v1 || ! v2 ) {
+        return - Infinity;
+      }
+      
       for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
         initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
         maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[ i ].length;
