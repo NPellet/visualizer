@@ -459,7 +459,7 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
         horGridMain: indexOf('hmain'),
         horGridSec: indexOf('hsec'),
         shiftxtozero: indexOf('shift'),
-        FitYToAxisOnFromTo: indexOf('resize'),
+        //FitYToAxisOnFromTo: indexOf('rescale'),
         minX: getFloat,
         minY: getFloat,
         maxX: getFloat,

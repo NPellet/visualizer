@@ -149,8 +149,8 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     }
 
 
-                    if( cfgCheckbox("FitYToAxisOnFromTo", "resize") ) {
-console.log('1');
+                    if( cfgCheckbox("FitYToAxisOnFromTo", "rescale") ) {
+
                         graph.getXAxis().on("zoom", function() {
 
                             graph.getYAxis().scaleToFitAxis( this );
