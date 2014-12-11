@@ -149,6 +149,14 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     }
 
 
+                    if( cfgCheckbox("FitYToAxisOnFromTo", "resize") ) {
+console.log('1');
+                        graph.getXAxis().on("zoom", function() {
+
+                            graph.getYAxis().scaleToFitAxis( this );
+                        });
+                    }
+
                     var legend = cfg('legend', 'none');
                     if(legend !== 'none') {
                         var theLegend = graph.makeLegend({

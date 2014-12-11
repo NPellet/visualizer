@@ -341,6 +341,13 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
                             default: 'both'
                         },
 
+
+                        FitYToAxisOnFromTo: {
+                            type: 'checkbox',
+                            title: 'Rescale Y axis on FromTo receive',
+                            options: {'rescale': ''}
+                        },
+
                         legend: {
                             type: 'combo',
                             title: 'Show legend',
@@ -452,6 +459,7 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
         horGridMain: indexOf('hmain'),
         horGridSec: indexOf('hsec'),
         shiftxtozero: indexOf('shift'),
+        FitYToAxisOnFromTo: indexOf('resize'),
         minX: getFloat,
         minY: getFloat,
         maxX: getFloat,
@@ -491,6 +499,7 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
         yTopSpacing: [ 'groups', 'group', 0, 'yTopSpacing', 0 ],
         wheelAction: [ 'groups', 'group', 0, 'wheelAction', 0 ],
         fullOut: [ 'groups', 'group', 0, 'fullOut', 0 ],
+        FitYToAxisOnFromTo: [ 'groups', 'group', 0, 'FitYToAxisOnFromTo', 0 ],
         zoom: [ 'groups', 'group', 0, 'zoom', 0 ],
         minX: [ 'groups', 'group', 0, 'minX', 0 ],
         minY: [ 'groups', 'group', 0, 'minY', 0 ],
