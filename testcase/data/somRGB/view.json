@@ -1,0 +1,827 @@
+{
+  "version": "2.9.7",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      },
+      "Admin": {
+        "name": "Admin"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/edition/filter_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "script": [
+                "function rnd(n) {\n    return Math.floor(Math.random()*n);\n}\n\nfunction rndColors(n) {\n    var i = 0,\n        a = new Array(n),\n        o;\n    for(; i < n; i++) {\n        o = {\n            r: rnd(256),\n            g: rnd(256),\n            b: rnd(256)\n        };\n        o.color = \"rgb(\"+o.r+\",\"+o.g+\",\"+o.b+\")\";\n        o.colorC = {type:'color',value:o.color};\n        a[i] = o;\n    }\n    return a;\n}\n\nfunction getChart(theSet, prediction) {\n    var chart = {\n        x: [],\n        y: [],\n        info: []\n    };\n    var result = {\n        type: 'chart',\n        value: {\n            data: [chart]\n        }\n    };\n    \n    var i = 0,\n        l = theSet.length;\n\n    for (; i < l; i++) {\n        chart.x[i] = prediction[i][0] + prediction[i][2][0];\n        chart.y[i] = prediction[i][1] + prediction[i][2][1];\n        chart.info[i] = theSet[i]\n    }\n    return result;\n}\n\nvar def = API.cache('def');\nif (!def) {\n    def = API.getData('defaultOptions').resurrect();\n    API.cache('def', def);\n}\n\nvar options = $.extend(true, {}, def, value.resurrect());\n\nvar trainingSet = rndColors(options.colors.train);\nvar testSet = rndColors(options.colors.test);\n\nvar som = new ML.nn.SOM(options.som.x, options.som.y, {\n    iterations: options.som.it,\n    fields: [{\n        name: 'r',\n        range: [0, 255]\n    }, {\n        name: 'g',\n        range: [0, 255]\n    }, {\n        name: 'b',\n        range: [0, 255]\n    }]\n});\n\nsom.train(trainingSet);\n\nvar predTraining = som.predict(true);\nvar predTest = som.predict(testSet, true);\n\nvar model = som.export();\n\nAPI.createData('somModel', model);\nAPI.createData('somTraining', getChart(trainingSet, predTraining));\nAPI.createData('somTest', getChart(testSet, predTest));\n\nresolve();"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {
+                "lib": "components/ml/dist/ml",
+                "alias": "ML"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Admin": {
+          "position": {
+            "left": 50,
+            "top": 0
+          },
+          "size": {
+            "width": 74,
+            "height": 103
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Untitled",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Admin"
+        }
+      },
+      "id": 1,
+      "vars_in": [
+        {
+          "rel": "dataobject",
+          "name": "options"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "Untitled",
+      "vars_out": [
+        {
+          "event": "onButtonClick",
+          "rel": "filteredObject",
+          "jpath": [],
+          "name": "colors"
+        }
+      ],
+      "actions_out": {}
+    },
+    {
+      "url": "modules/types/edition/onde/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "hasButton": [
+                [
+                  "show"
+                ]
+              ],
+              "button_text": [
+                "Do it"
+              ],
+              "debouncing": [
+                -1
+              ],
+              "output": [
+                "new"
+              ],
+              "mode": [
+                "schema"
+              ],
+              "schemaSource": [
+                "config"
+              ],
+              "schema": [
+                "{\n    \"type\": \"object\",\n    \"properties\": {\n        \"colors\": {\n            \"type\": \"object\",\n            \"label\": \"Color generation\",\n            \"properties\": {\n                \"train\": {\n                    \"type\": \"number\",\n                    \"label\": \"Number of training colors\",\n                    \"default\": 1000\n                },\n                \"test\": {\n                    \"type\": \"number\",\n                    \"label\": \"Number of test colors\",\n                    \"default\": 100\n                }\n            }\n        },\n        \"som\": {\n            \"type\": \"object\",\n            \"label\": \"SOM\",\n            \"properties\": {\n                \"x\": {\n                    \"type\": \"number\",\n                    \"label\": \"Grid x\",\n                    \"default\": 20\n                },\n                \"y\": {\n                    \"type\": \"number\",\n                    \"label\": \"Grid y\",\n                    \"default\": 20\n                },\n                \"it\": {\n                    \"type\": \"number\",\n                    \"label\": \"Iterations\",\n                    \"default\": 5\n                }\n            }\n        }\n    }\n}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 39,
+            "height": 29
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Options",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Admin": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 49,
+            "height": 31
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Options",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Admin"
+        }
+      },
+      "id": 2,
+      "vars_in": [
+        {
+          "rel": "inputValue",
+          "name": "defaultOptions"
+        }
+      ],
+      "actions_in": {},
+      "title": "Options",
+      "vars_out": [
+        {
+          "event": "onFormSubmit",
+          "rel": "outputValue",
+          "jpath": [],
+          "name": "options"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ]
+    },
+    {
+      "url": "modules/types/chart/advanced/som/",
+      "configuration": {
+        "sections": {
+          "background": [
+            {
+              "sections": {},
+              "groups": {
+                "group": [
+                  {
+                    "colorType": [
+                      "inter"
+                    ],
+                    "colorSpace": [
+                      "rgb"
+                    ],
+                    "color1": [
+                      [
+                        0,
+                        0,
+                        0,
+                        1
+                      ]
+                    ],
+                    "color2": [
+                      [
+                        255,
+                        255,
+                        255,
+                        0.99
+                      ]
+                    ],
+                    "field1": [
+                      "r"
+                    ],
+                    "field2": [
+                      "g"
+                    ],
+                    "field3": [
+                      "b"
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "dataset": [
+            {
+              "sections": {},
+              "groups": {
+                "group": [
+                  {
+                    "dataset": [
+                      "somTest"
+                    ],
+                    "colorType": [
+                      "jpath"
+                    ],
+                    "colorSpace": [
+                      "rgb"
+                    ],
+                    "color1": [
+                      [
+                        255,
+                        0,
+                        0,
+                        1
+                      ]
+                    ],
+                    "color2": [
+                      [
+                        0,
+                        0,
+                        0,
+                        1
+                      ]
+                    ],
+                    "jpath1": [
+                      [
+                        "color"
+                      ]
+                    ],
+                    "jpath2": [
+                      []
+                    ],
+                    "jpath3": [
+                      []
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "sections": {},
+              "groups": {
+                "group": [
+                  {
+                    "dataset": [
+                      "somTraining"
+                    ],
+                    "colorType": [
+                      "jpath"
+                    ],
+                    "colorSpace": [
+                      "rgb"
+                    ],
+                    "color1": [
+                      [
+                        255,
+                        0,
+                        0,
+                        1
+                      ]
+                    ],
+                    "color2": [
+                      [
+                        0,
+                        0,
+                        0,
+                        1
+                      ]
+                    ],
+                    "jpath1": [
+                      [
+                        "color"
+                      ]
+                    ],
+                    "jpath2": [
+                      []
+                    ],
+                    "jpath3": [
+                      []
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "groups": {}
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 40,
+            "top": 0
+          },
+          "size": {
+            "width": 94,
+            "height": 72
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Map",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Admin": {
+          "position": {
+            "left": 125,
+            "top": 0
+          },
+          "size": {
+            "width": 64,
+            "height": 39
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Map",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Admin"
+        }
+      },
+      "id": 3,
+      "vars_in": [
+        {
+          "rel": "model",
+          "name": "somModel"
+        },
+        {
+          "rel": "dataset",
+          "name": "somTest"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "Map",
+      "vars_out": [
+        {
+          "event": "onElementHover",
+          "rel": "element",
+          "jpath": [
+            "color"
+          ],
+          "name": "hoverElement"
+        },
+        {
+          "event": "onElementHover",
+          "rel": "coords",
+          "jpath": [],
+          "name": "coords"
+        },
+        {
+          "event": "onCellHover",
+          "rel": "elementList",
+          "jpath": [],
+          "name": "hoverCell"
+        },
+        {
+          "event": "onCellHover",
+          "rel": "cellInfo",
+          "jpath": [],
+          "name": "cellInfo"
+        }
+      ],
+      "actions_out": {}
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "text"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                []
+              ],
+              "displayValue": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 135,
+            "top": 0
+          },
+          "size": {
+            "width": 19,
+            "height": 14
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Info on element",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Admin": {
+          "position": {
+            "left": 188,
+            "top": 40
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Admin"
+        }
+      },
+      "id": 4,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "hoverElement"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "title": "Info on element",
+      "actions_out": {}
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "view"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                []
+              ],
+              "displayValue": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 135,
+            "top": 15
+          },
+          "size": {
+            "width": 42,
+            "height": 49
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Elements in cell",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Admin": {
+          "position": {
+            "left": 167,
+            "top": 40
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Admin"
+        }
+      },
+      "id": 5,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "hoverCell"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "title": "Elements in cell",
+      "actions_out": {}
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "view"
+              ],
+              "expanded": [
+                [
+                  "expand"
+                ]
+              ],
+              "storeObject": [
+                []
+              ],
+              "displayValue": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 178,
+            "top": 15
+          },
+          "size": {
+            "width": 27,
+            "height": 31
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Cell info",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Admin": {
+          "position": {
+            "left": 125,
+            "top": 40
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Admin"
+        }
+      },
+      "id": 6,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "cellInfo"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "title": "Cell info",
+      "actions_out": {}
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "text"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                []
+              ],
+              "displayValue": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 155,
+            "top": 0
+          },
+          "size": {
+            "width": 22,
+            "height": 14
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Element coordinates",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Admin": {
+          "position": {
+            "left": 146,
+            "top": 40
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Admin"
+        }
+      },
+      "id": 7,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "coords"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "title": "Element coordinates",
+      "actions_out": {}
+    }
+  ],
+  "variables": [
+    {
+      "varname": "trigger",
+      "jpath": [
+        "trigger"
+      ]
+    }
+  ],
+  "pouchvariables": [],
+  "configuration": {
+    "title": "Self-organizing map of random colors"
+  }
+}

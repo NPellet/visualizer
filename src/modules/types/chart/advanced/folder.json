@@ -1,14 +1,18 @@
 {
-	"modules": [
-		{
-			"moduleName": "Matrix display",
-			"url": "modules/types/chart/advanced/canvas_matrix/"
-		},
-		{
-			"moduleName": "Function plotter",
-			"url": "modules/types/chart/advanced/plot_function/"
-		}
-	],
-	"name": "Advanced charting",
-	"folders": []
+  "modules": [
+    {
+      "moduleName": "Matrix display",
+      "url": "modules/types/chart/advanced/canvas_matrix/"
+    },
+    {
+      "moduleName": "Function plotter",
+      "url": "modules/types/chart/advanced/plot_function/"
+    },
+    {
+      "moduleName": "Self-organizing map",
+      "url": "modules/types/chart/advanced/som/"
+    }
+  ],
+  "name": "Advanced charting",
+  "folders": []
 }

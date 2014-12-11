@@ -244,8 +244,13 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 			if( ! this.model || ! this.model.data ) {
 				return;
 			}
-			
-			return this.model.data[ rel ] || false;
+
+			var data = this.model.data[rel];
+			if (data) {
+				return data[Object.keys(data)[0]];
+			}
+
+			return false;
 		},
 
 		getVariableFromRel: function( rel ) {

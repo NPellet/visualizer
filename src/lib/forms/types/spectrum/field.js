@@ -14,6 +14,7 @@ define([ require, '../../field', 'src/util/util', 'jquery-ui', 'components/farbt
         $(this.domExpander).children('div').css('float', 'left').addClass('form-spectrum');
         $(this.domExpander).find('input').spectrum({
             color: '#ffffff',
+            preferredFormat: 'rgb',
             cancelText: '',
             showInitial: true,
             showInput: true,

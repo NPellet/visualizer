@@ -11,7 +11,7 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
         init: function () {
 
             this.module.model = this;
-            this.data = new DataObject();
+            this.data = {};
 
             this.triggerChangeCallbacksByRels = {};
             this.mapVars();
@@ -178,10 +178,9 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
                                     resolve(varValue);
                                 }
                             }).then(function (varValue) {
-
-                                    self.data[vars[j].rel] = varValue;
+                                    self.setData(vars[j].rel, varName, varValue);
                                     self.removeAllChangeListeners(vars[j].rel);
-                                    self.module.view.update[vars[j].rel].call(self.module.view, self.data[vars[j].rel], varName);
+                                    self.module.view.update[vars[j].rel].call(self.module.view, varValue, varName);
 
                                 }, function (err) {
                                     Debug.error("Error while filtering the data", err);
@@ -253,6 +252,24 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
 
         getValue: function () {
             return this.data;
+        },
+
+        setData: function (rel, name, value) {
+            if (!this.data[rel]) {
+                this.data[rel] = {};
+            }
+            this.data[rel][name] = value;
+        },
+
+        getData: function (rel, name) {
+            if (!this.data[rel]) {
+                return;
+            }
+            return this.data[rel][name];
+        },
+
+        getAllDataFromRel: function (rel) {
+            return this.data[rel];
         },
 
         getjPath: function (rel, subjPath) {

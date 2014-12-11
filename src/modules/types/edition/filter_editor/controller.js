@@ -8,7 +8,7 @@ define(['modules/types/client_interaction/code_editor/controller'], function (Co
     Controller.prototype = Object.create(CodeEditor.prototype);
 
     Controller.prototype.moduleInformation = {
-        moduleName: 'Script editor',
+        moduleName: 'Filter editor',
         description: 'Write code for a filter and test it in real time',
         author: 'Michaël Zasso',
         date: '04.02.2014',
