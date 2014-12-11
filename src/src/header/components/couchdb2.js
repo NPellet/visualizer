@@ -554,11 +554,8 @@ define([
 
                     delete node.data.doc.flavors[this.flavor]; // Delete current flavor
                     if ($.isEmptyObject(node.data.doc.flavors)) {  // No more flavors, delete document
-                        var doc = {
-                            _id: node.data.doc._id,
-                            _rev: node.data.doc._rev
-                        };
-                        this.database.removeDoc(doc, {
+                        node.data.doc._deleted = true;
+                        this.database.saveDoc(node.data.doc, {
                             success: function () {
                                 that.showError('Document deleted.', 2);
                                 node.remove();
