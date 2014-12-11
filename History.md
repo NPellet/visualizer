@@ -1,7 +1,22 @@
 HEAD
 ================
 
+* new module: self-organising map
+* couchdb2 : soft delete to allow replication and easier view recovery
+* util : add deprecate method
+* add src/util/color for color-manipulation functions
+* debug : add named levels / add getDebugLevel
+* module XYZoomNavigator is back !
+* defaultmodel : add getData and getAllDataFromRel methods
+* add `date` typerenderer
+
+2.9.7 / 2014-12-09
+================
+
 * parallel_coordinates : add option to prevent highlight of hidden lines
+* update JSME
+* spectra_displayer : fix highlight and output variable for chart objects
+* code editor : output value on load
 
 2.9.6 / 2014-12-03
 ================
