@@ -123,7 +123,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
                             shapeOptions: {
                                 locked: true
                             },
-                            fillColor: getColor(data[i][j])[0],
+                            fillColor: getColor(data[i][j]),
                             layer: 1,
                             info: data[i][j]
                         }, null, null, true);
@@ -150,16 +150,14 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
                 if (!theConfig) {
                     getColor = colorGenerator('fixed', null, [255, 0, 0, 1]);
                 } else {
-                    switch(theConfig.colorType[0]) {
+                    switch (theConfig.colorType[0]) {
                         case 'fixed':
                             getColor = colorGenerator('fixed', null, theConfig.color1[0]);
                             break;
                         case 'jpath':
                             // TODO perf check
                             getColor = function (value) {
-                                var color1 = chroma(String(DataObject.check(value).getChildSync(theConfig.jpath1[0])));
-                                var color2 = color1.alpha(color1.alpha() / 2);
-                                return [color1.css(), color2.css()];
+                                return chroma(String(DataObject.check(value).getChildSync(theConfig.jpath1[0]))).css();
                             };
                             break;
                     }
@@ -176,9 +174,9 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
                     color = getColor(data.info[i]);
                     colors[i] = {
                         shape: 'circle',
-                        r: 2.5,
-                        fill: color[1],
-                        stroke: color[0]
+                        r: 3,
+                        fill: color,
+                        stroke: 'black'
                     }
                 }
                 var serie = this.series[name] = this.graph.newSerie(name, {
@@ -188,7 +186,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
                     .setData(theData)
                     .setDataStyle({
                         shape: 'circle',
-                        r: 2.5
+                        r: 3
                     }, colors);
                 if (data.info) {
                     serie.on('mouseover', function (id) {
@@ -200,7 +198,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
                     });
                 }
                 serie.setSelectedStyle({
-                    r: 5
+                    r: 6
                 });
 
                 this.redraw();
@@ -223,29 +221,22 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
     function colorGenerator(type, space, colorA1, colorA2, field1, field2, field3) {
         var color1 = chroma(colorA1),
             color2 = chroma(colorA2),
-            scale, val1, val2, color;
+            scale, val;
         if (type === 'fixed') {
-            val1 = color1.css();
-            val2 = color1.alpha(color1.alpha() / 2).css();
+            val = color1.css();
             return function fixedColor() {
-                return [val1, val2];
+                return val;
             }
         } else if (type === 'range') {
             scale = chroma.scale([color1, color2]).mode(space);
             return function rangeColor(value) {
-                color = scale(value[field1]);
-                val1 = color.css();
-                val2 = color.alpha(color.alpha() / 2).css();
-                return [val1, val2];
+                return scale(value[field1]).css();
             }
         } else if (type === 'inter') {
             var interpolators = getInterpolators(colorA1, colorA2);
             var mean = (colorA1[3] + colorA2[3]) / 2;
             return function interpolatedColor(value) {
-                color = chroma([interpolators[0](value[field1]), interpolators[1](value[field2]), interpolators[2](value[field3]), mean]);
-                val1 = color.css();
-                val2 = color.alpha(color.alpha() / 2).css();
-                return [val1, val2];
+                return chroma([interpolators[0](value[field1]), interpolators[1](value[field2]), interpolators[2](value[field3]), mean]).css();
             }
         }
     }
