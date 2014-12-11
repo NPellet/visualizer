@@ -218,8 +218,7 @@
 								axisDataSpacing: { min: 0, max: 0.1 },
 
 								onZoom: function(from, to) {
-									if(self.onZoomGC)
-										self.onZoomGC(from, to);
+									self.trigger("onZoomGC", [ from, to ] );
 								}
 							}
 						],
@@ -687,6 +686,14 @@
 					serie.autoAxis( );
 					this.gcGraph.redraw( );
 					this.gcGraph.drawSeries( );
+
+
+					var axis = this.gcGraph.getBottomAxis();
+					var from = axis.getActualMin();
+					var to = axis.getActualMax();
+					
+					this.trigger("onZoomGC", [ from, to ] );
+						
 
 					this.gcData = gc[ i ];
 					this.gcSeries.push( serie );

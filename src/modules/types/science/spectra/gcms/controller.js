@@ -36,6 +36,11 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 			type: ['fromTo', 'object']
 		},
 
+		centerGCAt: {
+			label: 'Center GC at',
+			type: ['number', 'string', 'array']
+		},
+
 		fromtoMS: {
 			label: 'From - To on MS',
 			type: 'fromTo'
@@ -169,7 +174,8 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		zoomOnAnnotation: 'Zoom on annotation',
 		annotation: 'Annotation',
 		displayChemicalLabels: 'Display chemical labels',
-		hideChemicalLabels: 'Hide chemical labels'
+		hideChemicalLabels: 'Hide chemical labels',
+		centerGC: 'Center GC at value'
 	};
 	
 		

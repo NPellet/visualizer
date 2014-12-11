@@ -40,6 +40,12 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing
         blank: {
             value: function () {
                 this.dom.empty();
+            },
+            columns: function () {
+                for (var i = 0; i < this._previousColumns.length; i++) {
+                    delete this._currentColumns[this._previousColumns[i].name];
+                }
+                this._previousColumns = [];
             }
         },
         update: {
@@ -60,12 +66,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing
                 if (!Array.isArray(value))
                     return;
 
-                var i;
-
-                for (i = 0; i < this._previousColumns.length; i++) {
-                    delete this._currentColumns[this._previousColumns[i].name];
-                }
-                for (i = 0; i < value.length; i++) {
+                for (var i = 0; i < value.length; i++) {
                     this._currentColumns[value[i].name] = value[i];
                 }
                 this._previousColumns = value;

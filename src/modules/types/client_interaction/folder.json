@@ -15,6 +15,10 @@
 		{
 			"moduleName": "Paste value",
 			"url": "modules/types/client_interaction/paste_text/"
+		},
+		{
+			"moduleName": "XYZ Zoom navigator",
+			"url": "modules/types/client_interaction/xyzoomnavigator/"
 		}
 	],
 	"name": "Client interaction",

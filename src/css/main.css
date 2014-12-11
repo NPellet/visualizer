@@ -681,15 +681,20 @@ div.ci-module-display_value div.ci-module-content img {
 }
 
 .ci-navigation-navigarrow {
-	background: url('../images/arrownavig.png') top left no-repeat;
-	width: 12px;
+	
+	border-top-width: 0px;
+	border-left: 4px solid transparent;
+	border-right: 4px solid transparent;
+	border-bottom: 8px solid black;
+	
+	width: 0px;
 	height: 8px;
 	position: absolute;
 }
 
 .ci-navigation-navigarrow.top {
-	left: 19px;
-	top: 3px;
+	left: 21px;
+	top: 0px;
 }
 
 
@@ -701,8 +706,8 @@ div.ci-module-display_value div.ci-module-content img {
 	-webkit-transform:rotate(180deg); /* Safari and Chrome */
 	-o-transform:rotate(180deg); /* Opera */
 
-	top: 39px;
-	left: 19px;
+	top: 37px;
+	left: 21px;
 }
 
 
@@ -716,7 +721,7 @@ div.ci-module-display_value div.ci-module-content img {
 	-webkit-transform:rotate(270deg); /* Safari and Chrome */
 	-o-transform:rotate(270deg); /* Opera */
 
-	top: 21px;
+	top: 19px;
 	left: 3px;
 }
 
@@ -731,8 +736,8 @@ div.ci-module-display_value div.ci-module-content img {
 	-webkit-transform:rotate(90deg); /* Safari and Chrome */
 	-o-transform:rotate(90deg); /* Opera */
 
-	top: 21px;
-	left: 35px;
+	top: 19px;
+	left: 38px;
 }
 
 

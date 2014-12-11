@@ -248,7 +248,6 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             that.slick.groupItemMetadataProvider.onGroupExpanded.subscribe(function(e, args) {
                                 this.getData().collapseAllGroups(args.item.level);
                                 this.getData().expandGroup(args.item.groupingKey);
-                                //console.log('expanded', e, args);
                             });
                         }
 
@@ -286,7 +285,6 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             setTimeout(function() {
 
                                 that.lastViewport = that.grid.getViewport();
-                                //console.log('viewport changed', that.lastViewport);
                                 that._resetDeleteRowListeners();
                             }, 300);
                             that.lastViewport = that.grid.getViewport();
@@ -328,7 +326,6 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         that.grid.onMouseLeave.subscribe(function(e) {
                             that._e = e;
                             that.count--;
-                            console.log('count', that.count);
                             that.hovering = false;
                             var itemInfo = that._getItemInfoFromEvent(e);
                             if(!itemInfo) return;
@@ -372,7 +369,6 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             that.lastActiveCell = args.cell;
                             that.lastActiveRow = args.row;
 
-                            //console.log('active row changed', args.row);
                         });
 
                         that.grid.onColumnsReordered.subscribe(function() {
@@ -476,11 +472,9 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
                         // get back state before last update
                         if(that.lastViewport) {
-                            //console.log('last viewport', that.lastViewport);
                             that.grid.scrollRowToTop(that.lastViewport.top);
                         }
                         if(!_.isUndefined(that.lastActiveRow)) {
-                            //console.log('resetting last active row', that.lastActiveRow)
                             that.grid.setActiveCell(that.lastActiveRow, that.lastActiveCell);
                         }
 
@@ -516,7 +510,6 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 var args = that._checkCellFromEvent(e);
                 that.lastViewport = that.grid.getViewport();
                 if(columns[args.cell] && columns[args.cell].id === 'rowDeletion') {
-                    //console.log('row:', args.row);
                     // delete the row...
                     var itemInfo = that._getItemInfoFromRow(args.row);
                     that.module.data.splice(itemInfo.idx, 1);

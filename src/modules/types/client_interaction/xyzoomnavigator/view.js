@@ -1,9 +1,11 @@
-define(['modules/default/defaultview'], function(Default) {
-	
-	function view() {};
-	view.prototype = $.extend(true, {}, Default, {
+define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Default, Util, $) {
 
-		init: function() {	
+    function View() {
+    }
+
+    View.prototype = $.extend(true, {}, Default, {
+        init: function () {
+
 			this.dom = $("<div />");
 			var self = this;
 			var img = $('<div class="ci-navigation-navigarrow"></div>');
@@ -37,6 +39,34 @@ define(['modules/default/defaultview'], function(Default) {
 			this.step = 2;
 
 			var self = this;
+
+        },
+
+
+        inDom: function () {
+            var self = this;
+            this.resolveReady();
+        },
+
+
+		update: {
+
+			xycoords: function(value) {
+				if(!value)
+					return;
+				this.cx = value[0];
+				this.cy = value[1];
+
+			},
+
+			zoom: function(zoom) {
+				if(!(zoom))
+					return;
+				this._zoom = zoom;
+				if(this._zoomWidget.hasClass('ui-slider'))
+					this._zoomWidget.slider('value', this._zoom);
+			}
+
 		},
 
 
@@ -76,7 +106,6 @@ define(['modules/default/defaultview'], function(Default) {
 			}
 
 			var setTimeout = function() {
-				console.log('Set');
 				timeout = window.setTimeout(execute, getInterval());
 			}
 
@@ -91,87 +120,15 @@ define(['modules/default/defaultview'], function(Default) {
 			execute();	
 		},
 
+	  onActionReceive: {
+        changeXY: function (value) {
 
-		update: {
+        	this.cx = parseFloat( value );
+           
+        }
+}
 
-			xycoords: function(value) {
-				if(!value)
-					return;
-				this.cx = value[0];
-				this.cy = value[1];
+    });
 
-			},
-
-			zoom: function(zoom) {
-				if(!(zoom))
-					return;
-				this._zoom = zoom;
-				if(this._zoomWidget.hasClass('ui-slider'))
-					this._zoomWidget.slider('value', this._zoom);
-			}
-
-		},
-
-		buildElement: function(source, arrayToPush, jpaths, colorJPath) {
-			var jpath;
-			var box = this.module;
-			var self = this;
-			for(var i = 0, length = source.length; i < length; i++) {
-				var element = {};
-				element.data = {};
-
-				if(colorJPath)
-					element._color = CI.DataType.asyncToScreenAttribute(source[i], 'bgcolor', colorJPath).done(function(val) {
-						element._colorVal = val;
-					});
-
-
-				for(var j in jpaths) {
-					jpath = jpaths[j];
-					if(jpath.jpath)
-						jpath = jpath.jpath;
-						async = CI.DataType.asyncToScreenHtml(source[i], box, jpath);
-						async.done(function(val) {
-							element.data[j] = val;
-						});
-						if(element.data[j] == undefined)
-							element.data[j] = async.html;
-				}
-				
-				if(source[i].children) {
-					element.children  = [];
-					this.buildElement(source[i].children, element.children, jpaths, colorJPath);
-				}
-
-				var execFunc, id;
-				(function(myElement) {
-					if(source[i]._highlight) {
-						execFunc = function(value, what) {
-							myElement._highlight = value;
-							self.table.highlight(myElement);
-						};
-
-						id = CI.RepoHighlight.listen(source[i]._highlight, execFunc);
-
-					}
-				}) (element);
-				
-				this._highlights.push([source[i]._highlight, id]);
-				element._source = source[i];
-				arrayToPush.push(element);
-			}
-		},
-
-		getDom: function() {
-			return this.dom;
-		},
-		
-		typeToScreen: {
-			
-		
-		}
-
-	});
-	return view;
+    return View;
 });
- 

@@ -149,6 +149,14 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     }
 
 
+                    if( cfgCheckbox("FitYToAxisOnFromTo", "rescale") ) {
+
+                        graph.getXAxis().on("zoom", function() {
+
+                            graph.getYAxis().scaleToFitAxis( this );
+                        });
+                    }
+
                     var legend = cfg('legend', 'none');
                     if(legend !== 'none') {
                         var theLegend = graph.makeLegend({
@@ -467,6 +475,17 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 for (var i = 0; i < data.length; i++) {
 
                     var aData = data[i];
+
+                    if (i===0 && moduleValue.axis) {
+                        if(moduleValue.axis[aData.xAxis]) {
+                            this.xAxis.setLabel(moduleValue.axis[aData.xAxis].name);
+                        }
+                        if(moduleValue.axis[aData.yAxis]) {
+                            this.yAxis.setLabel(moduleValue.axis[aData.yAxis].name);
+                        }
+                    }
+
+
                     var serieName = data.serieLabel;
 
                     var valFinal = [];
@@ -501,7 +520,9 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     }
 
                     serie.autoAxis();
-                    this.setSerieParameters(serie, varname, aData._highlight);
+                    if (String(aData.serieType) != 'scatter') {
+                        this.setSerieParameters(serie, varname, aData._highlight);
+                    }
 
                     this.series[varname].push(serie);
                 }

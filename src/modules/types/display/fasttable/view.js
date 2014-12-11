@@ -371,6 +371,27 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                 this.module.controller.onToggleOff(this.module.data, index);
                 this.domBody.children().eq(index).removeClass('toggled');
 
+            },
+
+            toggleOn: function( source ) {
+
+                var index = this.module.getDataFromRel('list').indexOf(source);
+                if (index == -1) {
+                    return;
+                }
+                this.module.controller.onToggleOn(this.module.data, index);
+                this.domBody.children().eq(index).addClass('toggled');
+            },
+
+            scrollTo: function( source ) {
+
+                var index = this.module.getDataFromRel('list').indexOf(source);
+                if (index == -1) {
+                    return;
+                }
+
+                var el = this.domBody.children().eq( index ).get();
+                el.scrollIntoView();
             }
 
         },
