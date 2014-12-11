@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-11T08:54Z
+ * Date: 2014-12-11T09:37Z
  */
 
 (function( global, factory ) {
@@ -1913,7 +1913,7 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
         // If we wanted originally to resize min and max. Otherwise we use the current value
         minV = min ? minV : this.getActualMin();
         maxV = max ? maxV : this.getActualMax();
-        console.log( minV, maxV );
+
         var interval = maxV - minV;
 
         minV -= ( this.options.axisDataSpacing.min * interval );
@@ -4176,7 +4176,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     },
 
     resetSeries: function() {
-      for ( var i = 0; i < this.series.length; i++ ) {
+      while ( this.series[ 0 ] ) {
         this.series[ i ].kill( true );
       }
       this.series = [];
