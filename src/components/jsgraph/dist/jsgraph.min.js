@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-11T09:37Z
+ * Date: 2014-12-11T09:39Z
  */
 
 (function( global, factory ) {
@@ -4177,7 +4177,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
     resetSeries: function() {
       while ( this.series[ 0 ] ) {
-        this.series[ i ].kill( true );
+        this.series[ 0 ].kill( true );
       }
       this.series = [];
     },
