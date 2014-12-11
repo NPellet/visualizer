@@ -173,21 +173,22 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
                     theData[i * 2 + 1] = data.y[i];
                     color = getColor(data.info[i]);
                     colors[i] = {
-                        shape: 'circle',
-                        r: 3,
-                        fill: color,
-                        stroke: 'black'
-                    }
+                        fill: color
+                    };
                 }
                 var serie = this.series[name] = this.graph.newSerie(name, {
                     layer: 2
                 }, 'scatter')
                     .autoAxis()
                     .setData(theData)
-                    .setDataStyle({
+                    .setStyle({
                         shape: 'circle',
-                        r: 3
-                    }, colors);
+                        r: 3,
+                        stroke: 'black'
+                    }, colors)
+                    .setStyle({
+                        r: 6
+                    }, 'selected');
                 if (data.info) {
                     serie.on('mouseover', function (id) {
                         serie.selectPoint(id);
@@ -197,9 +198,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
                         serie.selectPoint(id, false);
                     });
                 }
-                serie.setSelectedStyle({
-                    r: 6
-                });
 
                 this.redraw();
             }
