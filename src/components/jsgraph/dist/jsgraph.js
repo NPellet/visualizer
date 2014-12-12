@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.3-4
+ * jsGraph JavaScript Graphing Library v1.10.4-2
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-11T19:03Z
+ * Date: 2014-12-11T21:05Z
  */
 
 (function( global, factory ) {
@@ -4340,6 +4340,14 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
         if ( shapeData.layer ) {
           shape.setLayer( shapeData.layer );
+        }
+
+        if ( shapeData.locked ) {
+          shape.lock();
+        }
+
+        if ( shapeData.selectable ) {
+          shape.selectable();
         }
 
         if ( shapeData.label ) {
@@ -9994,7 +10002,6 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
           shape = this.shapes[ index ];
         }
 
-
         shape.parentNode.setAttribute( 'transform', 'translate(' + this.shapesPositions[ index ][ 0 ] + ', ' + this.shapesPositions[ index ][ 1 ] + ')' );
 
         styles[ index ] = style;
@@ -10644,7 +10651,7 @@ build['./shapes/graph.shape'] = ( function( ) {
       this.classes = [];
 
       this._movable = true;
-      this._selectable = true;
+      this._selectable = false;
 
       if ( this.options.masker ) {
 
@@ -11147,6 +11154,14 @@ build['./shapes/graph.shape'] = ( function( ) {
       this._movable = bln;
     },
 
+    unselectable: function() {
+      this._selectable = false;
+    },
+
+    selectable: function() {
+      this._selectable = true;
+    },
+
     select: function( mute ) {
 
       if ( !this._selectable ) {
@@ -11490,7 +11505,9 @@ build['./shapes/graph.shape'] = ( function( ) {
 
     handleDblClick: function() {
 
-      this.configure();
+      if ( this.options.configurable ) {
+        this.configure();
+      }
     },
 
     configure: function() {
@@ -11573,15 +11590,15 @@ build['./shapes/graph.shape'] = ( function( ) {
 
     isLocked: function() {
 
-      return this.options.locked ||  this.graph.shapesLocked;
+      return this.locked ||  this.graph.shapesLocked;
     },
 
     lock: function() {
-      this.options.locked = true;
+      this.locked = true;
     },
 
     unlock: function() {
-      this.options.locked = false;
+      this.locked = false;
     },
 
     isBindable: function() {

@@ -1,8 +1,11 @@
 {
   "name": "jsGraph",
-  "version": "1.10.2-5",
+  "version": "1.10.4-2",
   "homepage": "http://jsgraph.org",
-  "main": "dist/jsgraph.js", 
+  "main": [
+    "dist/jsgraph.js",
+    "dist/jsgraph.min.js"
+  ],
   "keywords": [
     "graph",
     "plot",
@@ -10,15 +13,14 @@
   ],
   "license": "MIT",
   "ignore": [
-    "**/.*",
-    "./lib/lib/**",
-    "./lib/components/**",
-    "package.json",
-    "README.md",
-    "*.log",
+    "examples",
+    "lib",
+    "node_modules",
+    "src",
+    ".bowerrc",
+    ".gitignore",
     "gruntfile.js",
-    "AUTHORS",
-    "bower.json"
+    "package.json"
   ],
   "devDependencies": {
     "Aristo-jQuery-UI-Theme": "https://github.com/taitems/Aristo-jQuery-UI-Theme.git",
