@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>Visualizer Modules</title>
+	<title>Visualizer Source: ui.js</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -54,85 +54,61 @@
 	<div class="row-fluid">
 
 		
-		<div class="span8">
-			
+			<div class="span12">
+				
 				<div id="main">
 					
 
 
-	<h1 class="page-title">Modules</h1>
+		<h1 class="page-title">Source: ui.js</h1>
+    
 <section>
+	<article>
+		<pre
+			class="sunlight-highlight-javascript linenums">'use strict';
 
-<header>
-    <h2>
-    
-    </h2>
-    
-</header>
+/**
+ * Global ui methods
+ * @module src/util/ui
+ */
 
-<article>
-    <div class="container-overview">
-    
+define(['src/util/debug'], function (Debug) {
+    var $dialog;
+   return {
+       confirm: function (html) {
+           return new Promise(function (resolve) {
+               if (!$dialog) {
+                   $dialog = $('&lt;div/>');
+                   $('body').append($dialog);
+               }
+               if (html) {
+                   $dialog.html(html);
+               }
 
-    
-        
-
-        
-<dl class="details">
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
+               $dialog.dialog({
+                   modal: true,
+                   buttons: {
+                       Cancel: function () {
+                           resolve(false);
+                           $(this).dialog('close');
+                       },
+                       Ok: function () {
+                           resolve(true);
+                           $(this).dialog('close');
+                       }
+                   },
+                   close: function () {
+                       resolve(false);
+                   },
+                   width: 400
+               });
+           });
+       }
+   };
+});</pre>
+	</article>
 </section>
+
 
 
 
@@ -151,10 +127,6 @@
 				</footer>
 			</div>
 
-			
-			<div class="span3">
-				<div id="toc"></div>
-			</div>
 			
 			<br clear="both">
 		</div>

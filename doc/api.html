@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>DocStrap Module: src/util/api</title>
+	<title>Visualizer Module: src/util/api</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -18,7 +18,7 @@
 <div class="container-fluid">
 	<div class="navbar navbar-fixed-top navbar-inverse">
 		<div class="navbar-inner">
-			<a class="brand" href="index.html">DocStrap</a>
+			<a class="brand" href="index.html">Visualizer</a>
 			<ul class="nav">
 				
 				<li class="dropdown">
@@ -29,6 +29,14 @@
 						
 						<li>
 							<a href="api.html">src/util/api</a>
+						</li>
+						
+						<li>
+							<a href="color.html">src/util/color</a>
+						</li>
+						
+						<li>
+							<a href="ui.html">src/util/ui</a>
 						</li>
 						
 						<li>
@@ -128,11 +136,272 @@
     
 
     
+        <h3 class="subsection-title">Members</h3>
+
+        <dl>
+            
+<dt class="name" id="executeAction">
+    <h4><span class="type-signature">&lt;static> </span>executeAction<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    
+
+    
+
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+	<dt class="important tag-deprecated">Deprecated:</dt>
+	
+	<dd>
+		<ul class="dummy">
+			<li>Execute a global visualizer action. This is deprecated. Use API.doAction instead.</li>
+		</ul>
+	</dd>
+	
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="api.js.html">api.js</a>,
+				 <a href="api.js.html#sunlight-1-line-270">line 270</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        </dl>
+    
 
     
         <h3 class="subsection-title">Methods</h3>
 
         <dl>
+            
+<dt>
+    <h4 class="name" id="cache"><span class="type-signature">&lt;static> </span>cache<span class="signature">(name, <span class="optional">value</span>)</span><span class="type-signature"> &rarr; {*}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Cache a value in memory or retrieve it. The value can be retrieved anywhere API is available</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+		<th>Argument</th>
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>Name of the cached value</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>New value to set</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="api.js.html">api.js</a>,
+				 <a href="api.js.html#sunlight-1-line-282">line 282</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>The cached value or undefined if used as a setter</p>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">*</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
             
 <dt>
     <h4 class="name" id="createData"><span class="type-signature">&lt;static> </span>createData<span class="signature">(name, data, <span class="optional">filter</span>)</span><span class="type-signature"></span></h4>
@@ -342,7 +611,7 @@
     
     
     <div class="description">
-        <p>Send an action to all modules that are listening to it</p>
+        <p>Send an action to all modules and global action scripts</p>
     </div>
     
 
@@ -431,154 +700,6 @@
 
                 
                 </td>
-            
-
-            
-
-            <td class="description last"><p>Action value</p></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="api.js.html">api.js</a>,
-				 <a href="api.js.html#sunlight-1-line-250">line 250</a>
-			</li>
-		</ul>
-	</dd>
-	
-
-	
-
-	
-
-	
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="executeAction"><span class="type-signature">&lt;static> </span>executeAction<span class="signature">(name, value)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Execute a global visualizer action</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Action name</p></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
             
 
             
@@ -780,6 +901,156 @@
 	<dd>
 		
 <span class="param-type">boolean</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getData"><span class="type-signature">&lt;static> </span>getData<span class="signature">(varName)</span><span class="type-signature"> &rarr; {*}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Get the DataObject associated to a variable</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>varName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Name of the variable</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="api.js.html">api.js</a>,
+				 <a href="api.js.html#sunlight-1-line-186">line 186</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <ul>
+<li>DataObject or undefined</li>
+</ul>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">*</span>
 
 
 	</dd>
@@ -1076,7 +1347,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="api.js.html">api.js</a>,
-				 <a href="api.js.html#sunlight-1-line-207">line 207</a>
+				 <a href="api.js.html#sunlight-1-line-216">line 216</a>
 			</li>
 		</ul>
 	</dd>
@@ -1227,7 +1498,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="api.js.html">api.js</a>,
-				 <a href="api.js.html#sunlight-1-line-186">line 186</a>
+				 <a href="api.js.html#sunlight-1-line-195">line 195</a>
 			</li>
 		</ul>
 	</dd>
@@ -1584,7 +1855,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="api.js.html">api.js</a>,
-				 <a href="api.js.html#sunlight-1-line-232">line 232</a>
+				 <a href="api.js.html#sunlight-1-line-241">line 241</a>
 			</li>
 		</ul>
 	</dd>
@@ -1630,14 +1901,9 @@
 				<footer>
 					
 					
-		<span class="copyright">
-		DocStrap Copyright © 2012-2014 The contributors to the JSDoc3 and DocStrap projects.
-		</span>
-					<br />
-					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
-		on Mon Nov 10th 2014 using the <a
+		on Fri Dec 12th 2014 using the <a
 			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>

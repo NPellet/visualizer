@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>DocStrap Source: util.js</title>
+	<title>Visualizer Source: util.js</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -18,7 +18,7 @@
 <div class="container-fluid">
 	<div class="navbar navbar-fixed-top navbar-inverse">
 		<div class="navbar-inner">
-			<a class="brand" href="index.html">DocStrap</a>
+			<a class="brand" href="index.html">Visualizer</a>
 			<ul class="nav">
 				
 				<li class="dropdown">
@@ -29,6 +29,14 @@
 						
 						<li>
 							<a href="api.html">src/util/api</a>
+						</li>
+						
+						<li>
+							<a href="color.html">src/util/color</a>
+						</li>
+						
+						<li>
+							<a href="ui.html">src/util/ui</a>
 						</li>
 						
 						<li>
@@ -63,15 +71,15 @@
  * Global utility methods
  * @module src/util/util
  */
-define(['src/util/debug'], function (Debug) {
+define(['src/util/debug', 'src/util/color'], function (Debug, Color) {
 
     var uniqueid = 0;
 
     var months = ['January', 'February', 'March', 'April', 'Mai', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-    var noop = function () {
-    };
+    function noop() {
+    }
 
     var regQuote = /"/g,
         regJpath = /^element\./;
@@ -200,103 +208,47 @@ define(['src/util/debug'], function (Debug) {
             return days[day];
         },
         loadCss: function (url) {
+            var self = this;
+            return new Promise(function (resolve, reject) {
+                url = require.toUrl(url);
 
-            url = require.toUrl(url);
+                self.loadedCss = self.loadedCss || {};
 
-            this.loadedCss = this.loadedCss || {};
-
-            if (this.loadedCss[url]) { // element is already loaded
-                return;
-            }
-
-            this.loadedCss[url] = true;
-
-            var link = document.createElement('link');
-            link.type = 'text/css';
-            link.rel = 'stylesheet';
-            link.href = require.toUrl(url);
-
-            try {
-                document.getElementsByTagName('head')[0].appendChild(link);
-            } catch (e) {
-            }
-        },
-        getDistinctColors: function (numColors) {
-
-            var colors = [], j = 0;
-            for (var i = 0; i &lt; 360; i += 360 / numColors) {
-                j++;
-                var color = this.hsl2rgb(i, 100, 30 + j % 4 * 15);
-                colors.push([Math.round(color.r * 255), Math.round(color.g * 255), Math.round(color.b * 255)]);
-            }
-            return colors;
-        },
-        getNextColorRGB: function (colorNumber, numColors) {
-            return this.getDistinctColors(numColors)[colorNumber];
-        },
-        hsl2rgb: function (h, s, l) {
-            var m1, m2, hue, r, g, b;
-            s /= 100;
-            l /= 100;
-
-            if (s === 0)
-                r = g = b = (l * 255);
-            else {
-                if (l &lt;= 0.5)
-                    m2 = l * (s + 1);
-                else
-                    m2 = l + s - l * s;
-
-                m1 = l * 2 - m2;
-                hue = h / 360;
-                r = this.hueToRgb(m1, m2, hue + 1 / 3);
-                g = this.hueToRgb(m1, m2, hue);
-                b = this.hueToRgb(m1, m2, hue - 1 / 3);
-            }
-            return {r: r, g: g, b: b};
-        },
-        hueToRgb: function (p, q, t) {
-            if (t &lt; 0)
-                t += 1;
-            if (t > 1)
-                t -= 1;
-            if (t &lt; 1 / 6)
-                return p + (q - p) * 6 * t;
-            if (t &lt; 1 / 2)
-                return q;
-            if (t &lt; 2 / 3)
-                return p + (q - p) * (2 / 3 - t) * 6;
-            return p;
-        },
-        hexToRgb: function (hex) {
-            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-            return result ? [
-                parseInt(result[1], 16),
-                parseInt(result[2], 16),
-                parseInt(result[3], 16)
-
-            ] : [0, 0, 0];
-        },
-        rgbToHex: function (r, g, b) {
-            return '#' + ((1 &lt;&lt; 24) + (r &lt;&lt; 16) + (g &lt;&lt; 8) + b).toString(16).slice(1);
-        },
-        getColor: function (color) {
-
-            if (Array.isArray(color)) {
-                switch (color.length) {
-                    case 3:
-                        return 'rgb(' + color.join(',') + ')';
-                        break;
-                    case 4:
-                        return 'rgba(' + color.join(',') + ')';
-                        break;
+                if (self.loadedCss[url]) { // element is already loaded
+                    return resolve(self.loadedCss[url]);
                 }
-            } else if (typeof(color) == 'object') {
-                return 'rgb(' + Math.round(color.r * 255) + ', ' + Math.round(color.g * 255) + ', ' + Math.round(color.b * 255) + ')';
-            }
 
-            return color;
+                self.loadedCss[url] = true;
+
+                var link = document.createElement('link');
+                link.type = 'text/css';
+                link.rel = 'stylesheet';
+                link.href = url;
+                link.onload = function () {
+                    self.loadedCss[url] = link;
+                    resolve(link);
+                };
+
+                try {
+                    document.getElementsByTagName('head')[0].appendChild(link);
+                } catch (e) {
+                    reject(e);
+                }
+            });
+
+
         },
+
+        getCssVendorPrefix: function () {
+            var styles = window.getComputedStyle(document.documentElement, '');
+            var pre = (Array.prototype.slice
+                .call(styles)
+                .join('')
+                .match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
+            )[1];
+            return '-' + pre + '-';
+        },
+
         makejPathFunction: makejPathFunction,
 
         addjPathFunction: function (stack, jpath) {
@@ -396,9 +348,23 @@ define(['src/util/debug'], function (Debug) {
             }
 
             return access;
-        }
+        },
+
+        // Deprecated color methods. Moved to src/util/color
+        getDistinctColors: deprecate(Color.getDistinctColors, 'use Color.getDistinctColors'),
+        getNextColorRGB: deprecate(Color.getNextColorRGB, 'use Color.getNextColorRGB'),
+        hsl2rgb: deprecate(Color.hsl2rgb, 'use Color.hsl2rgb'),
+        hueToRgb: deprecate(Color.hue2rgb, 'use Color.hue2rgb'),
+        hexToRgb: deprecate(Color.hex2rgb, 'use Color.hex2rgb'),
+        rgbToHex: deprecate(Color.rgb2hex, 'use Color.rgb2hex'),
+        getColor: deprecate(Color.getColor, 'use Color.getColor')
 
     };
+
+    /**
+     * No-op function
+     */
+    exports.noop = noop;
 
     function isInt(str) {
         return isNaN(str) ? NaN : parseInt(str);
@@ -478,10 +444,10 @@ define(['src/util/debug'], function (Debug) {
      */
     exports.semverCompare = function semverCompare(v1, v2) {
         if (typeof v1 === 'string') {
-            v1 = semver(v1);
+            v1 = exports.semver(v1);
         }
         if (typeof v2 === 'string') {
-            v2 = semver(v2);
+            v2 = exports.semver(v2);
         }
         if (!v1 || !v2) {
             return Debug.error('Invalid version number:' + v1 ? v2 : v1);
@@ -515,6 +481,26 @@ define(['src/util/debug'], function (Debug) {
         }
     };
 
+    /**
+     * Mark that a method should not be used. Returns a modified function which warns once when called.
+     * @param {Function} method - the deprecated method
+     * @param {string} [message] - optional message to log
+     */
+    exports.deprecate = deprecate;
+    function deprecate(method, message) {
+        var warned = false;
+        return function deprecated() {
+            if (!warned) {
+                if (Debug.getDebugLevel() >= Debug.Levels.WARN) {
+                    Debug.warn('Method ' + method.name + ' is deprecated. ' + (message || ''));
+                    console.trace();
+                }
+                warned = true;
+            }
+            return method.apply(this, arguments);
+        }
+    }
+
     return exports;
 
 });
@@ -532,14 +518,9 @@ define(['src/util/debug'], function (Debug) {
 				<footer>
 					
 					
-		<span class="copyright">
-		DocStrap Copyright © 2012-2014 The contributors to the JSDoc3 and DocStrap projects.
-		</span>
-					<br />
-					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
-		on Mon Nov 10th 2014 using the <a
+		on Fri Dec 12th 2014 using the <a
 			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>
