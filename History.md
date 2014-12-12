@@ -1,6 +1,9 @@
 HEAD
 ================
 
+2.9.8 / 2014-12-12
+================
+
 * new module: self-organising map
 * couchdb2 : soft delete to allow replication and easier view recovery
 * util : add deprecate method
@@ -9,6 +12,9 @@ HEAD
 * module XYZoomNavigator is back !
 * defaultmodel : add getData and getAllDataFromRel methods
 * add `date` typerenderer
+* API : executAction is deprecated. use API.doAction instead
+* spectra displayer : add wheel baseline option
+* parallel coordinates : allow to send selection only on brush end
 
 2.9.7 / 2014-12-09
 ================
@@ -20,6 +26,7 @@ HEAD
 
 2.9.6 / 2014-12-03
 ================
+
 * fix cross-origin image loading issue in scatter 3d
 * function plotter: make pref editable with action in
 
