@@ -1,4 +1,6 @@
-define(function () {
+define(['loglevel'], function (log) {
+
+    log.disableAll();
 
     var Levels = {
         NODEBUG: -1,
@@ -9,19 +11,35 @@ define(function () {
         TRACE: 4
     };
 
-    var debugLevel = -1,
-        console = window.console,
-        entries = [];
+    var levelMapping = {
+        '-1': 'silent',
+        '0': 'error',
+        '1': 'warn',
+        '2': 'info',
+        '3': 'debug',
+        '4': 'trace'
+    };
 
-    function addEntry(entry) {
-        entries.push(entry);
-    }
+    var debugLevel = Levels.NODEBUG;
 
     var Debug = {
 
         Levels: Levels,
 
         setDebugLevel: function (level) {
+            level = parseInt(level);
+            if(isNaN(level) || (level < -1)) {
+                return;
+            }
+            if (level > 4) {
+                level = 4;
+            }
+            log.setLevel(levelMapping[level]);
+            this.error = log.error;
+            this.warn = log.warn;
+            this.info = log.info;
+            this.debug = log.debug;
+            this.trace = log.trace;
             debugLevel = level;
         },
 
@@ -29,55 +47,11 @@ define(function () {
             return debugLevel;
         },
 
-        error: function (message, error) {
-            if (debugLevel >= Levels.ERROR) {
-                if (error instanceof Error && error.stack) {
-                    arguments[1] = '\n' + error.stack;
-                } else {
-                    entries.push.call(arguments, '\n' + Error().stack);
-                }
-                console.error.apply(console, arguments);
-            }
-            if (debugLevel > Levels.NODEBUG)
-                addEntry('ERROR : ' + message);
-        },
-
-        warn: function (message) {
-            if (debugLevel >= Levels.WARN) {
-                console.warn.apply(console, arguments);
-            }
-            if (debugLevel > Levels.NODEBUG)
-                addEntry('WARN  : ' + message);
-        },
-
-        info: function (message) {
-            if (debugLevel >= Levels.INFO) {
-                console.info.apply(console, arguments);
-            }
-            if (debugLevel > Levels.NODEBUG)
-                addEntry('INFO  : ' + message);
-        },
-
-        debug: function (message) {
-            if (debugLevel >= Levels.DEBUG) {
-                console.debug.apply(console, arguments);
-            }
-            if (debugLevel > Levels.NODEBUG)
-                addEntry('DEBUG : ' + message);
-        },
-
-        trace: function (message) {
-            if (debugLevel >= Levels.TRACE) {
-                console.log.apply(console, arguments);
-            }
-            if (debugLevel > Levels.NODEBUG)
-                addEntry('TRACE : ' + message);
-        },
-
-        dump: function () {
-            console.log(entries.join('\n'));
-            entries = [];
-        },
+        error: log.error,
+        warn: log.warn,
+        info: log.info,
+        debug: log.debug,
+        trace: log.trace,
 
         timer: function () {
             var t = new Timer();
