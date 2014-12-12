@@ -4,7 +4,7 @@
  * Main visualizer API
  * @module src/util/api
  */
-define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables'], function (Traversing, ActionManager, Variables) {
+define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables', 'src/util/util'], function (Traversing, ActionManager, Variables, Util) {
 
     var variableFilters;
     var viewLocked = false;
@@ -252,22 +252,24 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
     };
 
     /**
-     * Send an action to all modules that are listening to it
+     * Send an action to all modules and global action scripts
      * @param {string} name - Action name
      * @param {*} [value] - Action value
      */
     exports.doAction = function doAction(name, value) {
         this.repositoryActions.set(name, value);
+        ActionManager.execute(name, value);
     };
 
     /**
-     * Execute a global visualizer action
+     * @deprecated
+     * Execute a global visualizer action. This is deprecated. Use API.doAction instead.
      * @param {string} name - Action name
      * @param {*} value - Action value
      */
-    exports.executeAction = function executeAction(name, value) {
+    exports.executeAction = Util.deprecate(function executeAction(name, value) {
         ActionManager.execute(name, value);
-    };
+    }, 'API.doAction is the recommended method.');
 
     var cache = {};
 
