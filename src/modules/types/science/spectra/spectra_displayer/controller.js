@@ -328,6 +328,12 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
                             default: 'none'
                         },
 
+                        wheelbaseline: {
+                            type: 'float',
+                            title: 'Wheel baseline',
+                            'default': 0
+                        },
+
                         fullOut: {
                             type: 'combo',
                             title: 'Full out on load',
@@ -508,6 +514,7 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
         flipX: [ 'groups', 'group', 0, 'flip', 0 ],
         flipY: [ 'groups', 'group', 0, 'flip', 0 ],
         plotinfos: [ 'groups', 'plotinfos', 0 ],
+        wheelbaseline: [ 'groups', 'group', 0, 'wheelbaseline', 0],
 
         displayAxis: ['groups', 'group', 0, 'displayAxis', 0],
         flipAxis: ['groups', 'group', 0, 'flip', 0],
