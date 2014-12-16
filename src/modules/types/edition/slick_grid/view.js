@@ -523,7 +523,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         that.slick.data.endUpdate();
 
                         // get back state before last update
-                        if(that.lastViewport) {
+                        if(that.lastViewport && !that.module.getConfigurationCheckbox('slickCheck', 'backToTop')) {
                             that.grid.scrollRowToTop(that.lastViewport.top);
                         }
                         if(!_.isUndefined(that.lastActiveRow)) {
