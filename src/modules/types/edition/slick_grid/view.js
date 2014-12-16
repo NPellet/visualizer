@@ -599,7 +599,6 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             var that = this;
             var hl = _(this.module.data).pluck('_highlight').flatten().uniq().value();
 
-            console.log('hl', hl);
             that._highlighted = [];
 
             API.killHighlight(this.module.getId());
@@ -617,9 +616,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             that._highlighted = _.filter(that._highlighted, function(val) {
                                 return key.indexOf(val) === -1;
                             });
-                            //that._undrawHighlight(key);
                         }
-                        console.log('highlighted', that._highlighted);
                         that._drawHighlight();
                     }, false, that.module.getId());
                 })(i);
