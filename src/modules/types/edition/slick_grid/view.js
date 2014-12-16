@@ -88,6 +88,34 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         getSlickColumns: function() {
             var that = this;
             var tp = $.proxy(typeRenderer, this);
+
+            function getEditor(jpath) {
+                var editor;
+                var obj = that.module.data.get(0).getChildSync(jpath);
+                if(obj instanceof DataString) {
+                    editor = Slick.Editors.SpecialNativeObject;
+                }
+                else if(obj instanceof DataNumber) {
+                    editor = Slick.Editors.DataNumberEditor
+                }
+                else if(obj instanceof DataBoolean) {
+                    editor = Slick.Editors.DataBooleanEditor
+                }
+                else {
+                    editor = typeEditors[getType(jpath)];
+                }
+                return editor;
+            }
+
+            function getType(jpath) {
+                var type;
+                var obj = that.module.data.get(0).getChildSync(jpath);
+                if(obj instanceof DataObject) {
+                    type = obj.type;
+                }
+                return type;
+            }
+
             var slickCols = this.colConfig.map(function(row) {
                 var editor, type;
                 if(row.editor === 'auto' && that.module.data) {
@@ -96,26 +124,15 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         Debug.warn('Slick grid: using editor based on type when the input variable is empty. Cannot determine type');
                     }
                     else {
-                        var obj = that.module.data.get(0).getChildSync(row.jpath);
-                        if(obj instanceof DataString) {
-                            editor = Slick.Editors.SpecialNativeObject;
-                        }
-                        else if(obj instanceof DataNumber) {
-                            editor = Slick.Editors.DataNumberEditor
-                        }
-                        else if(obj instanceof DataBoolean) {
-                            editor = Slick.Editors.DataBooleanEditor
-                        }
-                        else {
-                            type = that.module.data.get(0).getChildSync(row.jpath).type;
-                            editor = typeEditors[type];
-                        }
+                        editor = getEditor(row.jpath);
+                        type = getType(row.jpath);
                     }
                 }
                 else {
                     editor = typeEditors[row.editor];
                     type = row.editor;
                 }
+
                 return {
                     id: row.name,
                     name: row.name,
@@ -135,6 +152,40 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     dataType: type
                 }
             });
+
+            slickCols = _.filter(slickCols, function(val) {
+                return val.name;
+            });
+
+            // No columns are define, we use the input object to define them
+            if(_.isEmpty(slickCols)) {
+                var colNames = [];
+                for(var i=0; i<that.module.data.length; i++) {
+                    colNames = _(colNames).push(_.keys(that.module.data[i])).flatten().uniq().value();
+                }
+
+                slickCols = _(colNames).filter(function(v) {
+                    return v[0] !== '_';
+                }).map(function(rowName) {
+                    return {
+                        id: rowName,
+                        name: rowName,
+                        field: rowName,
+                        resisable: true,
+                        selectable: true,
+                        focusable: true,
+                        sortable: false,
+                        editor: getEditor([rowName]),
+                        dataType: getType([rowName]),
+                        jpath: [rowName],
+                        formatter: formatters.typerenderer,
+                        asyncPostRender: tp
+                    }
+                }).value();
+
+                console.log(colNames);
+            }
+
             if(this.module.getConfigurationCheckbox('slickCheck', 'rowDelete')) {
                 slickCols.unshift({
                     id: 'rowDeletion',
