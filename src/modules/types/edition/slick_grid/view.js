@@ -553,12 +553,12 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             };
         },
 
-        _selectHighlight: function(key) {
+        _selectHighlight: function() {
             if(this.hovering) {
                 return;
             }
             var that = this;
-            var idx = this._highlights.indexOf(key[0]);
+            var idx = this._highlights.indexOf(that._highlighted[0]);
             this.lastViewport = this.grid.getViewport();
             if(idx > -1) {
                 var item = that.slick.data.getItemByIdx(idx);
@@ -573,49 +573,55 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             }
         },
 
-        _drawHighlight: function(key) {
+        _drawHighlight: function() {
             var that = this;
-            if(!key instanceof Array) {
-                key = [key];
-            }
+            this.grid.removeCellCssStyles('highlight');
             var tmp = {};
-            this._selectHighlight(key);
+            this._selectHighlight();
             this.lastViewport = this.grid.getViewport();
             for(var i=this.lastViewport.top; i<=this.lastViewport.bottom; i++ ) {
                 var item = this.grid.getDataItem(i);
                 if(!item) continue;
-                if(_.any(key, function(k) {
-                        return k === item._highlight;
+                if(_.any(that._highlighted, function(k) {
+                        var hl = item._highlight;
+                        if(!(hl instanceof Array)) {
+                            hl = [hl];
+                        }
+                        return hl.indexOf(k) > -1;
                     })) {
                     tmp[i] = that.baseCellCssStyle;
                 }
             }
-
-            this.grid.setCellCssStyles(key.join(''), tmp);
+            this.grid.setCellCssStyles('highlight', tmp);
         },
-
-        _undrawHighlight: function(key) {
-            this.grid.removeCellCssStyles(key);
-
-        },
-
 
         _activateHighlights: function() {
             var that = this;
-            var hl = _(this.module.data).pluck('_highlight').uniq().value();
+            var hl = _(this.module.data).pluck('_highlight').flatten().uniq().value();
+
+            console.log('hl', hl);
+            that._highlighted = [];
 
             API.killHighlight(this.module.getId());
 
             for(var i=0; i<hl.length; i++) {
                 (function(i) {
                     API.listenHighlight({_highlight: hl[i]}, function(onOff, key) {
+                        if(!key instanceof Array) {
+                            key = [key];
+                        }
                         if(onOff) {
-                            that._drawHighlight(key);
+                            that._highlighted = _(that._highlighted).push(key).flatten().uniq().value();
                         }
                         else {
-                            that._undrawHighlight(key);
+                            that._highlighted = _.filter(that._highlighted, function(val) {
+                                return key.indexOf(val) === -1;
+                            });
+                            //that._undrawHighlight(key);
                         }
-                    });
+                        console.log('highlighted', that._highlighted);
+                        that._drawHighlight();
+                    }, false, that.module.getId());
                 })(i);
             }
         },
