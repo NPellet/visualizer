@@ -1,51 +1,46 @@
-define(['modules/default/defaultview'], function(Default) {
-	
-	function view() {};
-	view.prototype = $.extend(true, {}, Default, {
-		
-		init: function() {
-			this.dom = $('<iframe border="0" frameborder="none" width="100%" height="100%" />');
+define(['modules/default/defaultview'], function (Default) {
 
-			// fix scroll bar
-			// see http://stackoverflow.com/a/12726445/1247233 for explanations
-			this.dom.css('vertical-align', 'bottom');
+    function View() {
+    }
 
-			this.module.getDomContent().html(this.dom);
-			this.resolveReady();
-		},
+    View.prototype = $.extend(true, {}, Default, {
 
-		
-		blank: function() {
-			this.dom.attr('src', null);
-		},
+        init: function () {
+            this.dom = $('<iframe border="0" frameborder="none" width="100%" height="100%" />');
 
-		update: {
+            // fix scroll bar
+            // see http://stackoverflow.com/a/12726445/1247233 for explanations
+            this.dom.css('vertical-align', 'bottom');
 
-			url: function(moduleValue) {
-				if(!moduleValue)
-					return;
-				
-				this.dom.attr('src', moduleValue.get());
-			},
+            this.module.getDomContent().html(this.dom);
+            this.resolveReady();
+        },
 
-			doi: function(moduleValue) {
-				if(!moduleValue)
-					return;
-				this.dom.attr('src', "http://dx.doi.org/"+moduleValue.get());
-			}
-		},
+        blank: {
+            url: blankIframe,
+            doi: blankIframe
+        },
 
-		getDom: function() {
-			return this.dom;
-		},	
-		
-		typeToScreen: {
-		}
+        update: {
+            url: function (moduleValue) {
+                if (!moduleValue)
+                    return;
 
+                this.dom.attr('src', moduleValue.get());
+            },
+            doi: function (moduleValue) {
+                if (!moduleValue)
+                    return;
+                this.dom.attr('src', 'http://dx.doi.org/' + moduleValue.get());
+            }
+        }
 
-	});
-	return view;
+    });
+
+    function blankIframe() {
+        this.dom.attr('src', null);
+    }
+
+    return View;
+
 });
- 
-
- 
