@@ -16,11 +16,11 @@
     "test/*"
   ],
   "homepage": "https://github.com/cheminfo/sdf-parser",
-  "_release": "8978fa1f87",
+  "_release": "5bb7c123b5",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "8978fa1f87d30497793b6ed5fb8ddd765e4b5156"
+    "commit": "5bb7c123b5f4c1aa84ee95920a3aa74a43c0eaa0"
   },
   "_source": "git://github.com/cheminfo/sdf-parser.git",
   "_target": "*",
