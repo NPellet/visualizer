@@ -81,7 +81,7 @@ module.exports = function (grunt) {
                             './colors/css/colors.min.css',
                             './pouchdb/dist/pouchdb.min.js',
                             './uri.js/src/*.js',
-                            './twig.js/twig.min.js',
+                            './twig.js/twig.*',
                             './bluebird/js/browser/bluebird.js',
                             './onde/src/*',
                             ['./spectrum/spectrum.js', './spectrum/spectrum.css'],
