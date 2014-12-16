@@ -39,6 +39,8 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
     // A simple filter
     var columnFilters = {};
 
+    var uniqueID = 0;
+
 
 
     var formatters = {
@@ -192,7 +194,6 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
                 this.slick.columns = this.getSlickColumns();
                 this.slick.options = this.getSlickOptions();
-                this.incrementalId = 0;
                 this.generateUniqIds();
                 this.addRowAllowed = this.module.getConfigurationCheckbox('slickCheck', 'enableAddRow');
 
@@ -629,7 +630,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         },
 
         getNextIncrementalId: function() {
-            return this.incrementalId++;
+            return ++uniqueID;
         },
 
         generateUniqIds: function() {
@@ -637,15 +638,12 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             for(var i=0; i<this.module.data.length; i++) {
                 if(!this.module.data[i][this.idPropertyName]) {
                     Object.defineProperty(this.module.data[i], this.idPropertyName, {
-                        value: 'id_' + this.incrementalId,
+                        value: 'id_' + ++uniqueID,
                         writable: false,
                         configurable: false,
                         enumerable: false
                     });
                 }
-
-                //this.module.data[i][this.idPropertyName] = 'id_' + this.incrementalId;
-                this.incrementalId++;
             }
         },
 
