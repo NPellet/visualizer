@@ -1,5 +1,10 @@
 HEAD
 ================
+* slickgrid:
+ * better highlight support
+ * Columns determined automatically if none specified
+ * Scroll back to top option
+* core: view url is now relative to http host not to where the visualizer is hosted
 
 2.9.8 / 2014-12-12
 ================
