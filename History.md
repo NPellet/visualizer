@@ -1,4 +1,4 @@
-HEAD
+2.9.9 / 2014-12-12
 ================
 * slickgrid:
  * better highlight support
