@@ -14,17 +14,19 @@ define(['jquery', 'components/superagent/superagent', 'src/header/components/def
             var that = this;
             if(!this.$_elToOpen) {
                 this.$_elToOpen = $("<div/>").css("width", 550);
-                this.$tree = $('<div/>').css('id', this.cssId('tree')).css('display', 'inline-block').css('margin-right', 20);
-                this.$_elToOpen.append(this.$tree);
             }
+
 
             this.setStyleOpen(this._open);
             if(this._open) {
+                if(!this.$tree) {
+                    this.$tree = this.$tree || $('<div/>').css('id', this.cssId('tree')).css('display', 'inline-block').css('margin-right', 20);
+                    this.$_elToOpen.append(this.$tree);
+                }
                 this.open();
                 this.initTree().then(function() {
                     that.createButtons();
                 });
-
             }
             else {
                 this.close();
@@ -37,7 +39,7 @@ define(['jquery', 'components/superagent/superagent', 'src/header/components/def
 
         reloadTree: function() {
             this.$tree.fancytree('destroy');
-            this.initTree();
+            this.initTree(true);
         },
 
         reloadActiveNode: function () {
@@ -304,6 +306,9 @@ define(['jquery', 'components/superagent/superagent', 'src/header/components/def
         },
 
         loadRootTree: function() {
+            if(this.treeSchema) {
+                return this.treeSchema;
+            }
             return $.ajax({
                 url: '/navview/list',
                 dataType: 'json'
@@ -311,8 +316,11 @@ define(['jquery', 'components/superagent/superagent', 'src/header/components/def
 
         },
 
-        initTree: function() {
+        initTree: function(force) {
             var that = this;
+            if(!force && that.fancytreeOk) {
+                return Promise.resolve();
+            }
             return this.loadRootTree().then(function(res) {
                 var source = fancyTreeDirStructure(res);
                 that.$tree.fancytree({
@@ -383,6 +391,7 @@ define(['jquery', 'components/superagent/superagent', 'src/header/components/def
                         }
                     }
                 });
+                that.fancytreeOk = true;
             });
         },
 
@@ -396,7 +405,10 @@ define(['jquery', 'components/superagent/superagent', 'src/header/components/def
             this.$log.append($("<div/>").attr('id', this.cssId('success-log')).css('color', 'green'));
 
             // Append instructions
-            this.$log.parent().append('<div>\n<ul>\n    <li style="color:black;">Double-click a view to load it</li>\n    <li style="color: black;">Shift+click to rename a view</li>\n    <li style="color: black;">Press delete key to remove a view or a directory</li>\n</ul></div>');
+            this.$log.parent().append(new Button('Refresh Tree', function() {
+                that.reloadTree();
+            }, {color: 'blue'}).render());
+            this.$log.parent().append('<div>\n    <ul>\n        <li style="color:black;">Double-click a view to load it</li>\n        <li style="color: black;">Shift+click to rename a view</li>\n        <li style="color: black;">Press delete key to remove a view or a directory</li>\n    </ul>\n</div>');
 
             // Append buttons
             var $buttons = $('<div>\n    <table>\n        <tr>\n            <td></td>\n            <td></td>\n        </tr>\n        <tr>\n            <td><input type="text"/></td>\n            <td></td>\n        </tr>\n        <tr>\n            <td><input type="text"/></td>\n            <td></td>\n        </tr>\n    </table>\n</div>');

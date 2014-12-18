@@ -252,7 +252,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
                 ) {
                     return;
                 }
-                Debug.error("Error in getting the variable through variable.js", err);
+                Debug.error("Error in getting the variable through variable.js", err.stack || err);
             });
 
             for (var i = 0, l = self.listeners.length; i < l; i++) {

@@ -39,8 +39,16 @@ define(['jquery'], function() {
 
 		open: function() {
 			//this.$_elToOpen = ul;
+
 			this.$_elToOpen.addClass('header-button-list');
-			$('body').append(this.$_elToOpen);
+
+			// Verify that the element has been added to the dom
+			if(this.$_elToOpen.parents('body').length === 0) {
+				$('body').append(this.$_elToOpen);
+			}
+
+			this.$_elToOpen.show();
+
 
 			var w = this.$_elToOpen.outerWidth(true),
 				h = this.$_dom.outerHeight(true),
@@ -60,7 +68,7 @@ define(['jquery'], function() {
 			this.$_elToOpen.css({
 				top: newTop,
 				left: newLeft
-			})
+			});
 
 			//this.open = true;
 		},
@@ -69,7 +77,7 @@ define(['jquery'], function() {
 
 		close: function() {
                     if(this.$_elToOpen)
-			this.$_elToOpen.remove();
+			this.$_elToOpen.hide();
 		}
 	};
 });
