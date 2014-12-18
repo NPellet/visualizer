@@ -31,11 +31,16 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
                 plugins: {
                     'graph.plugin.zoom': {
                         zoomMode: 'xy'
-                    }
+                    },
+                    'graph.plugin.drag': {}
                 },
                 pluginAction: {
                     'graph.plugin.zoom': {
                         shift: false,
+                        ctrl: false
+                    },
+                    'graph.plugin.drag': {
+                        shift: true,
                         ctrl: false
                     }
                 },
