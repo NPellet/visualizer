@@ -1,5 +1,8 @@
 define(['loglevel'], function (log) {
 
+    // Fallback to Date for incompatible navigators (Safari)
+    var perfObj = window.performance ? window.performance : Date;
+
     log.disableAll();
 
     var Levels = {
@@ -66,10 +69,10 @@ define(['loglevel'], function (log) {
     function formatTime(time, format) {
         if (format) {
             if (format === 'ms') {
-                return time + 'ms';
+                return time.toFixed(3) + 'ms';
             }
             if (format === 's') {
-                return (time / 1000) + 's';
+                return (time / 1000).toFixed(3) + 's';
             }
         }
         else
@@ -88,27 +91,27 @@ define(['loglevel'], function (log) {
     Timer.prototype = {
         start: function () {
             if (this._paused) {
-                this._start = Date.now() - this._elapsed;
+                this._start = perfObj.now() - this._elapsed;
                 this._paused = false;
             } else if (!this._started) {
-                this._start = Date.now();
+                this._start = perfObj.now();
                 this._started = true;
             }
         },
         pause: function () {
             if (this._started && !this._paused) {
                 this._paused = true;
-                this._elapsed = Date.now() - this._start;
+                this._elapsed = perfObj.now() - this._start;
             }
         },
         time: function (format) {
             if (this._started && !this._paused) {
-                return formatTime(Date.now() - this._start, format);
+                return formatTime(perfObj.now() - this._start, format);
             }
         },
         step: function (format) {
             if (this._started && !this._paused) {
-                var now = Date.now();
+                var now = perfObj.now();
                 var time = now - this._start;
                 this._start = now;
                 this._total += time;
@@ -118,13 +121,13 @@ define(['loglevel'], function (log) {
         },
         lap: function (format) {
             if (this._started && !this._paused) {
-                var time = Date.now() - this._start;
+                var time = perfObj.now() - this._start;
                 this._laps.push(time);
                 return formatTime(this._total, format);
             }
         },
         sum: function (name) {
-            var elapsed = Date.now() - this._start;
+            var elapsed = perfObj.now() - this._start;
             if (name) {
                 if (!this._sums[name]) {
                     this._sums[name] = 0;
