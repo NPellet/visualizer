@@ -1,4 +1,4 @@
-define(['jquery', 'src/header/components/default', 'src/util/versioning'], function($, Default, Versioning) {
+define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/util/util'], function($, Default, Versioning, Util) {
 
 	var defaults = {
 		label: false,
@@ -14,7 +14,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning'], funct
         
         var currentMenu;
 
-	$.extend(el.prototype, Default, {
+	Util.inherits(el, Default, {
 	
 		initImpl: function() {},
 

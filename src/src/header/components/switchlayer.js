@@ -1,12 +1,12 @@
 'use strict';
 
-define(['jquery', 'src/header/components/default', 'src/main/grid'], function($, Default, Grid) {
+define(['jquery', 'src/header/components/default', 'src/main/grid', 'src/util/util'], function($, Default, Grid, Util) {
 
 	var el = function() {};
 
 	var currentMenu;
 
-	$.extend(el.prototype, Default, {
+	Util.inherits(el, Default, {
 
 		initImpl: function() {},
 

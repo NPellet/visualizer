@@ -11,7 +11,7 @@ define(['jquery', 'jquery-ui', 'src/header/components/default', './couchshare/sh
         tinyUrl: 'http://visualizer.epfl.ch/tiny'
     };
 
-    $.extend(Element.prototype, Default, {
+    Util.inherits(Element, Default, {
 
         initImpl: function () {
 

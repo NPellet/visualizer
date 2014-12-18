@@ -1,7 +1,7 @@
 define(['jquery', 'jquery-ui', 'src/header/components/default', './couchshare/share', 'forms/button', 'src/util/util'], function($, ui, Default, Sharer, Button, Util) {
 
 	var Element = function() {};
-	$.extend(Element.prototype, Default, {
+    Util.inherits(Element, Default, {
 
 		initImpl: function() {
             

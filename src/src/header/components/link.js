@@ -1,6 +1,6 @@
-define(['jquery', 'src/header/components/default'], function($, Default) {
+define(['jquery', 'src/header/components/default', 'src/util/util'], function($, Default, Util) {
 	var Element = function() {};
-	$.extend(Element.prototype, Default, {
+	Util.inherits(Element, Default, {
 
 		initImpl: function() {
 		},

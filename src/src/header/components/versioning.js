@@ -115,7 +115,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
 
 
 	var versioningElement = function() {};
-	$.extend(versioningElement.prototype, Default, {
+	Util.inherits(versioningElement, Default, {
 
 		getReady: function() { // Gets DOM ready
 			if(this.$_elToOpen)

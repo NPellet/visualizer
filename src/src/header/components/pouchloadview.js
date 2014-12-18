@@ -1,7 +1,7 @@
 define(['jquery', 'jquery-ui', 'src/header/components/default', 'src/util/versioning', 'pouchdb','src/util/util'], function($, ui, Default, Versioning, PouchDB, Util) {
 
 	var Element = function() {};
-	$.extend(Element.prototype, Default, {
+    Util.inherits(Element, Default, {
 
 		initImpl: function() {
             var id = Util.getNextUniqueId();

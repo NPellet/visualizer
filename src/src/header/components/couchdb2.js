@@ -17,7 +17,7 @@ define([
 
     var regAlphaNum = /^[a-zA-Z0-9]+$/;
 
-    $.extend(couchDBManager.prototype, Default, {
+    Util.inherits(couchDBManager, Default, {
         initImpl: function () {
             this.ok = this.loggedIn = false;
             this.id = Util.getNextUniqueId();

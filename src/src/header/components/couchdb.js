@@ -1,8 +1,8 @@
 define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms/button', 'src/util/util', 'lib/couchdb/jquery.couch', 'fancytree', 'components/jquery-ui-contextmenu/jquery.ui-contextmenu.min'], function($, Default, Versioning, Button, Util) {
 
     var couchDBManager = function() {};
-    
-    $.extend(couchDBManager.prototype, Default, {
+
+    Util.inherits(couchDBManager, Default, {
         initImpl: function() {
             this.ok = this.loggedIn = false;
             this.id = Util.getNextUniqueId();

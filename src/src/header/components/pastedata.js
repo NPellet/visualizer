@@ -1,8 +1,8 @@
-define(['jquery', 'jquery-ui', 'src/header/components/default', 'src/util/versioning', 'forms/button'], function($, ui, Default, Versioning, Button) {
+define(['jquery', 'jquery-ui', 'src/header/components/default', 'src/util/versioning', 'forms/button', 'src/util/util'], function($, ui, Default, Versioning, Button, Util) {
 
 
 	var Element = function() {};
-	$.extend(Element.prototype, Default, {
+	Util.inherits(Element, Default, {
 
 		initImpl: function() {
 			this.dataHandler = Versioning.getDataHandler();
