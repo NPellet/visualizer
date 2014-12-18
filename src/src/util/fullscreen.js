@@ -21,7 +21,7 @@ define(function(){
 			view.width = oldViewDimensions.width;
 			oldStyle = oldViewDimensions = currentFullscreenElement = null;
 		}
-		currentFullscreenModule.view.onResize();
+		currentFullscreenModule.view.onResize(view.width, view.height);
 	}
 	document.addEventListener("fullscreenchange", fullScreenChange);
 	document.addEventListener("webkitfullscreenchange", fullScreenChange);
