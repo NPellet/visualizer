@@ -1,99 +1,101 @@
-define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/util/util'], function($, Default, Versioning, Util) {
+'use strict';
 
-	var defaults = {
-		label: false,
-		elements: false,
-		viewURL: false,
-		dataURL: false,
-		viewBranch: false,
-		dataBranch: false,
-		toggle: false
-	};
+define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/util/util'], function ($, Default, Versioning, Util) {
 
-	var el = function() {};
-        
-        var currentMenu;
+    var defaults = {
+        label: false,
+        elements: false,
+        viewURL: false,
+        dataURL: false,
+        viewBranch: false,
+        dataBranch: false,
+        toggle: false
+    };
 
-	Util.inherits(el, Default, {
-	
-		initImpl: function() {},
+    function Element() {
+    }
 
-                _onClick: function() {
-                    
-                    this.setStyleOpen(this._open);
+    var currentMenu;
 
-                    if (this._open) {
-                        if(currentMenu && (currentMenu !== this) && currentMenu._open)
-                            currentMenu.onClick();
-                        currentMenu = this;
-                        
-                        if(this.options.viewURL || this.options.dataURL)
-                            this.load(this.options);
+    Util.inherits(Element, Default, {
 
-                        this.doElements();
-                    }
-                    else
-                        this.close();
+        _onClick: function () {
 
-                },
-                
-                load: function(el) {
-                    var result = {};
-                    if(el.views || el.viewURL) {
-                        result.view = {
-                            url: el.viewURL,
-                            branch: el.viewBranch,
-                            urls: el.views
-                        };
-                    }
-                    if(el.results || el.dataURL) {
-                        result.data = {
-                            url: el.dataURL,
-                            branch: el.branchURL,
-                            urls: el.views
-                        };
-                    }
-                    Versioning.switchView(result, true);
-                },
+            this.setStyleOpen(this._open);
 
-		doElements: function() {
-			this.$_elToOpen = this._doElements(this.options.elements);
-			this.open();
-		},
+            if (this._open) {
+                if (currentMenu && (currentMenu !== this) && currentMenu._open)
+                    currentMenu.onClick();
+                currentMenu = this;
 
-		_doElements: function(elements) {
-                    
-                    if(!elements)
-                        return;
+                if (this.options.viewURL || this.options.dataURL)
+                    this.load(this.options);
 
-			var ul = $("<ul />") || this.$_elToOpen.empty(),
-				i = 0, 
-				l = elements.length;
+                this.doElements();
+            }
+            else
+                this.close();
 
-			for(; i < l; i++) {
-				ul.append(this._buildSubElement(elements[i]));
-				if(elements[i].elements && elements[i].elements.length > 0) {
-					ul.append(this._doElements(elements[i].elements));
-				}
-			}
+        },
+
+        load: function (el) {
+            var result = {};
+            if (el.views || el.viewURL) {
+                result.view = {
+                    url: el.viewURL,
+                    branch: el.viewBranch,
+                    urls: el.views
+                };
+            }
+            if (el.results || el.dataURL) {
+                result.data = {
+                    url: el.dataURL,
+                    branch: el.branchURL,
+                    urls: el.views
+                };
+            }
+            Versioning.switchView(result, true);
+        },
+
+        doElements: function () {
+            this.$_elToOpen = this._doElements(this.options.elements);
+            this.open();
+        },
+
+        _doElements: function (elements) {
+
+            if (!elements)
+                return;
+
+            var ul = $("<ul />") || this.$_elToOpen.empty(),
+                i = 0,
+                l = elements.length;
+
+            for (; i < l; i++) {
+                ul.append(this._buildSubElement(elements[i]));
+                if (elements[i].elements && elements[i].elements.length > 0) {
+                    ul.append(this._doElements(elements[i].elements));
+                }
+            }
 
 
-			return ul;
-		},
+            return ul;
+        },
 
-		_buildSubElement: function(el) {
-			var self = this,
-				dom = $("<li />").text(el.label || '');
-			if(el.viewURL || el.dataURL) {
-				dom.addClass('hasEvent').bind('click', function() {
-                                    self.load(el);
-                                    self.onClick();
-				});
-			}
+        _buildSubElement: function (el) {
+            var self = this,
+                dom = $("<li />").text(el.label || '');
+            if (el.viewURL || el.dataURL) {
+                dom.addClass('hasEvent').bind('click', function () {
+                    self.load(el);
+                    self.onClick();
+                });
+            }
 
-			return dom;
-		}
-	});
-                
-	return el;
+            return dom;
+        }
+    });
+
+    return Element;
+
 });

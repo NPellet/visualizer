@@ -36,4 +36,5 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
     });
 
     return Element;
+
 });
