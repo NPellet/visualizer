@@ -130,7 +130,9 @@ define( [
 				onZoomGC: function( from, to ) {
 
 					self.module.controller.sendAction('fromtoGC', [ from, to ], 'onZoomGCChange');
-				}
+				},
+
+				onlyOneMS: true
 
 			} );
 
@@ -211,18 +213,11 @@ define( [
 
 			'ms': function(moduleValue, name, cont) {
 				var self = this;
+				console.log( this.gcmsInstance, moduleValue );
 				if(!this.gcmsInstance || !moduleValue)
 					return;
 
-				require(['components/jcampconverter/build/jcampconverter'], function(tojcamp) {
-					var jcamp = tojcamp.convert(moduleValue.get(), true).then( function(jcamp) {
-
-						if( jcamp.spectra ) {
-							self.gcmsInstance.setExternalMS( jcamp.spectra[ 0 ].data[ 0 ], cont );
-						}
-					});
-					
-				});
+				this.gcmsInstance.setExternalMS( moduleValue, {} );
 			},
 
 			'mscont': function(moduleValue, name) {
@@ -232,7 +227,7 @@ define( [
 			'ingredientList': function( value, varName ) {
 
 				var self = this;
-				
+
 				if( ! value ) {
 					return;
 				}

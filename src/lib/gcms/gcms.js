@@ -498,6 +498,12 @@
 
 				if( this.options.onlyOneMS ) {
 					var buffer = this;
+
+					if( this.extMS ) {
+						this.extMS.kill( true );
+						this.extMS = false;
+					}
+
 				} else {
 					var buffer = shape;
 				}
@@ -738,25 +744,47 @@
 			},
 
 
-			setExternalMS: function(ms, cont) {
-				if(this.extMS)
-					this.extMS.kill(true);
+			setExternalMS: function(ms, options ) {
 
-				this.extMS = this.msGraph.newSerie('external', { useSlots: false, lineToZero: !cont, lineWidth: 3, lineColor: 'rgba(0, 0, 255, 0.2)' });
-				this.extMS.setXAxis(this.msGraph.getXAxis());
-				this.extMS.setYAxis(this.msGraph.getRightAxis(1, {primaryGrid: false, secondaryGrid: false, axisDataSpacing: { min: 0, max: 0}, display: false }));
+				if( this.msFromAucSerie ) {
+					this.msFromAucSerie.kill( true );
+					this.msFromAucSerie = false;
+				}
 
+				if(this.extMS) {
+					this.extMS.kill( true );
+				}
+
+				this.extMS = this.msGraph
+						.newSerie('ext', { autoPeakPicking: true, lineToZero: ! options.continuous })
+						.autoAxis()
+						.setYAxis( this.msGraph.getRightAxis( ) )
+						.setLineWidth( 3 );
+
+
+				this.extMS.setData( ms );
+				this.extMS.setLineColor( options.strokeColor || options.fillColor || 'green' );
 
 
 				if( this.firstMsSerie ) {
-					self.msGraph.getBottomAxis().setMinMaxToFitSeries();
+					this.msGraph.getBottomAxis().setMinMaxToFitSeries();
 					this.firstMsSerie = false;
 				}
+
+				this.msGraph._updateAxes();
+
+				this.msGraph.getRightAxis().scaleToFitAxis( this.msGraph.getBottomAxis() );
 				
 
-				this.extMS.setData(ms);
 				this.msGraph.redraw(true, true, false);
 				this.msGraph.drawSeries();
+			},
+
+			removeExternalMS: function() {
+
+				if(this.extMS) {
+					this.extMS.kill(true);
+				}
 			},
 
 			trigger: function( func, params ) {
@@ -781,31 +809,32 @@
 
 			addIngredient: function( ingredient ) {
 
-
-console.log( ingredient.rt );
 				var self = this,
 					obj = {
 					pos: { 
 						x: ingredient.rt_s,
-						y: ingredient.rt_y
+						y: ingredient.rt_y,
+						dy: "-40px"
 
 					},
 					pos2: {
 						dx: 0,
-						dy: "-5px"
+						dy: "-30px"
 					},
 
 					type: 'line',
-					strokeColor: 'black',
+					strokeColor: "rgb(" + ingredient.color.join() + ")",
 					strokeWidth: 2,
 					label: {
 						position: {
 							dx: 0,
-							dy: "-10px"
+							dy: "-50px"
 						},
-
-						color: 'red',
-						size: 12
+						baseline: 'middle',
+						angle: -90,
+						color:  "rgb(" + ingredient.color.join() + ")",
+						size: 12,
+						text: ingredient.name
 					}
 				};
 
@@ -821,25 +850,60 @@ console.log( ingredient.rt );
 
 			updateIngredientPeaks: function() {
 
+				var self = this;
 				var min = this.gcGraph.getXAxis().getActualMin();
-				var max = this.gcGraph.getXAxis().getActualMin();
+				var max = this.gcGraph.getXAxis().getActualMax();
 
-				this.ingredients.sort( function( a, b ) {
+				this.ingredients = this.ingredients.sort( function( a, b ) {
 
 					if ( a[ 0 ].rt_s < min || a[ 0 ].rt_s > max ) {
+						
 						return 1;
 					}
 
 					if ( b[ 0 ].rt_s < min || b[ 0 ].rt_s > max ) {
-						return 1;
+						
+						return - 1;
 					}
 
-					return -( a[ 0 ].rt_y - b[ 0 ].rt_y );
+					return - ( a[ 0 ].rt_y - b[ 0 ].rt_y );
 				});
+
+				
+				var i = 0;
+				
+
+				
+
+				var limit = 20,
+					xs = [];
 
 				for( var i = 0; i < this.ingredients.length; i ++ ) {
 
-					if( i < 20 ) {
+					var cont = false;
+					var valX = self.gcGraph.getXAxis().getPx( this.ingredients[ i ][ 0 ].rt_s );
+
+					for( var j = 0; j < xs.length; j ++ ) {
+
+						var x = xs[ j ];
+
+						if( Math.abs( x - valX ) < 15 ) {
+							this.ingredients[ i ][ 1 ].toggleLabel( 0, false );
+							limit++;
+							cont = true;
+							break;
+						}
+					};
+
+					if( cont ) {
+						
+						continue;
+					} else {
+						xs.push( valX );
+					}
+
+					
+					if( i < limit ) {
 						this.ingredients[ i ][ 1 ].toggleLabel( 0, true );
 					} else {
 						this.ingredients[ i ][ 1 ].toggleLabel( 0, false );

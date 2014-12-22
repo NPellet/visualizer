@@ -82,8 +82,8 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		},
 		
 		ms: {
-			type: ["jcamp"],
-			label: 'MS (jcamp)'	
+			type: ["array"],
+			label: 'MS'	
 		},
 
 		msdata: {

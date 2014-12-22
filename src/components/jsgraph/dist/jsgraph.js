@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-22T14:52Z
+ * Date: 2014-12-22T16:10Z
  */
 
 (function( global, factory ) {
@@ -4362,6 +4362,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
             shape.set( 'labelColor', shapeData.label[ i ].color || 'black', i );
             shape.set( 'labelSize', shapeData.label[ i ].size, i );
             shape.set( 'labelAngle', shapeData.label[ i ].angle || 0, i );
+            shape.set( 'labelBaseline', shapeData.label[ i ].baseline || 'no-change', i );
 
             if ( shapeData.label[ i ].anchor ) {
               shape.set( 'labelAnchor', shapeData.label[ i ].anchor, i );
@@ -11037,6 +11038,9 @@ build['./shapes/graph.shape'] = ( function( ) {
     setLabelAngle: function( index ) {
       if ( this.label ) this._setLabelAngle( index );
     },
+    setLabelBaseline: function( index ) {
+      if ( this.label ) this._setLabelBaseline( index );
+    },
 
     _getPosition: function( value, relTo ) {
 
@@ -11057,8 +11061,8 @@ build['./shapes/graph.shape'] = ( function( ) {
     },
 
     toggleLabel: function( labelId, visible ) {
-      if ( this.labelNumber && this.label[ i ] ) {
-        this.label[ i ].setAttribute( 'display', visible ? 'block' : 'none' );
+      if ( this.labelNumber && this.label[ labelId ] ) {
+        this.label[ labelId ].setAttribute( 'display', visible ? 'block' : 'none' );
       }
     },
 
@@ -11163,7 +11167,8 @@ build['./shapes/graph.shape'] = ( function( ) {
         this.label[ labelIndex ].setAttribute( 'y', pos.y );
       }
       //this.label.setAttribute('text-anchor', pos.x < parsedCurrPos.x ? 'end' : (pos.x == parsedCurrPos.x ? 'middle' : 'start'));
-      //this.label[labelIndex].setAttribute('dominant-baseline', pos.y < parsedCurrPos.y ? 'no-change' : (pos.y == parsedCurrPos.y ? 'middle' : 'hanging'));
+
+      this.label[ labelIndex ].setAttribute( 'dominant-baseline', this.get( 'labelBaseline', labelIndex ) );
 
     },
 
@@ -11176,6 +11181,11 @@ build['./shapes/graph.shape'] = ( function( ) {
       var x = this.label[ labelIndex ].getAttribute( 'x' );
       var y = this.label[ labelIndex ].getAttribute( 'y' );
       this.label[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
+    },
+
+    _setLabelBaseline: function( labelIndex, angle ) {
+
+      this.label[ labelIndex ].setAttribute( 'dominant-baseline', this.label[ labelIndex ].baseline );
     },
 
     _forceLabelAnchor: function( i ) {
