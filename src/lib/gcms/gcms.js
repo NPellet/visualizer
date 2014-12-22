@@ -723,6 +723,8 @@
 					auc.redraw();
 					auc.setPosition();
 				});
+
+				this.updateIngredientPeaks();
 			},
 
 			setMS: function(ms) {
@@ -846,6 +848,8 @@
 					shape.draw();
 					shape.redraw();
 				});
+
+				this.updateIngredientPeaks();
 			},
 
 			updateIngredientPeaks: function() {
