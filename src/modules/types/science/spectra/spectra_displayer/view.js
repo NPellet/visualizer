@@ -727,6 +727,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                     serie.autoAxis();
                     
+console.log( data[ i ] );
 
                     if( data[ i ].data ) {
                         serie.setData(data[ i ].data);
@@ -735,7 +736,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     }
                     //	serie.setLabel( data[ i ].label.toString( ) );
                     serie.setLineWidth(data[ i ].lineWidth || 1);
-                    serie.setLineColor(data[ i ].lineColor || Util.getColor(Util.getNextColorRGB(i, l)));
+                    serie.setLineColor(data[ i ].lineColor || 'black' );
                 }
 
                 this.redraw();

@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.3-4
+ * jsGraph JavaScript Graphing Library v1.10.4-2
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-11T19:03Z
+ * Date: 2014-12-11T21:43Z
  */
 
 (function( global, factory ) {
@@ -4340,6 +4340,14 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
         if ( shapeData.layer ) {
           shape.setLayer( shapeData.layer );
+        }
+
+        if ( shapeData.locked ) {
+          shape.lock();
+        }
+
+        if ( shapeData.selectable ) {
+          shape.selectable();
         }
 
         if ( shapeData.label ) {
@@ -9646,7 +9654,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
         continuous;
 
       this.empty();
-      this.shapesPositions = [];
+      this.shapesDetails = [];
       this.shapes = [];
 
       if ( !data instanceof Array ) {
@@ -9715,11 +9723,15 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
       if ( mode === undefined ) {
         mode = "unselected"
       }
+      /*
+      if( ! this.styles[ mode ] ) {
+
+      }
 
       if ( mode !== "selected" && mode !== "unselected" ) {
         throw "Style mode is not correct. Should be selected or unselected";
       }
-
+*/
       this.styles[ mode ] = this.styles[ mode ] ||  {};
       this.styles[ mode ].all = all;
       this.styles[ mode ].modifiers = modifiers;
@@ -9797,7 +9809,9 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 
         }
 
-        this.shapesPositions[ j / 2 ] = [ xpx, ypx ];
+        this.shapesDetails[ j / 2 ] = this.shapesDetails[ j / 2 ] || [];
+        this.shapesDetails[ j / 2 ][ 0 ] = xpx;
+        this.shapesDetails[ j / 2 ][ 1 ] = ypx;
         keys.push( j / 2 );
 
         //this.shapes[ j / 2 ] = this.shapes[ j / 2 ] ||  undefined;
@@ -9994,8 +10008,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
           shape = this.shapes[ index ];
         }
 
-
-        shape.parentNode.setAttribute( 'transform', 'translate(' + this.shapesPositions[ index ][ 0 ] + ', ' + this.shapesPositions[ index ][ 1 ] + ')' );
+        shape.parentNode.setAttribute( 'transform', 'translate(' + this.shapesDetails[ index ][ 0 ] + ', ' + this.shapesDetails[ index ][ 1 ] + ')' );
 
         styles[ index ] = style;
       }
@@ -10008,12 +10021,13 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
       var styles = this.getStyle( selection, index );
 
       for ( var i in styles ) {
+
         for ( j in styles[ i ] ) {
 
           if ( j !== "shape" ) {
 
             if ( styles[ i ][ j ] ) {
-
+              
               this.shapes[ i ].setAttribute( j, styles[ i ][ j ] );
 
             } else {
@@ -10123,19 +10137,30 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 
     },
 
-    selectPoint: function( index, setOn ) {
+    unselectPoint: function( index ) {
+      this.selectPoint( index, false );
+
+    },
+
+    selectPoint: function( index, setOn, selectionType ) {
+
+      if ( typeof setOn == "string" ) {
+        selectionType = setOn;
+        setOn = undefined;
+      }
 
       if ( Array.isArray( index ) ) {
         return this.selectPoints( index );
       }
 
-      if ( this.shapes[ index ] ) {
+      if ( this.shapes[ index ] && this.shapesDetails[ index ] ) {
 
-        if ( ( this.shapes[ index ]._selected || setOn === false ) && setOn !== true ) {
+        if ( ( this.shapesDetails[ index ][ 2 ] || setOn === false ) && setOn !== true ) {
 
-          this.shapes[ index ]._selected = false;
+          var selectionStyle = this.shapesDetails[ index ][ 2 ];
+          this.shapesDetails[ index ][ 2 ] = false;
 
-          var allStyles = this.getStyle( "selected", index );
+          var allStyles = this.getStyle( selectionStyle, index );
 
           for ( var i in allStyles[ index ] ) {
             this.shapes[ index ].removeAttribute( i );
@@ -10145,7 +10170,9 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 
         } else {
 
-          this.applyStyle( "selected", index );
+          selectionType = selectionType ||  "selected";
+          this.shapesDetails[ index ][ 2 ] = selectionType;
+          this.applyStyle( selectionType, index );
 
         }
 
@@ -10644,7 +10671,7 @@ build['./shapes/graph.shape'] = ( function( ) {
       this.classes = [];
 
       this._movable = true;
-      this._selectable = true;
+      this._selectable = false;
 
       if ( this.options.masker ) {
 
@@ -11147,6 +11174,14 @@ build['./shapes/graph.shape'] = ( function( ) {
       this._movable = bln;
     },
 
+    unselectable: function() {
+      this._selectable = false;
+    },
+
+    selectable: function() {
+      this._selectable = true;
+    },
+
     select: function( mute ) {
 
       if ( !this._selectable ) {
@@ -11490,7 +11525,9 @@ build['./shapes/graph.shape'] = ( function( ) {
 
     handleDblClick: function() {
 
-      this.configure();
+      if ( this.options.configurable ) {
+        this.configure();
+      }
     },
 
     configure: function() {
@@ -11573,15 +11610,15 @@ build['./shapes/graph.shape'] = ( function( ) {
 
     isLocked: function() {
 
-      return this.options.locked ||  this.graph.shapesLocked;
+      return this.locked ||  this.graph.shapesLocked;
     },
 
     lock: function() {
-      this.options.locked = true;
+      this.locked = true;
     },
 
     unlock: function() {
-      this.options.locked = false;
+      this.locked = false;
     },
 
     isBindable: function() {
