@@ -781,10 +781,12 @@
 
 			addIngredient: function( ingredient ) {
 
+
+console.log( ingredient.rt );
 				var self = this,
 					obj = {
 					pos: { 
-						x: ingredient.rt,
+						x: ingredient.rt_s,
 						y: ingredient.rt_y
 
 					},
@@ -824,11 +826,11 @@
 
 				this.ingredients.sort( function( a, b ) {
 
-					if ( a[ 0 ].rt < min || a[ 0 ].rt > max ) {
+					if ( a[ 0 ].rt_s < min || a[ 0 ].rt_s > max ) {
 						return 1;
 					}
 
-					if ( b[ 0 ].rt < min || b[ 0 ].rt > max ) {
+					if ( b[ 0 ].rt_s < min || b[ 0 ].rt_s > max ) {
 						return 1;
 					}
 
