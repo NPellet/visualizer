@@ -44,6 +44,7 @@
 			this.init();
 
 			this.aucs = [];
+			this.ingredients = [];
 		}
 
 		gcms.prototype = {
@@ -784,7 +785,7 @@
 					obj = {
 					pos: { 
 						x: ingredient.rt,
-						y: rt_y
+						y: ingredient.rt_y
 
 					},
 					pos2: {
@@ -805,6 +806,7 @@
 						size: 12
 					}
 				};
+
 
 				this.gcGraph.newShape( obj ).then( function( shape ) {
 
