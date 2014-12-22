@@ -218,6 +218,12 @@
 								axisDataSpacing: { min: 0, max: 0.1 },
 
 								onZoom: function(from, to) {
+
+									// Zoom on GC has changed
+									self.updateIngredientPeaks();
+
+
+
 									self.trigger("onZoomGC", [ from, to ] );
 								}
 							}
@@ -770,6 +776,71 @@
 
 				this.msGraph.redraw();
 				this.msGraph.drawSeries();
+			},
+
+			addIngredient: function( ingredient ) {
+
+				var self = this,
+					obj = {
+					pos: { 
+						x: ingredient.rt,
+						y: rt_y
+
+					},
+					pos2: {
+						dx: 0,
+						dy: "-5px"
+					},
+
+					type: 'line',
+					strokeColor: 'black',
+					strokeWidth: 2,
+					label: {
+						position: {
+							dx: 0,
+							dy: "-10px"
+						},
+
+						color: 'red',
+						size: 12
+					}
+				};
+
+				this.gcGraph.newShape( obj ).then( function( shape ) {
+
+					self.ingredients.push( [ ingredient, shape ] );
+
+					shape.draw();
+					shape.redraw();
+				});
+			},
+
+			updateIngredientPeaks: function() {
+
+				var min = this.gcGraph.getXAxis().getActualMin();
+				var max = this.gcGraph.getXAxis().getActualMin();
+
+				this.ingredients.sort( function( a, b ) {
+
+					if ( a[ 0 ].rt < min || a[ 0 ].rt > max ) {
+						return 1;
+					}
+
+					if ( b[ 0 ].rt < min || b[ 0 ].rt > max ) {
+						return 1;
+					}
+
+					return -( a[ 0 ].rt_y - b[ 0 ].rt_y );
+				});
+
+				for( var i = 0; i < this.ingredients.length; i ++ ) {
+
+					if( i < 20 ) {
+						this.ingredients[ i ][ 1 ].toggleLabel( 0, true );
+					} else {
+						this.ingredients[ i ][ 1 ].toggleLabel( 0, false );
+					}
+				}
 			}
 		};
 

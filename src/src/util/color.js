@@ -51,9 +51,9 @@ define([], function () {
 
             m1 = l * 2 - m2;
             hue = h / 360;
-            r = this.hueToRgb(m1, m2, hue + 1 / 3);
-            g = this.hueToRgb(m1, m2, hue);
-            b = this.hueToRgb(m1, m2, hue - 1 / 3);
+            r = exports.hue2rgb(m1, m2, hue + 1 / 3);
+            g = exports.hue2rgb(m1, m2, hue);
+            b = exports.hue2rgb(m1, m2, hue - 1 / 3);
         }
         return {r: r, g: g, b: b};
     };

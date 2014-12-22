@@ -227,6 +227,21 @@ define( [
 
 			'mscont': function(moduleValue, name) {
 				this.update.ms(moduleValue, name, true);
+			},
+
+			'ingredientList': function( value, varName ) {
+
+				var self = this;
+				
+				if( ! value ) {
+					return;
+				}
+
+				this.ingredientList = value;
+
+				this.ingredientList.map( function( source ) {
+					self.gcmsInstance.addIngredient( source );
+				});
 			}
 		},
 

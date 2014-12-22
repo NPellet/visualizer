@@ -725,7 +725,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                 for (; i < l; i++) {
 
-                    var serie = this.graph.newSerie( varname + "_" + i, this.getSerieOptions(varname) );
+                    var serie = this.graph.newSerie( data[ i ].name, this.getSerieOptions(varname) );
 
                     serie.autoAxis();
                     
@@ -737,8 +737,8 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     }
                     //	serie.setLabel( data[ i ].label.toString( ) );
                     serie.setLineWidth(data[ i ].lineWidth || 1);
-
                     serie.setLineColor(data[ i ].lineColor || 'black' );
+                    serie.setLineWidth( 3, "selected" );
 
 //                    serie.setLineColor(data[ i ].lineColor || Color.getColor(Color.getNextColorRGB(i, l)));
 
@@ -857,7 +857,26 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                         i--;
                     }
                 }
-            }
+            },
+
+            selectSerie: function( serieName ) {
+
+                var s = this.graph.getSerie( serieName );
+
+                if( s ) {
+                    s.select( "selected" );
+                }
+            },
+
+
+            unselectSerie: function( serieName ) {
+
+                var s = this.graph.getSerie( serieName );
+
+                if( s ) {
+                    s.unselect();
+                }
+            },
         },
 
         getDom: function () {

@@ -145,7 +145,9 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
         'fromTo': 'From-To',
         'addSerie': 'Add a serie',
         'removeSerie': 'Remove a serie',
-        'removeSerieByName': 'Remove serie (name as input)'
+        'removeSerieByName': 'Remove serie (name as input)',
+        'selectSerie': 'Select serie',
+        'unselectSerie': 'Unselect serie'
     };
 
 

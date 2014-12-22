@@ -46,6 +46,11 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 			type: 'fromTo'
 		},
 
+		ingredientList: {
+			label: 'List of ingredients',
+			type: 'array'
+		},
+
 		GCIntegration: {
 			label: 'Integration on the GC',
 			type: 'object'
@@ -158,7 +163,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 	/*
 		Configuration of the module for receiving events, as a static object
 	*/
-	controller.prototype.variablesIn = [ 'gcms', 'jcamp', 'gc', 'ms', 'mscont', 'annotationgc' ];
+	controller.prototype.variablesIn = [ 'gcms', 'jcamp', 'gc', 'ms', 'mscont', 'annotationgc', 'ingredientList' ];
 
 	/*
 		Received actions
