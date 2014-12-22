@@ -383,7 +383,8 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
             var el = jpath.shift();
             var self = this;
 //console.log( this, this.get(el, true), el );
-            return this.get(el, true).then(function (subEl) {
+            var promise = this.get(el, true);
+            return promise.then(function (subEl) {
                 if (typeof subEl !== 'undefined') {
                     self.get()[el] = DataObject.check(subEl, true);
                     if (subEl && subEl.linkToParent) {

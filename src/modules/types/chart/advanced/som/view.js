@@ -31,11 +31,16 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
                 plugins: {
                     'graph.plugin.zoom': {
                         zoomMode: 'xy'
-                    }
+                    },
+                    'graph.plugin.drag': {}
                 },
                 pluginAction: {
                     'graph.plugin.zoom': {
                         shift: false,
+                        ctrl: false
+                    },
+                    'graph.plugin.drag': {
+                        shift: true,
                         ctrl: false
                     }
                 },
@@ -120,9 +125,8 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
                                 x: i + 1,
                                 y: j + 1
                             },
-                            shapeOptions: {
-                                locked: true
-                            },
+                            locked: true,
+                            selectable: false,
                             fillColor: getColor(data[i][j]),
                             layer: 1,
                             info: data[i][j]

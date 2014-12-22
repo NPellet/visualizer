@@ -824,7 +824,7 @@ define(['jquery',
 
                 visualizerDiv.html('<table id="viewport" cellpadding="0" cellspacing="0">\n    <tr>\n        <td id="ci-center">\n            <div id="modules-grid">\n                <div id="ci-dialog"></div>\n            </div>\n        </td>\n    </tr>\n</table>');
 
-                var configJson = require.toUrl(urls['config'] || visualizerDiv.attr('config') || 'usr/config/default.json');
+                var configJson = urls['config'] || visualizerDiv.attr('config') || require.toUrl('usr/config/default.json');
 
                 $.getJSON(configJson, {}, function (cfgJson) {
 

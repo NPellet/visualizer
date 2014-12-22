@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/util/datatraversing', 'src/util/api', 'src/util/util'], function (Default, Graph, DataTraversing, API, Util) {
+define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/util/datatraversing', 'src/util/api', 'src/util/color'], function (Default, Graph, DataTraversing, API, Color) {
 
     function View() {
     }
@@ -97,7 +97,9 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                     var wheel = cfg('wheelAction');
                     if (wheel && wheel !== 'none') {
-                        var wheelOptions = {};
+                        var wheelOptions = {
+                            baseline: cfg('wheelbaseline', 0)
+                        };
 
                         if (wheel === 'xAxis') {
                             wheelOptions.direction = 'x';
@@ -369,7 +371,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 for (var i = 0, l = plotinfos.length; i < l; i++) {
                     if (varname == plotinfos[i].variable) {
 
-                        serie.setLineColor(Util.getColor(plotinfos[i].plotcolor));
+                        serie.setLineColor(Color.getColor(plotinfos[i].plotcolor));
                         serie.setLineWidth(parseFloat(plotinfos[i].strokewidth) || 1);
 
                         if (plotinfos[i].markers[0] && serie.showMarkers) {
@@ -377,8 +379,8 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                             serie.setMarkers([{
                                 type: 1,
                                 zoom: 2,
-                                strokeColor: Util.getColor(plotinfos[i].plotcolor),
-                                fillColor: Util.getColor(plotinfos[i].plotcolor),
+                                strokeColor: Color.getColor(plotinfos[i].plotcolor),
+                                fillColor: Color.getColor(plotinfos[i].plotcolor),
                                 points: 'all'
                             }]);
                         }
@@ -736,7 +738,11 @@ console.log( data[ i ] );
                     }
                     //	serie.setLabel( data[ i ].label.toString( ) );
                     serie.setLineWidth(data[ i ].lineWidth || 1);
+<<<<<<< HEAD
                     serie.setLineColor(data[ i ].lineColor || 'black' );
+=======
+                    serie.setLineColor(data[ i ].lineColor || Color.getColor(Color.getNextColorRGB(i, l)));
+>>>>>>> FETCH_HEAD
                 }
 
                 this.redraw();

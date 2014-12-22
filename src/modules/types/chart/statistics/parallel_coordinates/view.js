@@ -98,6 +98,10 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing
             this.createIntermediateData();
             this.dom.empty();
 
+            function exportBrush(d) {
+                that.module.controller.onBrushSelection(d);
+            }
+
             if (this._data) {
 
                 var cfg = this.module.getConfiguration.bind(this.module),
@@ -135,9 +139,12 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing
                     parcoords.shadows();
                 }
 
-                parcoords.on('brush', function (d) {
-                    that.module.controller.onBrushSelection(d);
-                });
+                if(!cfgCb('options', 'brush')) {
+                    parcoords.on('brush', exportBrush);
+                }
+
+                parcoords.on('brushend', exportBrush);
+
                 this._parcoords = parcoords;
 
                 this.module.controller.onBrushSelection(this._data);

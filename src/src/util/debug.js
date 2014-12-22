@@ -1,4 +1,9 @@
-define(function () {
+define(['loglevel'], function (log) {
+
+    // Fallback to Date for incompatible navigators (Safari)
+    var perfObj = window.performance ? window.performance : Date;
+
+    log.disableAll();
 
     var Levels = {
         NODEBUG: -1,
@@ -9,19 +14,35 @@ define(function () {
         TRACE: 4
     };
 
-    var debugLevel = -1,
-        console = window.console,
-        entries = [];
+    var levelMapping = {
+        '-1': 'silent',
+        '0': 'error',
+        '1': 'warn',
+        '2': 'info',
+        '3': 'debug',
+        '4': 'trace'
+    };
 
-    function addEntry(entry) {
-        entries.push(entry);
-    }
+    var debugLevel = Levels.NODEBUG;
 
     var Debug = {
 
         Levels: Levels,
 
         setDebugLevel: function (level) {
+            level = parseInt(level);
+            if(isNaN(level) || (level < -1)) {
+                return;
+            }
+            if (level > 4) {
+                level = 4;
+            }
+            log.setLevel(levelMapping[level]);
+            this.error = log.error;
+            this.warn = log.warn;
+            this.info = log.info;
+            this.debug = log.debug;
+            this.trace = log.trace;
             debugLevel = level;
         },
 
@@ -29,55 +50,11 @@ define(function () {
             return debugLevel;
         },
 
-        error: function (message, error) {
-            if (debugLevel >= Levels.ERROR) {
-                if (error instanceof Error && error.stack) {
-                    arguments[1] = '\n' + error.stack;
-                } else {
-                    entries.push.call(arguments, '\n' + Error().stack);
-                }
-                console.error.apply(console, arguments);
-            }
-            if (debugLevel > Levels.NODEBUG)
-                addEntry('ERROR : ' + message);
-        },
-
-        warn: function (message) {
-            if (debugLevel >= Levels.WARN) {
-                console.warn.apply(console, arguments);
-            }
-            if (debugLevel > Levels.NODEBUG)
-                addEntry('WARN  : ' + message);
-        },
-
-        info: function (message) {
-            if (debugLevel >= Levels.INFO) {
-                console.info.apply(console, arguments);
-            }
-            if (debugLevel > Levels.NODEBUG)
-                addEntry('INFO  : ' + message);
-        },
-
-        debug: function (message) {
-            if (debugLevel >= Levels.DEBUG) {
-                console.debug.apply(console, arguments);
-            }
-            if (debugLevel > Levels.NODEBUG)
-                addEntry('DEBUG : ' + message);
-        },
-
-        trace: function (message) {
-            if (debugLevel >= Levels.TRACE) {
-                console.log.apply(console, arguments);
-            }
-            if (debugLevel > Levels.NODEBUG)
-                addEntry('TRACE : ' + message);
-        },
-
-        dump: function () {
-            console.log(entries.join('\n'));
-            entries = [];
-        },
+        error: log.error,
+        warn: log.warn,
+        info: log.info,
+        debug: log.debug,
+        trace: log.trace,
 
         timer: function () {
             var t = new Timer();
@@ -92,10 +69,10 @@ define(function () {
     function formatTime(time, format) {
         if (format) {
             if (format === 'ms') {
-                return time + 'ms';
+                return time.toFixed(3) + 'ms';
             }
             if (format === 's') {
-                return (time / 1000) + 's';
+                return (time / 1000).toFixed(3) + 's';
             }
         }
         else
@@ -114,27 +91,27 @@ define(function () {
     Timer.prototype = {
         start: function () {
             if (this._paused) {
-                this._start = Date.now() - this._elapsed;
+                this._start = perfObj.now() - this._elapsed;
                 this._paused = false;
             } else if (!this._started) {
-                this._start = Date.now();
+                this._start = perfObj.now();
                 this._started = true;
             }
         },
         pause: function () {
             if (this._started && !this._paused) {
                 this._paused = true;
-                this._elapsed = Date.now() - this._start;
+                this._elapsed = perfObj.now() - this._start;
             }
         },
         time: function (format) {
             if (this._started && !this._paused) {
-                return formatTime(Date.now() - this._start, format);
+                return formatTime(perfObj.now() - this._start, format);
             }
         },
         step: function (format) {
             if (this._started && !this._paused) {
-                var now = Date.now();
+                var now = perfObj.now();
                 var time = now - this._start;
                 this._start = now;
                 this._total += time;
@@ -144,13 +121,13 @@ define(function () {
         },
         lap: function (format) {
             if (this._started && !this._paused) {
-                var time = Date.now() - this._start;
+                var time = perfObj.now() - this._start;
                 this._laps.push(time);
                 return formatTime(this._total, format);
             }
         },
         sum: function (name) {
-            var elapsed = Date.now() - this._start;
+            var elapsed = perfObj.now() - this._start;
             if (name) {
                 if (!this._sums[name]) {
                     this._sums[name] = 0;

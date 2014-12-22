@@ -116,11 +116,6 @@ define(['jquery', 'jquery-ui', 'src/util/util', 'modules/modulefactory', 'src/ut
             }
 
 
-            // Expands the grid when one click on the header
-            module.getDomHeader().bind('mousedown', function () {
-                checkDimensions(true);
-            });
-
             if (!API.isViewLocked()) {
                 // Insert jQuery UI resizable and draggable
                 module.getDomWrapper().resizable({

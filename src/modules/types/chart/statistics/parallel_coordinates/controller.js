@@ -70,7 +70,8 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
                             options: {
                                 reorder: 'Reorderable',
                                 shadow: 'Keep shadows while brushing',
-                                hide: 'Prevent highlight of hidden lines'
+                                hide: 'Prevent highlight of hidden lines',
+                                brush: 'Export selection only on brush end'
                             },
                             'default': ['reorder']
                         },

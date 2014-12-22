@@ -67,7 +67,7 @@ define(['require', 'jquery', 'src/util/versioning'], function (require, $, Versi
         createElement: function (source) {
             return new Promise(function (resolve, reject) {
                 var url;
-                if (source.type.indexOf('/') >-1) {
+                if (source.type.indexOf('/') > -1) {
                     url = source.type;
                 } else {
                     url = './components/' + source.type;

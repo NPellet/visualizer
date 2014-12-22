@@ -4,7 +4,7 @@
  * Global utility methods
  * @module src/util/util
  */
-define(['src/util/debug', 'src/util/color'], function (Debug, Color) {
+define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _) {
 
     var uniqueid = 0;
 
@@ -433,6 +433,28 @@ define(['src/util/debug', 'src/util/color'], function (Debug, Color) {
             return method.apply(this, arguments);
         }
     }
+
+    /**
+     * Make a constructor's prototype inherit another one, while adding optionally new methods to it. Also sets a `super_`
+     * property to access the super constructor
+     * @param {Function} ctor - New constructor
+     * @param {Function} superCtor - Super constructor
+     * @param {Object} [methods] - Methods to add to the new constructor
+     */
+    exports.inherits = function (ctor, superCtor, methods) {
+        ctor.super_ = superCtor;
+        ctor.prototype = Object.create(superCtor.prototype, {
+            constructor: {
+                value: ctor,
+                enumerable: false,
+                writable: true,
+                configurable: true
+            }
+        });
+        if (methods) {
+            _.assign(ctor.prototype, methods);
+        }
+    };
 
     return exports;
 

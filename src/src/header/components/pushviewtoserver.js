@@ -1,11 +1,11 @@
 'use strict';
 
-define(['jquery', 'src/header/components/default', 'src/util/versioning'], function ($, Default, Versioning) {
+define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/util/util'], function ($, Default, Versioning, Util) {
 
     function Element() {
     }
 
-    $.extend(Element.prototype, Default, {
+    Util.inherits(Element, Default, {
 
         initImpl: function () {
             this.viewHandler = Versioning.getViewHandler();
@@ -36,4 +36,5 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning'], funct
     });
 
     return Element;
+
 });

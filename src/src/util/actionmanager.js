@@ -143,7 +143,7 @@ define(['require'], function( require ) {
 								return;
 							}
 
-							API.executeAction( event.data.actionName, event.data.actionValue );
+							API.doAction( event.data.actionName, event.data.actionValue );
 
 						break;
 

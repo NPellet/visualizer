@@ -1,22 +1,18 @@
-define(['jquery', 'src/header/components/default', 'src/util/versioning'], function($, Default, Versioning) {
+'use strict';
 
+define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/util/util'], function ($, Default, Versioning, Util) {
 
-	var Element = function() {};
-	$.extend(Element.prototype, Default, {
+    function Element() {
+    }
 
-		initImpl: function() {
-			this.viewHandler = Versioning.getViewHandler();
-		},
+    Util.inherits(Element, Default, {
 
-		_onClick: function() { // Overwrite usual onclick which loads a list / loads views/datas
-			
-			if(this._open) {
-				Versioning.blankView();
-			} else {
-				
-			}
-		}
-	});
+        _onClick: function () {
+            Versioning.blankView();
+        }
 
-	return Element;
+    });
+
+    return Element;
+
 });

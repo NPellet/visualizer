@@ -1,4 +1,12 @@
-HEAD
+2.9.9 / 2014-12-12
+================
+* slickgrid:
+ * better highlight support
+ * Columns determined automatically if none specified
+ * Scroll back to top option
+* core: view url is now relative to http host not to where the visualizer is hosted
+
+2.9.8 / 2014-12-12
 ================
 
 * new module: self-organising map
@@ -9,6 +17,9 @@ HEAD
 * module XYZoomNavigator is back !
 * defaultmodel : add getData and getAllDataFromRel methods
 * add `date` typerenderer
+* API : executAction is deprecated. use API.doAction instead
+* spectra displayer : add wheel baseline option
+* parallel coordinates : allow to send selection only on brush end
 
 2.9.7 / 2014-12-09
 ================
@@ -20,6 +31,7 @@ HEAD
 
 2.9.6 / 2014-12-03
 ================
+
 * fix cross-origin image loading issue in scatter 3d
 * function plotter: make pref editable with action in
 

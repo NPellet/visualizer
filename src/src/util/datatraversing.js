@@ -289,8 +289,8 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 				structure.elements = {};
 
 				for( var i in element ) {
-
-					structure.elements[ i ] = this.getStructureFromElement( element.get( i, false ) );
+					if(i[0] !== '_')
+						structure.elements[ i ] = this.getStructureFromElement( element.get( i, false ) );
 				}
 
 			} else if( type && Structures[ type ] && ( element.value || element.url ) ) {

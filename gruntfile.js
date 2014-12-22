@@ -81,7 +81,7 @@ module.exports = function (grunt) {
                             './colors/css/colors.min.css',
                             './pouchdb/dist/pouchdb.min.js',
                             './uri.js/src/*.js',
-                            './twig.js/twig.min.js',
+                            './twig.js/twig.*',
                             './bluebird/js/browser/bluebird.js',
                             './onde/src/*',
                             ['./spectrum/spectrum.js', './spectrum/spectrum.css'],
@@ -104,7 +104,8 @@ module.exports = function (grunt) {
                             './chroma-js/chroma.min.js',
                             './sdf-parser/**',
                             './async/lib/async.js',
-                            ['./jsNMR/lib/components/VisuMol/**', './jsNMR/src/**', './jsNMR/dist/**']
+                            ['./jsNMR/lib/components/VisuMol/**', './jsNMR/src/**', './jsNMR/dist/**'],
+                            './loglevel/dist/loglevel.min.js'
                         ],
 
                         dest: './build/components/'

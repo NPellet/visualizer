@@ -12,12 +12,12 @@ define([
     'components/jquery-ui-contextmenu/jquery.ui-contextmenu.min'
 ], function ($, Default, Versioning, Button, Util, Base64) {
 
-    var couchDBManager = function () {
-    };
+    function CouchDBManager() {
+    }
 
     var regAlphaNum = /^[a-zA-Z0-9]+$/;
 
-    $.extend(couchDBManager.prototype, Default, {
+    Util.inherits(CouchDBManager, Default, {
         initImpl: function () {
             this.ok = this.loggedIn = false;
             this.id = Util.getNextUniqueId();
@@ -474,15 +474,11 @@ define([
                 preventVoidMoves: true,
                 preventRecursiveMoves: true,
                 autoExpandMS: 300,
-                dragStart: function (node) {
-                    if (node.folder) // Can only move documents
-                        return false;
-                    return true;
+                dragStart: function (node) { // Can only move documents
+                    return !node.folder;
                 },
-                dragEnter: function (target) {
-                    if (!target.folder) // Can only drop in a folder
-                        return false;
-                    return true;
+                dragEnter: function (target) { // Can only drop in a folder
+                    return !!target.folder;
                 },
                 dragDrop: function (target, info) {
                     var theNode = info.otherNode;
@@ -669,7 +665,7 @@ define([
         }
     });
 
-    Object.defineProperty(couchDBManager.prototype, 'flavor', {
+    Object.defineProperty(CouchDBManager.prototype, 'flavor', {
         get: function () {
             if (this._flavor) {
                 return this._flavor;
@@ -764,6 +760,6 @@ define([
         return false;
     }
 
-    return couchDBManager;
+    return CouchDBManager;
 
 });

@@ -1,75 +1,79 @@
+'use strict';
 
-define(['jquery'], function() {
-	
-	return {
+define(['jquery', 'src/util/util'], function ($, Util) {
 
-		init: function(element) {
-			this.options = element;
-			this._open = false;
-			this.makeDom();
-			this.initImpl();
-		},
+    function Header() {
+    }
 
-		initImpl: function() {},
-		makeDom: function() {
+    Header.prototype.init = function (options) {
+        this.options = options;
+        this._open = false;
+        this.makeDom();
+        this.initImpl();
+    };
 
-			var self = this;
-			this._dom = document.createElement('li');
-			this.$_dom = $(this._dom);
-			this.$_dom.text(this.options.label || this.options.title || ''); 
-			this.$_dom.bind('click', function() {
-				self.onClick();
-			})
-		},
+    Header.prototype.initImpl = Util.noop;
 
-		getDom: function() {
-			return this.$_dom;
-		},
+    Header.prototype.makeDom = function () {
+        var self = this;
+        this._dom = document.createElement('li');
+        this.$_dom = $(this._dom);
+        this.$_dom.text(this.options.label || this.options.title || '');
+        this.$_dom.bind('click', function () {
+            self.onClick();
+        });
+    };
 
-		onClick: function() {
-			this._open = !this._open
-			this._onClick();
-		},
+    Header.prototype.getDom = function () {
+        return this.$_dom;
+    };
 
-		setStyleOpen: function(opened) {
-			this.$_dom[opened ? 'addClass' : 'removeClass']('opened');
-		},
+    Header.prototype.onClick = function () {
+        this._open = !this._open;
+        this._onClick();
+    };
 
-		_onClick: function() {},
+    Header.prototype._onClick = Util.noop;
 
-		open: function() {
-			//this.$_elToOpen = ul;
-			this.$_elToOpen.addClass('header-button-list');
-			$('body').append(this.$_elToOpen);
+    Header.prototype.setStyleOpen = function (opened) {
+        this.$_dom[opened ? 'addClass' : 'removeClass']('opened');
+    };
 
-			var w = this.$_elToOpen.outerWidth(true),
-				h = this.$_dom.outerHeight(true),
-				pos = this.$_dom.position(),
-				fullH = $(window).outerHeight(true),
-				fullW = $("#header").outerWidth(true),
-				newLeft, newTop
+    Header.prototype.open = function () {
+        this.$_elToOpen.addClass('header-button-list');
 
-			if(pos.left + w >= fullW) {
-				newLeft = fullW - w;
-			} else {
-				newLeft = pos.left;
-			}
-			newTop = h + pos.top - 1;
+        // Verify that the element has been added to the dom
+        if (this.$_elToOpen.parents('body').length === 0) {
+            $('body').append(this.$_elToOpen);
+        }
 
+        this.$_elToOpen.show();
 
-			this.$_elToOpen.css({
-				top: newTop,
-				left: newLeft
-			})
+        var w = this.$_elToOpen.outerWidth(true),
+            h = this.$_dom.outerHeight(true),
+            pos = this.$_dom.position(),
+            fullH = $(window).outerHeight(true),
+            fullW = $('#header').outerWidth(true),
+            newLeft, newTop;
 
-			//this.open = true;
-		},
+        if (pos.left + w >= fullW) {
+            newLeft = fullW - w;
+        } else {
+            newLeft = pos.left;
+        }
+        newTop = h + pos.top - 1;
 
+        this.$_elToOpen.css({
+            top: newTop,
+            left: newLeft
+        });
+    };
 
+    Header.prototype.close = function () {
+        if (this.$_elToOpen)
+            this.$_elToOpen.hide();
+    };
 
-		close: function() {
-                    if(this.$_elToOpen)
-			this.$_elToOpen.remove();
-		}
-	};
+    return Header;
+
 });

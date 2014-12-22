@@ -39,6 +39,8 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
     // A simple filter
     var columnFilters = {};
 
+    var uniqueID = 0;
+
 
 
     var formatters = {
@@ -86,6 +88,34 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         getSlickColumns: function() {
             var that = this;
             var tp = $.proxy(typeRenderer, this);
+
+            function getEditor(jpath) {
+                var editor;
+                var obj = that.module.data.get(0).getChildSync(jpath);
+                if(obj instanceof DataString) {
+                    editor = Slick.Editors.SpecialNativeObject;
+                }
+                else if(obj instanceof DataNumber) {
+                    editor = Slick.Editors.DataNumberEditor
+                }
+                else if(obj instanceof DataBoolean) {
+                    editor = Slick.Editors.DataBooleanEditor
+                }
+                else {
+                    editor = typeEditors[getType(jpath)];
+                }
+                return editor;
+            }
+
+            function getType(jpath) {
+                var type;
+                var obj = that.module.data.get(0).getChildSync(jpath);
+                if(obj instanceof DataObject) {
+                    type = obj.type;
+                }
+                return type;
+            }
+
             var slickCols = this.colConfig.map(function(row) {
                 var editor, type;
                 if(row.editor === 'auto' && that.module.data) {
@@ -94,26 +124,15 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         Debug.warn('Slick grid: using editor based on type when the input variable is empty. Cannot determine type');
                     }
                     else {
-                        var obj = that.module.data.get(0).getChildSync(row.jpath);
-                        if(obj instanceof DataString) {
-                            editor = Slick.Editors.SpecialNativeObject;
-                        }
-                        else if(obj instanceof DataNumber) {
-                            editor = Slick.Editors.DataNumberEditor
-                        }
-                        else if(obj instanceof DataBoolean) {
-                            editor = Slick.Editors.DataBooleanEditor
-                        }
-                        else {
-                            type = that.module.data.get(0).getChildSync(row.jpath).type;
-                            editor = typeEditors[type];
-                        }
+                        editor = getEditor(row.jpath);
+                        type = getType(row.jpath);
                     }
                 }
                 else {
                     editor = typeEditors[row.editor];
                     type = row.editor;
                 }
+
                 return {
                     id: row.name,
                     name: row.name,
@@ -133,6 +152,40 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     dataType: type
                 }
             });
+
+            slickCols = _.filter(slickCols, function(val) {
+                return val.name;
+            });
+
+            // No columns are define, we use the input object to define them
+            if(_.isEmpty(slickCols)) {
+                var colNames = [];
+                for(var i=0; i<that.module.data.length; i++) {
+                    colNames = _(colNames).push(_.keys(that.module.data[i])).flatten().uniq().value();
+                }
+
+                slickCols = _(colNames).filter(function(v) {
+                    return v[0] !== '_';
+                }).map(function(rowName) {
+                    return {
+                        id: rowName,
+                        name: rowName,
+                        field: rowName,
+                        resisable: true,
+                        selectable: true,
+                        focusable: true,
+                        sortable: false,
+                        editor: getEditor([rowName]),
+                        dataType: getType([rowName]),
+                        jpath: [rowName],
+                        formatter: formatters.typerenderer,
+                        asyncPostRender: tp
+                    }
+                }).value();
+
+                console.log(colNames);
+            }
+
             if(this.module.getConfigurationCheckbox('slickCheck', 'rowDelete')) {
                 slickCols.unshift({
                     id: 'rowDeletion',
@@ -192,7 +245,6 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
                 this.slick.columns = this.getSlickColumns();
                 this.slick.options = this.getSlickOptions();
-                this.incrementalId = 0;
                 this.generateUniqIds();
                 this.addRowAllowed = this.module.getConfigurationCheckbox('slickCheck', 'enableAddRow');
 
@@ -471,7 +523,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         that.slick.data.endUpdate();
 
                         // get back state before last update
-                        if(that.lastViewport) {
+                        if(that.lastViewport && !that.module.getConfigurationCheckbox('slickCheck', 'backToTop')) {
                             that.grid.scrollRowToTop(that.lastViewport.top);
                         }
                         if(!_.isUndefined(that.lastActiveRow)) {
@@ -552,12 +604,12 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             };
         },
 
-        _selectHighlight: function(key) {
+        _selectHighlight: function() {
             if(this.hovering) {
                 return;
             }
             var that = this;
-            var idx = this._highlights.indexOf(key[0]);
+            var idx = this._highlights.indexOf(that._highlighted[0]);
             this.lastViewport = this.grid.getViewport();
             if(idx > -1) {
                 var item = that.slick.data.getItemByIdx(idx);
@@ -572,49 +624,52 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             }
         },
 
-        _drawHighlight: function(key) {
+        _drawHighlight: function() {
             var that = this;
-            if(!key instanceof Array) {
-                key = [key];
-            }
+            this.grid.removeCellCssStyles('highlight');
             var tmp = {};
-            this._selectHighlight(key);
+            this._selectHighlight();
             this.lastViewport = this.grid.getViewport();
             for(var i=this.lastViewport.top; i<=this.lastViewport.bottom; i++ ) {
                 var item = this.grid.getDataItem(i);
                 if(!item) continue;
-                if(_.any(key, function(k) {
-                        return k === item._highlight;
+                if(_.any(that._highlighted, function(k) {
+                        var hl = item._highlight;
+                        if(!(hl instanceof Array)) {
+                            hl = [hl];
+                        }
+                        return hl.indexOf(k) > -1;
                     })) {
                     tmp[i] = that.baseCellCssStyle;
                 }
             }
-
-            this.grid.setCellCssStyles(key.join(''), tmp);
+            this.grid.setCellCssStyles('highlight', tmp);
         },
-
-        _undrawHighlight: function(key) {
-            this.grid.removeCellCssStyles(key);
-
-        },
-
 
         _activateHighlights: function() {
             var that = this;
-            var hl = _(this.module.data).pluck('_highlight').uniq().value();
+            var hl = _(this.module.data).pluck('_highlight').flatten().uniq().value();
+
+            that._highlighted = [];
 
             API.killHighlight(this.module.getId());
 
             for(var i=0; i<hl.length; i++) {
                 (function(i) {
                     API.listenHighlight({_highlight: hl[i]}, function(onOff, key) {
+                        if(!key instanceof Array) {
+                            key = [key];
+                        }
                         if(onOff) {
-                            that._drawHighlight(key);
+                            that._highlighted = _(that._highlighted).push(key).flatten().uniq().value();
                         }
                         else {
-                            that._undrawHighlight(key);
+                            that._highlighted = _.filter(that._highlighted, function(val) {
+                                return key.indexOf(val) === -1;
+                            });
                         }
-                    });
+                        that._drawHighlight();
+                    }, false, that.module.getId());
                 })(i);
             }
         },
@@ -629,7 +684,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         },
 
         getNextIncrementalId: function() {
-            return this.incrementalId++;
+            return ++uniqueID;
         },
 
         generateUniqIds: function() {
@@ -637,15 +692,12 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             for(var i=0; i<this.module.data.length; i++) {
                 if(!this.module.data[i][this.idPropertyName]) {
                     Object.defineProperty(this.module.data[i], this.idPropertyName, {
-                        value: 'id_' + this.incrementalId,
+                        value: 'id_' + ++uniqueID,
                         writable: false,
                         configurable: false,
                         enumerable: false
                     });
                 }
-
-                //this.module.data[i][this.idPropertyName] = 'id_' + this.incrementalId;
-                this.incrementalId++;
             }
         },
 

@@ -24,7 +24,8 @@ requirejs.config({
         'jquery-cookie':    'components/jquery-cookie/jquery.cookie',
         chemcalc:           'components/chemcalc/lib',
 		chroma:             'components/chroma-js/chroma.min',
-		'src/shape.1dnmr': 'components/jsNMR/src/shape.1dnmr'
+		'src/shape.1dnmr':  'components/jsNMR/src/shape.1dnmr',
+		loglevel:           'components/loglevel/dist/loglevel.min'
 	},
 	shim: {
 		d3: {
