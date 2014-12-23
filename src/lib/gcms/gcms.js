@@ -816,9 +816,9 @@
 				var self = this,
 					obj = {
 					pos: { 
-						x: ingredient.rt_s,
+						x: ingredient.rt_x,
 						y: ingredient.rt_y,
-						dy: "-40px"
+						dy: "-10px"
 
 					},
 					pos2: {
@@ -832,7 +832,7 @@
 					label: {
 						position: {
 							dx: 0,
-							dy: "-50px"
+							dy: "-40px"
 						},
 						baseline: 'middle',
 						angle: -90,
