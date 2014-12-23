@@ -275,6 +275,9 @@ define( [
 				this.gcmsInstance.getGC().getBottomAxis()._doZoomVal( from, to, true);
 				this.gcmsInstance.getGC().redraw( true, true, false );
 				this.gcmsInstance.getGC().drawSeries();
+
+				this.gcmsInstance.updateIngredientPeaks();
+
 			},
 
 			fromtoMS: function(value, name) {

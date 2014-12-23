@@ -633,6 +633,8 @@
 
 				this.gcGraph.redraw();
 				this.gcGraph.drawSeries();
+
+				this.updateIngredientPeaks();
 			},
 
 			setMSContinuous: function(cont) {
@@ -812,7 +814,7 @@
 			addIngredient: function( ingredient ) {
 				ingredient.color = ingredient.color || [100, 100, 100];
 
-				console.log("Rt_s: " + ingredient.rt_s + "; Rt_y: " + ingredient.rt_y + "; name: " + ingredient.name );
+				
 				var self = this,
 					obj = {
 					pos: { 
@@ -826,6 +828,9 @@
 						dy: "-30px"
 					},
 
+					locked: true,
+					selectable: false,
+					
 					type: 'line',
 					strokeColor: "rgb(" + ingredient.color.join() + ")",
 					strokeWidth: 2,
