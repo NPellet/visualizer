@@ -721,39 +721,36 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 var self = this;
                 require([ 'src/util/color'], function( Color ) {
 
-                var colors = Color.getDistinctColors( 20 );
-console.log( colors );
-                self.graph.removeSeries();
+                    var colors = Color.getDistinctColors( 20 );
+                    self.graph.removeSeries();
 
-                //data = data.get();
+                    //data = data.get();
 
-                var i = 0,
-                    l = data.length;
+                    var i = 0,
+                        l = data.length;
 
-                for (; i < l; i++) {
+                    for (; i < l; i++) {
 
-                    var serie = self.graph.newSerie( data[ i ].name, self.getSerieOptions(varname) );
+                        var serie = self.graph.newSerie( data[ i ].name, self.getSerieOptions(varname) );
 
-                    serie.autoAxis();
-                    
+                        serie.autoAxis();
+                        
 
-                    if( data[ i ].data ) {
-                        serie.setData(data[ i ].data);
-                    } else {
-                        console.log( data[ i ].data );
+                        if( data[ i ].data ) {
+                            serie.setData(data[ i ].data);
+                        } else {
+                            console.log( data[ i ].data );
+                        }
+                        //	serie.setLabel( data[ i ].label.toString( ) );
+                        serie.setLineWidth(data[ i ].lineWidth || 1);
+                        serie.setLineColor(data[ i ].lineColor || "rgb(" + colors[ i ].join() + ")" );
+                        serie.setLineWidth( 3, "selected" );
+
+    //                    serie.setLineColor(data[ i ].lineColor || Color.getColor(Color.getNextColorRGB(i, l)));
+
                     }
-                    //	serie.setLabel( data[ i ].label.toString( ) );
-                    serie.setLineWidth(data[ i ].lineWidth || 1);
-console.log( i, colors[ i ] );
 
-                    serie.setLineColor(data[ i ].lineColor || "rgb(" + colors[ i ].join() + ")" );
-                    serie.setLineWidth( 3, "selected" );
-
-//                    serie.setLineColor(data[ i ].lineColor || Color.getColor(Color.getNextColorRGB(i, l)));
-
-                }
-
-                self.redraw();
+                    self.redraw();
 
 
                  });
