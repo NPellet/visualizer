@@ -811,6 +811,8 @@
 
 			addIngredient: function( ingredient ) {
 				ingredient.color = ingredient.color || [100, 100, 100];
+
+				console.log("Rt_s: " + ingredient.rt_s + "; Rt_y: " + ingredient.rt_y + "; name: " + ingredient.name );
 				var self = this,
 					obj = {
 					pos: { 
