@@ -121,6 +121,8 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                         xOptions.type = 'time';
                     } else if( cfg('xaxismodification') == 'valtotime') {
                         xOptions.unitModification = 'time';
+                    } else if( cfg('xaxismodification') == 'valtotime:min.sec' ) {
+                        xOptions.unitModification = 'time:min.sec';
                     }
 
                     // Axes

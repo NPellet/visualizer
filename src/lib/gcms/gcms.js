@@ -212,7 +212,7 @@
 						bottom: [
 							{
 								labelValue: 'Time',
-								unitModification: 'time',
+								unitModification: 'time:min.sec',
 								primaryGrid: false,
 								nbTicksPrimary: 10,
 								secondaryGrid: false,

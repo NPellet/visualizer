@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-6
+ * jsGraph JavaScript Graphing Library v1.10.4-8
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-22T16:10Z
+ * Date: 2014-12-23T07:25Z
  */
 
 (function( global, factory ) {
@@ -877,90 +877,100 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
     getUnitPerTick: function( px, nbTick, valrange ) {
 
       var pxPerTick = px / nbTicks; // 1000 / 100 = 10 px per tick
-      if ( !nbTick )
+      if ( !nbTick ) {
         nbTick = px / 10;
-      else
+      } else {
         nbTick = Math.min( nbTick, px / 10 );
+      }
 
       // So now the question is, how many units per ticks ?
       // Say, we have 0.0004 unit per tick
       var unitPerTick = valrange / nbTick;
 
-      if ( this.options.unitModification == 'time' ) {
-        // Determine the time domain using max.
+      switch ( this.options.unitModification ) {
 
-        var max = this.getModifiedValue( this.getMaxValue() ),
-          units = [
-            [ 60, 'min' ],
-            [ 3600, 'h' ],
-            [ 3600 * 24, 'd' ]
-          ];
-        if ( max < 3600 ) { // to minutes
-          umin = 0;
-        } else if ( max < 3600 * 24 ) {
-          umin = 1;
-        } else {
-          umin = 2;
-        }
+        case 'time':
+        case 'time:min.sec':
 
-        var breaked = false;
-        for ( var i = 0, l = this.unitModificationTimeTicks.length; i < l; i++ ) {
-          for ( var k = 0, m = this.unitModificationTimeTicks[ i ][ 1 ].length; k < m; k++ ) {
-            if ( unitPerTick < this.unitModificationTimeTicks[ i ][ 0 ] * this.unitModificationTimeTicks[ i ][ 1 ][ k ] ) {
-              breaked = true;
+          var max = this.getModifiedValue( this.getMaxValue() ),
+            units = [
+              [ 60, 'min' ],
+              [ 3600, 'h' ],
+              [ 3600 * 24, 'd' ]
+            ];
+
+          if ( max < 3600 ) { // to minutes
+            umin = 0;
+          } else if ( max < 3600 * 24 ) {
+            umin = 1;
+          } else {
+            umin = 2;
+          }
+
+          var breaked = false;
+          for ( var i = 0, l = this.unitModificationTimeTicks.length; i < l; i++ ) {
+            for ( var k = 0, m = this.unitModificationTimeTicks[ i ][ 1 ].length; k < m; k++ ) {
+              if ( unitPerTick < this.unitModificationTimeTicks[ i ][ 0 ] * this.unitModificationTimeTicks[ i ][ 1 ][ k ] ) {
+                breaked = true;
+                break;
+              }
+            }
+            if ( breaked ) {
               break;
             }
           }
-          if ( breaked )
-            break;
-        }
 
-        //i and k contain the good variable;
-        if ( i !== this.unitModificationTimeTicks.length )
-          unitPerTickCorrect = this.unitModificationTimeTicks[ i ][ 0 ] * this.unitModificationTimeTicks[ i ][ 1 ][ k ];
-        else
-          unitPerTickCorrect = 1;
-
-      } else {
-        // We take the log
-        var decimals = Math.floor( Math.log( unitPerTick ) / Math.log( 10 ) );
-        /*
-					Example:
-						13'453 => Math.log10() = 4.12 => 4
-						0.0000341 => Math.log10() = -4.46 => -5
-				*/
-
-        var numberToNatural = unitPerTick * Math.pow( 10, -decimals );
-
-        /*
-					Example:
-						13'453 (4) => 1.345
-						0.0000341 (-5) => 3.41
-				*/
-
-        this.decimals = -decimals;
-
-        var possibleTicks = [ 1, 2, 5, 10 ];
-        var closest = false;
-        for ( var i = possibleTicks.length - 1; i >= 0; i-- )
-          if ( !closest || ( Math.abs( possibleTicks[ i ] - numberToNatural ) < Math.abs( closest - numberToNatural ) ) ) {
-            closest = possibleTicks[ i ];
+          //i and k contain the good variable;
+          if ( i !== this.unitModificationTimeTicks.length ) {
+            unitPerTickCorrect = this.unitModificationTimeTicks[ i ][ 0 ] * this.unitModificationTimeTicks[ i ][ 1 ][ k ];
+          } else {
+            unitPerTickCorrect = 1;
           }
 
-          // Ok now closest is the number of unit per tick in the natural number
-          /*
-					Example:
-						13'453 (4) (1.345) => 1
-						0.0000341 (-5) (3.41) => 5 
-				*/
+          break;
 
-          // Let's scale it back
-        var unitPerTickCorrect = closest * Math.pow( 10, decimals );
-        /*
-					Example:
-						13'453 (4) (1.345) (1) => 10'000
-						0.0000341 (-5) (3.41) (5) => 0.00005
-				*/
+        default:
+
+          // We take the log
+          var decimals = Math.floor( Math.log( unitPerTick ) / Math.log( 10 ) );
+          /*
+  					Example:
+  						13'453 => Math.log10() = 4.12 => 4
+  						0.0000341 => Math.log10() = -4.46 => -5
+  				*/
+
+          var numberToNatural = unitPerTick * Math.pow( 10, -decimals );
+
+          /*
+  					Example:
+  						13'453 (4) => 1.345
+  						0.0000341 (-5) => 3.41
+  				*/
+
+          this.decimals = -decimals;
+
+          var possibleTicks = [ 1, 2, 5, 10 ];
+          var closest = false;
+          for ( var i = possibleTicks.length - 1; i >= 0; i-- )
+            if ( !closest || ( Math.abs( possibleTicks[ i ] - numberToNatural ) < Math.abs( closest - numberToNatural ) ) ) {
+              closest = possibleTicks[ i ];
+            }
+
+            // Ok now closest is the number of unit per tick in the natural number
+            /*
+  					Example:
+  						13'453 (4) (1.345) => 1
+  						0.0000341 (-5) (3.41) => 5 
+  				*/
+
+            // Let's scale it back
+          var unitPerTickCorrect = closest * Math.pow( 10, decimals );
+          /*
+  					Example:
+  						13'453 (4) (1.345) (1) => 10'000
+  						0.0000341 (-5) (3.41) (5) => 0.00005
+  				*/
+          break;
       }
 
       var nbTicks = valrange / unitPerTickCorrect;
@@ -1320,18 +1330,26 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
     },
 
     getModifiedValue: function( value ) {
-      if ( this.options.ticklabelratio )
+      if ( this.options.ticklabelratio ) {
         value *= this.options.ticklabelratio;
+      }
 
-      if ( this.options.shiftToZero )
+      if ( this.options.shiftToZero ) {
         value -= this.getMinValue() * ( this.options.ticklabelratio || 1 );
+      }
+
       return value;
     },
 
     modifyUnit: function( value, mode ) {
+
+      var text = "";
+
       switch ( mode ) {
+
         case 'time': // val must be in seconds => transform in hours / days / months
           var max = this.getModifiedValue( this.getMaxValue() ),
+            first,
             units = [
               [ 60, 'min' ],
               [ 3600, 'h' ],
@@ -1344,31 +1362,35 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
           } else if ( max < 3600 * 24 * 30 ) {
             umin = 2;
           }
+
+          if ( !units[ umin ] ) {
+            return false;
+          }
+
+          value = value / units[ umin ][ 0 ];
+          var valueRounded = Math.floor( value );
+          text = valueRounded + units[ umin ][ 1 ];
+
+          // Addind lower unit for precision
+          umin--;
+          while ( incr < 1 * units[ umin + 1 ][ 0 ] && umin > -1 ) {
+
+            first = false;
+            value = ( value - valueRounded ) * units[ umin + 1 ][ 0 ] / units[ umin ][ 0 ];
+            valueRounded = Math.round( value );
+            text += " " + valueRounded + units[ umin ][ 1 ];
+            umin--;
+          }
+
           break;
-      }
 
-      if ( !units[ umin ] ) {
-        return false;
-      }
-
-      var incr = this.incrTick;
-      var text = "",
-        valueRounded;
-
-      value = value / units[ umin ][ 0 ];
-
-      valueRounded = Math.floor( value );
-
-      text = valueRounded + units[ umin ][ 1 ];
-      umin--;
-
-      while ( incr < 1 * units[ umin + 1 ][ 0 ] && umin > -1 ) {
-
-        first = false;
-        value = ( value - valueRounded ) * units[ umin + 1 ][ 0 ] / units[ umin ][ 0 ];
-        valueRounded = Math.round( value );
-        text += " " + valueRounded + units[ umin ][ 1 ];
-        umin--;
+        case 'time:min.sec':
+          value = value / 60;
+          var valueRounded = Math.floor( value );
+          var s = ( Math.round( ( value - valueRounded ) * 60 ) + "" );
+          s = s.length == 1 ? '0' + s : s;
+          text = valueRounded + "." + s;
+          break;
       }
 
       return text;
@@ -7005,8 +7027,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       this.groupMain.appendChild( this.markerLabelSquare );
       this.groupMain.appendChild( this.markerLabel );
 
-      this.labels = [];
-
       this.currentAction = false;
 
       if ( this.initExtended1 )
@@ -7200,6 +7220,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
     },
 
     select: function( selectionType ) {
+
+      selectionType = selectionType ||  "selected";
 
       this.selected = true;
 
@@ -7403,10 +7425,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       this.insertMarkers();
       this.insertLinesGroup();
 
-      var label;
-      for ( var i = 0, l = this.labels.length; i < l; i++ ) {
-        this.repositionLabel( this.labels[ i ] );
-      }
     },
 
     _draw_standard: function() {
@@ -7926,46 +7944,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       }
 
       return family.dom;
-    },
-
-    /* */
-    handleLabelMove: function( x, y ) {
-
-      var label = this.labelDragging;
-
-      if ( !label )
-        return;
-
-      label.labelX += x - label.draggingIniX;
-      label.draggingIniX = x;
-
-      label.labelY += y - label.draggingIniY;
-      label.draggingIniY = y;
-
-      label.rect.setAttribute( 'x', label.labelX );
-      label.rect.setAttribute( 'y', label.labelY - this.graph.options.fontSize );
-      label.labelDom.setAttribute( 'x', label.labelX );
-      label.labelDom.setAttribute( 'y', label.labelY );
-
-      label.labelLine.setAttribute( 'x1', label.labelX + label.labelDom.getComputedTextLength() / 2 );
-      label.labelLine.setAttribute( 'y1', label.labelY - this.graph.options.fontSize / 2 );
-
-    },
-
-    handleLabelMainMove: function( x, y ) {
-
-      if ( this.options.labelMoveFollowCurve || 1 == 1 ) {
-        var label = this.labelDragging;
-        label.x = this.getXAxis().getVal( x - this.graph.options.paddingLeft );
-
-        label.y = this.handleMouseMove( label.x, false ).interpolatedY;
-        this.repositionLabel( label, true );
-      }
-    },
-
-    handleLabelUp: function() {
-
-      this.labelDragging = false;
     },
 
     searchIndexByPxXY: function( x, y ) {
@@ -8492,145 +8470,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
     hideImpl: function() {
       this.hidePeakPicking();
-    },
-
-    addLabelX: function( x, label ) {
-      this.addLabelObj( {
-        x: x,
-        label: label
-      } );
-    },
-
-    addLabel: function( x, y, label ) {
-      this.addLabelObj( {
-        x: x,
-        y: y,
-        label: label
-      } );
-    },
-
-    repositionLabel: function( label, recalculateLabel ) {
-      var x = !this.getFlip() ? this.getX( label.x ) : this.getY( label.x ),
-        y = !this.getFlip() ? this.getY( label.y ) : this.getX( label.y );
-
-      var nan = ( isNaN( x ) || isNaN( y ) );
-      label.group.setAttribute( 'display', nan ? 'none' : 'block' );
-
-      if ( recalculateLabel ) {
-        label.labelDom.textContent = this.options.label
-          .replace( '<x>', label.x.toFixed( this.options.trackMouseLabelRouding ) || '' )
-          .replace( '<label>', label.label || '' );
-
-        label.rect.setAttribute( 'width', label.labelDom.getComputedTextLength() + 2 );
-      }
-      if ( nan )
-        return;
-      label.group.setAttribute( 'transform', 'translate(' + x + ' ' + y + ')' );
-    },
-
-    addLabelObj: function( label ) {
-      var self = this,
-        group, labelDom, rect, path;
-
-      this.labels.push( label );
-      if ( label.x && !label.y ) {
-        label.y = this.handleMouseMove( label.x, false ).interpolatedY;
-      }
-
-      group = document.createElementNS( this.graph.ns, 'g' );
-      this.groupLabels.appendChild( group );
-
-      labelDom = document.createElementNS( this.graph.ns, 'text' );
-      labelDom.setAttribute( 'x', 5 );
-      labelDom.setAttribute( 'y', -5 );
-
-      var labelLine = document.createElementNS( this.graph.ns, 'line' );
-      labelLine.setAttribute( 'stroke', 'black' );
-      labelLine.setAttribute( 'x2', 0 );
-      labelLine.setAttribute( 'x1', 0 );
-
-      group.appendChild( labelLine );
-      group.appendChild( labelDom );
-      rect = document.createElementNS( this.graph.ns, 'rect' );
-      rect.setAttribute( 'x', 5 );
-      rect.setAttribute( 'y', -this.graph.options.fontSize - 5 );
-      rect.setAttribute( 'width', labelDom.getComputedTextLength() + 2 );
-      rect.setAttribute( 'height', this.graph.options.fontSize + 2 );
-      rect.setAttribute( 'fill', 'white' );
-      rect.style.cursor = 'move';
-      labelDom.style.cursor = 'move';
-
-      path = document.createElementNS( this.graph.ns, 'path' );
-      path.setAttribute( 'd', 'M 0 -4 l 0 8 m -4 -4 l 8 0' );
-      path.setAttribute( 'stroke-width', '1px' );
-      path.setAttribute( 'stroke', 'black' );
-
-      path.style.cursor = 'move';
-
-      group.insertBefore( rect, labelDom );
-
-      group.appendChild( path );
-
-      label.labelLine = labelLine;
-      label.group = group;
-      label.rect = rect;
-      label.labelDom = labelDom;
-      label.path = path;
-
-      label.labelY = -5;
-      label.labelX = 5;
-
-      this.bindLabelHandlers( label );
-      this.repositionLabel( label, true );
-    },
-
-    bindLabelHandlers: function( label ) {
-      var self = this;
-
-      function clickHandler( e ) {
-
-        if ( self.graph.currentAction !== false ) {
-          return;
-        }
-
-        self.graph.currentAction = 'labelDragging';
-        e.stopPropagation();
-        label.dragging = true;
-
-        var coords = self.graph._getXY( e );
-        label.draggingIniX = coords.x;
-        label.draggingIniY = coords.y;
-        self.labelDragging = label;
-      }
-
-      function clickHandlerMain( e ) {
-
-        if ( self.graph.currentAction !== false ) {
-          return;
-        }
-        e.stopPropagation();
-        e.preventDefault();
-        self.graph.currentAction = 'labelDraggingMain';
-        self.labelDragging = label;
-      }
-
-      label.labelDom.addEventListener( 'mousedown', clickHandler );
-      label.rect.addEventListener( 'mousedown', clickHandler );
-      label.rect.addEventListener( 'click', function( e ) {
-        e.preventDefault();
-        e.stopPropagation();
-      } );
-
-      label.labelDom.addEventListener( 'click', function( e ) {
-        e.preventDefault();
-        e.stopPropagation();
-      } );
-
-      label.path.addEventListener( 'mousedown', clickHandlerMain );
-      label.path.addEventListener( 'click', function( e ) {
-        e.preventDefault();
-        e.stopPropagation();
-      } );
     },
 
     XIsMonotoneous: function() {

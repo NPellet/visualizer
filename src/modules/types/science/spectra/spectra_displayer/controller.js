@@ -315,7 +315,7 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
                         xaxismodification: {
                             type: 'combo',
                             title: 'X axis modification',
-                            options: [{key:'timestamptotime', title:'Timestamp to time'}, {key:'valtotime', title:'Value to time from 0'}],
+                            options: [{key:'timestamptotime', title:'Timestamp to time'}, {key:'valtotime', title:'Value to time from 0'}, {key:'valtotime:min.sec', title:'Seconds to min.sec'}],
                             default: []
                         },
 
