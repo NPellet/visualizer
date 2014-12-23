@@ -180,7 +180,8 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		annotation: 'Annotation',
 		displayChemicalLabels: 'Display chemical labels',
 		hideChemicalLabels: 'Hide chemical labels',
-		centerGC: 'Center GC at value'
+		centerGC: 'Center GC at value',
+		externalMS: 'Set external MS'
 	};
 	
 		

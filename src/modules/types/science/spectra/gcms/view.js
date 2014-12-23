@@ -213,7 +213,6 @@ define( [
 
 			'ms': function(moduleValue, name, cont) {
 				var self = this;
-				console.log( this.gcmsInstance, moduleValue );
 				if(!this.gcmsInstance || !moduleValue)
 					return;
 
@@ -282,6 +281,15 @@ define( [
 
 			fromtoMS: function(value, name) {
 				this.gcmsInstance.getMS().getBottomAxis()._doZoomVal(value.from, value.to, true);
+			},
+
+			externalMS: function( value, name ) {
+
+				var self = this;
+				if( ! this.gcmsInstance || !value)
+					return;
+
+				this.gcmsInstance.setExternalMS( value, {} );
 			},
 
 			zoomOnAnnotation: function(value, name) {

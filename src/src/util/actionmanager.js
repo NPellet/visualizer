@@ -74,6 +74,8 @@ define(['require'], function( require ) {
 			actionsFiles[ files[ 0 ].groups.action[ 0 ][ i ].name ] = actionsFiles[ files[ 0 ].groups.action[ 0 ][ i ].name ] || [];
 			actionsFiles[ files[ 0 ].groups.action[ 0 ][ i ].name ].push( { file: files[ 0 ].groups.action[ 0 ][ i ].file, mode: files[ 0 ].groups.action[ 0 ][ i ].mode } );
 		}
+
+
 	}
 
 	function executeActionFile( file, value ) {
