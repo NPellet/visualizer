@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-23T07:25Z
+ * Date: 2014-12-23T07:38Z
  */
 
 (function( global, factory ) {
@@ -1344,7 +1344,8 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
     modifyUnit: function( value, mode ) {
 
       var text = "";
-
+      var incr = this.incrTick;
+      
       switch ( mode ) {
 
         case 'time': // val must be in seconds => transform in hours / days / months

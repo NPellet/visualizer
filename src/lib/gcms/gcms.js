@@ -810,7 +810,7 @@
 			},
 
 			addIngredient: function( ingredient ) {
-
+				ingredient.color = ingredient.color || [100, 100, 100];
 				var self = this,
 					obj = {
 					pos: { 
