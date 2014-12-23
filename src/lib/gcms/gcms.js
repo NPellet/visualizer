@@ -862,12 +862,12 @@
 
 				this.ingredients = this.ingredients.sort( function( a, b ) {
 
-					if ( a[ 0 ].rt_s < min || a[ 0 ].rt_s > max ) {
+					if ( a[ 0 ].rt_x < min || a[ 0 ].rt_x > max ) {
 						
 						return 1;
 					}
 
-					if ( b[ 0 ].rt_s < min || b[ 0 ].rt_s > max ) {
+					if ( b[ 0 ].rt_x < min || b[ 0 ].rt_x > max ) {
 						
 						return - 1;
 					}
@@ -887,7 +887,7 @@
 				for( var i = 0; i < this.ingredients.length; i ++ ) {
 
 					var cont = false;
-					var valX = self.gcGraph.getXAxis().getPx( this.ingredients[ i ][ 0 ].rt_s );
+					var valX = self.gcGraph.getXAxis().getPx( this.ingredients[ i ][ 0 ].rt_x );
 
 					for( var j = 0; j < xs.length; j ++ ) {
 
