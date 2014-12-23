@@ -21,6 +21,7 @@ define(['modules/types/display/jqgrid/controller'], function (Controller) {
 
     ControllerExtended.prototype.variablesIn.push('showList');
     ControllerExtended.prototype.actionsIn.toggleOff = 'Toggle row off';
+    ControllerExtended.prototype.actionsIn.toggleOn = 'Toggle row on';
 
     return ControllerExtended;
 });
