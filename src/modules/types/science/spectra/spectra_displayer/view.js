@@ -718,7 +718,12 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                  return;
                  }*/
 
-                this.graph.removeSeries();
+                var self = this;
+                require([ 'src/util/color'], function( Color ) {
+
+                var colors = Color.getDistinctColors( 20 );
+console.log( colors );
+                self.graph.removeSeries();
 
                 //data = data.get();
 
@@ -727,7 +732,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                 for (; i < l; i++) {
 
-                    var serie = this.graph.newSerie( data[ i ].name, this.getSerieOptions(varname) );
+                    var serie = self.graph.newSerie( data[ i ].name, self.getSerieOptions(varname) );
 
                     serie.autoAxis();
                     
@@ -739,14 +744,19 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     }
                     //	serie.setLabel( data[ i ].label.toString( ) );
                     serie.setLineWidth(data[ i ].lineWidth || 1);
-                    serie.setLineColor(data[ i ].lineColor || 'black' );
+console.log( i, colors[ i ] );
+
+                    serie.setLineColor(data[ i ].lineColor || "rgb(" + colors[ i ].join() + ")" );
                     serie.setLineWidth( 3, "selected" );
 
 //                    serie.setLineColor(data[ i ].lineColor || Color.getColor(Color.getNextColorRGB(i, l)));
 
                 }
 
-                this.redraw();
+                self.redraw();
+
+
+                 });
                 
             }
         },

@@ -60,12 +60,13 @@ define([], function () {
 
     exports.getDistinctColors = function getDistinctColors(numColors) {
 
-        var colors = new Array(numColors), j = 0;
+        var colors = new Array(), j = 0;
         for (var i = 0; i < 360; i += 360 / numColors) {
             j++;
             var color = this.hsl2rgb(i, 100, 30 + j % 4 * 15);
-            colors.push([Math.round(color.r * 255), Math.round(color.g * 255), Math.round(color.b * 255)]);
+            colors.push( [ Math.round(color.r * 255), Math.round(color.g * 255), Math.round(color.b * 255) ] );
         }
+
         return colors;
     };
 
