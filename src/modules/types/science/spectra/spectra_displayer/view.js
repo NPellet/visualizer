@@ -726,7 +726,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 var self = this;
                 require([ 'src/util/color'], function( Color ) {
 
-                    var colors = Color.getDistinctColors( 20 );
+                    var colors = Color.getDistinctColors( data.length );
                  //   self.graph.removeSeries();
 
                     //data = data.get();

@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-29T12:10Z
+ * Date: 2014-12-29T14:21Z
  */
 
 (function( global, factory ) {
@@ -7326,6 +7326,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         this._xDataToUse = this.xData;
       }
 
+      console.log( this );
       this._optimizeMonotoneous = this.isXMonotoneous(),
       this._optimizeMaxPxX = this.getXAxis().getMathMaxPx(),
       this._optimizeBreak,
@@ -8466,7 +8467,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
     getMarkerForLegend: function() {
 
-      if ( !this.markerPoints[ this.selectionType ] ) {
+      if ( !this.markerPoints || !this.markerPoints[ this.selectionType ] ) {
         return;
       }
 
@@ -11313,7 +11314,7 @@ build['./shapes/graph.shape'] = ( function( ) {
           //	e.stopPropagation();
           e.preventDefault();
 
-          //          this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
+          
 
           if ( !this.isLocked() ) {
             this.graph.elementMoving( this );
@@ -11337,7 +11338,7 @@ build['./shapes/graph.shape'] = ( function( ) {
           }
 
           this.graph.selectShape( this );
-
+          this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
         }
       ],
 
@@ -11932,7 +11933,7 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
       }
 
       this.maxY = this.serie.getY( maxY );
-      
+
       return true;
     },
 
