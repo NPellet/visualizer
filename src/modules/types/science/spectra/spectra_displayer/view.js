@@ -190,8 +190,8 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                                 break;
                         }
                         theLegend.setPosition({
-                                dx: '-10px',
-                                dy: '10px',
+                                dx: '0px',
+                                dy: '0px',
                                 x: 'max',
                                 y: 'max'
                             },

@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-29T14:21Z
+ * Date: 2014-12-29T14:39Z
  */
 
 (function( global, factory ) {
@@ -3125,7 +3125,23 @@ build['./graph.legend'] = ( function( ) {
         return;
       }
 
-      var pos = this.graph.getPosition( position );
+      this.position = position;
+      this.alignToX = alignToX;
+      this.alignToY = alignToY;
+
+    },
+
+    calculatePosition: function() {
+
+      var position = this.position,
+        alignToY = this.alignToY,
+        alignToX = this.alignToX;
+
+      var pos = this.graph.getPosition( position, undefined, this.graph.getXAxis(), this.graph.getYAxis() );
+
+      if ( !pos ) {
+        return;
+      }
 
       if ( alignToX == "right" ) {
         pos.x -= this.width;
@@ -3146,6 +3162,7 @@ build['./graph.legend'] = ( function( ) {
       var self = this;
 
       this.applyStyle();
+      this.calculatePosition();
 
       while ( this.subG.hasChildNodes() ) {
         this.subG.removeChild( this.subG.lastChild );
@@ -4810,6 +4827,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
           pos[ i ] = this.getPx( value[ i ], axis );
         }
+
 
         if ( value[ 'd' + i ] !== undefined ) {
 
@@ -7326,7 +7344,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         this._xDataToUse = this.xData;
       }
 
-      console.log( this );
       this._optimizeMonotoneous = this.isXMonotoneous(),
       this._optimizeMaxPxX = this.getXAxis().getMathMaxPx(),
       this._optimizeBreak,
@@ -7457,6 +7474,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       this.insertMarkers();
       this.insertLinesGroup();
 
+      this.applyLineStyle( this.getSymbolForLegend() );
     },
 
     _draw_standard: function() {
@@ -11313,8 +11331,6 @@ build['./shapes/graph.shape'] = ( function( ) {
           var self = this;
           //	e.stopPropagation();
           e.preventDefault();
-
-          
 
           if ( !this.isLocked() ) {
             this.graph.elementMoving( this );
