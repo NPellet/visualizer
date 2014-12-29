@@ -412,11 +412,9 @@
 					self.msShapesSelectChange();					
 				});
 
-
 				this.gcGraph.on("shapeSelect", function( shape ) {
 					
 					if( shape.data.ingredient ) {
-
 						self.trigger("ingredientSelected", shape.data.ingredient );
 					}
 				});
@@ -440,7 +438,6 @@
 						return;
 					}
 					
-
 					self.doMsFromAUC( shape.data, shape );
 					self.trigger('AUCChange', shape );
 				} );
@@ -461,9 +458,7 @@
 						return;
 					}
 
-					
-					self.trigger('AUCSelected', shape );
-					
+					self.trigger('AUCSelected', shape );					
 				} );
 
 				this.gcGraph.shapeHandlers.onUnselected.push( function( shape ) {
@@ -471,7 +466,6 @@
 					if( ! ( shape.data.type == 'areaundercurve' ) ) {
 						return;
 					}
-					
 
 					self.trigger('AUCUnselected', shape );
 				} );
@@ -482,16 +476,12 @@
 						return;
 					}
 					
-
 					self.trigger('AUCRemoved', shape );
 				} );
-
-
 			
 				this.gcGraph.getXAxis().on("zoom", function( ) {
 					self.gcGraph.getYAxis().scaleToFitAxis();
 				})
-
 /*
 				this.gcGraph.shapeHandlers.onSelected.push( function( shape ) {
 					self.doMsFromAUC( shape.data, shape );

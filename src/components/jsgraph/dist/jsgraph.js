@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-29T18:05Z
+ * Date: 2014-12-29T18:21Z
  */
 
 (function( global, factory ) {
@@ -1411,10 +1411,10 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
 
         var dec = this.decimals - this.getExponentialFactor() - this.getExponentialLabelFactor();
 
-        if( isNaN( value ) ) {
+        if ( isNaN( value ) ) {
           return "";
         }
-        
+
         if ( dec > 0 ) {
           return value.toFixed( dec );
         }
@@ -5114,14 +5114,14 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       var x = e.clientX,
         y = e.clientY;
 
-      if ( e.offsetX !== undefined && e.offsetY !== undefined ) {
+      /*if ( e.offsetX !== undefined && e.offsetY !== undefined ) {
 
         return {
           x: e.offsetX,
           y: e.offsetY
         };
       }
-
+*/
       y = e.clientY;
 
       var pos = this.offsetCached || $( this._dom ).offset();
@@ -6787,7 +6787,7 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
       //	this._zoomingSquare.setAttribute('display', 'none');
 
       //	this._zoomingSquare.setAttribute('transform', 'translate(' + Math.random() + ', ' + Math.random() + ') scale(10, 10)');
-
+      
       switch ( this._zoomingMode ) {
 
         case 'xy':
@@ -11126,20 +11126,20 @@ build['./shapes/graph.shape'] = ( function( ) {
 
         this.label[ i ] = document.createElementNS( this.graph.ns, 'text' );
 
-        this.label[ i ].addEventListener( 'mouseover', function( e ) {
+        /* this.label[ i ].addEventListener( 'mouseover', function( e ) {
 
           //self.doHover( true );
-          e.stopPropagation();
+          //e.stopPropagation();
 
         } );
 
         this.label[ i ].addEventListener( 'mouseout', function( e ) {
 
           //self.doHover( false );
-          e.stopPropagation();
+          //e.stopPropagation();
 
         } );
-
+*/
         this.label[ i ].addEventListener( 'dblclick', function( e ) {
 
           e.preventDefault();
