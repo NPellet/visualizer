@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-23T07:38Z
+ * Date: 2014-12-29T11:41Z
  */
 
 (function( global, factory ) {
@@ -1345,7 +1345,7 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
 
       var text = "";
       var incr = this.incrTick;
-      
+
       switch ( mode ) {
 
         case 'time': // val must be in seconds => transform in hours / days / months
@@ -3455,6 +3455,8 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     wheel: {},
     dblclick: {},
 
+    shapeSelection: 'unique',
+
     dynamicDependencies: {
       'plugin': './plugins/',
       'serie': './series/',
@@ -3498,6 +3500,8 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
     this.shapes = [];
     this.shapesLocked = false;
+
+    this.selectedShapes = [];
 
     this.ns = 'http://www.w3.org/2000/svg';
     this.nsxlink = "http://www.w3.org/1999/xlink";
@@ -4673,34 +4677,62 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     selectShape: function( shape, mute ) {
 
       // Already selected. Returns false
-      if ( this.selectedShape == shape ) {
+      if ( this.selectedShapes.indexOf( shape ) > -1 ) {
         return false;
       }
 
-      if ( this.selectedShape )  { // Only one selected shape at the time
-
-        //console.log('Unselect shape');
-        this.selectedShape.unselect();
+      if ( !shape.isSelectable() ) {
+        return false;
       }
 
-      if ( !mute ) {
-        shape.select( true );
-      }
+      this.emit( "beforeShapeSelect", shape );
 
-      this.selectedShape = shape;
-      this.triggerEvent( 'onShapeSelect', shape.data );
-    },
-
-    unselectShape: function() {
-
-      if ( !this.selectedShape ) {
+      if ( this.cancelSelectShape ) {
+        this.cancelSelectShape = false;
         return;
       }
 
-      this.selectedShape.unselect();
+      this.cancelSelectShape = false;
 
-      this.triggerEvent( 'onShapeUnselect', this.selectedShape.data );
-      this.selectedShape = false;
+      if ( this.selectedShapes.length > 0 && this.options.shapeSelection == "unique" )  { // Only one selected shape at the time
+
+        //console.log('Unselect shape');
+        while ( this.selectedShapes[ 0 ] ) {
+          this.selectedShapes[ 0 ]._unselect();
+        }
+      }
+
+      shape._select();
+
+      this.selectedShapes.push( shape );
+      this.emit( "shapeSelect", shape );
+    },
+
+    unselectShape: function( shape ) {
+
+      if ( this.selectedShapes.indexOf( shape ) == -1 ) {
+        return;
+      }
+
+      this.emit( "beforeShapeSelect", shape );
+
+      if ( this.cancelUnselectShape ) {
+        this.cancelUnselectShape = false;
+        return;
+      }
+
+      shape._unselect();
+
+      this.selectedShapes.splice( this.selectedShapes.indexOf( shape ), 1 );
+      this.emit( "shapeUnselect", shape );
+    },
+
+    unselectShapes: function() {
+
+      while ( this.selectedShapes[ 0 ] ) {
+        this.unselectShape( this.selectedShapes[  0 ] );
+      }
+
     },
 
     makeLegend: function( options ) {
@@ -5189,17 +5221,20 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     graph.dom.addEventListener( 'click', function( e ) {
 
       // Cancel right click or Command+Click
-      if ( e.which == 3 || e.ctrlKey )
+      if ( e.which == 3 || e.ctrlKey ) {
         return;
+      }
+
       e.preventDefault();
       var coords = self._getXY( e );
-      if ( self.clickTimeout )
+      if ( self.clickTimeout ) {
         window.clearTimeout( self.clickTimeout );
+      }
 
-      // Only execute the action after 200ms
+      // Only execute the action after 100ms
       self.clickTimeout = window.setTimeout( function() {
         _handleClick( self, coords.x, coords.y, e );
-      }, 200 );
+      }, 100 );
     } );
 
     graph.dom.addEventListener( 'mousewheel', function( e ) {
@@ -5230,8 +5265,6 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       keyComb = graph.options.pluginAction,
       i;
 
-    graph.unselectShape();
-
     if ( graph.forcedPlugin ) {
 
       graph.activePlugin = graph.forcedPlugin;
@@ -5245,9 +5278,10 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
         graph.activePlugin = i; // Lease the mouse action to the current action
         graph._pluginExecute( i, 'onMouseDown', [ graph, x, y, e ] );
-        break;
+        return;
       }
     }
+
   }
 
   function _handleMouseMove( graph, x, y, e ) {
@@ -5321,17 +5355,10 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
   function _handleClick( graph, x, y, e ) {
 
-    if ( !graph.options.addLabelOnClick ) {
-      return;
+    if ( !e.shiftKey ) {
+      graph.unselectShapes();
     }
 
-    if ( graph.currentAction !== false ) {
-      return;
-    }
-
-    for ( var i = 0, l = graph.series.length; i < l; i++ ) {
-      graph.series[ i ].addLabelX( graph.series[ i ].getXAxis().getVal( x - graph.getPaddingLeft() ) );
-    }
   }
 
   function _getAxis( graph, num, options, pos ) {
@@ -7053,6 +7080,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
             },
 
+            selectable: true,
+
             shapeOptions: {
               minPosY: 15
             }
@@ -7061,6 +7090,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
             shape.setSerie( self );
             self.picks.push( shape );
+
           } ) );
         }
 
@@ -8490,17 +8520,24 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
           px,
           i = 0,
           l = ys.length,
-          k, m, y;
+          k, m, y,
+          index;
+
+        var selected = self.graph.selectedShapes.map( function( shape ) {
+          return shape.data.mz;
+        } );
 
         ys.sort( function( a, b ) {
           return b[ 0 ] - a[ 0 ];
         } );
 
+        m = 0;
+
         for ( ; i < l; i++ ) {
 
           x = ys[ i ][ 1 ],
           px = self.getX( x ),
-          k = 0, m = passed.length,
+          k = 0,
           y = self.getY( ys[ i ][ 0 ] );
 
           if ( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
@@ -8511,13 +8548,20 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
             continue;
           }
 
-          for ( ; k < m; k++ ) {
+          // Distance check
+          for ( ; k < passed.length; k++ ) {
             if ( Math.abs( passed[ k ] - px ) < self.options.autoPeakPickingMinDistance )  {
               break;
             }
           }
+          if ( k < passed.length ) {
+            continue;
+          }
+          // Distance check end
 
-          if ( k < m ) {
+          // If the retained one has already been selected somewhere, continue;
+          if ( ( index = selected.indexOf( x ) ) > -1 ) {
+            passed.push( px );
             continue;
           }
 
@@ -8531,9 +8575,16 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
             dy: "-10px"
           } );
 
+          self.picks[ m ].data.mz = x;
+
           self.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
           passed.push( px );
           self.picks[ m ].redraw();
+
+          m++;
+          while ( self.picks[ m ] && self.picks[ m ].isSelected() ) {
+            m++;
+          }
 
           if ( passed.length == self.options.autoPeakPickingNb ) {
             break;
@@ -10571,27 +10622,29 @@ build['./shapes/graph.shape'] = ( function( ) {
         this.graph.defs.appendChild( maskPath );
       }
 
-      if ( this._dom ) {
+      if ( this.group ) {
 
-        this.group.appendChild( this._dom );
+        if ( this._dom ) {
+          this.group.appendChild( this._dom );
+        }
 
-        this._dom.addEventListener( 'mouseover', function( e ) {
+        this.group.addEventListener( 'mouseover', function( e ) {
 
           self.handleMouseOver( e );
 
         } );
 
-        this._dom.addEventListener( 'mouseout', function( e ) {
+        this.group.addEventListener( 'mouseout', function( e ) {
 
           self.handleMouseOut( e );
 
         } );
 
-        this._dom.addEventListener( 'mousedown', function( e ) {
-
+        this.group.addEventListener( 'mousedown', function( e ) {
+          console.log( 'down' );
           self.graph.focus();
 
-          e.preventDefault();
+          //  e.preventDefault();
           //    e.stopPropagation();
 
           self.handleSelected = false;
@@ -10600,12 +10653,12 @@ build['./shapes/graph.shape'] = ( function( ) {
           self.handleMouseDown( e );
         } );
 
-        this._dom.addEventListener( 'click', function( e ) {
-
+        this.group.addEventListener( 'click', function( e ) {
+          console.log( 'clicked' );
           self.handleClick( e );
         } );
 
-        this._dom.addEventListener( 'dblclick', function( e ) {
+        this.group.addEventListener( 'dblclick', function( e ) {
 
           //e.preventDefault();
           // e.stopPropagation();
@@ -11064,14 +11117,26 @@ build['./shapes/graph.shape'] = ( function( ) {
     },
 
     unselectable: function() {
-      this._selectable = false;
+      this.setSelectable( false );
     },
 
     selectable: function() {
-      this._selectable = true;
+      this.setSelectable( true );
     },
 
-    select: function( mute ) {
+    isSelectable: function() {
+      return this._selectable;
+    },
+
+    isSelected: function() {
+      return this._selected;
+    },
+
+    hasHandles: function() {
+      return !!this.handles;
+    },
+
+    _select: function() {
 
       if ( !this._selectable ) {
         return;
@@ -11080,27 +11145,24 @@ build['./shapes/graph.shape'] = ( function( ) {
       this._selected = true;
       this.selectStyle();
 
-      if ( !this._staticHandles ) {
+      if ( this.hasHandles() && !this._staticHandles ) {
         this.addHandles();
         this.setHandles();
       }
 
       this.callHandler( "onSelected", this );
-
       this.graph.triggerEvent( 'onAnnotationSelect', this.data, this );
 
-      if ( !mute ) {
-        this.graph.selectShape( this, true );
-      }
     },
 
-    unselect: function() {
+    _unselect: function() {
 
       if ( !this._selectable ) {
         return;
       }
 
       this._selected = false;
+      this.unselectStyle();
 
       this.setStrokeWidth();
       this.setStrokeColor();
@@ -11114,10 +11176,6 @@ build['./shapes/graph.shape'] = ( function( ) {
 
       this.callHandler( "onUnselected", this );
 
-    },
-
-    isSelected: function() {
-      return this._selected;
     },
 
     staticHandles: function( bool ) {
@@ -11255,7 +11313,7 @@ build['./shapes/graph.shape'] = ( function( ) {
           //	e.stopPropagation();
           e.preventDefault();
 
-          this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
+          //          this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
 
           if ( !this.isLocked() ) {
             this.graph.elementMoving( this );
@@ -11271,7 +11329,14 @@ build['./shapes/graph.shape'] = ( function( ) {
 
         function( e ) {
 
-          this.select();
+          e.stopPropagation();
+          e.preventDefault();
+
+          if ( !e.shiftKey ) {
+            this.graph.unselectShapes();
+          }
+
+          this.graph.selectShape( this );
 
         }
       ],
@@ -11313,6 +11378,7 @@ build['./shapes/graph.shape'] = ( function( ) {
     },
 
     handleClick: function( e ) {
+
       return this.callHandler( 'click', e );
     },
 
@@ -11338,10 +11404,7 @@ build['./shapes/graph.shape'] = ( function( ) {
         return;
       }
 
-      if ( !this.isSelected() ) {
-        this.select();
-      }
-
+      this.graph.selectShape( this );
       this.callHandler( 'mouseMove', e );
 
     },
@@ -11645,6 +11708,14 @@ build['./shapes/graph.shape'] = ( function( ) {
 
     setLayer: function( layer ) {
       this._layer = layer;
+    },
+
+    selectStyle: function() {
+
+    },
+
+    unselectStyle: function() {
+
     }
   }
 
@@ -12232,7 +12303,26 @@ build['./shapes/graph.shape.label'] = ( function( GraphShape ) {
 
     redrawImpl: function() {
       this.draw();
+    },
+
+    selectStyle: function() {
+
+      this.everyLabel( function( i ) {
+
+        this.label[ i ].setAttribute( 'font-weight', 'bold' );
+
+      } );
+    },
+
+    unselectStyle: function() {
+
+      this.everyLabel( function( i ) {
+
+        this.label[ i ].setAttribute( 'font-weight', 'normal' );
+
+      } );
     }
+
   } );
 
   return GraphLabel;

@@ -127,6 +127,11 @@ define( [
 
 				},
 
+				MZChange: function( ms ) {
+					
+					self.module.controller.sendAction('mzList', ms, 'onMZSelectionChange');					
+				},
+
 				onZoomGC: function( from, to ) {
 
 					self.module.controller.sendAction('fromtoGC', [ from, to ], 'onZoomGCChange');

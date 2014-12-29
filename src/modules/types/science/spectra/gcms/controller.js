@@ -104,6 +104,11 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		annotationgc: {
 			type: ["array"],
 			label: 'Array of annotations for the GC'
+		},
+		
+		mzList: {
+			type: ["array"],
+			label: 'List of m/z selected'	
 		}
 	};
 
@@ -156,7 +161,13 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		onJCampParsed: {
 			label: "After the Jcamp has been parsed",
 			refVariable: [ 'msdata', 'gcdata' ]
+		},
+
+		onMZSelectionChange: {
+			label: 'm/z selection has changed',
+			refAction: [ 'mzList' ]
 		}
+
 	};
 	
 

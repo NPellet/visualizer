@@ -252,6 +252,8 @@
 						paddingLeft: 20,
 						paddingRight: 20,
 
+						shapeSelection: 'multiple',
+
 						close: true,
 
 						plugins: {
@@ -347,8 +349,9 @@
 								axisDataSpacing: { min: 0, max: 0.1 },
 
 								onZoom: function(from, to) {
-									if(self.onZoomMS)
+									if(self.onZoomMS) {
 										self.onZoomMS(from, to);
+									}
 								}
 							}
 						],
@@ -387,6 +390,16 @@
 
 				this.gcGraph.redraw();
 				this.msGraph.redraw();
+
+				this.msGraph.on("shapeSelect", function( shape ) {
+					self.msShapesSelectChange();
+				});
+
+				this.msGraph.on("shapeUnselect", function( shape ) {
+					self.msShapesSelectChange();					
+				});
+
+
 
 				this.gcGraph.shapeHandlers.onCreated.push( function( shape ) {
 					shape.setSerie( self.gcGraph.getSerie( 0 ) );
@@ -429,6 +442,13 @@
 				} );
 */
 
+			},
+
+			msShapesSelectChange: function() {
+
+				var shapes = this.msGraph.selectedShapes;
+
+				this.trigger("MZChange", [ shapes.map( function( shape ) { return shape.data.mz; } ) ] );
 			},
 
 
@@ -512,7 +532,7 @@
 
 					buffer.msFromAucSerie = this
 						.msGraph
-						.newSerie('fromAUC', { autoPeakPicking: true, lineToZero: ! this.options.msIsContinuous })
+						.newSerie('fromAUC', { autoPeakPicking: true, lineToZero: ! this.options.msIsContinuous, autoPeakPickingNb: 10 })
 						.autoAxis()
 						.setYAxis( self.msGraph.getRightAxis( ) )
 						.setLineWidth( 3 );
@@ -760,7 +780,7 @@
 				}
 
 				this.extMS = this.msGraph
-						.newSerie('ext', { autoPeakPicking: true, lineToZero: ! options.continuous })
+						.newSerie('ext', { autoPeakPicking: true, lineToZero: ! options.continuous, autoPeakPickingNb: 10 })
 						.autoAxis()
 						.setYAxis( this.msGraph.getRightAxis( ) )
 						.setLineWidth( 3 );
@@ -830,7 +850,7 @@
 
 					locked: true,
 					selectable: false,
-					
+
 					type: 'line',
 					strokeColor: "rgb(" + ingredient.color.join() + ")",
 					strokeWidth: 2,
