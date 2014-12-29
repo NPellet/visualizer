@@ -32,7 +32,7 @@ define(['src/util/api', 'src/util/util'], function (API, Util) {
             i = actionsOut.length - 1;
 
             for (; i >= 0; i--) {
-
+                
                 if (actionsOut[i].rel === rel && ((event && event === actionsOut[i].event) || !event)) {
 
                     actionname = actionsOut[i].name;
@@ -40,7 +40,9 @@ define(['src/util/api', 'src/util/util'], function (API, Util) {
 
                     if (value && jpath && value.getChild) {
                         (function (actionname) {
+                
                             value.getChild(jpath).then(function (returned) {
+                
                                 API.doAction(actionname, returned);
                             });
                         })(actionname);

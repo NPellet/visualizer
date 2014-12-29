@@ -12,6 +12,15 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function(Def
 			var data = [];
 
 			switch(rel) {
+
+				case 'mzList':
+				case 'selectedIngredient':
+
+					data = this.module.view.gcmsInstance.ingredients[ 0 ][ 0 ];
+					console.log( data );
+				break;
+
+
 				default:
 				case 'gcdata':
 

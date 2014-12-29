@@ -103,7 +103,7 @@ define( [
 				AUCUnselected: function( auc ) {
 
 					var rgb = auc.data.color;
-
+					
 					auc.set('fillColor', 'rgba(' + rgb[ 0 ] + ', ' + rgb[ 1 ] + ', ' + rgb[ 2 ] + ', 0.3)');
 					auc.set( 'strokeColor', 'rgba(' + rgb[ 0 ]+ ', ' + rgb[ 1 ] + ', ' + rgb[ 2 ] + ', 1)');
 
@@ -128,13 +128,18 @@ define( [
 				},
 
 				MZChange: function( ms ) {
-					
+
 					self.module.controller.sendAction('mzList', ms, 'onMZSelectionChange');					
 				},
 
 				onZoomGC: function( from, to ) {
 
 					self.module.controller.sendAction('fromtoGC', [ from, to ], 'onZoomGCChange');
+				},
+
+				ingredientSelected: function( ingredient ) {
+
+					self.module.controller.sendAction('selectedIngredient', ingredient, 'onIngredientSelected');	
 				},
 
 				onlyOneMS: true
@@ -236,6 +241,7 @@ define( [
 					return;
 				}
 
+
 				this.ingredientList = value;
 
 				this.ingredientList.map( function( source ) {
@@ -289,10 +295,11 @@ define( [
 			},
 
 			externalMS: function( value, name ) {
-
+console.log( value, name );
 				var self = this;
-				if( ! this.gcmsInstance || !value)
+				if( ! this.gcmsInstance || !value) {
 					return;
+				}
 
 				this.gcmsInstance.setExternalMS( value, {} );
 			},

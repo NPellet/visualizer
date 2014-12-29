@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-9
+ * jsGraph JavaScript Graphing Library v1.10.4-10
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-29T15:19Z
+ * Date: 2014-12-29T18:05Z
  */
 
 (function( global, factory ) {
@@ -1040,38 +1040,13 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
     _draw: function() { // Redrawing of the axis
       var visible;
 
-      switch ( this.options.tickPosition ) {
-        case 3:
-          this.tickPx1 = -2;
-          this.tickPx2 = 0;
-          break;
-
-        case 2:
-          this.tickPx1 = -1;
-          this.tickPx2 = 1;
-          break;
-
-        case 1:
-          this.tickPx1 = 0;
-          this.tickPx2 = 2;
-          break;
-      }
-
-      // Remove all ticks
-      while ( this.groupTicks.firstChild )
-        this.groupTicks.removeChild( this.groupTicks.firstChild );
-
-      // Remove all ticks
-      while ( this.groupTickLabels.firstChild )
-        this.groupTickLabels.removeChild( this.groupTickLabels.firstChild );
-
-      // Remove all grids
-      while ( this.groupGrids.firstChild )
-        this.groupGrids.removeChild( this.groupGrids.firstChild );
+      this.drawInit();
 
       if ( this.currentAxisMin == undefined || !this.currentAxisMax == undefined ) {
         this.setMinMaxToFitSeries(); // We reset the min max as a function of the series
       }
+
+      //   this.setSlaveAxesBoundaries();
 
       // The data min max is stored in this.dataMin, this.dataMax
 
@@ -1093,7 +1068,13 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       this.line.setAttribute( 'display', 'block' );
 
       if ( !this.options.hideTicks ) {
-        if ( !this.options.logScale ) {
+
+        if ( this.linkedToAxis ) { // px defined, linked to another axis
+
+          this.linkedToAxis.deltaPx = 10;
+          var widthHeight = this.drawLinkedToAxisTicksWrapper( widthPx, valrange );
+
+        } else if ( !this.options.logScale ) {
           // So the setting is: How many ticks in total ? Then we have to separate it
 
           if ( this.options.scientificTicks ) {
@@ -1141,6 +1122,41 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       return widthHeight + ( label ? 20 : 0 );
     },
 
+    drawInit: function() {
+
+      switch ( this.options.tickPosition ) {
+        case 3:
+          this.tickPx1 = -2;
+          this.tickPx2 = 0;
+          break;
+
+        case 2:
+          this.tickPx1 = -1;
+          this.tickPx2 = 1;
+          break;
+
+        case 1:
+          this.tickPx1 = 0;
+          this.tickPx2 = 2;
+          break;
+      }
+
+      // Remove all ticks
+      while ( this.groupTicks.firstChild ) {
+        this.groupTicks.removeChild( this.groupTicks.firstChild );
+      }
+
+      // Remove all ticks
+      while ( this.groupTickLabels.firstChild ) {
+        this.groupTickLabels.removeChild( this.groupTickLabels.firstChild );
+      }
+
+      // Remove all grids
+      while ( this.groupGrids.firstChild ) {
+        this.groupGrids.removeChild( this.groupGrids.firstChild );
+      }
+    },
+
     drawLinearTicksWrapper: function( widthPx, valrange ) {
 
       var nbTicks1 = this.getNbTicksPrimary();
@@ -1186,22 +1202,30 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       this.resetTicks();
 
       while ( incrTick < max ) {
+
         loop++;
-        if ( loop > 200 )
+        if ( loop > 200 ) {
           break;
+        }
+
         if ( secondary ) {
           subIncrTick = incrTick + secondaryIncr;
           //widthHeight = Math.max(widthHeight, this.drawTick(subIncrTick, 1));
           var loop2 = 0;
+
           while ( subIncrTick < incrTick + unitPerTick ) {
             loop2++;
-            if ( loop2 > 100 )
+            if ( loop2 > 100 ) {
               break;
+            }
+
             if ( subIncrTick < min || subIncrTick > max ) {
               subIncrTick += secondaryIncr;
               continue;
             }
-            this.drawTick( subIncrTick, false, Math.abs( subIncrTick - incrTick - unitPerTick / 2 ) < 1e-4 ? 3 : 2 );
+
+            this.drawTickWrapper( subIncrTick, false, Math.abs( subIncrTick - incrTick - unitPerTick / 2 ) < 1e-4 ? 3 : 2 );
+
             subIncrTick += secondaryIncr;
           }
         }
@@ -1211,7 +1235,7 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
           continue;
         }
 
-        this.drawTick( incrTick, true, 4 );
+        this.drawTickWrapper( incrTick, true, 4 );
         incrTick += primary[ 0 ];
       }
 
@@ -1245,14 +1269,14 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       while ( ( val = incr * Math.pow( 10, pow ) ) < max ) {
         if ( incr == 1 ) { // Superior power
           if ( val > min )
-            this.drawTick( val, true, 5, optsMain );
+            this.drawTickWrapper( val, true, 5, optsMain );
         }
         if ( incr == 10 ) {
           incr = 1;
           pow++;
         } else {
           if ( incr != 1 && val > min )
-            this.drawTick( val, true, 2, {
+            this.drawTickWrapper( val, true, 2, {
               overwrite: incr,
               fontSize: '0.6em'
             } );
@@ -1260,6 +1284,67 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
         }
       }
       return 5;
+    },
+
+    drawTickWrapper: function( value, label, scaling, options ) {
+
+      //var pos = this.getPos( value );
+
+      this.drawTick( value, label, scaling, options );
+    },
+
+    linkToAxis: function( axis, scalingFunction, decimals ) {
+
+      this.linkedToAxis = {
+        axis: axis,
+        scalingFunction: scalingFunction,
+        decimals: decimals ||  1
+      };
+
+    },
+
+    drawLinkedToAxisTicksWrapper: function( widthPx, valrange ) {
+
+      var opts = this.linkedToAxis,
+        px = 0,
+        val,
+        t,
+        i = 0,
+        l,
+        delta2;
+
+      console.warn( "This is a temporary trick. Needs to be removed for efficiency purposes" );
+      opts.axis.draw();
+
+      if ( !opts.deltaPx ) {
+        opts.deltaPx = 10;
+      }
+
+      do {
+
+        val = opts.scalingFunction( opts.axis.getVal( px + this.getMinPx() ) );
+
+        if ( opts.decimals ) {
+          this.decimals = opts.decimals;
+        }
+
+        t = this.drawTick( val, true, 1, {}, px + this.getMinPx() );
+
+        l = String( t[ 1 ].textContent ).length * 8;
+        delta2 = Math.round( l / 5 ) * 5;
+
+        if ( delta2 > opts.deltaPx ) {
+          opts.deltaPx = delta2;
+          this.drawInit();
+          this.drawLinkedToAxisTicksWrapper( widthPx, valrange );
+          return;
+        }
+
+        i++;
+
+        px += opts.deltaPx;
+
+      } while ( px < widthPx );
     },
 
     getPx: function( value ) {
@@ -1306,8 +1391,10 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
     valueToText: function( value ) {
 
       if ( this.options.scientificTicks ) {
+
         value /= Math.pow( 10, this.scientificExp );
         return value.toFixed( 1 );
+
       } else {
 
         value = value * Math.pow( 10, this.getExponentialFactor() ) * Math.pow( 10, this.getExponentialLabelFactor() );
@@ -1321,9 +1408,16 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
           value = this.modifyUnit( value, this.options.unitModification );
           return value;
         }
+
         var dec = this.decimals - this.getExponentialFactor() - this.getExponentialLabelFactor();
-        if ( dec > 0 )
+
+        if( isNaN( value ) ) {
+          return "";
+        }
+        
+        if ( dec > 0 ) {
           return value.toFixed( dec );
+        }
 
         return value.toFixed( 0 );
       }
@@ -1494,9 +1588,11 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
     setTickContent: function( dom, val, options ) {
       if ( !options ) options = {};
 
-      if ( options.overwrite || !options.exponential )
+      if ( options.overwrite || !options.exponential ) {
+
         dom.textContent = options.overwrite || this.valueToText( val );
-      else {
+
+      } else {
         var log = Math.round( Math.log( val ) / Math.log( 10 ) );
         var unit = Math.floor( val * Math.pow( 10, -log ) );
 
@@ -1585,10 +1681,15 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
       return ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ) ? 10 : 10 )
     },
 
-    drawTick: function( value, label, scaling, options ) {
+    drawTick: function( value, label, scaling, options, forcedPos ) {
       var group = this.groupTicks;
-      var tick = document.createElementNS( this.graph.ns, 'line' ),
+      var tick = document.createElementNS( this.graph.ns, 'line' );
+
+      if ( forcedPos !== undefined ) {
+        val = forcedPos;
+      } else {
         val = this.getPos( value );
+      }
 
       if ( val == undefined ) {
         return;
@@ -1627,6 +1728,8 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
         this.groupTickLabels.appendChild( tickLabel );
       }
       this.ticks.push( tick );
+
+      return [ tick, tickLabel ];
     },
 
     drawSpecifics: function() {
@@ -1644,9 +1747,11 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
       this.line.setAttribute( 'y1', 0 );
       this.line.setAttribute( 'y2', 0 );
 
-      this.labelTspan.style.dominantBaseline = 'hanging';
-      this.expTspan.style.dominantBaseline = 'hanging';
-      this.expTspanExp.style.dominantBaseline = 'hanging';
+      if ( !this.top ) {
+        this.labelTspan.style.dominantBaseline = 'hanging';
+        this.expTspan.style.dominantBaseline = 'hanging';
+        this.expTspanExp.style.dominantBaseline = 'hanging';
+      }
     },
 
     drawSeries: function() {
@@ -1749,11 +1854,16 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
       return ( this.longestTick[ 0 ] ? this.longestTick[ 0 ].getComputedTextLength() : 0 ) + 10; //(this.left ? 10 : 0);
     },
 
-    drawTick: function( value, label, scaling, options ) {
+    drawTick: function( value, label, scaling, options, forcedPos ) {
       var group = this.groupTicks,
         tickLabel,
-        labelWidth = 0,
+        labelWidth = 0;
+
+      if ( forcedPos !== undefined ) {
+        pos = forcedPos;
+      } else {
         pos = this.getPos( value );
+      }
 
       if ( pos == undefined )
         return;
@@ -5612,7 +5722,7 @@ build['./graph._serie'] = ( function( EventEmitter ) {
       } else if ( typeof data[ 0 ] == 'object' ) {
 
         this.mode = 'x_equally_separated';
-
+        console.log( data );
         var number = 0,
           numbers = [],
           datas = [],

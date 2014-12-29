@@ -105,10 +105,15 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 			type: ["array"],
 			label: 'Array of annotations for the GC'
 		},
-		
+
 		mzList: {
 			type: ["array"],
 			label: 'List of m/z selected'	
+		},
+
+		selectedIngredient: {
+			type: ["object"],
+			label: "Selected ingredient"
 		}
 	};
 
@@ -166,6 +171,11 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		onMZSelectionChange: {
 			label: 'm/z selection has changed',
 			refAction: [ 'mzList' ]
+		},
+
+		onIngredientSelected: {
+			label: "Ingredient is selected",
+			refAction: [ 'selectedIngredient' ]
 		}
 
 	};

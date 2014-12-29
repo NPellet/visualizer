@@ -230,6 +230,17 @@
 							}
 						],
 
+						
+						top: [
+							{
+								labelValue: 'RI',
+								primaryGrid: false,
+								secondaryGrid: false,
+							}
+						],
+
+						
+
 						left: [
 							{
 								labelValue: 'Intensity (-)',
@@ -391,6 +402,8 @@
 				this.gcGraph.redraw();
 				this.msGraph.redraw();
 
+				this.gcGraph.getTopAxis().linkToAxis( this.gcGraph.getBottomAxis(), function( val ) { return val * 3; }, 1 );
+
 				this.msGraph.on("shapeSelect", function( shape ) {
 					self.msShapesSelectChange();
 				});
@@ -400,8 +413,21 @@
 				});
 
 
+				this.gcGraph.on("shapeSelect", function( shape ) {
+					
+					if( shape.data.ingredient ) {
+
+						self.trigger("ingredientSelected", shape.data.ingredient );
+					}
+				});
+
 
 				this.gcGraph.shapeHandlers.onCreated.push( function( shape ) {
+
+					if( ! ( shape.data.type == 'areaundercurve' ) ) {
+						return;
+					}
+					
 					shape.setSerie( self.gcGraph.getSerie( 0 ) );
 					
 					self.aucs.push( shape );
@@ -409,24 +435,54 @@
 				} );
 
 				this.gcGraph.shapeHandlers.onAfterMoved.push( function( shape ) {
+
+					if( ! ( shape.data.type == 'areaundercurve' ) ) {
+						return;
+					}
+					
+
 					self.doMsFromAUC( shape.data, shape );
 					self.trigger('AUCChange', shape );
 				} );
 
 				this.gcGraph.shapeHandlers.onAfterResized.push( function( shape ) {
+
+					if( ! ( shape.data.type == 'areaundercurve' ) ) {
+						return;
+					}
+					
 					self.doMsFromAUC( shape.data, shape );
 					self.trigger('AUCChange', shape );
 				} );
 
 				this.gcGraph.shapeHandlers.onSelected.push( function( shape ) {
+
+					if( ! ( shape.data.type == 'areaundercurve' ) ) {
+						return;
+					}
+
+					
 					self.trigger('AUCSelected', shape );
+					
 				} );
 
 				this.gcGraph.shapeHandlers.onUnselected.push( function( shape ) {
+
+					if( ! ( shape.data.type == 'areaundercurve' ) ) {
+						return;
+					}
+					
+
 					self.trigger('AUCUnselected', shape );
 				} );
 
 				this.gcGraph.shapeHandlers.onRemoved.push( function( shape ) {
+
+					if( ! ( shape.data.type == 'areaundercurve' ) ) {
+						return;
+					}
+					
+
 					self.trigger('AUCRemoved', shape );
 				} );
 
@@ -848,8 +904,12 @@
 						dy: "-30px"
 					},
 
+					ingredient: ingredient,
+
 					locked: true,
-					selectable: false,
+					selectable: true,
+					moveable: false,
+					resizeable: false,
 
 					type: 'line',
 					strokeColor: "rgb(" + ingredient.color.join() + ")",
