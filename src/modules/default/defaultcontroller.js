@@ -38,7 +38,11 @@ define(['src/util/api', 'src/util/util'], function (API, Util) {
                     actionname = actionsOut[i].name;
                     jpath = actionsOut[i].jpath;
 
-                    if (value && jpath && value.getChild) {
+                    if (value && jpath) {
+
+                        if( ! value.getChild ) {
+                            value = new DataObject( value );
+                        }
                         (function (actionname) {
                 
                             value.getChild(jpath).then(function (returned) {

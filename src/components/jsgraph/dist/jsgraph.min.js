@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-29T18:21Z
+ * Date: 2014-12-29T20:03Z
  */
 
 (function( global, factory ) {
@@ -5722,12 +5722,17 @@ build['./graph._serie'] = ( function( EventEmitter ) {
       } else if ( typeof data[ 0 ] == 'object' ) {
 
         this.mode = 'x_equally_separated';
-        console.log( data );
+
         var number = 0,
           numbers = [],
           datas = [],
           k = 0,
           o;
+
+        if ( !data[ 0 ].y ) {
+          return;
+        }
+
         for ( var i = 0, l = data.length; i < l; i++ ) { // Several piece of data together
           number += data[ i ].y.length;
           continuous = ( i != 0 ) && ( !data[ i + 1 ] || data[ i ].x + data[ i ].dx * ( data[ i ].y.length ) == data[ i + 1 ].x );
@@ -6787,7 +6792,7 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
       //	this._zoomingSquare.setAttribute('display', 'none');
 
       //	this._zoomingSquare.setAttribute('transform', 'translate(' + Math.random() + ', ' + Math.random() + ') scale(10, 10)');
-      
+
       switch ( this._zoomingMode ) {
 
         case 'xy':

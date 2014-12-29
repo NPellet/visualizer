@@ -103,7 +103,7 @@ define( [
 				AUCUnselected: function( auc ) {
 
 					var rgb = auc.data.color;
-					
+
 					auc.set('fillColor', 'rgba(' + rgb[ 0 ] + ', ' + rgb[ 1 ] + ', ' + rgb[ 2 ] + ', 0.3)');
 					auc.set( 'strokeColor', 'rgba(' + rgb[ 0 ]+ ', ' + rgb[ 1 ] + ', ' + rgb[ 2 ] + ', 1)');
 
@@ -295,7 +295,7 @@ define( [
 			},
 
 			externalMS: function( value, name ) {
-console.log( value, name );
+
 				var self = this;
 				if( ! this.gcmsInstance || !value) {
 					return;
