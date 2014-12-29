@@ -86,6 +86,11 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
         series_xy1d: {
             type: 'array',
             label: 'List of series in 1D format ( [ x, y, x, y, ... ] )'
+        },
+
+        selectedShape: {
+            type: 'object',
+            label: 'Selected shape'
         }
     };
 
@@ -124,6 +129,11 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
         onMouseOverShape: {
             label: 'Mouse over a shape',
             refVariable: ['shapeInfos']
+        },
+
+        onShapeSelect: {
+            label: 'When a shape is selected',
+            refAction: [ 'selectedShape' ]
         }
     };
 

@@ -234,7 +234,10 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 } );
 
 
-
+                graph.on('shapeSelect', function( shape ) {
+                    
+                    self.module.controller.sendAction('selectedShape', shape.data, 'onShapeSelect' );
+                });
 
                 self.onResize();
                 self.resolveReady();
@@ -597,9 +600,9 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     (function (i) {
                         var annotation = annotations[i];
                         var shape = self.graph.newShape(annotation, null, null, true);
-
                         self.annotations[varName][i] = shape;
 
+                        shape.setSerie( self.graph.getSerie( 0 ) );
 //TODO annotation.onChange
 //                Debug.debug('annotation.onChange is disabled, need to be fixed');
 //                annotation.onChange( annotation, function( value ) {
@@ -746,7 +749,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                             console.log( data[ i ].data );
                         }
 
-                        console.log( self.getSerieOptions(varname) );
                         //	serie.setLabel( data[ i ].label.toString( ) );
                         serie.setLineWidth(data[ i ].lineWidth || opts.strokeWidth || 1 );
                         serie.setLineColor(data[ i ].lineColor || "rgb(" + colors[ i ].join() + ")" );

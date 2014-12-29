@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-29T11:41Z
+ * Date: 2014-12-29T12:10Z
  */
 
 (function( global, factory ) {
@@ -11932,10 +11932,7 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
       }
 
       this.maxY = this.serie.getY( maxY );
-      if ( this._selected ) {
-        this.select();
-      }
-
+      
       return true;
     },
 

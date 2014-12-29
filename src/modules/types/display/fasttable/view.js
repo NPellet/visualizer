@@ -275,12 +275,21 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                 html = '',
                 j,
                 k = jpaths.length,
-                currentVar;
+                currentVar,
+                color;
 
             html += '<tr';
 
             if (this.colorjpath) {
-                html += ' style="background-color: ' + this.colorjpath(source) + ';"';
+                color = this.colorjpath(source);
+                
+                if( color.length && color.length == 3 ) {
+                    color = 'rgb(' + color.join(',') + ')';
+                } else if( color.length && color.length == 4 ) {
+                    color = 'rgba(' + color.join(',') + ')';
+                }
+
+                html += ' style="background-color: ' + color + ';"';
             }
 
             html += ' id="' + this.module.getId() + '_' + i + '" ';
@@ -376,9 +385,25 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
             toggleOn: function( source ) {
 
                 var index = this.module.getDataFromRel('list').indexOf(source);
+                
                 if (index == -1) {
                     return;
                 }
+
+
+                var toggle = this.module.getConfiguration('toggle'),
+                    self = this;
+
+                if (toggle == 'single' && self.selected[0] !== undefined) {
+
+                    self.module.controller.onToggleOff(self.module.data, self.selected[0]);
+                    self.domBody.children().eq(self.selected[0]).toggleClass('toggled');
+                    self.selected = [];
+                }
+
+
+                self.selected.push(index);
+
                 this.module.controller.onToggleOn(this.module.data, index);
                 this.domBody.children().eq(index).addClass('toggled');
             },
