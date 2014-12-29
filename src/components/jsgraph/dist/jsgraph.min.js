@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-8
+ * jsGraph JavaScript Graphing Library v1.10.4-9
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-29T14:39Z
+ * Date: 2014-12-29T15:19Z
  */
 
 (function( global, factory ) {
@@ -4269,7 +4269,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
       this.selectedSerie = serie;
       this.triggerEvent( 'onSelectSerie', serie );
-      serie.select();
+      serie.select( "selected" );
     },
 
     unselectSerie: function( serie ) {
@@ -4827,7 +4827,6 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
           pos[ i ] = this.getPx( value[ i ], axis );
         }
-
 
         if ( value[ 'd' + i ] !== undefined ) {
 
@@ -5839,7 +5838,7 @@ build['./graph._serie'] = ( function( EventEmitter ) {
     },
 
     isSelected: function() {
-      return this.selected;
+      return this.selected ||  ( this.selectionType !== "unselected" );
     },
 
     _checkX: function( val ) {
@@ -6999,7 +6998,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
       autoPeakPicking: false,
       autoPeakPickingNb: 4,
-      autoPeakPickingMinDistance: 10
+      autoPeakPickingMinDistance: 10,
+
+      selectableOnClick: true
     },
 
     init: function( graph, name, options ) {
@@ -7024,6 +7025,10 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         lineColor: this.options.lineColor,
         lineStyle: this.options.lineStyle,
         markers: this.options.markers
+      };
+
+      this.styles.selected = {
+        lineWidth: 3
       };
 
       this.shown = true;
@@ -7113,6 +7118,19 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         }
 
       }
+
+      this.groupLines.addEventListener( 'click', function( e ) {
+        console.log( 'e', self.options.selectableOnClick )
+        if ( self.options.selectableOnClick ) {
+          console.log( self.isSelected() );
+          if ( self.isSelected() ) {
+            self.unselect();
+          } else {
+            self.select( "selected" );
+          }
+        }
+      } );
+
     },
 
     setAdditionalData: function( data ) {
@@ -7299,6 +7317,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         this.selectionType = selectionType;
         this.applyLineStyles();
       }
+
+      this.applyLineStyle( this.getSymbolForLegend() );
     },
 
     degrade: function( pxPerP, options ) {
@@ -7902,8 +7922,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
     },
 
     applyLineStyle: function( line ) {
+
       line.setAttribute( 'stroke', this.getLineColor() );
-      line.setAttribute( 'stroke-width', this.getLineWidth() + ( this.isSelected() ? 2 : 0 ) );
+      line.setAttribute( 'stroke-width', this.getLineWidth() );
       if ( this.getLineDashArray() ) {
         line.setAttribute( 'stroke-dasharray', this.getLineDashArray() );
       } else {
@@ -8297,6 +8318,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
     getStyle: function( selectionType ) {
 
       var s = this.styles[ selectionType || this.selectionType || "unselected" ];
+
       if ( s ) {
         return $.extend( {}, this.styles.unselected, s );
       } else {
@@ -8318,6 +8340,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
     },
 
     getLineWidth: function( selectionType ) {
+
       return this.getStyle( selectionType ).lineWidth;
     },
 
