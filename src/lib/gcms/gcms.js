@@ -86,6 +86,7 @@
 								mode: 'total'
 							}
 						},
+						
 /*
 
 						onAnnotationMake: function( annot, shape ) {
