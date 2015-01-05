@@ -255,7 +255,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             var c = that.grid.getColumns()[that.grid.getColumnIndex(columnId)];
                             var jpath = _.clone(c.jpath);
                             jpath.unshift(idx);
-                            if (!that.module.data.getChildSync(jpath).get().toString().match(columnFilters[columnId])) {
+                            if (!that.module.data.getChildSync(jpath) || !that.module.data.getChildSync(jpath).get().toString().match(columnFilters[columnId])) {
                                 return false;
                             }
                         }
