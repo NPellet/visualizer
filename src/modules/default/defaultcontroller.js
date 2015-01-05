@@ -41,7 +41,7 @@ define(['src/util/api', 'src/util/util'], function (API, Util) {
                     if (value && jpath) {
 
                         if( ! value.getChild ) {
-                            value = new DataObject( value );
+                            value = DataObject.check( value, true );
                         }
                         (function (actionname) {
                 
