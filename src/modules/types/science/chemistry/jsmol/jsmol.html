@@ -65,9 +65,11 @@
         Jmol.resizeApplet(this.applet, [w, h]);
     };
 
+    /*
     window.clear = function () {
         this.applet.reset();
     };
+    */
 
     // TODO !!!!
     window.setHighlight = function (atoms, onOff) {
@@ -122,6 +124,9 @@
                 break;
             case 'setMolFile':
                 setMolFile(message.message);
+                break;
+            case 'blank':
+                this.executeScript(["zap"]);
                 break;
             case 'executeScript':
                 executeScript(message.message);

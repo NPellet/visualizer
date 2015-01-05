@@ -59,6 +59,13 @@ define(['require', 'modules/default/defaultview'], function (require, Default) {
             this.postMessage('setSize', {width: this.width, height: this.height});
         },
 
+        blank: {
+            data: function () {
+                this.postMessage('blank', '');
+            }
+        },
+
+
         update: {
             data: function (data) {
                 var self = this;
