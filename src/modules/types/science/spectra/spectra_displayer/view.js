@@ -170,33 +170,47 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                             frameColor: 'rgba( 100, 100, 100, 0.5 )',
                             movable: true
                         });
-                        var posX, posY;
+                        var posX, posY, x, y;
                         switch (legend) {
                             case 'topright':
                                 posX = 'right';
                                 posY = 'top';
+                                x = 'max';
+                                y = 'max';
                                 break;
                             case 'bottomright':
                                 posX = 'right';
                                 posY = 'bottom';
+                                x = 'max';
+                                y = 'min';
                                 break;
                             case 'topleft':
                                 posX = 'left';
                                 posY = 'top';
+                                x = 'min';
+                                y = 'max';
                                 break;
                             case 'bottomleft':
                                 posX = 'left';
                                 posY = 'bottom';
+                                x = 'min';
+                                y = 'min';
                                 break;
+                        }
+                        if (cfgCheckbox('flipAxis', 'flipX')) {
+                            x = (x === 'min' ? 'max' : 'min');
+                        }
+                        if (cfgCheckbox('flipAxis', 'flipY')) {
+                            y = (y === 'min' ? 'max' : 'min');
                         }
                         theLegend.setPosition({
                                 dx: '0px',
                                 dy: '0px',
-                                x: 'max',
-                                y: 'max'
+                                x: x,
+                                y: y
                             },
-                            posX, // Reference point
-                            posY // Reference point
+                            posX,
+                            posY
                         );
                     }
 
