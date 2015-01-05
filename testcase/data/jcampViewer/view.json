@@ -1,215 +1,260 @@
 {
-	"modules": [
-		{
-			"title": "List",
-			"displayWrapper": true,
-			"position": {
-				"left": 0,
-				"top": 0
-			},
-			"size": {
-				"width": 43,
-				"height": 43
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"nblines": [
-								20
-							],
-							"toggle": [
-								null
-							],
-							"colorjpath": [
-								null
-							],
-							"filterRow": [
-								null
-							],
-							"displaySearch": []
-						}
-					],
-					"cols": [
-						[
-							{
-								"name": "Name",
-								"jpath": "element.name",
-								"number": [],
-								"editable": "none"
-							}
-						]
-					]
-				}
-			},
-			"id": 1,
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"vars_in": [
-				{
-					"rel": "list",
-					"name": "spectra"
-				}
-			],
-			"actions_in": [
-				{}
-			],
-			"vars_out": [
-				{
-					"event": "onHover",
-					"rel": "row",
-					"jpath": "element.jcamp",
-					"name": "jcamp"
-				}
-			],
-			"actions_out": [
-				{}
-			],
-			"url": "./modules/types/display/jqgrid/"
-		},
-		{
-			"title": "Spectrum",
-			"displayWrapper": true,
-			"position": {
-				"left": 45,
-				"top": 0
-			},
-			"size": {
-				"width": 73,
-				"height": 43
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"graphurl": [
-								""
-							],
-							"flip": [
-								[
-									"flipX"
-								]
-							],
-							"displayAxis": [
-								[
-									"x"
-								]
-							],
-							"grids": [
-								[]
-							],
-							"xLabel": [
-								""
-							],
-							"yTopSpacing": [
-								0
-							],
-							"yBottomSpacing": [
-								0
-							],
-							"xLeftSpacing": [
-								0
-							],
-							"xRightSpacing": [
-								0
-							],
-							"yLabel": [
-								""
-							],
-							"minX": [
-								""
-							],
-							"maxX": [
-								""
-							],
-							"minY": [
-								""
-							],
-							"maxY": [
-								""
-							],
-							"zoom": [
-								"x"
-							],
-							"shiftxtozero": [
-								[]
-							],
-							"xastime": [
-								[]
-							],
-							"wheelAction": [
-								"zoomY"
-							],
-							"fullOut": [
-								null
-							]
-						}
-					],
-					"plotinfos": [
-						[
-							{
-								"variable": "jcamp",
-								"plotcolor": [
-									1,
-									1,
-									255,
-									1
-								],
-								"strokewidth": "1",
-								"plotcontinuous": [
-									"continuous"
-								],
-								"peakpicking": [],
-								"markers": [],
-								"normalize": "none",
-								"optimizeSlots": [
-									"slots"
-								]
-							}
-						]
-					]
-				}
-			},
-			"id": 2,
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"vars_in": [
-				{
-					"rel": "jcamp",
-					"name": "jcamp"
-				}
-			],
-			"actions_in": [
-				{}
-			],
-			"vars_out": [
-				{}
-			],
-			"actions_out": [
-				{}
-			],
-			"url": "./modules/types/science/spectra/spectra_displayer/"
-		}
-	],
-	"variables": [
-		{
-			"varname": "spectra",
-			"jpath": "element.spectra",
-			"url": ""
-		}
-	],
-	"configuration": {
-		"title": "jcamp viewer"
+  "version": "2.9.10",
+  "grid": {
+	"layers": {
+	  "Default layer": {
+		"name": "Default layer"
+	  }
 	},
-	"version": "2.2.3"
+	"xWidth": 10,
+	"yHeight": 10
+  },
+  "modules": [
+	{
+	  "url": "modules/types/display/jqgrid/",
+	  "configuration": {
+		"sections": {},
+		"groups": {
+		  "group": [
+			{
+			  "nblines": [
+				20
+			  ],
+			  "toggle": [
+				null
+			  ],
+			  "colorjpath": [
+				null
+			  ],
+			  "filterRow": [
+				null
+			  ]
+			}
+		  ],
+		  "cols": [
+			[
+			  {
+				"name": "Name",
+				"jpath": "element.name",
+				"number": [],
+				"editable": "none"
+			  }
+			]
+		  ]
+		}
+	  },
+	  "layers": {
+		"Default layer": {
+		  "position": {
+			"left": 1,
+			"top": 1
+		  },
+		  "size": {
+			"width": 29,
+			"height": 26
+		  },
+		  "zIndex": 0,
+		  "display": true,
+		  "title": "JCAMPs",
+		  "bgColor": [
+			255,
+			255,
+			255,
+			0
+		  ],
+		  "wrapper": true,
+		  "created": true,
+		  "name": "Default layer"
+		}
+	  },
+	  "id": 1,
+	  "actions_out": [
+		{
+		  "jpath": []
+		}
+	  ],
+	  "vars_in": [
+		{
+		  "rel": "list",
+		  "name": "spectra"
+		}
+	  ],
+	  "actions_in": [
+		{}
+	  ],
+	  "title": "JCAMPs",
+	  "vars_out": [
+		{
+		  "event": "onHover",
+		  "rel": "row",
+		  "jpath": [
+			"jcamp"
+		  ],
+		  "name": "jcamp"
+		}
+	  ]
+	},
+	{
+	  "url": "modules/types/science/spectra/spectra_displayer/",
+	  "configuration": {
+		"sections": {},
+		"groups": {
+		  "group": [
+			{
+			  "graphurl": [
+				""
+			  ],
+			  "flip": [
+				[
+				  "flipX"
+				]
+			  ],
+			  "displayAxis": [
+				[
+				  "x"
+				]
+			  ],
+			  "grids": [
+				[]
+			  ],
+			  "xLabel": [
+				""
+			  ],
+			  "yTopSpacing": [
+				0
+			  ],
+			  "yBottomSpacing": [
+				0
+			  ],
+			  "xLeftSpacing": [
+				0
+			  ],
+			  "xRightSpacing": [
+				0
+			  ],
+			  "yLabel": [
+				""
+			  ],
+			  "minX": [
+				""
+			  ],
+			  "maxX": [
+				""
+			  ],
+			  "minY": [
+				""
+			  ],
+			  "maxY": [
+				""
+			  ],
+			  "zoom": [
+				"x"
+			  ],
+			  "shiftxtozero": [
+				[]
+			  ],
+			  "xaxismodification": [
+				[]
+			  ],
+			  "wheelAction": [
+				"zoomY"
+			  ],
+			  "wheelbaseline": [
+				0
+			  ],
+			  "fullOut": [
+				"both"
+			  ],
+			  "FitYToAxisOnFromTo": [
+				[]
+			  ],
+			  "legend": [
+				"topleft"
+			  ]
+			}
+		  ],
+		  "plotinfos": [
+			[
+			  {
+				"variable": "jcamp",
+				"plotcolor": [
+				  1,
+				  1,
+				  255,
+				  1
+				],
+				"strokewidth": "1",
+				"plotcontinuous": [
+				  "continuous"
+				],
+				"peakpicking": [],
+				"markers": [],
+				"normalize": "none",
+				"optimizeSlots": [],
+				"degrade": 0,
+				"monotoneous": []
+			  }
+			]
+		  ]
+		}
+	  },
+	  "layers": {
+		"Default layer": {
+		  "position": {
+			"left": 31,
+			"top": 1
+		  },
+		  "size": {
+			"width": 88,
+			"height": 53
+		  },
+		  "zIndex": 0,
+		  "display": true,
+		  "title": "Untitled",
+		  "bgColor": [
+			255,
+			255,
+			255,
+			0
+		  ],
+		  "wrapper": true,
+		  "created": true,
+		  "name": "Default layer"
+		}
+	  },
+	  "id": 2,
+	  "vars_in": [
+		{
+		  "rel": "jcamp",
+		  "name": "jcamp"
+		}
+	  ],
+	  "actions_in": [
+		{}
+	  ],
+	  "title": "Untitled",
+	  "vars_out": [
+		{
+		  "jpath": []
+		}
+	  ],
+	  "actions_out": [
+		{
+		  "jpath": []
+		}
+	  ]
+	}
+  ],
+  "variables": [
+	{
+	  "varname": "spectra",
+	  "jpath": [
+		"spectra"
+	  ]
+	}
+  ],
+  "pouchvariables": [],
+  "configuration": {
+	"title": "JCAMP viewer"
+  }
 }
