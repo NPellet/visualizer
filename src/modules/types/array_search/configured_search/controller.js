@@ -9,7 +9,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
 
     Controller.prototype.moduleInformation = {
         moduleName: 'Configured search',
-        description: 'Filters an array with configured UI criterias',
+        description: 'Filters an array with configured UI criteria',
         author: 'Norman Pellet',
         date: '24.12.2013',
         license: 'MIT',

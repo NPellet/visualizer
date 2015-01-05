@@ -125,7 +125,7 @@ define(['forms/form'], function( Form ) {
 
 						options: {
 							type: 'list',
-							displayTarget: [ 'text', 'slider', 'combo', 'checkbox' ]
+							displayTarget: [ 'text', 'float', 'slider', 'combo', 'checkbox' ]
 						},
 
 						fields: {
