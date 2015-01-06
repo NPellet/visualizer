@@ -19,7 +19,7 @@ define([ require, '../../field', 'src/util/util', 'jquery-ui', 'components/farbt
             showInitial: true,
             showInput: true,
             flat: true,
-            clickoutFiresChange: true,
+            clickoutFiresChange: false,
             showAlpha: true,
             showPalette: true,
             showSelectionPalette: true,
