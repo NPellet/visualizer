@@ -157,6 +157,7 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
 
     var stream;
     var $dialog;
+    var dialogClosed = true;
     function confirm(message) {
         return new Promise(function(resolve){
             if(!$dialog) {
@@ -206,6 +207,9 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
 
             function treatStream(s) {
                 stream = s;
+                if(dialogClosed) {
+                    s.stop();
+                }
                 if (navigator.mozGetUserMedia) {
                     video.mozSrcObject = stream;
                 } else {
@@ -229,7 +233,7 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                 ev.preventDefault();
             }, false);
 
-
+            dialogClosed = false;
             $dialog.dialog({
                 modal: true,
                 buttons: {
