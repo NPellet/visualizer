@@ -317,6 +317,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
                         that.grid.onAddNewRow.subscribe(function (e, args) {
                             that.module.model.dataTriggerChange(that.module.data);
+                            that._resetDeleteRowListeners();
                             //var item = args.item;
                             //var jpath = args.column.jpath.slice();
                             //jpath.unshift(that.module.data.length);
