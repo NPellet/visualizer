@@ -81,6 +81,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
         },
         exportForm: function () {
             var data = this.form.getData();
+            this.inputVal = data.data;
             if (!data.errorCount) {
                 this.module.controller.onSubmit(data.data);
             }

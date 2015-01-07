@@ -165,7 +165,7 @@ console.log( 'new');
 				( function( j, jpath ) {
 					self.nb++;
 
-					varValue.getChild( jpath, true ).done( function( returned ) {
+					varValue.getChild( jpath, true ).then( function( returned ) {
 
 						
 							self
