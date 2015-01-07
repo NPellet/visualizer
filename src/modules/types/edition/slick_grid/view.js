@@ -336,7 +336,6 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             // Acceptable since it is unlikely that someone click the delete button only 300 ms after
                             // the viewport has changed...
                             setTimeout(function() {
-
                                 that.lastViewport = that.grid.getViewport();
                                 that._resetDeleteRowListeners();
                             }, 300);
@@ -513,7 +512,21 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                                 }
                             }).value();
 
-                        if(groupings.length) that.slick.data.setGrouping(groupings);
+                        if(groupings.length) {
+                            that.slick.data.setGrouping(groupings);
+                            if(that.module.getConfigurationCheckbox('slickCheck', 'collapseGroup')) {
+                                that.slick.data.collapseAllGroups(0);
+                            }
+
+                            //_.each(groupings, function(val) {
+                            //    if(val.collapse) {
+                            //        that.slick.data.expandGroup(val.getter);
+                            //    }
+                            //});
+
+                        }
+
+
 
 
                         if(that.module.getConfigurationCheckbox('slickCheck', 'filterColumns')) {
