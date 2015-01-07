@@ -33,7 +33,8 @@ define([ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 'sr
     Controller.prototype.events = {
         onChange: {
             label: 'Form has changed',
-            refVariable: [ 'output_object', 'formatted_output' ]
+            refVariable: [ 'output_object', 'formatted_output' ],
+            refAction: ['output_object', 'formatted_output']
         },
 
         formTriggered: {
@@ -160,10 +161,13 @@ define([ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 'sr
         if (this.module.getConfiguration('replaceObj')) {
 
             this.setVarFromEvent('onChange', 'output_object', 'input_object', []);
+            this.sendAction('output_object', newValue, 'onChange');
 
         } else {
-            this.createDataFromEvent('onChange', 'formatted_output', formatValue(newValue));
+            var formattedValue = formatValue(newValue);
+            this.createDataFromEvent('onChange', 'formatted_output', formattedValue);
             this.createDataFromEvent('onChange', 'output_object', newValue);
+            this.sendAction('formatted_output', formattedValue, 'onChange');
         }
     };
 
