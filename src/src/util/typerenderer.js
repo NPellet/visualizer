@@ -567,53 +567,76 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 		
 	};
     functions.indicator.toscreen = function(def, value) {
-		
-        if(!Array.isArray(value))
-        	def.reject('');
-        var html = '<table cellpadding="0" cellspacing="0" style="text-align: center; height:100%; width:100%"><tr>';
+		require(["src/util/color"], function(Color) {
+            if(!Array.isArray(value))
+                def.reject('');
+            var html = '<table cellpadding="0" cellspacing="0" style="text-align: center; height:100%; width:100%"><tr>';
 
-		var length = value.length;
-		var width = (100/length)+"%";
+            // if the first element of the array is a number ... we need to convert the array.
+            if (! isNaN(value[0])) {
+                value=value.map(function(value) {
+                    return {"size": value};
+                })
+            }
 
-        for(var i = 0; i < length; i++) {
-        	var element = value[i];
-        	var span = $('<td>').css({
-        		"width":width,
-        		"border":"none"
-        	});
-        	if(element.bgcolor)
-        		span.css('background-color', element.bgcolor);
-        	if(element.color)
-        		span.css('color', element.color);
-        	if(element.text)
-        		span.append(element.text);
-        	if(element.class)
-        		span.addClass(element.class);
-        	if(element.icon)
-        		span.prepend('<i class="fa fa-'+element.icon+'"></i>');
-        	if(element.css)
-        		span.css(element.css);
-        	if(element.tooltip)
-        		span.attr("data-tooltip",element.tooltip);
-        	html+=span.get(0).outerHTML;
-        }
-				html += '</tr></table>';
-				def.resolve( html );
+            var length = value.length;
+            // no color ? we add some ...
+            var colors=Color.getDistinctColors(value.length);
+            var totalSize=0;
+            for(var i = 0; i < length; i++) {
+                if (! value[i].bgcolor) value[i].bgcolor=colors[i];
+                if (! value[i].size && value[i].size!==0) value[i].size=10;
+                totalSize+=value[i].size;
+            }
+
+            for(var i = 0; i < length; i++) {
+                if (! value[i].bgcolor) value[i].bgcolor=colors[i];
+                if (! value[i].size && value[i].size!==0) value[i].size=10;
+                totalSize+=value[i].size;
+            }
+
+
+            for(var i = 0; i < length; i++) {
+                var element = value[i];
+                var span = $('<td>').css({
+                    "width":(100*element.size/totalSize)+"%",
+                    "border":"none"
+                });
+                if(element.bgcolor)
+                    span.css('background-color', element.bgcolor);
+                if(element.color)
+                    span.css('color', element.color);
+                if(element.text)
+                    span.append(element.text);
+                if(element.class)
+                    span.addClass(element.class);
+                if(element.icon)
+                    span.prepend('<i class="fa fa-'+element.icon+'"></i>');
+                if(element.css)
+                    span.css(element.css);
+                if(element.tooltip)
+                    span.attr("data-tooltip",element.tooltip);
+                html+=span.get(0).outerHTML;
+            }
+            html += '</tr></table>';
+            def.resolve( html );
+        })
+
     };
         
         
-        functions.styledValue = {};
-        functions.styledValue.toscreen = function(def, value, valueRoot, args, highlights, box, jpath) {
+    functions.styledValue = {};
+    functions.styledValue.toscreen = function(def, value, valueRoot, args, highlights, box, jpath) {
 
-            var div = $('<div>');
-            div.css(value.css);
-            
-            functions.toScreen(value.value, box, args, jpath).always(function(subvalue) {
-                div.append(subvalue);
-                def.resolve(div.get(0));
-            });
-            
-        };
+        var div = $('<div>');
+        div.css(value.css);
+
+        functions.toScreen(value.value, box, args, jpath).always(function(subvalue) {
+            div.append(subvalue);
+            def.resolve(div.get(0));
+        });
+
+    };
 
 	function _valueToScreen(deferred, data, box, args, jpath) {
 		var type = Traversing.getType(data),
