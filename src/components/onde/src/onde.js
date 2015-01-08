@@ -623,6 +623,10 @@ onde.Onde.prototype.renderFieldValue = function (fieldName, fieldInfo, parentNod
             append($('<tt></tt>').text(fieldInfo.type));
         parentNode.append(valueContainer);
     }
+    if(fieldValueNode && fieldInfo && fieldInfo.readonly) {
+        fieldValueNode.attr('disabled', true);
+        fieldValueNode.css('background-color', 'lightgray');
+    }
 };
 
 onde.Onde.prototype.renderObjectPropertyField = function (namespace, baseId, fieldInfo, propName, valueData) {
