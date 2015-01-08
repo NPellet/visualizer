@@ -65,7 +65,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                                 filterColumns: 'Provides search input for each column',
                                 backToTop: 'Scroll back to top on new variable'
                             },
-                            default: ['editable', 'enableAddRow', 'enableCellNavigation', 'rowNumbering']
+                            default: ['enableCellNavigation', 'rowNumbering', 'forceFitColumns']
                         },
 
                         "slick.defaultColumnWidth": {
