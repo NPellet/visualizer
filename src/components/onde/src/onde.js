@@ -446,7 +446,10 @@ onde.Onde.prototype.renderFieldValue = function (fieldName, fieldInfo, parentNod
         } else {
             //TODO: Format
             if (fieldInfo.format == 'multiline') {
-                fieldValueNode = $('<textarea></textarea>');
+                var options="";
+                if (fieldInfo.cols) options+=" cols="+fieldInfo.cols;
+                if (fieldInfo.rows) options+=" rows="+fieldInfo.rows;
+                fieldValueNode = $('<textarea'+options+'></textarea>');
             } else {
                 fieldValueNode = $('<input type="text" />');
             }
