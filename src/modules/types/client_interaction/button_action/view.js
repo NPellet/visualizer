@@ -12,7 +12,7 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/ui'], function 
             this.dom = $('<div></div>');
             var buttonType = this.module.getConfiguration('toggle');
             if(buttonType === 'toggle') {
-                label = this.module.getConfiguration('onLabel');
+                label = this.module.getConfiguration('offLabel');
             }
             else {
                 label = this.module.getConfiguration('label');
@@ -24,20 +24,20 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/ui'], function 
                             prom = ui.confirm(that.module.getConfiguration('confirmText'));
                         }
                         prom.then(function(ok) {
-                            if(ok) {
-                                button.setTitle(that.module.getConfiguration('onLabel'));
-                                self.module.controller.onClick(val);
+                            if(!ok) {
+                                return;
                             }
-                            if(val) {
+                            if(!val) {
                                 button.setTitle(that.module.getConfiguration('offLabel'));
-                                console.log(that.module.getConfiguration('offLabel'));
+                                that.setButtonColor(that.module.getConfiguration('offColor'));
                             }
                             else {
                                 button.setTitle(that.module.getConfiguration('onLabel'));
-                                console.log(that.module.getConfiguration('onLabel'));
+                                that.setButtonColor(that.module.getConfiguration('onColor'));
                             }
+                            self.module.controller.onClick(val);
                         });
-
+0
                     },
                     {
                         color: 'Grey',
@@ -50,7 +50,16 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/ui'], function 
             this.dom.html(button.render());
             this.button = button;
 
+            if(buttonType === 'toggle') {
+                that.setButtonColor(that.module.getConfiguration('offColor'));
+            }
+
             this.resolveReady();
+        },
+
+        setButtonColor: function(color) {
+            color = 'rgba(' + color.join(',') + ')';
+            this.button.setColorCss(color);
         }
     });
 

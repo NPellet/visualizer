@@ -73,14 +73,25 @@ define(['modules/default/defaultcontroller'], function (Default) {
                         onLabel: {
                             type: 'text',
                             title: 'Button label (on)',
-                            default: 'Toggle action on',
+                            default: 'Toggle action off',
                             displayTarget: ['t']
                         },
                         offLabel: {
                             type: 'text',
                             title: 'Button label (off)',
-                            default: 'Toggle action off',
+                            default: 'Toggle action on',
                             displayTarget: ['t']
+                        },
+                        onColor: {
+                            type: 'spectrum',
+                            title: 'Color (on)',
+                            default: [0, 0, 0, 1],
+                            displayTarget: ['t']
+                        },
+                        offColor: {
+                            type: 'spectrum',
+                            title: 'Color (off)',
+                            default: [255, 255, 255, 1]
                         },
                         text: {
                             type: 'text',
@@ -110,6 +121,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
         label: ['groups', 'group', 0, 'label', 0],
         onLabel: ['groups', 'group', 0, 'onLabel', 0],
         offLabel: ['groups', 'group', 0, 'offLabel', 0],
+        onColor: ['groups', 'group', 0, 'onColor', 0],
+        offColor: ['groups', 'group', 0, 'offColor', 0],
         text: ['groups', 'group', 0, 'text', 0],
         toggle: ['groups', 'group', 0, 'toggle', 0],
         askConfirm: ['groups', 'group', 0, 'askConfirm', 0],
