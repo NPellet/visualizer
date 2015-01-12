@@ -23,7 +23,7 @@ require.config({
             'components/slickgrid/plugins/slick.rowselectionmodel',
             'components/slickgrid/slick.formatters',
             'modules/types/edition/slick_grid/slick.editors.custom'],
-        slickdataview: ['slickgrid', 'slickgroupitemmetadataprovider'],
+        slickdataview: ['lodash', 'slickgrid', 'slickgroupitemmetadataprovider'],
         slickgroupitemmetadataprovider: ['slickgrid']
 
     }
@@ -450,25 +450,30 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
                             that._makeDataObjects();
                             // We'll use a simple comparer function here.
+                            var sortCols;
+                            if(!args.sortCols) {
+                                sortCols = [{
+                                    sortCol: args.sortCol,
+                                    sortAsc: args.sortAsc
+                                }];
+                            }
+                            else {
+                                sortCols = args.sortCols;
+                            }
+                            for(var i=sortCols.length-1; i>=0; i--) {
+                                (function(i) {
+                                    var comparer = function(a) {
+                                        return a.getChildSync(sortCols[i].sortCol.jpath).get();
+                                    };
+                                    that.slick.data.sortBy(comparer, sortCols[i].sortAsc);
+                                })(i);
 
-                            var comparer = function(a, b) {
-                                if(!args.sortCol.simpleJpath) {
-                                    a = a[args.sortCol.jpath[0]];
-                                    b= b[args.sortCol.jpath[0]];
-                                }
-                                    // Does not work because element of array are not always DataObjects
-                                else {
-                                    a = a.getChildSync(args.sortCol.jpath).get();
-                                    b = b.getChildSync(args.sortCol.jpath).get();
-                                }
+                            }
 
-
-                                return (a > b) ? 1 : -1;
-                            };
 
                             // Delegate the sorting to DataView.
                             // This will fire the change events and update the grid.
-                            that.slick.data.sort(comparer, args.sortAsc);
+
                         });
 
 
