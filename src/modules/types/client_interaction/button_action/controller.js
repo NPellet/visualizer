@@ -53,20 +53,38 @@ define(['modules/default/defaultcontroller'], function (Default) {
                         type: 'list'
                     },
                     fields: {
-                        label: {
-                            type: 'text',
-                            title: 'Button label',
-                            'default': 'Action'
-                        },
-                        text: {
-                            type: 'text',
-                            title: 'Action text to send'
-                        },
                         toggle: {
                             type: 'combo',
                             title: 'Button type',
                             'default': 'toggle',
-                            options: [{key: 'click', title: 'Click'}, {key: 'toggle', title: 'Toggle'}]
+                            options: [{key: 'click', title: 'Click'}, {key: 'toggle', title: 'Toggle'}],
+                            displaySource: {
+                                click: 'c',
+                                toggle: 't'
+                            }
+                        },
+                        label: {
+                            type: 'text',
+                            title: 'Button label',
+                            'default': 'Action',
+                            displayTarget: ['c']
+
+                        },
+                        onLabel: {
+                            type: 'text',
+                            title: 'Button label (on)',
+                            default: 'Toggle action on',
+                            displayTarget: ['t']
+                        },
+                        offLabel: {
+                            type: 'text',
+                            title: 'Button label (off)',
+                            default: 'Toggle action off',
+                            displayTarget: ['t']
+                        },
+                        text: {
+                            type: 'text',
+                            title: 'Action text to send'
                         },
                         askConfirm: {
                             type: 'checkbox',
@@ -90,6 +108,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.configAliases = {
         label: ['groups', 'group', 0, 'label', 0],
+        onLabel: ['groups', 'group', 0, 'onLabel', 0],
+        offLabel: ['groups', 'group', 0, 'offLabel', 0],
         text: ['groups', 'group', 0, 'text', 0],
         toggle: ['groups', 'group', 0, 'toggle', 0],
         askConfirm: ['groups', 'group', 0, 'askConfirm', 0],
