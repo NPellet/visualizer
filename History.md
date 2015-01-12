@@ -1,5 +1,19 @@
+HEAD
+====
+
+* loading_plot : fix output variables
+* fix some onde problems
+* spectra_displayer : fix legend positioning
+
+2.9.10 / 2015-01-02
+===================
+
+* update JSME
+* modernize all headers
+* add util.inherits
+
 2.9.9 / 2014-12-12
-================
+==================
 * slickgrid:
  * better highlight support
  * Columns determined automatically if none specified
@@ -7,7 +21,7 @@
 * core: view url is now relative to http host not to where the visualizer is hosted
 
 2.9.8 / 2014-12-12
-================
+==================
 
 * new module: self-organising map
 * couchdb2 : soft delete to allow replication and easier view recovery
@@ -22,7 +36,7 @@
 * parallel coordinates : allow to send selection only on brush end
 
 2.9.7 / 2014-12-09
-================
+==================
 
 * parallel_coordinates : add option to prevent highlight of hidden lines
 * update JSME
@@ -30,18 +44,18 @@
 * code editor : output value on load
 
 2.9.6 / 2014-12-03
-================
+==================
 
 * fix cross-origin image loading issue in scatter 3d
 * function plotter: make pref editable with action in
 
 2.9.5 / 2014-12-03
-=================
+==================
 
 * fix jsNMR not being copied in build
 
 2.9.4 / 2014-12-03
-=================
+==================
 
 * 1D nmr module is back
 * parallel coordinates :
@@ -56,7 +70,7 @@
 * slickgrid: Highlighted row is scrolled to.
 
 2.9.3 / 2014-11-26
-=================
+==================
 
 * Slickgrid: option that provides an input on the header of each column where you can just type in to search something.
 * :arrow_up: chemcalc (v2.0.0)
@@ -76,7 +90,7 @@
 * add support for hidden option in module's folder.json
 
 2.9.0 / 2014-11-18
-===================
+==================
 
 * Slickgrid: Bug fixes.Row numbering overlay. Selected Row & Cell highlighting. DataNumber and DataBoolean edition. Hierarchical grouping. Hover and click actions in.
 * button_action : add option to disable toggle
@@ -93,7 +107,7 @@
 * add [setImmediate](https://github.com/YuzuJS/setImmediate) library
 
 2.8.0 / 2014-11-10
-===================
+==================
 
 * New module : Edition / Alpaca (create forms using JSON Schema)
 * API : add possibility to change loading message
@@ -106,19 +120,19 @@
 * code_editor : new type of output (JSON-parsed value)
 
 2.7.3 / 2014-11-05
-===================
+==================
 
 * new API method : existVar
 * bug fixes
 
 2.7.0 / 2014-11-03
-===================
+==================
 
 * jsmol / jsme : change communication with iframe to allow cross-origin loading
 * core: load main css and js files in entry point. Now only two lines are necessary to boot the visualizer
 
 2.6.0-1 / 2014-10-31
-===================
+====================
 
 * View sharing (and feedback) : version is exported and redirection is done to lactame.com. It is now possible to share a view on localhost / private network !
 * spectra_displayer : 
@@ -128,7 +142,7 @@
  * added highlight color option
 
 2.6.0-0 / 2014-10-29
-===================
+====================
 
 * New module : Edition / Table editor
 * New header : Switch layer
