@@ -149,6 +149,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     formatter: formatters[row.formatter],
                     asyncPostRender: (row.formatter === 'typerenderer') ? tp : undefined,
                     jpath: row.jpath,
+                    simpleJpath: row.jpath.length === 1,
                     dataType: type
                 }
             });
@@ -442,6 +443,34 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             }
                         });
 
+                        that.grid.onSort.subscribe(function(e, args) {
+                            // args.multiColumnSort indicates whether or not this is a multi-column sort.
+                            // If it is, args.sortCols will have an array of {sortCol:..., sortAsc:...} objects.
+                            // If not, the sort column and direction will be in args.sortCol & args.sortAsc.
+
+                            that._makeDataObjects();
+                            // We'll use a simple comparer function here.
+
+                            var comparer = function(a, b) {
+                                if(!args.sortCol.simpleJpath) {
+                                    a = a[args.sortCol.jpath[0]];
+                                    b= b[args.sortCol.jpath[0]];
+                                }
+                                    // Does not work because element of array are not always DataObjects
+                                else {
+                                    a = a.getChildSync(args.sortCol.jpath).get();
+                                    b = b.getChildSync(args.sortCol.jpath).get();
+                                }
+
+
+                                return (a > b) ? 1 : -1;
+                            };
+
+                            // Delegate the sorting to DataView.
+                            // This will fire the change events and update the grid.
+                            that.slick.data.sort(comparer, args.sortAsc);
+                        });
+
 
                         $(that.grid.getHeaderRow()).delegate(":input", "change keyup", function (e) {
                             var columnId = $(this).data("columnId");
@@ -685,6 +714,12 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         that._drawHighlight();
                     }, false, that.module.getId());
                 })(i);
+            }
+        },
+
+        _makeDataObjects: function() {
+            for(var i=0; i<this.module.data.length; i++) {
+                this.module.data[i] = DataObject.check(this.module.data[i]);
             }
         },
 
