@@ -175,9 +175,11 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 				variable;
 
 			for( ; i < l ; i++ ) {
-				
+
 	 			variable = API.getVar( vars[ i ].name );
-	 			this.model.onVarChange( variable );
+				if (variable.isDefined()) {
+					this.model.onVarChange(variable);
+				}
 			}
 		},
 		
