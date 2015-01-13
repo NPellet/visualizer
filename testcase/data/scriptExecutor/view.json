@@ -1,0 +1,573 @@
+{
+  "version": "2.9.10",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/science/chemistry/jsme/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "prefs": [
+                [
+                  "oldlook"
+                ]
+              ],
+              "labelsize": [
+                14
+              ],
+              "bondwidth": [
+                1
+              ],
+              "highlightColor": [
+                "3"
+              ],
+              "outputResult": [
+                []
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 3,
+            "top": 17
+          },
+          "size": {
+            "width": 52,
+            "height": 38
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Draw a molecule",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 1,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "Draw a molecule",
+      "vars_out": [
+        {
+          "event": "onStructureChange",
+          "rel": "mol",
+          "jpath": [],
+          "name": "mol"
+        }
+      ],
+      "actions_out": {}
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "script": [
+                "console.log(getVariables());\n\nvar event = getEvent();\nif (event == 'button' && getDefined() == 1) {\n    var molfile = get('mol').get();\n    var molecule = ACT.Molecule.fromMolfile(molfile);\n    if (getButton() == 'idcode') {\n        set('idcode', molecule.getIDCode());\n    } else {\n        set('smiles', molecule.toSmiles());\n    }\n} else if(event == 'action' && getAction().name == 'exec') {\n    set('message', 'Hello')\n}\n\nsendAction('act1', 'value1')"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {
+                "lib": "http://www.lactame.com/lib/actelion/2.0.4/actelion-2.0.4.js",
+                "alias": "ACT"
+              }
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "idcode",
+                "label": "IDCode"
+              },
+              {
+                "name": "smiles",
+                "label": "SMILES"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 59,
+            "top": 7
+          },
+          "size": {
+            "width": 52,
+            "height": 30
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Untitled",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 2,
+      "vars_in": [
+        {
+          "rel": "inputValue",
+          "name": "mol"
+        }
+      ],
+      "actions_in": [
+        {
+          "rel": "execute",
+          "name": "exec"
+        }
+      ],
+      "title": "Untitled",
+      "vars_out": [
+        {
+          "event": "onScriptEnded",
+          "rel": "outputValue",
+          "jpath": [],
+          "name": "result1"
+        }
+      ],
+      "actions_out": {}
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "script": [
+                "console.log(this.variables);\n\nsetAsync();\n\nif (this.event == 'button' && this.defined == 1) {\n    var molfile = this.get('mol').get();\n    var molecule = ACT.Molecule.fromMolfile(molfile);\n    if (this.button == 'idcode') {\n        this.set('idcode', molecule.getIDCode());\n    } else {\n        this.set('smiles', molecule.toSmiles());\n    }\n} else if(this.event == 'action' && this.action.name == 'exec') {\n    this.set('message', 'Hello')\n}\n\nsetTimeout(function () {\n    sendAction('act2', 'value2')\n    done();\n}, 1000)"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {
+                "lib": "http://www.lactame.com/lib/actelion/2.0.4/actelion-2.0.4.js",
+                "alias": "ACT"
+              }
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "idcode",
+                "label": "IDCode"
+              },
+              {
+                "name": "smiles",
+                "label": "SMILES"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 58,
+            "top": 40
+          },
+          "size": {
+            "width": 53,
+            "height": 36
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Untitled",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [
+        {
+          "rel": "inputValue",
+          "name": "mol"
+        }
+      ],
+      "actions_in": [
+        {
+          "rel": "execute",
+          "name": "exec"
+        }
+      ],
+      "title": "Untitled",
+      "vars_out": [
+        {
+          "event": "onScriptEnded",
+          "rel": "outputValue",
+          "jpath": [],
+          "name": "result2"
+        }
+      ],
+      "actions_out": {}
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "view"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                []
+              ],
+              "displayValue": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 114,
+            "top": 7
+          },
+          "size": {
+            "width": 43,
+            "height": 23
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Untitled",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 4,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "result1"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "title": "Untitled",
+      "actions_out": {}
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "view"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                []
+              ],
+              "displayValue": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 113,
+            "top": 40
+          },
+          "size": {
+            "width": 44,
+            "height": 22
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Untitled",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 5,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "result2"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "title": "Untitled",
+      "actions_out": {}
+    },
+    {
+      "url": "modules/types/client_interaction/button_action/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "toggle": [
+                "click"
+              ],
+              "label": [
+                "Execute"
+              ],
+              "onLabel": [
+                "Toggle action off"
+              ],
+              "offLabel": [
+                "Toggle action on"
+              ],
+              "onColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "offColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "text": [
+                ""
+              ],
+              "askConfirm": [
+                []
+              ],
+              "confirmText": [
+                "Are you sure?"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 19,
+            "top": 59
+          },
+          "size": {
+            "width": 15,
+            "height": 9
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Untitled",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 6,
+      "vars_in": [],
+      "actions_in": [
+        {}
+      ],
+      "title": "Untitled",
+      "vars_out": {},
+      "actions_out": [
+        {
+          "event": "onClick",
+          "rel": "actionText",
+          "jpath": [],
+          "name": "exec"
+        }
+      ]
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor"
+                ]
+              ],
+              "script": [
+                "console.log('Triggered by action ' + JSON.stringify(getAction()));"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {}
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 163,
+            "top": 33
+          },
+          "size": {
+            "width": 52,
+            "height": 6
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Untitled",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 7,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {
+          "rel": "execute",
+          "name": "act1"
+        },
+        {
+          "rel": "execute",
+          "name": "act2"
+        }
+      ],
+      "title": "Untitled",
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": {}
+    }
+  ],
+  "variables": [],
+  "pouchvariables": [],
+  "configuration": {
+    "title": "Script executor"
+  }
+}

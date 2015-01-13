@@ -6,6 +6,7 @@ HEAD
 * spectra_displayer : fix legend positioning
 * slick_grid: support single and multi-column sorting
 * button_action: more display options
+* new module : Code executor
 
 2.9.10 / 2015-01-02
 ===================
