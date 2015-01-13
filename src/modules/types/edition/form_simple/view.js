@@ -10,7 +10,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 			this.dom = $('<div />');
 			this.module.getDomContent( ).html( this.dom );
 			this.callback = null;
-			this.resolveReady();
+			//this.resolveReady();
 		},
 
 		inDom: function() {
@@ -128,9 +128,11 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                         event.preventDefault();
                     });
                     triggerFunction.call(form);
+					self.resolveReady();
 				});
 
                 self.form = form;
+
 			});
 		},
 		
