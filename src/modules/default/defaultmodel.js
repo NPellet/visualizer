@@ -207,11 +207,14 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
         },
 
         onActionTrigger: function (value, actionName) {
+            var that = this;
+            this.module.onReady().then(function() {
+                var actionRel = that.module.getActionRelFromName(actionName[0]);
+                if (that.module.view.onActionReceive && that.module.view.onActionReceive[actionRel]) {
+                    that.module.view.onActionReceive[actionRel].call(that.module.view, value, actionName);
+                }
+            });
 
-            var actionRel = this.module.getActionRelFromName(actionName[0]);
-            if (this.module.view.onActionReceive && this.module.view.onActionReceive[actionRel]) {
-                this.module.view.onActionReceive[actionRel].call(this.module.view, value, actionName);
-            }
         },
 
         buildData: function (data, sourceTypes) {
