@@ -1,5 +1,5 @@
-HEAD
-====
+2.10.0 / 2015-01-13
+===================
 
 * loading_plot : fix output variables
 * fix some onde problems
@@ -7,6 +7,7 @@ HEAD
 * slick_grid: support single and multi-column sorting
 * button_action: more display options
 * new module : Code executor
+* prevent modules from updating undefined variables
 
 2.9.10 / 2015-01-02
 ===================
