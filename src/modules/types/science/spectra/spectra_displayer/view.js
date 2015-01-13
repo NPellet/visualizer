@@ -73,18 +73,18 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                         options.pluginAction['graph.plugin.zoom'] = {shift: false, ctrl: false};
                         options.pluginAction['graph.plugin.drag'] = {shift: true, ctrl: false};
 
-/*
-                        // UPDATE NORMAN FOR DEV
-                        
-                        options.plugins['graph.plugin.shape'] = { type: 'rangex', color: [ 0, 100, 100 ], fillColor: 'rgba(0,100,100,0.3)', strokeColor: 'rgba(0,100,100,1)', strokeWidth: 2 }
-                        
-                        options.pluginAction[ 'graph.plugin.zoom'] = {};
-                        options.pluginAction[ 'graph.plugin.drag'] = {};
-                        options.pluginAction[ 'graph.plugin.shape'] = { shift: true, ctrl: false };
+                        /*
+                         // UPDATE NORMAN FOR DEV
 
-                        // END UPDATE NORMAN FOR DEV
+                         options.plugins['graph.plugin.shape'] = { type: 'rangex', color: [ 0, 100, 100 ], fillColor: 'rgba(0,100,100,0.3)', strokeColor: 'rgba(0,100,100,1)', strokeWidth: 2 }
 
-*/
+                         options.pluginAction[ 'graph.plugin.zoom'] = {};
+                         options.pluginAction[ 'graph.plugin.drag'] = {};
+                         options.pluginAction[ 'graph.plugin.shape'] = { shift: true, ctrl: false };
+
+                         // END UPDATE NORMAN FOR DEV
+
+                         */
 
                         options.dblclick = {
                             type: 'plugin',
@@ -238,18 +238,18 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 graph.shapeHandlers.onAfterResized.push( function( shape ) {
 
                     self.module.model.dataTriggerChange( shape.data );
-                    
+
                 } );
 
                 graph.shapeHandlers.onSelected.push( function( shape ) {
 
                     self.module.model.dataTriggerChange( shape.data );
-                    
+
                 } );
 
 
                 graph.on('shapeSelect', function( shape ) {
-                    
+
                     self.module.controller.sendAction('selectedShape', shape.data, 'onShapeSelect' );
                 });
 
@@ -384,7 +384,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
         },
 
-        setSerieParameters: function (serie, varname, highlight) {
+        setSerieParameters: function (serie, varname, highlight, forceColor) {
             var plotinfos = this.module.getConfiguration('plotinfos');
 
             if (plotinfos) {
@@ -392,7 +392,9 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 for (var i = 0, l = plotinfos.length; i < l; i++) {
                     if (varname == plotinfos[i].variable) {
 
-                        serie.setLineColor(Color.getColor(plotinfos[i].plotcolor));
+                        var color = forceColor ? forceColor : plotinfos[i].plotcolor;
+
+                        serie.setLineColor(Color.getColor(color));
                         serie.setLineWidth(parseFloat(plotinfos[i].strokewidth) || 1);
 
                         if (plotinfos[i].markers[0] && serie.showMarkers) {
@@ -400,8 +402,8 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                             serie.setMarkers([{
                                 type: 1,
                                 zoom: 2,
-                                strokeColor: Color.getColor(plotinfos[i].plotcolor),
-                                fillColor: Color.getColor(plotinfos[i].plotcolor),
+                                strokeColor: Color.getColor(color),
+                                fillColor: Color.getColor(color),
                                 points: 'all'
                             }]);
                         }
@@ -544,7 +546,8 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                     serie.autoAxis();
                     if (String(aData.serieType) != 'scatter') {
-                        this.setSerieParameters(serie, varname, aData._highlight);
+                        var color = data.length > 1 ? Color.getNextColorRGB(i, data.length) : null;
+                        this.setSerieParameters(serie, varname, aData._highlight, color);
                     }
 
                     this.series[varname].push(serie);
@@ -565,7 +568,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 var val = moduleValue.get();
 
                 var serie = this.graph.newSerie(varname, this.getSerieOptions(varname));
-             
+
                 this.normalize(val, varname);
                 serie.setData(val);
                 serie.autoAxis();
@@ -638,7 +641,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                         self.module.model.dataListenChange( annotations.traceSync( [ i ] ), function( v ) {
 
-                             shape.redraw();
+                            shape.redraw();
 
                         }, 'annotations');
 
@@ -691,7 +694,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                         if (spectra.contourLines) {
 
                             serie = self.graph.newSerie(varname, self.getSerieOptions(varname), 'contour');
-                            
+
                             serie.setData(spectra.contourLines);
                             serie.autoAxis();
                             self.setSerieParameters(serie, varname);
@@ -705,7 +708,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                                 var data = spectra[i].data[spectra[i].data.length - 1];
 
-                                
+
                                 self.normalize(data, varname);
                                 serie.setData(data);
                                 serie.autoAxis();
@@ -741,7 +744,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 require([ 'src/util/color'], function( Color ) {
 
                     var colors = Color.getDistinctColors( data.length );
-                 //   self.graph.removeSeries();
+                    //   self.graph.removeSeries();
 
                     //data = data.get();
 
@@ -768,15 +771,15 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                         serie.setLineColor(data[ i ].lineColor || "rgb(" + colors[ i ].join() + ")" );
                         serie.setLineWidth( 3, "selected" );
 
-    //                    serie.setLineColor(data[ i ].lineColor || Color.getColor(Color.getNextColorRGB(i, l)));
+                        //                    serie.setLineColor(data[ i ].lineColor || Color.getColor(Color.getNextColorRGB(i, l)));
 
                     }
 
                     self.redraw();
 
 
-                 });
-                
+                });
+
             }
         },
 
@@ -907,7 +910,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 if( s ) {
                     s.unselect();
                 }
-            },
+            }
         },
 
         getDom: function () {
