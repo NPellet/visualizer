@@ -27,11 +27,11 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/ui'], function 
                             if(!ok) {
                                 return;
                             }
-                            if(!val) {
+                            if(!val && buttonType === 'toggle') {
                                 button.setTitle(that.module.getConfiguration('offLabel'));
                                 that.setButtonColor(that.module.getConfiguration('offColor'));
                             }
-                            else {
+                            else if(buttonType === 'toggle'){
                                 button.setTitle(that.module.getConfiguration('onLabel'));
                                 that.setButtonColor(that.module.getConfiguration('onColor'));
                             }
