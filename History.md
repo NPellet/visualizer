@@ -4,6 +4,8 @@ HEAD
 * loading_plot : fix output variables
 * fix some onde problems
 * spectra_displayer : fix legend positioning
+* slick_grid: support sorting
+* button_action: more display options
 
 2.9.10 / 2015-01-02
 ===================
