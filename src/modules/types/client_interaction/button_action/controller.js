@@ -91,7 +91,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                         offColor: {
                             type: 'spectrum',
                             title: 'Color (off)',
-                            default: [255, 255, 255, 1],
+                            default: [0, 0, 0, 1],
                             displayTarget: ['t']
                         },
                         text: {
