@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/util', 'lib/loadingplot/loadingplot', 'components/jquery-mousewheel/jquery.mousewheel.min'], function (Default, Util, LoadingPlot) {
+define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'lib/loadingplot/loadingplot', 'components/jquery-mousewheel/jquery.mousewheel.min'], function (Default, Util, API, LoadingPlot) {
 
     Util.loadCss('lib/loadingplot/svg.css');
 
@@ -28,6 +28,7 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/loadingplot/loading
                 if (this.dom) {
                     this.dom.empty();
                 }
+                API.killHighlight(this.module.getId());
             }
         },
 
@@ -168,6 +169,9 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/loadingplot/loading
 
                                 el.setLabelStroke(theLabels.blackstroke);
                                 el.setLabelScale(theLabels.scalelabel);
+
+                                var fnc = el.highlight.bind(el);
+                                API.listenHighlight(datas[k], fnc, false, this.module.getId());
 
                                 el.hoverCallback = function () {
                                     self.module.controller.hover(this._data);
