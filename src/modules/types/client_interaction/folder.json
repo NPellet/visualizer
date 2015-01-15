@@ -1,7 +1,7 @@
 {
   "modules": [
     {
-      "moduleName": "Button action",
+      "moduleName": "Button",
       "url": "modules/types/client_interaction/button_action/"
     },
     {
