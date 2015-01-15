@@ -80,11 +80,6 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'lib/loa
 
                 this._highlights = [];
 
-                if (this._svg) {
-                    this._svg.remove();
-                    this.dom.empty();
-                }
-
                 var svg = new LoadingPlot.SVG(null, null, null, null, this.module.getConfiguration('navigation')[0][0] || false);
 
                 svg.onZoomChange(function (zoom01) {
