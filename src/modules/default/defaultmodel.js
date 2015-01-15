@@ -183,9 +183,9 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
                                     self.module.view.update[vars[j].rel].call(self.module.view, varValue, varName);
 
                                 }, function (err) {
-                                    Debug.error("Error while filtering the data", err);
+                                    Debug.error("Error while filtering the data : ", err.message, err.stack);
                                 }).catch(function (err) {
-                                    Debug.error("Error while updating module", err);
+                                    Debug.error("Error while updating module : ", err.message, err.stack);
                                 });
 
                         })(k);
@@ -198,10 +198,8 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
             }, function () {
                 rejectLatency();
             }).catch(function (err) {
-
                 rejectLatency();
-                Debug.error("Error while updating variable", err);
-
+                Debug.error("Error while updating variable : ", err.message, err.stack);
             });
 
         },
