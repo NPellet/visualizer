@@ -1,11 +1,11 @@
 {
   "name": "onde",
   "homepage": "https://github.com/cheminfo/onde",
-  "_release": "3f00899df6",
+  "_release": "3f990123c7",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "3f00899df6f90d25e0521dda648fff51ff719450"
+    "commit": "3f990123c709ded49aa4e4138f6a7e1e9d30a0a0"
   },
   "_source": "git://github.com/cheminfo/onde.git",
   "_target": "*",
