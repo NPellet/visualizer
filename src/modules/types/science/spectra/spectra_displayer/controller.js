@@ -126,6 +126,11 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
             label: 'Mouse out of a marker'
         },
 
+        onClickMarker: {
+            label: 'Mouse clicks a marker',
+            refVariable: [ 'markerInfos', 'markerXY' ]
+        },
+
         onMouseOverShape: {
             label: 'Mouse over a shape',
             refVariable: ['shapeInfos']
@@ -552,6 +557,12 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
         this.infos = infos;
         this.createDataFromEvent('onMouseOverMarker', 'markerInfos', infos);
         this.createDataFromEvent('onMouseOverMarker', 'markerXY', xy);
+    };
+
+    controller.prototype.onClickMarker = function (xy, infos) {
+        this.infos = infos;
+        this.createDataFromEvent('onClickMarker', 'markerInfos', infos);
+        this.createDataFromEvent('onClickMarker', 'markerXY', xy);
     };
 
     controller.prototype.onMouseOutMarker = function (xy, infos) {

@@ -379,6 +379,9 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 API.highlightId(highlight[index[0]], 0);
                 self.module.controller.onMouseOutMarker(xy, infos);
             };
+            options.onToggleMarker = function (xy, infos, toggledOn) {
+                self.module.controller.onClickMarker(xy, infos);
+            };
 
             return options;
 
