@@ -106,8 +106,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             displaySource: {yes: 'y'}
                         },
                         confirmText: {
-                            type: 'jscode',
-                            mode: 'html',
+                            type: 'wysiwyg',
                             title: 'Confirmation text',
                             default: 'Are you sure?',
                             displayTarget: ['y']
