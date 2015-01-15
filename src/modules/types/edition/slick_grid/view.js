@@ -339,6 +339,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             setTimeout(function() {
                                 that.lastViewport = that.grid.getViewport();
                                 that._resetDeleteRowListeners();
+                                that._jpathColor();
                             }, 300);
                             that.lastViewport = that.grid.getViewport();
                             if(that.module.getConfigurationCheckbox('slickCheck', 'rowNumbering')) {
@@ -349,7 +350,9 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                                     that.$rowHelp.fadeOut();
                                 }, 1000);
                             }
+                            that._jpathColor();
                         });
+
 
 
                         that.grid.onMouseEnter.subscribe(function(e) {
@@ -581,6 +584,8 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         that.grid.render();
                         that._resetDeleteRowListeners();
                         that._setBaseCellCssStyle();
+                        that.lastViewport = that.grid.getViewport();
+                        that._jpathColor();
 
                     });
             }
@@ -650,6 +655,28 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 idx: that.slick.data.getIdxById(id),
                 item: that.slick.data.getItemById(id)
             };
+        },
+
+        _jpathColor: function() {
+            var that = this;
+            if(!that.lastViewport) return;
+            var colorjPath = that.module.getConfiguration('colorjPath');
+            var cols = that.grid.getColumns();
+            if(colorjPath && colorjPath.length > 0) {
+                that._makeDataObjects();
+                for(var i=that.lastViewport.top; i<=that.lastViewport.bottom; i++ ) {
+                    var item = that.grid.getDataItem(i);
+                    if(item) {
+                        var color = item.getChildSync(colorjPath);
+                        if(color) {
+                            for(var j=0; j<cols.length; j++) {
+                                var node = that.grid.getCellNode(i, j);
+                                $(node).css('background-color', color.get());
+                            }
+                        }
+                    }
+                }
+            }
         },
 
         _selectHighlight: function() {
@@ -723,9 +750,11 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         },
 
         _makeDataObjects: function() {
+            if(this.dataObjectsDone) return;
             for(var i=0; i<this.module.data.length; i++) {
                 this.module.data[i] = DataObject.check(this.module.data[i]);
             }
+            this.dataObjectsDone = true;
         },
 
         onResize: function() {
