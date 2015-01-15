@@ -12,7 +12,7 @@ define(['jquery', 'jquery-ui', 'src/header/components/default', 'src/util/versio
             var strlen = str.length;
             var txtarea = $('<textarea/>').text(str).css({width: '100%', height: '95%'});
 
-            $('<div />').html(txtarea).dialog({modal: true, width: '80%', height: 200});
+            $('<div />').html(txtarea).dialog({modal: true, width: '80%', height: $(document).height() * 0.7});
             var txtdom = txtarea.get(0);
 
             txtdom.selectionStart = 0;
