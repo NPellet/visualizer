@@ -111,6 +111,18 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             title: 'Confirmation text',
                             default: 'Are you sure?',
                             displayTarget: ['y']
+                        },
+                        okLabel: {
+                            type: 'text',
+                            default: 'Ok',
+                            title: 'Ok label',
+                            displayTarget: ['y']
+                        },
+                        cancelLabel: {
+                            type: 'text',
+                            title: 'Cancel label',
+                            default: 'Cancel',
+                            displayTarget: ['y']
                         }
                     }
                 }
@@ -127,7 +139,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
         text: ['groups', 'group', 0, 'text', 0],
         toggle: ['groups', 'group', 0, 'toggle', 0],
         askConfirm: ['groups', 'group', 0, 'askConfirm', 0],
-        confirmText: ['groups', 'group', 0, 'confirmText', 0]
+        confirmText: ['groups', 'group', 0, 'confirmText', 0],
+        okLabel: ['groups', 'group', 0, 'okLabel', 0],
+        cancelLabel: ['groups', 'group', 0, 'cancelLabel', 0]
+
     };
 
     return Controller;

@@ -21,7 +21,7 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/ui'], function 
                 button = new Button(label, function (e, val) {
                         var prom = Promise.resolve(true);
                         if(that.module.getConfigurationCheckbox('askConfirm', 'yes')) {
-                            prom = ui.confirm(that.module.getConfiguration('confirmText'));
+                            prom = ui.confirm(that.module.getConfiguration('confirmText'), that.module.getConfiguration('okLabel'), that.module.getConfiguration('cancelLabel'));
                         }
                         prom.then(function(ok) {
                             if(!ok) {
