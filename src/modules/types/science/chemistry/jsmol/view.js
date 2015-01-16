@@ -27,6 +27,16 @@ define(['require', 'modules/default/defaultview'], function (require, Default) {
             case 'ready':
                 view.resolveReady();
                 break;
+            case 'message':
+                console.log('received a message from jsmol', message);
+                view.module.controller.onNewMessage(message.message);
+                break;
+            case 'atomClick':
+                view.module.controller.onAtomClick(message.message);
+                break;
+            case 'atomHover':
+                view.module.controller.onAtomHover(message.message);
+                break;
             default:
                 console.error('Message type not handled: ', message.type);
                 break;
@@ -74,6 +84,9 @@ define(['require', 'modules/default/defaultview'], function (require, Default) {
                 if (self.module.getConfiguration('script')) {
                     self.postMessage('executeScript', [self.module.getConfiguration('script')]);
                 }
+
+
+                //self.postMessage('restoreOrientation', 'lastOrientation');
             }
         },
 

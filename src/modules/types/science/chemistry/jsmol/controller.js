@@ -20,6 +20,29 @@ define(['modules/default/defaultcontroller'], function (Default) {
         data: {
             type: ['cif', 'pdb', 'mol3d', 'magres', 'mol2d', 'jme'],
             label: 'A molecule/protein data'
+        },
+        message: {
+            type: ['string'],
+            label: 'Messages from jsmol'
+        },
+        atom: {
+            type: ['string'],
+            label: 'A string describing the clicked atom'
+        }
+    };
+
+    Controller.prototype.events = {
+        onMessage: {
+            label: 'A new message from jsmol arrived',
+            refVariable: ['message']
+        },
+        onAtomClick: {
+            label: 'An atom was clicked',
+            refVariable: ['atom']
+        },
+        onAtomHover: {
+            label: 'An atom was hovered',
+            refVariable: ['atom']
         }
     };
 
@@ -58,6 +81,18 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.onRemove = function () {
         this.module.view.remove(this.module.getId());
+    };
+
+    Controller.prototype.onNewMessage = function(message) {
+        this.createDataFromEvent('onMessage', 'message', message);
+    };
+
+    Controller.prototype.onAtomClick = function(message) {
+        this.createDataFromEvent('onAtomClick', 'atom', message);
+    };
+
+    Controller.prototype.onAtomHover = function(message) {
+        this.createDataFromEvent('onAtomHover', 'atom', message);
     };
 
     return Controller;
