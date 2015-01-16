@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-13
+ * jsGraph JavaScript Graphing Library v1.10.4-14
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-01-11T00:28Z
+ * Date: 2015-01-16T09:20Z
  */
 
 (function( global, factory ) {
@@ -8651,11 +8651,14 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
     eraseMarkers: function() {
 
+      var self = this;
       if ( this.currentMarkersSelectionType ) {
 
-        for ( var i in this.markerFamilies[ this.currentMarkersSelectionType ] ) {
-          this.groupMain.removeChild( this.markerFamilies[ this.currentMarkersSelectionType ][ i ].dom );
-        }
+        this.markerFamilies[ this.currentMarkersSelectionType ].map( function( el ) {
+          self.groupMain.removeChild( el.dom );
+          el.path = "";
+        } );
+
         this.currentMarkersSelectionType = false;
       }
 
