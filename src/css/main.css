@@ -214,7 +214,8 @@ div.ci-module-wrapper .ci-module {
 }
 
 
-#modules-grid > div.ci-module-wrapper.ci-module-displaywrapper .ci-module-header {	display: block;
+#modules-grid > div.ci-module-wrapper.ci-module-displaywrapper .ci-module-header {
+	display: flex;
 	height: 23px;
 	font-size: 1.2em;
 	
@@ -266,6 +267,11 @@ div.ci-module-wrapper .ci-module-header .ci-module-header-title {
 	line-height: 23px;
 	margin-left: 10px;
 	float: left;
+	max-height: 100%;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	max-width: 89%;
+	white-space: nowrap;
 }
 
 div.ci-module-header-toolbar {
