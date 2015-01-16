@@ -3,6 +3,8 @@ HEAD
 * slick_grid: support jpath line color
 * module: toolbar on header to access configuration more quickly
 * onde: bug fixes
+* model : better logging of errors
+* update jsgraph
 
 2.10.0 / 2015-01-13
 ===================
