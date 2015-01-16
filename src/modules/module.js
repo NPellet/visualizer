@@ -1475,7 +1475,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 				} else {
 					return getFieldExample(element);
 				}
-			} else {
+			} else if(element.fields) {
 				element = element.fields;
 			}
 		}
