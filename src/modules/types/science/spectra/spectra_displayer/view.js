@@ -380,7 +380,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 self.module.controller.onMouseOutMarker(xy, infos);
             };
             options.onToggleMarker = function (xy, infos, toggledOn) {
-                self.module.controller.onClickMarker(xy, infos);
+                self.module.controller.onClickMarker(xy, infos, toggledOn);
             };
 
             return options;
@@ -425,11 +425,17 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             if (highlight) {
                 API.listenHighlight({_highlight: highlight}, function (value, commonKeys) {
                     for (var i = 0, ii = commonKeys.length; i < ii; i++) {
-                        var key = Number(commonKeys[i]);
+                        var key = commonKeys[i];
                         for(var j = 0, jj = highlight.length; j < jj; j++) {
                             var high = highlight[j];
-                            if ((isNaN(Number(high) && (high.indexOf(key) > -1))) || (Number(high) === key)) {
-                                serie.toggleMarker([j, 0], !!value, false);
+                            if (Array.isArray(high)) {
+                                for (var k = 0; k < high.length; k++) {
+                                    if (high[k] == key) {
+                                        serie.toggleMarker([j, 0], !!value, true);
+                                    }
+                                }
+                            } else if (high == key) {
+                                serie.toggleMarker([j, 0], !!value, true);
                             }
                         }
                     }
