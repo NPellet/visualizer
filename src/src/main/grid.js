@@ -696,6 +696,7 @@ define(['jquery', 'jquery-ui', 'src/util/util', 'modules/modulefactory', 'src/ut
             return Object.keys(definition.layers);
         },
         addModule: addModule,
+        removeModule: removeModule,
         addModuleFromJSON: addModuleFromJSON,
         checkDimensions: checkDimensions,
         moduleResize: moduleResize,

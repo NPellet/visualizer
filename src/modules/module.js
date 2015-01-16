@@ -1,6 +1,6 @@
 'use strict';
 
-define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util/fullscreen', 'src/util/debug', 'src/main/variables', 'src/main/grid'], function( $, ContextMenu, API, Util, Fullscreen, Debug, Variables ) {
+define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util/fullscreen', 'src/util/debug', 'src/main/variables', 'src/main/grid'], function( $, _, ContextMenu, API, Util, Fullscreen, Debug, Variables ) {
 
 	function init( module ) {
 		//define object properties
@@ -62,6 +62,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 					}
 					
 					module.dom = $( module.buildDom( ) );
+					module.bindToolbar();
 
 					module.domContent = module.dom.children( ).children( '.ci-module-content' );
 					module.domHeader = module.dom.children( ).children( '.ci-module-header' );
@@ -123,8 +124,20 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 			html += '</div>';
 			html += '<div class="ci-module-header-toolbar">';
 			html += '<ul>';
-			
-		
+
+			var toolbar = this.controller.getToolbar();
+			for(var i=0 ; i<toolbar.length; i++) {
+				html += '<li title="' + (toolbar[i].title || '') + '">';
+				if(toolbar[i].icon) {
+					html += '<img src="' + toolbar[i].icon + '"/>';
+				}
+				if(toolbar[i].cssClass) {
+					html += '<span class="' + toolbar[i].cssClass + '"/>';
+				}
+				html += '</li>';
+			}
+
+
 			html += '</ul>';
 			html += '</div>';
 			html += '</div><div class="ci-module-content">';
@@ -134,6 +147,21 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 			html += '<div class="ci-module-loading">Loading ...</div>';
 			html += '</div>';
 			return html;
+		},
+
+		bindToolbar: function() {
+			var that = this;
+			var toolbar = this.controller.getToolbar();
+			this.dom.find('.ci-module-header-toolbar ul li').each(function() {
+				var el = this;
+				var t = _.find(toolbar, function(val) {
+					return val.title === el.title
+				});
+
+				if(t && t.onClick) {
+					$(el).on('click', t.onClick.bind(that));
+				}
+			});
 		},
 
 		onReady: function() {
@@ -438,7 +466,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 			this.getDomWrapper().show();
 		},
 
-		doConfig: function() {
+		doConfig: function(sectionToOpen) {
 
 			var module = this;
 			var div = $('<div></div>').dialog({ modal: true, position: ['center', 50], width: '80%', title: "Edit module preferences"});
@@ -1032,7 +1060,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 							actions_in: [ { groups: { group: [ module.actions_in() ] } } ],
 							actions_out: [ { groups: { group: [ module.actions_out() ]}} ]
 						}
-					}
+					};
 
 
 					form.fill( fill );
@@ -1090,7 +1118,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 
 				form.onLoaded().done(function() {
 
-					div.html(form.makeDom());
+					div.html(form.makeDom(1,sectionToOpen || 2));
 					form.inDom();
 				});
 			});
