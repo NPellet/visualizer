@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-14
+ * jsGraph JavaScript Graphing Library v1.10.4-15
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-01-16T09:20Z
+ * Date: 2015-01-16T13:31Z
  */
 
 (function( global, factory ) {
@@ -7332,17 +7332,20 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
           var dom = document.createElementNS( this.graph.ns, 'path' );
           this.setMarkerStyleTo( dom, true );
-
-          var x = this.getX( this.data[ k ][ i * 2 ] );
-          var y = this.getY( this.data[ k ][ i * 2 + 1 ] );
-
-          dom.setAttribute( 'd', "M " + x + " " + y + " " + this.getMarkerPath( this.markerFamilies[ this.selectionType ][ this.getMarkerCurrentFamily( i ) ], 1 ) );
-
           this[ 'domMarker' + ( hover ? 'Hover' : 'Select' ) ][ index ] = dom;
           this.groupMarkerSelected.appendChild( dom );
 
-          if ( hover )
-            this.markerHovered++;
+        } else {
+          dom = el[ index ];
+        }
+
+        var x = this.getX( this.data[ k ][ i * 2 ] );
+        var y = this.getY( this.data[ k ][ i * 2 + 1 ] );
+
+        dom.setAttribute( 'd', "M " + x + " " + y + " " + this.getMarkerPath( this.markerFamilies[ this.selectionType ][ this.getMarkerCurrentFamily( i ) ], 1 ) );
+
+        if ( hover ) {
+          this.markerHovered++;
         }
 
       } else if ( force === false ||  !_on ) {
@@ -7377,14 +7380,17 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
       var toggledOn = this.toggleMarker( index );
 
-      if ( toggledOn && this.options.onSelectMarker )
+      if ( toggledOn && this.options.onSelectMarker ) {
         this.options.onSelectMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false );
+      }
 
-      if ( !toggledOn && this.options.onUnselectMarker )
+      if ( !toggledOn && this.options.onUnselectMarker ) {
         this.options.onUnselectMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false );
+      }
 
-      if ( this.options.onToggleMarker )
+      if ( this.options.onToggleMarker ) {
         this.options.onToggleMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false, toggledOn );
+      }
     },
 
     _getMarkerIndexFromEvent: function( e ) {
@@ -7617,6 +7623,15 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       this.removeExtraLines();
       this.insertMarkers();
       this.insertLinesGroup();
+
+      for ( var i in this.domMarkerHover ) {
+        this.toggleMarker( i.split( ',' ), true, true );
+      }
+
+      for ( var i in this.domMarkerSelect ) {
+
+        this.toggleMarker( i.split( ',' ), true, false );
+      }
 
       this.applyLineStyle( this.getSymbolForLegend() );
     },
