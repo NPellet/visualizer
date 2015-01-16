@@ -135,7 +135,7 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
         var mode = this.module.getConfiguration('mode');
         var schema = {};
         if (mode === 'object' || mode === 'both') {
-            schema = Schema.fromObject(this.module.view.inputObj);
+            schema = Schema.fromObject(this.module.view.inputVal);
         }
         if (mode === 'schema' || mode === 'both') {
             var schemaSource = this.module.getConfiguration('schemaSource');
