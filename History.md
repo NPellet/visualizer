@@ -1,3 +1,9 @@
+HEAD
+===================
+* slick_grid: support jpath line color
+* module: toolbar on header to access configuration more quickly
+* onde: bug fixes
+
 2.10.0 / 2015-01-13
 ===================
 
