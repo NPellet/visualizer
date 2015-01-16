@@ -684,7 +684,9 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 return;
             }
             var that = this;
-            var idx = this._highlights.indexOf(that._highlighted[0]);
+            var idx = _.findIndex(this._highlights, function(val) {
+                return val === that._highlighted[0] || (val.indexOf && val.indexOf(that._highlighted[0]) > -1);
+            });
             this.lastViewport = this.grid.getViewport();
             if(idx > -1) {
                 var item = that.slick.data.getItemByIdx(idx);
