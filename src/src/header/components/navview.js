@@ -37,6 +37,7 @@ define([
             if (this._open) {
                 if (!this.$tree) {
                     this.$tree = this.$tree || $('<div/>').css('id', this.cssId('tree')).css('display', 'inline-block').css('margin-right', 20);
+                    this.$_elToOpen.append('<div><p><label>Filter:</label><input name="search" placeholder="Filter..."><button id="btnResetSearch" disabled="disabled">×</button><span id="matches"></span></p></div>');
                     this.$_elToOpen.append(this.$tree);
                 }
                 this.open();
@@ -339,7 +340,10 @@ define([
             return this.loadRootTree().then(function (res) {
                 var source = fancyTreeDirStructure(res);
                 that.$tree.fancytree({
-                    extensions: ['edit'],
+                    extensions: ['edit', 'filter'],
+                    filter: {
+                        mode: 'dimm'
+                    },
                     source: source,
                     lazyLoad: function (event, data) {
                         data.result = $.ajax({
@@ -407,6 +411,28 @@ define([
                     }
                 });
                 that.fancytreeOk = true;
+                var tree = that.$tree.fancytree("getTree");
+                that.$_elToOpen.find("input[name=search]").keyup(function(e){
+                    console.log('keyup');
+                    var n,
+                        match = $(this).val();
+
+                    if(e && e.which === $.ui.keyCode.ESCAPE || $.trim(match) === ""){
+                        $("button#btnResetSearch").click();
+                        return;
+                    }
+
+                    // Pass a string to perform case insensitive matching
+                    n = tree.filterNodes(match, false);
+                    $("button#btnResetSearch").attr("disabled", false);
+                    $("span#matches").text("(" + n + " matches)");
+                }).focus();
+
+                $("button#btnResetSearch").click(function(){
+                    $("input[name=search]").val("");
+                    $("span#matches").text("");
+                    tree.clearFilter();
+                }).attr("disabled", true);
             });
         },
 
@@ -415,7 +441,7 @@ define([
             if (this._buttons) return;
 
             this.$log = $('<div/>').attr('id', this.cssId('log')).css('margin-bottom', 10);
-            this.$_elToOpen.append('<div/>').children().css('display', 'inline-block').css('vertical-align', 'top').append(this.$log);
+            this.$_elToOpen.append('<div/>').children(':gt(1)').css('display', 'inline-block').css('vertical-align', 'top').append(this.$log);
             this.$log.append($('<div/>').attr('id', this.cssId('error-log')).css('color', 'red'));
             this.$log.append($('<div/>').attr('id', this.cssId('success-log')).css('color', 'green'));
 

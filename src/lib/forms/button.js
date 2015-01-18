@@ -47,9 +47,14 @@ define(['require', 'jquery', 'forms/title'], function(require, $, title) {
 			this.onclick = func;
 		},
 		setColor: function(color) {
+			// Color is a class name
 			this.oldColor = this.color;
 			this.color = color;
 			this.applyStyle();
+		},
+
+		setColorCss: function(color) {
+			this.dom.css('color', color);
 		},
 		setValue: function( val ) {
 			this.value = val;

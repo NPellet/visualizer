@@ -1,67 +1,70 @@
-if(typeof LoadingPlot == 'undefined') LoadingPlot = {};
-LoadingPlot.SpringLabels = function(svg) {
-	this.labels = [];
-	this.coords = [];
-	this.lines = [];
-	this.els = [];
+'use strict';
 
-	this.svg = svg;
-}
+define(function () {
 
-LoadingPlot.SpringLabels.prototype.addElement = function(el, label, line) {
-	
-}
+    function SpringLabels(svg) {
+        this.labels = [];
+        this.coords = [];
+        this.lines = [];
+        this.els = [];
+        this.svg = svg;
+    }
 
+    SpringLabels.prototype.addElement = function (el, label, line) {
+    };
 
-LoadingPlot.SpringLabels.prototype.resolve = function(coords) {
-		
-		var els = this.svg.getElementsForSprings();
+    SpringLabels.prototype.resolve = function (coords) {
 
-		var coords = els[0];
-		var labels = els[1];
+        var els = this.svg.getElementsForSprings();
 
-		if(typeof CI == "undefined")
-			return;
+        var coords = els[0];
+        var labels = els[1];
 
-		CI.WebWorker.send('computesprings', {coords: coords, zoom: this.svg._zoom}, function(response) {
-			coords = response.coords;
+        /* TODO check what is this WebWorker
+         if(typeof CI == "undefined")
+         return;
 
-			for(var i = 0; i < coords.length; i++) {
+         CI.WebWorker.send('computesprings', {coords: coords, zoom: this.svg._zoom}, function(response) {
+         coords = response.coords;
 
-				coords[i][6] = 0;
-				coords[i][7] = 0;
+         for(var i = 0; i < coords.length; i++) {
 
-				if(!isNaN(coords[i][0])) {
-					
-					labels[i][0].setAttributeNS(null, 'x', coords[i][0]);
-					labels[i][0].setAttributeNS(null, 'y', coords[i][1]);
+         coords[i][6] = 0;
+         coords[i][7] = 0;
 
-					labels[i][0].setAttributeNS(null, 'text-anchor', (coords[i][0] < coords[i][4]) ? 'end' : 'start');
-					labels[i][1].setAttributeNS(null, 'display', 'none');
+         if(!isNaN(coords[i][0])) {
 
-					labels[i][1].setAttribute('display', 'block');
-					labels[i][1].setAttribute('stroke', 'black');
-					labels[i][1].setAttribute('vector-effect', 'non-scaling-stroke');
-					labels[i][1].setAttribute('x1', coords[i][0]);
-					labels[i][1].setAttribute('x2', coords[i][4]);
-					labels[i][1].setAttribute('y1', coords[i][1] - coords[i][3] / 2);
-					labels[i][1].setAttribute('y2', coords[i][5]);
+         labels[i][0].setAttributeNS(null, 'x', coords[i][0]);
+         labels[i][0].setAttributeNS(null, 'y', coords[i][1]);
 
-				} else {
-					console.log('Error');
-				}
-			}
-		});		
+         labels[i][0].setAttributeNS(null, 'text-anchor', (coords[i][0] < coords[i][4]) ? 'end' : 'start');
+         labels[i][1].setAttributeNS(null, 'display', 'none');
 
-	console.timeEnd('Springs');
-}
+         labels[i][1].setAttribute('display', 'block');
+         labels[i][1].setAttribute('stroke', 'black');
+         labels[i][1].setAttribute('vector-effect', 'non-scaling-stroke');
+         labels[i][1].setAttribute('x1', coords[i][0]);
+         labels[i][1].setAttribute('x2', coords[i][4]);
+         labels[i][1].setAttribute('y1', coords[i][1] - coords[i][3] / 2);
+         labels[i][1].setAttribute('y2', coords[i][5]);
 
+         } else {
+         console.log('Error');
+         }
+         }
+         });
 
-LoadingPlot.SpringLabels.prototype.allow = function() {
-	this.allowed = true;
-}
+         console.timeEnd('Springs');*/
+    };
 
+    SpringLabels.prototype.allow = function () {
+        this.allowed = true;
+    };
 
-LoadingPlot.SpringLabels.prototype.forbid = function() {
-	this.allowed = false;
-}
+    SpringLabels.prototype.forbid = function () {
+        this.allowed = false;
+    };
+
+    return SpringLabels;
+
+});

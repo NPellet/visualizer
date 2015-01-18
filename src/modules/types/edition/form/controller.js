@@ -68,7 +68,8 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator' ], 
 							fields: {
 
 								json: {
-									type: 'textarea',
+									type: 'jscode',
+									mode: 'json',
 									title: 'Form structure'
 								}
 							}
@@ -97,7 +98,8 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator' ], 
 								},
 								
 								html: {
-									type: 'textarea',
+									type: 'jscode',
+									mode: 'html',
 									title: 'HTML template'
 								}
 							}
@@ -113,7 +115,7 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator' ], 
 		structure: [ 'sections', 'structure', 0, 'groups', 'group', 0, 'json', 0 ],
 		tpl_file: [ 'sections', 'template', 0, 'groups', 'template', 0, 'file', 0 ],
 		tpl_html: [ 'sections', 'template', 0, 'groups', 'template', 0, 'html', 0 ]
-	}
+	};
 
 	return controller;
 });

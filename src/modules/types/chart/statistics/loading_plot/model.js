@@ -1,37 +1,31 @@
-define(['modules/default/defaultmodel'], function(Default) {
-	
-	function model() {};
-	model.prototype = $.extend(true, {}, Default, {
+'use strict';
 
-		/*getValue: function() {
-			return this.dataValue;
-		},
-		
-		getjPath: function(rel) {
-			
-			function getjPath(data) {
-				// It's an array of equivalent elements
-				// Don't need to merge a list
-				// It's like that since the data is typed and we know the structure
-				var jpaths = []; 
-				var structure = [];
-				var structure = CI.DataType.getStructureFromElement(data, structure)
-				if(rel == 'element') {
-					if(structure.elements)
-						CI.DataType.getJPathsFromStructure(structure.elements.series, null, jpaths);
-				}
-				return jpaths;
-			}
-                        var relObj;
-			switch(rel) {
-				case 'element':
-					relObj = 'loading';
-				break;
-			}
-			var data = this.module.getDataFromRel(relObj);	
-			return getjPath(data);
-		}*/
-	});
-	
-	return model;
+define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (Default, Traversing) {
+
+    function Model() {
+    }
+
+    Model.prototype = $.extend(true, {}, Default, {
+
+        getjPath: function (rel) {
+            var jpath = [];
+            if (rel === 'element') {
+                var data = this.module.getDataFromRel('loading');
+                if (data) {
+                    data = data.get();
+                    if (data.series && data.series[0]) {
+                        var serie = data.series[0];
+                        if (serie.data && serie.data[0]) {
+                            Traversing.getJPathsFromElement(serie.data[0], jpath);
+                        }
+                    }
+                }
+            }
+            return jpath;
+        }
+
+    });
+
+    return Model;
+
 });

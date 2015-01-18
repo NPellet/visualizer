@@ -112,8 +112,8 @@ define(['jquery', './section', './sectionelement', './conditionalelementdisplaye
 
 		_makeDomTpl: SectionElement.prototype._makeDomTpl,
 		
-		makeDom: function(tplMode) {
-
+		makeDom: function(tplMode, tabToOpen) {
+			tabToOpen = tabToOpen || 0;
 			var self = this,
 				dom = $('<form class="forms" tabindex="1" />'),
 				i,
@@ -169,7 +169,7 @@ define(['jquery', './section', './sectionelement', './conditionalelementdisplaye
 
 			switch(this.tplMode) {
 				case 1:
-					this.sectionLvl1Buttons.children().eq(0).trigger( 'click' );
+					this.sectionLvl1Buttons.children().eq(tabToOpen).trigger( 'click' );
 				break;
 			}
 

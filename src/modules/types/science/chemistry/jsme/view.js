@@ -28,7 +28,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
                 view.resolveReady();
                 break;
             case 'onChange':
-                view.module.controller.onChange(message.message.mol, message.message.smiles, message.message.jme);
+                view.module.controller.onChange(message.message.mol, message.message.smiles, message.message.jme, message.message.action);
                 break;
             case 'doHighlight':
                 view._doHighlight(message.message.mol, message.message.atom);

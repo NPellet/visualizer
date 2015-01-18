@@ -1,10 +1,6 @@
 {
 	"modules": [
 		{
-			"moduleName": "Two dimensional list",
-			"url": "modules/types/server_interaction/button_url/"
-		},
-		{
 			"moduleName": "Webservice Cron",
 			"url": "modules/types/server_interaction/webservice_cron/"
 		},

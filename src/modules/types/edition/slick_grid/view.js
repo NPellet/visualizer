@@ -23,7 +23,7 @@ require.config({
             'components/slickgrid/plugins/slick.rowselectionmodel',
             'components/slickgrid/slick.formatters',
             'modules/types/edition/slick_grid/slick.editors.custom'],
-        slickdataview: ['slickgrid', 'slickgroupitemmetadataprovider'],
+        slickdataview: ['lodash', 'slickgrid', 'slickgroupitemmetadataprovider'],
         slickgroupitemmetadataprovider: ['slickgrid']
 
     }
@@ -149,6 +149,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     formatter: formatters[row.formatter],
                     asyncPostRender: (row.formatter === 'typerenderer') ? tp : undefined,
                     jpath: row.jpath,
+                    simpleJpath: row.jpath.length === 1,
                     dataType: type
                 }
             });
@@ -338,6 +339,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             setTimeout(function() {
                                 that.lastViewport = that.grid.getViewport();
                                 that._resetDeleteRowListeners();
+                                that._jpathColor();
                             }, 300);
                             that.lastViewport = that.grid.getViewport();
                             if(that.module.getConfigurationCheckbox('slickCheck', 'rowNumbering')) {
@@ -348,7 +350,9 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                                     that.$rowHelp.fadeOut();
                                 }, 1000);
                             }
+                            that._jpathColor();
                         });
+
 
 
                         that.grid.onMouseEnter.subscribe(function(e) {
@@ -440,6 +444,39 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                                     that.module.definition.configuration.groups.cols[0].push(conf[idx]);
                                 }
                             }
+                        });
+
+                        that.grid.onSort.subscribe(function(e, args) {
+                            // args.multiColumnSort indicates whether or not this is a multi-column sort.
+                            // If it is, args.sortCols will have an array of {sortCol:..., sortAsc:...} objects.
+                            // If not, the sort column and direction will be in args.sortCol & args.sortAsc.
+
+                            that._makeDataObjects();
+                            // We'll use a simple comparer function here.
+                            var sortCols;
+                            if(!args.sortCols) {
+                                sortCols = [{
+                                    sortCol: args.sortCol,
+                                    sortAsc: args.sortAsc
+                                }];
+                            }
+                            else {
+                                sortCols = args.sortCols;
+                            }
+                            for(var i=sortCols.length-1; i>=0; i--) {
+                                (function(i) {
+                                    var comparer = function(a) {
+                                        return a.getChildSync(sortCols[i].sortCol.jpath).get();
+                                    };
+                                    that.slick.data.sortBy(comparer, sortCols[i].sortAsc);
+                                })(i);
+
+                            }
+
+
+                            // Delegate the sorting to DataView.
+                            // This will fire the change events and update the grid.
+
                         });
 
 
@@ -547,6 +584,8 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         that.grid.render();
                         that._resetDeleteRowListeners();
                         that._setBaseCellCssStyle();
+                        that.lastViewport = that.grid.getViewport();
+                        that._jpathColor();
 
                     });
             }
@@ -618,12 +657,36 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             };
         },
 
+        _jpathColor: function() {
+            var that = this;
+            if(!that.lastViewport) return;
+            var colorjPath = that.module.getConfiguration('colorjPath');
+            var cols = that.grid.getColumns();
+            if(colorjPath && colorjPath.length > 0) {
+                that._makeDataObjects();
+                for(var i=that.lastViewport.top; i<=that.lastViewport.bottom; i++ ) {
+                    var item = that.grid.getDataItem(i);
+                    if(item) {
+                        var color = item.getChildSync(colorjPath);
+                        if(color) {
+                            for(var j=0; j<cols.length; j++) {
+                                var node = that.grid.getCellNode(i, j);
+                                $(node).css('background-color', color.get());
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
         _selectHighlight: function() {
             if(this.hovering) {
                 return;
             }
             var that = this;
-            var idx = this._highlights.indexOf(that._highlighted[0]);
+            var idx = _.findIndex(this._highlights, function(val) {
+                return val === that._highlighted[0] || (val.indexOf && val.indexOf(that._highlighted[0]) > -1);
+            });
             this.lastViewport = this.grid.getViewport();
             if(idx > -1) {
                 var item = that.slick.data.getItemByIdx(idx);
@@ -686,6 +749,14 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     }, false, that.module.getId());
                 })(i);
             }
+        },
+
+        _makeDataObjects: function() {
+            if(this.dataObjectsDone) return;
+            for(var i=0; i<this.module.data.length; i++) {
+                this.module.data[i] = DataObject.check(this.module.data[i]);
+            }
+            this.dataObjectsDone = true;
         },
 
         onResize: function() {

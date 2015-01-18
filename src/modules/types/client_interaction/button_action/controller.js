@@ -53,20 +53,50 @@ define(['modules/default/defaultcontroller'], function (Default) {
                         type: 'list'
                     },
                     fields: {
-                        label: {
-                            type: 'text',
-                            title: 'Button label',
-                            'default': 'Action'
-                        },
-                        text: {
-                            type: 'text',
-                            title: 'Action text to send'
-                        },
                         toggle: {
                             type: 'combo',
                             title: 'Button type',
                             'default': 'toggle',
-                            options: [{key: 'click', title: 'Click'}, {key: 'toggle', title: 'Toggle'}]
+                            options: [{key: 'click', title: 'Click'}, {key: 'toggle', title: 'Toggle'}],
+                            displaySource: {
+                                click: 'c',
+                                toggle: 't'
+                            }
+                        },
+                        label: {
+                            type: 'text',
+                            title: 'Button label',
+                            'default': 'Action',
+                            displayTarget: ['c']
+
+                        },
+                        onLabel: {
+                            type: 'text',
+                            title: 'Button label (on)',
+                            default: 'Toggle action off',
+                            displayTarget: ['t']
+                        },
+                        offLabel: {
+                            type: 'text',
+                            title: 'Button label (off)',
+                            default: 'Toggle action on',
+                            displayTarget: ['t']
+                        },
+                        onColor: {
+                            type: 'spectrum',
+                            title: 'Color (on)',
+                            default: [0, 0, 0, 1],
+                            displayTarget: ['t']
+                        },
+                        offColor: {
+                            type: 'spectrum',
+                            title: 'Color (off)',
+                            default: [0, 0, 0, 1],
+                            displayTarget: ['t']
+                        },
+                        text: {
+                            type: 'text',
+                            title: 'Action text to send'
                         },
                         askConfirm: {
                             type: 'checkbox',
@@ -76,10 +106,21 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             displaySource: {yes: 'y'}
                         },
                         confirmText: {
-                            type: 'jscode',
-                            mode: 'html',
+                            type: 'wysiwyg',
                             title: 'Confirmation text',
                             default: 'Are you sure?',
+                            displayTarget: ['y']
+                        },
+                        okLabel: {
+                            type: 'text',
+                            default: 'Ok',
+                            title: 'Ok label',
+                            displayTarget: ['y']
+                        },
+                        cancelLabel: {
+                            type: 'text',
+                            title: 'Cancel label',
+                            default: 'Cancel',
                             displayTarget: ['y']
                         }
                     }
@@ -90,10 +131,17 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.configAliases = {
         label: ['groups', 'group', 0, 'label', 0],
+        onLabel: ['groups', 'group', 0, 'onLabel', 0],
+        offLabel: ['groups', 'group', 0, 'offLabel', 0],
+        onColor: ['groups', 'group', 0, 'onColor', 0],
+        offColor: ['groups', 'group', 0, 'offColor', 0],
         text: ['groups', 'group', 0, 'text', 0],
         toggle: ['groups', 'group', 0, 'toggle', 0],
         askConfirm: ['groups', 'group', 0, 'askConfirm', 0],
-        confirmText: ['groups', 'group', 0, 'confirmText', 0]
+        confirmText: ['groups', 'group', 0, 'confirmText', 0],
+        okLabel: ['groups', 'group', 0, 'okLabel', 0],
+        cancelLabel: ['groups', 'group', 0, 'cancelLabel', 0]
+
     };
 
     return Controller;

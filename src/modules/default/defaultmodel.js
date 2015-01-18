@@ -183,9 +183,9 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
                                     self.module.view.update[vars[j].rel].call(self.module.view, varValue, varName);
 
                                 }, function (err) {
-                                    Debug.error("Error while filtering the data", err);
+                                    Debug.error("Error while filtering the data : ", err.message, err.stack);
                                 }).catch(function (err) {
-                                    Debug.error("Error while updating module", err);
+                                    Debug.error("Error while updating module : ", err.message, err.stack);
                                 });
 
                         })(k);
@@ -198,20 +198,21 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
             }, function () {
                 rejectLatency();
             }).catch(function (err) {
-
                 rejectLatency();
-                Debug.error("Error while updating variable", err);
-
+                Debug.error("Error while updating variable : ", err.message, err.stack);
             });
 
         },
 
         onActionTrigger: function (value, actionName) {
+            var that = this;
+            this.module.onReady().then(function() {
+                var actionRel = that.module.getActionRelFromName(actionName[0]);
+                if (that.module.view.onActionReceive && that.module.view.onActionReceive[actionRel]) {
+                    that.module.view.onActionReceive[actionRel].call(that.module.view, value, actionName[0]);
+                }
+            });
 
-            var actionRel = this.module.getActionRelFromName(actionName[0]);
-            if (this.module.view.onActionReceive && this.module.view.onActionReceive[actionRel]) {
-                this.module.view.onActionReceive[actionRel].call(this.module.view, value, actionName);
-            }
         },
 
         buildData: function (data, sourceTypes) {

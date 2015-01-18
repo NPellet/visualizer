@@ -59,7 +59,7 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                 event.stopPropagation();
                 if(!useGetUserMedia || !self.module.getConfigurationCheckbox('getusermedia', 'yes')) $fileInput.click();
                 else {
-                    confirm($('<video id="video"></video><button id="startbutton">Take photo</button><canvas id="canvas"></canvas>')).then(function(value) {
+                    confirm($('<video id="video"></video><canvas id="canvas" style="display:none;"></canvas>')).then(function(value) {
                         if(!value) return;
                         if(value) {
                             self.module.controller.openPhoto(value);
@@ -147,7 +147,7 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
             if(!fsize) {
                 return;
             }
-            while(p.height() - 40 < f.height() && fsize > 2) {
+            while(p.height() - 45 < f.height() && fsize > 2) {
                 f.css('font-size', --fsize);
             }
 
@@ -172,7 +172,6 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
             var streaming = false,
                 video        = document.querySelector('#video'),
                 canvas       = document.querySelector('#canvas'),
-                startbutton  = document.querySelector('#startbutton'),
                 width = 320,
                 height = 0;
 
@@ -228,11 +227,6 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                 //photo.setAttribute('src', data);
             }
 
-            startbutton.addEventListener('click', function(ev){
-                takepicture();
-                ev.preventDefault();
-            }, false);
-
             dialogClosed = false;
             $dialog.dialog({
                 modal: true,
@@ -240,7 +234,8 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                     Cancel: function() {
                         $(this).dialog('close');
                     },
-                    Ok: function() {
+                    "Take Picture": function() {
+                        takepicture();
                         resolve(imgData);
                         $(this).dialog('close');
                     }

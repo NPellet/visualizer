@@ -126,6 +126,21 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
             label: 'Mouse out of a marker'
         },
 
+        onClickMarker: {
+            label: 'Mouse clicks a marker',
+            refVariable: [ 'markerInfos', 'markerXY' ]
+        },
+
+        onSelectMarker: {
+            label: 'Marker is selected',
+            refAction: [ 'markerInfos' ]
+        },
+
+        onUnselectMarker: {
+            label: 'Marker is unselected',
+            refAction: [ 'markerInfos' ]
+        },
+
         onMouseOverShape: {
             label: 'Mouse over a shape',
             refVariable: ['shapeInfos']
@@ -552,6 +567,17 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
         this.infos = infos;
         this.createDataFromEvent('onMouseOverMarker', 'markerInfos', infos);
         this.createDataFromEvent('onMouseOverMarker', 'markerXY', xy);
+    };
+
+    controller.prototype.onClickMarker = function (xy, infos, toggledOn) {
+        this.infos = infos;
+        this.createDataFromEvent('onClickMarker', 'markerInfos', infos);
+        this.createDataFromEvent('onClickMarker', 'markerXY', xy);
+        if (toggledOn) {
+            this.sendAction('markerInfos', infos, 'onSelectMarker');
+        } else {
+            this.sendAction('markerInfos', infos, 'onUnselectMarker');
+        }
     };
 
     controller.prototype.onMouseOutMarker = function (xy, infos) {

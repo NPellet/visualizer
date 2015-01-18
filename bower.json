@@ -30,7 +30,7 @@
     "jquery-ui-contextmenu": "git://github.com/mar10/jquery-ui-contextmenu#1.2.4",
     "jqueryui-touch-punch": "*",
     "jsbarcode": "*",
-    "jsgraph": "v1.10.4-2",
+    "jsgraph": "v1.10.4-15",
     "jsoneditor": "~3.1.1",
     "leaflet": "~0.7.3",
     "lodash": "~2.4.1",

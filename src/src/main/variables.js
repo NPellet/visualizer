@@ -113,7 +113,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
             "listeners": attributes
         });
 
-
+        this.defined = false;
         this.setName(name);
         this.listenedBy = {};
         this.listeners = [];
@@ -127,6 +127,10 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
 
         getName: function () {
             return this._name;
+        },
+
+        isDefined: function () {
+            return this.defined;
         },
 
         setjPath: function (jpath, callback) { // Reroute variable to some other place in the data
@@ -164,6 +168,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
 
         _setValue: function (value) {
             this._value = value;
+            this.defined = true;
         },
 
         getValue: function () {

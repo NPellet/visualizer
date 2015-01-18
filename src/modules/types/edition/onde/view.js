@@ -61,8 +61,13 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
             this.resolveReady();
         },
         initForm: function () {
+            var that = this;
             this.form = new onde.Onde(this.dom);
             this.renderForm();
+            this.form.on('field:delete', function(node) {
+                console.log('field:delete', node);
+                that.exportForm();
+            })
         },
         update: {
             inputValue: function (value) {
