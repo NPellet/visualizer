@@ -19,6 +19,10 @@
 		{
 			"moduleName": "XYZ Zoom navigator",
 			"url": "modules/types/client_interaction/xyzoomnavigator/"
+		},
+		{
+			"moduleName": "X Navigator",
+			"url": "modules/types/client_interaction/xnavigator/"
 		}
 	],
 	"name": "Client interaction",

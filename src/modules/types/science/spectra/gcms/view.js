@@ -132,9 +132,14 @@ define( [
 					self.module.controller.sendAction('mzList', ms, 'onMZSelectionChange');					
 				},
 
+				MSChangeIndex: function( msIndex ) {
+					self.module.controller.sendAction('msIndex', msIndex, 'onMSIndexChanged');
+				},
+
 				onZoomGC: function( from, to ) {
 
 					self.module.controller.sendAction('fromtoGC', [ from, to ], 'onZoomGCChange');
+					self.module.controller.sendAction('centerGC', (to + from) / 2, 'onZoomGCChange');
 				},
 
 				ingredientSelected: function( ingredient ) {
@@ -334,7 +339,7 @@ define( [
 
 			centerGC: function( value ) {
 
-				value = value[ 0 ]; // x value
+				
 				var a = this.gcmsInstance.getGC().getBottomAxis();
 
 				var mi = a.getActualMin();
@@ -345,6 +350,10 @@ define( [
 				a._doZoomVal( value - interval, value + interval, true);
 				this.gcmsInstance.getGC().redraw( true, true, false );
 				this.gcmsInstance.getGC().drawSeries();
+			},
+
+			setMSIndexData: function( x ) {
+				this.gcmsInstance.setMSIndexData( x );
 			}
 		},
 
