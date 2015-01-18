@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-01-18T20:34Z
+ * Date: 2015-01-18T20:58Z
  */
 
 (function( global, factory ) {
@@ -5509,7 +5509,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
   function _handleClick( graph, x, y, e ) {
 
     graph.emit( 'click', e );
-    if ( !e.shiftKey ) {
+    if ( e.target == graph.rectEvent && !e.shiftKey ) {
       graph.unselectShapes();
     }
 
