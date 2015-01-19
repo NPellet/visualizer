@@ -25,7 +25,7 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
                             this.doConfig(2);
                         },
                         title: "Open Preferences",
-                        cssClass: 'fa fa-wrench fa-lg'
+                        cssClass: 'fa fa-wrench'
                     }
                     //{
                     //    onClick: function() {
