@@ -763,6 +763,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     for (; i < l; i++) {
 
                         var opts = self.getSerieOptions(varname);
+                        
                         var serie = self.graph.newSerie( data[ i ].name, opts );
 
 
@@ -781,7 +782,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                         serie.setLineWidth( 3, "selected" );
 
                         //                    serie.setLineColor(data[ i ].lineColor || Color.getColor(Color.getNextColorRGB(i, l)));
-
+                        serie.extendStyles();
                     }
 
                     self.redraw();
@@ -903,8 +904,8 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             },
 
             selectSerie: function( serieName ) {
-
-                var s = this.graph.getSerie( serieName );
+            
+                var s = this.graph.getSerie( serieName.valueOf() );
 
                 if( s ) {
                     s.select( "selected" );
@@ -914,7 +915,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
             unselectSerie: function( serieName ) {
 
-                var s = this.graph.getSerie( serieName );
+                var s = this.graph.getSerie( serieName.valueOf() );
 
                 if( s ) {
                     s.unselect();

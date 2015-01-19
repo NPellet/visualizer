@@ -291,6 +291,8 @@ define( [
 				this.gcmsInstance.getGC().redraw( true, true, false );
 				this.gcmsInstance.getGC().drawSeries();
 
+				this.module.controller.sendAction('centerGC', (to + from) / 2, 'onZoomGCChange');
+
 				this.gcmsInstance.updateIngredientPeaks();
 
 			},
@@ -314,6 +316,9 @@ define( [
 					return;
 				}
 				this.gcmsInstance.zoomOn(value.pos.x, value.pos2.x, value._max || false);
+				this.module.controller.sendAction('centerGC', (value.pos.x + value.pos2.x) / 2, 'onZoomGCChange');
+				this.gcmsInstance.updateIngredientPeaks();
+				
 			},
 
 			displayChemicalLabels: function() {
