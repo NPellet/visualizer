@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-21
+ * jsGraph JavaScript Graphing Library v1.10.4-22
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-01-18T20:58Z
+ * Date: 2015-01-18T22:12Z
  */
 
 (function( global, factory ) {
@@ -11556,7 +11556,10 @@ build['./shapes/graph.shape'] = ( function( ) {
 
         if ( !pos ) {
 
-          var pos = this._getPosition( this.get( 'labelPosition', labelIndex ), currPos );
+          var pos = this._getPosition( this.get( 'labelPosition', labelIndex ) || {
+            dx: 0,
+            dy: 0
+          }, currPos );
         } else {
           pos = this._getPosition( pos );
         }
