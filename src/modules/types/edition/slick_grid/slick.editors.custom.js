@@ -39,6 +39,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
             this.args = args;
             var $cont, $input, defaultValue;
             this.init = function() {
+                var that = this;
                 $cont = $('<div/>');
                 $cont.append('<input type="text">');
                 $input = $cont.find('input');
@@ -54,21 +55,21 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
                     color: $input.val(),
                     preferredFormat: 'hex',
                     change: function(color) {
-                        console.log('change');
-                        console.log('color: ', color);
+                        that.changed = true;
                         $input.spectrum('hide');
-                        args.commitChanges();
+                        args.commitChanges('next');
                     },
                     move: function(color) {
-                        console.log('move');
-                        console.log('color: ', color);
+
                     },
                     show: function() {
-                        console.log('show');
+
                     },
                     hide: function() {
                         console.log('hide');
-                        args.commitChanges();
+                        if(!that.changed) {
+                            args.cancelChanges();
+                        }
                     },
                     localStorageKey: 'visualizer-spectrum',
                     showPalette: true,
