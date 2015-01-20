@@ -5,7 +5,7 @@
 			"url": "modules/types/chart/statistics/dendrogram/"
 		},
 		{
-			"moduleName": "Loading plot",
+			"moduleName": "Score plot",
 			"url": "modules/types/chart/statistics/loading_plot/"
 		},
 		{
