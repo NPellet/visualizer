@@ -25,29 +25,29 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
                             this.doConfig(2);
                         },
                         title: "Open Preferences",
-                        cssClass: 'fa fa-wrench fa-lg'
-                    },
-                    {
-                        onClick: function() {
-                            this.doConfig(3);
-                        },
-                        title: "Variables in",
-                        cssClass: 'fa fa-sign-in fa-lg'
-                    },
-                    {
-                        onClick: function() {
-                            this.doConfig(4)
-                        },
-                        title: "Variables out",
-                        cssClass: 'fa fa-sign-out fa-lg'
-                    },
-                    {
-                        onClick: function() {
-                            Grid.removeModule(this);
-                        },
-                        title: "Remove module",
-                        cssClass: 'fa fa-close fa-lg'
+                        cssClass: 'fa fa-wrench'
                     }
+                    //{
+                    //    onClick: function() {
+                    //        this.doConfig(3);
+                    //    },
+                    //    title: "Variables in",
+                    //    cssClass: 'fa fa-sign-in fa-lg'
+                    //},
+                    //{
+                    //    onClick: function() {
+                    //        this.doConfig(4)
+                    //    },
+                    //    title: "Variables out",
+                    //    cssClass: 'fa fa-sign-out fa-lg'
+                    //},
+                    //{
+                    //    onClick: function() {
+                    //        Grid.removeModule(this);
+                    //    },
+                    //    title: "Remove module",
+                    //    cssClass: 'fa fa-close fa-lg'
+                    //}
                 ]
             }
             return [];

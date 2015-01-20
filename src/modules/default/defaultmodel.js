@@ -209,7 +209,7 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
             this.module.onReady().then(function() {
                 var actionRel = that.module.getActionRelFromName(actionName[0]);
                 if (that.module.view.onActionReceive && that.module.view.onActionReceive[actionRel]) {
-                    that.module.view.onActionReceive[actionRel].call(that.module.view, value, actionName);
+                    that.module.view.onActionReceive[actionRel].call(that.module.view, value, actionName[0]);
                 }
             });
 

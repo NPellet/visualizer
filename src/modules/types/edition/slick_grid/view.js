@@ -214,6 +214,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 forceFitColumns: that.module.getConfigurationCheckbox('slickCheck', 'forceFitColumns'),
                 multiColumnSort: that.module.getConfigurationCheckbox('slickCheck', 'multiColumnSort'),
                 asyncEditorLoading: true,
+                asyncEditorLoadDelay: 40,
                 enableAsyncPostRender: true,
                 asyncPostRenderDelay: 0,
                 defaultColumnWidth: that.module.getConfiguration('slick.defaultColumnWidth') || 80,
@@ -243,6 +244,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 var that =  this;
                 this.module.data = moduleValue;
                 this._highlights = _.pluck(this.module.data, '_highlight');
+                that.dataObjectsDone = false;
 
                 this.slick.columns = this.getSlickColumns();
                 this.slick.options = this.getSlickOptions();
@@ -684,13 +686,15 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 return;
             }
             var that = this;
-            var idx = this._highlights.indexOf(that._highlighted[0]);
+            var idx = _.findIndex(this._highlights, function(val) {
+                return val === that._highlighted[0] || (val.indexOf && val.indexOf(that._highlighted[0]) > -1);
+            });
             this.lastViewport = this.grid.getViewport();
             if(idx > -1) {
                 var item = that.slick.data.getItemByIdx(idx);
                 var gridRow = that.slick.data.mapIdsToRows([item[that.idPropertyName]])[0];
                 if(!gridRow) return;
-                if (gridRow < this.lastViewport.top || gridRow > this.lastViewport.bottom) {
+                if (gridRow < this.lastViewport.top || gridRow >= this.lastViewport.bottom) {
                     // navigate
                     this.grid.scrollRowToTop(gridRow);
                 }

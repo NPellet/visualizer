@@ -36,8 +36,8 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 			type: ['fromTo', 'object']
 		},
 
-		centerGCAt: {
-			label: 'Center GC at',
+		centerGC: {
+			label: 'Center GC',
 			type: ['number', 'string', 'array']
 		},
 
@@ -114,6 +114,11 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		selectedIngredient: {
 			type: ["object"],
 			label: "Selected ingredient"
+		},
+
+		msIndex: {
+			type: ['number'],
+			label: 'MS Index'
 		}
 	};
 
@@ -127,7 +132,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 
 		onZoomGCChange: {
 			label: 'Zoom over GC spectra',
-			refAction: [ 'fromtoGC' ]
+			refAction: [ 'fromtoGC', 'centerGC' ]
 		},
 
 		onZoomMSChange: {
@@ -176,6 +181,11 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		onIngredientSelected: {
 			label: "Ingredient is selected",
 			refAction: [ 'selectedIngredient' ]
+		},
+
+		onMSIndexChanged: {
+			label: 'MS Index has changed',
+			refAction: [ 'msIndex' ]
 		}
 
 	};
@@ -202,7 +212,8 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		displayChemicalLabels: 'Display chemical labels',
 		hideChemicalLabels: 'Hide chemical labels',
 		centerGC: 'Center GC at value',
-		externalMS: 'Set external MS'
+		externalMS: 'Set external MS',
+		setMSIndexData: 'Change MS data index'
 	};
 	
 		

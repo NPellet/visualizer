@@ -21,6 +21,9 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
 
     function createDataJpath(name, data, jpath, filter) {
 
+        if (data && data.__parent){
+            data = data.resurrect();
+        }
         data = DataObject.check(data, true);
 
         if (data && data.getChild) {

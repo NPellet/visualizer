@@ -125,9 +125,9 @@ define(['modules/default/defaultcontroller'], function (Default) {
         };
     };
 
-    Controller.prototype.onChange = function (mol, smiles, jme) {
+    Controller.prototype.onChange = function (mol, smiles, jme, action) {
 
-        if(this.module.view._currentValue && this.module.getConfigurationCheckbox('outputResult', 'yes')) {
+        if(action != null && action != 'readMolFile' && action != 'reset' && this.module.view._currentValue && this.module.getConfigurationCheckbox('outputResult', 'yes')) {
 
             if(this.module.view._currentValue.type === 'mol2d') {
                 this.module.view._currentValue.setValue(mol, true);
