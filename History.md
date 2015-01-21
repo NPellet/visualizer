@@ -7,6 +7,7 @@ HEAD
 * update jsgraph
 * core: allow data's attributes to be changed (like _highlight)
 * single_value: option to append values to the dom with limit and auto-scroll
+* jsmol: support highlight and add var out (messages, click, hover)
 
 2.10.0 / 2015-01-13
 ===================
