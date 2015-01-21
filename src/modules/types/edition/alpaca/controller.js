@@ -8,7 +8,7 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
     Controller.prototype = $.extend(true, {}, Default);
 
     Controller.prototype.moduleInformation = {
-        moduleName: 'Alpaca',
+        name: 'Alpaca form',
         description: 'Create a form base on a schema and output an object',
         author: 'Daniel Kostro',
         date: '04.11.2014',

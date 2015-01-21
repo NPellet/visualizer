@@ -8,7 +8,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype = $.extend(true, {}, Default);
 
     Controller.prototype.moduleInformation = {
-        moduleName: 'JSMol module',
+        name: 'JSMol',
         description: 'Display a JSMol module',
         author: 'Nathanaêl Khodl, Luc Patiny',
         date: '30.12.2013',

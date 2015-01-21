@@ -16,7 +16,7 @@ define( [ '../../../default/defaultcontroller', 'lib/formcreator/formcreator' ],
 		Information about the module
 	*/
 	controller.prototype.moduleInformation = {
-		moduleName: 'Filter',
+		name: 'Filter',
 		description: 'A filtering module that takes variables in, modifies them, and outputs some other variables',
 		author: 'Norman Pellet',
 		date: '24.12.2013',

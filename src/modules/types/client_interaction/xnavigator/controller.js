@@ -7,7 +7,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
     Controller.prototype = $.extend(true, {}, Default);
 
     Controller.prototype.moduleInformation = {
-        moduleName: 'X Nav',
+        name: 'X Nav',
         description: 'X Nav',
         author: 'Norman Pellet',
         date: '9.12.2014',

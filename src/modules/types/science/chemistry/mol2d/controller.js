@@ -16,7 +16,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		Information about the module
 	*/
 	controller.prototype.moduleInformation = {
-		moduleName: 'CWC molfile displayer',
+		name: 'CWC molfile displayer',
 		description: 'Display 2D molfiles',
 		author: 'Norman Pellet',
 		date: '24.12.2013',

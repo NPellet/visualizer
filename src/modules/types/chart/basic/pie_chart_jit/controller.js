@@ -17,7 +17,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
      Information about the module
      */
     controller.prototype.moduleInformation = {
-        moduleName: 'Pie chart jit',
+        name: 'Pie chart jit',
         description: 'Display a pie chart based on jit',
         author: 'Michaël Zasso',
         date: '16.01.2014',

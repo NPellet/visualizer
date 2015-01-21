@@ -110,7 +110,7 @@ define(['../../../default/defaultcontroller', 'src/util/api', 'src/util/datatrav
 		},
 		
 		moduleInformations: {
-			moduleName: 'Var Editor'
+			name: 'Var Editor'
 		},
 
 		

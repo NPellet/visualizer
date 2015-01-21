@@ -16,7 +16,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		Information about the module
 	*/
 	controller.prototype.moduleInformation = {
-		moduleName: 'Fast two dimensional list',
+		name: 'Two dimensional list (fast)',
 		description: 'Display an array of data in 2 dimensions. Parts of the data can be selectively shown or hidden.',
 		author: 'Michaël Zasso',
 		date: '05.05.2014',

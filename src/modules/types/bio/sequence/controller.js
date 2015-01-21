@@ -16,7 +16,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
         Information about the module
     */
     controller.prototype.moduleInformation = {
-        moduleName: 'Sequence displayer',
+        name: 'Sequence displayer',
         description: 'Displays DNA sequence with annotations',
         author: 'Daniel Kostro',
         date: '12.06.2014',

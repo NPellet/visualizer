@@ -8,7 +8,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
     Controller.prototype = $.extend(true, {}, Default);
 
     Controller.prototype.moduleInformation = {
-        moduleName: 'Parallel coordinates',
+        name: 'Parallel coordinates',
         description: 'Multivariate data visualization',
         author: 'Michaël Zasso',
         date: '11.03.2014',

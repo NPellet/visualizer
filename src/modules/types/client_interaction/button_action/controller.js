@@ -9,7 +9,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype = $.extend(true, {}, Default);
 
     Controller.prototype.moduleInformation = {
-        moduleName: 'Button action',
+        name: 'Button',
         description: 'Shows a button that will trigger a text action',
         author: 'Norman Pellet',
         date: '24.12.2013',

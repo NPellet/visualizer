@@ -13,7 +13,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     };
 
     Controller.prototype.moduleInformation = {
-        moduleName: 'Complex grid',
+        name: 'Table',
         description: 'Displays a complex (but slower) grid with editable capability. Works async',
         author: 'Norman Pellet',
         date: '24.12.2013',

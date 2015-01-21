@@ -16,7 +16,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		Information about the module
 	*/
 	controller.prototype.moduleInformation = {
-		moduleName: 'IV stability',
+		name: 'IV stability',
 		description: 'Dedicated module to show IV Stability files',
 		author: 'Norman Pellet',
 		date: '24.12.2013',

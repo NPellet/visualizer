@@ -21,7 +21,7 @@ define(['modules/default/defaultcontroller', 'modules/types/edition/onde/control
 	};
 
     controller.prototype.moduleInformation = {
-        moduleName: 'Edit/Display',
+        name: 'Edit/Display',
         description: 'Dual-view module, with a displayer that is based on Twig and a JSON editor based on Onde.',
         author: 'Michaël Zasso',
         date: '13.05.2014',

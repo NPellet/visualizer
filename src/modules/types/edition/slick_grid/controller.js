@@ -8,7 +8,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
      Information about the module
      */
     controller.prototype.moduleInformation = {
-        moduleName: 'Slick Grid',
+        name: 'Slick Grid',
         description: 'Table editor based on SlickGrid',
         author: 'Daniel Kostro',
         date: '14.10.2014',

@@ -17,7 +17,7 @@ define([ 'modules/default/defaultcontroller' ], function (Default) {
      Information about the module
      */
     controller.prototype.moduleInformation = {
-        moduleName: 'Plotter',
+        name: 'Spectra displayer',
         description: 'Displays a plot, either data or jcamp',
         author: 'Norman Pellet',
         date: '24.12.2013',

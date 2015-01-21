@@ -1,4 +1,4 @@
-define( [ 'modules/default/defaultcontroller' ], function( Default ) {
+define( [ '../../../default/defaultcontroller' ], function( Default ) {
 	
 	/**
 	 * Creates a new empty controller
@@ -16,7 +16,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		Information about the module
 	*/
 	controller.prototype.moduleInformation = {
-		moduleName: 'Hashmap display',
+		name: 'Hashmap display',
 		description: 'Displays a json element in a list',
 		author: 'Norman Pellet',
 		date: '28.12.2013',

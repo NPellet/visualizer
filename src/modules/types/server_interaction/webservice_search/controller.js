@@ -8,7 +8,7 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
     Controller.prototype = $.extend(true, {}, Default);
 
     Controller.prototype.moduleInformation = {
-        moduleName: 'Webservice search',
+        name: 'Webservice search',
         description: 'Performs a query to a server and returns the response',
         author: 'Norman Pellet, Michaël Zasso',
         date: '29.07.2014',

@@ -7,7 +7,7 @@ define([ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 'sr
     Controller.prototype = $.extend(true, {}, Default);
 
     Controller.prototype.moduleInformation = {
-        moduleName: 'Simple Form',
+        name: 'Simple Form',
         description: 'A simple module allowing one to display a form in the module',
         author: 'Norman Pellet, Michaël Zasso',
         date: '01.09.2014',

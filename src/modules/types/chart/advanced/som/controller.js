@@ -8,7 +8,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     Controller.prototype = $.extend(true, {}, Default);
 
     Controller.prototype.moduleInformation = {
-        moduleName: 'Self-organizing map',
+        name: 'Self-organizing map',
         description: 'Display the result of a SOM analysis',
         author: 'Michaël Zasso',
         date: '01.12.2014',

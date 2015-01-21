@@ -1,26 +1,26 @@
 {
-	"modules": [
-		{
-			"moduleName": "Pie chart",
-			"url": "modules/types/chart/basic/pie_chart/"
-		},
-		{
-			"moduleName": "Pie chart jit",
-			"url": "modules/types/chart/basic/pie_chart_jit/"
-		},
-		{
-			"moduleName": "Stack chart",
-			"url": "modules/types/chart/basic/stack_chart/"
-		},
+  "modules": [
     {
-			"moduleName": "Radar chart",
-			"url": "modules/types/chart/basic/radar_chart/"
-		},
+      "moduleName": "Pie chart",
+      "url": "modules/types/chart/basic/pie_chart/"
+    },
     {
-      "moduleName": "Scatter 3D",
+      "moduleName": "Pie chart jit",
+      "url": "modules/types/chart/basic/pie_chart_jit/"
+    },
+    {
+      "moduleName": "Radar chart",
+      "url": "modules/types/chart/basic/radar_chart/"
+    },
+    {
+      "moduleName": "3D scatter plot",
       "url": "modules/types/chart/basic/scatter3D/"
+    },
+    {
+      "moduleName": "Stack chart",
+      "url": "modules/types/chart/basic/stack_chart/"
     }
-	],
-	"name": "Basic",
-	"folders": []
+  ],
+  "name": "Basic",
+  "folders": []
 }

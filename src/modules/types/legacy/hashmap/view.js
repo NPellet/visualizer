@@ -1,4 +1,4 @@
-define(['modules/default/defaultview', 'src/util/typerenderer'], function(Default, Renderer) {
+define(['../../../default/defaultview', 'src/util/typerenderer'], function(Default, Renderer) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {

@@ -7,7 +7,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
     Controller.prototype = $.extend(true, {}, Default);
 
     Controller.prototype.moduleInformation = {
-        moduleName: 'X-Y-Z Zoom',
+        name: 'X-Y-Z Zoom',
         description: 'X,Y,Z Zoom handles like Google Maps',
         author: 'Norman Pellet',
         date: '9.12.2014',

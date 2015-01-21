@@ -15,7 +15,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing'], function
 		Information about the module
 	*/
 	controller.prototype.moduleInformation = {
-		moduleName: 'Display dendrogram',
+		name: 'Circular dendrogram',
 		description: 'Display a dendrogram based on jit',
 		author: 'Luc Patiny',
 		date: '30.12.2013',
@@ -73,7 +73,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing'], function
 
 	
 	controller.prototype.moduleInformations = {
-		moduleName: 'Dendrogram'
+		name: 'Dendrogram'
 	};
 	
 

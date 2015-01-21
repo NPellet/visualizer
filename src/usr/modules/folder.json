@@ -1,7 +1,7 @@
 {
-	"modules": [],
-	"folders": {
-		"dev": "usr/modules/dev/"
-	},
-	"name": "modules"
+  "modules": [],
+  "folders": [
+    "test"
+  ],
+  "name": "modules"
 }

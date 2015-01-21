@@ -21,15 +21,14 @@
       "url": "modules/types/client_interaction/paste_text/"
     },
     {
-      "moduleName": "XYZ Zoom navigator",
-      "url": "modules/types/client_interaction/xyzoomnavigator/"
+      "moduleName": "X Nav",
+      "url": "modules/types/client_interaction/xnavigator/"
     },
     {
-		"moduleName": "X Navigator",
-		"url": "modules/types/client_interaction/xnavigator/"
-	}
+      "moduleName": "X-Y-Z Zoom",
+      "url": "modules/types/client_interaction/xyzoomnavigator/"
+    }
   ],
   "name": "Client interaction",
   "folders": []
-
 }

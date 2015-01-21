@@ -6,7 +6,7 @@ define(['modules/types/display/jqgrid/controller'], function (Controller) {
     ControllerExtended.prototype = new Controller();
 
     ControllerExtended.prototype.moduleInformation = {
-        moduleName: 'Fast table',
+        name: 'Table (fast)',
         description: 'Displays a fast grid',
         author: 'Norman Pellet',
         date: '24.12.2013',

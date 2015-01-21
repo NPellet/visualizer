@@ -15,7 +15,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		Information about the module
 	*/
 	controller.prototype.moduleInformation = {
-		moduleName: 'Paste value',
+		name: 'Paste value',
 		description: 'Paste any text and parse it in a variable',
 		author: 'Michaël Zasso',
 		date: '05.03.2014',

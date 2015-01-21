@@ -8,7 +8,7 @@ define(['modules/default/defaultcontroller', 'src/util/api'], function (Default,
     Controller.prototype = $.extend(true, {}, Default);
 
     Controller.prototype.moduleInformation = {
-        moduleName: 'Leaflet map',
+        name: 'Leaflet map',
         description: 'Display a map with objects in it',
         author: 'Michaeël Zasso',
         date: '11.01.2014',

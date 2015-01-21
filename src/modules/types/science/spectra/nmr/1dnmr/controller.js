@@ -8,7 +8,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype = $.extend(true, {}, Default);
 
     Controller.prototype.moduleInformation = {
-        moduleName: '1D NMR',
+        name: '1D NMR',
         description: 'Displays NMR jcamp files in the style of standard NMRs',
         author: 'Norman Pellet',
         date: '24.12.2013',

@@ -8,7 +8,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/datatrave
     Controller.prototype = $.extend(true, {}, Default);
 
     Controller.prototype.moduleInformation = {
-        moduleName: 'NMR spin system simulation',
+        name: 'NMR spin system simulation',
         description: 'Allows to enter coupling constant',
         author: 'Luc Patiny',
         date: '30.12.2013',

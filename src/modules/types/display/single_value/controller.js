@@ -8,7 +8,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
     Controller.prototype = $.extend(true, {}, Default);
 
     Controller.prototype.moduleInformation = {
-        moduleName: 'Display value',
+        name: 'Display value',
         description: 'Display a displayable element',
         author: 'Norman Pellet',
         date: '24.12.2013',

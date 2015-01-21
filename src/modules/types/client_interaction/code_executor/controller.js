@@ -8,7 +8,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
     Controller.prototype = Object.create(CodeEditor.prototype);
 
     Controller.prototype.moduleInformation = {
-        moduleName: 'Code executor',
+        name: 'Code executor',
         description: 'Write code that can be executed on input variable, action or just the push of a button',
         author: 'Michaël Zasso',
         date: '12.01.2015',

@@ -8,7 +8,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype = $.extend(true, {}, Default);
 
     Controller.prototype.moduleInformation = {
-        moduleName: 'Iframe',
+        name: 'Iframe',
         description: 'Shows a integrated iframe with URL as an input',
         author: 'Norman Pellet',
         date: '24.12.2013',

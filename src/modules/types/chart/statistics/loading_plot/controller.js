@@ -8,8 +8,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype = $.extend(true, {}, Default);
 
     Controller.prototype.moduleInformation = {
-        moduleName: 'Loading plot',
-        description: 'Display a loading plot',
+        name: 'Score plot',
+        description: 'Display a score plot',
         author: 'Norman Pellet',
         date: '24.12.2013',
         license: 'MIT',

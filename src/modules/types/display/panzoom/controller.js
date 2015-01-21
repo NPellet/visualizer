@@ -16,7 +16,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
   Information about the module
   */
   controller.prototype.moduleInformation = {
-    moduleName: 'Panzoom',
+    name: 'Panzoom',
     description: 'Panzoom',
     author: 'Daniel Kostro',
     date: '15.06.2014',

@@ -8,7 +8,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
     Controller.prototype = $.extend(true, {}, Default);
 
     Controller.prototype.moduleInformation = {
-        moduleName: 'Configured search',
+        name: 'Configured array search',
         description: 'Filters an array with configured UI criteria',
         author: 'Norman Pellet',
         date: '24.12.2013',

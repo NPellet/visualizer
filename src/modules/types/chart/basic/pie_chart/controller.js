@@ -15,7 +15,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 		Information about the module
 	*/
 	controller.prototype.moduleInformation = {
-		moduleName: 'Pie chart',
+		name: 'Pie chart',
 		description: 'Display a pie chart based on flot',
 		author: '',
 		date: '07.01.2014',

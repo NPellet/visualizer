@@ -16,7 +16,7 @@ define(['modules/default/defaultcontroller','components/x2js/xml2json.min'], fun
      Information about the module
      */
     controller.prototype.moduleInformation = {
-        moduleName: 'Webservice Cron',
+        name: 'Webservice Cron',
         description: 'Cron service allowing to fetch data from the server',
         author: 'Norman Pellet, Luc Patiny, Michaël Zasso',
         date: '11.01.2014',

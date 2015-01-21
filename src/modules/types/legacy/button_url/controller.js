@@ -16,7 +16,7 @@ define( [ '../../../default/defaultcontroller' ], function( Default ) {
 		Information about the module
 	*/
 	controller.prototype.moduleInformation = {
-		moduleName: 'Button url',
+		name: 'Button url',
 		description: 'Display an array of data in 2 dimensions using a table',
 		author: 'Norman Pellet',
 		date: '24.12.2013',
