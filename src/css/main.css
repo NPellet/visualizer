@@ -399,6 +399,10 @@ div.ci-module-wrapper.ci-module-jqgrid .ci-module-content .ui-jqgrid tr.ui-state
 	cursor: pointer;
 }
 
+.ci-highlight {
+	background-color: #FFFF99;
+}
+
 .ci-plot {
 	font-size: 0px;
 }
