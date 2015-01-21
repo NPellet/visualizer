@@ -1,6 +1,6 @@
 'use strict';
 
-define(['require', 'modules/default/defaultview'], function (require, Default) {
+define(['require', 'modules/default/defaultview', 'src/util/api'], function (require, Default, API) {
 
     function View() {
     }
@@ -23,19 +23,22 @@ define(['require', 'modules/default/defaultview'], function (require, Default) {
             return;
         }
         var view = views[id];
+        var atom;
         switch (message.type) {
             case 'ready':
                 view.resolveReady();
                 break;
             case 'message':
-                console.log('received a message from jsmol', message);
                 view.module.controller.onNewMessage(message.message);
                 break;
             case 'atomClick':
-                view.module.controller.onAtomClick(message.message);
+                atom = view.parseAtom(message.message);
+                view.module.controller.onAtomClick(atom);
                 break;
             case 'atomHover':
-                view.module.controller.onAtomHover(message.message);
+                atom = view.parseAtom(message.message);
+                view._doHighlights(atom);
+                view.module.controller.onAtomHover(atom);
                 break;
             default:
                 console.error('Message type not handled: ', message.type);
@@ -112,6 +115,34 @@ define(['require', 'modules/default/defaultview'], function (require, Default) {
 
         remove: function (id) {
             delete views[id];
+        },
+
+        parseAtom: function(atom) {
+            var reg = /^([^\s]+)\s+([^\s]+)\s+([-+]?[0-9]*\.?[0-9]+)\s+([-+]?[0-9]*\.?[0-9]+)\s+([-+]?[0-9]*\.?[0-9]+)/;
+            var m = reg.exec(atom);
+            return {
+                id: m[1],
+                label: m[2],
+                x: m[3],
+                y: m[4],
+                z: m[5]
+            };
+        },
+
+        _doHighlights: function(atom) {
+            if(this.lastHoveredAtom) {
+                API.highlightId(this.lastHoveredAtom.label, 0);
+            }
+            API.highlightId(atom.label, 1);
+            this.lastHoveredAtom = atom;
+        },
+
+        _activateHighlights: function() {
+
+        },
+
+        _drawHighlights: function() {
+
         }
 
     });
