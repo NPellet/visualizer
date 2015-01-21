@@ -67,11 +67,12 @@
     };
 
     window.setMolFile = function (data) {
-
         var actions = [];
         actions.push("load data 'model'");
-        actions.push(data);
-        actions.push("end 'model';");
+        actions.push(data._modelLoad);
+        actions.push("end 'model' " + data._lattice);
+        actions.push(data._script);
+        actions.push('set hoverDelay 0.01;');
         this.executeScript(actions);
     };
 
