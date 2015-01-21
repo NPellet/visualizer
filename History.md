@@ -1,4 +1,4 @@
-HEAD
+2.10.1 / 2015-01-21
 ===================
 * slick_grid: support jpath line color
 * module: toolbar on header to access configuration more quickly
