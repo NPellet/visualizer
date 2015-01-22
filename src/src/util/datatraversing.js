@@ -1,3 +1,4 @@
+'use strict';
 
 define(['jquery', 'src/data/structures'], function($, Structures) {
 	"use strict";
@@ -317,9 +318,9 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 
 			// We know the dynamic structure
 			// Apply to typed elements + to js objects
-			if(element.structure) {
+			if(element._structure) {
 
-				this.getJPathsFromStructure(element.structure, null, jpaths);	
+				this.getJPathsFromStructure(element._structure, null, jpaths);
 
 			} else if(element.type && Structures[element.type] && (element.value || element.url)) {
 
