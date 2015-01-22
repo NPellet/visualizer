@@ -1,3 +1,7 @@
+HEAD
+===================
+* scatter3D: add shapes and do some fixes
+
 2.10.1 / 2015-01-21
 ===================
 * slick_grid: support jpath line color

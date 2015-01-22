@@ -324,5 +324,9 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
         this.sendAction('row', item, 'onRowNew');
     };
 
+    controller.prototype.export = function() {
+        return this.module.view.exportToTabDelimited();
+    };
+
     return controller;
 });
