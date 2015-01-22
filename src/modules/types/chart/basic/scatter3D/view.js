@@ -121,7 +121,13 @@ define(['modules/default/defaultview','src/util/datatraversing',
     'sphere': baseURL + 'img/ball.png',
     'spheret': baseURL + 'img/ballt.png',
     'tetrahedron': baseURL + 'img/tetrahedron2.png',
-    'tetrahedront': baseURL + 'img/tetrahedron2t.png'
+    'tetrahedront': baseURL + 'img/tetrahedron2t.png',
+    'cone': baseURL + 'img/cone.png',
+    'conet': baseURL + 'img/conet.png',
+    'cube': baseURL + 'img/cube.png',
+    'cubet': baseURL + 'img/cubet.png',
+    'pyramid': baseURL + 'img/pyramid.png',
+    'pyramidt': baseURL + 'img/pyramidt.png',
   };
 
   $.fn.listHandlers = function(events, outputFunction) {
@@ -1585,7 +1591,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
         self._updateMathPoints({applyFilter: true});
         for(var shape in self._highlightParticleObjects) {
           for(var hlkey in self._highlightParticleObjects[shape]) {
-            self._updateParticleObject(self._highlightParticleObjects[shape][hlkey], {applyFilter: true, updateColor: false, sizeFactor: 1.5});
+            self._updateParticleObject(self._highlightParticleObjects[shape][hlkey], {applyFilter: true, updateColor: false, sizeFactor: 1.35});
           }
         }
         self.renderer.render(self.scene, self.camera);
@@ -1614,7 +1620,9 @@ define(['modules/default/defaultview','src/util/datatraversing',
       self._data.z = [];
       self._data.size = [];
       self._data.color = [];
+      self._data.shape = [];
       self._data._highlight = [];
+
       var jp = _.cloneDeep(jpaths);
       _.each(jp, function(v) {
         v.unshift(0);
@@ -1633,6 +1641,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
         self._data.z.push(validate(value.getChildSync(jp.z).get()));
         self._data.color.push(validate(value.getChildSync(jp.color).get()));
         self._data.size.push(validate(value.getChildSync(jp.size).get()));
+        self._data.shape.push(validate(value.getChildSync(jp.shape).get()));
       }
       self._meta = {};
       self._data.x = self._data.x || [];
@@ -1759,7 +1768,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
               self._highlightParticleObjects[shape][hl].drawn = true;
               self._updateParticleObject(self._highlightParticleObjects[shape][hl], {
                 updateColor: true,
-                sizeFactor: 1.5,
+                sizeFactor: 1.35,
                 transparent: true
               });
               self._render();

@@ -310,6 +310,13 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
                             extractValue: Util.jpathToArray,
                             insertValue: Util.jpathToString
                         },
+                        shape: {
+                            type: 'combo',
+                            title: 'shape',
+                            options: jpathPoint,
+                            extractValue: Util.jpathToArray,
+                            insertValue: Util.jpathToString
+                        },
                         highlight: {
                             type: 'combo',
                             title: 'highlight',
