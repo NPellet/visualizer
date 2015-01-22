@@ -56,7 +56,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
             return obj.resurrect();
         }
         return obj;
-    }
+    };
 
     DataObject.recursiveTransform = function (object, transformNatives) {
 

@@ -126,7 +126,9 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 			html += '<ul>';
 
 			var toolbar = this.controller.getToolbar();
+			var isLocked = API.isViewLocked();
 			for(var i=0 ; i<toolbar.length; i++) {
+				if(!toolbar[i].ifLocked && isLocked) continue;
 				html += '<li title="' + (toolbar[i].title || '') + '">';
 				if(toolbar[i].icon) {
 					html += '<img src="' + toolbar[i].icon + '"/>';
