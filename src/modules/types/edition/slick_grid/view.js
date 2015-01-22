@@ -788,6 +788,27 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             }
         },
 
+        exportToTabDelimited: function() {
+            var cols = this.grid.getColumns();
+            var txt = '';
+            var line = [], i, j;
+            for(i=0; i<cols.length; i++) {
+                line.push(cols[i].name);
+            }
+            txt += line.join('\t') + '\r\n';
+            for(i=0; i<this.module.data.length; i++) {
+                line = [];
+                for(j=0; j<cols.length; j++) {
+                    var jpath = cols[j].jpath;
+                    jpath = jpath.slice(0);
+                    jpath.unshift(i);
+                    line.push(this.module.data.getChildSync(jpath, false).get());
+                }
+                txt += line.join('\t') + '\r\n';
+            }
+            return txt;
+        },
+
         onActionReceive: {
             hoverRow: function(row) {
                 // row can be the row itself or the array's index
