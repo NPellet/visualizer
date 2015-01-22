@@ -134,7 +134,12 @@ define(['modules/default/defaultview','src/util/datatraversing',
     'cubet': baseURL + 'img/cubet.png',
     'pyramid': baseURL + 'img/pyramid.png',
     'pyramidt': baseURL + 'img/pyramidt.png',
+    'cylinder': baseURL + 'img/cylinder.png',
+    'cylindert': baseURL + 'img/cylindert.png',
+    'cuboid': baseURL + 'img/cuboid.png',
+    'cuboidt': baseURL + 'img/cuboidt.png'
   };
+
 
   preloadImages(shapeImages);
 
