@@ -6,6 +6,12 @@ define(['modules/default/defaultview','src/util/datatraversing',
   'lib/threejs/TrackballControls'], function(Default, Traversing, API, Util, _, THREE, Debug, chroma) {
 
 
+  function preloadImages(img) {
+    for(var key in img) {
+      THREE.ImageUtils.loadTexture(img[key]);
+    }
+  }
+
   function generateRandomArray(n, min, max) {
     var result = [];
     for(var i=0; i<n; i++) {
@@ -129,6 +135,8 @@ define(['modules/default/defaultview','src/util/datatraversing',
     'pyramid': baseURL + 'img/pyramid.png',
     'pyramidt': baseURL + 'img/pyramidt.png',
   };
+
+  preloadImages(shapeImages);
 
   $.fn.listHandlers = function(events, outputFunction) {
     return this.each(function(i){

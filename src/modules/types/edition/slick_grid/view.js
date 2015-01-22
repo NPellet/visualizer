@@ -214,7 +214,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 forceFitColumns: that.module.getConfigurationCheckbox('slickCheck', 'forceFitColumns'),
                 multiColumnSort: that.module.getConfigurationCheckbox('slickCheck', 'multiColumnSort'),
                 asyncEditorLoading: true,
-                asyncEditorLoadDelay: 40,
+                asyncEditorLoadDelay:0,
                 enableAsyncPostRender: true,
                 asyncPostRenderDelay: 0,
                 defaultColumnWidth: that.module.getConfiguration('slick.defaultColumnWidth') || 80,
