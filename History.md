@@ -3,6 +3,7 @@
 
 * scatter3D: add shapes and do some fixes
 * Got rid of ChemDoodle Web Components
+* slick_grid: implement export
 
 2.10.1 / 2015-01-21
 ===================
