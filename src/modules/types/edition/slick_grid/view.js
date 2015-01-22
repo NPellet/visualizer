@@ -793,7 +793,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             var txt = '';
             var line = [], i, j;
             for(i=0; i<cols.length; i++) {
-                line.push(cols[i].name);
+                line.push(cols[i].name || '');
             }
             txt += line.join('\t') + '\r\n';
             for(i=0; i<this.module.data.length; i++) {
@@ -802,7 +802,9 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     var jpath = cols[j].jpath;
                     jpath = jpath.slice(0);
                     jpath.unshift(i);
-                    line.push(this.module.data.getChildSync(jpath, false).get());
+                    var el = this.module.data.getChildSync(jpath, false);
+                    el = el ? el.get() : '';
+                    line.push(el);
                 }
                 txt += line.join('\t') + '\r\n';
             }
