@@ -85,6 +85,13 @@ define(['modules/default/defaultview','src/util/datatraversing',
     }
   }
 
+  function keepDecimals(num, n) {
+    num = "" + num;
+    var idx = num.indexOf('.');
+    if(idx === -1) return +num;
+    return num.slice(0, idx + n + 1);
+  }
+
   function rotateAroundObjectAxis(object, axis, radians) {
     var rotObjectMatrix = new THREE.Matrix4();
     rotObjectMatrix.makeRotationAxis(axis.normalize(), radians);
@@ -538,7 +545,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
         self._mainParticleObjects[shape] = self._newParticleObject(m[shape], {
           shape: shape
         });
-        self._updateParticleObject(self._mainParticleObjects[shape]);
+        self._updateParticleObject(self._mainParticleObjects[shape], {sizeFactor: 0.00001});
         self.scene.add(self._mainParticleObjects[shape]);
       }
       self.renderer.render(self.scene, self.camera);
@@ -988,7 +995,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
       // z labels
       if(self._configCheckBox('ticks', 'zlab')) {
         for(var i=0; i<self._data.nbTicks.z; i++) {
-          var text = ((self._data.realMin.z+i*self._data.intervalVal.z)/self._data.intervalFactor.z).toString();
+          var text = (keepDecimals((self._data.realMin.z+i*self._data.intervalVal.z)/self._data.intervalFactor.z, 2)).toString();
           self.tickLabels.push(self._addText(text, NORM_CONSTANT *1.1,0,i * self._data.intervalPx.z, {
             textAlign: "left"
           }));
@@ -997,7 +1004,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
       // y labels
       if(self._configCheckBox('ticks', 'ylab')) {
         for(var i=0; i<self._data.nbTicks.y; i++) {
-          var text = ((self._data.realMin.y+i*self._data.intervalVal.y)/self._data.intervalFactor.y).toString();
+          var text = (keepDecimals((self._data.realMin.y+i*self._data.intervalVal.y)/self._data.intervalFactor.y, 2)).toString();
           self.tickLabels.push(self._addText(text, -0.05*NORM_CONSTANT,i * self._data.intervalPx.y, NORM_CONSTANT, {
             textAlign: "right"
           }));
@@ -1006,7 +1013,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
       // x labels
       if(self._configCheckBox('ticks', 'xlab')) {
         for(var i=0; i<self._data.nbTicks.x; i++) {
-          var text = ((self._data.realMin.x+i*self._data.intervalVal.x)/self._data.intervalFactor.x).toString();
+          var text = (keepDecimals((self._data.realMin.x+i*self._data.intervalVal.x)/self._data.intervalFactor.x, 2)).toString();
           self.tickLabels.push(self._addText(text, i * self._data.intervalPx.x, 0, NORM_CONSTANT *1.1, {
             textAlign: "right"
           }));
@@ -1501,7 +1508,9 @@ define(['modules/default/defaultview','src/util/datatraversing',
 
           self._updateParticleObject(self._highlightParticleObjects[shape][hlkey], {
             sizeFactor: 1.5,
-            forcedColor: '#e5be39'
+            updateColor: false,
+            //forcedColor: '#e5be39'
+            forcedColor: '#000000'
           });
         }
       }
