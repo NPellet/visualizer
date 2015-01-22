@@ -6,7 +6,7 @@
  *	Perhaps a deep extend is needed. Otherwise we need to copy the listeners and callbacks !
  */
 
-define(['pouchdb', 'uri/URI', 'src/util/debug'], function(PouchDB, URI, Debug) {
+define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function(PouchDB, URI, Debug) {
 	"use strict";
 	
 	var exports = {};

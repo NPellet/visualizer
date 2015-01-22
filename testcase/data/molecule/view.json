@@ -215,46 +215,6 @@
 			]
 		},
 		{
-			"type": "mol2d",
-			"title": "ChemDoodle web component to display molfile",
-			"position": {
-				"left": 65,
-				"right": 1,
-				"top": 35
-			},
-			"size": {
-				"width": 43,
-				"height": 35
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {}
-			},
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"id": 3,
-			"vars_in": [
-				{
-					"rel": "mol2d",
-					"name": "OneChemical"
-				}
-			],
-			"actions_in": [
-				{}
-			],
-			"vars_out": [
-				{}
-			],
-			"actions_out": [
-				{}
-			],
-			"displayWrapper": true
-		},
-		{
 			"type": "jsme",
 			"title": "JSME to display molfile",
 			"displayWrapper": true,

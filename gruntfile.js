@@ -114,13 +114,6 @@ module.exports = function (grunt) {
 
                     {
                         expand: true,
-                        cwd: './src/lib/',
-                        src: [ './chemdoodle/**' ],
-                        dest: './build/lib/'
-                    },
-
-                    {
-                        expand: true,
                         cwd: './src/components/',
                         src: [
                             './Aristo-jQuery-UI-Theme/css/Aristo/images/*',

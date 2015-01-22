@@ -7,10 +7,6 @@
     {
       "moduleName": "JSMol",
       "url": "modules/types/science/chemistry/jsmol/"
-    },
-    {
-      "moduleName": "CWC molfile displayer",
-      "url": "modules/types/science/chemistry/mol2d/"
     }
   ],
   "name": "Chemistry",
