@@ -545,7 +545,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
         self._mainParticleObjects[shape] = self._newParticleObject(m[shape], {
           shape: shape
         });
-        self._updateParticleObject(self._mainParticleObjects[shape], {sizeFactor: 0.00001});
+        self._updateParticleObject(self._mainParticleObjects[shape]);
         self.scene.add(self._mainParticleObjects[shape]);
       }
       self.renderer.render(self.scene, self.camera);
@@ -1427,8 +1427,6 @@ define(['modules/default/defaultview','src/util/datatraversing',
       // particle system
       var object = new THREE.PointCloud( geometry, shaderMaterial );
       object.indexes = indexes;
-      // self._highlightParticleObjects[key].drawn = true;
-      // highlightObjectBis.dynamic = true;
       return object;
     },
 
@@ -1448,7 +1446,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
       var forcedColor = options.forcedColor ? new THREE.Color(options.forcedColor) : null;
       var updateColor = options.updateColor || true;
       var filter;
-      if(options.applyFilter) {
+      if(options.applyFilter) { // Filter point to display
         filter = self._data.inBoundary.slice(0);
         for (var i = 0; i < self._dispFilter.length; i++) {
           filter[i] = self._dispFilter[i] && filter[i];
@@ -1466,7 +1464,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
             values_color[v] = forcedColor;
           }
           else if(updateColor){
-            values_color[ v ] = new THREE.Color(color[v] || DEFAULT_POINT_COLOR);
+            values_color[ v ] = new THREE.Color(color[indexes[v]] || DEFAULT_POINT_COLOR);
           }
         }
       }
@@ -1484,6 +1482,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
         }
       }
       object.material.attributes.size.needsUpdate = true;
+      object.material.attributes.ca.needsUpdate = true;
       //self.renderer.render(self.scene, self.camera);
     },
 
@@ -1504,13 +1503,6 @@ define(['modules/default/defaultview','src/util/datatraversing',
           self._highlightParticleObjects[shape][hlkey] = self._newParticleObject(m[shape][hlkey], {
             shape: shape || DEFAULT_POINT_SHAPE,
             transparent: true
-          });
-
-          self._updateParticleObject(self._highlightParticleObjects[shape][hlkey], {
-            sizeFactor: 1.5,
-            updateColor: false,
-            //forcedColor: '#e5be39'
-            forcedColor: '#000000'
           });
         }
       }
@@ -1765,6 +1757,11 @@ define(['modules/default/defaultview','src/util/datatraversing',
             else {
               self.scene.add(self._highlightParticleObjects[shape][hl]);
               self._highlightParticleObjects[shape][hl].drawn = true;
+              self._updateParticleObject(self._highlightParticleObjects[shape][hl], {
+                updateColor: true,
+                sizeFactor: 1.5,
+                transparent: true
+              });
               self._render();
             }
           }
