@@ -99,12 +99,24 @@ define( [
 
 				AUCSelected: function( auc ) {
 
-					if( auc.msFromAucSerie ) {
+				/*	if( auc.msFromAucSerie ) {
 						auc.msFromAucSerie.setLineColor( 'rgba(255, 0, 0, 1)' );
 						auc.msFromAucSerie.applyLineStyles();
 
 						auc.msFromAucSerie.showPeakPicking( true );
+					}*/
+					if( auc.data ) {
+						
+						self.module.controller.createDataFromEvent('onIntegralSelect', 'GCIntegration', auc.data._originalSource );
+
+						self.module.controller.sendAction( 'GCIntegration', auc.data._originalSource, 'onIntegralSelect');
+						
+					} else {
+						//console.trace();
 					}
+
+
+					
 				},
 
 				AUCUnselected: function( auc ) {
@@ -294,6 +306,8 @@ define( [
 				var shapeData = self.gcmsInstance.addAUC( source.from, source.to, source );
 				shapeData._originalSource = source;
 			});
+
+			this.annotations = a;
 		},
 
 
