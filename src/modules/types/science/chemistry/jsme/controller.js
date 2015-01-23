@@ -18,7 +18,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.references = {
         mol: {
-            label: 'Mol 2D',
+            label: 'Molfile V2 2D',
             type: ['mol2d', 'molfile2d', 'string']
 
         },
@@ -28,13 +28,17 @@ define(['modules/default/defaultcontroller'], function (Default) {
         },
         smiles: {
             label: 'Smiles'
+        },
+        molV3: {
+            label: "Molfile V3 2D",
+            type: ['mol2d', 'molfile2d', 'string']
         }
     };
 
     Controller.prototype.events = {
         onStructureChange: {
             label: 'Molecular structure has changed',
-            refVariable: ['mol', 'smiles', 'jme']
+            refVariable: ['mol', 'smiles', 'jme','molV3']
         }
     };
 
@@ -125,7 +129,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         };
     };
 
-    Controller.prototype.onChange = function (mol, smiles, jme, action) {
+    Controller.prototype.onChange = function (mol, molV3, smiles, jme, action) {
 
         if(action != null && action != 'readMolFile' && action != 'reset' && this.module.view._currentValue && this.module.getConfigurationCheckbox('outputResult', 'yes')) {
 
@@ -143,6 +147,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         // Always create smiles because smiles is not a possible input variable
         this.createDataFromEvent('onStructureChange', 'smiles', smiles);
         this.createDataFromEvent('onStructureChange', 'mol', {type: 'mol2d', value: mol});
+        this.createDataFromEvent('onStructureChange', 'molV3', {type: 'mol2d', value: molV3});
         this.createDataFromEvent('onStructureChange', 'jme', {type: 'jme', value: jme});
 
     };
