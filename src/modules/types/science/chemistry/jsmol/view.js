@@ -142,11 +142,23 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
 
         _doHighlights: function(atom) {
             if(this.lastHoveredAtom) {
-                if(this.lastHoveredAtom.label === atom.label) return;
+                if(this.lastHoveredAtom.label === atom.label) {
+                    this._undoHighlightsDebounced();
+                    return;
+                }
                 API.highlightId(this.lastHoveredAtom.label, 0);
             }
+            this._undoHighlights();
             API.highlightId(atom.label, 1);
             this.lastHoveredAtom = atom;
+        },
+
+        _undoHighlights: function() {
+            _undoHighlights.call(this);
+        },
+
+        _undoHighlightsDebounced: function() {
+            _undoHighlightsDebounced.call(this);
         },
 
         _activateHighlights: function() {
@@ -186,7 +198,18 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
             this.executeScript(script);
         }
 
+
     });
+
+    function _undoHighlights() {
+        console.log('undo highlights', this.lastHoveredAtom);
+        if(this.lastHoveredAtom) {
+            API.highlightId(this.lastHoveredAtom.label, 0);
+            this.lastHoveredAtom = null;
+        }
+    }
+
+    var _undoHighlightsDebounced = _.debounce(_undoHighlights, 150);
 
     return View;
 
