@@ -396,8 +396,6 @@
 						shape.redraw();
 					})
 
-				this.gcGraph.getTopAxis().linkToAxis( this.gcGraph.getBottomAxis(), function( val ) { return val * 3; }, 1 );
-
 				this.msGraph.on("shapeSelect", function( shape ) {
 					self.msShapesSelectChange();
 				});
@@ -510,6 +508,24 @@
 			},
 
 
+			setRIComponents: function( components ) {
+
+
+				this.gcGraph.getTopAxis().linkToAxis( this.gcGraph.getBottomAxis(), function( val ) { 
+
+					var result = 0;
+					var i;
+					for( i = 0; i < components.length; i ++ ) {
+						result += components[ i ] * Math.pow( val, components.length - i - 1 );
+					}
+					return result;
+
+				}, 1 );
+
+				this.gcGraph.redraw();
+				this.gcGraph.drawSeries();
+			},
+
 			doMsFromAUC: function( annot, shape ) { // Creating an averaged MS on the fly
 
 				var self = this,
@@ -606,9 +622,6 @@
 
 
 			addAUC: function( from, to, options ) {
-
-
-				
 
 				var self = this,
 					obj = {
@@ -797,6 +810,7 @@
 			},
 
 			setExternalGC: function( gc ) {
+
 				if( this.extGC ) {
 					this.extGC.kill( true );
 				}
@@ -1014,10 +1028,6 @@
 
 				
 				var i = 0;
-				
-
-				
-
 				var limit = 20,
 					xs = [];
 

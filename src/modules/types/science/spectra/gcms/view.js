@@ -259,6 +259,14 @@ define( [
 				this.ingredientList.map( function( source ) {
 					self.gcmsInstance.addIngredient( source );
 				});
+			},
+
+			'RIComponents': function( value ) {
+
+				if( value ) {
+					this.gcmsInstance.setRIComponents( value );
+				}
+				
 			}
 		},
 

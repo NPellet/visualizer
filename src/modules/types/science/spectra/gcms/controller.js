@@ -129,6 +129,11 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		msAUC: {
 			type: [ 'array' ],
 			label: 'AUC MS'
+		},
+
+		RIComponents: {
+			type: [ 'array' ],
+			label: 'RI Components'
 		}
 	};
 
@@ -210,7 +215,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 	/*
 		Configuration of the module for receiving events, as a static object
 	*/
-	controller.prototype.variablesIn = [ 'gcms', 'jcamp', 'gc', 'ms', 'mscont', 'annotationgc', 'ingredientList' ];
+	controller.prototype.variablesIn = [ 'gcms', 'jcamp', 'gc', 'ms', 'mscont', 'annotationgc', 'ingredientList', 'RIComponents' ];
 
 	/*
 		Received actions
