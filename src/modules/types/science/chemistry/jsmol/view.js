@@ -151,6 +151,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
             this._undoHighlights();
             API.highlightId(atom.label, 1);
             this.lastHoveredAtom = atom;
+            this._undoHighlightsDebounced();
         },
 
         _undoHighlights: function() {
