@@ -92,7 +92,8 @@ define( [
 
 				onMsFromAUCChange: function( ms ) {
 
-					self.module.controller.sendAction('ms', ms, 'onMSChange');
+					self.module.controller.createDataFromEvent('onMSChange', 'ms', ms);
+					
 				},
 
 
