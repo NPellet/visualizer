@@ -109,7 +109,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
 		},
 		
 		moduleInformations: {
-			moduleName: 'Webservice Crontab'
+			name: 'Webservice Crontab'
 		},
 
 		

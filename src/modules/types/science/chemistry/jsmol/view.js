@@ -1,6 +1,6 @@
 'use strict';
 
-define(['require', 'modules/default/defaultview'], function (require, Default) {
+define(['require', 'modules/default/defaultview', 'src/util/api'], function (require, Default, API) {
 
     function View() {
     }
@@ -23,19 +23,22 @@ define(['require', 'modules/default/defaultview'], function (require, Default) {
             return;
         }
         var view = views[id];
+        var atom;
         switch (message.type) {
             case 'ready':
                 view.resolveReady();
                 break;
             case 'message':
-                console.log('received a message from jsmol', message);
                 view.module.controller.onNewMessage(message.message);
                 break;
             case 'atomClick':
-                view.module.controller.onAtomClick(message.message);
+                atom = view.parseAtom(message.message);
+                view.module.controller.onAtomClick(atom);
                 break;
             case 'atomHover':
-                view.module.controller.onAtomHover(message.message);
+                atom = view.parseAtom(message.message);
+                view._doHighlights(atom);
+                view.module.controller.onAtomHover(atom);
                 break;
             default:
                 console.error('Message type not handled: ', message.type);
@@ -69,6 +72,16 @@ define(['require', 'modules/default/defaultview'], function (require, Default) {
             this.postMessage('setSize', {width: this.width, height: this.height});
         },
 
+        inDom: function() {
+            var that = this;
+            this.dom.parent().on('mouseleave', function() {
+                if(that.lastHoveredAtom) {
+                    API.highlightId(that.lastHoveredAtom.label, 0);
+                    that.lastHoveredAtom = null;
+                }
+            });
+        },
+
         blank: {
             data: function () {
                 this.postMessage('blank', '');
@@ -79,12 +92,13 @@ define(['require', 'modules/default/defaultview'], function (require, Default) {
         update: {
             data: function (data) {
                 var self = this;
-                self.postMessage('setMolFile', data.get());
+                this.module.data = data;
+                self.postMessage('setMolFile', {_modelLoad: data.get(), _lattice: data._lattice, _script: data._script});
 
                 if (self.module.getConfiguration('script')) {
                     self.postMessage('executeScript', [self.module.getConfiguration('script')]);
                 }
-
+                this._activateHighlights();
 
                 //self.postMessage('restoreOrientation', 'lastOrientation');
             }
@@ -112,6 +126,64 @@ define(['require', 'modules/default/defaultview'], function (require, Default) {
 
         remove: function (id) {
             delete views[id];
+        },
+
+        parseAtom: function(atom) {
+            var reg = /^([^\s]+)\s+([^\s]+)\s+([-+]?[0-9]*\.?[0-9]+)\s+([-+]?[0-9]*\.?[0-9]+)\s+([-+]?[0-9]*\.?[0-9]+)/;
+            var m = reg.exec(atom);
+            return {
+                id: m[2],
+                label: m[1],
+                x: m[3],
+                y: m[4],
+                z: m[5]
+            };
+        },
+
+        _doHighlights: function(atom) {
+            if(this.lastHoveredAtom) {
+                if(this.lastHoveredAtom.label === atom.label) return;
+                API.highlightId(this.lastHoveredAtom.label, 0);
+            }
+            API.highlightId(atom.label, 1);
+            this.lastHoveredAtom = atom;
+        },
+
+        _activateHighlights: function() {
+            var that = this;
+            if(!this.module.data._highlight) return;
+            var hl = _(this.module.data._highlight).flatten().uniq().value();
+
+            that._highlighted = [];
+
+            API.killHighlight(this.module.getId());
+
+            for(var i=0; i<hl.length; i++) {
+                (function(i) {
+                    API.listenHighlight({_highlight: hl[i]}, function(onOff, key) {
+                        if(!key instanceof Array) {
+                            key = [key];
+                        }
+                        if(onOff) {
+                            that._highlighted = _(that._highlighted).push(key).flatten().uniq().value();
+                        }
+                        else {
+                            that._highlighted = _.filter(that._highlighted, function(val) {
+                                return key.indexOf(val) === -1;
+                            });
+                        }
+                        that._drawHighlight();
+                    }, false, that.module.getId());
+                })(i);
+            }
+        },
+
+        _drawHighlight: function() {
+            var script = 'select *.*; halos off;';
+            if(this._highlighted && this._highlighted.length) {
+                script += 'select ' + this._highlighted.join(',') + '; halos on;';
+            }
+            this.executeScript(script);
         }
 
     });

@@ -9,12 +9,23 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 
         init: function () {
             var html = '<div></div>';
-            this.dom = $(html).css({
-                display: 'table',
-                'table-layout': 'fixed',
-                height: '100%',
-                width: '100%'
-            });
+            if(this.module.getConfigurationCheckbox('append', 'yes')) {
+                this.dom = $(html).css({
+                   height: '100%',
+                    width: '100%',
+                    'overflow-x': 'hidden',
+                    'overflow-y': 'scroll'
+                });
+            }
+            else {
+                this.dom = $(html).css({
+                    display: 'table',
+                    'table-layout': 'fixed',
+                    height: '100%',
+                    width: '100%'
+                });
+            }
+
 
             this.values = {};
             this.module.getDomContent().html(this.dom);
@@ -25,7 +36,17 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 
         blank: {
             value: function () {
-                this.dom.empty();
+                if(this.module.getConfigurationCheckbox('append', 'yes')) {
+                    var maxEntries = this.module.getConfiguration('maxEntries');
+                    var children = this.dom.children();
+                    var until = children.length-maxEntries;
+                    for(var i=0; i<until; i++) {
+                        children[i].remove();
+                    }
+                }
+                else {
+                    this.dom.empty();
+                }
             }
         },
 
@@ -89,6 +110,11 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
             }
         },
 
+        _scrollDown: function() {
+            var scroll_height = this.dom[0].scrollHeight;
+            this.dom.scrollTop(scroll_height);
+        },
+
         fillWithVal: function (val, def) {
 
             var valign = this.module.getConfiguration('valign'),
@@ -102,25 +128,45 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 
             var valstr = val != undefined ? val.toString() : '';
 
-            var div = $('<div />').css({
-                fontFamily: font || 'Arial',
-                fontSize: fontsize || '10pt',
-                color: fontcolor || '#000000',
-                display: 'table-cell',
-                'vertical-align': valign || 'top',
-                textAlign: align || 'center',
-                width: '100%',
-                height: '100%',
-                'white-space': preformatted ? 'pre' : 'normal',
-                'word-wrap': 'break-word',
-                'user-select': selectable ? 'text' : 'none'
-            }).html(valstr);
+            var div;
 
+            if(this.module.getConfigurationCheckbox('append','yes')) {
+                div = $('<div>').css({
+                    fontFamily: font || 'Arial',
+                    fontSize: fontsize || '10pt',
+                    color: fontcolor || '#000000',
+                    'vertical-align': valign || 'top',
+                    textAlign: align || 'center',
+                    width: '100%',
+                    'white-space': preformatted ? 'pre' : 'normal',
+                    'word-wrap': 'break-word',
+                    'user-select': selectable ? 'text' : 'none'
+                }).html(valstr);
+                this.dom.append(div);
+            }
+            else {
+                div = $('<div />').css({
+                    fontFamily: font || 'Arial',
+                    fontSize: fontsize || '10pt',
+                    color: fontcolor || '#000000',
+                    display: 'table-cell',
+                    'vertical-align': valign || 'top',
+                    textAlign: align || 'center',
+                    width:  '100%',
+                    height: '100%',
+                    'white-space': preformatted ? 'pre' : 'normal',
+                    'word-wrap': 'break-word',
+                    'user-select': selectable ? 'text' : 'none'
+                }).html(valstr);
+                this.dom.html(div);
+            }
 
-            this.dom.html(div);
+            this._scrollDown();
+
 
             if (def && def.build) {
                 def.build();
+                this._scrollDown();
             }
 
             DomDeferred.notify(div);

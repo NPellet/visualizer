@@ -126,7 +126,9 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 			html += '<ul>';
 
 			var toolbar = this.controller.getToolbar();
+			var isLocked = API.isViewLocked();
 			for(var i=0 ; i<toolbar.length; i++) {
+				if(!toolbar[i].ifLocked && isLocked) continue;
 				html += '<li title="' + (toolbar[i].title || '') + '">';
 				if(toolbar[i].icon) {
 					html += '<img src="' + toolbar[i].icon + '"/>';
@@ -1021,7 +1023,7 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 
 					var moduleInfosHtml = 
 						'<table class="moduleInformation">' + 
-						"<tr><td>Module name</td><td>" + module.controller.moduleInformation.moduleName + "</td></tr>" + 
+						"<tr><td>Module name</td><td>" + module.controller.moduleInformation.name + "</td></tr>" +
 						"<tr><td></td><td><small>" + module.controller.moduleInformation.description + "</small></td></tr>" + 
 						"<tr><td>Module author</td><td>" + module.controller.moduleInformation.author + "</td></tr>" + 
 						"<tr><td>Creation date</td><td>" + module.controller.moduleInformation.date + "</td></tr>" + 
@@ -1399,7 +1401,7 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 				if( this.view.blank[ rels[ i ] ] ) {
 					this.view.blank[ rels[ i ] ].call( this.view, variableName );
 				} else {
-					Debug.info('Module ' + this.controller.moduleInformation.moduleName + ': no blank method defined for rel ' + rels[i]);
+					Debug.info('Module ' + this.controller.moduleInformation.name + ': no blank method defined for rel ' + rels[i]);
 				}
 			}
 		},

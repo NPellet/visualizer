@@ -15,7 +15,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 		Information about the module
 	*/
 	controller.prototype.moduleInformation = {
-		moduleName: 'Stack chart',
+		name: 'Stack chart',
 		description: 'Display a Bars or Line or points chart based on flot',
 		author: 'Khalid Arroub',
 		date: '07.01.2014',

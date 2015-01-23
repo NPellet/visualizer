@@ -8,7 +8,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
     Controller.prototype = $.extend(true, {}, Default);
 
     Controller.prototype.moduleInformation = {
-        moduleName: 'Display value',
+        name: 'Display value',
         description: 'Display a displayable element',
         author: 'Norman Pellet',
         date: '24.12.2013',
@@ -105,6 +105,23 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
                                 selectable: 'Make text selectable'
                             },
                             default: []
+                        },
+                        append: {
+                            type: 'checkbox',
+                            title: 'Append values',
+                            options: {
+                                yes: 'Yes'
+                            },
+                            displaySource: {
+                                yes: 'a'
+                            }
+
+                        },
+                        maxEntries: {
+                            type: 'float',
+                            title: 'Max entries',
+                            default: 1,
+                            displayTarget: ['a']
                         }
                     }
                 }
@@ -121,7 +138,9 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
         defaultvalue: [ 'groups', 'group', 0, 'defaultvalue', 0 ],
         sprintf: [ 'groups', 'group', 0, 'sprintf', 0 ],
         sprintfOrder: [ 'groups', 'group', 0, 'sprintfOrder' ],
-        preformatted: [ 'groups', 'group', 0, 'preformatted', 0 ]
+        preformatted: [ 'groups', 'group', 0, 'preformatted', 0 ],
+        append: [ 'groups', 'group', 0, 'append', 0 ],
+        maxEntries: [ 'groups', 'group', 0, 'maxEntries', 0 ]
     };
 
     return Controller;

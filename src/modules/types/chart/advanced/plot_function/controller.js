@@ -16,7 +16,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
         Information about the module
     */
     controller.prototype.moduleInformation = {
-        moduleName: 'Function plotter',
+        name: '3D function plotter',
         description: 'Plots an input function in 3D using Three.js',
         author: 'Luc Patiny',
         date: '28.12.2013',

@@ -114,13 +114,6 @@ module.exports = function (grunt) {
 
                     {
                         expand: true,
-                        cwd: './src/lib/',
-                        src: [ './chemdoodle/**' ],
-                        dest: './build/lib/'
-                    },
-
-                    {
-                        expand: true,
                         cwd: './src/components/',
                         src: [
                             './Aristo-jQuery-UI-Theme/css/Aristo/images/*',
@@ -697,12 +690,24 @@ module.exports = function (grunt) {
 
             target.modules = [];
             for (var i = 0, l = allModules.length; i < l; i++) {
-                var el = /moduleName(?:[: ]*)(?:'|")([a-zA-Z0-9 _-]*)(?:'|")/.exec(grunt.file.read(basePath + '/' + allModules[ i ] + '/controller.js'));
+                var moduleInfo = /moduleInformation[^\{]+(\{[^}]+})/.exec(grunt.file.read(basePath + '/' + allModules[ i ] + '/controller.js'));
 
-                target.modules.push({
-                    moduleName: (el[ 1 ] || allModules[ i ]),
+                try {
+                    eval ('moduleInfo = ' + moduleInfo[1]);
+                } catch (e) {
+                    throw new Error('Could not find module information for ' + basePath+'/'+allModules[i]);
+                }
+
+                var info = {
+                    moduleName: (moduleInfo.name || allModules[ i ]),
                     url: ( relPath ) + '/' + allModules[ i ] + '/'
-                });
+                };
+
+                if (moduleInfo.hidden) {
+                    info.hidden = true;
+                }
+
+                target.modules.push(info);
             }
 
             target.folders = [];
@@ -726,7 +731,7 @@ module.exports = function (grunt) {
                 target.name = basePath.split('/').pop();
             }
 
-            fs.writeFileSync(basePath + '/folder.json', JSON.stringify(target, null, '\t'));
+            fs.writeFileSync(basePath + '/folder.json', JSON.stringify(target, null, 2));
         }
 
         recurseFolder('./src/modules/types', 'modules/types');

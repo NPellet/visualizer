@@ -6,7 +6,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
     Controller.prototype = $.extend(true, {}, Default);
 
     Controller.prototype.moduleInformation = {
-        moduleName: 'Rich text editor',
+        name: 'Rich text editor',
         description: 'Edit rich text in a wysiwyg interface.',
         author: 'Michaël Zasso',
         date: '21.05.2014',

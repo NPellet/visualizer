@@ -338,9 +338,13 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
 
     // =========== DATA BOOLEAN ==============
     function booleanInit() {
+        var that = this;
         this.$input = $("<INPUT type=checkbox value='true' class='editor-checkbox' hideFocus>");
         this.$input.appendTo(this.args.container);
         this.$input.focus();
+        this.$input.change(function(){
+            that.args.commitChanges('next');
+        });
     }
 
     function booleanLoadValue(item) {

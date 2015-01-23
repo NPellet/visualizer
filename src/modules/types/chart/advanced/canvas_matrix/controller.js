@@ -8,7 +8,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype = $.extend(true, {}, Default);
 
     Controller.prototype.moduleInformation = {
-        moduleName: 'Matrix display',
+        name: 'Matrix display',
         description: 'Display an array of array as a colored matrix',
         author: 'Norman Pellet',
         date: '24.12.2013',

@@ -5,7 +5,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
 	controller.prototype = $.extend(true, {}, Default);
 
 	controller.prototype.moduleInformation = {
-		moduleName: 'Hierarchical structure',
+		name: 'Hierarchical structure',
 		description: 'Displays a hierarchical structure',
 		author: 'Michaël Zasso',
 		date: '02.06.2014',

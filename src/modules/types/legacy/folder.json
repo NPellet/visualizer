@@ -2,31 +2,31 @@
   "modules": [
     {
       "moduleName": "Button url",
-      "url": "modules/types/server_interaction/button_url/"
+      "url": "modules/types/legacy/button_url/"
     },
     {
       "moduleName": "Two dimensional list",
       "url": "modules/types/legacy/filelistupload/"
     },
     {
+      "moduleName": "Filter",
+      "url": "modules/types/legacy/filter/"
+    },
+    {
       "moduleName": "Selector",
       "url": "modules/types/legacy/grid_selector/"
     },
     {
-      "moduleName": "Webservice Crontab",
-      "url": "modules/types/legacy/webservice_cron/"
-    },
-    {
-      "moduleName": "Navigator",
-      "url": "modules/types/legacy/xyzoomnavigator/"
-    },
-    {
-      "moduleName": "Filter",
-      "url": "modules/types/edition/filter/"
+      "moduleName": "Hashmap display",
+      "url": "modules/types/legacy/hashmap/"
     },
     {
       "moduleName": "Var Editor",
-      "url": "modules/types/edition/var_editor/"
+      "url": "modules/types/legacy/var_editor/"
+    },
+    {
+      "moduleName": "Webservice Crontab",
+      "url": "modules/types/legacy/webservice_cron/"
     }
   ],
   "name": "Legacy",

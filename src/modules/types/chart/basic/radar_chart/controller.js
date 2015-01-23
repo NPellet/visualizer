@@ -15,7 +15,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 		Information about the module
 	*/
 	controller.prototype.moduleInformation = {
-		moduleName: 'RadarChart',
+		name: 'Radar chart',
 		description: 'Display a Radar chart - Polar area chart - Pie chart et Donut chart based on dhtmlxchart',
 		author: 'Khalid Arroub',
 		date: '04.07.2014',

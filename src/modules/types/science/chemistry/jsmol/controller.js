@@ -7,8 +7,21 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype = $.extend(true, {}, Default);
 
+    Controller.prototype.getToolbar = function() {
+        var base = Default.getToolbar.call(this);
+        base.push({
+            onClick: function() {
+                window.open('http://wiki.jmol.org/index.php/Mouse_Manual', '_blank');
+            },
+            title: 'Help',
+            cssClass: 'fa fa-question',
+            ifLocked: true
+        });
+        return base;
+    };
+
     Controller.prototype.moduleInformation = {
-        moduleName: 'JSMol module',
+        name: 'JSMol',
         description: 'Display a JSMol module',
         author: 'Nathanaêl Khodl, Luc Patiny',
         date: '30.12.2013',

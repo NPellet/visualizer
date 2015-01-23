@@ -1,6 +1,6 @@
 {
   "name": "jsGraph",
-  "version": "1.10.4-22",
+  "version": "1.10.4-30",
   "homepage": "http://jsgraph.org",
   "main": [
     "dist/jsgraph.js",
@@ -23,10 +23,8 @@
     "package.json"
   ],
   "devDependencies": {
-    "Aristo-jQuery-UI-Theme": "https://github.com/taitems/Aristo-jQuery-UI-Theme.git",
-    "highlight.js": "~7.3.0",
-    "jquery-ui": "~1.10.4",
     "jquery": "~2.1.1",
-    "requirejs": "~2.1.14"
+    "requirejs": "~2.1.14",
+    "eventEmitter": "git://github.com/NPellet/EventEmitter#~4.2.13"
   }
 }

@@ -16,7 +16,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
         Information about the module
     */
     controller.prototype.moduleInformation = {
-        moduleName: 'Protein Feature Viewer',
+        name: 'Protein Feature Viewer',
         description: 'Displays Protein Annotations',
         author: 'Daniel Kostro',
         date: '15.06.2014',

@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-24
+ * jsGraph JavaScript Graphing Library v1.10.4-30
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-01-20T07:43Z
+ * Date: 2015-01-20T10:05Z
  */
 
 (function( global, factory ) {
@@ -56,8 +56,6 @@ build['./dependencies/eventEmitter/EventEmitter'] = ( function( ) { /*!
 
   // Shortcuts to improve speed and size
   var proto = EventEmitter.prototype;
-  var exports = this;
-  var originalGlobalValue = exports.EventEmitter;
 
   /**
    * Finds the index of the listener for the event in its storage array.
@@ -479,32 +477,8 @@ build['./dependencies/eventEmitter/EventEmitter'] = ( function( ) { /*!
     return this._events || ( this._events = {} );
   };
 
-  /**
-   * Reverts the global {@link EventEmitter} to its previous value and returns a reference to this version.
-   *
-   * @return {Function} Non conflicting EventEmitter class.
-   */
-  EventEmitter.noConflict = function noConflict() {
-    exports.EventEmitter = originalGlobalValue;
-    return EventEmitter;
-  };
-  /*
-  // Expose the class either via AMD, CommonJS or the global object
-  if ( typeof define === 'function' && define.amd ) {
-    define( function() {
-      return EventEmitter;
-    } );
-  } else if ( typeof module === 'object' && module.exports ) {
-    module.exports = EventEmitter;
-  } else {
-    
-  }*/
-
-  exports.EventEmitter = EventEmitter;
-
   return EventEmitter;
-
- } ) ( build["./dependencies/eventEmitter/jquery"] );
+ } ) (  );
 
 
 // Build: End source file (dependencies/eventEmitter/EventEmitter) 
@@ -1688,6 +1662,7 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
 
     drawTick: function( value, label, scaling, options, forcedPos ) {
       var group = this.groupTicks;
+      var val;
       var tick = document.createElementNS( this.graph.ns, 'line' );
 
       if ( forcedPos !== undefined ) {
@@ -1860,6 +1835,8 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
     },
 
     drawTick: function( value, label, scaling, options, forcedPos ) {
+      var pos;
+
       var group = this.groupTicks,
         tickLabel,
         labelWidth = 0;
@@ -6375,8 +6352,6 @@ build['./dependencies/eventEmitter/eventEmitter'] = ( function( ) { /*!
 
   // Shortcuts to improve speed and size
   var proto = EventEmitter.prototype;
-  var exports = this;
-  var originalGlobalValue = exports.EventEmitter;
 
   /**
    * Finds the index of the listener for the event in its storage array.
@@ -6798,32 +6773,8 @@ build['./dependencies/eventEmitter/eventEmitter'] = ( function( ) { /*!
     return this._events || ( this._events = {} );
   };
 
-  /**
-   * Reverts the global {@link EventEmitter} to its previous value and returns a reference to this version.
-   *
-   * @return {Function} Non conflicting EventEmitter class.
-   */
-  EventEmitter.noConflict = function noConflict() {
-    exports.EventEmitter = originalGlobalValue;
-    return EventEmitter;
-  };
-  /*
-  // Expose the class either via AMD, CommonJS or the global object
-  if ( typeof define === 'function' && define.amd ) {
-    define( function() {
-      return EventEmitter;
-    } );
-  } else if ( typeof module === 'object' && module.exports ) {
-    module.exports = EventEmitter;
-  } else {
-    
-  }*/
-
-  exports.EventEmitter = EventEmitter;
-
   return EventEmitter;
-
- } ) ( build["./dependencies/eventEmitter/jquery"] );
+ } ) (  );
 
 
 // Build: End source file (dependencies/eventEmitter/eventEmitter) 
@@ -8960,11 +8911,11 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
       var self = this;
 
-      if( this.options.markersIndependant ) {
+      if ( this.options.markersIndependant ) {
 
         this.independantMarkers.map( function( el ) {
           self.groupMain.removeChild( el );
-        });
+        } );
 
       } else if ( this.currentMarkersSelectionType ) {
 
@@ -9085,7 +9036,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
     }
 
   } );
-
 
   function drawMarkerXY( graph, family, x, y ) {
 
@@ -10447,9 +10397,10 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 
     applyStyle: function( selection, index ) {
 
+      var i, j;
       var styles = this.getStyle( selection, index );
 
-      for ( var i in styles ) {
+      for ( i in styles ) {
 
         for ( j in styles[ i ] ) {
 
@@ -10573,7 +10524,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 
     selectPoint: function( index, setOn, selectionType ) {
 
-      if ( this.shapesDetails[ index ][ 2 ] == selectionType ) {
+      if ( this.shapesDetails[ index ][ 2 ] && this.shapesDetails[ index ][ 2 ] == selectionType ) {
         return;
       }
 

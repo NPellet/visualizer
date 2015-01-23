@@ -6,7 +6,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype = $.extend(true, {}, Default);
 
     Controller.prototype.moduleInformation = {
-        moduleName: 'Code editor',
+        name: 'Code editor',
         description: 'Write code in any language and send the content to another module',
         author: 'Michaël Zasso',
         date: '27.08.2014',

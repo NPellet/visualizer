@@ -8,7 +8,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype = $.extend(true, {}, Default);
 
     Controller.prototype.moduleInformation = {
-        moduleName: 'JSME',
+        name: 'JSME',
         description: 'Displays and interacts with the JSME plugin',
         author: 'Norman Pellet, Luc Patiny',
         date: '24.12.2013',

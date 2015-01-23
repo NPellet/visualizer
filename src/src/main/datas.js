@@ -51,6 +51,13 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
         }
     };
 
+    DataObject.resurrect = function(obj) {
+        if(isSpecialObject(obj)) {
+            return obj.resurrect();
+        }
+        return obj;
+    };
+
     DataObject.recursiveTransform = function (object, transformNatives) {
 
         object = DataObject.check(object, transformNatives);
@@ -312,6 +319,8 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
             var valueTyped = DataObject.check(value, true);
             var self = this.get();
 
+            var current = self[prop];
+
             if (!valueTyped) {
                 self[prop] = valueTyped;
             } else {
@@ -324,9 +333,16 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
                 if (typeNow !== type) {
                     self[prop] = valueTyped;
                 } else if (isSpecialNativeObject(self[prop]) || isTypedObject(self[prop])) {
+                    // Keep current listeners
+                    var listeners = self[prop]._dataChange;
+                    // Replace entire value so that special properties (_highlight ...) can be changed
+                    self[prop] = valueTyped;
                     self[prop].linkToParent(this, prop);
-                    self[prop].setValue(valueTyped.get(), noTrigger);
-                    noTrigger = true;
+                    self[prop]._dataChange = listeners;
+                    if (!noTrigger) {
+                        self[prop].triggerChange();
+                        noTrigger = true;
+                    }
                 } else if (valueTyped !== self[prop]) {
                     self[prop] = valueTyped;
                 }
@@ -334,6 +350,13 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
             if (!noTrigger) {
                 this.triggerChange(false, []);
             }
+
+            if (current) {
+                delete current.__parent;
+                delete current.__name;
+                delete current._dataChange;
+            }
+
             return self[prop];
         }
     };
@@ -449,13 +472,13 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
             Object.defineProperty(this, '__parent', {
                 value: parent,
                 writable: false,
-                configurable: false,
+                configurable: true,
                 enumerable: false
             });
             Object.defineProperty(this, '__name', {
                 value: name,
                 writable: false,
-                configurable: false,
+                configurable: true,
                 enumerable: false
             });
         }

@@ -1,10 +1,24 @@
-HEAD
+2.11.0 / 2015-01-22
 ===================
+
+* scatter3D: add shapes and do some fixes
+* Got rid of ChemDoodle Web Components
+* slick_grid: implement export
+
+2.10.1 / 2015-01-21
+===================
+
 * slick_grid: support jpath line color
 * module: toolbar on header to access configuration more quickly
 * onde: bug fixes
 * model : better logging of errors
 * update jsgraph
+* loading_plot : fix highlight
+* spectra_displayer : add events for clicking a marker
+* core: allow data's attributes to be changed (like _highlight)
+* single_value: option to append values to the dom with limit and auto-scroll
+* jsmol: support highlight and add var out (messages, click, hover)
+* rename some modules
 
 2.10.0 / 2015-01-13
 ===================

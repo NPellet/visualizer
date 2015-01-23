@@ -1,22 +1,22 @@
 {
-	"modules": [
-		{
-			"moduleName": "Display dendrogram",
-			"url": "modules/types/chart/statistics/dendrogram/"
-		},
-		{
-			"moduleName": "Loading plot",
-			"url": "modules/types/chart/statistics/loading_plot/"
-		},
-		{
-			"moduleName": "Parallel coordinates",
-			"url": "modules/types/chart/statistics/parallel_coordinates/"
-		},
-		{
-			"moduleName": "D3 Phylogram",
-			"url": "modules/types/chart/statistics/phylogram/"
-		}
-	],
-	"name": "Statistics",
-	"folders": []
+  "modules": [
+    {
+      "moduleName": "Circular dendrogram",
+      "url": "modules/types/chart/statistics/dendrogram/"
+    },
+    {
+      "moduleName": "Score plot",
+      "url": "modules/types/chart/statistics/loading_plot/"
+    },
+    {
+      "moduleName": "Parallel coordinates",
+      "url": "modules/types/chart/statistics/parallel_coordinates/"
+    },
+    {
+      "moduleName": "Phylogram",
+      "url": "modules/types/chart/statistics/phylogram/"
+    }
+  ],
+  "name": "Statistics",
+  "folders": []
 }

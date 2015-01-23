@@ -214,7 +214,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 forceFitColumns: that.module.getConfigurationCheckbox('slickCheck', 'forceFitColumns'),
                 multiColumnSort: that.module.getConfigurationCheckbox('slickCheck', 'multiColumnSort'),
                 asyncEditorLoading: true,
-                asyncEditorLoadDelay: 40,
+                asyncEditorLoadDelay: 30,
                 enableAsyncPostRender: true,
                 asyncPostRenderDelay: 0,
                 defaultColumnWidth: that.module.getConfiguration('slick.defaultColumnWidth') || 80,
@@ -788,6 +788,29 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             }
         },
 
+        exportToTabDelimited: function() {
+            var cols = this.grid.getColumns();
+            var txt = '';
+            var line = [], i, j;
+            for(i=0; i<cols.length; i++) {
+                line.push(cols[i].name || '');
+            }
+            txt += line.join('\t') + '\r\n';
+            for(i=0; i<this.module.data.length; i++) {
+                line = [];
+                for(j=0; j<cols.length; j++) {
+                    var jpath = cols[j].jpath;
+                    jpath = jpath.slice(0);
+                    jpath.unshift(i);
+                    var el = this.module.data.getChildSync(jpath, false);
+                    el = el ? el.get() : '';
+                    line.push(el);
+                }
+                txt += line.join('\t') + '\r\n';
+            }
+            return txt;
+        },
+
         onActionReceive: {
             hoverRow: function(row) {
                 // row can be the row itself or the array's index
@@ -820,8 +843,11 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     var gridRow = this.slick.data.mapIdsToRows([item[this.idPropertyName]])[0];
                     var dataIdx = this.slick.data.getIdxById(item[this.idPropertyName]);
                     this.module.controller.onClick(dataIdx, item);
-                    this.grid.scrollRowToTop(gridRow);
-                    this.grid.setActiveCell(gridRow, 0);
+                    if(gridRow) {
+                        this.grid.scrollRowToTop(gridRow);
+                        this.grid.setActiveCell(gridRow, 0);
+                    }
+
                 }
             }
         }

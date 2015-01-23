@@ -11,7 +11,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
      Information about the module
      */
     controller.prototype.moduleInformation = {
-        moduleName: 'D3 Phylogram',
+        name: 'Phylogram',
         description: 'Display phylogram using D3 library',
         author: 'Nathanaêl Khodl, Luc Patiny, Michaël Zasso',
         date: '30.12.2013',

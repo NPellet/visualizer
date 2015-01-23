@@ -17,40 +17,38 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
         },
 
         getToolbar: function() {
-            var isLocked = API.isViewLocked();
-            if(!isLocked) {
-                return [
-                    {
-                        onClick: function() {
-                            this.doConfig(2);
-                        },
-                        title: "Open Preferences",
-                        cssClass: 'fa fa-wrench'
-                    }
-                    //{
-                    //    onClick: function() {
-                    //        this.doConfig(3);
-                    //    },
-                    //    title: "Variables in",
-                    //    cssClass: 'fa fa-sign-in fa-lg'
-                    //},
-                    //{
-                    //    onClick: function() {
-                    //        this.doConfig(4)
-                    //    },
-                    //    title: "Variables out",
-                    //    cssClass: 'fa fa-sign-out fa-lg'
-                    //},
-                    //{
-                    //    onClick: function() {
-                    //        Grid.removeModule(this);
-                    //    },
-                    //    title: "Remove module",
-                    //    cssClass: 'fa fa-close fa-lg'
-                    //}
-                ]
-            }
-            return [];
+            return [
+                {
+                    onClick: function() {
+                        this.doConfig(2);
+                    },
+                    title: "Open Preferences",
+                    cssClass: 'fa fa-wrench',
+                    ifLocked: false
+                }
+                //{
+                //    onClick: function() {
+                //        this.doConfig(3);
+                //    },
+                //    title: "Variables in",
+                //    cssClass: 'fa fa-sign-in fa-lg',
+                //    ifLocked: true
+                //}
+                //{
+                //    onClick: function() {
+                //        this.doConfig(4)
+                //    },
+                //    title: "Variables out",
+                //    cssClass: 'fa fa-sign-out fa-lg'
+                //},
+                //{
+                //    onClick: function() {
+                //        Grid.removeModule(this);
+                //    },
+                //    title: "Remove module",
+                //    cssClass: 'fa fa-close fa-lg'
+                //}
+            ];
         },
 
         inDom: Util.noop,

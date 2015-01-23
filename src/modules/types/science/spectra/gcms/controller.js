@@ -16,7 +16,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		Information about the module
 	*/
 	controller.prototype.moduleInformation = {
-		moduleName: 'GC-MS',
+		name: 'GC-MS',
 		description: 'Displays a GC-MS using the plot library',
 		author: 'Norman Pellet',
 		date: '24.12.2013',

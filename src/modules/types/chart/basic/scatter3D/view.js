@@ -6,6 +6,12 @@ define(['modules/default/defaultview','src/util/datatraversing',
   'lib/threejs/TrackballControls'], function(Default, Traversing, API, Util, _, THREE, Debug, chroma) {
 
 
+  function preloadImages(img) {
+    for(var key in img) {
+      THREE.ImageUtils.loadTexture(img[key]);
+    }
+  }
+
   function generateRandomArray(n, min, max) {
     var result = [];
     for(var i=0; i<n; i++) {
@@ -85,6 +91,13 @@ define(['modules/default/defaultview','src/util/datatraversing',
     }
   }
 
+  function keepDecimals(num, n) {
+    num = "" + num;
+    var idx = num.indexOf('.');
+    if(idx === -1) return +num;
+    return num.slice(0, idx + n + 1);
+  }
+
   function rotateAroundObjectAxis(object, axis, radians) {
     var rotObjectMatrix = new THREE.Matrix4();
     rotObjectMatrix.makeRotationAxis(axis.normalize(), radians);
@@ -114,8 +127,21 @@ define(['modules/default/defaultview','src/util/datatraversing',
     'sphere': baseURL + 'img/ball.png',
     'spheret': baseURL + 'img/ballt.png',
     'tetrahedron': baseURL + 'img/tetrahedron2.png',
-    'tetrahedront': baseURL + 'img/tetrahedron2t.png'
+    'tetrahedront': baseURL + 'img/tetrahedron2t.png',
+    'cone': baseURL + 'img/cone.png',
+    'conet': baseURL + 'img/conet.png',
+    'cube': baseURL + 'img/cube.png',
+    'cubet': baseURL + 'img/cubet.png',
+    'pyramid': baseURL + 'img/pyramid.png',
+    'pyramidt': baseURL + 'img/pyramidt.png',
+    'cylinder': baseURL + 'img/cylinder.png',
+    'cylindert': baseURL + 'img/cylindert.png',
+    'cuboid': baseURL + 'img/cuboid.png',
+    'cuboidt': baseURL + 'img/cuboidt.png'
   };
+
+
+  preloadImages(shapeImages);
 
   $.fn.listHandlers = function(events, outputFunction) {
     return this.each(function(i){
@@ -988,7 +1014,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
       // z labels
       if(self._configCheckBox('ticks', 'zlab')) {
         for(var i=0; i<self._data.nbTicks.z; i++) {
-          var text = ((self._data.realMin.z+i*self._data.intervalVal.z)/self._data.intervalFactor.z).toString();
+          var text = (keepDecimals((self._data.realMin.z+i*self._data.intervalVal.z)/self._data.intervalFactor.z, 2)).toString();
           self.tickLabels.push(self._addText(text, NORM_CONSTANT *1.1,0,i * self._data.intervalPx.z, {
             textAlign: "left"
           }));
@@ -997,7 +1023,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
       // y labels
       if(self._configCheckBox('ticks', 'ylab')) {
         for(var i=0; i<self._data.nbTicks.y; i++) {
-          var text = ((self._data.realMin.y+i*self._data.intervalVal.y)/self._data.intervalFactor.y).toString();
+          var text = (keepDecimals((self._data.realMin.y+i*self._data.intervalVal.y)/self._data.intervalFactor.y, 2)).toString();
           self.tickLabels.push(self._addText(text, -0.05*NORM_CONSTANT,i * self._data.intervalPx.y, NORM_CONSTANT, {
             textAlign: "right"
           }));
@@ -1006,7 +1032,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
       // x labels
       if(self._configCheckBox('ticks', 'xlab')) {
         for(var i=0; i<self._data.nbTicks.x; i++) {
-          var text = ((self._data.realMin.x+i*self._data.intervalVal.x)/self._data.intervalFactor.x).toString();
+          var text = (keepDecimals((self._data.realMin.x+i*self._data.intervalVal.x)/self._data.intervalFactor.x, 2)).toString();
           self.tickLabels.push(self._addText(text, i * self._data.intervalPx.x, 0, NORM_CONSTANT *1.1, {
             textAlign: "right"
           }));
@@ -1420,8 +1446,6 @@ define(['modules/default/defaultview','src/util/datatraversing',
       // particle system
       var object = new THREE.PointCloud( geometry, shaderMaterial );
       object.indexes = indexes;
-      // self._highlightParticleObjects[key].drawn = true;
-      // highlightObjectBis.dynamic = true;
       return object;
     },
 
@@ -1441,7 +1465,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
       var forcedColor = options.forcedColor ? new THREE.Color(options.forcedColor) : null;
       var updateColor = options.updateColor || true;
       var filter;
-      if(options.applyFilter) {
+      if(options.applyFilter) { // Filter point to display
         filter = self._data.inBoundary.slice(0);
         for (var i = 0; i < self._dispFilter.length; i++) {
           filter[i] = self._dispFilter[i] && filter[i];
@@ -1459,7 +1483,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
             values_color[v] = forcedColor;
           }
           else if(updateColor){
-            values_color[ v ] = new THREE.Color(color[v] || DEFAULT_POINT_COLOR);
+            values_color[ v ] = new THREE.Color(color[indexes[v]] || DEFAULT_POINT_COLOR);
           }
         }
       }
@@ -1477,6 +1501,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
         }
       }
       object.material.attributes.size.needsUpdate = true;
+      object.material.attributes.ca.needsUpdate = true;
       //self.renderer.render(self.scene, self.camera);
     },
 
@@ -1497,11 +1522,6 @@ define(['modules/default/defaultview','src/util/datatraversing',
           self._highlightParticleObjects[shape][hlkey] = self._newParticleObject(m[shape][hlkey], {
             shape: shape || DEFAULT_POINT_SHAPE,
             transparent: true
-          });
-
-          self._updateParticleObject(self._highlightParticleObjects[shape][hlkey], {
-            sizeFactor: 1.5,
-            forcedColor: '#e5be39'
           });
         }
       }
@@ -1584,7 +1604,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
         self._updateMathPoints({applyFilter: true});
         for(var shape in self._highlightParticleObjects) {
           for(var hlkey in self._highlightParticleObjects[shape]) {
-            self._updateParticleObject(self._highlightParticleObjects[shape][hlkey], {applyFilter: true, updateColor: false, sizeFactor: 1.5});
+            self._updateParticleObject(self._highlightParticleObjects[shape][hlkey], {applyFilter: true, updateColor: false, sizeFactor: 1.35});
           }
         }
         self.renderer.render(self.scene, self.camera);
@@ -1613,7 +1633,9 @@ define(['modules/default/defaultview','src/util/datatraversing',
       self._data.z = [];
       self._data.size = [];
       self._data.color = [];
+      self._data.shape = [];
       self._data._highlight = [];
+
       var jp = _.cloneDeep(jpaths);
       _.each(jp, function(v) {
         v.unshift(0);
@@ -1632,6 +1654,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
         self._data.z.push(validate(value.getChildSync(jp.z).get()));
         self._data.color.push(validate(value.getChildSync(jp.color).get()));
         self._data.size.push(validate(value.getChildSync(jp.size).get()));
+        self._data.shape.push(validate(value.getChildSync(jp.shape).get()));
       }
       self._meta = {};
       self._data.x = self._data.x || [];
@@ -1756,6 +1779,11 @@ define(['modules/default/defaultview','src/util/datatraversing',
             else {
               self.scene.add(self._highlightParticleObjects[shape][hl]);
               self._highlightParticleObjects[shape][hl].drawn = true;
+              self._updateParticleObject(self._highlightParticleObjects[shape][hl], {
+                updateColor: true,
+                sizeFactor: 1.35,
+                transparent: true
+              });
               self._render();
             }
           }

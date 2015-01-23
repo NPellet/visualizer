@@ -1,51 +1,47 @@
 {
-	"modules": [
-		{
-			"moduleName": "Two dimensional list",
-			"url": "modules/types/display/2d_list/"
-		},
-                {
-			"moduleName": "Fast two dimensional list",
-			"url": "modules/types/display/2d_list_fast/"
-		},
-		{
-			"moduleName": "Fast table",
-			"url": "modules/types/display/fasttable/"
-		},
-		{
-			"moduleName": "Hashmap display",
-			"url": "modules/types/display/hashmap/"
-		},
-		{
-			"moduleName": "Iframe",
-			"url": "modules/types/display/iframe/"
-		},
-		{
-			"moduleName": "Complex grid",
-			"url": "modules/types/display/jqgrid/"
-		},
-	    {
-		    "moduleName": "Sticky note",
-		    "url": "modules/types/display/postit/",
-		    "hidden": true
-	    },
-		{
-			"moduleName": "Display value",
-			"url": "modules/types/display/single_value/"
-		},
-		{
-			"moduleName": "Twig template",
-			"url": "modules/types/display/template-twig/"
-		},
-		{
-			"moduleName": "Hierarchical structure",
-			"url": "modules/types/display/fancytree/"
-		},
-		{
-			"moduleName": "Panzoom",
-			"url": "modules/types/display/panzoom/"
-		}
-	],
-	"name": "Display",
-	"folders": []
+  "modules": [
+    {
+      "moduleName": "Two dimensional list",
+      "url": "modules/types/display/2d_list/"
+    },
+    {
+      "moduleName": "Two dimensional list (fast)",
+      "url": "modules/types/display/2d_list_fast/"
+    },
+    {
+      "moduleName": "Hierarchical structure",
+      "url": "modules/types/display/fancytree/"
+    },
+    {
+      "moduleName": "Table (fast)",
+      "url": "modules/types/display/fasttable/"
+    },
+    {
+      "moduleName": "Iframe",
+      "url": "modules/types/display/iframe/"
+    },
+    {
+      "moduleName": "Table",
+      "url": "modules/types/display/jqgrid/"
+    },
+    {
+      "moduleName": "Panzoom",
+      "url": "modules/types/display/panzoom/"
+    },
+    {
+      "moduleName": "Sticky note",
+      "url": "modules/types/display/postit/",
+      "hidden": true
+    },
+    {
+      "moduleName": "Display value",
+      "url": "modules/types/display/single_value/"
+    },
+    {
+      "moduleName": "Twig template",
+      "url": "modules/types/display/template-twig/"
+    }
+  ],
+  "name": "Display",
+  "folders": []
 }

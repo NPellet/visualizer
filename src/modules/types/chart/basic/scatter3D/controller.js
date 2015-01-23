@@ -15,7 +15,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
      Information about the module
      */
     controller.prototype.moduleInformation = {
-        moduleName: '3D Scatter Plot',
+        name: '3D scatter plot',
         description: 'Display 3D points',
         author: 'Daniel Kostro',
         date: '01.04.2014',
@@ -306,6 +306,13 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
                         size: {
                             type: 'combo',
                             title: 'size',
+                            options: jpathPoint,
+                            extractValue: Util.jpathToArray,
+                            insertValue: Util.jpathToString
+                        },
+                        shape: {
+                            type: 'combo',
+                            title: 'shape',
                             options: jpathPoint,
                             extractValue: Util.jpathToArray,
                             insertValue: Util.jpathToString

@@ -67,7 +67,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
 		
 		
 		moduleInformations: {
-			moduleName: 'Selector'
+			name: 'Selector'
 		},
 		
 		

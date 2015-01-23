@@ -8,7 +8,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
      Information about the module
      */
     controller.prototype.moduleInformation = {
-        moduleName: 'Slick Grid',
+        name: 'Slick Grid',
         description: 'Table editor based on SlickGrid',
         author: 'Daniel Kostro',
         date: '14.10.2014',
@@ -322,6 +322,10 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
     controller.prototype.onRowNew = function(row, item) {
         this.setVarFromEvent('onRowNew', 'row', 'list', [row]);
         this.sendAction('row', item, 'onRowNew');
+    };
+
+    controller.prototype.export = function() {
+        return this.module.view.exportToTabDelimited();
     };
 
     return controller;

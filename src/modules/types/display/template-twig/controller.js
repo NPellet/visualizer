@@ -7,7 +7,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
     controller.prototype = $.extend(true, {}, Default);
 
     controller.prototype.moduleInformation = {
-        moduleName: 'Twig template',
+        name: 'Twig template',
         description: 'Display parts of an object using a twig template',
         author: 'Michaël Zasso',
         date: '02.04.2014',

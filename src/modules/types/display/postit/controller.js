@@ -16,12 +16,13 @@ define( [ 'modules/default/defaultcontroller', 'src/util/util' ], function( Defa
 		Information about the module
 	*/
 	controller.prototype.moduleInformation = {
-		moduleName: 'Sticky note',
+		name: 'Sticky note',
 		description: 'Displays a sticky note',
 		author: 'Norman Pellet',
 		date: '24.12.2013',
 		license: 'MIT',
-		cssClass: 'postit'
+		cssClass: 'postit',
+		hidden: true
 	};
 	
 

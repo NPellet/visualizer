@@ -15,7 +15,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
 		Information about the module
 	*/
 	controller.prototype.moduleInformation = {
-		moduleName: 'SVG Editor',
+		name: 'SVG Editor',
 		description: 'SVG Editor',
 		author: 'Daniel Kostro',
 		date: '20.05.2014',

@@ -1,15 +1,15 @@
 {
-	"folders": [
-		"array_search",
-		"chart",
-		"client_interaction",
-		"display",
-		"edition",
-		"legacy",
-		"science",
-		"server_interaction",
-    "bio"
-	],
-	"name": "Base modules",
-	"modules": []
+  "folders": [
+    "array_search",
+    "bio",
+    "chart",
+    "client_interaction",
+    "display",
+    "edition",
+    "legacy",
+    "science",
+    "server_interaction"
+  ],
+  "name": "Base modules",
+  "modules": []
 }

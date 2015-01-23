@@ -1,10 +1,10 @@
 {
-	"folders": [
-		"advanced",
-		"basic",
-		"maps",
-		"statistics"
+  "folders": [
+    "advanced",
+    "basic",
+    "maps",
+    "statistics"
   ],
-	"name": "Chart",
-	"modules": []
+  "name": "Chart",
+  "modules": []
 }

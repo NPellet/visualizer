@@ -8,7 +8,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype = $.extend(true, {}, Default);
 
     Controller.prototype.moduleInformation = {
-        moduleName: 'Object editor',
+        name: 'Object editor',
         description: 'Display and/or modify a JSON object',
         author: 'Michaël Zasso',
         date: '29.08.2014',
