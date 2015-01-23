@@ -140,7 +140,8 @@ define( [
 
 				MSChangeIndex: function( msIndex, ms ) {
 					self.module.controller.sendAction('msIndex', msIndex, 'onMSIndexChanged');
-					self.module.controller.sendAction('msMouse', ms, 'onMSIndexChanged');
+					self.module.controller.createDataFromEvent('onMSIndexChanged', 'msMouse', ms);
+					
 				},
 
 				onZoomGC: function( from, to ) {
@@ -325,7 +326,7 @@ define( [
 
 				this.gcmsInstance.setExternalMS( value, {} );
 
-				self.module.controller.sendAction('ms', value, 'onMSChange');
+				self.module.controller.createDataFromEvent('onMSChange', 'ms', value);
 			},
 
 			zoomOnAnnotation: function(value, name) {
