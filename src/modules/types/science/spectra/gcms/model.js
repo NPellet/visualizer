@@ -17,9 +17,12 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function(Def
 				case 'selectedIngredient':
 
 					data = this.module.view.gcmsInstance.ingredients[ 0 ][ 0 ];
-					console.log( data );
+				
 				break;
 
+				case 'GCIntegration':
+					data = this.module.view.annotations[ 0 ];
+				break;
 
 				default:
 				case 'gcdata':

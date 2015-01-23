@@ -409,6 +409,11 @@
 					if( shape.data.ingredient ) {
 						self.trigger("ingredientSelected", shape.data.ingredient );
 					}
+
+
+					if( shape.data.type == 'areaundercurve' ) {
+						self.trigger('AUCSelected', shape.data );
+					}
 				});
 
 
@@ -637,7 +642,8 @@
 					color: [ 0, 100, 100 ],
 					fillColor: 'rgba(0,100,100,0.3)',
 					strokeColor: 'rgba(0,100,100,1)',
-					strokeWidth: 2				
+					strokeWidth: 2,
+					selectable: true	
 				};
 
 				if( options.color ) {
