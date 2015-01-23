@@ -112,8 +112,15 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 		return def.resolve(value.replace(/^(.*)$/,'<a target="_blank" href="http://dx.doi.org/$1"><img src="bin/logo/doi.png" /></a>'));
 	};
 
-    function renderActelionStructure(idcode, coordinates, def) {
-        require(['http://www.lactame.com/lib/actelion/3.0.0-alpha1/actelion-3.0.0-alpha1.js'], function (ACT) {
+    var actelionCDN = 'http://www.lactame.com/lib/actelion/3.0.0-alpha2/actelion-3.0.0-alpha2.js';
+    var defaultActelionStructureOptions = {
+        suppressChiralText: true,
+        suppressESR: true,
+        suppressCIPParity: true
+    };
+    function renderActelionStructure(idcode, coordinates, options, def) {
+        options = $.extend({}, defaultActelionStructureOptions, options);
+        require([actelionCDN], function (ACT) {
             var id = Util.getNextUniqueId();
             var div = '<div id="' + id + '" style="width:100%; height:100%" />';
             def.build = function () {
@@ -125,7 +132,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
                 canEl.height = h;
                 canEl.width = w;
                 div.html(can);
-                ACT.StructureView.drawStructure(id2, idcode, coordinates);
+                ACT.StructureView.drawStructure(id2, idcode, coordinates, options);
             };
             def.resolve(div);
         });
@@ -145,30 +152,30 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 
     functions.smiles = {};
     functions.smiles.toscreen = function (def, val, root, options, highlights, box) {
-        require(['http://www.lactame.com/lib/actelion/3.0.0-alpha1/actelion-3.0.0-alpha1.js'], function (ACT) {
+        require([actelionCDN], function (ACT) {
             var mol = ACT.Molecule.fromSmiles(String(val));
-            renderActelionStructure(mol.getIDCode(), mol.getIDCoordinates(), def);
+            renderActelionStructure(mol.getIDCode(), mol.getIDCoordinates(), options, def);
         });
     };
 
     functions.actelionID = {};
     functions.actelionID.toscreen = function (def, val, root, options, highlights, box) {
-        require(['http://www.lactame.com/lib/actelion/3.0.0-alpha1/actelion-3.0.0-alpha1.js'], function (ACT) {
+        require([actelionCDN], function (ACT) {
             if (root.coordinates) {
                 renderActelionStructure(String(root.value), String(root.coordinates), def);
             } else {
                 var value = String(root.value);
                 var mol = ACT.Molecule.fromIDCode(value, true);
-                renderActelionStructure(value, mol.getIDCoordinates(), def);
+                renderActelionStructure(value, mol.getIDCoordinates(), options, def);
             }
         });
     };
 
-	functions.mol2d = {};
-	functions.mol2d.toscreen = function(def, molfileChild, molfile, options, highlights, box) {
-        require(['http://www.lactame.com/lib/actelion/3.0.0-alpha1/actelion-3.0.0-alpha1.js'], function (ACT) {
+    functions.mol2d = {};
+    functions.mol2d.toscreen = function (def, molfileChild, molfile, options, highlights, box) {
+        require([actelionCDN], function (ACT) {
             var mol = ACT.Molecule.fromMolfile(molfileChild);
-            renderActelionStructure(mol.getIDCode(), mol.getIDCoordinates(), def);
+            renderActelionStructure(mol.getIDCode(), mol.getIDCoordinates(), options, def);
         });
 	};
 
