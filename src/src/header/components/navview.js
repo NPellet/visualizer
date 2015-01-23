@@ -11,16 +11,28 @@ define([
     'components/jquery-ui-contextmenu/jquery.ui-contextmenu.min'
 ], function ($, superagent, Default, Versioning, Button, Util) {
 
-    var menu = '<ul id="myMenu" class="contextMenu ui-helper-hidden">\n    <li class="edit"><a href="#edit">Edit</a></li>\n    <li class="cut"><a href="#cut">Cut</a></li>\n    <li class="copy"><a href="#copy">Copy</a></li>\n    <li class="paste"><a href="#paste">Paste</a></li>\n    <li class="ui-state-disabled"><a href="#delete">Delete</a></li>\n    <li>---</li>\n    <li class="quit"><a href="#quit">Quit</a></li>\n    <li><a href="#save"><span class="ui-icon ui-icon-disk"></span>Save</a></li>\n</ul>';
-
     function Element() {
     }
 
     Util.inherits(Element, Default, {
 
         initImpl: function () {
+            var that = this;
             this.id = Util.getNextUniqueId();
             $.ui.fancytree.debugLevel = 0;
+
+            $(document).keydown(function(event) {
+                    // If Control or Command key is pressed and the S key is pressed
+                    // run save function. 83 is the key code for S.
+                    if((event.ctrlKey || event.metaKey) && event.which == 83) {
+                        // Save Function
+                        event.preventDefault();
+                        that.checkNode();
+                        that.save();
+                        return false;
+                    };
+                }
+            );
         },
 
         _onClick: function () {
@@ -90,10 +102,26 @@ define([
 
         save: function () {
             var that = this;
-            var dir = this.getDir(this.activeNode.data.path);
-            var name = this.activeNode.title;
+            var dir, name;
+            if(this.activeNode) {
+                dir = this.getDir(this.activeNode.data.path);
+                name = this.activeNode.title;
+            }
+            else if(this.viewURL) {
+                dir = this.getDir(this.viewURL);
+                dir = dir.replace(/^\/views/, '.');
+                var idx = this.viewURL.lastIndexOf('/');
+                if(idx > -1) {
+                    name = this.viewURL.slice(idx+1);
+                }
+                else {
+                    name = this.viewURL;
+                }
+            }
+            else return;
 
-            confirm('You are about to save the current view to: ' + this.activeNode.data.path + '<br/>This operation will erase the previous content of this file and cannot be undone.').then(function (ok) {
+
+            confirm('You are about to save the current view to: ' + dir + name + '<br/>This operation will erase the previous content of this file and cannot be undone.').then(function (ok) {
                 if (!ok) return;
                 var req = $.ajax({
                     url: '/navview/save',
@@ -302,10 +330,13 @@ define([
             if (!this.activeNode) {
                 this.log('error-log', 'Error: you must select a node');
             }
+            var viewURL = location.search.split('viewURL=')[1];
+            viewURL = decodeURIComponent(viewURL);
+            this.viewURL = viewURL;
         },
 
         log: function (name, text) {
-
+            if(!this.$log) return;
             var $slog = this.$log.find('#' + this.cssId(name));
 
             if ($slog.length > 0) {
