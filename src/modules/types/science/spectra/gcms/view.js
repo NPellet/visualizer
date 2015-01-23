@@ -90,6 +90,12 @@ define( [
 					}
 				},
 
+				onMsFromAUCChange: function( ms ) {
+
+					self.module.controller.sendAction('ms', ms, 'onMSChange');
+				},
+
+
 				AUCSelected: function( auc ) {
 
 					if( auc.msFromAucSerie ) {
@@ -132,8 +138,9 @@ define( [
 					self.module.controller.sendAction('mzList', ms, 'onMZSelectionChange');					
 				},
 
-				MSChangeIndex: function( msIndex ) {
+				MSChangeIndex: function( msIndex, ms ) {
 					self.module.controller.sendAction('msIndex', msIndex, 'onMSIndexChanged');
+					self.module.controller.sendAction('msMouse', ms, 'onMSIndexChanged');
 				},
 
 				onZoomGC: function( from, to ) {
@@ -309,6 +316,8 @@ define( [
 				}
 
 				this.gcmsInstance.setExternalMS( value, {} );
+
+				self.module.controller.sendAction('ms', value, 'onMSChange');
 			},
 
 			zoomOnAnnotation: function(value, name) {

@@ -119,6 +119,16 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		msIndex: {
 			type: ['number'],
 			label: 'MS Index'
+		},
+
+		msMouse: {
+			type: [ 'array' ],
+			label: 'Current MS Moused'
+		},
+
+		msAUC: {
+			type: [ 'array' ],
+			label: 'AUC MS'
 		}
 	};
 
@@ -185,7 +195,13 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 
 		onMSIndexChanged: {
 			label: 'MS Index has changed',
-			refAction: [ 'msIndex' ]
+			refAction: [ 'msIndex' ],
+			refVariable: [ 'msMouse' ]
+		},
+
+		onMSChange: {
+			label: 'MS has changed',
+			refVariable: [ 'ms' ]
 		}
 
 	};

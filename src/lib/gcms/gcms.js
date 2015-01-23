@@ -936,7 +936,7 @@
 				var self = this;
 				var ms = self.msData[x];
 
-				self.trigger('MSChangeIndex', [ x ] );
+				self.trigger('MSChangeIndex', [ x, ms ] );
 
 				if( ! self.msSerieMouseTrack ) {
 					
@@ -953,18 +953,18 @@
 
 
 
-					var xVal = self.gcData[ x * 2 ];
-					
-					self.trackingLineGC.data.pos.x = xVal;
-					self.trackingLineGC.data.pos2.x = xVal;
-
-					self.trackingLineGC.redraw();
-
-					if( ! ms ) {
-						return;
-					}
+				var xVal = self.gcData[ x * 2 ];
 				
-				
+				self.trackingLineGC.data.pos.x = xVal;
+				self.trackingLineGC.data.pos2.x = xVal;
+
+				self.trackingLineGC.redraw();
+
+				if( ! ms ) {
+					return;
+				}
+			
+			
 				self.msSerieMouseTrack.setData( ms );
 
 

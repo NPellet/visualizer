@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-22
+ * jsGraph JavaScript Graphing Library v1.10.4-24
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-01-18T22:12Z
+ * Date: 2015-01-20T07:43Z
  */
 
 (function( global, factory ) {
@@ -7378,7 +7378,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       autoPeakPickingFormat: false,
       autoPeakPickingAllowAllY: false,
 
-      selectableOnClick: true
+      selectableOnClick: true,
+
+      markersIndependant: false
     },
 
     init: function( graph, name, options ) {
@@ -7456,7 +7458,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       this.groupMain.appendChild( this.markerLabelSquare );
       this.groupMain.appendChild( this.markerLabel );
 
-      this.currentAction = false;
+      this.independantMarkers = [];
 
       if ( this.initExtended1 )
         this.initExtended1();
@@ -7580,15 +7582,19 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
       index = index.join();
 
-      var _on = !hover ? !this.domMarkerSelect[ index ] : !this.domMarkerHover[ index ];
+      var _on;
+      if ( typeof force === 'undefined' ) {
+        _on = !hover ? !this.domMarkerSelect[ index ] : !this.domMarkerHover[ index ];
+      }
       var el = this[ 'domMarker' + ( hover ? 'Hover' : 'Select' ) ];
 
-      if ( _on || ( force === true && force !== false ) ) {
+      if ( _on || force === true ) {
 
         if ( !el[ index ] ) {
 
           var dom = document.createElementNS( this.graph.ns, 'path' );
-          this.setMarkerStyleTo( dom, true );
+
+          this.setMarkerStyleTo( dom, this.markerFamilies[ this.selectionType ][ this.getMarkerCurrentFamily( i ) ] );
           this[ 'domMarker' + ( hover ? 'Hover' : 'Select' ) ][ index ] = dom;
           this.groupMarkerSelected.appendChild( dom );
 
@@ -7605,7 +7611,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
           this.markerHovered++;
         }
 
-      } else if ( force === false ||  !_on ) {
+      } else if ( !_on || force === false ) {
 
         if ( ( hover && this.domMarkerHover[ index ] && !this.domMarkerSelect[ index ] ) || this.domMarkerSelect[ index ] ) {
 
@@ -7927,11 +7933,14 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       for ( ; i < l; i++ ) {
 
         toBreak = false;
+        this.counter1 = i;
 
         this.currentLine = "";
         j = 0, k = 0, m = data[ i ].length;
 
         for ( ; j < m; j += 2 ) {
+
+          this.counter2 = j / 2;
 
           if ( this.markersShown() ) {
 
@@ -8043,7 +8052,11 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         currentLine = "M ";
         j = 0, k = 0, m = data[ i ].length;
 
+        this.counter1 = i;
+
         for ( ; j < m; j += 1 ) {
+
+          this.counter2 = j;
 
           if ( this.markersShown() ) {
 
@@ -8279,16 +8292,18 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
       }
 
-      this.counter++;
-
       if ( !this.markerPoints ) {
+        this.counter++;
+
         return;
       }
 
       if ( this.markersShown() && !( xpx > this.getXAxis().getMaxPx() ||  xpx < this.getXAxis().getMinPx() ) ) {
 
-        drawMarkerXY( this.markerFamilies[ this.selectionType ][ this.markerCurrentFamily ], xpx, ypx );
+        drawMarkerXY( this, this.markerFamilies[ this.selectionType ][ this.markerCurrentFamily ], xpx, ypx );
       }
+
+      this.counter++;
 
     },
 
@@ -8421,6 +8436,39 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       }
 
       return family.dom;
+    },
+
+    // In case markers are not grouped in families but independant
+    getMarkerDomIndependant: function( index1, index2, family ) {
+
+      var self = this;
+      var index = index1 + "," + index2;
+
+      if ( !this.independantMarkers[ index ] ) {
+
+        var dom = document.createElementNS( this.graph.ns, 'path' );
+        this.setMarkerStyleTo( dom, family );
+
+        dom.addEventListener( 'mouseover', function( e ) {
+
+          self.onMouseOverMarker( e, [ index, 0 ] );
+        } );
+
+        dom.addEventListener( 'mouseout', function( e ) {
+
+          self.onMouseOutMarker( e, [ index, 0 ] );
+        } );
+
+        dom.addEventListener( 'click', function( e ) {
+          self.onClickOnMarker( e, [ index, 0 ] );
+        } );
+
+        this.independantMarkers[ index ] = dom;
+      }
+
+      this.groupMain.appendChild( this.independantMarkers[ index ] );
+
+      return this.independantMarkers[ index ];
     },
 
     searchIndexByPxXY: function( x, y ) {
@@ -8872,36 +8920,13 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         return ( a[ 0 ] - b[ 0 ] ) ||  ( a[ 2 ] == null ? -1 : 1 );
       } );
 
-      // OK now let's handle clashes
-
-      /*			for( var i = 0, l = markerPoints.length ; i < l ; i ++ ) {
-
-				// No clash
-				if( markerPoints[ i ][ 1 ] < markerPoints[ i + 1 ][ 1 ] ) {
-					continue;
-				}
-
-				var restartAt = markerPoints[ i + 1 ][ 1 ] + 1;
-				markerPoints[ i ][ 1 ] = markerPoints[ i + 1 ][ 0 ];
-
-				var j = i;
-
-				while( markerPoints[ j ][ 1 ] < restartAt ) {
-					j++;
-				}
-
-				markerPoints.splice( j, 0, [ restartAt, ])
-
-
-			}
-*/
       this.markerPoints = this.markerPoints ||  {};
       this.markerPoints[ selectionType || "unselected" ] = markerPoints;
     },
 
     insertMarkers: function() {
 
-      if ( !this.markerFamilies || !this.markerFamilies[ this.selectionType ] ) {
+      if ( !this.markerFamilies || !this.markerFamilies[ this.selectionType ] || this.options.markersIndependant ) {
         return;
       }
 
@@ -8934,7 +8959,14 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
     eraseMarkers: function() {
 
       var self = this;
-      if ( this.currentMarkersSelectionType ) {
+
+      if( this.options.markersIndependant ) {
+
+        this.independantMarkers.map( function( el ) {
+          self.groupMain.removeChild( el );
+        });
+
+      } else if ( this.currentMarkersSelectionType ) {
 
         this.markerFamilies[ this.currentMarkersSelectionType ].map( function( el ) {
           self.groupMain.removeChild( el.dom );
@@ -9054,15 +9086,23 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
   } );
 
-  function drawMarkerXY( family, x, y ) {
+
+  function drawMarkerXY( graph, family, x, y ) {
 
     if ( !family ) {
       return;
     }
 
+    if ( graph.options.markersIndependant ) {
+      var dom = graph.getMarkerDomIndependant( graph.counter1, graph.counter2, family );
+      var p = 'M ' + x + ' ' + y + ' ';
+      p += family.markerPath + ' ';
+
+      dom.setAttribute( 'd', p );
+    }
+
     family.path = family.path ||  "";
     family.path += 'M ' + x + ' ' + y + ' ';
-
     family.path += family.markerPath + ' ';
   }
 
