@@ -90,14 +90,33 @@ define( [
 					}
 				},
 
+				onMsFromAUCChange: function( ms ) {
+
+					self.module.controller.createDataFromEvent('onMSChange', 'ms', ms);
+					
+				},
+
+
 				AUCSelected: function( auc ) {
 
-					if( auc.msFromAucSerie ) {
+				/*	if( auc.msFromAucSerie ) {
 						auc.msFromAucSerie.setLineColor( 'rgba(255, 0, 0, 1)' );
 						auc.msFromAucSerie.applyLineStyles();
 
 						auc.msFromAucSerie.showPeakPicking( true );
+					}*/
+					if( auc.data ) {
+						
+						self.module.controller.createDataFromEvent('onIntegralSelect', 'GCIntegration', auc.data._originalSource );
+
+						self.module.controller.sendAction( 'GCIntegration', auc.data._originalSource, 'onIntegralSelect');
+						
+					} else {
+						//console.trace();
 					}
+
+
+					
 				},
 
 				AUCUnselected: function( auc ) {
@@ -132,8 +151,10 @@ define( [
 					self.module.controller.sendAction('mzList', ms, 'onMZSelectionChange');					
 				},
 
-				MSChangeIndex: function( msIndex ) {
+				MSChangeIndex: function( msIndex, ms ) {
 					self.module.controller.sendAction('msIndex', msIndex, 'onMSIndexChanged');
+					self.module.controller.createDataFromEvent('onMSIndexChanged', 'msMouse', ms);
+					
 				},
 
 				onZoomGC: function( from, to ) {
@@ -252,6 +273,14 @@ define( [
 				this.ingredientList.map( function( source ) {
 					self.gcmsInstance.addIngredient( source );
 				});
+			},
+
+			'RIComponents': function( value ) {
+
+				if( value ) {
+					this.gcmsInstance.setRIComponents( value );
+				}
+				
 			}
 		},
 
@@ -277,6 +306,8 @@ define( [
 				var shapeData = self.gcmsInstance.addAUC( source.from, source.to, source );
 				shapeData._originalSource = source;
 			});
+
+			this.annotations = a;
 		},
 
 
@@ -309,6 +340,8 @@ define( [
 				}
 
 				this.gcmsInstance.setExternalMS( value, {} );
+
+				self.module.controller.createDataFromEvent('onMSChange', 'ms', value);
 			},
 
 			zoomOnAnnotation: function(value, name) {

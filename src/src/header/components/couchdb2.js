@@ -9,7 +9,7 @@ define([
     'lib/webtoolkit/base64',
     'lib/couchdb/jquery.couch',
     'fancytree',
-    'components/jquery-ui-contextmenu/jquery.ui-contextmenu.min'
+    'components/ui-contextmenu/jquery.ui-contextmenu.min'
 ], function ($, Default, Versioning, Button, Util, Base64) {
 
     function CouchDBManager() {
@@ -167,12 +167,21 @@ define([
             if (typeof last === 'undefined')
                 return this.showError(11);
 
-            var child = last.node.findFirst(name);
+            var children = last.node.getChildren();
+            var child;
+            if (children) {
+                for (var i = 0; i < children.length; i++) {
+                    if (children[i].title === name) {
+                        child = children[i];
+                        break;
+                    }
+                }
+            }
 
             var doc;
             var that = this;
 
-            if (child && child.title === name && !child.folder && (last.node.getChildren().indexOf(child) >= 0)) {
+            if (child && !child.folder) {
                 doc = child.data.doc;
                 $.ajax({
                     url: this.database.uri + doc._id + '/' + type.toLowerCase() + '.json?rev=' + doc._rev,
@@ -335,6 +344,11 @@ define([
 
             var flavorField = $('<input type="text" value="' + this.flavor + '" id="' + this.cssId('flavor-input') + '">');
 
+            function changeFlavor() {
+                var flavor = that.getFormContent('flavor-input');
+                if (that.flavor !== flavor) that.changeFlavor(flavor);
+            }
+
             this.database.view('flavor/list', {
                 success: function (data) {
                     if (!data.rows.length)
@@ -347,6 +361,12 @@ define([
                     }).on('autocompleteselect', function (e, d) {
                         var flavor = d.item.value;
                         if (that.flavor !== flavor) that.changeFlavor(flavor);
+                        flavorField.blur();
+                    }).on('keypress', function (e) {
+                        if (e.keyCode === 13) {
+                            changeFlavor();
+                            flavorField.blur();
+                        }
                     });
                 },
                 error: function (status) {
@@ -356,10 +376,7 @@ define([
             });
 
             dom.append($('<p><span>Flavor : </span>').append(flavorField).append(
-                new Button('Switch', function () {
-                    var flavor = that.getFormContent('flavor-input');
-                    if (that.flavor !== flavor) that.changeFlavor(flavor);
-                }, {color: 'red'}).render()
+                new Button('Switch', changeFlavor, {color: 'red'}).render()
             ));
 
             var treeCSS = {
@@ -453,17 +470,41 @@ define([
                 menu: [
                     {title: 'Delete', cmd: 'delete', uiIcon: 'ui-icon-trash'},
                     {title: 'New flavor', cmd: 'newflavor', uiIcon: 'ui-icon-newwin'},
-                    {title: 'Rename', cmd: 'rename', uiIcon: 'ui-icon-folder-collapsed'}
+                    {title: 'Rename', cmd: 'rename', uiIcon: 'ui-icon-folder-collapsed'},
+                    {title: 'Flavors', cmd: 'flavors', children: []}
                 ],
                 beforeOpen: function (event, ui) {
                     var node = $.ui.fancytree.getNode(ui.target);
                     if (node.folder)
                         return false;
+                    var tree = $('#' + that.cssId('tree'));
+                    var flavors = Object.keys(node.data.doc.flavors);
+                    if (flavors.length === 1) {
+                        tree.contextmenu('setEntry', 'delete', 'Delete');
+                        tree.contextmenu('showEntry', 'flavors', false);
+                    } else {
+                        var children = new Array(flavors.length);
+                        for (var i = 0; i < flavors.length; i++) {
+                            children[i] = {
+                                title: flavors[i],
+                                cmd: 'flavor'
+                            };
+                            if (flavors[i] === that.flavor) {
+                                children[i].disabled = true;
+                            }
+                        }
+                        tree.contextmenu('setEntry', 'delete', 'Delete flavor');
+                        tree.contextmenu('setEntry', 'flavors', {
+                            title: 'Flavors',
+                            children: children
+                        });
+                        tree.contextmenu('showEntry', 'flavors', true);
+                    }
                     node.setActive();
                 },
                 select: function (event, ui) {
                     var node = $.ui.fancytree.getNode(ui.target);
-                    that.contextClick(node, ui.cmd);
+                    that.contextClick(node, ui.cmd, ui);
                 },
                 createMenu: function (event) {
                     $(event.target).css('z-index', 10000);
@@ -540,7 +581,7 @@ define([
                 include_docs: true
             });
         },
-        contextClick: function (node, action) {
+        contextClick: function (node, action, ctx) {
             var that = this;
 
             if (!node.folder) {
@@ -574,7 +615,7 @@ define([
                     }
                 }
                 else if (action === 'rename') {
-                    $('<div>').html('New name : <input type="text" id="' + this.cssId('newname') + '" />').dialog({
+                    $('<div>').html('New name : <input type="text" id="' + this.cssId('newname') + '" value="' + node.title + '" />').dialog({
                         buttons: {
                             'Save': function () {
                                 var dialog = $(this);
@@ -657,8 +698,11 @@ define([
                         minLength: 0,
                         source: that.flavorList
                     }));
-                }
-                else {
+                } else if (action === 'flavor') {
+                    that.changeFlavor(ctx.item.text());
+                } else if (action === 'flavors') {
+                    // do nothing
+                } else {
                     console.warn('Context menu action "' + action + '" not implemented !');
                 }
             }

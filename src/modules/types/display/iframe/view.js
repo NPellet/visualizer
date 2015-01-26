@@ -38,7 +38,7 @@ define(['modules/default/defaultview'], function (Default) {
     });
 
     function blankIframe() {
-        this.dom.attr('src', null);
+        this.dom.attr('src', "about:blank");
     }
 
     return View;

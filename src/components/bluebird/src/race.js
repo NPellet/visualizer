@@ -1,17 +1,16 @@
 "use strict";
-module.exports = function(Promise, INTERNAL, cast) {
-var apiRejection = require("./errors_api_rejection.js")(Promise);
+module.exports = function(
+    Promise, INTERNAL, tryConvertToPromise, apiRejection) {
 var isArray = require("./util.js").isArray;
 
-var raceLater = function Promise$_raceLater(promise) {
+var raceLater = function (promise) {
     return promise.then(function(array) {
-        return Promise$_Race(array, promise);
+        return race(array, promise);
     });
 };
 
-var hasOwn = {}.hasOwnProperty;
-function Promise$_Race(promises, parent) {
-    var maybePromise = cast(promises, void 0);
+function race(promises, parent) {
+    var maybePromise = tryConvertToPromise(promises);
 
     if (maybePromise instanceof Promise) {
         return raceLater(maybePromise);
@@ -20,32 +19,30 @@ function Promise$_Race(promises, parent) {
     }
 
     var ret = new Promise(INTERNAL);
-    if (parent !== void 0) {
-        ret._propagateFrom(parent, PROPAGATE_ALL);
-    } else {
-        ret._setTrace(void 0);
+    if (parent !== undefined) {
+        ret._propagateFrom(parent, PROPAGATE_BIND | PROPAGATE_CANCEL);
     }
     var fulfill = ret._fulfill;
     var reject = ret._reject;
     for (var i = 0, len = promises.length; i < len; ++i) {
         var val = promises[i];
 
-        if (val === void 0 && !(hasOwn.call(promises, i))) {
+        if (val === undefined && !(i in promises)) {
             continue;
         }
 
-        Promise.cast(val)._then(fulfill, reject, void 0, ret, null);
+        Promise.cast(val)._then(fulfill, reject, undefined, ret, null);
     }
     //Yes, if promises were empty, it will be forever pending :-)
     return ret;
 }
 
-Promise.race = function Promise$Race(promises) {
-    return Promise$_Race(promises, void 0);
+Promise.race = function (promises) {
+    return race(promises, undefined);
 };
 
-Promise.prototype.race = function Promise$race() {
-    return Promise$_Race(this, void 0);
+Promise.prototype.race = function () {
+    return race(this, undefined);
 };
 
 };

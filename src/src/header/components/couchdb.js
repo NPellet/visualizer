@@ -1,6 +1,6 @@
 'use strict';
 
-define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms/button', 'src/util/util', 'lib/couchdb/jquery.couch', 'fancytree', 'components/jquery-ui-contextmenu/jquery.ui-contextmenu.min'], function ($, Default, Versioning, Button, Util) {
+define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms/button', 'src/util/util', 'lib/couchdb/jquery.couch', 'fancytree', 'components/ui-contextmenu/jquery.ui-contextmenu.min'], function ($, Default, Versioning, Button, Util) {
 
     function CouchDBManager() {
     }

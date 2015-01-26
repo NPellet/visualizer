@@ -1,3 +1,11 @@
+2.12.0 / 2015-01-26
+===================
+
+* twig : support passing options in rendertype
+* typerenderer : allow rendering options for molecules
+* header : improvements to couchdb2
+* components : update jquery-ui-contextmenu, bluebird, fancytree, chemcalc, d3, font-awesome, jcampconverter, twig.js
+
 2.11.0 / 2015-01-22
 ===================
 

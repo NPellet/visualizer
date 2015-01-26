@@ -1,12 +1,13 @@
 "use strict";
 module.exports =
-function(Promise, PromiseArray, cast, INTERNAL) {
+function(Promise, PromiseArray, tryConvertToPromise, INTERNAL) {
 var util = require("./util.js");
 var canEvaluate = util.canEvaluate;
-var tryCatch1 = util.tryCatch1;
+var tryCatch = util.tryCatch;
 var errorObj = util.errorObj;
+var reject;
 
-
+if (!__BROWSER__) {
 if (canEvaluate) {
     var thenCallback = function(i) {
         return new Function("value", "holder", "                             \n\
@@ -26,7 +27,7 @@ if (canEvaluate) {
             ".replace(/values/g, values.join(", ")));
     };
     var thenCallbacks = [];
-    var callers = [void 0];
+    var callers = [undefined];
     for (var i = 1; i <= 5; ++i) {
         thenCallbacks.push(thenCallback(i));
         callers.push(caller(i));
@@ -46,55 +47,61 @@ if (canEvaluate) {
         var total = this.total;
         if (now >= total) {
             var handler = this.callers[total];
-            var ret = tryCatch1(handler, void 0, this);
+            promise._pushContext();
+            var ret = tryCatch(handler)(this);
+            promise._popContext();
             if (ret === errorObj) {
-                promise._rejectUnchecked(ret.e);
-            } else if (!promise._tryFollow(ret)) {
-                promise._fulfillUnchecked(ret);
+                promise._rejectCallback(ret.e, false, true);
+            } else {
+                promise._resolveCallback(ret);
             }
         } else {
             this.now = now;
         }
     };
+
+    var reject = function (reason) {
+        this._reject(reason);
+    };
+}
 }
 
-function reject(reason) {
-    this._reject(reason);
-}
-
-Promise.join = function Promise$Join() {
+Promise.join = function () {
     var last = arguments.length - 1;
     var fn;
     if (last > 0 && typeof arguments[last] === "function") {
         fn = arguments[last];
-        if (last < 6 && canEvaluate) {
-            var ret = new Promise(INTERNAL);
-            ret._setTrace(void 0);
-            var holder = new Holder(last, fn);
-            var callbacks = thenCallbacks;
-            for (var i = 0; i < last; ++i) {
-                var maybePromise = cast(arguments[i], void 0);
-                if (maybePromise instanceof Promise) {
-                    if (maybePromise.isPending()) {
-                        maybePromise._then(callbacks[i], reject,
-                                           void 0, ret, holder);
-                    } else if (maybePromise.isFulfilled()) {
-                        callbacks[i].call(ret,
-                                          maybePromise._settledValue, holder);
+        if (!__BROWSER__) {
+            if (last < 6 && canEvaluate) {
+                var ret = new Promise(INTERNAL);
+                ret._captureStackTrace();
+                var holder = new Holder(last, fn);
+                var callbacks = thenCallbacks;
+                for (var i = 0; i < last; ++i) {
+                    var maybePromise = tryConvertToPromise(arguments[i], ret);
+                    if (maybePromise instanceof Promise) {
+                        maybePromise = maybePromise._target();
+                        if (maybePromise._isPending()) {
+                            maybePromise._then(callbacks[i], reject,
+                                               undefined, ret, holder);
+                        } else if (maybePromise._isFulfilled()) {
+                            callbacks[i].call(ret,
+                                              maybePromise._value(), holder);
+                        } else {
+                            ret._reject(maybePromise._reason());
+                        }
                     } else {
-                        ret._reject(maybePromise._settledValue);
-                        maybePromise._unsetRejectionIsUnhandled();
+                        callbacks[i].call(ret, maybePromise, holder);
                     }
-                } else {
-                    callbacks[i].call(ret, maybePromise, holder);
                 }
+                return ret;
             }
-            return ret;
         }
     }
     INLINE_SLICE(args, arguments);
+    if (fn) args.pop();
     var ret = new PromiseArray(args).promise();
-    return fn !== void 0 ? ret.spread(fn) : ret;
+    return fn !== undefined ? ret.spread(fn) : ret;
 };
 
 };

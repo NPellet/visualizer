@@ -1,6 +1,6 @@
 {
   "name": "jcampconverter",
-  "version": "2.0.1",
+  "version": "2.0.3",
   "homepage": "https://github.com/cheminfo/jcampconverter",
   "description": "Parse and convert JCAMP data",
   "main": "build/jcampconverter.js",
@@ -21,14 +21,13 @@
     "node_modules",
     "Gruntfile.js"
   ],
-  "_release": "2.0.1",
+  "_release": "2.0.3",
   "_resolution": {
     "type": "version",
-    "tag": "v2.0.1",
-    "commit": "b17631949d6a92625c544963324f619970ac601e"
+    "tag": "v2.0.3",
+    "commit": "9c5330e9e9928a0bb5ad83f38202ed918ef83beb"
   },
   "_source": "git://github.com/cheminfo/jcampconverter.git",
-  "_target": "v2.0.1",
-  "_originalSource": "jcampconverter",
-  "_direct": true
+  "_target": "^2.0.3",
+  "_originalSource": "jcampconverter"
 }

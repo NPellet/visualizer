@@ -8,7 +8,7 @@ define([
     'forms/button',
     'src/util/util',
     'fancytree',
-    'components/jquery-ui-contextmenu/jquery.ui-contextmenu.min'
+    'components/ui-contextmenu/jquery.ui-contextmenu.min'
 ], function ($, superagent, Default, Versioning, Button, Util) {
 
     function Element() {

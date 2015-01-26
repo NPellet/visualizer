@@ -1,5 +1,6 @@
 "use strict";
-module.exports = function (Promise, apiRejection, cast) {
+module.exports = function (Promise, apiRejection, tryConvertToPromise,
+    createContext) {
     var TypeError = require("./errors.js").TypeError;
     var inherits = require("./util.js").inherits;
     var PromiseInspection = Promise.PromiseInspection;
@@ -12,7 +13,7 @@ module.exports = function (Promise, apiRejection, cast) {
                 // Cheaper than throwing
                 return Promise.reject(inspection.error());
             }
-            inspections[i] = inspection.value();
+            inspections[i] = inspection._settledValue;
         }
         return inspections;
     }
@@ -22,7 +23,7 @@ module.exports = function (Promise, apiRejection, cast) {
     }
 
     function castPreservingDisposable(thenable) {
-        var maybePromise = cast(thenable, void 0);
+        var maybePromise = tryConvertToPromise(thenable);
         if (maybePromise !== thenable &&
             typeof thenable._isDisposable === "function" &&
             typeof thenable._getDisposer === "function" &&
@@ -41,8 +42,9 @@ module.exports = function (Promise, apiRejection, cast) {
             if (maybePromise instanceof Promise &&
                 maybePromise._isDisposable()) {
                 try {
-                    maybePromise = cast(maybePromise._getDisposer()
-                                        .tryDispose(inspection), void 0);
+                    maybePromise = tryConvertToPromise(
+                        maybePromise._getDisposer().tryDispose(inspection),
+                        resources.promise);
                 } catch (e) {
                     return thrower(e);
                 }
@@ -71,20 +73,21 @@ module.exports = function (Promise, apiRejection, cast) {
         return dispose(this, inspection).thenThrow(reason);
     }
 
-    function Disposer(data, promise) {
+    function Disposer(data, promise, context) {
         this._data = data;
         this._promise = promise;
+        this._context = context;
     }
 
-    Disposer.prototype.data = function Disposer$data() {
+    Disposer.prototype.data = function () {
         return this._data;
     };
 
-    Disposer.prototype.promise = function Disposer$promise() {
+    Disposer.prototype.promise = function () {
         return this._promise;
     };
 
-    Disposer.prototype.resource = function Disposer$resource() {
+    Disposer.prototype.resource = function () {
         if (this.promise().isFulfilled()) {
             return this.promise().value();
         }
@@ -93,21 +96,24 @@ module.exports = function (Promise, apiRejection, cast) {
 
     Disposer.prototype.tryDispose = function(inspection) {
         var resource = this.resource();
+        var context = this._context;
+        if (context !== undefined) context._pushContext();
         var ret = resource !== null
             ? this.doDispose(resource, inspection) : null;
+        if (context !== undefined) context._popContext();
         this._promise._unsetDisposable();
-        this._data = this._promise = null;
+        this._data = null;
         return ret;
     };
 
-    Disposer.isDisposer = function Disposer$isDisposer(d) {
+    Disposer.isDisposer = function (d) {
         return (d != null &&
                 typeof d.resource === "function" &&
                 typeof d.tryDispose === "function");
     };
 
-    function FunctionDisposer(fn, promise) {
-        this.constructor$(fn, promise);
+    function FunctionDisposer(fn, promise, context) {
+        this.constructor$(fn, promise, context);
     }
     inherits(FunctionDisposer, Disposer);
 
@@ -116,7 +122,15 @@ module.exports = function (Promise, apiRejection, cast) {
         return fn.call(resource, resource, inspection);
     };
 
-    Promise.using = function Promise$using() {
+    function maybeUnwrapDisposer(value) {
+        if (Disposer.isDisposer(value)) {
+            this.resources[this.index]._setDisposable(value);
+            return value.promise();
+        }
+        return value;
+    }
+
+    Promise.using = function () {
         var len = arguments.length;
         if (len < 2) return apiRejection(
                         "you must pass at least 2 arguments to Promise.using");
@@ -130,38 +144,58 @@ module.exports = function (Promise, apiRejection, cast) {
                 var disposer = resource;
                 resource = resource.promise();
                 resource._setDisposable(disposer);
+            } else {
+                var maybePromise = tryConvertToPromise(resource);
+                if (maybePromise instanceof Promise) {
+                    resource =
+                        maybePromise._then(maybeUnwrapDisposer, null, null, {
+                            resources: resources,
+                            index: i
+                    }, undefined);
+                }
             }
             resources[i] = resource;
         }
 
-        return Promise.settle(resources)
+        var promise = Promise.settle(resources)
             .then(inspectionMapper)
-            .spread(fn)
-            ._then(disposerSuccess, disposerFail, void 0, resources, void 0);
+            .then(function(vals) {
+                promise._pushContext();
+                var ret;
+                try {
+                    ret = fn.apply(undefined, vals);
+                } finally {
+                    promise._popContext();
+                }
+                return ret;
+            })
+            ._then(
+                disposerSuccess, disposerFail, undefined, resources, undefined);
+        resources.promise = promise;
+        return promise;
     };
 
-    Promise.prototype._setDisposable =
-    function Promise$_setDisposable(disposer) {
+    Promise.prototype._setDisposable = function (disposer) {
         this._bitField = this._bitField | IS_DISPOSABLE;
         this._disposer = disposer;
     };
 
-    Promise.prototype._isDisposable = function Promise$_isDisposable() {
+    Promise.prototype._isDisposable = function () {
         return (this._bitField & IS_DISPOSABLE) > 0;
     };
 
-    Promise.prototype._getDisposer = function Promise$_getDisposer() {
+    Promise.prototype._getDisposer = function () {
         return this._disposer;
     };
 
-    Promise.prototype._unsetDisposable = function Promise$_unsetDisposable() {
+    Promise.prototype._unsetDisposable = function () {
         this._bitField = this._bitField & (~IS_DISPOSABLE);
-        this._disposer = void 0;
+        this._disposer = undefined;
     };
 
-    Promise.prototype.disposer = function Promise$disposer(fn) {
+    Promise.prototype.disposer = function (fn) {
         if (typeof fn === "function") {
-            return new FunctionDisposer(fn, this);
+            return new FunctionDisposer(fn, this, createContext());
         }
         throw new TypeError();
     };

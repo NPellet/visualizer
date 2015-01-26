@@ -5,20 +5,20 @@ var isPrimitive = util.isPrimitive;
 var wrapsPrimitiveReceiver = util.wrapsPrimitiveReceiver;
 
 module.exports = function(Promise) {
-var returner = function Promise$_returner() {
+var returner = function () {
     return this;
 };
-var thrower = function Promise$_thrower() {
+var thrower = function () {
     throw this;
 };
 
-var wrapper = function Promise$_wrapper(value, action) {
+var wrapper = function (value, action) {
     if (action === THROW) {
-        return function Promise$_thrower() {
+        return function () {
             throw value;
         };
     } else if (action === RETURN) {
-        return function Promise$_returner() {
+        return function () {
             return value;
         };
     }
@@ -27,32 +27,30 @@ var wrapper = function Promise$_wrapper(value, action) {
 
 
 Promise.prototype["return"] =
-Promise.prototype.thenReturn =
-function Promise$thenReturn(value) {
+Promise.prototype.thenReturn = function (value) {
     if (wrapsPrimitiveReceiver && isPrimitive(value)) {
         return this._then(
             wrapper(value, RETURN),
-            void 0,
-            void 0,
-            void 0,
-            void 0
+            undefined,
+            undefined,
+            undefined,
+            undefined
        );
     }
-    return this._then(returner, void 0, void 0, value, void 0);
+    return this._then(returner, undefined, undefined, value, undefined);
 };
 
 Promise.prototype["throw"] =
-Promise.prototype.thenThrow =
-function Promise$thenThrow(reason) {
+Promise.prototype.thenThrow = function (reason) {
     if (wrapsPrimitiveReceiver && isPrimitive(reason)) {
         return this._then(
             wrapper(reason, THROW),
-            void 0,
-            void 0,
-            void 0,
-            void 0
+            undefined,
+            undefined,
+            undefined,
+            undefined
        );
     }
-    return this._then(thrower, void 0, void 0, reason, void 0);
+    return this._then(thrower, undefined, undefined, reason, undefined);
 };
 };

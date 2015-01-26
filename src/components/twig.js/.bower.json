@@ -32,6 +32,6 @@
     "commit": "551d31426b7375fa3bb392ebb28beaa29125abcf"
   },
   "_source": "git://github.com/justjohn/twig.js.git",
-  "_target": "~0.7.0",
+  "_target": "^0.7.2",
   "_originalSource": "twig.js"
 }

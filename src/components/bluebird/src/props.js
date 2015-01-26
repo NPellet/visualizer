@@ -1,8 +1,8 @@
 "use strict";
-module.exports = function(Promise, PromiseArray, cast) {
+module.exports = function(
+    Promise, PromiseArray, tryConvertToPromise, apiRejection) {
 var ASSERT = require("./assert.js");
 var util = require("./util.js");
-var apiRejection = require("./errors_api_rejection")(Promise);
 var isObject = util.isObject;
 var es5 = require("./es5.js");
 
@@ -20,15 +20,13 @@ function PropertiesPromiseArray(obj) {
 util.inherits(PropertiesPromiseArray, PromiseArray);
 
 //Override
-PropertiesPromiseArray.prototype._init =
-function PropertiesPromiseArray$_init() {
-    this._init$(void 0, RESOLVE_OBJECT) ;
+PropertiesPromiseArray.prototype._init = function () {
+    this._init$(undefined, RESOLVE_OBJECT) ;
 };
 
 //Override
-PropertiesPromiseArray.prototype._promiseFulfilled =
-function PropertiesPromiseArray$_promiseFulfilled(value, index) {
-    if (this._isResolved()) return;
+PropertiesPromiseArray.prototype._promiseFulfilled = function (value, index) {
+    ASSERT(!this._isResolved());
     ASSERT(!(value instanceof Promise));
     this._values[index] = value;
     var totalResolved = ++this._totalResolved;
@@ -43,9 +41,8 @@ function PropertiesPromiseArray$_promiseFulfilled(value, index) {
 };
 
 //Override
-PropertiesPromiseArray.prototype._promiseProgressed =
-function PropertiesPromiseArray$_promiseProgressed(value, index) {
-    if (this._isResolved()) return;
+PropertiesPromiseArray.prototype._promiseProgressed = function (value, index) {
+    ASSERT(!this._isResolved());
 
     this._promise._progress({
         key: this._values[index + this.length()],
@@ -54,25 +51,24 @@ function PropertiesPromiseArray$_promiseProgressed(value, index) {
 };
 
 // Override
-PropertiesPromiseArray.prototype.shouldCopyValues =
-function PropertiesPromiseArray$_shouldCopyValues() {
+PropertiesPromiseArray.prototype.shouldCopyValues = function () {
     return false;
 };
 
 // Override
-PropertiesPromiseArray.prototype.getActualLength =
-function PropertiesPromiseArray$getActualLength(len) {
+PropertiesPromiseArray.prototype.getActualLength = function (len) {
     return len >> 1;
 };
 
-function Promise$_Props(promises) {
+function props(promises) {
     var ret;
-    var castValue = cast(promises, void 0);
+    var castValue = tryConvertToPromise(promises);
 
     if (!isObject(castValue)) {
         return apiRejection(PROPS_TYPE_ERROR);
     } else if (castValue instanceof Promise) {
-        ret = castValue._then(Promise.props, void 0, void 0, void 0, void 0);
+        ret = castValue._then(
+            Promise.props, undefined, undefined, undefined, undefined);
     } else {
         ret = new PropertiesPromiseArray(castValue).promise();
     }
@@ -83,11 +79,11 @@ function Promise$_Props(promises) {
     return ret;
 }
 
-Promise.prototype.props = function Promise$props() {
-    return Promise$_Props(this);
+Promise.prototype.props = function () {
+    return props(this);
 };
 
-Promise.props = function Promise$Props(promises) {
-    return Promise$_Props(promises);
+Promise.props = function (promises) {
+    return props(promises);
 };
 };

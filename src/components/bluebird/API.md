@@ -16,7 +16,7 @@
     - [`Promise.method(Function fn)`](#promisemethodfunction-fn---function)
     - [`Promise.resolve(dynamic value)`](#promiseresolvedynamic-value---promise)
     - [`Promise.reject(dynamic reason)`](#promiserejectdynamic-reason---promise)
-    - [`Promise.bind(dynamic thisArg)`](#promisebinddynamic-thisarg---promise)
+    - [`Promise.bind(dynamic thisArg [, dynamic value])`](#promisebinddynamic-thisarg--dynamic-value---promise)
 - [Synchronous inspection](#synchronous-inspection)
     - [`.isFulfilled()`](#isfulfilled---boolean)
     - [`.isRejected()`](#isrejected---boolean)
@@ -46,6 +46,7 @@
         - [Option: `suffix`](#option-suffix)
         - [Option: `filter`](#option-filter)
         - [Option: `promisifier`](#option-promisifier)
+    - [`Promise.fromNode(Function resolver)`](#promisefromnodefunction-resolver---promise)
     - [`.nodeify([Function callback] [, Object options])`](#nodeifyfunction-callback--object-options---promise)
         - [Option: `spread`](#option-spread)
 - [Timers](#timers)
@@ -63,7 +64,7 @@
 - [Utility](#utility)
     - [`.tap(Function handler)`](#tapfunction-handler---promise)
     - [`.call(String propertyName [, dynamic arg...])`](#callstring-propertyname--dynamic-arg---promise)
-    - [`.get(String propertyName)`](#getstring-propertyname---promise)
+    - [`.get(String propertyName|int index)`](#getstring-propertynameint-index---promise)
     - [`.return(dynamic value)`](#returndynamic-value---promise)
     - [`.throw(dynamic reason)`](#throwdynamic-reason---promise)
     - [`Promise.noConflict()`](#promisenoconflict---object)
@@ -74,6 +75,7 @@
     - [`CancellationError()`](#cancellationerror)
     - [`AggregateError()`](#aggregateerror)
 - [Error management configuration](#error-management-configuration)
+    - [Global rejection events](#global-rejection-events)
     - [`Promise.onPossiblyUnhandledRejection(Function handler)`](#promiseonpossiblyunhandledrejectionfunction-handler---undefined)
     - [`Promise.onUnhandledRejectionHandled(Function handler)`](#promiseonunhandledrejectionhandledfunction-handler---undefined)
     - [`Promise.longStackTraces()`](#promiselongstacktraces---void)
@@ -81,7 +83,7 @@
 - [Progression migration](#progression-migration)
 - [Deferred migration](#deferred-migration)
 
-Note that every instance promise method in the API has a static counterpart. For example `Promise.map(arr, fn)` is the same as calling `Promise.resolve(arr).map(fn)`. 
+Note that every instance promise method in the API has a static counterpart. For example `Promise.map(arr, fn)` is the same as calling `Promise.resolve(arr).map(fn)`.
 
 ##Core
 
@@ -161,7 +163,7 @@ promptAsync("Which url to visit?").then(function(url) {
 
 #####`.spread([Function fulfilledHandler] [, Function rejectedHandler ])` -> `Promise`
 
-Like calling `.then`, but the fulfillment value or rejection reason is assumed to be an array, which is flattened to the formal parameters of the handlers.
+Like calling `.then`, but the fulfillment value or rejection reason _must be_ an array, which is flattened to the formal parameters of the handlers.
 
 ```js
 Promise.delay(500).then(function() {
@@ -673,7 +675,7 @@ MyClass.prototype.method = Promise.method(function(input) {
         throw new TypeError("input is not valid");
     }
 
-    if (this.cachedFor(input)) {
+    if (this.cache(input)) {
         return this.someCachedValue;
     }
 
@@ -713,9 +715,9 @@ Create a promise that is rejected with the given `reason`.
 
 <hr>
 
-#####`Promise.bind(dynamic thisArg)` -> `Promise`
+#####`Promise.bind(dynamic thisArg [, dynamic value])` -> `Promise`
 
-Sugar for `Promise.resolve(undefined).bind(thisArg);`. See [`.bind()`](#binddynamic-thisarg---promise).
+Sugar for `Promise.resolve(value).bind(thisArg);`. See [`.bind()`](#binddynamic-thisarg---promise).
 
 <hr>
 
@@ -724,7 +726,7 @@ Sugar for `Promise.resolve(undefined).bind(thisArg);`. See [`.bind()`](#binddyna
 Often it is known in certain code paths that a promise is guaranteed to be fulfilled at that point - it would then be extremely inconvenient to use `.then()` to get at the promise's value as the callback is always called asynchronously.
 
 
-**Note**: At recent versions of Bluebird a design choise was made to expose `.reason()` and `.value` as well as other inspection methods on promises directly in order to make the below use case easier to work with. The `Promise.settle` method still returns a `PromiseInspection` array as its result. Every promise is now also a `PromiseInspection` and inspection methods can be used on promises freely. 
+**Note**: In recent versions of Bluebird a design choice was made to expose `.reason()` and `.value` as well as other inspection methods on promises directly in order to make the below use case easier to work with. The `Promise.settle` method still returns a `PromiseInspection` array as its result. Every promise is now also a `PromiseInspection` and inspection methods can be used on promises freely.
 
 For example, if you need to use values of earlier promises in the chain, you could nest:
 
@@ -770,7 +772,7 @@ In the latter the indentation stays flat no matter how many previous variables y
 
 #### The `PromiseInspection` Interface
 
-This interface is implemented by `Promise` instances as well as `PromiseInspection` results returned by calling `Promise.settle`. 
+This interface is implemented by `Promise` instances as well as `PromiseInspection` results returned by calling `Promise.settle`.
 
 <hr>
 
@@ -930,7 +932,7 @@ var files = ['a.txt', 'b.txt'].map(function(fileName) {
 Promise.settle(files).then(function(results) {
     // results is a PromiseInspection array
     // this is reached once the operations are all done, regardless if
-    // they're successful or not. 
+    // they're successful or not.
     var r = results[0];
     if (r.isFulfilled()) {  // check if was successful
         console.log(r.value()); // the promise's return value
@@ -1106,7 +1108,7 @@ such concurrency
 
 #####`.reduce(Function reducer [, dynamic initialValue])` -> `Promise`
 
-Reduce an array, or a promise of an array, which contains promises (or a mix of promises and values) with the given `reducer` function with the signature `(total, current, index, arrayLength)` where `item` is the resolved value of a respective promise in the input array. If any promise in the input array is rejected the returned promise is rejected as well.
+Reduce an array, or a promise of an array, which contains promises (or a mix of promises and values) with the given `reducer` function with the signature `(total, item, index, arrayLength)` where `item` is the resolved value of a respective promise in the input array, and `total` is either the initial value, or the result of the previous iteration. If any promise in the input array is rejected the returned promise is rejected as well.
 
 If the reducer function returns a promise or a thenable, the result for the promise is awaited for before continuing with next iteration.
 
@@ -1152,7 +1154,7 @@ See [`.map()`](#mapfunction-mapper--object-options---promise);
 
 #####`.each(Function iterator)` -> `Promise`
 
-Iterate over an array, or a promise of an array, which contains promises (or a mix of promises and values) with the given `iterator` function with the signature `(item, index, value)` where `item` is the resolved value of a respective promise in the input array. If any promise in the input array is rejected the returned promise is rejected as well.
+Iterate over an array, or a promise of an array, which contains promises (or a mix of promises and values) with the given `iterator` function with the signature `(item, index, value)` where `item` is the resolved value of a respective promise in the input array. Iteration happens in serially. If any promise in the input array is rejected the returned promise is rejected as well.
 
 Resolves to the original array unmodified, this method is meant to be used for side effects. If the iterator function returns a promise or a thenable, the result for the promise is awaited for before continuing with next iteration.
 
@@ -1216,16 +1218,19 @@ using(getConnection(),
 
 #####`Promise.using(Promise|Disposer promise, Promise|Disposer promise ..., Function handler)` -> `Promise`
 
-In conjunction with [`.disposer()`](#disposerfunction-disposer---disposer), `using` will make sure that no matter what, the specified disposer will be called
-when appropriate. The disposer is necessary because there is no standard interface in node for disposing resources.
+In conjunction with [`.disposer()`](#disposerfunction-disposer---disposer), `using` will make sure that no matter what, the specified disposer will be called when the promise returned by the callback passed to `using` has settled. The disposer is necessary because there is no standard interface in node for disposing resources.
 
-Simplest example (where `getConnection()` [has been defined] to return a proper [`Disposer`](#disposerfunction-disposer---disposer)))
+Here is a simple example (where `getConnection()` [has been defined] to return a proper [`Disposer`](#disposerfunction-disposer---disposer)))
 
 
 ```js
 using(getConnection(), function(connection) {
+   // Don't leak the `connection` variable anywhere from here
+   // it is only guaranteed to be open while the promise returned from
+   // this callback is still pending
    return connection.queryAsync("SELECT * FROM TABLE");
-   // Code continuing here still has access to `connection`
+   // Code that is chained from the promise created in the line above
+   // still has access to `connection`
 }).then(function(rows) {
     // The connection has been closed by now
     console.log(rows);
@@ -1300,10 +1305,8 @@ function getSqlConnection(connectionString) {
     return pg.connectAsync(connectionString).spread(function(client, done) {
         close = done;
         return client;
-    }).disposer(function() {
-        try {
-            if (close) close();
-        } catch(e) {};
+    }).disposer(function(client) {
+        if (close) close(client);
     });
 }
 
@@ -1328,9 +1331,7 @@ var pool  = mysql.createPool({
 
 function getSqlConnection() {
     return pool.getConnectionAsync().disposer(function(connection) {
-        try {
-            connection.release();
-        } catch(e) {};
+        connection.release();
     });
 }
 
@@ -1376,15 +1377,12 @@ function getTransaction(connectionString) {
         });
     }).disposer(function(client, promise) {
         if (promise.isFulfilled()) {
-            return client.queryAsync('COMMIT').then(closeSilently);
+            return client.queryAsync('COMMIT').then(closeClient);
         } else {
-            return client.queryAsync('ROLLBACK').then(closeSilently);
+            return client.queryAsync('ROLLBACK').then(closeClient);
         }
-        function closeSilently() {
-            try {
-                if (close) close();
-            } catch (e) {
-            }
+        function closeClient() {
+            if (close) close(client);
         }
     });
 }
@@ -1392,6 +1390,11 @@ function getTransaction(connectionString) {
 exports.getTransaction = getTransaction;
 ```
 
+#### Note about disposers in node
+
+If a disposer method throws, its highly likely that it failed to dispose of the resource. In that case, Bluebird has two options - it can either ignore the error and continue with program execution or throw an exception (crashing the process in node.js). Bluebird prefers to do the later because resources are typically scarce. For example, if database connections cannot be disposed of and Bluebird ignores that, the connection pool will be quickly depleted and the process will become unusable. Since Bluebird doesn't know how to handle that, the only sensible default is to crash the process.
+
+If you anticipate thrown errors while disposing of the resource you should use a `try..catch` block (or Promise.try) and write the appropriate code to handle the errors.
 
 <hr>
 
@@ -1411,6 +1414,8 @@ fs.readFileAsync("file.js", "utf8").then(...)
 ```
 
 Note that the above is an exceptional case because `fs` is a singleton instance. Most libraries can be promisified by requiring the library's classes (constructor functions) and calling promisifyAll on the `.prototype`. This only needs to be done once in the entire application's lifetime and after that you may use the library's methods exactly as they are documented, except by appending the `"Async"`-suffix to method calls and using the promise interface instead of the callback interface.
+
+As a notable exception in `fs`, `fs.existsAsync` doesn't work as expected, because Node's `fs.exists` doesn't call back with error as first argument.  More at #418.  One possible workaround is using `fs.statAsync`.
 
 Some examples of the above practice applied to some popular libraries:
 
@@ -1639,11 +1644,14 @@ Optionally, you can define a custom filter through the options object:
 
 ```js
 Promise.promisifyAll(..., {
-    filter: function(name, func, target) {
+    filter: function(name, func, target, passesDefaultFilter) {
         // name = the property name to be promisified without suffix
         // func = the function
         // target = the target object where the promisified func will be put with name + suffix
-        // return boolean
+        // passesDefaultFilter = whether the default filter would be passed
+        // return boolean (return value is coerced, so not returning anything is same as returning false)
+
+        return passesDefaultFilter && ...
     }
 })
 ```
@@ -1682,7 +1690,7 @@ function DOMPromisifier(originalMethod) {
 }
 
 // Promisify e.g. chrome.browserAction
-Promise.promisifyAll(chrome.browserAction, {promisifer: DOMPromisifer});
+Promise.promisifyAll(chrome.browserAction, {promisifier: DOMPromisifier});
 
 // Later
 chrome.browserAction.getTitleAsync({tabId: 1})
@@ -1748,6 +1756,61 @@ restler.getAsync("http://...", ...,).spread(function(data, response) {
 })
 ```
 
+Using `defaultPromisifier` parameter to add enhancements on top of normal node
+promisification:
+
+```js
+var fs = Promise.promisifyAll(require("fs"), {
+    promisifier: function(originalFunction, defaultPromisifer) {
+        var promisified = defaultPromisifier(originalFunction);
+
+        return function() {
+            // Enhance normal promisification by supporting promises as
+            // arguments
+
+            var args = [].slice.call(arguments);
+            var self = this;
+            return Promise.all(args).then(function(awaitedArgs) {
+                return promisified.apply(self, awaitedArgs);
+            });
+        };
+    }
+});
+
+// All promisified fs functions now await their arguments if they are promises
+var version = fs.readFileAsync("package.json", "utf8").then(JSON.parse).get("version");
+fs.writeFileAsync("the-version.txt", version, "utf8");
+```
+<hr>
+
+#####`Promise.fromNode(Function resolver)` -> `Promise`
+
+Returns a promise that is resolved by a node style callback function. This is the most fitting way to do on the fly promisification when libraries don't expose classes for automatic promisification by [`promisifyAll`](#promisepromisifyallobject-target--object-options---object).
+
+The resolver function is passed a callback that expects to be called back according to error-first node conventions.
+
+Using manual resolver:
+
+```js
+// TODO use real library that doesn't expose prototypes for promisification
+var object = crummyLibrary.create();
+Promise.fromNode(function(callback) {
+    object.foo("firstArgument", callback);
+}).then(function(result) {
+    console.log(result);
+})
+```
+
+The same can also be written with `.bind`:
+
+```js
+// TODO use real library that doesn't expose prototypes for promisification
+var object = crummyLibrary.create();
+Promise.fromNode(object.foo.bind(object, "firstArgument")).then(function(result) {
+    console.log(result);
+})
+```
+
 <hr>
 
 #####`.nodeify([Function callback] [, Object options])` -> `Promise`
@@ -1782,6 +1845,20 @@ getDataFor("me", function(err, dataForMe) {
         console.error( err );
     }
     console.log(dataForMe);
+});
+```
+
+Promises can be rejected with falsy values (or no value at all, equal to rejecting with `undefined`), however `.nodeify` will call the callback with an `Error` object if the promise's rejection reason is a falsy value. You can retrieve the original falsy value from the error's `.cause` property.
+
+Example:
+
+```js
+Promise.reject(null).nodeify(function(err, result) {
+    // If is executed
+    if (err) {
+        // Logs 'null'
+        console.log(err.cause);
+    }
 });
 ```
 
@@ -2202,7 +2279,7 @@ fs.readdirAsync(".").then(_)
 
 <hr>
 
-#####`.get(String propertyName)` -> `Promise`
+#####`.get(String propertyName|int index)` -> `Promise`
 
 This is a convenience method for doing:
 
@@ -2221,6 +2298,17 @@ db.query("...")
 
     });
 ```
+
+If `index` is negative, the indexed load will become `obj.length + index`. So that -1 can be used to read last item
+in the array, -2 to read the second last and so on. For example:
+
+```js
+Promise.resolve([1,2,3]).get(-1).then(function(value) {
+    console.log(value); // 3
+});
+```
+
+If the `index` is still negative after `obj.length + index`, it will be clamped to 0.
 
 When promisifying libraries (e.g. `request`) that call the callback with multiple arguments, the promisified version of that function will fulfill with an array of the arguments. `.get` can be a nifty short-hand to get the argument of interest.
 
@@ -2417,9 +2505,82 @@ a more suitable error handling scheme. Any scheme can be implemented on top of t
 - Using no hooks and using `.done()` to manually to mark end points where rejections will not be handled
 - ...
 
+If there is any rejection event hook registered, global or local, automatic logging is disabled.
+
 <hr>
 
+###Global rejection events
+
+Starting from 2.7.0 all bluebird instances also fire rejection events globally so that applications can register one universal hook for them.
+
+The global events are:
+
+ - `"unhandledRejection"` (corresponds to the local [`Promise.onPossiblyUnhandledRejection`](#promiseonpossiblyunhandledrejectionfunction-handler---undefined))
+ - `"rejectionHandled"` (corresponds to the local [`Promise.onUnhandledRejectionHandled`](#promiseonunhandledrejectionhandledfunction-handler---undefined))
+
+
+Attaching global rejection event handlers in **node.js**:
+
+```js
+// NOTE: event name is camelCase as per node convention
+process.on("unhandledRejection", function(reason, promise) {
+    // See Promise.onPossiblyUnhandledRejection for parameter documentation
+});
+
+// NOTE: event name is camelCase as per node convention
+process.on("rejectionHandled", function(promise) {
+    // See Promise.onUnhandledRejectionHandled for parameter documentation
+});
+```
+
+Attaching global rejection event handlers in **browsers**:
+
+Using DOM3 `addEventListener` APIs (support starting from IE9+):
+
+```js
+// NOTE: event name is all lower case as per DOM convention
+window.addEventListener("unhandledrejection", function(e) {
+    // NOTE: e.preventDefault() must be manually called to prevent the default
+    // action which is currently to log the stack trace to console.warn
+    e.preventDefault();
+    // NOTE: parameters are properties of the event detail property
+    var reason = e.detail.reason;
+    var promise = e.detail.promise;
+    // See Promise.onPossiblyUnhandledRejection for parameter documentation
+});
+
+// NOTE: event name is all lower case as per DOM convention
+window.addEventListener("rejectionhandled", function(e) {
+    // NOTE: e.preventDefault() must be manually called prevent the default
+    // action which is currently unset (but might be set to something in the future)
+    e.preventDefault();
+    // NOTE: parameters are properties of the event detail property
+    var promise = e.detail.promise;
+    // See Promise.onUnhandledRejectionHandled for parameter documentation
+});
+```
+
+In Web Workers you may use `self.addEventListener(...)`.
+
+Using legacy APIs (support starting from IE6+):
+
+```js
+// NOTE: event name is all lower case as per legacy convention
+window.onunhandledrejection = function(reason, promise) {
+    // See Promise.onPossiblyUnhandledRejection for parameter documentation
+};
+
+// NOTE: event name is all lower case as per legacy convention
+window.onrejectionhandled = function(promise) {
+    // See Promise.onUnhandledRejectionHandled for parameter documentation
+};
+```
+<hr>
+
+
 #####`Promise.onPossiblyUnhandledRejection(Function handler)` -> `undefined`
+
+*Note: this hook is specific to the bluebird instance its called on, application developers should use [global rejection events](#global-rejection-events)*
 
 Add `handler` as the handler to call when there is a possibly unhandled rejection. The default handler logs the error stack to stderr or `console.error` in browsers.
 
@@ -2434,6 +2595,8 @@ Passing no value or a non-function will have the effect of removing any kind of 
 <hr>
 
 #####`Promise.onUnhandledRejectionHandled(Function handler)` -> `undefined`
+
+*Note: this hook is specific to the bluebird instance its called on, application developers should use [global rejection events](#global-rejection-events)*
 
 Add `handler` as the handler to call when a rejected promise that was reported as "possibly unhandled rejection" became handled.
 

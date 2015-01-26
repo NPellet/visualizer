@@ -7,16 +7,16 @@
   "dependencies": {
     "ace": "~1.1.6",
     "Aristo-jQuery-UI-Theme": "git://github.com/taitems/Aristo-jQuery-UI-Theme.git",
-    "bluebird": "~2.3.11",
+    "bluebird": "^2.9.1",
     "bowser": "~0.7.1",
-    "chemcalc": "2.0.0",
+    "chemcalc": "^2.0.0",
     "ckeditor": "~4.4.4",
     "colors": "~2.0.0",
-    "d3": "~3.4.11",
-    "fancytree": "~2.3.0",
+    "d3": "^3.5.3",
+    "fancytree": "^2.7.0",
     "farbtastic": "~2.0.0-alpha.1",
-    "font-awesome": "~4.2.0",
-    "jcampconverter": "v2.0.1",
+    "font-awesome": "^4.3.0",
+    "jcampconverter": "^2.0.3",
     "jit": "~2.0.2",
     "jqgrid": "~4.6.0",
     "jqgrid_edit": "git://github.com/NPellet/jqGrid#~4.5.6",
@@ -27,7 +27,6 @@
     "jquery-mousewheel": "~3.1.11",
     "jquery-throttle-debounce": "*",
     "jquery-ui": "1.10.4",
-    "jquery-ui-contextmenu": "git://github.com/mar10/jquery-ui-contextmenu#1.2.4",
     "jqueryui-touch-punch": "*",
     "jsbarcode": "*",
     "jsgraph": "v1.10.4-30",
@@ -44,7 +43,7 @@
     "sprintf": "~1.0.0",
     "superagent": "~0.18.2",
     "threejs": "*",
-    "twig.js": "~0.7.0",
+    "twig.js": "^0.7.2",
     "underscore": "~1.7.0",
     "uri.js": "~1.13.2",
     "x2js": "*",
@@ -53,6 +52,7 @@
     "chroma-js": "~0.6.1",
     "sdf-parser": "cheminfo/sdf-parser",
     "async": "~0.9.0",
-    "loglevel": "~1.2.0"
+    "loglevel": "~1.2.0",
+    "ui-contextmenu": "~1.8.1"
   }
 }

@@ -1,4 +1,63 @@
-# 2.3.0 / Unreleased
+# 2.6.1-0 / Unreleased
+  * [CHANGED] Dropped `fx` option. Use `toggleEffect` instead.
+  * [CHANGED] 'win8' and 'bootstrap' skins where modified to highlight the 
+    title span instead of the node span, in order to be compatible with
+    [ext-wide]. The original skins are available as 'skin-win8-n' and
+    'skin-bootstrap-n' respectively.
+  * [Added] ext-wide extension (experimental)
+  * [Added] LESS files to distribution
+  * [Added] Publish on [cdnjs](https://cdnjs.com/libraries/jquery.fancytree)
+  * [Improved] tree.reactivate() returns a promise
+  * [Fixed] #246 Gaps when filtering in hide mode (patch by @lefunque)
+  * [Fixed] #287 wrong image on hovers
+  * [Fixed] #368 Standard browser behavior prevented (e.g. zoom with Ctrl+'+'/'-')
+  * [Fixed] #369 Suppress warning, when dropping top- on top-node
+
+# 2.6.0 / 2014-11-29
+  * [Added] Option `focusOnSelect` to set focus when node is checked by a mouse 
+    click (default: false)
+  * [Added] `restore` event, sent after ext-persist has restored the tree state
+  * [Improved] #359 Better navigation performance when skipping hidden nodes
+  * Publish on npm Registry
+
+# 2.5.0 / 2014-11-23
+  * [CHANGED] [ext-persist] overrideSource option now defaults to true
+  * [Added] [ext-filter] Option `autoApply` re-applies filter on lazy loading
+    (on by default)
+  * [Added] quicksearch: navigate to next node by typing the first letters
+  * [Improved] [ext-dnd] Make draggable helper and parent configurable
+  * [Improved] #153 Add class `fancytree-unselectable` to respective nodes and
+    dimm unselectable checkboxes
+  * [Improved] Update to jQuery 1.1.11, jQuery UI 1.11.2
+  * [Improved] New mode 'firstChild' for node.addNode()
+  * [Fixed] #324 Fix problem where minExpandLevel was not expanding root node
+  * [Fixed] #300 dnd.focusOnClick for jQuery UI 1.11
+  * [Fixed] #354 [ext-persist] with selectMode 3
+
+# 2.4.1 / 2014-09-23
+  * [Fixed] Regression #323
+
+# 2.4.0 / 2014-09-21
+  * [CHANGED] Renamed dist/jquery.fancytree-custom.min.js to jquery.fancytree-all.min.js
+  * [CHANGED] ext-edit callbacks no longer pass `data.value` (use `data.input.val()` instead).
+  * [Added] CDN support (http://www.jsdelivr.com/#!jquery.fancytree)
+  * [Added] New method `node.visitAndLoad()`
+  * [Added] New method `node.editCreateNode()` (ext-edit)
+  * [Added] New method `node.isRootNode()`
+  * [Added] New method `node.isTopLevel()`
+  * [Added] New option `id` to override default tree id
+  * [Added] New argument `stopOnParents` for tree.generateFormElements()
+  * [Improved] #294 node.load() should resolve 'ok', if node is already loaded
+  * [Improved] #293 minExpandLevel does not auto-expand
+  * [Improved] #313 Allow HTML in tooltips
+  * [Fixed] crash in scrollIntoView() when parent is `window`
+  * [Fixed] #305 Checkbox doesn't show with Glyph + Table
+  * [Fixed] #316 Fix hasChildren() when children = []
+  * [Fixed] #237 ajax LoadError not updated in StatusNode with Table ext
+  * [Fixed] #295 loadKeyPath with multiple paths
+  * [Deprecated] node.isRoot(). Use node.isRootNode() instead
+
+# 2.3.0 / 2014-08-17
   * [CHANGED] renamed (undocumented) event 'loaderror' to 'loadError'
   * [Added] postProcess now allows to signal error conditions (so it becomes easy to handle custom ajax response formats)
   * [Added] node.setStatus()
@@ -16,6 +75,7 @@
   * [Fixed] #250: Children lazy empty nodes remain checked when parent is 
     unchecked with hierarchical multi-selection
   * [Fixed] #272 Navigation in filtered trees
+
 
 # 2.1.0 / 2014-05-29
   * [Added] #210: [ext-persist] optionally store information in sessionStorage or localStorage
