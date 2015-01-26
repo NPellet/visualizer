@@ -727,7 +727,9 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
         _activateHighlights: function() {
             var that = this;
-            var hl = _(this.module.data).pluck('_highlight').flatten().uniq().value();
+            var hl = _(this.module.data).pluck('_highlight').flatten().filter(function(val) {
+                return !_.isUndefined(val);
+            }).value();
 
             that._highlighted = [];
 

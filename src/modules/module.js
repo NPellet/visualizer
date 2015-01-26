@@ -649,7 +649,6 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 							},
 
 							groups: {
-
 								group: {
 									options: {
 										type: 'text'
