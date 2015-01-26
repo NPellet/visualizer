@@ -1645,16 +1645,22 @@ define(['modules/default/defaultview','src/util/datatraversing',
       function validate(x) {
         return (_.isObject(x) || _.isArray(x)) ? null : x;
       }
+
+      function getFromJpath(value, jp, fallback) {
+        var val = value.getChildSync(jp);
+        if(!val) return fallback;
+        return validate(val.get());
+      }
       for (var i = 0; i < value.length; i++) {
         _.each(jp, function(v){
           v[0] = i;
         });
-        self._data.x.push(validate(value.getChildSync(jp.x).get()));
-        self._data.y.push(validate(value.getChildSync(jp.y).get()));
-        self._data.z.push(validate(value.getChildSync(jp.z).get()));
-        self._data.color.push(validate(value.getChildSync(jp.color).get()));
-        self._data.size.push(validate(value.getChildSync(jp.size).get()));
-        self._data.shape.push(validate(value.getChildSync(jp.shape).get()));
+        self._data.x.push(getFromJpath(value, jp.x, 0));
+        self._data.y.push(getFromJpath(value, jp.y, 0));
+        self._data.z.push(getFromJpath(value, jp.z, 0));
+        self._data.color.push(getFromJpath(value, jp.color, DEFAULT_POINT_COLOR));
+        self._data.size.push(getFromJpath(value, jp.size, DEFAULT_POINT_RADIUS));
+        self._data.shape.push(getFromJpath(value, jp.shape, DEFAULT_POINT_SHAPE));
       }
       self._meta = {};
       self._data.x = self._data.x || [];
