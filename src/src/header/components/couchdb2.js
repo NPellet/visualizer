@@ -591,7 +591,7 @@ define([
                     }
                 }
                 else if (action === 'rename') {
-                    $('<div>').html('New name : <input type="text" id="' + this.cssId('newname') + '" />').dialog({
+                    $('<div>').html('New name : <input type="text" id="' + this.cssId('newname') + '" value="' + node.title + '" />').dialog({
                         buttons: {
                             'Save': function () {
                                 var dialog = $(this);
