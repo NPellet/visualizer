@@ -1,3 +1,10 @@
+2.12.0 / HEAD
+=============
+
+* twig : support passing options in rendertype
+* typerenderer : allow rendering options for molecules
+* header : improvements to couchdb2
+
 2.11.0 / 2015-01-22
 ===================
 
