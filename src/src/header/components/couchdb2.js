@@ -344,6 +344,11 @@ define([
 
             var flavorField = $('<input type="text" value="' + this.flavor + '" id="' + this.cssId('flavor-input') + '">');
 
+            function changeFlavor() {
+                var flavor = that.getFormContent('flavor-input');
+                if (that.flavor !== flavor) that.changeFlavor(flavor);
+            }
+
             this.database.view('flavor/list', {
                 success: function (data) {
                     if (!data.rows.length)
@@ -356,6 +361,12 @@ define([
                     }).on('autocompleteselect', function (e, d) {
                         var flavor = d.item.value;
                         if (that.flavor !== flavor) that.changeFlavor(flavor);
+                        flavorField.blur();
+                    }).on('keypress', function (e) {
+                        if (e.keyCode === 13) {
+                            changeFlavor();
+                            flavorField.blur();
+                        }
                     });
                 },
                 error: function (status) {
@@ -365,10 +376,7 @@ define([
             });
 
             dom.append($('<p><span>Flavor : </span>').append(flavorField).append(
-                new Button('Switch', function () {
-                    var flavor = that.getFormContent('flavor-input');
-                    if (that.flavor !== flavor) that.changeFlavor(flavor);
-                }, {color: 'red'}).render()
+                new Button('Switch', changeFlavor, {color: 'red'}).render()
             ));
 
             var treeCSS = {

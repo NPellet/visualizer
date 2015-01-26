@@ -55,6 +55,12 @@
     "height": "30px",
     "elements": [
       {
+        "type": "couchdb2",
+        "label": "CouchDB",
+        "url": "http://localhost/couch",
+        "database": "c"
+      },
+      {
         "type": "copydata",
         "label": "Copy data"
       },
