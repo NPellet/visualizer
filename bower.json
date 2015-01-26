@@ -12,7 +12,7 @@
     "chemcalc": "^2.0.0",
     "ckeditor": "~4.4.4",
     "colors": "~2.0.0",
-    "d3": "~3.4.11",
+    "d3": "^3.5.3",
     "fancytree": "^2.7.0",
     "farbtastic": "~2.0.0-alpha.1",
     "font-awesome": "~4.2.0",
