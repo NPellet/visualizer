@@ -13,7 +13,7 @@
     "ckeditor": "~4.4.4",
     "colors": "~2.0.0",
     "d3": "~3.4.11",
-    "fancytree": "~2.3.0",
+    "fancytree": "^2.7.0",
     "farbtastic": "~2.0.0-alpha.1",
     "font-awesome": "~4.2.0",
     "jcampconverter": "v2.0.1",
