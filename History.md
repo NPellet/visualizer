@@ -1,3 +1,10 @@
+2.12.1 / 2015-01-26
+===================
+
+* slick_grid: have fallback values when jpath not found
+* init : add browser check for IE <= 8
+* build : fix ui-contextmenu
+
 2.12.0 / 2015-01-26
 ===================
 
