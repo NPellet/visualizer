@@ -27,6 +27,10 @@ __Arguments__
 * `options` - Object with options to pass to the converter
 * `useWorker` - Browser only: convert in a web worker (default: false). If this option is set to true, it will return a [Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise).
 
+__Options__
+
+* keepSpectra - Generate array for 2D NMR spectra (default: false)
+
 ### Use as a module
 
 ####Node JS
@@ -51,5 +55,5 @@ Testing and build
 ---------------
 ```
 npm install
-grunt
+npm run build
 ```

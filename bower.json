@@ -16,7 +16,7 @@
     "fancytree": "^2.7.0",
     "farbtastic": "~2.0.0-alpha.1",
     "font-awesome": "^4.3.0",
-    "jcampconverter": "v2.0.1",
+    "jcampconverter": "^2.0.3",
     "jit": "~2.0.2",
     "jqgrid": "~4.6.0",
     "jqgrid_edit": "git://github.com/NPellet/jqGrid#~4.5.6",
