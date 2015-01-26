@@ -1,5 +1,17 @@
 'use strict';
 
+(function () {
+    var iereg = /MSIE (\d+)/;
+    var isIE = iereg.exec(navigator.userAgent);
+    if (isIE) {
+        var ieversion = parseInt(isIE[1]);
+        if (ieversion <= 8) {
+            alert('This application does not support IE' + ieversion + '.\nPlease upgrade your system to have IE11+ or use an alternate browser (Google Chrome, Firefox).');
+            throw new Error('IE' + ieversion + ' not supported');
+        }
+    }
+})();
+
 requirejs.config({
 	waitSeconds: 0,
 	paths: {
