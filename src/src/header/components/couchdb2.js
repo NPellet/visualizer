@@ -470,17 +470,41 @@ define([
                 menu: [
                     {title: 'Delete', cmd: 'delete', uiIcon: 'ui-icon-trash'},
                     {title: 'New flavor', cmd: 'newflavor', uiIcon: 'ui-icon-newwin'},
-                    {title: 'Rename', cmd: 'rename', uiIcon: 'ui-icon-folder-collapsed'}
+                    {title: 'Rename', cmd: 'rename', uiIcon: 'ui-icon-folder-collapsed'},
+                    {title: 'Flavors', cmd: 'flavors', children: []}
                 ],
                 beforeOpen: function (event, ui) {
                     var node = $.ui.fancytree.getNode(ui.target);
                     if (node.folder)
                         return false;
+                    var tree = $('#' + that.cssId('tree'));
+                    var flavors = Object.keys(node.data.doc.flavors);
+                    if (flavors.length === 1) {
+                        tree.contextmenu('setEntry', 'delete', 'Delete');
+                        tree.contextmenu('showEntry', 'flavors', false);
+                    } else {
+                        var children = new Array(flavors.length);
+                        for (var i = 0; i < flavors.length; i++) {
+                            children[i] = {
+                                title: flavors[i],
+                                cmd: 'flavor'
+                            };
+                            if (flavors[i] === that.flavor) {
+                                children[i].disabled = true;
+                            }
+                        }
+                        tree.contextmenu('setEntry', 'delete', 'Delete flavor');
+                        tree.contextmenu('setEntry', 'flavors', {
+                            title: 'Flavors',
+                            children: children
+                        });
+                        tree.contextmenu('showEntry', 'flavors', true);
+                    }
                     node.setActive();
                 },
                 select: function (event, ui) {
                     var node = $.ui.fancytree.getNode(ui.target);
-                    that.contextClick(node, ui.cmd);
+                    that.contextClick(node, ui.cmd, ui);
                 },
                 createMenu: function (event) {
                     $(event.target).css('z-index', 10000);
@@ -557,7 +581,7 @@ define([
                 include_docs: true
             });
         },
-        contextClick: function (node, action) {
+        contextClick: function (node, action, ctx) {
             var that = this;
 
             if (!node.folder) {
@@ -674,8 +698,11 @@ define([
                         minLength: 0,
                         source: that.flavorList
                     }));
-                }
-                else {
+                } else if (action === 'flavor') {
+                    that.changeFlavor(ctx.item.text());
+                } else if (action === 'flavors') {
+                    // do nothing
+                } else {
                     console.warn('Context menu action "' + action + '" not implemented !');
                 }
             }
