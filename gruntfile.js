@@ -75,7 +75,7 @@ module.exports = function (grunt) {
                             './leaflet/dist/**',
                             ['./jsoneditor/jsoneditor.min*', './jsoneditor/img/*'],
                             './jit/Jit/**/*',
-                            './jquery-ui-contextmenu/jquery.ui-contextmenu.min.js',
+                            './ui-contextmenu/jquery.ui-contextmenu.min.js',
                             './papa-parse/papaparse.min.js',
                             ['./font-awesome/css/font-awesome.min.css', './font-awesome/fonts/*'],
                             './colors/css/colors.min.css',
