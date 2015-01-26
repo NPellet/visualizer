@@ -9,7 +9,7 @@ define([
     'lib/webtoolkit/base64',
     'lib/couchdb/jquery.couch',
     'fancytree',
-    'components/jquery-ui-contextmenu/jquery.ui-contextmenu.min'
+    'components/ui-contextmenu/jquery.ui-contextmenu.min'
 ], function ($, Default, Versioning, Button, Util, Base64) {
 
     function CouchDBManager() {

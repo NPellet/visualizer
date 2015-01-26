@@ -8,7 +8,7 @@ define([
     'forms/button',
     'src/util/util',
     'fancytree',
-    'components/jquery-ui-contextmenu/jquery.ui-contextmenu.min'
+    'components/ui-contextmenu/jquery.ui-contextmenu.min'
 ], function ($, superagent, Default, Versioning, Button, Util) {
 
     var menu = '<ul id="myMenu" class="contextMenu ui-helper-hidden">\n    <li class="edit"><a href="#edit">Edit</a></li>\n    <li class="cut"><a href="#cut">Cut</a></li>\n    <li class="copy"><a href="#copy">Copy</a></li>\n    <li class="paste"><a href="#paste">Paste</a></li>\n    <li class="ui-state-disabled"><a href="#delete">Delete</a></li>\n    <li>---</li>\n    <li class="quit"><a href="#quit">Quit</a></li>\n    <li><a href="#save"><span class="ui-icon ui-icon-disk"></span>Save</a></li>\n</ul>';

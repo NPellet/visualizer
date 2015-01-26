@@ -53,6 +53,7 @@
     "chroma-js": "~0.6.1",
     "sdf-parser": "cheminfo/sdf-parser",
     "async": "~0.9.0",
-    "loglevel": "~1.2.0"
+    "loglevel": "~1.2.0",
+    "ui-contextmenu": "~1.8.1"
   }
 }
