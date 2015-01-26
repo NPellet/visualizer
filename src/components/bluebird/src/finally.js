@@ -1,5 +1,5 @@
 "use strict";
-module.exports = function(Promise, NEXT_FILTER, cast) {
+module.exports = function(Promise, NEXT_FILTER, tryConvertToPromise) {
 var util = require("./util.js");
 var wrapsPrimitiveReceiver = util.wrapsPrimitiveReceiver;
 var isPrimitive = util.isPrimitive;
@@ -12,12 +12,12 @@ function throwThis() {
     throw this;
 }
 function return$(r) {
-    return function Promise$_returner() {
+    return function() {
         return r;
     };
 }
 function throw$(r) {
-    return function Promise$_thrower() {
+    return function() {
         throw r;
     };
 }
@@ -28,7 +28,7 @@ function promisedFinally(ret, reasonOrValue, isFulfilled) {
     } else {
         then = isFulfilled ? returnThis : throwThis;
     }
-    return ret._then(then, thrower, void 0, reasonOrValue, void 0);
+    return ret._then(then, thrower, undefined, reasonOrValue, undefined);
 }
 
 function finallyHandler(reasonOrValue) {
@@ -40,9 +40,10 @@ function finallyHandler(reasonOrValue) {
                     : handler();
 
     //Nobody ever returns anything from a .finally handler so speed this up
-    if (ret !== void 0) {
-        var maybePromise = cast(ret, void 0);
+    if (ret !== undefined) {
+        var maybePromise = tryConvertToPromise(ret, promise);
         if (maybePromise instanceof Promise) {
+            maybePromise = maybePromise._target();
             return promisedFinally(maybePromise, reasonOrValue,
                                     promise.isFulfilled());
         }
@@ -67,17 +68,17 @@ function tapHandler(value) {
                     : handler(value);
 
     //Nobody ever returns anything from a .finally handler so speed this up
-    if (ret !== void 0) {
-        var maybePromise = cast(ret, void 0);
+    if (ret !== undefined) {
+        var maybePromise = tryConvertToPromise(ret, promise);
         if (maybePromise instanceof Promise) {
+            maybePromise = maybePromise._target();
             return promisedFinally(maybePromise, value, true);
         }
     }
     return value;
 }
 
-Promise.prototype._passThroughHandler =
-function Promise$_passThroughHandler(handler, isFinally) {
+Promise.prototype._passThroughHandler = function (handler, isFinally) {
     if (typeof handler !== "function") return this.then();
 
     var promiseAndHandler = {
@@ -87,16 +88,16 @@ function Promise$_passThroughHandler(handler, isFinally) {
 
     return this._then(
             isFinally ? finallyHandler : tapHandler,
-            isFinally ? finallyHandler : void 0, void 0,
-            promiseAndHandler, void 0);
+            isFinally ? finallyHandler : undefined, undefined,
+            promiseAndHandler, undefined);
 };
 
 Promise.prototype.lastly =
-Promise.prototype["finally"] = function Promise$finally(handler) {
+Promise.prototype["finally"] = function (handler) {
     return this._passThroughHandler(handler, true);
 };
 
-Promise.prototype.tap = function Promise$tap(handler) {
+Promise.prototype.tap = function (handler) {
     return this._passThroughHandler(handler, false);
 };
 };

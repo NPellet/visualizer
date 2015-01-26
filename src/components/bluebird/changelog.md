@@ -1,6 +1,161 @@
+## 2.9.0 (2015-01-24)
+
+Features:
+
+ - Add [`Promise.fromNode`](API.md#promisefromnodefunction-resolver---promise)
+ - Add new paramter `value` for [`Promise.bind`](API.md#promisebinddynamic-thisarg--dynamic-value---promise)
+
+Bugfixes:
+
+ - Fix several issues with [`cancellation`](API.md#cancellation) and [`.bind()`](API.md#binddynamic-thisarg---promise) interoperation when `thisArg` is a promise or thenable
+ - Fix promises created in [`disposers`](API#disposerfunction-disposer---disposer) not having proper long stack trace context
+ - Fix [`Promise.join`](API.md#promisejoinpromisethenablevalue-promises-function-handler---promise) sometimes passing the passed in callback function as the last argument to itself.
+
+Misc:
+
+ - Reduce minified full browser build file size by not including unused code generation functionality.
+ - Major internal refactoring related to testing code and source code file layout
+
+## 2.8.2 (2015-01-20)
+
+Features:
+
+ - [Global rejection events](https://github.com/petkaantonov/bluebird/blob/master/API.md#global-rejection-events) are now fired both as DOM3 events and as legacy events in browsers
+
+## 2.8.1 (2015-01-20)
+
+Bugfixes:
+
+ - Fix long stack trace stiching consistency when rejected from thenables
+
+## 2.8.0 (2015-01-19)
+
+Features:
+
+ - Major debuggability improvements:
+    - Long stack traces have been re-designed. They are now much more readable,
+      succint, relevant and consistent across bluebird features.
+    - Long stack traces are supported now in IE10+
+
+## 2.7.1 (2015-01-15)
+
+Bugfixes:
+
+ - Fix [#447](https://github.com/petkaantonov/bluebird/issues/447)
+
+## 2.7.0 (2015-01-15)
+
+Features:
+
+ - Added more context to stack traces originating from coroutines ([#421](https://github.com/petkaantonov/bluebird/issues/421))
+ - Implemented [global rejection events](https://github.com/petkaantonov/bluebird/blob/master/API.md#global-rejection-events) ([#428](https://github.com/petkaantonov/bluebird/issues/428), [#357](https://github.com/petkaantonov/bluebird/issues/357))
+ - [Custom promisifiers](https://github.com/petkaantonov/bluebird/blob/master/API.md#option-promisifier) are now passed the default promisifier which can be used to add enhancements on top of normal node promisification
+ - [Promisification filters](https://github.com/petkaantonov/bluebird/blob/master/API.md#option-filter) are now passed `passesDefaultFilter` boolean
+
+Bugfixes:
+
+ - Fix `.noConflict()` call signature ([#446]())
+ - Fix `Promise.method`ified functions being called with `undefined` when they were called with no arguments
+
+## 2.6.4 (2015-01-12)
+
+Bugfixes:
+
+ - `OperationalErrors` thrown by promisified functions retain custom properties, such as `.code` and `.path`.
+
+## 2.6.3 (2015-01-12)
+
+Bugfixes:
+
+ - Fix [#429](https://github.com/petkaantonov/bluebird/issues/429)
+ - Fix [#432](https://github.com/petkaantonov/bluebird/issues/432)
+ - Fix [#433](https://github.com/petkaantonov/bluebird/issues/433)
+
+## 2.6.2 (2015-01-07)
+
+Bugfixes:
+
+ - Fix [#426](https://github.com/petkaantonov/bluebird/issues/426)
+
+## 2.6.1 (2015-01-07)
+
+Bugfixes:
+
+ - Fixed built browser files not being included in the git tag release for bower
+
+## 2.6.0 (2015-01-06)
+
+Features:
+
+ - Significantly improve parallel promise performance and memory usage (+50% faster, -50% less memory)
+
+
+## 2.5.3 (2014-12-30)
+
+## 2.5.2 (2014-12-29)
+
+Bugfixes:
+
+ - Fix bug where already resolved promise gets attached more handlers while calling its handlers resulting in some handlers not being called
+ - Fix bug where then handlers are not called in the same order as they would run if Promises/A+ 2.3.2 was implemented as adoption
+ - Fix bug where using `Object.create(null)` as a rejection reason would crash bluebird
+
+## 2.5.1 (2014-12-29)
+
+Bugfixes:
+
+ - Fix `.finally` throwing null error when it is derived from a promise that is resolved with a promise that is resolved with a promise
+
+## 2.5.0 (2014-12-28)
+
+Features:
+
+ - [`.get`](#API.md#https://github.com/petkaantonov/bluebird/blob/master/API.md#getstring-propertyname---promise) now supports negative indexing.
+
+Bugfixes:
+
+ - Fix bug with `Promise.method` wrapped function returning a promise that never resolves if the function returns a promise that is resolved with another promise
+ - Fix bug with `Promise.delay` never resolving if the value is a promise that is resolved with another promise
+
+## 2.4.3 (2014-12-28)
+
+Bugfixes:
+
+ - Fix memory leak as described in [this Promises/A+ spec issue](https://github.com/promises-aplus/promises-spec/issues/179).
+
+## 2.4.2 (2014-12-21)
+
+Bugfixes:
+
+ - Fix bug where spread rejected handler is ignored in case of rejection
+ - Fix synchronous scheduler passed to `setScheduler` causing infinite loop
+
+## 2.4.1 (2014-12-20)
+
+Features:
+
+ - Error messages now have links to wiki pages for additional information
+ - Promises now clean up all references (to handlers, child promises etc) as soon as possible.
+
+## 2.4.0 (2014-12-18)
+
+Features:
+
+ - Better filtering of bluebird internal calls in long stack traces, especially when using minified file in browsers
+ - Small performance improvements for all collection methods
+ - Promises now delete references to handlers attached to them as soon as possible
+ - Additional stack traces are now output on stderr/`console.warn` for errors that are thrown in the process/window from rejected `.done()` promises. See [#411](https://github.com/petkaantonov/bluebird/issues/411)
+
+## 2.3.11 (2014-10-31)
+
+Bugfixes:
+
+ - Fix [#371](https://github.com/petkaantonov/bluebird/issues/371), [#373](https://github.com/petkaantonov/bluebird/issues/373)
+
+
 ## 2.3.10 (2014-10-28)
 
-Features: 
+Features:
 
  - `Promise.method` no longer wraps primitive errors
  - `Promise.try` no longer wraps primitive errors

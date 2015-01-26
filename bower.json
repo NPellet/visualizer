@@ -7,7 +7,7 @@
   "dependencies": {
     "ace": "~1.1.6",
     "Aristo-jQuery-UI-Theme": "git://github.com/taitems/Aristo-jQuery-UI-Theme.git",
-    "bluebird": "~2.3.11",
+    "bluebird": "^2.9.1",
     "bowser": "~0.7.1",
     "chemcalc": "2.0.0",
     "ckeditor": "~4.4.4",
@@ -27,7 +27,6 @@
     "jquery-mousewheel": "~3.1.11",
     "jquery-throttle-debounce": "*",
     "jquery-ui": "1.10.4",
-    "jquery-ui-contextmenu": "git://github.com/mar10/jquery-ui-contextmenu#1.2.4",
     "jqueryui-touch-punch": "*",
     "jsbarcode": "*",
     "jsgraph": "v1.10.4-30",

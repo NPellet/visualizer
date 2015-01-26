@@ -2,22 +2,10 @@
 module.exports = function(Promise, INTERNAL) {
 var ASSERT = require("./assert.js");
 var util = require("./util.js");
-var canAttach = require("./errors.js").canAttach;
 var errorObj = util.errorObj;
 var isObject = util.isObject;
 
-function getThen(obj) {
-    try {
-        return obj.then;
-    }
-    catch(e) {
-        errorObj.e = e;
-        return errorObj;
-    }
-}
-
-function Promise$_Cast(obj, originalPromise) {
-    ASSERT(arguments.length === 2);
+function tryConvertToPromise(obj, context) {
     if (isObject(obj)) {
         if (obj instanceof Promise) {
             return obj;
@@ -25,7 +13,6 @@ function Promise$_Cast(obj, originalPromise) {
         //Make casting from another bluebird fast
         else if (isAnyBluebirdPromise(obj)) {
             var ret = new Promise(INTERNAL);
-            ret._setTrace(void 0);
             obj._then(
                 ret._fulfillUnchecked,
                 ret._rejectUncheckedCheckError,
@@ -33,20 +20,23 @@ function Promise$_Cast(obj, originalPromise) {
                 ret,
                 null
             );
-            ret._setFollowing();
             return ret;
         }
-        var then = getThen(obj);
+        var then = util.tryCatch(getThen)(obj);
         if (then === errorObj) {
-            if (originalPromise !== void 0 && canAttach(then.e)) {
-                originalPromise._attachExtraTrace(then.e);
-            }
-            return Promise.reject(then.e);
+            if (context) context._pushContext();
+            var ret = Promise.reject(then.e);
+            if (context) context._popContext();
+            return ret;
         } else if (typeof then === "function") {
-            return Promise$_doThenable(obj, then, originalPromise);
+            return doThenable(obj, then, context);
         }
     }
     return obj;
+}
+
+function getThen(obj) {
+    return obj.then;
 }
 
 var hasProp = {}.hasOwnProperty;
@@ -54,63 +44,49 @@ function isAnyBluebirdPromise(obj) {
     return hasProp.call(obj, "_promise0");
 }
 
-function Promise$_doThenable(x, then, originalPromise) {
+function doThenable(x, then, context) {
     ASSERT(typeof then === "function");
-    ASSERT(arguments.length === 3);
-    var resolver = Promise.defer();
-    var called = false;
-    try {
-        then.call(
-            x,
-            Promise$_resolveFromThenable,
-            Promise$_rejectFromThenable,
-            Promise$_progressFromThenable
-        );
-    } catch(e) {
-        if (!called) {
-            called = true;
-            var trace = canAttach(e) ? e : new Error(e + "");
-            if (originalPromise !== void 0) {
-                originalPromise._attachExtraTrace(trace);
-            }
-            resolver.promise._reject(e, trace);
-        }
-    }
-    return resolver.promise;
-
-    function Promise$_resolveFromThenable(y) {
-        if (called) return;
-        called = true;
-
-        if (x === y) {
-            var e = Promise._makeSelfResolutionError();
-            if (originalPromise !== void 0) {
-                originalPromise._attachExtraTrace(e);
-            }
-            resolver.promise._reject(e, void 0);
-            return;
-        }
-        resolver.resolve(y);
+    var promise = new Promise(INTERNAL);
+    var ret = promise;
+    if (context) context._pushContext();
+    promise._captureStackTrace();
+    if (context) context._popContext();
+    var synchronous = true;
+    var result = util.tryCatch(then).call(x,
+                                        resolveFromThenable,
+                                        rejectFromThenable,
+                                        progressFromThenable);
+    synchronous = false;
+    if (promise && result === errorObj) {
+        promise._rejectCallback(result.e, true, true);
+        promise = null;
     }
 
-    function Promise$_rejectFromThenable(r) {
-        if (called) return;
-        called = true;
-        var trace = canAttach(r) ? r : new Error(r + "");
-        if (originalPromise !== void 0) {
-            originalPromise._attachExtraTrace(trace);
+    function resolveFromThenable(value) {
+        if (!promise) return;
+        if (x === value) {
+            promise._rejectCallback(
+                Promise._makeSelfResolutionError(), false, true);
+        } else {
+            promise._resolveCallback(value);
         }
-        resolver.promise._reject(r, trace);
+        promise = null;
     }
 
-    function Promise$_progressFromThenable(v) {
-        if (called) return;
-        var promise = resolver.promise;
+    function rejectFromThenable(reason) {
+        if (!promise) return;
+        promise._rejectCallback(reason, synchronous, true);
+        promise = null;
+    }
+
+    function progressFromThenable(value) {
+        if (!promise) return;
         if (typeof promise._progress === "function") {
-            promise._progress(v);
+            promise._progress(value);
         }
     }
+    return ret;
 }
 
-return Promise$_Cast;
+return tryConvertToPromise;
 };

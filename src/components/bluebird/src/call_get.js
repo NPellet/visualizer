@@ -11,7 +11,10 @@ var util = require("./util.js");
 var canEvaluate = util.canEvaluate;
 var isIdentifier = util.isIdentifier;
 
-function makeMethodCaller (methodName) {
+var getMethodCaller;
+var getGetter;
+if (!__BROWSER__) {
+var makeMethodCaller = function (methodName) {
     return new Function("obj", "                                             \n\
         'use strict'                                                         \n\
         var len = this.length;                                               \n\
@@ -23,16 +26,16 @@ function makeMethodCaller (methodName) {
             default: return obj.methodName.apply(obj, this);                 \n\
         }                                                                    \n\
         ".replace(/methodName/g, methodName));
-}
+};
 
-function makeGetter (propertyName) {
+var makeGetter = function (propertyName) {
     return new Function("obj", "                                             \n\
         'use strict';                                                        \n\
         return obj.propertyName;                                             \n\
         ".replace("propertyName", propertyName));
-}
+};
 
-function getCompiled(name, compiler, cache) {
+var getCompiled = function(name, compiler, cache) {
     var ret = cache[name];
     if (typeof ret !== "function") {
         if (!isIdentifier(name)) {
@@ -48,38 +51,44 @@ function getCompiled(name, compiler, cache) {
         }
     }
     return ret;
-}
+};
 
-function getMethodCaller(name) {
+getMethodCaller = function(name) {
     return getCompiled(name, makeMethodCaller, callerCache);
-}
+};
 
-function getGetter(name) {
+getGetter = function(name) {
     return getCompiled(name, makeGetter, getterCache);
+};
 }
 
 function caller(obj) {
     return obj[this.pop()].apply(obj, this);
 }
-Promise.prototype.call = function Promise$call(methodName) {
+Promise.prototype.call = function (methodName) {
     INLINE_SLICE(args, arguments, 1);
-    if (canEvaluate) {
-        var maybeCaller = getMethodCaller(methodName);
-        if (maybeCaller !== null) {
-            return this._then(maybeCaller, void 0, void 0, args, void 0);
+    if (!__BROWSER__) {
+        if (canEvaluate) {
+            var maybeCaller = getMethodCaller(methodName);
+            if (maybeCaller !== null) {
+                return this._then(
+                    maybeCaller, undefined, undefined, args, undefined);
+            }
         }
     }
     args.push(methodName);
-    return this._then(caller, void 0, void 0, args, void 0);
+    return this._then(caller, undefined, undefined, args, undefined);
 };
 
 function namedGetter(obj) {
     return obj[this];
 }
 function indexedGetter(obj) {
-    return obj[this];
+    var index = +this;
+    if (index < 0) index = Math.max(0, index + obj.length);
+    return obj[index];
 }
-Promise.prototype.get = function Promise$get(propertyName) {
+Promise.prototype.get = function (propertyName) {
     var isIndex = (typeof propertyName === "number");
     var getter;
     if (!isIndex) {
@@ -92,6 +101,6 @@ Promise.prototype.get = function Promise$get(propertyName) {
     } else {
         getter = indexedGetter;
     }
-    return this._then(getter, void 0, void 0, propertyName, void 0);
+    return this._then(getter, undefined, undefined, propertyName, undefined);
 };
 };

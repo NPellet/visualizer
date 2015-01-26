@@ -1,42 +1,26 @@
 "use strict";
-var ASSERT = require("./assert.js");
 var schedule;
-var _MutationObserver;
 if (typeof process === "object" && typeof process.version === "string") {
-    schedule = function Promise$_Scheduler(fn) {
-        process.nextTick(fn);
-    };
+    schedule = parseInt(process.version.split(".")[1], 10) > 10
+        ? setImmediate : process.nextTick;
 }
-else if ((typeof MutationObserver !== "undefined" &&
-         (_MutationObserver = MutationObserver)) ||
-         (typeof WebKitMutationObserver !== "undefined" &&
-         (_MutationObserver = WebKitMutationObserver))) {
-    schedule = (function() {
+else if (typeof MutationObserver !== "undefined") {
+    schedule = function(fn) {
         var div = document.createElement("div");
-        var queuedFn = void 0;
-        var observer = new _MutationObserver(
-            function Promise$_Scheduler() {
-                ASSERT(queuedFn !== void 0);
-                var fn = queuedFn;
-                queuedFn = void 0;
-                fn();
-            }
-       );
-        observer.observe(div, {
-            attributes: true
-        });
-        return function Promise$_Scheduler(fn) {
-            ASSERT(queuedFn === void 0);
-            queuedFn = fn;
-            div.classList.toggle("foo");
-        };
-
-    })();
+        var observer = new MutationObserver(fn);
+        observer.observe(div, {attributes: true});
+        return function() { div.classList.toggle("foo"); };
+    };
+    schedule.isStatic = true;
 }
 else if (typeof setTimeout !== "undefined") {
-    schedule = function Promise$_Scheduler(fn) {
+    schedule = function (fn) {
         setTimeout(fn, 0);
     };
 }
-else throw new Error("no async scheduler available");
+else {
+    schedule = function() {
+        throw new Error(NO_ASYNC_SCHEDULER);
+    };
+}
 module.exports = schedule;

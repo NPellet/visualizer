@@ -3,37 +3,26 @@ module.exports = function(Promise, PromiseArray) {
 var ASSERT = require("./assert.js");
 var util = require("./util.js");
 var async = require("./async.js");
-var errors = require("./errors.js");
-var tryCatch1 = util.tryCatch1;
+var tryCatch = util.tryCatch;
 var errorObj = util.errorObj;
 
-Promise.prototype.progressed = function Promise$progressed(handler) {
-    return this._then(void 0, void 0, handler, void 0, void 0);
+Promise.prototype.progressed = function (handler) {
+    return this._then(undefined, undefined, handler, undefined, undefined);
 };
 
-Promise.prototype._progress = function Promise$_progress(progressValue) {
+Promise.prototype._progress = function (progressValue) {
     if (this._isFollowingOrFulfilledOrRejected()) return;
-    this._progressUnchecked(progressValue);
+    this._target()._progressUnchecked(progressValue);
 
 };
 
-Promise.prototype._clearFirstHandlerData$Base =
-Promise.prototype._clearFirstHandlerData;
-Promise.prototype._clearFirstHandlerData =
-function Promise$_clearFirstHandlerData() {
-    this._clearFirstHandlerData$Base();
-    this._progressHandler0 = void 0;
-};
-
-Promise.prototype._progressHandlerAt =
-function Promise$_progressHandlerAt(index) {
+Promise.prototype._progressHandlerAt = function (index) {
     return index === 0
         ? this._progressHandler0
         : this[(index << 2) + index - CALLBACK_SIZE + CALLBACK_PROGRESS_OFFSET];
 };
 
-Promise.prototype._doProgressWith =
-function Promise$_doProgressWith(progression) {
+Promise.prototype._doProgressWith = function (progression) {
     var progressValue = progression.value;
     var handler = progression.handler;
     var promise = progression.promise;
@@ -41,7 +30,7 @@ function Promise$_doProgressWith(progression) {
 
     ASSERT(typeof handler === "function");
     ASSERT(promise instanceof Promise);
-    var ret = tryCatch1(handler, receiver, progressValue);
+    var ret = tryCatch(handler).call(receiver, progressValue);
     if (ret === errorObj) {
         //2.4 if the onProgress callback throws an exception
         //with a name property equal to 'StopProgressPropagation',
@@ -53,8 +42,8 @@ function Promise$_doProgressWith(progression) {
             //'StopProgressPropagation',
             // the result of the function is used as the progress
             //value to propagate.
-            var trace = errors.canAttach(ret.e)
-                ? ret.e : new Error(ret.e + "");
+            var trace = util.canAttachTrace(ret.e)
+                ? ret.e : new Error(util.toString(ret.e));
             promise._attachExtraTrace(trace);
             promise._progress(ret.e);
         }
@@ -69,16 +58,15 @@ function Promise$_doProgressWith(progression) {
         //2.2.3 If the promise is rejected, the rejection reason
         //should be treated as if it was thrown by the callback
         //directly.
-        ret._then(promise._progress, null, null, promise, void 0);
+        ret._then(promise._progress, null, null, promise, undefined);
     } else {
         promise._progress(ret);
     }
 };
 
 
-Promise.prototype._progressUnchecked =
-function Promise$_progressUnchecked(progressValue) {
-    if (!this.isPending()) return;
+Promise.prototype._progressUnchecked = function (progressValue) {
+    ASSERT(!this._isFollowingOrFulfilledOrRejected());
     var len = this._length();
     var progress = this._progress;
     for (var i = 0; i < len; i++) {
@@ -90,9 +78,8 @@ function Promise$_progressUnchecked(progressValue) {
             var receiver = this._receiverAt(i);
             if (typeof handler === "function") {
                 handler.call(receiver, progressValue, promise);
-            } else if (receiver instanceof Promise && receiver._isProxied()) {
-                receiver._progressUnchecked(progressValue);
-            } else if (receiver instanceof PromiseArray) {
+            } else if (receiver instanceof PromiseArray &&
+                       !receiver._isResolved()) {
                 receiver._promiseProgressed(progressValue, promise);
             }
             continue;

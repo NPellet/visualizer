@@ -1,99 +1,115 @@
 "use strict";
+var firstLineError;
+try {throw new Error(); } catch (e) {firstLineError = e;}
 var ASSERT = require("./assert.js");
 var schedule = require("./schedule.js");
 var Queue = require("./queue.js");
-var errorObj = require("./util.js").errorObj;
-var tryCatch1 = require("./util.js").tryCatch1;
-var _process = typeof process !== "undefined" ? process : void 0;
+var _process = typeof process !== "undefined" ? process : undefined;
 
 function Async() {
     this._isTickUsed = false;
-    this._schedule = schedule;
-    this._length = 0;
-    this._lateBuffer = new Queue(LATE_BUFFER_CAPACITY);
-    this._functionBuffer = new Queue(FUNCTION_BUFFER_CAPACITY);
+    this._lateQueue = new Queue(LATE_QUEUE_CAPACITY);
+    this._normalQueue = new Queue(NORMAL_QUEUE_CAPACITY);
     var self = this;
-    //Optimized around the fact that no arguments
-    //need to be passed
-    this.consumeFunctionBuffer = function Async$consumeFunctionBuffer() {
-        self._consumeFunctionBuffer();
+    this.drainQueues = function () {
+        self._drainQueues();
     };
+    this._schedule =
+        schedule.isStatic ? schedule(this.drainQueues) : schedule;
 }
 
-Async.prototype.haveItemsQueued = function Async$haveItemsQueued() {
-    return this._length > 0;
+Async.prototype.haveItemsQueued = function () {
+    return this._normalQueue.length() > 0;
+};
+
+Async.prototype._withDomain = function(fn) {
+    ASSERT(typeof fn === "function");
+    if (_process !== undefined &&
+        _process.domain != null &&
+        !fn.domain) {
+        fn = _process.domain.bind(fn);
+    }
+    return fn;
+};
+
+// Must be used if fn can throw
+Async.prototype.throwLater = function(fn, arg) {
+    if (arguments.length === 1) {
+        arg = fn;
+        fn = function () { throw arg; };
+    }
+    fn = this._withDomain(fn);
+    if (typeof setTimeout !== "undefined") {
+        setTimeout(function() {
+            fn(arg);
+        }, 0);
+    } else try {
+        this._schedule(function() {
+            fn(arg);
+        });
+    } catch (e) {
+        throw new Error(NO_ASYNC_SCHEDULER);
+    }
 };
 
 //When the fn absolutely needs to be called after
 //the queue has been completely flushed
-Async.prototype.invokeLater = function Async$invokeLater(fn, receiver, arg) {
-    ASSERT(typeof fn === "function");
+Async.prototype.invokeLater = function (fn, receiver, arg) {
     ASSERT(arguments.length === 3);
-    if (_process !== void 0 &&
-        _process.domain != null &&
-        !fn.domain) {
-        fn = _process.domain.bind(fn);
-    }
-    this._lateBuffer.push(fn, receiver, arg);
+    fn = this._withDomain(fn);
+    this._lateQueue.push(fn, receiver, arg);
     this._queueTick();
 };
 
-Async.prototype.invoke = function Async$invoke(fn, receiver, arg) {
-    ASSERT(typeof fn === "function");
+Async.prototype.invokeFirst = function (fn, receiver, arg) {
     ASSERT(arguments.length === 3);
-    if (_process !== void 0 &&
-        _process.domain != null &&
-        !fn.domain) {
-        fn = _process.domain.bind(fn);
-    }
-    var functionBuffer = this._functionBuffer;
-    functionBuffer.push(fn, receiver, arg);
-    this._length = functionBuffer.length();
+    fn = this._withDomain(fn);
+    this._normalQueue.unshift(fn, receiver, arg);
     this._queueTick();
 };
 
-Async.prototype._consumeFunctionBuffer =
-function Async$_consumeFunctionBuffer() {
-    var functionBuffer = this._functionBuffer;
-    ASSERT(this._isTickUsed);
-    while (functionBuffer.length() > 0) {
-        var fn = functionBuffer.shift();
-        var receiver = functionBuffer.shift();
-        var arg = functionBuffer.shift();
+Async.prototype.invoke = function (fn, receiver, arg) {
+    ASSERT(arguments.length === 3);
+    fn = this._withDomain(fn);
+    this._normalQueue.push(fn, receiver, arg);
+    this._queueTick();
+};
+
+Async.prototype.settlePromises = function(promise) {
+    this._normalQueue._pushOne(promise);
+    this._queueTick();
+};
+
+Async.prototype._drainQueue = function(queue) {
+    while (queue.length() > 0) {
+        var fn = queue.shift();
+        if (typeof fn !== "function") {
+            fn._settlePromises();
+            continue;
+        }
+        var receiver = queue.shift();
+        var arg = queue.shift();
         fn.call(receiver, arg);
     }
+};
+
+Async.prototype._drainQueues = function () {
+    ASSERT(this._isTickUsed);
+    this._drainQueue(this._normalQueue);
     this._reset();
-    this._consumeLateBuffer();
+    this._drainQueue(this._lateQueue);
 };
 
-Async.prototype._consumeLateBuffer = function Async$_consumeLateBuffer() {
-    var buffer = this._lateBuffer;
-    while(buffer.length() > 0) {
-        var fn = buffer.shift();
-        var receiver = buffer.shift();
-        var arg = buffer.shift();
-        var res = tryCatch1(fn, receiver, arg);
-        if (res === errorObj) {
-            this._queueTick();
-            if (fn.domain != null) {
-                fn.domain.emit("error", res.e);
-            } else {
-                throw res.e;
-            }
-        }
-    }
-};
-
-Async.prototype._queueTick = function Async$_queue() {
+Async.prototype._queueTick = function () {
     if (!this._isTickUsed) {
-        this._schedule(this.consumeFunctionBuffer);
         this._isTickUsed = true;
+        this._schedule(this.drainQueues);
     }
 };
 
-Async.prototype._reset = function Async$_reset() {
+Async.prototype._reset = function () {
     this._isTickUsed = false;
-    this._length = 0;
 };
 
 module.exports = new Async();
+module.exports.firstLineError = firstLineError;

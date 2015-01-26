@@ -1,9 +1,9 @@
 "use strict";
 var ASSERT = require("./assert.js");
-//http://jsperf.com/deque-vs-array-2
-function arrayCopy(src, srcIndex, dst, dstIndex, len) {
+function arrayMove(src, srcIndex, dst, dstIndex, len) {
     for (var j = 0; j < len; ++j) {
         dst[j + dstIndex] = src[j + srcIndex];
+        src[j + srcIndex] = void 0;
     }
 }
 
@@ -11,15 +11,13 @@ function Queue(capacity) {
     this._capacity = capacity;
     this._length = 0;
     this._front = 0;
-    this._makeCapacity();
 }
 
-Queue.prototype._willBeOverCapacity =
-function Queue$_willBeOverCapacity(size) {
+Queue.prototype._willBeOverCapacity = function (size) {
     return this._capacity < size;
 };
 
-Queue.prototype._pushOne = function Queue$_pushOne(arg) {
+Queue.prototype._pushOne = function (arg) {
     var length = this.length();
     this._checkCapacity(length + 1);
     var i = (this._front + length) & (this._capacity - 1);
@@ -27,7 +25,24 @@ Queue.prototype._pushOne = function Queue$_pushOne(arg) {
     this._length = length + 1;
 };
 
-Queue.prototype.push = function Queue$push(fn, receiver, arg) {
+Queue.prototype._unshiftOne = function(value) {
+    var capacity = this._capacity;
+    this._checkCapacity(this.length() + 1);
+    var front = this._front;
+    var i = (((( front - 1 ) &
+                    ( capacity - 1) ) ^ capacity ) - capacity );
+    this[i] = value;
+    this._front = i;
+    this._length = this.length() + 1;
+};
+
+Queue.prototype.unshift = function(fn, receiver, arg) {
+    this._unshiftOne(arg);
+    this._unshiftOne(receiver);
+    this._unshiftOne(fn);
+};
+
+Queue.prototype.push = function (fn, receiver, arg) {
     ASSERT(arguments.length === 3);
     ASSERT(typeof fn === "function");
     var length = this.length() + 3;
@@ -48,56 +63,34 @@ Queue.prototype.push = function Queue$push(fn, receiver, arg) {
     this._length = length;
 };
 
-Queue.prototype.shift = function Queue$shift() {
+Queue.prototype.shift = function () {
     ASSERT(this.length() > 0);
     var front = this._front,
         ret = this[front];
 
-    this[front] = void 0;
+    this[front] = undefined;
     this._front = (front + 1) & (this._capacity - 1);
     this._length--;
     return ret;
 };
 
-Queue.prototype.length = function Queue$length() {
+Queue.prototype.length = function () {
     return this._length;
 };
 
-Queue.prototype._makeCapacity = function Queue$_makeCapacity() {
-    var len = this._capacity;
-    for (var i = 0; i < len; ++i) {
-        this[i] = void 0;
-    }
-};
-
-Queue.prototype._checkCapacity = function Queue$_checkCapacity(size) {
+Queue.prototype._checkCapacity = function (size) {
     if (this._capacity < size) {
-        this._resizeTo(this._capacity << 3);
+        this._resizeTo(this._capacity << 1);
     }
 };
 
-Queue.prototype._resizeTo = function Queue$_resizeTo(capacity) {
-    var oldFront = this._front;
+Queue.prototype._resizeTo = function (capacity) {
     var oldCapacity = this._capacity;
-    var oldQueue = new Array(oldCapacity);
-    var length = this.length();
-
-    arrayCopy(this, 0, oldQueue, 0, oldCapacity);
     this._capacity = capacity;
-    this._makeCapacity();
-    this._front = 0;
-    //Can perform direct linear copy
-    if (oldFront + length <= oldCapacity) {
-        arrayCopy(oldQueue, oldFront, this, 0, length);
-    } else {//Cannot perform copy directly, perform as much as possible
-            //at the end, and then copy the rest to the beginning of the buffer
-        var lengthBeforeWrapping =
-            length - ((oldFront + length) & (oldCapacity - 1));
-
-        arrayCopy(oldQueue, oldFront, this, 0, lengthBeforeWrapping);
-        arrayCopy(oldQueue, 0, this, lengthBeforeWrapping,
-                    length - lengthBeforeWrapping);
-    }
+    var front = this._front;
+    var length = this._length;
+    var moveItemsCount = (front + length) & (oldCapacity - 1);
+    arrayMove(this, 0, this, oldCapacity, moveItemsCount);
 };
 
 module.exports = Queue;

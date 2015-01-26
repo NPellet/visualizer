@@ -4,32 +4,12 @@ var util = require("./util.js");
 var inherits = util.inherits;
 var notEnumerableProp = util.notEnumerableProp;
 
-function markAsOriginatingFromRejection(e) {
-    try {
-        notEnumerableProp(e, OPERATIONAL_ERROR_KEY, true);
-    }
-    catch(ignore) {}
-}
-
-function originatesFromRejection(e) {
-    if (e == null) return false;
-    return ((e instanceof OperationalError) ||
-        e[OPERATIONAL_ERROR_KEY] === true);
-}
-
-function isError(obj) {
-    return obj instanceof Error;
-}
-
-function canAttach(obj) {
-    return isError(obj);
-}
-
 function subError(nameProperty, defaultMessage) {
     function SubError(message) {
         if (!(this instanceof SubError)) return new SubError(message);
-        this.message = typeof message === "string" ? message : defaultMessage;
-        this.name = nameProperty;
+        notEnumerableProp(this, "message",
+            typeof message === "string" ? message : defaultMessage);
+        notEnumerableProp(this, "name", nameProperty);
         if (Error.captureStackTrace) {
             Error.captureStackTrace(this, this.constructor);
         }
@@ -81,14 +61,16 @@ AggregateError.prototype.toString = function() {
 };
 
 function OperationalError(message) {
-    this.name = "OperationalError";
-    this.message = message;
+    if (!(this instanceof OperationalError))
+        return new OperationalError(message);
+    notEnumerableProp(this, "name", "OperationalError");
+    notEnumerableProp(this, "message", message);
     this.cause = message;
     this[OPERATIONAL_ERROR_KEY] = true;
 
     if (message instanceof Error) {
-        this.message = message.message;
-        this.stack = message.stack;
+        notEnumerableProp(this, "message", message.message);
+        notEnumerableProp(this, "stack", message.stack);
     } else if (Error.captureStackTrace) {
         Error.captureStackTrace(this, this.constructor);
     }
@@ -97,8 +79,7 @@ function OperationalError(message) {
 inherits(OperationalError, Error);
 
 //Ensure all copies of the library throw the same error types
-var key = "__BluebirdErrorTypes__";
-var errorTypes = Error[key];
+var errorTypes = Error[BLUEBIRD_ERRORS];
 if (!errorTypes) {
     errorTypes = Objectfreeze({
         CancellationError: CancellationError,
@@ -107,7 +88,7 @@ if (!errorTypes) {
         RejectionError: OperationalError,
         AggregateError: AggregateError
     });
-    notEnumerableProp(Error, key, errorTypes);
+    notEnumerableProp(Error, BLUEBIRD_ERRORS, errorTypes);
 }
 
 module.exports = {
@@ -117,8 +98,5 @@ module.exports = {
     CancellationError: errorTypes.CancellationError,
     OperationalError: errorTypes.OperationalError,
     TimeoutError: errorTypes.TimeoutError,
-    AggregateError: errorTypes.AggregateError,
-    originatesFromRejection: originatesFromRejection,
-    markAsOriginatingFromRejection: markAsOriginatingFromRejection,
-    canAttach: canAttach
+    AggregateError: errorTypes.AggregateError
 };
