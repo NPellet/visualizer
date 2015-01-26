@@ -167,12 +167,21 @@ define([
             if (typeof last === 'undefined')
                 return this.showError(11);
 
-            var child = last.node.findFirst(name);
+            var children = last.node.getChildren();
+            var child;
+            if (children) {
+                for (var i = 0; i < children.length; i++) {
+                    if (children[i].title === name) {
+                        child = children[i];
+                        break;
+                    }
+                }
+            }
 
             var doc;
             var that = this;
 
-            if (child && child.title === name && !child.folder && (last.node.getChildren().indexOf(child) >= 0)) {
+            if (child && !child.folder) {
                 doc = child.data.doc;
                 $.ajax({
                     url: this.database.uri + doc._id + '/' + type.toLowerCase() + '.json?rev=' + doc._rev,
