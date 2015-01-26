@@ -93,7 +93,8 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
     var defaultActelionStructureOptions = {
         suppressChiralText: true,
         suppressESR: true,
-        suppressCIPParity: true
+        suppressCIPParity: true,
+        noStereoProblem: true
     };
 
     function renderActelionStructure(idcode, coordinates, options, def) {
