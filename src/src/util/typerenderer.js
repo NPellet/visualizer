@@ -139,13 +139,17 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
     functions.actelionID = {};
     functions.actelionID.toscreen = function (def, val, root, options, highlights, box) {
         require([actelionCDN], function (ACT) {
-            if (root.coordinates) {
-                renderActelionStructure(String(root.value), String(root.coordinates), def);
-            } else {
+            if (!root.coordinates) {
                 var value = String(root.value);
                 var mol = ACT.Molecule.fromIDCode(value, true);
-                renderActelionStructure(value, mol.getIDCoordinates(), options, def);
+                Object.defineProperty(root, 'coordinates', {
+                    configurable: true,
+                    enumerable: false,
+                    value: mol.getIDCoordinates(),
+                    writable: true
+                });
             }
+            renderActelionStructure(String(root.value), String(root.coordinates), options, def);
         });
     };
 
