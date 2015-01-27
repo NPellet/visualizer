@@ -11,12 +11,12 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer', 'src/util/api' 
 
 		},
                 
-                blank: {
-                    list: function() {
-                        API.killHighlight( this.module.getId() );
-                        this.dom.empty();
-                    }
-                },
+        blank: {
+            list: function() {
+                API.killHighlight( this.module.getId() );
+                this.dom.empty();
+            }
+        },
 		
 		inDom: function() {
 			var self = this;
