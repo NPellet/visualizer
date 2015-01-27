@@ -2,9 +2,11 @@
 
 define(['modules/default/defaultview','src/util/datatraversing',
   'src/util/api','src/util/util',
-  'lodash', 'threejs', 'src/util/debug', 'chroma',
-  'lib/threejs/TrackballControls'], function(Default, Traversing, API, Util, _, THREE, Debug, chroma) {
+  'lodash', 'threejs', 'src/util/debug', 'chroma', 'components/ml/dist/ml.min',
+  'lib/threejs/TrackballControls'], function(Default, Traversing, API, Util, _, THREE, Debug, chroma, ml) {
 
+
+  var Stat = ml.Stat;
 
   function preloadImages(img) {
     for(var key in img) {
@@ -601,8 +603,8 @@ define(['modules/default/defaultview','src/util/datatraversing',
 
       // size normalization
       var sizeConstant = this.module.getConfiguration('sizeNormalization');
-      var sizeMin = Math.min.apply(null, self._data.size);
-      var sizeMax = Math.max.apply(null, self._data.size);
+      var sizeMin = Stat.array.min(self._data.size);
+      var sizeMax = Stat.array.max(self._data.size);
       var sizeInt = sizeMax-sizeMin;
       self._data.size = _.map(self._data.size, function(s) {
         return sizeInt === 0 ? sizeConstant/2 : sizeConstant * (s -sizeMin)/sizeInt;
@@ -610,8 +612,8 @@ define(['modules/default/defaultview','src/util/datatraversing',
 
       // color normalization
       if(_.all(self._data.color, _.isNumber)) {
-        var colorMin = Math.min.apply(null, self._data.color);
-        var colorMax = Math.max.apply(null, self._data.color);
+        var colorMin = Stat.array.min(self._data.color);
+        var colorMax = Stat.array.max(self._data.color);
         var colorInt = colorMax - colorMin;
         self._data.color = _.map(self._data.color, function(c) {
           var hue = colorInt === 0 ? 180 : 360 * (c - colorMin) / colorInt;
@@ -636,12 +638,12 @@ define(['modules/default/defaultview','src/util/datatraversing',
       self._data.max = {};
       self._data.len = {};
 
-      self._data.min.x = parseFloat(self.module.getConfiguration('minX')) || Math.min.apply(null, x);
-      self._data.min.y = parseFloat(self.module.getConfiguration('minY')) || Math.min.apply(null, y);
-      self._data.min.z = parseFloat(self.module.getConfiguration('minZ')) || Math.min.apply(null, z);
-      self._data.max.x = parseFloat(self.module.getConfiguration('maxX')) || Math.max.apply(null, x);
-      self._data.max.y = parseFloat(self.module.getConfiguration('maxY')) || Math.max.apply(null, y);
-      self._data.max.z = parseFloat(self.module.getConfiguration('maxZ')) || Math.max.apply(null, z);
+      self._data.min.x = parseFloat(self.module.getConfiguration('minX')) || Stat.array.min(x);
+      self._data.min.y = parseFloat(self.module.getConfiguration('minY')) || Stat.array.min(y);
+      self._data.min.z = parseFloat(self.module.getConfiguration('minZ')) || Stat.array.min(z);
+      self._data.max.x = parseFloat(self.module.getConfiguration('maxX')) || Stat.array.max(x);
+      self._data.max.y = parseFloat(self.module.getConfiguration('maxY')) || Stat.array.max(y);
+      self._data.max.z = parseFloat(self.module.getConfiguration('maxZ')) || Stat.array.max(z);
       self._data.len.x = self._data.max.x - self._data.min.x;
       self._data.len.y = self._data.max.y - self._data.min.y;
       self._data.len.z = self._data.max.z - self._data.min.z;
