@@ -8,6 +8,12 @@ define(['modules/default/defaultview'], function (Default) {
         init: function () {
             this.dom = $('<iframe border="0" frameborder="none" width="100%" height="100%" />');
 
+            var self=this;
+            this.dom.load(function(event) {
+                if (self.dom.attr('src')!="about:blank") {
+                    self.hideLoading();
+                }
+            });
             // fix scroll bar
             // see http://stackoverflow.com/a/12726445/1247233 for explanations
             this.dom.css('vertical-align', 'bottom');
@@ -25,12 +31,13 @@ define(['modules/default/defaultview'], function (Default) {
             url: function (moduleValue) {
                 if (!moduleValue)
                     return;
-
+                this.showLoading();
                 this.dom.attr('src', moduleValue.get());
             },
             doi: function (moduleValue) {
                 if (!moduleValue)
                     return;
+                this.showLoading();
                 this.dom.attr('src', 'http://dx.doi.org/' + moduleValue.get());
             }
         }
