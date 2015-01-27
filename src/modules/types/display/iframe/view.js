@@ -13,11 +13,8 @@ define(['modules/default/defaultview'], function (Default) {
             var self=this;
             this.dom.load(function(event) { // we remove the loading message
                 if (self.dom.attr('src')!="about:blank") {
-                    if (self._loadingTimeout) {
-                        clearTimeout(self._loadingTimeout);
-                        self._loadingTimeout=null;
-                    }
-                    self.hideLoading();
+                    if (self._loadingTimeout) clearTimeout(self._loadingTimeout);
+                    else self.hideLoading();
                 }
             });
             // fix scroll bar
@@ -39,6 +36,7 @@ define(['modules/default/defaultview'], function (Default) {
                     return;
 
                 var self=this;
+                if (self._loadingTimeout) clearTimeout(self._loadingTimeout);
                 this._loadingTimeout = setTimeout(function() { self.showLoading(); }, 500);
 
                 this.dom.attr('src', moduleValue.get());
@@ -48,6 +46,7 @@ define(['modules/default/defaultview'], function (Default) {
                     return;
 
                 var self=this;
+                if (self._loadingTimeout) clearTimeout(self._loadingTimeout);
                 this._loadingTimeout = setTimeout(function() { self.showLoading(); }, 500);
 
                 this.dom.attr('src', 'http://dx.doi.org/' + moduleValue.get());
