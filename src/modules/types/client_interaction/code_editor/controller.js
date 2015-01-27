@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultcontroller'], function (Default) {
 
     function Controller() {
@@ -54,16 +56,16 @@ define(['modules/default/defaultcontroller'], function (Default) {
                                 {title: 'HTML', key: 'html'},
                                 {title: 'XML', key: 'xml'}
                             ],
-                            default: 'text'
+                            'default': 'text'
                         },
                         btnvalue: {
                             type: 'text',
                             title: 'Button text',
-                            default: 'Send script'
+                            'default': 'Send script'
                         },
                         iseditable: {
                             title: 'Display editor',
-                            default: ['editable'],
+                            'default': ['editable'],
                             type: 'checkbox',
                             options: {
                                 editable: 'Show the code editor'
@@ -71,7 +73,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                         },
                         hasButton: {
                             title: 'Display button',
-                            default: ['button'],
+                            'default': ['button'],
                             type: 'checkbox',
                             options: {
                                 button: 'Show the button'
@@ -90,10 +92,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.configAliases = {
         mode: ['groups', 'group', 0, 'mode', 0],
-        btnvalue: [ 'groups', 'group', 0, 'btnvalue', 0],
-        iseditable: [ 'groups', 'group', 0 , 'iseditable', 0],
-        hasButton: [ 'groups', 'group', 0 , 'hasButton', 0],
-        script: [ 'groups', 'group', 0, 'script', 0]
+        btnvalue: ['groups', 'group', 0, 'btnvalue', 0],
+        iseditable: ['groups', 'group', 0, 'iseditable', 0],
+        hasButton: ['groups', 'group', 0, 'hasButton', 0],
+        script: ['groups', 'group', 0, 'script', 0]
     };
 
     Controller.prototype.onEditorChanged = function (value) {
@@ -115,7 +117,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     function getJsonValue(str) {
         try {
             return JSON.parse(str);
-        } catch(e) {
+        } catch (e) {
             return null;
         }
     }

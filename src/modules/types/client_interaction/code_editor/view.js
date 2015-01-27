@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/context', 'jquery'], function (Default, Util, ace, Context, $) {
 
     function View() {
@@ -68,12 +70,16 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
         editorChanged: function () {
             var val = this.editor.getValue();
             this._code = val;
-            if(this.module.definition.configuration.groups) {
+            if (this.module.definition.configuration.groups) {
                 this.module.definition.configuration.groups.group[0].script[0] = val;
             }
             this.module.controller.onEditorChanged(this._code);
+        },
+        onResize: function () {
+            this.editor.resize();
         }
     });
 
     return View;
+
 });
