@@ -45,7 +45,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
 
                 for (i = 0; i < definedDrops.length; i++) {
                     var def = definedDrops[i];
-                    if (!def.variable)
+                    if (! def || !def.variable)
                         continue;
                     if (rel === 'data' && !this.tmpVars.hasOwnProperty(def.variable)) {
                         this.tmpVars[def.variable] = standardFile;
