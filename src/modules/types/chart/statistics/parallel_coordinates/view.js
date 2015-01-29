@@ -51,13 +51,16 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing
         update: {
             value: function (value) {
 
-                if (!value)
-                    return;
-                value = value.get();
-                if (!value.length)
-                    return;
-
-                this._value = value.resurrect();
+                if (!value) {
+                    this._value=[];
+                } else {
+                    value = value.get();
+                    if (!value.length) {
+                        this._value=[];
+                    } else {
+                        this._value = value.resurrect();
+                    }
+                }
 
                 this.redrawChart();
             },
@@ -102,7 +105,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing
                 that.module.controller.onBrushSelection(d);
             }
 
-            if (this._data) {
+            if (this._data && this._data.length>0) {
 
                 var cfg = this.module.getConfiguration.bind(this.module),
                     cfgCb = this.module.getConfigurationCheckbox.bind(this.module);
@@ -146,11 +149,10 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing
                 parcoords.on('brushend', exportBrush);
 
                 this._parcoords = parcoords;
-
-                this.module.controller.onBrushSelection(this._data);
             } else {
                 this.dom.html('No column to display');
             }
+            this.module.controller.onBrushSelection(this._data);
         },
         createIntermediateData: function () {
             var columns = this.getColumns(),
@@ -170,7 +172,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing
             API.killHighlight(this.module.getId());
             this._highlighted = [];
 
-            if (!l || !vl) {
+            if (!vl) {
                 this._data = [];
                 return;
             }
