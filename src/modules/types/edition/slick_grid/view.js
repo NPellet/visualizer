@@ -806,7 +806,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     jpath.unshift(i);
                     var el = this.module.data.getChildSync(jpath, false);
                     el = el ? el.get() : '';
-                    el = el.replace(/\r/g,"\\r").replace(/\n/g,"\\n").replace(/\t/g,"\\t");
+                    if (typeof el === "string") el = el.replace(/\r/g,"\\r").replace(/\n/g,"\\n").replace(/\t/g,"\\t");
                     line.push(el);
                 }
                 txt += line.join('\t') + '\r\n';
