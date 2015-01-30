@@ -114,10 +114,11 @@ define([
         },
         createMenu: function () {
             if (this.$_elToOpen) {
-                if (this.loggedIn)
-                    this.$_elToOpen.html(this.getMenuContent());
-                else
-                    this.$_elToOpen.html(this.getLoginForm());
+                if (this.loggedIn) {
+                    this.openMenu('tree');
+                } else {
+                    this.openMenu('login');
+                }
                 return;
             }
 
@@ -128,15 +129,26 @@ define([
             $.couch.session({
                 success: function (data) {
                     if (data.userCtx.name === null) {
-                        that.$_elToOpen.html(that.getLoginForm());
+                        that.openMenu('login');
                     } else {
                         that.loggedIn = true;
                         that.username = data.userCtx.name;
-                        that.$_elToOpen.html(that.getMenuContent());
+                        that.openMenu('tree');
                     }
                 }
             });
 
+        },
+        openMenu: function (which) {
+            if (which === this.lastMenu) {
+                return;
+            } else if (which === 'tree') {
+                this.$_elToOpen.html(this.getMenuContent());
+                this.lastMenu = 'tree';
+            } else if (which === 'login') {
+                this.$_elToOpen.html(this.getLoginForm());
+                this.lastMenu = 'login';
+            }
         },
         load: function (node, rev) {
             var result = {};
@@ -276,7 +288,7 @@ define([
                 success: function (data) {
                     that.loggedIn = true;
                     that.username = username;
-                    that.$_elToOpen.html(that.getMenuContent());
+                    that.openMenu('tree')
                 },
                 error: function () {
                     that.showError.apply(that, arguments);
