@@ -846,7 +846,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     var gridRow = this.slick.data.mapIdsToRows([item[this.idPropertyName]])[0];
                     var dataIdx = this.slick.data.getIdxById(item[this.idPropertyName]);
                     this.module.controller.onClick(dataIdx, item);
-                    if(gridRow) {
+                    if(!_.isUndefined(gridRow)) {
                         this.grid.scrollRowToTop(gridRow);
                         this.grid.setActiveCell(gridRow, 0);
                     }
