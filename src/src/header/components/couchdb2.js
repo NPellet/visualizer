@@ -581,7 +581,8 @@ define([
                                                 title: 'Key'
                                             },
                                             contentText: {
-                                                type: 'text',
+                                                type: 'jscode',
+                                                mode: 'text',
                                                 title: 'Value',
                                                 displayTarget: ['t']
                                             },
