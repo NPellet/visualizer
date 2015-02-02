@@ -11,7 +11,7 @@ requirejs.config({
     }
 });
 
-define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'components/leaflet/dist/leaflet'], function (Default, Util, API, L) {
+define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'src/util/color', 'components/leaflet/dist/leaflet'], function (Default, Util, API, Color, L) {
 
     function View() {
         this.mapID = Util.getNextUniqueId();
@@ -106,7 +106,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
             // Construct default marker options
             Marker.setDefaultOptions({
                 kind: this.module.getConfiguration('markerkind'),
-                color: Util.getColor(this.module.getConfiguration('markercolor')),
+                color: Color.getColor(this.module.getConfiguration('markercolor')),
                 size: parseInt(this.module.getConfiguration('markersize')),
                 img: 'components/leaflet/dist/images/marker-icon.png',
                 imgHighlight: 'modules/types/chart/maps/leaflet/marker-icon-red.png'
@@ -125,7 +125,14 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
 
             this.getTileLayer().addTo(that.map);
 
+            var firstZoom = true;
+
             function onZoom() {
+                if (firstZoom) {
+                    // First zoom event is triggered by the initial setView. Ignore it
+                    firstZoom = false;
+                    return;
+                }
                 // First call the move handler in case zooming changed the center
                 that.module.controller.moveAction.call(that);
                 that.module.controller.zoomAction.call(that);
@@ -195,14 +202,19 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
         },
         onActionReceive: {
             position: function (val) {
-                this.map.setView(L.latLng(val[0], val[1]));
+                var currentCenter = this.map.getCenter();
+                if (round(val[0]) !== round(currentCenter.lat) || round(val[1]) !== round(currentCenter.lng)) {
+                    this.map.setView(L.latLng(val[0], val[1]));
+                }
             },
             zoom: function (val) {
                 var min = this.map.getMinZoom();
                 var max = this.map.getMaxZoom();
                 if (val < min) val = min;
                 else if (val > max) val = max;
-                this.map.setZoom(val);
+                if (val !== this.map.getZoom()) {
+                    this.map.setZoom(val);
+                }
             }
         },
         getTileLayer: function () {
@@ -276,6 +288,10 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
             }
         }, this);
 
+    }
+
+    function round(val) {
+        return Math.floor(val * 1000);
     }
 
     return View;
