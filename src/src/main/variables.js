@@ -179,7 +179,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
             var id = module.getId();
             // If the module already listens for this variable, we should definitely not listen for it again.
             if (this.listenedBy[id]) {
-                return Debug.warn("This module already listens the variable " + this.getName() + ". No new listener is added");
+                return;
             }
 
             this.listenedBy[id] = true;
