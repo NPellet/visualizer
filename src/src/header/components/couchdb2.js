@@ -544,7 +544,7 @@ define([
             var that = this;
             if(!this.currentDocument) return;
 
-            var div = $('<div></div>').dialog({ modal: true, position: ['center', 50], width: '80%', title: "Edit module preferences"});
+            var div = $('<div></div>').dialog({ modal: true, position: ['center', 50], width: '80%', title: "Edit Metadata"});
             console.log('meta data');
 
             var structure = {
@@ -561,7 +561,7 @@ define([
                             keywords: {
                                 options: {
                                     multiple: true,
-                                    title: 'abc'
+                                    title: 'Key/Value Metadata'
                                 },
                                 groups: {
                                     group: {
