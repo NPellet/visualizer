@@ -244,7 +244,7 @@ define([
             var self = this;
             geojson.eachLayer(function (layer) {
                 addEvents.call(self, layer);
-                self.mapBounds[varname].extend(layer.getBounds());
+                self.mapBounds[varname].extend(layer.getBounds ? layer.getBounds() : layer.getLatLng());
             });
         },
         updateFit: function (varname) {
