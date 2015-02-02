@@ -4,6 +4,7 @@
 * Core
  * grid : fix resize bug on IE11
 * Modules
+ * leaflet : add autofit option
  * leaflet : fix circular event bug
  * leaflet : add 5 new possible inputs : CSV, KML, GPX, WKT and TopoJSON
 * Headers

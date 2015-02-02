@@ -100,7 +100,7 @@ define(['modules/default/defaultcontroller', 'src/util/api'], function (Default,
                                 {title: 'OpenStreetMap', key: 'osm'},
                                 {title: 'HikeBike', key: 'hb'}
                             ],
-                            default: 'osm'
+                            'default': 'osm'
                         },
                         mapcenter: {
                             type: 'text',
@@ -112,7 +112,17 @@ define(['modules/default/defaultcontroller', 'src/util/api'], function (Default,
                             min: 0,
                             max: 19,
                             step: 1,
-                            default: '10'
+                            'default': '10'
+                        },
+                        autofit: {
+                            type: 'combo',
+                            title: 'Autofit map',
+                            options: [
+                                {title: 'No fit', key: 'nofit'},
+                                {title: 'Fit around everything', key: 'all'},
+                                {title: 'Fit around current variable', key: 'var'}
+                            ],
+                            'default': 'nofit'
                         }
                     }
                 },
@@ -165,6 +175,7 @@ define(['modules/default/defaultcontroller', 'src/util/api'], function (Default,
         mapcenter: ['groups', 'group', 0, 'mapcenter', 0],
         mapzoom: ['groups', 'group', 0, 'mapzoom', 0],
         maptiles: ['groups', 'group', 0, 'maptiles', 0],
+        autofit: ['groups', 'group', 0, 'autofit', 0],
         markerjpath: ['groups', 'markers', 0, 'markerjpath', 0],
         markerkind: ['groups', 'markers', 0, 'markerkind', 0],
         markercolor: ['groups', 'markers', 0, 'markercolor', 0],

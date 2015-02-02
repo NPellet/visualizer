@@ -102,6 +102,7 @@ define([
     View.prototype = $.extend(true, {}, Default, {
         init: function () {
             this.mapLayers = {};
+            this.mapBounds = {};
             this.dom = $('<div id="' + this.mapID + '"></div>').css({
                 height: '100%',
                 width: '100%'
@@ -188,34 +189,78 @@ define([
                 this.map.setView(L.latLng(value[0], value[1]));
             },
             geojson: function (geo, varname) {
-                var geoJson = geo.get();
-                var converted = L.geoJson(geoJson, {
-                    style: function (feature) {
-                        return feature.properties && feature.properties.style;
-                    }
-                });
-                this.addGeoJSON(converted, varname);
+                try {
+                    var geoJson = geo.get();
+                    var converted = L.geoJson(geoJson, {
+                        style: function (feature) {
+                            return feature.properties && feature.properties.style;
+                        }
+                    });
+                    this.addGeoJSON(converted, varname);
+                } catch (e) {
+                }
+                this.updateFit(varname);
             },
             csv: function (csv, varname) {
-                this.addGeoJSON(omnivore.csv.parse(csv.get()), varname);
+                try {
+                    this.addGeoJSON(omnivore.csv.parse(csv.get()), varname);
+                } catch (e) {
+                }
+                this.updateFit(varname);
             },
             kml: function (kml, varname) {
-                this.addGeoJSON(omnivore.kml.parse(kml.get()), varname);
+                try {
+                    this.addGeoJSON(omnivore.kml.parse(kml.get()), varname);
+                } catch (e) {
+                }
+                this.updateFit(varname);
             },
             gpx: function (gpx, varname) {
-                this.addGeoJSON(omnivore.gpx.parse(gpx.get()), varname);
+                try {
+                    this.addGeoJSON(omnivore.gpx.parse(gpx.get()), varname);
+                } catch (e) {
+                }
+                this.updateFit(varname);
             },
             wkt: function (wkt, varname) {
-                this.addGeoJSON(omnivore.wkt.parse(wkt.get()), varname);
+                try {
+                    this.addGeoJSON(omnivore.wkt.parse(wkt.get()), varname);
+                } catch (e) {
+                }
+                this.updateFit(varname);
             },
             topojson: function (topojson, varname) {
-                this.addGeoJSON(omnivore.topojson.parse(topojson.get()), varname);
+                try {
+                    this.addGeoJSON(omnivore.topojson.parse(topojson.get()), varname);
+                } catch (e) {
+                }
+                this.updateFit(varname);
             }
         },
         addGeoJSON: function (geojson, varname) {
             geojson.addTo(this.map);
             this.mapLayers[varname] = geojson;
-            geojson.eachLayer(addEvents, this);
+            this.mapBounds[varname] = new L.LatLngBounds();
+            var self = this;
+            geojson.eachLayer(function (layer) {
+                addEvents.call(self, layer);
+                self.mapBounds[varname].extend(layer.getBounds());
+            });
+        },
+        updateFit: function (varname) {
+            var fit = this.module.getConfiguration('autofit');
+            var bounds;
+            if (fit === 'var') {
+                bounds = this.mapBounds[varname];
+            } else if (fit === 'all') {
+                bounds = new L.LatLngBounds();
+                for (var i in this.mapBounds) {
+                    bounds.extend(this.mapBounds[i]);
+                }
+            }
+            if (bounds && bounds.isValid()) {
+                this.map.fitBounds(bounds);
+            }
         },
         onResize: function () {
             this.map.invalidateSize();
@@ -315,6 +360,10 @@ define([
             this.mapLayers[varname].clearLayers();
             delete this.mapLayers[varname];
         }
+        if (this.mapBounds.hasOwnProperty(varname)) {
+            delete this.mapBounds[varname];
+        }
+        this.updateFit();
     }
 
     function round(val) {
