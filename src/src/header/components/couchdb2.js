@@ -7,10 +7,11 @@ define([
     'forms/button',
     'src/util/util',
     'lib/webtoolkit/base64',
+    'forms/form',
     'lib/couchdb/jquery.couch',
     'fancytree',
     'components/ui-contextmenu/jquery.ui-contextmenu.min'
-], function ($, Default, Versioning, Button, Util, Base64) {
+], function ($, Default, Versioning, Button, Util, Base64, Form) {
 
     function CouchDBManager() {
     }
@@ -166,6 +167,26 @@ define([
 
             this.lastKeyLoaded = node.key;
         },
+
+        saveMeta: function(val) {
+            var that = this;
+            var node = that.currentDocument;
+            $.ajax({
+                url: this.database.uri + node.data.doc._id + '/meta.json?rev=' + node.data.doc._rev,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(val),
+                dataType: 'json',
+                error: this.showError,
+                success: function (data) {
+                    node.data.doc._rev = data.rev;
+                    node.data.hasMeta = true;
+                    if (node.children)
+                        child.lazyLoad(true);
+                    that.showError('meta saved.', 2);
+                }
+            });
+        },
         save: function (type, name) {
 
             if (name.length < 1)
@@ -175,7 +196,7 @@ define([
 
             var content = Versioning['get' + type + 'JSON']();
 
-            var last = this['lastNode'];
+            var last = this.lastNode;
             if (typeof last === 'undefined')
                 return this.showError(11);
 
@@ -251,7 +272,7 @@ define([
             if (name.indexOf(':') !== -1)
                 return this.showError(10);
 
-            var last = this['lastNode'];
+            var last = this.lastNode;
             if (typeof last === 'undefined')
                 return this.showError(11);
 
@@ -398,6 +419,9 @@ define([
             };
             var treeContainer = $('<div>').attr('id', this.cssId('tree')).css(treeCSS).appendTo(dom);
             dom.append($('<p>').append('<input type="text" id="' + this.cssId('docName') + '"/>')
+                    .append(new Button('Edit MetaData', function(){
+                        that.metaData();
+                    }, {color: 'blue'}).render())
                     .append(new Button('Save data', function () {
                         that.save('Data', that.getFormContent('docName'));
                     }, {color: 'red'}).render())
@@ -414,6 +438,277 @@ define([
             this.loadFlavor();
 
             return dom;
+        },
+        getMetaForm: function(node) {
+            var that = this;
+            var doc = node.data.doc;
+            return new Promise(function (resolve) {
+                $.ajax({
+                    url: that.database.uri + doc._id + '/meta.json', // always the last revision
+                    type: 'GET',
+                    dataType: 'json',
+                    error: function() {
+                        console.error('Could not get meta data...');
+                        resolve({});
+                    },
+                    success: function (data) {
+                        resolve(that.processMetaForm(data));
+                    }
+                });
+            });
+        },
+
+        processMetaForm: function(obj) {
+            //var result = {
+            //    sections: {
+            //        metadata: [{
+            //            sections: {
+            //                keywords: [
+            //                    {
+            //                        "sections": {},
+            //                        "groups": {
+            //                            "group": [
+            //                                {
+            //                                    "contentType": ['html'],
+            //                                    "keyword": [
+            //                                        "showHelp"
+            //                                    ],
+            //                                    "contentText": [
+            //                                        "abc"
+            //                                    ],
+            //                                    "contentHtml": [
+            //                                        "xyz"
+            //                                    ]
+            //                                }
+            //                            ]
+            //                        }
+            //                    },
+            //                    {
+            //                        "sections": {},
+            //                        "groups": {
+            //                            "group": [
+            //                                {
+            //                                    "contentType": ['text'],
+            //                                    "keyword": [
+            //                                        "showHelp"
+            //                                    ],
+            //                                    "contentText": [
+            //                                        "abc"
+            //                                    ],
+            //                                    "contentHtml": [
+            //                                        "xyz"
+            //                                    ]
+            //                                }
+            //                            ]
+            //                        }
+            //                    }
+            //                ]
+            //            }
+            //        }]
+            //    }
+            //};
+            var result = {
+                sections: {
+                    metadata: [
+                        {
+                            sections: {
+                                keywords: []
+                            }
+                        }
+                    ]
+                }
+            };
+            for(var key in obj) {
+                var n = {};
+                n.contentType = [obj[key].type];
+                n.keyword = [key];
+                if(obj[key].type === 'text') {
+                    n.contentText = [obj[key].value];
+                    n.contentHtml = [''];
+                }
+                else if(obj[key].type === 'html') {
+                    n.contentHtml = [obj[key].value];
+                    n.contentText = [''];
+                }
+                result.sections.metadata[0].sections.keywords.push({
+                    sections: {},
+                    groups: {
+                        group: [n]
+                    }
+                });
+            }
+            return result;
+        },
+
+        metaData: function() {
+            var that = this;
+            if(!this.currentDocument) return;
+
+            var div = $('<div></div>').dialog({ modal: true, position: ['center', 50], width: '80%', title: "Edit module preferences"});
+            console.log('meta data');
+
+            var structure = {
+
+                sections: {
+
+                    metadata: {
+
+                        options: {
+                            title: 'Metadata',
+                            icon: 'info_rhombus'
+                        },
+                        sections: {
+                            keywords: {
+                                options: {
+                                    multiple: true,
+                                    title: 'abc'
+                                },
+                                groups: {
+                                    group: {
+                                        options: {
+                                            type: 'list',
+                                            multiple: true
+                                        },
+                                        fields: {
+                                            contentType: {
+                                                type: 'combo',
+                                                options: [{key: 'text', title: 'Text'}, {key: 'html', title: 'html'}],
+                                                title: 'Content type',
+                                                displaySource: {text: 't', html: 'h'}
+                                            },
+                                            keyword: {
+                                                type: 'text',
+                                                title: 'Key'
+                                            },
+                                            contentText: {
+                                                type: 'text',
+                                                title: 'Value',
+                                                displayTarget: ['t']
+                                            },
+                                            contentHtml: {
+                                                type: 'wysiwyg',
+                                                title: 'Value',
+                                                displayTarget: ['h']
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            var form = new Form({
+            });
+
+            form.init({
+                onValueChanged: function( value ) {	}
+            });
+
+            form.setStructure( structure );
+            form.onStructureLoaded().done(function() {
+                var fill = {};
+                var prom;
+                if(!that.currentDocument.data.hasMeta) {
+                    prom = Promise.resolve({});
+                }
+                else {
+                    prom = that.getMetaForm(that.currentDocument);
+                }
+
+                prom.then(function(fill) {
+                    form.fill(fill);
+                });
+                //form.fill({
+                //    sections: {
+                //        metadata: [{
+                //            sections: {
+                //                keywords: [
+                //                {
+                //                    "sections": {},
+                //                    "groups": {
+                //                        "group": [
+                //                            {
+                //                                "contentType": ['html'],
+                //                                "keyword": [
+                //                                    "showHelp"
+                //                                ],
+                //                                "contentText": [
+                //                                    "abc"
+                //                                ],
+                //                                "contentHtml": [
+                //                                    "xyz"
+                //                                ]
+                //                            }
+                //                        ]
+                //                    }
+                //                },
+                //                {
+                //                    "sections": {},
+                //                    "groups": {
+                //                        "group": [
+                //                            {
+                //                                "contentType": ['text'],
+                //                                "keyword": [
+                //                                    "showHelp"
+                //                                ],
+                //                                "contentText": [
+                //                                    "abc"
+                //                                ],
+                //                                "contentHtml": [
+                //                                    "xyz"
+                //                                ]
+                //                            }
+                //                        ]
+                //                    }
+                //                }
+                //            ]
+                //            }
+                //        }]
+                //}
+                //});
+            });
+
+            form.addButton('Cancel', { color: 'blue' }, function() {
+                div.dialog( 'close' );
+            });
+
+            form.addButton('Save', { color: 'green' }, function() {
+                var value = form.getValue();
+                that.saveMeta(that.getMetaFromForm(value));
+                div.dialog('close');
+            });
+
+            form.onLoaded().done(function() {
+                div.html(form.makeDom(1,0));
+                form.inDom();
+            });
+
+        },
+
+        getMetaFromForm: function(value) {
+            value = DataObject.check(value, true);
+            var result = {};
+            var x = value.getChildSync(['sections', 'metadata', 0, 'sections', 'keywords']);
+            if(x) {
+                for(var i=0; i< x.length; i++) {
+                    var val = x.getChildSync([i, 'groups', 'group', 0]);
+                    if(val.contentType[0] === 'text') {
+                        result[val.keyword[0]] = {
+                            type: 'text',
+                            value: val.contentText[0]
+                        }
+                    }
+                    else if(val.contentType[0] === 'html') {
+                        result[val.keyword[0]] = {
+                            type: 'html',
+                            value: val.contentHtml[0]
+                        }
+                    }
+                }
+            }
+            return result;
         },
         lazyLoad: function (event, result) {
             var id = result.node.data.doc._id;
@@ -437,7 +732,6 @@ define([
             });
         },
         clickNode: function (event, data) {
-
             var folder;
             var node = folder = data.node, last;
 
@@ -448,6 +742,7 @@ define([
                 keyWithoutFlavor = '';
 
             if (node.folder) {
+                this.currentDocument = undefined;
                 var folderName = keyWithoutFlavor;
                 last = {name: this.username + (folderName.length > 0 ? ':' + folderName : ''), node: node};
             } else {
@@ -457,6 +752,7 @@ define([
                     node = node.parent;
                 }
                 folder = node.parent;
+                this.currentDocument = node;
                 $('#' + this.cssId('docName')).val(node.title);
                 last = {name: node.data.doc._id, node: node};
                 if (event.type === 'fancytreedblclick')
@@ -467,7 +763,6 @@ define([
                 key: keyWithoutFlavor,
                 node: folder
             };
-
             this.lastNode = last;
             if (event.type === 'fancytreedblclick' && !node.folder)
                 return false;
@@ -755,7 +1050,8 @@ define([
             __name: flavors.join(':'),
             __doc: data.doc,
             __data: data.value.data,
-            __view: data.value.view
+            __view: data.value.view,
+            __meta: data.value.meta
         };
         return structure;
     }
@@ -787,6 +1083,7 @@ define([
                         doc: obj.__doc,
                         hasData: obj.__data,
                         hasView: obj.__view,
+                        hasMeta: obj.__meta,
                         lazy: true,
                         title: name,
                         key: thisPath
@@ -799,6 +1096,7 @@ define([
                 el.doc = obj.__doc;
                 el.hasData = obj.__data;
                 el.hasView = obj.__view;
+                el.hasMeta = obj.__meta;
             }
             tree.push(el);
         }
