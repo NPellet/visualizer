@@ -35,6 +35,25 @@ define(['modules/default/defaultcontroller', 'src/util/api'], function (Default,
         item: {
             label: 'Object on the map',
             type: 'object'
+        },
+        csv: {
+            label: 'CSV with latitude and longitude columns',
+            type: 'string'
+        },
+        kml: {
+            label: 'KML',
+            type: 'string'
+        },
+        gpx: {
+            label: 'GPX',
+            type: 'string'
+        },
+        wkt: {
+            label: 'WKT',
+            type:'string'
+        },
+        topojson: {
+            label: 'TopoJSON'
         }
     };
 
@@ -58,7 +77,7 @@ define(['modules/default/defaultcontroller', 'src/util/api'], function (Default,
         }
     };
 
-    Controller.prototype.variablesIn = ['geojson', 'position'];
+    Controller.prototype.variablesIn = ['geojson', 'csv', 'kml', 'gpx', 'wkt', 'topojson', 'position'];
 
     Controller.prototype.actionsIn = {
         position: 'Move the map',
