@@ -30,7 +30,7 @@ define( [ 'jquery', 'jquery-ui' ], function( $, jqueryui ) {
 						if( valueInput[ changing ] && lastVal[ changing ] !== ui.value && ! isNaN( ui.value ) ) {
 							lastVal[ changing ] = ui.value;
 							valueInput[ changing ].val( lastVal[ changing ] );	
-							self.setValueSilent( lastVal );
+							self.setValueSilent( range ? lastVal : lastVal[0] );
 						}
 					},
 
@@ -53,7 +53,7 @@ define( [ 'jquery', 'jquery-ui' ], function( $, jqueryui ) {
 
 								if( valueInput[ changing ] ) {
 									valueInput[ changing ].val( lastVal[ changing ] );	
-									self.setValueSilent( lastVal );
+									self.setValueSilent( range ? lastVal : lastVal[0] );
 								}
 							}
 						}
