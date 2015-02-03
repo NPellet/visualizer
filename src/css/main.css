@@ -1,16 +1,12 @@
-body, h1, h2, h3, h4, h5, h6, p {
+#ci-visualizer h1, h2, h3, h4, h5, h6, p {
 	margin: 0;
 	padding: 0;
 }
 
-body {
+#ci-visualizer {
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
 	font-size: 11px;
 	color: black;
-}
-
-body.locked {
-	/*overflow: hidden;*/
 }
 
 .ci-spacer {
