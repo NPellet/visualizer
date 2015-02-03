@@ -7,8 +7,8 @@ define(['jquery', 'jquery-ui', 'src/util/util', 'modules/modulefactory', 'src/ut
     var layersUl, layersLi;
 
     var defaults = {
-        xWidth: 10, // 20px per step
-        yHeight: 10 // 20px per step
+        xWidth: 10,
+        yHeight: 10
     };
 
     function checkDimensions(extend) {
@@ -18,13 +18,13 @@ define(['jquery', 'jquery-ui', 'src/util/util', 'modules/modulefactory', 'src/ut
             var pos = modules[i].getPosition(getActiveLayer()),
                 size = modules[i].getSize(getActiveLayer());
 
-            if (pos.top && size.height) {
+            if (pos.top && size.height && modules[i].getActiveLayer(getActiveLayer()).display) {
                 bottomMax = Math.max(bottomMax, pos.top + size.height);
             }
         }
 
         jqdom.css('height',
-            Math.max($(window).height() - $("#header").outerHeight(true) - 5, (defaults.yHeight * bottomMax + (extend ? 1000 : 0)))
+            Math.max($('#ci-visualizer').height() - $("#header").outerHeight(true) - 5, (defaults.yHeight * bottomMax + (extend ? 1000 : 0)))
         );
     }
 

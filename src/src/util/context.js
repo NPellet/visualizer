@@ -65,10 +65,10 @@ define(['jquery', 'src/util/api', 'modules/modulefactory'], function($, API, Mod
 				} 
 
 				contextMenu = null;
-				top = e.pageY;
-				left = e.pageX;
+				top = e.clientY;
+				left = e.clientX;
 				var $menu = $('<ul class="ci-contextmenu"></ul>').css({
-					'position': 'absolute',
+					'position': 'fixed',
 					'left': left,
 					'top': top,
 					'z-index': 10000

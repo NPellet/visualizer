@@ -864,7 +864,6 @@ define(['jquery',
                 }).always(function () {
                     require(['usr/datastructures/filelist'], function () {
                         Context.init(document.getElementById('modules-grid'));
-
                         if (!API.isViewLocked()) {
                             Context.listen(Context.getRootDom(), [
                                     ['<li class="ci-item-configureentrypoint"><a><span class="ui-icon ui-icon-key"></span>Global preferences</a></li>',

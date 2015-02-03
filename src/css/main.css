@@ -13,18 +13,6 @@
 	clear: both;
 }
 
-/**
- * 	Main Page
- */
-
-html, body {
-	height: 100%;
-	min-height: 100%;
-}
-
-#ci-visualizer {
-    position: relative;
-}
 
 #viewport {
 	width: 100%;
