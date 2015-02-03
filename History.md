@@ -1,3 +1,17 @@
+2.13.0 / HEAD
+=============
+
+* Core
+ * grid : fix resize bug on IE11
+* Modules
+ * leaflet : add autofit option
+ * leaflet : fix circular event bug
+ * leaflet : add 5 new possible inputs : CSV, KML, GPX, WKT and TopoJSON
+* Headers
+ * couchdb2 : performance improvements
+* Components
+ * install leaflet-omnivore
+
 2.12.1 / 2015-01-26
 ===================
 

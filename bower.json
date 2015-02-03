@@ -53,6 +53,7 @@
     "sdf-parser": "cheminfo/sdf-parser",
     "async": "~0.9.0",
     "loglevel": "~1.2.0",
-    "ui-contextmenu": "~1.8.1"
+    "ui-contextmenu": "~1.8.1",
+    "leaflet-omnivore": "~0.3.2"
   }
 }

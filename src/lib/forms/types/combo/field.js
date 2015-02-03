@@ -10,7 +10,7 @@ define( [ require, '../../field', 'fancytree' ], function( require, FieldDefault
 		this.name = name;
 		this.domExpander = $("<div></div>").fancytree({
 
-			fx: false,
+			toggleEffect: false,
 			debut: 0,
 			source: [],
 

@@ -11,7 +11,14 @@ requirejs.config({
     }
 });
 
-define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'src/util/color', 'components/leaflet/dist/leaflet'], function (Default, Util, API, Color, L) {
+define([
+    'modules/default/defaultview',
+    'src/util/util',
+    'src/util/api',
+    'src/util/color',
+    'components/leaflet/dist/leaflet',
+    'components/leaflet-omnivore/leaflet-omnivore.min'
+], function (Default, Util, API, Color, L, omnivore) {
 
     function View() {
         this.mapID = Util.getNextUniqueId();
@@ -95,6 +102,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'src/uti
     View.prototype = $.extend(true, {}, Default, {
         init: function () {
             this.mapLayers = {};
+            this.mapBounds = {};
             this.dom = $('<div id="' + this.mapID + '"></div>').css({
                 height: '100%',
                 width: '100%'
@@ -167,12 +175,12 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'src/uti
 
         },
         blank: {
-            geojson: function (varname) {
-                if (this.mapLayers.hasOwnProperty(varname)) {
-                    this.mapLayers[varname].clearLayers();
-                    delete this.mapLayers[varname];
-                }
-            }
+            geojson: clearLayer,
+            csv: clearLayer,
+            kml: clearLayer,
+            gpx: clearLayer,
+            wkt: clearLayer,
+            topojson: clearLayer
         },
         update: {
             position: function (value) {
@@ -181,20 +189,77 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'src/uti
                 this.map.setView(L.latLng(value[0], value[1]));
             },
             geojson: function (geo, varname) {
-                if (!geo)
-                    return;
-                var geoJson = geo.get();
-                var converted = L.geoJson(geoJson, {
-                    style: function (feature) {
-                        return feature.properties && feature.properties.style;
-                    }
-                });
-
-                converted.addTo(this.map);
-                this.mapLayers[varname] = converted;
-
-                converted.eachLayer(addEvents, this);
-
+                try {
+                    var geoJson = geo.get();
+                    var converted = L.geoJson(geoJson, {
+                        style: function (feature) {
+                            return feature.properties && feature.properties.style;
+                        }
+                    });
+                    this.addGeoJSON(converted, varname);
+                } catch (e) {
+                }
+                this.updateFit(varname);
+            },
+            csv: function (csv, varname) {
+                try {
+                    this.addGeoJSON(omnivore.csv.parse(csv.get()), varname);
+                } catch (e) {
+                }
+                this.updateFit(varname);
+            },
+            kml: function (kml, varname) {
+                try {
+                    this.addGeoJSON(omnivore.kml.parse(kml.get()), varname);
+                } catch (e) {
+                }
+                this.updateFit(varname);
+            },
+            gpx: function (gpx, varname) {
+                try {
+                    this.addGeoJSON(omnivore.gpx.parse(gpx.get()), varname);
+                } catch (e) {
+                }
+                this.updateFit(varname);
+            },
+            wkt: function (wkt, varname) {
+                try {
+                    this.addGeoJSON(omnivore.wkt.parse(wkt.get()), varname);
+                } catch (e) {
+                }
+                this.updateFit(varname);
+            },
+            topojson: function (topojson, varname) {
+                try {
+                    this.addGeoJSON(omnivore.topojson.parse(topojson.get()), varname);
+                } catch (e) {
+                }
+                this.updateFit(varname);
+            }
+        },
+        addGeoJSON: function (geojson, varname) {
+            geojson.addTo(this.map);
+            this.mapLayers[varname] = geojson;
+            this.mapBounds[varname] = new L.LatLngBounds();
+            var self = this;
+            geojson.eachLayer(function (layer) {
+                addEvents.call(self, layer);
+                self.mapBounds[varname].extend(layer.getBounds ? layer.getBounds() : layer.getLatLng());
+            });
+        },
+        updateFit: function (varname) {
+            var fit = this.module.getConfiguration('autofit');
+            var bounds;
+            if (fit === 'var') {
+                bounds = this.mapBounds[varname];
+            } else if (fit === 'all') {
+                bounds = new L.LatLngBounds();
+                for (var i in this.mapBounds) {
+                    bounds.extend(this.mapBounds[i]);
+                }
+            }
+            if (bounds && bounds.isValid()) {
+                this.map.fitBounds(bounds);
             }
         },
         onResize: function () {
@@ -288,6 +353,17 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'src/uti
             }
         }, this);
 
+    }
+
+    function clearLayer(varname) {
+        if (this.mapLayers.hasOwnProperty(varname)) {
+            this.mapLayers[varname].clearLayers();
+            delete this.mapLayers[varname];
+        }
+        if (this.mapBounds.hasOwnProperty(varname)) {
+            delete this.mapBounds[varname];
+        }
+        this.updateFit();
     }
 
     function round(val) {

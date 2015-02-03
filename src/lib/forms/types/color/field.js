@@ -1,5 +1,5 @@
 
-define( [ require, '../../field', 'src/util/util', 'jquery-ui', 'components/farbtastic/src/farbtastic' ], function( require, FieldDefaultConstructor, Util, ui ) {
+define( [ require, '../../field', 'src/util/color', 'jquery-ui', 'components/farbtastic/src/farbtastic' ], function( require, FieldDefaultConstructor, Color, ui ) {
 
 	var FieldConstructor = function(name) {
 
@@ -11,7 +11,7 @@ define( [ require, '../../field', 'src/util/util', 'jquery-ui', 'components/farb
 		$("<div></div>").addClass('form-colorpicker').css({ 'float': 'left' }).farbtastic(function(color) {
 
 			if( self.getElementExpanded( ) ) {
-				var value = Util.hexToRgb(color);
+				var value = Color.hex2rgb(color);
 
 				self.getElementExpanded( ).value = [ value[ 0 ], value[ 1 ], value[ 2 ], self.getElementExpanded( ).value[ 3 ] ] ;
 			}
@@ -59,7 +59,7 @@ define( [ require, '../../field', 'src/util/util', 'jquery-ui', 'components/farb
 
 		this._showExpander( fieldElement );
 		var value = fieldElement.value || [0, 0, 0, 1];
-		$.farbtastic( this.domExpander.children( '.form-colorpicker' ) ).setColor( Util.rgbToHex( value[0], value[1], value[2] ) );
+		$.farbtastic( this.domExpander.children( '.form-colorpicker' ) ).setColor( Color.rgb2hex( value[0], value[1], value[2] ) );
 		this.domExpander.children( '.form-slider' ).slider( 'value', value[ 3 ] );
 	};
 
