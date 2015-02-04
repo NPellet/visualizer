@@ -24,7 +24,7 @@ define(['jquery', 'jquery-ui', 'src/util/util', 'modules/modulefactory', 'src/ut
         }
 
         jqdom.css('height',
-            Math.max($('#ci-visualizer').height() - $("#header").outerHeight(true) - 5, (defaults.yHeight * bottomMax + (extend ? 1000 : 0)))
+            Math.max($('#ci-visualizer').height() - $("#header").outerHeight(true) - 5, (defaults.yHeight * bottomMax + (extend ? 600 : 0)))
         );
     }
 
