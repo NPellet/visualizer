@@ -18,7 +18,7 @@ define(['jquery', 'jquery-ui', 'src/util/util', 'modules/modulefactory', 'src/ut
             var pos = modules[i].getPosition(getActiveLayer()),
                 size = modules[i].getSize(getActiveLayer());
 
-            if (pos.top && size.height && modules[i].getActiveLayer(getActiveLayer()).display) {
+            if (pos.top && size.height && modules[i].getLayer(getActiveLayer()).display) {
                 bottomMax = Math.max(bottomMax, pos.top + size.height);
             }
         }
@@ -242,7 +242,7 @@ define(['jquery', 'jquery-ui', 'src/util/util', 'modules/modulefactory', 'src/ut
 
             addModule(module);
 
-            var layer = module.getActiveLayer(getActiveLayer());
+            var layer = module.getLayer(getActiveLayer());
 
             layer.position.set('left', left);
             layer.position.set('top', top);

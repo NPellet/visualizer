@@ -390,7 +390,7 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 		toggleLayer: function( newLayerShown, layerOut ) {
 
 			var layer;
-			if( layer = this.getActiveLayer( newLayerShown )) {
+			if( layer = this.getLayer(newLayerShown )) {
 
 
 				if( ! layer.display ) {
@@ -440,7 +440,7 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 					$.extend( true, this.definition.layers[ i ], Module.prototype.emptyConfig );
 					this.definition.layers[ i ].name = i;
 				} else {
-					$.extend( true, this.definition.layers[ i ], this.getActiveLayer( this.getActiveLayerName() ) );
+					$.extend( true, this.definition.layers[ i ], this.getLayer( this.getActiveLayerName() ) );
 				}
 
 				this.definition.layers[ i ] = this.definition.layers[ i ].duplicate();
@@ -451,13 +451,13 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 			return this.activeLayerName;
 		},
 
-		getActiveLayer: function( activeLayer, noCreation ) {
+		getLayer: function(layerName) {
 
-			if( ! activeLayer ) {
+			if( ! layerName ) {
 				return false;
 			}
 
-			return this.definition.layers[ activeLayer ];
+			return this.definition.layers[ layerName ];
 		},
 
 		hide: function() {
@@ -1237,7 +1237,7 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 		 */
 		getPosition: function( activeLayer ) {
 			
-			var layer = this.getActiveLayer( activeLayer );
+			var layer = this.getLayer( activeLayer );
 			return layer.position;
 		},
 		
@@ -1246,7 +1246,7 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 		 */
 		getSize: function( activeLayer ) {
 			
-			var layer = this.getActiveLayer( activeLayer );
+			var layer = this.getLayer( activeLayer );
 			return layer.size;
 		},
 
