@@ -1,8 +1,9 @@
-2.13.0 / HEAD
+2.13.0 / 2015-02-04
 =============
 
 * Core
  * grid : fix resize bug on IE11
+ * layout: no more global rules in main.css. Improve height calculations.
 * Modules
  * leaflet : add autofit option
  * leaflet : fix circular event bug
