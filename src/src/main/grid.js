@@ -24,7 +24,7 @@ define(['jquery', 'jquery-ui', 'src/util/util', 'modules/modulefactory', 'src/ut
         }
 
         jqdom.css('height',
-            Math.max($('#ci-visualizer').height() - $("#header").outerHeight(true) - 5, (defaults.yHeight * bottomMax + (extend ? 600 : 0)))
+            Math.max($('#ci-visualizer').height() - $("#header").outerHeight(true) - 5, (defaults.yHeight * bottomMax + (extend ? 400 : 0)))
         );
     }
 
@@ -152,9 +152,9 @@ define(['jquery', 'jquery-ui', 'src/util/util', 'modules/modulefactory', 'src/ut
                         //console.log( module.getPosition( getActiveLayer() ) );
 
                         module.moving = false;
-                        checkDimensions(false);
+                        checkDimensions(true);
                     },
-                    drag: function () {
+                    drag: function() {
                         checkDimensions(true);
                     }
 
