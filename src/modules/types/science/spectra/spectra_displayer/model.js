@@ -9,6 +9,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
             yMin: 0,
             yMax: 0
         };
+        this.trackData = {};
     }
 
     Model.prototype = $.extend(true, {}, Default, {
@@ -59,6 +60,9 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
                     if (annot) {
                         data = annot[0];
                     }
+                    break;
+                case 'trackData':
+                    data = this.trackData;
                     break;
                 default:
                     data = this.module.data;

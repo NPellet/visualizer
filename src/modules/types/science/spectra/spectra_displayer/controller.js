@@ -46,6 +46,10 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
             label: 'Axis boundaries',
             type: 'object'
         },
+        trackData: {
+            label: 'Tracking data',
+            type: 'object'
+        },
         // input
         chart: {
             type: 'chart',
@@ -89,8 +93,8 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
         },
         onTrackMouse: {
             label: 'Mouse tracking',
-            refVariable: ['x'],
-            refAction: ['x']
+            refVariable: ['trackData'],
+            refAction: ['trackData']
         },
         onAnnotationAdd: {
             label: 'Annotation added',
@@ -336,7 +340,7 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
                         FitYToAxisOnFromTo: {
                             type: 'checkbox',
                             title: 'Rescale Y axis on FromTo receive',
-                            options: {'rescale': ''}
+                            options: {rescale: ''}
                         },
 
                         legend: {
@@ -349,6 +353,12 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
                                 {key: 'bottomleft', title: 'Bottom-left'},
                                 {key: 'bottomright', title: 'Bottom-right'}
                             ]
+                        },
+
+                        mouseTracking: {
+                            type: 'checkbox',
+                            title: 'Mouse tracking',
+                            options: {track: ''}
                         }
                     }
                 },
@@ -484,6 +494,7 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
         wheelAction: ['groups', 'group', 0, 'wheelAction', 0],
         fullOut: ['groups', 'group', 0, 'fullOut', 0],
         FitYToAxisOnFromTo: ['groups', 'group', 0, 'FitYToAxisOnFromTo', 0],
+        mouseTracking: ['groups', 'group', 0, 'mouseTracking', 0],
         zoom: ['groups', 'group', 0, 'zoom', 0],
         minX: ['groups', 'group', 0, 'minX', 0],
         minY: ['groups', 'group', 0, 'minY', 0],

@@ -114,6 +114,14 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                         };
                     }
 
+                    if (cfgCheckbox('mouseTracking', 'track')) {
+                        options.onMouseMoveData = function (event, result) {
+                            self.module.model.trackData = result;
+                            self.module.controller.sendAction('trackData', 'onTrackMouse', result);
+                            self.module.controller.createDataFromEvent('onTrackMouse', 'trackData', result);
+                        };
+                    }
+
                     var graph = new Graph(self.dom.get(0), options);
 
                     var xOptions = {};
