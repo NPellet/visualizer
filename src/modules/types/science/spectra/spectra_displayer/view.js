@@ -117,7 +117,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     if (cfgCheckbox('mouseTracking', 'track')) {
                         options.onMouseMoveData = function (event, result) {
                             self.module.model.trackData = result;
-                            self.module.controller.sendAction('trackData', 'onTrackMouse', result);
+                            self.module.controller.sendAction('trackData', result, 'onTrackMouse');
                             self.module.controller.createDataFromEvent('onTrackMouse', 'trackData', result);
                         };
                     }
@@ -251,15 +251,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                 } );
 
-                graph.shapeHandlers.onSelected.push( function( shape ) {
-
-                    self.module.model.dataTriggerChange( shape.data );
-
-                } );
-
-
                 graph.on('shapeSelect', function( shape ) {
-
                     self.module.controller.sendAction('selectedShape', shape.data, 'onShapeSelect' );
                 });
 
