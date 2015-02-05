@@ -389,10 +389,14 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
                         },
 
                         plotcontinuous: {
-                            type: 'checkbox',
+                            type: 'combo',
                             title: 'Continuous',
-                            options: {continuous: 'Continuous'},
-                            'default': ['continuous']
+                            options: [
+                                {key: 'continuous', title: 'Continuous'},
+                                {key: 'discrete', title: 'Discrete'},
+                                {key: 'auto', title: 'Auto'}
+                            ],
+                            'default': 'continuous'
                         },
 
                         peakpicking: {

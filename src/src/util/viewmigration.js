@@ -263,6 +263,21 @@ define(['src/util/versioning', 'src/util/debug', 'src/util/util'], function (Ver
                     });
                 }
             }, 'spectra_displayer');
+        },
+
+        '2.13.1-b1', function (view) {
+            eachModule(view, function (module) {
+                var plotinfos = module.getChildSync(['configuration', 'groups', 'plotinfos', 0]);
+                if (plotinfos) {
+                    plotinfos.forEach(function (infos) {
+                        if (infos.plotcontinuous) {
+                            infos.plotcontinuous = (infos.plotcontinuous[0] == 'continuous') ? 'continuous' : 'discrete';
+                        } else {
+                            infos.plotcontinuous = 'continuous';
+                        }
+                    });
+                }
+            }, 'spectra_displayer');
         }
 
 //  Add new migration functions here

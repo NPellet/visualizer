@@ -345,7 +345,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             }
         },
 
-        getSerieOptions: function (varname, highlight) {
+        getSerieOptions: function (varname, highlight, data) {
             var self = this,
                 plotinfos = this.module.getConfiguration('plotinfos');
 
@@ -359,7 +359,12 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 for (var i = 0, l = plotinfos.length; i < l; i++) {
                     if (varname == plotinfos[i].variable) {
 
-                        options.lineToZero = !plotinfos[i].plotcontinuous[0];
+                        var continuous = plotinfos[i].plotcontinuous;
+                        if (continuous === 'auto') {
+                            continuous = analyzeContinuous(data);
+                        }
+
+                        options.lineToZero = continuous == 'discrete';
                         options.useSlots = (plotinfos[i].optimizeSlots ? !!plotinfos[i].optimizeSlots[0] : false);
                         options.strokeWidth = parseInt( plotinfos[ i ].strokewidth );
 
@@ -552,7 +557,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     }
 
 
-                    var serie = this.graph.newSerie(serieName, this.getSerieOptions(varname, aData._highlight), aData.serieType || undefined);
+                    var serie = this.graph.newSerie(serieName, this.getSerieOptions(varname, aData._highlight, valFinal), aData.serieType || undefined);
 
                     this.normalize(valFinal, varname);
                     serie.setData(valFinal);
@@ -584,7 +589,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                 var val = moduleValue.get();
 
-                var serie = this.graph.newSerie(varname, this.getSerieOptions(varname));
+                var serie = this.graph.newSerie(varname, this.getSerieOptions(varname, null, val));
 
                 this.normalize(val, varname);
                 serie.setData(val);
@@ -602,8 +607,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 this.series[varname] = this.series[varname] || [];
                 this.removeSerie(varname);
 
-                var serie = this.graph.newSerie(varname, this.getSerieOptions(varname));
-
                 var minX = this.module.getConfiguration('minX', 0);
                 var maxX = this.module.getConfiguration('maxX', val.length - 1);
                 var step = (maxX - minX) / (val.length - 1);
@@ -612,6 +615,8 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     val2.push(minX + step * i);
                     val2.push(val[i]);
                 }
+
+                var serie = this.graph.newSerie(varname, this.getSerieOptions(varname, null , val2));
 
                 this.normalize(val2, varname);
 
@@ -721,10 +726,9 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                             spectra = spectra.spectra;
                             for (var i = 0, l = spectra.length; i < l; i++) {
-                                serie = self.graph.newSerie(varname, self.getSerieOptions(varname));
-
                                 var data = spectra[i].data[spectra[i].data.length - 1];
 
+                                serie = self.graph.newSerie(varname, self.getSerieOptions(varname, null, data));
 
                                 self.normalize(data, varname);
                                 serie.setData(data);
@@ -770,8 +774,8 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                     for (; i < l; i++) {
 
-                        var opts = self.getSerieOptions(varname);
-                        
+                        var opts = self.getSerieOptions(varname, null, data[i].data);
+
                         var serie = self.graph.newSerie( data[ i ].name, opts );
 
 
@@ -917,7 +921,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             },
 
             selectSerie: function( serieName ) {
-            
+
                 var s = this.graph.getSerie( serieName.valueOf() );
 
                 if( s ) {
@@ -1016,6 +1020,32 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
         }
 
     });
+
+    function analyzeContinuous(data) {
+        if (Array.isArray(data)) {
+            var minInterval = Infinity;
+            var maxInterval = -Infinity;
+            var interval, i, ii;
+            if (typeof data[0] === 'number') {
+                for (i = 0, ii = data.length - 2; i < ii; i += 2) {
+                    interval = data[i + 2] - data[i];
+                    if (interval > maxInterval) maxInterval = interval;
+                    if (interval < minInterval) minInterval = interval;
+                }
+            } else {
+                for(i = 0, ii = data.length - 1; i < ii; i++) {
+                    interval = data[i + 1][0] - data[i][0];
+                    if (interval > maxInterval) maxInterval = interval;
+                    if (interval < minInterval) minInterval = interval;
+                }
+            }
+            if (Math.abs(minInterval / maxInterval) < 0.9) {
+                return 'discrete';
+            } else {
+                return 'continuous';
+            }
+        }
+    }
 
     return View;
 
