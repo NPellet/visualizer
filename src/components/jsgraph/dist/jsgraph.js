@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-30
+ * jsGraph JavaScript Graphing Library v1.10.4-31
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-01-23T14:40Z
+ * Date: 2015-02-05T09:02Z
  */
 
 (function( global, factory ) {
@@ -828,12 +828,7 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       this._hasChanged = true;
 
       // New method
-      this.emit( "zoom", [ this, this.currentAxisMin, this.currentAxisMax ] );
-
-      // Old method
-      if ( this.options.onZoom && !mute ) {
-        this.options.onZoom( this.currentAxisMin, this.currentAxisMax );
-      }
+      this.emit( "zoom", this.currentAxisMin, this.currentAxisMax, this );
     },
 
     getSerieShift: function() {
@@ -4485,7 +4480,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
         if ( shapeData.selectOnMouseDown ) {
           shape._selectOnMouseDown = shapeData.selectOnMouseDown;
         }
-        
+
         if ( shapeData.selectable ) {
           shape.selectable();
         }
@@ -4788,24 +4783,23 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     },
 
     selectShape: function( shape, mute ) {
-      
+
       // Already selected. Returns false
       if ( this.selectedShapes.indexOf( shape ) > -1 ) {
         return false;
       }
-      
 
       if ( !shape.isSelectable() ) {
         return false;
       }
-      
+
       this.emit( "beforeShapeSelect", shape );
 
       if ( this.cancelSelectShape ) {
         this.cancelSelectShape = false;
         return;
       }
-      
+
       this.cancelSelectShape = false;
 
       if ( this.selectedShapes.length > 0 && this.options.shapeSelection == "unique" )  { // Only one selected shape at the time
@@ -4816,7 +4810,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
           this.unselectShape( this.selectedShapes[ 0 ] )
         }
       }
-      
+
       shape._select();
       this.selectedShapes.push( shape );
       this.emit( "shapeSelect", shape );
@@ -7122,13 +7116,11 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
         this.graph.autoscaleAxes();
         this.graph.drawSeries();
 
-        if ( yAxis.options.onZoom ) {
-          yAxis.options.onZoom( yAxis.getMinValue(), yAxis.getMaxValue() );
-        }
+        this.graph._applyToAxes( function( axis ) {
 
-        if ( xAxis.options.onZoom ) {
-          xAxis.options.onZoom( xAxis.getMinValue(), xAxis.getMaxValue() );
-        }
+          axis.emit( 'zoom', axis.currentAxisMin, axis.currentAxisMax, axis );
+
+        }, null, true, true );
 
       } else {
 
@@ -11929,10 +11921,15 @@ build['./shapes/graph.shape'] = ( function( ) {
     handleMouseOver: function() {
 
       this.callHandler( 'mouseOver', this );
+
+      this.graph.emit( "shapeMouseOver", this );
+
     },
 
     handleMouseOut: function() {
       this.callHandler( 'mouseOut', this );
+
+      this.graph.emit( "shapeMouseOut", this );
     },
 
     removeHandles: function() {
