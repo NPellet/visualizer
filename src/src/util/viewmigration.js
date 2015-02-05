@@ -244,6 +244,25 @@ define(['src/util/versioning', 'src/util/debug', 'src/util/util'], function (Ver
                     }
                 }
             });
+        },
+
+        '2.13.1-b0', function (view) {
+            eachModule(view, function (module) {
+                if (module.actions_in) {
+                    module.actions_in.forEach(function (action) {
+                        if (action.rel === 'fromTo') {
+                            action.rel = 'fromToX';
+                        }
+                    });
+                }
+                if (module.actions_out) {
+                    module.actions_out.forEach(function (action) {
+                        if (action.rel === 'fromTo') {
+                            action.rel = 'fromToX';
+                        }
+                    });
+                }
+            }, 'spectra_displayer');
         }
 
 //  Add new migration functions here

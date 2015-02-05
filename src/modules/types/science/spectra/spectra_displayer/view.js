@@ -138,6 +138,14 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     if(!cfgCheckbox('displayAxis', 'x')) {
                         xAxis.hide();
                     }
+                    xAxis.on('zoom', function (min, max) {
+                        self.module.model.setXBoundaries(min, max);
+                    });
+                    if (cfgCheckbox('FitYToAxisOnFromTo', 'rescale')) {
+                        xAxis.on('zoom', function () {
+                            yAxis.scaleToFitAxis(this);
+                        });
+                    }
 
                     var yAxis = graph.getYAxis();
                     yAxis
@@ -151,15 +159,9 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     if (!cfgCheckbox('displayAxis', 'y')) {
                         yAxis.hide();
                     }
-
-
-                    if( cfgCheckbox("FitYToAxisOnFromTo", "rescale") ) {
-
-                        graph.getXAxis().on("zoom", function() {
-
-                            graph.getYAxis().scaleToFitAxis( this );
-                        });
-                    }
+                    yAxis.on('zoom', function (min, max) {
+                        self.module.model.setYBoundaries(min, max);
+                    });
 
                     var legend = cfg('legend', 'none');
                     if(legend !== 'none') {
@@ -278,7 +280,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
         },
 
         redraw: function (forceReacalculateAxis, varName) {
-
             var fullOut = this.module.getConfiguration('fullOut');
             if (varName && fullOut === 'once') {
                 if (!this.shouldAutoscale(varName)) {
@@ -291,12 +292,12 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             if (forceReacalculateAxis) {
                 this.graph.redraw();
                 this.graph.autoscaleAxes();
-            } else if (fullOut == "none") {
+            } else if (fullOut == 'none') {
                 this.graph.redraw(true, true);
-            } else if (fullOut == "xAxis") {
+            } else if (fullOut == 'xAxis') {
                 this.graph.redraw(false, true);
                 this.xAxis.setMinMaxToFitSeries();
-            } else if (fullOut == "yAxis") {
+            } else if (fullOut == 'yAxis') {
                 this.graph.redraw(true, false);
                 this.yAxis.setMinMaxToFitSeries();
             } else {
@@ -306,6 +307,13 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
             this.graph.drawSeries();
 
+            var minX = this.xAxis.getActualMin();
+            var maxX = this.xAxis.getActualMax();
+            var minY = this.yAxis.getActualMin();
+            var maxY = this.yAxis.getActualMax();
+
+            this.module.model.setXBoundaries(minX, maxX);
+            this.module.model.setYBoundaries(minY, maxY);
         },
 
         doZone: function (varname, zone, value, color) {
@@ -525,7 +533,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     var valFinal = [];
 
                     switch(aData.serieType) {
-                        case "zone":
+                        case 'zone':
                             if(aData.yMin && aData.yMax) {
                                 for(var j= 0, l= aData.yMax.length; j<l; j++) {
                                     valFinal.push(aData.x ? aData.x[j] : j);
@@ -692,7 +700,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                     JcampConverter.convert(moduleValue, { lowRes: 1024 }, true).then(function (spectra) {
 
-                        if (def.state() == "rejected") {
+                        if (def.state() == 'rejected') {
                             return;
                         }
 
@@ -778,8 +786,8 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                         //	serie.setLabel( data[ i ].label.toString( ) );
                         serie.setLineWidth(data[ i ].lineWidth || opts.strokeWidth || 1 );
-                        serie.setLineColor(data[ i ].lineColor || "rgb(" + colors[ i ].join() + ")" );
-                        serie.setLineWidth( 3, "selected" );
+                        serie.setLineColor(data[ i ].lineColor || 'rgb(' + colors[ i ].join() + ')' );
+                        serie.setLineWidth( 3, 'selected' );
 
                         //                    serie.setLineColor(data[ i ].lineColor || Color.getColor(Color.getNextColorRGB(i, l)));
                         serie.extendStyles();
@@ -855,14 +863,19 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
         },
 
         onActionReceive: {
-            fromTo: function (value) {
 
+            fromToX: function (value) {
                 value = value.get();
-                this.graph.getBottomAxis()._doZoomVal(value.from, value.to, true);
-
+                this.xAxis._doZoomVal(value.from, value.to, true);
                 this.graph.redraw(true);
                 this.graph.drawSeries();
+            },
 
+            fromToY: function (value) {
+                value = value.get();
+                this.yAxis._doZoomVal(value.from, value.to, true);
+                this.graph.redraw(true);
+                this.graph.drawSeries();
             },
 
             addSerie: function (value) {
@@ -908,10 +921,9 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 var s = this.graph.getSerie( serieName.valueOf() );
 
                 if( s ) {
-                    s.select( "selected" );
+                    s.select( 'selected' );
                 }
             },
-
 
             unselectSerie: function( serieName ) {
 
@@ -921,6 +933,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     s.unselect();
                 }
             }
+
         },
 
         getDom: function () {

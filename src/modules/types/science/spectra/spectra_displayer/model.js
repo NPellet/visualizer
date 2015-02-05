@@ -3,9 +3,40 @@
 define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (Default, Traversing) {
 
     function Model() {
+        this.boundaries = {
+            xMin: 0,
+            xMax: 0,
+            yMin: 0,
+            yMax: 0
+        };
     }
 
     Model.prototype = $.extend(true, {}, Default, {
+
+        setXBoundaries: function (min, max) {
+            min = min | 0;
+            max = max | 0;
+            this.boundaries.xMin = min;
+            this.boundaries.xMax = max;
+            this.module.controller.zoomChanged('X', min, max);
+        },
+
+        setYBoundaries: function (min, max) {
+            min = min | 0;
+            max = max | 0;
+            this.boundaries.yMin = min;
+            this.boundaries.yMax = max;
+            this.module.controller.zoomChanged('Y', min, max);
+        },
+
+        getBoundaries: function () {
+            return {
+                xMin: this.boundaries.xMin,
+                xMax: this.boundaries.xMax,
+                yMin: this.boundaries.yMin,
+                yMax: this.boundaries.yMax
+            }
+        },
 
         getValue: function () {
             return this.dataValue;
