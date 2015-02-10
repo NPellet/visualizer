@@ -29,7 +29,7 @@
     "jquery-ui": "1.10.4",
     "jqueryui-touch-punch": "*",
     "jsbarcode": "*",
-    "jsgraph": "v1.10.4-31",
+    "jsgraph": "v1.10.4-33",
     "jsoneditor": "~3.1.1",
     "leaflet": "~0.7.3",
     "lodash": "~2.4.1",
@@ -55,8 +55,5 @@
     "loglevel": "~1.2.0",
     "ui-contextmenu": "~1.8.1",
     "leaflet-omnivore": "~0.3.2"
-  },
-  "resolutions": {
-    "jsgraph": "v1.10.4-31"
   }
 }
