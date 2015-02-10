@@ -199,7 +199,7 @@ define( [
 				}
 
 				moduleValue = moduleValue.get();
-				require( [ 'components/jcampconverter/build/jcampconverter' ], function( tojcamp ) {
+				require( [ 'components/jcampconverter/dist/jcampconverter.min' ], function( tojcamp ) {
 
 					var jcamp = tojcamp.convert( moduleValue, true ).then( function( jcamp ) {
 

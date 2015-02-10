@@ -82,7 +82,7 @@ requirejs.config({
 	'components/jsNMR/src/nmr': {
 		 'graph': 'components/jsgraph/dist/jsgraph.min',
 		 'assignation': 'components/jsNMR/src/assignation',
-		 'jcampconverter': 'components/jcampconverter/build/jcampconverter',
+		 'jcampconverter': 'components/jcampconverter/dist/jcampconverter.min',
 		 'lib/components/VisuMol/src/molecule': 'components/jsNMR/lib/components/VisuMol/src/molecule'
 	},
 
