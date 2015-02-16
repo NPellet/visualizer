@@ -494,6 +494,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             for(i=0; i<items.length; i++) {
                                 delete items[i].__elementPosition;
                             }
+                            that._jpathColor();
                         });
 
 
