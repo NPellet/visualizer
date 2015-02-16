@@ -140,7 +140,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     width: +row.width || undefined,
                     minWidth: +row.minWidth || undefined,
                     maxWidth: +row.maxWidth || undefined,
-                    resizable: row.resizable.indexOf('yes') > -1 ? true : undefined,
+                    resizable: row.resizable.indexOf('yes') > -1 ? true : false,
                     selectable: row.selectable.indexOf('yes') > -1 ,
                     focusable: row.focusable.indexOf('yes') > -1,
                     sortable: row.sortable.indexOf('yes') > -1,

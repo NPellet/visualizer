@@ -88,7 +88,6 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                             ],
                             default: ['cell']
                         },
-
                         filterRow: {
                             type: 'jscode',
                             title: 'Filter'
@@ -103,13 +102,11 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                         multiple: true,
                         title: 'Columns'
                     },
-
                     fields: {
                         name: {
                             type: 'text',
                             title: 'Columns title'
                         },
-
                         jpath: {
                             type: 'combo',
                             title: 'jPath',
@@ -117,7 +114,6 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                             extractValue: Util.jpathToArray,
                             insertValue: Util.jpathToString
                         },
-
                         editor: {
                             type: 'combo',
                             title: 'Editor',
@@ -132,7 +128,6 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                                 {key: 'color', title: 'Color'}
                             ]
                         },
-
                         formatter: {
                             type: 'combo',
                             title: 'Formatter',
@@ -141,38 +136,30 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                             ],
                             default: 'typerenderer'
                         },
-
                         width: {
                             type: 'text',
                             title: 'Width'
                         },
-
                         minWidth: {
                             type: 'text',
                             title: 'Min Width'
                         },
-
                         maxWidth: {
                             type: 'text',
                             title: 'Max Width'
                         },
-
                         selectable: {
                             type: 'checkbox',
                             title: 'Selectable',
                             options: {yes: 'Yes'},
                             default: ['yes']
                         },
-
                         resizable: {
                             type: 'checkbox',
                             title: 'Resizable',
-                            options: {abc: 'Yes'},
+                            options: {yes: 'Yes'},
                             default: ['yes']
                         },
-
-
-
                         sortable: {
                             type: 'checkbox',
                             title: 'Sortable',
