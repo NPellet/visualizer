@@ -455,6 +455,11 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
                             that._makeDataObjects();
                             // We'll use a simple comparer function here.
+                            var items = that.slick.data.getItems(), i=0;
+                            // Add a position indicatior ==> for stable sort
+                            for(i=0; i<items.length; i++) {
+                                items[i].__elementPosition = i;
+                            }
                             var sortCols;
                             if(!args.sortCols) {
                                 sortCols = [{
@@ -465,20 +470,30 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             else {
                                 sortCols = args.sortCols;
                             }
-                            for(var i=sortCols.length-1; i>=0; i--) {
+                            for(i=sortCols.length-1; i>=0; i--) {
                                 (function(i) {
-                                    var comparer = function(a) {
-                                        return a.getChildSync(sortCols[i].sortCol.jpath).get();
-                                    };
-                                    that.slick.data.sortBy(comparer, sortCols[i].sortAsc);
-                                })(i);
+                                    //var comparer = function(a) {
+                                    //    return a.getChildSync(sortCols[i].sortCol.jpath).get();
+                                    //};
 
+                                    var comparer1 = function(a, b) {
+                                        var val1 = a.getChildSync(sortCols[i].sortCol.jpath).get();
+                                        var val2 = b.getChildSync(sortCols[i].sortCol.jpath).get();
+                                        if(val1 < val2) {
+                                            return -1;
+                                        }
+                                        else if(val2 < val1) {
+                                            return 1;
+                                        }
+                                        return a.__elementPosition - b.__elementPosition;
+                                    };
+                                    that.slick.data.sort(comparer1, sortCols[i].sortAsc);
+                                })(i);
                             }
 
-
-                            // Delegate the sorting to DataView.
-                            // This will fire the change events and update the grid.
-
+                            for(i=0; i<items.length; i++) {
+                                delete items[i].__elementPosition;
+                            }
                         });
 
 
@@ -533,7 +548,6 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         //});
                         that.grid.init();
                         that.slick.data.beginUpdate();
-                        var ids = _.pluck(that.slick.columns, 'id');
 
                         var groupings = _.chain(that.module.getConfiguration('groupings'))
                             .filter(function(val) {
