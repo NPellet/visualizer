@@ -63,7 +63,8 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                                 multiColumnSort: 'Multi-column sorting',
                                 oneUncollapsed: 'Maximum One group uncollapsed (per level)',
                                 filterColumns: 'Provides search input for each column',
-                                backToTop: 'Scroll back to top on new variable',
+                                backToTop: 'Don\'t remember scroll position on new variable',
+                                forgetLastActive: 'Don\'t scroll back to last active row on new variable',
                                 collapseGroup: 'Collapse groups on start'
                             },
                             default: ['enableCellNavigation', 'rowNumbering', 'forceFitColumns']

@@ -140,7 +140,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     width: +row.width || undefined,
                     minWidth: +row.minWidth || undefined,
                     maxWidth: +row.maxWidth || undefined,
-                    resizable: row.resizable.indexOf('yes') > -1 ? true : false,
+                    resizable: row.resizable.indexOf('yes') > -1,
                     selectable: row.selectable.indexOf('yes') > -1 ,
                     focusable: row.focusable.indexOf('yes') > -1,
                     sortable: row.sortable.indexOf('yes') > -1,
@@ -593,7 +593,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         if(that.lastViewport && !that.module.getConfigurationCheckbox('slickCheck', 'backToTop')) {
                             that.grid.scrollRowToTop(that.lastViewport.top);
                         }
-                        if(!_.isUndefined(that.lastActiveRow)) {
+                        if(!_.isUndefined(that.lastActiveRow) && !that.module.getConfigurationCheckbox('slickCheck', 'forgetLastActive')) {
                             that.grid.setActiveCell(that.lastActiveRow, that.lastActiveCell);
                         }
 
@@ -602,7 +602,6 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         that._setBaseCellCssStyle();
                         that.lastViewport = that.grid.getViewport();
                         that._jpathColor();
-
                     });
             }
 
