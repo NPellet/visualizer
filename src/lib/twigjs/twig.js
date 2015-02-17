@@ -58,7 +58,7 @@ define(['components/twig.js/twig.min', 'src/util/typerenderer', 'src/util/util']
             });
         }));
 
-        return '<div id="' + id + '" style="height:100%; width:100%"></div>';
+        return '<span id="' + id + '"></span>';
 
     });
 
