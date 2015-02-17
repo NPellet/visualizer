@@ -57,28 +57,34 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
                     fields: {
                         hasButton: {
                             type: 'checkbox',
-                            title: 'Show export button',
-                            default: ['show'],
-                            options: {show: 'Show'}
+                            title: 'Export options',
+                            'default': ['show'],
+                            options: {
+                                show: 'Show button',
+                                onload: 'Export data on load'
+                            }
                         },
                         button_text: {
                             type: 'text',
                             title: 'Text of the export button',
-                            default: 'Export'
+                            'default': 'Export'
                         },
                         debouncing: {
                             type: 'float',
                             title: 'Debouncing',
-                            default: -1
+                            'default': -1
                         },
                         output: {
                             type: 'combo',
                             title: 'Output result',
                             options: [
-                                {title: 'Modified input object', key: 'modified'},
+                                {
+                                    title: 'Modified input object',
+                                    key: 'modified'
+                                },
                                 {title: 'New object', key: 'new'}
                             ],
-                            default: 'new'
+                            'default': 'new'
                         },
                         mode: {
                             type: 'combo',
@@ -88,7 +94,7 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
                                 {title: 'Schema', key: 'schema'},
                                 {title: 'Both', key: 'both'}
                             ],
-                            default: 'object',
+                            'default': 'object',
                             displaySource: {
                                 object: 'o',
                                 schema: 's',
@@ -106,13 +112,13 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
                             displaySource: {
                                 config: 'c'
                             },
-                            default: 'config'
+                            'default': 'config'
                         },
                         schema: {
                             type: 'jscode',
                             mode: 'json',
                             title: 'JSON schema',
-                            default: '{}',
+                            'default': '{}',
                             displayTarget: ['c']
                         }
                     }
