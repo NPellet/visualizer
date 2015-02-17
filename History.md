@@ -1,5 +1,12 @@
-2.13.0 / 2015-02-04
+2.13.1 / HEAD
 =============
+
+* Modules
+ * onde: add option to create variable on load
+ * spectra_displayer: fix various events
+
+2.13.0 / 2015-02-04
+===================
 
 * Core
  * grid : fix resize bug on IE11
