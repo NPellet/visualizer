@@ -1,8 +1,9 @@
 'use strict';
 
-define(['modules/types/client_interaction/code_editor/controller', 'src/util/api', 'src/util/debug'], function (CodeEditor, API, Debug) {
+define(['modules/types/client_interaction/code_editor/controller', 'src/util/api', 'src/util/debug', 'lib/browserify/vm'], function (CodeEditor, API, Debug, vm) {
 
     function Controller() {
+        this.currentScript = null;
     }
 
     Controller.prototype = Object.create(CodeEditor.prototype);
@@ -107,41 +108,154 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
     };
 
     Controller.prototype.onButtonClick = function (name) {
-        var executor = this.getExecutor();
-        executor.setButton(name);
-        executor.execute();
+        this.initExecutor().then(function (executor) {
+            executor.setButton(name);
+            executor.execute();
+        });
     };
 
     Controller.prototype.onVariableIn = function () {
-        var executor = this.getExecutor();
-        executor.setVariable();
-        executor.execute();
+        this.initExecutor().then(function (executor) {
+            executor.setVariable();
+            executor.execute();
+        });
     };
 
     Controller.prototype.onActionIn = function (name, value) {
-        var executor = this.getExecutor();
-        executor.setAction(name, value);
-        executor.execute();
-    };
-
-    Controller.prototype.getExecutor = function () {
-        return new ScriptExecutor(this);
+        this.initExecutor().then(function (executor) {
+            executor.setAction(name, value);
+            executor.execute();
+        });
     };
 
     Controller.prototype.initImpl = function () {
         var neededLibs = this.module.getConfiguration('libs');
-        this.require = {
-            start: 'require' + getRequireStart(neededLibs),
-            end: '\n});'
-        };
+        var urls = [];
+        var aliases = [];
+        if (neededLibs) {
+            for (var i = 0; i < neededLibs.length; i++) {
+                var neededLib = neededLibs[i];
+                if (neededLib.lib) {
+                    urls.push(neededLib.lib);
+                    aliases.push(neededLib.alias || 'required_anonymous_' + i);
+                }
+            }
+        }
+
+        urls.unshift('src/util/api');
+        aliases.unshift('console', 'API');
+
+        this.neededUrls = urls;
+        this.neededAliases = aliases.join(', ');
         this.resolveReady();
     };
 
-    function ScriptExecutor(controller) {
+    Controller.prototype.initExecutor = function () {
+        var promise;
+        var newScript = this.module.view._code;
+        if (this.currentScript == newScript) {
+            promise = Promise.resolve(this._executor || this._loadingExecutor);
+        } else {
+            var self = this;
+            var prom = new Promise(function (resolve, reject) {
+                require(self.neededUrls, function () {
+                    var libs = new Array(self.neededUrls.length);
+                    for (var i = 0; i < self.neededUrls.length; i++) {
+                        libs[i] = arguments[i];
+                    }
+                    var executor = new ScriptExecutor(self, libs);
+                    self.currentScript = newScript;
+                    self._executor = executor;
+                    self._loadingExecutor = null;
+                    resolve(executor);
+                });
+            });
+            this._loadingExecutor = prom;
+            promise = prom;
+        }
+        return promise.then(function (executor) {
+            executor.init();
+            return executor;
+        });
+    };
+
+    function ScriptExecutor(controller, libs) {
+        libs.unshift(window.console);
         this.controller = controller;
-        this.context = new ScriptExecutorContext(this);
+        this.libs = libs;
+        var context = getNewContext(this);
+        var theCode = this.controller.module.view._code;
+        vm.runInContext(
+            'var __exec__ = function(' +
+            controller.neededAliases +
+            ') {' +theCode + '\n};', context
+        );
+        this.theFunction = context.__exec__;
         this.outputVariable = {};
     }
+
+    function getNewContext(executor) {
+        var setter = function (name, value) {
+            executor.doVariable(name, value);
+        };
+        var context = {
+            variables: {},
+            event: null,
+            button: null,
+            action: null,
+            defined: 0,
+            'set': setter,
+            'get': function (name) {
+                return this.variables[name];
+            }
+        };
+
+        var ctx = vm.createContext({
+            getVariables: function () {
+                return context.variables;
+            },
+            getEvent: function () {
+                return context.event;
+            },
+            getButton: function () {
+                return context.button;
+            },
+            'get': function (name) {
+                return context.variables[name];
+            },
+            getDefined: function () {
+                return context.defined;
+            },
+            'set': setter,
+            getAction: function () {
+                return context.action;
+            },
+            sendAction: function (name, value) {
+                API.doAction(name, value);
+            },
+            setAsync: function () {
+                executor.async();
+            },
+            done: function () {
+                executor.done();
+            },
+            setTimeout: function () {
+                window.setTimeout.apply(window, arguments);
+            },
+            setInterval: context
+        });
+        executor.context = context;
+        return ctx;
+    }
+
+    ScriptExecutor.prototype.init = function () {
+        this.context.event = null;
+        this.context.button = null;
+        this.context.action = null;
+        this.context.variables = {};
+        this.context.defined = 0;
+        this.outputVariable = {};
+    };
 
     ScriptExecutor.prototype.setButton = function (name) {
         this.context.event = 'button';
@@ -164,12 +278,6 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         this.outputVariable[name] = value;
     };
 
-    var methods = ['getVariables', 'getEvent', 'getButton', 'get', 'getDefined', 'set', 'getAction', 'sendAction', 'setAsync', 'done'];
-    var strMethods = methods.join(',');
-    var mappedMethods = methods.map(function (val) {
-        return '__c__.' + val + '.bind(__c__)';
-    }).join(',');
-
     ScriptExecutor.prototype.execute = function () {
 
         var variables = this.controller.module.view._input;
@@ -184,19 +292,19 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         this.context.variables = ctxVariables;
         this.context.defined = varNum;
 
+        this._async = false;
         this._done = Promise.resolve();
 
-        var strToEval =
-            this.controller.require.start +
-            'try {\n' +
-            '(function (' + strMethods + ', Debug) {\n' +
-            this.controller.module.view._code +
-            '\n}).call(__c__,' + mappedMethods + ');\n' +
-            '} catch(e) {Debug.error("Code executor error", e)}\n' +
-            '__e__.setOutput();\n' +
-            this.controller.require.end;
+        try {
+            this.theFunction.apply(this.context, this.libs);
+        } catch(e) {
+            if (e && e.stack) {
+                e = e.stack;
+            }
+            Debug.error('Code executor error', e);
+        }
 
-        evaluate(strToEval, this.context, this);
+        this.setOutput();
 
     };
 
@@ -228,66 +336,6 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
     ScriptExecutor.prototype.done = function () {
     };
 
-    function ScriptExecutorContext(executor) {
-        this.__executor__ = executor;
-    }
-
-
-    ScriptExecutorContext.prototype = {
-        getVariables: function () {
-            return this.variables;
-        },
-        getEvent: function () {
-            return this.event;
-        },
-        getButton: function () {
-            return this.button;
-        },
-        'get': function (name) {
-            return this.variables[name];
-        },
-        getDefined: function () {
-            return this.defined;
-        },
-        'set': function (name, value) {
-            this.__executor__.doVariable(name, value);
-        },
-        getAction: function () {
-            return this.action;
-        },
-        sendAction: function (name, value) {
-            API.doAction(name, value);
-        },
-        setAsync: function () {
-            this.__executor__.async();
-        },
-        done: function () {
-            this.__executor__.done();
-        }
-    };
-
-    function getRequireStart(neededLibs) {
-        var required = '( [ "src/util/api"';
-        var callback = 'function( API';
-
-        if (neededLibs) {
-            for (var i = 0; i < neededLibs.length; i++) {
-                var neededLib = neededLibs[i];
-                if (neededLib.lib) {
-                    required += ', "' + neededLib.lib + '"';
-                    callback += ', ' + (neededLib.alias || 'required_anonymous_' + i);
-                }
-            }
-        }
-
-        return required + ' ], ' + callback + ' ){\n';
-    }
-
-    function evaluate(__s__, __c__, __e__,
-                      Controller, getRequireStart, ScriptExecutorContext, ScriptExecutor, CodeEditor, methods, strMethods, mappedMethods // redefine module variables to prevent modification
-    ) {
-        eval(__s__);
-    }
-
     return Controller;
+
 });
