@@ -542,7 +542,10 @@ define([
 
         metaData: function() {
             var that = this;
-            if(!this.currentDocument) return;
+            if(!this.currentDocument) {
+                that.showError('No document selected');
+                return;
+            }
 
             var div = $('<div></div>').dialog({ modal: true, position: ['center', 50], width: '80%', title: "Edit Metadata"});
             console.log('meta data');
