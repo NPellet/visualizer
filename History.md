@@ -17,6 +17,7 @@
  * leaflet : add 5 new possible inputs : CSV, KML, GPX, WKT and TopoJSON
 * Headers
  * couchdb2 : performance improvements
+ * couchdb2: new meta data button
 * Components
  * install leaflet-omnivore
 
