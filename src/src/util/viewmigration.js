@@ -284,6 +284,7 @@ define(['src/util/versioning', 'src/util/debug', 'src/util/util'], function (Ver
             eachModule(view, function(module) {
                 debugger;
                 var groupings = module.getChildSync(['configuration','groups', 'groupings', 0]);
+                if(!groupings) return;
                 for(var i=0; i<groupings.length; i++) {
                     groupings[i].getter = [groupings[i].getter];
                 }
