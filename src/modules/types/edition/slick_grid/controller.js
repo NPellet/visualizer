@@ -192,8 +192,11 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
 
                     fields: {
                         getter: {
-                            type: 'text',
-                            title: 'Getter'
+                            type: 'combo',
+                            title: 'jPath',
+                            options: jpaths,
+                            extractValue: Util.jpathToArray,
+                            insertValue: Util.jpathToString
                         },
                         groupName: {
                             type: 'text',

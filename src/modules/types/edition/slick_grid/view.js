@@ -556,14 +556,23 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                                 return false;
                             })
                             .map(function(val) {
-                                return {
-                                    getter: val.getter,
-                                    formatter: function(g) {
-                                        return val.groupName + ': ' + g.value + "  <span style='color:green'>(" + g.count + " items)</span>";
-                                    },
-                                    aggregateCollapsed: false,
-                                    lazyTotalsCalculation: true
+                                var r = {};
+                                if(val.getter && val.getter.length > 1) {
+                                    r.getter = function(row) {
+                                        return row.getChildSync(val.getter);
+                                    };
+                                    that._makeDataObjects();
                                 }
+                                else {
+                                    r.getter = val.getter[0];
+                                }
+
+                                r.formatter = function(g) {
+                                    return val.groupName + ': ' + g.value + "  <span style='color:green'>(" + g.count + " items)</span>";
+                                };
+                                r.aggregateCollapsed = false;
+                                r.lazyTotalsCalculation = true;
+                                return r;
                             }).value();
 
                         if(groupings.length) {
