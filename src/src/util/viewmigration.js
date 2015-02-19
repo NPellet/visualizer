@@ -278,6 +278,16 @@ define(['src/util/versioning', 'src/util/debug', 'src/util/util'], function (Ver
                     });
                 }
             }, 'spectra_displayer');
+        },
+
+        '2.13.1-b2', function(view) {
+            eachModule(view, function(module) {
+                debugger;
+                var groupings = module.getChildSync(['configuration','groups', 'groupings', 0]);
+                for(var i=0; i<groupings.length; i++) {
+                    groupings[i].getter = [groupings[i].getter];
+                }
+            }, 'slick_grid');
         }
 
 //  Add new migration functions here
