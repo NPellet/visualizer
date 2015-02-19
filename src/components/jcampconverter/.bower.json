@@ -1,6 +1,6 @@
 {
   "name": "jcampconverter",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "main": [
     "dist/jcampconverter.js",
     "dist/jcampconverter.min.js"
@@ -24,11 +24,11 @@
     "/*",
     "!dist/*"
   ],
-  "_release": "2.0.4",
+  "_release": "2.0.5",
   "_resolution": {
     "type": "version",
-    "tag": "v2.0.4",
-    "commit": "00dad20561f952f2c0300ecb8018fc75cdbb16e1"
+    "tag": "v2.0.5",
+    "commit": "5cb278d25c42b42cbba79ec63cfb12a71128f8f4"
   },
   "_source": "git://github.com/cheminfo/jcampconverter.git",
   "_target": "^2.0.3",

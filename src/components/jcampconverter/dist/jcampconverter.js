@@ -1,6 +1,6 @@
 /**
  * jcampconverter - Parse and convert JCAMP data
- * @version v2.0.4
+ * @version v2.0.5
  * @link https://github.com/cheminfo/jcampconverter
  * @license MIT
  */
@@ -32,6 +32,10 @@ function getConverter() {
 
     function convert(jcamp, options) {
         options = options || {};
+
+        var keepRecordsRegExp=/^[A-Z]+$/;
+        if (options.keepRecordsRegExp) keepRecordsRegExp=options.keepRecordsRegExp;
+
         var start = new Date();
 
         var ntuples = {},
@@ -225,7 +229,7 @@ function getConverter() {
                 spectrum = {};
             } else if (isMSField(dataLabel)) {
                 spectrum[convertMSFieldToLabel(dataLabel)] = dataValue;
-            } else if (dataLabel.match(/^[A-Z].*/)) {
+            } else if (dataLabel.match(keepRecordsRegExp)) {
                 result.info[dataLabel] = dataValue.trim();
             }
         }
@@ -472,15 +476,14 @@ function getConverter() {
     }
 
     function convertTo3DZ(spectra) {
-        //console.time('ConvertTo3DZ');
-        var z = [];
         var noise = 0;
         var minZ = spectra[0].data[0][0];
-        var maxZ = spectra[0].data[0][0];
+        var maxZ = minZ;
         var ySize = spectra.length;
         var xSize = spectra[0].data[0].length / 2;
+        var z = new Array(ySize);
         for (var i = 0; i < ySize; i++) {
-            z[i] = [];
+            z[i] = new Array(xSize);
             for (var j = 0; j < xSize; j++) {
                 z[i][j] = spectra[i].data[0][j * 2 + 1];
                 if (z[i][j] < minZ) minZ = spectra[i].data[0][j * 2 + 1];
@@ -490,16 +493,15 @@ function getConverter() {
                 }
             }
         }
-        //console.timeEnd('ConvertTo3DZ');
         return {
             z: z,
             minX: spectra[0].data[0][0],
             maxX: spectra[0].data[0][spectra[0].data[0].length - 2],
             minY: spectra[0].pageValue,
-            maxY: spectra[spectra.length - 1].pageValue,
+            maxY: spectra[ySize - 1].pageValue,
             minZ: minZ,
             maxZ: maxZ,
-            noise: noise / ((z.length - 1) * (z[0].length - 1) * 2)
+            noise: noise / ((ySize - 1) * (xSize - 1) * 2)
         };
 
     }
