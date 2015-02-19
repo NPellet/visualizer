@@ -1,4 +1,4 @@
-define(['modules/default/defaultcontroller', 'src/util/util'], function(Default, Util) {
+define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], function(Default, Util, _) {
 
     var controller = function() {};
 
@@ -294,14 +294,20 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
 
 
     controller.prototype.onHover = function(row, item) {
+        var itemId = item[this.module.view.idPropertyName];
+        if(this.lastHoveredItemId === itemId) return;
+        this.lastHoveredItemId = itemId;
         this.setVarFromEvent( 'onHover', 'row', 'list', [ row ] );
         this.sendAction( 'row', item, 'onHover' );
-
     };
 
-    controller.prototype.onClick = function(row, item) {
+    var onClick = _.throttle(function(row, item) {
         this.setVarFromEvent( 'onSelect', 'row', 'list', [ row ] );
         this.sendAction( 'row', item, 'onSelect' );
+    }, 250, {trailing: false});
+
+    controller.prototype.onClick = function(row, item) {
+       onClick.call(this, row, item);
     };
 
     controller.prototype.onRowChange = function(row, item) {

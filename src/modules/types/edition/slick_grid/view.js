@@ -65,6 +65,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
     View.prototype = $.extend(true, {}, Default, {
 
         init: function() {
+            var that = this;
             if (! this.$dom) {
                 this._id = Util.getNextUniqueId();
                 this.$dom = $('<div>').attr('id', this._id).css({
@@ -77,6 +78,9 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 this.module.getDomContent().append(this.$dom);
             }
 
+            this.$dom.on('mouseleave', function() {
+                that.module.controller.lastHoveredItemId = null;
+            });
 
             this.slick = {};
             this.colConfig = this.module.getConfiguration('cols');
