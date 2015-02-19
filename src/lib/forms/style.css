@@ -1,8 +1,9 @@
-th, td, .forms input, .forms select, .forms textarea {
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+body {
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 	font-size: 11px;
 	color: black;
 }
+
 
 .forms {
 	background-color: #f0f0f0;
