@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/types/client_interaction/code_editor/controller', 'src/util/api', 'src/util/debug', 'lib/browserify/vm'], function (CodeEditor, API, Debug, vm) {
+define(['modules/types/client_interaction/code_editor/controller', 'src/util/api', 'src/util/debug', 'src/util/sandbox'], function (CodeEditor, API, Debug, Sandbox) {
 
     function Controller() {
         this.currentScript = null;
@@ -143,7 +143,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         }
 
         urls.unshift('src/util/api');
-        aliases.unshift('console', 'API');
+        aliases.unshift('API');
 
         this.neededUrls = urls;
         this.neededAliases = aliases.join(', ');
@@ -163,6 +163,9 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
                     for (var i = 0; i < self.neededUrls.length; i++) {
                         libs[i] = arguments[i];
                     }
+                    if (self._executor) { // close previous sandbox
+                        self._executor._sandbox.close();
+                    }
                     var executor = new ScriptExecutor(self, libs);
                     self.currentScript = newScript;
                     self._executor = executor;
@@ -180,17 +183,18 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
     };
 
     function ScriptExecutor(controller, libs) {
-        libs.unshift(window.console);
         this.controller = controller;
         this.libs = libs;
         var context = getNewContext(this);
         var theCode = this.controller.module.view._code;
-        vm.runInContext(
+        this._sandbox = new Sandbox();
+        this._sandbox.setContext(context);
+        this._sandbox.run(
             'var __exec__ = function(' +
             controller.neededAliases +
-            ') {' +theCode + '\n};', context
+            ') {' + theCode + '\n};'
         );
-        this.theFunction = context.__exec__;
+        this.theFunction = this._sandbox.getContext().__exec__;
         this.outputVariable = {};
     }
 
@@ -210,7 +214,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
             }
         };
 
-        var ctx = vm.createContext({
+        var ctx = {
             getVariables: function () {
                 return context.variables;
             },
@@ -238,12 +242,8 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
             },
             done: function () {
                 executor.done();
-            },
-            setTimeout: function () {
-                window.setTimeout.apply(window, arguments);
-            },
-            setInterval: context
-        });
+            }
+        };
         executor.context = context;
         return ctx;
     }
@@ -297,7 +297,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
 
         try {
             this.theFunction.apply(this.context, this.libs);
-        } catch(e) {
+        } catch (e) {
             if (e && e.stack) {
                 e = e.stack;
             }
