@@ -1,4 +1,15 @@
-# 2.6.1-0 / Unreleased
+# 2.7.1-0 / Unreleased
+  * [Changed] Deprecated ext-menu (was never officially supported, see http://localhost:8080/demo/index.html#sample-ext-menu.html)
+  * [Improved] Bluring the widget will now blur the focused node too.
+  * [Improved] Persistence will only set node focus if widget had focus (otherwise only activate the node).
+  * [Improved] Set default focus on first keypress to active node (first node otherwise)
+  * [Improved] #383 Accept [ECMAScript 6 Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise) as source
+  * [Added] `_superApply()` for hook handlers.
+  * [Added] eventToString() supports mouse events
+  * [Fixed] persistence for focus (when using non-cookie storage)
+  * [Fixed] #391 Exception on autoscrolling filtered trees
+
+# 2.7.0 / 2014-12-21
   * [CHANGED] Dropped `fx` option. Use `toggleEffect` instead.
   * [CHANGED] 'win8' and 'bootstrap' skins where modified to highlight the 
     title span instead of the node span, in order to be compatible with
