@@ -70,7 +70,7 @@ requirejs.config({
 		jqgrid: ['jquery', 'components/jqgrid_edit/js/i18n/grid.locale-en'],
 		'libs/jsmol/js/JSmolApplet': ['libs/jsmol/JSmol.min.nojq'],
 		'lib/flot/jquery.flot.pie': ['jquery', 'lib/flot/jquery.flot'],
-		'jquery-ui': ['jquery','components/jquery-ui/ui/minified/jquery-ui.min'],
+		'jquery-ui': ['jquery','components/jquery-ui/jquery-ui.min'],
 		'jquery-tmpl': ['jquery'],
 		'components/farbtastic/src/farbtastic': ['components/jquery/jquery-migrate.min'],
 		'lib/pixastic/pixastic': ['lib/pixastic/pixastic/pixastic.core'],

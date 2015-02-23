@@ -439,7 +439,7 @@ define(['jquery', 'jquery-ui', 'src/util/util', 'modules/modulefactory', 'src/ut
             def.resolve(definition.layers[name]);
         }
 
-        var div = $('<div></div>').dialog({modal: true, position: ['center', 50], width: '80%', title: ""}),
+        var div = $('<div></div>').dialog({modal: true, position: {my: 'top+50', at: 'center top'}, width: '80%', title: ""}),
             form = new Form({});
 
         form.init();

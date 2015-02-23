@@ -289,7 +289,7 @@ define(['jquery',
         var data = Versioning.getData(),
             view = Versioning.getView();
 
-        var div = $('<div></div>').dialog({modal: true, position: ['center', 50], width: '80%'});
+        var div = $('<div></div>').dialog({modal: true, position: {my: 'top+50', at: 'center top'}, width: '80%'});
         div.prev().remove();
         div.parent().css('z-index', 1000);
 
@@ -791,7 +791,7 @@ define(['jquery',
             var css = [
                 'css/main.css',
                 'components/colors/css/colors.min.css',
-                'components/Aristo-jQuery-UI-Theme/css/Aristo/Aristo.css',
+                'components/jquery-ui/themes/smoothness/jquery-ui.min',
                 'lib/forms/style.css',
                 'components/fancytree/dist/skin-lion/ui.fancytree.css',
                 'components/jqgrid_edit/css/ui.jqgrid.css',

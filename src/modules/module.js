@@ -471,7 +471,7 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 		doConfig: function(sectionToOpen) {
 
 			var module = this;
-			var div = $('<div></div>').dialog({ modal: true, position: ['center', 50], width: '80%', title: "Edit module preferences"});
+			var div = $('<div></div>').dialog({ modal: true, position: {my: 'top+50', at: 'center top'}, width: '80%', title: "Edit module preferences"});
 			div.prev().remove();
 			div.parent().css('z-index', 1000);
 
