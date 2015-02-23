@@ -1,12 +1,14 @@
-define(['modules/default/defaultview', 'lib/twigjs/twig'], function(Default, Twig) {
+'use strict';
 
-    function view() {
+define(['modules/default/defaultview', 'lib/twigjs/twig'], function (Default, Twig) {
+
+    function View() {
     }
-    ;
-    view.prototype = $.extend(true, {}, Default, {
-        init: function() {
 
-            this.dom = $("<div>").css({
+    View.prototype = $.extend(true, {}, Default, {
+        init: function () {
+
+            this.dom = $('<div>').css({
                 height: '100%',
                 width: '100%'
             });
@@ -17,38 +19,32 @@ define(['modules/default/defaultview', 'lib/twigjs/twig'], function(Default, Twi
             });
         },
         blank: {
-            value: function(varName) {
+            value: function (varName) {
                 this.dom.empty();
+            },
+            tpl: function () {
             }
         },
-        inDom: function() {
-			this.module.getDomContent().html(this.dom);
-			this.resolveReady();
-			this.render();
+        inDom: function () {
+            this.module.getDomContent().html(this.dom);
+            this.resolveReady();
+            this.render();
         },
         update: {
-            value: function(value, name) {
-				
-                if (!value) {
-                    return;
+            value: function (value, name) {
+                // Extract typed value
+                value = value.get();
+
+                // Convert special objects like DataString (twig does some check depending on the filter used and the values need to be native)
+                if (typeof value.resurrect === 'function') {
+                    value = value.resurrect();
                 }
-				
-				// Extract typed value
-				value = value.get();
-				
-				// Convert special objects like DataString (twig does some check depending on the filter used and the values need to be native)
-				if(typeof value.resurrect === "function") {
-					value = value.resurrect();
-				}
-				
+
                 this._values[name] = value;
 
                 this.render();
-
             },
-            tpl: function(value) {
-                if (!value)
-                    return;
+            tpl: function (value) {
                 var tpl = value.get().toString();
                 try {
                     this.template = Twig.twig({
@@ -57,15 +53,16 @@ define(['modules/default/defaultview', 'lib/twigjs/twig'], function(Default, Twi
                     this.module.definition.configuration.groups.group[0].template[0] = tpl;
                     this.render();
                 } catch (e) {
-               }
+                }
             }
         },
-        render: function() {
+        render: function () {
             var render = this.template.renderAsync(this._values);
             this.dom.html(render.html);
             render.render();
         }
     });
 
-    return view;
+    return View;
+
 });
