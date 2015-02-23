@@ -3,7 +3,7 @@
 	padding: 0;
 }
 
-#ci-visualizer {
+#ci-visualizer, .ci-visualizer-text {
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
 	font-size: 11px;
 	color: black;

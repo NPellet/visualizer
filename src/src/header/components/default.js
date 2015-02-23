@@ -40,7 +40,7 @@ define(['jquery', 'src/util/util'], function ($, Util) {
     };
 
     Header.prototype.open = function () {
-        this.$_elToOpen.addClass('header-button-list');
+        this.$_elToOpen.addClass('header-button-list ci-visualizer-text');
 
         // Verify that the element has been added to the dom
         if (this.$_elToOpen.parents('body').length === 0) {
