@@ -252,7 +252,12 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 } );
 
                 graph.on('shapeSelect', function( shape ) {
+                    self.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape.data);
                     self.module.controller.sendAction('selectedShape', shape.data, 'onShapeSelect' );
+                });
+                graph.on('shapeUnselect', function (shape) {
+                    self.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape.data);
+                    self.module.controller.sendAction('shapeInfos', shape.data, 'onShapeUnselect' );
                 });
 
                 self.onResize();

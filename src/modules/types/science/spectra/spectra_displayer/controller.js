@@ -31,7 +31,7 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
             type: 'array'
         },
         shapeInfos: {
-            label: 'Shape infos',
+            label: 'Shape data',
             type: 'object'
         },
         fromToX: {
@@ -81,7 +81,7 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
         },
         selectedShape: {
             type: 'object',
-            label: 'Selected shape'
+            label: 'Shape data'
         }
     };
 
@@ -126,6 +126,14 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
         onShapeSelect: {
             label: 'When a shape is selected',
             refAction: ['selectedShape']
+        },
+        onShapeUnselect: {
+            label: 'When a shape is unselected',
+            refAction: ['shapeInfos']
+        },
+        onShapeClick: {
+            label: 'When a shape is clicked',
+            refVariable: ['shapeInfos']
         }
     };
 
