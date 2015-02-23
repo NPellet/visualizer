@@ -26,6 +26,8 @@ define(function () {
         'html': 'string',
         'boolean': 'boolean',
         'array': 'array',
+        'regexp': 'string',
+        'regex': 'string',
         'colorBar': {
             'type': 'array',
             'elements': {

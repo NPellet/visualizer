@@ -385,6 +385,23 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 
     };
 
+    functions.regexp = {};
+    functions.regexp.toscreen = function (def, val) {
+        var value = String(val);
+        require(['lib/regexper/regexper'], function (Parser) {
+            var id = Util.getNextUniqueId();
+            var div = '<div id="' + id + '" />';
+            def.build = function () {
+                var div = $('#' + id)[0];
+                var parser = new Parser(div);
+                parser.parse(value).invoke('render');
+            };
+            def.resolve(div);
+        });
+    };
+
+    functions.regex = functions.regexp;
+
     function _valueToScreen(deferred, data, box, args, jpath) {
         var type = Traversing.getType(data),
             highlights = Traversing.getHighlights(data);
