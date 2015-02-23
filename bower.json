@@ -42,7 +42,7 @@
     "jquery-cookie": "~1.4.1",
     "jquery-mousewheel": "~3.1.11",
     "jquery-throttle-debounce": "*",
-    "jquery-ui": "1.10.4",
+    "jquery-ui": "1.11.3",
     "jqueryui-touch-punch": "*",
     "jsbarcode": "*",
     "jsgraph": "v1.10.4-34",
