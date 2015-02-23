@@ -124,7 +124,7 @@ define([
             }
 
             var that = this;
-            this.$_elToOpen = $('<div>').css('width', 550);
+            this.$_elToOpen = $('<div>').css('width', 560);
             this.errorP = $('<p id="' + this.cssId('error') + '">');
 
             $.couch.session({
