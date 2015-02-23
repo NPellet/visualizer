@@ -47,15 +47,14 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
                 else {
                     this.dom.empty();
                 }
+            },
+            color: function () {
+                this.module.getDomContent().css('background-color', '#FFF');
             }
         },
 
         update: {
             color: function (color) {
-                if (color === undefined) {
-                    return;
-                }
-
                 this.module.getDomContent().css('background-color', color.get());
             },
 
