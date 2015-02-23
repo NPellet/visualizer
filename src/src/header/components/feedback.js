@@ -19,7 +19,7 @@ define(['jquery', 'jquery-ui', 'src/header/components/default', './couchshare/sh
             this.dialogOptions = {
                 modal: true,
                 title: 'Feedback',
-                width: 750,
+                width: 900,
                 height: 350
             };
         },
