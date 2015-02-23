@@ -91,6 +91,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
             var data = this.form.getData();
             this.inputVal = data.data;
             if (!data.errorCount) {
+                this._data = data.data;
                 this.module.controller.onSubmit(data.data);
             }
         }
