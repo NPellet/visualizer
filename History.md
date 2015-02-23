@@ -1,9 +1,13 @@
-2.13.1 / HEAD
-=============
+2.14.0 / 2015-02-23
+===================
 
+* Core
+ * typerenderer: add regex type using RegExper
+ * add support to evaluate code in a sandbox
 * Modules
  * onde: add option to create variable on load
  * spectra_displayer: fix various events
+ * code_executor: use sandboxing and precompilation
 
 2.13.0 / 2015-02-04
 ===================
