@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-33
+ * jsGraph JavaScript Graphing Library v1.10.4-34
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-02-10T08:40Z
+ * Date: 2015-02-11T15:42Z
  */
 
 (function( global, factory ) {
@@ -7352,7 +7352,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       this.name = name;
       this.id = this.graph.uniqueId();
 
-      this.options = $.extend( true, {}, GraphSerie.prototype.defaults, options ); // Creates options
+      this.options = $.extend( true, {}, GraphSerie.prototype.defaults, ( options || {} ) ); // Creates options
       this.graph.mapEventEmission( this.options, this ); // Register events
 
       // Creates an empty style variable
