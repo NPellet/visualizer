@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/data/structures', 'src/util/Debug'], function (Default, Structure, Debug) {
+define(['modules/default/defaultcontroller', 'src/data/structures', 'src/util/debug'], function (Default, Structure, Debug) {
 
     function Controller() {
     }
