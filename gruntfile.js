@@ -70,7 +70,6 @@ module.exports = function (grunt) {
                             './sprintf/dist/sprintf.min.js',
                             './requirejs/require.js',
                             './jquery-throttle-debounce/jquery.ba-throttle-debounce.min.js',
-                            ['./Aristo-jQuery-UI-Theme/css/Aristo/images/*', './Aristo-jQuery-UI-Theme/css/Aristo/*.css'],
                             './x2js/xml2json.min.js',
                             ['./leaflet/dist/**', './leaflet-omnivore/leaflet-omnivore.min.js'],
                             ['./jsoneditor/jsoneditor.min*', './jsoneditor/img/*'],
@@ -110,16 +109,6 @@ module.exports = function (grunt) {
 
                         dest: './build/components/'
 
-                    },
-
-                    {
-                        expand: true,
-                        cwd: './src/components/',
-                        src: [
-                            './Aristo-jQuery-UI-Theme/css/Aristo/images/*',
-                            './Aristo-jQuery-UI-Theme/css/Aristo/*.css'
-                        ],
-                        dest: './build/components/jqueryui/'
                     }
                 ]
             },
