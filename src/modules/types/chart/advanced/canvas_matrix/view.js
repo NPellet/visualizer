@@ -294,7 +294,7 @@ define([
 
         initWorkers: function () {
 
-            var minMaxWorker = Worker('src/util/workers/getminmaxmatrix.js');
+            var minMaxWorker = Worker(require.toUrl('src/util/workers/getminmaxmatrix.js'));
             var mainWorker = Worker(require.toUrl('./worker.js'));
             var self = this;
             return Promise.all([minMaxWorker, mainWorker]).then(function (workers) {
