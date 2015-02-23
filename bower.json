@@ -26,7 +26,7 @@
     "bluebird": "^2.9.12",
     "bowser": "~0.7.1",
     "chemcalc": "^2.0.0",
-    "ckeditor": "~4.4.4",
+    "ckeditor": "~4.4.7",
     "colors": "~2.0.0",
     "d3": "^3.5.3",
     "fancytree": "^2.8.0",
