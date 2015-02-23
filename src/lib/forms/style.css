@@ -1,4 +1,4 @@
-body {
+#ci-visualizer th, #ci-visualizer td, #ci-visualizer input, #ci-visualizer select, #ci-visualizer textarea {
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 	font-size: 11px;
 	color: black;
@@ -10,6 +10,9 @@ body {
 	border: 1px solid #c0c0c0;
 	position: relative;
 	outline: none;
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-size: 11px;
+    color: black;
 }
 
 .forms .cleaner {
