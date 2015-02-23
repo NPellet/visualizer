@@ -1,3 +1,76 @@
+## 2.9.11 (2015-02-19)
+
+Bugfixes:
+
+ - Fix [#503](.)
+
+## 2.9.10 (2015-02-18)
+
+Bugfixes:
+
+ - Fix [#501](.)
+
+## 2.9.9 (2015-02-12)
+
+Bugfixes:
+
+ - Fix `TypeError: Cannot assign to read only property 'length'` when jsdom has declared a read-only length for all objects to inherit.
+
+## 2.9.8 (2015-02-10)
+
+Bugfixes:
+
+ - Fix regression introduced in 2.9.7 where promisify didn't properly dynamically look up methods on `this`
+
+## 2.9.7 (2015-02-08)
+
+Bugfixes:
+
+ - Fix `promisify` not retaining custom properties of the function. This enables promisifying the `"request"` module's export function and its methods at the same time.
+ - Fix `promisifyAll` methods being dependent on `this` when they are not originally dependent on `this`. This enables e.g. passing promisified `fs` functions directly as callbacks without having to bind them to `fs`.
+ - Fix `process.nextTick` being used over `setImmediate` in node.
+
+## 2.9.6 (2015-02-02)
+
+Bugfixes:
+
+ - Node environment detection can no longer be fooled
+
+## 2.9.5 (2015-02-02)
+
+Misc:
+
+ - Warn when [`.then()`](.) is passed non-functions
+
+## 2.9.4 (2015-01-30)
+
+Bugfixes:
+
+ - Fix [.timeout()](.) not calling `clearTimeout` with the proper handle in node causing the process to wait for unneeded timeout. This was a regression introduced in 2.9.1.
+
+## 2.9.3 (2015-01-27)
+
+Bugfixes:
+
+ - Fix node-webkit compatibility issue ([#467](https://github.com/petkaantonov/bluebird/pull/467))
+ - Fix long stack trace support in recent firefox versions
+
+## 2.9.2 (2015-01-26)
+
+Bugfixes:
+
+ - Fix critical bug regarding to using promisifyAll in browser that was introduced in 2.9.0 ([#466](https://github.com/petkaantonov/bluebird/issues/466)).
+
+Misc:
+
+ - Add `"browser"` entry point to package.json
+
+## 2.9.1 (2015-01-24)
+
+Features:
+
+ - If a bound promise is returned by the callback to [`Promise.method`](#promisemethodfunction-fn---function) and [`Promise.try`](#promisetryfunction-fn--arraydynamicdynamic-arguments--dynamic-ctx----promise), the returned promise will be bound to the same value
+
 ## 2.9.0 (2015-01-24)
 
 Features:

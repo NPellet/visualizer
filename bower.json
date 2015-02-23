@@ -7,7 +7,7 @@
   "dependencies": {
     "ace": "~1.1.6",
     "Aristo-jQuery-UI-Theme": "git://github.com/taitems/Aristo-jQuery-UI-Theme.git",
-    "bluebird": "^2.9.1",
+    "bluebird": "^2.9.12",
     "bowser": "~0.7.1",
     "chemcalc": "^2.0.0",
     "ckeditor": "~4.4.4",

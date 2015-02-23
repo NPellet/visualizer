@@ -99,7 +99,7 @@ function writeCoverageFile(coverage, groupNumber) {
 }
 
 function needsFreshProcess(testName) {
-    return /domain|schedule/.test(testName);
+    return false;
 }
 
 function runTestGroup(testGroup, options, progress) {
@@ -176,9 +176,14 @@ if (options.cover && typeof argv["cover"] === "string") {
 
 var jsHint = options.jsHint ? require("./jshint.js")() : Promise.resolve();
 var tests = getTests(options);
-var buildResult = build({
+var buildOpts = {
     debug: true
-});
+};
+if (options.testBrowser) {
+    buildOpts.browser = true;
+    buildOpts.minify = true;
+}
+var buildResult = build(buildOpts);
 if (options.cover) {
     var exclusions = ["assert.js", "captured_trace.js"];
     var coverageInstrumentedRoot = build.ensureDirectory(build.dirs.instrumented,options.cover);
@@ -284,12 +289,6 @@ Promise.all([testResults, jsHint]).spread(function(_, jsHintResponse) {
         console.error(e + "");
     } else {
         console.error(e.noStackPrint ? e.message : e.stack);
-    }
-
-    if (e) {
-        Object.keys(e).forEach(function(key) {
-            console.error(key, e[key]);
-        });
     }
     process.exit(2);
 });

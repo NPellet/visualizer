@@ -2,11 +2,13 @@
 module.exports = function() {
 var async = require("./async.js");
 var ASSERT = require("./assert.js");
-var inherits = require("./util.js").inherits;
+var util = require("./util.js");
 var bluebirdFramePattern =
     /[\\\/]bluebird[\\\/]js[\\\/](main|debug|zalgo|instrumented)/;
 var stackFramePattern = null;
 var formatStack = null;
+var indentStackFrames = false;
+var warn;
 
 function CapturedTrace(parent) {
     ASSERT(parent === undefined || parent instanceof CapturedTrace);
@@ -17,7 +19,7 @@ function CapturedTrace(parent) {
     // there must be cycles
     if (length > 32) this.uncycle();
 }
-inherits(CapturedTrace, Error);
+util.inherits(CapturedTrace, Error);
 
 CapturedTrace.prototype.uncycle = function() {
     var length = this._length;
@@ -87,18 +89,19 @@ CapturedTrace.prototype.hasParent = function() {
 CapturedTrace.prototype.attachExtraTrace = function(error) {
     if (error.__stackCleaned__) return;
     this.uncycle();
-    var header = CapturedTrace.cleanHeaderStack(error, false);
-    var stacks = [header.slice(1)];
-    var trace = this;
+    var parsed = CapturedTrace.parseStackAndMessage(error);
+    var message = parsed.message;
+    var stacks = [parsed.stack];
 
+    var trace = this;
     while (trace !== undefined) {
-        stacks.push(cleanStack(trace.stack.split("\n"), 0));
+        stacks.push(cleanStack(trace.stack.split("\n")));
         trace = trace._parent;
     }
     removeCommonRoots(stacks);
     removeDuplicateOrEmptyJumps(stacks);
-    var message = header[0].split(NEWLINE_PROTECTOR).join("\n");
     error.stack = reconstructStack(message, stacks);
+    util.notEnumerableProp(error, "__stackCleaned__", true);
 };
 
 function reconstructStack(message, stacks) {
@@ -106,7 +109,9 @@ function reconstructStack(message, stacks) {
         stacks[i].push(FROM_PREVIOUS_EVENT);
         stacks[i] = stacks[i].join("\n");
     }
-    stacks[i] = stacks[i].join("\n");
+    if (i < stacks.length) {
+        stacks[i] = stacks[i].join("\n");
+    }
     return message + "\n" + stacks.join("\n");
 }
 
@@ -148,61 +153,54 @@ function removeCommonRoots(stacks) {
     }
 }
 
-function protectErrorMessageNewlines (stack) {
+function cleanStack(stack) {
+    var ret = [];
     for (var i = 0; i < stack.length; ++i) {
-        var line = stack[i];
-        if (NO_STACK_TRACE === line || stackFramePattern.test(line)) {
-            break;
-        }
-    }
-    // No multiline error message
-    if (i <= 1) return 1;
-    var errorMessageLines = [];
-    for (var j = 0; j < i; ++j) {
-        errorMessageLines.push(stack.shift());
-    }
-    stack.unshift(errorMessageLines.join(NEWLINE_PROTECTOR));
-    return i;
-}
-
-function unProtectNewlines(stack) {
-    if (stack.length > 0) {
-        stack[0] = stack[0].split(NEWLINE_PROTECTOR).join("\n");
-    }
-    return stack;
-}
-
-function cleanStack(stack, initialIndex) {
-    ASSERT(initialIndex >= 0);
-    var ret = stack.slice(0, initialIndex);
-    for (var i = initialIndex; i < stack.length; ++i) {
         var line = stack[i];
         var isTraceLine = stackFramePattern.test(line) ||
             NO_STACK_TRACE === line;
         var isInternalFrame = isTraceLine && shouldIgnore(line);
         if (isTraceLine && !isInternalFrame) {
+            if (indentStackFrames && line.charAt(0) !== " ") {
+                // Make Firefox stack traces readable...it is almost
+                // impossible to see the event boundaries without
+                // indentation.
+                line = "    " + line;
+            }
             ret.push(line);
         }
     }
     return ret;
 }
 
-CapturedTrace.cleanHeaderStack = function(error, shouldUnProtectNewlines) {
-    if (error.__stackCleaned__) return;
-    error.__stackCleaned__ = true;
-    var stack = error.stack;
-    stack = typeof stack === "string"
-        ? stack.split("\n")
-        : [error.toString(), NO_STACK_TRACE];
-    var initialIndex = protectErrorMessageNewlines(stack);
-    stack = cleanStack(stack, initialIndex);
-    if (shouldUnProtectNewlines) stack = unProtectNewlines(stack);
-    error.stack = stack.join("\n");
+function stackFramesAsArray(error) {
+    var stack = error.stack.replace(/\s+$/g, "").split("\n");
+    for (var i = 0; i < stack.length; ++i) {
+        var line = stack[i];
+        if (NO_STACK_TRACE === line || stackFramePattern.test(line)) {
+            break;
+        }
+    }
+    // Chrome and IE include the error message in the stack
+    if (i > 0) {
+        stack = stack.slice(i);
+    }
     return stack;
+}
+
+CapturedTrace.parseStackAndMessage = function(error) {
+    var stack = error.stack;
+    var message = error.toString();
+    stack = typeof stack === "string" && stack.length > 0
+                ? stackFramesAsArray(error) : [NO_STACK_TRACE];
+    return {
+        message: message,
+        stack: cleanStack(stack)
+    };
 };
 
 CapturedTrace.formatAndLogError = function(error, title) {
-    if (typeof console === "object") {
+    if (typeof console !== "undefined") {
         var message;
         if (typeof error === "object" || typeof error === "function") {
             var stack = error.stack;
@@ -210,9 +208,8 @@ CapturedTrace.formatAndLogError = function(error, title) {
         } else {
             message = title + String(error);
         }
-        if (typeof console.warn === "function" ||
-            typeof console.warn === "object") {
-            console.warn(message);
+        if (typeof warn === "function") {
+            warn(message);
         } else if (typeof console.log === "function" ||
             typeof console.log === "object") {
             console.log(message);
@@ -367,7 +364,7 @@ var captureStackTrace = (function stackDetection() {
 
         if (error.name !== undefined &&
             error.message !== undefined) {
-            return error.name + ". " + error.message;
+            return error.toString();
         }
         return formatNonError(error);
     };
@@ -394,37 +391,12 @@ var captureStackTrace = (function stackDetection() {
 
     //SpiderMonkey
     if (typeof err.stack === "string" &&
-        typeof "".startsWith === "function" &&
-        (err.stack.startsWith("stackDetection@")) &&
-        stackDetection.name === "stackDetection") {
-
+        err.stack.split("\n")[0].indexOf("stackDetection@") >= 0) {
         stackFramePattern = /@/;
-        var rline = /[@\n]/;
-
-        formatStack = function(stack, error) {
-            if (typeof stack === "string") {
-                return (error.name + ". " + error.message + "\n" + stack);
-            }
-
-            if (error.name !== undefined &&
-                error.message !== undefined) {
-                return error.name + ". " + error.message;
-            }
-            return formatNonError(error);
-        };
-
+        formatStack = v8stackFormatter;
+        indentStackFrames = true;
         return function captureStackTrace(o) {
-            var stack = new Error().stack;
-            var split = stack.split(rline);
-            var len = split.length;
-            var ret = "";
-            for (var i = 0; i < len; i += 2) {
-                ret += split[i];
-                ret += "@";
-                ret += split[i + 1];
-                ret += "\n";
-            }
-            o.stack = ret;
+            o.stack = new Error().stack;
         };
     }
 
@@ -433,13 +405,15 @@ var captureStackTrace = (function stackDetection() {
     catch(e) {
         hasStackAfterThrow = ("stack" in e);
     }
-    // IE
+    // IE 10+
     if (!("stack" in err) && hasStackAfterThrow) {
         stackFramePattern = v8stackFramePattern;
         formatStack = v8stackFormatter;
         return function captureStackTrace(o) {
+            Error.stackTraceLimit = Error.stackTraceLimit + 6;
             try { throw new Error(); }
             catch(e) { o.stack = e.stack; }
+            Error.stackTraceLimit = Error.stackTraceLimit - 6;
         };
     }
 
@@ -450,20 +424,18 @@ var captureStackTrace = (function stackDetection() {
             typeof error === "function") &&
             error.name !== undefined &&
             error.message !== undefined) {
-            return error.name + ". " + error.message;
+            return error.toString();
         }
         return formatNonError(error);
     };
 
     return null;
 
-})();
+})([]);
 
 var fireDomEvent;
 var fireGlobalEvent = (function() {
-    if (typeof process !== "undefined" &&
-        typeof process.version === "string" &&
-        typeof window === "undefined") {
+    if (util.isNode) {
         return function(name, reason, promise) {
             if (name === REJECTION_HANDLED_EVENT) {
                 return process.emit(name, promise);
@@ -473,27 +445,39 @@ var fireGlobalEvent = (function() {
         };
     } else {
         var customEventWorks = false;
+        var anyEventWorks = true;
         try {
             var ev = new self.CustomEvent("test");
             customEventWorks = ev instanceof CustomEvent;
         } catch (e) {}
-        fireDomEvent = function(type, detail) {
-            var event;
-            // WebWorkers and Up-to-date browsers
-            if (customEventWorks) {
-                event = new self.CustomEvent(type, {
-                    detail: detail,
-                    bubbles: false,
-                    cancelable: true
-                });
-            // IE9
-            } else if (self.dispatchEvent) {
-                event = document.createEvent("CustomEvent");
-                event.initCustomEvent(type, false, true, detail);
+        if (!customEventWorks) {
+            try {
+                var event = document.createEvent("CustomEvent");
+                event.initCustomEvent("testingtheevent", false, true, {});
+                self.dispatchEvent(event);
+            } catch (e) {
+                anyEventWorks = false;
             }
+        }
+        if (anyEventWorks) {
+            fireDomEvent = function(type, detail) {
+                var event;
+                // WebWorkers and Up-to-date browsers
+                if (customEventWorks) {
+                    event = new self.CustomEvent(type, {
+                        detail: detail,
+                        bubbles: false,
+                        cancelable: true
+                    });
+                // IE9
+                } else if (self.dispatchEvent) {
+                    event = document.createEvent("CustomEvent");
+                    event.initCustomEvent(type, false, true, detail);
+                }
 
-            return event ? !self.dispatchEvent(event) : false;
-        };
+                return event ? !self.dispatchEvent(event) : false;
+            };
+        }
 
         var toWindowMethodNameMap = {};
         toWindowMethodNameMap[UNHANDLED_REJECTION_EVENT] = ("on" +
@@ -514,6 +498,21 @@ var fireGlobalEvent = (function() {
         };
     }
 })();
+
+if (typeof console !== "undefined" && typeof console.warn !== "undefined") {
+    warn = function (message) {
+        console.warn(message);
+    };
+    if (util.isNode && process.stderr.isTTY) {
+        warn = function(message) {
+            process.stderr.write("\u001b[31m" + message + "\u001b[39m\n");
+        };
+    } else if (!util.isNode && typeof (new Error().stack) === "string") {
+        warn = function(message) {
+            console.warn("%c" + message, "color: red");
+        };
+    }
+}
 
 return CapturedTrace;
 };

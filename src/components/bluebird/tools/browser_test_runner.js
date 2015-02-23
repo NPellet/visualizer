@@ -4,6 +4,7 @@ var Promise = require("bluebird");
 var fs = Promise.promisifyAll(require("fs"));
 var baseDir = path.join(__dirname, "..", "test", "browser");
 var browsers = [
+    ["Windows XP", "internet explorer", "6"],
     ["Windows XP", "internet explorer", "7"],
     ["Windows XP", "internet explorer", "8"],
     ["Windows 7", "internet explorer", "9"],
@@ -16,6 +17,8 @@ var browsers = [
     ["Windows 7", "chrome", "beta"],
     ["Windows 7", "safari", "5"],
     ["OS X 10.9", "iphone", "8.1"],
+    ["OS X 10.8", "safari", "6"],
+    ["OS X 10.9", "safari", "7"]
 ];
 
 var saucelabsOptions = {
