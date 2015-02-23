@@ -36,7 +36,8 @@ requirejs.config({
         chemcalc:           'components/chemcalc/lib',
 		chroma:             'components/chroma-js/chroma.min',
 		'src/shape.1dnmr':  'components/jsNMR/src/shape.1dnmr',
-		loglevel:           'components/loglevel/dist/loglevel.min'
+		loglevel:           'components/loglevel/dist/loglevel.min',
+        "markdown-js":      'components/markdown-js/lib/markdown'
 	},
 	shim: {
 		d3: {

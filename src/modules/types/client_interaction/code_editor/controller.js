@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller'], function (Default) {
+define(['modules/default/defaultcontroller', 'src/data/structures', 'src/util/Debug'], function (Default, Structure, Debug) {
 
     function Controller() {
     }
@@ -21,24 +21,31 @@ define(['modules/default/defaultcontroller'], function (Default) {
         },
         jsonValue: {
             label: 'JSON-parsed value'
+        },
+        typedValue: {
+            label: 'The typed value'
         }
     };
 
     Controller.prototype.events = {
         onEditorChange: {
             label: 'The value in the editor has changed',
-            refVariable: ['value', 'jsonValue']
+            refVariable: ['value', 'jsonValue', 'typedValue']
         },
         onButtonClick: {
             label: 'The button was clicked',
             refAction: ['value', 'jsonValue'],
-            refVariable: ['value', 'jsonValue']
+            refVariable: ['value', 'jsonValue', 'typedValue']
         }
     };
 
     Controller.prototype.variablesIn = ['value'];
 
     Controller.prototype.configurationStructure = function () {
+        var types = Structure._getList(), l = types.length, typeList = new Array(l);
+        for (var i = 0; i < l; i++) {
+            typeList[i] = {key: types[i], title: types[i]};
+        }
         return {
             groups: {
                 group: {
@@ -54,9 +61,15 @@ define(['modules/default/defaultcontroller'], function (Default) {
                                 {title: 'Javascript', key: 'javascript'},
                                 {title: 'JSON', key: 'json'},
                                 {title: 'HTML', key: 'html'},
-                                {title: 'XML', key: 'xml'}
+                                {title: 'XML', key: 'xml'},
+                                {title: 'Markdown', key: 'markdown'}
                             ],
                             'default': 'text'
+                        },
+                        outputType: {
+                            type: 'combo',
+                            title: 'Type of output value (optional)',
+                            options: typeList
                         },
                         btnvalue: {
                             type: 'text',
@@ -95,7 +108,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
         btnvalue: ['groups', 'group', 0, 'btnvalue', 0],
         iseditable: ['groups', 'group', 0, 'iseditable', 0],
         hasButton: ['groups', 'group', 0, 'hasButton', 0],
-        script: ['groups', 'group', 0, 'script', 0]
+        script: ['groups', 'group', 0, 'script', 0],
+        outputType: ['groups', 'group', 0, 'outputType', 0],
     };
 
     Controller.prototype.onEditorChanged = function (value) {
@@ -103,6 +117,9 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
         var json = getJsonValue(value);
         this.createDataFromEvent('onEditorChange', 'jsonValue', json);
+        var typedValue = this.getTypedValue(value);
+        if(typedValue !== null)
+            this.createDataFromEvent('onEditorChange', 'typedValue', typedValue);
     };
 
     Controller.prototype.onButtonClick = function (value) {
@@ -112,6 +129,20 @@ define(['modules/default/defaultcontroller'], function (Default) {
         var json = getJsonValue(value);
         this.createDataFromEvent('onButtonClick', 'jsonValue', json);
         this.sendAction('jsonValue', json, 'onButtonClick');
+
+        var typedValue = this.getTypedValue(value);
+        if(typedValue !== null)
+        this.createDataFromEvent('onButtonClick', 'typedValue', typedValue);
+        //this.sendAction()
+    };
+
+    Controller.prototype.getTypedValue = function(val) {
+        var type = this.module.getConfiguration('outputType');
+        if(!type) return null;
+        return {
+            type: this.module.getConfiguration('outputType'),
+            value: val
+        }
     };
 
     function getJsonValue(str) {

@@ -54,6 +54,7 @@
     "async": "~0.9.0",
     "loglevel": "~1.2.0",
     "ui-contextmenu": "~1.8.1",
-    "leaflet-omnivore": "~0.3.2"
+    "leaflet-omnivore": "~0.3.2",
+    "markdown-js": "evilstreak/markdown-js#~0.5"
   }
 }
