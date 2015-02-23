@@ -357,9 +357,13 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                 element[';' + jp[j].name] = this.renderElement(element, s, jpath, jp[j].name);
             }
 
-            s.getChild(this.module.getConfiguration('colorjPath')).then(function (value) {
-                element._backgroundColor = value.toString();
-            });
+            var cJpath = this.module.getConfiguration('colorjPath');
+            if (cJpath) {
+                var color = s.getChildSync(cJpath);
+                if (color) {
+                    element._backgroundColor = String(color);
+                }
+            }
 
             return element;
         },
