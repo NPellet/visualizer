@@ -737,51 +737,6 @@ div.ci-module-display_value div.ci-module-content img {
 	left: 38px;
 }
 
-
-
-.ui-menu, .ui-menu .ui-menu {
-	list-style:none;
-	width: 150px;
-	border-radius: 0px;
-	margin: 0;
-	display:block;
-	float: left;
-}
-.ui-menu .ui-menu {
-	margin-top: -3px;
-}
-.ui-menu .ui-menu-item {
-	margin:0;
-	padding: 0;
-	zoom: 1;
-	float: left;
-	clear: left;
-	width: 100%;
-}
-.ui-menu .ui-menu-item a {
-	text-decoration:none;
-	display:block;
-	padding:.2em .4em;
-	line-height:1.5;
-	zoom:1;
-}
-.ui-menu .ui-menu-item a.ui-state-hover,
-.ui-menu .ui-menu-item a.ui-state-active,
-.ui-menu .ui-menu-item a.ui-state-focus {
-	font-weight: normal;
-	/*margin: -1px;*/
-	background: #5f83b9;
-	cursor: pointer;
-	color: #FFFFFF;
-	/*text-shadow: 0px 1px 1px #234386;*/
-	border-color: #466086;
-	-moz-border-radius: 0; 
-	-webkit-border-radius: 0;
-	border-radius: 0;
-	border-width: 0px;
-}
-
-
 #visualizer-buttons {
 	float: right;
 	
@@ -890,10 +845,6 @@ table.moduleInformation tr td {
 table.moduleInformation tr td:first-child {
 	font-weight: bold;
 	width: 120px;
-}
-
-.ui-dialog, .ui-front {
-    z-index: 10000 !important;
 }
 
 .ci-tooltip {
