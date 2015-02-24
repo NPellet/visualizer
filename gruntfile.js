@@ -24,6 +24,9 @@ module.exports = function (grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         uglify: {
+            options: {
+                screwIE8: true
+            },
             build: {
                 files: [
                     {
