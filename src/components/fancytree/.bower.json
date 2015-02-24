@@ -55,6 +55,6 @@
     "commit": "4ccdf7848d940dc51ffcde7fa579e580bf1b6982"
   },
   "_source": "git://github.com/mar10/fancytree.git",
-  "_target": "^2.8.0",
+  "_target": "2.8.0",
   "_originalSource": "fancytree"
 }

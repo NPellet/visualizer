@@ -38,7 +38,6 @@
     "commit": "dcca4c5dcc1eec8400ae02b6b51fbb44a2ae0d77"
   },
   "_source": "git://github.com/gka/chroma.js.git",
-  "_target": "~0.6.1",
-  "_originalSource": "chroma-js",
-  "_direct": true
+  "_target": "0.6.1",
+  "_originalSource": "chroma-js"
 }

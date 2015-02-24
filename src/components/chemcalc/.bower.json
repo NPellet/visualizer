@@ -47,6 +47,6 @@
     "commit": "6946ed85701f4a3526a1a6f1b0490e65801a06c1"
   },
   "_source": "git://github.com/cheminfo/chemcalc-js.git",
-  "_target": "^2.0.0",
+  "_target": "2.0.4",
   "_originalSource": "chemcalc"
 }

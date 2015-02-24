@@ -21,6 +21,6 @@
     "commit": "59279c19c41e8bf236b92eccc07771c06aa095f4"
   },
   "_source": "git://github.com/ded/bowser.git",
-  "_target": "~0.7.1",
+  "_target": "0.7.2",
   "_originalSource": "bowser"
 }

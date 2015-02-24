@@ -6,8 +6,7 @@ define([
     'src/util/util',
     'src/util/color',
     'src/util/worker',
-    'components/jquery.threedubmedia/event.drag/jquery.event.drag',
-    'components/jquery-throttle-debounce/jquery.ba-throttle-debounce.min'
+    'components/jquery.threedubmedia/event.drag/jquery.event.drag'
 ], function (require, Default, Util, Color, Worker) {
 
     function View() {

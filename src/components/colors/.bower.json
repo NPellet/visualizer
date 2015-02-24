@@ -31,7 +31,6 @@
     "commit": "1177d70bb49ccc8a00a5a6c58814b3e52f55f363"
   },
   "_source": "git://github.com/mrmrs/colors.git",
-  "_target": "~2.0.0",
-  "_originalSource": "colors",
-  "_direct": true
+  "_target": "2.0.0",
+  "_originalSource": "colors"
 }

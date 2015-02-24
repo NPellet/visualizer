@@ -27,7 +27,6 @@
     "commit": "544a73a3b3ee1546fccda48e00daf2ad90b4c4ab"
   },
   "_source": "git://github.com/timmywil/jquery.panzoom.git",
-  "_target": "~2.0.5",
-  "_originalSource": "jquery.panzoom",
-  "_direct": true
+  "_target": "2.0.5",
+  "_originalSource": "jquery.panzoom"
 }

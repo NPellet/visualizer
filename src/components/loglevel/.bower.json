@@ -16,7 +16,6 @@
     "commit": "86fdcafb6b73a6ccf87d0b084371bbeb1e062507"
   },
   "_source": "git://github.com/pimterry/loglevel.git",
-  "_target": "~1.2.0",
-  "_originalSource": "loglevel",
-  "_direct": true
+  "_target": "1.2.0",
+  "_originalSource": "loglevel"
 }

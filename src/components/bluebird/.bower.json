@@ -39,6 +39,6 @@
     "commit": "5b04130ab8965e41146dd25001021bd51b1552e0"
   },
   "_source": "git://github.com/petkaantonov/bluebird.git",
-  "_target": "^2.9.12",
+  "_target": "2.9.12",
   "_originalSource": "bluebird"
 }

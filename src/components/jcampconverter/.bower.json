@@ -31,6 +31,6 @@
     "commit": "5cb278d25c42b42cbba79ec63cfb12a71128f8f4"
   },
   "_source": "git://github.com/cheminfo/jcampconverter.git",
-  "_target": "^2.0.3",
+  "_target": "2.0.5",
   "_originalSource": "jcampconverter"
 }
