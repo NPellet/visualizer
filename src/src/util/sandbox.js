@@ -2,15 +2,30 @@
 
 define(function () {
 
+    var globals = [
+        'DataObject',
+        'DataArray',
+        'DataString',
+        'DataBoolean',
+        'DataNumber',
+        'Promise',
+        'require'
+    ];
+
     function Sandbox() {
         var iframe = document.createElement('iframe');
         iframe.style.display = 'none';
         document.body.appendChild(iframe);
         this._win = iframe.contentWindow;
+        var win = this._win;
         this._frame = iframe;
-        this._originalKeys = Object.keys(this._win);
-        this._win.parent = null;
-        this._originalKeys.push('parent');
+        this._originalKeys = Object.keys(win);
+        Object.defineProperty(win, 'parent', {value:null});
+        globals.forEach(function (global) {
+            Object.defineProperty(win, global, {
+                value: window[global]
+            });
+        });
         this._closed = false;
     }
 
