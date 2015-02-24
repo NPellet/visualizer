@@ -152,8 +152,6 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
                     return resolve(self.loadedCss[url]);
                 }
 
-                self.loadedCss[url] = true;
-
                 var link = document.createElement('link');
                 link.type = 'text/css';
                 link.rel = 'stylesheet';
