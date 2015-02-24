@@ -1,3 +1,13 @@
+HEAD
+===================
+* Util
+ * Add unloadCss that disables some css
+* Filters
+ * Add markdown filter with code highlighting
+* Components
+ * Add [marked](https://github.com/chjj/marked)
+ * Add [highlight.js](https://github.com/isagalaev/highlight.js)
+
 2.14.0 / 2015-02-23
 ===================
 
