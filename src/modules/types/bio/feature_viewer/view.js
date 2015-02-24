@@ -5,7 +5,6 @@ requirejs.config({
 });
 
 define(['modules/default/defaultview', 'src/util/util',
-'components/jquery/jquery-migrate.min',
 'lib/biojs-1.0/src/main/javascript/Biojs.js',
 'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer.js',
 './Biojs.MyFeatureViewer',
@@ -18,7 +17,6 @@ define(['modules/default/defaultview', 'src/util/util',
   view.prototype = $.extend(true, {}, Default, {
 
     init: function() {
-      console.log('in init');
       if (! this.dom) {
         this._id = Util.getNextUniqueId();
         this.dom = $(' <div id="' + this._id + '"></div>').css('height', '100%').css('width', '100%');
@@ -30,14 +28,12 @@ define(['modules/default/defaultview', 'src/util/util',
 
     blank: {
       feature: function() {
-        console.log('in blank');
         this.dom.empty();
       }
     },
 
 
     inDom: function() {
-      console.log('in dom');
       this.resolveReady();
     },
 
@@ -49,7 +45,6 @@ define(['modules/default/defaultview', 'src/util/util',
     update: {
       feature :function(data) {
         var self = this;
-        console.log('update features: ', data);
         var myPainter = new Biojs.MyFeatureViewer({
           target: this._id,
           json: data,
@@ -65,7 +60,6 @@ define(['modules/default/defaultview', 'src/util/util',
         dom.parent().width('100%').height('100%');
       
         myPainter.onFeatureClick(function(data) {
-          console.log('feature click: ', data);
           delete data.shape;
           self.module.controller.onFeatureClicked(data);
         });

@@ -73,7 +73,6 @@ requirejs.config({
 		'libs/jsmol/js/JSmolApplet': ['libs/jsmol/JSmol.min.nojq'],
 		'lib/flot/jquery.flot.pie': ['jquery', 'lib/flot/jquery.flot'],
 		'jquery-tmpl': ['jquery'],
-		'components/farbtastic/src/farbtastic': ['components/jquery/jquery-migrate.min'],
 		'lib/pixastic/pixastic': ['lib/pixastic/pixastic/pixastic.core'],
 		'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer.js': ['lib/biojs-1.0/src/main/javascript/Biojs.js'],
 		'lib/biojs-1.0/src/main/javascript/Biojs.DasProteinFeatureViewer.js': ['lib/biojs-1.0/src/main/javascript/Biojs.js', 'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer.js']
@@ -102,6 +101,7 @@ requirejs.config({
 
 require(['jquery', 'src/main/datas', 'src/main/entrypoint', 'uri/URI.fragmentQuery', 'components/bluebird/js/browser/bluebird.min', 'lib/IndexedDBShim/IndexedDBShim', 'components/setImmediate/setImmediate'], function($, Datas, EntryPoint, URI, Promise) {
 	window.Promise = Promise;
+	$.browser = {msie:false}; // Property used by old libraries and not present in jQuery anymore
 	$(document).ready(function() {
 			var url = new URI(window.location.href);
 			var type = (url.search().length > 0) ? 'search' : (url.fragment()[0] === '?' ? 'fragment' : 'search');

@@ -16,7 +16,7 @@ require.config({
     shim: {
         dragevent:     ['jquery'],
         dropevent:     ['jquery'],
-        slickcore:     ['jquery-ui', 'components/jquery/jquery-migrate.min'],
+        slickcore:     ['jquery-ui'],
         slickgrid:     ['slickcore', 'dragevent', 'dropevent','components/slickgrid/plugins/slick.cellrangedecorator',
             'components/slickgrid/plugins/slick.cellrangeselector' ,
             'components/slickgrid/plugins/slick.cellselectionmodel' ,
