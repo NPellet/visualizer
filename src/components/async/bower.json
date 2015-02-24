@@ -34,15 +34,5 @@
   ],
   "authors": [
     "Caolan McMahon"
-  ],
-  "homepage": "https://github.com/caolan/async",
-  "_release": "0.9.2",
-  "_resolution": {
-    "type": "version",
-    "tag": "0.9.2",
-    "commit": "baee7a647e77195ee897caf1e17374eae473e517"
-  },
-  "_source": "git://github.com/caolan/async.git",
-  "_target": "0.9.2",
-  "_originalSource": "async"
+  ]
 }
