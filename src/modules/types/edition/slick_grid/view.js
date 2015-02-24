@@ -188,7 +188,6 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     }
                 }).value();
 
-                console.log(colNames);
             }
 
             if(this.module.getConfigurationCheckbox('slickCheck', 'rowDelete')) {
