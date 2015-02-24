@@ -6,6 +6,10 @@
     line-height: 1.5;
 }
 
+.ui-autocomplete {
+    z-index: 990 !important;
+}
+
 .ui-widget-overlay {
     background: #262b33;
     opacity: 0.7;
