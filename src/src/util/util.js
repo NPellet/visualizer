@@ -148,6 +148,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
                 self.loadedCss = self.loadedCss || {};
 
                 if (self.loadedCss[url]) { // element is already loaded
+                    self.loadedCss[url].disabled = false;
                     return resolve(self.loadedCss[url]);
                 }
 
@@ -168,7 +169,13 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
                     reject(e);
                 }
             });
-
+        },
+        unloadCss: function(url) {
+            var that = this;
+            url = require.toUrl(url);
+            if(that.loadedCss[url]) {
+                that.loadedCss[url].disabled = true;
+            }
 
         },
 
