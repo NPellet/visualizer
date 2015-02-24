@@ -19,7 +19,7 @@ requirejs.config({
 		d3:                 'components/d3/d3.min',
 		fancytree:          'components/fancytree/dist/jquery.fancytree-all',
 		jqgrid:             'components/jqgrid_edit/js/jquery.jqGrid',
-		jquery:             'components/jquery/jquery.min',
+		jquery:             'components/jquery/dist/jquery.min',
 		'jquery-ui':        'components/jquery-ui/jquery-ui.min',
 		'jquery-tmpl':      'components/jquery-tmpl/jquery.tmpl',
 		ckeditor:           'components/ckeditor/ckeditor',
