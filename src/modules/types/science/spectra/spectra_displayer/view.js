@@ -874,14 +874,12 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
         onActionReceive: {
 
             fromToX: function (value) {
-                value = value.get();
                 this.xAxis._doZoomVal(value.from, value.to, true);
                 this.graph.redraw(true);
                 this.graph.drawSeries();
             },
 
             fromToY: function (value) {
-                value = value.get();
                 this.yAxis._doZoomVal(value.from, value.to, true);
                 this.graph.redraw(true);
                 this.graph.drawSeries();
@@ -890,7 +888,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             addSerie: function (value) {
 
                 this.colorId++;
-                value = value.get();
 
                 if (value.name) {
                     this.makeSerie(value, value, value.name);
@@ -903,8 +900,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             },
 
             removeSerie: function (value) {
-
-                value = value.get();
 
                 for (var i = 0, l = this.seriesActions.length; i < l; i++) {
 
