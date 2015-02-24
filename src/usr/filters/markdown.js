@@ -1,13 +1,23 @@
 'use strict';
 
-define(['components/markdown-js/lib/markdown'], function () {
+define(['lodash', 'src/util/util', 'marked', 'highlightjs'], function (_, Util, marked, highlights) {
+    var cssPromises = [];
+    cssPromises.push(Util.loadCss('./components/highlight.js/src/styles/default.css'));
+    var cssLoaded = Promise.all(cssPromises);
 
     return {
         filter: function gcFilter(md, resolve) {
-            resolve({
-                type: 'html',
-                value: markdown.toHTML(md.resurrect())
+            cssLoaded.then(function() {
+                resolve({
+                    type: 'html',
+                    value: marked(md.resurrect(), {
+                        highlight: function (code) {
+                            return highlights.highlightAuto(code).value;
+                        }
+                    })
+                });
             });
+
         }
     };
 });

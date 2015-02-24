@@ -37,7 +37,9 @@ requirejs.config({
 		chroma:             'components/chroma-js/chroma.min',
 		'src/shape.1dnmr':  'components/jsNMR/src/shape.1dnmr',
 		loglevel:           'components/loglevel/dist/loglevel.min',
-        "markdown-js":      'components/markdown-js/lib/markdown'
+        "markdown-js":      'components/markdown-js/lib/markdown',
+        marked:             'components/marked/lib/marked',
+        'highlightjs':     'components/highlight.js/build/highlight.pack'
 	},
 	shim: {
 		d3: {
