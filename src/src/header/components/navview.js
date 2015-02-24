@@ -371,6 +371,7 @@ define([
             return this.loadRootTree().then(function (res) {
                 var source = fancyTreeDirStructure(res);
                 that.$tree.fancytree({
+                    toggleEffect: false,
                     extensions: ['edit', 'filter'],
                     filter: {
                         mode: 'dimm'
