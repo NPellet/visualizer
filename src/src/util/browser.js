@@ -57,10 +57,10 @@ define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'src/util/util', 'jqu
     };
 
     function checkBrowser() {
-        // Check that it's not a google bot
-        var reg = /Googlebot|Mediapartners\-Google|AdsBot-Google/i;
+        // Check that it's not a bot
+        var reg = /bot/i;
         if(navigator.userAgent.match(reg)) {
-            return true;
+            return 'bot';
         }
         var browserKeys = _.keys(browsers);
         var bmap = _.map(browserKeys, function(val){
@@ -111,6 +111,10 @@ define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'src/util/util', 'jqu
     return {
         checkCompatibility: function() {
             return new Promise(function(resolve) {
+                // Bots always pass the test
+                if(browserIsCompatible === 'bot') {
+                    return resolve();
+                }
                 if(!browserIsCompatible) {
                     Debug.error('browser is not compatible');
                     return resolve(browserErrorMessage());
