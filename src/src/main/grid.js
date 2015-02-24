@@ -1,6 +1,6 @@
 'use strict';
 
-define(['jquery', 'jquery-ui', 'src/util/util', 'modules/modulefactory', 'src/util/context', 'src/util/versioning', 'src/util/api', 'forms/form', 'src/main/variables', 'src/util/debug'], function ($, ui, Util, ModuleFactory, Context, Versioning, API, Form, Variables, Debug) {
+define(['jquery', 'jquery-ui/core', 'src/util/util', 'modules/modulefactory', 'src/util/context', 'src/util/versioning', 'src/util/api', 'forms/form', 'src/main/variables', 'src/util/debug'], function ($, ui, Util, ModuleFactory, Context, Versioning, API, Form, Variables, Debug) {
 
     var definition, jqdom, moduleMove, isInit = false;
     var activeLayer = "Default layer";

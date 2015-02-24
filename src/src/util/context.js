@@ -1,6 +1,6 @@
 
 // Context menu
-define(['jquery', 'src/util/api', 'modules/modulefactory'], function($, API, ModuleFactory) {
+define(['jquery', 'src/util/api', 'modules/modulefactory', 'jquery-ui/menu'], function($, API, ModuleFactory) {
 
 	var contextMenu;
 

@@ -1,6 +1,6 @@
 'use strict';
 
-define(['jquery', 'jquery-ui', 'src/header/components/default', 'src/util/versioning', 'forms/button', 'src/util/util'], function ($, ui, Default, Versioning, Button, Util) {
+define(['jquery', 'jquery-ui/dialog', 'src/header/components/default', 'src/util/versioning', 'forms/button', 'src/util/util'], function ($, ui, Default, Versioning, Button, Util) {
 
     function Element() {
     }

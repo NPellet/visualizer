@@ -47,7 +47,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
 
                 buttons[pos[j]].branchLocal = new Button('Make branch', function () {
 
-                    require(['forms/formfactory', 'jquery-ui', 'forms/button'], function (FormFactory, jqueryui, Button) {
+                    require(['forms/formfactory', 'jquery-ui/dialog', 'forms/button'], function (FormFactory, jqueryui, Button) {
 
                         var div = $('<div></div>').dialog({modal: true, width: '80%', title: 'Make brach'});
                         div.parent().css('zIndex', 10000);

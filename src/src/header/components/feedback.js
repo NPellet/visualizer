@@ -1,6 +1,6 @@
 'use strict';
 
-define(['jquery', 'jquery-ui', 'src/header/components/default', './couchshare/share', 'forms/button', 'src/util/util'], function ($, ui, Default, Sharer, Button, Util) {
+define(['jquery', 'jquery-ui/dialog', 'src/header/components/default', './couchshare/share', 'forms/button', 'src/util/util'], function ($, ui, Default, Sharer, Button, Util) {
 
     function Element() {
     }

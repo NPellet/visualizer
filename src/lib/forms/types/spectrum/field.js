@@ -1,6 +1,6 @@
 'use strict';
 
-define([ require, '../../field', 'src/util/util', 'jquery-ui', 'components/farbtastic/src/farbtastic', 'components/spectrum/spectrum' ], function (require, FieldDefaultConstructor, Util, ui, spectrum) {
+define([ require, '../../field', 'src/util/util', 'components/farbtastic/src/farbtastic', 'components/spectrum/spectrum' ], function (require, FieldDefaultConstructor, Util, spectrum) {
 
     var felement = null;
 

@@ -20,7 +20,7 @@ requirejs.config({
 		fancytree:          'components/fancytree/dist/jquery.fancytree-all',
 		jqgrid:             'components/jqgrid_edit/js/jquery.jqGrid',
 		jquery:             'components/jquery/dist/jquery.min',
-		'jquery-ui':        'components/jquery-ui/jquery-ui.min',
+		'jquery-ui':        'components/jquery-ui/ui',
 		'jquery-tmpl':      'components/jquery-tmpl/jquery.tmpl',
 		ckeditor:           'components/ckeditor/ckeditor',
 		threejs:            'components/threejs/build/three.min',

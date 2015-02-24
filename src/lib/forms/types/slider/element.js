@@ -1,5 +1,5 @@
 
-define( [ 'jquery', 'jquery-ui' ], function( $, jqueryui ) {
+define( [ 'jquery', 'jquery-ui/slider' ], function( $ ) {
 
 	var FieldConstructor = function() {};
 	
