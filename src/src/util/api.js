@@ -260,7 +260,7 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
      * @param {*} [value] - Action value
      */
     exports.doAction = function doAction(name, value) {
-        this.repositoryActions.set(name, value);
+        this.repositoryActions.set(name, DataObject.check(value, true));
         ActionManager.execute(name, value);
     };
 
