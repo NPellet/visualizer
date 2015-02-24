@@ -1,11 +1,11 @@
 {
-  "name": "Papa-Parse",
+  "name": "papaparse",
   "main": "papaparse.js",
   "homepage": "http://papaparse.com",
   "authors": [
     "Matthew Holt"
   ],
-  "description": "Papa Parse is a powerful CSV (delimited text) parser for the browser. (A port for Node.js is available as Baby Parse.)",
+  "description": "Fast and powerful CSV parser for the browser. Converts CSV->JSON and JSON->CSV. Supports web workers and streaming large files.",
   "keywords": [
     "csv",
     "parse",
@@ -21,8 +21,10 @@
     "file",
     "filereader",
     "stream",
+    "worker",
     "workers",
     "ajax",
+    "thread",
     "threading",
     "multi-threaded"
   ],
@@ -35,15 +37,14 @@
     "tests",
     "player"
   ],
-  "version": "3.1.2",
-  "_release": "3.1.2",
+  "version": "4.1.0",
+  "_release": "4.1.0",
   "_resolution": {
     "type": "version",
-    "tag": "3.1.2",
-    "commit": "1f4f3f56201dfcf0bab46f2e06e9012783cd9217"
+    "tag": "4.1.0",
+    "commit": "3a28c0294f74cf23eb638c4f9b4cf30f8bea0aa5"
   },
-  "_source": "git://github.com/mholt/jquery.parse.git",
-  "_target": "~3.1.2",
-  "_originalSource": "papa-parse",
-  "_direct": true
+  "_source": "git://github.com/mholt/PapaParse.git",
+  "_target": "4.1.0",
+  "_originalSource": "papa-parse"
 }
