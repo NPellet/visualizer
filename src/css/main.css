@@ -400,6 +400,7 @@ div.ci-module-wrapper.ci-module-jqgrid .ci-module-content .ui-jqgrid tr.ui-state
 
 
 #header {
+    display: flex;
 	width: 100%;
 	background: #e2e2e2; /* Old browsers */
 	background: -moz-linear-gradient(left, #e2e2e2 0%, #dbdbdb 49%, #fefefe 99%); /* FF3.6+ */
@@ -411,7 +412,6 @@ div.ci-module-wrapper.ci-module-jqgrid .ci-module-content .ui-jqgrid tr.ui-state
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e2e2e2', endColorstr='#fefefe',GradientType=1 ); /* IE6-9 */
     top:0px;
     z-index: 900;
-    position: fixed;
 }
 
 #title  {
@@ -420,12 +420,11 @@ div.ci-module-wrapper.ci-module-jqgrid .ci-module-content .ui-jqgrid tr.ui-state
 	margin-left: 10px;
 	height: 100%;
 	float: left;
-	display: table;
+    overflow:hidden;
+    flex: 1 1 10px;
 }
 
 #title div {
-	display: table-cell;
-    vertical-align: middle;
     height: 100%;
 }
 
@@ -435,11 +434,9 @@ div.ci-module-wrapper.ci-module-jqgrid .ci-module-content .ui-jqgrid tr.ui-state
 	float: right;
 	list-style-type: none;
 	height: 100%;
-	
 	top: 0;
 	right: 0;
 	height: 100%;
-/*	display: table;*/
 }
 
 #header ul li {

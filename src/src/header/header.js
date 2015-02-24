@@ -37,7 +37,7 @@ define(['require', 'jquery', 'src/util/versioning'], function (require, $, Versi
 
         setHeight: function (height) {
             this.dom.css('height', height);
-            $('#modules-grid').css('margin-top', height);
+            //$('#modules-grid').css('margin-top', height);
         },
 
         setTitle: function (view) {
