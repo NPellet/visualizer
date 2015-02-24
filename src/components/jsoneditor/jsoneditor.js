@@ -20,11 +20,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * Copyright (c) 2011-2014 Jos de Jong, http://jsoneditoronline.org
+ * Copyright (c) 2011-2015 Jos de Jong, http://jsoneditoronline.org
  *
  * @author  Jos de Jong, <wjosdejong@gmail.com>
- * @version 3.1.2
- * @date    2014-09-03
+ * @version 3.2.0
+ * @date    2015-01-25
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -1120,6 +1120,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // prevent default submit action when the editor is located inside a form
 	      event.preventDefault();
 	    };
+	    this.frame.onkeydown = function (event) {
+	      me._onKeyDown(event);
+	    };
 
 	    // create menu
 	    this.menu = document.createElement('div');
@@ -1129,7 +1132,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // create format button
 	    var buttonFormat = document.createElement('button');
 	    buttonFormat.className = 'format';
-	    buttonFormat.title = 'Format JSON data, with proper indentation and line feeds';
+	    buttonFormat.title = 'Format JSON data, with proper indentation and line feeds (Ctrl+\\)';
 	    this.menu.appendChild(buttonFormat);
 	    buttonFormat.onclick = function () {
 	      try {
@@ -1143,7 +1146,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // create compact button
 	    var buttonCompact = document.createElement('button');
 	    buttonCompact.className = 'compact';
-	    buttonCompact.title = 'Compact JSON data, remove all whitespaces';
+	    buttonCompact.title = 'Compact JSON data, remove all whitespaces (Ctrl+Shift+\\)';
 	    this.menu.appendChild(buttonCompact);
 	    buttonCompact.onclick = function () {
 	      try {
@@ -1178,7 +1181,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      editor.setShowPrintMargin(false);
 	      editor.setFontSize(13);
 	      editor.getSession().setMode('ace/mode/json');
-	      editor.getSession().setTabSize(2);
+	      editor.getSession().setTabSize(this.indentation);
 	      editor.getSession().setUseSoftTabs(true);
 	      editor.getSession().setUseWrapMode(true);
 	      this.editor = editor;
@@ -1229,6 +1232,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
+	   * Event handler for keydown. Handles shortcut keys
+	   * @param {Event} event
+	   * @private
+	   */
+	  textmode._onKeyDown = function (event) {
+	    var keynum = event.which || event.keyCode;
+	    var handled = false;
+
+	    if (keynum == 220 && event.ctrlKey) {
+	      if (event.shiftKey) { // Ctrl+Shift+\
+	        this.compact();
+	      }
+	      else { // Ctrl+\
+	        this.format();
+	      }
+	      handled = true;
+	    }
+
+	    if (handled) {
+	      event.preventDefault();
+	      event.stopPropagation();
+	    }
+	  };
+
+	  /**
 	   * Detach the editor from the DOM
 	   * @private
 	   */
@@ -1264,16 +1292,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Compact the code in the formatter
 	   */
 	  textmode.compact = function () {
-	    var json = util.parse(this.getText());
-	    this.setText(JSON.stringify(json));
+	    var json = this.get();
+	    var text = JSON.stringify(json);
+	    this.setText(text);
 	  };
 
 	  /**
 	   * Format the code in the formatter
 	   */
 	  textmode.format = function () {
-	    var json = util.parse(this.getText());
-	    this.setText(JSON.stringify(json, null, this.indentation));
+	    var json = this.get();
+	    var text = JSON.stringify(json, null, this.indentation);
+	    this.setText(text);
 	  };
 
 	  /**
@@ -1311,7 +1341,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @return {Object} json
 	   */
 	  textmode.get = function() {
-	    return util.parse(this.getText());
+	    var text = this.getText();
+	    var json;
+
+	    try {
+	      json = util.parse(text); // this can throw an error
+	    }
+	    catch (err) {
+	      // try to sanitize json, replace JavaScript notation with JSON notation
+	      text = util.sanitize(text);
+	      this.setText(text);
+
+	      // try to parse again
+	      json = util.parse(text); // this can throw an error
+	    }
+
+	    return json;
 	  };
 
 	  /**
@@ -1379,30 +1424,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return JSON.parse(jsonString);
 	    }
 	    catch (err) {
-	      // try to load as JavaScript instead of JSON (like "{a: 2}" instead of "{"a": 2}"
-	      try {
-	        return util.parseJS(jsonString);
-	      }
-	      catch(err2) {
-	        // ok no luck loading as JavaScript
+	      // try to throw a more detailed error message using validate
+	      util.validate(jsonString);
 
-	        // try to throw a more detailed error message using validate
-	        util.validate(jsonString);
-
-	        // rethrow the original error
-	        throw err;
-	      }
+	      // rethrow the original error
+	      throw err;
 	    }
 	  };
 
 	  /**
-	   * Parse a string containing an object in JavaScript notation into a JSON.
-	   * Throws an error when not successful. This function can for example parse
-	   * a string like "{a: 2, 'b': {c: 'd'}".
+	   * Sanitize a JSON-like string containing. For example changes JavaScript
+	   * notation into JSON notation.
+	   * This function for example changes a string like "{a: 2, 'b': {c: 'd'}"
+	   * into '{"a": 2, "b": {"c": "d"}'
 	   * @param {string} jsString
-	   * @returns {JSON} json
+	   * @returns {string} json
 	   */
-	  util.parseJS = function (jsString) {
+	  util.sanitize = function (jsString) {
 	    // escape all single and double quotes inside strings
 	    var chars = [];
 	    var inString = false;
@@ -1443,7 +1481,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return $1 + '"' + $2 + '"' + $3;
 	    });
 
-	    return JSON.parse(jsonString);
+	    return jsonString;
 	  };
 
 	  /**
@@ -2608,7 +2646,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var node = this;
 	    var path = [];
 	    while (node) {
-	      var field = node.field || node.index;
+	      var field = node.field != undefined ? node.field : node.index;
 	      if (field !== undefined) {
 	        path.unshift(field);
 	      }
