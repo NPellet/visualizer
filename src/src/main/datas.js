@@ -927,4 +927,14 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
 
     }
 
+    return {
+        DataObject: DataObject,
+        DataArray: DataArray,
+        DataString: DataString,
+        DataBoolean: DataBoolean,
+        DataNumber: DataNumber,
+        isSpecialObject: isSpecialObject,
+        isSpecialNativeObject: isSpecialNativeObject
+    };
+
 });

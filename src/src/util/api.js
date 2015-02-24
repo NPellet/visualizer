@@ -4,7 +4,7 @@
  * Main visualizer API
  * @module src/util/api
  */
-define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables', 'src/util/util'], function (Traversing, ActionManager, Variables, Util) {
+define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables', 'src/util/util', 'src/main/datas'], function (Traversing, ActionManager, Variables, Util, Data) {
 
     var variableFilters;
     var viewLocked = false;
@@ -260,7 +260,10 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
      * @param {*} [value] - Action value
      */
     exports.doAction = function doAction(name, value) {
-        this.repositoryActions.set(name, DataObject.check(value, true));
+        if (Data.isSpecialObject(value)) {
+            value = value.get();
+        }
+        this.repositoryActions.set(name, value);
         ActionManager.execute(name, value);
     };
 
