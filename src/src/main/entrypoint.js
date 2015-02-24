@@ -791,7 +791,7 @@ define(['jquery',
             var css = [
                 'css/main.css',
                 'components/colors/css/colors.min.css',
-                'components/jquery-ui/themes/smoothness/jquery-ui.min',
+                'components/jquery-ui/themes/smoothness/jquery-ui.min.css',
                 'lib/forms/style.css',
                 'components/fancytree/dist/skin-lion/ui.fancytree.css',
                 'components/jqgrid_edit/css/ui.jqgrid.css',
