@@ -6,7 +6,7 @@ var request = require('../..')
   , url = require('url');
 
 app.get('/', function(req, res){
-  res.send(400, 'invalid json');
+  res.status(400).send('invalid json');
 });
 
 app.listen(8888);
@@ -21,6 +21,7 @@ describe('res.toError()', function(){
       assert(err.method == 'GET');
       assert(err.path == '/');
       assert(err.message == 'cannot GET / (400)');
+      assert(err.text == 'invalid json');
       done();
     });
   })

@@ -7,7 +7,7 @@ var EventEmitter = require('events').EventEmitter
   , url = require('url');
 
 app.get('/login', function(req, res){
-  res.send('<form id="login"></form>');
+  res.status(200).send('<form id="login"></form>');
 });
 
 app.all('/echo', function(req, res){
@@ -16,7 +16,7 @@ app.all('/echo', function(req, res){
 });
 
 app.get('/json', function(req, res){
-  res.send({ name: 'manny' });
+  res.status(200).json({ name: 'manny' });
 });
 
 app.get('/', function(req, res){
@@ -32,7 +32,7 @@ app.get('/movies/all', function(req, res){
 });
 
 app.get('/movies/all/0', function(req, res){
-  res.send('first movie page');
+  res.status(200).send('first movie page');
 });
 
 app.get('/links', function(req, res){
@@ -42,16 +42,16 @@ app.get('/links', function(req, res){
 
 app.get('/xml', function(req, res){
   res.type('xml');
-  res.send('<some><xml></xml></some>');
+  res.status(200).send('<some><xml></xml></some>');
 });
 
 app.get('/custom', function(req, res){
   res.type('application/x-custom');
-  res.send('custom stuff');
+  res.status(200).send('custom stuff');
 });
 
 app.get('/error', function(req, res){
-  res.send(500, 'boom');
+  res.status(500).send('boom');
 });
 
 app.listen(5000);
@@ -98,6 +98,37 @@ describe('request', function(){
         done();
       });
     })
+  })
+
+  describe('req.toJSON()', function(){
+    it('should describe the request', function(done){
+      request
+      .post(':5000/echo')
+      .send({ foo: 'baz' })
+      .end(function(res){
+        var obj = res.request.toJSON();
+        assert('POST' == obj.method);
+        assert(':5000/echo' == obj.url);
+        assert('baz' == obj.data.foo);
+        done();
+      });
+    })
+  })
+
+  describe('res.toJSON()', function(){
+    it('should describe the response', function(done){
+      request
+      .post(':5000/echo')
+      .send({ foo: 'baz' })
+      .end(function(res){
+        var obj = res.toJSON();
+        assert('object' == typeof obj.header);
+        assert('object' == typeof obj.req);
+        assert(200 == obj.status);
+        assert('{"foo":"baz"}' == obj.text);
+        done();
+      });
+    });
   })
 
   describe('res.error', function(){
