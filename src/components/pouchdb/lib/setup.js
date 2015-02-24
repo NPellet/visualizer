@@ -42,7 +42,7 @@ PouchDB.parseAdapter = function (name, opts) {
   // check for browsers that have been upgraded from websql-only to websql+idb
   var skipIdb = 'idb' in PouchDB.adapters && 'websql' in PouchDB.adapters &&
     utils.hasLocalStorage() &&
-    global.localStorage['_pouch__websqldb_' + PouchDB.prefix + name];
+    localStorage['_pouch__websqldb_' + PouchDB.prefix + name];
 
   if (typeof opts !== 'undefined' && opts.db) {
     adapterName = 'leveldb';
@@ -72,14 +72,19 @@ PouchDB.parseAdapter = function (name, opts) {
 };
 
 PouchDB.destroy = utils.toPromise(function (name, opts, callback) {
+
   if (typeof opts === 'function' || typeof opts === 'undefined') {
     callback = opts;
     opts = {};
   }
-
   if (name && typeof name === 'object') {
     opts = name;
     name = undefined;
+  }
+
+  if (!opts.internal) {
+    console.log('PouchDB.destroy() is deprecated and will be removed. ' +
+                'Please use db.destroy() instead.');
   }
 
   var backend = PouchDB.parseAdapter(opts.name || name, opts);
@@ -121,8 +126,8 @@ PouchDB.destroy = utils.toPromise(function (name, opts, callback) {
       var deletedMap = Object.keys(dependentDbs).map(function (name) {
         var trueName = usePrefix ?
           name.replace(new RegExp('^' + PouchDB.prefix), '') : name;
-        var subOpts = utils.extend(true, opts, {adapter: backend.adapter});
-        return PouchDB.destroy(trueName, subOpts);
+        var subOpts = utils.extend(true, opts, db.__opts || {});
+        return db.constructor.destroy(trueName, subOpts);
       });
       Promise.all(deletedMap).then(destroyDb, function (error) {
         callback(error);
@@ -131,11 +136,6 @@ PouchDB.destroy = utils.toPromise(function (name, opts, callback) {
   });
 });
 
-PouchDB.allDbs = utils.toPromise(function (callback) {
-  var err = new Error('allDbs method removed');
-  err.stats = '400';
-  callback(err);
-});
 PouchDB.adapter = function (id, obj) {
   if (obj.valid()) {
     PouchDB.adapters[id] = obj;

@@ -1,8 +1,10 @@
 "use strict";
 
 var request = require('request');
+
+var buffer = require('./buffer');
 var errors = require('./errors');
-var utils = require("../utils");
+var utils = require('../utils');
 
 function ajax(options, adapterCallback) {
 
@@ -48,22 +50,8 @@ function ajax(options, adapterCallback) {
     }
     if (Array.isArray(obj)) {
       obj = obj.map(function (v) {
-        var obj;
-        if (v.ok) {
-          return v;
-        } else if (v.error && v.error === 'conflict') {
-          obj = errors.REV_CONFLICT;
-          obj.id = v.id;
-          return obj;
-        } else if (v.error && v.error === 'forbidden') {
-          obj = errors.FORBIDDEN;
-          obj.id = v.id;
-          obj.reason = v.reason;
-          return obj;
-        } else if (v.missing) {
-          obj = errors.MISSING_DOC;
-          obj.missing = v.missing;
-          return obj;
+        if (v.error || v.missing) {
+          return errors.generateErrorFromResponse(v);
         } else {
           return v;
         }
@@ -73,7 +61,7 @@ function ajax(options, adapterCallback) {
   }
 
   function onError(err, cb) {
-    var errParsed, errObj, errType, key;
+    var errParsed, errObj;
     if (err.code && err.status) {
       var err2 = new Error(err.message || err.code);
       err2.status = err.status;
@@ -82,40 +70,9 @@ function ajax(options, adapterCallback) {
     try {
       errParsed = JSON.parse(err.responseText);
       //would prefer not to have a try/catch clause
-      for (key in errors) {
-        if (errors.hasOwnProperty(key) &&
-            errors[key].name === errParsed.error) {
-          errType = errors[key];
-          break;
-        }
-      }
-      if (!errType) {
-        errType = errors.UNKNOWN_ERROR;
-        if (err.status) {
-          errType.status = err.status;
-        }
-        if (err.statusText) {
-          err.name = err.statusText;
-        }
-      }
-      errObj = errors.error(errType, errParsed.reason);
+      errObj = errors.generateErrorFromResponse(errParsed);
     } catch (e) {
-      for (var key in errors) {
-        if (errors.hasOwnProperty(key) && errors[key].status === err.status) {
-          errType = errors[key];
-          break;
-        }
-      }
-      if (!errType) {
-        errType = errors.UNKNOWN_ERROR;
-        if (err.status) {
-          errType.status = err.status;
-        }
-        if (err.statusText) {
-          err.name = err.statusText;
-        }
-      }
-      errObj = errors.error(errType);
+      errObj = errors.generateErrorFromResponse(err);
     }
     cb(errObj);
   }
@@ -138,14 +95,22 @@ function ajax(options, adapterCallback) {
     options.json = false;
   }
 
+  function defaultBody(data) {
+    if (process.browser) {
+      return '';
+    }
+    return new buffer('', 'binary');
+  }
+
   return request(options, function (err, response, body) {
     if (err) {
       err.status = response ? response.statusCode : 400;
       return onError(err, callback);
     }
+
     var error;
-    var content_type = response.headers['content-type'];
-    var data = (body || new Buffer(''));
+    var content_type = response.headers && response.headers['content-type'];
+    var data = body || defaultBody();
 
     // CouchDB doesn't always return the right content-type for JSON data, so
     // we check for ^{ and }$ (ignoring leading/trailing whitespace)
@@ -158,20 +123,11 @@ function ajax(options, adapterCallback) {
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       onSuccess(data, response, callback);
-    }
-    else {
+    } else {
       if (options.binary) {
         data = JSON.parse(data.toString());
       }
-      if (data.reason === 'missing') {
-        error = errors.MISSING_DOC;
-      } else if (data.reason === 'no_db_file') {
-        error = errors.error(errors.DB_MISSING, data.reason);
-      } else if (data.error === 'conflict') {
-        error = errors.REV_CONFLICT;
-      } else {
-        error = errors.error(errors.UNKNOWN_ERROR, data.reason, data.error);
-      }
+      error = errors.generateErrorFromResponse(data);
       error.status = response.statusCode;
       callback(error);
     }

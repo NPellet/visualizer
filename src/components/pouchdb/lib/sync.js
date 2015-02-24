@@ -1,4 +1,5 @@
 'use strict';
+
 var utils = require('./utils');
 var replication = require('./replicate');
 var replicate = replication.replicate;
@@ -21,10 +22,11 @@ function sync(src, target, opts, callback) {
   target = replication.toPouch(target, opts);
   return new Sync(src, target, opts, callback);
 }
+
 function Sync(src, target, opts, callback) {
   var self = this;
   this.canceled = false;
-  
+
   var onChange, complete;
   if ('onChange' in opts) {
     onChange = opts.onChange;
@@ -38,8 +40,8 @@ function Sync(src, target, opts, callback) {
   }
 
   this.push = replicate(src, target, opts);
-
   this.pull = replicate(target, src, opts);
+
   var emittedCancel = false;
   function onCancel(data) {
     if (!emittedCancel) {
@@ -47,7 +49,6 @@ function Sync(src, target, opts, callback) {
       self.emit('cancel', data);
     }
   }
-
   function pullChange(change) {
     self.emit('change', {
       direction: 'pull',
@@ -60,9 +61,22 @@ function Sync(src, target, opts, callback) {
       change: change
     });
   }
-  var listeners = {};
+  function pushDenied(doc) {
+    self.emit('denied', {
+      direction: 'push',
+      doc: doc
+    });
+  }
+  function pullDenied(doc) {
+    self.emit('denied', {
+      direction: 'pull',
+      doc: doc
+    });
+  }
 
+  var listeners = {};
   var removed = {};
+
   function removeAll(type) { // type is 'push' or 'pull'
     return function (event, func) {
       var isChange = event === 'change' &&
@@ -83,10 +97,18 @@ function Sync(src, target, opts, callback) {
     };
   }
 
+  if (opts.live) {
+    this.push.on('complete', self.pull.cancel.bind(self.pull));
+    this.pull.on('complete', self.push.cancel.bind(self.push));
+  }
+
   this.on('newListener', function (event) {
     if (event === 'change') {
       self.pull.on('change', pullChange);
       self.push.on('change', pushChange);
+    } else if (event === 'denied') {
+      self.pull.on('denied', pullDenied);
+      self.push.on('denied', pushDenied);
     } else if (event === 'cancel') {
       self.pull.on('cancel', onCancel);
       self.push.on('cancel', onCancel);
