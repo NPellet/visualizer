@@ -21,7 +21,6 @@ requirejs.config({
 		jqgrid:             'components/jqgrid_edit/js/jquery.jqGrid',
 		jquery:             'components/jquery/dist/jquery.min',
 		'jquery-ui':        'components/jquery-ui/ui',
-		'jquery-tmpl':      'components/jquery-tmpl/jquery.tmpl',
 		ckeditor:           'components/ckeditor/ckeditor',
 		threejs:            'components/threejs/build/three.min',
 		forms:              'lib/forms',
@@ -72,7 +71,6 @@ requirejs.config({
 		jqgrid: ['jquery', 'components/jqgrid_edit/js/i18n/grid.locale-en'],
 		'libs/jsmol/js/JSmolApplet': ['libs/jsmol/JSmol.min.nojq'],
 		'lib/flot/jquery.flot.pie': ['jquery', 'lib/flot/jquery.flot'],
-		'jquery-tmpl': ['jquery'],
 		'lib/pixastic/pixastic': ['lib/pixastic/pixastic/pixastic.core'],
 		'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer.js': ['lib/biojs-1.0/src/main/javascript/Biojs.js'],
 		'lib/biojs-1.0/src/main/javascript/Biojs.DasProteinFeatureViewer.js': ['lib/biojs-1.0/src/main/javascript/Biojs.js', 'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer.js']

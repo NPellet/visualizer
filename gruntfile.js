@@ -98,7 +98,6 @@ module.exports = function (grunt) {
                             './jsbarcode/jsBarcode.min.js',
                             './slickgrid/**',
                             './ml/dist/*',
-                            './alpaca/**',
                             './jquery-tmpl/**',
                             './setImmediate/setImmediate.js',
                             './chroma-js/chroma.min.js',

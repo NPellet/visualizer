@@ -1,10 +1,6 @@
 {
   "modules": [
     {
-      "moduleName": "Alpaca form",
-      "url": "modules/types/edition/alpaca/"
-    },
-    {
       "moduleName": "Edit/Display",
       "url": "modules/types/edition/dualview/"
     },
