@@ -282,13 +282,13 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
             if (this.colorjpath) {
                 color = this.colorjpath(source);
-                
-                if( color.length && color.length == 3 ) {
-                    color = 'rgb(' + color.join(',') + ')';
-                } else if( color.length && color.length == 4 ) {
-                    color = 'rgba(' + color.join(',') + ')';
+                if (Array.isArray(color)) {
+                    if (color.length === 3) {
+                        color = 'rgb(' + color.join(',') + ')';
+                    } else {
+                        color = 'rgba(' + color.join(',') + ')';
+                    }
                 }
-
                 html += ' style="background-color: ' + color + ';"';
             }
 
