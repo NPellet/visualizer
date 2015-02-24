@@ -29,7 +29,7 @@ requirejs.config({
 		pouchdb:            'components/pouchdb/dist/pouchdb.min',
 		uri:                'components/uri.js/src',
 		underscore:         'components/underscore/underscore-min',
-        lodash:             'components/lodash/dist/lodash.min',
+        lodash:             'components/lodash/lodash.min',
         modernizr:          'components/modernizr/modernizr',
         bowser:             'components/bowser/bowser.min',
         'jquery-cookie':    'components/jquery-cookie/jquery.cookie',

@@ -89,7 +89,7 @@ module.exports = function (grunt) {
                             './superagent/superagent.js',
                             './modernizr/modernizr.js',
                             './underscore/underscore-min',
-                            './lodash/dist/lodash.min.js',
+                            './lodash/lodash.min.js',
                             './bowser/bowser.min.js',
                             './jquery-cookie/jquery.cookie.js',
                             './chemcalc/lib.js',
