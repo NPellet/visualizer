@@ -38,7 +38,7 @@ requirejs.config({
 		loglevel:           'components/loglevel/dist/loglevel.min',
         "markdown-js":      'components/markdown-js/lib/markdown',
         marked:             'components/marked/lib/marked',
-        'highlightjs':     'components/highlight.js/build/highlight.pack'
+        'highlightjs':		'components/highlight.js/build/highlight.pack'
 	},
 	shim: {
 		d3: {
@@ -73,7 +73,8 @@ requirejs.config({
 		'lib/flot/jquery.flot.pie': ['jquery', 'lib/flot/jquery.flot'],
 		'lib/pixastic/pixastic': ['lib/pixastic/pixastic/pixastic.core'],
 		'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer.js': ['lib/biojs-1.0/src/main/javascript/Biojs.js'],
-		'lib/biojs-1.0/src/main/javascript/Biojs.DasProteinFeatureViewer.js': ['lib/biojs-1.0/src/main/javascript/Biojs.js', 'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer.js']
+		'lib/biojs-1.0/src/main/javascript/Biojs.DasProteinFeatureViewer.js': ['lib/biojs-1.0/src/main/javascript/Biojs.js', 'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer.js'],
+		fancytree: ['jquery-ui/droppable']
 	},
 
 	map: {

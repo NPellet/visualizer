@@ -5,14 +5,14 @@
  *
  * @see https://github.com/mar10/jquery-ui-contextmenu
  *
- * Copyright (c) 2013-2015, Martin Wendt (http://wwWendt.de). Licensed MIT.
+ * Copyright (c) 2013-2014, Martin Wendt (http://wwWendt.de). Licensed MIT.
  */
 
 (function( factory ) {
 	"use strict";
 	if ( typeof define === "function" && define.amd ) {
 		// AMD. Register as an anonymous module.
-		define([ "jquery-ui/menu" ], factory );
+		define([ "jquery" ], factory );
 	} else {
 		// Browser globals
 		factory( jQuery );
@@ -22,12 +22,7 @@
 "use strict";
 
 var supportSelectstart = "onselectstart" in document.createElement("div"),
-	match = $.ui.menu.version.match(/^(\d)\.(\d+)/),
-	uiVersion = {
-		major: parseInt(match[1], 10),
-		minor: parseInt(match[2], 10)
-	},
-	isLTE110 = ( uiVersion.major < 2 && uiVersion.minor < 11 );
+	match, uiVersion;
 
 $.widget("moogle.contextmenu", {
 	version: "@VERSION",
@@ -275,17 +270,13 @@ $.widget("moogle.contextmenu", {
 			.unbind("mousedown" + this.eventNamespace)
 			.unbind("touchstart" + this.eventNamespace)
 			.unbind("keydown" + this.eventNamespace);
-
+		this.$menu
+			.unbind("contextmenu" + this.eventNamespace);
 		self.currentTarget = null; // issue #44 after hide animation is too late
-		if ( this.$menu ) { // #88: widget might have been destroyed already
-			this.$menu
-				.unbind("contextmenu" + this.eventNamespace);
-			this._hide(this.$menu, hideOpts, function() {
-				self._trigger("close");
-			});
-		} else {
+
+		this._hide(this.$menu, hideOpts, function() {
 			self._trigger("close");
-		}
+		});
 	},
 	/** Handle $().contextmenu("option", key, value) calls. */
 	_setOption: function(key, value) {
@@ -360,54 +351,6 @@ $.widget("moogle.contextmenu", {
  * Global functions
  */
 $.extend($.moogle.contextmenu, {
-	/** Convert a menu description into a into a <li> content. */
-	createEntryMarkup: function(entry, $parentLi) {
-		var $a = null;
-
-		if ( !/[^\-\u2014\u2013\s]/.test( entry.title ) ) {
-			// hyphen, em dash, en dash: separator as defined by UI Menu 1.10
-			$parentLi.text(entry.title);
-		} else {
-			if ( isLTE110 ) {
-				// jQuery UI Menu 1.10 or before required an `<a>` tag
-				$parentLi.attr("data-command", entry.cmd);
-				$a = $("<a/>", {
-						html: "" + entry.title,
-						href: "#"
-					}).appendTo($parentLi);
-
-				if ( entry.uiIcon ) {
-					$a.append($("<span class='ui-icon' />").addClass(entry.uiIcon));
-				}
-
-			} else {
-				// jQuery UI Menu 1.11+ preferes to avoid `<a>` tags
-				$parentLi
-					.attr("data-command", entry.cmd)
-					.html("" + entry.title);
-				if ( $.isFunction(entry.action) ) {
-					$parentLi.data("actionHandler", entry.action);
-				}
-				if ( entry.uiIcon ) {
-					$parentLi
-						.append($("<span class='ui-icon' />")
-						.addClass(entry.uiIcon));
-				}
-			}
-			if ( $.isFunction(entry.action) ) {
-				$parentLi.data("actionHandler", entry.action);
-			}
-			if ( entry.disabled ) {
-				$parentLi.addClass("ui-state-disabled");
-			}
-			if ( entry.addClass ) {
-				$parentLi.addClass(entry.addClass);
-			}
-			if ( $.isPlainObject(entry.data) ) {
-				$parentLi.data(entry.data);
-			}
-		}
-	},
 	/** Convert a nested array of command objects into a <ul> structure. */
 	createMenuMarkup: function(options, $parentUl) {
 		var i, menu, $ul, $li;
@@ -427,14 +370,6 @@ $.extend($.moogle.contextmenu, {
 		}
 		return $parentUl;
 	},
-	/** Returns true if the menu item has child menu items */
-	isMenu: function(item) {
-		if ( isLTE110 ) {
-			return item.has(">a[aria-haspopup='true']").length > 0;
-		} else {
-			return item.is("[aria-haspopup='true']");
-		}
-	},
 	/** Replaces the value of elem's first text node child */
 	replaceFirstTextNodeChild: function(elem, text) {
 		elem
@@ -442,15 +377,90 @@ $.extend($.moogle.contextmenu, {
 			.filter(function() { return this.nodeType === 3; })
 			.first()
 			.replaceWith(text);
-	},
-	/** Updates the menu item's title */
-	updateTitle: function(item, title) {
-		if ( isLTE110 ) {
-			$.moogle.contextmenu.replaceFirstTextNodeChild($("a", item), title);
-		} else {
-			$.moogle.contextmenu.replaceFirstTextNodeChild(item, title);
-		}
 	}
 });
+
+match = $.ui.menu.version.match(/^(\d)\.(\d+)/);
+
+uiVersion = {
+	major: parseInt(match[1], 10),
+	minor: parseInt(match[2], 10)
+};
+
+if ( uiVersion.major < 2 && uiVersion.minor < 11 ) {
+	$.extend($.moogle.contextmenu, {
+		/** Convert a menu description into a into a <li> content. */
+		createEntryMarkup: function(entry, $parentLi) {
+			var $a = null;
+
+			// if (entry.title.match(/^---/)) {
+			if ( !/[^\-\u2014\u2013\s]/.test( entry.title ) ) {
+				// hyphen, em dash, en dash: separator as defined by UI Menu 1.10
+				$parentLi.text(entry.title);
+			} else {
+				$parentLi.attr("data-command", entry.cmd);
+				$a = $("<a/>", {
+					html: "" + entry.title, // allow to pass HTML markup
+					href: "#"
+				}).appendTo($parentLi);
+				if ( $.isFunction(entry.action) ) {
+					$parentLi.data("actionHandler", entry.action);
+				}
+				if (entry.uiIcon) {
+					$a.append($("<span class='ui-icon' />").addClass(entry.uiIcon));
+				}
+				if (entry.disabled) {
+					$parentLi.addClass("ui-state-disabled");
+				}
+				if ($.isPlainObject(entry.data)) {
+					$parentLi.data(entry.data);
+				}
+			}
+		},
+		/** Returns true if the menu item has child menu items */
+		isMenu: function(item) {
+			return item.has(">a[aria-haspopup='true']").length > 0;
+		},
+		/** Updates the menu item's title */
+		updateTitle: function(item, title) {
+			$.moogle.contextmenu.replaceFirstTextNodeChild($("a", item), title);
+		}
+	});
+} else {
+	$.extend($.moogle.contextmenu, {
+		/** Convert a menu description into a into a <li> content. */
+		createEntryMarkup: function(entry, $parentLi) {
+			if ( !/[^\-\u2014\u2013\s]/.test( entry.title ) ) {
+				$parentLi.text(entry.title);
+			} else {
+				$parentLi
+					.attr("data-command", entry.cmd)
+					.html("" + entry.title);
+				if ( $.isFunction(entry.action) ) {
+					$parentLi.data("actionHandler", entry.action);
+				}
+				if ( entry.uiIcon ) {
+					$parentLi
+						.append($("<span class='ui-icon' />")
+						.addClass(entry.uiIcon));
+				}
+				if ( entry.disabled ) {
+					$parentLi.addClass("ui-state-disabled");
+				}
+				if ( $.isPlainObject(entry.data) ) {
+					$parentLi.data(entry.data);
+				}
+			}
+		},
+		/** Returns true if the menu item has child menu items */
+		isMenu: function(item) {
+			return item.is("[aria-haspopup='true']");
+		},
+		/** Updates the menu item's title */
+		updateTitle: function(item, title) {
+			$.moogle.contextmenu.replaceFirstTextNodeChild(item, title);
+		}
+	});
+}
 
 }));

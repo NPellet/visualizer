@@ -10,7 +10,8 @@ define([
     'forms/form',
     'lib/couchdb/jquery.couch',
     'fancytree',
-    'components/ui-contextmenu/jquery.ui-contextmenu.min'
+    'components/ui-contextmenu/jquery.ui-contextmenu.min',
+    'jquery-ui/autocomplete'
 ], function ($, Default, Versioning, Button, Util, Base64, Form) {
 
     function CouchDBManager() {
@@ -870,6 +871,7 @@ define([
                     var tree = createFullTree(data.rows, that.flavor);
                     var theTree = $('#' + that.cssId('tree'));
                     theTree.fancytree({
+                        toggleEffect: false,
                         extensions: ['dnd'],
                         dnd: dnd,
                         source: [],

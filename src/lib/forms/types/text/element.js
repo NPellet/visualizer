@@ -1,5 +1,5 @@
 
-define( [ ], function(  ) {
+define( ['jquery-ui/autocomplete'], function(  ) {
 
 	var FieldConstructor = function() {};
 	

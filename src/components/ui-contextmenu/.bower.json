@@ -1,7 +1,7 @@
 {
   "name": "ui-contextmenu",
   "description": "Turn a jQuery UI Menu widget into a contextmenu.",
-  "version": "1.8.2",
+  "version": "1.8.1",
   "main": [
     "jquery.ui-contextmenu.js"
   ],
@@ -44,13 +44,13 @@
   },
   "devDependencies": {},
   "homepage": "https://github.com/mar10/jquery-ui-contextmenu",
-  "_release": "1.8.2",
+  "_release": "1.8.1",
   "_resolution": {
     "type": "version",
-    "tag": "v1.8.2",
-    "commit": "e7eaae9842cc146f36161dafeb223a36be7e4aab"
+    "tag": "v1.8.1",
+    "commit": "b958ed8cb8199a3ff308a3209404a808fe169997"
   },
   "_source": "git://github.com/mar10/jquery-ui-contextmenu.git",
-  "_target": "1.8.2",
+  "_target": "1.8.1",
   "_originalSource": "ui-contextmenu"
 }
