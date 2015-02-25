@@ -2,6 +2,10 @@
     width: 150px;
 }
 
+.ui-menu .ui-menu-item {
+    list-style-image: none;
+}
+
 .ui-menu .ui-menu-item a {
     line-height: 1.5;
 }
