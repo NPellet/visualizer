@@ -16,6 +16,11 @@
     z-index: 999 !important;
 }
 
+.ui-icon.ui-resizable-se {
+    width: 12px;
+    height: 12px;
+}
+
 .ui-widget { font-family: inherit; font-size: inherit; }
 .ui-dialog { overflow: visible; }
 .ui-dialog .ui-dialog-content { overflow: visible; }
