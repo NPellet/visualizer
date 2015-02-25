@@ -1,9 +1,9 @@
 'use strict';
 
-define(['modules/default/defaultview','src/util/datatraversing',
+define(['modules/default/defaultview', 'src/main/datas', 'src/util/datatraversing',
   'src/util/api','src/util/util',
   'lodash', 'threejs', 'src/util/debug', 'chroma', 'components/ml/dist/ml.min',
-  'lib/threejs/TrackballControls'], function(Default, Traversing, API, Util, _, THREE, Debug, chroma, ml) {
+  'lib/threejs/TrackballControls'], function(Default, Data, Traversing, API, Util, _, THREE, Debug, chroma, ml) {
 
 
   var Stat = ml.Stat;
@@ -1638,7 +1638,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
       self._data.shape = [];
       self._data._highlight = [];
 
-      var jp = _.cloneDeep(jpaths.resurrect());
+      var jp = _.cloneDeep(Data.resurrect(jpaths));
       _.each(jp, function(v) {
         v.unshift(0);
       });
