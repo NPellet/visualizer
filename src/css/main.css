@@ -34,7 +34,9 @@
 	position: relative;
 }
 
-
+.ci-item-newmodule a {
+	display: block;
+}
 
 table#viewport, table#viewport td, #ci-module-grid, #ci-left > *, .ci-expand > *, .ci-module-header, .ci-module-header > *, .ci-module-content, .ci-module, .ci-module-wrapper {
   -webkit-user-select: none;
