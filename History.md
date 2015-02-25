@@ -1,23 +1,24 @@
-HEAD
-===================
-* Util
- * Add unloadCss that disables some css
-* Filters
- * Add markdown filter with code highlighting
-* Components
- * Add [marked](https://github.com/chjj/marked)
- * Add [highlight.js](https://github.com/isagalaev/highlight.js)
-
-2.14.0 / 2015-02-23
+2.14.0 / HEAD
 ===================
 
 * Core
+ * datas: export classes and functions
+ * util: Add unloadCss that disables some css
+ * ui: Add dialog creation helper
  * typerenderer: add regex type using RegExper
  * add support to evaluate code in a sandbox
+ * add external worker loader
 * Modules
  * onde: add option to create variable on load
  * spectra_displayer: fix various events
  * code_executor: use sandboxing and precompilation
+* Filters
+ * Add markdown filter with code highlighting
+* Components
+ * Update all components
+ * Remove alpaca
+ * Add [marked](https://github.com/chjj/marked)
+ * Add [highlight.js](https://github.com/isagalaev/highlight.js)
 
 2.13.0 / 2015-02-04
 ===================
