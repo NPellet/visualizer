@@ -37,7 +37,10 @@ define(['modules/default/defaultview'], function (Default) {
 
                 var self=this;
                 if (self._loadingTimeout) clearTimeout(self._loadingTimeout);
-                this._loadingTimeout = setTimeout(function() { self.showLoading(); }, 500);
+                this._loadingTimeout = setTimeout(function() {
+                    self._loadingTimeout=undefined;
+                    self.showLoading();
+                }, 500);
 
                 this.dom.attr('src', moduleValue.get());
             },
@@ -47,7 +50,10 @@ define(['modules/default/defaultview'], function (Default) {
 
                 var self=this;
                 if (self._loadingTimeout) clearTimeout(self._loadingTimeout);
-                this._loadingTimeout = setTimeout(function() { self.showLoading(); }, 500);
+                this._loadingTimeout = setTimeout(function() {
+                    self._loadingTimeout=undefined;
+                    self.showLoading();
+                }, 500);
 
                 this.dom.attr('src', 'http://dx.doi.org/' + moduleValue.get());
             }
