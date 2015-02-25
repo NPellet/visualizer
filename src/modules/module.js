@@ -1342,7 +1342,7 @@ define([
 				delete this.definition.dataSend;
 			}
 
-			return this.definition.vars_out = this.definition.vars_out || {};
+			return this.definition.vars_out = this.definition.vars_out || new DataArray();
 		},
 
 
@@ -1354,7 +1354,7 @@ define([
 				delete this.definition.actionsIn;
 			}
 
-			return this.definition.actions_in = this.definition.actions_in || {};
+			return this.definition.actions_in = this.definition.actions_in || new DataArray();
 		},
 
 
@@ -1366,7 +1366,7 @@ define([
 				delete this.definition.actionsOut;
 			}
 
-			return this.definition.actions_out = this.definition.actions_out || {};
+			return this.definition.actions_out = this.definition.actions_out || new DataArray();
 		},
 		
 		getDefinition: function() {
