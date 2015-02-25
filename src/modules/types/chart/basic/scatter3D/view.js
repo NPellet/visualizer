@@ -1638,7 +1638,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
       self._data.shape = [];
       self._data._highlight = [];
 
-      var jp = _.cloneDeep(jpaths);
+      var jp = _.cloneDeep(jpaths.resurrect());
       _.each(jp, function(v) {
         v.unshift(0);
       });
