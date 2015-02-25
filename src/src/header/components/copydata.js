@@ -1,6 +1,6 @@
 'use strict';
 
-define(['jquery', 'jquery-ui/dialog', 'src/header/components/default', 'src/util/versioning', 'src/util/util'], function ($, ui, Default, Versioning, Util) {
+define(['jquery', 'src/util/ui', 'src/header/components/default', 'src/util/versioning', 'src/util/util'], function ($, ui, Default, Versioning, Util) {
 
     function Element() {
     }
@@ -10,9 +10,11 @@ define(['jquery', 'jquery-ui/dialog', 'src/header/components/default', 'src/util
         _onClick: function () {
             var str = Versioning.getDataJSON('\t');
             var strlen = str.length;
-            var txtarea = $('<textarea/>').text(str).css({width: '100%', height: '200px'});
-
-            $('<div />').html(txtarea).dialog({modal: true, width: '80%'});
+            var txtarea = $('<textarea/>').text(str).css({
+                width: '100%',
+                height: '200px'
+            });
+            ui.dialog(txtarea, {width: '80%'});
             var txtdom = txtarea.get(0);
 
             txtdom.selectionStart = 0;

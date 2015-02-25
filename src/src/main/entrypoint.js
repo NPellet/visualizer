@@ -1,6 +1,7 @@
 'use strict';
 
-define(['jquery',
+define([
+    'jquery',
     'src/header/header',
     'src/util/repository',
     'src/main/grid',
@@ -16,24 +17,28 @@ define(['jquery',
     'src/util/debug',
     'src/util/browser',
     'src/util/util',
-    'src/util/urldata'
-], function ($,
-             Header,
-             Repository,
-             Grid,
-             API,
-             Context,
-             Traversing,
-             Versioning,
-             ModuleFactory,
-             Migration,
-             ActionManager,
-             Cron,
-             PouchDBUtil,
-             Debug,
-             browser,
-             Util,
-             UrlData) {
+    'src/util/urldata',
+    'src/util/ui'
+], function (
+    $,
+    Header,
+    Repository,
+    Grid,
+    API,
+    Context,
+    Traversing,
+    Versioning,
+    ModuleFactory,
+    Migration,
+    ActionManager,
+    Cron,
+    PouchDBUtil,
+    Debug,
+    browser,
+    Util,
+    UrlData,
+    ui
+) {
 
     var _viewLoaded, _dataLoaded;
 
@@ -58,7 +63,7 @@ define(['jquery',
             reloadingView();
             Grid.reset(view.grid);
         } else {
-            Grid.init(view.grid, document.getElementById("modules-grid"));
+            Grid.init(view.grid, document.getElementById('modules-grid'));
             this.viewLoaded = true;
         }
 
@@ -108,12 +113,12 @@ define(['jquery',
 
     function viewLoaded() {
         _viewLoaded = true;
-        _check("view");
+        _check('view');
     }
 
     function dataLoaded() {
         _dataLoaded = true;
-        _check("data");
+        _check('data');
     }
 
     function _check(loading) {
@@ -135,10 +140,10 @@ define(['jquery',
             return new Promise(function (resolve, reject) {
                 if (view.init_script) {
                     var prefix = '(function init_script(init_deferred){"use strict";\n';
-                    var script = view.init_script[0].groups.general[0].script[0] || "";
-                    var suffix = "\n})({resolve:resolve});";
-                    if (script.indexOf("init_deferred") === -1) {
-                        suffix += "resolve();";
+                    var script = view.init_script[0].groups.general[0].script[0] || '';
+                    var suffix = '\n})({resolve:resolve});';
+                    if (script.indexOf('init_deferred') === -1) {
+                        suffix += 'resolve();';
                     }
                     eval(prefix + script + suffix);
                 } else {
@@ -199,7 +204,7 @@ define(['jquery',
             }
 
             // Entry point variables
-            API.loading("Fetching remote variables");
+            API.loading('Fetching remote variables');
             var fetching = [];
             for (var i = 0, l = view.variables.length; i < l; i++) {
                 (function (i) {
@@ -225,7 +230,7 @@ define(['jquery',
 
                         } else {
 
-                            if (typeof entryVar.jpath === "string") {
+                            if (typeof entryVar.jpath === 'string') {
                                 entryVar.jpath = entryVar.jpath.split('.');
                                 entryVar.jpath.shift();
                             }
@@ -237,12 +242,12 @@ define(['jquery',
             }
 
             return Promise.all(fetching).then(function () {
-                API.stopLoading("Fetching remote variables");
+                API.stopLoading('Fetching remote variables');
             });
         }
 
         function loadPouchVariables() {
-            API.loading("Fetching local variables");
+            API.loading('Fetching local variables');
             var pouching = [], pouchVariable;
             for (var i = 0, l = view.pouchvariables.length; i < l; i++) {
                 pouchVariable = view.pouchvariables[i];
@@ -275,9 +280,9 @@ define(['jquery',
             }
 
             return Promise.all(pouching).then(function () {
-                API.stopLoading("Fetching local variables");
+                API.stopLoading('Fetching local variables');
             }, function (err) {
-                Debug.error("Unable to fetch local variables", err)
+                Debug.error('Unable to fetch local variables', err)
             });
 
         }
@@ -289,9 +294,11 @@ define(['jquery',
         var data = Versioning.getData(),
             view = Versioning.getView();
 
-        var div = $('<div></div>').dialog({modal: true, position: {my: 'top+50', at: 'center top'}, width: '80%'});
-        div.prev().remove();
-        div.parent().css('z-index', 1000);
+        var div = ui.dialog({
+            autoPosition: true,
+            width: '80%',
+            noHeader: true
+        });
 
         var options = [];
 
@@ -317,7 +324,7 @@ define(['jquery',
                             tablevars: {
                                 options: {
                                     type: 'table',
-                                    title: "Main variables",
+                                    title: 'Main variables',
                                     multiple: true
                                 },
                                 fields: {
@@ -332,14 +339,14 @@ define(['jquery',
                                         options: options,
                                         extractValue: function (val) {
                                             if (val) {
-                                                var val2 = val.split(".");
+                                                var val2 = val.split('.');
                                                 val2.shift();
                                                 return val2;
                                             }
                                         },
 
                                         insertValue: function (val) {
-                                            return "element." + (val || []).join(".");
+                                            return 'element.' + (val || []).join('.');
                                         }
                                     },
                                     url: {
@@ -347,15 +354,15 @@ define(['jquery',
                                         title: 'From URL'
                                     },
                                     timeout: {
-                                        type: "text",
-                                        title: "Timeout"
+                                        type: 'text',
+                                        title: 'Timeout'
                                     }
                                 }
                             },
                             pouchvars: {
                                 options: {
                                     type: 'table',
-                                    title: "PouchDB variables",
+                                    title: 'PouchDB variables',
                                     multiple: true
                                 },
                                 fields: {
@@ -385,7 +392,7 @@ define(['jquery',
                             actions: {
                                 options: {
                                     multiple: true,
-                                    title: "Action"
+                                    title: 'Action'
                                 },
                                 groups: {
                                     action: {
@@ -542,11 +549,11 @@ define(['jquery',
                                     },
                                     crontime: {
                                         type: 'float',
-                                        title: "Repetition (s)"
+                                        title: 'Repetition (s)'
                                     },
                                     cronvariable: {
-                                        type: "text",
-                                        title: "Target variable"
+                                        type: 'text',
+                                        title: 'Target variable'
                                     }
                                 }
                             }
@@ -572,7 +579,7 @@ define(['jquery',
                                         fields: {
                                             crontime: {
                                                 type: 'float',
-                                                title: "Repetition (s)"
+                                                title: 'Repetition (s)'
                                             },
                                             script: {
                                                 type: 'jscode',
@@ -594,7 +601,7 @@ define(['jquery',
                             filters: {
                                 options: {
                                     multiple: true,
-                                    title: "Filter"
+                                    title: 'Filter'
                                 },
                                 groups: {
                                     filter: {
@@ -668,7 +675,7 @@ define(['jquery',
                                 fields: {
                                     pouchname: {
                                         type: 'text',
-                                        title: "Pouch DB name"
+                                        title: 'Pouch DB name'
                                     },
                                     couchurl: {
                                         type: 'text',
@@ -765,7 +772,7 @@ define(['jquery',
                 ActionManager.setFilesFromForm(data);
                 /* */
 
-                if (typeof CronManager !== "undefined") {
+                if (typeof CronManager !== 'undefined') {
                     CronManager.setCronsFromForm(data, view);
                 }
 
@@ -860,7 +867,7 @@ define(['jquery',
                     API.setAllFilters(cfgJson.filters || []);
 
                 }).fail(function (a, b) {
-                    console.error("Error loading the config : " + b);
+                    console.error('Error loading the config : ' + b);
                 }).always(function () {
                     require(['usr/datastructures/filelist'], function () {
                         Context.init(document.getElementById('modules-grid'));
@@ -900,7 +907,7 @@ define(['jquery',
                                 url: urls['dataURL'] || $visualizer.attr('dataURL')
                             }
                         };
-                        window.history.replaceState({type: "viewchange", value: viewInfo}, "");
+                        window.history.replaceState({type: 'viewchange', value: viewInfo}, '');
                         Versioning.switchView(viewInfo, false)
                             .then(function () {
                                 Debug.info('Successfully switched view');

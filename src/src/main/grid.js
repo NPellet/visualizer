@@ -1,9 +1,9 @@
 'use strict';
 
-define(['jquery', 'jquery-ui/core', 'src/util/util', 'modules/modulefactory', 'src/util/context', 'src/util/versioning', 'src/util/api', 'forms/form', 'src/main/variables', 'src/util/debug'], function ($, ui, Util, ModuleFactory, Context, Versioning, API, Form, Variables, Debug) {
+define(['jquery', 'src/util/ui', 'src/util/util', 'modules/modulefactory', 'src/util/context', 'src/util/versioning', 'src/util/api', 'forms/form', 'src/main/variables', 'src/util/debug'], function ($, ui, Util, ModuleFactory, Context, Versioning, API, Form, Variables, Debug) {
 
     var definition, jqdom, moduleMove, isInit = false;
-    var activeLayer = "Default layer";
+    var activeLayer = 'Default layer';
     var layersUl, layersLi;
 
     var defaults = {
@@ -24,7 +24,7 @@ define(['jquery', 'jquery-ui/core', 'src/util/util', 'modules/modulefactory', 's
         }
 
         jqdom.css('height',
-            Math.max($('#ci-visualizer').height() - $("#header").outerHeight(true) - 5, (defaults.yHeight * bottomMax + (extend ? 400 : 0)))
+            Math.max($('#ci-visualizer').height() - $('#header').outerHeight(true) - 5, (defaults.yHeight * bottomMax + (extend ? 400 : 0)))
         );
     }
 
@@ -105,7 +105,7 @@ define(['jquery', 'jquery-ui/core', 'src/util/util', 'modules/modulefactory', 's
 
                     ['<li name="copy"><a><span class="ui-icon ui-icon-copy"></span> Copy module</a></li>',
                         function () {
-                            window.localStorage.setItem("ci-copy-module", JSON.stringify(module.definition));
+                            window.localStorage.setItem('ci-copy-module', JSON.stringify(module.definition));
                         }]
                 ]);
             }
@@ -130,12 +130,12 @@ define(['jquery', 'jquery-ui/core', 'src/util/util', 'modules/modulefactory', 's
                         module.resizing = false;
                         checkDimensions(false);
                     },
-                    containment: "parent"
+                    containment: 'parent'
 
                 }).draggable({
 
                     grid: [definition.xWidth, definition.yHeight],
-                    containment: "parent",
+                    containment: 'parent',
                     handle: '.ci-module-header',
                     start: function () {
                         Util.maskIframes();
@@ -195,7 +195,7 @@ define(['jquery', 'jquery-ui/core', 'src/util/util', 'modules/modulefactory', 's
             module.toggleLayer(getActiveLayer());
 
         }, function (err) {
-            Debug.error("Error during module dom initialization", err);
+            Debug.error('Error during module dom initialization', err);
         });
     }
 
@@ -251,7 +251,7 @@ define(['jquery', 'jquery-ui/core', 'src/util/util', 'modules/modulefactory', 's
             layer.size.set('height', height);
 
             layer.wrapper = true;
-            layer.title = "Untitled";
+            layer.title = 'Untitled';
 
 
             $(document)
@@ -269,7 +269,7 @@ define(['jquery', 'jquery-ui/core', 'src/util/util', 'modules/modulefactory', 's
             modulePos.ileft = e.pageX;
             modulePos.itop = e.pageY;
 
-            modulePos.div = $("<div>").css({
+            modulePos.div = $('<div>').css({
 
                 border: '1px solid red',
                 backgroundColor: 'rgba(255, 0, 0, 0.2)',
@@ -279,7 +279,7 @@ define(['jquery', 'jquery-ui/core', 'src/util/util', 'modules/modulefactory', 's
                 top: modulePos.top,
                 position: 'absolute'
 
-            }).appendTo($("body"));
+            }).appendTo($('body'));
         };
 
         var mouseMoveHandler = function (e) {
@@ -320,10 +320,10 @@ define(['jquery', 'jquery-ui/core', 'src/util/util', 'modules/modulefactory', 's
             modules[i].definition.zindex = modules[i].definition.zindex || 1;
             if (modules[i].definition.zindex >= myZIndex)
                 modules[i].definition.zindex--;
-            modules[i].dom.css("zIndex", modules[i].definition.zindex);
+            modules[i].dom.css('zIndex', modules[i].definition.zindex);
             count++;
         }
-        $(dom).css("zIndex", count);
+        $(dom).css('zIndex', count);
         module.definition.zindex = count;
     }
 
@@ -338,11 +338,11 @@ define(['jquery', 'jquery-ui/core', 'src/util/util', 'modules/modulefactory', 's
             modules[i].definition.zindex = modules[i].definition.zindex || 1;
             if (modules[i].definition.zindex <= myZIndex)
                 modules[i].definition.zindex++;
-            modules[i].dom.css("zIndex", modules[i].definition.zindex);
+            modules[i].dom.css('zIndex', modules[i].definition.zindex);
             count++;
         }
 
-        $(dom).css("zIndex", 1);
+        $(dom).css('zIndex', 1);
         module.definition.zindex = 1;
     }
 
@@ -439,7 +439,11 @@ define(['jquery', 'jquery-ui/core', 'src/util/util', 'modules/modulefactory', 's
             def.resolve(definition.layers[name]);
         }
 
-        var div = $('<div></div>').dialog({modal: true, position: {my: 'top+50', at: 'center top'}, width: '80%', title: ""}),
+        var div = ui.dialog({
+                autoPosition: true,
+                title: 'New layer',
+                width: '600px'
+            }),
             form = new Form({});
 
         form.init();
@@ -462,7 +466,7 @@ define(['jquery', 'jquery-ui/core', 'src/util/util', 'modules/modulefactory', 's
                                             nonEmpty: true,
                                             feedback: {
                                                 _class: true,
-                                                message: "The layer name cannot be empty"
+                                                message: 'The layer name cannot be empty'
                                             }
                                         }]
                                     }
@@ -571,7 +575,7 @@ define(['jquery', 'jquery-ui/core', 'src/util/util', 'modules/modulefactory', 's
                     for (var i in elements.folders) {
 
                         var el = $('<li><a>' + i + '</a></li>');
-                        var ul = $("<ul />").appendTo(el);
+                        var ul = $('<ul />').appendTo(el);
                         makeRecursiveMenu(elements.folders[i], ul);
                         dom.append(el);
                     }
@@ -583,7 +587,7 @@ define(['jquery', 'jquery-ui/core', 'src/util/util', 'modules/modulefactory', 's
                 Context.listen(Context.getRootDom(), [
                         ['<li name="paste"><a><span class="ui-icon ui-icon-clipboard"></span>Paste module</a></li>',
                             function () {
-                                var module = DataObject.recursiveTransform(JSON.parse(window.localStorage.getItem("ci-copy-module")));
+                                var module = DataObject.recursiveTransform(JSON.parse(window.localStorage.getItem('ci-copy-module')));
                                 addModuleFromJSON(module);
                             }]]
                 );
@@ -592,11 +596,11 @@ define(['jquery', 'jquery-ui/core', 'src/util/util', 'modules/modulefactory', 's
                     Context.listen(dom, [], function (contextDom) {
                         var $li = $('<li name="add"><a> Add a module</a></li>');
 
-                        var $ulModules = $("<ul />").appendTo($li);
+                        var $ulModules = $('<ul />').appendTo($li);
                         var allTypes = ModuleFactory.getTypes();
                         $.when(allTypes).then(function (json) {
 
-                            if (typeof json === "object" && !Array.isArray(json)) {
+                            if (typeof json === 'object' && !Array.isArray(json)) {
                                 json = [json];
                             }
 
@@ -622,7 +626,7 @@ define(['jquery', 'jquery-ui/core', 'src/util/util', 'modules/modulefactory', 's
 
 
                 layersLi = $('<li><a> Switch to layer</a></li>');
-                layersUl = $("<ul />").appendTo(layersLi);
+                layersUl = $('<ul />').appendTo(layersLi);
 
                 if (API.getContextMenu().indexOf('all') > -1 || API.getContextMenu().indexOf('layers') > -1) {
                     Context.listen(dom, [], function (contextDom) {
@@ -639,17 +643,17 @@ define(['jquery', 'jquery-ui/core', 'src/util/util', 'modules/modulefactory', 's
 
                         });
 
-                        $('<li data-layer=""><a>+ Add a new layer</a></li>').data('layerkey', "-1").appendTo(layersUl);
+                        $('<li data-layer=""><a>+ Add a new layer</a></li>').data('layerkey', '-1').appendTo(layersUl);
 
                         $(contextDom).append(layersLi);
 
                         layersLi.bind('click', function (event) {
                             var layer = $(event.target.parentNode).data('layerkey');
 
-                            if (layer !== "-1") {
+                            if (layer !== '-1') {
                                 switchToLayer(layer);
 
-                            } else if (layer == "-1") {
+                            } else if (layer == '-1') {
                                 newLayer();
                             }
                         });

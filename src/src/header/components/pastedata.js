@@ -1,6 +1,6 @@
 'use strict';
 
-define(['jquery', 'jquery-ui/dialog', 'src/header/components/default', 'src/util/versioning', 'forms/button', 'src/util/util'], function ($, ui, Default, Versioning, Button, Util) {
+define(['jquery', 'src/util/ui', 'src/header/components/default', 'src/util/versioning', 'forms/button', 'src/util/util'], function ($, ui, Default, Versioning, Button, Util) {
 
     function Element() {
     }
@@ -8,7 +8,10 @@ define(['jquery', 'jquery-ui/dialog', 'src/header/components/default', 'src/util
     Util.inherits(Element, Default, {
 
         _onClick: function () {
-            var txtarea = $('<textarea></textarea>').css({width: '100%', height: '200px'}),
+            var txtarea = $('<textarea></textarea>').css({
+                    width: '100%',
+                    height: '200px'
+                }),
                 val, keys,
                 btn = new Button('Paste', function () {
 
@@ -24,10 +27,9 @@ define(['jquery', 'jquery-ui/dialog', 'src/header/components/default', 'src/util
                     }
 
                     div.dialog('close');
-                }),
-                div;
+                });
 
-            div = $('<div />').html(txtarea).append(btn.render()).dialog({modal: true, width: '80%'});
+            var div  = ui.dialog(txtarea, {width: '80%'}).append(btn.render());
         }
 
     });

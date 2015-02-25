@@ -1,6 +1,6 @@
 'use strict';
 
-define(['jquery', 'jquery-ui/dialog', 'src/header/components/default', './couchshare/share', 'forms/button', 'src/util/util'], function ($, ui, Default, Sharer, Button, Util) {
+define(['jquery', 'src/util/ui', 'src/header/components/default', './couchshare/share', 'forms/button', 'src/util/util'], function ($, ui, Default, Sharer, Button, Util) {
 
     function Element() {
     }
@@ -9,18 +9,16 @@ define(['jquery', 'jquery-ui/dialog', 'src/header/components/default', './couchs
 
         initImpl: function () {
             this.dialogOptions = {
-                modal: true,
                 title: 'Share view',
                 width: 550,
-                height: 150
+                height: 170
             };
         },
 
         _onClick: function () {
             var that = this;
             var uniqid = Util.getNextUniqueId();
-
-            var dialog = $('<div>').html('<h3>Click the share button to make a snapshot of your view and generate a tiny URL</h3>').append(
+            var dialog = $('<div>').html('<h3>Click the share button to make a snapshot of your view and generate a tiny URL</h3><br>').append(
                 new Button('Share', function () {
                     var button = this;
                     if (!this.options.disabled) {
@@ -35,7 +33,7 @@ define(['jquery', 'jquery-ui/dialog', 'src/header/components/default', './couchs
             ).append(
                 $('<input type="text" id="' + uniqid + '" />').css('width', '400px')
             );
-            dialog.dialog(this.dialogOptions);
+            ui.dialog(dialog, this.dialogOptions);
         }
 
     });

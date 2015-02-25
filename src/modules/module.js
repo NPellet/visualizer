@@ -1,6 +1,27 @@
 'use strict';
 
-define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util/fullscreen', 'src/util/debug', 'src/main/variables', 'src/main/grid'], function( $, _, ContextMenu, API, Util, Fullscreen, Debug, Variables ) {
+define([
+	'jquery',
+	'lodash',
+	'src/util/context',
+	'src/util/api',
+	'src/util/util',
+	'src/util/fullscreen',
+	'src/util/debug',
+	'src/main/variables',
+	'src/util/ui',
+	'src/main/grid'
+], function(
+	$,
+	_,
+	ContextMenu,
+	API,
+	Util,
+	Fullscreen,
+	Debug,
+	Variables,
+	ui
+) {
 
 	function init( module ) {
 		//define object properties
@@ -29,9 +50,9 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 			module.updateAllView( );
 
 		}, function(err) {
-			Debug.error( "Caught error in module ready state", err );
+			Debug.error( 'Caught error in module ready state', err );
 		}).catch(function(err){
-			Debug.error("Caught error while updating module", err);
+			Debug.error('Caught error while updating module', err);
 		});
 
 		return new Promise(
@@ -43,13 +64,13 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 					return;
 				}
 
-				module._cssLoaded = Util.loadCss( moduleURL + "style.css" );
+				module._cssLoaded = Util.loadCss( moduleURL + 'style.css' );
 
 				require( [
 					
-					moduleURL + "model" + ext,
-					moduleURL + "view" + ext,
-					moduleURL + "controller" + ext
+					moduleURL + 'model' + ext,
+					moduleURL + 'view' + ext,
+					moduleURL + 'controller' + ext
 
 				], function(M, V, C) {
 
@@ -93,7 +114,7 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 
 		this.ready = init( this );
 		this.ready.catch( function(err) {
-			Debug.error( "Caught error in module initialization.", err );
+			Debug.error( 'Caught error in module initialization.', err );
 		});
 	};
 	/**
@@ -103,7 +124,7 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 		
 		buildDom: function() {
 			
-			var html = "";
+			var html = '';
 			html += '<div class="ci-module-wrapper ci-module-displaywrapper ci-module-';
 			html += this.controller.moduleInformation.cssClass;
 
@@ -188,7 +209,7 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 					this.view.update[ rel ].call(this.view, val[ 1 ], val[ 0 ][ 0 ] );	
 				}
 			}, function(err) {
-				Debug.error("Error during view update", err);
+				Debug.error('Error during view update', err);
 			});
 		},
 
@@ -219,7 +240,7 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 		getDomContent: function() {
 			if(typeof this.domContent !== 'undefined')
 				return this.domContent;
-			throw "The module has not been loaded yet";
+			throw 'The module has not been loaded yet';
 		},
 		
 		/** 
@@ -230,7 +251,7 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 			if( typeof this.domWrapper !== 'undefined' ) {
 				return this.domWrapper;
 			}
-			throw "The module has not been loaded yet";
+			throw 'The module has not been loaded yet';
 		},
 		
 		/** 
@@ -242,7 +263,7 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 				return this.view.getDom();
 			}
 
-			throw "The module's view doest not implement the getDom function";
+			throw 'The module\'s view doest not implement the getDom function';
 		},
 		
 		/** 
@@ -254,7 +275,7 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 				return this.domHeader;
 			}
 
-			throw "The module has not been loaded yet";
+			throw 'The module has not been loaded yet';
 		},
 		
 		/**
@@ -471,9 +492,11 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 		doConfig: function(sectionToOpen) {
 
 			var module = this;
-			var div = $('<div></div>').dialog({ modal: true, position: {my: 'top+50', at: 'center top'}, width: '80%', title: "Edit module preferences"});
-			div.prev().remove();
-			div.parent().css('z-index', 1000);
+			var div = ui.dialog({
+				autoPosition: true,
+				noHeader: true,
+				width: '80%'
+			});
 
 			var references = this.controller.references,
 				events = this.controller.events,
@@ -498,7 +521,7 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 					for( ; i < l ; i ++ ) {
 
 						target.push( {
-							key: arraySource[ i ].file || "",
+							key: arraySource[ i ].file || '',
 							title: arraySource[ i ].name,
 							children: makeFilters( arraySource[ i ].children )
 						} );		
@@ -669,7 +692,7 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 							groups: {
 								layerDisplay: {
 									options: {
-										title: "Display on layers",
+										title: 'Display on layers',
 										type: 'list'
 									},
 
@@ -1022,12 +1045,12 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 
 					var moduleInfosHtml = 
 						'<table class="moduleInformation">' + 
-						"<tr><td>Module name</td><td>" + module.controller.moduleInformation.name + "</td></tr>" +
-						"<tr><td></td><td><small>" + module.controller.moduleInformation.description + "</small></td></tr>" + 
-						"<tr><td>Module author</td><td>" + module.controller.moduleInformation.author + "</td></tr>" + 
-						"<tr><td>Creation date</td><td>" + module.controller.moduleInformation.date + "</td></tr>" + 
-						"<tr><td>Released under</td><td>" + module.controller.moduleInformation.license + "</td></tr>" +
-						"</table>"
+						'<tr><td>Module name</td><td>' + module.controller.moduleInformation.name + '</td></tr>' +
+						'<tr><td></td><td><small>' + module.controller.moduleInformation.description + '</small></td></tr>' +
+						'<tr><td>Module author</td><td>' + module.controller.moduleInformation.author + '</td></tr>' +
+						'<tr><td>Creation date</td><td>' + module.controller.moduleInformation.date + '</td></tr>' +
+						'<tr><td>Released under</td><td>' + module.controller.moduleInformation.license + '</td></tr>' +
+						'</table>'
 					;
 					
 
@@ -1361,17 +1384,16 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 
 		exportData: function() {
 			var module = this;
-			$('<div class="ci-module-export"><textarea></textarea></div>').dialog({
-				modal: true,
+			ui.dialog('<div class="ci-module-export"><textarea></textarea></div>', {
 				title: 'Export data from module ' + module.getTitle(),
 				width: '70%',
 				height: 500
-			}).children('textarea').text(module.controller["export"]());
+			}).children('textarea').text(module.controller['export']());
 		},
 		
 		printView: function() {
 			var content = this.controller.print();
-			var openWindow = window.open("", "", "");
+			var openWindow = window.open('', '', '');
 			openWindow.document.write(content);
 			openWindow.document.close();
 			openWindow.focus();
@@ -1380,7 +1402,7 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 		setBackgroundColor: function(color) {
 
 
-			this.domContent.get(0).style.backgroundColor = 'rgba(' + color.join(",") + ')';
+			this.domContent.get(0).style.backgroundColor = 'rgba(' + color.join(',') + ')';
 		},
 
 		setDisplayWrapper: function( bln ) {
@@ -1473,8 +1495,7 @@ define(['jquery', 'lodash', 'src/util/context', 'src/util/api', 'src/util/util',
 
 		exportConfigExample: function() {
 			var module = this;
-			$('<div class="ci-module-export"><textarea></textarea></div>').dialog({
-				modal: true,
+			ui.dialog('<div class="ci-module-export"><textarea></textarea></div>', {
 				title: 'Config example',
 				width: '70%',
 				height: 500

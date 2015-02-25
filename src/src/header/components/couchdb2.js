@@ -2,6 +2,7 @@
 
 define([
     'jquery',
+    'src/util/ui',
     'src/header/components/default',
     'src/util/versioning',
     'forms/button',
@@ -12,7 +13,7 @@ define([
     'fancytree',
     'components/ui-contextmenu/jquery.ui-contextmenu.min',
     'jquery-ui/autocomplete'
-], function ($, Default, Versioning, Button, Util, Base64, Form) {
+], function ($, ui, Default, Versioning, Button, Util, Base64, Form) {
 
     function CouchDBManager() {
     }
@@ -390,6 +391,7 @@ define([
                     else
                         that.flavorList = data.rows[0].value;
                     flavorField.autocomplete({
+                        appendTo: '#ci-visualizer',
                         minLength: 0,
                         source: that.flavorList
                     }).on('autocompleteselect', function (e, d) {
@@ -548,8 +550,11 @@ define([
                 return;
             }
 
-            var div = $('<div></div>').dialog({ modal: true, position: ['center', 50], width: '80%', title: "Edit Metadata"});
-            console.log('meta data');
+            var div = ui.dialog({
+                width: '80%',
+                autoPosition: true,
+                title: 'Edit Metadata'
+            });
 
             var structure = {
 
@@ -928,7 +933,7 @@ define([
                     }
                 }
                 else if (action === 'rename') {
-                    $('<div>').html('New name : <input type="text" id="' + this.cssId('newname') + '" value="' + node.title + '" />').dialog({
+                    ui.dialog('New name : <input type="text" id="' + this.cssId('newname') + '" value="' + node.title + '" />', {
                         buttons: {
                             'Save': function () {
                                 var dialog = $(this);
@@ -964,12 +969,12 @@ define([
                             'Cancel': function () {
                                 $(this).dialog('destroy');
                             }
-                        },
-                        title: 'New name'
+                        }
                     });
                 }
                 else if (action === 'newflavor') {
-                    $('<div>').html('Flavor :').dialog({
+                    var div = $('<div>').html('Flavor :');
+                    ui.dialog(div, {
                         buttons: {
                             'Save': function () {
                                 var dialog = $(this);
@@ -1007,7 +1012,9 @@ define([
                             }
                         },
                         title: 'New flavor'
-                    }).append($('<input type="text" id="' + this.cssId('newflavorname') + '" />').autocomplete({
+                    });
+                    div.append($('<input type="text" id="' + this.cssId('newflavorname') + '" />').autocomplete({
+                        appendTo: '#ci-visualizer',
                         minLength: 0,
                         source: that.flavorList
                     }));

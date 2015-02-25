@@ -1,6 +1,6 @@
 'use strict';
 
-define(['jquery', 'jquery-ui/dialog', 'src/header/components/default', './couchshare/share', 'forms/button', 'src/util/util'], function ($, ui, Default, Sharer, Button, Util) {
+define(['jquery', 'src/util/ui', 'src/header/components/default', './couchshare/share', 'forms/button', 'src/util/util'], function ($, ui, Default, Sharer, Button, Util) {
 
     function Element() {
     }
@@ -17,7 +17,6 @@ define(['jquery', 'jquery-ui/dialog', 'src/header/components/default', './couchs
 
 
             this.dialogOptions = {
-                modal: true,
                 title: 'Feedback',
                 width: 900,
                 height: 350
@@ -64,7 +63,7 @@ define(['jquery', 'jquery-ui/dialog', 'src/header/components/default', './couchs
                     }
                 }, {color: 'blue'}).render()
             ).append(message);
-            dialog.dialog(this.dialogOptions);
+            ui.dialog(dialog, this.dialogOptions);
         }
 
     });
