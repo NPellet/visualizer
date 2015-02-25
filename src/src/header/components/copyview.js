@@ -8,7 +8,7 @@ define(['jquery', 'src/util/ui', 'src/header/components/default', 'src/util/vers
     Util.inherits(Element, Default, {
 
         _onClick: function () {
-            var str = Versioning.getViewJSON('\t');
+            var str = Versioning.getViewJSON('  ');
             var strlen = str.length;
             var txtarea = $('<textarea/>').text(str).css({
                 width: '100%',
