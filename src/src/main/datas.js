@@ -934,7 +934,9 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
         DataBoolean: DataBoolean,
         DataNumber: DataNumber,
         isSpecialObject: isSpecialObject,
-        isSpecialNativeObject: isSpecialNativeObject
+        isSpecialNativeObject: isSpecialNativeObject,
+        resurrect: DataObject.resurrect,
+        check: DataObject.check
     };
 
 });
