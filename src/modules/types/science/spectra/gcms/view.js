@@ -194,16 +194,10 @@ define( [
 			'jcamp': function(moduleValue) {
 				var self = this;
 
-				if(!moduleValue) {
-					return;
-				}
-
-				moduleValue = moduleValue.get();
+				moduleValue = String(moduleValue.get());
 				require( [ 'components/jcampconverter/dist/jcampconverter.min' ], function( tojcamp ) {
 
-					var jcamp = tojcamp.convert( moduleValue, true ).then( function( jcamp ) {
-
-//						console.log(JSON.stringify(jcamp.profiling,true));
+					tojcamp.convert( moduleValue, true ).then( function( jcamp ) {
 
 						if( jcamp.gcms ) {
 
