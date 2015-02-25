@@ -357,7 +357,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
     }
 
     function booleanSerializeValue() {
-        return !!this.$input.attr("checked");
+        return !!this.$input[0].checked;
     }
 
     function booleanIsValueChanged() {
