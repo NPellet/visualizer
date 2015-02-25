@@ -4,7 +4,7 @@ requirejs.config({
   }
 });
 
-define(['modules/default/defaultview', 'src/util/util',
+define(['modules/default/defaultview', 'src/util/util', 'jquery-ui/slider',
 'lib/biojs-1.0/src/main/javascript/Biojs.js',
 'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer.js',
 './Biojs.MyFeatureViewer',
