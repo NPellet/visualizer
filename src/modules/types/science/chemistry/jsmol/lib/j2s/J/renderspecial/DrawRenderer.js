@@ -44,9 +44,8 @@ if (mesh.connections[0] < 0) return false;
 mesh.vs =  new Array (4);
 mesh.vc = 4;
 var c = mesh.connections;
-for (var i = 0; i < 4; i++) {
-mesh.vs[i] = (c[i] < 0 ? mesh.vs[i - 1] : this.vwr.getAtomPoint3f (c[i]));
-}
+for (var i = 0; i < 4; i++) mesh.vs[i] = (c[i] < 0 ? mesh.vs[i - 1] : this.vwr.ms.at[c[i]]);
+
 mesh.recalcAltVertices = true;
 }return this.renderMesh2 (mesh);
 }, "J.shape.Mesh");
@@ -313,12 +312,11 @@ break;
 });
 Clazz.defineMethod (c$, "renderInfo", 
  function () {
-if (this.mesh.title == null || this.vwr.getDrawHover () || !this.g3d.setC (this.vwr.getColixBackgroundContrast ())) return;
+if (this.isExport || this.mesh.title == null || this.vwr.getDrawHover () || !this.g3d.setC (this.vwr.cm.colixBackgroundContrast)) return;
 for (var i = this.dmesh.pc; --i >= 0; ) if (this.isPolygonDisplayable (i)) {
 var size = this.vwr.getFloat (570425356);
 if (size <= 0) size = 14;
-var fid = this.g3d.getFontFid (size * this.imageFontScaling);
-this.g3d.setFontFid (fid);
+this.vwr.gdata.setFontFid (this.vwr.gdata.getFontFid (size * this.imageFontScaling));
 var s = this.mesh.title[i < this.mesh.title.length ? i : this.mesh.title.length - 1];
 var pt = 0;
 if (s.length > 1 && s.charAt (0) == '>') {

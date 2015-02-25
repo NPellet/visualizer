@@ -12,7 +12,7 @@ this.output ("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
 this.output ("<!DOCTYPE X3D PUBLIC \"ISO//Web3D//DTD X3D 3.1//EN\" \"http://www.web3d.org/specifications/x3d-3.1.dtd\">\n");
 this.output ("<X3D profile=\'Immersive\' version=\'3.1\' xmlns:xsd=\'http://www.w3.org/2001/XMLSchema-instance\' xsd:noNamespaceSchemaLocation=\' http://www.web3d.org/specifications/x3d-3.1.xsd \'>\n");
 this.output ("<head>\n");
-this.output ("<meta name='title' content=" + JU.PT.esc (this.vwr.getModelSetName ()).$replace ('<', ' ').$replace ('>', ' ').$replace ('&', ' ') + "/>\n");
+this.output ("<meta name='title' content=" + JU.PT.esc (this.vwr.ms.modelSetName).$replace ('<', ' ').$replace ('>', ' ').$replace ('&', ' ') + "/>\n");
 this.output ("<meta name='description' content='Jmol rendering'/>\n");
 this.output ("<meta name='creator' content=' '/>\n");
 this.output ("<meta name='created' content='" + this.getExportDate () + "'/>\n");
@@ -247,7 +247,7 @@ this.output ("'/>");
 this.output ("</IndexedFaceSet>\n");
 this.outputAppearance (colix, false);
 this.output ("\n</Shape>\n");
-}, "JU.P3,JU.P3,JU.P3,~N");
+}, "JU.T3,JU.T3,JU.T3,~N");
 Clazz.overrideMethod (c$, "outputTextPixel", 
 function (pt, argb) {
 var color = this.rgbFractionalFromArgb (argb);

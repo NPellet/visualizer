@@ -6,7 +6,6 @@ this.parser = null;
 this.isMolecular = false;
 this.filterAssembly = false;
 this.allowRotations = true;
-this.checkSpecial = true;
 this.readIdeal = true;
 this.configurationPtr = -2147483648;
 this.useAuthorChainID = true;
@@ -84,8 +83,7 @@ this.useAuthorChainID = !this.checkFilterKey ("NOAUTHORCHAINS");
 if (this.isMolecular) {
 this.forceSymmetry (false);
 this.molecularType = "filter \"MOLECULAR\"";
-}this.checkSpecial = !this.checkFilterKey ("NOSPECIAL");
-this.asc.setCheckSpecial (this.checkSpecial);
+}this.asc.checkSpecial = !this.checkFilterKey ("NOSPECIAL");
 this.allowRotations = !this.checkFilterKey ("NOSYM");
 if (this.strSupercell != null && this.strSupercell.indexOf (",") >= 0) this.addCellType ("conventional", this.strSupercell, true);
 this.readCifData ();
@@ -221,7 +219,7 @@ return;
 this.thisStructuralFormula = "";
 this.thisFormula = "";
 this.iHaveDesiredModel = this.isLastModel (this.modelNumber);
-if (this.isCourseGrained) this.asc.setAtomSetAuxiliaryInfo ("courseGrained", Boolean.TRUE);
+if (this.isCourseGrained) this.asc.setCurrentModelInfo ("courseGrained", Boolean.TRUE);
 if (this.nAtoms0 == this.asc.ac) {
 this.modelNumber--;
 this.haveModel = false;
@@ -259,19 +257,19 @@ this.vibsFractional = true;
 }});
 Clazz.overrideMethod (c$, "applySymmetryAndSetTrajectory", 
 function () {
-if (this.isMMCIF) this.asc.setCheckSpecial (false);
+if (this.isMMCIF) this.asc.checkSpecial = false;
 var doCheckBonding = this.doCheckUnitCell && !this.isMMCIF;
 if (this.isMMCIF) {
 var modelIndex = this.asc.iSet;
-this.asc.setAtomSetAuxiliaryInfo ("PDB_CONECT_firstAtom_count_max", [this.asc.getAtomSetAtomIndex (modelIndex), this.asc.getAtomSetAtomCount (modelIndex), this.maxSerial]);
+this.asc.setCurrentModelInfo ("PDB_CONECT_firstAtom_count_max", [this.asc.getAtomSetAtomIndex (modelIndex), this.asc.getAtomSetAtomCount (modelIndex), this.maxSerial]);
 }if (this.htCellTypes != null) {
-for (var e, $e = this.htCellTypes.entrySet ().iterator (); $e.hasNext () && ((e = $e.next ()) || true);) this.asc.setAtomSetAuxiliaryInfo ("unitcell_" + e.getKey (), e.getValue ());
+for (var e, $e = this.htCellTypes.entrySet ().iterator (); $e.hasNext () && ((e = $e.next ()) || true);) this.asc.setCurrentModelInfo ("unitcell_" + e.getKey (), e.getValue ());
 
 this.htCellTypes = null;
 }if (!this.haveCellWaveVector) this.modDim = 0;
 this.applySymTrajASCR ();
 if (doCheckBonding && (this.bondTypes.size () > 0 || this.isMolecular)) this.setBondingAndMolecules ();
-this.asc.setAtomSetAuxiliaryInfo ("fileHasUnitCell", Boolean.TRUE);
+this.asc.setCurrentModelInfo ("fileHasUnitCell", Boolean.TRUE);
 this.asc.xtalSymmetry = null;
 });
 Clazz.overrideMethod (c$, "finalizeSubclassSymmetry", 
@@ -301,8 +299,9 @@ if (JU.Logger.debugging) JU.Logger.debug (this.key);
 });
 Clazz.defineMethod (c$, "nextAtomSet", 
  function () {
-this.asc.setAtomSetAuxiliaryInfo ("isCIF", Boolean.TRUE);
+this.asc.setCurrentModelInfo ("isCIF", Boolean.TRUE);
 if (this.asc.iSet >= 0) {
+if (this.isMMCIF) this.setModelPDB (true);
 this.asc.newAtomSet ();
 if (this.isMMCIF) this.setModelPDB (true);
 } else {
@@ -409,9 +408,9 @@ return;
 if (this.key.startsWith ("_atom_site") || (isLigand = this.key.equals ("_chem_comp_atom_comp_id"))) {
 if (!this.processAtomSiteLoopBlock (isLigand)) return;
 this.asc.setAtomSetName (this.thisDataSetName);
-this.asc.setAtomSetAuxiliaryInfo ("chemicalName", this.chemicalName);
-this.asc.setAtomSetAuxiliaryInfo ("structuralFormula", this.thisStructuralFormula);
-this.asc.setAtomSetAuxiliaryInfo ("formula", this.thisFormula);
+this.asc.setCurrentModelInfo ("chemicalName", this.chemicalName);
+this.asc.setCurrentModelInfo ("structuralFormula", this.thisStructuralFormula);
+this.asc.setCurrentModelInfo ("formula", this.thisFormula);
 return;
 }if (this.key.startsWith ("_space_group_symop") || this.key.startsWith ("_symmetry_equiv_pos") || this.key.startsWith ("_symmetry_ssg_equiv")) {
 if (this.ignoreFileSymmetryOperators) {
@@ -766,7 +765,7 @@ pt.x = seqID;
 }}this.ac++;
 if (this.modDim > 0 && siteMult != 0) atom.vib = JU.V3.new3 (siteMult, 0, NaN);
 }
-this.asc.setAtomSetAuxiliaryInfo ("isCIF", Boolean.TRUE);
+this.asc.setCurrentModelInfo ("isCIF", Boolean.TRUE);
 if (this.isMMCIF) this.setModelPDB (true);
 if (this.isMMCIF && this.skipping) this.skipping = false;
 return true;
@@ -978,12 +977,12 @@ for (var i = this.firstAtom; i < this.ac; i++) {
 if (this.asc.bsAtoms.get (i)) this.symmetry.toCartesian (this.atoms[i], true);
  else if (JU.Logger.debugging) JU.Logger.debug (this.molecularType + " removing " + i + " " + this.atoms[i].atomName + " " + this.atoms[i]);
 }
-this.asc.setAtomSetAuxiliaryInfo ("notionalUnitcell", null);
+this.asc.setCurrentModelInfo ("notionalUnitcell", null);
 if (this.nMolecular++ == this.asc.iSet) {
 this.asc.clearGlobalBoolean (0);
 this.asc.clearGlobalBoolean (1);
 this.asc.clearGlobalBoolean (2);
-}}if (this.bondTypes.size () > 0) this.asc.setAtomSetAuxiliaryInfo ("hasBonds", Boolean.TRUE);
+}}if (this.bondTypes.size () > 0) this.asc.setCurrentModelInfo ("hasBonds", Boolean.TRUE);
 this.bondTypes.clear ();
 this.atomRadius = null;
 this.bsSets = null;

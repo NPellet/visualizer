@@ -30,7 +30,7 @@ Clazz.defineMethod (c$, "render1",
 if (p.visibilityFlags == 0) return false;
 colix = JU.C.getColixInherited (colix, p.centralAtom.colixAtom);
 var needTranslucent = false;
-if (JU.C.isColixTranslucent (colix)) {
+if (JU.C.renderPass2 (colix)) {
 needTranslucent = true;
 } else if (!this.g3d.setC (colix)) {
 return false;
@@ -60,7 +60,7 @@ return needTranslucent;
 }, "J.shapespecial.Polyhedron,~N");
 Clazz.defineMethod (c$, "drawFace", 
  function (normix, A, B, C) {
-if (this.isAll || this.frontOnly && this.g3d.isDirectedTowardsCamera (normix)) {
+if (this.isAll || this.frontOnly && this.vwr.gdata.isDirectedTowardsCamera (normix)) {
 this.drawCylinderTriangle (A.x, A.y, A.z, B.x, B.y, B.z, C.x, C.y, C.z);
 }}, "~N,JU.P3i,JU.P3i,JU.P3i");
 Clazz.defineMethod (c$, "drawCylinderTriangle", 

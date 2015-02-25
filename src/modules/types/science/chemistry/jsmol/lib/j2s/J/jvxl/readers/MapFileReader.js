@@ -23,14 +23,12 @@ this.alpha = 0;
 this.beta = 0;
 this.gamma = 0;
 this.origin = null;
-this.adjustment = null;
 this.vectors = null;
 Clazz.instantialize (this, arguments);
 }, J.jvxl.readers, "MapFileReader", J.jvxl.readers.VolumeFileReader);
 Clazz.prepareFields (c$, function () {
 this.nxyzStart =  Clazz.newIntArray (3, 0);
 this.origin =  new JU.P3 ();
-this.adjustment =  new JU.P3 ();
 this.vectors =  new Array (3);
 });
 Clazz.makeConstructor (c$, 
@@ -45,8 +43,6 @@ Clazz.defineMethod (c$, "init2MFR",
 function (sg, br) {
 this.init2VFR (sg, br);
 this.isAngstroms = true;
-this.adjustment = sg.getParams ().center;
-if (this.adjustment == null || this.adjustment.x == 3.4028235E38) this.adjustment =  new JU.P3 ();
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
 Clazz.defineMethod (c$, "getVectorsAndOrigin", 
 function () {
@@ -81,9 +77,9 @@ xyz2crs[this.maps - 1] = 2;
 var xIndex = xyz2crs[0];
 var yIndex = xyz2crs[1];
 var zIndex = xyz2crs[2];
-this.origin.scaleAdd2 (this.nxyzStart[xIndex] + this.adjustment.x, this.vectors[0], this.origin);
-this.origin.scaleAdd2 (this.nxyzStart[yIndex] + this.adjustment.y, this.vectors[1], this.origin);
-this.origin.scaleAdd2 (this.nxyzStart[zIndex] + this.adjustment.z, this.vectors[2], this.origin);
+this.origin.scaleAdd2 (this.nxyzStart[xIndex], this.vectors[0], this.origin);
+this.origin.scaleAdd2 (this.nxyzStart[yIndex], this.vectors[1], this.origin);
+this.origin.scaleAdd2 (this.nxyzStart[zIndex], this.vectors[2], this.origin);
 }this.volumetricOrigin.setT (this.origin);
 JU.Logger.info ("Jmol grid origin in Cartesian coordinates: " + this.origin);
 JU.Logger.info ("Use  isosurface OFFSET {x y z}  if you want to shift it.\n");

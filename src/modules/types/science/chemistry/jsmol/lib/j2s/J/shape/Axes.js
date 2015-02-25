@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shape");
-Clazz.load (["J.shape.FontLineShape", "JU.P3", "$.V3"], "J.shape.Axes", ["java.lang.Boolean", "JU.PT", "$.SB", "J.c.AXES", "JU.Escape", "JV.JC"], function () {
+Clazz.load (["J.shape.FontLineShape", "JU.P3", "$.V3"], "J.shape.Axes", ["java.lang.Boolean", "JU.PT", "$.SB", "JU.Escape", "JV.JC"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.axisXY = null;
 this.scale = 0;
@@ -66,11 +66,11 @@ Clazz.defineMethod (c$, "initShape",
 function () {
 Clazz.superCall (this, J.shape.Axes, "initShape", []);
 this.myType = "axes";
-this.font3d = this.gdata.getFont3D (14);
+this.font3d = this.vwr.gdata.getFont3D (14);
 var axesMode = this.vwr.g.axesMode;
 if (this.fixedOrigin == null) this.originPoint.set (0, 0, 0);
  else this.originPoint.setT (this.fixedOrigin);
-if (axesMode === J.c.AXES.UNITCELL && this.ms.unitCells != null) {
+if (axesMode == 603979808 && this.ms.unitCells != null) {
 var unitcell = this.vwr.getCurrentUnitCell ();
 if (unitcell != null) {
 var vertices = unitcell.getUnitCellVertices ();
@@ -84,7 +84,7 @@ this.axisPoints[0].scaleAdd2 (this.scale, vertices[4], offset);
 this.axisPoints[1].scaleAdd2 (this.scale, vertices[2], offset);
 this.axisPoints[2].scaleAdd2 (this.scale, vertices[1], offset);
 return;
-}} else if (axesMode === J.c.AXES.BOUNDBOX) {
+}} else if (axesMode == 603979810) {
 if (this.fixedOrigin == null) this.originPoint.setT (this.vwr.getBoundBoxCenter ());
 }this.setScale (this.vwr.getFloat (570425346) / 2);
 });

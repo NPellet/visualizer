@@ -59,11 +59,14 @@ JV.DataManager.setSelectedFloats (JU.PT.parseFloat (stringData), bs, f);
 } else if (field == 0 || field == 2147483647) {
 bs = data[2];
 if (floatData != null) {
-if (floatData.length == bs.cardinality ()) for (var i = bs.nextSetBit (0), pt = 0; i >= 0; i = bs.nextSetBit (i + 1), pt++) f[i] = floatData[pt];
-
- else for (var i = bs.nextSetBit (0); i >= 0; i = bs.nextSetBit (i + 1)) f[i] = floatData[i];
+var n = floatData.length;
+if (n == bs.cardinality ()) {
+for (var i = bs.nextSetBit (0), pt = 0; i >= 0; i = bs.nextSetBit (i + 1), pt++) f[i] = floatData[pt];
 
 } else {
+for (var i = bs.nextSetBit (0); i >= 0 && i < n; i = bs.nextSetBit (i + 1)) f[i] = floatData[i];
+
+}} else {
 JU.Parser.parseFloatArrayBsData (strData == null ? JU.PT.getTokens (stringData) : strData, bs, f);
 }} else if (matchField <= 0) {
 bs = data[2];

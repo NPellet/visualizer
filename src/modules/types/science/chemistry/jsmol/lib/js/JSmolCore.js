@@ -1,7 +1,11 @@
+	// BH 4/25 -- added text option. setAppletCss(null, "style=\"xxxx\"")
+	// note that since you must add the style keyword, this can be used to add any attribute to these tags, not just css. 
+
 // JSmolCore.js -- Jmol core capability 
 
 // see JSmolApi.js for public user-interface. All these are private functions
 
+// BH 12/6/2014 3:32:54 PM Jmol.setAppletCss() broken
 // BH 9/13/2014 2:15:51 PM embedded JSME loads from SEARCH when Jmol should 
 // BH 8/14/2014 2:52:38 PM drag-drop cache should not be cleared if SPT file is dropped
 // BH 8/5/2014 6:39:54 AM unnecessary messages about binary for PDB finally removed
@@ -127,7 +131,7 @@ Jmol = (function(document) {
 		}
 	};
 	var j = {
-		_version: "$Date: 2014-10-05 20:16:30 -0500 (Sun, 05 Oct 2014) $", // svn.keywords:lastUpdated
+		_version: "$Date: 2014-12-19 08:17:57 -0600 (Fri, 19 Dec 2014) $", // svn.keywords:lastUpdated
 		_alertNoBinary: true,
 		// this url is used to Google Analytics tracking of Jmol use. You may remove it or modify it if you wish. 
 		_allowedJmolSize: [25, 2048, 300],   // min, max, default (pixels)
@@ -135,6 +139,8 @@ Jmol = (function(document) {
 				before calling Jmol.getApplet(), limits for applet size can be overriden.
 				2048 standard for GeoWall (http://geowall.geo.lsa.umich.edu/home.html)
 		*/
+		_appletCssClass: "",
+		_appletCssText: "",
 		_fileCache: null, // enabled by Jmol.setFileCaching(applet, true/false)
 		_jarFile: null,  // can be set in URL using _JAR=
 		_j2sPath: null,  // can be set in URL using _J2S=
@@ -838,7 +844,7 @@ Jmol = (function(document) {
 		return true;  
 	}
 
-	Jmol._binaryTypes = [".gz",".jpg",".png",".zip",".jmol",".bin",".smol",".spartan",".mrc",".pse", ".map", ".omap"];
+	Jmol._binaryTypes = [".gz",".jpg",".gif",".png",".zip",".jmol",".bin",".smol",".spartan",".mrc",".pse", ".map", ".omap"];
 
 	Jmol._isBinaryUrl = function(url) {
 		for (var i = Jmol._binaryTypes.length; --i >= 0;)
@@ -1016,7 +1022,10 @@ Jmol = (function(document) {
 		if (Jmol._localFileSaveFunction && Jmol._localFileSaveFunction(filename, data))
 			return "OK";
 		var filename = filename.substring(filename.lastIndexOf("/") + 1);
-		mimetype || (mimetype = (filename.indexOf(".pdf") >= 0 ? "application/pdf" : filename.indexOf(".png") >= 0 ? "image/png" : filename.indexOf(".jpg") >= 0 ? "image/jpg" : ""));
+		mimetype || (mimetype = (filename.indexOf(".pdf") >= 0 ? "application/pdf" 
+			: filename.indexOf(".png") >= 0 ? "image/png" 
+			: filename.indexOf(".gif") >= 0 ? "image/gif" 
+			: filename.indexOf(".jpg") >= 0 ? "image/jpg" : ""));
 		var isString = (typeof data == "string");
 		if (!isString)
 			data = (JU ? JU : J.util).Base64.getBase64(data).toString();
@@ -1121,9 +1130,11 @@ Jmol = (function(document) {
 				img = "<div id=\"ID_coverdiv\" style=\"background-color:red;z-index:" + Jmol._getZ(applet, "coverImage")+";width:100%;height:100%;display:inline;position:absolute;top:0px;left:0px\"><image id=\"ID_coverimage\" src=\""
 				 + applet._coverImage + "\" style=\"width:100%;height:100%\"" + more + "/>" + play + "</div>";
 			}
+			var css = Jmol._appletCssText.replace(/\'/g,'"');
+			css = (css.indexOf("style=\"") >= 0 ? css.split("style=\"")[1] : "\" " + css);
 			s = "\
 ...<div id=\"ID_appletinfotablediv\" style=\"width:Wpx;height:Hpx;position:relative;font-size:14px;text-align:left\">IMG\
-......<div id=\"ID_appletdiv\" style=\"z-index:" + Jmol._getZ(applet, "header") + ";width:100%;height:100%;position:absolute;top:0px;left:0px;\">";
+......<div id=\"ID_appletdiv\" style=\"z-index:" + Jmol._getZ(applet, "header") + ";width:100%;height:100%;position:absolute;top:0px;left:0px;" + css + ">";
 			var height = applet._height;
 			var width = applet._width;
 			if (typeof height !== "string" || height.indexOf("%") < 0) 
@@ -1271,10 +1282,10 @@ Jmol = (function(document) {
 		obj._noMonitor = Info.disableJ2SLoadMonitor;
 		Jmol._j2sPath && (Info.j2sPath = Jmol._j2sPath);
 		obj._j2sPath = Info.j2sPath;
-		obj._deferApplet = Info.deferApplet;
-		obj._deferUncover = !obj._isJava && Info.deferUncover;
 		obj._coverImage = Info.coverImage;
 		obj._isCovered = !!obj._coverImage; 
+		obj._deferApplet = Info.deferApplet || obj._isCovered && obj._isJava; // must do this if covered in Java
+		obj._deferUncover = Info.deferUncover && !obj._isJava; // can't do this with Java
 		obj._coverScript = Info.coverScript;
 		obj._coverTitle = Info.coverTitle;
 

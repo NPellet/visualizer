@@ -30,7 +30,7 @@ this.findString = this.params.calculationType;
 }, "~B");
 Clazz.overrideMethod (c$, "readVertices", 
 function () {
-this.readLine ();
+this.rd ();
 var n0;
 while (this.line != null) {
 if (this.line.length != 0 && this.line.charAt (0) == '@') {
@@ -46,14 +46,14 @@ n0 = this.nPolygons;
 this.readVectors ();
 if (this.nPolygons > n0) JU.Logger.info ("lines: " + (this.nPolygons - n0) + "/" + this.nPolygons);
 continue;
-}}}this.readLine ();
+}}}this.rd ();
 }
 return true;
 });
 Clazz.defineMethod (c$, "readDots", 
  function () {
 var color =  Clazz.newIntArray (1, 0);
-while (this.readLine () != null && this.line.indexOf ('@') < 0) {
+while (this.rd () != null && this.line.indexOf ('@') < 0) {
 var i = this.getPoint (this.line, 2, color, true);
 if (i < 0) continue;
 this.nDots++;
@@ -63,7 +63,7 @@ this.nTriangles = this.addTriangleCheck (i, i, i, 7, 0, false, color[0]);
 Clazz.defineMethod (c$, "readVectors", 
  function () {
 var color =  Clazz.newIntArray (1, 0);
-while (this.readLine () != null && this.line.indexOf ('@') < 0) {
+while (this.rd () != null && this.line.indexOf ('@') < 0) {
 var ia = this.getPoint (this.line, 3, color, true);
 var ib = this.getPoint (this.line.substring (this.line.lastIndexOf ('{')), 2, color, false);
 if (ia < 0 || ib < 0) continue;

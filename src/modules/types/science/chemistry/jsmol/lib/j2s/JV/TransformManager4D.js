@@ -84,7 +84,6 @@ if (this.m2_rotate == null) this.m2_rotate = JU.M4.newMV (this.matrixRotate, thi
 Clazz.defineMethod (c$, "calcTransformMatrix", 
 function () {
 Clazz.superCall (this, JV.TransformManager4D, "calcTransformMatrix", []);
-this.is4D = this.vwr.getTestFlag (2);
 this.doTransform4D = (this.is4D && !this.stereoFrame && this.mode != 1);
 if (!this.doTransform4D) return;
 this.v1.sub2 (this.frameOffset, this.fixedRotationCenter);

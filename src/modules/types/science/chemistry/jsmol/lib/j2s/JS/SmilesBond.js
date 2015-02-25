@@ -119,14 +119,6 @@ return 96;
 }
 return -1;
 }, "~S");
-Clazz.defineMethod (c$, "getAtom1", 
-function () {
-return this.atom1;
-});
-Clazz.defineMethod (c$, "getAtom2", 
-function () {
-return this.atom2;
-});
 Clazz.defineMethod (c$, "setAtom2", 
 function (atom) {
 this.atom2 = atom;

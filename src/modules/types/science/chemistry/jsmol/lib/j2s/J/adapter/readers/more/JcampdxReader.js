@@ -101,8 +101,8 @@ if (baseModel.length == 0) baseModel = last;
 if (baseModel.length != 0) {
 var ibase = this.findModelById (baseModel);
 if (ibase >= 0) {
-this.asc.setAtomSetAuxiliaryInfoForSet ("jdxModelID", baseModel, ibase);
-for (var i = model.atomSetCount; --i >= 0; ) model.setAtomSetAuxiliaryInfoForSet ("jdxBaseModel", baseModel, i);
+this.asc.setModelInfoForSet ("jdxModelID", baseModel, ibase);
+for (var i = model.atomSetCount; --i >= 0; ) model.setModelInfoForSet ("jdxBaseModel", baseModel, i);
 
 if (model.bondCount == 0) this.setBonding (model, ibase);
 }}if (!Float.isNaN (vibScale)) {
@@ -149,9 +149,9 @@ Clazz.defineMethod (c$, "updateModelIDs",
  function (id, model0, isFirst) {
 var n = this.asc.atomSetCount;
 if (isFirst && n == model0 + 2) {
-this.asc.setAtomSetAuxiliaryInfo ("modelID", id);
+this.asc.setCurrentModelInfo ("modelID", id);
 return;
-}for (var pt = 0, i = model0; ++i < n; ) this.asc.setAtomSetAuxiliaryInfoForSet ("modelID", id + "." + (++pt), i);
+}for (var pt = 0, i = model0; ++i < n; ) this.asc.setModelInfoForSet ("modelID", id + "." + (++pt), i);
 
 }, "~S,~N,~B");
 Clazz.overrideMethod (c$, "addPeakData", 
@@ -225,7 +225,7 @@ Clazz.defineMethod (c$, "addType",
  function (imodel, type) {
 var types = this.addTypeStr (this.asc.getAtomSetAuxiliaryInfoValue (imodel, "spectrumTypes"), type);
 if (types == null) return;
-this.asc.setAtomSetAuxiliaryInfoForSet ("spectrumTypes", types, imodel);
+this.asc.setModelInfoForSet ("spectrumTypes", types, imodel);
 var s = this.addTypeStr (this.allTypes, type);
 if (s != null) this.allTypes = s;
 }, "~N,~S");
@@ -239,14 +239,14 @@ return types + type;
 Clazz.defineMethod (c$, "processPeakSelectAtom", 
  function (i, key, data) {
 var peaks = this.asc.getAtomSetAuxiliaryInfoValue (i, key);
-if (peaks == null) this.asc.setAtomSetAuxiliaryInfoForSet (key, peaks =  new JU.Lst (), i);
+if (peaks == null) this.asc.setModelInfoForSet (key, peaks =  new JU.Lst (), i);
 peaks.addLast (data);
 }, "~N,~S,~S");
 Clazz.defineMethod (c$, "processPeakSelectModel", 
  function (i, title) {
 if (this.asc.getAtomSetAuxiliaryInfoValue (i, "jdxModelSelect") != null) return false;
-this.asc.setAtomSetAuxiliaryInfoForSet ("name", title, i);
-this.asc.setAtomSetAuxiliaryInfoForSet ("jdxModelSelect", this.line, i);
+this.asc.setModelInfoForSet ("name", title, i);
+this.asc.setModelInfoForSet ("jdxModelSelect", this.line, i);
 return true;
 }, "~N,~S");
 Clazz.overrideMethod (c$, "setSpectrumPeaks", 

@@ -72,9 +72,9 @@ function (red, grn, blu) {
 return 0xFF000000 | (red << 16) | (grn << 8) | blu;
 }, "~N,~N,~N");
 c$.colorPtFromString = Clazz.defineMethod (c$, "colorPtFromString", 
-function (colorName, pt) {
-return JU.CU.toRGBpt (JU.CU.getArgbFromString (colorName), pt);
-}, "~S,JU.P3");
+function (colorName) {
+return JU.CU.colorPtFromInt (JU.CU.getArgbFromString (colorName), null);
+}, "~S");
 c$.colorPtFromInt = Clazz.defineMethod (c$, "colorPtFromInt", 
 function (color, pt) {
 if (pt == null) pt =  new JU.P3 ();
@@ -85,13 +85,6 @@ c$.colorPtToFFRGB = Clazz.defineMethod (c$, "colorPtToFFRGB",
 function (pt) {
 return JU.CU.colorTriadToFFRGB (pt.x, pt.y, pt.z);
 }, "JU.T3");
-c$.toRGBpt = Clazz.defineMethod (c$, "toRGBpt", 
-function (color, pt) {
-pt.x = (color >> 16) & 0xFF;
-pt.y = (color >> 8) & 0xFF;
-pt.z = color & 0xFF;
-return pt;
-}, "~N,JU.P3");
 c$.toRGB3f = Clazz.defineMethod (c$, "toRGB3f", 
 function (c, f) {
 f[0] = ((c >> 16) & 0xFF) / 255;
@@ -118,9 +111,9 @@ return (doRound ? JU.P3.new3 (Math.round (h * 10) / 10, Math.round (s * 1000) / 
 }, "JU.P3,~B");
 c$.hslToRGB = Clazz.defineMethod (c$, "hslToRGB", 
 function (hsl) {
-var h = hsl.x / 60;
-var s = hsl.y / 100;
-var l = hsl.z / 100;
+var h = Math.max (0, Math.min (360, hsl.x)) / 60;
+var s = Math.max (0, Math.min (100, hsl.y)) / 100;
+var l = Math.max (0, Math.min (100, hsl.z)) / 100;
 var p = l - (l < 0.5 ? l : 1 - l) * s;
 var q = 2 * (l - p);
 var r = JU.CU.toRGB (p, q, h + 2);

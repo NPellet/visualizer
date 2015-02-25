@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.xml");
-Clazz.load (["J.adapter.readers.xml.XmlCmlReader"], "J.adapter.readers.xml.XmlMolproReader", null, function () {
+Clazz.load (["J.adapter.readers.xml.XmlCmlReader"], "J.adapter.readers.xml.XmlMolproReader", ["JU.PT"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.myAttributes = null;
 Clazz.instantialize (this, arguments);
@@ -53,7 +53,7 @@ if (localName.equalsIgnoreCase ("normalCoordinate")) {
 if (!this.keepChars) return;
 var ac = this.asc.getLastAtomSetAtomCount ();
 var baseAtomIndex = this.asc.getLastAtomSetAtomIndex ();
-this.tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.chars);
+this.tokens = JU.PT.getTokens (this.chars);
 for (var offset = this.tokens.length - ac * 3, i = 0; i < ac; i++) {
 this.asc.addVibrationVector (i + baseAtomIndex, this.parseFloatStr (this.tokens[offset++]), this.parseFloatStr (this.tokens[offset++]), this.parseFloatStr (this.tokens[offset++]));
 }

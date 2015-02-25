@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.xtal");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.xtal.EspressoReader", ["java.lang.Double"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.xtal.EspressoReader", ["java.lang.Double", "JU.PT"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.cellParams = null;
 this.totEnergy = null;
@@ -41,7 +41,7 @@ var i0 = (andAPar ? 0 : 3);
 if (andAPar && this.line.contains ("=")) this.aPar = this.parseFloatStr (this.line.substring (this.line.indexOf ("=") + 1)) * 0.5291772;
 this.cellParams =  Clazz.newFloatArray (9, 0);
 for (var n = 0, i = 0; n < 3; n++) {
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+var tokens = JU.PT.getTokens (this.rd ());
 this.cellParams[i++] = this.parseFloatStr (tokens[i0]) * this.aPar;
 this.cellParams[i++] = this.parseFloatStr (tokens[i0 + 1]) * this.aPar;
 this.cellParams[i++] = this.parseFloatStr (tokens[i0 + 2]) * this.aPar;
@@ -90,7 +90,7 @@ if (this.endFlag) this.discardLinesUntilContains ("Harris-Foulkes estimate");
 });
 Clazz.defineMethod (c$, "readEnergy", 
  function () {
-this.totEnergy = Double.$valueOf (Double.parseDouble (J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line.substring (this.line.indexOf ("=") + 1))[0]));
+this.totEnergy = Double.$valueOf (Double.parseDouble (JU.PT.getTokens (this.line.substring (this.line.indexOf ("=") + 1))[0]));
 });
 Clazz.defineMethod (c$, "setEnergy", 
  function () {

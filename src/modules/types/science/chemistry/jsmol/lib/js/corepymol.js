@@ -1249,7 +1249,7 @@ sm.vwr.displayAtoms (this.bsAtoms, false, false, 1276118017, true);
 return;
 case 12295:
 var bs = sm.vwr.getModelUndeletedAtomsBitSet (this.argb);
-JU.BSUtil.invertInPlace (bs, sm.vwr.getAtomCount ());
+JU.BSUtil.invertInPlace (bs, sm.vwr.ms.ac);
 sm.vwr.select (bs, false, 0, true);
 sm.restrictSelected (false, true);
 return;
@@ -1308,7 +1308,7 @@ JU.BSUtil.andNot (this.bsAtoms, bsCarb);
 break;
 case 16:
 sm.loadShape (this.id);
-sm.setShapePropertyBs (this.id, "ignore", JU.BSUtil.copyInvert (this.bsAtoms, sm.vwr.getAtomCount ()), null);
+sm.setShapePropertyBs (this.id, "ignore", JU.BSUtil.copyInvert (this.bsAtoms, sm.vwr.ms.ac), null);
 break;
 default:
 if (!this.visible) return;
@@ -1349,7 +1349,7 @@ return;
 sb.append ("isosurface ID ").append (JU.PT.esc (sID));
 if (this.modelIndex < 0) this.modelIndex = sm.vwr.am.cmi;
 if (this.bsAtoms == null) {
-sb.append (" model ").append (m.am[this.modelIndex].getModelNumberDotted ()).append (" color density sigma 1.0 ").append (JU.PT.esc (this.cacheID)).append (" ").append (JU.PT.esc (sID));
+sb.append (" model ").append (m.getModelNumberDotted (this.modelIndex)).append (" color density sigma 1.0 ").append (JU.PT.esc (this.cacheID)).append (" ").append (JU.PT.esc (sID));
 if (doCache) sb.append (";isosurface cache");
 } else {
 var lighting = (this.info)[0];
@@ -1362,7 +1362,7 @@ if (lighting == null) {
 lighting = "mesh nofill";
 resolution = " resolution 1.5";
 }var haveMep = JU.PT.isOneOf (sID, mepList);
-var model = m.am[this.modelIndex].getModelNumberDotted ();
+var model = m.getModelNumberDotted (this.modelIndex);
 var ignore = "";
 var type = (this.size < 0 ? " sasurface " : " solvent ");
 sb.append (" model ").append (model).append (resolution).append (" select ").append (JU.Escape.eBS (this.bsAtoms)).append (only).append (ignore).append (type).appendF (Math.abs (this.size / 1000));
@@ -1390,7 +1390,7 @@ this.modelIndex = sm.vwr.am.cmi;
 var mesh = this.info;
 sID = mesh.get (mesh.size () - 2).toString ();
 sb =  new JU.SB ();
-sb.append ("isosurface ID ").append (JU.PT.esc (sID)).append (" model ").append (m.am[this.modelIndex].getModelNumberDotted ()).append (" color ").append (JU.Escape.escapeColor (this.argb)).append ("  ").append (JU.PT.esc (this.cacheID)).append (" ").append (JU.PT.esc (sID)).append (" mesh nofill frontonly");
+sb.append ("isosurface ID ").append (JU.PT.esc (sID)).append (" model ").append (m.getModelNumberDotted (this.modelIndex)).append (" color ").append (JU.Escape.escapeColor (this.argb)).append ("  ").append (JU.PT.esc (this.cacheID)).append (" ").append (JU.PT.esc (sID)).append (" mesh nofill frontonly");
 var within = J.adapter.readers.pymol.PyMOLScene.floatAt (J.adapter.readers.pymol.PyMOLScene.listAt (J.adapter.readers.pymol.PyMOLScene.listAt (mesh, 2), 0), 11);
 var list = J.adapter.readers.pymol.PyMOLScene.listAt (J.adapter.readers.pymol.PyMOLScene.listAt (J.adapter.readers.pymol.PyMOLScene.listAt (mesh, 2), 0), 12);
 if (within > 0) {
@@ -2378,7 +2378,7 @@ style = "BoldItalic";
 break;
 }
 var font = this.vwr.getFont3D (face, style, fontSize == 0 ? 12 : fontSize * factor);
-var t = JM.Text.newLabel (this.vwr.gdata, font, label, this.getColix (colorIndex, 0), 0, 0, 0, labelOffset);
+var t = JM.Text.newLabel (this.vwr, font, label, this.getColix (colorIndex, 0), 0, 0, 0, labelOffset);
 return t;
 }, "~S,~A,~N,~N,~N");
 Clazz_defineMethod (c$, "setVersionSettings", 
@@ -2694,7 +2694,7 @@ this.bsLineBonds.andNot (this.bsStickBonds);
 Clazz_defineMethod (c$, "finalizeUniqueBonds", 
  function () {
 if (this.uniqueList == null) return;
-var bondCount = this.vwr.getBondCount ();
+var bondCount = this.vwr.ms.bondCount;
 var bonds = this.vwr.ms.bo;
 for (var i = this.bsUniqueBonds.nextSetBit (0); i >= 0; i = this.bsUniqueBonds.nextSetBit (i + 1)) {
 var rad = NaN;
@@ -2804,7 +2804,7 @@ function () {
 this.baseAtomIndex = (this.htParams.get ("baseAtomIndex")).intValue ();
 this.baseModelIndex = (this.htParams.get ("baseModelIndex")).intValue ();
 this.asc.setInfo ("noAutoBond", Boolean.TRUE);
-this.asc.setAtomSetAuxiliaryInfo ("pdbNoHydrogens", Boolean.TRUE);
+this.asc.setCurrentModelInfo ("pdbNoHydrogens", Boolean.TRUE);
 this.asc.setInfo ("isPyMOL", Boolean.TRUE);
 if (this.isTrajectory) this.trajectorySteps =  new JU.Lst ();
 this.isStateScript = this.htParams.containsKey ("isStateScript");
@@ -2843,13 +2843,12 @@ this.setLoadNote ();
 var scenes =  new Array (this.sceneOrder.size ());
 for (var i = scenes.length; --i >= 0; ) scenes[i] = this.sceneOrder.get (i);
 
-var info = this.vwr.getModelSetAuxiliaryInfo ();
-info.put ("scenes", scenes);
+this.vwr.getModelSetAuxiliaryInfo ().put ("scenes", scenes);
 }this.vwr.ms.setTrajectoryBs (JU.BSUtil.newBitSet2 (this.baseModelIndex, this.vwr.ms.mc));
 if (!this.isStateScript) this.pymolScene.setFrameObject (0, null);
 if (this.bsBytesExcluded != null) {
 var nExcluded = this.bsBytesExcluded.cardinality ();
-var bytes0 = this.vwr.getFileAsBytes (this.filePath, null);
+var bytes0 = this.vwr.fm.getFileAsBytes (this.filePath, null);
 var bytes =  Clazz_newByteArray (bytes0.length - nExcluded, 0);
 for (var i = this.bsBytesExcluded.nextClearBit (0), n = bytes0.length, pt = 0; i < n; i = this.bsBytesExcluded.nextClearBit (i + 1)) bytes[pt++] = bytes0[i];
 
@@ -2966,7 +2965,7 @@ this.asc.finalizeTrajectoryAs (this.trajectorySteps, null);
 this.processSelectionsAndScenes (map);
 this.pymolScene.finalizeVisibility ();
 if (!this.isStateScript) {
-this.vwr.initialize (true);
+this.vwr.initialize (false);
 this.addJmolScript (this.pymolScene.getViewScript (J.adapter.readers.pymol.PyMOLReader.getMapList (map, "view")).toString ());
 }if (this.$ac == 0) this.asc.setInfo ("dataOnly", Boolean.TRUE);
 this.pymolScene.offsetObjects ();

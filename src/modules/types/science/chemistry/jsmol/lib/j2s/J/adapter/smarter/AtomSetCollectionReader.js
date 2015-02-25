@@ -262,7 +262,7 @@ Clazz.defineMethod (c$, "setModelPDB",
 function (isPDB) {
 if (isPDB) this.asc.setGlobalBoolean (4);
  else this.asc.clearGlobalBoolean (4);
-this.asc.setAtomSetAuxiliaryInfo ("isPDB", isPDB ? Boolean.TRUE : null);
+this.asc.setCurrentModelInfo ("isPDB", isPDB ? Boolean.TRUE : null);
 }, "~B");
 Clazz.defineMethod (c$, "finish", 
  function () {
@@ -277,12 +277,12 @@ var name = this.asc.fileTypeName;
 var fileType = name;
 if (fileType.indexOf ("(") >= 0) fileType = fileType.substring (0, fileType.indexOf ("("));
 for (var i = this.asc.atomSetCount; --i >= 0; ) {
-this.asc.setAtomSetAuxiliaryInfoForSet ("fileName", this.filePath, i);
-this.asc.setAtomSetAuxiliaryInfoForSet ("fileType", fileType, i);
+this.asc.setModelInfoForSet ("fileName", this.filePath, i);
+this.asc.setModelInfoForSet ("fileType", fileType, i);
 }
 this.asc.freeze (this.reverseModels);
 if (this.asc.errorMessage != null) return this.asc.errorMessage + "\nfor file " + this.filePath + "\ntype " + name;
-if ((this.asc.bsAtoms == null ? this.asc.ac : this.asc.bsAtoms.cardinality ()) == 0 && fileType.indexOf ("DataOnly") < 0 && this.asc.getAtomSetCollectionAuxiliaryInfo ("dataOnly") == null) return "No atoms found\nfor file " + this.filePath + "\ntype " + name;
+if ((this.asc.bsAtoms == null ? this.asc.ac : this.asc.bsAtoms.cardinality ()) == 0 && fileType.indexOf ("DataOnly") < 0 && this.asc.atomSetInfo.get ("dataOnly") == null) return "No atoms found\nfor file " + this.filePath + "\ntype " + name;
 this.fixBaseIndices ();
 return this.asc;
 });
@@ -421,7 +421,7 @@ this.asc.newAtomSet ();
 this.asc.setCollectionName ("<collection of " + (this.asc.iSet + 1) + " models>");
 } else {
 this.asc.setCollectionName (name);
-}this.asc.setAtomSetAuxiliaryInfoForSet ("name", name, Math.max (0, this.asc.iSet));
+}this.asc.setModelInfoForSet ("name", name, Math.max (0, this.asc.iSet));
 }, "~S");
 Clazz.defineMethod (c$, "cloneLastAtomSet", 
 function (ac, pts) {
@@ -575,7 +575,7 @@ this.filterGroup3 = this.checkFilterKey ("[");
 this.filterChain = this.checkFilterKey (":");
 this.filterAltLoc = this.checkFilterKey ("%");
 this.filterEveryNth = this.checkFilterKey ("/=");
-if (this.filterEveryNth) this.filterN = this.parseIntStr (this.filter.substring (this.filter.indexOf ("/=") + 2));
+if (this.filterEveryNth) this.filterN = this.parseIntAt (this.filter, this.filter.indexOf ("/=") + 2);
  else this.filterAtomType = this.checkFilterKey ("=");
 if (this.filterN == -2147483648) this.filterEveryNth = false;
 this.haveAtomFilter = this.filterAtomName || this.filterAtomType || this.filterElement || this.filterGroup3 || this.filterChain || this.filterAltLoc || this.filterHetero || this.filterEveryNth || this.checkFilterKey ("/=");
@@ -692,7 +692,7 @@ this.doCheckUnitCell = true;
 }, "J.adapter.smarter.Atom");
 Clazz.defineMethod (c$, "addSites", 
 function (htSites) {
-this.asc.setAtomSetAuxiliaryInfo ("pdbSites", htSites);
+this.asc.setCurrentModelInfo ("pdbSites", htSites);
 var sites = "";
 for (var entry, $entry = htSites.entrySet ().iterator (); $entry.hasNext () && ((entry = $entry.next ()) || true);) {
 var name = entry.getKey ();
@@ -719,7 +719,7 @@ var sym = (this.iHaveUnitCell && this.doCheckUnitCell ? this.asc.getXSymmetry ()
 if (sym == null) this.asc.setTensors ();
 if (this.isTrajectory) this.asc.setTrajectory ();
 if (this.moreUnitCellInfo != null) {
-this.asc.setAtomSetAuxiliaryInfo ("moreUnitCellInfo", this.moreUnitCellInfo);
+this.asc.setCurrentModelInfo ("moreUnitCellInfo", this.moreUnitCellInfo);
 this.moreUnitCellInfo = null;
 }this.finalizeSubclassSymmetry (sym != null);
 if (sym != null && this.ptSupercell != null) {
@@ -735,7 +735,7 @@ function () {
 });
 Clazz.defineMethod (c$, "finalizeMOData", 
 function (moData) {
-this.asc.setAtomSetAuxiliaryInfo ("moData", moData);
+this.asc.setCurrentModelInfo ("moData", moData);
 if (moData == null) return;
 var orbitals = moData.get ("mos");
 if (orbitals != null) JU.Logger.info (orbitals.size () + " molecular orbitals read in model " + this.asc.atomSetCount);
@@ -762,7 +762,7 @@ Clazz.defineMethod (c$, "fillDataBlock",
 function (data, minLineLen) {
 var nLines = data.length;
 for (var i = 0; i < nLines; i++) {
-data[i] = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.discardLinesUntilNonBlank ());
+data[i] = JU.PT.getTokens (this.discardLinesUntilNonBlank ());
 if (data[i].length < minLineLen) --i;
 }
 }, "~A,~N");
@@ -774,7 +774,7 @@ for (var i = 0; i < data.length; i++) {
 while (tokens != null && pt >= tokens.length) {
 if (s == null) s = this.rd ();
 if (width == 0) {
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (s);
+tokens = JU.PT.getTokens (s);
 } else {
 tokens =  new Array (Clazz.doubleToInt (s.length / width));
 for (var j = 0; j < tokens.length; j++) tokens[j] = s.substring (j * width, (j + 1) * width);
@@ -865,7 +865,7 @@ if (!this.line.endsWith ("#noautobond")) this.line += "#noautobond";
 }if (this.line.indexOf ("Jmol data min") >= 0) {
 JU.Logger.info (this.line);
 var data =  Clazz.newFloatArray (15, 0);
-this.parseStringInfestedFloatArray (this.line.substring (10).$replace ('=', ' ').$replace ('{', ' ').$replace ('}', ' '), data);
+JU.Parser.parseStringInfestedFloatArray (this.line.substring (10).$replace ('=', ' ').$replace ('{', ' ').$replace ('}', ' '), null, data);
 var minXYZ = JU.P3.new3 (data[0], data[1], data[2]);
 var maxXYZ = JU.P3.new3 (data[3], data[4], data[5]);
 this.fileScaling = JU.P3.new3 (data[6], data[7], data[8]);
@@ -938,24 +938,12 @@ Clazz.defineMethod (c$, "getTokens",
 function () {
 return JU.PT.getTokens (this.line);
 });
-Clazz.defineMethod (c$, "parseStringInfestedFloatArray", 
-function (s, data) {
-JU.Parser.parseStringInfestedFloatArray (s, null, data);
-}, "~S,~A");
 c$.getTokensFloat = Clazz.defineMethod (c$, "getTokensFloat", 
 function (s, f, n) {
 if (f == null) f =  Clazz.newFloatArray (n, 0);
-JU.PT.parseFloatArrayDataN (J.adapter.smarter.AtomSetCollectionReader.getTokensStr (s), f, n);
+JU.PT.parseFloatArrayDataN (JU.PT.getTokens (s), f, n);
 return f;
 }, "~S,~A,~N");
-c$.getTokensStr = Clazz.defineMethod (c$, "getTokensStr", 
-function (s) {
-return JU.PT.getTokens (s);
-}, "~S");
-c$.getTokensAt = Clazz.defineMethod (c$, "getTokensAt", 
-function (s, iStart) {
-return JU.PT.getTokensAt (s, iStart);
-}, "~S,~N");
 Clazz.defineMethod (c$, "parseFloat", 
 function () {
 return JU.PT.parseFloatNext (this.line, this.next);
@@ -1006,14 +994,6 @@ Clazz.defineMethod (c$, "parseTokenRange",
 function (s, iStart, iEnd) {
 this.next[0] = iStart;
 return JU.PT.parseTokenRange (s, iEnd, this.next);
-}, "~S,~N,~N");
-c$.parseTrimmedAt = Clazz.defineMethod (c$, "parseTrimmedAt", 
-function (s, iStart) {
-return JU.PT.parseTrimmedAt (s, iStart);
-}, "~S,~N");
-c$.parseTrimmedRange = Clazz.defineMethod (c$, "parseTrimmedRange", 
-function (s, iStart, iEnd) {
-return JU.PT.parseTrimmedRange (s, iStart, iEnd);
 }, "~S,~N,~N");
 c$.getFortranFormatLengths = Clazz.defineMethod (c$, "getFortranFormatLengths", 
 function (s) {

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.quantum");
-Clazz.load (["J.api.MOCalculationInterface", "J.quantum.QuantumCalculation"], "J.quantum.MOCalculation", ["J.c.QS", "JU.Logger"], function () {
+Clazz.load (["J.api.MOCalculationInterface", "J.quantum.QuantumCalculation"], "J.quantum.MOCalculation", ["J.quantum.QS", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.CX = null;
 this.CY = null;
@@ -29,7 +29,6 @@ this.sum = -1;
 this.c = 1;
 this.nGaussians = 0;
 this.doShowShellType = false;
-this.basisType = null;
 this.coeffs = null;
 this.map = null;
 this.integration = 0;
@@ -144,11 +143,11 @@ Clazz.defineMethod (c$, "normalizeShell",
  function (iShell) {
 var c = 0;
 var shell = this.shells.get (iShell);
-this.basisType = J.c.QS.getItem (shell[1]);
+var basisType = shell[1];
 this.gaussianPtr = shell[2];
 this.nGaussians = shell[3];
 this.doShowShellType = this.doDebug;
-if (!this.setCoeffs (false)) return 0;
+if (!this.setCoeffs (basisType, false)) return 0;
 for (var i = this.map.length; --i >= 0; ) c += this.coeffs[i] * this.coeffs[i];
 
 return c;
@@ -158,37 +157,37 @@ Clazz.defineMethod (c$, "processShell",
 var lastAtom = this.atomIndex;
 var shell = this.shells.get (iShell);
 this.atomIndex = shell[0] + this.firstAtomOffset;
-this.basisType = J.c.QS.getItem (shell[1]);
+var basisType = shell[1];
 this.gaussianPtr = shell[2];
 this.nGaussians = shell[3];
 this.doShowShellType = this.doDebug;
 if (this.atomIndex != lastAtom && (this.thisAtom = this.qmAtoms[this.atomIndex]) != null) this.thisAtom.setXYZ (this, true);
-if (!this.setCoeffs (true)) return;
+if (!this.setCoeffs (shell[1], true)) return;
 if (this.havePoints) this.setMinMax (-1);
-switch (this.basisType) {
-case J.c.QS.S:
+switch (basisType) {
+case 0:
 this.addDataS ();
 break;
-case J.c.QS.P:
+case 1:
 this.addDataP ();
 break;
-case J.c.QS.SP:
+case 2:
 this.addDataSP ();
 break;
-case J.c.QS.D_SPHERICAL:
+case 3:
 this.addData5D ();
 break;
-case J.c.QS.D_CARTESIAN:
+case 4:
 this.addData6D ();
 break;
-case J.c.QS.F_SPHERICAL:
+case 5:
 this.addData7F ();
 break;
-case J.c.QS.F_CARTESIAN:
+case 6:
 this.addData10F ();
 break;
 default:
-JU.Logger.warn (" Unsupported basis type for atomno=" + (this.atomIndex + 1) + ": " + this.basisType.tag);
+JU.Logger.warn (" Unsupported basis type for atomno=" + (this.atomIndex + 1) + ": " + J.quantum.QS.getQuantumShellTag (basisType));
 break;
 }
 }, "~N");
@@ -231,19 +230,18 @@ if (JU.Logger.debugging) JU.Logger.debug ("\t\t\tnormalization for l=" + el + " 
 return sum;
 }, "~N,~N");
 Clazz.defineMethod (c$, "setCoeffs", 
- function (isProcess) {
+ function (type, isProcess) {
 var isOK = false;
-var mapType = this.basisType.id;
-this.map = this.dfCoefMaps[mapType];
+this.map = this.dfCoefMaps[type];
 if (isProcess && this.thisAtom == null) {
 this.moCoeff += this.map.length;
 return false;
 }for (var i = 0; i < this.map.length; i++) isOK = new Boolean (isOK | ((this.coeffs[i] = this.moCoefficients[this.map[i] + this.moCoeff++]) != 0)).valueOf ();
 
 isOK = new Boolean (isOK & (this.coeffs[0] != -2147483648)).valueOf ();
-if (isOK && this.doDebug && isProcess) this.dumpInfo (mapType);
+if (isOK && this.doDebug && isProcess) this.dumpInfo (type);
 return isOK;
-}, "~B");
+}, "~N,~B");
 Clazz.defineMethod (c$, "addDataS", 
  function () {
 var norm;
@@ -875,7 +873,7 @@ return true;
 Clazz.defineMethod (c$, "dumpInfo", 
  function (shell) {
 if (this.doShowShellType) {
-JU.Logger.debug ("\n\t\t\tprocessShell: " + shell + " type=" + J.c.QS.getQuantumShellTag (shell) + " nGaussians=" + this.nGaussians + " atom=" + this.atomIndex);
+JU.Logger.debug ("\n\t\t\tprocessShell: " + shell + " type=" + J.quantum.QS.getQuantumShellTag (shell) + " nGaussians=" + this.nGaussians + " atom=" + this.atomIndex);
 this.doShowShellType = false;
 }if (JU.Logger.isActiveLevel (6)) for (var ig = 0; ig < this.nGaussians; ig++) {
 var alpha = this.gaussians[this.gaussianPtr + ig][0];

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.more");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.more.GromacsReader", ["java.lang.Float", "JU.P3", "J.adapter.smarter.Atom", "J.api.JmolAdapter", "JU.Logger"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.more.GromacsReader", ["java.lang.Float", "JU.P3", "J.adapter.smarter.Atom", "JU.Logger"], function () {
 c$ = Clazz.declareType (J.adapter.readers.more, "GromacsReader", J.adapter.smarter.AtomSetCollectionReader);
 Clazz.overrideMethod (c$, "initializeReader", 
 function () {
@@ -59,7 +59,7 @@ function (group3, atomName) {
 if (atomName.length <= 2 && group3.equals (atomName)) return atomName;
 var ch1 = (atomName.length == 4 ? atomName.charAt (0) : '\0');
 var ch2 = atomName.charAt (atomName.length == 4 ? 1 : 0);
-var isHetero = J.api.JmolAdapter.isHetero (group3);
+var isHetero = this.vwr.getJBR ().isHetero (group3);
 if (J.adapter.smarter.Atom.isValidSymNoCase (ch1, ch2)) return (isHetero || ch1 != 'H' ? "" + ch1 + ch2 : "H");
 if (J.adapter.smarter.Atom.isValidSym1 (ch2)) return "" + ch2;
 if (J.adapter.smarter.Atom.isValidSym1 (ch1)) return "" + ch1;
@@ -68,7 +68,7 @@ return "Xx";
 Clazz.defineMethod (c$, "readUnitCell", 
  function () {
 if (this.rd () == null) return;
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line);
+var tokens = this.getTokens ();
 if (tokens.length < 3 || !this.doApplySymmetry) return;
 var a = 10 * this.parseFloatStr (tokens[0]);
 var b = 10 * this.parseFloatStr (tokens[1]);

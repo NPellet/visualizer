@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.simple");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.simple.GhemicalMMReader", ["java.lang.Exception"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.simple.GhemicalMMReader", ["java.lang.Exception", "JU.PT"], function () {
 c$ = Clazz.declareType (J.adapter.readers.simple, "GhemicalMMReader", J.adapter.smarter.AtomSetCollectionReader);
 Clazz.overrideMethod (c$, "checkLine", 
 function () {
@@ -72,7 +72,7 @@ Clazz.defineMethod (c$, "processCoord",
 function () {
 var atoms = this.asc.atoms;
 var ac = this.asc.ac;
-for (var i = 0; i < ac; ++i) this.setAtomCoordScaled (atoms[i], J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ()), 1, 10);
+for (var i = 0; i < ac; ++i) this.setAtomCoordScaled (atoms[i], JU.PT.getTokens (this.rd ()), 1, 10);
 
 });
 Clazz.defineMethod (c$, "processCharges", 

@@ -279,9 +279,9 @@ var bonds = this.ms.bo;
 for (var i = this.ms.bondCount; --i >= 0; ) {
 var bond = bonds[i];
 if (!bond.isCovalent ()) continue;
-var c1 = partialCharges[bond.getAtomIndex1 ()];
-var c2 = partialCharges[bond.getAtomIndex2 ()];
-if (c1 != c2) this.setDipoleAtoms (bond.getAtom1 (), bond.getAtom2 (), c1, c2);
+var c1 = partialCharges[bond.atom1.i];
+var c2 = partialCharges[bond.atom2.i];
+if (c1 != c2) this.setDipoleAtoms (bond.atom1, bond.atom2, c1, c2);
 }
 });
 Clazz.defineMethod (c$, "isBondDipole", 
@@ -361,7 +361,7 @@ return this.dipoles[dipoleIndex];
 }, "JM.Atom,JM.Atom,~B");
 Clazz.defineMethod (c$, "findBondDipole", 
  function (bond) {
-var d = this.findAtomDipole (bond.getAtom1 (), bond.getAtom2 (), false);
+var d = this.findAtomDipole (bond.atom1, bond.atom2, false);
 return (d == null || d.atoms[0] == null ? null : d);
 }, "JM.Bond");
 Clazz.defineMethod (c$, "findDipoleFor", 
@@ -376,7 +376,7 @@ Clazz.defineMethod (c$, "allocDipole",
  function (thisID, dipoleInfo) {
 this.dipoles = JU.AU.ensureLength (this.dipoles, this.dipoleCount + 1);
 if (thisID == null || thisID.length == 0) thisID = "dipole" + (this.dipoleCount + 1);
-var d = this.dipoles[this.dipoleCount++] =  new J.shapespecial.Dipole (this.vwr.am.cmi, thisID, dipoleInfo, this.colix, 5, true);
+var d = this.dipoles[this.dipoleCount++] =  new J.shapespecial.Dipole ().init (this.vwr.am.cmi, thisID, dipoleInfo, this.colix, 5, true);
 return d;
 }, "~S,~S");
 Clazz.defineMethod (c$, "dumpDipoles", 
@@ -450,7 +450,7 @@ function () {
 if (this.dipoleCount == 0) return "";
 var s =  new JU.SB ();
 var thisModel = -1;
-var modelCount = this.vwr.getModelCount ();
+var modelCount = this.vwr.ms.mc;
 for (var i = 0; i < this.dipoleCount; i++) {
 var dipole = this.dipoles[i];
 if (dipole.isValid) {

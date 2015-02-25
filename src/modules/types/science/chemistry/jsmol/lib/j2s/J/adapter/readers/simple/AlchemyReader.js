@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.simple");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.simple.AlchemyReader", ["java.lang.Character", "J.adapter.smarter.Atom"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.simple.AlchemyReader", ["java.lang.Character", "JU.PT", "J.adapter.smarter.Atom"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.isM3D = false;
 this.ac = 0;
@@ -24,7 +24,7 @@ Clazz.defineMethod (c$, "readAtoms",
  function () {
 var pt = (this.isM3D ? 3 : 2);
 for (var i = this.ac; --i >= 0; ) {
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+var tokens = JU.PT.getTokens (this.rd ());
 var atom =  new J.adapter.smarter.Atom ();
 atom.atomSerial = this.parseIntStr (tokens[0]);
 var name = tokens[1];
@@ -44,7 +44,7 @@ this.asc.addAtomWithMappedSerialNumber (atom);
 Clazz.defineMethod (c$, "readBonds", 
  function () {
 for (var i = this.bondCount; --i >= 0; ) {
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+var tokens = JU.PT.getTokens (this.rd ());
 var atomSerial1 = tokens[1];
 var atomSerial2 = tokens[2];
 var sOrder = (tokens.length < 4 ? "1" : tokens[3].toUpperCase ());

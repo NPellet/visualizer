@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.render");
-Clazz.load (["J.render.FontLineShapeRenderer", "JU.P3"], "J.render.AxesRenderer", ["J.c.AXES", "JU.Point3fi"], function () {
+Clazz.load (["J.render.FontLineShapeRenderer", "JU.P3"], "J.render.AxesRenderer", ["JU.Point3fi"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.screens = null;
 this.originScreen = null;
@@ -26,15 +26,14 @@ var mad = this.vwr.getObjectMad (1);
 if (mad == 0 || !this.g3d.checkTranslucent (false)) return false;
 var isXY = (axes.axisXY.z != 0);
 if (!isXY && this.tm.isNavigating () && this.vwr.getBoolean (603979888)) return false;
-var axesMode = this.vwr.g.axesMode;
 this.imageFontScaling = this.vwr.getImageFontScaling ();
 if (this.vwr.areAxesTainted ()) {
 var f = axes.font3d;
 axes.initShape ();
 if (f != null) axes.font3d = f;
-}this.font3d = this.g3d.getFont3DScaled (axes.font3d, this.imageFontScaling);
+}this.font3d = this.vwr.gdata.getFont3DScaled (axes.font3d, this.imageFontScaling);
 var modelIndex = this.vwr.am.cmi;
-var isUnitCell = (axesMode === J.c.AXES.UNITCELL);
+var isUnitCell = (this.vwr.g.axesMode == 603979808);
 if (this.vwr.ms.isJmolDataFrameForModel (modelIndex) && !this.vwr.ms.getJmolFrameType (modelIndex).equals ("plot data")) return false;
 if (isUnitCell && modelIndex < 0) {
 if (this.vwr.getCurrentUnitCell () == null) return false;
@@ -46,14 +45,14 @@ labelPtr = 6;
 } else if (isXY) {
 nPoints = 3;
 labelPtr = 9;
-} else if (axesMode === J.c.AXES.BOUNDBOX) {
+} else if (this.vwr.g.axesMode == 603979810) {
 nPoints = 6;
 labelPtr = (this.vwr.getBoolean (603979806) ? 15 : 9);
 }if (axes.labels != null) {
 if (nPoints != 3) nPoints = (axes.labels.length < 6 ? 3 : 6);
 labelPtr = -1;
 }var isDataFrame = this.vwr.isJmolDataFrame ();
-var slab = this.g3d.getSlab ();
+var slab = this.vwr.gdata.slab;
 var diameter = mad;
 var drawTicks = false;
 if (isXY) {
@@ -109,7 +108,7 @@ this.tickInfo.signFactor = (i % 6 >= 3 ? -1 : 1);
 if (nPoints == 3 && !isXY) {
 var label0 = (axes.labels == null || axes.labels.length == 3 || axes.labels[3] == null ? "0" : axes.labels[3]);
 if (label0 != null && label0.length != 0) {
-this.colix = this.vwr.getColixBackgroundContrast ();
+this.colix = this.vwr.cm.colixBackgroundContrast;
 this.g3d.setC (this.colix);
 this.renderLabel (label0, this.originScreen.x, this.originScreen.y, this.originScreen.z, xCenter, yCenter);
 }}if (isXY) this.g3d.setSlab (slab);

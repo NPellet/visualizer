@@ -19,7 +19,6 @@ this.intlTableNumberFull = null;
 this.intlTableNumberExt = null;
 this.hallInfo = null;
 this.latticeParameter = 0;
-this.latticeCode = '\0';
 this.operations = null;
 this.finalOperations = null;
 this.operationCount = 0;
@@ -176,15 +175,13 @@ return this.name;
 });
 Clazz.defineMethod (c$, "getLatticeDesignation", 
 function () {
-return this.latticeCode + ": " + JS.HallTranslation.getLatticeDesignation (this.latticeParameter);
+return JS.HallTranslation.getLatticeDesignation (this.latticeParameter);
 });
 Clazz.defineMethod (c$, "setLatticeParam", 
 function (latticeParameter) {
 this.latticeParameter = latticeParameter;
-this.latticeCode = JS.HallTranslation.getLatticeCode (latticeParameter);
-if (latticeParameter > 10) {
-this.latticeParameter = -JS.HallTranslation.getLatticeIndex (this.latticeCode);
-}}, "~N");
+if (latticeParameter > 10) this.latticeParameter = -JS.HallTranslation.getLatticeIndex (JS.HallTranslation.getLatticeCode (latticeParameter));
+}, "~N");
 Clazz.defineMethod (c$, "dumpCanonicalSeitzList", 
  function () {
 if (this.hallInfo == null) this.hallInfo =  new JS.HallInfo (this.hallSymbol);
@@ -242,7 +239,6 @@ return sb.toString ();
 });
 Clazz.defineMethod (c$, "setLattice", 
  function (latticeCode, isCentrosymmetric) {
-this.latticeCode = latticeCode;
 this.latticeParameter = JS.HallTranslation.getLatticeIndex (latticeCode);
 if (!isCentrosymmetric) this.latticeParameter = -this.latticeParameter;
 }, "~S,~B");

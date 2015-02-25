@@ -27,11 +27,10 @@ Clazz.instantialize (this, arguments);
 Clazz.prepareFields (c$, function () {
 this.unitVectorX = JU.V3.new3 (1, 0, 0);
 });
-Clazz.defineMethod (c$, "getGroups", 
-function () {
-return this.monomers;
-});
 Clazz.makeConstructor (c$, 
+function () {
+});
+Clazz.defineMethod (c$, "set", 
 function (monomers) {
 this.monomers = monomers;
 this.monomerCount = monomers.length;

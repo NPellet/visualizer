@@ -48,8 +48,7 @@ Clazz.defineMethod (c$, "initApplication",
  function () {
 this.vwrOptions.put ("applet", Boolean.TRUE);
 if (this.getJmolParameter ("statusListener") == null) this.vwrOptions.put ("statusListener", this);
-this.viewer =  new JV.Viewer (null);
-this.viewer.setOptions (this.vwrOptions);
+this.viewer =  new JV.Viewer (this.vwrOptions);
 this.viewer.pushHoldRepaint ();
 var emulate = this.getValueLowerCase ("emulate", "jmol");
 this.setStringProperty ("defaults", emulate.equals ("chime") ? "RasMol" : "Jmol");

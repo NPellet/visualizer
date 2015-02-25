@@ -11,12 +11,12 @@ this.setPropFLS (propertyName, value);
 Clazz.defineMethod (c$, "initShape", 
 function () {
 Clazz.superCall (this, J.shape.Bbcage, "initShape", []);
-this.font3d = this.gdata.getFont3D (14);
+this.font3d = this.vwr.gdata.getFont3D (14);
 this.myType = "boundBox";
 });
 Clazz.overrideMethod (c$, "setModelVisibilityFlags", 
 function (bs) {
 var bboxModels;
-this.isVisible = ((this.mad = this.vwr.getObjectMad (4)) != 0 && ((bboxModels = this.vwr.ms.getBoundBoxModels ()) == null || bs.intersects (bboxModels)));
+this.isVisible = ((this.mad = this.vwr.getObjectMad (4)) != 0 && ((bboxModels = this.vwr.ms.bboxModels) == null || bs.intersects (bboxModels)));
 }, "JU.BS");
 });

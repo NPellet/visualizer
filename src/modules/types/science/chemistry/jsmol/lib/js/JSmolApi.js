@@ -352,8 +352,8 @@
 	// note that since you must add the style keyword, this can be used to add any attribute to these tags, not just css. 
 
 	Jmol.setAppletCss = function(cssClass, text) {
-		cssClass != null && (Jmol.controls._appletCssClass = cssClass);
-		Jmol.controls._appletCssText = text ? text + " " : cssClass ? "class=\"" + cssClass + "\" " : "";
+		cssClass != null && (Jmol._appletCssClass = cssClass);
+		Jmol._appletCssText = text ? text + " " : cssClass ? "class=\"" + cssClass + "\" " : "";
 	}
 
 	Jmol.setButtonCss = function(cssClass, text) {

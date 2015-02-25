@@ -32,10 +32,7 @@ Clazz.prepareFields (c$, function () {
 this.atoms =  new Array (2);
 this.coords =  new Array (2);
 });
-Clazz.makeConstructor (c$, 
-function () {
-});
-Clazz.makeConstructor (c$, 
+Clazz.defineMethod (c$, "init", 
 function (modelIndex, thisID, dipoleInfo, colix, mad, visible) {
 this.modelIndex = modelIndex;
 this.thisID = thisID;
@@ -44,6 +41,7 @@ this.colix = colix;
 this.mad = mad;
 this.visible = visible;
 this.type = 0;
+return this;
 }, "~N,~S,~S,~N,~N,~B");
 Clazz.defineMethod (c$, "setTranslucent", 
 function (isTranslucent, translucentLevel) {

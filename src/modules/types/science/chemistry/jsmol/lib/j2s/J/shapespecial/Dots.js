@@ -172,7 +172,7 @@ var dotsConvexMaps = this.ec.getDotsConvexMaps ();
 if (dotsConvexMaps == null || this.ec.getDotsConvexMax () == 0) return "";
 var s =  new JU.SB ();
 var temp =  new java.util.Hashtable ();
-var ac = this.vwr.getAtomCount ();
+var ac = this.vwr.ms.ac;
 var type = (this.isSurface ? "geoSurface " : "dots ");
 for (var i = 0; i < ac; i++) {
 if (!this.bsOn.get (i) || dotsConvexMaps[i] == null) continue;

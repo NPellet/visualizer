@@ -2,6 +2,7 @@ Clazz.declarePackage ("J.g3d");
 Clazz.load (["J.g3d.G3DRenderer", "JU.P3", "$.V3"], "J.g3d.HermiteRenderer", ["JU.Lst", "$.P3i", "JU.Point3fi"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.g3d = null;
+this.gdata = null;
 this.pLeft = null;
 this.pRight = null;
 this.sLeft = null;
@@ -59,14 +60,15 @@ Clazz.makeConstructor (c$,
 function () {
 });
 Clazz.overrideMethod (c$, "set", 
-function (g3d) {
+function (g3d, gdata) {
 this.g3d = g3d;
+this.gdata = gdata;
 return this;
-}, "J.api.JmolRendererInterface");
+}, "J.api.JmolRendererInterface,JU.GData");
 Clazz.defineMethod (c$, "renderHermiteRope", 
 function (fill, tension, diameterBeg, diameterMid, diameterEnd, p0, p1, p2, p3) {
 if (p0.z == 1 || p1.z == 1 || p2.z == 1 || p3.z == 1) return;
-if (this.g3d.isClippedZ (p1.z) || this.g3d.isClippedZ (p2.z)) return;
+if (this.gdata.isClippedZ (p1.z) || this.gdata.isClippedZ (p2.z)) return;
 var x1 = p1.x;
 var y1 = p1.y;
 var z1 = p1.z;

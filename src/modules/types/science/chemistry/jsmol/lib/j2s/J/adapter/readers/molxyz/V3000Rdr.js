@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.molxyz");
-Clazz.load (null, "J.adapter.readers.molxyz.V3000Rdr", ["java.util.Hashtable", "J.adapter.smarter.AtomSetCollectionReader"], function () {
+Clazz.load (null, "J.adapter.readers.molxyz.V3000Rdr", ["java.util.Hashtable", "JU.PT"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.mr = null;
 this.line = null;
@@ -38,8 +38,8 @@ var charge = 0;
 var isotope = 0;
 for (var j = 7; j < tokens.length; j++) {
 var s = tokens[j].toUpperCase ();
-if (s.startsWith ("CHG=")) charge = this.mr.parseIntStr (tokens[j].substring (4));
- else if (s.startsWith ("MASS=")) isotope = this.mr.parseIntStr (tokens[j].substring (5));
+if (s.startsWith ("CHG=")) charge = this.mr.parseIntAt (tokens[j], 4);
+ else if (s.startsWith ("MASS=")) isotope = this.mr.parseIntAt (tokens[j], 5);
 }
 if (isotope > 1 && elementSymbol.equals ("H")) isotope = 1 - isotope;
 this.mr.addMolAtom (iAtom, isotope, elementSymbol, charge, x, y, z);
@@ -61,7 +61,7 @@ var cfg = this.getField ("CFG");
 if (cfg == null) {
 var endpts = this.getField ("ENDPTS");
 if (endpts != null && this.line.indexOf ("ATTACH=ALL") >= 0) {
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (endpts);
+tokens = JU.PT.getTokens (endpts);
 var n = this.mr.parseIntStr (tokens[0]);
 var o = this.mr.fixOrder (order, 0);
 for (var k = 1; k <= n; k++) this.mr.asc.addNewBondFromNames (iAtom1, tokens[k], o);
@@ -94,7 +94,7 @@ var f = 0;
 if (isPartial) f = this.mr.parseFloatStr (data);
  else if ((a = this.userData.get (name)) == null) this.userData.put (name, a =  new Array (ac));
 try {
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (atoms);
+var tokens = JU.PT.getTokens (atoms);
 for (var i = tokens.length; --i >= 1; ) {
 var atom = tokens[i];
 if (isPartial) this.mr.asc.getAtomFromName (atom).partialCharge = f;

@@ -68,7 +68,6 @@ this.chargesFound = true;
 });
 Clazz.defineMethod (c$, "processCoordinates", 
 function () {
-this.readLines (3);
 if (!this.chargesFound) {
 this.asc.newAtomSet ();
 this.baseAtomIndex = this.asc.ac;
@@ -76,7 +75,9 @@ this.baseAtomIndex = this.asc.ac;
 this.chargesFound = false;
 }var atoms = this.asc.atoms;
 var atomNumber;
-while (this.rd () != null) {
+while (this.rd ().trim ().length == 0 || this.line.indexOf ("ATOM") >= 0) {
+}
+while (this.line != null) {
 var tokens = this.getTokens ();
 if (tokens.length == 0 || (atomNumber = this.parseIntStr (tokens[0])) == -2147483648) break;
 var atom = atoms[this.baseAtomIndex + atomNumber - 1];
@@ -87,6 +88,7 @@ var elementSymbol = tokens[1];
 var atno = this.parseIntStr (elementSymbol);
 if (atno != -2147483648) elementSymbol = J.adapter.smarter.AtomSetCollectionReader.getElementSymbol (atno);
 atom.elementSymbol = elementSymbol;
+this.rd ();
 }
 });
 Clazz.defineMethod (c$, "readFrequencies", 
@@ -121,7 +123,7 @@ if (this.line.indexOf ("DESCRIPTION") < 0) this.discardLinesUntilContains ("DESC
 while (this.discardLinesUntilContains ("VIBRATION") != null) {
 tokens = this.getTokens ();
 var freqNo = this.parseIntStr (tokens[1]);
-tokens[0] = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ())[1];
+tokens[0] = JU.PT.getTokens (this.rd ())[1];
 if (tokens[2].equals ("ATOM")) tokens[2] = null;
 info[freqNo - 1] = tokens;
 if (freqNo == this.vibrationNumber) break;

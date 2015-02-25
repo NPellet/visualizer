@@ -567,7 +567,7 @@ for (var i = 0; i < patternAtom.nPrimitives; i++) if (!this.checkPrimitiveAtom (
 for (var i = patternAtom.getBondCount (); --i >= 0; ) {
 var patternBond = patternAtom.getBond (i);
 if (patternBond.getAtomIndex2 () != patternAtom.index) continue;
-var atom1 = patternBond.getAtom1 ();
+var atom1 = patternBond.atom1;
 var matchingAtom = atom1.getMatchingAtom ();
 switch (patternBond.order) {
 case 96:
@@ -619,7 +619,7 @@ if (j1 >= 0) j = j1 - 1;
 }}
 this.bsFound = bs;
 return true;
-}jmolAtom = this.jmolAtoms[newPatternBond.getAtom1 ().getMatchingAtom ()];
+}jmolAtom = this.jmolAtoms[newPatternBond.atom1.getMatchingAtom ()];
 switch (newPatternBond.order) {
 case 96:
 var nextGroupAtom = (jmolAtom).getOffsetResidueAtom (newPatternAtom.atomName, 1);
@@ -984,21 +984,21 @@ var nBonds = sAtom1.getBondCount ();
 var isAtropisomer = false;
 for (var j = 0; j < nBonds; j++) {
 b = sAtom1.getBond (j);
-var isAtom2 = (b.getAtom2 () === sAtom1);
+var isAtom2 = (b.atom2 === sAtom1);
 var type = b.order;
 switch (type) {
 case 769:
 case 1025:
 case 2:
 if (isAtom2) continue;
-sAtom2 = b.getAtom2 ();
+sAtom2 = b.atom2;
 bondType = type;
 isAtropisomer = (type != 2);
 if (isAtropisomer) dir1 = (b.isNot ? -1 : 1);
 break;
 case 257:
 case 513:
-sAtomDirected1 = (isAtom2 ? b.getAtom1 () : b.getAtom2 ());
+sAtomDirected1 = (isAtom2 ? b.atom1 : b.atom2);
 dir1 = (isAtom2 != (type == 257) ? 1 : -1);
 break;
 }
@@ -1015,12 +1015,12 @@ if (sAtom2 == null || dir1 == 0) continue;
 nBonds = sAtom2.getBondCount ();
 for (var j = 0; j < nBonds && dir2 == 0; j++) {
 b = sAtom2.getBond (j);
-var isAtom2 = (b.getAtom2 () === sAtom2);
+var isAtom2 = (b.atom2 === sAtom2);
 var type = b.order;
 switch (type) {
 case 257:
 case 513:
-sAtomDirected2 = (isAtom2 ? b.getAtom1 () : b.getAtom2 ());
+sAtomDirected2 = (isAtom2 ? b.atom1 : b.atom2);
 dir2 = (isAtom2 != (type == 257) ? 1 : -1);
 break;
 }
@@ -1321,7 +1321,7 @@ var atom1 = atoms[i1];
 var n = sAtom.getBondCount ();
 for (var j = 0; j < n; j++) {
 var sBond = sAtom.getBond (j);
-var firstAtom = (sBond.getAtom1 () === sAtom);
+var firstAtom = (sBond.atom1 === sAtom);
 if (firstAtom) {
 var order = 1;
 switch (sBond.order) {
@@ -1354,12 +1354,12 @@ case 3:
 order = 3;
 break;
 }
-var atom2 = atoms[sBond.getAtom2 ().getMatchingAtom ()];
+var atom2 = atoms[sBond.atom2.getMatchingAtom ()];
 var b =  new JS.SmilesBond (atom1, atom2, order, false);
 atom2.bondCount--;
 JU.Logger.info ("" + b);
 } else {
-var atom2 = atoms[sBond.getAtom1 ().getMatchingAtom ()];
+var atom2 = atoms[sBond.atom1.getMatchingAtom ()];
 var b = atom2.getBondTo (atom1);
 atom1.addBond (b);
 }}
@@ -2446,7 +2446,7 @@ if (this.atomsOr != null && this.atomsOr.length > this.nAtomsOr) this.atomsOr = 
 if (this.primitives != null && this.primitives.length > this.nPrimitives) this.primitives = JU.AU.arrayCopyObject (this.primitives, this.primitives.length);
 for (var i = 0; i < this.bonds.length; i++) {
 if (this.isBioAtom && this.bonds[i].order == 17) this.bonds[i].order = 112;
-if (this.bonds[i].getAtom1 ().index > this.bonds[i].getAtom2 ().index) {
+if (this.bonds[i].atom1.index > this.bonds[i].atom2.index) {
 this.bonds[i].switchAtoms ();
 }}
 });
@@ -2471,7 +2471,7 @@ function (i) {
 if (this.parent != null) return this.parent.getMatchingBondedAtom (i);
 if (i >= this.bondCount) return -1;
 var b = this.bonds[i];
-return (b.getAtom1 () === this ? b.getAtom2 () : b.getAtom1 ()).matchingAtom;
+return (b.atom1 === this ? b.atom2 : b.atom1).matchingAtom;
 }, "~N");
 Clazz_overrideMethod (c$, "getBondedAtomIndex", 
 function (j) {
@@ -2501,7 +2501,7 @@ if (this.parent != null) return this.parent.getBondTo (atom);
 var bond;
 for (var k = 0; k < this.bonds.length; k++) {
 if ((bond = this.bonds[k]) == null) continue;
-if (atom == null ? bond.getAtom2 () === this : bond.getOtherAtom (this) === atom) return bond;
+if (atom == null ? bond.atom2 === this : bond.getOtherAtom (this) === atom) return bond;
 }
 return null;
 }, "JS.SmilesAtom");
@@ -2736,14 +2736,6 @@ return 96;
 }
 return -1;
 }, "~S");
-Clazz_defineMethod (c$, "getAtom1", 
-function () {
-return this.atom1;
-});
-Clazz_defineMethod (c$, "getAtom2", 
-function () {
-return this.atom2;
-});
 Clazz_defineMethod (c$, "setAtom2", 
 function (atom) {
 this.atom2 = atom;
@@ -3508,7 +3500,7 @@ return;
 }this.ringBonds.remove (r);
 switch (bond.order) {
 case -1:
-bond.order = (bond0.order != -1 ? bond0.order : this.isSmarts || currentAtom.isAromatic () && bond0.getAtom1 ().isAromatic () ? 81 : 1);
+bond.order = (bond0.order != -1 ? bond0.order : this.isSmarts || currentAtom.isAromatic () && bond0.atom1.isAromatic () ? 81 : 1);
 break;
 case 257:
 bond.order = 513;
@@ -3788,7 +3780,7 @@ ptsB =  new JU.Lst ();
 }var m =  new JU.M4 ();
 var c =  new JU.P3 ();
 var atoms = this.e.vwr.ms.at;
-var ac = this.e.vwr.getAtomCount ();
+var ac = this.e.vwr.ms.ac;
 var maps = this.sm.getCorrelationMaps (smiles, atoms, ac, bsA, isSmarts, true);
 if (maps == null) this.e.evalError (this.sm.getLastException (), null);
 if (maps.length == 0) return NaN;
@@ -3858,7 +3850,7 @@ var b;
 if (bsMatch3D == null) {
 asAtoms = (smiles == null);
 try {
-if (asAtoms) b = this.sm.getSubstructureSetArray (pattern, this.e.vwr.ms.at, this.e.vwr.getAtomCount (), bsSelected, null, isSmarts, false);
+if (asAtoms) b = this.sm.getSubstructureSetArray (pattern, this.e.vwr.ms.at, this.e.vwr.ms.ac, bsSelected, null, isSmarts, false);
  else b = this.sm.find (pattern, smiles, isSmarts, false);
 } catch (ex) {
 if (Clazz_exceptionOf (ex, Exception)) {
@@ -3899,8 +3891,8 @@ function (bs1, bs2, smiles1, isSmarts) {
 var mapSet = JU.AU.newInt2 (2);
 this.getSmilesCorrelation (bs1, bs2, smiles1, null, null, null, null, isSmarts, false, mapSet, null, false, false);
 if (mapSet[0] == null) return null;
-var bondMap1 = this.e.vwr.getDihedralMap (mapSet[0]);
-var bondMap2 = (bondMap1 == null ? null : this.e.vwr.getDihedralMap (mapSet[1]));
+var bondMap1 = this.e.vwr.ms.getDihedralMap (mapSet[0]);
+var bondMap2 = (bondMap1 == null ? null : this.e.vwr.ms.getDihedralMap (mapSet[1]));
 if (bondMap2 == null || bondMap2.length != bondMap1.length) return null;
 var angles =  Clazz_newFloatArray (bondMap1.length, 3, 0);
 var atoms = this.e.vwr.ms.at;

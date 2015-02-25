@@ -17,6 +17,6 @@ if (this.useAltNames) atom.atomName = altName;
 Clazz.overrideMethod (c$, "finalizeSubclassReader", 
 function () {
 this.finalizeReaderPDB ();
-if (!this.useAltNames) this.asc.setAtomSetAuxiliaryInfo ("altName", this.altNames.toArray ( new Array (this.altNames.size ())));
+if (!this.useAltNames) this.asc.setCurrentModelInfo ("altName", this.altNames.toArray ( new Array (this.altNames.size ())));
 });
 });

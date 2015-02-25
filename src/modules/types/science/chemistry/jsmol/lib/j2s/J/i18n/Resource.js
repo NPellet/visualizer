@@ -13,7 +13,7 @@ if (className == null) this.resourceMap = resource;
 c$.getResource = Clazz.defineMethod (c$, "getResource", 
 function (vwr, className, name) {
 var poData = null;
-if (vwr != null && vwr.isApplet ()) {
+if (vwr != null && vwr.isApplet) {
 var fname = JV.Viewer.appletIdiomaBase + "/" + name + ".po";
 JU.Logger.info ("Loading language resource " + fname);
 poData = vwr.getFileAsString3 (fname, false, "gt");

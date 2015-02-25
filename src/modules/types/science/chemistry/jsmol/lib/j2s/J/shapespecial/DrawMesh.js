@@ -20,12 +20,12 @@ this.isScaleSet = false;
 Clazz.instantialize (this, arguments);
 }, J.shapespecial, "DrawMesh", J.shape.Mesh);
 Clazz.makeConstructor (c$, 
-function (thisID, colix, index) {
+function (vwr, thisID, colix, index) {
 this.drawType = J.shapespecial.Draw.EnumDrawType.NONE;
 this.axis = JU.V3.new3 (1, 0, 0);
 this.bsMeshesVisible =  new JU.BS ();
-this.mesh1 (thisID, colix, index);
-}, "~S,~N,~N");
+this.mesh1 (vwr, thisID, colix, index);
+}, "JV.Viewer,~S,~N,~N");
 Clazz.overrideMethod (c$, "clear", 
 function (meshType) {
 this.clearMesh (meshType);

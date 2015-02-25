@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JM");
-Clazz.load (["JM.PhosphorusMonomer"], "JM.NucleicMonomer", ["java.lang.Character", "JU.Lst", "$.P3", "$.Quat", "$.V3", "J.c.STR", "JM.NucleicPolymer", "JV.JC"], function () {
+Clazz.load (["JM.PhosphorusMonomer"], "JM.NucleicMonomer", ["java.lang.Character", "JU.Lst", "$.P3", "$.Quat", "$.V3", "J.c.STR", "JM.Group", "JM.NucleicPolymer"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.hasRnaO2Prime = false;
 this.baseCenter = null;
@@ -25,8 +25,7 @@ Clazz.defineMethod (c$, "set4",
 this.set3 (chain, group3, seqcode, firstAtomIndex, lastAtomIndex, offsets);
 if (!JM.Monomer.have (offsets, 15)) {
 offsets[0] = offsets[19];
-var offset = offsets[0] & 0xFF;
-if (offset != 255) this.leadAtomIndex = firstAtomIndex + offset;
+this.setLeadAtomIndex ();
 }this.hasRnaO2Prime = JM.Monomer.have (offsets, 2);
 this.$isPyrimidine = JM.Monomer.have (offsets, 8);
 this.$isPurine = JM.Monomer.have (offsets, 9) && JM.Monomer.have (offsets, 10) && JM.Monomer.have (offsets, 11);
@@ -229,7 +228,7 @@ ptNorP = this.getP ();
 if (ptNorP == null) return null;
 var p1 = this.getAtomFromOffsetIndex (23);
 var p2 = this.getAtomFromOffsetIndex (24);
-var bonds = ptNorP.getBonds ();
+var bonds = ptNorP.bonds;
 if (bonds == null) return null;
 var g = ptNorP.group;
 for (var i = 0; i < bonds.length; i++) {
@@ -271,7 +270,7 @@ return (myN1.isBonded (otherN3));
 Clazz.overrideMethod (c$, "getCrossLinkLead", 
 function (vReturn) {
 var N = (this.$isPurine ? this.getN1 () : this.getN3 ());
-var bonds = N.getBonds ();
+var bonds = N.bonds;
 if (bonds == null) return false;
 var haveCrossLinks = false;
 for (var i = 0; i < bonds.length; i++) {
@@ -331,7 +330,7 @@ return this.bps;
 });
 Clazz.overrideMethod (c$, "getGroup1b", 
 function () {
-var g3 = JV.JC.group3Names[this.groupID];
+var g3 = JM.Group.group3Names[this.groupID];
 var g1 = (JM.NucleicPolymer.htGroup1 == null ? null : JM.NucleicPolymer.htGroup1.get (g3));
 return (g1 == null ? Character.toLowerCase (g3.charAt (g3.length - 1)) : g1.charAt (0));
 });

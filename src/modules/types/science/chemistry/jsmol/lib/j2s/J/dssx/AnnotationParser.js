@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.dssx");
-Clazz.load (["J.api.JmolAnnotationParser"], "J.dssx.AnnotationParser", ["java.lang.Boolean", "$.Float", "java.util.Hashtable", "JU.AU", "$.BS", "$.Lst", "$.P3", "$.PT", "$.Rdr", "$.SB", "JM.HBond", "JM.BasePair", "$.NucleicPolymer", "JS.SV", "JU.BSUtil", "$.Logger", "JV.JC"], function () {
+Clazz.load (["J.api.JmolAnnotationParser"], "J.dssx.AnnotationParser", ["java.lang.Boolean", "$.Float", "java.util.Hashtable", "JU.AU", "$.BS", "$.Lst", "$.P3", "$.PT", "$.Rdr", "$.SB", "JM.Group", "$.HBond", "JM.BasePair", "$.NucleicPolymer", "$.Resolver", "JS.SV", "JU.BSUtil", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.reader = null;
 this.line = null;
@@ -1028,8 +1028,8 @@ if (name.charAt (0) == 'H') {
 if (J.dssx.AnnotationParser.pdbAtomForH == null) {
 J.dssx.AnnotationParser.pdbAtomForH =  new java.util.Hashtable ();
 this.assignPDBH ("", "N H H1 H2 H3 CB HB2 HB3 CD HD2 HD3 CG HG2 HG3 C2' H2'' H2' C5' H5'' H5' OXT HXT");
-for (var i = JV.JC.pdbBondInfo.length; --i >= 1; ) {
-this.assignPDBH (JV.JC.group3Names[i], JV.JC.pdbBondInfo[i]);
+for (var i = JM.Resolver.pdbBondInfo.length; --i >= 1; ) {
+this.assignPDBH (JM.Group.group3Names[i], JM.Resolver.pdbBondInfo[i]);
 }
 }var a = J.dssx.AnnotationParser.pdbAtomForH.get (name);
 if (a == null) a = J.dssx.AnnotationParser.pdbAtomForH.get (group3 + name);

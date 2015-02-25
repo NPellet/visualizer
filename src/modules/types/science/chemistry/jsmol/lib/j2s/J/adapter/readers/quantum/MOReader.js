@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.BasisFunctionReader"], "J.adapter.readers.quantum.MOReader", ["java.lang.Float", "java.util.Hashtable", "JU.AU", "$.Lst", "$.PT", "J.api.JmolAdapter", "JU.Logger"], function () {
+Clazz.load (["J.adapter.readers.quantum.BasisFunctionReader"], "J.adapter.readers.quantum.MOReader", ["java.lang.Float", "java.util.Hashtable", "JU.AU", "$.Lst", "$.PT", "J.quantum.QS", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.shellCount = 0;
 this.gaussianCount = 0;
@@ -18,6 +18,7 @@ this.HEADER_NONE = 0;
 this.haveCoeffMap = false;
 this.iMo0 = 1;
 this.lastMoData = null;
+this.allowNoOrbitals = false;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.quantum, "MOReader", J.adapter.readers.quantum.BasisFunctionReader);
 Clazz.overrideMethod (c$, "initializeReader", 
@@ -59,7 +60,7 @@ var atoms = this.asc.atoms;
 for (var i = i0; i < ac; ++i) {
 while (atoms[i].elementNumber == 0) ++i;
 
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+var tokens = JU.PT.getTokens (this.rd ());
 var charge;
 if (tokens == null || tokens.length < 3 || Float.isNaN (charge = this.parseFloatStr (tokens[2]))) {
 JU.Logger.info ("Error reading NBO charges: " + this.line);
@@ -126,15 +127,15 @@ if (str.length == 0 || str.indexOf ("--") >= 0 || str.indexOf (".....") >= 0 || 
 if (!this.haveCoeffMap) {
 this.haveCoeffMap = true;
 var isOK = true;
-if (pCoeffLabels.length > 0) isOK = this.getDFMap (pCoeffLabels, J.api.JmolAdapter.SHELL_P, "(PX)  (PY)  (PZ)", 4);
+if (pCoeffLabels.length > 0) isOK = this.getDFMap (pCoeffLabels, 1, "(PX)  (PY)  (PZ)", 4);
 if (dCoeffLabels.length > 0) {
-if (dCoeffLabels.indexOf ("X") >= 0) isOK = this.getDFMap (dCoeffLabels, J.api.JmolAdapter.SHELL_D_CARTESIAN, J.adapter.readers.quantum.BasisFunctionReader.CANONICAL_DC_LIST, 2);
- else if (dCoeffLabels.indexOf ("(D6)") >= 0) isOK = this.getDFMap (dCoeffLabels, J.api.JmolAdapter.SHELL_D_CARTESIAN, "(D1)  (D4)  (D6)  (D2)  (D3)  (D5)", 4);
- else isOK = this.getDFMap (dCoeffLabels, J.api.JmolAdapter.SHELL_D_SPHERICAL, "(D5)  (D2)  (D3)  (D4)  (D1)", 4);
+if (dCoeffLabels.indexOf ("X") >= 0) isOK = this.getDFMap (dCoeffLabels, 4, J.adapter.readers.quantum.BasisFunctionReader.CANONICAL_DC_LIST, 2);
+ else if (dCoeffLabels.indexOf ("(D6)") >= 0) isOK = this.getDFMap (dCoeffLabels, 4, "(D1)  (D4)  (D6)  (D2)  (D3)  (D5)", 4);
+ else isOK = this.getDFMap (dCoeffLabels, 3, "(D5)  (D2)  (D3)  (D4)  (D1)", 4);
 }if (fCoeffLabels.length > 0) {
-if (fCoeffLabels.indexOf ("X") >= 0) isOK = this.getDFMap (fCoeffLabels, J.api.JmolAdapter.SHELL_F_CARTESIAN, J.adapter.readers.quantum.BasisFunctionReader.CANONICAL_FC_LIST, 2);
- else if (fCoeffLabels.indexOf ("(F10)") >= 0) isOK = this.getDFMap (fCoeffLabels, J.api.JmolAdapter.SHELL_F_CARTESIAN, J.adapter.readers.quantum.MOReader.FC_LIST, 5);
- else isOK = this.getDFMap (fCoeffLabels, J.api.JmolAdapter.SHELL_F_SPHERICAL, "(F1)  (F2)  (F3)  (F4)  (F5)  (F6)  (F7)", 4);
+if (fCoeffLabels.indexOf ("X") >= 0) isOK = this.getDFMap (fCoeffLabels, 6, J.adapter.readers.quantum.BasisFunctionReader.CANONICAL_FC_LIST, 2);
+ else if (fCoeffLabels.indexOf ("(F10)") >= 0) isOK = this.getDFMap (fCoeffLabels, 6, J.adapter.readers.quantum.MOReader.FC_LIST, 5);
+ else isOK = this.getDFMap (fCoeffLabels, 5, "(F1)  (F2)  (F3)  (F4)  (F5)  (F6)  (F7)", 4);
 }if (!isOK) {
 }}if (str.length == 0) nBlank++;
  else nBlank = 0;
@@ -194,7 +195,7 @@ var nChar = type.length;
 ch = (nChar < 4 ? 'S' : nChar == 4 ? 'G' : nChar == 5 ? 'H' : '?');
 if (!this.haveCoeffMap && nChar == 3) fCoeffLabels += " " + J.adapter.readers.quantum.BasisFunctionReader.canonicalizeQuantumSubshellTag (type.toUpperCase ());
  else if (!this.haveCoeffMap && nChar == 2) dCoeffLabels += " " + J.adapter.readers.quantum.BasisFunctionReader.canonicalizeQuantumSubshellTag (type.toUpperCase ());
-}if (this.isQuantumBasisSupported (ch)) {
+}if (J.quantum.QS.isQuantumBasisSupported (ch)) {
 if (ptOffset < 0) {
 for (var i = 0; i < nThisLine; i++) data[i].addLast (tokens[i + nSkip]);
 
@@ -234,7 +235,7 @@ this.readLines (5);
 return;
 case 1:
 tokens = this.getTokens ();
-if (tokens.length == 0) tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+if (tokens.length == 0) tokens = JU.PT.getTokens (this.rd ());
 for (var i = 0; i < nThisLine; i++) {
 mos[i].put ("energy", Float.$valueOf (JU.PT.fVal (tokens[i])));
 }
@@ -265,7 +266,7 @@ this.setMO (mos[i]);
 }, "~N,~A,~A");
 Clazz.defineMethod (c$, "setMOData", 
 function (clearOrbitals) {
-if (this.shells != null && this.gaussians != null && this.orbitals.size () != 0) {
+if (this.shells != null && this.gaussians != null && (this.allowNoOrbitals || this.orbitals.size () != 0)) {
 this.moData.put ("calculationType", this.calculationType);
 this.moData.put ("energyUnits", this.energyUnits);
 this.moData.put ("shells", this.shells);

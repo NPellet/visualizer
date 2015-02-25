@@ -16,7 +16,7 @@ J.i18n.GT.setDoTranslate (doTranslate);
 Clazz.overrideMethod (c$, "menuShowPopup", 
 function (popup, x, y) {
 try {
-(popup).show (this.isTainted ? this.vwr.getHtml5Applet () : null, x, y);
+(popup).show (this.isTainted ? this.vwr.html5Applet : null, x, y);
 } catch (e) {
 if (Clazz.exceptionOf (e, Exception)) {
 } else {

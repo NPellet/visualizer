@@ -17,18 +17,47 @@ J.g3d.TextRenderer.htFont3d.clear ();
 J.g3d.TextRenderer.htFont3dAntialias.clear ();
 });
 c$.plot = Clazz.defineMethod (c$, "plot", 
-function (x, y, z, argb, bgargb, text, font3d, g3d, jmolRenderer, antialias) {
+function (x, y, z, argb, bgargb, text, font3d, g3d, jr, antialias) {
 if (text.length == 0) return 0;
-if (text.indexOf ("<su") >= 0 || text.indexOf ("<color") >= 0) return J.g3d.TextRenderer.plotByCharacter (x, y, z, argb, bgargb, text, font3d, g3d, jmolRenderer, antialias);
+if (text.indexOf ("<su") >= 0 || text.indexOf ("<color") >= 0) return J.g3d.TextRenderer.plotByCharacter (x, y, z, argb, bgargb, text, font3d, g3d, jr, antialias);
 var offset = font3d.getAscent ();
 y -= offset;
 var text3d = J.g3d.TextRenderer.getPlotText3D (x, y, g3d, text, font3d, antialias);
 if (text3d.isInvalid) return text3d.width;
 if (antialias && (argb & 0xC0C0C0) == 0) {
 argb = argb | 0x040404;
-}if (jmolRenderer != null || (x < 0 || x + text3d.width > g3d.width || y < 0 || y + text3d.height > g3d.height)) J.g3d.TextRenderer.plotClipped (x, y, z, argb, bgargb, g3d, jmolRenderer, text3d.mapWidth, text3d.height, text3d.tmap);
- else J.g3d.TextRenderer.plotUnclipped (x, y, z, argb, bgargb, g3d, text3d.mapWidth, text3d.height, text3d.tmap);
-return text3d.width;
+}var textHeight = text3d.height;
+var textWidth = text3d.width;
+var tmap = text3d.tmap;
+var g = g3d;
+var width = g.width;
+var height = g.height;
+var zbuf = g.zbuf;
+var p = g.pixel;
+var tLog = g.translucencyLog;
+if (jr != null || (x < 0 || x + text3d.width > width || y < 0 || y + text3d.height > height) && (jr = g3d) != null) {
+for (var off = 0, i = 0; i < textHeight; i++) {
+for (var j = 0; j < textWidth; j++) {
+var shade = tmap[off++];
+if (shade != 0) jr.plotImagePixel (argb, x + j, y + i, z, shade, bgargb, width, height, zbuf, p, tLog);
+}
+}
+} else {
+var pbufOffset = y * width + x;
+for (var i = 0, off = 0; i < textHeight; i++) {
+for (var j = 0; j < textWidth; j++) {
+var shade = tmap[off++];
+if (shade != 0 && z < zbuf[pbufOffset]) {
+if (shade == 8) {
+p.addPixel (pbufOffset, z, argb);
+} else {
+shade += tLog;
+if (shade <= 7) g3d.shadeTextPixel (pbufOffset, z, argb, bgargb, shade, zbuf);
+}}pbufOffset++;
+}
+pbufOffset += (width - textWidth);
+}
+}return text3d.width;
 }, "~N,~N,~N,~N,~N,~S,javajs.awt.Font,J.g3d.Graphics3D,J.api.JmolRendererInterface,~B");
 c$.plotByCharacter = Clazz.defineMethod (c$, "plotByCharacter", 
  function (x, y, z, argb, bgargb, text, font3d, g3d, jmolRenderer, antialias) {
@@ -71,32 +100,6 @@ w += width;
 }
 return w;
 }, "~N,~N,~N,~N,~N,~S,javajs.awt.Font,J.g3d.Graphics3D,J.api.JmolRendererInterface,~B");
-c$.plotUnclipped = Clazz.defineMethod (c$, "plotUnclipped", 
- function (x, y, z, argb, bgargb, g3d, textWidth, textHeight, tmap) {
-var offset = 0;
-var zbuf = g3d.zbuf;
-var renderWidth = g3d.width;
-var pbufOffset = y * renderWidth + x;
-for (var i = 0; i < textHeight; i++) {
-for (var j = 0; j < textWidth; j++) {
-var shade = tmap[offset++];
-if (shade != 0 && z < zbuf[pbufOffset]) g3d.shadeTextPixel (pbufOffset, z, argb, bgargb, shade);
-pbufOffset++;
-}
-pbufOffset += (renderWidth - textWidth);
-}
-}, "~N,~N,~N,~N,~N,J.g3d.Graphics3D,~N,~N,~A");
-c$.plotClipped = Clazz.defineMethod (c$, "plotClipped", 
- function (x, y, z, argb, bgargb, g3d, jmolRenderer, textWidth, textHeight, tmap) {
-if (jmolRenderer == null) jmolRenderer = g3d;
-var offset = 0;
-for (var i = 0; i < textHeight; i++) {
-for (var j = 0; j < textWidth; j++) {
-var shade = tmap[offset++];
-if (shade != 0) jmolRenderer.plotImagePixel (argb, x + j, y + i, z, shade, bgargb);
-}
-}
-}, "~N,~N,~N,~N,~N,J.g3d.Graphics3D,J.api.JmolRendererInterface,~N,~N,~A");
 Clazz.makeConstructor (c$, 
  function (text, font3d) {
 this.ascent = font3d.getAscent ();

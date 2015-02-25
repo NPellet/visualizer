@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JM");
-Clazz.load (["JM.Group"], "JM.Monomer", ["java.lang.Float", "JU.Measure", "$.P3", "$.Quat", "J.c.STR", "JM.ProteinStructure", "JU.Escape", "$.Logger", "JV.JC"], function () {
+Clazz.load (["JM.Group"], "JM.Monomer", ["java.lang.Float", "JU.Measure", "$.P3", "$.Quat", "J.c.STR", "JM.ProteinStructure", "$.Resolver", "JU.Escape", "$.Logger", "JV.JC"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.bioPolymer = null;
 this.offsets = null;
@@ -24,13 +24,17 @@ Clazz.defineMethod (c$, "set2",
 function (chain, group3, seqcode, firstAtomIndex, lastAtomIndex, interestingAtomOffsets) {
 this.setGroup (chain, group3, seqcode, firstAtomIndex, lastAtomIndex);
 this.offsets = interestingAtomOffsets;
-var offset = this.offsets[0] & 0xFF;
-if (offset != 255) this.leadAtomIndex = firstAtomIndex + offset;
+this.setLeadAtomIndex ();
 return this;
 }, "JM.Chain,~S,~N,~N,~N,~A");
+Clazz.defineMethod (c$, "setLeadAtomIndex", 
+function () {
+var offset = this.offsets[0] & 0xFF;
+if (offset != 255) this.leadAtomIndex = this.firstAtomIndex + offset;
+});
 Clazz.overrideMethod (c$, "getGroups", 
 function () {
-return this.bioPolymer.getGroups ();
+return this.bioPolymer.monomers;
 });
 Clazz.defineMethod (c$, "setBioPolymer", 
 function (polymer, index) {
@@ -205,7 +209,7 @@ function (atoms, bsConformation, conformationIndex) {
 var ch = '\u0000';
 for (var i = this.firstAtomIndex; i <= this.lastAtomIndex; i++) {
 var atom = atoms[i];
-var altloc = atom.getAlternateLocationID ();
+var altloc = atom.altloc;
 if (altloc == '\0') continue;
 if (conformationIndex >= 0 && altloc != ch) {
 ch = altloc;
@@ -220,21 +224,22 @@ var offset = this.offsets[offsetIndex] & 0xFF;
 if (offset == 255) continue;
 var iThis = this.firstAtomIndex + offset;
 var atom = atoms[iThis];
-var thisID = atom.getAtomID ();
-if ((atom.getAlternateLocationID ()).charCodeAt (0) == 0) continue;
+var thisID = atom.atomID;
+if (atom.altloc.charCodeAt (0) == 0) continue;
 var nScan = this.lastAtomIndex - this.firstAtomIndex;
 for (var i = 1; i <= nScan; i++) {
 var iNew = iThis + i;
 if (iNew > this.lastAtomIndex) iNew -= nScan + 1;
 var offsetNew = iNew - this.firstAtomIndex;
 if (offsetNew < 0 || offsetNew > 255 || iNew == iThis || !bsSelected.get (iNew)) continue;
-var atomID = atoms[iNew].getAtomID ();
+var atomID = atoms[iNew].atomID;
 if (atomID != thisID || atomID == 0 && !atoms[iNew].getAtomName ().equals (atom.getAtomName ())) continue;
-if (JU.Logger.debugging) JU.Logger.debug ("Chain.udateOffsetsForAlternativeLocation " + atoms[iNew] + " was " + atom);
 this.offsets[offsetIndex] = offsetNew;
+atoms[iNew].nBackbonesDisplayed = atom.nBackbonesDisplayed;
 break;
 }
 }
+this.setLeadAtomIndex ();
 }, "~A,JU.BS");
 Clazz.defineMethod (c$, "getMonomerSequenceAtoms", 
 function (bsInclude, bsResult) {
@@ -265,10 +270,10 @@ return (a == null || b == null ? this.getHelixData (tokType, qType, mStep) : JU.
 }, "~N,~S,~N");
 Clazz.defineMethod (c$, "getUniqueID", 
 function () {
-var cid = this.getChainID ();
+var cid = this.chain.chainID;
 var a = this.getLeadAtom ();
 var id = (a == null ? "" : "_" + a.mi) + "_" + this.getResno () + (cid == 0 ? "" : "_" + cid);
-var aid = (a == null ? '\0' : this.getLeadAtom ().getAlternateLocationID ());
+var aid = (a == null ? '\0' : this.getLeadAtom ().altloc);
 if (aid != '\0') id += "_" + aid;
 return id;
 });
@@ -280,18 +285,14 @@ return false;
 }, "JM.Group");
 Clazz.overrideMethod (c$, "getCrossLinkLead", 
 function (vReturn) {
-for (var i = this.firstAtomIndex; i <= this.lastAtomIndex; i++) if (this.getCrossLink (i, vReturn) && vReturn == null) return true;
+for (var i = this.firstAtomIndex; i <= this.lastAtomIndex; i++) if (this.getCrossLinkGroup (i, vReturn, null) && vReturn == null) return true;
 
 return false;
 }, "JU.Lst");
-Clazz.defineMethod (c$, "getCrossLink", 
-function (i, vReturn) {
-return this.getCrossLinkGroup (i, vReturn, null);
-}, "~N,JU.Lst");
 Clazz.defineMethod (c$, "getCrossLinkGroup", 
- function (i, vReturn, group) {
+function (i, vReturn, group) {
 var atom = this.chain.getAtom (i);
-var bonds = atom.getBonds ();
+var bonds = atom.bonds;
 var ibp = this.getBioPolymerIndexInModel ();
 if (ibp < 0 || bonds == null) return false;
 var haveCrossLink = false;
@@ -359,4 +360,16 @@ return this.straightness;
 }
 return NaN;
 }, "~N");
+Clazz.overrideMethod (c$, "getGroup1", 
+function () {
+return (this.groupID < JM.Resolver.predefinedGroup1Names.length ? JM.Resolver.predefinedGroup1Names[this.groupID] : this.group1.charCodeAt (0) > 1 ? this.group1 : this.group1.charCodeAt (0) == 1 ? '?' : (this.group1 = this.getGroup1b ()));
+});
+Clazz.defineMethod (c$, "getGroup1b", 
+function () {
+return '?';
+});
+Clazz.overrideMethod (c$, "setGroupID", 
+function (group3) {
+this.groupID = JM.Resolver.getGroupIdFor (group3);
+}, "~S");
 });

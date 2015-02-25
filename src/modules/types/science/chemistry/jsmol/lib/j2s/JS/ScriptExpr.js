@@ -413,7 +413,7 @@ this.iToken = 1000;
 var ignoreSubset = (pcStart < 0);
 var isInMath = false;
 var nExpress = 0;
-var ac = this.vwr.getAtomCount ();
+var ac = this.vwr.ms.ac;
 if (ignoreSubset) pcStart = -pcStart;
 ignoreSubset = new Boolean (ignoreSubset | this.chk).valueOf ();
 if (pcStop == 0 && code.length > pcStart) pcStop = pcStart + 1;
@@ -525,13 +525,14 @@ rpn.addXBs (this.chk ?  new JU.BS () : this.vwr.ms.getClickableSet (!allowRefres
 allowRefresh = false;
 break;
 case 1048608:
-if (this.vwr.allowSpecAtom ()) {
+if (this.vwr.ms.allowSpecAtom ()) {
 var atomID = instruction.intValue;
 if (atomID > 0) rpn.addXBs (this.compareInt (1095761922, 269484436, atomID));
  else rpn.addXBs (this.getAtomBits (instruction.tok, value));
 } else {
 rpn.addXBs (this.lookupIdentifierValue ("_" + value));
 }break;
+case 3145731:
 case 3145764:
 case 3145732:
 case 1613758470:
@@ -585,7 +586,7 @@ var pt = value;
 rpn.addXBs (this.getAtomBits (instruction.tok, [Clazz.doubleToInt (Math.floor (pt.x * 1000)), Clazz.doubleToInt (Math.floor (pt.y * 1000)), Clazz.doubleToInt (Math.floor (pt.z * 1000))]));
 break;
 case 3145758:
-rpn.addXBs (this.vwr.getModelUndeletedAtomsBitSet (this.vwr.am.cmi));
+rpn.addXBs (this.vwr.am.cmi < 0 ? this.vwr.getFrameAtoms () : this.vwr.getModelUndeletedAtomsBitSet (this.vwr.am.cmi));
 break;
 case 1613758476:
 case 3145730:
@@ -658,7 +659,7 @@ this.expressionResult = (this.chk ?  new JU.BS () : this.getAtomBitSet (this.exp
 }if (!mustBeBitSet && !(Clazz.instanceOf (this.expressionResult, JU.BS))) return null;
 var bs = (Clazz.instanceOf (this.expressionResult, JU.BS) ? this.expressionResult :  new JU.BS ());
 this.isBondSet = (Clazz.instanceOf (this.expressionResult, JM.BondSet));
-if (!this.isBondSet && this.vwr.excludeAtoms (bs, ignoreSubset).length () > this.vwr.getAtomCount ()) bs.clearAll ();
+if (!this.isBondSet && (bs = this.vwr.slm.excludeAtoms (bs, ignoreSubset)).length () > this.vwr.ms.ac) bs.clearAll ();
 if (this.tempStatement != null) {
 this.st = this.tempStatement;
 this.tempStatement = null;
@@ -669,7 +670,7 @@ Clazz.defineMethod (c$, "getComparison",
 var tokValue = t.tok;
 if (tokValue == 7) {
 var bs =  new JU.BS ();
-if (tokOp != 269484436) bs.setBits (0, this.vwr.getAtomCount ());
+if (tokOp != 269484436) bs.setBits (0, this.vwr.ms.ac);
 var lst = (t).getList ();
 for (var i = lst.size (); --i >= 0; ) {
 var res = this.getComparison (lst.get (i), tokWhat, tokOp, strOp, data);
@@ -787,7 +788,7 @@ return l;
 Clazz.defineMethod (c$, "compareFloatData", 
 function (tokWhat, data, tokOperator, comparisonFloat) {
 var bs =  new JU.BS ();
-var ac = this.vwr.getAtomCount ();
+var ac = this.vwr.ms.ac;
 var modelSet = this.vwr.ms;
 var atoms = modelSet.at;
 var propertyFloat = 0;
@@ -829,7 +830,7 @@ Clazz.defineMethod (c$, "compareString",
  function (tokWhat, tokOperator, comparisonString) {
 var bs =  new JU.BS ();
 var atoms = this.vwr.ms.at;
-var ac = this.vwr.getAtomCount ();
+var ac = this.vwr.ms.ac;
 var isCaseSensitive = (tokOperator == 269484438 || tokWhat == 1087373316 && this.vwr.getBoolean (603979823));
 if (!isCaseSensitive) comparisonString = comparisonString.toLowerCase ();
 for (var i = ac; --i >= 0; ) {
@@ -858,9 +859,9 @@ var ia = 2147483647;
 var propertyBitSet = null;
 var bitsetComparator = tokOperator;
 var bitsetBaseValue = ival;
-var ac = this.vwr.getAtomCount ();
 var modelSet = this.vwr.ms;
 var atoms = modelSet.at;
+var ac = modelSet.ac;
 var imax = -1;
 var imin = 0;
 var iModel = -1;
@@ -913,9 +914,9 @@ ia = atom.atomPropertyInt (tokWhat);
 break;
 case 1095761943:
 case 1095766024:
-return JU.BSUtil.copy (this.vwr.getConformation (-1, ival - 1, false));
+return JU.BSUtil.copy (this.vwr.ms.getConformation (-1, ival - 1, false));
 case 1297090050:
-propertyBitSet = atom.getAtomSymmetry ();
+propertyBitSet = atom.atomSymmetry;
 if (propertyBitSet == null) continue;
 if (atom.mi != iModel) {
 iModel = atom.mi;
@@ -1035,7 +1036,7 @@ var haveIndex = (index != 2147483647);
 var isAtoms = haveIndex || !(Clazz.instanceOf (tokenValue, JM.BondSet));
 var minmaxtype = tok & 480;
 var selectedFloat = (minmaxtype == 224);
-var ac = this.vwr.getAtomCount ();
+var ac = this.vwr.ms.ac;
 var fout = (minmaxtype == 256 ?  Clazz.newFloatArray (ac, 0) : null);
 var isExplicitlyAll = (minmaxtype == 480 || selectedFloat);
 tok &= -481;
@@ -1075,7 +1076,7 @@ switch (tok) {
 case 1141899265:
 case 1678770178:
 if (this.chk) return bs;
-bsNew = (tok == 1141899265 ? (isAtoms ? bs : this.vwr.ms.getAtoms (1678770178, bs)) : (isAtoms ?  new JM.BondSet (this.vwr.getBondsForSelectedAtoms (bs)) : bs));
+bsNew = (tok == 1141899265 ? (isAtoms ? bs : this.vwr.ms.getAtoms (1678770178, bs)) : (isAtoms ? JM.BondSet.newBS (this.vwr.getBondsForSelectedAtoms (bs), null) : bs));
 var i;
 switch (minmaxtype) {
 case 32:
@@ -1260,13 +1261,13 @@ if (haveIndex) break;
 } else {
 var isAll = (bs == null);
 var i0 = (isAll ? 0 : bs.nextSetBit (0));
-var i1 = this.vwr.getBondCount ();
+var i1 = this.vwr.ms.bondCount;
 for (var i = i0; i >= 0 && i < i1; i = (isAll ? i + 1 : bs.nextSetBit (i + 1))) {
 n++;
-var bond = modelSet.getBondAt (i);
+var bond = modelSet.bo[i];
 switch (tok) {
 case 1141899267:
-var fv = bond.getAtom1 ().distance (bond.getAtom2 ());
+var fv = bond.atom1.distance (bond.atom2);
 switch (minmaxtype) {
 case 32:
 if (fv < fvMinMax) fvMinMax = fv;
@@ -1288,17 +1289,17 @@ break;
 case 1146095626:
 switch (minmaxtype) {
 case 1048579:
-pt.ave (bond.getAtom1 (), bond.getAtom2 ());
+pt.ave (bond.atom1, bond.atom2);
 vout.addLast (JU.P3.newP (pt));
 break;
 default:
-pt.add (bond.getAtom1 ());
-pt.add (bond.getAtom2 ());
+pt.add (bond.atom1);
+pt.add (bond.atom2);
 n++;
 }
 break;
 case 1766856708:
-JU.CU.toRGBpt (this.vwr.getColorArgbOrGray (bond.colix), ptT);
+JU.CU.colorPtFromInt (this.vwr.gdata.getColorArgbOrGray (bond.colix), ptT);
 switch (minmaxtype) {
 case 1048579:
 vout.addLast (JU.P3.newP (ptT));
@@ -1385,9 +1386,9 @@ return Float.$valueOf (sum);
 }, "JU.BS,~N,JU.P3,JU.P4,~O,~O,~B,~N,~B");
 Clazz.defineMethod (c$, "bitSetForModelFileNumber", 
  function (m) {
-var bs = JU.BS.newN (this.vwr.getAtomCount ());
+var bs = JU.BS.newN (this.vwr.ms.ac);
 if (this.chk) return bs;
-var modelCount = this.vwr.getModelCount ();
+var modelCount = this.vwr.ms.mc;
 var haveFileSet = this.vwr.haveFileSet ();
 if (m < 1000000 && haveFileSet) m *= 1000000;
 var pt = m % 1000000;
@@ -1426,7 +1427,7 @@ var propertyName = "";
 var settingData = key.startsWith ("property_");
 var isThrown = key.equals ("thrown_value");
 var isExpression = (this.tokAt (1) == 1048577);
-var t = (settingData ? null : this.getContextVariableAsVariable (key));
+var t = (settingData ? null : key.length == 0 ?  new JS.SV () : this.getContextVariableAsVariable (key));
 if (isSet && !isExpression) {
 switch (this.tokAt (2)) {
 case 1073742195:
@@ -1496,7 +1497,7 @@ break;
 case 10:
 propertyName = sel.asString ();
 bs = JS.SV.getBitSet (t, true);
-var nAtoms = this.vwr.getAtomCount ();
+var nAtoms = this.vwr.ms.ac;
 var nbs = bs.cardinality ();
 if (propertyName.startsWith ("property_")) {
 var obj = (tv.tok == 7 ? JS.SV.flistValue (tv, tv.getList ().size () == nbs ? nbs : nAtoms) : tv.asString ());
@@ -1516,7 +1517,7 @@ return t;
 }var vv = JS.SV.oValue (tv);
 if (settingData) {
 if (tv.tok == 7) vv = tv.asString ();
-this.vwr.setData (key, [key, "" + vv, JU.BSUtil.copy (this.vwr.bsA ()), Integer.$valueOf (0)], this.vwr.getAtomCount (), 0, 0, -2147483648, 0);
+this.vwr.setData (key, [key, "" + vv, JU.BSUtil.copy (this.vwr.bsA ()), Integer.$valueOf (0)], this.vwr.ms.ac, 0, 0, -2147483648, 0);
 return null;
 }if (Clazz.instanceOf (vv, Boolean)) {
 this.setBooleanProperty (key, (vv).booleanValue ());

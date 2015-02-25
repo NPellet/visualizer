@@ -16,7 +16,7 @@ this.modelRadiusPixels = 0;
 this.navigationCenter = null;
 this.navigationOffset = null;
 this.navigationShiftXY = null;
-this.navigationDepth = 0;
+this.navigationDepthPercent = 0;
 this.matrixTemp = null;
 this.vectorTemp = null;
 this.haveNotifiedNaN = false;
@@ -65,15 +65,15 @@ this.zmPct = 100;
 this.zmPctSet = 100;
 this.zoomRatio = 0;
 this.slabEnabled = false;
-this.internalSlab = false;
 this.zShadeEnabled = false;
+this.internalSlab = false;
 this.slabPercentSetting = 0;
 this.depthPercentSetting = 0;
+this.slabValue = 0;
+this.depthValue = 0;
 this.zSlabPercentSetting = 50;
 this.zDepthPercentSetting = 0;
 this.zSlabPoint = null;
-this.slabValue = 0;
-this.depthValue = 0;
 this.zSlabValue = 0;
 this.zDepthValue = 0;
 this.slabRange = 0;
@@ -83,7 +83,7 @@ this.perspectiveDepth = true;
 this.scale3D = false;
 this.cameraDepth = 3;
 this.cameraDepthSetting = 3;
-this.visualRange = 0;
+this.visualRangeAngstroms = 0;
 this.cameraDistance = 1000;
 this.width = 0;
 this.height = 0;
@@ -125,7 +125,6 @@ this.stereoRadians = 0;
 this.stereoFrame = false;
 this.matrixStereo = null;
 this.windowCentered = false;
-this.frameOffsets = null;
 this.frameOffset = null;
 this.bsSelectedAtoms = null;
 this.ptOffset = null;
@@ -187,6 +186,15 @@ me.vwr = vwr;
 me.setScreenParameters (width, height, true, false, true, true);
 return me;
 }, "JV.Viewer,~N,~N,~B");
+Clazz.defineMethod (c$, "setDefaultPerspective", 
+function () {
+this.setCameraDepthPercent (3.0, true);
+this.setPerspectiveDepth (true);
+this.setStereoDegrees (-5);
+this.visualRangeAngstroms = 5.0;
+this.setSpinOff ();
+this.setVibrationPeriod (0);
+});
 Clazz.defineMethod (c$, "homePosition", 
 function (resetSpin) {
 if (resetSpin) this.setSpinOff ();
@@ -242,7 +250,7 @@ Clazz.defineMethod (c$, "setFixedRotationCenter",
  function (center) {
 if (center == null) return;
 this.fixedRotationCenter.setT (center);
-}, "JU.P3");
+}, "JU.T3");
 Clazz.defineMethod (c$, "setRotationPointXY", 
 function (center) {
 var newCenterScreen = this.transformPt (center);
@@ -261,7 +269,7 @@ var pt2 = JU.P3.new3 (-yDelta, xDelta, 0);
 pt2.add (ptScreen);
 this.unTransformPoint (pt2, pt2);
 this.vwr.setInMotion (false);
-this.rotateAboutPointsInternal (null, pt2, pt1, 10 * speed, NaN, false, true, null, true, null, null, null);
+this.rotateAboutPointsInternal (null, pt2, pt1, 10 * speed, NaN, false, true, null, true, null, null, null, null);
 }, "~N,~N,~N");
 Clazz.defineMethod (c$, "rotateXYBy", 
 function (degX, degY, bsAtoms) {
@@ -273,29 +281,29 @@ if (x != 2147483647 && y != 2147483647) this.resetXYCenter (x, y);
 this.rotateZRadians ((zDelta / 57.29577951308232));
 }, "~N,~N,~N");
 Clazz.defineMethod (c$, "applyRotation", 
- function (mNew, isInternal, bsAtoms, translation, translationOnly) {
+ function (mNew, isInternal, bsAtoms, translation, translationOnly, m4) {
 if (bsAtoms == null) {
 this.matrixRotate.mul2 (mNew, this.matrixRotate);
 return;
-}this.vwr.moveAtoms (mNew, this.matrixRotate, translation, this.internalRotationCenter, isInternal, bsAtoms, translationOnly);
+}this.vwr.moveAtoms (m4, mNew, this.matrixRotate, translation, this.internalRotationCenter, isInternal, bsAtoms, translationOnly);
 if (translation != null) {
 this.internalRotationCenter.add (translation);
-}}, "JU.M3,~B,JU.BS,JU.V3,~B");
+}}, "JU.M3,~B,JU.BS,JU.V3,~B,JU.M4");
 Clazz.defineMethod (c$, "rotate3DBall", 
 function (xDeg, yDeg, bsAtoms) {
-if (this.matrixTemp3.setAsBallRotation (0.017453292, -yDeg, -xDeg)) this.applyRotation (this.matrixTemp3, false, bsAtoms, null, false);
+if (this.matrixTemp3.setAsBallRotation (0.017453292, -yDeg, -xDeg)) this.applyRotation (this.matrixTemp3, false, bsAtoms, null, false, null);
 }, "~N,~N,JU.BS");
 Clazz.defineMethod (c$, "rotateXRadians", 
 function (angleRadians, bsAtoms) {
-this.applyRotation (this.matrixTemp3.setAsXRotation (angleRadians), false, bsAtoms, null, false);
+this.applyRotation (this.matrixTemp3.setAsXRotation (angleRadians), false, bsAtoms, null, false, null);
 }, "~N,JU.BS");
 Clazz.defineMethod (c$, "rotateYRadians", 
 function (angleRadians, bsAtoms) {
-this.applyRotation (this.matrixTemp3.setAsYRotation (angleRadians), false, bsAtoms, null, false);
+this.applyRotation (this.matrixTemp3.setAsYRotation (angleRadians), false, bsAtoms, null, false, null);
 }, "~N,JU.BS");
 Clazz.defineMethod (c$, "rotateZRadians", 
 function (angleRadians) {
-this.applyRotation (this.matrixTemp3.setAsZRotation (angleRadians), false, null, null, false);
+this.applyRotation (this.matrixTemp3.setAsZRotation (angleRadians), false, null, null, false, null);
 }, "~N");
 Clazz.defineMethod (c$, "rotateAxisAngle", 
 function (rotAxis, radians) {
@@ -304,14 +312,14 @@ this.rotateAxisAngle2 (this.axisangleT, null);
 }, "JU.V3,~N");
 Clazz.defineMethod (c$, "rotateAxisAngle2", 
  function (axisAngle, bsAtoms) {
-this.applyRotation (this.matrixTemp3.setAA (axisAngle), false, bsAtoms, null, false);
+this.applyRotation (this.matrixTemp3.setAA (axisAngle), false, bsAtoms, null, false, null);
 }, "JU.A4,JU.BS");
 Clazz.defineMethod (c$, "rotateAxisAngleAtCenter", 
 function (eval, rotCenter, rotAxis, degreesPerSecond, endDegrees, isSpin, bsAtoms) {
 if (rotCenter != null) this.moveRotationCenter (rotCenter, true);
 this.setSpinOff ();
 this.setNavOn (false);
-if (this.vwr.isHeadless ()) {
+if (this.vwr.headless) {
 if (isSpin && endDegrees == 3.4028235E38) return false;
 isSpin = false;
 }if (Float.isNaN (degreesPerSecond) || degreesPerSecond == 0 || endDegrees == 0) return false;
@@ -339,29 +347,27 @@ this.axisangleT.angle = angleRadians;
 this.rotateAxisAngle2 (this.axisangleT, bsAtoms);
 }, "~N,JU.BS");
 Clazz.defineMethod (c$, "rotateAboutPointsInternal", 
-function (eval, point1, point2, degreesPerSecond, endDegrees, isClockwise, isSpin, bsAtoms, isGesture, translation, finalPoints, dihedralList) {
+function (eval, point1, point2, degreesPerSecond, endDegrees, isClockwise, isSpin, bsAtoms, isGesture, translation, finalPoints, dihedralList, m4) {
 this.setSpinOff ();
 this.setNavOn (false);
-if (dihedralList == null && (translation == null || translation.length () < 0.001) && (!isSpin || endDegrees == 0 || Float.isNaN (degreesPerSecond) || degreesPerSecond == 0) && (isSpin || endDegrees == 0)) return false;
+if (dihedralList == null && (translation == null || translation.length () < 0.001) && (isSpin ? Float.isNaN (degreesPerSecond) || degreesPerSecond == 0 : endDegrees == 0)) return false;
 var axis = null;
 if (dihedralList == null) {
 axis = JU.V3.newVsub (point2, point1);
 if (isClockwise) axis.scale (-1.0);
 this.internalRotationCenter.setT (point1);
 this.rotationAxis.setT (axis);
-if (translation == null) {
-this.internalTranslation = null;
-} else {
-this.internalTranslation = JU.V3.newV (translation);
-}}var isSelected = (bsAtoms != null);
+this.internalTranslation = (translation == null ? null : JU.V3.newV (translation));
+}var isSelected = (bsAtoms != null);
 if (isSpin) {
 if (dihedralList == null) {
-var nFrames = Clazz.doubleToInt (Math.abs (endDegrees) / Math.abs (degreesPerSecond) * this.spinFps + 0.5);
+if (endDegrees == 0) endDegrees = NaN;
 if (Float.isNaN (endDegrees)) {
 this.rotationRate = degreesPerSecond;
 } else {
+var nFrames = Clazz.doubleToInt (Math.abs (endDegrees) / Math.abs (degreesPerSecond) * this.spinFps + 0.5);
 this.rotationRate = degreesPerSecond = endDegrees / nFrames * this.spinFps;
-if (translation != null) this.internalTranslation.scale (1 / (nFrames));
+if (translation != null) this.internalTranslation.scale (1 / nFrames);
 }this.internalRotationAxis.setVA (axis, (Float.isNaN (this.rotationRate) ? 0 : this.rotationRate) * 0.017453292);
 this.isSpinInternal = true;
 this.isSpinFixed = false;
@@ -369,21 +375,21 @@ this.isSpinSelected = isSelected;
 } else {
 endDegrees = degreesPerSecond;
 }this.setSpin (eval, true, endDegrees, finalPoints, dihedralList, bsAtoms, isGesture);
-return (dihedralList != null || bsAtoms != null);
+return !Float.isNaN (endDegrees);
 }var radians = endDegrees * 0.017453292;
 this.internalRotationAxis.setVA (axis, radians);
-this.rotateAxisAngleRadiansInternal (radians, bsAtoms);
+this.rotateAxisAngleRadiansInternal (radians, bsAtoms, m4);
 return false;
-}, "J.api.JmolScriptEvaluator,JU.T3,JU.T3,~N,~N,~B,~B,JU.BS,~B,JU.V3,JU.Lst,~A");
+}, "J.api.JmolScriptEvaluator,JU.T3,JU.T3,~N,~N,~B,~B,JU.BS,~B,JU.V3,JU.Lst,~A,JU.M4");
 Clazz.defineMethod (c$, "rotateAxisAngleRadiansInternal", 
-function (radians, bsAtoms) {
+function (radians, bsAtoms, m4) {
 this.internalRotationAngle = radians;
 this.vectorT.set (this.internalRotationAxis.x, this.internalRotationAxis.y, this.internalRotationAxis.z);
 this.matrixRotate.rotate2 (this.vectorT, this.vectorT2);
 this.axisangleT.setVA (this.vectorT2, radians);
-this.applyRotation (this.matrixTemp3.setAA (this.axisangleT), true, bsAtoms, this.internalTranslation, radians > 1e6);
+this.applyRotation (this.matrixTemp3.setAA (this.axisangleT), true, bsAtoms, this.internalTranslation, radians > 1e6, m4);
 if (bsAtoms == null) this.getNewFixedRotationCenter ();
-}, "~N,JU.BS");
+}, "~N,JU.BS,JU.M4");
 Clazz.defineMethod (c$, "getNewFixedRotationCenter", 
 function () {
 this.axisangleT.setAA (this.internalRotationAxis);
@@ -391,8 +397,7 @@ this.axisangleT.angle = -this.internalRotationAngle;
 this.matrixTemp4.setToAA (this.axisangleT);
 this.vectorT.setT (this.internalRotationCenter);
 this.pointT2.sub2 (this.fixedRotationCenter, this.vectorT);
-var pt =  new JU.P3 ();
-this.matrixTemp4.rotTrans2 (this.pointT2, pt);
+var pt = this.matrixTemp4.rotTrans2 (this.pointT2,  new JU.P3 ());
 pt.add (this.vectorT);
 this.setRotationCenterAndRadiusXYZ (pt, false);
 });
@@ -461,10 +466,6 @@ Clazz.defineMethod (c$, "getTranslationYPercent",
 function () {
 return (this.height == 0 ? 0 : (this.fixedTranslation.y - this.height / 2) * 100 / this.height);
 });
-Clazz.defineMethod (c$, "getTranslationZPercent", 
-function () {
-return 0;
-});
 Clazz.defineMethod (c$, "getTranslationScript", 
 function () {
 var info = "";
@@ -480,7 +481,7 @@ switch (type) {
 case 4130:
 return this.getMoveToText (1, false);
 case 1073742132:
-return this.getRotationQuaternion ().toString ();
+return JU.Quat.newM (this.vwr.tm.matrixRotate).toString ();
 case 1073742178:
 var sb =  new JU.SB ();
 JV.TransformManager.truncate2 (sb, this.getTranslationXPercent ());
@@ -497,9 +498,9 @@ info.put ("moveTo", this.getMoveToText (1, false));
 info.put ("center", "center " + this.getCenterText ());
 info.put ("centerPt", this.fixedRotationCenter);
 var aa =  new JU.A4 ();
-this.getAxisAngle (aa);
+aa.setM (this.matrixRotate);
 info.put ("axisAngle", aa);
-info.put ("quaternion", JU.Quat.newAA (aa).toPoint4f ());
+info.put ("quaternion", JU.Quat.newM (this.matrixRotate).toPoint4f ());
 info.put ("rotationMatrix", this.matrixRotate);
 info.put ("rotateZYZ", this.getRotateZyzText (false));
 info.put ("rotateXYZ", this.getRotateXyzText ());
@@ -511,25 +512,18 @@ if (this.mode == 1) {
 info.put ("navigationCenter", "navigate center " + JU.Escape.eP (this.navigationCenter));
 info.put ("navigationOffsetXPercent", Float.$valueOf (this.getNavigationOffsetPercent ('X')));
 info.put ("navigationOffsetYPercent", Float.$valueOf (this.getNavigationOffsetPercent ('Y')));
-info.put ("navigationDepthPercent", Float.$valueOf (this.getNavigationDepthPercent ()));
+info.put ("navigationDepthPercent", Float.$valueOf (this.navigationDepthPercent));
 }return info;
-});
-Clazz.defineMethod (c$, "getAxisAngle", 
-function (axisAngle) {
-axisAngle.setM (this.matrixRotate);
-}, "JU.A4");
-Clazz.defineMethod (c$, "getTransformText", 
-function () {
-return this.matrixRotate.toString ();
-});
-Clazz.defineMethod (c$, "getMatrixRotate", 
-function () {
-return JU.M3.newM3 (this.matrixRotate);
 });
 Clazz.defineMethod (c$, "getRotation", 
 function (m) {
 m.setM3 (this.matrixRotate);
 }, "JU.M3");
+Clazz.defineMethod (c$, "setZoomHeight", 
+function (zoomHeight, zoomLarge) {
+this.zoomHeight = zoomHeight;
+this.scaleFitToScreen (false, zoomLarge, false, true);
+}, "~B,~B");
 Clazz.defineMethod (c$, "zoomBy", 
 function (pixels) {
 if (pixels > 20) pixels = 20;
@@ -539,10 +533,16 @@ if (deltaPercent == 0) deltaPercent = (pixels > 0 ? 1 : (deltaPercent < 0 ? -1 :
 this.zoomRatio = (deltaPercent + this.zmPctSet) / this.zmPctSet;
 this.zmPctSet += deltaPercent;
 }, "~N");
-Clazz.defineMethod (c$, "getZoomPercentFloat", 
-function () {
-return this.zmPct;
-});
+Clazz.defineMethod (c$, "zoomByFactor", 
+function (factor, x, y) {
+if (factor <= 0 || !this.zoomEnabled) return;
+if (this.mode != 1) {
+this.zoomRatio = factor;
+this.zmPctSet *= factor;
+this.resetXYCenter (x, y);
+} else if (this.getNav ()) {
+this.nav.zoomByFactor (factor, x, y);
+}}, "~N,~N,~N");
 Clazz.defineMethod (c$, "zoomToPercent", 
 function (percentZoom) {
 this.zmPctSet = percentZoom;
@@ -581,14 +581,6 @@ this.scale3D = (angstromsPerInch > 0);
 if (this.scale3D) this.scale3DAngstromsPerInch = angstromsPerInch;
 this.perspectiveDepth = !this.scale3D;
 }, "~N");
-Clazz.defineMethod (c$, "setZslabPoint", 
-function (pt) {
-this.zSlabPoint = (pt == null ? null : JU.P3.newP (pt));
-}, "JU.P3");
-Clazz.defineMethod (c$, "getZShadeStart", 
-function () {
-return (this.zShadeEnabled ? this.zDepthValue : 0);
-});
 Clazz.defineMethod (c$, "setSlabRange", 
 function (value) {
 this.slabRange = value;
@@ -616,6 +608,7 @@ this.depthPlane = null;
 this.slabPlane = null;
 this.setSlabEnabled (false);
 this.setZShadeEnabled (false);
+this.slabDepthChanged ();
 });
 Clazz.defineMethod (c$, "getSlabPercentSetting", 
 function () {
@@ -632,6 +625,7 @@ Clazz.defineMethod (c$, "slabDepthChanged",
  function () {
 this.vwr.g.setI ("slab", this.slabPercentSetting);
 this.vwr.g.setI ("depth", this.depthPercentSetting);
+this.finalizeTransformParameters ();
 });
 Clazz.defineMethod (c$, "depthByPercentagePoints", 
 function (percentage) {
@@ -681,16 +675,16 @@ this.depthPercentSetting = 0;
 } else {
 this.slabPlane = plane;
 this.slabPercentSetting = 100;
-}}, "JU.P4,~B");
+}this.slabDepthChanged ();
+}, "JU.P4,~B");
 Clazz.defineMethod (c$, "setSlabDepthInternal", 
 function (isDepth) {
-this.finalizeTransformParameters ();
 if (isDepth) this.depthPlane = null;
  else this.slabPlane = null;
 this.slabInternal (this.getSlabDepthPlane (isDepth), isDepth);
 }, "~B");
 Clazz.defineMethod (c$, "getSlabDepthPlane", 
-function (isDepth) {
+ function (isDepth) {
 if (isDepth) {
 if (this.depthPlane != null) return this.depthPlane;
 } else {
@@ -737,10 +731,6 @@ Clazz.defineMethod (c$, "getCameraDepth",
 function () {
 return this.cameraDepthSetting;
 });
-Clazz.defineMethod (c$, "setVisualRange", 
-function (angstroms) {
-this.visualRange = angstroms;
-}, "~N");
 Clazz.defineMethod (c$, "setScreenParameters0", 
  function (screenWidth, screenHeight, useZoomLarge, antialias, resetSlab, resetZoom) {
 if (screenWidth == 2147483647) return;
@@ -797,14 +787,9 @@ Clazz.defineMethod (c$, "scaleToPerspective",
 function (z, sizeAngstroms) {
 return (this.perspectiveDepth ? sizeAngstroms * this.getPerspectiveFactor (z) : sizeAngstroms);
 }, "~N,~N");
-Clazz.defineMethod (c$, "getMatrixtransform", 
-function () {
-return this.matrixTransform;
-});
 Clazz.defineMethod (c$, "setNavigationMode", 
 function (TF) {
-if (TF && this.canNavigate ()) this.mode = 1;
- else this.mode = this.defaultMode;
+this.mode = (TF ? 1 : this.defaultMode);
 this.resetNavigationPoint (true);
 }, "~B");
 Clazz.defineMethod (c$, "isNavigating", 
@@ -876,7 +861,7 @@ this.matrixTemp.m11 = this.matrixTemp.m22 = -this.scalePixelsPerAngstrom;
 this.matrixTransform.mul2 (this.matrixTemp, this.matrixTransform);
 this.matrixTransform.m23 += this.modelCenterOffset;
 try {
-this.matrixTransformInv.invertM (this.matrixTransform);
+this.matrixTransformInv.setM4 (this.matrixTransform).invert ();
 } catch (e) {
 if (Clazz.exceptionOf (e, Exception)) {
 System.out.println ("ERROR INVERTING matrixTransform!");
@@ -1088,13 +1073,26 @@ throw e;
 }
 }
 }, "J.api.JmolScriptEvaluator,~N,JU.P3,JU.T3,~N,JU.M3,~N,~N,~N,~N,JU.P3,~N,~N,~N,~N,~N,~N");
+Clazz.defineMethod (c$, "setAll", 
+function (center, m, navCenter, zoom, xTrans, yTrans, rotationRadius, pixelScale, navDepth, xNav, yNav, cameraDepth, cameraX, cameraY) {
+if (!Float.isNaN (m.m00)) this.setRotation (m);
+if (center != null) this.moveRotationCenter (center, !this.windowCentered);
+if (navCenter != null && this.mode == 1) this.navigationCenter.setT (navCenter);
+if (!Float.isNaN (cameraDepth)) this.setCameraDepthPercent (cameraDepth, false);
+if (!Float.isNaN (cameraX) && !Float.isNaN (cameraY)) this.setCamera (cameraX, cameraY);
+if (!Float.isNaN (zoom)) this.zoomToPercent (zoom);
+if (!Float.isNaN (rotationRadius)) this.modelRadius = rotationRadius;
+if (!Float.isNaN (pixelScale)) this.scaleDefaultPixelsPerAngstrom = pixelScale;
+if (!Float.isNaN (xTrans) && !Float.isNaN (yTrans)) {
+this.translateToPercent ('x', xTrans);
+this.translateToPercent ('y', yTrans);
+}if (this.mode == 1) {
+if (!Float.isNaN (xNav) && !Float.isNaN (yNav)) this.navTranslatePercentOrTo (0, xNav, yNav);
+if (!Float.isNaN (navDepth)) this.setNavigationDepthPercent (navDepth);
+}}, "JU.P3,JU.M3,JU.P3,~N,~N,~N,~N,~N,~N,~N,~N,~N,~N,~N");
 Clazz.defineMethod (c$, "stopMotion", 
 function () {
 this.movetoThread = null;
-});
-Clazz.defineMethod (c$, "getRotationQuaternion", 
-function () {
-return JU.Quat.newM (this.matrixRotate);
 });
 Clazz.defineMethod (c$, "getRotationText", 
 function () {
@@ -1195,7 +1193,7 @@ sb.append (";navigate 0 translate");
 JV.TransformManager.truncate2 (sb, this.getNavigationOffsetPercent ('X'));
 JV.TransformManager.truncate2 (sb, this.getNavigationOffsetPercent ('Y'));
 sb.append (";navigate 0 depth ");
-JV.TransformManager.truncate2 (sb, this.getNavigationDepthPercent ());
+JV.TransformManager.truncate2 (sb, this.navigationDepthPercent);
 sb.append (";");
 }}, "JU.SB");
 Clazz.defineMethod (c$, "getRotateZyzText", 
@@ -1289,7 +1287,7 @@ if (this.spinThread == null) {
 this.spinThread = J.api.Interface.getOption ("thread.SpinThread", this.vwr, "tm");
 this.spinThread.setManager (this, this.vwr, [Float.$valueOf (endDegrees), endPositions, dihedralList, bsAtoms, isGesture ? Boolean.TRUE : null]);
 this.spinIsGesture = isGesture;
-if (bsAtoms == null && dihedralList == null && (endDegrees == 3.4028235E38 || !this.vwr.g.waitForMoveTo)) {
+if ((Float.isNaN (endDegrees) || endDegrees == 3.4028235E38 || !this.vwr.g.waitForMoveTo)) {
 this.spinThread.start ();
 } else {
 this.spinThread.setEval (eval);
@@ -1354,7 +1352,7 @@ this.vibrationThread = null;
 }this.vibrationOn = false;
 this.vibrationT.x = 0;
 return;
-}if (this.vwr.getModelCount () < 1) {
+}if (this.vwr.ms.mc < 1) {
 this.vibrationOn = false;
 this.vibrationT.x = 0;
 return;
@@ -1401,17 +1399,9 @@ function (TF) {
 this.windowCentered = TF;
 this.resetNavigationPoint (true);
 }, "~B");
-Clazz.defineMethod (c$, "getRotationCenter", 
-function () {
-return this.fixedRotationCenter;
-});
-Clazz.defineMethod (c$, "getRotationRadius", 
-function () {
-return this.modelRadius;
-});
 Clazz.defineMethod (c$, "setRotationRadius", 
 function (angstroms, doAll) {
-angstroms = (this.modelRadius = (angstroms <= 0 ? this.vwr.calcRotationRadius (this.fixedRotationCenter) : angstroms));
+angstroms = (this.modelRadius = (angstroms <= 0 ? this.vwr.ms.calcRotationRadius (this.vwr.am.cmi, this.fixedRotationCenter) : angstroms));
 if (doAll) this.vwr.setRotationRadius (angstroms, false);
 return angstroms;
 }, "~N,~B");
@@ -1423,8 +1413,8 @@ this.setFixedRotationCenter (this.rotationCenterDefault);
 this.modelRadius = this.rotationRadiusDefault;
 return;
 }this.setFixedRotationCenter (newCenterOfRotation);
-if (andRadius && this.windowCentered) this.modelRadius = this.vwr.calcRotationRadius (this.fixedRotationCenter);
-}, "JU.P3,~B");
+if (andRadius && this.windowCentered) this.modelRadius = this.vwr.ms.calcRotationRadius (this.vwr.am.cmi, this.fixedRotationCenter);
+}, "JU.T3,~B");
 Clazz.defineMethod (c$, "setNewRotationCenter", 
 function (center, doScale) {
 if (center == null) center = this.rotationCenterDefault;
@@ -1464,13 +1454,9 @@ this.resetFitToScreen (true);
 }, "~N,JU.P3");
 Clazz.defineMethod (c$, "setFrameOffset", 
 function (modelIndex) {
-if (this.frameOffsets == null || modelIndex < 0 || modelIndex >= this.frameOffsets.length) this.frameOffset.set (0, 0, 0);
- else this.frameOffset.setT (this.frameOffsets[modelIndex]);
+if (this.vwr.frameOffsets == null || modelIndex < 0 || modelIndex >= this.vwr.frameOffsets.length) this.frameOffset.set (0, 0, 0);
+ else this.frameOffset.setT (this.vwr.frameOffsets[modelIndex]);
 }, "~N");
-Clazz.defineMethod (c$, "setFrameOffsets", 
-function (offsets) {
-this.frameOffsets = offsets;
-}, "~A");
 Clazz.defineMethod (c$, "setSelectedTranslation", 
 function (bsAtoms, xyz, xy) {
 this.bsSelectedAtoms = bsAtoms;
@@ -1500,11 +1486,11 @@ this.cameraDepth = this.cameraDepthSetting;
 this.zoomFactor = 3.4028235E38;
 }this.cameraDistance = this.cameraDepth * this.screenPixelCount;
 this.referencePlaneOffset = this.cameraDistance + this.screenPixelCount / 2;
-this.scalePixelsPerAngstrom = (this.scale3D && !this.perspectiveDepth && this.mode != 1 ? 72 / this.scale3DAngstromsPerInch * (this.antialias ? 2 : 1) : this.screenPixelCount / this.visualRange);
+this.scalePixelsPerAngstrom = (this.scale3D && !this.perspectiveDepth && this.mode != 1 ? 72 / this.scale3DAngstromsPerInch * (this.antialias ? 2 : 1) : this.screenPixelCount / this.visualRangeAngstroms);
 if (this.mode != 1) this.mode = (this.camera.z == 0 ? 0 : 2);
 this.perspectiveShiftXY.set (this.camera.z == 0 ? 0 : this.camera.x * this.scalePixelsPerAngstrom / this.screenWidth * 100, this.camera.z == 0 ? 0 : this.camera.y * this.scalePixelsPerAngstrom / this.screenHeight * 100, 0);
 this.modelRadiusPixels = this.modelRadius * this.scalePixelsPerAngstrom;
-var offset100 = (2 * this.modelRadius) / this.visualRange * this.referencePlaneOffset;
+var offset100 = (2 * this.modelRadius) / this.visualRangeAngstroms * this.referencePlaneOffset;
 if (this.mode == 1) {
 this.calcNavCameraFactors (offset100);
 return;
@@ -1561,10 +1547,6 @@ break;
 }
 this.matrixTransformInv.rotTrans2 (this.untransformedPoint, coordPt);
 }, "JU.T3,JU.T3");
-Clazz.defineMethod (c$, "canNavigate", 
-function () {
-return true;
-});
 Clazz.defineMethod (c$, "resetNavigationPoint", 
 function (doResetSlab) {
 if (this.zmPct < 5 && this.mode != 1) {
@@ -1591,14 +1573,6 @@ this.navigating = true;
 this.finalizeTransformParameters ();
 this.navigating = false;
 }, "JU.P3");
-Clazz.defineMethod (c$, "getNavigationCenter", 
-function () {
-return this.navigationCenter;
-});
-Clazz.defineMethod (c$, "getNavigationDepthPercent", 
-function () {
-return this.navigationDepth;
-});
 Clazz.defineMethod (c$, "setNavigationSlabOffsetPercent", 
 function (percent) {
 this.vwr.g.setF ("navigationSlab", percent);
@@ -1625,7 +1599,7 @@ function (addComments) {
 var s = (addComments ? " /* navigation center, translation, depth */ " : " ");
 if (this.mode != 1) return s + "{0 0 0} 0 0 0";
 this.getNavigationOffset ();
-return s + JU.Escape.eP (this.navigationCenter) + " " + this.getNavigationOffsetPercent ('X') + " " + this.getNavigationOffsetPercent ('Y') + " " + this.getNavigationDepthPercent ();
+return s + JU.Escape.eP (this.navigationCenter) + " " + this.getNavigationOffsetPercent ('X') + " " + this.getNavigationOffsetPercent ('Y') + " " + this.navigationDepthPercent;
 }, "~B");
 Clazz.defineMethod (c$, "setScreenParameters", 
 function (screenWidth, screenHeight, useZoomLarge, antialias, resetSlab, resetZoom) {
@@ -1659,16 +1633,6 @@ Clazz.defineMethod (c$, "navigateAxis",
 function (rotAxis, degrees) {
 if (this.getNav ()) this.nav.navigateAxis (rotAxis, degrees);
 }, "JU.V3,~N");
-Clazz.defineMethod (c$, "zoomByFactor", 
-function (factor, x, y) {
-if (factor <= 0 || !this.zoomEnabled) return;
-if (this.mode != 1) {
-this.zoomRatio = factor;
-this.zmPctSet *= factor;
-this.resetXYCenter (x, y);
-} else if (this.getNav ()) {
-this.nav.zoomByFactor (factor, x, y);
-}}, "~N,~N,~N");
 Clazz.defineMethod (c$, "setNavigationOffsetRelative", 
 function () {
 if (this.getNav ()) this.nav.setNavigationOffsetRelative ();
@@ -1693,39 +1657,21 @@ Clazz.defineMethod (c$, "getNavigationState",
 function () {
 return (this.mode == 1 && this.getNav () ? this.nav.getNavigationState () : "");
 });
-Clazz.defineMethod (c$, "setZoomHeight", 
-function (zoomHeight, zoomLarge) {
-this.zoomHeight = zoomHeight;
-this.scaleFitToScreen (false, zoomLarge, false, true);
-}, "~B,~B");
-Clazz.defineMethod (c$, "setAll", 
-function (center, m, navCenter, zoom, xTrans, yTrans, rotationRadius, pixelScale, navDepth, xNav, yNav, cameraDepth, cameraX, cameraY) {
-if (!Float.isNaN (m.m00)) this.setRotation (m);
-if (center != null) this.moveRotationCenter (center, !this.windowCentered);
-if (navCenter != null && this.mode == 1) this.navigationCenter.setT (navCenter);
-if (!Float.isNaN (cameraDepth)) this.setCameraDepthPercent (cameraDepth, false);
-if (!Float.isNaN (cameraX) && !Float.isNaN (cameraY)) this.setCamera (cameraX, cameraY);
-if (!Float.isNaN (zoom)) this.zoomToPercent (zoom);
-if (!Float.isNaN (rotationRadius)) this.modelRadius = rotationRadius;
-if (!Float.isNaN (pixelScale)) this.scaleDefaultPixelsPerAngstrom = pixelScale;
-if (!Float.isNaN (xTrans) && !Float.isNaN (yTrans)) {
-this.translateToPercent ('x', xTrans);
-this.translateToPercent ('y', yTrans);
-}if (this.mode == 1) {
-if (!Float.isNaN (xNav) && !Float.isNaN (yNav)) this.navTranslatePercentOrTo (0, xNav, yNav);
-if (!Float.isNaN (navDepth)) this.setNavigationDepthPercent (navDepth);
-}}, "JU.P3,JU.M3,JU.P3,~N,~N,~N,~N,~N,~N,~N,~N,~N,~N,~N");
 Clazz.defineStatics (c$,
-"degreesPerRadian", 57.29577951308232,
-"DEFAULT_NAV_FPS", 10,
 "DEFAULT_SPIN_Y", 30,
 "DEFAULT_SPIN_FPS", 30,
-"MAXIMUM_ZOOM_PERCENTAGE", 200000,
-"MAXIMUM_ZOOM_PERSPECTIVE_DEPTH", 10000,
+"DEFAULT_NAV_FPS", 10,
+"DEFAULT_VISUAL_RANGE", 5,
+"DEFAULT_STEREO_DEGREES", -5,
 "MODE_STANDARD", 0,
 "MODE_NAVIGATION", 1,
 "MODE_PERSPECTIVE_PYMOL", 2,
 "DEFAULT_PERSPECTIVE_MODEL", 11,
+"DEFAULT_PERSPECTIVE_DEPTH", true,
+"DEFAULT_CAMERA_DEPTH", 3.0,
+"degreesPerRadian", 57.29577951308232,
+"MAXIMUM_ZOOM_PERCENTAGE", 200000,
+"MAXIMUM_ZOOM_PERSPECTIVE_DEPTH", 10000,
 "NAV_MODE_IGNORE", -2,
 "NAV_MODE_ZOOMED", -1,
 "NAV_MODE_NONE", 0,

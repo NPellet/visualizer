@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.MOReader"], "J.adapter.readers.quantum.GamessReader", ["java.lang.Float", "java.util.Hashtable", "JU.AU", "$.Lst", "$.PT", "J.api.JmolAdapter", "JU.Logger"], function () {
+Clazz.load (["J.adapter.readers.quantum.MOReader"], "J.adapter.readers.quantum.GamessReader", ["java.lang.Float", "java.util.Hashtable", "JU.AU", "$.Lst", "$.PT", "J.adapter.readers.quantum.BasisFunctionReader", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.atomNames = null;
 this.calcOptions = null;
@@ -8,7 +8,7 @@ Clazz.instantialize (this, arguments);
 }, J.adapter.readers.quantum, "GamessReader", J.adapter.readers.quantum.MOReader);
 Clazz.defineMethod (c$, "readEnergy", 
 function () {
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line.substring (this.line.indexOf ("ENERGY")));
+var tokens = JU.PT.getTokens (this.line.substring (this.line.indexOf ("ENERGY")));
 if (tokens.length < 3) return;
 var strEnergy = tokens[2];
 var e = this.parseFloatStr (strEnergy);
@@ -51,7 +51,7 @@ slater[2] = nGaussians;
 slatersByAtomType.addLast (slater);
 }thisShell = tokens[0];
 this.shellCount++;
-slater = [J.api.JmolAdapter.getQuantumShellTagID (this.fixShellTag (tokens[1])), this.gaussianCount, 0];
+slater = [J.adapter.readers.quantum.BasisFunctionReader.getQuantumShellTagID (this.fixShellTag (tokens[1])), this.gaussianCount, 0];
 nGaussians = 0;
 }++nGaussians;
 ++this.gaussianCount;
@@ -234,7 +234,7 @@ this.calcOptions =  new java.util.Hashtable ();
 this.asc.setInfo ("calculationOptions", this.calcOptions);
 }while (this.rd () != null && (this.line = this.line.trim ()).length > 0) {
 if (this.line.indexOf ("=") < 0) continue;
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (JU.PT.rep (this.line, "=", " = ") + " ?");
+var tokens = JU.PT.getTokens (JU.PT.rep (this.line, "=", " = ") + " ?");
 for (var i = 0; i < tokens.length; i++) {
 if (!tokens[i].equals ("=")) continue;
 try {

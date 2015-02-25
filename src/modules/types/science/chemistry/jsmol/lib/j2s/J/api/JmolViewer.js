@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.api");
-Clazz.load (null, "J.api.JmolViewer", ["java.lang.Boolean", "java.util.Hashtable"], function () {
+Clazz.load (null, "J.api.JmolViewer", ["java.util.Hashtable"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.menuStructure = null;
 this.apiPlatform = null;
@@ -34,11 +34,6 @@ c$.getJmolVersion = Clazz.defineMethod (c$, "getJmolVersion",
 function () {
 return JV.Viewer.getJmolVersion ();
 });
-c$.checkOption = Clazz.defineMethod (c$, "checkOption", 
-function (vwr, option) {
-var testFlag = vwr.getParameter (option);
-return (Clazz.instanceOf (testFlag, Boolean) && (testFlag).booleanValue () || Clazz.instanceOf (testFlag, Integer) && (testFlag).intValue () != 0);
-}, "J.api.JmolViewer,~S");
 Clazz.defineMethod (c$, "openFileAsync", 
 function (fileName) {
 this.openFileAsyncSpecial (fileName, 0);
@@ -47,14 +42,6 @@ Clazz.defineMethod (c$, "renderScreenImage",
 function (g, currentSize, rectClip) {
 this.apiPlatform.renderScreenImage (g, currentSize);
 }, "~O,~O,~O");
-Clazz.defineMethod (c$, "getJsObjectInfo", 
-function (jsObject, method, args) {
-return this.apiPlatform.getJsObjectInfo (jsObject, method, args);
-}, "~A,~S,~A");
-c$.getJmolValueAsString = Clazz.defineMethod (c$, "getJmolValueAsString", 
-function (jmolViewer, $var) {
-return (jmolViewer == null ? "" : "" + jmolViewer.getParameter ($var));
-}, "J.api.JmolViewer,~S");
 Clazz.defineMethod (c$, "dispose", 
 function () {
 });

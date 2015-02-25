@@ -23,7 +23,6 @@ function (sg) {
 this.initADR (sg);
 this.isXLowToHigh = true;
 this.precalculateVoxelData = false;
-this.atomDataServer = sg.getAtomDataServer ();
 this.params.fullyLit = true;
 this.isPlanarMapping = (this.params.thePlane != null || this.params.state == 3);
 if (this.params.func != null) this.volumeData.sr = this;
@@ -90,7 +89,7 @@ if (this.params.func == null) return 0;
 this.values[0] = pt.x;
 this.values[1] = pt.y;
 this.values[2] = pt.z;
-return this.atomDataServer.evalFunctionFloat (this.func[0], this.func[1], this.values);
+return this.sg.atomDataServer.evalFunctionFloat (this.func[0], this.func[1], this.values);
 }, "JU.T3,~B");
 Clazz.defineMethod (c$, "evaluateValue", 
 function (x, y, z) {

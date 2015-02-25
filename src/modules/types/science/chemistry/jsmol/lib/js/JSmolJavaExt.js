@@ -6,6 +6,7 @@
 // (local scope) Clazz_xxx, allowing them to be further compressed using
 // Google Closure Compiler in that same ANT task.
 
+// BH 1/16/2015 10:09:38 AM Chrome failure jqGrig due to new String("x").toString() not being a simple string
 // BH 8/14/2014 6:49:22 PM Character class efficiencies
 // BH 7/24/2014 9:02:18 AM most browsers do not support String.codePointAt()
 // BH 7/11/2014 4:17:22 PM fix for Boolean.valueOf("false") not being false 
@@ -1612,7 +1613,7 @@ default:
 };
 
 if(navigator.userAgent.toLowerCase().indexOf("chrome")!=-1){
-	String.prototype.toString=function(){return this;};
+	String.prototype.toString=function(){return this.valueOf();};
 }
 
 }

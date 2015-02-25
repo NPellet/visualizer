@@ -6,7 +6,7 @@ function () {
 var cartesianHeader = "Cartesian Coordinates (Ang";
 if (this.isSpartanArchive (cartesianHeader)) {
 this.moData =  new java.util.Hashtable ();
-var spartanArchive =  new J.adapter.readers.quantum.SpartanArchive (this);
+var spartanArchive =  new J.adapter.readers.quantum.SpartanArchive (this, "", null);
 var ac = spartanArchive.readArchive (this.line, true, 0, true);
 if (ac > 0) this.asc.setAtomSetName ("Spartan file");
 } else if (this.line.indexOf (cartesianHeader) >= 0) {
@@ -41,7 +41,7 @@ this.setAtomCoordXYZ (atom, this.parseFloatRange (this.line, 17, 30), this.parse
 });
 Clazz.defineMethod (c$, "readFrequencies", 
  function () {
-var ac = this.asc.getFirstAtomSetAtomCount ();
+var ac = this.asc.atomSetAtomCounts[0];
 while (true) {
 this.discardLinesUntilNonBlank ();
 var lineBaseFreqCount = this.vibrationNumber;

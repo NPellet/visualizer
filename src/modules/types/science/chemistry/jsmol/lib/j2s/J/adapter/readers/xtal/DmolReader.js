@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.xtal");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.xtal.DmolReader", ["java.lang.Double", "JU.DF", "JU.Logger"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.xtal.DmolReader", ["java.lang.Double", "JU.DF", "$.PT", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.unitCellData = null;
 this.totE = null;
@@ -26,7 +26,7 @@ Clazz.defineMethod (c$, "readCellParam",
  function () {
 this.unitCellData =  Clazz.newFloatArray (9, 0);
 for (var n = 0, i = 0; n < 3; n++) {
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+var tokens = JU.PT.getTokens (this.rd ());
 this.unitCellData[i++] = this.parseFloatStr (!this.geomOpt ? tokens[0] : tokens[4]) * 0.5291772;
 this.unitCellData[i++] = this.parseFloatStr (!this.geomOpt ? tokens[1] : tokens[5]) * 0.5291772;
 this.unitCellData[i++] = this.parseFloatStr (!this.geomOpt ? tokens[2] : tokens[6]) * 0.5291772;
@@ -64,7 +64,7 @@ this.setAtomCoord (atom);
 Clazz.defineMethod (c$, "readEnergy", 
  function () {
 this.rd ();
-if (this.line.contains ("Ef")) this.totE = Double.$valueOf (Double.parseDouble (J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line.substring (this.line.indexOf ("Ef") + 1, this.line.indexOf ("Ha")))[1]));
+if (this.line.contains ("Ef")) this.totE = Double.$valueOf (Double.parseDouble (JU.PT.getTokens (this.line.substring (this.line.indexOf ("Ef") + 1, this.line.indexOf ("Ha")))[1]));
 });
 Clazz.defineMethod (c$, "setEnergy", 
  function () {
@@ -77,7 +77,7 @@ Clazz.defineMethod (c$, "readFreq",
 var lastAtomCount = 0;
 var ac = this.asc.getLastAtomSetAtomCount ();
 while (this.rd () != null && this.line.charAt (1) == ' ') {
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line);
+var tokens = this.getTokens ();
 var frequencyCount = Clazz.doubleToInt (tokens.length / 2);
 var frequencies =  Clazz.newFloatArray (frequencyCount, 0);
 for (var i = 1, n = 0; i < tokens.length; i += 2, n++) {

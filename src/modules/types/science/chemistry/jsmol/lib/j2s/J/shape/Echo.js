@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shape");
-Clazz.load (["J.shape.TextShape"], "J.shape.Echo", ["JU.PT", "JM.Object2d", "$.Text"], function () {
+Clazz.load (["J.shape.TextShape"], "J.shape.Echo", ["JU.PT", "JM.Object2d", "$.Text", "JU.C"], function () {
 c$ = Clazz.declareType (J.shape, "Echo", J.shape.TextShape);
 Clazz.defineMethod (c$, "initShape", 
 function () {
@@ -67,12 +67,12 @@ valign = 3;
 halign = 2;
 } else if ("bottom" === target) {
 valign = 2;
-}text = JM.Text.newEcho (this.vwr, this.gdata, this.gdata.getFont3DFS ("Serif", 20), target, 10, valign, halign, 0);
-text.setAdjustForWindow (true);
+}text = JM.Text.newEcho (this.vwr, this.vwr.gdata.getFont3DFS ("Serif", 20), target, 10, valign, halign, 0);
+text.adjustForWindow = true;
 this.objects.put (target, text);
 if (this.currentFont != null) text.setFont (this.currentFont, true);
-if (this.currentColor != null) text.setColixO (this.currentColor);
-if (this.currentBgColor != null) text.setBgColixO (this.currentBgColor);
+if (this.currentColor != null) text.colix = JU.C.getColixO (this.currentColor);
+if (this.currentBgColor != null) text.bgcolix = JU.C.getColixO (this.currentBgColor);
 if (this.currentTranslucentLevel != 0) text.setTranslucent (this.currentTranslucentLevel, false);
 if (this.currentBgTranslucentLevel != 0) text.setTranslucent (this.currentBgTranslucentLevel, true);
 }this.currentObject = text;

@@ -327,7 +327,7 @@ this.isAltKeyReleased = true;
 });
 Clazz.defineMethod (c$, "startHoverWatcher", 
 function (isStart) {
-if (this.vwr.isPreviewOnly ()) return;
+if (this.vwr.isPreviewOnly) return;
 try {
 if (isStart) {
 if (this.hoverWatcherThread != null) return;
@@ -472,7 +472,7 @@ var dragRelease = !this.pressed.check (this.xyRange, x, y, buttonMods, time, 922
 this.checkReleaseAction (x, y, time, dragRelease);
 return;
 case 3:
-if (this.vwr.isApplet () && !this.vwr.hasFocus ()) return;
+if (this.vwr.isApplet && !this.vwr.hasFocus ()) return;
 this.setCurrent (time, this.current.x, this.current.y, buttonMods);
 this.checkDragWheelAction (JV.binding.Binding.getMouseAction (0, buttonMods, 3), this.current.x, this.current.y, 0, y, time, 3);
 return;
@@ -526,7 +526,7 @@ break;
 }
 if (isBound) {
 this.dragAtomIndex = this.vwr.findNearestAtomIndexMovable (x, y, true);
-if (this.dragAtomIndex >= 0 && (this.apm == 32 || this.apm == 31) && this.vwr.isAtomAssignable (this.dragAtomIndex)) {
+if (this.dragAtomIndex >= 0 && (this.apm == 32 || this.apm == 31) && this.vwr.ms.isAtomAssignable (this.dragAtomIndex)) {
 this.enterMeasurementMode (this.dragAtomIndex);
 this.mp.addPoint (this.dragAtomIndex, null, false);
 }return;
@@ -696,7 +696,6 @@ return;
 }}}, "~N,~N,~N,~B");
 Clazz.defineMethod (c$, "checkClickAction", 
  function (x, y, time, clickedCount) {
-if (!this.vwr.haveModelSet ()) return;
 if (clickedCount > 0) {
 if (this.checkUserAction (this.clickAction, x, y, 0, 0, time, 32768)) return;
 this.clickAction = this.vwr.notifyMouseClicked (x, y, this.clickAction, 32768);

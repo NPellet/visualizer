@@ -163,10 +163,10 @@ if (attValue != null) this.atts.put (name, attValue);
 }, "~A");
 Clazz.defineMethod (c$, "jsObjectCall", 
  function (jsObject, method, args) {
-return this.parent.vwr.getJsObjectInfo (jsObject, method, args == null ? this.nullObj : args);
+return this.parent.vwr.apiPlatform.getJsObjectInfo (jsObject, method, args == null ? this.nullObj : args);
 }, "~A,~S,~A");
 Clazz.defineMethod (c$, "jsObjectGetMember", 
  function (jsObject, name) {
-return this.parent.vwr.getJsObjectInfo (jsObject, name, null);
+return this.parent.vwr.apiPlatform.getJsObjectInfo (jsObject, name, null);
 }, "~A,~S");
 });

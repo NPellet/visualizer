@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.SurfaceReader"], "J.jvxl.readers.VolumeDataReader", ["JU.AU", "$.SB", "J.jvxl.data.JvxlCoder", "JU.Logger"], function () {
+Clazz.load (["J.jvxl.readers.SurfaceReader"], "J.jvxl.readers.VolumeDataReader", ["java.lang.Float", "JU.AU", "$.SB", "J.jvxl.data.JvxlCoder", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.dataType = 0;
 this.precalculateVoxelData = false;
@@ -7,7 +7,6 @@ this.allowMapData = false;
 this.point = null;
 this.ptsPerAngstrom = 0;
 this.maxGrid = 0;
-this.atomDataServer = null;
 this.useOriginStepsPoints = false;
 Clazz.instantialize (this, arguments);
 }, J.jvxl.readers, "VolumeDataReader", J.jvxl.readers.SurfaceReader);
@@ -15,6 +14,10 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.VolumeDataReader, []);
 });
+Clazz.overrideMethod (c$, "init", 
+function (sg) {
+this.initVDR (sg);
+}, "J.jvxl.readers.SurfaceGenerator");
 Clazz.defineMethod (c$, "initVDR", 
 function (sg) {
 this.initSR (sg);
@@ -141,7 +144,7 @@ case 2:
 this.volumetricVectors[2].set (0, 0, d);
 this.volumetricOrigin.z = min;
 if (this.isEccentric) this.eccentricityMatrix.rotate (this.volumetricOrigin);
-if (this.center != null && this.center.x != 3.4028235E38) this.volumetricOrigin.add (this.center);
+if (this.center != null && !Float.isNaN (this.center.x)) this.volumetricOrigin.add (this.center);
 }
 if (this.isEccentric) this.eccentricityMatrix.rotate (this.volumetricVectors[index]);
 return this.voxelCounts[index];

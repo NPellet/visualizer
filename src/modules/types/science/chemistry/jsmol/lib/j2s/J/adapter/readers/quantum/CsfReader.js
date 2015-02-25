@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.MopacSlaterReader", "java.util.Hashtable"], "J.adapter.readers.quantum.CsfReader", ["java.lang.Float", "JU.AU", "$.Lst", "$.PT", "J.adapter.smarter.Atom", "$.Bond", "J.api.JmolAdapter", "JU.Logger"], function () {
+Clazz.load (["J.adapter.readers.quantum.MopacSlaterReader", "java.util.Hashtable"], "J.adapter.readers.quantum.CsfReader", ["java.lang.Float", "JU.AU", "$.Lst", "$.PT", "J.adapter.readers.quantum.BasisFunctionReader", "J.adapter.smarter.Atom", "$.Bond", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.nAtoms = 0;
 this.strAtomicNumbers = "";
@@ -48,7 +48,7 @@ return false;
 });
 Clazz.defineMethod (c$, "processLocalTransform", 
  function () {
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd () + " " + this.rd () + " " + this.rd () + " " + this.rd ());
+var tokens = JU.PT.getTokens (this.rd () + " " + this.rd () + " " + this.rd () + " " + this.rd ());
 this.setTransform (this.parseFloatStr (tokens[0]), this.parseFloatStr (tokens[1]), this.parseFloatStr (tokens[2]), this.parseFloatStr (tokens[4]), this.parseFloatStr (tokens[5]), this.parseFloatStr (tokens[6]), this.parseFloatStr (tokens[8]), this.parseFloatStr (tokens[9]), this.parseFloatStr (tokens[10]));
 });
 Clazz.defineMethod (c$, "getPropertyCount", 
@@ -88,7 +88,7 @@ var ioffset = i0;
 for (var i = 0; i < n; i++) {
 var ipt = ioffset + i;
 if (ipt == tokens.length) {
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+tokens = JU.PT.getTokens (this.rd ());
 ioffset -= ipt - i0;
 ipt = i0;
 }if (isInteger) (f)[i] = this.parseIntStr (tokens[ipt]);
@@ -321,7 +321,7 @@ this.setMOs ("eV");
 });
 Clazz.defineMethod (c$, "processBasisObject", 
  function (sto_gto) {
-var atomNos = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.strAtomicNumbers);
+var atomNos = JU.PT.getTokens (this.strAtomicNumbers);
 this.atomicNumbers =  Clazz.newIntArray (atomNos.length, 0);
 for (var i = 0; i < this.atomicNumbers.length; i++) this.atomicNumbers[i] = this.parseIntStr (atomNos[i]);
 
@@ -373,7 +373,7 @@ iShell = shells[ipt];
 var slater =  Clazz.newIntArray (4, 0);
 var iAtom = this.asc.getAtomIndex (this.connectors.get (sto_gto + "_basis_fxn" + (ipt + 1))[0]);
 slater[0] = iAtom;
-slater[1] = J.api.JmolAdapter.getQuantumShellTagID (types[ipt].substring (0, 1));
+slater[1] = J.adapter.readers.quantum.BasisFunctionReader.getQuantumShellTagID (types[ipt].substring (0, 1));
 var nZ = 0;
 while (++nZ < nZetas && zetas[ipt][nZ] != 0) {
 }

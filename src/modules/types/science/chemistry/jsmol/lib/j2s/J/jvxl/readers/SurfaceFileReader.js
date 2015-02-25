@@ -17,7 +17,7 @@ Clazz.superConstructor (this, J.jvxl.readers.SurfaceFileReader, []);
 });
 Clazz.defineMethod (c$, "setStream", 
 function (fileName, isBigEndian) {
-this.binarydoc.setStream ((this.sg.getAtomDataServer ()).getJzt (), fileName == null ? null : this.sg.getAtomDataServer ().getBufferedInputStream (fileName), isBigEndian);
+this.binarydoc.setStream ((this.sg.atomDataServer).getJzt (), fileName == null ? null : this.sg.atomDataServer.getBufferedInputStream (fileName), isBigEndian);
 }, "~S,~B");
 Clazz.overrideMethod (c$, "init", 
 function (sg) {
@@ -34,7 +34,7 @@ this.br = br;
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
 Clazz.defineMethod (c$, "newBinaryDocument", 
 function () {
-return J.api.Interface.getInterface ("JU.BinaryDocument", this.sg.getAtomDataServer (), "file");
+return J.api.Interface.getInterface ("JU.BinaryDocument", this.sg.atomDataServer, "file");
 });
 Clazz.overrideMethod (c$, "setOutputChannel", 
 function (out) {
@@ -109,11 +109,11 @@ return JU.PT.getQuotedStringNext (this.line, this.next);
 });
 Clazz.defineMethod (c$, "skipTo", 
 function (info, what) {
-if (info != null) while (this.readLine ().indexOf (info) < 0) {
+if (info != null) while (this.rd ().indexOf (info) < 0) {
 }
 if (what != null) this.next[0] = this.line.indexOf (what) + what.length + 2;
 }, "~S,~S");
-Clazz.defineMethod (c$, "readLine", 
+Clazz.defineMethod (c$, "rd", 
 function () {
 this.line = this.br.readLine ();
 if (this.line != null) {

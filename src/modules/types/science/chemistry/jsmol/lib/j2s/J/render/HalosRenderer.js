@@ -15,7 +15,7 @@ var atoms = this.ms.at;
 var bsSelected = (selectDisplayTrue ? this.vwr.bsA () : null);
 var needTranslucent = false;
 this.g3d.addRenderer (1073741880);
-for (var i = this.ms.getAtomCount (); --i >= 0; ) {
+for (var i = this.ms.ac; --i >= 0; ) {
 var atom = atoms[i];
 if ((atom.shapeVisibilityFlags & 1) == 0) continue;
 var isHidden = this.ms.isAtomHidden (i);

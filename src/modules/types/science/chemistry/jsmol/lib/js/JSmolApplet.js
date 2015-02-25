@@ -1,5 +1,6 @@
 // JmolApplet.js -- Jmol._Applet and Jmol._Image
 
+// BY 10/19/2014 8:08:51 PM moved applet._cover and applet._displayCoverImage to 
 // BH 5/8/2014 11:20:21 AM trying to fix AH nd JG problem with multiple applets
 // BH 1/27/2014 8:36:43 AM adding Info.viewSet
 // BH 12/13/2013 9:04:53 AM _evaluate DEPRECATED (see JSmolApi.js Jmol.evaulateVar
@@ -101,7 +102,6 @@
 		};	 
 		Jmol._addDefaultInfo(Info, DefaultInfo);
 		Jmol._debugAlert = Info.debug;
-			if (!Jmol.featureDetection.allowHTML5)Info.use = "JAVA";
 
 		Info.serverURL && (Jmol._serverUrl = Info.serverURL);
 
@@ -118,8 +118,12 @@
 			case "WEBGL":
 				applet = Applet._getCanvas(id, Info, checkOnly, true);
 				break;
-			case "HTML5":
-				applet = Applet._getCanvas(id, Info, checkOnly, false);
+			case "HTML5":               
+  			if (Jmol.featureDetection.allowHTML5){
+				  applet = Applet._getCanvas(id, Info, checkOnly, false);
+        } else {
+          List.push("JAVA");
+        }
 				break;
 			case "IMAGE":
 				applet = new Jmol._Image(id, Info, checkOnly);
@@ -674,6 +678,38 @@
 		}
 		return false;
 	}
+
+	proto._cover = function (doCover) {
+		if (doCover || !this._deferApplet) {
+			this._displayCoverImage(doCover);
+			return;
+		}
+		// uncovering UNMADE applet upon clicking image
+		var s = (this._coverScript ? this._coverScript : "");
+		this._coverScript = "";
+		if (this._deferUncover)
+			s += ";refresh;javascript " + this._id + "._displayCoverImage(false)";
+		this._script(s, true);
+		if (this._deferUncover && this._coverTitle == "activate 3D model")
+			Jmol._getElement(this, "coverimage").title = "3D model is loading...";
+		if (!this._isJava)
+			this._newCanvas(false);
+		if (this._defaultModel)	
+			Jmol._search(this, this._defaultModel);
+		this._showInfo(false);
+		if (!this._deferUncover)
+			this._displayCoverImage(false);
+		if (this._isJava)
+			Jmol.$html(Jmol.$(this, "appletdiv"), this._javaCode);
+		if (this._init)
+			this._init();
+	};
+
+	proto._displayCoverImage = function(TF) {
+		if (!this._coverImage || this._isCovered == TF) return;
+		this._isCovered = TF;
+		Jmol._getElement(this, "coverdiv").style.display = (TF ? "block" : "none");
+	};
 
   proto._getSmiles = function() {
 		return this._evaluate("{visible}.find('SMILES')");   

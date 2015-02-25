@@ -61,10 +61,6 @@ this.pointA =  new JU.P3 ();
 this.fReturn =  Clazz.newFloatArray (1, 0);
 this.linearOffsets =  Clazz.newIntArray (8, 0);
 });
-Clazz.defineMethod (c$, "getBsVoxels", 
-function () {
-return this.bsVoxels;
-});
 Clazz.makeConstructor (c$, 
 function () {
 Clazz.superConstructor (this, J.jvxl.calc.MarchingCubes, []);

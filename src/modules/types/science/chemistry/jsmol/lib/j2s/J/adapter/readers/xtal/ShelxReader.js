@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.xtal");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.xtal.ShelxReader", ["java.lang.Float", "JU.AU", "J.adapter.smarter.Atom", "JU.Logger"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.xtal.ShelxReader", ["java.lang.Float", "JU.AU", "$.PT", "J.adapter.smarter.Atom", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.sfacElementSymbols = null;
 this.isCmdf = false;
@@ -46,7 +46,7 @@ this.cell ();
 this.setSymmetryOperator ("x,y,z");
 break;
 case 2:
-this.setSpaceGroupName (J.adapter.smarter.AtomSetCollectionReader.parseTrimmedAt (this.line, 4));
+this.setSpaceGroupName (JU.PT.parseTrimmedAt (this.line, 4));
 break;
 case 3:
 this.parseSfacRecord ();
@@ -88,7 +88,7 @@ for (var i = this.tokens.length; allElementSymbols && --i >= 1; ) {
 var token = this.tokens[i];
 allElementSymbols = J.adapter.readers.xtal.ShelxReader.isValidElementSymbolNoCaseSecondChar (token);
 }
-var sfacTokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line.substring (4));
+var sfacTokens = JU.PT.getTokens (this.line.substring (4));
 if (allElementSymbols) this.parseSfacElementSymbols (sfacTokens);
  else this.parseSfacCoefficients (sfacTokens);
 });

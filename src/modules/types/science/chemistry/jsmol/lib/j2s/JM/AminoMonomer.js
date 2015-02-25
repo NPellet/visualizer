@@ -93,7 +93,7 @@ Clazz.defineMethod (c$, "getExplicitNH",
 function () {
 var nitrogen = this.getNitrogenAtom ();
 var h = null;
-var bonds = nitrogen.getBonds ();
+var bonds = nitrogen.bonds;
 if (bonds == null) return null;
 for (var i = 0; i < bonds.length; i++) if ((h = bonds[i].getOtherAtom (nitrogen)).getElementNumber () == 1) return h;
 
@@ -141,7 +141,7 @@ case 'P':
 return this.getCarbonylCarbonAtom ();
 case 'q':
 if (this.monomerIndex == this.bioPolymer.monomerCount - 1) return null;
-var mNext = (this.bioPolymer.getGroups ()[this.monomerIndex + 1]);
+var mNext = (this.bioPolymer.monomers[this.monomerIndex + 1]);
 var pt =  new JU.P3 ();
 pt.ave (this.getCarbonylCarbonAtom (), mNext.getNitrogenAtom ());
 return pt;
@@ -176,11 +176,11 @@ case 'p':
 case 'x':
 if (this.monomerIndex == this.bioPolymer.monomerCount - 1) return null;
 vA.sub2 (ptCa, ptC);
-vB.sub2 ((this.bioPolymer.getGroups ()[this.monomerIndex + 1]).getNitrogenAtom (), ptC);
+vB.sub2 ((this.bioPolymer.monomers[this.monomerIndex + 1]).getNitrogenAtom (), ptC);
 break;
 case 'q':
 if (this.monomerIndex == this.bioPolymer.monomerCount - 1) return null;
-var mNext = (this.bioPolymer.getGroups ()[this.monomerIndex + 1]);
+var mNext = (this.bioPolymer.monomers[this.monomerIndex + 1]);
 vB.sub2 (mNext.getLeadAtom (), mNext.getNitrogenAtom ());
 vA.sub2 (ptCa, ptC);
 break;
@@ -218,7 +218,7 @@ Clazz.defineMethod (c$, "clear",
 if (a == null) return;
 bs.clear (a.i);
 if (!andH) return;
-var b = a.getBonds ();
+var b = a.bonds;
 var h;
 for (var j = b.length; --j >= 0; ) if ((h = b[j].getOtherAtom (a)).getElementNumber () == 1) bs.clear (h.i);
 

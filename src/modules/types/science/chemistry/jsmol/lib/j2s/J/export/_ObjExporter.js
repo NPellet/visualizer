@@ -135,7 +135,7 @@ if (this.surfacesOnly) {
 this.debugPrint ("  Not done owing to surfacesOnly");
 return;
 }this.outputTriangle1 (pt1, pt2, pt3, colix);
-}, "JU.P3,JU.P3,JU.P3,~N");
+}, "JU.T3,JU.T3,JU.T3,~N");
 Clazz.overrideMethod (c$, "outputHeader", 
 function () {
 this.debugPrint ("outputHeader");
@@ -154,7 +154,7 @@ if (meshSurface.normals == null) {
 this.debugPrint ("  no vertex normals");
 } else {
 this.debugPrint ("  nNormals=" + meshSurface.vc);
-}if (meshSurface.pcs == null) {
+}if (meshSurface.vcs == null) {
 this.debugPrint ("  no vertex colors");
 } else {
 this.debugPrint ("  nColixes=" + meshSurface.vc);
@@ -167,7 +167,7 @@ this.debugPrint ("  nPolygonColixes=" + meshSurface.pc);
 this.debugPrint ("  all polygons used");
 } else {
 this.debugPrint ("  number of polygons used=" + meshSurface.bsPolygons.cardinality ());
-}this.debugPrint ("  solid color=" + this.g3d.getColorArgbOrGray (colix));
+}this.debugPrint ("  solid color=" + this.gdata.getColorArgbOrGray (colix));
 }var bsPolygons = meshSurface.bsPolygons;
 var nPolygons = meshSurface.pc;
 if (meshSurface.normals != null) meshSurface.normalCount = meshSurface.vc;
@@ -210,9 +210,9 @@ var bsValid =  new JU.BS ();
 this.addMesh (name, data, matrix, null, colix, dim, bsValid);
 }, "JU.MeshSurface,~N");
 Clazz.overrideMethod (c$, "initializeOutput", 
-function (vwr, privateKey, g3d, params) {
+function (vwr, privateKey, gdata, params) {
 this.debugPrint ("initializeOutput: + output");
-var retVal = this.initOutput (vwr, privateKey, g3d, params);
+var retVal = this.initOutput (vwr, privateKey, gdata, params);
 if (!retVal) {
 this.debugPrint ("End initializeOutput (error in super):");
 return false;
@@ -264,7 +264,7 @@ this.mtlout.append (data);
 }, "~S");
 Clazz.defineMethod (c$, "getTextureName", 
  function (colix) {
-return "k" + JU.Escape.getHexColorFromRGB (this.g3d.getColorArgbOrGray (colix));
+return "k" + JU.Escape.getHexColorFromRGB (this.gdata.getColorArgbOrGray (colix));
 }, "~N");
 Clazz.defineMethod (c$, "outputCircle1", 
  function (ptCenter, ptPerp, colix, radius) {
@@ -345,7 +345,7 @@ this.addTexture (colix, null);
 var name = "Triangle" + this.triangleNum++;
 var matrix = JU.M4.newM4 (null);
 this.addMesh (name, data, matrix, matrix, colix, null, null);
-}, "JU.P3,JU.P3,JU.P3,~N");
+}, "JU.T3,JU.T3,JU.T3,~N");
 Clazz.defineMethod (c$, "addTexture", 
  function (colix, name) {
 var scolix = Short.$valueOf (colix);
@@ -474,12 +474,12 @@ var rgb;
 if (data.pcs == null) {
 var face = data.pis[i];
 sum.set (0, 0, 0);
-for (var iVertex, $iVertex = 0, $$iVertex = face; $iVertex < $$iVertex.length && ((iVertex = $$iVertex[$iVertex]) || true); $iVertex++) sum.add (JU.CU.colorPtFromInt (this.g3d.getColorArgbOrGray (colixes[iVertex]), ptTemp));
+for (var iVertex, $iVertex = 0, $$iVertex = face; $iVertex < $$iVertex.length && ((iVertex = $$iVertex[$iVertex]) || true); $iVertex++) sum.add (JU.CU.colorPtFromInt (this.gdata.getColorArgbOrGray (colixes[iVertex]), ptTemp));
 
 sum.scale (1.0 / face.length);
 rgb = JU.CU.colorPtToFFRGB (sum);
 } else {
-rgb = this.g3d.getColorArgbOrGray (colixes[i]);
+rgb = this.gdata.getColorArgbOrGray (colixes[i]);
 }if (bytes == null) {
 for (var j = 0; j < 3; j++) for (var k = 0; k < 3; k++) rgbbuf[(row * 3 + k) * w + col * 3 + j] = rgb;
 

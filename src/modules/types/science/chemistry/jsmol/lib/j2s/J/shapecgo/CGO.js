@@ -1,9 +1,10 @@
 Clazz.declarePackage ("J.shapecgo");
-Clazz.load (["J.shapespecial.Draw"], "J.shapecgo.CGO", ["JU.AU", "$.PT", "$.SB", "J.shapecgo.CGOMesh"], function () {
+Clazz.load (["J.shapespecial.Draw"], "J.shapecgo.CGO", ["java.util.Hashtable", "JU.AU", "$.PT", "$.SB", "J.shapecgo.CGOMesh"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.cmeshes = null;
 this.cgoMesh = null;
 this.useColix = false;
+this.keyMap = null;
 Clazz.instantialize (this, arguments);
 }, J.shapecgo, "CGO", J.shapespecial.Draw);
 Clazz.prepareFields (c$, function () {
@@ -16,7 +17,7 @@ Clazz.overrideMethod (c$, "allocMesh",
 function (thisID, m) {
 var index = this.meshCount++;
 this.meshes = this.cmeshes = JU.AU.ensureLength (this.cmeshes, this.meshCount * 2);
-this.currentMesh = this.thisMesh = this.cgoMesh = this.cmeshes[index] = (m == null ?  new J.shapecgo.CGOMesh (thisID, this.colix, index) : m);
+this.currentMesh = this.thisMesh = this.cgoMesh = this.cmeshes[index] = (m == null ?  new J.shapecgo.CGOMesh (this.vwr, thisID, this.colix, index) : m);
 this.currentMesh.color = this.color;
 this.currentMesh.index = index;
 this.currentMesh.useColix = this.useColix;
@@ -52,6 +53,20 @@ this.cgoMesh.visible = true;
 return;
 }this.setPropertySuper (propertyName, value, bs);
 }, "~S,~O,JU.BS");
+Clazz.overrideMethod (c$, "getPropertyData", 
+function (property, data) {
+if (property === "key") {
+if (this.keyMap == null) {
+this.keyMap =  new java.util.Hashtable ();
+var tokens = JU.PT.getTokens ("BEGIN:2 END:3 STOP:0 POINT:0 POINTS:0 LINES:1 LINE_LOOP:2 LINE_STRIP:3 TRIANGLES:4 TRIANGLE_STRIP:5 TRIANGLE_FAN:6 LINE:1 VERTEX:4 NORMAL:5 COLOR:6 LINEWIDTH:10 SAUSAGE:14 DIAMETER:-100");
+for (var i = tokens.length; --i >= 0; ) {
+var pt = tokens[i].indexOf (":");
+this.keyMap.put (tokens[i].substring (0, pt), Integer.$valueOf (Integer.parseInt (tokens[i].substring (pt + 1))));
+}
+}data[0] = this.keyMap.get ((data[0]).toUpperCase ());
+return (data[0] != null);
+}return this.getPropDataMC (property, data);
+}, "~S,~A");
 Clazz.overrideMethod (c$, "deleteMeshElement", 
 function (i) {
 if (this.meshes[i] === this.currentMesh) this.currentMesh = this.cgoMesh = null;
@@ -93,7 +108,7 @@ Clazz.overrideMethod (c$, "getCommand2",
 function (mesh, iModel) {
 var cmesh = mesh;
 var str =  new JU.SB ();
-var modelCount = this.vwr.getModelCount ();
+var modelCount = this.vwr.ms.mc;
 if (iModel >= 0 && modelCount > 1) J.shape.Shape.appendCmd (str, "frame " + this.vwr.getModelNumberDotted (iModel));
 str.append ("  CGO ID ").append (JU.PT.esc (mesh.thisID));
 if (iModel < 0) iModel = 0;
@@ -106,4 +121,6 @@ J.shape.Shape.appendCmd (str, cmesh.getState ("cgo"));
 if (cmesh.useColix) J.shape.Shape.appendCmd (str, J.shape.Shape.getColorCommandUnk ("cgo", cmesh.colix, this.translucentAllowed));
 return str.toString ();
 }, "J.shape.Mesh,~N");
+Clazz.defineStatics (c$,
+"KEY_LIST", "BEGIN:2 END:3 STOP:0 POINT:0 POINTS:0 LINES:1 LINE_LOOP:2 LINE_STRIP:3 TRIANGLES:4 TRIANGLE_STRIP:5 TRIANGLE_FAN:6 LINE:1 VERTEX:4 NORMAL:5 COLOR:6 LINEWIDTH:10 SAUSAGE:14 DIAMETER:-100");
 });

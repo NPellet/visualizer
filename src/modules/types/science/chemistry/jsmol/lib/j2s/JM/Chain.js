@@ -10,9 +10,6 @@ this.groups = null;
 this.selectedGroupCount = 0;
 Clazz.instantialize (this, arguments);
 }, JM, "Chain");
-Clazz.prepareFields (c$, function () {
-this.groups =  new Array (16);
-});
 Clazz.defineMethod (c$, "getAtom", 
 function (index) {
 return this.model.ms.at[index];
@@ -22,15 +19,8 @@ function (model, chainID, index) {
 this.model = model;
 this.chainID = chainID;
 this.index = index;
+this.groups =  new Array (16);
 }, "JM.Model,~N,~N");
-Clazz.defineMethod (c$, "getGroup", 
-function (groupIndex) {
-return this.groups[groupIndex];
-}, "~N");
-Clazz.defineMethod (c$, "getGroupCount", 
-function () {
-return this.groupCount;
-});
 Clazz.defineMethod (c$, "calcSelectedGroupsCount", 
 function (bsSelected) {
 this.selectedGroupCount = 0;

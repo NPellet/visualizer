@@ -93,7 +93,7 @@ var name;
 var a;
 var atomEdges;
 for (var j = 0; j < this.edgeData.size (); j++) {
-this.tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line = this.edgeData.get (j));
+this.tokens = JU.PT.getTokens (this.line = this.edgeData.get (j));
 switch (this.tokens.length) {
 case 3:
 name = this.getName (this.tokens[1]);

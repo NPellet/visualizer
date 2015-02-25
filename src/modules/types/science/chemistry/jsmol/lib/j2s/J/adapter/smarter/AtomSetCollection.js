@@ -5,7 +5,7 @@ this.reader = null;
 this.bsAtoms = null;
 this.fileTypeName = null;
 this.collectionName = null;
-this.ascAuxiliaryInfo = null;
+this.atomSetInfo = null;
 this.atoms = null;
 this.ac = 0;
 this.bonds = null;
@@ -42,7 +42,7 @@ this.vibScale = 0;
 Clazz.instantialize (this, arguments);
 }, J.adapter.smarter, "AtomSetCollection");
 Clazz.prepareFields (c$, function () {
-this.ascAuxiliaryInfo =  new java.util.Hashtable ();
+this.atomSetInfo =  new java.util.Hashtable ();
 this.atoms =  new Array (256);
 this.bonds =  new Array (256);
 this.structures =  new Array (16);
@@ -60,7 +60,7 @@ this.collectionName = collectionName;
 }, "~S");
 Clazz.defineMethod (c$, "clearGlobalBoolean", 
 function (globalIndex) {
-this.ascAuxiliaryInfo.remove (J.adapter.smarter.AtomSetCollection.globalBooleans[globalIndex]);
+this.atomSetInfo.remove (J.adapter.smarter.AtomSetCollection.globalBooleans[globalIndex]);
 }, "~N");
 Clazz.defineMethod (c$, "setGlobalBoolean", 
 function (globalIndex) {
@@ -68,7 +68,7 @@ this.setInfo (J.adapter.smarter.AtomSetCollection.globalBooleans[globalIndex], B
 }, "~N");
 Clazz.defineMethod (c$, "getGlobalBoolean", 
 function (globalIndex) {
-return (this.getAtomSetCollectionAuxiliaryInfo (J.adapter.smarter.AtomSetCollection.globalBooleans[globalIndex]) === Boolean.TRUE);
+return (this.atomSetInfo.get (J.adapter.smarter.AtomSetCollection.globalBooleans[globalIndex]) === Boolean.TRUE);
 }, "~N");
 Clazz.makeConstructor (c$, 
 function (fileTypeName, reader, array, list) {
@@ -132,7 +132,7 @@ Clazz.defineMethod (c$, "appendAtomSetCollection",
 function (collectionIndex, collection) {
 if (collection.reader != null && collection.reader.mustFinalizeModelSet) this.readerList.addLast (collection.reader);
 var existingAtomsCount = this.ac;
-this.setInfo ("loadState", collection.getAtomSetCollectionAuxiliaryInfo ("loadState"));
+this.setInfo ("loadState", collection.atomSetInfo.get ("loadState"));
 if (collection.bsAtoms != null) {
 if (this.bsAtoms == null) this.bsAtoms =  new JU.BS ();
 for (var i = collection.bsAtoms.nextSetBit (0); i >= 0; i = collection.bsAtoms.nextSetBit (i + 1)) this.bsAtoms.set (existingAtomsCount + i);
@@ -144,7 +144,7 @@ this.newAtomSet ();
 var info = this.atomSetAuxiliaryInfo[this.iSet] = collection.atomSetAuxiliaryInfo[atomSetNum];
 var atomInfo = info.get ("PDB_CONECT_firstAtom_count_max");
 if (atomInfo != null) atomInfo[0] += existingAtomsCount;
-this.setAtomSetAuxiliaryInfo ("title", collection.collectionName);
+this.setCurrentModelInfo ("title", collection.collectionName);
 this.setAtomSetName (collection.getAtomSetName (atomSetNum));
 for (var atomNum = 0; atomNum < collection.atomSetAtomCounts[atomSetNum]; atomNum++) {
 try {
@@ -186,8 +186,8 @@ if (this.trajectoryStepCount > 1) this.finalizeTrajectory ();
 this.getList (true);
 this.getList (false);
 for (var i = 0; i < this.atomSetCount; i++) {
-this.setAtomSetAuxiliaryInfoForSet ("initialAtomCount", Integer.$valueOf (this.atomSetAtomCounts[i]), i);
-this.setAtomSetAuxiliaryInfoForSet ("initialBondCount", Integer.$valueOf (this.atomSetBondCounts[i]), i);
+this.setModelInfoForSet ("initialAtomCount", Integer.$valueOf (this.atomSetAtomCounts[i]), i);
+this.setModelInfoForSet ("initialBondCount", Integer.$valueOf (this.atomSetBondCounts[i]), i);
 }
 }, "~B");
 Clazz.defineMethod (c$, "reverseAtomSets", 
@@ -282,7 +282,7 @@ var id = (isAltLoc ? this.atoms[i].altLoc : this.atoms[i].insertionCode);
 if (id != '\0' && lists[pt = this.atoms[i].atomSetIndex].indexOf (id) < 0) lists[pt] += id;
 }
 var type = (isAltLoc ? "altLocs" : "insertionCodes");
-for (i = 0; i < this.atomSetCount; i++) if (lists[i].length > 0) this.setAtomSetAuxiliaryInfoForSet (type, lists[i], i);
+for (i = 0; i < this.atomSetCount; i++) if (lists[i].length > 0) this.setModelInfoForSet (type, lists[i], i);
 
 }, "~B");
 Clazz.defineMethod (c$, "finish", 
@@ -293,7 +293,7 @@ if (this.reader != null) this.reader.finalizeModelSet ();
 this.atoms = null;
 this.atomSetAtomCounts =  Clazz.newIntArray (16, 0);
 this.atomSetAuxiliaryInfo =  new Array (16);
-this.ascAuxiliaryInfo =  new java.util.Hashtable ();
+this.atomSetInfo =  new java.util.Hashtable ();
 this.atomSetCount = 0;
 this.atomSetNumbers =  Clazz.newIntArray (16, 0);
 this.atomSymbolicMap =  new java.util.Hashtable ();
@@ -311,7 +311,7 @@ function () {
 for (var i = this.ac; --i >= 0; ) this.atoms[i] = null;
 
 this.ac = 0;
-this.clearSymbolicMap ();
+this.atomSymbolicMap.clear ();
 this.atomSetCount = 0;
 this.iSet = -1;
 for (var i = this.atomSetAuxiliaryInfo.length; --i >= 0; ) {
@@ -407,10 +407,6 @@ if (pts != null) atom.setT (pts[i]);
 }
 return count;
 }, "~N,~A");
-Clazz.defineMethod (c$, "getFirstAtomSetAtomCount", 
-function () {
-return this.atomSetAtomCounts[0];
-});
 Clazz.defineMethod (c$, "getLastAtomSetAtomCount", 
 function () {
 return this.atomSetAtomCounts[this.iSet];
@@ -523,14 +519,10 @@ function (iatom, x, y, z) {
 if (!this.allowMultiple) iatom = iatom % this.ac;
 return (this.atoms[iatom].vib = JU.V3.new3 (x, y, z));
 }, "~N,~N,~N,~N");
-Clazz.defineMethod (c$, "setAtomSetSpaceGroupName", 
-function (spaceGroupName) {
-this.setAtomSetAuxiliaryInfo ("spaceGroup", spaceGroupName + "");
-}, "~S");
 Clazz.defineMethod (c$, "setCoordinatesAreFractional", 
 function (tf) {
 this.coordinatesAreFractional = tf;
-this.setAtomSetAuxiliaryInfo ("coordinatesAreFractional", Boolean.$valueOf (tf));
+this.setCurrentModelInfo ("coordinatesAreFractional", Boolean.$valueOf (tf));
 if (tf) this.setGlobalBoolean (0);
 }, "~B");
 Clazz.defineMethod (c$, "setAnisoBorU", 
@@ -562,24 +554,15 @@ Clazz.defineMethod (c$, "setTensors",
 function () {
 if (this.haveAnisou) this.getXSymmetry ().setTensors ();
 });
-Clazz.defineMethod (c$, "setCheckSpecial", 
-function (TF) {
-this.checkSpecial = TF;
-}, "~B");
-Clazz.defineMethod (c$, "clearSymbolicMap", 
-function () {
-this.atomSymbolicMap.clear ();
-});
 Clazz.defineMethod (c$, "setInfo", 
 function (key, value) {
-if (value == null) this.ascAuxiliaryInfo.remove (key);
- else this.ascAuxiliaryInfo.put (key, value);
+if (value == null) this.atomSetInfo.remove (key);
+ else this.atomSetInfo.put (key, value);
 }, "~S,~O");
 Clazz.defineMethod (c$, "setAtomSetCollectionPartialCharges", 
 function (auxKey) {
-if (!this.ascAuxiliaryInfo.containsKey (auxKey)) {
-return false;
-}var atomData = this.ascAuxiliaryInfo.get (auxKey);
+if (!this.atomSetInfo.containsKey (auxKey)) return false;
+var atomData = this.atomSetInfo.get (auxKey);
 for (var i = atomData.size (); --i >= 0; ) this.atoms[i].partialCharge = atomData.get (i).floatValue ();
 
 JU.Logger.info ("Setting partial charges type " + auxKey);
@@ -589,10 +572,6 @@ Clazz.defineMethod (c$, "mapPartialCharge",
 function (atomName, charge) {
 this.getAtomFromName (atomName).partialCharge = charge;
 }, "~S,~N");
-Clazz.defineMethod (c$, "getAtomSetCollectionAuxiliaryInfo", 
-function (key) {
-return this.ascAuxiliaryInfo.get (key);
-}, "~S");
 c$.fixPeriodic = Clazz.defineMethod (c$, "fixPeriodic", 
  function (pt, pt0) {
 pt.x = J.adapter.smarter.AtomSetCollection.fixPoint (pt.x, pt0.x);
@@ -660,7 +639,7 @@ this.atomSetNumbers[this.iSet + this.trajectoryStepCount] = this.atomSetCount + 
 } else {
 this.atomSetNumbers[this.iSet] = this.atomSetCount;
 }if (doClearMap) this.atomSymbolicMap.clear ();
-this.setAtomSetAuxiliaryInfo ("title", this.collectionName);
+this.setCurrentModelInfo ("title", this.collectionName);
 }, "~B");
 Clazz.defineMethod (c$, "getAtomSetAtomIndex", 
 function (i) {
@@ -679,7 +658,7 @@ function (atomSetName) {
 if (this.isTrajectory) {
 this.setTrajectoryName (atomSetName);
 return;
-}this.setAtomSetAuxiliaryInfoForSet ("name", atomSetName, this.iSet);
+}this.setModelInfoForSet ("name", atomSetName, this.iSet);
 if (!this.allowMultiple) this.setCollectionName (atomSetName);
 }, "~S");
 Clazz.defineMethod (c$, "setTrajectoryName", 
@@ -693,7 +672,7 @@ this.trajectoryNames.set (this.trajectoryStepCount - 1, name);
 }, "~S");
 Clazz.defineMethod (c$, "setAtomSetNames", 
 function (atomSetName, n, namedSets) {
-for (var i = this.iSet; --n >= 0 && i >= 0; --i) if (namedSets == null || !namedSets.get (i)) this.setAtomSetAuxiliaryInfoForSet ("name", atomSetName, i);
+for (var i = this.iSet; --n >= 0 && i >= 0; --i) if (namedSets == null || !namedSets.get (i)) this.setModelInfoForSet ("name", atomSetName, i);
 
 }, "~S,~N,JU.BS");
 Clazz.defineMethod (c$, "setCurrentAtomSetNumber", 
@@ -711,7 +690,7 @@ this.setAtomSetModelPropertyForSet (key, value, this.iSet);
 Clazz.defineMethod (c$, "setAtomSetModelPropertyForSet", 
 function (key, value, atomSetIndex) {
 var p = this.getAtomSetAuxiliaryInfoValue (atomSetIndex, "modelProperties");
-if (p == null) this.setAtomSetAuxiliaryInfoForSet ("modelProperties", p =  new java.util.Properties (), atomSetIndex);
+if (p == null) this.setModelInfoForSet ("modelProperties", p =  new java.util.Properties (), atomSetIndex);
 p.put (key, value);
 if (key.startsWith (".")) p.put (key.substring (1), value);
 }, "~S,~S,~N");
@@ -720,7 +699,7 @@ function (key, data, atomSetIndex, isGroup) {
 if (Clazz.instanceOf (data, String) && !(data).endsWith ("\n")) data = data + "\n";
 if (atomSetIndex < 0) atomSetIndex = this.iSet;
 var p = this.getAtomSetAuxiliaryInfoValue (atomSetIndex, "atomProperties");
-if (p == null) this.setAtomSetAuxiliaryInfoForSet ("atomProperties", p =  new java.util.Hashtable (), atomSetIndex);
+if (p == null) this.setModelInfoForSet ("atomProperties", p =  new java.util.Hashtable (), atomSetIndex);
 p.put (key, data);
 }, "~S,~O,~N,~B");
 Clazz.defineMethod (c$, "setAtomSetPartialCharges", 
@@ -737,11 +716,11 @@ Clazz.defineMethod (c$, "getAtomSetAuxiliaryInfoValue",
 function (index, key) {
 return this.atomSetAuxiliaryInfo[index >= 0 ? index : this.iSet].get (key);
 }, "~N,~S");
-Clazz.defineMethod (c$, "setAtomSetAuxiliaryInfo", 
+Clazz.defineMethod (c$, "setCurrentModelInfo", 
 function (key, value) {
-this.setAtomSetAuxiliaryInfoForSet (key, value, this.iSet);
+this.setModelInfoForSet (key, value, this.iSet);
 }, "~S,~O");
-Clazz.defineMethod (c$, "setAtomSetAuxiliaryInfoForSet", 
+Clazz.defineMethod (c$, "setModelInfoForSet", 
 function (key, value, atomSetIndex) {
 if (atomSetIndex < 0) return;
 if (this.atomSetAuxiliaryInfo[atomSetIndex] == null) this.atomSetAuxiliaryInfo[atomSetIndex] =  new java.util.Hashtable ();
@@ -753,15 +732,6 @@ function (key, value, n) {
 for (var idx = this.iSet; --n >= 0 && idx >= 0; --idx) this.setAtomSetModelPropertyForSet (key, value, idx);
 
 }, "~S,~S,~N");
-Clazz.defineMethod (c$, "cloneLastAtomSetProperties", 
-function () {
-this.cloneAtomSetProperties (this.iSet - 1);
-});
-Clazz.defineMethod (c$, "cloneAtomSetProperties", 
-function (index) {
-var p = this.getAtomSetAuxiliaryInfoValue (index, "modelProperties");
-if (p != null) this.setAtomSetAuxiliaryInfoForSet ("modelProperties", p.clone (), this.iSet);
-}, "~N");
 Clazz.defineMethod (c$, "getAtomSetNumber", 
 function (atomSetIndex) {
 return this.atomSetNumbers[atomSetIndex >= this.atomSetCount ? 0 : atomSetIndex];
@@ -777,20 +747,12 @@ function (atomSetIndex) {
 var i = (atomSetIndex >= this.atomSetCount ? this.atomSetCount - 1 : atomSetIndex);
 return (i < 0 ? null : this.atomSetAuxiliaryInfo[i]);
 }, "~N");
-Clazz.defineMethod (c$, "setAtomNames", 
-function (atomIdNames) {
-if (atomIdNames == null) return null;
-var s;
-for (var i = 0; i < this.ac; i++) if ((s = atomIdNames.getProperty (this.atoms[i].atomName)) != null) this.atoms[i].atomName = s;
-
-return null;
-}, "java.util.Properties");
 Clazz.defineMethod (c$, "setAtomSetEnergy", 
 function (energyString, value) {
 if (this.iSet < 0) return;
 JU.Logger.info ("Energy for model " + (this.iSet + 1) + " = " + energyString);
-this.setAtomSetAuxiliaryInfo ("EnergyString", energyString);
-this.setAtomSetAuxiliaryInfo ("Energy", Float.$valueOf (value));
+this.setCurrentModelInfo ("EnergyString", energyString);
+this.setCurrentModelInfo ("Energy", Float.$valueOf (value));
 this.setAtomSetModelProperty ("Energy", "" + value);
 }, "~S,~N");
 Clazz.defineMethod (c$, "setAtomSetFrequency", 
@@ -804,11 +766,6 @@ if (label != null) this.setAtomSetModelProperty ("FrequencyLabel", label);
 this.setAtomSetModelProperty (".PATH", (pathKey == null ? "" : pathKey + J.adapter.smarter.SmarterJmolAdapter.PATH_SEPARATOR + "Frequencies") + "Frequencies");
 return name;
 }, "~S,~S,~S,~S");
-Clazz.defineMethod (c$, "toCartesian", 
-function (symmetry) {
-for (var i = this.getLastAtomSetAtomIndex (); i < this.ac; i++) symmetry.toCartesian (this.atoms[i], true);
-
-}, "J.api.SymmetryInterface");
 Clazz.defineMethod (c$, "getBondList", 
 function () {
 var info =  new Array (this.bondCount);

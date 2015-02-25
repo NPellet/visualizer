@@ -14,6 +14,7 @@ this.isProgressive = false;
 this.isXLowToHigh = false;
 this.assocCutoff = 0.3;
 this.isQuiet = false;
+this.isPeriodic = false;
 this.vertexDataOnly = false;
 this.hasColorData = false;
 this.dataMin = 3.4028235E38;
@@ -76,8 +77,7 @@ function () {
 Clazz.defineMethod (c$, "initSR", 
 function (sg) {
 this.sg = sg;
-this.params = sg.getParams ();
-this.marchingSquares = sg.getMarchingSquares ();
+this.params = sg.params;
 this.assocCutoff = this.params.assocCutoff;
 this.isXLowToHigh = this.params.isXLowToHigh;
 this.center = this.params.center;
@@ -88,10 +88,11 @@ this.eccentricityMatrixInverse = this.params.eccentricityMatrixInverse;
 this.isEccentric = this.params.isEccentric;
 this.eccentricityScale = this.params.eccentricityScale;
 this.eccentricityRatio = this.params.eccentricityRatio;
-this.meshData = sg.getMeshData ();
-this.jvxlData = sg.getJvxlData ();
-this.setVolumeDataV (sg.getVolumeData ());
-this.meshDataServer = sg.getMeshDataServer ();
+this.marchingSquares = sg.marchingSquares;
+this.meshData = sg.meshData;
+this.jvxlData = sg.jvxlData;
+this.setVolumeDataV (sg.volumeDataTemp);
+this.meshDataServer = sg.meshDataServer;
 this.cJvxlEdgeNaN = String.fromCharCode (125);
 }, "J.jvxl.readers.SurfaceGenerator");
 Clazz.defineMethod (c$, "setOutputChannel", 
@@ -172,6 +173,7 @@ this.jvxlData.colorDensity = this.params.colorDensity;
 this.jvxlData.pointSize = this.params.pointSize;
 if (this.jvxlData.vContours != null) this.params.nContours = this.jvxlData.vContours.length;
 this.jvxlData.nContours = (this.params.contourFromZero ? this.params.nContours : -1 - this.params.nContours);
+this.jvxlData.thisContour = this.params.thisContour;
 this.jvxlData.nEdges = this.edgeCount;
 this.jvxlData.edgeFractionBase = this.edgeFractionBase;
 this.jvxlData.edgeFractionRange = this.edgeFractionRange;
@@ -219,7 +221,7 @@ Clazz.defineMethod (c$, "discardTempDataSR",
 function (discardAll) {
 if (!discardAll) return;
 this.voxelData = null;
-this.sg.setMarchingSquares (this.marchingSquares = null);
+this.sg.marchingSquares = this.marchingSquares = null;
 this.marchingCubes = null;
 }, "~B");
 Clazz.defineMethod (c$, "initializeVolumetricData", 
@@ -306,14 +308,14 @@ var contourType = -1;
 this.marchingSquares = null;
 if (this.params.thePlane != null || this.params.isContoured) {
 this.marchingSquares =  new J.jvxl.calc.MarchingSquares (this, this.volumeData, this.params.thePlane, this.params.contoursDiscrete, this.params.nContours, this.params.thisContour, this.params.contourFromZero);
-contourType = this.marchingSquares.getContourType ();
+contourType = this.marchingSquares.contourType;
 this.marchingSquares.setMinMax (this.params.valueMappedToRed, this.params.valueMappedToBlue);
 }this.params.contourType = contourType;
 this.params.isXLowToHigh = this.isXLowToHigh;
 this.marchingCubes =  new J.jvxl.calc.MarchingCubes (this, this.volumeData, this.params, this.jvxlVoxelBitSet);
 var data = this.marchingCubes.getEdgeData ();
 if (this.params.thePlane == null) this.edgeData = data;
-this.jvxlData.setSurfaceInfoFromBitSetPts (this.marchingCubes.getBsVoxels (), this.params.thePlane, this.params.mapLattice);
+this.jvxlData.setSurfaceInfoFromBitSetPts (this.marchingCubes.bsVoxels, this.params.thePlane, this.params.mapLattice);
 this.jvxlData.jvxlExcluded = this.params.bsExcluded;
 if (this.isJvxl) this.edgeData = this.jvxlEdgeDataRead;
 this.postProcessVertices ();
@@ -358,11 +360,11 @@ function (vertexXYZ, value, assocVertex, asCopy) {
 return (Float.isNaN (value) && assocVertex != -3 ? -1 : this.meshDataServer == null ? this.meshData.addVertexCopy (vertexXYZ, value, assocVertex, asCopy) : this.meshDataServer.addVertexCopy (vertexXYZ, value, assocVertex, asCopy));
 }, "JU.T3,~N,~N,~B");
 Clazz.defineMethod (c$, "addTriangleCheck", 
-function (iA, iB, iC, check, check2, isAbsolute, color) {
+function (iA, iB, iC, check, iContour, isAbsolute, color) {
 if (this.marchingSquares != null && this.params.isContoured) {
-if (color == 0) return this.marchingSquares.addTriangle (iA, iB, iC, check, check2);
+if (color == 0) return this.marchingSquares.addTriangle (iA, iB, iC, check, iContour);
 color = 0;
-}return (this.meshDataServer != null ? this.meshDataServer.addTriangleCheck (iA, iB, iC, check, check2, isAbsolute, color) : isAbsolute && !J.jvxl.data.MeshData.checkCutoff (iA, iB, iC, this.meshData.vvs) ? -1 : this.meshData.addTriangleCheck (iA, iB, iC, check, check2, color));
+}return (this.meshDataServer != null ? this.meshDataServer.addTriangleCheck (iA, iB, iC, check, iContour, isAbsolute, color) : isAbsolute && !J.jvxl.data.MeshData.checkCutoff (iA, iB, iC, this.meshData.vvs) ? -1 : this.meshData.addTriangleCheck (iA, iB, iC, check, iContour, color));
 }, "~N,~N,~N,~N,~N,~B,~N");
 Clazz.defineMethod (c$, "colorIsosurface", 
 function () {
@@ -376,12 +378,13 @@ this.params.setMapRanges (this, false);
 this.marchingSquares.setMinMax (this.params.valueMappedToRed, this.params.valueMappedToBlue);
 this.jvxlData.saveVertexCount = this.marchingSquares.contourVertexCount;
 this.contourVertexCount = this.marchingSquares.generateContourData (this.jvxlDataIs2dContour, (this.params.isSquared ? 1e-8 : 1e-4));
-this.jvxlData.contourValuesUsed = this.marchingSquares.getContourValues ();
+this.jvxlData.contourValuesUsed = this.marchingSquares.contourValuesUsed;
 this.minMax = this.marchingSquares.getMinMax ();
 if (this.meshDataServer != null) this.meshDataServer.notifySurfaceGenerationCompleted ();
 this.finalizeMapping ();
 }this.applyColorScale ();
 this.jvxlData.nContours = (this.params.contourFromZero ? this.params.nContours : -1 - this.params.nContours);
+this.jvxlData.thisContour = this.params.thisContour;
 this.jvxlData.jvxlFileMessage = "mapped: min = " + this.params.valueMappedToRed + "; max = " + this.params.valueMappedToBlue;
 });
 Clazz.defineMethod (c$, "applyColorScale", 
@@ -447,7 +450,7 @@ var valueBlue = this.jvxlData.valueMappedToBlue;
 var valueRed = this.jvxlData.valueMappedToRed;
 var minColorIndex = this.jvxlData.minColorIndex;
 var maxColorIndex = this.jvxlData.maxColorIndex;
-if (this.params.colorEncoder == null) this.params.colorEncoder =  new JU.ColorEncoder (null);
+if (this.params.colorEncoder == null) this.params.colorEncoder =  new JU.ColorEncoder (null, null);
 this.params.colorEncoder.setRange (this.params.valueMappedToRed, this.params.valueMappedToBlue, this.params.isColorReversed);
 for (var i = this.meshData.vc; --i >= 0; ) {
 var value = vertexValues[i];
@@ -606,11 +609,9 @@ this.volumetricOrigin.setT (this.center);
 Clazz.defineMethod (c$, "setBBoxAll", 
  function () {
 if (this.meshDataServer != null) this.meshDataServer.fillMeshData (this.meshData, 1, null);
-this.xyzMin = null;
-for (var i = 0; i < this.meshData.vc; i++) {
-var p = this.meshData.vs[i];
-if (!Float.isNaN (p.x)) this.setBBox (p, 0);
-}
+this.xyzMin =  new JU.P3 ();
+this.xyzMax =  new JU.P3 ();
+this.meshData.setBox (this.xyzMin, this.xyzMax);
 });
 Clazz.defineMethod (c$, "setBBox", 
 function (pt, margin) {
@@ -632,10 +633,6 @@ function () {
 Clazz.defineMethod (c$, "getSurfaceAtomIndex", 
 function () {
 return -1;
-});
-Clazz.defineMethod (c$, "getSpanningVectors", 
-function () {
-return (this.volumeData == null ? null : this.volumeData.getSpanningVectors ());
 });
 Clazz.defineStatics (c$,
 "ANGSTROMS_PER_BOHR", 0.5291772,

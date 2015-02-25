@@ -8,6 +8,7 @@ this.bsSelection = null;
 this.bsFixed = null;
 this.bsSubset = null;
 this.bsDeleted = null;
+this.noneSelected = null;
 this.empty = 1;
 this.hideNotSelected = false;
 this.bsTemp = null;
@@ -118,7 +119,7 @@ if (reportChime) this.vwr.reportSelection ((n == 0 ? "No atoms" : n == 1 ? "1 at
 }, "JU.BS,~N,~B");
 Clazz.defineMethod (c$, "selectAll", 
 function (isQuiet) {
-var count = this.vwr.getAtomCount ();
+var count = this.vwr.ms.ac;
 this.empty = (count == 0) ? 1 : 0;
 for (var i = count; --i >= 0; ) this.bsSelection.set (i);
 
@@ -156,7 +157,7 @@ return (atomIndex < 0 || this.bsSubset == null || this.bsSubset.get (atomIndex))
 }, "~N");
 Clazz.defineMethod (c$, "invertSelection", 
 function () {
-JU.BSUtil.invertInPlace (this.bsSelection, this.vwr.getAtomCount ());
+JU.BSUtil.invertInPlace (this.bsSelection, this.vwr.ms.ac);
 this.empty = (this.bsSelection.length () > 0 ? 0 : 1);
 this.selectionChanged (false);
 });
@@ -199,7 +200,7 @@ this.listeners[len] = listener;
 }, "J.api.JmolSelectionListener");
 Clazz.defineMethod (c$, "selectionChanged", 
  function (isQuiet) {
-if (this.hideNotSelected) this.hide (this.vwr.ms, JU.BSUtil.copyInvert (this.bsSelection, this.vwr.getAtomCount ()), 0, isQuiet);
+if (this.hideNotSelected) this.hide (this.vwr.ms, JU.BSUtil.copyInvert (this.bsSelection, this.vwr.ms.ac), 0, isQuiet);
 if (isQuiet || this.listeners.length == 0) return;
 for (var i = this.listeners.length; --i >= 0; ) if (this.listeners[i] != null) this.listeners[i].selectionChanged (this.bsSelection);
 
@@ -216,10 +217,6 @@ this.bsDeleted.or (bs);
 this.bsSelection.andNot (this.bsDeleted);
 return bsNew.cardinality ();
 }, "JU.BS");
-Clazz.defineMethod (c$, "getDeletedAtoms", 
-function () {
-return this.bsDeleted;
-});
 Clazz.defineMethod (c$, "getSelectedAtoms", 
 function () {
 if (this.bsSubset == null) return this.bsSelection;
@@ -231,14 +228,11 @@ Clazz.defineMethod (c$, "getSelectedAtomsNoSubset",
 function () {
 return JU.BSUtil.copy (this.bsSelection);
 });
-Clazz.defineMethod (c$, "getSelectionSubset", 
-function () {
-return this.bsSubset;
-});
 Clazz.defineMethod (c$, "excludeAtoms", 
 function (bs, ignoreSubset) {
 if (this.bsDeleted != null) bs.andNot (this.bsDeleted);
-if (!ignoreSubset && this.bsSubset != null) bs.and (this.bsSubset);
+if (!ignoreSubset && this.bsSubset != null) (bs = JU.BSUtil.copy (bs)).and (this.bsSubset);
+return bs;
 }, "JU.BS,~B");
 Clazz.defineMethod (c$, "setMotionFixedAtoms", 
 function (bs) {

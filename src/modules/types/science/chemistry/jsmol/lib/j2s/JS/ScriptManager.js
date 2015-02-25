@@ -181,7 +181,7 @@ if (strScript == null) return null;
 var str = this.checkScriptExecution (strScript, false);
 if (str != null) return str;
 var outputBuffer = (statusList == null || statusList.equals ("output") ?  new JU.SB () : null);
-var oldStatusList = this.vwr.sm.getStatusList ();
+var oldStatusList = this.vwr.sm.statusList;
 this.vwr.getStatusChanged (statusList);
 if (this.vwr.isSyntaxCheck) JU.Logger.info ("--checking script:\n" + this.eval.getScript () + "\n----\n");
 var historyDisabled = (strScript.indexOf (")") == 0);
@@ -291,7 +291,7 @@ function (eval, atomExpression) {
 if (eval == null) {
 eval = this.evalTemp;
 if (eval == null) eval = this.evalTemp = this.newScriptEvaluator ();
-}return this.vwr.excludeAtoms (eval.getAtomBitSet (atomExpression), false);
+}return this.vwr.slm.excludeAtoms (eval.getAtomBitSet (atomExpression), false);
 }, "J.api.JmolScriptEvaluator,~O");
 Clazz.overrideMethod (c$, "scriptCheckRet", 
 function (strScript, returnContext) {
@@ -312,7 +312,7 @@ noScript = true;
 fileName = fileName.substring (1);
 }fileName = fileName.$replace ('\\', '/');
 var isCached = fileName.startsWith ("cache://");
-if (this.vwr.isApplet () && fileName.indexOf ("://") < 0) fileName = "file://" + (fileName.startsWith ("/") ? "" : "/") + fileName;
+if (this.vwr.isApplet && fileName.indexOf ("://") < 0) fileName = "file://" + (fileName.startsWith ("/") ? "" : "/") + fileName;
 try {
 if (fileName.endsWith (".pse")) {
 cmd = (isCached ? "" : "zap;") + "load SYNC " + JU.PT.esc (fileName) + " filter 'DORESIZE'";
@@ -394,11 +394,11 @@ vwr.stateScriptVersionInt = 2147483647;
 }, "JV.Viewer,~S");
 Clazz.overrideMethod (c$, "addHydrogensInline", 
 function (bsAtoms, vConnections, pts) {
-var modelIndex = this.vwr.getAtomModelIndex (bsAtoms.nextSetBit (0));
+var modelIndex = this.vwr.ms.at[bsAtoms.nextSetBit (0)].mi;
 if (modelIndex != this.vwr.ms.mc - 1) return  new JU.BS ();
 var bsA = this.vwr.getModelUndeletedAtomsBitSet (modelIndex);
 this.vwr.g.appendNew = false;
-var atomIndex = this.vwr.ms.getAtomCount ();
+var atomIndex = this.vwr.ms.ac;
 var atomno = this.vwr.ms.getAtomCountInModel (modelIndex);
 var sbConnect =  new JU.SB ();
 for (var i = 0; i < vConnections.size (); i++) {

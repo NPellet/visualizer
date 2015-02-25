@@ -29,7 +29,7 @@ break;
 return Jmol._loadFileAsynchronously(this, this.vwr.html5Applet, this.fileName, null);
 }return;
 case 1:
-var data = this.vwr.getFileAsBytes (this.fileName, null);
+var data = this.vwr.fm.getFileAsBytes (this.fileName, null);
 this.setData (this.fileName, this.fileName, data, null);
 return;
 case -2:

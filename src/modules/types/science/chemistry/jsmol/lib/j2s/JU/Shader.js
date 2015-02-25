@@ -69,19 +69,24 @@ this.flushCaches ();
 }, "~B,~N,~N");
 Clazz.defineMethod (c$, "flushCaches", 
 function () {
-this.flushShades ();
-this.flushSphereCache ();
+this.checkShades (JU.C.colixMax);
+for (var i = JU.C.colixMax; --i >= 0; ) this.ashades[i] = null;
+
+this.calcSphereShading ();
+for (var i = 128; --i >= 0; ) this.sphereShapeCache[i] = null;
+
+this.ellipsoidShades = null;
 });
 Clazz.defineMethod (c$, "setLastColix", 
 function (argb, asGrey) {
-JU.C.allocateColix (argb);
-this.checkShades ();
+JU.C.allocateColix (argb, true);
+this.checkShades (2047);
 if (asGrey) JU.C.setLastGrey (argb);
 this.ashades[2047] = this.getShades2 (argb, false);
 }, "~N,~B");
 Clazz.defineMethod (c$, "getShades", 
 function (colix) {
-this.checkShades ();
+this.checkShades (JU.C.colixMax);
 colix &= -30721;
 var shades = this.ashades[colix];
 if (shades == null) shades = this.ashades[colix] = this.getShades2 (JU.C.argbs[colix], false);
@@ -89,7 +94,7 @@ return shades;
 }, "~N");
 Clazz.defineMethod (c$, "getShadesG", 
 function (colix) {
-this.checkShades ();
+this.checkShades (JU.C.colixMax);
 colix &= -30721;
 if (this.ashadesGreyscale == null) this.ashadesGreyscale = JU.AU.newInt2 (this.ashades.length);
 var shadesGreyscale = this.ashadesGreyscale[colix];
@@ -97,18 +102,12 @@ if (shadesGreyscale == null) shadesGreyscale = this.ashadesGreyscale[colix] = th
 return shadesGreyscale;
 }, "~N");
 Clazz.defineMethod (c$, "checkShades", 
- function () {
-if (this.ashades != null && this.ashades.length == JU.C.colixMax) return;
-this.ashades = JU.AU.arrayCopyII (this.ashades, JU.C.colixMax);
-if (this.ashadesGreyscale != null) this.ashadesGreyscale = JU.AU.arrayCopyII (this.ashadesGreyscale, JU.C.colixMax);
-});
-Clazz.defineMethod (c$, "flushShades", 
-function () {
-this.checkShades ();
-for (var i = JU.C.colixMax; --i >= 0; ) this.ashades[i] = null;
-
-this.calcSphereShading ();
-});
+ function (n) {
+if (this.ashades != null && this.ashades.length >= n) return;
+if (n == 2047) n++;
+this.ashades = JU.AU.arrayCopyII (this.ashades, n);
+if (this.ashadesGreyscale != null) this.ashadesGreyscale = JU.AU.arrayCopyII (this.ashadesGreyscale, n);
+}, "~N");
 Clazz.defineMethod (c$, "getShades2", 
  function (rgb, greyScale) {
 var shades =  Clazz.newIntArray (64, 0);
@@ -265,38 +264,6 @@ for (var ii = 0; ii < 40; ii++) for (var jj = 0; jj < 40; jj++) for (var kk = 0;
 
 
 });
-Clazz.defineMethod (c$, "flushSphereCache", 
-function () {
-for (var i = 128; --i >= 0; ) this.sphereShapeCache[i] = null;
-
-this.ellipsoidShades = null;
-});
-Clazz.defineMethod (c$, "occludePixels", 
-function (pbuf, zbuf, aobuf, width, height, ambientOcclusion) {
-var n = zbuf.length;
-for (var x = 0, y = 0, offset = 0; offset < n; offset++) {
-var z = zbuf[offset];
-var xymax = Math.min (z >> 5, 0);
-if (xymax == 0) continue;
-var r2max = xymax * xymax;
-var pxmax = Math.min (width, x + xymax);
-var pymax = Math.min (height, y + xymax);
-for (var px = Math.max (0, x - xymax); px < pxmax; px++) {
-for (var py = Math.max (0, y - xymax); py < pymax; py++) {
-var dx = px - x;
-var dy = py - y;
-var r2 = dx * dx + dy * dy;
-if (r2 > r2max) continue;
-var pt = offset + width * dy + dx;
-var dz = zbuf[pt] - z;
-if (dz <= z || dz * dz > r2) continue;
-}
-}
-if (++x == width) {
-x = 0;
-y++;
-}}
-}, "~A,~A,~A,~N,~N,~N");
 Clazz.defineStatics (c$,
 "SHADE_INDEX_MAX", 64,
 "SHADE_INDEX_LAST", 63,

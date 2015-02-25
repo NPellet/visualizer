@@ -602,9 +602,9 @@ Clazz.defineMethod (c$, "checkSpecialParameterSyntax",
  function () {
 if (this.lookingAtString (!this.implicitString)) {
 if (this.cchToken < 0) return this.ERROR (4);
-var str = this.getUnescapedStringLiteral (this.lastToken != null && !this.iHaveQuotedString && this.lastToken.tok != 1073741983 && (this.tokCommand == 1085443 && this.nTokens == 2 && this.lastToken.tok == 545259546 || this.tokCommand == 135271426 || this.tokCommand == 1610616835 || this.tokCommand == 135271429));
+var str = this.getUnescapedStringLiteral (this.lastToken != null && !this.iHaveQuotedString && this.lastToken.tok != 1073741983 && (this.tokCommand == 1085443 && this.nTokens == 2 && this.lastToken.tok == 545259546 || this.tokCommand == 135271427 || this.tokCommand == 1610616835 || this.tokCommand == 135271429));
 this.iHaveQuotedString = true;
-if (this.tokCommand == 135271426 && this.lastToken.tok == 135270408 || this.tokCommand == 135270408 && str.indexOf ("@") < 0) {
+if (this.tokCommand == 135271427 && this.lastToken.tok == 135270408 || this.tokCommand == 135270408 && str.indexOf ("@") < 0) {
 if (!this.getData (str)) {
 return this.ERROR (11, "data");
 }} else {
@@ -657,13 +657,13 @@ return 2;
 }}}switch (this.tokCommand) {
 case 135270926:
 if (this.nTokens != 2 || this.lastToken.tok != 1073741925 && this.lastToken.tok != 1073742189) return 0;
-case 135271426:
+case 135271427:
 case 135271429:
 case 1276121098:
 if (this.script.charAt (this.ichToken) == '@') {
 this.iHaveQuotedString = true;
 return 0;
-}if (this.tokCommand == 135271426) {
+}if (this.tokCommand == 135271427) {
 if (this.nTokens == 1 || this.nTokens == 2 && this.tokAt (1) == 1073741839) {
 var isDataBase = JV.Viewer.isDatabaseCode (this.charAt (this.ichToken));
 if (this.lookingAtLoadFormat (isDataBase)) {
@@ -673,6 +673,7 @@ switch (token == null ? 0 : token.tok) {
 case 1073742015:
 case 1073742077:
 case 1073741839:
+case 1610616855:
 if (this.nTokens != 1) return 4;
 case 135270408:
 case 1229984263:
@@ -695,7 +696,7 @@ if (this.script.charAt (this.ichToken) == '{' || this.parenCount > 0) break;
 if ((bs = this.lookingAtBitset ()) != null) {
 this.addTokenToPrefix (JS.T.o (10, bs));
 return 2;
-}}if (!this.iHaveQuotedString && this.lookingAtImpliedString (this.tokCommand == 135270926, this.tokCommand == 135271426, this.nTokens > 1 || this.tokCommand != 135271429)) {
+}}if (!this.iHaveQuotedString && this.lookingAtImpliedString (this.tokCommand == 135270926, this.tokCommand == 135271427, this.nTokens > 1 || this.tokCommand != 135271429)) {
 var str = this.script.substring (this.ichToken, this.ichToken + this.cchToken);
 if (this.tokCommand == 135271429) {
 if (str.startsWith ("javascript:")) {
@@ -786,7 +787,7 @@ return 2;
 var isBondOrMatrix = (this.script.charAt (this.ichToken) == '[');
 var bs = this.lookingAtBitset ();
 if (bs != null) {
-this.addTokenToPrefix (JS.T.o (10, isBondOrMatrix ?  new JM.BondSet (bs) : bs));
+this.addTokenToPrefix (JS.T.o (10, isBondOrMatrix ? JM.BondSet.newBS (bs, null) : bs));
 return 2;
 }if (isBondOrMatrix) {
 var m = this.lookingAtMatrix ();
@@ -858,6 +859,7 @@ this.setEqualPt = this.ichToken;
 return 0;
 }return 2;
 case 1150985:
+if (this.tokCommand == 135174 || this.tokCommand == 4103 && this.nTokens == 1) return 0;
 case 364548:
 if (this.flowContext != null) this.flowContext.forceEndIf = false;
 case 364547:
@@ -1179,7 +1181,7 @@ this.replaceCommand (JS.T.tokenSet);
 this.addTokenToPrefix (this.lastToken);
 break;
 }}break;
-case 135271426:
+case 135271427:
 if (this.theTok == 1060866 && (this.nTokens == 1 || this.lastToken.tok == 1073741940 || this.lastToken.tok == 1073742152)) {
 this.addTokenToPrefix (JS.T.tokenDefineString);
 return 2;

@@ -8,18 +8,10 @@ this.bsptsValid = null;
 this.cubeIterators = null;
 Clazz.instantialize (this, arguments);
 }, J.bspt, "Bspf");
-Clazz.defineMethod (c$, "validate", 
-function (isValid) {
-this.isValid = isValid;
-}, "~B");
 Clazz.defineMethod (c$, "validateModel", 
 function (i, isValid) {
 this.bsptsValid[i] = isValid;
 }, "~N,~B");
-Clazz.defineMethod (c$, "isInitialized", 
-function () {
-return this.isValid;
-});
 Clazz.defineMethod (c$, "isInitializedIndex", 
 function (bsptIndex) {
 return this.bspts.length > bsptIndex && this.bspts[bsptIndex] != null && this.bsptsValid[bsptIndex];
@@ -31,10 +23,6 @@ this.bspts =  new Array (1);
 this.bsptsValid =  Clazz.newBooleanArray (1, false);
 this.cubeIterators =  new Array (0);
 }, "~N");
-Clazz.defineMethod (c$, "getBsptCount", 
-function () {
-return this.bspts.length;
-});
 Clazz.defineMethod (c$, "addTuple", 
 function (bsptIndex, tuple) {
 if (bsptIndex >= this.bspts.length) {

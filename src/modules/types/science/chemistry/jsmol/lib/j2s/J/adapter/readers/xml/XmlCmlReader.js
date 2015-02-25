@@ -236,7 +236,7 @@ case 0:
 if (name.equals ("module")) {
 if (--this.moduleNestingLevel == 0) {
 if (this.parent.iHaveUnitCell) this.applySymmetryAndSetTrajectory ();
-this.atomIdNames = this.asc.setAtomNames (this.atomIdNames);
+this.setAtomNames ();
 }}break;
 case 2:
 if (name.equals ("crystal")) {
@@ -246,7 +246,7 @@ this.embeddedCrystal = false;
 } else {
 this.state = 0;
 }} else if (name.equalsIgnoreCase ("cellParameter") && this.keepChars) {
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.chars);
+var tokens = JU.PT.getTokens (this.chars);
 this.setKeepChars (false);
 if (tokens.length != 3 || this.cellParameterType == null) {
 } else if (this.cellParameterType.equals ("length")) {
@@ -290,7 +290,7 @@ case 6:
 if (name.equals ("molecule")) {
 if (--this.moleculeNesting == 0) {
 this.applySymmetryAndSetTrajectory ();
-this.atomIdNames = this.asc.setAtomNames (this.atomIdNames);
+this.setAtomNames ();
 this.state = 0;
 } else {
 this.state = 6;
@@ -353,6 +353,15 @@ this.state = 6;
 break;
 }
 }, "~S");
+Clazz.defineMethod (c$, "setAtomNames", 
+ function () {
+if (this.atomIdNames == null) return;
+var s;
+var atoms = this.asc.atoms;
+for (var i = 0; i < this.ac; i++) if ((s = this.atomIdNames.getProperty (atoms[i].atomName)) != null) atoms[i].atomName = s;
+
+this.atomIdNames = null;
+});
 Clazz.defineMethod (c$, "addNewBond", 
  function (a1, a2, order) {
 this.parent.applySymmetryToBonds = true;

@@ -15,14 +15,14 @@ this.nSurfaces = 1;
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
 Clazz.overrideMethod (c$, "readParameters", 
 function () {
-var n1 = this.parseIntStr (this.readLine ());
+var n1 = this.parseIntStr (this.rd ());
 var n2 = this.parseInt ();
-this.nPointsX = this.parseIntStr (this.readLine ());
+this.nPointsX = this.parseIntStr (this.rd ());
 this.nPointsY = this.parseInt ();
 this.nPointsZ = this.parseInt ();
 this.jvxlFileHeaderBuffer.append ("Plt formatted data (" + n1 + "," + n2 + ") " + this.nPointsX + " x " + this.nPointsY + " x " + this.nPointsZ + " \nJmol " + JV.Viewer.getJmolVersion () + '\n');
 this.volumetricOrigin.set (0, 0, 0);
-var xmin = this.parseFloatStr (this.readLine ().substring (0, 12));
+var xmin = this.parseFloatStr (this.rd ().substring (0, 12));
 var xmax = this.parseFloatRange (this.line, 12, 24);
 var ymin = this.parseFloatRange (this.line, 24, 36);
 var ymax = this.parseFloatRange (this.line, 36, 48);

@@ -39,7 +39,7 @@ if (this.monomerCount > 0) {
 this.colixes =  Clazz.newShortArray (this.monomerCount, 0);
 this.paletteIDs =  Clazz.newByteArray (this.monomerCount, 0);
 this.mads =  Clazz.newShortArray (this.monomerCount + 1, 0);
-this.monomers = bioPolymer.getGroups ();
+this.monomers = bioPolymer.monomers;
 this.meshReady =  Clazz.newBooleanArray (this.monomerCount, false);
 this.meshes =  new Array (this.monomerCount);
 this.wingVectors = bioPolymer.getWingVectors ();

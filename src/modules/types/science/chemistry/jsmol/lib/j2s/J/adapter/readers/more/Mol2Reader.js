@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.more");
-Clazz.load (["J.adapter.readers.more.ForceFieldReader"], "J.adapter.readers.more.Mol2Reader", ["J.adapter.smarter.Bond", "J.api.JmolAdapter", "JV.JC"], function () {
+Clazz.load (["J.adapter.readers.more.ForceFieldReader"], "J.adapter.readers.more.Mol2Reader", ["java.lang.Character", "JU.PT", "J.adapter.smarter.Bond"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.nAtoms = 0;
 this.ac = 0;
@@ -72,7 +72,7 @@ if (ac == 0) return;
 var i0 = this.asc.ac;
 for (var i = 0; i < ac; ++i) {
 var atom = this.asc.addNewAtom ();
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+var tokens = JU.PT.getTokens (this.rd ());
 var atomType = tokens[5];
 atom.atomName = tokens[1] + '\0' + atomType;
 var pt = atomType.indexOf (".");
@@ -94,6 +94,7 @@ var atoms = this.asc.atoms;
 var g3 = atoms[i0].group3;
 if (g3 == null) return;
 var isPDB = false;
+if (!g3.equals ("UNK") && !g3.startsWith ("RES")) {
 for (var i = this.asc.ac; --i >= i0; ) if (!g3.equals (atoms[this.asc.ac - 1].group3)) {
 isPDB = true;
 break;
@@ -101,19 +102,34 @@ break;
 if (isPDB) {
 isPDB = false;
 for (var i = this.asc.ac; --i >= i0; ) {
-var atom = atoms[i];
-if (atom.group3.length <= 3 && (JV.JC.knownPDBGroupID (atom.group3) >= 0 || JV.JC.checkCarbohydrate (atom.group3))) {
+var pt = this.getPDBGroupLength (atoms[i].group3);
+if (pt == 0 || pt > 3) break;
+if (this.vwr.getJBR ().isKnownPDBGroup (g3.substring (0, pt))) {
 isPDB = this.isPDB = true;
 break;
 }}
-}for (var i = this.asc.ac; --i >= i0; ) if (isPDB) atoms[i].isHetero = J.api.JmolAdapter.isHetero (atoms[i].group3);
- else atoms[i].group3 = null;
-
+}}for (var i = this.asc.ac; --i >= i0; ) {
+if (isPDB) {
+g3 = atoms[i].group3;
+g3 = g3.substring (0, this.getPDBGroupLength (g3));
+atoms[i].isHetero = this.vwr.getJBR ().isHetero (g3);
+} else {
+g3 = null;
+}atoms[i].group3 = g3;
+}
 }, "~N");
+Clazz.defineMethod (c$, "getPDBGroupLength", 
+ function (g3) {
+var pt0 = g3.length;
+var pt = pt0;
+while (--pt > 0 && Character.isDigit (g3.charAt (pt))) {
+}
+return ++pt;
+}, "~S");
 Clazz.defineMethod (c$, "readBonds", 
  function (bondCount) {
 for (var i = 0; i < bondCount; ++i) {
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+var tokens = JU.PT.getTokens (this.rd ());
 var atomIndex1 = this.parseIntStr (tokens[1]);
 var atomIndex2 = this.parseIntStr (tokens[2]);
 var order = this.parseIntStr (tokens[3]);

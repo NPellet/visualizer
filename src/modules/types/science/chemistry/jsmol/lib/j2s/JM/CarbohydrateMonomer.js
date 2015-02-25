@@ -42,7 +42,7 @@ Clazz.overrideMethod (c$, "isConnectedPrevious",
 function () {
 if (this.monomerIndex <= 0) return false;
 for (var i = this.firstAtomIndex; i <= this.lastAtomIndex; i++) {
-if (this.getCrossLink (i, null)) return true;
+if (this.getCrossLinkGroup (i, null, null)) return true;
 }
 return false;
 });

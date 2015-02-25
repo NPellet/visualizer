@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.MOReader", "JU.BS"], "J.adapter.readers.quantum.GaussianReader", ["java.lang.Exception", "$.Float", "java.util.Hashtable", "JU.AU", "$.Lst", "$.PT", "$.V3", "J.adapter.smarter.SmarterJmolAdapter", "J.api.JmolAdapter", "JU.Escape", "$.Logger"], function () {
+Clazz.load (["J.adapter.readers.quantum.MOReader", "JU.BS"], "J.adapter.readers.quantum.GaussianReader", ["java.lang.Exception", "$.Float", "java.util.Hashtable", "JU.AU", "$.Lst", "$.PT", "$.V3", "J.adapter.readers.quantum.BasisFunctionReader", "J.adapter.smarter.SmarterJmolAdapter", "J.quantum.QS", "JU.Escape", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.energyString = "";
 this.energyKey = "";
@@ -70,18 +70,18 @@ return true;
 });
 Clazz.defineMethod (c$, "readSCFDone", 
  function () {
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensAt (this.line, 11);
+var tokens = JU.PT.getTokensAt (this.line, 11);
 if (tokens.length < 4) return;
 this.energyKey = tokens[0];
 this.asc.setAtomSetEnergy (tokens[2], this.parseFloatStr (tokens[2]));
 this.energyString = tokens[2] + " " + tokens[3];
 this.asc.setAtomSetNames (this.energyKey + " = " + this.energyString, this.equivalentAtomSets, this.namedSets);
 this.asc.setAtomSetPropertyForSets (this.energyKey, this.energyString, this.equivalentAtomSets);
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+tokens = JU.PT.getTokens (this.rd ());
 if (tokens.length > 2) {
 this.asc.setAtomSetPropertyForSets (tokens[0], tokens[2], this.equivalentAtomSets);
 if (tokens.length > 5) this.asc.setAtomSetPropertyForSets (tokens[3], tokens[5], this.equivalentAtomSets);
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+tokens = JU.PT.getTokens (this.rd ());
 }if (tokens.length > 2) this.asc.setAtomSetPropertyForSets (tokens[0], tokens[2], this.equivalentAtomSets);
 });
 Clazz.defineMethod (c$, "setEnergy", 
@@ -131,8 +131,8 @@ var slater =  Clazz.newIntArray (4, 0);
 slater[0] = ac - 1;
 tokens = this.getTokens ();
 var oType = tokens[0];
-if (doSphericalF && oType.indexOf ("F") >= 0 || doSphericalD && oType.indexOf ("D") >= 0) slater[1] = J.api.JmolAdapter.getQuantumShellTagIDSpherical (oType);
- else slater[1] = J.api.JmolAdapter.getQuantumShellTagID (oType);
+if (doSphericalF && oType.indexOf ("F") >= 0 || doSphericalD && oType.indexOf ("D") >= 0) slater[1] = J.adapter.readers.quantum.BasisFunctionReader.getQuantumShellTagIDSpherical (oType);
+ else slater[1] = J.adapter.readers.quantum.BasisFunctionReader.getQuantumShellTagID (oType);
 var nGaussians = this.parseIntStr (tokens[1]);
 slater[2] = this.gaussianCount;
 slater[3] = nGaussians;
@@ -157,15 +157,15 @@ if (!tokens[1].equals (lastAtom)) ac++;
 lastAtom = tokens[1];
 slater[0] = ac - 1;
 var oType = tokens[4];
-if (doSphericalF && oType.indexOf ("F") >= 0 || doSphericalD && oType.indexOf ("D") >= 0) slater[1] = J.api.JmolAdapter.getQuantumShellTagIDSpherical (oType);
- else slater[1] = J.api.JmolAdapter.getQuantumShellTagID (oType);
+if (doSphericalF && oType.indexOf ("F") >= 0 || doSphericalD && oType.indexOf ("D") >= 0) slater[1] = J.adapter.readers.quantum.BasisFunctionReader.getQuantumShellTagIDSpherical (oType);
+ else slater[1] = J.adapter.readers.quantum.BasisFunctionReader.getQuantumShellTagID (oType);
 var nGaussians = this.parseIntStr (tokens[5]);
 slater[2] = this.gaussianCount;
 slater[3] = nGaussians;
 this.shells.addLast (slater);
 this.gaussianCount += nGaussians;
 for (var i = 0; i < nGaussians; i++) {
-gdata.addLast (J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ()));
+gdata.addLast (JU.PT.getTokens (this.rd ()));
 }
 }
 }if (ac == 0) ac = 1;
@@ -191,11 +191,11 @@ var tokens;
 if (this.line.indexOf ("                    ") == 0) {
 this.addMOData (nThisLine, data, mos);
 if (isNOtype) {
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line);
+tokens = this.getTokens ();
 nThisLine = tokens.length;
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+tokens = JU.PT.getTokens (this.rd ());
 } else {
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+tokens = JU.PT.getTokens (this.rd ());
 nThisLine = tokens.length;
 }for (var i = 0; i < nThisLine; i++) {
 mos[i] =  new java.util.Hashtable ();
@@ -224,8 +224,8 @@ this.line = JU.PT.rep (this.line, " 0 ", "0  ");
 tokens = this.getTokens ();
 var type = tokens[tokens.length - nThisLine - 1].substring (1);
 if (JU.PT.isDigit (type.charAt (0))) type = type.substring (1);
-if (!this.isQuantumBasisSupported (type.charAt (0)) && "XYZ".indexOf (type.charAt (0)) >= 0) type = (type.length == 2 ? "D" : "F") + type;
-if (!this.isQuantumBasisSupported (type.charAt (0))) continue;
+if (!J.quantum.QS.isQuantumBasisSupported (type.charAt (0)) && "XYZ".indexOf (type.charAt (0)) >= 0) type = (type.length == 2 ? "D" : "F") + type;
+if (!J.quantum.QS.isQuantumBasisSupported (type.charAt (0))) continue;
 tokens = J.adapter.smarter.AtomSetCollectionReader.getStrings (this.line.substring (this.line.length - 10 * nThisLine), nThisLine, 10);
 for (var i = 0; i < nThisLine; i++) data[i].addLast (tokens[i]);
 
@@ -247,11 +247,11 @@ function (key, mustHave) {
 this.discardLinesUntilContains2 (key, ":");
 if (this.line == null && mustHave) throw ( new Exception ("No frequencies encountered"));
 while ((this.line = this.rd ()) != null && this.line.length > 15) {
-var symmetries = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
-var frequencies = J.adapter.smarter.AtomSetCollectionReader.getTokensAt (this.discardLinesUntilStartsWith (" Frequencies"), 15);
-var red_masses = J.adapter.smarter.AtomSetCollectionReader.getTokensAt (this.discardLinesUntilStartsWith (" Red. masses"), 15);
-var frc_consts = J.adapter.smarter.AtomSetCollectionReader.getTokensAt (this.discardLinesUntilStartsWith (" Frc consts"), 15);
-var intensities = J.adapter.smarter.AtomSetCollectionReader.getTokensAt (this.discardLinesUntilStartsWith (" IR Inten"), 15);
+var symmetries = JU.PT.getTokens (this.rd ());
+var frequencies = JU.PT.getTokensAt (this.discardLinesUntilStartsWith (" Frequencies"), 15);
+var red_masses = JU.PT.getTokensAt (this.discardLinesUntilStartsWith (" Red. masses"), 15);
+var frc_consts = JU.PT.getTokensAt (this.discardLinesUntilStartsWith (" Frc consts"), 15);
+var intensities = JU.PT.getTokensAt (this.discardLinesUntilStartsWith (" IR Inten"), 15);
 var iAtom0 = this.asc.ac;
 var ac = this.asc.getLastAtomSetAtomCount ();
 var frequencyCount = frequencies.length;
@@ -273,11 +273,11 @@ this.fillFrequencyData (iAtom0, ac, ac, ignore, true, 0, 0, null, 0);
 }, "~S,~B");
 Clazz.defineMethod (c$, "readDipoleMoment", 
 function () {
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+var tokens = JU.PT.getTokens (this.rd ());
 if (tokens.length != 8) return;
 var dipole = JU.V3.new3 (this.parseFloatStr (tokens[1]), this.parseFloatStr (tokens[3]), this.parseFloatStr (tokens[5]));
 JU.Logger.info ("Molecular dipole for model " + this.asc.atomSetCount + " = " + dipole);
-this.asc.setAtomSetAuxiliaryInfo ("dipole", dipole);
+this.asc.setCurrentModelInfo ("dipole", dipole);
 });
 Clazz.defineMethod (c$, "readPartialCharges", 
 function () {
@@ -288,7 +288,7 @@ var atoms = this.asc.atoms;
 for (var i = i0; i < ac; ++i) {
 while (atoms[i].elementNumber == 0) ++i;
 
-var charge = this.parseFloatStr (J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ())[2]);
+var charge = this.parseFloatStr (JU.PT.getTokens (this.rd ())[2]);
 atoms[i].partialCharge = charge;
 }
 JU.Logger.info ("Mulliken charges found for Model " + this.asc.atomSetCount);

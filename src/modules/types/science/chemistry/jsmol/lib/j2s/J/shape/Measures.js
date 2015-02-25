@@ -32,7 +32,7 @@ this.atoms = this.ms.at;
 });
 Clazz.overrideMethod (c$, "initShape", 
 function () {
-this.font3d = this.gdata.getFont3D (15);
+this.font3d = this.vwr.gdata.getFont3D (15);
 });
 Clazz.overrideMethod (c$, "setSize", 
 function (size, bsSelected) {
@@ -46,7 +46,7 @@ for (var i = 0; i < this.measurementCount; i++) this.measurements.get (i).setMod
 
 return;
 }if ("color" === propertyName) {
-this.setColor (value == null ? 0 : JU.C.getColixO (value));
+this.setColor (JU.C.getColixO (value));
 return;
 }if ("font" === propertyName) {
 this.font3d = value;

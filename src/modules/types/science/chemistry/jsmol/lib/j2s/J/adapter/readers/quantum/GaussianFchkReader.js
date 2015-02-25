@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.GaussianReader"], "J.adapter.readers.quantum.GaussianFchkReader", ["java.lang.Double", "$.Float", "java.util.Hashtable", "JU.AU", "$.Lst", "$.PT", "$.V3", "J.adapter.smarter.Bond", "J.api.JmolAdapter", "JU.Escape", "$.Logger"], function () {
+Clazz.load (["J.adapter.readers.quantum.GaussianReader"], "J.adapter.readers.quantum.GaussianFchkReader", ["java.lang.Double", "$.Float", "java.util.Hashtable", "JU.AU", "$.Lst", "$.PT", "$.V3", "J.adapter.readers.quantum.BasisFunctionReader", "J.adapter.smarter.Bond", "JU.Escape", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.fileData = null;
 this.atomCount = 0;
@@ -13,7 +13,7 @@ this.fileData =  new java.util.Hashtable ();
 this.fileData.put ("title", this.rd ().trim ());
 this.calculationType = JU.PT.rep (this.rd (), "  ", " ");
 this.asc.newAtomSet ();
-this.asc.setAtomSetAuxiliaryInfo ("fileData", this.fileData);
+this.asc.setCurrentModelInfo ("fileData", this.fileData);
 this.readAllData ();
 this.readAtoms ();
 this.readBonds ();
@@ -113,7 +113,7 @@ var data = this.fileData.get ("DipoleMoment");
 if (data == null) return;
 var dipole = JU.V3.new3 (data[0], data[1], data[2]);
 JU.Logger.info ("Molecular dipole for model " + this.asc.atomSetCount + " = " + dipole);
-this.asc.setAtomSetAuxiliaryInfo ("dipole", dipole);
+this.asc.setCurrentModelInfo ("dipole", dipole);
 });
 Clazz.overrideMethod (c$, "readPartialCharges", 
 function () {
@@ -147,8 +147,8 @@ var nGaussians = Clazz.floatToInt (pps[i]);
 var iatom = Clazz.floatToInt (atomMap[i]);
 var slater =  Clazz.newIntArray (4, 0);
 slater[0] = iatom - 1;
-if (oType.equals ("F7") || oType.equals ("D5")) slater[1] = J.api.JmolAdapter.getQuantumShellTagIDSpherical (oType.substring (0, 1));
- else slater[1] = J.api.JmolAdapter.getQuantumShellTagID (oType);
+if (oType.equals ("F7") || oType.equals ("D5")) slater[1] = J.adapter.readers.quantum.BasisFunctionReader.getQuantumShellTagIDSpherical (oType.substring (0, 1));
+ else slater[1] = J.adapter.readers.quantum.BasisFunctionReader.getQuantumShellTagID (oType);
 slater[2] = this.gaussianCount;
 slater[3] = nGaussians;
 if (JU.Logger.debugging) JU.Logger.debug ("Slater " + this.shells.size () + " " + JU.Escape.eAI (slater));

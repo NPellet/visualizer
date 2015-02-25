@@ -41,7 +41,7 @@ if (mat == null) return;
 var m =  new JU.M4 ();
 m.setToM3 (mat);
 this.matrixFractionalToCartesian.mul2 (m, this.matrixFractionalToCartesian);
-this.matrixCartesianToFractional.invertM (this.matrixFractionalToCartesian);
+this.matrixCartesianToFractional.setM4 (this.matrixFractionalToCartesian).invert ();
 this.initUnitcellVertices ();
 }, "JU.M3");
 Clazz.defineMethod (c$, "toUnitCell", 
@@ -226,10 +226,8 @@ if (this.matrixFractionalToCartesian == null) return;
 this.matrixCtoFANoOffset = JU.M4.newM4 (this.matrixCartesianToFractional);
 this.matrixFtoCNoOffset = JU.M4.newM4 (this.matrixFractionalToCartesian);
 this.vertices =  new Array (8);
-for (var i = 8; --i >= 0; ) {
-this.vertices[i] =  new JU.P3 ();
-this.matrixFractionalToCartesian.rotTrans2 (JU.BoxInfo.unitCubePoints[i], this.vertices[i]);
-}
+for (var i = 8; --i >= 0; ) this.vertices[i] = this.matrixFractionalToCartesian.rotTrans2 (JU.BoxInfo.unitCubePoints[i],  new JU.P3 ());
+
 });
 Clazz.defineMethod (c$, "checkDistance", 
 function (f1, f2, distance, dx, iRange, jRange, kRange, ptOffset) {

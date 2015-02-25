@@ -129,29 +129,29 @@ var val2 = vertexValues[iB];
 var val3 = vertexValues[iC];
 return (val1 >= 0 && val2 >= 0 && val3 >= 0 || val1 <= 0 && val2 <= 0 && val3 <= 0);
 }, "~N,~N,~N,~A");
-Clazz.defineMethod (c$, "calculateVolumeOrArea", 
-function (thisSet, isArea, getSets) {
-if (getSets || this.nSets <= 0) this.getSurfaceSet ();
+c$.calculateVolumeOrArea = Clazz.defineMethod (c$, "calculateVolumeOrArea", 
+function (m, thisSet, isArea, getSets) {
+if (getSets || m.nSets <= 0) m.getSurfaceSet ();
 var justOne = (thisSet >= -1);
-var n = (justOne || this.nSets <= 0 ? 1 : this.nSets);
+var n = (justOne || m.nSets <= 0 ? 1 : m.nSets);
 var v =  Clazz.newDoubleArray (n, 0);
 var vAB =  new JU.V3 ();
 var vAC =  new JU.V3 ();
 var vTemp =  new JU.V3 ();
-for (var i = this.pc; --i >= 0; ) {
-if (!this.setABC (i)) continue;
-var iSet = (this.nSets <= 0 ? 0 : this.vertexSets[this.iA]);
+for (var i = m.pc; --i >= 0; ) {
+if (m.setABC (i) == null) continue;
+var iSet = (m.nSets <= 0 ? 0 : m.vertexSets[m.iA]);
 if (thisSet >= 0 && iSet != thisSet) continue;
 if (isArea) {
-vAB.sub2 (this.vs[this.iB], this.vs[this.iA]);
-vAC.sub2 (this.vs[this.iC], this.vs[this.iA]);
+vAB.sub2 (m.vs[m.iB], m.vs[m.iA]);
+vAC.sub2 (m.vs[m.iC], m.vs[m.iA]);
 vTemp.cross (vAB, vAC);
 v[justOne ? 0 : iSet] += vTemp.length ();
 } else {
-vAB.setT (this.vs[this.iB]);
-vAC.setT (this.vs[this.iC]);
+vAB.setT (m.vs[m.iB]);
+vAC.setT (m.vs[m.iC]);
 vTemp.cross (vAB, vAC);
-vAC.setT (this.vs[this.iA]);
+vAC.setT (m.vs[m.iA]);
 v[justOne ? 0 : iSet] += vAC.dot (vTemp);
 }}
 var factor = (isArea ? 2 : 6);
@@ -159,7 +159,7 @@ for (var i = 0; i < n; i++) v[i] /= factor;
 
 if (justOne) return Float.$valueOf (v[0]);
 return v;
-}, "~N,~B,~B");
+}, "J.jvxl.data.MeshData,~N,~B,~B");
 Clazz.defineMethod (c$, "updateInvalidatedVertices", 
 function (bs) {
 bs.clearAll ();

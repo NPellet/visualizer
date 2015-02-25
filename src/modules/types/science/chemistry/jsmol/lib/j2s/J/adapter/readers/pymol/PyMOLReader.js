@@ -57,7 +57,7 @@ function () {
 this.baseAtomIndex = (this.htParams.get ("baseAtomIndex")).intValue ();
 this.baseModelIndex = (this.htParams.get ("baseModelIndex")).intValue ();
 this.asc.setInfo ("noAutoBond", Boolean.TRUE);
-this.asc.setAtomSetAuxiliaryInfo ("pdbNoHydrogens", Boolean.TRUE);
+this.asc.setCurrentModelInfo ("pdbNoHydrogens", Boolean.TRUE);
 this.asc.setInfo ("isPyMOL", Boolean.TRUE);
 if (this.isTrajectory) this.trajectorySteps =  new JU.Lst ();
 this.isStateScript = this.htParams.containsKey ("isStateScript");
@@ -96,13 +96,12 @@ this.setLoadNote ();
 var scenes =  new Array (this.sceneOrder.size ());
 for (var i = scenes.length; --i >= 0; ) scenes[i] = this.sceneOrder.get (i);
 
-var info = this.vwr.getModelSetAuxiliaryInfo ();
-info.put ("scenes", scenes);
+this.vwr.getModelSetAuxiliaryInfo ().put ("scenes", scenes);
 }this.vwr.ms.setTrajectoryBs (JU.BSUtil.newBitSet2 (this.baseModelIndex, this.vwr.ms.mc));
 if (!this.isStateScript) this.pymolScene.setFrameObject (0, null);
 if (this.bsBytesExcluded != null) {
 var nExcluded = this.bsBytesExcluded.cardinality ();
-var bytes0 = this.vwr.getFileAsBytes (this.filePath, null);
+var bytes0 = this.vwr.fm.getFileAsBytes (this.filePath, null);
 var bytes =  Clazz.newByteArray (bytes0.length - nExcluded, 0);
 for (var i = this.bsBytesExcluded.nextClearBit (0), n = bytes0.length, pt = 0; i < n; i = this.bsBytesExcluded.nextClearBit (i + 1)) bytes[pt++] = bytes0[i];
 
@@ -219,7 +218,7 @@ this.asc.finalizeTrajectoryAs (this.trajectorySteps, null);
 this.processSelectionsAndScenes (map);
 this.pymolScene.finalizeVisibility ();
 if (!this.isStateScript) {
-this.vwr.initialize (true);
+this.vwr.initialize (false);
 this.addJmolScript (this.pymolScene.getViewScript (J.adapter.readers.pymol.PyMOLReader.getMapList (map, "view")).toString ());
 }if (this.$ac == 0) this.asc.setInfo ("dataOnly", Boolean.TRUE);
 this.pymolScene.offsetObjects ();

@@ -26,7 +26,7 @@ fileName = null;
 this.os0 = os;
 os = null;
 }this.os = os;
-this.isLocalFile = (fileName != null && !(fileName.startsWith ("http://") || fileName.startsWith ("https://")));
+this.isLocalFile = (fileName != null && !JU.OC.isRemote (fileName));
 if (asWriter && !this.$isBase64 && os != null) this.bw =  new java.io.BufferedWriter ( new java.io.OutputStreamWriter (os));
 return this;
 }, "javajs.api.BytePoster,~S,~B,java.io.OutputStream");
@@ -80,7 +80,16 @@ return this;
 Clazz.defineMethod (c$, "reset", 
 function () {
 this.sb = null;
-try {
+this.initOS ();
+});
+Clazz.defineMethod (c$, "initOS", 
+ function () {
+if (this.sb != null) {
+var s = this.sb.toString ();
+this.reset ();
+this.append (s);
+return;
+}try {
 {
 this.os = null;
 }if (this.os == null) this.os =  new java.io.ByteArrayOutputStream ();
@@ -98,14 +107,20 @@ this.byteCount = 0;
 });
 Clazz.overrideMethod (c$, "write", 
 function (buf, i, len) {
-if (this.os == null) this.os =  new java.io.ByteArrayOutputStream ();
-{
-this.os.write(buf, i, len);
-}this.byteCount += len;
+if (this.os == null) this.initOS ();
+try {
+this.os.write (buf, i, len);
+} catch (e) {
+if (Clazz.exceptionOf (e, java.io.IOException)) {
+} else {
+throw e;
+}
+}
+this.byteCount += len;
 }, "~A,~N,~N");
 Clazz.overrideMethod (c$, "writeByteAsInt", 
 function (b) {
-if (this.os == null) this.os =  new java.io.ByteArrayOutputStream ();
+if (this.os == null) this.initOS ();
 {
 this.os.writeByteAsInt(b);
 }this.byteCount++;
@@ -190,4 +205,28 @@ Clazz.defineMethod (c$, "postByteArray",
 var bytes = (this.sb == null ? this.toByteArray () : this.sb.toString ().getBytes ());
 return this.bytePoster.postByteArray (this.fileName, bytes);
 });
+c$.isRemote = Clazz.defineMethod (c$, "isRemote", 
+function (fileName) {
+if (fileName == null) return false;
+var itype = JU.OC.urlTypeIndex (fileName);
+return (itype >= 0 && itype != 4);
+}, "~S");
+c$.isLocal = Clazz.defineMethod (c$, "isLocal", 
+function (fileName) {
+if (fileName == null) return false;
+var itype = JU.OC.urlTypeIndex (fileName);
+return (itype < 0 || itype == 4);
+}, "~S");
+c$.urlTypeIndex = Clazz.defineMethod (c$, "urlTypeIndex", 
+function (name) {
+if (name == null) return -2;
+for (var i = 0; i < JU.OC.urlPrefixes.length; ++i) {
+if (name.startsWith (JU.OC.urlPrefixes[i])) {
+return i;
+}}
+return -1;
+}, "~S");
+Clazz.defineStatics (c$,
+"urlPrefixes", ["http:", "https:", "sftp:", "ftp:", "file:"],
+"URL_LOCAL", 4);
 });

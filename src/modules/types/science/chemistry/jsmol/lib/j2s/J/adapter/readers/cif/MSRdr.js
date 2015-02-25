@@ -106,7 +106,7 @@ break;
 if (!isOK) return;
 if (map == null) map = this.htModulation;
 if (id.indexOf ("@") < 0) id += "@" + (iModel >= 0 ? iModel : this.cr.asc.iSet);
-if (id.startsWith ("D_L#")) {
+if (id.startsWith ("D_L#") || id.startsWith ("U_L")) {
 if (this.legendres == null) this.legendres =  new JU.Lst ();
 this.legendres.addLast (id);
 }JU.Logger.info ("Adding " + id + " " + JU.Escape.e (pt));
@@ -246,7 +246,7 @@ pt_ = key.indexOf ("#") + 1;
 var utens = null;
 switch (type) {
 case 'U':
-utens = key.substring (4, key.indexOf (";"));
+utens = key.substring (pt_, key.indexOf (";"));
 case 'O':
 case 'D':
 case 'M':
@@ -287,7 +287,7 @@ if (this.cr.fixJavaFloat) for (var i = pt.length; --i >= 0; ) pt[i] = JU.PT.fixD
 }, "~A");
 Clazz.overrideMethod (c$, "getQCoefs", 
 function (key) {
-var fn = Math.max (0, this.cr.parseIntStr (key.substring (2)));
+var fn = Math.max (0, this.cr.parseIntAt (key, 2));
 if (fn == 0) {
 if (this.qlist100 == null) {
 this.qlist100 =  Clazz.newDoubleArray (this.modDim, 0);

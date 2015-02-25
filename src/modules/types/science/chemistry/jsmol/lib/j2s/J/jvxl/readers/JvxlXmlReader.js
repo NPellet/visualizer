@@ -37,7 +37,7 @@ Clazz.defineMethod (c$, "init2JXR",
 function (sg, br) {
 this.init2VFR (sg, br);
 this.jvxlData.wasJvxl = this.isJvxl = true;
-this.isXLowToHigh = false;
+this.isXLowToHigh = this.canDownsample = false;
 this.xr =  new J.jvxl.readers.XmlReader (br);
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
 Clazz.overrideMethod (c$, "readVolumeData", 
@@ -128,7 +128,7 @@ this.jvxlReadSurfaceInfo ();
 }, "~N,~N");
 Clazz.defineMethod (c$, "jvxlSkipData", 
 function (nPoints, doSkipColorData) {
-this.readLine ();
+this.rd ();
 this.xr.skipTag ("jvxlSurface");
 }, "~N,~B");
 Clazz.defineMethod (c$, "jvxlReadSurfaceInfo", 
@@ -146,8 +146,10 @@ var nContoursRead = this.parseIntStr (J.jvxl.readers.XmlReader.getXmlAttrib (dat
 if (nContoursRead <= 0) {
 nContoursRead = 0;
 } else {
+if (this.params.thisContour < 0) this.params.thisContour = this.parseIntStr (J.jvxl.readers.XmlReader.getXmlAttrib (data, "thisContour"));
 s = J.jvxl.readers.XmlReader.getXmlAttrib (data, "contourValues");
 if (s.length > 0) {
+s = s.$replace ('[', ' ').$replace (']', ' ');
 this.jvxlData.contourValues = this.params.contoursDiscrete = this.parseFloatArrayStr (s);
 JU.Logger.info ("JVXL read: contourValues " + JU.Escape.eAF (this.jvxlData.contourValues));
 }s = J.jvxl.readers.XmlReader.getXmlAttrib (data, "contourColors");
@@ -203,6 +205,8 @@ this.edgeDataCount = 0;
 this.params.thePlane = null;
 this.surfaceDataCount = this.parseIntStr (J.jvxl.readers.XmlReader.getXmlAttrib (data, "nSurfaceInts"));
 this.edgeDataCount = this.parseIntStr (J.jvxl.readers.XmlReader.getXmlAttrib (data, "nBytesUncompressedEdgeData"));
+s = J.jvxl.readers.XmlReader.getXmlAttrib (data, "fixedLattice");
+if (s.indexOf ("{") >= 0) this.jvxlData.fixedLattice = JU.Escape.uP (s);
 }this.excludedVertexCount = this.parseIntStr (J.jvxl.readers.XmlReader.getXmlAttrib (data, "nExcludedVertexes"));
 this.excludedTriangleCount = this.parseIntStr (J.jvxl.readers.XmlReader.getXmlAttrib (data, "nExcludedTriangles"));
 this.invalidatedVertexCount = this.parseIntStr (J.jvxl.readers.XmlReader.getXmlAttrib (data, "nInvalidatedVertexes"));
@@ -333,7 +337,7 @@ var nThisValue = 0;
 while (bsVoxelPtr < nPoints) {
 nThisValue = this.parseInt ();
 if (nThisValue == -2147483648) {
-this.readLine ();
+this.rd ();
 if (this.line == null || (nThisValue = this.parseIntStr (this.line)) == -2147483648) {
 if (!this.endOfData) JU.Logger.error ("end of file in JvxlReader?" + " line=" + this.line);
 this.endOfData = true;
@@ -415,7 +419,7 @@ throw e;
 if (haveTranslucent && trans == 0) {
 this.jvxlData.translucency = 0.5;
 }return "-";
-}if (this.params.colorEncoder == null) this.params.colorEncoder =  new JU.ColorEncoder (null);
+}if (this.params.colorEncoder == null) this.params.colorEncoder =  new JU.ColorEncoder (null, null);
 this.params.colorEncoder.setColorScheme (null, false);
 this.params.colorEncoder.setRange (this.params.valueMappedToRed, this.params.valueMappedToBlue, this.params.isColorReversed);
 JU.Logger.info ("JVXL reading color data mapped min/max: " + this.params.mappedDataMin + "/" + this.params.mappedDataMax + " for " + vertexCount + " vertices." + " using encoding keys " + this.colorFractionBase + " " + this.colorFractionRange);
@@ -547,7 +551,7 @@ function (tdata, edgeData, colorData) {
 var nTriangles = this.parseIntStr (J.jvxl.readers.XmlReader.getXmlAttrib (tdata, "count"));
 if (nTriangles < 0) return;
 var nextc =  Clazz.newIntArray (1, 0);
-var nColors = (colorData == null ? -1 : JU.PT.parseIntNext (colorData, nextc));
+var nColors = (colorData == null ? -1 : 1);
 var color = 0;
 JU.Logger.info ("Reading " + nTriangles + " triangles");
 var encoding = J.jvxl.readers.JvxlXmlReader.getEncoding (tdata);
@@ -614,12 +618,12 @@ p = 0;
 if (haveEdgeInfo) {
 edgeMask = (nexte == null ? edata.charCodeAt (i) - 48 : JU.PT.parseIntNext (edata, nexte));
 if (edgeMask < 0 || edgeMask > 7) edgeMask = 7;
-}if (nColors > 0) {
+}if (--nColors == 0) {
+nColors = (JU.PT.parseIntNext (colorData, nextc));
 var c = JU.PT.parseIntNext (colorData, nextc);
 if (c == -2147483648) nColors = 0;
- else color = c;
-nColors--;
-}this.addTriangleCheck (vertex[0], vertex[1], vertex[2], edgeMask, 0, false, color);
+ else color = c | 0xFF000000;
+}this.addTriangleCheck (vertex[0], vertex[1], vertex[2], edgeMask, color, false, color);
 i++;
 }}
 }, "~S,~S,~S");

@@ -403,8 +403,8 @@ for (var i = bsAtoms.nextSetBit (0); i >= 0; i = bsAtoms.nextSetBit (i + 1)) par
 
 var a1 = null;
 for (var i = bTypes.length; --i >= 0; ) {
-a1 = bonds[i].getAtom1 ();
-var a2 = bonds[i].getAtom2 ();
+a1 = bonds[i].atom1;
+var a2 = bonds[i].atom2;
 var ok1 = bsAtoms.get (a1.i);
 var ok2 = bsAtoms.get (a2.i);
 if (!ok1 && !ok2) continue;
@@ -487,7 +487,7 @@ var bsHydrogen =  new JU.BS ();
 var bsConnected = JU.BSUtil.copy (bsAtoms);
 for (var i = bsAtoms.nextSetBit (0); i >= 0; i = bsAtoms.nextSetBit (i + 1)) {
 var a = atoms[i];
-var bonds = a.getBonds ();
+var bonds = a.bonds;
 if (bonds != null) for (var j = bonds.length; --j >= 0; ) if (bonds[j].isCovalent ()) bsConnected.set (bonds[j].getOtherAtom (a).i);
 
 }
@@ -528,7 +528,7 @@ for (var i = bs.nextSetBit (0); i >= 0; i = bs.nextSetBit (i + 1)) types[i] = j;
 bsDone.or (bs);
 }
 for (var i = bsHydrogen.nextSetBit (0); i >= 0; i = bsHydrogen.nextSetBit (i + 1)) {
-var bonds = atoms[i].getBonds ();
+var bonds = atoms[i].bonds;
 if (bonds != null) {
 var j = types[bonds[0].getOtherAtom (atoms[i]).i];
 if (j != 0) bsDone.set (i);
@@ -543,8 +543,8 @@ Clazz.defineMethod (c$, "setBondTypes",
  function (bonds, bondCount, bsAtoms) {
 var bTypes =  Clazz.newIntArray (bondCount, 0);
 for (var i = bondCount; --i >= 0; ) {
-var a1 = bonds[i].getAtom1 ();
-var a2 = bonds[i].getAtom2 ();
+var a1 = bonds[i].atom1;
+var a2 = bonds[i].atom2;
 var ok1 = bsAtoms.get (a1.i);
 var ok2 = bsAtoms.get (a2.i);
 if (!ok1 && !ok2) continue;

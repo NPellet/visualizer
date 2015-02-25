@@ -34,10 +34,10 @@ function (applet, vertices, normals, indices, nVertices, nPolygons, nFaces, bsPo
 }, "~O,~A,~A,~A,~N,~N,~N,JU.BS,~N,~N,~A,~A");
 Clazz.defineMethod (c$, "jsTriangle", 
 function (applet, color, pt1, pt2, pt3) {
-}, "~O,~N,JU.P3,JU.P3,JU.P3");
+}, "~O,~N,JU.T3,JU.T3,JU.T3");
 Clazz.overrideMethod (c$, "outputHeader", 
 function () {
-this.html5Applet = this.vwr.getHtml5Applet ();
+this.html5Applet = this.vwr.html5Applet;
 this.useTable =  new J["export"].UseTable ("JS");
 this.htSpheresRendered.clear ();
 this.htObjects.clear ();
@@ -85,18 +85,18 @@ this.outputCylinder (null, ptBase, ptTip, colix, 0, radius, null, null, false);
 }, "JU.P3,JU.P3,~N,~N");
 Clazz.defineMethod (c$, "getColor", 
  function (colix) {
-return Integer.$valueOf (this.g3d.getColorArgbOrGray (colix));
+return Integer.$valueOf (this.gdata.getColorArgbOrGray (colix));
 }, "~N");
 Clazz.overrideMethod (c$, "outputSurface", 
 function (vertices, normals, vertexColixes, indices, polygonColixes, nVertices, nPolygons, nFaces, bsPolygons, faceVertexMax, colix, colorList, htColixes, offset) {
 var vertexColors = this.getColors (vertexColixes);
 var polygonColors = this.getColors (polygonColixes);
-this.jsSurface (this.html5Applet, vertices, normals, indices, nVertices, nPolygons, nFaces, bsPolygons, faceVertexMax, this.g3d.getColorArgbOrGray (colix), vertexColors, polygonColors);
+this.jsSurface (this.html5Applet, vertices, normals, indices, nVertices, nPolygons, nFaces, bsPolygons, faceVertexMax, this.gdata.getColorArgbOrGray (colix), vertexColors, polygonColors);
 }, "~A,~A,~A,~A,~A,~N,~N,~N,JU.BS,~N,~N,JU.Lst,java.util.Map,JU.P3");
 Clazz.overrideMethod (c$, "outputTriangle", 
 function (pt1, pt2, pt3, colix) {
-this.jsTriangle (this.html5Applet, this.g3d.getColorArgbOrGray (colix), pt1, pt2, pt3);
-}, "JU.P3,JU.P3,JU.P3,~N");
+this.jsTriangle (this.html5Applet, this.gdata.getColorArgbOrGray (colix), pt1, pt2, pt3);
+}, "JU.T3,JU.T3,JU.T3,~N");
 Clazz.overrideMethod (c$, "outputTextPixel", 
 function (pt, argb) {
 }, "JU.P3,~N");
@@ -117,7 +117,7 @@ Clazz.defineMethod (c$, "getColors",
 if (colixes == null) return null;
 var colors =  Clazz.newIntArray (colixes.length, 0);
 for (var i = colors.length; --i >= 0; ) {
-colors[i] = this.g3d.getColorArgbOrGray (colixes[i]);
+colors[i] = this.gdata.getColorArgbOrGray (colixes[i]);
 }
 return colors;
 }, "~A");

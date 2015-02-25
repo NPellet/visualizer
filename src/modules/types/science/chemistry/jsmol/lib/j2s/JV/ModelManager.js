@@ -16,14 +16,6 @@ function () {
 this.modelSetPathName = this.fileName = null;
  new JM.ModelLoader (this.vwr, this.vwr.getZapName (), null, null, null, null);
 });
-Clazz.defineMethod (c$, "getModelSetFileName", 
-function () {
-return (this.fileName != null ? this.fileName : this.vwr.getZapName ());
-});
-Clazz.defineMethod (c$, "getModelSetPathName", 
-function () {
-return this.modelSetPathName;
-});
 Clazz.defineMethod (c$, "createModelSet", 
 function (fullPathName, fileName, loadScript, atomSetCollection, bsNew, isAppend) {
 var modelSetName = null;
@@ -44,7 +36,7 @@ modelSetName = modelSetName.trim ();
 if (modelSetName.length == 0) modelSetName = null;
 }if (modelSetName == null) modelSetName = JV.ModelManager.reduceFilename (fileName);
 } new JM.ModelLoader (this.vwr, modelSetName, loadScript, atomSetCollection, (isAppend ? this.modelSet : null), bsNew);
-}if (this.modelSet.getAtomCount () == 0 && !this.modelSet.getMSInfoB ("isPyMOL")) this.zap ();
+}if (this.modelSet.ac == 0 && !this.modelSet.getMSInfoB ("isPyMOL")) this.zap ();
 }, "~S,~S,JU.SB,~O,JU.BS,~B");
 c$.reduceFilename = Clazz.defineMethod (c$, "reduceFilename", 
  function (fileName) {

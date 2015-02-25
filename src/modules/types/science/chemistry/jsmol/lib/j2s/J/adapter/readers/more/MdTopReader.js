@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.more");
-Clazz.load (["J.adapter.readers.more.ForceFieldReader"], "J.adapter.readers.more.MdTopReader", ["java.lang.Boolean", "JU.Lst", "J.adapter.smarter.Atom", "J.api.JmolAdapter", "JU.Logger"], function () {
+Clazz.load (["J.adapter.readers.more.ForceFieldReader"], "J.adapter.readers.more.MdTopReader", ["java.lang.Boolean", "JU.Lst", "J.adapter.smarter.Atom", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.nAtoms = 0;
 this.ac = 0;
@@ -32,7 +32,7 @@ var atoms = this.asc.atoms;
 var atom;
 for (var i = 0; i < this.ac; i++) {
 atom = atoms[i];
-atom.isHetero = J.api.JmolAdapter.isHetero (atom.group3);
+atom.isHetero = this.vwr.getJBR ().isHetero (atom.group3);
 var atomType = this.$atomTypes[i];
 if (!this.getElementSymbol (atom, atomType)) atom.elementSymbol = J.adapter.readers.more.ForceFieldReader.deducePdbElementSymbol (atom.isHetero, atom.atomName, atom.group3);
 }

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JSV.common");
-Clazz.load (["JSV.api.JSVGraphics", "$.JSVPdfWriter"], "JSV.common.PDFWriter", ["java.util.Hashtable", "javajs.export.PDFCreator", "JU.CU", "JSV.common.JSVersion"], function () {
+Clazz.load (["JSV.api.JSVPdfWriter", "J.api.GenericGraphics"], "JSV.common.PDFWriter", ["java.util.Hashtable", "javajs.export.PDFCreator", "JU.CU", "JSV.common.JSVersion"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.g2d = null;
 this.date = null;
@@ -7,7 +7,7 @@ this.pdf = null;
 this.inPath = false;
 this.rgb = null;
 Clazz.instantialize (this, arguments);
-}, JSV.common, "PDFWriter", null, [JSV.api.JSVGraphics, JSV.api.JSVPdfWriter]);
+}, JSV.common, "PDFWriter", null, [J.api.GenericGraphics, JSV.api.JSVPdfWriter]);
 Clazz.prepareFields (c$, function () {
 this.rgb =  Clazz.newFloatArray (3, 0);
 });

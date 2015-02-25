@@ -38,7 +38,7 @@ this.smoothingPower = (this.smoothingPower - 11) / 2;
 if (this.mepType != null) {
 this.doSmoothProperty = true;
 if (this.params.mep_calcType >= 0) this.calcType = this.params.mep_calcType;
-this.mepCalc = J.api.Interface.getOption ("quantum." + this.mepType + "Calculation", this.sg.getAtomDataServer (), "file");
+this.mepCalc = J.api.Interface.getOption ("quantum." + this.mepType + "Calculation", this.sg.atomDataServer, "file");
 }if (!this.doSmoothProperty && this.maxDistance == 2147483647) this.maxDistance = 5;
 this.getAtoms (this.params.bsSelected, this.doAddHydrogens, true, false, false, true, false, NaN);
 if (this.meshDataServer != null) this.meshDataServer.fillMeshData (this.meshData, 1, null);
@@ -64,7 +64,7 @@ Clazz.overrideMethod (c$, "initializeMapping",
 function () {
 if (this.params.showTiming) JU.Logger.startTimer ("property mapping");
 if (this.bsNearby != null) this.bsMySelected.or (this.bsNearby);
-this.iter = this.atomDataServer.getSelectedAtomIterator (this.bsMySelected, false, false, false);
+this.iter = this.sg.atomDataServer.getSelectedAtomIterator (this.bsMySelected, false, false, false);
 });
 Clazz.overrideMethod (c$, "finalizeMapping", 
 function () {
@@ -86,7 +86,7 @@ var dmin = 3.4028235E38;
 var dminNearby = 3.4028235E38;
 var value = (this.doSmoothProperty ? 0 : NaN);
 var vdiv = 0;
-this.atomDataServer.setIteratorForPoint (this.iter, this.modelIndex, pt, this.maxDistance);
+this.sg.atomDataServer.setIteratorForPoint (this.iter, this.modelIndex, pt, this.maxDistance);
 this.iAtomSurface = -1;
 while (this.iter.hasNext ()) {
 var ia = this.iter.next ();

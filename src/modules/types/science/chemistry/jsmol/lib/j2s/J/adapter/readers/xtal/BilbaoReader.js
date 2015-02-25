@@ -86,7 +86,7 @@ for (var i = 0; i < 6; i++) this.setUnitCellItem (i, data[i]);
 this.i0 = this.asc.ac;
 this.nAtoms = this.parseIntStr (this.rdLine ());
 for (var i = this.nAtoms; --i >= 0; ) {
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rdLine ());
+var tokens = JU.PT.getTokens (this.rdLine ());
 if (!this.getSym && tokens[1].contains ("_")) continue;
 if (tokens.length == 3) this.addAtomXYZSymName (tokens, 0, "Be", "Be1");
  else this.addAtomXYZSymName (tokens, 3, tokens[0], tokens[0] + tokens[1]);

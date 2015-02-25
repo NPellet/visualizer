@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.render");
-Clazz.load (["J.render.ShapeRenderer", "JU.P3", "$.P3i", "$.V3"], "J.render.FontLineShapeRenderer", ["java.lang.Float", "JU.PT", "J.c.AXES"], function () {
+Clazz.load (["J.render.ShapeRenderer", "JU.P3", "$.P3i", "$.V3"], "J.render.FontLineShapeRenderer", ["java.lang.Float", "JU.PT"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.imageFontScaling = 0;
 this.atomA = null;
@@ -112,7 +112,7 @@ this.vectorT2.scale (length / this.vectorT2.length ());
 var ptRef = this.tickInfo.reference;
 if (ptRef == null) {
 this.pointT3.setT (this.vwr.getBoundBoxCenter ());
-if (this.vwr.g.axesMode === J.c.AXES.BOUNDBOX) {
+if (this.vwr.g.axesMode == 603979810) {
 this.pointT3.add3 (1, 1, 1);
 }} else {
 this.pointT3.setT (ptRef);

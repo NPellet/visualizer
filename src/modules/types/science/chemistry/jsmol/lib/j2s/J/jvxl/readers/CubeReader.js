@@ -12,9 +12,9 @@ this.init2VFR (sg, br);
 Clazz.overrideMethod (c$, "readParameters", 
 function () {
 this.jvxlFileHeaderBuffer =  new JU.SB ();
-this.jvxlFileHeaderBuffer.append (this.readLine ()).appendC ('\n');
-this.jvxlFileHeaderBuffer.append (this.readLine ()).appendC ('\n');
-var atomLine = this.readLine ();
+this.jvxlFileHeaderBuffer.append (this.rd ()).appendC ('\n');
+this.jvxlFileHeaderBuffer.append (this.rd ()).appendC ('\n');
+var atomLine = this.rd ();
 var tokens = JU.PT.getTokensAt (atomLine, 0);
 this.ac = this.parseIntStr (tokens[0]);
 this.negativeAtomCount = (this.ac < 0);
@@ -24,12 +24,12 @@ J.jvxl.readers.VolumeFileReader.checkAtomLine (this.isXLowToHigh, this.isAngstro
 if (!this.isAngstroms) this.volumetricOrigin.scale (0.5291772);
 for (var i = 0; i < 3; ++i) this.readVoxelVector (i);
 
-for (var i = 0; i < this.ac; ++i) this.jvxlFileHeaderBuffer.append (this.readLine () + "\n");
+for (var i = 0; i < this.ac; ++i) this.jvxlFileHeaderBuffer.append (this.rd () + "\n");
 
 if (!this.negativeAtomCount) {
 this.nSurfaces = 1;
 } else {
-this.readLine ();
+this.rd ();
 JU.Logger.info ("Reading extra CUBE information line: " + this.line);
 this.nSurfaces = this.parseIntStr (this.line);
 }});

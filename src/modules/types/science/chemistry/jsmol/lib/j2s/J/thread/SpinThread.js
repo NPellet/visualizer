@@ -15,6 +15,7 @@ this.haveNotified = false;
 this.index = 0;
 this.bsBranches = null;
 this.isDone = false;
+this.m4 = null;
 Clazz.instantialize (this, arguments);
 }, J.thread, "SpinThread", J.thread.JmolThread);
 Clazz.overrideMethod (c$, "setManager", 
@@ -28,7 +29,7 @@ this.isNav = true;
 this.endDegrees = (options[0]).floatValue ();
 this.endPositions = options[1];
 this.dihedralList = options[2];
-if (this.dihedralList != null) this.bsBranches = vwr.getBsBranches (this.dihedralList);
+if (this.dihedralList != null) this.bsBranches = vwr.ms.getBsBranches (this.dihedralList);
 this.bsAtoms = options[3];
 this.isGesture = (options[4] != null);
 }return 0;
@@ -115,7 +116,7 @@ this.transformManager.setNavigationOffsetRelative ();
 } else if (this.transformManager.isSpinInternal || this.transformManager.isSpinFixed) {
 this.angle = (this.transformManager.isSpinInternal ? this.transformManager.internalRotationAxis : this.transformManager.fixedRotationAxis).angle / this.myFps;
 if (this.transformManager.isSpinInternal) {
-this.transformManager.rotateAxisAngleRadiansInternal (this.angle, this.bsAtoms);
+this.transformManager.rotateAxisAngleRadiansInternal (this.angle, this.bsAtoms, this.m4);
 } else {
 this.transformManager.rotateAxisAngleRadiansFixed (this.angle, this.bsAtoms);
 }this.nDegrees += Math.abs (this.angle * 57.29577951308232);

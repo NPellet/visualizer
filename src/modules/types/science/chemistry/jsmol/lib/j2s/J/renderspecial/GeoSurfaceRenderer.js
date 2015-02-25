@@ -17,12 +17,12 @@ function () {
 var gs = this.shape;
 this.iShowSolid = !(!this.vwr.checkMotionRendering (1113198597) && gs.ec.getDotsConvexMax () > 100);
 if (!this.iShowSolid && !this.g3d.setC (4)) return false;
-var tcover = this.g3d.getTranslucentCoverOnly ();
-if (this.iShowSolid) this.g3d.setTranslucentCoverOnly (true);
+var tCover = this.vwr.gdata.translucentCoverOnly;
+if (this.iShowSolid) this.vwr.gdata.translucentCoverOnly = true;
 this.g3d.addRenderer (1073742182);
 if (this.iShowSolid && this.faceMap == null) this.faceMap =  Clazz.newIntArray (this.screenDotCount, 0);
 this.render1 (gs);
-this.g3d.setTranslucentCoverOnly (tcover);
+this.vwr.gdata.translucentCoverOnly = tCover;
 return this.requireTranslucent;
 });
 Clazz.overrideMethod (c$, "renderConvex", 

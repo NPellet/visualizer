@@ -112,10 +112,10 @@ var url;
 {
 }resourceName = (url == null ? vwr.vwrOptions.get ("codePath") + classPath + resourceName : url.getFile ());
 if (vwr.async) {
-var bytes = vwr.cacheGet (resourceName);
+var bytes = vwr.fm.cacheGet (resourceName, false);
 if (bytes == null) throw  new JV.JmolAsyncException (resourceName);
 return JU.Rdr.getBufferedReader (JU.Rdr.getBIS (bytes), null);
-}return vwr.getBufferedReaderOrErrorMessageFromName (resourceName, [null, null], false);
+}return vwr.fm.getBufferedReaderOrErrorMessageFromName (resourceName, [null, null], false, true);
 }, "JV.Viewer,~O,~S,~S");
 Clazz.defineStatics (c$,
 "JPEG_CONTINUE_STRING", " #Jmol...\0",

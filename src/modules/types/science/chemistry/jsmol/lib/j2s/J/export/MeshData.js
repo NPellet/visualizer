@@ -32,7 +32,7 @@ v2.normalize ();
 var normals = [v2, v2, v2];
 var faces = [[0, 1, 2]];
 return JU.MeshSurface.newMesh (false, vertexes, 0, faces, normals, 0);
-}, "JU.P3,JU.P3,JU.P3");
+}, "JU.T3,JU.T3,JU.T3");
 c$.getConeData = Clazz.defineMethod (c$, "getConeData", 
 function () {
 var ndeg = 10;

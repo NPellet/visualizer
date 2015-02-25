@@ -92,11 +92,11 @@ for (var i = i0; i >= 0; i = (isAll ? i - 1 : bsPolygons.nextSetBit (i + 1))) th
 }, "~A,~A,~N,JU.BS,~N");
 Clazz.overrideMethod (c$, "plotText", 
 function (x, y, z, colix, text, font3d) {
-this.g3d.plotText (x, y, z, this.g3d.getColorArgbOrGray (colix), 0, text, font3d, this.jmolRenderer);
+this.gdata.plotText (x, y, z, this.gdata.getColorArgbOrGray (colix), 0, text, font3d, this.jmolRenderer);
 }, "~N,~N,~N,~N,~S,javajs.awt.Font");
 Clazz.overrideMethod (c$, "plotImage", 
 function (x, y, z, image, bgcolix, width, height) {
-this.g3d.plotImage (x, y, z, image, this.jmolRenderer, bgcolix, width, height);
+this.gdata.plotImage (x, y, z, image, this.jmolRenderer, bgcolix, width, height);
 }, "~N,~N,~N,~O,~N,~N,~N");
 Clazz.overrideMethod (c$, "drawAtom", 
 function (atom) {
@@ -193,7 +193,7 @@ this.tm.unTransformPoint (ptB, this.tempP2);
 this.tm.unTransformPoint (ptC, this.tempP3);
 }this.outputTriangle (this.tempP1, this.tempP2, this.tempP3, colix);
 if (twoSided) this.outputTriangle (this.tempP1, this.tempP3, this.tempP2, colix);
-}, "~N,JU.P3,JU.P3,JU.P3,~B,~B");
+}, "~N,JU.T3,JU.T3,JU.T3,~B,~B");
 Clazz.defineMethod (c$, "setSphereMatrix", 
 function (center, rx, ry, rz, a, sphereMatrix) {
 if (a != null) {
