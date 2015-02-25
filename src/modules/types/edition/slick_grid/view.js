@@ -9,14 +9,14 @@ require.config({
 
         // SlickGrid
         slickcore:     'components/slickgrid/slick.core',
-        slickgrid:     'components/slickgrid/slick.grid',
+        slickgrid:     'modules/types/edition/slick_grid/slick.grid',
         slickdataview: 'modules/types/edition/slick_grid/slick.dataview.custom',
         slickgroupitemmetadataprovider: 'modules/types/edition/slick_grid/slick.groupitemmetadataprovider.custom'
     },
     shim: {
         dragevent:     ['jquery'],
         dropevent:     ['jquery'],
-        slickcore:     ['jquery-ui/core'],
+        slickcore:     ['jquery-ui/core', 'jquery-ui/sortable'],
         slickgrid:     ['slickcore', 'dragevent', 'dropevent','components/slickgrid/plugins/slick.cellrangedecorator',
             'components/slickgrid/plugins/slick.cellrangeselector' ,
             'components/slickgrid/plugins/slick.cellselectionmodel' ,
