@@ -288,6 +288,20 @@ define(['src/util/versioning', 'src/util/debug', 'src/util/util'], function (Ver
                     groupings[i].getter = [groupings[i].getter];
                 }
             }, 'slick_grid');
+        },
+        '2.13.1-b3', function(view) {
+            eachModule(view, function(module) {
+                var cols = module.getChildSync(['configuration', 'groups', 'cols', 0]);
+                for(var i=0; i<cols.length; i++) {
+                    delete cols[i].selectable;
+                    delete cols[i].focusable;
+                    delete cols[i].sortable;
+                    delete cols[i].defaultSortOnAsc;
+                    delete cols[i].resizable;
+                }
+                var group = module.getChildSync([ 'configuration', 'groups', 'group', 0 ]);
+                delete group.toggle;
+            }, 'slick_grid');
         }
 
 //  Add new migration functions here

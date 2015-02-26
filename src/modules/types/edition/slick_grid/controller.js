@@ -31,13 +31,6 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
                     },
 
                     fields: {
-
-                        toggle: {
-                            type: 'combo',
-                            title: 'Line toggling',
-                            options: [{key: "0", title: "No"}, {key: "single", title:"Single row"}, {key: "multiple", title:"Multiple rows"}]
-                        },
-
                         colorjpath: {
                             type: 'combo',
                             title: 'Color jPath',
@@ -148,38 +141,6 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
                         maxWidth: {
                             type: 'text',
                             title: 'Max Width'
-                        },
-                        selectable: {
-                            type: 'checkbox',
-                            title: 'Selectable',
-                            options: {yes: 'Yes'},
-                            default: ['yes']
-                        },
-                        resizable: {
-                            type: 'checkbox',
-                            title: 'Resizable',
-                            options: {yes: 'Yes'},
-                            default: ['yes']
-                        },
-                        sortable: {
-                            type: 'checkbox',
-                            title: 'Sortable',
-                            options: {yes: 'Yes'},
-                            default: ['yes']
-                        },
-
-                        focusable: {
-                            type: 'checkbox',
-                            title: 'Focusable',
-                            options: {yes: 'Yes'},
-                            default: ['yes']
-                        },
-
-                        defaultSortAsc: {
-                            type: 'checkbox',
-                            title: 'Sort Asc on first click',
-                            options: {yes: 'Yes'},
-                            default: ['yes']
                         }
                     }
                 },
@@ -209,7 +170,6 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
     };
 
     controller.prototype.configAliases = {
-        'toggle': [ 'groups', 'group', 0, 'toggle', 0 ],
         'colorjPath': [ 'groups', 'group', 0, 'colorjpath', 0 ],
         'filterRow': [ 'groups', 'group', 0, 'filterRow', 0 ],
         'slickCheck': [ 'groups', 'group', 0, 'slickCheck', 0 ],
