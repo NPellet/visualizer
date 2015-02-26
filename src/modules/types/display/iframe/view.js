@@ -1,17 +1,17 @@
+'use strict';
+
 define(['modules/default/defaultview'], function (Default) {
 
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
-
-
+    $.extend(true, View.prototype, Default, {
         init: function () {
-            this.dom = $('<iframe border="0" frameborder="none" width="100%" height="100%" />');
+            this.dom = $('<iframe>');
 
-            var self=this;
-            this.dom.load(function(event) { // we remove the loading message
-                if (self.dom.attr('src')!='about:blank') {
+            var self = this;
+            this.dom.load(function () { // we remove the loading message
+                if (self.dom.attr('src') != 'about:blank') {
                     if (self._loadingTimeout) clearTimeout(self._loadingTimeout);
                     else self.hideLoading();
                 }
@@ -23,46 +23,23 @@ define(['modules/default/defaultview'], function (Default) {
             this.module.getDomContent().html(this.dom);
             this.resolveReady();
         },
-
         blank: {
-            url: blankIframe,
-            doi: blankIframe
+            url: function () {
+                this.dom.attr('src', 'about:blank');
+            }
         },
-
         update: {
             url: function (moduleValue) {
-                if (!moduleValue)
-                    return;
-
-                var self=this;
+                var self = this;
                 if (self._loadingTimeout) clearTimeout(self._loadingTimeout);
-                this._loadingTimeout = setTimeout(function() {
-                    self._loadingTimeout=undefined;
+                this._loadingTimeout = setTimeout(function () {
+                    self._loadingTimeout = null;
                     self.showLoading();
                 }, 500);
-
                 this.dom.attr('src', moduleValue.get());
-            },
-            doi: function (moduleValue) {
-                if (!moduleValue)
-                    return;
-
-                var self=this;
-                if (self._loadingTimeout) clearTimeout(self._loadingTimeout);
-                this._loadingTimeout = setTimeout(function() {
-                    self._loadingTimeout=undefined;
-                    self.showLoading();
-                }, 500);
-
-                this.dom.attr('src', 'http://dx.doi.org/' + moduleValue.get());
             }
         }
-
     });
-
-    function blankIframe() {
-        this.dom.attr('src', 'about:blank');
-    }
 
     return View;
 
