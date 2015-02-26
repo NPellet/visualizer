@@ -401,13 +401,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         });
 
                         that.grid.onClick.subscribe(function(e,args) {
-                            var columns = that.grid.getColumns();
-                            var itemInfo = that._getItemInfoFromRow(args.row);
-                            if(itemInfo) {
-                                if(columns[args.cell] && columns[args.cell].id !== 'rowDeletion') {
-                                    that.module.controller.onClick(itemInfo.idx, itemInfo.item);
-                                }
-                            }
+
                         });
 
                         that.grid.onColumnsResized.subscribe(function() {
@@ -429,6 +423,14 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         that.grid.onActiveCellChanged.subscribe(function(e, args) {
                             that.lastActiveCell = args.cell;
                             that.lastActiveRow = args.row;
+
+                            var columns = that.grid.getColumns();
+                            var itemInfo = that._getItemInfoFromRow(args.row);
+                            if(itemInfo) {
+                                if(columns[args.cell] && columns[args.cell].id !== 'rowDeletion') {
+                                    that.module.controller.onClick(itemInfo.idx, itemInfo.item);
+                                }
+                            }
 
                         });
 

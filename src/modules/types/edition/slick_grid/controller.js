@@ -237,7 +237,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
         },
 
         selectedrows: {
-            label: 'Selected rows'
+            label: 'Active rows'
         }
     };
 
@@ -267,7 +267,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
         // List of all possible events
 
         onSelect: {
-            label: 'A line is selected',
+            label: 'A new r is became active',
             refVariable: [ 'row' ],
             refAction: [ 'row' ]
         },
@@ -301,13 +301,20 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
         this.sendAction( 'row', item, 'onHover' );
     };
 
+
+
     var onClick = _.throttle(function(row, item) {
         this.setVarFromEvent( 'onSelect', 'row', 'list', [ row ] );
         this.sendAction( 'row', item, 'onSelect' );
     }, 250, {trailing: false});
 
     controller.prototype.onClick = function(row, item) {
-       onClick.call(this, row, item);
+       //onClick.call(this, row, item);
+        var itemId = item[this.module.view.idPropertyName];
+        if(this.lastClickedItemId === itemId) return;
+        this.lastClickedItemId = itemId;
+        this.setVarFromEvent( 'onSelect', 'row', 'list', [ row ] );
+        this.sendAction( 'row', item, 'onSelect' );
     };
 
     controller.prototype.onRowChange = function(row, item) {
