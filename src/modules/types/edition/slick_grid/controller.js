@@ -217,7 +217,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
         // List of all possible events
 
         onSelect: {
-            label: 'A new r is became active',
+            label: 'A row was clicked',
             refVariable: [ 'row' ],
             refAction: [ 'row' ]
         },
@@ -238,9 +238,15 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
             label: 'A new row has been edited',
             refVariable: ['row'],
             refAction: ['row']
+        },
+        onRowActive: {
+            label: 'A new row became active',
+            refVariable: ['row'],
+            refAction: ['row']
         }
+    }
 
-    };
+    ;
 
 
     controller.prototype.onHover = function(row, item) {
@@ -251,20 +257,21 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
         this.sendAction( 'row', item, 'onHover' );
     };
 
-
-
     var onClick = _.throttle(function(row, item) {
         this.setVarFromEvent( 'onSelect', 'row', 'list', [ row ] );
         this.sendAction( 'row', item, 'onSelect' );
     }, 250, {trailing: false});
 
     controller.prototype.onClick = function(row, item) {
-       //onClick.call(this, row, item);
+       onClick.call(this, row, item);
+    };
+
+    controller.prototype.onActive = function(row, item) {
         var itemId = item[this.module.view.idPropertyName];
         if(this.lastClickedItemId === itemId) return;
         this.lastClickedItemId = itemId;
-        this.setVarFromEvent( 'onSelect', 'row', 'list', [ row ] );
-        this.sendAction( 'row', item, 'onSelect' );
+        this.setVarFromEvent( 'onRowActive', 'row', 'list', [ row ] );
+        this.sendAction( 'row', item, 'onRowActive' );
     };
 
     controller.prototype.onRowChange = function(row, item) {

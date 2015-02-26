@@ -400,10 +400,6 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
                         });
 
-                        that.grid.onClick.subscribe(function(e,args) {
-
-                        });
-
                         that.grid.onColumnsResized.subscribe(function() {
                             var cols = that.grid.getColumns();
                             for(var i=0; i<cols.length; i++) {
@@ -420,6 +416,16 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
                         });
 
+                        that.grid.onClick.subscribe(function(e,args) {
+                            var columns = that.grid.getColumns();
+                            var itemInfo = that._getItemInfoFromRow(args.row);
+                            if(itemInfo) {
+                                if(columns[args.cell] && columns[args.cell].id !== 'rowDeletion') {
+                                    that.module.controller.onClick(itemInfo.idx, itemInfo.item);
+                                }
+                            }
+                        });
+
                         that.grid.onActiveCellChanged.subscribe(function(e, args) {
                             that.lastActiveCell = args.cell;
                             that.lastActiveRow = args.row;
@@ -428,7 +434,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             var itemInfo = that._getItemInfoFromRow(args.row);
                             if(itemInfo) {
                                 if(columns[args.cell] && columns[args.cell].id !== 'rowDeletion') {
-                                    that.module.controller.onClick(itemInfo.idx, itemInfo.item);
+                                    that.module.controller.onActive(itemInfo.idx, itemInfo.item);
                                 }
                             }
 
