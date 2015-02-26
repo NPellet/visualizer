@@ -630,54 +630,6 @@ define([
                 prom.then(function(fill) {
                     form.fill(fill);
                 });
-                //form.fill({
-                //    sections: {
-                //        metadata: [{
-                //            sections: {
-                //                keywords: [
-                //                {
-                //                    "sections": {},
-                //                    "groups": {
-                //                        "group": [
-                //                            {
-                //                                "contentType": ['html'],
-                //                                "keyword": [
-                //                                    "showHelp"
-                //                                ],
-                //                                "contentText": [
-                //                                    "abc"
-                //                                ],
-                //                                "contentHtml": [
-                //                                    "xyz"
-                //                                ]
-                //                            }
-                //                        ]
-                //                    }
-                //                },
-                //                {
-                //                    "sections": {},
-                //                    "groups": {
-                //                        "group": [
-                //                            {
-                //                                "contentType": ['text'],
-                //                                "keyword": [
-                //                                    "showHelp"
-                //                                ],
-                //                                "contentText": [
-                //                                    "abc"
-                //                                ],
-                //                                "contentHtml": [
-                //                                    "xyz"
-                //                                ]
-                //                            }
-                //                        ]
-                //                    }
-                //                }
-                //            ]
-                //            }
-                //        }]
-                //}
-                //});
             });
 
             form.addButton('Cancel', { color: 'blue' }, function() {
