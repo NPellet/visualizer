@@ -31,14 +31,6 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
                     },
 
                     fields: {
-                        colorjpath: {
-                            type: 'combo',
-                            title: 'Color jPath',
-                            options: jpaths,
-                            extractValue: Util.jpathToArray,
-                            insertValue: Util.jpathToString
-                        },
-
                         slickCheck: {
                             type: 'checkbox',
                             title: 'Slick options',
@@ -59,7 +51,13 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
                             },
                             default: ['enableCellNavigation', 'rowNumbering', 'forceFitColumns']
                         },
-
+                        colorjpath: {
+                            type: 'combo',
+                            title: 'Color jPath',
+                            options: jpaths,
+                            extractValue: Util.jpathToArray,
+                            insertValue: Util.jpathToString
+                        },
                         "slick.defaultColumnWidth": {
                             type: 'float',
                             title: 'Default Column Width'

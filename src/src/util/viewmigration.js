@@ -325,7 +325,6 @@ define(['src/util/versioning', 'src/util/debug', 'src/util/util'], function (Ver
         var idx = checkbox.indexOf(name);
         if(idx > -1){
             checkbox.splice(idx, 1);
-            console.log('hello', name);
         }
     }
 
