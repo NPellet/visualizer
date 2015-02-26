@@ -377,6 +377,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             var hl = itemInfo.item._highlight;
                             that._hl = hl;
                             if(hl) {
+                                console.log('highlight id');
                                 API.highlightId(hl,1);
                                 lastHighlight = hl;
                             }
@@ -733,7 +734,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     this.grid.scrollRowToTop(gridRow);
                 }
 
-                this.grid.setActiveCell(gridRow, 0);
+                //this.grid.setActiveCell(gridRow, 0);
             }
         },
 

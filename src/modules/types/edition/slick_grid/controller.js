@@ -257,14 +257,10 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
         this.sendAction( 'row', item, 'onHover' );
     };
 
-    var onClick = _.throttle(function(row, item) {
+    controller.prototype.onClick = _.throttle(function(row, item) {
         this.setVarFromEvent( 'onSelect', 'row', 'list', [ row ] );
         this.sendAction( 'row', item, 'onSelect' );
     }, 250, {trailing: false});
-
-    controller.prototype.onClick = function(row, item) {
-       onClick.call(this, row, item);
-    };
 
     controller.prototype.onActive = function(row, item) {
         var itemId = item[this.module.view.idPropertyName];
