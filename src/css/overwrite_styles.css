@@ -25,24 +25,33 @@
     height: 12px;
 }
 
-.ui-widget { font-family: inherit; font-size: inherit; }
-.ui-dialog { overflow: visible; }
-.ui-dialog .ui-dialog-content { overflow: visible; }
+.ui-widget {
+    font-family: inherit;
+    font-size: inherit;
+}
+
+.ui-dialog {
+    overflow: visible;
+}
+
+.ui-dialog .ui-dialog-content {
+    overflow: visible;
+}
 
 .ui-fancytree.fancytree-container {
-	background: transparent;
-	border: none;
-	outline: none;
+    background: transparent;
+    border: none;
+    outline: none;
 }
 
 /* Norman modification */
 .jqgrow:hover {
-	background-color: #e5be39 !important;
+    background-color: #e5be39 !important;
 }
 
 .jqgrow td.ui-state-highlight {
-	background-color: transparent;
-	border: none;
+    background-color: transparent;
+    border: none;
 }
 
 .ui-jqgrid {
@@ -51,6 +60,6 @@
 
 /* disable link animations from colors component */
 a {
-  -webkit-transition: none;
-  transition: none;
+    -webkit-transition: none;
+    transition: none;
 }
