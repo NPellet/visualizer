@@ -7,12 +7,11 @@ define(['modules/default/defaultview'], function (Default) {
 
 
         init: function () {
-            this._loadingTimeout;
             this.dom = $('<iframe border="0" frameborder="none" width="100%" height="100%" />');
 
             var self=this;
             this.dom.load(function(event) { // we remove the loading message
-                if (self.dom.attr('src')!="about:blank") {
+                if (self.dom.attr('src')!='about:blank') {
                     if (self._loadingTimeout) clearTimeout(self._loadingTimeout);
                     else self.hideLoading();
                 }
@@ -62,7 +61,7 @@ define(['modules/default/defaultview'], function (Default) {
     });
 
     function blankIframe() {
-        this.dom.attr('src', "about:blank");
+        this.dom.attr('src', 'about:blank');
     }
 
     return View;
