@@ -216,7 +216,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
     }
 
     DataArray.prototype = Object.create(Array.prototype);
-    Object.defineProperty(DataArray.prototype, 'constructor', DataArray);
+    Object.defineProperty(DataArray.prototype, 'constructor', {value: DataArray});
 
     window.DataObject = DataObject;
     window.DataArray = DataArray;
