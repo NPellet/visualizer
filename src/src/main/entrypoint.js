@@ -831,7 +831,7 @@ define([
 
                 visualizerDiv.html('<table id="viewport" cellpadding="0" cellspacing="0">\n    <tr>\n        <td id="ci-center">\n            <div id="modules-grid">\n                <div id="ci-dialog"></div>\n            </div>\n        </td>\n    </tr>\n</table>');
 
-                var configJson = urls['config'] || visualizerDiv.attr('config') || require.toUrl('usr/config/default.json');
+                var configJson = urls['config'] || visualizerDiv.attr('data-ci-config') || visualizerDiv.attr('config') || require.toUrl('usr/config/default.json');
 
                 $.getJSON(configJson, {}, function (cfgJson) {
 
@@ -899,12 +899,12 @@ define([
                             view: {
                                 urls: urls['views'],
                                 branch: urls['viewBranch'],
-                                url: urls['viewURL'] || $visualizer.attr('viewURL')
+                                url: urls['viewURL'] || $visualizer.attr('data-ci-view') || $visualizer.attr('viewURL')
                             },
                             data: {
                                 urls: urls['results'],
                                 branch: urls['resultBranch'],
-                                url: urls['dataURL'] || $visualizer.attr('dataURL')
+                                url: urls['dataURL'] || $visualizer.attr('data-ci-data') || $visualizer.attr('dataURL')
                             }
                         };
                         window.history.replaceState({type: 'viewchange', value: viewInfo}, '');
