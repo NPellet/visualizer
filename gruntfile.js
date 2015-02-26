@@ -104,7 +104,9 @@ module.exports = function (grunt) {
                             './sdf-parser/**',
                             './async/lib/async.js',
                             ['./jsNMR/lib/components/VisuMol/**', './jsNMR/src/**', './jsNMR/dist/**'],
-                            './loglevel/dist/loglevel.min.js'
+                            './loglevel/dist/loglevel.min.js',
+                            './marked/lib/marked.js',
+                            './highlight.js/build/highlight.pack.js'
                         ],
 
                         dest: './build/components/'
