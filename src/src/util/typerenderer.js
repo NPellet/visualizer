@@ -331,13 +331,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
             var colors = Color.getDistinctColors(value.length);
             var totalSize = 0;
             for (var i = 0; i < length; i++) {
-                if (!value[i].bgcolor) value[i].bgcolor = colors[i];
-                if (!value[i].size && value[i].size !== 0) value[i].size = 10;
-                totalSize += value[i].size;
-            }
-
-            for (var i = 0; i < length; i++) {
-                if (!value[i].bgcolor) value[i].bgcolor = colors[i];
+                if (!value[i].bgcolor) value[i].bgcolor = Color.getColor(colors[i]);
                 if (!value[i].size && value[i].size !== 0) value[i].size = 10;
                 totalSize += value[i].size;
             }
