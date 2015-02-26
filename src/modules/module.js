@@ -1387,7 +1387,8 @@ define([
 			ui.dialog('<div class="ci-module-export"><textarea></textarea></div>', {
 				title: 'Export data from module ' + module.getTitle(),
 				width: '70%',
-				height: 500
+				height: 500,
+				noWrap: true
 			}).children('textarea').text(module.controller['export']());
 		},
 		
@@ -1498,7 +1499,8 @@ define([
 			ui.dialog('<div class="ci-module-export"><textarea></textarea></div>', {
 				title: 'Config example',
 				width: '70%',
-				height: 500
+				height: 500,
+				noWrap: true
 			}).children('textarea').text(JSON.stringify(module.getConfigExample(), null, 4));
 		}
 

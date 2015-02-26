@@ -50,7 +50,8 @@ define(['src/util/debug', 'lodash', 'jquery', 'jquery-ui/dialog'], function (Deb
         modal: true,
         autoDestroy: true,
         autoPosition: false,
-        noHeader: false
+        noHeader: false,
+        noWrap: false
     };
     exports.dialog = function (div, options) {
         if (typeof div === 'object' && !div.jquery) {
@@ -58,7 +59,12 @@ define(['src/util/debug', 'lodash', 'jquery', 'jquery-ui/dialog'], function (Deb
             div = null;
         }
         options = $.extend({}, defaultDialogOptions, options);
-        var $dialog = $('<div>').html(div || '');
+        var $dialog;
+        if (options.noWrap) {
+            $dialog = $(div || '<div>');
+        } else {
+            $dialog = $('<div>').html(div || '');
+        }
         if (options.autoDestroy && !options.close) {
             options.close = function () {
                 $(this).dialog('destroy');
