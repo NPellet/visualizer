@@ -300,7 +300,17 @@ define(['src/util/versioning', 'src/util/debug', 'src/util/util'], function (Ver
                     delete cols[i].resizable;
                 }
                 var group = module.getChildSync([ 'configuration', 'groups', 'group', 0 ]);
+
                 delete group.toggle;
+
+                var slickCheck = group.slickCheck[0];
+                if(slickCheck instanceof Array) {
+                    checkboxRemove(slickCheck, 'multiColumnSort');
+                    checkboxRemove(slickCheck, 'enableColumnReorder');
+                    checkboxRemove(slickCheck, 'enableTextSelectionOnCells');
+                }
+                delete group.filterRow;
+
             }, 'slick_grid');
         }
 
@@ -310,6 +320,14 @@ define(['src/util/versioning', 'src/util/debug', 'src/util/util'], function (Ver
 //      }
 
     ];
+
+    function checkboxRemove(checkbox, name) {
+        var idx = checkbox.indexOf(name);
+        if(idx > -1){
+            checkbox.splice(idx, 1);
+            console.log('hello', name);
+        }
+    }
 
     function eachModule(view, callback, moduleNames) {
         if (view.modules) {

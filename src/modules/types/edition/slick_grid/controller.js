@@ -47,13 +47,10 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
                                 enableAddRow: 'Enable add row',
                                 enableCellNavigation: 'Enable Cell Navigation',
                                 autoEdit: 'Enable Auto Edit',
-                                enableTextSelectionOnCells: 'Enable Text Selection',
-                                enableColumnReorder: 'Enable Column reorder',
                                 forceFitColumns: 'Force fit Columns',
                                 rowDelete: 'Can delete rows',
                                 autoFocus: 'Auto Focus',
                                 rowNumbering: 'Show row number when scrolling',
-                                multiColumnSort: 'Multi-column sorting',
                                 oneUncollapsed: 'Maximum One group uncollapsed (per level)',
                                 filterColumns: 'Provides search input for each column',
                                 backToTop: 'Don\'t remember scroll position on new variable',
@@ -81,10 +78,6 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
                                 {key: 'cell', title: 'Cell Selection Model'}
                             ],
                             default: ['cell']
-                        },
-                        filterRow: {
-                            type: 'jscode',
-                            title: 'Filter'
                         }
                     }
                 },
@@ -171,7 +164,6 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
 
     controller.prototype.configAliases = {
         'colorjPath': [ 'groups', 'group', 0, 'colorjpath', 0 ],
-        'filterRow': [ 'groups', 'group', 0, 'filterRow', 0 ],
         'slickCheck': [ 'groups', 'group', 0, 'slickCheck', 0 ],
         'slick.rowHeight': [ 'groups', 'group', 0, 'slick.rowHeight', 0 ],
         'slick.selectionModel': [ 'groups', 'group', 0, 'slick.selectionModel', 0 ],
