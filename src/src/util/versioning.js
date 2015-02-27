@@ -1,10 +1,10 @@
 'use strict';
 
-define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'src/util/util'], function (VersionHandler, Debug, Variables, Util) {
+define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'lib/semver/semver'], function (VersionHandler, Debug, Variables, semver) {
 
     var version = '2.14.1';
 
-    if (!Util.semver(version)) {
+    if (!semver.valid(version)) {
         throw new Error('Version number is invalid: ' + version);
     }
 

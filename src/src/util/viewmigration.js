@@ -1,6 +1,6 @@
 'use strict';
 
-define(['src/util/versioning', 'src/util/debug', 'src/util/util'], function (Versioning, Debug, Util) {
+define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function (Versioning, Debug, semver) {
 
     var migrators = [
 
@@ -289,6 +289,7 @@ define(['src/util/versioning', 'src/util/debug', 'src/util/util'], function (Ver
                 }
             }, 'slick_grid');
         },
+
         '2.13.1-b3', function(view) {
             eachModule(view, function(module) {
                 var cols = module.getChildSync(['configuration', 'groups', 'cols', 0]);
@@ -424,7 +425,7 @@ define(['src/util/versioning', 'src/util/debug', 'src/util/util'], function (Ver
             return './modules/types/xyzoomnavigator/';
         if (type === 'webservice_cron')
             return './modules/types/webservice_cron/';
-        console.error('viewmigration problem: ' + type + ' is unknown');
+        Debug.error('viewmigration problem: ' + type + ' is unknown');
     }
 
     function updateJpath(element) {
@@ -446,11 +447,8 @@ define(['src/util/versioning', 'src/util/debug', 'src/util/util'], function (Ver
             delete view._version;
         }
 
-        if (view.version === Versioning.version)
+        if (view.version === Versioning.version) {
             return view;
-
-        if (typeof view.version !== 'undefined') {
-            Debug.info('Migrating view from version ' + view.version + ' to ' + Versioning.version);
         }
 
         // views without good version numbering
@@ -475,108 +473,64 @@ define(['src/util/versioning', 'src/util/debug', 'src/util/util'], function (Ver
                 break;
         }
 
-        var versionSem = Util.semver(view.version);
-
-        if (!versionSem) {
+        var viewVersion = semver.parse(view.version);
+        if (!viewVersion) {
+            Debug.error('View has an invalid version: ' + view.version + '. It cannot be migrated');
             return view;
         }
 
-        if (versionSem.prerelease) {
+        var visualizerVersion = semver.parse(Versioning.version);
+
+        if (semver.gt(viewVersion, visualizerVersion)) {
+            return view;
+        }
+
+        Debug.info('Migrating view from version ' + view.version + ' to ' + Versioning.version);
+
+        if (viewVersion.prerelease.length) {
             Debug.warn('Migrating a prerelease view, anything can happen !');
         }
 
-        if (Util.semver(Versioning.version).prerelease) {
+        if (visualizerVersion.prerelease.length) {
             Debug.warn('Migrating to a prerelease version of the visualizer, anything can happen !');
         }
 
-        migrateView(view, versionSem);
+        for (var i = 0; i < migrationFunctions.length; i++) {
+            if (semver.lt(viewVersion, migrationFunctions[i].version)) {
+                Debug.debug('applying migration to v' + migrationFunctions[i].version.version);
+                migrationFunctions[i].func(view);
+            }
+        }
 
         view.version = Versioning.version;
 
         return view;
     }
 
-    function migrateView(view, version) {
-        var i, j, k, l,
-            major, minor, patch, release,
-            found;
-        for (i = version.major; i < migrationFunctions.length; i++) {
-            major = migrationFunctions[i];
-            if (major) {
-                j = (i == version.major ? version.minor : 0);
-                for (; j < major.length; j++) {
-                    minor = major[j];
-                    if (minor) {
-                        k = ((i == version.major && j == version.minor) ? version.patch : 0);
-                        for (; k < minor.length; k++) {
-                            patch = minor[k];
-                            if (patch) {
-                                if (i == version.major && j == version.minor && k == version.patch) {
-                                    if (version.prerelease) {
-                                        for (l = 0; l < patch.length; l++) {
-                                            release = patch[l];
-                                            if (release.label == version.prerelease) {
-                                                found = true;
-                                            } else if (found) {
-                                                Debug.debug("applying migration to v" + i + "." + j + "." + k + "-" + release.label);
-                                                release.func(view);
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    for (l = 0; l < patch.length; l++) {
-                                        release = patch[l];
-                                        Debug.debug("applying migration to v" + i + "." + j + "." + k + "-" + release.label);
-                                        release.func(view);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     var migrationFunctions = [];
-
-    function addMigrationFunction(version, func) {
-
-        var semVer = Util.semver(version);
-
-        if (!semVer) {
-            throw new Error('invalid semver for migration function: ' + version);
-        }
-
-        if (typeof func !== 'function') {
-            throw new Error('object passed for migration ' + version + ' has to be a function');
-        }
-
-        var major = migrationFunctions[semVer.major] || (migrationFunctions[semVer.major] = []);
-        var minor = major[semVer.minor] || (major[semVer.minor] = []);
-        var patch = minor[semVer.patch] || (minor[semVer.patch] = []);
-
-        if (semVer.prerelease) {
-            patch.push({
-                label: semVer.prerelease,
-                func: func
-            });
-        } else {
-            patch.push({
-                label: 'release',
-                func: func
-            });
-        }
-
-    }
 
     if (migrators.length % 2 == 1) {
         throw new Error('Invalid length of the migrators array.');
     }
 
     for (var i = 0; i < migrators.length; i += 2) {
-        addMigrationFunction(migrators[i], migrators[i + 1]);
+        var version = semver.parse(migrators[i]);
+        if (!version) {
+            throw new Error('invalid semver for migration function: ' + migrators[i]);
+        }
+        var func = migrators[i + 1];
+        if (typeof func !== 'function') {
+            throw new Error('object passed for migration ' + migrators[i] + ' has to be a function');
+        }
+        migrationFunctions.push({
+            version: version,
+            func: func
+        });
     }
+
+    migrationFunctions.sort(function (v1, v2) {
+        return v1.version.compare(v2.version);
+    });
 
     return migrate;
 
