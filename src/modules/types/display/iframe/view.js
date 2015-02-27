@@ -16,9 +16,6 @@ define(['modules/default/defaultview'], function (Default) {
                     else self.hideLoading();
                 }
             });
-            // fix scroll bar
-            // see http://stackoverflow.com/a/12726445/1247233 for explanations
-            this.dom.css('vertical-align', 'bottom');
 
             this.module.getDomContent().html(this.dom);
             this.resolveReady();
