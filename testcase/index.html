@@ -75,25 +75,45 @@
 
 The visualizer page requires 3 parameters:
 <ul>
-    <li>viewURL: url towards a JSON file describing the elements to display
-    <li>dataURL: url pointing to the JSON containing the data
-    <li>config: url point to a JSON containing information about the header of the page (optional)
-
-
-
-        <h1>Examples</h1>
-
-        Please note that some of the examples will required an internet connection.
-
-        Also the examples DO NOT WORK with CHROME. Ajax query on local harddisk are not allowed in the current version of Chrome.
-
-        Or starts chrome using command line (on MacOSx): open /Applications/Google\ Chrome.app --args -allow-file-access-from-files
-
-        Select the config type: <div id="configs"></div>
-        <div id="examples"></div>
-
+    <li>viewURL: url towards a JSON file describing the elements to display</li>
+    <li>dataURL: url pointing to the JSON containing the data</li>
+    <li>config: url point to a JSON containing information about the header of
+        the page (optional)
+    </li>
 </ul>
 
+<h1>Examples</h1>
+
+<p>
+    Please note that some of the examples will required an internet
+    connection.
+</p>
+
+<p>
+    Also the examples DO NOT WORK with CHROME. Ajax query on local harddisk
+    are not allowed in the current version of Chrome.
+</p>
+
+<p>
+    Or starts chrome using command line (on MacOSx): open
+    /Applications/Google\ Chrome.app --args -allow-file-access-from-files
+</p>
+<br>
+
+<div style="margin-left: 40px">
+    Select the config type:
+    <div id="configs" style="display: inline-block"></div>
+    <br>
+    Select the version to test:
+    <div id="version" style="display: inline-block">
+        <select id="selectedVersion" onchange="updateExamples();">
+            <option value="src">source</option>
+            <option value="build">build</option>
+        </select>
+    </div>
+    <br><br>
+    <div id="examples"></div>
+</div>
 
 <script>
     function updateHeaders() {
@@ -111,15 +131,14 @@ The visualizer page requires 3 parameters:
 
     function updateExamples() {
         var currentHeader=$('#selectedHeader').val();
-
-
+        var version = $('#selectedVersion').val();
         var html=[];
         for (var i=0; i<examples.length; i++) {
             var viewURL="../testcase/data/"+examples[i].folder+"/view.json";
             var dataURL="../testcase/data/"+examples[i].folder+"/data.json";
             var configURL="";
             if (currentHeader) configURL="../testcase/config/"+currentHeader+".json";
-            html.push("<a target='_blank' href='../src/index.html?config="+configURL+"&viewURL="+viewURL+"&dataURL="+dataURL+"'>"+examples[i].description+"</a>");
+            html.push("<a target='_blank' href='../" + version + "/index.html?config="+configURL+"&viewURL="+viewURL+"&dataURL="+dataURL+"'>"+examples[i].description+"</a>");
             html.push("<br>");
         }
         $("#examples").html(html.join(""));
