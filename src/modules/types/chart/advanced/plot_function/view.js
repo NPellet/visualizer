@@ -5,7 +5,7 @@ define(['require','modules/default/defaultview','src/util/util','threejs'], func
 		init: function() {
 			// console.log("INIT");
 			THREE.ImageUtils.crossOrigin = 'anonymous';
-			
+			co
 			var self=this;
 
 			this.webgl = ( function () {
@@ -102,7 +102,7 @@ define(['require','modules/default/defaultview','src/util/util','threejs'], func
 			
 			if (!this.webgl) return;
 			var self=this;
-      console.log(this.onReady);
+    //  console.log(this.onReady);
 			this.module.viewReady.then(function() {
 				var cfg = $.proxy(self.module.getConfiguration, self.module);
 				var segments=cfg('segments');
@@ -117,7 +117,7 @@ define(['require','modules/default/defaultview','src/util/util','threejs'], func
 					self.scene.remove( self.graphMesh );
 				}
 
-				var wireTexture = new THREE.ImageUtils.loadTexture( require.toUrl('./square.png') );
+				var wireTexture = THREE.ImageUtils.loadTexture( require.toUrl('./square.png') );
 				wireTexture.wrapS = wireTexture.wrapT = THREE.RepeatWrapping;
 				wireTexture.repeat.set( 40, 40 );
 				var wireMaterial = new THREE.MeshBasicMaterial( { map: wireTexture, vertexColors: THREE.VertexColors, side:THREE.DoubleSide } );
