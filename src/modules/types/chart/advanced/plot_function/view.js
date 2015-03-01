@@ -4,7 +4,8 @@ define(['require','modules/default/defaultview','src/util/util','threejs'], func
 
 		init: function() {
 			// console.log("INIT");
-
+			THREE.ImageUtils.crossOrigin = '';
+			
 			var self=this;
 
 			this.webgl = ( function () {
