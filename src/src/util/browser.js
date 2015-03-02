@@ -1,4 +1,4 @@
-define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'src/util/util', 'jquery-cookie'], function(Debug, bowser, _, modernizr, Util) {
+define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'src/util/ui', 'jquery-cookie'], function(Debug, bowser, _, modernizr, ui) {
 
     var features = {
         canvas: {
@@ -91,7 +91,7 @@ define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'src/util/util', 'jqu
         tmpl += '<b><%- browserName %> <%- browserVersion %> </b> is incompatible with the visualizer<br/>';
         tmpl += 'Please update your browser to one of the following: <br/>';
         tmpl += '<ul class="browser-list"><% _.forEach(browsers, function(b) { %><li class="<%- b.name.toLowerCase() %>"><a href="<%- b.url %>"> <%- b.name %> </a> <span style="color:orange"><%- b.message %></span></li><% }); %></ul>';
-        return _.template(tmpl, recommendedBrowsers);
+        return _.template(tmpl)(recommendedBrowsers);
     }
 
     function featureErrorMessage() {
@@ -103,7 +103,7 @@ define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'src/util/util', 'jqu
         tmpl += '<ul class="browser-list"><% _.forEach(browsers, function(b) { %><li class="<%- b.name.toLowerCase() %>"><a href="<%- b.url %>"> <%- b.name %> </a> <span style="color:orange"><%- b.message %></span></li><% }); %></ul>';
 
         var feat = {features: _.cloneDeep(features)};
-        return _.template(tmpl, _.merge(feat, recommendedBrowsers));
+        return _.template(tmpl)(_.merge(feat, recommendedBrowsers));
     }
 
 
@@ -130,15 +130,11 @@ define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'src/util/util', 'jqu
                     return resolve();
                 }
 
-                var $dialog = $('#ci-dialog');
-                if(!$dialog.length) {
-                    $dialog = $('<div>').attr('id', 'ci-dialog');
-                    $('body').append($dialog);
-                }
+                var $dialog = $('<div>');
+
                 $dialog.html(featureErrorMessage());
-                $dialog.append($('<input id="skip-warning-checkbox" type="checkbox">Don\'t show this again</input>'));
-                $dialog.dialog({
-                    modal: true,
+                $dialog.append('<input id="skip-warning-checkbox" type="checkbox">Don\'t show this again</input>');
+                ui.dialog($dialog, {
                     buttons: {
                         Ok: function() {
                             $(this).dialog('close');
@@ -153,6 +149,7 @@ define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'src/util/util', 'jqu
                     },
                     width: 600
                 });
+
             });
 
         }
