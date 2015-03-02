@@ -48,7 +48,7 @@ requirejs.config({
 			exports: 'THREE',
 			init: function() {
 				// Allow cross-origin images
-				this.THREE.ImageUtils.crossOrigin = '';
+				this.THREE.ImageUtils.crossOrigin = 'anonymous';
 			}
 		},
 		'components/x2js/xml2json.min': {

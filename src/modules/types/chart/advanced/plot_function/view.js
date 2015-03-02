@@ -3,11 +3,7 @@ define(['require','modules/default/defaultview','src/util/util','threejs'], func
 	view.prototype = $.extend(true, {}, Default, {
 
 		init: function() {
-			// console.log("INIT");
-			THREE.ImageUtils.crossOrigin = 'anonymous';
-			
-			var self=this;
-
+            var self=this;
 			this.webgl = ( function () {
 				try {
 					return !! window.WebGLRenderingContext && 
