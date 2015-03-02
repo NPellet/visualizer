@@ -1,7 +1,15 @@
+2.14.2 / 2015-03-02
+===================
+* Core
+ * Bootstrap css compatibility (fixes cheminfo.org)
+* Components
+ * Fix cross-origin Image in THREE.js
+ * Fix marked and highlight.js build
+
 2.14.1 / 2015-02-26
 ===================
-
-* fix SlickGrid module
+* Modules
+ * fix SlickGrid module
 
 2.14.0 / 2015-02-26
 ===================
