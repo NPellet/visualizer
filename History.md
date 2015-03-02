@@ -1,5 +1,14 @@
+2.14.3 / 2015-03-02
+===================
+
+* Core
+ * Fix main CSS
+ * Fix CSS for jquery-ui dialogs
+ * Fix browser feature message (IE)
+
 2.14.2 / 2015-03-02
 ===================
+
 * Core
  * Bootstrap css compatibility (fixes cheminfo.org)
 * Components
@@ -8,6 +17,7 @@
 
 2.14.1 / 2015-02-26
 ===================
+
 * Modules
  * fix SlickGrid module
 
