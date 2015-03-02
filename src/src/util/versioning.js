@@ -2,7 +2,7 @@
 
 define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'lib/semver/semver'], function (VersionHandler, Debug, Variables, semver) {
 
-    var version = '2.14.1';
+    var version = '2.14.2';
 
     if (!semver.valid(version)) {
         throw new Error('Version number is invalid: ' + version);
