@@ -324,7 +324,7 @@ define([
                 success: function () {
                     that.loggedIn = false;
                     that.username = null;
-                    that.$_elToOpen.html(that.getLoginForm());
+                    that.openMenu('login');
                 }
             });
         },
