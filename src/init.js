@@ -38,7 +38,7 @@ requirejs.config({
 		loglevel:           'components/loglevel/dist/loglevel.min',
         "markdown-js":      'components/markdown-js/lib/markdown',
         marked:             'components/marked/lib/marked',
-        'highlightjs':		'components/highlight.js/build/highlight.pack'
+        'highlightjs':		'lib/highlight.js/highlight.pack'
 	},
 	shim: {
 		d3: {
