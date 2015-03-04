@@ -1,8 +1,11 @@
-HEAD
-====
+2.14.4 / 2015-03-04
+===================
 
 * Components
  * Move highlight.js to libs
+* Header
+ * couchdb2: fix logout
+
 
 2.14.3 / 2015-03-02
 ===================
