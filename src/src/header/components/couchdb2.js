@@ -412,7 +412,7 @@ define([
             });
 
             dom.append($('<p><span>Flavor : </span>').append(flavorField).append(
-                new Button('Switch', changeFlavor, {color: 'red'}).render()
+                new Button('Switch', changeFlavor, {color: 'red'}).setTooltip('Switch flavor!').render()
             ));
 
             var treeCSS = {
@@ -421,8 +421,32 @@ define([
                 'width': '300px'
             };
             var treeContainer = $('<div>').attr('id', this.cssId('tree')).css(treeCSS).appendTo(dom);
-            dom.append($('<p>').append('<input type="text" id="' + this.cssId('docName') + '"/>')
-                    .append(new Button('Edit MetaData', function(){
+            this.makePublicButton = new Button('Make Public', function() {
+                console.log('Make public');
+                ui.confirm('Do you want to proceed', 'Proceed', 'Cancel').then(function(proceed){
+                    if(!proceed || !that.currentDocument) return;
+                    var node = that.currentDocument;
+                    var doc = node.data.doc;
+                    doc.isPublic = true;
+                    that.database.saveDoc(doc, {
+                        success: function (data) {
+                            doc._rev = data.rev;
+                            node.data.isPublic = true;
+                            that.updateButtons();
+                            if (node.children)
+                                child.lazyLoad(true);
+
+                            that.showError('The view was made public', 2);
+                        },
+                        error: function () {
+                            that.showError.apply(that, arguments)
+                        }
+                    });
+                    console.log('proceed with make public');
+                });
+            }, {color: 'red'});
+            dom.append($('<div style="width:560px; height:35px;">').append('<input type="text" id="' + this.cssId('docName') + '"/>')
+                    .append(new Button('Edit Meta', function(){
                         that.metaData();
                     }, {color: 'blue'}).render())
                     .append(new Button('Save data', function () {
@@ -434,13 +458,25 @@ define([
                     .append(new Button('Mkdir', function () {
                         that.mkdir(that.getFormContent('docName'));
                     }, {color: 'blue'}).render())
+                    .append(this.errorP)
             );
 
-            dom.append(this.errorP);
+
+            dom.append('<hr>').append(this.makePublicButton.render().hide());
 
             this.loadFlavor();
 
             return dom;
+        },
+        updateButtons: function() {
+            var node = this.currentDocument;
+            var dom = this.makePublicButton.getDom();
+            if((node && node.data && !node.data.isPublic && dom)) {
+                dom.show();
+            }
+            else if(dom) {
+                dom.hide();
+            }
         },
         getMetaForm: function(node) {
             var that = this;
@@ -696,6 +732,7 @@ define([
         clickNode: function (event, data) {
             var folder;
             var node = folder = data.node, last;
+            debugger;
 
             var index = node.key.indexOf(':'), keyWithoutFlavor;
             if (index >= 0)
@@ -716,6 +753,7 @@ define([
                 folder = node.parent;
                 this.currentDocument = node;
                 $('#' + this.cssId('docName')).val(node.title);
+                this.updateButtons();
                 last = {name: node.data.doc._id, node: node};
                 if (event.type === 'fancytreedblclick')
                     this.load(node, rev);
@@ -1016,7 +1054,8 @@ define([
             __doc: data.doc,
             __data: data.value.data,
             __view: data.value.view,
-            __meta: data.value.meta
+            __meta: data.value.meta,
+            __public: data.value.isPublic
         };
         return structure;
     }
@@ -1049,6 +1088,7 @@ define([
                         hasData: obj.__data,
                         hasView: obj.__view,
                         hasMeta: obj.__meta,
+                        isPublic: obj.__public,
                         lazy: true,
                         title: name,
                         key: thisPath
@@ -1062,6 +1102,7 @@ define([
                 el.hasData = obj.__data;
                 el.hasView = obj.__view;
                 el.hasMeta = obj.__meta;
+                el.isPublic = obj.__public;
             }
             tree.push(el);
         }
