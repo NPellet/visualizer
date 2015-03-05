@@ -67,6 +67,16 @@ define(['require', 'jquery', 'forms/title'], function(require, $, title) {
             return this;
 		},
 
+        setTooltip: function(tooltip) {
+            this.tooltip = tooltip;
+            this.applyStyle();
+            return this;
+        },
+
+        getTooltip: function() {
+            return this.tooltip;
+        },
+
 		render: function() {
 			var html = "";
 			html += '<div class="form-button';
@@ -86,6 +96,13 @@ define(['require', 'jquery', 'forms/title'], function(require, $, title) {
 			if( ! this.dom ) {
 				return;
 			}
+
+            if(this.tooltip) {
+                this.dom.attr('title', this.tooltip);
+            }
+            else {
+                this.dom.attr('title');
+            }
 
 			if( this.color ) {
 				this.dom.removeClass(this.oldColor);
