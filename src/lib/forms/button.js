@@ -39,6 +39,7 @@ define(['require', 'jquery', 'forms/title'], function(require, $, title) {
 
 			this.title = objtitle;
 			this.applyStyle( );
+            return this;
 		},
 		getId: function() {
 			return this.id;
@@ -55,12 +56,15 @@ define(['require', 'jquery', 'forms/title'], function(require, $, title) {
 
 		setColorCss: function(color) {
 			this.dom.css('color', color);
+            return this;
 		},
 		setValue: function( val ) {
 			this.value = val;
+            return this;
 		},
 		setIcon: function(icon) {
 			this.icon = icon;
+            return this;
 		},
 
 		render: function() {
