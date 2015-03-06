@@ -173,19 +173,22 @@ define([
         saveMeta: function(val) {
             var that = this;
             var node = that.currentDocument;
-            $.ajax({
-                url: this.database.uri + node.data.doc._id + '/meta.json?rev=' + node.data.doc._rev,
-                type: 'PUT',
-                contentType: 'application/json',
-                data: JSON.stringify(val),
-                dataType: 'json',
-                error: this.showError,
+            var doc = node.data.doc;
+            doc.keywords = val.keywords.value;
+            doc._attachments['meta.json'] = {
+                'content_type': 'application/json',
+                'data': Base64.encode(JSON.stringify(val))
+            };
+            that.database.saveDoc(doc, {
                 success: function (data) {
-                    node.data.doc._rev = data.rev;
-                    node.data.hasMeta = true;
+                    doc._rev = data.rev;
                     if (node.children)
                         child.lazyLoad(true);
+
                     that.showError('meta saved.', 2);
+                },
+                error: function () {
+                    that.showError.apply(that, arguments)
                 }
             });
         },
