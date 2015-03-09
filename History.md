@@ -1,3 +1,11 @@
+2.15.0 / 2015-03-09
+===================
+* Header
+ * couchdb2: new login methods (google,facebook, github). Metadata keywords saved in doc for indexing in couchdb map/reduce
+* Modules
+ * dragdrop: fix bugs
+ * form_simple: fix bug
+
 2.14.4 / 2015-03-04
 ===================
 
