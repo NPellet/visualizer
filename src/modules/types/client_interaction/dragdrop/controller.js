@@ -240,12 +240,12 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
     };
 
     Controller.prototype.open = function (data) {
-
         if (!data.items.length)
             return;
 
-        //this.module.model.tmpVars = new DataObject();
-        //this.module.model.tmpVarsArray = new DataObject();
+
+        this.module.model.tmpVars = new DataObject();
+        this.module.model.tmpVarsArray = new DataObject();
 
         var that = this;
         var defs = [];
