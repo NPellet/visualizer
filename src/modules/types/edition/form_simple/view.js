@@ -47,49 +47,57 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 				def = tpl_html;
 			}
 
-			var triggerFunction = function( ) {
-
-				if( self.lockEvents ) {
-					return;
-				}
+            function triggerCommon() {
+                if( self.lockEvents ) {
+                    return;
+                }
 
                 var i, l;
 
-				var val = new DataObject( this.getValue(), true );
-				self.formValue = val;
+                var val = new DataObject( this.getValue(), true );
+                self.formValue = val;
 //				self.module.controller.valueChanged( val );
 
-				var input = self.module.getDataFromRel('input_object'),
-					structure = self.module.getConfiguration('structure') || [],
-					jpath;
+                var input = self.module.getDataFromRel('input_object'),
+                    structure = self.module.getConfiguration('structure') || [],
+                    jpath;
 
-				var el = new DataObject();
+                var el = new DataObject();
 
-				if( input ) {
-					
-					if( self.module.getConfiguration( 'replaceObj' ) ) {
+                if( input ) {
 
-						for( i = 0, l = structure.length ; i < l ; i ++ ) {
-							jpath = structure[ i ].groups.general[ 0 ].searchOnField[ 0 ];
-							input.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value, [self.module.getId()] );
-						}
+                    if( self.module.getConfiguration( 'replaceObj' ) ) {
 
-						self.module.model.dataTriggerChange( input );
+                        for( i = 0, l = structure.length ; i < l ; i ++ ) {
+                            jpath = structure[ i ].groups.general[ 0 ].searchOnField[ 0 ];
+                            input.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value, [self.module.getId()] );
+                        }
 
-					} else {
+                        self.module.model.dataTriggerChange( input );
 
-						for( i = 0, l = structure.length ; i < l ; i ++ ) {
-							jpath = structure[ i ].groups.general[ 0 ].searchOnField[ 0 ];
-							el.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value );
-	//						input.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value );
-						}
-					}
-				} else {
-					el = val;
-				}
+                    } else {
 
-				self.module.controller.valueChanged( el );
+                        for( i = 0, l = structure.length ; i < l ; i ++ ) {
+                            jpath = structure[ i ].groups.general[ 0 ].searchOnField[ 0 ];
+                            el.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value );
+                            //						input.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value );
+                        }
+                    }
+                } else {
+                    el = val;
+                }
+                return el;
+            }
+
+			var triggerFunction = function( ) {
+                var el = triggerCommon.call(this);
+                self.module.controller.formTriggered(el)
 			};
+
+            var changedFunction = function() {
+                var el = triggerCommon.call(this);
+                self.module.controller.valueChanged(el);
+            };
 
 			$.when( def ).done( function( tpl ) { 
 
@@ -98,15 +106,12 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 				
 				switch( trigger ) {
 
-					case 'btn':
+					case 'btn':case 'both':
                         var btnLabel = self.module.getConfiguration('btnLabel');
 						form.addButton(btnLabel, { color: 'blue' }, $.proxy( triggerFunction, form ) );
-					break;
-
-					case 'change':
+					case 'change':case 'both':
                         var debounce = self.module.getConfiguration('debounce');
-                        options.onValueChanged = debounce > 0 ?  _.debounce(triggerFunction, debounce): triggerFunction;
-					break;
+                        options.onValueChanged = debounce > 0 ?  _.debounce(changedFunction, debounce): changedFunction;
 				}
 
 				form.init( options );
