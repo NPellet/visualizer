@@ -11,7 +11,8 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
 
             var self = this;
             var $fileInput = $('<input/>').css('display', 'none').attr({
-                type: 'file'
+                type: 'file',
+                multiple: true
             });
             var capture = this.module.getConfiguration('capture');
             if(capture && capture !== 'none') {
