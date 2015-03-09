@@ -24,6 +24,7 @@ define([
         initImpl: function () {
             this.ok = this.loggedIn = false;
             this.id = Util.getNextUniqueId();
+            this.options.loginMethods = this.options.loginMethods || ['couchdb'];
             if (this.options.url) {
                 $.couch.urlPrefix = this.options.url.replace(/\/$/, '');
             }
@@ -331,27 +332,45 @@ define([
                 }
             });
         },
-        getLoginForm: function () {
-
+        renderLoginMethods: function() {
             var that = this;
-
             function doLogin() {
                 that.login(that.getFormContent('login-username'), that.getFormContent('login-password'));
                 return false;
             }
+            for(var i=0; i<this.options.loginMethods.length; i++) {
+                switch(this.options.loginMethods[i]) {
+                    case 'google':
+                        this.loginForm.append('<a href=" ' + that.url + '/auth/google' + '">Google login</a><br/>');
+                        break;
+                    case 'github':
+                        this.loginForm.append('<a href=" ' + that.url + '/auth/github' + '">Github login</a><br/>');
+                        break;
+                    case 'facebook':
+                        this.loginForm.append('<a href=" ' + that.url + '/auth/facebook' + '">Facebook login</a><br/>');
+                        break;
+                    case 'couchdb':
+                        this.loginForm.append('<div> Couchdb Login </div>');
+                        this.loginForm.append('<label for="' + this.cssId('login-username') + '">Username </label><input type="text" id="' + this.cssId('login-username') + '" /><br>');
+                        this.loginForm.append('<label for="' + this.cssId('login-password') + '">Password </label><input type="password" id="' + this.cssId('login-password') + '" /><br><br>');
+                        this.loginForm.append(new Button('Login', doLogin, {color: 'green'}).render());
+                        this.loginForm.bind('keypress', function (e) {
+                            if (e.charCode === 13)
+                                return doLogin();
+                        });
+                        break;
+                    default:
 
+                        break;
+                }
+            };
+        },
+
+        getLoginForm: function () {
             var loginForm = this.loginForm = $('<div>');
             loginForm.append('<h1>Login</h1>');
-            loginForm.append('<label for="' + this.cssId('login-username') + '">Username </label><input type="text" id="' + this.cssId('login-username') + '" /><br>');
-            loginForm.append('<label for="' + this.cssId('login-password') + '">Password </label><input type="password" id="' + this.cssId('login-password') + '" />');
-            loginForm.append(new Button('Login', doLogin, {color: 'green'}).render());
-            loginForm.bind('keypress', function (e) {
-                if (e.charCode === 13)
-                    return doLogin();
-            });
-
+            this.renderLoginMethods();
             loginForm.append(this.errorP);
-
             return loginForm;
         },
         getMenuContent: function () {
