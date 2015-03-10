@@ -259,7 +259,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         if (columnId !== undefined && columnFilters[columnId] !== "") {
                             var idx = that.slick.data.getIdxById(item[that.idPropertyName]);
                             var c = that.grid.getColumns()[that.grid.getColumnIndex(columnId)];
-                            var jpath = _.clone(c.jpath);
+                            var jpath = _.clone(DataObject.resurrect(c.jpath));
                             jpath.unshift(idx);
                             if (!that.module.data.getChildSync(jpath) || !that.module.data.getChildSync(jpath).get().toString().match(columnFilters[columnId])) {
                                 return false;
