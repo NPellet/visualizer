@@ -445,7 +445,7 @@ define([
             var treeContainer = $('<div>').attr('id', this.cssId('tree')).css(treeCSS).appendTo(dom);
             this.makePublicButton = new Button('Make Public', function() {
                 console.log('Make public');
-                ui.confirm('Do you want to proceed', 'Proceed', 'Cancel').then(function(proceed){
+                ui.confirm('You are about to make your view public. This action is irreversible. It will enable anybody to access the saved view and data. Do you want to proceed?', 'Proceed', 'Cancel').then(function(proceed){
                     if(!proceed || !that.currentDocument) return;
                     var node = that.currentDocument;
                     var doc = node.data.doc;
