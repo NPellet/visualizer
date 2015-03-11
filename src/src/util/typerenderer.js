@@ -230,11 +230,44 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
         return def.reject(value.replace(/\[([0-9]+)/g, "[<sup>$1</sup>").replace(/([a-zA-Z)])([0-9]+)/g, "$1<sub>$2</sub>").replace(/\(([0-9+-]+)\)/g, "<sup>$1</sup>"));
     };
 
+    function bioPv(type, def, val) {
+        require(['lib/bio-pv/bio-pv.min'], function (pv) {
+            var id = Util.getNextUniqueId();
+            var div = '<div id="' + id + '" style="width:99%; height:99%" />';
+            def.build = function () {
+                var mol;
+                if (type === 'pdb') {
+                    mol = pv.io.pdb(val);
+                } else if (type === 'mol3d') {
+                    mol = pv.io.sdf(val);
+                }
+                var viewer = pv.Viewer(document.getElementById(id), {
+                    width: 'auto',
+                    height: 'auto',
+                    quality: 'medium'
+                });
+                viewer.addListener('viewerReady', function () {
+                    if (type === 'pdb') {
+                        var ligand = mol.select({rnames : ['RVP', 'SAH']});
+                        viewer.ballsAndSticks('ligand-' + id, ligand);
+                        viewer.cartoon(id, mol);
+                    } else if (type === 'mol3d') {
+                        viewer.ballsAndSticks(id, mol);
+                    }
+                    viewer.fitTo(mol);
+                });
+            };
+            def.resolve(div);
+        });
+    }
 
     functions.pdb = {};
-    functions.pdb.toscreen = function (def, value) {
-        return def.resolve(value);
-    };
+    functions.pdb.toscreen = bioPv.bind(functions.pdb, 'pdb');
+
+    functions.mol3d = {};
+    functions.mol3d.toscreen = bioPv.bind(functions.pdb, 'mol3d');
+
+    functions.molfile3D = functions.mol3d;
 
     functions.cif = {};
     functions.cif.toscreen = function (def, value) {

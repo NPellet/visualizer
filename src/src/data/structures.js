@@ -6,6 +6,8 @@ define(function () {
 //        'object': 'object', // Removed ! Object should by dynamic.
         'mol2d': 'string',
         'molfile2D': 'string',
+        'mol3d': 'string',
+        'molfile3D': 'string',
         'jme': 'string',
         'smiles': 'string',
         'actelionID': 'string',
