@@ -171,7 +171,7 @@ define([
             this.lastKeyLoaded = node.key;
         },
 
-        saveMeta: function(val) {
+        saveMeta: function (val) {
             var that = this;
             var node = that.currentDocument;
             var doc = node.data.doc;
@@ -334,14 +334,16 @@ define([
                 }
             });
         },
-        renderLoginMethods: function() {
+        renderLoginMethods: function () {
             var that = this;
+
             function doLogin() {
                 that.login(that.getFormContent('login-username'), that.getFormContent('login-password'));
                 return false;
             }
-            for(var i=0; i<this.options.loginMethods.length; i++) {
-                switch(this.options.loginMethods[i]) {
+
+            for (var i = 0; i < this.options.loginMethods.length; i++) {
+                switch (this.options.loginMethods[i]) {
                     case 'google':
                         this.loginForm.append('<a href=" ' + that.url + '/auth/google' + '">Google login</a><br/>');
                         break;
@@ -365,7 +367,8 @@ define([
 
                         break;
                 }
-            };
+            }
+            ;
         },
 
         getLoginForm: function () {
@@ -445,10 +448,10 @@ define([
                 'width': '300px'
             };
             var treeContainer = $('<div>').attr('id', this.cssId('tree')).css(treeCSS).appendTo(dom);
-            this.makePublicButton = new Button('Make Public', function() {
+            this.makePublicButton = new Button('Make Public', function () {
                 console.log('Make public');
-                ui.confirm('You are about to make your view public. This action is irreversible. It will enable anybody to access the saved view and data. Do you want to proceed?', 'Proceed', 'Cancel').then(function(proceed){
-                    if(!proceed || !that.currentDocument) return;
+                ui.confirm('You are about to make your view public. This action is irreversible. It will enable anybody to access the saved view and data. Do you want to proceed?', 'Proceed', 'Cancel').then(function (proceed) {
+                    if (!proceed || !that.currentDocument) return;
                     var node = that.currentDocument;
                     var doc = node.data.doc;
                     doc.isPublic = true;
@@ -470,7 +473,7 @@ define([
                 });
             }, {color: 'red'});
             dom.append($('<div style="width:560px; height:35px;">').append('<input type="text" id="' + this.cssId('docName') + '"/>')
-                    .append(new Button('Edit Meta', function(){
+                    .append(new Button('Edit Meta', function () {
                         that.metaData();
                     }, {color: 'blue'}).render())
                     .append(new Button('Save data', function () {
@@ -492,17 +495,17 @@ define([
 
             return dom;
         },
-        updateButtons: function() {
+        updateButtons: function () {
             var node = this.currentDocument;
             var dom = this.makePublicButton.getDom();
-            if((node && node.data && !node.data.isPublic && dom)) {
+            if ((node && node.data && !node.data.isPublic && dom)) {
                 dom.show();
             }
-            else if(dom) {
+            else if (dom) {
                 dom.hide();
             }
         },
-        getMetaForm: function(node) {
+        getMetaForm: function (node) {
             var that = this;
             var doc = node.data.doc;
             return new Promise(function (resolve) {
@@ -510,7 +513,7 @@ define([
                     url: that.database.uri + doc._id + '/meta.json', // always the last revision
                     type: 'GET',
                     dataType: 'json',
-                    error: function() {
+                    error: function () {
                         console.error('Could not get meta data...');
                         resolve({});
                     },
@@ -521,7 +524,7 @@ define([
             });
         },
 
-        processMetaForm: function(obj) {
+        processMetaForm: function (obj) {
             //var result = {
             //    sections: {
             //        metadata: [{
@@ -581,15 +584,15 @@ define([
                     ]
                 }
             };
-            for(var key in obj) {
+            for (var key in obj) {
                 var n = {};
                 n.contentType = [obj[key].type];
                 n.keyword = [key];
-                if(obj[key].type === 'text') {
+                if (obj[key].type === 'text') {
                     n.contentText = [obj[key].value];
                     n.contentHtml = [''];
                 }
-                else if(obj[key].type === 'html') {
+                else if (obj[key].type === 'html') {
                     n.contentHtml = [obj[key].value];
                     n.contentText = [''];
                 }
@@ -603,9 +606,9 @@ define([
             return result;
         },
 
-        metaData: function() {
+        metaData: function () {
             var that = this;
-            if(!this.currentDocument) {
+            if (!this.currentDocument) {
                 that.showError('No document selected');
                 return;
             }
@@ -669,60 +672,60 @@ define([
                 }
             };
 
-            var form = new Form({
-            });
+            var form = new Form({});
 
             form.init({
-                onValueChanged: function( value ) {	}
+                onValueChanged: function (value) {
+                }
             });
 
-            form.setStructure( structure );
-            form.onStructureLoaded().done(function() {
+            form.setStructure(structure);
+            form.onStructureLoaded().done(function () {
                 var fill = {};
                 var prom;
-                if(!that.currentDocument.data.hasMeta) {
+                if (!that.currentDocument.data.hasMeta) {
                     prom = Promise.resolve({});
                 }
                 else {
                     prom = that.getMetaForm(that.currentDocument);
                 }
 
-                prom.then(function(fill) {
+                prom.then(function (fill) {
                     form.fill(fill);
                 });
             });
 
-            form.addButton('Cancel', { color: 'blue' }, function() {
-                div.dialog( 'close' );
+            form.addButton('Cancel', {color: 'blue'}, function () {
+                div.dialog('close');
             });
 
-            form.addButton('Save', { color: 'green' }, function() {
+            form.addButton('Save', {color: 'green'}, function () {
                 var value = form.getValue();
                 that.saveMeta(that.getMetaFromForm(value));
                 div.dialog('close');
             });
 
-            form.onLoaded().done(function() {
-                div.html(form.makeDom(1,0));
+            form.onLoaded().done(function () {
+                div.html(form.makeDom(1, 0));
                 form.inDom();
             });
 
         },
 
-        getMetaFromForm: function(value) {
+        getMetaFromForm: function (value) {
             value = DataObject.check(value, true);
             var result = {};
             var x = value.getChildSync(['sections', 'metadata', 0, 'sections', 'keywords']);
-            if(x) {
-                for(var i=0; i< x.length; i++) {
+            if (x) {
+                for (var i = 0; i < x.length; i++) {
                     var val = x.getChildSync([i, 'groups', 'group', 0]);
-                    if(val.contentType[0] === 'text') {
+                    if (val.contentType[0] === 'text') {
                         result[val.keyword[0]] = {
                             type: 'text',
                             value: val.contentText[0]
                         }
                     }
-                    else if(val.contentType[0] === 'html') {
+                    else if (val.contentType[0] === 'html') {
                         result[val.keyword[0]] = {
                             type: 'html',
                             value: val.contentHtml[0]
@@ -880,34 +883,35 @@ define([
 
                 }
             };
-
-            this.database.view('flavor/docs', {
-                success: function (data) {
-                    var tree = createFullTree(data.rows, that.flavor);
-                    var theTree = $('#' + that.cssId('tree'));
-                    theTree.fancytree({
-                        toggleEffect: false,
-                        extensions: ['dnd'],
-                        dnd: dnd,
-                        source: [],
-                        lazyLoad: proxyLazyLoad,
-                        dblclick: proxyClick,
-                        debugLevel: 0,
-                        activate: proxyClick
-                    }).children('ul').css('box-sizing', 'border-box');
-                    var thefTree = theTree.data('ui-fancytree').getTree();
-                    thefTree.reload(tree);
-                    thefTree.getNodeByKey(that.flavor).toggleExpanded();
-                    theTree.contextmenu(menuOptions);
-                    if (that.lastKeyLoaded)
-                        thefTree.activateKey(that.lastKeyLoaded);
+            this.database.list('flavor/sort', 'docs', {
+                    key: [this.flavor, this.username],
+                    include_docs: true
                 },
-                error: function (status) {
-                    console.log(status);
-                },
-                key: [this.flavor, this.username],
-                include_docs: true
-            });
+                {
+                    success: function (data) {
+                        var tree = createFullTree(data, that.flavor);
+                        var theTree = $('#' + that.cssId('tree'));
+                        theTree.fancytree({
+                            toggleEffect: false,
+                            extensions: ['dnd'],
+                            dnd: dnd,
+                            source: [],
+                            lazyLoad: proxyLazyLoad,
+                            dblclick: proxyClick,
+                            debugLevel: 0,
+                            activate: proxyClick
+                        }).children('ul').css('box-sizing', 'border-box');
+                        var thefTree = theTree.data('ui-fancytree').getTree();
+                        thefTree.reload(tree);
+                        thefTree.getNodeByKey(that.flavor).toggleExpanded();
+                        theTree.contextmenu(menuOptions);
+                        if (that.lastKeyLoaded)
+                            thefTree.activateKey(that.lastKeyLoaded);
+                    },
+                    error: function (status) {
+                        console.log(status);
+                    }
+                });
         },
         contextClick: function (node, action, ctx) {
             var that = this;
