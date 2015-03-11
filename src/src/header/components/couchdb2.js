@@ -240,8 +240,10 @@ define([
             }
             else {
                 var flavors = {}, flav = [];
-                if (last.key)
-                    flav = last.key.split(':');
+                if (last.key) {
+                    flav = last.node.key.split(':');
+                    flav.shift();
+                }
                 flav.push(name);
                 flavors[this.flavor] = flav;
                 doc = {
@@ -743,7 +745,7 @@ define([
                     for (var i = 0; i < l; i++) {
                         var rev = info[i];
                         if (rev.status === 'available') {
-                            var el = {title: 'rev ' + (l - i), id: data._id, rev: true, key: rev.rev};
+                            var el = {title: 'rev ' + (l - i), id: data._id, rev: rev.rev, key: result.node.key};
                             revs.push(el);
                         }
                     }
@@ -754,7 +756,6 @@ define([
         clickNode: function (event, data) {
             var folder;
             var node = folder = data.node, last;
-            debugger;
 
             var index = node.key.indexOf(':'), keyWithoutFlavor;
             if (index >= 0)
@@ -763,20 +764,17 @@ define([
                 keyWithoutFlavor = '';
 
             if (node.folder) {
-                this.currentDocument = undefined;
-                var folderName = keyWithoutFlavor;
-                last = {name: this.username + (folderName.length > 0 ? ':' + folderName : ''), node: node};
+                this.currentDocument = null;
             } else {
                 var rev;
                 if (node.data.rev) {
-                    rev = node.key;
+                    rev = node.data.rev;
                     node = node.parent;
                 }
                 folder = node.parent;
                 this.currentDocument = node;
                 $('#' + this.cssId('docName')).val(node.title);
                 this.updateButtons();
-                last = {name: node.data.doc._id, node: node};
                 if (event.type === 'fancytreedblclick')
                     this.load(node, rev);
             }
@@ -845,7 +843,7 @@ define([
                 preventRecursiveMoves: true,
                 autoExpandMS: 300,
                 dragStart: function (node) { // Can only move documents
-                    return !node.folder;
+                    return !node.folder && !node.data.rev;
                 },
                 dragEnter: function (target) { // Can only drop in a folder
                     return !!target.folder;
