@@ -1,5 +1,13 @@
+HEAD
+===================
+
+* Lib
+ * add bio-pv
+* add support for pdb and mol3d in typerenderer
+
 2.15.0 / 2015-03-09
 ===================
+
 * Header
  * couchdb2: new login methods (google,facebook, github). Metadata keywords saved in doc for indexing in couchdb map/reduce
 * Modules
@@ -13,7 +21,6 @@
  * Move highlight.js to libs
 * Header
  * couchdb2: fix logout
-
 
 2.14.3 / 2015-03-02
 ===================
