@@ -9,7 +9,8 @@ define(function () {
         'DataBoolean',
         'DataNumber',
         'Promise',
-        'require'
+        'require',
+        'setImmediate'
     ];
 
     function Sandbox() {
