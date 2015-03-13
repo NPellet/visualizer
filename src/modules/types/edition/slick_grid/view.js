@@ -649,7 +649,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             $rb.off('click');
             $rb.on('click', function(e) {
                 var columns = that.grid.getColumns();
-                var args = that._checkCellFromEvent(e);
+                var args = that.grid.getCellFromEvent(e);
                 that.lastViewport = that.grid.getViewport();
                 if(columns[args.cell] && columns[args.cell].id === 'rowDeletion') {
                     // delete the row...
@@ -657,16 +657,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     that.module.data.splice(itemInfo.idx, 1);
                     that.module.data.triggerChange();
                 }
-
             });
-        },
-
-        _checkCellFromEvent: function(e) {
-            var cell = this.grid.getCellFromEvent(e);
-            if(cell.row >= this.module.data.length) {
-                return null;
-            }
-            return cell;
         },
 
         _getItemInfoFromEvent: function(e) {
