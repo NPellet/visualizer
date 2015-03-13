@@ -38,7 +38,11 @@ requirejs.config({
 		loglevel:           'components/loglevel/dist/loglevel.min',
         "markdown-js":      'components/markdown-js/lib/markdown',
         marked:             'components/marked/lib/marked',
-        'highlightjs':		'lib/highlight.js/highlight.pack'
+        'highlightjs':		'lib/highlight.js/highlight.pack',
+        BiojsFeatureViewer: 'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer',
+        BiojsCore: 'lib/biojs-1.0/src/main/javascript/Biojs',
+        BiojsMyFeatureViewer: 'modules/types/bio/feature_viewer/Biojs.MyFeatureViewer',
+        BiojsDasProteinFeatureViewer: 'lib/biojs-1.0/src/main/javascript/Biojs.DasProteinFeatureViewer'
 	},
 	shim: {
 		d3: {
@@ -72,7 +76,13 @@ requirejs.config({
 		'libs/jsmol/js/JSmolApplet': ['libs/jsmol/JSmol.min.nojq'],
 		'lib/flot/jquery.flot.pie': ['jquery', 'lib/flot/jquery.flot'],
 		'lib/pixastic/pixastic': ['lib/pixastic/pixastic/pixastic.core'],
-		fancytree: ['jquery-ui/droppable']
+		fancytree: ['jquery-ui/droppable'],
+        BiojsMyFeatureViewer: ["BiojsFeatureViewer"],
+        BiojsFeatureViewer: ['BiojsCore', 'lib/biojs-1.0/src/main/resources/dependencies/jquery/jquery.tooltip',
+            'lib/biojs-1.0/src/main/resources/dependencies/graphics/raphael-2.1.2',
+            'lib/biojs-1.0/src/main/resources/dependencies/graphics/canvg',
+            'lib/biojs-1.0/src/main/resources/dependencies/graphics/rgbcolor'],
+        BiojsDasProteinFeatureViewer: ['BiojsMyFeatureViewer']
 	},
 
 	map: {
