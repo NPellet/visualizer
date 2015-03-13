@@ -148,7 +148,10 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
             if(!fsize) {
                 return;
             }
-            while(p.height() - 45 < f.height() && fsize > 2) {
+
+            var h = 45;
+            if(!this.module.domHeader.is(':visible')) h=20;
+            while(p.height() - h < f.height() && fsize > 2) {
                 f.css('font-size', --fsize);
             }
 
