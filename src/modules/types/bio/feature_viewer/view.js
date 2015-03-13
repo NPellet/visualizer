@@ -3,7 +3,7 @@ requirejs.config({
         BiojsFeatureViewer: 'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer',
         BiojsCore: 'lib/biojs-1.0/src/main/javascript/Biojs',
         BiojsMyFeatureViewer: 'modules/types/bio/feature_viewer/Biojs.MyFeatureViewer',
-        BiojsDasProteinFeatureViewer: 'lib/biojs-1.0/src/main/javascript/Biojs.DasProteinFeatureViewer'
+        BiojsDasProteinFeatureViewer: 'lib/biojs-1.0/src/main/javascript/Biojs.DasProteinFeatureViewer',
     },
     shim: {
         BiojsMyFeatureViewer: ["BiojsFeatureViewer"],
@@ -11,12 +11,11 @@ requirejs.config({
             'lib/biojs-1.0/src/main/resources/dependencies/graphics/raphael-2.1.2',
             'lib/biojs-1.0/src/main/resources/dependencies/graphics/canvg',
             'lib/biojs-1.0/src/main/resources/dependencies/graphics/rgbcolor'],
-        BiojsDasProteinFeatureViewer: ['BiojsFeatureViewer'],
-        BiojsMyDasProteinFeatureViewer: ['BiojsMyFeatureViewer']
+        BiojsDasProteinFeatureViewer: ['BiojsMyFeatureViewer']
   }
 });
 
-define(['modules/default/defaultview', 'src/util/util', 'jquery-ui/slider', 'BiojsMyDasProteinFeatureViewer'], function(Default, Util) {
+define(['modules/default/defaultview', 'src/util/util', 'jquery-ui/slider', 'BiojsDasProteinFeatureViewer'], function(Default, Util) {
   function view() {};
   view.prototype = $.extend(true, {}, Default, {
 
