@@ -3,7 +3,13 @@ HEAD
 
 * Lib
  * add bio-pv
-* add support for pdb and mol3d in typerenderer
+* Core
+ * add support for pdb and mol3d in typerenderer
+* Modules
+ * slick_grid: Fix some edge case bugs
+* Headers
+ * Couchdb2: use couchdb's sort list (smart sort of flavors)
+ * Couchdb2: bug fix
 
 2.15.0 / 2015-03-09
 ===================
