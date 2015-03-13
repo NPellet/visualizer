@@ -1,9 +1,3 @@
-requirejs.config({
-  shim: {
-    "modules/types/bio/feature_viewer/Biojs.MyFeatureViewer": ["lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer.js"]
-  }
-});
-
 define(['modules/default/defaultview', 'src/util/util', 'jquery-ui/slider',
 'lib/biojs-1.0/src/main/javascript/Biojs.js',
 'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer.js',

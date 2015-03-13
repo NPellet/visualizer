@@ -72,8 +72,6 @@ requirejs.config({
 		'libs/jsmol/js/JSmolApplet': ['libs/jsmol/JSmol.min.nojq'],
 		'lib/flot/jquery.flot.pie': ['jquery', 'lib/flot/jquery.flot'],
 		'lib/pixastic/pixastic': ['lib/pixastic/pixastic/pixastic.core'],
-		'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer.js': ['lib/biojs-1.0/src/main/javascript/Biojs.js'],
-		'lib/biojs-1.0/src/main/javascript/Biojs.DasProteinFeatureViewer.js': ['lib/biojs-1.0/src/main/javascript/Biojs.js', 'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer.js'],
 		fancytree: ['jquery-ui/droppable']
 	},
 
