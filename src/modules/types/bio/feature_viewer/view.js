@@ -1,3 +1,17 @@
+requirejs.config({
+    paths: {
+        BiojsFeatureViewer: 'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer.js',
+        BiojsCore: 'lib/biojs-1.0/src/main/javascript/Biojs.js',
+        BiojsMyFeatureViewer: 'modules/types/bio/feature_viewer/Biojs.MyFeatureViewer',
+        BiojsDasProteinFeatureViewer: 'lib/biojs-1.0/src/main/javascript/Biojs.DasProteinFeatureViewer.js'
+    },
+    shim: {
+        BiojsMyFeatureViewer: ["BiojsFeatureViewer"],
+        BiojsFeatureViewer: ['BiojsCore'],
+        BiojsDasProteinFeatureViewer: ['BiojsCore', 'BiojsFeatureViewer'],
+  }
+});
+
 define(['modules/default/defaultview', 'src/util/util', 'jquery-ui/slider',
 'lib/biojs-1.0/src/main/javascript/Biojs.js',
 'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer.js',
