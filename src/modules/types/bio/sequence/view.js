@@ -1,7 +1,7 @@
 define(['modules/default/defaultview', 'src/util/util',
-  'lib/biojs-1.0/src/main/javascript/Biojs.js',
-  'lib/biojs-1.0/src/main/javascript/Biojs.Tooltip.js',
-  'lib/biojs-1.0/src/main/javascript/Biojs.Sequence.js'
+  'lib/biojs-1.0/src/main/javascript/Biojs',
+  'lib/biojs-1.0/src/main/javascript/Biojs.Tooltip',
+  'lib/biojs-1.0/src/main/javascript/Biojs.Sequence'
   ], function(Default, Util) {
   function view() {};
   view.prototype = $.extend(true, {}, Default, {
