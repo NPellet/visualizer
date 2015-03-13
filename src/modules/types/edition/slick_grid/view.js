@@ -703,7 +703,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 that._makeDataObjects();
                 for(var i=that.lastViewport.top; i<=that.lastViewport.bottom; i++ ) {
                     var item = that.grid.getDataItem(i);
-                    if(item) {
+                    if(item && item.__group !== true) {
                         var color = item.getChildSync(colorjPath);
                         if(color) {
                             for(var j=0; j<cols.length; j++) {
