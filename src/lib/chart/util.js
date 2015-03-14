@@ -1,6 +1,6 @@
 define(function() {
 
-    function check(data, options) {
+    function check(value, options) {
         var options=options || {};
         // we will try to determine the type of the value
         // type could be:
@@ -9,7 +9,7 @@ define(function() {
 
         if (! type) { // auto determination of type
             if (Array.isArray(value)) { //
-                if (value[0] && Array.isArray(value)) {
+                if (value[0]) {
                     if (Array.isArray(value[0])) {
                         if (value.length==2) {
                             type="2DXXYY";
