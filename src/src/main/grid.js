@@ -251,7 +251,7 @@ define(['jquery', 'src/util/ui', 'src/util/util', 'modules/modulefactory', 'src/
             layer.size.set('height', height);
 
             layer.wrapper = true;
-            layer.title = 'Untitled';
+            layer.title = '';
 
 
             $(document)
