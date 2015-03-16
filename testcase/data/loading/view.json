@@ -1,0 +1,91 @@
+{
+  "version": "2.15.0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "script": [
+                "\nAPI.loading('load1', 'This is a first loading message');\nsetTimeout(function() {\n    API.loading('load2', 'And thats another one');\n    setTimeout(function () {\n        API.loading('load3', 'Each message appears under the last one');\n        setTimeout(function() {\n            API.loading('load2', 'You can change loading messages');\n            setTimeout(function() {\n                API.stopLoading('load1');\n                API.loading('load3', 'The overlay stays as long as there are still messages');\n                setTimeout(function() {\n                    API.stopLoading('load2');\n                    setTimeout(function(){\n                        API.stopLoading('load3');\n                    }, 500);\n                }, 2000)\n            }, 2000);\n        }, 2000)\n        }, 2000);\n},2000)"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {}
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "blabla",
+                "label": "Show loading screen"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 44,
+            "top": 7
+          },
+          "size": {
+            "width": 75,
+            "height": 37
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Untitled",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 1,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "Untitled",
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": []
+    }
+  ],
+  "variables": [],
+  "pouchvariables": [],
+  "configuration": {
+    "title": "Demo of loading animation"
+  }
+}
