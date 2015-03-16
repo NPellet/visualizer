@@ -15,7 +15,10 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
     // If undefined is set then not setting the name attribute will add it anyway
     var contextMenu = ['undefined', 'all', 'global-configuration', 'configuration', 'copy', 'paste', 'duplicate', 'add', 'layers', 'remove', 'export', 'print', 'refresh', 'tofront', 'toback', 'move', 'custom', 'fullscreen'];
 
-    var loadingHtml = $('<div id="loading-visualizer"><div class="title">Loading</div><div class="animation"><div /><div /><div /><div /></div><div class="subtitle" id="loading-message"></div></div>');
+    var loadingSVG = Util.getLoadingAnimation(64, 'slateblue');
+    var loadingHtml = $('<div>', {id: 'ci-loading'})
+        .append(loadingSVG)
+        .append($('<div>', {id: 'ci-loading-message', 'class': 'ci-loading-subtitle'}));
     var loading = {};
     var loadingNumber = 0;
 
@@ -230,7 +233,7 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
             loading[id] = $('<div>' + message + '</div>');
             loadingNumber++;
 
-            $('#loading-message').append(loading[id]);
+            $('#ci-loading-message').append(loading[id]);
         } else {
             loading[id].html(message);
         }
