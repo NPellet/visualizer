@@ -722,6 +722,10 @@ module.exports = function (grunt) {
                 target.name = basePath.split('/').pop();
             }
 
+            target.modules.sort(function (module1, module2) {
+                return module1.moduleName.toLowerCase().localeCompare(module2.moduleName.toLowerCase());
+            });
+
             fs.writeFileSync(basePath + '/folder.json', JSON.stringify(target, null, 2));
         }
 
