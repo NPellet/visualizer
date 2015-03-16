@@ -1,6 +1,10 @@
 {
   "modules": [
     {
+      "moduleName": "3D scatter plot",
+      "url": "modules/types/chart/basic/scatter3D/"
+    },
+    {
       "moduleName": "Pie chart",
       "url": "modules/types/chart/basic/pie_chart/"
     },
@@ -11,10 +15,6 @@
     {
       "moduleName": "Radar chart",
       "url": "modules/types/chart/basic/radar_chart/"
-    },
-    {
-      "moduleName": "3D scatter plot",
-      "url": "modules/types/chart/basic/scatter3D/"
     },
     {
       "moduleName": "Stack chart",

@@ -5,20 +5,20 @@
       "url": "modules/types/legacy/button_url/"
     },
     {
-      "moduleName": "Two dimensional list",
-      "url": "modules/types/legacy/filelistupload/"
-    },
-    {
       "moduleName": "Filter",
       "url": "modules/types/legacy/filter/"
+    },
+    {
+      "moduleName": "Hashmap display",
+      "url": "modules/types/legacy/hashmap/"
     },
     {
       "moduleName": "Selector",
       "url": "modules/types/legacy/grid_selector/"
     },
     {
-      "moduleName": "Hashmap display",
-      "url": "modules/types/legacy/hashmap/"
+      "moduleName": "Two dimensional list",
+      "url": "modules/types/legacy/filelistupload/"
     },
     {
       "moduleName": "Var Editor",

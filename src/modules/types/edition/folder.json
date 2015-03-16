@@ -9,14 +9,6 @@
       "url": "modules/types/edition/filter_editor/"
     },
     {
-      "moduleName": "Templated form",
-      "url": "modules/types/edition/form/"
-    },
-    {
-      "moduleName": "Simple Form",
-      "url": "modules/types/edition/form_simple/"
-    },
-    {
       "moduleName": "Object editor",
       "url": "modules/types/edition/object_editor/"
     },
@@ -29,12 +21,20 @@
       "url": "modules/types/edition/rich_text/"
     },
     {
+      "moduleName": "Simple Form",
+      "url": "modules/types/edition/form_simple/"
+    },
+    {
       "moduleName": "Slick Grid",
       "url": "modules/types/edition/slick_grid/"
     },
     {
       "moduleName": "SVG Editor",
       "url": "modules/types/edition/svg_editor/"
+    },
+    {
+      "moduleName": "Templated form",
+      "url": "modules/types/edition/form/"
     }
   ],
   "name": "Edition",

@@ -5,16 +5,16 @@
       "url": "modules/types/chart/statistics/dendrogram/"
     },
     {
-      "moduleName": "Score plot",
-      "url": "modules/types/chart/statistics/loading_plot/"
-    },
-    {
       "moduleName": "Parallel coordinates",
       "url": "modules/types/chart/statistics/parallel_coordinates/"
     },
     {
       "moduleName": "Phylogram",
       "url": "modules/types/chart/statistics/phylogram/"
+    },
+    {
+      "moduleName": "Score plot",
+      "url": "modules/types/chart/statistics/loading_plot/"
     }
   ],
   "name": "Statistics",

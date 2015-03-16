@@ -1,12 +1,12 @@
 {
   "modules": [
     {
-      "moduleName": "Matrix display",
-      "url": "modules/types/chart/advanced/canvas_matrix/"
-    },
-    {
       "moduleName": "3D function plotter",
       "url": "modules/types/chart/advanced/plot_function/"
+    },
+    {
+      "moduleName": "Matrix display",
+      "url": "modules/types/chart/advanced/canvas_matrix/"
     },
     {
       "moduleName": "Self-organizing map",

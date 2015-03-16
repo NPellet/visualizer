@@ -1,28 +1,16 @@
 {
   "modules": [
     {
-      "moduleName": "Two dimensional list",
-      "url": "modules/types/display/2d_list/"
-    },
-    {
-      "moduleName": "Two dimensional list (fast)",
-      "url": "modules/types/display/2d_list_fast/"
+      "moduleName": "Display value",
+      "url": "modules/types/display/single_value/"
     },
     {
       "moduleName": "Hierarchical structure",
       "url": "modules/types/display/fancytree/"
     },
     {
-      "moduleName": "Table (fast)",
-      "url": "modules/types/display/fasttable/"
-    },
-    {
       "moduleName": "Iframe",
       "url": "modules/types/display/iframe/"
-    },
-    {
-      "moduleName": "Table",
-      "url": "modules/types/display/jqgrid/"
     },
     {
       "moduleName": "Panzoom",
@@ -34,12 +22,24 @@
       "hidden": true
     },
     {
-      "moduleName": "Display value",
-      "url": "modules/types/display/single_value/"
+      "moduleName": "Table",
+      "url": "modules/types/display/jqgrid/"
+    },
+    {
+      "moduleName": "Table (fast)",
+      "url": "modules/types/display/fasttable/"
     },
     {
       "moduleName": "Twig template",
       "url": "modules/types/display/template-twig/"
+    },
+    {
+      "moduleName": "Two dimensional list",
+      "url": "modules/types/display/2d_list/"
+    },
+    {
+      "moduleName": "Two dimensional list (fast)",
+      "url": "modules/types/display/2d_list_fast/"
     }
   ],
   "name": "Display",
