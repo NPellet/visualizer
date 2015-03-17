@@ -501,18 +501,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
         update: {
 
-            fromTo: function (moduleValue) {
-                var view = this;
-
-                if (!moduleValue || !moduleValue.value)
-                    return;
-
-                if (view.dom.data('spectra')) {
-                    view.dom.data('spectra').setBoundaries(moduleValue.value.from, moduleValue.value.to);
-                }
-
-            },
-
             chart: function (moduleValue, varname) {
                 this.series[varname] = this.series[varname] || [];
                 this.removeSerie(varname);
@@ -938,10 +926,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 }
             }
 
-        },
-
-        getDom: function () {
-            return this.dom;
         },
 
         normalize: function (array, varname) {

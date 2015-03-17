@@ -137,7 +137,7 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
         }
     };
 
-    Controller.prototype.variablesIn = ['chart', 'xArray', 'xyArray', 'jcamp', 'annotations', 'fromTo', 'series_xy1d'];
+    Controller.prototype.variablesIn = ['chart', 'xArray', 'xyArray', 'jcamp', 'annotations', 'series_xy1d'];
 
     Controller.prototype.actionsIn = {
         fromTo: 'From-To',
