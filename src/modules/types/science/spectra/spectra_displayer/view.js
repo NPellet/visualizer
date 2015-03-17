@@ -621,10 +621,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             },
 
             annotations: function (value, varName) {
-
-                API.killHighlight(this.module.getId());
                 this.annotations[varName] = this.annotations[varName] || [];
-                this.removeAnnotations(varName);
                 var annotations = value.get();
                 var i = 0, l = annotations.length;
                 var self = this;
@@ -652,7 +649,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                             } else {
                                 shape.unHighlight();
                             }
-                        }, false, self.module.getId());
+                        }, false, self.module.getId() + varName);
 
                         self.module.model.dataListenChange( annotations.traceSync( [ i ] ), function( v ) {
 
@@ -811,6 +808,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
         },
 
         removeAnnotations: function (varName) {
+            API.killHighlight(this.module.getId() + varName);
             if (this.annotations[varName]) {
                 for(var i = 0; i < this.annotations[varName].length; i++) {
                     this.annotations[varName][i].kill();
