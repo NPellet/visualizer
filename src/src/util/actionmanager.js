@@ -192,7 +192,9 @@ define(['require'], function( require ) {
 		execute: function( actionName, actionValue ) {
 
 			if( evaluatedScripts[ actionName ] ) {
-				evaluatedScripts[ actionName ]( actionValue );
+				setImmediate(function () {
+					evaluatedScripts[ actionName ]( actionValue );
+				});
 			}
 
 			if( actionsFiles[ actionName ] ) {
