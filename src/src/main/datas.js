@@ -136,7 +136,10 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
     };
 
     function DataString(s) {
-        this.s_ = String(s);
+        Object.defineProperty(this, 's_', {
+            value: String(s),
+            writable: true
+        });
     }
 
     DataString.cast = function (value) {
@@ -164,7 +167,10 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
     DataString.prototype.nativeConstructor = String;
 
     function DataNumber(s) {
-        this.s_ = Number(s);
+        Object.defineProperty(this, 's_', {
+            value: Number(s),
+            writable: true
+        });
     }
 
     DataNumber.cast = function (value) {
@@ -178,7 +184,10 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
     DataNumber.prototype.nativeConstructor = Number;
 
     function DataBoolean(s) {
-        this.s_ = Boolean(s);
+        Object.defineProperty(this, 's_', {
+            value: Boolean(s),
+            writable: true
+        });
     }
 
     DataBoolean.cast = function (value) {
