@@ -71,10 +71,6 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
             type: ['array'],
             label: 'Annotation file'
         },
-        fromTo: {
-            type: 'fromTo',
-            label: 'From - To data'
-        },
         series_xy1d: {
             type: 'array',
             label: 'List of series in 1D format ( [ x, y, x, y, ... ] )'
@@ -140,7 +136,8 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
     Controller.prototype.variablesIn = ['chart', 'xArray', 'xyArray', 'jcamp', 'annotations', 'series_xy1d'];
 
     Controller.prototype.actionsIn = {
-        fromTo: 'From-To',
+        fromToX: 'From - To X',
+        fromToY: 'From - To Y',
         addSerie: 'Add a serie',
         removeSerie: 'Remove a serie',
         removeSerieByName: 'Remove serie (name as input)',

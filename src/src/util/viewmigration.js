@@ -313,6 +313,19 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                 delete group.filterRow;
 
             }, 'slick_grid');
+        },
+
+        '2.15.1', function (view) {
+            eachModule(view, function(module) {
+                var actions_in = module.actions_in;
+                if (actions_in && actions_in.length) {
+                    actions_in.forEach(function (action) {
+                        if (action && action.rel === 'fromTo') {
+                            action.rel = 'fromToX';
+                        }
+                    });
+                }
+            }, 'spectra_displayer');
         }
 
 //  Add new migration functions here
