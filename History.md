@@ -1,12 +1,17 @@
-HEAD
+2.15.1 / 2015-03-17
 ===================
 
 * Lib
  * add bio-pv
 * Core
  * add support for pdb and mol3d in typerenderer
+ * gruntfile: sort modules by name
+ * change loading animation
 * Modules
  * slick_grid: Fix some edge case bugs
+ * spectra_displayer: fix bug with fromTo actions and remove fromTo var in
+ * object_editor: allow to select jpath for output
+ * sandbox: add setImmediate
 * Headers
  * Couchdb2: use couchdb's sort list (smart sort of flavors)
  * Couchdb2: bug fix
