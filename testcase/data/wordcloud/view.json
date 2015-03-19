@@ -1,0 +1,99 @@
+{
+  "version": "2.15.1",
+  "grid": {
+	"layers": {
+	  "Default layer": {
+		"name": "Default layer"
+	  }
+	},
+	"xWidth": 10,
+	"yHeight": 10
+  },
+  "modules": [
+	{
+	  "url": "modules/types/chart/statistics/wordcloud/",
+	  "configuration": {
+		"sections": {},
+		"groups": {
+		  "group": [
+			{
+			  "spiral": [
+				"archimedean"
+			  ],
+			  "scale": [
+				"logn"
+			  ],
+			  "orientation": [
+				5
+			  ],
+			  "oneWordPerLine": [
+				[
+				  "oneWordPerLine"
+				]
+			  ],
+			  "fromTo": [
+				[
+				  -60,
+				  60
+				]
+			  ]
+			}
+		  ]
+		}
+	  },
+	  "layers": {
+		"Default layer": {
+		  "position": {
+			"left": 38,
+			"top": 9
+		  },
+		  "size": {
+			"width": 99,
+			"height": 48
+		  },
+		  "zIndex": 0,
+		  "display": true,
+		  "title": "",
+		  "bgColor": [
+			255,
+			255,
+			255,
+			0
+		  ],
+		  "wrapper": true,
+		  "created": true,
+		  "name": "Default layer"
+		}
+	  },
+	  "id": 1,
+	  "vars_in": [
+		{
+		  "rel": "value",
+		  "name": "myvar"
+		}
+	  ],
+	  "actions_in": [],
+	  "title": "",
+	  "vars_out": [],
+	  "actions_out": []
+	}
+  ],
+  "variables": [
+	{
+	  "varname": "myValue",
+	  "jpath": [
+		"myValue"
+	  ]
+	},
+	{
+	  "varname": "myLink",
+	  "jpath": [
+		"myLink"
+	  ]
+	}
+  ],
+  "pouchvariables": [],
+  "configuration": {
+	"title": "No title"
+  }
+}
