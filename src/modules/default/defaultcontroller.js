@@ -143,6 +143,10 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
             }
         },
 
+        sendActionFromEvent: function (event, rel, data) {
+            return this.sendAction(rel, data, event);
+        },
+
         allVariablesFor: function (event, rel, callback) {
 
             var varsOut, i = 0;
