@@ -122,9 +122,9 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
         duration:0
       });
 
-        //this.panzoomElements.find('img').on('click', function(data, panzoom) {
-        //   console.log('click img   ', data);
-        //});
+        this.panzoomElements.parent().on('click', function(data) {
+           console.log('click img   ', data);
+        });
 
       this.panzoomElements.on('panzoompan', function(data, panzoom){
           console.log(panzoom.getMatrix());
@@ -139,8 +139,9 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
       this.dom.dblclick(function() {
         self.panzoomElements.panzoom("reset");
       });
-      
-      this.panzoomElements.parent().on('mousewheel.focal', function( e ) {
+      this.panzoomElements.parent().off('mousewheel.focal');
+      this.panzoomElements.parent().first().on('mousewheel.focal', function( e ) {
+          console.log('hello',this);
         e.preventDefault();
           var increment = 1;
           var baseIncrement = 0.2;
