@@ -106,7 +106,8 @@ module.exports = function (grunt) {
                             ['./jsNMR/lib/components/VisuMol/**', './jsNMR/src/**', './jsNMR/dist/**'],
                             './loglevel/dist/loglevel.min.js',
                             './marked/lib/marked.js',
-                            './highlight.js/build/highlight.pack.js'
+                            './highlight.js/build/highlight.pack.js',
+                            './openchemlib/dist/*.js'
                         ],
 
                         dest: './build/components/'
