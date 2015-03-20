@@ -89,7 +89,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
         return def.resolve(value.replace(/^(.*)$/, '<a target="_blank" href="http://dx.doi.org/$1"><img src="bin/logo/doi.png" /></a>'));
     };
 
-    var actelionCDN = 'http://www.lactame.com/lib/actelion/3.0.0-alpha3/actelion-3.0.0-alpha3.js';
+    var actelionCDN = 'components/openchemlib/dist/openchemlib-viewer';
     var defaultActelionStructureOptions = {
         suppressChiralText: true,
         suppressESR: true,
