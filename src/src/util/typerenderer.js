@@ -76,7 +76,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
         dom.removeAttr('id');
         dom.attr('width', '100%');
         dom.attr('height', '100%');
-        def.resolve(dom);
+        def.resolve($('<div>').append(dom).html());
     };
 
     functions.gif = functions.picture;
