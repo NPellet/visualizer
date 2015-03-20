@@ -10,7 +10,6 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
   view.prototype = $.extend(true, {}, Default, {
 
     init: function() {
-      Util.loadCss('components/jcrop/css/jquery.Jcrop.css')
       if (! this.dom) {
         this._id = Util.getNextUniqueId();
         this.dom = $(' <div id="' + this._id + '"></div>').css('height', '100%').css('width', '100%');
@@ -118,14 +117,19 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
       
       this.panzoomElements.panzoom({
         increment: 0.1,
-        maxScale: 10.0,
-        minScale: 0.2,
-        duration:100
+        maxScale: 100.0,
+        minScale: 0.1,
+        duration:0
       });
-      
+
+        //this.panzoomElements.find('img').on('click', function(data, panzoom) {
+        //   console.log('click img   ', data);
+        //});
+
       this.panzoomElements.on('panzoompan', function(data, panzoom){
+          console.log(panzoom.getMatrix());
         var panzoomInstances = self.panzoomElements.panzoom("instance");
-        for(i=0; i<panzoomInstances.length; i++) {
+        for(var i=0; i<panzoomInstances.length; i++) {
           if(panzoomInstances[i] !== panzoom) {
             panzoomInstances[i].setMatrix(panzoom.getMatrix());
           }
@@ -138,10 +142,16 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
       
       this.panzoomElements.parent().on('mousewheel.focal', function( e ) {
         e.preventDefault();
+          var increment = 1;
+          var baseIncrement = 0.2;
+          if(self.panzoomElements.length > 0) {
+              var zoomMagnitude = $(self.panzoomElements[0]).panzoom('getMatrix')[0];
+              increment = baseIncrement * zoomMagnitude;
+          }
         var delta = e.delta || e.originalEvent.wheelDelta;
         var zoomOut = delta ? delta < 0 : e.originalEvent.deltaY > 0;
         self.panzoomElements.panzoom('zoom', zoomOut, {
-          increment: 0.1,
+          increment: increment,
           animate: false,
           focal: e
         });
@@ -171,11 +181,6 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
       //       increment: 0.1
       //     });
       // });
-    },
-    
-    selectionMode: function() {
-      this.panzoomElements.panzoom("destroy");
-      this.jcropApi.enable();
     },
 
     onResize: function() {
