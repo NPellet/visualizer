@@ -175,7 +175,9 @@ define([
             var that = this;
             var node = that.currentDocument;
             var doc = node.data.doc;
-            doc.keywords = val.keywords.value;
+            if(val && val.keywords && val.keywords.value) {
+                doc.keywords = val.keywords.value;
+            }
             doc._attachments['meta.json'] = {
                 'content_type': 'application/json',
                 'data': Base64.encode(JSON.stringify(val))
