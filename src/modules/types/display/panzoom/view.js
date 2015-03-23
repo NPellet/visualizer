@@ -80,8 +80,9 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
             var self = this;
             var x = self.dom.find('#'+varname);
             if(x.length === 0) {
-                x = $('<div class="parent" id="' + varname + '"><div class="panzoom"><img style="image-rendering: pixelated;"/></div></div>');
+                x = $('<div class="parent" id="' + varname + '"><div class="panzoom"><img/></div></div>');
             }
+
             var imgconf = self.module.getConfiguration('img');
             imgconf = _.find(imgconf, function(c) {
                 if(c.variable === varname) {
@@ -93,6 +94,8 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
                 }
                 return false;
             });
+
+            x.find('img').addClass(imgconf.rendering);
 
             if(imgconf && imgconf.opacity) {
                 x.find('img').css('opacity', parseFloat(imgconf.opacity));
