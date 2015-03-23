@@ -31,7 +31,6 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
   */
   controller.prototype.references = {
     picture: {
-      type:'picture',
       label: 'A picture'
     }
   };
