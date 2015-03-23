@@ -131,8 +131,12 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
                     offsetY = data.offsetY;
                 }
                 else {
-                    offsetX = data.pageX - $(this).offset().left;
-                    offsetY = data.pageY - $(this).offset().top;
+                    var rect = this.getBoundingClientRect();
+
+                    //debugger;
+                    offsetX = (data.clientX - $(this).offset().left)/$(self.panzoomElements[0]).panzoom('getMatrix')[0];
+                    offsetY = (data.clientY - $(this).offset().top)/$(self.panzoomElements[0]).panzoom('getMatrix')[3];
+                    console.log(offsetX, offsetY);
                 }
                 var clickPixel = {
                     x: Math.floor(offsetX*self.imgWidth[0]/this.width),
