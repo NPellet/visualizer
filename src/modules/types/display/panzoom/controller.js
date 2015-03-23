@@ -32,11 +32,18 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
     controller.prototype.references = {
         picture: {
             label: 'A picture'
+        },
+        pixel: {
+            label: 'A pixel'
         }
     };
 
     controller.prototype.events = {
-
+        click: {
+            label: 'The image was clicked',
+            refVariable: ['pixel'],
+            refAction: ['pixel']
+        }
     };
 
 
@@ -132,6 +139,10 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 
     controller.prototype.configAliases = {
         img: [ 'groups', 'img', 0 ]
+    };
+
+    controller.prototype.clickedPixel = function(clickedPixel) {
+        this.createDataFromEvent('click','pixel', clickedPixel);
     };
 
     return controller;

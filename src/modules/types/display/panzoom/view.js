@@ -125,6 +125,21 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
             $img.on('click.panzoomModule', function(data) {
                 // You can get image the clicked pixel here
                 //console.log('clicked pixel', data.offsetX*self.imgWidth[0]/this.width);
+                var offsetX, offsetY;
+                if(data.offsetX) {
+                    offsetX = data.offsetX;
+                    offsetY = data.offsetY;
+                }
+                else {
+                    offsetX = data.pageX - $(this).offset().left;
+                    offsetY = data.pageY - $(this).offset().top;
+                }
+                var clickPixel = {
+                    x: Math.floor(offsetX*self.imgWidth[0]/this.width),
+                    y: Math.floor(offsetY*self.imgHeight[0]/this.height)
+                };
+                console.log('clickedPixel', clickPixel);
+                self.module.controller.clickedPixel(clickPixel);
             });
 
             this.panzoomElements.off('panzoompan');
