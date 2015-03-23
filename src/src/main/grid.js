@@ -5,6 +5,7 @@ define(['jquery', 'src/util/ui', 'src/util/util', 'modules/modulefactory', 'src/
     var definition, jqdom, moduleMove, isInit = false;
     var activeLayer = 'Default layer';
     var layersUl, layersLi;
+    var utilUl, utilLi;
 
     var defaults = {
         xWidth: 10,
@@ -660,6 +661,43 @@ define(['jquery', 'src/util/ui', 'src/util/util', 'modules/modulefactory', 'src/
 
                     });
                 }
+
+                utilLi = $('<li><a>Utils</a></li>');
+                utilUl = $('<ul />').appendTo(utilLi);
+                Context.listen(dom, [], function (contextDom) {
+
+                    utilUl.empty();
+                    utilUl.append($('<li data-util="copyview"><a><span/>Copy view</a></li>').data('utilkey', 'copyview'));
+                    utilUl.append($('<li data-util="copydata"><a><span/>Copy data</a></li>').data('utilkey', 'copydata'));
+                    utilUl.append($('<li data-util="pasteview"><a><span/>Paste view</a></li>').data('utilkey', 'pasteview'));
+                    utilUl.append($('<li data-util="pastedata"><a><span/>Paste data</a></li>').data('utilkey', 'pastedata'));
+                    utilUl.append($('<li data-util="blankview"><a><span/>Blank view</a></li>').data('utilkey', 'blankview'));
+                    $(contextDom).append(utilLi);
+
+                    utilLi.bind('click', function (event) {
+                        var utilkey = $(event.target.parentNode).data('utilkey');
+                        debugger;
+                        switch(utilkey) {
+                            case 'copyview':
+                                ui.copyview();
+                                break;
+                            case 'blankview':
+                                Versioning.blankView();
+                                break;
+                            case 'copydata':
+                                ui.copyData();
+                                break;
+                            case 'pasteview':
+                                ui.pasteView();
+                                break;
+                            case 'pastedata':
+                                ui.pasteData();
+                                break;
+                        }
+                    });
+
+                });
+
                 Context.listen(Context.getRootDom(), [
                         ['<li class="ci-item-configureentrypoint" class="ui-state-disabled"><a class="ui-state-disabled"><span class="ui-icon ui-icon-info"></span>Version ' + Versioning.getView().version + ' </a></li>',
                             function () {

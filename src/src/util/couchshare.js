@@ -1,6 +1,6 @@
 'use strict';
 
-define(['lib/webtoolkit/base64', 'src/util/versioning', 'lib/couchdb/jquery.couch'], function (Base64, Versioning) {
+define(['../../lib/webtoolkit/base64', 'src/util/versioning', 'lib/couchdb/jquery.couch'], function (Base64, Versioning) {
 
     function share(options) {
 
