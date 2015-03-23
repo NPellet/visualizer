@@ -878,7 +878,6 @@ define([
                                             configureEntryPoint();
                                         }]]
                             );
-
                             Context.listen(Context.getRootDom(), [
                                     ['<li class="ci-item-refresh" name="refresh"><a><span class="ui-icon ui-icon-arrowrefresh-1-s"></span>Refresh page</a></li>',
                                         function () {
