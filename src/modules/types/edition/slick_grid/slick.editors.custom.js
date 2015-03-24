@@ -399,6 +399,8 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
     }
 
     function defaultInit() {
+        var that = this;
+        console.log('default init');
         this.$input = $("<INPUT type=text class='editor-text' />")
             .appendTo(this.args.container)
             .bind("keydown.nav", function (e) {
@@ -407,7 +409,10 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
                 }
             })
             .focus()
-            .select();
+            .select()
+            .focusout(function() {
+                that.args.commitChanges('next');
+            })
     }
 
     function defaultDestroy() {
