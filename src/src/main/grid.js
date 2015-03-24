@@ -693,6 +693,9 @@ define(['jquery', 'src/util/ui', 'src/util/util', 'modules/modulefactory', 'src/
                             case 'pastedata':
                                 ui.pasteData();
                                 break;
+                            default:
+                                Debug.warn('Unknow util key');
+                                break;
                         }
                     });
 
