@@ -1,7 +1,7 @@
-define(['src/util/api', 'modules/default/defaultview', 'src/util/util', 'lodash',
+define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/util/util', 'lodash',
     'components/jquery.panzoom/dist/jquery.panzoom',
     'components/jquery-mousewheel/jquery.mousewheel'
-], function(API, Default, Util, _) {
+], function(API, Debug, Default, Util, _) {
 
     var MAX_IMAGE_SIZE = 10000;
     function view() {
@@ -74,9 +74,7 @@ define(['src/util/api', 'modules/default/defaultview', 'src/util/util', 'lodash'
             var prom;
             var variables = {};
 
-            // Filter conf for valid data
-            var conf = this.module.getConfiguration('img');
-            conf = _.filter(conf, function(c) {
+            function filterConf(c) {
                 var v = API.getData(c.variable);
                 if(v !== undefined) {
                     variables[c.variable] = v;
@@ -85,8 +83,22 @@ define(['src/util/api', 'modules/default/defaultview', 'src/util/util', 'lodash'
                         return true;
                     }
                 }
+                Debug.warn('Panzoom: ignoring invalid configuration line');
                 return false;
-            });
+            }
+
+            // Filter conf for valid data
+            var conf = this.module.getConfiguration('img');
+            conf = _.filter(conf, filterConf);
+
+            if(conf.length === 0) {
+                conf = this._buildConfFromVarsIn();
+                conf = _.filter(conf, filterConf);
+            }
+            else {
+
+            }
+
 
             prom = _.map(conf, function(c) {
                 return new Promise(function(resolve, reject) {
@@ -177,10 +189,6 @@ define(['src/util/api', 'modules/default/defaultview', 'src/util/util', 'lodash'
                 }
             });
 
-            that.images[0].$img.on('click', function (e) {
-                console.log('img coord', e.pageX - $(e.currentTarget).offset().left);
-            });
-
             this.dom.off('dblclick');
             this.dom.dblclick(function() {
                 for(var i=0; i<that.images.length; i++) {
@@ -213,6 +221,18 @@ define(['src/util/api', 'modules/default/defaultview', 'src/util/util', 'lodash'
 
         getDom: function() {
             return this.dom;
+        },
+
+        _buildConfFromVarsIn: function() {
+            var i=1;
+            return _.map(this.module.definition.vars_in, function(v){
+                return {
+                    variable: v.name,
+                    opacity: 0.5,
+                    'z-index': i++,
+                    rendering: 'Normal'
+                }
+            });
         }
     });
 
@@ -229,5 +249,6 @@ define(['src/util/api', 'modules/default/defaultview', 'src/util/util', 'lodash'
         }
         return factor;
     }
+
     return view;
 });
