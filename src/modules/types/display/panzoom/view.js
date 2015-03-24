@@ -1,14 +1,14 @@
-define(['modules/default/defaultview', 'src/util/util', 'underscore',
+define(['src/util/api', 'modules/default/defaultview', 'src/util/util', 'lodash',
     'components/jquery.panzoom/dist/jquery.panzoom',
     'components/jquery-mousewheel/jquery.mousewheel'
-], function(Default, Util, _) {
+], function(API, Default, Util, _) {
 
     var MAX_IMAGE_SIZE = 10000;
     function view() {
         this.selectingArea = false;
         this.imgWidth = [];
         this.imgHeight = [];
-    };
+    }
     view.prototype = $.extend(true, {}, Default, {
 
         init: function() {
@@ -26,38 +26,39 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
             }
         },
 
-
         inDom: function() {
-            // self.dom.html('<div class="parent"><div class="panzoom"><img src="http://blog.millermedeiros.com/wp-content/uploads/2010/04/awesome_tiger.svg"></div></div>\
-            // <div class="parent"><div class="panzoom"><img class="transparent" src="http://www.colourbox.com/preview/6527480-273411-cute-baby-tiger-cartoon.jpg"></div></div>');
-            //
-
             this.resolveReady();
-
-
         },
 
         update:{
-            picture: function(val, varname) {
-                var self = this;
+            picture: function() {
+                var that = this;
                 this.clearImages();
-                this.addImage(val.get(), varname, function() {
-                    self.panzoomElements = self.dom.find('.panzoom');
-                    self.panzoomMode();
-                    self.onResize();
-                    self.reorderImages();
+                this.addImages().then(function() {
+                    that.panzoomMode();
+                    that.onResize();
+                    that.reorderImages();
                 });
+                //this.addImage(val.get(), varname, function() {
+                //    self.panzoomElements = self.dom.find('.panzoom');
+                //    self.panzoomMode();
+                //    self.onResize();
+                //    self.reorderImages();
+                //});
 
             }
         },
 
         clearImages: function() {
-            this.imgWidth = [];
-            this.imgHeight = [];
-            if(this.panzoomElements) {
-                this.panzoomElements.panzoom("destroy");
-                this.dom.html('');
+            if(!this.images) {
+                this.images = [];
+                return;
             }
+            for(var i=0; i<this.images.length; i++) {
+                this.images[i].$panzoomEl.panzoom("destroy");
+            }
+            this.dom.html('');
+            this.images = [];
         },
 
         reorderImages: function() {
@@ -73,7 +74,51 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
             for(var i=0; i<vars_in.length; i++) {
                 this.dom.find('#'+vars_in[i]).css('z-index', (order[i] || vars_in.length-i))
             }
+        },
 
+        addImages: function() {
+            var that = this;
+            var prom;
+            var variables = {};
+
+            // Filter conf for valid data
+            var conf = this.module.getConfiguration('img');
+            conf = _.filter(conf, function(c) {
+                var v = API.getData(c.variable);
+                if(v !== undefined) {
+                    variables[c.variable] = v;
+                    var op = parseFloat(c.opacity);
+                    if(op && op >=0 && op <=1) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            prom = _.map(conf, function(c) {
+                return new Promise(function(resolve, reject) {
+                    var image = {};
+                    that.images.push(image);
+                    var x = $('<div class="parent" id="' + c.variable + '"><div class="panzoom"><img/></div></div>');
+                    var $img = x.find('img');
+                    $img
+                        .css('opacity', c.opacity)
+                        .addClass(c.rendering)
+                        .attr('src', variables[c.variable].get())
+                        .load(function(){
+                            image.name = c.variable;
+                            image.$panzoomEl = x.find('.panzoom');
+                            image.$img = x.find('img');
+                            image.$parent = x.find('.parent');
+                            image.width = this.width;
+                            image.height = this.height;
+                            image.conf = c;
+                            that.dom.append(x);
+                            resolve();
+                        });
+                });
+            });
+            return Promise.all(prom);
         },
 
         addImage: function(val, varname, cb) {
@@ -86,7 +131,6 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
             var imgconf = self.module.getConfiguration('img');
             imgconf = _.find(imgconf, function(c) {
                 if(c.variable === varname) {
-
                     var op = parseFloat(c.opacity);
                     if(op && op >=0 && op <=1) {
                         return true;
@@ -110,94 +154,126 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
         },
 
         panzoomMode: function() {
-            var self = this;
-            var zoomCount = 0;
+            var that = this;
 
-            this.panzoomElements.panzoom({
-                increment: 0.1,
-                maxScale: 100.0,
-                minScale: 0.000001,
-                duration:0
-            });
+            for(var i=0; i<this.images.length; i++) {
+                that.images[i].$panzoomEl.panzoom({
+                    increment: 0.1,
+                    maxScale: 100.0,
+                    minScale: 0.000001,
+                    duration:0
+                });
 
-            var $img = this.panzoomElements.find('img');
-            $img.off('click.panzoomModule');
-            $img.on('click.panzoomModule', function(data) {
-                // You can get image the clicked pixel here
-                //console.log('clicked pixel', data.offsetX*self.imgWidth[0]/this.width);
-                var offsetX, offsetY;
-                if(data.offsetX) {
-                    offsetX = data.offsetX;
-                    offsetY = data.offsetY;
-                }
-                else {
-                    var rect = this.getBoundingClientRect();
-
-                    //debugger;
-                    offsetX = (data.clientX - $(this).offset().left)/$(self.panzoomElements[0]).panzoom('getMatrix')[0];
-                    offsetY = (data.clientY - $(this).offset().top)/$(self.panzoomElements[0]).panzoom('getMatrix')[3];
-                    console.log(offsetX, offsetY);
-                }
-                var clickPixel = {
-                    x: Math.floor(offsetX*self.imgWidth[0]/this.width),
-                    y: Math.floor(offsetY*self.imgHeight[0]/this.height)
-                };
-                console.log('clickedPixel', clickPixel);
-                self.module.controller.clickedPixel(clickPixel);
-            });
-
-            this.panzoomElements.off('panzoompan');
-            this.panzoomElements.on('panzoompan', function(data, panzoom){
-                var panzoomInstances = self.panzoomElements.panzoom("instance");
-                for(var i=0; i<panzoomInstances.length; i++) {
-                    if(panzoomInstances[i] !== panzoom) {
-                        panzoomInstances[i].setMatrix(panzoom.getMatrix());
+                that.images[i].$panzoomEl.on('panzoompan', function(data, panzoom){
+                    for(var j=0; j<that.images.length; j++) {
+                        var panzoomInstance = that.images[j].$panzoomEl.panzoom("instance");
+                        if(panzoomInstance !== panzoom) {
+                            panzoomInstance.setMatrix(panzoom.getMatrix());
+                        }
                     }
-                }
-            });
+                });
+
+                (function(i) {
+                    that.images[i].$panzoomEl.parent().off('mousewheel.focal');
+                    that.images[i].$panzoomEl.parent().on('mousewheel.focal', function( e ) {
+                        e.preventDefault();
+                        var increment = 1;
+                        var baseIncrement = 0.2;
+                        if(that.images.length > 0) {
+                            var zoomMagnitude = that.images[i].$panzoomEl.panzoom('getMatrix')[0];
+                            increment = baseIncrement * zoomMagnitude;
+                        }
+                        var delta = e.delta || e.originalEvent.wheelDelta;
+                        var zoomOut = delta ? delta < 0 : e.originalEvent.deltaY > 0;
+                        for(var j=0 ;j<that.images.length; j++) {
+                            that.images[j].$panzoomEl.panzoom('zoom', zoomOut, {
+                                increment: increment,
+                                animate: false,
+                                focal: e
+                            });
+                        }
+                    });
+                })(i);
+
+                //var $img = images[i].$img;
+                //$img.off('click.panzoomModule');
+                //$img.on('click.panzoomModule', function(data) {
+                //    // You can get image the clicked pixel here
+                //    //console.log('clicked pixel', data.offsetX*self.imgWidth[0]/this.width);
+                //    var offsetX, offsetY;
+                //    if(data.offsetX) {
+                //        offsetX = data.offsetX;
+                //        offsetY = data.offsetY;
+                //    }
+                //    else {
+                //        offsetX = (data.clientX - $(this).offset().left)/$(self.panzoomElements[0]).panzoom('getMatrix')[0];
+                //        offsetY = (data.clientY - $(this).offset().top)/$(self.panzoomElements[0]).panzoom('getMatrix')[3];
+                //    }
+                //    var clickPixel = {
+                //        x: Math.floor(offsetX*self.imgWidth[0]/this.width),
+                //        y: Math.floor(offsetY*self.imgHeight[0]/this.height)
+                //    };
+                //    console.log('clickedPixel', clickPixel);
+                //    self.module.controller.clickedPixel(clickPixel);
+                //});
+            }
+            if(that.images.length > 0) {
+
+
+
+
+                that.dom.on('click', function(e) {
+                    var allClickedPixels = {};
+                    for(var i=0; i<that.images.length; i++) {
+                        var rect = that.images[i].$img[0].getBoundingClientRect();
+                        var clickedPixel = {
+                            x: Math.floor((e.pageX-rect.left)*that.images[i].width/rect.width),
+                            y: Math.floor((e.pageY-rect.top)*that.images[i].height/rect.height)
+                        };
+
+                        if(clickedPixel.x >= 0 && clickedPixel.x < that.images[i].width && clickedPixel.y >= 0 && clickedPixel.y < that.images[i].height) {
+                            if(i===0)
+                                that.module.controller.clickedPixel(clickedPixel);
+                            allClickedPixels[that.images[i].name] = clickedPixel;
+                        }
+                    }
+                    if(Object.keys(allClickedPixels).length > 0) {
+                        that.module.controller.allClickedPixels(allClickedPixels);
+                    }
+                });
+
+                that.images[0].$img.on('click', function(e) {
+                    console.log('img coord', e.pageX - $(e.currentTarget).offset().left);
+                });
+            }
+
             this.dom.off('dblclick');
             this.dom.dblclick(function() {
-                self.panzoomElements.panzoom("reset");
-            });
-            this.panzoomElements.parent().off('mousewheel.focal');
-            this.panzoomElements.parent().first().on('mousewheel.focal', function( e ) {
-                e.preventDefault();
-                var increment = 1;
-                var baseIncrement = 0.2;
-                if(self.panzoomElements.length > 0) {
-                    var zoomMagnitude = $(self.panzoomElements[0]).panzoom('getMatrix')[0];
-                    increment = baseIncrement * zoomMagnitude;
+                for(var i=0; i<that.images.length; i++) {
+                    that.images[i].$panzoomEl.panzoom("reset");
                 }
-                var delta = e.delta || e.originalEvent.wheelDelta;
-                var zoomOut = delta ? delta < 0 : e.originalEvent.deltaY > 0;
-                self.panzoomElements.panzoom('zoom', zoomOut, {
-                    increment: increment,
-                    animate: false,
-                    focal: e
-                });
             });
+
         },
 
         onResize: function() {
-            var self = this;
-            if(this.panzoomElements) {
-                var domimg = this.dom.find('img');
+            if(!this.images) return;
+
+            for(var i=0; i<this.images.length; i++) {
+                var domimg = this.images[i].$img[0];
                 var factor = 1;
-                for(var i=0; i<domimg.length; i++) {
-                    if(this.imgWidth[i]/this.imgHeight[i] > this.dom.width()/this.dom.height()) {
-                        //factor = computeFactor(self.imgWidth[i], this.dom.width());
-                        domimg[i].width = this.dom.width() * factor;
-                        domimg[i].height = this.imgHeight[i]/this.imgWidth[i] * this.dom.width() * factor;
+                    if(this.images[i].height/this.images[i].width > this.dom.width()/this.dom.height()) {
+                        //factor = computeFactor(this.imgWidth[i], this.dom.width());
+                        domimg.width = this.dom.width() * factor;
+                        domimg.height = this.images[i].height/this.images[i].width * this.dom.width() * factor;
                     }
                     else {
-                        //factor = computeFactor(self.imgHeight[i], this.dom.height());
-                        domimg[i].height = this.dom.height() * factor;
-                        domimg[i].width = this.imgWidth[i]/this.imgHeight[i] * this.dom.height() * factor;
-                        // domimg[i].width = 'auto';
+                        //factor = computeFactor(this.imgHeight[i], this.dom.height());
+                        domimg.height = this.dom.height() * factor;
+                        domimg.width = this.images[i].width/this.images[i].height * this.dom.height() * factor;
                     }
-                    this.dom.find('.parent').width(this.dom.parent().width()).height(this.dom.parent().height());
-                }
-                this.panzoomElements.panzoom('resetDimensions');
+                    this.images[i].$parent.width(this.dom.parent().width()).height(this.dom.parent().height());
+                    this.images[i].$panzoomEl.panzoom('resetDimensions');
             }
         },
 

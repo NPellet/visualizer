@@ -35,13 +35,16 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
         },
         pixel: {
             label: 'A pixel'
+        },
+        allpixel: {
+            label: 'A hash map of pixels by varname'
         }
     };
 
     controller.prototype.events = {
         click: {
             label: 'The image was clicked',
-            refVariable: ['pixel'],
+            refVariable: ['pixel', 'allpixel'],
             refAction: ['pixel']
         }
     };
@@ -143,6 +146,10 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 
     controller.prototype.clickedPixel = function(clickedPixel) {
         this.createDataFromEvent('click','pixel', clickedPixel);
+    };
+
+    controller.prototype.allClickedPixels = function(allClickedPixels) {
+        this.createDataFromEvent('click', 'allpixel', allClickedPixels);
     };
 
     return controller;
