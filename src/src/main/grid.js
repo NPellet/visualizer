@@ -702,7 +702,7 @@ define(['jquery', 'src/util/ui', 'src/util/util', 'modules/modulefactory', 'src/
                 });
 
                 Context.listen(Context.getRootDom(), [
-                        ['<li class="ci-item-configureentrypoint" class="ui-state-disabled"><a class="ui-state-disabled"><span class="ui-icon ui-icon-info"></span>Version ' + Versioning.getView().version + ' </a></li>',
+                        ['<li class="ci-item-configureentrypoint" class="ui-state-disabled"><a class="ui-state-disabled"><span class="ui-icon ui-icon-info"></span>Version ' + Versioning.version + ' </a></li>',
                             function () {
 
                             }]]
