@@ -3,6 +3,7 @@
 define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'lib/semver/semver'], function (VersionHandler, Debug, Variables, semver) {
 
     var version = '2.15.2';
+    var originalVersion = 'none';
 
     if (!semver.valid(version)) {
         throw new Error('Version number is invalid: ' + version);
@@ -91,6 +92,9 @@ define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'lib/
     }
 
     function updateView(newView) {
+        if(newView && newView.version) {
+            originalVersion = newView.version;
+        }
         var i;
         for (i in view) {
             delete view[i];
@@ -119,6 +123,10 @@ define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'lib/
 
         get version() {
             return String(version);
+        },
+
+        get originalVersion() {
+            return String(originalVersion);
         },
 
         setView: setView,

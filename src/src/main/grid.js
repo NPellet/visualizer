@@ -698,14 +698,14 @@ define(['jquery', 'src/util/ui', 'src/util/util', 'modules/modulefactory', 'src/
                                 break;
                         }
                     });
-
                 });
-
                 Context.listen(Context.getRootDom(), [
-                        ['<li class="ci-item-configureentrypoint" class="ui-state-disabled"><a class="ui-state-disabled"><span class="ui-icon ui-icon-info"></span>Version ' + Versioning.version + ' </a></li>',
+                        ['<li class="ci-item-configureentrypoint" class="ui-state-disabled"><a class="ui-state-disabled" id="version-context-menu"><span class="ui-icon ui-icon-info"></span>Version ' + Versioning.originalVersion + '\u2192' + Versioning.version + ' </a></li>',
                             function () {
-
-                            }]]
+                                console.log('vvvvvvvvvvvvvvvvvvvvv');
+                            }]], null, function($ctxmenu) {
+                        $ctxmenu.find('#version-context-menu').html('<span class="ui-icon ui-icon-info"></span>Version ' + Versioning.originalVersion + '\u2192' + Versioning.version);
+                    }
                 );
 
 

@@ -10,7 +10,7 @@ define(['jquery', 'src/util/api', 'modules/modulefactory', 'jquery-ui/menu'], fu
                 elements = [elements];
 
             dom.addEventListener('contextmenu', function (e) {
-
+                console.log('contextmenu', dom, onBeforeShow);
 
                 if (onBeforeShow) {
                     onBeforeShow(contextMenu);
