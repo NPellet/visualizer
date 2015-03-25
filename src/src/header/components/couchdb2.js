@@ -789,8 +789,10 @@ define([
                 node: folder
             };
             this.lastNode = last;
+            console.log(this.lastNode.key);
             if (event.type === 'fancytreedblclick' && !node.folder)
                 return false;
+
         },
         loadFlavor: function () {
             var proxyLazyLoad = $.proxy(this, 'lazyLoad'),
@@ -909,6 +911,14 @@ define([
                         theTree.contextmenu(menuOptions);
                         if (that.lastKeyLoaded)
                             thefTree.activateKey(that.lastKeyLoaded);
+                        if(that.currentDocument) {
+                            var id = that.currentDocument.data.doc._id;
+                            var d = _.find(data, function(d) {return d.id === id});
+                            if(d) {
+                                var key = _.flatten([that.flavor, d.value.flavors]).join(':');
+                                thefTree.activateKey(key);
+                            }
+                        }
                     },
                     error: function (status) {
                         console.log(status);
