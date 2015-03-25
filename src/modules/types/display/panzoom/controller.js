@@ -132,6 +132,15 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
                                 { key: 'crisp-edges', title: 'Crisp edges'}
                             ],
                             default: ['default']
+                        },
+                        scaling: {
+                            type: 'combo',
+                            title: 'Scaling Method',
+                            options: [
+                                { key: 'max', title: 'Extend to 100% of available spcae'},
+                                { key: 'no', title: 'Keep original image size'}
+                            ],
+                            default: ['max']
                         }
                     }
                 }

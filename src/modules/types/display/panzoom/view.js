@@ -5,9 +5,7 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
 
     var MAX_IMAGE_SIZE = 10000;
     function view() {
-        this.selectingArea = false;
-        this.imgWidth = [];
-        this.imgHeight = [];
+
     }
     view.prototype = $.extend(true, {}, Default, {
 
@@ -137,6 +135,8 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                     duration:0
                 });
 
+                that.images[i].$panzoomEl.css('transform-origin', '0px 0px 0px');
+
                 that.images[i].$panzoomEl.on('panzoompan', function(data, panzoom){
                     for(var j=0; j<that.images.length; j++) {
                         var panzoomInstance = that.images[j].$panzoomEl.panzoom("instance");
@@ -146,28 +146,33 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                     }
                 });
 
-                (function(i) {
-                    that.images[i].$panzoomEl.parent().off('mousewheel.focal');
-                    that.images[i].$panzoomEl.parent().on('mousewheel.focal', function( e ) {
-                        e.preventDefault();
-                        var increment = 1;
-                        var baseIncrement = 0.2;
-                        if(that.images.length > 0) {
-                            var zoomMagnitude = that.images[i].$panzoomEl.panzoom('getMatrix')[0];
-                            increment = baseIncrement * zoomMagnitude;
-                        }
-                        var delta = e.delta || e.originalEvent.wheelDelta;
-                        var zoomOut = delta ? delta < 0 : e.originalEvent.deltaY > 0;
-                        for(var j=0 ;j<that.images.length; j++) {
-                            that.images[j].$panzoomEl.panzoom('zoom', zoomOut, {
-                                increment: increment,
-                                animate: false,
-                                focal: e
-                            });
-                        }
-                    });
-                })(i);
             }
+            if(that.images.length > 0) {
+                that.images[0].$panzoomEl.parent().off('mousewheel.focal');
+                that.images[0].$panzoomEl.parent().on('mousewheel.focal', function( e ) {
+                    e.preventDefault();
+                    var increment = 1;
+                    var baseIncrement = 0.2;
+                    if(that.images.length > 0) {
+                        var zoomMagnitude = that.images[0].$panzoomEl.panzoom('getMatrix')[0];
+                        increment = baseIncrement * zoomMagnitude;
+                    }
+                    var delta = e.delta || e.originalEvent.wheelDelta;
+                    var zoomOut = delta ? delta < 0 : e.originalEvent.deltaY > 0;
+                    that.images[0].$panzoomEl.panzoom('zoom', zoomOut, {
+                        increment: increment,
+                        animate: false,
+                        focal: e
+                    });
+                    var mat = that.images[0].$panzoomEl.panzoom('getMatrix');
+                    debugger;
+                    for(var j=1 ;j<that.images.length; j++) {
+                        var instance = that.images[j].$panzoomEl.panzoom('instance');
+                        instance.setMatrix(mat);
+                    }
+                });
+            }
+
             that.dom.off('click.panzoom');
             that.dom.on('click.panzoom', function (e) {
                 var allClickedPixels = {};
@@ -202,9 +207,11 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
             if(!this.images) return;
 
             for(var i=0; i<this.images.length; i++) {
+                var scalingMethod = this.images[i].conf.scaling;
                 var domimg = this.images[i].$img[0];
                 var factor = 1;
-                    if(this.images[i].height/this.images[i].width > this.dom.width()/this.dom.height()) {
+                if(scalingMethod === 'max') {
+                    if(this.images[i].width/this.images[i].height > this.dom.width()/this.dom.height()) {
                         //factor = computeFactor(this.imgWidth[i], this.dom.width());
                         domimg.width = this.dom.width() * factor;
                         domimg.height = this.images[i].height/this.images[i].width * this.dom.width() * factor;
@@ -214,8 +221,10 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                         domimg.height = this.dom.height() * factor;
                         domimg.width = this.images[i].width/this.images[i].height * this.dom.height() * factor;
                     }
-                    this.images[i].$parent.width(this.dom.parent().width()).height(this.dom.parent().height());
-                    this.images[i].$panzoomEl.panzoom('resetDimensions');
+
+                }
+                this.images[i].$parent.width(this.dom.parent().width()).height(this.dom.parent().height());
+                this.images[i].$panzoomEl.panzoom('resetDimensions');
             }
         },
 
@@ -230,7 +239,8 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                     variable: v.name,
                     opacity: 0.5,
                     'z-index': i++,
-                    rendering: 'Normal'
+                    rendering: 'Normal',
+                    scaling: 'max'
                 }
             });
         }
