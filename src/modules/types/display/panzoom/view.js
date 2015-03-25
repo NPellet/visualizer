@@ -5,12 +5,11 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
     'components/jquery-mousewheel/jquery.mousewheel'
 ], function(API, Debug, Default, Util, _) {
 
-    var MAX_IMAGE_SIZE = 10000;
     var currentPromise = Promise.resolve();
-    function view() {
+    function View() {
 
     }
-    view.prototype = $.extend(true, {}, Default, {
+    View.prototype = $.extend(true, {}, Default, {
 
         init: function() {
             if (! this.dom) {
@@ -233,20 +232,5 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
             });
         }
     });
-
-    function computeFactor(imageWidth, viewport) {
-        var factor = viewport/imageWidth;
-        if(factor < 10) {
-            factor = imageWidth*10/viewport;
-        }
-        else {
-            factor = 1;
-        }
-        if(imageWidth * factor > MAX_IMAGE_SIZE) {
-            factor = Math.max(MAX_IMAGE_SIZE / imageWidth, 1);
-        }
-        return factor;
-    }
-
-    return view;
+    return View;
 });
