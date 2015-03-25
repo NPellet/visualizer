@@ -1,4 +1,4 @@
-HEAD
+2.15.2 / 2015-03-25
 ===================
 * Core
  * Add version of visualizer in context menu
