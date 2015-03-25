@@ -1,9 +1,12 @@
+'use strict';
+
 define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/util/util', 'lodash',
     'components/jquery.panzoom/dist/jquery.panzoom',
     'components/jquery-mousewheel/jquery.mousewheel'
 ], function(API, Debug, Default, Util, _) {
 
     var MAX_IMAGE_SIZE = 10000;
+    var currentPromise = Promise.resolve();
     function view() {
 
     }
@@ -31,8 +34,7 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
         update:{
             picture: function() {
                 var that = this;
-                this.clearImages();
-                this.addImages().then(function() {
+                currentPromise = currentPromise.then(function() { that.clearImages(); return that.addImages()}).then(function() {
                     that.panzoomMode();
                     that.onResize();
                     that.reorderImages();
@@ -54,17 +56,8 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
 
 
         reorderImages: function() {
-
-            var vars_in = _.map(this.module.definition.vars_in, function(v){
-                return v.name;
-            });
-
-
-            var order = _.map(this.module.getConfiguration('img'), function(c) {
-                return parseInt(c.order);
-            });
-            for(var i=0; i<vars_in.length; i++) {
-                this.dom.find('#'+vars_in[i]).css('z-index', (order[i] || vars_in.length-i))
+            for(var i=0; i<this.images.length; i++) {
+                this.images[i].$panzoomEl.css('z-index', parseInt(this.images[i].conf.order) || i);
             }
         },
 
@@ -100,9 +93,9 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
 
 
             prom = _.map(conf, function(c) {
-                return new Promise(function(resolve, reject) {
+                return new Promise(function(resolve) {
                     var image = {};
-                    var x = $('<div class="parent" id="' + c.variable + '"><div class="panzoom"><img/></div></div>');
+                    var x = $('<div class="parent"><div class="panzoom"><img/></div></div>');
                     var $img = x.find('img');
                     $img
                         .css('opacity', c.opacity)
@@ -136,8 +129,6 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                     duration:0
                 });
 
-                that.images[i].$panzoomEl.css('transform-origin', '0px 0px 0px');
-
                 that.images[i].$panzoomEl.on('panzoompan', function(data, panzoom){
                     for(var j=0; j<that.images.length; j++) {
                         var panzoomInstance = that.images[j].$panzoomEl.panzoom("instance");
@@ -146,32 +137,29 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                         }
                     }
                 });
-
             }
-            if(that.images.length > 0) {
-                that.images[0].$panzoomEl.parent().off('mousewheel.focal');
-                that.images[0].$panzoomEl.parent().on('mousewheel.focal', function( e ) {
-                    e.preventDefault();
-                    var increment = 1;
-                    var baseIncrement = 0.2;
-                    if(that.images.length > 0) {
-                        var zoomMagnitude = that.images[0].$panzoomEl.panzoom('getMatrix')[0];
-                        increment = baseIncrement * zoomMagnitude;
-                    }
-                    var delta = e.delta || e.originalEvent.wheelDelta;
-                    var zoomOut = delta ? delta < 0 : e.originalEvent.deltaY > 0;
-                    that.images[0].$panzoomEl.panzoom('zoom', zoomOut, {
-                        increment: increment,
-                        animate: false,
-                        focal: e
-                    });
-                    var mat = that.images[0].$panzoomEl.panzoom('getMatrix');
-                    for(var j=1 ;j<that.images.length; j++) {
-                        var instance = that.images[j].$panzoomEl.panzoom('instance');
-                        instance.setMatrix(mat);
-                    }
+            that.dom.off('mousewheel.focal');
+            that.dom.on('mousewheel.focal', function( e ) {
+                e.preventDefault();
+                var increment = 1;
+                var baseIncrement = 0.2;
+                if(that.images.length > 0) {
+                    var zoomMagnitude = that.images[0].$panzoomEl.panzoom('getMatrix')[0];
+                    increment = baseIncrement * zoomMagnitude;
+                }
+                var delta = e.delta || e.originalEvent.wheelDelta;
+                var zoomOut = delta ? delta < 0 : e.originalEvent.deltaY > 0;
+                that.images[0].$panzoomEl.panzoom('zoom', zoomOut, {
+                    increment: increment,
+                    animate: false,
+                    focal: e
                 });
-            }
+                var mat = that.images[0].$panzoomEl.panzoom('getMatrix');
+                for(var j=1 ;j<that.images.length; j++) {
+                    var instance = that.images[j].$panzoomEl.panzoom('instance');
+                    instance.setMatrix(mat);
+                }
+            });
 
             that.dom.off('click.panzoom');
             that.dom.on('click.panzoom', function (e) {
