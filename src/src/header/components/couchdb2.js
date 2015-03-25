@@ -223,6 +223,8 @@ define([
             var that = this;
 
             if (child && !child.folder) {
+                // This doc has revs which means it has been saved to couchdb already
+                // Therefore we only need to update the attachment
                 doc = child.data.doc;
                 $.ajax({
                     url: this.database.uri + doc._id + '/' + type.toLowerCase() + '.json?rev=' + doc._rev,
@@ -241,6 +243,8 @@ define([
                 });
             }
             else {
+                // The doc is new so we need to save the whole document
+                // With a new uuid
                 var flavors = {}, flav = [];
                 if (last.key) {
                     flav = last.node.key.split(':');
@@ -912,6 +916,8 @@ define([
                         if (that.lastKeyLoaded)
                             thefTree.activateKey(that.lastKeyLoaded);
                         if(that.currentDocument) {
+                            // When switching flavors, if this document is also
+                            // in the new flavor we select it automatically
                             var id = that.currentDocument.data.doc._id;
                             var d = _.find(data, function(d) {return d.id === id});
                             if(d) {
