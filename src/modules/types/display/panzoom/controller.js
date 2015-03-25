@@ -21,7 +21,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
         author: 'Daniel Kostro',
         date: '15.06.2014',
         license: 'MIT',
-        cssClass: 'mod_panzoom'
+        cssClass: 'panzoom'
     };
 
 

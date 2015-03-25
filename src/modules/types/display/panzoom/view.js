@@ -165,7 +165,6 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                         focal: e
                     });
                     var mat = that.images[0].$panzoomEl.panzoom('getMatrix');
-                    debugger;
                     for(var j=1 ;j<that.images.length; j++) {
                         var instance = that.images[j].$panzoomEl.panzoom('instance');
                         instance.setMatrix(mat);
