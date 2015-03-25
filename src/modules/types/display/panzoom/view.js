@@ -20,7 +20,7 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
 
         blank: {
             picture: function() {
-                this.dom.empty();
+                this.clearImages();
             }
         },
 
@@ -46,11 +46,12 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                 return;
             }
             for(var i=0; i<this.images.length; i++) {
-                this.images[i].$panzoomEl.panzoom("destroy");
+                this.images[i].$panzoomEl.panzoom('destroy');
             }
             this.dom.html('');
             this.images = [];
         },
+
 
         reorderImages: function() {
 
@@ -101,7 +102,6 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
             prom = _.map(conf, function(c) {
                 return new Promise(function(resolve, reject) {
                     var image = {};
-                    that.images.push(image);
                     var x = $('<div class="parent" id="' + c.variable + '"><div class="panzoom"><img/></div></div>');
                     var $img = x.find('img');
                     $img
@@ -117,6 +117,7 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                             image.height = this.height;
                             image.conf = c;
                             that.dom.append(x);
+                            that.images.push(image);
                             resolve();
                         });
                 });
