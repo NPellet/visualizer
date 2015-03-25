@@ -584,7 +584,6 @@ define(['jquery', 'src/util/ui', 'src/util/util', 'modules/modulefactory', 'src/
             }
 
             if (!API.isViewLocked()) {
-
                 Context.listen(Context.getRootDom(), [
                         ['<li name="paste"><a><span class="ui-icon ui-icon-clipboard"></span>Paste module</a></li>',
                             function () {
@@ -628,6 +627,7 @@ define(['jquery', 'src/util/ui', 'src/util/util', 'modules/modulefactory', 'src/
 
                 layersLi = $('<li><a> Switch to layer</a></li>');
                 layersUl = $('<ul />').appendTo(layersLi);
+
 
                 if (API.getContextMenu().indexOf('all') > -1 || API.getContextMenu().indexOf('layers') > -1) {
                     Context.listen(dom, [], function (contextDom) {
@@ -700,14 +700,25 @@ define(['jquery', 'src/util/ui', 'src/util/util', 'modules/modulefactory', 'src/
                     });
                 });
                 Context.listen(Context.getRootDom(), [
-                        ['<li class="ci-item-configureentrypoint" class="ui-state-disabled"><a class="ui-state-disabled" id="version-context-menu"><span class="ui-icon ui-icon-info"></span>Version ' + Versioning.originalVersion + '\u2192' + Versioning.version + ' </a></li>',
+                        ['<li class="ci-item-configureentrypoint" class="ui-state-disabled" id="context-menu-version"><a class="ui-state-disabled"><span class="ui-icon ui-icon-info"></span>' + Versioning.originalVersion + '\u2192' + Versioning.version + ' </a></li>',
                             function () {
                                 console.log('vvvvvvvvvvvvvvvvvvvvv');
                             }]], null, function($ctxmenu) {
-                        $ctxmenu.find('#version-context-menu').html('<span class="ui-icon ui-icon-info"></span>Version ' + Versioning.originalVersion + '\u2192' + Versioning.version);
+                        $ctxmenu.find('#context-menu-version a').html('<span class="ui-icon ui-icon-info"></span>' + Versioning.originalVersion + '\u2192' + Versioning.version);
                     }
                 );
 
+                Versioning.getBuildInfo().then(function(buildInfo) {
+                    if(buildInfo) {
+                        var date = new Date(new Date(buildInfo.timestamp).getTime()).toLocaleTimeString();
+                        Context.listen(Context.getRootDom(), [
+                            ['<li name="paste" id="context-menu-build-info"><a class="ui-state-disabled"><span class="ui-icon ui-icon-info"></span>Built ' + date + '</a></li>',
+                                function () {
+                                }]], null, function($ctxmenu) {
+                            $ctxmenu.find('#context-menu-build-info').insertAfter($ctxmenu.find('#context-menu-version'))
+                        });
+                    }
+                });
 
             }
 

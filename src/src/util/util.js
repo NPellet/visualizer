@@ -372,7 +372,6 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
             height: size,
             fill: color
         });
-
     };
 
     return exports;

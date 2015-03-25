@@ -447,7 +447,8 @@ module.exports = function (grunt) {
         'requirejs',
         'uglify:build',
         'clean:build',
-        'rename:afterBuild'
+        'rename:afterBuild',
+        'buildInfoFile'
     ];
 
     if (grunt.option('clean-images')) {
@@ -648,6 +649,13 @@ module.exports = function (grunt) {
         mkpath.sync('./build/usr/config/');
         fs.writeFileSync('./build/usr/config/default.json', JSON.stringify(cfg, false, '\t'));
         //grunt.task.run('clean:buildTemp');
+    });
+
+    // Create build.json file
+    grunt.registerTask('buildInfoFile', 'Create build.json', function() {
+        fs.writeFileSync('./build/build.json', JSON.stringify({
+            timestamp: new Date().getTime()
+        })) ;
     });
 
     // Takes care of module jsons
