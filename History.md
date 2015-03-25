@@ -1,3 +1,19 @@
+HEAD
+===================
+* Core
+ * Add version of visualizer in context menu
+ * Add Utils section in context menu (copy view etc...)
+ * Better color renderer (opacity is seen)
+* Modules
+ * panzoom: add var out with clicked pixel(s)
+ * panzoom: fix bugs
+ * slick grid: enhance color editor
+ * slick grid: fix bugs
+ * onde: fix bugs
+ * spectra_displayer: fix highlight blanking
+* Header
+ * couchdb2: fix meta save
+
 2.15.1 / 2015-03-17
 ===================
 
