@@ -4,7 +4,6 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
     'components/jquery.panzoom/dist/jquery.panzoom',
     'components/jquery-mousewheel/jquery.mousewheel'
 ], function(API, Debug, Default, Util, _) {
-    var ql = 0; // queue length
     var currentPromise = Promise.resolve();
     function View() {
 
@@ -194,6 +193,10 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                     minScale: 0.000001,
                     duration:0
                 });
+                if(that.lastTransform) {
+                    var instance = that.images[i].$panzoomEl.panzoom('instance');
+                    instance.setMatrix(that.lastTransform);
+                }
                 that.images[i].$panzoomEl.off('panzoompan');
                 that.images[i].$panzoomEl.on('panzoompan', function(data, panzoom){
                     that.lastTransform = panzoom.getMatrix();
