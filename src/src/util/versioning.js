@@ -2,7 +2,7 @@
 
 define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'lib/semver/semver'], function (VersionHandler, Debug, Variables, semver) {
 
-    var version = '2.15.2';
+    var version = '2.15.3';
     var originalVersion = 'none';
     var buildInfo;
 
