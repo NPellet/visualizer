@@ -107,7 +107,9 @@ module.exports = function (grunt) {
                             './loglevel/dist/loglevel.min.js',
                             './marked/lib/marked.js',
                             './highlight.js/build/highlight.pack.js',
-                            './openchemlib/dist/*.js'
+                            './openchemlib/dist/*.js',
+                            './jquery.panzoom/dist/*.js',
+                            './jquery-mousewheel/*.js'
                         ],
 
                         dest: './build/components/'
