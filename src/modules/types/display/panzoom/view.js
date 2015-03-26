@@ -139,17 +139,24 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                 var x = that.dom.find('#' + that.getImageDomId(varname));
                 // If it does destroy
                 x.find('.panzoom').panzoom('destroy');
-
+                var $img;
                 if(x.length === 0) {
                     x = that.newImageDom(varname);
+                    $img = x.find('img');
                 }
+                else {
+                    var $previousImg = x.find('img');
+                    $img = $('<img/>')
+                    x.find('.panzoom').append($img);
+                }
+
 
                 var image = _.find(that.images, function(img) {
                     return img.name === varname
                 });
                 image = image || {};
 
-                var $img = x.find('img');
+
                 $img
                     .css('opacity', conf.opacity)
                     .addClass(conf.rendering)
@@ -157,13 +164,14 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                     .load(function(){
                         image.name = conf.variable;
                         image.$panzoomEl = x.find('.panzoom');
-                        image.$img = x.find('img');
+                        image.$img = $img;
                         image.$parent = x.find('.parent');
                         image.width = this.width;
                         image.height = this.height;
                         image.conf = conf;
                         that.dom.append(x);
                         that.images.push(image);
+                        if($previousImg) $previousImg.remove();
                         resolve();
                     });
             });
