@@ -1,3 +1,11 @@
+2.15.3 / 2015-03-25
+===================
+* Grunt
+ * Fix jquery.panzoom build
+ * Add task: writes a json file with info about the build
+* Core
+ * display build time in context menu
+
 2.15.2 / 2015-03-25
 ===================
 * Core
