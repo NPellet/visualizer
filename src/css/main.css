@@ -283,6 +283,7 @@ div.ci-module-header-toolbar ul li img {
 div.ci-module-wrapper .ci-module-content {
     width: 100%;
     overflow: auto;
+    position: absolute;
 }
 
 .ci-module-expand {
