@@ -130,7 +130,7 @@ define([
         var view = Versioning.getView();
         var data = Versioning.getData();
 
-        Promise.all([loadCustomFilters(), loadMainVariables(), loadPouchVariables()]).then(doInitScript).then(function() {
+        Promise.all([loadCustomFilters(), loadMainVariables(), loadPouchVariables(), configureRequirejs()]).then(doInitScript).then(function() {
             ActionManager.viewHasChanged(view);
         }, function(e) {
             console.error('View loading problem', e);
@@ -150,6 +150,24 @@ define([
                     resolve();
                 }
             });
+        }
+
+        function configureRequirejs() {
+            return new Promise(function(resolve) {
+                if(!view.requirejs) return resolve();
+                var paths = view.requirejs[0].groups.paths[0];
+
+                paths = _.filter(paths, function(p) {
+                    return p.alias && p.path;
+                });
+                console.log(paths);
+                var conf = {paths:{}};
+                for(var i=0; i<paths.length; i++) {
+                    conf.paths[paths[i].alias] = paths[i].path;
+                }
+                requirejs.config(conf);
+            });
+
         }
 
         function loadCustomFilters() {
@@ -699,6 +717,30 @@ define([
                                 }
                             }
                         }
+                    },
+                    requirejs: {
+                        options: {
+                            title: 'Requirejs',
+                            icon: 'scripts'
+                        },
+                        groups: {
+                            paths: {
+                                options: {
+                                    type: 'table',
+                                    multiple: true
+                                },
+                                fields: {
+                                    alias: {
+                                        type: 'text',
+                                        title: 'Alias'
+                                    },
+                                    path: {
+                                        type: 'text',
+                                        title: 'Path'
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             });
@@ -726,7 +768,8 @@ define([
                             }
                         }],
                         script_cron: view.script_crons,
-                        couch_replication: view.couch_replication
+                        couch_replication: view.couch_replication,
+                        requirejs: view.requirejs
                     }
                 });
             });
@@ -753,6 +796,7 @@ define([
                 view.couch_replication = value.sections.couch_replication;
                 view.init_script = value.sections.init_script;
                 view.custom_filters = value.sections.custom_filters;
+                view.requirejs = value.sections.requirejs;
 
                 // PouchDB variables
                 data = new DataArray(value.sections.cfg[0].groups.pouchvars[0]);
