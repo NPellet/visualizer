@@ -160,7 +160,6 @@ define([
                 paths = _.filter(paths, function(p) {
                     return p.alias && p.path;
                 });
-                console.log(paths);
                 var conf = {paths:{}};
                 for(var i=0; i<paths.length; i++) {
                     conf.paths[paths[i].alias] = paths[i].path;
@@ -730,13 +729,13 @@ define([
                                     multiple: true
                                 },
                                 fields: {
+                                    path: {
+                                        type: 'text',
+                                        title: 'Url or Path'
+                                    },
                                     alias: {
                                         type: 'text',
                                         title: 'Alias'
-                                    },
-                                    path: {
-                                        type: 'text',
-                                        title: 'Path'
                                     }
                                 }
                             }
