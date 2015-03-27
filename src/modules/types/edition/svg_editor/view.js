@@ -127,7 +127,7 @@ define([
                         value: self.module.getConfiguration('svgcode')
                     }, this.module );
                     def.always( function( val ) {
-                        self.dom = val || $('<svg></svg>');
+                        self.dom = $(val) || $('<svg></svg>');
                         //console.log('rendered', self.dom);
                         self.module.getDomContent().html(self.dom);
                         // if(self._configCheckBox('sanitize', 'doSanitize')) {
