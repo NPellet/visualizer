@@ -6,7 +6,7 @@ define(['jquery', 'modules/module', 'src/util/debug'], function ($, Module, Debu
 
     var modules = [],
         definitions = new DataArray(),
-        allModules;
+        allModules = {};
 
     function getSubFoldersFrom(folder) {
         return new Promise(function (resolve) {
@@ -51,7 +51,7 @@ define(['jquery', 'modules/module', 'src/util/debug'], function ($, Module, Debu
             }
 
             if (Array.isArray(list.folders)) { // folders to retreive
-                var finalList = {};
+                var finalList = allModules;
 
                 if (list.modules) {
                     finalList.modules = list.modules;
@@ -66,6 +66,7 @@ define(['jquery', 'modules/module', 'src/util/debug'], function ($, Module, Debu
                     } else { // Folder is a string, start recursive lookup
                         getSubFoldersFrom(list.folders[i]).then(function (folder) {
                             $.extend(true, finalList, folder);
+                            //$.extend(true, allModules, finalList);
                         }, function (err) {
                             Debug.error('Caught error in ModuleFactory', err);
                         });
