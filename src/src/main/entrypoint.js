@@ -209,11 +209,13 @@ define([
                         }
                     }
                 }
-                var filtersLib = view.custom_filters[0].sections.filtersLib[0].groups.filters[0];
-                filtersLib= _.filter(filtersLib, function(v){
-                    return v.name && v.file;
-                });
-                API.setAllFilters(filtersLib);
+                var filtersLib = view.getChildSync('custom_filters', 0, 'sections', 'filtersLib', 0, 'groups', 'filters', 0);
+                if (filtersLib) {
+                    filtersLib= _.filter(filtersLib, function(v){
+                        return v.name && v.file;
+                    });
+                    API.setAllFilters(filtersLib);
+                }
             }
         }
 
