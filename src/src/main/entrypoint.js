@@ -165,6 +165,11 @@ define([
                     conf.paths[paths[i].alias] = paths[i].path;
                 }
                 requirejs.config(conf);
+
+                var modules = view.requirejs[0].groups.modules[0];
+                ModuleFactory.setModules({
+                    folders: _.pluck(modules, 'url')
+                })
             });
 
         }
@@ -736,6 +741,18 @@ define([
                                     alias: {
                                         type: 'text',
                                         title: 'Alias'
+                                    }
+                                }
+                            },
+                            modules: {
+                                options: {
+                                    type: 'table',
+                                    multiple: true
+                                },
+                                fields: {
+                                    url: {
+                                        type: 'text',
+                                        title: 'Root url to modules'
                                     }
                                 }
                             }

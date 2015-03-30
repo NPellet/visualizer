@@ -57,7 +57,7 @@ define(['jquery', 'modules/module', 'src/util/debug'], function ($, Module, Debu
                     finalList.modules = list.modules;
                 }
 
-                finalList.folders = {};
+                finalList.folders = finalList.folders || {};
                 for (var i = 0; i < list.folders.length; i++) {
                     if (typeof list.folders[i] === 'object') {
                         var folder = list.folders[i];
