@@ -907,3 +907,14 @@ li.safari {
     -ms-user-select: none;
     user-select: none;
 }
+
+.ci-visualizer-notification {
+    position: fixed;
+    background-color: lightgray;
+    border: solid 1px black;
+    top: 30px;
+    padding: 15px;
+    font-size: 15px;
+    right: 0px;
+    width: 200px;
+}

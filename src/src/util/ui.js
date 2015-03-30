@@ -10,6 +10,7 @@ define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/version
     var exports = {};
 
     var $dialog;
+    var $notification;
     exports.confirm = function (html, okLabel, cancelLabel) {
         if (_.isUndefined(okLabel)) okLabel = 'Ok';
         if (_.isUndefined(cancelLabel)) cancelLabel = 'Cancel';
@@ -229,6 +230,18 @@ define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/version
             $('<input type="text" id="' + uniqid + '" />').css('width', '400px')
         );
         this.dialog(dialog, dialogOptions);
+    };
+
+    exports.showNotification = function(message) {
+        $notification = $('.ci-visualizer-notification');
+        if($notification.length === 0) {
+            $('#ci-visualizer').append('<div class="ci-visualizer-notification"></div>')
+            $notification = $('.ci-visualizer-notification');
+        }
+        $notification.show().html(message);
+        setTimeout(function() {
+            $notification.hide();
+        }, 5000);
     };
 
     return exports;
