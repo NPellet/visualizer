@@ -209,6 +209,12 @@ define([
                         }
                     }
                 }
+                debugger;
+                var filtersLib = view.custom_filters[0].sections.filtersLib[0].groups.filters[0];
+                filtersLib= _.filter(filtersLib, function(v){
+                    return v.name && v.file;
+                });
+                API.setAllFilters(filtersLib);
             }
         }
 
@@ -620,6 +626,30 @@ define([
                             icon: 'script_go'
                         },
                         sections: {
+                            filtersLib: {
+                                options: {
+                                    title: 'Filter libs'
+                                },
+                                groups: {
+                                    filters: {
+                                        options: {
+                                            type: 'table',
+                                            multiple: true
+                                        },
+                                        fields: {
+                                            name: {
+                                                type: 'text',
+                                                title: 'Name'
+                                            },
+                                            file: {
+                                                type: 'text',
+                                                title: 'url'
+                                            }
+                                        }
+                                    }
+                                }
+
+                            },
                             filters: {
                                 options: {
                                     multiple: true,

@@ -7,12 +7,12 @@ define(function () {
     return {
         filter: function base64Filter(dataObject, resolve, reject) {
             if (dataObject.getType() !== "string")
-                return reject();
+                return reject(new TypeError('Base 64 filter expects a string'));
 
             var str = dataObject.get();
             var result = reg.exec(str);
             if (!result)
-                return reject();
+                return reject('Base 64 filter could not match a base 64 pattern' + reg.toString());
 
             resolve({
                 mimeType: result[1],
@@ -20,5 +20,4 @@ define(function () {
             });
         }
     };
-
 });
