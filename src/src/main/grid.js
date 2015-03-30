@@ -700,9 +700,16 @@ define(['jquery', 'src/util/ui', 'src/util/util', 'modules/modulefactory', 'src/
                     });
                 });
                 Context.listen(Context.getRootDom(), [
-                        ['<li class="ci-item-configureentrypoint" class="ui-state-disabled" id="context-menu-version"><a class="ui-state-disabled"><span class="ui-icon ui-icon-info"></span>' + Versioning.originalVersion + '\u2192' + Versioning.version + ' </a></li>',
-                            Util.noop]], null, function($ctxmenu) {
-                        $ctxmenu.find('#context-menu-version a').html('<span class="ui-icon ui-icon-info"></span>' + Versioning.originalVersion + '\u2192' + Versioning.version);
+                        ['<li class="ci-item-configureentrypoint" class="ui-state-disabled" id="context-menu-version"><a class="ui-state-disabled"><span class="ui-icon ui-icon-info"></span>' + Versioning.version + ' </a></li>',
+                            function () {
+                                window.open('https://github.com/NPellet/visualizer', '_blank');
+                            }]], null, function($ctxmenu) {
+                        var original = Versioning.originalVersion;
+                        var prefix = '';
+                        if (original !== 'none' && original !== Versioning.version) {
+                            prefix = original + '\u2192';
+                        }
+                        $ctxmenu.find('#context-menu-version a').html('<span class="ui-icon ui-icon-info"></span>' + prefix + Versioning.version);
                     }
                 );
 
