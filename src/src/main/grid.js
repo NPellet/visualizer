@@ -662,7 +662,7 @@ define(['jquery', 'src/util/ui', 'src/util/util', 'modules/modulefactory', 'src/
                     });
                 }
 
-                utilLi = $('<li><a>Utils</a></li>');
+                utilLi = $('<li name="utils"><a>Utils</a></li>');
                 utilUl = $('<ul />').appendTo(utilLi);
                 Context.listen(dom, [], function (contextDom) {
 
