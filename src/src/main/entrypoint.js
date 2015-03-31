@@ -208,6 +208,9 @@ define([
             return new Promise(function(resolve) {
                 var modules = view.getChildSync(['custom_modules', 0, 'groups', 'modules', 0]);
                 if(!modules) return resolve();
+                modules = _.filter(modules, function(m) {
+                    return m && m.url;
+                });
                 ModuleFactory.setModules({
                     folders: _.pluck(modules, 'url')
                 }, {external:true}).then(function() {
@@ -217,13 +220,13 @@ define([
                         var mod = _.find(modulesUrl, function(m) {
                             return m.id === module.id && m.id !== undefined;
                         });
-                        if(mod && !mod.url) {
-                            //mod.url = module.urlPrefix;
+                        if(mod && !mod.url && module.folder) {
+                            mod.url = module.folder;
                         }
                         if(!mod && module.id) {
                             modulesUrl.push({
                                 id: module.id,
-                                url: module.url || ''
+                                url: module.url || module.folder || ''
                             })
                         }
                     });
@@ -283,7 +286,7 @@ define([
                 var filtersLib = view.getChildSync('custom_filters', 0, 'sections', 'filtersLib', 0, 'groups', 'filters', 0);
                 if (filtersLib) {
                     filtersLib= _.filter(filtersLib, function(v){
-                        return v.name && v.file;
+                        return v && v.name && v.file;
                     });
                     API.setAllFilters(filtersLib);
                 }

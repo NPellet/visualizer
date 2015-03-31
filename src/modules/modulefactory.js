@@ -20,7 +20,9 @@ define(['jquery', 'modules/module', 'src/util/debug'], function ($, Module, Debu
                 if(result.modules.length > 0 && prop) {
                     for(var j=0; j<result.modules.length; j++) {
                         $.extend(result.modules[j], prop);
-                        result.modules[j].folder = folder;
+                        if(result.modules[j].folder) {
+                            result.modules[j].folder = folder + '/' + result.modules[j].folder
+                        }
                     }
                 }
                 if (folderContent.folders && Array.isArray(folderContent.folders)) {
