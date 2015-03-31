@@ -1,3 +1,63 @@
+## 2.9.20 (2015-03-29)
+
+Bugfixes:
+
+ - Fix regression where there is a long delay between calling `.cancel()` and promise actually getting cancelled in Chrome when long stack traces are enabled
+
+## 2.9.19 (2015-03-29)
+
+Bugfixes:
+
+ - Fix crashing in Chrome when long stack traces are disabled
+
+## 2.9.18 (2015-03-29)
+
+Bugfixes:
+
+ - Fix settlePromises using trampoline
+
+## 2.9.17 (2015-03-29)
+
+
+Bugfixes:
+
+ - Fix Chrome DevTools async stack traceability ([#542](.)).
+
+## 2.9.16 (2015-03-28)
+
+Features:
+
+ - Use setImmediate if available
+
+## 2.9.15 (2015-03-26)
+
+Features:
+
+ - Added `.asCallback` alias for `.nodeify`.
+
+Bugfixes:
+
+ - Don't always use nextTick, but try to pick up setImmediate or setTimeout in NW. Fixes [#534](.), [#525](.)
+ - Make progress a core feature. Fixes [#535](.) Note that progress has been removed in 3.x - this is only a fix necessary for 2.x custom builds.
+
+## 2.9.14 (2015-03-12)
+
+Bugfixes:
+
+ - Always use process.nextTick. Fixes [#525](.)
+
+## 2.9.13 (2015-02-27)
+
+Bugfixes:
+
+ - Fix .each, .filter, .reduce and .map callbacks being called synchornously if the input is immediate. ([#513](.))
+
+## 2.9.12 (2015-02-19)
+
+Bugfixes:
+
+ - Fix memory leak introduced in 2.9.0 ([#502](.))
+
 ## 2.9.11 (2015-02-19)
 
 Bugfixes:

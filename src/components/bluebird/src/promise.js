@@ -554,7 +554,6 @@ Promise.prototype._settlePromiseAt = function (index) {
     var promise = this._promiseAt(index);
     var isPromise = promise instanceof Promise;
 
-    ASSERT(async._isTickUsed);
     if (isPromise && promise._isMigrated()) {
         promise._unsetIsMigrated();
         return async.invoke(this._settlePromiseAt, this, index);
@@ -711,6 +710,7 @@ Promise.prototype._settlePromises = function () {
 };
 
 Promise._makeSelfResolutionError = makeSelfResolutionError;
+require("./progress.js")(Promise, PromiseArray);
 require("./method.js")(Promise, INTERNAL, tryConvertToPromise, apiRejection);
 require("./bind.js")(Promise, INTERNAL, tryConvertToPromise);
 require("./finally.js")(Promise, NEXT_FILTER, tryConvertToPromise);
