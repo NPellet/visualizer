@@ -64,7 +64,7 @@
     "sprintf": "1.0.2",
     "superagent": "0.21.0",
     "threejs": "*",
-    "twig.js": "0.8.1",
+    "twig.js": "0.8.2",
     "ui-contextmenu": "1.8.1",
     "underscore": "1.8.2",
     "uri.js": "1.14.1",
