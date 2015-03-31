@@ -1,14 +1,9 @@
 'use strict';
 
-define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'lib/semver/semver'], function (VersionHandler, Debug, Variables, semver) {
+define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'version'], function (VersionHandler, Debug, Variables, Version) {
 
-    var version = '2.15.3';
+    var version = Version.version;
     var originalVersion = 'none';
-    var buildInfo;
-
-    if (!semver.valid(version)) {
-        throw new Error('Version number is invalid: ' + version);
-    }
 
     var dataHandler = new VersionHandler(),
         viewHandler = new VersionHandler(),
@@ -208,25 +203,6 @@ define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'lib/
 
         isViewLocked: function () {
             return this.getView().configuration.lockView || false;
-        },
-
-        getBuildInfo: function() {
-            return new Promise(function(resolve, reject) {
-                if(buildInfo === undefined) {
-                    $.getJSON(requirejs.toUrl('./build.json'))
-                        .done(function(bi) {
-                            buildInfo = bi;
-                            resolve(buildInfo);
-                        })
-                        .fail(function() {
-                            buildInfo = null;
-                            resolve(null);
-                        })
-                }
-                else {
-                    resolve(buildInfo);
-                }
-            });
         }
 
     };

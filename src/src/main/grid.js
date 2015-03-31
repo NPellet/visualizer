@@ -1,6 +1,28 @@
 'use strict';
 
-define(['jquery', 'src/util/ui', 'src/util/util', 'modules/modulefactory', 'src/util/context', 'src/util/versioning', 'src/util/api', 'forms/form', 'src/main/variables', 'src/util/debug'], function ($, ui, Util, ModuleFactory, Context, Versioning, API, Form, Variables, Debug) {
+define([
+    'jquery',
+    'src/util/ui',
+    'src/util/util',
+    'modules/modulefactory',
+    'src/util/context',
+    'src/util/versioning',
+    'src/util/api',
+    'forms/form',
+    'src/main/variables',
+    'src/util/debug',
+    'version'
+], function ($,
+             ui,
+             Util,
+             ModuleFactory,
+             Context,
+             Versioning,
+             API,
+             Form,
+             Variables,
+             Debug,
+             Version) {
 
     var definition, jqdom, moduleMove, isInit = false;
     var activeLayer = 'Default layer';
@@ -713,21 +735,17 @@ define(['jquery', 'src/util/ui', 'src/util/util', 'modules/modulefactory', 'src/
                         if (original !== 'none' && original !== Versioning.version) {
                             prefix = original + '\u2192';
                         }
-                        $ctxmenu.find('#context-menu-version a').html('<span class="ui-icon ui-icon-info"></span>' + prefix + Versioning.version);
+                        $ctxmenu.find('#context-menu-version a').html('<span class="ui-icon ui-icon-info"></span>' + prefix + Versioning.version + (Version.isRelease ? '' : ' (pre)'));
                     }
                 );
 
-                Versioning.getBuildInfo().then(function(buildInfo) {
-                    if(buildInfo) {
-                        var date = new Date(new Date(buildInfo.timestamp).getTime()).toLocaleTimeString();
-                        Context.listen(Context.getRootDom(), [
-                            ['<li name="paste" id="context-menu-build-info"><a class="ui-state-disabled"><span class="ui-icon ui-icon-info"></span>Built ' + date + '</a></li>',
-                                function () {
-                                }]], null, function($ctxmenu) {
-                            $ctxmenu.find('#context-menu-build-info').insertAfter($ctxmenu.find('#context-menu-version'))
-                        });
-                    }
-                });
+                if (Version.buildTime) {
+                    Context.listen(Context.getRootDom(), [
+                        ['<li id="context-menu-build-info"><a class="ui-state-disabled"><span class="ui-icon ui-icon-info"></span>Built ' + Version.buildTime + '</a></li>',
+                            Util.noop]], null, function($ctxmenu) {
+                        $ctxmenu.find('#context-menu-build-info').insertAfter($ctxmenu.find('#context-menu-version'))
+                    });
+                }
 
             }
 
