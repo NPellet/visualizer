@@ -66,7 +66,7 @@ module.exports = function (grunt) {
                             './jquery/dist/jquery.min.js',
                             ['./jquery-ui/ui/*.js', './jquery-ui/themes/smoothness/**'],
                             './threejs/build/three.min.js',
-                            './ace/lib/ace/**',
+                            './ace/src/**',
                             ['./ckeditor/skins/**', './ckeditor/ckeditor.js', './ckeditor/styles.js', './ckeditor/contents.css', './ckeditor/adapters/jquery.js', './ckeditor/lang/en.js', './ckeditor/plugins/**', './ckeditor/config.js'],
                             './farbtastic/src/farbtastic.js',
                             './jquery.threedubmedia/event.drag/jquery.event.drag.js',

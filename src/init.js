@@ -15,7 +15,7 @@
 requirejs.config({
 	waitSeconds: 0,
 	paths: {
-		ace:                'components/ace/lib/ace',
+		ace:                'components/ace/src',
 		d3:                 'components/d3/d3.min',
 		fancytree:          'components/fancytree/dist/jquery.fancytree-all',
 		jqgrid:             'components/jqgrid_edit/js/jquery.jqGrid',

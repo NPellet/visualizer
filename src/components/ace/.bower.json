@@ -1,0 +1,12 @@
+{
+  "name": "ace",
+  "homepage": "https://github.com/ajaxorg/ace-builds",
+  "_release": "beb9ff68e3",
+  "_resolution": {
+    "type": "commit",
+    "commit": "beb9ff68e397b4dcaa1d40f79651a063fc917736"
+  },
+  "_source": "git://github.com/ajaxorg/ace-builds.git",
+  "_target": "beb9ff68e397b4dcaa1d40f79651a063fc917736",
+  "_originalSource": "ajaxorg/ace-builds"
+}

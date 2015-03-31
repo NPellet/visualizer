@@ -21,7 +21,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "ace": "1.1.8",
+    "ace": "ajaxorg/ace-builds#beb9ff68e397b4dcaa1d40f79651a063fc917736",
     "async": "0.9.2",
     "bluebird": "2.9.21",
     "bowser": "0.7.2",
