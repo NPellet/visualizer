@@ -13,7 +13,6 @@ define(['jquery', 'modules/module', 'src/util/debug', 'src/util/util'], function
             var result = {
                 folders: {}
             };
-            console.log(folder);
             $.getJSON(require.toUrl(folder + '/folder.json')).then(function (folderContent) {
                 result.name = folderContent.name;
                 result.modules = folderContent.modules;
@@ -24,7 +23,6 @@ define(['jquery', 'modules/module', 'src/util/debug', 'src/util/util'], function
                             result.modules[j].id = id;
                         }
                         result.modules[j].url = result.modules[j].url.replace(/\/$/, '') + '/';
-                        console.log('url', result.modules[j]);
                     }
                 }
                 if (folderContent.folders && Array.isArray(folderContent.folders)) {
