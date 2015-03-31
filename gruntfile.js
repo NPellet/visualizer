@@ -663,86 +663,95 @@ module.exports = function (grunt) {
     // Takes care of module jsons
     grunt.registerTask('eraseModuleJsons', [ 'clean:modulesJsonErase' ]);
     grunt.registerTask('createJSONModules', 'Create all modules json', function () {
-        function recurseFolder(basePath, relPath) {
-
-            var folders = fs.readdirSync(basePath),
-                allFolders = [],
-                allModules = [],
-                containsModule = false,
-                target = {},
-                subFolder;
-
-            for (var i = 0, l = folders.length; i < l; i++) {
-                if (!fs.statSync(basePath + '/' + folders[ i ]).isDirectory() || folders[ i ] == 'lib') {
-                    continue;
-                }
-
-                if (fs.existsSync(basePath + '/' + folders[ i ] + '/model.js')) {
-                    allModules.push(folders[ i ]);
-                } else {
-                    allFolders.push(folders[ i ]);
-                }
-
-                containsModule = containsModule || fs.existsSync(basePath + '/' + folders[ i ] + '/model.js');
-            }
-
-            if (allFolders.length == 0 && allModules.length == 0) {
-                return;
-            }
-
-            target.modules = [];
-            for (var i = 0, l = allModules.length; i < l; i++) {
-                var moduleInfo = /moduleInformation[^\{]+(\{[^}]+})/.exec(grunt.file.read(basePath + '/' + allModules[ i ] + '/controller.js'));
-
-                try {
-                    eval ('moduleInfo = ' + moduleInfo[1]);
-                } catch (e) {
-                    throw new Error('Could not find module information for ' + basePath+'/'+allModules[i]);
-                }
-
-                var info = {
-                    moduleName: (moduleInfo.name || allModules[ i ]),
-                    url: ( relPath ) + '/' + allModules[ i ] + '/'
-                };
-
-                if (moduleInfo.hidden) {
-                    info.hidden = true;
-                }
-
-                target.modules.push(info);
-            }
-
-            target.folders = [];
-            for (var i = 0, l = allFolders.length; i < l; i++) {
-                recurseFolder(basePath + '/' + allFolders[ i ], relPath + '/' + allFolders[ i ]);
-
-                if (fs.existsSync(basePath + '/' + allFolders[ i ] + '/folder.json')) {
-                    subFolder = grunt.file.readJSON(basePath + '/' + allFolders[ i ] + '/folder.json');
-                    target.folders.push(allFolders[i]);
-                }
-            }
-
-            if (fs.existsSync(basePath + '/folder.json')) {
-                var json = grunt.file.readJSON(basePath + '/folder.json');
-                json.folders = target.folders;
-                json.modules = target.modules;
-
-                target = json;
-
-            } else {
-                target.name = basePath.split('/').pop();
-            }
-
-            target.modules.sort(function (module1, module2) {
-                return module1.moduleName.toLowerCase().localeCompare(module2.moduleName.toLowerCase());
-            });
-
-            fs.writeFileSync(basePath + '/folder.json', JSON.stringify(target, null, 2));
-        }
-
         recurseFolder('./src/modules/types', 'modules/types');
         recurseFolder('./src/usr/modules', 'usr/modules');
         recurseFolder('/var/www/html/bio/v1', 'http://127.0.0.1/bio/v1');
     });
+
+    grunt.registerTask('recurseFolder', 'Recurse Folder', function() {
+        var from = grunt.option('recurseFolderFrom');
+        var to = grunt.option('recurseFolderTo');
+
+        if(from && to) {
+            recurseFolder(from, to);
+        }
+    });
+
+    function recurseFolder(basePath, relPath) {
+
+        var folders = fs.readdirSync(basePath),
+            allFolders = [],
+            allModules = [],
+            containsModule = false,
+            target = {},
+            subFolder;
+
+        for (var i = 0, l = folders.length; i < l; i++) {
+            if (!fs.statSync(basePath + '/' + folders[ i ]).isDirectory() || folders[ i ] == 'lib') {
+                continue;
+            }
+
+            if (fs.existsSync(basePath + '/' + folders[ i ] + '/model.js')) {
+                allModules.push(folders[ i ]);
+            } else {
+                allFolders.push(folders[ i ]);
+            }
+
+            containsModule = containsModule || fs.existsSync(basePath + '/' + folders[ i ] + '/model.js');
+        }
+
+        if (allFolders.length == 0 && allModules.length == 0) {
+            return;
+        }
+
+        target.modules = [];
+        for (var i = 0, l = allModules.length; i < l; i++) {
+            var moduleInfo = /moduleInformation[^\{]+(\{[^}]+})/.exec(grunt.file.read(basePath + '/' + allModules[ i ] + '/controller.js'));
+
+            try {
+                eval ('moduleInfo = ' + moduleInfo[1]);
+            } catch (e) {
+                throw new Error('Could not find module information for ' + basePath+'/'+allModules[i]);
+            }
+
+            var info = {
+                moduleName: (moduleInfo.name || allModules[ i ]),
+                url: ( relPath ) + '/' + allModules[ i ] + '/'
+            };
+
+            if (moduleInfo.hidden) {
+                info.hidden = true;
+            }
+
+            target.modules.push(info);
+        }
+
+        target.folders = [];
+        for (var i = 0, l = allFolders.length; i < l; i++) {
+            recurseFolder(basePath + '/' + allFolders[ i ], relPath + '/' + allFolders[ i ]);
+
+            if (fs.existsSync(basePath + '/' + allFolders[ i ] + '/folder.json')) {
+                subFolder = grunt.file.readJSON(basePath + '/' + allFolders[ i ] + '/folder.json');
+                target.folders.push(allFolders[i]);
+            }
+        }
+
+        if (fs.existsSync(basePath + '/folder.json')) {
+            var json = grunt.file.readJSON(basePath + '/folder.json');
+            json.folders = target.folders;
+            json.modules = target.modules;
+
+            target = json;
+
+        } else {
+            target.name = basePath.split('/').pop();
+        }
+
+        target.modules.sort(function (module1, module2) {
+            return module1.moduleName.toLowerCase().localeCompare(module2.moduleName.toLowerCase());
+        });
+
+        fs.writeFileSync(basePath + '/folder.json', JSON.stringify(target, null, 2));
+    }
 
 };
