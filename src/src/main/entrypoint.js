@@ -172,6 +172,10 @@ define([
             for(var j=0; j< v.modules.length; j++) {
                 var moduleId = Util.moduleIdFromUrl(v.modules[j].url);
                 var module = modulesById[moduleId];
+                if(!module) {
+                    Debug.warn('Your view contains an url to a module that does not correspond to any loaded modules');
+                    continue;
+                }
                 if(module.url.replace(/\/$/,'') !== v.modules[j].url.replace(/\/$/,'')) {
                     changed = true;
                     v.modules[j].url = module.url;
