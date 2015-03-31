@@ -74,6 +74,7 @@ define([
         l = view.modules.length;
 
         view.variables = view.variables || new DataArray();
+        view.aliases = view.aliases || new DataArray();
         view.pouchvariables = view.pouchvariables || new DataArray();
         view.configuration = view.configuration || new DataObject();
         view.configuration.title = view.configuration.title || 'No title';
@@ -152,17 +153,17 @@ define([
             });
         }
         function configureRequirejs() {
-                if(!view.requirejs) return;
-                var paths = view.requirejs[0].groups.paths[0];
+            if(!view.requirejs) return;
+            var paths = view.aliases;
 
-                paths = _.filter(paths, function(p) {
-                    return p.alias && p.path;
-                });
-                var conf = {paths:{}};
-                for(var i=0; i<paths.length; i++) {
-                    conf.paths[paths[i].alias] = paths[i].path;
-                }
-                requirejs.config(conf);
+            paths = _.filter(paths, function(p) {
+                return p && p.alias && p.path;
+            });
+            var conf = {paths:{}};
+            for(var i=0; i<paths.length; i++) {
+                conf.paths[paths[i].alias] = paths[i].path;
+            }
+            requirejs.config(DataObject.resurrect(conf));
         }
 
         function checkCustomModules() {
@@ -192,7 +193,7 @@ define([
         }
 
         function loadCustomModules() {
-            var modules = view.getChildSync(['custom_modules', 0, 'groups', 'modules', 0]);
+            var modules = view.getChildSync(['custom_filters', 0, 'sections', 'modules', 0, 'groups', 'modules', 0]);
             if(!modules) return Promise.resolve();
             modules = _.filter(modules, function(m) {
                 return m && m.url;
@@ -378,6 +379,23 @@ define([
                             icon: 'hostname'
                         },
                         groups: {
+                            aliases: {
+                                options: {
+                                    type: 'table',
+                                    multiple: true,
+                                    title: 'Define Global Aliases'
+                                },
+                                fields: {
+                                    path: {
+                                        type: 'text',
+                                        title: 'Url or Path'
+                                    },
+                                    alias: {
+                                        type: 'text',
+                                        title: 'Alias'
+                                    }
+                                }
+                            },
                             tablevars: {
                                 options: {
                                     type: 'table',
@@ -655,9 +673,29 @@ define([
                             icon: 'script_go'
                         },
                         sections: {
+                            modules: {
+                                options: {
+                                    multiple: false,
+                                    title: 'Modules'
+                                },
+                                groups: {
+                                    modules: {
+                                        options: {
+                                            type: 'table',
+                                            multiple: true
+                                        },
+                                        fields: {
+                                            url: {
+                                                type: 'text',
+                                                title: 'Root url to modules'
+                                            }
+                                        }
+                                    }
+                                }
+                            },
                             filtersLib: {
                                 options: {
-                                    title: 'Filter libs'
+                                    title: 'Filters'
                                 },
                                 groups: {
                                     filters: {
@@ -682,7 +720,7 @@ define([
                             filters: {
                                 options: {
                                     multiple: true,
-                                    title: 'Filter'
+                                    title: 'Custom Filters'
                                 },
                                 groups: {
                                     filter: {
@@ -716,42 +754,6 @@ define([
                                                 title: 'Alias'
                                             }
                                         }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    custom_modules: {
-                        options: {
-                            title: 'Custom Modules',
-                            icon: 'script_go'
-                        },
-                        groups: {
-                            modules: {
-                                options: {
-                                    type: 'table',
-                                    multiple: true
-                                },
-                                fields: {
-                                    url: {
-                                        type: 'text',
-                                        title: 'Root url to modules'
-                                    }
-                                }
-                            },
-                            modulesUrl: {
-                                options: {
-                                    type: 'table',
-                                    multiple: true
-                                },
-                                fields: {
-                                    id: {
-                                        type: 'text',
-                                        title: 'Module Id'
-                                    },
-                                    url: {
-                                        type: 'text',
-                                        title: 'Module URL'
                                     }
                                 }
                             }
@@ -816,30 +818,6 @@ define([
                                 }
                             }
                         }
-                    },
-                    requirejs: {
-                        options: {
-                            title: 'Requirejs',
-                            icon: 'scripts'
-                        },
-                        groups: {
-                            paths: {
-                                options: {
-                                    type: 'table',
-                                    multiple: true
-                                },
-                                fields: {
-                                    path: {
-                                        type: 'text',
-                                        title: 'Url or Path'
-                                    },
-                                    alias: {
-                                        type: 'text',
-                                        title: 'Alias'
-                                    }
-                                }
-                            }
-                        }
                     }
                 }
             });
@@ -850,7 +828,8 @@ define([
                         cfg: [{
                             groups: {
                                 tablevars: [view.variables],
-                                pouchvars: [view.pouchvariables]
+                                pouchvars: [view.pouchvariables],
+                                aliases: [view.aliases]
                             }
                         }],
                         actionscripts: [{
@@ -860,7 +839,6 @@ define([
                         }],
                         init_script: view.init_script,
                         custom_filters: view.custom_filters,
-                        custom_modules: view.custom_modules,
                         actionfiles: ActionManager.getFilesForm(),
                         webcron: [{
                             groups: {
@@ -892,11 +870,10 @@ define([
 
                 view.variables = data;
                 view.crons = allcrons;
-
+                view.aliases = new DataArray(value.sections.cfg[0].groups.aliases[0], true);
                 view.couch_replication = value.sections.couch_replication;
                 view.init_script = value.sections.init_script;
                 view.custom_filters = value.sections.custom_filters;
-                view.custom_modules = value.sections.custom_modules;
                 view.requirejs = value.sections.requirejs;
 
                 // PouchDB variables
