@@ -158,7 +158,6 @@
                 setSize(message.message.width, message.message.height);
                 break;
             case 'call':
-                debugger;
                 if(!message.message.name || !(typeof Jmol[message.message.name] == 'function')) break;
                 Jmol[message.message.name].apply(Jmol, message.message.args);
                 break;

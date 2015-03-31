@@ -74,7 +74,6 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
             });
 
             $fileInput.on('load', function(e) {
-                debugger;
             });
 
             this.module.getDomContent().html(this.dom);
