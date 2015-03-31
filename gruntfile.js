@@ -5,7 +5,9 @@ module.exports = function (grunt) {
         _ = require('underscore'),
         mkpath = require('mkpath'),
         path = require('path'),
-        extend = require('extend');
+        extend = require('extend'),
+        child_process = require('child_process'),
+        semver = require('semver');
 
     var usrPath = grunt.option('usr') || './src/usr';
 
@@ -124,7 +126,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: './src/',
-                        src: ['./index.html', 'init.js', 'css/**', 'bin/**', 'lib/**', 'src/**', 'data/**'],
+                        src: ['./index.html', 'init.js', 'version.js', 'css/**', 'bin/**', 'lib/**', 'src/**', 'data/**'],
                         dest: './build/'
                     }
                 ]
@@ -327,15 +329,15 @@ module.exports = function (grunt) {
 
                     expressions = [/\.jpg$/, /\.png$/, /\.jpeg$/, /\.gif$/];
                     if (_.any(expressions, function (exp) {
-                        return fileStats.name.match(exp);
-                    })) {
+                            return fileStats.name.match(exp);
+                        })) {
                         allimages.push(root + '/' + fileStats.name);
                     }
 
                     expressions = [/\.css$/, /\.js$/, /\.html$/];
                     if (_.any(expressions, function (exp) {
-                        return fileStats.name.match(exp);
-                    })) {
+                            return fileStats.name.match(exp);
+                        })) {
                         // File content
                         var content = fs.readFileSync(root + '/' + fileStats.name).toString();
 
@@ -440,6 +442,7 @@ module.exports = function (grunt) {
     }
 
     var buildTasks = [
+        'buildTime:set',
         'clean:build',
         'buildProject',
         'copy:buildModules',
@@ -450,7 +453,7 @@ module.exports = function (grunt) {
         'uglify:build',
         'clean:build',
         'rename:afterBuild',
-        'buildInfoFile'
+        'buildTime:unset'
     ];
 
     if (grunt.option('clean-images')) {
@@ -653,13 +656,6 @@ module.exports = function (grunt) {
         //grunt.task.run('clean:buildTemp');
     });
 
-    // Create build.json file
-    grunt.registerTask('buildInfoFile', 'Create build.json', function() {
-        fs.writeFileSync('./build/build.json', JSON.stringify({
-            timestamp: new Date().getTime()
-        })) ;
-    });
-
     // Takes care of module jsons
     grunt.registerTask('eraseModuleJsons', [ 'clean:modulesJsonErase' ]);
     grunt.registerTask('createJSONModules', 'Create all modules json', function () {
@@ -743,5 +739,100 @@ module.exports = function (grunt) {
         recurseFolder('./src/modules/types', 'modules/types');
         recurseFolder('./src/usr/modules', 'usr/modules');
     });
+
+    grunt.registerTask('bump', function (version) {
+        var versionJS = fs.readFileSync('./src/version.js', 'utf8');
+
+        var major = getVersionValue(versionJS, 'MAJOR');
+        var minor = getVersionValue(versionJS, 'MINOR');
+        var patch = getVersionValue(versionJS, 'PATCH');
+        var prerelease = getVersionValue(versionJS, 'PRERELEASE');
+
+        var v = major + '.' + minor + '.' + patch;
+        if (prerelease !== 'false') {
+            v += '-' + prerelease;
+        }
+
+        var semVersion = semver.parse(v);
+
+        console.log('Current version is ' +semVersion);
+
+        semVersion.inc(version || 'patch');
+
+        console.log('Bumping to ' + semVersion);
+
+        versionJS = setVersionValue(versionJS, 'MAJOR', semVersion.major);
+        versionJS = setVersionValue(versionJS, 'MINOR', semVersion.minor);
+        versionJS = setVersionValue(versionJS, 'PATCH', semVersion.patch);
+        versionJS = setVersionValue(versionJS, 'PRERELEASE',
+            semVersion.prerelease.length ? semVersion.prerelease[0] : 'false');
+
+        if (grunt.option('release')) {
+
+            console.log('Publishing release');
+
+            // Set IS_RELEASE flag to true
+            versionJS = setVersionValue(versionJS, 'IS_RELEASE', 'true');
+            fs.writeFileSync('./src/version.js', versionJS);
+
+            // Bump version in package.json
+            var pkg = fs.readFileSync('./package.json', 'utf8');
+            pkg = pkg.replace(/"version": ".+",/, '"version": "' + semVersion + '",');
+            fs.writeFileSync('./package.json', pkg);
+
+            // Bump version in bower.json
+            var bower = fs.readFileSync('./bower.json', 'utf8');
+            bower = bower.replace(/"version": ".+",/, '"version": "' + semVersion + '",');
+            fs.writeFileSync('./bower.json', bower);
+
+            // Commit the version change and tag
+            child_process.execFileSync('git', ['pull']);
+            child_process.execFileSync('git', ['add', 'src/version.js', 'bower.json', 'package.json']);
+            child_process.execFileSync('git', ['commit', '-m', 'Release v' + semVersion]);
+            child_process.execFileSync('git', ['tag', '-a', 'v' + semVersion, '-m', 'Release v' + semVersion]);
+
+            // Bump version to prepatch and reset IS_RELEASE to false
+            versionJS = setVersionValue(versionJS, 'IS_RELEASE', 'false');
+            semVersion.inc('prerelease');
+            versionJS = setVersionValue(versionJS, 'PATCH', semVersion.patch);
+            versionJS = setVersionValue(versionJS, 'PRERELEASE',
+                semVersion.prerelease.length ? semVersion.prerelease[0] : 'false');
+
+            fs.writeFileSync('./src/version.js', versionJS);
+
+            console.log('Now working on v' + semVersion);
+
+            // Commit the new version.js
+            child_process.execFileSync('git', ['add', 'src/version.js']);
+            child_process.execFileSync('git', ['commit', '-m', 'Working on v' + semVersion]);
+
+            // Push commits and tag
+            //child_process.execFileSync('git', ['push', 'origin']);
+            //child_process.execFileSync('git', ['push', 'origin', '--tags']);
+        } else {
+            fs.writeFileSync('./src/version.js', versionJS);
+        }
+
+    });
+
+    grunt.registerTask('buildTime', function (setting) {
+        var versionJS = fs.readFileSync('./src/version.js', 'utf8');
+        if (setting === 'set') {
+            versionJS = setVersionValue(versionJS, 'BUILD_TIME', Date.now());
+        } else {
+            versionJS = setVersionValue(versionJS, 'BUILD_TIME', 'null');
+        }
+        fs.writeFileSync('./src/version.js', versionJS);
+    });
+
+    function getVersionValue(str, name) {
+        var reg = new RegExp('var ' + name + ' = ([\\w\\d]+);');
+        return reg.exec(str)[1];
+    }
+
+    function setVersionValue(str, name, value) {
+        var reg = new RegExp('var ' + name + ' = [\\w\\d]+;');
+        return str.replace(reg, 'var ' + name + ' = ' + value + ';');
+    }
 
 };

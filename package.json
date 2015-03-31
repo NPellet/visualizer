@@ -37,6 +37,7 @@
     "grunt-rename": "^0.1.4",
     "grunt-text-replace": "~0.3.10",
     "mkpath": "^0.1.0",
+    "semver": "^4.3.3",
     "underscore": "^1.5.2",
     "walk": "^2.3.4"
   },
