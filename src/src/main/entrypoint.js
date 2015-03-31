@@ -121,7 +121,6 @@ define([
         _check('data');
     }
 
-    var lastCustomModules;
     function _check(loading) {
 
         if (!_dataLoaded || !_viewLoaded) {
@@ -167,85 +166,36 @@ define([
         }
 
         function checkCustomModules() {
-            var modulesUrl = view.getChildSync(['custom_modules', 0, 'groups', 'modulesUrl', 0]);
-            if(!modulesUrl) return;
-            if(lastCustomModules && lastCustomModules !== view.custom_modules[0].groups.modulesUrl[0]) {
-                var toChange = [];
-                var v = Versioning.getView().duplicate();
-                for(var j=0; j< v.modules.length; j++) {
-                    var cmodule = v.modules[j];
-                    for(var i=0; i<lastCustomModules.length; i++) {
-                        var current = _.find(modulesUrl, function(m){return m.id === lastCustomModules[i].id});
-                        if(current && current.url !== lastCustomModules[i].url) {
-                            if(cmodule.url.replace(/\/$/, '') === lastCustomModules[i].url.replace(/\/$/,'')) {
-                                toChange.push({
-                                    id: cmodule.id,
-                                    url: current.url
-                                })
-                            }
-                        }
-                    }
+            var v = Versioning.getView().duplicate();
+            var changed = false;
+            var modulesById = ModuleFactory.getModulesById();
+            for(var j=0; j< v.modules.length; j++) {
+                var moduleId = Util.moduleIdFromUrl(v.modules[j].url);
+                var module = modulesById[moduleId];
+                if(module.url.replace(/\/$/,'') !== v.modules[j].url.replace(/\/$/,'')) {
+                    changed = true;
+                    v.modules[j].url = module.url;
                 }
-
-
-                if(toChange.length >0) {
-                    for(j=0; j<toChange.length; j++) {
-                        cmodule = _.find(v.modules, function(m) {
-                            return m.id === toChange[j].id
-                        });
-                        if(cmodule) cmodule.url = toChange[j].url;
-                    }
-                    lastCustomModules = view.custom_modules[0].groups.modulesUrl[0];
-                    Debug.info('Some module urls have changed. Replacing in current view and reloading.');
-                    return Versioning.setViewJSON(v);
-                }
-
             }
-            lastCustomModules = view.custom_modules[0].groups.modulesUrl[0];
+            if(changed === false) {
+                Debug.info('No module urls rewritten in the view');
+            }
+            else {
+                Debug.info('Module urls were rewritten...');
+                Versioning.setViewJSON(v);
+            }
+
         }
 
         function loadCustomModules() {
-            return new Promise(function(resolve) {
-                var modules = view.getChildSync(['custom_modules', 0, 'groups', 'modules', 0]);
-                if(!modules) return resolve();
-                modules = _.filter(modules, function(m) {
-                    return m && m.url;
-                });
-                ModuleFactory.setModules({
-                    folders: _.pluck(modules, 'url')
-                }, {external:true}).then(function() {
-                    ModuleFactory.traverseModules(function(module) {
-                        if(!module.external) return;
-                        var modulesUrl = view.custom_modules[0].groups.modulesUrl[0];
-                        var mod = _.find(modulesUrl, function(m) {
-                            return m.id === module.id && m.id !== undefined;
-                        });
-                        if(mod && !mod.url && module.folder) {
-                            mod.url = module.folder;
-                        }
-                        if(!mod && module.id) {
-                            modulesUrl.push({
-                                id: module.id,
-                                url: module.url || module.folder || ''
-                            })
-                        }
-                    });
-                    var modulesUrl = view.getChildSync(['custom_modules', 0, 'groups', 'modulesUrl', 0]);
-                    if(!modulesUrl) return resolve();
-                    view.custom_modules[0].groups.modulesUrl[0] = _.filter(modulesUrl, function(v) {
-                        return v.id || v.url;
-                    });
-
-                    var toUpdate = _.filter(modulesUrl, function(m) {
-                        return m.id && m.url;
-                    });
-                    for(var i=0; i<toUpdate.length; i++) {
-                        ModuleFactory.resolveModuleUrl(toUpdate[i].id, toUpdate[i].url);
-                    }
-                    return resolve();
-                });
+            var modules = view.getChildSync(['custom_modules', 0, 'groups', 'modules', 0]);
+            if(!modules) return Promise.resolve();
+            modules = _.filter(modules, function(m) {
+                return m && m.url;
             });
-
+            return ModuleFactory.setModules({
+                folders: _.pluck(modules, 'url')
+            });
         }
 
         function loadCustomFilters() {

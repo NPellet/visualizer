@@ -374,6 +374,12 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
         });
     };
 
+    exports.moduleIdFromUrl = function(url) {
+        var reg = /([^\/]+)(\/)?$/;
+        var res = url.match(reg);
+        return res[1];
+    };
+
     return exports;
 
 });

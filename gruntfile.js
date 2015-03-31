@@ -742,6 +742,7 @@ module.exports = function (grunt) {
 
         recurseFolder('./src/modules/types', 'modules/types');
         recurseFolder('./src/usr/modules', 'usr/modules');
+        recurseFolder('/var/www/html/bio/v1', 'http://127.0.0.1/bio/v1');
     });
 
 };

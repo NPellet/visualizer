@@ -1,6 +1,6 @@
 'use strict';
 
-define(['jquery', 'modules/module', 'src/util/debug'], function ($, Module, Debug) {
+define(['jquery', 'modules/module', 'src/util/debug', 'src/util/util'], function ($, Module, Debug, Util) {
 
     var incrementalId = 0;
 
@@ -8,7 +8,7 @@ define(['jquery', 'modules/module', 'src/util/debug'], function ($, Module, Debu
         definitions = new DataArray(),
         allModules = {};
 
-    function getSubFoldersFrom(folder, prop) {
+    function getSubFoldersFrom(folder) {
         return new Promise(function (resolve) {
             var result = {
                 folders: {}
@@ -17,20 +17,22 @@ define(['jquery', 'modules/module', 'src/util/debug'], function ($, Module, Debu
             $.getJSON(require.toUrl(folder + '/folder.json')).then(function (folderContent) {
                 result.name = folderContent.name;
                 result.modules = folderContent.modules;
-                if(result.modules.length > 0 && prop) {
+                if(result.modules.length > 0) {
                     for(var j=0; j<result.modules.length; j++) {
-                        $.extend(result.modules[j], prop);
-                        if(result.modules[j].folder) {
-                            result.modules[j].folder = folder + '/' + result.modules[j].folder
+                        var id;
+                        if(id = Util.moduleIdFromUrl(result.modules[j].url)) {
+                            result.modules[j].id = id;
                         }
+                        result.modules[j].url = result.modules[j].url.replace(/\/$/, '') + '/';
+                        console.log('url', result.modules[j]);
                     }
                 }
                 if (folderContent.folders && Array.isArray(folderContent.folders)) {
-                    var defs = [];
+                    var prom = [];
                     for (var i = 0; i < folderContent.folders.length; i++) {
-                        defs.push(getSubFoldersFrom(folder + '/' + folderContent.folders[i], prop));
+                        prom.push(getSubFoldersFrom(folder + '/' + folderContent.folders[i]));
                     }
-                    Promise.all(defs).then(function (results) {
+                    Promise.all(prom).then(function (results) {
                         for (var i = 0; i < results.length; i++) {
                             var res = results[i];
                             result.folders[res.name] = res;
@@ -53,13 +55,6 @@ define(['jquery', 'modules/module', 'src/util/debug'], function ($, Module, Debu
         getTypes: function () {
             return allModules;
         },
-        resolveModuleUrl: function(moduleId, moduleUrl) {
-            this.traverseModules(function(module) {
-                if(module.id === moduleId) {
-                    module.url = moduleUrl.replace(/\/$/, '') + '/';
-                }
-            })
-        },
 
         traverseModules: function(moduleCallback, obj) {
             obj = obj || allModules;
@@ -75,7 +70,7 @@ define(['jquery', 'modules/module', 'src/util/debug'], function ($, Module, Debu
                 }
             }
         },
-        setModules: function (list, prop) {
+        setModules: function (list) {
             var prom = [];
             if (Array.isArray(list)) {
                 throw new Error('Module configuration error : list of folders must be defined in a "folders" array.');
@@ -95,7 +90,7 @@ define(['jquery', 'modules/module', 'src/util/debug'], function ($, Module, Debu
                         $.extend(true, finalList.folders, folder.folders);
 
                     } else { // Folder is a string, start recursive lookup
-                        prom.push(getSubFoldersFrom(list.folders[i], prop).then(function (folder) {
+                        prom.push(getSubFoldersFrom(list.folders[i]).then(function (folder) {
                             $.extend(true, finalList, folder);
                             //$.extend(true, allModules, finalList);
                         }, function (err) {
@@ -136,6 +131,14 @@ define(['jquery', 'modules/module', 'src/util/debug'], function ($, Module, Debu
         },
         getDefinitions: function () {
             return definitions;
+        },
+
+        getModulesById: function() {
+            var modulesById = {};
+            this.traverseModules(function(mod) {
+                modulesById[mod.id] = mod;
+            });
+            return modulesById;
         }
     };
 });
