@@ -121,6 +121,7 @@ define([
         _check('data');
     }
 
+    var lastCustomModules;
     function _check(loading) {
 
         if (!_dataLoaded || !_viewLoaded) {
@@ -129,9 +130,9 @@ define([
 
         var view = Versioning.getView();
         var data = Versioning.getData();
-
-        Promise.all([loadCustomFilters(), loadMainVariables(), loadPouchVariables(), configureRequirejs()]).then(doInitScript).then(function() {
+        Promise.all([loadCustomFilters(), loadMainVariables(), loadPouchVariables(), configureRequirejs(), loadCustomModules()]).then(doInitScript).then(function() {
             ActionManager.viewHasChanged(view);
+            checkCustomModules();
         }, function(e) {
             console.error('View loading problem', e);
         });
@@ -151,10 +152,8 @@ define([
                 }
             });
         }
-
         function configureRequirejs() {
-            return new Promise(function(resolve) {
-                if(!view.requirejs) return resolve();
+                if(!view.requirejs) return;
                 var paths = view.requirejs[0].groups.paths[0];
 
                 paths = _.filter(paths, function(p) {
@@ -165,11 +164,83 @@ define([
                     conf.paths[paths[i].alias] = paths[i].path;
                 }
                 requirejs.config(conf);
+        }
 
-                var modules = view.requirejs[0].groups.modules[0];
+        function checkCustomModules() {
+            var modulesUrl = view.getChildSync(['custom_modules', 0, 'groups', 'modulesUrl', 0]);
+            if(!modulesUrl) return;
+            if(lastCustomModules && lastCustomModules !== view.custom_modules[0].groups.modulesUrl[0]) {
+                var toChange = [];
+                var v = Versioning.getView().duplicate();
+                for(var j=0; j< v.modules.length; j++) {
+                    var cmodule = v.modules[j];
+                    for(var i=0; i<lastCustomModules.length; i++) {
+                        var current = _.find(modulesUrl, function(m){return m.id === lastCustomModules[i].id});
+                        if(current && current.url !== lastCustomModules[i].url) {
+                            if(cmodule.url.replace(/\/$/, '') === lastCustomModules[i].url.replace(/\/$/,'')) {
+                                toChange.push({
+                                    id: cmodule.id,
+                                    url: current.url
+                                })
+                            }
+                        }
+                    }
+                }
+
+
+                if(toChange.length >0) {
+                    for(j=0; j<toChange.length; j++) {
+                        cmodule = _.find(v.modules, function(m) {
+                            return m.id === toChange[j].id
+                        });
+                        if(cmodule) cmodule.url = toChange[j].url;
+                    }
+                    lastCustomModules = view.custom_modules[0].groups.modulesUrl[0];
+                    Debug.info('Some module urls have changed. Replacing in current view and reloading.');
+                    return Versioning.setViewJSON(v);
+                }
+
+            }
+            lastCustomModules = view.custom_modules[0].groups.modulesUrl[0];
+        }
+
+        function loadCustomModules() {
+            return new Promise(function(resolve) {
+                var modules = view.getChildSync(['custom_modules', 0, 'groups', 'modules', 0]);
+                if(!modules) return resolve();
                 ModuleFactory.setModules({
                     folders: _.pluck(modules, 'url')
-                })
+                }, {external:true}).then(function() {
+                    ModuleFactory.traverseModules(function(module) {
+                        if(!module.external) return;
+                        var modulesUrl = view.custom_modules[0].groups.modulesUrl[0];
+                        var mod = _.find(modulesUrl, function(m) {
+                            return m.id === module.id && m.id !== undefined;
+                        });
+                        if(mod && !mod.url) {
+                            //mod.url = module.urlPrefix;
+                        }
+                        if(!mod && module.id) {
+                            modulesUrl.push({
+                                id: module.id,
+                                url: module.url || ''
+                            })
+                        }
+                    });
+                    var modulesUrl = view.getChildSync(['custom_modules', 0, 'groups', 'modulesUrl', 0]);
+                    if(!modulesUrl) return resolve();
+                    view.custom_modules[0].groups.modulesUrl[0] = _.filter(modulesUrl, function(v) {
+                        return v.id || v.url;
+                    });
+
+                    var toUpdate = _.filter(modulesUrl, function(m) {
+                        return m.id && m.url;
+                    });
+                    for(var i=0; i<toUpdate.length; i++) {
+                        ModuleFactory.resolveModuleUrl(toUpdate[i].id, toUpdate[i].url);
+                    }
+                    return resolve();
+                });
             });
 
         }
@@ -693,6 +764,42 @@ define([
                             }
                         }
                     },
+                    custom_modules: {
+                        options: {
+                            title: 'Custom Modules',
+                            icon: 'script_go'
+                        },
+                        groups: {
+                            modules: {
+                                options: {
+                                    type: 'table',
+                                    multiple: true
+                                },
+                                fields: {
+                                    url: {
+                                        type: 'text',
+                                        title: 'Root url to modules'
+                                    }
+                                }
+                            },
+                            modulesUrl: {
+                                options: {
+                                    type: 'table',
+                                    multiple: true
+                                },
+                                fields: {
+                                    id: {
+                                        type: 'text',
+                                        title: 'Module Id'
+                                    },
+                                    url: {
+                                        type: 'text',
+                                        title: 'Module URL'
+                                    }
+                                }
+                            }
+                        }
+                    },
                     init_script: {
                         options: {
                             title: 'Initialization script',
@@ -774,18 +881,6 @@ define([
                                         title: 'Alias'
                                     }
                                 }
-                            },
-                            modules: {
-                                options: {
-                                    type: 'table',
-                                    multiple: true
-                                },
-                                fields: {
-                                    url: {
-                                        type: 'text',
-                                        title: 'Root url to modules'
-                                    }
-                                }
                             }
                         }
                     }
@@ -808,6 +903,7 @@ define([
                         }],
                         init_script: view.init_script,
                         custom_filters: view.custom_filters,
+                        custom_modules: view.custom_modules,
                         actionfiles: ActionManager.getFilesForm(),
                         webcron: [{
                             groups: {
@@ -843,6 +939,7 @@ define([
                 view.couch_replication = value.sections.couch_replication;
                 view.init_script = value.sections.init_script;
                 view.custom_filters = value.sections.custom_filters;
+                view.custom_modules = value.sections.custom_modules;
                 view.requirejs = value.sections.requirejs;
 
                 // PouchDB variables

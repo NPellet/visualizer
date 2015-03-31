@@ -100,6 +100,8 @@ define([
 					module.model.init( );
 					
 					resolve( module );
+				}, function(err) {
+					return reject(err);
 				});
 			}
 

@@ -355,7 +355,12 @@ define(['jquery', 'src/util/ui', 'src/util/util', 'modules/modulefactory', 'src/
             }
         }
 
-        module.getDomWrapper().remove().unbind();
+        try {
+            module.getDomWrapper().remove().unbind();
+        } catch(e) {
+            Debug.warn('Could not remove module from dom.', e);
+        }
+
         ModuleFactory.removeModule(module);
 
         if (module.controller && module.controller.onRemove) {
@@ -676,7 +681,6 @@ define(['jquery', 'src/util/ui', 'src/util/util', 'modules/modulefactory', 'src/
 
                     utilLi.bind('click', function (event) {
                         var utilkey = $(event.target.parentNode).data('utilkey');
-                        debugger;
                         switch(utilkey) {
                             case 'copyview':
                                 ui.copyview();
