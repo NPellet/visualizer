@@ -87,7 +87,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
     function duplicate(object) {
 
         var type = typeof object;
-        if (type === 'number' || type === 'string' || type === 'boolean') {
+        if (type === 'number' || type === 'string' || type === 'boolean' || object === null) {
             return object;
         } else if (type === 'undefined' || type === 'function') {
             return;
