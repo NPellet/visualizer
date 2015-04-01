@@ -803,6 +803,7 @@ module.exports = function (grunt) {
 
             // Bump version to prepatch and reset IS_RELEASE to false
             versionJS = setVersionValue(versionJS, 'IS_RELEASE', 'false');
+            var previousVersion = semVersion.toString();
             semVersion.inc('prerelease');
             versionJS = setVersionValue(versionJS, 'PATCH', semVersion.patch);
             versionJS = setVersionValue(versionJS, 'PRERELEASE',
@@ -818,7 +819,7 @@ module.exports = function (grunt) {
 
             // Push commits and tag
             child_process.execFileSync('git', ['push', 'origin']);
-            child_process.execFileSync('git', ['push', 'origin', 'v' + semVersion]);
+            child_process.execFileSync('git', ['push', 'origin', 'v' + previousVersion]);
         } else {
             fs.writeFileSync('./src/version.js', versionJS);
         }
