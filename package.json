@@ -7,6 +7,9 @@
     "visualization",
     "framework"
   ],
+  "scripts": {
+    "build": "grunt build --clean-images"
+  },
   "homepage": "https://github.com/NPellet/visualizer",
   "bugs": {
     "url": "https://github.com/npellet/visualizer/issues"
