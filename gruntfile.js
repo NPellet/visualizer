@@ -817,8 +817,8 @@ module.exports = function (grunt) {
             child_process.execFileSync('git', ['commit', '-m', 'Working on v' + semVersion]);
 
             // Push commits and tag
-            //child_process.execFileSync('git', ['push', 'origin']);
-            //child_process.execFileSync('git', ['push', 'origin', '--tags']);
+            child_process.execFileSync('git', ['push', 'origin']);
+            child_process.execFileSync('git', ['push', 'origin', 'v' + semVersion]);
         } else {
             fs.writeFileSync('./src/version.js', versionJS);
         }
