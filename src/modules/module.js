@@ -27,8 +27,8 @@ define([
 		//define object properties
 		var moduleURL = String(module.definition.getChildSync(['url'], true).get()),
 			ext = '';
-		
-		if( moduleURL.indexOf('http://') > -1 ) {
+
+		if(/^https?:\/\/|\.|\//.test(moduleURL)  ) {
 			ext = '.js';
 		}
 
