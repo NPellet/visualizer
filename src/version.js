@@ -4,10 +4,10 @@ define(['lib/semver/semver'], function (semver) {
 
     /* DO NOT MODIFY THE FOLLOWING LINES MANUALLY */
     var MAJOR = 2;
-    var MINOR = 15;
-    var PATCH = 3;
+    var MINOR = 16;
+    var PATCH = 0;
     var PRERELEASE = false;
-    var IS_RELEASE = false;
+    var IS_RELEASE = true;
     var BUILD_TIME = null;
     /* END */
 
