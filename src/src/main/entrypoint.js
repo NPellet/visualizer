@@ -153,7 +153,7 @@ define([
             });
         }
         function configureRequirejs() {
-            if(!view.requirejs) return;
+            if(!view.aliases) return;
             var paths = view.aliases;
 
             paths = _.filter(paths, function(p) {
