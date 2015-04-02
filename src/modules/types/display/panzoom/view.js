@@ -202,7 +202,8 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                     increment: 0.1,
                     maxScale: 100.0,
                     minScale: 0.000001,
-                    duration:0
+                    duration:0,
+                    startTransform: "none"
                 });
                 if(that.lastTransform) {
                     var instance = that.images[i].$panzoomEl.panzoom('instance');
