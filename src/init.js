@@ -95,11 +95,11 @@ requirejs.config({
 	},
 
 	'src/shape.1dnmr': {
- 		'graph': 'components/jsgraph/dist/jsgraph.min',
+ 		'graph': 'components/jsgraph/dist/jsgraph.min'
 	},//'components/jsNMR/src/shape.1dnmr'
 
 	'lib/gcms/gcms': {
-		'graph': 'components/jsgraph/dist/jsgraph.min',
+		'graph': 'components/jsgraph/dist/jsgraph.min'
 	}
 
 

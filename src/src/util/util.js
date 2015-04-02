@@ -384,6 +384,24 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
         return /^https?:\/\/|\.|\//.test(url);
     };
 
+    var utilReqPaths = {};
+    exports.rewriteRequirePath = function(url) {
+        if(!this.requireNeedsExtension(url)) {
+            // return same url without trailing backslash
+            return url.replace(/\/$/, '');
+        }
+        var reqPathStr = exports.getNextUniqueId(true);
+        url = url.replace(/\/$/,'');
+        if(utilReqPaths[url]) return utilReqPaths[url];
+        var paths = {};
+        paths[reqPathStr] = url;
+        requirejs.config({
+            paths: paths
+        });
+
+        return reqPathStr;
+    };
+
     return exports;
 
 });

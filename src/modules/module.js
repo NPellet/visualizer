@@ -25,12 +25,9 @@ define([
 
 	function init( module ) {
 		//define object properties
-		var moduleURL = String(module.definition.getChildSync(['url'], true).get()),
-			ext = '';
+		var moduleURL = Util.rewriteRequirePath(String(module.definition.getChildSync(['url'], true).get())) + '/';
 
-		if(Util.requireNeedsExtension(moduleURL)  ) {
-			ext = '.js';
-		}
+
 
 		module.viewReady = new Promise( function( res, rej ) {
 			module._resolveView = res;
@@ -68,9 +65,9 @@ define([
 
 				require( [
 					
-					moduleURL + 'model' + ext,
-					moduleURL + 'view' + ext,
-					moduleURL + 'controller' + ext
+					moduleURL + 'model',
+					moduleURL + 'view',
+					moduleURL + 'controller'
 
 				], function(M, V, C) {
 
