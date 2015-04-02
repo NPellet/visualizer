@@ -150,10 +150,11 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                     x.find('.panzoom').append($img);
                 }
 
-
+                var foundImg = false;
                 var image = _.find(that.images, function(img) {
                     return img.name === varname
                 });
+                if(image) foundImg = true;
                 image = image || {};
 
 
@@ -170,7 +171,9 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                         image.height = this.height;
                         image.conf = conf;
                         that.dom.append(x);
-                        that.images.push(image);
+                        if(!foundImg) {
+                            that.images.push(image);
+                        }
                         if($previousImg) $previousImg.remove();
                         resolve();
                     });
@@ -263,6 +266,7 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
             this.dom.off('dblclick');
             this.dom.dblclick(function() {
                 for(var i=0; i<that.images.length; i++) {
+                    console.log('reset');
                     that.images[i].$panzoomEl.panzoom("reset");
                     if(i===0) {
                         that.lastTransform = that.images[i].$panzoomEl.panzoom("getMatrix")
