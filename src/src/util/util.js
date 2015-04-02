@@ -380,6 +380,10 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
         return res[1];
     };
 
+    exports.requireNeedsExtension = function(url) {
+        return /^https?:\/\/|\.|\//.test(url);
+    };
+
     return exports;
 
 });
