@@ -1,62 +1,64 @@
+'use strict';
 
-define( [ 'require', '../text/element'], function( require, textElement ) {
+define(['require', '../text/element'], function (require, textElement) {
 
-	var FieldConstructor = function() {};
-	
-	$.extend( FieldConstructor.prototype, textElement.prototype );
+    var FieldConstructor = function () {
+    };
+
+    $.extend(FieldConstructor.prototype, textElement.prototype);
 
 
-	FieldConstructor.prototype.validate = function( value ) {
-	
-		var error = false;
-		var floatVal = parseFloat( value );
+    FieldConstructor.prototype.validate = function (value) {
 
-		if( value == "" || floatVal == value ) {
-				var i = 0, l;
+        var error = false;
+        var floatVal = parseFloat(value);
 
-			if( this.field.options.validation && this.field.options.validation.rules ) {
+        if (value == '' || floatVal == value) {
+            var i = 0, l;
 
-				l = this.field.options.validation.rules.length;
+            if (this.field.options.validation && this.field.options.validation.rules) {
 
-				for( ; i < l ; i ++ ) {
+                l = this.field.options.validation.rules.length;
 
-					var error = false;
-				
-					if( typeof( this.field.options.validation.rules[ i ].max ) !== "undefined" ) {
+                for (; i < l; i++) {
 
-						var max = this.field.options.validation.rules[ i ].max;
-						
-						if( floatVal > max ) {
-							error = true;
-						}
-					}
+                    var error = false;
 
-					if( typeof( this.field.options.validation.rules[ i ].min ) !== "undefined" ) {
+                    if (typeof( this.field.options.validation.rules[i].max ) !== 'undefined') {
 
-						var max = this.field.options.validation.rules[ i ].min;
-						if( floatVal < max ) {
-							error = true;
-						}
-					}
+                        var max = this.field.options.validation.rules[i].max;
 
-					if( error ) {
-						this.validation.error = true;
-						this.validation.feedback = this.field.options.validation.rules[ i ].feedback;
-						return;
-					}
-				
-					this.validation.error = false;
-				}
-			}
+                        if (floatVal > max) {
+                            error = true;
+                        }
+                    }
 
-			this.validation.value = floatVal;	
-			this.validation.error = false;
+                    if (typeof( this.field.options.validation.rules[i].min ) !== 'undefined') {
 
-		} else {
+                        var max = this.field.options.validation.rules[i].min;
+                        if (floatVal < max) {
+                            error = true;
+                        }
+                    }
 
-			this.validation.errorType = 1;
-		}
-	}
+                    if (error) {
+                        this.validation.error = true;
+                        this.validation.feedback = this.field.options.validation.rules[i].feedback;
+                        return;
+                    }
 
-	return FieldConstructor;
+                    this.validation.error = false;
+                }
+            }
+
+            this.validation.value = floatVal;
+            this.validation.error = false;
+
+        } else {
+
+            this.validation.errorType = 1;
+        }
+    }
+
+    return FieldConstructor;
 });

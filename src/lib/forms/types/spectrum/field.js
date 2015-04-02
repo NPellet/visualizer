@@ -1,6 +1,6 @@
 'use strict';
 
-define([ require, '../../field', 'src/util/util', 'components/farbtastic/src/farbtastic', 'components/spectrum/spectrum' ], function (require, FieldDefaultConstructor, Util, spectrum) {
+define([require, '../../field', 'src/util/util', 'components/farbtastic/src/farbtastic', 'components/spectrum/spectrum'], function (require, FieldDefaultConstructor, Util, spectrum) {
 
     var felement = null;
 
@@ -24,17 +24,17 @@ define([ require, '../../field', 'src/util/util', 'components/farbtastic/src/far
             showPalette: true,
             showSelectionPalette: true,
             palette: [[
-                    'rgba(152,  0,  0, 1)',
-                    'rgba(255,  0,  0, 1)',
-                    'rgba(255,  153,  0, 1)',
-                    'rgba(255,  255,  0, 1)',
-                    'rgba(0,  255,  0, 1)',
-                    'rgba(0,  255,  255, 1)',
-                    'rgba(74,  134,  232, 1)',
-                    'rgba(0,  0,  255, 1)',
-                    'rgba(153,  0,  255, 1)',
-                    'rgba(255,  0,  255, 1)'
-                ],
+                'rgba(152,  0,  0, 1)',
+                'rgba(255,  0,  0, 1)',
+                'rgba(255,  153,  0, 1)',
+                'rgba(255,  255,  0, 1)',
+                'rgba(0,  255,  0, 1)',
+                'rgba(0,  255,  255, 1)',
+                'rgba(74,  134,  232, 1)',
+                'rgba(0,  0,  255, 1)',
+                'rgba(153,  0,  255, 1)',
+                'rgba(255,  0,  255, 1)'
+            ],
                 [
                     'rgba(230,  184,  175, 1)',
                     'rgba(244,  204,  204, 1)',
@@ -110,7 +110,7 @@ define([ require, '../../field', 'src/util/util', 'components/farbtastic/src/far
             localStorageKey: 'visualizer-spectrum',
             change: function (color) {
                 var rgb = color.toRgb();
-                self.getElementExpanded().value = felement.value = [ rgb['r'], rgb['g'], rgb['b'], rgb['a'] ];
+                self.getElementExpanded().value = felement.value = [rgb['r'], rgb['g'], rgb['b'], rgb['a']];
                 // self.form.hideExpander();
                 felement.toggleSelect();
             }

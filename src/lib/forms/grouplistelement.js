@@ -1,224 +1,224 @@
-define(['jquery', './groupelement'], function($, GroupElement) {
+'use strict';
 
-	var GroupListElement = function() {};
+define(['jquery', './groupelement'], function ($, GroupElement) {
 
-	GroupListElement.prototype = new GroupElement();
-	
-	GroupListElement.prototype.makeDom = function(forceMake) {
+    var GroupListElement = function () {
+    };
 
-		if( ! forceMake && this.dom ) {
-			this.updateDom();
-		}
+    GroupListElement.prototype = new GroupElement();
 
-		var self = this,
-			dom = $("<div />").addClass('form-group-list'),
-			div, 
-			label, 
-			divFieldElements;
+    GroupListElement.prototype.makeDom = function (forceMake) {
 
-		if( this.group.getTitle() ) {
-			dom.append('<div class="form-groupelement-title">' + this.getTitle() + '</div>');
-		}
+        if (!forceMake && this.dom) {
+            this.updateDom();
+        }
 
-		self.fieldElementsDom = self.fieldElementsDom || { };
-		this.group.eachFields( function( field ) {
+        var self = this,
+            dom = $('<div />').addClass('form-group-list'),
+            div,
+            label,
+            divFieldElements;
 
-			if( field.isDisplayed() ) {
+        if (this.group.getTitle()) {
+            dom.append('<div class="form-groupelement-title">' + this.getTitle() + '</div>');
+        }
 
-				div = $( "<div />" ).addClass( 'form-field-list-' + field.getType( ) );
-				label = $( "<label />" ).html( field.getTitle( true ) ); // Title is attached to field element
+        self.fieldElementsDom = self.fieldElementsDom || {};
+        this.group.eachFields(function (field) {
 
-				div.append( label );
-				divFieldElements = $( '<div />' ).addClass( 'form-field-list-elements' );
-				div.append( divFieldElements );
-				dom.append( div );
+            if (field.isDisplayed()) {
 
-				self.fieldElementsDom[ field.getName( ) ] = divFieldElements;
-			}
-			
-		});
+                div = $('<div />').addClass('form-field-list-' + field.getType());
+                label = $('<label />').html(field.getTitle(true)); // Title is attached to field element
 
-		this.updateDom();
-		this.dom = dom;
-		return this.dom;
-	};
+                div.append(label);
+                divFieldElements = $('<div />').addClass('form-field-list-elements');
+                div.append(divFieldElements);
+                dom.append(div);
 
-	GroupListElement.prototype.updateDom = function() {
+                self.fieldElementsDom[field.getName()] = divFieldElements;
+            }
 
-		var self = this;
+        });
 
-		self.fieldElementsDom = self.fieldElementsDom || { };
+        this.updateDom();
+        this.dom = dom;
+        return this.dom;
+    };
 
-		this.group.eachFields( function( field ) {
+    GroupListElement.prototype.updateDom = function () {
 
-			if( self.fieldElementsDom[ field.getName() ] ) {
-				self.fieldElementsDom[ field.getName() ].children().detach(); // Empty the dom
+        var self = this;
 
-				self.eachFieldElements( field.getName(), function(fieldElement) {
-					self.fieldElementsDom[ field.getName() ].append( fieldElement.getDom( ) );
-				});
-			}
-		});
+        self.fieldElementsDom = self.fieldElementsDom || {};
 
-		this.group.form.redoTabIndices();
-		return this.dom;
-	};
+        this.group.eachFields(function (field) {
 
+            if (self.fieldElementsDom[field.getName()]) {
+                self.fieldElementsDom[field.getName()].children().detach(); // Empty the dom
 
-	GroupListElement.prototype._makeDomTpl = function() {
+                self.eachFieldElements(field.getName(), function (fieldElement) {
+                    self.fieldElementsDom[field.getName()].append(fieldElement.getDom());
+                });
+            }
+        });
 
-		var self = this;
+        this.group.form.redoTabIndices();
+        return this.dom;
+    };
 
-		this.dom = this.group._tplClean.clone();
-		self.fieldElementsDom = self.fieldElementsDom || { };
-		
-		this.dom.find('.form-dyn').each( function( i, el ) {
 
-			el = $( el );
+    GroupListElement.prototype._makeDomTpl = function () {
 
-			var content = el.attr( 'data-form-content' ).split(':');
+        var self = this;
 
-			switch( content[ 0 ] ) {
+        this.dom = this.group._tplClean.clone();
+        self.fieldElementsDom = self.fieldElementsDom || {};
 
-				case 'field':
-					if( self.fieldElements[ content[ 1 ] ] ) {
+        this.dom.find('.form-dyn').each(function (i, el) {
 
-						switch( content[ 2 ] ) {
+            el = $(el);
 
-							case 'dom':
-								self.fieldElementsDom[ content[ 1 ] ] = el;
-							break;
+            var content = el.attr('data-form-content').split(':');
 
-							case 'label':
-								el.html( self.group.fields[ content[ 1 ] ].options.title || self.group.fields[ content[ 1 ] ].name );
-							break;
-						}
-					}
-				break;
-			}
-			
-		} );
+            switch (content[0]) {
 
-		this.updateDom();
-		return this.dom;
-	}
+                case 'field':
+                    if (self.fieldElements[content[1]]) {
 
+                        switch (content[2]) {
 
+                            case 'dom':
+                                self.fieldElementsDom[content[1]] = el;
+                                break;
 
-	GroupListElement.prototype.condDisplay = function( fieldName, displayOrHide ) {
-		this.eachFieldElements( fieldName, function( fieldEl ) {
-			if( displayOrHide ) {
-				this.fieldElementsDom[ fieldName ].parent( ).show();
-			} else {
-				this.fieldElementsDom[ fieldName ].parent( ).hide();
-			}
-		});		
-	}
+                            case 'label':
+                                el.html(self.group.fields[content[1]].options.title || self.group.fields[content[1]].name);
+                                break;
+                        }
+                    }
+                    break;
+            }
 
-	GroupListElement.prototype.getFieldIndex = function( fieldElement ) {
+        });
 
-		var name = fieldElement.field.getName();
+        this.updateDom();
+        return this.dom;
+    }
 
-		if( ! this.fieldElements[ name ]) {
-			return this.form.throwError("Cannot get field index. Field name " + name + " doesn't exist");
-		}
 
-		var index = this.fieldElements[ name ].indexOf( fieldElement );
+    GroupListElement.prototype.condDisplay = function (fieldName, displayOrHide) {
+        this.eachFieldElements(fieldName, function (fieldEl) {
+            if (displayOrHide) {
+                this.fieldElementsDom[fieldName].parent().show();
+            } else {
+                this.fieldElementsDom[fieldName].parent().hide();
+            }
+        });
+    }
 
-		if( index < 0 ) {
-			return this.form.throwError("Cannot get field index. Cannot find field element");
-		}
+    GroupListElement.prototype.getFieldIndex = function (fieldElement) {
 
-		return index;
-	};
+        var name = fieldElement.field.getName();
 
+        if (!this.fieldElements[name]) {
+            return this.form.throwError('Cannot get field index. Field name ' + name + ' doesn\'t exist');
+        }
 
+        var index = this.fieldElements[name].indexOf(fieldElement);
 
-	GroupListElement.prototype.getValue = function(stackFrom, stackTo) {
+        if (index < 0) {
+            return this.form.throwError('Cannot get field index. Cannot find field element');
+        }
 
-		var i, j, l, stackTo = { };
+        return index;
+    };
 
-		for( i in this.fieldElements ) {
 
-			j = 0, 
-			l = this.fieldElements[ i ].length,
-			stackTo[ i ] = [ ];
+    GroupListElement.prototype.getValue = function (stackFrom, stackTo) {
 
-			for( ; j < l ; j ++) {
-				stackTo[ i ].push( this.fieldElements[ i ][ j ].extractValue( ) );
-			}
-		}
+        var i, j, l, stackTo = {};
 
-		return stackTo;
-	};
+        for (i in this.fieldElements) {
 
+            j = 0,
+                l = this.fieldElements[i].length,
+                stackTo[i] = [];
 
+            for (; j < l; j++) {
+                stackTo[i].push(this.fieldElements[i][j].extractValue());
+            }
+        }
 
-	GroupListElement.prototype.duplicateFieldElement = function( fieldElement ) {
+        return stackTo;
+    };
 
-		var self = this,
-			name = fieldElement.field.getName( ),
-			fieldIndex = this.getFieldIndex( fieldElement );
 
-		if(fieldIndex === false) {
-			return;
-		}
+    GroupListElement.prototype.duplicateFieldElement = function (fieldElement) {
 
-		var newElement = this
-							.group
-							.getField( name )
-							.makeElement( )
-							.done(function( value ) {
+        var self = this,
+            name = fieldElement.field.getName(),
+            fieldIndex = this.getFieldIndex(fieldElement);
 
-								value.setDefaultOr();
-								value.group = self.group;
-								value.groupElement = self;
-								self.fieldElements[ name ].splice( fieldIndex + 1, 0, value );
-							});
-		
-		return newElement;
-	};
+        if (fieldIndex === false) {
+            return;
+        }
 
-	GroupListElement.prototype.removeFieldElement = function( fieldElement ) {
+        var newElement = this
+            .group
+            .getField(name)
+            .makeElement()
+            .done(function (value) {
 
-		var name = fieldElement.field.getName(),
-			fieldIndex = this.getFieldIndex( fieldElement );
+                value.setDefaultOr();
+                value.group = self.group;
+                value.groupElement = self;
+                self.fieldElements[name].splice(fieldIndex + 1, 0, value);
+            });
 
-		if(fieldIndex === false)
-			return;
+        return newElement;
+    };
 
-		fieldElement.field.removeElement( fieldElement );
-		this.fieldElements[ name ].splice( fieldIndex, 1 );
-	}
+    GroupListElement.prototype.removeFieldElement = function (fieldElement) {
 
+        var name = fieldElement.field.getName(),
+            fieldIndex = this.getFieldIndex(fieldElement);
 
-	GroupListElement.prototype.getExpanderInfosFor = function( fieldElement ) {
+        if (fieldIndex === false)
+            return;
 
-		var fieldName = fieldElement.name,
-			i = 0;
+        fieldElement.field.removeElement(fieldElement);
+        this.fieldElements[name].splice(fieldIndex, 1);
+    }
 
-		var posDom = fieldElement._dom.position();
-		var posWrap = this.group.form.dom.find('.form-sections-wrapper').position();
 
-		return {
-			width: fieldElement._dom.innerWidth(),
-			left: posDom.left + posWrap.left,
-			top: posDom.top + posWrap.top + fieldElement._dom.height() - 1
-		};
-	}
+    GroupListElement.prototype.getExpanderInfosFor = function (fieldElement) {
 
-	GroupListElement.prototype.redoTabIndices = function( ) {
+        var fieldName = fieldElement.name,
+            i = 0;
 
-		var self = this;
-		this.group.eachFields( function( field ) {
+        var posDom = fieldElement._dom.position();
+        var posWrap = this.group.form.dom.find('.form-sections-wrapper').position();
 
-			self.eachFieldElements( field.getName() , function( fieldElement ) {
+        return {
+            width: fieldElement._dom.innerWidth(),
+            left: posDom.left + posWrap.left,
+            top: posDom.top + posWrap.top + fieldElement._dom.height() - 1
+        };
+    }
 
-				fieldElement.redoTabIndices();
-			} );
-			
-		} );
-	}
-	
-	return GroupListElement;
+    GroupListElement.prototype.redoTabIndices = function () {
+
+        var self = this;
+        this.group.eachFields(function (field) {
+
+            self.eachFieldElements(field.getName(), function (fieldElement) {
+
+                fieldElement.redoTabIndices();
+            });
+
+        });
+    }
+
+    return GroupListElement;
 });

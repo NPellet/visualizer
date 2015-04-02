@@ -1,78 +1,80 @@
+'use strict';
 
-define( [ 'require', 'jquery', 'src/util/util', 'ace/ace' ], function( require, $, Util, ace ) {
+define(['require', 'jquery', 'src/util/util', 'ace/ace'], function (require, $, Util, ace) {
 
 
-	var FieldConstructor = function() {};
-	
-	FieldConstructor.prototype.__makeDom = function() {
-		
-		this._id = Util.getNextUniqueId();
+    var FieldConstructor = function () {
+    };
 
-		var self = this,
-			dom = $("<div />"),
+    FieldConstructor.prototype.__makeDom = function () {
 
-			input = $( "<div />", { id: this._id, tabindex: 1 } )
-					.css({
-						width: '100%',
-						height: '100%',
-					    position: 'relative',
-					    padding: 20,
-					    margin: 0
-					})
-					.addClass( 'field-list' )
-					.appendTo( dom );
+        this._id = Util.getNextUniqueId();
 
-		this.fieldElement = input;
-		this.input = input;
-		dom.addClass('ui-widget-content');
-		dom.resizable({
-			handles: "s",
-			stop: function() {
-				self.editor.resize();
-			}
-		});
-		dom.css({
-			height: '200px',
-			width: '100%'
-		});
-		this.dom = dom;
-		return dom;
-	};
+        var self = this,
+            dom = $('<div />'),
 
-	FieldConstructor.prototype.focus = function() {
+            input = $('<div />', {id: this._id, tabindex: 1})
+                .css({
+                    width: '100%',
+                    height: '100%',
+                    position: 'relative',
+                    padding: 20,
+                    margin: 0
+                })
+                .addClass('field-list')
+                .appendTo(dom);
 
-		if( this.editor ) {
-			this.editor.focus();
-		}
-		
-	};
+        this.fieldElement = input;
+        this.input = input;
+        dom.addClass('ui-widget-content');
+        dom.resizable({
+            handles: 's',
+            stop: function () {
+                self.editor.resize();
+            }
+        });
+        dom.css({
+            height: '200px',
+            width: '100%'
+        });
+        this.dom = dom;
+        return dom;
+    };
 
-	FieldConstructor.prototype.inDom = function() {
+    FieldConstructor.prototype.focus = function () {
 
-		var self = this;
-		var editor = ace.edit( self._id );
-                var mode = this.field.options.mode || "javascript";
+        if (this.editor) {
+            this.editor.focus();
+        }
 
-	    editor.setTheme( "./theme/monokai" );
-	    editor.setPrintMarginColumn( false );
-	    editor.getSession( ).setMode( "./mode/"+mode );
-		
-		editor.getSession( ).on( 'change', function() {
-			
-			self.setValueSilent( editor.getValue( ) );
-		} );
+    };
 
-		this.editor = editor;
+    FieldConstructor.prototype.inDom = function () {
 
-		this.checkValue( );
-	};
+        var self = this;
+        var editor = ace.edit(self._id);
+        var mode = this.field.options.mode || 'javascript';
 
-	FieldConstructor.prototype.checkValue = function() {
+        editor.setTheme('./theme/monokai');
+        editor.setPrintMarginColumn(false);
+        editor.getSession().setMode('./mode/' + mode);
 
-		if( this.editor ) {
-			this.editor.setValue( this.value );
-		}
-	};
+        editor.getSession().on('change', function () {
 
-	return FieldConstructor;
+            self.setValueSilent(editor.getValue());
+        });
+
+        this.editor = editor;
+
+        this.checkValue();
+    };
+
+    FieldConstructor.prototype.checkValue = function () {
+
+        if (this.editor) {
+            this.editor.setValue(this.value);
+        }
+    };
+
+    return FieldConstructor;
 });

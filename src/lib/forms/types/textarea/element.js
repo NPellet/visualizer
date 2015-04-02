@@ -1,34 +1,36 @@
+'use strict';
 
-define( [ ], function(  ) {
+define([], function () {
 
-	var FieldConstructor = function() {};
-	
-	FieldConstructor.prototype.__makeDom = function() {
-		
-		var self = this,
-			dom = $("<div />"),
+    var FieldConstructor = function () {
+    };
 
-			input = $( "<textarea />" )
-					.addClass( 'field-list' )
-					.appendTo( dom )
-					.bind('keyup blur', function() {
-						var val;
-						if( self.value !== ( val = $( this ).val( ) ) ) {
-							self.value = $( this ).val( );
-						}
-					});
+    FieldConstructor.prototype.__makeDom = function () {
 
-		this.dom = dom;
-		this.input = input;
-		return dom;
-	};
+        var self = this,
+            dom = $('<div />'),
 
-	FieldConstructor.prototype.checkValue = function() {
+            input = $('<textarea />')
+                .addClass('field-list')
+                .appendTo(dom)
+                .bind('keyup blur', function () {
+                    var val;
+                    if (self.value !== ( val = $(this).val() )) {
+                        self.value = $(this).val();
+                    }
+                });
 
-		if( this.dom ) {
-			this.input.val(this.value);
-		}
-	}
+        this.dom = dom;
+        this.input = input;
+        return dom;
+    };
 
-	return FieldConstructor;
+    FieldConstructor.prototype.checkValue = function () {
+
+        if (this.dom) {
+            this.input.val(this.value);
+        }
+    }
+
+    return FieldConstructor;
 });

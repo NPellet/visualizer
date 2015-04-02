@@ -1,86 +1,88 @@
+'use strict';
 
-define( ['jquery-ui/autocomplete'], function(  ) {
+define(['jquery-ui/autocomplete'], function () {
 
-	var FieldConstructor = function() {};
-	
-	FieldConstructor.prototype.__makeDom = function() {
-		
-		var self = this,
-			dom = $("<div />"),
+    var FieldConstructor = function () {
+    };
 
-			input = $( "<input />" , { type: 'text' } )
-					.addClass( 'field-list' )
-					.appendTo( dom )
-					.bind('click', function( event ) {
+    FieldConstructor.prototype.__makeDom = function () {
 
-						self.toggleSelect( event );
+        var self = this,
+            dom = $('<div />'),
 
-					})
-					.bind('keyup blur', function() {
-						var val;
-						if( self.value !== ( val = $( this ).val( ) ) ) {
-							self.setValueSilent( $( this ).val( ) );
-						}
-						
+            input = $('<input />', {type: 'text'})
+                .addClass('field-list')
+                .appendTo(dom)
+                .bind('click', function (event) {
 
-					}).bind('keydown', function( e ) {
+                    self.toggleSelect(event);
 
-						if( self.field.form.tabPressed( e, self ) ) {
-							this.blur( );
-						}
-
-					});
+                })
+                .bind('keyup blur', function () {
+                    var val;
+                    if (self.value !== ( val = $(this).val() )) {
+                        self.setValueSilent($(this).val());
+                    }
 
 
-		this.checkValue();
+                }).bind('keydown', function (e) {
+
+                    if (self.field.form.tabPressed(e, self)) {
+                        this.blur();
+                    }
+
+                });
 
 
-		this.dom = dom;
-		this.input = input;
-		this.fieldElement = input;
-
-		return dom;
-	};
+        this.checkValue();
 
 
-	FieldConstructor.prototype.inDom = function() {
+        this.dom = dom;
+        this.input = input;
+        this.fieldElement = input;
 
-		var self = this;
+        return dom;
+    };
 
-		if( this.field.getOptions ( this ) ) {
 
-			this.input.autocomplete( {
-				minLength: 0,
-				source: this.field.getOptions ( this )
-			});
+    FieldConstructor.prototype.inDom = function () {
 
-			this.input.bind('focus', function() {
-				self.input.autocomplete( 'search', self.value );
-			});
+        var self = this;
 
-			this.input.autocomplete( 'widget' ).addClass( 'form-autocomplete' );
-			//this.input.autocomplete( 'search', this.value ); // To allow to display everything when the field is blank
-		}
-	}
+        if (this.field.getOptions(this)) {
 
-	FieldConstructor.prototype.checkValue = function() {
+            this.input.autocomplete({
+                minLength: 0,
+                source: this.field.getOptions(this)
+            });
 
-		if( this.value === null ) {
-			this.value = "";
-		}
-		
-		if( this.dom ) {
-			this.input.val( this.value );
-		}
-	};
+            this.input.bind('focus', function () {
+                self.input.autocomplete('search', self.value);
+            });
 
-	FieldConstructor.prototype.getOptions = function() {
-		return this.autocomplete || false;
-	};
+            this.input.autocomplete('widget').addClass('form-autocomplete');
+            //this.input.autocomplete( 'search', this.value ); // To allow to display everything when the field is blank
+        }
+    }
 
-	FieldConstructor.prototype.setOptions = function(options) {
-		this.autocomplete = options;
-	};
+    FieldConstructor.prototype.checkValue = function () {
 
-	return FieldConstructor;
+        if (this.value === null) {
+            this.value = '';
+        }
+
+        if (this.dom) {
+            this.input.val(this.value);
+        }
+    };
+
+    FieldConstructor.prototype.getOptions = function () {
+        return this.autocomplete || false;
+    };
+
+    FieldConstructor.prototype.setOptions = function (options) {
+        this.autocomplete = options;
+    };
+
+    return FieldConstructor;
 });
