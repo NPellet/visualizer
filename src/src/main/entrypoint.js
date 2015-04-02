@@ -198,6 +198,9 @@ define([
             modules = _.filter(modules, function(m) {
                 return m && m.url;
             });
+            for(var i=0; i<modules.length; i++) {
+                modules[i].url = modules[i].url.replace(/\/$/, '');
+            }
             return ModuleFactory.setModules({
                 folders: _.pluck(modules, 'url')
             });
