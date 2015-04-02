@@ -107,7 +107,9 @@ define(['forms/form'], function( Form ) {
 									{ title: 'Slider', key: 'slider' },
 									{ title: 'Range', key: 'slider_range' },
 									{ title: 'Checkbox', key: 'checkbox' },
-									{ title: 'Color',  key: 'spectrum'}
+									{ title: 'Color',  key: 'spectrum'},
+									{ title: 'Code editor', key: 'jscode' },
+									{ title: 'Text area', key: 'textarea' }
 								],
 
 								displaySource:  {
