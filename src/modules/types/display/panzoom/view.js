@@ -1,13 +1,14 @@
 'use strict';
 
-define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/util/util', 'lodash',
+define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/util/util', 'lodash', 'bowser',
     'components/jquery.panzoom/dist/jquery.panzoom',
     'components/jquery-mousewheel/jquery.mousewheel'
-], function(API, Debug, Default, Util, _) {
+], function(API, Debug, Default, Util, _, bowser) {
     var currentPromise = Promise.resolve();
     function View() {
 
     }
+
     View.prototype = $.extend(true, {}, Default, {
 
         init: function() {
@@ -38,14 +39,7 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                 //    that.onResize();
                 //    that.reorderImages();
                 //});
-
-                currentPromise = currentPromise.then(function() {
-                    return that.addImage(value, varname);
-                }).then(function() {
-                    that.panzoomMode(varname);
-                    that.onResize();
-                    that.reorderImages();
-                })
+                    return that.doImage(varname, value)
             }
         },
 
@@ -61,6 +55,16 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
             this.images = [];
         },
 
+        doImage: function(varname, value) {
+            var that = this;
+            currentPromise = currentPromise.then(function() {
+                return that.addImage(varname, value);
+            }).then(function() {
+                that.panzoomMode(varname);
+                that.onResize();
+                that.reorderImages();
+            });
+        },
 
         reorderImages: function() {
             for(var i=0; i<this.images.length; i++) {
@@ -123,9 +127,13 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
             return Promise.all(prom);
         },
 
-        addImage: function(variable, varname) {
+        addImage: function(varname, variable) {
             var that = this;
+
             return new Promise(function(resolve) {
+                if(variable === undefined) {
+                    variable = API.getData(varname);
+                }
                 // find the corresponding configuration line
                 var conf = _.find(that.module.getConfiguration('img'), function(c) {
                     return c.variable === varname;
@@ -241,6 +249,13 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                     var instance = that.images[j].$panzoomEl.panzoom('instance');
                     instance.setMatrix(that.lastTransform);
                 }
+
+                // This is a trick to get crisp images with chrome
+                // Since it does'n implement crisp-edges image rendering
+                // But pixelated rendering instead
+                if(bowser.chrome) {
+                    that.chromeCrisp();
+                }
             });
 
             that.dom.off('click.panzoom');
@@ -267,7 +282,6 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
             this.dom.off('dblclick');
             this.dom.dblclick(function() {
                 for(var i=0; i<that.images.length; i++) {
-                    console.log('reset');
                     that.images[i].$panzoomEl.panzoom("reset");
                     if(i===0) {
                         that.lastTransform = that.images[i].$panzoomEl.panzoom("getMatrix")
@@ -276,6 +290,13 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
             });
 
         },
+
+        chromeCrisp: _.debounce(function() {
+            for(var j=0; j<this.images.length; j++) {
+                if(this.images[j].conf.rendering === 'crisp-edges')
+                    this.doImage(this.images[j].name);
+            }
+        }, 300),
 
         onResize: function() {
             if(!this.images) return;

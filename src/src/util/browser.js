@@ -153,7 +153,5 @@ define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'src/util/ui', 'jquer
             });
 
         }
-
-
     }
 });
