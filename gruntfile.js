@@ -661,7 +661,6 @@ module.exports = function (grunt) {
     grunt.registerTask('createJSONModules', 'Create all modules json', function () {
         recurseFolder('./src/modules/types', 'modules/types');
         recurseFolder('./src/usr/modules', 'usr/modules');
-        recurseFolder('/var/www/html/bio/v1', 'http://127.0.0.1/bio/v1');
     });
 
     grunt.registerTask('recurseFolder', 'Recurse Folder', function() {
