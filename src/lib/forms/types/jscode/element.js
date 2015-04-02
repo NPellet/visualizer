@@ -58,6 +58,7 @@ define(['require', 'jquery', 'src/util/util', 'ace/ace'], function (require, $, 
         editor.setTheme('./theme/monokai');
         editor.setPrintMarginColumn(false);
         editor.getSession().setMode('./mode/' + mode);
+        editor.$blockScrolling = Infinity;
 
         editor.getSession().on('change', function () {
 

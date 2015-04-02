@@ -19,6 +19,7 @@ define(['modules/types/client_interaction/code_editor/view', 'src/util/util', 'a
         this.editor = ace.edit(this._id);
         var initVal = this.module.getConfiguration('script') || '';
         this._code = initVal;
+        this.editor.$blockScrolling = Infinity;
         this.editor.getSession().setMode('./mode/javascript');
         this.editor.setValue(initVal, -1);
         this.editor.getSession().on('change', function () {
