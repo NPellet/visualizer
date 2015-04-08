@@ -28,14 +28,14 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
                 var cols = self.module.getConfiguration('colnumber', 4) || 4;
                 var elementId = trIndex * cols + tdIndex;
                 var value = self.list.get()[elementId];
-                if (e.type === "mouseenter") {
+                if (e.type === 'mouseenter') {
                     self.module.controller.setVarFromEvent('onHover', 'cell', 'list', [elementId]);
                     API.highlight(value, 1);
                 }
-                else if (e.type === "mouseleave") {
+                else if (e.type === 'mouseleave') {
                     API.highlight(value, 0);
                 }
-                else if (e.type === "click") {
+                else if (e.type === 'click') {
                     self.module.controller.setVarFromEvent('onClick', 'cell', 'list', [elementId]);
                     self.module.controller.sendAction('cell', value, 'onClick');
                 }
@@ -55,10 +55,10 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
                 var view = this,
                     cfg = $.proxy(this.module.getConfiguration, this.module),
                     cols = cfg('colnumber', 4) || 4,
-                    sizeStyle = "",
+                    sizeStyle = '',
                     self = this,
                     val = moduleValue.get(),
-                    table = $('<table cellpadding="3" cellspacing="0">').css("text-align", "center"),
+                    table = $('<table cellpadding="3" cellspacing="0">').css('text-align', 'center'),
                     l = val.length,
                     done = 0,
                     td,
@@ -70,12 +70,12 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
 
                     if (cfg.width) {
 
-                        sizeStyle += "width: " + Math.round(100 / cols) + "%; ";
+                        sizeStyle += 'width: ' + Math.round(100 / cols) + '%; ';
                     }
 
                     if (cfg.height) {
 
-                        sizeStyle += "height: " + cfg.height + "px; ";
+                        sizeStyle += 'height: ' + cfg.height + 'px; ';
                     }
                 }
 
@@ -91,7 +91,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
                         if (current) {
                             current.appendTo(table);
                         }
-                        current = $("<tr />");
+                        current = $('<tr />');
                     }
 
                     done++;
@@ -127,8 +127,8 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
             var cfg = $.proxy(this.module.getConfiguration, this.module),
                 colorJpath = cfg('colorjpath', false),
                 valJpath = cfg('valjpath', ''),
-                td = $("<td>").css({
-                    width: Math.round(100 / cols) + "%",
+                td = $('<td>').css({
+                    width: Math.round(100 / cols) + '%',
                     height: cfg.height
                 });
 
@@ -147,9 +147,9 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
 
             API.listenHighlight(element, function (onOff, key) {
                 if (onOff) {
-                    td.css("border-color", "black");
+                    td.css('border-color', 'black');
                 } else {
-                    td.css("border-color", "");
+                    td.css('border-color', '');
                 }
             }, false, this.module.getId());
 
