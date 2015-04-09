@@ -23,6 +23,10 @@ define(['modules/default/defaultview', 'lib/twigjs/twig'], function (Default, Tw
                 this.dom.empty();
             },
             tpl: function () {
+                this.module.definition.configuration.groups.group[0].template[0] = '';
+                this.template = Twig.twig({
+                    data: ''
+                });
             }
         },
         inDom: function () {
@@ -35,7 +39,11 @@ define(['modules/default/defaultview', 'lib/twigjs/twig'], function (Default, Tw
                 // Extract typed value
                 value = value.get();
 
-                // Convert special objects like DataString (twig does some check depending on the filter used and the values need to be native)
+                /*
+                 Convert special objects like DataString
+                 (twig does some check depending on the filter used
+                 and the values need to be native)
+                 */
                 if (typeof value.resurrect === 'function') {
                     value = value.resurrect();
                 }
