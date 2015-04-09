@@ -14,8 +14,12 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
 
         blank: {
             list: function () {
+                this.list = null;
                 API.killHighlight(this.module.getId());
                 this.dom.empty();
+            },
+            showList: function () {
+                this.showList = null;
             }
         },
 
@@ -39,24 +43,13 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
 
         update: {
             list: function (moduleValue) {
+                var cfg = this.module.getConfiguration.bind(this.module);
+                var cols = (100 / (cfg('colnumber', 4) || 4)) + '%';
+                var val = moduleValue.get();
 
-                this.defs = [];
-                if (!Array.isArray(moduleValue)) {
-                    return;
-                }
+                this.dataReady = new Array(val.length);
 
-                var view = this,
-                    cfg = $.proxy(this.module.getConfiguration, this.module),
-                    cols = (100 / (cfg('colnumber', 4) || 4)) + '%',
-                    self = this,
-                    val = moduleValue.get(),
-                    l = val.length,
-                    i = 0;
-
-                this.dataReady = $.Deferred();
-                var dataDivs = new Array(l);
-
-                self.list = val;
+                this.list = val;
 
                 var colorJpath = cfg('colorjpath', false),
                     valJpath = cfg('valjpath', ''),
@@ -65,39 +58,18 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
                     };
                 var height = cfg('height');
                 if (height) {
-                    dimensions.height = height;
+                    dimensions.height = height + 'px';
                 }
 
-                for (; i < l; i++) {
-                    dataDivs[i] = this.renderElement(view.list.getChildSync([i]), dimensions, colorJpath, valJpath).appendTo(view.dom);
+                for (var i = 0; i < val.length; i++) {
+                    this.dataReady[i] = this.renderElement(this.list.getChildSync([i]), dimensions, colorJpath, valJpath);
                 }
 
-                this.dataReady.resolve(dataDivs);
                 this.updateVisibility();
-
-                i = 0;
-                l = this.defs.length;
-
-                for (; i < l; i++) {
-                    (function (j) {
-
-                        self.defs[j].done(function () {
-                            if (self.defs[j].build) {
-                                self.defs[j].build();
-                            }
-                        });
-
-                    })(i);
-                }
             },
 
             showList: function (value) {
-                if (!Array.isArray(value)) {
-                    return;
-                }
-
-                this.showList = value;
-
+                this.showList = value.get();
                 this.updateVisibility();
             }
         },
@@ -108,7 +80,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
 
             var that = this;
 
-            this.dataReady.then(function (dataDivs) {
+            Promise.all(this.dataReady).then(function (dataDivs) {
                 var value = that.showList;
                 var i = 0, ii = value.length;
                 for (; i < ii; i++) {
@@ -118,18 +90,13 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
         },
 
         renderElement: function (element, dimensions, colorJpath, valJpath) {
-
-            var td = $('<div>').css(dimensions);
+            var td = $('<div>').css(dimensions).appendTo(this.dom);
 
             if (colorJpath) {
-                element.getChild(colorJpath, true).done(function (val) {
+                element.getChild(colorJpath, true).then(function (val) {
                     td.css('background-color', val.get());
                 });
             }
-
-            this.defs.push(Renderer.toScreen(element, this.module, {}, valJpath).always(function (val) {
-                td.html(val);
-            }));
 
             API.listenHighlight(element, function (onOff) {
                 if (onOff) {
@@ -139,7 +106,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
                 }
             }, false, this.module.getId());
 
-            return td;
+            return Renderer.render(td, element, valJpath);
         }
 
     });

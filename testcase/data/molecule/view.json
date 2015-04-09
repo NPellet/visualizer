@@ -25,7 +25,7 @@
 		  ]
 		}
 	  },
-	  "id": 4,
+	  "id": 1,
 	  "vars_in": [
 		{
 		  "rel": "list",
@@ -161,7 +161,7 @@
 		  ]
 		}
 	  },
-	  "id": 5,
+	  "id": 2,
 	  "vars_in": [
 		{
 		  "rel": "list",
@@ -317,7 +317,7 @@
 		  ]
 		}
 	  },
-	  "id": 6,
+	  "id": 3,
 	  "vars_in": [
 		{
 		  "rel": "mol",
@@ -359,6 +359,75 @@
 		}
 	  },
 	  "title": "JSME to display molfile"
+	},
+	{
+	  "url": "modules/types/display/2d_list_fast/",
+	  "configuration": {
+		"sections": {},
+		"groups": {
+		  "group": [
+			{
+			  "colnumber": [
+				"5"
+			  ],
+			  "valjPath": [
+				"element.entry.mol.0.value"
+			  ],
+			  "colorjPath": [
+				"element.color"
+			  ],
+			  "height": [
+				""
+			  ]
+			}
+		  ]
+		}
+	  },
+	  "layers": {
+		"Default layer": {
+		  "position": {
+			"left": 148,
+			"top": 0
+		  },
+		  "size": {
+			"width": 76,
+			"height": 34
+		  },
+		  "zIndex": 0,
+		  "display": true,
+		  "title": "2D grid (fast)",
+		  "bgColor": [
+			255,
+			255,
+			255,
+			0
+		  ],
+		  "wrapper": true,
+		  "created": true,
+		  "name": "Default layer"
+		}
+	  },
+	  "id": 4,
+	  "vars_in": [
+		{
+		  "rel": "list",
+		  "name": "result"
+		}
+	  ],
+	  "actions_in": [
+		{}
+	  ],
+	  "title": "2D grid (fast)",
+	  "vars_out": [
+		{
+		  "jpath": []
+		}
+	  ],
+	  "actions_out": [
+		{
+		  "jpath": []
+		}
+	  ]
 	}
   ],
   "configuration": {
