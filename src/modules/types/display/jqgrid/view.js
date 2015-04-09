@@ -211,33 +211,27 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                 },
 
                 onSortCol: function () {
-
                     var ids = self.jqGrid('getDataIDs'),
                         i = 0,
-                        l = ids.length,
-                        id;
+                        l = ids.length;
 
                     for (; i < l; i++) {
                         self.tableElements[i]._inDom.notify();
                     }
-
                 }
             });
 
             this.jqGrid = $.proxy($(this.domTable).jqGrid, $(this.domTable));
             this.resolveReady();
-
         },
 
         applyFilterToRow: function (elId, rowId) {
-
             if (this.filter) {
                 this.filter(this.jqGrid, this.elements[elId], rowId);
             }
         },
 
         onResize: function () {
-
             if (!this.jqGrid) {
                 return;
             }
@@ -247,7 +241,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
         },
 
         blank: {
-
             list: function () {
                 this.currentPage = this.jqGrid('getGridParam', 'page');
                 API.killHighlight(this.module.getId());
@@ -259,10 +252,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
         update: {
 
             list: function (moduleValue) {
-
-                if (!moduleValue) {
-                    return;
-                }
 
                 var list = moduleValue.get(),
                     jpaths = this.module.getConfiguration('colsjPaths'),
@@ -307,29 +296,17 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
             }
         },
 
-        inDomEl: function (el) {
-            if (el.build) {
-                el.build();
-            }
-        },
-
-        buildElements: function (source, arrayToPush, jpaths, colorJPath, muteListen) {
+        buildElements: function (source, arrayToPush, jpaths) {
             var self = this,
-                jpath,
                 i = 0,
                 l = source.length;
 
-            self.done = 0;
-
             for (; i < l; i++) {
-
                 arrayToPush.push(this.buildElement(source.get(i), self.uniqId + i, jpaths));
             }
-
         },
 
         buildElement: function (s, i, jp, m) {
-
             var self = this,
                 element = {},
                 j = 0,
@@ -342,7 +319,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
             element['id'] = String(i);
             element['__source'] = s;
 
-
             API.listenHighlight(s, function (onOff, key) {
                 $('#' + i)[onOff ? 'addClass' : 'removeClass']('ci-highlight');
             }, false, this.module.getId());
@@ -350,13 +326,14 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
             element._inDom = $.Deferred();
             for (; j < l; j++) {
+                var id = (element.id + '_' + jp[j].name).replace(/[^\w\d_]/g, '_');
+                (function(j, id) {
+                    element._inDom.progress(function () {
+                        Renderer.render($('#' + id), s, jp[j].jpath);
+                    });
+                })(j, id);
 
-                var jpath = jp[j].jpath;
-
-                element[jp[j].name] = '';
-
-                self.done++;
-                element[';' + jp[j].name] = this.renderElement(element, s, jpath, jp[j].name);
+                element[jp[j].name] = '<div id="' + id + '">';
             }
 
             var cJpath = this.module.getConfiguration('colorjPath');
@@ -375,10 +352,9 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                 body = $('body');
 
             this.module.model.dataListenChange(source, function () {
-
                 self.jqGrid('setRowData', id, self.buildElement(this, id, jpaths, true));
                 var scroll = body.scrollTop();
-                var target = $('tr#' + id, self.domTable).get(0);//.clearQueue().finish().effect( 'highlight', { queue: true }, 1000 ).get( 0 );
+                var target = $('tr#' + id, self.domTable).get(0);
                 if (target) {
                     target.scrollIntoView();
                     body.scrollTop(scroll);
@@ -386,48 +362,9 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
             }, 'list');
         },
 
-        renderElement: function (element, source, jpath, l) {
-
-            var self = this,
-                box = self.module;
-
-            var defScreen = Renderer.toScreen(source, box, {}, jpath);
-
-            defScreen.always(function (value) {
-
-                element._inDom.progress(function () {
-
-                    element[l] = value;
-                    self.done--;
-
-                    self.jqGrid('setCell', element.id, l, value);
-
-                    if (defScreen.build) {
-                        //console.log( defScreen );
-                        defScreen.build();
-                    }
-
-                    /* todo In this required ??? */
-                    if (self.done == 0) {
-                        self.onResize(self.width, self.height);
-                    }
-
-                });
-
-                element[l] = value;
-                self.done--;
-
-            }, function (value) {
-
-                element[l] = value;
-                self.done--;
-            });
-        },
-
         onActionReceive: {
 
             addRow: function (source) {
-
                 this.elements = this.elements || [];
                 this.elements.push(source);
                 this.module.data = this.elements;
@@ -437,8 +374,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                 this.gridElements.push(el);
 
                 this.jqGrid('addRowData', el.id, el);
-
-                //	API.setVariable(this.module.getNameFromRel('list'), this.module.data, false, true);
             },
 
             removeRow: function (el) {
@@ -480,7 +415,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                     i = 0,
                     l = jpaths.length;
 
-
                 for (; i < l; i++) {
                     if (jpaths[i].jpath == jpath) {
                         jpaths.splice(i, 1);
@@ -489,7 +423,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                 }
 
                 this.reloadModule();
-
             }
         },
 

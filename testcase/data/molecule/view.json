@@ -121,16 +121,13 @@
 		  "group": [
 			{
 			  "nblines": [
-				null
+				5
 			  ],
 			  "toggle": [
 				null
 			  ],
 			  "colorjpath": [
 				"element.color"
-			  ],
-			  "displaySearch": [
-				[]
 			  ],
 			  "filterRow": [
 				null
@@ -174,7 +171,7 @@
 	  "vars_out": [
 		{
 		  "event": "onHover",
-		  "rel": "element",
+		  "rel": "row",
 		  "jpath": [
 			"entry",
 			"mol",
@@ -185,7 +182,7 @@
 		},
 		{
 		  "event": "onHover",
-		  "rel": "element",
+		  "rel": "row",
 		  "jpath": [
 			"entry",
 			"mol",
@@ -196,7 +193,9 @@
 		}
 	  ],
 	  "actions_out": [
-		{}
+		{
+		  "jpath": []
+		}
 	  ],
 	  "url": "modules/types/display/jqgrid/",
 	  "layers": {
@@ -420,7 +419,15 @@
 	  "title": "2D grid (fast)",
 	  "vars_out": [
 		{
-		  "jpath": []
+		  "event": "onHover",
+		  "rel": "cell",
+		  "jpath": [
+			"entry",
+			"mol",
+			"0",
+			"value"
+		  ],
+		  "name": "OneChemical"
 		}
 	  ],
 	  "actions_out": [
