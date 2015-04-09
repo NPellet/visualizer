@@ -1,0 +1,33 @@
+.ci-diagram .link {
+    fill: none;
+    stroke: #666;
+    stroke-width: 1px;
+}
+
+.ci-diagram .link.normal {
+    stroke: black;
+}
+
+.ci-diagram circle {
+    fill: #ccc;
+    stroke: #333;
+    stroke-width: 1px;
+}
+
+.ci-diagram rect {
+    fill: #ddd;
+    stroke: #333;
+    stroke-width: 1px;
+}
+
+.ci-diagram text {
+    font: 10px sans-serif;
+    pointer-events: none;
+    text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+}
+
+.ci-diagram .rect {
+    background-color: lightgrey;
+    border: solid 1px black;
+    padding: 8px 5px 8px 5px;
+}
