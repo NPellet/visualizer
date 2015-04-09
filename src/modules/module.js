@@ -414,13 +414,10 @@ define([
 
 
 				if( ! layer.display ) {
-					
 					this.hide();
-				//	console.log('Hide');
 					return;
 				} else {
 					this.show();
-				//	console.log('Show');	
 				}
 
 				this.setTitle( layer.title );
@@ -1178,8 +1175,7 @@ define([
                     }
                 }
             } else {
-                console.warn('Alias ' + alias + ' not defined ');
-                console.trace();
+                Debug.warn('Alias ' + aliasName + ' not defined ');
             }
             if (toReturn == undefined)
                 toReturn = this._doConfigurationFunction(cfgEl, aliasName);
@@ -1221,7 +1217,7 @@ define([
 				cfgEl = cfgEl[ alias[ i ] ];
 				if( ! cfgEl ) {
 
-					console.warn('Error in configuration file - Alias is not a correct jPath');
+					Debug.warn('Error in configuration file - Alias is not a correct jPath');
 					return false;
 				}
 
