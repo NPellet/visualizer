@@ -71,10 +71,6 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             title: 'Color jPath',
                             options: jpaths
                         },
-                        width: {
-                            type: 'text',
-                            title: 'Cell width'
-                        },
                         height: {
                             type: 'text',
                             title: 'Cell height'
@@ -88,7 +84,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype.configAliases = {
         colnumber: ['groups', 'group', 0, 'colnumber', 0],
         colorjpath: ['groups', 'group', 0, 'colorjPath', 0],
-        valjpath: ['groups', 'group', 0, 'valjPath', 0]
+        valjpath: ['groups', 'group', 0, 'valjPath', 0],
+        height: ['groups', 'group', 0, 'height', 0]
     };
 
     return Controller;

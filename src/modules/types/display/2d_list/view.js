@@ -22,7 +22,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
         },
         inDom: function () {
             var self = this;
-            this.module.getDomView().on('mouseenter mouseleave click', 'td', function (e) {
+            this.dom.on('mouseenter mouseleave click', 'td', function (e) {
                 var tdIndex = $(this).index();
                 var trIndex = $(this).parent().index();
                 var cols = self.module.getConfiguration('colnumber', 4) || 4;
@@ -37,7 +37,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
                 }
                 else if (e.type === 'click') {
                     self.module.controller.setVarFromEvent('onClick', 'cell', 'list', [elementId]);
-                    self.module.controller.sendAction('cell', value, 'onClick');
+                    self.module.controller.sendActionFromEvent('onClick', 'cell', value);
                 }
             });
             this.resolveReady();
@@ -47,113 +47,60 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
 
             list: function (moduleValue) {
 
-                this.defs = [];
-                if (!Array.isArray(moduleValue)) {
-                    return;
-                }
-
-                var view = this,
-                    cfg = $.proxy(this.module.getConfiguration, this.module),
+                var cfg = this.module.getConfiguration.bind(this.module),
                     cols = cfg('colnumber', 4) || 4,
-                    sizeStyle = '',
-                    self = this,
                     val = moduleValue.get(),
-                    table = $('<table cellpadding="3" cellspacing="0">').css('text-align', 'center'),
-                    l = val.length,
-                    done = 0,
-                    td,
-                    i = 0;
+                    table = $('<table cellpadding="3" cellspacing="0">').css('text-align', 'center');
 
-                self.list = val;
+                this.dom.html(table);
 
-                if (cfg.width || cfg.height) {
+                this.list = val;
 
-                    if (cfg.width) {
+                var height = cfg('height');
 
-                        sizeStyle += 'width: ' + Math.round(100 / cols) + '%; ';
-                    }
-
-                    if (cfg.height) {
-
-                        sizeStyle += 'height: ' + cfg.height + 'px; ';
-                    }
-                }
+                var css = {
+                    width: Math.round(100 / cols) + '%',
+                    height: cfg('height', 0) + 'px'
+                };
 
                 var current, colId;
-                this._inDom = false;
 
-                for (; i < l; i++) {
-
-                    td = this.renderElement(view.list.getChildSync([i]), cols);
-                    colId = done % cols;
+                for (var i = 0; i < val.length; i++) {
+                    colId = i % cols;
 
                     if (colId === 0) {
-                        if (current) {
-                            current.appendTo(table);
-                        }
-                        current = $('<tr />');
+                        current = $('<tr>').appendTo(table);
                     }
 
-                    done++;
-                    td.appendTo(current);
+                    this.renderElement(current, i, css, cfg('colorjpath', false), cfg('valjpath', ''));
                 }
 
-                if (current) {
-                    current.appendTo(table);
-                }
-
-                view.dom.html(table);
-
-                i = 0;
-                l = this.defs.length;
-
-                for (; i < l; i++) {
-
-                    (function (j) {
-
-                        self.defs[j].then(function () {
-                            if (self.defs[j].build) {
-                                self.defs[j].build();
-                            }
-                        });
-
-                    })(i);
-                }
             }
         },
 
-        renderElement: function (element, cols) {
+        renderElement: function (dom, index, css, colorJpath, valJpath) {
 
-            var cfg = $.proxy(this.module.getConfiguration, this.module),
-                colorJpath = cfg('colorjpath', false),
-                valJpath = cfg('valjpath', ''),
-                td = $('<td>').css({
-                    width: Math.round(100 / cols) + '%',
-                    height: cfg.height
-                });
+            var self = this;
+            var td = $('<td>').css(css).appendTo(dom);
 
-            if (colorJpath) {
-
-                element.getChild(colorJpath, true).then(function (val) {
-                    td.css('background-color', val.get());
-                });
-            }
-
-            this.defs.push(Renderer.toScreen(element, this.module, {}, valJpath).always(function (val) {
-
-                td.html(val);
-
-            }));
-
-            API.listenHighlight(element, function (onOff, key) {
-                if (onOff) {
-                    td.css('border-color', 'black');
-                } else {
-                    td.css('border-color', '');
+            this.list.getChild([index]).then(function (element) {
+                if (colorJpath) {
+                    element.getChild(colorJpath).then(function (val) {
+                        td.css('background-color', val.get());
+                    });
                 }
-            }, false, this.module.getId());
 
-            return td;
+                Renderer.render(td, element, valJpath);
+
+                API.listenHighlight(element, function (onOff, key) {
+                    if (onOff) {
+                        td.css('border-color', 'black');
+                    } else {
+                        td.css('border-color', '');
+                    }
+                }, false, self.module.getId());
+            });
+
         }
     });
 
