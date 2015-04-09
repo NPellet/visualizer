@@ -53,45 +53,6 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
 
         inDom: Util.noop,
 
-        sendAction: function (rel, value, event) {
-
-            var actionsOut = this.module.actions_out(),
-                i,
-                jpath,
-                actionname;
-
-            if (!actionsOut) {
-                return;
-            }
-
-            i = actionsOut.length - 1;
-
-            for (; i >= 0; i--) {
-                
-                if (actionsOut[i].name && actionsOut[i].rel === rel && ((event && event === actionsOut[i].event) || !event)) {
-
-                    actionname = actionsOut[i].name;
-                    jpath = actionsOut[i].jpath;
-
-                    if (value && jpath) {
-
-                        if( ! value.getChild ) {
-                            value = DataObject.check( value, true );
-                        }
-                        (function (actionname) {
-                
-                            value.getChild(jpath).then(function (returned) {
-                
-                                API.doAction(actionname, returned);
-                            });
-                        })(actionname);
-                    } else {
-                        API.doAction(actionname, value);
-                    }
-                }
-            }
-        },
-
         setVarFromEvent: function (event, rel, relSource, jpath, callback) {
 
             var varsOut, i = 0, first = true;
@@ -143,9 +104,47 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
             }
         },
 
-        sendActionFromEvent: function (event, rel, data) {
-            return this.sendAction(rel, data, event);
+        sendActionFromEvent: function (event, rel, value) {
+            var actionsOut = this.module.actions_out(),
+                i,
+                jpath,
+                actionname;
+
+            if (!actionsOut) {
+                return;
+            }
+
+            i = actionsOut.length - 1;
+
+            for (; i >= 0; i--) {
+
+                if (actionsOut[i].name && actionsOut[i].rel === rel && ((event && event === actionsOut[i].event) || !event)) {
+
+                    actionname = actionsOut[i].name;
+                    jpath = actionsOut[i].jpath;
+
+                    if (value && jpath) {
+
+                        if( ! value.getChild ) {
+                            value = DataObject.check( value, true );
+                        }
+                        (function (actionname) {
+
+                            value.getChild(jpath).then(function (returned) {
+
+                                API.doAction(actionname, returned);
+                            });
+                        })(actionname);
+                    } else {
+                        API.doAction(actionname, value);
+                    }
+                }
+            }
         },
+
+        sendAction: Util.deprecate(function sendAction(rel, value, event) {
+            return this.sendActionFromEvent(event, rel, value);
+        }, 'Use sendActionFromEvent instead.'),
 
         allVariablesFor: function (event, rel, callback) {
 
