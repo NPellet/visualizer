@@ -121,25 +121,17 @@ define([
                     });
                 }
                 else {
-
-                    var def = Renderer.toScreen({
+                    var domContent = self.module.getDomContent();
+                    Renderer.render(domContent, {
                         type: 'svg',
                         value: self.module.getConfiguration('svgcode')
-                    }, this.module);
-                    def.always(function (val) {
-                        self.dom = $(val) || $('<svg></svg>');
-                        //console.log('rendered', self.dom);
-                        self.module.getDomContent().html(self.dom);
-                        // if(self._configCheckBox('sanitize', 'doSanitize')) {
-                        //     svgedit.sanitize.sanitizeSvg(self.dom[0]);
-                        // }
+                    }).catch(function () {
+                        domContent.html('<svg></svg>');
+                    }).then(function () {
+                        self.dom = domContent.find('svg');
                         self.resolveReady();
                     });
                 }
-            },
-
-            inDom: function () {
-                //console.log('in dom');
             },
 
             onResize: function () {
@@ -153,12 +145,7 @@ define([
                 }
             },
 
-            blank: function () {
-                //console.log('blank');
-            },
-
             update: {
-
                 svgModifier: function (data) {
                     //console.log('update');
                     var self = this;
