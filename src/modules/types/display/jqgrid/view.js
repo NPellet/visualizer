@@ -5,7 +5,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
 
         init: function () {
 
@@ -293,7 +293,11 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                     this.currentPage = 1;
                     this.dataSize = l;
                 }
-                this.jqGrid('setGridParam', {datatype: 'local', data: allEls, page: this.currentPage});
+                this.jqGrid('setGridParam', {
+                    datatype: 'local',
+                    data: allEls,
+                    page: this.currentPage
+                });
 
                 $(this.domTable).trigger('reloadGrid');
 
@@ -304,11 +308,9 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
         },
 
         inDomEl: function (el) {
-
             if (el.build) {
                 el.build();
             }
-
         },
 
         buildElements: function (source, arrayToPush, jpaths, colorJPath, muteListen) {
