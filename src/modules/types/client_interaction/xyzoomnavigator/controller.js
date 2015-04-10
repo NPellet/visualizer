@@ -46,14 +46,14 @@ define(['modules/default/defaultcontroller'], function(Default) {
 
     Controller.prototype.move = function( x, y ) {
 
-		this.createDataFromEvent('onMove', 'xycoords', [ x, y ] );
-        this.sendAction('xycoords', [ x, y ], 'onMove');
+		this.createDataFromEvent('onMove', 'xycoords', [ x, y ]);
+        this.sendActionFromEvent('onMove', 'xycoords', [ x, y ]);
     }
 
 	Controller.prototype.zoom = function( zoom ) {
 
-		this.createDataFromEvent('onZoomChange', 'zoom', zoom );
-        this.sendAction('zoom', [ x, y ], 'onZoomChange');
+		this.createDataFromEvent('onZoomChange', 'zoom', zoom);
+        this.sendActionFromEvent('onZoomChange', 'zoom', [ x, y ]);
 	}
 
     Controller.prototype.variablesIn = ['xycoords', 'zoom'];

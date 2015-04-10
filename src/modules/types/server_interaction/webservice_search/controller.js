@@ -395,7 +395,7 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
         this.createDataFromEvent('onSearchReturn', 'results', elements);
         this.createDataFromEvent('onSearchReturn', 'url', this.url);
 
-        this.sendAction('results', elements, 'onSearchReturn');
+        this.sendActionFromEvent('onSearchReturn', 'results', elements);
     };
 
     return Controller;

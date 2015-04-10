@@ -48,7 +48,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
 
     controller.prototype.sendTreeFromEvent = function(data, name) {
         var element = new DataObject({'type': 'tree', value: data}, true);
-        this.sendAction('tree', element, name);
+        this.sendActionFromEvent(name, 'tree', element);
         this.createDataFromEvent(name, 'tree', element);
 		this.createDataFromEvent(name, 'list', function(){
             var arr = [];

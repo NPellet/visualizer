@@ -254,12 +254,12 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
         if(this.lastHoveredItemId === itemId) return;
         this.lastHoveredItemId = itemId;
         this.setVarFromEvent( 'onHover', 'row', 'list', [ row ] );
-        this.sendAction( 'row', item, 'onHover' );
+        this.sendActionFromEvent( 'onHover', 'row', item );
     };
 
     controller.prototype.onClick = _.throttle(function(row, item) {
         this.setVarFromEvent( 'onSelect', 'row', 'list', [ row ] );
-        this.sendAction( 'row', item, 'onSelect' );
+        this.sendActionFromEvent( 'onSelect', 'row', item );
     }, 250, {trailing: false});
 
     controller.prototype.onActive = function(row, item) {
@@ -267,18 +267,18 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
         if(this.lastClickedItemId === itemId) return;
         this.lastClickedItemId = itemId;
         this.setVarFromEvent( 'onRowActive', 'row', 'list', [ row ] );
-        this.sendAction( 'row', item, 'onRowActive' );
+        this.sendActionFromEvent( 'onRowActive', 'row', item );
     };
 
     controller.prototype.onRowChange = function(row, item) {
         this.setVarFromEvent('onRowChange', 'row', 'list', [row]);
-        this.sendAction('row', item, 'onRowChange');
+        this.sendActionFromEvent('onRowChange', 'row', item);
     };
 
 
     controller.prototype.onRowNew = function(row, item) {
         this.setVarFromEvent('onRowNew', 'row', 'list', [row]);
-        this.sendAction('row', item, 'onRowNew');
+        this.sendActionFromEvent('onRowNew', 'row', item);
     };
 
     controller.prototype.export = function() {

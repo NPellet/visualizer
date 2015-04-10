@@ -35,7 +35,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
                     API.highlight(value, 0);
                 } else if (e.type === 'click') {
                     self.module.controller.setVarFromEvent('onClick', 'cell', 'list', [elementId]);
-                    self.module.controller.sendAction('cell', value, 'onClick');
+                    self.module.controller.sendActionFromEvent('onClick', 'cell', value);
                 }
             });
             this.resolveReady();

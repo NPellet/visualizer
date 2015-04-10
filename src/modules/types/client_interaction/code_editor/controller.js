@@ -124,11 +124,11 @@ define(['modules/default/defaultcontroller', 'src/data/structures', 'src/util/de
 
     Controller.prototype.onButtonClick = function (value) {
         this.createDataFromEvent('onButtonClick', 'value', value);
-        this.sendAction('value', value, 'onButtonClick');
+        this.sendActionFromEvent('onButtonClick', 'value', value);
 
         var json = getJsonValue(value);
         this.createDataFromEvent('onButtonClick', 'jsonValue', json);
-        this.sendAction('jsonValue', json, 'onButtonClick');
+        this.sendActionFromEvent('onButtonClick', 'jsonValue', json);
 
         var typedValue = this.getTypedValue(value);
         if(typedValue !== null)

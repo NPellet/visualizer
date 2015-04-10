@@ -194,13 +194,13 @@ define(['modules/default/defaultcontroller', 'src/util/api'], function (Default,
     Controller.prototype.moveAction = function () {
         var center = this.map.getCenter();
 
-        this.module.controller.sendAction('position', [center.lat, center.lng], 'onMapMove');
+        this.module.controller.sendActionFromEvent('onMapMove', 'position', [center.lat, center.lng]);
 
         boundUpdate.call(this);
     };
 
     Controller.prototype.zoomAction = function () {
-        this.module.controller.sendAction('zoom', this.map.getZoom(), 'onZoomChange');
+        this.module.controller.sendActionFromEvent('onZoomChange', 'zoom', this.map.getZoom());
 
         boundUpdate.call(this);
     };

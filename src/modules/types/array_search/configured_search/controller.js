@@ -92,10 +92,10 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
         // Sets the variable corresponding to the onSearchDone event
 
         this.createDataFromEvent('onSearchDone', 'flagArray', flags);
-        this.sendAction('flagArray', flags, 'onSearchDone');
+        this.sendActionFromEvent('onSearchDone', 'flagArray', flags);
 
         this.createDataFromEvent('onSearchDone', 'filteredArray', arr);
-        this.sendAction('filteredArray', arr, 'onSearchDone');
+        this.sendActionFromEvent('onSearchDone0', 'filteredArray', arr);
         this.createDataFromEvent('onSearchDone', 'countResult', arr.length);
 
     };

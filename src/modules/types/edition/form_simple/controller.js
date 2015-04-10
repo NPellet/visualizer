@@ -162,13 +162,13 @@ define([ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 'sr
         if (this.module.getConfiguration('replaceObj')) {
 
             this.setVarFromEvent('onChange', 'output_object', 'input_object', []);
-            this.sendAction('output_object', newValue, 'onChange');
+            this.sendActionFromEvent('onChange', 'output_object', newValue);
 
         } else {
             var formattedValue = formatValue(newValue);
             this.createDataFromEvent('onChange', 'formatted_output', formattedValue);
             this.createDataFromEvent('onChange', 'output_object', newValue);
-            this.sendAction('formatted_output', formattedValue, 'onChange');
+            this.sendActionFromEvent('onChange', 'formatted_output', formattedValue);
         }
     };
 
@@ -183,8 +183,8 @@ define([ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 'sr
             this.createDataFromEvent('formTriggered', 'output_object', newValue);
         }
 
-        this.sendAction('formatted_output', formattedValue, 'formTriggered');
-        this.sendAction('output_object', newValue, 'formTriggered');
+        this.sendActionFromEvent('formTriggered', 'formatted_output', formattedValue);
+        this.sendActionFromEvent('formTriggered', 'output_object', newValue);
     };
 
     function formatValue(value) {
