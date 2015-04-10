@@ -372,7 +372,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
     };
 
     exports.requireNeedsExtension = function(url) {
-        return /^https?:\/\/|\.|\//.test(url);
+        return /^https?:\/\/|^\.|^\//.test(url);
     };
 
     var utilReqPaths = {};
