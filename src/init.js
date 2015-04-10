@@ -15,6 +15,7 @@
 requirejs.config({
 	waitSeconds: 0,
 	paths: {
+		//mathjax:            'components/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML&amp;delayStartupUntil=configured',
 		ace:                'components/ace/src',
 		d3:                 'components/d3/d3.min',
 		fancytree:          'components/fancytree/dist/jquery.fancytree-all',
@@ -46,6 +47,14 @@ requirejs.config({
         BiojsDasProteinFeatureViewer: 'lib/biojs-1.0/src/main/javascript/Biojs.DasProteinFeatureViewer'
 	},
 	shim: {
+		//mathjax: {
+		//	exports: "MathJax",
+		//	init: function () {
+		//		MathJax.Hub.Config({ /* Your configuration here */ });
+		//		MathJax.Hub.Startup.onload();
+		//		return MathJax;
+		//	}
+		//},
 		d3: {
 			exports: 'd3'
 		},

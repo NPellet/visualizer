@@ -1,12 +1,41 @@
 'use strict';
 
-define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/util/datatraversing', 'src/util/debug', 'sparkline'], function (require, $, lodash, API, Util, Traversing, Debug) {
-
+define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/util/datatraversing', 'src/util/debug'], function (require, $, lodash, API, Util, Traversing, Debug) {
     Util.loadCss('components/font-awesome/css/font-awesome.min.css');
 
     var functions = {};
 
+    //functions.mathjax = {};
+    //
+    //functions.mathjax.init = function() {
+    //    return new Promise(function(resolve, reject) {
+    //        require(['mathjax'], resolve);
+    //    });
+    //};
+    //
+    //functions.mathjax.toscreen = function($el, val, rootval, options) {
+    //    var div;
+    //    if(val instanceof Array) {
+    //        div = MathJax.HTML.Element(
+    //            "div",
+    //            val
+    //        );
+    //    }
+    //    else {
+    //        div = val;
+    //    }
+    //
+    //    $el.html(val);
+    //
+    //    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    //};
+
     functions.sparkline = {};
+    functions.sparkline.init = function() {
+        return new Promise(function (resolve, reject) {
+            require(['sparkline'], resolve);
+        });
+    };
     functions.sparkline.toscreen = function($el, val, rootval, options) {
         var defaultOptions = {
             width: '100%',
@@ -362,13 +391,15 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
         }
 
         options = $.extend(options, object._options);
-
+        var init;
         if (!functions[type].ready && functions[type].init) {
-            functions[type].init();
+            init = functions[type].init();
             functions[type].ready = true;
         }
 
-        return Promise.resolve(functions[type].toscreen($(element), value, object, options));
+        return Promise.resolve(init).then(function () {
+            return functions[type].toscreen($(element), value, object, options);
+        });
     }
 
     return {
