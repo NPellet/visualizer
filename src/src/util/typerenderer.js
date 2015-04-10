@@ -47,8 +47,16 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
     };
 
     functions.number = {};
-    functions.number.toscreen = function (element, val) {
-        element.html(val.valueOf());
+    functions.number.toscreen = function (element, val, rootVal, options) {
+        var number = Number(val);
+        if (isNaN(number)) {
+            number = 'NaN';
+        } else if (options.hasOwnProperty('toPrecision')) {
+            number = number.toPrecision(options.toPrecision);
+        } else if (options.hasOwnProperty('toFixed')) {
+            number = number.toFixed(options.toFixed);
+        }
+        element.html(number);
     };
 
     functions.picture = {};
