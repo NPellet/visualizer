@@ -1,27 +1,13 @@
 'use strict';
 
-define(['components/farbtastic/src/farbtastic'], function () {
+define(['src/util/util', 'components/farbtastic/src/farbtastic'], function (Util) {
 
     var FieldConstructor = function () {
     };
 
     FieldConstructor.prototype.__makeDom = function () {
 
-
-        var fonts = [
-            {title: 'Arial', key: 'Arial'},
-            {title: 'Arial Black', key: ''Arial Black''},
-            {title: 'Comic Sans MS', key: ''Comic Sans MS''},
-            {title: 'Courier', key: 'Courier'},
-            {title: 'Courier new', key: ''Courier New''},
-            {title: 'Georgia', key: 'Georgia'},
-            {title: 'Helvetica', key: 'Helvetica'},
-            {title: 'Impact', key: 'Impact'},
-            {title: 'Palatino', key: 'Palatino'},
-            {title: 'Times new roman', key: ''Times New Roman''},
-            {title: 'Trebuchet MS', key: ''Trebuchet MS''},
-            {title: 'Verdana', key: 'Verdana'}
-        ];
+        var fonts = Util.getWebsafeFonts();
 
         var self = this,
             dom = $('<div />'),
