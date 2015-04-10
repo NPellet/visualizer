@@ -417,6 +417,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                         serie.setLineColor(Color.getColor(color));
                         serie.setLineWidth(parseFloat(plotinfos[i].strokewidth) || 1);
+                        serie.setLineStyle(parseInt(plotinfos[i].strokestyle) || 1);
 
                         if (plotinfos[i].markers[0] && serie.showMarkers) {
                             serie.showMarkers();

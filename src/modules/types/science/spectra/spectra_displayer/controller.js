@@ -393,6 +393,25 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
                             'default': '1'
                         },
 
+                        strokestyle: {
+                            type: 'combo',
+                            title: 'Stroke style',
+                            options: [
+                                {key: '1', title: '1'},
+                                {key: '2', title: '2'},
+                                {key: '3', title: '3'},
+                                {key: '4', title: '4'},
+                                {key: '5', title: '5'},
+                                {key: '6', title: '6'},
+                                {key: '7', title: '7'},
+                                {key: '8', title: '8'},
+                                {key: '9', title: '9'},
+                                {key: '10', title: '10'},
+                                {key: '11', title: '11'}
+                            ],
+                            'default': '1'
+                        },
+
                         plotcontinuous: {
                             type: 'combo',
                             title: 'Continuous',
