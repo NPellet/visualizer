@@ -98,6 +98,7 @@ define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'vers
         for (i in newView) {
             view[i] = DataObject.recursiveTransform(newView[i]);
         }
+        Variables.eraseAll();
     }
 
     function updateData(newData) {

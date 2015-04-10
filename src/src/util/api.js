@@ -73,12 +73,6 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
             this.repositoryActions = repo;
         },
 
-        resetVariables: function () {
-
-            Variables.eraseAll();
-
-        },
-
         createDataJpath: createDataJpath,
 
         listenHighlight: function () {
