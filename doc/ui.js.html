@@ -72,40 +72,249 @@
  * @module src/util/ui
  */
 
-define(['src/util/debug'], function (Debug) {
-    var $dialog;
-   return {
-       confirm: function (html) {
-           return new Promise(function (resolve) {
-               if (!$dialog) {
-                   $dialog = $('&lt;div/>');
-                   $('body').append($dialog);
-               }
-               if (html) {
-                   $dialog.html(html);
-               }
+define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/versioning', 'forms/button', 'src/util/couchshare', 'jquery-ui/dialog'], function (Util, Debug, _, $, Versioning, Button, Sharer) {
 
-               $dialog.dialog({
-                   modal: true,
-                   buttons: {
-                       Cancel: function () {
-                           resolve(false);
-                           $(this).dialog('close');
-                       },
-                       Ok: function () {
-                           resolve(true);
-                           $(this).dialog('close');
-                       }
-                   },
-                   close: function () {
-                       resolve(false);
-                   },
-                   width: 400
-               });
-           });
-       }
-   };
-});</pre>
+    var exports = {};
+
+    var $dialog;
+    var $notification;
+    exports.confirm = function (html, okLabel, cancelLabel) {
+        if (_.isUndefined(okLabel)) okLabel = 'Ok';
+        if (_.isUndefined(cancelLabel)) cancelLabel = 'Cancel';
+        return new Promise(function (resolve) {
+            if (!$dialog) {
+                $dialog = $('&lt;div/>');
+                $('body').append($dialog);
+            }
+            if (html) {
+                $dialog.html(html);
+            }
+
+            var options = {
+                modal: true,
+                buttons: {},
+                close: function () {
+                    resolve(false);
+                },
+                width: 400
+            };
+
+            if (okLabel !== null && okLabel !== '') options.buttons[okLabel] = function () {
+                resolve(true);
+                $(this).dialog('close');
+            };
+
+            if (cancelLabel !== null && cancelLabel !== '') options.buttons[cancelLabel] = function () {
+                resolve(false);
+                $(this).dialog('close');
+            };
+
+            $dialog.dialog(options);
+        });
+    };
+
+    var defaultDialogOptions = {
+        appendTo: '#ci-visualizer',
+        modal: true,
+        autoDestroy: true,
+        autoPosition: false,
+        noHeader: false,
+        noWrap: false
+    };
+    exports.dialog = function (div, options) {
+        if (typeof div === 'object' && !div.jquery) {
+            options = div;
+            div = null;
+        }
+        options = $.extend({}, defaultDialogOptions, options);
+        var $dialog;
+        if (options.noWrap) {
+            $dialog = $(div || '&lt;div>');
+        } else {
+            $dialog = $('&lt;div>').html(div || '');
+        }
+        if (options.autoDestroy && !options.close) {
+            options.close = function () {
+                $(this).dialog('destroy');
+            };
+        }
+        if (options.autoPosition) {
+            options.position = {
+                my: 'top+50',
+                at: 'center top',
+                of: '#ci-visualizer'
+            };
+        }
+        $dialog.dialog(options);
+        if (options.noHeader) {
+            $dialog.prev().remove();
+        }
+        return $dialog;
+    };
+
+    exports.copyview = function() {
+        var str = Versioning.getViewJSON('  ');
+        var strlen = str.length;
+        var txtarea = $('&lt;textarea/>').text(str).css({
+            width: '100%',
+            height: '95%'
+        });
+        this.dialog(txtarea, {
+            width: '80%',
+            height: $('#ci-visualizer').height() * 0.7
+        });
+
+        var txtdom = txtarea.get(0);
+
+        txtdom.selectionStart = 0;
+        txtdom.selectionEnd = strlen;
+        txtdom.focus();
+    };
+
+    exports.copyData = function() {
+        var str = Versioning.getDataJSON('  ');
+        var strlen = str.length;
+        var txtarea = $('&lt;textarea/>').text(str).css({
+            width: '100%',
+            height: '200px'
+        });
+        this.dialog(txtarea, {width: '80%'});
+        var txtdom = txtarea.get(0);
+
+        txtdom.selectionStart = 0;
+        txtdom.selectionEnd = strlen;
+        txtdom.focus();
+    };
+
+    exports.pasteData = function() {
+        var txtarea = $('&lt;textarea>&lt;/textarea>').css({
+                width: '100%',
+                height: '200px'
+            }),
+            val, keys,
+            btn = new Button('Paste', function () {
+
+                try {
+                    val = JSON.parse(txtarea.val());
+                    keys = Object.keys(val);
+                    for (var i = 0, ii = keys.length; i &lt; ii; i++) {
+                        if (keys[i].charAt(0) === '_')
+                            delete val[keys[i]];
+                    }
+                    Versioning.setDataJSON(val);
+                } catch (_) {
+                }
+
+                div.dialog('close');
+            });
+
+        var div  = this.dialog(txtarea, {width: '80%'}).append(btn.render());
+    };
+
+    exports.pasteView = function() {
+        var txtarea = $('&lt;textarea>&lt;/textarea>').css({
+                width: '100%',
+                height: '200px'
+            }),
+            val, keys,
+            btn = new Button('Paste', function () {
+
+                try {
+                    val = JSON.parse(txtarea.val());
+                    keys = Object.keys(val);
+                    for (var i = 0, ii = keys.length; i &lt; ii; i++) {
+                        if (keys[i].charAt(0) === '_')
+                            delete val[keys[i]];
+                    }
+                    Versioning.setViewJSON(val);
+                } catch (_) {
+                }
+
+                div.dialog('close');
+            });
+
+        var div  = this.dialog(txtarea, {width: '80%'}).append(btn.render());
+    };
+
+    exports.feedback = function(options, shareOptions, dialogOptions) {
+        var uniqid = Util.getNextUniqueId();
+
+        var message = $('&lt;span>').attr('id', uniqid + '-message').css('color', 'red');
+
+        var dialog = $('&lt;div>').html('&lt;h2>Do you have a comment on the visualizer ? Did you find a bug ?&lt;/h2>&lt;p>Put your comment here and we will be notified.&lt;br>A snapshot of you view and data will also be sent to us so feel free to describe exactly what you did and what happened !&lt;/p>' +
+        '&lt;table>&lt;tr>&lt;td>Title : &lt;/td>&lt;td>&lt;input type="text" id="' + uniqid + '-title" style="width:500px" />&lt;/td>&lt;/tr>&lt;tr>&lt;td>Description : &lt;/td>&lt;td>&lt;textarea id="' + uniqid + '-description" rows="12" cols="80">&lt;/textarea>&lt;/td>&lt;/tr>&lt;/table>').append(
+            new Button('Send', function () {
+                var button = this;
+                if (!options.disabled) {
+                    Sharer.share(shareOptions).done(function (tinyUrl) {
+                        var title = $('#' + uniqid + '-title').val();
+                        var description = $('#' + uniqid + '-description').val();
+                        var json = {
+                            title: title,
+                            body: description + '\n\nTestcase: ' + tinyUrl + ' ([Original URL](' + document.location.href + '))'
+                        };
+                        $.ajax({
+                            type: 'POST',
+                            url: 'http://visualizer.epfl.ch/github/api/issue',
+                            contentType: 'application/json',
+                            dataType: 'json',
+                            data: JSON.stringify(json),
+                            success: function (data) {
+                                console.log('success', data);
+                                message.html('Thank you for your feedback ! You can follow your issue &lt;a target="_blank" href="' + data.description + '">here&lt;/a>');
+                                button.disable();
+                            },
+                            error: function (data) {
+                                message.html('ERROR');
+                                console.log('error', data);
+                            }
+                        });
+                    }).fail(function (data) {
+                        message.html('ERROR');
+                        console.log('error', data);
+                    });
+                }
+            }, {color: 'blue'}).render()
+        ).append(message);
+        this.dialog(dialog, dialogOptions);
+    };
+
+    exports.couchShare = function(options, dialogOptions) {
+        var uniqid = Util.getNextUniqueId();
+        var dialog = $('&lt;div>').html('&lt;h3>Click the share button to make a snapshot of your view and generate a tiny URL&lt;/h3>&lt;br>').append(
+            new Button('Share', function () {
+                var button = this;
+                if (!options.disabled) {
+                    Sharer.share(options).done(function (tinyUrl) {
+                        $('#' + uniqid).val(tinyUrl).focus().select();
+                        button.disable();
+                    }).fail(function () {
+                        $('#' + uniqid).val('error');
+                    });
+                }
+            }, {color: 'blue'}).render()
+        ).append(
+            $('&lt;input type="text" id="' + uniqid + '" />').css('width', '400px')
+        );
+        this.dialog(dialog, dialogOptions);
+    };
+
+    exports.showNotification = function(message) {
+        $notification = $('.ci-visualizer-notification');
+        if($notification.length === 0) {
+            $('#ci-visualizer').append('&lt;div class="ci-visualizer-notification">&lt;/div>')
+            $notification = $('.ci-visualizer-notification');
+        }
+        $notification.show().html(message);
+        setTimeout(function() {
+            $notification.hide();
+        }, 5000);
+    };
+
+    return exports;
+
+});
+</pre>
 	</article>
 </section>
 
@@ -121,7 +330,7 @@ define(['src/util/debug'], function (Debug) {
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
-		on Fri Dec 12th 2014 using the <a
+		on Fri Apr 10th 2015 using the <a
 			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>
