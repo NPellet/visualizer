@@ -4,6 +4,7 @@ define([
     'jquery',
     'src/util/ui',
     'src/util/util',
+    'src/util/diagram',
     'modules/modulefactory',
     'src/util/context',
     'src/util/versioning',
@@ -15,6 +16,7 @@ define([
 ], function ($,
              ui,
              Util,
+             diagram,
              ModuleFactory,
              Context,
              Versioning,
@@ -725,6 +727,13 @@ define([
                         }
                     });
                 });
+
+                Context.listen(Context.getRootDom(), [
+                        ['<li name="diagram"><a><span class="ui-icon ui-icon-zoomin"></span>View Diagram</a></li>',
+                            function () {
+                                diagram.showVariableDiagram();
+                            }]]
+                );
                 Context.listen(Context.getRootDom(), [
                         ['<li class="ci-item-configureentrypoint" class="ui-state-disabled" id="context-menu-version"><a class="ui-state-disabled"><span class="ui-icon ui-icon-info"></span>' + Versioning.version + ' </a></li>',
                             function () {
