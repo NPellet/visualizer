@@ -904,13 +904,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
     function typeRenderer(cellNode, row, dataContext, colDef) {
         if(dataContext.__group) return;
         this.module.data.traceSync([row]);
-        var def = Renderer.toScreen(dataContext, this.module, {}, colDef.jpath);
-        def.always(function(value) {
-            $(cellNode).html(value);
-            if(def.build) {
-                def.build();
-            }
-        });
+        Renderer.render(cellNode, dataContext, colDef.jpath);
     }
 
     var lastHighlight = '';
