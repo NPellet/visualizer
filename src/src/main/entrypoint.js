@@ -183,7 +183,7 @@ define([
                 }
             }
             if(changed === false) {
-                Debug.info('No module urls rewritten in the view');
+                Debug.debug('No module urls rewritten in the view');
             }
             else {
                 Debug.info('Module urls were rewritten...');
