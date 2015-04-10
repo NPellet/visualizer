@@ -6,8 +6,6 @@
  */
 define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _) {
 
-    var uniqueid = 0;
-
     var months = ['January', 'February', 'March', 'April', 'Mai', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -112,14 +110,6 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
         },
         unmaskIframes: function () {
             $('.iframemask').remove();
-        },
-        getNextUniqueId: function (absolute) {
-
-            if (absolute) {
-                return 'id_' + Date.now() + Math.round(Math.random() * 100000);
-            }
-
-            return 'uniqid_' + (++uniqueid);
         },
         formatSize: function (size) {
 
@@ -293,7 +283,21 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
     /**
      * No-op function
      */
-    exports.noop = noop;
+    exports.noop = function noop() {
+    };
+
+    var uniqueid = 0;
+    /**
+     * Returns a unique id.
+     * @param {boolean} absolute
+     * @returns {string}
+     */
+    exports.getNextUniqueId = function getNextUniqueId(absolute) {
+        if (absolute) {
+            return 'id_' + Date.now() + Math.round(Math.random() * 100000);
+        }
+        return 'uniqid_' + (++uniqueid);
+    };
 
     /**
      * Mark that a method should not be used. Returns a modified function which warns once when called.
