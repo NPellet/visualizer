@@ -1,3 +1,17 @@
+## 2.9.23 (2015-04-02)
+
+Bugfixes:
+
+ - Fix node.js domain propagation ([#521](.)).
+
+## 2.9.22 (2015-04-02)
+
+ - Fix `.promisify` crashing in phantom JS ([#556](.))
+
+## 2.9.21 (2015-03-30)
+
+ - Fix error object's `'stack'`' overwriting causing an error when its defined to be a setter that throws an error ([#552](.)).
+
 ## 2.9.20 (2015-03-29)
 
 Bugfixes:
