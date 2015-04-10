@@ -4,6 +4,7 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
     var exports = {};
     var $diagram;
     function getLinks() {
+        // targets are vars_in, sources are vars_out
         var sources = [], targets = [], links = [], i, j;
         var modules = ModuleFactory.getModules();
         for(i=0; i<modules.length; i++) {
@@ -22,7 +23,10 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
 
             for(j=0; j<module.vars_out.length ; j++) {
                 var var_out = module.vars_out[j];
-                if(!var_out.name) continue;
+                if(!var_out.name || !var_out.event) continue;
+                if(var_out.event) {
+                    console.log(event);
+                }
                 sources.push({
                     id: DataObject.resurrect(module.id),
                     filter: var_out.filter,
@@ -39,20 +43,39 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
             });
 
             if(source) {
-                _.forEach(source, function(s) {
+                for(j=0; j<source.length; j++) {
                     links.push({
-                        source: s,
-                        target: targets[i],
-                        type: 'normal'
-                    });
-                });
+                        source: {
+                            module: source[j].module,
+                            id: source[j].id
+                        },
+                        target: {
+                            id: targets[i].id,
+                            module: targets[i].module
+                        },
+                        type: 'normal',
+                        filter: source[j].filter || 'no filter',
+                        event: source[j].event || 'no event',
+                        name: source[j].name || 'no name'
+                    })
+                }
             }
-            else {
-                links.push({
-                    source: {name: targets[i].name, rel: undefined, id: Util.getNextUniqueId(true)},
-                    target: targets[i],
-                    type: 'normal'
-                });
+            //else {
+            //    links.push({
+            //        source: {name: targets[i].name, rel: undefined, id: Util.getNextUniqueId(true)},
+            //        target: targets[i],
+            //        type: 'normal'
+            //    });
+            //}
+        }
+
+        for(i=0; i<sources.length; i++) {
+            var target = _.filter(targets, function(t){
+                return t.name === sources[i].name;
+            });
+
+            if(!target.length) {
+                Debug.warn('The module ' + sources[i].id + ' has a var_out ' + sources[i].name + ' not used as an input of any other module');
             }
         }
         return links;
@@ -75,11 +98,11 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
 
         var width = 1400,
             height = 900,
-            nodeRadius = 40;
+            nodeRadius = 50;
 
         var nodeBox = {
-            width: 40,
-            height: 40
+            width: nodeRadius,
+            height: nodeRadius
         };
 
         var linkBox = {
@@ -193,13 +216,17 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
         }
 
         function nodeTextContent(d) {
-            return d.info.module.controller ? d.info.module.controller.moduleInformation.name : 'unknown';
+            var res = [];
+            res.push(d.info.module.controller ? d.info.module.controller.moduleInformation.name : 'unknown');
+            res.push(d.info.module.definition.title);
+
+            return res.join('<br/>');
         }
 
         function linkTextContent(d) {
             var template = 'Event: <%= event %><br/> Name: <%= name %>';
             var compiled = _.template(template);
-            return compiled(DataObject.resurrect(d.source.info));
+            return compiled(DataObject.resurrect(d));
         }
 // Use elliptical arc path segments to doubly-encode directionality.
         function tick() {
