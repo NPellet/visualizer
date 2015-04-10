@@ -21,6 +21,7 @@ requirejs.config({
 		jqgrid:             'components/jqgrid_edit/js/jquery.jqGrid',
 		jquery:             'components/jquery/dist/jquery.min',
 		'jquery-ui':        'components/jquery-ui/ui',
+		'sparkline':        'lib/jquery.sparkline/jquery.sparkline.min',
 		ckeditor:           'components/ckeditor/ckeditor',
 		threejs:            'components/threejs/build/three.min',
 		forms:              'lib/forms',

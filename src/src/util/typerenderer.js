@@ -1,10 +1,20 @@
 'use strict';
 
-define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatraversing', 'src/util/debug'], function (require, $, API, Util, Traversing, Debug) {
+define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/util/datatraversing', 'src/util/debug', 'sparkline'], function (require, $, lodash, API, Util, Traversing, Debug) {
 
     Util.loadCss('components/font-awesome/css/font-awesome.min.css');
 
     var functions = {};
+
+    functions.sparkline = {};
+    functions.sparkline.toscreen = function($el, val, rootval, options) {
+        var defaultOptions = {
+            width: '100%',
+            height: '100%'
+        };
+        options = _.defaults(options, defaultOptions);
+        $el.sparkline(val, options);
+    };
 
     functions.string = {};
     functions.string.toscreen = function (element, val) {
