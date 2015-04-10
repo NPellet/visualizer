@@ -6,6 +6,7 @@
  * change how requirejs loads modules
  * fix loading of external modules
 * Util
+ * Debug diagram to see relation between modules
  * Change the way typerenderer works and update related modules
 * Module
  * Deprecate controller.sendAction 
