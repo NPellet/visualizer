@@ -44,7 +44,8 @@ define(['lib/semver/semver'], function (semver) {
         prerelease: PRERELEASE,
         isRelease: IS_RELEASE,
         version: version,
-        buildTime: buildTime
+        buildTime: buildTime,
+        isBuild: buildTime != null
     };
 
 });
