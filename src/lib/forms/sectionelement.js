@@ -463,7 +463,7 @@ define(['require', 'jquery'], function (require, $) {
         _makeDomTpl: function () {
 
             this.dom = this.section._tplClean.clone();
-
+            var i, j, l;
             for (i in this.sectionElements) {
                 j = 0,
                     l = this.sectionElements[i].length;
