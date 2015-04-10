@@ -92,7 +92,7 @@ define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/version
             width: '100%',
             height: '95%'
         });
-        this.dialog(txtarea, {
+        exports.dialog(txtarea, {
             width: '80%',
             height: $('#ci-visualizer').height() * 0.7
         });
@@ -111,7 +111,7 @@ define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/version
             width: '100%',
             height: '200px'
         });
-        this.dialog(txtarea, {width: '80%'});
+        exports.dialog(txtarea, {width: '80%'});
         var txtdom = txtarea.get(0);
 
         txtdom.selectionStart = 0;
@@ -141,7 +141,7 @@ define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/version
                 div.dialog('close');
             });
 
-        var div  = this.dialog(txtarea, {width: '80%'}).append(btn.render());
+        var div  = exports.dialog(txtarea, {width: '80%'}).append(btn.render());
     };
 
     exports.pasteView = function() {
@@ -166,7 +166,7 @@ define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/version
                 div.dialog('close');
             });
 
-        var div  = this.dialog(txtarea, {width: '80%'}).append(btn.render());
+        var div  = exports.dialog(txtarea, {width: '80%'}).append(btn.render());
     };
 
     exports.feedback = function(options, shareOptions, dialogOptions) {
@@ -209,7 +209,7 @@ define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/version
                 }
             }, {color: 'blue'}).render()
         ).append(message);
-        this.dialog(dialog, dialogOptions);
+        exports.dialog(dialog, dialogOptions);
     };
 
     exports.couchShare = function(options, dialogOptions) {
@@ -229,7 +229,7 @@ define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/version
         ).append(
             $('<input type="text" id="' + uniqid + '" />').css('width', '400px')
         );
-        this.dialog(dialog, dialogOptions);
+        exports.dialog(dialog, dialogOptions);
     };
 
     exports.showNotification = function(message) {

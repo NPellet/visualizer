@@ -129,14 +129,14 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
         var svg = d3.select($diagram[0]).append("svg")
             .attr("viewBox", '0 0 ' + width + ' ' + height)
             .attr('width', '100%')
-            .attr('height', '100%')
-            .call(zoom);
+            .attr('height', '100%');
 
-        //svg.append('g').append('rect')
-        //    .attr('width', width)
-        //    .attr('height', height)
-        //    .style('fill', 'none')
-        //    .call(zoom);
+        svg.append('g').append('rect')
+            .attr('width', width)
+            .attr('height', height)
+            .style('fill', 'rgba(255,255,255,1')
+            .style('stroke-width', 0)
+            .call(zoom);
 
         svg = svg.append('g');
 // Per-type markers, as they don't inherit styles.
@@ -164,6 +164,7 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
             .data(force.nodes())
             .enter().append("circle")
             .attr("r", nodeRadius)
+            //.call(zoom)
             //.call(drag)
             .call(force.drag)
         //.call(drag1);
@@ -212,6 +213,7 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
             .html(nodeTextContent);
 
         function zoomed() {
+            console.log('zoomed');
             svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
         }
 
@@ -281,7 +283,9 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
 
         ui.dialog($diagram, {
             width: width,
-            height: height
+            height: height,
+            noHeader: true,
+            noWrap: true
         });
     };
 
