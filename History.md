@@ -1,3 +1,29 @@
+2.17.0 / HEAD
+=============
+
+* Core
+ * version: add isBuild property
+ * change how requirejs loads modules
+ * fix loading of external modules
+* Util
+ * Change the way typerenderer works and update related modules
+* Module
+ * Deprecate controller.sendAction 
+ * code_executor: add methods and keep values between executions
+
+2.16.0 / 2015-04-01
+===================
+
+* Core
+ * introduce version.js and bump task
+ * Make modules and filter loadable from preferences (#456)
+ * add link to GitHub in context menu
+* Util
+ * ui: add showNotification method
+* Module
+ * fix SVG editor
+ * panzoom: improve performance
+
 2.15.3 / 2015-03-25
 ===================
 * Grunt
