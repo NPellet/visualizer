@@ -144,6 +144,10 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                 rowList: [2, 10, 20, 30, 100],
                 pager: '#pager' + this.uniqId,
 
+                formatCell: function (rowid, cellname, value) {
+                    return $(value).text();
+                },
+
                 resizeStop: function (width, index) {
 
                     self.domTable.children().children().eq(0).children().each(function (i) {
@@ -158,8 +162,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                     }
                 },
 
-                afterSaveCell: function (rowId, colName, value, rowNum, colNum) {
-
+                beforeSaveCell: function (rowId, colName, value, rowNum, colNum) {
 
                     if (self.jpaths[colNum].number.indexOf('number') > -1) {
                         value = parseFloat(value);
@@ -172,6 +175,9 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                     );
 
                     self.applyFilterToRow(rowId.replace(self.uniqId, ''), rowId);
+
+                    return '<div id="' + getIDForCell(rowId, colName) + '">' + value + '</div>';
+
                 },
 
                 loadComplete: function () {
@@ -326,7 +332,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
             element._inDom = $.Deferred();
             for (; j < l; j++) {
-                var id = (element.id + '_' + jp[j].name).replace(/[^\w\d_]/g, '_');
+                var id = getIDForCell(element.id, jp[j].name);
                 (function(j, id) {
                     element._inDom.progress(function () {
                         Renderer.render($('#' + id), s, jp[j].jpath);
@@ -441,6 +447,10 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
         }
 
     });
+
+    function getIDForCell(rowid, column) {
+        return (rowid + '_' + column).replace(/[^\w\d_]/g, '_');
+    }
 
     return View;
 
