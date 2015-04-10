@@ -1,5 +1,5 @@
 {
-  "version": "2.9.7",
+  "version": "2.16.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -527,7 +527,7 @@
           "jpath": []
         }
       ],
-      "title": "Info on element",
+      "title": "",
       "actions_out": {}
     },
     {
@@ -620,7 +620,7 @@
           "jpath": []
         }
       ],
-      "title": "Elements in cell",
+      "title": "",
       "actions_out": {}
     },
     {
@@ -715,7 +715,7 @@
           "jpath": []
         }
       ],
-      "title": "Cell info",
+      "title": "",
       "actions_out": {}
     },
     {
@@ -808,20 +808,139 @@
           "jpath": []
         }
       ],
-      "title": "Element coordinates",
+      "title": "",
       "actions_out": {}
     }
   ],
   "variables": [
     {
-      "varname": "trigger",
+      "varname": "defaultOptions",
       "jpath": [
-        "trigger"
+        "defaultOptions"
       ]
     }
   ],
-  "pouchvariables": [],
+  "pouchvariables": [
+    {}
+  ],
   "configuration": {
     "title": "Self-organizing map of random colors"
-  }
+  },
+  "aliases": [
+    {}
+  ],
+  "actionscripts": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          {
+            "name": [
+              null
+            ],
+            "script": [
+              null
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "crons": [
+    {}
+  ],
+  "couch_replication": [
+    {
+      "sections": {},
+      "groups": {
+        "couch": [
+          [
+            {
+              "direction": "both",
+              "continuous": []
+            }
+          ]
+        ]
+      }
+    }
+  ],
+  "init_script": [
+    {
+      "sections": {},
+      "groups": {
+        "general": [
+          {
+            "script": [
+              null
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "custom_filters": [
+    {
+      "sections": {
+        "modules": [
+          {
+            "sections": {},
+            "groups": {
+              "modules": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filtersLib": [
+          {
+            "sections": {},
+            "groups": {
+              "filters": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filters": [
+          {
+            "sections": {},
+            "groups": {
+              "filter": [
+                {
+                  "name": [
+                    null
+                  ],
+                  "script": [
+                    null
+                  ]
+                }
+              ],
+              "libs": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "groups": {}
+    }
+  ],
+  "actionfiles": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          [
+            {}
+          ]
+        ]
+      }
+    }
+  ]
 }
