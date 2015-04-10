@@ -1,12 +1,14 @@
 'use strict';
 
-define(['modules/types/client_interaction/code_editor/controller', 'src/util/api', 'src/util/debug', 'src/util/sandbox'], function (CodeEditor, API, Debug, Sandbox) {
+define(['modules/types/client_interaction/code_editor/controller', 'src/util/api', 'src/util/debug', 'src/util/sandbox', 'src/util/util'], function (CodeEditor, API, Debug, Sandbox, Util) {
 
     function Controller() {
+        CodeEditor.call(this);
         this.currentScript = null;
+        this.outputObject = {};
     }
 
-    Controller.prototype = Object.create(CodeEditor.prototype);
+    Util.inherits(Controller, CodeEditor);
 
     Controller.prototype.moduleInformation = {
         name: 'Code executor',
@@ -194,13 +196,31 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
             controller.neededAliases +
             ') {' + theCode + '\n};'
         );
+        this.wasSet = false;
         this.theFunction = this._sandbox.getContext().__exec__;
-        this.outputVariable = {};
     }
 
     function getNewContext(executor) {
         var setter = function (name, value) {
+            executor.wasSet = true;
             executor.doVariable(name, value);
+        };
+        var clear = function () {
+            executor.wasSet = true;
+            executor.controller.outputObject = {};
+        };
+        var unset = function (name) {
+            executor.wasSet = true;
+            delete executor.controller.outputObject[name];
+        };
+        var done = function () {
+            executor.done();
+        };
+        var setAsync = function () {
+            executor.async();
+        };
+        var sendAction = function (name, value) {
+            API.doAction(name, value);
         };
         var context = {
             variables: {},
@@ -211,7 +231,12 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
             'set': setter,
             'get': function (name) {
                 return this.variables[name];
-            }
+            },
+            sendAction: sendAction,
+            setAsync: setAsync,
+            done: done,
+            clear: clear,
+            unset: unset
         };
 
         var ctx = {
@@ -224,25 +249,21 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
             getButton: function () {
                 return context.button;
             },
-            'get': function (name) {
-                return context.variables[name];
+            getAction: function () {
+                return context.action;
             },
             getDefined: function () {
                 return context.defined;
             },
             'set': setter,
-            getAction: function () {
-                return context.action;
+            'get': function (name) {
+                return context.variables[name];
             },
-            sendAction: function (name, value) {
-                API.doAction(name, value);
-            },
-            setAsync: function () {
-                executor.async();
-            },
-            done: function () {
-                executor.done();
-            }
+            sendAction: sendAction,
+            setAsync: setAsync,
+            done: done,
+            clear: clear,
+            unset: unset
         };
         executor.context = context;
         return ctx;
@@ -254,7 +275,6 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         this.context.action = null;
         this.context.variables = {};
         this.context.defined = 0;
-        this.outputVariable = {};
     };
 
     ScriptExecutor.prototype.setButton = function (name) {
@@ -275,7 +295,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
     };
 
     ScriptExecutor.prototype.doVariable = function (name, value) {
-        this.outputVariable[name] = value;
+        this.controller.outputObject[name] = value;
     };
 
     ScriptExecutor.prototype.execute = function () {
@@ -291,6 +311,8 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         }
         this.context.variables = ctxVariables;
         this.context.defined = varNum;
+
+        this.wasSet = false;
 
         this._async = false;
         this._done = Promise.resolve();
@@ -311,8 +333,9 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
     ScriptExecutor.prototype.setOutput = function () {
         var self = this;
         this._done.then(function () {
-            self.controller.lastData = self.outputVariable;
-            self.controller.createDataFromEvent('onScriptEnded', 'outputValue', self.outputVariable);
+            if (self.wasSet) {
+                self.controller.createDataFromEvent('onScriptEnded', 'outputValue', self.controller.outputObject);
+            }
         }, function (e) {
             Debug.error('Code executor error', e);
         });

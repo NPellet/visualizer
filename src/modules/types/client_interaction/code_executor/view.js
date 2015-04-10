@@ -3,9 +3,10 @@
 define(['modules/types/client_interaction/code_editor/view', 'src/util/util', 'ace/ace', 'src/util/context', 'jquery'], function (CodeEditor, Util, ace, Context, $) {
 
     function View() {
+        CodeEditor.call(this);
     }
 
-    View.prototype = Object.create(CodeEditor.prototype);
+    Util.inherits(View, CodeEditor);
 
     View.prototype.init = function () {
         CodeEditor.prototype.init.call(this);
