@@ -5,10 +5,9 @@ define([
     'src/util/util',
     'ckeditor',
     'lodash',
-    'src/util/typerenderer',
     'src/main/grid',
     'chroma'
-], function (Default, Util, CKEDITOR, _, Renderer, Grid, chroma) {
+], function (Default, Util, CKEDITOR, _, Grid, chroma) {
 
     function View() {
         this._id = Util.getNextUniqueId();

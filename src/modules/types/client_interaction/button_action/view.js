@@ -5,13 +5,13 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/ui'], function 
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
         init: function () {
             var that = this;
             var label;
             this.dom = $('<div></div>');
             var buttonType = this.module.getConfiguration('toggle');
-            if(buttonType === 'toggle') {
+            if (buttonType === 'toggle') {
                 label = this.module.getConfiguration('offLabel');
             }
             else {
@@ -20,24 +20,23 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/ui'], function 
             var self = this,
                 button = new Button(label, function (e, val) {
                         var prom = Promise.resolve(true);
-                        if(that.module.getConfigurationCheckbox('askConfirm', 'yes')) {
+                        if (that.module.getConfigurationCheckbox('askConfirm', 'yes')) {
                             prom = ui.confirm(that.module.getConfiguration('confirmText'), that.module.getConfiguration('okLabel'), that.module.getConfiguration('cancelLabel'));
                         }
-                        prom.then(function(ok) {
-                            if(!ok) {
+                        prom.then(function (ok) {
+                            if (!ok) {
                                 return;
                             }
-                            if(!val && buttonType === 'toggle') {
+                            if (!val && buttonType === 'toggle') {
                                 button.setTitle(that.module.getConfiguration('offLabel'));
                                 that.setButtonColor(that.module.getConfiguration('offColor'));
                             }
-                            else if(buttonType === 'toggle'){
+                            else if (buttonType === 'toggle') {
                                 button.setTitle(that.module.getConfiguration('onLabel'));
                                 that.setButtonColor(that.module.getConfiguration('onColor'));
                             }
                             self.module.controller.onClick(val);
                         });
-0
                     },
                     {
                         color: 'Grey',
@@ -50,14 +49,14 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/ui'], function 
             this.dom.html(button.render());
             this.button = button;
 
-            if(buttonType === 'toggle') {
+            if (buttonType === 'toggle') {
                 that.setButtonColor(that.module.getConfiguration('offColor'));
             }
 
             this.resolveReady();
         },
 
-        setButtonColor: function(color) {
+        setButtonColor: function (color) {
             color = 'rgba(' + color.join(',') + ')';
             this.button.setColorCss(color);
         }

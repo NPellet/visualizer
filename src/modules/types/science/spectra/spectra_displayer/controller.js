@@ -528,14 +528,14 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
                 to: max
             }
         };
-        this.sendAction('fromTo' + axis, obj, 'onZoomChange');
+        this.sendActionFromEvent('onZoomChange', 'fromTo' + axis, obj);
         this.createDataFromEvent('onZoomChange', 'fromTo' + axis, obj);
         this.sendBoundaries();
     };
 
     Controller.prototype.sendBoundaries = _.throttle(function () {
         var boundaries = this.module.model.getBoundaries();
-        this.sendAction('fromToXY', boundaries, 'onZoomChange');
+        this.sendActionFromEvent('onZoomChange', 'fromToXY', boundaries);
         this.createDataFromEvent('onZoomChange', 'fromToXY', boundaries);
     }, 1, {leading: false});
 
@@ -550,9 +550,9 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
         this.createDataFromEvent('onClickMarker', 'markerInfos', infos);
         this.createDataFromEvent('onClickMarker', 'markerXY', xy);
         if (toggledOn) {
-            this.sendAction('markerInfos', infos, 'onSelectMarker');
+            this.sendActionFromEvent('onSelectMarker', 'markerInfos', infos);
         } else {
-            this.sendAction('markerInfos', infos, 'onUnselectMarker');
+            this.sendActionFromEvent('onUnselectMarker', 'markerInfos', infos);
         }
     };
 

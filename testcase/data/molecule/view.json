@@ -1,288 +1,479 @@
 {
-	"modules": [
-		{
-			"type": "2d_list",
-			"title": [
-				[
-					[
-						[
-							[
-								[
-									[
-										[
-											[
-												"2D grid"
-											]
-										]
-									]
-								]
-							]
-						]
-					]
-				]
-			],
-			"position": {
-				"left": 65,
-				"right": 1,
-				"top": 0
-			},
-			"size": {
-				"width": 82,
-				"height": 34
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"colnumber": [
-								"3"
-							],
-							"valjPath": [
-								"element.entry.mol.0.value"
-							],
-							"colorjPath": [
-								"element.color"
-							],
-							"width": [
-								null
-							],
-							"height": [
-								null
-							]
-						}
-					]
-				}
-			},
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"id": 1,
-			"vars_in": [
-				{
-					"rel": "list",
-					"name": "result"
-				}
-			],
-			"actions_in": [
-				{}
-			],
-			"vars_out": [
-				{
-					"event": "onHover",
-					"rel": "cell",
-					"jpath": "element.entry.mol.0.value",
-					"name": "OneChemical"
-				}
-			],
-			"actions_out": [
-				{}
-			],
-			"displayWrapper": true
-		},
-		{
-			"type": "jqgrid",
-			"title": [
-				[
-					[
-						[
-							[
-								[
-									[
-										[
-											[
-												[
-													[
-														[
-															[
-																[
-																	[
-																		[
-																			[
-																				[
-																					[
-																						"List of chemicals"
-																					]
-																				]
-																			]
-																		]
-																	]
-																]
-															]
-														]
-													]
-												]
-											]
-										]
-									]
-								]
-							]
-						]
-					]
-				]
-			],
-			"position": {
-				"left": 0,
-				"right": 1,
-				"top": 0
-			},
-			"size": {
-				"width": 64,
-				"height": 70
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"nblines": [
-								null
-							],
-							"toggle": [
-								null
-							],
-							"colorjpath": [
-								"element.color"
-							],
-							"displaySearch": [
-								[]
-							],
-							"filterRow": [
-								null
-							]
-						}
-					],
-					"cols": [
-						[
-							{
-								"name": "Name",
-								"jpath": "element.entry.iupac.0.value",
-								"number": [],
-								"editable": "none"
-							},
-							{
-								"name": "Structure",
-								"jpath": "element.entry.mol.0.value",
-								"number": [],
-								"editable": "none"
-							},
-							{
-								"name": "MF",
-								"jpath": "element.entry.mf.0.value",
-								"number": [],
-								"editable": "none"
-							}
-						]
-					]
-				}
-			},
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"id": 2,
-			"displayWrapper": true,
-			"vars_in": [
-				{
-					"rel": "list",
-					"name": "result"
-				}
-			],
-			"actions_in": [
-				{}
-			],
-			"vars_out": [
-				{
-					"event": "onHover",
-					"rel": "element",
-					"jpath": "element.entry.mol.0.value",
-					"name": "OneChemical"
-				},
-				{
-					"event": "onHover",
-					"rel": "element",
-					"jpath": "element.entry.mol.0.gif",
-					"name": "TheImage"
-				}
-			],
-			"actions_out": [
-				{}
-			]
-		},
-		{
-			"type": "jsme",
-			"title": "JSME to display molfile",
-			"displayWrapper": true,
-			"position": {
-				"left": 109,
-				"top": 35
-			},
-			"size": {
-				"width": 38,
-				"height": 35
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"prefs": [
-								[
-									"oldlook",
-									"depict"
-								]
-							]
-						}
-					]
-				}
-			},
-			"id": 4,
-			"vars_in": [
-				{
-					"rel": "mol",
-					"name": "OneChemical"
-				}
-			],
-			"actions_in": [
-				{}
-			],
-			"vars_out": [
-				{}
-			],
-			"actions_out": [
-				{}
-			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			]
+  "modules": [
+	{
+	  "configuration": {
+		"sections": {},
+		"groups": {
+		  "group": [
+			{
+			  "colnumber": [
+				"3"
+			  ],
+			  "valjPath": [
+				"element.entry.mol.0.value"
+			  ],
+			  "colorjPath": [
+				"element.color"
+			  ],
+			  "width": [
+				null
+			  ],
+			  "height": [
+				null
+			  ]
+			}
+		  ]
 		}
-	],
-	"configuration": {
-		"showMenuBarOnStart": false,
-		"showModuleHeaderOnHover": false,
-		"title": "Example of a ChemExper Chemical Directory result with background color",
-		"moduleBackground": "#ffffff",
-		"variableFilters": {}
+	  },
+	  "id": 1,
+	  "vars_in": [
+		{
+		  "rel": "list",
+		  "name": "result"
+		}
+	  ],
+	  "actions_in": [
+		{}
+	  ],
+	  "vars_out": [
+		{
+		  "event": "onHover",
+		  "rel": "cell",
+		  "jpath": [
+			"entry",
+			"mol",
+			"0",
+			"value"
+		  ],
+		  "name": "OneChemical"
+		}
+	  ],
+	  "actions_out": [
+		{}
+	  ],
+	  "url": "modules/types/display/2d_list/",
+	  "layers": {
+		"Default layer": {
+		  "position": {
+			"left": 65,
+			"top": 0,
+			"right": 0
+		  },
+		  "size": {
+			"width": 82,
+			"height": 34
+		  },
+		  "display": true,
+		  "title": [
+			[
+			  [
+				[
+				  [
+					[
+					  [
+						[
+						  [
+							"2D grid"
+						  ]
+						]
+					  ]
+					]
+				  ]
+				]
+			  ]
+			]
+		  ],
+		  "bgColor": [
+			255,
+			255,
+			255,
+			0
+		  ],
+		  "wrapper": true,
+		  "created": true,
+		  "name": "Default layer"
+		}
+	  },
+	  "title": [
+		[
+		  [
+			[
+			  [
+				[
+				  [
+					[
+					  [
+						"2D grid"
+					  ]
+					]
+				  ]
+				]
+			  ]
+			]
+		  ]
+		]
+	  ]
 	},
-	"variables": [
+	{
+	  "configuration": {
+		"sections": {},
+		"groups": {
+		  "group": [
+			{
+			  "nblines": [
+				5
+			  ],
+			  "toggle": [
+				null
+			  ],
+			  "colorjpath": [
+				"element.color"
+			  ],
+			  "filterRow": [
+				null
+			  ]
+			}
+		  ],
+		  "cols": [
+			[
+			  {
+				"name": "Name",
+				"jpath": "element.entry.iupac.0.value",
+				"number": [],
+				"editable": "none"
+			  },
+			  {
+				"name": "Structure",
+				"jpath": "element.entry.mol.0.value",
+				"number": [],
+				"editable": "none"
+			  },
+			  {
+				"name": "MF",
+				"jpath": "element.entry.mf.0.value",
+				"number": [],
+				"editable": "none"
+			  }
+			]
+		  ]
+		}
+	  },
+	  "id": 2,
+	  "vars_in": [
 		{
-			"varname": "result",
-			"jpath": "element.result",
-			"url": ""
+		  "rel": "list",
+		  "name": "result"
+		}
+	  ],
+	  "actions_in": [
+		{}
+	  ],
+	  "vars_out": [
+		{
+		  "event": "onHover",
+		  "rel": "row",
+		  "jpath": [
+			"entry",
+			"mol",
+			"0",
+			"value"
+		  ],
+		  "name": "OneChemical"
 		},
 		{
-			"varname": "molecule",
-			"jpath": "element.0.entry.mol.0.gif",
-			"url": ""
+		  "event": "onHover",
+		  "rel": "row",
+		  "jpath": [
+			"entry",
+			"mol",
+			"0",
+			"gif"
+		  ],
+		  "name": "TheImage"
 		}
-	],
-	"_version": "2.2"
+	  ],
+	  "actions_out": [
+		{
+		  "jpath": []
+		}
+	  ],
+	  "url": "modules/types/display/jqgrid/",
+	  "layers": {
+		"Default layer": {
+		  "position": {
+			"left": 0,
+			"top": 0,
+			"right": 0
+		  },
+		  "size": {
+			"width": 64,
+			"height": 70
+		  },
+		  "display": true,
+		  "title": [
+			[
+			  [
+				[
+				  [
+					[
+					  [
+						[
+						  [
+							[
+							  [
+								[
+								  [
+									[
+									  [
+										[
+										  [
+											[
+											  [
+												"List of chemicals"
+											  ]
+											]
+										  ]
+										]
+									  ]
+									]
+								  ]
+								]
+							  ]
+							]
+						  ]
+						]
+					  ]
+					]
+				  ]
+				]
+			  ]
+			]
+		  ],
+		  "bgColor": [
+			255,
+			255,
+			255,
+			0
+		  ],
+		  "wrapper": true,
+		  "created": true,
+		  "name": "Default layer"
+		}
+	  },
+	  "title": [
+		[
+		  [
+			[
+			  [
+				[
+				  [
+					[
+					  [
+						[
+						  [
+							[
+							  [
+								[
+								  [
+									[
+									  [
+										[
+										  [
+											"List of chemicals"
+										  ]
+										]
+									  ]
+									]
+								  ]
+								]
+							  ]
+							]
+						  ]
+						]
+					  ]
+					]
+				  ]
+				]
+			  ]
+			]
+		  ]
+		]
+	  ]
+	},
+	{
+	  "configuration": {
+		"sections": {},
+		"groups": {
+		  "group": [
+			{
+			  "prefs": [
+				[
+				  "oldlook",
+				  "depict"
+				]
+			  ]
+			}
+		  ]
+		}
+	  },
+	  "id": 3,
+	  "vars_in": [
+		{
+		  "rel": "mol",
+		  "name": "OneChemical"
+		}
+	  ],
+	  "actions_in": [
+		{}
+	  ],
+	  "vars_out": [
+		{}
+	  ],
+	  "actions_out": [
+		{}
+	  ],
+	  "url": "modules/types/science/chemistry/jsme/",
+	  "layers": {
+		"Default layer": {
+		  "position": {
+			"left": 109,
+			"top": 35,
+			"right": 0
+		  },
+		  "size": {
+			"width": 38,
+			"height": 35
+		  },
+		  "display": true,
+		  "title": "JSME to display molfile",
+		  "bgColor": [
+			255,
+			255,
+			255,
+			0
+		  ],
+		  "wrapper": true,
+		  "created": true,
+		  "name": "Default layer"
+		}
+	  },
+	  "title": "JSME to display molfile"
+	},
+	{
+	  "url": "modules/types/display/2d_list_fast/",
+	  "configuration": {
+		"sections": {},
+		"groups": {
+		  "group": [
+			{
+			  "colnumber": [
+				"5"
+			  ],
+			  "valjPath": [
+				"element.entry.mol.0.value"
+			  ],
+			  "colorjPath": [
+				"element.color"
+			  ],
+			  "height": [
+				""
+			  ]
+			}
+		  ]
+		}
+	  },
+	  "layers": {
+		"Default layer": {
+		  "position": {
+			"left": 148,
+			"top": 0
+		  },
+		  "size": {
+			"width": 76,
+			"height": 34
+		  },
+		  "zIndex": 0,
+		  "display": true,
+		  "title": "2D grid (fast)",
+		  "bgColor": [
+			255,
+			255,
+			255,
+			0
+		  ],
+		  "wrapper": true,
+		  "created": true,
+		  "name": "Default layer"
+		}
+	  },
+	  "id": 4,
+	  "vars_in": [
+		{
+		  "rel": "list",
+		  "name": "result"
+		}
+	  ],
+	  "actions_in": [
+		{}
+	  ],
+	  "title": "2D grid (fast)",
+	  "vars_out": [
+		{
+		  "event": "onHover",
+		  "rel": "cell",
+		  "jpath": [
+			"entry",
+			"mol",
+			"0",
+			"value"
+		  ],
+		  "name": "OneChemical"
+		}
+	  ],
+	  "actions_out": [
+		{
+		  "jpath": []
+		}
+	  ]
+	}
+  ],
+  "configuration": {
+	"showMenuBarOnStart": false,
+	"showModuleHeaderOnHover": false,
+	"title": "Example of a ChemExper Chemical Directory result with background color",
+	"moduleBackground": "#ffffff",
+	"variableFilters": {}
+  },
+  "variables": [
+	{
+	  "varname": "result",
+	  "jpath": [
+		"result"
+	  ],
+	  "url": ""
+	},
+	{
+	  "varname": "molecule",
+	  "jpath": [
+		"0",
+		"entry",
+		"mol",
+		"0",
+		"gif"
+	  ],
+	  "url": ""
+	}
+  ],
+  "version": "2.16.1-0",
+  "grid": {
+	"layers": {
+	  "Default layer": {
+		"name": "Default layer"
+	  }
+	},
+	"xWidth": 10,
+	"yHeight": 10
+  },
+  "aliases": [],
+  "pouchvariables": []
 }

@@ -1,6 +1,13 @@
 'use strict';
 
-define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api', 'src/util/domdeferred', 'src/util/datatraversing', 'src/util/typerenderer', 'src/util/context'], function (require, Default, Util, API, DomDeferred, Traversing, Renderer, Context) {
+define([
+    'modules/default/defaultview',
+    'src/util/util',
+    'src/util/api',
+    'src/util/domdeferred',
+    'src/util/datatraversing',
+    'src/util/context'
+], function (Default, Util, API, DomDeferred, Traversing, Context) {
 
     function View() {
     }

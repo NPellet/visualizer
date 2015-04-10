@@ -1,13 +1,13 @@
 'use strict';
 
-define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatraversing'], function (require, $, API, Util, Traversing) {
+define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatraversing', 'src/util/debug'], function (require, $, API, Util, Traversing, Debug) {
 
     Util.loadCss('components/font-awesome/css/font-awesome.min.css');
 
     var functions = {};
 
     functions.string = {};
-    functions.string.toscreen = function (def, val) {
+    functions.string.toscreen = function (element, val) {
         val = String(val);
         while (true) {
             val = val.replace('<', '&lt;').replace('>', '&gt;');
@@ -15,61 +15,46 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
                 break;
             }
         }
-        def.resolve(val);
+        element.html(val);
     };
 
     functions.date = {};
-    functions.date.toscreen = function (def, val) {
+    functions.date.toscreen = function (element, val) {
         try {
             var d = new Date(val);
-            def.resolve(d.toLocaleString());
+            element.html(d.toLocaleString());
         }
         catch (e) {
-            def.resolve('Invalid date');
+            element.html('Invalid date');
         }
     };
 
     functions.color = {};
-    functions.color.toscreen = function (def, val) {
+    functions.color.toscreen = function (element, val) {
         var result =  '<div style="background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==); width:100%; height:100%">' +
-            '<div style="background-color: ' + val + '; width: 100%; height:100%; padding:0; margin:0"></div></div>'
-        def.resolve(result);
-    };
-
-    functions.html = {};
-    functions.html.toscreen = function (def, val) {
-        def.resolve(String(val));
-    };
-
-    functions.matrix = {};
-    functions.matrix.toscreen = function (def, val) {
-        def.resolve(val);
+            '<div style="background-color: ' + val + '; width: 100%; height:100%; padding:0; margin:0"></div></div>';
+        element.html(result);
     };
 
     functions.number = {};
-    functions.number.toscreen = function (def, val) {
-        def.reject(val.valueOf());
-    };
-
-    functions.chemical = {};
-    functions.chemical.toscreen = function (def, val) {
-        val.getChild(['iupac', '0', 'value']).then(def.resolve, def.reject);
+    functions.number.toscreen = function (element, val) {
+        element.html(val.valueOf());
     };
 
     functions.picture = {};
-    functions.picture.toscreen = function (def, val) {
-        def.reject('<img src="' + val + '" />');
+    functions.picture.toscreen = function (element, val) {
+        element.html('<img src="' + encodeURI(val) + '" />');
     };
 
     functions.svg = {};
-    functions.svg.toscreen = function (def, val) {
+    functions.svg.toscreen = function (element, val) {
         var dom = $(val);
         var viewbox = [0, 0, parseInt(dom.attr('width')), parseInt(dom.attr('height'))];
         dom[0].setAttribute('viewBox', viewbox.join(' '));
         dom.removeAttr('id');
         dom.attr('width', '100%');
         dom.attr('height', '100%');
-        def.resolve($('<div>').append(dom).html());
+        element.html(dom);
     };
 
     functions.gif = functions.picture;
@@ -78,170 +63,114 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
     functions.png = functions.picture;
 
     functions.doi = {};
-    functions.doi.toscreen = function (def, value) {
-        return def.resolve(value.replace(/^(.*)$/, '<a target="_blank" href="http://dx.doi.org/$1"><img src="bin/logo/doi.png" /></a>'));
+    functions.doi.toscreen = function (element, value) {
+        return element.html(value.replace(/^(.*)$/, '<a target="_blank" href="http://dx.doi.org/$1"><img src="bin/logo/doi.png" /></a>'));
     };
 
-    var actelionCDN = 'components/openchemlib/dist/openchemlib-viewer';
-    var defaultActelionStructureOptions = {
+    var OCL = 'components/openchemlib/dist/openchemlib-viewer';
+    var defaultOpenChemLibStructureOptions = {
         suppressChiralText: true,
         suppressESR: true,
         suppressCIPParity: true,
         noStereoProblem: true
     };
 
-    function renderActelionStructure(idcode, coordinates, options, def) {
-        options = $.extend({}, defaultActelionStructureOptions, options);
-        require([actelionCDN], function (ACT) {
-            var id = Util.getNextUniqueId();
-            var div = '<div id="' + id + '" style="width:100%; height:100%" />';
-            def.build = function () {
-                var div = $('#' + id);
-                var h = Math.max(150, div.height()), w = div.width();
-                var id2 = Util.getNextUniqueId();
-                var can = $('<canvas>', {id: id2});
+    function renderOpenChemLibStructure(element, idcode, coordinates, options) {
+        return new Promise(function (resolve) {
+            options = $.extend({}, defaultOpenChemLibStructureOptions, options);
+            require([OCL], function (ACT) {
+                var id = Util.getNextUniqueId();
+                var h = Math.max(150, element.height()), w = element.width();
+                var can = $('<canvas>', {id: id});
                 var canEl = can.get(0);
                 canEl.height = h;
                 canEl.width = w;
-                div.html(can);
-                ACT.StructureView.drawStructure(id2, idcode, coordinates, options);
-            };
-            def.resolve(div);
+                element.html(can);
+                ACT.StructureView.drawStructure(id, idcode, coordinates, options);
+                resolve();
+            });
         });
     }
 
     functions.jme = {};
-    functions.jme.toscreen = function (def, jme, jmeRoot, options, highlights, box) {
-        require(['lib/chemistry/jme-converter'], function (Converter) {
-            var converted = Converter.toMolfile(jme);
-            var molfile = {
-                type: 'mol2d',
-                value: converted
-            };
-            functions.mol2d.toscreen(def, converted, molfile, options, highlights, box);
+    functions.jme.toscreen = function (element, jme, jmeRoot, options) {
+        return new Promise(function (resolve) {
+            require(['lib/chemistry/jme-converter'], function (Converter) {
+                var converted = Converter.toMolfile(jme);
+                var molfile = {
+                    type: 'mol2d',
+                    value: converted
+                };
+                resolve(functions.mol2d.toscreen(element, converted, jmeRoot, options));
+            });
         });
     };
 
     functions.smiles = {};
-    functions.smiles.toscreen = function (def, val, root, options, highlights, box) {
-        require([actelionCDN], function (ACT) {
-            var mol = ACT.Molecule.fromSmiles(String(val));
-            renderActelionStructure(mol.getIDCode(), mol.getIDCoordinates(), options, def);
+    functions.smiles.toscreen = function (element, smi, smiRoot, options) {
+        return new Promise(function (resolve) {
+            require([OCL], function (ACT) {
+                var mol = ACT.Molecule.fromSmiles(String(smi));
+                resolve(renderOpenChemLibStructure(element, mol.getIDCode(), mol.getIDCoordinates(), options));
+            });
         });
     };
 
     functions.actelionID = {};
-    functions.actelionID.toscreen = function (def, val, root, options, highlights, box) {
-        require([actelionCDN], function (ACT) {
-            if (!root.coordinates) {
-                var value = String(root.value);
-                var mol = ACT.Molecule.fromIDCode(value, true);
-                Object.defineProperty(root, 'coordinates', {
-                    configurable: true,
-                    enumerable: false,
-                    value: mol.getIDCoordinates(),
-                    writable: true
-                });
-            }
-            renderActelionStructure(String(root.value), String(root.coordinates), options, def);
+    functions.actelionID.toscreen = function (element, val, root, options) {
+        return new Promise(function (resolve) {
+            require([OCL], function (ACT) {
+                if (!root.coordinates) {
+                    var value = String(root.value);
+                    var mol = ACT.Molecule.fromIDCode(value, true);
+                    Object.defineProperty(root, 'coordinates', {
+                        configurable: true,
+                        enumerable: false,
+                        value: mol.getIDCoordinates(),
+                        writable: true
+                    });
+                }
+                resolve(renderOpenChemLibStructure(element, String(root.value), String(root.coordinates), options));
+            });
         });
     };
 
     functions.mol2d = {};
-    functions.mol2d.toscreen = function (def, molfileChild, molfile, options, highlights, box) {
-        require([actelionCDN], function (ACT) {
-            var mol = ACT.Molecule.fromMolfile(molfileChild);
-            renderActelionStructure(mol.getIDCode(), mol.getIDCoordinates(), options, def);
+    functions.mol2d.toscreen = function (element, molfile, molfileRoot, options) {
+        return new Promise(function (resolve) {
+            require([OCL], function (ACT) {
+                var mol = ACT.Molecule.fromMolfile(molfile);
+                resolve(renderOpenChemLibStructure(element, mol.getIDCode(), mol.getIDCoordinates(), options));
+            });
         });
     };
 
     functions.molfile2D = functions.mol2d;
 
-    functions.jcamp = {};
-    functions.jcamp.hexToRgb = function (hex) {
-        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? {
-            r: parseInt(result[1], 16),
-            g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16)
-        } : null;
-    };
-    functions.id = 0;
-    functions.cache = [];
-
-    functions.jcamp.toscreen = function (def, valueChild, value, args, highlights, box) {
-
-        require(['lib/plot/plot', 'components/jcampconverter/dist/jcampconverter.min'], function (Graph, Converter) {
-
-            var dom = $("<div />").css({width: 200, height: 200});
-            var graph = new Graph(dom.get(0), {
-                    closeRight: false,
-                    closeTop: false,
-                    zoomMode: ''
-                }, {
-                    bottom: [
-                        {
-                            unitModification: false,
-                            primaryGrid: false,
-                            nbTicksPrimary: 5,
-                            nbTicksSecondary: 2,
-                            secondaryGrid: false,
-                            axisDataSpacing: {min: 0, max: 0}
-                        }
-                    ],
-
-                    left: [
-                        {
-                            ticklabelratio: 1,
-                            primaryGrid: true,
-                            nbTicksSecondary: 4,
-                            secondaryGrid: false,
-                            //scientificTicks: true,
-                            nbTicksPrimary: 2,
-                            forcedMin: 0,
-                            axisDataSpacing: {min: 0, max: 0}
-                        }
-                    ]
-                }
-            );
-            graph.resize(200, 200);
-            value = Converter.convert(value.value);
-            var serie = graph.newSerie('serie', {lineToZero: true});
-            serie.autoAxis();
-            serie.setData(value.spectra[0].data[0]);
-            def.resolve(graph._dom);
-            graph.redraw();
-            graph.drawSeries();
-        });
-
-
-    };
-
     functions.mf = {};
-    functions.mf.toscreen = function (def, value) {
-
-        return def.reject(value.replace(/\[([0-9]+)/g, "[<sup>$1</sup>").replace(/([a-zA-Z)])([0-9]+)/g, "$1<sub>$2</sub>").replace(/\(([0-9+-]+)\)/g, "<sup>$1</sup>"));
+    functions.mf.toscreen = function (element, value) {
+        element.html(value.replace(/\[([0-9]+)/g, '[<sup>$1</sup>').replace(/([a-zA-Z)])([0-9]+)/g, '$1<sub>$2</sub>').replace(/\(([0-9+-]+)\)/g, '<sup>$1</sup>'));
     };
 
-    function bioPv(type, def, val) {
-        require(['lib/bio-pv/bio-pv.min'], function (pv) {
-            var id = Util.getNextUniqueId();
-            var div = '<div id="' + id + '" style="width:99%; height:99%" />';
-            def.build = function () {
+    function bioPv(type, element, val) {
+        return new Promise(function (resolve) {
+            require(['lib/bio-pv/bio-pv.min'], function (pv) {
+                var div = $('<div style="width:99%; height:99%" />');
+                element.html(div);
                 var mol;
                 if (type === 'pdb') {
                     mol = pv.io.pdb(val);
                 } else if (type === 'mol3d') {
                     mol = pv.io.sdf(val);
                 }
-                var viewer = pv.Viewer(document.getElementById(id), {
+                var viewer = pv.Viewer(div.get(0), {
                     width: 'auto',
                     height: 'auto',
                     quality: 'medium'
                 });
                 viewer.addListener('viewerReady', function () {
                     if (type === 'pdb') {
-                        var ligand = mol.select({rnames : ['RVP', 'SAH']});
+                        var ligand = mol.select({rnames: ['RVP', 'SAH']});
                         viewer.ballsAndSticks('ligand-' + id, ligand);
                         viewer.cartoon(id, mol);
                     } else if (type === 'mol3d') {
@@ -249,8 +178,8 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
                     }
                     viewer.fitTo(mol);
                 });
-            };
-            def.resolve(div);
+                resolve();
+            });
         });
     }
 
@@ -262,26 +191,21 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 
     functions.molfile3D = functions.mol3d;
 
-    functions.cif = {};
-    functions.cif.toscreen = function (def, value) {
-        return def.resolve(value);
-    };
-
     functions.downloadLink = {};
-    functions.downloadLink.toscreen = function (def, value) {
-        return def.resolve(value.replace(/^(.*)$/, '<a href="$1">⤵</a>'));
+    functions.downloadLink.toscreen = function (element, value) {
+        element.html(value.replace(/^(.*)$/, '<a href="$1">⤵</a>'));
     };
 
     functions.boolean = {};
-    functions.boolean.toscreen = function (def, value) {
+    functions.boolean.toscreen = function (element, value) {
         if (value)
-            def.resolve('<span style="color: green;">&#10004;</span>');
+            element.html('<span style="color: green;">&#10004;</span>');
         else
-            def.resolve('<span style="color: red;">&#10008;</span>');
+            element.html('<span style="color: red;">&#10008;</span>');
     };
 
     functions.colorBar = {};
-    functions.colorBar.toscreen = function (def, value) {
+    functions.colorBar.toscreen = function (element, value) {
 
         var div = $('<div>');
         var gradient = "linear-gradient(to right";
@@ -302,7 +226,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
             height: "100%",
             width: "100%"
         })/*.css("background","-webkit-"+gradient).css("background","-moz-"+gradient)*/.css("background", gradient);
-        def.resolve(div.get(0));
+        element.html(div);
     };
 
     functions.indicator = {};
@@ -339,126 +263,110 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
         });
 
     };
-    functions.indicator.toscreen = function (def, value) {
-        require(["src/util/color"], function (Color) {
-            if (!Array.isArray(value))
-                def.reject('');
-            var html = '<table cellpadding="0" cellspacing="0" style="text-align: center; height:100%; width:100%"><tr>';
+    functions.indicator.toscreen = function (htmlElement, value) {
+        return new Promise(function (resolve) {
+            require(['src/util/color'], function (Color) {
+                if (!Array.isArray(value)) {
+                    return resolve();
+                }
+                var html = '<table cellpadding="0" cellspacing="0" style="text-align: center; height:100%; width:100%"><tr>';
 
-            // if the first element of the array is a number ... we need to convert the array.
-            if (!isNaN(value[0])) {
-                value = value.map(function (value) {
-                    return {"size": value};
-                })
-            }
+                // if the first element of the array is a number ... we need to convert the array.
+                if (!isNaN(value[0])) {
+                    value = value.map(function (value) {
+                        return {"size": value};
+                    })
+                }
 
-            var length = value.length;
-            // no color ? we add some ...
-            var colors = Color.getDistinctColors(value.length);
-            var totalSize = 0;
-            for (var i = 0; i < length; i++) {
-                if (!value[i].bgcolor) value[i].bgcolor = Color.getColor(colors[i]);
-                if (!value[i].size && value[i].size !== 0) value[i].size = 10;
-                totalSize += value[i].size;
-            }
-
-
-            for (var i = 0; i < length; i++) {
-                var element = value[i];
-                var span = $('<td>').css({
-                    "width": (100 * element.size / totalSize) + "%",
-                    "border": "none"
-                });
-                if (element.bgcolor)
-                    span.css('background-color', element.bgcolor);
-                if (element.color)
-                    span.css('color', element.color);
-                if (element.text)
-                    span.append(element.text);
-                if (element.class)
-                    span.addClass(element.class);
-                if (element.icon)
-                    span.prepend('<i class="fa fa-' + element.icon + '"></i>');
-                if (element.css)
-                    span.css(element.css);
-                if (element.tooltip)
-                    span.attr("data-tooltip", element.tooltip);
-                html += span.get(0).outerHTML;
-            }
-            html += '</tr></table>';
-            def.resolve(html);
-        })
-
-    };
+                var length = value.length;
+                // no color ? we add some ...
+                var colors = Color.getDistinctColors(value.length);
+                var totalSize = 0;
+                for (var i = 0; i < length; i++) {
+                    if (!value[i].bgcolor) value[i].bgcolor = Color.getColor(colors[i]);
+                    if (!value[i].size && value[i].size !== 0) value[i].size = 10;
+                    totalSize += value[i].size;
+                }
 
 
-    functions.styledValue = {};
-    functions.styledValue.toscreen = function (def, value, valueRoot, args, highlights, box, jpath) {
-
-        var div = $('<div>');
-        div.css(value.css);
-
-        functions.toScreen(value.value, box, args, jpath).always(function (subvalue) {
-            div.append(subvalue);
-            def.resolve(div.get(0));
+                for (var i = 0; i < length; i++) {
+                    var element = value[i];
+                    var span = $('<td>').css({
+                        "width": (100 * element.size / totalSize) + "%",
+                        "border": "none"
+                    });
+                    if (element.bgcolor)
+                        span.css('background-color', element.bgcolor);
+                    if (element.color)
+                        span.css('color', element.color);
+                    if (element.text)
+                        span.append(element.text);
+                    if (element.class)
+                        span.addClass(element.class);
+                    if (element.icon)
+                        span.prepend('<i class="fa fa-' + element.icon + '"></i>');
+                    if (element.css)
+                        span.css(element.css);
+                    if (element.tooltip)
+                        span.attr("data-tooltip", element.tooltip);
+                    html += span.get(0).outerHTML;
+                }
+                html += '</tr></table>';
+                htmlElement.html(html);
+                resolve();
+            });
         });
-
     };
 
     functions.regexp = {};
-    functions.regexp.toscreen = function (def, val) {
+    functions.regexp.toscreen = function (element, val) {
         var value = String(val);
-        require(['lib/regexper/regexper'], function (Parser) {
-            var id = Util.getNextUniqueId();
-            var div = '<div id="' + id + '" />';
-            def.build = function () {
-                var div = $('#' + id)[0];
-                var parser = new Parser(div);
+        return new Promise(function (resolve) {
+            require(['lib/regexper/regexper'], function (Parser) {
+                var div = $('<div>').appendTo(element);
+                var parser = new Parser(div.get(0));
                 parser.parse(value).invoke('render');
-            };
-            def.resolve(div);
+                resolve();
+            });
         });
     };
 
     functions.regex = functions.regexp;
 
-    function _valueToScreen(deferred, data, box, args, jpath) {
-        var type = Traversing.getType(data),
-            highlights = Traversing.getHighlights(data);
+    function _render(element, object, options) {
+        var value = object.get();
 
-        args = $.extend(args, Traversing.getOptions(data));
-
+        var type = object.getType();
         if (!functions[type]) {
-            return deferred.resolve('');
+            Debug.warn('No renderer found for type ' + type);
+            element.html(String(value));
+            return Promise.resolve();
         }
 
-        var rootData = data;
-        data = Traversing.get(data);
+        options = $.extend(options, object._options);
 
         if (!functions[type].ready && functions[type].init) {
             functions[type].init();
             functions[type].ready = true;
         }
 
-        functions[type].toscreen(deferred, data, rootData, args, highlights, box, jpath);
+        return Promise.resolve(functions[type].toscreen($(element), value, object, options));
     }
 
     return {
-        toScreen: function (element, box, opts, jpath) {
-            var deferred = $.Deferred();
-            element = DataObject.check(element, true);
-            if (!jpath) {
-                _valueToScreen(deferred, element, box, opts, jpath);
-                return deferred;
+        render: function (element, object, jpath, options) {
+            if (typeof jpath === 'object' && !Array.isArray(jpath)) {
+                options = jpath;
+                jpath = null;
             }
-
-            element.getChild(jpath).then(function (element) {
-                _valueToScreen(deferred, element, box, opts, jpath);
-            }, function () {
-                deferred.reject();
-            });
-
-            return deferred;
+            object = DataObject.check(object, true);
+            if (jpath) {
+                return object.getChild(jpath).then(function (child) {
+                    return _render(element, child, options);
+                });
+            } else {
+                return _render(element, object, options);
+            }
         },
         addType: function (name, renderer) {
             functions[name] = renderer;

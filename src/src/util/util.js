@@ -286,16 +286,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
             }
 
             return access;
-        },
-
-        // Deprecated color methods. Moved to src/util/color
-        getDistinctColors: deprecate(Color.getDistinctColors, 'use Color.getDistinctColors'),
-        getNextColorRGB: deprecate(Color.getNextColorRGB, 'use Color.getNextColorRGB'),
-        hsl2rgb: deprecate(Color.hsl2rgb, 'use Color.hsl2rgb'),
-        hueToRgb: deprecate(Color.hue2rgb, 'use Color.hue2rgb'),
-        hexToRgb: deprecate(Color.hex2rgb, 'use Color.hex2rgb'),
-        rgbToHex: deprecate(Color.rgb2hex, 'use Color.rgb2hex'),
-        getColor: deprecate(Color.getColor, 'use Color.getColor')
+        }
 
     };
 
@@ -309,20 +300,16 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
      * @param {Function} method - the deprecated method
      * @param {string} [message] - optional message to log
      */
-    exports.deprecate = deprecate;
-    function deprecate(method, message) {
+    exports.deprecate = function deprecate(method, message) {
         var warned = false;
         return function deprecated() {
             if (!warned) {
-                if (Debug.getDebugLevel() >= Debug.Levels.WARN) {
-                    Debug.warn('Method ' + method.name + ' is deprecated. ' + (message || ''));
-                    console.trace();
-                }
+                Debug.warn('Method ' + method.name + ' is deprecated. ' + (message || ''));
                 warned = true;
             }
             return method.apply(this, arguments);
         }
-    }
+    };
 
     /**
      * Make a constructor's prototype inherit another one, while adding optionally new methods to it. Also sets a `super_`
@@ -402,6 +389,15 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
 
         return reqPathStr;
     };
+
+    // Deprecated color methods. Moved to src/util/color
+    exports.getDistinctColors = exports.deprecate(Color.getDistinctColors, 'use Color.getDistinctColors');
+    exports.getNextColorRGB = exports.deprecate(Color.getNextColorRGB, 'use Color.getNextColorRGB');
+    exports.hsl2rgb = exports.deprecate(Color.hsl2rgb, 'use Color.hsl2rgb');
+    exports.hueToRgb = exports.deprecate(Color.hue2rgb, 'use Color.hue2rgb');
+    exports.hexToRgb = exports.deprecate(Color.hex2rgb, 'use Color.hex2rgb');
+    exports.rgbToHex = exports.deprecate(Color.rgb2hex, 'use Color.rgb2hex');
+    exports.getColor = exports.deprecate(Color.getColor, 'use Color.getColor');
 
     return exports;
 
