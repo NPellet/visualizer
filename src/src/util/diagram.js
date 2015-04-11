@@ -1,6 +1,115 @@
 'use strict';
 
 define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  'modules/modulefactory', 'd3'], function (Util, ui, Debug, _, $,ModuleFactory, d3) {
+
+    function Rectangle() {
+        var fail;
+        if(arguments.length === 3) {
+            this.init1.apply(this, arguments);
+        }
+        else if(arguments.length === 4) {
+            this.init2.apply(this, arguments);
+        }
+        else if(arguments.length === 1 && a instanceof Array) {
+            if(arguments[0].length === 3)
+                this.init1.apply(this,arguments[0]);
+            else if(arguments.length === 4)
+                this.init2.apply(this, arguments[0]);
+            else
+                fail = true;
+        }
+        else {
+            fail = true;
+        }
+        if(fail) {
+            throw new Error('Rectangle construction failed')
+        }
+    }
+
+    Rectangle.prototype.init1 = function(minmin, width, height) {
+        this.minmin = minmin;
+        this.maxmax = {x: this.minmin.x + width, y: this.minmin.y + height};
+        this.minmax = {x: this.minmin.x, y: this.maxmax.y};
+        this.maxmin = {x: this.maxmax.x, y: this.maxmax.y};
+
+        this._init();
+    };
+
+    Rectangle.prototype._init = function() {
+        this.minx = this.minmin.x;
+        this.maxx = this.maxmax.x;
+        this.miny = this.minmin.y;
+        this.maxy = this.maxmax.y;
+
+        this.centerx = (this.minx + this.maxx)/2;
+        this.centery = (this.miny + this.maxy)/2;
+    };
+
+    Rectangle.prototype.init2 = function() {
+        var corners = arguments;
+        var x = _.pluck(corners, 'x');
+        var y = _.pluck(corners, 'y');
+        for(var i=0; i<corners.length; i++) {
+            if(Math.max.apply(null, x) === corners[i].x && Math.max.apply(null, y) === corners[i].y)
+                this.maxmax = corners[i];
+            else if(Math.min.apply(null, x) === corners[i].x && Math.max.apply(null, y) === corners[i].y)
+                this.minmax = corners[i];
+            else if(Math.max.apply(null, x) === corners[i].x && Math.min.apply(null, y) === corners[i].y)
+                this.maxmin = corners[i];
+            else if(Math.min.apply(null, x) === corners[i].x && Math.min.apply(null, y) === corners[i].y)
+                this.minmin = corners[i];
+            else
+                throw new Error('Rectangle initialisation failed');
+        }
+        this._init();
+    };
+
+    Rectangle.prototype.intersection = function(point) {
+        var that = this, points;
+
+        if(point.x !== this.centerx) {
+            var a = (point.y - this.centery)/(point.x -this.centerx);
+            var b = point.y - a * point.x;
+
+            points = [
+                {x: (this.miny-b)/a, y:this.miny},
+                {x: (this.maxy)/a, y:this.maxy},
+                {x: this.minx, y: a*this.minx+b},
+                {x: this.maxx, y: a*this.maxx+b}
+            ];
+
+            points = _.filter(points, function(p) {
+                return that.isInside(p);
+            });
+        }
+
+        else {
+            points = [
+                {x: this.centerx, y:this.miny},
+                {x: this.centerx, y: this.maxy}
+            ]
+        }
+
+
+        var distances = _.map(points, function(p) {
+            return distance(p, point);
+        });
+
+        var idx = distances.indexOf(Math.min.apply(null, distances));
+        if(idx > -1) return points[idx];
+        return null;
+    };
+
+    Rectangle.prototype.isInside = function(point) {
+        return (point.x <= this.maxx && point.x >= this.minx && point.y <= this.maxy && point.y >= this.miny);
+    };
+
+    function distance(a, b) {
+        var dx = a.x- b.x;
+        var dy = a.y- b.y;
+        return Math.sqrt(dx*dx + dy*dy);
+    }
+
     var exports = {};
     var $diagram;
     function getLinks() {
@@ -24,9 +133,6 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
             for(j=0; j<module.vars_out.length ; j++) {
                 var var_out = module.vars_out[j];
                 if(!var_out.name || !var_out.event) continue;
-                if(var_out.event) {
-                    console.log(event);
-                }
                 sources.push({
                     id: DataObject.resurrect(module.id),
                     filter: var_out.filter,
@@ -93,6 +199,7 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
 
     exports.showVariableDiagram = function() {
         Util.loadCss('src/util/diagram.css').then(function() {
+            var type = 'rect'; // Use circ or rect
             var links = getLinks();
             var nodes = getNodes(links);
 
@@ -160,14 +267,26 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
                 .attr("class", function(d) { return "link " + d.type; })
                 .attr("marker-end", function(d) { return "url(#" + d.type + ")"; });
 
-
-            var circle = svg.append("g").selectAll("circle")
-                .data(force.nodes())
-                .enter().append("circle")
-                .attr("r", nodeRadius)
-                //.call(zoom)
-                //.call(drag)
-                .call(force.drag)
+            var node;
+            if(type === 'circ') {
+                node = svg.append("g").selectAll("circle")
+                    .data(force.nodes())
+                    .enter().append("circle")
+                    .attr("r", nodeRadius)
+                    //.call(zoom)
+                    //.call(drag)
+                    .call(force.drag)
+            }
+            else if(type === 'rect') {
+                node = svg.append("g").selectAll("rect")
+                    .data(force.nodes())
+                    .enter().append("rect")
+                    .attr("width", nodeBox.width)
+                    .attr('height', nodeBox.height)
+                    //.call(zoom)
+                    //.call(drag)
+                    .call(force.drag)
+            }
             //.call(drag1);
 
 
@@ -214,7 +333,6 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
                 .html(nodeTextContent);
 
             function zoomed() {
-                console.log('zoomed');
                 svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
             }
 
@@ -234,9 +352,9 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
 // Use elliptical arc path segments to doubly-encode directionality.
             function tick() {
                 path.attr("d", linkLine);
-                circle.attr("transform", transform);
+                node.attr("transform", transformNode);
                 linkText.attr('transform', transformLink);
-                nodeText.attr('transform', transformNode);
+                nodeText.attr('transform', transformNodeText);
             }
 
             function linkArc(d) {
@@ -251,8 +369,11 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
                 return "M" + target.from.x  + "," + target.from.y + "L" + target.to.x + ' ' + target.to.y
             }
 
-            function transform(d) {
-                return "translate(" + d.x + "," + d.y + ")";
+            function transformNode(d) {
+                if(type === 'circ')
+                    return "translate(" + d.x + "," + d.y + ")";
+                else
+                    return "translate(" + (d.x - nodeBox.width/2) + ',' + (d.y - nodeBox.height/2) + ')';
             }
 
             function transformLink(d) {
@@ -260,32 +381,52 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
                 return "translate(" + ((target.from.x + target.to.x)/2 - linkBox.width/2) + ',' + ((target.from.y + target.to.y)/2 - linkBox.height/2) + ')';
             }
 
-            function transformNode(d) {
+            function transformNodeText(d) {
                 return "translate(" + ((d.x + d.x)/2 - nodeBox.width/2) + ',' + ((d.y + d.y)/2 - nodeBox.height/2) + ')';
             }
 
             function getTargetPosition(d) {
-                var dx = d.target.x - d.source.x,
-                    dy = d.target.y - d.source.y,
-                    dr = Math.sqrt(dx * dx + dy * dy);
-                var factor = 1-(nodeRadius / dr);
-                return {
-                    from: {
-                        x: d.target.x - dx*factor,
-                        y: d.target.y - dy*factor
-                    },
-                    to: {
-                        x: d.source.x + dx*factor,
-                        y: d.source.y + dy*factor
+                switch(type) {
+                    case 'circ':
+                        var dx = d.target.x - d.source.x,
+                            dy = d.target.y - d.source.y,
+                            dr = Math.sqrt(dx * dx + dy * dy);
+                        var factor = 1-(nodeRadius / dr);
+                        return {
+                            from: {
+                                x: d.target.x - dx*factor,
+                                y: d.target.y - dy*factor
+                            },
+                            to: {
+                                x: d.source.x + dx*factor,
+                                y: d.source.y + dy*factor
+                            }
+                        };
+                    case 'rect': {
+                        var sourceRect = new Rectangle({
+                            x: d.source.x - nodeBox.width/2,
+                            y: d.source.y - nodeBox.height/2
+                        }, nodeBox.width, nodeBox.height);
+
+                        var targetRect = new Rectangle({
+                            x: d.target.x -nodeBox.width/2,
+                            y: d.target.y - nodeBox.height/2
+                        }, nodeBox.width, nodeBox.height);
+
+                        return {
+                            from: sourceRect.intersection(d.target),
+                            to: targetRect.intersection(d.source)
+                        };
                     }
-                };
+                }
+
             }
 
 
             ui.dialog($diagram, {
                 width: width,
                 height: height,
-                noHeader: true,
+                noHeader: false,
                 noWrap: true
             });
         });
