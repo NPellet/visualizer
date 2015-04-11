@@ -188,11 +188,18 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
     }
 
     function getNodes(links) {
+        var width = 1400, height=900;
         var nodes = {};
         links.forEach(function(link) {
             link.source = nodes[link.source.id] || (nodes[link.source.id] = {info: link.source});
             link.target = nodes[link.target.id] || (nodes[link.target.id] = {info: link.target});
         });
+        var n = Object.keys(nodes).length, i=0;
+        for(var key in nodes) {
+            nodes[key].x = Math.random() * width;
+            nodes[key].y = Math.random() * height;
+            i++;
+        }
         return nodes;
     }
 
