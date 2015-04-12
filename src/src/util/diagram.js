@@ -206,7 +206,7 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
 
     exports.showVariableDiagram = function() {
         Util.loadCss('src/util/diagram.css').then(function() {
-            var type = 'rect'; // Use circ or rect
+            var type = 'circ'; // Use circ or rect
             var links = getLinks();
             var nodes = getNodes(links);
 
@@ -215,8 +215,8 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
                 nodeRadius = 50;
 
             var nodeBox = {
-                width: nodeRadius*1.4,
-                height: nodeRadius*1.4,
+                width: nodeRadius*Math.sqrt(2), // Length of the biggest square in that circle
+                height: nodeRadius*Math.sqrt(2),
                 padding: '2px 8px 2px 8px'
             };
 
