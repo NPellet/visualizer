@@ -216,7 +216,8 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
 
             var nodeBox = {
                 width: nodeRadius*1.4,
-                height: nodeRadius*1.4
+                height: nodeRadius*1.4,
+                padding: '2px 8px 2px 8px'
             };
 
             var linkBox = {
@@ -334,7 +335,9 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
                     display: 'flex',
                     'align-items': 'center',
                     height: '' + nodeBox.height + 'px',
-                    width: '' + nodeBox.width + 'px'
+                    width: '' + nodeBox.width + 'px',
+                    padding: nodeBox.padding,
+                    'box-sizing': 'border-box'
                 })
                 .attr('class', 'node-text')
                 .html(nodeTextContent);
