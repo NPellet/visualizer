@@ -196,6 +196,8 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
         });
         var n = Object.keys(nodes).length, i=0;
         for(var key in nodes) {
+            //nodes[key].x = i*width/n + (Math.random()-0.5) * i/n/10 * width;
+            //nodes[key].y = i*height/n + (Math.random()-0.5) *i/n/10 * height;
             nodes[key].x = Math.random() * width;
             nodes[key].y = Math.random() * height;
             i++;
@@ -432,10 +434,23 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
 
             }
 
+            var ww = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+            var wh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+            var f = 0.94;
+            debugger;
+            var dw, dh; // dialog height and width
+            if(ww/width < wh/height) {
+                dw = f * ww;
+                dh = dw * height/width;
+            }
+            else {
+                dh = f * wh;
+                dw = dh * width/height;
+            }
 
             ui.dialog($diagram, {
-                width: width,
-                height: height,
+                width: dw,
+                height: dh,
                 noHeader: false,
                 noWrap: true
             });
