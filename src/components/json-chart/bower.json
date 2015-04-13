@@ -1,0 +1,28 @@
+{
+  "name": "json-chart",
+  "version": "1.0.0",
+  "description": "JSON Chart validator",
+  "keywords": [
+    "JSON",
+    "chart",
+    "validation"
+  ],
+  "main": [
+    "dist/json-chart.js",
+    "dist/json-chart.min.js"
+  ],
+  "authors": [
+    "Michaël Zasso"
+  ],
+  "homepage": "https://github.com/cheminfo/json-chart",
+  "license": "MIT",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "ignore": [
+    "/*",
+    "!dist/*"
+  ]
+}
