@@ -8,6 +8,7 @@
 * Typerenderer
  * sparkline type renderer 
  * Change the way typerenderer works and update related modules
+ * add toPrecision and toFixed options for number type
 * Util
  * Debug diagram to see relation between modules
 * Module
@@ -15,6 +16,9 @@
  * code_executor: add methods and keep values between executions
  * scatter3d: bug fix with chart format
  * slick_grid: additional option (don't scroll on highlight)
+ * spectra_displayer: add option for line style
+* Components:
+ * install json-chart and remove lib/chart
 
 2.16.0 / 2015-04-01
 ===================
@@ -31,6 +35,7 @@
 
 2.15.3 / 2015-03-25
 ===================
+
 * Grunt
  * Fix jquery.panzoom build
  * Add task: writes a json file with info about the build
@@ -39,6 +44,7 @@
 
 2.15.2 / 2015-03-25
 ===================
+
 * Core
  * Add version of visualizer in context menu
  * Add Utils section in context menu (copy view etc...)
