@@ -327,7 +327,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                 }
             }, 'spectra_displayer');
         },
-        '2.16.1-0', function(view) {
+        '2.16.1-1', function(view) {
             eachModule(view, function(module) {
                 var slickCheck = module.getChildSync([ 'configuration', 'groups', 'group', 0, 'slickCheck', 0 ]);
                 if(slickCheck instanceof Array) {
