@@ -19,7 +19,7 @@ In both cases, the procedure is done using the Grunt script `bump`.
 
 This will most likely be used when the version number needs to be incremented for
 a view migration script.  
-Example: `$ grunt build:prerelease`. "prerelease" can be replaced by any string 
+Example: `$ grunt bump:prerelease`. "prerelease" can be replaced by any string 
 accepted by the [semver](https://www.npmjs.com/package/semver) module for incrementation.  
 "pre"-versions are preferred if no release is done.
 
@@ -27,7 +27,7 @@ This command just updates the numbers in `version.js`. No commit is created.
 
 ### Bump and release
 
-To release a new version of the Visualizer, run a command like `grunt build:patch --release`.  
+To release a new version of the Visualizer, run a command like `grunt bump:patch --release`.  
 This will bump the version number, commit the files with a release message, 
 tag the release in Git, then it will immediately bump the version to the next
 prerelease, commit again and push the changes to GitHub.
