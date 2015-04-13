@@ -7,9 +7,9 @@
  * fix loading of external modules
 * Typerenderer
  * sparkline type renderer 
+ * Change the way typerenderer works and update related modules
 * Util
  * Debug diagram to see relation between modules
- * Change the way typerenderer works and update related modules
 * Module
  * Deprecate controller.sendAction 
  * code_executor: add methods and keep values between executions
