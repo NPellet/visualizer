@@ -326,8 +326,15 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                     });
                 }
             }, 'spectra_displayer');
+        },
+        '2.16.1-0', function(view) {
+            eachModule(view, function(module) {
+                var slickCheck = module.getChildSync([ 'configuration', 'groups', 'group', 0, 'slickCheck', 0 ]);
+                if(slickCheck instanceof Array) {
+                    checkboxAdd(slickCheck, 'highlightScroll');
+                }
+            }, 'slick_grid')
         }
-
 //  Add new migration functions here
 //      'x.y.z', function (view) {
 //          // Do something to the view
@@ -339,6 +346,13 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
         var idx = checkbox.indexOf(name);
         if(idx > -1){
             checkbox.splice(idx, 1);
+        }
+    }
+
+    function checkboxAdd(checkbox, name) {
+        var idx = checkbox.indexOf(name);
+        if(idx === -1){
+            checkbox.push(name);
         }
     }
 
