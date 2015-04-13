@@ -95,7 +95,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
         this.sendActionFromEvent('onSearchDone', 'flagArray', flags);
 
         this.createDataFromEvent('onSearchDone', 'filteredArray', arr);
-        this.sendActionFromEvent('onSearchDone0', 'filteredArray', arr);
+        this.sendActionFromEvent('onSearchDone', 'filteredArray', arr);
         this.createDataFromEvent('onSearchDone', 'countResult', arr.length);
 
     };
