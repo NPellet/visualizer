@@ -47,9 +47,10 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
                                 filterColumns: 'Provides search input for each column',
                                 backToTop: 'Don\'t remember scroll position on new variable',
                                 forgetLastActive: 'Don\'t scroll back to last active row on new variable',
+                                highlightScroll: 'Scroll to highlighted line',
                                 collapseGroup: 'Collapse groups on start'
                             },
-                            default: ['enableCellNavigation', 'rowNumbering', 'forceFitColumns']
+                            default: ['enableCellNavigation', 'rowNumbering', 'forceFitColumns', 'highlightScroll']
                         },
                         colorjpath: {
                             type: 'combo',

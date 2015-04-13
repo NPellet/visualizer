@@ -719,7 +719,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 return val === that._highlighted[0] || (val.indexOf && val.indexOf(that._highlighted[0]) > -1);
             });
             this.lastViewport = this.grid.getViewport();
-            if(idx > -1) {
+            if(idx > -1 && this.module.getConfigurationCheckbox('slickCheck', 'highlightScroll')) {
                 var item = that.slick.data.getItemByIdx(idx);
                 var gridRow = that.slick.data.mapIdsToRows([item[that.idPropertyName]])[0];
                 if(!gridRow) return;
