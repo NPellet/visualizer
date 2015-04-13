@@ -5,12 +5,16 @@
  * version: add isBuild property
  * change how requirejs loads modules
  * fix loading of external modules
+* Typerenderer
+ * sparkline type renderer 
 * Util
  * Debug diagram to see relation between modules
  * Change the way typerenderer works and update related modules
 * Module
  * Deprecate controller.sendAction 
  * code_executor: add methods and keep values between executions
+ * scatter3d: bug fix with chart format
+ * slick_grid: additional option (don't scroll on highlight)
 
 2.16.0 / 2015-04-01
 ===================
