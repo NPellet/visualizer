@@ -386,7 +386,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
         var type = object.getType();
         if (!functions[type]) {
             Debug.warn('No renderer found for type ' + type);
-            element.html(String(value));
+            $(element).html(String(value));
             return Promise.resolve();
         }
 
