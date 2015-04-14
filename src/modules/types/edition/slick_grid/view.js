@@ -38,6 +38,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
     // A simple filter
     var columnFilters = {};
+    var columnFilterFunctions = {};
 
     var uniqueID = 0;
 
@@ -254,14 +255,19 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 this.generateUniqIds();
                 this.addRowAllowed = this.module.getConfigurationCheckbox('slickCheck', 'enableAddRow');
 
+
                 function filter(item) {
+
                     for (var columnId in columnFilters) {
                         if (columnId !== undefined && columnFilters[columnId] !== "") {
                             var idx = that.slick.data.getIdxById(item[that.idPropertyName]);
                             var c = that.grid.getColumns()[that.grid.getColumnIndex(columnId)];
                             var jpath = _.clone(DataObject.resurrect(c.jpath));
                             jpath.unshift(idx);
-                            if (!that.module.data.getChildSync(jpath) || !that.module.data.getChildSync(jpath).get().toString().match(columnFilters[columnId])) {
+                            //if (!that.module.data.getChildSync(jpath) || !that.module.data.getChildSync(jpath).get().toString().match(columnFilters[columnId])) {
+                            //    return false;
+                            //}
+                            if (!that.module.data.getChildSync(jpath) || !columnFilterFunctions[columnId](that.module.data.getChildSync(jpath).get())) {
                                 return false;
                             }
                         }
@@ -517,6 +523,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             var columnId = $(this).data("columnId");
                             if (columnId != null) {
                                 columnFilters[columnId] = $.trim($(this).val());
+                                columnFilterFunctions[columnId] = getColumnFilterFunction(columnFilters[columnId]);
                                 that.slick.data.refresh();
                             }
                         });
@@ -906,6 +913,89 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         this.module.data.traceSync([row]);
         Renderer.render(cellNode, dataContext, colDef.jpath);
     }
+
+    var filters = {};
+    filters.cointains = function (a, search) {
+        return a.toLowerCase().match(search.toLowerCase());
+    };
+
+    filters.gt = function(a, b) {
+        return a > b;
+    };
+
+    filters.lt = function(a, b) {
+        return a < b;
+    };
+
+    filters.interval = function(a, low, high) {
+        return a >= low && a <= high;
+    }
+
+    filters.reg = function (a, reg, modifiers) {
+        var reg = new RegExp(reg, modifiers);
+        return a.match(reg);
+    }
+
+    function getColumnFilterFunction(query) {
+        var match;
+
+        match = query.match(/^"(.*)"$/);
+        if(match) {
+            return function(val) {
+                match = match.toLowerCase();
+                val = val.toString().toLowerCase();
+                return val.match(match[1]);
+            }
+        }
+
+        match = query.match(/^\/(.*)\/(i?)/);
+        if(match) {
+            return function(val) {
+                return val.toString().match(new RegExp(match[1], match[2] || undefined));
+            }
+        }
+
+        match = query.match(/^([<>=]{1,2})([0-9.]+)$/);
+        if(match) {
+            if(match[1] === '<') {
+                return function(val) {
+                    return val < match[2];
+                }
+            }
+            else if(match[1] === '<=' || match[1] === '=<') {
+                return function(val) {
+                    return val <= match[2]
+                }
+            }
+            else if(match[1] === '>') {
+                return function(val) {
+                    return val > match[2];
+                }
+            }
+            else if(match[1] === '>=' || match[1] === '=>') {
+                return function(val) {
+                    return val >= match[2];
+                }
+            }
+            else if(match[1] === '==' || match[1] === '=') {
+                return function(val) {
+                    return val == match[2];
+                }
+            }
+        }
+
+        match = query.match(/^([0-9.]+)\.\.([0-9.]*)$/);
+        if(match) {
+            return function(val) {
+                return val >= match[1] && val <= match[2];
+            }
+        }
+
+        return function(val) {
+            return val.toString().toLowerCase().match(query.toLowerCase());
+        }
+    }
+
 
     var lastHighlight = '';
     return View;
