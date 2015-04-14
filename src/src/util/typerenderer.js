@@ -382,7 +382,8 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
 
     function _render(element, object, options) {
         if(object == undefined) {
-            return element.html('');
+            element.html('');
+            return Promise.resolve();
         }
         var value = object.get();
 
