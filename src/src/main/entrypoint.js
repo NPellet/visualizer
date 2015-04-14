@@ -134,7 +134,7 @@ define([
             ActionManager.viewHasChanged(view);
             checkCustomModules();
         }, function(e) {
-            console.error('View loading problem', e);
+            console.error('View loading problem', e, e.stack);
         });
 
         function doInitScript() {
