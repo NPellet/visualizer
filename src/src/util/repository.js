@@ -72,7 +72,7 @@ define(['jquery', 'src/util/event'], function($, Event) {
 
 			
 
-			for(i in callbacks) {
+			loop1: for(i in callbacks) {
 				var currentCallback = this._callbacks[i];
 
 				if(!currentCallback)
@@ -80,8 +80,13 @@ define(['jquery', 'src/util/event'], function($, Event) {
 				var commonKeys = getCommonKeys(currentCallback[0], sourcekeys);
 
 				if(commonKeys.length > 0 || ((!commonKeys || commonKeys.length == 0) && currentCallback[2])) {
-					
-					currentCallback[1](value, commonKeys);
+                    for(var killerID in this._killers) {
+                        if(this._killers[killerID].indexOf(+i) > -1) {
+                            currentCallback[1](value, commonKeys, killerID);
+                            continue loop1;
+                        }
+                    }
+					currentCallback[1](value, commonKeys, null);
 				}
 			}
 		});
