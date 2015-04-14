@@ -90,8 +90,13 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
 
     functions.picture = {};
     functions.picture.toscreen = function (element, val) {
-        element.html('<img src="' + encodeURI(val) + '" />');
+        element.html('<img src="' + val + '" />');
     };
+    
+    functions.gif = functions.picture;
+    functions.jpeg = functions.picture;
+    functions.jpg = functions.picture;
+    functions.png = functions.picture;
 
     functions.svg = {};
     functions.svg.toscreen = function (element, val) {
@@ -103,11 +108,6 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
         dom.attr('height', '100%');
         element.html(dom);
     };
-
-    functions.gif = functions.picture;
-    functions.jpeg = functions.picture;
-    functions.jpg = functions.picture;
-    functions.png = functions.picture;
 
     functions.doi = {};
     functions.doi.toscreen = function (element, value) {
