@@ -911,7 +911,10 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
     function typeRenderer(cellNode, row, dataContext, colDef) {
         if(dataContext.__group) return;
         this.module.data.traceSync([row]);
-        Renderer.render(cellNode, dataContext, colDef.jpath);
+        if(cellNode) {
+            Renderer.render(cellNode, dataContext, colDef.jpath);
+        }
+
     }
 
     var filters = {};
