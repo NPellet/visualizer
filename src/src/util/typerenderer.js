@@ -381,6 +381,9 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
     functions.regex = functions.regexp;
 
     function _render(element, object, options) {
+        if(object == undefined) {
+            element.html('');
+        }
         var value = object.get();
 
         var type = object.getType();
