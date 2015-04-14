@@ -383,7 +383,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
     function _render(element, object, options) {
         var value = object.get();
 
-        var typee = object.getType();
+        var type = object.getType();
         if (!functions[type]) {
             Debug.warn('No renderer found for type ' + type);
             element.html(String(value));
