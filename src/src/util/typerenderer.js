@@ -383,10 +383,10 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
     function _render(element, object, options) {
         var value = object.get();
 
-        var type = object.getType();
+        var typee = object.getType();
         if (!functions[type]) {
             Debug.warn('No renderer found for type ' + type);
-            $(element).html(String(value));
+            element.html(String(value));
             return Promise.resolve();
         }
 
@@ -398,7 +398,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
         }
 
         return Promise.resolve(init).then(function () {
-            return functions[type].toscreen($(element), value, object, options);
+            return functions[type].toscreen(element, value, object, options);
         });
     }
 
@@ -408,6 +408,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
                 options = jpath;
                 jpath = null;
             }
+            element = $(element);
             object = DataObject.check(object, true);
             if (jpath) {
                 return object.getChild(jpath).then(function (child) {
