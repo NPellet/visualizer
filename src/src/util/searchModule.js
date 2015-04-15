@@ -3,7 +3,6 @@ define(['src/util/util', 'modules/modulefactory', 'src/main/grid','select2'], fu
 
         Util.loadCss('components/select2/dist/css/select2.css').then(function() {
             var modules = ModuleFactory.getModulesById();
-
             var keys = Object.keys(modules);
 
             var modulesArr = new Array(keys.length);
@@ -12,7 +11,8 @@ define(['src/util/util', 'modules/modulefactory', 'src/main/grid','select2'], fu
                 modulesArr[i].id = keys[i];
                 modulesArr[i].text = keys[i];
             }
-            var $select2 = '<div><select>';
+            var $select2 = '<div><div style="height:50px"></div> <select>';
+            var selectWidth = 500;
 
             var ww = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
             var wh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
@@ -22,13 +22,11 @@ define(['src/util/util', 'modules/modulefactory', 'src/main/grid','select2'], fu
 
             $select2 = $select2.css({
                 position: 'fixed',
-                display: 'flex',
                 'justify-content': 'center',
-                'align-items': 'center',
                 top:0,
-                left: 0,
+                left: Math.floor(ww/2-selectWidth/2),
                 width: ww,
-                height:wh,
+                height:wh-50,
                 padding:0,
                 margin:0,
                 backgroundColor: 'rgba(255,255,255,0.3'
@@ -36,7 +34,7 @@ define(['src/util/util', 'modules/modulefactory', 'src/main/grid','select2'], fu
                 .appendTo('body')
                 .find('select')
                 .addClass('js-example-basic-single').css({
-                    width: 500,
+                    width: selectWidth,
                     zIndex: 5000
                 });
 
