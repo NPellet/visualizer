@@ -434,8 +434,8 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
 
             }
 
-            var ww = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
-            var wh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+            var ww = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+            var wh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
             var f = 0.94;
             debugger;
             var dw, dh; // dialog height and width
