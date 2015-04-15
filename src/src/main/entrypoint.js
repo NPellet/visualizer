@@ -18,7 +18,8 @@ define([
     'src/util/browser',
     'src/util/util',
     'src/util/urldata',
-    'src/util/ui'
+    'src/util/ui',
+    'src/util/shortcuts'
 ], function (
     $,
     Header,

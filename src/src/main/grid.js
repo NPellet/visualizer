@@ -793,6 +793,7 @@ define([
             return Object.keys(definition.layers);
         },
         addModule: addModule,
+        newModule: newModule,
         removeModule: removeModule,
         addModuleFromJSON: addModuleFromJSON,
         checkDimensions: checkDimensions,
