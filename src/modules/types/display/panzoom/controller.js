@@ -47,6 +47,11 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
             label: 'The image was clicked',
             refVariable: ['pixel', 'allpixel'],
             refAction: ['pixel']
+        },
+        hover: {
+            label: 'A pixel was hovered',
+            refVariable: ['pixel', 'allpixel'],
+            refAction: ['pixel']
         }
     };
 
@@ -160,6 +165,14 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 
     controller.prototype.allClickedPixels = function(allClickedPixels) {
         this.createDataFromEvent('click', 'allpixel', allClickedPixels);
+    };
+
+    controller.prototype.hoverPixel = function(hoverPixel) {
+        this.createDataFromEvent('hover', 'pixel', hoverPixel);
+    };
+
+    controller.prototype.allHoverPixels = function(allHoverPixels) {
+        this.createDataFromEvent('hover', 'allpixel', allHoverPixels);
     };
 
     return controller;

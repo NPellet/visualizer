@@ -281,12 +281,26 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                 var allClickedPixels = {};
                 var clickedPixel = {};
                 getPixels(e, allClickedPixels, clickedPixel);
-                console.log(clickedPixel);
                 if(!_.isEmpty(clickedPixel)) {
                     that.module.controller.clickedPixel(clickedPixel);
                 }
                 if(!_.isEmpty(allClickedPixels)) {
                     that.module.controller.allClickedPixels(allClickedPixels);
+                }
+            });
+
+            that.dom.off('mousemove.panzoom');
+            that.dom.on('mousemove.panzoom', function(e) {
+                var allHoverPixels = {};
+                var hoverPixel = {};
+                getPixels(e, allHoverPixels, hoverPixel);
+                if(!_.isEmpty(hoverPixel) && !_.isEqual(DataObject.resurrect(that.lastHoverPixel), hoverPixel)) {
+                    that.module.controller.hoverPixel(hoverPixel);
+                    that.lastHoverPixel = hoverPixel;
+                }
+                if(!_.isEmpty(allHoverPixels) && !_.isEqual(DataObject.resurrect(that.lastAllHoverPixels), allHoverPixels)) {
+                    that.module.controller.allHoverPixels(allHoverPixels);
+                    that.lastAllHoverPixels = allHoverPixels;
                 }
             });
 
