@@ -111,7 +111,8 @@ module.exports = function (grunt) {
                             './highlight.js/build/highlight.pack.js',
                             './openchemlib/dist/*.js',
                             './jquery.panzoom/dist/*.js',
-                            './jquery-mousewheel/*.js'
+                            './jquery-mousewheel/*.js',
+                            './select2/dist/**'
                         ],
 
                         dest: './build/components/'
