@@ -216,6 +216,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
                     quality: 'medium'
                 });
                 viewer.addListener('viewerReady', function () {
+                    var id = Util.getNextUniqueId();
                     if (type === 'pdb') {
                         var ligand = mol.select({rnames: ['RVP', 'SAH']});
                         viewer.ballsAndSticks('ligand-' + id, ligand);
