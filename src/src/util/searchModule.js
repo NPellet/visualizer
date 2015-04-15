@@ -24,12 +24,15 @@ define(['src/util/util', 'modules/modulefactory', 'src/main/grid','select2'], fu
                 position: 'fixed',
                 'justify-content': 'center',
                 top:0,
-                left: Math.floor(ww/2-selectWidth/2),
+                left: 0,
                 width: ww,
-                height:wh-50,
-                padding:0,
+                height:wh,
+                paddingLeft: Math.floor(ww/2-selectWidth/2),
+                paddingTop: 50,
                 margin:0,
-                backgroundColor: 'rgba(255,255,255,0.3'
+                'box-sizing': 'border-box',
+                opacity: 0.7,
+                backgroundColor: '#262b33'
             })
                 .appendTo('body')
                 .find('select')
