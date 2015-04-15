@@ -211,8 +211,8 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
                     mol = pv.io.sdf(val);
                 }
                 var viewer = pv.Viewer(div.get(0), {
-                    width: 'auto',
-                    height: 'auto',
+                    width: element.width(),
+                    height: Math.max(250, element.height()),
                     quality: 'medium'
                 });
                 viewer.addListener('viewerReady', function () {
