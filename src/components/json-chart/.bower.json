@@ -32,7 +32,6 @@
     "commit": "cec6f5fc9a3b05e7100635075139ea128f0411d0"
   },
   "_source": "git://github.com/cheminfo/json-chart.git",
-  "_target": "~1.0.0",
-  "_originalSource": "json-chart",
-  "_direct": true
+  "_target": "1.0.0",
+  "_originalSource": "json-chart"
 }

@@ -12,7 +12,8 @@ define([
     'forms/form',
     'src/main/variables',
     'src/util/debug',
-    'version'
+    'version',
+    'select2'
 ], function ($,
              ui,
              Util,

@@ -69,7 +69,8 @@
     "ui-contextmenu": "1.8.1",
     "underscore": "1.8.2",
     "uri.js": "1.14.1",
-    "x2js": "1.1.7"
+    "x2js": "1.1.7",
+    "select2": "4.0.0-rc.2"
   },
   "private": true
 }

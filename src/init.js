@@ -16,6 +16,7 @@ requirejs.config({
 	waitSeconds: 0,
 	paths: {
 		//mathjax:            'components/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML&amp;delayStartupUntil=configured',
+		select2:            'components/select2/dist/js/select2.full',
 		ace:                'components/ace/src',
 		d3:                 'components/d3/d3.min',
 		fancytree:          'components/fancytree/dist/jquery.fancytree-all',
@@ -81,6 +82,12 @@ requirejs.config({
             exports: 'Papa'
         },
         'jquery-cookie': 'jquery',
+		'select2': {
+			deps: ['jquery'],
+			init: function() {
+				debugger;
+			}
+		},
 		'lib/threejs/TrackballControls': ['threejs'],
 		jqgrid: ['jquery', 'components/jqgrid_edit/js/i18n/grid.locale-en'],
 		'libs/jsmol/js/JSmolApplet': ['libs/jsmol/JSmol.min.nojq'],

@@ -258,23 +258,34 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                 }
             });
 
-            that.dom.off('click.panzoom');
-            that.dom.on('click.panzoom', function (e) {
-                var allClickedPixels = {};
+            function getPixels(e, allPixels, pixel) {
                 for (var i = 0; i < that.images.length; i++) {
                     var rect = that.images[i].$img[0].getBoundingClientRect();
-                    var clickedPixel = {
+                    var p = {
                         x: Math.floor((e.pageX - rect.left) * that.images[i].width / rect.width),
                         y: Math.floor((e.pageY - rect.top) * that.images[i].height / rect.height)
                     };
 
-                    if (clickedPixel.x >= 0 && clickedPixel.x < that.images[i].width && clickedPixel.y >= 0 && clickedPixel.y < that.images[i].height) {
-                        if (i === 0)
-                            that.module.controller.clickedPixel(clickedPixel);
-                        allClickedPixels[that.images[i].name] = clickedPixel;
+                    if (p.x >= 0 && p.x < that.images[i].width && p.y >= 0 && p.y < that.images[i].height) {
+                        if (i === 0) {
+                            pixel.x = p.x;
+                            pixel.y = p.y;
+                        }
+
+                        allPixels[that.images[i].name] = p;
                     }
                 }
-                if (Object.keys(allClickedPixels).length > 0) {
+            }
+            that.dom.off('click.panzoom');
+            that.dom.on('click.panzoom', function (e) {
+                var allClickedPixels = {};
+                var clickedPixel = {};
+                getPixels(e, allClickedPixels, clickedPixel);
+                console.log(clickedPixel);
+                if(!_.isEmpty(clickedPixel)) {
+                    that.module.controller.clickedPixel(clickedPixel);
+                }
+                if(!_.isEmpty(allClickedPixels)) {
                     that.module.controller.allClickedPixels(allClickedPixels);
                 }
             });
