@@ -16,15 +16,6 @@ define(['jquery', 'modules/module', 'src/util/debug', 'src/util/util'], function
             $.getJSON(require.toUrl(folder + '/folder.json')).then(function (folderContent) {
                 result.name = folderContent.name;
                 result.modules = folderContent.modules;
-                if(result.modules.length > 0) {
-                    for(var j=0; j<result.modules.length; j++) {
-                        var id;
-                        if(id = Util.moduleIdFromUrl(result.modules[j].url)) {
-                            result.modules[j].id = id;
-                        }
-                        result.modules[j].url = result.modules[j].url.replace(/\/$/, '') + '/';
-                    }
-                }
                 if (folderContent.folders && Array.isArray(folderContent.folders)) {
                     var prom = [];
                     for (var i = 0; i < folderContent.folders.length; i++) {
@@ -69,6 +60,7 @@ define(['jquery', 'modules/module', 'src/util/debug', 'src/util/util'], function
             }
         },
         setModules: function (list) {
+            var that = this;
             var prom = [];
             if (Array.isArray(list)) {
                 throw new Error('Module configuration error : list of folders must be defined in a "folders" array.');
@@ -103,7 +95,15 @@ define(['jquery', 'modules/module', 'src/util/debug', 'src/util/util'], function
             else {
                 allModules = list;
             }
-            return Promise.all(prom);
+            return Promise.all(prom).then(function() {
+                that.traverseModules(function(module) {
+                    var id;
+                    if(id = Util.moduleIdFromUrl(module.url)) {
+                        module.id = id;
+                    }
+                    module.url = module.url.replace(/\/$/, '') + '/';
+                })
+            });
 
         },
         newModule: function (definition) {
