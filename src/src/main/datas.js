@@ -309,7 +309,9 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
                     if (this.hasOwnProperty('type') && this.hasOwnProperty('value')) {
                         return Promise.resolve(this.value);
                     } else if (this.hasOwnProperty('type') && this.hasOwnProperty('url')) {
-                        return this.fetch(true);
+                        return this.fetch(true).then(function (self) {
+                            return self.get();
+                        });
                     } else {
                         return Promise.resolve(this);
                     }
