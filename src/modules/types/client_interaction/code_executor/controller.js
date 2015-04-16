@@ -6,6 +6,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         CodeEditor.call(this);
         this.currentScript = null;
         this.outputObject = {};
+        this.reloaded = true;
     }
 
     Util.inherits(Controller, CodeEditor);
@@ -150,15 +151,17 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         this.neededUrls = urls;
         this.neededAliases = aliases.join(', ');
         this.resolveReady();
+        this.reloaded = true;
     };
 
     Controller.prototype.initExecutor = function () {
         var promise;
         var newScript = this.module.view._code;
-        if (this.currentScript == newScript) {
+        if (!this.reloaded && this.currentScript == newScript) {
             promise = Promise.resolve(this._executor || this._loadingExecutor);
         } else {
             var self = this;
+            this.reloaded = false;
             var prom = new Promise(function (resolve, reject) {
                 require(self.neededUrls, function () {
                     var libs = new Array(self.neededUrls.length);
