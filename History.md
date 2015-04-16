@@ -1,11 +1,13 @@
-2.17.0 / HEAD
-=============
+2.17.0 / 2015-04-16
+===================
 
 * Core
  * version: add isBuild property
  * change how requirejs loads modules
  * fix loading of external modules
+ * add module searchbox (CTRL + /)
 * Typerenderer
+ * various fixes with new structure
  * sparkline type renderer 
  * Change the way typerenderer works and update related modules
  * add toPrecision and toFixed options for number type
@@ -14,11 +16,14 @@
 * Module
  * Deprecate controller.sendAction 
  * code_executor: add methods and keep values between executions
+ * code_executor: recompile function when module is reloaded
+ * parallel_coordinates: default color to black if jpath is not set
  * scatter3d: bug fix with chart format
  * slick_grid: additional option (don't scroll on highlight)
  * spectra_displayer: add option for line style
 * Components:
  * install json-chart and remove lib/chart
+ * install select2
 
 2.16.0 / 2015-04-01
 ===================
