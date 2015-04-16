@@ -112,7 +112,9 @@ module.exports = function (grunt) {
                             './openchemlib/dist/*.js',
                             './jquery.panzoom/dist/*.js',
                             './jquery-mousewheel/*.js',
-                            './select2/dist/**'
+                            './select2/dist/**',
+                            './jszip/dist/**',
+                            './file-saver.js/*.js'
                         ],
 
                         dest: './build/components/'
