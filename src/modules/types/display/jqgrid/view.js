@@ -406,7 +406,12 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                 var jpath2 = jpath.split('.');
                 jpath2 = jpath2.pop();
 
-                module.getConfiguration('colsjPaths').push({
+                var cols = module.getConfiguration('colsjPaths');
+                for(var i=0; i<cols.length; i++) {
+                    if(jpath === cols[i].jpath) return;
+                }
+
+                cols.push({
                     name: jpath2,
                     editable: false,
                     jpath: jpath,
