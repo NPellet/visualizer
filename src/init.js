@@ -16,6 +16,8 @@ requirejs.config({
 	waitSeconds: 0,
 	paths: {
 		//mathjax:            'components/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML&amp;delayStartupUntil=configured',
+		jszip:              'components/jszip/dist/jszip.min',
+		'file-saver':    'components/file-saver.js/FileSaver',
 		select2:            'components/select2/dist/js/select2.full',
 		ace:                'components/ace/src',
 		d3:                 'components/d3/d3.min',
