@@ -244,6 +244,11 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
         element.html(value.replace(/^(.*)$/, '<a href="$1">⤵</a>'));
     };
 
+    functions.openLink = {};
+    functions.openLink.toscreen = function($element, value) {
+        $element.html(value.replace(/^(.*)$/, '<a href="$1" target="_blank"><i class="fa fa-external-link"></i></a>'));
+    };
+
     functions.boolean = {};
     functions.boolean.toscreen = function (element, value) {
         if (value)
