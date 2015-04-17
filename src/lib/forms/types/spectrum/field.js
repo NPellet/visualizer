@@ -13,7 +13,6 @@ define([require, '../../field', 'src/util/util', 'components/farbtastic/src/farb
         this.domExpander.append('<div><input type="text" /></div>');
         $(this.domExpander).children('div').css('float', 'left').addClass('form-spectrum');
         $(this.domExpander).find('input').spectrum({
-            color: '#ffffff',
             preferredFormat: 'rgb',
             cancelText: '',
             showInitial: true,
