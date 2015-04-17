@@ -1,3 +1,16 @@
+2.17.1 / 2015-04-17
+===================
+
+* Core
+ * version: fix check of Intl crashing on Safari
+ * data: get(true) should resolve with value when data is fetched from url
+* Forms
+ * fix spectrum color init
+* Module
+ * jqgrid: on action in don't add the column if a column with same jpath exists
+* Components
+ * Add jszip and file-save.js librairies
+
 2.17.0 / 2015-04-16
 ===================
 
