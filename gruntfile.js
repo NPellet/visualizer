@@ -114,7 +114,8 @@ module.exports = function (grunt) {
                             './jquery-mousewheel/*.js',
                             './select2/dist/**',
                             './jszip/dist/**',
-                            './file-saver.js/*.js'
+                            './file-saver.js/*.js',
+                            './json-chart/dist/*'
                         ],
 
                         dest: './build/components/'
