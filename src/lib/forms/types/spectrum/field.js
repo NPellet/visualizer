@@ -12,12 +12,12 @@ define([require, '../../field', 'src/util/util', 'components/farbtastic/src/farb
         this.domExpander = $('<div></div>');
         this.domExpander.append('<div><input type="text" /></div>');
         $(this.domExpander).children('div').css('float', 'left').addClass('form-spectrum');
-        $(this.domExpander).find('input').spectrum({
-            preferredFormat: 'rgb',
+        this.$spectrum = $(self.domExpander).find('input').spectrum({
+            color: felement && felement.value ? 'rgba(' + felement.value.join(',') + ')' : undefined,
+            preferredFormat: 'rgba',
             cancelText: '',
             showInitial: true,
             showInput: true,
-            flat: true,
             clickoutFiresChange: false,
             showAlpha: true,
             showPalette: true,
@@ -112,6 +112,7 @@ define([require, '../../field', 'src/util/util', 'components/farbtastic/src/farb
                 self.getElementExpanded().value = felement.value = [rgb['r'], rgb['g'], rgb['b'], rgb['a']];
                 // self.form.hideExpander();
                 felement.toggleSelect();
+                self.$spectrum.spectrum('hide');
             }
         });
 
@@ -129,7 +130,8 @@ define([require, '../../field', 'src/util/util', 'components/farbtastic/src/farb
         felement = fieldElement;
         this._showExpander(fieldElement);
         var value = fieldElement.value || [0, 0, 0, 1];
-        this.domExpander.find('.form-spectrum').spectrum('set', 'rgba(' + value.join(',') + ')');
+        //this.domExpander.find('.form-spectrum').spectrum('set', 'rgba(' + value.join(',') + ')');
+        this.$spectrum.next().click();
     };
 
     return FieldConstructor;
