@@ -24,8 +24,8 @@ define(['lib/semver/semver'], function (semver) {
     var buildTime = null;
     if (BUILD_TIME) {
         var date = new Date(BUILD_TIME);
-        if (Intl) {
-            buildTime = new Intl.DateTimeFormat('en-GB', {
+        if (window.Intl) {
+            buildTime = new window.Intl.DateTimeFormat('en-GB', {
                 year: 'numeric',
                 month: 'numeric',
                 day: 'numeric',
