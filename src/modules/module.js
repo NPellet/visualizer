@@ -1418,7 +1418,8 @@ define([
 				if( this.view.blank[ rels[ i ] ] ) {
 					this.view.blank[ rels[ i ] ].call( this.view, variableName );
 				} else {
-					Debug.info('Module ' + this.controller.moduleInformation.name + ': no blank method defined for rel ' + rels[i]);
+					Util.warnOnce('missing-blank-' + this.controller.moduleInformation.name + '_' + rels[i],
+						'Module ' + this.controller.moduleInformation.name + ': no blank method defined for rel ' + rels[i]);
 				}
 			}
 		},
