@@ -315,6 +315,43 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
         }
     };
 
+    /*
+     TODO remove when Set API is supported in more browsers
+     */
+    var warnOnceMap, warnOnceCheck;
+    if (typeof Set === 'undefined') {
+        warnOnceMap = {};
+        warnOnceCheck = function (name) {
+            if (warnOnceMap[name]) {
+                return true;
+            } else {
+                warnOnceMap[name] = true;
+                return false;
+            }
+        }
+    } else {
+        warnOnceMap = new Set();
+        warnOnceCheck = function (name) {
+            if (warnOnceMap.has(name)) {
+                return true;
+            } else {
+                warnOnceMap.add(name);
+                return false;
+            }
+        }
+    }
+
+    /**
+     * Prints a warning message only once per id
+     * @param id
+     * @param message
+     */
+    exports.warnOnce = function warnOnce(id, message) {
+        if (!warnOnceCheck(id)) {
+            Debug.warn(message);
+        }
+    };
+
     /**
      * Make a constructor's prototype inherit another one, while adding optionally new methods to it. Also sets a `super_`
      * property to access the super constructor
