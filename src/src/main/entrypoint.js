@@ -383,23 +383,6 @@ define([
                             icon: 'hostname'
                         },
                         groups: {
-                            aliases: {
-                                options: {
-                                    type: 'table',
-                                    multiple: true,
-                                    title: 'Define Global Aliases'
-                                },
-                                fields: {
-                                    path: {
-                                        type: 'text',
-                                        title: 'Url or Path'
-                                    },
-                                    alias: {
-                                        type: 'text',
-                                        title: 'Alias'
-                                    }
-                                }
-                            },
                             tablevars: {
                                 options: {
                                     type: 'table',
@@ -457,6 +440,23 @@ define([
                                     id: {
                                         type: 'text',
                                         title: 'ID'
+                                    }
+                                }
+                            },
+                            aliases: {
+                                options: {
+                                    type: 'table',
+                                    multiple: true,
+                                    title: 'Define Global Aliases'
+                                },
+                                fields: {
+                                    path: {
+                                        type: 'text',
+                                        title: 'Url or Path'
+                                    },
+                                    alias: {
+                                        type: 'text',
+                                        title: 'Alias'
                                     }
                                 }
                             }
