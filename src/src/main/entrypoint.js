@@ -957,7 +957,15 @@ define([
 
                 visualizerDiv.html('<table id="viewport" cellpadding="0" cellspacing="0">\n    <tr>\n        <td id="ci-center">\n            <div id="modules-grid">\n                <div id="ci-dialog"></div>\n            </div>\n        </td>\n    </tr>\n</table>');
 
-                var configJson = urls['config'] || visualizerDiv.attr('data-ci-config') || visualizerDiv.attr('config') || require.toUrl('usr/config/default.json');
+                var configJson = urls['config'] || visualizerDiv.attr('data-ci-config');
+                if (!configJson) {
+                    if (visualizerDiv.attr('config')) {
+                        Debug.warn('config as attribute of ci-visualizer is deprecated. Use data-ci-config instead.');
+                        configJson = visualizerDiv.attr('config');
+                    } else {
+                        configJson = require.toUrl('usr/config/default.json')
+                    }
+                }
 
                 $.getJSON(configJson, {}, function (cfgJson) {
 
@@ -969,8 +977,8 @@ define([
                         });
                     }
 
-                    if (!debugSet && cfgJson.debugLevel) {
-                        Debug.setDebugLevel(cfgJson.debugLevel);
+                    if (!debugSet) {
+                        Debug.setDebugLevel(cfgJson.debugLevel || Debug.Levels.ERROR);
                     }
 
                     if (cfgJson.lockView || cfgJson.viewLock) {
@@ -993,7 +1001,7 @@ define([
                     API.setAllFilters(cfgJson.filters || []);
 
                 }).fail(function (a, b) {
-                    console.error('Error loading the config : ' + b);
+                    Debug.error('Error loading the config : ' + b);
                 }).always(function () {
                     require(['usr/datastructures/filelist'], function () {
                         Context.init(document.getElementById('modules-grid'));
@@ -1020,16 +1028,29 @@ define([
 
                         Versioning.setURLType(type);
                         var $visualizer = $('#ci-visualizer');
+
+                        var viewURL = urls['viewURL'] || $visualizer.attr('data-ci-view');
+                        if (!viewURL && $visualizer.attr('viewURL')) {
+                            Debug.warn('viewURL as attribute of ci-visualizer is deprecated. Use data-ci-view instead.');
+                            viewURL = $visualizer.attr('viewURL');
+                        }
+
+                        var dataURL = urls['dataURL'] || $visualizer.attr('data-ci-data');
+                        if (!dataURL && $visualizer.attr('dataURL')) {
+                            Debug.warn('dataURL as attribute of ci-visualizer is deprecated. Use data-ci-data instead.');
+                            dataURL = $visualizer.attr('dataURL');
+                        }
+
                         var viewInfo = {
                             view: {
                                 urls: urls['views'],
                                 branch: urls['viewBranch'],
-                                url: urls['viewURL'] || $visualizer.attr('data-ci-view') || $visualizer.attr('viewURL')
+                                url: viewURL
                             },
                             data: {
                                 urls: urls['results'],
                                 branch: urls['resultBranch'],
-                                url: urls['dataURL'] || $visualizer.attr('data-ci-data') || $visualizer.attr('dataURL')
+                                url: dataURL
                             }
                         };
                         window.history.replaceState({type: 'viewchange', value: viewInfo}, '');
