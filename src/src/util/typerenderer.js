@@ -57,6 +57,11 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
         element.html(val);
     };
 
+    functions.html = {};
+    functions.html.toscreen = function (element, val) {
+        element.html(String(val));
+    };
+
     functions.date = {};
     functions.date.toscreen = function (element, val) {
         try {
@@ -395,7 +400,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
 
         var type = object.getType();
         if (!functions[type]) {
-            Debug.warn('No renderer found for type ' + type);
+            Util.warnOnce('no-typerenderer-' + type, 'No renderer found for type ' + type);
             element.html(String(value));
             return Promise.resolve();
         }
