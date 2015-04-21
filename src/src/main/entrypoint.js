@@ -12,7 +12,6 @@ define([
     'modules/modulefactory',
     'src/util/viewmigration',
     'src/util/actionmanager',
-    'src/util/cron',
     'src/util/pouchtovar',
     'src/util/debug',
     'src/util/browser',
@@ -32,7 +31,6 @@ define([
     ModuleFactory,
     Migration,
     ActionManager,
-    Cron,
     PouchDBUtil,
     Debug,
     browser,
@@ -698,12 +696,6 @@ define([
                         init_script: view.init_script,
                         custom_filters: view.custom_filters,
                         actionfiles: ActionManager.getFilesForm(),
-                        webcron: [{
-                            groups: {
-                                general: [view.crons || []]
-                            }
-                        }],
-                        script_cron: view.script_crons,
                         couch_replication: view.couch_replication,
                         requirejs: view.requirejs
                     }
@@ -718,16 +710,12 @@ define([
                 div.dialog('close');
 
                 var data,
-                    allcrons,
                     value = form.getValue();
 
                 /* Entry variables */
                 data = new DataArray(value.sections.cfg[0].groups.tablevars[0], true);
-                allcrons = new DataObject(value.sections.webcron[0].groups.general[0], true);
-
 
                 view.variables = data;
-                view.crons = allcrons;
                 view.aliases = new DataArray(value.sections.cfg[0].groups.aliases[0], true);
                 view.couch_replication = value.sections.couch_replication;
                 view.init_script = value.sections.init_script;
@@ -738,7 +726,6 @@ define([
                 data = new DataArray(value.sections.cfg[0].groups.pouchvars[0]);
                 view.pouchvariables = data;
 
-
                 _check(true);
 
                 /* Handle actions scripts */
@@ -746,15 +733,10 @@ define([
                 ActionManager.setScriptsFromForm(data);
                 /* */
 
-
                 /* Handle actions files */
                 data = value.sections.actionfiles;
                 ActionManager.setFilesFromForm(data);
                 /* */
-
-                if (typeof CronManager !== 'undefined') {
-                    CronManager.setCronsFromForm(data, view);
-                }
 
             });
 
