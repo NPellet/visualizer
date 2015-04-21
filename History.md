@@ -1,3 +1,9 @@
+2.17.5 / 2015-04-21
+===================
+
+* entrypoint: remove cron-related dead code
+* typerenderer: add html renderer
+
 2.17.4 / 2015-04-21
 ===================
 
