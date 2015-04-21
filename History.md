@@ -1,3 +1,15 @@
+2.17.3 / 2015-04-21
+===================
+
+* Core
+ * deprecate non-standard HTML attributes on ci-visualizer
+ * remove unused tabs from global preferences (#498)
+* Util
+ * add warnOnce method
+* Module
+ * rich_text: fix in-place variable modification (#497)
+ * single_value: fix html rendering of default value (#500)
+
 2.17.2 / 2015-04-17
 ===================
 
