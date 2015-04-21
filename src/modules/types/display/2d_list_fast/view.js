@@ -48,6 +48,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
                 var val = moduleValue.get();
 
                 this.dataReady = new Array(val.length);
+                this.dataDivs = new Array(val.length);
 
                 this.list = val;
 
@@ -62,7 +63,9 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
                 }
 
                 for (var i = 0; i < val.length; i++) {
-                    this.dataReady[i] = this.renderElement(this.list.getChildSync([i]), dimensions, colorJpath, valJpath);
+                    var data = this.renderElement(this.list.getChildSync([i]), dimensions, colorJpath, valJpath);
+                    this.dataReady[i] = data[0];
+                    this.dataDivs[i] = data[1];
                 }
 
                 this.updateVisibility();
@@ -80,11 +83,11 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
 
             var that = this;
 
-            Promise.all(this.dataReady).then(function (dataDivs) {
+            Promise.all(this.dataReady).then(function () {
                 var value = that.showList;
                 var i = 0, ii = value.length;
                 for (; i < ii; i++) {
-                    value[i] ? dataDivs[i].show() : dataDivs[i].hide();
+                    value[i] ? that.dataDivs[i].show() : that.dataDivs[i].hide();
                 }
             });
         },
@@ -106,7 +109,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
                 }
             }, false, this.module.getId());
 
-            return Renderer.render(td, element, valJpath);
+            return [Renderer.render(td, element, valJpath), td];
         }
 
     });
