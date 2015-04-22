@@ -76,7 +76,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
     functions.color = {};
     functions.color.toscreen = function (element, val) {
         var result =  '<div style="background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==); width:100%; height:100%">' +
-            '<div style="background-color: ' + val + '; width: 100%; height:100%; padding:0; margin:0"></div></div>';
+            '<div style="background-color: ' + val + '; width: 100%; height:100%; padding:0; margin:0">&nbsp;</div></div>';
         element.html(result);
     };
 
@@ -349,7 +349,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
 
                 for (var i = 0; i < length; i++) {
                     var element = value[i];
-                    var span = $('<td>').css({
+                    var span = $('<td>&nbsp;</td>').css({
                         "width": (100 * element.size / totalSize) + "%",
                         "border": "none"
                     });
