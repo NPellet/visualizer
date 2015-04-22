@@ -8,7 +8,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
-        name: 'Two dimensional list (fast)',
+        name: 'Two dimensional list',
         description: 'Display an array of data in 2 dimensions. Parts of the data can be selectively shown or hidden.',
         author: 'Michaël Zasso',
         date: '05.05.2014',

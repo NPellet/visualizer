@@ -8,12 +8,13 @@ define(['modules/default/defaultcontroller'], function (Default) {
     $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
-        name: 'Two dimensional list',
+        name: 'Two dimensional list (old)',
         description: 'Display an array of data in 2 dimensions using a table',
         author: 'Norman Pellet',
         date: '24.12.2013',
         license: 'MIT',
-        cssClass: '2d_list'
+        cssClass: '2d_list',
+        hidden: true
     };
 
     Controller.prototype.references = {
