@@ -391,6 +391,9 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
 
     functions.regex = functions.regexp;
 
+    //TODO replace with a Map when more browsers are supported
+    var typeInit = {};
+
     function _render(element, object, options) {
         if(object == undefined) {
             element.html('');
@@ -406,13 +409,18 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
         }
 
         options = $.extend(options, object._options);
-        var init;
-        if (!functions[type].ready && functions[type].init) {
-            init = functions[type].init();
-            functions[type].ready = true;
+
+        var init = typeInit[type];
+        if (!init) {
+            if (typeof functions[type].init === 'function') {
+                init = Promise.resolve(functions[type].init());
+            } else {
+                init = Promise.resolve();
+            }
+            typeInit[type] = init;
         }
 
-        return Promise.resolve(init).then(function () {
+        return init.then(function () {
             return functions[type].toscreen(element, value, object, options);
         });
     }
