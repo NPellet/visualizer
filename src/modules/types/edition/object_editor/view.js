@@ -85,7 +85,7 @@ define(['modules/default/defaultview', 'src/util/util', 'components/jsoneditor/j
                 }
                 this.changeInputData(value);
                 var valNative = this.inputData.resurrect();
-                this.editor.set(valNative);
+                this.editor.set(JSON.parse(JSON.stringify(valNative))); //TODO more investigation (see issue #513)
                 if (this.expand && this.editor.expandAll)
                     this.editor.expandAll();
                 this.module.controller.sendValue(valNative, 'onObjectChange');
