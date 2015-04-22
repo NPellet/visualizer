@@ -73,7 +73,7 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
 
             points = [
                 {x: (this.miny-b)/a, y:this.miny},
-                {x: (this.maxy)/a, y:this.maxy},
+                {x: (this.maxy-b)/a, y:this.maxy},
                 {x: this.minx, y: a*this.minx+b},
                 {x: this.maxx, y: a*this.maxx+b}
             ];
@@ -208,19 +208,30 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
 
     exports.showVariableDiagram = function() {
         Util.loadCss('src/util/diagram.css').then(function() {
-            var type = 'circ'; // Use circ or rect
+            var type = 'rect'; // Use circ or rect
             var links = getLinks();
             var nodes = getNodes(links);
 
             var width = 1400,
                 height = 900,
-                nodeRadius = 50;
+                nodeRadius = 50,
+                nodeBox;
 
-            var nodeBox = {
-                width: nodeRadius*Math.sqrt(2), // Length of the biggest square in that circle
-                height: nodeRadius*Math.sqrt(2),
-                padding: '2px 8px 2px 8px'
-            };
+            if(type === 'circ') {
+                nodeBox = {
+                    width: nodeRadius*Math.sqrt(2), // Length of the biggest square in that circle
+                    height: nodeRadius*Math.sqrt(2),
+                    padding: '2px 8px 2px 8px'
+                };
+            }
+
+            else {
+                nodeBox = {
+                    width: 140,
+                    height: 90,
+                    padding: '2px 8px 2px 8px'
+                };
+            }
 
             var linkBox = {
                 width: 150,
