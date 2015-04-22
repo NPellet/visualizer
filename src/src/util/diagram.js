@@ -138,6 +138,7 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
                     filter: var_out.filter,
                     name: var_out.name,
                     event: var_out.event,
+                    jpath: var_out.jpath,
                     module: modules[i]
                 });
             }
@@ -150,6 +151,7 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
 
             if(source) {
                 for(j=0; j<source.length; j++) {
+                    console.log(source[j].jpath);
                     links.push({
                         source: {
                             module: source[j].module,
@@ -162,7 +164,8 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
                         type: 'normal',
                         filter: source[j].filter || 'no filter',
                         event: source[j].event || 'no event',
-                        name: source[j].name || 'no name'
+                        name: source[j].name || 'no name',
+                        jpath: source[j].jpath || []
                     })
                 }
             }
@@ -368,7 +371,7 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
             }
 
             function linkTextContent(d) {
-                var template = 'Event: <%= event %><br/> Name: <%= name %>';
+                var template = 'Event: <%= event %><br/>Name: <%= name %><br/>jpath: <%= jpath %>';
                 var compiled = _.template(template);
                 return compiled(DataObject.resurrect(d));
             }
@@ -448,7 +451,6 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
             var ww = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
             var wh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
             var f = 0.94;
-            debugger;
             var dw, dh; // dialog height and width
             if(ww/width < wh/height) {
                 dw = f * ww;
