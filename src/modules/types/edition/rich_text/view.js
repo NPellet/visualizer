@@ -46,7 +46,8 @@ define([
             CKEDITOR.disableAutoInline = true;
             var options = {
                 extraPlugins: 'mathjax,font,sourcedialog,codesnippet',
-                removeButtons: ''
+                removeButtons: '',
+                language: 'en'
             };
             if (this.readOnly) {
                 options.readOnly = true;
