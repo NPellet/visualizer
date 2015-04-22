@@ -1669,7 +1669,12 @@ define(['modules/default/defaultview', 'src/main/datas', 'src/util/datatraversin
 
       function getFromJpath(value, jp, fallback) {
         var val = value.getChildSync(jp);
-        if(val === undefined) return fallback;
+        if(val === undefined) {
+          if(fallback === DEFAULT_POINT_COLOR) {
+            debugger;
+          }
+          return fallback;
+        }
         return validate(val.get());
       }
       for (var i = 0; i < value.length; i++) {
@@ -1739,7 +1744,7 @@ define(['modules/default/defaultview', 'src/main/datas', 'src/util/datatraversin
       var self = this;
       self._data[name] = self._data[name] || [];
       for(var i=0; i<self._data.x.length; i++) {
-        if(!self._data[name][i]) self._data[name][i] = defaultValue;
+        if(self._data[name][i] === undefined) self._data[name][i] = defaultValue;
       }
     },
 

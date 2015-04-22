@@ -22,7 +22,12 @@ define([
 
     Util.inherits(CouchDBManager, Default, {
         initImpl: function () {
-            this.ok = this.loggedIn = false;
+
+            this.ok = this.loggedIn = this.ready = false;
+            if(!this.options.beforeUrl) this.ready = true;
+            else {
+                this.beforeUrl();
+            }
             this.id = Util.getNextUniqueId();
             this.options.loginMethods = this.options.loginMethods || ['couchdb'];
             if (this.options.url) {
@@ -34,6 +39,24 @@ define([
             $.ui.fancytree.debugLevel = 0;
             this.checkDatabase();
         },
+
+        beforeUrl: function() {
+            var that = this;
+            var url = this.options.beforeUrl;
+            $.ajax({
+                type: 'GET',
+                url: url,
+                success: function() {
+                    Debug.info('CouchDB: beforeUrl success');
+                    that.ready = true;
+                },
+                error: function(err) {
+                    Debug.info('CouchDB: beforeUrl error', err);
+                    that.ready = true;
+                }
+            })
+        },
+
         showError: function (e, type) {
             var content;
             var color = 'red';
@@ -101,7 +124,7 @@ define([
             this.loadFlavor();
         },
         _onClick: function () {
-            if (this.ok) {
+            if (this.ok && this.ready) {
                 this.setStyleOpen(this._open);
                 if (this._open) {
                     this.createMenu();
@@ -111,9 +134,12 @@ define([
                     this.close();
                 }
             }
-            else {
+            else if(!this.ok) {
                 this.checkDatabase();
                 console.error('CouchDB header : unreachable database.');
+            }
+            else {
+                ui.showNotification('Couchdb button not ready');
             }
         },
         createMenu: function () {
