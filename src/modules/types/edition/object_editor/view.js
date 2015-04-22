@@ -52,7 +52,13 @@ define(['modules/default/defaultview', 'src/util/util', 'components/jsoneditor/j
             this.changeInputData(DataObject.check(JSON.parse(this.module.getConfiguration('storedObject')), true));
 
             this.editor = new jsoneditor(document.getElementById(this._id), {mode: mode, change: function () {
-                that.module.controller.sendValue(that.editor.get(), 'onObjectChange');
+                var result;
+                try {
+                    result = that.editor.get();
+                } catch (e) {
+                    result = 'Invalid JSON: ' + e.message;
+                }
+                that.module.controller.sendValue(result, 'onObjectChange');
             }, module: this.module});
 
             var sendButton = this.dom.find('.menu').prepend('<button class="send" style="width: 45px; float: left; background: none; font-size: small;">\n    <span style="font-size: 10pt;">Send</span>\n</button>').find('button.send');
