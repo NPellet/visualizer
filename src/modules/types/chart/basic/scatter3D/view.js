@@ -1669,7 +1669,7 @@ define(['modules/default/defaultview', 'src/main/datas', 'src/util/datatraversin
 
       function getFromJpath(value, jp, fallback) {
         var val = value.getChildSync(jp);
-        if(!val) return fallback;
+        if(val === undefined) return fallback;
         return validate(val.get());
       }
       for (var i = 0; i < value.length; i++) {
