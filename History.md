@@ -1,6 +1,7 @@
-2.17.7 / 2015-04-23
+2.17.8 / 2015-04-23
 ===================
 
+ * v2.17.7 removed due to a bug with typerenderer
  * typerenderer: ensure values are fetched before calling the renderer
 
 2.17.6 / 2015-04-23
