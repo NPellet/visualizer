@@ -279,8 +279,8 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
                 .attr("viewBox", "0 -5 10 10")
                 .attr("refX", 10)
                 .attr("refY", 0)
-                .attr("markerWidth", 6)
-                .attr("markerHeight", 6)
+                .attr("markerWidth", 15)
+                .attr("markerHeight", 15)
                 .attr("orient", "auto")
                 .append("path")
                 .attr("d", "M0,-5L10,0L0,5");
@@ -374,7 +374,7 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
                 var compiled = _.template(template);
                 return compiled(DataObject.resurrect(d));
             }
-// Use elliptical arc path segments to doubly-encode directionality.
+
             function tick() {
                 path.attr("d", linkLine);
                 node.attr("transform", transformNode);
