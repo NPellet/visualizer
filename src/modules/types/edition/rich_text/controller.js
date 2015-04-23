@@ -85,6 +85,12 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             title: 'Looks like a postit',
                             options: {yes: 'Yes'},
                             'default': []
+                        },
+                        html: {
+                            type: 'checkbox',
+                            title: 'Render plain html',
+                            options: {yes: 'Yes'},
+                            'default': ['yes']
                         }
                     }
                 }
@@ -97,7 +103,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
         modifyInVariable: ['groups', 'group', 0, 'modifyInVariable', 0],
         autoHeight: ['groups', 'group', 0, 'autoHeight', 0],
         bgColor: ['groups', 'group', 0, 'bgColor', 0],
-        postit: ['groups', 'group', 0, 'postit', 0]
+        postit: ['groups', 'group', 0, 'postit', 0],
+        plainHtml: ['groups', 'group', 0, 'html', 0]
     };
 
     return Controller;

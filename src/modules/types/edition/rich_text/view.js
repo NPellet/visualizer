@@ -14,6 +14,9 @@ define([
     }
 
     View.prototype = $.extend(true, {}, Default, {
+        init: function () {
+            this.plainHtml = this.module.getConfigurationCheckbox('plainHtml', 'yes');
+        },
         inDom: function () {
             this.initEditor();
             this.resolveReady();
@@ -35,37 +38,48 @@ define([
             var self = this;
             var initText = this.module.definition.richtext || '';
             this.readOnly = !this.module.getConfigurationCheckbox('editable', 'isEditable');
-            this.dom = $(' <div id="' + this._id + '" contenteditable="true">');
-            this.dom.html(initText);
-            this.module.getDomContent().html(this.dom);
-            this._setCss();
-            this.module.controller.valueChanged(initText);
-            if (CKEDITOR.instances[this._id]) {
-                CKEDITOR.instances[this._id].destroy();
-            }
-            CKEDITOR.disableAutoInline = true;
-            var options = {
-                extraPlugins: 'mathjax,font,sourcedialog,codesnippet',
-                removeButtons: '',
-                language: 'en'
-            };
-            if (this.readOnly) {
-                options.readOnly = true;
-                options.removePlugins = 'toolbar';
-                options.allowedContent = true;
-            }
-            this.instance = CKEDITOR.inline(this._id, options);
-            this.instance.on('change', function () {
-                self.module.controller.valueChanged(self.instance.getData());
-                if (self.module.getConfigurationCheckbox('autoHeight', 'yes')) {
-                    self.module.getDomWrapper().height(self.getContentHeight() + 50);
-                    Grid.moduleResize(self.module);
+            if (this.readOnly && this.plainHtml) {
+                this.dom = $('<div>');
+                this.dom.html(initText);
+                this.module.getDomContent().html(this.dom);
+                this._setCss();
+            } else {
+                this.dom = $('<div id="' + this._id + '" contenteditable="true">');
+                this.dom.html(initText);
+                this.module.getDomContent().html(this.dom);
+                this._setCss();
+                this.module.controller.valueChanged(initText);
+                if (CKEDITOR.instances[this._id]) {
+                    CKEDITOR.instances[this._id].destroy();
                 }
+                CKEDITOR.disableAutoInline = true;
+                var options = {
+                    extraPlugins: 'mathjax,font,sourcedialog,codesnippet',
+                    removeButtons: '',
+                    language: 'en'
+                };
+                if (this.readOnly) {
+                    options.readOnly = true;
+                    options.removePlugins = 'toolbar';
+                    options.allowedContent = true;
+                }
+                this.instance = CKEDITOR.inline(this._id, options);
+                this.instance.on('change', function () {
+                    self.module.controller.valueChanged(self.instance.getData());
+                    if (self.module.getConfigurationCheckbox('autoHeight', 'yes')) {
+                        self.module.getDomWrapper().height(self.getContentHeight() + 50);
+                        Grid.moduleResize(self.module);
+                    }
 
-            });
+                });
+            }
         },
         updateEditor: function (html) {
-            this.instance.setData(html);
+            if (this.plainHtml) {
+                this.dom.html(html);
+            } else {
+                this.instance.setData(html);
+            }
         },
         getContentHeight: function () {
             var height = 0;
