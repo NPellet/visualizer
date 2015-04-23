@@ -31,3 +31,10 @@ To release a new version of the Visualizer, run a command like `grunt bump:patch
 This will bump the version number, commit the files with a release message, 
 tag the release in Git, then it will immediately bump the version to the next
 prerelease, commit again and push the changes to GitHub.
+
+## Update History.md
+
+When a new release is done, the important changes should be added to History.md
+
+The following command helps to have a preformatted list of all commit messages since a given tag:  
+`git log v2.17.5..HEAD --pretty=" * %s" | cat`

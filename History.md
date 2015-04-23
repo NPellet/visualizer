@@ -1,3 +1,21 @@
+2.17.6 / 2015-04-23
+===================
+
+* Util
+ * diagram: bigger arrows
+ * diagram: show jpath in link if present
+ * diagram: style changes
+ * typerenderer: hack to force height on empty divs with background color
+ * typerenderer: correctly wait for init to finish
+* Module
+ * 2d_list: hide 2d_list from module list
+ * object_editor: ensure that no DataObject is sent to the editing library
+ * object_editor: if input is invalid, send a string describing the error instead of silently failing
+ * rich_text: force english language in CKEDITOR
+ * rich_text: add option to force plain HTML rendering
+ * scatter3d: fix _completeData
+ * leaflet: fix viewport output
+
 2.17.5 / 2015-04-21
 ===================
 
