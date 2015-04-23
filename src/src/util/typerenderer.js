@@ -400,7 +400,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
             return Promise.resolve();
         }
 
-        return object.get(true).then(function (value) {
+        return Promise.resolve(object.get(true)).then(function (value) {
             var type = object.getType();
             if (!functions[type]) {
                 Util.warnOnce('no-typerenderer-' + type, 'No renderer found for type ' + type);
