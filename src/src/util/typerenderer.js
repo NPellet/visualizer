@@ -399,29 +399,30 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
             element.html('');
             return Promise.resolve();
         }
-        var value = object.get();
 
-        var type = object.getType();
-        if (!functions[type]) {
-            Util.warnOnce('no-typerenderer-' + type, 'No renderer found for type ' + type);
-            element.html(String(value));
-            return Promise.resolve();
-        }
-
-        options = $.extend(options, object._options);
-
-        var init = typeInit[type];
-        if (!init) {
-            if (typeof functions[type].init === 'function') {
-                init = Promise.resolve(functions[type].init());
-            } else {
-                init = Promise.resolve();
+        return object.get(true).then(function (value) {
+            var type = object.getType();
+            if (!functions[type]) {
+                Util.warnOnce('no-typerenderer-' + type, 'No renderer found for type ' + type);
+                element.html(String(value));
+                return;
             }
-            typeInit[type] = init;
-        }
 
-        return init.then(function () {
-            return functions[type].toscreen(element, value, object, options);
+            options = $.extend(options, object._options);
+
+            var init = typeInit[type];
+            if (!init) {
+                if (typeof functions[type].init === 'function') {
+                    init = Promise.resolve(functions[type].init());
+                } else {
+                    init = Promise.resolve();
+                }
+                typeInit[type] = init;
+            }
+
+            return init.then(function () {
+                return functions[type].toscreen(element, value, object, options);
+            });
         });
     }
 
