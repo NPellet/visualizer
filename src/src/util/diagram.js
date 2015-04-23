@@ -133,12 +133,14 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
             for(j=0; j<module.vars_out.length ; j++) {
                 var var_out = module.vars_out[j];
                 if(!var_out.name || !var_out.event) continue;
+                debugger;
                 sources.push({
                     id: DataObject.resurrect(module.id),
                     filter: var_out.filter,
                     name: var_out.name,
                     event: var_out.event,
                     jpath: var_out.jpath,
+                    rel: var_out.rel,
                     module: modules[i]
                 });
             }
@@ -165,7 +167,9 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
                         filter: source[j].filter || 'no filter',
                         event: source[j].event || 'no event',
                         name: source[j].name || 'no name',
-                        jpath: source[j].jpath || []
+                        jpath: source[j].jpath || [],
+                        rel_out: source[j].rel,
+                        rel_in: targets[j].rel
                     })
                 }
             }
@@ -363,14 +367,14 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
 
             function nodeTextContent(d) {
                 var res = [];
-                res.push(d.info.module.controller ? d.info.module.controller.moduleInformation.name : 'unknown');
+                res.push((d.info.module.controller ? d.info.module.controller.moduleInformation.name : 'unknown') + '<br/>');
                 res.push(d.info.module.definition.title);
 
                 return res.join('<br/>');
             }
 
             function linkTextContent(d) {
-                var template = 'Event:&nbsp;<%= event %><br/>Name:&nbsp;<%= name %><br/><% if(jpath.length > 0) { %> jpath:&nbsp;<% print("[" + jpath.join(",") + "]"); %> <% } %>';
+                var template = 'Event:&nbsp;<%= event %><br/>\nName:&nbsp;<%= name %><br/>\n<!--<% if(rel_out) { %> Ref out:&nbsp;<%= rel_out %><br/><% } %>-->\n<!--<% if(rel_in) { %> Ref in:&nbsp;<%= rel_in %><br/><% } %>-->\n<% if(jpath.length > 0) { %> <br/>jpath:&nbsp;<% print("[" + jpath.join(",") + "]"); %> <% } %>';
                 var compiled = _.template(template);
                 return compiled(DataObject.resurrect(d));
             }
