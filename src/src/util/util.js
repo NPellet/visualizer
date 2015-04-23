@@ -289,7 +289,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
     var uniqueid = 0;
     /**
      * Returns a unique id.
-     * @param {boolean} absolute
+     * @param {boolean} [absolute]
      * @returns {string}
      */
     exports.getNextUniqueId = function getNextUniqueId(absolute) {
