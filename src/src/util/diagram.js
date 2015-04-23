@@ -324,7 +324,7 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
                 .attr("height", linkBox.height);
 
             linkText
-                .append("xhtml:body")
+                .append("xhtml:div")
                 .append('div')
                 .style({
                     display: 'flex',
@@ -345,7 +345,7 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
                     height: nodeBox.height
                 });
 
-            nodeText.append('xhtml:body')
+            nodeText.append('xhtml:div')
                 .append('div')
                 .style({
                     display: 'flex',
