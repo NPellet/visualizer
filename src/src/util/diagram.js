@@ -349,7 +349,6 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
                 .append('div')
                 .style({
                     display: 'flex',
-                    'align-items': 'center',
                     height: '' + nodeBox.height + 'px',
                     width: '' + nodeBox.width + 'px',
                     padding: nodeBox.padding,
@@ -371,7 +370,7 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
             }
 
             function linkTextContent(d) {
-                var template = 'Event: <%= event %><br/>Name: <%= name %><br/>jpath: <%= jpath %>';
+                var template = 'Event:&nbsp;<%= event %><br/>Name:&nbsp;<%= name %><br/><% if(jpath.length > 0) { %> jpath:&nbsp;<% print("[" + jpath.join(",") + "]"); %> <% } %>';
                 var compiled = _.template(template);
                 return compiled(DataObject.resurrect(d));
             }
