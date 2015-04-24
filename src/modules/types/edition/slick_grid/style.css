@@ -356,19 +356,8 @@ classes should alter those!
 
 .slick-cell a.recycle-bin {
     cursor: pointer;
-    color: black;
-    border: 1px solid #AEAEAE;
-    border-radius: 20px;
-    font-size: 20px;
-    font-weight: bold;
-    display: inline-block;
-    line-height: 0px;
     padding: 6px 3px 11px 3px;
     margin-left: 3px;
-}
-
-.recycle-bin:before {
-    content: "×";
 }
 
 .rowHelp {

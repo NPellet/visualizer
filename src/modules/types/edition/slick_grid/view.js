@@ -897,7 +897,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
     }
 
     function binFormatter() {
-        return '<div style="width:100%; height: 100%; display: table-cell"><a class="recycle-bin"></a></div>';
+        return '<div style="width:100%; height: 100%; display: table-cell"><a class="recycle-bin"><i class="fa fa-remove fa-2"></i></a></div>';
     }
 
     function requiredFieldValidator(value) {
