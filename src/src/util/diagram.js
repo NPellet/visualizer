@@ -133,7 +133,6 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
             for(j=0; j<module.vars_out.length ; j++) {
                 var var_out = module.vars_out[j];
                 if(!var_out.name || !var_out.event) continue;
-                debugger;
                 sources.push({
                     id: DataObject.resurrect(module.id),
                     filter: var_out.filter,
