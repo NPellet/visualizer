@@ -99,6 +99,14 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                         filterRow: {
                             type: 'jscode',
                             title: 'Filter'
+                        },
+                        highlightLine: {
+                            type: 'checkbox',
+                            title: 'Highlight on hover',
+                            options: {
+                                'Yes': 'Yes'
+                            },
+                            default: ['Yes']
                         }
                     }
                 },
@@ -174,7 +182,8 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         nbLines: ['groups', 'group', 0, 'nblines', 0],
         toggle: ['groups', 'group', 0, 'toggle', 0],
         colorjPath: ['groups', 'group', 0, 'colorjpath', 0],
-        filterRow: ['groups', 'group', 0, 'filterRow', 0]
+        filterRow: ['groups', 'group', 0, 'filterRow', 0],
+        highlightLine: ['groups', 'group', 0, 'highlightLine', 0]
     };
 
     Controller.prototype.lineHover = function (elements, row) {

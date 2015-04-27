@@ -27,7 +27,9 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
             this.currentPage = 1; // we remember the last selected page
 
             this.dom.on('mouseover', 'tr.jqgrow', function () {
-
+                if(self.module.getConfigurationCheckbox('highlightLine', 'Yes')) {
+                    $(this).addClass('ci-highlight');
+                }
                 if (this !== lastTr) {
                     self.module.controller.lineHover(self.elements, $(this).attr('id').replace(self.uniqId, ''));
                 }
@@ -35,7 +37,9 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                 lastTr = this;
 
             }).on('mouseout', 'tr.jqgrow', function () {
-
+                if(self.module.getConfigurationCheckbox('highlightLine', 'Yes')) {
+                    $(this).removeClass('ci-highlight');
+                }
                 if (this === lastTr) {
 
                     self.module.controller.lineOut(self.elements, $(this).attr('id').replace(self.uniqId, ''));
