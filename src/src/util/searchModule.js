@@ -8,8 +8,7 @@ define(['src/util/util', 'modules/modulefactory', 'src/main/grid','select2'], fu
             var modulesArr = new Array(keys.length);
             for(var i=0; i<keys.length; i++) {
                 modulesArr[i] = modules[keys[i]];
-                modulesArr[i].id = keys[i];
-                modulesArr[i].text = keys[i];
+                modulesArr[i].text = keys[i] + ' ' + modulesArr[i].moduleName;
             }
             var $select2 = '<div><div style="height:50px"></div> <select>';
             var selectWidth = 500;
@@ -41,9 +40,15 @@ define(['src/util/util', 'modules/modulefactory', 'src/main/grid','select2'], fu
                     zIndex: 5000
                 });
 
+            function outputTemplate (module) {
+                return module.moduleName;
+            }
+
             $select2.select2({
                 placeholder: "Select a module",
-                data: modulesArr
+                data: modulesArr,
+                templateResult: outputTemplate
+
             }).select2('open');
 
             var selecting;
@@ -62,7 +67,7 @@ define(['src/util/util', 'modules/modulefactory', 'src/main/grid','select2'], fu
                     $select2.select2('destroy');
                     $select2.parent().remove();
                 }
-            })
+            });
         });
     };
 });
