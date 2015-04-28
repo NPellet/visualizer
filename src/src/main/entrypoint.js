@@ -450,7 +450,7 @@ define([
                                 fields: {
                                     path: {
                                         type: 'text',
-                                        title: 'Url or Path'
+                                        title: 'Url or Path (omit .js extension)'
                                     },
                                     alias: {
                                         type: 'text',
