@@ -149,6 +149,7 @@ if (!Float.isNaN (jvxlData.pointSize)) J.jvxl.data.JvxlCoder.addAttrib (attribs,
  else if (jvxlData.diameter != 0) J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  diameter", "" + jvxlData.diameter);
 if (!jvxlData.allowVolumeRender) J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  allowVolumeRender", "false");
 if (jvxlData.jvxlPlane == null || vertexDataOnly) {
+if (jvxlData.fixedLattice != null && !vertexDataOnly) J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  fixedLattice", "" + jvxlData.fixedLattice);
 if (jvxlData.isContoured) {
 J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  contoured", "true");
 J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  colorMapped", "true");
@@ -189,7 +190,8 @@ if (jvxlData.jvxlPlane != null) J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  c
 J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  nContours", "" + jvxlData.contourValues.length);
 J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  contourValues", JU.Escape.eAF (jvxlData.contourValuesUsed == null ? jvxlData.contourValues : jvxlData.contourValuesUsed));
 J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  contourColors", jvxlData.contourColors);
-}}if (jvxlData.insideOut) J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  insideOut", "true");
+}if (jvxlData.thisContour > 0) J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  thisContour", "" + jvxlData.thisContour);
+}if (jvxlData.insideOut) J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  insideOut", "true");
 if (jvxlData.vertexDataOnly) J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  note", "vertex/face data only");
  else if (jvxlData.isXLowToHigh) J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  note", "progressive JVXL+ -- X values read from low(0) to high(" + (jvxlData.nPointsX - 1) + ")");
 J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  xyzMin", JU.Escape.eP (jvxlData.boundingBox[0]));

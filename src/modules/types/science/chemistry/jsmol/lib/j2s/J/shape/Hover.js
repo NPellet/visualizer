@@ -14,11 +14,11 @@ Clazz.defineMethod (c$, "initShape",
 function () {
 Clazz.superCall (this, J.shape.Hover, "initShape", []);
 this.isHover = true;
-var font3d = this.gdata.getFont3DFSS ("SansSerif", "Plain", 12);
+var font3d = this.vwr.gdata.getFont3DFSS ("SansSerif", "Plain", 12);
 var bgcolix = JU.C.getColixS ("#FFFFC3");
 var colix = 4;
-this.currentObject = this.hoverText = JM.Text.newLabel (this.gdata, font3d, null, colix, bgcolix, 1, 0, null);
-this.hoverText.setAdjustForWindow (true);
+this.currentObject = this.hoverText = JM.Text.newLabel (this.vwr, font3d, null, colix, bgcolix, 1, 0, null);
+this.hoverText.adjustForWindow = true;
 });
 Clazz.overrideMethod (c$, "setProperty", 
 function (propertyName, value, bsSelected) {
@@ -37,7 +37,7 @@ return;
 }if ("atomLabel" === propertyName) {
 var text = value;
 if (text != null && text.length == 0) text = null;
-var count = this.vwr.getAtomCount ();
+var count = this.vwr.ms.ac;
 if (this.atomFormats == null || this.atomFormats.length < count) this.atomFormats =  new Array (count);
 for (var i = bsSelected.nextSetBit (0); i >= 0; i = bsSelected.nextSetBit (i + 1)) this.atomFormats[i] = text;
 

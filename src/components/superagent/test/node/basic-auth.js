@@ -3,12 +3,15 @@ var EventEmitter = require('events').EventEmitter
   , request = require('../../')
   , express = require('express')
   , assert = require('assert')
-  , app = express();
+  , app = express()
+  , basicAuth = require('basic-auth-connect');
 
-app.use(express.basicAuth('tobi', 'learnboost'));
-
-app.get('/', function(req, res){
+app.get('/', basicAuth('tobi', 'learnboost'), function(req, res){
   res.end('you win!');
+});
+
+app.get('/again', basicAuth('tobi', ''), function(req, res){
+  res.end('you win again!');
 });
 
 app.listen(3010);
@@ -40,8 +43,8 @@ describe('Basic auth', function(){
   describe('req.auth(user + ":" + pass)', function(){
     it('should set authorization', function(done){
       request
-      .get('http://localhost:3010')
-      .auth('tobi:learnboost')
+      .get('http://localhost:3010/again')
+      .auth('tobi')
       .end(function(res){
         res.status.should.eql(200);
         done();

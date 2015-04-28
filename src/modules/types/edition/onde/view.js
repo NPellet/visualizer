@@ -83,11 +83,15 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
         renderForm: function () {
             var schema = this.module.controller.getSchema();
             this.form.render(schema, this.inputVal, {});
+            if(this.module.getConfigurationCheckbox('hasButton', 'onload')) {
+                this.exportForm();
+            }
         },
         exportForm: function () {
             var data = this.form.getData();
             this.inputVal = data.data;
             if (!data.errorCount) {
+                this._data = data.data;
                 this.module.controller.onSubmit(data.data);
             }
         }

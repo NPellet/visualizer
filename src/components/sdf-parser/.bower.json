@@ -1,7 +1,13 @@
 {
   "name": "sdf-parser",
+  "version": "1.0.0",
   "main": [
-    "dist/sdf-parser.js"
+    "dist/sdf-parser.js",
+    "dist/sdf-parser.min.js"
+  ],
+  "homepage": "https://github.com/cheminfo/sdf-parser",
+  "authors": [
+    "Michaël Zasso"
   ],
   "description": "SDF Parser",
   "moduleType": [
@@ -9,20 +15,25 @@
     "globals",
     "node"
   ],
-  "keywords": [],
+  "keywords": [
+    "sdf",
+    "parser",
+    "molfile",
+    "v2000",
+    "mdl"
+  ],
   "license": "MIT",
   "ignore": [
-    "src/*",
-    "test/*"
+    "/*",
+    "!dist/*"
   ],
-  "homepage": "https://github.com/cheminfo/sdf-parser",
-  "_release": "5bb7c123b5",
+  "_release": "1.0.0",
   "_resolution": {
-    "type": "branch",
-    "branch": "master",
-    "commit": "5bb7c123b5f4c1aa84ee95920a3aa74a43c0eaa0"
+    "type": "version",
+    "tag": "v1.0.0",
+    "commit": "8940a223dc2256a43e9cc8d7a7495a37e8e8c220"
   },
   "_source": "git://github.com/cheminfo/sdf-parser.git",
-  "_target": "*",
-  "_originalSource": "cheminfo/sdf-parser"
+  "_target": "1.0.0",
+  "_originalSource": "sdf-parser"
 }

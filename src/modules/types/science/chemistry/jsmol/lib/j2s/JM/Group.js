@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JM");
-Clazz.load (["java.lang.Short", "JV.JC"], "JM.Group", ["java.util.Hashtable", "JU.BS", "$.Quat", "J.c.STR", "JU.BSUtil", "$.Escape", "$.Logger"], function () {
+Clazz.load (["java.lang.Short", "java.util.Hashtable", "JV.JC"], "JM.Group", ["JU.BS", "$.Quat", "J.c.STR", "JU.BSUtil", "$.Escape", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.groupIndex = 0;
 this.group1 = '\0';
@@ -9,20 +9,11 @@ this.leadAtomIndex = -1;
 this.lastAtomIndex = 0;
 this.seqcode = 0;
 this.groupID = 0;
-this.$isProtein = false;
 this.selectedIndex = 0;
 this.shapeVisibilityFlags = 0;
 this.bsAdded = null;
 Clazz.instantialize (this, arguments);
 }, JM, "Group");
-Clazz.defineMethod (c$, "getGroupIndex", 
-function () {
-return this.groupIndex;
-});
-Clazz.defineMethod (c$, "setGroupIndex", 
-function (groupIndex) {
-this.groupIndex = groupIndex;
-}, "~N");
 Clazz.makeConstructor (c$, 
 function () {
 });
@@ -30,17 +21,14 @@ Clazz.defineMethod (c$, "setGroup",
 function (chain, group3, seqcode, firstAtomIndex, lastAtomIndex) {
 this.chain = chain;
 this.seqcode = seqcode;
-if (group3 == null) group3 = "";
-this.groupID = JV.JC.getGroupIdFor (group3);
-this.$isProtein = (this.groupID >= 1 && this.groupID < 24);
 this.firstAtomIndex = firstAtomIndex;
 this.lastAtomIndex = lastAtomIndex;
+if (group3 != null && group3.length > 0) this.setGroupID (group3);
 return this;
 }, "JM.Chain,~S,~N,~N,~N");
-Clazz.defineMethod (c$, "setModelSet", 
-function (modelSet) {
-this.chain.model.ms = modelSet;
-}, "JM.ModelSet");
+Clazz.defineMethod (c$, "setGroupID", 
+function (group3) {
+}, "~S");
 Clazz.defineMethod (c$, "setShapeVisibility", 
 function (visFlag, isVisible) {
 if (isVisible) {
@@ -50,23 +38,11 @@ this.shapeVisibilityFlags &= ~visFlag;
 }}, "~N,~B");
 Clazz.defineMethod (c$, "getGroup3", 
 function () {
-return JV.JC.group3Names[this.groupID];
+return (this.groupID < 1 ? "" : JM.Group.group3Names[this.groupID]);
 });
 Clazz.defineMethod (c$, "getGroup1", 
 function () {
-return (this.groupID < JV.JC.predefinedGroup1Names.length ? JV.JC.predefinedGroup1Names[this.groupID] : this.group1.charCodeAt (0) > 1 ? this.group1 : this.group1.charCodeAt (0) == 1 ? '?' : (this.group1 = this.getGroup1b ()));
-});
-Clazz.defineMethod (c$, "getGroup1b", 
-function () {
 return '?';
-});
-Clazz.defineMethod (c$, "getGroupID", 
-function () {
-return this.groupID;
-});
-Clazz.defineMethod (c$, "getChainID", 
-function () {
-return this.chain.chainID;
 });
 Clazz.defineMethod (c$, "getBioPolymerLength", 
 function () {
@@ -102,11 +78,11 @@ return -1;
 }, "J.c.STR,~N");
 Clazz.defineMethod (c$, "isProtein", 
 function () {
-return this.$isProtein;
+return false;
 });
 Clazz.defineMethod (c$, "isNucleic", 
 function () {
-return (this.groupID >= 24 && this.groupID < 42);
+return false;
 });
 Clazz.defineMethod (c$, "isDna", 
 function () {
@@ -343,4 +319,10 @@ Clazz.defineStatics (c$,
 "SEQUENCE_NUMBER_FLAG", 0x80,
 "INSERTION_CODE_MASK", 0x7F,
 "SEQUENCE_NUMBER_SHIFT", 8);
+c$.htGroup = c$.prototype.htGroup =  new java.util.Hashtable ();
+Clazz.defineStatics (c$,
+"standardGroupList", null);
+c$.group3Names = c$.prototype.group3Names =  new Array (128);
+Clazz.defineStatics (c$,
+"specialAtomNames", null);
 });

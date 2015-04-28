@@ -25,7 +25,7 @@ JU.Logger.info ("efvet file contains " + this.nVertices + " vertices and " + thi
 Clazz.defineMethod (c$, "getHeader", 
  function () {
 this.skipTo ("<efvet", null);
-while (this.readLine ().length > 0 && this.line.indexOf (">") < 0) this.jvxlFileHeaderBuffer.append ("# " + this.line + "\n");
+while (this.rd ().length > 0 && this.line.indexOf (">") < 0) this.jvxlFileHeaderBuffer.append ("# " + this.line + "\n");
 
 JU.Logger.info (this.jvxlFileHeaderBuffer.toString ());
 });

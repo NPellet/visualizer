@@ -1,12 +1,13 @@
+'use strict';
 
-define( [ '../../field' ], function( FieldDefaultConstructor ) {
+define(['../../field'], function (FieldDefaultConstructor) {
 
-	var FieldConstructor = function(name) {
-		this.name = name;
-	};
+    var FieldConstructor = function (name) {
+        this.name = name;
+    };
 
-	FieldConstructor.prototype = new FieldDefaultConstructor();
+    FieldConstructor.prototype = new FieldDefaultConstructor();
 
-	return FieldConstructor;
+    return FieldConstructor;
 
 });

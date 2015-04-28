@@ -593,7 +593,7 @@ m4 = JU.M4.newM4 (x2.value);
 m4.transpose ();
 return this.addXM4 (m4);
 case 10:
-return this.addXBs (JU.BSUtil.copyInvert (JS.SV.bsSelectVar (x2), (Clazz.instanceOf (x2.value, JM.BondSet) ? this.vwr.getBondCount () : this.vwr.getAtomCount ())));
+return this.addXBs (JU.BSUtil.copyInvert (JS.SV.bsSelectVar (x2), (Clazz.instanceOf (x2.value, JM.BondSet) ? this.vwr.ms.bondCount : this.vwr.ms.ac)));
 }
 return this.addXFloat (-x2.asFloat ());
 case 269484144:
@@ -606,11 +606,9 @@ m = JU.M3.newM3 (x2.value);
 m.invert ();
 return this.addXM3 (m);
 case 12:
-m4 = JU.M4.newM4 (x2.value);
-m4.invert ();
-return this.addXM4 (m4);
+return this.addXM4 (JU.M4.newM4 (x2.value).invert ());
 case 10:
-return this.addXBs (JU.BSUtil.copyInvert (JS.SV.bsSelectVar (x2), (Clazz.instanceOf (x2.value, JM.BondSet) ? this.vwr.getBondCount () : this.vwr.getAtomCount ())));
+return this.addXBs (JU.BSUtil.copyInvert (JS.SV.bsSelectVar (x2), (Clazz.instanceOf (x2.value, JM.BondSet) ? this.vwr.ms.bondCount : this.vwr.ms.ac)));
 default:
 return this.addXBool (!x2.asBoolean ());
 }
@@ -662,9 +660,7 @@ case 1766856708:
 switch (x2.tok) {
 case 4:
 case 7:
-s = JS.SV.sValue (x2);
-pt =  new JU.P3 ();
-return this.addXPt (JU.CU.colorPtFromString (s, pt));
+return this.addXPt (JU.CU.colorPtFromString (JS.SV.sValue (x2)));
 case 2:
 case 3:
 return this.addXPt (this.vwr.getColorPointForPropertyValue (JS.SV.fValue (x2)));
@@ -1033,7 +1029,7 @@ this.vwr.toUnitCell (pt, JU.P3.new3 (n, n, n));
 return this.addXPt (pt);
 case 9:
 pt4 = x1.value;
-if (x2.tok == 8) return this.addXPt ((JU.Quat.newP4 (pt4)).transformPt (x2.value));
+if (x2.tok == 8) return this.addXPt ((JU.Quat.newP4 (pt4)).transform2 (x2.value,  new JU.P3 ()));
 if (x2.tok == 9) {
 var v4 = JU.P4.newPt (x2.value);
 (JU.Quat.newP4 (pt4)).getThetaDirected (v4);
@@ -1171,7 +1167,7 @@ if (this.chk) return this.addXStr ("");
 var bs = JS.SV.bsSelectVar (x2);
 var tokens;
 var n = bs.cardinality ();
-if (n == 0 || (tokens = JS.T.getAtomPropertiesLike (abbr.substring (0, abbr.length - 1))) == null) return this.addXStr ("");
+if (n == 0 || !abbr.endsWith ("?") || (tokens = JS.T.getAtomPropertiesLike (abbr.substring (0, abbr.length - 1))) == null) return this.addXStr ("");
 var ht =  new java.util.Hashtable ();
 var index = (n == 1 ? bs.nextSetBit (0) : 2147483647);
 for (var i = tokens.size (); --i >= 0; ) {
@@ -1288,7 +1284,7 @@ var bs = JS.SV.bsSelectVar (x2);
 if (bs.cardinality () == 1 && (op.intValue & 480) == 0) op.intValue |= 32;
 var val = this.eval.getBitsetProperty (bs, op.intValue, null, null, x2.value, op.value, false, x2.index, true);
 if (op.intValue != 1678770178) return this.addXObj (val);
-return this.addX (JS.SV.newV (10,  new JM.BondSet (val, this.vwr.ms.getAtomIndices (bs))));
+return this.addX (JS.SV.newV (10, JM.BondSet.newBS (val, this.vwr.ms.getAtomIndices (bs))));
 }
 return false;
 }, "JS.T,JS.SV");

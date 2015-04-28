@@ -44,7 +44,7 @@ vwr.tm.getRotation (this.rotationMatrix);
 }this.xTrans = vwr.tm.getTranslationXPercent ();
 this.yTrans = vwr.tm.getTranslationYPercent ();
 this.zoom = vwr.tm.getZoomSetting ();
-this.center.setT (vwr.tm.getRotationCenter ());
+this.center.setT (vwr.tm.fixedRotationCenter);
 this.windowCenteredFlag = vwr.tm.isWindowCentered ();
 this.rotationRadius = vwr.getFloat (570425388);
 this.navigationMode = vwr.getBoolean (603979887);
@@ -52,8 +52,8 @@ this.moveToText = vwr.tm.getMoveToText (-1, false);
 if (this.navigationMode) {
 this.xNav = vwr.tm.getNavigationOffsetPercent ('X');
 this.yNav = vwr.tm.getNavigationOffsetPercent ('Y');
-this.navDepth = vwr.tm.getNavigationDepthPercent ();
-this.navCenter = JU.P3.newP (vwr.tm.getNavigationCenter ());
+this.navDepth = vwr.tm.navigationDepthPercent;
+this.navCenter = JU.P3.newP (vwr.tm.navigationCenter);
 }if (vwr.tm.camera.z != 0) {
 this.cameraDepth = vwr.tm.getCameraDepth ();
 this.cameraX = vwr.tm.camera.x;

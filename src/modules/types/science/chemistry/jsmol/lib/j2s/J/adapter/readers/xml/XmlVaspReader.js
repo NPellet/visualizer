@@ -62,10 +62,10 @@ return;
 this.asc.doFixPeriodic = true;
 this.asc.newAtomSet ();
 if (this.enthalpy != null) {
-this.asc.setAtomSetAuxiliaryInfo ("enthalpy", Double.$valueOf (JU.PT.dVal (this.enthalpy)));
+this.asc.setCurrentModelInfo ("enthalpy", Double.$valueOf (JU.PT.dVal (this.enthalpy)));
 }if (this.gibbsEnergy != null) {
 this.asc.setAtomSetEnergy ("" + this.gibbsEnergy, this.parseFloatStr (this.gibbsEnergy));
-this.asc.setAtomSetAuxiliaryInfo ("gibbsEnergy", Double.$valueOf (JU.PT.dVal (this.gibbsEnergy)));
+this.asc.setCurrentModelInfo ("gibbsEnergy", Double.$valueOf (JU.PT.dVal (this.gibbsEnergy)));
 }if (this.enthalpy != null && this.gibbsEnergy != null) this.asc.setAtomSetName ("Enthalpy = " + this.enthalpy + " eV Gibbs Energy = " + this.gibbsEnergy + " eV");
 return;
 }if (!this.parent.doProcessLines) return;

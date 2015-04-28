@@ -11,7 +11,8 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
 
             var self = this;
             var $fileInput = $('<input/>').css('display', 'none').attr({
-                type: 'file'
+                type: 'file',
+                multiple: true
             });
             var capture = this.module.getConfiguration('capture');
             if(capture && capture !== 'none') {
@@ -73,7 +74,6 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
             });
 
             $fileInput.on('load', function(e) {
-                debugger;
             });
 
             this.module.getDomContent().html(this.dom);
@@ -147,7 +147,10 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
             if(!fsize) {
                 return;
             }
-            while(p.height() - 45 < f.height() && fsize > 2) {
+
+            var h = 45;
+            if(!this.module.domHeader.is(':visible')) h=20;
+            while(p.height() - h < f.height() && fsize > 2) {
                 f.css('font-size', --fsize);
             }
 

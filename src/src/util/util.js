@@ -6,8 +6,6 @@
  */
 define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _) {
 
-    var uniqueid = 0;
-
     var months = ['January', 'February', 'March', 'April', 'Mai', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -113,14 +111,6 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
         unmaskIframes: function () {
             $('.iframemask').remove();
         },
-        getNextUniqueId: function (absolute) {
-
-            if (absolute) {
-                return 'id_' + Date.now() + Math.round(Math.random() * 100000);
-            }
-
-            return 'uniqid_' + (++uniqueid);
-        },
         formatSize: function (size) {
 
             var i = 0;
@@ -148,10 +138,9 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
                 self.loadedCss = self.loadedCss || {};
 
                 if (self.loadedCss[url]) { // element is already loaded
+                    self.loadedCss[url].disabled = false;
                     return resolve(self.loadedCss[url]);
                 }
-
-                self.loadedCss[url] = true;
 
                 var link = document.createElement('link');
                 link.type = 'text/css';
@@ -168,7 +157,13 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
                     reject(e);
                 }
             });
-
+        },
+        unloadCss: function(url) {
+            var that = this;
+            url = require.toUrl(url);
+            if(that.loadedCss[url]) {
+                that.loadedCss[url].disabled = true;
+            }
 
         },
 
@@ -281,137 +276,27 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
             }
 
             return access;
-        },
-
-        // Deprecated color methods. Moved to src/util/color
-        getDistinctColors: deprecate(Color.getDistinctColors, 'use Color.getDistinctColors'),
-        getNextColorRGB: deprecate(Color.getNextColorRGB, 'use Color.getNextColorRGB'),
-        hsl2rgb: deprecate(Color.hsl2rgb, 'use Color.hsl2rgb'),
-        hueToRgb: deprecate(Color.hue2rgb, 'use Color.hue2rgb'),
-        hexToRgb: deprecate(Color.hex2rgb, 'use Color.hex2rgb'),
-        rgbToHex: deprecate(Color.rgb2hex, 'use Color.rgb2hex'),
-        getColor: deprecate(Color.getColor, 'use Color.getColor')
+        }
 
     };
 
     /**
      * No-op function
      */
-    exports.noop = noop;
-
-    function isInt(str) {
-        return isNaN(str) ? NaN : parseInt(str);
-    }
-
-    /**
-     * An object describing a version number in semantic versioning
-     * @typedef {Object} VersionNumber
-     * @property {number} major
-     * @property {number} minor
-     * @property {number} patch
-     * @property {string} [prerelease] - defined only if the version is identified as prerelease
-     */
-
-    /**
-     * Converts a semver string to a {@link VersionNumber} object
-     * @param versionStr - semver string
-     * @returns {VersionNumber}
-     * @example
-     * var semver = util.semver('v1.4.7-2');
-     * console.log(semver);
-     * {
-     *   major: 1,
-     *   minor: 4,
-     *   patch: 7,
-     *   prerelease: '2'
-     * }
-     */
-    exports.semver = function semver(versionStr) {
-
-        if (!versionStr) {
-            return Debug.error('no version');
-        }
-
-        if (versionStr[0] === 'v') {
-            versionStr = versionStr.substr(1);
-        }
-
-        var version = versionStr.split('.');
-        if (version.length > 3) {
-            return Debug.error('version number is invalid: ' + versionStr);
-        }
-
-        switch (version.length) {
-            case 1:
-                version[1] = '0';
-            case 2:
-                version[2] = '0';
-        }
-
-        var semver = {
-            major: isInt(version[0]),
-            minor: isInt(version[1]),
-            patch: isInt(version[2]),
-            prerelease: false
-        };
-
-        var split = version[2].split('-');
-        if (split.length > 1) {
-            semver.patch = parseInt(split[0]);
-            semver.prerelease = split[1];
-        }
-
-        if (semver.major >= 0 && semver.minor >= 0 && semver.patch >= 0) {
-            return semver;
-        } else {
-            return Debug.error('version number is invalid: ' + versionStr);
-        }
-
+    exports.noop = function noop() {
     };
 
+    var uniqueid = 0;
     /**
-     * Compare two semver strings or {@link VersionNumber} objects
-     * @param {string|VersionNumber} v1 - First version to compare
-     * @param {string|VersionNumber} v2 - Second version to compare
-     * @returns {number} - -1 if v1 is greater, 1 if v2 is greater, 0 if versions are identical
+     * Returns a unique id.
+     * @param {boolean} [absolute]
+     * @returns {string}
      */
-    exports.semverCompare = function semverCompare(v1, v2) {
-        if (typeof v1 === 'string') {
-            v1 = exports.semver(v1);
+    exports.getNextUniqueId = function getNextUniqueId(absolute) {
+        if (absolute) {
+            return 'id_' + Date.now() + Math.round(Math.random() * 100000);
         }
-        if (typeof v2 === 'string') {
-            v2 = exports.semver(v2);
-        }
-        if (!v1 || !v2) {
-            return Debug.error('Invalid version number:' + v1 ? v2 : v1);
-        }
-        if (v1.major < v2.major) {
-            return -1;
-        } else if (v2.major < v1.major) {
-            return 1;
-        } else if (v1.minor < v2.minor) {
-            return -1;
-        } else if (v2.minor < v1.minor) {
-            return 1;
-        } else if (v1.patch < v2.patch) {
-            return -1;
-        } else if (v2.patch < v1.patch) {
-            return 1;
-        } else if (v1.prerelease && !v2.prerelease) {
-            return -1;
-        } else if (v2.prerelease && !v1.prerelease) {
-            return 1;
-        } else if (v1.prerelease && v2.prerelease) {
-            if (v1.prerelease < v2.prerelease) {
-                return -1;
-            } else if (v2.prerelease < v1.prerelease) {
-                return 1;
-            } else {
-                return 0;
-            }
-        } else {
-            return 0;
-        }
+        return 'uniqid_' + (++uniqueid);
     };
 
     /**
@@ -419,20 +304,53 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
      * @param {Function} method - the deprecated method
      * @param {string} [message] - optional message to log
      */
-    exports.deprecate = deprecate;
-    function deprecate(method, message) {
+    exports.deprecate = function deprecate(method, message) {
         var warned = false;
         return function deprecated() {
             if (!warned) {
-                if (Debug.getDebugLevel() >= Debug.Levels.WARN) {
-                    Debug.warn('Method ' + method.name + ' is deprecated. ' + (message || ''));
-                    console.trace();
-                }
+                Debug.warn('Method ' + method.name + ' is deprecated. ' + (message || ''));
                 warned = true;
             }
             return method.apply(this, arguments);
         }
+    };
+
+    /*
+     TODO remove when Set API is supported in more browsers
+     */
+    var warnOnceMap, warnOnceCheck;
+    if (typeof Set === 'undefined') {
+        warnOnceMap = {};
+        warnOnceCheck = function (name) {
+            if (warnOnceMap[name]) {
+                return true;
+            } else {
+                warnOnceMap[name] = true;
+                return false;
+            }
+        }
+    } else {
+        warnOnceMap = new Set();
+        warnOnceCheck = function (name) {
+            if (warnOnceMap.has(name)) {
+                return true;
+            } else {
+                warnOnceMap.add(name);
+                return false;
+            }
+        }
     }
+
+    /**
+     * Prints a warning message only once per id
+     * @param id
+     * @param message
+     */
+    exports.warnOnce = function warnOnce(id, message) {
+        if (!warnOnceCheck(id)) {
+            Debug.warn(message);
+        }
+    };
 
     /**
      * Make a constructor's prototype inherit another one, while adding optionally new methods to it. Also sets a `super_`
@@ -455,6 +373,72 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
             _.assign(ctor.prototype, methods);
         }
     };
+
+    exports.getLoadingAnimation = function (size, color) {
+        if (size === undefined) size = 32;
+        if (color === undefined) color = 'black';
+        // Image taken from https://github.com/jxnblk/loading (loading-bars.svg)
+        return $('\
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="black">\
+            <path transform="translate(2)" d="M0 12 V20 H4 V12z">\
+                <animate attributeName="d" values="M0 12 V20 H4 V12z; M0 4 V28 H4 V4z; M0 12 V20 H4 V12z; M0 12 V20 H4 V12z" dur="1.2s" repeatCount="indefinite" begin="0" keytimes="0;.2;.5;1" keySplines="0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.8 0.4 0.8" calcMode="spline"  />\
+            </path>\
+            <path transform="translate(8)" d="M0 12 V20 H4 V12z">\
+                <animate attributeName="d" values="M0 12 V20 H4 V12z; M0 4 V28 H4 V4z; M0 12 V20 H4 V12z; M0 12 V20 H4 V12z" dur="1.2s" repeatCount="indefinite" begin="0.2" keytimes="0;.2;.5;1" keySplines="0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.8 0.4 0.8" calcMode="spline"  />\
+            </path>\
+            <path transform="translate(14)" d="M0 12 V20 H4 V12z">\
+                <animate attributeName="d" values="M0 12 V20 H4 V12z; M0 4 V28 H4 V4z; M0 12 V20 H4 V12z; M0 12 V20 H4 V12z" dur="1.2s" repeatCount="indefinite" begin="0.4" keytimes="0;.2;.5;1" keySplines="0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.8 0.4 0.8" calcMode="spline" />\
+            </path>\
+            <path transform="translate(20)" d="M0 12 V20 H4 V12z">\
+                <animate attributeName="d" values="M0 12 V20 H4 V12z; M0 4 V28 H4 V4z; M0 12 V20 H4 V12z; M0 12 V20 H4 V12z" dur="1.2s" repeatCount="indefinite" begin="0.6" keytimes="0;.2;.5;1" keySplines="0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.8 0.4 0.8" calcMode="spline" />\
+            </path>\
+            <path transform="translate(26)" d="M0 12 V20 H4 V12z">\
+                <animate attributeName="d" values="M0 12 V20 H4 V12z; M0 4 V28 H4 V4z; M0 12 V20 H4 V12z; M0 12 V20 H4 V12z" dur="1.2s" repeatCount="indefinite" begin="0.8" keytimes="0;.2;.5;1" keySplines="0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.8 0.4 0.8" calcMode="spline" />\
+            </path>\
+        </svg>').attr({
+            width: size,
+            height: size,
+            fill: color
+        });
+    };
+
+    exports.moduleIdFromUrl = function(url) {
+        var reg = /([^\/]+)(\/)?$/;
+        var res = url.match(reg);
+        return res[1];
+    };
+
+    exports.requireNeedsExtension = function(url) {
+        return /^https?:\/\/|^\.|^\//.test(url);
+    };
+
+    var utilReqPaths = {};
+    exports.rewriteRequirePath = function(url) {
+        if(!this.requireNeedsExtension(url)) {
+            // return same url without trailing backslash
+            return url.replace(/\/$/, '');
+        }
+        var reqPathStr = exports.getNextUniqueId(true);
+        url = url.replace(/\/$/,'');
+        if(utilReqPaths[url]) return utilReqPaths[url];
+        utilReqPaths[url] = reqPathStr;
+        var paths = {};
+        paths[reqPathStr] = url;
+        requirejs.config({
+            paths: paths
+        });
+
+        return reqPathStr;
+    };
+
+    // Deprecated color methods. Moved to src/util/color
+    exports.getDistinctColors = exports.deprecate(Color.getDistinctColors, 'use Color.getDistinctColors');
+    exports.getNextColorRGB = exports.deprecate(Color.getNextColorRGB, 'use Color.getNextColorRGB');
+    exports.hsl2rgb = exports.deprecate(Color.hsl2rgb, 'use Color.hsl2rgb');
+    exports.hueToRgb = exports.deprecate(Color.hue2rgb, 'use Color.hue2rgb');
+    exports.hexToRgb = exports.deprecate(Color.hex2rgb, 'use Color.hex2rgb');
+    exports.rgbToHex = exports.deprecate(Color.rgb2hex, 'use Color.rgb2hex');
+    exports.getColor = exports.deprecate(Color.getColor, 'use Color.getColor');
 
     return exports;
 

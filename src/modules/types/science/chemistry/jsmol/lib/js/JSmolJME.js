@@ -71,6 +71,7 @@
 		Jmol._setObject(this, id, Info);
 		this._options = Info.options;
 		(this._options.indexOf("autoez") < 0) && (this._options += ",autoez");
+		(this._options.indexOf("canonize") < 0) && (this._options += ",nocanonize");
 		this._setCheck(true);
 		this._editEnabled = true;
 		this._editOptions =  Info.editOptions || "editEnabled;";

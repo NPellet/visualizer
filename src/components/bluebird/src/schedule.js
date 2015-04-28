@@ -1,10 +1,23 @@
 "use strict";
 var schedule;
-if (typeof process === "object" && typeof process.version === "string") {
-    schedule = parseInt(process.version.split(".")[1], 10) > 10
-        ? setImmediate : process.nextTick;
-}
-else if (typeof MutationObserver !== "undefined") {
+var noAsyncScheduler = function() {
+    throw new Error(NO_ASYNC_SCHEDULER);
+};
+if (require("./util.js").isNode) {
+    var version = process.versions.node.split(".").map(Number);
+    schedule = (version[0] === 0 && version[1] > 10) || (version[0] > 0)
+        ? global.setImmediate : process.nextTick;
+
+    if (!schedule) {
+        if (typeof setImmediate !== "undefined") {
+            schedule = setImmediate;
+        } else if (typeof setTimeout !== "undefined") {
+            schedule = setTimeout;
+        } else {
+            schedule = noAsyncScheduler;
+        }
+    }
+} else if (typeof MutationObserver !== "undefined") {
     schedule = function(fn) {
         var div = document.createElement("div");
         var observer = new MutationObserver(fn);
@@ -12,15 +25,15 @@ else if (typeof MutationObserver !== "undefined") {
         return function() { div.classList.toggle("foo"); };
     };
     schedule.isStatic = true;
-}
-else if (typeof setTimeout !== "undefined") {
+} else if (typeof setImmediate !== "undefined") {
+    schedule = function (fn) {
+        setImmediate(fn);
+    };
+} else if (typeof setTimeout !== "undefined") {
     schedule = function (fn) {
         setTimeout(fn, 0);
     };
-}
-else {
-    schedule = function() {
-        throw new Error(NO_ASYNC_SCHEDULER);
-    };
+} else {
+    schedule = noAsyncScheduler;
 }
 module.exports = schedule;

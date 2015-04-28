@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.cif");
-Clazz.load (["J.adapter.readers.cif.CifReader"], "J.adapter.readers.cif.MMCifReader", ["java.util.Hashtable", "JU.BS", "$.Lst", "$.M4", "$.P3", "$.PT", "$.Rdr", "$.SB", "J.adapter.smarter.Atom", "$.Structure", "J.api.JmolAdapter", "J.c.STR", "JU.Logger"], function () {
+Clazz.load (["J.adapter.readers.cif.CifReader"], "J.adapter.readers.cif.MMCifReader", ["java.util.Hashtable", "JU.BS", "$.Lst", "$.M4", "$.P3", "$.PT", "$.Rdr", "$.SB", "J.adapter.smarter.Atom", "$.Structure", "J.c.STR", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.isBiomolecule = false;
 this.byChain = false;
@@ -14,6 +14,7 @@ this.assemblyIdAtoms = null;
 this.thisChain = -1;
 this.chainSum = null;
 this.chainAtomCount = null;
+this.isLigandBondBug = false;
 this.assem = null;
 this.hetatmData = null;
 this.htHetero = null;
@@ -26,11 +27,12 @@ this.isMMCIF = true;
 this.byChain = this.checkFilterKey ("BYCHAIN");
 this.bySymop = this.checkFilterKey ("BYSYMOP");
 this.isCourseGrained = this.byChain || this.bySymop;
-if (this.byChain) {
+if (this.isCourseGrained) {
 this.chainAtomMap =  new java.util.Hashtable ();
 this.chainAtomCounts =  new java.util.Hashtable ();
 }if (this.checkFilterKey ("BIOMOLECULE")) this.filter = JU.PT.rep (this.filter, "BIOMOLECULE", "ASSEMBLY");
 this.isBiomolecule = this.checkFilterKey ("ASSEMBLY");
+this.isLigandBondBug = (this.stateScriptVersionInt >= 140204 && this.stateScriptVersionInt <= 140208 || this.stateScriptVersionInt >= 140304 && this.stateScriptVersionInt <= 140308);
 });
 Clazz.overrideMethod (c$, "finalizeSubclass", 
 function () {
@@ -50,10 +52,10 @@ note = vs.finalizeRna3d (this.modelMap);
 this.reader = JU.Rdr.getBR (this.addedData);
 this.processDSSR (this, this.htGroup1);
 }if (note != null) this.appendLoadNote (note);
-}this.applySymmetryAndSetTrajectory ();
+}if (!this.isCourseGrained) this.applySymmetryAndSetTrajectory ();
 }if (this.htSites != null) this.addSites (this.htSites);
 if (this.vBiomolecules != null && this.vBiomolecules.size () == 1 && (this.isCourseGrained || this.asc.ac > 0)) {
-this.asc.setAtomSetAuxiliaryInfo ("biomolecules", this.vBiomolecules);
+this.asc.setCurrentModelInfo ("biomolecules", this.vBiomolecules);
 var ht = this.vBiomolecules.get (0);
 this.appendLoadNote ("Constructing " + ht.get ("name"));
 this.setBiomolecules (ht);
@@ -142,7 +144,7 @@ var id = this.assem[0];
 var iMolecule = this.parseIntStr (id);
 var list = this.assem[2];
 this.appendLoadNote ("found biomolecule " + id + ": " + list);
-if (!this.checkFilterKey ("ASSEMBLY " + id + ";")) return;
+if (!this.checkFilterKey ("ASSEMBLY " + id + ";") && !this.checkFilterKey ("ASSEMBLY=" + id + ";")) return;
 if (this.vBiomolecules == null) {
 this.vBiomolecules =  new JU.Lst ();
 }var info =  new java.util.Hashtable ();
@@ -161,7 +163,7 @@ Clazz.defineMethod (c$, "decodeAssemblyOperators",
 var pt = ops.indexOf (")(");
 if (pt >= 0) return this.crossBinary (this.decodeAssemblyOperators (ops.substring (0, pt + 1)), this.decodeAssemblyOperators (ops.substring (pt + 1)));
 if (ops.startsWith ("(")) {
-if (ops.indexOf ("-") >= 0) ops = JU.BS.unescape ("({" + ops.substring (1, ops.length - 1).$replace ('-', ':') + "})").toString ();
+if (ops.indexOf ("-") >= 0) ops = JU.BS.unescape ("({" + ops.substring (1, ops.length - 1).$replace ('-', ':') + "})").toJSON ();
 ops = JU.PT.rep (ops, " ", "");
 ops = ops.substring (1, ops.length - 1);
 }return ops;
@@ -266,7 +268,7 @@ return true;
 });
 Clazz.defineMethod (c$, "addHetero", 
  function (groupName, hetName) {
-if (!J.api.JmolAdapter.isHetero (groupName)) return;
+if (!this.vwr.getJBR ().isHetero (groupName)) return;
 if (this.htHetero == null) this.htHetero =  new java.util.Hashtable ();
 this.htHetero.put (groupName, hetName);
 if (JU.Logger.debugging) {
@@ -469,6 +471,7 @@ var a1 =  new J.adapter.smarter.Atom ();
 a1.setT (sum);
 a1.scale (1 / count);
 a1.radius = 16;
+this.asc.addAtom (a1);
 }} else {
 nAtoms = bsAll.cardinality ();
 if (nAtoms < this.asc.ac) this.asc.bsAtoms = bsAll;
@@ -499,6 +502,7 @@ return m;
 Clazz.defineMethod (c$, "processLigandBondLoopBlock", 
  function () {
 this.parseLoopParametersFor ("_chem_comp_bond", J.adapter.readers.cif.MMCifReader.chemCompBondFields);
+if (this.isLigandBondBug) return false;
 for (var i = this.propertyCount; --i >= 0; ) if (this.fieldOf[i] == -1) {
 JU.Logger.warn ("?que? missing property: " + J.adapter.readers.cif.MMCifReader.chemCompBondFields[i]);
 return false;
@@ -566,7 +570,7 @@ var bs = this.assemblyIdAtoms.get (assemblyId);
 if (bs == null) this.assemblyIdAtoms.put (assemblyId, bs =  new JU.BS ());
 bs.set (this.ac);
 }if (atom.isHetero && this.htHetero != null) {
-this.asc.setAtomSetAuxiliaryInfo ("hetNames", this.htHetero);
+this.asc.setCurrentModelInfo ("hetNames", this.htHetero);
 this.asc.setInfo ("hetNames", this.htHetero);
 this.htHetero = null;
 }return true;

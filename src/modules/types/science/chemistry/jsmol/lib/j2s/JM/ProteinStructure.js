@@ -81,10 +81,6 @@ Clazz.defineMethod (c$, "isWithin",
 function (monomerIndex) {
 return (monomerIndex > this.monomerIndexFirst && monomerIndex < this.monomerIndexLast);
 }, "~N");
-Clazz.defineMethod (c$, "getMonomerIndex", 
-function () {
-return this.monomerIndexFirst;
-});
 Clazz.defineMethod (c$, "getIndex", 
 function (monomer) {
 if (this.resMap == null) {

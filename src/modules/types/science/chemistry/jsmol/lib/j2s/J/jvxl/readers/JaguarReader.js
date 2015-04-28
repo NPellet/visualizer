@@ -22,7 +22,7 @@ this.jvxlFileHeaderBuffer =  new JU.SB ();
 this.jvxlFileHeaderBuffer.append ("Jaguar data\n");
 this.jvxlFileHeaderBuffer.append ("\n");
 var atomLine;
-while ((atomLine = this.readLine ()) != null && atomLine.indexOf ("origin=") < 0) {
+while ((atomLine = this.rd ()) != null && atomLine.indexOf ("origin=") < 0) {
 }
 var tokens = JU.PT.getTokensAt (atomLine, 0);
 if (tokens.length == 4 && tokens[0].equals ("origin=")) {
@@ -32,7 +32,7 @@ if (!this.isAngstroms) this.volumetricOrigin.scale (0.5291772);
 }this.readExtents (0);
 this.readExtents (1);
 this.readExtents (2);
-tokens = JU.PT.getTokens (this.readLine ());
+tokens = JU.PT.getTokens (this.rd ());
 this.voxelCounts[0] = this.parseIntStr (tokens[1]);
 this.voxelCounts[1] = this.parseIntStr (tokens[2]);
 this.voxelCounts[2] = this.parseIntStr (tokens[3]);
@@ -46,11 +46,11 @@ this.jvxlFileHeaderBuffer.append (this.voxelCounts[1] + " 0.0 " + d + " 0.0\n");
 d = this.extents[2] / (this.voxelCounts[2] - 1);
 this.volumetricVectors[2].set (0, 0, d * factor);
 this.jvxlFileHeaderBuffer.append (this.voxelCounts[2] + " 0.0 0.0 " + d + "\n");
-this.readLine ();
+this.rd ();
 });
 Clazz.defineMethod (c$, "readExtents", 
  function (voxelVectorIndex) {
-var tokens = JU.PT.getTokens (this.readLine ());
+var tokens = JU.PT.getTokens (this.rd ());
 this.extents[voxelVectorIndex] = this.parseFloatStr (tokens[voxelVectorIndex + 1]);
 }, "~N");
 });

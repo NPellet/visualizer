@@ -8,7 +8,8 @@ define([
     'forms/button',
     'src/util/util',
     'fancytree',
-    'components/ui-contextmenu/jquery.ui-contextmenu.min'
+    'components/ui-contextmenu/jquery.ui-contextmenu.min',
+    'jquery-ui/dialog'
 ], function ($, superagent, Default, Versioning, Button, Util) {
 
     function Element() {
@@ -371,6 +372,7 @@ define([
             return this.loadRootTree().then(function (res) {
                 var source = fancyTreeDirStructure(res);
                 that.$tree.fancytree({
+                    toggleEffect: false,
                     extensions: ['edit', 'filter'],
                     filter: {
                         mode: 'dimm'
@@ -480,7 +482,7 @@ define([
             this.$log.parent().append(new Button('Refresh Tree', function () {
                 that.reloadTree();
             }, {color: 'blue'}).render());
-            this.$log.parent().append('<div>\n    <ul>\n        <li style="color:black;">Double-click a view to load it</li>\n        <li style="color: black;">Shift+click to rename a view</li>\n        <li style="color: black;">Press delete key to remove a view or a directory</li>\n    </ul>\n</div>');
+            this.$log.parent().append('<br/><br/><br/><div>\n    <ul>\n        <li style="color:black;">Double-click a view to load it</li>\n        <li style="color: black;">Shift+click to rename a view</li>\n        <li style="color: black;">Press delete key to remove a view or a directory</li>\n    </ul>\n</div>');
 
             // Append buttons
             var $buttons = $('<div>\n    <table>\n        <tr>\n            <td></td>\n            <td></td>\n        </tr>\n        <tr>\n            <td><input type="text"/></td>\n            <td></td>\n        </tr>\n        <tr>\n            <td><input type="text"/></td>\n            <td></td>\n        </tr>\n    </table>\n</div>');

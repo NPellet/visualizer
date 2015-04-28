@@ -1,175 +1,163 @@
+'use strict';
 
-define( [ 'components/farbtastic/src/farbtastic' ], function(  ) {
+define(['src/util/util', 'components/farbtastic/src/farbtastic'], function (Util) {
 
-	var FieldConstructor = function() {};
-	
-	FieldConstructor.prototype.__makeDom = function() {
-		
+    var FieldConstructor = function () {
+    };
 
-        var fonts = [
-            {title: "Arial", key: "Arial"},
-            {title: "Arial Black", key: "'Arial Black'"},
-            {title: "Comic Sans MS", key: "'Comic Sans MS'"},
-            {title: "Courier", key: "Courier"},
-            {title: "Courier new", key: "'Courier New'"},
-            {title: "Georgia", key: "Georgia"},
-            {title: "Helvetica", key: "Helvetica"},
-            {title: "Impact", key: "Impact"},
-            {title: "Palatino", key: "Palatino"},
-            {title: "Times new roman", key: "'Times New Roman'"},
-            {title: "Trebuchet MS", key: "'Trebuchet MS'"},
-            {title: "Verdana", key: "Verdana"}
-        ];
-        
-		var self = this,
-			dom = $("<div />"),
-			value = this.value;
+    FieldConstructor.prototype.__makeDom = function () {
 
-		var ul = $("<ul />").addClass('form-textstyle-ul'),
-			boldBtn = $("<li><span>B</span></li>").addClass('btn').attr('data-style', 'bold'),
-			italicBtn = $("<li><span>I</span></li>").addClass('btn').attr('data-style', 'italic'),
-			underlineBtn = $("<li><span>U</span></li>").addClass('btn').attr('data-style', 'underline'),
-			fontfaceBtn = $("<li><select></select></li>").children('select').attr('data-style', 'fontface').append( function() {
-				opts = [];
-				for( var i = 0, l = fonts.length ; i < l ;  i += 1 ) {
-					opts.push('<option value="' + fonts[ i ].key + '">' + fonts[ i ].title + '</option>');
-				}
-				return opts;
-			} ),
+        var fonts = Util.getWebsafeFonts();
 
-			fontsizeBtn = $("<li><select></select></li>").children('select').attr('data-style', 'fontsize').append( function() {
-				var opts = [];
-				for( var i = 10, l = 20 ; i < l ; i += 1 ) {
-					opts.push('<option value="' + i + '">' + i + ' pts</option>');
-				}
-				return opts;
-			} ),
+        var self = this,
+            dom = $('<div />'),
+            value = this.value;
 
-			fontcolorBtn = $("<li><span>A</span></li>").addClass('form-textstyle-colorli').bind('click', function() {
+        var ul = $('<ul />').addClass('form-textstyle-ul'),
+            boldBtn = $('<li><span>B</span></li>').addClass('btn').attr('data-style', 'bold'),
+            italicBtn = $('<li><span>I</span></li>').addClass('btn').attr('data-style', 'italic'),
+            underlineBtn = $('<li><span>U</span></li>').addClass('btn').attr('data-style', 'underline'),
+            fontfaceBtn = $('<li><select></select></li>').children('select').attr('data-style', 'fontface').append(function () {
+                opts = [];
+                for (var i = 0, l = fonts.length; i < l; i += 1) {
+                    opts.push('<option value="' + fonts[i].key + '">' + fonts[i].title + '</option>');
+                }
+                return opts;
+            }),
 
-				fontcolorDiv.toggle();
-				$(this).toggleClass('selected');
-			}),
+            fontsizeBtn = $('<li><select></select></li>').children('select').attr('data-style', 'fontsize').append(function () {
+                var opts = [];
+                for (var i = 10, l = 20; i < l; i += 1) {
+                    opts.push('<option value="' + i + '">' + i + ' pts</option>');
+                }
+                return opts;
+            }),
+
+            fontcolorBtn = $('<li><span>A</span></li>').addClass('form-textstyle-colorli').bind('click', function () {
+
+                fontcolorDiv.toggle();
+                $(this).toggleClass('selected');
+            }),
 
 
-			backgroundcolorBtn = $("<li><span></span></li>").addClass('form-textstyle-bgcolorli').bind('click', function() {
+            backgroundcolorBtn = $('<li><span></span></li>').addClass('form-textstyle-bgcolorli').bind('click', function () {
 
-				fontcolorDiv2.toggle();
-				$(this).toggleClass('selected');
-			}),
+                fontcolorDiv2.toggle();
+                $(this).toggleClass('selected');
+            }),
 
-			fontcolorDiv = $("<div />").addClass('form-textstyle-color'),
-			fontcolorDiv2 = $("<div />").addClass('form-textstyle-color');
-			
-
-		ul.on('click', '.btn', function() {
-		
-			value[ $(this).attr('data-style' ) ] = ! $(this).hasClass('selected');
-		
-			self.checkValue();
-		} );
-
-		ul.on('change', 'select', function() {
-		
-			value[ $(this).attr('data-style' ) ] = $(this).attr('value');
-	
-			self.checkValue();
-		} );
-
-		this.farb = $.farbtastic( fontcolorDiv, {} );
-		this.farb2 = $.farbtastic( fontcolorDiv2, {} );
+            fontcolorDiv = $('<div />').addClass('form-textstyle-color'),
+            fontcolorDiv2 = $('<div />').addClass('form-textstyle-color');
 
 
-		ul.append( boldBtn );
-		ul.append( italicBtn );
-		ul.append( underlineBtn );
-		ul.append( fontfaceBtn );
-		ul.append( fontsizeBtn );
-		ul.append( fontcolorBtn );
-		ul.append( backgroundcolorBtn );
+        ul.on('click', '.btn', function () {
 
-		this.div = ul;
-		this.dom = dom;
-		this.fieldElement = ul;
-		this.checkboxes = {};
+            value[$(this).attr('data-style')] = !$(this).hasClass('selected');
 
-		this.checkValue();
+            self.checkValue();
+        });
 
-		this.farb.linkTo( function() {
-			value.color = arguments[ 0 ];
-			self.checkValue();
-		});
+        ul.on('change', 'select', function () {
 
-		this.farb2.linkTo( function() {
-			value.bgcolor = arguments[ 0 ];
-			self.checkValue();
-		});
+            value[$(this).attr('data-style')] = $(this).attr('value');
+
+            self.checkValue();
+        });
+
+        this.farb = $.farbtastic(fontcolorDiv, {});
+        this.farb2 = $.farbtastic(fontcolorDiv2, {});
 
 
-		dom.append(ul, fontcolorDiv, fontcolorDiv2);
-		return dom;
-	};
+        ul.append(boldBtn);
+        ul.append(italicBtn);
+        ul.append(underlineBtn);
+        ul.append(fontfaceBtn);
+        ul.append(fontsizeBtn);
+        ul.append(fontcolorBtn);
+        ul.append(backgroundcolorBtn);
 
-	FieldConstructor.prototype.focus = function() {
+        this.div = ul;
+        this.dom = dom;
+        this.fieldElement = ul;
+        this.checkboxes = {};
 
-		this.fieldElement.find('input:first').focus();
-		this.select();
-	}
+        this.checkValue();
 
-	FieldConstructor.prototype.checkValue = function() {
+        this.farb.linkTo(function () {
+            value.color = arguments[0];
+            self.checkValue();
+        });
 
-		if( ! ( this.value instanceof Object ) ) {
-			this.setValueSilent({});
-		}
+        this.farb2.linkTo(function () {
+            value.bgcolor = arguments[0];
+            self.checkValue();
+        });
 
 
-		if( this.div ) {
-			for( var i in this.value ) {
+        dom.append(ul, fontcolorDiv, fontcolorDiv2);
+        return dom;
+    };
 
-				switch( i ) {
+    FieldConstructor.prototype.focus = function () {
 
-					case 'bold':
-						this.div.find('li[data-style="bold"]')[ this.value[ i ] ? 'addClass' : 'removeClass']('selected');
-					break;
+        this.fieldElement.find('input:first').focus();
+        this.select();
+    }
 
-					case 'italic':
-						this.div.find('li[data-style="italic"]')[ this.value[ i ] ? 'addClass' : 'removeClass']('selected');
-					break;
+    FieldConstructor.prototype.checkValue = function () {
 
-					case 'underline':
-						this.div.find('li[data-style="underline"]')[ this.value[ i ] ? 'addClass' : 'removeClass']('selected');
-					break;
+        if (!( this.value instanceof Object )) {
+            this.setValueSilent({});
+        }
 
-					case 'color':
-						this.div.find('li.form-textstyle-colorli').children().css('color', this.value[ i ] );
-						this.farb.setColor( this.value[ i ] );
-					break;
 
-					case 'bgcolor':
-						this.div.find('li.form-textstyle-bgcolorli').children().css('background-color', this.value[ i ] );
-						this.farb2.setColor( this.value[ i ] );
-					break;
+        if (this.div) {
+            for (var i in this.value) {
 
-					case 'fontface':
-						this.div.find('select[data-style="fontface"]').attr('value', this.value[ i ] );
-					break;
+                switch (i) {
 
-					case 'fontsize':
-						this.div.find('select[data-style="fontsize"]').attr('value', this.value[ i ] );
-					break;
-				}
-			}
-		}
-		
-	}
+                    case 'bold':
+                        this.div.find('li[data-style="bold"]')[this.value[i] ? 'addClass' : 'removeClass']('selected');
+                        break;
 
-	FieldConstructor.prototype.getOptions = function() {
-		return this.combooptions || false;
-	}
+                    case 'italic':
+                        this.div.find('li[data-style="italic"]')[this.value[i] ? 'addClass' : 'removeClass']('selected');
+                        break;
 
-	FieldConstructor.prototype.setOptions = function(options) {
-		this.combooptions = options;
-	}
+                    case 'underline':
+                        this.div.find('li[data-style="underline"]')[this.value[i] ? 'addClass' : 'removeClass']('selected');
+                        break;
 
-	return FieldConstructor;
+                    case 'color':
+                        this.div.find('li.form-textstyle-colorli').children().css('color', this.value[i]);
+                        this.farb.setColor(this.value[i]);
+                        break;
+
+                    case 'bgcolor':
+                        this.div.find('li.form-textstyle-bgcolorli').children().css('background-color', this.value[i]);
+                        this.farb2.setColor(this.value[i]);
+                        break;
+
+                    case 'fontface':
+                        this.div.find('select[data-style="fontface"]').attr('value', this.value[i]);
+                        break;
+
+                    case 'fontsize':
+                        this.div.find('select[data-style="fontsize"]').attr('value', this.value[i]);
+                        break;
+                }
+            }
+        }
+
+    }
+
+    FieldConstructor.prototype.getOptions = function () {
+        return this.combooptions || false;
+    }
+
+    FieldConstructor.prototype.setOptions = function (options) {
+        this.combooptions = options;
+    }
+
+    return FieldConstructor;
 });

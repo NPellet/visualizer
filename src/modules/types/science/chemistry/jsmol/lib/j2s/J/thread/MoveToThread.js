@@ -44,7 +44,6 @@ this.zoomPercent0 = 0;
 this.slab = 0;
 this.transX = 0;
 this.transY = 0;
-this.transZ = 0;
 if (!Clazz.isClassDefined ("J.thread.MoveToThread.Slider")) {
 J.thread.MoveToThread.$MoveToThread$Slider$ ();
 }
@@ -91,7 +90,6 @@ var fps = Clazz.floatToInt (f[3]);
 this.slab = this.transformManager.getSlabPercentSetting ();
 this.transX = this.transformManager.getTranslationXPercent ();
 this.transY = this.transformManager.getTranslationYPercent ();
-this.transZ = this.transformManager.getTranslationZPercent ();
 this.timePerStep = Clazz.doubleToInt (1000 / fps);
 this.totalSteps = Clazz.floatToInt (fps * this.floatSecondsTotal);
 if (this.totalSteps <= 0) this.totalSteps = 1;
@@ -113,11 +111,11 @@ this.floatSecondsTotal = f[0];
 this.zoom = this.newSlider (this.transformManager.zmPct, f[1]);
 this.xTrans = this.newSlider (this.transformManager.getTranslationXPercent (), f[2]);
 this.yTrans = this.newSlider (this.transformManager.getTranslationYPercent (), f[3]);
-this.rotationRadius = this.newSlider (this.transformManager.modelRadius, (this.center == null || Float.isNaN (f[4]) ? this.transformManager.modelRadius : f[4] <= 0 ? this.vwr.calcRotationRadius (this.center) : f[4]));
+this.rotationRadius = this.newSlider (this.transformManager.modelRadius, (this.center == null || Float.isNaN (f[4]) ? this.transformManager.modelRadius : f[4] <= 0 ? this.vwr.ms.calcRotationRadius (this.vwr.am.cmi, this.center) : f[4]));
 this.pixelScale = this.newSlider (this.transformManager.scaleDefaultPixelsPerAngstrom, f[5]);
 if (f[6] != 0) {
 this.navCenter = options[2];
-this.navDepth = this.newSlider (this.transformManager.getNavigationDepthPercent (), f[6]);
+this.navDepth = this.newSlider (this.transformManager.navigationDepthPercent, f[6]);
 this.xNav = this.newSlider (this.transformManager.getNavigationOffsetPercent ('X'), f[7]);
 this.yNav = this.newSlider (this.transformManager.getNavigationOffsetPercent ('Y'), f[8]);
 }this.cameraDepth = this.newSlider (this.transformManager.getCameraDepth (), f[9]);
@@ -160,7 +158,7 @@ if (this.dRot.z != 0) this.transformManager.rotateZRadians (this.radiansZStep);
 if (this.dZoom != 0) this.transformManager.zoomToPercent (this.zoomPercent0 + this.dZoom * this.iStep / this.totalSteps);
 if (this.dTrans.x != 0) this.transformManager.translateToPercent ('x', this.transX + this.dTrans.x * this.iStep / this.totalSteps);
 if (this.dTrans.y != 0) this.transformManager.translateToPercent ('y', this.transY + this.dTrans.y * this.iStep / this.totalSteps);
-if (this.dTrans.z != 0) this.transformManager.translateToPercent ('z', this.transZ + this.dTrans.z * this.iStep / this.totalSteps);
+if (this.dTrans.z != 0) this.transformManager.translateToPercent ('z', this.dTrans.z * this.iStep / this.totalSteps);
 if (this.dSlab != 0) this.transformManager.slabToPercent (Clazz.doubleToInt (Math.floor (this.slab + this.dSlab * this.iStep / this.totalSteps)));
 var timeSpent = (System.currentTimeMillis () - this.startTime);
 var timeAllowed = this.iStep * this.timePerStep;

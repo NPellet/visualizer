@@ -3,6 +3,18 @@
 https://github.com/josdejong/jsoneditor
 
 
+## 2015-01-25, version 3.2.0
+
+- Implemented shortcut keys `Ctrl+\` to format and `Ctrl+Shift+\` to compact
+  JSON when in mode `text` or `code`.
+- Before an error is thrown because of invalid text, the editor first tries to
+  sanitize the text (replace JavaScript notation with JSON notation), and only
+  after that throws the error.
+- Fixed Node.path() not working for a JSON Object `""`. Thanks @tomalec.
+- Minor styling improvements.
+- Fixed configured indentation not being applied to Ace editor.
+
+
 ## 2014-09-03, version 3.1.2
 
 - Some fixes/improvements in `parseJS` (to parse a JSON object from a JavaScript

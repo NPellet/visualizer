@@ -9,7 +9,6 @@
     "commit": "0150b04c6506aabe51d73f770fee0409e10a2f4d"
   },
   "_source": "git://github.com/YuzuJS/setImmediate.git",
-  "_target": "~1.0.2",
-  "_originalSource": "YuzuJS/setImmediate",
-  "_direct": true
+  "_target": "1.0.2",
+  "_originalSource": "YuzuJS/setImmediate"
 }

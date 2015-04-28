@@ -16,7 +16,6 @@ this.vEdges = null;
 this.vFaces = null;
 this.ptS1 = null;
 this.ptS2 = null;
-this.vTemp3 = null;
 this.vTemp = null;
 this.plane = null;
 this.ptTemp2 = null;
@@ -44,7 +43,6 @@ Clazz.instantialize (this, arguments);
 Clazz.prepareFields (c$, function () {
 this.ptS1 =  new JU.P3 ();
 this.ptS2 =  new JU.P3 ();
-this.vTemp3 =  new JU.V3 ();
 this.vTemp =  new JU.V3 ();
 this.plane =  new JU.P4 ();
 this.ptTemp2 =  new JU.P3 ();
@@ -84,7 +82,7 @@ this.sr = this.params.solventRadius;
 this.point = this.params.point;
 this.isCavity = (this.params.isCavity && this.meshDataServer != null);
 this.isPocket = (this.params.pocket != null && this.meshDataServer != null);
-this.doCalculateTroughs = (!isMapData && this.atomDataServer != null && !this.isCavity && this.sr > 0 && (this.dataType == 1195 || this.dataType == 1203));
+this.doCalculateTroughs = (!isMapData && this.sg.atomDataServer != null && !this.isCavity && this.sr > 0 && (this.dataType == 1195 || this.dataType == 1203));
 this.doUseIterator = this.doCalculateTroughs;
 this.getAtoms (this.params.bsSelected, this.doAddHydrogens, true, false, false, true, false, NaN);
 if (this.isCavity || this.isPocket) this.dots = this.meshDataServer.calculateGeodesicSurface (this.bsMySelected, this.envelopeRadius);
@@ -186,7 +184,7 @@ if (this.doCalculateTroughs && this.bsSurfacePoints != null) {
 var bsAll =  new JU.BS ();
 var bsSurfaces = this.meshData.getSurfaceSet ();
 var bsSources = null;
-var volumes = (this.isPocket ? null : this.meshData.calculateVolumeOrArea (-2147483648, false, false));
+var volumes = (this.isPocket ? null : J.jvxl.data.MeshData.calculateVolumeOrArea (this.meshData, -2147483648, false, false));
 var minVolume = (1.5 * 3.141592653589793 * Math.pow (this.sr, 3));
 var maxVolume = 0;
 var maxIsNegative = false;
@@ -262,7 +260,7 @@ this.bsSurfaceDone =  new JU.BS ();
 this.bsSurfaceVoxels =  new JU.BS ();
 this.bsSurfacePoints =  new JU.BS ();
 if (this.doCalculateTroughs) {
-this.iter = this.atomDataServer.getSelectedAtomIterator (this.bsMySelected, true, false, false);
+this.iter = this.sg.atomDataServer.getSelectedAtomIterator (this.bsMySelected, true, false, false);
 this.vEdges =  new JU.Lst ();
 this.bsLocale =  new Array (this.myAtomCount);
 this.htEdges =  new java.util.Hashtable ();
@@ -297,7 +295,7 @@ for (var iatomA = 0; iatomA < this.myAtomCount; iatomA++) this.bsLocale[iatomA] 
 for (var iatomA = 0; iatomA < this.myAtomCount; iatomA++) {
 var ptA = this.atomXyz[iatomA];
 var rA = this.rs[iatomA];
-this.atomDataServer.setIteratorForAtom (this.iter, this.atomIndex[iatomA], rA + this.maxRS);
+this.sg.atomDataServer.setIteratorForAtom (this.iter, this.atomIndex[iatomA], rA + this.maxRS);
 while (this.iter.hasNext ()) {
 var iB = this.iter.next ();
 var iatomB = this.myIndex[iB];
@@ -349,7 +347,7 @@ this.noFaceSpheres.clear (ic);
 });
 Clazz.defineMethod (c$, "validateFace", 
  function (ia, ib, ic, edge, ptS) {
-this.atomDataServer.setIteratorForPoint (this.iter, this.modelIndex, ptS, this.maxRS);
+this.sg.atomDataServer.setIteratorForPoint (this.iter, this.modelIndex, ptS, this.maxRS);
 var isValid = true;
 while (this.iter.hasNext ()) {
 var iia = this.iter.next ();
@@ -395,7 +393,7 @@ var value = this.sr - this.ptV.distance (ptS);
 var v = this.voxelData[i][j][k];
 var ipt = this.volumeData.getPointIndex (i, j, k);
 if (firstPass && value > 0) this.bsSurfaceDone.set (ipt);
-if (JU.Measure.isInTetrahedron (this.ptV, ptA, ptB, ptC, ptS, this.plane, this.vTemp, this.vTemp2, this.vTemp3, false)) {
+if (JU.Measure.isInTetrahedron (this.ptV, ptA, ptB, ptC, ptS, this.plane, this.vTemp, this.vTemp2, false)) {
 if (!firstPass ? !this.bsSurfaceDone.get (ipt) && value < 0 && value > -this.volumeData.maxGrid * 1.8 && (value > v) == bsThisPass.get (ipt) : (value > 0 && (v < 0 || v == 3.4028235E38 || (value > v) == bsThisPass.get (ipt)))) {
 bsThisPass.set (ipt);
 this.setVoxel (i, j, k, ipt, value);

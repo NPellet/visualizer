@@ -19,12 +19,12 @@ this.initialize ();
 Clazz.overrideMethod (c$, "getSizeG", 
 function (group) {
 var m = group;
-var groupIndex = m.getGroupIndex ();
+var groupIndex = m.groupIndex;
 var leadAtomIndex = m.getLeadAtom ().i;
 for (var i = this.bioShapes.length; --i >= 0; ) {
 var bioShape = this.bioShapes[i];
 for (var j = 0; j < bioShape.monomerCount; j++) {
-if (bioShape.monomers[j].getGroupIndex () == groupIndex && bioShape.monomers[j].getLeadAtom ().i == leadAtomIndex) return bioShape.mads[j];
+if (bioShape.monomers[j].groupIndex == groupIndex && bioShape.monomers[j].getLeadAtom ().i == leadAtomIndex) return bioShape.mads[j];
 }
 }
 return 0;
@@ -108,7 +108,7 @@ Clazz.defineMethod (c$, "initialize",
 function () {
 var modelCount = this.ms.mc;
 var models = this.ms.am;
-var n = this.ms.getBioPolymerCount ();
+var n = this.ms.getBioPolymerCountInModel (-1);
 var shapes =  new Array (n--);
 for (var i = modelCount; --i >= 0; ) for (var j = this.ms.getBioPolymerCountInModel (i); --j >= 0; n--) {
 var bp = (models[i]).getBioPolymer (j);

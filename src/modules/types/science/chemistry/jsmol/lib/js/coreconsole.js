@@ -403,7 +403,7 @@ if (cmd != null) cmd = splitCmd[0] + splitCmd[1] + q + cmd + q;
 var map = null;
 if (!asCommand) {
 notThis = s;
-if (inBrace || splitCmd[2].startsWith ("$") || JS.T.isIDcmd (cmdtok) || isSelect) {
+if (inBrace || splitCmd[2].startsWith ("$") || isSelect) {
 map =  new java.util.Hashtable ();
 this.vwr.getObjectMap (map, inBrace || isSelect ? '{' : splitCmd[2].startsWith ("$") ? '$' : '0');
 }}cmd = JS.T.completeCommand (map, s.equalsIgnoreCase ("set "), asCommand, asCommand ? splitCmd[1] : splitCmd[2], this.nTab);
@@ -442,7 +442,7 @@ if (strErrorMessage != null && !strErrorMessage.equals ("pending")) this.outputM
 }, "~S");
 Clazz_defineMethod (c$, "destroyConsole", 
 function () {
-if (this.vwr.isApplet ()) this.vwr.getProperty ("DATA_API", "getAppConsole", Boolean.FALSE);
+if (this.vwr.isApplet) this.vwr.getProperty ("DATA_API", "getAppConsole", Boolean.FALSE);
 });
 c$.setAbstractButtonLabels = Clazz_defineMethod (c$, "setAbstractButtonLabels", 
 function (menuMap, labels) {
@@ -566,8 +566,7 @@ function () {
 Clazz_defineMethod (c$, "recallCommand", 
 function (up) {
 var cmd = this.vwr.getSetHistory (up ? -1 : 1);
-if (cmd == null) return;
-this.input.setText (cmd);
+if (cmd != null) this.input.setText (JU.PT.escUnicode (cmd));
 }, "~B");
 Clazz_defineMethod (c$, "processKey", 
 function (kcode, kid, isControlDown) {
@@ -581,7 +580,7 @@ if (s.endsWith ("\n") || s.endsWith ("\t")) return 0;
 mode = 1;
 if (this.input.getCaretPosition () == s.length) {
 var cmd = this.completeCommand (s);
-if (cmd != null) this.input.setText (cmd.$replace ('\t', ' '));
+if (cmd != null) this.input.setText (JU.PT.escUnicode (cmd).$replace ('\t', ' '));
 this.nTab++;
 return mode;
 }break;

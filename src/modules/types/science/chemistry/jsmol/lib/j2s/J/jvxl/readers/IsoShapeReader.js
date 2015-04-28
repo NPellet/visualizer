@@ -56,7 +56,7 @@ function (isMapData) {
 this.volumeData.sr = this;
 this.precalculateVoxelData = false;
 this.isQuiet = true;
-if (this.center.x == 3.4028235E38) this.center.set (0, 0, 0);
+if (Float.isNaN (this.center.x)) this.center.set (0, 0, 0);
 var type = "sphere";
 switch (this.dataType) {
 case 1294:

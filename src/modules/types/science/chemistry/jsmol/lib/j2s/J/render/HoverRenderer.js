@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.render");
-Clazz.load (["J.render.ShapeRenderer"], "J.render.HoverRenderer", ["JU.P3", "J.render.TextRenderer"], function () {
+Clazz.load (["J.render.ShapeRenderer"], "J.render.HoverRenderer", ["JU.P3", "J.render.TextRenderer", "JU.Txt"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.tempXY = null;
 this.ptTemp = null;
@@ -26,9 +26,9 @@ label = hover.text;
 text.setXYZs (hover.xy.x, hover.xy.y, 1, -2147483648);
 } else {
 return true;
-}if (this.vwr != null && (label.indexOf ("%{") >= 0 || label.indexOf ("@{") >= 0)) label = this.vwr.formatText (label);
+}if (this.vwr != null && (label.indexOf ("%{") >= 0 || label.indexOf ("@{") >= 0)) label = JU.Txt.formatText (this.vwr, label);
 text.setText (label);
-J.render.TextRenderer.render (text, this.vwr, this.g3d, 0, antialias ? 2 : 1, false, null, this.tempXY);
+J.render.TextRenderer.render (text, this.g3d, 0, antialias ? 2 : 1, false, null, this.tempXY);
 return true;
 });
 Clazz.defineMethod (c$, "fixLabel", 

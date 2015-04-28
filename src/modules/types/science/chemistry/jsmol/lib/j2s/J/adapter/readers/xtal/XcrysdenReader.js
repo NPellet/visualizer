@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.xtal");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.xtal.XcrysdenReader", null, function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.xtal.XcrysdenReader", ["JU.PT"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.nAtoms = 0;
 this.animation = false;
@@ -51,7 +51,7 @@ this.setFractionalCoordinates (false);
 });
 Clazz.defineMethod (c$, "readCoordinates", 
  function () {
-var atomStr = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+var atomStr = JU.PT.getTokens (this.rd ());
 this.nAtoms = Integer.parseInt (atomStr[0]);
 this.setFractionalCoordinates (false);
 var counter = 0;

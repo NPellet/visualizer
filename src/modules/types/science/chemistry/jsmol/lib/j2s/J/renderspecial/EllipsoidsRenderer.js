@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.renderspecial");
-Clazz.load (["J.render.ShapeRenderer", "JU.BS", "$.M3", "$.M4", "$.P3", "$.P3i", "$.V3", "JV.JC"], "J.renderspecial.EllipsoidsRenderer", ["java.lang.Float", "JU.PT", "J.shapespecial.Ellipsoid", "JU.C", "$.GData", "$.Normix"], function () {
+Clazz.load (["J.render.ShapeRenderer", "JU.BS", "$.M3", "$.M4", "$.P3", "$.P3i", "$.V3", "JV.JC"], "J.renderspecial.EllipsoidsRenderer", ["java.lang.Float", "JU.PT", "J.shapespecial.Ellipsoid", "JU.C", "$.Normix"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.ellipsoids = null;
 this.bGlobals = null;
@@ -94,7 +94,7 @@ this.bGlobals[0] = this.vwr.getBooleanProperty ("ellipsoidDots");
 this.bGlobals[3] = this.vwr.getBooleanProperty ("ellipsoidFill");
 this.bGlobals[6] = !this.isExport && !this.vwr.checkMotionRendering (1113198596);
 this.diameter0 = Math.round ((this.vwr.getP ("ellipsoidAxisDiameter")).floatValue () * 1000);
-var m4 = this.tm.getMatrixtransform ();
+var m4 = this.tm.matrixTransform;
 this.mat.setRow (0, m4.m00, m4.m01, m4.m02);
 this.mat.setRow (1, m4.m10, m4.m11, m4.m12);
 this.mat.setRow (2, m4.m20, m4.m21, m4.m22);
@@ -175,7 +175,7 @@ return;
 }if (this.bOptions[4]) {
 this.renderBall ();
 if (this.bOptions[1] || this.bOptions[2]) {
-this.g3d.setC (this.vwr.getColixBackgroundContrast ());
+this.g3d.setC (this.vwr.cm.colixBackgroundContrast);
 if (this.bOptions[2]) this.renderAxes ();
 if (this.bOptions[1]) this.renderArcs ();
 this.g3d.setC (this.colix);
@@ -353,7 +353,11 @@ this.s1.add (this.selectedPoints[2] = this.screens[J.renderspecial.EllipsoidsRen
 this.s1.scaleAdd (-3, this.s0, this.s1);
 this.pt1.set (this.s1.x, this.s1.y, this.s1.z);
 this.matScreenToEllipsoid.rotate (this.pt1);
-this.selectedOctant = JU.GData.getScreenOctant (this.pt1);
+var i = 0;
+if (this.pt1.x < 0) i |= 1;
+if (this.pt1.y < 0) i |= 2;
+if (this.pt1.z < 0) i |= 4;
+this.selectedOctant = i;
 }});
 Clazz.defineStatics (c$,
 "OPT_DOTS", 0,

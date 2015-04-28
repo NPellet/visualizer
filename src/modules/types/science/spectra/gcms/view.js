@@ -109,7 +109,7 @@ define( [
 						
 						self.module.controller.createDataFromEvent('onIntegralSelect', 'GCIntegration', auc.data._originalSource );
 
-						self.module.controller.sendAction( 'GCIntegration', auc.data._originalSource, 'onIntegralSelect');
+						self.module.controller.sendActionFromEvent( 'onIntegralSelect', 'GCIntegration', auc.data._originalSource);
 						
 					} else {
 						//console.trace();
@@ -148,24 +148,24 @@ define( [
 
 				MZChange: function( ms ) {
 
-					self.module.controller.sendAction('mzList', ms, 'onMZSelectionChange');					
+					self.module.controller.sendActionFromEvent('onMZSelectionChange', 'mzList', ms);
 				},
 
 				MSChangeIndex: function( msIndex, ms ) {
-					self.module.controller.sendAction('msIndex', msIndex, 'onMSIndexChanged');
+					self.module.controller.sendActionFromEvent('onMSIndexChanged', 'msIndex', msIndex);
 					self.module.controller.createDataFromEvent('onMSIndexChanged', 'msMouse', ms);
 					
 				},
 
 				onZoomGC: function( from, to ) {
 
-					self.module.controller.sendAction('fromtoGC', [ from, to ], 'onZoomGCChange');
-					self.module.controller.sendAction('centerGC', (to + from) / 2, 'onZoomGCChange');
+					self.module.controller.sendActionFromEvent('onZoomGCChange', 'fromtoGC', [ from, to ]);
+					self.module.controller.sendActionFromEvent('onZoomGCChange', 'centerGC', (to + from) / 2);
 				},
 
 				ingredientSelected: function( ingredient ) {
 
-					self.module.controller.sendAction('selectedIngredient', ingredient, 'onIngredientSelected');	
+					self.module.controller.sendActionFromEvent('onIngredientSelected', 'selectedIngredient', ingredient);
 				},
 
 				onlyOneMS: true
@@ -194,16 +194,10 @@ define( [
 			'jcamp': function(moduleValue) {
 				var self = this;
 
-				if(!moduleValue) {
-					return;
-				}
-
-				moduleValue = moduleValue.get();
+				moduleValue = String(moduleValue.get());
 				require( [ 'components/jcampconverter/dist/jcampconverter.min' ], function( tojcamp ) {
 
-					var jcamp = tojcamp.convert( moduleValue, true ).then( function( jcamp ) {
-
-//						console.log(JSON.stringify(jcamp.profiling,true));
+					tojcamp.convert( moduleValue, true ).then( function( jcamp ) {
 
 						if( jcamp.gcms ) {
 
@@ -313,7 +307,6 @@ define( [
 
 		onActionReceive: {
 			fromtoGC: function(value, name) {
-				value = value.get();
 
 				var from = value.from - Math.abs( value.to - value.from ) * 0.1;
 				var to = value.to + Math.abs( value.to - value.from ) * 0.1;
@@ -322,7 +315,7 @@ define( [
 				this.gcmsInstance.getGC().redraw( true, true, false );
 				this.gcmsInstance.getGC().drawSeries();
 
-				this.module.controller.sendAction('centerGC', (to + from) / 2, 'onZoomGCChange');
+				this.module.controller.sendActionFromEvent('onZoomGCChange', 'centerGC', (to + from) / 2);
 
 				this.gcmsInstance.updateIngredientPeaks();
 
@@ -349,7 +342,7 @@ define( [
 					return;
 				}
 				this.gcmsInstance.zoomOn(value.pos.x, value.pos2.x, value._max || false);
-				this.module.controller.sendAction('centerGC', (value.pos.x + value.pos2.x) / 2, 'onZoomGCChange');
+				this.module.controller.sendActionFromEvent('onZoomGCChange', 'centerGC', (value.pos.x + value.pos2.x) / 2);
 				this.gcmsInstance.updateIngredientPeaks();
 				
 			},

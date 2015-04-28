@@ -2,7 +2,7 @@ Clazz.declarePackage ("J.awtjs2d");
 c$ = Clazz.declareType (J.awtjs2d, "JSFont");
 c$.newFont = Clazz.defineMethod (c$, "newFont", 
 function (fontFace, isBold, isItalic, fontSize, type) {
-fontFace = (fontFace.equals ("Monospaced") ? "Courier" : fontFace.startsWith ("Sans") ? "Sans-Serif" : "Serif");
+fontFace = (fontFace.equals ("Monospaced") ? "Courier" : fontFace.startsWith ("Sans") ? "Helvetica Neue, Sans-serif" : "Serif");
 return (isBold ? "bold " : "") + (isItalic ? "italic " : "") + fontSize + type + " " + fontFace;
 }, "~S,~B,~B,~N,~S");
 c$.getFontMetrics = Clazz.defineMethod (c$, "getFontMetrics", 

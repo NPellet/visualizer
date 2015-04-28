@@ -332,16 +332,34 @@ return JU.PT.getQuotedStringNext (line, next);
 }, "~S,~N");
 c$.getQuotedStringNext = Clazz.defineMethod (c$, "getQuotedStringNext", 
 function (line, next) {
-var value = line;
 var i = next[0];
-if (i < 0 || (i = value.indexOf ("\"", i)) < 0) return "";
-next[0] = ++i;
-value = value.substring (i);
-i = -1;
-while (++i < value.length && value.charAt (i) != '"') if (value.charAt (i) == '\\') i++;
+if (i < 0 || (i = line.indexOf ("\"", i)) < 0) return "";
+var pt = i + 1;
+var len = line.length;
+while (++i < len && line.charAt (i) != '"') if (line.charAt (i) == '\\') i++;
 
-next[0] += i + 1;
-return value.substring (0, i);
+next[0] = i + 1;
+return line.substring (pt, i);
+}, "~S,~A");
+c$.getCSVString = Clazz.defineMethod (c$, "getCSVString", 
+function (line, next) {
+var i = next[1];
+if (i < 0 || (i = line.indexOf ("\"", i)) < 0) return null;
+var pt = next[0] = i;
+var len = line.length;
+var escaped = false;
+var haveEscape = false;
+while (++i < len && (line.charAt (i) != '"' || (escaped = (i + 1 < len && line.charAt (i + 1) == '"')))) if (escaped) {
+escaped = false;
+haveEscape = true;
+i++;
+}
+if (i >= len) {
+next[1] = -1;
+return null;
+}next[1] = i + 1;
+var s = line.substring (pt + 1, i);
+return (haveEscape ? JU.PT.rep (JU.PT.rep (s, "\"\"", "\0"), "\0", "\"") : s);
 }, "~S,~A");
 c$.isOneOf = Clazz.defineMethod (c$, "isOneOf", 
 function (key, semiList) {
@@ -612,11 +630,15 @@ pt0 = pt + 1;
 sb.append (str.substring (pt0, str.length));
 str = sb.toString ();
 }
-for (i = str.length; --i >= 0; ) if (str.charCodeAt (i) > 0x7F) {
+return "\"" + JU.PT.escUnicode (str) + "\"";
+}, "~S");
+c$.escUnicode = Clazz.defineMethod (c$, "escUnicode", 
+function (str) {
+for (var i = str.length; --i >= 0; ) if (str.charCodeAt (i) > 0x7F) {
 var s = "0000" + Integer.toHexString (str.charCodeAt (i));
 str = str.substring (0, i) + "\\u" + s.substring (s.length - 4) + str.substring (i + 1);
 }
-return "\"" + str + "\"";
+return str;
 }, "~S");
 c$.escF = Clazz.defineMethod (c$, "escF", 
 function (f) {

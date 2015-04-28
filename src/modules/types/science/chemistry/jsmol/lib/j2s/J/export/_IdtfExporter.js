@@ -61,9 +61,8 @@ Clazz.overrideMethod (c$, "outputHeader",
 function () {
 this.output ("FILE_FORMAT \"IDTF\"\nFORMAT_VERSION 100\n");
 this.m.setIdentity ();
-var q = this.tm.getRotationQuaternion ();
-this.m.setToM3 (q.getMatrix ());
-q.transformP2 (this.referenceCenter, this.tempP1);
+this.m.setToM3 (this.tm.matrixRotate);
+this.m.rotate2 (this.referenceCenter, this.tempP1);
 this.m.m03 = -this.tempP1.x;
 this.m.m13 = -this.tempP1.y;
 this.m.m23 = -this.tempP1.z;
@@ -519,7 +518,7 @@ this.addShader (key, colix);
 if (this.cylinderMatrix == null) this.cylinderMatrix =  new JU.M4 ();
 this.cylinderMatrix.setIdentity ();
 v.addLast (this.getParentItem ("Jmol", this.cylinderMatrix));
-}, "JU.P3,JU.P3,JU.P3,~N");
+}, "JU.T3,JU.T3,JU.T3,~N");
 Clazz.defineMethod (c$, "getTriangleResource", 
  function (key, pt1, pt2, pt3) {
 var vertexes = [pt1, pt2, pt3];
@@ -529,5 +528,5 @@ this.tempV2.cross (this.tempV2, this.tempV1);
 this.tempV2.normalize ();
 var normals = [this.tempV2, this.tempV2, this.tempV2];
 return this.getMeshData (key, this.triangleFace, vertexes, normals);
-}, "~S,JU.P3,JU.P3,JU.P3");
+}, "~S,JU.T3,JU.T3,JU.T3");
 });

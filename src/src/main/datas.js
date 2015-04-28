@@ -87,7 +87,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
     function duplicate(object) {
 
         var type = typeof object;
-        if (type === 'number' || type === 'string' || type === 'boolean') {
+        if (type === 'number' || type === 'string' || type === 'boolean' || object === null) {
             return object;
         } else if (type === 'undefined' || type === 'function') {
             return;
@@ -136,7 +136,10 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
     };
 
     function DataString(s) {
-        this.s_ = String(s);
+        Object.defineProperty(this, 's_', {
+            value: String(s),
+            writable: true
+        });
     }
 
     DataString.cast = function (value) {
@@ -164,7 +167,10 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
     DataString.prototype.nativeConstructor = String;
 
     function DataNumber(s) {
-        this.s_ = Number(s);
+        Object.defineProperty(this, 's_', {
+            value: Number(s),
+            writable: true
+        });
     }
 
     DataNumber.cast = function (value) {
@@ -178,7 +184,10 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
     DataNumber.prototype.nativeConstructor = Number;
 
     function DataBoolean(s) {
-        this.s_ = Boolean(s);
+        Object.defineProperty(this, 's_', {
+            value: Boolean(s),
+            writable: true
+        });
     }
 
     DataBoolean.cast = function (value) {
@@ -216,7 +225,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
     }
 
     DataArray.prototype = Object.create(Array.prototype);
-    Object.defineProperty(DataArray.prototype, 'constructor', DataArray);
+    Object.defineProperty(DataArray.prototype, 'constructor', {value: DataArray});
 
     window.DataObject = DataObject;
     window.DataArray = DataArray;
@@ -300,7 +309,9 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
                     if (this.hasOwnProperty('type') && this.hasOwnProperty('value')) {
                         return Promise.resolve(this.value);
                     } else if (this.hasOwnProperty('type') && this.hasOwnProperty('url')) {
-                        return this.fetch(true);
+                        return this.fetch(true).then(function (self) {
+                            return self.get();
+                        });
                     } else {
                         return Promise.resolve(this);
                     }
@@ -926,5 +937,17 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
         }
 
     }
+
+    return {
+        DataObject: DataObject,
+        DataArray: DataArray,
+        DataString: DataString,
+        DataBoolean: DataBoolean,
+        DataNumber: DataNumber,
+        isSpecialObject: isSpecialObject,
+        isSpecialNativeObject: isSpecialNativeObject,
+        resurrect: DataObject.resurrect,
+        check: DataObject.check
+    };
 
 });

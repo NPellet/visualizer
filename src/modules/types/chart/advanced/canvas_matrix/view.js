@@ -1,6 +1,13 @@
 'use strict';
 
-define(['require', 'modules/default/defaultview', 'src/util/webworker', 'src/util/util', 'components/jquery.threedubmedia/event.drag/jquery.event.drag', 'components/jquery-throttle-debounce/jquery.ba-throttle-debounce.min'], function (require, Default, WorkerHandler, Util) {
+define([
+    'require',
+    'modules/default/defaultview',
+    'src/util/util',
+    'src/util/color',
+    'src/util/worker',
+    'components/jquery.threedubmedia/event.drag/jquery.event.drag'
+], function (require, Default, Util, Color, Worker) {
 
     function View() {
     }
@@ -68,9 +75,8 @@ define(['require', 'modules/default/defaultview', 'src/util/webworker', 'src/uti
         inDom: function () {
             this.canvasContainer.width(this.dom.width() - 55);
             this.onResize(true);
-            this.initWorkers();
+            this.initWorkers().then(this.resolveReady.bind(this));
             this.module.controller.initEvents();
-            this.resolveReady();
         },
 
         onResize: function (doNotRedraw) {
@@ -254,6 +260,15 @@ define(['require', 'modules/default/defaultview', 'src/util/webworker', 'src/uti
             };
         },
 
+        blank: {
+            matrix: function () {
+                this.doCanvasErase();
+                this.gridData = [];
+                this.canvasNbX = 0;
+                this.canvasNbY = 0;
+            }
+        },
+
         // Here we receive new data, we need to relaunch the workers
         update: {
 
@@ -262,7 +277,6 @@ define(['require', 'modules/default/defaultview', 'src/util/webworker', 'src/uti
                 if (!this.canvas)
                     return;
 
-                this.doCanvasErase();
                 moduleValue = moduleValue.get();
 
 
@@ -271,27 +285,6 @@ define(['require', 'modules/default/defaultview', 'src/util/webworker', 'src/uti
                 this.canvasNbX = this.gridData[0].length;
                 this.canvasNbY = this.gridData.length;
 
-                var self = this;
-
-                if (!this.minmaxworker) {
-                    this.minmaxworker = new Worker('src/util/workers/getminmaxmatrix.js');
-                    this.minmaxworker.addEventListener('message', function (event) {
-
-                        self.minValue = event.data.min;
-                        self.maxValue = event.data.max;
-                        self.doChangeWorkersData();
-                        // We can keep the actual workers, not a problem. We just need to erase the buffers array
-                        self.buffers = [];
-                        self.buffersDone = [];
-                        if (!self.getHighContrast()) {
-                            self.minValue = 0;
-                            self.maxValue = 1;
-                        }
-                        self.redoScale(self.minValue, self.maxValue);
-                        self.launchWorkers(true);
-                    });
-                }
-
                 this.minmaxworker.postMessage(JSON.stringify(moduleValue.data));
             }
 
@@ -299,7 +292,52 @@ define(['require', 'modules/default/defaultview', 'src/util/webworker', 'src/uti
         },
 
         initWorkers: function () {
-            this.workers = this.initWorker();
+
+            var minMaxWorker = Worker(require.toUrl('src/util/workers/getminmaxmatrix.js'));
+            var mainWorker = Worker(require.toUrl('./worker.js'));
+            var self = this;
+            return Promise.all([minMaxWorker, mainWorker]).then(function (workers) {
+                var minMaxWorker = workers[0];
+                minMaxWorker.addEventListener('message', function (event) {
+
+                    self.minValue = event.data.min;
+                    self.maxValue = event.data.max;
+                    self.doChangeWorkersData();
+                    // We can keep the actual workers, not a problem. We just need to erase the buffers array
+                    self.buffers = [];
+                    self.buffersDone = [];
+                    if (!self.getHighContrast()) {
+                        self.minValue = 0;
+                        self.maxValue = 1;
+                    }
+                    self.redoScale(self.minValue, self.maxValue);
+                    self.launchWorkers(true);
+                });
+                self.minmaxworker = minMaxWorker;
+
+                var mainWorker = workers[1];
+                mainWorker.postMessage({
+                    title: 'init',
+                    message: {
+                        colors: self.getColors(),
+                        squareLoading: self.squareLoading,
+                        highcontrast: self.getHighContrast()
+                    }
+                });
+                mainWorker.addEventListener('message', function (event) {
+                    var data = event.data;
+                    var pxPerCell = data.pxPerCell;
+                    var buffIndexX = data.indexX;
+                    var buffIndexY = data.indexY;
+
+                    self.buffers[self.getBufferKey(pxPerCell, buffIndexX, buffIndexY)] = data.data;
+                    if (self.getPxPerCell() == pxPerCell)
+                        self.doCanvasDrawBuffer(buffIndexX, buffIndexY);
+
+                    self.launchWorkers();
+                });
+                self.workers = mainWorker;
+            });
         },
 
         getCurrentPxPerCellFetch: function () {
@@ -389,34 +427,6 @@ define(['require', 'modules/default/defaultview', 'src/util/webworker', 'src/uti
             });
         },
 
-        initWorker: function (pxPerCell) {
-            var worker = new Worker(require.toUrl('./worker.js'));
-            worker.postMessage({
-                title: 'init',
-                message: {
-                    colors: this.getColors(),
-                    squareLoading: this.squareLoading,
-                    highcontrast: this.getHighContrast()
-                }
-            });
-
-            var self = this;
-            worker.addEventListener('message', function (event) {
-                var data = event.data;
-                var pxPerCell = data.pxPerCell;
-                var buffIndexX = data.indexX;
-                var buffIndexY = data.indexY;
-
-                self.buffers[self.getBufferKey(pxPerCell, buffIndexX, buffIndexY)] = data.data;
-                if (self.getPxPerCell() == pxPerCell)
-                    self.doCanvasDrawBuffer(buffIndexX, buffIndexY);
-
-                self.launchWorkers();
-            });
-
-            return worker;
-        },
-
         getColors: function () {
             if (!this.colors) {
                 var colors = this.module.getConfiguration('colors');
@@ -449,7 +459,7 @@ define(['require', 'modules/default/defaultview', 'src/util/webworker', 'src/uti
             var lineargradient = this.scaleCanvasContext.createLinearGradient(0, 0, 0, gradHeight);
 
             for (var i = 0; i < colors.length; i++) {
-                lineargradient.addColorStop(i / (colors.length - 1), Util.getColor(colors[i]));
+                lineargradient.addColorStop(i / (colors.length - 1), Color.getColor(colors[i]));
                 this.scaleCanvasContext.fillText(String(Math.round(100 * (i * step + min)) / 100), 5, stepPx * i <= 0 ? 15 : stepPx * i - 5);
             }
 

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.xtal");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader", "JU.Lst"], "J.adapter.readers.xtal.VaspPoscarReader", ["JU.SB", "JU.Logger"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader", "JU.Lst"], "J.adapter.readers.xtal.VaspPoscarReader", ["JU.PT", "$.SB", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.atomLabels = null;
 this.ac = 0;
@@ -35,8 +35,8 @@ this.addPrimitiveLatticeVector (2, unitCellData, 6);
 });
 Clazz.defineMethod (c$, "readMolecularFormula", 
  function () {
-var elementLabel = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.discardLinesUntilNonBlank ());
-var elementCounts = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+var elementLabel = JU.PT.getTokens (this.discardLinesUntilNonBlank ());
+var elementCounts = JU.PT.getTokens (this.rd ());
 var mf =  new JU.SB ();
 for (var i = 0; i < elementCounts.length; i++) {
 var n = Integer.parseInt (elementCounts[i]);
@@ -56,7 +56,7 @@ Clazz.defineMethod (c$, "readCoordinates",
  function () {
 if (this.discardLinesUntilNonBlank ().toLowerCase ().contains ("selective")) this.rd ();
 if (this.line.toLowerCase ().contains ("cartesian")) this.setFractionalCoordinates (false);
-for (var i = 0; i < this.ac; i++) this.addAtomXYZSymName (J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ()), 0, null, this.atomLabels.get (i));
+for (var i = 0; i < this.ac; i++) this.addAtomXYZSymName (JU.PT.getTokens (this.rd ()), 0, null, this.atomLabels.get (i));
 
 });
 });

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JV");
-Clazz.load (["java.util.Hashtable", "JU.P3", "J.c.AXES", "$.CBK"], "JV.GlobalSettings", ["java.lang.Boolean", "$.Float", "JU.BS", "$.DF", "$.Lst", "$.PT", "$.SB", "J.c.STR", "JS.SV", "JU.BSUtil", "$.Escape", "$.Logger", "JV.JC", "$.StateManager", "$.Viewer"], function () {
+Clazz.load (["java.util.Hashtable", "JU.P3", "J.c.CBK"], "JV.GlobalSettings", ["java.lang.Boolean", "$.Float", "JU.DF", "$.PT", "$.SB", "J.c.STR", "JS.SV", "JU.Escape", "$.Logger", "JV.JC", "$.StateManager", "$.Viewer"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.vwr = null;
 this.htNonbooleanParameterValues = null;
@@ -7,13 +7,6 @@ this.htBooleanParameterFlags = null;
 this.htPropertyFlagsRemoved = null;
 this.htUserVariables = null;
 this.databases = null;
-this.ambientPercent = 45;
-this.diffusePercent = 84;
-this.specular = true;
-this.specularExponent = 6;
-this.phongExponent = 64;
-this.specularPercent = 22;
-this.specularPower = 40;
 this.zDepth = 0;
 this.zShadePower = 3;
 this.zSlab = 50;
@@ -45,8 +38,8 @@ this.smilesUrlFormat = null;
 this.nihResolverFormat = null;
 this.pubChemFormat = null;
 this.edsUrlFormat = "http://eds.bmc.uu.se/eds/dfs/%LC13/%LCFILE/%LCFILE.omap";
+this.edsUrlFormatDiff = "http://eds.bmc.uu.se/eds/dfs/%LC13/%LCFILE/%LCFILE_diff.omap";
 this.edsUrlCutoff = "http://eds.bmc.uu.se/eds/dfs/%LC13/%LCFILE/%LCFILE.sfdat";
-this.edsUrlOptions = "within 2.0 {*}";
 this.minBondDistance = 0.4;
 this.minPixelSelRadius = 6;
 this.pdbAddHydrogens = false;
@@ -61,8 +54,6 @@ this.legacyHAddition = false;
 this.legacyJavaFloat = false;
 this.allowRotateSelected = false;
 this.allowMoveAtoms = false;
-this.defaultPerspectiveDepth = true;
-this.visualRange = 5;
 this.solventOn = false;
 this.defaultAngleLabel = "%VALUE %UNITS";
 this.defaultDistanceLabel = "%VALUE %UNITS";
@@ -135,13 +126,10 @@ this.allowKeyStrokes = false;
 this.animationFps = 10;
 this.atomPicking = true;
 this.autoFps = false;
-this.axesMode = null;
+this.axesMode = 603979810;
 this.axesScale = 2;
 this.starWidth = 0.05;
 this.bondPicking = false;
-this.defaultCameraDepth = 3.0;
-this.celShading = false;
-this.celShadingPower = 10;
 this.dataSeparator = "~~~";
 this.debugScript = false;
 this.defaultDrawArrowScale = 0.5;
@@ -236,7 +224,6 @@ Clazz.instantialize (this, arguments);
 Clazz.prepareFields (c$, function () {
 this.htUserVariables =  new java.util.Hashtable ();
 this.ptDefaultLattice =  new JU.P3 ();
-this.axesMode = J.c.AXES.BOUNDBOX;
 this.objColors =  Clazz.newIntArray (8, 0);
 this.objStateOn =  Clazz.newBooleanArray (8, false);
 this.objMad =  Clazz.newIntArray (8, 0);
@@ -247,28 +234,8 @@ this.structureList.put (J.c.STR.SHEET, [-180, -10, 70, 180, -180, -45, -180, -13
 this.structureList.put (J.c.STR.HELIX, [-160, 0, -100, 45]);
 }});
 Clazz.makeConstructor (c$, 
-function (vwr, gsOld, clearUserVariables) {
+function (vwr, g, clearUserVariables) {
 this.vwr = vwr;
-this.registerAllValues (gsOld, clearUserVariables);
-}, "JV.Viewer,JV.GlobalSettings,~B");
-Clazz.defineMethod (c$, "clear", 
-function () {
-var e = this.htUserVariables.keySet ().iterator ();
-while (e.hasNext ()) {
-var key = e.next ();
-if (key.charAt (0) == '@' || key.startsWith ("site_")) e.remove ();
-}
-this.setPicked (-1);
-this.setI ("_atomhovered", -1);
-this.setO ("_pickinfo", "");
-this.setB ("selectionhalos", false);
-this.setB ("hidenotselected", false);
-this.setB ("measurementlabels", this.measurementLabels = true);
-this.setB ("drawHover", this.drawHover = false);
-this.vwr.stm.saveScene ("DELETE", null);
-});
-Clazz.defineMethod (c$, "registerAllValues", 
-function (g, clearUserVariables) {
 this.htNonbooleanParameterValues =  new java.util.Hashtable ();
 this.htBooleanParameterFlags =  new java.util.Hashtable ();
 this.htPropertyFlagsRemoved =  new java.util.Hashtable ();
@@ -309,12 +276,13 @@ this.pubChemFormat = this.databases.get ("pubchem");
 for (var item, $item = 0, $$item = J.c.CBK.values (); $item < $$item.length && ((item = $$item[$item]) || true); $item++) this.resetValue (item.name () + "Callback", g);
 
 this.setI ("historyLevel", 0);
+this.setF ("cameraDepth", 3.0);
 this.setI ("depth", 0);
 this.setF ("gestureSwipeFactor", 1.0);
 this.setB ("hideNotSelected", false);
 this.setO ("hoverLabel", "");
-this.setB ("isKiosk", this.vwr.isKiosk ());
-this.setO ("logFile", this.vwr.getLogFileName ());
+this.setB ("isKiosk", vwr.isKiosk ());
+this.setO ("logFile", vwr.getLogFileName ());
 this.setI ("logLevel", JU.Logger.getLogLevel ());
 this.setF ("mouseWheelFactor", 1.15);
 this.setF ("mouseDragFactor", 1.0);
@@ -325,6 +293,7 @@ this.setI ("navX", 0);
 this.setI ("navY", 0);
 this.setI ("navZ", 0);
 this.setO ("pathForAllFiles", "");
+this.setB ("perspectiveDepth", true);
 this.setI ("perspectiveModel", 11);
 this.setO ("picking", "identify");
 this.setO ("pickingStyle", "toggle");
@@ -344,16 +313,14 @@ this.setI ("spinX", 0);
 this.setI ("spinY", 30);
 this.setI ("spinZ", 0);
 this.setI ("spinFps", 30);
+this.setF ("visualRange", 5.0);
 this.setI ("stereoDegrees", -5);
 this.setI ("stateversion", 0);
-this.setB ("syncScript", this.vwr.getStatusManager ().syncingScripts);
-this.setB ("syncMouse", this.vwr.getStatusManager ().syncingMouse);
-this.setB ("syncStereo", this.vwr.getStatusManager ().stereoSync);
+this.setB ("syncScript", vwr.sm.syncingScripts);
+this.setB ("syncMouse", vwr.sm.syncingMouse);
+this.setB ("syncStereo", vwr.sm.stereoSync);
 this.setB ("windowCentered", true);
 this.setB ("zoomEnabled", true);
-this.setI ("zDepth", 0);
-this.setB ("zShade", false);
-this.setI ("zSlab", 50);
 this.setI ("_version", JV.JC.versionInt);
 this.setB ("axesWindow", true);
 this.setB ("axesMolecular", false);
@@ -380,7 +347,6 @@ this.setB ("allowModelkit", this.allowModelkit);
 this.setB ("allowMultiTouch", this.allowMultiTouch);
 this.setB ("allowRotateSelected", this.allowRotateSelected);
 this.setB ("allowMoveAtoms", this.allowMoveAtoms);
-this.setI ("ambientPercent", this.ambientPercent);
 this.setI ("animationFps", this.animationFps);
 this.setB ("antialiasImages", this.antialiasImages);
 this.setB ("antialiasDisplay", this.antialiasDisplay);
@@ -392,7 +358,7 @@ this.setB ("atomPicking", this.atomPicking);
 this.setO ("atomTypes", this.atomTypes);
 this.setB ("autoBond", this.autoBond);
 this.setB ("autoFps", this.autoFps);
-this.setI ("axesMode", this.axesMode.getCode ());
+this.setI ("axesMode", this.axesMode == 603979808 ? 2 : this.axesMode == 603979804 ? 1 : 0);
 this.setF ("axesScale", this.axesScale);
 this.setB ("axesOrientationRasmol", this.axesOrientationRasmol);
 this.setB ("backboneSteps", this.backboneSteps);
@@ -400,15 +366,12 @@ this.setB ("bondModeOr", this.bondModeOr);
 this.setB ("bondPicking", this.bondPicking);
 this.setI ("bondRadiusMilliAngstroms", this.bondRadiusMilliAngstroms);
 this.setF ("bondTolerance", this.bondTolerance);
-this.setF ("cameraDepth", this.defaultCameraDepth);
 this.setB ("cartoonBaseEdges", this.cartoonBaseEdges);
 this.setB ("cartoonFancy", this.cartoonFancy);
 this.setB ("cartoonLadders", this.cartoonLadders);
 this.setB ("cartoonLadders", this.cartoonRibose);
 this.setB ("cartoonRockets", this.cartoonRockets);
 this.setB ("chainCaseSensitive", this.chainCaseSensitive);
-this.setB ("celShading", this.celShading);
-this.setI ("celShadingPower", this.celShadingPower);
 this.setI ("bondingVersion", this.bondingVersion);
 this.setO ("dataSeparator", this.dataSeparator);
 this.setB ("debugScript", this.debugScript);
@@ -425,7 +388,6 @@ this.setB ("defaultStructureDSSP", this.defaultStructureDSSP);
 this.setO ("defaultTorsionLabel", this.defaultTorsionLabel);
 this.setF ("defaultTranslucent", this.defaultTranslucent);
 this.setI ("delayMaximumMs", this.delayMaximumMs);
-this.setI ("diffusePercent", this.diffusePercent);
 this.setF ("dipoleScale", this.dipoleScale);
 this.setB ("disablePopupMenu", this.disablePopupMenu);
 this.setB ("displayCellParameters", this.displayCellParameters);
@@ -439,6 +401,7 @@ this.setF ("drawFontSize", this.drawFontSize);
 this.setB ("drawPicking", this.drawPicking);
 this.setB ("dsspCalculateHydrogenAlways", this.dsspCalcHydrogen);
 this.setO ("edsUrlFormat", this.edsUrlFormat);
+this.setO ("edsUrlFormatDiff", this.edsUrlFormatDiff);
 this.setO ("edsUrlCutoff", this.edsUrlCutoff);
 this.setB ("ellipsoidArcs", this.ellipsoidArcs);
 this.setB ("ellipsoidArrows", this.ellipsoidArrows);
@@ -508,9 +471,7 @@ this.setB ("partialDots", this.partialDots);
 this.setB ("pdbAddHydrogens", this.pdbAddHydrogens);
 this.setB ("pdbGetHeader", this.pdbGetHeader);
 this.setB ("pdbSequential", this.pdbSequential);
-this.setB ("perspectiveDepth", this.defaultPerspectiveDepth);
 this.setI ("percentVdwAtom", this.percentVdwAtom);
-this.setI ("phongExponent", this.phongExponent);
 this.setI ("pickingSpinRate", this.pickingSpinRate);
 this.setO ("pickLabel", this.pickLabel);
 this.setI ("platformSpeed", this.platformSpeed);
@@ -549,10 +510,6 @@ this.setO ("pubChemFormat", this.pubChemFormat);
 this.setB ("showUnitCellDetails", this.showUnitCellDetails);
 this.setB ("solventProbe", this.solventOn);
 this.setF ("solventProbeRadius", this.solventProbeRadius);
-this.setB ("specular", this.specular);
-this.setI ("specularExponent", this.specularExponent);
-this.setI ("specularPercent", this.specularPercent);
-this.setI ("specularPower", this.specularPower);
 this.setB ("ssbondsBackbone", this.ssbondsBackbone);
 this.setF ("starWidth", this.starWidth);
 this.setB ("statusReporting", this.statusReporting);
@@ -577,7 +534,6 @@ this.setF ("vectorScale", this.vectorScale);
 this.setB ("vectorSymmetry", this.vectorSymmetry);
 this.setF ("vibrationPeriod", this.vibrationPeriod);
 this.setF ("vibrationScale", this.vibrationScale);
-this.setF ("visualRange", this.visualRange);
 this.setB ("waitForMoveTo", this.waitForMoveTo);
 this.setB ("wireframeRotation", this.wireframeRotation);
 this.setI ("zDepth", this.zDepth);
@@ -586,7 +542,23 @@ this.setB ("zoomHeight", this.zoomHeight);
 this.setB ("zoomLarge", this.zoomLarge);
 this.setI ("zShadePower", this.zShadePower);
 this.setI ("zSlab", this.zSlab);
-}, "JV.GlobalSettings,~B");
+}, "JV.Viewer,JV.GlobalSettings,~B");
+Clazz.defineMethod (c$, "clear", 
+function () {
+var e = this.htUserVariables.keySet ().iterator ();
+while (e.hasNext ()) {
+var key = e.next ();
+if (key.charAt (0) == '@' || key.startsWith ("site_")) e.remove ();
+}
+this.vwr.setPicked (-1);
+this.setI ("_atomhovered", -1);
+this.setO ("_pickinfo", "");
+this.setB ("selectionhalos", false);
+this.setB ("hidenotselected", false);
+this.setB ("measurementlabels", this.measurementLabels = true);
+this.setB ("drawHover", this.drawHover = false);
+this.vwr.stm.saveScene ("DELETE", null);
+});
 Clazz.defineMethod (c$, "setUnits", 
 function (units) {
 var mu = this.measureDistanceUnits;
@@ -717,25 +689,6 @@ Clazz.defineMethod (c$, "getStructureList",
 function () {
 return this.structureList;
 });
-Clazz.defineMethod (c$, "setPicked", 
-function (atomIndex) {
-var pickedSet = null;
-var pickedList = null;
-if (atomIndex >= 0) {
-this.setI ("_atompicked", atomIndex);
-pickedSet = this.getParam ("picked", true);
-pickedList = this.getParam ("pickedList", true);
-}if (pickedSet == null || pickedSet.tok != 10) {
-pickedSet = JS.SV.newV (10,  new JU.BS ());
-pickedList = JS.SV.getVariableList ( new JU.Lst ());
-this.setUserVariable ("picked", pickedSet);
-this.setUserVariable ("pickedList", pickedList);
-}if (atomIndex < 0) return;
-JS.SV.getBitSet (pickedSet, false).set (atomIndex);
-var p = pickedList.pushPop (null, null);
-if (p.tok == 10) pickedList.pushPop (p, null);
-if (p.tok != 10 || !(p.value).get (atomIndex)) pickedList.pushPop (JS.SV.newV (10, JU.BSUtil.newAndSetBit (atomIndex)), null);
-}, "~N");
 Clazz.defineMethod (c$, "resolveDataBase", 
 function (database, id) {
 var format = this.databases.get (database.toLowerCase ());
@@ -743,7 +696,19 @@ if (format == null) return null;
 if (id.indexOf ("/") < 0) {
 if (database.equals ("pubchem")) id = "name/" + id;
  else if (database.equals ("nci")) id += "/file?format=sdf&get3d=True";
-}return (format.indexOf ("%FILE") < 0 ? format + id : JU.PT.formatStringS (format, "FILE", id));
+}while (format.indexOf ("%c") >= 0) {
+try {
+for (var i = 1; i < 10; i++) {
+format = JU.PT.rep (format, "%c" + i, id.substring (i - 1, i));
+}
+} catch (e) {
+if (Clazz.exceptionOf (e, Exception)) {
+} else {
+throw e;
+}
+}
+}
+return (format.indexOf ("%FILE") < 0 ? format + id : JU.PT.formatStringS (format, "FILE", id));
 }, "~S,~S");
 c$.doReportProperty = Clazz.defineMethod (c$, "doReportProperty", 
 function (name) {
@@ -792,6 +757,7 @@ this.app (str, "#set smilesUrlFormat " + JU.PT.esc (this.smilesUrlFormat));
 this.app (str, "#set nihResolverFormat " + JU.PT.esc (this.nihResolverFormat));
 this.app (str, "#set pubChemFormat " + JU.PT.esc (this.pubChemFormat));
 this.app (str, "#set edsUrlFormat " + JU.PT.esc (this.edsUrlFormat));
+this.app (str, "#set edsUrlFormatDiff " + JU.PT.esc (this.edsUrlFormatDiff));
 this.app (str, "#set edsUrlCutoff " + JU.PT.esc (this.edsUrlCutoff));
 this.app (str, "set bondingVersion " + this.bondingVersion);
 this.app (str, "set legacyAutoBonding " + this.legacyAutoBonding);

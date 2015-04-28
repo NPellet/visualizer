@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader", "java.util.Hashtable", "JU.Lst"], "J.adapter.readers.quantum.BasisFunctionReader", ["java.lang.Character", "java.util.Arrays", "J.api.JmolAdapter", "JU.Logger"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader", "java.util.Hashtable", "JU.Lst"], "J.adapter.readers.quantum.BasisFunctionReader", ["java.util.Arrays", "JU.PT", "J.quantum.QS", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.shells = null;
 this.moData = null;
@@ -31,7 +31,7 @@ this.line += " " + this.alphaBeta;
 var ucline = this.line.toUpperCase ();
 if (this.filterTokens == null) {
 this.filterIsNot = (this.filter.indexOf ("!") >= 0);
-this.filterTokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.filter.$replace ('!', ' ').$replace (',', ' ').$replace (';', ' '));
+this.filterTokens = JU.PT.getTokens (this.filter.$replace ('!', ' ').$replace (',', ' ').$replace (';', ' '));
 }for (var i = 0; i < this.filterTokens.length; i++) if (ucline.indexOf (this.filterTokens[i]) >= 0) {
 if (!this.filterIsNot) {
 nOK = this.filterTokens.length;
@@ -48,15 +48,11 @@ function (mo) {
 if (this.dfCoefMaps != null) mo.put ("dfCoefMaps", this.dfCoefMaps);
 this.orbitals.addLast (mo);
 }, "java.util.Map");
-Clazz.defineMethod (c$, "isQuantumBasisSupported", 
-function (ch) {
-return ("SPLDF".indexOf (Character.toUpperCase (ch)) >= 0);
-}, "~S");
 Clazz.defineMethod (c$, "getDFMap", 
 function (fileList, shellType, jmolList, minLength) {
 if (fileList.equals (jmolList)) return true;
 this.getDfCoefMaps ();
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (fileList);
+var tokens = JU.PT.getTokens (fileList);
 var isOK = true;
 for (var i = 0; i < this.dfCoefMaps[shellType].length && isOK; i++) {
 var key = tokens[i];
@@ -75,8 +71,7 @@ this.dfCoefMaps[shellType][0] = -2147483648;
 }, "~S,~N,~S,~N");
 Clazz.defineMethod (c$, "getDfCoefMaps", 
 function () {
-if (this.dfCoefMaps == null) this.dfCoefMaps = J.api.JmolAdapter.getNewDfCoefMap ();
-return this.dfCoefMaps;
+return (this.dfCoefMaps == null ? (this.dfCoefMaps = J.adapter.readers.quantum.BasisFunctionReader.getNewDfCoefMap ()) : this.dfCoefMaps);
 });
 c$.canonicalizeQuantumSubshellTag = Clazz.defineMethod (c$, "canonicalizeQuantumSubshellTag", 
 function (tag) {
@@ -99,6 +94,22 @@ this.nCoef += m;
 }
 return this.nCoef;
 }, "~N,~N");
+c$.getQuantumShellTagIDSpherical = Clazz.defineMethod (c$, "getQuantumShellTagIDSpherical", 
+function (tag) {
+return J.quantum.QS.getQuantumShellTagIDSpherical (tag);
+}, "~S");
+c$.getQuantumShellTagID = Clazz.defineMethod (c$, "getQuantumShellTagID", 
+function (tag) {
+return J.quantum.QS.getQuantumShellTagID (tag);
+}, "~S");
+c$.getQuantumShellTag = Clazz.defineMethod (c$, "getQuantumShellTag", 
+function (id) {
+return J.quantum.QS.getQuantumShellTag (id);
+}, "~N");
+c$.getNewDfCoefMap = Clazz.defineMethod (c$, "getNewDfCoefMap", 
+function () {
+return J.quantum.QS.getNewDfCoefMap ();
+});
 c$.$BasisFunctionReader$MOEnergySorter$ = function () {
 Clazz.pu$h(self.c$);
 c$ = Clazz.decorateAsClass (function () {

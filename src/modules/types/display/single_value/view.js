@@ -1,23 +1,32 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domdeferred', 'src/util/api', 'src/util/typerenderer'], function (Default, Traversing, DomDeferred, API, Renderer) {
+define([
+    'modules/default/defaultview',
+    'src/util/domdeferred',
+    'src/util/api',
+    'src/util/typerenderer',
+    'src/util/color'
+], function (Default,
+             DomDeferred,
+             API,
+             Renderer,
+             Color) {
 
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
 
         init: function () {
             var html = '<div></div>';
-            if(this.module.getConfigurationCheckbox('append', 'yes')) {
+            if (this.module.getConfigurationCheckbox('append', 'yes')) {
                 this.dom = $(html).css({
-                   height: '100%',
+                    height: '100%',
                     width: '100%',
                     'overflow-x': 'hidden',
                     'overflow-y': 'scroll'
                 });
-            }
-            else {
+            } else {
                 this.dom = $(html).css({
                     display: 'table',
                     'table-layout': 'fixed',
@@ -26,59 +35,43 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
                 });
             }
 
-
             this.values = {};
             this.module.getDomContent().html(this.dom);
-            this.fillWithVal(this.module.getConfiguration('defaultvalue'));
+            this.fillWithVal({type:'html', value:this.module.getConfiguration('defaultvalue', '')});
             this.resolveReady();
             this._relsForLoading = ['value'];
         },
 
         blank: {
             value: function () {
-                if(this.module.getConfigurationCheckbox('append', 'yes')) {
+                if (this.module.getConfigurationCheckbox('append', 'yes')) {
                     var maxEntries = this.module.getConfiguration('maxEntries');
                     var children = this.dom.children();
-                    var until = children.length-maxEntries;
-                    for(var i=0; i<until; i++) {
+                    var until = children.length - maxEntries;
+                    for (var i = 0; i < until; i++) {
                         children[i].remove();
                     }
-                }
-                else {
+                } else {
                     this.dom.empty();
                 }
+            },
+            color: function () {
+                this.module.getDomContent().css('background-color', '#FFF');
             }
         },
 
         update: {
             color: function (color) {
-                if (color === undefined) {
-                    return;
-                }
-
                 this.module.getDomContent().css('background-color', color.get());
             },
 
             value: function (varValue, varName) {
-                if (varValue == undefined) {
-                    this.fillWithVal(this.module.getConfiguration('defaultvalue') || '');
-                } else {
-                    this.render(varValue, varName);
-                }
+                this.values[varName] = varValue;
+                this.renderAll(varValue);
             }
         },
 
-        render: function (varValue, varName) {
-            var self = this;
-
-            var def = Renderer.toScreen(varValue, this.module);
-            def.always(function (val) {
-                self.values[ varName ] = val;
-                self.renderAll(val, def);
-            });
-        },
-
-        renderAll: function (val, def) {
+        renderAll: function (val) {
 
             var view = this,
                 sprintfVal = this.module.getConfiguration('sprintf'),
@@ -87,50 +80,51 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
             if (sprintfVal && sprintfVal != '') {
 
                 try {
-                    require([ 'components/sprintf/dist/sprintf.min' ], function () {
+                    require(['components/sprintf/dist/sprintf.min'], function () {
 
-                        var args = [ sprintfVal ];
+                        var args = [sprintfVal];
                         for (var i in view.values) {
-                            args.push(view.values[ i ]);
+                            args.push(view.values[i]);
                         }
 
                         val = sprintf.apply(this, args);
 
-                        view.fillWithVal(val, def);
+                        view.fillWithVal(val);
                     });
 
                 } catch (e) {
 
-                    view.fillWithVal(val, def);
+                    view.fillWithVal(val);
 
                 }
 
             } else {
-                view.fillWithVal(val, def);
+                view.fillWithVal(val);
             }
         },
 
-        _scrollDown: function() {
+        _scrollDown: function () {
             var scroll_height = this.dom[0].scrollHeight;
             this.dom.scrollTop(scroll_height);
         },
 
-        fillWithVal: function (val, def) {
+        fillWithVal: function (val) {
 
-            var valign = this.module.getConfiguration('valign'),
-                align = this.module.getConfiguration('align'),
-                fontcolor = this.module.getConfiguration('fontcolor'),
-                fontsize = this.module.getConfiguration('fontsize'),
-                font = this.module.getConfiguration('font');
-            var
-                preformatted = this.module.getConfigurationCheckbox('preformatted', 'pre'),
-                selectable = this.module.getConfigurationCheckbox('preformatted', 'selectable');
-
-            var valstr = val != undefined ? val.toString() : '';
+            var valign = this.module.getConfiguration('valign');
+            var align = this.module.getConfiguration('align');
+            var fontcolor = this.module.getConfiguration('fontcolor');
+            var fontsize = this.module.getConfiguration('fontsize');
+            var font = this.module.getConfiguration('font');
+            var preformatted = this.module.getConfigurationCheckbox('preformatted', 'pre');
+            var selectable = this.module.getConfigurationCheckbox('preformatted', 'selectable');
 
             var div;
 
-            if(this.module.getConfigurationCheckbox('append','yes')) {
+            if (fontcolor) {
+                fontcolor = Color.getColor(fontcolor);
+            }
+
+            if (this.module.getConfigurationCheckbox('append', 'yes')) {
                 div = $('<div>').css({
                     fontFamily: font || 'Arial',
                     fontSize: fontsize || '10pt',
@@ -141,7 +135,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
                     'white-space': preformatted ? 'pre' : 'normal',
                     'word-wrap': 'break-word',
                     'user-select': selectable ? 'text' : 'none'
-                }).html(valstr);
+                });
                 this.dom.append(div);
             }
             else {
@@ -152,22 +146,21 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
                     display: 'table-cell',
                     'vertical-align': valign || 'top',
                     textAlign: align || 'center',
-                    width:  '100%',
+                    width: '100%',
                     height: '100%',
                     'white-space': preformatted ? 'pre' : 'normal',
                     'word-wrap': 'break-word',
                     'user-select': selectable ? 'text' : 'none'
-                }).html(valstr);
+                });
                 this.dom.html(div);
             }
 
             this._scrollDown();
 
-
-            if (def && def.build) {
-                def.build();
-                this._scrollDown();
-            }
+            var self = this;
+            Renderer.render(div, val).then(function () {
+                self._scrollDown();
+            });
 
             DomDeferred.notify(div);
         }

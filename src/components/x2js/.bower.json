@@ -18,6 +18,6 @@
     "commit": "cc022eb163cdd95e0e16bb1036f04421034e0f5d"
   },
   "_source": "git://github.com/abdmob/x2js.git",
-  "_target": "*",
+  "_target": "1.1.7",
   "_originalSource": "x2js"
 }

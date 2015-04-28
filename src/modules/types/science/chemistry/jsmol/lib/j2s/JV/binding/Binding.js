@@ -189,16 +189,16 @@ var qlow = (qualifiers == null || qualifiers.equalsIgnoreCase ("all") ? null : q
 var names =  new Array (actionInfo.length);
 var user =  new JU.Lst ();
 for (var obj, $obj = this.bindings.values ().iterator (); $obj.hasNext () && ((obj = $obj.next ()) || true);) {
-if (JU.PT.isAI (obj)) {
+if (JU.PT.isAS (obj)) {
+var action = (obj)[0];
+var script = (obj)[1];
+if (qlow == null || qlow.indexOf ("user") >= 0 || action.indexOf (qlow) >= 0 || script.indexOf (qlow) >= 0) user.addLast (obj);
+} else {
 var info = obj;
 var i = info[1];
 if (names[i] == null) names[i] =  new JU.Lst ();
 var name = JV.binding.Binding.getMouseActionName (info[0], true);
 if (qlow == null || (actionNames[i] + ";" + actionInfo[i] + ";" + name).toLowerCase ().indexOf (qlow) >= 0) names[i].addLast (name);
-} else if (JU.PT.isAS (obj)) {
-var action = (obj)[0];
-var script = (obj)[1];
-if (qlow == null || qlow.indexOf ("user") >= 0 || action.indexOf (qlow) >= 0 || script.indexOf (qlow) >= 0) user.addLast (obj);
 }}
 for (var i = 0; i < actionInfo.length; i++) {
 var n;

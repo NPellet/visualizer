@@ -190,7 +190,7 @@ ptemp.setT (ipt);
 uc.toFractional (ptemp, false);
 info1 += "|inversion center at " + JS.SymmetryDesc.strCoord (ptemp, op.isBio);
 }if (haveCentering) info1 += "|centering " + JS.SymmetryDesc.strCoord (op.centering, op.isBio);
-if (op.timeReversal != 0) info1 += "|spin " + (op.timeReversal == 1 ? "m" : "-m");
+if (op.timeReversal != 0 && op.getSpinOp () == -1) info1 += "|spin flipped";
 var cmds = null;
 var xyzNew = (op.isBio ? op.xyzOriginal : JS.SymmetryOperation.getXYZFromMatrix (op, false, false, false));
 if (id != null) {
@@ -198,7 +198,7 @@ var drawid;
 var opType = null;
 drawid = "\ndraw ID " + id + "_";
 var draw1 =  new JU.SB ();
-draw1.append (("// " + op.xyzOriginal + "|" + xyzNew + "|" + info1).$replace ('\n', ' ')).append ("\n").append (drawid).append ("* delete");
+draw1.append (("// " + op.xyzOriginal + "|" + xyzNew + "|" + info1).$replace ('\n', ' ')).appendC ('\n').append (drawid).append ("* delete");
 JS.SymmetryDesc.drawLine (draw1, drawid + "frame1X", 0.15, pta00, pta01, "red");
 JS.SymmetryDesc.drawLine (draw1, drawid + "frame1Y", 0.15, pta00, pta02, "green");
 JS.SymmetryDesc.drawLine (draw1, drawid + "frame1Z", 0.15, pta00, pta03, "blue");
@@ -347,7 +347,6 @@ m2.m03 += vtrans.x;
 m2.m13 += vtrans.y;
 m2.m23 += vtrans.z;
 }xyzNew = (op.isBio ? m2.toString () : op.modDim > 0 ? op.xyzOriginal : JS.SymmetryOperation.getXYZFromMatrix (m2, false, false, false));
-if (op.timeReversal != 0) xyzNew += (op.timeReversal == 1 ? ",m" : ",-m");
 return [xyzNew, op.xyzOriginal, info1, cmds, JS.SymmetryDesc.approx0 (ftrans), JS.SymmetryDesc.approx0 (trans), JS.SymmetryDesc.approx0 (ipt), JS.SymmetryDesc.approx0 (pa1), JS.SymmetryDesc.approx0 (ax1), Integer.$valueOf (ang1), m2, vtrans, op.centering];
 }, "JS.SymmetryOperation,J.api.SymmetryInterface,JU.P3,JU.P3,~S,JM.ModelSet");
 c$.setFractional = Clazz.defineMethod (c$, "setFractional", 
@@ -366,7 +365,7 @@ c$.rotTransCart = Clazz.defineMethod (c$, "rotTransCart",
  function (op, uc, pt00, vtrans) {
 var p0 = JU.P3.newP (pt00);
 uc.toFractional (p0, false);
-op.rotTrans2 (p0, p0);
+op.rotTrans (p0);
 p0.add (vtrans);
 uc.toCartesian (p0, false);
 return p0;
@@ -404,13 +403,9 @@ var iop = op;
 var centering = null;
 if (xyz == null) {
 var ops = uc.getSymmetryOperations ();
-if (ops == null || op == 0 || Math.abs (op) > ops.length) {
-return (type == 135176 ? "draw ID sym_* delete" : "");
-}if (op > 0) {
-xyz = ops[iop = op - 1].xyz;
-} else {
-xyz = ops[iop = -1 - op].xyz;
-}centering = ops[iop].centering;
+if (ops == null || op == 0 || Math.abs (op) > ops.length) return (type == 135176 ? "draw ID sym_* delete" : "");
+xyz = ops[iop = Math.abs (op) - 1].xyz;
+centering = ops[iop].centering;
 } else {
 iop = op = 0;
 }var symTemp = modelSet.getSymTemp (true);
@@ -475,10 +470,11 @@ if (infolist[i] == null || symOp >= 0 && symOp != i) continue;
 if (drawID != null) return infolist[i][3];
 if (sb.length () > 0) sb.appendC ('\n');
 if (prettyMat) {
-sb.append (JS.SymmetryOperation.cleanMatrix (infolist[i][10])).append ("\t");
+JS.SymmetryOperation.getPrettyMatrix (sb, infolist[i][10]);
+sb.appendC ('\t');
 } else if (!labelOnly) {
-if (symOp < 0) sb.appendI (i + 1).append ("\t");
-sb.append (infolist[i][0]).append ("\t");
+if (symOp < 0) sb.appendI (i + 1).appendC ('\t');
+sb.append (infolist[i][0]).appendC ('\t');
 }sb.append (infolist[i][2]);
 }
 if (sb.length () == 0 && drawID != null) sb.append ("draw " + drawID + "* delete");

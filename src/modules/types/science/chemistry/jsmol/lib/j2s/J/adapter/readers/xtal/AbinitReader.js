@@ -37,12 +37,12 @@ this.readAtoms ();
 });
 Clazz.defineMethod (c$, "readNoatom", 
  function () {
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line);
+var tokens = this.getTokens ();
 if (tokens.length <= 2) this.nAtom = this.parseIntStr (tokens[1]);
 });
 Clazz.defineMethod (c$, "readNotypes", 
  function () {
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line);
+var tokens = this.getTokens ();
 if (tokens.length <= 2) this.nType = this.parseIntStr (tokens[1]);
 });
 Clazz.defineMethod (c$, "readTypesequence", 
@@ -94,7 +94,7 @@ var i0 = this.asc.ac;
 this.line = this.line.substring (12);
 while (this.line != null && !this.line.contains ("x")) {
 var atom = this.asc.addNewAtom ();
-this.setAtomCoordScaled (atom, J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line), 0, 0.5291772);
+this.setAtomCoordScaled (atom, this.getTokens (), 0, 0.5291772);
 this.rd ();
 }
 this.discardLinesUntilContains ("z");

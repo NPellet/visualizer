@@ -38,8 +38,8 @@ define([ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 'sr
         },
 
         formTriggered: {
-            label: 'Form is triggered',
-            refAction: [ 'output_object' ],
+            label: 'The button was clicked',
+            refAction: [ 'output_object', 'formatted_output' ],
             refVariable: [ 'output_object', 'formatted_output' ]
         }
     };
@@ -71,21 +71,22 @@ define([ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 'sr
                                     title: 'Trigger type',
                                     options: [
                                         {key: 'btn', title: 'Button'},
-                                        { key: 'change', title: 'On change'}
+                                        { key: 'change', title: 'On change'},
+                                        { key: 'both', title: 'Both'}
                                     ],
-                                    displaySource: { btn: 'btn', change: 'change' }
+                                    displaySource: { btn: 'btn', change: 'change', both: 'both' }
                                 },
                                 buttonLabel: {
                                     type: 'text',
                                     title: 'Button label',
                                     'default': 'OK',
-                                    displayTarget: ['btn']
+                                    displayTarget: ['btn', 'both']
                                 },
                                 debounce: {
                                     type: 'float',
                                     title: 'Debounce',
                                     'default': 0,
-                                    displayTarget: ['change']
+                                    displayTarget: ['change', 'both']
                                 }
                             }
                         }
@@ -161,18 +162,29 @@ define([ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 'sr
         if (this.module.getConfiguration('replaceObj')) {
 
             this.setVarFromEvent('onChange', 'output_object', 'input_object', []);
-            this.sendAction('output_object', newValue, 'onChange');
+            this.sendActionFromEvent('onChange', 'output_object', newValue);
 
         } else {
             var formattedValue = formatValue(newValue);
             this.createDataFromEvent('onChange', 'formatted_output', formattedValue);
             this.createDataFromEvent('onChange', 'output_object', newValue);
-            this.sendAction('formatted_output', formattedValue, 'onChange');
+            this.sendActionFromEvent('onChange', 'formatted_output', formattedValue);
         }
     };
 
-    Controller.prototype.formTriggered = function (value) {
-        this.sendAction('formValue', value, 'formTriggered');
+    Controller.prototype.formTriggered = function (newValue) {
+        if (this.module.getConfiguration('replaceObj')) {
+
+            this.setVarFromEvent('formTriggered', 'output_object', 'input_object', []);
+
+        } else {
+            var formattedValue = formatValue(newValue);
+            this.createDataFromEvent('formTriggered', 'formatted_output', formattedValue);
+            this.createDataFromEvent('formTriggered', 'output_object', newValue);
+        }
+
+        this.sendActionFromEvent('formTriggered', 'formatted_output', formattedValue);
+        this.sendActionFromEvent('formTriggered', 'output_object', newValue);
     };
 
     function formatValue(value) {

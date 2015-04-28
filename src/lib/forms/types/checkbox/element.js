@@ -1,116 +1,118 @@
+'use strict';
 
-define( [ ], function(  ) {
+define([], function () {
 
-	var FieldConstructor = function() {};
-	
-	FieldConstructor.prototype.__makeDom = function() {
-		
-		var self = this,
-			dom = $("<div />"),
-			div = $( "<div></div>", { tabindex: 1 } )
-				.addClass( 'form-field' )
-				.on('click', function() {
-					self.toggleSelect( event );
-				})
-				.on('click', 'input[type="checkbox"]', function( event ) {
+    var FieldConstructor = function () {
+    };
 
-					event.stopPropagation();
+    FieldConstructor.prototype.__makeDom = function () {
 
-					var id = $(this).attr('data-checkbox-id');
-					var value = self.value || [];
+        var self = this,
+            dom = $('<div />'),
+            div = $('<div></div>', {tabindex: 1})
+                .addClass('form-field')
+                .on('click', function () {
+                    self.toggleSelect(event);
+                })
+                .on('click', 'input[type="checkbox"]', function (event) {
 
-					if( $(this).is(':checked') ) {
+                    event.stopPropagation();
 
-						value.push( id );
+                    var id = $(this).attr('data-checkbox-id');
+                    var value = self.value || [];
 
-					} else if( ( id = value.indexOf( id ) ) > -1 ) {
+                    if ($(this).is(':checked')) {
 
-						value.splice( id, 1 );
+                        value.push(id);
 
-					}
+                    } else if (( id = value.indexOf(id) ) > -1) {
 
-					self.setValueSilent(value);
-				})
-				.on('keydown', 'input[type="checkbox"]', function( event ) {
-					
+                        value.splice(id, 1);
 
-					//event.preventDefault();
-					event.stopPropagation();
-					//self.form.tabPressed( event, self);
-				})
-				.on('keydown', 'input[type="checkbox"]:last', function( event ) {
-					
-					event.preventDefault();
-					event.stopPropagation();
-					if( self.form.tabPressed( event, self) ) {
-						this.blur();
-					}
-				})
-				.appendTo( dom );
+                    }
 
-		this.div = div;
-		this.dom = dom;
-		this.fieldElement = div;
-		this.checkboxes = {};
+                    self.setValueSilent(value);
+                })
+                .on('keydown', 'input[type="checkbox"]', function (event) {
 
-		var i, options = this.field.getOptions( this );
 
-		for( i in options ) {
-			this.checkboxes[ i ] = ( $( '<input type="checkbox" tabindex="1" data-checkbox-id="' + i + '" />' + options[ i ] + '<br />' ) );
-			this.div.append( this.checkboxes[ i ] );
-		}
+                    //event.preventDefault();
+                    event.stopPropagation();
+                    //self.form.tabPressed( event, self);
+                })
+                .on('keydown', 'input[type="checkbox"]:last', function (event) {
 
-		return dom;
-	};
+                    event.preventDefault();
+                    event.stopPropagation();
+                    if (self.form.tabPressed(event, self)) {
+                        this.blur();
+                    }
+                })
+                .appendTo(dom);
 
-	FieldConstructor.prototype.focus = function() {
+        this.div = div;
+        this.dom = dom;
+        this.fieldElement = div;
+        this.checkboxes = {};
 
-		this.fieldElement.find('input:first').focus();
-		this.select();
-	}
+        var i, options = this.field.getOptions(this);
 
-	FieldConstructor.prototype.checkValue = function() {
+        for (i in options) {
+            this.checkboxes[i] = ( $('<input type="checkbox" tabindex="1" data-checkbox-id="' + i + '" />' + options[i] + '<br />') );
+            this.div.append(this.checkboxes[i]);
+        }
 
-		if( this.dom ) {
+        return dom;
+    };
 
-			if( ! ( this.value instanceof Array ) ) {
+    FieldConstructor.prototype.focus = function () {
 
-				if(this.value == null || this.value == "") {
+        this.fieldElement.find('input:first').focus();
+        this.select();
+    }
 
-					this.value = [];
-				} else {
+    FieldConstructor.prototype.checkValue = function () {
 
-					this.value = [ this.value ];
-				}
-				return;
-			}
+        if (this.dom) {
 
-			var val = this.value,
-				options = this.field.getOptions( this );
+            if (!( this.value instanceof Array )) {
 
-			$.each( this.checkboxes, function( index, element ) {
-				
-				if( val.indexOf( index ) > -1  ) {
+                if (this.value == null || this.value == '') {
 
-					element.prop( 'checked', 'checked' );
+                    this.value = [];
+                } else {
 
-				} else {
+                    this.value = [this.value];
+                }
+                return;
+            }
 
-					element.removeProp( 'checked' );
-					
-				}
-				
-			});
-		}
-	}
+            var val = this.value,
+                options = this.field.getOptions(this);
 
-	FieldConstructor.prototype.getOptions = function() {
-		return this.combooptions || false;
-	}
+            $.each(this.checkboxes, function (index, element) {
 
-	FieldConstructor.prototype.setOptions = function(options) {
-		this.combooptions = options;
-	}
+                if (val.indexOf(index) > -1) {
 
-	return FieldConstructor;
+                    element.prop('checked', 'checked');
+
+                } else {
+
+                    element.removeProp('checked');
+
+                }
+
+            });
+        }
+    }
+
+    FieldConstructor.prototype.getOptions = function () {
+        return this.combooptions || false;
+    }
+
+    FieldConstructor.prototype.setOptions = function (options) {
+        this.combooptions = options;
+    }
+
+    return FieldConstructor;
 });

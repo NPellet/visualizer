@@ -34,7 +34,6 @@ var optionalModuleRequireMap = {
     "reduce.js": true,
     "settle.js": true,
     "some.js": true,
-    "progress.js": true,
     "cancel.js": true,
     "using.js": true,
     "filter.js": ["map.js"],
@@ -43,6 +42,31 @@ var optionalModuleRequireMap = {
     "timers.js": ["cancel.js"]
 };
 
+var lastLineCode = "                                                         \n\
+    util.toFastProperties(Promise);                                          \n\
+    util.toFastProperties(Promise.prototype);                                \n\
+    function fillTypes(value) {                                              \n\
+        var p = new Promise(INTERNAL);                                       \n\
+        p._fulfillmentHandler0 = value;                                      \n\
+        p._rejectionHandler0 = value;                                        \n\
+        p._progressHandler0 = value;                                         \n\
+        p._promise0 = value;                                                 \n\
+        p._receiver0 = value;                                                \n\
+        p._settledValue = value;                                             \n\
+    }                                                                        \n\
+    // Complete slack tracking, opt out of field-type tracking and           \n\
+    // stabilize map                                                         \n\
+    fillTypes({a: 1});                                                       \n\
+    fillTypes({b: 2});                                                       \n\
+    fillTypes({c: 3});                                                       \n\
+    fillTypes(1);                                                            \n\
+    fillTypes(function(){});                                                 \n\
+    fillTypes(undefined);                                                    \n\
+    fillTypes(false);                                                        \n\
+    fillTypes(new Promise(INTERNAL));                                        \n\
+    CapturedTrace.setBounds(async.firstLineError, util.lastLineError);       \n\
+    return Promise;                                                          \n\
+";
 
 function getOptionalRequireCode(srcs) {
     return srcs.sort(function(a, b) {
@@ -60,7 +84,7 @@ function getOptionalRequireCode(srcs) {
             ret += "require('./"+cur.sourceFileName+"')("+ cur.deps.join(", ") +");\n";
         }
         return ret;
-    }, "") + "\nPromise.prototype = Promise.prototype;\nreturn Promise;\n";
+    }, "") +  lastLineCode;
 }
 
 function getBrowserBuildHeader(sources, npmPackage) {
@@ -234,6 +258,7 @@ function buildBrowser(sources, dir, tmpDir, depsRequireCode, minify, npmPackage,
                         self.P = self.Promise;                                     \
                     }";
                     src = src + alias;
+                    src = src.replace(/\brequire\b/g, "_dereq_");
                     var minWrite, write;
                     if (minify) {
                         var minSrc = UglifyJS.minify(src, {

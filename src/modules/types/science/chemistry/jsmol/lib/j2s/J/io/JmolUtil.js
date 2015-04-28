@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.io");
-Clazz.load (["J.api.JmolZipUtilities"], "J.io.JmolUtil", ["java.io.BufferedInputStream", "$.BufferedReader", "java.net.URL", "java.util.Hashtable", "$.StringTokenizer", "JU.LimitedLineReader", "$.Lst", "$.PT", "$.Rdr", "$.SB", "J.adapter.smarter.AtomSetCollection", "J.api.Interface", "J.io.JmolBinary", "JU.Escape", "$.Logger", "JV.FileManager"], function () {
+Clazz.load (["J.api.JmolZipUtilities"], "J.io.JmolUtil", ["java.io.BufferedInputStream", "$.BufferedReader", "java.net.URL", "java.util.Hashtable", "$.StringTokenizer", "JU.LimitedLineReader", "$.Lst", "$.OC", "$.PT", "$.Rdr", "$.SB", "J.adapter.smarter.AtomSetCollection", "J.api.Interface", "J.io.JmolBinary", "JU.Escape", "$.Logger"], function () {
 c$ = Clazz.declareType (J.io, "JmolUtil", null, J.api.JmolZipUtilities);
 Clazz.makeConstructor (c$, 
 function () {
@@ -171,7 +171,9 @@ if (tokens.length == 3 && JU.PT.parseInt (tokens[0]) != -2147483648 && JU.PT.par
 if (line.startsWith ("v ") && line2.startsWith ("v ") && line3.startsWith ("v ")) return "Obj";
 var nAtoms = JU.PT.parseInt (line3);
 if (nAtoms == -2147483648) return (line3.indexOf ("+") == 0 ? "Jvxl+" : null);
-if (nAtoms >= 0) return (line3.length < 60 ? "Cube" : null);
+tokens = JU.PT.getTokens (line3);
+if (tokens[0].indexOf (".") > 0) return (line3.length >= 60 || tokens.length != 3 ? null : "VaspChgcar");
+if (nAtoms >= 0) return (tokens.length == 4 ? "Cube" : null);
 nAtoms = -nAtoms;
 for (var i = 4 + nAtoms; --i >= 0; ) if ((line = br.readLineWithNewline ()) == null) return null;
 
@@ -359,11 +361,11 @@ var createImage = false;
 var fullPathName = "" + fullPathNameOrBytes;
 if (Clazz.instanceOf (fullPathNameOrBytes, String)) {
 if (fullPathName.indexOf ("|") > 0) {
-var ret = vwr.fm.getFileAsBytes (fullPathName, null, true);
+var ret = vwr.fm.getFileAsBytes (fullPathName, null);
 if (!JU.PT.isAB (ret)) return "" + ret;
 image = (vwr.isJS ? ret : apiPlatform.createImage (ret));
 } else if (vwr.isJS) {
-} else if (JV.FileManager.urlTypeIndex (fullPathName) >= 0) {
+} else if (JU.OC.urlTypeIndex (fullPathName) >= 0) {
 try {
 image = apiPlatform.createImage ( new java.net.URL (Clazz.castNullAs ("java.net.URL"), fullPathName, null));
 } catch (e) {

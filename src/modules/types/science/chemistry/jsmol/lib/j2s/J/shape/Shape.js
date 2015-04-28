@@ -3,7 +3,6 @@ Clazz.load (null, "J.shape.Shape", ["J.c.PAL", "JU.C", "$.Logger", "JV.JC"], fun
 c$ = Clazz.decorateAsClass (function () {
 this.vwr = null;
 this.ms = null;
-this.gdata = null;
 this.shapeID = 0;
 this.vf = 0;
 this.translucentLevel = 0;
@@ -13,19 +12,14 @@ this.bsSizeSet = null;
 this.bsColixSet = null;
 Clazz.instantialize (this, arguments);
 }, J.shape, "Shape");
-Clazz.defineMethod (c$, "getViewer", 
-function () {
-return this.vwr;
-});
 Clazz.defineMethod (c$, "initializeShape", 
-function (vwr, g3d, modelSet, shapeID) {
+function (vwr, modelSet, shapeID) {
 this.vwr = vwr;
-this.gdata = g3d;
 this.shapeID = shapeID;
 this.vf = JV.JC.getShapeVisibilityFlag (shapeID);
 this.setModelSet (modelSet);
 this.initShape ();
-}, "JV.Viewer,JU.GData,JM.ModelSet,~N");
+}, "JV.Viewer,JM.ModelSet,~N");
 Clazz.defineMethod (c$, "setModelVisibilityFlags", 
 function (bsModels) {
 }, "JU.BS");
@@ -132,11 +126,11 @@ return this.getColixA (colix, paletteID, this.ms.at[atomIndex]);
 }, "~N,~N,~N");
 Clazz.defineMethod (c$, "getColixA", 
 function (colix, paletteID, atom) {
-return (colix == 2 ? this.vwr.getColixAtomPalette (atom, paletteID) : colix);
+return (colix == 2 ? this.vwr.cm.getColixAtomPalette (atom, paletteID) : colix);
 }, "~N,~N,JM.Atom");
 Clazz.defineMethod (c$, "getColixB", 
 function (colix, pid, bond) {
-return (colix == 2 ? this.vwr.getColixBondPalette (bond, pid) : colix);
+return (colix == 2 ? this.vwr.cm.getColixBondPalette (bond, pid) : colix);
 }, "~N,~N,JM.Bond");
 Clazz.defineMethod (c$, "getShapeDetail", 
 function () {
@@ -167,7 +161,7 @@ return (JU.C.isColixColorInherited (colix) ? "none" : JU.C.getHexCode (colix));
 }, "~N");
 c$.getTranslucentLabel = Clazz.defineMethod (c$, "getTranslucentLabel", 
 function (colix) {
-return (JU.C.isColixTranslucent (colix) ? "translucent " + JU.C.getColixTranslucencyFractional (colix) : "opaque");
+return (JU.C.isColixTranslucent (colix) ? JU.C.getColixTranslucencyLabel (colix) : "opaque");
 }, "~N");
 c$.appendCmd = Clazz.defineMethod (c$, "appendCmd", 
 function (s, cmd) {

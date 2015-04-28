@@ -16,7 +16,7 @@ function () {
 this.jvxlFileHeaderBuffer =  new JU.SB ().append (this.skipComments (false));
 if (this.line == null || this.line.length == 0) this.line = "Line 1";
 this.jvxlFileHeaderBuffer.append (this.line).appendC ('\n');
-if (this.readLine () == null || this.line.length == 0) this.line = "Line 2";
+if (this.rd () == null || this.line.length == 0) this.line = "Line 2";
 this.jvxlFileHeaderBuffer.append (this.line).appendC ('\n');
 this.jvxlFileHeaderBuffer.append (this.skipComments (false));
 var atomLine = this.line;
@@ -37,7 +37,7 @@ if (!this.isAngstroms) this.volumetricOrigin.scale (0.5291772);
 this.readVoxelVector (0);
 this.readVoxelVector (1);
 this.readVoxelVector (2);
-for (var i = 0; i < this.ac; ++i) this.jvxlFileHeaderBuffer.append (this.readLine () + "\n");
+for (var i = 0; i < this.ac; ++i) this.jvxlFileHeaderBuffer.append (this.rd () + "\n");
 
 this.skipComments (true);
 JU.Logger.info ("Reading extra JVXL information line: " + this.line);
@@ -64,7 +64,7 @@ function (type, nPoints) {
 var str = "";
 try {
 while (str.length < nPoints) {
-this.readLine ();
+this.rd ();
 str += J.jvxl.data.JvxlCoder.jvxlDecompressString (this.line);
 }
 } catch (e) {
@@ -171,7 +171,7 @@ Clazz.defineMethod (c$, "jvxlSkipDataBlock",
  function (nPoints, isInt) {
 var n = 0;
 while (n < nPoints) {
-this.readLine ();
+this.rd ();
 n += (isInt ? this.countData (this.line) : J.jvxl.data.JvxlCoder.jvxlDecompressString (this.line).length);
 }
 }, "~N,~B");

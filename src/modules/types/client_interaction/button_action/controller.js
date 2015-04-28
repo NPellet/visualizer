@@ -6,7 +6,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'Button',
@@ -41,8 +41,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.onClick = function (on) {
         var text = this.module.getConfiguration('text');
-        this.sendAction('actionText', text, 'onClick');
-        this.sendAction('actionText', text, (on ? 'onToggleOn' : 'onToggleOff'));
+        this.sendActionFromEvent('onClick', 'actionText', text);
+        this.sendActionFromEvent(on ? 'onToggleOn' : 'onToggleOff', 'actionText', text);
     };
 
     Controller.prototype.configurationStructure = function () {
@@ -57,7 +57,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             type: 'combo',
                             title: 'Button type',
                             'default': 'toggle',
-                            options: [{key: 'click', title: 'Click'}, {key: 'toggle', title: 'Toggle'}],
+                            options: [
+                                {key: 'click', title: 'Click'},
+                                {key: 'toggle', title: 'Toggle'}
+                            ],
                             displaySource: {
                                 click: 'c',
                                 toggle: 't'
@@ -73,25 +76,25 @@ define(['modules/default/defaultcontroller'], function (Default) {
                         onLabel: {
                             type: 'text',
                             title: 'Button label (on)',
-                            default: 'Toggle action off',
+                            'default': 'Toggle action off',
                             displayTarget: ['t']
                         },
                         offLabel: {
                             type: 'text',
                             title: 'Button label (off)',
-                            default: 'Toggle action on',
+                            'default': 'Toggle action on',
                             displayTarget: ['t']
                         },
                         onColor: {
                             type: 'spectrum',
                             title: 'Color (on)',
-                            default: [0, 0, 0, 1],
+                            'default': [0, 0, 0, 1],
                             displayTarget: ['t']
                         },
                         offColor: {
                             type: 'spectrum',
                             title: 'Color (off)',
-                            default: [0, 0, 0, 1],
+                            'default': [0, 0, 0, 1],
                             displayTarget: ['t']
                         },
                         text: {
@@ -102,25 +105,25 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             type: 'checkbox',
                             title: 'Ask for confirmation',
                             options: {yes: 'Yes'},
-                            default: [],
+                            'default': [],
                             displaySource: {yes: 'y'}
                         },
                         confirmText: {
                             type: 'wysiwyg',
                             title: 'Confirmation text',
-                            default: 'Are you sure?',
+                            'default': 'Are you sure?',
                             displayTarget: ['y']
                         },
                         okLabel: {
                             type: 'text',
-                            default: 'Ok',
+                            'default': 'Ok',
                             title: 'Ok label',
                             displayTarget: ['y']
                         },
                         cancelLabel: {
                             type: 'text',
                             title: 'Cancel label',
-                            default: 'Cancel',
+                            'default': 'Cancel',
                             displayTarget: ['y']
                         }
                     }

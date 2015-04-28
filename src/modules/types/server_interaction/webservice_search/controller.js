@@ -300,7 +300,7 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
         }
 
         var debounce = this.module.getConfiguration('debounce');
-        this.doSearch = this.debounce > 0 ? this._doSearch : _.debounce(this._doSearch, debounce);
+        this.doSearch = this.debounce > 0 ? _.debounce(this._doSearch, debounce) : this._doSearch;
 
         if (this.module.getConfiguration('onloadsearch')) {
             this.doSearch();
@@ -395,7 +395,7 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
         this.createDataFromEvent('onSearchReturn', 'results', elements);
         this.createDataFromEvent('onSearchReturn', 'url', this.url);
 
-        this.sendAction('results', elements, 'onSearchReturn');
+        this.sendActionFromEvent('onSearchReturn', 'results', elements);
     };
 
     return Controller;

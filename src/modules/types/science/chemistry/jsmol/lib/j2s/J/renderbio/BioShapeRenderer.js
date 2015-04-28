@@ -92,7 +92,7 @@ return this.needTranslucent;
 });
 Clazz.defineMethod (c$, "setGlobals", 
  function () {
-this.isPass2 = this.g3d.isPass2 ();
+this.isPass2 = this.vwr.gdata.isPass2;
 this.invalidateMesh = false;
 this.needTranslucent = false;
 this.g3d.addRenderer (553648147);
@@ -153,7 +153,7 @@ this.vwr.freeTempEnum (this.structureTypes);
 });
 Clazz.defineMethod (c$, "initializePolymer", 
  function (bioShape) {
-var bsDeleted = this.vwr.getDeletedAtoms ();
+var bsDeleted = this.vwr.slm.bsDeleted;
 if (this.vwr.ms.isJmolDataFrameForModel (bioShape.modelIndex)) {
 this.controlPoints = bioShape.bioPolymer.getControlPoints (true, 0, false);
 } else {
@@ -361,7 +361,7 @@ var isElliptical = (this.cartoonsFancy || this.hermiteLevel >= 6);
 var nHermites = (this.hermiteLevel + 1) * 2 + 1;
 var nPer = (isFlatMesh ? 4 : (this.hermiteLevel + 1) * 4 - 2);
 var angle = ((isFlatMesh ? 3.141592653589793 / (nPer - 1) : 6.283185307179586 / nPer));
-var mesh = this.meshes[i] =  new J.shape.Mesh ().mesh1 ("mesh_" + this.shapeID + "_" + i, 0, i);
+var mesh = this.meshes[i] =  new J.shape.Mesh ().mesh1 (this.vwr, "mesh_" + this.shapeID + "_" + i, 0, i);
 var variableRadius = (madBeg != madMid || madMid != madEnd);
 if (this.controlHermites == null || this.controlHermites.length < nHermites + 1) {
 this.controlHermites =  new Array (nHermites + 1);

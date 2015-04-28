@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.simple");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.simple.CubeReader", null, function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.simple.CubeReader", ["JU.PT"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.ac = 0;
 this.isAngstroms = false;
@@ -37,7 +37,7 @@ Clazz.defineMethod (c$, "readAtoms",
  function () {
 var f = (this.isAngstroms ? 1 : 0.5291772);
 for (var i = 0; i < this.ac; ++i) {
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+var tokens = JU.PT.getTokens (this.rd ());
 this.setAtomCoordScaled (null, tokens, 2, f).elementNumber = this.parseIntStr (tokens[0]);
 }
 });

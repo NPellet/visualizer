@@ -81,7 +81,7 @@ define(['modules/types/client_interaction/code_editor/controller'], function (Co
             if (typeof data !== 'undefined')
                 that.createDataFromEvent('onButtonClick', 'filteredObject', data);
         }, function (error) {
-            console.error('Filter execution error : ', error);
+            console.error('Filter execution error (filter title: ' + that.module.definition.title + ') : ', error);
         });
     };
 

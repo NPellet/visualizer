@@ -151,8 +151,7 @@ this.g3d.fillCylinderScreen3I (3, 3, s1, s2, p1, p2, 0.005);
 }, "JU.P3i,JU.P3i,JU.P3,JU.P3");
 Clazz.defineMethod (c$, "renderTriangle", 
  function (scr, pt, i, j, k, doShade) {
-if (doShade) this.g3d.setNoisySurfaceShade (scr[i], scr[j], scr[k]);
-this.g3d.fillTriangle3i (scr[i], scr[j], scr[k], pt[i], pt[j], pt[k]);
+this.g3d.fillTriangle3i (scr[i], scr[j], scr[k], pt[i], pt[j], pt[k], doShade);
 }, "~A,~A,~N,~N,~N,~B");
 Clazz.defineMethod (c$, "renderRing6", 
  function () {

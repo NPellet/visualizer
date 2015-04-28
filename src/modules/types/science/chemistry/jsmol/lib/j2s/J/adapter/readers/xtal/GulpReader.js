@@ -144,7 +144,7 @@ return;
 this.coordinatesArePrimitive = (i0 == 0);
 this.rd ();
 while (this.rd () != null && this.line.contains ("=")) {
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line.$replace ('=', ' '));
+var tokens = JU.PT.getTokens (this.line.$replace ('=', ' '));
 for (var i = i0; i < i0 + 4; i += 2) if (tokens.length > i + 1) this.setParameter (tokens[i], this.parseFloatStr (tokens[i + 1]));
 
 }
@@ -162,7 +162,7 @@ this.scalePrimitiveData (6, this.c);
 if (!this.coordinatesArePrimitive) while (this.rd () != null && this.line.indexOf ("Final") < 0) if (this.line.indexOf ("Non-primitive lattice parameters") > 0) {
 this.rd ();
 for (var i = 0; i < 2; i++) {
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ().$replace ('=', ' '));
+tokens = JU.PT.getTokens (this.rd ().$replace ('=', ' '));
 this.setParameter (tokens[0], this.parseFloatStr (tokens[1]));
 this.setParameter (tokens[2], this.parseFloatStr (tokens[3]));
 this.setParameter (tokens[4], this.parseFloatStr (tokens[5]));
@@ -222,7 +222,7 @@ this.atomCharges =  new java.util.Hashtable ();
 this.discardLinesUntilContains (this.sep);
 this.discardLinesUntilContains (this.sep);
 var tokens;
-while ((tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ())).length > 5) {
+while ((tokens = JU.PT.getTokens (this.rd ())).length > 5) {
 var species = tokens[0];
 var charge = this.atomCharges.get (species);
 var f = (charge == null ? 0 : charge.floatValue ());
@@ -232,7 +232,7 @@ this.atomCharges.put (species, Float.$valueOf ((f + this.parseFloatStr (tokens[4
 Clazz.defineMethod (c$, "readEnergy", 
  function () {
 if (this.line.indexOf ("=") < 0) this.discardLinesUntilContains ("=");
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line.substring (this.line.indexOf ("=")));
+var tokens = JU.PT.getTokens (this.line.substring (this.line.indexOf ("=")));
 this.totEnergy = Double.$valueOf (Double.parseDouble (tokens[1]));
 this.energyUnits = tokens[2];
 this.discardLinesUntilContains (this.sep);

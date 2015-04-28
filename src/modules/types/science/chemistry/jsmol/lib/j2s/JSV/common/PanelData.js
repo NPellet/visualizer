@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JSV.common");
-Clazz.load (["java.lang.Enum", "javajs.api.EventManager", "java.util.Hashtable", "JU.Lst"], "JSV.common.PanelData", ["java.lang.Boolean", "$.Double", "javajs.awt.Font", "JU.CU", "JSV.api.JSVGraphics", "JSV.common.Annotation", "$.Coordinate", "$.GraphSet", "$.JSVFileManager", "$.JSVersion", "$.JSViewer", "$.MeasurementData", "$.Parameters", "$.PeakPickEvent", "$.ScriptToken", "$.Spectrum", "$.SubSpecChangeEvent", "$.ZoomEvent", "JSV.dialog.JSVDialog", "JU.Logger"], function () {
+Clazz.load (["java.lang.Enum", "javajs.api.EventManager", "java.util.Hashtable", "JU.Lst"], "JSV.common.PanelData", ["java.lang.Boolean", "$.Double", "javajs.awt.Font", "JU.CU", "JSV.common.Annotation", "$.Coordinate", "$.GraphSet", "$.JSVFileManager", "$.JSVersion", "$.JSViewer", "$.MeasurementData", "$.Parameters", "$.PeakPickEvent", "$.ScriptToken", "$.Spectrum", "$.SubSpecChangeEvent", "$.ZoomEvent", "JSV.dialog.JSVDialog", "J.api.GenericGraphics", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.g2d = null;
 this.g2d0 = null;
@@ -956,14 +956,14 @@ Clazz.defineMethod (c$, "printPdf",
 function (pdfCreator, pl) {
 var isPortrait = !pl.layout.equals ("landscape");
 this.print (pdfCreator, (isPortrait ? pl.imageableHeight : pl.imageableWidth), (isPortrait ? pl.imageableWidth : pl.imageableHeight), pl.imageableX, pl.imageableY, pl.paperHeight, pl.paperWidth, isPortrait, 0);
-}, "JSV.api.JSVGraphics,JSV.common.PrintLayout");
+}, "J.api.GenericGraphics,JSV.common.PrintLayout");
 Clazz.defineMethod (c$, "print", 
 function (g, height, width, x, y, paperHeight, paperWidth, isPortrait, pi) {
 this.g2d = this.g2d0;
 if (pi == 0) {
 this.isPrinting = true;
 var addFilePath = false;
-if (Clazz.instanceOf (g, JSV.api.JSVGraphics)) {
+if (Clazz.instanceOf (g, J.api.GenericGraphics)) {
 this.g2d = g;
 g = this.gMain;
 }if (this.printGraphPosition.equals ("default")) {

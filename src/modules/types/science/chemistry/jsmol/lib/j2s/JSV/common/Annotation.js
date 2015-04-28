@@ -104,7 +104,7 @@ return null;
 throw e;
 }
 }
-}, "JSV.api.JSVGraphics,JSV.common.Spectrum,JU.Lst,JSV.common.Annotation");
+}, "J.api.GenericGraphics,JSV.common.Spectrum,JU.Lst,JSV.common.Annotation");
 Clazz.pu$h(self.c$);
 c$ = Clazz.declareType (JSV.common.Annotation, "AType", Enum);
 Clazz.defineEnumConstant (c$, "Integration", 0, []);

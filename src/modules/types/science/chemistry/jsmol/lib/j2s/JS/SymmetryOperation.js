@@ -17,9 +17,9 @@ this.sigma = null;
 this.index = 0;
 this.subsystemCode = null;
 this.timeReversal = 0;
-this.magOp = 3.4028235E38;
-this.isCenteringOp = false;
 this.unCentered = false;
+this.isCenteringOp = false;
+this.magOp = 3.4028235E38;
 Clazz.instantialize (this, arguments);
 }, JS, "SymmetryOperation", JU.M4);
 Clazz.defineMethod (c$, "setSigma", 
@@ -110,10 +110,7 @@ function (xyz, modDim, allowScaling) {
 if (xyz == null) return false;
 this.xyzOriginal = xyz;
 xyz = xyz.toLowerCase ();
-var n = (modDim + 4) * (modDim + 4);
-this.modDim = modDim;
-if (modDim > 0) this.myLabels = JS.SymmetryOperation.labelsXn;
-this.linearRotTrans =  Clazz.newFloatArray (n, 0);
+this.setModDim (modDim);
 var isReverse = (xyz.startsWith ("!"));
 if (isReverse) xyz = xyz.substring (1);
 if (xyz.indexOf ("xyz matrix:") == 0) {
@@ -123,15 +120,19 @@ return this.setFromMatrix (null, isReverse);
 }if (xyz.indexOf ("[[") == 0) {
 xyz = xyz.$replace ('[', ' ').$replace (']', ' ').$replace (',', ' ');
 JU.Parser.parseStringInfestedFloatArray (xyz, null, this.linearRotTrans);
-for (var i = 0; i < n; i++) {
-var v = this.linearRotTrans[i];
-if (Float.isNaN (v)) return false;
-}
+for (var i = this.linearRotTrans.length; --i >= 0; ) if (Float.isNaN (this.linearRotTrans[i])) return false;
+
 this.setMatrix (isReverse);
 this.isFinalized = true;
 this.isBio = (xyz.indexOf ("bio") >= 0);
 this.xyz = (this.isBio ? this.toString () : JS.SymmetryOperation.getXYZFromMatrix (this, false, false, false));
 return true;
+}if (modDim == 0 && xyz.indexOf ("x4") >= 0) {
+for (var i = 14; --i >= 4; ) {
+if (xyz.indexOf ("x" + i) >= 0) {
+this.setModDim (i - 3);
+break;
+}}
 }if (xyz.endsWith ("m")) {
 this.timeReversal = (xyz.indexOf ("-m") >= 0 ? -1 : 1);
 allowScaling = true;
@@ -143,6 +144,13 @@ if (this.timeReversal != 0) this.xyz += (this.timeReversal == 1 ? ",m" : ",-m");
 if (JU.Logger.debugging) JU.Logger.debug ("" + this);
 return true;
 }, "~S,~N,~B");
+Clazz.defineMethod (c$, "setModDim", 
+ function (dim) {
+var n = (dim + 4) * (dim + 4);
+this.modDim = dim;
+if (dim > 0) this.myLabels = JS.SymmetryOperation.labelsXn;
+this.linearRotTrans =  Clazz.newFloatArray (n, 0);
+}, "~N");
 Clazz.defineMethod (c$, "setMatrix", 
  function (isReverse) {
 if (this.linearRotTrans.length > 16) {
@@ -151,7 +159,7 @@ this.setGamma (isReverse);
 this.setA (this.linearRotTrans);
 if (isReverse) {
 var p3 = JU.P3.new3 (this.m03, this.m13, this.m23);
-this.invertM (this);
+this.invert ();
 this.rotate (p3);
 p3.scale (-1);
 this.setTranslation (p3);
@@ -490,18 +498,17 @@ this.timeReversal = magRev;
 if (this.xyz.indexOf ("m") >= 0) this.xyz = this.xyz.substring (0, this.xyz.indexOf ("m"));
 this.xyz += (magRev == 1 ? ",m" : magRev == -1 ? ",-m" : "");
 }, "~N");
-c$.cleanMatrix = Clazz.defineMethod (c$, "cleanMatrix", 
-function (m4) {
-var sb =  new JU.SB ();
+c$.getPrettyMatrix = Clazz.defineMethod (c$, "getPrettyMatrix", 
+function (sb, m4) {
 sb.append ("[ ");
 var row =  Clazz.newFloatArray (4, 0);
 for (var i = 0; i < 3; i++) {
 m4.getRow (i, row);
-sb.append ("[ ").appendI (Clazz.floatToInt (row[0])).append (" ").appendI (Clazz.floatToInt (row[1])).append (" ").appendI (Clazz.floatToInt (row[2])).append (" ");
+sb.append ("[ ").appendI (Clazz.floatToInt (row[0])).appendC (' ').appendI (Clazz.floatToInt (row[1])).appendC (' ').appendI (Clazz.floatToInt (row[2])).appendC (' ');
 sb.append (JS.SymmetryOperation.twelfthsOf (row[3] * 12)).append (" ]");
 }
 return sb.append (" ]").toString ();
-}, "JU.M4");
+}, "JU.SB,JU.M4");
 Clazz.defineMethod (c$, "setCentering", 
 function (c, isFinal) {
 if (this.centering == null && !this.unCentered) {

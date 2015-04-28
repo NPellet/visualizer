@@ -32,7 +32,7 @@ var bs1 = this.getAtomSiteBS (bsA);
 var iAtom = (bs1.cardinality () == 1 ? bs1.nextSetBit (0) : -1);
 var list =  new JU.Lst ();
 for (var i = bsModels.nextSetBit (0); i >= 0; i = bsModels.nextSetBit (i + 1)) {
-var tensors = this.vwr.getModelAuxiliaryInfoValue (i, "interactionTensors");
+var tensors = this.vwr.ms.getInfo (i, "interactionTensors");
 if (tensors == null) continue;
 var n = tensors.size ();
 for (var j = 0; j < n; j++) {
@@ -59,10 +59,10 @@ Clazz.overrideMethod (c$, "getUniqueTensorSet",
 function (bsAtoms) {
 var bs =  new JU.BS ();
 var atoms = this.vwr.ms.at;
-for (var i = this.vwr.getModelCount (); --i >= 0; ) {
+for (var i = this.vwr.ms.mc; --i >= 0; ) {
 var bsModelAtoms = this.vwr.getModelUndeletedAtomsBitSet (i);
 bsModelAtoms.and (bsAtoms);
-if (this.vwr.getModelUnitCell (i) == null) continue;
+if (this.vwr.ms.getUnitCell (i) == null) continue;
 for (var j = bsModelAtoms.nextSetBit (0); j >= 0; j = bsModelAtoms.nextSetBit (j + 1)) if (atoms[j].atomSite != atoms[j].i + 1) bsModelAtoms.clear (j);
 
 bs.or (bsModelAtoms);
@@ -109,7 +109,7 @@ a2 = this.vwr.ms.at[isc.atomIndex2];
 }, "~B,JM.Atom,JM.Atom,~S,JU.Tensor");
 Clazz.defineMethod (c$, "getISCtype", 
  function (a1, type) {
-var tensors = this.vwr.getModelAuxiliaryInfoValue (a1.mi, "interactionTensors");
+var tensors = this.vwr.ms.getInfo (a1.mi, "interactionTensors");
 if (tensors == null) return null;
 type = (type == null ? "" : type.toLowerCase ());
 var pt = -1;

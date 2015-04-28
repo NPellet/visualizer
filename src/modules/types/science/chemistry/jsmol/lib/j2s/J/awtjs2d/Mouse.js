@@ -14,7 +14,7 @@ Clazz.instantialize (this, arguments);
 Clazz.makeConstructor (c$, 
 function (privateKey, vwr, display) {
 this.vwr = vwr;
-this.manager = this.vwr.getActionManager ();
+this.manager = this.vwr.acm;
 }, "~N,javajs.api.PlatformViewer,~O");
 Clazz.overrideMethod (c$, "clear", 
 function () {
@@ -190,7 +190,7 @@ this.addKeyBuffer (ke.getModifiers () == 1 ? Character.toUpperCase (ch) : ch);
 }, "java.awt.event.KeyEvent");
 Clazz.defineMethod (c$, "keyPressed", 
 function (ke) {
-if (this.vwr.isApplet ()) ke.consume ();
+if (this.vwr.isApplet) ke.consume ();
 this.manager.keyPressed (ke.getKeyCode (), ke.getModifiers ());
 }, "java.awt.event.KeyEvent");
 Clazz.defineMethod (c$, "keyReleased", 

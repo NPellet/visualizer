@@ -37,7 +37,6 @@
     "commit": "4bbd3f876ca9e538b95ea125846f6b314cdf3a91"
   },
   "_source": "git://github.com/philogb/jit.git",
-  "_target": "~2.0.2",
-  "_originalSource": "jit",
-  "_direct": true
+  "_target": "2.0.2",
+  "_originalSource": "jit"
 }

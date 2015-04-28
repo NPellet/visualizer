@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.VolumeDataReader", "JU.BS", "$.P3", "$.P3i", "J.atomdata.AtomData"], "J.jvxl.readers.AtomDataReader", ["java.lang.Float", "java.util.Date", "JU.AU", "$.PT", "$.SB", "$.V3", "J.atomdata.RadiusData", "J.c.VDW", "J.jvxl.data.JvxlCoder", "JU.BSUtil", "$.Logger"], function () {
+Clazz.load (["J.jvxl.readers.VolumeDataReader", "JU.BS", "$.P3", "$.P3i", "J.atomdata.AtomData"], "J.jvxl.readers.AtomDataReader", ["java.lang.Float", "java.util.Date", "JU.AU", "$.SB", "$.V3", "J.atomdata.RadiusData", "J.c.VDW", "J.jvxl.data.JvxlCoder", "JU.BSUtil", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.maxDistance = 0;
 this.contactPair = null;
@@ -66,7 +66,6 @@ Clazz.defineMethod (c$, "initADR",
 function (sg) {
 this.initVDR (sg);
 this.precalculateVoxelData = true;
-this.atomDataServer = sg.getAtomDataServer ();
 }, "J.jvxl.readers.SurfaceGenerator");
 Clazz.overrideMethod (c$, "setup", 
 function (isMapData) {
@@ -75,7 +74,7 @@ this.setup2 ();
 Clazz.defineMethod (c$, "setup2", 
 function () {
 this.contactPair = this.params.contactPair;
-this.doAddHydrogens = (this.sg.getAtomDataServer () != null && this.params.addHydrogens);
+this.doAddHydrogens = (this.sg.atomDataServer != null && this.params.addHydrogens);
 this.modelIndex = this.params.modelIndex;
 if (this.params.bsIgnore != null) this.bsMyIgnored = this.params.bsIgnore;
 if (this.params.volumeData != null) {
@@ -146,7 +145,7 @@ if (this.myAtomCount > 0) {
 var hAtoms = null;
 if (doAddHydrogens) {
 this.atomData.bsSelected = atomSet;
-this.atomDataServer.fillAtomData (this.atomData, 8);
+this.sg.atomDataServer.fillAtomData (this.atomData, 8);
 hAtoms =  new Array (nH = this.atomData.hydrogenAtomCount);
 for (var i = 0; i < this.atomData.hAtoms.length; i++) if (this.atomData.hAtoms[i] != null) for (var j = this.atomData.hAtoms[i].length; --j >= 0; ) hAtoms[--nH] = this.atomData.hAtoms[i][j];
 
@@ -268,14 +267,6 @@ this.setVoxelRange (0, this.xyzMin.x, this.xyzMax.x, this.ptsPerAngstrom, this.m
 this.setVoxelRange (1, this.xyzMin.y, this.xyzMax.y, this.ptsPerAngstrom, this.maxGrid, this.minPtsPerAng);
 this.setVoxelRange (2, this.xyzMin.z, this.xyzMax.z, this.ptsPerAngstrom, this.maxGrid, this.minPtsPerAng);
 }});
-Clazz.defineMethod (c$, "fixTitleLine", 
-function (iLine) {
-if (this.params.title == null) return false;
-var line = this.params.title[iLine];
-if (line.indexOf ("%F") > 0) line = this.params.title[iLine] = JU.PT.formatStringS (line, "F", this.atomData.fileName);
-if (line.indexOf ("%M") > 0) this.params.title[iLine] = JU.PT.formatStringS (line, "M", this.atomData.modelName);
-return true;
-}, "~N");
 Clazz.defineMethod (c$, "setVertexSource", 
 function () {
 if (this.meshDataServer != null) this.meshDataServer.fillMeshData (this.meshData, 1, null);

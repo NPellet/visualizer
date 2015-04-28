@@ -1,6 +1,6 @@
 'use strict';
 
-define(['src/util/versioning', 'src/util/debug', 'src/util/util'], function (Versioning, Debug, Util) {
+define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function (Versioning, Debug, semver) {
 
     var migrators = [
 
@@ -248,14 +248,14 @@ define(['src/util/versioning', 'src/util/debug', 'src/util/util'], function (Ver
 
         '2.13.1-b0', function (view) {
             eachModule(view, function (module) {
-                if (module.actions_in) {
+                if (Array.isArray(module.actions_in)) {
                     module.actions_in.forEach(function (action) {
                         if (action.rel === 'fromTo') {
                             action.rel = 'fromToX';
                         }
                     });
                 }
-                if (module.actions_out) {
+                if (Array.isArray(module.actions_out)) {
                     module.actions_out.forEach(function (action) {
                         if (action.rel === 'fromTo') {
                             action.rel = 'fromToX';
@@ -278,14 +278,83 @@ define(['src/util/versioning', 'src/util/debug', 'src/util/util'], function (Ver
                     });
                 }
             }, 'spectra_displayer');
-        }
+        },
 
+        '2.13.1-b2', function(view) {
+            eachModule(view, function(module) {
+                var groupings = module.getChildSync(['configuration','groups', 'groupings', 0]);
+                if(!groupings) return;
+                for(var i=0; i<groupings.length; i++) {
+                    groupings[i].getter = [groupings[i].getter];
+                }
+            }, 'slick_grid');
+        },
+
+        '2.13.1-b3', function(view) {
+            eachModule(view, function(module) {
+                var cols = module.getChildSync(['configuration', 'groups', 'cols', 0]);
+                for(var i=0; i<cols.length; i++) {
+                    delete cols[i].selectable;
+                    delete cols[i].focusable;
+                    delete cols[i].sortable;
+                    delete cols[i].defaultSortOnAsc;
+                    delete cols[i].resizable;
+                }
+                var group = module.getChildSync([ 'configuration', 'groups', 'group', 0 ]);
+
+                delete group.toggle;
+
+                var slickCheck = group.slickCheck[0];
+                if(slickCheck instanceof Array) {
+                    checkboxRemove(slickCheck, 'multiColumnSort');
+                    checkboxRemove(slickCheck, 'enableColumnReorder');
+                    checkboxRemove(slickCheck, 'enableTextSelectionOnCells');
+                }
+                delete group.filterRow;
+
+            }, 'slick_grid');
+        },
+
+        '2.15.1', function (view) {
+            eachModule(view, function(module) {
+                var actions_in = module.actions_in;
+                if (actions_in && actions_in.length) {
+                    actions_in.forEach(function (action) {
+                        if (action && action.rel === 'fromTo') {
+                            action.rel = 'fromToX';
+                        }
+                    });
+                }
+            }, 'spectra_displayer');
+        },
+        '2.16.1-1', function(view) {
+            eachModule(view, function(module) {
+                var slickCheck = module.getChildSync([ 'configuration', 'groups', 'group', 0, 'slickCheck', 0 ]);
+                if(slickCheck instanceof Array) {
+                    checkboxAdd(slickCheck, 'highlightScroll');
+                }
+            }, 'slick_grid')
+        }
 //  Add new migration functions here
 //      'x.y.z', function (view) {
 //          // Do something to the view
 //      }
 
     ];
+
+    function checkboxRemove(checkbox, name) {
+        var idx = checkbox.indexOf(name);
+        if(idx > -1){
+            checkbox.splice(idx, 1);
+        }
+    }
+
+    function checkboxAdd(checkbox, name) {
+        var idx = checkbox.indexOf(name);
+        if(idx === -1){
+            checkbox.push(name);
+        }
+    }
 
     function eachModule(view, callback, moduleNames) {
         if (view.modules) {
@@ -383,7 +452,7 @@ define(['src/util/versioning', 'src/util/debug', 'src/util/util'], function (Ver
             return './modules/types/xyzoomnavigator/';
         if (type === 'webservice_cron')
             return './modules/types/webservice_cron/';
-        console.error('viewmigration problem: ' + type + ' is unknown');
+        Debug.error('viewmigration problem: ' + type + ' is unknown');
     }
 
     function updateJpath(element) {
@@ -405,11 +474,8 @@ define(['src/util/versioning', 'src/util/debug', 'src/util/util'], function (Ver
             delete view._version;
         }
 
-        if (view.version === Versioning.version)
+        if (view.version === Versioning.version) {
             return view;
-
-        if (typeof view.version !== 'undefined') {
-            Debug.info('Migrating view from version ' + view.version + ' to ' + Versioning.version);
         }
 
         // views without good version numbering
@@ -434,108 +500,64 @@ define(['src/util/versioning', 'src/util/debug', 'src/util/util'], function (Ver
                 break;
         }
 
-        var versionSem = Util.semver(view.version);
-
-        if (!versionSem) {
+        var viewVersion = semver.parse(view.version);
+        if (!viewVersion) {
+            Debug.error('View has an invalid version: ' + view.version + '. It cannot be migrated');
             return view;
         }
 
-        if (versionSem.prerelease) {
+        var visualizerVersion = semver.parse(Versioning.version);
+
+        if (semver.gt(viewVersion, visualizerVersion)) {
+            return view;
+        }
+
+        Debug.info('Migrating view from version ' + view.version + ' to ' + Versioning.version);
+
+        if (viewVersion.prerelease.length) {
             Debug.warn('Migrating a prerelease view, anything can happen !');
         }
 
-        if (Util.semver(Versioning.version).prerelease) {
+        if (visualizerVersion.prerelease.length) {
             Debug.warn('Migrating to a prerelease version of the visualizer, anything can happen !');
         }
 
-        migrateView(view, versionSem);
+        for (var i = 0; i < migrationFunctions.length; i++) {
+            if (semver.lt(viewVersion, migrationFunctions[i].version)) {
+                Debug.debug('applying migration to v' + migrationFunctions[i].version.version);
+                migrationFunctions[i].func(view);
+            }
+        }
 
         view.version = Versioning.version;
 
         return view;
     }
 
-    function migrateView(view, version) {
-        var i, j, k, l,
-            major, minor, patch, release,
-            found;
-        for (i = version.major; i < migrationFunctions.length; i++) {
-            major = migrationFunctions[i];
-            if (major) {
-                j = (i == version.major ? version.minor : 0);
-                for (; j < major.length; j++) {
-                    minor = major[j];
-                    if (minor) {
-                        k = ((i == version.major && j == version.minor) ? version.patch : 0);
-                        for (; k < minor.length; k++) {
-                            patch = minor[k];
-                            if (patch) {
-                                if (i == version.major && j == version.minor && k == version.patch) {
-                                    if (version.prerelease) {
-                                        for (l = 0; l < patch.length; l++) {
-                                            release = patch[l];
-                                            if (release.label == version.prerelease) {
-                                                found = true;
-                                            } else if (found) {
-                                                Debug.debug("applying migration to v" + i + "." + j + "." + k + "-" + release.label);
-                                                release.func(view);
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    for (l = 0; l < patch.length; l++) {
-                                        release = patch[l];
-                                        Debug.debug("applying migration to v" + i + "." + j + "." + k + "-" + release.label);
-                                        release.func(view);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     var migrationFunctions = [];
-
-    function addMigrationFunction(version, func) {
-
-        var semVer = Util.semver(version);
-
-        if (!semVer) {
-            throw new Error('invalid semver for migration function: ' + version);
-        }
-
-        if (typeof func !== 'function') {
-            throw new Error('object passed for migration ' + version + ' has to be a function');
-        }
-
-        var major = migrationFunctions[semVer.major] || (migrationFunctions[semVer.major] = []);
-        var minor = major[semVer.minor] || (major[semVer.minor] = []);
-        var patch = minor[semVer.patch] || (minor[semVer.patch] = []);
-
-        if (semVer.prerelease) {
-            patch.push({
-                label: semVer.prerelease,
-                func: func
-            });
-        } else {
-            patch.push({
-                label: 'release',
-                func: func
-            });
-        }
-
-    }
 
     if (migrators.length % 2 == 1) {
         throw new Error('Invalid length of the migrators array.');
     }
 
     for (var i = 0; i < migrators.length; i += 2) {
-        addMigrationFunction(migrators[i], migrators[i + 1]);
+        var version = semver.parse(migrators[i]);
+        if (!version) {
+            throw new Error('invalid semver for migration function: ' + migrators[i]);
+        }
+        var func = migrators[i + 1];
+        if (typeof func !== 'function') {
+            throw new Error('object passed for migration ' + migrators[i] + ' has to be a function');
+        }
+        migrationFunctions.push({
+            version: version,
+            func: func
+        });
     }
+
+    migrationFunctions.sort(function (v1, v2) {
+        return v1.version.compare(v2.version);
+    });
 
     return migrate;
 

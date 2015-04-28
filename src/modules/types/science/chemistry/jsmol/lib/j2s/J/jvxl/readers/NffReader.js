@@ -32,7 +32,7 @@ Clazz.defineMethod (c$, "readVerticesAndPolygons",
 function () {
 var color = 0xFF0000;
 try {
-while (this.readLine () != null) {
+while (this.rd () != null) {
 if (this.line.length == 0) continue;
 var tokens = this.getTokens ();
 switch (this.line.charAt (0)) {
@@ -62,7 +62,7 @@ return true;
 });
 Clazz.defineMethod (c$, "getVertex", 
  function () {
-var i = this.vertexMap.get (this.readLine ());
+var i = this.vertexMap.get (this.rd ());
 if (i == null) {
 var tokens = this.getTokens ();
 this.pt.set (this.parseFloatStr (tokens[0]), this.parseFloatStr (tokens[1]), this.parseFloatStr (tokens[2]));

@@ -62,9 +62,9 @@
 ){
 var $t$;
 //var c$;
-Jmol.___JmolDate="$Date: 2014-10-13 19:33:47 -0500 (Mon, 13 Oct 2014) $"
+Jmol.___JmolDate="$Date: 2015-02-11 06:00:50 -0600 (Wed, 11 Feb 2015) $"
 Jmol.___fullJmolProperties="src/org/jmol/viewer/Jmol.properties"
-Jmol.___JmolVersion="14.2.7_2014.10.13"
+Jmol.___JmolVersion="14.2.12_2015.02.11"
 // JSmolJavaExt.js
 
 // This library will be wrapped by an additional anonymous function using ANT in 
@@ -73,6 +73,7 @@ Jmol.___JmolVersion="14.2.7_2014.10.13"
 // (local scope) Clazz_xxx, allowing them to be further compressed using
 // Google Closure Compiler in that same ANT task.
 
+// BH 1/16/2015 10:09:38 AM Chrome failure jqGrig due to new String("x").toString() not being a simple string
 // BH 8/14/2014 6:49:22 PM Character class efficiencies
 // BH 7/24/2014 9:02:18 AM most browsers do not support String.codePointAt()
 // BH 7/11/2014 4:17:22 PM fix for Boolean.valueOf("false") not being false 
@@ -1679,7 +1680,7 @@ default:
 };
 
 if(navigator.userAgent.toLowerCase().indexOf("chrome")!=-1){
-	String.prototype.toString=function(){return this;};
+	String.prototype.toString=function(){return this.valueOf();};
 }
 
 }
@@ -11239,9 +11240,9 @@ function (red, grn, blu) {
 return 0xFF000000 | (red << 16) | (grn << 8) | blu;
 }, "~N,~N,~N");
 c$.colorPtFromString = Clazz_defineMethod (c$, "colorPtFromString", 
-function (colorName, pt) {
-return JU.CU.toRGBpt (JU.CU.getArgbFromString (colorName), pt);
-}, "~S,JU.P3");
+function (colorName) {
+return JU.CU.colorPtFromInt (JU.CU.getArgbFromString (colorName), null);
+}, "~S");
 c$.colorPtFromInt = Clazz_defineMethod (c$, "colorPtFromInt", 
 function (color, pt) {
 if (pt == null) pt =  new JU.P3 ();
@@ -11252,13 +11253,6 @@ c$.colorPtToFFRGB = Clazz_defineMethod (c$, "colorPtToFFRGB",
 function (pt) {
 return JU.CU.colorTriadToFFRGB (pt.x, pt.y, pt.z);
 }, "JU.T3");
-c$.toRGBpt = Clazz_defineMethod (c$, "toRGBpt", 
-function (color, pt) {
-pt.x = (color >> 16) & 0xFF;
-pt.y = (color >> 8) & 0xFF;
-pt.z = color & 0xFF;
-return pt;
-}, "~N,JU.P3");
 c$.toRGB3f = Clazz_defineMethod (c$, "toRGB3f", 
 function (c, f) {
 f[0] = ((c >> 16) & 0xFF) / 255;
@@ -11285,9 +11279,9 @@ return (doRound ? JU.P3.new3 (Math.round (h * 10) / 10, Math.round (s * 1000) / 
 }, "JU.P3,~B");
 c$.hslToRGB = Clazz_defineMethod (c$, "hslToRGB", 
 function (hsl) {
-var h = hsl.x / 60;
-var s = hsl.y / 100;
-var l = hsl.z / 100;
+var h = Math.max (0, Math.min (360, hsl.x)) / 60;
+var s = Math.max (0, Math.min (100, hsl.y)) / 100;
+var l = Math.max (0, Math.min (100, hsl.z)) / 100;
 var p = l - (l < 0.5 ? l : 1 - l) * s;
 var q = 2 * (l - p);
 var r = JU.CU.toRGB (p, q, h + 2);
@@ -12116,6 +12110,7 @@ this.m30 = m1.m30;
 this.m31 = m1.m31;
 this.m32 = m1.m32;
 this.m33 = m1.m33;
+return this;
 }, "JU.M4");
 Clazz_defineMethod (c$, "setMV", 
 function (m1, t) {
@@ -12386,18 +12381,14 @@ tmp = this.m23;
 this.m23 = this.m32;
 this.m32 = tmp;
 });
-Clazz_defineMethod (c$, "invertM", 
-function (m1) {
-this.setM4 (m1);
-this.invert ();
-}, "JU.M4");
 Clazz_defineMethod (c$, "invert", 
 function () {
 var s = this.determinant4 ();
-if (s == 0.0) return;
+if (s == 0.0) return this;
 s = 1 / s;
 this.set (this.m11 * (this.m22 * this.m33 - this.m23 * this.m32) + this.m12 * (this.m23 * this.m31 - this.m21 * this.m33) + this.m13 * (this.m21 * this.m32 - this.m22 * this.m31), this.m21 * (this.m02 * this.m33 - this.m03 * this.m32) + this.m22 * (this.m03 * this.m31 - this.m01 * this.m33) + this.m23 * (this.m01 * this.m32 - this.m02 * this.m31), this.m31 * (this.m02 * this.m13 - this.m03 * this.m12) + this.m32 * (this.m03 * this.m11 - this.m01 * this.m13) + this.m33 * (this.m01 * this.m12 - this.m02 * this.m11), this.m01 * (this.m13 * this.m22 - this.m12 * this.m23) + this.m02 * (this.m11 * this.m23 - this.m13 * this.m21) + this.m03 * (this.m12 * this.m21 - this.m11 * this.m22), this.m12 * (this.m20 * this.m33 - this.m23 * this.m30) + this.m13 * (this.m22 * this.m30 - this.m20 * this.m32) + this.m10 * (this.m23 * this.m32 - this.m22 * this.m33), this.m22 * (this.m00 * this.m33 - this.m03 * this.m30) + this.m23 * (this.m02 * this.m30 - this.m00 * this.m32) + this.m20 * (this.m03 * this.m32 - this.m02 * this.m33), this.m32 * (this.m00 * this.m13 - this.m03 * this.m10) + this.m33 * (this.m02 * this.m10 - this.m00 * this.m12) + this.m30 * (this.m03 * this.m12 - this.m02 * this.m13), this.m02 * (this.m13 * this.m20 - this.m10 * this.m23) + this.m03 * (this.m10 * this.m22 - this.m12 * this.m20) + this.m00 * (this.m12 * this.m23 - this.m13 * this.m22), this.m13 * (this.m20 * this.m31 - this.m21 * this.m30) + this.m10 * (this.m21 * this.m33 - this.m23 * this.m31) + this.m11 * (this.m23 * this.m30 - this.m20 * this.m33), this.m23 * (this.m00 * this.m31 - this.m01 * this.m30) + this.m20 * (this.m01 * this.m33 - this.m03 * this.m31) + this.m21 * (this.m03 * this.m30 - this.m00 * this.m33), this.m33 * (this.m00 * this.m11 - this.m01 * this.m10) + this.m30 * (this.m01 * this.m13 - this.m03 * this.m11) + this.m31 * (this.m03 * this.m10 - this.m00 * this.m13), this.m03 * (this.m11 * this.m20 - this.m10 * this.m21) + this.m00 * (this.m13 * this.m21 - this.m11 * this.m23) + this.m01 * (this.m10 * this.m23 - this.m13 * this.m20), this.m10 * (this.m22 * this.m31 - this.m21 * this.m32) + this.m11 * (this.m20 * this.m32 - this.m22 * this.m30) + this.m12 * (this.m21 * this.m30 - this.m20 * this.m31), this.m20 * (this.m02 * this.m31 - this.m01 * this.m32) + this.m21 * (this.m00 * this.m32 - this.m02 * this.m30) + this.m22 * (this.m01 * this.m30 - this.m00 * this.m31), this.m30 * (this.m02 * this.m11 - this.m01 * this.m12) + this.m31 * (this.m00 * this.m12 - this.m02 * this.m10) + this.m32 * (this.m01 * this.m10 - this.m00 * this.m11), this.m00 * (this.m11 * this.m22 - this.m12 * this.m21) + this.m01 * (this.m12 * this.m20 - this.m10 * this.m22) + this.m02 * (this.m10 * this.m21 - this.m11 * this.m20));
 this.scale (s);
+return this;
 });
 Clazz_defineMethod (c$, "set", 
  function (m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33) {
@@ -12456,6 +12447,7 @@ this.rotTrans2 (point, point);
 Clazz_defineMethod (c$, "rotTrans2", 
 function (point, pointOut) {
 pointOut.set (this.m00 * point.x + this.m01 * point.y + this.m02 * point.z + this.m03, this.m10 * point.x + this.m11 * point.y + this.m12 * point.z + this.m13, this.m20 * point.x + this.m21 * point.y + this.m22 * point.z + this.m23);
+return pointOut;
 }, "JU.T3,JU.T3");
 Clazz_defineMethod (c$, "setAsXYRotation", 
 function (angle) {
@@ -12533,7 +12525,7 @@ fileName = null;
 this.os0 = os;
 os = null;
 }this.os = os;
-this.isLocalFile = (fileName != null && !(fileName.startsWith ("http://") || fileName.startsWith ("https://")));
+this.isLocalFile = (fileName != null && !JU.OC.isRemote (fileName));
 if (asWriter && !this.$isBase64 && os != null) this.bw =  new java.io.BufferedWriter ( new java.io.OutputStreamWriter (os));
 return this;
 }, "javajs.api.BytePoster,~S,~B,java.io.OutputStream");
@@ -12587,7 +12579,16 @@ return this;
 Clazz_defineMethod (c$, "reset", 
 function () {
 this.sb = null;
-try {
+this.initOS ();
+});
+Clazz_defineMethod (c$, "initOS", 
+ function () {
+if (this.sb != null) {
+var s = this.sb.toString ();
+this.reset ();
+this.append (s);
+return;
+}try {
 {
 this.os = null;
 }if (this.os == null) this.os =  new java.io.ByteArrayOutputStream ();
@@ -12605,14 +12606,20 @@ this.byteCount = 0;
 });
 Clazz_overrideMethod (c$, "write", 
 function (buf, i, len) {
-if (this.os == null) this.os =  new java.io.ByteArrayOutputStream ();
-{
-this.os.write(buf, i, len);
-}this.byteCount += len;
+if (this.os == null) this.initOS ();
+try {
+this.os.write (buf, i, len);
+} catch (e) {
+if (Clazz_exceptionOf (e, java.io.IOException)) {
+} else {
+throw e;
+}
+}
+this.byteCount += len;
 }, "~A,~N,~N");
 Clazz_overrideMethod (c$, "writeByteAsInt", 
 function (b) {
-if (this.os == null) this.os =  new java.io.ByteArrayOutputStream ();
+if (this.os == null) this.initOS ();
 {
 this.os.writeByteAsInt(b);
 }this.byteCount++;
@@ -12697,6 +12704,30 @@ Clazz_defineMethod (c$, "postByteArray",
 var bytes = (this.sb == null ? this.toByteArray () : this.sb.toString ().getBytes ());
 return this.bytePoster.postByteArray (this.fileName, bytes);
 });
+c$.isRemote = Clazz_defineMethod (c$, "isRemote", 
+function (fileName) {
+if (fileName == null) return false;
+var itype = JU.OC.urlTypeIndex (fileName);
+return (itype >= 0 && itype != 4);
+}, "~S");
+c$.isLocal = Clazz_defineMethod (c$, "isLocal", 
+function (fileName) {
+if (fileName == null) return false;
+var itype = JU.OC.urlTypeIndex (fileName);
+return (itype < 0 || itype == 4);
+}, "~S");
+c$.urlTypeIndex = Clazz_defineMethod (c$, "urlTypeIndex", 
+function (name) {
+if (name == null) return -2;
+for (var i = 0; i < JU.OC.urlPrefixes.length; ++i) {
+if (name.startsWith (JU.OC.urlPrefixes[i])) {
+return i;
+}}
+return -1;
+}, "~S");
+Clazz_defineStatics (c$,
+"urlPrefixes", ["http:", "https:", "sftp:", "ftp:", "file:"],
+"URL_LOCAL", 4);
 });
 Clazz_declarePackage ("JU");
 Clazz_load (["JU.T3"], "JU.P3", null, function () {
@@ -12709,6 +12740,10 @@ p.y = t.y;
 p.z = t.z;
 return p;
 }, "JU.T3");
+c$.getUnlikely = Clazz_defineMethod (c$, "getUnlikely", 
+function () {
+return (JU.P3.unlikely == null ? JU.P3.unlikely = JU.P3.new3 (3.141592653589793, 2.718281828459045, (8.539734222673566)) : JU.P3.unlikely);
+});
 c$.new3 = Clazz_defineMethod (c$, "new3", 
 function (x, y, z) {
 var p =  new JU.P3 ();
@@ -12717,6 +12752,8 @@ p.y = y;
 p.z = z;
 return p;
 }, "~N,~N,~N");
+Clazz_defineStatics (c$,
+"unlikely", null);
 });
 Clazz_declarePackage ("JU");
 Clazz_load (["JU.T3i"], "JU.P3i", null, function () {
@@ -13088,16 +13125,34 @@ return JU.PT.getQuotedStringNext (line, next);
 }, "~S,~N");
 c$.getQuotedStringNext = Clazz_defineMethod (c$, "getQuotedStringNext", 
 function (line, next) {
-var value = line;
 var i = next[0];
-if (i < 0 || (i = value.indexOf ("\"", i)) < 0) return "";
-next[0] = ++i;
-value = value.substring (i);
-i = -1;
-while (++i < value.length && value.charAt (i) != '"') if (value.charAt (i) == '\\') i++;
+if (i < 0 || (i = line.indexOf ("\"", i)) < 0) return "";
+var pt = i + 1;
+var len = line.length;
+while (++i < len && line.charAt (i) != '"') if (line.charAt (i) == '\\') i++;
 
-next[0] += i + 1;
-return value.substring (0, i);
+next[0] = i + 1;
+return line.substring (pt, i);
+}, "~S,~A");
+c$.getCSVString = Clazz_defineMethod (c$, "getCSVString", 
+function (line, next) {
+var i = next[1];
+if (i < 0 || (i = line.indexOf ("\"", i)) < 0) return null;
+var pt = next[0] = i;
+var len = line.length;
+var escaped = false;
+var haveEscape = false;
+while (++i < len && (line.charAt (i) != '"' || (escaped = (i + 1 < len && line.charAt (i + 1) == '"')))) if (escaped) {
+escaped = false;
+haveEscape = true;
+i++;
+}
+if (i >= len) {
+next[1] = -1;
+return null;
+}next[1] = i + 1;
+var s = line.substring (pt + 1, i);
+return (haveEscape ? JU.PT.rep (JU.PT.rep (s, "\"\"", "\0"), "\0", "\"") : s);
 }, "~S,~A");
 c$.isOneOf = Clazz_defineMethod (c$, "isOneOf", 
 function (key, semiList) {
@@ -13368,11 +13423,15 @@ pt0 = pt + 1;
 sb.append (str.substring (pt0, str.length));
 str = sb.toString ();
 }
-for (i = str.length; --i >= 0; ) if (str.charCodeAt (i) > 0x7F) {
+return "\"" + JU.PT.escUnicode (str) + "\"";
+}, "~S");
+c$.escUnicode = Clazz_defineMethod (c$, "escUnicode", 
+function (str) {
+for (var i = str.length; --i >= 0; ) if (str.charCodeAt (i) > 0x7F) {
 var s = "0000" + Integer.toHexString (str.charCodeAt (i));
 str = str.substring (0, i) + "\\u" + s.substring (s.length - 4) + str.substring (i + 1);
 }
-return "\"" + str + "\"";
+return str;
 }, "~S");
 c$.escF = Clazz_defineMethod (c$, "escF", 
 function (f) {
@@ -14699,8 +14758,6 @@ Clazz_declareInterface (JSV.api, "JSVAppletInterface");
 Clazz_declarePackage ("JSV.api");
 Clazz_declareInterface (JSV.api, "JSVFileHelper");
 Clazz_declarePackage ("JSV.api");
-Clazz_declareInterface (JSV.api, "JSVGraphics");
-Clazz_declarePackage ("JSV.api");
 Clazz_load (["JSV.api.JSVViewPanel"], "JSV.api.JSVMainPanel", null, function () {
 Clazz_declareInterface (JSV.api, "JSVMainPanel", JSV.api.JSVViewPanel);
 });
@@ -15644,7 +15701,7 @@ return null;
 throw e;
 }
 }
-}, "JSV.api.JSVGraphics,JSV.common.Spectrum,JU.Lst,JSV.common.Annotation");
+}, "J.api.GenericGraphics,JSV.common.Spectrum,JU.Lst,JSV.common.Annotation");
 Clazz_pu$h(self.c$);
 c$ = Clazz_declareType (JSV.common.Annotation, "AType", Enum);
 Clazz_defineEnumConstant (c$, "Integration", 0, []);
@@ -20112,6 +20169,9 @@ c$ = Clazz_p0p ();
 Clazz_defineStatics (c$,
 "MAXABS", 4);
 });
+Jmol.___JSVDate="$Date: 2015-01-05 17:28:27 -0600 (Mon, 05 Jan 2015) $"
+Jmol.___JSVSvnRev="$LastChangedRevision: 1681 $"
+Jmol.___JSVVersion="14.2.7"
 Clazz_declarePackage ("JSV.common");
 c$ = Clazz_declareType (JSV.common, "JSVersion");
 Clazz_defineStatics (c$,
@@ -20122,12 +20182,12 @@ var tmpVersion = null;
 var tmpDate = null;
 var tmpSVN = null;
 {
-tmpVersion = self.___version; tmpDate = self.___date; tmpSVN =
-self.___svnRev;
+tmpVersion = Jmol.___JSVVersion; tmpDate = Jmol.___JSVDate;
+tmpSVN =  Jmol.___JSVSvnRev;
 }if (tmpDate != null) tmpDate = tmpDate.substring (7, 23);
-if (tmpSVN != null) tmpSVN = tmpSVN.substring (22, 27);
+tmpSVN = (tmpSVN == null ? "" : "/SVN" + tmpSVN.substring (22, 27));
 JSV.common.JSVersion.VERSION_SHORT = (tmpVersion != null ? tmpVersion : "(Unknown version)");
-JSV.common.JSVersion.VERSION = JSV.common.JSVersion.VERSION_SHORT + "/SVN" + tmpSVN + "/" + (tmpDate != null ? tmpDate : "(Unknown date)");
+JSV.common.JSVersion.VERSION = JSV.common.JSVersion.VERSION_SHORT + tmpSVN + "/" + (tmpDate != null ? tmpDate : "(Unknown date)");
 }Clazz_declarePackage ("JSV.common");
 Clazz_load (["java.util.Hashtable"], "JSV.common.JSVFileManager", ["java.io.BufferedInputStream", "$.BufferedReader", "$.InputStreamReader", "$.StringReader", "java.net.URL", "JU.AU", "$.Encoding", "$.PT", "$.SB", "JSV.common.JSVersion", "$.JSViewer", "JSV.exception.JSVException", "JU.Logger"], function () {
 c$ = Clazz_declareType (JSV.common, "JSVFileManager");
@@ -22331,7 +22391,7 @@ if (this.units != null) info.put ("units", this.units);
 c$.HEADER = c$.prototype.HEADER = ["", "start", "end", "value"];
 });
 Clazz_declarePackage ("JSV.common");
-Clazz_load (["java.lang.Enum", "javajs.api.EventManager", "java.util.Hashtable", "JU.Lst"], "JSV.common.PanelData", ["java.lang.Boolean", "$.Double", "javajs.awt.Font", "JU.CU", "JSV.api.JSVGraphics", "JSV.common.Annotation", "$.Coordinate", "$.GraphSet", "$.JSVFileManager", "$.JSVersion", "$.JSViewer", "$.MeasurementData", "$.Parameters", "$.PeakPickEvent", "$.ScriptToken", "$.Spectrum", "$.SubSpecChangeEvent", "$.ZoomEvent", "JSV.dialog.JSVDialog", "JU.Logger"], function () {
+Clazz_load (["java.lang.Enum", "javajs.api.EventManager", "java.util.Hashtable", "JU.Lst"], "JSV.common.PanelData", ["java.lang.Boolean", "$.Double", "javajs.awt.Font", "JU.CU", "JSV.common.Annotation", "$.Coordinate", "$.GraphSet", "$.JSVFileManager", "$.JSVersion", "$.JSViewer", "$.MeasurementData", "$.Parameters", "$.PeakPickEvent", "$.ScriptToken", "$.Spectrum", "$.SubSpecChangeEvent", "$.ZoomEvent", "JSV.dialog.JSVDialog", "J.api.GenericGraphics", "JU.Logger"], function () {
 c$ = Clazz_decorateAsClass (function () {
 this.g2d = null;
 this.g2d0 = null;
@@ -23288,14 +23348,14 @@ Clazz_defineMethod (c$, "printPdf",
 function (pdfCreator, pl) {
 var isPortrait = !pl.layout.equals ("landscape");
 this.print (pdfCreator, (isPortrait ? pl.imageableHeight : pl.imageableWidth), (isPortrait ? pl.imageableWidth : pl.imageableHeight), pl.imageableX, pl.imageableY, pl.paperHeight, pl.paperWidth, isPortrait, 0);
-}, "JSV.api.JSVGraphics,JSV.common.PrintLayout");
+}, "J.api.GenericGraphics,JSV.common.PrintLayout");
 Clazz_defineMethod (c$, "print", 
 function (g, height, width, x, y, paperHeight, paperWidth, isPortrait, pi) {
 this.g2d = this.g2d0;
 if (pi == 0) {
 this.isPrinting = true;
 var addFilePath = false;
-if (Clazz_instanceOf (g, JSV.api.JSVGraphics)) {
+if (Clazz_instanceOf (g, J.api.GenericGraphics)) {
 this.g2d = g;
 g = this.gMain;
 }if (this.printGraphPosition.equals ("default")) {
@@ -25829,14 +25889,14 @@ font.fontMetrics.font = font.font;
 return Math.ceil(font.fontMetrics.measureText(text).width);
 }}, "javajs.awt.Font,~S");
 Clazz_declarePackage ("JSV.js2d");
-Clazz_load (["JSV.api.JSVGraphics"], "JSV.js2d.JsG2D", ["javajs.awt.Color", "JU.CU"], function () {
+Clazz_load (["J.api.GenericGraphics"], "JSV.js2d.JsG2D", ["javajs.awt.Color", "JU.CU"], function () {
 c$ = Clazz_decorateAsClass (function () {
 this.windowWidth = 0;
 this.windowHeight = 0;
 this.isShifted = false;
 this.inPath = false;
 Clazz_instantialize (this, arguments);
-}, JSV.js2d, "JsG2D", null, JSV.api.JSVGraphics);
+}, JSV.js2d, "JsG2D", null, J.api.GenericGraphics);
 Clazz_makeConstructor (c$, 
 function () {
 });

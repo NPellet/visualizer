@@ -46,7 +46,7 @@ this.params.fullyLit = true;
 this.point = this.params.point;
 if (Clazz.instanceOf (this.params.func, String)) {
 this.funcType = (this.params.func.equals ("a-b") ? 2 : this.params.func.equals ("a+b") ? 1 : 3);
-} else if (this.params.func == null || this.atomDataServer == null) {
+} else if (this.params.func == null || this.sg.atomDataServer == null) {
 this.funcType = 2;
 } else {
 this.func = this.params.func;
@@ -117,7 +117,7 @@ return (va > vb ? va : vb);
 default:
 this.values[0] = va;
 this.values[1] = vb;
-return this.atomDataServer.evalFunctionFloat (this.func[0], this.func[1], this.values);
+return this.sg.atomDataServer.evalFunctionFloat (this.func[0], this.func[1], this.values);
 }
 }, "~N,~N");
 Clazz.overrideMethod (c$, "getValueAtPoint", 

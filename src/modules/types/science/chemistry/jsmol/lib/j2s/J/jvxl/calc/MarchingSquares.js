@@ -53,10 +53,6 @@ nContours = contoursDiscrete.length;
 this.nContourSegments = nContours;
 this.contourFromZero = false;
 }}, "J.jvxl.api.VertexDataServer,J.jvxl.data.VolumeData,JU.P4,~A,~N,~N,~B");
-Clazz.defineMethod (c$, "getContourType", 
-function () {
-return this.contourType;
-});
 Clazz.defineMethod (c$, "setMinMax", 
 function (valueMin, valueMax) {
 this.valueMin = valueMin;
@@ -73,18 +69,14 @@ Clazz.defineMethod (c$, "setContourData",
 function (i, value) {
 this.contourVertexes[i].setValue (value);
 }, "~N,~N");
-Clazz.defineMethod (c$, "getContourValues", 
-function () {
-return this.contourValuesUsed;
-});
 Clazz.defineMethod (c$, "calcContourPoint", 
 function (cutoff, valueA, valueB, pt) {
 return this.volumeData.calculateFractionalPoint (cutoff, this.pointA, this.pointB, valueA, valueB, pt);
 }, "~N,~N,~N,JU.P3");
 Clazz.defineMethod (c$, "addTriangle", 
-function (iA, iB, iC, check, check2) {
+function (iA, iB, iC, check, iContour) {
 if (this.triangleCount == this.triangles.length) this.triangles = JU.AU.doubleLength (this.triangles);
-this.triangles[this.triangleCount++] = Clazz.innerTypeInstance (J.jvxl.calc.MarchingSquares.Triangle, this, null, iA, iB, iC, check, check2);
+this.triangles[this.triangleCount++] = Clazz.innerTypeInstance (J.jvxl.calc.MarchingSquares.Triangle, this, null, iA, iB, iC, check, iContour);
 return 0;
 }, "~N,~N,~N,~N,~N");
 Clazz.defineMethod (c$, "generateContourData", 
@@ -163,6 +155,7 @@ return iPt;
 }, "J.jvxl.calc.MarchingSquares.Triangle,~N,~N");
 Clazz.defineMethod (c$, "checkContour", 
  function (t, i, value) {
+if (this.thisContour > 0 && i + 1 != this.thisContour) return;
 var ipt0 = this.intercept (t, 0, value);
 var ipt1 = this.intercept (t, 1, value);
 var ipt2 = this.intercept (t, 2, value);

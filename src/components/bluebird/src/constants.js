@@ -27,7 +27,7 @@ CONSTANT(CALLBACK_PROMISE_OFFSET, 3);
 CONSTANT(CALLBACK_RECEIVER_OFFSET, 4);
 CONSTANT(CALLBACK_SIZE, 5);
 //Layout for ._bitField
-//QQWF NCTR BMHS UDAL LLLL LLLL LLLL LLLL
+//QQWF NCTR BMHS UDXL LLLL LLLL LLLL LLLL
 //Q = isSettlePromisesQueued (Both bits are either on or off to represent
 //                    1 bit due to 31-bit integers in 32-bit v8)
 //W = isFollowing (The promise that is being followed is not stored explicitly)
@@ -35,15 +35,15 @@ CONSTANT(CALLBACK_SIZE, 5);
 //N = isRejected
 //C = isCancellable
 //T = isFinal (used for .done() implementation)
-//B = isMigratingBinding
+//B = isBound
 //M = isMigrated
 //H = isRejectionUnhandled
 //S = isCarryingStackTrace
 //U = isUnhanldedRejectionNotified
 //D = isDisposable
-//A = isSpreadable
+//X = isBound
 //R = [Reserved]
-//L = Length, 17 bit unsigned
+//L = Length, 18 bit unsigned
 CONSTANT(NO_STATE, 0x0|0);
 CONSTANT(IS_SETTLE_PROMISES_QUEUED, 0xC0000000|0)
 CONSTANT(IS_FOLLOWING, 0x20000000|0);
@@ -51,13 +51,13 @@ CONSTANT(IS_FULFILLED, 0x10000000|0);
 CONSTANT(IS_REJECTED, 0x8000000|0);
 CONSTANT(IS_CANCELLABLE, 0x4000000|0);
 CONSTANT(IS_FINAL, 0x2000000|0);
-CONSTANT(IS_MIGRATING_BINDING, 0x800000|0);
+CONSTANT(IS_BOUND, 0x800000|0);
 CONSTANT(IS_MIGRATED, 0x400000|0);
 CONSTANT(IS_REJECTION_UNHANDLED, 0x200000|0);
 CONSTANT(IS_CARRYING_STACK_TRACE, 0x100000|0);
 CONSTANT(IS_UNHANDLED_REJECTION_NOTIFIED, 0x80000|0);
 CONSTANT(IS_DISPOSABLE, 0x40000|0);
-CONSTANT(IS_SPREADABLE, 0x20000|0);
+CONSTANT(IS_BOUND, 0x20000|0);
 CONSTANT(LENGTH_MASK, 0x1FFFF|0);
 CONSTANT(LENGTH_CLEAR_MASK, ~LENGTH_MASK);
 CONSTANT(MAX_LENGTH, LENGTH_MASK);
@@ -91,8 +91,7 @@ CONSTANT(QUEUE_MIN_CAPACITY, 16);
 CONSTANT(FROM_PREVIOUS_EVENT, "From previous event:");
 CONSTANT(NO_STACK_TRACE, "    (No stack trace)");
 CONSTANT(ADDITIONAL_STACK_TRACE, "^--- With additional stack trace: ");
-CONSTANT(UNHANDLED_REJECTION_HEADER, "Possibly unhandled ");
-CONSTANT(NEWLINE_PROTECTOR, "\\u0002\\u0000\\u0001");
+CONSTANT(UNHANDLED_REJECTION_HEADER, "Unhandled rejection ");
 
 //direct_resolve.js
 CONSTANT(THROW, 1);
@@ -100,7 +99,7 @@ CONSTANT(RETURN, 2);
 
 //promisify.js
 CONSTANT(MAX_PARAM_COUNT, 1023);
-CONSTANT(PARAM_COUNTS_TO_TRY, 5);
+CONSTANT(PARAM_COUNTS_TO_TRY, 3);
 
 //error.js
 CONSTANT(BLUEBIRD_ERRORS, "__BluebirdErrorTypes__");

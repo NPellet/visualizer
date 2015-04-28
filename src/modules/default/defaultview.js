@@ -85,11 +85,11 @@ define(['src/util/util'], function (Util) {
         },
 
         showLoading: function () {
-            this.module.domLoading.show();
+            this.module.domLoading.addClass('ci-module-loading-visible');
         },
 
         hideLoading: function () {
-            this.module.domLoading.hide();
+            this.module.domLoading.removeClass('ci-module-loading-visible');
         },
 
         relsForLoading: function () {

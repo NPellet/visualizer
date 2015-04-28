@@ -139,6 +139,7 @@ this.points = null;
 this.volumeData = null;
 this.contactPair = null;
 this.mapLattice = null;
+this.extendGrid = 0;
 this.isMapped = false;
 this.showTiming = false;
 this.pointSize = 0;
@@ -160,9 +161,9 @@ this.bsIgnore = null;
 this.bsSelected = null;
 this.bsSolvent = null;
 this.calculationType = "";
-this.center = JU.P3.new3 (3.4028235E38, 3.4028235E38, 3.4028235E38);
+this.center =  new JU.P3 ();
+this.resetForMapping (true);
 this.colorBySign = this.colorByPhase = this.colorBySets = false;
-this.colorDensity = false;
 this.colorEncoder = null;
 this.colorNeg = -65536;
 this.colorNegLCAO = -8388480;
@@ -181,15 +182,14 @@ this.dataXYReversed = false;
 this.distance = 3.4028235E38;
 this.doFullMolecular = false;
 this.envelopeRadius = 10;
+this.extendGrid = 0;
 this.fileIndex = 1;
 this.readAllData = true;
 this.fileName = "";
 this.fullyLit = false;
-this.func = null;
 this.functionInfo = null;
 this.iAddGridPoints = false;
 this.insideOut = false;
-this.intersection = null;
 this.isAngstroms = false;
 this.isBicolorMap = this.isCutoffAbsolute = this.isPositiveOnly = false;
 this.isCavity = false;
@@ -197,14 +197,13 @@ this.isColorReversed = false;
 this.isSquared = false;
 this.isSquaredLinear = false;
 this.isContoured = false;
-this.isEccentric = this.isAnisotropic = false;
+this.isEccentric = false;
 this.isMapped = false;
 this.isPeriodic = false;
 this.isSilent = false;
-this.mapLattice = null;
 this.logCube = this.logCompression = false;
 this.logMessages = JU.Logger.debugging;
-this.mappedDataMin = 3.4028235E38;
+this.mapLattice = null;
 this.mep_calcType = -1;
 this.minSet = 0;
 this.modelIndex = -1;
@@ -231,15 +230,31 @@ this.thisContour = -1;
 this.title = null;
 this.usePropertyForColorRange = true;
 this.vertexSource = null;
-this.volumeData = null;
 });
+Clazz.defineMethod (c$, "resetForMapping", 
+function (haveSurface) {
+if (!haveSurface) this.state = 2;
+this.center.x = NaN;
+this.colorDensity = false;
+this.func = null;
+this.intersection = null;
+this.isAnisotropic = false;
+this.isMapped = true;
+this.mappedDataMin = 3.4028235E38;
+this.origin = null;
+this.parameters = null;
+this.points = null;
+this.qmOrbitalType = 0;
+this.steps = null;
+this.volumeData = null;
+}, "~B");
 Clazz.defineMethod (c$, "setAnisotropy", 
 function (pt) {
 this.anisotropy[0] = pt.x;
 this.anisotropy[1] = pt.y;
 this.anisotropy[2] = pt.z;
 this.isAnisotropic = true;
-if (this.center.x == 3.4028235E38) this.center.set (0, 0, 0);
+if (Float.isNaN (this.center.x)) this.center.set (0, 0, 0);
 }, "JU.P3");
 Clazz.defineMethod (c$, "setEccentricity", 
 function (info) {
@@ -260,7 +275,7 @@ if (fab_c > 1) this.eccentricityScale *= fab_c;
 this.anisotropy[0] = fab_c * c;
 this.anisotropy[1] = fab_c * c;
 this.anisotropy[2] = c;
-if (this.center.x == 3.4028235E38) this.center.set (0, 0, 0);
+if (Float.isNaN (this.center.x)) this.center.set (0, 0, 0);
 }, "JU.P4");
 Clazz.defineMethod (c$, "setPlane", 
 function (plane) {
@@ -295,7 +310,7 @@ this.distance = 0.3 * (Float.isNaN (this.scale) ? 1 : this.scale);
 this.cutoff = 1.4E-45;
 this.isCutoffAbsolute = false;
 this.isSilent = !this.logMessages;
-if (this.center.x == 3.4028235E38) this.center.set (0, 0, 0);
+if (Float.isNaN (this.center.x)) this.center.set (0, 0, 0);
 if (this.resolution == 3.4028235E38) this.resolution = 6;
 }, "~A");
 Clazz.defineMethod (c$, "setLobe", 
@@ -500,23 +515,6 @@ this.mappedDataMax = 1;
 this.valueMappedToRed = this.mappedDataMin;
 this.valueMappedToBlue = this.mappedDataMax;
 }}, "J.jvxl.readers.SurfaceReader,~B");
-Clazz.defineMethod (c$, "resetForMapping", 
-function (haveSurface) {
-if (!haveSurface) this.state = 2;
-this.isMapped = true;
-this.qmOrbitalType = 0;
-this.parameters = null;
-this.colorDensity = false;
-this.mappedDataMin = 3.4028235E38;
-this.intersection = null;
-this.func = null;
-this.points = null;
-this.origin = null;
-this.steps = null;
-this.volumeData = null;
-this.center.x = 3.4028235E38;
-this.isAnisotropic = false;
-}, "~B");
 Clazz.defineMethod (c$, "addSlabInfo", 
 function (slabObject) {
 if (this.slabInfo == null) this.slabInfo =  new JU.Lst ();

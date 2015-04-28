@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JV");
-Clazz.load (["javajs.api.BytePoster", "java.util.Hashtable"], "JV.FileManager", ["java.io.BufferedInputStream", "$.BufferedReader", "java.lang.Boolean", "java.net.URL", "$.URLEncoder", "java.util.Map", "JU.AU", "$.BArray", "$.Base64", "$.Lst", "$.PT", "$.Rdr", "$.SB", "J.api.Interface", "J.io.FileReader", "$.JmolBinary", "JS.SV", "JU.Logger", "JV.Viewer"], function () {
+Clazz.load (["javajs.api.BytePoster", "java.util.Hashtable"], "JV.FileManager", ["java.io.BufferedInputStream", "$.BufferedReader", "java.lang.Boolean", "java.net.URL", "$.URLEncoder", "java.util.Map", "JU.AU", "$.BArray", "$.Base64", "$.Lst", "$.OC", "$.PT", "$.Rdr", "$.SB", "J.api.Interface", "J.io.FileReader", "$.JmolBinary", "JS.SV", "JU.Logger", "JV.Viewer"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.vwr = null;
 this.jmb = null;
@@ -27,10 +27,6 @@ Clazz.defineMethod (c$, "clear",
 function () {
 this.setFileInfo ([this.vwr.getZapName ()]);
 this.jmb.spardirCache = null;
-});
-Clazz.defineMethod (c$, "getSpardirCache", 
-function () {
-return this.jmb.spardirCache;
 });
 Clazz.defineMethod (c$, "clearPngjCache", 
 function (fileName) {
@@ -239,7 +235,7 @@ outputBytes = bytes;
 name = JU.PT.rep (name, "?_", "=_");
 } else {
 name =  new JU.SB ().append (name).append ("=").appendSB (JU.Base64.getBase64 (bytes)).toString ();
-}}var iurl = JV.FileManager.urlTypeIndex (name);
+}}var iurl = JU.OC.urlTypeIndex (name);
 var isURL = (iurl >= 0);
 var post = null;
 if (isURL && (iurl = name.indexOf ("?POST?")) >= 0) {
@@ -309,7 +305,7 @@ var state = this.vwr.getFileAsString4 (fileName, -1, false, true, false, "file")
 return (state.indexOf ("**** Jmol Embedded Script ****") < 0 ? "" : J.io.JmolBinary.getEmbeddedScript (state));
 }for (var i = 0; i < dir.length; i++) if (dir[i].indexOf (".spt") >= 0) {
 var data = [fileName + "|" + dir[i], null];
-this.getFileDataOrErrorAsString (data, -1, false, false, false);
+this.getFileDataAsString (data, -1, false, false, false);
 return data[1];
 }
 return "";
@@ -502,19 +498,18 @@ var t = this.getBufferedInputStreamOrErrorMessageFromName (fileName, fileName, f
 return JU.Rdr.getZipDirectoryAndClose (this.vwr.getJzt (), t, addManifest ? "JmolManifest" : null);
 }, "~S,~B,~B");
 Clazz.defineMethod (c$, "getFileAsBytes", 
-function (name, out, allowZip) {
+function (name, out) {
 if (name == null) return null;
 var fullName = name;
 var subFileList = null;
 if (name.indexOf ("|") >= 0) {
 subFileList = JU.PT.split (name, "|");
 name = subFileList[0];
-allowZip = true;
 }var t = this.getBufferedInputStreamOrErrorMessageFromName (name, fullName, false, false, null, false, true);
 if (Clazz.instanceOf (t, String)) return "Error:" + t;
 try {
 var bis = t;
-var bytes = (out != null || !allowZip || subFileList == null || subFileList.length <= 1 || !JU.Rdr.isZipS (bis) && !JU.Rdr.isPngZipStream (bis) ? JU.Rdr.getStreamAsBytes (bis, out) : JU.Rdr.getZipFileContentsAsBytes (this.vwr.getJzt (), bis, subFileList, 1));
+var bytes = (out != null || subFileList == null || subFileList.length <= 1 || !JU.Rdr.isZipS (bis) && !JU.Rdr.isPngZipStream (bis) ? JU.Rdr.getStreamAsBytes (bis, out) : JU.Rdr.getZipFileContentsAsBytes (this.vwr.getJzt (), bis, subFileList, 1));
 bis.close ();
 return bytes;
 } catch (ioe) {
@@ -524,7 +519,7 @@ return ioe.toString ();
 throw ioe;
 }
 }
-}, "~S,JU.OC,~B");
+}, "~S,JU.OC");
 Clazz.defineMethod (c$, "getFileAsMap", 
 function (name) {
 var bdata =  new java.util.Hashtable ();
@@ -557,7 +552,7 @@ throw e;
 }
 return bdata;
 }, "~S");
-Clazz.defineMethod (c$, "getFileDataOrErrorAsString", 
+Clazz.defineMethod (c$, "getFileDataAsString", 
 function (data, nBytesMax, doSpecialLoad, allowBinary, checkProtected) {
 data[1] = "";
 var name = data[0];
@@ -612,21 +607,6 @@ image = null;
 if (image != null && bytes != null) nameOrError = ";base64," + JU.Base64.getBase64 (bytes).toString ();
 this.vwr.loadImageData (image, nameOrError, echoName, null);
 }}, "~O,~S");
-c$.urlTypeIndex = Clazz.defineMethod (c$, "urlTypeIndex", 
-function (name) {
-if (name == null) return -2;
-for (var i = 0; i < JV.FileManager.urlPrefixes.length; ++i) {
-if (name.startsWith (JV.FileManager.urlPrefixes[i])) {
-return i;
-}}
-return -1;
-}, "~S");
-c$.isLocal = Clazz.defineMethod (c$, "isLocal", 
-function (fileName) {
-if (fileName == null) return false;
-var itype = JV.FileManager.urlTypeIndex (fileName);
-return (itype < 0 || itype == 4);
-}, "~S");
 Clazz.defineMethod (c$, "getClassifiedName", 
  function (name, isFullLoad) {
 if (name == null) return [null];
@@ -645,7 +625,7 @@ return names;
 }name = this.vwr.resolveDatabaseFormat (name);
 if (name.indexOf (":") < 0 && name.indexOf ("/") != 0) name = JV.FileManager.addDirectory (this.vwr.getDefaultDirectory (), name);
 if (this.appletDocumentBaseURL == null) {
-if (JV.FileManager.urlTypeIndex (name) >= 0 || this.vwr.haveAccess (JV.Viewer.ACCESS.NONE) || this.vwr.haveAccess (JV.Viewer.ACCESS.READSPT) && !name.endsWith (".spt") && !name.endsWith ("/")) {
+if (JU.OC.urlTypeIndex (name) >= 0 || this.vwr.haveAccess (JV.Viewer.ACCESS.NONE) || this.vwr.haveAccess (JV.Viewer.ACCESS.READSPT) && !name.endsWith (".spt") && !name.endsWith ("/")) {
 try {
 url =  new java.net.URL (Clazz.castNullAs ("java.net.URL"), name, null);
 } catch (e) {
@@ -679,7 +659,7 @@ names[1] = JV.FileManager.stripPath (names[0]);
 var name0 = names[0];
 names[0] = this.pathForAllFiles + names[1];
 JU.Logger.info ("FileManager substituting " + name0 + " --> " + names[0]);
-}if (isFullLoad && (file != null || JV.FileManager.urlTypeIndex (names[0]) == 4)) {
+}if (isFullLoad && (file != null || JU.OC.urlTypeIndex (names[0]) == 4)) {
 var path = (file == null ? JU.PT.trim (names[0].substring (5), "/") : names[0]);
 var pt = path.length - names[1].length - 1;
 if (pt > 0) {
@@ -729,8 +709,8 @@ c$.getLocalDirectory = Clazz.defineMethod (c$, "getLocalDirectory",
 function (vwr, forDialog) {
 var localDir = vwr.getP (forDialog ? "currentLocalPath" : "defaultDirectoryLocal");
 if (forDialog && localDir.length == 0) localDir = vwr.getP ("defaultDirectoryLocal");
-if (localDir.length == 0) return (vwr.isApplet () ? null : vwr.apiPlatform.newFile (System.getProperty ("user.dir", ".")));
-if (vwr.isApplet () && localDir.indexOf ("file:/") == 0) localDir = localDir.substring (6);
+if (localDir.length == 0) return (vwr.isApplet ? null : vwr.apiPlatform.newFile (System.getProperty ("user.dir", ".")));
+if (vwr.isApplet && localDir.indexOf ("file:/") == 0) localDir = localDir.substring (6);
 var f = vwr.apiPlatform.newFile (localDir);
 try {
 return f.isDirectory () ? f : f.getParentAsFile ();
@@ -792,7 +772,7 @@ var nFiles = fileNames.size ();
 for (var iFile = 0; iFile < nFiles; iFile++) {
 var name0 = fileNames.get (iFile);
 var name = name0;
-if (isLocal == JV.FileManager.isLocal (name)) {
+if (isLocal == JU.OC.isLocal (name)) {
 var pt = (noPath ? -1 : name.indexOf ("/" + dataPath + "/"));
 if (pt >= 0) {
 name = name.substring (pt + 1);
@@ -856,7 +836,7 @@ return -1;
 }var data;
 if (isAdd) {
 fileName = this.vwr.resolveDatabaseFormat (fileName);
-data = this.getFileAsBytes (fileName, null, true);
+data = this.getFileAsBytes (fileName, null);
 if (Clazz.instanceOf (data, String)) return 0;
 this.cachePut (fileName, data);
 } else {
@@ -898,13 +878,7 @@ throw e;
 }
 return (ret == null ? "" : JU.Rdr.fixUTF (ret));
 }, "~S,~A");
-Clazz.defineMethod (c$, "recachePngjBytes", 
-function (fname, bytes) {
-this.jmb.recachePngjBytes (fname, bytes);
-}, "~S,~A");
 Clazz.defineStatics (c$,
-"SIMULATION_PROTOCOL", "http://SIMULATION/",
-"URL_LOCAL", 4,
-"urlPrefixes", ["http:", "https:", "sftp:", "ftp:", "file:"]);
+"SIMULATION_PROTOCOL", "http://SIMULATION/");
 c$.scriptFilePrefixes = c$.prototype.scriptFilePrefixes = ["/*file*/\"", "FILE0=\"", "FILE1=\""];
 });

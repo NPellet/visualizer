@@ -28,7 +28,7 @@ this.setRanges (this.params.mep_ptsPerAngstrom, this.params.mep_gridMax, 0);
 Clazz.overrideMethod (c$, "generateCube", 
 function () {
 this.newVoxelDataCube ();
-var m = J.api.Interface.getOption ("quantum." + this.type + "Calculation", this.sg.getAtomDataServer (), "file");
+var m = J.api.Interface.getOption ("quantum." + this.type + "Calculation", this.sg.atomDataServer, "file");
 m.calculate (this.volumeData, this.bsMySelected, this.atomData.atomXyz, this.params.theProperty, this.params.mep_calcType);
 });
 });

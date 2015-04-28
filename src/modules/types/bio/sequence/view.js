@@ -1,11 +1,7 @@
-define(['modules/default/defaultview', 'src/util/util',
-  'components/jquery/jquery-migrate.min',
-  'lib/biojs-1.0/src/main/javascript/Biojs.js',
-  'lib/biojs-1.0/src/main/javascript/Biojs.Tooltip.js',
-  'lib/biojs-1.0/src/main/javascript/Biojs.Sequence.js'
+define(['modules/default/defaultview', 'src/util/util', 'BiojsCore',
+  'lib/biojs-1.0/src/main/javascript/Biojs.Tooltip',
+  'lib/biojs-1.0/src/main/javascript/Biojs.Sequence'
   ], function(Default, Util) {
-    // var $ = jQuery;
-    console.log('jquery: ',jQuery.fn.jquery);
   function view() {};
   view.prototype = $.extend(true, {}, Default, {
 
@@ -27,7 +23,6 @@ define(['modules/default/defaultview', 'src/util/util',
     inDom: function() {
       var self = this;
       var theSequence = "METLCQRLNVCQDKILTHYENDSTDLRDHIDYWKHMRLECAIYYKAREMGFKHINHQVVPTLAVSKNKALQAIELQLTLETIYNSQYSNEKWTLQDVSLEVYLTAPTGCIKKHGYTVEVQFDGDICNTMHYTNWTHIYICEEAojs SVTVVEGQVDYYGLYYVHEGIRTYFVQFKDDAEKYSKNKVWEVHAGGQVILCPTSVFSSNEVSSPEIIRQHLANHPAATHTKAVALGTEETQTTIQRPRSEPDTGNPCHTTKLLHRDSVDSAPILTAFNSSHKGRINCNSNTTPIVHLKGDANTLKCLRYRFKKHCTLYTAVSSTWHWTGHNVKHKSAIVTLTYDSEWQRDQFLSQVKIPKTITVSTGFMSI";
-      console.log('init sequence');
       var mySequence = new Biojs.Sequence({
         sequence : theSequence,
         target : this.dom.attr('id'),
@@ -56,7 +51,6 @@ define(['modules/default/defaultview', 'src/util/util',
       });
       
       mySequence.onSelectionChange(function(data) {
-        console.log(data);
         self.module.controller.onSequenceSelectionChanged(data);
       });
       

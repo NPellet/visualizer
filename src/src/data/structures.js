@@ -6,6 +6,8 @@ define(function () {
 //        'object': 'object', // Removed ! Object should by dynamic.
         'mol2d': 'string',
         'molfile2D': 'string',
+        'mol3d': 'string',
+        'molfile3D': 'string',
         'jme': 'string',
         'smiles': 'string',
         'actelionID': 'string',
@@ -15,6 +17,7 @@ define(function () {
         'string': 'string',
         'jpg': 'string',
         'jpeg': 'string',
+        'webp': 'string',
         'png': 'string',
         'svg': 'string',
         'number': 'number',
@@ -26,6 +29,8 @@ define(function () {
         'html': 'string',
         'boolean': 'boolean',
         'array': 'array',
+        'regexp': 'string',
+        'regex': 'string',
         'colorBar': {
             'type': 'array',
             'elements': {

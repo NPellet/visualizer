@@ -52,7 +52,7 @@ Clazz.defineMethod (c$, "allocMesh",
 function (thisID, m) {
 var index = this.meshCount++;
 this.meshes = JU.AU.ensureLength (this.meshes, this.meshCount * 2);
-this.currentMesh = this.meshes[index] = (m == null ?  new J.shape.Mesh ().mesh1 (thisID, this.colix, index) : m);
+this.currentMesh = this.meshes[index] = (m == null ?  new J.shape.Mesh ().mesh1 (this.vwr, thisID, this.colix, index) : m);
 this.currentMesh.color = this.color;
 this.currentMesh.index = index;
 if (thisID != null && this.htObjects != null) this.htObjects.put (thisID.toUpperCase (), this.currentMesh);
@@ -242,7 +242,6 @@ return;
 case 603979967:
 m.setTranslucent (bProp, this.translucentLevel);
 if (bProp && m.bsSlabGhost != null) m.resetSlab ();
-if (m.bsTransPolygons != null) m.resetTransPolygons ();
 return;
 default:
 m.setTokenProperty (tokProp, bProp);
@@ -385,7 +384,7 @@ return -1;
 }, "~S");
 Clazz.overrideMethod (c$, "setModelVisibilityFlags", 
 function (bsModels) {
-var bsDeleted = this.vwr.getDeletedAtoms ();
+var bsDeleted = this.vwr.slm.bsDeleted;
 for (var i = this.meshCount; --i >= 0; ) {
 var mesh = this.meshes[i];
 mesh.visibilityFlags = (mesh.visible && mesh.isValid && (mesh.modelIndex < 0 || bsModels.get (mesh.modelIndex) && (mesh.atomIndex < 0 || !this.ms.isAtomHidden (mesh.atomIndex) && !(bsDeleted != null && bsDeleted.get (mesh.atomIndex)))) ? this.vf : 0);

@@ -210,7 +210,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
         }
     }
 
-    var _undoHighlightsDebounced = _.debounce(_undoHighlights, 150);
+    var _undoHighlightsDebounced = _.debounce(_undoHighlights, 250);
 
     return View;
 

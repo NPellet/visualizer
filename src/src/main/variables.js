@@ -282,7 +282,10 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
         exist: function (varName) {
             return allVariables.hasOwnProperty(varName);
         },
-        unlisten: unlisten
+        unlisten: unlisten,
+        eraseAll: function() {
+            allVariables = {};
+        }
     };
 
 });

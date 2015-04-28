@@ -620,7 +620,7 @@ var tokenOut = JS.SV.newSV (tokenIn.tok, 2147483647, null);
 switch (tokenIn.tok) {
 case 10:
 if (Clazz.instanceOf (tokenIn.value, JM.BondSet)) {
-bs =  new JM.BondSet (tokenIn.value, (tokenIn.value).getAssociatedAtoms ());
+bs = JM.BondSet.newBS (tokenIn.value, (tokenIn.value).associatedAtoms);
 len = JU.BSUtil.cardinalityOf (bs);
 } else {
 bs = JU.BSUtil.copy (tokenIn.value);
@@ -817,7 +817,7 @@ if (v == null) v = JU.Escape.uABsM (s);
 if (Clazz.instanceOf (v, JU.P3)) return (JS.SV.newV (8, v));
 if (Clazz.instanceOf (v, JU.P4)) return JS.SV.newV (9, v);
 if (Clazz.instanceOf (v, JU.BS)) {
-if (s != null && s.indexOf ("[{") == 0) v =  new JM.BondSet (v);
+if (s != null && s.indexOf ("[{") == 0) v = JM.BondSet.newBS (v, null);
 return JS.SV.newV (10, v);
 }if (Clazz.instanceOf (v, JU.M34)) return (JS.SV.newV (Clazz.instanceOf (v, JU.M3) ? 11 : 12, v));
 return o;

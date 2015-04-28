@@ -39,7 +39,7 @@ var readNextLine = true;
 for (var i = 0; i < ac; i++) {
 this.discardLinesUntilNonBlank ();
 if (this.line == null) break;
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line);
+var tokens = this.getTokens ();
 var sIndex = tokens[0];
 if (sIndex.equals (lastAtom)) {
 readNextLine = false;

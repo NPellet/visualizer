@@ -13,7 +13,7 @@ var needTranslucent = false;
 this.mar = Clazz.floatToInt (this.vwr.getFloat (570425403) * 1000);
 if (this.mar == 0 && (this.g3d.isAntialiased () || this.isExport)) this.mar = 50;
 var atoms = this.ms.at;
-for (var i = this.ms.getAtomCount (); --i >= 0; ) {
+for (var i = this.ms.ac; --i >= 0; ) {
 var atom = atoms[i];
 if (!this.isVisibleForMe (atom)) continue;
 this.colix = J.shape.Shape.getColix (stars.colixes, i, atom);

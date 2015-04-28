@@ -51,18 +51,18 @@ this.nBlock = this.voxelCounts[2] * this.voxelCounts[1];
 });
 Clazz.defineMethod (c$, "getLine", 
  function () {
-this.readLine ();
-while (this.line != null && (this.line.length == 0 || this.line.indexOf ("REMARKS") >= 0 || this.line.indexOf ("XPLOR:") >= 0)) this.readLine ();
+this.rd ();
+while (this.line != null && (this.line.length == 0 || this.line.indexOf ("REMARKS") >= 0 || this.line.indexOf ("XPLOR:") >= 0)) this.rd ();
 
 return this.line;
 });
 Clazz.overrideMethod (c$, "nextVoxel", 
 function () {
 if (this.linePt >= this.line.length) {
-this.readLine ();
+this.rd ();
 this.linePt = 0;
 if ((this.nRead % this.nBlock) == 0) {
-this.readLine ();
+this.rd ();
 }}if (this.line == null) return 0;
 var val = this.parseFloatRange (this.line, this.linePt, this.linePt + 12);
 this.linePt += 12;

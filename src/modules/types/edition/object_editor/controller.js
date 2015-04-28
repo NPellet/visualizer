@@ -104,6 +104,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         if (this.module.view.storeObject) {
             this.module.definition.configuration.groups.group[0].storedObject[0] = JSON.stringify(newValue);
         }
+        this.module.model._latestData = newValue;
         var outputType = this.module.getConfiguration('output');
         if (outputType === 'new') {
             this.createDataFromEvent(eventType, 'output', newValue);

@@ -20,7 +20,7 @@ var ranges = null;
 var range = null;
 tlsGroups =  new JU.Lst ();
 while (this.rd () != null) {
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line.$replace ('\'', ' '));
+var tokens = JU.PT.getTokens (this.line.$replace ('\'', ' '));
 if (tokens.length == 0) continue;
 if (tokens[0].equals ("TLS")) {
 tlsGroup =  new java.util.Hashtable ();

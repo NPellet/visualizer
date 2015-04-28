@@ -25,6 +25,7 @@ this.strop = null;
 this.isSubsystem = false;
 this.tFactorInv = null;
 this.rsvs = null;
+this.spinOp = 0;
 this.ptTemp = null;
 this.v0 = null;
 this.axesLengths = null;
@@ -71,6 +72,8 @@ this.rsvs = symmetry.getOperationRsVs (iop);
 this.gammaIinv = this.rsvs.getSubmatrix (3, 3, d, d).inverse ();
 var gammaM = this.rsvs.getSubmatrix (3, 0, d, 3);
 var sI = this.rsvs.getSubmatrix (3, 3 + d, d, 1);
+this.spinOp = symmetry.getSpinOp (iop);
+System.out.println ("spinOp " + iop + " " + this.strop + " " + this.spinOp);
 this.tau = this.gammaIinv.mul (this.sigma.mul (vR0).sub (gammaM.mul (vR00)).sub (sI));
 if (JU.Logger.debuggingHigh) JU.Logger.debug ("MODSET create " + id + " r0=" + JU.Escape.eP (r0) + " tau=" + this.tau);
 return this;
@@ -114,8 +117,10 @@ var arI = this.rI.getArray ();
 for (var i = this.mods.size (); --i >= 0; ) this.mods.get (i).apply (this, arI);
 
 this.gammaE.rotate (this);
-if (this.mxyz != null) this.gammaE.rotate (this.mxyz);
-return this;
+if (this.mxyz != null) {
+this.gammaE.rotate (this.mxyz);
+if (this.spinOp < 0) this.mxyz.scale (this.spinOp);
+}return this;
 }, "JU.T3,~B");
 Clazz.defineMethod (c$, "addUTens", 
 function (utens, v) {
@@ -202,6 +207,7 @@ if (this.modTemp == null) {
 this.modTemp =  new JU.ModulationSet ();
 this.modTemp.id = this.id;
 this.modTemp.tau = this.tau;
+this.modTemp.spinOp = this.spinOp;
 this.modTemp.mods = this.mods;
 this.modTemp.gammaE = this.gammaE;
 this.modTemp.modDim = this.modDim;

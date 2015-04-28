@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.xml");
-Clazz.load (["J.adapter.readers.xml.XmlReader", "JU.Lst"], "J.adapter.readers.xml.XmlChem3dReader", ["java.lang.Boolean", "$.Float", "java.util.Hashtable", "J.adapter.smarter.Atom", "J.api.Interface", "JU.Logger"], function () {
+Clazz.load (["J.adapter.readers.xml.XmlReader", "JU.Lst"], "J.adapter.readers.xml.XmlChem3dReader", ["java.lang.Boolean", "$.Float", "java.util.Hashtable", "JU.PT", "J.adapter.smarter.Atom", "J.api.Interface", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.orbitals = null;
 this.moData = null;
@@ -33,7 +33,7 @@ this.atom.atomName = this.atts.get ("id");
 this.atom.elementSymbol = this.atts.get ("symbol");
 if (this.atts.containsKey ("cartCoords")) {
 var xyz = this.atts.get ("cartCoords");
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (xyz);
+tokens = JU.PT.getTokens (xyz);
 this.atom.set (this.parseFloatStr (tokens[0]), this.parseFloatStr (tokens[1]), this.parseFloatStr (tokens[2]));
 }return;
 }if ("bond".equals (localName)) {
@@ -44,8 +44,8 @@ if (this.atts.containsKey ("bondOrder")) order = this.parseIntStr (this.atts.get
 this.asc.addNewBondFromNames (atom1, atom2, order);
 return;
 }if ("electronicStructureCalculation".equalsIgnoreCase (localName)) {
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.atts.get ("calcPartialCharges"));
-var tokens2 = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.atts.get ("calcAtoms"));
+tokens = JU.PT.getTokens (this.atts.get ("calcPartialCharges"));
+var tokens2 = JU.PT.getTokens (this.atts.get ("calcAtoms"));
 for (var i = this.parseIntStr (tokens[0]); --i >= 0; ) this.asc.mapPartialCharge (tokens2[i + 1], this.parseFloatStr (tokens[i + 1]));
 
 }if ("gridData".equalsIgnoreCase (localName)) {
@@ -55,11 +55,11 @@ var nPointsZ = this.parseIntStr (this.atts.get ("gridDatZDim"));
 var xStep = this.parseFloatStr (this.atts.get ("gridDatXSize")) / (nPointsX);
 var yStep = this.parseFloatStr (this.atts.get ("gridDatYSize")) / (nPointsY);
 var zStep = this.parseFloatStr (this.atts.get ("gridDatZSize")) / (nPointsZ);
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.atts.get ("gridDatOrigin"));
+tokens = JU.PT.getTokens (this.atts.get ("gridDatOrigin"));
 var ox = this.parseFloatStr (tokens[0]);
 var oy = this.parseFloatStr (tokens[1]);
 var oz = this.parseFloatStr (tokens[2]);
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.atts.get ("gridDatData"));
+tokens = JU.PT.getTokens (this.atts.get ("gridDatData"));
 var pt = 1;
 var voxelData =  Clazz.newFloatArray (nPointsX, nPointsY, nPointsZ, 0);
 var sum = 0;

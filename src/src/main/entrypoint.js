@@ -1,6 +1,7 @@
 'use strict';
 
-define(['jquery',
+define([
+    'jquery',
     'src/header/header',
     'src/util/repository',
     'src/main/grid',
@@ -11,29 +12,32 @@ define(['jquery',
     'modules/modulefactory',
     'src/util/viewmigration',
     'src/util/actionmanager',
-    'src/util/cron',
     'src/util/pouchtovar',
     'src/util/debug',
     'src/util/browser',
     'src/util/util',
-    'src/util/urldata'
-], function ($,
-             Header,
-             Repository,
-             Grid,
-             API,
-             Context,
-             Traversing,
-             Versioning,
-             ModuleFactory,
-             Migration,
-             ActionManager,
-             Cron,
-             PouchDBUtil,
-             Debug,
-             browser,
-             Util,
-             UrlData) {
+    'src/util/urldata',
+    'src/util/ui',
+    'src/util/shortcuts'
+], function (
+    $,
+    Header,
+    Repository,
+    Grid,
+    API,
+    Context,
+    Traversing,
+    Versioning,
+    ModuleFactory,
+    Migration,
+    ActionManager,
+    PouchDBUtil,
+    Debug,
+    browser,
+    Util,
+    UrlData,
+    ui
+) {
 
     var _viewLoaded, _dataLoaded;
 
@@ -58,7 +62,7 @@ define(['jquery',
             reloadingView();
             Grid.reset(view.grid);
         } else {
-            Grid.init(view.grid, document.getElementById("modules-grid"));
+            Grid.init(view.grid, document.getElementById('modules-grid'));
             this.viewLoaded = true;
         }
 
@@ -69,6 +73,7 @@ define(['jquery',
         l = view.modules.length;
 
         view.variables = view.variables || new DataArray();
+        view.aliases = view.aliases || new DataArray();
         view.pouchvariables = view.pouchvariables || new DataArray();
         view.configuration = view.configuration || new DataObject();
         view.configuration.title = view.configuration.title || 'No title';
@@ -108,12 +113,12 @@ define(['jquery',
 
     function viewLoaded() {
         _viewLoaded = true;
-        _check("view");
+        _check('view');
     }
 
     function dataLoaded() {
         _dataLoaded = true;
-        _check("data");
+        _check('data');
     }
 
     function _check(loading) {
@@ -124,26 +129,79 @@ define(['jquery',
 
         var view = Versioning.getView();
         var data = Versioning.getData();
-
-        Promise.all([loadCustomFilters(), loadMainVariables(), loadPouchVariables()]).then(doInitScript).then(function() {
+        Promise.all([loadCustomFilters(), loadMainVariables(), loadPouchVariables(), configureRequirejs(), loadCustomModules()]).then(doInitScript).then(function() {
             ActionManager.viewHasChanged(view);
+            checkCustomModules();
         }, function(e) {
-            console.error('View loading problem', e);
+            console.error('View loading problem', e, e.stack);
         });
 
         function doInitScript() {
             return new Promise(function (resolve, reject) {
                 if (view.init_script) {
                     var prefix = '(function init_script(init_deferred){"use strict";\n';
-                    var script = view.init_script[0].groups.general[0].script[0] || "";
-                    var suffix = "\n})({resolve:resolve});";
-                    if (script.indexOf("init_deferred") === -1) {
-                        suffix += "resolve();";
+                    var script = view.init_script[0].groups.general[0].script[0] || '';
+                    var suffix = '\n})({resolve:resolve});';
+                    if (script.indexOf('init_deferred') === -1) {
+                        suffix += 'resolve();';
                     }
                     eval(prefix + script + suffix);
                 } else {
                     resolve();
                 }
+            });
+        }
+        function configureRequirejs() {
+            if(!view.aliases) return;
+            var paths = view.aliases;
+
+            paths = _.filter(paths, function(p) {
+                return p && p.alias && p.path;
+            });
+            var conf = {paths:{}};
+            for(var i=0; i<paths.length; i++) {
+                conf.paths[paths[i].alias] = paths[i].path;
+            }
+            requirejs.config(DataObject.resurrect(conf));
+        }
+
+        function checkCustomModules() {
+            var v = Versioning.getView().duplicate();
+            var changed = false;
+            var modulesById = ModuleFactory.getModulesById();
+            for(var j=0; j< v.modules.length; j++) {
+                var moduleId = Util.moduleIdFromUrl(v.modules[j].url);
+                var module = modulesById[moduleId];
+                if(!module) {
+                    Debug.warn('Your view contains an url to a module that does not correspond to any loaded modules');
+                    continue;
+                }
+                if(module.url.replace(/\/$/,'') !== v.modules[j].url.replace(/\/$/,'')) {
+                    changed = true;
+                    v.modules[j].url = module.url;
+                }
+            }
+            if(changed === false) {
+                Debug.debug('No module urls rewritten in the view');
+            }
+            else {
+                Debug.info('Module urls were rewritten...');
+                Versioning.setViewJSON(v);
+            }
+
+        }
+
+        function loadCustomModules() {
+            var modules = view.getChildSync(['custom_filters', 0, 'sections', 'modules', 0, 'groups', 'modules', 0]);
+            if(!modules) return Promise.resolve();
+            modules = _.filter(modules, function(m) {
+                return m && m.url;
+            });
+            for(var i=0; i<modules.length; i++) {
+                modules[i].url = modules[i].url.replace(/\/$/, '');
+            }
+            return ModuleFactory.setModules({
+                folders: _.pluck(modules, 'url')
             });
         }
 
@@ -182,6 +240,13 @@ define(['jquery',
                         }
                     }
                 }
+                var filtersLib = view.getChildSync('custom_filters', 0, 'sections', 'filtersLib', 0, 'groups', 'filters', 0);
+                if (filtersLib) {
+                    filtersLib= _.filter(filtersLib, function(v){
+                        return v && v.name && v.file;
+                    });
+                    API.setAllFilters(filtersLib);
+                }
             }
         }
 
@@ -199,7 +264,7 @@ define(['jquery',
             }
 
             // Entry point variables
-            API.loading("Fetching remote variables");
+            API.loading('Fetching remote variables');
             var fetching = [];
             for (var i = 0, l = view.variables.length; i < l; i++) {
                 (function (i) {
@@ -225,7 +290,7 @@ define(['jquery',
 
                         } else {
 
-                            if (typeof entryVar.jpath === "string") {
+                            if (typeof entryVar.jpath === 'string') {
                                 entryVar.jpath = entryVar.jpath.split('.');
                                 entryVar.jpath.shift();
                             }
@@ -237,12 +302,12 @@ define(['jquery',
             }
 
             return Promise.all(fetching).then(function () {
-                API.stopLoading("Fetching remote variables");
+                API.stopLoading('Fetching remote variables');
             });
         }
 
         function loadPouchVariables() {
-            API.loading("Fetching local variables");
+            API.loading('Fetching local variables');
             var pouching = [], pouchVariable;
             for (var i = 0, l = view.pouchvariables.length; i < l; i++) {
                 pouchVariable = view.pouchvariables[i];
@@ -275,9 +340,9 @@ define(['jquery',
             }
 
             return Promise.all(pouching).then(function () {
-                API.stopLoading("Fetching local variables");
+                API.stopLoading('Fetching local variables');
             }, function (err) {
-                Debug.error("Unable to fetch local variables", err)
+                Debug.error('Unable to fetch local variables', err)
             });
 
         }
@@ -289,9 +354,11 @@ define(['jquery',
         var data = Versioning.getData(),
             view = Versioning.getView();
 
-        var div = $('<div></div>').dialog({modal: true, position: ['center', 50], width: '80%'});
-        div.prev().remove();
-        div.parent().css('z-index', 1000);
+        var div = ui.dialog({
+            autoPosition: true,
+            width: '80%',
+            noHeader: true
+        });
 
         var options = [];
 
@@ -317,7 +384,7 @@ define(['jquery',
                             tablevars: {
                                 options: {
                                     type: 'table',
-                                    title: "Main variables",
+                                    title: 'Main variables',
                                     multiple: true
                                 },
                                 fields: {
@@ -332,14 +399,14 @@ define(['jquery',
                                         options: options,
                                         extractValue: function (val) {
                                             if (val) {
-                                                var val2 = val.split(".");
+                                                var val2 = val.split('.');
                                                 val2.shift();
                                                 return val2;
                                             }
                                         },
 
                                         insertValue: function (val) {
-                                            return "element." + (val || []).join(".");
+                                            return 'element.' + (val || []).join('.');
                                         }
                                     },
                                     url: {
@@ -347,15 +414,15 @@ define(['jquery',
                                         title: 'From URL'
                                     },
                                     timeout: {
-                                        type: "text",
-                                        title: "Timeout"
+                                        type: 'text',
+                                        title: 'Timeout'
                                     }
                                 }
                             },
                             pouchvars: {
                                 options: {
                                     type: 'table',
-                                    title: "PouchDB variables",
+                                    title: 'PouchDB variables',
                                     multiple: true
                                 },
                                 fields: {
@@ -373,6 +440,23 @@ define(['jquery',
                                         title: 'ID'
                                     }
                                 }
+                            },
+                            aliases: {
+                                options: {
+                                    type: 'table',
+                                    multiple: true,
+                                    title: 'Define Global Aliases'
+                                },
+                                fields: {
+                                    path: {
+                                        type: 'text',
+                                        title: 'Url or Path'
+                                    },
+                                    alias: {
+                                        type: 'text',
+                                        title: 'Alias'
+                                    }
+                                }
                             }
                         }
                     },
@@ -385,7 +469,7 @@ define(['jquery',
                             actions: {
                                 options: {
                                     multiple: true,
-                                    title: "Action"
+                                    title: 'Action'
                                 },
                                 groups: {
                                     action: {
@@ -439,162 +523,60 @@ define(['jquery',
                             }
                         }
                     },
-                    webservice: {
-                        options: {
-                            title: 'Webservice',
-                            icon: 'web_disk'
-                        },
-                        sections: {
-                            general: {
-                                options: {
-                                    multiple: true,
-                                    title: 'Webservice instance'
-                                },
-                                groups: {
-                                    general: {
-                                        options: {
-                                            type: 'list',
-                                            multiple: true
-                                        },
-                                        fields: {
-                                            action: {
-                                                type: 'text',
-                                                title: 'Triggering action'
-                                            },
-                                            url: {
-                                                type: 'text',
-                                                title: 'URL'
-                                            },
-                                            method: {
-                                                type: 'combo',
-                                                title: 'Method',
-                                                options: [{key: 'get', title: 'GET'}, {key: 'post', title: 'POST'}]
-                                            }
-                                        }
-                                    },
-                                    varsin: {
-                                        options: {
-                                            type: 'table',
-                                            multiple: true,
-                                            title: 'Vars in'
-                                        },
-                                        fields: {
-                                            action: {
-                                                type: 'text',
-                                                title: 'Triggering action'
-                                            },
-                                            url: {
-                                                type: 'text',
-                                                title: 'URL'
-                                            }
-                                        }
-                                    },
-                                    varsout: {
-                                        options: {
-                                            type: 'table',
-                                            multiple: true,
-                                            title: 'Variables out'
-                                        },
-                                        fields: {
-                                            action: {
-                                                type: 'combo',
-                                                title: 'jPath'
-                                            },
-                                            url: {
-                                                type: 'text',
-                                                title: 'Variable name'
-                                            }
-                                        }
-                                    },
-                                    structure: {
-                                        options: {
-                                            type: 'list',
-                                            multiple: true,
-                                            title: 'Response structure'
-                                        },
-                                        fields: {
-                                            action: {
-                                                type: 'jscode',
-                                                title: 'JSON'
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                        }
-                    },
-                    webcron: {
-                        options: {
-                            title: 'Webservice crontab',
-                            icon: 'world_go'
-                        },
-                        groups: {
-                            general: {
-                                options: {
-                                    type: 'table',
-                                    multiple: true
-                                },
-                                fields: {
-                                    cronurl: {
-                                        type: 'text',
-                                        title: 'Cron URL'
-                                    },
-                                    crontime: {
-                                        type: 'float',
-                                        title: "Repetition (s)"
-                                    },
-                                    cronvariable: {
-                                        type: "text",
-                                        title: "Target variable"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    script_cron: {
-                        options: {
-                            title: 'Script execution',
-                            icon: 'scripts'
-                        },
-                        sections: {
-                            script_el: {
-                                options: {
-                                    multiple: true,
-                                    title: 'Script element'
-                                },
-                                groups: {
-                                    general: {
-                                        options: {
-                                            type: 'list',
-                                            multiple: true
-                                        },
-                                        fields: {
-                                            crontime: {
-                                                type: 'float',
-                                                title: "Repetition (s)"
-                                            },
-                                            script: {
-                                                type: 'jscode',
-                                                title: 'Javascript to execute'
-                                            }
-
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
                     custom_filters: {
                         options: {
                             title: 'Custom filters',
                             icon: 'script_go'
                         },
                         sections: {
+                            modules: {
+                                options: {
+                                    multiple: false,
+                                    title: 'Modules'
+                                },
+                                groups: {
+                                    modules: {
+                                        options: {
+                                            type: 'table',
+                                            multiple: true
+                                        },
+                                        fields: {
+                                            url: {
+                                                type: 'text',
+                                                title: 'Root url to modules'
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            filtersLib: {
+                                options: {
+                                    title: 'Filters'
+                                },
+                                groups: {
+                                    filters: {
+                                        options: {
+                                            type: 'table',
+                                            multiple: true
+                                        },
+                                        fields: {
+                                            name: {
+                                                type: 'text',
+                                                title: 'Name'
+                                            },
+                                            file: {
+                                                type: 'text',
+                                                title: 'url'
+                                            }
+                                        }
+                                    }
+                                }
+
+                            },
                             filters: {
                                 options: {
                                     multiple: true,
-                                    title: "Filter"
+                                    title: 'Custom Filters'
                                 },
                                 groups: {
                                     filter: {
@@ -668,7 +650,7 @@ define(['jquery',
                                 fields: {
                                     pouchname: {
                                         type: 'text',
-                                        title: "Pouch DB name"
+                                        title: 'Pouch DB name'
                                     },
                                     couchurl: {
                                         type: 'text',
@@ -702,7 +684,8 @@ define(['jquery',
                         cfg: [{
                             groups: {
                                 tablevars: [view.variables],
-                                pouchvars: [view.pouchvariables]
+                                pouchvars: [view.pouchvariables],
+                                aliases: [view.aliases]
                             }
                         }],
                         actionscripts: [{
@@ -713,13 +696,8 @@ define(['jquery',
                         init_script: view.init_script,
                         custom_filters: view.custom_filters,
                         actionfiles: ActionManager.getFilesForm(),
-                        webcron: [{
-                            groups: {
-                                general: [view.crons || []]
-                            }
-                        }],
-                        script_cron: view.script_crons,
-                        couch_replication: view.couch_replication
+                        couch_replication: view.couch_replication,
+                        requirejs: view.requirejs
                     }
                 });
             });
@@ -732,25 +710,21 @@ define(['jquery',
                 div.dialog('close');
 
                 var data,
-                    allcrons,
                     value = form.getValue();
 
                 /* Entry variables */
                 data = new DataArray(value.sections.cfg[0].groups.tablevars[0], true);
-                allcrons = new DataObject(value.sections.webcron[0].groups.general[0], true);
-
 
                 view.variables = data;
-                view.crons = allcrons;
-
+                view.aliases = new DataArray(value.sections.cfg[0].groups.aliases[0], true);
                 view.couch_replication = value.sections.couch_replication;
                 view.init_script = value.sections.init_script;
                 view.custom_filters = value.sections.custom_filters;
+                view.requirejs = value.sections.requirejs;
 
                 // PouchDB variables
                 data = new DataArray(value.sections.cfg[0].groups.pouchvars[0]);
                 view.pouchvariables = data;
-
 
                 _check(true);
 
@@ -759,15 +733,10 @@ define(['jquery',
                 ActionManager.setScriptsFromForm(data);
                 /* */
 
-
                 /* Handle actions files */
                 data = value.sections.actionfiles;
                 ActionManager.setFilesFromForm(data);
                 /* */
-
-                if (typeof CronManager !== "undefined") {
-                    CronManager.setCronsFromForm(data, view);
-                }
 
             });
 
@@ -791,7 +760,7 @@ define(['jquery',
             var css = [
                 'css/main.css',
                 'components/colors/css/colors.min.css',
-                'components/Aristo-jQuery-UI-Theme/css/Aristo/Aristo.css',
+                'components/jquery-ui/themes/smoothness/jquery-ui.min.css',
                 'lib/forms/style.css',
                 'components/fancytree/dist/skin-lion/ui.fancytree.css',
                 'components/jqgrid_edit/css/ui.jqgrid.css',
@@ -824,7 +793,15 @@ define(['jquery',
 
                 visualizerDiv.html('<table id="viewport" cellpadding="0" cellspacing="0">\n    <tr>\n        <td id="ci-center">\n            <div id="modules-grid">\n                <div id="ci-dialog"></div>\n            </div>\n        </td>\n    </tr>\n</table>');
 
-                var configJson = urls['config'] || visualizerDiv.attr('config') || require.toUrl('usr/config/default.json');
+                var configJson = urls['config'] || visualizerDiv.attr('data-ci-config');
+                if (!configJson) {
+                    if (visualizerDiv.attr('config')) {
+                        Debug.warn('config as attribute of ci-visualizer is deprecated. Use data-ci-config instead.');
+                        configJson = visualizerDiv.attr('config');
+                    } else {
+                        configJson = require.toUrl('usr/config/default.json')
+                    }
+                }
 
                 $.getJSON(configJson, {}, function (cfgJson) {
 
@@ -836,8 +813,8 @@ define(['jquery',
                         });
                     }
 
-                    if (!debugSet && cfgJson.debugLevel) {
-                        Debug.setDebugLevel(cfgJson.debugLevel);
+                    if (!debugSet) {
+                        Debug.setDebugLevel(cfgJson.debugLevel || Debug.Levels.ERROR);
                     }
 
                     if (cfgJson.lockView || cfgJson.viewLock) {
@@ -860,7 +837,7 @@ define(['jquery',
                     API.setAllFilters(cfgJson.filters || []);
 
                 }).fail(function (a, b) {
-                    console.error("Error loading the config : " + b);
+                    Debug.error('Error loading the config : ' + b);
                 }).always(function () {
                     require(['usr/datastructures/filelist'], function () {
                         Context.init(document.getElementById('modules-grid'));
@@ -871,7 +848,6 @@ define(['jquery',
                                             configureEntryPoint();
                                         }]]
                             );
-
                             Context.listen(Context.getRootDom(), [
                                     ['<li class="ci-item-refresh" name="refresh"><a><span class="ui-icon ui-icon-arrowrefresh-1-s"></span>Refresh page</a></li>',
                                         function () {
@@ -888,19 +864,32 @@ define(['jquery',
 
                         Versioning.setURLType(type);
                         var $visualizer = $('#ci-visualizer');
+
+                        var viewURL = urls['viewURL'] || $visualizer.attr('data-ci-view');
+                        if (!viewURL && $visualizer.attr('viewURL')) {
+                            Debug.warn('viewURL as attribute of ci-visualizer is deprecated. Use data-ci-view instead.');
+                            viewURL = $visualizer.attr('viewURL');
+                        }
+
+                        var dataURL = urls['dataURL'] || $visualizer.attr('data-ci-data');
+                        if (!dataURL && $visualizer.attr('dataURL')) {
+                            Debug.warn('dataURL as attribute of ci-visualizer is deprecated. Use data-ci-data instead.');
+                            dataURL = $visualizer.attr('dataURL');
+                        }
+
                         var viewInfo = {
                             view: {
                                 urls: urls['views'],
                                 branch: urls['viewBranch'],
-                                url: urls['viewURL'] || $visualizer.attr('viewURL')
+                                url: viewURL
                             },
                             data: {
                                 urls: urls['results'],
                                 branch: urls['resultBranch'],
-                                url: urls['dataURL'] || $visualizer.attr('dataURL')
+                                url: dataURL
                             }
                         };
-                        window.history.replaceState({type: "viewchange", value: viewInfo}, "");
+                        window.history.replaceState({type: 'viewchange', value: viewInfo}, '');
                         Versioning.switchView(viewInfo, false)
                             .then(function () {
                                 Debug.info('Successfully switched view');

@@ -2,6 +2,7 @@
 
 define([
     'jquery',
+    'src/util/ui',
     'src/header/components/default',
     'src/util/versioning',
     'forms/button',
@@ -10,8 +11,9 @@ define([
     'forms/form',
     'lib/couchdb/jquery.couch',
     'fancytree',
-    'components/ui-contextmenu/jquery.ui-contextmenu.min'
-], function ($, Default, Versioning, Button, Util, Base64, Form) {
+    'components/ui-contextmenu/jquery.ui-contextmenu.min',
+    'jquery-ui/autocomplete'
+], function ($, ui, Default, Versioning, Button, Util, Base64, Form) {
 
     function CouchDBManager() {
     }
@@ -20,8 +22,14 @@ define([
 
     Util.inherits(CouchDBManager, Default, {
         initImpl: function () {
-            this.ok = this.loggedIn = false;
+
+            this.ok = this.loggedIn = this.ready = false;
+            if(!this.options.beforeUrl) this.ready = true;
+            else {
+                this.beforeUrl();
+            }
             this.id = Util.getNextUniqueId();
+            this.options.loginMethods = this.options.loginMethods || ['couchdb'];
             if (this.options.url) {
                 $.couch.urlPrefix = this.options.url.replace(/\/$/, '');
             }
@@ -31,6 +39,24 @@ define([
             $.ui.fancytree.debugLevel = 0;
             this.checkDatabase();
         },
+
+        beforeUrl: function() {
+            var that = this;
+            var url = this.options.beforeUrl;
+            $.ajax({
+                type: 'GET',
+                url: url,
+                success: function() {
+                    Debug.info('CouchDB: beforeUrl success');
+                    that.ready = true;
+                },
+                error: function(err) {
+                    Debug.info('CouchDB: beforeUrl error', err);
+                    that.ready = true;
+                }
+            })
+        },
+
         showError: function (e, type) {
             var content;
             var color = 'red';
@@ -98,7 +124,7 @@ define([
             this.loadFlavor();
         },
         _onClick: function () {
-            if (this.ok) {
+            if (this.ok && this.ready) {
                 this.setStyleOpen(this._open);
                 if (this._open) {
                     this.createMenu();
@@ -108,9 +134,12 @@ define([
                     this.close();
                 }
             }
-            else {
+            else if(!this.ok) {
                 this.checkDatabase();
                 console.error('CouchDB header : unreachable database.');
+            }
+            else {
+                ui.showNotification('Couchdb button not ready');
             }
         },
         createMenu: function () {
@@ -124,7 +153,7 @@ define([
             }
 
             var that = this;
-            this.$_elToOpen = $('<div>').css('width', 550);
+            this.$_elToOpen = $('<div>').css('width', 560);
             this.errorP = $('<p id="' + this.cssId('error') + '">');
 
             $.couch.session({
@@ -168,22 +197,27 @@ define([
             this.lastKeyLoaded = node.key;
         },
 
-        saveMeta: function(val) {
+        saveMeta: function (val) {
             var that = this;
             var node = that.currentDocument;
-            $.ajax({
-                url: this.database.uri + node.data.doc._id + '/meta.json?rev=' + node.data.doc._rev,
-                type: 'PUT',
-                contentType: 'application/json',
-                data: JSON.stringify(val),
-                dataType: 'json',
-                error: this.showError,
+            var doc = node.data.doc;
+            if(val && val.keywords && val.keywords.value) {
+                doc.keywords = val.keywords.value;
+            }
+            doc._attachments['meta.json'] = {
+                'content_type': 'application/json',
+                'data': Base64.encode(JSON.stringify(val))
+            };
+            that.database.saveDoc(doc, {
                 success: function (data) {
-                    node.data.doc._rev = data.rev;
-                    node.data.hasMeta = true;
+                    doc._rev = data.rev;
                     if (node.children)
                         child.lazyLoad(true);
+
                     that.showError('meta saved.', 2);
+                },
+                error: function () {
+                    that.showError.apply(that, arguments)
                 }
             });
         },
@@ -215,6 +249,8 @@ define([
             var that = this;
 
             if (child && !child.folder) {
+                // This doc has revs which means it has been saved to couchdb already
+                // Therefore we only need to update the attachment
                 doc = child.data.doc;
                 $.ajax({
                     url: this.database.uri + doc._id + '/' + type.toLowerCase() + '.json?rev=' + doc._rev,
@@ -233,9 +269,13 @@ define([
                 });
             }
             else {
+                // The doc is new so we need to save the whole document
+                // With a new uuid
                 var flavors = {}, flav = [];
-                if (last.key)
-                    flav = last.key.split(':');
+                if (last.key) {
+                    flav = last.node.key.split(':');
+                    flav.shift();
+                }
                 flav.push(name);
                 flavors[this.flavor] = flav;
                 doc = {
@@ -322,12 +362,11 @@ define([
                 success: function () {
                     that.loggedIn = false;
                     that.username = null;
-                    that.$_elToOpen.html(that.getLoginForm());
+                    that.openMenu('login');
                 }
             });
         },
-        getLoginForm: function () {
-
+        renderLoginMethods: function () {
             var that = this;
 
             function doLogin() {
@@ -335,18 +374,40 @@ define([
                 return false;
             }
 
+            for (var i = 0; i < this.options.loginMethods.length; i++) {
+                switch (this.options.loginMethods[i]) {
+                    case 'google':
+                        this.loginForm.append('<a href=" ' + that.url + '/auth/google' + '">Google login</a><br/>');
+                        break;
+                    case 'github':
+                        this.loginForm.append('<a href=" ' + that.url + '/auth/github' + '">Github login</a><br/>');
+                        break;
+                    case 'facebook':
+                        this.loginForm.append('<a href=" ' + that.url + '/auth/facebook' + '">Facebook login</a><br/>');
+                        break;
+                    case 'couchdb':
+                        this.loginForm.append('<div> Couchdb Login </div>');
+                        this.loginForm.append('<label for="' + this.cssId('login-username') + '">Username </label><input type="text" id="' + this.cssId('login-username') + '" /><br>');
+                        this.loginForm.append('<label for="' + this.cssId('login-password') + '">Password </label><input type="password" id="' + this.cssId('login-password') + '" /><br><br>');
+                        this.loginForm.append(new Button('Login', doLogin, {color: 'green'}).render());
+                        this.loginForm.bind('keypress', function (e) {
+                            if (e.charCode === 13)
+                                return doLogin();
+                        });
+                        break;
+                    default:
+
+                        break;
+                }
+            }
+            ;
+        },
+
+        getLoginForm: function () {
             var loginForm = this.loginForm = $('<div>');
             loginForm.append('<h1>Login</h1>');
-            loginForm.append('<label for="' + this.cssId('login-username') + '">Username </label><input type="text" id="' + this.cssId('login-username') + '" /><br>');
-            loginForm.append('<label for="' + this.cssId('login-password') + '">Password </label><input type="password" id="' + this.cssId('login-password') + '" />');
-            loginForm.append(new Button('Login', doLogin, {color: 'green'}).render());
-            loginForm.bind('keypress', function (e) {
-                if (e.charCode === 13)
-                    return doLogin();
-            });
-
+            this.renderLoginMethods();
             loginForm.append(this.errorP);
-
             return loginForm;
         },
         getMenuContent: function () {
@@ -389,6 +450,7 @@ define([
                     else
                         that.flavorList = data.rows[0].value;
                     flavorField.autocomplete({
+                        appendTo: '#ci-visualizer',
                         minLength: 0,
                         source: that.flavorList
                     }).on('autocompleteselect', function (e, d) {
@@ -409,7 +471,7 @@ define([
             });
 
             dom.append($('<p><span>Flavor : </span>').append(flavorField).append(
-                new Button('Switch', changeFlavor, {color: 'red'}).render()
+                new Button('Switch', changeFlavor, {color: 'red'}).setTooltip('Switch flavor!').render()
             ));
 
             var treeCSS = {
@@ -418,8 +480,32 @@ define([
                 'width': '300px'
             };
             var treeContainer = $('<div>').attr('id', this.cssId('tree')).css(treeCSS).appendTo(dom);
-            dom.append($('<p>').append('<input type="text" id="' + this.cssId('docName') + '"/>')
-                    .append(new Button('Edit MetaData', function(){
+            this.makePublicButton = new Button('Make Public', function () {
+                console.log('Make public');
+                ui.confirm('You are about to make your view public. This action is irreversible. It will enable anybody to access the saved view and data. Do you want to proceed?', 'Proceed', 'Cancel').then(function (proceed) {
+                    if (!proceed || !that.currentDocument) return;
+                    var node = that.currentDocument;
+                    var doc = node.data.doc;
+                    doc.isPublic = true;
+                    that.database.saveDoc(doc, {
+                        success: function (data) {
+                            doc._rev = data.rev;
+                            node.data.isPublic = true;
+                            that.updateButtons();
+                            if (node.children)
+                                child.lazyLoad(true);
+
+                            that.showError('The view was made public', 2);
+                        },
+                        error: function () {
+                            that.showError.apply(that, arguments)
+                        }
+                    });
+                    console.log('proceed with make public');
+                });
+            }, {color: 'red'});
+            dom.append($('<div style="width:560px; height:35px;">').append('<input type="text" id="' + this.cssId('docName') + '"/>')
+                    .append(new Button('Edit Meta', function () {
                         that.metaData();
                     }, {color: 'blue'}).render())
                     .append(new Button('Save data', function () {
@@ -431,15 +517,27 @@ define([
                     .append(new Button('Mkdir', function () {
                         that.mkdir(that.getFormContent('docName'));
                     }, {color: 'blue'}).render())
+                    .append(this.errorP)
             );
 
-            dom.append(this.errorP);
+
+            dom.append('<hr>').append(this.makePublicButton.render().hide());
 
             this.loadFlavor();
 
             return dom;
         },
-        getMetaForm: function(node) {
+        updateButtons: function () {
+            var node = this.currentDocument;
+            var dom = this.makePublicButton.getDom();
+            if ((node && node.data && !node.data.isPublic && dom)) {
+                dom.show();
+            }
+            else if (dom) {
+                dom.hide();
+            }
+        },
+        getMetaForm: function (node) {
             var that = this;
             var doc = node.data.doc;
             return new Promise(function (resolve) {
@@ -447,7 +545,7 @@ define([
                     url: that.database.uri + doc._id + '/meta.json', // always the last revision
                     type: 'GET',
                     dataType: 'json',
-                    error: function() {
+                    error: function () {
                         console.error('Could not get meta data...');
                         resolve({});
                     },
@@ -458,7 +556,7 @@ define([
             });
         },
 
-        processMetaForm: function(obj) {
+        processMetaForm: function (obj) {
             //var result = {
             //    sections: {
             //        metadata: [{
@@ -518,15 +616,15 @@ define([
                     ]
                 }
             };
-            for(var key in obj) {
+            for (var key in obj) {
                 var n = {};
                 n.contentType = [obj[key].type];
                 n.keyword = [key];
-                if(obj[key].type === 'text') {
+                if (obj[key].type === 'text') {
                     n.contentText = [obj[key].value];
                     n.contentHtml = [''];
                 }
-                else if(obj[key].type === 'html') {
+                else if (obj[key].type === 'html') {
                     n.contentHtml = [obj[key].value];
                     n.contentText = [''];
                 }
@@ -540,12 +638,18 @@ define([
             return result;
         },
 
-        metaData: function() {
+        metaData: function () {
             var that = this;
-            if(!this.currentDocument) return;
+            if (!this.currentDocument) {
+                that.showError('No document selected');
+                return;
+            }
 
-            var div = $('<div></div>').dialog({ modal: true, position: ['center', 50], width: '80%', title: "Edit Metadata"});
-            console.log('meta data');
+            var div = ui.dialog({
+                width: '80%',
+                autoPosition: true,
+                title: 'Edit Metadata'
+            });
 
             var structure = {
 
@@ -600,108 +704,60 @@ define([
                 }
             };
 
-            var form = new Form({
-            });
+            var form = new Form({});
 
             form.init({
-                onValueChanged: function( value ) {	}
+                onValueChanged: function (value) {
+                }
             });
 
-            form.setStructure( structure );
-            form.onStructureLoaded().done(function() {
+            form.setStructure(structure);
+            form.onStructureLoaded().done(function () {
                 var fill = {};
                 var prom;
-                if(!that.currentDocument.data.hasMeta) {
+                if (!that.currentDocument.data.hasMeta) {
                     prom = Promise.resolve({});
                 }
                 else {
                     prom = that.getMetaForm(that.currentDocument);
                 }
 
-                prom.then(function(fill) {
+                prom.then(function (fill) {
                     form.fill(fill);
                 });
-                //form.fill({
-                //    sections: {
-                //        metadata: [{
-                //            sections: {
-                //                keywords: [
-                //                {
-                //                    "sections": {},
-                //                    "groups": {
-                //                        "group": [
-                //                            {
-                //                                "contentType": ['html'],
-                //                                "keyword": [
-                //                                    "showHelp"
-                //                                ],
-                //                                "contentText": [
-                //                                    "abc"
-                //                                ],
-                //                                "contentHtml": [
-                //                                    "xyz"
-                //                                ]
-                //                            }
-                //                        ]
-                //                    }
-                //                },
-                //                {
-                //                    "sections": {},
-                //                    "groups": {
-                //                        "group": [
-                //                            {
-                //                                "contentType": ['text'],
-                //                                "keyword": [
-                //                                    "showHelp"
-                //                                ],
-                //                                "contentText": [
-                //                                    "abc"
-                //                                ],
-                //                                "contentHtml": [
-                //                                    "xyz"
-                //                                ]
-                //                            }
-                //                        ]
-                //                    }
-                //                }
-                //            ]
-                //            }
-                //        }]
-                //}
-                //});
             });
 
-            form.addButton('Cancel', { color: 'blue' }, function() {
-                div.dialog( 'close' );
+            form.addButton('Cancel', {color: 'blue'}, function () {
+                div.dialog('close');
             });
 
-            form.addButton('Save', { color: 'green' }, function() {
+            form.addButton('Save', {color: 'green'}, function () {
                 var value = form.getValue();
                 that.saveMeta(that.getMetaFromForm(value));
                 div.dialog('close');
             });
 
-            form.onLoaded().done(function() {
-                div.html(form.makeDom(1,0));
+            form.onLoaded().done(function () {
+                div.html(form.makeDom(1, 0));
                 form.inDom();
             });
 
         },
 
-        getMetaFromForm: function(value) {
+        getMetaFromForm: function (value) {
             value = DataObject.check(value, true);
             var result = {};
             var x = value.getChildSync(['sections', 'metadata', 0, 'sections', 'keywords']);
-            if(x) {
-                for(var i=0; i< x.length; i++) {
+            if (x) {
+                for (var i = 0; i < x.length; i++) {
                     var val = x.getChildSync([i, 'groups', 'group', 0]);
-                    if(val.contentType[0] === 'text') {
+                    if (val.contentType[0] === 'text') {
                         result[val.keyword[0]] = {
                             type: 'text',
                             value: val.contentText[0]
                         }
                     }
-                    else if(val.contentType[0] === 'html') {
+                    else if (val.contentType[0] === 'html') {
                         result[val.keyword[0]] = {
                             type: 'html',
                             value: val.contentHtml[0]
@@ -724,7 +780,7 @@ define([
                     for (var i = 0; i < l; i++) {
                         var rev = info[i];
                         if (rev.status === 'available') {
-                            var el = {title: 'rev ' + (l - i), id: data._id, rev: true, key: rev.rev};
+                            var el = {title: 'rev ' + (l - i), id: data._id, rev: rev.rev, key: result.node.key};
                             revs.push(el);
                         }
                     }
@@ -743,19 +799,17 @@ define([
                 keyWithoutFlavor = '';
 
             if (node.folder) {
-                this.currentDocument = undefined;
-                var folderName = keyWithoutFlavor;
-                last = {name: this.username + (folderName.length > 0 ? ':' + folderName : ''), node: node};
+                this.currentDocument = null;
             } else {
                 var rev;
                 if (node.data.rev) {
-                    rev = node.key;
+                    rev = node.data.rev;
                     node = node.parent;
                 }
                 folder = node.parent;
                 this.currentDocument = node;
                 $('#' + this.cssId('docName')).val(node.title);
-                last = {name: node.data.doc._id, node: node};
+                this.updateButtons();
                 if (event.type === 'fancytreedblclick')
                     this.load(node, rev);
             }
@@ -765,8 +819,10 @@ define([
                 node: folder
             };
             this.lastNode = last;
+            console.log(this.lastNode.key);
             if (event.type === 'fancytreedblclick' && !node.folder)
                 return false;
+
         },
         loadFlavor: function () {
             var proxyLazyLoad = $.proxy(this, 'lazyLoad'),
@@ -824,7 +880,7 @@ define([
                 preventRecursiveMoves: true,
                 autoExpandMS: 300,
                 dragStart: function (node) { // Can only move documents
-                    return !node.folder;
+                    return !node.folder && !node.data.rev;
                 },
                 dragEnter: function (target) { // Can only drop in a folder
                     return !!target.folder;
@@ -861,33 +917,45 @@ define([
 
                 }
             };
-
-            this.database.view('flavor/docs', {
-                success: function (data) {
-                    var tree = createFullTree(data.rows, that.flavor);
-                    var theTree = $('#' + that.cssId('tree'));
-                    theTree.fancytree({
-                        extensions: ['dnd'],
-                        dnd: dnd,
-                        source: [],
-                        lazyLoad: proxyLazyLoad,
-                        dblclick: proxyClick,
-                        debugLevel: 0,
-                        activate: proxyClick
-                    }).children('ul').css('box-sizing', 'border-box');
-                    var thefTree = theTree.data('ui-fancytree').getTree();
-                    thefTree.reload(tree);
-                    thefTree.getNodeByKey(that.flavor).toggleExpanded();
-                    theTree.contextmenu(menuOptions);
-                    if (that.lastKeyLoaded)
-                        thefTree.activateKey(that.lastKeyLoaded);
+            this.database.list('flavor/sort', 'docs', {
+                    key: [this.flavor, this.username],
+                    include_docs: true
                 },
-                error: function (status) {
-                    console.log(status);
-                },
-                key: [this.flavor, this.username],
-                include_docs: true
-            });
+                {
+                    success: function (data) {
+                        var tree = createFullTree(data, that.flavor);
+                        var theTree = $('#' + that.cssId('tree'));
+                        theTree.fancytree({
+                            toggleEffect: false,
+                            extensions: ['dnd'],
+                            dnd: dnd,
+                            source: [],
+                            lazyLoad: proxyLazyLoad,
+                            dblclick: proxyClick,
+                            debugLevel: 0,
+                            activate: proxyClick
+                        }).children('ul').css('box-sizing', 'border-box');
+                        var thefTree = theTree.data('ui-fancytree').getTree();
+                        thefTree.reload(tree);
+                        thefTree.getNodeByKey(that.flavor).toggleExpanded();
+                        theTree.contextmenu(menuOptions);
+                        if (that.lastKeyLoaded)
+                            thefTree.activateKey(that.lastKeyLoaded);
+                        if(that.currentDocument) {
+                            // When switching flavors, if this document is also
+                            // in the new flavor we select it automatically
+                            var id = that.currentDocument.data.doc._id;
+                            var d = _.find(data, function(d) {return d.id === id});
+                            if(d) {
+                                var key = _.flatten([that.flavor, d.value.flavors]).join(':');
+                                thefTree.activateKey(key);
+                            }
+                        }
+                    },
+                    error: function (status) {
+                        console.log(status);
+                    }
+                });
         },
         contextClick: function (node, action, ctx) {
             var that = this;
@@ -923,7 +991,7 @@ define([
                     }
                 }
                 else if (action === 'rename') {
-                    $('<div>').html('New name : <input type="text" id="' + this.cssId('newname') + '" value="' + node.title + '" />').dialog({
+                    ui.dialog('New name : <input type="text" id="' + this.cssId('newname') + '" value="' + node.title + '" />', {
                         buttons: {
                             'Save': function () {
                                 var dialog = $(this);
@@ -959,12 +1027,12 @@ define([
                             'Cancel': function () {
                                 $(this).dialog('destroy');
                             }
-                        },
-                        title: 'New name'
+                        }
                     });
                 }
                 else if (action === 'newflavor') {
-                    $('<div>').html('Flavor :').dialog({
+                    var div = $('<div>').html('Flavor :');
+                    ui.dialog(div, {
                         buttons: {
                             'Save': function () {
                                 var dialog = $(this);
@@ -1002,7 +1070,9 @@ define([
                             }
                         },
                         title: 'New flavor'
-                    }).append($('<input type="text" id="' + this.cssId('newflavorname') + '" />').autocomplete({
+                    });
+                    div.append($('<input type="text" id="' + this.cssId('newflavorname') + '" />').autocomplete({
+                        appendTo: '#ci-visualizer',
                         minLength: 0,
                         source: that.flavorList
                     }));
@@ -1052,7 +1122,8 @@ define([
             __doc: data.doc,
             __data: data.value.data,
             __view: data.value.view,
-            __meta: data.value.meta
+            __meta: data.value.meta,
+            __public: data.value.isPublic
         };
         return structure;
     }
@@ -1085,6 +1156,7 @@ define([
                         hasData: obj.__data,
                         hasView: obj.__view,
                         hasMeta: obj.__meta,
+                        isPublic: obj.__public,
                         lazy: true,
                         title: name,
                         key: thisPath
@@ -1098,6 +1170,7 @@ define([
                 el.hasData = obj.__data;
                 el.hasView = obj.__view;
                 el.hasMeta = obj.__meta;
+                el.isPublic = obj.__public;
             }
             tree.push(el);
         }

@@ -114,15 +114,17 @@ function PouchDB(name, opts, callback) {
 
     self.destroy = utils.adapterFun('destroy', function (callback) {
       var self = this;
+      var opts = this.__opts || {};
       self.info(function (err, info) {
         if (err) {
           return callback(err);
         }
-        self.constructor.destroy(info.db_name, callback);
+        opts.internal = true;
+        self.constructor.destroy(info.db_name, opts, callback);
       });
     });
 
-    PouchDB.adapters[opts.adapter].call(self, opts, function (err, db) {
+    PouchDB.adapters[opts.adapter].call(self, opts, function (err) {
       if (err) {
         if (callback) {
           self.taskqueue.fail(err);
@@ -141,10 +143,13 @@ function PouchDB(name, opts, callback) {
       PouchDB.emit('created', opts.originalName);
       self.taskqueue.ready(self);
       callback(null, self);
-      
     });
+
     if (opts.skipSetup) {
       self.taskqueue.ready(self);
+      process.nextTick(function () {
+        callback(null, self);
+      });
     }
 
     if (utils.isCordova()) {
@@ -157,7 +162,8 @@ function PouchDB(name, opts, callback) {
   }, oldCB);
   self.then = promise.then.bind(promise);
   self.catch = promise.catch.bind(promise);
-
 }
+
+PouchDB.debug = require('debug');
 
 module.exports = PouchDB;

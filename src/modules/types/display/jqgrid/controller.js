@@ -5,7 +5,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.init = function () {
         this.toggleElements = {};
@@ -80,15 +80,16 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                         nblines: {
                             type: 'float',
                             title: 'Lines per page',
-                            default: 20
+                            'default': 20
                         },
                         toggle: {
                             type: 'combo',
                             title: 'Line toggling',
-                            options: [{key: '0', title: 'No'}, {key: 'single', title: 'Single row'}, {
-                                key: 'multiple',
-                                title: 'Multiple rows'
-                            }]
+                            options: [
+                                {key: '0', title: 'No'},
+                                {key: 'single', title: 'Single row'},
+                                {key: 'multiple', title: 'Multiple rows'}
+                            ]
                         },
                         colorjpath: {
                             type: 'combo',
@@ -98,6 +99,14 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                         filterRow: {
                             type: 'jscode',
                             title: 'Filter'
+                        },
+                        highlightLine: {
+                            type: 'checkbox',
+                            title: 'Highlight on hover',
+                            options: {
+                                'Yes': 'Yes'
+                            },
+                            default: ['Yes']
                         }
                     }
                 },
@@ -125,11 +134,13 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                         editable: {
                             type: 'combo',
                             title: 'Editable',
-                            default: 'none',
-                            options: [{key: 'none', title: 'No'}, {key: 'text', title: 'Text'}, {
-                                key: 'checkbox',
-                                title: 'Checkbox'
-                            }, {key: 'select', title: 'Combo'}]
+                            'default': 'none',
+                            options: [
+                                {key: 'none', title: 'No'},
+                                {key: 'text', title: 'Text'},
+                                {key: 'checkbox', title: 'Checkbox'},
+                                {key: 'select', title: 'Combo'}
+                            ]
                         },
                         options: {
                             type: 'text',
@@ -171,12 +182,13 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         nbLines: ['groups', 'group', 0, 'nblines', 0],
         toggle: ['groups', 'group', 0, 'toggle', 0],
         colorjPath: ['groups', 'group', 0, 'colorjpath', 0],
-        filterRow: ['groups', 'group', 0, 'filterRow', 0]
+        filterRow: ['groups', 'group', 0, 'filterRow', 0],
+        highlightLine: ['groups', 'group', 0, 'highlightLine', 0]
     };
 
     Controller.prototype.lineHover = function (elements, row) {
         this.setVarFromEvent('onHover', 'row', 'list', [row]);
-        this.sendAction('row', elements.get(row), 'onHover');
+        this.sendActionFromEvent('onHover', 'row', elements.get(row));
         API.highlight(elements[row], 1);
     };
 
@@ -189,16 +201,12 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     };
 
     Controller.prototype.lineClick = function (elements, row) {
-        //	elements[ row ].linkToParent( elements, row );
         this.setVarFromEvent('onSelect', 'row', 'list', [row]);
-        this.sendAction('row', elements.get(row), 'onSelect');
+        this.sendActionFromEvent('onSelect', 'row', elements.get(row));
     };
 
     Controller.prototype.onToggleOn = function (elements, row) {
-
-//		elements[ row ].linkToParent( elements, row );
-
-        this.sendAction('row', elements.get(row), 'onToggleOn');
+        this.sendActionFromEvent('onToggleOn', 'row', elements.get(row));
         this.setVarFromEvent('onToggleOn', 'row', 'list', [row]);
 
         this.toggleElements[row] = true;
@@ -206,10 +214,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     };
 
     Controller.prototype.onToggleOff = function (elements, row) {
-
-        //	elements[ row ].linkToParent( elements, row );
-
-        this.sendAction('row', elements.get(row), 'onToggleOff');
+        this.sendActionFromEvent('onToggleOff', 'row', elements.get(row));
         this.setVarFromEvent('onToggleOff', 'row', 'list', [row]);
 
         delete this.toggleElements[row];

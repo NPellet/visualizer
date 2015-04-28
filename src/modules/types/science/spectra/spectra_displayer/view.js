@@ -117,7 +117,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     if (cfgCheckbox('mouseTracking', 'track')) {
                         options.onMouseMoveData = function (event, result) {
                             self.module.model.trackData = result;
-                            self.module.controller.sendAction('trackData', result, 'onTrackMouse');
+                            self.module.controller.sendActionFromEvent('onTrackMouse', 'trackData', result);
                             self.module.controller.createDataFromEvent('onTrackMouse', 'trackData', result);
                         };
                     }
@@ -252,7 +252,12 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 } );
 
                 graph.on('shapeSelect', function( shape ) {
-                    self.module.controller.sendAction('selectedShape', shape.data, 'onShapeSelect' );
+                    self.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape.data);
+                    self.module.controller.sendActionFromEvent('onShapeSelect', 'selectedShape', shape.data);
+                });
+                graph.on('shapeUnselect', function (shape) {
+                    self.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape.data);
+                    self.module.controller.sendActionFromEvent('onShapeUnselect', 'shapeInfos', shape.data);
                 });
 
                 self.onResize();
@@ -412,6 +417,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                         serie.setLineColor(Color.getColor(color));
                         serie.setLineWidth(parseFloat(plotinfos[i].strokewidth) || 1);
+                        serie.setLineStyle(parseInt(plotinfos[i].strokestyle) || 1);
 
                         if (plotinfos[i].markers[0] && serie.showMarkers) {
                             serie.showMarkers();
@@ -496,18 +502,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
         update: {
 
-            fromTo: function (moduleValue) {
-                var view = this;
-
-                if (!moduleValue || !moduleValue.value)
-                    return;
-
-                if (view.dom.data('spectra')) {
-                    view.dom.data('spectra').setBoundaries(moduleValue.value.from, moduleValue.value.to);
-                }
-
-            },
-
             chart: function (moduleValue, varname) {
                 this.series[varname] = this.series[varname] || [];
                 this.removeSerie(varname);
@@ -533,7 +527,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     }
 
 
-                    var serieName = data.serieLabel;
+                    var serieName = data.serieLabel || varname;
 
                     var valFinal = [];
 
@@ -628,10 +622,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             },
 
             annotations: function (value, varName) {
-
-                API.killHighlight(this.module.getId());
                 this.annotations[varName] = this.annotations[varName] || [];
-                this.removeAnnotations(varName);
                 var annotations = value.get();
                 var i = 0, l = annotations.length;
                 var self = this;
@@ -659,7 +650,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                             } else {
                                 shape.unHighlight();
                             }
-                        }, false, self.module.getId());
+                        }, false, self.module.getId() + varName);
 
                         self.module.model.dataListenChange( annotations.traceSync( [ i ] ), function( v ) {
 
@@ -818,6 +809,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
         },
 
         removeAnnotations: function (varName) {
+            API.killHighlight(this.module.getId() + varName);
             if (this.annotations[varName]) {
                 for(var i = 0; i < this.annotations[varName].length; i++) {
                     this.annotations[varName][i].kill();
@@ -869,14 +861,12 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
         onActionReceive: {
 
             fromToX: function (value) {
-                value = value.get();
                 this.xAxis._doZoomVal(value.from, value.to, true);
                 this.graph.redraw(true);
                 this.graph.drawSeries();
             },
 
             fromToY: function (value) {
-                value = value.get();
                 this.yAxis._doZoomVal(value.from, value.to, true);
                 this.graph.redraw(true);
                 this.graph.drawSeries();
@@ -885,7 +875,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             addSerie: function (value) {
 
                 this.colorId++;
-                value = value.get();
 
                 if (value.name) {
                     this.makeSerie(value, value, value.name);
@@ -898,8 +887,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             },
 
             removeSerie: function (value) {
-
-                value = value.get();
 
                 for (var i = 0, l = this.seriesActions.length; i < l; i++) {
 
@@ -938,10 +925,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 }
             }
 
-        },
-
-        getDom: function () {
-            return this.dom;
         },
 
         normalize: function (array, varname) {

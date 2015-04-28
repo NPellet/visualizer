@@ -65,7 +65,7 @@ var $t$;
 Clazz_declarePackage ("JV");
 c$ = Clazz_declareType (JV, "JmolStateCreator");
 Clazz_declarePackage ("JV");
-Clazz_load (["JV.JmolStateCreator", "java.util.Hashtable"], "JV.StateCreator", ["java.lang.Float", "java.util.Arrays", "$.Date", "javajs.awt.Font", "JU.BS", "$.P3", "$.PT", "$.SB", "J.c.AXES", "$.PAL", "$.STER", "$.STR", "$.VDW", "JM.Atom", "$.AtomCollection", "$.Bond", "$.BondSet", "J.shape.Shape", "JU.BSUtil", "$.C", "$.ColorEncoder", "$.Edge", "$.Escape", "$.Logger", "JV.GlobalSettings", "$.JC", "$.StateManager", "$.Viewer"], function () {
+Clazz_load (["JV.JmolStateCreator", "java.util.Hashtable"], "JV.StateCreator", ["java.lang.Float", "java.util.Arrays", "$.Date", "javajs.awt.Font", "JU.BS", "$.P3", "$.PT", "$.SB", "J.c.PAL", "$.STER", "$.STR", "$.VDW", "JM.Atom", "$.AtomCollection", "$.Bond", "$.BondSet", "JS.T", "J.shape.Shape", "JU.BSUtil", "$.C", "$.ColorEncoder", "$.Edge", "$.Escape", "$.Logger", "JV.GlobalSettings", "$.JC", "$.StateManager", "$.Viewer"], function () {
 c$ = Clazz_decorateAsClass (function () {
 this.vwr = null;
 this.temp = null;
@@ -92,13 +92,14 @@ function (type, width, height) {
 var isAll = (type == null || type.equalsIgnoreCase ("all"));
 var s =  new JU.SB ();
 var sfunc = (isAll ?  new JU.SB ().append ("function _setState() {\n") : null);
-if (isAll) s.append ("# Jmol state version " + JV.Viewer.getJmolVersion () + ";\n");
-if (this.vwr.isApplet () && isAll) {
+if (isAll) {
+s.append ("# Jmol state version " + JV.Viewer.getJmolVersion () + ";\n");
+if (this.vwr.isApplet) {
 this.app (s, "# fullName = " + JU.PT.esc (this.vwr.fullName));
 this.app (s, "# documentBase = " + JU.PT.esc (JV.Viewer.appletDocumentBase));
 this.app (s, "# codeBase = " + JU.PT.esc (JV.Viewer.appletCodeBase));
 s.append ("\n");
-}var global = this.vwr.g;
+}}var global = this.vwr.g;
 if (isAll || type.equalsIgnoreCase ("windowState")) s.append (this.getWindowState (sfunc, width, height));
 if (isAll || type.equalsIgnoreCase ("fileState")) s.append (this.getFileState (sfunc));
 if (isAll || type.equalsIgnoreCase ("definedState")) s.append (this.getDefinedState (sfunc, true));
@@ -153,7 +154,7 @@ var cmd;
 for (var i = 0; i < len; i++) {
 var ss = ms.stateScripts.get (i);
 if (ss.inDefinedStateBlock && (cmd = ss.toString ()).length > 0) {
-commands.append ("  ").append (cmd).append ("\n");
+this.app (commands, cmd);
 haveDefs = true;
 }}
 if (!haveDefs) return "";
@@ -180,7 +181,7 @@ var len = ms.stateScripts.size ();
 for (var i = 0; i < len; i++) {
 var ss = ms.stateScripts.get (i);
 if (!ss.inDefinedStateBlock && (cmd = ss.toString ()).length > 0) {
-commands.append ("  ").append (cmd).append ("\n");
+this.app (commands, cmd);
 }}
 var sb =  new JU.SB ();
 for (var i = 0; i < ms.bondCount; i++) if (!models[bonds[i].atom1.mi].isModelKit) if (bonds[i].isHydrogen () || (bonds[i].order & 131072) != 0) {
@@ -216,7 +217,7 @@ if (needOrientations && models[i].orientation != null && !ms.isTrajectorySubFram
 if (models[i].frameDelay != 0 && !ms.isTrajectorySubFrame (i)) commands.append (fcmd).append ("; frame delay ").appendF (models[i].frameDelay / 1000).append (";\n");
 if (models[i].simpleCage != null) {
 commands.append (fcmd).append ("; unitcell ").append (JU.Escape.eAP (models[i].simpleCage.getUnitCellVectors ())).append (";\n");
-this.getShapeState (commands, isAll, 32);
+this.getShapeState (commands, isAll, 33);
 }}
 var loadUC = false;
 if (ms.unitCells != null) {
@@ -236,8 +237,8 @@ loadUC = true;
 }commands.append (";\n");
 haveModulation = new Boolean (haveModulation | (this.vwr.ms.getLastVibrationVector (i, 1276121113) >= 0)).valueOf ();
 }
-if (loadUC) this.vwr.shm.loadShape (32);
-this.getShapeState (commands, isAll, 32);
+if (loadUC) this.vwr.shm.loadShape (33);
+this.getShapeState (commands, isAll, 33);
 if (haveModulation) {
 var temp =  new java.util.Hashtable ();
 var ivib;
@@ -264,7 +265,7 @@ var i;
 var imax;
 if (iShape == 2147483647) {
 i = 0;
-imax = 36;
+imax = 37;
 } else {
 imax = (i = iShape) + 1;
 }for (; i < imax; ++i) if ((shape = shapes[i]) != null && (isAll || JV.JC.isShapeSecondary (i)) && (cmd = shape.getShapeState ()) != null && cmd.length > 1) commands.append (cmd);
@@ -286,13 +287,12 @@ for (var i = 1; i < 8; i++) if (global.objColors[i] != 0) this.app (str, JV.Stat
 
 if (global.backgroundImageFileName != null) {
 this.app (str, "background IMAGE " + (global.backgroundImageFileName.startsWith (";base64,") ? "" : "/*file*/") + JU.PT.esc (global.backgroundImageFileName));
-}str.append (this.getSpecularState ());
-this.app (str, "statusReporting  = " + global.statusReporting);
+}str.append (this.getLightingState (false));
 if (sfunc != null) str.append ("}\n\n");
 return str.toString ();
 }, "JU.SB,~N,~N");
-Clazz_overrideMethod (c$, "getSpecularState", 
-function () {
+Clazz_overrideMethod (c$, "getLightingState", 
+function (isAll) {
 var str =  new JU.SB ();
 var g = this.vwr.gdata;
 this.app (str, "set ambientPercent " + g.getAmbientPercent ());
@@ -300,15 +300,15 @@ this.app (str, "set diffusePercent " + g.getDiffusePercent ());
 this.app (str, "set specular " + g.getSpecular ());
 this.app (str, "set specularPercent " + g.getSpecularPercent ());
 this.app (str, "set specularPower " + g.getSpecularPower ());
-this.app (str, "set celShading " + g.getCel ());
-this.app (str, "set celShadingPower " + g.getCelPower ());
 var se = g.getSpecularExponent ();
 var pe = g.getPhongExponent ();
-if (Math.pow (2, se) == pe) this.app (str, "set specularExponent " + se);
- else this.app (str, "set phongExponent " + pe);
+this.app (str, (Math.pow (2, se) == pe ? "set specularExponent " + se : "set phongExponent " + pe));
+this.app (str, "set celShading " + g.getCel ());
+this.app (str, "set celShadingPower " + g.getCelPower ());
 this.app (str, "set zShadePower " + this.vwr.g.zShadePower);
+if (isAll) this.getZshadeState (str, this.vwr.tm, true);
 return str.toString ();
-});
+}, "~B");
 Clazz_defineMethod (c$, "getFileState", 
  function (sfunc) {
 var commands =  new JU.SB ();
@@ -381,7 +381,7 @@ return n;
 }, "JU.ColorEncoder,JU.SB");
 Clazz_defineMethod (c$, "getAnimState", 
  function (am, sfunc) {
-var modelCount = this.vwr.getModelCount ();
+var modelCount = this.vwr.ms.mc;
 if (modelCount < 2) return "";
 var commands =  new JU.SB ();
 if (sfunc != null) {
@@ -390,18 +390,16 @@ commands.append ("function _setFrameState() {\n");
 }commands.append ("# frame state;\n");
 commands.append ("# modelCount ").appendI (modelCount).append (";\n# first ").append (this.vwr.getModelNumberDotted (0)).append (";\n# last ").append (this.vwr.getModelNumberDotted (modelCount - 1)).append (";\n");
 if (am.backgroundModelIndex >= 0) this.app (commands, "set backgroundModel " + this.vwr.getModelNumberDotted (am.backgroundModelIndex));
-var bs = this.vwr.getFrameOffsets ();
-if (bs != null) this.app (commands, "frame align " + JU.Escape.eBS (bs));
+if (this.vwr.bsFrameOffsets != null) this.app (commands, "frame align " + JU.Escape.eBS (this.vwr.bsFrameOffsets));
 this.app (commands, "frame RANGE " + am.getModelSpecial (-1) + " " + am.getModelSpecial (1));
 this.app (commands, "animation DIRECTION " + (am.animationDirection == 1 ? "+1" : "-1"));
 this.app (commands, "animation FPS " + am.animationFps);
-this.app (commands, "animation MODE " + am.animationReplayMode.name () + " " + am.firstFrameDelay + " " + am.lastFrameDelay);
+this.app (commands, "animation MODE " + JS.T.nameOf (am.animationReplayMode) + " " + am.firstFrameDelay + " " + am.lastFrameDelay);
 if (am.morphCount > 0) this.app (commands, "animation MORPH " + am.morphCount);
-var frames = am.getAnimationFrames ();
 var showModel = true;
-if (frames != null) {
-this.app (commands, "anim frames " + JU.Escape.eAI (frames));
-var i = am.getCurrentFrameIndex ();
+if (am.animationFrames != null) {
+this.app (commands, "anim frames " + JU.Escape.eAI (am.animationFrames));
+var i = am.caf;
 this.app (commands, "frame " + (i + 1));
 showModel = (am.cmi != am.modelIndexForFrame (i));
 }if (showModel) this.app (commands, "model " + am.getModelSpecial (0));
@@ -431,14 +429,14 @@ value = JU.Escape.e (value);
 }list[n++] = key + " " + value;
 }
 switch (global.axesMode) {
-case J.c.AXES.UNITCELL:
+case 603979808:
 list[n++] = "set axes unitcell";
 break;
-case J.c.AXES.BOUNDBOX:
-list[n++] = "set axes window";
+case 603979804:
+list[n++] = "set axes molecular";
 break;
 default:
-list[n++] = "set axes molecular";
+list[n++] = "set axes window";
 }
 java.util.Arrays.sort (list, 0, n);
 for (var i = 0; i < n; i++) if (list[i] != null) this.app (commands, list[i]);
@@ -485,7 +483,7 @@ this.addBs (commands, "hide ", sm.bsHidden);
 this.addBs (commands, "subset ", sm.bsSubset);
 this.addBs (commands, "delete ", sm.bsDeleted);
 this.addBs (commands, "fix ", sm.bsFixed);
-temp.put ("-", this.vwr.getSelectedAtomsNoSubset ());
+temp.put ("-", this.vwr.slm.getSelectedAtomsNoSubset ());
 cmd = this.getCommands (temp, null, "select");
 if (cmd == null) this.app (commands, "select none");
  else commands.append (cmd);
@@ -501,7 +499,7 @@ var s = "";
 var m = this.vwr.ms;
 if (m.trajectorySteps == null) return "";
 for (var i = m.mc; --i >= 0; ) {
-var t = m.am[i].getSelectedTrajectory ();
+var t = m.am[i].selectedTrajectory;
 if (t >= 0) {
 s = " or " + m.getModelNumberDotted (t) + s;
 i = m.am[i].trajectoryBaseIndex;
@@ -519,7 +517,7 @@ commands.append ("function _setPerspectiveState() {\n");
 }this.app (commands, "set perspectiveModel " + tm.perspectiveModel);
 this.app (commands, "set scaleAngstromsPerInch " + tm.scale3DAngstromsPerInch);
 this.app (commands, "set perspectiveDepth " + tm.perspectiveDepth);
-this.app (commands, "set visualRange " + tm.visualRange);
+this.app (commands, "set visualRange " + tm.visualRangeAngstroms);
 if (!tm.isWindowCentered ()) this.app (commands, "set windowCentered false");
 this.app (commands, "set cameraDepth " + tm.cameraDepth);
 var navigating = (tm.mode == 1);
@@ -532,17 +530,9 @@ if (tm.stereoMode !== J.c.STER.NONE) this.app (commands, "stereo " + (tm.stereoC
 if (!navigating && !tm.zoomEnabled) this.app (commands, "zoom off");
 commands.append ("  slab ").appendI (tm.slabPercentSetting).append (";depth ").appendI (tm.depthPercentSetting).append (tm.slabEnabled && !navigating ? ";slab on" : "").append (";\n");
 commands.append ("  set slabRange ").appendF (tm.slabRange).append (";\n");
-if (tm.zShadeEnabled) commands.append ("  set zShade;\n");
-try {
-if (tm.zSlabPoint != null) commands.append ("  set zSlab ").append (JU.Escape.eP (tm.zSlabPoint)).append (";\n");
-} catch (e) {
-if (Clazz_exceptionOf (e, Exception)) {
-} else {
-throw e;
-}
-}
 if (tm.slabPlane != null) commands.append ("  slab plane ").append (JU.Escape.eP4 (tm.slabPlane)).append (";\n");
 if (tm.depthPlane != null) commands.append ("  depth plane ").append (JU.Escape.eP4 (tm.depthPlane)).append (";\n");
+this.getZshadeState (commands, tm, false);
 commands.append (this.getSpinState (true)).append ("\n");
 if (this.vwr.ms.modelSetHasVibrationVectors () && tm.vibrationOn) this.app (commands, "set vibrationPeriod " + tm.vibrationPeriod + ";vibration on");
 if (navigating) {
@@ -551,6 +541,22 @@ if (tm.depthPlane != null || tm.slabPlane != null) commands.append ("  slab on;\
 }if (sfunc != null) commands.append ("}\n\n");
 return commands.toString ();
 }, "JV.TransformManager,JU.SB");
+Clazz_defineMethod (c$, "getZshadeState", 
+ function (s, tm, isAll) {
+if (isAll) {
+this.app (s, "set zDepth " + tm.zDepthPercentSetting);
+this.app (s, "set zSlab " + tm.zSlabPercentSetting);
+if (!tm.zShadeEnabled) this.app (s, "set zShade false");
+}if (tm.zShadeEnabled) this.app (s, "set zShade true");
+try {
+if (tm.zSlabPoint != null) this.app (s, "set zSlab " + JU.Escape.eP (tm.zSlabPoint));
+} catch (e) {
+if (Clazz_exceptionOf (e, Exception)) {
+} else {
+throw e;
+}
+}
+}, "JU.SB,JV.TransformManager,~B");
 Clazz_overrideMethod (c$, "getSpinState", 
 function (isAll) {
 var tm = this.vwr.tm;
@@ -592,8 +598,7 @@ return setPrev;
 }, "java.util.Map,JU.SB,~S,~S");
 Clazz_defineMethod (c$, "app", 
  function (s, cmd) {
-if (cmd.length == 0) return;
-s.append ("  ").append (cmd).append (";\n");
+if (cmd.length != 0) s.append ("  ").append (cmd).append (";\n");
 }, "JU.SB,~S");
 Clazz_defineMethod (c$, "addBs", 
  function (sb, key, bs) {
@@ -750,7 +755,7 @@ Clazz_defineMethod (c$, "getShapeState",
 function (shape) {
 var s;
 switch (shape.shapeID) {
-case 30:
+case 31:
 var es = shape;
 var sb =  new JU.SB ();
 sb.append ("\n  set echo off;\n");
@@ -765,10 +770,10 @@ var hs = shape;
 s = this.getAtomShapeState (hs) + (hs.colixSelection == 2 ? "" : hs.colixSelection == 0 ? "  color SelectionHalos NONE;\n" : J.shape.Shape.getColorCommandUnk ("selectionHalos", hs.colixSelection, hs.translucentAllowed) + ";\n");
 if (hs.bsHighlight != null) s += "  set highlight " + JU.Escape.eBS (hs.bsHighlight) + "; " + J.shape.Shape.getColorCommandUnk ("highlight", hs.colixHighlight, hs.translucentAllowed) + ";\n";
 break;
-case 34:
+case 35:
 this.clearTemp ();
 var h = shape;
-if (h.atomFormats != null) for (var i = this.vwr.getAtomCount (); --i >= 0; ) if (h.atomFormats[i] != null) JU.BSUtil.setMapBitSet (this.temp, i, i, "set hoverLabel " + JU.PT.esc (h.atomFormats[i]));
+if (h.atomFormats != null) for (var i = this.vwr.ms.ac; --i >= 0; ) if (h.atomFormats[i] != null) JU.BSUtil.setMapBitSet (this.temp, i, i, "set hoverLabel " + JU.PT.esc (h.atomFormats[i]));
 
 s = "\n  hover " + JU.PT.esc ((h.labelFormat == null ? "" : h.labelFormat)) + ";\n" + this.getCommands (this.temp, null, "select");
 this.clearTemp ();
@@ -787,7 +792,7 @@ JU.BSUtil.setMapBitSet (this.temp, i, i, cmd);
 if (l.bsColixSet != null && l.bsColixSet.get (i)) JU.BSUtil.setMapBitSet (this.temp2, i, i, J.shape.Shape.getColorCommand ("label", l.paletteIDs[i], l.colixes[i], l.translucentAllowed));
 if (l.bsBgColixSet != null && l.bsBgColixSet.get (i)) JU.BSUtil.setMapBitSet (this.temp2, i, i, "background label " + J.shape.Shape.encodeColor (l.bgcolixes[i]));
 var text = l.getLabel (i);
-var sppm = (text != null ? text.getScalePixelsPerMicron () : 0);
+var sppm = (text != null ? text.scalePixelsPerMicron : 0);
 if (sppm > 0) JU.BSUtil.setMapBitSet (this.temp2, i, i, "set labelScaleReference " + (10000 / sppm));
 if (l.offsets != null && l.offsets.length > i) {
 var offsetFull = l.offsets[i];
@@ -807,7 +812,7 @@ this.clearTemp ();
 break;
 case 0:
 this.clearTemp ();
-var ac = this.vwr.getAtomCount ();
+var ac = this.vwr.ms.ac;
 var atoms = this.vwr.ms.at;
 var balls = shape;
 var colixes = balls.colixes;
@@ -862,14 +867,13 @@ if (t.script != null) s.append ("  ").append (echoCmd).append (" script ").appen
 if (t.modelIndex >= 0) s.append ("  ").append (echoCmd).append (" model ").append (this.vwr.getModelNumberDotted (t.modelIndex)).append (";\n");
 if (t.pointerPt != null) {
 s.append ("  ").append (echoCmd).append (" point ").append (Clazz_instanceOf (t.pointerPt, JM.Atom) ? "({" + (t.pointerPt).i + "})" : JU.Escape.eP (t.pointerPt)).append (";\n");
-}s.append ("  " + J.shape.Shape.getFontCommand ("echo", t.font));
-if (t.scalePixelsPerMicron > 0) s.append (" " + (10000 / t.scalePixelsPerMicron));
+}t.appendFontCmd (s);
 s.append ("; color echo");
-if (JU.C.isColixTranslucent (t.colix)) s.append (" translucent " + JU.C.getColixTranslucencyFractional (t.colix));
+if (JU.C.isColixTranslucent (t.colix)) s.append (JU.C.getColixTranslucencyLabel (t.colix));
 s.append (" ").append (JU.C.getHexCode (t.colix));
 if (t.bgcolix != 0) {
 s.append ("; color echo background");
-if (JU.C.isColixTranslucent (t.bgcolix)) s.append (" translucent " + JU.C.getColixTranslucencyFractional (t.bgcolix));
+if (JU.C.isColixTranslucent (t.bgcolix)) s.append (JU.C.getColixTranslucencyLabel (t.bgcolix));
 s.append (" ").append (JU.C.getHexCode (t.bgcolix));
 }s.append (";\n");
 return s.toString ();
@@ -1118,7 +1122,7 @@ bs = this.vwr.getModelUndeletedAtomsBitSet (modelIndex);
 sb.append ("zap ");
 sb.append (JU.Escape.eBS (bs)).append (";");
 this.getInlineData (sb, this.vwr.getModelExtract (bs, false, true, "MOL"), true, null);
-sb.append ("set refreshing false;").append (this.vwr.actionManager.getPickingState ()).append (this.vwr.tm.getMoveToText (0, false)).append ("set refreshing true;");
+sb.append ("set refreshing false;").append (this.vwr.acm.getPickingState ()).append (this.vwr.tm.getMoveToText (0, false)).append ("set refreshing true;");
 }if (clearRedo) {
 this.vwr.actionStates.add (0, sb.toString ());
 this.vwr.actionStatesRedo.clear ();

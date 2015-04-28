@@ -81,14 +81,16 @@ function () {
 this.finalizeReaderASCR ();
 if (this.ac > 0 && this.spartanArchive != null && this.asc.bondCount == 0 && this.bondData != null) this.spartanArchive.addBonds (this.bondData, 0);
 if (this.moData != null) {
-var n = this.asc.getAtomSetCollectionAuxiliaryInfo ("HOMO_N");
-if (n != null) this.moData.put ("HOMO", Integer.$valueOf (n.intValue ()));
-}});
+var n = this.asc.atomSetInfo.get ("HOMO_N");
+if (n != null) {
+var i = n.intValue ();
+this.moData.put ("HOMO", Integer.$valueOf (i));
+}}});
 Clazz.defineMethod (c$, "readMyTransform", 
  function () {
 var mat;
 var binaryCodes = this.rd ();
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (binaryCodes.trim ());
+var tokens = JU.PT.getTokens (binaryCodes.trim ());
 if (tokens.length < 16) return;
 var bytes =  Clazz.newByteArray (tokens.length, 0);
 for (var i = 0; i < tokens.length; i++) bytes[i] = JU.PT.parseIntRadix (tokens[i], 16);

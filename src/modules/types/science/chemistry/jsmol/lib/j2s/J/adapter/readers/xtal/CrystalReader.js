@@ -221,7 +221,7 @@ while (this.rd ().indexOf ("GAMMA") < 0) if (this.line.indexOf ("VOLUME=") >= 0)
 this.primitiveVolume = this.parseFloatStr (this.line.substring (43));
 this.primitiveDensity = this.parseFloatStr (this.line.substring (66));
 }
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+var tokens = JU.PT.getTokens (this.rd ());
 if (this.isSlab) {
 if (this.isPrimitive) this.setUnitCell (this.parseFloatStr (tokens[0]) * f, this.parseFloatStr (tokens[1]) * f, -1, this.parseFloatStr (tokens[3]), this.parseFloatStr (tokens[4]), this.parseFloatStr (tokens[5]));
  else this.setUnitCell (this.parseFloatStr (tokens[0]) * f, this.parseFloatStr (tokens[1]) * f, -1, 90, 90, this.parseFloatStr (tokens[2]));
@@ -328,7 +328,7 @@ if (this.vCoords == null) return;
 this.ac = this.vCoords.size ();
 for (var i = 0; i < this.ac; i++) {
 var atom = this.asc.addNewAtom ();
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.vCoords.get (i));
+var tokens = JU.PT.getTokens (this.vCoords.get (i));
 atom.atomSerial = this.parseIntStr (tokens[0]);
 var atomicNumber;
 var offset;
@@ -365,7 +365,7 @@ this.setEnergy ();
 Clazz.defineMethod (c$, "setEnergy", 
  function () {
 this.asc.setAtomSetEnergy ("" + this.energy, this.energy.floatValue ());
-this.asc.setAtomSetAuxiliaryInfo ("Energy", this.energy);
+this.asc.setCurrentModelInfo ("Energy", this.energy);
 this.asc.setInfo ("Energy", this.energy);
 this.asc.setAtomSetName ("Energy = " + this.energy + " Hartree");
 });
@@ -389,7 +389,7 @@ Clazz.defineMethod (c$, "readTotalAtomicCharges",
 var data =  new JU.SB ();
 while (this.rd () != null && this.line.indexOf ("T") < 0) data.append (this.line);
 
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (data.toString ());
+var tokens = JU.PT.getTokens (data.toString ());
 var charges =  Clazz.newFloatArray (tokens.length, 0);
 if (this.nuclearCharges == null) this.nuclearCharges = charges;
 if (this.asc.ac == 0) return true;
@@ -417,7 +417,7 @@ while (this.rd () != null && this.line.indexOf ("(") >= 0) Sfrag += this.line;
 
 Sfrag = JU.PT.rep (Sfrag, "(", " ");
 Sfrag = JU.PT.rep (Sfrag, ")", " ");
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (Sfrag);
+var tokens = JU.PT.getTokens (Sfrag);
 for (var i = 0, pos = 0; i < numAtomsFrag; i++, pos += 3) this.atomFrag[i] = this.getAtomIndexFromPrimitiveIndex (this.parseIntStr (tokens[pos]) - 1);
 
 java.util.Arrays.sort (this.atomFrag);
@@ -446,7 +446,7 @@ this.discardLinesUntilContains (this.isLongMode ? "LO MODES FOR IRREP" : this.is
 this.rd ();
 var lastAtomCount = -1;
 while (this.rd () != null && this.line.startsWith (" FREQ(CM**-1)")) {
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line.substring (15));
+var tokens = JU.PT.getTokens (this.line.substring (15));
 var frequencies =  Clazz.newFloatArray (tokens.length, 0);
 var frequencyCount = frequencies.length;
 for (var i = 0; i < frequencyCount; i++) {
@@ -506,7 +506,7 @@ var data = "";
 while (this.rd () != null && (this.line.length < 4 || JU.PT.isDigit (this.line.charAt (3)))) data += this.line;
 
 data = JU.PT.rep (data, "-", " -");
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (data);
+var tokens = JU.PT.getTokens (data);
 for (var i = 0, pt = nfields - 1; i < this.ac; i++, pt += nfields) {
 var iConv = this.getAtomIndexFromPrimitiveIndex (i);
 if (iConv >= 0) f[iConv] = this.parseFloatStr (tokens[pt]);
@@ -521,7 +521,7 @@ var atoms = this.asc.atoms;
 while (this.rd () != null && this.line.startsWith (" *** ATOM")) {
 var tokens = this.getTokens ();
 var index = this.parseIntStr (tokens[3]) - 1;
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.readLines (3));
+tokens = JU.PT.getTokens (this.readLines (3));
 var vectors =  new Array (3);
 for (var i = 0; i < 3; i++) {
 vectors[i] = JU.V3.newV (this.directLatticeVectors[i]);
@@ -539,12 +539,12 @@ this.createAtomsFromCoordLines ();
 this.rd ();
 var atoms = this.asc.atoms;
 while (this.rd ().startsWith (" ATOM")) {
-var index = this.parseIntStr (this.line.substring (5)) - 1;
+var index = this.parseIntAt (this.line, 5) - 1;
 var atom = atoms[index];
 this.readLines (2);
 var a =  Clazz.newDoubleArray (3, 3, 0);
 for (var i = 0; i < 3; i++) {
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+var tokens = JU.PT.getTokens (this.rd ());
 for (var j = 0; j < 3; j++) a[i][j] = this.parseFloatStr (tokens[j + 1]);
 
 }

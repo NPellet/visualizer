@@ -68,7 +68,7 @@ if (!this.isFirst && this.am.currentIsLast () && !this.am.setAnimationNext ()) {
 mode = -2;
 break;
 }this.isFirst = false;
-this.targetTime += Clazz.floatToInt ((1000 / this.am.animationFps) + this.vwr.getFrameDelayMs (this.am.cmi));
+this.targetTime += Clazz.floatToInt ((1000 / this.am.animationFps) + this.vwr.ms.getFrameDelayMs (this.am.cmi));
 mode = 3;
 break;
 case 3:

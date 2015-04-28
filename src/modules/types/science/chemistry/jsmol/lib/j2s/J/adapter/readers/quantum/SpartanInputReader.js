@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.BasisFunctionReader"], "J.adapter.readers.quantum.SpartanInputReader", ["J.adapter.smarter.Bond", "JU.Logger"], function () {
+Clazz.load (["J.adapter.readers.quantum.BasisFunctionReader"], "J.adapter.readers.quantum.SpartanInputReader", ["JU.PT", "J.adapter.smarter.Bond", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.modelName = null;
 this.modelAtomCount = 0;
@@ -36,14 +36,14 @@ while (this.rd () != null && this.line.indexOf ("END") < 0) this.constraints += 
 
 this.rd ();
 if (this.constraints.length == 0) return;
-this.asc.setAtomSetAuxiliaryInfo ("constraints", this.constraints);
+this.asc.setCurrentModelInfo ("constraints", this.constraints);
 this.asc.setAtomSetModelProperty (".PATH", "EnergyProfile");
 this.asc.setAtomSetModelProperty ("Constraint", this.constraints);
 });
 Clazz.defineMethod (c$, "readTransform", 
  function () {
 this.rd ();
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd () + " " + this.rd ());
+var tokens = JU.PT.getTokens (this.rd () + " " + this.rd ());
 this.setTransform (this.parseFloatStr (tokens[0]), this.parseFloatStr (tokens[1]), this.parseFloatStr (tokens[2]), this.parseFloatStr (tokens[4]), this.parseFloatStr (tokens[5]), this.parseFloatStr (tokens[6]), this.parseFloatStr (tokens[8]), this.parseFloatStr (tokens[9]), this.parseFloatStr (tokens[10]));
 });
 Clazz.defineMethod (c$, "readInputHeader", 

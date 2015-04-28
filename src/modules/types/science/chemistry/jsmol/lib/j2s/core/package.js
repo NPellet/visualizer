@@ -149,6 +149,7 @@ if (!window["java.registered"])
 
 
 	ClazzLoader.jarClasspath (base + "coresurface.z.js",	[
+		"JS.IsoExt",
 		"J.api.VolumeDataInterface",
 		"J.jvxl.api.VertexDataServer",
 		"$.MeshDataServer",

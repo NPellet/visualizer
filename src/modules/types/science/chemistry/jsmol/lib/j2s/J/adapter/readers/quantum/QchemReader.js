@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.MOReader", "$.BasisFunctionReader"], "J.adapter.readers.quantum.QchemReader", ["java.lang.Float", "java.util.Hashtable", "JU.AU", "$.Lst", "$.PT", "J.api.JmolAdapter", "JU.Logger"], function () {
+Clazz.load (["J.adapter.readers.quantum.MOReader", "$.BasisFunctionReader"], "J.adapter.readers.quantum.QchemReader", ["java.lang.Float", "java.util.Hashtable", "JU.AU", "$.Lst", "$.PT", "J.api.JmolAdapter", "J.quantum.QS", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.calculationNumber = 1;
 this.alphas = null;
@@ -119,16 +119,16 @@ if (this.rd () != null && this.line.startsWith ("$end")) break;
 continue;
 }shellCount++;
 var slater =  Clazz.newIntArray (4, 0);
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line);
+tokens = this.getTokens ();
 slater[0] = ac;
-slater[1] = J.api.JmolAdapter.getQuantumShellTagID (tokens[0]);
+slater[1] = J.adapter.readers.quantum.BasisFunctionReader.getQuantumShellTagID (tokens[0]);
 slater[2] = gaussianCount;
 var nGaussians = this.parseIntStr (tokens[1]);
 slater[3] = nGaussians;
 this.shells.addLast (slater);
 gaussianCount += nGaussians;
 for (var i = 0; i < nGaussians; i++) {
-gdata.addLast (J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ()));
+gdata.addLast (JU.PT.getTokens (this.rd ()));
 }
 }
 this.gaussians = JU.AU.newFloat2 (gaussianCount);
@@ -142,7 +142,7 @@ if (JU.Logger.debugging) {
 JU.Logger.debug (shellCount + " slater shells read");
 JU.Logger.debug (gaussianCount + " gaussian primitives read");
 }this.discardLinesUntilStartsWith (" There are");
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line);
+tokens = this.getTokens ();
 this.nBasis = this.parseIntStr (tokens[5]);
 });
 Clazz.defineMethod (c$, "readESym", 
@@ -153,7 +153,7 @@ var moInfos;
 var ne = 0;
 var readBetas = false;
 this.discardLinesUntilStartsWith (" Alpha");
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line);
+var tokens = this.getTokens ();
 moInfos = this.alphas;
 for (var e = 0; e < 2; e++) {
 var nMO = 0;
@@ -166,13 +166,13 @@ if (this.line.indexOf ("Occupied") > 0) ne = 1;
 }if (this.line.startsWith (" -------")) {
 e = 2;
 break;
-}var nOrbs = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line).length;
+}var nOrbs = this.getTokens ().length;
 if (nOrbs == 0 || this.line.startsWith (" Warning")) {
 this.discardLinesUntilStartsWith (" Beta");
 readBetas = true;
 moInfos = this.betas;
 break;
-}if (haveSym) tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+}if (haveSym) tokens = JU.PT.getTokens (this.rd ());
 for (var i = 0, j = 0; i < nOrbs; i++, j += 2) {
 var info = Clazz.innerTypeInstance (J.adapter.readers.quantum.QchemReader.MOInfo, this, null);
 info.ne = ne;
@@ -186,7 +186,7 @@ if (!readBetas) this.betas = this.alphas;
 }, "~B");
 Clazz.defineMethod (c$, "readQchemMolecularOrbitals", 
  function () {
-var orbitalType = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line)[0];
+var orbitalType = this.getTokens ()[0];
 this.alphaBeta = (orbitalType.equals ("RESTRICTTED") ? "" : "A");
 this.readMOs (orbitalType.equals ("RESTRICTED"), this.alphas);
 if (orbitalType.equals ("ALPHA")) {
@@ -195,14 +195,14 @@ this.alphaBeta = "B";
 this.readMOs (false, this.betas);
 }var isOK = true;
 if (this.dList.length > 0) {
-if (this.dSpherical) isOK = this.getDFMap (this.dList, J.api.JmolAdapter.SHELL_D_SPHERICAL, J.adapter.readers.quantum.QchemReader.$DS_LIST, 2);
- else isOK = this.getDFMap (this.dList, J.api.JmolAdapter.SHELL_D_CARTESIAN, J.adapter.readers.quantum.QchemReader.$DC_LIST, 3);
+if (this.dSpherical) isOK = this.getDFMap (this.dList, 3, J.adapter.readers.quantum.QchemReader.$DS_LIST, 2);
+ else isOK = this.getDFMap (this.dList, 4, J.adapter.readers.quantum.QchemReader.$DC_LIST, 3);
 if (!isOK) {
 JU.Logger.error ("atomic orbital order is unrecognized -- skipping reading of MOs. dList=" + this.dList);
 this.shells = null;
 }}if (this.fList.length > 0) {
-if (this.fSpherical) isOK = this.getDFMap (this.fList, J.api.JmolAdapter.SHELL_F_SPHERICAL, J.adapter.readers.quantum.QchemReader.$FS_LIST, 2);
- else isOK = this.getDFMap (this.fList, J.api.JmolAdapter.SHELL_F_CARTESIAN, J.adapter.readers.quantum.QchemReader.$FC_LIST, 3);
+if (this.fSpherical) isOK = this.getDFMap (this.fList, 5, J.adapter.readers.quantum.QchemReader.$FS_LIST, 2);
+ else isOK = this.getDFMap (this.fList, 6, J.adapter.readers.quantum.QchemReader.$FC_LIST, 3);
 if (!isOK) {
 JU.Logger.error ("atomic orbital order is unrecognized -- skipping reading of MOs. fList=" + this.fList);
 this.shells = null;
@@ -218,23 +218,23 @@ var tokens;
 var energy;
 var nMOs = 0;
 while (this.rd ().length > 2) {
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line);
+tokens = this.getTokens ();
 var nMO = tokens.length;
-energy = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ().substring (13));
+energy = JU.PT.getTokens (this.rd ().substring (13));
 for (var i = 0; i < nMO; i++) {
 moid[i] = this.parseIntStr (tokens[i]) - 1;
 mocoef[i] =  Clazz.newFloatArray (this.nBasis, 0);
 mos[i] =  new java.util.Hashtable ();
 }
 for (var i = 0, pt = 0; i < this.nBasis; i++) {
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+tokens = JU.PT.getTokens (this.rd ());
 var s = this.line.substring (12, 17).trim ();
 var ch = s.charAt (0);
 switch (ch) {
 case 'd':
 s = s.substring (s.length - 3).toUpperCase ();
 if (s.startsWith ("D ")) {
-if (!this.dFixed) this.fixSlaterTypes (J.api.JmolAdapter.SHELL_D_CARTESIAN, J.api.JmolAdapter.SHELL_D_SPHERICAL);
+if (!this.dFixed) this.fixSlaterTypes (4, 3);
 s = "D" + s.charAt (2);
 this.dSpherical = true;
 }if (this.dList.indexOf (s) < 0) this.dList += s + " ";
@@ -243,14 +243,14 @@ break;
 case 'f':
 s = s.substring (s.length - 3).toUpperCase ();
 if (s.startsWith ("F ")) {
-if (!this.fFixed) this.fixSlaterTypes (J.api.JmolAdapter.SHELL_F_CARTESIAN, J.api.JmolAdapter.SHELL_F_SPHERICAL);
+if (!this.fFixed) this.fixSlaterTypes (6, 5);
 s = "F" + s.charAt (2);
 this.fSpherical = true;
 }if (this.fList.indexOf (s) < 0) this.fList += s + " ";
 this.fFixed = true;
 break;
 default:
-if (!this.isQuantumBasisSupported (ch)) continue;
+if (!J.quantum.QS.isQuantumBasisSupported (ch)) continue;
 break;
 }
 for (var j = tokens.length - nMO, k = 0; k < nMO; j++, k++) mocoef[k][pt] = this.parseFloatStr (tokens[j]);

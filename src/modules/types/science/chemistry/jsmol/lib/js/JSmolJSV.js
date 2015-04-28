@@ -138,6 +138,14 @@
 		Jmol._Applet._createApplet(this, Info, params);
 	}
 
+	proto._cover = function (doCover) {
+		// TODO: cover options here, including Java
+		if (!this._isJava)
+			this._newCanvas(false);
+		this._showInfo(false);
+		this._init();
+	};
+
 	proto._readyCallback = function(id, fullid, isReady, applet) {
 	 if (!isReady)
 			return; // ignore -- page is closing

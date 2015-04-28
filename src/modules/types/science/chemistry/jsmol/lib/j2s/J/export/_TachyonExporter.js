@@ -17,14 +17,14 @@ Clazz.superConstructor (this, J["export"]._TachyonExporter, []);
 this.commentChar = "# ";
 });
 Clazz.overrideMethod (c$, "initializeOutput", 
-function (vwr, privateKey, g3d, params) {
+function (vwr, privateKey, gdata, params) {
 this.getLightingInfo ();
-return this.initOutput (vwr, privateKey, g3d, params);
+return this.initOutput (vwr, privateKey, gdata, params);
 }, "JV.Viewer,~N,JU.GData,java.util.Map");
 Clazz.defineMethod (c$, "getLightingInfo", 
  function () {
-this.lighting = " AMBIENT " + J["export"].___Exporter.round (this.g3d.getAmbientPercent () / 100) + " DIFFUSE " + J["export"].___Exporter.round (this.g3d.getDiffusePercent () / 100) + " SPECULAR " + J["export"].___Exporter.round (this.g3d.getSpecularPercent () / 100);
-this.phong = " Phong Plastic 0.5 Phong_size " + this.g3d.getSpecularExponent ();
+this.lighting = " AMBIENT " + J["export"].___Exporter.round (this.gdata.getAmbientPercent () / 100) + " DIFFUSE " + J["export"].___Exporter.round (this.gdata.getDiffusePercent () / 100) + " SPECULAR " + J["export"].___Exporter.round (this.gdata.getSpecularPercent () / 100);
+this.phong = " Phong Plastic 0.5 Phong_size " + this.gdata.getSpecularExponent ();
 });
 Clazz.overrideMethod (c$, "outputHeader", 
 function () {
@@ -224,5 +224,5 @@ this.output (" V0 " + this.triad (ptA));
 this.output (" V1 " + this.triad (ptB));
 this.output (" V2 " + this.triad (ptC));
 this.outputTextureCode ();
-}, "JU.P3,JU.P3,JU.P3,~N");
+}, "JU.T3,JU.T3,JU.T3,~N");
 });

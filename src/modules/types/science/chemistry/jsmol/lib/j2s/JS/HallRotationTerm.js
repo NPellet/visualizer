@@ -85,11 +85,8 @@ this.translation.rotationShift12ths += t.rotationShift12ths;
 this.translation.vectorShift12ths.add (t.vectorShift12ths);
 }}
 this.primitiveCode = (this.isImproper ? "-" : "") + this.primitiveCode + this.translationString;
-if (this.isImproper) {
-this.seitzMatrix12ths.setM4 (this.rotation.seitzMatrixInv);
-} else {
-this.seitzMatrix12ths.setM4 (this.rotation.seitzMatrix);
-}this.seitzMatrix12ths.m03 = this.translation.vectorShift12ths.x;
+this.seitzMatrix12ths.setM4 (this.isImproper ? this.rotation.seitzMatrixInv : this.rotation.seitzMatrix);
+this.seitzMatrix12ths.m03 = this.translation.vectorShift12ths.x;
 this.seitzMatrix12ths.m13 = this.translation.vectorShift12ths.y;
 this.seitzMatrix12ths.m23 = this.translation.vectorShift12ths.z;
 switch (this.axisType) {

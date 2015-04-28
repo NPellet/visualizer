@@ -82,6 +82,6 @@ return (this.x == t2.x && this.y == t2.y && this.z == t2.z);
 }, "~O");
 Clazz.overrideMethod (c$, "toString", 
 function () {
-return "(" + this.x + ", " + this.y + ", " + this.z + ")";
+return "{" + this.x + ", " + this.y + ", " + this.z + "}";
 });
 });

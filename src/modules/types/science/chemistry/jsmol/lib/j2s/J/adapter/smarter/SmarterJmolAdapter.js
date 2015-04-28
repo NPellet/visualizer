@@ -41,7 +41,7 @@ JU.Logger.error ("" + e);
 return "" + e;
 }
 }, "~S,~S,~O,java.util.Map");
-Clazz.defineMethod (c$, "getAtomSetCollectionFromReader", 
+Clazz.overrideMethod (c$, "getAtomSetCollectionFromReader", 
 function (fname, reader, htParams) {
 var ret = J.adapter.smarter.Resolver.getAtomCollectionReader (fname, null, reader, htParams, -1);
 if (Clazz.instanceOf (ret, J.adapter.smarter.AtomSetCollectionReader)) {
@@ -207,7 +207,7 @@ return (asc).collectionName;
 }, "~O");
 Clazz.overrideMethod (c$, "getAtomSetCollectionAuxiliaryInfo", 
 function (asc) {
-return (asc).ascAuxiliaryInfo;
+return (asc).atomSetInfo;
 }, "~O");
 Clazz.overrideMethod (c$, "getAtomSetCount", 
 function (asc) {

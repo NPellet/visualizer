@@ -66,7 +66,7 @@ var bioShape = this.bioShapes[iShape];
 var atomIndices = bioShape.bioPolymer.getLeadAtomIndices ();
 for (var i = bioShape.monomerCount; --i >= 0; ) {
 var atom = this.ms.at[atomIndices[i]];
-if (atom.getNBackbonesDisplayed () > 0 && !this.ms.isAtomHidden (i)) atom.setClickable (this.vf);
+if (atom.nBackbonesDisplayed > 0 && !this.ms.isAtomHidden (i)) atom.setClickable (this.vf);
 }
 }
 });

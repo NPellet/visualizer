@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.xml");
-Clazz.load (["J.adapter.readers.xml.XmlReader"], "J.adapter.readers.xml.XmlOdysseyReader", ["java.lang.Float", "JU.P3", "J.adapter.smarter.Atom"], function () {
+Clazz.load (["J.adapter.readers.xml.XmlReader"], "J.adapter.readers.xml.XmlOdysseyReader", ["java.lang.Float", "JU.P3", "$.PT", "J.adapter.smarter.Atom"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.modelName = null;
 this.formula = null;
@@ -29,7 +29,7 @@ if (this.atts.containsKey ("label")) this.atom.atomName = this.atts.get ("label"
  else this.atom.atomName = this.atts.get ("id");
 if (this.atts.containsKey ("xyz")) {
 var xyz = this.atts.get ("xyz");
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (xyz);
+var tokens = JU.PT.getTokens (xyz);
 this.atom.set (this.parseFloatStr (tokens[0]), this.parseFloatStr (tokens[1]), this.parseFloatStr (tokens[2]));
 }if (this.atts.containsKey ("element")) {
 this.atom.elementSymbol = this.atts.get ("element");
@@ -42,7 +42,7 @@ if (this.atts.containsKey ("order")) order = this.parseBondToken (this.atts.get 
 this.asc.addNewBondFromNames (atom1, atom2, order);
 return;
 }if ("boundary".equals (localName)) {
-var boxDim = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.atts.get ("box"));
+var boxDim = JU.PT.getTokens (this.atts.get ("box"));
 var x = this.parseFloatStr (boxDim[0]);
 var y = this.parseFloatStr (boxDim[1]);
 var z = this.parseFloatStr (boxDim[2]);
@@ -53,7 +53,7 @@ this.parent.setUnitCellItem (3, 90);
 this.parent.setUnitCellItem (4, 90);
 this.parent.setUnitCellItem (5, 90);
 var pt = JU.P3.new3 (-x / 2, -y / 2, -z / 2);
-this.asc.setAtomSetAuxiliaryInfo ("periodicOriginXyz", pt);
+this.asc.setCurrentModelInfo ("periodicOriginXyz", pt);
 var atoms = this.asc.atoms;
 for (var i = this.asc.ac; --i >= 0; ) {
 atoms[i].sub (pt);
@@ -67,7 +67,7 @@ return;
 }if ("odyssey_simulation".equals (localName)) {
 if (this.modelName != null && this.phase != null) this.modelName += " - " + this.phase;
 if (this.modelName != null) this.asc.setAtomSetName (this.modelName);
-if (this.formula != null) this.asc.setAtomSetAuxiliaryInfo ("formula", this.formula);
+if (this.formula != null) this.asc.setCurrentModelInfo ("formula", this.formula);
 }if ("title".equals (localName) || "formula".equals (localName) || "phase".equals (localName)) this.keepChars = true;
 }, "~S");
 Clazz.defineMethod (c$, "parseBondToken", 

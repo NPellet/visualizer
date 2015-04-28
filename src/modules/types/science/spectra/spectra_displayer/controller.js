@@ -31,7 +31,7 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
             type: 'array'
         },
         shapeInfos: {
-            label: 'Shape infos',
+            label: 'Shape data',
             type: 'object'
         },
         fromToX: {
@@ -71,17 +71,13 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
             type: ['array'],
             label: 'Annotation file'
         },
-        fromTo: {
-            type: 'fromTo',
-            label: 'From - To data'
-        },
         series_xy1d: {
             type: 'array',
             label: 'List of series in 1D format ( [ x, y, x, y, ... ] )'
         },
         selectedShape: {
             type: 'object',
-            label: 'Selected shape'
+            label: 'Shape data'
         }
     };
 
@@ -126,13 +122,22 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
         onShapeSelect: {
             label: 'When a shape is selected',
             refAction: ['selectedShape']
+        },
+        onShapeUnselect: {
+            label: 'When a shape is unselected',
+            refAction: ['shapeInfos']
+        },
+        onShapeClick: {
+            label: 'When a shape is clicked',
+            refVariable: ['shapeInfos']
         }
     };
 
-    Controller.prototype.variablesIn = ['chart', 'xArray', 'xyArray', 'jcamp', 'annotations', 'fromTo', 'series_xy1d'];
+    Controller.prototype.variablesIn = ['chart', 'xArray', 'xyArray', 'jcamp', 'annotations', 'series_xy1d'];
 
     Controller.prototype.actionsIn = {
-        fromTo: 'From-To',
+        fromToX: 'From - To X',
+        fromToY: 'From - To Y',
         addSerie: 'Add a serie',
         removeSerie: 'Remove a serie',
         removeSerieByName: 'Remove serie (name as input)',
@@ -388,6 +393,25 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
                             'default': '1'
                         },
 
+                        strokestyle: {
+                            type: 'combo',
+                            title: 'Stroke style',
+                            options: [
+                                {key: '1', title: '1'},
+                                {key: '2', title: '2'},
+                                {key: '3', title: '3'},
+                                {key: '4', title: '4'},
+                                {key: '5', title: '5'},
+                                {key: '6', title: '6'},
+                                {key: '7', title: '7'},
+                                {key: '8', title: '8'},
+                                {key: '9', title: '9'},
+                                {key: '10', title: '10'},
+                                {key: '11', title: '11'}
+                            ],
+                            'default': '1'
+                        },
+
                         plotcontinuous: {
                             type: 'combo',
                             title: 'Continuous',
@@ -523,14 +547,14 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
                 to: max
             }
         };
-        this.sendAction('fromTo' + axis, obj, 'onZoomChange');
+        this.sendActionFromEvent('onZoomChange', 'fromTo' + axis, obj);
         this.createDataFromEvent('onZoomChange', 'fromTo' + axis, obj);
         this.sendBoundaries();
     };
 
     Controller.prototype.sendBoundaries = _.throttle(function () {
         var boundaries = this.module.model.getBoundaries();
-        this.sendAction('fromToXY', boundaries, 'onZoomChange');
+        this.sendActionFromEvent('onZoomChange', 'fromToXY', boundaries);
         this.createDataFromEvent('onZoomChange', 'fromToXY', boundaries);
     }, 1, {leading: false});
 
@@ -545,9 +569,9 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
         this.createDataFromEvent('onClickMarker', 'markerInfos', infos);
         this.createDataFromEvent('onClickMarker', 'markerXY', xy);
         if (toggledOn) {
-            this.sendAction('markerInfos', infos, 'onSelectMarker');
+            this.sendActionFromEvent('onSelectMarker', 'markerInfos', infos);
         } else {
-            this.sendAction('markerInfos', infos, 'onUnselectMarker');
+            this.sendActionFromEvent('onUnselectMarker', 'markerInfos', infos);
         }
     };
 

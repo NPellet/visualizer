@@ -1,9 +1,9 @@
 'use strict';
 
-define(['modules/default/defaultview','src/util/datatraversing',
+define(['modules/default/defaultview', 'src/main/datas', 'src/util/datatraversing',
   'src/util/api','src/util/util',
   'lodash', 'threejs', 'src/util/debug', 'chroma', 'components/ml/dist/ml.min',
-  'lib/threejs/TrackballControls'], function(Default, Traversing, API, Util, _, THREE, Debug, chroma, ml) {
+  'lib/threejs/TrackballControls'], function(Default, Data, Traversing, API, Util, _, THREE, Debug, chroma, ml) {
 
 
   var Stat = ml.Stat;
@@ -112,7 +112,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
   var ZOOM_START = 3;
   var DEFAULT_BACKGROUND_COLOR = '#eeeeee';
   var DEFAULT_PROJECTION_COLOR = '#888888';
-  var DEFAULT_POINT_COLOR = '#FFFFFF';
+  var DEFAULT_POINT_COLOR = '#000000';
   var DEFAULT_POINT_RADIUS = 0.03;
   var DEFAULT_POINT_GEOMETRY = "sphere";
   var DEFAULT_POINT_APPEARANCE = "none";
@@ -723,12 +723,27 @@ define(['modules/default/defaultview','src/util/datatraversing',
       self._data.nbTicks[axis] = Math.round((self._data.realMax[axis] - self._data.realMin[axis])/self._data.intervalVal[axis]+1);
       self._data.intervalPx[axis] = NORM_CONSTANT / (self._data.nbTicks[axis]-1);
       self._data.decimals[axis] = decimals;
+
       var intdec = Math.floor(Math.log(unitPerTickCorrect) / Math.log(10));
       if(Math.abs(intdec) <= 1) {
         self._data.intervalFactor[axis] = 1;
       }
       else {
         self._data.intervalFactor[axis] = Math.pow(10, intdec);
+      }
+
+      // Special case where the axis has only one distinct value (interval = 0)
+      if(!_.isFinite(self._data.intervalPx[axis])) {
+        self._data.nbTicks[axis] = 3;
+        self._data.intervalPx[axis] = NORM_CONSTANT/2;
+        var num = self._data[axis][0];
+        self._data.decimals[axis] = self._data[axis][0] === 0 ? 0 :  Math.floor(Math.log(Math.abs(num)) / Math.log(10));
+        self._data.intervalFactor[axis] = Math.pow(10, self._data.decimals[axis]);
+        var diff = self._data.intervalFactor[axis];
+        self._data.realMin[axis] = Math.ceil((num-diff)/diff)*diff;
+        self._data.realMax[axis] = Math.floor((num+diff)/diff)*diff;
+        self._data.realLen[axis] = self._data.realMax[axis] - self._data.realMin[axis];
+        self._data.intervalVal[axis] = (self._data.realLen[axis]) / 2;
       }
     },
 
@@ -1075,20 +1090,22 @@ define(['modules/default/defaultview','src/util/datatraversing',
       var ytitle = (ykey && self._meta.axis && self._meta.axis[ykey]) ? self._meta.axis[ykey].name : 'Y';
       var ztitle = (zkey && self._meta.axis && self._meta.axis[zkey]) ? self._meta.axis[zkey].name : 'Z';
 
+      var $legendTitles = $('#legend_titles');
+
       switch(mode) {
         case 'axis':
           drawOnAxis(xtitle, ytitle, ztitle);
-          $('#legend_titles').hide();
+          $legendTitles.hide();
           break;
         case 'alegend':
           drawOnAxis('X', 'Y', 'Z');
           drawLegend(xtitle, ytitle, ztitle);
-          $('#legend_titles').show();
+          $legendTitles.show();
           break;
         case 'both':
           drawOnAxis(xtitle, ytitle, ztitle);
           drawLegend(xtitle, ytitle, ztitle);
-          $('#legend_titles').show();
+          $legendTitles.show();
           break;
         default:
           return;
@@ -1545,12 +1562,13 @@ define(['modules/default/defaultview','src/util/datatraversing',
 
         // Convert series
         this._convertChartToData(moduleValue.get());
+        this._completeChartData();
         this._computeMinMax();
         this._computeTickInfo();
         this._computeInBoundaryIndexes();
         this._normalizeData();
         this._setGridOrigin();
-        this._updateChartData();
+
 
         if(!this._firstLoad) this._activateHighlights();
 
@@ -1571,12 +1589,13 @@ define(['modules/default/defaultview','src/util/datatraversing',
 
         // Convert data
         this._convertData3dToData(moduleValue);
+        this._completeChartData();
         this._computeMinMax();
         this._computeTickInfo();
         this._computeInBoundaryIndexes();
         this._normalizeData();
         this._setGridOrigin();
-        this._updateChartData();
+
         if(!this._firstLoad) this._activateHighlights();
 
 
@@ -1638,7 +1657,7 @@ define(['modules/default/defaultview','src/util/datatraversing',
       self._data.shape = [];
       self._data._highlight = [];
 
-      var jp = _.cloneDeep(jpaths);
+      var jp = _.cloneDeep(Data.resurrect(jpaths));
       _.each(jp, function(v) {
         v.unshift(0);
       });
@@ -1650,7 +1669,12 @@ define(['modules/default/defaultview','src/util/datatraversing',
 
       function getFromJpath(value, jp, fallback) {
         var val = value.getChildSync(jp);
-        if(!val) return fallback;
+        if(val === undefined) {
+          if(fallback === DEFAULT_POINT_COLOR) {
+            debugger;
+          }
+          return fallback;
+        }
         return validate(val.get());
       }
       for (var i = 0; i < value.length; i++) {
@@ -1714,29 +1738,20 @@ define(['modules/default/defaultview','src/util/datatraversing',
       });
 
       self._dispFilter = self._dispFilter || [];
-
-      // generate random x,y z
-      var n = 1000;
-      self._data.x =       generateRandomArray(n,0,5);
-      self._data.y =       generateRandomArray(n,0,5);
-      self._data.z =       generateRandomArray(n,0,5);
-      self._data.size =    generateRandomArray(n, 0.01, 0.02);
-      self._data.color =  generateRandomColors(n);
-      self._data._highlight = generateRandomFromArray(['A','B','C','D'], n);
     },
 
-    _completeDataInfo: function(name, defaultValue) {
+    _completeData: function(name, defaultValue) {
       var self = this;
       self._data[name] = self._data[name] || [];
       for(var i=0; i<self._data.x.length; i++) {
-        if(!self._data[name][i]) self._data[name][i] = defaultValue;
+        if(self._data[name][i] === undefined) self._data[name][i] = defaultValue;
       }
     },
 
-    _updateChartData: function() {
-      this._completeDataInfo('size', DEFAULT_POINT_RADIUS);
-      this._completeDataInfo('color', DEFAULT_POINT_COLOR);
-      this._completeDataInfo('shape', DEFAULT_POINT_SHAPE);
+    _completeChartData: function() {
+      this._completeData('size', DEFAULT_POINT_RADIUS);
+      this._completeData('color', DEFAULT_POINT_COLOR);
+      this._completeData('shape', DEFAULT_POINT_SHAPE);
     },
 
     _activateHighlights: function() {

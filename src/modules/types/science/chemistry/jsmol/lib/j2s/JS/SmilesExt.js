@@ -24,7 +24,7 @@ ptsB =  new JU.Lst ();
 }var m =  new JU.M4 ();
 var c =  new JU.P3 ();
 var atoms = this.e.vwr.ms.at;
-var ac = this.e.vwr.getAtomCount ();
+var ac = this.e.vwr.ms.ac;
 var maps = this.sm.getCorrelationMaps (smiles, atoms, ac, bsA, isSmarts, true);
 if (maps == null) this.e.evalError (this.sm.getLastException (), null);
 if (maps.length == 0) return NaN;
@@ -94,7 +94,7 @@ var b;
 if (bsMatch3D == null) {
 asAtoms = (smiles == null);
 try {
-if (asAtoms) b = this.sm.getSubstructureSetArray (pattern, this.e.vwr.ms.at, this.e.vwr.getAtomCount (), bsSelected, null, isSmarts, false);
+if (asAtoms) b = this.sm.getSubstructureSetArray (pattern, this.e.vwr.ms.at, this.e.vwr.ms.ac, bsSelected, null, isSmarts, false);
  else b = this.sm.find (pattern, smiles, isSmarts, false);
 } catch (ex) {
 if (Clazz.exceptionOf (ex, Exception)) {
@@ -135,8 +135,8 @@ function (bs1, bs2, smiles1, isSmarts) {
 var mapSet = JU.AU.newInt2 (2);
 this.getSmilesCorrelation (bs1, bs2, smiles1, null, null, null, null, isSmarts, false, mapSet, null, false, false);
 if (mapSet[0] == null) return null;
-var bondMap1 = this.e.vwr.getDihedralMap (mapSet[0]);
-var bondMap2 = (bondMap1 == null ? null : this.e.vwr.getDihedralMap (mapSet[1]));
+var bondMap1 = this.e.vwr.ms.getDihedralMap (mapSet[0]);
+var bondMap2 = (bondMap1 == null ? null : this.e.vwr.ms.getDihedralMap (mapSet[1]));
 if (bondMap2 == null || bondMap2.length != bondMap1.length) return null;
 var angles =  Clazz.newFloatArray (bondMap1.length, 3, 0);
 var atoms = this.e.vwr.ms.at;

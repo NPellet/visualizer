@@ -10,7 +10,7 @@ this.repaintPending = false;
 Clazz.instantialize (this, arguments);
 }, J.render, "RepaintManager", null, J.api.JmolRepaintManager);
 Clazz.prepareFields (c$, function () {
-this.bsTranslucent = JU.BS.newN (36);
+this.bsTranslucent = JU.BS.newN (37);
 });
 Clazz.makeConstructor (c$, 
 function () {
@@ -54,7 +54,7 @@ return true;
 Clazz.defineMethod (c$, "repaintNow", 
  function (why) {
 if (!this.vwr.haveDisplay) return;
-this.vwr.apiPlatform.repaint (this.vwr.getDisplay ());
+this.vwr.apiPlatform.repaint (this.vwr.display);
 }, "~S");
 Clazz.overrideMethod (c$, "repaintDone", 
 function () {
@@ -65,7 +65,7 @@ Clazz.overrideMethod (c$, "clear",
 function (iShape) {
 if (this.renderers == null) return;
 if (iShape >= 0) this.renderers[iShape] = null;
- else for (var i = 0; i < 36; ++i) this.renderers[i] = null;
+ else for (var i = 0; i < 37; ++i) this.renderers[i] = null;
 
 }, "~N");
 Clazz.defineMethod (c$, "getRenderer", 
@@ -78,20 +78,20 @@ renderer.setViewerG3dShapeID (this.vwr, shapeID);
 return this.renderers[shapeID] = renderer;
 }, "~N");
 Clazz.overrideMethod (c$, "render", 
-function (gdata, modelSet, isFirstPass, minMax) {
-if (this.renderers == null) this.renderers =  new Array (36);
+function (gdata, modelSet, isFirstPass, navMinMax) {
+var g3d = gdata;
+if (this.renderers == null) this.renderers =  new Array (37);
 this.getAllRenderers ();
 try {
 var logTime = this.vwr.getBoolean (603979934);
-var g3d = gdata;
 g3d.renderBackground (null);
 if (isFirstPass) {
 this.bsTranslucent.clearAll ();
-if (minMax != null) g3d.renderCrossHairs (minMax, this.vwr.getScreenWidth (), this.vwr.getScreenHeight (), this.vwr.tm.getNavigationOffset (), this.vwr.tm.getNavigationDepthPercent ());
+if (navMinMax != null) g3d.renderCrossHairs (navMinMax, this.vwr.getScreenWidth (), this.vwr.getScreenHeight (), this.vwr.tm.getNavigationOffset (), this.vwr.tm.navigationDepthPercent);
 var band = this.vwr.getRubberBandSelection ();
 if (band != null && g3d.setC (this.vwr.cm.colixRubberband)) g3d.drawRect (band.x, band.y, 0, 0, band.width, band.height);
 }var msg = null;
-for (var i = 0; i < 36 && g3d.currentlyRendering (); ++i) {
+for (var i = 0; i < 37 && gdata.currentlyRendering; ++i) {
 var shape = this.shapeManager.getShape (i);
 if (shape == null) continue;
 if (logTime) {
@@ -114,7 +114,7 @@ throw e;
 Clazz.defineMethod (c$, "getAllRenderers", 
  function () {
 var isOK = true;
-for (var i = 0; i < 36; ++i) {
+for (var i = 0; i < 37; ++i) {
 if (this.shapeManager.getShape (i) == null || this.getRenderer (i) != null) continue;
 isOK = this.repaintPending = !this.vwr.async;
 }
@@ -130,13 +130,13 @@ isOK = (exporter3D != null);
 if (!isOK) {
 JU.Logger.error ("Cannot export " + params.get ("type"));
 return null;
-}if (this.renderers == null) this.renderers =  new Array (36);
+}if (this.renderers == null) this.renderers =  new Array (37);
 this.getAllRenderers ();
 var msg = null;
 try {
 var logTime = this.vwr.getBoolean (603979934);
 exporter3D.renderBackground (exporter3D);
-for (var i = 0; i < 36; ++i) {
+for (var i = 0; i < 37; ++i) {
 var shape = this.shapeManager.getShape (i);
 if (shape == null) continue;
 if (logTime) {

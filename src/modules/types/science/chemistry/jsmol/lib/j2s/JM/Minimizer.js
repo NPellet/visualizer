@@ -243,7 +243,7 @@ var i1;
 var i2;
 for (var i = 0; i < this.rawBondCount; i++) {
 var bond = this.bonds[i];
-if (!this.bsAtoms.get (i1 = bond.getAtomIndex1 ()) || !this.bsAtoms.get (i2 = bond.getAtomIndex2 ())) continue;
+if (!this.bsAtoms.get (i1 = bond.atom1.i) || !this.bsAtoms.get (i2 = bond.atom2.i)) continue;
 if (i2 < i1) {
 var ii = i1;
 i1 = i2;

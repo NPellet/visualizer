@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.GamessReader"], "J.adapter.readers.quantum.GamessUKReader", ["java.lang.Float", "JU.Lst", "J.adapter.smarter.AtomSetCollectionReader"], function () {
+Clazz.load (["J.adapter.readers.quantum.GamessReader"], "J.adapter.readers.quantum.GamessUKReader", ["java.lang.Float", "JU.Lst", "$.PT", "J.adapter.smarter.AtomSetCollectionReader"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.symmetries = null;
 this.occupancies = null;
@@ -60,7 +60,7 @@ this.readLines (4);
 this.symmetries =  new JU.Lst ();
 this.occupancies =  new JU.Lst ();
 while (this.rd () != null && this.line.indexOf ("====") < 0) {
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line.substring (20));
+var tokens = JU.PT.getTokens (this.line.substring (20));
 this.symmetries.addLast (tokens[0] + " " + tokens[1]);
 this.occupancies.addLast (Float.$valueOf (this.parseFloatStr (tokens[5])));
 }

@@ -27,7 +27,7 @@ var ipt = null;
 var spt = null;
 var pymolMap =  Clazz.newIntArray (3, 0);
 var bsOK =  new JU.BS ();
-while (this.readLine () != null) {
+while (this.rd () != null) {
 if (this.line.length < 2 || this.line.charAt (1) != ' ') {
 if (this.params.readAllData && this.line.startsWith ("usemtl")) color = JU.CU.getArgbFromString ("[x" + this.line.substring (8) + "]");
 continue;

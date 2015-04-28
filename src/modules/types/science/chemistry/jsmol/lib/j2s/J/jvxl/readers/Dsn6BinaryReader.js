@@ -23,7 +23,7 @@ this.binarydoc = this.newBinaryDocument ();
 var o2 = sg.getReaderData ();
 var fileName = o2[0];
 var data = o2[1];
-if (data == null) this.binarydoc.setStream ((sg.getAtomDataServer ()).getJzt (), sg.getAtomDataServer ().getBufferedInputStream (fileName), true);
+if (data == null) this.binarydoc.setStream ((sg.atomDataServer).getJzt (), sg.atomDataServer.getBufferedInputStream (fileName), true);
  else this.binarydoc.setStreamData ( new java.io.DataInputStream (JU.Rdr.getBIS (data.getBytes ())), true);
 if (this.params.thePlane == null) this.params.insideOut = !this.params.insideOut;
 this.nSurfaces = 1;
@@ -34,7 +34,7 @@ var header =  Clazz.newShortArray (19, 0);
 for (var i = 0; i < 19; i++) header[i] = this.binarydoc.readShort ();
 
 if (header[18] != 100) {
-this.binarydoc.setStream ((this.sg.getAtomDataServer ()).getJzt (), null, false);
+this.binarydoc.setStream ((this.sg.atomDataServer).getJzt (), null, false);
 for (var i = 0; i < 19; i++) header[i] = this.binarydoc.swapBytesS (header[i]);
 
 }this.nxyzStart[0] = header[0];

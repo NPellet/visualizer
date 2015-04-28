@@ -1,11 +1,15 @@
 'use strict';
 
-define(['modules/types/client_interaction/code_editor/controller', 'src/util/api', 'src/util/debug'], function (CodeEditor, API, Debug) {
+define(['modules/types/client_interaction/code_editor/controller', 'src/util/api', 'src/util/debug', 'src/util/sandbox', 'src/util/util'], function (CodeEditor, API, Debug, Sandbox, Util) {
 
     function Controller() {
+        CodeEditor.call(this);
+        this.currentScript = null;
+        this.outputObject = {};
+        this.reloaded = true;
     }
 
-    Controller.prototype = Object.create(CodeEditor.prototype);
+    Util.inherits(Controller, CodeEditor);
 
     Controller.prototype.moduleInformation = {
         name: 'Code executor',
@@ -107,41 +111,174 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
     };
 
     Controller.prototype.onButtonClick = function (name) {
-        var executor = this.getExecutor();
-        executor.setButton(name);
-        executor.execute();
+        this.initExecutor().then(function (executor) {
+            executor.setButton(name);
+            executor.execute();
+        });
     };
 
     Controller.prototype.onVariableIn = function () {
-        var executor = this.getExecutor();
-        executor.setVariable();
-        executor.execute();
+        this.initExecutor().then(function (executor) {
+            executor.setVariable();
+            executor.execute();
+        });
     };
 
     Controller.prototype.onActionIn = function (name, value) {
-        var executor = this.getExecutor();
-        executor.setAction(name, value);
-        executor.execute();
-    };
-
-    Controller.prototype.getExecutor = function () {
-        return new ScriptExecutor(this);
+        this.initExecutor().then(function (executor) {
+            executor.setAction(name, value);
+            executor.execute();
+        });
     };
 
     Controller.prototype.initImpl = function () {
         var neededLibs = this.module.getConfiguration('libs');
-        this.require = {
-            start: 'require' + getRequireStart(neededLibs),
-            end: '\n});'
-        };
+        var urls = [];
+        var aliases = [];
+        if (neededLibs) {
+            for (var i = 0; i < neededLibs.length; i++) {
+                var neededLib = neededLibs[i];
+                if (neededLib.lib) {
+                    urls.push(neededLib.lib);
+                    aliases.push(neededLib.alias || 'required_anonymous_' + i);
+                }
+            }
+        }
+
+        urls.unshift('src/util/api');
+        aliases.unshift('API');
+
+        this.neededUrls = urls;
+        this.neededAliases = aliases.join(', ');
         this.resolveReady();
+        this.reloaded = true;
     };
 
-    function ScriptExecutor(controller) {
+    Controller.prototype.initExecutor = function () {
+        var promise;
+        var newScript = this.module.view._code;
+        if (!this.reloaded && this.currentScript == newScript) {
+            promise = Promise.resolve(this._executor || this._loadingExecutor);
+        } else {
+            var self = this;
+            this.reloaded = false;
+            var prom = new Promise(function (resolve, reject) {
+                require(self.neededUrls, function () {
+                    var libs = new Array(self.neededUrls.length);
+                    for (var i = 0; i < self.neededUrls.length; i++) {
+                        libs[i] = arguments[i];
+                    }
+                    if (self._executor) { // close previous sandbox
+                        self._executor._sandbox.close();
+                    }
+                    var executor = new ScriptExecutor(self, libs);
+                    self.currentScript = newScript;
+                    self._executor = executor;
+                    self._loadingExecutor = null;
+                    resolve(executor);
+                });
+            });
+            this._loadingExecutor = prom;
+            promise = prom;
+        }
+        return promise.then(function (executor) {
+            executor.init();
+            return executor;
+        });
+    };
+
+    function ScriptExecutor(controller, libs) {
         this.controller = controller;
-        this.context = new ScriptExecutorContext(this);
-        this.outputVariable = {};
+        this.libs = libs;
+        var context = getNewContext(this);
+        var theCode = this.controller.module.view._code;
+        this._sandbox = new Sandbox();
+        this._sandbox.setContext(context);
+        this._sandbox.run(
+            'var __exec__ = function(' +
+            controller.neededAliases +
+            ') {' + theCode + '\n};'
+        );
+        this.wasSet = false;
+        this.theFunction = this._sandbox.getContext().__exec__;
     }
+
+    function getNewContext(executor) {
+        var setter = function (name, value) {
+            executor.wasSet = true;
+            executor.doVariable(name, value);
+        };
+        var clear = function () {
+            executor.wasSet = true;
+            executor.controller.outputObject = {};
+        };
+        var unset = function (name) {
+            executor.wasSet = true;
+            delete executor.controller.outputObject[name];
+        };
+        var done = function () {
+            executor.done();
+        };
+        var setAsync = function () {
+            executor.async();
+        };
+        var sendAction = function (name, value) {
+            API.doAction(name, value);
+        };
+        var context = {
+            variables: {},
+            event: null,
+            button: null,
+            action: null,
+            defined: 0,
+            'set': setter,
+            'get': function (name) {
+                return this.variables[name];
+            },
+            sendAction: sendAction,
+            setAsync: setAsync,
+            done: done,
+            clear: clear,
+            unset: unset
+        };
+
+        var ctx = {
+            getVariables: function () {
+                return context.variables;
+            },
+            getEvent: function () {
+                return context.event;
+            },
+            getButton: function () {
+                return context.button;
+            },
+            getAction: function () {
+                return context.action;
+            },
+            getDefined: function () {
+                return context.defined;
+            },
+            'set': setter,
+            'get': function (name) {
+                return context.variables[name];
+            },
+            sendAction: sendAction,
+            setAsync: setAsync,
+            done: done,
+            clear: clear,
+            unset: unset
+        };
+        executor.context = context;
+        return ctx;
+    }
+
+    ScriptExecutor.prototype.init = function () {
+        this.context.event = null;
+        this.context.button = null;
+        this.context.action = null;
+        this.context.variables = {};
+        this.context.defined = 0;
+    };
 
     ScriptExecutor.prototype.setButton = function (name) {
         this.context.event = 'button';
@@ -161,14 +298,8 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
     };
 
     ScriptExecutor.prototype.doVariable = function (name, value) {
-        this.outputVariable[name] = value;
+        this.controller.outputObject[name] = value;
     };
-
-    var methods = ['getVariables', 'getEvent', 'getButton', 'get', 'getDefined', 'set', 'getAction', 'sendAction', 'setAsync', 'done'];
-    var strMethods = methods.join(',');
-    var mappedMethods = methods.map(function (val) {
-        return '__c__.' + val + '.bind(__c__)';
-    }).join(',');
 
     ScriptExecutor.prototype.execute = function () {
 
@@ -184,27 +315,30 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         this.context.variables = ctxVariables;
         this.context.defined = varNum;
 
+        this.wasSet = false;
+
+        this._async = false;
         this._done = Promise.resolve();
 
-        var strToEval =
-            this.controller.require.start +
-            'try {\n' +
-            '(function (' + strMethods + ', Debug) {\n' +
-            this.controller.module.view._code +
-            '\n}).call(__c__,' + mappedMethods + ');\n' +
-            '} catch(e) {Debug.error("Code executor error", e)}\n' +
-            '__e__.setOutput();\n' +
-            this.controller.require.end;
+        try {
+            this.theFunction.apply(this.context, this.libs);
+        } catch (e) {
+            if (e && e.stack) {
+                e = e.stack;
+            }
+            Debug.error('Code executor error', e);
+        }
 
-        evaluate(strToEval, this.context, this);
+        this.setOutput();
 
     };
 
     ScriptExecutor.prototype.setOutput = function () {
         var self = this;
         this._done.then(function () {
-            self.controller.lastData = self.outputVariable;
-            self.controller.createDataFromEvent('onScriptEnded', 'outputValue', self.outputVariable);
+            if (self.wasSet) {
+                self.controller.createDataFromEvent('onScriptEnded', 'outputValue', self.controller.outputObject);
+            }
         }, function (e) {
             Debug.error('Code executor error', e);
         });
@@ -228,66 +362,6 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
     ScriptExecutor.prototype.done = function () {
     };
 
-    function ScriptExecutorContext(executor) {
-        this.__executor__ = executor;
-    }
-
-
-    ScriptExecutorContext.prototype = {
-        getVariables: function () {
-            return this.variables;
-        },
-        getEvent: function () {
-            return this.event;
-        },
-        getButton: function () {
-            return this.button;
-        },
-        'get': function (name) {
-            return this.variables[name];
-        },
-        getDefined: function () {
-            return this.defined;
-        },
-        'set': function (name, value) {
-            this.__executor__.doVariable(name, value);
-        },
-        getAction: function () {
-            return this.action;
-        },
-        sendAction: function (name, value) {
-            API.doAction(name, value);
-        },
-        setAsync: function () {
-            this.__executor__.async();
-        },
-        done: function () {
-            this.__executor__.done();
-        }
-    };
-
-    function getRequireStart(neededLibs) {
-        var required = '( [ "src/util/api"';
-        var callback = 'function( API';
-
-        if (neededLibs) {
-            for (var i = 0; i < neededLibs.length; i++) {
-                var neededLib = neededLibs[i];
-                if (neededLib.lib) {
-                    required += ', "' + neededLib.lib + '"';
-                    callback += ', ' + (neededLib.alias || 'required_anonymous_' + i);
-                }
-            }
-        }
-
-        return required + ' ], ' + callback + ' ){\n';
-    }
-
-    function evaluate(__s__, __c__, __e__,
-                      Controller, getRequireStart, ScriptExecutorContext, ScriptExecutor, CodeEditor, methods, strMethods, mappedMethods // redefine module variables to prevent modification
-    ) {
-        eval(__s__);
-    }
-
     return Controller;
+
 });

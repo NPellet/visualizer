@@ -208,7 +208,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing
                     newVal[columns[j].name] = theVal ? theVal.valueOf() : theVal;
                 }
                 if (colorJpath) {
-                    newVal.__color = colorJpath(val);
+                    newVal.__color = colorJpath(val) || '#000000';
                 }
                 newVal.__id = i;
             }

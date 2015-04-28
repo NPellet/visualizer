@@ -38,7 +38,7 @@ this.ptTemp =  new JU.P3 ();
 Clazz.defineMethod (c$, "initShape", 
 function () {
 Clazz.superCall (this, J.shape.Labels, "initShape", []);
-this.defaultFontId = this.zeroFontId = this.gdata.getFont3DFSS ("SansSerif", "Plain", 13).fid;
+this.defaultFontId = this.zeroFontId = this.vwr.gdata.getFont3DFSS ("SansSerif", "Plain", 13).fid;
 this.defaultColix = 0;
 this.defaultBgcolix = 0;
 this.defaultOffset = J.shape.Labels.zeroOffset;
@@ -68,7 +68,7 @@ for (var i = bsSelected.nextSetBit (0); i >= 0 && i < this.ac; i = bsSelected.ne
 if (this.strings.length <= i) continue;
 this.text = this.getLabel (i);
 if (this.text == null) {
-this.text = JM.Text.newLabel (this.gdata, null, this.strings[i], 0, 0, 0, scalePixelsPerMicron, null);
+this.text = JM.Text.newLabel (this.vwr, null, this.strings[i], 0, 0, 0, scalePixelsPerMicron, null);
 this.putLabel (i, this.text);
 } else {
 this.text.setScalePixelsPerMicron (scalePixelsPerMicron);
@@ -128,7 +128,7 @@ var fontsize = (value).intValue ();
 if (fontsize < 0) {
 this.fids = null;
 return;
-}var fid = this.gdata.getFontFid (fontsize);
+}var fid = this.vwr.gdata.getFontFid (fontsize);
 if (!this.setDefaults) for (var i = bsSelected.nextSetBit (0); i >= 0 && i < this.ac; i = bsSelected.nextSetBit (i + 1)) this.setFont (i, fid);
 
 if (this.setDefaults || !this.defaultsOnlyForNone) this.defaultFontId = fid;
@@ -237,11 +237,12 @@ Clazz.defineMethod (c$, "setPymolOffset",
  function (i, value) {
 var text = this.getLabel (i);
 if (text == null) {
+if (this.strings == null || this.strings.length <= i || this.strings[i] == null) return;
 var fid = (this.bsFontSet != null && this.bsFontSet.get (i) ? this.fids[i] : -1);
 if (fid < 0) this.setFont (i, fid = this.defaultFontId);
 var font = javajs.awt.Font.getFont3D (fid);
 var colix = this.getColix2 (i, this.atoms[i], false);
-text = JM.Text.newLabel (this.gdata, font, this.strings[i], colix, this.getColix2 (i, this.atoms[i], true), 0, this.scalePixelsPerMicron, value);
+text = JM.Text.newLabel (this.vwr, font, this.strings[i], colix, this.getColix2 (i, this.atoms[i], true), 0, this.scalePixelsPerMicron, value);
 this.setTextLabel (i, text);
 } else {
 text.pymolOffset = value;
@@ -273,7 +274,7 @@ var label = (tokens == null ? null : JM.LabelToken.formatLabelAtomArray (this.vw
 this.addString (atom, i, label, strLabel);
 this.text = this.getLabel (i);
 if (this.isScaled) {
-this.text = JM.Text.newLabel (this.gdata, null, label, 0, 0, 0, this.scalePixelsPerMicron, null);
+this.text = JM.Text.newLabel (this.vwr, null, label, 0, 0, 0, this.scalePixelsPerMicron, null);
 this.putLabel (i, this.text);
 } else if (this.text != null && label != null) {
 this.text.setText (label);
@@ -323,7 +324,7 @@ return this.labelBoxes.get (Integer.$valueOf (i));
 Clazz.defineMethod (c$, "setLabelColix", 
  function (i, colix, pid) {
 this.setColixAndPalette (colix, pid, i);
-if (this.colixes != null && ((this.text = this.getLabel (i)) != null)) this.text.setColix (this.colixes[i]);
+if (this.colixes != null && ((this.text = this.getLabel (i)) != null)) this.text.colix = this.colixes[i];
 }, "~N,~N,~N");
 Clazz.defineMethod (c$, "setBgcolix", 
  function (i, bgcolix) {
@@ -333,7 +334,7 @@ this.bgcolixes = JU.AU.ensureLengthShort (this.bgcolixes, i + 1);
 }this.bgcolixes[i] = bgcolix;
 this.bsBgColixSet.setBitTo (i, bgcolix != 0);
 this.text = this.getLabel (i);
-if (this.text != null) this.text.setBgColix (bgcolix);
+if (this.text != null) this.text.bgcolix = bgcolix;
 }, "~N,~N");
 Clazz.defineMethod (c$, "setOffsets", 
  function (i, offset, isExact) {
@@ -365,7 +366,7 @@ if (pointer == 0) return;
 this.offsets = JU.AU.ensureLengthI (this.offsets, i + 1);
 }this.offsets[i] = (this.offsets[i] & -4) + pointer;
 this.text = this.getLabel (i);
-if (this.text != null) this.text.setPointer (pointer);
+if (this.text != null) this.text.pointer = pointer;
 }, "~N,~N");
 Clazz.defineMethod (c$, "setFront", 
  function (i, TF) {

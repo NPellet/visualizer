@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.xml");
-Clazz.load (["J.adapter.readers.xml.XmlReader"], "J.adapter.readers.xml.XmlQEReader", ["JU.Logger"], function () {
+Clazz.load (["J.adapter.readers.xml.XmlReader"], "J.adapter.readers.xml.XmlQEReader", ["JU.PT", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.a = 0;
 this.b = 0;
@@ -31,7 +31,7 @@ if ("NUMBER_OF_ATOMS".equalsIgnoreCase (localName) || "CELL_DIMENSIONS".equalsIg
 this.keepChars = true;
 return;
 }if (localName.startsWith ("ATOM.")) {
-this.parent.setAtomCoordScaled (null, J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.atts.get ("TAU")), 0, 0.5291772).elementSymbol = this.atts.get ("SPECIES").trim ();
+this.parent.setAtomCoordScaled (null, JU.PT.getTokens (this.atts.get ("TAU")), 0, 0.5291772).elementSymbol = this.atts.get ("SPECIES").trim ();
 }if ("structure".equals (localName)) {
 if (!this.parent.doGetModel (++this.parent.modelNumber, null)) {
 this.parent.checkLastModel ();

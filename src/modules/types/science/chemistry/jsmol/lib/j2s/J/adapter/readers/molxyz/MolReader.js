@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.molxyz");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.molxyz.MolReader", ["java.lang.Exception", "$.Float", "J.adapter.smarter.Atom", "J.api.JmolAdapter", "JU.Logger"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.molxyz.MolReader", ["java.lang.Exception", "$.Float", "JU.PT", "J.adapter.smarter.Atom", "J.api.JmolAdapter", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.is2D = false;
 this.haveAtomSerials = false;
@@ -133,7 +133,7 @@ if (this.line.toUpperCase ().contains ("_PARTIAL_CHARGES")) {
 try {
 var atoms = this.asc.atoms;
 for (var i = this.parseIntStr (this.rd ()); --i >= 0; ) {
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+var tokens = JU.PT.getTokens (this.rd ());
 var atomIndex = this.parseIntStr (tokens[0]) + this.iatom0 - 1;
 var partialCharge = this.parseFloatStr (tokens[1]);
 if (!Float.isNaN (partialCharge)) atoms[atomIndex].partialCharge = partialCharge;

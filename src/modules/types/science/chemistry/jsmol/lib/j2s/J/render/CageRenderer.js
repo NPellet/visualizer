@@ -20,7 +20,7 @@ function (mad, vertices, axisPoints, firstLine, allowedEdges0, allowedEdges1, sc
 this.g3d.setC (this.colix);
 var fls = this.shape;
 this.imageFontScaling = this.vwr.getImageFontScaling ();
-this.font3d = this.g3d.getFont3DScaled (fls.font3d, this.imageFontScaling);
+this.font3d = this.vwr.gdata.getFont3DScaled (fls.font3d, this.imageFontScaling);
 var zSum = 0;
 for (var i = 8; --i >= 0; ) {
 this.pt.setT (vertices[i]);

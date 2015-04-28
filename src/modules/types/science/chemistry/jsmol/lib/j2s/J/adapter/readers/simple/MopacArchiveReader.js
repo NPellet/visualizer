@@ -1,9 +1,9 @@
 Clazz.declarePackage ("J.adapter.readers.simple");
-Clazz.load (["J.adapter.readers.simple.ZMatrixReader"], "J.adapter.readers.simple.MopacArchiveReader", ["java.lang.Float", "JU.P3", "J.adapter.smarter.Atom", "J.api.JmolAdapter"], function () {
+Clazz.load (["J.adapter.readers.simple.InputReader"], "J.adapter.readers.simple.MopacArchiveReader", ["java.lang.Float", "JU.P3", "J.adapter.smarter.Atom", "J.api.JmolAdapter"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.energyWithUnits = null;
 Clazz.instantialize (this, arguments);
-}, J.adapter.readers.simple, "MopacArchiveReader", J.adapter.readers.simple.ZMatrixReader);
+}, J.adapter.readers.simple, "MopacArchiveReader", J.adapter.readers.simple.InputReader);
 Clazz.overrideMethod (c$, "initializeReader", 
 function () {
 this.asc.newAtomSet ();
@@ -20,7 +20,7 @@ Clazz.defineMethod (c$, "getMyValue",
 if (this.line.substring (0, 10).trim ().length != 0) return true;
 var key = this.line.substring (0, 34).trim ().$replace (' ', '_');
 var value = this.line.substring (35).trim ();
-this.asc.setAtomSetAuxiliaryInfo (key, value);
+this.asc.setCurrentModelInfo (key, value);
 if (this.line.indexOf ("TOTAL ENERGY") >= 0) {
 var tokens = this.getTokens ();
 this.energyWithUnits = " (" + tokens[3] + " " + tokens[4] + ")";

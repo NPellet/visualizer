@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JV");
-Clazz.load (["java.util.Hashtable"], ["JV.Connections", "$.Connection", "$.StateManager", "$.Scene"], ["java.util.Arrays", "JU.BS", "$.SB", "JM.Orientation", "JU.BSUtil", "JV.GlobalSettings"], function () {
+Clazz.load (["java.util.Hashtable"], ["JV.Connections", "$.Connection", "$.StateManager", "$.Scene"], ["java.util.Arrays", "JU.BS", "$.SB", "JM.Orientation", "JU.BSUtil"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.vwr = null;
 this.saved = null;
@@ -47,10 +47,6 @@ Clazz.makeConstructor (c$,
 function (vwr) {
 this.vwr = vwr;
 }, "JV.Viewer");
-Clazz.defineMethod (c$, "getGlobalSettings", 
-function (gsOld, clearUserVariables) {
-return  new JV.GlobalSettings (this.vwr, gsOld, clearUserVariables);
-}, "JV.GlobalSettings,~B");
 Clazz.defineMethod (c$, "clear", 
 function (global) {
 this.vwr.setShowAxes (false);
@@ -58,9 +54,25 @@ this.vwr.setShowBbcage (false);
 this.vwr.setShowUnitCell (false);
 global.clear ();
 }, "JV.GlobalSettings");
+Clazz.defineMethod (c$, "resetLighting", 
+function () {
+this.vwr.setIntProperty ("ambientPercent", 45);
+this.vwr.setIntProperty ("celShadingPower", 10);
+this.vwr.setIntProperty ("diffusePercent", 84);
+this.vwr.setIntProperty ("phongExponent", 64);
+this.vwr.setIntProperty ("specularExponent", 6);
+this.vwr.setIntProperty ("specularPercent", 22);
+this.vwr.setIntProperty ("specularPower", 40);
+this.vwr.setIntProperty ("zDepth", 0);
+this.vwr.setIntProperty ("zShadePower", 3);
+this.vwr.setIntProperty ("zSlab", 50);
+this.vwr.setBooleanProperty ("specular", true);
+this.vwr.setBooleanProperty ("celShading", false);
+this.vwr.setBooleanProperty ("zshade", false);
+});
 Clazz.defineMethod (c$, "setCrystallographicDefaults", 
 function () {
-this.vwr.setAxesModeUnitCell (true);
+this.vwr.setAxesMode (603979808);
 this.vwr.setShowAxes (true);
 this.vwr.setShowUnitCell (true);
 this.vwr.setBooleanProperty ("perspectiveDepth", false);
@@ -311,7 +323,7 @@ this.connections =  new Array (this.bondCount + 1);
 var bonds = modelSet.bo;
 for (var i = this.bondCount; --i >= 0; ) {
 var b = bonds[i];
-this.connections[i] =  new JV.Connection (b.getAtomIndex1 (), b.getAtomIndex2 (), b.mad, b.colix, b.order, b.getEnergy (), b.getShapeVisibilityFlags ());
+this.connections[i] =  new JV.Connection (b.atom1.i, b.atom2.i, b.mad, b.colix, b.order, b.getEnergy (), b.shapeVisibilityFlags);
 }
 }, "JV.Viewer");
 Clazz.defineMethod (c$, "restore", 
@@ -321,13 +333,13 @@ if (modelSet == null) return false;
 modelSet.deleteAllBonds ();
 for (var i = this.bondCount; --i >= 0; ) {
 var c = this.connections[i];
-var ac = modelSet.getAtomCount ();
+var ac = modelSet.ac;
 if (c.atomIndex1 >= ac || c.atomIndex2 >= ac) continue;
 var b = modelSet.bondAtoms (modelSet.at[c.atomIndex1], modelSet.at[c.atomIndex2], c.order, c.mad, null, c.energy, false, true);
-b.setColix (c.colix);
-b.setShapeVisibilityFlags (c.shapeVisibilityFlags);
+b.colix = c.colix;
+b.shapeVisibilityFlags = c.shapeVisibilityFlags;
 }
-for (var i = this.bondCount; --i >= 0; ) modelSet.getBondAt (i).setIndex (i);
+for (var i = this.bondCount; --i >= 0; ) modelSet.bo[i].index = i;
 
 this.vwr.setShapeProperty (1, "reportAll", null);
 return true;

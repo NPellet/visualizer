@@ -36,8 +36,8 @@ define(['modules/default/defaultcontroller'], function(Default) {
 
     Controller.prototype.move = function( x ) {
 
-		this.createDataFromEvent('onMove', 'xcoords', x );
-        this.sendAction('xcoords', x, 'onMove');
+		this.createDataFromEvent('onMove', 'xcoords', x);
+        this.sendActionFromEvent('onMove', 'xcoords', x);
     }
 
 

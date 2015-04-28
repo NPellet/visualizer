@@ -1,12 +1,9 @@
 'use strict';
 
-define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'src/util/util'], function (VersionHandler, Debug, Variables, Util) {
+define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'version'], function (VersionHandler, Debug, Variables, Version) {
 
-    var version = '2.13.1-b1';
-
-    if (!Util.semver(version)) {
-        throw new Error('Version number is invalid: ' + version);
-    }
+    var version = Version.version;
+    var originalVersion = 'none';
 
     var dataHandler = new VersionHandler(),
         viewHandler = new VersionHandler(),
@@ -91,6 +88,9 @@ define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'src/
     }
 
     function updateView(newView) {
+        if(newView && newView.version) {
+            originalVersion = newView.version;
+        }
         var i;
         for (i in view) {
             delete view[i];
@@ -98,6 +98,7 @@ define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'src/
         for (i in newView) {
             view[i] = DataObject.recursiveTransform(newView[i]);
         }
+        Variables.eraseAll();
     }
 
     function updateData(newData) {
@@ -119,6 +120,10 @@ define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'src/
 
         get version() {
             return String(version);
+        },
+
+        get originalVersion() {
+            return String(originalVersion);
         },
 
         setView: setView,

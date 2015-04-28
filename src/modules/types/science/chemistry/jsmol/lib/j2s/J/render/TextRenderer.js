@@ -2,11 +2,11 @@ Clazz.declarePackage ("J.render");
 Clazz.load (null, "J.render.TextRenderer", ["java.lang.Float", "JM.Text"], function () {
 c$ = Clazz.declareType (J.render, "TextRenderer");
 c$.render = Clazz.defineMethod (c$, "render", 
-function (text, vwr, g3d, scalePixelsPerMicron, imageFontScaling, isExact, boxXY, temp) {
+function (text, g3d, scalePixelsPerMicron, imageFontScaling, isExact, boxXY, temp) {
 if (text == null || text.image == null && !text.doFormatText && text.lines == null) return;
 var showText = g3d.setC (text.colix);
 if (!showText && (text.image == null && (text.bgcolix == 0 || !g3d.setC (text.bgcolix)))) return;
-text.setPosition (vwr, g3d.getRenderWidth (), g3d.getRenderHeight (), scalePixelsPerMicron, imageFontScaling, isExact, boxXY);
+text.setPosition (scalePixelsPerMicron, imageFontScaling, isExact, boxXY);
 if (text.image == null && text.bgcolix != 0) {
 if (g3d.setC (text.bgcolix)) J.render.TextRenderer.showBox (g3d, text.colix, Clazz.floatToInt (text.boxX), Clazz.floatToInt (text.boxY) + text.boxYoff2 * 2, text.z + 2, text.zSlab, Clazz.floatToInt (text.boxWidth), Clazz.floatToInt (text.boxHeight), text.fontScale, text.isLabelOrHover);
 if (!showText) return;
@@ -19,7 +19,7 @@ g3d.drawString (text.lines[i], text.font, Clazz.floatToInt (temp[0]), Clazz.floa
 g3d.drawImage (text.image, Clazz.floatToInt (text.boxX), Clazz.floatToInt (text.boxY), text.z, text.zSlab, text.bgcolix, Clazz.floatToInt (text.boxWidth), Clazz.floatToInt (text.boxHeight));
 }J.render.TextRenderer.drawPointer (text, g3d);
 return;
-}, "JM.Text,JV.Viewer,J.api.JmolRendererInterface,~N,~N,~B,~A,~A");
+}, "JM.Text,J.api.JmolRendererInterface,~N,~N,~B,~A,~A");
 c$.drawPointer = Clazz.defineMethod (c$, "drawPointer", 
 function (text, g3d) {
 if ((text.pointer & 1) == 0 || !g3d.setC ((text.pointer & 2) != 0 && text.bgcolix != 0 ? text.bgcolix : text.colix)) return;

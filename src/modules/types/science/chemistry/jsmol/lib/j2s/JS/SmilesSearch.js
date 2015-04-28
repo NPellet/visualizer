@@ -289,7 +289,7 @@ for (var i = 0; i < patternAtom.nPrimitives; i++) if (!this.checkPrimitiveAtom (
 for (var i = patternAtom.getBondCount (); --i >= 0; ) {
 var patternBond = patternAtom.getBond (i);
 if (patternBond.getAtomIndex2 () != patternAtom.index) continue;
-var atom1 = patternBond.getAtom1 ();
+var atom1 = patternBond.atom1;
 var matchingAtom = atom1.getMatchingAtom ();
 switch (patternBond.order) {
 case 96:
@@ -341,7 +341,7 @@ if (j1 >= 0) j = j1 - 1;
 }}
 this.bsFound = bs;
 return true;
-}jmolAtom = this.jmolAtoms[newPatternBond.getAtom1 ().getMatchingAtom ()];
+}jmolAtom = this.jmolAtoms[newPatternBond.atom1.getMatchingAtom ()];
 switch (newPatternBond.order) {
 case 96:
 var nextGroupAtom = (jmolAtom).getOffsetResidueAtom (newPatternAtom.atomName, 1);
@@ -706,21 +706,21 @@ var nBonds = sAtom1.getBondCount ();
 var isAtropisomer = false;
 for (var j = 0; j < nBonds; j++) {
 b = sAtom1.getBond (j);
-var isAtom2 = (b.getAtom2 () === sAtom1);
+var isAtom2 = (b.atom2 === sAtom1);
 var type = b.order;
 switch (type) {
 case 769:
 case 1025:
 case 2:
 if (isAtom2) continue;
-sAtom2 = b.getAtom2 ();
+sAtom2 = b.atom2;
 bondType = type;
 isAtropisomer = (type != 2);
 if (isAtropisomer) dir1 = (b.isNot ? -1 : 1);
 break;
 case 257:
 case 513:
-sAtomDirected1 = (isAtom2 ? b.getAtom1 () : b.getAtom2 ());
+sAtomDirected1 = (isAtom2 ? b.atom1 : b.atom2);
 dir1 = (isAtom2 != (type == 257) ? 1 : -1);
 break;
 }
@@ -737,12 +737,12 @@ if (sAtom2 == null || dir1 == 0) continue;
 nBonds = sAtom2.getBondCount ();
 for (var j = 0; j < nBonds && dir2 == 0; j++) {
 b = sAtom2.getBond (j);
-var isAtom2 = (b.getAtom2 () === sAtom2);
+var isAtom2 = (b.atom2 === sAtom2);
 var type = b.order;
 switch (type) {
 case 257:
 case 513:
-sAtomDirected2 = (isAtom2 ? b.getAtom1 () : b.getAtom2 ());
+sAtomDirected2 = (isAtom2 ? b.atom1 : b.atom2);
 dir2 = (isAtom2 != (type == 257) ? 1 : -1);
 break;
 }
@@ -1043,7 +1043,7 @@ var atom1 = atoms[i1];
 var n = sAtom.getBondCount ();
 for (var j = 0; j < n; j++) {
 var sBond = sAtom.getBond (j);
-var firstAtom = (sBond.getAtom1 () === sAtom);
+var firstAtom = (sBond.atom1 === sAtom);
 if (firstAtom) {
 var order = 1;
 switch (sBond.order) {
@@ -1076,12 +1076,12 @@ case 3:
 order = 3;
 break;
 }
-var atom2 = atoms[sBond.getAtom2 ().getMatchingAtom ()];
+var atom2 = atoms[sBond.atom2.getMatchingAtom ()];
 var b =  new JS.SmilesBond (atom1, atom2, order, false);
 atom2.bondCount--;
 JU.Logger.info ("" + b);
 } else {
-var atom2 = atoms[sBond.getAtom1 ().getMatchingAtom ()];
+var atom2 = atoms[sBond.atom1.getMatchingAtom ()];
 var b = atom2.getBondTo (atom1);
 atom1.addBond (b);
 }}

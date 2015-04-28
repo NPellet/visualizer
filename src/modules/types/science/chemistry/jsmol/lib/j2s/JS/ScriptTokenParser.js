@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JS");
-Clazz.load (null, "JS.ScriptTokenParser", ["java.lang.Float", "JU.Lst", "$.P3", "$.PT", "J.i18n.GT", "JS.ScriptParam", "$.T", "JU.Logger", "$.SimpleUnitCell", "JV.JC"], function () {
+Clazz.load (null, "JS.ScriptTokenParser", ["java.lang.Float", "JU.Lst", "$.P3", "$.PT", "J.i18n.GT", "JS.ScriptParam", "$.T", "JU.Logger", "$.SimpleUnitCell"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.vwr = null;
 this.script = null;
@@ -106,7 +106,7 @@ for (var i = 0; i < firstToken && this.addNextToken (); i++) {
 while (this.moreTokens ()) {
 if (this.isEmbeddedExpression) {
 while (!this.isExpressionNext ()) {
-if (this.tokPeekIs (1073741824) && !(this.tokCommand == 135271426 && this.itokenInfix == 1)) {
+if (this.tokPeekIs (1073741824) && !(this.tokCommand == 135271427 && this.itokenInfix == 1)) {
 var name = this.atokenInfix[this.itokenInfix].value;
 var t = JS.T.getTokenFromName (name);
 if (t != null) if (!this.isMathExpressionCommand && this.lastToken.tok != 1060866 || (this.lastToken.tok == 1048583 || this.tokAt (this.itokenInfix + 1) == 269484048) && !this.isUserFunction (name)) {
@@ -719,8 +719,8 @@ case 0:
 case 3145732:
 case 3145750:
 return false;
-case 269484066:
 case 2:
+case 269484066:
 case 269484210:
 case 5:
 break;
@@ -740,18 +740,11 @@ if (checkResNameSpec) {
 if (!this.clauseResNameSpec ()) return false;
 specSeen = true;
 tok = this.tokPeek ();
-if (JS.T.tokAttr (tok, 269484288)) {
-this.returnToken ();
-this.ltokenPostfix.remove (this.ltokenPostfix.size () - 1);
-return false;
-}}var wasInteger = false;
-if (tok == 269484209 || tok == 2 || tok == 5) {
-wasInteger = (tok == 2);
-if (this.tokPeekIs (269484209)) this.getToken ();
- else if (!this.clauseSequenceSpec ()) return false;
+}if (tok == 2 || tok == 269484209 || tok == 5) {
+if (!this.clauseSequenceSpec ()) return false;
 specSeen = true;
 tok = this.tokPeek ();
-}if (tok == 269484066 || tok == 269484209 || tok == 1073741824 || tok == 1112541205 || tok == 1112541206 || tok == 1112541207 || tok == 1141899281 || tok == 2 && !wasInteger) {
+}if (tok == 269484066) {
 if (!this.clauseChainSpec (tok)) return false;
 specSeen = true;
 tok = this.tokPeek ();
@@ -763,7 +756,7 @@ tok = this.tokPeek ();
 if (!this.clauseAlternateSpec ()) return false;
 specSeen = true;
 tok = this.tokPeek ();
-}if (tok == 269484066 || tok == 269484208) {
+}if (tok == 269484208) {
 if (!this.clauseModelSpec ()) return false;
 specSeen = true;
 tok = this.tokPeek ();
@@ -775,6 +768,7 @@ this.addTokenToPostfixToken (JS.T.tokenAll);
 Clazz.defineMethod (c$, "clauseResNameSpec", 
  function () {
 this.getToken ();
+var tok = this.tokPeek ();
 switch (this.theToken.tok) {
 case 269484209:
 return true;
@@ -785,12 +779,13 @@ while (this.getToken () != null && !this.isToken (269484097)) strSpec += this.th
 if (!this.isToken (269484097)) return false;
 if (strSpec === "") return true;
 var pt;
-if (strSpec.length > 0 && (pt = strSpec.indexOf ("*")) >= 0 && pt != strSpec.length - 1) return this.error (14);
-strSpec = strSpec.toUpperCase ();
-return this.generateResidueSpecCode (JS.T.o (1048612, strSpec));
+return (strSpec.length > 0 && (pt = strSpec.indexOf ("*")) >= 0 && pt != strSpec.length - 1 ? this.error (14) : this.generateResidueSpecCode (JS.T.o (1048612, strSpec.toUpperCase ())));
 default:
-var res = this.theValue;
-if (this.tokPeekIs (269484209)) {
+if (JS.T.tokAttr (tok, 269484288)) {
+this.returnToken ();
+return false;
+}var res = this.theValue;
+if (tok == 269484209) {
 res = this.theValue + "*";
 this.getToken ();
 }return this.generateResidueSpecCode (JS.T.o (1073741824, res));
@@ -798,6 +793,7 @@ this.getToken ();
 });
 Clazz.defineMethod (c$, "clauseSequenceSpec", 
  function () {
+if (this.tokPeek () == 269484209) return (this.getToken () != null);
 var seqToken = this.getSequenceCode (false);
 if (seqToken == null) return false;
 var tok = this.tokPeek ();
@@ -817,20 +813,26 @@ Clazz.defineMethod (c$, "getSequenceCode",
  function (isSecond) {
 var seqcode = 2147483647;
 var seqvalue = 2147483647;
-var tokPeek = this.tokPeek ();
-if (tokPeek == 5) seqcode = this.tokenNext ().intValue;
- else if (tokPeek == 2) seqvalue = this.tokenNext ().intValue;
- else if (!isSecond) {
-return null;
-}return JS.T.tv (1048614, seqvalue, Integer.$valueOf (seqcode));
+switch (this.tokPeek ()) {
+case 5:
+seqcode = this.tokenNext ().intValue;
+break;
+case 2:
+seqvalue = this.tokenNext ().intValue;
+break;
+default:
+if (!isSecond) return null;
+}
+return JS.T.tv (1048614, seqvalue, Integer.$valueOf (seqcode));
 }, "~B");
 Clazz.defineMethod (c$, "clauseChainSpec", 
  function (tok) {
-if (tok == 269484066) {
 this.tokenNext ();
 tok = this.tokPeek ();
-if (this.isSpecTerminator (tok)) return this.generateResidueSpecCode (JS.T.tv (1048609, 0, "spec_chain"));
-}var chain;
+var strChain;
+if (this.isTerminator (tok)) {
+strChain = " ";
+} else {
 switch (tok) {
 case 269484209:
 return (this.getToken () != null);
@@ -838,17 +840,39 @@ case 2:
 this.getToken ();
 var val = this.theToken.intValue;
 if (val < 0 || val > 9999) return this.error (8);
-chain = this.vwr.getChainID ("" + val, false);
+strChain = "" + val;
 break;
+case 4:
+this.vwr.getChainID ("a", true);
 default:
-var strChain = "" + this.getToken ().value;
-if (strChain.equals ("?")) return true;
-chain = this.vwr.getChainID (strChain, false);
+strChain = "" + this.getToken ().value;
 break;
 }
+if (strChain.length == 0) strChain = " ";
+ else if (strChain.equals ("?")) return true;
+}var chain = this.vwr.getChainID (strChain, false);
 return this.generateResidueSpecCode (JS.T.tv (1048609, chain, "spec_chain"));
 }, "~N");
-Clazz.defineMethod (c$, "isSpecTerminator", 
+Clazz.defineMethod (c$, "clauseAlternateSpec", 
+ function () {
+this.tokenNext ();
+if (this.isTerminator (this.tokPeek ())) return this.generateResidueSpecCode (JS.T.o (1048607, null));
+switch (this.getToken ().tok) {
+case 269484209:
+case 4:
+case 2:
+case 1073741824:
+case 1112541205:
+case 1112541206:
+case 1112541207:
+case 1141899281:
+break;
+default:
+return this.error (10);
+}
+return this.generateResidueSpecCode (JS.T.o (1048607, this.theToken.value));
+});
+Clazz.defineMethod (c$, "isTerminator", 
  function (tok) {
 switch (tok) {
 case 0:
@@ -857,45 +881,24 @@ case 269484128:
 case 269484112:
 case 269484144:
 case 269484080:
-case 269484210:
 case 269484049:
 case 1048590:
 return true;
-}
-return false;
-}, "~N");
-Clazz.defineMethod (c$, "clauseAlternateSpec", 
- function () {
-this.tokenNext ();
-var tok = this.tokPeek ();
-if (this.isSpecTerminator (tok)) return this.generateResidueSpecCode (JS.T.o (1048607, null));
-var alternate = this.getToken ().value;
-switch (this.theToken.tok) {
-case 269484209:
-case 4:
-case 2:
-case 1073741824:
-break;
 default:
-return this.error (10);
+return false;
 }
-return this.generateResidueSpecCode (JS.T.o (1048607, alternate));
-});
+}, "~N");
 Clazz.defineMethod (c$, "clauseModelSpec", 
  function () {
 this.getToken ();
-if (this.tokPeekIs (269484209)) {
+switch (this.tokPeek ()) {
+case 269484209:
 this.getToken ();
 return true;
-}switch (this.tokPeek ()) {
 case 2:
 return this.generateResidueSpecCode (JS.T.o (1048610, Integer.$valueOf (this.getToken ().intValue)));
 case 3:
 return this.generateResidueSpecCode (JS.T.tv (1048610, this.fixModelSpec (this.getToken ()), this.theValue));
-case 269484080:
-case 1048590:
-case 0:
-return this.generateResidueSpecCode (JS.T.o (1048610, Integer.$valueOf (1)));
 }
 return this.error (10);
 });
@@ -924,7 +927,7 @@ atomSpec += "" + this.theToken.value;
 if (this.tokPeekIs (269484209)) {
 this.tokenNext ();
 atomSpec += "'";
-}var atomID = JV.JC.lookupSpecialAtomID (atomSpec.toUpperCase ());
+}var atomID = this.vwr.getJBR ().lookupSpecialAtomID (atomSpec.toUpperCase ());
 return this.generateResidueSpecCode (JS.T.tv (1048608, atomID, atomSpec));
 });
 c$.errorString = Clazz.defineMethod (c$, "errorString", 

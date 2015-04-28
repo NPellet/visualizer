@@ -94,6 +94,18 @@ for (var i = n; i < this.nextCommand; i++) if (!this.commandList.get (i).toUpper
 
 return str;
 }, "~N");
+Clazz.defineMethod (c$, "find", 
+function (cmd, dir) {
+var cpos = this.cursorPos;
+var c = cmd;
+while (c != null) {
+c = this.getSetHistory (dir);
+if (c == null) break;
+if (c.startsWith (cmd)) return c;
+}
+this.cursorPos = cpos;
+return null;
+}, "~S,~N");
 Clazz.defineMethod (c$, "removeCommand", 
 function () {
 return this.removeCommand (this.nextCommand - 1);

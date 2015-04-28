@@ -1,6 +1,13 @@
 'use strict';
 
-define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api', 'src/util/domdeferred', 'src/util/datatraversing', 'src/util/typerenderer', 'src/util/context'], function (require, Default, Util, API, DomDeferred, Traversing, Renderer, Context) {
+define([
+    'modules/default/defaultview',
+    'src/util/util',
+    'src/util/api',
+    'src/util/domdeferred',
+    'src/util/datatraversing',
+    'src/util/context'
+], function (Default, Util, API, DomDeferred, Traversing, Context) {
 
     function View() {
     }
@@ -282,13 +289,13 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
             if (this.colorjpath) {
                 color = this.colorjpath(source);
-                
-                if( color.length && color.length == 3 ) {
-                    color = 'rgb(' + color.join(',') + ')';
-                } else if( color.length && color.length == 4 ) {
-                    color = 'rgba(' + color.join(',') + ')';
+                if (Array.isArray(color)) {
+                    if (color.length === 3) {
+                        color = 'rgb(' + color.join(',') + ')';
+                    } else {
+                        color = 'rgba(' + color.join(',') + ')';
+                    }
                 }
-
                 html += ' style="background-color: ' + color + ';"';
             }
 

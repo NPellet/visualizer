@@ -3,7 +3,8 @@ Clazz.load (["java.lang.Enum", "JM.BioPolymer"], "JM.AlphaPolymer", ["JU.BS", "$
 c$ = Clazz.declareType (JM, "AlphaPolymer", JM.BioPolymer);
 Clazz.makeConstructor (c$, 
 function (monomers) {
-Clazz.superConstructor (this, JM.AlphaPolymer, [monomers]);
+Clazz.superConstructor (this, JM.AlphaPolymer, []);
+this.set (monomers);
 this.hasStructure = true;
 }, "~A");
 Clazz.overrideMethod (c$, "getProteinStructure", 

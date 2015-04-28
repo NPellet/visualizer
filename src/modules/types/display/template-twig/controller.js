@@ -1,12 +1,13 @@
-define(['modules/default/defaultcontroller'], function(Default) {
+'use strict';
 
-    function controller() {
+define(['modules/default/defaultcontroller'], function (Default) {
+
+    function Controller() {
     }
-    ;
 
-    controller.prototype = $.extend(true, {}, Default);
+    Controller.prototype = $.extend(true, {}, Default);
 
-    controller.prototype.moduleInformation = {
+    Controller.prototype.moduleInformation = {
         name: 'Twig template',
         description: 'Display parts of an object using a twig template',
         author: 'Michaël Zasso',
@@ -15,21 +16,19 @@ define(['modules/default/defaultcontroller'], function(Default) {
         cssClass: 'twig'
     };
 
-    controller.prototype.references = {
-        "value": {
+    Controller.prototype.references = {
+        value: {
             label: 'Any object'
         },
-        "tpl" : {
+        tpl: {
             label: 'Template',
             type: 'string'
         }
-
     };
 
-    controller.prototype.variablesIn = ['value', 'tpl'];
+    Controller.prototype.variablesIn = ['value', 'tpl'];
 
-    controller.prototype.configurationStructure = function(section) {
-
+    Controller.prototype.configurationStructure = function () {
         return {
             groups: {
                 group: {
@@ -41,18 +40,18 @@ define(['modules/default/defaultcontroller'], function(Default) {
                             type: 'jscode',
                             title: 'Template',
                             mode: 'html',
-                            default: ''
+                            'default': ''
                         }
-
                     }
                 }
             }
         };
     };
 
-    controller.prototype.configAliases = {
-        'template': ['groups', 'group', 0, 'template', 0]
+    Controller.prototype.configAliases = {
+        template: ['groups', 'group', 0, 'template', 0]
     };
 
-    return controller;
+    return Controller;
+
 });

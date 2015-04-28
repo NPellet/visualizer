@@ -43,7 +43,7 @@ for (var i = 0; i < this.slaterArray.length; i++) pointers[i] = this.slaterArray
 
 this.sortOrbitalCoefficients (pointers);
 }this.moData.put ("slaters", this.slaterArray);
-this.asc.setAtomSetAuxiliaryInfo ("moData", this.moData);
+this.asc.setCurrentModelInfo ("moData", this.moData);
 }, "~B,~B");
 Clazz.defineMethod (c$, "setMOs", 
 function (units) {

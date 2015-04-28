@@ -5,11 +5,11 @@ var request = require('../..')
   , app = express();
 
 app.get('/', function(req, res){
-  res.send(req.query);
+  res.status(200).send(req.query);
 });
 
-app.del('/', function(req, res){
-  res.send(req.query);
+app.delete('/', function(req, res){
+  res.status(200).send(req.query);
 });
 
 app.listen(3006);
@@ -111,7 +111,7 @@ describe('req.query(Object)', function(){
     .del('http://localhost:3006/')
     .query({ at: date })
     .end(function(res){
-      assert(String(date) == res.body.at);
+      assert(date.toISOString() == res.body.at);
       done();
     });
   })

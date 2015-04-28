@@ -113,7 +113,7 @@ this.outputSphere (pt.x, pt.y, pt.z, diameter / 2, colix);
 Clazz.overrideMethod (c$, "fillTriangle", 
 function (colix, ptA, ptB, ptC, twoSided, isCartesian) {
 this.outputTriangle (ptA, ptB, ptC, colix);
-}, "~N,JU.P3,JU.P3,JU.P3,~B,~B");
+}, "~N,JU.T3,JU.T3,JU.T3,~B,~B");
 Clazz.overrideMethod (c$, "fillEllipsoid", 
 function (center, points, colix, x, y, z, diameter, toEllipsoidal, coef, deriv, octantPoints) {
 var radius = diameter / 2;

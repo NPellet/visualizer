@@ -2,9 +2,11 @@
 
 module.exports = {
   name: 'idb-alt',
+  require: 'level-js',
   valid: function () {
-    return 'idb' in window.PouchDB.adapters &&
-      window.PouchDB.adapters.idb.valid();
+    var PouchDB = global.PouchDB || require('pouchdb');
+    return 'idb' in PouchDB.adapters &&
+      PouchDB.adapters.idb.valid();
   },
   use_prefix: true
 };

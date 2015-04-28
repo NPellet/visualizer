@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.SlaterReader"], "J.adapter.readers.quantum.AdfReader", ["java.lang.Float", "java.util.Hashtable", "JU.AU", "$.Lst", "J.api.JmolAdapter", "J.quantum.SlaterData", "JU.Logger"], function () {
+Clazz.load (["J.adapter.readers.quantum.SlaterReader"], "J.adapter.readers.quantum.AdfReader", ["java.lang.Float", "java.util.Hashtable", "JU.AU", "$.Lst", "$.PT", "J.api.JmolAdapter", "J.quantum.SlaterData", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.htSymmetries = null;
 this.vSymmetries = null;
@@ -24,11 +24,11 @@ if (!this.doGetModel (++this.modelNumber, null)) return this.checkLastModel ();
 this.readCoordinates ();
 return true;
 }if (this.line.indexOf (" ======  Eigenvectors (rows) in BAS representation") >= 0) {
-if (this.doReadMolecularOrbitals) this.readMolecularOrbitals (J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.symLine)[1]);
+if (this.doReadMolecularOrbitals) this.readMolecularOrbitals (JU.PT.getTokens (this.symLine)[1]);
 return true;
 }if (!this.doProcessLines) return true;
 if (this.line.indexOf ("Energy:") >= 0) {
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line.substring (this.line.indexOf ("Energy:")));
+var tokens = JU.PT.getTokens (this.line.substring (this.line.indexOf ("Energy:")));
 this.energy = tokens[1];
 return true;
 }if (this.line.indexOf ("Vibrations") >= 0) {
@@ -38,7 +38,7 @@ return true;
 this.symLine = this.line;
 return true;
 }if (this.line.indexOf (" ======  Eigenvectors (rows) in BAS representation") >= 0) {
-this.readMolecularOrbitals (J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.symLine)[1]);
+this.readMolecularOrbitals (JU.PT.getTokens (this.symLine)[1]);
 return true;
 }return true;
 });
@@ -91,7 +91,7 @@ var index = 0;
 var syms = "";
 while (this.rd () != null && this.line.length > 1) syms += this.line;
 
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (syms);
+var tokens = JU.PT.getTokens (syms);
 for (var i = 0; i < tokens.length; i++) {
 var sd = Clazz.innerTypeInstance (J.adapter.readers.quantum.AdfReader.SymmetryData, this, null, index++, tokens[i]);
 this.htSymmetries.put (tokens[i], sd);
@@ -109,12 +109,12 @@ this.discardLinesUntilContains ("=== " + sd.sym + " ===");
 if (this.line == null) {
 JU.Logger.error ("Symmetry slater basis section not found: " + sd.sym);
 return;
-}sd.nSFO = this.parseIntStr (this.rd ().substring (15));
-sd.nBF = this.parseIntStr (this.rd ().substring (75));
+}sd.nSFO = this.parseIntAt (this.rd (), 15);
+sd.nBF = this.parseIntAt (this.rd (), 75);
 var funcList = "";
 while (this.rd () != null && this.line.length > 1) funcList += this.line;
 
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (funcList);
+var tokens = JU.PT.getTokens (funcList);
 if (tokens.length != sd.nBF) return;
 sd.basisFunctions =  Clazz.newIntArray (tokens.length, 0);
 for (var j = tokens.length; --j >= 0; ) {
@@ -130,7 +130,7 @@ while (this.rd () != null && this.line.length > 3 && this.line.charAt (3) == ' '
 var data = this.line;
 while (this.rd ().indexOf ("---") < 0) data += this.line;
 
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (data);
+var tokens = JU.PT.getTokens (data);
 var nAtoms = tokens.length - 1;
 var atomList =  Clazz.newIntArray (nAtoms, 0);
 for (var i = 1; i <= nAtoms; i++) atomList[i - 1] = this.parseIntStr (tokens[i]) - 1;
@@ -140,7 +140,7 @@ while (this.line.length >= 10) {
 data = this.line;
 while (this.rd ().length > 35 && this.line.substring (0, 35).trim ().length == 0) data += this.line;
 
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (data);
+tokens = JU.PT.getTokens (data);
 var isCore = tokens[0].equals ("Core");
 var pt = (isCore ? 1 : 0);
 var x = this.parseIntStr (tokens[pt++]);
@@ -167,7 +167,7 @@ var nBF = this.slaterArray.length;
 sd.coefs =  Clazz.newFloatArray (sd.nSFO, nBF, 0);
 while (n < sd.nBF) {
 this.rd ();
-var nLine = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ()).length;
+var nLine = JU.PT.getTokens (this.rd ()).length;
 this.rd ();
 sd.mos = JU.AU.createArrayOfHashtable (sd.nSFO);
 var data =  new Array (sd.nSFO);

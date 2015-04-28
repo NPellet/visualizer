@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.MOReader", "java.util.Hashtable", "JU.Lst"], "J.adapter.readers.quantum.PsiReader", ["java.lang.Float", "JU.AU", "$.PT", "J.api.JmolAdapter", "JU.Logger"], function () {
+Clazz.load (["J.adapter.readers.quantum.MOReader", "java.util.Hashtable", "JU.Lst"], "J.adapter.readers.quantum.PsiReader", ["java.lang.Float", "JU.AU", "$.PT", "J.adapter.readers.quantum.BasisFunctionReader", "J.api.JmolAdapter", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.atomNames = null;
 this.shellsByUniqueAtom = null;
@@ -90,7 +90,7 @@ if (slater != null) {
 slatersByUniqueAtom.addLast (slater);
 }ipt = 1;
 slater =  Clazz.newIntArray (3, 0);
-slater[0] = J.api.JmolAdapter.getQuantumShellTagID (tokens[0]);
+slater[0] = J.adapter.readers.quantum.BasisFunctionReader.getQuantumShellTagID (tokens[0]);
 slater[1] = this.gaussianCount;
 this.shellCount++;
 break;
@@ -154,7 +154,7 @@ var ptData = (this.line.charAt (5) == ' ' ? 2 : 4);
 if (this.line.indexOf ("                    ") == 0) {
 this.addMOData (nThisLine, data, mos);
 nThisLine = tokens.length;
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+tokens = JU.PT.getTokens (this.rd ());
 for (var i = 0; i < nThisLine; i++) {
 mos[i] =  new java.util.Hashtable ();
 data[i] =  new JU.Lst ();

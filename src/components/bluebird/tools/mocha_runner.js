@@ -4,18 +4,23 @@ module.exports = function mochaRun(progress) {
     var currentId = 0;
 
     function checkTimers() {
-        Object.keys(timers).forEach(function(key) {
+        var keys = Object.keys(timers);
+        for (var i = 0; i < keys.length; ++i) {
+            key = keys[i];
             var timer = timers[key];
-
+            if (!timer) continue;
             if (currentTime >= (timer.started + timer.time)) {
                 if (timer.interval) {
                     timer.started = currentTime;
                 } else {
                     delete timers[key];
                 }
-                timer.fn.call(global);
+                var fn = timer.fn;
+                if (timer.domain) timer.domain.enter();
+                fn();
+                if (timer.domain) timer.domain.exit();
             }
-        });
+        }
     }
 
     function setInterval(fn, time) {
@@ -26,7 +31,8 @@ module.exports = function mochaRun(progress) {
             fn: fn,
             time: time,
             started: currentTime,
-            interval: true
+            interval: true,
+            domain: process.domain
         };
         return id;
     }
@@ -39,7 +45,8 @@ module.exports = function mochaRun(progress) {
             fn: fn,
             time: time,
             started: currentTime,
-            interval: false
+            interval: false,
+            domain: process.domain
         };
         return id;
     }
@@ -50,15 +57,17 @@ module.exports = function mochaRun(progress) {
 
     var clearInterval = clearTimeout;
     if (fakeTimers) {
-        (function tick() {
+        (function timerLoop() {
             currentTime += 10;
             try {
                 checkTimers();
             } finally {
-                setImmediate(tick);
+                setImmediate(timerLoop);
             }
         })();
 
+        global.oldSetTimeout = global.setTimeout;
+        global.oldClearTimeout = global.clearTimeout;
         global.setTimeout = setTimeout;
         global.clearTimeout = clearTimeout;
         global.setInterval = setInterval;

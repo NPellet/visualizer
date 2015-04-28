@@ -129,7 +129,7 @@ Clazz.overrideMethod (c$, "getData",
 function () {
 for (var i = 0; i < this.fieldCount; ++i) if ((this.loopData[i] = this.getNextDataToken ()) == null) return false;
 
-return true;
+return (this.fieldCount > 0);
 });
 Clazz.overrideMethod (c$, "skipLoop", 
 function () {

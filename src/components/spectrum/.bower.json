@@ -1,6 +1,6 @@
 {
   "name": "spectrum",
-  "version": "1.5.1",
+  "version": "1.6.1",
   "main": [
     "./spectrum.css",
     "./spectrum.js"
@@ -22,13 +22,13 @@
     "README.md",
     "test/"
   ],
-  "_release": "1.5.1",
+  "_release": "1.6.1",
   "_resolution": {
     "type": "version",
-    "tag": "1.5.1",
-    "commit": "ed52c1cb69178e74f05e77d2d59974d7673b6737"
+    "tag": "1.6.1",
+    "commit": "788bcd3da11c68c58970eead5220d7976856dae6"
   },
   "_source": "git://github.com/bgrins/spectrum.git",
-  "_target": "~1.5.0",
+  "_target": "1.6.1",
   "_originalSource": "spectrum"
 }

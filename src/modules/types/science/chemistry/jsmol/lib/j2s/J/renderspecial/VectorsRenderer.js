@@ -51,7 +51,7 @@ this.vibrationOn = this.vwr.tm.vibrationOn;
 this.headScale = -0.2;
 if (this.vectorScale < 0) this.headScale = -this.headScale;
 var haveModulations = false;
-for (var i = this.ms.getAtomCount (); --i >= 0; ) {
+for (var i = this.ms.ac; --i >= 0; ) {
 var atom = atoms[i];
 if (!this.isVisibleForMe (atom)) continue;
 var mod = this.ms.getModulation (i);
@@ -70,7 +70,7 @@ this.vibTemp.scale (-1);
 this.transform (mads[i], atom, this.vibTemp, null);
 this.renderVector (atom);
 }}
-if (haveModulations) for (var i = this.ms.getAtomCount (); --i >= 0; ) {
+if (haveModulations) for (var i = this.ms.ac; --i >= 0; ) {
 var atom = atoms[i];
 if (!this.isVisibleForMe (atom)) continue;
 var mod = this.ms.getModulation (i);

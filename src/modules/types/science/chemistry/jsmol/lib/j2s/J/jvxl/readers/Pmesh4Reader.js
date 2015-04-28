@@ -31,7 +31,7 @@ J.jvxl.data.JvxlCoder.jvxlCreateHeaderWithoutTitleOrAtoms (this.volumeData, this
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
 Clazz.overrideMethod (c$, "getSurfaceData", 
 function () {
-this.readLine ();
+this.rd ();
 if (this.readVerticesAndPolygons ()) JU.Logger.info (this.type + " file contains " + this.nVertices + " 4D vertices and " + this.nPolygons + " polygons for " + this.nTriangles + " triangles");
  else JU.Logger.error (this.params.fileName + ": " + (this.pmeshError == null ? "Error reading pmesh4 data " : this.pmeshError));
 });
@@ -86,7 +86,7 @@ Clazz.defineMethod (c$, "nextToken",
  function () {
 while (this.iToken >= this.tokens.length) {
 this.iToken = 0;
-this.readLine ();
+this.rd ();
 this.tokens = this.getTokens ();
 }
 return this.tokens[this.iToken++];

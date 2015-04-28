@@ -4,6 +4,7 @@ c$ = Clazz.decorateAsClass (function () {
 this.notionalUnitcell = null;
 this.matrixCartesianToFractional = null;
 this.matrixFractionalToCartesian = null;
+this.volume = 0;
 this.na = 0;
 this.nb = 0;
 this.nc = 0;
@@ -19,7 +20,6 @@ this.cosBeta = 0;
 this.sinBeta = 0;
 this.cosGamma = 0;
 this.sinGamma = 0;
-this.volume = 0;
 this.cA_ = 0;
 this.cB_ = 0;
 this.a_ = 0;
@@ -120,8 +120,7 @@ scaleMatrix[i] = parameters[6 + i] * f;
 }
 this.matrixCartesianToFractional = JU.M4.newA16 (scaleMatrix);
 this.matrixCartesianToFractional.getTranslation (this.fractionalOrigin);
-this.matrixFractionalToCartesian =  new JU.M4 ();
-this.matrixFractionalToCartesian.invertM (this.matrixCartesianToFractional);
+this.matrixFractionalToCartesian = JU.M4.newM4 (this.matrixCartesianToFractional).invert ();
 if (parameters[0] == 1) this.setParamsFromMatrix ();
 } else if (parameters.length > 14 && !Float.isNaN (parameters[14])) {
 var m = this.matrixFractionalToCartesian =  new JU.M4 ();
@@ -129,16 +128,14 @@ m.setColumn4 (0, parameters[6] * this.na, parameters[7] * this.na, parameters[8]
 m.setColumn4 (1, parameters[9] * this.nb, parameters[10] * this.nb, parameters[11] * this.nb, 0);
 m.setColumn4 (2, parameters[12] * this.nc, parameters[13] * this.nc, parameters[14] * this.nc, 0);
 m.setColumn4 (3, 0, 0, 0, 1);
-this.matrixCartesianToFractional =  new JU.M4 ();
-this.matrixCartesianToFractional.invertM (this.matrixFractionalToCartesian);
+this.matrixCartesianToFractional = JU.M4.newM4 (this.matrixFractionalToCartesian).invert ();
 } else {
 var m = this.matrixFractionalToCartesian =  new JU.M4 ();
 m.setColumn4 (0, this.a, 0, 0, 0);
 m.setColumn4 (1, (this.b * this.cosGamma), (this.b * this.sinGamma), 0, 0);
 m.setColumn4 (2, (this.c * this.cosBeta), (this.c * (this.cosAlpha - this.cosBeta * this.cosGamma) / this.sinGamma), (this.volume / (this.a * this.b * this.sinGamma)), 0);
 m.setColumn4 (3, 0, 0, 0, 1);
-this.matrixCartesianToFractional =  new JU.M4 ();
-this.matrixCartesianToFractional.invertM (this.matrixFractionalToCartesian);
+this.matrixCartesianToFractional = JU.M4.newM4 (this.matrixFractionalToCartesian).invert ();
 }this.matrixCtoFANoOffset = this.matrixCartesianToFractional;
 this.matrixFtoCNoOffset = this.matrixFractionalToCartesian;
 }, "~A");

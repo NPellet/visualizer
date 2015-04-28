@@ -96,6 +96,8 @@ if (type_id == null) type_id = "D_S";
 case 61:
 if (type_id == null) type_id = "D_L";
 case 65:
+if (type_id == null) type_id = "U_L";
+case 69:
 if (type_id == null) type_id = "O_L";
 case 55:
 if (type_id == null) type_id = "M_T";
@@ -111,6 +113,7 @@ case 62:
 axis = this.field;
 if (this.modAxes != null && this.modAxes.indexOf (axis.toUpperCase ()) < 0) ignore = true;
 break;
+case 66:
 case 34:
 axis = this.field.toUpperCase ();
 break;
@@ -118,8 +121,8 @@ default:
 var f = cr.parseFloatStr (this.field);
 switch (tok) {
 case 64:
-case 67:
-case 70:
+case 71:
+case 68:
 pt[0] = f;
 if (f != 0) pt[2] = 0;
 break;
@@ -128,9 +131,9 @@ case 31:
 case 15:
 case 52:
 case 37:
-case 76:
-case 72:
-case 74:
+case 77:
+case 73:
+case 75:
 pt[2] = 0;
 case 2:
 case 5:
@@ -150,12 +153,12 @@ case 38:
 pt[0] = f;
 pt[2] = 1;
 break;
-case 66:
-case 73:
+case 70:
+case 74:
 case 26:
 axis = "0";
 case 63:
-case 69:
+case 67:
 case 3:
 case 6:
 case 9:
@@ -170,8 +173,8 @@ case 47:
 case 14:
 case 51:
 case 36:
-case 71:
-case 75:
+case 72:
+case 76:
 pt[1] = f;
 break;
 case 4:
@@ -214,7 +217,8 @@ if (pt[1] != 0) this.addMod (type_id + "#y;" + atomLabel, fid, [c, w, pt[1]]);
 if (pt[2] != 0) this.addMod (type_id + "#z;" + atomLabel, fid, [c, w, pt[2]]);
 continue;
 }if (type_id.indexOf ("_L") == 1) {
-axis += Clazz.doubleToInt (pt[1]);
+if (type_id.startsWith ("U")) type_id += Clazz.doubleToInt (pt[1]);
+ else axis += Clazz.doubleToInt (pt[1]);
 }type_id += "#" + axis + ";" + atomLabel;
 break;
 }
@@ -324,18 +328,19 @@ Clazz.defineStatics (c$,
 "LEG_DISP_AXIS", 62,
 "LEG_DISP_ORDER", 63,
 "LEG_DISP_COEF", 64,
-"LEG_OCC_LABEL", 65,
-"LEG_OCC_ORDER", 66,
-"LEG_OCC_COEF", 67,
-"LEG_U_LABEL", 68,
-"LEG_U_ORDER", 69,
-"LEG_U_COEF", 70,
-"DEPR_FD_COS", 71,
-"DEPR_FD_SIN", 72,
-"DEPR_FO_COS", 73,
-"DEPR_FO_SIN", 74,
-"DEPR_FU_COS", 75,
-"DEPR_FU_SIN", 76,
-"modulationFields", ["*_fourier_wave_vector_seq_id", "_cell_wave_vector_seq_id", "_cell_wave_vector_x", "_cell_wave_vector_y", "_cell_wave_vector_z", "*_fourier_wave_vector_x", "*_fourier_wave_vector_y", "*_fourier_wave_vector_z", "*_fourier_wave_vector_q1_coeff", "*_fourier_wave_vector_q2_coeff", "*_fourier_wave_vector_q3_coeff", "*_displace_fourier_atom_site_label", "*_displace_fourier_axis", "*_displace_fourier_wave_vector_seq_id", "*_displace_fourier_param_cos", "*_displace_fourier_param_sin", "*_displace_fourier_param_modulus", "*_displace_fourier_param_phase", "*_displace_special_func_atom_site_label", "*_displace_special_func_sawtooth_ax", "*_displace_special_func_sawtooth_ay", "*_displace_special_func_sawtooth_az", "*_displace_special_func_sawtooth_c", "*_displace_special_func_sawtooth_w", "*_occ_fourier_atom_site_label", "*_occ_fourier_wave_vector_seq_id", "*_occ_fourier_param_cos", "*_occ_fourier_param_sin", "*_occ_fourier_param_modulus", "*_occ_fourier_param_phase", "*_occ_special_func_atom_site_label", "*_occ_special_func_crenel_c", "*_occ_special_func_crenel_w", "*_u_fourier_atom_site_label", "*_u_fourier_tens_elem", "*_u_fourier_wave_vector_seq_id", "*_u_fourier_param_cos", "*_u_fourier_param_sin", "*_u_fourier_param_modulus", "*_u_fourier_param_phase", "*_displace_fourier_id", "*_occ_fourier_id", "*_u_fourier_id", "*_displace_fourier_param_id", "*_occ_fourier_param_id", "*_u_fourier_param_id", "*_occ_fourier_absolute_site_label", "*_occ_fourier_absolute", "*_moment_fourier_atom_site_label", "*_moment_fourier_axis", "*_moment_fourier_wave_vector_seq_id", "*_moment_fourier_param_cos", "*_moment_fourier_param_sin", "*_moment_fourier_param_modulus", "*_moment_fourier_param_phase", "*_moment_special_func_atom_site_label", "*_moment_special_func_sawtooth_ax", "*_moment_special_func_sawtooth_ay", "*_moment_special_func_sawtooth_az", "*_moment_special_func_sawtooth_c", "*_moment_special_func_sawtooth_w", "*_displace_legendre_atom_site_label", "*_displace_legendre_axis", "*_displace_legendre_param_order", "*_displace_legendre_param_coeff", "*_u_legendre_atom_site_label", "*_u_legendre_param_order", "*_u_legendre_param_coeff", "*_occ_legendre_atom_site_label", "*_occ_legendre_param_order", "*_occ_legendre_param_coeff", "*_displace_fourier_cos", "*_displace_fourier_sin", "*_occ_fourier_cos", "*_occ_fourier_sin", "*_u_fourier_cos", "*_u_fourier_sin"],
+"LEG_U_LABEL", 65,
+"LEG_U_TENS", 66,
+"LEG_U_ORDER", 67,
+"LEG_U_COEF", 68,
+"LEG_OCC_LABEL", 69,
+"LEG_OCC_ORDER", 70,
+"LEG_OCC_COEF", 71,
+"DEPR_FD_COS", 72,
+"DEPR_FD_SIN", 73,
+"DEPR_FO_COS", 74,
+"DEPR_FO_SIN", 75,
+"DEPR_FU_COS", 76,
+"DEPR_FU_SIN", 77,
+"modulationFields", ["*_fourier_wave_vector_seq_id", "_cell_wave_vector_seq_id", "_cell_wave_vector_x", "_cell_wave_vector_y", "_cell_wave_vector_z", "*_fourier_wave_vector_x", "*_fourier_wave_vector_y", "*_fourier_wave_vector_z", "*_fourier_wave_vector_q1_coeff", "*_fourier_wave_vector_q2_coeff", "*_fourier_wave_vector_q3_coeff", "*_displace_fourier_atom_site_label", "*_displace_fourier_axis", "*_displace_fourier_wave_vector_seq_id", "*_displace_fourier_param_cos", "*_displace_fourier_param_sin", "*_displace_fourier_param_modulus", "*_displace_fourier_param_phase", "*_displace_special_func_atom_site_label", "*_displace_special_func_sawtooth_ax", "*_displace_special_func_sawtooth_ay", "*_displace_special_func_sawtooth_az", "*_displace_special_func_sawtooth_c", "*_displace_special_func_sawtooth_w", "*_occ_fourier_atom_site_label", "*_occ_fourier_wave_vector_seq_id", "*_occ_fourier_param_cos", "*_occ_fourier_param_sin", "*_occ_fourier_param_modulus", "*_occ_fourier_param_phase", "*_occ_special_func_atom_site_label", "*_occ_special_func_crenel_c", "*_occ_special_func_crenel_w", "*_u_fourier_atom_site_label", "*_u_fourier_tens_elem", "*_u_fourier_wave_vector_seq_id", "*_u_fourier_param_cos", "*_u_fourier_param_sin", "*_u_fourier_param_modulus", "*_u_fourier_param_phase", "*_displace_fourier_id", "*_occ_fourier_id", "*_u_fourier_id", "*_displace_fourier_param_id", "*_occ_fourier_param_id", "*_u_fourier_param_id", "*_occ_fourier_absolute_site_label", "*_occ_fourier_absolute", "*_moment_fourier_atom_site_label", "*_moment_fourier_axis", "*_moment_fourier_wave_vector_seq_id", "*_moment_fourier_param_cos", "*_moment_fourier_param_sin", "*_moment_fourier_param_modulus", "*_moment_fourier_param_phase", "*_moment_special_func_atom_site_label", "*_moment_special_func_sawtooth_ax", "*_moment_special_func_sawtooth_ay", "*_moment_special_func_sawtooth_az", "*_moment_special_func_sawtooth_c", "*_moment_special_func_sawtooth_w", "*_displace_legendre_atom_site_label", "*_displace_legendre_axis", "*_displace_legendre_param_order", "*_displace_legendre_param_coeff", "*_u_legendre_atom_site_label", "*_u_legendre_tens_elem", "*_u_legendre_param_order", "*_u_legendre_param_coeff", "*_occ_legendre_atom_site_label", "*_occ_legendre_param_order", "*_occ_legendre_param_coeff", "*_displace_fourier_cos", "*_displace_fourier_sin", "*_occ_fourier_cos", "*_occ_fourier_sin", "*_u_fourier_cos", "*_u_fourier_sin"],
 "NONE", -1);
 });

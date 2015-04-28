@@ -226,38 +226,6 @@ ClazzLoader._loadZJars(0);
 			this._code = Jmol._documentWrite(t);
 		};
 
-		proto._cover = function (doCover) {
-			if (doCover || !this._deferApplet) {
-				this._displayCoverImage(doCover);
-				return;
-			}
-			// uncovering UNMADE applet upon clicking image
-			var s = (this._coverScript ? this._coverScript : "");
-			this._coverScript = "";
-			if (this._deferUncover)
-				s += ";refresh;javascript " + this._id + "._displayCoverImage(false)";
-			this._script(s, true);
-			if (this._deferUncover && this._coverTitle == "activate 3D model")
-				Jmol._getElement(this, "coverimage").title = "3D model is loading...";
-			if (!this._isJava)
-				this._newCanvas(false);
-			if (this._defaultModel)	
-				Jmol._search(this, this._defaultModel);
-			this._showInfo(false);
-			if (!this._deferUncover)
-				this._displayCoverImage(false);
-			if (this._isJava)
-				Jmol.$html(Jmol.$(this, "appletdiv"), this._javaCode);
-			if (this._init)
-				this._init();
-		};
-
-		proto._displayCoverImage = function(TF) {
-			if (!this._coverImage || this._isCovered == TF) return;
-			this._isCovered = TF;
-			Jmol._getElement(this, "coverdiv").style.display = (TF ? "block" : "none");
-		};
-
 		proto._newCanvas = function(doReplace) {
 			if (this._is2D)
 				this._createCanvas2d(doReplace);

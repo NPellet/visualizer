@@ -22,7 +22,7 @@ Clazz.overrideMethod (c$, "processXml",
 function (parent, saxReader) {
 parent.htParams.put ("backboneAtoms", this.bsBackbone);
 this.PX (parent, saxReader);
-this.asc.clearSymbolicMap ();
+this.asc.atomSymbolicMap.clear ();
 }, "J.adapter.readers.xml.XmlReader,~O");
 Clazz.overrideMethod (c$, "processStartElement", 
 function (localName) {
@@ -47,7 +47,7 @@ if (this.iGroup == 0) this.iGroup = 1;
 this.atom.sequenceNumber = this.iGroup;
 var xyz = this.atts.get ("XYZ");
 if (xyz != null) {
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (xyz.$replace (',', ' '));
+tokens = JU.PT.getTokens (xyz.$replace (',', ' '));
 this.atom.set (this.parseFloatStr (tokens[0]), this.parseFloatStr (tokens[1]), this.parseFloatStr (tokens[2]));
 }var isBackbone = "1".equals (this.atts.get ("IsBackboneAtom"));
 if (isBackbone) this.bsBackbone.set (this.iAtom);

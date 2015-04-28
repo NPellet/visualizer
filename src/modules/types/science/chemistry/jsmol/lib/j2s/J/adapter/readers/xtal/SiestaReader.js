@@ -74,7 +74,7 @@ this.discardLinesUntilContains ("siesta: E_KS(eV) = ");
 var tokens = this.getTokens ();
 var energy = Double.$valueOf (Double.parseDouble (tokens[3]));
 this.asc.setAtomSetEnergy ("" + energy, energy.floatValue ());
-this.asc.setAtomSetAuxiliaryInfo ("Energy", energy);
+this.asc.setCurrentModelInfo ("Energy", energy);
 this.asc.setInfo ("Energy", energy);
 this.asc.setAtomSetName ("Energy = " + energy + " eV");
 });

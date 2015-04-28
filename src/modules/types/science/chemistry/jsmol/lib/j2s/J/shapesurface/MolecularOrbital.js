@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shapesurface");
-Clazz.load (["J.shapesurface.Isosurface"], "J.shapesurface.MolecularOrbital", ["java.lang.Boolean", "$.Float", "java.util.Hashtable", "JU.AU", "$.Lst", "$.PT", "$.SB", "J.c.QS", "J.jvxl.data.JvxlCoder", "JU.Escape"], function () {
+Clazz.load (["J.shapesurface.Isosurface"], "J.shapesurface.MolecularOrbital", ["java.lang.Boolean", "$.Float", "java.util.Hashtable", "JU.AU", "$.Lst", "$.PT", "$.SB", "J.jvxl.data.JvxlCoder", "J.quantum.QS", "JU.Escape"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.moTranslucency = null;
 this.moTranslucentLevel = null;
@@ -28,13 +28,14 @@ this.htModels = null;
 this.thisModel = null;
 this.moSlab = null;
 this.moSlabValue = null;
+this.nboType = null;
 Clazz.instantialize (this, arguments);
 }, J.shapesurface, "MolecularOrbital", J.shapesurface.Isosurface);
 Clazz.defineMethod (c$, "initShape", 
 function () {
 Clazz.superCall (this, J.shapesurface.MolecularOrbital, "initShape", []);
 this.myType = "mo";
-this.setPropI ("thisID", "mo", null);
+this.setPropI ("thisID", this.myType, null);
 });
 Clazz.overrideMethod (c$, "setProperty", 
 function (propertyName, value, bs) {
@@ -131,40 +132,6 @@ if (this.moSquareLinear === Boolean.TRUE) this.thisModel.put ("moSquareLinear", 
  else this.thisModel.remove ("moSquareLinear");
 this.setOrbital (this.$moNumber, this.$moLinearCombination);
 return;
-}if ("translucentLevel" === propertyName) {
-if (this.thisModel == null) {
-if (this.currentMesh == null) return;
-this.thisModel = this.htModels.get (this.currentMesh.thisID);
-}this.thisModel.put ("moTranslucentLevel", value);
-}if ("delete" === propertyName) {
-this.htModels.remove (this.strID);
-this.$moNumber = 0;
-this.$moLinearCombination = null;
-}if ("token" === propertyName) {
-var tok = (value).intValue ();
-switch (tok) {
-case 1113198595:
-case 1073742042:
-this.moDots = tok;
-break;
-case 1073741938:
-case 1073742046:
-this.moFill = tok;
-break;
-case 1073742018:
-case 1073742052:
-this.moMesh = tok;
-break;
-case 1073741960:
-case 1073742058:
-this.moFrontOnly = tok;
-break;
-}
-}if ("translucency" === propertyName) {
-if (this.thisModel == null) {
-if (this.currentMesh == null) return;
-this.thisModel = this.htModels.get (this.currentMesh.thisID);
-}this.thisModel.put ("moTranslucency", value);
 }if (propertyName === "deleteModelAtoms") {
 var modelIndex = ((value)[2])[0];
 var htModelsNew =  new java.util.Hashtable ();
@@ -185,6 +152,45 @@ this.meshes[i].thisID = this.getId (this.meshes[i].modelIndex);
 }
 this.htModels = htModelsNew;
 return;
+}if ("moData" === propertyName) {
+var moData = value;
+this.nboType = moData.get ("nboType");
+if (this.nboType == null) this.thisModel.remove ("nboType");
+ else this.thisModel.put ("nboType", this.nboType);
+} else if ("translucentLevel" === propertyName) {
+if (this.thisModel == null) {
+if (this.currentMesh == null) return;
+this.thisModel = this.htModels.get (this.currentMesh.thisID);
+}this.thisModel.put ("moTranslucentLevel", value);
+} else if ("delete" === propertyName) {
+this.htModels.remove (this.strID);
+this.$moNumber = 0;
+this.$moLinearCombination = null;
+} else if ("token" === propertyName) {
+var tok = (value).intValue ();
+switch (tok) {
+case 1113198595:
+case 1073742042:
+this.moDots = tok;
+break;
+case 1073741938:
+case 1073742046:
+this.moFill = tok;
+break;
+case 1073742018:
+case 1073742052:
+this.moMesh = tok;
+break;
+case 1073741960:
+case 1073742058:
+this.moFrontOnly = tok;
+break;
+}
+} else if ("translucency" === propertyName) {
+if (this.thisModel == null) {
+if (this.currentMesh == null) return;
+this.thisModel = this.htModels.get (this.currentMesh.thisID);
+}this.thisModel.put ("moTranslucency", value);
 }this.setPropI (propertyName, value, bs);
 }, "~S,~O,JU.BS");
 Clazz.defineMethod (c$, "getId", 
@@ -193,15 +199,18 @@ return "mo_model" + this.vwr.getModelNumberDotted (modelIndex);
 }, "~N");
 Clazz.overrideMethod (c$, "getProperty", 
 function (propertyName, param) {
+if (propertyName.startsWith ("list")) {
+var s = "";
 if (propertyName.equals ("list")) {
-var s = this.getPropI ("list");
-if (s.length > 1) s += "cutoff = " + this.getPropI ("cutoff") + "\n";
-return this.vwr.getMoInfo (-1) + "\n" + s;
+s = this.getPropI ("list");
+if (s.length > 1) s += "cutoff = " + this.jvxlData.cutoff + "\n";
+s = "\n" + s;
+}return this.getMoInfo (-1) + s;
 }if (propertyName === "moNumber") return Integer.$valueOf (this.$moNumber);
 if (propertyName === "moLinearCombination") return this.$moLinearCombination;
 if (propertyName === "showMO") {
 var str =  new JU.SB ();
-var mos = (this.sg.getMoData ().get ("mos"));
+var mos = (this.sg.params.moData.get ("mos"));
 var nOrb = (mos == null ? 0 : mos.size ());
 var thisMO = param;
 var currentMO = this.$moNumber;
@@ -216,14 +225,13 @@ var nTotal = (thisMO > 0 ? 1 : nOrb);
 var i0 = (nTotal == 1 && currentMO > 0 ? currentMO : 1);
 for (var i = i0; i <= nOrb; i++) if (thisMO == 0 || thisMO == i || !doOneMo && i == currentMO) {
 if (!doOneMo) {
-var params = this.sg.getParams ();
-this.setPropI ("init", params, null);
+this.setPropI ("init", this.sg.params, null);
 this.setOrbital (i, null);
 }this.jvxlData.moleculeXml = this.vwr.getModelCml (this.vwr.getModelUndeletedAtomsBitSet (this.thisMesh.modelIndex), 100, true);
 if (!haveHeader) {
 str.append (J.jvxl.data.JvxlCoder.jvxlGetFile (this.jvxlData, null, null, "HEADERONLY", true, nTotal, null, null));
 haveHeader = true;
-}str.append (J.jvxl.data.JvxlCoder.jvxlGetFile (this.jvxlData, null, this.jvxlData.title, null, false, 1, this.thisMesh.getState ("mo"), (this.thisMesh.scriptCommand == null ? "" : this.thisMesh.scriptCommand)));
+}str.append (J.jvxl.data.JvxlCoder.jvxlGetFile (this.jvxlData, null, this.jvxlData.title, null, false, 1, this.thisMesh.getState (this.myType), (this.thisMesh.scriptCommand == null ? "" : this.thisMesh.scriptCommand)));
 if (!doOneMo) this.setPropI ("delete", "mo_show", null);
 if (nTotal == 1) break;
 }
@@ -231,6 +239,35 @@ str.append (J.jvxl.data.JvxlCoder.jvxlGetFile (this.jvxlData, null, null, "TRAIL
 return str.toString ();
 }return this.getPropI (propertyName);
 }, "~S,~N");
+Clazz.defineMethod (c$, "getMoInfo", 
+function (modelIndex) {
+var sb =  new JU.SB ();
+for (var m = 0, mc = this.vwr.ms.mc; m < mc; m++) {
+if (modelIndex >= 0 && m != modelIndex) continue;
+var moData = this.vwr.ms.getInfo (m, "moData");
+if (moData == null) continue;
+var mos = (moData.get ("mos"));
+var nOrb = (mos == null ? 0 : mos.size ());
+if (nOrb == 0) continue;
+var moType = moData.get ("nboType");
+if (moType == null) moType = "mo";
+for (var i = nOrb; --i >= 0; ) {
+var mo = mos.get (i);
+var type = mo.get ("type");
+if (type == null) type = "";
+var units = mo.get ("energyUnits");
+if (units == null) units = "";
+var occ = mo.get ("occupancy");
+if (occ != null) type = "occupancy " + occ.floatValue () + " " + type;
+var sym = mo.get ("symmetry");
+if (sym != null) type += sym;
+var energy = "" + mo.get ("energy");
+if (Float.isNaN (JU.PT.parseFloat (energy))) sb.append (JU.PT.sprintf ("model %-2s; %s %-2i # %s\n", "ssis", [this.vwr.ms.getModelNumberDotted (m), moType, Integer.$valueOf (i + 1), type]));
+ else sb.append (JU.PT.sprintf ("model %-2s;  %s %-2i # energy %-8.3f %s %s\n", "ssifss", [this.vwr.ms.getModelNumberDotted (m), moType, Integer.$valueOf (i + 1), mo.get ("energy"), units, type]));
+}
+}
+return sb.toString ();
+}, "~N");
 Clazz.overrideMethod (c$, "clearSg", 
 function () {
 });
@@ -242,12 +279,13 @@ this.moTranslucency = this.thisModel.get ("moTranslucency");
 this.moTranslucentLevel = this.thisModel.get ("moTranslucentLevel");
 this.moPlane = this.thisModel.get ("moPlane");
 this.moCutoff = this.thisModel.get ("moCutoff");
-if (this.moCutoff == null) this.moCutoff = this.sg.getMoData ().get ("defaultCutoff");
+if (this.moCutoff == null) this.moCutoff = this.sg.params.moData.get ("defaultCutoff");
 if (this.moCutoff == null) {
 this.moCutoff = Float.$valueOf (0.05);
 }this.thisModel.put ("moCutoff", Float.$valueOf (this.moCutoff.floatValue ()));
 this.moResolution = this.thisModel.get ("moResolution");
 this.moScale = this.thisModel.get ("moScale");
+this.nboType = this.thisModel.get ("moType");
 this.moColorPos = this.thisModel.get ("moColorPos");
 this.moColorNeg = this.thisModel.get ("moColorNeg");
 this.moSquareData = this.thisModel.get ("moSquareData");
@@ -285,7 +323,7 @@ this.setPropI ("monteCarloCount", this.moMonteCarloCount, null);
 }}this.setPropI ("squareData", this.moSquareData, null);
 this.setPropI ("squareLinear", this.moSquareLinear, null);
 this.setPropI ("title", this.moTitleFormat, null);
-this.setPropI ("fileName", this.vwr.getFileName (), null);
+this.setPropI ("fileName", this.vwr.fm.getFileName (), null);
 this.setPropI ("molecularOrbital", linearCombination == null ? Integer.$valueOf (moNumber) : linearCombination, null);
 if (this.moPlane != null && this.moColorNeg != null) this.setPropI ("colorRGB", this.moColorNeg, null);
 if (this.moPlane != null && this.moColorPos != null) this.setPropI ("colorRGB", this.moColorPos, null);
@@ -306,36 +344,30 @@ Clazz.overrideMethod (c$, "getShapeState",
 function () {
 if (this.htModels == null) return "";
 var s =  new JU.SB ();
-var modelCount = this.vwr.getModelCount ();
-for (var i = 0; i < modelCount; i++) s.append (this.getMoState (i));
-
-return s.toString ();
-});
-Clazz.defineMethod (c$, "getMoState", 
- function (modelIndex) {
-this.strID = this.getId (modelIndex);
-if (!this.getSettings (this.strID)) return "";
-var s =  new JU.SB ();
-var modelCount = this.vwr.getModelCount ();
-if (modelCount > 1) J.shape.Shape.appendCmd (s, "frame " + this.vwr.getModelNumberDotted (modelIndex));
-if (this.moCutoff != null) J.shape.Shape.appendCmd (s, "mo cutoff " + (this.sg.getIsPositiveOnly () ? "+" : "") + this.moCutoff);
-if (this.moScale != null) J.shape.Shape.appendCmd (s, "mo scale " + this.moScale);
-if (this.moMonteCarloCount != null) J.shape.Shape.appendCmd (s, "mo points " + this.moMonteCarloCount + " " + this.moRandomSeed);
-if (this.moResolution != null) J.shape.Shape.appendCmd (s, "mo resolution " + this.moResolution);
-if (this.moPlane != null) J.shape.Shape.appendCmd (s, "mo plane {" + this.moPlane.x + " " + this.moPlane.y + " " + this.moPlane.z + " " + this.moPlane.w + "}");
-if (this.moTitleFormat != null) J.shape.Shape.appendCmd (s, "mo titleFormat " + JU.PT.esc (this.moTitleFormat));
-if (this.moColorNeg != null) J.shape.Shape.appendCmd (s, "mo color " + JU.Escape.escapeColor (this.moColorNeg.intValue ()) + (this.moColorNeg.equals (this.moColorPos) ? "" : " " + JU.Escape.escapeColor (this.moColorPos.intValue ())));
+var modelCount = this.vwr.ms.mc;
+for (var iModel = 0; iModel < modelCount; iModel++) {
+if (!this.getSettings (this.getId (iModel))) continue;
+if (modelCount > 1) J.shape.Shape.appendCmd (s, "frame " + this.vwr.getModelNumberDotted (iModel));
+if (this.nboType != null) J.shape.Shape.appendCmd (s, "nbo type " + this.nboType);
+if (this.moCutoff != null) J.shape.Shape.appendCmd (s, this.myType + " cutoff " + (this.sg.params.isPositiveOnly ? "+" : "") + this.moCutoff);
+if (this.moScale != null) J.shape.Shape.appendCmd (s, this.myType + " scale " + this.moScale);
+if (this.moMonteCarloCount != null) J.shape.Shape.appendCmd (s, this.myType + " points " + this.moMonteCarloCount + " " + this.moRandomSeed);
+if (this.moResolution != null) J.shape.Shape.appendCmd (s, this.myType + " resolution " + this.moResolution);
+if (this.moPlane != null) J.shape.Shape.appendCmd (s, this.myType + " plane {" + this.moPlane.x + " " + this.moPlane.y + " " + this.moPlane.z + " " + this.moPlane.w + "}");
+if (this.moTitleFormat != null) J.shape.Shape.appendCmd (s, this.myType + " titleFormat " + JU.PT.esc (this.moTitleFormat));
+if (this.moColorNeg != null) J.shape.Shape.appendCmd (s, this.myType + " color " + JU.Escape.escapeColor (this.moColorNeg.intValue ()) + (this.moColorNeg.equals (this.moColorPos) ? "" : " " + JU.Escape.escapeColor (this.moColorPos.intValue ())));
 if (this.moSlab != null) {
 if (this.thisMesh.slabOptions != null) J.shape.Shape.appendCmd (s, this.thisMesh.slabOptions.toString ());
-if (this.thisMesh.jvxlData.slabValue != -2147483648) J.shape.Shape.appendCmd (s, "mo slab " + this.thisMesh.jvxlData.slabValue);
+if (this.thisMesh.jvxlData.slabValue != -2147483648) J.shape.Shape.appendCmd (s, this.myType + " slab " + this.thisMesh.jvxlData.slabValue);
 }if (this.$moLinearCombination == null) {
-J.shape.Shape.appendCmd (s, "mo " + (this.moSquareData === Boolean.TRUE ? "squared " : "") + this.$moNumber);
+J.shape.Shape.appendCmd (s, this.myType + " " + (this.moSquareData === Boolean.TRUE ? "squared " : "") + this.$moNumber);
 } else {
-J.shape.Shape.appendCmd (s, "mo " + J.c.QS.getMOString (this.$moLinearCombination) + (this.moSquareLinear === Boolean.TRUE ? " squared" : ""));
-}if (this.moTranslucency != null) J.shape.Shape.appendCmd (s, "mo translucent " + this.moTranslucentLevel);
-J.shape.Shape.appendCmd (s, (this.thisModel.get ("mesh")).getState ("mo"));
+J.shape.Shape.appendCmd (s, this.myType + " " + J.quantum.QS.getMOString (this.$moLinearCombination) + (this.moSquareLinear === Boolean.TRUE ? " squared" : ""));
+}if (this.moTranslucency != null) J.shape.Shape.appendCmd (s, this.myType + " translucent " + this.moTranslucentLevel);
+J.shape.Shape.appendCmd (s, (this.thisModel.get ("mesh")).getState (this.myType));
+}
 return s.toString ();
-}, "~N");
+});
 Clazz.defineMethod (c$, "merge", 
 function (shape) {
 var mo = shape;

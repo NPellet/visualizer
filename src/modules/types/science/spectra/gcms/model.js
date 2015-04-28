@@ -10,24 +10,22 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function(Def
 
 		getjPath: function(rel) {
 			var data = [];
-
+			var view = this.module.view;
 			switch(rel) {
 
 				case 'mzList':
 				case 'selectedIngredient':
-
-					data = this.module.view.gcmsInstance.ingredients[ 0 ][ 0 ];
+					if (view.gcmsInstance.ingredients[0]) data = view.gcmsInstance.ingredients[ 0 ][ 0 ];
 				
 				break;
 
 				case 'GCIntegration':
-					data = this.module.view.annotations[ 0 ];
+					if (view.annotations) data = view.annotations[ 0 ];
 				break;
 
 				default:
 				case 'gcdata':
-
-					data = this.module.view.jcamp.gcms.gc;
+					if (view.jcamp) data = view.jcamp.gcms.gc;
 				
 				break;
 			}

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.xtal");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader", "JU.Lst"], "J.adapter.readers.xtal.VaspOutcarReader", ["java.lang.Double", "JU.DF"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader", "JU.Lst"], "J.adapter.readers.xtal.VaspOutcarReader", ["java.lang.Double", "JU.DF", "$.PT"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.atomNames = null;
 this.ac = 0;
@@ -63,9 +63,9 @@ this.elementNames.addLast (this.getTokens ()[3]);
 Clazz.defineMethod (c$, "readAtomCountAndSetNames", 
  function () {
 var numofElement =  Clazz.newIntArray (100, 0);
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line.substring (this.line.indexOf ("=") + 1));
+var tokens = JU.PT.getTokens (this.line.substring (this.line.indexOf ("=") + 1));
 this.ac = 0;
-for (var i = 0; i < tokens.length; i++) this.ac += (numofElement[i] = this.parseIntStr (tokens[i].trim ()));
+for (var i = 0; i < tokens.length; i++) this.ac += (numofElement[i] = this.parseIntStr (tokens[i]));
 
 this.atomNames =  new Array (this.ac);
 var nElements = this.elementNames.size ();
@@ -111,10 +111,10 @@ while (this.rd () != null && this.line.indexOf ("----------") < 0) this.addAtomX
 Clazz.defineMethod (c$, "readEnergy", 
  function () {
 this.rd ();
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+var tokens = JU.PT.getTokens (this.rd ());
 this.gibbsEnergy = Double.$valueOf (Double.parseDouble (tokens[4]));
 this.rd ();
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+tokens = JU.PT.getTokens (this.rd ());
 var enthalpy = Double.parseDouble (tokens[3]);
 this.gibbsEntropy = Double.$valueOf (enthalpy - this.gibbsEnergy.doubleValue ());
 });
@@ -122,8 +122,8 @@ Clazz.defineMethod (c$, "setAtomSetInfo",
  function () {
 if (this.gibbsEnergy == null) return;
 this.asc.setAtomSetEnergy ("" + this.gibbsEnergy, this.gibbsEnergy.floatValue ());
-this.asc.setAtomSetAuxiliaryInfo ("Energy", this.gibbsEnergy);
-this.asc.setAtomSetAuxiliaryInfo ("Entropy", this.gibbsEntropy);
+this.asc.setCurrentModelInfo ("Energy", this.gibbsEnergy);
+this.asc.setCurrentModelInfo ("Entropy", this.gibbsEntropy);
 this.asc.setInfo ("Energy", this.gibbsEnergy);
 this.asc.setInfo ("Entropy", this.gibbsEntropy);
 this.asc.setAtomSetName ("G = " + this.gibbsEnergy + " eV, T*S = " + this.gibbsEntropy + " eV");
@@ -132,26 +132,26 @@ Clazz.defineMethod (c$, "readMdyn",
  function () {
 var tokens = this.getTokens ();
 this.rd ();
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+tokens = JU.PT.getTokens (this.rd ());
 this.electronEne = Double.$valueOf (Double.parseDouble (tokens[4]));
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+tokens = JU.PT.getTokens (this.rd ());
 this.kinEne = Double.$valueOf (Double.parseDouble (tokens[4]));
 this.temp = this.parseFloatStr (tokens[6]);
 this.readLines (3);
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.rd ());
+tokens = JU.PT.getTokens (this.rd ());
 this.totEne = Double.$valueOf (Double.parseDouble (tokens[4]));
 this.setAtomSetInfoMd ();
 });
 Clazz.defineMethod (c$, "setAtomSetInfoMd", 
  function () {
 this.asc.setAtomSetName ("Temp. = " + JU.DF.formatDecimal ((this.temp), 2) + " K, Energy = " + this.totEne + " eV");
-this.asc.setAtomSetAuxiliaryInfo ("Energy", this.totEne);
+this.asc.setCurrentModelInfo ("Energy", this.totEne);
 this.asc.setInfo ("Energy", this.totEne);
-this.asc.setAtomSetAuxiliaryInfo ("EleEnergy", this.kinEne);
+this.asc.setCurrentModelInfo ("EleEnergy", this.kinEne);
 this.asc.setInfo ("EleEnergy", this.electronEne);
-this.asc.setAtomSetAuxiliaryInfo ("Kinetic", this.electronEne);
+this.asc.setCurrentModelInfo ("Kinetic", this.electronEne);
 this.asc.setInfo ("Kinetic", this.kinEne);
-this.asc.setAtomSetAuxiliaryInfo ("Temperature", JU.DF.formatDecimal ((this.temp), 2));
+this.asc.setCurrentModelInfo ("Temperature", JU.DF.formatDecimal ((this.temp), 2));
 this.asc.setInfo ("Temperature", JU.DF.formatDecimal ((this.temp), 2));
 });
 Clazz.defineMethod (c$, "readFrequency", 

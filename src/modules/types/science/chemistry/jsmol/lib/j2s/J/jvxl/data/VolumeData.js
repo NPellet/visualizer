@@ -86,10 +86,6 @@ Clazz.overrideMethod (c$, "getOriginFloat",
 function () {
 return this.origin;
 });
-Clazz.defineMethod (c$, "getSpanningVectors", 
-function () {
-return this.spanningVectors;
-});
 Clazz.defineMethod (c$, "getYzCount", 
 function () {
 this.minGrid = this.volumetricVectors[0].length ();

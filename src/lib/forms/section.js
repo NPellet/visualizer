@@ -1,234 +1,233 @@
-define(['jquery', './sectionelement', './group'], function($, SectionElement, Group) {
+'use strict';
 
-	var _self = this;
-	var Section = function(name) {
+define(['jquery', './sectionelement', './group'], function ($, SectionElement, Group) {
 
-		this.name = name;
-	};
+    var _self = this;
+    var Section = function (name) {
 
-	Section.defaultOptions = {
-		
-	};
+        this.name = name;
+    };
 
-	$.extend(Section.prototype, {
-		
-		init: function(options) {
+    Section.defaultOptions = {};
 
-			this.options = $.extend({}, Section.defaultOptions, options); // Creates the options
-			this.splice = Array.prototype.splice;
+    $.extend(Section.prototype, {
 
-			this.sections = {} // List all sections
-			this.groups = {}; // All group fields
+        init: function (options) {
 
-			this.sub = []; // Section elements
-		},
+            this.options = $.extend({}, Section.defaultOptions, options); // Creates the options
+            this.splice = Array.prototype.splice;
 
+            this.sections = {} // List all sections
+            this.groups = {}; // All group fields
 
-		getName: function() {
-			return this.name;
-		},
-
-		setStructure: function( json ) {
-
-			if( json.sections ) {
-				this._addSections( json.sections );
-			}
-
-			if( json.groups ) { 
-				this._addGroups( json.groups );
-			}
-		},
-
-		_addSections: function( sections ) {
-
-			this._addElements(sections, this.sections, Section);
-		},
-
-		_addGroups: function( groups ) {
-
-			this._addElements(groups, this.groups, Group);
-		},
-
-		_addElements: function( stackJson, stackTarget, constructor ) {
-			var i;
-			for( i in stackJson ) {
-				this._addElement( stackJson[ i ], stackTarget, constructor, i );
-			}
-		},
-
-		_addElement: function(objFrom, stackTarget, constructor, name) {
-
-			if( ! ( objFrom instanceof constructor)) {
-
-				var objFrom2 = new constructor( name );
-
-				objFrom2.init(objFrom.options);
-				objFrom2.sectionLevel = this.sectionLevel + 1;
-				objFrom2.section = this;
-				objFrom2.form = this.form;
-
-				objFrom2.setStructure(objFrom);
-				objFrom = objFrom2;
-
-			}
-
-			if( stackTarget[ objFrom.getName() ] ) {
-				return this.form.throwError('Cannot add Section / Group. "' + objFrom.getName() + '" already exists');
-			}
-
-			stackTarget[ objFrom.getName() ] = objFrom;
-		},
+            this.sub = []; // Section elements
+        },
 
 
-		/*
+        getName: function () {
+            return this.name;
+        },
 
-		 sections: {
-			sectionName: {
+        setStructure: function (json) {
 
-				groups: {
-					groupName: [{
-						fieldName: ['12', '214', '2342']
-					}]
-				},
+            if (json.sections) {
+                this._addSections(json.sections);
+            }
 
-				sections: {
-		
-				}
-			}
-		}
+            if (json.groups) {
+                this._addGroups(json.groups);
+            }
+        },
 
-		*/
+        _addSections: function (sections) {
 
-		eachGroups: function( callback ) {
-			var i;
-			for(i in this.groups) {
-				callback.call( this, this.groups[ i ] );
-			}
-		},
+            this._addElements(sections, this.sections, Section);
+        },
 
-		eachSections: function( callback ) {
-			var i;
-			for(i in this.sections) {
-				callback.call( this, this.sections[ i ] );
-			}
-		},
+        _addGroups: function (groups) {
 
-		getValue: function() {
-			// Should only be called from form
-			var json = {},
-				i;
+            this._addElements(groups, this.groups, Group);
+        },
 
-			this.eachSubSections(function( sub ) {
-				json.push( sub.getValue() );
-			});
+        _addElements: function (stackJson, stackTarget, constructor) {
+            var i;
+            for (i in stackJson) {
+                this._addElement(stackJson[i], stackTarget, constructor, i);
+            }
+        },
 
-			return json;
-		},
+        _addElement: function (objFrom, stackTarget, constructor, name) {
 
-		getSection: function(sectionName, sectionNumber) {
-			
-			var section = this.sections[ sectionName ];
-			if( sectionNumber == undefined )
-				return section;
-			return section.getSectionElement( sectionNumber );
-		},
+            if (!( objFrom instanceof constructor)) {
 
-		getSections: function() {
-			return this.sections;
-		},
+                var objFrom2 = new constructor(name);
 
-		getGroups: function() {
-			return this.groups;
-		},
+                objFrom2.init(objFrom.options);
+                objFrom2.sectionLevel = this.sectionLevel + 1;
+                objFrom2.section = this;
+                objFrom2.form = this.form;
 
-		sectionExists: function(sectionName) {
-			return !! this.sections[ sectionName ];
-		},
+                objFrom2.setStructure(objFrom);
+                objFrom = objFrom2;
 
-		getGroup: function( groupName ) {
-			return this.groups[ groupName ] || this.form.throwError("Cannot find group " + groupName + ".");
-		},
+            }
 
-		groupExists: function( groupName ) {
-			return !! this.groups[ groupName ];
-		},
+            if (stackTarget[objFrom.getName()]) {
+                return this.form.throwError('Cannot add Section / Group. "' + objFrom.getName() + '" already exists');
+            }
 
-		makeElement: function(options) {
-			var sub = new SectionElement( );
-			sub.init( options );
-			sub.section = this;
-			this.sub.push( sub );
-
-			return sub;
-		},
+            stackTarget[objFrom.getName()] = objFrom;
+        },
 
 
-		_setTpl: function( tpl ) {
-			this._tpl = tpl;
+        /*
 
-			this.eachSections( function( section ) {
-				section._setTpl( this._tpl.find( '.form-section[data-form-sectionname="' + section.name + '"]' ) );
-			});
+         sections: {
+         sectionName: {
 
-			this.eachGroups( function( group ) {
-				group._setTpl( this._tpl.find( '.form-group[data-form-groupname="' + group.name + '"]' ) );
-			});
+         groups: {
+         groupName: [{
+         fieldName: ['12', '214', '2342']
+         }]
+         },
 
-			this._tplClean = this._tpl.clone();
-			this._tplClean.find('.form-section-group-container:eq(0)').empty();
-			this._tplClean.find('.form-section-section-container:eq(0)').empty();
-		}
-	});
-	
+         sections: {
 
-	
-	Object.defineProperty(Section.prototype, 'form', {
-		
-		enumerable: true,
-		configurable: false,
-		
-		get: function() {
-			return this._form;
-		},
+         }
+         }
+         }
 
-		set: function(form) {
-			this._form = form;
-		}
-	
-	});
-	
-	Object.defineProperty(Section.prototype, 'name', {
-		
-		enumerable: true,
-		configurable: false,
+         */
 
-		get: function() {
-			return this._name;
-		},
+        eachGroups: function (callback) {
+            var i;
+            for (i in this.groups) {
+                callback.call(this, this.groups[i]);
+            }
+        },
 
-		set: function(name) {
-			
-			this._name = name;
-		}
-	
-	});
+        eachSections: function (callback) {
+            var i;
+            for (i in this.sections) {
+                callback.call(this, this.sections[i]);
+            }
+        },
+
+        getValue: function () {
+            // Should only be called from form
+            var json = {},
+                i;
+
+            this.eachSubSections(function (sub) {
+                json.push(sub.getValue());
+            });
+
+            return json;
+        },
+
+        getSection: function (sectionName, sectionNumber) {
+
+            var section = this.sections[sectionName];
+            if (sectionNumber == undefined)
+                return section;
+            return section.getSectionElement(sectionNumber);
+        },
+
+        getSections: function () {
+            return this.sections;
+        },
+
+        getGroups: function () {
+            return this.groups;
+        },
+
+        sectionExists: function (sectionName) {
+            return !!this.sections[sectionName];
+        },
+
+        getGroup: function (groupName) {
+            return this.groups[groupName] || this.form.throwError('Cannot find group ' + groupName + '.');
+        },
+
+        groupExists: function (groupName) {
+            return !!this.groups[groupName];
+        },
+
+        makeElement: function (options) {
+            var sub = new SectionElement();
+            sub.init(options);
+            sub.section = this;
+            this.sub.push(sub);
+
+            return sub;
+        },
 
 
-	Object.defineProperty(Section.prototype, 'section', {
-		
-		enumerable: true,
-		configurable: false,
-		
-		get: function() {
-			return this._section;
-		},
+        _setTpl: function (tpl) {
+            this._tpl = tpl;
 
-		set: function(section) {
-			this._section = section;
-		}
-	
-	});
+            this.eachSections(function (section) {
+                section._setTpl(this._tpl.find('.form-section[data-form-sectionname="' + section.name + '"]'));
+            });
+
+            this.eachGroups(function (group) {
+                group._setTpl(this._tpl.find('.form-group[data-form-groupname="' + group.name + '"]'));
+            });
+
+            this._tplClean = this._tpl.clone();
+            this._tplClean.find('.form-section-group-container:eq(0)').empty();
+            this._tplClean.find('.form-section-section-container:eq(0)').empty();
+        }
+    });
 
 
-	return Section;
+    Object.defineProperty(Section.prototype, 'form', {
+
+        enumerable: true,
+        configurable: false,
+
+        get: function () {
+            return this._form;
+        },
+
+        set: function (form) {
+            this._form = form;
+        }
+
+    });
+
+    Object.defineProperty(Section.prototype, 'name', {
+
+        enumerable: true,
+        configurable: false,
+
+        get: function () {
+            return this._name;
+        },
+
+        set: function (name) {
+
+            this._name = name;
+        }
+
+    });
+
+
+    Object.defineProperty(Section.prototype, 'section', {
+
+        enumerable: true,
+        configurable: false,
+
+        get: function () {
+            return this._section;
+        },
+
+        set: function (section) {
+            this._section = section;
+        }
+
+    });
+
+
+    return Section;
 });

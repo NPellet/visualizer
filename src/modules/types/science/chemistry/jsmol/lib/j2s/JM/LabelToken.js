@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JM");
-Clazz.load (null, "JM.LabelToken", ["java.lang.Float", "java.util.Hashtable", "JU.PT", "$.SB", "JS.T"], function () {
+Clazz.load (null, "JM.LabelToken", ["java.lang.Float", "java.util.Hashtable", "JU.Lst", "$.PT", "$.SB", "$.T3", "JS.SV", "$.T", "JU.Edge"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.text = null;
 this.key = null;
@@ -84,8 +84,8 @@ return htValues;
 c$.formatLabelBond = Clazz.defineMethod (c$, "formatLabelBond", 
 function (vwr, bond, tokens, values, indices, ptTemp) {
 values.put ("#", "" + (bond.index + 1));
-values.put ("ORDER", "" + bond.getOrderNumberAsString ());
-values.put ("TYPE", bond.getOrderName ());
+values.put ("ORDER", "" + JU.Edge.getBondOrderNumberFromOrder (bond.order));
+values.put ("TYPE", JU.Edge.getBondOrderNameFromOrder (bond.order));
 values.put ("LENGTH", Float.$valueOf (bond.atom1.distance (bond.atom2)));
 values.put ("ENERGY", Float.$valueOf (bond.getEnergy ()));
 JM.LabelToken.setValues (tokens, values);
@@ -168,13 +168,11 @@ ich = cch;
 break;
 }var propertyName = strFormat.substring (ich, ichClose).toLowerCase ();
 if (propertyName.startsWith ("property_")) {
-lt.text = propertyName;
 lt.tok = 135270408;
-lt.data = vwr.getDataFloat (lt.text);
+lt.data = vwr.getDataFloat (propertyName);
 } else if (propertyName.startsWith ("validation.")) {
-lt.text = propertyName.substring (11);
 lt.tok = 1073742189;
-lt.data = vwr.getDataFloat ("property_" + lt.text);
+lt.data = vwr.getDataFloat ("property_" + propertyName.substring (11));
 } else {
 var token = JS.T.getTokenFromName (propertyName);
 if (token != null && JM.LabelToken.isLabelPropertyTok (token.tok)) lt.tok = token.tok;
@@ -185,16 +183,20 @@ var ichCloseBracket = strFormat.indexOf ('}', ich);
 if (ichCloseBracket < ich) {
 ich = cch;
 break;
-}lt.text = strFormat.substring (ich, ichCloseBracket);
-lt.data = vwr.getDataFloat (lt.text);
+}var s = strFormat.substring (ich, ichCloseBracket);
+lt.data = vwr.getDataFloat (s);
 if (lt.data == null) {
-lt.data = vwr.getData (lt.text);
+lt.data = vwr.getData (s);
 if (Clazz.instanceOf (lt.data, Array)) {
 lt.data = (lt.data)[1];
 if (Clazz.instanceOf (lt.data, String)) lt.data = JU.PT.split (lt.data, "\n");
 if (!(JU.PT.isAS (lt.data))) lt.data = null;
-}lt.tok = (lt.data == null ? 4 : 135266306);
+}if (lt.data == null) {
+lt.tok = 1716520985;
+lt.data = s;
 } else {
+lt.tok = 135266306;
+}} else {
 lt.tok = 135270408;
 }ich = ichCloseBracket + 1;
 break;
@@ -245,6 +247,27 @@ strT += "," + o.get (i);
 }
 if (strT.length > 1) strT = strT.substring (1);
 }}}break;
+case 1716520985:
+var data = vwr.ms.getInfo (atom.mi, t.data);
+var iatom = atom.i - vwr.ms.am[atom.mi].firstAtomIndex;
+var o = null;
+if (iatom >= 0) if ((Clazz.instanceOf (data, Array))) {
+var sdata = data;
+o = (iatom < sdata.length ? sdata[iatom] : null);
+} else if (Clazz.instanceOf (data, JU.Lst)) {
+var list = data;
+o = (iatom < list.size () ? JS.SV.oValue (list.get (iatom)) : null);
+}if (o == null) {
+strT = "";
+} else if (Clazz.instanceOf (o, Float)) {
+floatT = (o).floatValue ();
+} else if (Clazz.instanceOf (o, Integer)) {
+floatT = (o).intValue ();
+} else if (Clazz.instanceOf (o, JU.T3)) {
+ptT = o;
+} else {
+strT = o.toString ();
+}break;
 case 135266306:
 if (t.data != null) {
 var sdata = t.data;
@@ -252,9 +275,7 @@ strT = (atom.i < sdata.length ? sdata[atom.i] : "");
 }break;
 case 1632634891:
 var formalCharge = atom.getFormalCharge ();
-if (formalCharge > 0) strT = "" + formalCharge + "+";
- else if (formalCharge < 0) strT = "" + -formalCharge + "-";
- else strT = "";
+strT = (formalCharge > 0 ? "" + formalCharge + "+" : formalCharge < 0 ? "" + -formalCharge + "-" : "");
 break;
 case 'g':
 strT = "" + atom.getSelectedGroupIndexWithinChain ();
@@ -276,6 +297,7 @@ floatT = atom.atomPropertyFloat (vwr, t.tok, ptTemp);
 break;
 case 'r':
 strT = atom.getSeqcodeString ();
+if (strT == null) strT = "1";
 break;
 case 1087373324:
 strT = atom.getStructureId ();
@@ -285,11 +307,7 @@ var id = atom.getStrucNo ();
 strT = (id <= 0 ? "" : "" + id);
 break;
 case 1112539150:
-floatT = atom.getGroupParameter (1112539150);
-if (Float.isNaN (floatT)) strT = "null";
-break;
-case 4:
-strT = vwr.ms.getAtomProp (atom, t.text.substring (2, t.text.length - 1));
+if (Float.isNaN (floatT = atom.getGroupParameter (1112539150))) strT = "null";
 break;
 case 1112541202:
 case 1112541203:

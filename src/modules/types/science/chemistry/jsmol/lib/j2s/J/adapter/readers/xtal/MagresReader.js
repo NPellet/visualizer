@@ -22,7 +22,7 @@ Clazz.overrideMethod (c$, "finalizeSubclassReader",
 function () {
 this.asc.setInfo ("fileHeader", this.header.toString ());
 this.finalizeReaderASCR ();
-if (this.interactionTensors.size () > 0) this.asc.setAtomSetAuxiliaryInfo ("interactionTensors", this.interactionTensors);
+if (this.interactionTensors.size () > 0) this.asc.setCurrentModelInfo ("interactionTensors", this.interactionTensors);
 });
 Clazz.overrideMethod (c$, "checkLine", 
 function () {
@@ -79,7 +79,7 @@ case 5:
 if (this.currentBlock == -1) {
 this.currentBlock = 2;
 this.magresUnits =  new java.util.Hashtable ();
-this.asc.setAtomSetAuxiliaryInfo ("magresUnits", this.magresUnits);
+this.asc.setCurrentModelInfo ("magresUnits", this.magresUnits);
 }break;
 case 6:
 if (this.currentBlock == 2) this.currentBlock = -1;
@@ -149,7 +149,7 @@ var data =  Clazz.newFloatArray (9, 0);
 for (var i = 0; i < 9; ) data[i] = this.parseFloatStr (tokens[++i]);
 
 JU.Logger.info ("Magres reader creating magres_" + type + ": " + JU.Escape.eAF (data));
-this.asc.setAtomSetAuxiliaryInfo ("magres_" + type, data);
+this.asc.setCurrentModelInfo ("magres_" + type, data);
 }var atomName1 = J.adapter.readers.xtal.MagresReader.getAtomName (tokens[1], tokens[2]);
 var pt = 3;
 var atomName2 = (isIsc ? J.adapter.readers.xtal.MagresReader.getAtomName (tokens[pt++], tokens[pt++]) : null);

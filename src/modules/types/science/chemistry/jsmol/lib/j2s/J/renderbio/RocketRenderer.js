@@ -81,7 +81,7 @@ this.tm.transformPt3f (pointStart, this.screenA);
 this.tm.transformPt3f ((renderArrowHead ? pointBeforeEnd : pointEnd), this.screenB);
 var zMid = Clazz.doubleToInt (Math.floor ((this.screenA.z + this.screenB.z) / 2));
 var diameter = Clazz.floatToInt (this.vwr.tm.scaleToScreen (zMid, this.mad));
-if (pointStart !== pointBeforeEnd) this.g3d.fillCylinderBits (2, diameter, this.screenA, this.screenB);
+if (!renderArrowHead || pointStart !== pointBeforeEnd) this.g3d.fillCylinderBits (2, diameter, this.screenA, this.screenB);
 if (renderArrowHead) {
 this.screenA.sub2 (pointEnd, pointBeforeEnd);
 this.tm.transformPt3f (pointEnd, this.screenC);

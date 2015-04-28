@@ -5,7 +5,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'Iframe',
@@ -25,13 +25,6 @@ define(['modules/default/defaultcontroller'], function (Default) {
     };
 
     Controller.prototype.variablesIn = ['url'];
-
-    Controller.prototype.configurationStructure = function () {
-        var jpaths = this.module.model.getjPath();
-
-        return {
-        }
-    };
 
     return Controller;
 

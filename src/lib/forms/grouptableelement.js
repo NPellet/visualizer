@@ -1,377 +1,377 @@
-define(['jquery', './groupelement'], function($, GroupElement) {
+'use strict';
 
-	var GroupTableElement = function() {
-		this.duplicators = [];
-	};
+define(['jquery', './groupelement'], function ($, GroupElement) {
 
-	GroupTableElement.prototype = new GroupElement();
-	
-	GroupTableElement.prototype.makeDom = function(forceMake) {
+    var GroupTableElement = function () {
+        this.duplicators = [];
+    };
 
-		var self = this,
-			dom = $("<div />").addClass('form-group-table'),
-			table, domHead, domBody, tr, th, divFieldElements;
+    GroupTableElement.prototype = new GroupElement();
 
+    GroupTableElement.prototype.makeDom = function (forceMake) {
 
-		if( this.getTitle() ) {
-			dom.append('<div class="form-groupelement-title">' + this.getTitle() + '</div>');
-		}
+        var self = this,
+            dom = $('<div />').addClass('form-group-table'),
+            table, domHead, domBody, tr, th, divFieldElements;
 
-		table = $("<table />", { cellpadding: 0, cellspacing: 0 } ).css( { width: '100%' } );
-		domHead = $("<thead />");
-		domBody = $("<tbody />");
 
-		tr = $("<tr />").appendTo(domHead);
+        if (this.getTitle()) {
+            dom.append('<div class="form-groupelement-title">' + this.getTitle() + '</div>');
+        }
 
-		tr.append( "<th />" ); // Numbering
+        table = $('<table />', {
+            cellpadding: 0,
+            cellspacing: 0
+        }).css({width: '100%'});
+        domHead = $('<thead />');
+        domBody = $('<tbody />');
 
-		this.group.eachFields( function( field ) {
+        tr = $('<tr />').appendTo(domHead);
 
-			if( field.isDisplayed() ) {
-				th = $( "<th />" ).html( field.getTitle( true ) );
-				tr.append( th );
-			}
+        tr.append('<th />'); // Numbering
 
-		});
+        this.group.eachFields(function (field) {
 
-		if( this.options.multiple ) {
-			tr.append("<th />");	
-		}
-		
-		table.append( domHead ).append( domBody );
+            if (field.isDisplayed()) {
+                th = $('<th />').html(field.getTitle(true));
+                tr.append(th);
+            }
 
-		this.dom = dom;
-		this.domHead = domHead;
-		this.domBody = domBody;
+        });
 
-		if( this.options.multiple ) {
+        if (this.options.multiple) {
+            tr.append('<th />');
+        }
 
-			table.on('click', '.form-duplicator', function() {
+        table.append(domHead).append(domBody);
 
-				var add = $( this ).hasClass( 'form-duplicator-add' ),
-					rowid = parseInt( $( this ).parent( ).attr( 'data-rowid' ) );
+        this.dom = dom;
+        this.domHead = domHead;
+        this.domBody = domBody;
 
-				if( add ) {
+        if (this.options.multiple) {
 
-					self.duplicate( rowid );
+            table.on('click', '.form-duplicator', function () {
 
-				} else {
+                var add = $(this).hasClass('form-duplicator-add'),
+                    rowid = parseInt($(this).parent().attr('data-rowid'));
 
-					self.remove( rowid );
-				}
+                if (add) {
 
-			});
-		}
+                    self.duplicate(rowid);
 
-		this.updateDom();
-		this.dom.append(table);
-		return this.dom;
-	};
+                } else {
 
+                    self.remove(rowid);
+                }
 
+            });
+        }
 
-	GroupTableElement.prototype._makeDomTpl = function() {
+        this.updateDom();
+        this.dom.append(table);
+        return this.dom;
+    };
 
 
-		return this.makeDom();
-	}
+    GroupTableElement.prototype._makeDomTpl = function () {
 
-	GroupTableElement.prototype.visible = function() {
 
-		var w = this.domBody.width(), $el, self = this;
+        return this.makeDom();
+    }
 
-		w -= 20;
-		if( this.options.multiple ) {
-			w -= 30;
-		}
+    GroupTableElement.prototype.visible = function () {
 
-		w /= this.group.nbFields;
+        var w = this.domBody.width(), $el, self = this;
 
-		this.domHead.children().children().each(function( i , el ) {
-			$el = $(el);
+        w -= 20;
+        if (this.options.multiple) {
+            w -= 30;
+        }
 
-			if( i == 0 ) {
-				$el.css('width', 20);
-				return;
-			}
+        w /= this.group.nbFields;
 
-			if( self.group.options.multiple && i == self.group.nbFields + 1) {
-				$el.css('width', 30);
-				return;
-			}
+        this.domHead.children().children().each(function (i, el) {
+            $el = $(el);
 
-			$el.css('width', w);
+            if (i == 0) {
+                $el.css('width', 20);
+                return;
+            }
 
-		});
-	}
+            if (self.group.options.multiple && i == self.group.nbFields + 1) {
+                $el.css('width', 30);
+                return;
+            }
 
+            $el.css('width', w);
 
-	GroupTableElement.prototype.updateDom = function() {
+        });
+    }
 
-		var self = this;
-		var trs = [], tr, td, i = 0, l, j = 0, fields = [ ];
 
-		this.domBody.children().detach( );
+    GroupTableElement.prototype.updateDom = function () {
 
-		this.group.eachFields( function( field ) {
+        var self = this;
+        var trs = [], tr, td, i = 0, l, j = 0, fields = [];
 
-			var fieldName = field.getName();
-			self.getFieldElement( fieldName , 0 );
-			//self.fieldElementsDom[ fieldName ].empty(); // Empty the dom
+        this.domBody.children().detach();
 
-			i = 0;
+        this.group.eachFields(function (field) {
 
-			self.eachFieldElements( fieldName, function( fieldElement ) {
+            var fieldName = field.getName();
+            self.getFieldElement(fieldName, 0);
+            //self.fieldElementsDom[ fieldName ].empty(); // Empty the dom
 
-				td = $( "<td />" ).html( fieldElement.getDom( ) );
-				trs[ i ] = trs[ i ] || [ ];
-				trs[ i ][ j ] = td;
-				i++;
+            i = 0;
 
-			});
+            self.eachFieldElements(fieldName, function (fieldElement) {
 
-			j++;
+                td = $('<td />').html(fieldElement.getDom());
+                trs[i] = trs[i] || [];
+                trs[i][j] = td;
+                i++;
 
-			fields[ j ] = field;
-		});
+            });
 
-		i = 0, l = trs.length;
-		for( ; i < l ; i++ ) {
+            j++;
 
-			tr = $("<tr />");
-			tr.append('<td>' + ( i + 1 ) + '</td>'); // Numbering
-		
-			for(j = 0, m = trs[ i ].length; j < m ; j++ ) {
-/*
-				if(!trs[ i ][ j ]) {
+            fields[j] = field;
+        });
 
-					trs[ i ][ j ] = fields[ j ].makeElement( ); // No choice we need to create if doesn't exist
-					trs[ i ][ j ].groupElement( this );
-				}
-*/
-				tr.append( trs[ i ][ j ] ); // Add td to tr
-			}
+        i = 0, l = trs.length;
+        for (; i < l; i++) {
 
-			if( this.options.multiple ) {
-				tr.append( this.makeDuplicator( i ) ); // Numbering
-			}
+            tr = $('<tr />');
+            tr.append('<td>' + ( i + 1 ) + '</td>'); // Numbering
 
-			this.domBody.append( tr );
-		}
+            for (var j = 0, m = trs[i].length; j < m; j++) {
+                /*
+                 if(!trs[ i ][ j ]) {
 
+                 trs[ i ][ j ] = fields[ j ].makeElement( ); // No choice we need to create if doesn't exist
+                 trs[ i ][ j ].groupElement( this );
+                 }
+                 */
+                tr.append(trs[i][j]); // Add td to tr
+            }
 
-		this.group.form.redoTabIndices();
-	
-		return this.dom;
-	};
+            if (this.options.multiple) {
+                tr.append(this.makeDuplicator(i)); // Numbering
+            }
 
-	GroupTableElement.prototype.makeDuplicator = function(rowId) {
-		if( this.duplicators[ rowId ] ) {
-			return this.duplicators[ rowId ];
-		}
+            this.domBody.append(tr);
+        }
 
-		var td = $( "<td></td>" , { "data-rowid": rowId } ).addClass( 'form-table-duplicator' );
-		td.append( '<span class="form-duplicator form-duplicator-add">+</span>' );
-		td.append( '<span class="form-duplicator form-duplicator-remove">-</span>' );
 
-		this.duplicators[ rowId ] = td;
+        this.group.form.redoTabIndices();
 
-		return td;
-	};
+        return this.dom;
+    };
 
-	GroupTableElement.prototype.duplicate = function(rowId) {
+    GroupTableElement.prototype.makeDuplicator = function (rowId) {
+        if (this.duplicators[rowId]) {
+            return this.duplicators[rowId];
+        }
 
-		var self = this,
-			els = [];
+        var td = $('<td></td>', {'data-rowid': rowId}).addClass('form-table-duplicator');
+        td.append('<span class="form-duplicator form-duplicator-add">+</span>');
+        td.append('<span class="form-duplicator form-duplicator-remove">-</span>');
 
-		this.group.eachFields( function( field ) {
+        this.duplicators[rowId] = td;
 
-			var el = field.makeElement( ).done(function( value ) {
+        return td;
+    };
 
-				value.group = self.group;
-				value.groupElement = self;
-				self.fieldElements[ field.getName() ].splice( rowId + 1, 0, value );
-			});
+    GroupTableElement.prototype.duplicate = function (rowId) {
 
-			els.push( el );
+        var self = this,
+            els = [];
 
-		});
+        this.group.eachFields(function (field) {
 
-		$.when.apply( $.when, els ).then(function() {
+            var el = field.makeElement().done(function (value) {
 
-			self.updateDom( );
-			var i = 0,
-				l = arguments.length;
+                value.group = self.group;
+                value.groupElement = self;
+                self.fieldElements[field.getName()].splice(rowId + 1, 0, value);
+            });
 
-			for( ; i < l ; i ++ ) {
+            els.push(el);
 
-				arguments[ i ].setDefaultOr();
-				arguments[ i ].inDom( );
-			}
+        });
 
-		});
-	};
+        $.when.apply($.when, els).then(function () {
 
-	GroupTableElement.prototype.remove = function(rowId) {
+            self.updateDom();
+            var i = 0,
+                l = arguments.length;
 
-		var self = this,
-			length;
+            for (; i < l; i++) {
 
-		this.group.eachFields( function( field ) {
+                arguments[i].setDefaultOr();
+                arguments[i].inDom();
+            }
 
-			field.removeElement( self.fieldElements[ field.getName() ][ rowId ] );
-			self.fieldElements[ field.getName() ].splice( rowId, 1 );
-			length = self.fieldElements[ field.getName() ].length;
+        });
+    };
 
-		});
+    GroupTableElement.prototype.remove = function (rowId) {
 
-		if( length == 0 ) {
+        var self = this,
+            length;
 
-			this.duplicate( -1 );
-		} else {
+        this.group.eachFields(function (field) {
 
-			self.updateDom();
-		}
+            field.removeElement(self.fieldElements[field.getName()][rowId]);
+            self.fieldElements[field.getName()].splice(rowId, 1);
+            length = self.fieldElements[field.getName()].length;
 
-	};
+        });
 
-	GroupTableElement.prototype.fill = function( json, clearFirst ) {
+        if (length == 0) {
 
-		if( ! ( json instanceof Array ) ) {
-			return this.fillOld( json, clearFirst );
-		}
+            this.duplicate(-1);
+        } else {
 
-		var i = 0,
-			l = json.length,
-			j,
-			finalEl = {},
-			allJ = {},
-			fields = this.group.fields;
+            self.updateDom();
+        }
 
-		for( ; i < l ; i ++ ) {
+    };
 
-			for( j in fields ) {
+    GroupTableElement.prototype.fill = function (json, clearFirst) {
 
-				finalEl[ j ] = finalEl[ j ] || [ ];
-				finalEl[ j ][ i ] = json[ i ][ j ]; 
-				allJ[ j ] = true;
-			}
-		}
+        if (!( json instanceof Array )) {
+            return this.fillOld(json, clearFirst);
+        }
 
-		for( j in fields ) {
-			i = 0;
-			for( ; i < l ; i ++ ) {
-				finalEl[ j ][ i ] = finalEl[ j ][ i ] || null; 
-			}
-		}
+        var i = 0,
+            l = json.length,
+            j,
+            finalEl = {},
+            allJ = {},
+            fields = this.group.fields;
 
-		return this._fill( finalEl, clearFirst );
-	};
+        for (; i < l; i++) {
 
+            for (j in fields) {
 
-	GroupTableElement.prototype.fillOld = function( json, clearFirst ) {
+                finalEl[j] = finalEl[j] || [];
+                finalEl[j][i] = json[i][j];
+                allJ[j] = true;
+            }
+        }
 
-	
-		var i, l, max = 0, j;
+        for (j in fields) {
+            i = 0;
+            for (; i < l; i++) {
+                finalEl[j][i] = finalEl[j][i] || null;
+            }
+        }
 
-		this.group.eachFields(function( field ) {
+        return this._fill(finalEl, clearFirst);
+    };
 
-			json[ field.getName() ] = json[ field.getName() ] || [];
-			max = Math.max(max, json[ field.getName() ].length);
 
-		});
+    GroupTableElement.prototype.fillOld = function (json, clearFirst) {
 
-		for( i in json ) {
-			for( j = json[ i ].length ; j < max ; j ++ ) {
-				json[ i ][ j ] = null;
-			}
-		}
-		
-		return this._fill( json, clearFirst );
-	}
 
-	GroupTableElement.prototype.getValue = function(stackFrom, stackTo) {
+        var i, l, max = 0, j;
 
-		var i, j, l, stackTo = [ ];
+        this.group.eachFields(function (field) {
 
-		for( i in this.fieldElements ) {
+            json[field.getName()] = json[field.getName()] || [];
+            max = Math.max(max, json[field.getName()].length);
 
-			j = 0, 
-			l = this.fieldElements[ i ].length;
-			
-			for( ; j < l ; j ++) {
+        });
 
-				stackTo[ j ] = stackTo[ j ] || { };
-				stackTo[ j ][ i ] = this.fieldElements[ i ][ j ].extractValue( );
-			}
-		}
+        for (i in json) {
+            for (j = json[i].length; j < max; j++) {
+                json[i][j] = null;
+            }
+        }
 
-		return stackTo;
-	};
+        return this._fill(json, clearFirst);
+    }
 
+    GroupTableElement.prototype.getValue = function (stackFrom, stackTo) {
 
+        var i, j, l, stackTo = [];
 
+        for (i in this.fieldElements) {
 
-	GroupTableElement.prototype.getExpanderInfosFor = function( fieldElement ) {
+            j = 0,
+                l = this.fieldElements[i].length;
 
-		var fieldName = fieldElement.getName(),
-			i = 0, j;
+            for (; j < l; j++) {
 
-		this.eachFieldElements( fieldName, function( el ) {
-			if( el == fieldElement) {
-				j = i;
-			}
-			i++;
-		});
+                stackTo[j] = stackTo[j] || {};
+                stackTo[j][i] = this.fieldElements[i][j].extractValue();
+            }
+        }
 
-		var posWrap = this.group.form.dom.find('.form-sections-wrapper').position();
-		var posDom = fieldElement.dom.position();
-		var row = this.domBody.children('tr:eq(' + j + ')');
-		var tablePos = this.domBody.position();
+        return stackTo;
+    };
 
-		return {
-			width: row.outerWidth() - posDom.left + tablePos.left + 2,
-			left: posDom.left + posWrap.left - 1,
-			top: posDom.top + posWrap.top + this.domBody.children('tr:eq(' + j + ')').innerHeight() - 1
-		};
-	};
 
+    GroupTableElement.prototype.getExpanderInfosFor = function (fieldElement) {
 
+        var fieldName = fieldElement.getName(),
+            i = 0, j;
 
+        this.eachFieldElements(fieldName, function (el) {
+            if (el == fieldElement) {
+                j = i;
+            }
+            i++;
+        });
 
-	GroupTableElement.prototype.redoTabIndices = function( ) {
+        var posWrap = this.group.form.dom.find('.form-sections-wrapper').position();
+        var posDom = fieldElement.dom.position();
+        var row = this.domBody.children('tr:eq(' + j + ')');
+        var tablePos = this.domBody.position();
 
-		var self = this,
-			increment = 0,
-			nbFields = this.group.nbFields,
-			fieldPos = 0,
-			stack = [],
-			i = 0, l;
+        return {
+            width: row.outerWidth() - posDom.left + tablePos.left + 2,
+            left: posDom.left + posWrap.left - 1,
+            top: posDom.top + posWrap.top + this.domBody.children('tr:eq(' + j + ')').innerHeight() - 1
+        };
+    };
 
-		this.group.eachFields( function( field ) {
 
-			increment = 0;
-			self.eachFieldElements( field.getName() , function( fieldElement ) {
-				stack[ increment * nbFields + fieldPos ] = fieldElement;
-				increment ++;
-			} );
+    GroupTableElement.prototype.redoTabIndices = function () {
 
-			fieldPos++;
-		} );
+        var self = this,
+            increment = 0,
+            nbFields = this.group.nbFields,
+            fieldPos = 0,
+            stack = [],
+            i = 0, l;
 
-		for( l = stack.length ; i < l ; i ++ ) {
-			this.group.form.incrementTabIndex( stack[ i ] );
-		}
-	}
-	
+        this.group.eachFields(function (field) {
 
-	GroupTableElement.prototype.getFieldElementCorrespondingTo = function( element, name ) {
-		var field;
-		if( this.fieldElements[ name ] && ( field = this.fieldElements[ name ][ this.fieldElements[ element.getName() ].indexOf( element ) ] ) ) {
-			return field;
-		}
-	}
+            increment = 0;
+            self.eachFieldElements(field.getName(), function (fieldElement) {
+                stack[increment * nbFields + fieldPos] = fieldElement;
+                increment++;
+            });
 
+            fieldPos++;
+        });
 
-	return GroupTableElement;
+        for (l = stack.length; i < l; i++) {
+            this.group.form.incrementTabIndex(stack[i]);
+        }
+    }
+
+
+    GroupTableElement.prototype.getFieldElementCorrespondingTo = function (element, name) {
+        var field;
+        if (this.fieldElements[name] && ( field = this.fieldElements[name][this.fieldElements[element.getName()].indexOf(element)] )) {
+            return field;
+        }
+    }
+
+
+    return GroupTableElement;
 });

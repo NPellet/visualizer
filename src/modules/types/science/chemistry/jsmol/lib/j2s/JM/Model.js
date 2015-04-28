@@ -62,14 +62,6 @@ Clazz.defineMethod (c$, "getTrueAtomCount",
 function () {
 return this.bsAtoms.cardinality () - this.bsAtomsDeleted.cardinality ();
 });
-Clazz.defineMethod (c$, "setSelectedTrajectory", 
-function (i) {
-this.selectedTrajectory = i;
-}, "~N");
-Clazz.defineMethod (c$, "getSelectedTrajectory", 
-function () {
-return this.selectedTrajectory;
-});
 Clazz.defineMethod (c$, "resetBoundCount", 
 function () {
 this.bondCount = -1;
@@ -109,30 +101,6 @@ auxiliaryInfo.put ("title", jmolData);
 this.jmolFrameType = (jmolData.indexOf ("ramachandran") >= 0 ? "ramachandran" : jmolData.indexOf ("quaternion") >= 0 ? "quaternion" : "data");
 }return this;
 }, "JM.ModelSet,~N,~N,~S,java.util.Properties,java.util.Map");
-Clazz.defineMethod (c$, "setNAltLocs", 
-function (nAltLocs) {
-this.nAltLocs = nAltLocs;
-}, "~N");
-Clazz.defineMethod (c$, "setNInsertions", 
-function (nInsertions) {
-this.nInsertions = nInsertions;
-}, "~N");
-Clazz.defineMethod (c$, "getModelNumberDotted", 
-function () {
-return this.ms.getModelNumberDotted (this.modelIndex);
-});
-Clazz.defineMethod (c$, "getModelTitle", 
-function () {
-return this.ms.getModelTitle (this.modelIndex);
-});
-Clazz.defineMethod (c$, "isStructureTainted", 
-function () {
-return this.structureTainted;
-});
-Clazz.defineMethod (c$, "getChains", 
-function () {
-return this.chains;
-});
 Clazz.defineMethod (c$, "getChainCount", 
 function (countWater) {
 if (this.chainCount > 1 && !countWater) for (var i = 0; i < this.chainCount; i++) if (this.chains[i].chainID == 0) return this.chainCount - 1;
@@ -156,7 +124,7 @@ Clazz.defineMethod (c$, "getGroupCount",
 function () {
 if (this.groupCount < 0) {
 this.groupCount = 0;
-for (var i = this.chainCount; --i >= 0; ) this.groupCount += this.chains[i].getGroupCount ();
+for (var i = this.chainCount; --i >= 0; ) this.groupCount += this.chains[i].groupCount;
 
 }return this.groupCount;
 });
@@ -201,50 +169,19 @@ for (var i = 0; i < this.chainCount; ++i) this.chains[i].groups = JU.AU.arrayCop
 Clazz.defineMethod (c$, "getPdbData", 
 function (vwr, type, ctype, isDraw, bsSelected, out, tokens, pdbCONECT, bsWritten) {
 }, "JV.Viewer,~S,~S,~B,JU.BS,JU.OC,~A,JU.SB,JU.BS");
-Clazz.defineMethod (c$, "getDefaultLargePDBRendering", 
-function (sb, maxAtoms) {
-}, "JU.SB,~N");
 Clazz.defineMethod (c$, "getBioBranches", 
 function (bioBranches) {
 return bioBranches;
 }, "JU.Lst");
-Clazz.defineMethod (c$, "getGroupsWithin", 
-function (nResidues, bs, bsResult) {
-}, "~N,JU.BS,JU.BS");
-Clazz.defineMethod (c$, "getSequenceBits", 
-function (specInfo, bs, bsResult) {
-}, "~S,JU.BS,JU.BS");
-Clazz.defineMethod (c$, "getRasmolHydrogenBonds", 
-function (bsA, bsB, vHBonds, nucleicOnly, nMax, dsspIgnoreHydrogens, bsHBonds) {
-}, "JU.BS,JU.BS,JU.Lst,~B,~N,~B,JU.BS");
-Clazz.defineMethod (c$, "clearRasmolHydrogenBonds", 
-function (bsAtoms) {
-}, "JU.BS");
 Clazz.defineMethod (c$, "clearBioPolymers", 
 function () {
 });
-Clazz.defineMethod (c$, "calcSelectedMonomersCount", 
-function (bsSelected) {
-}, "JU.BS");
-Clazz.defineMethod (c$, "calculatePolymers", 
-function (groups, groupCount, baseGroupIndex, modelsExcluded, checkConnections) {
-}, "~A,~N,~N,JU.BS,~B");
 Clazz.defineMethod (c$, "getAllPolymerInfo", 
 function (bs, finalInfo, modelVector) {
 }, "JU.BS,java.util.Map,JU.Lst");
 Clazz.defineMethod (c$, "getBioPolymerCount", 
 function () {
 return 0;
-});
-Clazz.defineMethod (c$, "getPolymerPointsAndVectors", 
-function (bs, vList, isTraceAlpha, sheetSmoothing) {
-}, "JU.BS,JU.Lst,~B,~N");
-Clazz.defineMethod (c$, "getPolymerLeadMidPoints", 
-function (iPolymer) {
-return null;
-}, "~N");
-Clazz.defineMethod (c$, "recalculateLeadMidpointsAndWingVectors", 
-function () {
 });
 Clazz.defineMethod (c$, "calculateStructures", 
 function (asDSSP, doReport, dsspIgnoreHydrogen, setStructure, includeAlpha) {
@@ -264,16 +201,6 @@ if (nHetero > 0) sb.append (" (" + nHetero + ")");
 sb.append ("\nNumber of Bonds ..... " + this.ms.bondCount);
 sb.append ("\nNumber of Models ...... " + this.ms.mc);
 }, "JU.SB,~N");
-Clazz.defineMethod (c$, "calculateStruts", 
-function (modelSet, bs1, bs2) {
-return 0;
-}, "JM.ModelSet,JU.BS,JU.BS");
-Clazz.defineMethod (c$, "calculateStraightness", 
-function (vwr, ctype, qtype, mStep) {
-}, "JV.Viewer,~S,~S,~N");
-Clazz.defineMethod (c$, "selectSeqcodeRange", 
-function (seqcodeA, seqcodeB, chainID, bs, caseSensitive) {
-}, "~N,~N,~N,JU.BS,~B");
 Clazz.defineMethod (c$, "setConformation", 
 function (bsConformation) {
 }, "JU.BS");
@@ -281,12 +208,60 @@ Clazz.defineMethod (c$, "getPdbConformation",
 function (bsConformation, conformationIndex) {
 return false;
 }, "JU.BS,~N");
-Clazz.defineMethod (c$, "getProteinStructureState", 
-function (bsAtoms, taintedOnly, needPhiPsi, mode) {
-return null;
-}, "JU.BS,~B,~B,~N");
 Clazz.defineMethod (c$, "getFullPDBHeader", 
 function () {
 return null;
 });
+Clazz.defineMethod (c$, "getSequenceBits", 
+function (ms, specInfo, bs) {
+return null;
+}, "JM.ModelSet,~S,JU.BS");
+Clazz.defineMethod (c$, "getBasePairBits", 
+function (ms, specInfo) {
+return null;
+}, "JM.ModelSet,~S");
+Clazz.defineMethod (c$, "resetRasmolBonds", 
+function (model, bs) {
+}, "JM.Model,JU.BS");
+Clazz.defineMethod (c$, "calcRasmolHydrogenBonds", 
+function (ms, bsA, bsB, vHBonds, nucleicOnly, nMax, dsspIgnoreHydrogens, bsHBonds) {
+}, "JM.ModelSet,JU.BS,JU.BS,JU.Lst,~B,~N,~B,JU.BS");
+Clazz.defineMethod (c$, "getFullProteinStructureState", 
+function (modelSet, bsAtoms2, taintedOnly, needPhiPsi, mode) {
+return null;
+}, "JM.ModelSet,JU.BS,~B,~B,~N");
+Clazz.defineMethod (c$, "calculateAllPolymers", 
+function (ms, groups, groupCount2, baseGroupIndex, modelsExcluded) {
+}, "JM.ModelSet,~A,~N,~N,JU.BS");
+Clazz.defineMethod (c$, "getGroupsWithinAll", 
+function (ms, nResidues, bs) {
+return null;
+}, "JM.ModelSet,~N,JU.BS");
+Clazz.defineMethod (c$, "getSelectCodeRange", 
+function (ms, specInfo) {
+return null;
+}, "JM.ModelSet,~A");
+Clazz.defineMethod (c$, "calculateStruts", 
+function (ms, bs1, bs2) {
+return 0;
+}, "JM.ModelSet,JU.BS,JU.BS");
+Clazz.defineMethod (c$, "getPolymerPointsAndVectors", 
+function (bs, vList, isTraceAlpha, sheetSmoothing) {
+}, "JU.BS,JU.Lst,~B,~N");
+Clazz.defineMethod (c$, "recalculatePoints", 
+function (ms, modelIndex) {
+}, "JM.ModelSet,~N");
+Clazz.defineMethod (c$, "getDefaultLargePDBRendering", 
+function (sb, maxAtoms) {
+}, "JU.SB,~N");
+Clazz.defineMethod (c$, "calcSelectedMonomersCount", 
+function (bsSelected) {
+}, "JU.BS");
+Clazz.defineMethod (c$, "getBioPolymerCountInModel", 
+function (ms, modelIndex) {
+return 0;
+}, "JM.ModelSet,~N");
+Clazz.defineMethod (c$, "calculateStraightnessAll", 
+function (ms) {
+}, "JM.ModelSet");
 });

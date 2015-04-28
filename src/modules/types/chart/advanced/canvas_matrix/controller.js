@@ -1,6 +1,9 @@
 'use strict';
 
-define(['modules/default/defaultcontroller'], function (Default) {
+define([
+    'modules/default/defaultcontroller',
+    'lodash'
+], function (Default, _) {
 
     function Controller() {
     }
@@ -61,7 +64,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
         var dom = $(this.module.getDomContent());
 
-        dom.on('mousemove', 'canvas', $.debounce(25, getHandlerForEvent(this, 'onPixelHover')));
+        dom.on('mousemove', 'canvas', _.debounce(getHandlerForEvent(this, 'onPixelHover'), 25));
         dom.on('click', 'canvas', getHandlerForEvent(this, 'onPixelClick'));
 
     };

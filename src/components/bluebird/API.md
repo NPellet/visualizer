@@ -16,14 +16,13 @@
     - [`Promise.method(Function fn)`](#promisemethodfunction-fn---function)
     - [`Promise.resolve(dynamic value)`](#promiseresolvedynamic-value---promise)
     - [`Promise.reject(dynamic reason)`](#promiserejectdynamic-reason---promise)
-    - [`Promise.bind(dynamic thisArg [, dynamic value])`](#promisebinddynamic-thisarg--dynamic-value---promise)
+    - [`Promise.bind(dynamic thisArg)`](#promisebinddynamic-thisarg---promise)
 - [Synchronous inspection](#synchronous-inspection)
     - [`.isFulfilled()`](#isfulfilled---boolean)
     - [`.isRejected()`](#isrejected---boolean)
     - [`.isPending()`](#ispending---boolean)
     - [`.value()`](#value---dynamic)
     - [`.reason()`](#reason---dynamic)
-    - [`.reflect()`](#reflect---promisepromiseinspection)
 - [Collections](#collections)
     - [`.all()`](#all---promise)
     - [`.props()`](#props---promise)
@@ -69,6 +68,7 @@
     - [`.throw(dynamic reason)`](#throwdynamic-reason---promise)
     - [`Promise.noConflict()`](#promisenoconflict---object)
     - [`Promise.setScheduler(Function scheduler)`](#promisesetschedulerfunction-scheduler---void)
+    - [`.reflect()`](#reflect---promisepromiseinspection)
 - [Built-in error types](#built-in-error-types)
     - [`OperationalError()`](#operationalerror)
     - [`TimeoutError()`](#timeouterror)
@@ -120,7 +120,7 @@ function getConnection(urlString) {
     return new Promise(function(resolve) {
         //Without new Promise, this throwing will throw an actual exception
         var params = parse(urlString);
-        resolve(getAdapater(params).getConnection());
+        resolve(getAdapter(params).getConnection());
     });
 }
 ```
@@ -473,7 +473,7 @@ MyClass.prototype.method = function() {
 
 ```js
 somethingAsync().bind({})
-.then(function (aValue, bValue) {
+.spread(function (aValue, bValue) {
     this.aValue = aValue;
     this.bValue = bValue;
     return somethingElseAsync(aValue, bValue);
@@ -488,7 +488,7 @@ The above without `.bind()` could be achieved with:
 ```js
 var scope = {};
 somethingAsync()
-.then(function (aValue, bValue) {
+.spread(function (aValue, bValue) {
     scope.aValue = aValue;
     scope.bValue = bValue;
     return somethingElseAsync(aValue, bValue);
@@ -715,9 +715,9 @@ Create a promise that is rejected with the given `reason`.
 
 <hr>
 
-#####`Promise.bind(dynamic thisArg [, dynamic value])` -> `Promise`
+#####`Promise.bind(dynamic thisArg)` -> `Promise`
 
-Sugar for `Promise.resolve(value).bind(thisArg);`. See [`.bind()`](#binddynamic-thisarg---promise).
+Sugar for `Promise.resolve(undefined).bind(thisArg);`. See [`.bind()`](#binddynamic-thisarg---promise).
 
 <hr>
 
@@ -808,11 +808,6 @@ Get the rejection reason of this promise. Throws an error if the promise isn't r
 
 You should check if this promise is `.isRejected()` before calling `.reason()` - or only call `.reason()` in code paths where it's guaranteed that this promise is rejected.
 
-<hr>
-
-#####`.reflect()` -> `Promise<PromiseInspection>`
-
-The `.reflect()` method returns a promise that is always successful when this promise is settled. Its fulfillment value is a `PromiseInspection` instance that reflects the resolution this promise. See [this issue](https://github.com/petkaantonov/bluebird/issues/346) for example usage.
 
 ##Collections
 
@@ -921,7 +916,7 @@ Promise.join(getPictures(), getComments(), getTweets(),
 
 Given an array, or a promise of an array, which contains promises (or a mix of promises and values) return a promise that is fulfilled when all the items in the array are either fulfilled or rejected. The fulfillment value is an array of [`PromiseInspection`](#synchronous-inspection) instances at respective positions in relation to the input array.
 
-This method is useful for when you have an array of promises and you'd like to know when all of them resolve - either by fulfilling of rejecting. For example:
+This method is useful for when you have an array of promises and you'd like to know when all of them resolve - either by fulfilling or rejecting. For example:
 
 ```js
 var fs = Promise.promisifyAll(require("fs"));
@@ -1305,8 +1300,8 @@ function getSqlConnection(connectionString) {
     return pg.connectAsync(connectionString).spread(function(client, done) {
         close = done;
         return client;
-    }).disposer(function(client) {
-        if (close) close(client);
+    }).disposer(function() {
+        if (close) close();
     });
 }
 
@@ -1551,11 +1546,20 @@ readFile("myfile.js", "utf8").then(function(contents) {
 });
 ```
 
-Note that if the node function is a method of some object, you need to pass the object as the second argument like so:
+Note that if the node function is a method of some object, you can pass the object as the second argument like so:
 
 ```js
 var redisGet = Promise.promisify(redisClient.get, redisClient);
 redisGet('foo').then(function() {
+    //...
+});
+```
+
+But this will also work:
+
+```js
+var getAsync = Promise.promisify(redisClient.get);
+getAsync.call(redisClient, 'foo').then(function() {
     //...
 });
 ```
@@ -1814,6 +1818,7 @@ Promise.fromNode(object.foo.bind(object, "firstArgument")).then(function(result)
 <hr>
 
 #####`.nodeify([Function callback] [, Object options])` -> `Promise`
+#####`.asCallback([Function callback] [, Object options])` -> `Promise`
 
 Register a node-style callback on this promise. When this promise is either fulfilled or rejected, the node callback will be called back with the node.js convention where error reason is the first argument and success value is the second argument. The error argument will be `null` in case of success.
 
@@ -2022,7 +2027,7 @@ Using ECMAScript6 generators feature to implement C# 5.0 `async/await` like synt
 
 #####`Promise.coroutine(GeneratorFunction generatorFunction)` -> `Function`
 
-Returns a function that can use `yield` to yield promises. Control is returned back to the generator when the yielded promise settles. This can lead to less verbose code when doing lots of sequential async calls with minimal processing in between. Node version greater than `0.11.2` is required and needs to be executed with the `--harmony-generators` (or `--harmony`) command-line switch.
+Returns a function that can use `yield` to yield promises. Control is returned back to the generator when the yielded promise settles. This can lead to less verbose code when doing lots of sequential async calls with minimal processing in between. Node version greater than `0.11.2` is required and needs to be executed with the `--harmony-generators` (or `--harmony`) command-line switch. All io.js versions are directly supported.
 
 ```js
 var Promise = require("bluebird");
@@ -2204,7 +2209,9 @@ doSomething()
     .then(...)
 ```
 
+*Note: in browsers it is necessary to call `.tap` with `console.log.bind(console)` because console methods can not be called as stand-alone functions.*
 
+<hr>
 
 #####`.call(String propertyName [, dynamic arg...])` -> `Promise`
 
@@ -2442,6 +2449,12 @@ Promise.setScheduler(function(fn) {
     $rootScope.$evalAsync(fn);
 });
 ```
+
+<hr>
+
+#####`.reflect()` -> `Promise<PromiseInspection>`
+
+The `.reflect()` method returns a promise that is always successful when this promise is settled. Its fulfillment value is a `PromiseInspection` instance that reflects the resolution this promise. See [this issue](https://github.com/petkaantonov/bluebird/issues/346) for example usage.
 
 ##Built-in error types
 

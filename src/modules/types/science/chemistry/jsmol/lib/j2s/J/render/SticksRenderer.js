@@ -55,7 +55,7 @@ Clazz.overrideMethod (c$, "render",
 function () {
 var bonds = this.ms.bo;
 if (bonds == null) return false;
-this.isPass2 = this.g3d.isPass2 ();
+this.isPass2 = this.vwr.gdata.isPass2;
 if (!this.isPass2) this.bsForPass2.clearAll ();
 this.slabbing = this.tm.slabEnabled;
 this.slabByAtom = this.vwr.getBoolean (603979939);
@@ -76,7 +76,7 @@ this.renderBond ();
 }
  else for (var i = this.ms.bondCount; --i >= 0; ) {
 this.bond = bonds[i];
-if ((this.bond.getShapeVisibilityFlags () & this.myVisibilityFlag) != 0 && this.renderBond ()) {
+if ((this.bond.shapeVisibilityFlags & this.myVisibilityFlag) != 0 && this.renderBond ()) {
 needTranslucent = true;
 this.bsForPass2.set (i);
 }}
@@ -94,8 +94,8 @@ Clazz.defineMethod (c$, "renderBond",
  function () {
 var atomA0;
 var atomB0;
-this.a = atomA0 = this.bond.getAtom1 ();
-this.b = atomB0 = this.bond.getAtom2 ();
+this.a = atomA0 = this.bond.atom1;
+this.b = atomB0 = this.bond.atom2;
 var order = this.bond.order & -131073;
 if (this.bondsBackbone) {
 if (this.ssbondsBackbone && (order & 256) != 0) {
@@ -106,8 +106,7 @@ this.a = this.a.group.getLeadAtomOr (this.a);
 this.b = this.b.group.getLeadAtomOr (this.b);
 }}if (!this.isPass2 && (!this.a.isVisible (9) || !this.b.isVisible (9) || !this.g3d.isInDisplayRange (this.a.sX, this.a.sY) || !this.g3d.isInDisplayRange (this.b.sX, this.b.sY))) return false;
 if (this.slabbing) {
-if (this.g3d.isClippedZ (this.a.sZ) && this.g3d.isClippedZ (this.b.sZ)) return false;
-if (this.slabByAtom && (this.g3d.isClippedZ (this.a.sZ) || this.g3d.isClippedZ (this.b.sZ))) return false;
+if (this.vwr.gdata.isClippedZ (this.a.sZ) && this.vwr.gdata.isClippedZ (this.b.sZ) || this.slabByAtom && (this.vwr.gdata.isClippedZ (this.a.sZ) || this.vwr.gdata.isClippedZ (this.b.sZ))) return false;
 }this.zA = this.a.sZ;
 this.zB = this.b.sZ;
 if (this.zA == 1 || this.zB == 1) return false;
@@ -115,15 +114,15 @@ this.colixA = atomA0.colixAtom;
 this.colixB = atomB0.colixAtom;
 if (((this.colix = this.bond.colix) & -30721) == 2) {
 this.colix = (this.colix & 30720);
-this.colixA = JU.C.getColixInherited ((this.colix | this.vwr.getColixAtomPalette (atomA0, J.c.PAL.CPK.id)), this.colixA);
-this.colixB = JU.C.getColixInherited ((this.colix | this.vwr.getColixAtomPalette (atomB0, J.c.PAL.CPK.id)), this.colixB);
+this.colixA = JU.C.getColixInherited ((this.colix | this.vwr.cm.getColixAtomPalette (atomA0, J.c.PAL.CPK.id)), this.colixA);
+this.colixB = JU.C.getColixInherited ((this.colix | this.vwr.cm.getColixAtomPalette (atomB0, J.c.PAL.CPK.id)), this.colixB);
 } else {
 this.colixA = JU.C.getColixInherited (this.colix, this.colixA);
 this.colixB = JU.C.getColixInherited (this.colix, this.colixB);
 }var needTranslucent = false;
 if (!this.isExport && !this.isPass2) {
-var doA = !JU.C.isColixTranslucent (this.colixA);
-var doB = !JU.C.isColixTranslucent (this.colixB);
+var doA = !JU.C.renderPass2 (this.colixA);
+var doB = !JU.C.renderPass2 (this.colixB);
 if (!doA || !doB) {
 if (!doA && !doB && !needTranslucent) {
 this.g3d.setC (!doA ? this.colixA : this.colixB);
@@ -219,12 +218,12 @@ if (isDashed) this.drawDashed (this.xA, this.yA, this.zA, this.xB, this.yB, this
  else this.fillCylinder (this.colixA, this.colixB, this.endcaps, this.width, this.xA, this.yA, this.zA, this.xB, this.yB, this.zB);
 return;
 }if (doFixedSpacing) {
-if (!isPiBonded) this.z.set (3.141592653589793, 2.718281828459045, (8.539734222673566));
+if (!isPiBonded) this.z.setT (JU.P3.getUnlikely ());
 this.x.sub2 (this.b, this.a);
 this.y.cross (this.x, this.z);
 this.y.normalize ();
 if (Float.isNaN (this.y.x)) {
-this.z.set (3.141592653589793, 2.718281828459045, (8.539734222673566));
+this.z.setT (JU.P3.getUnlikely ());
 this.y.cross (this.x, this.z);
 this.y.cross (this.y, this.x);
 this.y.normalize ();

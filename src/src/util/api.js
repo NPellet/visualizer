@@ -4,7 +4,7 @@
  * Main visualizer API
  * @module src/util/api
  */
-define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables', 'src/util/util'], function (Traversing, ActionManager, Variables, Util) {
+define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables', 'src/util/util', 'src/main/datas'], function (Traversing, ActionManager, Variables, Util, Data) {
 
     var variableFilters;
     var viewLocked = false;
@@ -15,7 +15,10 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
     // If undefined is set then not setting the name attribute will add it anyway
     var contextMenu = ['undefined', 'all', 'global-configuration', 'configuration', 'copy', 'paste', 'duplicate', 'add', 'layers', 'remove', 'export', 'print', 'refresh', 'tofront', 'toback', 'move', 'custom', 'fullscreen'];
 
-    var loadingHtml = $('<div id="loading-visualizer"><div class="title">Loading</div><div class="animation"><div /><div /><div /><div /></div><div class="subtitle" id="loading-message"></div></div>');
+    var loadingSVG = Util.getLoadingAnimation(64, 'slateblue');
+    var loadingHtml = $('<div>', {id: 'ci-loading'})
+        .append(loadingSVG)
+        .append($('<div>', {id: 'ci-loading-message', 'class': 'ci-loading-subtitle'}));
     var loading = {};
     var loadingNumber = 0;
 
@@ -70,12 +73,6 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
             this.repositoryActions = repo;
         },
 
-        resetVariables: function () {
-
-            Variables.eraseAll();
-
-        },
-
         createDataJpath: createDataJpath,
 
         listenHighlight: function () {
@@ -99,9 +96,14 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
         },
 
         setAllFilters: function (filters) {
-
-            variableFilters = filters;
-            variableFilters.unshift({file: '', name: 'No filter'});
+            variableFilters = _([filters, variableFilters]).flatten().filter(function(v){
+                return v && v.name && v.file;
+            }).uniq(function(v) {
+                return v.file;
+            }).unshift({
+                file: '',
+                name: 'No filter'
+            }).value();
         },
 
         viewLock: function () {
@@ -230,7 +232,7 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
             loading[id] = $('<div>' + message + '</div>');
             loadingNumber++;
 
-            $('#loading-message').append(loading[id]);
+            $('#ci-loading-message').append(loading[id]);
         } else {
             loading[id].html(message);
         }
@@ -260,6 +262,9 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
      * @param {*} [value] - Action value
      */
     exports.doAction = function doAction(name, value) {
+        if (Data.isSpecialObject(value)) {
+            value = value.get();
+        }
         this.repositoryActions.set(name, value);
         ActionManager.execute(name, value);
     };

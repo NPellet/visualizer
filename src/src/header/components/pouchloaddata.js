@@ -1,6 +1,6 @@
 'use strict';
 
-define(['jquery', 'jquery-ui', 'src/header/components/default', 'src/util/versioning', 'pouchdb', 'src/util/util'], function ($, ui, Default, Versioning, PouchDB, Util) {
+define(['jquery', 'src/util/ui', 'src/header/components/default', 'src/util/versioning', 'pouchdb', 'src/util/util'], function ($, ui, Default, Versioning, PouchDB, Util) {
 
     function Element() {
     }
@@ -10,10 +10,9 @@ define(['jquery', 'jquery-ui', 'src/header/components/default', 'src/util/versio
         initImpl: function () {
             var id = Util.getNextUniqueId();
             var db = new PouchDB('localDatas');
-            this.dialog = $('<div>').html('<form><label for="name">Name</label><input type="text" name="name" id="' + id + '" class="text ui-widget-content ui-corner-all" />');
+            this.dialog = $('<form><label for="name">Name</label><input type="text" name="name" id="' + id + '" class="text ui-widget-content ui-corner-all" />');
 
             this.dialogOptions = {
-                modal: true,
                 title: 'Load data',
                 buttons: {
                     Load: function () {
@@ -37,7 +36,7 @@ define(['jquery', 'jquery-ui', 'src/header/components/default', 'src/util/versio
         },
 
         _onClick: function () {
-            this.dialog.dialog(this.dialogOptions);
+            ui.dialog(this.dialog, this.dialogOptions);
         }
 
     });

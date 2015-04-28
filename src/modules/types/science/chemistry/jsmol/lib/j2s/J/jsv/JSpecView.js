@@ -29,7 +29,7 @@ break;
 default:
 return null;
 }
-var peaks = this.vwr.getModelAuxiliaryInfoValue (iModel, "jdxAtomSelect_" + type);
+var peaks = this.vwr.ms.getInfo (iModel, "jdxAtomSelect_" + type);
 if (peaks == null) return null;
 this.vwr.ms.htPeaks =  new java.util.Hashtable ();
 var htPeaks = this.vwr.ms.htPeaks;
@@ -65,13 +65,13 @@ Clazz.overrideMethod (c$, "setModel",
 function (modelIndex) {
 var syncMode = ("sync on".equals (this.vwr.ms.getInfoM ("jmolscript")) ? 1 : this.vwr.sm.getSyncMode ());
 if (syncMode != 1) return;
-var peak = this.vwr.getModelAuxiliaryInfoValue (modelIndex, "jdxModelSelect");
+var peak = this.vwr.ms.getInfo (modelIndex, "jdxModelSelect");
 if (peak != null) this.sendJSpecView (peak + " src=\"Jmol\"");
 }, "~N");
 Clazz.overrideMethod (c$, "getBaseModelIndex", 
 function (modelIndex) {
-var baseModel = this.vwr.getModelAuxiliaryInfoValue (modelIndex, "jdxBaseModel");
-if (baseModel != null) for (var i = this.vwr.getModelCount (); --i >= 0; ) if (baseModel.equals (this.vwr.getModelAuxiliaryInfoValue (i, "jdxModelID"))) return i;
+var baseModel = this.vwr.ms.getInfo (modelIndex, "jdxBaseModel");
+if (baseModel != null) for (var i = this.vwr.ms.mc; --i >= 0; ) if (baseModel.equals (this.vwr.ms.getInfo (i, "jdxModelID"))) return i;
 
 return modelIndex;
 }, "~N");
@@ -85,13 +85,13 @@ case 28:
 this.vwr.sm.syncSend (this.vwr.fullName + "JSpecView" + script.substring (11), ">", 0);
 return null;
 case 21:
-if (this.vwr.isApplet ()) return null;
+if (this.vwr.isApplet) return null;
 return null;
 case 14:
 var filename = JU.PT.getQuotedAttribute (script, "file");
 var isSimulation = filename.startsWith (JV.FileManager.SIMULATION_PROTOCOL);
-var id = (!isSimulation || this.vwr.isApplet () ? "" : JU.PT.getQuotedAttribute (filename.$replace ('\'', '"'), "id"));
-if (isSimulation && !this.vwr.isApplet () && filename.startsWith (JV.FileManager.SIMULATION_PROTOCOL + "MOL=")) filename = null;
+var id = (!isSimulation || this.vwr.isApplet ? "" : JU.PT.getQuotedAttribute (filename.$replace ('\'', '"'), "id"));
+if (isSimulation && !this.vwr.isApplet && filename.startsWith (JV.FileManager.SIMULATION_PROTOCOL + "MOL=")) filename = null;
  else filename = JU.PT.rep (filename, "#molfile", "");
 var modelID = (isSimulation ? "molfile" : JU.PT.getQuotedAttribute (script, "model"));
 var baseModel = JU.PT.getQuotedAttribute (script, "baseModel");
@@ -104,7 +104,7 @@ var modelIndex = (id == null ? -3 : this.vwr.getModelIndexFromId (id));
 if (modelIndex == -2) return null;
 if (modelIndex != -1 || filename == null) {
 script = "";
-} else if (isSimulation && !this.vwr.isApplet ()) {
+} else if (isSimulation && !this.vwr.isApplet) {
 return null;
 } else {
 if (isSimulation) filename += "#molfile";

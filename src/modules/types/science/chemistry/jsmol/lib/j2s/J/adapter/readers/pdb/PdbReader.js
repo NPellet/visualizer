@@ -231,7 +231,7 @@ this.checkNotPDB ();
 if (!this.isCourseGrained) this.connectAll (this.maxSerial, this.isConnectStateBug);
 var symmetry;
 if (this.vBiomolecules != null && this.vBiomolecules.size () > 0 && this.asc.ac > 0) {
-this.asc.setAtomSetAuxiliaryInfo ("biomolecules", this.vBiomolecules);
+this.asc.setCurrentModelInfo ("biomolecules", this.vBiomolecules);
 this.setBiomoleculeAtomCounts ();
 if (this.thisBiomolecule != null && this.applySymmetry) {
 this.asc.getXSymmetry ().applySymmetryBio (this.thisBiomolecule, this.notionalUnitCell, this.applySymmetryToBonds, this.filter);
@@ -257,7 +257,7 @@ this.appendLoadNote (this.sbTlsErrors.toString ());
 this.finalizeReaderASCR ();
 if (this.vCompnds != null) {
 this.asc.setInfo ("compoundSource", this.vCompnds);
-for (var i = this.asc.iSet + 1; --i >= 0; ) this.asc.setAtomSetAuxiliaryInfoForSet ("compoundSource", this.vCompnds, i);
+for (var i = this.asc.iSet + 1; --i >= 0; ) this.asc.setModelInfoForSet ("compoundSource", this.vCompnds, i);
 
 }if (this.htSites != null) {
 this.addSites (this.htSites);
@@ -409,7 +409,7 @@ chainlist = ":" + list.$replace (' ', ':');
 needLine = false;
 while (this.readHeader (true) != null && this.line.indexOf ("BIOMT") < 0 && this.line.indexOf ("350") == 7) chainlist += ":" + this.line.substring (11).trim ().$replace (' ', ':');
 
-if (this.checkFilterKey ("BIOMOLECULE " + id + ";")) {
+if (this.checkFilterKey ("BIOMOLECULE " + id + ";") || this.checkFilterKey ("BIOMOLECULE=" + id + ";")) {
 this.setFilter (this.filter.$replace (':', '_') + chainlist);
 JU.Logger.info ("filter set to \"" + this.filter + "\"");
 this.thisBiomolecule = info;
@@ -543,7 +543,7 @@ if (this.haveMappedSerials) this.asc.addAtomWithMappedSerialNumber (atom);
 if (this.ac++ == 0 && !this.isCourseGrained) this.setModelPDB (true);
 if (atom.isHetero) {
 if (this.htHetero != null) {
-this.asc.setAtomSetAuxiliaryInfo ("hetNames", this.htHetero);
+this.asc.setCurrentModelInfo ("hetNames", this.htHetero);
 this.htHetero = null;
 }}}, "J.adapter.smarter.Atom,~N,~N,~N,~N,~N");
 Clazz.defineMethod (c$, "atom", 
@@ -643,13 +643,20 @@ this.sbConect =  new JU.SB ();
 this.sb =  new JU.SB ();
 } else {
 this.sb.setLength (0);
-}var sourceSerial = -1;
-sourceSerial = this.getSerial (6, 11);
+}var sourceSerial = this.getSerial (6, 11);
 if (sourceSerial < 0) return;
-for (var i = 0; i < 9; i += (i == 5 ? 2 : 1)) {
-var offset = i * 5 + 11;
-var offsetEnd = offset + 5;
-var targetSerial = (offsetEnd <= this.lineLength ? this.getSerial (offset, offsetEnd) : -1);
+var order = 1;
+var pt1 = this.line.trim ().length;
+if (pt1 > 56) pt1 = this.line.substring (0, 56).trim ().length;
+for (var pt = 11; pt < pt1; pt += 5) {
+switch (pt) {
+case 31:
+order = 2048;
+break;
+case 41:
+continue;
+}
+var targetSerial = this.getSerial (pt, pt + 5);
 if (targetSerial < 0) continue;
 var isDoubleBond = (sourceSerial == this.lastSourceSerial && targetSerial == this.lastTargetSerial);
 if (isDoubleBond) this.haveDoubleBonds = true;
@@ -667,11 +674,9 @@ if (this.sbConect.indexOf (st) >= 0 && !isDoubleBond) continue;
 if (this.haveDoubleBonds) {
 var st1 = "--" + st;
 if (this.sbConect.indexOf (st1) >= 0) continue;
-this.sbConect.append (st);
 this.sb.append (st1);
-} else {
-this.sbConect.append (st);
-}this.addConnection ([i1, targetSerial, i < 4 ? 1 : 2048]);
+}this.sbConect.append (st);
+this.addConnection ([i1, targetSerial, order]);
 }
 this.sbConect.appendSB (this.sb);
 });
@@ -736,12 +741,12 @@ this.sbConect = null;
 this.asc.newAtomSet ();
 if (!this.isCourseGrained) this.setModelPDB (true);
 this.asc.setCurrentAtomSetNumber (modelNumber);
-if (this.isCourseGrained) this.asc.setAtomSetAuxiliaryInfo ("courseGrained", Boolean.TRUE);
+if (this.isCourseGrained) this.asc.setCurrentModelInfo ("courseGrained", Boolean.TRUE);
 }, "~N");
 Clazz.defineMethod (c$, "checkNotPDB", 
  function () {
 var isPDB = (!this.isCourseGrained && (this.nRes == 0 || this.nUNK != this.nRes));
-this.asc.setCheckSpecial (!isPDB);
+this.asc.checkSpecial = !isPDB;
 this.setModelPDB (isPDB);
 this.nUNK = this.nRes = 0;
 this.currentGroup3 = null;
@@ -751,7 +756,7 @@ Clazz.defineMethod (c$, "cryst1",
 var a = this.$cryst1 = this.getFloat (6, 9);
 if (a == 1) a = NaN;
 this.setUnitCell (a, this.getFloat (15, 9), this.getFloat (24, 9), this.getFloat (33, 7), this.getFloat (40, 7), this.getFloat (47, 7));
-if (this.sgName == null) this.setSpaceGroupName (J.adapter.smarter.AtomSetCollectionReader.parseTrimmedRange (this.line, 55, 66));
+if (this.sgName == null) this.setSpaceGroupName (JU.PT.parseTrimmedRange (this.line, 55, 66));
 });
 Clazz.defineMethod (c$, "getFloat", 
  function (ich, cch) {
@@ -774,12 +779,12 @@ if (this.line.toUpperCase ().indexOf ("NMR") >= 0) this.asc.setInfo ("isNMRdata"
 Clazz.defineMethod (c$, "formul", 
  function () {
 var groupName = this.parseTokenRange (this.line, 12, 15);
-var formula = J.adapter.smarter.AtomSetCollectionReader.parseTrimmedRange (this.line, 19, 70);
+var formula = JU.PT.parseTrimmedRange (this.line, 19, 70);
 var ichLeftParen = formula.indexOf ('(');
 if (ichLeftParen >= 0) {
 var ichRightParen = formula.indexOf (')');
 if (ichRightParen < 0 || ichLeftParen >= ichRightParen || ichLeftParen + 1 == ichRightParen) return;
-formula = J.adapter.smarter.AtomSetCollectionReader.parseTrimmedRange (formula, ichLeftParen + 1, ichRightParen);
+formula = JU.PT.parseTrimmedRange (formula, ichLeftParen + 1, ichRightParen);
 }var htElementsInGroup = this.htFormul.get (groupName);
 if (htElementsInGroup == null) this.htFormul.put (groupName, htElementsInGroup =  new java.util.Hashtable ());
 this.next[0] = 0;
@@ -801,7 +806,7 @@ this.htHetero =  new java.util.Hashtable ();
 }var groupName = this.parseTokenRange (this.line, 7, 10);
 if (this.htHetero.containsKey (groupName)) {
 return;
-}var hetName = J.adapter.smarter.AtomSetCollectionReader.parseTrimmedRange (this.line, 30, 70);
+}var hetName = JU.PT.parseTrimmedRange (this.line, 30, 70);
 this.htHetero.put (groupName, hetName);
 });
 Clazz.defineMethod (c$, "hetnam", 
@@ -809,7 +814,7 @@ Clazz.defineMethod (c$, "hetnam",
 if (this.htHetero == null) {
 this.htHetero =  new java.util.Hashtable ();
 }var groupName = this.parseTokenRange (this.line, 11, 14);
-var hetName = J.adapter.smarter.AtomSetCollectionReader.parseTrimmedRange (this.line, 15, 70);
+var hetName = JU.PT.parseTrimmedRange (this.line, 15, 70);
 if (groupName == null) {
 JU.Logger.error ("ERROR: HETNAM record does not contain a group name: " + this.line);
 return;
@@ -847,7 +852,7 @@ Clazz.defineMethod (c$, "site",
 if (this.htSites == null) {
 this.htSites =  new java.util.Hashtable ();
 }var nResidues = this.parseIntRange (this.line, 15, 17);
-var siteID = J.adapter.smarter.AtomSetCollectionReader.parseTrimmedRange (this.line, 11, 14);
+var siteID = JU.PT.parseTrimmedRange (this.line, 11, 14);
 var htSite = this.htSites.get (siteID);
 if (htSite == null) {
 htSite =  new java.util.Hashtable ();
@@ -857,11 +862,11 @@ this.htSites.put (siteID, htSite);
 }var groups = htSite.get ("groups");
 for (var i = 0; i < 4; i++) {
 var pt = 18 + i * 11;
-var resName = J.adapter.smarter.AtomSetCollectionReader.parseTrimmedRange (this.line, pt, pt + 3);
+var resName = JU.PT.parseTrimmedRange (this.line, pt, pt + 3);
 if (resName.length == 0) break;
-var chainID = J.adapter.smarter.AtomSetCollectionReader.parseTrimmedRange (this.line, pt + 4, pt + 5);
-var seq = J.adapter.smarter.AtomSetCollectionReader.parseTrimmedRange (this.line, pt + 5, pt + 9);
-var iCode = J.adapter.smarter.AtomSetCollectionReader.parseTrimmedRange (this.line, pt + 9, pt + 10);
+var chainID = JU.PT.parseTrimmedRange (this.line, pt + 4, pt + 5);
+var seq = JU.PT.parseTrimmedRange (this.line, pt + 5, pt + 9);
+var iCode = JU.PT.parseTrimmedRange (this.line, pt + 9, pt + 10);
 groups += (groups.length == 0 ? "" : ",") + "[" + resName + "]" + seq;
 if (iCode.length > 0) groups += "^" + iCode;
 if (chainID.length > 0) groups += ":" + chainID;
@@ -880,7 +885,7 @@ var range = null;
 var remark = this.line.substring (0, 11);
 while (this.readHeader (true) != null && this.line.startsWith (remark)) {
 try {
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line.substring (10).$replace (':', ' '));
+var tokens = JU.PT.getTokens (this.line.substring (10).$replace (':', ' '));
 if (tokens.length < 2) continue;
 JU.Logger.info (this.line);
 if (tokens[1].equalsIgnoreCase ("GROUP")) {
@@ -954,7 +959,7 @@ this.tlsAddError ("invalid origin: " + this.line);
 }} else if (tokens[1].equalsIgnoreCase ("TENSOR")) {
 var tensorType = tokens[0].charAt (0);
 var s = (this.readHeader (true).substring (10) + this.readHeader (true).substring (10) + this.readHeader (true).substring (10)).$replace (tensorType, ' ').$replace (':', ' ');
-tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (s);
+tokens = JU.PT.getTokens (s);
 var data =  Clazz.newFloatArray (3, 3, 0);
 tlsGroup.put ("t" + tensorType, data);
 for (var i = 0; i < tokens.length; i++) {
@@ -1029,7 +1034,7 @@ this.setTlsTensor (atom, group, symmetry);
 }
 }
 this.asc.setAtomProperties ("tlsGroup", data, iModel, true);
-this.asc.setAtomSetAuxiliaryInfoForSet ("TLS", tlsGroupInfo, iModel);
+this.asc.setModelInfoForSet ("TLS", tlsGroupInfo, iModel);
 this.asc.setTensors ();
 }, "~N,~N,J.api.SymmetryInterface");
 Clazz.defineMethod (c$, "findAtomForRange", 
@@ -1112,9 +1117,9 @@ Clazz.defineMethod (c$, "connectAllBad",
 var firstAtom = this.connectNextAtomIndex;
 for (var i = this.connectNextAtomSet; i < this.asc.atomSetCount; i++) {
 var count = this.asc.getAtomSetAtomCount (i);
-this.asc.setAtomSetAuxiliaryInfoForSet ("PDB_CONECT_firstAtom_count_max", [firstAtom, count, maxSerial], i);
+this.asc.setModelInfoForSet ("PDB_CONECT_firstAtom_count_max", [firstAtom, count, maxSerial], i);
 if (this.vConnect != null) {
-this.asc.setAtomSetAuxiliaryInfoForSet ("PDB_CONECT_bonds", this.vConnect, i);
+this.asc.setModelInfoForSet ("PDB_CONECT_bonds", this.vConnect, i);
 this.asc.setGlobalBoolean (3);
 }firstAtom += count;
 }
@@ -1130,11 +1135,11 @@ if (index < 0) return;
 if (isConnectStateBug) {
 this.connectAllBad (maxSerial);
 return;
-}a.setAtomSetAuxiliaryInfo ("PDB_CONECT_firstAtom_count_max", [a.getAtomSetAtomIndex (index), a.getAtomSetAtomCount (index), maxSerial]);
+}a.setCurrentModelInfo ("PDB_CONECT_firstAtom_count_max", [a.getAtomSetAtomIndex (index), a.getAtomSetAtomCount (index), maxSerial]);
 if (this.vConnect == null) return;
 var firstAtom = this.connectNextAtomIndex;
 for (var i = a.atomSetCount; --i >= this.connectNextAtomSet; ) {
-a.setAtomSetAuxiliaryInfoForSet ("PDB_CONECT_bonds", this.vConnect, i);
+a.setModelInfoForSet ("PDB_CONECT_bonds", this.vConnect, i);
 a.setGlobalBoolean (3);
 firstAtom += a.getAtomSetAtomCount (i);
 }

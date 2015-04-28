@@ -338,7 +338,7 @@ if (this.atomsOr != null && this.atomsOr.length > this.nAtomsOr) this.atomsOr = 
 if (this.primitives != null && this.primitives.length > this.nPrimitives) this.primitives = JU.AU.arrayCopyObject (this.primitives, this.primitives.length);
 for (var i = 0; i < this.bonds.length; i++) {
 if (this.isBioAtom && this.bonds[i].order == 17) this.bonds[i].order = 112;
-if (this.bonds[i].getAtom1 ().index > this.bonds[i].getAtom2 ().index) {
+if (this.bonds[i].atom1.index > this.bonds[i].atom2.index) {
 this.bonds[i].switchAtoms ();
 }}
 });
@@ -363,7 +363,7 @@ function (i) {
 if (this.parent != null) return this.parent.getMatchingBondedAtom (i);
 if (i >= this.bondCount) return -1;
 var b = this.bonds[i];
-return (b.getAtom1 () === this ? b.getAtom2 () : b.getAtom1 ()).matchingAtom;
+return (b.atom1 === this ? b.atom2 : b.atom1).matchingAtom;
 }, "~N");
 Clazz.overrideMethod (c$, "getBondedAtomIndex", 
 function (j) {
@@ -393,7 +393,7 @@ if (this.parent != null) return this.parent.getBondTo (atom);
 var bond;
 for (var k = 0; k < this.bonds.length; k++) {
 if ((bond = this.bonds[k]) == null) continue;
-if (atom == null ? bond.getAtom2 () === this : bond.getOtherAtom (this) === atom) return bond;
+if (atom == null ? bond.atom2 === this : bond.getOtherAtom (this) === atom) return bond;
 }
 return null;
 }, "JS.SmilesAtom");

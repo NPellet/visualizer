@@ -10,7 +10,6 @@
     "commit": "f78cf1c719cb20cc7e1e367f54a21f52e71f6290"
   },
   "_source": "git://github.com/mapbox/leaflet-omnivore.git",
-  "_target": "~0.3.2",
-  "_originalSource": "leaflet-omnivore",
-  "_direct": true
+  "_target": "0.3.2",
+  "_originalSource": "leaflet-omnivore"
 }

@@ -1,145 +1,170 @@
-define(['require', 'jquery', 'forms/title'], function(require, $, title) {
+'use strict';
 
-	var id = 0;
-	var stack = {};
+define(['require', 'jquery', 'forms/title'], function (require, $, title) {
 
-	$(document).on('click', '.form-button', function(event) {
-		var btn = stack[$(this).data('id')];
-		if( btn && ! btn.isDisabled( ) ) {
-			btn.doClick(event, $(this));
-		}
-	});
+    var id = 0;
+    var stack = {};
 
-	var button = function(label, onclick, options) {
-		this.title = new title(label);
-		this.onclick = onclick;
-		this.id = ++id;
-		this.value = false;
-		/*
-		if(typeof onclick !== "function" && !options)
-			this.options = onclick;
-		else
-			this.options = options || {};
-*/
+    $(document).on('click', '.form-button', function (event) {
+        var btn = stack[$(this).data('id')];
+        if (btn && !btn.isDisabled()) {
+            btn.doClick(event, $(this));
+        }
+    });
 
-		this.options = options || {};
-		this.color = this.options.color;
-		// Store button in the stack
-		stack[this.id] = this;
-	};
+    var button = function (label, onclick, options) {
+        this.title = new title(label);
+        this.onclick = onclick;
+        this.id = ++id;
+        this.value = false;
+        /*
+         if(typeof onclick !== 'function' && !options)
+         this.options = onclick;
+         else
+         this.options = options || {};
+         */
 
-	button.prototype = {
-		getTitle: function() { return this.title; },
+        this.options = options || {};
+        this.color = this.options.color;
+        // Store button in the stack
+        stack[this.id] = this;
+    };
 
-		setTitle: function(objtitle) {
-			
-			if( ! ( objtitle instanceof title ) ) {
-				objtitle = new title( objtitle );
-			}
+    button.prototype = {
+        getTitle: function () {
+            return this.title;
+        },
 
-			this.title = objtitle;
-			this.applyStyle( );
-		},
-		getId: function() {
-			return this.id;
-		},
-		setOnClick: function(func) {
-			this.onclick = func;
-		},
-		setColor: function(color) {
-			// Color is a class name
-			this.oldColor = this.color;
-			this.color = color;
-			this.applyStyle();
-		},
+        setTitle: function (objtitle) {
 
-		setColorCss: function(color) {
-			this.dom.css('color', color);
-		},
-		setValue: function( val ) {
-			this.value = val;
-		},
-		setIcon: function(icon) {
-			this.icon = icon;
-		},
+            if (!( objtitle instanceof title )) {
+                objtitle = new title(objtitle);
+            }
 
-		render: function() {
-			var html = "";
-			html += '<div class="form-button';
-			html += '" data-id="';
-			html += this.id;
-			html += '" id="button-' + this.id + '"><span /><span />';
-			html += '</div>';
-			
-			this.dom = $(html);
+            this.title = objtitle;
+            this.applyStyle();
+            return this;
+        },
+        getId: function () {
+            return this.id;
+        },
+        setOnClick: function (func) {
+            this.onclick = func;
+        },
+        setColor: function (color) {
+            // Color is a class name
+            this.oldColor = this.color;
+            this.color = color;
+            this.applyStyle();
+        },
 
-			this.applyStyle();
-			return this.dom;
-		},
+        setColorCss: function (color) {
+            this.dom.css('color', color);
+            return this;
+        },
+        setValue: function (val) {
+            this.value = val;
+            return this;
+        },
+        setIcon: function (icon) {
+            this.icon = icon;
+            return this;
+        },
 
-		applyStyle: function() {
+        setTooltip: function (tooltip) {
+            this.tooltip = tooltip;
+            this.applyStyle();
+            return this;
+        },
 
-			if( ! this.dom ) {
-				return;
-			}
+        getTooltip: function () {
+            return this.tooltip;
+        },
 
-			if( this.color ) {
-				this.dom.removeClass(this.oldColor);
-				this.dom.addClass(this.color);
-			}
+        render: function () {
+            var html = '';
+            html += '<div class="form-button';
+            html += '" data-id="';
+            html += this.id;
+            html += '" id="button-' + this.id + '"><span /><span />';
+            html += '</div>';
 
-			if( this.options.disabled ) {
-				this.dom.addClass( 'disabled' );
-			} else {
-				this.dom.removeClass('disabled' );
-			}
+            this.dom = $(html);
 
-			if(this.options.checkbox) {
-				if( this.value ) {
-					this.dom.addClass('bi-active');
-				} else {
-					this.dom.removeClass('bi-active');
-				}
-			}
+            this.applyStyle();
+            return this.dom;
+        },
 
-			this.dom.children().eq(1).html(this.title.getLabel());
+        applyStyle: function () {
 
-			if( this.icon ) {
-				this.dom.children().eq(0).html('<img src="' + require.toUrl('./images/' + this.icon + '.png') + '" />');
-			}
-				
-		},
+            if (!this.dom) {
+                return;
+            }
 
-		doClick: function(event, item) {
+            if (this.tooltip) {
+                this.dom.attr('title', this.tooltip);
+            }
+            else {
+                this.dom.attr('title');
+            }
 
-			this.value = !this.value;
-			this.applyStyle();
-			if(this.onclick)
-				this.onclick(event, this.value, item);
-		},
+            if (this.color) {
+                this.dom.removeClass(this.oldColor);
+                this.dom.addClass(this.color);
+            }
 
-		getDom: function() {
-			if(!this.dom) {
-				console.warn("The button dom has not been created yet");
-				return;
-			}
-			return this.dom;
-		},
+            if (this.options.disabled) {
+                this.dom.addClass('disabled');
+            } else {
+                this.dom.removeClass('disabled');
+            }
 
-		disable: function() {
-			this.options.disabled = true;
-			this.applyStyle();
-		},
+            if (this.options.checkbox) {
+                if (this.value) {
+                    this.dom.addClass('bi-active');
+                } else {
+                    this.dom.removeClass('bi-active');
+                }
+            }
 
-		enable: function() {
-			this.options.disabled = false;
-			this.applyStyle();
-		},
+            this.dom.children().eq(1).html(this.title.getLabel());
 
-		isDisabled: function() {
-			return this.options.disabled;
-		}
-	}
+            if (this.icon) {
+                this.dom.children().eq(0).html('<img src="' + require.toUrl('./images/' + this.icon + '.png') + '" />');
+            }
 
-	return button;
+        },
+
+        doClick: function (event, item) {
+
+            this.value = !this.value;
+            this.applyStyle();
+            if (this.onclick)
+                this.onclick(event, this.value, item);
+        },
+
+        getDom: function () {
+            if (!this.dom) {
+                console.warn('The button dom has not been created yet');
+                return;
+            }
+            return this.dom;
+        },
+
+        disable: function () {
+            this.options.disabled = true;
+            this.applyStyle();
+        },
+
+        enable: function () {
+            this.options.disabled = false;
+            this.applyStyle();
+        },
+
+        isDisabled: function () {
+            return this.options.disabled;
+        }
+    }
+
+    return button;
 });

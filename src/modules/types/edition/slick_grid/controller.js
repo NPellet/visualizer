@@ -1,4 +1,4 @@
-define(['modules/default/defaultcontroller', 'src/util/util'], function(Default, Util) {
+define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], function(Default, Util, _) {
 
     var controller = function() {};
 
@@ -31,21 +31,6 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                     },
 
                     fields: {
-
-                        toggle: {
-                            type: 'combo',
-                            title: 'Line toggling',
-                            options: [{key: "0", title: "No"}, {key: "single", title:"Single row"}, {key: "multiple", title:"Multiple rows"}]
-                        },
-
-                        colorjpath: {
-                            type: 'combo',
-                            title: 'Color jPath',
-                            options: jpaths,
-                            extractValue: Util.jpathToArray,
-                            insertValue: Util.jpathToString
-                        },
-
                         slickCheck: {
                             type: 'checkbox',
                             title: 'Slick options',
@@ -54,21 +39,26 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                                 enableAddRow: 'Enable add row',
                                 enableCellNavigation: 'Enable Cell Navigation',
                                 autoEdit: 'Enable Auto Edit',
-                                enableTextSelectionOnCells: 'Enable Text Selection',
-                                enableColumnReorder: 'Enable Column reorder',
                                 forceFitColumns: 'Force fit Columns',
                                 rowDelete: 'Can delete rows',
                                 autoFocus: 'Auto Focus',
                                 rowNumbering: 'Show row number when scrolling',
-                                multiColumnSort: 'Multi-column sorting',
                                 oneUncollapsed: 'Maximum One group uncollapsed (per level)',
                                 filterColumns: 'Provides search input for each column',
-                                backToTop: 'Scroll back to top on new variable',
+                                backToTop: 'Don\'t remember scroll position on new variable',
+                                forgetLastActive: 'Don\'t scroll back to last active row on new variable',
+                                highlightScroll: 'Scroll to highlighted line',
                                 collapseGroup: 'Collapse groups on start'
                             },
-                            default: ['enableCellNavigation', 'rowNumbering', 'forceFitColumns']
+                            default: ['enableCellNavigation', 'rowNumbering', 'forceFitColumns', 'highlightScroll']
                         },
-
+                        colorjpath: {
+                            type: 'combo',
+                            title: 'Color jPath',
+                            options: jpaths,
+                            extractValue: Util.jpathToArray,
+                            insertValue: Util.jpathToString
+                        },
                         "slick.defaultColumnWidth": {
                             type: 'float',
                             title: 'Default Column Width'
@@ -87,11 +77,6 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                                 {key: 'cell', title: 'Cell Selection Model'}
                             ],
                             default: ['cell']
-                        },
-
-                        filterRow: {
-                            type: 'jscode',
-                            title: 'Filter'
                         }
                     }
                 },
@@ -103,13 +88,11 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                         multiple: true,
                         title: 'Columns'
                     },
-
                     fields: {
                         name: {
                             type: 'text',
                             title: 'Columns title'
                         },
-
                         jpath: {
                             type: 'combo',
                             title: 'jPath',
@@ -117,7 +100,6 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                             extractValue: Util.jpathToArray,
                             insertValue: Util.jpathToString
                         },
-
                         editor: {
                             type: 'combo',
                             title: 'Editor',
@@ -132,7 +114,6 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                                 {key: 'color', title: 'Color'}
                             ]
                         },
-
                         formatter: {
                             type: 'combo',
                             title: 'Formatter',
@@ -141,57 +122,17 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
                             ],
                             default: 'typerenderer'
                         },
-
                         width: {
                             type: 'text',
                             title: 'Width'
                         },
-
                         minWidth: {
                             type: 'text',
                             title: 'Min Width'
                         },
-
                         maxWidth: {
                             type: 'text',
                             title: 'Max Width'
-                        },
-
-                        selectable: {
-                            type: 'checkbox',
-                            title: 'Selectable',
-                            options: {yes: 'Yes'},
-                            default: ['yes']
-                        },
-
-                        resizable: {
-                            type: 'checkbox',
-                            title: 'Resizable',
-                            options: {abc: 'Yes'},
-                            default: ['yes']
-                        },
-
-
-
-                        sortable: {
-                            type: 'checkbox',
-                            title: 'Sortable',
-                            options: {yes: 'Yes'},
-                            default: ['yes']
-                        },
-
-                        focusable: {
-                            type: 'checkbox',
-                            title: 'Focusable',
-                            options: {yes: 'Yes'},
-                            default: ['yes']
-                        },
-
-                        defaultSortAsc: {
-                            type: 'checkbox',
-                            title: 'Sort Asc on first click',
-                            options: {yes: 'Yes'},
-                            default: ['yes']
                         }
                     }
                 },
@@ -204,8 +145,11 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
 
                     fields: {
                         getter: {
-                            type: 'text',
-                            title: 'Getter'
+                            type: 'combo',
+                            title: 'jPath',
+                            options: jpaths,
+                            extractValue: Util.jpathToArray,
+                            insertValue: Util.jpathToString
                         },
                         groupName: {
                             type: 'text',
@@ -218,9 +162,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
     };
 
     controller.prototype.configAliases = {
-        'toggle': [ 'groups', 'group', 0, 'toggle', 0 ],
         'colorjPath': [ 'groups', 'group', 0, 'colorjpath', 0 ],
-        'filterRow': [ 'groups', 'group', 0, 'filterRow', 0 ],
         'slickCheck': [ 'groups', 'group', 0, 'slickCheck', 0 ],
         'slick.rowHeight': [ 'groups', 'group', 0, 'slick.rowHeight', 0 ],
         'slick.selectionModel': [ 'groups', 'group', 0, 'slick.selectionModel', 0 ],
@@ -246,7 +188,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
         },
 
         selectedrows: {
-            label: 'Selected rows'
+            label: 'Active rows'
         }
     };
 
@@ -276,7 +218,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
         // List of all possible events
 
         onSelect: {
-            label: 'A line is selected',
+            label: 'A row was clicked',
             refVariable: [ 'row' ],
             refAction: [ 'row' ]
         },
@@ -297,31 +239,47 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function(Default,
             label: 'A new row has been edited',
             refVariable: ['row'],
             refAction: ['row']
+        },
+        onRowActive: {
+            label: 'A new row became active',
+            refVariable: ['row'],
+            refAction: ['row']
         }
+    }
 
-    };
+    ;
 
 
     controller.prototype.onHover = function(row, item) {
+        var itemId = item[this.module.view.idPropertyName];
+        if(this.lastHoveredItemId === itemId) return;
+        this.lastHoveredItemId = itemId;
         this.setVarFromEvent( 'onHover', 'row', 'list', [ row ] );
-        this.sendAction( 'row', item, 'onHover' );
-
+        this.sendActionFromEvent( 'onHover', 'row', item );
     };
 
-    controller.prototype.onClick = function(row, item) {
+    controller.prototype.onClick = _.throttle(function(row, item) {
         this.setVarFromEvent( 'onSelect', 'row', 'list', [ row ] );
-        this.sendAction( 'row', item, 'onSelect' );
+        this.sendActionFromEvent( 'onSelect', 'row', item );
+    }, 250, {trailing: false});
+
+    controller.prototype.onActive = function(row, item) {
+        var itemId = item[this.module.view.idPropertyName];
+        if(this.lastClickedItemId === itemId) return;
+        this.lastClickedItemId = itemId;
+        this.setVarFromEvent( 'onRowActive', 'row', 'list', [ row ] );
+        this.sendActionFromEvent( 'onRowActive', 'row', item );
     };
 
     controller.prototype.onRowChange = function(row, item) {
         this.setVarFromEvent('onRowChange', 'row', 'list', [row]);
-        this.sendAction('row', item, 'onRowChange');
+        this.sendActionFromEvent('onRowChange', 'row', item);
     };
 
 
     controller.prototype.onRowNew = function(row, item) {
         this.setVarFromEvent('onRowNew', 'row', 'list', [row]);
-        this.sendAction('row', item, 'onRowNew');
+        this.sendActionFromEvent('onRowNew', 'row', item);
     };
 
     controller.prototype.export = function() {

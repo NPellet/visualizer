@@ -5,7 +5,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'Display value',
@@ -104,7 +104,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
                                 pre: 'Display as preformatted text',
                                 selectable: 'Make text selectable'
                             },
-                            default: []
+                            'default': []
                         },
                         append: {
                             type: 'checkbox',
@@ -115,12 +115,11 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
                             displaySource: {
                                 yes: 'a'
                             }
-
                         },
                         maxEntries: {
                             type: 'float',
                             title: 'Max entries',
-                            default: 1,
+                            'default': 1,
                             displayTarget: ['a']
                         }
                     }
@@ -130,17 +129,17 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
     };
 
     Controller.prototype.configAliases = {
-        fontcolor: [ 'groups', 'group', 0, 'fontcolor', 0 ],
-        font: [ 'groups', 'group', 0, 'font', 0 ],
-        fontsize: [ 'groups', 'group', 0, 'fontsize', 0 ],
-        align: [ 'groups', 'group', 0, 'align', 0 ],
-        valign: [ 'groups', 'group', 0, 'valign', 0 ],
-        defaultvalue: [ 'groups', 'group', 0, 'defaultvalue', 0 ],
-        sprintf: [ 'groups', 'group', 0, 'sprintf', 0 ],
-        sprintfOrder: [ 'groups', 'group', 0, 'sprintfOrder' ],
-        preformatted: [ 'groups', 'group', 0, 'preformatted', 0 ],
-        append: [ 'groups', 'group', 0, 'append', 0 ],
-        maxEntries: [ 'groups', 'group', 0, 'maxEntries', 0 ]
+        fontcolor: ['groups', 'group', 0, 'fontcolor', 0],
+        font: ['groups', 'group', 0, 'font', 0],
+        fontsize: ['groups', 'group', 0, 'fontsize', 0],
+        align: ['groups', 'group', 0, 'align', 0],
+        valign: ['groups', 'group', 0, 'valign', 0],
+        defaultvalue: ['groups', 'group', 0, 'defaultvalue', 0],
+        sprintf: ['groups', 'group', 0, 'sprintf', 0],
+        sprintfOrder: ['groups', 'group', 0, 'sprintfOrder'],
+        preformatted: ['groups', 'group', 0, 'preformatted', 0],
+        append: ['groups', 'group', 0, 'append', 0],
+        maxEntries: ['groups', 'group', 0, 'maxEntries', 0]
     };
 
     return Controller;

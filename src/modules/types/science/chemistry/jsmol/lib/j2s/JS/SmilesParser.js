@@ -603,7 +603,7 @@ return;
 }this.ringBonds.remove (r);
 switch (bond.order) {
 case -1:
-bond.order = (bond0.order != -1 ? bond0.order : this.isSmarts || currentAtom.isAromatic () && bond0.getAtom1 ().isAromatic () ? 81 : 1);
+bond.order = (bond0.order != -1 ? bond0.order : this.isSmarts || currentAtom.isAromatic () && bond0.atom1.isAromatic () ? 81 : 1);
 break;
 case 257:
 bond.order = 513;

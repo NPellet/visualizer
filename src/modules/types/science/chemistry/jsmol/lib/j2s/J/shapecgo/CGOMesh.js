@@ -12,7 +12,12 @@ this.cList =  new JU.Lst ();
 });
 c$.getSize = Clazz.defineMethod (c$, "getSize", 
 function (i) {
+switch (i) {
+case -100:
+return 1;
+default:
 return (i >= 0 && i < J.shapecgo.CGOMesh.sizes.length ? J.shapecgo.CGOMesh.sizes[i] : -1);
+}
 }, "~N");
 Clazz.defineMethod (c$, "clear", 
 function (meshType) {
@@ -138,5 +143,6 @@ Clazz.defineStatics (c$,
 "QUADRIC", 26,
 "CONE", 27,
 "RESET_NORMAL", 28,
-"PICK_COLOR", 29);
+"PICK_COLOR", 29,
+"JMOL_DIAMETER", -100);
 });

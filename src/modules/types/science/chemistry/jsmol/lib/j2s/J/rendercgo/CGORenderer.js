@@ -31,6 +31,8 @@ return this.needTranslucent;
 Clazz.overrideMethod (c$, "renderMesh", 
 function (mesh) {
 this.mesh = mesh;
+this.diameter = this.cgoMesh.diameter;
+this.width = this.cgoMesh.width;
 this.cmds = this.cgoMesh.cmds;
 if (this.cmds == null || !this.cgoMesh.visible) return false;
 if (!this.g3d.setC (this.cgoMesh.colix)) return this.needTranslucent = true;
@@ -39,6 +41,7 @@ var glMode = -1;
 var nPts = 0;
 this.ptNormal = 0;
 this.ptColor = 0;
+this.width = 0;
 this.doColor = !mesh.useColix;
 var pt;
 var spt;
@@ -67,10 +70,11 @@ glMode = this.cgoMesh.getInt (i + 1);
 nPts = 0;
 break;
 case 3:
-if (glMode == 2 && nPts >= 3) this.drawLine (1, 2, false, this.pt1, this.pt3, this.pt1i, this.pt3i);
+if (glMode == 2 && nPts >= 3) this.drawLine (1, 2, true, this.pt0, this.pt3, this.pt0i, this.pt3i);
 nPts = 0;
 break;
-case 10:
+case -100:
+this.width = this.cgoMesh.getFloat (i + 1);
 break;
 case 6:
 this.getColix (true);
@@ -89,14 +93,14 @@ break;
 case 1:
 if (nPts == 2) {
 this.getPoint (i, this.pt1, this.pt1i);
-this.drawLine (1, 2, false, this.pt0, this.pt0, this.pt1i, this.pt1i);
+this.drawLine (1, 2, false, this.pt0, this.pt1, this.pt0i, this.pt1i);
 nPts = 0;
 }break;
 case 2:
 case 3:
 if (nPts == 1) {
 if (glMode == 2) {
-this.vTemp.setT (this.pt0);
+this.pt3.setT (this.pt0);
 this.pt3i.setT (this.pt0i);
 }break;
 }this.getPoint (i, this.pt1, this.pt1i);
@@ -106,7 +110,7 @@ this.pt1 = pt;
 spt = this.pt0i;
 this.pt0i = this.pt1i;
 this.pt1i = spt;
-this.drawLine (1, 2, false, this.pt0, this.pt1, this.pt0i, this.pt1i);
+this.drawLine (1, 2, true, this.pt0, this.pt1, this.pt0i, this.pt1i);
 break;
 case 4:
 switch (nPts) {

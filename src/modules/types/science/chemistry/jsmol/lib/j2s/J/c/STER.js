@@ -24,7 +24,6 @@ for (var item, $item = 0, $$item = J.c.STER.values (); $item < $$item.length && 
 
 return null;
 }, "~S");
-c$.DEFAULT_STEREO_DEGREES = -5;
 Clazz.defineEnumConstant (c$, "NONE", 0, ["OFF", false]);
 Clazz.defineEnumConstant (c$, "DOUBLE", 1, ["", false]);
 Clazz.defineEnumConstant (c$, "REDCYAN", 2, ["REDCYAN", true]);

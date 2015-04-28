@@ -367,6 +367,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                     var trees = createTrees(data.rows);
                     var datatree = $("#" + that.cssId("datatree"));
                     datatree.fancytree({
+                        toggleEffect: false,
                         source: trees.data,
                         lazyload: proxyLazyLoad,
                         click: proxyClickData,
@@ -378,6 +379,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
 
                     var viewtree = $("#" + that.cssId("viewtree"));
                     viewtree.fancytree({
+                        toggleEffect: false,
                         source: trees.view,
                         lazyload: proxyLazyLoad,
                         click: proxyClickView,

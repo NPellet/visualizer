@@ -7,7 +7,7 @@ var MD5_CHUNK_SIZE = 32768;
 
 function sliceShim(arrayBuffer, begin, end) {
   if (typeof arrayBuffer.slice === 'function') {
-    if (!begin) {
+    if (!begin && !end) {
       return arrayBuffer.slice();
     } else if (!end) {
       return arrayBuffer.slice(begin);
@@ -68,7 +68,7 @@ function rawToBase64(raw) {
   for (var i = 0; i < raw.length; i++) {
     res += intToString(raw[i]);
   }
-  return global.btoa(res);
+  return btoa(res);
 }
 
 module.exports = function (data, callback) {
@@ -95,9 +95,6 @@ module.exports = function (data, callback) {
   function loadNextChunk() {
     var start = currentChunk * chunkSize;
     var end = start + chunkSize;
-    if ((start + chunkSize) >= data.size) {
-      end = data.size;
-    }
     currentChunk++;
     if (currentChunk < chunks) {
       append(buffer, data, start, end);
