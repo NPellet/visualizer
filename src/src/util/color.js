@@ -91,6 +91,11 @@ define(function () {
         return color;
     };
 
+    exports.getBrightness = function (color) {
+        // from http://www.w3.org/WAI/ER/WD-AERT/#color-contrast
+        return ((color[0] / 255 * 299) + (color[1] / 255 * 587) + (color[2] / 255 * 114)) / (color[3] || 1);
+    };
+
     return exports;
 
 });
