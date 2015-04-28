@@ -25,8 +25,7 @@ define(['modules/default/defaultview', 'src/util/color', 'jquery-ui/progressbar'
                     position: 'absolute',
                     left: '50%',
                     top: '4px',
-                    fontWeight: 'bold',
-                    color: (Color.getBrightness(color) < 500) ? 'white' : 'black'
+                    fontWeight: 'bold'
                 });
                 progressBar.append(progressDiv);
                 options.change = function () {
