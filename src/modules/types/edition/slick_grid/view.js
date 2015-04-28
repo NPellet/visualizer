@@ -498,8 +498,18 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                                     //};
 
                                     var comparer1 = function(a, b) {
-                                        var val1 = a.getChildSync(sortCols[i].sortCol.jpath).get();
-                                        var val2 = b.getChildSync(sortCols[i].sortCol.jpath).get();
+                                        var val1 = a.getChildSync(sortCols[i].sortCol.jpath);
+                                        var val2 = b.getChildSync(sortCols[i].sortCol.jpath);
+                                        if(val1 === undefined) {
+                                            if(sortCols[i].sortAsc) return 1;
+                                            else return -1
+                                        }
+                                        if(val2 === undefined) {
+                                            if(sortCols[i].sortAsc) return -1;
+                                            else return 1;
+                                        }
+                                        val1 = val1.get();
+                                        val2 = val2.get();
                                         if(val1 < val2) {
                                             return -1;
                                         }
@@ -508,6 +518,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                                         }
                                         return a.__elementPosition - b.__elementPosition;
                                     };
+                                    console.log(sortCols[i].sortAsc)
                                     that.slick.data.sort(comparer1, sortCols[i].sortAsc);
                                 })(i);
                             }
