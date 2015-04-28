@@ -72,7 +72,7 @@ define(['modules/default/defaultview', 'src/util/color', 'jquery-ui/progressbar'
         },
 
         renderValue: function () {
-            if (this.currentTotal > 0 && this.currentValue > 0) {
+            if (this.currentTotal >= 0 && this.currentValue >= 0) {
                 this.progressBar.progressbar('value', this.currentValue / this.currentTotal * 100);
             }
         }
