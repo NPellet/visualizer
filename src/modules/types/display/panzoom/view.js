@@ -18,6 +18,7 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                 this.module.getDomContent().html(this.dom);
             }
             this.images = [];
+            this.state = 'done';
         },
 
 
@@ -211,23 +212,39 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                     maxScale: 100.0,
                     minScale: 0.000001,
                     duration:0,
-                    startTransform: "none"
-                });
+                    startTransform: "none",
+                    onEnd: function() {
+                        // Set the pointer to cursor only if
+                        if(that.state === 'pan') {
+                            $(this).css('cursor', 'pointer');
+                        }
+                    }
+                }).css('cursor', 'pointer');
                 if(that.lastTransform) {
                     var instance = that.images[i].$panzoomEl.panzoom('instance');
                     instance.setMatrix(that.lastTransform);
                 }
                 that.images[i].$panzoomEl.off('panzoompan');
-                that.images[i].$panzoomEl.on('panzoompan', function(data, panzoom){
+                that.images[i].$panzoomEl.on('panzoompan', function(data, panzoom) {
+
                     that.lastTransform = panzoom.getMatrix();
+
                     for(var j=0; j<that.images.length; j++) {
+                        if(that.state === 'done') {
+                            that.images[j].$panzoomEl.css('cursor', 'move');
+                            that.state = 'pan';
+                        }
                         var panzoomInstance = that.images[j].$panzoomEl.panzoom("instance");
+
                         if(panzoomInstance !== panzoom) {
                             panzoomInstance.setMatrix(that.lastTransform);
+
                         }
                     }
                 });
             }
+
+
             that.dom.off('mousewheel.focal');
             that.dom.on('mousewheel.focal', function( e ) {
                 e.preventDefault();
@@ -278,6 +295,15 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
             }
             that.dom.off('click.panzoom');
             that.dom.on('click.panzoom', function (e) {
+                // Don't generate event if we are panning
+                if(that.state === 'pan') {
+                    that.state = 'done';
+                    return;
+                }
+                that.state = 'done';
+
+
+                $(this).css('cursor', 'pointer');
                 var allClickedPixels = {};
                 var clickedPixel = {};
                 getPixels(e, allClickedPixels, clickedPixel);
@@ -291,6 +317,9 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
 
             that.dom.off('mousemove.panzoom');
             that.dom.on('mousemove.panzoom', function(e) {
+                if(that.state === 'pan') {
+                    return;
+                }
                 var allHoverPixels = {};
                 var hoverPixel = {};
                 getPixels(e, allHoverPixels, hoverPixel);
@@ -303,6 +332,8 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                     that.lastAllHoverPixels = allHoverPixels;
                 }
             });
+
+
 
             this.dom.off('dblclick');
             this.dom.dblclick(function() {
