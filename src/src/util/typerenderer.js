@@ -94,8 +94,13 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
     };
 
     functions.picture = {};
-    functions.picture.toscreen = function (element, val) {
-        element.html('<img src="' + val + '" />');
+    functions.picture.toscreen = function (element, val, rootVal, options) {
+        var $img = $('<img>');
+        $img.attr({
+            src: val,
+            width: options ? options.width : undefined
+        });
+        element.html($img);
     };
     
     functions.gif = functions.picture;
