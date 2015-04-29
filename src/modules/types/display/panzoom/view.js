@@ -64,6 +64,8 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                 that.panzoomMode(varname);
                 that.onResize();
                 that.reorderImages();
+            }, function() {
+                Debug.warn('panzoom: image failed to load');
             });
         },
 
@@ -131,7 +133,7 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
         addImage: function(varname, variable) {
             var that = this;
 
-            return new Promise(function(resolve) {
+            return new Promise(function(resolve, reject) {
                 if(variable === undefined) {
                     variable = API.getData(varname);
                 }
@@ -171,7 +173,8 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                     .css('opacity', conf.opacity)
                     .addClass(conf.rendering)
                     .attr('src', variable.get())
-                    .load(function(){
+                    .on('load', function(){
+                        console.log('has loaded', arguments);
                         image.name = conf.variable;
                         image.$panzoomEl = x.find('.panzoom');
                         image.$img = $img;
@@ -185,6 +188,10 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                         }
                         if($previousImg) $previousImg.remove();
                         resolve();
+                    })
+                    .on('error', function() {
+                        if($previousImg) $previousImg.remove();
+                        reject();
                     });
             });
         },
