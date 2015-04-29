@@ -411,7 +411,9 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
             .focus()
             .select()
             .focusout(function() {
-                that.args.commitChanges('next');
+                // Shouldn't do this if auto-edit
+                if(!that.args.grid.module.view.slick.options.autoEdit)
+                    that.args.commitChanges('next');
             })
     }
 
