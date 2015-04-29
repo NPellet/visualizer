@@ -71,7 +71,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                                 depict: 'Only display structure (no editing)',
                                 nopaste: 'Remove the paste menu',
                                 border: 'With depict option, display the border around the molecule',
-                                star: 'Display start button allowing hightlight of atoms (placed in the smiels)',
+                                star: 'Display star button allowing highlight of atoms (placed in the smiles)',
                                 oldlook: 'Use the old look'
                             }
                         },
