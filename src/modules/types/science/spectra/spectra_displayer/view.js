@@ -527,7 +527,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     }
 
 
-                    var serieName = data.serieLabel || varname;
+                    var serieName = aData.label || varname;
 
                     var valFinal = [];
 
