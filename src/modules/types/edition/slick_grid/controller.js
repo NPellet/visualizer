@@ -37,7 +37,6 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
                             options: {
                                 editable: 'Editable',
                                 enableAddRow: 'Enable add row',
-                                enableCellNavigation: 'Enable Cell Navigation',
                                 autoEdit: 'Enable Auto Edit',
                                 forceFitColumns: 'Force fit Columns',
                                 rowDelete: 'Can delete rows',

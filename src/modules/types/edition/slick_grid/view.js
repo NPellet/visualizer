@@ -211,7 +211,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             return {
                 editable: that.module.getConfigurationCheckbox('slickCheck', 'editable'),
                 enableAddRow: that.module.getConfigurationCheckbox('slickCheck', 'enableAddRow'),
-                enableCellNavigation: that.module.getConfigurationCheckbox('slickCheck', 'enableCellNavigation'),
+                enableCellNavigation: that.module.getConfigurationCheckbox('slickCheck', 'editable'),
                 autoEdit: that.module.getConfigurationCheckbox('slickCheck', 'autoEdit'),
                 enableTextSelectionOnCells: true,
                 enableColumnReorder: true,
