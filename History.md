@@ -1,3 +1,22 @@
+2.17.9 / 2015-04-29
+===================
+ * Modules
+    * slick_grid: bug fixes
+    * jqgrid: option not to systematically highlight the hovered line
+    * New progress bar module
+    * panzoom: minor improvements
+
+ * Util
+    * shortcuts: bug fix
+    * search module: display name instead of id but search both
+    * shortcuts: bug fix
+
+ * Type renderer
+    * Add webp renderer
+  
+ * Testcases
+    * add progress bar examples
+ 
 2.17.8 / 2015-04-23
 ===================
 
