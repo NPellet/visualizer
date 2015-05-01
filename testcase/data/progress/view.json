@@ -11,148 +11,6 @@
   },
   "modules": [
     {
-      "url": "modules/types/display/progress/",
-      "configuration": {
-        "sections": {},
-        "groups": {
-          "group": [
-            {
-              "mode": [
-                "value"
-              ],
-              "showprogress": [
-                [
-                  "show"
-                ]
-              ],
-              "barcolor": [
-                [
-                  217,
-                  234,
-                  211,
-                  1
-                ]
-              ]
-            }
-          ]
-        }
-      },
-      "layers": {
-        "Default layer": {
-          "position": {
-            "left": 46,
-            "top": 16
-          },
-          "size": {
-            "width": 54,
-            "height": 36
-          },
-          "zIndex": 0,
-          "display": true,
-          "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
-          "wrapper": false,
-          "created": true,
-          "name": "Default layer"
-        }
-      },
-      "id": 1,
-      "vars_in": [
-        {
-          "rel": "progress",
-          "name": "progress"
-        },
-        {
-          "rel": "total",
-          "name": "total"
-        }
-      ],
-      "actions_in": [
-        {}
-      ],
-      "title": "",
-      "vars_out": [],
-      "actions_out": []
-    },
-    {
-      "url": "modules/types/edition/object_editor/",
-      "configuration": {
-        "sections": {},
-        "groups": {
-          "group": [
-            {
-              "editable": [
-                "text"
-              ],
-              "expanded": [
-                []
-              ],
-              "storeObject": [
-                [
-                  "expand"
-                ]
-              ],
-              "displayValue": [
-                []
-              ],
-              "output": [
-                "new"
-              ],
-              "storedObject": [
-                "8"
-              ]
-            }
-          ]
-        }
-      },
-      "layers": {
-        "Default layer": {
-          "position": {
-            "left": 40,
-            "top": 0
-          },
-          "size": {
-            "width": 33,
-            "height": 15
-          },
-          "zIndex": 0,
-          "display": true,
-          "title": "Percent / Current value",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer"
-        }
-      },
-      "id": 2,
-      "vars_in": [
-        {}
-      ],
-      "actions_in": [
-        {}
-      ],
-      "vars_out": [
-        {
-          "event": "onObjectChange",
-          "rel": "output",
-          "jpath": [],
-          "name": "progress"
-        }
-      ],
-      "title": "Percent / Current value",
-      "actions_out": []
-    },
-    {
       "url": "modules/types/edition/object_editor/",
       "configuration": {
         "sections": {},
@@ -186,12 +44,12 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 74,
-            "top": 0
+            "left": 34,
+            "top": 2
           },
           "size": {
-            "width": 33,
-            "height": 15
+            "width": 20,
+            "height": 12
           },
           "zIndex": 0,
           "display": true,
@@ -207,7 +65,7 @@
           "name": "Default layer"
         }
       },
-      "id": 3,
+      "id": 1,
       "vars_in": [
         {}
       ],
@@ -223,80 +81,8 @@
         }
       ],
       "title": "Total",
-      "actions_out": []
-    },
-    {
-      "url": "modules/types/edition/object_editor/",
-      "configuration": {
-        "sections": {},
-        "groups": {
-          "group": [
-            {
-              "editable": [
-                "text"
-              ],
-              "expanded": [
-                []
-              ],
-              "storeObject": [
-                [
-                  "expand"
-                ]
-              ],
-              "displayValue": [
-                []
-              ],
-              "output": [
-                "new"
-              ],
-              "storedObject": [
-                "0.3"
-              ]
-            }
-          ]
-        }
-      },
-      "layers": {
-        "Default layer": {
-          "position": {
-            "left": 0,
-            "top": 0
-          },
-          "size": {
-            "width": 33,
-            "height": 15
-          },
-          "zIndex": 0,
-          "display": true,
-          "title": "Percent / Current value",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer"
-        }
-      },
-      "id": 4,
-      "vars_in": [
-        {}
-      ],
-      "actions_in": [
-        {}
-      ],
-      "vars_out": [
-        {
-          "event": "onObjectChange",
-          "rel": "output",
-          "jpath": [],
-          "name": "progress1"
-        }
-      ],
-      "title": "Percent / Current value",
-      "actions_out": []
+      "actions_out": [],
+      "zindex": 3
     },
     {
       "url": "modules/types/display/progress/",
@@ -305,13 +91,8 @@
         "groups": {
           "group": [
             {
-              "mode": [
-                "percent"
-              ],
-              "showprogress": [
-                [
-                  "show"
-                ]
+              "tpl": [
+                ":current / :total (:percent)"
               ],
               "barcolor": [
                 [
@@ -328,11 +109,11 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 0,
-            "top": 16
+            "left": 18,
+            "top": 15
           },
           "size": {
-            "width": 33,
+            "width": 49,
             "height": 7
           },
           "zIndex": 0,
@@ -349,19 +130,578 @@
           "name": "Default layer"
         }
       },
-      "id": 5,
+      "id": 2,
       "vars_in": [
         {
-          "rel": "progress",
-          "name": "progress1"
+          "rel": "total",
+          "name": "total"
         }
       ],
+      "actions_in": [
+        {
+          "rel": "inc",
+          "name": "inc"
+        },
+        {
+          "rel": "set",
+          "name": "set"
+        },
+        {
+          "rel": "total",
+          "name": "tot"
+        }
+      ],
+      "title": "",
+      "vars_out": [],
+      "actions_out": [],
+      "zindex": 1
+    },
+    {
+      "url": "modules/types/client_interaction/button_action/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "toggle": [
+                "click"
+              ],
+              "label": [
+                "Increment by 1"
+              ],
+              "onLabel": [
+                "Toggle action off"
+              ],
+              "offLabel": [
+                "Toggle action on"
+              ],
+              "onColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "offColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "text": [
+                ""
+              ],
+              "askConfirm": [
+                []
+              ],
+              "confirmText": [
+                "Are you sure?"
+              ],
+              "okLabel": [
+                "Ok"
+              ],
+              "cancelLabel": [
+                "Cancel"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 25,
+            "top": 18
+          },
+          "size": {
+            "width": 13,
+            "height": 6
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": false,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [],
       "actions_in": [
         {}
       ],
       "title": "",
       "vars_out": [],
-      "actions_out": []
+      "actions_out": [
+        {
+          "event": "onClick",
+          "rel": "actionText",
+          "jpath": [],
+          "name": "inc"
+        }
+      ],
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/client_interaction/button_action/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "toggle": [
+                "click"
+              ],
+              "label": [
+                "Increment by 2"
+              ],
+              "onLabel": [
+                "Toggle action off"
+              ],
+              "offLabel": [
+                "Toggle action on"
+              ],
+              "onColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "offColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "text": [
+                "2"
+              ],
+              "askConfirm": [
+                []
+              ],
+              "confirmText": [
+                "Are you sure?"
+              ],
+              "okLabel": [
+                "Ok"
+              ],
+              "cancelLabel": [
+                "Cancel"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 37,
+            "top": 18
+          },
+          "size": {
+            "width": 13,
+            "height": 6
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": false,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 4,
+      "vars_in": [],
+      "actions_in": [
+        {}
+      ],
+      "title": "",
+      "vars_out": [],
+      "actions_out": [
+        {
+          "event": "onClick",
+          "rel": "actionText",
+          "jpath": [],
+          "name": "inc"
+        }
+      ],
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/client_interaction/button_action/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "toggle": [
+                "click"
+              ],
+              "label": [
+                "Set to 5"
+              ],
+              "onLabel": [
+                "Toggle action off"
+              ],
+              "offLabel": [
+                "Toggle action on"
+              ],
+              "onColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "offColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "text": [
+                "5"
+              ],
+              "askConfirm": [
+                []
+              ],
+              "confirmText": [
+                "Are you sure?"
+              ],
+              "okLabel": [
+                "Ok"
+              ],
+              "cancelLabel": [
+                "Cancel"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 49,
+            "top": 18
+          },
+          "size": {
+            "width": 13,
+            "height": 6
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": false,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 5,
+      "vars_in": [],
+      "actions_in": [
+        {}
+      ],
+      "title": "",
+      "vars_out": [],
+      "actions_out": [
+        {
+          "event": "onClick",
+          "rel": "actionText",
+          "jpath": [],
+          "name": "set"
+        }
+      ],
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/client_interaction/button_action/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "toggle": [
+                "click"
+              ],
+              "label": [
+                "Set total at 20"
+              ],
+              "onLabel": [
+                "Toggle action off"
+              ],
+              "offLabel": [
+                "Toggle action on"
+              ],
+              "onColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "offColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "text": [
+                "20"
+              ],
+              "askConfirm": [
+                []
+              ],
+              "confirmText": [
+                "Are you sure?"
+              ],
+              "okLabel": [
+                "Ok"
+              ],
+              "cancelLabel": [
+                "Cancel"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 56,
+            "top": 18
+          },
+          "size": {
+            "width": 13,
+            "height": 6
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": false,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 6,
+      "vars_in": [],
+      "actions_in": [
+        {}
+      ],
+      "title": "",
+      "vars_out": [],
+      "actions_out": [
+        {
+          "event": "onClick",
+          "rel": "actionText",
+          "jpath": [],
+          "name": "tot"
+        }
+      ],
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/display/progress/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "tpl": [
+                "elapsed: :elapsed (:eta)"
+              ],
+              "barcolor": [
+                [
+                  241,
+                  194,
+                  50,
+                  1
+                ]
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 18,
+            "top": 22
+          },
+          "size": {
+            "width": 49,
+            "height": 7
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": false,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 7,
+      "vars_in": [
+        {
+          "rel": "total",
+          "name": "total"
+        }
+      ],
+      "actions_in": [
+        {
+          "rel": "inc",
+          "name": "inc"
+        },
+        {
+          "rel": "set",
+          "name": "set"
+        },
+        {
+          "rel": "total",
+          "name": "tot"
+        }
+      ],
+      "title": "",
+      "vars_out": [],
+      "actions_out": [],
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/client_interaction/button_action/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "toggle": [
+                "click"
+              ],
+              "label": [
+                "Reset"
+              ],
+              "onLabel": [
+                "Toggle action off"
+              ],
+              "offLabel": [
+                "Toggle action on"
+              ],
+              "onColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "offColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "text": [
+                "0"
+              ],
+              "askConfirm": [
+                []
+              ],
+              "confirmText": [
+                "Are you sure?"
+              ],
+              "okLabel": [
+                "Ok"
+              ],
+              "cancelLabel": [
+                "Cancel"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 17,
+            "top": 18
+          },
+          "size": {
+            "width": 13,
+            "height": 6
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": false,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 8,
+      "vars_in": [],
+      "actions_in": [
+        {}
+      ],
+      "title": "",
+      "vars_out": [],
+      "actions_out": [
+        {
+          "event": "onClick",
+          "rel": "actionText",
+          "jpath": [],
+          "name": "set"
+        }
+      ],
+      "zindex": 2
     }
   ],
   "variables": [],

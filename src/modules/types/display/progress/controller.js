@@ -17,17 +17,19 @@ define(['modules/default/defaultcontroller'], function (Default) {
     };
 
     Controller.prototype.references = {
-        progress: {
-            label: 'Progression',
-            type: 'number'
-        },
         total: {
-            label: 'Total progression',
+            label: 'Total progress',
             type: 'number'
         }
     };
 
-    Controller.prototype.variablesIn = ['progress', 'total'];
+    Controller.prototype.variablesIn = ['total'];
+
+    Controller.prototype.actionsIn = {
+        inc: 'Increment current progress',
+        'set': 'Set current progress',
+        total: 'Change total progress'
+    };
 
     Controller.prototype.configurationStructure = function () {
         return {
@@ -37,22 +39,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
                         type: 'list'
                     },
                     fields: {
-                        mode: {
-                            type: 'combo',
-                            title: 'Progression type',
-                            options: [
-                                {title: 'Percentage', key: 'percent'},
-                                {title: 'Value and total', key: 'value'}
-                            ],
-                            'default': 'percent'
-                        },
-                        showprogress: {
-                            type: 'checkbox',
-                            title: 'Show progress in bar',
-                            options: {
-                                show: 'Yes'
-                            },
-                            'default': ['show']
+                        tpl: {
+                            type: 'text',
+                            title: 'Progress template',
+                            'default': ':current / :total'
                         },
                         barcolor: {
                             type: 'spectrum',
@@ -66,9 +56,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
     };
 
     Controller.prototype.configAliases = {
-        barcolor: ['groups', 'group', 0, 'barcolor', 0],
-        showprogress: ['groups', 'group', 0, 'showprogress', 0],
-        progressmode: ['groups', 'group', 0, 'mode', 0]
+        tpl: ['groups', 'group', 0, 'tpl', 0],
+        barcolor: ['groups', 'group', 0, 'barcolor', 0]
     };
 
     return Controller;
