@@ -328,7 +328,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
 
                         that.grid.onAddNewRow.subscribe(function (e, args) {
-                            console.log(that.module.data[that.module.data.length-1]);
+//                            console.log(that.module.data[that.module.data.length-1]);
                             that.module.controller.onRowNew(that.module.data.length-1, that.module.data[that.module.data.length-1]);
                             that.module.model.dataTriggerChange(that.module.data);
                             that._resetDeleteRowListeners();
@@ -386,7 +386,6 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             var hl = itemInfo.item._highlight;
                             that._hl = hl;
                             if(hl) {
-                                console.log('highlight id');
                                 API.highlightId(hl,1);
                                 lastHighlight = hl;
                             }
@@ -518,7 +517,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                                         }
                                         return a.__elementPosition - b.__elementPosition;
                                     };
-                                    console.log(sortCols[i].sortAsc)
+//                                    console.log(sortCols[i].sortAsc);
                                     that.slick.data.sort(comparer1, sortCols[i].sortAsc);
                                 })(i);
                             }
