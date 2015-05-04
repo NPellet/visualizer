@@ -1,5 +1,11 @@
+2.19.2 / 2015-05-05
+===================
+
+* Add version selector header
+
 2.19.1 / 2015-05-04
 ===================
+
 * Remove Base64 library
 * Update JSME
 
