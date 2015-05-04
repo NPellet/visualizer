@@ -431,7 +431,6 @@ define(['modules/default/defaultview', 'src/main/datas', 'src/util/datatraversin
 
         $(self.renderer.domElement).listHandlers('mousemove', function(a, b) {
           // List jquery handlers (to debug...)
-          console.log('handler list: ', a,b);
         });
 
       }
@@ -509,7 +508,6 @@ define(['modules/default/defaultview', 'src/main/datas', 'src/util/datatraversin
       //   var a = i%2 ? 1 : -1;
       //   var b = parseInt(i/2)%2 ? 1 : -1;
       //   var c = parseInt(i/4)%2 ? 1 : -1;
-      //   console.log(a,b,c);
       //   var light = new THREE.DirectionalLight(0x777777, 1);
       //   light.position.set(a,b,c);
       //   self.scene.add(light);

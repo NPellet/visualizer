@@ -20,7 +20,6 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
                 self.paintFeatures(self.opt.json)
               }
             } catch (err) {
-              Biojs.console.log(err);
               document.getElementById(self.opt.target).innerHTML = '';
               document.getElementById(self.opt.target).innerHTML = 'No image available. Did you provide a valid UniProt accession or identifier, and valid limits?';
             }

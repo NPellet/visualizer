@@ -158,7 +158,6 @@ define([
                  */
                 /* value = DataTraversing.getValueIfNeeded(value);
 
-                 console.log(value);
                  if (!value)
                  return;
 

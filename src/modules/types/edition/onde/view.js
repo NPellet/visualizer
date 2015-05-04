@@ -65,7 +65,6 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
             this.form = new onde.Onde(this.dom);
             this.renderForm();
             this.form.on('field:delete', function(node) {
-                console.log('field:delete', node);
                 that.exportForm();
             })
         },

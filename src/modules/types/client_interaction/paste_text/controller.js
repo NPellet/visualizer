@@ -122,8 +122,6 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
         });
         
         
-        //console.log(this.module.getConfiguration("defaultvalue"));
-        //console.log(this.module.definition.configuration)
     };
 
  	return controller;

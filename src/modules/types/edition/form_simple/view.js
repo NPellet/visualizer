@@ -144,7 +144,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
 		update: {
 			input_object: function( varValue ) {
-console.log('input');
 				var self = this;
 				this.newValue( varValue );
 				
@@ -158,7 +157,6 @@ console.log('input');
 		},
 
 		newValue: function( varValue ) {
-console.log( 'new');
 			var self = this,
 				structure = this.module.getConfiguration('structure') || [],
 				jpath;

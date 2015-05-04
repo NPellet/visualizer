@@ -35,7 +35,6 @@ define(['require','modules/default/defaultview','src/util/util','threejs'], func
 			
 			
 			if (this.scene) {
-			//	console.log(this.scene.__webglObjects);
 			//	this.scene.remove
 
 				this.scene.remove(this.graphGeometry);
@@ -44,7 +43,6 @@ define(['require','modules/default/defaultview','src/util/util','threejs'], func
 				delete this.graphGeometry;
 				delete this.graphMesh;
 				delete this.floor;
-				// console.log(this.scene.__webglObjects);
 			}
 
 			require(['./TrackballControls','lib/parser/Parser'], function() {
@@ -98,7 +96,6 @@ define(['require','modules/default/defaultview','src/util/util','threejs'], func
 			
 			if (!this.webgl) return;
 			var self=this;
-    //  console.log(this.onReady);
 			this.module.viewReady.then(function() {
 				var cfg = $.proxy(self.module.getConfiguration, self.module);
 				var segments=cfg('segments');

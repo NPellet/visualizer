@@ -20,7 +20,6 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
 			this.module.getDomContent().html(this.dom);
 			this.cx = 0;
 			this.step = this.module.getConfiguration('step') || 2;
-console.log( this.step );
 			var self = this;
 
         },

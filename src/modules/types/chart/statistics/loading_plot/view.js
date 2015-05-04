@@ -58,7 +58,6 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'lib/loa
             },
 
             zoom: function (val) {
-                console.log(val);
                 if (!val) {
                     return;
                 }

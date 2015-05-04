@@ -16,7 +16,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
         regJpath = /^element\./;
 
     function makejPathFunction(jpath) {
-
+// comment
         if (!jpath) {
             return noop;
         }

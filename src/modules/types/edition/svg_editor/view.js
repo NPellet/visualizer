@@ -105,11 +105,9 @@ define([
                         frame.contentWindow.svgedit.options = {};
 
                         // frame.contentWindow.svgedit.options.sanitize = self._configCheckBox('sanitize', 'doSanitize');
-                        //console.log(self.svgEditor);
 
                         // What to do when the canvas changes
                         self.svgCanvas.bind('changed', function () {
-                            //console.log('svgCanvas changed');
                             self.svgEditor.showSaveWarning = false;
                             self._saveSvg();
                         });
@@ -117,7 +115,6 @@ define([
                         self.iframeLoaded.resolve();
                         self.resolveReady();
                         self.onResize();
-                        //console.log('resolve ready');
                     });
                 }
                 else {
@@ -135,9 +132,7 @@ define([
             },
 
             onResize: function () {
-                //console.log('on resize');
                 if (this._configCheckBox('editable', 'isEditable') && this.dom) {
-                    //console.log('on resize apply');
                     this.dom.height(this.height).width(this.width);
                     if (this.svgCanvas) {
                         this.svgCanvas.zoomChanged(window, 'canvas');
@@ -147,7 +142,6 @@ define([
 
             update: {
                 svgModifier: function (data) {
-                    //console.log('update');
                     var self = this;
                     // var clone = [];
 
@@ -201,7 +195,6 @@ define([
                 $allAnimations.each(function () {
                     this.addEventListener('endEvent', function () {
                         blockHighlight[highlightId] = false;
-                        // console.log($(this).parent());
                         // Persist works only for <animate/>
                         if (anim.options.persistOnEnd) {
                             if (anim.tag === 'animate') {
@@ -213,7 +206,6 @@ define([
                         }
 
                         if (anim.options.clearAnimationTags) {
-                            //console.log('clear animation tags');
                             self.$getAnimationTags($svgEl).remove();
                         }
 
@@ -227,7 +219,6 @@ define([
                         }
                         else {
                             // Don't clear anything
-                            // console.log('not clear on end')
                         }
                     });
                     this.addEventListener('repeatEvent', function () {
@@ -395,7 +386,6 @@ define([
                     return;
 
                 function onMouseEnter() {
-                    //console.log('mouse enter callback');
 
                     /*      if( self.dataTimeout) { window.clearInterval( self.dataTimeout); }
                      self.dataTimeout = window.setInterval( function( ) { console.log( obj.info ); obj.info.triggerChange(); } , 100 );
@@ -424,10 +414,8 @@ define([
 
                 function cb(onOff) {
                     if (blockHighlight[killId]) {
-                        //console.log('highlight blocked...');
                         return;
                     }
-                    //console.log('highlight callaback');
                     var animation = {};
                     animation.tag = 'animateTransform';
                     animation.options = {
@@ -515,7 +503,6 @@ define([
 
             _loadSvg: function () {
                 var svgcode = this.module.getConfiguration('svgcode');
-                // console.log('load svg code: ', svgcode);
                 this.svgCanvas.setSvgString(svgcode);
                 this.module.controller.onChange(svgcode);
             },
