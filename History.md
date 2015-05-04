@@ -1,5 +1,16 @@
-2.17.9 / 2015-04-29
+2.19.0 / 2015-05-04
 ===================
+
+* Modules
+ * progress: change behavior to use actions and text template
+ * panzoom: handle image loading failure
+ * spectra_displayer: corretly assign serie label
+* Util
+ * typerenderer: can force image width
+
+2.18.0 / 2015-04-29
+===================
+
  * Modules
     * slick_grid: bug fixes
     * jqgrid: option not to systematically highlight the hovered line
