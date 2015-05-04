@@ -1,6 +1,6 @@
 'use strict';
 
-define(['../../lib/webtoolkit/base64', 'src/util/versioning', 'lib/couchdb/jquery.couch'], function (Base64, Versioning) {
+define(['src/util/versioning', 'lib/couchdb/jquery.couch'], function (Versioning) {
 
     function share(options) {
 
@@ -11,8 +11,8 @@ define(['../../lib/webtoolkit/base64', 'src/util/versioning', 'lib/couchdb/jquer
         var db = $.couch.db(database);
 
         var view = Versioning.getView();
-        var encodedView = Base64.encode(JSON.stringify(view));
-        var encodedData = Base64.encode(Versioning.getDataJSON());
+        var encodedView = btoa(JSON.stringify(view));
+        var encodedData = btoa(Versioning.getDataJSON());
 
         var docid = guid();
 

@@ -7,13 +7,12 @@ define([
     'src/util/versioning',
     'forms/button',
     'src/util/util',
-    'lib/webtoolkit/base64',
     'forms/form',
     'lib/couchdb/jquery.couch',
     'fancytree',
     'components/ui-contextmenu/jquery.ui-contextmenu.min',
     'jquery-ui/autocomplete'
-], function ($, ui, Default, Versioning, Button, Util, Base64, Form) {
+], function ($, ui, Default, Versioning, Button, Util, Form) {
 
     function CouchDBManager() {
     }
@@ -206,7 +205,7 @@ define([
             }
             doc._attachments['meta.json'] = {
                 'content_type': 'application/json',
-                'data': Base64.encode(JSON.stringify(val))
+                'data': btoa(JSON.stringify(val))
             };
             that.database.saveDoc(doc, {
                 success: function (data) {
@@ -286,7 +285,7 @@ define([
                 };
                 doc._attachments[type.toLowerCase() + '.json'] = {
                     'content_type': 'application/json',
-                    'data': Base64.encode(content)
+                    'data': btoa(content)
                 };
                 this.database.saveDoc(doc, {
                     success: function (data) {
