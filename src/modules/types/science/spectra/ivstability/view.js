@@ -63,7 +63,6 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 
 
 				onMouseMoveData: function(e, val) {
-					/*console.log(val);*/
 					/*for(var i in val) {
 						LRU.get('http://lpidb.epfl.ch/content/ajax/getstabilityiv.ajax.php?id=' + i +'&date=' + val[i].xBefore).done(function(data) {
 					    	for(var i in data) {

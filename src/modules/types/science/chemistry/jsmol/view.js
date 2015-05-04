@@ -203,7 +203,6 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
     });
 
     function _undoHighlights() {
-        console.log('undo highlights', this.lastHoveredAtom);
         if(this.lastHoveredAtom) {
             API.highlightId(this.lastHoveredAtom.label, 0);
             this.lastHoveredAtom = null;

@@ -54,7 +54,6 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 				$("#"+self._id).bind("plotclick", function (event, pos, item) {
 				    if (item) {
-				      	cconsole.log(item.dataIndex, item.seriesIndex);
 				    }
 				});
 				$("#"+self._id).bind("plothover", function (event, pos, item) {
@@ -73,9 +72,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					API.listenHighlight( self._data[i], function( onOff, key ) {
 
 						// we need to highlight the correct shape ...
-				//		console.log(onOff, key, currentDataPoint);
 						if (onOff) {
-							console.log(i);
 							self._plot.highlight(0, currentDataPoint);
 						} else {
 							self._plot.unhighlight(0, currentDataPoint);
@@ -119,7 +116,6 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			var self=this;
 			if ( ! Array.isArray(value.data) || ! value.data[0] || ! Array.isArray(value.data[0].y)) return;
 			if (value.data.length>0) {
-				console.log("Pie Chart module can only display the first serie of data")
 			}
 			var y=value.data[0].y;
 			var highlight=value.data[0]._highlight;

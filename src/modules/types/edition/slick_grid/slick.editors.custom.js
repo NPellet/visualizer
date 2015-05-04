@@ -158,7 +158,6 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
 
                     },
                     hide: function() {
-                        console.log('hide');
                         if(!that.changed) {
                             args.cancelChanges();
                         }
@@ -400,7 +399,6 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
 
     function defaultInit() {
         var that = this;
-        console.log('default init');
         this.$input = $("<INPUT type=text class='editor-text' />")
             .appendTo(this.args.container)
             .bind("keydown.nav", function (e) {

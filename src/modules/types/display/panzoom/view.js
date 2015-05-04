@@ -174,7 +174,6 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                     .addClass(conf.rendering)
                     .attr('src', variable.get())
                     .on('load', function(){
-                        console.log('has loaded', arguments);
                         image.name = conf.variable;
                         image.$panzoomEl = x.find('.panzoom');
                         image.$img = $img;

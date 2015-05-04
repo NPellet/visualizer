@@ -775,8 +775,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                         if( data[ i ].data ) {
                             serie.setData(data[ i ].data);
-                        } else {
-                            console.log( data[ i ].data );
                         }
 
                         //	serie.setLabel( data[ i ].label.toString( ) );

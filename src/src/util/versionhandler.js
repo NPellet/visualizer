@@ -121,7 +121,6 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 			var self = this;
 			return db.open().pipe(function() {
 				return db.getAll(self.type, self._dirUrl).pipe(function(all) {
-					console.log(all);
 					return all;
 				});
 			});

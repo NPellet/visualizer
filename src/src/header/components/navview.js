@@ -446,7 +446,6 @@ define([
                 that.fancytreeOk = true;
                 var tree = that.$tree.fancytree("getTree");
                 that.$_elToOpen.find("input[name=search]").keyup(function(e){
-                    console.log('keyup');
                     var n,
                         match = $(this).val();
 

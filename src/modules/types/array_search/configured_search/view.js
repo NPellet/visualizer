@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api', 'lib/formcreator/formcreator', 'src/util/util'], function (Default, Traversing, API, FormCreator, Util) {
+define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api', 'lib/formcreator/formcreator', 'src/util/util', 'src/util/debug'], function (Default, Traversing, API, FormCreator, Util, Debug) {
 
     function View() {
     }
@@ -275,8 +275,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                 this._searchFunc = null;
                 eval(toEval);
             } catch (e) {
-                console.error('Error while evaluating function.');
-                console.log(toEval);
+                Debug.error('Error while evaluating function.', toEval);
             }
         },
 

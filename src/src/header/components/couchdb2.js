@@ -481,7 +481,6 @@ define([
             };
             var treeContainer = $('<div>').attr('id', this.cssId('tree')).css(treeCSS).appendTo(dom);
             this.makePublicButton = new Button('Make Public', function () {
-                console.log('Make public');
                 ui.confirm('You are about to make your view public. This action is irreversible. It will enable anybody to access the saved view and data. Do you want to proceed?', 'Proceed', 'Cancel').then(function (proceed) {
                     if (!proceed || !that.currentDocument) return;
                     var node = that.currentDocument;
@@ -501,7 +500,6 @@ define([
                             that.showError.apply(that, arguments)
                         }
                     });
-                    console.log('proceed with make public');
                 });
             }, {color: 'red'});
             dom.append($('<div style="width:560px; height:35px;">').append('<input type="text" id="' + this.cssId('docName') + '"/>')
@@ -819,7 +817,6 @@ define([
                 node: folder
             };
             this.lastNode = last;
-            console.log(this.lastNode.key);
             if (event.type === 'fancytreedblclick' && !node.folder)
                 return false;
 
