@@ -174,8 +174,8 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
         });
     };
 
-    functions.actelionID = {};
-    functions.actelionID.toscreen = function (element, val, root, options) {
+    functions.actelionid = {};
+    functions.actelionid.toscreen = function (element, val, root, options) {
         return new Promise(function (resolve) {
             require([OCL], function (ACT) {
                 if (!root.coordinates) {
@@ -203,7 +203,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
         });
     };
 
-    functions.molfile2D = functions.mol2d;
+    functions.molfile2d = functions.mol2d;
 
     functions.mf = {};
     functions.mf.toscreen = function (element, value) {
@@ -248,15 +248,15 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
     functions.mol3d = {};
     functions.mol3d.toscreen = bioPv.bind(functions.pdb, 'mol3d');
 
-    functions.molfile3D = functions.mol3d;
+    functions.molfile3d = functions.mol3d;
 
-    functions.downloadLink = {};
-    functions.downloadLink.toscreen = function (element, value) {
+    functions.downloadlink = {};
+    functions.downloadlink.toscreen = function (element, value) {
         element.html(value.replace(/^(.*)$/, '<a href="$1">⤵</a>'));
     };
 
-    functions.openLink = {};
-    functions.openLink.toscreen = function($element, value) {
+    functions.openlink = {};
+    functions.openlink.toscreen = function($element, value) {
         $element.html(value.replace(/^(.*)$/, '<a href="$1" target="_blank"><i class="fa fa-external-link"></i></a>'));
     };
 
@@ -268,8 +268,8 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
             element.html('<span style="color: red;">&#10008;</span>');
     };
 
-    functions.colorBar = {};
-    functions.colorBar.toscreen = function (element, value) {
+    functions.colorbar = {};
+    functions.colorbar.toscreen = function (element, value) {
 
         var div = $('<div>&nbsp;</div>');
         var gradient = "linear-gradient(to right";
@@ -407,7 +407,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
         }
 
         return Promise.resolve(object.get(true)).then(function (value) {
-            var type = object.getType();
+            var type = object.getType().toLowerCase();
             if (!functions[type]) {
                 Util.warnOnce('no-typerenderer-' + type, 'No renderer found for type ' + type);
                 element.html(String(value));
