@@ -271,7 +271,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
     functions.colorBar = {};
     functions.colorBar.toscreen = function (element, value) {
 
-        var div = $('<div>');
+        var div = $('<div>&nbsp;</div>');
         var gradient = "linear-gradient(to right";
 
         var total = 0, i = 0, l = value.length;
