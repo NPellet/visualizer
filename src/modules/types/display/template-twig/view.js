@@ -36,20 +36,12 @@ define(['modules/default/defaultview', 'lib/twigjs/twig'], function (Default, Tw
         },
         update: {
             value: function (value, name) {
-                // Extract typed value
-                value = value.get();
-
                 /*
-                 Convert special objects like DataString
+                 Convert special DataObjects
                  (twig does some check depending on the filter used
                  and the values need to be native)
                  */
-                if (typeof value.resurrect === 'function') {
-                    value = value.resurrect();
-                }
-
-                this._values[name] = value;
-
+                this._values[name] = value.resurrect();
                 this.render();
             },
             tpl: function (value) {
