@@ -382,7 +382,11 @@ define([
         try {
             module.getDomWrapper().remove().unbind();
         } catch(e) {
-            Debug.warn('Could not remove module from dom.', e);
+            module.onReady().then(function () {
+                module.getDomWrapper().remove().unbind();
+            }).catch(function (e) {
+                Debug.warn('Could not remove module from dom.', e);
+            });
         }
 
         ModuleFactory.removeModule(module);
