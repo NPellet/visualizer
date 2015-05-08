@@ -421,7 +421,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             if(itemInfo) {
                                 that.module.controller.onRowChange(itemInfo.idx, itemInfo.item);
                             }
-
+                            that._resetDeleteRowListeners();
                         });
 
                         that.grid.onClick.subscribe(function(e,args) {
