@@ -52,7 +52,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
                     .focus()
                     .select();
                 $input.spectrum({
-                    color: args.item.getChildSync(args.column.jpath).get(),
+                    color: args.item.getChildSync(args.column.jpath) ? args.item.getChildSync(args.column.jpath).get() : undefined,
                     appendTo: 'body',
                     showInitial: true,
                     showInput: true,
