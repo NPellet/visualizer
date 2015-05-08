@@ -676,7 +676,8 @@ define([
                                                 type: 'combo',
                                                 options: [{key: 'text', title: 'Text'}, {key: 'html', title: 'html'}],
                                                 title: 'Content type',
-                                                displaySource: {text: 't', html: 'h'}
+                                                displaySource: {text: 't', html: 'h'},
+                                                default: 'text'
                                             },
                                             keyword: {
                                                 type: 'text',
