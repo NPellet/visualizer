@@ -210,6 +210,7 @@ define([
             that.database.saveDoc(doc, {
                 success: function (data) {
                     doc._rev = data.rev;
+                    node.data.hasMeta = true;
                     if (node.children)
                         child.lazyLoad(true);
 
