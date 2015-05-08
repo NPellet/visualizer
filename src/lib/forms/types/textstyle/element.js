@@ -18,7 +18,7 @@ define(['src/util/util', 'components/farbtastic/src/farbtastic'], function (Util
             italicBtn = $('<li><span>I</span></li>').addClass('btn').attr('data-style', 'italic'),
             underlineBtn = $('<li><span>U</span></li>').addClass('btn').attr('data-style', 'underline'),
             fontfaceBtn = $('<li><select></select></li>').children('select').attr('data-style', 'fontface').append(function () {
-                opts = [];
+                var opts = [];
                 for (var i = 0, l = fonts.length; i < l; i += 1) {
                     opts.push('<option value="' + fonts[i].key + '">' + fonts[i].title + '</option>');
                 }
@@ -102,7 +102,7 @@ define(['src/util/util', 'components/farbtastic/src/farbtastic'], function (Util
 
         this.fieldElement.find('input:first').focus();
         this.select();
-    }
+    };
 
     FieldConstructor.prototype.checkValue = function () {
 
@@ -113,6 +113,10 @@ define(['src/util/util', 'components/farbtastic/src/farbtastic'], function (Util
 
         if (this.div) {
             for (var i in this.value) {
+
+                if (!this.value.hasOwnProperty(i)) {
+                    continue;
+                }
 
                 switch (i) {
 
@@ -149,15 +153,16 @@ define(['src/util/util', 'components/farbtastic/src/farbtastic'], function (Util
             }
         }
 
-    }
+    };
 
     FieldConstructor.prototype.getOptions = function () {
         return this.combooptions || false;
-    }
+    };
 
     FieldConstructor.prototype.setOptions = function (options) {
         this.combooptions = options;
-    }
+    };
 
     return FieldConstructor;
+
 });
