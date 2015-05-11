@@ -468,8 +468,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         });
 
                         that.grid.onSelectedRowsChanged.subscribe(function(e,args) {
-                            console.log('selected rows changed');
-                            console.log(e,args);
+                            that.lastSelectedRows = args.rows;
                             var selected = [];
                             for(var i=0; i<args.rows.length; i++) {
                                 var itemInfo = that._getItemInfoFromRow(args.rows[i]);
@@ -644,9 +643,15 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         if(that.lastViewport && !that.module.getConfigurationCheckbox('slickCheck', 'backToTop')) {
                             that.grid.scrollRowToTop(that.lastViewport.top);
                         }
-                        if(!_.isUndefined(that.lastActiveRow) && !that.module.getConfigurationCheckbox('slickCheck', 'forgetLastActive')) {
+
+                        if(Array.isArray(that.lastSelectedRows)) {
+                            that.grid.setSelectedRows(that.lastSelectedRows);
+                        }
+
+                        else if(!_.isUndefined(that.lastActiveRow) && !that.module.getConfigurationCheckbox('slickCheck', 'forgetLastActive')) {
                             that.grid.setActiveCell(that.lastActiveRow, that.lastActiveCell);
                         }
+
 
                         that.grid.render();
                         that._resetDeleteRowListeners();
