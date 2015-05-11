@@ -1,6 +1,6 @@
 {
   "name": "openchemlib",
-  "version": "3.0.0-alpha8",
+  "version": "3.0.0-beta1",
   "description": "Manipulate molecules",
   "keywords": [
     "chemistry",
@@ -10,6 +10,7 @@
   ],
   "main": [
     "dist/openchemlib-core.js",
+    "dist/openchemlib-full.js",
     "dist/openchemlib-viewer.js"
   ],
   "license": "BSD",
@@ -27,14 +28,13 @@
     "/*",
     "!dist/*"
   ],
-  "_release": "3.0.0-alpha8",
+  "_release": "3.0.0-beta1",
   "_resolution": {
     "type": "version",
-    "tag": "v3.0.0-alpha8",
-    "commit": "fbaa550a64d32b8c768633bc71821b992fb3fb81"
+    "tag": "v3.0.0-beta1",
+    "commit": "aee78d2bebdb94497bdb72282681280a2224767a"
   },
   "_source": "git://github.com/cheminfo/openchemlib-js.git",
-  "_target": "v3.0.0-alpha8",
-  "_originalSource": "openchemlib",
-  "_direct": true
+  "_target": "v3.0.0-beta1",
+  "_originalSource": "openchemlib"
 }
