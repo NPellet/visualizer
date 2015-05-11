@@ -125,7 +125,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
         return element.html(value.replace(/^(.*)$/, '<a target="_blank" href="http://dx.doi.org/$1"><img src="bin/logo/doi.png" /></a>'));
     };
 
-    var OCL = 'components/openchemlib/dist/openchemlib-viewer';
+    var OCL = 'openchemlib/openchemlib-viewer';
     var defaultOpenChemLibStructureOptions = {
         suppressChiralText: true,
         suppressESR: true,

@@ -36,6 +36,7 @@ requirejs.config({
         marked: 'components/marked/lib/marked',
         //mathjax:            'components/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML&amp;delayStartupUntil=configured',
         modernizr: 'components/modernizr/modernizr',
+        openchemlib: 'components/openchemlib/dist',
         plot: 'lib/plot/plot',
         pouchdb: 'components/pouchdb/dist/pouchdb.min',
         underscore: 'components/underscore/underscore-min',
