@@ -186,8 +186,9 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
             type: 'array'
         },
 
-        selectedrows: {
-            label: 'Active rows'
+        rows: {
+            label: 'Row selection',
+            type: 'array'
         }
     };
 
@@ -243,10 +244,19 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
             label: 'A new row became active',
             refVariable: ['row'],
             refAction: ['row']
+        },
+        onRowsSelect: {
+            label: 'Row have been selected',
+            refVariable: ['rows']
         }
-    }
+    };
 
-    ;
+    controller.prototype.onRowsSelected = function(items) {
+        items = items.filter(function(v) {
+            return !!v;
+        });
+        this.createDataFromEvent('onRowsSelect', 'rows', items);
+    };
 
 
     controller.prototype.onHover = function(row, item) {

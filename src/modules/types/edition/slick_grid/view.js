@@ -467,6 +467,17 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             }
                         });
 
+                        that.grid.onSelectedRowsChanged.subscribe(function(e,args) {
+                            console.log('selected rows changed');
+                            console.log(e,args);
+                            var selected = [];
+                            for(var i=0; i<args.rows.length; i++) {
+                                var itemInfo = that._getItemInfoFromRow(args.rows[i]);
+                                selected.push(itemInfo.item);
+                            }
+                            that.module.controller.onRowsSelected(selected);
+                        });
+
                         that.grid.onSort.subscribe(function(e, args) {
                             // args.multiColumnSort indicates whether or not this is a multi-column sort.
                             // If it is, args.sortCols will have an array of {sortCol:..., sortAsc:...} objects.
