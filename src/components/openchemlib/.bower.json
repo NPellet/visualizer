@@ -1,6 +1,6 @@
 {
   "name": "openchemlib",
-  "version": "3.0.0-beta2",
+  "version": "3.0.0-beta3",
   "description": "Manipulate molecules",
   "keywords": [
     "chemistry",
@@ -28,13 +28,13 @@
     "/*",
     "!dist/*"
   ],
-  "_release": "3.0.0-beta2",
+  "_release": "3.0.0-beta3",
   "_resolution": {
     "type": "version",
-    "tag": "v3.0.0-beta2",
-    "commit": "93f13b74cf77348e414bba199112482ff26b9674"
+    "tag": "v3.0.0-beta3",
+    "commit": "1da0aec2a8f16a8399d83b3e0fd389c73969a971"
   },
   "_source": "git://github.com/cheminfo/openchemlib-js.git",
-  "_target": "v3.0.0-beta2",
+  "_target": "v3.0.0-beta3",
   "_originalSource": "openchemlib"
 }

@@ -16,7 +16,7 @@ define(['modules/default/defaultview', 'src/util/util', 'openchemlib/openchemlib
             this.dom = $('<div>')
                 .attr('id', this.id)
                 .css({
-                    height: '100%',
+                    height: '99%',
                     width: '100%'
                 });
             this.module.getDomContent().html(this.dom);
