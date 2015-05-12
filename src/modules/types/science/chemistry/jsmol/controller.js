@@ -41,6 +41,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
         atom: {
             type: ['string'],
             label: 'A string describing the clicked atom'
+        },
+        execResult: {
+            type: ['string'],
+            label: 'Result of executing sync script'
         }
     };
 
@@ -56,14 +60,14 @@ define(['modules/default/defaultcontroller'], function (Default) {
         onAtomHover: {
             label: 'An atom was hovered',
             refVariable: ['atom']
+        },
+        onExecResult: {
+            label: 'New sync exec result',
+            refVariable: ['execResult']
         }
     };
 
     Controller.prototype.variablesIn = ['data'];
-
-    Controller.prototype.onJSMolScriptReceive = function (a) {
-        this.module.view.executeScript(a);
-    };
 
     Controller.prototype.configurationStructure = function (section) {
         return {
@@ -77,6 +81,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
                         script: {
                             type: 'jscode',
                             title: 'After load script'
+                        },
+                        syncScript: {
+                            type: 'jscode',
+                            title: 'Sync after load script'
                         }
                     }
                 }
@@ -85,11 +93,13 @@ define(['modules/default/defaultcontroller'], function (Default) {
     };
 
     Controller.prototype.configAliases = {
-        script: ['groups', 'group', 0, 'script', 0]
+        script: ['groups', 'group', 0, 'script', 0],
+        syncScript: ['groups', 'group', 0, 'syncScript',0]
     };
 
     Controller.prototype.actionsIn = {
-        jsmolscript: 'Some JSMol Script received'
+        jsmolscript: 'Some JSMol Script received',
+        jsmolscriptSync: 'Sync jsmol Script to execute'
     };
 
     Controller.prototype.onRemove = function () {
@@ -106,6 +116,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.onAtomHover = function(message) {
         this.createDataFromEvent('onAtomHover', 'atom', message);
+    };
+
+    Controller.prototype.onSyncExecDone = function(message) {
+        this.createDataFromEvent('onExecResult', 'execResult', message);
     };
 
     return Controller;

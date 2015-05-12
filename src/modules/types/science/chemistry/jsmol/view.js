@@ -40,6 +40,12 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
                 view._doHighlights(atom);
                 view.module.controller.onAtomHover(atom);
                 break;
+            case 'error':
+                console.log('An error message was received', message.message);
+                break;
+            case 'execSync':
+                view.module.controller.onSyncExecDone(message.message);
+                break;
             default:
                 console.error('Message type not handled: ', message.type);
                 break;
@@ -98,6 +104,9 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
                 if (self.module.getConfiguration('script')) {
                     self.postMessage('executeScript', [self.module.getConfiguration('script')]);
                 }
+                if(self.module.getConfiguration('syncScript')) {
+                    self.postMessage('executeScriptSync', [self.module.getConfiguration('syncScript')]);
+                }
                 this._activateHighlights();
 
                 //self.postMessage('restoreOrientation', 'lastOrientation');
@@ -106,8 +115,15 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
 
         onActionReceive: {
             jsmolscript: function (a) {
-                this.module.controller.onJSMolScriptReceive(a);
+                this.executeScript(a);
+            },
+            jsmolscriptSync: function(a) {
+                this.executeScriptSync(a);
             }
+        },
+
+        executeScriptSync: function(src) {
+            this.postMessage('executeScriptSync', [src]);
         },
 
         executeScript: function (src) {
