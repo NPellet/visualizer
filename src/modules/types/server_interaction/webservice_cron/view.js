@@ -2,10 +2,10 @@
 
 define(['modules/default/defaultview'], function (Default) {
 
-    function view() {
+    function View() {
     }
 
-    view.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
         init: function () {
             this.dom = $('<div></div>');
             this.logList = this.dom[0].children;
@@ -24,7 +24,8 @@ define(['modules/default/defaultview'], function (Default) {
                 this.logList[this.logList.length - 1].remove();
             }
         }
-
     });
-    return view;
+
+    return View;
+
 });

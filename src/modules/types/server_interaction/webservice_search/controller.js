@@ -5,7 +5,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'components/superag
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'Webservice search',
