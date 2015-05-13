@@ -77,7 +77,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
                                 {key: 'row', title: 'Row Selection Model'},
                                 {key: 'cell', title: 'Cell Selection Model'}
                             ],
-                            default: ['cell']
+                            default: 'row'
                         }
                     }
                 },
