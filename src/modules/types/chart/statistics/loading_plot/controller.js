@@ -20,11 +20,11 @@ define(['modules/default/defaultcontroller'], function (Default) {
         // Input
         loading: {
             label: 'Loading variable',
-            type: "loading"
+            type: 'loading'
         },
         preferences: {
             label: 'Preferences',
-            type: "object"
+            type: 'object'
         },
         // Output
         element: {

@@ -444,27 +444,27 @@ define([
                     }
                 });
                 that.fancytreeOk = true;
-                var tree = that.$tree.fancytree("getTree");
-                that.$_elToOpen.find("input[name=search]").keyup(function(e){
+                var tree = that.$tree.fancytree('getTree');
+                that.$_elToOpen.find('input[name=search]').keyup(function(e){
                     var n,
                         match = $(this).val();
 
-                    if(e && e.which === $.ui.keyCode.ESCAPE || $.trim(match) === ""){
-                        $("button#btnResetSearch").click();
+                    if(e && e.which === $.ui.keyCode.ESCAPE || $.trim(match) === ''){
+                        $('button#btnResetSearch').click();
                         return;
                     }
 
                     // Pass a string to perform case insensitive matching
                     n = tree.filterNodes(match, false);
-                    $("button#btnResetSearch").attr("disabled", false);
-                    $("span#matches").text("(" + n + " matches)");
+                    $('button#btnResetSearch').attr('disabled', false);
+                    $('span#matches').text('(' + n + ' matches)');
                 }).focus();
 
-                $("button#btnResetSearch").click(function(){
-                    $("input[name=search]").val("");
-                    $("span#matches").text("");
+                $('button#btnResetSearch').click(function(){
+                    $('input[name=search]').val('');
+                    $('span#matches').text('');
                     tree.clearFilter();
-                }).attr("disabled", true);
+                }).attr('disabled', true);
             });
         },
 

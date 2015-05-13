@@ -6,7 +6,7 @@ define(function() {
 		renderer: {
 			toscreen: function( def, value ) {
 				value = value.get();
-				def.resolve( value + "abc" );
+				def.resolve( value + 'abc' );
 			}
 		}
 	};

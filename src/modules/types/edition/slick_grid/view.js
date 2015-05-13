@@ -259,7 +259,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 function filter(item) {
 
                     for (var columnId in columnFilters) {
-                        if (columnId !== undefined && columnFilters[columnId] !== "") {
+                        if (columnId !== undefined && columnFilters[columnId] !== '') {
                             var idx = that.slick.data.getIdxById(item[that.idPropertyName]);
                             var c = that.grid.getColumns()[that.grid.getColumnIndex(columnId)];
                             var jpath = _.clone(DataObject.resurrect(c.jpath));
@@ -289,7 +289,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
                         that.slick.data.setModule(that.module);
                         that.$dom = $('#'+that._id);
-                        that.grid = new Slick.Grid("#"+that._id, that.slick.data, that.slick.columns, that.slick.options);
+                        that.grid = new Slick.Grid('#'+that._id, that.slick.data, that.slick.columns, that.slick.options);
                         that.grid.registerPlugin(that.slick.groupItemMetadataProvider);
 
 
@@ -537,8 +537,8 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         });
 
 
-                        $(that.grid.getHeaderRow()).delegate(":input", "change keyup", function (e) {
-                            var columnId = $(this).data("columnId");
+                        $(that.grid.getHeaderRow()).delegate(':input', 'change keyup', function (e) {
+                            var columnId = $(this).data('columnId');
                             if (columnId != null) {
                                 columnFilters[columnId] = $.trim($(this).val());
                                 columnFilterFunctions[columnId] = getColumnFilterFunction(columnFilters[columnId]);
@@ -550,7 +550,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             $(args.node).empty();
                             $("<input type='text'>")
                                 .css('width', '100%')
-                                .data("columnId", args.column.id)
+                                .data('columnId', args.column.id)
                                 .val(columnFilters[args.column.id])
                                 .appendTo(args.node);
                         });
@@ -608,7 +608,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                                 }
 
                                 r.formatter = function(g) {
-                                    return val.groupName + ': ' + g.value + "  <span style='color:green'>(" + g.count + " items)</span>";
+                                    return val.groupName + ': ' + g.value + "  <span style='color:green'>(" + g.count + ' items)</span>';
                                 };
                                 r.aggregateCollapsed = false;
                                 r.lazyTotalsCalculation = true;
@@ -866,7 +866,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     jpath.unshift(i);
                     var el = this.module.data.getChildSync(jpath, false);
                     el = el ? el.get() : '';
-                    if (typeof el === "string") el = el.replace(/\r/g,"\\r").replace(/\n/g,"\\n").replace(/\t/g,"\\t");
+                    if (typeof el === 'string') el = el.replace(/\r/g,'\\r').replace(/\n/g,'\\n').replace(/\t/g,'\\t');
                     line.push(el);
                 }
                 txt += line.join('\t') + '\r\n';
@@ -917,7 +917,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
     });
 
     function waitingFormatter() {
-        return "...";
+        return '...';
     }
 
     function binFormatter() {
@@ -926,7 +926,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
     function requiredFieldValidator(value) {
         if (value == null || value == undefined || !value.length) {
-            return {valid: false, msg: "This is a required field"};
+            return {valid: false, msg: 'This is a required field'};
         } else {
             return {valid: true, msg: null};
         }

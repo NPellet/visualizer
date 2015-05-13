@@ -9,24 +9,24 @@ define(function(){
 		var fullscreenElement = (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
 		var view = currentFullscreenModule.view;
 		if(fullscreenElement) { // New element is now fullscreen
-			oldStyle = fullscreenElement.getAttribute("style");
-			fullscreenElement.setAttribute("style","height:100%; width:100%; background-color:white;");
+			oldStyle = fullscreenElement.getAttribute('style');
+			fullscreenElement.setAttribute('style','height:100%; width:100%; background-color:white;');
 			currentFullscreenElement = fullscreenElement;
 			oldViewDimensions = {height: view.height, width:view.width};
 			view.height = currentFullscreenModule.getDomContent().height();
 			view.width = currentFullscreenModule.getDomContent().width();
 		} else { // Stopping fullscreen
-			currentFullscreenElement.setAttribute("style", oldStyle);
+			currentFullscreenElement.setAttribute('style', oldStyle);
 			view.height = oldViewDimensions.height;
 			view.width = oldViewDimensions.width;
 			oldStyle = oldViewDimensions = currentFullscreenElement = null;
 		}
 		currentFullscreenModule.view.onResize(view.width, view.height);
 	}
-	document.addEventListener("fullscreenchange", fullScreenChange);
-	document.addEventListener("webkitfullscreenchange", fullScreenChange);
-	document.addEventListener("mozfullscreenchange", fullScreenChange);
-	document.addEventListener("MSFullscreenChange", fullScreenChange);
+	document.addEventListener('fullscreenchange', fullScreenChange);
+	document.addEventListener('webkitfullscreenchange', fullScreenChange);
+	document.addEventListener('mozfullscreenchange', fullScreenChange);
+	document.addEventListener('MSFullscreenChange', fullScreenChange);
 	
 	return {
 		requestFullscreen: function(module) {

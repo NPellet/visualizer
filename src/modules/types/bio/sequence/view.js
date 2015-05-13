@@ -22,31 +22,31 @@ define(['modules/default/defaultview', 'src/util/util', 'BiojsCore',
 
     inDom: function() {
       var self = this;
-      var theSequence = "METLCQRLNVCQDKILTHYENDSTDLRDHIDYWKHMRLECAIYYKAREMGFKHINHQVVPTLAVSKNKALQAIELQLTLETIYNSQYSNEKWTLQDVSLEVYLTAPTGCIKKHGYTVEVQFDGDICNTMHYTNWTHIYICEEAojs SVTVVEGQVDYYGLYYVHEGIRTYFVQFKDDAEKYSKNKVWEVHAGGQVILCPTSVFSSNEVSSPEIIRQHLANHPAATHTKAVALGTEETQTTIQRPRSEPDTGNPCHTTKLLHRDSVDSAPILTAFNSSHKGRINCNSNTTPIVHLKGDANTLKCLRYRFKKHCTLYTAVSSTWHWTGHNVKHKSAIVTLTYDSEWQRDQFLSQVKIPKTITVSTGFMSI";
+      var theSequence = 'METLCQRLNVCQDKILTHYENDSTDLRDHIDYWKHMRLECAIYYKAREMGFKHINHQVVPTLAVSKNKALQAIELQLTLETIYNSQYSNEKWTLQDVSLEVYLTAPTGCIKKHGYTVEVQFDGDICNTMHYTNWTHIYICEEAojs SVTVVEGQVDYYGLYYVHEGIRTYFVQFKDDAEKYSKNKVWEVHAGGQVILCPTSVFSSNEVSSPEIIRQHLANHPAATHTKAVALGTEETQTTIQRPRSEPDTGNPCHTTKLLHRDSVDSAPILTAFNSSHKGRINCNSNTTPIVHLKGDANTLKCLRYRFKKHCTLYTAVSSTWHWTGHNVKHKSAIVTLTYDSEWQRDQFLSQVKIPKTITVSTGFMSI';
       var mySequence = new Biojs.Sequence({
         sequence : theSequence,
         target : this.dom.attr('id'),
         format : 'CODATA',
         id : 'P918283',
         annotations: [
-          { name:"CATH", 
-            color:"#F0F020", 
-            html: "Using color code #F0F020 ", 
+          { name:'CATH',
+            color:'#F0F020',
+            html: 'Using color code #F0F020 ',
             regions: [{start: 122, end: 135}]
           },
           { 
-            name:"TEST", 
-            html:"<br> Example of <b>HTML</b>", 
-            color:"green", 
+            name:'TEST',
+            html:'<br> Example of <b>HTML</b>',
+            color:'green',
             regions: [
             {start: 285, end: 292},
-            {start: 293, end: 314, color: "#2E4988"}]
+            {start: 293, end: 314, color: '#2E4988'}]
           }
         ],
         highlights : [
-          { start:30, end:42, color:"white", background:"green", id:"spin1" },
+          { start:30, end:42, color:'white', background:'green', id:'spin1' },
           { start:139, end:140 }, 
-          { start:631, end:633, color:"white", background:"blue" }
+          { start:631, end:633, color:'white', background:'blue' }
         ]
       });
       

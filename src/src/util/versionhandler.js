@@ -5,7 +5,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 		this.currentPath = [];
 		this._allData = {};
 		//self._head = {};
-		this.dom = $("<div />");
+		this.dom = $('<div />');
 		
  		this.versionChangeDeferred = $.Deferred();
 		this._data = {};
@@ -81,7 +81,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 				for(var i in data) {
 					// i is branch name
 					// data.revisions is all revs || data[i].list
-					branches[i] = i + " (" + (data[i].list.length + (self.currentPath[1] == 'local' ? 1 : 0)) + ")";
+					branches[i] = i + ' (' + (data[i].list.length + (self.currentPath[1] == 'local' ? 1 : 0)) + ')';
 				}
 				return branches;
 			});
@@ -112,8 +112,8 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 				return 'Head';
 
 			var time = new Date(el._time);
-			var str = time.getDate() + "/" + time.getMonth() + "/" + time.getFullYear() + " ";
-			str += Util.pad(time.getHours()) + ":" + Util.pad(time.getMinutes());
+			var str = time.getDate() + '/' + time.getMonth() + '/' + time.getFullYear() + ' ';
+			str += Util.pad(time.getHours()) + ':' + Util.pad(time.getMinutes());
 			return str;
 		},
 
@@ -301,7 +301,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 			});
 
 			$(document).on('mouseup', function() {
-				$(".ci-dataview-menu").remove();
+				$('.ci-dataview-menu').remove();
 			});
 
 		},

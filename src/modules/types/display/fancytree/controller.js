@@ -15,11 +15,11 @@ define(['modules/default/defaultcontroller'], function(Default) {
 	
 	controller.prototype.references = {
 		tree: {
-			label: "Hierarchical structure (tree)",
-			type: "tree"
+			label: 'Hierarchical structure (tree)',
+			type: 'tree'
 		},
 		nodeData: {
-			label: "Node data"
+			label: 'Node data'
 		}
 	};
 	
@@ -27,14 +27,14 @@ define(['modules/default/defaultcontroller'], function(Default) {
 	
 	controller.prototype.events = {
 		onActivate: {
-			label: "Select a node",
-			refVariable: ["nodeData"]
+			label: 'Select a node',
+			refVariable: ['nodeData']
 		}
 	};
 
 	controller.prototype.configurationStructure = function() {
 		
-		var jpaths = this.module.model.getjPath("nodeData");
+		var jpaths = this.module.model.getjPath('nodeData');
 		
 		return {
 			groups: {
@@ -101,7 +101,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
 	};
 	
 	controller.prototype.onActivate = function(data) {
-		this.createDataFromEvent("onActivate", "nodeData", data);
+		this.createDataFromEvent('onActivate', 'nodeData', data);
 	};
 
 	return controller;

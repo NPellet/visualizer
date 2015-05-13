@@ -147,7 +147,7 @@ define([
 
                 JcampConverter.convert(String(moduleValue.get()), true).then(function (result) {
                     var data = result.contourLines;
-                    self.nmr.setSerie2D( "SomeName", data, opts );
+                    self.nmr.setSerie2D( 'SomeName', data, opts );
                     self.redraw();
                 });
             },
@@ -170,7 +170,7 @@ define([
         addSerieJcampXOrY: function( value, x, y ) {
             var self = this;
 
-            name = "SomeName";
+            name = 'SomeName';
             var options = {
                  label: 'Chemical 1'
             };

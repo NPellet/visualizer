@@ -11,7 +11,7 @@ define(function() {
 		if( crons[ name ] ) {
 
 			if( ! overwrite ) {
-				console.warn("Cron already exists");
+				console.warn('Cron already exists');
 				return;
 			} else {
 				remove( name );

@@ -22,7 +22,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
     controller.prototype.mouseOverLeaf = function(data) {
         if(data.data) {
             this._data = DataObject.check(data.data);
-            this.createDataFromEvent("onLeafHover", 'leaf', DataObject.check(this._data));
+            this.createDataFromEvent('onLeafHover', 'leaf', DataObject.check(this._data));
         }
     };
     controller.prototype.mouseOutLeaf = function() {
@@ -31,19 +31,19 @@ define(['modules/default/defaultcontroller'], function(Default) {
     controller.prototype.clickLeaf = function(data) {
         if(data.data) {
             this._data = DataObject.check(data.data);
-            this.createDataFromEvent("onLeafSelect", 'leaf', DataObject.check(this._data));
+            this.createDataFromEvent('onLeafSelect', 'leaf', DataObject.check(this._data));
         }
     };
 
     controller.prototype.mouseOverBranch = function(data) {
-        this.sendTreeFromEvent(data, "onBranchHover");
+        this.sendTreeFromEvent(data, 'onBranchHover');
     };
 
     controller.prototype.mouseOutBranch = function() {
     };
 
     controller.prototype.clickBranch = function(data) {
-        this.sendTreeFromEvent(data, "onBranchSelect");
+        this.sendTreeFromEvent(data, 'onBranchSelect');
     };
 
     controller.prototype.sendTreeFromEvent = function(data, name) {

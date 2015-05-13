@@ -184,12 +184,12 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 		},
 
 		addLegend: function(id, name, description, color) {
-			var div = $("<div />");
+			var div = $('<div />');
 			this.legends[id] = div;
 			var self = this;
-			var defaultText = "(Insert a comment here)";
+			var defaultText = '(Insert a comment here)';
 
-			square = $("<div />").css({
+			square = $('<div />').css({
 				width: 30,
 				height: 30,
 				backgroundColor: color,
@@ -199,19 +199,19 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 				marginBottom: '10px'
 			});
 
-			nameDom = $("<div />").css({
+			nameDom = $('<div />').css({
 				marginLeft: '35px',
 				fontSize: '1.1em'
 			}).text(name);
 
-			descriptionDom = $("<div />").css({
+			descriptionDom = $('<div />').css({
 				marginLeft: '35px',
 				marginTop: '2px'
 			}).attr('contentEditable', 'true').text(description || defaultText)
 
 			.bind('mousedown', function() {
 				if($(this).text() == defaultText)
-					$(this).text("").css({ color: 'black', fontStyle: 'normal' }).focus();
+					$(this).text('').css({ color: 'black', fontStyle: 'normal' }).focus();
 
 			}).bind('keypress', function(e) {
 
@@ -223,7 +223,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 
 			}).bind('blur', function() {
 				var text = $(this).text();
-				if(text == "" || text == null || text == defaultText)
+				if(text == '' || text == null || text == defaultText)
 					$(this).text(defaultText).css({ color: 'grey', fontStyle: 'italic' });
 				else {
 					self.editCellComment(id, text);
@@ -236,7 +236,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 
 
 
-			clearDom = $("<div />").css({
+			clearDom = $('<div />').css({
 				'clear': 'both'
 			});
 

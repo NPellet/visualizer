@@ -17,7 +17,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
     //    var div;
     //    if(val instanceof Array) {
     //        div = MathJax.HTML.Element(
-    //            "div",
+    //            'div',
     //            val
     //        );
     //    }
@@ -27,7 +27,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
     //
     //    $el.html(val);
     //
-    //    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    //    MathJax.Hub.Queue(['Typeset',MathJax.Hub]);
     //};
 
     functions.sparkline = {};
@@ -272,7 +272,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
     functions.colorbar.toscreen = function (element, value) {
 
         var div = $('<div>&nbsp;</div>');
-        var gradient = "linear-gradient(to right";
+        var gradient = 'linear-gradient(to right';
 
         var total = 0, i = 0, l = value.length;
         for (i = 0; i < l; total += value[i++][0]);
@@ -281,15 +281,15 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
         for (i = 0; i < l; i++) {
             end = start + value[i][0] / total * 100;
             color = value[i][1];
-            gradient += ", " + color + " " + start + "%, " + color + " " + end + "%";
+            gradient += ', ' + color + ' ' + start + '%, ' + color + ' ' + end + '%';
             start = end;
         }
-        gradient += ")";
+        gradient += ')';
 
         div.css({
-            height: "100%",
-            width: "100%"
-        })/*.css("background","-webkit-"+gradient).css("background","-moz-"+gradient)*/.css("background", gradient);
+            height: '100%',
+            width: '100%'
+        })/*.css('background','-webkit-'+gradient).css('background','-moz-'+gradient)*/.css('background', gradient);
         element.html(div);
     };
 
@@ -297,9 +297,9 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
     functions.indicator.init = function () {
 
         var tooltip = $('<div class="ci-tooltip"></div>').css({
-            display: "none",
+            display: 'none',
             opacity: 0
-        }).appendTo("#ci-visualizer");
+        }).appendTo('#ci-visualizer');
         var current;
 
         $('#modules-grid').on('mouseenter', '[data-tooltip]', function (e) {
@@ -310,8 +310,8 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
                 tooltip.css({
                     left: offset.left,
                     top: offset.top,
-                    display: "block"
-                }).text(target.attr("data-tooltip"));
+                    display: 'block'
+                }).text(target.attr('data-tooltip'));
                 tooltip.animate({
                     opacity: 1
                 });
@@ -322,7 +322,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
             clearTimeout(current);
             tooltip.css({
                 opacity: 0,
-                display: "none"
+                display: 'none'
             });
         });
 
@@ -338,7 +338,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
                 // if the first element of the array is a number ... we need to convert the array.
                 if (!isNaN(value[0])) {
                     value = value.map(function (value) {
-                        return {"size": value};
+                        return {'size': value};
                     })
                 }
 
@@ -356,8 +356,8 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
                 for (var i = 0; i < length; i++) {
                     var element = value[i];
                     var span = $('<td>&nbsp;</td>').css({
-                        "width": (100 * element.size / totalSize) + "%",
-                        "border": "none"
+                        'width': (100 * element.size / totalSize) + '%',
+                        'border': 'none'
                     });
                     if (element.bgcolor)
                         span.css('background-color', element.bgcolor);
@@ -372,7 +372,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
                     if (element.css)
                         span.css(element.css);
                     if (element.tooltip)
-                        span.attr("data-tooltip", element.tooltip);
+                        span.attr('data-tooltip', element.tooltip);
                     html += span.get(0).outerHTML;
                 }
                 html += '</tr></table>';

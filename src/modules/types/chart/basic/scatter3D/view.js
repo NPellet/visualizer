@@ -45,7 +45,7 @@ define(['modules/default/defaultview', 'src/main/datas', 'src/util/datatraversin
   }
 
   function hexToRgb(hex) {
-    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+    // Expand shorthand form (e.g. '03F') to full form (e.g. '0033FF')
     var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
     hex = hex.replace(shorthandRegex, function(m, r, g, b) {
       return r + r + g + g + b + b;
@@ -61,11 +61,11 @@ define(['modules/default/defaultview', 'src/main/datas', 'src/util/datatraversin
 
   function componentToHex(c) {
     var hex = c.toString(16);
-    return hex.length == 1 ? "0" + hex : hex;
+    return hex.length == 1 ? '0' + hex : hex;
   }
 
   function rgbToHex(r, g, b) {
-    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+    return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
   }
 
   function arrayToRgba(arr) {
@@ -94,7 +94,7 @@ define(['modules/default/defaultview', 'src/main/datas', 'src/util/datatraversin
   }
 
   function keepDecimals(num, n) {
-    num = "" + num;
+    num = '' + num;
     var idx = num.indexOf('.');
     if(idx === -1) return +num;
     return num.slice(0, idx + n + 1);
@@ -114,10 +114,10 @@ define(['modules/default/defaultview', 'src/main/datas', 'src/util/datatraversin
   var DEFAULT_PROJECTION_COLOR = '#888888';
   var DEFAULT_POINT_COLOR = '#000000';
   var DEFAULT_POINT_RADIUS = 0.03;
-  var DEFAULT_POINT_GEOMETRY = "sphere";
-  var DEFAULT_POINT_APPEARANCE = "none";
-  var DEFAULT_POINT_SHAPE = "sphere";
-  var DEFAULT_TEXT_COLOR = "rgba(0,0,0,1)";
+  var DEFAULT_POINT_GEOMETRY = 'sphere';
+  var DEFAULT_POINT_APPEARANCE = 'none';
+  var DEFAULT_POINT_SHAPE = 'sphere';
+  var DEFAULT_TEXT_COLOR = 'rgba(0,0,0,1)';
   var HIGHLIGHT_OPACITY = 0.6;
   var DELTA = NORM_CONSTANT / 1000;
   var CAMERA_NEAR = 2;
@@ -971,8 +971,8 @@ define(['modules/default/defaultview', 'src/main/datas', 'src/util/datatraversin
       // Set default options
       options.size = options.size || 50;
       options.fillStyle = options.fillStyle || arrayToRgba(self.module.getConfiguration('annotationColor')) || DEFAULT_TEXT_COLOR;
-      options.textAlign = options.textAlign || "left";
-      options.font = options.font || "Arial";
+      options.textAlign = options.textAlign || 'left';
+      options.font = options.font || 'Arial';
       // Stange, opacity of 1 will dispaly a black background on the text
       options.opacity = options.opacity || 0.99;
 
@@ -983,16 +983,16 @@ define(['modules/default/defaultview', 'src/main/datas', 'src/util/datatraversin
       canvas.width = options.size * text.length / 2 + options.size / 2;
 
       switch(options.textAlign) {
-        case "left":
+        case 'left':
           x += canvas.width/2;
           break;
-        case "right":
+        case 'right':
           x -= canvas.width /2;
           break;
       }
 
       var ctx = canvas.getContext('2d');
-      ctx.font = "Bold " + options.size + "px " + options.font;
+      ctx.font = 'Bold ' + options.size + 'px ' + options.font;
       ctx.fillStyle = options.fillStyle;
       ctx.fillText(text, 0, options.size);
 
@@ -1031,7 +1031,7 @@ define(['modules/default/defaultview', 'src/main/datas', 'src/util/datatraversin
         for(var i=0; i<self._data.nbTicks.z; i++) {
           var text = (keepDecimals((self._data.realMin.z+i*self._data.intervalVal.z)/self._data.intervalFactor.z, 2)).toString();
           self.tickLabels.push(self._addText(text, NORM_CONSTANT *1.1,0,i * self._data.intervalPx.z, {
-            textAlign: "left"
+            textAlign: 'left'
           }));
         }
       }
@@ -1040,7 +1040,7 @@ define(['modules/default/defaultview', 'src/main/datas', 'src/util/datatraversin
         for(var i=0; i<self._data.nbTicks.y; i++) {
           var text = (keepDecimals((self._data.realMin.y+i*self._data.intervalVal.y)/self._data.intervalFactor.y, 2)).toString();
           self.tickLabels.push(self._addText(text, -0.05*NORM_CONSTANT,i * self._data.intervalPx.y, NORM_CONSTANT, {
-            textAlign: "right"
+            textAlign: 'right'
           }));
         }
       }
@@ -1049,7 +1049,7 @@ define(['modules/default/defaultview', 'src/main/datas', 'src/util/datatraversin
         for(var i=0; i<self._data.nbTicks.x; i++) {
           var text = (keepDecimals((self._data.realMin.x+i*self._data.intervalVal.x)/self._data.intervalFactor.x, 2)).toString();
           self.tickLabels.push(self._addText(text, i * self._data.intervalPx.x, 0, NORM_CONSTANT *1.1, {
-            textAlign: "right"
+            textAlign: 'right'
           }));
         }
       }
@@ -1122,17 +1122,17 @@ define(['modules/default/defaultview', 'src/main/datas', 'src/util/datatraversin
       function drawOnAxis(tx, ty, tz) {
         // x label
         self.tickLabels.push(self._addText(addFactor(tx, 'x'), NORM_CONSTANT/2, 0, NORM_CONSTANT *1.4, {
-          textAlign: "right"
+          textAlign: 'right'
         }));
 
         // y label
         self.tickLabels.push(self._addText(addFactor(ty,'y'), -0.4*NORM_CONSTANT, NORM_CONSTANT/2, NORM_CONSTANT, {
-          textAlign: "right"
+          textAlign: 'right'
         }));
 
         // z label
         self.tickLabels.push(self._addText(addFactor(tz,'z'), NORM_CONSTANT *1.4,0,NORM_CONSTANT/2, {
-          textAlign: "left"
+          textAlign: 'left'
         }));
 
       }
@@ -1370,7 +1370,7 @@ define(['modules/default/defaultview', 'src/main/datas', 'src/util/datatraversin
       }
 
       // Adding a deferred allows to wait to get actually the data before we draw the chart
-      // we decided here to plot the chart in the "onResize" event
+      // we decided here to plot the chart in the 'onResize' event
       this.loadedData = $.Deferred();
 
       this.resolveReady();
@@ -1416,16 +1416,16 @@ define(['modules/default/defaultview', 'src/main/datas', 'src/util/datatraversin
       options = options || {};
       var image = shapeImages[options.shape] || shapeImages[DEFAULT_POINT_SHAPE];
       if(options.transparent) {
-        image = image.replace(/\.(png|svg|jpeg|jpg|gif)$/i, "t.$1");
+        image = image.replace(/\.(png|svg|jpeg|jpg|gif)$/i, 't.$1');
       }
       var attributes = {
         size: {	type: 'f', value: [] },
         ca:   {	type: 'c', value: [] }
       };
       var uniforms = {
-        amplitude: { type: "f", value: 1 },
-        color:     { type: "c", value: new THREE.Color('#ffffff') },
-        texture:   { type: "t", value: THREE.ImageUtils.loadTexture(image) }
+        amplitude: { type: 'f', value: 1 },
+        color:     { type: 'c', value: new THREE.Color('#ffffff') },
+        texture:   { type: 't', value: THREE.ImageUtils.loadTexture(image) }
       };
 
       //uniforms.texture.value.wrapS = uniforms.texture.value.wrapT = THREE.RepeatWrapping;
@@ -1434,8 +1434,8 @@ define(['modules/default/defaultview', 'src/main/datas', 'src/util/datatraversin
 
         uniforms: 		uniforms,
         attributes:     attributes,
-        vertexShader:   "			attribute float size;			attribute vec4 ca;			varying vec4 vColor;			void main() {				vColor = ca;				vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );				gl_PointSize = size * ( 1.0 / length( mvPosition.xyz ) );				gl_Position = projectionMatrix * mvPosition;			}",
-        fragmentShader: "uniform vec3 color;			uniform sampler2D texture;			varying vec4 vColor;			void main() {				vec4 outColor = texture2D( texture, gl_PointCoord );				if ( outColor.a < 0.5 ) discard;				gl_FragColor = outColor * vec4( color * vColor.xyz, 1.0 );				float depth = gl_FragCoord.z / gl_FragCoord.w;				const vec3 fogColor = vec3( 0.0 );				float fogFactor = smoothstep( 0.0, 10000.0, depth );				gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );			}",
+        vertexShader:   '			attribute float size;			attribute vec4 ca;			varying vec4 vColor;			void main() {				vColor = ca;				vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );				gl_PointSize = size * ( 1.0 / length( mvPosition.xyz ) );				gl_Position = projectionMatrix * mvPosition;			}',
+        fragmentShader: 'uniform vec3 color;			uniform sampler2D texture;			varying vec4 vColor;			void main() {				vec4 outColor = texture2D( texture, gl_PointCoord );				if ( outColor.a < 0.5 ) discard;				gl_FragColor = outColor * vec4( color * vColor.xyz, 1.0 );				float depth = gl_FragCoord.z / gl_FragCoord.w;				const vec3 fogColor = vec3( 0.0 );				float fogFactor = smoothstep( 0.0, 10000.0, depth );				gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );			}',
         transparent: true
       });
 
@@ -1710,7 +1710,7 @@ define(['modules/default/defaultview', 'src/main/datas', 'src/util/datatraversin
       var self=this;
       if ( ! Array.isArray(value.data) || ! value.data[0] || ! Array.isArray(value.data[0].y)) return;
       if (value.data.length>0) {
-        Debug.warn("Scatter 3D module will merge series together");
+        Debug.warn('Scatter 3D module will merge series together');
       }
 
       for(var j=0; j<value.data.length; j++) {

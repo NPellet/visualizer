@@ -16,11 +16,11 @@ define(['modules/types/client_interaction/code_editor/controller'], function (Co
     };
 
     Controller.prototype.references.dataobject = {
-        label: "Object to filter"
+        label: 'Object to filter'
     };
 
     Controller.prototype.references.filteredObject = {
-        label: "Filtered object"
+        label: 'Filtered object'
     };
 
     Controller.prototype.events = {
@@ -32,7 +32,7 @@ define(['modules/types/client_interaction/code_editor/controller'], function (Co
 
     Controller.prototype.variablesIn = ['dataobject'];
 
-    Controller.prototype.actionsIn.doFilter = "Trigger the filter";
+    Controller.prototype.actionsIn.doFilter = 'Trigger the filter';
 
     Controller.prototype.configurationStructure = function () {
         return {

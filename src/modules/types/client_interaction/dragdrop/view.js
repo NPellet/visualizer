@@ -30,14 +30,14 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                 }
             }
 
-            var textarea = $("<textarea>").css({
-                position: "absolute",
+            var textarea = $('<textarea>').css({
+                position: 'absolute',
                 top: 0,
                 left: 0,
                 height: 0,
                 width: 0,
                 opacity: 0
-            }).on("paste", function (e) {
+            }).on('paste', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 self.module.controller.open(e.originalEvent.clipboardData);
@@ -49,7 +49,7 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                 hover: this.module.getConfiguration('hoverlabel') || defaultMessage
             };
             this.messageP = $('<div>').css('display', 'inline-block').html(this.messages.default);
-            this.dom = $('<div />', { class: 'dragdropzone' }).html(this.messageP).on("click mousemove", function () {
+            this.dom = $('<div />', { class: 'dragdropzone' }).html(this.messageP).on('click mousemove', function () {
                 textarea.focus();
             }).mouseout(function () {
                 textarea.blur();
@@ -190,7 +190,7 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                         audio: false
                     }, treatStream,
                     function(err) {
-                        console.error("An error occured! " + err);
+                        console.error('An error occured! ' + err);
                     }
                 );
 
@@ -237,7 +237,7 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                     Cancel: function() {
                         $(this).dialog('close');
                     },
-                    "Take Picture": function() {
+                    'Take Picture': function() {
                         takepicture();
                         resolve(imgData);
                         $(this).dialog('close');

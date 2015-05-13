@@ -31,7 +31,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
     */
     controller.prototype.references = {
       sequence: {
-        label: "An Amino Acid Sequence"
+        label: 'An Amino Acid Sequence'
       }
     };
 
@@ -41,13 +41,13 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
     */
     controller.prototype.events = {
       onSequenceSelectionChanged: {
-        label: "A sequence was selected",
-        refVariable: ["sequence"]
+        label: 'A sequence was selected',
+        refVariable: ['sequence']
       }
     };
     
     controller.prototype.onSequenceSelectionChanged = function(val) {
-      this.createDataFromEvent("onSequenceSelectionChanged", "sequence", DataObject.check(val, true));
+      this.createDataFromEvent('onSequenceSelectionChanged', 'sequence', DataObject.check(val, true));
     }
     
 

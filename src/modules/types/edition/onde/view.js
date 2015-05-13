@@ -21,7 +21,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
                 this.dom.append(new Button(this.module.getConfiguration('button_text'), function () {
                     that.exportForm();
                 }, {color: 'green'}).render().css({
-                        marginTop: "10px"
+                        marginTop: '10px'
                     }));
             }
 

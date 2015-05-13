@@ -8,7 +8,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 
 		init: function() {
-			if (this.DEBUG) console.log("Pie Chart: init");
+			if (this.DEBUG) console.log('Pie Chart: init');
 
 			// When we change configuration the method init is called again. Also the case when we change completely of view
 			if (! this.dom) {
@@ -36,7 +36,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			
 
 
-			if (this.DEBUG) console.log("Pie Chart: ID: "+this._id);
+			if (this.DEBUG) console.log('Pie Chart: ID: '+this._id);
 
 			this._data=[];	// the data that will be sent to FLOT
 			
@@ -45,18 +45,18 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		},
 		
 		onResize: function() {
-			if (this.DEBUG) console.log("Pie Chart: onResize");
+			if (this.DEBUG) console.log('Pie Chart: onResize');
 			var self=this;
 			// the size is now really defined (we are after inDom)
 			// and we received the data ...
 			this.loadedData.done(function() {
-				self._plot=$.plot("#"+self._id, self._data, self._options);
+				self._plot=$.plot('#'+self._id, self._data, self._options);
 
-				$("#"+self._id).bind("plotclick", function (event, pos, item) {
+				$('#'+self._id).bind('plotclick', function (event, pos, item) {
 				    if (item) {
 				    }
 				});
-				$("#"+self._id).bind("plothover", function (event, pos, item) {
+				$('#'+self._id).bind('plothover', function (event, pos, item) {
 				    if (item) {
 				    	self.module.controller.elementHover(self._data[item.seriesIndex]);
 				    } else {
@@ -91,7 +91,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		*/
 		update: {
 			'chart': function(moduleValue) {
-				if (this.DEBUG) console.log("Pie Chart: update from chart object");
+				if (this.DEBUG) console.log('Pie Chart: update from chart object');
 
 				if (! moduleValue || ! moduleValue.value) return;
 
@@ -103,7 +103,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				this.onResize();
 			},
 			'yArray': function(moduleValue) {
-				if (this.DEBUG) console.log("Pie Chart: update from array");
+				if (this.DEBUG) console.log('Pie Chart: update from array');
 				this._data=moduleValue.get();
 				this.loadedData.resolve();
 				
@@ -133,7 +133,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				}
 				if (Array.isArray(infos) && infos.length>i) {
 					// Data can be retrieved async so to fetch an information from the "info" object we need this strange code
-					Traversing.getValueFromJPath(infos[i],"element.name").done(function(elVal) {
+					Traversing.getValueFromJPath(infos[i],'element.name').done(function(elVal) {
 						self._data[i].label=elVal;
 						self._data[i].info=infos[i];
 					});

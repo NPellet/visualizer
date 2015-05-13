@@ -30,7 +30,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 	*/
 	controller.prototype.references = {
 
-		"value": {
+		'value': {
 			label: 'The parsed object'
 			
 		}
@@ -94,22 +94,22 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 	};
     
     controller.prototype.valueChanged = function(value) {
-        var type = this.module.getConfiguration("type"),
+        var type = this.module.getConfiguration('type'),
             def = $.Deferred(),
             that=this;
         switch(type) {
-            case "text":
+            case 'text':
                 def.resolve(value);
                 break;
-            case "json":
+            case 'json':
                 def.resolve(JSON.parse(value));
                 break;
-            case "csv":
-                require(["components/papa-parse/papaparse.min"],function(Papa){
+            case 'csv':
+                require(['components/papa-parse/papaparse.min'],function(Papa){
                     def.resolve(Papa.parse(value).data);
                 });
                 break;
-            case "xml":
+            case 'xml':
                 require(['components/x2js/xml2json.min'],function(X2JS){
                     def.resolve(new X2JS().xml_str2json(value));
                 });

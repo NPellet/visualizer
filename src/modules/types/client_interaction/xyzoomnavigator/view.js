@@ -6,10 +6,10 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
     View.prototype = $.extend(true, {}, Default, {
         init: function () {
 
-			this.dom = $("<div />");
+			this.dom = $('<div />');
 			var self = this;
 			var img = $('<div class="ci-navigation-navigarrow"></div>');
-			this.domNavig = $("<div />").addClass('ci-navigation-navig')
+			this.domNavig = $('<div />').addClass('ci-navigation-navig')
 				.append(img.clone().addClass('top'))
 				.append(img.clone().addClass('left'))
 				.append(img.clone().addClass('right'))
@@ -22,7 +22,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
 
 			this._zoomWidget = this.domZoom.slider({
 				height: 100,
-				orientation: "vertical",
+				orientation: 'vertical',
 				min: 0,
 				step: 0.01,
 				max: 1,

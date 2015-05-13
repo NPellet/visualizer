@@ -7,7 +7,7 @@ define(['jquery'], function($) {
 		open: function() {
 			// In the following line, you should include the prefixes of implementations you want to test.
 			window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-			// DON'T use "var indexedDB = ..." if you're not in a function.
+			// DON'T use 'var indexedDB = ...' if you're not in a function.
 			// Moreover, you may need references to some window.IDB* objects:
 			window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
 			window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange
@@ -37,20 +37,20 @@ define(['jquery'], function($) {
 				process = false;
 				db = e.target.result;
 				var def1 = $.Deferred(), def2 = $.Deferred();
-			    if(db.objectStoreNames.contains("localview")) {
-			    	db.deleteObjectStore("localview");
+			    if(db.objectStoreNames.contains('localview')) {
+			    	db.deleteObjectStore('localview');
 			    	//req.onsuccess = function() { def1.resolve(); }
 			    }
 		    
-		   		if(db.objectStoreNames.contains("localdata")) {
-			    	db.deleteObjectStore("localdata");
+		   		if(db.objectStoreNames.contains('localdata')) {
+			    	db.deleteObjectStore('localdata');
 			    	//req2.onsuccess = function() { def2.resolve();}
 			    }
 
 		    	
 				var def3 = $.Deferred(), def4 = $.Deferred();
-				var req1 = db.createObjectStore("localdata", { keyPath: 'readURL'});
-				var req2 = db.createObjectStore("localview", { keyPath: 'readURL' });
+				var req1 = db.createObjectStore('localdata', { keyPath: 'readURL'});
+				var req2 = db.createObjectStore('localview', { keyPath: 'readURL' });
 
 				req1.onsuccess = function() { def3.resolve(); }
 				req2.onsuccess = function() { def4.resolve(); }
@@ -77,14 +77,14 @@ define(['jquery'], function($) {
 		getAll: function(type, key, branch) {
 
 			var def = $.Deferred(), self = this;
-			type = (type == 'data' || type == "localdata") ? 'localdata' : 'localview';
+			type = (type == 'data' || type == 'localdata') ? 'localdata' : 'localview';
 
 			var trans = db.transaction([type], 'readwrite');
 			var store = trans.objectStore(type);
 			var stack = {};
 			
 			if(branch)
-				var req = store.get(key + ";" + branch);
+				var req = store.get(key + ';' + branch);
 			else {
 				var req = store.openCursor();
 			}
@@ -105,7 +105,7 @@ define(['jquery'], function($) {
 						stack[e.target.result.value.branch] = e.target.result.value;
 
 					if(e.target.result)
-						e.target.result["continue"]();
+						e.target.result['continue']();
 					else {
 
 						def.resolve(stack);
@@ -124,11 +124,11 @@ define(['jquery'], function($) {
 
 			// Create empty head, empty list
 
-			obj = { readURL: key + ";" + branch, url: key, branch: branch, list: [], head: "{}" };
+			obj = { readURL: key + ';' + branch, url: key, branch: branch, list: [], head: '{}' };
 
 			var def = $.Deferred();
 
-			type = (type == 'data' || type == "localdata") ? 'localdata' : 'localview';
+			type = (type == 'data' || type == 'localdata') ? 'localdata' : 'localview';
 			var trans = db.transaction(type, 'readwrite');
 			var store = trans.objectStore(type);
 			var req = store.put(obj);
@@ -143,11 +143,11 @@ define(['jquery'], function($) {
 		storeToHead: function(type, key, branch, obj) {
 			
 			var def = $.Deferred(), self = this;
-			type = (type == 'data' || type == "localdata") ? 'localdata' : 'localview';
+			type = (type == 'data' || type == 'localdata') ? 'localdata' : 'localview';
 			var trans = db.transaction(type, 'readwrite');
 			var store = trans.objectStore(type);
 			
-			var req = store.get(key + ";" + branch);
+			var req = store.get(key + ';' + branch);
 			req.onsuccess = function(e) {
 
 				if(e.target.result) {
@@ -174,12 +174,12 @@ define(['jquery'], function($) {
 		store: function(type, key, branch, obj) {
 
 			var def = $.Deferred();
-			type = (type == 'data' || type == "localdata") ? 'localdata' : 'localview';
+			type = (type == 'data' || type == 'localdata') ? 'localdata' : 'localview';
 			var trans = db.transaction(type, 'readwrite');
 			
 			var store = trans.objectStore(type);	
 			
-			var req = store.get(key + ";" + branch),
+			var req = store.get(key + ';' + branch),
 				obj = JSON.stringify( obj );
 
 			req.onsuccess = function(e) {

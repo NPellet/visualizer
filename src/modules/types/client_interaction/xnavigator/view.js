@@ -6,10 +6,10 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
     View.prototype = $.extend(true, {}, Default, {
         init: function () {
 
-			this.dom = $("<div />");
+			this.dom = $('<div />');
 			var self = this;
 			var img = $('<div class="ci-navigation-navigarrow"></div>');
-			this.domNavig = $("<div />").addClass('')
+			this.domNavig = $('<div />').addClass('')
 				.append(img.clone().addClass('left'))
 				.append(img.clone().addClass('right'))
 				.on('mousedown', '.ci-navigation-navigarrow', function(event) {

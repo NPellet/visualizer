@@ -18,9 +18,9 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/util', 'src/mai
     					return;
     				CKEDITOR.disableAutoInline = true;
     				self.instance = CKEDITOR.inline(self._id, {
-    					extraPlugins:"mathjax"
+    					extraPlugins:'mathjax'
     				});
-    				self.instance.on("change",function(){
+    				self.instance.on('change',function(){
     					self.module.definition.text = self.instance.getData();
     					self.module.getDomWrapper().height(self.inside.height() + 70);
     					Grid.moduleResize(self.module);
@@ -33,7 +33,7 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/util', 'src/mai
                 this.inside = $('<div>', { id: id, class: 'inside'}).html(self.module.definition.text || '');
             }
             
-			this.dom = $('<div />', {  class: 'postit' }).css("font-family", this.module.getConfiguration("fontfamily")+", Arial");
+			this.dom = $('<div />', {  class: 'postit' }).css('font-family', this.module.getConfiguration('fontfamily')+', Arial');
 			
 
 			this.dom.html(this.inside);

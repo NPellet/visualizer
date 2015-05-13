@@ -69,7 +69,7 @@ define(['modules/default/defaultcontroller','components/x2js/xml2json.min'], fun
 
     controller.prototype.doVariables = function() {
 
-        var cfg = this.module.getConfiguration("cronInfos"), variable, time, url, datatype;
+        var cfg = this.module.getConfiguration('cronInfos'), variable, time, url, datatype;
 
         if (!cfg)
             return;
@@ -156,10 +156,10 @@ define(['modules/default/defaultcontroller','components/x2js/xml2json.min'], fun
                             default: ''
                         },
                         datatype: {
-                            type: "combo",
-                            title: "Data type",
-                            options: [{title: "Text", key: "text"}, {title: "JSON", key: "json"}, {title: "XML", key: "xml"}],
-                            default:"json"
+                            type: 'combo',
+                            title: 'Data type',
+                            options: [{title: 'Text', key: 'text'}, {title: 'JSON', key: 'json'}, {title: 'XML', key: 'xml'}],
+                            default:'json'
                         },
                         repeat: {
                             type: 'text',

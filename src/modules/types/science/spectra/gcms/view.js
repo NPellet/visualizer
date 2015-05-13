@@ -28,7 +28,7 @@ define( [
 			var div1 = document.createElement('div');
 			var div2 = document.createElement('div');
 
-			var domGraph = document.createElement("div");
+			var domGraph = document.createElement('div');
 
 			domGraph.appendChild( div1 );
 			domGraph.appendChild( div2 );
@@ -204,8 +204,8 @@ define( [
 							self.gcmsInstance.setGC( jcamp.gcms.gc );
 							self.gcmsInstance.setMS( jcamp.gcms.ms );
 
-							self.module.controller.createDataFromEvent( "onJCampParsed", "msdata", jcamp.gcms.ms );
-							self.module.controller.createDataFromEvent( "onJCampParsed", "gcdata", jcamp.gcms.gc );
+							self.module.controller.createDataFromEvent( 'onJCampParsed', 'msdata', jcamp.gcms.ms );
+							self.module.controller.createDataFromEvent( 'onJCampParsed', 'gcdata', jcamp.gcms.gc );
 
 							self.jcamp = jcamp;
 						}

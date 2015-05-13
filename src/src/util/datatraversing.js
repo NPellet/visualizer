@@ -1,7 +1,6 @@
 'use strict';
 
 define(['jquery', 'src/data/structures'], function($, Structures) {
-	"use strict";
 
 	var asyncId = 0;
 
@@ -27,7 +26,7 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 	function _setValueFromJPath(element, jpath, newValue, moduleId, mute) {
 		var el = getValueIfNeeded(element);
 		var type, subelement;
-		if(typeof el != "object" && jpath.length > 0)
+		if(typeof el != 'object' && jpath.length > 0)
 			el = {};
 		if(jpath.length == 1)
 			return el[jpath[0]] = newValue;
@@ -58,10 +57,10 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 	}
 
 	function getValueIfNeeded(element) {
-		if(typeof element == "undefined")
+		if(typeof element == 'undefined')
 			return;
 
-		if(typeof element == "object" && element.url)
+		if(typeof element == 'object' && element.url)
 			return fetchElementIfNeeded(element).pipe(function(data) {
 				return data.value;
 			});
@@ -73,11 +72,11 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 	function fetchElementIfNeeded(element) {
 		var deferred = $.Deferred();
 		
-		if(typeof element == "undefined" || element == null)
+		if(typeof element == 'undefined' || element == null)
 			return deferred.reject();
 		var type = getType(element);
 		if(element.url && element.type) {
-			//var ajaxType = typeof Structures[type] == "object" ? 'json' : 'text';
+			//var ajaxType = typeof Structures[type] == 'object' ? 'json' : 'text';
 			require(['src/util/urldata'], function(urlData) {
 				
 				urlData.get(element.url, false, element.timeout).then(function(data) {
@@ -105,14 +104,14 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 		var type = typeof element;
 		if(type == 'object') {
 			if(Array.isArray(element))
-				return "array";
+				return 'array';
 			if(Structures[element.type] && (element.value || element.url))
 				return element.type;
 			
-			if(typeof element.type == "undefined" || !element.value)
-				return "object";
+			if(typeof element.type == 'undefined' || !element.value)
+				return 'object';
 			else {
-				console.error("Type " + element.type + " could not be found");
+				console.error('Type ' + element.type + ' could not be found');
 				return;
 			}
 		}
@@ -148,7 +147,7 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 				return $.Deferred().resolve(element);
 			if(!jpath.split)
 				jpath = '';
-			var jpathSplitted = jpath.split('.'); // Remove first element, which should always be "element"
+			var jpathSplitted = jpath.split('.'); // Remove first element, which should always be 'element'
 			jpathSplitted.shift();
 			return _getValueFromJPath(element, jpathSplitted);
 		},
@@ -179,11 +178,11 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 
 				if( ! jpathString ) {
 					
-					jpathString = title = "element";
+					jpathString = title = 'element';
 					
 				} else {
 
-					jpathString += "." + title;
+					jpathString += '.' + title;
 
 				}
 
@@ -200,7 +199,7 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 						// The type is object (native). Then look for its children (structure.elements)
 						for( i in structure.elements ) {
 
-							this.getJPathsFromStructure(structure.elements[ i ], (i + ""), children, jpathString);
+							this.getJPathsFromStructure(structure.elements[ i ], (i + ''), children, jpathString);
 
 						}
 
@@ -223,14 +222,14 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 						}
 
 						for( i = 0; i < len; i++ ) {
-							this.getJPathsFromStructure(structure.elements[ i ] || structure.elements[ 0 ], (i + ""), children, jpathString);
+							this.getJPathsFromStructure(structure.elements[ i ] || structure.elements[ 0 ], (i + ''), children, jpathString);
 						}
 					break;
 				}		
 			} else {
 
-				// Useful is { myProp: "chemical" } => will fetch the chemical structure
-				if(typeof structure == "string" && typeof Structures[ structure ] == "object") {
+				// Useful is { myProp: 'chemical' } => will fetch the chemical structure
+				if(typeof structure == 'string' && typeof Structures[ structure ] == 'object') {
 
 					this.getJPathsFromStructure( Structures[ structure ], title, jpathspool, jpathString);
 
@@ -238,11 +237,11 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 
 					if( ! jpathString || jpathString == null ) {
 
-						jpathString = title = "element";
+						jpathString = title = 'element';
 
 					} else {
 
-						jpathString += "." + title;
+						jpathString += '.' + title;
 					}
 
 					jpathspool.push( { 
@@ -274,9 +273,9 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 			var type = element.getType();
 			element = DataObject.check(element.get());
 
-			if( type == "array") {
+			if( type == 'array') {
 
-				structure.type = "array";
+				structure.type = 'array';
 				structure.elements = [];
 				var length = Math.min(5, element.length );
 
@@ -284,9 +283,9 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 					structure.elements[ i ] = this.getStructureFromElement( element.get( i, false ) );
 				}
 
-			} else if( type =="object" ) {
+			} else if( type =='object' ) {
 
-				structure.type = "object";	
+				structure.type = 'object';
 				structure.elements = {};
 
 				for( var i in element ) {
@@ -339,7 +338,7 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 		get: function( data ) {
 			
 			if(data) {
-				if(typeof data.get === "function") {
+				if(typeof data.get === 'function') {
 					return data.get();
 				} else if(data.type && data.value) {
 					return data.value;

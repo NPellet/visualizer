@@ -96,7 +96,7 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
                 }
             }
             for (var i = 0; i < ii; i++) {
-                json.values[i] = {values: [arr[i]], label: (labels[i] || "label_" + i)};
+                json.values[i] = {values: [arr[i]], label: (labels[i] || 'label_' + i)};
             }
         } else { // stacked chart
             json = {};
@@ -109,7 +109,7 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
                     var serie = data[i];
                     var arr = serie.y;
                     if (i === 0) {
-                        json.values[j] = {values: new Array(ii), label: "label2 " + j};
+                        json.values[j] = {values: new Array(ii), label: 'label2 ' + j};
                         json.label[j] = serie.label;
                     }
                     json.values[j].values[i] = arr[j];
@@ -123,7 +123,7 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
         var ii = array.length;
         var json = {values: new Array(ii)};
         for (var i = 0; i < ii; i++) {
-            json.values[i] = {values: [array[i]], label: "label_" + i};
+            json.values[i] = {values: [array[i]], label: 'label_' + i};
         }
         return json;
     }
@@ -137,8 +137,8 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
      for (var i = 0; i < ii; i++) {
      for (var j = 0; j < jj; j++) {
      if (i === 0) {
-     json.values[j] = {values: new Array(ii), label: "label2 " + j};
-     json.label[j] = "label " + j;
+     json.values[j] = {values: new Array(ii), label: 'label2 ' + j};
+     json.label[j] = 'label ' + j;
      }
      json.values[j].values[i] = array[i][j];
      }

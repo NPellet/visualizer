@@ -51,7 +51,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
                         return filterFunction.filter(value, resolve, reject);
                     }
 
-                    reject("No filter function defined");
+                    reject('No filter function defined');
                 });
 
             };
@@ -106,11 +106,11 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
         };
 
         Object.defineProperties(this, {
-            "_name": attributes,
-            "_jpath": attributes,
-            "_value": attributes,
-            "listenedBy": attributes,
-            "listeners": attributes
+            '_name': attributes,
+            '_jpath': attributes,
+            '_value': attributes,
+            'listenedBy': attributes,
+            'listeners': attributes
         });
 
         this.defined = false;
@@ -137,7 +137,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
 
             this._jpath = jpath;
 
-            if (typeof this._jpath == "string") {
+            if (typeof this._jpath == 'string') {
                 this._jpath = this._jpath.split('.');
                 this._jpath.shift();
             }
@@ -207,7 +207,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
 
             if (this.rejectCurrentPromise) {
 
-                this.rejectCurrentPromise("latency");
+                this.rejectCurrentPromise('latency');
                 this.rejectCurrentPromise = false;
             }
 
@@ -234,8 +234,8 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
 
                             }, function (error) {
 
-                                Debug.warn("Error during variable filtering : ", error);
-                                _reject("filter");
+                                Debug.warn('Error during variable filtering : ', error);
+                                _reject('filter');
 
                             });
 
@@ -252,12 +252,12 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
             });
             this.currentPromise.catch(function (err) {
                 if (
-                    err === "filter" || // Already caught
-                    err === "latency" // Expected
+                    err === 'filter' || // Already caught
+                    err === 'latency' // Expected
                 ) {
                     return;
                 }
-                Debug.error("Error in getting the variable through variable.js", err.stack || err);
+                Debug.error('Error in getting the variable through variable.js', err.stack || err);
             });
 
             for (var i = 0, l = self.listeners.length; i < l; i++) {

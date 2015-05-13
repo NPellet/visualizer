@@ -9,7 +9,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 		init: function() {
 
-			if (this.DEBUG) console.log("Radar Chart: init");
+			if (this.DEBUG) console.log('Radar Chart: init');
 
 			// When we change configuration the method init is called again. Also the case when we change completely of view
 			if (! this.dom) {
@@ -18,7 +18,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				this.module.getDomContent().html(this.dom);
 			}
 
-			if (this.DEBUG) console.log("Radar Chart: ID: "+this._id);
+			if (this.DEBUG) console.log('Radar Chart: ID: '+this._id);
 
 			this._data=[];	// the data that will be represented
 			var cfg = $.proxy( this.module.getConfiguration, this.module );
@@ -30,12 +30,12 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 		inDom: function() {
 
-			if (this.DEBUG) console.log("Radar Chart: inDom");
+			if (this.DEBUG) console.log('Radar Chart: inDom');
 
 		},
 
 		onResize: function() {
-			if (this.DEBUG) console.log("Radar Chart: onResize");
+			if (this.DEBUG) console.log('Radar Chart: onResize');
 			this._redraw();
 
 		},
@@ -48,7 +48,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			'chart': function(moduleValue) 
 			{
 
-				if (this.DEBUG) console.log("Radar Chart: update from chart object");
+				if (this.DEBUG) console.log('Radar Chart: update from chart object');
 
 				if (! moduleValue) {
 					delete this.value;
@@ -82,10 +82,10 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 			this.createChart(this.value);
 
-			this._radar.parse(data,"json");
+			this._radar.parse(data,'json');
 
 			var self=this;
-			this._radar.attachEvent("onMouseMove", function (id, ev, trg)
+			this._radar.attachEvent('onMouseMove', function (id, ev, trg)
 			{
 				data.forEach(function(entry) 
 				{
@@ -107,7 +107,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				return true;
 
 			}); 
-			this._radar.attachEvent("onMouseOut", function (id, ev, trg){
+			this._radar.attachEvent('onMouseOut', function (id, ev, trg){
 						self.module.controller.elementOut();
 			}); 
 
@@ -121,11 +121,11 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				for (var j = 0; j < value.data[0].x.length; j++) 
 				{
 					data[j] = {};
-					data[j]["xunit"] = value.data[0].x[j];
+					data[j]['xunit'] = value.data[0].x[j];
 					data[j]['_highlight'] = [];	
 					for (var i = 0; i < value.data.length; i++) 
 					{
-						index = "serie"+i;
+						index = 'serie'+i;
 						data[j][index] = value.data[i].y[j];
 						if (value.data[i]._highlight && value.data[i]._highlight[j]) {
 							data[j]['_highlight'].push({name: index, _highlight: value.data[i]._highlight[j]});
@@ -138,7 +138,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		getRandomColor: function(nbColor, i) {
 
 			var currentColor=360/nbColor*i;
-			color = "hsla("+currentColor+",100%,50%,0.3)";
+			color = 'hsla('+currentColor+',100%,50%,0.3)';
 
 			return color;
 		},
@@ -155,10 +155,10 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				}
 
 				var options = {
-					view: "radar",
+					view: 'radar',
 					container: this._id,
 					alpha:0.2,
-					value: "#serie0#",
+					value: '#serie0#',
 					disableLines:cfg('line'),
 					disableItems: cfg('point'),
 					color: chart.data[0].color,
@@ -168,7 +168,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 						width:1
 					},
 					xAxis:{
-							template:"#xunit#"
+							template:'#xunit#'
 					},
 					yAxis:{
 							lineShape:cfg('lineshape'),
@@ -191,7 +191,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 							chart.data[i].color = this.getRandomColor(chart.data.length, i);
 						}
 						this._radar.addSeries({
-							value: "#serie"+i+"#",
+							value: '#serie'+i+'#',
 							fill: chart.data[i].color,
 							disableLines:cfg('line'),
 							line:{
@@ -211,9 +211,9 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					view: cfg('pie'),
 					container: this._id,
 					radius: 220,
-					value: "#serie0#",
+					value: '#serie0#',
 					color: chart.data[0].color,
-					pieInnerText: "<b>#xunit#</b>"
+					pieInnerText: '<b>#xunit#</b>'
 				};
 				this._radar = new dhtmlXChart(options);
 
@@ -225,7 +225,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					switch (cfg('legendalign'))
 					{
 					case 'top-left':
-					this._radar.define("legend",{
+					this._radar.define('legend',{
 					width: 120,
 					align: 'left',
 					valign: 'top',
@@ -237,7 +237,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				}); 
 				break
 					case 'top-right':
-					this._radar.define("legend",{
+					this._radar.define('legend',{
 					width: 120,
 					align: 'right',
 					valign: 'top',
@@ -249,7 +249,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				}); 
 				break;
 					case 'bottom-left':
-					this._radar.define("legend",{
+					this._radar.define('legend',{
 					width: 120,
 					align: 'left',
 					valign: 'bottom',
@@ -261,7 +261,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				}); 
 			break;
 					case 'bottom-right':
-					this._radar.define("legend",{
+					this._radar.define('legend',{
 					width: 120,
 					align: 'right',
 					valign: 'bottom',

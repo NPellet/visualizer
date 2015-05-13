@@ -16,10 +16,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
     };
 
     Controller.prototype.references = {
-        "value": {
+        value: {
             label: 'A JSON object'
         },
-        "output": {
+        output: {
             label: 'Output object'
         }
     };

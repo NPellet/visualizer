@@ -36,7 +36,7 @@ define(['jquery', 'src/util/debug'], function($, Debug) {
 
 			toStore = { data: { data: data, timeout: Date.now() } };
 
-			if(typeof head == "undefined") {
+			if(typeof head == 'undefined') {
 				toStore.prev = toStore;
 				toStore.next = toStore;
 			} else {
@@ -112,7 +112,7 @@ define(['jquery', 'src/util/debug'], function($, Debug) {
 		var ready = $.Deferred();
 
 		if(!dbname)
-			return ready.reject("No database to use");
+			return ready.reject('No database to use');
 
 		if(db)
 			return ready.resolve(db);

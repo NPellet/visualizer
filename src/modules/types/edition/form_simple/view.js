@@ -184,7 +184,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 									structure[ j ].groups.general[ 0 ].name[ 0 ]
 
 							][0]
-								.value = ( returned ? ( returned.get ? returned.get() : returned.toString( ) ) : "" );
+								.value = ( returned ? ( returned.get ? returned.get() : returned.toString( ) ) : '' );
 						
 
 						self.nb--;

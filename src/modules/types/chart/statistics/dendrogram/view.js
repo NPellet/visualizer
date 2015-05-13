@@ -14,7 +14,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		},
 
 		init: function() {
-			if (this.DEBUG) console.log("Dendrogram: init");
+			if (this.DEBUG) console.log('Dendrogram: init');
 
 			// When we change configuration the method init is called again. Also the case when we change completely of view
 			if (! this.dom) {
@@ -37,17 +37,17 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			
 			this.resolveReady();
 
-			if (this.DEBUG) console.log("Dendrogram: ID: "+this._id);
+			if (this.DEBUG) console.log('Dendrogram: ID: '+this._id);
 
 		},
 		
 
 		inDom: function() {
-			if (this.DEBUG) console.log("Dendrogram: inDom");
+			if (this.DEBUG) console.log('Dendrogram: inDom');
 		},
 
 		onResize: function() {
-			if (this.DEBUG) console.log("Dendrogram: onResize");
+			if (this.DEBUG) console.log('Dendrogram: onResize');
 			this.createDendrogram();
 			this.updateDendrogram();
 		},
@@ -71,7 +71,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		*/
 		update: {
 			'tree': function(moduleValue) {
-				if (this.DEBUG) console.log("Dendrogram: update");
+				if (this.DEBUG) console.log('Dendrogram: update');
 
 
 				if (! moduleValue || ! moduleValue.value) return;
@@ -101,17 +101,17 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		},
 		
 		updateDendrogram: function() {
-			if (this.DEBUG) console.log("Dendrogram: updateDendrogram");
+			if (this.DEBUG) console.log('Dendrogram: updateDendrogram');
 			if (!this._rgraph || !this._value) return;
 
 		    this._rgraph.loadJSON(this._value);
 
-		    // in each node we had the content of "label"
+		    // in each node we had the content of 'label'
 		    $jit.Graph.Util.each(this._rgraph.graph, function(node) {
 		    	if (node.data && node.data.label) {
 		    		node.name=node.data.label
 		    	} else {
-		    		node.name="";
+		    		node.name='';
 		    	}
 			});  
 		    this._rgraph.refresh();
@@ -122,7 +122,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 			this._options={
 				nodeSize: cfg('nodeSize') || 1,
-				nodeColor: cfg('nodeColor') || "yellow",
+				nodeColor: cfg('nodeColor') || 'yellow',
 			}
 		},
 
@@ -130,7 +130,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		createDendrogram: function() {
 			var self = this;
 
-			if (this.DEBUG) console.log("Dendrogram: createDendrogram");
+			if (this.DEBUG) console.log('Dendrogram: createDendrogram');
 			// ?????? how to put this in the model ?????
 
 	    	var actions=this.module.vars_out();
@@ -169,7 +169,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				    stylesHover: {  
 				      CanvasStyles: {
 				      	lineWidth: 10,
-				      	strokeStyle: "#f00",
+				      	strokeStyle: '#f00',
 				      	shadowColor: '#ccc',  
 			      		shadowBlur: 10
 			      	  }
@@ -193,7 +193,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		        	overridable: true,
 		        	/*
 		        	CanvasStyles: { // we need to specify it here if we want to change it later
-			        	shadowColor: "rgb(0, 0, 0)",
+			        	shadowColor: 'rgb(0, 0, 0)',
 						shadowBlur: 0
 		        	},
 		        	*/
@@ -203,23 +203,23 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		        },
 		        Label: {  
 				  overridable: true,  
-				  type: 'Native', //'SVG', 'Native', "HTML" 
+				  type: 'Native', //'SVG', 'Native', 'HTML'
 				  size: cfg('labelSize') || 10,  
 				  family: 'sans-serif',  
 				  textAlign: 'center',  
 				  textBaseline: 'alphabetic',  
-				  color: cfg('labelColor') || "black"  
+				  color: cfg('labelColor') || 'black'
 				},
 				
 				Node: {
 					CanvasStyles: { // we need to specify it here so that we can change it later (mouse enter, leave or external highlight)
-			            shadowColor: "rgb(0, 0, 0)",
+			            shadowColor: 'rgb(0, 0, 0)',
 						shadowBlur: 0
 		        	},
 		        
 					overridable: true,  
-					type: cfg('nodeType') || "circle",  
-					color: cfg('nodeColor') || "yellow",  
+					type: cfg('nodeType') || 'circle',
+					color: cfg('nodeColor') || 'yellow',
 					dim: cfg('nodeSize') || 3,  
 					height: 3,  
 					width: 3,
@@ -228,10 +228,10 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				
 		 	 	Events: {
 		 	 		getRgraph: function(e) {
-		 	 			var src=e.srcElement.id.replace(/-.*/,"");
+		 	 			var src=e.srcElement.id.replace(/-.*/,'');
 		 	 			if ($jit.existingInstance[src]) return $jit.existingInstance[src];
 		 	 			// maybe we clicked on a label
-		 	 			src=e.srcElement.parentElement.id.replace(/-.*/,"");
+		 	 			src=e.srcElement.parentElement.id.replace(/-.*/,'');
 		 	 			if ($jit.existingInstance[src]) return $jit.existingInstance[src];
 		 	 			return;
 		 	 		},
@@ -310,12 +310,12 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		},
 		
 		getDom: function() {
-			if (this.DEBUG) console.log("Dendrogram: getDom");
+			if (this.DEBUG) console.log('Dendrogram: getDom');
 			return this.dom;
 		},
 		
 		_doHighlight: function(id, val) {
-			if (this.DEBUG) console.log("Dendrogram: _doHighlight");
+			if (this.DEBUG) console.log('Dendrogram: _doHighlight');
 
 			if(this._highlighted[id] && val)
 				return;

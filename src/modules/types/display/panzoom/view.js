@@ -218,7 +218,7 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                     maxScale: 100.0,
                     minScale: 0.000001,
                     duration:0,
-                    startTransform: "none",
+                    startTransform: 'none',
                     onEnd: function() {
                         // Set the pointer to cursor only if
                         if(that.state === 'pan') {
@@ -240,7 +240,7 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
                             that.images[j].$panzoomEl.css('cursor', 'move');
                             that.state = 'pan';
                         }
-                        var panzoomInstance = that.images[j].$panzoomEl.panzoom("instance");
+                        var panzoomInstance = that.images[j].$panzoomEl.panzoom('instance');
 
                         if(panzoomInstance !== panzoom) {
                             panzoomInstance.setMatrix(that.lastTransform);
@@ -344,9 +344,9 @@ define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/ut
             this.dom.off('dblclick');
             this.dom.dblclick(function() {
                 for(var i=0; i<that.images.length; i++) {
-                    that.images[i].$panzoomEl.panzoom("reset");
+                    that.images[i].$panzoomEl.panzoom('reset');
                     if(i===0) {
-                        that.lastTransform = that.images[i].$panzoomEl.panzoom("getMatrix")
+                        that.lastTransform = that.images[i].$panzoomEl.panzoom('getMatrix')
                     }
                 }
             });

@@ -58,17 +58,17 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
                             extractValue: Util.jpathToArray,
                             insertValue: Util.jpathToString
                         },
-                        "slick.defaultColumnWidth": {
+                        'slick.defaultColumnWidth': {
                             type: 'float',
                             title: 'Default Column Width'
                         },
 
-                        "slick.rowHeight": {
+                        'slick.rowHeight': {
                             type: 'text',
                             title: 'Row Height'
                         },
 
-                        "slick.selectionModel": {
+                        'slick.selectionModel': {
                             type: 'combo',
                             title: 'Selection',
                             options: [

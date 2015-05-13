@@ -3,7 +3,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
     function Controller() {
     }
 
-    var reg = new RegExp(";base64,(.+)$");
+    var reg = new RegExp(';base64,(.+)$');
 
     Controller.prototype = $.extend(true, {}, Default);
 
@@ -69,12 +69,12 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                             type: 'combo',
                             title: 'Capture',
                             options: [
-                                {title: "none", key: "none"},
+                                {title: 'none', key: 'none'},
                                 {title: 'camera', key: 'camera'},
                                 {title: 'camcorder', key: 'camcorder'},
                                 {title: 'microphone', key: 'microphone'}
                             ],
-                            default: "none"
+                            default: 'none'
                         }
                     }
                 },
@@ -86,43 +86,43 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                     },
                     fields: {
                         filter: {
-                            type: "combo",
-                            title: "filter on",
+                            type: 'combo',
+                            title: 'filter on',
                             options: [
-                                {title: "File extension", key: "ext"},
-                                {title: "Mime-type", key: "mime"}
+                                {title: 'File extension', key: 'ext'},
+                                {title: 'Mime-type', key: 'mime'}
                             ],
-                            "default": "ext"
+                            'default': 'ext'
                         },
                         extension: {
-                            type: "text",
-                            title: "Filter",
-                            "default": "*"
+                            type: 'text',
+                            title: 'Filter',
+                            'default': '*'
                         },
                         filetype: {
-                            type: "combo",
-                            title: "Read type",
+                            type: 'combo',
+                            title: 'Read type',
                             options: [
-                                {title: "Text", key: "text"},
-                                {title: "Base64 Encoded", key: "base64"},
-                                {title: "Object URL", key: "url"}/*, {title: "Binary string", key: "binary"}, {title: "Array buffer", key: "b"}*/
+                                {title: 'Text', key: 'text'},
+                                {title: 'Base64 Encoded', key: 'base64'},
+                                {title: 'Object URL', key: 'url'}/*, {title: 'Binary string', key: 'binary'}, {title: 'Array buffer', key: 'b'}*/
                             ],
-                            "default": "text"
+                            'default': 'text'
                         },
                         type: {
-                            type: "combo",
-                            title: "Force type",
+                            type: 'combo',
+                            title: 'Force type',
                             options: typeList,
-                            "default": "string"
+                            'default': 'string'
                         },
                         mime: {
-                            type: "text",
-                            title: "Force mime-type"
+                            type: 'text',
+                            title: 'Force mime-type'
                         },
                         variable: {
-                            type: "text",
-                            title: "Temporary variable",
-                            "default": "file"
+                            type: 'text',
+                            title: 'Temporary variable',
+                            'default': 'file'
                         }
                     }
                 },
@@ -134,10 +134,10 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                     },
                     fields: {
                         type: {
-                            type: "combo",
-                            title: "Force type",
+                            type: 'combo',
+                            title: 'Force type',
                             options: typeList,
-                            "default": "string"
+                            'default': 'string'
                         },
                         filter: {
                             type: 'text',
@@ -145,9 +145,9 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                             'default': 'text/plain'
                         },
                         variable: {
-                            type: "text",
-                            title: "Temporary variable",
-                            "default": "str"
+                            type: 'text',
+                            title: 'Temporary variable',
+                            'default': 'str'
                         }
                     }
                 },
@@ -160,9 +160,9 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                     },
                     fields: {
                         variable: {
-                            type: "text",
-                            title: "Temporary variable",
-                            "default": "photo"
+                            type: 'text',
+                            title: 'Temporary variable',
+                            'default': 'photo'
                         }
                     }
                 }
@@ -200,7 +200,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                     eCfgEl.match = /^.*$/i;
                 }
                 if(!cfgEl.filter) {
-                    eCfgEl.filter = "ext";
+                    eCfgEl.filter = 'ext';
                 }
             }
             this.fileCfg = enhancedFileCfg;
@@ -258,7 +258,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                         item = data.items[i];
                         def = $.Deferred();
                         defs.push(def);
-                        if (item.kind === "file") {
+                        if (item.kind === 'file') {
                             item = item.getAsFile();
                             if (meta = this.checkFileMetadata(item, cfg)) {
                                 meta.def = def;
@@ -330,7 +330,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
 
     Controller.prototype.checkFileMetadata = function (item, cfg) {
         if (!cfg) {
-            return Debug.warn("No file filter configured");
+            return Debug.warn('No file filter configured');
         }
 
         var name = item.name || '',
@@ -338,15 +338,15 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
             split = name.split('.'),
             ext, lineCfg;
         if (split.length < 2) {
-            ext = "";
+            ext = '';
         } else {
             ext = split.pop().toLowerCase();
         }
         for (var i = 0, l = cfg.length; i < l; i++) {
             var filter = cfg[i].filter;
-            if(filter === "ext") {
+            if(filter === 'ext') {
                 var extensions = cfg[i].extension;
-                if (extensions === "*" || extensions.split(',').indexOf(ext) !== -1) {
+                if (extensions === '*' || extensions.split(',').indexOf(ext) !== -1) {
                     lineCfg = cfg[i];
                     break;
                 }
@@ -359,14 +359,14 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
             }
         }
         if (!lineCfg && name) {
-            return Debug.warn("Extension " + ext + " not configured (filename: " + name + ")");
+            return Debug.warn('Extension ' + ext + ' not configured (filename: ' + name + ')');
         } else if(!lineCfg) {
             return Debug.warn("Item has no filename and mime-type doesn't match: " + mime);
         }
 
         return {
             filename: name,
-            mime: lineCfg.mime || mime || "application/octet-stream",
+            mime: lineCfg.mime || mime || 'application/octet-stream',
             cfg: lineCfg
         };
     };

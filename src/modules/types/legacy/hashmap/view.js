@@ -21,7 +21,7 @@ define(['../../../default/defaultview', 'src/util/typerenderer'], function(Defau
 
 			Renderer.toScreen( element, this.module, { }, el.jpath ).always( function( value ) {
 
-				if( value == "" && self.module.getConfiguration('hideemptylines', false) ) {
+				if( value == '' && self.module.getConfiguration('hideemptylines', false) ) {
 					return;
 				}
 

@@ -70,11 +70,11 @@ define(['../../../default/defaultview', 'src/util/datatraversing', 'src/util/api
 				var _varsToSet = [];
 				function getVar( vName ) {
 
-					if( typeof _varsIn[ vName ] !== "undefined" ) {
+					if( typeof _varsIn[ vName ] !== 'undefined' ) {
 						return _varsIn[ vName ];
 					}
 
-					console.warn( " Variable " + vName + " does not exist. Returning null ");
+					console.warn( ' Variable ' + vName + ' does not exist. Returning null ');
 					return null;
 				}
 
@@ -84,7 +84,7 @@ define(['../../../default/defaultview', 'src/util/datatraversing', 'src/util/api
 						_varsToSet[ vName ] = vValue;
 						return;
 					}
-					console.warn( " Variable " + vName + " has not been selected for variable out" );
+					console.warn( ' Variable ' + vName + ' has not been selected for variable out' );
 				}
 
 				function getConfig() {
@@ -99,7 +99,7 @@ define(['../../../default/defaultview', 'src/util/datatraversing', 'src/util/api
 					}
 				}
 
-				eval("var f = function() { \n" + script + "\n  _doSetVars(); \n }");
+				eval('var f = function() { \n' + script + '\n  _doSetVars(); \n }');
 				return f;
 
 			}) ( API, this.cfgValue, this.variables, varsout, script );

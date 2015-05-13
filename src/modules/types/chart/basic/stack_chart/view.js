@@ -9,7 +9,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 		init: function() {
 
-			if (this.DEBUG) console.log("Stack Chart: init");
+			if (this.DEBUG) console.log('Stack Chart: init');
 			if (this.dom) {
 				// in the dom exists and the preferences has been changed we need to clean the canvas
 				this.dom.empty();
@@ -27,10 +27,10 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			}
 
 			// Adding a deferred allows to wait to get actually the data before we draw the chart
-			// we decided here to plot the chart in the "onResize" event
+			// we decided here to plot the chart in the 'onResize' event
 			this.loadedData=$.Deferred();
 
-			if (this.DEBUG) console.log("Stack Chart: ID: "+this._id);
+			if (this.DEBUG) console.log('Stack Chart: ID: '+this._id);
 
 			this._data=[];	// the data that will be sent to FLOT
 			var cfg = $.proxy( this.module.getConfiguration, this.module );
@@ -45,30 +45,30 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 		inDom: function() {
 
-			if (this.DEBUG) console.log("Stack Chart: inDom");
+			if (this.DEBUG) console.log('Stack Chart: inDom');
 
 		},
 
 		onResize: function() {
 
-			if (this.DEBUG) console.log("Stack Chart: onResize");
+			if (this.DEBUG) console.log('Stack Chart: onResize');
 
 			var self=this;
 
 			this.loadedData.done(function() {
 
 			this._plot = self.plot(self._id, self._data, self._options);
-			var choiceContainer = $("#choices"+self._id);
+			var choiceContainer = $('#choices'+self._id);
 			choiceContainer.empty();
 
 			$.each(self._data, function(key, val) {
 			choiceContainer.append("<br/><input type='checkbox' name='" + key +
 				"' checked='checked' id='id" + key + "'></input>" +
 				"<label for='id" + key + "'>"
-				+ val.label + "</label>");
+				+ val.label + '</label>');
 			});
 
-			choiceContainer.find("input").bind("click",function (event, pos, item){
+			choiceContainer.find('input').bind('click',function (event, pos, item){
 			self.plotAccordingToChoices(choiceContainer,self._id);
 			});
 			});
@@ -89,7 +89,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			var self=this;
 			var cfg = $.proxy( this.module.getConfiguration, this.module );	
 				
-			if (this.DEBUG) console.log("stack Chart: update from chart object");
+			if (this.DEBUG) console.log('stack Chart: update from chart object');
 			this._convertChartToData(moduleValue.get().data);;
 			var axis = moduleValue.get().axis;			
 			var x = moduleValue.get().data[0].x	
@@ -134,7 +134,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 						info: info,
 						label: label
 					}	
-			/*	Traversing.getValueFromJPath(info[0],"element.name").done(function(elVal) {
+			/*	Traversing.getValueFromJPath(info[0],'element.name').done(function(elVal) {
 					self._data[j].label=elVal;
 					self._data[j].info=value[j].info
 				}); */ 
@@ -248,17 +248,17 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		plot: function(id,data,options) {
 
 			var self=this;
-			this._plot=$.plot("#"+id, data, options);
-			$("#"+id).bind("plotclick", function (event, pos, item) {
+			this._plot=$.plot('#'+id, data, options);
+			$('#'+id).bind('plotclick', function (event, pos, item) {
 
 			event.preventDefault();
 				if (item) {
-					console.log("Y:"+item.datapoint[1]);
+					console.log('Y:'+item.datapoint[1]);
 
 
 				}
 			});
-			$("#"+id).bind("plothover", function (event, pos, item) {
+			$('#'+id).bind('plothover', function (event, pos, item) {
 
 				if (item) {
 					self.module.controller.elementHover(self._data[item.seriesIndex].data[item.dataIndex]);
@@ -272,8 +272,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			plotAccordingToChoices : function(choiceContainer,id) {
 				var self=this;
 				var data = [];
-				choiceContainer.find("input:checked").each(function () {
-					var key = $(this).attr("name");
+				choiceContainer.find('input:checked').each(function () {
+					var key = $(this).attr('name');
 					if (key && self._data[key]) {
 						data.push(self._data[key]);
 					}

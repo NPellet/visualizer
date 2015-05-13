@@ -1,9 +1,9 @@
 define([ 
-	"src/data/structures",
-	"src/util/typerenderer",
+	'src/data/structures',
+	'src/util/typerenderer',
 
 	// Add you own types here
-	"./example"
+	'./example'
 
 	], function( Structures, Renderer ) {
 

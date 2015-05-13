@@ -81,7 +81,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
         },
 
         onProgress: function () {
-            this.dom.html("Progress. Please wait...");
+            this.dom.html('Progress. Please wait...');
         },
 
         blank: {

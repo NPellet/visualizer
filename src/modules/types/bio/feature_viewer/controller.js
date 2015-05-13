@@ -31,24 +31,24 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
   	*/
   	controller.prototype.references = {
   	  feature: {
-        label: "An object describing a feature"
+        label: 'An object describing a feature'
   	  }
   	};
   
     controller.prototype.events = {
       onFeatureClicked: {
-        label: "A feature was clicked",
-        refVariable: ["feature"]
+        label: 'A feature was clicked',
+        refVariable: ['feature']
       },
       
       onFeatureMouseOver: {
-        label: "The mouse is over a feature",
-        refVariable: ["feature"]
+        label: 'The mouse is over a feature',
+        refVariable: ['feature']
       }
     };
 	
     controller.prototype.onFeatureClicked = function(val) {
-      this.createDataFromEvent("onFeatureClicked", "feature", DataObject.check(val, true));
+      this.createDataFromEvent('onFeatureClicked', 'feature', DataObject.check(val, true));
     }
 	  
     controller.prototype.onFeatureMouseOver = function(val) {

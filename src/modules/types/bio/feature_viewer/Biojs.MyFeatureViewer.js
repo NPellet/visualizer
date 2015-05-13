@@ -4,8 +4,8 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
         /*
          * Private variables
          */
-        _webservice:"http://wwwdev.ebi.ac.uk/uniprot/featureViewer/image",
-        _dasReference:"http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/",
+        _webservice:'http://wwwdev.ebi.ac.uk/uniprot/featureViewer/image',
+        _dasReference:'http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/',
         /**
          * Default values for the options
          * @name Biojs.DasProteinFeatureViewer-constructor
@@ -26,18 +26,18 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
         },
 
         opt:{
-            dasSources:"http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot",
-            featureTypes:"",
-            featureNames:"",
+            dasSources:'http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot',
+            featureTypes:'',
+            featureNames:'',
             imageWidth:700,
-            imageStyle:"nonOverlapping",
-            optionResponse:"raphael",
+            imageStyle:'nonOverlapping',
+            optionResponse:'raphael',
             hgrid:false,
             vgrid:false,
             allFeatures:true,
             allRectangles:false,
             allSameSize:false,
-            proxyUrl: "../biojs/dependencies/proxy/proxy.php"
+            proxyUrl: '../biojs/dependencies/proxy/proxy.php'
         },
 
         /**
@@ -55,7 +55,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
          */
         showGeneralLegend: function() {
             var config = this.opt.json.configuration;
-            var dataURL = this._webservice + "?";
+            var dataURL = this._webservice + '?';
             window.open(dataURL); //open generated image in new tab/window
         },
 
@@ -68,25 +68,25 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
          *
          */
         exportFeaturesToImage: function() {
-//        if (typeof FlashCanvas != "undefined") {
+//        if (typeof FlashCanvas != 'undefined') {
 //            FlashCanvas.initElement(canvas);
 //        }
             var config = this.opt.json.configuration;
-            var dataURL = "";
+            var dataURL = '';
             if (jQuery.browser.msie) { //canvas does not work (not even with IE 9)
-                var arguments = "segment=" + this.opt.json.segment;
+                var arguments = 'segment=' + this.opt.json.segment;
                 if ((config.requestedStart != 0) && (config.requestedStop != 0)) {
-                    arguments = arguments + ":" + config.requestedStart + "," + config.requestedStop;
+                    arguments = arguments + ':' + config.requestedStart + ',' + config.requestedStop;
                 }
                 arguments = arguments +
-                    "&dasReference=" + config.dasReference +
-                    "&dasSources=" + config.dasSources +
-                    "&width=" + config.sizeX +
-                    "&option=image" +
-                    "&hgrid=" + config.horizontalGrid +
-                    "&vgrid=" + config.verticalGrid +
-                    "&style=" + config.style;
-                dataURL = this._webservice + "?" + arguments;
+                    '&dasReference=' + config.dasReference +
+                    '&dasSources=' + config.dasSources +
+                    '&width=' + config.sizeX +
+                    '&option=image' +
+                    '&hgrid=' + config.horizontalGrid +
+                    '&vgrid=' + config.verticalGrid +
+                    '&style=' + config.style;
+                dataURL = this._webservice + '?' + arguments;
                 window.open(dataURL); //open generated image in new tab/window
             } else {
               var $holder = jQuery('#uniprotFeaturePainter-holder');
@@ -96,7 +96,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
                 $svg.attr('width', $svg.width()+'px');
                 $svg.attr('height', $svg.height()+'px');
                 svg = document.getElementById('uniprotFeaturePainter-holder').innerHTML;
-                var canvas = document.createElement("canvas");
+                var canvas = document.createElement('canvas');
                 canvg(canvas, svg);
                 dataURL = canvas.toDataURL();
                 $svg.attr('width', $svg.width()+'px');
@@ -120,7 +120,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
          * myPainter.applyStyle("centered");
          */
         applyStyle: function(style) {
-            if ((style != undefined) && ((style == "centered") || (style == "nonOverlapping") || (style = "rows"))) {
+            if ((style != undefined) && ((style == 'centered') || (style == 'nonOverlapping') || (style = 'rows'))) {
                 var config = this.opt.json.configuration;
                 this.customize(style, config.horizontalGrid, config.verticalGrid);
             }

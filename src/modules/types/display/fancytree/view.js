@@ -6,7 +6,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function(D
 			
 			var id = Util.getNextUniqueId();
 			this.dom = $('<table id="'+id+'">').css({
-				width: "100%"
+				width: '100%'
 			});
 			
 			var columns = this.module.getConfiguration('columns')||[],
@@ -22,7 +22,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function(D
 					col = columns[i];
 					if(col.jpath) {
 						colgroup.append($('<col'+(col.width?' width="'+col.width+'px"':'')+'></col>'));
-						thead.append('<th>'+(col.name||"")+'</th>');
+						thead.append('<th>'+(col.name||'')+'</th>');
 						trow.append('<td></td>');
 						jpaths.push(col.jpath);
 						Util.addjPathFunction(this.jpathsF, col.jpath);
@@ -30,7 +30,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function(D
 				}
 			}
 			
-			this.expand = this.module.getConfiguration("expand");
+			this.expand = this.module.getConfiguration('expand');
 			
 			this.jpaths = jpaths;
 			
@@ -42,7 +42,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function(D
 			var that = this;
 			
 			this.dom.fancytree({
-				extensions: ["table"],
+				extensions: ['table'],
 				table: {
 					indentation: 20,
 					nodeColumnIdx: 0
@@ -51,7 +51,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function(D
 				renderColumns: function(event, data) {
 					var node = data.node,
 						dataObj = node.data.dataObj,
-						$tdList = $(node.tr).find(">td"),
+						$tdList = $(node.tr).find('>td'),
 						jpaths = that.jpaths;
 					if(dataObj.info) {
 						for(var i = 0; i < jpaths.length; i++) {
@@ -74,12 +74,12 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function(D
 				var result = treeToFancy(value.get());
 				this.module.model._objectModel = result.model;
 				this.tree.reload(result.fancy);
-				if(this.expand === "lvl1") {
+				if(this.expand === 'lvl1') {
 					var firstlvl = this.tree.rootNode.children;
 					for(var i = 0; i < firstlvl.length; i++) {
 						firstlvl[i].setExpanded(true);
 					}
-				} else if(this.expand === "all") {
+				} else if(this.expand === 'all') {
 					this.tree.visit(function(node){
 						node.setExpanded(true);
 					});
@@ -114,7 +114,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function(D
 			
 			if(i===0) {
 				// add current object's properties to the model
-				if(typeof child.info === "object") {
+				if(typeof child.info === 'object') {
 					var keys = Object.keys(child.info), key;
 					for(var j = 0; j < keys.length; j++) {
 						key = keys[j];
@@ -126,7 +126,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function(D
 			}
 			
 			fancyChild = {
-				title: child.label||"Untitled node",
+				title: child.label||'Untitled node',
 				dataObj: DataObject.check(child)
 			};
 			fancyTree.push(fancyChild);

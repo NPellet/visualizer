@@ -28,7 +28,7 @@ define(['require'], function( require ) {
 
 		for( ; i < l ; i ++ ) {
 
-			eval("evaled[ [ data[ i ].groups.action[ 0 ].name[ 0 ] ] ] = function(value) { " + data[ i ].groups.action[ 0 ].script[ 0 ] + " }");
+			eval('evaled[ [ data[ i ].groups.action[ 0 ].name[ 0 ] ] ] = function(value) { ' + data[ i ].groups.action[ 0 ].script[ 0 ] + ' }');
 		}
 
 		evaluatedScripts = evaled;

@@ -6,7 +6,7 @@ define(['modules/default/defaultview','src/util/util'], function(Default, Util) 
 		init: function() {	
 			this.domWrapper = $('<div class="ci-display-grid-selector"></div>');
 			this.module.getDomContent().html(this.domWrapper);
-			this.dom = $("<form></form>").appendTo(this.domWrapper);
+			this.dom = $('<form></form>').appendTo(this.domWrapper);
 			var self = this;
 		},
 
@@ -105,8 +105,8 @@ define(['modules/default/defaultview','src/util/util'], function(Default, Util) 
 
 		sliderUpdateValue: function(el, value, colId, lineId) {
 			var self = this;
-			el.prev().html(Math.round(value[0] * 100) + " %");
-			el.next().html(Math.round(value[1] * 100) + " %");
+			el.prev().html(Math.round(value[0] * 100) + ' %');
+			el.next().html(Math.round(value[1] * 100) + ' %');
 
 			if(lineId !== undefined) 
 				self.module.controller.selectorChanged(self.cols[colId].name, self.lines[lineId].name, value);

@@ -5,9 +5,9 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
     }
 
     var standardFile = new DataObject({
-        filename: "",
-        mimetype: "",
-        content: ""
+        filename: '',
+        mimetype: '',
+        content: ''
     });
 
     var standardArray = new DataArray([standardFile]);
@@ -30,8 +30,8 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
 
             if (rel === 'data' || rel === 'dataarray') {
                 // Populate tmpVars with empty object so the user can set a variable out even if no file was dropped
-                var definedDrops = (this.module.getConfiguration("vars") || []).slice();
-                var definedString = this.module.getConfiguration("string");
+                var definedDrops = (this.module.getConfiguration('vars') || []).slice();
+                var definedString = this.module.getConfiguration('string');
                 var definedPhoto = this.module.getConfiguration('photo');
                 if (definedString) {
                     for(i = 0; i < definedString.length; i++) {

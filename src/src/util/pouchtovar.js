@@ -7,7 +7,7 @@
  */
 
 define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function(PouchDB, URI, Debug) {
-	"use strict";
+	'use strict';
 	
 	var exports = {};
 	
@@ -61,11 +61,11 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function(Pouc
 
 				for( var i in this ) {
 
-					if( typeof this[ i ] === "function ") {
+					if( typeof this[ i ] === 'function ') {
 						continue;
 					}
 
-					if( ( i ).indexOf("_") === 0) {
+					if( ( i ).indexOf('_') === 0) {
 						continue;
 					}
 
@@ -79,7 +79,7 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function(Pouc
 			value: function() {
 				if(this.hasChangeListener)
 					return;
-				Object.defineProperty(this, "hasChangeListener", {value: true});
+				Object.defineProperty(this, 'hasChangeListener', {value: true});
 				var queue = [];
 				var saving = false;
 
@@ -91,7 +91,7 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function(Pouc
 					var el = queue.shift();
 					self.getPouch().pouchdb.put(el, self._id, self._rev, function(err, response) {
 						if(err)
-							return Debug.error("Error while writing PouchObject", err);
+							return Debug.error('Error while writing PouchObject', err);
 						self._rev = response.rev;
 						if(queue.length)
 							doSave(true);
@@ -103,7 +103,7 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function(Pouc
 					var toSave = self.exportForPouch();
 					queue.push(toSave);
 					doSave();
-				}, "internal_pouch_change" );
+				}, 'internal_pouch_change' );
 			}
 		}
 	});
@@ -124,7 +124,7 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function(Pouc
 		this.type = 'array';
 		this.value = DataObject.check(arr || []);
 		
-		Object.defineProperty(this, "__pouch", propertyDescriptor);
+		Object.defineProperty(this, '__pouch', propertyDescriptor);
 		
 		for(var i = 0, l = this.value.length; i < l; i++) {
 			this.value[i] = new PouchObject(this.value[i]);
@@ -153,7 +153,7 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function(Pouc
 			value: function() {
 				var manager;
 				if(!(manager = this.getPouch())) {
-					Debug.error("No Pouch manager has been defined for this array. Aborting push procedure.");
+					Debug.error('No Pouch manager has been defined for this array. Aborting push procedure.');
 					return;
 				}
 
@@ -174,17 +174,17 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function(Pouc
 						args[i]._rev = res[i].rev;
 					}
 				}, function(err){
-					Debug.error("An error occured while pushing into PouchArray.", err);
+					Debug.error('An error occured while pushing into PouchArray.', err);
 				});
 
-				this.triggerChange("internal_pouch_change");
+				this.triggerChange('internal_pouch_change');
 			}
 		},
 		splice: {
 			value: function() {
 				var manager;
 				if(!(manager = this.getPouch())) {
-					Debug.error("No Pouch manager has been defined for this array. Aborting splice procedure.");
+					Debug.error('No Pouch manager has been defined for this array. Aborting splice procedure.');
 					return;
 				}
 				var elementsRemoved = Array.prototype.splice.apply(this.value, arguments);
@@ -193,7 +193,7 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function(Pouc
 					manager.pouchdb.remove( elementsRemoved[ i ] );
 				}
 
-				this.triggerChange("internal_pouch_change");
+				this.triggerChange('internal_pouch_change');
 				return elementsRemoved;
 			}
 		},
@@ -219,7 +219,7 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function(Pouc
 	var allSyncs = {};
 	function SyncManager(serverURL) {
 		this.url = serverURL;
-		this.urlH = serverURL.replace(/\/\/[^\/]*@/, "//***@");
+		this.urlH = serverURL.replace(/\/\/[^\/]*@/, '//***@');
 		this.froms = {};
 		this.tos = {};
 		this.run();
@@ -230,19 +230,19 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function(Pouc
 		continuous = !!continuous;
 		
 		var pouchName = pouch.name;
-		var urlH = couchURL.replace(/\/\/[^\/]*@/, "//***@");
+		var urlH = couchURL.replace(/\/\/[^\/]*@/, '//***@');
 		
 		function complete(res) {
 			if(res.ok) {
 				if (fromCouch)
-					return Debug.debug("Replication from couchDB " + urlH + " to localDB " + pouchName + " finished.", res);
+					return Debug.debug('Replication from couchDB ' + urlH + ' to localDB ' + pouchName + ' finished.', res);
 				else
-					return Debug.debug("Replication from localDB " + pouchName + " to couchDB " + urlH + " finished.", res);
+					return Debug.debug('Replication from localDB ' + pouchName + ' to couchDB ' + urlH + ' finished.', res);
 			} else {
 				if (fromCouch)
-					return Debug.warn("Replication from couchDB " + urlH + " to localDB " + pouchName + " failed.", res);
+					return Debug.warn('Replication from couchDB ' + urlH + ' to localDB ' + pouchName + ' failed.', res);
 				else
-					return Debug.warn("Replication from localDB " + pouchName + " to couchDB " + urlH + " failed.", res);
+					return Debug.warn('Replication from localDB ' + pouchName + ' to couchDB ' + urlH + ' failed.', res);
 			}
 		}
 		
@@ -252,7 +252,7 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function(Pouc
 				return;
 			
 			callback = function() {
-				Debug.debug("Started replication from couchDB " + urlH + " to localDB " + pouchName + ".");
+				Debug.debug('Started replication from couchDB ' + urlH + ' to localDB ' + pouchName + '.');
 				return pouch.pouchdb.replicate.from(couchURL, {
 					live: continuous
 				}).on('complete', complete);
@@ -265,7 +265,7 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function(Pouc
 				return;
 			
 			callback = function() {
-				Debug.debug("Started replication from localDB " + pouchName + " to couchDB " + urlH + ".");
+				Debug.debug('Started replication from localDB ' + pouchName + ' to couchDB ' + urlH + '.');
 				return pouch.pouchdb.replicate.to(couchURL, {
 					live: continuous
 				}).on('complete', complete);
@@ -286,11 +286,11 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function(Pouc
 					resolve();
 				}
 				else {
-					reject(Error(req.status+" : "+req.statusText));
+					reject(Error(req.status+' : '+req.statusText));
 				}
 			};
 			req.onerror = function() {
-				reject(Error("Network error"));
+				reject(Error('Network error'));
 			};
 			req.send();
 		});
@@ -311,10 +311,10 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function(Pouc
 			var i;
 			checkURL(that.url).then(
 					function(){
-						Debug.trace(that.urlH+" is responding.");
+						Debug.trace(that.urlH+' is responding.');
 						if(that.online)
 							return;
-						Debug.info("Start all replications");
+						Debug.info('Start all replications');
 						for(i in that.froms) {
 							that.running.push(that.froms[i]());
 						}
@@ -324,10 +324,10 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function(Pouc
 						that.online = true;
 					},
 					function(err){
-						Debug.trace(that.urlH+" is not responding.", err);
+						Debug.trace(that.urlH+' is not responding.', err);
 						if(!that.online)
 							return;
-						Debug.warn("Stop all replications");
+						Debug.warn('Stop all replications');
 						while(that.running.length > 0){
 							that.running.pop().cancel();
 						}
@@ -383,30 +383,30 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function(Pouc
 			include_docs: true,
 			live: true,
 			since: 'now'
-		}).on("create", function(change){
+		}).on('create', function(change){
 			// If there is a new doc, we just need to add it to the allDocs object
 			if(that.allDocs) {
 				var pouchobj = new PouchObject(change.doc);
 				pouchobj.setPouch(that);
 				that.allDocs.value.push(pouchobj);
-				that.allDocs.triggerChange("internal_pouch_change");
+				that.allDocs.triggerChange('internal_pouch_change');
 			}
-		}).on("update", function(change){
+		}).on('update', function(change){
 			// Here we need to update the singleDoc and the reference in allDocs
 			var id = change.id;
 			if(that.singleDocs[id]) {
 				if (that.singleDocs[id]._rev !== change.doc._rev) { // If revID is the same, it means the change was already done in the visualizer
-					that.singleDocs[id].mergeWith(change.doc, "internal_pouch_change");
+					that.singleDocs[id].mergeWith(change.doc, 'internal_pouch_change');
 				}
 			}
 			if(that.allDocs) {
 				var arr = that.allDocs.value,
 					index = getIndex(arr, id);
 				if (index > -1 && arr[index]._rev !== change.doc._rev) {
-					arr[index].mergeWith(change.doc, "internal_pouch_change");
+					arr[index].mergeWith(change.doc, 'internal_pouch_change');
 				}
 			}
-		}).on("delete", function(change){
+		}).on('delete', function(change){
 			// Here we must flush the reference to the object and disable its pouch functionalities
 			var id = change.id;
 			if(that.singleDocs[id]) {
@@ -419,7 +419,7 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function(Pouc
 				if(index > -1) {
 					arr[index].setPouch(null);
 					arr.splice(index, 1);
-					that.allDocs.triggerChange("internal_pouch_change");
+					that.allDocs.triggerChange('internal_pouch_change');
 				}
 			}
 		});
@@ -443,7 +443,7 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function(Pouc
 				that.singleDocs[id] = pouchobj;
 				resolve(pouchobj);
 			}, function(err){
-				Debug.info("Doc "+id+" does not exist, creating new doc.", err);
+				Debug.info('Doc '+id+' does not exist, creating new doc.', err);
 				pouchobj = new PouchObject({_id: id});
 				pouchobj.setPouch(that);
 				that.singleDocs[id] = pouchobj;
@@ -472,13 +472,13 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function(Pouc
 				that.allDocs = all;
 				resolve(all);
 			}, function(err){
-				Debug.warn("Error in pouchdb.allDocs", err);
+				Debug.warn('Error in pouchdb.allDocs', err);
 			});
 		});
 	};
 
 	var defaultRepOpt = {
-		direction: "both",
+		direction: 'both',
 		continuous: true
 	};
 	
@@ -491,11 +491,11 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function(Pouc
 				
 		var pouch = PouchFactory.get(name);
 		
-		if (options.direction === "CtoP" || options.direction === "both") {
+		if (options.direction === 'CtoP' || options.direction === 'both') {
 			pouch.sync(true, couchURL, options.continuous);
 		}
 		
-		if (options.direction === "PtoC" || options.direction === "both") {
+		if (options.direction === 'PtoC' || options.direction === 'both') {
 			pouch.sync(false, couchURL, options.continuous);
 		}
 		
@@ -522,7 +522,7 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function(Pouc
 			return true;
 		}
 		
-		if(typeof id === "function") {
+		if(typeof id === 'function') {
 			options = callback;
 			callback = id;
 			id = false;
@@ -530,12 +530,12 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function(Pouc
 
 		if (id) {
 			return pouch.getDoc(id, options).then(callback, function(){
-				Debug.error("Caught error in PouchManager.getDoc", dbname, id);
+				Debug.error('Caught error in PouchManager.getDoc', dbname, id);
 			});
 		}
 		else {
 			return pouch.getDocs(options).then(callback, function(){
-				Debug.error("Caught error in PouchManager.getDocs", dbname);
+				Debug.error('Caught error in PouchManager.getDocs', dbname);
 			});
 		}
 	};

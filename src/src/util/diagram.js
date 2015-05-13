@@ -251,17 +251,17 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
                 .size([width, height])
                 .linkDistance((Math.max(nodeBox.width, nodeBox.height) + Math.max(linkBox.width, linkBox.height)*1.7))
                 .charge(-4000)
-                .on("tick", tick)
+                .on('tick', tick)
                 .start();
 
             $diagram = $('<div class="ci-diagram">');
 
             var zoom = d3.behavior.zoom()
                 .scaleExtent([0.2, 10])
-                .on("zoom", zoomed);
+                .on('zoom', zoomed);
 
-            var svg = d3.select($diagram[0]).append("svg")
-                .attr("viewBox", '0 0 ' + width + ' ' + height)
+            var svg = d3.select($diagram[0]).append('svg')
+                .attr('viewBox', '0 0 ' + width + ' ' + height)
                 .attr('width', '100%')
                 .attr('height', '100%');
 
@@ -275,40 +275,40 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
             svg = svg.append('g');
 
             // Per-type markers, as they don't inherit styles.
-            svg.append("defs").selectAll("marker")
-                .data(["normal"])
-                .enter().append("marker")
-                .attr("id", function(d) { return d; })
-                .attr("viewBox", "0 -5 10 10")
-                .attr("refX", 10)
-                .attr("refY", 0)
-                .attr("markerWidth", 15)
-                .attr("markerHeight", 15)
-                .attr("orient", "auto")
-                .append("path")
-                .attr("d", "M0,-5L10,0L0,5");
+            svg.append('defs').selectAll('marker')
+                .data(['normal'])
+                .enter().append('marker')
+                .attr('id', function(d) { return d; })
+                .attr('viewBox', '0 -5 10 10')
+                .attr('refX', 10)
+                .attr('refY', 0)
+                .attr('markerWidth', 15)
+                .attr('markerHeight', 15)
+                .attr('orient', 'auto')
+                .append('path')
+                .attr('d', 'M0,-5L10,0L0,5');
 
-            var path = svg.append("g").selectAll("path")
+            var path = svg.append('g').selectAll('path')
                 .data(force.links())
-                .enter().append("path")
-                .attr("class", function(d) { return "link " + d.type; })
-                .attr("marker-end", function(d) { return "url(#" + d.type + ")"; });
+                .enter().append('path')
+                .attr('class', function(d) { return 'link ' + d.type; })
+                .attr('marker-end', function(d) { return 'url(#' + d.type + ')'; });
 
             var node;
             if(type === 'circ') {
-                node = svg.append("g").selectAll("circle")
+                node = svg.append('g').selectAll('circle')
                     .data(force.nodes())
-                    .enter().append("circle")
-                    .attr("r", nodeRadius)
+                    .enter().append('circle')
+                    .attr('r', nodeRadius)
                     //.call(zoom)
                     //.call(drag)
                     .call(force.drag)
             }
             else if(type === 'rect') {
-                node = svg.append("g").selectAll("rect")
+                node = svg.append('g').selectAll('rect')
                     .data(force.nodes())
-                    .enter().append("rect")
-                    .attr("width", nodeBox.width)
+                    .enter().append('rect')
+                    .attr('width', nodeBox.width)
                     .attr('height', nodeBox.height)
                     //.call(zoom)
                     //.call(drag)
@@ -317,17 +317,17 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
             //.call(drag1);
 
 
-            var linkText = svg.append("g")
+            var linkText = svg.append('g')
                 .selectAll('foreignObject')
                 .data(force.links())
                 .enter()
-                .append("foreignObject")
+                .append('foreignObject')
                 .style('pointer-events', 'none')
-                .attr("width", linkBox.width)
-                .attr("height", linkBox.height);
+                .attr('width', linkBox.width)
+                .attr('height', linkBox.height);
 
             linkText
-                .append("xhtml:div")
+                .append('xhtml:div')
                 .append('div')
                 .style({
                     display: 'flex',
@@ -338,7 +338,7 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
                 .attr('class', 'arrow-text')
                 .html(linkTextContent);
 
-            var nodeText = svg.append("g")
+            var nodeText = svg.append('g')
                 .selectAll('foreignObject')
                 .data(force.nodes())
                 .enter().append('foreignObject')
@@ -361,7 +361,7 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
                 .html(nodeTextContent);
 
             function zoomed() {
-                svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+                svg.attr('transform', 'translate(' + d3.event.translate + ')scale(' + d3.event.scale + ')');
             }
 
             function nodeTextContent(d) {
@@ -379,8 +379,8 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
             }
 
             function tick() {
-                path.attr("d", linkLine);
-                node.attr("transform", transformNode);
+                path.attr('d', linkLine);
+                node.attr('transform', transformNode);
                 linkText.attr('transform', transformLink);
                 nodeText.attr('transform', transformNodeText);
             }
@@ -389,28 +389,28 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
                 var dx = d.target.x - d.source.x,
                     dy = d.target.y - d.source.y,
                     dr = Math.sqrt(dx * dx + dy * dy);
-                return "M" + d.source.x  + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x  + "," + (d.target.y + -40);
+                return 'M' + d.source.x  + ',' + d.source.y + 'A' + dr + ',' + dr + ' 0 0,1 ' + d.target.x  + ',' + (d.target.y + -40);
             }
 
             function linkLine(d) {
                 var target = getTargetPosition(d);
-                return "M" + target.from.x  + "," + target.from.y + "L" + target.to.x + ' ' + target.to.y
+                return 'M' + target.from.x  + ',' + target.from.y + 'L' + target.to.x + ' ' + target.to.y
             }
 
             function transformNode(d) {
                 if(type === 'circ')
-                    return "translate(" + d.x + "," + d.y + ")";
+                    return 'translate(' + d.x + ',' + d.y + ')';
                 else
-                    return "translate(" + (d.x - nodeBox.width/2) + ',' + (d.y - nodeBox.height/2) + ')';
+                    return 'translate(' + (d.x - nodeBox.width/2) + ',' + (d.y - nodeBox.height/2) + ')';
             }
 
             function transformLink(d) {
                 var target = getTargetPosition(d);
-                return "translate(" + ((target.from.x + target.to.x)/2 - linkBox.width/2) + ',' + ((target.from.y + target.to.y)/2 - linkBox.height/2) + ')';
+                return 'translate(' + ((target.from.x + target.to.x)/2 - linkBox.width/2) + ',' + ((target.from.y + target.to.y)/2 - linkBox.height/2) + ')';
             }
 
             function transformNodeText(d) {
-                return "translate(" + ((d.x + d.x)/2 - nodeBox.width/2) + ',' + ((d.y + d.y)/2 - nodeBox.height/2) + ')';
+                return 'translate(' + ((d.x + d.x)/2 - nodeBox.width/2) + ',' + ((d.y + d.y)/2 - nodeBox.height/2) + ')';
             }
 
             function getTargetPosition(d) {

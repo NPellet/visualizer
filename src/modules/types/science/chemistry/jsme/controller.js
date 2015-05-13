@@ -30,7 +30,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
             label: 'Smiles'
         },
         molV3: {
-            label: "Molfile V3 2D",
+            label: 'Molfile V3 2D',
             type: ['mol2d', 'molfile2d', 'string']
         }
     };

@@ -67,7 +67,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
             if (!elements)
                 return;
 
-            var ul = $("<ul />") || this.$_elToOpen.empty(),
+            var ul = $('<ul />') || this.$_elToOpen.empty(),
                 i = 0,
                 l = elements.length;
 
@@ -84,7 +84,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
 
         _buildSubElement: function (el) {
             var self = this,
-                dom = $("<li />").text(el.label || '');
+                dom = $('<li />').text(el.label || '');
             if (el.viewURL || el.dataURL) {
                 dom.addClass('hasEvent').bind('click', function () {
                     self.load(el);

@@ -69,7 +69,7 @@ define(['jquery', 'src/util/api', 'modules/modulefactory', 'jquery-ui/menu'], fu
                     'left': left,
                     'top': top,
                     'z-index': 10000
-                }).appendTo($("body"));
+                }).appendTo($('body'));
 
                 contextMenu = $menu;
 
@@ -128,10 +128,10 @@ define(['jquery', 'src/util/api', 'modules/modulefactory', 'jquery-ui/menu'], fu
                     var clientH = document.documentElement.clientHeight;
                     var clientW = document.documentElement.clientWidth;
                     if (top + height > clientH) {
-                        contextMenu.css("top", Math.max(0, clientH - height - 10));
+                        contextMenu.css('top', Math.max(0, clientH - height - 10));
                     }
                     if (left + width > clientW) {
-                        contextMenu.css("left", Math.max(0, clientW - width - 10));
+                        contextMenu.css('left', Math.max(0, clientW - width - 10));
                     }
 
                     return false;

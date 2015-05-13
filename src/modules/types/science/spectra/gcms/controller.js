@@ -67,53 +67,53 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		},
 
 		gcms: {
-			type: ["jcamp", "array", "object"],
+			type: ['jcamp', 'array', 'object'],
 			label: 'GC-MS data'
 		},
 
 		jcamp: {
-			type: ["jcamp", "string"],
+			type: ['jcamp', 'string'],
 			label: 'GC-MS data via JCamp'
 		},
 
 		gc: {
-			type: ["jcamp"],
+			type: ['jcamp'],
 			label: 'GC'	
 		},
 		
 		ms: {
-			type: ["array"],
+			type: ['array'],
 			label: 'MS'	
 		},
 
 		msdata: {
-			type: ["array"],
-			label: "Parsed MS Data"
+			type: ['array'],
+			label: 'Parsed MS Data'
 		},
 
 		gcdata: {
-			type: ["array"],
-			label: "Parsed GC Data"
+			type: ['array'],
+			label: 'Parsed GC Data'
 		},
 
 		mscont: {
-			type: ["jcamp"],
+			type: ['jcamp'],
 			label: 'Continuous MS'	
 		},
 
 		annotationgc: {
-			type: ["array"],
+			type: ['array'],
 			label: 'Array of annotations for the GC'
 		},
 
 		mzList: {
-			type: ["array"],
+			type: ['array'],
 			label: 'List of m/z selected'	
 		},
 
 		selectedIngredient: {
-			type: ["object"],
-			label: "Selected ingredient"
+			type: ['object'],
+			label: 'Selected ingredient'
 		},
 
 		msIndex: {
@@ -184,7 +184,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		},
 
 		onJCampParsed: {
-			label: "After the Jcamp has been parsed",
+			label: 'After the Jcamp has been parsed',
 			refVariable: [ 'msdata', 'gcdata' ]
 		},
 
@@ -194,7 +194,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		},
 
 		onIngredientSelected: {
-			label: "Ingredient is selected",
+			label: 'Ingredient is selected',
 			refAction: [ 'selectedIngredient' ]
 		},
 
@@ -263,7 +263,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 
 	controller.prototype.configFunctions = {
 		continuous: function( cfg ) {
-			 return cfg[ 0 ] == "continuous";
+			 return cfg[ 0 ] == 'continuous';
 		}
 	};
 

@@ -138,7 +138,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 
                         displayPointCoordinates: {
                             type: 'checkbox',
-                            title: "Display point coordinates",
+                            title: 'Display point coordinates',
                             options: {
                                 onhover: 'Yes (on hover)'
                             }
@@ -212,7 +212,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
                                 { title: 'None', key: 'none'},
                                 { title: 'As Legend', key: 'alegend'},
                                 { title: 'On axis', key: 'axis'},
-                                {title: "Both", key: 'both'}
+                                {title: 'Both', key: 'both'}
                             ]
                         },
 

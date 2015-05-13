@@ -7,7 +7,7 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.phylogram', '
         init: function () {
 
             this._id = Util.getNextUniqueId();
-            this.selectorId = "#" + this._id;
+            this.selectorId = '#' + this._id;
             this.chart = null;
             this.currentHighlightId = null;
 
@@ -98,7 +98,7 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.phylogram', '
                 //skipLabels: false
             });
 
-            var leaves = d3.selectAll(this.selectorId + " .leaf");
+            var leaves = d3.selectAll(this.selectorId + ' .leaf');
 
             leaves.each(function (data) {
 
@@ -108,15 +108,15 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.phylogram', '
 
                         API.listenHighlight(dataNode.data, function (value, what) {
 
-                            var point = leaf.select("circle");
-                            point.attr("fill", function (a) {
+                            var point = leaf.select('circle');
+                            point.attr('fill', function (a) {
                                 if (a.data && a.data.$color)
                                     return a.data.$color;
                                 if (value)
-                                    return "#f5f48d";
-                                return "grey";
+                                    return '#f5f48d';
+                                return 'grey';
                             });
-                            point.attr("r", (value ? 9 : 4.5));
+                            point.attr('r', (value ? 9 : 4.5));
 
                         }, false, that._id);
 
@@ -128,9 +128,9 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.phylogram', '
             });
 
             // ( this.module.getConfiguration('defaultvalue') || '' )
-            d3.selectAll(this.selectorId + " .link").each(function () {
-                //d3.select(this).attr("stroke",( view.module.getConfiguration('branchColor') || '#cccccc' ));
-                d3.select(this).attr("stroke-width", (that.module.getConfiguration('branchWidth') + "px" || '5px'));
+            d3.selectAll(this.selectorId + ' .link').each(function () {
+                //d3.select(this).attr('stroke',( view.module.getConfiguration('branchColor') || '#cccccc' ));
+                d3.select(this).attr('stroke-width', (that.module.getConfiguration('branchWidth') + 'px' || '5px'));
             });
 
         },

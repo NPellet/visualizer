@@ -70,7 +70,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/util' ], function( Defa
 		
     controller.prototype.configurationStructure = function(section) {
         var standardFonts = Util.getWebsafeFonts();
-        standardFonts.push({ title: "Post-it", key: "Post_IT"});
+        standardFonts.push({ title: 'Post-it', key: 'Post_IT'});
         return { 
             groups: {
                 group: {
