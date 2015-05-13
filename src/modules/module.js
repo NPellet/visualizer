@@ -1566,4 +1566,5 @@ define([
     }
 
     return Module;
+
 });

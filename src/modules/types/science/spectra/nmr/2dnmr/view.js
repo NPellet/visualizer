@@ -157,5 +157,3 @@ define([
     return View;
 
 });
-
- 

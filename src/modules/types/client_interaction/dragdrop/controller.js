@@ -483,4 +483,5 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
     };
 
     return Controller;
+
 });

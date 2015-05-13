@@ -401,4 +401,3 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'components/superag
     return Controller;
 
 });
-

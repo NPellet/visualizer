@@ -66,4 +66,5 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery-ui/slider', 'Bio
     });
 
     return view;
+
 });

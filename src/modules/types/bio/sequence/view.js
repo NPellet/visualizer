@@ -95,4 +95,5 @@ define(['modules/default/defaultview', 'src/util/util', 'BiojsCore',
     });
 
     return view;
+
 });

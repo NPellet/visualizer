@@ -28,4 +28,3 @@ define(['modules/default/defaultview'], function (Default) {
     });
     return view;
 });
- 

@@ -408,5 +408,7 @@ define([
             };
         }
     });
+
     return View;
+
 });

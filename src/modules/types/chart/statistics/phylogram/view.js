@@ -142,4 +142,5 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.phylogram', '
     });
 
     return view;
+
 });

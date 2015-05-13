@@ -155,4 +155,5 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
      }*/
 
     return view;
+
 });

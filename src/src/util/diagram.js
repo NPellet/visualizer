@@ -474,4 +474,5 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
     };
 
     return exports;
+
 });

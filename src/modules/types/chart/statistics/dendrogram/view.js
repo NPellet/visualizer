@@ -333,4 +333,5 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
     });
 
     return view;
+
 });

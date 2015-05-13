@@ -141,4 +141,5 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
     }
 
     return view;
+
 });

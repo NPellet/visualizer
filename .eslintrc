@@ -5,6 +5,7 @@
   },
   "rules": {
     "comma-dangle": [2, "never"],
+    "eol-last": 2,
     "indent": [2, 4],
     "no-constant-condition": 2,
     "no-debugger": 2,
@@ -16,6 +17,7 @@
     "no-extra-semi": 2,
     "no-func-assign": 2,
     "no-irregular-whitespace": 2,
+    "no-lone-blocks": 2,
     "no-negated-in-lhs": 2,
     "no-obj-calls": 2,
     "no-regex-spaces": 2,

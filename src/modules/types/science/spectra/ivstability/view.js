@@ -340,5 +340,3 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 
     return view;
 });
-
- 
