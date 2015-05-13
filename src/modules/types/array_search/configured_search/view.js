@@ -5,7 +5,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
 
         init: function () {
             var self = this;
@@ -65,8 +65,8 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                                     },
                                     fields: FormCreator.makeStructure(searchfields, function (field) {
 
-                                        for (var k = 0, m = field.groups.general[ 0 ].searchOnField.length; k < m, field.groups.general[ 0 ].searchOnField[ k ]; k++) {
-                                            Util.addjPathFunction(self._jpathsFcts, field.groups.general[ 0 ].searchOnField[ k ]);
+                                        for (var k = 0, m = field.groups.general[0].searchOnField.length; k < m, field.groups.general[0].searchOnField[k]; k++) {
+                                            Util.addjPathFunction(self._jpathsFcts, field.groups.general[0].searchOnField[k]);
                                         }
                                     })
                                 }
@@ -76,7 +76,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                 };
 
             for (; j < k; j++) {
-                varsout.push(varsoutCfg[ j ].name);
+                varsout.push(varsoutCfg[j].name);
             }
 
 
@@ -84,11 +84,11 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
             form.init({
                 onValueChanged: function (value) {
-                    var cfg = form.getValue().sections.cfg[ 0 ].groups.cfg[ 0 ],
+                    var cfg = form.getValue().sections.cfg[0].groups.cfg[0],
                         cfgFinal = {};
 
                     for (var i in cfg) {
-                        cfgFinal[ i ] = cfg[ i ][ 0 ];
+                        cfgFinal[i] = cfg[i][0];
                     }
 
                     $.extend(self.cfgValue, cfgFinal);
@@ -98,7 +98,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
             form.setStructure(cfg);
             form.onStructureLoaded().done(function () {
-                form.fill({ });
+                form.fill({});
             });
 
             form.onLoaded().done(function () {
@@ -138,7 +138,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                     l = val.length;
                     for (i = 0; (i < l); i++) {
                         if (this.searchElement(cfg, val.getChildSync([i]).get())) {
-                            if (count < max) target[count++] = val[ i ];
+                            if (count < max) target[count++] = val[i];
                             flags[i] = true;
                         } else {
                             flags[i] = false;
@@ -225,7 +225,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
             toEval += ' return ';
             for (; i < l; i++) {
 
-                searchOn = searchfields[ i ].groups.general[ 0 ].searchOnField || [];
+                searchOn = searchfields[i].groups.general[0].searchOnField || [];
 
                 if (i > 0) {
                     toEval += ' && ';
@@ -243,14 +243,14 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                             toEval += ' || ';
                         }
                         var opts = {};
-                        if (searchfields[ i ].groups.general[ 0 ].type[ 0 ] === 'float') opts.number = true;
-                        if (searchfields[ i ].groups.text && searchfields[ i ].groups.text[ 0 ].case_sensitive[ 0 ][ 0 ] === 'case_sensitive') opts.caseSensitive = true;
+                        if (searchfields[i].groups.general[0].type[0] === 'float') opts.number = true;
+                        if (searchfields[i].groups.text && searchfields[i].groups.text[0].case_sensitive[0][0] === 'case_sensitive') opts.caseSensitive = true;
                         var allow_undefined = false;
-                        if (searchfields[ i ].groups.general[ 0 ].allow_undefined && searchfields[ i ].groups.general[ 0 ].allow_undefined[0]) {
-                            allow_undefined = !!searchfields[ i ].groups.general[ 0 ].allow_undefined[0].length;
+                        if (searchfields[i].groups.general[0].allow_undefined && searchfields[i].groups.general[0].allow_undefined[0]) {
+                            allow_undefined = !!searchfields[i].groups.general[0].allow_undefined[0].length;
                         }
-                        toEval += ' ( ( el = self.getJpath( "' + searchOn[ j ] + '", row ) ) ? ( ';
-                        toEval += this._makeOp(searchfields[ i ].groups.general[ 0 ].operator[ 0 ], searchfields[ i ].groups.general[ 0 ].name[ 0 ], opts);
+                        toEval += ' ( ( el = self.getJpath( "' + searchOn[j] + '", row ) ) ? ( ';
+                        toEval += this._makeOp(searchfields[i].groups.general[0].operator[0], searchfields[i].groups.general[0].name[0], opts);
                         toEval += ' ) : ' + allow_undefined + ' ) ';
 
                     }
@@ -273,19 +273,17 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
         },
 
         getJpath: function (jpathEl, row) {
-            return this._jpathsFcts[ jpathEl ](row);
+            return this._jpathsFcts[jpathEl](row);
         },
 
         update: {
             array: function (variableValue, variableName) {
                 if (variableValue) {
-                    this.variables[ variableName ] = variableValue.get();
+                    this.variables[variableName] = variableValue.get();
                     this.search();
                 }
             }
         },
-
-        typeToScreen: {},
 
         onActionReceive: {
             disable: function () {
@@ -302,4 +300,5 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
     });
 
     return View;
+
 });

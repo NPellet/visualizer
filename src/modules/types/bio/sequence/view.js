@@ -1,12 +1,17 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/util', 'BiojsCore',
+define([
+    'modules/default/defaultview',
+    'src/util/util',
+    'BiojsCore',
     'lib/biojs-1.0/src/main/javascript/Biojs.Tooltip',
     'lib/biojs-1.0/src/main/javascript/Biojs.Sequence'
 ], function (Default, Util) {
-    function view() {
+
+    function View() {
     }
-    view.prototype = $.extend(true, {}, Default, {
+
+    $.extend(true, View.prototype, Default, {
 
         init: function () {
             if (!this.dom) {
@@ -16,12 +21,6 @@ define(['modules/default/defaultview', 'src/util/util', 'BiojsCore',
                 this.resolveReady();
             }
         },
-
-
-        blank: function () {
-            this.dom.empty();
-        },
-
 
         inDom: function () {
             var self = this;
@@ -68,32 +67,10 @@ define(['modules/default/defaultview', 'src/util/util', 'BiojsCore',
             //   sequenceUrl: 'http://www.rcsb.org/pdb/download/downloadFile.do?fileFormat=xml&compression=NO&structureId=100D',
             //   id: '100D'
             // });
-        },
-
-        onResize: function () {
-
-            if (!this.webgl) return;
-            var self = this;
-
-            this.onReady.done(function () {
-
-
-            });
-
-        },
-
-
-        update: {
-            'function': function (data) {
-
-            }
-        },
-
-        getDom: function () {
-            return this.dom;
         }
+
     });
 
-    return view;
+    return View;
 
 });

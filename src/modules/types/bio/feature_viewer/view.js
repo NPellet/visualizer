@@ -1,9 +1,11 @@
 'use strict';
 
 define(['modules/default/defaultview', 'src/util/util', 'jquery-ui/slider', 'BiojsDasProteinFeatureViewer'], function (Default, Util) {
-    function view() {
+
+    function View() {
     }
-    view.prototype = $.extend(true, {}, Default, {
+
+    $.extend(true, View.prototype, Default, {
 
         init: function () {
             if (!this.dom) {
@@ -65,6 +67,6 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery-ui/slider', 'Bio
         }
     });
 
-    return view;
+    return View;
 
 });

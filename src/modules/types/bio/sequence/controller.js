@@ -2,23 +2,12 @@
 
 define(['modules/default/defaultcontroller'], function (Default) {
 
-    /**
-     * Creates a new empty controller
-     * @class Controller
-     * @name Controller
-     * @constructor
-     */
-    function controller() {
+    function Controller() {
     }
 
-    // Extends the default properties of the default controller
-    controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
-
-    /*
-     Information about the module
-     */
-    controller.prototype.moduleInformation = {
+    Controller.prototype.moduleInformation = {
         name: 'Sequence displayer',
         description: 'Displays DNA sequence with annotations',
         author: 'Daniel Kostro',
@@ -27,66 +16,25 @@ define(['modules/default/defaultcontroller'], function (Default) {
         cssClass: 'sequence_display'
     };
 
-
-    /*
-     Configuration of the input/output references of the module
-     */
-    controller.prototype.references = {
+    Controller.prototype.references = {
         sequence: {
             label: 'An Amino Acid Sequence'
         }
     };
 
-
-    /*
-     Configuration of the module for sending events, as a static object
-     */
-    controller.prototype.events = {
+    Controller.prototype.events = {
         onSequenceSelectionChanged: {
             label: 'A sequence was selected',
             refVariable: ['sequence']
         }
     };
 
-    controller.prototype.onSequenceSelectionChanged = function (val) {
+    Controller.prototype.onSequenceSelectionChanged = function (val) {
         this.createDataFromEvent('onSequenceSelectionChanged', 'sequence', DataObject.check(val, true));
     };
 
+    Controller.prototype.variablesIn = ['sequence'];
 
-    /*
-     Configuration of the module for receiving events, as a static object
-     In the form of
-     */
-    controller.prototype.variablesIn = ['sequence'];
+    return Controller;
 
-    /*
-     Received actions
-     In the form of
-
-     {
-     actionRef: 'actionLabel'
-     }
-     */
-    controller.prototype.actionsIn = {};
-
-
-    controller.prototype.configurationStructure = function (section) {
-
-        return {
-            groups: {
-                group: {
-                    options: {
-                        type: 'list'
-                    },
-
-                    fields: {}
-                }
-            }
-        };
-    };
-
-
-    controller.prototype.configAliases = {};
-
-    return controller;
 });
