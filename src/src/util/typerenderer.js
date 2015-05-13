@@ -48,12 +48,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
     functions.string = {};
     functions.string.toscreen = function (element, val) {
         val = String(val);
-        while (true) {
-            val = val.replace('<', '&lt;').replace('>', '&gt;');
-            if (val.indexOf('<') === -1 && val.indexOf('>') === -1) {
-                break;
-            }
-        }
+        val.replace(/</g, '&lt;').replace(/>/g, '&gt;');
         element.html(val);
     };
 
