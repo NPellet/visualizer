@@ -62,7 +62,7 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function (Pou
 
                 for (var i in this) {
 
-                    if (typeof this[i] === 'function ') {
+                    if (typeof this[i] === 'function') {
                         continue;
                     }
 

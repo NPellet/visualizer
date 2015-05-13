@@ -11,6 +11,7 @@
     "no-duplicate-case": 2,
     "no-ex-assign": 2,
     "quotes": [2, "single", "avoid-escape"],
-    "strict": [2, "global"]
+    "strict": [2, "global"],
+    "valid-typeof": 2
   }
 }
