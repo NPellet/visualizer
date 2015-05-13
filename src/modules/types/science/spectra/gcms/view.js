@@ -340,27 +340,6 @@ define([
 
             },
 
-            displayChemicalLabels: function () {
-                return;
-                var i = 0,
-                    l = this.shapes.length;
-
-                for (; i < l; i++) {
-                    this.shapes[i].toggleLabel(1, true);
-                }
-            },
-
-            hideChemicalLabels: function () {
-                return;
-                var i = 0,
-                    l = this.shapes.length;
-
-                for (; i < l; i++) {
-                    this.shapes[i].toggleLabel(1, false);
-                }
-
-            },
-
             centerGC: function (value) {
 
 
@@ -379,38 +358,6 @@ define([
             setMSIndexData: function (x) {
                 this.gcmsInstance.setMSIndexData(x);
             }
-        },
-
-        doAnnotation: function (annotation) {
-
-            return;
-
-
-            var self = this;
-            var shape = this.gcmsInstance.getGC().makeShape(annotation, {}, false);
-
-            shape.setSelectable(true);
-
-            annotation.onChange(function (value) {
-                shape.draw();
-                shape.redraw();
-            }, self.module.getId());
-
-            API.killHighlight(this.module.getId());
-            API.listenHighlight(annotation, function (onOff) {
-
-                if (onOff) {
-                    shape.highlight();
-                } else {
-                    shape.unHighlight();
-                }
-            }, false, this.module.getId());
-
-
-            shape.draw();
-            shape.redraw();
-
-            return shape;
         }
     });
 

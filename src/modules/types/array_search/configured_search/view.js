@@ -171,49 +171,38 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                     } else {
                         return ' ((el+"")' + textSuffix + ') == ' + val + textSuffix + ' ';
                     }
-                    break;
 
                 case '<>':
                 case '><':
                 case '!=':
                     return ' (el + "") !== ' + val + ' ';
-                    break;
 
                 case '>':
                     return ' el > ' + numPrefix + val + numSuffix + ' ';
-                    break;
 
                 case '>=':
                     return ' el >= ' + numPrefix + val + numSuffix + ' ';
-                    break;
 
                 case '<':
                     return ' el < ' + numPrefix + val + numSuffix + ' ';
-                    break;
 
                 case '<=':
                     return ' el <= ' + numPrefix + val + numSuffix + ' ';
-                    break;
 
                 case 'contains':
                     return ' el' + textSuffix + '.match(' + val + textSuffix + ') ';
-                    break;
 
                 case 'notcontain':
                     return ' ! el' + textSuffix + '.match(' + val + textSuffix + ') ';
-                    break;
 
                 case 'starts':
                     return ' el' + textSuffix + '.match(new RegExp("^"+' + val + textSuffix + ')) ';
-                    break;
 
                 case 'end':
                     return ' el' + textSuffix + '.match(new RegExp(' + val + textSuffix + '+"$")) ';
-                    break;
 
                 case 'btw':
                     return ' ( el >= parseFloat( ' + val + '[0] ) && el <= parseFloat( ' + val + '[1] ) )';
-                    break;
             }
 
         },

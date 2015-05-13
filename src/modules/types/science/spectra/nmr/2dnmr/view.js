@@ -150,57 +150,6 @@ define([
 
         redraw: function () {
             this.nmr.redrawAll2D();
-        },
-
-        get2dSerie: function (name) {
-            return;
-            if (!this.series['_2d'][name]) {
-                // Create 2D serie
-                var serie = this.graphs['_2d'].newSerie('serie2d_' + 'name', {}, 'contour')
-                    .autoAxis();
-                serie.getXAxis()
-                    .togglePrimaryGrid(false)
-                    .toggleSecondaryGrid(false)
-                    .setDisplay(false)
-                    .flip(true);
-                serie.getYAxis()
-                    .togglePrimaryGrid(false)
-                    .toggleSecondaryGrid(false)
-                    .setDisplay(false)
-                    .flip(true);
-                this.series['_2d'][name] = serie;
-            }
-            return this.series['_2d'][name];
-        },
-
-        get2d: function (XY) {
-            return;
-            var min = Infinity,
-                max = -Infinity,
-                series = this.series['_2d'],
-                minVal, maxVal;
-            for (var i in series) {
-                minVal = series[i]['getMin' + XY]();
-                if (minVal < min) {
-                    min = minVal;
-                }
-                maxVal = series[i]['getMax' + XY]();
-                if (maxVal > max) {
-                    max = maxVal;
-                }
-            }
-            return {
-                min: min,
-                max: max
-            };
-        },
-
-        force: function (axis, minMax, value) {
-            return;
-            var series = this.series['_2d'];
-            for (var i in series) {
-                series[i]['get' + axis + 'Axis']()['force' + minMax](value);
-            }
         }
 
     });

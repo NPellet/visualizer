@@ -514,7 +514,6 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
 
         _getLocalHead: function (branch) {
             branch = branch || 'Master';
-            var self = this;
 
             return db.getHead(this.type, this._dirUrl, branch).pipe(function (el) {
 
@@ -523,12 +522,6 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
                 }
 
                 return el;
-
-                if (self.type == 'view')
-                    return new DataObject(el, true);
-                else if (self.type == 'data')
-                    return new DataObject(el, true);
-
             });
         },
 

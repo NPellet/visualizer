@@ -141,11 +141,9 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, ui) {
                         html += '<option ' + (spec.defaultvalue == opt[0] ? 'selected="selected" ' : '') + 'value="' + opt[0] + '">' + (opt[1] || opt[0]) + '</option>';
                     }
                     return '<select ' + elemAttribute + '>' + html + '</select>';
-                    break;
 
                 case 'checkbox':
                     return '<input type="checkbox" ' + (spec.defaultvalue ? 'checked="checked"' : '') + ' value="1" offvalue="0" ' + elemAttribute + ' />';
-                    break;
 
                 case 'textarea':
                     return '<textarea ' + elemAttribute +
@@ -157,7 +155,6 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, ui) {
                 case 'float':
                 case 'text':
                     return '<input type="text" value="' + (spec.defaultvalue || '') + '" ' + elemAttribute + ' style="width: 100%" />';
-                    break;
             }
         },
 

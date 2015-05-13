@@ -1068,7 +1068,6 @@ define([
             switch (mode) {
                 case 'none':
                     return;
-                    break;
                 default:
                     self.graphTitle.push(self._addText(title, NORM_CONSTANT / 10, NORM_CONSTANT * 1.3, 100, {
                         textAlign: 'left'
@@ -1110,7 +1109,6 @@ define([
                     break;
                 default:
                     return;
-                    break;
             }
 
 

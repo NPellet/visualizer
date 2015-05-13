@@ -925,15 +925,12 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
 
             case 'string':
                 return new DataString(object);
-                break;
 
             case 'number':
                 return new DataNumber(object);
-                break;
 
             case 'boolean':
                 return new DataBoolean(object);
-                break;
         }
 
     }

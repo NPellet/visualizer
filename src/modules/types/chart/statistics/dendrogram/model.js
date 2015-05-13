@@ -20,11 +20,8 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
             switch (rel) {
                 case 'node':
                     return jpaths;
-                    break;
-
                 default:
                     return false;
-                    break;
             }
         }
     });

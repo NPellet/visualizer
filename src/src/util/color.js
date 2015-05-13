@@ -79,10 +79,8 @@ define(function () {
             switch (color.length) {
                 case 3:
                     return 'rgb(' + color.join(',') + ')';
-                    break;
                 case 4:
                     return 'rgba(' + color.join(',') + ')';
-                    break;
             }
         } else if (typeof(color) == 'object') {
             return 'rgb(' + Math.round(color.r * 255) + ', ' + Math.round(color.g * 255) + ', ' + Math.round(color.b * 255) + ')';

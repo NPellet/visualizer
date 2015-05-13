@@ -15,7 +15,6 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
                     break;
                 default:
                     return [];
-                    break;
             }
 
             var jpaths = [];

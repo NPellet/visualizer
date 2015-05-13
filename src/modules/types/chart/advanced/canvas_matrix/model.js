@@ -44,10 +44,8 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
                 case 'intersect':
                     data = data.data[0][0];
                     return getjPath(data, accepts);
-                    break;
                 default:
                     return false;
-                    break;
             }
         }
 
