@@ -1682,9 +1682,6 @@ define([
             function getFromJpath(value, jp, fallback) {
                 var val = value.getChildSync(jp);
                 if (val === undefined) {
-                    if (fallback === DEFAULT_POINT_COLOR) {
-                        debugger;
-                    }
                     return fallback;
                 }
                 return validate(val.get());

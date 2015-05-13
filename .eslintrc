@@ -5,6 +5,7 @@
   },
   "rules": {
     "indent": [2, 4],
+    "no-debugger": 2,
     "quotes": [2, "single", "avoid-escape"],
     "strict": [2, "global"]
   }

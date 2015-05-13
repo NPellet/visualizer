@@ -86,12 +86,7 @@ requirejs.config({
             exports: 'Papa'
         },
         'jquery-cookie': 'jquery',
-        'select2': {
-            deps: ['jquery'],
-            init: function () {
-                debugger;
-            }
-        },
+        'select2': ['jquery'],
         'lib/threejs/TrackballControls': ['threejs'],
         jqgrid: ['jquery', 'components/jqgrid_edit/js/i18n/grid.locale-en'],
         'libs/jsmol/js/JSmolApplet': ['libs/jsmol/JSmol.min.nojq'],
