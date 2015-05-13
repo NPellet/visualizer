@@ -2,6 +2,11 @@
 
 Information for the core developers of the project.
 
+## Check code style
+
+The project uses eslint to validate code style.  
+Command is `npm run jslint`
+
 ## Versioning and release procedure
 
 The Visualizer project tries to follow [semantic versioning](http://semver.org/).  
