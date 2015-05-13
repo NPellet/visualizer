@@ -1,7 +1,6 @@
 'use strict';
 
-define([
-    'modules/default/defaultcontroller'], function (Default) {
+define(['modules/default/defaultcontroller'], function (Default) {
 
     function Controller() {
     }

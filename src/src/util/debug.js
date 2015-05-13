@@ -33,7 +33,7 @@ define(['loglevel'], function (log) {
 
         setDebugLevel: function (level) {
             level = parseInt(level);
-            if(isNaN(level) || (level < -1)) {
+            if (isNaN(level) || (level < -1)) {
                 return;
             }
             if (level > 4) {
@@ -76,9 +76,9 @@ define(['loglevel'], function (log) {
             if (format === 's') {
                 return (time / 1000).toFixed(3) + 's';
             }
-        }
-        else
+        } else {
             return time;
+        }
     }
 
     function Timer() {

@@ -358,8 +358,9 @@ define([
                 this.resetZoomPrefetch(pxPerCell);
                 this.pxPerCell = this.cachedPxPerCell;
 
-            } else
+            } else {
                 pxPerCell = this.getCurrentPxPerCellFetch();
+            }
 
             if (!this.postNextMessageToWorker(pxPerCell)) {
                 if (this.incrementPxPerCellFetch())
@@ -423,7 +424,11 @@ define([
         doChangeWorkersData: function () {
             this.workers.postMessage({
                 title: 'changeData',
-                message: {data: JSON.stringify(this.gridData), min: this.minValue, max: this.maxValue}
+                message: {
+                    data: JSON.stringify(this.gridData),
+                    min: this.minValue,
+                    max: this.maxValue
+                }
             });
         },
 

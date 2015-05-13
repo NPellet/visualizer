@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/util/api'], function(Default, Traversing, API) {
+define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/util/api'], function (Default, Traversing, API) {
 
     /**
      * Creates a new empty controller
@@ -48,7 +48,6 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
      };*/
 
 
-
     /*
      Configuration of the input/output references of the module
      */
@@ -64,12 +63,11 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     };
 
 
-
     /*controller.prototype.elementHover = function(element) {
      if( ! element ) {
      return;
      }
-     
+
      // this.setVarFromEvent( 'onHover', element, 'row' );
      if (this._highlighted) {
      API.highlight( this._highlighted, 0 );
@@ -77,7 +75,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
      API.highlight( element, 1 );
      this._highlighted=element;
      },
-     
+
      controller.prototype.elementOut = function() {
      if (this._highlighted) {
      API.highlight( this._highlighted, 0 );
@@ -92,7 +90,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     controller.prototype.variablesIn = ['chart', 'yArray'];
 
 
-    controller.prototype.configurationStructure = function() {
+    controller.prototype.configurationStructure = function () {
         return {
             groups: {
                 group: {
@@ -113,16 +111,16 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                             }
                         },
                         /*showLabels: {
-                            type: 'checkbox',
-                            title: 'Show labels ?',
-                            options: {
-                                showLabels: 'Yes'
-                            }
-                        },
-                        labelColor: {
-                            type: 'color',
-                            title: 'Label color'
-                        },*/
+                         type: 'checkbox',
+                         title: 'Show labels ?',
+                         options: {
+                         showLabels: 'Yes'
+                         }
+                         },
+                         labelColor: {
+                         type: 'color',
+                         title: 'Label color'
+                         },*/
                     }
                 }
             }

@@ -226,7 +226,8 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
 
                             callback(value, resolve, reject);
 
-                        }).then(function (value) {
+                        })
+                            .then(function (value) {
 
                                 value = DataObject.check(value, true);
                                 self._setValue(value);
@@ -283,7 +284,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
             return allVariables.hasOwnProperty(varName);
         },
         unlisten: unlisten,
-        eraseAll: function() {
+        eraseAll: function () {
             allVariables = {};
         }
     };

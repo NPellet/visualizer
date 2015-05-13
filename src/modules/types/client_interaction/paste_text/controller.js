@@ -1,74 +1,74 @@
 'use strict';
 
-define( [ 'modules/default/defaultcontroller' ], function( Default ) {
-	
-	/**
-	 * Creates a new empty controller
-	 * @class Controller
-	 * @name Controller
-	 * @constructor
-	 */
-	function controller() { };
+define(['modules/default/defaultcontroller'], function (Default) {
 
-	// Extends the default properties of the default controller
-	controller.prototype = $.extend( true, {}, Default );
+    /**
+     * Creates a new empty controller
+     * @class Controller
+     * @name Controller
+     * @constructor
+     */
+    function controller() {
+    };
 
-	/*
-		Information about the module
-	*/
-	controller.prototype.moduleInformation = {
-		name: 'Paste value',
-		description: 'Paste any text and parse it in a variable',
-		author: 'Michaël Zasso',
-		date: '05.03.2014',
-		license: 'MIT',
-		cssClass: 'paste_text'
-	};
-	
+    // Extends the default properties of the default controller
+    controller.prototype = $.extend(true, {}, Default);
 
-
-	/*
-		Configuration of the input/output references of the module
-	*/
-	controller.prototype.references = {
-
-		'value': {
-			label: 'The parsed object'
-			
-		}
-	};
+    /*
+     Information about the module
+     */
+    controller.prototype.moduleInformation = {
+        name: 'Paste value',
+        description: 'Paste any text and parse it in a variable',
+        author: 'Michaël Zasso',
+        date: '05.03.2014',
+        license: 'MIT',
+        cssClass: 'paste_text'
+    };
 
 
-	/*
-		Configuration of the module for sending events, as a static object
-	*/
-	controller.prototype.events = {
+    /*
+     Configuration of the input/output references of the module
+     */
+    controller.prototype.references = {
+
+        'value': {
+            label: 'The parsed object'
+
+        }
+    };
+
+
+    /*
+     Configuration of the module for sending events, as a static object
+     */
+    controller.prototype.events = {
         onEditorChange: {
             label: 'The value in the editor has changed',
             refVariable: ['value']
         },
-	};
-		
-	controller.prototype.configurationStructure = function(section) {
-		
-		return {
+    };
 
-			groups: {
+    controller.prototype.configurationStructure = function (section) {
 
-				group: {
-					options: {
-						type: 'list'
-					},
+        return {
 
-					fields: {
+            groups: {
 
-						thevalue: {
-							type: 'jscode',
-							title: 'Value',
+                group: {
+                    options: {
+                        type: 'list'
+                    },
+
+                    fields: {
+
+                        thevalue: {
+                            type: 'jscode',
+                            title: 'Value',
                             mode: 'text',
                             default: ''
-						},
-                        
+                        },
+
                         type: {
                             type: 'combo',
                             title: 'Data type',
@@ -81,25 +81,24 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
                             default: 'text'
                         },
 
-					}
-				}
-			}
-		}
-	};
+                    }
+                }
+            }
+        }
+    };
 
-	controller.prototype.configFunctions = {
-	};
+    controller.prototype.configFunctions = {};
 
-	controller.prototype.configAliases = {
+    controller.prototype.configAliases = {
         'type': ['groups', 'group', 0, 'type', 0],
-		'thevalue': [ 'groups', 'group', 0, 'thevalue', 0 ]
-	};
-    
-    controller.prototype.valueChanged = function(value) {
+        'thevalue': ['groups', 'group', 0, 'thevalue', 0]
+    };
+
+    controller.prototype.valueChanged = function (value) {
         var type = this.module.getConfiguration('type'),
             def = $.Deferred(),
-            that=this;
-        switch(type) {
+            that = this;
+        switch (type) {
             case 'text':
                 def.resolve(value);
                 break;
@@ -107,24 +106,24 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
                 def.resolve(JSON.parse(value));
                 break;
             case 'csv':
-                require(['components/papa-parse/papaparse.min'],function(Papa){
+                require(['components/papa-parse/papaparse.min'], function (Papa) {
                     def.resolve(Papa.parse(value).data);
                 });
                 break;
             case 'xml':
-                require(['components/x2js/xml2json.min'],function(X2JS){
+                require(['components/x2js/xml2json.min'], function (X2JS) {
                     def.resolve(new X2JS().xml_str2json(value));
                 });
                 break;
         }
-        def.done(function(data){
+        def.done(function (data) {
 
-            if(that.module.definition.configuration.groups) that.module.definition.configuration.groups.group[0].thevalue[0] = value;
-            that.createDataFromEvent( 'onEditorChange', 'value', DataObject.check(data, true));
+            if (that.module.definition.configuration.groups) that.module.definition.configuration.groups.group[0].thevalue[0] = value;
+            that.createDataFromEvent('onEditorChange', 'value', DataObject.check(data, true));
         });
-        
-        
+
+
     };
 
- 	return controller;
+    return controller;
 });

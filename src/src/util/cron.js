@@ -1,96 +1,96 @@
 'use strict';
 
-define(function() {
+define(function () {
 
-	var setTimeout = window.setInterval,
-		clearTimeout = window.clearTimeout,
-		crons = {};
+    var setTimeout = window.setInterval,
+        clearTimeout = window.clearTimeout,
+        crons = {};
 
-	var create = function( url, interval, callback, overwrite, cancelStart ) {
+    var create = function (url, interval, callback, overwrite, cancelStart) {
 
-		var name = url;
-		
-		if( crons[ name ] ) {
+        var name = url;
 
-			if( ! overwrite ) {
-				console.warn('Cron already exists');
-				return;
-			} else {
-				remove( name );
-			}
-		}
+        if (crons[name]) {
 
-		crons[ name ] = [ url, interval, false, false, callback ];
+            if (!overwrite) {
+                console.warn('Cron already exists');
+                return;
+            } else {
+                remove(name);
+            }
+        }
 
-		if( ! cancelStart ) {
-			start( name );	
-		}
+        crons[name] = [url, interval, false, false, callback];
 
-		return name;
-	};
+        if (!cancelStart) {
+            start(name);
+        }
 
-	var start = function( name ) {
+        return name;
+    };
 
-		( function( cronName ) {
+    var start = function (name) {
 
-			//crons[ cronName ][ 2 ] = false;
-			//console.log( crons[ cronName ] );
-			crons[ cronName ][ 3 ] = window.setTimeout( function() {
+        (function (cronName) {
 
-				$.ajax({
-					url: crons[ cronName ][ 0 ],
-					timeout: 1200,
-					method: 'get',
-					success: function( response ) {
+            //crons[ cronName ][ 2 ] = false;
+            //console.log( crons[ cronName ] );
+            crons[cronName][3] = window.setTimeout(function () {
+
+                $.ajax({
+                    url: crons[cronName][0],
+                    timeout: 1200,
+                    method: 'get',
+                    success: function (response) {
 
 //					console.log( crons[ cronName ], cronName );
-/*
-						if( crons[ cronName ][ 2 ] == true ) {
-							return;
-						}
-*/
+                        /*
+                         if( crons[ cronName ][ 2 ] == true ) {
+                         return;
+                         }
+                         */
 
-						crons[ cronName ][ 4 ]( response );
-						start( cronName );
-					}
-				});
+                        crons[cronName][4](response);
+                        start(cronName);
+                    }
+                });
 
-			}, crons[ cronName ][ 1 ] );
+            }, crons[cronName][1]);
 
-		}) ( name );
-		
-	};
+        })(name);
 
-	var stop = function( name ) {
+    };
 
-		if( ! crons[ name ] ) {
-			console.warn( 'Cannot stop a cron that does not exist' );
-			return;
-		}
+    var stop = function (name) {
 
-		window.clearTimeout( crons[ name ][ 3 ] );
-		//crons[ name ][ 2 ] = true;
+        if (!crons[name]) {
+            console.warn('Cannot stop a cron that does not exist');
+            return;
+        }
 
-	};
+        window.clearTimeout(crons[name][3]);
+        //crons[ name ][ 2 ] = true;
 
-	var remove = function( name ) {
+    };
 
-		if( ! crons[ name ] ) {
-			console.warn( 'Cannot remove a cron that does not exist' );
-			return;
-		}
+    var remove = function (name) {
 
-		stop( name );
-		delete crons[ name ];
-	};
+        if (!crons[name]) {
+            console.warn('Cannot remove a cron that does not exist');
+            return;
+        }
 
-	return {
-		start: start,
-		remove: remove,
-		erase: remove,
-		stop: stop,
-		pause: stop,
-		create: create,
-		make: create
-	}
+        stop(name);
+        delete crons[name];
+    };
+
+    return {
+        start: start,
+        remove: remove,
+        erase: remove,
+        stop: stop,
+        pause: stop,
+        create: create,
+        make: create
+    }
 });

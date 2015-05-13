@@ -107,7 +107,10 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                             options: [
                                 {title: 'Text', key: 'text'},
                                 {title: 'Base64 Encoded', key: 'base64'},
-                                {title: 'Object URL', key: 'url'}/*, {title: 'Binary string', key: 'binary'}, {title: 'Array buffer', key: 'b'}*/
+                                {
+                                    title: 'Object URL',
+                                    key: 'url'
+                                }/*, {title: 'Binary string', key: 'binary'}, {title: 'Array buffer', key: 'b'}*/
                             ],
                             'default': 'text'
                         },
@@ -189,19 +192,19 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         var i, ii, cfgEl, eCfgEl;
 
         var fileCfg = this.module.getConfiguration('vars');
-        if(fileCfg) {
+        if (fileCfg) {
 
             var enhancedFileCfg = [];
-            for(i = 0, ii = fileCfg.length; i < ii; i++) {
+            for (i = 0, ii = fileCfg.length; i < ii; i++) {
                 cfgEl = fileCfg[i];
                 eCfgEl = $.extend({}, cfgEl);
                 enhancedFileCfg.push(eCfgEl);
-                if(cfgEl.extension) {
+                if (cfgEl.extension) {
                     eCfgEl.match = new RegExp('^' + cfgEl.extension.replace(/\*/g, '.*').replace(/\?/g, '.') + '$', 'i');
                 } else {
                     eCfgEl.match = /^.*$/i;
                 }
-                if(!cfgEl.filter) {
+                if (!cfgEl.filter) {
                     eCfgEl.filter = 'ext';
                 }
             }
@@ -210,14 +213,14 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         }
 
         var stringCfg = this.module.getConfiguration('string');
-        if(stringCfg) {
+        if (stringCfg) {
 
             var enhancedStringCfg = [];
-            for(i = 0, ii = stringCfg.length; i < ii; i++) {
+            for (i = 0, ii = stringCfg.length; i < ii; i++) {
                 cfgEl = stringCfg[i];
                 eCfgEl = $.extend({}, cfgEl);
                 enhancedStringCfg.push(eCfgEl);
-                if(cfgEl.filter) {
+                if (cfgEl.filter) {
                     eCfgEl.match = new RegExp('^' + cfgEl.filter.replace(/\*/g, '.*').replace(/\?/g, '.') + '$', 'i');
                 } else {
                     eCfgEl.match = /^text\/plain$/i;
@@ -256,23 +259,23 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         var cfgString = this.stringCfg;
 
         var i = 0, ii = data.items.length, item, meta, def;
-                    for (; i < ii; i++) {
-                        item = data.items[i];
-                        def = $.Deferred();
-                        defs.push(def);
-                        if (item.kind === 'file') {
-                            item = item.getAsFile();
-                            if (meta = this.checkFileMetadata(item, cfg)) {
-                                meta.def = def;
-                                this.read(item, meta);
-                            } else {
-                                def.resolve();
-                            }
-                        } else {
-                            if(meta = this.checkStringMetadata(item, cfgString)) {
-                                meta.def = def;
-                                this.treatString(item, meta);
-                            } else {
+        for (; i < ii; i++) {
+            item = data.items[i];
+            def = $.Deferred();
+            defs.push(def);
+            if (item.kind === 'file') {
+                item = item.getAsFile();
+                if (meta = this.checkFileMetadata(item, cfg)) {
+                    meta.def = def;
+                    this.read(item, meta);
+                } else {
+                    def.resolve();
+                }
+            } else {
+                if (meta = this.checkStringMetadata(item, cfgString)) {
+                    meta.def = def;
+                    this.treatString(item, meta);
+                } else {
                     def.resolve();
                 }
             }
@@ -284,7 +287,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         });
     };
 
-    Controller.prototype.openPhoto = function(result) {
+    Controller.prototype.openPhoto = function (result) {
         var that = this;
         var meta = this.checkPhotoMetadata(this.photoCfg);
         meta.def = $.Deferred();
@@ -313,13 +316,13 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
 
         for (var i = 0, l = cfg.length; i < l; i++) {
             var matcher = cfg[i].match;
-            if(matcher.test(mime)) {
+            if (matcher.test(mime)) {
                 lineCfg = cfg[i];
                 break;
             }
         }
 
-        if(!lineCfg) {
+        if (!lineCfg) {
             return Debug.warn("String item's mime-type doesn't match: " + mime);
         }
 
@@ -346,7 +349,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         }
         for (var i = 0, l = cfg.length; i < l; i++) {
             var filter = cfg[i].filter;
-            if(filter === 'ext') {
+            if (filter === 'ext') {
                 var extensions = cfg[i].extension;
                 if (extensions === '*' || extensions.split(',').indexOf(ext) !== -1) {
                     lineCfg = cfg[i];
@@ -354,7 +357,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                 }
             } else {
                 var matcher = cfg[i].match;
-                if(matcher.test(mime)) {
+                if (matcher.test(mime)) {
                     lineCfg = cfg[i];
                     break;
                 }
@@ -362,7 +365,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         }
         if (!lineCfg && name) {
             return Debug.warn('Extension ' + ext + ' not configured (filename: ' + name + ')');
-        } else if(!lineCfg) {
+        } else if (!lineCfg) {
             return Debug.warn("Item has no filename and mime-type doesn't match: " + mime);
         }
 
@@ -373,7 +376,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         };
     };
 
-    Controller.prototype.checkPhotoMetadata = function(cfg) {
+    Controller.prototype.checkPhotoMetadata = function (cfg) {
         var lineCfg = cfg[0];
 
         lineCfg.filetype = 'url';
@@ -440,7 +443,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
     };
 
     Controller.prototype.tmpVar = function (obj, meta) {
-        if(typeof obj !== 'object') {
+        if (typeof obj !== 'object') {
             obj = {
                 type: meta.cfg.type,
                 value: obj
@@ -460,15 +463,15 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         meta.def.resolve();
     };
 
-    Controller.prototype.emulDataTransfer = function(e) {
+    Controller.prototype.emulDataTransfer = function (e) {
         var emul = {};
         emul.files = e.target.files;
         emul.items = [];
-        for(var i=0; i< e.target.files.length; i++) {
-            (function(i) {
+        for (var i = 0; i < e.target.files.length; i++) {
+            (function (i) {
                 emul.items.push({
                     kind: 'file',
-                    getAsFile: function() {
+                    getAsFile: function () {
                         return e.target.files[i];
                     }
                 })

@@ -1,9 +1,9 @@
 'use strict';
 
-define(['modules/default/defaultcontroller'], function(Default) {
+define(['modules/default/defaultcontroller'], function (Default) {
 
     function controller() {
-        this._data=new DataObject();
+        this._data = new DataObject();
     }
 
     // Extends the default properties of the default controller
@@ -21,56 +21,56 @@ define(['modules/default/defaultcontroller'], function(Default) {
         cssClass: 'phylogram'
     };
 
-    controller.prototype.mouseOverLeaf = function(data) {
-        if(data.data) {
+    controller.prototype.mouseOverLeaf = function (data) {
+        if (data.data) {
             this._data = DataObject.check(data.data);
             this.createDataFromEvent('onLeafHover', 'leaf', DataObject.check(this._data));
         }
     };
-    controller.prototype.mouseOutLeaf = function() {
+    controller.prototype.mouseOutLeaf = function () {
 
     };
-    controller.prototype.clickLeaf = function(data) {
-        if(data.data) {
+    controller.prototype.clickLeaf = function (data) {
+        if (data.data) {
             this._data = DataObject.check(data.data);
             this.createDataFromEvent('onLeafSelect', 'leaf', DataObject.check(this._data));
         }
     };
 
-    controller.prototype.mouseOverBranch = function(data) {
+    controller.prototype.mouseOverBranch = function (data) {
         this.sendTreeFromEvent(data, 'onBranchHover');
     };
 
-    controller.prototype.mouseOutBranch = function() {
+    controller.prototype.mouseOutBranch = function () {
     };
 
-    controller.prototype.clickBranch = function(data) {
+    controller.prototype.clickBranch = function (data) {
         this.sendTreeFromEvent(data, 'onBranchSelect');
     };
 
-    controller.prototype.sendTreeFromEvent = function(data, name) {
+    controller.prototype.sendTreeFromEvent = function (data, name) {
         var element = new DataObject({'type': 'tree', value: data}, true);
         this.sendActionFromEvent(name, 'tree', element);
         this.createDataFromEvent(name, 'tree', element);
-		this.createDataFromEvent(name, 'list', function(){
+        this.createDataFromEvent(name, 'list', function () {
             var arr = [];
             treeToArray(arr, data);
             return DataArray(arr);
         });
     };
-	
-	function treeToArray(arr, tree) {
-		if(tree.children) {
-			for(var i = 0, ii = tree.children.length; i < ii; i++) {
-				treeToArray(arr, tree.children[i]);
-			}
-		}
-		else if(tree.data) {
-			arr.push(tree.data);
-		}
-	}
 
-    controller.prototype.configurationStructure = function() {
+    function treeToArray(arr, tree) {
+        if (tree.children) {
+            for (var i = 0, ii = tree.children.length; i < ii; i++) {
+                treeToArray(arr, tree.children[i]);
+            }
+        }
+        else if (tree.data) {
+            arr.push(tree.data);
+        }
+    }
+
+    controller.prototype.configurationStructure = function () {
         return {
             groups: {
                 group: {
@@ -111,11 +111,11 @@ define(['modules/default/defaultcontroller'], function(Default) {
         },
         onBranchSelect: {
             label: 'Select a branch',
-            refVariable: ['tree','list']
+            refVariable: ['tree', 'list']
         },
         onBranchHover: {
             label: 'Hovers a branch',
-            refVariable: ['tree','list']
+            refVariable: ['tree', 'list']
         }
     };
 
@@ -130,10 +130,10 @@ define(['modules/default/defaultcontroller'], function(Default) {
         leaf: {
             label: 'Value of the leaf'
         },
-		list: {
-			type: 'array',
-			label: 'A list of children'
-		}
+        list: {
+            type: 'array',
+            label: 'A list of children'
+        }
     };
 
     controller.prototype.variablesIn = ['tree'];

@@ -1,12 +1,12 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/api'], function(Default, API) {
+define(['modules/default/defaultview', 'src/util/api'], function (Default, API) {
 
     function view() {
     }
 
     view.prototype = $.extend(true, {}, Default, {
-        init: function() {
+        init: function () {
             var html = '';
             html += '<div></div>';
 
@@ -15,16 +15,16 @@ define(['modules/default/defaultview', 'src/util/api'], function(Default, API) {
                 width: '100%'
             });
             this.currentValue = '';
-            this.module.getDomContent( ).html(this.dom);
+            this.module.getDomContent().html(this.dom);
         },
-        inDom: function() {
+        inDom: function () {
             var that = this;
             var defaultValue = this.module.getConfiguration('thevalue');
             var textarea = $('<textarea>').css({
                 boxSizing: 'border-box',
                 width: '99%',
                 height: '99%'
-            }).on('keyup', function() {
+            }).on('keyup', function () {
                 var val = textarea.val();
                 if (that.currentValue !== val) {
                     that.module.controller.valueChanged(val);
@@ -34,7 +34,7 @@ define(['modules/default/defaultview', 'src/util/api'], function(Default, API) {
             this.dom.append(textarea);
             that.currentValue = defaultValue;
             this.module.controller.valueChanged(defaultValue);
-			this.resolveReady();
+            this.resolveReady();
         }
     });
 

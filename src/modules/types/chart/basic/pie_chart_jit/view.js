@@ -1,17 +1,17 @@
 'use strict';
 
-define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util', 'components/jit/Jit/jit'], function(Default, $, API, Util, $jit) {
+define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util', 'components/jit/Jit/jit'], function (Default, $, API, Util, $jit) {
 
     function view() {
         this._id = Util.getNextUniqueId();
     }
-    
+
     function customBlank() {
         this.chart.canvas.clear();
     }
-    
+
     view.prototype = $.extend(true, {}, Default, {
-        init: function() {
+        init: function () {
             if (!this.dom) {
                 this.dom = $('<div id="' + this._id + '"></div>').css({
                     height: '100%',
@@ -20,7 +20,7 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
                 this.module.getDomContent().html(this.dom);
             }
 
-            var labelColorRGB = this.module.getConfiguration('labelColor');
+            var labelColorRGB = this.module.getConfiguration('labelColor');
             var labelColor;
             if (labelColorRGB && labelColorRGB[3] !== 0) {
                 labelColor = Util.rgbToHex(labelColorRGB[0], labelColorRGB[1], labelColorRGB[2]);
@@ -39,9 +39,9 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
                 }
             };
         },
-        inDom: function() {
+        inDom: function () {
         },
-        onResize: function() {
+        onResize: function () {
             this.dom.empty();
             this.chart = new $jit.PieChart(this.chartOptions);
             if (this._data)
@@ -49,14 +49,14 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
             this.resolveReady();
         },
         update: {
-            'chart': function(moduleValue) {
+            'chart': function (moduleValue) {
                 if (!moduleValue)
                     return;
                 var chartJson = convertChartToJson(moduleValue.get());
                 this._data = chartJson;
                 this.setData(chartJson);
             },
-            'yArray': function(moduleValue) {
+            'yArray': function (moduleValue) {
                 if (!moduleValue)
                     return;
                 var arrayJson = convertSingleArrayToJson(moduleValue.get());
@@ -64,7 +64,7 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
                 this.setData(arrayJson);
             }
         },
-        setData: function(dataJson) {
+        setData: function (dataJson) {
             this.chart.loadJSON(dataJson);
         },
         blank: {
@@ -98,7 +98,10 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
                 }
             }
             for (var i = 0; i < ii; i++) {
-                json.values[i] = {values: [arr[i]], label: (labels[i] || 'label_' + i)};
+                json.values[i] = {
+                    values: [arr[i]],
+                    label: (labels[i] || 'label_' + i)
+                };
             }
         } else { // stacked chart
             json = {};
@@ -111,7 +114,10 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
                     var serie = data[i];
                     var arr = serie.y;
                     if (i === 0) {
-                        json.values[j] = {values: new Array(ii), label: 'label2 ' + j};
+                        json.values[j] = {
+                            values: new Array(ii),
+                            label: 'label2 ' + j
+                        };
                         json.label[j] = serie.label;
                     }
                     json.values[j].values[i] = arr[j];

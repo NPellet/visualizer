@@ -1,6 +1,6 @@
 'use strict';
 
-define( [ 'modules/default/defaultcontroller' ], function( Default ) {
+define(['modules/default/defaultcontroller'], function (Default) {
 
     /**
      * Creates a new empty controller
@@ -8,10 +8,11 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
      * @name Controller
      * @constructor
      */
-    function controller() { };
+    function controller() {
+    };
 
     // Extends the default properties of the default controller
-    controller.prototype = $.extend( true, {}, Default );
+    controller.prototype = $.extend(true, {}, Default);
 
 
     /*
@@ -27,13 +28,12 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
     };
 
 
-
     /*
      Configuration of the input/output references of the module
      */
     controller.prototype.references = {
         picture: {
-            type: ['picture', 'png', 'jpeg', 'jpg','gif'],
+            type: ['picture', 'png', 'jpeg', 'jpg', 'gif'],
             label: 'A picture'
         },
         pixel: {
@@ -58,7 +58,6 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
     };
 
 
-
     /*
      Configuration of the module for receiving events, as a static object
      In the form of
@@ -73,21 +72,19 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
      actionRef: 'actionLabel'
      }
      */
-    controller.prototype.actionsIn = {
-
-    };
+    controller.prototype.actionsIn = {};
 
 
-    controller.prototype.configurationStructure = function(section) {
+    controller.prototype.configurationStructure = function (section) {
         var vars = [];
         var currentCfg = this.module.definition.vars_in;
 
-        if(currentCfg) {
+        if (currentCfg) {
 
             var i = 0,
                 l = currentCfg.length;
 
-            for( ; i < l ; i++) {
+            for (; i < l; i++) {
                 vars.push({
                     title: currentCfg[i].name,
                     key: currentCfg[i].name
@@ -102,9 +99,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
                         type: 'list'
                     },
 
-                    fields: {
-
-                    }
+                    fields: {}
                 },
 
                 img: {
@@ -136,8 +131,8 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
                             type: 'combo',
                             title: 'Rendering',
                             options: [
-                                { key: 'default', title: 'Normal'},
-                                { key: 'crisp-edges', title: 'Crisp edges'}
+                                {key: 'default', title: 'Normal'},
+                                {key: 'crisp-edges', title: 'Crisp edges'}
                             ],
                             default: ['default']
                         },
@@ -145,8 +140,11 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
                             type: 'combo',
                             title: 'Scaling Method',
                             options: [
-                                { key: 'max', title: 'Extend to 100% of available spcae'},
-                                { key: 'no', title: 'Keep original image size'}
+                                {
+                                    key: 'max',
+                                    title: 'Extend to 100% of available spcae'
+                                },
+                                {key: 'no', title: 'Keep original image size'}
                             ],
                             default: ['max']
                         }
@@ -158,22 +156,22 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 
 
     controller.prototype.configAliases = {
-        img: [ 'groups', 'img', 0 ]
+        img: ['groups', 'img', 0]
     };
 
-    controller.prototype.clickedPixel = function(clickedPixel) {
-        this.createDataFromEvent('click','pixel', clickedPixel);
+    controller.prototype.clickedPixel = function (clickedPixel) {
+        this.createDataFromEvent('click', 'pixel', clickedPixel);
     };
 
-    controller.prototype.allClickedPixels = function(allClickedPixels) {
+    controller.prototype.allClickedPixels = function (allClickedPixels) {
         this.createDataFromEvent('click', 'allpixel', allClickedPixels);
     };
 
-    controller.prototype.hoverPixel = function(hoverPixel) {
+    controller.prototype.hoverPixel = function (hoverPixel) {
         this.createDataFromEvent('hover', 'pixel', hoverPixel);
     };
 
-    controller.prototype.allHoverPixels = function(allHoverPixels) {
+    controller.prototype.allHoverPixels = function (allHoverPixels) {
         this.createDataFromEvent('hover', 'allpixel', allHoverPixels);
     };
 

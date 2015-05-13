@@ -1,20 +1,21 @@
 'use strict';
 
-define(['modules/default/defaultmodel', 'src/util/datatraversing'], function(Default, Traversing) {
-	
-	function model() {};
-	model.prototype = $.extend(true, {}, Default, {
-		
-		getjPath: function(ref){
-			if(ref === 'nodeData' && this._objectModel) {
-				return Traversing.getJPathsFromElement(this.module.model._objectModel);
-			}
-			else {
-				return [];
-			}
-		}
-		
-	});
+define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (Default, Traversing) {
 
-	return model;
+    function model() {
+    };
+    model.prototype = $.extend(true, {}, Default, {
+
+        getjPath: function (ref) {
+            if (ref === 'nodeData' && this._objectModel) {
+                return Traversing.getJPathsFromElement(this.module.model._objectModel);
+            }
+            else {
+                return [];
+            }
+        }
+
+    });
+
+    return model;
 });

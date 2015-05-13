@@ -1,15 +1,15 @@
 'use strict';
 
-define(function() {
-	return {
+define(function () {
+    return {
 
-		typeName: 'MyOwnType',
-		structure: {},
-		renderer: {
-			toscreen: function( def, value ) {
-				value = value.get();
-				def.resolve( value + 'abc' );
-			}
-		}
-	};
+        typeName: 'MyOwnType',
+        structure: {},
+        renderer: {
+            toscreen: function (def, value) {
+                value = value.get();
+                def.resolve(value + 'abc');
+            }
+        }
+    };
 });

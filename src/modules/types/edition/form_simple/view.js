@@ -1,61 +1,61 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api', 'lib/formcreator/formcreator', 'lodash'], function(Default, DataTraversing, API, FormCreator, _) {
+define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api', 'lib/formcreator/formcreator', 'lodash'], function (Default, DataTraversing, API, FormCreator, _) {
 
-	function View() {
+    function View() {
     }
 
-	View.prototype = $.extend(true, {}, Default, {
+    View.prototype = $.extend(true, {}, Default, {
 
-		init: function() {
-			this.dom = $('<div />');
-			this.module.getDomContent( ).html( this.dom );
-			this.callback = null;
-			//this.resolveReady();
-		},
+        init: function () {
+            this.dom = $('<div />');
+            this.module.getDomContent().html(this.dom);
+            this.callback = null;
+            //this.resolveReady();
+        },
 
-		inDom: function() {
+        inDom: function () {
 
-			var self = this,
-				structure = this.module.getConfiguration('structure') || [],
-				tpl_file = this.module.getConfiguration('tpl_file'),
-				trigger = this.module.getConfiguration('trigger'),
-				tpl_html = this.module.getConfiguration('tpl_html'),
-				form,
-				def,
-				options = {},
-				formStructure = {
-					sections: {
-						main: {
-							groups: {
-								main: {
-									options: {
-										type: 'list',
-										multiple: false
-									},
+            var self = this,
+                structure = this.module.getConfiguration('structure') || [],
+                tpl_file = this.module.getConfiguration('tpl_file'),
+                trigger = this.module.getConfiguration('trigger'),
+                tpl_html = this.module.getConfiguration('tpl_html'),
+                form,
+                def,
+                options = {},
+                formStructure = {
+                    sections: {
+                        main: {
+                            groups: {
+                                main: {
+                                    options: {
+                                        type: 'list',
+                                        multiple: false
+                                    },
 
-									fields: FormCreator.makeStructure( structure )
-								}
-							}
-						}
-					}
-				};
+                                    fields: FormCreator.makeStructure(structure)
+                                }
+                            }
+                        }
+                    }
+                };
 
-		
-			if( tpl_file ) {
-				def = $.get( tpl_file, {} );	
-			} else {
-				def = tpl_html;
-			}
+
+            if (tpl_file) {
+                def = $.get(tpl_file, {});
+            } else {
+                def = tpl_html;
+            }
 
             function triggerCommon() {
-                if( self.lockEvents ) {
+                if (self.lockEvents) {
                     return;
                 }
 
                 var i, l;
 
-                var val = new DataObject( this.getValue(), true );
+                var val = new DataObject(this.getValue(), true);
                 self.formValue = val;
 //				self.module.controller.valueChanged( val );
 
@@ -65,22 +65,22 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
                 var el = new DataObject();
 
-                if( input ) {
+                if (input) {
 
-                    if( self.module.getConfiguration( 'replaceObj' ) ) {
+                    if (self.module.getConfiguration('replaceObj')) {
 
-                        for( i = 0, l = structure.length ; i < l ; i ++ ) {
-                            jpath = structure[ i ].groups.general[ 0 ].searchOnField[ 0 ];
-                            input.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value, [self.module.getId()] );
+                        for (i = 0, l = structure.length; i < l; i++) {
+                            jpath = structure[i].groups.general[0].searchOnField[0];
+                            input.setChild(jpath, self.form.sectionElements.main[0].groupElements.main[0].fieldElements[structure[i].groups.general[0].name[0]][0].value, [self.module.getId()]);
                         }
 
-                        self.module.model.dataTriggerChange( input );
+                        self.module.model.dataTriggerChange(input);
 
                     } else {
 
-                        for( i = 0, l = structure.length ; i < l ; i ++ ) {
-                            jpath = structure[ i ].groups.general[ 0 ].searchOnField[ 0 ];
-                            el.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value );
+                        for (i = 0, l = structure.length; i < l; i++) {
+                            jpath = structure[i].groups.general[0].searchOnField[0];
+                            el.setChild(jpath, self.form.sectionElements.main[0].groupElements.main[0].fieldElements[structure[i].groups.general[0].name[0]][0].value);
                             //						input.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value );
                         }
                     }
@@ -90,122 +90,124 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                 return el;
             }
 
-			var triggerFunction = function( ) {
+            var triggerFunction = function () {
                 var el = triggerCommon.call(this);
                 self.module.controller.formTriggered(el)
-			};
+            };
 
-            var changedFunction = function() {
+            var changedFunction = function () {
                 var el = triggerCommon.call(this);
                 self.module.controller.valueChanged(el);
             };
 
-			$.when( def ).done( function( tpl ) { 
+            $.when(def).done(function (tpl) {
 
-				tpl = '<form><div style="position: relative;" class="form-sections-wrapper form-section-section-container"><div class="form-section" data-form-sectionname="main"><div class="form-section-group-container"><div class="form-group" data-form-groupname="main">' + tpl + '</div></div></div></div></form>';
-				var form = FormCreator.makeForm();
-				
-				switch( trigger ) {
+                tpl = '<form><div style="position: relative;" class="form-sections-wrapper form-section-section-container"><div class="form-section" data-form-sectionname="main"><div class="form-section-group-container"><div class="form-group" data-form-groupname="main">' + tpl + '</div></div></div></div></form>';
+                var form = FormCreator.makeForm();
 
-					case 'btn':case 'both':
+                switch (trigger) {
+
+                    case 'btn':
+                    case 'both':
                         var btnLabel = self.module.getConfiguration('btnLabel');
-						form.addButton(btnLabel, { color: 'blue' }, $.proxy( triggerFunction, form ) );
-					case 'change':case 'both':
+                        form.addButton(btnLabel, {color: 'blue'}, $.proxy(triggerFunction, form));
+                    case 'change':
+                    case 'both':
                         var debounce = self.module.getConfiguration('debounce');
-                        options.onValueChanged = debounce > 0 ?  _.debounce(changedFunction, debounce): changedFunction;
-				}
+                        options.onValueChanged = debounce > 0 ? _.debounce(changedFunction, debounce) : changedFunction;
+                }
 
-				form.init( options );
+                form.init(options);
 
-				form.setStructure( formStructure );
-				form.onStructureLoaded( ).done( function( ) {
+                form.setStructure(formStructure);
+                form.onStructureLoaded().done(function () {
 
-					form.fill( { } ); // For now let's keep it empty.
+                    form.fill({}); // For now let's keep it empty.
 
-				} );
+                });
 
-				form.onLoaded( ).done( function( ) {
-					
-					form.setTpl( tpl );
-					
-					self.dom.html( form.makeDomTpl() );
-					form.inDom( );
+                form.onLoaded().done(function () {
+
+                    form.setTpl(tpl);
+
+                    self.dom.html(form.makeDomTpl());
+                    form.inDom();
                     form.dom.submit(function (event) {
                         event.preventDefault();
                     });
                     triggerFunction.call(form);
-					self.resolveReady();
-				});
+                    self.resolveReady();
+                });
 
                 self.form = form;
 
-			});
-		},
-		
+            });
+        },
 
-		update: {
-			input_object: function( varValue ) {
-				var self = this;
-				this.newValue( varValue );
-				
 
-				this.module.model.dataListenChange( varValue, function() {
+        update: {
+            input_object: function (varValue) {
+                var self = this;
+                this.newValue(varValue);
 
-					self.newValue( this );
 
-				}, 'input_object');
-			}
-		},
+                this.module.model.dataListenChange(varValue, function () {
 
-		newValue: function( varValue ) {
-			var self = this,
-				structure = this.module.getConfiguration('structure') || [],
-				jpath;
+                    self.newValue(this);
 
-			self.lockEvents = true;
-			self.nb = 0;
+                }, 'input_object');
+            }
+        },
 
-			for( var i = 0, l = structure.length ; i < l ; i ++ ) {
-				jpath = structure[ i ].groups.general[ 0 ].searchOnField[ 0 ];
+        newValue: function (varValue) {
+            var self = this,
+                structure = this.module.getConfiguration('structure') || [],
+                jpath;
 
-				( function( j, jpath ) {
-					self.nb++;
+            self.lockEvents = true;
+            self.nb = 0;
 
-					varValue.getChild( jpath, true ).then( function( returned ) {
+            for (var i = 0, l = structure.length; i < l; i++) {
+                jpath = structure[i].groups.general[0].searchOnField[0];
 
-						
-							self
-								.form
-								.sectionElements
-								.main[ 0 ]
-								.groupElements
-								.main[ 0 ]
-								.fieldElements[ 
+                (function (j, jpath) {
+                    self.nb++;
 
-									structure[ j ].groups.general[ 0 ].name[ 0 ]
+                    varValue.getChild(jpath, true).then(function (returned) {
 
-							][0]
-								.value = ( returned ? ( returned.get ? returned.get() : returned.toString( ) ) : '' );
-						
 
-						self.nb--;
-						if( self.nb == 0 ) {
-							self.lockEvents = false;
-						}
-					});
-			
-				}) ( i, jpath );
-				
-			}
+                        self
+                            .form
+                            .sectionElements
+                            .main[0]
+                            .groupElements
+                            .main[0]
+                            .fieldElements[
 
-		},
+                            structure[j].groups.general[0].name[0]
 
-		getDom: function() {
-			return this.dom;
-		}
+                            ][0]
+                            .value = ( returned ? ( returned.get ? returned.get() : returned.toString() ) : '' );
 
-	});
 
-	return View;
+                        self.nb--;
+                        if (self.nb == 0) {
+                            self.lockEvents = false;
+                        }
+                    });
+
+                })(i, jpath);
+
+            }
+
+        },
+
+        getDom: function () {
+            return this.dom;
+        }
+
+    });
+
+    return View;
 
 });

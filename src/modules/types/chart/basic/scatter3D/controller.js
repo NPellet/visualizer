@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/api', 'src/util/util'], function(Default, Traversing, API, Util) {
+define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/util/api', 'src/util/util'], function (Default, Traversing, API, Util) {
 
     /**
      * Creates a new empty controller
@@ -8,10 +8,11 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
      * @name Controller
      * @constructor
      */
-    function controller() { };
+    function controller() {
+    };
 
     // Extends the default properties of the default controller
-    controller.prototype = $.extend( true, {}, Default );
+    controller.prototype = $.extend(true, {}, Default);
 
     /*
      Information about the module
@@ -35,7 +36,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 
         onHover: {
             label: 'Hover a 3D point',
-            refVariable: [ 'info', 'coordinates', 'point']
+            refVariable: ['info', 'coordinates', 'point']
         },
 
         onClick: {
@@ -44,14 +45,14 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
         }
     };
 
-    controller.prototype.onHover = function(row) {
+    controller.prototype.onHover = function (row) {
         var coord = [
             this.module.view._data.x[row],
             this.module.view._data.y[row],
             this.module.view._data.z[row]
         ];
 
-        this.setVarFromEvent('onHover', 'point', 'data3D', [row] );
+        this.setVarFromEvent('onHover', 'point', 'data3D', [row]);
         this.createDataFromEvent('onHover', 'coordinates', DataObject.check(coord));
     };
 
@@ -85,22 +86,21 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
     };
 
 
-
-    controller.prototype.elementHover = function(element) {
-        if( ! element ) {
+    controller.prototype.elementHover = function (element) {
+        if (!element) {
             return;
         }
 
         if (this._highlighted) {
-            API.highlight( this._highlighted, 0 );
+            API.highlight(this._highlighted, 0);
         }
-        API.highlight( element, 1 );
-        this._highlighted=element;
+        API.highlight(element, 1);
+        this._highlighted = element;
     };
 
-    controller.prototype.elementOut = function() {
+    controller.prototype.elementOut = function () {
         if (this._highlighted) {
-            API.highlight( this._highlighted, 0 );
+            API.highlight(this._highlighted, 0);
         }
     };
 
@@ -109,14 +109,14 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
      Configuration of the module for receiving events, as a static object
      In the form of
      */
-    controller.prototype.variablesIn = [ 'chart', 'boolArray', 'data3D' ];
+    controller.prototype.variablesIn = ['chart', 'boolArray', 'data3D'];
 
 
-    controller.prototype.configurationStructure = function() {
+    controller.prototype.configurationStructure = function () {
         var jpath = [];
         Traversing.getJPathsFromElement(this.module.data, jpath);
 
-        var jpathPoint = this.module.model.getjPath('point', false );
+        var jpathPoint = this.module.model.getjPath('point', false);
         return {
             groups: {
                 group: {
@@ -157,7 +157,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
                                 'yzsec': 'YZ Secondary',
                                 'xzsec': 'XZ Secondary'
                             },
-                            default: ['xy','yz','xz']
+                            default: ['xy', 'yz', 'xz']
                         },
 
                         secondaryGrids: {
@@ -204,16 +204,16 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
                                 'ylab': 'Y Label',
                                 'zlab': 'Z Label'
                             },
-                            default: ['x','y','z', 'xlab', 'ylab', 'zlab']
+                            default: ['x', 'y', 'z', 'xlab', 'ylab', 'zlab']
                         },
 
                         labels: {
                             type: 'combo',
                             title: 'Labels',
                             options: [
-                                { title: 'None', key: 'none'},
-                                { title: 'As Legend', key: 'alegend'},
-                                { title: 'On axis', key: 'axis'},
+                                {title: 'None', key: 'none'},
+                                {title: 'As Legend', key: 'alegend'},
+                                {title: 'On axis', key: 'axis'},
                                 {title: 'Both', key: 'both'}
                             ]
                         },
@@ -261,7 +261,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
                         annotationColor: {
                             type: 'color',
                             title: 'Annotation color',
-                            default: [50,50,50,1]
+                            default: [50, 50, 50, 1]
                         },
                         sizeNormalization: {
                             type: 'float',

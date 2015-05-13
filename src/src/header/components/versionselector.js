@@ -33,9 +33,9 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
                 currentMenu = this;
 
                 this.doElements();
-            }
-            else
+            } else {
                 this.close();
+            }
 
         },
 
@@ -44,7 +44,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
             var uri = new URI(document.location.href);
             var query = uri.query(true);
             var currentVersion;
-            if(query.v) {
+            if (query.v) {
                 currentVersion = query.v;
             } else {
                 currentVersion = 'v' + Versioning.version;
@@ -76,7 +76,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
         load: function (version) {
             var uri = new URI(document.location.href);
             var query = uri.query(true);
-            if(query.v !== version) {
+            if (query.v !== version) {
                 uri.setQuery('v', version);
                 document.location = uri.href();
             }

@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller'], function(Default) {
+define(['modules/default/defaultcontroller'], function (Default) {
 
 
     function Controller() {
@@ -18,27 +18,27 @@ define(['modules/default/defaultcontroller'], function(Default) {
     };
 
 
-	Controller.prototype.references = {
-        
+    Controller.prototype.references = {
+
         'xcoords': {
-			label: 'X Coords'
-		}
+            label: 'X Coords'
+        }
 
     };
 
     Controller.prototype.events = {
 
-    	onMove: {
-			label: 'Move',
-			description: '',
-			refVariable: ['xcoords'],
-			refAction: ['xcoords']
-		}
+        onMove: {
+            label: 'Move',
+            description: '',
+            refVariable: ['xcoords'],
+            refAction: ['xcoords']
+        }
     };
 
-    Controller.prototype.move = function( x ) {
+    Controller.prototype.move = function (x) {
 
-		this.createDataFromEvent('onMove', 'xcoords', x);
+        this.createDataFromEvent('onMove', 'xcoords', x);
         this.sendActionFromEvent('onMove', 'xcoords', x);
     }
 
@@ -46,42 +46,41 @@ define(['modules/default/defaultcontroller'], function(Default) {
     Controller.prototype.variablesIn = ['xcoords'];
 
     Controller.prototype.actionsIn = {
-		
-		changeX: 'Change X center value'
-	}
 
-	Controller.prototype.configurationStructure = function(section) {
-		
-		return {
+        changeX: 'Change X center value'
+    }
 
-			groups: {
+    Controller.prototype.configurationStructure = function (section) {
 
-				group: {
-					options: {
-						type: 'list'
-					},
+        return {
 
-					fields: {
+            groups: {
 
-						step: {
-							type: 'float',
-							title: 'Step',
+                group: {
+                    options: {
+                        type: 'list'
+                    },
+
+                    fields: {
+
+                        step: {
+                            type: 'float',
+                            title: 'Step',
                             default: '1'
-						}
-					}
-				}
-			}
-		}
-	}
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 
-	Controller.prototype.configFunctions = {
-	};
+    Controller.prototype.configFunctions = {};
 
-	Controller.prototype.configAliases = {
+    Controller.prototype.configAliases = {
         'step': ['groups', 'group', 0, 'step', 0]
-	};
+    };
 
 
-	return Controller;
+    return Controller;
 });

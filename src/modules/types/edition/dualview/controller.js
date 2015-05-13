@@ -1,26 +1,26 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'modules/types/edition/onde/controller', 'modules/types/display/template-twig/controller'], function(Default, OndeC, TwigC) {
+define(['modules/default/defaultcontroller', 'modules/types/edition/onde/controller', 'modules/types/display/template-twig/controller'], function (Default, OndeC, TwigC) {
 
     function controller() {
-		this.twigC = new TwigC();
-		this.ondeC = new OndeC();
+        this.twigC = new TwigC();
+        this.ondeC = new OndeC();
     }
 
     controller.prototype = $.extend(true, {}, Default);
 
-	controller.prototype.setModule = function(module) {
-		this.module = module;
-		this.twigC.module = module.twigM;
-		this.twigC.module.controller = this.twigC;
-		this.ondeC.module = module.ondeM;
-		this.ondeC.module.controller = this.ondeC;
-	};
-	
-	controller.prototype.init = function() {
-		this.twigC.init();
-		this.ondeC.init();
-	};
+    controller.prototype.setModule = function (module) {
+        this.module = module;
+        this.twigC.module = module.twigM;
+        this.twigC.module.controller = this.twigC;
+        this.ondeC.module = module.ondeM;
+        this.ondeC.module.controller = this.ondeC;
+    };
+
+    controller.prototype.init = function () {
+        this.twigC.init();
+        this.ondeC.init();
+    };
 
     controller.prototype.moduleInformation = {
         name: 'Edit/Display',
@@ -39,7 +39,7 @@ define(['modules/default/defaultcontroller', 'modules/types/edition/onde/control
 
     controller.prototype.variablesIn = ['value'];
 
-    controller.prototype.configurationStructure = function() {
+    controller.prototype.configurationStructure = function () {
 
         return {
             groups: {
@@ -54,36 +54,42 @@ define(['modules/default/defaultcontroller', 'modules/types/edition/onde/control
                             mode: 'html',
                             default: ''
                         },
-						schema: {
-							type: 'jscode',
-							title: 'Schema',
-							mode: 'json',
-							default: '{}'
-						},
-						button_text: {
-							type: 'text',
-							title: 'Text of the save button',
-							default: 'Save'
-						}
+                        schema: {
+                            type: 'jscode',
+                            title: 'Schema',
+                            mode: 'json',
+                            default: '{}'
+                        },
+                        button_text: {
+                            type: 'text',
+                            title: 'Text of the save button',
+                            default: 'Save'
+                        }
                     }
                 }
             }
         };
     };
-	
-	controller.prototype.configFunctions = {
-		mode: function(){return 'schema';},
-		schemaSource: function(){return 'config';},
-		output: function(){return 'modified';}
-	};
+
+    controller.prototype.configFunctions = {
+        mode: function () {
+            return 'schema';
+        },
+        schemaSource: function () {
+            return 'config';
+        },
+        output: function () {
+            return 'modified';
+        }
+    };
 
     controller.prototype.configAliases = {
         template: ['groups', 'group', 0, 'template', 0],
-		schema: ['groups', 'group', 0, 'schema', 0],
-		button_text: ['groups', 'group', 0, 'button_text', 0],
-		mode: [],
-		schemaSource: [],
-		output: []
+        schema: ['groups', 'group', 0, 'schema', 0],
+        button_text: ['groups', 'group', 0, 'button_text', 0],
+        mode: [],
+        schemaSource: [],
+        output: []
     };
 
     return controller;

@@ -1,19 +1,20 @@
 'use strict';
 
-define(['modules/default/defaultmodel', 'src/util/datatraversing'], function(Default, Traversing) {
-	
-	function model() {};
-	model.prototype = $.extend(true, {}, Default, {
+define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (Default, Traversing) {
 
-		getValue: function() {
-			return this.dataValue;
-		},
-		
-		getjPath: function(rel) {
-			return []
-		}
-	});
+    function model() {
+    };
+    model.prototype = $.extend(true, {}, Default, {
 
-	return model;
+        getValue: function () {
+            return this.dataValue;
+        },
+
+        getjPath: function (rel) {
+            return []
+        }
+    });
+
+    return model;
 });
 	

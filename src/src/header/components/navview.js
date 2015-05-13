@@ -22,16 +22,17 @@ define([
             this.id = Util.getNextUniqueId();
             $.ui.fancytree.debugLevel = 0;
 
-            $(document).keydown(function(event) {
+            $(document).keydown(function (event) {
                     // If Control or Command key is pressed and the S key is pressed
                     // run save function. 83 is the key code for S.
-                    if((event.ctrlKey || event.metaKey) && event.which == 83) {
+                    if ((event.ctrlKey || event.metaKey) && event.which == 83) {
                         // Save Function
                         event.preventDefault();
                         that.checkNode();
                         that.save();
                         return false;
-                    };
+                    }
+                    ;
                 }
             );
         },
@@ -104,16 +105,16 @@ define([
         save: function () {
             var that = this;
             var dir, name;
-            if(this.activeNode) {
+            if (this.activeNode) {
                 dir = this.getDir(this.activeNode.data.path);
                 name = this.activeNode.title;
             }
-            else if(this.viewURL) {
+            else if (this.viewURL) {
                 dir = this.getDir(this.viewURL);
                 dir = dir.replace(/^\/views/, '.');
                 var idx = this.viewURL.lastIndexOf('/');
-                if(idx > -1) {
-                    name = this.viewURL.slice(idx+1);
+                if (idx > -1) {
+                    name = this.viewURL.slice(idx + 1);
                 }
                 else {
                     name = this.viewURL;
@@ -337,7 +338,7 @@ define([
         },
 
         log: function (name, text) {
-            if(!this.$log) return;
+            if (!this.$log) return;
             var $slog = this.$log.find('#' + this.cssId(name));
 
             if ($slog.length > 0) {
@@ -402,8 +403,7 @@ define([
                             case 8:
                                 if (data.node.isFolder()) {
                                     that.removeDir.apply(that, [data.node]);
-                                }
-                                else {
+                                } else {
                                     that.remove.apply(that, [data.node]);
                                 }
                                 break;
@@ -445,11 +445,11 @@ define([
                 });
                 that.fancytreeOk = true;
                 var tree = that.$tree.fancytree('getTree');
-                that.$_elToOpen.find('input[name=search]').keyup(function(e){
+                that.$_elToOpen.find('input[name=search]').keyup(function (e) {
                     var n,
                         match = $(this).val();
 
-                    if(e && e.which === $.ui.keyCode.ESCAPE || $.trim(match) === ''){
+                    if (e && e.which === $.ui.keyCode.ESCAPE || $.trim(match) === '') {
                         $('button#btnResetSearch').click();
                         return;
                     }
@@ -460,7 +460,7 @@ define([
                     $('span#matches').text('(' + n + ' matches)');
                 }).focus();
 
-                $('button#btnResetSearch').click(function(){
+                $('button#btnResetSearch').click(function () {
                     $('input[name=search]').val('');
                     $('span#matches').text('');
                     tree.clearFilter();
