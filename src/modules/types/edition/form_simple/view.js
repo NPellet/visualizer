@@ -106,13 +106,11 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                 var form = FormCreator.makeForm();
 
                 switch (trigger) {
-
                     case 'btn':
                     case 'both':
                         var btnLabel = self.module.getConfiguration('btnLabel');
                         form.addButton(btnLabel, {color: 'blue'}, $.proxy(triggerFunction, form));
                     case 'change':
-                    case 'both':
                         var debounce = self.module.getConfiguration('debounce');
                         options.onValueChanged = debounce > 0 ? _.debounce(changedFunction, debounce) : changedFunction;
                 }

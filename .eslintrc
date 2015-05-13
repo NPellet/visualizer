@@ -6,6 +6,9 @@
   "rules": {
     "indent": [2, 4],
     "no-debugger": 2,
+    "no-dupe-args": 2,
+    "no-dupe-keys": 2,
+    "no-duplicate-case": 2,
     "quotes": [2, "single", "avoid-escape"],
     "strict": [2, "global"]
   }
