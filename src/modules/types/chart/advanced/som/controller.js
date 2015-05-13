@@ -5,7 +5,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'Self-organizing map',
@@ -96,7 +96,10 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                 }
             } else {
                 for (i = 0, ii = fields.length; i < ii; i++) {
-                    modelOptions.push({key: fields[i].name, title: fields[i].name});
+                    modelOptions.push({
+                        key: fields[i].name,
+                        title: fields[i].name
+                    });
                 }
             }
         }
@@ -135,7 +138,10 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                                     options: [
                                         {key: 'fixed', title: 'Fixed color'},
                                         {key: 'range', title: 'Color range'},
-                                        {key: 'inter', title: 'RGB interpolation'}
+                                        {
+                                            key: 'inter',
+                                            title: 'RGB interpolation'
+                                        }
                                         //{ key: 'derive', title: 'Derivative'}
                                     ],
                                     'default': 'fixed',
@@ -217,7 +223,10 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                                     options: [
                                         {key: 'fixed', title: 'Fixed color'},
                                         {key: 'range', title: 'Color range'},
-                                        {key: 'inter', title: 'RGB interpolation'},
+                                        {
+                                            key: 'inter',
+                                            title: 'RGB interpolation'
+                                        },
                                         {key: 'jpath', title: 'Color jpath'}
                                     ],
                                     'default': 'fixed',

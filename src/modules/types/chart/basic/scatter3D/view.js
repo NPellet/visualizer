@@ -1,12 +1,18 @@
 'use strict';
 
 define([
-    'modules/default/defaultview', 'src/main/datas', 'src/util/datatraversing',
-    'src/util/api', 'src/util/util',
-    'lodash', 'threejs', 'src/util/debug', 'chroma', 'components/ml/dist/ml.min',
+    'modules/default/defaultview',
+    'src/main/datas',
+    'src/util/datatraversing',
+    'src/util/api',
+    'src/util/util',
+    'lodash',
+    'threejs',
+    'src/util/debug',
+    'chroma',
+    'components/ml/dist/ml.min',
     'lib/threejs/TrackballControls'
 ], function (Default, Data, Traversing, API, Util, _, THREE, Debug, chroma, ml) {
-
 
     var Stat = ml.Stat;
 
@@ -31,7 +37,6 @@ define([
         });
         return x;
     }
-
 
     function generateRandomColors(n) {
         var result = [];
@@ -162,14 +167,11 @@ define([
         });
     };
 
-    function view() {
+    function View() {
         this._firstLoad = true;
     }
 
-    view.prototype = $.extend(true, {}, Default, {
-
-        DEBUG: true,
-
+    $.extend(true, View.prototype, Default, {
 
         _initThreejs: function () {
             var self = this;
@@ -1842,5 +1844,6 @@ define([
         }
     });
 
-    return view;
+    return View;
+
 });

@@ -2,16 +2,13 @@
 
 define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api', 'src/util/util', 'lib/flot/jquery.flot'], function (Default, Traversing, API, Util) {
 
-    function view() {
+    function View() {
     }
-    view.prototype = $.extend(true, {}, Default, {
 
-        DEBUG: true,
-
+    $.extend(true, View.prototype, Default, {
 
         init: function () {
 
-            if (this.DEBUG) console.log('Stack Chart: init');
             if (this.dom) {
                 // in the dom exists and the preferences has been changed we need to clean the canvas
                 this.dom.empty();
@@ -32,8 +29,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
             // we decided here to plot the chart in the 'onResize' event
             this.loadedData = $.Deferred();
 
-            if (this.DEBUG) console.log('Stack Chart: ID: ' + this._id);
-
             this._data = [];	// the data that will be sent to FLOT
             var cfg = $.proxy(this.module.getConfiguration, this.module);
             axis = undefined;
@@ -44,16 +39,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
         },
 
-
-        inDom: function () {
-
-            if (this.DEBUG) console.log('Stack Chart: inDom');
-
-        },
-
         onResize: function () {
-
-            if (this.DEBUG) console.log('Stack Chart: onResize');
 
             var self = this;
 
@@ -90,7 +76,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                 var self = this;
                 var cfg = $.proxy(this.module.getConfiguration, this.module);
 
-                if (this.DEBUG) console.log('stack Chart: update from chart object');
                 this._convertChartToData(moduleValue.get().data);
                 var axis = moduleValue.get().axis;
                 var x = moduleValue.get().data[0].x;
@@ -286,5 +271,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
     });
 
-    return view;
+    return View;
+
 });

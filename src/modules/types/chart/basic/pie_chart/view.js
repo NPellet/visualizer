@@ -2,15 +2,12 @@
 
 define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api', 'src/util/util', 'lib/flot/jquery.flot', 'lib/flot/jquery.flot.pie'], function (Default, Traversing, API, Util) {
 
-    function view() {
+    function View() {
     }
-    view.prototype = $.extend(true, {}, Default, {
 
-        DEBUG: false,
-
+    $.extend(true, View.prototype, Default, {
 
         init: function () {
-            if (this.DEBUG) console.log('Pie Chart: init');
 
             // When we change configuration the method init is called again. Also the case when we change completely of view
             if (!this.dom) {
@@ -35,9 +32,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
             this.updateOptions();
 
-
-            if (this.DEBUG) console.log('Pie Chart: ID: ' + this._id);
-
             this._data = [];	// the data that will be sent to FLOT
 
             this.resolveReady();
@@ -45,7 +39,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
         },
 
         onResize: function () {
-            if (this.DEBUG) console.log('Pie Chart: onResize');
             var self = this;
             // the size is now really defined (we are after inDom)
             // and we received the data ...
@@ -91,7 +84,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
          */
         update: {
             'chart': function (moduleValue) {
-                if (this.DEBUG) console.log('Pie Chart: update from chart object');
 
                 if (!moduleValue || !moduleValue.value) return;
 
@@ -103,7 +95,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                 this.onResize();
             },
             'yArray': function (moduleValue) {
-                if (this.DEBUG) console.log('Pie Chart: update from array');
                 this._data = moduleValue.get();
                 this.loadedData.resolve();
 
@@ -164,6 +155,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
     });
 
-    return view;
+    return View;
 
 });

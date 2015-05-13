@@ -2,7 +2,7 @@
 
 define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util', 'components/jit/Jit/jit'], function (Default, $, API, Util, $jit) {
 
-    function view() {
+    function View() {
         this._id = Util.getNextUniqueId();
     }
 
@@ -10,7 +10,7 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
         this.chart.canvas.clear();
     }
 
-    view.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
         init: function () {
             if (!this.dom) {
                 this.dom = $('<div id="' + this._id + '"></div>').css({
@@ -39,8 +39,6 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
                 }
             };
         },
-        inDom: function () {
-        },
         onResize: function () {
             this.dom.empty();
             this.chart = new $jit.PieChart(this.chartOptions);
@@ -49,14 +47,14 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
             this.resolveReady();
         },
         update: {
-            'chart': function (moduleValue) {
+            chart: function (moduleValue) {
                 if (!moduleValue)
                     return;
                 var chartJson = convertChartToJson(moduleValue.get());
                 this._data = chartJson;
                 this.setData(chartJson);
             },
-            'yArray': function (moduleValue) {
+            yArray: function (moduleValue) {
                 if (!moduleValue)
                     return;
                 var arrayJson = convertSingleArrayToJson(moduleValue.get());
@@ -136,24 +134,6 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
         return json;
     }
 
-    /*function convertArrayToJson(array) {
-     var json = {};
-     var ii = array.length;
-     var jj = array[0].length;
-     json.values = new Array(jj);
-     json.label = new Array(jj);
-     for (var i = 0; i < ii; i++) {
-     for (var j = 0; j < jj; j++) {
-     if (i === 0) {
-     json.values[j] = {values: new Array(ii), label: 'label2 ' + j};
-     json.label[j] = 'label ' + j;
-     }
-     json.values[j].values[i] = array[i][j];
-     }
-     }
-     return(json);
-     }*/
-
-    return view;
+    return View;
 
 });

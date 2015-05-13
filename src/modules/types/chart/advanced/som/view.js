@@ -5,7 +5,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
         init: function () {
             this.dom = document.createElement('div');
             this.dom.style.height = '100%';

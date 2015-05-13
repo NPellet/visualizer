@@ -2,17 +2,13 @@
 
 define(['modules/default/defaultcontroller'], function (Default) {
 
-    function controller() {
+    function Controller() {
         this._data = new DataObject();
     }
 
-    // Extends the default properties of the default controller
-    controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
-    /*
-     Information about the module
-     */
-    controller.prototype.moduleInformation = {
+    Controller.prototype.moduleInformation = {
         name: 'Phylogram',
         description: 'Display phylogram using D3 library',
         author: 'Nathanaêl Khodl, Luc Patiny, Michaël Zasso',
@@ -21,34 +17,36 @@ define(['modules/default/defaultcontroller'], function (Default) {
         cssClass: 'phylogram'
     };
 
-    controller.prototype.mouseOverLeaf = function (data) {
+    Controller.prototype.mouseOverLeaf = function (data) {
         if (data.data) {
             this._data = DataObject.check(data.data);
             this.createDataFromEvent('onLeafHover', 'leaf', DataObject.check(this._data));
         }
     };
-    controller.prototype.mouseOutLeaf = function () {
+
+    Controller.prototype.mouseOutLeaf = function () {
 
     };
-    controller.prototype.clickLeaf = function (data) {
+
+    Controller.prototype.clickLeaf = function (data) {
         if (data.data) {
             this._data = DataObject.check(data.data);
             this.createDataFromEvent('onLeafSelect', 'leaf', DataObject.check(this._data));
         }
     };
 
-    controller.prototype.mouseOverBranch = function (data) {
+    Controller.prototype.mouseOverBranch = function (data) {
         this.sendTreeFromEvent(data, 'onBranchHover');
     };
 
-    controller.prototype.mouseOutBranch = function () {
+    Controller.prototype.mouseOutBranch = function () {
     };
 
-    controller.prototype.clickBranch = function (data) {
+    Controller.prototype.clickBranch = function (data) {
         this.sendTreeFromEvent(data, 'onBranchSelect');
     };
 
-    controller.prototype.sendTreeFromEvent = function (data, name) {
+    Controller.prototype.sendTreeFromEvent = function (data, name) {
         var element = new DataObject({'type': 'tree', value: data}, true);
         this.sendActionFromEvent(name, 'tree', element);
         this.createDataFromEvent(name, 'tree', element);
@@ -70,7 +68,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         }
     }
 
-    controller.prototype.configurationStructure = function () {
+    Controller.prototype.configurationStructure = function () {
         return {
             groups: {
                 group: {
@@ -80,27 +78,20 @@ define(['modules/default/defaultcontroller'], function (Default) {
                     fields: {
                         branchWidth: {
                             type: 'text',
-                            default: 4,
+                            'default': 4,
                             title: 'Branch width'
                         }
-                        /*
-                         branchColor: {
-                         type: 'color',
-                         title: 'Branch color'
-                         }
-                         */
                     }
                 }
             }
         };
     };
 
-    controller.prototype.configAliases = {
-        'branchWidth': ['groups', 'group', 0, 'branchWidth', 0]
-        //'branchColor': [ 'groups', 'group', 0, 'branchColor', 0 ]
+    Controller.prototype.configAliases = {
+        branchWidth: ['groups', 'group', 0, 'branchWidth', 0]
     };
 
-    controller.prototype.events = {
+    Controller.prototype.events = {
         onLeafSelect: {
             label: 'Select a leaf',
             refVariable: ['leaf']
@@ -119,10 +110,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         }
     };
 
-    /*
-     Configuration of the input/output references of the module
-     */
-    controller.prototype.references = {
+    Controller.prototype.references = {
         tree: {
             type: ['tree'],
             label: 'A tree with children'
@@ -136,8 +124,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
         }
     };
 
-    controller.prototype.variablesIn = ['tree'];
+    Controller.prototype.variablesIn = ['tree'];
 
+    return Controller;
 
-    return controller;
 });

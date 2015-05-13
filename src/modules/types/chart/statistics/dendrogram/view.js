@@ -2,11 +2,11 @@
 
 define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api', 'src/util/util', 'lib/jit/jit-custom'], function (Default, Traversing, API, Util) {
 
-    function view() {
+    function View() {
     }
-    view.prototype = $.extend(true, {}, Default, {
 
-        DEBUG: false,
+    $.extend(true, View.prototype, Default, {
+
         highlightNode: function (nodeID) {
             node.setCanvasStyle('shadowBlur', 0, 'start');
             node.setCanvasStyle('shadowBlur', 10, 'end');
@@ -17,7 +17,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
         },
 
         init: function () {
-            if (this.DEBUG) console.log('Dendrogram: init');
 
             // When we change configuration the method init is called again. Also the case when we change completely of view
             if (!this.dom) {
@@ -40,17 +39,10 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
             this.resolveReady();
 
-            if (this.DEBUG) console.log('Dendrogram: ID: ' + this._id);
 
-        },
-
-
-        inDom: function () {
-            if (this.DEBUG) console.log('Dendrogram: inDom');
         },
 
         onResize: function () {
-            if (this.DEBUG) console.log('Dendrogram: onResize');
             this.createDendrogram();
             this.updateDendrogram();
         },
@@ -74,8 +66,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
          */
         update: {
             'tree': function (moduleValue) {
-                if (this.DEBUG) console.log('Dendrogram: update');
-
 
                 if (!moduleValue || !moduleValue.value) return;
 
@@ -104,7 +94,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
         },
 
         updateDendrogram: function () {
-            if (this.DEBUG) console.log('Dendrogram: updateDendrogram');
             if (!this._rgraph || !this._value) return;
 
             this._rgraph.loadJSON(this._value);
@@ -133,7 +122,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
         createDendrogram: function () {
             var self = this;
 
-            if (this.DEBUG) console.log('Dendrogram: createDendrogram');
             // ?????? how to put this in the model ?????
 
             var actions = this.module.vars_out();
@@ -311,14 +299,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
         },
 
-        getDom: function () {
-            if (this.DEBUG) console.log('Dendrogram: getDom');
-            return this.dom;
-        },
-
         _doHighlight: function (id, val) {
-            if (this.DEBUG) console.log('Dendrogram: _doHighlight');
-
             if (this._highlighted[id] && val)
                 return;
             if (!this._highlighted[id] && !val)
@@ -332,6 +313,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
         }
     });
 
-    return view;
+    return View;
 
 });

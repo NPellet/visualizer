@@ -2,14 +2,13 @@
 
 define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (Default, Traversing) {
 
-    function model() {
+    function Model() {
     }
-    model.prototype = $.extend(true, {}, Default, {
 
+    $.extend(true, Model.prototype, Default, {
         getValue: function () {
             return this.dataValue;
         },
-
         getjPath: function (rel, accepts) {
             var value = this.module.view._value || {};
             while (value.children && value.children.length > 0) {
@@ -26,5 +25,6 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
         }
     });
 
-    return model;
+    return Model;
+
 });

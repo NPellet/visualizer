@@ -1,6 +1,14 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing', 'src/util/context', 'lib/d3/d3.parcoords', 'src/util/api', 'lodash'], function (Default, Util, Traversing, Context, d3, API, _) {
+define([
+    'modules/default/defaultview',
+    'src/util/util',
+    'src/util/datatraversing',
+    'src/util/context',
+    'lib/d3/d3.parcoords',
+    'src/util/api',
+    'lodash'
+], function (Default, Util, Traversing, Context, d3, API, _) {
 
     function View() {
         this._id = Util.getNextUniqueId();
@@ -12,7 +20,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing
 
     Util.loadCss('lib/d3/d3.parcoords.css');
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
         init: function () {
             var that = this;
             var html = '<div class="parcoords" id="' + this._id + '"></div>';
@@ -52,11 +60,11 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing
             value: function (value) {
 
                 if (!value) {
-                    this._value=[];
+                    this._value = [];
                 } else {
                     value = value.get();
                     if (!value.length) {
-                        this._value=[];
+                        this._value = [];
                     } else {
                         this._value = value.resurrect();
                     }
@@ -107,7 +115,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing
                 that.module.controller.onBrushSelection(d);
             }
 
-            if (this._data && this._data.length>0) {
+            if (this._data && this._data.length > 0) {
 
                 var cfg = this.module.getConfiguration.bind(this.module),
                     cfgCb = this.module.getConfigurationCheckbox.bind(this.module);
@@ -144,7 +152,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing
                     parcoords.shadows();
                 }
 
-                if(!cfgCb('options', 'brush')) {
+                if (!cfgCb('options', 'brush')) {
                     parcoords.on('brush', exportBrush);
                 }
 

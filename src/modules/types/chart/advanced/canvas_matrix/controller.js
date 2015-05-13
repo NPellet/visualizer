@@ -8,7 +8,7 @@ define([
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'Matrix display',
@@ -102,11 +102,11 @@ define([
             description: 'When the users click on any pixel',
             refVariable: ['row', 'col', 'intersect']
         }/*,
-        onPixelDblClick: {
-            label: 'double click on a pixel',
-            description: 'When the user double clics on any pixel',
-            refVariable: ['row', 'col', 'intersect']
-        }*/
+         onPixelDblClick: {
+         label: 'double click on a pixel',
+         description: 'When the user double clics on any pixel',
+         refVariable: ['row', 'col', 'intersect']
+         }*/
     };
 
     Controller.prototype.configurationStructure = function () {
@@ -118,7 +118,7 @@ define([
                     },
                     fields: {
                         highcontrast: {
-                            default: 'true',
+                            'default': 'true',
                             type: 'checkbox',
                             title: 'Contrast',
                             options: {'true': 'Take data min/max as boundaries'}

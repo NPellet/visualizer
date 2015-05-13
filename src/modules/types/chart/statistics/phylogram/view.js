@@ -2,10 +2,10 @@
 
 define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.phylogram', 'src/util/api'], function (Default, Util, d3, API) {
 
-    function view() {
+    function View() {
     }
 
-    view.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
         init: function () {
 
             this._id = Util.getNextUniqueId();
@@ -38,10 +38,7 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.phylogram', '
             }
         },
         update: {
-            'tree': function (data) {
-
-                if (!data)
-                    return;
+            tree: function (data) {
 
                 data = data.get();
 
@@ -141,6 +138,6 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.phylogram', '
         }
     });
 
-    return view;
+    return View;
 
 });

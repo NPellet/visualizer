@@ -2,22 +2,12 @@
 
 define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/util/api'], function (Default, Traversing, API) {
 
-    /**
-     * Creates a new empty controller
-     * @class Controller
-     * @name Controller
-     * @constructor
-     */
-    function controller() {
+    function Controller() {
     }
 
-    // Extends the default properties of the default controller
-    controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
-    /*
-     Information about the module
-     */
-    controller.prototype.moduleInformation = {
+    Controller.prototype.moduleInformation = {
         name: 'Radar chart',
         description: 'Display a Radar chart - Polar area chart - Pie chart et Donut chart based on dhtmlxchart',
         author: 'Khalid Arroub',
@@ -26,33 +16,17 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         cssClass: ''
     };
 
-
-    /*
-     Configuration of the module for sending events, as a static object
-     */
-    controller.prototype.events = {
-
-        // List of all possible events
-
-    };
-
-
-    /*
-     Configuration of the input/output references of the module
-     */
-    controller.prototype.references = {
+    Controller.prototype.references = {
         chart: {
-            type: ['chart'],
+            type: 'chart',
             label: 'A json describing a chart'
         }
     };
 
-
-    controller.prototype.elementHover = function (element) {
+    Controller.prototype.elementHover = function (element) {
         if (!element) {
             return;
         }
-
 
         if (this._highlighted) {
             API.highlight(this._highlighted, 0);
@@ -61,43 +35,33 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         this._highlighted = element;
     };
 
-    controller.prototype.elementOut = function () {
+    Controller.prototype.elementOut = function () {
         if (this._highlighted) {
             API.highlight(this._highlighted, 0);
         }
     };
 
+    Controller.prototype.variablesIn = ['chart'];
 
-    /*
-     Configuration of the module for receiving events, as a static object
-     In the form of
-     */
-    controller.prototype.variablesIn = ['chart'];
-
-
-    controller.prototype.configurationStructure = function () {
+    Controller.prototype.configurationStructure = function () {
         return {
             groups: {
                 group: {
                     options: {
                         type: 'list'
                     },
-
                     fields: {
-
                         preference: {
                             type: 'combo',
                             title: 'Chart Type',
                             options: [
                                 {title: 'Radar', key: 'radar'},
                                 {title: 'Pie', key: 'pie'}
-                            ]
-                            , displaySource: {
-                                'radar': 'r',
-                                'pie': 'p'
-
+                            ],
+                            displaySource: {
+                                radar: 'r',
+                                pie: 'p'
                             }
-
                         },
                         pie: {
                             type: 'combo',
@@ -108,20 +72,17 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                                 {title: 'Donut', key: 'donut'}
                             ],
                             displayTarget: ['p']
-
-                        }
-                        , start: {
+                        },
+                        start: {
                             type: 'text',
                             title: 'Start Value Of Y Axis',
                             displayTarget: ['r']
                         },
-
                         end: {
                             type: 'text',
                             title: 'End Value Of Y Axis',
                             displayTarget: ['r']
                         },
-
                         step: {
                             type: 'text',
                             title: 'Steps Between',
@@ -140,7 +101,6 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                             options: [
                                 {title: 'Arc', key: 'arc'},
                                 {title: 'Line', key: 'line'}
-
                             ],
                             displayTarget: ['r']
                         },
@@ -161,7 +121,6 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                             displaySource: {
                                 'true': 't',
                                 'false': 'f'
-
                             }
                         },
                         legendmarker: {
@@ -170,7 +129,6 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                             options: [
                                 {title: 'Cube', key: 'cube'},
                                 {title: 'Round', key: 'round'}
-
                             ],
                             displayTarget: ['r', 't']
                         },
@@ -182,42 +140,38 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                                 {title: 'top-left', key: 'top-left'},
                                 {title: 'bottom-right', key: 'bottom-right'},
                                 {title: 'bottom-left', key: 'bottom-left'}
-
                             ],
                             displayTarget: ['r', 't']
                         }
-
-
                     }
                 }
             }
         };
     };
 
-    controller.prototype.configFunctions = {
-        'point': function (cfg) {
-            return cfg.indexOf('point') == -1 ? true : false;
+    Controller.prototype.configFunctions = {
+        point: function (cfg) {
+            return cfg.indexOf('point') == -1;
         },
-        'line': function (cfg) {
-            return cfg.indexOf('line') == -1 ? false : true;
+        line: function (cfg) {
+            return cfg.indexOf('line') != -1;
         }
     };
-    controller.prototype.configAliases = {
 
-        'preference': ['groups', 'group', 0, 'preference', 0],
-        'pie': ['groups', 'group', 0, 'pie', 0],
-        'start': ['groups', 'group', 0, 'start', 0],
-        'end': ['groups', 'group', 0, 'end', 0],
-        'step': ['groups', 'group', 0, 'step', 0],
-        'lineshape': ['groups', 'group', 0, 'lineshape', 0],
-        'point': ['groups', 'group', 0, 'point', 0],
-        'showlegend': ['groups', 'group', 0, 'showlegend', 0],
-        'line': ['groups', 'group', 0, 'line', 0],
-        'legendmarker': ['groups', 'group', 0, 'legendmarker', 0],
-        'legendalign': ['groups', 'group', 0, 'legendalign', 0]
+    Controller.prototype.configAliases = {
+        preference: ['groups', 'group', 0, 'preference', 0],
+        pie: ['groups', 'group', 0, 'pie', 0],
+        start: ['groups', 'group', 0, 'start', 0],
+        end: ['groups', 'group', 0, 'end', 0],
+        step: ['groups', 'group', 0, 'step', 0],
+        lineshape: ['groups', 'group', 0, 'lineshape', 0],
+        point: ['groups', 'group', 0, 'point', 0],
+        showlegend: ['groups', 'group', 0, 'showlegend', 0],
+        line: ['groups', 'group', 0, 'line', 0],
+        legendmarker: ['groups', 'group', 0, 'legendmarker', 0],
+        legendalign: ['groups', 'group', 0, 'legendalign', 0]
     };
 
-
-    return controller;
+    return Controller;
 
 });

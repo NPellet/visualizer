@@ -99,7 +99,7 @@ define([
         }
     };
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
         init: function () {
             this.mapLayers = {};
             this.mapBounds = {};

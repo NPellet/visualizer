@@ -5,7 +5,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs'], f
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
 
         init: function () {
             var self = this;

@@ -2,22 +2,12 @@
 
 define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/util/api', 'src/util/util'], function (Default, Traversing, API, Util) {
 
-    /**
-     * Creates a new empty controller
-     * @class Controller
-     * @name Controller
-     * @constructor
-     */
-    function controller() {
+    function Controller() {
     }
 
-    // Extends the default properties of the default controller
-    controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
-    /*
-     Information about the module
-     */
-    controller.prototype.moduleInformation = {
+    Controller.prototype.moduleInformation = {
         name: '3D scatter plot',
         description: 'Display 3D points',
         author: 'Daniel Kostro',
@@ -26,26 +16,18 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         cssClass: 'scatter_3D'
     };
 
-
-    /*
-     Configuration of the module for sending events, as a static object
-     */
-    controller.prototype.events = {
-
-        // List of all possible events
-
+    Controller.prototype.events = {
         onHover: {
             label: 'Hover a 3D point',
             refVariable: ['info', 'coordinates', 'point']
         },
-
         onClick: {
             label: 'Click a 3D point',
             refVariable: ['info', 'coordinates', 'point']
         }
     };
 
-    controller.prototype.onHover = function (row) {
+    Controller.prototype.onHover = function (row) {
         var coord = [
             this.module.view._data.x[row],
             this.module.view._data.y[row],
@@ -56,10 +38,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         this.createDataFromEvent('onHover', 'coordinates', DataObject.check(coord));
     };
 
-    /*
-     Configuration of the input/output references of the module
-     */
-    controller.prototype.references = {
+    Controller.prototype.references = {
         chart: {
             type: 'chart',
             label: 'A json describing a chart'
@@ -82,11 +61,9 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
             type: 'array',
             label: 'Point coordinates'
         }
-
     };
 
-
-    controller.prototype.elementHover = function (element) {
+    Controller.prototype.elementHover = function (element) {
         if (!element) {
             return;
         }
@@ -98,21 +75,15 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         this._highlighted = element;
     };
 
-    controller.prototype.elementOut = function () {
+    Controller.prototype.elementOut = function () {
         if (this._highlighted) {
             API.highlight(this._highlighted, 0);
         }
     };
 
+    Controller.prototype.variablesIn = ['chart', 'boolArray', 'data3D'];
 
-    /*
-     Configuration of the module for receiving events, as a static object
-     In the form of
-     */
-    controller.prototype.variablesIn = ['chart', 'boolArray', 'data3D'];
-
-
-    controller.prototype.configurationStructure = function () {
+    Controller.prototype.configurationStructure = function () {
         var jpath = [];
         Traversing.getJPathsFromElement(this.module.data, jpath);
 
@@ -332,33 +303,32 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         };
     };
 
-    controller.prototype.configAliases = {
-        'tooltip': ['groups', 'group', 0, 'tooltip', 0],
-        'tooltipJpath': ['groups', 'group', 0, 'tooltipJpath', 0],
-        'grid': ['groups', 'group', 0, 'grid', 0],
-        'ticks': ['groups', 'group', 0, 'ticks', 0],
-        'projection': ['groups', 'group', 0, 'projection', 0],
-        'labels': ['groups', 'group', 0, 'labels', 0],
-        'minX': ['groups', 'group', 0, 'minX', 0],
-        'maxX': ['groups', 'group', 0, 'maxX', 0],
-        'minY': ['groups', 'group', 0, 'minY', 0],
-        'maxY': ['groups', 'group', 0, 'maxY', 0],
-        'minZ': ['groups', 'group', 0, 'minZ', 0],
-        'maxZ': ['groups', 'group', 0, 'maxZ', 0],
-        'backgroundColor': ['groups', 'group', 0, 'backgroundColor', 0],
-        'secondaryGrids': ['groups', 'group', 0, 'secondaryGrids', 0],
-        'appearance': ['groups', 'group', 0, 'appearance', 0],
-        'displayPointCoordinates': ['groups', 'group', 0, 'displayPointCoordinates', 0],
-        'annotationColor': ['groups', 'group', 0, 'annotationColor', 0],
-        'gridOriginX': ['groups', 'group', 0, 'gridOriginX', 0],
-        'gridOriginY': ['groups', 'group', 0, 'gridOriginY', 0],
-        'gridOriginZ': ['groups', 'group', 0, 'gridOriginZ', 0],
-        'sizeNormalization': ['groups', 'group', 0, 'sizeNormalization', 0],
-        'optimize': ['groups', 'group', 0, 'optimize', 0],
-        'dataJpaths': ['groups', 'dataJpaths', 0, 0]
+    Controller.prototype.configAliases = {
+        tooltip: ['groups', 'group', 0, 'tooltip', 0],
+        tooltipJpath: ['groups', 'group', 0, 'tooltipJpath', 0],
+        grid: ['groups', 'group', 0, 'grid', 0],
+        ticks: ['groups', 'group', 0, 'ticks', 0],
+        projection: ['groups', 'group', 0, 'projection', 0],
+        labels: ['groups', 'group', 0, 'labels', 0],
+        minX: ['groups', 'group', 0, 'minX', 0],
+        maxX: ['groups', 'group', 0, 'maxX', 0],
+        minY: ['groups', 'group', 0, 'minY', 0],
+        maxY: ['groups', 'group', 0, 'maxY', 0],
+        minZ: ['groups', 'group', 0, 'minZ', 0],
+        maxZ: ['groups', 'group', 0, 'maxZ', 0],
+        backgroundColor: ['groups', 'group', 0, 'backgroundColor', 0],
+        secondaryGrids: ['groups', 'group', 0, 'secondaryGrids', 0],
+        appearance: ['groups', 'group', 0, 'appearance', 0],
+        displayPointCoordinates: ['groups', 'group', 0, 'displayPointCoordinates', 0],
+        annotationColor: ['groups', 'group', 0, 'annotationColor', 0],
+        gridOriginX: ['groups', 'group', 0, 'gridOriginX', 0],
+        gridOriginY: ['groups', 'group', 0, 'gridOriginY', 0],
+        gridOriginZ: ['groups', 'group', 0, 'gridOriginZ', 0],
+        sizeNormalization: ['groups', 'group', 0, 'sizeNormalization', 0],
+        optimize: ['groups', 'group', 0, 'optimize', 0],
+        dataJpaths: ['groups', 'dataJpaths', 0, 0]
     };
 
+    return Controller;
 
-    return controller;
 });
-

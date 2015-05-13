@@ -2,16 +2,12 @@
 
 define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api', 'src/util/util', 'lib/dhtmlxchart/dhtmlxchart'], function (Default, Traversing, API, Util) {
 
-    function view() {
+    function View() {
     }
-    view.prototype = $.extend(true, {}, Default, {
 
-        DEBUG: true,
-
+    $.extend(true, View.prototype, Default, {
 
         init: function () {
-
-            if (this.DEBUG) console.log('Radar Chart: init');
 
             // When we change configuration the method init is called again. Also the case when we change completely of view
             if (!this.dom) {
@@ -20,26 +16,14 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                 this.module.getDomContent().html(this.dom);
             }
 
-            if (this.DEBUG) console.log('Radar Chart: ID: ' + this._id);
-
             this._data = [];	// the data that will be represented
-            var cfg = $.proxy(this.module.getConfiguration, this.module);
 
             this.resolveReady();
 
         },
 
-
-        inDom: function () {
-
-            if (this.DEBUG) console.log('Radar Chart: inDom');
-
-        },
-
         onResize: function () {
-            if (this.DEBUG) console.log('Radar Chart: onResize');
             this._redraw();
-
         },
 
         /* When a value change this method is called. It will be called for all
@@ -48,21 +32,10 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
          */
         update: {
             chart: function (moduleValue) {
-
-                if (this.DEBUG) console.log('Radar Chart: update from chart object');
-
-                if (!moduleValue) {
-                    delete this.value;
-                } else {
-                    this.value = moduleValue.get();
-                }
-
+                this.value = moduleValue.get();
                 this._redraw();
             }
-
-
         },
-
 
         _redraw: function () {
             if (!this.value) {
@@ -119,7 +92,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                     data[j]['xunit'] = value.data[0].x[j];
                     data[j]['_highlight'] = [];
                     for (var i = 0; i < value.data.length; i++) {
-                        index = 'serie' + i;
+                        var index = 'serie' + i;
                         data[j][index] = value.data[i].y[j];
                         if (value.data[i]._highlight && value.data[i]._highlight[j]) {
                             data[j]['_highlight'].push({
@@ -272,5 +245,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
         }
     });
-    return view;
+
+    return View;
+
 });
