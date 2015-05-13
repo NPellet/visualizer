@@ -323,10 +323,11 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         try {
             this.theFunction.apply(this.context, this.libs);
         } catch (e) {
+            var err = e;
             if (e && e.stack) {
-                e = e.stack;
+                err = e.stack;
             }
-            Debug.error('Code executor error', e);
+            Debug.error('Code executor error', err);
         }
 
         this.setOutput();
