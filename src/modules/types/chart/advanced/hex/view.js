@@ -1,260 +1,349 @@
 'use strict';
 
-define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 'src/util/color', 'chroma'], function (Default, Graph, Color, chroma) {
+requirejs.config({
+    paths: {
+        'd3-plugins': 'components/d3-plugins'
+    },
+    shim: {
+        'd3-plugins': 'd3'
+    }
+});
+
+define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/util', 'd3', 'd3-plugins/hexbin/hexbin'], function (Default, _, Debug, Util, d3) {
+    var DEFAULT_COLOR = 'lightblue';
+
 
     function View() {
     }
 
     View.prototype = $.extend(true, {}, Default, {
         init: function () {
-            this.dom = document.createElement('div');
-            this.dom.style.height = '100%';
-            this.dom.style.width = '100%';
-            this.dom.style.overflow = 'hidden';
-            this.module.getDomContent().html(this.dom);
-            this.series = {};
-            this.datasetInfo = {};
+            console.log('init');
+
         },
         inDom: function () {
-            var self = this;
-            var axisOptions = {
-                primaryGrid: false,
-                secondaryGrid: false
-            };
-            this.graph = new Graph(this.dom, {
-                close: {
-                    left: false,
-                    right: false,
-                    top: false,
-                    bottom: false
-                },
-                plugins: {
-                    'graph.plugin.zoom': {
-                        zoomMode: 'xy'
-                    },
-                    'graph.plugin.drag': {}
-                },
-                pluginAction: {
-                    'graph.plugin.zoom': {
-                        shift: false,
-                        ctrl: false
-                    },
-                    'graph.plugin.drag': {
-                        shift: true,
-                        ctrl: false
-                    }
-                },
-                dblclick: {
-                    type: 'plugin',
-                    plugin: 'graph.plugin.zoom',
-                    options: {
-                        mode: 'total'
-                    }
-                }
-            }, {
-                bottom: [axisOptions],
-                left: [axisOptions]
-            }, function (graph) {
-                graph.shapeHandlers.mouseOver.push(function (shape) {
-                    self.module.controller.onCellHover(shape.data);
-                });
-                graph.getXAxis().hide().setAxisDataSpacing(0, 0);
-                graph.getYAxis().hide().setAxisDataSpacing(0, 0);
-                self.resolveReady();
+            this.id = Util.getNextUniqueId();
+            this.dom = $('<div>').attr('id', this.id).css({
+                width: '99%',
+                height: '99%'
             });
+            this.module.getDomContent().html(this.dom);
+            this.resolveReady();
         },
         blank: {
-            model: function () {
-                this.graph.removeShapes();
-            },
-            dataset: function (name) {
-                if (this.series[name]) {
-                    this.series[name].kill();
-                    delete this.series[name];
-                }
-                if (this.datasetInfo[name]) {
-                    this.datasetInfo[name] = null;
-                }
+            chart: function () {
+                this.reset();
             }
         },
         update: {
-            model: function (value) {
-                if (String(value.get('name')) !== 'SOM') {
-                    return;
+            chart: function (value) {
+                this.ignored = [];
+                this.chart = value.get();
+                var data = chartToArray(this.chart);
+                var coordinateSystem = this.module.getConfiguration('coordinateSystem');
+                this.layout = 'vertical';
+                switch(coordinateSystem) {
+                    case 'combinatorial':
+                        this.originalData = data;
+                        this.data = combinatorialToCubic(data);
+                        this.cubicData = this.data;
+                        this.data = cubicToOddr(this.data);
+                        break;
+                    default:
+                        this.data = data;
+                        break;
                 }
-                var data = value.get('data');
-                var x = data.length,
-                    y = data[0].length;
-                var graph = this.graph;
-
-                var i;
-
-                var cfg = this.module.getConfiguration.bind(this.module);
-                var field1 = cfg('bgField1'),
-                    field2 = cfg('bgField2'),
-                    field3 = cfg('bgField3');
-                var fields = value.options.fields;
-                if (Array.isArray(fields)) {
-                    for (i = 0; i < fields.length; i++) {
-                        if (fields[i].name === field1) {
-                            field1 = i;
-                        }
-                        if (fields[i].name === field2) {
-                            field2 = i;
-                        }
-                        if (fields[i].name === field3) {
-                            field3 = i;
-                        }
-                    }
-                }
-                var getColor = colorGenerator(cfg('bgType'), cfg('bgSpace'), cfg('bgColor1'), cfg('bgColor2'), field1, field2, field3);
-
-                // Set size of axes to fit the grid
-                graph.getXAxis().forceMin(0).forceMax(x);
-                graph.getYAxis().forceMin(0).forceMax(y);
-
-                for (i = 0; i < x; i++) {
-                    for (var j = 0; j < y; j++) {
-                        var shape = graph.newShape({
-                            type: 'rect',
-                            pos: {
-                                x: i,
-                                y: j
-                            },
-                            pos2: {
-                                x: i + 1,
-                                y: j + 1
-                            },
-                            locked: true,
-                            selectable: false,
-                            fillColor: getColor(data[i][j]),
-                            layer: 1,
-                            info: data[i][j]
-                        }, null, null, true);
-                        shape.draw();
-                        shape.redraw();
-                    }
-                }
-
-                this.redraw();
-            },
-            dataset: function (value, name) {
-                var i, getColor;
-                var config = this.module.getConfiguration('datasets'),
-                    theConfig;
-                if (config) {
-                    for (i = 0; i < config.length; i++) {
-                        if (config[i].groups.group[0].dataset[0] === name) {
-                            theConfig = config[i].groups.group[0];
-                            break;
-                        }
-                    }
-                }
-
-                if (!theConfig) {
-                    getColor = colorGenerator('fixed', null, [255, 0, 0, 1]);
-                } else {
-                    switch (theConfig.colorType[0]) {
-                        case 'fixed':
-                            getColor = colorGenerator('fixed', null, theConfig.color1[0]);
-                            break;
-                        case 'jpath':
-                            // TODO perf check
-                            getColor = function (value) {
-                                return chroma(String(DataObject.check(value).getChildSync(theConfig.jpath1[0]))).css();
-                            };
-                            break;
-                    }
-                }
-
-                var self = this;
-                var data = value.getChildSync(['data', '0']);
-                var l = data.x.length;
-                var theData = new Array(l * 2);
-                var colors = new Array(l), color;
-                for (i = 0; i < l; i++) {
-                    theData[i * 2] = data.x[i];
-                    theData[i * 2 + 1] = data.y[i];
-                    color = getColor(data.info[i]);
-                    colors[i] = {
-                        fill: color
-                    };
-                }
-                var serie = this.series[name] = this.graph.newSerie(name, {
-                    layer: 2
-                }, 'scatter')
-                    .autoAxis()
-                    .setData(theData)
-                    .setStyle({
-                        shape: 'circle',
-                        r: 3,
-                        stroke: 'black'
-                    }, colors)
-                    .setStyle({
-                        r: 6
-                    }, 'selected');
-                if (data.info) {
-                    serie.on('mouseover', function (id) {
-                        serie.selectPoint(id);
-                        self.module.controller.onElementHover(data.x[id], data.y[id], data.info[id]);
-                    });
-                    serie.on('mouseout', function (id) {
-                        serie.selectPoint(id, false);
-                    });
-                }
-
-                this.redraw();
+                this._chartData();
+                this._ignored();
+                this._normalize();
+                this.draw();
             }
         },
+
+        _normalize: function() {
+            var x = _.pluck(this.data, 0);
+            var y = _.pluck(this.data, 1);
+            var minX = Math.min.apply(null, x);
+            var minY = Math.min.apply(null, y);
+            var min = Math.min(minX,minY);
+
+
+            for(var i=0; i<this.data.length; i++) {
+                this.data[i][0] -= min;
+                this.data[i][1] -= min;
+            }
+
+        },
+
+        _ignored: function() {
+            debugger;
+            var ignored = [];
+            for(var i=0; i<this.data.length; i++) {
+                if(this.data[i] === undefined) {
+                    ignored.push(i);
+                }
+            }
+
+            this.totalSize = this.data.length;
+            this.realSize = this.data.length - ignored.length;
+            _.pullAt(this.data, ignored);
+            _.pullAt(this.color, ignored);
+            _.pullAt(this.cubicData, ignored);
+            _.pullAt(this.originalData, ignored);
+            _.pullAt(this.label, ignored);
+
+            this.color = this.color.map(function(val) {
+                return val || DEFAULT_COLOR;
+            });
+        },
+
+        _chartData: function() {
+            this.color = _.pluck(this.chart.data, 'color');
+            this.label = _.pluck(this.chart.data, 'label');
+        },
+
         onResize: function (width, height) {
-            if (!this.graph) {
-                return;
-            }
-            this.graph.resize(width, height);
-            this.redraw();
+
         },
-        redraw: function () {
-            this.graph.redraw();
-            this.graph.autoscaleAxes();
-            this.graph.drawSeries();
+
+        draw: function () {
+            var that = this;
+
+
+            var hexRadius = d3.min([this.dom.width()/((10 + 0.5) * Math.sqrt(3)),
+                this.dom.height()/((10 + 1/3) * 1.5)]);
+            var points = [];
+            for(var i=0; i<this.data.length; i++) {
+                points.push([hexRadius * this.data[i][1] * 1.75, hexRadius * this.data[i][0] * 1.5]);
+            }
+
+
+            var margin = {
+                top: 20 + hexRadius/2, bottom: 30 + hexRadius/2,
+                left: 40 + hexRadius/2, right: 20 + hexRadius/2
+            };
+
+            var width = this.dom.width() - margin.left -margin.right,
+                height = this.dom.height() - margin.top - margin.bottom;
+
+            var svg = d3.select('#' + this.id).append("svg")
+                .style('margin', 0)
+                .style('padding',0)
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            var hexbin = d3.hexbin()
+                .radius(hexRadius);
+
+            var hexbinPoints = hexbin(points);
+            svg.append("g")
+                .selectAll(".hexagon")
+                .data(hexbinPoints)
+                .enter().append("path")
+                .attr("class", "hexagon")
+                .attr("d", function (d) {
+                    return "M" + d.x + "," + d.y + hexbin.hexagon();
+                })
+                .attr("stroke", "black")
+                .attr("stroke-width", "1px")
+                .style("fill", function(d, i) {
+                    return that.color[i];
+                });
+
+            var nodeText = svg.append("g")
+                .selectAll('foreignObject')
+                .data(hexbinPoints)
+                .enter().append('foreignObject')
+                .style('pointer-events', 'none')
+                .attr({
+                    width: hexRadius,
+                    height: hexRadius,
+                    transform: function(d) {
+                        return 'translate(' + (d.x - hexRadius/2)+ ',' + (d.y - hexRadius/2) + ')'
+                    }
+                });
+
+            nodeText.append('xhtml:div')
+                .append('div')
+                .style({
+                    display: 'flex',
+                    height: '' + hexRadius + 'px',
+                    width: '' + hexRadius + 'px',
+                    padding: 0,
+                    'align-items': 'center',
+                    'text-align': 'center',
+                    'justify-content': 'center',
+                    'box-sizing': 'border-box'
+                })
+                .html(function(d,i) {
+                    return that.label[i];
+                });
+        },
+
+        reset: function() {
+            this.dom.html('');
         }
     });
 
-    function colorGenerator(type, space, colorA1, colorA2, field1, field2, field3) {
-        var color1 = chroma(colorA1),
-            color2 = chroma(colorA2),
-            scale, val;
-        if (type === 'fixed') {
-            val = color1.css();
-            return function fixedColor() {
-                return val;
-            }
-        } else if (type === 'range') {
-            scale = chroma.scale([color1, color2]).mode(space);
-            return function rangeColor(value) {
-                return scale(value[field1]).css();
-            }
-        } else if (type === 'inter') {
-            var interpolators = getInterpolators(colorA1, colorA2);
-            var mean = (colorA1[3] + colorA2[3]) / 2;
-            return function interpolatedColor(value) {
-                return chroma([interpolators[0](value[field1]), interpolators[1](value[field2]), interpolators[2](value[field3]), mean]).css();
-            }
+
+    function chartToArray(chart) {
+        try{
+            var x=chart.data[0].x;
+        } catch(e) {
+            Debug.warn('no chart data');
+            return [];
         }
+        var result = [];
+
+        var hasZ = (chart.data[0].z !== undefined);
+        for(var i=0; i<chart.data.length; i++) {
+            var r = [chart.data[i].x, chart.data[i].y];
+            if(hasZ) r.push(chart.data[i].z);
+            result.push(r);
+        }
+        return result;
     }
 
-    function getInterpolators(color1, color2) {
-        return [getInterpolator(color1[0], color2[0]), getInterpolator(color1[1], color2[1]), getInterpolator(color1[2], color2[2])];
+    function checkCubic(v) {
+        if(v===undefined || v.length !== 3 || v[0] + v[1] + v[2] !== 0) {
+            return false;
+        }
+        return true;
     }
 
-    function getInterpolator(a, b) {
-        a = +a;
-        b = +b;
-        return function interpolator(t) {
-            return a * (1 - t) + b * t;
-        };
+    function combinatorialToCubic(data) {
+        var result = [];
+        for(var i=0; i<data.length; i++) {
+            var v = data[i];
+            var min = Math.min.apply(null, v);
+            var max = Math.max.apply(null, v);
+            if(min !== 0 || v.length !== 3) {
+                result.push(undefined);
+                continue;
+            }
+
+            var minIdx = v.indexOf(min);
+            var maxIdx = v.indexOf(max);
+            var middleIdx = ((minIdx + maxIdx)*2)%3;
+
+            var r = [0,0,0];
+            r = addArray(r, getComponent2(v, minIdx, middleIdx, maxIdx));
+            r = addArray(r, getComponent1(v, minIdx, middleIdx, maxIdx));
+            result.push(r);
+        }
+        return result;
+    }
+
+    function combinatorialToEvenq(data) {
+        var r = combinatorialToCubic(data);
+        r = cubicToEvenq(r);
+        return r;
+    }
+
+    function cubicToEvenq(data) {
+        var r = new Array(data.length);
+        for(var i=0; i<data.length; i++) {
+            if(!checkCubic(data[i])) continue;
+            var col = data[i][0], z = data[i][2];
+            var row = z + (col + (col&1)) / 2;
+            r[i] = [row, col];
+        }
+        return r;
+
+    }
+
+    function cubicToEvenr(data) {
+        var r = new Array(data.length);
+        for(var i=0; i<data.length; i++) {
+            if(!checkCubic(data[i])) continue;
+            var row = data[i][2], x = data[i][0];
+            var col = x + (row + (row&1)) / 2;
+            r[i] = [row, col];
+        }
+        return r;
+    }
+
+    function cubicToOddr(data) {
+        var r = new Array(data.length);
+        for(var i=0; i<data.length; i++) {
+            if(!checkCubic(data[i])) continue;
+            var row = data[i][2], x = data[i][0];
+            var col = x + (row - (row&1)) / 2;
+            r[i] = [row, col];
+        }
+        return r;
+    }
+
+    function cubicToOddq(data) {
+        var r = new Array(data.length);
+        for(var i=0; i<data.length; i++) {
+            if(!checkCubic(data[i])) continue;
+            var col = data[i][0], z = data[i][2];
+            var row = z + (col - (col&1)) / 2;
+            r[i] = [row, col];
+        }
+        return r;
+    }
+
+    function addArray(arr1, arr2) {
+        if(arr1.length !== arr2.length) {
+            throw new Error('Array not the same size in addition');
+        }
+        var r = arr1.slice(0);
+        for(var i=0; i<arr1.length; i++) {
+            r[i] += arr2[i];
+        }
+        return r;
+    }
+
+    function multArray(arr, c) {
+        var r = arr.slice(0);
+        for(var i=0; i<arr.length; i++) {
+            r[i] *= c;
+        }
+        return r;
+    }
+
+    function offsetArray(arr, c) {
+        var r = arr.slice(0);
+        for(var i=0; i<arr.length; i++) {
+            r[i] += c;
+        }
+        return r;
+    }
+
+    function getComponent1(arr, minIdx, middleIdx, maxIdx) {
+        if(minIdx === middleIdx) {
+            return [0,0,0];
+        }
+        if(middleIdx === 0 && maxIdx === 1 || middleIdx === 1 && maxIdx === 0) {
+            return multArray([1,-1,0], arr[middleIdx]);
+        }
+        if(middleIdx === 1 && maxIdx === 2 || middleIdx ===2 && maxIdx === 1) {
+            return multArray([0, 1, -1], arr[middleIdx]);
+        }
+        return multArray([-1, 0, 1], arr[middleIdx]);
+    }
+
+    function getComponent2(arr, minIdx, middleIdx, maxIdx) {
+        if(middleIdx === maxIdx) {
+            return [0,0,0];
+        }
+
+        if(maxIdx === 0) {
+            return multArray([0, -1, 1], arr[maxIdx] - arr[middleIdx]);
+        }
+
+        if(maxIdx === 1) {
+            return multArray([1,0,-1], arr[maxIdx] - arr[middleIdx]);
+        }
+
+        return multArray([-1, 1, 0], arr[maxIdx] - arr[middleIdx]);
     }
 
     return View;
-
 });
+
+

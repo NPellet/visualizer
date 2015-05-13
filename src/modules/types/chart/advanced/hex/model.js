@@ -1,47 +1,28 @@
 'use strict';
 
-define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (Default, Traversing) {
+define(['modules/default/defaultmodel', 'src/util/datatraversing'], function(Default, Traversing) {
 
-    function Model() {
-    }
-
-    Model.prototype = $.extend(true, {}, Default, {
-        getjPath: function (rel) {
-            var data, el;
-            switch (rel) {
-                case 'element':
-                    data = this.module.getDataFromRel('dataset');
-                    if (data) {
-                        el = data.getChildSync(['data', 0, 'info', 0]);
-                        if (el) {
-                            return Traversing.getJPathsFromElement(el);
-                        }
+    function model() {};
+    model.prototype = $.extend(true, {}, Default, {
+        getjPath: function(rel) {
+            var data;
+            switch(rel) {
+                case 'point':
+                    data = this.module.data || new DataArray();
+                    data = data.get(0);
+                    if(!data) {
+                        return [];
                     }
                     break;
-                case 'elementList':
-                    data = this.getAllDataFromRel('dataset');
-                    if (data) {
-                        var result = {};
-                        for (var i in data){
-                            result[i] = {};
-                        }
-                        return Traversing.getJPathsFromElement(result);
-                    }
+                default:
+                    data = this.module._data;
                     break;
-                case 'cellInfo':
-                    data = this.module.getDataFromRel('model');
-                    if (data) {
-                        return Traversing.getJPathsFromElement({
-                            x: 0,
-                            y: 0,
-                            info: data.data[0][0]
-                        });
-                    }
             }
-            return [];
+            var jpaths = [];
+            Traversing.getJPathsFromElement(data, jpaths);
+            return jpaths;
         }
     });
 
-    return Model;
-
+    return model;
 });
