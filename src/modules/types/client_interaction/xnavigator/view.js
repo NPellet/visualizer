@@ -5,9 +5,8 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
         init: function () {
-
             this.dom = $('<div />');
             var self = this;
             var img = $('<div class="ci-navigation-navigarrow"></div>');
@@ -22,16 +21,8 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
             this.module.getDomContent().html(this.dom);
             this.cx = 0;
             this.step = this.module.getConfiguration('step') || 2;
-            var self = this;
-
-        },
-
-
-        inDom: function () {
-            var self = this;
             this.resolveReady();
         },
-
 
         update: {
 
@@ -87,13 +78,12 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
 
         onActionReceive: {
             changeX: function (value) {
-
                 this.cx = parseFloat(value.valueOf());
-
             }
         }
 
     });
 
     return View;
+
 });

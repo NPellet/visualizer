@@ -118,7 +118,7 @@ define(['modules/default/defaultcontroller', 'src/data/structures', 'src/util/de
         var json = getJsonValue(value);
         this.createDataFromEvent('onEditorChange', 'jsonValue', json);
         var typedValue = this.getTypedValue(value);
-        if(typedValue !== null)
+        if (typedValue !== null)
             this.createDataFromEvent('onEditorChange', 'typedValue', typedValue);
     };
 
@@ -131,14 +131,14 @@ define(['modules/default/defaultcontroller', 'src/data/structures', 'src/util/de
         this.sendActionFromEvent('onButtonClick', 'jsonValue', json);
 
         var typedValue = this.getTypedValue(value);
-        if(typedValue !== null)
-        this.createDataFromEvent('onButtonClick', 'typedValue', typedValue);
+        if (typedValue !== null)
+            this.createDataFromEvent('onButtonClick', 'typedValue', typedValue);
         //this.sendAction()
     };
 
-    Controller.prototype.getTypedValue = function(val) {
+    Controller.prototype.getTypedValue = function (val) {
         var type = this.module.getConfiguration('outputType');
-        if(!type) return null;
+        if (!type) return null;
         return {
             type: this.module.getConfiguration('outputType'),
             value: val

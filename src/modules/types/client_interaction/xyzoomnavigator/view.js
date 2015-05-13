@@ -5,7 +5,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
         init: function () {
 
             this.dom = $('<div />');
@@ -39,17 +39,8 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
             this.cx = 0;
             this.cy = 0;
             this.step = 2;
-
-            var self = this;
-
-        },
-
-
-        inDom: function () {
-            var self = this;
             this.resolveReady();
         },
-
 
         update: {
 
@@ -84,7 +75,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
             var target = $(e.target || e.srcElement);
 
             mode = target.hasClass('top') ? 'top' : (target.hasClass('bottom') ? 'bottom' : (target.hasClass('left') ? 'left' : (target.hasClass('right') ? 'right' : 'top')));
-            var self = this, timeout;
+            var timeout;
 
             var getInterval = function () {
                 return 300000 / ((Date.now() - started) + 1500) + 10;
@@ -132,4 +123,5 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
     });
 
     return View;
+
 });

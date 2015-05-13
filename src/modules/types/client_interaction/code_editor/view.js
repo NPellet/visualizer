@@ -5,7 +5,7 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
         init: function () {
 
             this._id = Util.getNextUniqueId();

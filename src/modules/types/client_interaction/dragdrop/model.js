@@ -14,7 +14,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
 
     var standardArray = new DataArray([standardFile]);
 
-    Model.prototype = $.extend(true, {}, Default, {
+    $.extend(true, Model.prototype, Default, {
 
         init: function () {
             this.tmpVars = new DataObject();
@@ -66,4 +66,5 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
     });
 
     return Model;
+
 });

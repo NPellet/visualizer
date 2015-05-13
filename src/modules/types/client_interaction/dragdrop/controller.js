@@ -7,7 +7,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
 
     var reg = new RegExp(';base64,(.+)$');
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'Drag and drop',

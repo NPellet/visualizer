@@ -2,22 +2,12 @@
 
 define(['modules/default/defaultcontroller'], function (Default) {
 
-    /**
-     * Creates a new empty controller
-     * @class Controller
-     * @name Controller
-     * @constructor
-     */
-    function controller() {
+    function Controller() {
     }
 
-    // Extends the default properties of the default controller
-    controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
-    /*
-     Information about the module
-     */
-    controller.prototype.moduleInformation = {
+    Controller.prototype.moduleInformation = {
         name: 'Paste value',
         description: 'Paste any text and parse it in a variable',
         author: 'Michaël Zasso',
@@ -26,30 +16,20 @@ define(['modules/default/defaultcontroller'], function (Default) {
         cssClass: 'paste_text'
     };
 
-
-    /*
-     Configuration of the input/output references of the module
-     */
-    controller.prototype.references = {
-
-        'value': {
+    Controller.prototype.references = {
+        value: {
             label: 'The parsed object'
-
         }
     };
 
-
-    /*
-     Configuration of the module for sending events, as a static object
-     */
-    controller.prototype.events = {
+    Controller.prototype.events = {
         onEditorChange: {
             label: 'The value in the editor has changed',
             refVariable: ['value']
         }
     };
 
-    controller.prototype.configurationStructure = function () {
+    Controller.prototype.configurationStructure = function () {
         return {
             groups: {
                 group: {
@@ -61,7 +41,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             type: 'jscode',
                             title: 'Value',
                             mode: 'text',
-                            default: ''
+                            'default': ''
                         },
                         type: {
                             type: 'combo',
@@ -72,7 +52,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                                 {title: 'XML', key: 'xml'},
                                 {title: 'CSV', key: 'csv'}
                             ],
-                            default: 'text'
+                            'default': 'text'
                         }
                     }
                 }
@@ -80,14 +60,12 @@ define(['modules/default/defaultcontroller'], function (Default) {
         };
     };
 
-    controller.prototype.configFunctions = {};
-
-    controller.prototype.configAliases = {
-        'type': ['groups', 'group', 0, 'type', 0],
-        'thevalue': ['groups', 'group', 0, 'thevalue', 0]
+    Controller.prototype.configAliases = {
+        type: ['groups', 'group', 0, 'type', 0],
+        thevalue: ['groups', 'group', 0, 'thevalue', 0]
     };
 
-    controller.prototype.valueChanged = function (value) {
+    Controller.prototype.valueChanged = function (value) {
         var type = this.module.getConfiguration('type'),
             def = $.Deferred(),
             that = this;
@@ -115,8 +93,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
             that.createDataFromEvent('onEditorChange', 'value', DataObject.check(data, true));
         });
 
-
     };
 
-    return controller;
+    return Controller;
+
 });

@@ -6,7 +6,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'X Nav',
@@ -17,17 +17,13 @@ define(['modules/default/defaultcontroller'], function (Default) {
         cssClass: 'xnav'
     };
 
-
     Controller.prototype.references = {
-
-        'xcoords': {
+        xcoords: {
             label: 'X Coords'
         }
-
     };
 
     Controller.prototype.events = {
-
         onMove: {
             label: 'Move',
             description: '',
@@ -37,36 +33,28 @@ define(['modules/default/defaultcontroller'], function (Default) {
     };
 
     Controller.prototype.move = function (x) {
-
         this.createDataFromEvent('onMove', 'xcoords', x);
         this.sendActionFromEvent('onMove', 'xcoords', x);
     };
 
-
     Controller.prototype.variablesIn = ['xcoords'];
 
     Controller.prototype.actionsIn = {
-
         changeX: 'Change X center value'
     };
 
-    Controller.prototype.configurationStructure = function (section) {
-
+    Controller.prototype.configurationStructure = function () {
         return {
-
             groups: {
-
                 group: {
                     options: {
                         type: 'list'
                     },
-
                     fields: {
-
                         step: {
                             type: 'float',
                             title: 'Step',
-                            default: '1'
+                            'default': 1
                         }
                     }
                 }
@@ -74,13 +62,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
         };
     };
 
-
-    Controller.prototype.configFunctions = {};
-
     Controller.prototype.configAliases = {
-        'step': ['groups', 'group', 0, 'step', 0]
+        step: ['groups', 'group', 0, 'step', 0]
     };
 
-
     return Controller;
+
 });

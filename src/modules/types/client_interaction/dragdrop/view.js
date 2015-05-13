@@ -8,7 +8,7 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
 
         init: function () {
 
@@ -259,5 +259,5 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
     }
 
     return View;
-});
 
+});

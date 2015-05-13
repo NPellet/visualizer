@@ -2,10 +2,10 @@
 
 define(['modules/default/defaultview', 'src/util/api'], function (Default, API) {
 
-    function view() {
+    function View() {
     }
 
-    view.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
         init: function () {
             var html = '';
             html += '<div></div>';
@@ -38,5 +38,6 @@ define(['modules/default/defaultview', 'src/util/api'], function (Default, API) 
         }
     });
 
-    return view;
+    return View;
+
 });
