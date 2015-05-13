@@ -130,7 +130,7 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
                 });
             }
 
-            for(j=0; j<module.vars_out.length ; j++) {
+            for(j=0; j<module.vars_out.length; j++) {
                 var var_out = module.vars_out[j];
                 if(!var_out.name || !var_out.event) continue;
                 sources.push({

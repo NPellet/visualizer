@@ -942,7 +942,9 @@ define([
                             // When switching flavors, if this document is also
                             // in the new flavor we select it automatically
                             var id = that.currentDocument.data.doc._id;
-                            var d = _.find(data, function(d) {return d.id === id;});
+                            var d = _.find(data, function(d) {
+                                return d.id === id;
+                            });
                             if(d) {
                                 var key = _.flatten([that.flavor, d.value.flavors]).join(':');
                                 thefTree.activateKey(key);

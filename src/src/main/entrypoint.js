@@ -52,7 +52,6 @@ define([
 
     function doView(view) {
 
-        var i = 0, l;
         DataObject.recursiveTransform(view, false);
 
         view = Migration(view);
@@ -70,7 +69,7 @@ define([
 
         view.modules = view.modules || new DataArray();
 
-        l = view.modules.length;
+        var l = view.modules.length;
 
         view.variables = view.variables || new DataArray();
         view.aliases = view.aliases || new DataArray();
@@ -78,8 +77,8 @@ define([
         view.configuration = view.configuration || new DataObject();
         view.configuration.title = view.configuration.title || 'No title';
 
-        for (; i < l;) {
-            Grid.addModuleFromJSON(view.getChildSync(['modules', i++], true));
+        for (var i = 0; i < l; i++) {
+            Grid.addModuleFromJSON(view.getChildSync(['modules', i], true));
         }
 
         Grid.checkDimensions();

@@ -13,6 +13,7 @@
     "no-extra-semi": 2,
     "quotes": [2, "single", "avoid-escape"],
     "semi": [2, "always"],
+    "semi-spacing": [2, {"before": false, "after": true}],
     "strict": [2, "global"],
     "valid-typeof": 2
   }
