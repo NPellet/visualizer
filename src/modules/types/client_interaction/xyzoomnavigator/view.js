@@ -104,17 +104,17 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
 
                 self.module.controller.move(self.cx, self.cy);
                 setTimeout();
-            }
+            };
 
             var setTimeout = function () {
                 timeout = window.setTimeout(execute, getInterval());
-            }
+            };
 
             var upHandler = function () {
 
                 window.clearTimeout(timeout);
                 $(document).unbind('mouseup', upHandler);
-            }
+            };
 
             $(document).bind('mouseup', upHandler);
 

@@ -19,7 +19,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
 
             try {
                 if (!Biojs.Utils.isEmpty(self.opt.json)) {
-                    self.paintFeatures(self.opt.json)
+                    self.paintFeatures(self.opt.json);
                 }
             } catch (err) {
                 document.getElementById(self.opt.target).innerHTML = '';

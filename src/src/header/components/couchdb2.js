@@ -53,7 +53,7 @@ define([
                     Debug.info('CouchDB: beforeUrl error', err);
                     that.ready = true;
                 }
-            })
+            });
         },
 
         showError: function (e, type) {
@@ -217,7 +217,7 @@ define([
                     that.showError('meta saved.', 2);
                 },
                 error: function () {
-                    that.showError.apply(that, arguments)
+                    that.showError.apply(that, arguments);
                 }
             });
         },
@@ -349,7 +349,7 @@ define([
                 success: function (data) {
                     that.loggedIn = true;
                     that.username = username;
-                    that.openMenu('tree')
+                    that.openMenu('tree');
                 },
                 error: function () {
                     that.showError.apply(that, arguments);
@@ -496,7 +496,7 @@ define([
                             that.showError('The view was made public', 2);
                         },
                         error: function () {
-                            that.showError.apply(that, arguments)
+                            that.showError.apply(that, arguments);
                         }
                     });
                 });
@@ -753,13 +753,13 @@ define([
                         result[val.keyword[0]] = {
                             type: 'text',
                             value: val.contentText[0]
-                        }
+                        };
                     }
                     else if (val.contentType[0] === 'html') {
                         result[val.keyword[0]] = {
                             type: 'html',
                             value: val.contentHtml[0]
-                        }
+                        };
                     }
                 }
             }
@@ -900,7 +900,7 @@ define([
                                     theNode.moveTo(target, info.hitMode);
                                 },
                                 error: function () {
-                                    that.showError.apply(that, arguments)
+                                    that.showError.apply(that, arguments);
                                 }
                             });
                         },
@@ -942,7 +942,7 @@ define([
                             // When switching flavors, if this document is also
                             // in the new flavor we select it automatically
                             var id = that.currentDocument.data.doc._id;
-                            var d = _.find(data, function(d) {return d.id === id});
+                            var d = _.find(data, function(d) {return d.id === id;});
                             if(d) {
                                 var key = _.flatten([that.flavor, d.value.flavors]).join(':');
                                 thefTree.activateKey(key);
@@ -971,7 +971,7 @@ define([
                                 node.remove();
                             },
                             error: function () {
-                                that.showError.apply(that, arguments)
+                                that.showError.apply(that, arguments);
                             }
                         });
                     }
@@ -982,7 +982,7 @@ define([
                                 node.remove();
                             },
                             error: function () {
-                                that.showError.apply(that, arguments)
+                                that.showError.apply(that, arguments);
                             }
                         });
                     }

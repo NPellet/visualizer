@@ -84,7 +84,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                     }
                 }
             }
-        }
+        };
     };
 
     controller.prototype.configFunctions = {};

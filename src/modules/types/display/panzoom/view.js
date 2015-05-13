@@ -41,7 +41,7 @@ define([
                 //    that.onResize();
                 //    that.reorderImages();
                 //});
-                return that.doImage(varname, value)
+                return that.doImage(varname, value);
             }
         },
 
@@ -158,13 +158,13 @@ define([
                 }
                 else {
                     var $previousImg = x.find('img');
-                    $img = $('<img/>')
+                    $img = $('<img/>');
                     x.find('.panzoom').append($img);
                 }
 
                 var foundImg = false;
                 var image = _.find(that.images, function (img) {
-                    return img.name === varname
+                    return img.name === varname;
                 });
                 if (image) foundImg = true;
                 image = image || {};
@@ -349,7 +349,7 @@ define([
                 for (var i = 0; i < that.images.length; i++) {
                     that.images[i].$panzoomEl.panzoom('reset');
                     if (i === 0) {
-                        that.lastTransform = that.images[i].$panzoomEl.panzoom('getMatrix')
+                        that.lastTransform = that.images[i].$panzoomEl.panzoom('getMatrix');
                     }
                 }
             });
@@ -408,7 +408,7 @@ define([
                 'z-index': zIndex,
                 rendering: 'Normal',
                 scaling: 'max'
-            }
+            };
         }
     });
     return View;

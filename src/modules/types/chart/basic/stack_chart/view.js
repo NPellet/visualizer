@@ -133,7 +133,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                     data: s,
                     info: info,
                     label: label
-                }
+                };
                 /*	Traversing.getValueFromJPath(info[0],'element.name').done(function(elVal) {
                  self._data[j].label=elVal;
                  self._data[j].info=value[j].info
@@ -279,7 +279,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
             });
 
             if (data.length > 0) {
-                this.plot(id, data, self._options)
+                this.plot(id, data, self._options);
             }
         }
 

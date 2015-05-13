@@ -175,7 +175,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                     };
                     this._radar = new dhtmlXChart(options);
 
-                    var val = []
+                    var val = [];
 
                     for (var i = 0; i < chart.data.length; i++) {
                         if (i != 0) {
@@ -191,7 +191,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                                     width: 1
                                 }
 
-                            })
+                            });
                         }
                         val.push({
                             text: chart.data[i].serieLabel,
@@ -228,7 +228,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                             },
                             values: val
                         });
-                        break
+                        break;
                     case 'top-right':
                         this._radar.define('legend', {
                             width: 120,

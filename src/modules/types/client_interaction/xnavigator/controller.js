@@ -40,7 +40,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
         this.createDataFromEvent('onMove', 'xcoords', x);
         this.sendActionFromEvent('onMove', 'xcoords', x);
-    }
+    };
 
 
     Controller.prototype.variablesIn = ['xcoords'];
@@ -48,7 +48,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype.actionsIn = {
 
         changeX: 'Change X center value'
-    }
+    };
 
     Controller.prototype.configurationStructure = function (section) {
 
@@ -71,8 +71,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
                     }
                 }
             }
-        }
-    }
+        };
+    };
 
 
     Controller.prototype.configFunctions = {};

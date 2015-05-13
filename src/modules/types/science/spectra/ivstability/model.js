@@ -11,7 +11,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
         },
 
         getjPath: function (rel) {
-            return []
+            return [];
         }
     });
 

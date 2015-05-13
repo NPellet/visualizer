@@ -112,7 +112,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
             // in each node we had the content of 'label'
             $jit.Graph.Util.each(this._rgraph.graph, function (node) {
                 if (node.data && node.data.label) {
-                    node.name = node.data.label
+                    node.name = node.data.label;
                 } else {
                     node.name = '';
                 }
@@ -126,7 +126,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
             this._options = {
                 nodeSize: cfg('nodeSize') || 1,
                 nodeColor: cfg('nodeColor') || 'yellow'
-            }
+            };
         },
 
 
@@ -141,7 +141,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
             var hover = function (node) {
                 //	self.module.controller.onHover(new DataObject(self._idHash[node.id]), 'node');
                 self.module.controller.onHover(self._idHash[node.id]);
-            }
+            };
 
 
             var cfg = $.proxy(this.module.getConfiguration, this.module);

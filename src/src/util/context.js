@@ -28,7 +28,7 @@ define(['jquery', 'src/util/api', 'modules/modulefactory', 'jquery-ui/menu'], fu
 
                                 callbackClick.call(this, e, e2);
                             }
-                        })
+                        });
 
                     })($(elements[i][0]), elements[i][1], elements[i][2]);
                 }
@@ -56,7 +56,7 @@ define(['jquery', 'src/util/api', 'modules/modulefactory', 'jquery-ui/menu'], fu
                 //e.preventDefault();
                 if (contextMenu) {
                     if (contextMenu.hasClass('ui-menu')) {
-                        contextMenu.menu('destroy')
+                        contextMenu.menu('destroy');
                     }
                     contextMenu.remove();
                 }
@@ -78,27 +78,27 @@ define(['jquery', 'src/util/api', 'modules/modulefactory', 'jquery-ui/menu'], fu
                     //e.preventDefault();
                     if (contextMenu) {
                         if (contextMenu.hasClass('ui-menu')) {
-                            contextMenu.menu('destroy')
+                            contextMenu.menu('destroy');
                         }
                         contextMenu.remove();
                     }
 
                     contextMenu = null;
                     $(document).unbind('click', clickHandler);
-                }
+                };
 
                 var rightClickHandler = function () {
 
                     //e.preventDefault();
                     if (contextMenu) {
                         if (contextMenu.hasClass('ui-menu')) {
-                            contextMenu.menu('destroy')
+                            contextMenu.menu('destroy');
                         }
                         contextMenu.remove();
                     }
 
                     contextMenu = null;
-                }
+                };
 
                 $(document).bind('click', clickHandler);
                 //		return false;
@@ -141,5 +141,6 @@ define(['jquery', 'src/util/api', 'modules/modulefactory', 'jquery-ui/menu'], fu
         }
 
 
-    }
+    };
+
 });

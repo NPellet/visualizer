@@ -174,7 +174,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                     }
                 }
             }
-        }
+        };
     };
     controller.prototype.configFunctions = {
         'stack': function (cfg) {

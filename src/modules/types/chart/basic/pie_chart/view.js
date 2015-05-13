@@ -81,7 +81,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                 }
 
 
-            })
+            });
         },
 
         /* When a vaue change this method is called. It will be called for all
@@ -122,7 +122,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
             for (var i = 0; i < y.length; i++) {
                 this._data[i] = {
                     data: y[i]
-                }
+                };
                 if (Array.isArray(highlight) && highlight.length > i) {
                     if (Array.isArray(highlight[i])) {
                         this._data[i]._highlight = highlight[i];

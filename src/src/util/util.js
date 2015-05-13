@@ -49,7 +49,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
         ruleName = ruleName.toLowerCase();
 
         if (!document.styleSheets) {
-            return
+            return;
         }
 
         var i = 0, stylesheet, ii, cssRule;
@@ -180,7 +180,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
         makejPathFunction: makejPathFunction,
 
         addjPathFunction: function (stack, jpath) {
-            stack[jpath] = makejPathFunction(jpath)
+            stack[jpath] = makejPathFunction(jpath);
         },
 
         jpathToArray: function (val) {
@@ -312,7 +312,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
                 warned = true;
             }
             return method.apply(this, arguments);
-        }
+        };
     };
 
     /*
@@ -328,7 +328,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
                 warnOnceMap[name] = true;
                 return false;
             }
-        }
+        };
     } else {
         warnOnceMap = new Set();
         warnOnceCheck = function (name) {
@@ -338,7 +338,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
                 warnOnceMap.add(name);
                 return false;
             }
-        }
+        };
     }
 
     /**

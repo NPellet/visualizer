@@ -7,5 +7,6 @@ define(function () {
             deferred.notify(dom);
         },
         progress: deferred.progress
-    }
+    };
+
 });

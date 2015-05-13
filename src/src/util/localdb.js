@@ -12,7 +12,7 @@ define(['jquery'], function ($) {
             // DON'T use 'var indexedDB = ...' if you're not in a function.
             // Moreover, you may need references to some window.IDB* objects:
             window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
-            window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange
+            window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
             // (Mozilla has never prefixed these objects, so we don't need window.mozIDB*)
 
             var def = $.Deferred();
@@ -56,26 +56,24 @@ define(['jquery'], function ($) {
 
                 req1.onsuccess = function () {
                     def3.resolve();
-                }
+                };
                 req2.onsuccess = function () {
                     def4.resolve();
-                }
+                };
 
                 $.when(def3, def4).then(function () {
-
                     def.resolve();
                 });
-            }
+            };
 
             req.onerror = function (e) {
                 console.log(e.target);
                 def.reject();
-            }
+            };
 
             req.oncomplete = function (e) {
-                console.warn(e.error)
-
-            }
+                console.warn(e.error);
+            };
 
             return def;
         },
@@ -118,11 +116,11 @@ define(['jquery'], function ($) {
                         def.resolve(stack);
                     }
                 }
-            }
+            };
 
             req.onerror = function () {
 
-            }
+            };
 
             return def;
         },
@@ -148,7 +146,7 @@ define(['jquery'], function ($) {
 
             req.onsuccess = function (e) {
                 def.resolve(obj);
-            }
+            };
 
             return def;
         },
@@ -170,7 +168,7 @@ define(['jquery'], function ($) {
                     var req2 = store.put(obj2);
                     req2.onsuccess = function (e) {
                         def.resolve(obj);
-                    }
+                    };
                 }
                 else {
 
@@ -180,7 +178,7 @@ define(['jquery'], function ($) {
                         });
                     });
                 }
-            }
+            };
             return def;
         },
 
@@ -208,7 +206,7 @@ define(['jquery'], function ($) {
                         var req2 = store.put(resulted);
                         req2.onsuccess = function (e) {
                             def.resolve(obj);
-                        }
+                        };
 
                     });
                 } else {
@@ -218,9 +216,9 @@ define(['jquery'], function ($) {
                     var req2 = store.put(obj2);
                     req2.onsuccess = function (e) {
                         def.resolve(obj);
-                    }
+                    };
                 }
-            }
+            };
             return def;
         },
 
@@ -230,14 +228,15 @@ define(['jquery'], function ($) {
                 return self.getAll(type, key, branch).pipe(function (obj) {
                     return obj.head;
                 });
-            })
+            });
         },
 
         getList: function (type, key, branch) {
 
             return db.getAll(type, key, branch).pipe(function (obj) {
                 return obj.list;
-            })
+            });
         }
-    }
+    };
+
 });

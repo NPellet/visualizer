@@ -50,20 +50,20 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
         this.createDataFromEvent('onMove', 'xycoords', [x, y]);
         this.sendActionFromEvent('onMove', 'xycoords', [x, y]);
-    }
+    };
 
     Controller.prototype.zoom = function (zoom) {
 
         this.createDataFromEvent('onZoomChange', 'zoom', zoom);
         this.sendActionFromEvent('onZoomChange', 'zoom', [x, y]);
-    }
+    };
 
     Controller.prototype.variablesIn = ['xycoords', 'zoom'];
 
     Controller.prototype.actionsIn = {
         changeZoom: 'Change zoom value',
         changeXY: 'Change XY center value'
-    }
+    };
 
 
     return Controller;

@@ -471,7 +471,7 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
                     }
                 }
             }
-        }
+        };
     };
 
     Controller.prototype.configFunctions = {

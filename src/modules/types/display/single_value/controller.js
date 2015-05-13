@@ -125,7 +125,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
                     }
                 }
             }
-        }
+        };
     };
 
     Controller.prototype.configAliases = {

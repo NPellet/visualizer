@@ -159,7 +159,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
                     }
                 }
             }
-        }
+        };
     };
 
     controller.prototype.configAliases = {

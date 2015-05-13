@@ -354,5 +354,6 @@ define(['jquery', 'src/data/structures'], function ($, Structures) {
 
         triggerDataChange: triggerDataChange,
         listenDataChange: listenDataChange
-    }
+    };
+
 });

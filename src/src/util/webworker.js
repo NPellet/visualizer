@@ -23,7 +23,7 @@ define(['jquery'], function ($) {
                         return;
                     }
                 }
-            }
+            };
         },
 
         send: function (name, message, callback) {

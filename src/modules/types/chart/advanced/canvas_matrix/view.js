@@ -47,10 +47,10 @@ define([
 
                 self.accumulatedDelta += delta;
                 if (delta !== undefined)
-                    self.changeZoom(self.accumulatedDelta / 1000, (e.offsetX || e.pageX - $(e.target).offset().left), (e.offsetY || e.pageY - $(e.target).offset().top))
+                    self.changeZoom(self.accumulatedDelta / 1000, (e.offsetX || e.pageX - $(e.target).offset().left), (e.offsetY || e.pageY - $(e.target).offset().top));
             }).on('dblclick', function (e) {
                 self.accumulatedDelta = 0;
-                self.changeZoom(self.accumulatedDelta / 1000, (e.offsetX || e.pageX - $(e.target).offset().left), (e.offsetY || e.pageY - $(e.target).offset().top))
+                self.changeZoom(self.accumulatedDelta / 1000, (e.offsetX || e.pageX - $(e.target).offset().left), (e.offsetY || e.pageY - $(e.target).offset().top));
 
             });
 
@@ -418,7 +418,7 @@ define([
                     buffer: this.buffers[this.getBufferKey(pxPerCell, indexX, indexY)],
                     nbValX: w
                 }
-            })
+            });
         },
 
         doChangeWorkersData: function () {
@@ -448,7 +448,7 @@ define([
         },
 
         getHighContrast: function () {
-            return this.highContrast || (this.highContrast = this.module.getConfiguration('highContrast', false) )
+            return this.highContrast || (this.highContrast = this.module.getConfiguration('highContrast', false) );
         },
 
         redoScale: function (min, max) {

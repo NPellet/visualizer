@@ -153,7 +153,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                     }
                 }
             }
-        }
+        };
     };
 
     Controller.prototype.onVarReceiveChange = function (name, rel, confSection) {
@@ -173,7 +173,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
 
     Controller.prototype.configFunctions = {
         colsjPaths: function (cfg) {
-            return cfg || []
+            return cfg || [];
         }
     };
 

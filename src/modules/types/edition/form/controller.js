@@ -106,7 +106,7 @@ define(['modules/default/defaultcontroller', 'lib/formcreator/formcreator'], fun
                     }
                 }
             }
-        }
+        };
     };
 
 

@@ -99,7 +99,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
                         _count: 0,
                         _limit: limit
                     });
-            }
+            };
             deferred.resolve();
         }, function () {
             Debug.warn('IDB opening failure');
@@ -128,7 +128,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
         // Store references from cross compatibility
         indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
         IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
-        IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange
+        IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
 
         if (!indexedDB) {
             ready.reject();
@@ -142,13 +142,13 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
 
             db = e.target.result;
             ready.resolve();
-        }
+        };
 
         openrequest.onerror = function (e) {
 
             Debug.info(e);
             ready.reject();
-        }
+        };
 
         openrequest.onupgradeneeded = function (e) {
             db = e.target.result;
@@ -160,9 +160,9 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
 
             objectStore.onsuccess = function () {
 
-            }
+            };
 
-        }
+        };
 
         return ready;
     }
@@ -184,7 +184,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
                     defGet.resolve(e.target.result.data);
                 else
                     defGet.reject();
-            }
+            };
 
             getter = store.get('__lrudata' + storeName);
             getter.onsuccess = function (e) {
@@ -198,8 +198,8 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
 
                 setter.onsuccess = function (e) {
                     defSet.resolve();
-                }
-            }
+                };
+            };
 
             $.when(defGet, defSet).then(function (data) {
 
@@ -272,7 +272,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
                     _count: lru._count,
                     _limit: lru._limit
                 });
-            }
+            };
 
             deferred.resolve(data);
         }, function () {
@@ -327,5 +327,6 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
         exists: function (store) {
             return (memory[store]);
         }
-    }
+    };
+
 });

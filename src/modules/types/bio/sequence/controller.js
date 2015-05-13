@@ -50,7 +50,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     controller.prototype.onSequenceSelectionChanged = function (val) {
         this.createDataFromEvent('onSequenceSelectionChanged', 'sequence', DataObject.check(val, true));
-    }
+    };
 
 
     /*

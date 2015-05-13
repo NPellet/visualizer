@@ -57,7 +57,7 @@ define([
             controller.setVarFromEvent(name, 'row', 'matrix', ['xLabel', keyed[1]]);
             controller.setVarFromEvent(name, 'col', 'matrix', ['yLabel', keyed[0]]);
             controller.setVarFromEvent(name, 'intersect', 'matrix', ['data', keyed[1], keyed[0]]);
-        }
+        };
     }
 
     Controller.prototype.initEvents = function () {
@@ -131,7 +131,7 @@ define([
                     }
                 }
             }
-        }
+        };
     };
 
     Controller.prototype.configAliases = {

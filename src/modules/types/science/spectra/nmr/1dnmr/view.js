@@ -61,7 +61,7 @@ define([
                 for (var i = 0; i < config.length; i++) {
                     if (config[i].varname === varname) {
                         result.lineColor = Util.getColor(config[i].color);
-                        result.lineWidth = config[i].width
+                        result.lineWidth = config[i].width;
                     }
                 }
             }

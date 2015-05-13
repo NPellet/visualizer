@@ -333,7 +333,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                 if(slickCheck instanceof Array) {
                     checkboxAdd(slickCheck, 'highlightScroll');
                 }
-            }, 'slick_grid')
+            }, 'slick_grid');
         }
 //  Add new migration functions here
 //      'x.y.z', function (view) {

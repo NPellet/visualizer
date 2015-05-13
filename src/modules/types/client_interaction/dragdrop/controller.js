@@ -384,7 +384,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         return {
             mime: 'image/png',
             cfg: lineCfg
-        }
+        };
     };
 
     Controller.prototype.fileRead = function (result, meta) {
@@ -447,7 +447,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
             obj = {
                 type: meta.cfg.type,
                 value: obj
-            }
+            };
         }
         var name = meta.cfg.variable;
         var variable = new DataObject({
@@ -474,7 +474,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                     getAsFile: function () {
                         return e.target.files[i];
                     }
-                })
+                });
             })(i);
 
         }

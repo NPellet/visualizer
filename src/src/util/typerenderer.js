@@ -339,7 +339,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
                 if (!isNaN(value[0])) {
                     value = value.map(function (value) {
                         return {'size': value};
-                    })
+                    });
                 }
 
                 var length = value.length;

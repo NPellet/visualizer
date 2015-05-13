@@ -92,5 +92,6 @@ define(function () {
         pause: stop,
         create: create,
         make: create
-    }
+    };
+
 });

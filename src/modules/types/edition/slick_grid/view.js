@@ -101,10 +101,10 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     editor = Slick.Editors.SpecialNativeObject;
                 }
                 else if(obj instanceof DataNumber) {
-                    editor = Slick.Editors.DataNumberEditor
+                    editor = Slick.Editors.DataNumberEditor;
                 }
                 else if(obj instanceof DataBoolean) {
-                    editor = Slick.Editors.DataBooleanEditor
+                    editor = Slick.Editors.DataBooleanEditor;
                 }
                 else {
                     editor = typeEditors[getType(jpath)];
@@ -156,7 +156,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     jpath: row.jpath,
                     simpleJpath: row.jpath.length === 1,
                     dataType: type
-                }
+                };
             });
 
             slickCols = _.filter(slickCols, function(val) {
@@ -186,7 +186,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         jpath: [rowName],
                         formatter: formatters.typerenderer,
                         asyncPostRender: tp
-                    }
+                    };
                 }).value();
 
             }
@@ -510,7 +510,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                                         var val2 = b.getChildSync(sortCols[i].sortCol.jpath);
                                         if(val1 === undefined) {
                                             if(sortCols[i].sortAsc) return 1;
-                                            else return -1
+                                            else return -1;
                                         }
                                         if(val2 === undefined) {
                                             if(sortCols[i].sortAsc) return -1;
@@ -829,7 +829,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             }
             this.$rowHelp.css( {
                 bottom: 0
-            })
+            });
         },
 
         getNextIncrementalId: function() {
@@ -956,12 +956,12 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
     filters.interval = function(a, low, high) {
         return a >= low && a <= high;
-    }
+    };
 
     filters.reg = function (a, reg, modifiers) {
         var reg = new RegExp(reg, modifiers);
         return a.match(reg);
-    }
+    };
 
     function getColumnFilterFunction(query) {
         var match;
@@ -972,14 +972,14 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 match = match.toLowerCase();
                 val = val.toString().toLowerCase();
                 return val.match(match[1]);
-            }
+            };
         }
 
         match = query.match(/^\/(.*)\/(i?)/);
         if(match) {
             return function(val) {
                 return val.toString().match(new RegExp(match[1], match[2] || undefined));
-            }
+            };
         }
 
         match = query.match(/^([<>=]{1,2})([0-9.]+)$/);
@@ -987,27 +987,27 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             if(match[1] === '<') {
                 return function(val) {
                     return val < match[2];
-                }
+                };
             }
             else if(match[1] === '<=' || match[1] === '=<') {
                 return function(val) {
-                    return val <= match[2]
-                }
+                    return val <= match[2];
+                };
             }
             else if(match[1] === '>') {
                 return function(val) {
                     return val > match[2];
-                }
+                };
             }
             else if(match[1] === '>=' || match[1] === '=>') {
                 return function(val) {
                     return val >= match[2];
-                }
+                };
             }
             else if(match[1] === '==' || match[1] === '=') {
                 return function(val) {
                     return val == match[2];
-                }
+                };
             }
         }
 
@@ -1015,12 +1015,12 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         if(match) {
             return function(val) {
                 return val >= match[1] && val <= match[2];
-            }
+            };
         }
 
         return function(val) {
             return val.toString().toLowerCase().match(query.toLowerCase());
-        }
+        };
     }
 
 

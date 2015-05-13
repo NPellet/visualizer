@@ -143,7 +143,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
                     }
                 }
             }
-        }
+        };
     };
 
     controller.prototype.configAliases = {

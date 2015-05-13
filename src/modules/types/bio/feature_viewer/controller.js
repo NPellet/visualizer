@@ -51,11 +51,11 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     controller.prototype.onFeatureClicked = function (val) {
         this.createDataFromEvent('onFeatureClicked', 'feature', DataObject.check(val, true));
-    }
+    };
 
     controller.prototype.onFeatureMouseOver = function (val) {
         this.createDataFromEvent('onFeatureMouseOver', 'feature', DataObject.check(val, true));
-    }
+    };
 
 
     /*

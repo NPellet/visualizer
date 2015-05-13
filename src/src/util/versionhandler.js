@@ -26,7 +26,7 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
                 }
             }
         };
-    }
+    };
 
     DataViewHandler.prototype = {
 
@@ -169,7 +169,7 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
             } else if (level == 2) { // (head/stored)
                 toOpen = this.getBranches();
             } else if (level == 3) { // Display all month + years
-                toOpen = this.getElements()
+                toOpen = this.getElements();
             }
 
             // When we got it !

@@ -84,14 +84,14 @@ define([
     }
 
     function rgbStringToHex(rgbString) {
-        var shorthandRegex = /^rgba?\(\s*(\d+),\s*(\d+),\s*(\d+)/
+        var shorthandRegex = /^rgba?\(\s*(\d+),\s*(\d+),\s*(\d+)/;
         var m = shorthandRegex.exec(rgbString);
         if (m) {
             return rgbToHex(m[1], m[2], m[3]);
         }
         else {
             console.error('rgb string to hex conversion failed', rgbString);
-            return '#ffffff'
+            return '#ffffff';
         }
     }
 
@@ -618,7 +618,7 @@ define([
                     var hue = colorInt === 0 ? 180 : 360 * (c - colorMin) / colorInt;
                     var color = chroma('hsl(' + hue + ', 65%, 65%)');
                     return color.hex();
-                })
+                });
             }
 
         },
@@ -1000,7 +1000,7 @@ define([
             ctx.fillText(text, 0, options.size);
 
             // canvas contents will be used for a texture
-            var texture = new THREE.Texture(canvas)
+            var texture = new THREE.Texture(canvas);
             texture.needsUpdate = true;
 
             var material = new THREE.MeshBasicMaterial({
@@ -1517,7 +1517,7 @@ define([
                         ? (size[v] || DEFAULT_POINT_RADIUS) * factor
                         : 0;
                     if (forcedColor) {
-                        values_color[v] = forcedColor
+                        values_color[v] = forcedColor;
                     }
                     else if (updateColor) {
                         values_color[v] = new THREE.Color(color[v] || DEFAULT_POINT_COLOR);

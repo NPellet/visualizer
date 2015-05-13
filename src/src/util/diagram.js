@@ -22,7 +22,7 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
             fail = true;
         }
         if(fail) {
-            throw new Error('Rectangle construction failed')
+            throw new Error('Rectangle construction failed');
         }
     }
 
@@ -87,7 +87,7 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
             points = [
                 {x: this.centerx, y:this.miny},
                 {x: this.centerx, y: this.maxy}
-            ]
+            ];
         }
 
 
@@ -169,7 +169,7 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
                         jpath: source[j].jpath || [],
                         rel_out: source[j].rel,
                         rel_in: targets[j].rel
-                    })
+                    });
                 }
             }
             //else {
@@ -302,7 +302,7 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
                     .attr('r', nodeRadius)
                     //.call(zoom)
                     //.call(drag)
-                    .call(force.drag)
+                    .call(force.drag);
             }
             else if(type === 'rect') {
                 node = svg.append('g').selectAll('rect')
@@ -312,7 +312,7 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
                     .attr('height', nodeBox.height)
                     //.call(zoom)
                     //.call(drag)
-                    .call(force.drag)
+                    .call(force.drag);
             }
             //.call(drag1);
 
@@ -394,7 +394,7 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
 
             function linkLine(d) {
                 var target = getTargetPosition(d);
-                return 'M' + target.from.x  + ',' + target.from.y + 'L' + target.to.x + ' ' + target.to.y
+                return 'M' + target.from.x  + ',' + target.from.y + 'L' + target.to.x + ' ' + target.to.y;
             }
 
             function transformNode(d) {

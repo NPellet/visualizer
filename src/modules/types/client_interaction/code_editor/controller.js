@@ -142,7 +142,7 @@ define(['modules/default/defaultcontroller', 'src/data/structures', 'src/util/de
         return {
             type: this.module.getConfiguration('outputType'),
             value: val
-        }
+        };
     };
 
     function getJsonValue(str) {

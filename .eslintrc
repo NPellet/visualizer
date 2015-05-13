@@ -12,6 +12,7 @@
     "no-ex-assign": 2,
     "no-extra-semi": 2,
     "quotes": [2, "single", "avoid-escape"],
+    "semi": [2, "always"],
     "strict": [2, "global"],
     "valid-typeof": 2
   }

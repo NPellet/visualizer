@@ -18,7 +18,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 
             this.legends = [];
             this.dom = $(html.join(''));
-            this.legendDom = this.dom.find('.ivstablegend')
+            this.legendDom = this.dom.find('.ivstablegend');
             this.module.getDomContent().html(this.dom).css('overflow', 'hidden');
             this.resolveReady();
         },

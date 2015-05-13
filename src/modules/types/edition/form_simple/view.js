@@ -92,7 +92,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
             var triggerFunction = function () {
                 var el = triggerCommon.call(this);
-                self.module.controller.formTriggered(el)
+                self.module.controller.formTriggered(el);
             };
 
             var changedFunction = function () {

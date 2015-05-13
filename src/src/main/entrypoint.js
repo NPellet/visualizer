@@ -234,7 +234,7 @@ define([
                             allFilters.push({
                                 file: filter.name[0],
                                 name: filter.name[0]
-                            })
+                            });
                         } catch (e) {
                             Debug.warn('Problem with custom filter definition', e);
                         }
@@ -342,7 +342,7 @@ define([
             return Promise.all(pouching).then(function () {
                 API.stopLoading('Fetching local variables');
             }, function (err) {
-                Debug.error('Unable to fetch local variables', err)
+                Debug.error('Unable to fetch local variables', err);
             });
 
         }
@@ -799,7 +799,7 @@ define([
                         Debug.warn('config as attribute of ci-visualizer is deprecated. Use data-ci-config instead.');
                         configJson = visualizerDiv.attr('config');
                     } else {
-                        configJson = require.toUrl('usr/config/default.json')
+                        configJson = require.toUrl('usr/config/default.json');
                     }
                 }
 

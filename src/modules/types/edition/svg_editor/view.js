@@ -42,7 +42,7 @@ define([
 
             if (args[0]._configCheckBox('editable', 'isEditable')) {
                 setTimeout(function () {
-                    args[0].svgCanvas.getSvgString()(handleSvgData)
+                    args[0].svgCanvas.getSvgString()(handleSvgData);
                 }, 0);
             }
             else {
@@ -253,7 +253,7 @@ define([
                 for (var key in attributes) {
                     if (typeof attributes[key] === 'function') {
                         $svgEl.each(function () {
-                            this.setAttribute(key, attributes[key].call())
+                            this.setAttribute(key, attributes[key].call());
                         });
                     }
                     else {
@@ -340,7 +340,7 @@ define([
                 // Case 1)
                 if (obj.attributes && !obj.animation) {
                     if (_.any(obj.attributes, function (attribute) {
-                            return typeof attribute === 'function'
+                            return typeof attribute === 'function';
                         })) {
                         this.setAttributesOneByOne($svgEl, obj.attributes);
                     }
@@ -356,7 +356,7 @@ define([
 
                 // Case 2)
                 else if (obj.animation && !obj.attributes) {
-                    self.addAnimations($svgEl, obj.animation)
+                    self.addAnimations($svgEl, obj.animation);
                 }
 
                 // Case 3)
@@ -473,7 +473,7 @@ define([
                                     }
                                     self.modifySvgFromArray(obj[eventName], true);
                                 });
-                            })(mouseEventNames[j])
+                            })(mouseEventNames[j]);
                         }
                     }
                 })($svgEl);
@@ -481,7 +481,7 @@ define([
 
             getHighlightId: function ($svgEl) {
                 $svgEl.map(function () {
-                    return this.getAttribute('id')
+                    return this.getAttribute('id');
                 }).toArray().join(',');
             },
 
@@ -521,7 +521,7 @@ define([
                 if (!id || !anim.attributes || !anim.attributes.to || !anim.attributes.attributeName) return;
                 animMemory[id] = animMemory[id] || {};
                 animMemory[id][anim.attributes.attributeName] = animMemory[id][anim.attributes.attributeName] || {};
-                animMemory[id][anim.attributes.attributeName].to = anim.attributes.to
+                animMemory[id][anim.attributes.attributeName].to = anim.attributes.to;
             },
 
             rememberAnim: function (anim, id) {

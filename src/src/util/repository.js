@@ -44,7 +44,7 @@ define(['jquery', 'src/util/event'], function ($, Event) {
             if (!set1[set2el] && !or)
                 return null;
             else if (set1[set2el])
-                set3.push(set2el)
+                set3.push(set2el);
         }
         return set3;
     };

@@ -36,7 +36,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
                 xMax: this.boundaries.xMax,
                 yMin: this.boundaries.yMin,
                 yMax: this.boundaries.yMax
-            }
+            };
         },
 
         getValue: function () {

@@ -468,9 +468,8 @@ define([
 
         if (name) {
             return definition.layers[name] = {name: name};
-
-            setLayers()
-            def.resolve(definition.layers[name]);
+            //setLayers();
+            //def.resolve(definition.layers[name]);
         }
 
         var div = ui.dialog({
@@ -756,7 +755,7 @@ define([
                     Context.listen(Context.getRootDom(), [
                         ['<li id="context-menu-build-info"><a class="ui-state-disabled"><span class="ui-icon ui-icon-info"></span>Built ' + Version.buildTime + '</a></li>',
                             Util.noop]], null, function($ctxmenu) {
-                        $ctxmenu.find('#context-menu-build-info').insertAfter($ctxmenu.find('#context-menu-version'))
+                        $ctxmenu.find('#context-menu-build-info').insertAfter($ctxmenu.find('#context-menu-version'));
                     });
                 }
 

@@ -164,7 +164,7 @@ define([
             this.dom.find('.ci-module-header-toolbar ul li').each(function () {
                 var el = this;
                 var t = _.find(toolbar, function (val) {
-                    return val.title === el.title
+                    return val.title === el.title;
                 });
 
                 if (t && t.onClick) {
@@ -550,7 +550,7 @@ define([
                 varsInList.push({
                     key: varsIn[i],
                     title: references[varsIn [i]].label
-                })
+                });
             }
 
             // Send configuration
@@ -801,7 +801,7 @@ define([
                                 }
                             }
                         }
-                    }
+                    };
                 }
 
                 if (eventsVariables.length > 0) {
@@ -856,7 +856,7 @@ define([
                                 }
                             }
                         }
-                    }
+                    };
                 }
 
                 if (actionsInList.length > 0) {
@@ -893,7 +893,7 @@ define([
                                 }
                             }
                         }
-                    }
+                    };
                 }
 
                 if (eventsActions.length > 0) {
@@ -941,7 +941,7 @@ define([
                                 }
                             }
                         }
-                    }
+                    };
                 }
 
                 form.setStructure(structure);
@@ -1440,7 +1440,7 @@ define([
                 bgColor: [255, 255, 255, 0],
                 wrapper: true,
                 created: true
-            })
+            });
         },
 
         reload: function () {
@@ -1471,7 +1471,7 @@ define([
 
             for (var i in aliases) {
                 if (aliases.hasOwnProperty(i)) {
-                    result[i] = getExampleFromAlias(definition, aliases[i])
+                    result[i] = getExampleFromAlias(definition, aliases[i]);
                 }
             }
 

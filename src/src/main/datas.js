@@ -918,7 +918,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
             type = object.getType();
             object = object.get();
         } else {
-            type = typeof object
+            type = typeof object;
         }
 
         switch (type) {

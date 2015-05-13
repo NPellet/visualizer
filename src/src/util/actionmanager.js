@@ -168,7 +168,7 @@ define(['require'], function (require) {
 
                             break;
                     }
-                }
+                };
 
                 break;
         }
@@ -216,6 +216,6 @@ define(['require'], function (require) {
                 }
             }
         }
-    }
+    };
 
 });

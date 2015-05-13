@@ -66,7 +66,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
             this.renderForm();
             this.form.on('field:delete', function(node) {
                 that.exportForm();
-            })
+            });
         },
         update: {
             inputValue: function (value) {

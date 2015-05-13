@@ -295,7 +295,7 @@ define([
             req.fail(function () {
                 node.setTitle(that.inlineOldTitle);
                 that.log('error-log', 'Failed to rename file');
-            })
+            });
         },
 
         newFile: function () {
@@ -538,7 +538,7 @@ define([
                     path: el.rel + el.name,
                     dir: el.rel
                 }
-            }
+            };
         });
     }
 

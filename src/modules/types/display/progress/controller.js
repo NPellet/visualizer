@@ -52,7 +52,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                     }
                 }
             }
-        }
+        };
     };
 
     Controller.prototype.configAliases = {

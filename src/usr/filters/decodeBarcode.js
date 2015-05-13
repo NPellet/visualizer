@@ -49,7 +49,7 @@ define(function () {
                                 filteredResult.push({
                                     encoding: m[1],
                                     encoded: m[2]
-                                })
+                                });
                             }
                         }
                         return resolve(filteredResult);

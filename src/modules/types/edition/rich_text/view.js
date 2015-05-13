@@ -103,7 +103,7 @@ define([
                 this.dom.css({
                     background: Util.getCssVendorPrefix() + 'radial-gradient(center, ellipse cover, ' + ch.brighter().hex() + ' 0%, ' + ch.hex() + ' 100%)'
                     //background: 'radial-gradient(ellipse at center, ' + ch.brighter().hex() + ' 0%,' + ch.hex() + ' 100%)',
-                })
+                });
             }
             else {
                 this.dom.css({

@@ -92,7 +92,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                             options: {
                                 mode: 'total'
                             }
-                        }
+                        };
                     }
 
                     var wheel = cfg('wheelAction');
@@ -934,7 +934,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             var normalize = '';
             for (i = 0, l = plotinfos.length; i < l; i++) {
                 if (varname == plotinfos[i].variable) {
-                    normalize = plotinfos[i].normalize
+                    normalize = plotinfos[i].normalize;
                 }
             }
             if (!normalize) return;
