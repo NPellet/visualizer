@@ -76,7 +76,6 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         },
 
         _ignored: function() {
-            debugger;
             var ignored = [];
             for(var i=0; i<this.data.length; i++) {
                 if(this.data[i] === undefined) {
@@ -126,33 +125,33 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             var width = this.dom.width() - margin.left -margin.right,
                 height = this.dom.height() - margin.top - margin.bottom;
 
-            var svg = d3.select('#' + this.id).append("svg")
+            var svg = d3.select('#' + this.id).append('svg')
                 .style('margin', 0)
                 .style('padding',0)
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom)
+                .append('g')
+                .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
             var hexbin = d3.hexbin()
                 .radius(hexRadius);
 
             var hexbinPoints = hexbin(points);
-            svg.append("g")
-                .selectAll(".hexagon")
+            svg.append('g')
+                .selectAll('.hexagon')
                 .data(hexbinPoints)
-                .enter().append("path")
-                .attr("class", "hexagon")
-                .attr("d", function (d) {
-                    return "M" + d.x + "," + d.y + hexbin.hexagon();
+                .enter().append('path')
+                .attr('class', 'hexagon')
+                .attr('d', function (d) {
+                    return 'M' + d.x + ',' + d.y + hexbin.hexagon();
                 })
-                .attr("stroke", "black")
-                .attr("stroke-width", "1px")
-                .style("fill", function(d, i) {
+                .attr('stroke', 'black')
+                .attr('stroke-width', '1px')
+                .style('fill', function(d, i) {
                     return that.color[i];
                 });
 
-            var nodeText = svg.append("g")
+            var nodeText = svg.append('g')
                 .selectAll('foreignObject')
                 .data(hexbinPoints)
                 .enter().append('foreignObject')
@@ -161,7 +160,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                     width: hexRadius,
                     height: hexRadius,
                     transform: function(d) {
-                        return 'translate(' + (d.x - hexRadius/2)+ ',' + (d.y - hexRadius/2) + ')'
+                        return 'translate(' + (d.x - hexRadius/2)+ ',' + (d.y - hexRadius/2) + ')';
                     }
                 });
 
