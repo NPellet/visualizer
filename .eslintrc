@@ -14,6 +14,8 @@
     "no-empty": 2,
     "no-ex-assign": 2,
     "no-extra-semi": 2,
+    "no-func-assign": 2,
+    "no-irregular-whitespace": 2,
     "quotes": [2, "single", "avoid-escape"],
     "semi": [2, "always"],
     "semi-spacing": [2, {"before": false, "after": true}],
