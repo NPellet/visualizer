@@ -21,10 +21,13 @@
     "no-regex-spaces": 2,
     "no-sparse-arrays": 2,
     "no-unreachable": 2,
+    "no-unused-expressions": 2,
+    "no-with": 2,
     "quotes": [2, "single", "avoid-escape"],
     "semi": [2, "always"],
     "semi-spacing": [2, {"before": false, "after": true}],
     "strict": [2, "global"],
+    "use-isnan": 2,
     "valid-typeof": 2
   }
 }

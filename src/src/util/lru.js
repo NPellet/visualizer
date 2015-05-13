@@ -193,7 +193,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
                 if (!lru)
                     return defGet.reject();
 
-                lru.data[index] == Date.now(); // Update the date of the object
+                lru.data[index] = Date.now(); // Update the date of the object
                 var setter = store.put(lru);
 
                 setter.onsuccess = function (e) {

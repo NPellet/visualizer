@@ -1289,11 +1289,15 @@ define([
             var self = this;
             self._data.inBoundary = [];
             for (var i = 0; i < self._data.x.length; i++) {
-                self._inBoundary({
-                    x: self._data.x[i],
-                    y: self._data.y[i],
-                    z: self._data.z[i]
-                }) ? self._data.inBoundary.push(true) : self._data.inBoundary.push(false);
+                if (self._inBoundary({
+                        x: self._data.x[i],
+                        y: self._data.y[i],
+                        z: self._data.z[i]
+                    })) {
+                    self._data.inBoundary.push(true);
+                } else {
+                    self._data.inBoundary.push(false);
+                }
             }
         },
 

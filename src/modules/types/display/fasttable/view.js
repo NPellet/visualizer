@@ -270,7 +270,11 @@ define([
                 id = this.module.getId() + '_';
             for (var i = 0; i < l; i++) {
                 el = document.getElementById(id + i);
-                s[i] ? el.removeAttribute('style') : el.setAttribute('style', 'display:none');
+                if (s[i]) {
+                    el.removeAttribute('style');
+                } else {
+                    el.setAttribute('style', 'display:none');
+                }
             }
 
         },

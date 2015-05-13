@@ -94,7 +94,9 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/datatraversing
             this.resolveReady();
         },
         onResize: function () {
-            this.parcoords && this.parcoords.width(this.width).height(this.height).resize().render();
+            if (this.parcoords) {
+                this.parcoords.width(this.width).height(this.height).resize().render();
+            }
         },
         redrawChart: function () {
             var that = this;

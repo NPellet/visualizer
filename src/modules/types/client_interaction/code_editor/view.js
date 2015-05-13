@@ -77,7 +77,9 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
             this.module.controller.onEditorChanged(this._code);
         },
         onResize: function () {
-            this.editor && this.editor.resize();
+            if (this.editor) {
+                this.editor.resize();
+            }
         }
     });
 
