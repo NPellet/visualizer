@@ -5,7 +5,7 @@ Information for the core developers of the project.
 ## Check code style
 
 The project uses eslint to validate code style.  
-Command is `npm run jslint`
+Command is `npm run eslint`
 
 ## Versioning and release procedure
 

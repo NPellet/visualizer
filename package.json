@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "build": "grunt build --clean-images",
-    "jslint": "eslint src --reset"
+    "eslint": "eslint src --reset"
   },
   "homepage": "https://github.com/NPellet/visualizer",
   "bugs": {
