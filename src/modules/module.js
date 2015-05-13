@@ -1383,18 +1383,15 @@ define([
         },
 
         setBackgroundColor: function (color) {
-
-
             this.domContent.get(0).style.backgroundColor = 'rgba(' + color.join(',') + ')';
         },
 
         setDisplayWrapper: function (bln) {
-
             this.getDomWrapper()[(bln === true || bln == undefined) ? 'addClass' : 'removeClass']('ci-module-displaywrapper');
-
             try {
                 this.getDomWrapper().resizable((bln === true || bln == undefined) ? 'enable' : 'disable');
             } catch (e) {
+                // do nothing
             }
         },
 

@@ -54,6 +54,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
                 $('#' + self._id).bind('plotclick', function (event, pos, item) {
                     if (item) {
+                        //TODO handle click?
                     }
                 });
                 $('#' + self._id).bind('plothover', function (event, pos, item) {
@@ -114,8 +115,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
             this._data = [];
             var self = this;
             if (!Array.isArray(value.data) || !value.data[0] || !Array.isArray(value.data[0].y)) return;
-            if (value.data.length > 0) {
-            }
             var y = value.data[0].y;
             var highlight = value.data[0]._highlight;
             var infos = value.data[0].info;

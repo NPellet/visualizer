@@ -640,8 +640,6 @@ define([
                                 for (var i = 0, l = json.length; i < l; i++) {
                                     makeRecursiveMenu(json[i], $ulModules);
                                 }
-                            } else {
-
                             }
 
                         });

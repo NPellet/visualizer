@@ -102,9 +102,6 @@ define([
                 conf = this._buildConfFromVarsIn();
                 conf = _.filter(conf, filterConf);
             }
-            else {
-
-            }
             prom = _.map(conf, function (c) {
                 return new Promise(function (resolve) {
                     var image = {};

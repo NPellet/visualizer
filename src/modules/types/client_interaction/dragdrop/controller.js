@@ -241,6 +241,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
             var result = Structure._parse(meta.cfg.type, value);
             this.tmpVar(result, meta);
         } catch (e) {
+            Debug.info('Value could not be parsed: ', value, e);
         }
     };
 

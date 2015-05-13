@@ -198,6 +198,7 @@ define([
                     });
                     this.addGeoJSON(converted, varname);
                 } catch (e) {
+                    // do nothing
                 }
                 this.updateFit(varname);
             },
@@ -205,6 +206,7 @@ define([
                 try {
                     this.addGeoJSON(omnivore.csv.parse(csv.get()), varname);
                 } catch (e) {
+                    // do nothing
                 }
                 this.updateFit(varname);
             },
@@ -212,6 +214,7 @@ define([
                 try {
                     this.addGeoJSON(omnivore.kml.parse(kml.get()), varname);
                 } catch (e) {
+                    // do nothing
                 }
                 this.updateFit(varname);
             },
@@ -219,6 +222,7 @@ define([
                 try {
                     this.addGeoJSON(omnivore.gpx.parse(gpx.get()), varname);
                 } catch (e) {
+                    // do nothing
                 }
                 this.updateFit(varname);
             },
@@ -226,6 +230,7 @@ define([
                 try {
                     this.addGeoJSON(omnivore.wkt.parse(wkt.get()), varname);
                 } catch (e) {
+                    // do nothing
                 }
                 this.updateFit(varname);
             },
@@ -233,6 +238,7 @@ define([
                 try {
                     this.addGeoJSON(omnivore.topojson.parse(topojson.get()), varname);
                 } catch (e) {
+                    // do nothing
                 }
                 this.updateFit(varname);
             }

@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'lib/twigjs/twig'], function (Default, Twig) {
+define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], function (Default, Twig, Debug) {
 
     function View() {
     }
@@ -53,6 +53,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig'], function (Default, Tw
                     this.module.definition.configuration.groups.group[0].template[0] = tpl;
                     this.render();
                 } catch (e) {
+                    Debug.info('Problem with template: ' + e);
                 }
             }
         },

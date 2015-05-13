@@ -136,6 +136,7 @@ define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/version
                     }
                     Versioning.setDataJSON(val);
                 } catch (_) {
+                    // do nothing
                 }
 
                 div.dialog('close');
@@ -161,6 +162,7 @@ define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/version
                     }
                     Versioning.setViewJSON(val);
                 } catch (_) {
+                    // do nothing
                 }
 
                 div.dialog('close');
