@@ -2,10 +2,7 @@
 
 define([
     'modules/default/defaultview',
-
-    'components/jsNMR/src/nmr',
-
-
+    'components/jsNMR/src/nmr'
 ], function (Default, NMR) {
 
     function View() {

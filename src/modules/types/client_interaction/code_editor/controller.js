@@ -109,7 +109,7 @@ define(['modules/default/defaultcontroller', 'src/data/structures', 'src/util/de
         iseditable: ['groups', 'group', 0, 'iseditable', 0],
         hasButton: ['groups', 'group', 0, 'hasButton', 0],
         script: ['groups', 'group', 0, 'script', 0],
-        outputType: ['groups', 'group', 0, 'outputType', 0],
+        outputType: ['groups', 'group', 0, 'outputType', 0]
     };
 
     Controller.prototype.onEditorChanged = function (value) {

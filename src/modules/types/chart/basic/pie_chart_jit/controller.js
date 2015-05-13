@@ -58,7 +58,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         yArray: {
             type: 'array',
             label: '1D Y array'
-        },
+        }
     };
 
 
@@ -108,7 +108,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                             options: {
                                 updateHeights: 'Yes (Only for mono-serie pies)'
                             }
-                        },
+                        }
                         /*showLabels: {
                          type: 'checkbox',
                          title: 'Show labels ?',
@@ -127,15 +127,15 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     };
 
     controller.prototype.configFunctions = {
-        'updateHeights': boolCheckbox,
-        'showLabels': boolCheckbox
+        updateHeights: boolCheckbox,
+        showLabels: boolCheckbox
     };
 
     controller.prototype.configAliases = {
-        'sliceOffset': ['groups', 'group', 0, 'sliceOffset', 0],
-        'updateHeights': ['groups', 'group', 0, 'updateHeights', 0],
-        'showLabels': ['groups', 'group', 0, 'showLabels', 0],
-        'labelColor': ['groups', 'group', 0, 'labelColor', 0]
+        sliceOffset: ['groups', 'group', 0, 'sliceOffset', 0],
+        updateHeights: ['groups', 'group', 0, 'updateHeights', 0],
+        showLabels: ['groups', 'group', 0, 'showLabels', 0],
+        labelColor: ['groups', 'group', 0, 'labelColor', 0]
     };
 
     function boolCheckbox(cfg) {

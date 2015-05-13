@@ -4,6 +4,7 @@
     "amd": true
   },
   "rules": {
+    "comma-dangle": [2, "never"],
     "indent": [2, 4],
     "no-debugger": 2,
     "no-dupe-args": 2,

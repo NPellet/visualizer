@@ -46,29 +46,23 @@ define(['modules/default/defaultcontroller'], function (Default) {
         onEditorChange: {
             label: 'The value in the editor has changed',
             refVariable: ['value']
-        },
+        }
     };
 
-    controller.prototype.configurationStructure = function (section) {
-
+    controller.prototype.configurationStructure = function () {
         return {
-
             groups: {
-
                 group: {
                     options: {
                         type: 'list'
                     },
-
                     fields: {
-
                         thevalue: {
                             type: 'jscode',
                             title: 'Value',
                             mode: 'text',
                             default: ''
                         },
-
                         type: {
                             type: 'combo',
                             title: 'Data type',
@@ -76,11 +70,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
                                 {title: 'Text', key: 'text'},
                                 {title: 'JSON', key: 'json'},
                                 {title: 'XML', key: 'xml'},
-                                {title: 'CSV', key: 'csv'},
+                                {title: 'CSV', key: 'csv'}
                             ],
                             default: 'text'
-                        },
-
+                        }
                     }
                 }
             }
