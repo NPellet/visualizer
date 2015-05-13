@@ -9,7 +9,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
      * @constructor
      */
     function controller() {
-    };
+    }
 
     // Extends the default properties of the default controller
     controller.prototype = $.extend(true, {}, Default);

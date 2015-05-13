@@ -10,7 +10,6 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
      */
     function controller() {
     }
-    ;
 
     // Extends the default properties of the default controller
     controller.prototype = $.extend(true, {}, Default);
@@ -141,7 +140,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
 
     function boolCheckbox(cfg) {
         return (cfg.length !== 0);
-    };
+    }
 
 
     return controller;

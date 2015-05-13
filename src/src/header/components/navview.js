@@ -32,7 +32,6 @@ define([
                         that.save();
                         return false;
                     }
-                    ;
                 }
             );
         },

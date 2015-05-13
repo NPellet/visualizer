@@ -3,7 +3,7 @@
 define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api', 'src/util/util', 'lib/jit/jit-custom'], function (Default, Traversing, API, Util) {
 
     function view() {
-    };
+    }
     view.prototype = $.extend(true, {}, Default, {
 
         DEBUG: false,

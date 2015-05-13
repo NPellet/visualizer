@@ -3,7 +3,7 @@
 define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'], function (Default, DataTraversing, API) {
 
     function view() {
-    };
+    }
     view.prototype = $.extend(true, {}, Default, {
 
         init: function () {

@@ -28,7 +28,7 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function (Pou
         }
 
         this.addChangeListener();
-    };
+    }
 
     PouchObject.prototype = Object.create(DataObject.prototype, {
         constructor: {
@@ -133,7 +133,7 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function (Pou
             this.value[i] = new PouchObject(this.value[i]);
             this.value[i].__parent = this;
         }
-    };
+    }
 
     PouchArray.prototype = Object.create(DataObject.prototype, {
         constructor: {

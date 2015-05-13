@@ -1396,7 +1396,6 @@ define([
                 this.getDomWrapper().resizable((bln === true || bln == undefined) ? 'enable' : 'disable');
             } catch (e) {
             }
-            ;
         },
 
         blankVariable: function (variableName) {

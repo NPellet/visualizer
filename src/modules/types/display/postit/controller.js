@@ -9,7 +9,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
      * @constructor
      */
     function controller() {
-    };
+    }
 
     // Extends the default properties of the default controller
     controller.prototype = $.extend(true, {}, Default);

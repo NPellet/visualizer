@@ -2,7 +2,7 @@
 
 define(['modules/default/defaultview', 'src/util/util', 'jquery-ui/slider', 'BiojsDasProteinFeatureViewer'], function (Default, Util) {
     function view() {
-    };
+    }
     view.prototype = $.extend(true, {}, Default, {
 
         init: function () {

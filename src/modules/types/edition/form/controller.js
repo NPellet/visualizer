@@ -9,7 +9,7 @@ define(['modules/default/defaultcontroller', 'lib/formcreator/formcreator'], fun
      * @constructor
      */
     function controller() {
-    };
+    }
 
     // Extends the default properties of the default controller
     controller.prototype = $.extend(true, {}, Default);

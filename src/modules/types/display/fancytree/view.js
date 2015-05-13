@@ -3,7 +3,7 @@
 define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (Default, Util) {
 
     function view() {
-    };
+    }
     view.prototype = $.extend(true, {}, Default, {
         init: function () {
 

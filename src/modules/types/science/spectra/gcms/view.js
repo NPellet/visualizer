@@ -16,7 +16,7 @@ define([
 
 
     function view() {
-    };
+    }
     view.prototype = $.extend(true, {}, Default, {
 
         init: function () {

@@ -3,7 +3,7 @@
 define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api', 'src/util/util', 'lib/flot/jquery.flot'], function (Default, Traversing, API, Util) {
 
     function view() {
-    };
+    }
     view.prototype = $.extend(true, {}, Default, {
 
         DEBUG: true,
@@ -92,9 +92,8 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
                 if (this.DEBUG) console.log('stack Chart: update from chart object');
                 this._convertChartToData(moduleValue.get().data);
-                ;
                 var axis = moduleValue.get().axis;
-                var x = moduleValue.get().data[0].x
+                var x = moduleValue.get().data[0].x;
                 this.updateOptions(cfg, axis, x);
                 this._plot = self.plot(self._id, self._data, self._options);
 

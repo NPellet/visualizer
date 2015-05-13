@@ -3,7 +3,7 @@
 define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing', 'src/util/urldata'], function (Default, Graph, Traversing, LRU) {
 
     function view() {
-    };
+    }
     view.prototype = $.extend(true, {}, Default, {
 
         init: function () {

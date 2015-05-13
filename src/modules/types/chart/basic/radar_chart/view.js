@@ -3,7 +3,7 @@
 define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api', 'src/util/util', 'lib/dhtmlxchart/dhtmlxchart'], function (Default, Traversing, API, Util) {
 
     function view() {
-    };
+    }
     view.prototype = $.extend(true, {}, Default, {
 
         DEBUG: true,
@@ -129,7 +129,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                         }
                     }
                 }
-                ;
             }
             return data;
         },
@@ -215,7 +214,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
                     break;
             }
-            ;
 
             if (cfg('showlegend') == 'true') {
                 switch (cfg('legendalign')) {

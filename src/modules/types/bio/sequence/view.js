@@ -5,7 +5,7 @@ define(['modules/default/defaultview', 'src/util/util', 'BiojsCore',
     'lib/biojs-1.0/src/main/javascript/Biojs.Sequence'
 ], function (Default, Util) {
     function view() {
-    };
+    }
     view.prototype = $.extend(true, {}, Default, {
 
         init: function () {

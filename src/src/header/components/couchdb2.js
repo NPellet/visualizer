@@ -400,7 +400,6 @@ define([
                         break;
                 }
             }
-            ;
         },
 
         getLoginForm: function () {

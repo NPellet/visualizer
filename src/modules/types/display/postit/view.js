@@ -3,7 +3,7 @@
 define(['modules/default/defaultview', 'forms/button', 'src/util/util', 'src/main/grid'], function (Default, Button, Util, Grid) {
 
     function view() {
-    };
+    }
     view.prototype = $.extend(true, {}, Default, {
 
         init: function () {

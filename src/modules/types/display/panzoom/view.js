@@ -1,13 +1,13 @@
 'use strict';
 
-define(['src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/util/util', 'lodash', 'bowser',
+define([
+    'src/util/api', 'src/util/debug', 'modules/default/defaultview', 'src/util/util', 'lodash', 'bowser',
     'components/jquery.panzoom/dist/jquery.panzoom',
     'components/jquery-mousewheel/jquery.mousewheel'
 ], function (API, Debug, Default, Util, _, bowser) {
     var currentPromise = Promise.resolve();
 
     function View() {
-
     }
 
     View.prototype = $.extend(true, {}, Default, {
