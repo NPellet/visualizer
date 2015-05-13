@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultmodel', 'src/util/datatraversing'], function(Default, Traversing) {
 
     function model() {

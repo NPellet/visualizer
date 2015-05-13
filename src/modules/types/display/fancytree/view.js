@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function(Default, Util) {
 	
 	function view() {};

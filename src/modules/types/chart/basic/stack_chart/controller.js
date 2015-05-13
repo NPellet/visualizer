@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/api'], function(Default, Traversing, API) {
 
 	/**
@@ -53,7 +55,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 		chart: {
 			type: ['chart'],
 			label: 'A json describing a chart'
-		},
+		}
 
 	};
 
@@ -165,7 +167,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 						yLabelWidth: {
 							type: 'text',
 							title: 'Y Axis label Width'
-						},
+						}
 
 					}
 				}
@@ -187,7 +189,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 		'xLabelHeight': [ 'groups', 'group', 0, 'xLabelHeight', 0 ],
 		'xLabelWidth': [ 'groups', 'group', 0, 'xLabelWidth', 0 ],
 		'yLabelHeight': [ 'groups', 'group', 0, 'yLabelHeight', 0 ],
-		'yLabelWidth': [ 'groups', 'group', 0, 'yLabelWidth', 0 ],
+		'yLabelWidth': [ 'groups', 'group', 0, 'yLabelWidth', 0 ]
 	};
 
 

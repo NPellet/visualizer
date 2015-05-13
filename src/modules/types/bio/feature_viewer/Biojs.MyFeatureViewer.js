@@ -1,3 +1,5 @@
+'use strict';
+
 Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
     /** @lends Biojs.DasProteinFeatureViewer */
     {
@@ -74,11 +76,11 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
             var config = this.opt.json.configuration;
             var dataURL = '';
             if (jQuery.browser.msie) { //canvas does not work (not even with IE 9)
-                var arguments = 'segment=' + this.opt.json.segment;
+                var args = 'segment=' + this.opt.json.segment;
                 if ((config.requestedStart != 0) && (config.requestedStop != 0)) {
-                    arguments = arguments + ':' + config.requestedStart + ',' + config.requestedStop;
+                    args = args + ':' + config.requestedStart + ',' + config.requestedStop;
                 }
-                arguments = arguments +
+                args = args +
                     '&dasReference=' + config.dasReference +
                     '&dasSources=' + config.dasSources +
                     '&width=' + config.sizeX +
@@ -86,7 +88,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
                     '&hgrid=' + config.horizontalGrid +
                     '&vgrid=' + config.verticalGrid +
                     '&style=' + config.style;
-                dataURL = this._webservice + '?' + arguments;
+                dataURL = this._webservice + '?' + args;
                 window.open(dataURL); //open generated image in new tab/window
             } else {
               var $holder = jQuery('#uniprotFeaturePainter-holder');

@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  *	Intended behaviour: new element in the couch must trigger a first level variable change.
  *	In the words, the trigger is that the whole array has changed.
@@ -7,7 +9,6 @@
  */
 
 define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function(PouchDB, URI, Debug) {
-	'use strict';
 	
 	var exports = {};
 	

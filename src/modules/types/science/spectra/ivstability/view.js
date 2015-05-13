@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing', 'src/util/urldata'], function(Default, Graph, Traversing, LRU) {
 	
 	function view() {};
@@ -94,7 +96,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 						primaryGrid: false,
 						nbTicksPrimary: 10,
 						secondaryGrid: false,
-						axisDataSpacing: { min: 0, max: 0.1 },
+						axisDataSpacing: { min: 0, max: 0.1 }
 					}
 				],
 
@@ -139,7 +141,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 						shiftToZero: false,
 						primaryGrid: false,
 						secondaryGrid: false,
-						axisDataSpacing: { min: 0, max: 0.1 },
+						axisDataSpacing: { min: 0, max: 0.1 }
 					}
 				],
 
@@ -189,7 +191,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 			var self = this;
 			var defaultText = '(Insert a comment here)';
 
-			square = $('<div />').css({
+			var square = $('<div />').css({
 				width: 30,
 				height: 30,
 				backgroundColor: color,
@@ -199,12 +201,12 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 				marginBottom: '10px'
 			});
 
-			nameDom = $('<div />').css({
+			var nameDom = $('<div />').css({
 				marginLeft: '35px',
 				fontSize: '1.1em'
 			}).text(name);
 
-			descriptionDom = $('<div />').css({
+			var descriptionDom = $('<div />').css({
 				marginLeft: '35px',
 				marginTop: '2px'
 			}).attr('contentEditable', 'true').text(description || defaultText)
@@ -236,7 +238,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 
 
 
-			clearDom = $('<div />').css({
+			var clearDom = $('<div />').css({
 				'clear': 'both'
 			});
 

@@ -1,3 +1,4 @@
+'use strict';
 
 define(['modules/default/defaultcontroller','components/x2js/xml2json.min'], function(Default,X2JS) {
 

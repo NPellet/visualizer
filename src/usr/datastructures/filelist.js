@@ -1,4 +1,6 @@
-define([ 
+'use strict';
+
+define([
 	'src/data/structures',
 	'src/util/typerenderer',
 

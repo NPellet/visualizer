@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versioning', 'src/data/structures', 'src/util/debug'], function (Default, API, Versioning, Structure, Debug) {
 
     function Controller() {

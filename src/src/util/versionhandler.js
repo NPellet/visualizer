@@ -1,3 +1,5 @@
+'use strict';
+
 define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 
 	var DataViewHandler = function(dirUrl, defaultBranch, defaultUrl) {

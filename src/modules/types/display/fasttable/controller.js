@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/types/display/jqgrid/controller'], function (Controller) {
 
     function ControllerExtended() {

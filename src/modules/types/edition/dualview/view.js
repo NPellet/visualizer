@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultview', 'modules/types/edition/onde/view', 'modules/types/display/template-twig/view', 'src/util/context'], function(Default, OndeV, TwigV, Context) {
 
     function view() {

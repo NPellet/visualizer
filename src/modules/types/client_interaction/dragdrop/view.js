@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
     bowser.mobileos = bowser.ios || bowser.android || bowser.blackberry || bowser.firefoxos || bowser.webos || false;
     var hasGetUserMedia = !!(navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);

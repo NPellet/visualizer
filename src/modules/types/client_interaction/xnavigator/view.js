@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Default, Util, $) {
 
     function View() {

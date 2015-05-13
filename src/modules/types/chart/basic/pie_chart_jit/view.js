@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util', 'components/jit/Jit/jit'], function(Default, $, API, Util, $jit) {
 
     function view() {

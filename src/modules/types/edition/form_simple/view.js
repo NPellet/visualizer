@@ -1,4 +1,5 @@
 'use strict';
+
 define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api', 'lib/formcreator/formcreator', 'lodash'], function(Default, DataTraversing, API, FormCreator, _) {
 
 	function View() {

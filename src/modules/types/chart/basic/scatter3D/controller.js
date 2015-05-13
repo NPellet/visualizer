@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/api', 'src/util/util'], function(Default, Traversing, API, Util) {
 
     /**
@@ -253,7 +255,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
                         backgroundColor: {
                             type: 'color',
                             title: 'Background Color',
-                            default: [230, 230, 230, 1],
+                            default: [230, 230, 230, 1]
                         },
 
                         annotationColor: {

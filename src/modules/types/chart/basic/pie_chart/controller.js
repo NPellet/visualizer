@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/api'], function(Default, Traversing, API) {
 	
 	/**
@@ -57,7 +59,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 		yArray: {
 			type: 'array',
 			label: '1D Y array'
-		},
+		}
 	};
 
 

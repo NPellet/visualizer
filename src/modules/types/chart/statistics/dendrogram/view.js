@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util','lib/jit/jit-custom'], function(Default, Traversing, API, Util) {
 	
 	function view() {};
@@ -122,7 +124,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 			this._options={
 				nodeSize: cfg('nodeSize') || 1,
-				nodeColor: cfg('nodeColor') || 'yellow',
+				nodeColor: cfg('nodeColor') || 'yellow'
 			}
 		},
 
@@ -198,7 +200,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		        	},
 		        	*/
 		         	color: cfg('edgeColor') || 'green',
-		         	lineWidth: cfg('edgeWidth') || 0.5,
+		         	lineWidth: cfg('edgeWidth') || 0.5
 
 		        },
 		        Label: {  
@@ -294,10 +296,10 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				    },
 				    onMouseLeave: function(node, eventInfo, e) {
 				    	this.getRgraph(e).canvas.getElement().style.cursor = '';  
-				    },
+				    }
 		    	},
 		  		Tips: {
-		      		enable: false,
+		      		enable: false
 		     	}
 		    });
 
@@ -327,7 +329,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					API.highlight(i, val);
 				}
 			}
-		},
+		}
 	});
 
 	return view;

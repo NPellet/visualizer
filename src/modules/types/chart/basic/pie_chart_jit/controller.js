@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/util/api'], function(Default, Traversing, API) {
 
     /**

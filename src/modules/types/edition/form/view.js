@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'], function(Default, DataTraversing, API) {
 	
 	function view() {};

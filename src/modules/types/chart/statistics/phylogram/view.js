@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.phylogram', 'src/util/api'], function (Default, Util, d3, API) {
 
     function view() {

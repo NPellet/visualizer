@@ -1,4 +1,5 @@
 'use strict';
+
 define([ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 'src/util/datatraversing' ], function (Default, FormCreator, Traversing) {
 
     function Controller() {

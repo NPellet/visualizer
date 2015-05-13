@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util','lib/dhtmlxchart/dhtmlxchart'], function(Default, Traversing, API, Util) {
 
 	function view() {};
@@ -45,7 +47,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		It will also be called at the beginning and in this case the value is null !
 		*/
 		update: {
-			'chart': function(moduleValue) 
+			chart: function(moduleValue)
 			{
 
 				if (this.DEBUG) console.log('Radar Chart: update from chart object');
@@ -57,7 +59,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				}
 
 				this._redraw();
-			},
+			}
 
 
 		},
@@ -174,8 +176,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 							lineShape:cfg('lineshape'),
 							start: cfg('start'),
 							end: cfg('end'),
-							step: cfg('step'),
-					},
+							step: cfg('step')
+					}
 
 				};
 				this._radar = new dhtmlXChart(options);
@@ -197,7 +199,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 							line:{
 								color:chart.data[i].color,
 								width:1
-							},
+							}
 
 						})
 						}
@@ -277,7 +279,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				}
 				}
 
-		},
+		}
 	});
 	return view;
 });

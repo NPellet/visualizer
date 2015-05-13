@@ -1,3 +1,5 @@
+'use strict';
+
 define(['jquery'], function($) {
 
 	var db, process;

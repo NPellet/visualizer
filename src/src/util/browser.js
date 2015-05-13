@@ -1,3 +1,5 @@
+'use strict';
+
 define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'src/util/ui', 'jquery-cookie'], function(Debug, bowser, _, modernizr, ui) {
 
     var features = {

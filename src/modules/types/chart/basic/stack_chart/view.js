@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util','lib/flot/jquery.flot'], function(Default, Traversing, API, Util) {
 
 	function view() {};
@@ -102,7 +104,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 				
 				
-			},
+			}
 
 
 		},

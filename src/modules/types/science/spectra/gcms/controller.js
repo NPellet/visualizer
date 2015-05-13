@@ -1,3 +1,5 @@
+'use strict';
+
 define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 	
 	/**

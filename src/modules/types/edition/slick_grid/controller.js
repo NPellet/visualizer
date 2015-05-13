@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], function(Default, Util, _) {
 
     var controller = function() {};

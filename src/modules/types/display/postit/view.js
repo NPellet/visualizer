@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultview', 'forms/button', 'src/util/util', 'src/main/grid'], function(Default, Button, Util, Grid) {
 	
 	function view() {};

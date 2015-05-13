@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultview', 'src/util/util', 'BiojsCore',
   'lib/biojs-1.0/src/main/javascript/Biojs.Tooltip',
   'lib/biojs-1.0/src/main/javascript/Biojs.Sequence'
@@ -81,7 +83,7 @@ define(['modules/default/defaultview', 'src/util/util', 'BiojsCore',
 
     getDom: function() {
       return this.dom;
-    },
+    }
   });
 
   return view;

@@ -1,3 +1,5 @@
+'use strict';
+
 define(['loglevel'], function (log) {
 
     // Fallback to Date for incompatible navigators (Safari)

@@ -1,3 +1,5 @@
+'use strict';
+
 define( [
 
 	'modules/default/defaultview', 
@@ -45,11 +47,6 @@ define( [
 			this.dom = domGraph;
 			this.module.getDomContent().html( domGraph );
 			this.resolveReady();
-		},
-
-		unload: function() {
-			//this.gcmsInstance.unload();
-			this.dom.remove();
 		},
 
 		inDom: function() {

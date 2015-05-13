@@ -1,3 +1,4 @@
+'use strict';
 
 // LRU
 define(['jquery', 'src/util/debug'], function($, Debug) {
@@ -58,7 +59,7 @@ define(['jquery', 'src/util/debug'], function($, Debug) {
 				head.next = head.next.next;
 				toDelete.next.next = undefined;
 				toDelete.next.prev = undefined;
-				delete toDelete;
+				//delete toDelete; WTF
 				memoryCount[store]--;
 			}
 
@@ -186,7 +187,7 @@ define(['jquery', 'src/util/debug'], function($, Debug) {
 					return defGet.reject();
 
 				lru.data[index] == Date.now(); // Update the date of the object
-				setter = store.put(lru);
+				var setter = store.put(lru);
 
 				setter.onsuccess = function(e) {
 					defSet.resolve();

@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/api'], function(Default, Traversing, API) {
 
 	/**
@@ -44,8 +46,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 		chart: {
 			type: ['chart'],
 			label: 'A json describing a chart'
-		},
-
+		}
 	};
 
 
@@ -174,8 +175,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 								{title: 'Round', key: 'round'}
 
 							],
-							displayTarget: [ 'r' ],
-							displayTarget: [ 't' ]
+							displayTarget: [ 'r', 't' ]
 						},
 						legendalign : {
 							type: 'combo',
@@ -187,8 +187,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 								{title: 'bottom-left', key: 'bottom-left'}
 
 							],
-							displayTarget: [ 'r' ],
-							displayTarget: [ 't' ]
+							displayTarget: [ 'r', 't' ]
 						}
 						
 

@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultcontroller', 'modules/types/edition/onde/controller', 'modules/types/display/template-twig/controller'], function(Default, OndeC, TwigC) {
 
     function controller() {

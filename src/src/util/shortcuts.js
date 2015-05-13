@@ -1,3 +1,5 @@
+'use strict';
+
 define(['jquery'], function($) {
         $(document).keydown(function(event) {
                 // If Control or Command key is pressed and the S key is pressed

@@ -1,3 +1,5 @@
+'use strict';
+
 define(function() {
 
 	var setTimeout = window.setInterval,
@@ -35,7 +37,7 @@ define(function() {
 			//console.log( crons[ cronName ] );
 			crons[ cronName ][ 3 ] = window.setTimeout( function() {
 
-				aj = $.ajax({
+				$.ajax({
 					url: crons[ cronName ][ 0 ],
 					timeout: 1200,
 					method: 'get',

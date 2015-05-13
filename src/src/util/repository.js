@@ -1,3 +1,5 @@
+'use strict';
+
 define(['jquery', 'src/util/event'], function($, Event) {
 
 	var callbackId = -1;

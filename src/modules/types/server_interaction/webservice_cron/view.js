@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultview'], function(Default) {
 
     function view() {
