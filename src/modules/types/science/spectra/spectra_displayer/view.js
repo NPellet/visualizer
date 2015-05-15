@@ -946,13 +946,15 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             if (!normalize) return;
 
             if (Array.isArray(array[0])) { // Normalize from [[x1,y1],[x2,y2]]
-                if (normalize == 'max1') {
+                if (normalize == 'max1' || normalize == 'max100' ) {
+                    var factor=1;
+                    if (normalize=='max100') factor=100;
                     maxValue = -Infinity;
                     for (i = 0; i < array.length; i++) {
                         if (array[i][1] > maxValue) maxValue = array[i][1];
                     }
                     for (i = 0; i < array.length; i++) {
-                        array[i][1] /= maxValue;
+                        array[i][1] /= maxValue/factor;
                     }
                 } else if (normalize == 'sum1') {
                     total = 0;
@@ -975,13 +977,15 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     }
                 }
             } else { // Normalize from [x1,y1,x2,y2]
-                if (normalize == 'max1') {
+                if (normalize == 'max1' || normalize == 'max100' ) {
+                    var factor=1;
+                    if (normalize=='max100') factor=100;
                     maxValue = -Infinity;
                     for (i = 1; i < array.length; i = i + 2) {
                         if (array[i] > maxValue) maxValue = array[i];
                     }
                     for (i = 1; i < array.length; i = i + 2) {
-                        array[i] /= maxValue;
+                        array[i] /= maxValue / factor;
                     }
                 } else if (normalize == 'sum1') {
                     total = 0;
