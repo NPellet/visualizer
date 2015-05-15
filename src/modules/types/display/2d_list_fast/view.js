@@ -86,7 +86,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
             Promise.all(this.dataReady).then(function () {
                 var value = that.showList;
                 for (var i = 0; i < value.length; i++) {
-                    if(value[i]) {
+                    if (value[i]) {
                         that.dataDivs[i].show();
                     } else {
                         that.dataDivs[i].hide();

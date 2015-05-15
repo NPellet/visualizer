@@ -1,7 +1,13 @@
 'use strict';
 
-define(['modules/types/display/jqgrid/model'], function (model) {
+define(['modules/types/display/jqgrid/model', 'src/util/util'], function (Model, Util) {
 
-    return model;
+    function ModelExtended() {
+        Model.call(this);
+    }
+
+    Util.inherits(ModelExtended, Model);
+
+    return ModelExtended;
 
 });

@@ -12,7 +12,7 @@ define([
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
 
         init: function () {
 
@@ -21,7 +21,10 @@ define([
 
             var toggle = this.module.getConfiguration('toggle');
 
-            this.domTable = $('<table />', {cellpadding: 0, cellspacing: 0}).css({width: '100%'});
+            this.domTable = $('<table />', {
+                cellpadding: 0,
+                cellspacing: 0
+            }).css({width: '100%'});
             this.domHead = $('<thead />').appendTo(this.domTable);
             this.domBody = $('<tbody />').appendTo(this.domTable);
 
@@ -84,7 +87,11 @@ define([
                         self.domTable.find('th[data-jpath-number="' + currentColSort.col + '"] .sort').remove();
                     }
 
-                    currentColSort = {asc: true, col: jpathId, span: $('<div class="sort up"></div>')};
+                    currentColSort = {
+                        asc: true,
+                        col: jpathId,
+                        span: $('<div class="sort up"></div>')
+                    };
 
                     self.domTable.find('th[data-jpath-number="' + currentColSort.col + '"]').append(currentColSort.span);
 
@@ -349,7 +356,7 @@ define([
 
                 this.elements = this.elements || [];
 
-                if( this.module.getDataFromRel('list').indexOf( source ) > -1 ) {
+                if (this.module.getDataFromRel('list').indexOf(source) > -1) {
                     return;
                 }
 
@@ -393,10 +400,10 @@ define([
 
             },
 
-            toggleOn: function( source ) {
+            toggleOn: function (source) {
 
                 var index = this.module.getDataFromRel('list').indexOf(source);
-                
+
                 if (index == -1) {
                     return;
                 }
@@ -419,14 +426,14 @@ define([
                 this.domBody.children().eq(index).addClass('toggled');
             },
 
-            scrollTo: function( source ) {
+            scrollTo: function (source) {
 
                 var index = this.module.getDataFromRel('list').indexOf(source);
                 if (index == -1) {
                     return;
                 }
 
-                var el = this.domBody.children().eq( index ).get();
+                var el = this.domBody.children().eq(index).get();
                 el.scrollIntoView();
             }
 

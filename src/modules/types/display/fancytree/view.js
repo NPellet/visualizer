@@ -2,9 +2,10 @@
 
 define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (Default, Util) {
 
-    function view() {
+    function View() {
     }
-    view.prototype = $.extend(true, {}, Default, {
+
+    $.extend(true, View.prototype, Default, {
         init: function () {
 
             var id = Util.getNextUniqueId();
@@ -140,6 +141,6 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
         }
     }
 
-    return view;
+    return View;
 
 });

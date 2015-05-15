@@ -5,7 +5,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
         init: function () {
 
             this.dom = $('<div>').css({

@@ -22,7 +22,6 @@ define(['modules/default/defaultcontroller'], function (Default) {
             label: 'Data of the cell',
             type: 'object'
         },
-
         list: {
             label: 'The array of data to display',
             type: 'array'

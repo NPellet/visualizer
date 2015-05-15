@@ -1,11 +1,12 @@
 'use strict';
 
-define(['modules/types/display/jqgrid/controller'], function (Controller) {
+define(['modules/types/display/jqgrid/controller', 'src/util/util'], function (Controller, Util) {
 
     function ControllerExtended() {
+        Controller.call(this);
     }
 
-    ControllerExtended.prototype = new Controller();
+    Util.inherits(ControllerExtended, Controller);
 
     ControllerExtended.prototype.moduleInformation = {
         name: 'Table (fast)',
@@ -26,4 +27,5 @@ define(['modules/types/display/jqgrid/controller'], function (Controller) {
     ControllerExtended.prototype.actionsIn.toggleOn = 'Toggle row on';
 
     return ControllerExtended;
+
 });

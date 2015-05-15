@@ -1,16 +1,18 @@
 'use strict';
 
-define(['modules/default/defaultmodel', 'src/util/datatraversing'], function(Default, Traversing) {
+define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (Default, Traversing) {
 
-    function model() {}
-    model.prototype = $.extend(true, {}, Default, {
-        getjPath: function(rel) {
+    function Model() {
+    }
+
+    $.extend(true, Model.prototype, Default, {
+        getjPath: function (rel) {
             var data;
-            switch(rel) {
+            switch (rel) {
                 case 'point':
                     data = this.module.data || new DataArray();
                     data = data.get(0);
-                    if(!data) {
+                    if (!data) {
                         return [];
                     }
                     break;
@@ -24,5 +26,6 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function(Def
         }
     });
 
-    return model;
+    return Model;
+
 });

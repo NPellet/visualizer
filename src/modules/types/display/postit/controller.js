@@ -2,23 +2,12 @@
 
 define(['modules/default/defaultcontroller', 'src/util/util'], function (Default, Util) {
 
-    /**
-     * Creates a new empty controller
-     * @class Controller
-     * @name Controller
-     * @constructor
-     */
-    function controller() {
+    function Controller() {
     }
 
-    // Extends the default properties of the default controller
-    controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
-
-    /*
-     Information about the module
-     */
-    controller.prototype.moduleInformation = {
+    Controller.prototype.moduleInformation = {
         name: 'Sticky note',
         description: 'Displays a sticky note',
         author: 'Norman Pellet',
@@ -28,48 +17,21 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
         hidden: true
     };
 
-
-    /*
-     Configuration of the input/output references of the module
-     */
-    controller.prototype.references = {
-
+    Controller.prototype.references = {
         value: {
             label: 'Sticky note value',
             type: 'string'
         }
     };
 
-
-    /*
-     Configuration of the module for sending events, as a static object
-     */
-    controller.prototype.events = {
+    Controller.prototype.events = {
         onChange: {
             label: 'Value is changed',
             refVariable: ['value']
         }
     };
 
-
-    /*
-     Configuration of the module for receiving events, as a static object
-     In the form of
-     */
-    controller.prototype.variablesIn = [];
-
-    /*
-     Received actions
-     In the form of
-
-     {
-     actionRef: 'actionLabel'
-     }
-     */
-    controller.prototype.actionsIn = {};
-
-
-    controller.prototype.configurationStructure = function (section) {
+    Controller.prototype.configurationStructure = function () {
         var standardFonts = Util.getWebsafeFonts();
         standardFonts.push({title: 'Post-it', key: 'Post_IT'});
         return {
@@ -90,7 +52,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
                             type: 'checkbox',
                             title: 'Is Editable',
                             options: {isEditable: 'Yes'},
-                            default: ['isEditable']
+                            'default': ['isEditable']
                         }
                     }
                 }
@@ -98,12 +60,11 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
         };
     };
 
-
-    controller.prototype.configAliases = {
+    Controller.prototype.configAliases = {
         fontfamily: ['groups', 'group', 0, 'fontfamily', 0],
         editable: ['groups', 'group', 0, 'editable', 0]
     };
 
-    return controller;
-});
+    return Controller;
 
+});

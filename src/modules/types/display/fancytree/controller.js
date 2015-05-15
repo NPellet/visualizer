@@ -2,12 +2,12 @@
 
 define(['modules/default/defaultcontroller'], function (Default) {
 
-    function controller() {
+    function Controller() {
     }
 
-    controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
-    controller.prototype.moduleInformation = {
+    Controller.prototype.moduleInformation = {
         name: 'Hierarchical structure',
         description: 'Displays a hierarchical structure',
         author: 'Michaël Zasso',
@@ -16,7 +16,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         cssClass: 'fancytree'
     };
 
-    controller.prototype.references = {
+    Controller.prototype.references = {
         tree: {
             label: 'Hierarchical structure (tree)',
             type: 'tree'
@@ -26,16 +26,16 @@ define(['modules/default/defaultcontroller'], function (Default) {
         }
     };
 
-    controller.prototype.variablesIn = ['tree'];
+    Controller.prototype.variablesIn = ['tree'];
 
-    controller.prototype.events = {
+    Controller.prototype.events = {
         onActivate: {
             label: 'Select a node',
             refVariable: ['nodeData']
         }
     };
 
-    controller.prototype.configurationStructure = function () {
+    Controller.prototype.configurationStructure = function () {
 
         var jpaths = this.module.model.getjPath('nodeData');
 
@@ -50,7 +50,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                         expand: {
                             type: 'combo',
                             title: 'Auto-expand children',
-                            default: 'none',
+                            'default': 'none',
                             options: [
                                 {
                                     title: 'None',
@@ -98,14 +98,15 @@ define(['modules/default/defaultcontroller'], function (Default) {
         };
     };
 
-    controller.prototype.configAliases = {
+    Controller.prototype.configAliases = {
         columns: ['groups', 'cols', 0],
         expand: ['groups', 'group', 0, 'expand', 0]
     };
 
-    controller.prototype.onActivate = function (data) {
+    Controller.prototype.onActivate = function (data) {
         this.createDataFromEvent('onActivate', 'nodeData', data);
     };
 
-    return controller;
+    return Controller;
+
 });

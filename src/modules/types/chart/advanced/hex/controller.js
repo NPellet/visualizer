@@ -5,7 +5,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'Hexagonal map',
@@ -19,9 +19,6 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         chart: {
             label: 'Chart data'
         }
-    };
-
-    Controller.prototype.events = {
     };
 
     Controller.prototype.variablesIn = ['chart'];
@@ -45,7 +42,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                                 {key: 'cubic', title: 'Cubic'},
                                 {key: 'evenq', title: 'Even-q'}
                             ],
-                            default: 'combinatorial'
+                            'default': 'combinatorial'
                         },
                         originX: {
                             type: 'float',
@@ -61,8 +58,8 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                         }
                     }
                 }
-                }
-            };
+            }
+        };
     };
 
     Controller.prototype.configAliases = {

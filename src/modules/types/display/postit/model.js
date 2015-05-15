@@ -2,19 +2,15 @@
 
 define(['modules/default/defaultmodel'], function (Default) {
 
-    function model() {
+    function Model() {
     }
-    model.prototype = $.extend(true, {}, Default, {
 
+    $.extend(true, Model.prototype, Default, {
         getValue: function () {
             return this.dataValue;
-        },
-
-
-        getjPath: function (rel, accepts) {
-            return {};
         }
     });
 
-    return model;
+    return Model;
+
 });

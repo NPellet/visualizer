@@ -27,7 +27,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
             this.currentPage = 1; // we remember the last selected page
 
             this.dom.on('mouseover', 'tr.jqgrow', function () {
-                if(self.module.getConfigurationCheckbox('highlightLine', 'Yes')) {
+                if (self.module.getConfigurationCheckbox('highlightLine', 'Yes')) {
                     $(this).addClass('ci-highlight');
                 }
                 if (this !== lastTr) {
@@ -37,7 +37,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                 lastTr = this;
 
             }).on('mouseout', 'tr.jqgrow', function () {
-                if(self.module.getConfigurationCheckbox('highlightLine', 'Yes')) {
+                if (self.module.getConfigurationCheckbox('highlightLine', 'Yes')) {
                     $(this).removeClass('ci-highlight');
                 }
                 if (this === lastTr) {
@@ -337,7 +337,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
             element._inDom = $.Deferred();
             for (; j < l; j++) {
                 var id = getIDForCell(element.id, jp[j].name);
-                (function(j, id) {
+                (function (j, id) {
                     element._inDom.progress(function () {
                         Renderer.render($('#' + id), s, jp[j].jpath);
                     });
@@ -411,8 +411,8 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                 jpath2 = jpath2.pop();
 
                 var cols = module.getConfiguration('colsjPaths');
-                for(var i=0; i<cols.length; i++) {
-                    if(jpath === cols[i].jpath) return;
+                for (var i = 0; i < cols.length; i++) {
+                    if (jpath === cols[i].jpath) return;
                 }
 
                 cols.push({
