@@ -5,7 +5,7 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'Spectra displayer',
@@ -305,9 +305,18 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
                             type: 'combo',
                             title: 'X axis modification',
                             options: [
-                                {key: 'timestamptotime', title: 'Timestamp to time'},
-                                {key: 'valtotime', title: 'Value to time from 0'},
-                                {key: 'valtotime:min.sec', title: 'Seconds to min.sec'}
+                                {
+                                    key: 'timestamptotime',
+                                    title: 'Timestamp to time'
+                                },
+                                {
+                                    key: 'valtotime',
+                                    title: 'Value to time from 0'
+                                },
+                                {
+                                    key: 'valtotime:min.sec',
+                                    title: 'Seconds to min.sec'
+                                }
                             ],
                             'default': []
                         },

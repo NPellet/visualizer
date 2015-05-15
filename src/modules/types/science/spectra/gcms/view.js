@@ -1,26 +1,19 @@
 'use strict';
 
 define([
-
     'modules/default/defaultview',
     'src/util/datatraversing',
-    'lib/gcms/gcms',
-    'src/util/util',
-    'src/util/api'
-
+    'lib/gcms/gcms'
 ], function (Default,
              Traversing,
-             GCMS,
-             Util,
-             API) {
+             GCMS) {
 
-
-    function view() {
+    function View() {
     }
-    view.prototype = $.extend(true, {}, Default, {
+
+    $.extend(true, View.prototype, Default, {
 
         init: function () {
-
 
             this.namedSeries = {};
 
@@ -361,5 +354,6 @@ define([
         }
     });
 
-    return view;
+    return View;
+
 });

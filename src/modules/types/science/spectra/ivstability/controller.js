@@ -2,23 +2,12 @@
 
 define(['modules/default/defaultcontroller'], function (Default) {
 
-    /**
-     * Creates a new empty controller
-     * @class Controller
-     * @name Controller
-     * @constructor
-     */
-    function controller() {
+    function Controller() {
     }
 
-    // Extends the default properties of the default controller
-    controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
-
-    /*
-     Information about the module
-     */
-    controller.prototype.moduleInformation = {
+    Controller.prototype.moduleInformation = {
         name: 'IV stability',
         description: 'Dedicated module to show IV Stability files',
         author: 'Norman Pellet',
@@ -26,46 +15,21 @@ define(['modules/default/defaultcontroller'], function (Default) {
         license: 'MIT'
     };
 
-
-    /*
-     Configuration of the input/output references of the module
-     */
-    controller.prototype.references = {
-
-        'url': {
+    Controller.prototype.references = {
+        url: {
             type: ['string'],
             label: 'URL',
             description: 'Iframe URL'
         }
     };
 
+    Controller.prototype.variablesIn = ['url'];
 
-    /*
-     Configuration of the module for sending events, as a static object
-     */
-    controller.prototype.events = {};
-
-
-    /*
-     Configuration of the module for receiving events, as a static object
-     */
-    controller.prototype.variablesIn = ['url'];
-
-    /*
-     Received actions
-     */
-    controller.prototype.actionsIn = {
+    Controller.prototype.actionsIn = {
         addSerie: 'Add a new serie',
         removeSerie: 'Remove a serie'
     };
 
+    return Controller;
 
-    controller.prototype.configurationStructure = function (section) {
-
-    };
-
-
-    controller.prototype.configAliases = {};
-
-    return controller;
 });

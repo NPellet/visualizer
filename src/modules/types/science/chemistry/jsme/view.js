@@ -11,7 +11,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
 
         try {
             var message = JSON.parse(event.data);
-        } catch(e) {
+        } catch (e) {
             return;
         }
         if (message.module !== 'jsme') {
@@ -39,7 +39,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
         }
     });
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
 
         init: function () {
             var self = this;
@@ -77,7 +77,10 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
 
             this.module.getDomContent().css('overflow', 'hidden');
 
-            this.postMessage('setSize', {width: this.width, height: this.height});
+            this.postMessage('setSize', {
+                width: this.width,
+                height: this.height
+            });
         },
 
         onProgress: function () {

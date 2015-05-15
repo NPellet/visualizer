@@ -2,23 +2,12 @@
 
 define(['modules/default/defaultcontroller'], function (Default) {
 
-    /**
-     * Creates a new empty controller
-     * @class Controller
-     * @name Controller
-     * @constructor
-     */
-    function controller() {
+    function Controller() {
     }
 
-    // Extends the default properties of the default controller
-    controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
-
-    /*
-     Information about the module
-     */
-    controller.prototype.moduleInformation = {
+    Controller.prototype.moduleInformation = {
         name: 'GC-MS',
         description: 'Displays a GC-MS using the plot library',
         author: 'Norman Pellet',
@@ -27,13 +16,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         cssClass: 'gcms'
     };
 
-
-    /*
-     Configuration of the input/output references of the module
-     */
-    controller.prototype.references = {
-
-
+    Controller.prototype.references = {
         fromtoGC: {
             label: 'From - To on GC',
             type: ['fromTo', 'object']
@@ -140,13 +123,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         }
     };
 
-
-    /*
-     Configuration of the module for sending events, as a static object
-     */
-    controller.prototype.events = {
-
-        // List of all possible events
+    Controller.prototype.events = {
 
         onZoomGCChange: {
             label: 'Zoom over GC spectra',
@@ -214,21 +191,9 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     };
 
+    Controller.prototype.variablesIn = ['gcms', 'jcamp', 'gc', 'ms', 'mscont', 'annotationgc', 'ingredientList', 'RIComponents'];
 
-    /*
-     Configuration of the module for receiving events, as a static object
-     */
-    controller.prototype.variablesIn = ['gcms', 'jcamp', 'gc', 'ms', 'mscont', 'annotationgc', 'ingredientList', 'RIComponents'];
-
-    /*
-     Received actions
-     In the form of
-
-     {
-     actionRef: 'actionLabel'
-     }
-     */
-    controller.prototype.actionsIn = {
+    Controller.prototype.actionsIn = {
         fromtoGC: 'From - To on GC',
         fromtoMS: 'From - To on MS',
         zoomOnAnnotation: 'Zoom on annotation',
@@ -240,8 +205,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         setMSIndexData: 'Change MS data index'
     };
 
-
-    controller.prototype.configurationStructure = function (section) {
+    Controller.prototype.configurationStructure = function (section) {
 
         return {
             groups: {
@@ -263,16 +227,16 @@ define(['modules/default/defaultcontroller'], function (Default) {
         };
     };
 
-
-    controller.prototype.configFunctions = {
+    Controller.prototype.configFunctions = {
         continuous: function (cfg) {
             return cfg[0] == 'continuous';
         }
     };
 
-    controller.prototype.configAliases = {
-        'continuous': ['groups', 'group', 0, 'continuous', 0]
+    Controller.prototype.configAliases = {
+        continuous: ['groups', 'group', 0, 'continuous', 0]
     };
 
-    return controller;
+    return Controller;
+
 });

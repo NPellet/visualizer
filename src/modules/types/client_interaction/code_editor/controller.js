@@ -5,7 +5,7 @@ define(['modules/default/defaultcontroller', 'src/data/structures', 'src/util/de
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'Code editor',

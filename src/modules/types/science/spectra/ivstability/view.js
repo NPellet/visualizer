@@ -2,9 +2,10 @@
 
 define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing', 'src/util/urldata'], function (Default, Graph, Traversing, LRU) {
 
-    function view() {
+    function View() {
     }
-    view.prototype = $.extend(true, {}, Default, {
+
+    $.extend(true, View.prototype, Default, {
 
         init: function () {
             var html = [];
@@ -331,12 +332,9 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 
                 delete this.ivseries[serieName];
             }
-        },
-
-        getDom: function () {
-            return this.dom;
         }
     });
 
-    return view;
+    return View;
+
 });

@@ -5,12 +5,12 @@ define(['modules/default/defaultcontroller'], function (Default) {
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
-    Controller.prototype.getToolbar = function() {
+    Controller.prototype.getToolbar = function () {
         var base = Default.getToolbar.call(this);
         base.push({
-            onClick: function() {
+            onClick: function () {
                 window.open('http://wiki.jmol.org/index.php/Mouse_Manual', '_blank');
             },
             title: 'Help',
@@ -69,7 +69,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.variablesIn = ['data'];
 
-    Controller.prototype.configurationStructure = function (section) {
+    Controller.prototype.configurationStructure = function () {
         return {
             groups: {
                 group: {
@@ -94,7 +94,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.configAliases = {
         script: ['groups', 'group', 0, 'script', 0],
-        syncScript: ['groups', 'group', 0, 'syncScript',0]
+        syncScript: ['groups', 'group', 0, 'syncScript', 0]
     };
 
     Controller.prototype.actionsIn = {
@@ -106,19 +106,19 @@ define(['modules/default/defaultcontroller'], function (Default) {
         this.module.view.remove(this.module.getId());
     };
 
-    Controller.prototype.onNewMessage = function(message) {
+    Controller.prototype.onNewMessage = function (message) {
         this.createDataFromEvent('onMessage', 'message', message);
     };
 
-    Controller.prototype.onAtomClick = function(message) {
+    Controller.prototype.onAtomClick = function (message) {
         this.createDataFromEvent('onAtomClick', 'atom', message);
     };
 
-    Controller.prototype.onAtomHover = function(message) {
+    Controller.prototype.onAtomHover = function (message) {
         this.createDataFromEvent('onAtomHover', 'atom', message);
     };
 
-    Controller.prototype.onSyncExecDone = function(message) {
+    Controller.prototype.onSyncExecDone = function (message) {
         this.createDataFromEvent('onExecResult', 'execResult', message);
     };
 

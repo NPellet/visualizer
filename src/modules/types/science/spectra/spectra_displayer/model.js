@@ -12,7 +12,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
         this.trackData = {};
     }
 
-    Model.prototype = $.extend(true, {}, Default, {
+    $.extend(true, Model.prototype, Default, {
 
         setXBoundaries: function (min, max) {
             min = min | 0;

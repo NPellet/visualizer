@@ -11,7 +11,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
 
         try {
             var message = JSON.parse(event.data);
-        } catch(e) {
+        } catch (e) {
             return;
         }
         if (message.module !== 'jsmol') {
@@ -52,7 +52,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
         }
     });
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
 
         init: function () {
             var self = this;
@@ -75,13 +75,16 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
 
         onResize: function () {
             this.dom.height(this.height).width(this.width);
-            this.postMessage('setSize', {width: this.width, height: this.height});
+            this.postMessage('setSize', {
+                width: this.width,
+                height: this.height
+            });
         },
 
-        inDom: function() {
+        inDom: function () {
             var that = this;
-            this.dom.parent().on('mouseleave', function() {
-                if(that.lastHoveredAtom) {
+            this.dom.parent().on('mouseleave', function () {
+                if (that.lastHoveredAtom) {
                     API.highlightId(that.lastHoveredAtom.label, 0);
                     that.lastHoveredAtom = null;
                 }
@@ -99,12 +102,16 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
             data: function (data) {
                 var self = this;
                 this.module.data = data;
-                self.postMessage('setMolFile', {_modelLoad: data.get(), _lattice: data._lattice, _script: data._script});
+                self.postMessage('setMolFile', {
+                    _modelLoad: data.get(),
+                    _lattice: data._lattice,
+                    _script: data._script
+                });
 
                 if (self.module.getConfiguration('script')) {
                     self.postMessage('executeScript', [self.module.getConfiguration('script')]);
                 }
-                if(self.module.getConfiguration('syncScript')) {
+                if (self.module.getConfiguration('syncScript')) {
                     self.postMessage('executeScriptSync', [self.module.getConfiguration('syncScript')]);
                 }
                 this._activateHighlights();
@@ -117,12 +124,12 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
             jsmolscript: function (a) {
                 this.executeScript(a);
             },
-            jsmolscriptSync: function(a) {
+            jsmolscriptSync: function (a) {
                 this.executeScriptSync(a);
             }
         },
 
-        executeScriptSync: function(src) {
+        executeScriptSync: function (src) {
             this.postMessage('executeScriptSync', [src]);
         },
 
@@ -144,7 +151,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
             delete views[id];
         },
 
-        parseAtom: function(atom) {
+        parseAtom: function (atom) {
             var reg = /^([^\s]+)\s+([^\s]+)\s+([-+]?[0-9]*\.?[0-9]+)\s+([-+]?[0-9]*\.?[0-9]+)\s+([-+]?[0-9]*\.?[0-9]+)/;
             var m = reg.exec(atom);
             return {
@@ -156,9 +163,9 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
             };
         },
 
-        _doHighlights: function(atom) {
-            if(this.lastHoveredAtom) {
-                if(this.lastHoveredAtom.label === atom.label) {
+        _doHighlights: function (atom) {
+            if (this.lastHoveredAtom) {
+                if (this.lastHoveredAtom.label === atom.label) {
                     this._undoHighlightsDebounced();
                     return;
                 }
@@ -170,34 +177,34 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
             this._undoHighlightsDebounced();
         },
 
-        _undoHighlights: function() {
+        _undoHighlights: function () {
             _undoHighlights.call(this);
         },
 
-        _undoHighlightsDebounced: function() {
+        _undoHighlightsDebounced: function () {
             _undoHighlightsDebounced.call(this);
         },
 
-        _activateHighlights: function() {
+        _activateHighlights: function () {
             var that = this;
-            if(!this.module.data._highlight) return;
+            if (!this.module.data._highlight) return;
             var hl = _(this.module.data._highlight).flatten().uniq().value();
 
             that._highlighted = [];
 
             API.killHighlight(this.module.getId());
 
-            for(var i=0; i<hl.length; i++) {
-                (function(i) {
-                    API.listenHighlight({_highlight: hl[i]}, function(onOff, key) {
-                        if(!key instanceof Array) {
+            for (var i = 0; i < hl.length; i++) {
+                (function (i) {
+                    API.listenHighlight({_highlight: hl[i]}, function (onOff, key) {
+                        if (!key instanceof Array) {
                             key = [key];
                         }
-                        if(onOff) {
+                        if (onOff) {
                             that._highlighted = _(that._highlighted).push(key).flatten().uniq().value();
                         }
                         else {
-                            that._highlighted = _.filter(that._highlighted, function(val) {
+                            that._highlighted = _.filter(that._highlighted, function (val) {
                                 return key.indexOf(val) === -1;
                             });
                         }
@@ -207,9 +214,9 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
             }
         },
 
-        _drawHighlight: function() {
+        _drawHighlight: function () {
             var script = 'select *.*; halos off;';
-            if(this._highlighted && this._highlighted.length) {
+            if (this._highlighted && this._highlighted.length) {
                 script += 'select ' + this._highlighted.join(',') + '; halos on;';
             }
             this.executeScript(script);
@@ -219,7 +226,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
     });
 
     function _undoHighlights() {
-        if(this.lastHoveredAtom) {
+        if (this.lastHoveredAtom) {
             API.highlightId(this.lastHoveredAtom.label, 0);
             this.lastHoveredAtom = null;
         }

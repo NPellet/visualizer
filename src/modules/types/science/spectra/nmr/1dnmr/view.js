@@ -10,7 +10,7 @@ define([
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
 
         init: function () {
             this.dom = $('<div />');
