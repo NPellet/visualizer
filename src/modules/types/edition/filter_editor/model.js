@@ -1,11 +1,12 @@
 'use strict';
 
-define(['modules/types/client_interaction/code_editor/model'], function (CodeEditor) {
+define(['modules/types/client_interaction/code_editor/model', 'src/util/util'], function (CodeEditor, Util) {
 
     function Model() {
+        CodeEditor.call(this);
     }
 
-    Model.prototype = Object.create(CodeEditor.prototype);
+    Util.inherits(Model, CodeEditor);
 
     return Model;
 

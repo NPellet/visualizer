@@ -1,13 +1,17 @@
 'use strict';
 
-define(['modules/default/defaultview', 'modules/types/edition/onde/view', 'modules/types/display/template-twig/view', 'src/util/context'], function (Default, OndeV, TwigV, Context) {
+define([
+    'modules/default/defaultview',
+    'modules/types/edition/onde/view',
+    'modules/types/display/template-twig/view'
+], function (Default, OndeV, TwigV) {
 
-    function view() {
+    function View() {
         this.twigV = new TwigV();
         this.ondeV = new OndeV();
     }
 
-    view.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
         setModule: function (module) {
             this.module = module;
 
@@ -74,5 +78,6 @@ define(['modules/default/defaultview', 'modules/types/edition/onde/view', 'modul
         }
     });
 
-    return view;
+    return View;
+
 });

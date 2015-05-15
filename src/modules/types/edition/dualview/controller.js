@@ -2,14 +2,14 @@
 
 define(['modules/default/defaultcontroller', 'modules/types/edition/onde/controller', 'modules/types/display/template-twig/controller'], function (Default, OndeC, TwigC) {
 
-    function controller() {
+    function Controller() {
         this.twigC = new TwigC();
         this.ondeC = new OndeC();
     }
 
-    controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
-    controller.prototype.setModule = function (module) {
+    Controller.prototype.setModule = function (module) {
         this.module = module;
         this.twigC.module = module.twigM;
         this.twigC.module.controller = this.twigC;
@@ -17,12 +17,12 @@ define(['modules/default/defaultcontroller', 'modules/types/edition/onde/control
         this.ondeC.module.controller = this.ondeC;
     };
 
-    controller.prototype.init = function () {
+    Controller.prototype.init = function () {
         this.twigC.init();
         this.ondeC.init();
     };
 
-    controller.prototype.moduleInformation = {
+    Controller.prototype.moduleInformation = {
         name: 'Edit/Display',
         description: 'Dual-view module, with a displayer that is based on Twig and a JSON editor based on Onde.',
         author: 'Michaël Zasso',
@@ -31,16 +31,15 @@ define(['modules/default/defaultcontroller', 'modules/types/edition/onde/control
         cssClass: 'dualview'
     };
 
-    controller.prototype.references = {
+    Controller.prototype.references = {
         value: {
             label: 'Any object'
         }
     };
 
-    controller.prototype.variablesIn = ['value'];
+    Controller.prototype.variablesIn = ['value'];
 
-    controller.prototype.configurationStructure = function () {
-
+    Controller.prototype.configurationStructure = function () {
         return {
             groups: {
                 group: {
@@ -52,18 +51,18 @@ define(['modules/default/defaultcontroller', 'modules/types/edition/onde/control
                             type: 'jscode',
                             title: 'Template',
                             mode: 'html',
-                            default: ''
+                            'default': ''
                         },
                         schema: {
                             type: 'jscode',
                             title: 'Schema',
                             mode: 'json',
-                            default: '{}'
+                            'default': '{}'
                         },
                         button_text: {
                             type: 'text',
                             title: 'Text of the save button',
-                            default: 'Save'
+                            'default': 'Save'
                         }
                     }
                 }
@@ -71,7 +70,7 @@ define(['modules/default/defaultcontroller', 'modules/types/edition/onde/control
         };
     };
 
-    controller.prototype.configFunctions = {
+    Controller.prototype.configFunctions = {
         mode: function () {
             return 'schema';
         },
@@ -83,7 +82,7 @@ define(['modules/default/defaultcontroller', 'modules/types/edition/onde/control
         }
     };
 
-    controller.prototype.configAliases = {
+    Controller.prototype.configAliases = {
         template: ['groups', 'group', 0, 'template', 0],
         schema: ['groups', 'group', 0, 'schema', 0],
         button_text: ['groups', 'group', 0, 'button_text', 0],
@@ -92,5 +91,6 @@ define(['modules/default/defaultcontroller', 'modules/types/edition/onde/control
         output: []
     };
 
-    return controller;
+    return Controller;
+
 });

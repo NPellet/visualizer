@@ -20,11 +20,9 @@ define(['modules/default/defaultcontroller'], function (Default) {
             type: 'svg',
             label: 'A string describing an svg'
         },
-
         svgModifier: {
             label: 'An object describing svg modification'
         },
-
         info: {
             label: 'An info object'
         }
@@ -35,12 +33,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
             label: 'The svg content changed',
             refVariable: ['svgString']
         },
-
         onHover: {
             label: 'An svg element is hovered',
             refVariable: ['info']
         },
-
         onClick: {
             label: 'An svg element is clicked',
             refVariable: ['info']

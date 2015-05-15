@@ -8,7 +8,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
 
     Util.loadCss('components/onde/src/onde.css');
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
         init: function () {
             var that = this;
             this.dom = $('<form id="' + this._id + '">').css({
@@ -34,7 +34,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
             var debouncing = this.module.getConfiguration('debouncing', -1);
             if (debouncing > -1) {
                 var cb = function (e) {
-                    if(e.type === 'change' && (e.target.type === 'text' || e.target.type === 'textarea')) return;
+                    if (e.type === 'change' && (e.target.type === 'text' || e.target.type === 'textarea')) return;
                     that.exportForm();
                 };
                 if (debouncing > 0) {
@@ -64,7 +64,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
             var that = this;
             this.form = new onde.Onde(this.dom);
             this.renderForm();
-            this.form.on('field:delete', function(node) {
+            this.form.on('field:delete', function (node) {
                 that.exportForm();
             });
         },
@@ -82,7 +82,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
         renderForm: function () {
             var schema = this.module.controller.getSchema();
             this.form.render(schema, this.inputVal, {});
-            if(this.module.getConfigurationCheckbox('hasButton', 'onload')) {
+            if (this.module.getConfigurationCheckbox('hasButton', 'onload')) {
                 this.exportForm();
             }
         },

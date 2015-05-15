@@ -2,23 +2,12 @@
 
 define(['modules/default/defaultcontroller', 'lib/formcreator/formcreator'], function (Default, FormCreator) {
 
-    /**
-     * Creates a new empty controller
-     * @class Controller
-     * @name Controller
-     * @constructor
-     */
-    function controller() {
+    function Controller() {
     }
 
-    // Extends the default properties of the default controller
-    controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
-
-    /*
-     Information about the module
-     */
-    controller.prototype.moduleInformation = {
+    Controller.prototype.moduleInformation = {
         name: 'Templated form',
         description: 'A complex module allowing one to display a templated form in the module',
         author: 'Norman Pellet',
@@ -27,45 +16,20 @@ define(['modules/default/defaultcontroller', 'lib/formcreator/formcreator'], fun
         cssClass: 'form'
     };
 
-
-    /*
-     Configuration of the input/output references of the module
-     */
-    controller.prototype.references = {};
-
-
-    /*
-     Configuration of the module for sending events, as a static object
-     */
-    controller.prototype.events = {};
-
-
-    /*
-     Configuration of the module for receiving events, as a static object
-     In the form of
-     */
-    controller.prototype.variablesIn = [];
-
-
-    controller.prototype.configurationStructure = function () {
+    Controller.prototype.configurationStructure = function () {
 
         return {
             sections: {
-
                 structure: {
-
                     options: {
                         title: 'Form structure'
                     },
-
                     groups: {
                         group: {
                             options: {
                                 type: 'list'
                             },
-
                             fields: {
-
                                 json: {
                                     type: 'jscode',
                                     mode: 'json',
@@ -75,27 +39,21 @@ define(['modules/default/defaultcontroller', 'lib/formcreator/formcreator'], fun
                         }
                     }
                 },
-
-
                 template: {
-
                     options: {
                         title: 'Template'
                     },
-
                     groups: {
                         template: {
                             options: {
                                 type: 'list',
                                 multiple: false
                             },
-
                             fields: {
                                 file: {
                                     type: 'text',
                                     title: 'Template file'
                                 },
-
                                 html: {
                                     type: 'jscode',
                                     mode: 'html',
@@ -109,12 +67,12 @@ define(['modules/default/defaultcontroller', 'lib/formcreator/formcreator'], fun
         };
     };
 
-
-    controller.prototype.configAliases = {
+    Controller.prototype.configAliases = {
         structure: ['sections', 'structure', 0, 'groups', 'group', 0, 'json', 0],
         tpl_file: ['sections', 'template', 0, 'groups', 'template', 0, 'file', 0],
         tpl_html: ['sections', 'template', 0, 'groups', 'template', 0, 'html', 0]
     };
 
-    return controller;
+    return Controller;
+
 });

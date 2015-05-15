@@ -2,12 +2,12 @@
 
 define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'], function (Default, DataTraversing, API) {
 
-    function view() {
+    function View() {
     }
-    view.prototype = $.extend(true, {}, Default, {
+
+    $.extend(true, View.prototype, Default, {
 
         init: function () {
-
             this.dom = $('<div />');
             this.module.getDomContent().html(this.dom);
             this.callback = null;
@@ -22,9 +22,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                 form;
 
             try {
-
                 json = JSON.parse(structure);
-
             } catch (e) {
                 return;
             }
@@ -60,16 +58,10 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                 });
             });
             this.form = form;
-        },
+        }
 
-        update: {},
-
-        getDom: function () {
-            return this.dom;
-        },
-
-        typeToScreen: {}
     });
-    return view;
+
+    return View;
+
 });
- 

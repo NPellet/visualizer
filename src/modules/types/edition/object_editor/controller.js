@@ -5,7 +5,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'Object editor',
@@ -74,7 +74,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             type: 'combo',
                             title: 'Output result',
                             options: [
-                                {title: 'Modified input object', key: 'modified'},
+                                {
+                                    title: 'Modified input object',
+                                    key: 'modified'
+                                },
                                 {title: 'New object', key: 'new'}
                             ],
                             default: 'new'
@@ -112,7 +115,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
             var input = this.module.view.inputData;
             if (input) {
                 input.mergeWith(newValue, this.module.getId());
-                this.setVarFromEvent(eventType, 'output', 'value', [ ]);
+                this.setVarFromEvent(eventType, 'output', 'value', []);
             }
         }
     };

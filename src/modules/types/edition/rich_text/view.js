@@ -13,7 +13,7 @@ define([
         this._id = Util.getNextUniqueId();
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
         init: function () {
             this.plainHtml = this.module.getConfigurationCheckbox('plainHtml', 'yes');
         },

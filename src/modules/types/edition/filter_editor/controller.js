@@ -1,11 +1,12 @@
 'use strict';
 
-define(['modules/types/client_interaction/code_editor/controller'], function (CodeEditor) {
+define(['modules/types/client_interaction/code_editor/controller', 'src/util/util'], function (CodeEditor, Util) {
 
     function Controller() {
+        CodeEditor.call(this);
     }
 
-    Controller.prototype = Object.create(CodeEditor.prototype);
+    Util.inherits(Controller, CodeEditor);
 
     Controller.prototype.moduleInformation = {
         name: 'Filter editor',
@@ -70,8 +71,8 @@ define(['modules/types/client_interaction/code_editor/controller'], function (Co
     };
 
     Controller.prototype.configAliases = {
-        script: [ 'groups', 'group', 0, 'script', 0],
-        libs: [ 'groups', 'libs', 0]
+        script: ['groups', 'group', 0, 'script', 0],
+        libs: ['groups', 'libs', 0]
     };
 
     Controller.prototype.onButtonClick = function (value, object) {
@@ -128,4 +129,5 @@ define(['modules/types/client_interaction/code_editor/controller'], function (Co
     }
 
     return Controller;
+
 });

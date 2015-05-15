@@ -5,13 +5,12 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
 
         init: function () {
             this.dom = $('<div />');
             this.module.getDomContent().html(this.dom);
             this.callback = null;
-            //this.resolveReady();
         },
 
         inDom: function () {
@@ -57,7 +56,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
                 var val = new DataObject(this.getValue(), true);
                 self.formValue = val;
-//				self.module.controller.valueChanged( val );
 
                 var input = self.module.getDataFromRel('input_object'),
                     structure = self.module.getConfiguration('structure') || [],
@@ -198,10 +196,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
             }
 
-        },
-
-        getDom: function () {
-            return this.dom;
         }
 
     });
