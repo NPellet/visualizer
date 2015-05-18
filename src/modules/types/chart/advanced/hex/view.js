@@ -56,7 +56,6 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                 this._chartData();
                 this._ignored();
                 this._normalize();
-                debugger;
                 this.draw();
             }
         },
@@ -66,6 +65,10 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             var y = _.pluck(this.data, 1);
             var minX = Math.min.apply(null, x);
             var minY = Math.min.apply(null, y);
+            var maxX = Math.max.apply(null, x);
+            var maxY = Math.max.apply(null, y);
+            this.lenX = maxX - minX;
+            this.lenY = maxY -minY;
             var min = Math.min(minX,minY);
             if(min%2 !== 0) min = min-1;
 
@@ -73,7 +76,10 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                 this.data[i][0] -= min;
                 this.data[i][1] -= min;
             }
-
+            this.minX = minX - min;
+            this.minY = minY -min;
+            this.maxX = maxX - min;
+            this.maxY = maxY -min;
         },
 
         _ignored: function() {
@@ -109,14 +115,23 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         draw: function () {
             var that = this;
 
-
-            var hexRadius = d3.min([this.dom.width()/((10 + 0.5) * Math.sqrt(3)),
-                this.dom.height()/((10 + 1/3) * 1.5)]);
+            var r1 = this.dom.width() / (2+this.lenX*1.5);
+            var r2 = this.dom.height() / ((this.lenX+1)*1.75);
+            var hexRadius = Math.min(r1,r2);
             var points = [];
             for(var i=0; i<this.data.length; i++) {
-                points.push([hexRadius * this.data[i][1] * 1.75, hexRadius * this.data[i][0] * 1.5]);
+                points.push(toPixel(this.data[i]));
             }
 
+            var boundingBox = _.flatten([toPixel([this.minX-0.3, this.minY-0.8]), toPixel([this.lenX+1.5, this.lenY+1.5])]);
+
+
+            console.log('bounding box', boundingBox);
+            console.log('radius', hexRadius);
+
+            function toPixel(point) {
+                return [point[0] * hexRadius * 1.75, point[1] * hexRadius * 1.5];
+            }
 
             var margin = {
                 top: 20 + hexRadius/2, bottom: 30 + hexRadius/2,
@@ -126,14 +141,16 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             var width = this.dom.width() - margin.left -margin.right,
                 height = this.dom.height() - margin.top - margin.bottom;
 
+            //var h = this.
+
             var svg = d3.select('#' + this.id).append('svg')
-                .attr('viewBox', '-150, -150, 600, 600')
+                .attr('viewBox', boundingBox.join(','))
                 .style('margin', 0)
                 .style('padding',0)
                 .attr('width', width + margin.left + margin.right)
                 .attr('height', height + margin.top + margin.bottom)
                 .append('g')
-                .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+                //.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
             var hexbin = d3.hexbin()
                 .radius(hexRadius);
@@ -261,7 +278,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             if(!checkCubic(data[i])) continue;
             var col = data[i][0], z = data[i][2];
             var row = z + (col + (col&1)) / 2;
-            r[i] = [row, col];
+            r[i] = [col, row];
         }
         return r;
 
@@ -273,7 +290,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             if(!checkCubic(data[i])) continue;
             var row = data[i][2], x = data[i][0];
             var col = x + (row + (row&1)) / 2;
-            r[i] = [row, col];
+            r[i] = [col, row];
         }
         return r;
     }
@@ -284,7 +301,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             if(!checkCubic(data[i])) continue;
             var row = data[i][2], x = data[i][0];
             var col = x + (row - (row&1)) / 2;
-            r[i] = [row, col];
+            r[i] = [col, row];
         }
         return r;
     }
@@ -295,7 +312,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             if(!checkCubic(data[i])) continue;
             var col = data[i][0], z = data[i][2];
             var row = z + (col - (col&1)) / 2;
-            r[i] = [row, col];
+            r[i] = [col, row];
         }
         return r;
     }
