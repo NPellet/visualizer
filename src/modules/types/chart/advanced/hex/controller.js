@@ -40,7 +40,8 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                             options: [
                                 {key: 'combinatorial', title: 'Combinatorial'},
                                 {key: 'cubic', title: 'Cubic'},
-                                {key: 'evenq', title: 'Even-q'}
+                                {key: 'evenq', title: 'Even-q'},
+                                {key: 'oddr', title: 'Odd-r'}
                             ],
                             'default': 'combinatorial'
                         },
