@@ -1,99 +1,295 @@
 {
-  "version": "2.15.1",
+  "version": "2.19.3-0",
   "grid": {
-	"layers": {
-	  "Default layer": {
-		"name": "Default layer"
-	  }
-	},
-	"xWidth": 10,
-	"yHeight": 10
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
   },
   "modules": [
-	{
-	  "url": "modules/types/chart/statistics/wordcloud/",
-	  "configuration": {
-		"sections": {},
-		"groups": {
-		  "group": [
-			{
-			  "spiral": [
-				"archimedean"
-			  ],
-			  "scale": [
-				"logn"
-			  ],
-			  "orientation": [
-				5
-			  ],
-			  "oneWordPerLine": [
-				[
-				  "oneWordPerLine"
-				]
-			  ],
-			  "fromTo": [
-				[
-				  -60,
-				  60
-				]
-			  ]
-			}
-		  ]
-		}
-	  },
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 38,
-			"top": 9
-		  },
-		  "size": {
-			"width": 99,
-			"height": 48
-		  },
-		  "zIndex": 0,
-		  "display": true,
-		  "title": "",
-		  "bgColor": [
-			255,
-			255,
-			255,
-			0
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		}
-	  },
-	  "id": 1,
-	  "vars_in": [
-		{
-		  "rel": "value",
-		  "name": "myvar"
-		}
-	  ],
-	  "actions_in": [],
-	  "title": "",
-	  "vars_out": [],
-	  "actions_out": []
-	}
+    {
+      "url": "modules/types/chart/statistics/wordcloud/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "spiral": [
+                "archimedean"
+              ],
+              "scale": [
+                "log"
+              ],
+              "orientation": [
+                5
+              ],
+              "oneWordPerLine": [
+                []
+              ],
+              "fromTo": [
+                [
+                  -60,
+                  60
+                ]
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 32,
+            "top": 13
+          },
+          "size": {
+            "width": 88,
+            "height": 37
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 1,
+      "vars_in": [
+        {
+          "rel": "textvalue",
+          "name": "myvar"
+        }
+      ],
+      "actions_in": [],
+      "title": "",
+      "vars_out": [],
+      "actions_out": []
+    },
+    {
+      "url": "modules/types/legacy/var_editor/",
+      "configuration": {},
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 8,
+            "top": 8
+          },
+          "size": {
+            "width": 42,
+            "height": 26
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 2
+    },
+    {
+      "url": "modules/types/edition/rich_text/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                [
+                  "isEditable"
+                ]
+              ],
+              "modifyInVariable": [
+                [
+                  "yes"
+                ]
+              ],
+              "autoHeight": [
+                []
+              ],
+              "bgColor": [
+                [
+                  255,
+                  255,
+                  255,
+                  1
+                ]
+              ],
+              "postit": [
+                []
+              ],
+              "html": [
+                []
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 1,
+            "top": 0
+          },
+          "size": {
+            "width": 119,
+            "height": 12
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            252,
+            248,
+            248,
+            1
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [
+        {
+          "rel": "html",
+          "name": "myvar"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "richtext": "cheminfo cheminfo cheminfo cheminfo cheminfo cheminfo visualizer visualizer visualizer visualizer visualizer visualizer visualizer visualizer visualizer visualizer visualizer javascript javascript javascript javascript chemical chemical chemical molecule molecule molecule molecule peak peak smiles smiles mass mass mass",
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "title": "",
+      "actions_out": []
+    },
+    {
+      "url": "modules/types/display/single_value/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "defaultvalue": [
+                null
+              ],
+              "font": [
+                null
+              ],
+              "fontcolor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "fontsize": [
+                null
+              ],
+              "align": [
+                null
+              ],
+              "valign": [
+                null
+              ],
+              "sprintf": [
+                null
+              ],
+              "sprintfOrder": [
+                null
+              ],
+              "preformatted": [
+                []
+              ],
+              "append": [
+                []
+              ],
+              "maxEntries": [
+                1
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 1,
+            "top": 13
+          },
+          "size": {
+            "width": 30,
+            "height": 37
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 4,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "myvar"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "",
+      "vars_out": [],
+      "actions_out": []
+    }
   ],
   "variables": [
-	{
-	  "varname": "myValue",
-	  "jpath": [
-		"myValue"
-	  ]
-	},
-	{
-	  "varname": "myLink",
-	  "jpath": [
-		"myLink"
-	  ]
-	}
+    {
+      "varname": "myvar",
+      "jpath": [
+        "myvar"
+      ]
+    },
+    {
+      "varname": "newvar",
+      "jpath": [
+        "newvar"
+      ]
+    }
   ],
   "pouchvariables": [],
   "configuration": {
-	"title": "No title"
-  }
+    "title": "No title"
+  },
+  "aliases": []
 }
