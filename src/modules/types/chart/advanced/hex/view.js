@@ -9,7 +9,7 @@ requirejs.config({
     }
 });
 
-define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/util', 'd3', 'd3-plugins/hexbin/hexbin'], function (Default, _, Debug, Util, d3) {
+define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/util', 'd3', 'src/util/colorbar', 'd3-plugins/hexbin/hexbin'], function (Default, _, Debug, Util, d3, colorbar) {
     var DEFAULT_COLOR = 'lightblue';
 
 
@@ -124,6 +124,8 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             }
 
             var boundingBox = _.flatten([toPixel([this.minX-0.3, this.minY-0.8]), toPixel([this.lenX+1.5, this.lenY+1.5])]);
+            boundingBox[0] -= 100; // Keep some room for color bar
+            boundingBox[2] += 100;
 
 
             console.log('bounding box', boundingBox);
@@ -151,6 +153,27 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                 .attr('height', height + margin.top + margin.bottom)
                 .append('g')
                 //.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+
+            var colorbarx = boundingBox[0] + 20;
+            var colorbary = boundingBox[1] + 20;
+            var svgMarkup = colorbar.getSvg({
+                width: 20,
+                height: 200,
+                axis: {
+                    orientation: 'left',
+                    ticks: 5,
+                    order: 'asc'
+                },
+                stops: ['#6e7c5a', '#a03333', '#d8b8b3'],
+                stopPositions: [0, 0.2, 1],
+                domain: [0.11,0.4]
+            });
+
+            svgMarkup = '<g transform="translate(' + colorbarx + ',' + colorbary + ')">' + svgMarkup + '</g>';
+            console.log('svg markup', svgMarkup);
+            svg.html(svgMarkup);
+
 
             var hexbin = d3.hexbin()
                 .radius(hexRadius);
