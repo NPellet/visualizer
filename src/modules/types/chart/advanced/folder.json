@@ -11,6 +11,10 @@
     {
       "moduleName": "Self-organizing map",
       "url": "modules/types/chart/advanced/som/"
+    },
+    {
+      "moduleName": "Hexagonal map",
+      "url": "modules/types/chart/advanced/hex/"
     }
   ],
   "name": "Advanced charting",

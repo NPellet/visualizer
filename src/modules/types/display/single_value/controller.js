@@ -21,7 +21,6 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
             label: 'Any displayable object'
 
         },
-
         color: {
             type: 'string',
             label: 'A color to fill the module with'
@@ -125,7 +124,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
                     }
                 }
             }
-        }
+        };
     };
 
     Controller.prototype.configAliases = {

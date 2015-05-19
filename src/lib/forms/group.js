@@ -1,205 +1,205 @@
-define(['require', 'jquery', './field', './grouplistelement', './grouptableelement', './grouptextelement'], function(require, $, Field, GroupListElement, GroupTableElement, GroupTextElement) {
+'use strict';
 
-	var Group = function(name) {
-		this.name = name;
-	};
+define(['require', 'jquery', './field', './grouplistelement', './grouptableelement', './grouptextelement'], function (require, $, Field, GroupListElement, GroupTableElement, GroupTextElement) {
 
-	Group.defaultOptions = {
-		
-	};
+    var Group = function (name) {
+        this.name = name;
+    };
 
-	$.extend(Group.prototype, {
-		
-		init: function(options) {
-			this.options = $.extend({}, Group.defaultOptions, options); // Creates the options
+    Group.defaultOptions = {};
 
-			this.fields = {};
-			this.deferreds = {};
-			this.elements = [];
-			this.nbFields = 0;
-		},
+    $.extend(Group.prototype, {
 
-		getName: function() {
-			return this.name;
-		},
+        init: function (options) {
+            this.options = $.extend({}, Group.defaultOptions, options); // Creates the options
 
-		getTitle: function() {
-			return this.options.title;
-		},
+            this.fields = {};
+            this.deferreds = {};
+            this.elements = [];
+            this.nbFields = 0;
+        },
 
-		setStructure: function(json) {
-			
-			var i;
-			json = json.fields;
+        getName: function () {
+            return this.name;
+        },
 
-			for( i in json ) {
-				this.addField( json[ i ], i );
-			}
-		},
+        getTitle: function () {
+            return this.options.title;
+        },
 
-		addField: function(fieldobj, name) {
+        setStructure: function (json) {
 
-			var fieldName = ( name || fieldobj.name ),
-				self = this;
+            var i;
+            json = json.fields;
 
-			if( this.fields[ fieldName ] ) {
-				return this.form.throwError('Field "' + sectionobj.getName( ) + '" already exists');
-			}
+            for (i in json) {
+                this.addField(json[i], i);
+            }
+        },
 
-			this.nbFields++;
+        addField: function (fieldobj, name) {
 
-			if( ! ( fieldobj instanceof Field ) ) {
+            var fieldName = ( name || fieldobj.name ),
+                self = this;
 
-				var type = fieldobj.type,
-					deferred = $.Deferred( );
+            if (this.fields[fieldName]) {
+                return this.form.throwError('Field "' + sectionobj.getName() + '" already exists');
+            }
 
-				require( [ './types/' + type + '/field' ], function( FieldConstructor ) {
+            this.nbFields++;
 
-					field = new FieldConstructor( fieldName );
-					field.init( fieldobj );
-					field.group = self;
-					
-					self.fields[ fieldName ] = field;
+            if (!( fieldobj instanceof Field )) {
 
-					if( field.options.displaySource || field.options.displayTarget ) {
-						self.form.conditionalDisplayer.init( field, field.options.displaySource, field.options.displayTarget );
-					}
-					
-					deferred.resolve( field );
-				});
+                var type = fieldobj.type,
+                    deferred = $.Deferred();
 
-				this.form.addField( deferred );
+                require(['./types/' + type + '/field'], function (FieldConstructor) {
 
-				this.deferreds[ fieldName ] = deferred;
-				this.fields[ fieldName ] = false;
+                    var field = new FieldConstructor(fieldName);
+                    field.init(fieldobj);
+                    field.group = self;
 
-				return deferred;
+                    self.fields[fieldName] = field;
 
-			} else {
+                    if (field.options.displaySource || field.options.displayTarget) {
+                        self.form.conditionalDisplayer.init(field, field.options.displaySource, field.options.displayTarget);
+                    }
 
-				this.sections[ fieldobj.getName() ] = fieldobj;
-				return fieldobj;
-			}
+                    deferred.resolve(field);
+                });
 
-			
-		},
+                this.form.addField(deferred);
 
-		_setTpl: function( tpl ) {
-			this.tpl = tpl;
-			this._tplClean = tpl;
-		},
+                this.deferreds[fieldName] = deferred;
+                this.fields[fieldName] = false;
 
-		fieldExists: function(fieldName) {
-			return !! this.fields[ fieldName ];
-		},
+                return deferred;
 
-		getField: function(fieldName, fieldId) {
+            } else {
 
-			if( fieldId !== undefined ) {
-				return this.getFieldElement(fieldName, fieldId);
-			}
-
-			if( ! this.fields[ fieldName ] ) {
-
-				if( fieldName != "_title" ) {
-					return this.form.throwError('Cannot return field "' + fieldName + '". Field does not exist');
-				}
-			}
-
-			return this.fields[ fieldName ];
-		},
-
-		eachFields: function(callback) {
-			var i;
-			for(i in this.fields) {
-				callback.call(this, this.fields[i]);
-			}
-		},
-
-		makeElement: function() {
-
-			var subelement;
-			switch( this.options.type ) {
-
-				case 'table':
-
-					subelement = new GroupTableElement();
-
-				break;
-
-				case 'text':
-					subelement = new GroupTextElement();
-				break;
-
-				case 'list':
-				default:
-
-					subelement = new GroupListElement();
-
-				break;
-			}
-
-			subelement.init( this.options );
-			subelement.group = this;
-
-			this.elements.push( subelement );
-
-			return subelement;
-		},
-
-		ready: function() {
-			return $.when( this.deferreds )
-		}
-	});
+                this.sections[fieldobj.getName()] = fieldobj;
+                return fieldobj;
+            }
 
 
-	Object.defineProperty(Group.prototype, 'section', {
-		
-		enumerable: false,
-		configurable: false,
-		
-		
-		get: function() {
-			return this._section;
-		},
+        },
 
-		set: function(section) {
-			this._section = section;
-		}
-		
-	});
+        _setTpl: function (tpl) {
+            this.tpl = tpl;
+            this._tplClean = tpl;
+        },
 
-	
-	Object.defineProperty(Group.prototype, 'form', {
-		
-		enumerable: true,
-		configurable: false,
-		
-		get: function() {
+        fieldExists: function (fieldName) {
+            return !!this.fields[fieldName];
+        },
 
-			return this._form || this.section.form;
-		},
+        getField: function (fieldName, fieldId) {
 
-		set: function(form) {
-			this._form = form;
-		}
-	
-	});
+            if (fieldId !== undefined) {
+                return this.getFieldElement(fieldName, fieldId);
+            }
 
-	Object.defineProperty(Group.prototype, 'name', {
-		
-		enumerable: true,
-		configurable: false,
-		
-		get: function() {
-			return this._name;
-		},
+            if (!this.fields[fieldName]) {
 
-		set: function(name) {
-			this._name = name;
-		}
-	
-	});
+                if (fieldName != '_title') {
+                    return this.form.throwError('Cannot return field "' + fieldName + '". Field does not exist');
+                }
+            }
 
-	return Group;
+            return this.fields[fieldName];
+        },
+
+        eachFields: function (callback) {
+            var i;
+            for (i in this.fields) {
+                callback.call(this, this.fields[i]);
+            }
+        },
+
+        makeElement: function () {
+
+            var subelement;
+            switch (this.options.type) {
+
+                case 'table':
+
+                    subelement = new GroupTableElement();
+
+                    break;
+
+                case 'text':
+                    subelement = new GroupTextElement();
+                    break;
+
+                case 'list':
+                default:
+
+                    subelement = new GroupListElement();
+
+                    break;
+            }
+
+            subelement.init(this.options);
+            subelement.group = this;
+
+            this.elements.push(subelement);
+
+            return subelement;
+        },
+
+        ready: function () {
+            return $.when(this.deferreds)
+        }
+    });
+
+
+    Object.defineProperty(Group.prototype, 'section', {
+
+        enumerable: false,
+        configurable: false,
+
+
+        get: function () {
+            return this._section;
+        },
+
+        set: function (section) {
+            this._section = section;
+        }
+
+    });
+
+
+    Object.defineProperty(Group.prototype, 'form', {
+
+        enumerable: true,
+        configurable: false,
+
+        get: function () {
+
+            return this._form || this.section.form;
+        },
+
+        set: function (form) {
+            this._form = form;
+        }
+
+    });
+
+    Object.defineProperty(Group.prototype, 'name', {
+
+        enumerable: true,
+        configurable: false,
+
+        get: function () {
+            return this._name;
+        },
+
+        set: function (name) {
+            this._name = name;
+        }
+
+    });
+
+    return Group;
 });

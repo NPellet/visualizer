@@ -1,136 +1,138 @@
+'use strict';
 
-define( [ 'jquery', 'jquery-ui/slider' ], function( $ ) {
+define(['jquery', 'jquery-ui/slider'], function ($) {
 
-	var FieldConstructor = function() {};
-	
-	FieldConstructor.prototype.__makeDom = function() {
-		
-		var self = this,
-			dom = $("<div />"),
-			div = $( "<div></div>" )
-					.addClass( 'field-list' )
-					.appendTo( dom ),
-			lastVal = [this.field.options.min, this.field.options.max],
-			changing,
-			range = self.field.options.range,
-			slider = $("<div />")
-				.appendTo( div )
-				.slider( {
+    var FieldConstructor = function () {
+    };
 
-					min: this.field.options.min,
-					max: this.field.options.max,
-					step: this.field.options.step,
+    FieldConstructor.prototype.__makeDom = function () {
 
-					range: this.field.options.range,
+        var self = this,
+            dom = $('<div />'),
+            div = $('<div></div>')
+                .addClass('field-list')
+                .appendTo(dom),
+            lastVal = [this.field.options.min, this.field.options.max],
+            changing,
+            range = self.field.options.range,
+            slider = $('<div />')
+                .appendTo(div)
+                .slider({
 
-					change: function( event, ui ) {
-							
-						ui.value = range ? ui.values[ changing ] : ui.value;
+                    min: this.field.options.min,
+                    max: this.field.options.max,
+                    step: this.field.options.step,
 
-						if( valueInput[ changing ] && lastVal[ changing ] !== ui.value && ! isNaN( ui.value ) ) {
-							lastVal[ changing ] = ui.value;
-							valueInput[ changing ].val( lastVal[ changing ] );	
-							self.setValueSilent( range ? lastVal : lastVal[0] );
-						}
-					},
+                    range: this.field.options.range,
 
-					slide: function( event, ui ) {
-						
-						var index = $(ui.handle).index();
-						changing = index;
+                    change: function (event, ui) {
 
-						if( range ) {
-							changing --;
-						}
-						
-						ui.value = range ? ui.values[ changing ] : ui.value;
+                        ui.value = range ? ui.values[changing] : ui.value;
 
-						if( !isNaN( ui.value )) {
-						
-							if( valueInput[ changing ] && lastVal[ changing ] !== ui.value && ! isNaN( ui.value ) ) {
+                        if (valueInput[changing] && lastVal[changing] !== ui.value && !isNaN(ui.value)) {
+                            lastVal[changing] = ui.value;
+                            valueInput[changing].val(lastVal[changing]);
+                            self.setValueSilent(range ? lastVal : lastVal[0]);
+                        }
+                    },
 
-								lastVal[ changing ] = ui.value;
+                    slide: function (event, ui) {
 
-								if( valueInput[ changing ] ) {
-									valueInput[ changing ].val( lastVal[ changing ] );	
-									self.setValueSilent( range ? lastVal : lastVal[0] );
-								}
-							}
-						}
-					}
-				}),
+                        var index = $(ui.handle).index();
+                        changing = index;
 
-			valueWrap = $("<div />")
-				.addClass( 'forms-field-slider-value')
-				.appendTo( div ),
-			valueInput = [];
+                        if (range) {
+                            changing--;
+                        }
 
-		valueInput[ 0 ] = $("<input />").bind( 'keyup' , function( ) {
-			
-			var val = $( this ).val( ),
-				floatVal = parseFloat( val );
+                        ui.value = range ? ui.values[changing] : ui.value;
 
-			if( !isNaN( val ) && isFinite( val ) ) {
-				lastVal[ 0 ] = floatVal;
-				changing = 0;
+                        if (!isNaN(ui.value)) {
 
-				if( range ) {
-					self.slider.slider( 'values', changing, floatVal );
-				} else {
-					self.slider.slider( 'value', floatVal );
-				}
-			}
-		});
+                            if (valueInput[changing] && lastVal[changing] !== ui.value && !isNaN(ui.value)) {
 
-		valueWrap.append( this.field.options.range ? '<span>Min</span>' : '<span>Value</span>' ).append( valueInput[ 0 ] );
+                                lastVal[changing] = ui.value;
 
-		if( this.field.options.range ) {
+                                if (valueInput[changing]) {
+                                    valueInput[changing].val(lastVal[changing]);
+                                    self.setValueSilent(range ? lastVal : lastVal[0]);
+                                }
+                            }
+                        }
+                    }
+                }),
 
-			valueInput[ 1 ] = $("<input />").bind( 'keyup' , function( ) {
-				
-				var val = $( this ).val( ),
-					floatVal = parseFloat( val );
+            valueWrap = $('<div />')
+                .addClass('forms-field-slider-value')
+                .appendTo(div),
+            valueInput = [];
 
-				if( !isNaN( val ) && isFinite( val ) ) {
-					lastVal[ 1 ] = floatVal;
-					changing = 1;
-					self.slider.slider( 'values', changing, floatVal );
-				}
-			});
+        valueInput[0] = $('<input />').bind('keyup', function () {
 
-			valueWrap.append( '<span>Max</span>' ).append( valueInput[ 1 ] );
-		}
+            var val = $(this).val(),
+                floatVal = parseFloat(val);
 
-		this.fieldElement = div;
-		this.div = div;
-		this.dom = dom;
-		this.slider = slider;
-		this.inputs = valueInput;
-		
+            if (!isNaN(val) && isFinite(val)) {
+                lastVal[0] = floatVal;
+                changing = 0;
+
+                if (range) {
+                    self.slider.slider('values', changing, floatVal);
+                } else {
+                    self.slider.slider('value', floatVal);
+                }
+            }
+        });
+
+        valueWrap.append(this.field.options.range ? '<span>Min</span>' : '<span>Value</span>').append(valueInput[0]);
+
+        if (this.field.options.range) {
+
+            valueInput[1] = $('<input />').bind('keyup', function () {
+
+                var val = $(this).val(),
+                    floatVal = parseFloat(val);
+
+                if (!isNaN(val) && isFinite(val)) {
+                    lastVal[1] = floatVal;
+                    changing = 1;
+                    self.slider.slider('values', changing, floatVal);
+                }
+            });
+
+            valueWrap.append('<span>Max</span>').append(valueInput[1]);
+        }
+
+        this.fieldElement = div;
+        this.div = div;
+        this.dom = dom;
+        this.slider = slider;
+        this.inputs = valueInput;
+
 //		this.checkValue();
 
-		return dom;
-	};
+        return dom;
+    };
 
-	FieldConstructor.prototype.checkValue = function() {
+    FieldConstructor.prototype.checkValue = function () {
 
-		if( this.slider && typeof this.value !== "undefined" ) {
+        if (this.slider && typeof this.value !== 'undefined') {
 
-			if( this.field.options.range ) {
+            if (this.field.options.range) {
 
-				if( this.value instanceof Array ) {
-					for( var i = 0, l = this.value.length; i < l ; i ++ ) {
-						this.slider.slider( 'values', i, this.value[ i ] );	
-						this.inputs[ i ].val( this.value[ i ] );	
-					}
-				}
-			} else {
-				this.slider.slider( 'value', this.value );	
-			}
+                if (this.value instanceof Array) {
+                    for (var i = 0, l = this.value.length; i < l; i++) {
+                        this.slider.slider('values', i, this.value[i]);
+                        this.inputs[i].val(this.value[i]);
+                    }
+                }
+            } else {
+                this.slider.slider('value', this.value);
+            }
 
-			
-		}
-	}
 
-	return FieldConstructor;
+        }
+    }
+
+    return FieldConstructor;
 });

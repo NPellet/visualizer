@@ -1,152 +1,188 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <title>Visualizer Demo</title>
-    <link rel="stylesheet" href="../src/css/main.css" media="screen, print" />
+    <link rel="stylesheet" href="../src/css/main.css" media="screen, print"/>
     <script src="../src/components/jquery/dist/jquery.min.js"></script>
-
     <script>
-        var configs=[];
-        configs.push({description:"Empty", name:""});
-        configs.push({description:"Default", name:"default"});
-        configs.push({description:"Test", name:"test"});
-        configs.push({description:"Title only", name:"title"});
-        configs.push({description:"Multiview header", name:"multiview"});
-        var currentHeader="default";
-        var examples=[];
-        examples.push({description:"Fibers", folder:"fiber"});
-        examples.push({description:"ChemCalc Lookup", folder:"chemcalcLookup"});
-        examples.push({description:"Chart", folder:"chart"});
-        examples.push({description:"3D function", folder:"chart-function"});
-        examples.push({description:"Molecule", folder:"molecule"});
-        examples.push({description:"-?- Linked atoms - molecules", folder:"linkedAtomMolecule"});
-        examples.push({description:"--- Loading plot", folder:"loadingPlot"});
-        examples.push({description:"Dendrogram", folder:"dendrogram"});
-        examples.push({description:"Jcamp Viewer", folder:"jcampViewer"});
-        examples.push({description:"jsNMR 1D", folder:"jsnmr1d"});
-        examples.push({description:"jsNMR 2D", folder:"jsnmr2d"});
-        examples.push({description:"2D Spectra", folder:"spectra2D"});
-        examples.push({description:"GC/MS", folder:"gcms"});
-        examples.push({description:"Single value and download link", folder:"singleValue"});
-        examples.push({description:"Simple array", folder:"array"});
-        examples.push({description:"JSMol", folder:"jsmol"});
-        examples.push({description:"JSMol - JSME", folder:"jsmol-jsme"});
-        examples.push({description:"JSMol Script", folder:"jsmolScript"});
-        examples.push({description:"JSME and database lookup", folder:"jsme-lookup"});
-        examples.push({description:"JSME display", folder:"jsme-display"});
-        examples.push({description:"-?- Phylogram", folder:"phylogram"});
-        examples.push({description:"-?- Phylogram 2", folder:"phylogram2"});
-        examples.push({description:"Array filtering", folder:"filter"});
-        examples.push({description:"Variable modification", folder:"varedit"});
-        examples.push({description:"Highlight", folder:"highlight"});
-        examples.push({description:"Filter - DOI", folder:"filter-doi"});
-        examples.push({description:"Dummy", folder:"dummy"});
-        examples.push({description:"NMR simulation", folder:"nmrSimulation"});
-        examples.push({description:"Flot Chart", folder:"flotChart"});
-        examples.push({description:"Flot Stack", folder:"flotStack"});
-        examples.push({description:"Radar Chart", folder:"dhtmlxchart"});
-
-        examples.push({description:"WebService CRON", folder:"webserviceCron"});
-        examples.push({description:"Matrix test", folder:"matrixTest"});
-
-        examples.push({description:"Leaflet Map", folder:"leaflet-map"});
-        examples.push({description:"Multiview", folder:"multiview"});
-        examples.push({description:"Drop image for histogram", folder:"histogram"});
-        examples.push({description:"Parallel coordinates", folder:"parcoords"});
-        examples.push({description:"Parallel coordinates (Big data)", folder:"parcoords2"});
-        examples.push({description:"Drag and drop / paste", folder:"dragdrop"});
-        examples.push({description:"Twig template", folder:"twig"});
-        examples.push({description: "Scatter 3D", folder:"plot3D"});
-        examples.push({description: "SVG Editor (Bioreactor)", folder: "svgEditor"});
-        examples.push({description: "House monitoring", folder: "houseMonitoring"});
-        examples.push({description: "Hierarchical structure explorer", folder: "fancytree"});
-        examples.push({description: "Bio - View AA sequence", folder: "bioSequence"});
-        examples.push({description: "Bio - Feature Viewer", folder: "bioFeatureViewer"});
-        examples.push({description: "Panzoom", folder: "panzoom"});
-        examples.push({description: "Bio-synthesis tutorial", folder: "bioSynthesis"});
-        examples.push({description: "Expérience de Griffith", folder: "Griffith"});
-        examples.push({description: "Self-organizing map of random colors", folder: "somRGB"});
-        examples.push({description: "Script executor", folder: "scriptExecutor"});
-        examples.push({description: "Loading screen API", folder: "loading"});
-        examples.push({description: "Word Cloud", folder: "wordcloud"});
+        var configs = [
+            {description: 'Empty', name: ''},
+            {description: 'Default', name: 'default'},
+            {description: 'Test', name: 'test'},
+            {description: 'Title only', name: 'title'},
+            {description: 'Multiview header', name: 'multiview'}
+        ];
+        var currentHeader = 'default';
+        var examples = [
+            {description: 'Fibers', folder: 'fiber'},
+            {description: 'ChemCalc Lookup', folder: 'chemcalcLookup'},
+            {description: 'Chart', folder: 'chart'},
+            {description: '3D function', folder: 'chart-function'},
+            {description: 'Molecule', folder: 'molecule'},
+            {description: 'Linked atoms - molecules', folder: 'linkedAtomMolecule'},
+            {description: 'Loading plot', folder: 'loadingPlot'},
+            {description: 'Dendrogram', folder: 'dendrogram'},
+            {description: 'Jcamp Viewer', folder: 'jcampViewer'},
+            {description: 'jsNMR 1D', folder: 'jsnmr1d'},
+            {description: 'jsNMR 2D', folder: 'jsnmr2d'},
+            {description: '2D Spectra', folder: 'spectra2D'},
+            {description: 'GC/MS', folder: 'gcms'},
+            {description: 'Single value and download link', folder: 'singleValue'},
+            {description: 'Simple array', folder: 'array'},
+            {description: 'JSMol', folder: 'jsmol'},
+            {description: 'JSMol - JSME', folder: 'jsmol-jsme'},
+            {description: 'JSMol Script', folder: 'jsmolScript'},
+            {description: 'JSME and database lookup', folder: 'jsme-lookup'},
+            {description: 'JSME display', folder: 'jsme-display'},
+            {description: 'Phylogram', folder: 'phylogram'},
+            {description: 'Phylogram 2', folder: 'phylogram2'},
+            {description: 'Array filtering', folder: 'filter'},
+            {description: 'Variable modification', folder: 'varedit'},
+            {description: 'Highlight', folder: 'highlight'},
+            {description: 'Filter - DOI', folder: 'filter-doi'},
+            {description: 'Dummy', folder: 'dummy'},
+            {description: 'NMR simulation', folder: 'nmrSimulation'},
+            {description: 'Flot Chart', folder: 'flotChart'},
+            {description: 'Flot Stack', folder: 'flotStack'},
+            {description: 'Radar Chart', folder: 'dhtmlxchart'},
+            {description: 'WebService CRON', folder: 'webserviceCron'},
+            {description: 'Matrix test', folder: 'matrixTest'},
+            {description: 'Leaflet Map', folder: 'leaflet-map'},
+            {description: 'Multiview', folder: 'multiview'},
+            {description: 'Drop image for histogram', folder: 'histogram'},
+            {description: 'Parallel coordinates', folder: 'parcoords'},
+            {description: 'Parallel coordinates (Big data)', folder: 'parcoords2'},
+            {description: 'Drag and drop / paste', folder: 'dragdrop'},
+            {description: 'Twig template', folder: 'twig'},
+            {description: 'Scatter 3D', folder: 'plot3D'},
+            {description: 'SVG Editor (Bioreactor)', folder: 'svgEditor'},
+            {description: 'House monitoring', folder: 'houseMonitoring'},
+            {description: 'Hierarchical structure explorer', folder: 'fancytree'},
+            {description: 'Bio - View AA sequence', folder: 'bioSequence'},
+            {description: 'Bio - Feature Viewer', folder: 'bioFeatureViewer'},
+            {description: 'Panzoom', folder: 'panzoom'},
+            {description: 'Bio-synthesis tutorial', folder: 'bioSynthesis'},
+            {description: 'Expérience de Griffith', folder: 'Griffith'},
+            {description: 'Self-organizing map of random colors', folder: 'somRGB'},
+            {description: 'Script executor', folder: 'scriptExecutor'},
+            {description: 'Loading screen API', folder: 'loading'},
+            {description: 'Chemistry exercise with jqGrid', folder: 'chem-exercise'},
+            {description: 'Progress bar', folder: 'progress'},
+            {description: 'OCL Molecule editor', folder: 'ocl_edit'},
+            {description: 'Hexagonal map', folder: 'hexaMap'}
+        ];
     </script>
-
+    <style>
+        #left {
+            float:left;
+            width: 500px;
+        }
+        #right {
+            float: right;
+            height: 100%;
+            width: calc(100% - 520px);
+        }
+        #frame {
+            border: none;
+            height:100vh;
+            width: 100%;
+        }
+    </style>
 </head>
+
 <body>
+<div id="container">
+    <div id="left">
+        The visualizer page requires 3 parameters:
+        <ul>
+            <li>viewURL: url towards a JSON file describing the elements to
+                display
+            </li>
+            <li>dataURL: url pointing to the JSON containing the data</li>
+            <li>config: url point to a JSON containing information about the
+                header
+                of
+                the page (optional)
+            </li>
+        </ul>
 
-The visualizer page requires 3 parameters:
-<ul>
-    <li>viewURL: url towards a JSON file describing the elements to display</li>
-    <li>dataURL: url pointing to the JSON containing the data</li>
-    <li>config: url point to a JSON containing information about the header of
-        the page (optional)
-    </li>
-</ul>
+        <h1>Examples</h1>
 
-<h1>Examples</h1>
+        <p>
+            Please note that some of the examples will required an internet
+            connection.
+        </p>
 
-<p>
-    Please note that some of the examples will required an internet
-    connection.
-</p>
+        <p>
+            Also the examples DO NOT WORK with CHROME. Ajax query on local
+            harddisk
+            are not allowed in the current version of Chrome.
+        </p>
 
-<p>
-    Also the examples DO NOT WORK with CHROME. Ajax query on local harddisk
-    are not allowed in the current version of Chrome.
-</p>
+        <p>
+            Or starts chrome using command line (on MacOSx): open
+            /Applications/Google\ Chrome.app --args
+            -allow-file-access-from-files
+        </p>
+        <br>
 
-<p>
-    Or starts chrome using command line (on MacOSx): open
-    /Applications/Google\ Chrome.app --args -allow-file-access-from-files
-</p>
-<br>
+        <div style="margin-left: 40px">
+            Select the config type:
+            <div id="configs" style="display: inline-block"></div>
+            <br>
 
-<div style="margin-left: 40px">
-    Select the config type:
-    <div id="configs" style="display: inline-block"></div>
-    <br>
-    Select the version to test:
-    <div id="version" style="display: inline-block">
-        <select id="selectedVersion" onchange="updateExamples();">
-            <option value="src">source</option>
-            <option value="build">build</option>
-        </select>
+            <div id="version" style="display: inline-block">
+                <label for="selectedVersion">Select the version to
+                    test: </label><select id="selectedVersion"
+                                          onchange="updateExamples();">
+                <option value="src">source</option>
+                <option value="build">build</option>
+            </select>
+            </div>
+            <br><br>
+
+            <div id="examples"></div>
+        </div>
     </div>
-    <br><br>
-    <div id="examples"></div>
+    <div id="right">
+        <iframe id="frame"></iframe>
+    </div>
 </div>
-
 <script>
     function updateHeaders() {
-        var html=[];
-        html.push("<select id='selectedHeader' onchange='updateExamples();'>");
-        for (var i=0; i<configs.length; i++) {
-            var defaultHeader="";
-            if (configs[i].name==currentHeader) defaultHeader="selected";
-            html.push("<option value='"+configs[i].name+"' "+defaultHeader+">"+configs[i].description+"</option>");
+        var html = [];
+        html.push('<select id="selectedHeader" onchange="updateExamples();">');
+        for (var i = 0; i < configs.length; i++) {
+            var defaultHeader = '';
+            if (configs[i].name == currentHeader) defaultHeader = 'selected';
+            html.push('<option value="' + configs[i].name + '" ' + defaultHeader + '>' + configs[i].description + '</option>');
         }
-        html.push("</select>");
-        $("#configs").html(html.join(""));
+        html.push('</select>');
+        $('#configs').html(html.join(''));
     }
     updateHeaders();
 
     function updateExamples() {
-        var currentHeader=$('#selectedHeader').val();
+        var currentHeader = $('#selectedHeader').val();
         var version = $('#selectedVersion').val();
-        var html=[];
-        for (var i=0; i<examples.length; i++) {
-            var viewURL="../testcase/data/"+examples[i].folder+"/view.json";
-            var dataURL="../testcase/data/"+examples[i].folder+"/data.json";
-            var configURL="";
-            if (currentHeader) configURL="../testcase/config/"+currentHeader+".json";
-            html.push("<a target='_blank' href='../" + version + "/index.html?config="+configURL+"&viewURL="+viewURL+"&dataURL="+dataURL+"'>"+examples[i].description+"</a>");
-            html.push("<br>");
+        var html = [];
+        for (var i = 0; i < examples.length; i++) {
+            var viewURL = '../testcase/data/' + examples[i].folder + '/view.json';
+            var dataURL = '../testcase/data/' + examples[i].folder + '/data.json';
+            var configURL = '';
+            if (currentHeader) configURL = '../testcase/config/' + currentHeader + '.json';
+            var url = '../' + version + '/index.html?config=' + configURL + '&viewURL=' + viewURL + '&dataURL=' + dataURL;
+            html.push('<a href="' + url + '" onclick="openInIframe(\'' + url + '\');return false;">' + examples[i].description + '</a>');
+            html.push('<br>');
         }
-        $("#examples").html(html.join(""));
+        $('#examples').html(html.join(''));
     }
     updateExamples();
 
+    function openInIframe(url) {
+        $('#frame').attr('src', url);
+    }
 </script>
 
 </body>

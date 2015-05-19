@@ -1,90 +1,91 @@
+'use strict';
 
-define( [ ], function(  ) {
+define([], function () {
 
-	var FieldConstructor = function() {};
-	
-	FieldConstructor.prototype.__makeDom = function() {
-		
-		var self = this,
-			dom = $("<div />"),
-			div = $( "<div>&nbsp;</div>" )
-					.addClass( 'form-field' )
-					.attr('tabIndex', '1')
-					.appendTo( dom )
-					.bind('click', function( event ) {
+    var FieldConstructor = function () {
+    };
 
-						self.select( event );
-						event.stopPropagation();
-					});
+    FieldConstructor.prototype.__makeDom = function () {
 
-		this.fieldElement = div;
-		this.div = div;
-		this.dom = dom;
-		
-		return dom;
-	};
+        var self = this,
+            dom = $('<div />'),
+            div = $('<div>&nbsp;</div>')
+                .addClass('form-field')
+                .attr('tabIndex', '1')
+                .appendTo(dom)
+                .bind('click', function (event) {
 
-	FieldConstructor.prototype.checkValue = function() {
+                    self.select(event);
+                    event.stopPropagation();
+                });
 
-		if( this.dom ) {
+        this.fieldElement = div;
+        this.div = div;
+        this.dom = dom;
 
-			var val = this.value,
-				options = this.field.getOptions( this ),
-				text = this.lookRecursively( val, options );
+        return dom;
+    };
 
-			if( text !== undefined ) {
-				this.div.html( text.title );
+    FieldConstructor.prototype.checkValue = function () {
 
-			//	this.fieldElement.trigger( 'focus' );
-			//	this.form.hideExpander( true );				
-			} else {
-				this.div.html( '' );
-			}
-		}
+        if (this.dom) {
 
-	}
+            var val = this.value,
+                options = this.field.getOptions(this),
+                text = this.lookRecursively(val, options);
 
-	FieldConstructor.prototype.lookRecursively = function(key, pool) {
-		
-		if( ! pool ) {
-			return;
-		}	
+            if (text !== undefined) {
+                this.div.html(text.title);
 
-		var found = false,
-			i = 0, l = pool.length;
+                //	this.fieldElement.trigger( 'focus' );
+                //	this.form.hideExpander( true );
+            } else {
+                this.div.html('');
+            }
+        }
 
-		if( ! pool ) {
-			return;
-		}
+    }
 
-		for(  ; i < l ; i++) {
+    FieldConstructor.prototype.lookRecursively = function (key, pool) {
 
-			if( pool[ i ].key == key ) {
-				return pool[ i ];
-			}
-			
-			if( pool[ i ].children ) {
+        if (!pool) {
+            return;
+        }
 
-				if(found = this.lookRecursively( key, pool[ i ].children ) ) {
-					
-					return found;
-				}
-			}
-		}
+        var found = false,
+            i = 0, l = pool.length;
 
-		return;
-	},
+        if (!pool) {
+            return;
+        }
+
+        for (; i < l; i++) {
+
+            if (pool[i].key == key) {
+                return pool[i];
+            }
+
+            if (pool[i].children) {
+
+                if (found = this.lookRecursively(key, pool[i].children)) {
+
+                    return found;
+                }
+            }
+        }
+
+        return;
+    },
 
 
+        FieldConstructor.prototype.getOptions = function () {
+            return this.combooptions || false;
+        }
 
-	FieldConstructor.prototype.getOptions = function() {
-		return this.combooptions || false;
-	}
+    FieldConstructor.prototype.setOptions = function (options) {
+        this.combooptions = options;
+        this.checkValue();
+    }
 
-	FieldConstructor.prototype.setOptions = function(options) {
-		this.combooptions = options;
-		this.checkValue( );
-	}
-
-	return FieldConstructor;
+    return FieldConstructor;
 });

@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (Default, Traversing) {
 
     function Model() {
@@ -5,14 +7,14 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
     }
 
     var standardFile = new DataObject({
-        filename: "",
-        mimetype: "",
-        content: ""
+        filename: '',
+        mimetype: '',
+        content: ''
     });
 
     var standardArray = new DataArray([standardFile]);
 
-    Model.prototype = $.extend(true, {}, Default, {
+    $.extend(true, Model.prototype, Default, {
 
         init: function () {
             this.tmpVars = new DataObject();
@@ -30,22 +32,22 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
 
             if (rel === 'data' || rel === 'dataarray') {
                 // Populate tmpVars with empty object so the user can set a variable out even if no file was dropped
-                var definedDrops = (this.module.getConfiguration("vars") || []).slice();
-                var definedString = this.module.getConfiguration("string");
+                var definedDrops = (this.module.getConfiguration('vars') || []).slice();
+                var definedString = this.module.getConfiguration('string');
                 var definedPhoto = this.module.getConfiguration('photo');
                 if (definedString) {
-                    for(i = 0; i < definedString.length; i++) {
+                    for (i = 0; i < definedString.length; i++) {
                         definedDrops.push(definedString[i]);
                     }
                 }
 
-                if(definedPhoto) {
+                if (definedPhoto) {
                     definedDrops.push(definedPhoto[0]);
                 }
 
                 for (i = 0; i < definedDrops.length; i++) {
                     var def = definedDrops[i];
-                    if (! def || !def.variable)
+                    if (!def || !def.variable)
                         continue;
                     if (rel === 'data' && !this.tmpVars.hasOwnProperty(def.variable)) {
                         this.tmpVars[def.variable] = standardFile;
@@ -64,4 +66,5 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
     });
 
     return Model;
+
 });

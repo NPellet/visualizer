@@ -8,4 +8,5 @@ define(['modules/default/defaultmodel'], function (Default) {
     $.extend(true, Model.prototype, Default);
 
     return Model;
+
 });

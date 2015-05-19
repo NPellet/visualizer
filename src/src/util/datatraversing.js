@@ -1,358 +1,359 @@
 'use strict';
 
-define(['jquery', 'src/data/structures'], function($, Structures) {
-	"use strict";
-
-	var asyncId = 0;
-
-	function _getValueFromJPath(element, jpath) {
-
-		var el = getValueIfNeeded(element),
-			type,
-			jpathElement = jpath.shift();
-
-		if(jpathElement) {
-			if(el && (el = el[jpathElement]) !== false) {
-				// Fetch the element and return the deferred.
-				// However, we pipe the deferred with the recursive function
-				return fetchElementIfNeeded(el).pipe(function(elChildren) {
-					return _getValueFromJPath(elChildren, jpath);
-				});
-			} else
-				return $.Deferred().reject();
-		} else // Finally, jpathElement doesn't exist and we throw what's left
-			return $.Deferred().resolve(element);
-	}
-
-	function _setValueFromJPath(element, jpath, newValue, moduleId, mute) {
-		var el = getValueIfNeeded(element);
-		var type, subelement;
-		if(typeof el != "object" && jpath.length > 0)
-			el = {};
-		if(jpath.length == 1)
-			return el[jpath[0]] = newValue;
-		var jpathElement = jpath.shift();
-		if(jpathElement) {
-			if(!(subelement = el[jpathElement])) { // If not an object, we make it an object
-				subelement = {};
-				el[jpathElement] = subelement;
-			}
-
-			// Perhaps the subelement is set only by URL, in which case we have to set it.
-			return fetchElementIfNeeded(subelement).pipe(function(elChildren) {
-				return _setValueFromJPath(elChildren, jpath, newValue);
-			}).done(function() {
-				if(!mute)
-					triggerDataChange(el, moduleId);
-			});
-		}
-	}
-
-
-	function getOptions(value) {
-            return value ? (value._options ? value._options : {}) : {};
-	}
-
-	function getHighlights(value) {
-            return value ? (value._highlight ? value._highlight : []) : [];
-	}
-
-	function getValueIfNeeded(element) {
-		if(typeof element == "undefined")
-			return;
-
-		if(typeof element == "object" && element.url)
-			return fetchElementIfNeeded(element).pipe(function(data) {
-				return data.value;
-			});
-		if(element.value && element.type)
-			return element.value;
-		return element;
-	}
-
-	function fetchElementIfNeeded(element) {
-		var deferred = $.Deferred();
-		
-		if(typeof element == "undefined" || element == null)
-			return deferred.reject();
-		var type = getType(element);
-		if(element.url && element.type) {
-			//var ajaxType = typeof Structures[type] == "object" ? 'json' : 'text';
-			require(['src/util/urldata'], function(urlData) {
-				
-				urlData.get(element.url, false, element.timeout).then(function(data) {
-					data = {type: type, value: data};
-					deferred.resolve(data);
-				}, function(data) {
-					console.log('Fetching error');
-				});
-			});
-			return deferred;
-		}/* else if(element.value) {
-			return deferred.resolve(element.value);
-		} */else
-			return deferred.resolve(element);
-	}
-
-	function getType(element) {
-		if(element == undefined)
-			return;
-
-		if( element.getType ) {
-			return element.getType();
-		}
-		
-		var type = typeof element;
-		if(type == 'object') {
-			if(Array.isArray(element))
-				return "array";
-			if(Structures[element.type] && (element.value || element.url))
-				return element.type;
-			
-			if(typeof element.type == "undefined" || !element.value)
-				return "object";
-			else {
-				console.error("Type " + element.type + " could not be found");
-				return;
-			}
-		}
-		// Native types: int, string, boolean
-		return type;
-	}
-
-	function listenDataChange(data, callback, id) {
-		if(!data.__onDataChanged)
-			data.__onDataChanged = [];
-		data.__onDataChanged.push([callback, id]);
-	}
-
-	function triggerDataChange(data, id) {
-		if(data.__onDataChanged) {
-			for(var i = 0, l = data.__onDataChanged.length; i < l; i++) {
-				if((id !== undefined && data.__onDataChanged[i][1] !== id) || id === undefined) {
-					data.__onDataChanged[i][0].call(data, data);	
-				}
-			}
-		}
-	}
-
-	return {
-
-		getType: getType,
-
-		getValueIfNeeded: getValueIfNeeded,
-		fetchElementIfNeeded: fetchElementIfNeeded,
-
-		getValueFromJPath: function(element, jpath) {
-			if(!jpath)
-				return $.Deferred().resolve(element);
-			if(!jpath.split)
-				jpath = '';
-			var jpathSplitted = jpath.split('.'); // Remove first element, which should always be "element"
-			jpathSplitted.shift();
-			return _getValueFromJPath(element, jpathSplitted);
-		},
-
-		setValueFromJPath: function(element, jpath, newValue, moduleId, mute) {
-			if(!jpath.split)
-				jpath = '';
-			var jpathSplitted = jpath.split('.');
-			jpathSplitted.shift();
-
-			if(moduleId === true || moduleId === false) {
-				mute = moduleId;
-				moduleId = undefined;
-			}
-			
-			return _setValueFromJPath(element, jpathSplitted, newValue, moduleId, mute);
-		},
-
-		getJPathsFromStructure: function(structure, title, jpathspool, jpathString) {
-			
-		 	if( ! structure ) {
-				return;
-		 	}
-
-			var children = [], len, i;
-
-			if( structure.elements ) {
-
-				if( ! jpathString ) {
-					
-					jpathString = title = "element";
-					
-				} else {
-
-					jpathString += "." + title;
-
-				}
-
-				jpathspool.push( {
-					title: title,
-					children: children,
-					key: jpathString 
-				} );
-
-				switch( structure.type ) {
-
-					case 'object':
+define(['jquery', 'src/data/structures'], function ($, Structures) {
+
+    var asyncId = 0;
+
+    function _getValueFromJPath(element, jpath) {
+
+        var el = getValueIfNeeded(element),
+            type,
+            jpathElement = jpath.shift();
+
+        if (jpathElement) {
+            if (el && (el = el[jpathElement]) !== false) {
+                // Fetch the element and return the deferred.
+                // However, we pipe the deferred with the recursive function
+                return fetchElementIfNeeded(el).pipe(function (elChildren) {
+                    return _getValueFromJPath(elChildren, jpath);
+                });
+            } else {
+                return $.Deferred().reject();
+            }
+        } else {
+            // Finally, jpathElement doesn't exist and we throw what's left
+            return $.Deferred().resolve(element);
+        }
+    }
+
+    function _setValueFromJPath(element, jpath, newValue, moduleId, mute) {
+        var el = getValueIfNeeded(element);
+        var type, subelement;
+        if (typeof el != 'object' && jpath.length > 0)
+            el = {};
+        if (jpath.length == 1)
+            return el[jpath[0]] = newValue;
+        var jpathElement = jpath.shift();
+        if (jpathElement) {
+            if (!(subelement = el[jpathElement])) { // If not an object, we make it an object
+                subelement = {};
+                el[jpathElement] = subelement;
+            }
+
+            // Perhaps the subelement is set only by URL, in which case we have to set it.
+            return fetchElementIfNeeded(subelement).pipe(function (elChildren) {
+                return _setValueFromJPath(elChildren, jpath, newValue);
+            }).done(function () {
+                if (!mute)
+                    triggerDataChange(el, moduleId);
+            });
+        }
+    }
+
+
+    function getOptions(value) {
+        return value ? (value._options ? value._options : {}) : {};
+    }
+
+    function getHighlights(value) {
+        return value ? (value._highlight ? value._highlight : []) : [];
+    }
+
+    function getValueIfNeeded(element) {
+        if (typeof element == 'undefined')
+            return;
+
+        if (typeof element == 'object' && element.url)
+            return fetchElementIfNeeded(element).pipe(function (data) {
+                return data.value;
+            });
+        if (element.value && element.type)
+            return element.value;
+        return element;
+    }
+
+    function fetchElementIfNeeded(element) {
+        var deferred = $.Deferred();
+
+        if (typeof element == 'undefined' || element == null)
+            return deferred.reject();
+        var type = getType(element);
+        if (element.url && element.type) {
+            //var ajaxType = typeof Structures[type] == 'object' ? 'json' : 'text';
+            require(['src/util/urldata'], function (urlData) {
+
+                urlData.get(element.url, false, element.timeout).then(function (data) {
+                    data = {type: type, value: data};
+                    deferred.resolve(data);
+                }, function (data) {
+                    console.log('Fetching error');
+                });
+            });
+            return deferred;
+        } else {
+            return deferred.resolve(element);
+        }
+    }
+
+    function getType(element) {
+        if (element == undefined)
+            return;
+
+        if (element.getType) {
+            return element.getType();
+        }
+
+        var type = typeof element;
+        if (type == 'object') {
+            if (Array.isArray(element))
+                return 'array';
+            if (Structures[element.type] && (element.value || element.url))
+                return element.type;
 
-						// The type is object (native). Then look for its children (structure.elements)
-						for( i in structure.elements ) {
+            if (typeof element.type == 'undefined' || !element.value)
+                return 'object';
+            else {
+                console.error('Type ' + element.type + ' could not be found');
+                return;
+            }
+        }
+        // Native types: int, string, boolean
+        return type;
+    }
 
-							this.getJPathsFromStructure(structure.elements[ i ], (i + ""), children, jpathString);
-
-						}
+    function listenDataChange(data, callback, id) {
+        if (!data.__onDataChanged)
+            data.__onDataChanged = [];
+        data.__onDataChanged.push([callback, id]);
+    }
 
-					break;
+    function triggerDataChange(data, id) {
+        if (data.__onDataChanged) {
+            for (var i = 0, l = data.__onDataChanged.length; i < l; i++) {
+                if ((id !== undefined && data.__onDataChanged[i][1] !== id) || id === undefined) {
+                    data.__onDataChanged[i][0].call(data, data);
+                }
+            }
+        }
+    }
 
-					// It it's an array, look for the children
-					case 'array':
+    return {
 
-						// Array which length is nown => Then it's an object type
-						if(!Array.isArray(structure.elements)) {
-							structure.elements = [ structure.elements ];
-						}
-						
-						// Look for how many elements to display
-						len = Math.min( 5, structure.elements.length || 0 );
-						
-						// Can be overridden in the structure.
-						if( structure.nbElements ) {
-							len = structure.nbElements;
-						}
+        getType: getType,
 
-						for( i = 0; i < len; i++ ) {
-							this.getJPathsFromStructure(structure.elements[ i ] || structure.elements[ 0 ], (i + ""), children, jpathString);
-						}
-					break;
-				}		
-			} else {
+        getValueIfNeeded: getValueIfNeeded,
+        fetchElementIfNeeded: fetchElementIfNeeded,
 
-				// Useful is { myProp: "chemical" } => will fetch the chemical structure
-				if(typeof structure == "string" && typeof Structures[ structure ] == "object") {
+        getValueFromJPath: function (element, jpath) {
+            if (!jpath)
+                return $.Deferred().resolve(element);
+            if (!jpath.split)
+                jpath = '';
+            var jpathSplitted = jpath.split('.'); // Remove first element, which should always be 'element'
+            jpathSplitted.shift();
+            return _getValueFromJPath(element, jpathSplitted);
+        },
 
-					this.getJPathsFromStructure( Structures[ structure ], title, jpathspool, jpathString);
+        setValueFromJPath: function (element, jpath, newValue, moduleId, mute) {
+            if (!jpath.split)
+                jpath = '';
+            var jpathSplitted = jpath.split('.');
+            jpathSplitted.shift();
 
-				} else {
+            if (moduleId === true || moduleId === false) {
+                mute = moduleId;
+                moduleId = undefined;
+            }
 
-					if( ! jpathString || jpathString == null ) {
+            return _setValueFromJPath(element, jpathSplitted, newValue, moduleId, mute);
+        },
 
-						jpathString = title = "element";
+        getJPathsFromStructure: function (structure, title, jpathspool, jpathString) {
 
-					} else {
+            if (!structure) {
+                return;
+            }
 
-						jpathString += "." + title;
-					}
+            var children = [], len, i;
 
-					jpathspool.push( { 
-						title: title,
-						children: children,
-						key: jpathString
-					} );
-				}
-			}
+            if (structure.elements) {
 
+                if (!jpathString) {
 
+                    jpathString = title = 'element';
 
-		},
+                } else {
 
+                    jpathString += '.' + title;
 
-		getStructureFromElement: function(element) {
-			
-			var structure = {};
+                }
 
-			if( ! element ) {
-				return;
-			}
+                jpathspool.push({
+                    title: title,
+                    children: children,
+                    key: jpathString
+                });
 
-			if( ! element.getType ) {
-				element = DataObject.check( element, true );
-			}
+                switch (structure.type) {
 
+                    case 'object':
 
-			var type = element.getType();
-			element = DataObject.check(element.get());
+                        // The type is object (native). Then look for its children (structure.elements)
+                        for (i in structure.elements) {
 
-			if( type == "array") {
+                            this.getJPathsFromStructure(structure.elements[i], (i + ''), children, jpathString);
 
-				structure.type = "array";
-				structure.elements = [];
-				var length = Math.min(5, element.length );
+                        }
 
-				for(var i = 0; i < length; i++) {
-					structure.elements[ i ] = this.getStructureFromElement( element.get( i, false ) );
-				}
+                        break;
 
-			} else if( type =="object" ) {
+                    // It it's an array, look for the children
+                    case 'array':
 
-				structure.type = "object";	
-				structure.elements = {};
+                        // Array which length is nown => Then it's an object type
+                        if (!Array.isArray(structure.elements)) {
+                            structure.elements = [structure.elements];
+                        }
 
-				for( var i in element ) {
-					if(i[0] !== '_')
-						structure.elements[ i ] = this.getStructureFromElement( element.get( i, false ) );
-				}
+                        // Look for how many elements to display
+                        len = Math.min(5, structure.elements.length || 0);
 
-			} else if( type && Structures[ type ] && ( element.value || element.url ) ) {
+                        // Can be overridden in the structure.
+                        if (structure.nbElements) {
+                            len = structure.nbElements;
+                        }
 
-				structure = Structures[type];
+                        for (i = 0; i < len; i++) {
+                            this.getJPathsFromStructure(structure.elements[i] || structure.elements[0], (i + ''), children, jpathString);
+                        }
+                        break;
+                }
+            } else {
 
-			} else {
-				structure = type;
-			}
+                // Useful is { myProp: 'chemical' } => will fetch the chemical structure
+                if (typeof structure == 'string' && typeof Structures[structure] == 'object') {
 
-			return structure;
-		},
+                    this.getJPathsFromStructure(Structures[structure], title, jpathspool, jpathString);
 
-		getJPathsFromElement: function(element, jpaths) {
-			
-			if( ! jpaths ) {
-				jpaths = [];
-			}
+                } else {
 
+                    if (!jpathString || jpathString == null) {
 
-			if(element === undefined || element == null) {
-				return;
-			}
+                        jpathString = title = 'element';
 
-			// We know the dynamic structure
-			// Apply to typed elements + to js objects
-			if(element._structure) {
+                    } else {
 
-				this.getJPathsFromStructure(element._structure, null, jpaths);
+                        jpathString += '.' + title;
+                    }
 
-			} else if(element.type && Structures[element.type] && (element.value || element.url)) {
+                    jpathspool.push({
+                        title: title,
+                        children: children,
+                        key: jpathString
+                    });
+                }
+            }
 
-				this.getJPathsFromStructure(Structures[element.type], null, jpaths);
 
-			} else {
+        },
 
-				var structure = this.getStructureFromElement(element, structure);
-				this.getJPathsFromStructure(structure, null, jpaths);
 
-			}
+        getStructureFromElement: function (element) {
+
+            var structure = {};
+
+            if (!element) {
+                return;
+            }
+
+            if (!element.getType) {
+                element = DataObject.check(element, true);
+            }
+
+
+            var type = element.getType();
+            element = DataObject.check(element.get());
+
+            if (type == 'array') {
+
+                structure.type = 'array';
+                structure.elements = [];
+                var length = Math.min(5, element.length);
+
+                for (var i = 0; i < length; i++) {
+                    structure.elements[i] = this.getStructureFromElement(element.get(i, false));
+                }
+
+            } else if (type == 'object') {
+
+                structure.type = 'object';
+                structure.elements = {};
+
+                for (var i in element) {
+                    if (i[0] !== '_')
+                        structure.elements[i] = this.getStructureFromElement(element.get(i, false));
+                }
+
+            } else if (type && Structures[type] && ( element.value || element.url )) {
+
+                structure = Structures[type];
+
+            } else {
+                structure = type;
+            }
+
+            return structure;
+        },
+
+        getJPathsFromElement: function (element, jpaths) {
+
+            if (!jpaths) {
+                jpaths = [];
+            }
+
+
+            if (element === undefined || element == null) {
+                return;
+            }
+
+            // We know the dynamic structure
+            // Apply to typed elements + to js objects
+            if (element._structure) {
+
+                this.getJPathsFromStructure(element._structure, null, jpaths);
+
+            } else if (element.type && Structures[element.type] && (element.value || element.url)) {
+
+                this.getJPathsFromStructure(Structures[element.type], null, jpaths);
+
+            } else {
+
+                var structure = this.getStructureFromElement(element, structure);
+                this.getJPathsFromStructure(structure, null, jpaths);
+
+            }
 
             return jpaths;
-		},
+        },
 
-		get: function( data ) {
-			
-			if(data) {
-				if(typeof data.get === "function") {
-					return data.get();
-				} else if(data.type && data.value) {
-					return data.value;
-				}
-			}
+        get: function (data) {
 
-			return data;
-		},
+            if (data) {
+                if (typeof data.get === 'function') {
+                    return data.get();
+                } else if (data.type && data.value) {
+                    return data.value;
+                }
+            }
 
-		getHighlights: getHighlights,
-		getOptions: getOptions,
+            return data;
+        },
 
-		triggerDataChange: triggerDataChange,
-		listenDataChange: listenDataChange
-	}
+        getHighlights: getHighlights,
+        getOptions: getOptions,
+
+        triggerDataChange: triggerDataChange,
+        listenDataChange: listenDataChange
+    };
+
 });

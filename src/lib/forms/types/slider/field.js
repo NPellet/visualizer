@@ -1,22 +1,23 @@
+'use strict';
 
-define( [ require, '../../field', ], function( require, FieldDefaultConstructor ) {
+define([require, '../../field',], function (require, FieldDefaultConstructor) {
 
-	var FieldConstructor = function(name) {
+    var FieldConstructor = function (name) {
 
-		var self = this;
-		this.name = name;
-	};
+        var self = this;
+        this.name = name;
+    };
 
-	FieldConstructor.prototype = new FieldDefaultConstructor( );
+    FieldConstructor.prototype = new FieldDefaultConstructor();
 
-	FieldConstructor.prototype.initimpl = function() {
+    FieldConstructor.prototype.initimpl = function () {
 
-		 this.options = $.extend( {
-		 	min: 0,
-		 	max: 1,
-		 	step: 0.1
-		 }, this.options );
-	}
+        this.options = $.extend({
+            min: 0,
+            max: 1,
+            step: 0.1
+        }, this.options);
+    }
 
-	return FieldConstructor;
+    return FieldConstructor;
 });

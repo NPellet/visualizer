@@ -1,3 +1,175 @@
+2.19.2 / 2015-05-05
+===================
+
+* Add version selector header
+
+2.19.1 / 2015-05-04
+===================
+
+* Remove Base64 library
+* Update JSME
+
+2.19.0 / 2015-05-04
+===================
+
+* Modules
+ * progress: change behavior to use actions and text template
+ * panzoom: handle image loading failure
+ * spectra_displayer: corretly assign serie label
+* Util
+ * typerenderer: can force image width
+
+2.18.0 / 2015-04-29
+===================
+
+ * Modules
+    * slick_grid: bug fixes
+    * jqgrid: option not to systematically highlight the hovered line
+    * New progress bar module
+    * panzoom: minor improvements
+
+ * Util
+    * shortcuts: bug fix
+    * search module: display name instead of id but search both
+    * shortcuts: bug fix
+
+ * Type renderer
+    * Add webp renderer
+  
+ * Testcases
+    * add progress bar examples
+ 
+2.17.8 / 2015-04-23
+===================
+
+ * v2.17.7 removed due to a bug with typerenderer
+ * typerenderer: ensure values are fetched before calling the renderer
+
+2.17.6 / 2015-04-23
+===================
+
+* Util
+ * diagram: bigger arrows
+ * diagram: show jpath in link if present
+ * diagram: style changes
+ * typerenderer: hack to force height on empty divs with background color
+ * typerenderer: correctly wait for init to finish
+* Module
+ * 2d_list: hide 2d_list from module list
+ * object_editor: ensure that no DataObject is sent to the editing library
+ * object_editor: if input is invalid, send a string describing the error instead of silently failing
+ * rich_text: force english language in CKEDITOR
+ * rich_text: add option to force plain HTML rendering
+ * scatter3d: fix _completeData
+ * leaflet: fix viewport output
+
+2.17.5 / 2015-04-21
+===================
+
+* entrypoint: remove cron-related dead code
+* typerenderer: add html renderer
+
+2.17.4 / 2015-04-21
+===================
+
+* 2d_list_fast: fix updateVisibility (#503)
+
+2.17.3 / 2015-04-21
+===================
+
+* Core
+ * deprecate non-standard HTML attributes on ci-visualizer
+ * remove unused tabs from global preferences (#498)
+* Util
+ * add warnOnce method
+* Module
+ * rich_text: fix in-place variable modification (#497)
+ * single_value: fix html rendering of default value (#500)
+
+2.17.2 / 2015-04-17
+===================
+
+* build: add missing json-chart library
+
+2.17.1 / 2015-04-17
+===================
+
+* Core
+ * version: fix check of Intl crashing on Safari
+ * data: get(true) should resolve with value when data is fetched from url
+* Forms
+ * fix spectrum color init
+* Module
+ * jqgrid: on action in don't add the column if a column with same jpath exists
+* Components
+ * Add jszip and file-save.js librairies
+
+2.17.0 / 2015-04-16
+===================
+
+* Core
+ * version: add isBuild property
+ * change how requirejs loads modules
+ * fix loading of external modules
+ * add module searchbox (CTRL + /)
+* Typerenderer
+ * various fixes with new structure
+ * sparkline type renderer 
+ * Change the way typerenderer works and update related modules
+ * add toPrecision and toFixed options for number type
+* Util
+ * Debug diagram to see relation between modules
+* Module
+ * Deprecate controller.sendAction 
+ * code_executor: add methods and keep values between executions
+ * code_executor: recompile function when module is reloaded
+ * parallel_coordinates: default color to black if jpath is not set
+ * scatter3d: bug fix with chart format
+ * slick_grid: additional option (don't scroll on highlight)
+ * spectra_displayer: add option for line style
+* Components:
+ * install json-chart and remove lib/chart
+ * install select2
+
+2.16.0 / 2015-04-01
+===================
+
+* Core
+ * introduce version.js and bump task
+ * Make modules and filter loadable from preferences (#456)
+ * add link to GitHub in context menu
+* Util
+ * ui: add showNotification method
+* Module
+ * fix SVG editor
+ * panzoom: improve performance
+
+2.15.3 / 2015-03-25
+===================
+
+* Grunt
+ * Fix jquery.panzoom build
+ * Add task: writes a json file with info about the build
+* Core
+ * display build time in context menu
+
+2.15.2 / 2015-03-25
+===================
+
+* Core
+ * Add version of visualizer in context menu
+ * Add Utils section in context menu (copy view etc...)
+ * Better color renderer (opacity is seen)
+* Modules
+ * panzoom: add var out with clicked pixel(s)
+ * panzoom: fix bugs
+ * slick grid: enhance color editor
+ * slick grid: fix bugs
+ * onde: fix bugs
+ * spectra_displayer: fix highlight blanking
+* Header
+ * couchdb2: fix meta save
+
 2.15.1 / 2015-03-17
 ===================
 

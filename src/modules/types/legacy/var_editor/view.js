@@ -29,7 +29,7 @@ define(['../../../default/defaultview'], function(Default) {
 
 					require( [ 'forms/button' ], function( Button ) {
 
-						self.search.append( (self.buttonInst = new Button( cfg("buttonlabel") || 'Search', function() {
+						self.search.append( (self.buttonInst = new Button( cfg('buttonlabel') || 'Search', function() {
 
 							self.module.controller.doSearch();
 							
@@ -89,7 +89,7 @@ define(['../../../default/defaultview'], function(Default) {
 
 
 			if (cfg('resultfilter')) {
-        		eval("self.module.resultfilter = function(data) { try { \n " + cfg('resultfilter') + "\n } catch(_) { console.log(_); } }");
+        		eval('self.module.resultfilter = function(data) { try { \n ' + cfg('resultfilter') + '\n } catch(_) { console.log(_); } }');
       		} else {
       			delete self.module.resultfilter;
       		}

@@ -5,8 +5,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
     function Model() {
     }
 
-    Model.prototype = $.extend(true, {}, Default, {
-
+    $.extend(true, Model.prototype, Default, {
         getjPath: function (rel) {
             var jpath = [];
             if (rel === 'element') {
@@ -23,7 +22,6 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
             }
             return jpath;
         }
-
     });
 
     return Model;

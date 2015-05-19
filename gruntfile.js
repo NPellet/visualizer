@@ -5,7 +5,9 @@ module.exports = function (grunt) {
         _ = require('underscore'),
         mkpath = require('mkpath'),
         path = require('path'),
-        extend = require('extend');
+        extend = require('extend'),
+        child_process = require('child_process'),
+        semver = require('semver');
 
     var usrPath = grunt.option('usr') || './src/usr';
 
@@ -40,7 +42,6 @@ module.exports = function (grunt) {
                             '!lib/**/*',
                             'lib/forms/**/*.js',
                             'lib/twigjs/*.js',
-                            'lib/webtoolkit/*.js',
                             'lib/chemistry/*.js',
                             'lib/loadingplot/*.js'
                         ], // Actual pattern(s) to match.
@@ -66,7 +67,7 @@ module.exports = function (grunt) {
                             './jquery/dist/jquery.min.js',
                             ['./jquery-ui/ui/*.js', './jquery-ui/themes/smoothness/**'],
                             './threejs/build/three.min.js',
-                            './ace/lib/ace/**',
+                            './ace/src/**',
                             ['./ckeditor/skins/**', './ckeditor/ckeditor.js', './ckeditor/styles.js', './ckeditor/contents.css', './ckeditor/adapters/jquery.js', './ckeditor/lang/en.js', './ckeditor/plugins/**', './ckeditor/config.js'],
                             './farbtastic/src/farbtastic.js',
                             './jquery.threedubmedia/event.drag/jquery.event.drag.js',
@@ -106,7 +107,14 @@ module.exports = function (grunt) {
                             ['./jsNMR/lib/components/VisuMol/**', './jsNMR/src/**', './jsNMR/dist/**'],
                             './loglevel/dist/loglevel.min.js',
                             './marked/lib/marked.js',
-                            './highlight.js/build/highlight.pack.js'
+                            './highlight.js/build/highlight.pack.js',
+                            './openchemlib/dist/*.js',
+                            './jquery.panzoom/dist/*.js',
+                            './jquery-mousewheel/*.js',
+                            './select2/dist/**',
+                            './jszip/dist/**',
+                            './file-saver.js/*.js',
+                            './json-chart/dist/*'
                         ],
 
                         dest: './build/components/'
@@ -121,7 +129,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: './src/',
-                        src: ['./index.html', 'init.js', 'css/**', 'bin/**', 'lib/**', 'src/**', 'data/**'],
+                        src: ['./index.html', 'init.js', 'version.js', 'css/**', 'bin/**', 'lib/**', 'src/**', 'data/**'],
                         dest: './build/'
                     }
                 ]
@@ -324,15 +332,15 @@ module.exports = function (grunt) {
 
                     expressions = [/\.jpg$/, /\.png$/, /\.jpeg$/, /\.gif$/];
                     if (_.any(expressions, function (exp) {
-                        return fileStats.name.match(exp);
-                    })) {
+                            return fileStats.name.match(exp);
+                        })) {
                         allimages.push(root + '/' + fileStats.name);
                     }
 
                     expressions = [/\.css$/, /\.js$/, /\.html$/];
                     if (_.any(expressions, function (exp) {
-                        return fileStats.name.match(exp);
-                    })) {
+                            return fileStats.name.match(exp);
+                        })) {
                         // File content
                         var content = fs.readFileSync(root + '/' + fileStats.name).toString();
 
@@ -437,6 +445,7 @@ module.exports = function (grunt) {
     }
 
     var buildTasks = [
+        'buildTime:set',
         'clean:build',
         'buildProject',
         'copy:buildModules',
@@ -446,7 +455,8 @@ module.exports = function (grunt) {
         'requirejs',
         'uglify:build',
         'clean:build',
-        'rename:afterBuild'
+        'rename:afterBuild',
+        'buildTime:unset'
     ];
 
     if (grunt.option('clean-images')) {
@@ -652,85 +662,190 @@ module.exports = function (grunt) {
     // Takes care of module jsons
     grunt.registerTask('eraseModuleJsons', [ 'clean:modulesJsonErase' ]);
     grunt.registerTask('createJSONModules', 'Create all modules json', function () {
-        function recurseFolder(basePath, relPath) {
-
-            var folders = fs.readdirSync(basePath),
-                allFolders = [],
-                allModules = [],
-                containsModule = false,
-                target = {},
-                subFolder;
-
-            for (var i = 0, l = folders.length; i < l; i++) {
-                if (!fs.statSync(basePath + '/' + folders[ i ]).isDirectory() || folders[ i ] == 'lib') {
-                    continue;
-                }
-
-                if (fs.existsSync(basePath + '/' + folders[ i ] + '/model.js')) {
-                    allModules.push(folders[ i ]);
-                } else {
-                    allFolders.push(folders[ i ]);
-                }
-
-                containsModule = containsModule || fs.existsSync(basePath + '/' + folders[ i ] + '/model.js');
-            }
-
-            if (allFolders.length == 0 && allModules.length == 0) {
-                return;
-            }
-
-            target.modules = [];
-            for (var i = 0, l = allModules.length; i < l; i++) {
-                var moduleInfo = /moduleInformation[^\{]+(\{[^}]+})/.exec(grunt.file.read(basePath + '/' + allModules[ i ] + '/controller.js'));
-
-                try {
-                    eval ('moduleInfo = ' + moduleInfo[1]);
-                } catch (e) {
-                    throw new Error('Could not find module information for ' + basePath+'/'+allModules[i]);
-                }
-
-                var info = {
-                    moduleName: (moduleInfo.name || allModules[ i ]),
-                    url: ( relPath ) + '/' + allModules[ i ] + '/'
-                };
-
-                if (moduleInfo.hidden) {
-                    info.hidden = true;
-                }
-
-                target.modules.push(info);
-            }
-
-            target.folders = [];
-            for (var i = 0, l = allFolders.length; i < l; i++) {
-                recurseFolder(basePath + '/' + allFolders[ i ], relPath + '/' + allFolders[ i ]);
-
-                if (fs.existsSync(basePath + '/' + allFolders[ i ] + '/folder.json')) {
-                    subFolder = grunt.file.readJSON(basePath + '/' + allFolders[ i ] + '/folder.json');
-                    target.folders.push(allFolders[i]);
-                }
-            }
-
-            if (fs.existsSync(basePath + '/folder.json')) {
-                var json = grunt.file.readJSON(basePath + '/folder.json');
-                json.folders = target.folders;
-                json.modules = target.modules;
-
-                target = json;
-
-            } else {
-                target.name = basePath.split('/').pop();
-            }
-
-            target.modules.sort(function (module1, module2) {
-                return module1.moduleName.toLowerCase().localeCompare(module2.moduleName.toLowerCase());
-            });
-
-            fs.writeFileSync(basePath + '/folder.json', JSON.stringify(target, null, 2));
-        }
-
         recurseFolder('./src/modules/types', 'modules/types');
         recurseFolder('./src/usr/modules', 'usr/modules');
     });
+
+    grunt.registerTask('recurseFolder', 'Recurse Folder', function() {
+        var from = grunt.option('recurseFolderFrom');
+        var to = grunt.option('recurseFolderTo');
+
+        if(from && to) {
+            recurseFolder(from, to);
+        }
+    });
+
+    function recurseFolder(basePath, relPath) {
+
+        var folders = fs.readdirSync(basePath),
+            allFolders = [],
+            allModules = [],
+            containsModule = false,
+            target = {},
+            subFolder;
+
+        for (var i = 0, l = folders.length; i < l; i++) {
+            if (!fs.statSync(basePath + '/' + folders[ i ]).isDirectory() || folders[ i ] == 'lib') {
+                continue;
+            }
+
+            if (fs.existsSync(basePath + '/' + folders[ i ] + '/model.js')) {
+                allModules.push(folders[ i ]);
+            } else {
+                allFolders.push(folders[ i ]);
+            }
+
+            containsModule = containsModule || fs.existsSync(basePath + '/' + folders[ i ] + '/model.js');
+        }
+
+        if (allFolders.length == 0 && allModules.length == 0) {
+            return;
+        }
+
+        target.modules = [];
+        for (var i = 0, l = allModules.length; i < l; i++) {
+            var moduleInfo = /moduleInformation[^\{]+(\{[^}]+})/.exec(grunt.file.read(basePath + '/' + allModules[ i ] + '/controller.js'));
+
+            try {
+                eval ('moduleInfo = ' + moduleInfo[1]);
+            } catch (e) {
+                throw new Error('Could not find module information for ' + basePath+'/'+allModules[i]);
+            }
+
+            var info = {
+                moduleName: (moduleInfo.name || allModules[ i ]),
+                url: ( relPath ) + '/' + allModules[ i ] + '/'
+            };
+
+            if (moduleInfo.hidden) {
+                info.hidden = true;
+            }
+
+            target.modules.push(info);
+        }
+
+        target.folders = [];
+        for (var i = 0, l = allFolders.length; i < l; i++) {
+            recurseFolder(basePath + '/' + allFolders[ i ], relPath + '/' + allFolders[ i ]);
+
+            if (fs.existsSync(basePath + '/' + allFolders[ i ] + '/folder.json')) {
+                subFolder = grunt.file.readJSON(basePath + '/' + allFolders[ i ] + '/folder.json');
+                target.folders.push(allFolders[i]);
+            }
+        }
+
+        if (fs.existsSync(basePath + '/folder.json')) {
+            var json = grunt.file.readJSON(basePath + '/folder.json');
+            json.folders = target.folders;
+            json.modules = target.modules;
+
+            target = json;
+
+        } else {
+            target.name = basePath.split('/').pop();
+        }
+
+        target.modules.sort(function (module1, module2) {
+            return module1.moduleName.toLowerCase().localeCompare(module2.moduleName.toLowerCase());
+        });
+
+        fs.writeFileSync(basePath + '/folder.json', JSON.stringify(target, null, 2));
+    }
+
+    grunt.registerTask('bump', function (version) {
+        var versionJS = fs.readFileSync('./src/version.js', 'utf8');
+
+        var major = getVersionValue(versionJS, 'MAJOR');
+        var minor = getVersionValue(versionJS, 'MINOR');
+        var patch = getVersionValue(versionJS, 'PATCH');
+        var prerelease = getVersionValue(versionJS, 'PRERELEASE');
+
+        var v = major + '.' + minor + '.' + patch;
+        if (prerelease !== 'false') {
+            v += '-' + prerelease;
+        }
+
+        var semVersion = semver.parse(v);
+
+        console.log('Current version is ' +semVersion);
+
+        semVersion.inc(version || 'patch');
+
+        console.log('Bumping to ' + semVersion);
+
+        versionJS = setVersionValue(versionJS, 'MAJOR', semVersion.major);
+        versionJS = setVersionValue(versionJS, 'MINOR', semVersion.minor);
+        versionJS = setVersionValue(versionJS, 'PATCH', semVersion.patch);
+        versionJS = setVersionValue(versionJS, 'PRERELEASE',
+            semVersion.prerelease.length ? semVersion.prerelease[0] : 'false');
+
+        if (grunt.option('release')) {
+
+            console.log('Publishing release');
+
+            // Set IS_RELEASE flag to true
+            versionJS = setVersionValue(versionJS, 'IS_RELEASE', 'true');
+            fs.writeFileSync('./src/version.js', versionJS);
+
+            // Bump version in package.json
+            var pkg = fs.readFileSync('./package.json', 'utf8');
+            pkg = pkg.replace(/"version": ".+",/, '"version": "' + semVersion + '",');
+            fs.writeFileSync('./package.json', pkg);
+
+            // Bump version in bower.json
+            var bower = fs.readFileSync('./bower.json', 'utf8');
+            bower = bower.replace(/"version": ".+",/, '"version": "' + semVersion + '",');
+            fs.writeFileSync('./bower.json', bower);
+
+            // Commit the version change and tag
+            child_process.execFileSync('git', ['pull']);
+            child_process.execFileSync('git', ['add', 'src/version.js', 'bower.json', 'package.json']);
+            child_process.execFileSync('git', ['commit', '-m', 'Release v' + semVersion]);
+            child_process.execFileSync('git', ['tag', '-a', 'v' + semVersion, '-m', 'Release v' + semVersion]);
+
+            // Bump version to prepatch and reset IS_RELEASE to false
+            versionJS = setVersionValue(versionJS, 'IS_RELEASE', 'false');
+            var previousVersion = semVersion.toString();
+            semVersion.inc('prerelease');
+            versionJS = setVersionValue(versionJS, 'PATCH', semVersion.patch);
+            versionJS = setVersionValue(versionJS, 'PRERELEASE',
+                semVersion.prerelease.length ? semVersion.prerelease[0] : 'false');
+
+            fs.writeFileSync('./src/version.js', versionJS);
+
+            console.log('Now working on v' + semVersion);
+
+            // Commit the new version.js
+            child_process.execFileSync('git', ['add', 'src/version.js']);
+            child_process.execFileSync('git', ['commit', '-m', 'Working on v' + semVersion]);
+
+            // Push commits and tag
+            child_process.execFileSync('git', ['push', 'origin']);
+            child_process.execFileSync('git', ['push', 'origin', 'v' + previousVersion]);
+        } else {
+            fs.writeFileSync('./src/version.js', versionJS);
+        }
+
+    });
+
+    grunt.registerTask('buildTime', function (setting) {
+        var versionJS = fs.readFileSync('./src/version.js', 'utf8');
+        if (setting === 'set') {
+            versionJS = setVersionValue(versionJS, 'BUILD_TIME', Date.now());
+        } else {
+            versionJS = setVersionValue(versionJS, 'BUILD_TIME', 'null');
+        }
+        fs.writeFileSync('./src/version.js', versionJS);
+    });
+
+    function getVersionValue(str, name) {
+        var reg = new RegExp('var ' + name + ' = ([\\w\\d]+);');
+        return reg.exec(str)[1];
+    }
+
+    function setVersionValue(str, name, value) {
+        var reg = new RegExp('var ' + name + ' = [\\w\\d]+;');
+        return str.replace(reg, 'var ' + name + ' = ' + value + ';');
+    }
 
 };

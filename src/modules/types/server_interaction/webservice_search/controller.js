@@ -1,11 +1,11 @@
 'use strict';
 
-define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/superagent/superagent', 'uri/URITemplate', 'src/util/debug', 'lodash'], function (Default, API, superagent, URITemplate, Debug, _) {
+define(['modules/default/defaultcontroller', 'src/util/api', 'components/superagent/superagent', 'uri/URITemplate', 'src/util/debug', 'lodash'], function (Default, API, superagent, URITemplate, Debug, _) {
 
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'Webservice search',
@@ -35,12 +35,12 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
     Controller.prototype.events = {
         onSearchReturn: {
             label: 'On search complete',
-            refVariable: [ 'results', 'url' ],
-            refAction: [ 'results' ]
+            refVariable: ['results', 'url'],
+            refAction: ['results']
         }
     };
 
-    Controller.prototype.variablesIn = [ 'vartrigger', 'url' ];
+    Controller.prototype.variablesIn = ['vartrigger', 'url'];
 
     Controller.prototype.actionsIn = {
         doSearch: 'Trigger search',
@@ -63,11 +63,11 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
                             type: 'combo',
                             title: 'Query method',
                             options: [
-                                { key: 'GET', title: 'GET'},
-                                { key: 'POST', title: 'POST'},
-                                { key: 'PUT', title: 'PUT'},
-                                { key: 'DELETE', title: 'DELETE'},
-                                { key: 'HEAD', title: 'HEAD'}
+                                {key: 'GET', title: 'GET'},
+                                {key: 'POST', title: 'POST'},
+                                {key: 'PUT', title: 'PUT'},
+                                {key: 'DELETE', title: 'DELETE'},
+                                {key: 'HEAD', title: 'HEAD'}
                             ],
                             'default': 'POST'
                         },
@@ -83,12 +83,12 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
                         showStatus: {
                             type: 'checkbox',
                             title: 'Show response status',
-                            options: { display: 'Yes'}
+                            options: {display: 'Yes'}
                         },
                         button: {
                             type: 'checkbox',
                             title: 'Search button',
-                            options: { button: '' },
+                            options: {button: ''},
                             displaySource: {button: 'b'}
                         },
                         buttonlabel: {
@@ -102,7 +102,7 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
                         onloadsearch: {
                             type: 'checkbox',
                             title: 'Make one query on load',
-                            options: { button: '' }
+                            options: {button: ''}
                         },
                         debounce: {
                             type: 'float',
@@ -163,9 +163,9 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
                             type: 'combo',
                             title: 'Destination',
                             options: [
-                                { key: 'url', title: 'URL'},
-                                { key: 'query', title: 'Query string'},
-                                { key: 'data', title: 'Post data'}
+                                {key: 'url', title: 'URL'},
+                                {key: 'query', title: 'Query string'},
+                                {key: 'data', title: 'Post data'}
                             ],
                             'default': 'url'
                         },
@@ -181,11 +181,11 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
                             type: 'combo',
                             title: 'Field type',
                             options: [
-                                { key: 'text', title: 'Text'},
-                                { key: 'float', title: 'Number'},
-                                { key: 'textarea', title: 'Textarea'},
-                                { key: 'combo', title: 'Combo'},
-                                { key: 'checkbox', title: 'Checkbox'}
+                                {key: 'text', title: 'Text'},
+                                {key: 'float', title: 'Number'},
+                                {key: 'textarea', title: 'Textarea'},
+                                {key: 'combo', title: 'Combo'},
+                                {key: 'checkbox', title: 'Checkbox'}
                             ],
                             'default': 'text'
                         },
@@ -217,9 +217,9 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
                                     type: 'combo',
                                     title: 'Destination',
                                     options: [
-                                        { key: 'url', title: 'URL'},
-                                        { key: 'query', title: 'Query string'},
-                                        { key: 'data', title: 'Post data'}
+                                        {key: 'url', title: 'URL'},
+                                        {key: 'query', title: 'Query string'},
+                                        {key: 'data', title: 'Post data'}
                                     ],
                                     'default': 'data'
                                 },
@@ -251,19 +251,19 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
     };
 
     Controller.prototype.configAliases = {
-        button: [ 'groups', 'group', 0, 'button', 0 ],
-        showStatus: [ 'groups', 'group', 0, 'showStatus', 0 ],
-        url: [ 'groups', 'group', 0, 'url', 0 ],
-        method: [ 'groups', 'group', 0, 'method', 0 ],
-        searchparams: [ 'groups', 'searchparams', 0 ],
-        buttonlabel: [ 'groups', 'group', 0, 'buttonlabel', 0 ],
-        buttonlabel_exec: [ 'groups', 'group', 0, 'buttonlabel_exec', 0 ],
-        onloadsearch: [ 'groups', 'group', 0, 'onloadsearch', 0, 0 ],
-        resultfilter: [ 'groups', 'group', 0, 'resultfilter', 0 ],
-        postvariables: [ 'sections', 'postvariables', 0, 'groups', 'postvariables', 0 ],
-        headers: [ 'groups', 'headers', 0 ],
-        dataType: [ 'groups', 'group', 0, 'dataType', 0 ],
-        debounce: [ 'groups', 'group', 0, 'debounce', 0 ],
+        button: ['groups', 'group', 0, 'button', 0],
+        showStatus: ['groups', 'group', 0, 'showStatus', 0],
+        url: ['groups', 'group', 0, 'url', 0],
+        method: ['groups', 'group', 0, 'method', 0],
+        searchparams: ['groups', 'searchparams', 0],
+        buttonlabel: ['groups', 'group', 0, 'buttonlabel', 0],
+        buttonlabel_exec: ['groups', 'group', 0, 'buttonlabel_exec', 0],
+        onloadsearch: ['groups', 'group', 0, 'onloadsearch', 0, 0],
+        resultfilter: ['groups', 'group', 0, 'resultfilter', 0],
+        postvariables: ['sections', 'postvariables', 0, 'groups', 'postvariables', 0],
+        headers: ['groups', 'headers', 0],
+        dataType: ['groups', 'group', 0, 'dataType', 0],
+        debounce: ['groups', 'group', 0, 'debounce', 0],
         askConfirm: ['groups', 'group', 0, 'askConfirm', 0],
         confirmText: ['groups', 'group', 0, 'confirmText', 0]
     };
@@ -372,8 +372,8 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
                 Debug.warn('Webservice search: request failed', err);
                 self.module.view.showError();
             } else {
-                if(self.module.getConfigurationCheckbox('showStatus', 'display')) {
-                     self.module.view.showSuccess(response.status);
+                if (self.module.getConfigurationCheckbox('showStatus', 'display')) {
+                    self.module.view.showSuccess(response.status);
                 }
                 var body = response.body;
                 if (body == null) {
@@ -395,10 +395,9 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
         this.createDataFromEvent('onSearchReturn', 'results', elements);
         this.createDataFromEvent('onSearchReturn', 'url', this.url);
 
-        this.sendAction('results', elements, 'onSearchReturn');
+        this.sendActionFromEvent('onSearchReturn', 'results', elements);
     };
 
     return Controller;
 
 });
-

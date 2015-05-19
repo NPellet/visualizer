@@ -1,0 +1,40 @@
+{
+  "name": "openchemlib",
+  "version": "3.0.0-beta4",
+  "description": "Manipulate molecules",
+  "keywords": [
+    "chemistry",
+    "molecule",
+    "molfile",
+    "SMILES"
+  ],
+  "main": [
+    "dist/openchemlib-core.js",
+    "dist/openchemlib-full.js",
+    "dist/openchemlib-viewer.js"
+  ],
+  "license": "BSD",
+  "authors": [
+    "Michaël Zasso",
+    "Christian Rufener"
+  ],
+  "homepage": "https://github.com/cheminfo/openchemlib-js",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "ignore": [
+    "/*",
+    "!dist/*"
+  ],
+  "_release": "3.0.0-beta4",
+  "_resolution": {
+    "type": "version",
+    "tag": "v3.0.0-beta4",
+    "commit": "a059c1052a008afefef8c5c6a92ce6b51125f32a"
+  },
+  "_source": "git://github.com/cheminfo/openchemlib-js.git",
+  "_target": "v3.0.0-beta4",
+  "_originalSource": "openchemlib"
+}

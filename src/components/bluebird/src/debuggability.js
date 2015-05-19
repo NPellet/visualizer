@@ -11,6 +11,10 @@ var debugging = __DEBUG__ || (util.isNode &&
                     (!!process.env["BLUEBIRD_DEBUG"] ||
                      process.env["NODE_ENV"] === "development"));
 
+if (debugging) {
+    async.disableTrampolineIfNecessary();
+}
+
 Promise.prototype._ensurePossibleRejectionHandled = function () {
     this._setRejectionIsUnhandled();
     async.invokeLater(this._notifyUnhandledRejection, this, undefined);
@@ -101,7 +105,8 @@ Promise.prototype._attachExtraTrace = function (error, ignoreSelf) {
             trace.attachExtraTrace(error);
         } else if (!error.__stackCleaned__) {
             var parsed = CapturedTrace.parseStackAndMessage(error);
-            error.stack = parsed.message + "\n" + parsed.stack.join("\n");
+            util.notEnumerableProp(error, "stack",
+                parsed.message + "\n" + parsed.stack.join("\n"));
             util.notEnumerableProp(error, "__stackCleaned__", true);
         }
     }
@@ -134,6 +139,9 @@ Promise.longStackTraces = function () {
         throw new Error(LONG_STACK_TRACES_ERROR);
     }
     debugging = CapturedTrace.isSupported();
+    if (debugging) {
+        async.disableTrampolineIfNecessary();
+    }
 };
 
 Promise.hasLongStackTraces = function () {

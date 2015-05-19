@@ -1,9 +1,11 @@
+'use strict';
+
 define(['loglevel'], function (log) {
 
     // Fallback to Date for incompatible navigators (Safari)
     var perfObj = window.performance ? window.performance : Date;
 
-    log.disableAll();
+    log.setLevel('trace');
 
     var Levels = {
         NODEBUG: -1,
@@ -23,7 +25,7 @@ define(['loglevel'], function (log) {
         '4': 'trace'
     };
 
-    var debugLevel = Levels.NODEBUG;
+    var debugLevel = Levels.TRACE;
 
     var Debug = {
 
@@ -31,7 +33,7 @@ define(['loglevel'], function (log) {
 
         setDebugLevel: function (level) {
             level = parseInt(level);
-            if(isNaN(level) || (level < -1)) {
+            if (isNaN(level) || (level < -1)) {
                 return;
             }
             if (level > 4) {
@@ -74,9 +76,9 @@ define(['loglevel'], function (log) {
             if (format === 's') {
                 return (time / 1000).toFixed(3) + 's';
             }
-        }
-        else
+        } else {
             return time;
+        }
     }
 
     function Timer() {

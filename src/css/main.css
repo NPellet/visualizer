@@ -283,6 +283,7 @@ div.ci-module-header-toolbar ul li img {
 div.ci-module-wrapper .ci-module-content {
     width: 100%;
     overflow: auto;
+    position: absolute;
 }
 
 .ci-module-expand {
@@ -905,4 +906,15 @@ li.safari {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+.ci-visualizer-notification {
+    position: fixed;
+    background-color: lightgray;
+    border: solid 1px black;
+    top: 30px;
+    padding: 15px;
+    font-size: 15px;
+    right: 0px;
+    width: 200px;
 }

@@ -170,7 +170,7 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
                                             return filterFunction.filter(varValue, resolve, reject);
                                         }
 
-                                        reject("No filter function defined");
+                                        reject('No filter function defined');
 
                                     });
 
@@ -183,9 +183,9 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
                                     self.module.view.update[vars[j].rel].call(self.module.view, varValue, varName);
 
                                 }, function (err) {
-                                    Debug.error("Error while filtering the data : ", err.message, err.stack);
+                                    Debug.error('Error while filtering the data : ', err.message, err.stack);
                                 }).catch(function (err) {
-                                    Debug.error("Error while updating module : ", err.message, err.stack);
+                                    Debug.error('Error while updating module : ', err.message, err.stack);
                                 });
 
                         })(k);
@@ -199,7 +199,7 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
                 rejectLatency();
             }).catch(function (err) {
                 rejectLatency();
-                Debug.error("Error while updating variable : ", err.message, err.stack);
+                Debug.error('Error while updating variable : ', err.message, err.stack);
             });
 
         },
@@ -313,7 +313,7 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
 
             } else {
                 Debug.setDebugLevel(1);
-                Debug.error("Adding the change callback is forbidden as no rel has been defined ! Aborting callback binding to prevent leaks");
+                Debug.error('Adding the change callback is forbidden as no rel has been defined ! Aborting callback binding to prevent leaks');
             }
         },
 

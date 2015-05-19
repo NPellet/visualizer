@@ -5,7 +5,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: '2D NMR',
@@ -39,7 +39,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         }
     };
 
-    Controller.prototype.variablesIn = [ 'jcampx', 'jcampy', 'jcampxy', 'jcamp2d', 'annotations' ];
+    Controller.prototype.variablesIn = ['jcampx', 'jcampy', 'jcampxy', 'jcamp2d', 'annotations'];
 
     return Controller;
 

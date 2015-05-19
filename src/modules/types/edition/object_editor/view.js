@@ -8,7 +8,7 @@ define(['modules/default/defaultview', 'src/util/util', 'components/jsoneditor/j
 
     Util.loadCss('components/jsoneditor/jsoneditor.min.css');
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
         init: function () {
             var that = this;
             if (!this.dom) {
@@ -51,9 +51,18 @@ define(['modules/default/defaultview', 'src/util/util', 'components/jsoneditor/j
             this.storeObject = !!this.module.getConfiguration('storeObject', false)[0];
             this.changeInputData(DataObject.check(JSON.parse(this.module.getConfiguration('storedObject')), true));
 
-            this.editor = new jsoneditor(document.getElementById(this._id), {mode: mode, change: function () {
-                that.module.controller.sendValue(that.editor.get(), 'onObjectChange');
-            }, module: this.module});
+            this.editor = new jsoneditor(document.getElementById(this._id), {
+                mode: mode, change: function () {
+                    var result;
+                    try {
+                        result = that.editor.get();
+                    } catch (e) {
+                        result = 'Invalid JSON: ' + e.message;
+                    }
+                    that.module.controller.sendValue(result, 'onObjectChange');
+                },
+                module: this.module
+            });
 
             var sendButton = this.dom.find('.menu').prepend('<button class="send" style="width: 45px; float: left; background: none; font-size: small;">\n    <span style="font-size: 10pt;">Send</span>\n</button>').find('button.send');
 
@@ -74,12 +83,12 @@ define(['modules/default/defaultview', 'src/util/util', 'components/jsoneditor/j
         },
         update: {
             value: function (value) {
-                if(this.module.getConfigurationCheckbox('displayValue', 'display')) {
+                if (this.module.getConfigurationCheckbox('displayValue', 'display')) {
                     value = value.get();
                 }
                 this.changeInputData(value);
                 var valNative = this.inputData.resurrect();
-                this.editor.set(valNative);
+                this.editor.set(JSON.parse(JSON.stringify(valNative))); //TODO more investigation (see issue #513)
                 if (this.expand && this.editor.expandAll)
                     this.editor.expandAll();
                 this.module.controller.sendValue(valNative, 'onObjectChange');
@@ -103,4 +112,5 @@ define(['modules/default/defaultview', 'src/util/util', 'components/jsoneditor/j
     });
 
     return View;
+
 });

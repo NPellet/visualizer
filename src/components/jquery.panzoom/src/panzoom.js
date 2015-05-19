@@ -25,9 +25,15 @@
 
 	// INSERT FIXHOOK
 
+	var document = window.document;
 	var datakey = '__pz__';
 	var slice = Array.prototype.slice;
 	var pointerEvents = !!window.PointerEvent;
+	var supportsInputEvent = (function() {
+		var input = document.createElement('input');
+		input.setAttribute('oninput', 'return');
+		return typeof input.oninput === 'function';
+	})();
 
 	// Regex
 	var rupper = /([A-Z])/g;
@@ -188,7 +194,7 @@
 	 * @param {Object} [options] - An object literal containing options to override default options
 	 *  (See Panzoom.defaults for ones not listed below)
 	 * @param {jQuery} [options.$zoomIn] - zoom in buttons/links collection (you can also bind these yourself
-	 *  e.g. $button.on('click', function(e) { e.preventDefault(); $elem.panzooom('zoomIn'); });)
+	 *  e.g. $button.on('click', function(e) { e.preventDefault(); $elem.panzoom('zoomIn'); });)
 	 * @param {jQuery} [options.$zoomOut] - zoom out buttons/links collection on which to bind zoomOut
 	 * @param {jQuery} [options.$zoomRange] - zoom in/out with this range control
 	 * @param {jQuery} [options.$reset] - Reset buttons/links collection on which to bind the reset method
@@ -662,14 +668,14 @@
 			if (focal && !options.disablePan) {
 				// Adapted from code by Florian Günther
 				// https://github.com/florianguenther/zui53
-				var dims = this._checkDims();
+				//var dims = this._checkDims();
 				var clientX = focal.clientX;
 				var clientY = focal.clientY;
 				// Adjust the focal point for default transform-origin => 50% 50%
-				if (!this.isSVG) {
-					clientX -= (dims.width + dims.widthBorder) / 2;
-					clientY -= (dims.height + dims.heightBorder) / 2;
-				}
+				//if (!this.isSVG) {
+				//	clientX -= (dims.width + dims.widthBorder) / 2;
+				//	clientY -= (dims.height + dims.heightBorder) / 2;
+				//}
 				var clientV = new Vector(clientX, clientY, 1);
 				var surfaceM = new Matrix(matrix);
 				// Supply an offset manually if necessary
@@ -814,7 +820,7 @@
 				// Promote the element to it's own compositor layer
 				'backface-visibility': 'hidden',
 				// Set to defaults for the namespace
-				'transform-origin': this.isSVG ? '0 0' : '50% 50%'
+				'transform-origin': '0 0'
 			};
 			// Set elem styles
 			if (!this.options.disablePan) {
@@ -942,7 +948,9 @@
 				events[ (pointerEvents ? 'pointerdown' : 'mousedown') + ns ] = function() {
 					self.transition(true);
 				};
-				events[ 'change' + ns ] = function() {
+				// Zoom on input events if available and change events
+				// See https://github.com/timmywil/jquery.panzoom/issues/90
+				events[ (supportsInputEvent ? 'input' : 'change') + ns ] = function() {
 					self.zoom(+this.value, { noSetRange: true });
 				};
 				$zoomRange.on(events);

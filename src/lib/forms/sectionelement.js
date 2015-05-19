@@ -1,509 +1,508 @@
-define(['require', 'jquery'], function(require, $) {
-
-	var SectionElement = function() {
-
-	};
-
-	SectionElement.defaultOptions = {
-		
-	};
-
-	$.extend(SectionElement.prototype, {
-		
-		init: function(options) {
+'use strict';
 
-			this.options = $.extend({}, SectionElement.defaultOptions, options); // Creates the options
-			this.splice = Array.prototype.splice;
-		
-			this.groupElements = {};
-			this.sectionElements = {};
+define(['require', 'jquery'], function (require, $) {
 
-			// Collection of all field elements in groupElements and sectionElements...
-			this.fieldElements = [];
+    var SectionElement = function () {
 
-			this.readyDef = $.Deferred();
-			this.done = 0;
-		},
+    };
 
-		fill: function( json, clearFirst ) {
+    SectionElement.defaultOptions = {};
 
-			this._fillGroups( json.groups, clearFirst );
-			this._fillSections( json.sections, clearFirst );
+    $.extend(SectionElement.prototype, {
 
-			// Check for empty shit
-			if( this.done == 0 ) { // All subgroups and subsections are loaded. Let's move to the parent !
-				this.readyDef.resolve();
-			}
+        init: function (options) {
 
-			return this.readyDef;
-		},
+            this.options = $.extend({}, SectionElement.defaultOptions, options); // Creates the options
+            this.splice = Array.prototype.splice;
 
-		_fillGroups: function( groupsObj, clearFirst ) {
+            this.groupElements = {};
+            this.sectionElements = {};
 
-			// Let's make at least 1 section element
-			var groups = this.section.getGroups();
-	/*		for( i in groups ) {
-				this.getGroupElement( groups[ i ].getName( ), 0 );
-			}
-*/
-			this._fill( groups, this.getGroupElement, groupsObj, clearFirst );
-		},
+            // Collection of all field elements in groupElements and sectionElements...
+            this.fieldElements = [];
 
-		_fillSections: function( sectionsObj, clearFirst ) {
+            this.readyDef = $.Deferred();
+            this.done = 0;
+        },
 
-			// Let's make at least 1 section element
-			var sections = this.section.getSections();
-	/*		for( i in sections ) {
-				this.getSectionElement( sections[ i ].getName( ), 0 );
-			}
-*/
-			this._fill( sections, this.getSectionElement, sectionsObj, clearFirst );
-		},
+        fill: function (json, clearFirst) {
 
-		_fill: function( stackStructure, getter, stack, clearFirst ) {
+            this._fillGroups(json.groups, clearFirst);
+            this._fillSections(json.sections, clearFirst);
 
-			var self = this;
+            // Check for empty shit
+            if (this.done == 0) { // All subgroups and subsections are loaded. Let's move to the parent !
+                this.readyDef.resolve();
+            }
 
-			if( ! stack ) {
-				stack = { };
-			}
+            return this.readyDef;
+        },
 
-			var i, j, l;
-			for( i in stackStructure ) {
+        _fillGroups: function (groupsObj, clearFirst) {
 
-				if( ! ( stack[ i ] ) ) {
-					stack[ i ] = { };
-				}
-				// i is groupname, groupsObj[i] is mixed (obj/array)
-				if( ! ( stack[ i ] instanceof Array ) ) {
-					stack[ i ] = [ stack[ i ] ];
-				}
-				
-				j = 0,
-				l = stack[ i ].length;
+            // Let's make at least 1 section element
+            var groups = this.section.getGroups();
+            /*		for( i in groups ) {
+             this.getGroupElement( groups[ i ].getName( ), 0 );
+             }
+             */
+            this._fill(groups, this.getGroupElement, groupsObj, clearFirst);
+        },
 
-				if( l == 0 ) {
-					stack[ i ][ 0 ] = { };
-					l++;
-				}
+        _fillSections: function (sectionsObj, clearFirst) {
 
-				for( ; j < l ; j ++) {
+            // Let's make at least 1 section element
+            var sections = this.section.getSections();
+            /*		for( i in sections ) {
+             this.getSectionElement( sections[ i ].getName( ), 0 );
+             }
+             */
+            this._fill(sections, this.getSectionElement, sectionsObj, clearFirst);
+        },
 
-					self.done++;
-					getter.call( this, i , j ).fill( stack[ i ][ j ] , clearFirst ).done( function() { // Returns a deferred
-						self.done--;
-						if( self.done == 0 ) { // All subgroups and subsections are loaded. Let's move to the parent !
-							self.readyDef.resolve();
-						}
-					});
+        _fill: function (stackStructure, getter, stack, clearFirst) {
 
-				}
-			}
+            var self = this;
 
-		},
+            if (!stack) {
+                stack = {};
+            }
 
-		visible: function() {
-			this.eachElements( function( element ) {
-				element.visible();
-			} );
-		},
+            var i, j, l;
+            for (i in stackStructure) {
 
+                if (!( stack[i] )) {
+                    stack[i] = {};
+                }
+                // i is groupname, groupsObj[i] is mixed (obj/array)
+                if (!( stack[i] instanceof Array )) {
+                    stack[i] = [stack[i]];
+                }
 
-		condDisplay: function( elementName, elementType, displayOrHide ) {
+                j = 0,
+                    l = stack[i].length;
 
-			var els,
-				i = 0,
-				l;
+                if (l == 0) {
+                    stack[i][0] = {};
+                    l++;
+                }
 
-			switch( elementType ) {
+                for (; j < l; j++) {
 
-				case 'section':
-					els = this.sectionElements[ elementName ];
-				break;
+                    self.done++;
+                    getter.call(this, i, j).fill(stack[i][j], clearFirst).done(function () { // Returns a deferred
+                        self.done--;
+                        if (self.done == 0) { // All subgroups and subsections are loaded. Let's move to the parent !
+                            self.readyDef.resolve();
+                        }
+                    });
 
-				case 'group':
-					els = this.groupElements[ elementName ];
-				break;
-			}
+                }
+            }
 
-			for( l = els.length ; i < l ; i ++ ) {
+        },
 
-				if( displayOrHide ) {
-					els[ i ].show();
-				} else {
-					els[ i ].hide();
-				}
+        visible: function () {
+            this.eachElements(function (element) {
+                element.visible();
+            });
+        },
 
-			}
-		},
 
+        condDisplay: function (elementName, elementType, displayOrHide) {
 
-		eachGroupElements: function(groupName, callback) {
-			if( ! this.groupElements[ groupName ]) {
-				return;
-			}
+            var els,
+                i = 0,
+                l;
 
-			var i = 0, 
-				l = this.groupElements[ groupName ].length;
+            switch (elementType) {
 
-			for( ; i < l ; i ++ ) {
-				callback.call( this, this.groupElements[ groupName ][ i ] )
-			}
-		},
+                case 'section':
+                    els = this.sectionElements[elementName];
+                    break;
 
-		inDom: function( ) {
+                case 'group':
+                    els = this.groupElements[elementName];
+                    break;
+            }
 
-			this.eachElements( function( element ) {
-				element.inDom();
-			} );
-		},
+            for (l = els.length; i < l; i++) {
 
-		eachElements: function( callback ) {
+                if (displayOrHide) {
+                    els[i].show();
+                } else {
+                    els[i].hide();
+                }
 
-			var self = this;
-			this.section.eachGroups( function( group ) {
+            }
+        },
 
-				self.eachGroupElements( group.getName() , function( groupElement ) {
 
-					callback( groupElement, 'group', group.getName( ) );					
-				});
-			});
+        eachGroupElements: function (groupName, callback) {
+            if (!this.groupElements[groupName]) {
+                return;
+            }
 
-			this.section.eachSections( function( section ) {
+            var i = 0,
+                l = this.groupElements[groupName].length;
 
-				self.eachSectionElements( section.getName() , function( sectionElement ) {
+            for (; i < l; i++) {
+                callback.call(this, this.groupElements[groupName][i])
+            }
+        },
 
-					callback( sectionElement, 'section', section.getName( ) );
-				});
-			});
-		},
+        inDom: function () {
 
-		redoTabIndices: function() {
-			this.eachElements( function( element ) {
-				element.redoTabIndices();
-			} );
-		},
+            this.eachElements(function (element) {
+                element.inDom();
+            });
+        },
 
-		addFieldElement: function( fieldElement ) {
-			this.fieldElements.push( fieldElement );
-		},
+        eachElements: function (callback) {
 
-		removeFieldElement: function( fieldElement ) {
-			this.fieldElements.splice( this.fieldElements.indexOf( fieldElement ), 1 );
-		},
+            var self = this;
+            this.section.eachGroups(function (group) {
 
-		eachSectionElements: function(sectionName, callback) {
-			if( ! this.sectionElements[ sectionName ]) {
-				return;
-			}
+                self.eachGroupElements(group.getName(), function (groupElement) {
 
-			var i = 0, 
-				l = this.sectionElements[ sectionName ].length;
+                    callback(groupElement, 'group', group.getName());
+                });
+            });
 
-			for( ; i < l ; i ++ ) {
-				callback.call( this, this.sectionElements[ sectionName ][ i ] )
-			}
-		},
+            this.section.eachSections(function (section) {
 
+                self.eachSectionElements(section.getName(), function (sectionElement) {
 
-		getGroupElement: function( groupName, groupInternalId ) {
+                    callback(sectionElement, 'section', section.getName());
+                });
+            });
+        },
 
-			return this._getElement(this.groupElements, this.section.getGroup, this.section, groupName, groupInternalId);
-		},
+        redoTabIndices: function () {
+            this.eachElements(function (element) {
+                element.redoTabIndices();
+            });
+        },
 
+        addFieldElement: function (fieldElement) {
+            this.fieldElements.push(fieldElement);
+        },
 
-		getSectionElement: function( sectionName, sectionInternalId ) {
+        removeFieldElement: function (fieldElement) {
+            this.fieldElements.splice(this.fieldElements.indexOf(fieldElement), 1);
+        },
 
-			return this._getElement(this.sectionElements, this.section.getSection, this.section, sectionName, sectionInternalId);
-		},
-		
+        eachSectionElements: function (sectionName, callback) {
+            if (!this.sectionElements[sectionName]) {
+                return;
+            }
 
-		_getElement: function(stack, getter, scope, name, id) {
+            var i = 0,
+                l = this.sectionElements[sectionName].length;
 
-			var el;
-			stack[ name ] = stack[ name ] || [];
-			
-			if( ! stack[ name ][ id ] ) {
+            for (; i < l; i++) {
+                callback.call(this, this.sectionElements[sectionName][i])
+            }
+        },
 
-				el = getter.call( scope, name ).makeElement( );
-				el.sectionElement = this;
-				stack[ name ][ id ] = el;
-			}
 
-			return stack[ name ][ id ];
-		},
+        getGroupElement: function (groupName, groupInternalId) {
 
-		getSectionElements: function() {
-			return this.sectionElements;
-		},
+            return this._getElement(this.groupElements, this.section.getGroup, this.section, groupName, groupInternalId);
+        },
 
-		getGroupElements: function() {
-			return this.groupElements;
-		},
 
-		getValue: function() {
+        getSectionElement: function (sectionName, sectionInternalId) {
 
-			var groupEls = this.getGroupElements(),
-				sectionEls = this.getSectionElements(),
-				json = { sections: {}, groups: {} };
+            return this._getElement(this.sectionElements, this.section.getSection, this.section, sectionName, sectionInternalId);
+        },
 
-			this._getValue(sectionEls, json.sections);
-			this._getValue(groupEls, json.groups);
 
-			return json;
-		},
+        _getElement: function (stack, getter, scope, name, id) {
 
-		_getValue: function(stackFrom, stackTo) {
+            var el;
+            stack[name] = stack[name] || [];
 
-			var i, j, l;
+            if (!stack[name][id]) {
 
-			for( i in stackFrom ) {
+                el = getter.call(scope, name).makeElement();
+                el.sectionElement = this;
+                stack[name][id] = el;
+            }
 
-				j = 0, 
-				l = stackFrom[ i ].length,
-				stackTo[ i ] = [];
+            return stack[name][id];
+        },
 
-				for( ; j < l ; j ++) {
-					stackTo[ i ].push( stackFrom[ i ][ j ].getValue( ) );
-				}
-			}
+        getSectionElements: function () {
+            return this.sectionElements;
+        },
 
-			return stackTo;
-		},
+        getGroupElements: function () {
+            return this.groupElements;
+        },
 
-		getTitle: function() {
-			return this.section.options.title || false;
-		},
+        getValue: function () {
 
-		getTitleIcon: function() {
-			var html = '',
-				title = this.getTitle();
-			if(this.section.options.icon) {
-				html += '<img src="' + require.toUrl('./images/' + this.section.options.icon + '.png') + '" />';
-			}
+            var groupEls = this.getGroupElements(),
+                sectionEls = this.getSectionElements(),
+                json = {sections: {}, groups: {}};
 
-			if( title ) {
-				html += '<div>' + title + '</div>';
-			}
-			return html;
-		},
+            this._getValue(sectionEls, json.sections);
+            this._getValue(groupEls, json.groups);
 
-		makeDom: function() {
+            return json;
+        },
 
-			var self = this,
-				dom = $("<div />"),
-				i,
-				h,
-				j,
-				l;
+        _getValue: function (stackFrom, stackTo) {
 
-			switch( this.section.form.tplMode ) {
-				case 1:
-				
-					if( this.section.sectionLevel == 1 ) {
-						this.section.form.sectionLvl1Buttons.append('<div data-section-name="' + this.section.getName() + '" class="form-section-select">' + this.getTitleIcon( ) + '</div>');	
-						dom.hide();
-					} else {
-						this.stdTitle( dom );
-					}
-				break;
+            var i, j, l;
 
-				default:
-					this.stdTitle( dom );
-				break;
+            for (i in stackFrom) {
 
-			}
+                j = 0,
+                    l = stackFrom[i].length,
+                    stackTo[i] = [];
 
-			for( i in this.groupElements ) {
-				l = this.groupElements[ i ].length;
-				for( j = 0; j < l ; j++) {
-					dom.append( this.groupElements[ i ][ j ].makeDom( ) );
-				}
-			}
+                for (; j < l; j++) {
+                    stackTo[i].push(stackFrom[i][j].getValue());
+                }
+            }
 
-			for( i in this.sectionElements ) {
-				l = this.sectionElements[ i ].length;
-				for( j = 0 ; j < l ; j++) {
-					dom.append( this.sectionElements[ i ][ j ].makeDom( ) );
-				}
-			}
-			
-	
-			return (this.dom = dom);
-		},
+            return stackTo;
+        },
 
-		stdTitle: function( dom ) {
+        getTitle: function () {
+            return this.section.options.title || false;
+        },
 
-			var title = this.getTitle(),
-				lvl = this.section.sectionLevel;
+        getTitleIcon: function () {
+            var html = '',
+                title = this.getTitle();
+            if (this.section.options.icon) {
+                html += '<img src="' + require.toUrl('./images/' + this.section.options.icon + '.png') + '" />';
+            }
 
-			if( title || this.section.options.multiple ) { // If no title and no duplicate, no reason to add the title I think
+            if (title) {
+                html += '<div>' + title + '</div>';
+            }
+            return html;
+        },
 
-				h = $('<h' + lvl + '>' + title + '</h' + lvl + '>');
+        makeDom: function () {
 
-				if( this.section.options.multiple ) {
-					h.append( this.makeDuplicator( ) );
-				}
+            var self = this,
+                dom = $('<div />'),
+                i,
+                h,
+                j,
+                l;
 
-				dom.append(h);
-			}
-		},
+            switch (this.section.form.tplMode) {
+                case 1:
 
-		makeDuplicator: function( ) {
+                    if (this.section.sectionLevel == 1) {
+                        this.section.form.sectionLvl1Buttons.append('<div data-section-name="' + this.section.getName() + '" class="form-section-select">' + this.getTitleIcon() + '</div>');
+                        dom.hide();
+                    } else {
+                        this.stdTitle(dom);
+                    }
+                    break;
 
-			var self = this;
+                default:
+                    this.stdTitle(dom);
+                    break;
 
-			return $('<div class="form-duplicator-wrapper"><span class="form-duplicator form-duplicator-add">duplicate</span> - <span class="form-duplicator form-duplicator-remove">remove</span></div>').on('click', 'span', function() {
-				var dupl = $(this).hasClass('form-duplicator-add');
-				// Duplicate function as to be called on the parent with self as a parameter
-				self.sectionElement[ dupl ? 'duplicateSectionElement' : 'removeSectionElement']( self );
-			});
-		},
+            }
 
-		show: function() {
-			this.dom.show();
-		},
+            for (i in this.groupElements) {
+                l = this.groupElements[i].length;
+                for (j = 0; j < l; j++) {
+                    dom.append(this.groupElements[i][j].makeDom());
+                }
+            }
 
-		hide: function() {
-			this.dom.hide();
-		},
+            for (i in this.sectionElements) {
+                l = this.sectionElements[i].length;
+                for (j = 0; j < l; j++) {
+                    dom.append(this.sectionElements[i][j].makeDom());
+                }
+            }
 
-		getSectionIndex: function( sectionElement ) {
 
-			var name = sectionElement.section.getName();
+            return (this.dom = dom);
+        },
 
-			if( ! this.sectionElements[ name ]) {
-				return this.form.throwError("Cannot get section index. Section name " + name + " doesn't exist");
-			}
+        stdTitle: function (dom) {
 
-			var index = this.sectionElements[ name ].indexOf( sectionElement );
+            var title = this.getTitle(),
+                lvl = this.section.sectionLevel;
 
-			if( index < 0 ) {
-				return this.form.throwError("Cannot get section index. Cannot find section element");
-			}
+            if (title || this.section.options.multiple) { // If no title and no duplicate, no reason to add the title I think
 
-			return index;
-		},
+                var h = $('<h' + lvl + '>' + title + '</h' + lvl + '>');
 
-		removeSectionElement: function( sectionElement ) {
+                if (this.section.options.multiple) {
+                    h.append(this.makeDuplicator());
+                }
 
-			var self = this,
-				name = sectionElement.section.getName( ),
-				sectionIndex = this.getSectionIndex( sectionElement );
+                dom.append(h);
+            }
+        },
 
-			if( sectionIndex === false ) {
-				return;
-			}
+        makeDuplicator: function () {
 
-			if( this.sectionElements[ name ].length == 1 ) {
-				this.duplicateSectionElement( sectionElement );
-			}
+            var self = this;
 
-			this.sectionElements[ name ].splice( sectionIndex, 1 ); // Remove the element from the stack
-			sectionElement.dom.remove( );
-			sectionElement.dom = null;
-			sectionElement = null;
-		},
+            return $('<div class="form-duplicator-wrapper"><span class="form-duplicator form-duplicator-add">duplicate</span> - <span class="form-duplicator form-duplicator-remove">remove</span></div>').on('click', 'span', function () {
+                var dupl = $(this).hasClass('form-duplicator-add');
+                // Duplicate function as to be called on the parent with self as a parameter
+                self.sectionElement[dupl ? 'duplicateSectionElement' : 'removeSectionElement'](self);
+            });
+        },
 
+        show: function () {
+            this.dom.show();
+        },
 
-		duplicateSectionElement: function( sectionElement ) {
+        hide: function () {
+            this.dom.hide();
+        },
 
-			var self = this,
-				name = sectionElement.section.getName( ),
-				sectionIndex = this.getSectionIndex( sectionElement );
+        getSectionIndex: function (sectionElement) {
 
-			if(sectionIndex === false) {
-				return;
-			}
+            var name = sectionElement.section.getName();
 
-			var newSectionEl = this
-								.section
-								.getSection( name )
-								.makeElement( );
+            if (!this.sectionElements[name]) {
+                return this.form.throwError('Cannot get section index. Section name ' + name + ' doesn\'t exist');
+            }
 
-			newSectionEl.sectionElement = this; // Sets the parent element as being this
+            var index = this.sectionElements[name].indexOf(sectionElement);
 
-			this.sectionElements[ name ].splice( sectionIndex + 1, 0, newSectionEl ); // Add the section in the stack
-			
-			newSectionEl.fill( { } ); // Fill the section with empty stuff
-			
-			newSectionEl.readyDef.then( function() { // Only when all fields have loaded we can trigger a dom creation
+            if (index < 0) {
+                return this.form.throwError('Cannot get section index. Cannot find section element');
+            }
 
-				if( sectionElement && sectionElement.dom ) { // If we actually duplicate an existing section, we add it right after
+            return index;
+        },
 
-					sectionElement.dom.after( newSectionEl.makeDom( ) );
+        removeSectionElement: function (sectionElement) {
 
-				} else { // Else we add it at the end
+            var self = this,
+                name = sectionElement.section.getName(),
+                sectionIndex = this.getSectionIndex(sectionElement);
 
-					self.dom.append( newSectionEl.makeDom( ) );
+            if (sectionIndex === false) {
+                return;
+            }
 
-				}
+            if (this.sectionElements[name].length == 1) {
+                this.duplicateSectionElement(sectionElement);
+            }
 
-				for( var i = 0, l = newSectionEl.fieldElements.length ; i < l ; i ++ ) {
-					self.section.form.conditionalDisplayer.changed( newSectionEl.fieldElements[ i ] );
-				}
+            this.sectionElements[name].splice(sectionIndex, 1); // Remove the element from the stack
+            sectionElement.dom.remove();
+            sectionElement.dom = null;
+            sectionElement = null;
+        },
 
-				newSectionEl.inDom( );
-			});
-		
-			return newSectionEl;
-		},
 
-		ready: function() {
-			return $.when.apply( $.when, this.deferreds );
-		},
+        duplicateSectionElement: function (sectionElement) {
 
+            var self = this,
+                name = sectionElement.section.getName(),
+                sectionIndex = this.getSectionIndex(sectionElement);
 
-		makeDomTpl: function( ) {
+            if (sectionIndex === false) {
+                return;
+            }
 
-			return this._makeDomTpl();
-		},
+            var newSectionEl = this
+                .section
+                .getSection(name)
+                .makeElement();
 
+            newSectionEl.sectionElement = this; // Sets the parent element as being this
 
-		_makeDomTpl: function( ) {
+            this.sectionElements[name].splice(sectionIndex + 1, 0, newSectionEl); // Add the section in the stack
 
-			this.dom = this.section._tplClean.clone();
+            newSectionEl.fill({}); // Fill the section with empty stuff
 
-			for( i in this.sectionElements ) {
-				j  = 0, 
-				l = this.sectionElements[ i ].length;
+            newSectionEl.readyDef.then(function () { // Only when all fields have loaded we can trigger a dom creation
 
-				for( ; j < l ; j++) {
-					this.dom.find('.form-section-section-container').append( this.sectionElements[ i ][ j ].makeDomTpl( ) );
-				}
-			}
+                if (sectionElement && sectionElement.dom) { // If we actually duplicate an existing section, we add it right after
 
-			for( i in this.groupElements ) {
-				j  = 0, 
-				l = this.groupElements[ i ].length;
-				
-				for( ; j < l ; j++) {
-					this.dom.find('.form-section-group-container').append( this.groupElements[ i ][ j ].makeDomTpl( ) );
-				}
-			}
+                    sectionElement.dom.after(newSectionEl.makeDom());
 
-			return this.dom;
-		}
-	});
+                } else { // Else we add it at the end
 
+                    self.dom.append(newSectionEl.makeDom());
 
+                }
 
-/*
-	Object.defineProperty(SectionElement.prototype, 'sectionElement', {
-		
-		enumerable: true,
-		configurable: false,
-		
-		get: function() {
-			return this._sectionElement;
-		},
+                for (var i = 0, l = newSectionEl.fieldElements.length; i < l; i++) {
+                    self.section.form.conditionalDisplayer.changed(newSectionEl.fieldElements[i]);
+                }
 
-		set: function(section) {
-			this._sectionElement = section;
-		}
-	
-	});*/
+                newSectionEl.inDom();
+            });
 
+            return newSectionEl;
+        },
 
-	return SectionElement;
+        ready: function () {
+            return $.when.apply($.when, this.deferreds);
+        },
+
+
+        makeDomTpl: function () {
+
+            return this._makeDomTpl();
+        },
+
+
+        _makeDomTpl: function () {
+
+            this.dom = this.section._tplClean.clone();
+            var i, j, l;
+            for (i in this.sectionElements) {
+                j = 0,
+                    l = this.sectionElements[i].length;
+
+                for (; j < l; j++) {
+                    this.dom.find('.form-section-section-container').append(this.sectionElements[i][j].makeDomTpl());
+                }
+            }
+
+            for (i in this.groupElements) {
+                j = 0,
+                    l = this.groupElements[i].length;
+
+                for (; j < l; j++) {
+                    this.dom.find('.form-section-group-container').append(this.groupElements[i][j].makeDomTpl());
+                }
+            }
+
+            return this.dom;
+        }
+    });
+
+
+    /*
+     Object.defineProperty(SectionElement.prototype, 'sectionElement', {
+
+     enumerable: true,
+     configurable: false,
+
+     get: function() {
+     return this._sectionElement;
+     },
+
+     set: function(section) {
+     this._sectionElement = section;
+     }
+
+     });*/
+
+
+    return SectionElement;
 });

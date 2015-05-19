@@ -1,453 +1,452 @@
-define(['jquery', './section', './sectionelement', './conditionalelementdisplayer'], function($, Section, SectionElement, ConditionElementDispalyer) {
+'use strict';
 
-	var Form = function() { };
+define(['jquery', './section', './sectionelement', './conditionalelementdisplayer'], function ($, Section, SectionElement, ConditionElementDispalyer) {
 
-	Form.defaultOptions = {
+    var Form = function () {
+    };
 
-	};
+    Form.defaultOptions = {};
 
-	Form.prototype = new Section();
-	$.extend(Form.prototype, {
-		
-		init: function(options) {
+    Form.prototype = new Section();
+    $.extend(Form.prototype, {
 
-			var self = this;
+        init: function (options) {
 
-			this.options = $.extend({}, Form.defaultOptions, options); // Creates the options
-			this.splice = Array.prototype.splice;
+            var self = this;
 
-			this.section = this;
+            this.options = $.extend({}, Form.defaultOptions, options); // Creates the options
+            this.splice = Array.prototype.splice;
 
-			this.sections = {}; // List all sections
-			this.sectionElements = {};
+            this.section = this;
 
-			this.allFields = []; // List all fields, DEFERRED
-			this.allFieldElements = []; // List of all field elements, DEFERRED
+            this.sections = {}; // List all sections
+            this.sectionElements = {};
 
-			this._onStructureLoaded = $.Deferred();
-			this._onValueLoaded = $.Deferred();	
+            this.allFields = []; // List all fields, DEFERRED
+            this.allFieldElements = []; // List of all field elements, DEFERRED
 
-			this.sectionLevel = 0;
-			this.expander = {};
-			this.form = this;
+            this._onStructureLoaded = $.Deferred();
+            this._onValueLoaded = $.Deferred();
 
-			this.conditionalDisplayer = new ConditionElementDispalyer();
+            this.sectionLevel = 0;
+            this.expander = {};
+            this.form = this;
 
-			this.buttons = [];
-			this.buttonsDom = $("<div />").addClass('form-buttonzone');
-			this.buttonsDom.append( $("<div />").addClass('cleaner') ); 
-		},
+            this.conditionalDisplayer = new ConditionElementDispalyer();
 
-		triggerAction: function() {
+            this.buttons = [];
+            this.buttonsDom = $('<div />').addClass('form-buttonzone');
+            this.buttonsDom.append($('<div />').addClass('cleaner'));
+        },
 
-			if( ! arguments[ 0 ] ) {
-				return;
-			}
+        triggerAction: function () {
 
-			var func = arguments[ 0 ];
-			if(typeof this.options[ func ] == "function") {
+            if (!arguments[0]) {
+                return;
+            }
 
-				var args = this.splice.call( arguments, 0, 1 );
-				this.options[ func ].apply(this, arguments);
-			}
-		},
+            var func = arguments[0];
+            if (typeof this.options[func] == 'function') {
 
+                var args = this.splice.call(arguments, 0, 1);
+                this.options[func].apply(this, arguments);
+            }
+        },
 
-		addFieldElement: function( deferred ) { // Called from field.js, method makeElement()
 
-			this.allFieldElements.push( deferred );
-		},
+        addFieldElement: function (deferred) { // Called from field.js, method makeElement()
 
-		fieldElementValueChanged: function( fieldElement, value, oldValue ) {
+            this.allFieldElements.push(deferred);
+        },
 
-			if( this.doneDom ) {
-				this.triggerAction('onValueChanged', fieldElement, this.getValue( ) );
-			}
-		},
+        fieldElementValueChanged: function (fieldElement, value, oldValue) {
 
-		addField: function( deferred ) {
+            if (this.doneDom) {
+                this.triggerAction('onValueChanged', fieldElement, this.getValue());
+            }
+        },
 
-			this.allFields.push( deferred );
-		},
+        addField: function (deferred) {
 
-		eachFields: function(callback) {
+            this.allFields.push(deferred);
+        },
 
-			return this._each( this.allFields, callback );
-		},
+        eachFields: function (callback) {
 
-		eachFieldsElements: function(callback) {
+            return this._each(this.allFields, callback);
+        },
 
-			return this._each( this.allFieldElements, callback );
-		},
+        eachFieldsElements: function (callback) {
 
-		_each: function(stack, callback) {
+            return this._each(this.allFieldElements, callback);
+        },
 
-			var self = this, 
-				i = 0, 
-				l = stack.length;
+        _each: function (stack, callback) {
 
-			$.when.apply( $.when, stack ).then( function() {
+            var self = this,
+                i = 0,
+                l = stack.length;
 
-				for( ; i < l ; i ++) {
+            $.when.apply($.when, stack).then(function () {
 
-					callback.call( self, arguments[ i ] );
-				}
-			});
-		},
+                for (; i < l; i++) {
 
-		setTpl: function( tpl ) {
-		
-			tpl = $( tpl );
-			this._setTpl( tpl );
-		},
+                    callback.call(self, arguments[i]);
+                }
+            });
+        },
 
-		makeDomTpl: function( ) {
-			this.doneDom = true;
-			var returned = this._makeDomTpl( );
+        setTpl: function (tpl) {
 
-			this.dom.find('.buttons').html( this.buttonsDom );
+            tpl = $(tpl);
+            this._setTpl(tpl);
+        },
 
-			return returned;
-		},
+        makeDomTpl: function () {
+            this.doneDom = true;
+            var returned = this._makeDomTpl();
 
-		_makeDomTpl: SectionElement.prototype._makeDomTpl,
-		
-		makeDom: function(tplMode, tabToOpen) {
-			tabToOpen = tabToOpen || 0;
-			var self = this,
-				dom = $('<form class="forms" tabindex="1" />'),
-				i,
-				j, 
-				l,
-				sections = $("<div />").addClass('form-sections-wrapper');
-			
-			this.tplMode = tplMode || 1;
+            this.dom.find('.buttons').html(this.buttonsDom);
 
-			switch(this.tplMode) {
-				case 1:
+            return returned;
+        },
 
-					this.sectionLvl1Buttons = $("<div />")
-												.addClass( 'form-section-select-wrapper' )
-												.appendTo( dom );
+        _makeDomTpl: SectionElement.prototype._makeDomTpl,
 
-					this.sectionLvl1Buttons.on( 'click' , '.form-section-select' , function() {
+        makeDom: function (tplMode, tabToOpen) {
+            tabToOpen = tabToOpen || 0;
+            var self = this,
+                dom = $('<form class="forms" tabindex="1" />'),
+                i,
+                j,
+                l,
+                sections = $('<div />').addClass('form-sections-wrapper');
 
-						$(this).siblings().removeClass('selected');
-						$(this).addClass('selected');
+            this.tplMode = tplMode || 1;
 
-						sections.children().hide().eq( $(this).index() ).show();
+            switch (this.tplMode) {
+                case 1:
 
-						var j = 0,
-							els = self.sectionElements[ $(this).attr('data-section-name') ],
-							l = els.length;
+                    this.sectionLvl1Buttons = $('<div />')
+                        .addClass('form-section-select-wrapper')
+                        .appendTo(dom);
 
-						for( ; j < l ; j ++ ) {
-							els[ j ].visible();
-						}
+                    this.sectionLvl1Buttons.on('click', '.form-section-select', function () {
 
-					});
+                        $(this).siblings().removeClass('selected');
+                        $(this).addClass('selected');
 
-				break;
-			}
+                        sections.children().hide().eq($(this).index()).show();
 
-			this.bindEvents( dom );
+                        var j = 0,
+                            els = self.sectionElements[$(this).attr('data-section-name')],
+                            l = els.length;
 
+                        for (; j < l; j++) {
+                            els[j].visible();
+                        }
 
-			for( i in this.sectionElements ) {
+                    });
 
-				j  = 0, 
-				l = this.sectionElements[ i ].length;
+                    break;
+            }
 
-				for( ; j < l ; j++) {
-					sections.append( this.sectionElements[ i ][ j ].makeDom( ) );
-				}
-			}
+            this.bindEvents(dom);
 
-			this.doneDom = true;
 
-			dom.append( sections );
+            for (i in this.sectionElements) {
 
-			switch(this.tplMode) {
-				case 1:
-					this.sectionLvl1Buttons.children().eq(tabToOpen).trigger( 'click' );
-				break;
-			}
+                j = 0,
+                    l = this.sectionElements[i].length;
 
-			dom.append( this.buttonsDom );
+                for (; j < l; j++) {
+                    sections.append(this.sectionElements[i][j].makeDom());
+                }
+            }
 
-			// When the dom is created we can display / hide additional fields based on conditioning
-			$.when.apply( $, this.allFieldElements ).then( function( ) {
+            this.doneDom = true;
 
-				var i = 0,
-					l = arguments.length;
+            dom.append(sections);
 
-				for( ; i < l ; i ++ ) {
-					self.conditionalDisplayer.changed( arguments[ i ] );
-				}
+            switch (this.tplMode) {
+                case 1:
+                    this.sectionLvl1Buttons.children().eq(tabToOpen).trigger('click');
+                    break;
+            }
 
-			} );
+            dom.append(this.buttonsDom);
 
-			return (this.dom = dom);
-		},
+            // When the dom is created we can display / hide additional fields based on conditioning
+            $.when.apply($, this.allFieldElements).then(function () {
 
-		bindEvents: function( dom ) {
+                var i = 0,
+                    l = arguments.length;
 
-			var self = this;
+                for (; i < l; i++) {
+                    self.conditionalDisplayer.changed(arguments[i]);
+                }
 
-			dom.get(0).addEventListener('click', function() {
-				self.hideExpander();
-				self._unselectField();
-			}, false);
+            });
 
+            return (this.dom = dom);
+        },
 
-			dom.get(0).addEventListener('submit', function( e ) {
-			
-				self.formSubmitted( e );
-			}, false);
+        bindEvents: function (dom) {
 
+            var self = this;
 
+            dom.get(0).addEventListener('click', function () {
+                self.hideExpander();
+                self._unselectField();
+            }, false);
 
-			dom.get(0).addEventListener('keydown', function( event ) {
-				
-				self.tabPressed( event );
 
-			}, false);
+            dom.get(0).addEventListener('submit', function (e) {
 
+                self.formSubmitted(e);
+            }, false);
 
 
-		},
+            dom.get(0).addEventListener('keydown', function (event) {
 
-		_unselectField: function() {
+                self.tabPressed(event);
 
-			if( this.selectedFieldElement ) {
-				this.selectedFieldElement.unSelect(  );
-			}
-		},
+            }, false);
 
-		selectFieldElement : function ( fieldElement ) {
-			
-			this._unselectField( );
-			this.selectedFieldElement = fieldElement;
-			this.hideExpander( );
-		},
 
+        },
 
-		unSelectFieldElement : function ( fieldElement ) {
-			this.selectedFieldElement = false;
-		},
+        _unselectField: function () {
 
-		// Getting the value
-		getValue: function() {
-			var json = { sections: { } };
-			this._getValue(this.sectionElements, json.sections);
-			return json;
+            if (this.selectedFieldElement) {
+                this.selectedFieldElement.unSelect();
+            }
+        },
 
-		},
-		_getValue: SectionElement.prototype._getValue,
+        selectFieldElement: function (fieldElement) {
 
+            this._unselectField();
+            this.selectedFieldElement = fieldElement;
+            this.hideExpander();
+        },
 
-		// Setting the value
-		fill: function( json, clearFirst ) {
 
-			var self = this;
-			json = json || {};
+        unSelectFieldElement: function (fieldElement) {
+            this.selectedFieldElement = false;
+        },
 
-			this._fillSections( json.sections, clearFirst );
-			
-			$.when.apply( $.when, this.allFieldElements ).then(function() {
+        // Getting the value
+        getValue: function () {
+            var json = {sections: {}};
+            this._getValue(this.sectionElements, json.sections);
+            return json;
 
-				self._onValueLoaded.resolve( );	
-			})
-			
-		},
-		_fillSections: SectionElement.prototype._fillSections,
-		_fill: SectionElement.prototype._fill,
+        },
+        _getValue: SectionElement.prototype._getValue,
 
-		getSectionElement: SectionElement.prototype.getSectionElement,
-		_getElement: SectionElement.prototype._getElement,
 
-		getSection: function( sectionName ) {
-			return this.sections[ sectionName ] || this.throwError("Cannot find section " + sectionName + ".");
-		},
+        // Setting the value
+        fill: function (json, clearFirst) {
 
+            var self = this;
+            json = json || {};
 
-		eachSectionElements: function( callback ) {
+            this._fillSections(json.sections, clearFirst);
 
-			var i, j, l;
+            $.when.apply($.when, this.allFieldElements).then(function () {
 
-			for( i in this.sectionElements ) {
+                self._onValueLoaded.resolve();
+            })
 
-				j  = 0, 
-				l = this.sectionElements[ i ].length;
+        },
+        _fillSections: SectionElement.prototype._fillSections,
+        _fill: SectionElement.prototype._fill,
 
-				for( ; j < l ; j ++ ) {
+        getSectionElement: SectionElement.prototype.getSectionElement,
+        _getElement: SectionElement.prototype._getElement,
 
-					callback.call( this, this.sectionElements[ i ][ j ] );
-				}
-			}
-		},
+        getSection: function (sectionName) {
+            return this.sections[sectionName] || this.throwError('Cannot find section ' + sectionName + '.');
+        },
 
-		tabPressed: function( event, fieldElement ) {
 
-			if( event.keyCode == 9 ) {
-				event.preventDefault( );
-				event.stopPropagation( );
+        eachSectionElements: function (callback) {
 
-				if( ! fieldElement ) {
-					if( this.selectedFieldElement ) {
-						fieldElement = this.selectedFieldElement;
-					} else {
-						return;
-					}
-				}
+            var i, j, l;
 
-				fieldElement.unSelect();
-				var index = this.tabIndexed.indexOf( fieldElement );
-				this.tabIndexed[ index + ( event.shiftKey ? -1 : 1)  ].focus();
+            for (i in this.sectionElements) {
 
-				return true;
-			}
-		},
+                j = 0,
+                    l = this.sectionElements[i].length;
 
-		incrementTabIndex: function( field ) {
-			return this.tabIndexed[ ++ this.lastIndex ] = field;
-		},
+                for (; j < l; j++) {
 
-		redoTabIndices: function() {
+                    callback.call(this, this.sectionElements[i][j]);
+                }
+            }
+        },
 
-			this.lastIndex = 1;
-			this.tabIndexed = [];
+        tabPressed: function (event, fieldElement) {
 
-			this.eachSectionElements( function( element ) {
-				element.redoTabIndices( );
-			})
-		},
+            if (event.keyCode == 9) {
+                event.preventDefault();
+                event.stopPropagation();
 
-		inDom: function( ) {
-			this.eachSectionElements( function( element ) {
-				element.inDom( );
-			});
+                if (!fieldElement) {
+                    if (this.selectedFieldElement) {
+                        fieldElement = this.selectedFieldElement;
+                    } else {
+                        return;
+                    }
+                }
 
+                fieldElement.unSelect();
+                var index = this.tabIndexed.indexOf(fieldElement);
+                this.tabIndexed[index + ( event.shiftKey ? -1 : 1)].focus();
 
-			// We make all sections visible at this point
-			// (usefull for tables to resize their own columns)
-			var i,
-				j = 0,
-				l;
-			for( i in this.sectionElements ) {
-				l = this.sectionElements[ i ].length;
-				for( ; j < l ; j++) {
-					this.sectionElements[ i ][ j ].visible( );
-				}
-			}
-			////////////
+                return true;
+            }
+        },
 
-			this.dom.focus();
-			this.redoTabIndices( );
-		},
+        incrementTabIndex: function (field) {
+            return this.tabIndexed[++this.lastIndex] = field;
+        },
 
-		onReady: function( callback ) {
-			return this._onValueLoaded;
-		},
+        redoTabIndices: function () {
 
-		onLoaded: function( callback ) {
-			return this.onReady( callback );
-		},
+            this.lastIndex = 1;
+            this.tabIndexed = [];
 
-		// Setting the structure 
-		setStructure: function(json) {
+            this.eachSectionElements(function (element) {
+                element.redoTabIndices();
+            })
+        },
 
-			if( json.sections ) {
-				this._addSections( json.sections );
-			}
+        inDom: function () {
+            this.eachSectionElements(function (element) {
+                element.inDom();
+            });
 
-			this.structureIsSet();
-		},
-	/*	_addSections: Section.prototype._addSections,
-		_addElements: Section.prototype._addElements,
-		_addElement: Section.prototype._addElement,
-*/
-		// Called when all the structure is set.
-		structureIsSet: function() {
-			var self = this;
-			$.when.apply($, this.allFields).then(function() {
-				self._onStructureLoaded.resolve();
-			});
-		},
 
-		onStructureLoaded: function() {
-			return this._onStructureLoaded;
-		},
+            // We make all sections visible at this point
+            // (usefull for tables to resize their own columns)
+            var i,
+                j = 0,
+                l;
+            for (i in this.sectionElements) {
+                l = this.sectionElements[i].length;
+                for (; j < l; j++) {
+                    this.sectionElements[i][j].visible();
+                }
+            }
+            ////////////
 
+            this.dom.focus();
+            this.redoTabIndices();
+        },
 
-		getExpanderDom: function() {
-			return this.expander.dom || ( 
-						this.expander.dom = $("<div />")
-												.addClass('form-expander')
-												.appendTo( this.dom )
-												.on('click', function( event ) {
-													event.stopPropagation();
-													event.preventDefault();
-												} ) 
-										);
-		},
+        onReady: function (callback) {
+            return this._onValueLoaded;
+        },
 
-		setExpander: function(dom, fieldElement) {
+        onLoaded: function (callback) {
+            return this.onReady(callback);
+        },
 
-			var self = this;
-			if( this.expander.open ) {
-				this.hideExpander( true );
-			} else {
-				this.getExpanderDom().hide();
-			}
-			
-			this.getExpanderDom().children().detach();
-			this.getExpanderDom().html(dom);
-			
-			this.getExpanderDom().stop(true).show();
-			self.expander.open = true;
+        // Setting the structure
+        setStructure: function (json) {
 
-		},
+            if (json.sections) {
+                this._addSections(json.sections);
+            }
 
-		hideExpander: function(fast) {
-			
-			if( this.expander.open ) {
-				this.getExpanderDom( ).stop( true ).hide( );//[fast ? 'hide' : 'slideUp']();
-				this.expander.open = false;
-			}
-		},
+            this.structureIsSet();
+        },
+        /*	_addSections: Section.prototype._addSections,
+         _addElements: Section.prototype._addElements,
+         _addElement: Section.prototype._addElement,
+         */
+        // Called when all the structure is set.
+        structureIsSet: function () {
+            var self = this;
+            $.when.apply($, this.allFields).then(function () {
+                self._onStructureLoaded.resolve();
+            });
+        },
 
-		addButton: function( label, options, callback, onSubmitClick ) {
+        onStructureLoaded: function () {
+            return this._onStructureLoaded;
+        },
 
-			var self = this;
-			require( [ 'forms/button' ], function( Button ) {
 
-				var btn = new Button( label, callback, options );
-				self.buttons.push( btn );
-				btn.clickOnSubmit = onSubmitClick;
-				self.onReady( ).done( function( ) {
-					self.buttonsDom.prepend( btn.render( ) );	
-				});
-			});
-		},
+        getExpanderDom: function () {
+            return this.expander.dom || (
+                    this.expander.dom = $('<div />')
+                        .addClass('form-expander')
+                        .appendTo(this.dom)
+                        .on('click', function (event) {
+                            event.stopPropagation();
+                            event.preventDefault();
+                        })
+                );
+        },
 
-		throwError: function(error) {
-			console.error(error);
-			return false;
-		},
+        setExpander: function (dom, fieldElement) {
 
-		formSubmitted: function( e ) {
+            var self = this;
+            if (this.expander.open) {
+                this.hideExpander(true);
+            } else {
+                this.getExpanderDom().hide();
+            }
 
-			e.preventDefault();
-			for( var i = 0, l = this.buttons.length ; i < l ; i ++ ) {
-				if( this.buttons[ i ].clickOnSubmit ) {
-					this.buttons[ i ].doClick();
-				}
-			}
-		}
+            this.getExpanderDom().children().detach();
+            this.getExpanderDom().html(dom);
 
-	});
+            this.getExpanderDom().stop(true).show();
+            self.expander.open = true;
 
+        },
 
-	return Form;
+        hideExpander: function (fast) {
+
+            if (this.expander.open) {
+                this.getExpanderDom().stop(true).hide();//[fast ? 'hide' : 'slideUp']();
+                this.expander.open = false;
+            }
+        },
+
+        addButton: function (label, options, callback, onSubmitClick) {
+
+            var self = this;
+            require(['forms/button'], function (Button) {
+
+                var btn = new Button(label, callback, options);
+                self.buttons.push(btn);
+                btn.clickOnSubmit = onSubmitClick;
+                self.onReady().done(function () {
+                    self.buttonsDom.prepend(btn.render());
+                });
+            });
+        },
+
+        throwError: function (error) {
+            console.error(error);
+            return false;
+        },
+
+        formSubmitted: function (e) {
+
+            e.preventDefault();
+            for (var i = 0, l = this.buttons.length; i < l; i++) {
+                if (this.buttons[i].clickOnSubmit) {
+                    this.buttons[i].doClick();
+                }
+            }
+        }
+
+    });
+
+
+    return Form;
 });

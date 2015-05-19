@@ -8,7 +8,7 @@ define([
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'Matrix display',
@@ -54,10 +54,10 @@ define([
                 return;
             }
 
-            controller.setVarFromEvent(name, 'row', 'matrix', ['xLabel', keyed[0]]);
-            controller.setVarFromEvent(name, 'col', 'matrix', ['yLabel', keyed[1]]);
-            controller.setVarFromEvent(name, 'intersect', 'matrix', ['data', keyed[0], keyed[1]]);
-        }
+            controller.setVarFromEvent(name, 'row', 'matrix', ['xLabel', keyed[1]]);
+            controller.setVarFromEvent(name, 'col', 'matrix', ['yLabel', keyed[0]]);
+            controller.setVarFromEvent(name, 'intersect', 'matrix', ['data', keyed[1], keyed[0]]);
+        };
     }
 
     Controller.prototype.initEvents = function () {
@@ -84,7 +84,8 @@ define([
         },
         matrix: {
             label: 'Matrix',
-            description: 'A 2D array representing the matrix'
+            description: 'A 2D array representing the matrix',
+            type: 'matrix'
         }
     };
 
@@ -92,20 +93,20 @@ define([
 
     Controller.prototype.events = {
         onPixelHover: {
-            label: 'mouse hover pixel',
+            label: 'Hover on a pixel',
             description: 'When the mouses moves over a new pixel of the data matrix',
             refVariable: ['row', 'col', 'intersect']
         },
         onPixelClick: {
-            label: 'click on a pixel',
+            label: 'Click on a pixel',
             description: 'When the users click on any pixel',
             refVariable: ['row', 'col', 'intersect']
         }/*,
-        onPixelDblClick: {
-            label: 'double click on a pixel',
-            description: 'When the user double clics on any pixel',
-            refVariable: ['row', 'col', 'intersect']
-        }*/
+         onPixelDblClick: {
+         label: 'double click on a pixel',
+         description: 'When the user double clics on any pixel',
+         refVariable: ['row', 'col', 'intersect']
+         }*/
     };
 
     Controller.prototype.configurationStructure = function () {
@@ -117,7 +118,7 @@ define([
                     },
                     fields: {
                         highcontrast: {
-                            default: 'true',
+                            'default': 'true',
                             type: 'checkbox',
                             title: 'Contrast',
                             options: {'true': 'Take data min/max as boundaries'}
@@ -130,7 +131,7 @@ define([
                     }
                 }
             }
-        }
+        };
     };
 
     Controller.prototype.configAliases = {

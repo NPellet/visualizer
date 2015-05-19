@@ -5,7 +5,7 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
         init: function () {
 
             this._id = Util.getNextUniqueId();
@@ -34,6 +34,7 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
                 this.editor = ace.edit(this._id);
                 var mode = './mode/' + this.module.getConfiguration('mode');
 
+                this.editor.$blockScrolling = Infinity;
                 this.editor.getSession().setMode(mode);
                 this.editor.setValue(initVal, -1);
                 this.editor.getSession().on('change', function () {
@@ -76,7 +77,9 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
             this.module.controller.onEditorChanged(this._code);
         },
         onResize: function () {
-            this.editor && this.editor.resize();
+            if (this.editor) {
+                this.editor.resize();
+            }
         }
     });
 

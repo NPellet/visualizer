@@ -3,9 +3,10 @@
 define(['modules/types/client_interaction/code_editor/view', 'src/util/util', 'ace/ace', 'src/util/context', 'jquery'], function (CodeEditor, Util, ace, Context, $) {
 
     function View() {
+        CodeEditor.call(this);
     }
 
-    View.prototype = Object.create(CodeEditor.prototype);
+    Util.inherits(View, CodeEditor);
 
     View.prototype.init = function () {
         CodeEditor.prototype.init.call(this);
@@ -21,6 +22,7 @@ define(['modules/types/client_interaction/code_editor/view', 'src/util/util', 'a
         if (this.module.getConfigurationCheckbox('display', 'editor')) {
             $('<div id="' + this._id + '"></div>').css('height', '100%').css('width', '100%').appendTo(this.editorCell);
             this.editor = ace.edit(this._id);
+            this.editor.$blockScrolling = Infinity;
             this.editor.getSession().setMode('./mode/javascript');
             this.editor.setValue(initVal, -1);
             this.editor.getSession().on('change', this.editorChanged.bind(this));

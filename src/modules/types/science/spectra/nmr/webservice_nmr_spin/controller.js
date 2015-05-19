@@ -5,7 +5,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/datatrave
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'NMR spin system simulation',
@@ -32,16 +32,16 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/datatrave
         // Replace all variables in the URL
         reg = /\<var:([a-zA-Z0-9]+)\>/;
         while (val = reg.exec(url)) {
-            variable = API.getRepositoryData().get(val[ 1 ]) || [ '' ];
-            variable = variable[ 1 ];
-            url = url.replace('<var:' + val[ 1 ] + '>', encodeURIComponent(variable));
+            variable = API.getRepositoryData().get(val[1]) || [''];
+            variable = variable[1];
+            url = url.replace('<var:' + val[1] + '>', encodeURIComponent(variable));
         }
 
         this.url = url;
 
         var data = this.module.view.system.serializeArray();
         var toSend = {};
-        for(var i = 0; i < data.length; i++) {
+        for (var i = 0; i < data.length; i++) {
             toSend[data[i].name] = data[i].value;
         }
 
@@ -95,18 +95,18 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/datatrave
                             title: 'Spin system',
                             'default': '2',
                             options: [
-                                { key: '2', title: 'AB'},
-                                { key: '3', title: 'ABC'},
-                                { key: '4', title: 'ABCD'},
-                                { key: '5', title: 'ABCDE'},
-                                { key: '6', title: 'ABCDEF'}
+                                {key: '2', title: 'AB'},
+                                {key: '3', title: 'ABC'},
+                                {key: '4', title: 'ABCD'},
+                                {key: '5', title: 'ABCDE'},
+                                {key: '6', title: 'ABCDEF'}
                             ]
                         },
                         button: {
                             type: 'checkbox',
                             title: 'Process button',
                             'default': 'button',
-                            options: { button: '' }
+                            options: {button: ''}
                         },
                         buttonlabel: {
                             type: 'text',
@@ -122,7 +122,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/datatrave
                             type: 'checkbox',
                             title: 'Make one process on load',
                             'default': 'onload',
-                            options: { onload: '' }
+                            options: {onload: ''}
                         }
                     }
                 }
@@ -131,15 +131,14 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/datatrave
     };
 
     Controller.prototype.configAliases = {
-        url: [ 'groups', 'group', 0, 'url', 0 ],
-        button: [ 'groups', 'group', 0, 'button', 0 ],
-        systemSize: [ 'groups', 'group', 0, 'systemSize' ],
-        buttonlabel: [ 'groups', 'group', 0, 'buttonlabel', 0 ],
-        buttonlabel_exec: [ 'groups', 'group', 0, 'buttonlabel_exec', 0 ],
-        onloadanalysis: [ 'groups', 'group', 0, 'onloadanalysis', 0, 0 ]
+        url: ['groups', 'group', 0, 'url', 0],
+        button: ['groups', 'group', 0, 'button', 0],
+        systemSize: ['groups', 'group', 0, 'systemSize'],
+        buttonlabel: ['groups', 'group', 0, 'buttonlabel', 0],
+        buttonlabel_exec: ['groups', 'group', 0, 'buttonlabel_exec', 0],
+        onloadanalysis: ['groups', 'group', 0, 'onloadanalysis', 0, 0]
     };
 
     return Controller;
 
 });
-

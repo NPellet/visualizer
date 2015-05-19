@@ -14,7 +14,7 @@ define(['components/superagent/superagent'], function (agent) {
                     return reject(err);
                 }
                 if (res.status !== 200) {
-                    return reject(new Error('Failed to download worker at ' + url))
+                    return reject(new Error('Failed to download worker at ' + url));
                 }
                 var blob = new Blob([res.text], {type: 'application/javascript'});
                 var blobUrl = URL.createObjectURL(blob);

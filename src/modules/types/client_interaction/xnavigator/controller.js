@@ -1,10 +1,12 @@
-define(['modules/default/defaultcontroller'], function(Default) {
+'use strict';
+
+define(['modules/default/defaultcontroller'], function (Default) {
 
 
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'X Nav',
@@ -15,71 +17,55 @@ define(['modules/default/defaultcontroller'], function(Default) {
         cssClass: 'xnav'
     };
 
-
-	Controller.prototype.references = {
-        
-        'xcoords': {
-			label: 'X Coords'
-		}
-
+    Controller.prototype.references = {
+        xcoords: {
+            label: 'X Coords'
+        }
     };
 
     Controller.prototype.events = {
-
-    	onMove: {
-			label: 'Move',
-			description: '',
-			refVariable: ['xcoords'],
-			refAction: ['xcoords']
-		}
+        onMove: {
+            label: 'Move',
+            description: '',
+            refVariable: ['xcoords'],
+            refAction: ['xcoords']
+        }
     };
 
-    Controller.prototype.move = function( x ) {
-
-		this.createDataFromEvent('onMove', 'xcoords', x );
-        this.sendAction('xcoords', x, 'onMove');
-    }
-
+    Controller.prototype.move = function (x) {
+        this.createDataFromEvent('onMove', 'xcoords', x);
+        this.sendActionFromEvent('onMove', 'xcoords', x);
+    };
 
     Controller.prototype.variablesIn = ['xcoords'];
 
     Controller.prototype.actionsIn = {
-		
-		changeX: 'Change X center value'
-	}
+        changeX: 'Change X center value'
+    };
 
-	Controller.prototype.configurationStructure = function(section) {
-		
-		return {
+    Controller.prototype.configurationStructure = function () {
+        return {
+            groups: {
+                group: {
+                    options: {
+                        type: 'list'
+                    },
+                    fields: {
+                        step: {
+                            type: 'float',
+                            title: 'Step',
+                            'default': 1
+                        }
+                    }
+                }
+            }
+        };
+    };
 
-			groups: {
+    Controller.prototype.configAliases = {
+        step: ['groups', 'group', 0, 'step', 0]
+    };
 
-				group: {
-					options: {
-						type: 'list'
-					},
+    return Controller;
 
-					fields: {
-
-						step: {
-							type: 'float',
-							title: 'Step',
-                            default: '1'
-						}
-					}
-				}
-			}
-		}
-	}
-
-
-	Controller.prototype.configFunctions = {
-	};
-
-	Controller.prototype.configAliases = {
-        'step': ['groups', 'group', 0, 'step', 0]
-	};
-
-
-	return Controller;
 });

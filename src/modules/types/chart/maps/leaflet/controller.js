@@ -5,7 +5,7 @@ define(['modules/default/defaultcontroller', 'src/util/api'], function (Default,
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'Leaflet map',
@@ -194,20 +194,20 @@ define(['modules/default/defaultcontroller', 'src/util/api'], function (Default,
     Controller.prototype.moveAction = function () {
         var center = this.map.getCenter();
 
-        this.module.controller.sendAction('position', [center.lat, center.lng], 'onMapMove');
+        this.module.controller.sendActionFromEvent('onMapMove', 'position', [center.lat, center.lng]);
 
         boundUpdate.call(this);
     };
 
     Controller.prototype.zoomAction = function () {
-        this.module.controller.sendAction('zoom', this.map.getZoom(), 'onZoomChange');
+        this.module.controller.sendActionFromEvent('onZoomChange', 'zoom', this.map.getZoom());
 
         boundUpdate.call(this);
     };
 
     function boundUpdate() {
         var map = this.map;
-        this.module.controller.setVarFromEvent('onMapMove', function () {
+        this.module.controller.createDataFromEvent('onMapMove', 'viewport', null, function () {
             var bounds = map.getBounds();
             var arr = new Array(4);
 
@@ -225,7 +225,7 @@ define(['modules/default/defaultcontroller', 'src/util/api'], function (Default,
                     }
                 }
             });
-        }, 'viewport');
+        });
     }
 
     function getGeoCoords(latLng) { // return coordinates in geojson order

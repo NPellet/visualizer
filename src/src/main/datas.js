@@ -87,7 +87,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
     function duplicate(object) {
 
         var type = typeof object;
-        if (type === 'number' || type === 'string' || type === 'boolean') {
+        if (type === 'number' || type === 'string' || type === 'boolean' || object === null) {
             return object;
         } else if (type === 'undefined' || type === 'function') {
             return;
@@ -309,7 +309,9 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
                     if (this.hasOwnProperty('type') && this.hasOwnProperty('value')) {
                         return Promise.resolve(this.value);
                     } else if (this.hasOwnProperty('type') && this.hasOwnProperty('url')) {
-                        return this.fetch(true);
+                        return this.fetch(true).then(function (self) {
+                            return self.get();
+                        });
                     } else {
                         return Promise.resolve(this);
                     }
@@ -916,22 +918,19 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
             type = object.getType();
             object = object.get();
         } else {
-            type = typeof object
+            type = typeof object;
         }
 
         switch (type) {
 
             case 'string':
                 return new DataString(object);
-                break;
 
             case 'number':
                 return new DataNumber(object);
-                break;
 
             case 'boolean':
                 return new DataBoolean(object);
-                break;
         }
 
     }

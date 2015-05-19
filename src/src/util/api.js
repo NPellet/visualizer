@@ -73,12 +73,6 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
             this.repositoryActions = repo;
         },
 
-        resetVariables: function () {
-
-            Variables.eraseAll();
-
-        },
-
         createDataJpath: createDataJpath,
 
         listenHighlight: function () {
@@ -102,9 +96,14 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
         },
 
         setAllFilters: function (filters) {
-
-            variableFilters = filters;
-            variableFilters.unshift({file: '', name: 'No filter'});
+            variableFilters = _([filters, variableFilters]).flatten().filter(function(v){
+                return v && v.name && v.file;
+            }).uniq(function(v) {
+                return v.file;
+            }).unshift({
+                file: '',
+                name: 'No filter'
+            }).value();
         },
 
         viewLock: function () {
