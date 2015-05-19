@@ -37,7 +37,10 @@ define([
 
             this.values = {};
             this.module.getDomContent().html(this.dom);
-            this.fillWithVal({type:'html', value:this.module.getConfiguration('defaultvalue', '')});
+            this.fillWithVal({
+                type: 'html',
+                value: this.module.getConfiguration('defaultvalue', '')
+            });
             this.resolveReady();
             this._relsForLoading = ['value'];
         },

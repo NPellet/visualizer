@@ -1,426 +1,359 @@
-define( [
+'use strict';
 
-	'modules/default/defaultview', 
-	'src/util/datatraversing', 
-	'lib/gcms/gcms', 
-	'src/util/util', 
-	'src/util/api'
+define([
+    'modules/default/defaultview',
+    'src/util/datatraversing',
+    'lib/gcms/gcms'
+], function (Default,
+             Traversing,
+             GCMS) {
 
-	], function(
+    function View() {
+    }
 
-		Default, 
-		Traversing, 
-		GCMS, 
-		Util, 
-		API
+    $.extend(true, View.prototype, Default, {
 
-	) {
-	
-	
-	function view() {};
-	view.prototype = $.extend(true, {}, Default, {
-		
-		init: function() {
+        init: function () {
 
-			
-			this.namedSeries = {};
-			
-			var div1 = document.createElement('div');
-			var div2 = document.createElement('div');
+            this.namedSeries = {};
 
-			var domGraph = document.createElement("div");
+            var div1 = document.createElement('div');
+            var div2 = document.createElement('div');
 
-			domGraph.appendChild( div1 );
-			domGraph.appendChild( div2 );
+            var domGraph = document.createElement('div');
 
-			div2.style.width = '100%';
-			div2.style.height = '100px';
+            domGraph.appendChild(div1);
+            domGraph.appendChild(div2);
 
-			div1.style.width = '100%';
-			div1.style.height = '250px';
-			
-			this.div1 = div1;
-			this.div2 = div2;
+            div2.style.width = '100%';
+            div2.style.height = '100px';
 
-			this.dom = domGraph;
-			this.module.getDomContent().html( domGraph );
-			this.resolveReady();
-		},
+            div1.style.width = '100%';
+            div1.style.height = '250px';
 
-		unload: function() {
-			//this.gcmsInstance.unload();
-			this.dom.remove();
-		},
+            this.div1 = div1;
+            this.div2 = div2;
 
-		inDom: function() {
+            this.dom = domGraph;
+            this.module.getDomContent().html(domGraph);
+            this.resolveReady();
+        },
 
-			var self = this;
+        inDom: function () {
 
-			var gcmsinstance = new GCMS( this.div1, this.div2, {
+            var self = this;
 
-										
-				AUCCreated: function( auc ) {
+            var gcmsinstance = new GCMS(this.div1, this.div2, {
 
-					var self = this;
-					var pos = Math.round( auc.data.pos.x );
-					var pos2 = Math.round( auc.data.pos2.x );
+
+                AUCCreated: function (auc) {
+
+                    var self = this;
+                    var pos = Math.round(auc.data.pos.x);
+                    var pos2 = Math.round(auc.data.pos2.x);
 //					var color = rgbToHex.apply( this, auc.data.color );
 
 
-				},
+                },
 
-				AUCChange: function( auc ) {
+                AUCChange: function (auc) {
 
-					var pos = Math.round( auc.data.pos.x );
-					var pos2 = Math.round( auc.data.pos2.x );
+                    var pos = Math.round(auc.data.pos.x);
+                    var pos2 = Math.round(auc.data.pos2.x);
 
-					if( auc.msFromAucSerie ) {
-						auc.msFromAucSerie.setLineColor( 'rgba(255, 0, 0, 1)' );
-						auc.msFromAucSerie.applyLineStyles();
+                    if (auc.msFromAucSerie) {
+                        auc.msFromAucSerie.setLineColor('rgba(255, 0, 0, 1)');
+                        auc.msFromAucSerie.applyLineStyles();
 
 //									auc.msFromAucSerie.showPeakPicking();
-					}
+                    }
 
-					if( auc.data._originalSource ) {
+                    if (auc.data._originalSource) {
 
-						auc.data._originalSource.set('from', pos );
-						auc.data._originalSource.set('to', pos2 );
+                        auc.data._originalSource.set('from', pos);
+                        auc.data._originalSource.set('to', pos2);
 
-						auc.data._originalSource.triggerChange();
-					}
-				},
+                        auc.data._originalSource.triggerChange();
+                    }
+                },
 
-				onMsFromAUCChange: function( ms ) {
+                onMsFromAUCChange: function (ms) {
 
-					self.module.controller.createDataFromEvent('onMSChange', 'ms', ms);
-					
-				},
+                    self.module.controller.createDataFromEvent('onMSChange', 'ms', ms);
 
+                },
 
-				AUCSelected: function( auc ) {
 
-				/*	if( auc.msFromAucSerie ) {
-						auc.msFromAucSerie.setLineColor( 'rgba(255, 0, 0, 1)' );
-						auc.msFromAucSerie.applyLineStyles();
+                AUCSelected: function (auc) {
 
-						auc.msFromAucSerie.showPeakPicking( true );
-					}*/
-					if( auc.data ) {
-						
-						self.module.controller.createDataFromEvent('onIntegralSelect', 'GCIntegration', auc.data._originalSource );
+                    /*	if( auc.msFromAucSerie ) {
+                     auc.msFromAucSerie.setLineColor( 'rgba(255, 0, 0, 1)' );
+                     auc.msFromAucSerie.applyLineStyles();
 
-						self.module.controller.sendActionFromEvent( 'onIntegralSelect', 'GCIntegration', auc.data._originalSource);
-						
-					} else {
-						//console.trace();
-					}
+                     auc.msFromAucSerie.showPeakPicking( true );
+                     }*/
+                    if (auc.data) {
 
+                        self.module.controller.createDataFromEvent('onIntegralSelect', 'GCIntegration', auc.data._originalSource);
 
-					
-				},
+                        self.module.controller.sendActionFromEvent('onIntegralSelect', 'GCIntegration', auc.data._originalSource);
 
-				AUCUnselected: function( auc ) {
+                    } else {
+                        //console.trace();
+                    }
 
-					var rgb = auc.data.color;
 
-					auc.set('fillColor', 'rgba(' + rgb[ 0 ] + ', ' + rgb[ 1 ] + ', ' + rgb[ 2 ] + ', 0.3)');
-					auc.set( 'strokeColor', 'rgba(' + rgb[ 0 ]+ ', ' + rgb[ 1 ] + ', ' + rgb[ 2 ] + ', 1)');
+                },
 
-					auc.setFillColor();
-					auc.setStrokeColor();
+                AUCUnselected: function (auc) {
 
-					if( auc.msFromAucSerie ) {
-						auc.msFromAucSerie.setLineColor( 'rgba(' + rgb[ 0 ] + ', ' + rgb[ 1 ] + ', ' + rgb[ 2 ] + ', 0.3)' );
-						auc.msFromAucSerie.applyLineStyles();
-						auc.msFromAucSerie.hidePeakPicking( true );
-					}
+                    var rgb = auc.data.color;
 
-				},
+                    auc.set('fillColor', 'rgba(' + rgb[0] + ', ' + rgb[1] + ', ' + rgb[2] + ', 0.3)');
+                    auc.set('strokeColor', 'rgba(' + rgb[0] + ', ' + rgb[1] + ', ' + rgb[2] + ', 1)');
 
-				AUCRemoved: function( auc ) {
+                    auc.setFillColor();
+                    auc.setStrokeColor();
 
+                    if (auc.msFromAucSerie) {
+                        auc.msFromAucSerie.setLineColor('rgba(' + rgb[0] + ', ' + rgb[1] + ', ' + rgb[2] + ', 0.3)');
+                        auc.msFromAucSerie.applyLineStyles();
+                        auc.msFromAucSerie.hidePeakPicking(true);
+                    }
 
-					if( auc.msFromAucSerie ) {
-						auc.msFromAucSerie.kill();
-					}
+                },
 
-				},
+                AUCRemoved: function (auc) {
 
-				MZChange: function( ms ) {
 
-					self.module.controller.sendActionFromEvent('onMZSelectionChange', 'mzList', ms);
-				},
+                    if (auc.msFromAucSerie) {
+                        auc.msFromAucSerie.kill();
+                    }
 
-				MSChangeIndex: function( msIndex, ms ) {
-					self.module.controller.sendActionFromEvent('onMSIndexChanged', 'msIndex', msIndex);
-					self.module.controller.createDataFromEvent('onMSIndexChanged', 'msMouse', ms);
-					
-				},
+                },
 
-				onZoomGC: function( from, to ) {
+                MZChange: function (ms) {
 
-					self.module.controller.sendActionFromEvent('onZoomGCChange', 'fromtoGC', [ from, to ]);
-					self.module.controller.sendActionFromEvent('onZoomGCChange', 'centerGC', (to + from) / 2);
-				},
+                    self.module.controller.sendActionFromEvent('onMZSelectionChange', 'mzList', ms);
+                },
 
-				ingredientSelected: function( ingredient ) {
+                MSChangeIndex: function (msIndex, ms) {
+                    self.module.controller.sendActionFromEvent('onMSIndexChanged', 'msIndex', msIndex);
+                    self.module.controller.createDataFromEvent('onMSIndexChanged', 'msMouse', ms);
 
-					self.module.controller.sendActionFromEvent('onIngredientSelected', 'selectedIngredient', ingredient);
-				},
+                },
 
-				onlyOneMS: true
+                onZoomGC: function (from, to) {
 
-			} );
+                    self.module.controller.sendActionFromEvent('onZoomGCChange', 'fromtoGC', [from, to]);
+                    self.module.controller.sendActionFromEvent('onZoomGCChange', 'centerGC', (to + from) / 2);
+                },
 
-			this.gcmsInstance = gcmsinstance;
-		},
+                ingredientSelected: function (ingredient) {
 
-		unload: function() {
-			this.dom.remove();
-			//this.gcmsInstance = false;
-		},
+                    self.module.controller.sendActionFromEvent('onIngredientSelected', 'selectedIngredient', ingredient);
+                },
 
-		onResize: function() {
-			this.gcmsInstance.resize(this.width, this.height);
-		},
-		
-		blank: {
-			jcamp: function(varname) {
-			//	this.gcmsInstance.blank();
-			}
-		},
+                onlyOneMS: true
 
-		update: {
-			'jcamp': function(moduleValue) {
-				var self = this;
+            });
 
-				moduleValue = String(moduleValue.get());
-				require( [ 'components/jcampconverter/dist/jcampconverter.min' ], function( tojcamp ) {
+            this.gcmsInstance = gcmsinstance;
+        },
 
-					tojcamp.convert( moduleValue, true ).then( function( jcamp ) {
+        unload: function () {
+            this.dom.remove();
+            //this.gcmsInstance = false;
+        },
 
-						if( jcamp.gcms ) {
+        onResize: function () {
+            this.gcmsInstance.resize(this.width, this.height);
+        },
 
-							self.gcmsInstance.setGC( jcamp.gcms.gc );
-							self.gcmsInstance.setMS( jcamp.gcms.ms );
+        blank: {
+            jcamp: function (varname) {
+                //	this.gcmsInstance.blank();
+            }
+        },
 
-							self.module.controller.createDataFromEvent( "onJCampParsed", "msdata", jcamp.gcms.ms );
-							self.module.controller.createDataFromEvent( "onJCampParsed", "gcdata", jcamp.gcms.gc );
+        update: {
+            'jcamp': function (moduleValue) {
+                var self = this;
 
-							self.jcamp = jcamp;
-						}
-					});
-					
-				});
-			},
+                moduleValue = String(moduleValue.get());
+                require(['components/jcampconverter/dist/jcampconverter.min'], function (tojcamp) {
 
-			'annotationgc': function(value) {
-				if( ! value ) {
-					return;
-				}
-		
-				this.resetAnnotationsGC( );
-				this.addAnnotations( value );
-			},
+                    tojcamp.convert(moduleValue, true).then(function (jcamp) {
 
-			'gcms': function(moduleValue) {
-				this.gcmsInstance.setGC(moduleValue.gc);
-				this.gcmsInstance.setMS(moduleValue.ms);
-			},
+                        if (jcamp.gcms) {
 
-			'gc': function(moduleValue) {
-				var self = this;
-				if(!this.gcmsInstance || !moduleValue)
-					return;
+                            self.gcmsInstance.setGC(jcamp.gcms.gc);
+                            self.gcmsInstance.setMS(jcamp.gcms.ms);
 
-				var jcamp = tojcamp(moduleValue.get()).done( function( jcamp ) {
-					if(jcamp.spectra) {
-						self.gcmsInstance.setExternalGC(jcamp.spectra[0].data[0]);
-					}
-				});
-			},
+                            self.module.controller.createDataFromEvent('onJCampParsed', 'msdata', jcamp.gcms.ms);
+                            self.module.controller.createDataFromEvent('onJCampParsed', 'gcdata', jcamp.gcms.gc);
 
+                            self.jcamp = jcamp;
+                        }
+                    });
 
-			'ms': function(moduleValue, name, cont) {
-				var self = this;
-				if(!this.gcmsInstance || !moduleValue)
-					return;
+                });
+            },
 
-				this.gcmsInstance.setExternalMS( moduleValue, {} );
-			},
+            'annotationgc': function (value) {
+                if (!value) {
+                    return;
+                }
 
-			'mscont': function(moduleValue, name) {
-				this.update.ms(moduleValue, name, true);
-			},
+                this.resetAnnotationsGC();
+                this.addAnnotations(value);
+            },
 
-			'ingredientList': function( value, varName ) {
+            'gcms': function (moduleValue) {
+                this.gcmsInstance.setGC(moduleValue.gc);
+                this.gcmsInstance.setMS(moduleValue.ms);
+            },
 
-				var self = this;
+            'gc': function (moduleValue) {
+                var self = this;
+                if (!this.gcmsInstance || !moduleValue)
+                    return;
 
-				if( ! value ) {
-					return;
-				}
+                var jcamp = tojcamp(moduleValue.get()).done(function (jcamp) {
+                    if (jcamp.spectra) {
+                        self.gcmsInstance.setExternalGC(jcamp.spectra[0].data[0]);
+                    }
+                });
+            },
 
 
-				this.ingredientList = value;
+            'ms': function (moduleValue, name, cont) {
+                var self = this;
+                if (!this.gcmsInstance || !moduleValue)
+                    return;
 
-				this.ingredientList.map( function( source ) {
-					self.gcmsInstance.addIngredient( source );
-				});
-			},
+                this.gcmsInstance.setExternalMS(moduleValue, {});
+            },
 
-			'RIComponents': function( value ) {
+            'mscont': function (moduleValue, name) {
+                this.update.ms(moduleValue, name, true);
+            },
 
-				if( value ) {
-					this.gcmsInstance.setRIComponents( value );
-				}
-				
-			}
-		},
+            'ingredientList': function (value, varName) {
 
-		getDom: function() {
-			return this.dom;
-		},
+                var self = this;
 
-		resetAnnotationsGC: function() {
+                if (!value) {
+                    return;
+                }
 
 
-			if( ! this.gcmsInstance ) {
-				return;
-			}
+                this.ingredientList = value;
 
-			this.gcmsInstance.killAllAUC();
-		},
+                this.ingredientList.map(function (source) {
+                    self.gcmsInstance.addIngredient(source);
+                });
+            },
 
-		addAnnotations: function( a ) {
+            'RIComponents': function (value) {
 
-			var self = this;
-			a.map( function( source ) {
+                if (value) {
+                    this.gcmsInstance.setRIComponents(value);
+                }
 
-				var shapeData = self.gcmsInstance.addAUC( source.from, source.to, source );
-				shapeData._originalSource = source;
-			});
+            }
+        },
 
-			this.annotations = a;
-		},
+        getDom: function () {
+            return this.dom;
+        },
 
+        resetAnnotationsGC: function () {
 
-		onActionReceive: {
-			fromtoGC: function(value, name) {
 
-				var from = value.from - Math.abs( value.to - value.from ) * 0.1;
-				var to = value.to + Math.abs( value.to - value.from ) * 0.1;
-				
-				this.gcmsInstance.getGC().getBottomAxis()._doZoomVal( from, to, true);
-				this.gcmsInstance.getGC().redraw( true, true, false );
-				this.gcmsInstance.getGC().drawSeries();
+            if (!this.gcmsInstance) {
+                return;
+            }
 
-				this.module.controller.sendActionFromEvent('onZoomGCChange', 'centerGC', (to + from) / 2);
+            this.gcmsInstance.killAllAUC();
+        },
 
-				this.gcmsInstance.updateIngredientPeaks();
+        addAnnotations: function (a) {
 
-			},
+            var self = this;
+            a.map(function (source) {
 
-			fromtoMS: function(value, name) {
-				this.gcmsInstance.getMS().getBottomAxis()._doZoomVal(value.from, value.to, true);
-			},
+                var shapeData = self.gcmsInstance.addAUC(source.from, source.to, source);
+                shapeData._originalSource = source;
+            });
 
-			externalMS: function( value, name ) {
+            this.annotations = a;
+        },
 
-				var self = this;
-				if( ! this.gcmsInstance || !value) {
-					return;
-				}
 
-				this.gcmsInstance.setExternalMS( value, {} );
+        onActionReceive: {
+            fromtoGC: function (value, name) {
 
-				self.module.controller.createDataFromEvent('onMSChange', 'ms', value);
-			},
+                var from = value.from - Math.abs(value.to - value.from) * 0.1;
+                var to = value.to + Math.abs(value.to - value.from) * 0.1;
 
-			zoomOnAnnotation: function(value, name) {
-				if(!value.pos && !value.pos2) {
-					return;
-				}
-				this.gcmsInstance.zoomOn(value.pos.x, value.pos2.x, value._max || false);
-				this.module.controller.sendActionFromEvent('onZoomGCChange', 'centerGC', (value.pos.x + value.pos2.x) / 2);
-				this.gcmsInstance.updateIngredientPeaks();
-				
-			},
+                this.gcmsInstance.getGC().getBottomAxis()._doZoomVal(from, to, true);
+                this.gcmsInstance.getGC().redraw(true, true, false);
+                this.gcmsInstance.getGC().drawSeries();
 
-			displayChemicalLabels: function() {
-				return;
-				var i = 0, 
-					l = this.shapes.length;
+                this.module.controller.sendActionFromEvent('onZoomGCChange', 'centerGC', (to + from) / 2);
 
-				for ( ; i < l ; i++ ) {
-					this.shapes[i].toggleLabel( 1 , true );
-				}
-			},
+                this.gcmsInstance.updateIngredientPeaks();
 
-			hideChemicalLabels: function() {
-				return;
-				var i = 0, 
-					l = this.shapes.length;
+            },
 
-				for ( ; i < l ; i++ ) {
-					this.shapes[i].toggleLabel( 1 , false );
-				}
+            fromtoMS: function (value, name) {
+                this.gcmsInstance.getMS().getBottomAxis()._doZoomVal(value.from, value.to, true);
+            },
 
-			},
+            externalMS: function (value, name) {
 
-			centerGC: function( value ) {
+                var self = this;
+                if (!this.gcmsInstance || !value) {
+                    return;
+                }
 
-				
-				var a = this.gcmsInstance.getGC().getBottomAxis();
+                this.gcmsInstance.setExternalMS(value, {});
 
-				var mi = a.getActualMin();
-				var ma = a.getActualMax();
+                self.module.controller.createDataFromEvent('onMSChange', 'ms', value);
+            },
 
-				var interval = Math.abs( ma - mi ) / 2;
+            zoomOnAnnotation: function (value, name) {
+                if (!value.pos && !value.pos2) {
+                    return;
+                }
+                this.gcmsInstance.zoomOn(value.pos.x, value.pos2.x, value._max || false);
+                this.module.controller.sendActionFromEvent('onZoomGCChange', 'centerGC', (value.pos.x + value.pos2.x) / 2);
+                this.gcmsInstance.updateIngredientPeaks();
 
-				a._doZoomVal( value - interval, value + interval, true);
-				this.gcmsInstance.getGC().redraw( true, true, false );
-				this.gcmsInstance.getGC().drawSeries();
-			},
+            },
 
-			setMSIndexData: function( x ) {
-				this.gcmsInstance.setMSIndexData( x );
-			}
-		},
+            centerGC: function (value) {
 
-		doAnnotation: function(annotation) {
 
-			return;
+                var a = this.gcmsInstance.getGC().getBottomAxis();
 
+                var mi = a.getActualMin();
+                var ma = a.getActualMax();
 
+                var interval = Math.abs(ma - mi) / 2;
 
-			var self = this;
-			var shape = this.gcmsInstance.getGC().makeShape(annotation, {}, false);
+                a._doZoomVal(value - interval, value + interval, true);
+                this.gcmsInstance.getGC().redraw(true, true, false);
+                this.gcmsInstance.getGC().drawSeries();
+            },
 
-			shape.setSelectable(true);
+            setMSIndexData: function (x) {
+                this.gcmsInstance.setMSIndexData(x);
+            }
+        }
+    });
 
-			annotation.onChange(function(value) {
-				shape.draw();
-				shape.redraw();
-			}, self.module.getId());
-			
-			API.killHighlight(this.module.getId());
-			API.listenHighlight( annotation, function( onOff ) {
+    return View;
 
-				if( onOff ) {
-					shape.highlight();
-				} else {
-					shape.unHighlight();
-				}
-			}, false, this.module.getId());
-
-
-			shape.draw();
-			shape.redraw();
-
-			return shape;
-		}
-	});
-
-	return view;
 });

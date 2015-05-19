@@ -41,7 +41,7 @@ define([
         if (forceType) {
             value = new DataObject({
                 type: forceType,
-                value: value
+                value: DataObject.check(value, true).get()
             });
         }
 

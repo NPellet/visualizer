@@ -1,6 +1,6 @@
 'use strict';
 
-define(['../../lib/webtoolkit/base64', 'src/util/versioning', 'lib/couchdb/jquery.couch'], function (Base64, Versioning) {
+define(['src/util/versioning', 'lib/couchdb/jquery.couch'], function (Versioning) {
 
     function share(options) {
 
@@ -11,8 +11,11 @@ define(['../../lib/webtoolkit/base64', 'src/util/versioning', 'lib/couchdb/jquer
         var db = $.couch.db(database);
 
         var view = Versioning.getView();
-        var encodedView = Base64.encode(JSON.stringify(view));
-        var encodedData = Base64.encode(Versioning.getDataJSON());
+
+        // https://developer.mozilla.org/en-US/docs/Web/API/WindowBase64/Base64_encoding_and_decoding#The_.22Unicode_Problem.22
+
+        var encodedView = btoa( unescape( encodeURIComponent(JSON.stringify(view))));
+        var encodedData = btoa( unescape( encodeURIComponent(Versioning.getDataJSON())));
 
         var docid = guid();
 

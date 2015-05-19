@@ -1,15 +1,17 @@
-define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util', 'components/jit/Jit/jit'], function(Default, $, API, Util, $jit) {
+'use strict';
 
-    function view() {
+define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util', 'components/jit/Jit/jit'], function (Default, $, API, Util, $jit) {
+
+    function View() {
         this._id = Util.getNextUniqueId();
     }
-    
+
     function customBlank() {
         this.chart.canvas.clear();
     }
-    
-    view.prototype = $.extend(true, {}, Default, {
-        init: function() {
+
+    $.extend(true, View.prototype, Default, {
+        init: function () {
             if (!this.dom) {
                 this.dom = $('<div id="' + this._id + '"></div>').css({
                     height: '100%',
@@ -18,7 +20,7 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
                 this.module.getDomContent().html(this.dom);
             }
 
-            var labelColorRGB = this.module.getConfiguration('labelColor');
+            var labelColorRGB = this.module.getConfiguration('labelColor');
             var labelColor;
             if (labelColorRGB && labelColorRGB[3] !== 0) {
                 labelColor = Util.rgbToHex(labelColorRGB[0], labelColorRGB[1], labelColorRGB[2]);
@@ -37,9 +39,7 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
                 }
             };
         },
-        inDom: function() {
-        },
-        onResize: function() {
+        onResize: function () {
             this.dom.empty();
             this.chart = new $jit.PieChart(this.chartOptions);
             if (this._data)
@@ -47,14 +47,14 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
             this.resolveReady();
         },
         update: {
-            'chart': function(moduleValue) {
+            chart: function (moduleValue) {
                 if (!moduleValue)
                     return;
                 var chartJson = convertChartToJson(moduleValue.get());
                 this._data = chartJson;
                 this.setData(chartJson);
             },
-            'yArray': function(moduleValue) {
+            yArray: function (moduleValue) {
                 if (!moduleValue)
                     return;
                 var arrayJson = convertSingleArrayToJson(moduleValue.get());
@@ -62,7 +62,7 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
                 this.setData(arrayJson);
             }
         },
-        setData: function(dataJson) {
+        setData: function (dataJson) {
             this.chart.loadJSON(dataJson);
         },
         blank: {
@@ -96,7 +96,10 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
                 }
             }
             for (var i = 0; i < ii; i++) {
-                json.values[i] = {values: [arr[i]], label: (labels[i] || "label_" + i)};
+                json.values[i] = {
+                    values: [arr[i]],
+                    label: (labels[i] || 'label_' + i)
+                };
             }
         } else { // stacked chart
             json = {};
@@ -109,7 +112,10 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
                     var serie = data[i];
                     var arr = serie.y;
                     if (i === 0) {
-                        json.values[j] = {values: new Array(ii), label: "label2 " + j};
+                        json.values[j] = {
+                            values: new Array(ii),
+                            label: 'label2 ' + j
+                        };
                         json.label[j] = serie.label;
                     }
                     json.values[j].values[i] = arr[j];
@@ -123,28 +129,11 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
         var ii = array.length;
         var json = {values: new Array(ii)};
         for (var i = 0; i < ii; i++) {
-            json.values[i] = {values: [array[i]], label: "label_" + i};
+            json.values[i] = {values: [array[i]], label: 'label_' + i};
         }
         return json;
     }
 
-    /*function convertArrayToJson(array) {
-     var json = {};
-     var ii = array.length;
-     var jj = array[0].length;
-     json.values = new Array(jj);
-     json.label = new Array(jj);
-     for (var i = 0; i < ii; i++) {
-     for (var j = 0; j < jj; j++) {
-     if (i === 0) {
-     json.values[j] = {values: new Array(ii), label: "label2 " + j};
-     json.label[j] = "label " + j;
-     }
-     json.values[j].values[i] = array[i][j];
-     }
-     }
-     return(json);
-     }*/
+    return View;
 
-    return view;
 });

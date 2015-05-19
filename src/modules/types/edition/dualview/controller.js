@@ -1,26 +1,28 @@
-define(['modules/default/defaultcontroller', 'modules/types/edition/onde/controller', 'modules/types/display/template-twig/controller'], function(Default, OndeC, TwigC) {
+'use strict';
 
-    function controller() {
-		this.twigC = new TwigC();
-		this.ondeC = new OndeC();
+define(['modules/default/defaultcontroller', 'modules/types/edition/onde/controller', 'modules/types/display/template-twig/controller'], function (Default, OndeC, TwigC) {
+
+    function Controller() {
+        this.twigC = new TwigC();
+        this.ondeC = new OndeC();
     }
 
-    controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
-	controller.prototype.setModule = function(module) {
-		this.module = module;
-		this.twigC.module = module.twigM;
-		this.twigC.module.controller = this.twigC;
-		this.ondeC.module = module.ondeM;
-		this.ondeC.module.controller = this.ondeC;
-	};
-	
-	controller.prototype.init = function() {
-		this.twigC.init();
-		this.ondeC.init();
-	};
+    Controller.prototype.setModule = function (module) {
+        this.module = module;
+        this.twigC.module = module.twigM;
+        this.twigC.module.controller = this.twigC;
+        this.ondeC.module = module.ondeM;
+        this.ondeC.module.controller = this.ondeC;
+    };
 
-    controller.prototype.moduleInformation = {
+    Controller.prototype.init = function () {
+        this.twigC.init();
+        this.ondeC.init();
+    };
+
+    Controller.prototype.moduleInformation = {
         name: 'Edit/Display',
         description: 'Dual-view module, with a displayer that is based on Twig and a JSON editor based on Onde.',
         author: 'Michaël Zasso',
@@ -29,16 +31,15 @@ define(['modules/default/defaultcontroller', 'modules/types/edition/onde/control
         cssClass: 'dualview'
     };
 
-    controller.prototype.references = {
+    Controller.prototype.references = {
         value: {
             label: 'Any object'
         }
     };
 
-    controller.prototype.variablesIn = ['value'];
+    Controller.prototype.variablesIn = ['value'];
 
-    controller.prototype.configurationStructure = function() {
-
+    Controller.prototype.configurationStructure = function () {
         return {
             groups: {
                 group: {
@@ -50,39 +51,46 @@ define(['modules/default/defaultcontroller', 'modules/types/edition/onde/control
                             type: 'jscode',
                             title: 'Template',
                             mode: 'html',
-                            default: ''
+                            'default': ''
                         },
-						schema: {
-							type: 'jscode',
-							title: 'Schema',
-							mode: 'json',
-							default: '{}'
-						},
-						button_text: {
-							type: 'text',
-							title: 'Text of the save button',
-							default: 'Save'
-						}
+                        schema: {
+                            type: 'jscode',
+                            title: 'Schema',
+                            mode: 'json',
+                            'default': '{}'
+                        },
+                        button_text: {
+                            type: 'text',
+                            title: 'Text of the save button',
+                            'default': 'Save'
+                        }
                     }
                 }
             }
         };
     };
-	
-	controller.prototype.configFunctions = {
-		mode: function(){return 'schema';},
-		schemaSource: function(){return 'config';},
-		output: function(){return 'modified';}
-	};
 
-    controller.prototype.configAliases = {
-        template: ['groups', 'group', 0, 'template', 0],
-		schema: ['groups', 'group', 0, 'schema', 0],
-		button_text: ['groups', 'group', 0, 'button_text', 0],
-		mode: [],
-		schemaSource: [],
-		output: []
+    Controller.prototype.configFunctions = {
+        mode: function () {
+            return 'schema';
+        },
+        schemaSource: function () {
+            return 'config';
+        },
+        output: function () {
+            return 'modified';
+        }
     };
 
-    return controller;
+    Controller.prototype.configAliases = {
+        template: ['groups', 'group', 0, 'template', 0],
+        schema: ['groups', 'group', 0, 'schema', 0],
+        button_text: ['groups', 'group', 0, 'button_text', 0],
+        mode: [],
+        schemaSource: [],
+        output: []
+    };
+
+    return Controller;
+
 });

@@ -1,12 +1,12 @@
+'use strict';
+
 define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (Default, DataTraversing) {
 
     function Model() {
     }
 
-    Model.prototype = $.extend(true, {}, Default, {
-
+    $.extend(true, Model.prototype, Default, {
         getjPath: function (rel) {
-
             var jpaths = [];
 
             switch (rel) {

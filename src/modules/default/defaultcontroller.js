@@ -22,7 +22,7 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
                     onClick: function() {
                         this.doConfig(2);
                     },
-                    title: "Open Preferences",
+                    title: 'Open Preferences',
                     cssClass: 'fa fa-wrench',
                     ifLocked: false
                 }
@@ -72,7 +72,7 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
 
                     varsOut[i].jpath = varsOut[i].jpath || []; // Need not be undefined
 
-                    if (typeof varsOut[i].jpath == "string") {
+                    if (typeof varsOut[i].jpath == 'string') {
                         varsOut[i].jpath = varsOut[i].jpath.split('.');
                         varsOut[i].jpath.shift();
                     }

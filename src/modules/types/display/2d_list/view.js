@@ -5,7 +5,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
 
         init: function () {
             var html = [];

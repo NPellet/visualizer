@@ -1,11 +1,14 @@
+'use strict';
+
 define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
     bowser.mobileos = bowser.ios || bowser.android || bowser.blackberry || bowser.firefoxos || bowser.webos || false;
     var hasGetUserMedia = !!(navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
     var useGetUserMedia = !bowser.mobileos && hasGetUserMedia;
+
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
 
         init: function () {
 
@@ -15,9 +18,9 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                 multiple: true
             });
             var capture = this.module.getConfiguration('capture');
-            if(capture && capture !== 'none') {
+            if (capture && capture !== 'none') {
                 $fileInput.attr('capture', capture);
-                switch(capture) {
+                switch (capture) {
                     case 'camera':
                         $fileInput.attr('accept', 'image/*');
                         break;
@@ -30,14 +33,14 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                 }
             }
 
-            var textarea = $("<textarea>").css({
-                position: "absolute",
+            var textarea = $('<textarea>').css({
+                position: 'absolute',
                 top: 0,
                 left: 0,
                 height: 0,
                 width: 0,
                 opacity: 0
-            }).on("paste", function (e) {
+            }).on('paste', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 self.module.controller.open(e.originalEvent.clipboardData);
@@ -49,31 +52,31 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                 hover: this.module.getConfiguration('hoverlabel') || defaultMessage
             };
             this.messageP = $('<div>').css('display', 'inline-block').html(this.messages.default);
-            this.dom = $('<div />', { class: 'dragdropzone' }).html(this.messageP).on("click mousemove", function () {
+            this.dom = $('<div />', {class: 'dragdropzone'}).html(this.messageP).on('click mousemove', function () {
                 textarea.focus();
             }).mouseout(function () {
                 textarea.blur();
             }).append(textarea);
 
 
-            this.dom.on('click', function(event) {
+            this.dom.on('click', function (event) {
                 event.stopPropagation();
-                if(!useGetUserMedia || !self.module.getConfigurationCheckbox('getusermedia', 'yes')) $fileInput.click();
+                if (!useGetUserMedia || !self.module.getConfigurationCheckbox('getusermedia', 'yes')) $fileInput.click();
                 else {
-                    confirm($('<video id="video"></video><canvas id="canvas" style="display:none;"></canvas>')).then(function(value) {
-                        if(!value) return;
-                        if(value) {
+                    confirm($('<video id="video"></video><canvas id="canvas" style="display:none;"></canvas>')).then(function (value) {
+                        if (!value) return;
+                        if (value) {
                             self.module.controller.openPhoto(value);
                         }
                     });
                 }
             });
 
-            $fileInput.on('change', function(e) {
+            $fileInput.on('change', function (e) {
                 self.module.controller.open(self.module.controller.emulDataTransfer(e));
             });
 
-            $fileInput.on('load', function(e) {
+            $fileInput.on('load', function (e) {
             });
 
             this.module.getDomContent().html(this.dom);
@@ -99,7 +102,7 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                 dragCount++;
                 e.stopPropagation();
                 e.preventDefault();
-                if(dragCount === 1) {
+                if (dragCount === 1) {
                     self.messageP.html(self.messages.drag);
                     self.dom.addClass('dragdrop-over');
                 }
@@ -115,7 +118,7 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                 dragCount--;
                 e.stopPropagation();
                 e.preventDefault();
-                if(!dragCount) {
+                if (!dragCount) {
                     self.messageP.html(self.messages.default);
                     self.dom.removeClass('dragdrop-over');
                 }
@@ -138,19 +141,19 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
 
             this.resolveReady();
         },
-        onResize: function() {
+        onResize: function () {
 
             var f = this.dom.first('div');
             var p = this.dom.parent().parent();
             f.css('font-size', 26);
             var fsize = 26;
-            if(!fsize) {
+            if (!fsize) {
                 return;
             }
 
             var h = 45;
-            if(!this.module.domHeader.is(':visible')) h=20;
-            while(p.height() - h < f.height() && fsize > 2) {
+            if (!this.module.domHeader.is(':visible')) h = 20;
+            while (p.height() - h < f.height() && fsize > 2) {
                 f.css('font-size', --fsize);
             }
 
@@ -161,9 +164,10 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
     var stream;
     var $dialog;
     var dialogClosed = true;
+
     function confirm(message) {
-        return new Promise(function(resolve){
-            if(!$dialog) {
+        return new Promise(function (resolve) {
+            if (!$dialog) {
                 $dialog = $('<div/>');
                 $('body').append($dialog);
             }
@@ -173,32 +177,31 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
 
 
             var streaming = false,
-                video        = document.querySelector('#video'),
-                canvas       = document.querySelector('#canvas'),
+                video = document.querySelector('#video'),
+                canvas = document.querySelector('#canvas'),
                 width = 320,
                 height = 0;
 
 
-                navigator.getMedia = ( navigator.getUserMedia ||
-                    navigator.webkitGetUserMedia ||
-                    navigator.mozGetUserMedia ||
-                    navigator.msGetUserMedia);
+            navigator.getMedia = ( navigator.getUserMedia ||
+            navigator.webkitGetUserMedia ||
+            navigator.mozGetUserMedia ||
+            navigator.msGetUserMedia);
 
-                navigator.getMedia(
-                    {
-                        video: true,
-                        audio: false
-                    }, treatStream,
-                    function(err) {
-                        console.error("An error occured! " + err);
-                    }
-                );
+            navigator.getMedia(
+                {
+                    video: true,
+                    audio: false
+                }, treatStream,
+                function (err) {
+                    console.error('An error occured! ' + err);
+                }
+            );
 
 
-
-            video.addEventListener('canplay', function(ev){
+            video.addEventListener('canplay', function (ev) {
                 if (!streaming) {
-                    height = video.videoHeight / (video.videoWidth/width);
+                    height = video.videoHeight / (video.videoWidth / width);
                     video.setAttribute('width', width);
                     video.setAttribute('height', height);
                     canvas.setAttribute('width', width);
@@ -209,7 +212,7 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
 
             function treatStream(s) {
                 stream = s;
-                if(dialogClosed) {
+                if (dialogClosed) {
                     s.stop();
                 }
                 if (navigator.mozGetUserMedia) {
@@ -234,17 +237,17 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
             $dialog.dialog({
                 modal: true,
                 buttons: {
-                    Cancel: function() {
+                    Cancel: function () {
                         $(this).dialog('close');
                     },
-                    "Take Picture": function() {
+                    'Take Picture': function () {
                         takepicture();
                         resolve(imgData);
                         $(this).dialog('close');
                     }
                 },
-                close: function() {
-                    if(!stream) {
+                close: function () {
+                    if (!stream) {
                         return resolve(false);
                     }
                     stream.stop();
@@ -256,5 +259,5 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
     }
 
     return View;
-});
 
+});

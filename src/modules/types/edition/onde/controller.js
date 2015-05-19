@@ -5,7 +5,7 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'Onde form',

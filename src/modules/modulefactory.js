@@ -102,7 +102,7 @@ define(['jquery', 'modules/module', 'src/util/debug', 'src/util/util'], function
                         module.id = id;
                     }
                     module.url = module.url.replace(/\/$/, '') + '/';
-                })
+                });
             });
 
         },

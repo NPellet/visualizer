@@ -1,22 +1,13 @@
-define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/util/api'], function(Default, Traversing, API) {
+'use strict';
 
-    /**
-     * Creates a new empty controller
-     * @class Controller
-     * @name Controller
-     * @constructor
-     */
-    function controller() {
+define(['modules/default/defaultcontroller'], function (Default) {
+
+    function Controller() {
     }
-    ;
 
-    // Extends the default properties of the default controller
-    controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
-    /*
-     Information about the module
-     */
-    controller.prototype.moduleInformation = {
+    Controller.prototype.moduleInformation = {
         name: 'Pie chart jit',
         description: 'Display a pie chart based on jit',
         author: 'Michaël Zasso',
@@ -25,32 +16,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         cssClass: 'pie_chart_jit'
     };
 
-
-    /*
-     Configuration of the module for sending events, as a static object
-     */
-    controller.prototype.events = {
-        // List of all possible events
-
-        /*onHover: {
-         label: 'Hover a piece of pie',
-         refVariable: [ 'piece' ]
-         }*/
-    };
-
-    /*controller.prototype.onHover = function(element) {
-     if( ! element ) {
-     return;
-     }
-     this.setVarFromEvent( 'onHover', element, 'piece' );
-     };*/
-
-
-
-    /*
-     Configuration of the input/output references of the module
-     */
-    controller.prototype.references = {
+    Controller.prototype.references = {
         chart: {
             type: ['chart'],
             label: 'A json describing a chart'
@@ -58,39 +24,12 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         yArray: {
             type: 'array',
             label: '1D Y array'
-        },
+        }
     };
 
+    Controller.prototype.variablesIn = ['chart', 'yArray'];
 
-
-    /*controller.prototype.elementHover = function(element) {
-     if( ! element ) {
-     return;
-     }
-     
-     // this.setVarFromEvent( 'onHover', element, 'row' );
-     if (this._highlighted) {
-     API.highlight( this._highlighted, 0 );
-     }
-     API.highlight( element, 1 );
-     this._highlighted=element;
-     },
-     
-     controller.prototype.elementOut = function() {
-     if (this._highlighted) {
-     API.highlight( this._highlighted, 0 );
-     }
-     };*/
-
-
-    /*
-     Configuration of the module for receiving events, as a static object
-     In the form of 
-     */
-    controller.prototype.variablesIn = ['chart', 'yArray'];
-
-
-    controller.prototype.configurationStructure = function() {
+    Controller.prototype.configurationStructure = function () {
         return {
             groups: {
                 group: {
@@ -101,7 +40,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                         sliceOffset: {
                             type: 'text',
                             title: 'Slice offset',
-                            default: 1
+                            'default': 1
                         },
                         updateHeights: {
                             type: 'checkbox',
@@ -109,41 +48,29 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                             options: {
                                 updateHeights: 'Yes (Only for mono-serie pies)'
                             }
-                        },
-                        /*showLabels: {
-                            type: 'checkbox',
-                            title: 'Show labels ?',
-                            options: {
-                                showLabels: 'Yes'
-                            }
-                        },
-                        labelColor: {
-                            type: 'color',
-                            title: 'Label color'
-                        },*/
+                        }
                     }
                 }
             }
         };
     };
 
-    controller.prototype.configFunctions = {
-        'updateHeights': boolCheckbox,
-        'showLabels': boolCheckbox
+    Controller.prototype.configFunctions = {
+        updateHeights: boolCheckbox,
+        showLabels: boolCheckbox
     };
 
-    controller.prototype.configAliases = {
-        'sliceOffset': ['groups', 'group', 0, 'sliceOffset', 0],
-        'updateHeights': ['groups', 'group', 0, 'updateHeights', 0],
-        'showLabels': ['groups', 'group', 0, 'showLabels', 0],
-        'labelColor': ['groups', 'group', 0, 'labelColor', 0]
+    Controller.prototype.configAliases = {
+        sliceOffset: ['groups', 'group', 0, 'sliceOffset', 0],
+        updateHeights: ['groups', 'group', 0, 'updateHeights', 0],
+        showLabels: ['groups', 'group', 0, 'showLabels', 0],
+        labelColor: ['groups', 'group', 0, 'labelColor', 0]
     };
 
     function boolCheckbox(cfg) {
         return (cfg.length !== 0);
-    };
+    }
 
+    return Controller;
 
-    return controller;
 });
-

@@ -1,3 +1,5 @@
+'use strict';
+
 define(['src/util/util', 'modules/modulefactory', 'src/main/grid','select2'], function(Util, ModuleFactory, Grid) {
     return function() {
 
@@ -45,7 +47,7 @@ define(['src/util/util', 'modules/modulefactory', 'src/main/grid','select2'], fu
             }
 
             $select2.select2({
-                placeholder: "Select a module",
+                placeholder: 'Select a module',
                 data: modulesArr,
                 templateResult: outputTemplate
 

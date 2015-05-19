@@ -64,7 +64,7 @@ define(['../../../default/defaultcontroller', 'src/util/api', 'src/util/datatrav
 
 			self.module.view.unlock();
 
-			if(typeof data == "object") {
+			if(typeof data == 'object') {
 				data = new DataObject.check(data, true);
 			}
 
@@ -101,7 +101,7 @@ define(['../../../default/defaultcontroller', 'src/util/api', 'src/util/datatrav
 		
 		configurationReceive: {
 
-			"vartrigger": {
+			'vartrigger': {
 				type: [],
 				label: 'A variable to trigger the search',
 				description: ''
@@ -208,7 +208,7 @@ define(['../../../default/defaultcontroller', 'src/util/api', 'src/util/datatrav
 			'resultfilter': [ 'groups', 'group', 0, 'resultfilter', 0 ]
 		},
 
-		"export": function() {
+		'export': function() {
 		}
 
 	});

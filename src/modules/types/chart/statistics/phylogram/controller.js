@@ -1,16 +1,14 @@
-define(['modules/default/defaultcontroller'], function(Default) {
+'use strict';
 
-    function controller() {
-        this._data=new DataObject();
+define(['modules/default/defaultcontroller'], function (Default) {
+
+    function Controller() {
+        this._data = new DataObject();
     }
 
-    // Extends the default properties of the default controller
-    controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
-    /*
-     Information about the module
-     */
-    controller.prototype.moduleInformation = {
+    Controller.prototype.moduleInformation = {
         name: 'Phylogram',
         description: 'Display phylogram using D3 library',
         author: 'Nathanaêl Khodl, Luc Patiny, Michaël Zasso',
@@ -19,56 +17,58 @@ define(['modules/default/defaultcontroller'], function(Default) {
         cssClass: 'phylogram'
     };
 
-    controller.prototype.mouseOverLeaf = function(data) {
-        if(data.data) {
+    Controller.prototype.mouseOverLeaf = function (data) {
+        if (data.data) {
             this._data = DataObject.check(data.data);
-            this.createDataFromEvent("onLeafHover", 'leaf', DataObject.check(this._data));
-        }
-    };
-    controller.prototype.mouseOutLeaf = function() {
-
-    };
-    controller.prototype.clickLeaf = function(data) {
-        if(data.data) {
-            this._data = DataObject.check(data.data);
-            this.createDataFromEvent("onLeafSelect", 'leaf', DataObject.check(this._data));
+            this.createDataFromEvent('onLeafHover', 'leaf', DataObject.check(this._data));
         }
     };
 
-    controller.prototype.mouseOverBranch = function(data) {
-        this.sendTreeFromEvent(data, "onBranchHover");
+    Controller.prototype.mouseOutLeaf = function () {
+
     };
 
-    controller.prototype.mouseOutBranch = function() {
+    Controller.prototype.clickLeaf = function (data) {
+        if (data.data) {
+            this._data = DataObject.check(data.data);
+            this.createDataFromEvent('onLeafSelect', 'leaf', DataObject.check(this._data));
+        }
     };
 
-    controller.prototype.clickBranch = function(data) {
-        this.sendTreeFromEvent(data, "onBranchSelect");
+    Controller.prototype.mouseOverBranch = function (data) {
+        this.sendTreeFromEvent(data, 'onBranchHover');
     };
 
-    controller.prototype.sendTreeFromEvent = function(data, name) {
+    Controller.prototype.mouseOutBranch = function () {
+    };
+
+    Controller.prototype.clickBranch = function (data) {
+        this.sendTreeFromEvent(data, 'onBranchSelect');
+    };
+
+    Controller.prototype.sendTreeFromEvent = function (data, name) {
         var element = new DataObject({'type': 'tree', value: data}, true);
         this.sendActionFromEvent(name, 'tree', element);
         this.createDataFromEvent(name, 'tree', element);
-		this.createDataFromEvent(name, 'list', function(){
+        this.createDataFromEvent(name, 'list', function () {
             var arr = [];
             treeToArray(arr, data);
             return DataArray(arr);
         });
     };
-	
-	function treeToArray(arr, tree) {
-		if(tree.children) {
-			for(var i = 0, ii = tree.children.length; i < ii; i++) {
-				treeToArray(arr, tree.children[i]);
-			}
-		}
-		else if(tree.data) {
-			arr.push(tree.data);
-		}
-	}
 
-    controller.prototype.configurationStructure = function() {
+    function treeToArray(arr, tree) {
+        if (tree.children) {
+            for (var i = 0, ii = tree.children.length; i < ii; i++) {
+                treeToArray(arr, tree.children[i]);
+            }
+        }
+        else if (tree.data) {
+            arr.push(tree.data);
+        }
+    }
+
+    Controller.prototype.configurationStructure = function () {
         return {
             groups: {
                 group: {
@@ -78,27 +78,20 @@ define(['modules/default/defaultcontroller'], function(Default) {
                     fields: {
                         branchWidth: {
                             type: 'text',
-                            default: 4,
+                            'default': 4,
                             title: 'Branch width'
                         }
-                        /*
-                         branchColor: {
-                         type: 'color',
-                         title: 'Branch color'
-                         }
-                         */
                     }
                 }
             }
         };
     };
 
-    controller.prototype.configAliases = {
-        'branchWidth': ['groups', 'group', 0, 'branchWidth', 0]
-        //'branchColor': [ 'groups', 'group', 0, 'branchColor', 0 ]
+    Controller.prototype.configAliases = {
+        branchWidth: ['groups', 'group', 0, 'branchWidth', 0]
     };
 
-    controller.prototype.events = {
+    Controller.prototype.events = {
         onLeafSelect: {
             label: 'Select a leaf',
             refVariable: ['leaf']
@@ -109,18 +102,15 @@ define(['modules/default/defaultcontroller'], function(Default) {
         },
         onBranchSelect: {
             label: 'Select a branch',
-            refVariable: ['tree','list']
+            refVariable: ['tree', 'list']
         },
         onBranchHover: {
             label: 'Hovers a branch',
-            refVariable: ['tree','list']
+            refVariable: ['tree', 'list']
         }
     };
 
-    /*
-     Configuration of the input/output references of the module
-     */
-    controller.prototype.references = {
+    Controller.prototype.references = {
         tree: {
             type: ['tree'],
             label: 'A tree with children'
@@ -128,14 +118,14 @@ define(['modules/default/defaultcontroller'], function(Default) {
         leaf: {
             label: 'Value of the leaf'
         },
-		list: {
-			type: 'array',
-			label: 'A list of children'
-		}
+        list: {
+            type: 'array',
+            label: 'A list of children'
+        }
     };
 
-    controller.prototype.variablesIn = ['tree'];
+    Controller.prototype.variablesIn = ['tree'];
 
+    return Controller;
 
-    return controller;
 });

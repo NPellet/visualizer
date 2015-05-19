@@ -1,44 +1,43 @@
-define(['modules/default/defaultmodel', 'src/util/datatraversing'], function(Default, Traversing) {
-	
-	function model() {};
-	model.prototype = $.extend(true, {}, Default, {
+'use strict';
 
-		getValue: function() {
-			return this.dataValue;
-		},
-		
+define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (Default, Traversing) {
 
-		getjPath: function(rel) {
-			var data = [];
-			var view = this.module.view;
-			switch(rel) {
+    function Model() {
+    }
 
-				case 'mzList':
-				case 'selectedIngredient':
-					if (view.gcmsInstance.ingredients[0]) data = view.gcmsInstance.ingredients[ 0 ][ 0 ];
-				
-				break;
+    $.extend(true, Model.prototype, Default, {
 
-				case 'GCIntegration':
-					if (view.annotations) data = view.annotations[ 0 ];
-				break;
+        getjPath: function (rel) {
+            var data = [];
+            var view = this.module.view;
+            switch (rel) {
 
-				default:
-				case 'gcdata':
-					if (view.jcamp) data = view.jcamp.gcms.gc;
-				
-				break;
-			}
+                case 'mzList':
+                case 'selectedIngredient':
+                    if (view.gcmsInstance.ingredients[0]) data = view.gcmsInstance.ingredients[0][0];
 
-			var jpaths = [];
-			Traversing.getJPathsFromElement(data, jpaths);
+                    break;
 
-			return jpaths;
-		}
+                case 'GCIntegration':
+                    if (view.annotations) data = view.annotations[0];
+                    break;
+
+                default:
+                case 'gcdata':
+                    if (view.jcamp) data = view.jcamp.gcms.gc;
+
+                    break;
+            }
+
+            var jpaths = [];
+            Traversing.getJPathsFromElement(data, jpaths);
+
+            return jpaths;
+        }
 
 
-	});
+    });
 
-	return model;
+    return Model;
+
 });
-	

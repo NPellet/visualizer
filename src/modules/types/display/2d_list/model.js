@@ -5,11 +5,11 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
     function Model() {
     }
 
-    Model.prototype = $.extend(true, {}, Default, {
+    $.extend(true, Model.prototype, Default, {
         getValue: function () {
             return this.dataValue;
         },
-        getjPath: function (rel) {
+        getjPath: function () {
             var jpaths = [];
             var data = this.module.getDataFromRel('list');
             if (!data || data == null) {

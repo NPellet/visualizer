@@ -65,7 +65,7 @@ function generate(indexX, indexY, buffer, nbValX) {
         y = startY;
         for (; y < endY; y++) {
 
-            if (typeof data[y] === "undefined" || typeof data[y][x] === "undefined") {
+            if (typeof data[y] === 'undefined' || typeof data[y][x] === 'undefined') {
                 //	throw "Errrrror !!!";
                 continue;
             } else {

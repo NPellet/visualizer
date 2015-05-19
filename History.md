@@ -1,3 +1,44 @@
+2.19.2 / 2015-05-05
+===================
+
+* Add version selector header
+
+2.19.1 / 2015-05-04
+===================
+
+* Remove Base64 library
+* Update JSME
+
+2.19.0 / 2015-05-04
+===================
+
+* Modules
+ * progress: change behavior to use actions and text template
+ * panzoom: handle image loading failure
+ * spectra_displayer: corretly assign serie label
+* Util
+ * typerenderer: can force image width
+
+2.18.0 / 2015-04-29
+===================
+
+ * Modules
+    * slick_grid: bug fixes
+    * jqgrid: option not to systematically highlight the hovered line
+    * New progress bar module
+    * panzoom: minor improvements
+
+ * Util
+    * shortcuts: bug fix
+    * search module: display name instead of id but search both
+    * shortcuts: bug fix
+
+ * Type renderer
+    * Add webp renderer
+  
+ * Testcases
+    * add progress bar examples
+ 
 2.17.8 / 2015-04-23
 ===================
 

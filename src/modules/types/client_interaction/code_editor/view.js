@@ -5,7 +5,7 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
         init: function () {
 
             this._id = Util.getNextUniqueId();
@@ -77,7 +77,9 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
             this.module.controller.onEditorChanged(this._code);
         },
         onResize: function () {
-            this.editor && this.editor.resize();
+            if (this.editor) {
+                this.editor.resize();
+            }
         }
     });
 

@@ -382,7 +382,11 @@ define([
         try {
             module.getDomWrapper().remove().unbind();
         } catch(e) {
-            Debug.warn('Could not remove module from dom.', e);
+            module.onReady().then(function () {
+                module.getDomWrapper().remove().unbind();
+            }).catch(function (e) {
+                Debug.warn('Could not remove module from dom.', e);
+            });
         }
 
         ModuleFactory.removeModule(module);
@@ -464,9 +468,8 @@ define([
 
         if (name) {
             return definition.layers[name] = {name: name};
-
-            setLayers()
-            def.resolve(definition.layers[name]);
+            //setLayers();
+            //def.resolve(definition.layers[name]);
         }
 
         var div = ui.dialog({
@@ -637,8 +640,6 @@ define([
                                 for (var i = 0, l = json.length; i < l; i++) {
                                     makeRecursiveMenu(json[i], $ulModules);
                                 }
-                            } else {
-
                             }
 
                         });
@@ -752,7 +753,7 @@ define([
                     Context.listen(Context.getRootDom(), [
                         ['<li id="context-menu-build-info"><a class="ui-state-disabled"><span class="ui-icon ui-icon-info"></span>Built ' + Version.buildTime + '</a></li>',
                             Util.noop]], null, function($ctxmenu) {
-                        $ctxmenu.find('#context-menu-build-info').insertAfter($ctxmenu.find('#context-menu-version'))
+                        $ctxmenu.find('#context-menu-build-info').insertAfter($ctxmenu.find('#context-menu-version'));
                     });
                 }
 

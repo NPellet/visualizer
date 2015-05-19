@@ -1,21 +1,13 @@
-define( [ 'modules/default/defaultcontroller' ], function( Default ) {
+'use strict';
 
-    /**
-     * Creates a new empty controller
-     * @class Controller
-     * @name Controller
-     * @constructor
-     */
-    function controller() { };
+define(['modules/default/defaultcontroller'], function (Default) {
 
-    // Extends the default properties of the default controller
-    controller.prototype = $.extend( true, {}, Default );
+    function Controller() {
+    }
 
+    $.extend(true, Controller.prototype, Default);
 
-    /*
-     Information about the module
-     */
-    controller.prototype.moduleInformation = {
+    Controller.prototype.moduleInformation = {
         name: 'Panzoom',
         description: 'Panzoom',
         author: 'Daniel Kostro',
@@ -24,14 +16,9 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
         cssClass: 'panzoom'
     };
 
-
-
-    /*
-     Configuration of the input/output references of the module
-     */
-    controller.prototype.references = {
+    Controller.prototype.references = {
         picture: {
-            type: ['picture', 'png', 'jpeg', 'jpg','gif'],
+            type: ['picture', 'png', 'jpeg', 'jpg', 'gif'],
             label: 'A picture'
         },
         pixel: {
@@ -42,7 +29,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
         }
     };
 
-    controller.prototype.events = {
+    Controller.prototype.events = {
         click: {
             label: 'The image was clicked',
             refVariable: ['pixel', 'allpixel'],
@@ -55,37 +42,18 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
         }
     };
 
+    Controller.prototype.variablesIn = ['picture'];
 
-
-    /*
-     Configuration of the module for receiving events, as a static object
-     In the form of
-     */
-    controller.prototype.variablesIn = ['picture'];
-
-    /*
-     Received actions
-     In the form of
-
-     {
-     actionRef: 'actionLabel'
-     }
-     */
-    controller.prototype.actionsIn = {
-
-    };
-
-
-    controller.prototype.configurationStructure = function(section) {
+    Controller.prototype.configurationStructure = function () {
         var vars = [];
         var currentCfg = this.module.definition.vars_in;
 
-        if(currentCfg) {
+        if (currentCfg) {
 
             var i = 0,
                 l = currentCfg.length;
 
-            for( ; i < l ; i++) {
+            for (; i < l; i++) {
                 vars.push({
                     title: currentCfg[i].name,
                     key: currentCfg[i].name
@@ -100,9 +68,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
                         type: 'list'
                     },
 
-                    fields: {
-
-                    }
+                    fields: {}
                 },
 
                 img: {
@@ -134,8 +100,8 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
                             type: 'combo',
                             title: 'Rendering',
                             options: [
-                                { key: 'default', title: 'Normal'},
-                                { key: 'crisp-edges', title: 'Crisp edges'}
+                                {key: 'default', title: 'Normal'},
+                                {key: 'crisp-edges', title: 'Crisp edges'}
                             ],
                             default: ['default']
                         },
@@ -143,8 +109,11 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
                             type: 'combo',
                             title: 'Scaling Method',
                             options: [
-                                { key: 'max', title: 'Extend to 100% of available spcae'},
-                                { key: 'no', title: 'Keep original image size'}
+                                {
+                                    key: 'max',
+                                    title: 'Extend to 100% of available spcae'
+                                },
+                                {key: 'no', title: 'Keep original image size'}
                             ],
                             default: ['max']
                         }
@@ -155,25 +124,26 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
     };
 
 
-    controller.prototype.configAliases = {
-        img: [ 'groups', 'img', 0 ]
+    Controller.prototype.configAliases = {
+        img: ['groups', 'img', 0]
     };
 
-    controller.prototype.clickedPixel = function(clickedPixel) {
-        this.createDataFromEvent('click','pixel', clickedPixel);
+    Controller.prototype.clickedPixel = function (clickedPixel) {
+        this.createDataFromEvent('click', 'pixel', clickedPixel);
     };
 
-    controller.prototype.allClickedPixels = function(allClickedPixels) {
+    Controller.prototype.allClickedPixels = function (allClickedPixels) {
         this.createDataFromEvent('click', 'allpixel', allClickedPixels);
     };
 
-    controller.prototype.hoverPixel = function(hoverPixel) {
+    Controller.prototype.hoverPixel = function (hoverPixel) {
         this.createDataFromEvent('hover', 'pixel', hoverPixel);
     };
 
-    controller.prototype.allHoverPixels = function(allHoverPixels) {
+    Controller.prototype.allHoverPixels = function (allHoverPixels) {
         this.createDataFromEvent('hover', 'allpixel', allHoverPixels);
     };
 
-    return controller;
+    return Controller;
+
 });

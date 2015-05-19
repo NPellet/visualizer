@@ -12,7 +12,7 @@ define([
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
 
         init: function () {
             this.colors = null;
@@ -47,10 +47,10 @@ define([
 
                 self.accumulatedDelta += delta;
                 if (delta !== undefined)
-                    self.changeZoom(self.accumulatedDelta / 1000, (e.offsetX || e.pageX - $(e.target).offset().left), (e.offsetY || e.pageY - $(e.target).offset().top))
+                    self.changeZoom(self.accumulatedDelta / 1000, (e.offsetX || e.pageX - $(e.target).offset().left), (e.offsetY || e.pageY - $(e.target).offset().top));
             }).on('dblclick', function (e) {
                 self.accumulatedDelta = 0;
-                self.changeZoom(self.accumulatedDelta / 1000, (e.offsetX || e.pageX - $(e.target).offset().left), (e.offsetY || e.pageY - $(e.target).offset().top))
+                self.changeZoom(self.accumulatedDelta / 1000, (e.offsetX || e.pageX - $(e.target).offset().left), (e.offsetY || e.pageY - $(e.target).offset().top));
 
             });
 
@@ -358,8 +358,9 @@ define([
                 this.resetZoomPrefetch(pxPerCell);
                 this.pxPerCell = this.cachedPxPerCell;
 
-            } else
+            } else {
                 pxPerCell = this.getCurrentPxPerCellFetch();
+            }
 
             if (!this.postNextMessageToWorker(pxPerCell)) {
                 if (this.incrementPxPerCellFetch())
@@ -417,13 +418,17 @@ define([
                     buffer: this.buffers[this.getBufferKey(pxPerCell, indexX, indexY)],
                     nbValX: w
                 }
-            })
+            });
         },
 
         doChangeWorkersData: function () {
             this.workers.postMessage({
                 title: 'changeData',
-                message: {data: JSON.stringify(this.gridData), min: this.minValue, max: this.maxValue}
+                message: {
+                    data: JSON.stringify(this.gridData),
+                    min: this.minValue,
+                    max: this.maxValue
+                }
             });
         },
 
@@ -443,7 +448,7 @@ define([
         },
 
         getHighContrast: function () {
-            return this.highContrast || (this.highContrast = this.module.getConfiguration('highContrast', false) )
+            return this.highContrast || (this.highContrast = this.module.getConfiguration('highContrast', false) );
         },
 
         redoScale: function (min, max) {

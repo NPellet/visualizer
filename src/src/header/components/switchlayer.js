@@ -25,9 +25,9 @@ define(['jquery', 'src/header/components/default', 'src/main/grid', 'src/util/ut
                     this.load(this.options);
 
                 this.doElements();
-            }
-            else
+            } else {
                 this.close();
+            }
 
         },
 

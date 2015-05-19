@@ -1,212 +1,221 @@
-define(['require'], function( require ) {
+'use strict';
 
-	var Versioning;
-	require([ 'src/util/versioning' ], function( Vers ) {
-		Versioning = Vers;
-	});
+define(['require'], function (require) {
 
+    var Versioning;
+    require(['src/util/versioning'], function (Vers) {
+        Versioning = Vers;
+    });
 
-	var API;
-	require([ 'src/util/api' ], function( A ) {
-		API = A;
-	});
 
+    var API;
+    require(['src/util/api'], function (A) {
+        API = A;
+    });
 
-	/* RELATED TO SCRIPTING 	*/
-	var evaluatedScripts;
-	function doScripts( ) {
 
-		var data = getActionScripts( );
+    /* RELATED TO SCRIPTING 	*/
+    var evaluatedScripts;
 
-		if( ! data || evaluatedScripts ) {
-			return;
-		}
+    function doScripts() {
 
-		var evaled = {},
-			i = 0,
-			l = data.length;
+        var data = getActionScripts();
 
-		for( ; i < l ; i ++ ) {
+        if (!data || evaluatedScripts) {
+            return;
+        }
 
-			eval("evaled[ [ data[ i ].groups.action[ 0 ].name[ 0 ] ] ] = function(value) { " + data[ i ].groups.action[ 0 ].script[ 0 ] + " }");
-		}
+        var evaled = {},
+            i = 0,
+            l = data.length;
 
-		evaluatedScripts = evaled;
-	}
+        for (; i < l; i++) {
 
-	function getActionScripts() {
+            eval('evaled[ [ data[ i ].groups.action[ 0 ].name[ 0 ] ] ] = function(value) { ' + data[i].groups.action[0].script[0] + ' }');
+        }
 
-		return Versioning.getView( ).actionscripts || [ ];
-	}
+        evaluatedScripts = evaled;
+    }
 
-	function setActionScripts( form ) {
-		
-		evaluatedScripts = undefined;
-		Versioning.getView( ).actionscripts = form; // Keeps track of the scripts in the view
-		doScripts( form );
-	}
+    function getActionScripts() {
 
+        return Versioning.getView().actionscripts || [];
+    }
 
-	/* Action files */
+    function setActionScripts(form) {
 
-	var actionsFiles;
+        evaluatedScripts = undefined;
+        Versioning.getView().actionscripts = form; // Keeps track of the scripts in the view
+        doScripts(form);
+    }
 
-	function setActionFiles( form ) {
-		
-		Versioning.getView( ).actionfiles = form;
-		doFiles( );
-	}
 
-	function doFiles( ) {
-		var files = Versioning.getView( ).actionfiles;
-		var fileName,
-			fileMode,
-			actionName;
+    /* Action files */
 
-		actionsFiles = {};
+    var actionsFiles;
 
-		if( ! files ) {
-			return;
-		}
+    function setActionFiles(form) {
 
-		for(var i = 0, l = files[ 0 ].groups.action[ 0 ].length; i < l ; i ++) {
+        Versioning.getView().actionfiles = form;
+        doFiles();
+    }
 
-			actionsFiles[ files[ 0 ].groups.action[ 0 ][ i ].name ] = actionsFiles[ files[ 0 ].groups.action[ 0 ][ i ].name ] || [];
-			actionsFiles[ files[ 0 ].groups.action[ 0 ][ i ].name ].push( { file: files[ 0 ].groups.action[ 0 ][ i ].file, mode: files[ 0 ].groups.action[ 0 ][ i ].mode } );
-		}
+    function doFiles() {
+        var files = Versioning.getView().actionfiles;
+        var fileName,
+            fileMode,
+            actionName;
 
+        actionsFiles = {};
 
-	}
+        if (!files) {
+            return;
+        }
 
-	function executeActionFile( file, value ) {
+        for (var i = 0, l = files[0].groups.action[0].length; i < l; i++) {
 
-		switch ( file.mode ) {
+            actionsFiles[files[0].groups.action[0][i].name] = actionsFiles[files[0].groups.action[0][i].name] || [];
+            actionsFiles[files[0].groups.action[0][i].name].push({
+                file: files[0].groups.action[0][i].file,
+                mode: files[0].groups.action[0][i].mode
+            });
+        }
 
-			case 'amd':
 
-				require( [ file.file ], function( File ) {
-					File( value );
-				});
+    }
 
-			break;
+    function executeActionFile(file, value) {
 
-			case 'worker':
+        switch (file.mode) {
 
-				var worker = new Worker( file.file );
-				
-				worker.postMessage( { method: 'actionValue', value: value } );
+            case 'amd':
 
-				worker.onmessage = function( event ) {
-					// Do something. We need to invent an API here.
+                require([file.file], function (File) {
+                    File(value);
+                });
 
-					if( ! event.data.method ) {
-						return;
-					}
+                break;
 
-					switch( event.data.method ) {
+            case 'worker':
 
-						case 'getVar':
-							if( ! Array.isArray(event.data.variables) ) {
-								return;
-							}
+                var worker = new Worker(file.file);
 
-							var variables = {},
-								i = 0,
-								l = event.data.variables.length;
+                worker.postMessage({method: 'actionValue', value: value});
 
-							for( ; i < l ; i ++ ) {
-								variables[ event.data.variables[ i ] ] = API.getVar( event.data.variables[ i ] );
-							}
+                worker.onmessage = function (event) {
+                    // Do something. We need to invent an API here.
 
-							worker.postMessage( { method: 'getVar', variables: variables });
+                    if (!event.data.method) {
+                        return;
+                    }
 
-						break;
+                    switch (event.data.method) {
 
-						case 'setVar':
+                        case 'getVar':
+                            if (!Array.isArray(event.data.variables)) {
+                                return;
+                            }
 
-							if( ! ( event.data.variables ) ) {
-								return;
-							}
-					
-							for( var i in event.data.variables ) {
-								API.setVar( i, event.data.variables[ i ] );
-							}
+                            var variables = {},
+                                i = 0,
+                                l = event.data.variables.length;
 
-						break;
+                            for (; i < l; i++) {
+                                variables[event.data.variables[i]] = API.getVar(event.data.variables[i]);
+                            }
 
+                            worker.postMessage({
+                                method: 'getVar',
+                                variables: variables
+                            });
 
-						case 'terminate':
-							worker.terminate();
-						break;
+                            break;
 
-						case 'sendAction':
+                        case 'setVar':
 
-							if( ! event.data.actionName ) {
-								return;
-							}
+                            if (!( event.data.variables )) {
+                                return;
+                            }
 
-							API.doAction( event.data.actionName, event.data.actionValue );
+                            for (var i in event.data.variables) {
+                                API.setVar(i, event.data.variables[i]);
+                            }
 
-						break;
+                            break;
 
-						case 'highlight':
-							
-							if( ! event.data.highlightId ) {
-								return;
-							}
 
-							API.highlightId( event.data.highlightId, event.data.highlightValue || false );
-							
-						break;
-					}
-				}
+                        case 'terminate':
+                            worker.terminate();
+                            break;
 
-			break;
-		}
-	}
+                        case 'sendAction':
 
+                            if (!event.data.actionName) {
+                                return;
+                            }
 
-	return {
+                            API.doAction(event.data.actionName, event.data.actionValue);
 
-		setScriptsFromForm: function( form ) {
-			setActionScripts( form );
-		},
+                            break;
 
-		setFilesFromForm: function( form ) {
-			setActionFiles( form );
-		},
+                        case 'highlight':
 
-		viewHasChanged: function( view ) {
-			setActionScripts( view.actionscripts );
-			doFiles();
-		},
+                            if (!event.data.highlightId) {
+                                return;
+                            }
 
-		getScriptsForm: function( ) {
-			return Versioning.getView().actionscripts || [];
-		},
+                            API.highlightId(event.data.highlightId, event.data.highlightValue || false);
 
-		getFilesForm: function() {
-			return Versioning.getView().actionfiles || [];
-		},
+                            break;
+                    }
+                };
 
-		execute: function( actionName, actionValue ) {
+                break;
+        }
+    }
 
-			if( evaluatedScripts[ actionName ] ) {
-				setImmediate(function () {
-					evaluatedScripts[ actionName ]( actionValue );
-				});
-			}
 
-			if( actionsFiles[ actionName ] ) {
+    return {
 
-				var i = 0,
-					l = actionsFiles[ actionName ].length;
+        setScriptsFromForm: function (form) {
+            setActionScripts(form);
+        },
 
-				for( ; i < l ; i ++ ) {
-					executeActionFile( actionsFiles[ actionName ][ i ], actionValue );
-				}
-			}
-		}
-	}
+        setFilesFromForm: function (form) {
+            setActionFiles(form);
+        },
+
+        viewHasChanged: function (view) {
+            setActionScripts(view.actionscripts);
+            doFiles();
+        },
+
+        getScriptsForm: function () {
+            return Versioning.getView().actionscripts || [];
+        },
+
+        getFilesForm: function () {
+            return Versioning.getView().actionfiles || [];
+        },
+
+        execute: function (actionName, actionValue) {
+
+            if (evaluatedScripts[actionName]) {
+                setImmediate(function () {
+                    evaluatedScripts[actionName](actionValue);
+                });
+            }
+
+            if (actionsFiles[actionName]) {
+
+                var i = 0,
+                    l = actionsFiles[actionName].length;
+
+                for (; i < l; i++) {
+                    executeActionFile(actionsFiles[actionName][i], actionValue);
+                }
+            }
+        }
+    };
 
 });

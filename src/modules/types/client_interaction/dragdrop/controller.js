@@ -1,11 +1,13 @@
+'use strict';
+
 define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versioning', 'src/data/structures', 'src/util/debug'], function (Default, API, Versioning, Structure, Debug) {
 
     function Controller() {
     }
 
-    var reg = new RegExp(";base64,(.+)$");
+    var reg = new RegExp(';base64,(.+)$');
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'Drag and drop',
@@ -69,12 +71,12 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                             type: 'combo',
                             title: 'Capture',
                             options: [
-                                {title: "none", key: "none"},
+                                {title: 'none', key: 'none'},
                                 {title: 'camera', key: 'camera'},
                                 {title: 'camcorder', key: 'camcorder'},
                                 {title: 'microphone', key: 'microphone'}
                             ],
-                            default: "none"
+                            default: 'none'
                         }
                     }
                 },
@@ -86,43 +88,46 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                     },
                     fields: {
                         filter: {
-                            type: "combo",
-                            title: "filter on",
+                            type: 'combo',
+                            title: 'filter on',
                             options: [
-                                {title: "File extension", key: "ext"},
-                                {title: "Mime-type", key: "mime"}
+                                {title: 'File extension', key: 'ext'},
+                                {title: 'Mime-type', key: 'mime'}
                             ],
-                            "default": "ext"
+                            'default': 'ext'
                         },
                         extension: {
-                            type: "text",
-                            title: "Filter",
-                            "default": "*"
+                            type: 'text',
+                            title: 'Filter',
+                            'default': '*'
                         },
                         filetype: {
-                            type: "combo",
-                            title: "Read type",
+                            type: 'combo',
+                            title: 'Read type',
                             options: [
-                                {title: "Text", key: "text"},
-                                {title: "Base64 Encoded", key: "base64"},
-                                {title: "Object URL", key: "url"}/*, {title: "Binary string", key: "binary"}, {title: "Array buffer", key: "b"}*/
+                                {title: 'Text', key: 'text'},
+                                {title: 'Base64 Encoded', key: 'base64'},
+                                {
+                                    title: 'Object URL',
+                                    key: 'url'
+                                }/*, {title: 'Binary string', key: 'binary'}, {title: 'Array buffer', key: 'b'}*/
                             ],
-                            "default": "text"
+                            'default': 'text'
                         },
                         type: {
-                            type: "combo",
-                            title: "Force type",
+                            type: 'combo',
+                            title: 'Force type',
                             options: typeList,
-                            "default": "string"
+                            'default': 'string'
                         },
                         mime: {
-                            type: "text",
-                            title: "Force mime-type"
+                            type: 'text',
+                            title: 'Force mime-type'
                         },
                         variable: {
-                            type: "text",
-                            title: "Temporary variable",
-                            "default": "file"
+                            type: 'text',
+                            title: 'Temporary variable',
+                            'default': 'file'
                         }
                     }
                 },
@@ -134,10 +139,10 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                     },
                     fields: {
                         type: {
-                            type: "combo",
-                            title: "Force type",
+                            type: 'combo',
+                            title: 'Force type',
                             options: typeList,
-                            "default": "string"
+                            'default': 'string'
                         },
                         filter: {
                             type: 'text',
@@ -145,9 +150,9 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                             'default': 'text/plain'
                         },
                         variable: {
-                            type: "text",
-                            title: "Temporary variable",
-                            "default": "str"
+                            type: 'text',
+                            title: 'Temporary variable',
+                            'default': 'str'
                         }
                     }
                 },
@@ -160,9 +165,9 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                     },
                     fields: {
                         variable: {
-                            type: "text",
-                            title: "Temporary variable",
-                            "default": "photo"
+                            type: 'text',
+                            title: 'Temporary variable',
+                            'default': 'photo'
                         }
                     }
                 }
@@ -187,20 +192,20 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         var i, ii, cfgEl, eCfgEl;
 
         var fileCfg = this.module.getConfiguration('vars');
-        if(fileCfg) {
+        if (fileCfg) {
 
             var enhancedFileCfg = [];
-            for(i = 0, ii = fileCfg.length; i < ii; i++) {
+            for (i = 0, ii = fileCfg.length; i < ii; i++) {
                 cfgEl = fileCfg[i];
                 eCfgEl = $.extend({}, cfgEl);
                 enhancedFileCfg.push(eCfgEl);
-                if(cfgEl.extension) {
+                if (cfgEl.extension) {
                     eCfgEl.match = new RegExp('^' + cfgEl.extension.replace(/\*/g, '.*').replace(/\?/g, '.') + '$', 'i');
                 } else {
                     eCfgEl.match = /^.*$/i;
                 }
-                if(!cfgEl.filter) {
-                    eCfgEl.filter = "ext";
+                if (!cfgEl.filter) {
+                    eCfgEl.filter = 'ext';
                 }
             }
             this.fileCfg = enhancedFileCfg;
@@ -208,14 +213,14 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         }
 
         var stringCfg = this.module.getConfiguration('string');
-        if(stringCfg) {
+        if (stringCfg) {
 
             var enhancedStringCfg = [];
-            for(i = 0, ii = stringCfg.length; i < ii; i++) {
+            for (i = 0, ii = stringCfg.length; i < ii; i++) {
                 cfgEl = stringCfg[i];
                 eCfgEl = $.extend({}, cfgEl);
                 enhancedStringCfg.push(eCfgEl);
-                if(cfgEl.filter) {
+                if (cfgEl.filter) {
                     eCfgEl.match = new RegExp('^' + cfgEl.filter.replace(/\*/g, '.*').replace(/\?/g, '.') + '$', 'i');
                 } else {
                     eCfgEl.match = /^text\/plain$/i;
@@ -236,6 +241,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
             var result = Structure._parse(meta.cfg.type, value);
             this.tmpVar(result, meta);
         } catch (e) {
+            Debug.info('Value could not be parsed: ', value, e);
         }
     };
 
@@ -254,23 +260,23 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         var cfgString = this.stringCfg;
 
         var i = 0, ii = data.items.length, item, meta, def;
-                    for (; i < ii; i++) {
-                        item = data.items[i];
-                        def = $.Deferred();
-                        defs.push(def);
-                        if (item.kind === "file") {
-                            item = item.getAsFile();
-                            if (meta = this.checkFileMetadata(item, cfg)) {
-                                meta.def = def;
-                                this.read(item, meta);
-                            } else {
-                                def.resolve();
-                            }
-                        } else {
-                            if(meta = this.checkStringMetadata(item, cfgString)) {
-                                meta.def = def;
-                                this.treatString(item, meta);
-                            } else {
+        for (; i < ii; i++) {
+            item = data.items[i];
+            def = $.Deferred();
+            defs.push(def);
+            if (item.kind === 'file') {
+                item = item.getAsFile();
+                if (meta = this.checkFileMetadata(item, cfg)) {
+                    meta.def = def;
+                    this.read(item, meta);
+                } else {
+                    def.resolve();
+                }
+            } else {
+                if (meta = this.checkStringMetadata(item, cfgString)) {
+                    meta.def = def;
+                    this.treatString(item, meta);
+                } else {
                     def.resolve();
                 }
             }
@@ -282,7 +288,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         });
     };
 
-    Controller.prototype.openPhoto = function(result) {
+    Controller.prototype.openPhoto = function (result) {
         var that = this;
         var meta = this.checkPhotoMetadata(this.photoCfg);
         meta.def = $.Deferred();
@@ -311,13 +317,13 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
 
         for (var i = 0, l = cfg.length; i < l; i++) {
             var matcher = cfg[i].match;
-            if(matcher.test(mime)) {
+            if (matcher.test(mime)) {
                 lineCfg = cfg[i];
                 break;
             }
         }
 
-        if(!lineCfg) {
+        if (!lineCfg) {
             return Debug.warn("String item's mime-type doesn't match: " + mime);
         }
 
@@ -330,7 +336,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
 
     Controller.prototype.checkFileMetadata = function (item, cfg) {
         if (!cfg) {
-            return Debug.warn("No file filter configured");
+            return Debug.warn('No file filter configured');
         }
 
         var name = item.name || '',
@@ -338,40 +344,40 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
             split = name.split('.'),
             ext, lineCfg;
         if (split.length < 2) {
-            ext = "";
+            ext = '';
         } else {
             ext = split.pop().toLowerCase();
         }
         for (var i = 0, l = cfg.length; i < l; i++) {
             var filter = cfg[i].filter;
-            if(filter === "ext") {
+            if (filter === 'ext') {
                 var extensions = cfg[i].extension;
-                if (extensions === "*" || extensions.split(',').indexOf(ext) !== -1) {
+                if (extensions === '*' || extensions.split(',').indexOf(ext) !== -1) {
                     lineCfg = cfg[i];
                     break;
                 }
             } else {
                 var matcher = cfg[i].match;
-                if(matcher.test(mime)) {
+                if (matcher.test(mime)) {
                     lineCfg = cfg[i];
                     break;
                 }
             }
         }
         if (!lineCfg && name) {
-            return Debug.warn("Extension " + ext + " not configured (filename: " + name + ")");
-        } else if(!lineCfg) {
+            return Debug.warn('Extension ' + ext + ' not configured (filename: ' + name + ')');
+        } else if (!lineCfg) {
             return Debug.warn("Item has no filename and mime-type doesn't match: " + mime);
         }
 
         return {
             filename: name,
-            mime: lineCfg.mime || mime || "application/octet-stream",
+            mime: lineCfg.mime || mime || 'application/octet-stream',
             cfg: lineCfg
         };
     };
 
-    Controller.prototype.checkPhotoMetadata = function(cfg) {
+    Controller.prototype.checkPhotoMetadata = function (cfg) {
         var lineCfg = cfg[0];
 
         lineCfg.filetype = 'url';
@@ -379,7 +385,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         return {
             mime: 'image/png',
             cfg: lineCfg
-        }
+        };
     };
 
     Controller.prototype.fileRead = function (result, meta) {
@@ -438,11 +444,11 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
     };
 
     Controller.prototype.tmpVar = function (obj, meta) {
-        if(typeof obj !== 'object') {
+        if (typeof obj !== 'object') {
             obj = {
                 type: meta.cfg.type,
                 value: obj
-            }
+            };
         }
         var name = meta.cfg.variable;
         var variable = new DataObject({
@@ -458,18 +464,18 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         meta.def.resolve();
     };
 
-    Controller.prototype.emulDataTransfer = function(e) {
+    Controller.prototype.emulDataTransfer = function (e) {
         var emul = {};
         emul.files = e.target.files;
         emul.items = [];
-        for(var i=0; i< e.target.files.length; i++) {
-            (function(i) {
+        for (var i = 0; i < e.target.files.length; i++) {
+            (function (i) {
                 emul.items.push({
                     kind: 'file',
-                    getAsFile: function() {
+                    getAsFile: function () {
                         return e.target.files[i];
                     }
-                })
+                });
             })(i);
 
         }
@@ -477,4 +483,5 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
     };
 
     return Controller;
+
 });

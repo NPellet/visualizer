@@ -2,6 +2,11 @@
 
 Information for the core developers of the project.
 
+## Check code style
+
+The project uses eslint to validate code style.  
+Command is `npm run eslint`
+
 ## Versioning and release procedure
 
 The Visualizer project tries to follow [semantic versioning](http://semver.org/).  
@@ -27,7 +32,8 @@ This command just updates the numbers in `version.js`. No commit is created.
 
 ### Bump and release
 
-To release a new version of the Visualizer, run a command like `grunt bump:patch --release`.  
+To release a new version of the Visualizer, run a command like `grunt bump:patch --release`.
+The bump can be applied with `prerelease`, `patch`, `minor`, `major`
 This will bump the version number, commit the files with a release message, 
 tag the release in Git, then it will immediately bump the version to the next
 prerelease, commit again and push the changes to GitHub.

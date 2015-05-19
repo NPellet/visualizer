@@ -1,11 +1,11 @@
 'use strict';
 
-define(['modules/default/defaultview', 'lib/twigjs/twig'], function (Default, Twig) {
+define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], function (Default, Twig, Debug) {
 
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
         init: function () {
 
             this.dom = $('<div>').css({
@@ -36,20 +36,12 @@ define(['modules/default/defaultview', 'lib/twigjs/twig'], function (Default, Tw
         },
         update: {
             value: function (value, name) {
-                // Extract typed value
-                value = value.get();
-
                 /*
-                 Convert special objects like DataString
+                 Convert special DataObjects
                  (twig does some check depending on the filter used
                  and the values need to be native)
                  */
-                if (typeof value.resurrect === 'function') {
-                    value = value.resurrect();
-                }
-
-                this._values[name] = value;
-
+                this._values[name] = value.resurrect();
                 this.render();
             },
             tpl: function (value) {
@@ -61,6 +53,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig'], function (Default, Tw
                     this.module.definition.configuration.groups.group[0].template[0] = tpl;
                     this.render();
                 } catch (e) {
+                    Debug.info('Problem with template: ' + e);
                 }
             }
         },

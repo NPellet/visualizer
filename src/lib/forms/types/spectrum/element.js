@@ -1,6 +1,6 @@
 'use strict';
 
-define([], function () {
+define(['src/util/color'], function (Color) {
 
     var FieldConstructor = function () {
     };
@@ -37,8 +37,7 @@ define([], function () {
             this.div.html(color);
             this.div.css('background-color', color);
 
-            // from http://www.w3.org/WAI/ER/WD-AERT/#color-contrast
-            var brightness = ((this.value[0] / 255 * 299) + (this.value[1] / 255 * 587) + (this.value[2] / 255 * 114)) / this.value[3];
+            var brightness = Color.getBrightness(this.value);;
             this.div.css('color', (brightness < 500) ? 'white' : 'black');
 
         }

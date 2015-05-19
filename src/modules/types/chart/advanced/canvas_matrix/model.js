@@ -15,7 +15,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
         return jpaths;
     }
 
-    Model.prototype = $.extend(true, {}, Default, {
+    $.extend(true, Model.prototype, Default, {
 
         getValue: function () {
             return this.dataValue;
@@ -34,20 +34,18 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
 
             switch (rel) {
                 case 'row':
-                    if (! Array.isArray(data.yLabel)) return;
+                    if (!Array.isArray(data.yLabel)) return;
                     data = data.yLabel[0];
                     return getjPath(data, accepts);
                 case 'col':
-                    if (! Array.isArray(data.xLabel)) return;
+                    if (!Array.isArray(data.xLabel)) return;
                     data = data.xLabel[0];
                     return getjPath(data, accepts);
                 case 'intersect':
                     data = data.data[0][0];
                     return getjPath(data, accepts);
-                    break;
                 default:
                     return false;
-                    break;
             }
         }
 

@@ -5,7 +5,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'Rich text editor',

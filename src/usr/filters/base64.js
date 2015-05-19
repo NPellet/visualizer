@@ -2,11 +2,11 @@
 
 define(function () {
 
-    var reg = new RegExp("^data:([^;]+);base64,(.+)$");
+    var reg = new RegExp('^data:([^;]+);base64,(.+)$');
 
     return {
         filter: function base64Filter(dataObject, resolve, reject) {
-            if (dataObject.getType() !== "string")
+            if (dataObject.getType() !== 'string')
                 return reject(new TypeError('Base 64 filter expects a string'));
 
             var str = dataObject.get();

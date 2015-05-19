@@ -52,7 +52,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
                     .focus()
                     .select();
                 $input.spectrum({
-                    color: args.item.getChildSync(args.column.jpath).get(),
+                    color: args.item.getChildSync(args.column.jpath) ? args.item.getChildSync(args.column.jpath).get() : undefined,
                     appendTo: 'body',
                     showInitial: true,
                     showInput: true,
@@ -158,7 +158,6 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
 
                     },
                     hide: function() {
-                        console.log('hide');
                         if(!that.changed) {
                             args.cancelChanges();
                         }
@@ -400,7 +399,6 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
 
     function defaultInit() {
         var that = this;
-        console.log('default init');
         this.$input = $("<INPUT type=text class='editor-text' />")
             .appendTo(this.args.container)
             .bind("keydown.nav", function (e) {
@@ -411,7 +409,9 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
             .focus()
             .select()
             .focusout(function() {
-                that.args.commitChanges('next');
+                // Shouldn't do this if auto-edit
+                if(!that.args.grid.module.view.slick.options.autoEdit)
+                    that.args.commitChanges('next');
             })
     }
 

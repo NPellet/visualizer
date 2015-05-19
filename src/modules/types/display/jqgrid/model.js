@@ -11,7 +11,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
             return this.dataValue;
         },
 
-        getjPath: function (rel, temporary, sub) {
+        getjPath: function (rel, temporary) {
             var data;
 
             switch (rel) {

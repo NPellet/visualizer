@@ -1,15 +1,17 @@
-define([ 
-	"src/data/structures",
-	"src/util/typerenderer",
+'use strict';
 
-	// Add you own types here
-	"./example"
+define([
+        'src/data/structures',
+        'src/util/typerenderer',
 
-	], function( Structures, Renderer ) {
+        // Add you own types here
+        './example'
 
-		for( var i = 2, l = arguments.length ; i < l ; i ++ ) {
-			Structures[ arguments[ i ].typeName ] = arguments[ i ].structure;
-			Renderer.addType([ arguments[ i ].typeName ], arguments[ i ].renderer);
-		}
-	}
+    ], function (Structures, Renderer) {
+
+        for (var i = 2, l = arguments.length; i < l; i++) {
+            Structures[arguments[i].typeName] = arguments[i].structure;
+            Renderer.addType([arguments[i].typeName], arguments[i].renderer);
+        }
+    }
 );

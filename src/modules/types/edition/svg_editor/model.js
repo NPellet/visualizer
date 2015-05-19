@@ -23,4 +23,5 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
     });
 
     return Model;
+
 });

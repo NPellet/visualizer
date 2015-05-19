@@ -3,23 +3,22 @@
 require.config({
     paths: {
         // jQuery & jQuery UI
-
-        dragevent:     'components/slickgrid/lib/jquery.event.drag-2.2',
-        dropevent:     'components/slickgrid/lib/jquery.event.drop-2.2',
+        dragevent: 'components/slickgrid/lib/jquery.event.drag-2.2',
+        dropevent: 'components/slickgrid/lib/jquery.event.drop-2.2',
 
         // SlickGrid
-        slickcore:     'components/slickgrid/slick.core',
-        slickgrid:     'modules/types/edition/slick_grid/slick.grid',
+        slickcore: 'components/slickgrid/slick.core',
+        slickgrid: 'modules/types/edition/slick_grid/slick.grid',
         slickdataview: 'modules/types/edition/slick_grid/slick.dataview.custom',
         slickgroupitemmetadataprovider: 'modules/types/edition/slick_grid/slick.groupitemmetadataprovider.custom'
     },
     shim: {
-        dragevent:     ['jquery'],
-        dropevent:     ['jquery'],
-        slickcore:     ['jquery-ui/core', 'jquery-ui/sortable'],
-        slickgrid:     ['slickcore', 'dragevent', 'dropevent','components/slickgrid/plugins/slick.cellrangedecorator',
-            'components/slickgrid/plugins/slick.cellrangeselector' ,
-            'components/slickgrid/plugins/slick.cellselectionmodel' ,
+        dragevent: ['jquery'],
+        dropevent: ['jquery'],
+        slickcore: ['jquery-ui/core', 'jquery-ui/sortable'],
+        slickgrid: ['slickcore', 'dragevent', 'dropevent', 'components/slickgrid/plugins/slick.cellrangedecorator',
+            'components/slickgrid/plugins/slick.cellrangeselector',
+            'components/slickgrid/plugins/slick.cellselectionmodel',
             'components/slickgrid/plugins/slick.rowselectionmodel',
             'components/slickgrid/slick.formatters',
             'modules/types/edition/slick_grid/slick.editors.custom'],
@@ -29,9 +28,21 @@ require.config({
     }
 });
 
+define([
+    'require',
+    'modules/default/defaultview',
+    'src/util/debug',
+    'lodash',
+    'src/util/util',
+    'src/util/api',
+    'src/util/typerenderer',
+    'slickgrid',
+    'slickdataview'
+], function (require, Default, Debug, _, Util, API, Renderer) {
 
-define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 'src/util/util', 'src/util/api', 'src/util/typerenderer', 'slickgrid', 'slickdataview'], function(require, Default, Debug, _, Util, API, Renderer) {
-    function View() {}
+    function View() {
+    }
+
     var cssPromises = [];
     cssPromises.push(Util.loadCss('./components/slickgrid/slick.grid.css'));
     var cssLoaded = Promise.all(cssPromises);
@@ -41,7 +52,6 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
     var columnFilterFunctions = {};
 
     var uniqueID = 0;
-
 
 
     var formatters = {
@@ -63,11 +73,11 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         DataBoolean: Slick.Editors.DataBooleanEditor
     };
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
 
-        init: function() {
+        init: function () {
             var that = this;
-            if (! this.$dom) {
+            if (!this.$dom) {
                 this._id = Util.getNextUniqueId();
                 this.$dom = $('<div>').attr('id', this._id).css({
                     width: '100%',
@@ -79,7 +89,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 this.module.getDomContent().append(this.$dom);
             }
 
-            this.$dom.on('mouseleave', function() {
+            this.$dom.on('mouseleave', function () {
                 that.module.controller.lastHoveredItemId = null;
             });
 
@@ -90,21 +100,21 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         },
 
 
-        getSlickColumns: function() {
+        getSlickColumns: function () {
             var that = this;
             var tp = $.proxy(typeRenderer, this);
 
             function getEditor(jpath) {
                 var editor;
                 var obj = that.module.data.get(0).getChildSync(jpath);
-                if(obj instanceof DataString) {
+                if (obj instanceof DataString) {
                     editor = Slick.Editors.SpecialNativeObject;
                 }
-                else if(obj instanceof DataNumber) {
-                    editor = Slick.Editors.DataNumberEditor
+                else if (obj instanceof DataNumber) {
+                    editor = Slick.Editors.DataNumberEditor;
                 }
-                else if(obj instanceof DataBoolean) {
-                    editor = Slick.Editors.DataBooleanEditor
+                else if (obj instanceof DataBoolean) {
+                    editor = Slick.Editors.DataBooleanEditor;
                 }
                 else {
                     editor = typeEditors[getType(jpath)];
@@ -115,16 +125,16 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             function getType(jpath) {
                 var type;
                 var obj = that.module.data.get(0).getChildSync(jpath);
-                if(obj instanceof DataObject) {
+                if (obj instanceof DataObject) {
                     type = obj.type;
                 }
                 return type;
             }
 
-            var slickCols = this.colConfig.map(function(row) {
+            var slickCols = this.colConfig.map(function (row) {
                 var editor, type;
-                if(row.editor === 'auto' && that.module.data) {
-                    if(!that.module.data.length) {
+                if (row.editor === 'auto' && that.module.data) {
+                    if (!that.module.data.length) {
                         editor = Slick.Editors.SpecialNativeObject;
                         Debug.warn('Slick grid: using editor based on type when the input variable is empty. Cannot determine type');
                     }
@@ -156,23 +166,23 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                     jpath: row.jpath,
                     simpleJpath: row.jpath.length === 1,
                     dataType: type
-                }
+                };
             });
 
-            slickCols = _.filter(slickCols, function(val) {
+            slickCols = _.filter(slickCols, function (val) {
                 return val.name;
             });
 
             // No columns are define, we use the input object to define them
-            if(_.isEmpty(slickCols)) {
+            if (_.isEmpty(slickCols)) {
                 var colNames = [];
-                for(var i=0; i<that.module.data.length; i++) {
+                for (var i = 0; i < that.module.data.length; i++) {
                     colNames = _(colNames).push(_.keys(that.module.data[i])).flatten().uniq().value();
                 }
 
-                slickCols = _(colNames).filter(function(v) {
+                slickCols = _(colNames).filter(function (v) {
                     return v[0] !== '_';
-                }).map(function(rowName) {
+                }).map(function (rowName) {
                     return {
                         id: rowName,
                         name: rowName,
@@ -186,12 +196,12 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         jpath: [rowName],
                         formatter: formatters.typerenderer,
                         asyncPostRender: tp
-                    }
+                    };
                 }).value();
 
             }
 
-            if(this.module.getConfigurationCheckbox('slickCheck', 'rowDelete')) {
+            if (this.module.getConfigurationCheckbox('slickCheck', 'rowDelete')) {
                 slickCols.unshift({
                     id: 'rowDeletion',
                     width: 30,
@@ -206,12 +216,12 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             return slickCols;
         },
 
-        getSlickOptions: function() {
+        getSlickOptions: function () {
             var that = this;
             return {
                 editable: that.module.getConfigurationCheckbox('slickCheck', 'editable'),
                 enableAddRow: that.module.getConfigurationCheckbox('slickCheck', 'enableAddRow'),
-                enableCellNavigation: that.module.getConfigurationCheckbox('slickCheck', 'enableCellNavigation'),
+                enableCellNavigation: that.module.getConfigurationCheckbox('slickCheck', 'editable'),
                 autoEdit: that.module.getConfigurationCheckbox('slickCheck', 'autoEdit'),
                 enableTextSelectionOnCells: true,
                 enableColumnReorder: true,
@@ -222,7 +232,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 enableAsyncPostRender: true,
                 asyncPostRenderDelay: 0,
                 defaultColumnWidth: that.module.getConfiguration('slick.defaultColumnWidth') || 80,
-                dataItemColumnValueExtractor: function(item, coldef) {
+                dataItemColumnValueExtractor: function (item, coldef) {
                     // In order to use jpath, we return the row instead of the column
                     // TODO: use jpath in coldef here?
                     return item;
@@ -235,17 +245,15 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         },
 
 
-        inDom: function(){
-
-
+        inDom: function () {
 
 
         },
 
         update: {
 
-            list: function( moduleValue ) {
-                var that =  this;
+            list: function (moduleValue) {
+                var that = this;
                 this.module.data = moduleValue;
                 this._highlights = _.pluck(this.module.data, '_highlight');
                 that.dataObjectsDone = false;
@@ -259,7 +267,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 function filter(item) {
 
                     for (var columnId in columnFilters) {
-                        if (columnId !== undefined && columnFilters[columnId] !== "") {
+                        if (columnId !== undefined && columnFilters[columnId] !== '') {
                             var idx = that.slick.data.getIdxById(item[that.idPropertyName]);
                             var c = that.grid.getColumns()[that.grid.getColumnIndex(columnId)];
                             var jpath = _.clone(DataObject.resurrect(c.jpath));
@@ -277,10 +285,10 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
 
                 cssLoaded
-                    .then(function() {
+                    .then(function () {
                         return that.cssLoaded;
                     })
-                    .then(function() {
+                    .then(function () {
 
                         that.slick.groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
                         that.slick.data = new Slick.Data.DataView({
@@ -288,13 +296,12 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         });
 
                         that.slick.data.setModule(that.module);
-                        that.$dom = $('#'+that._id);
-                        that.grid = new Slick.Grid("#"+that._id, that.slick.data, that.slick.columns, that.slick.options);
+                        that.$dom = $('#' + that._id);
+                        that.grid = new Slick.Grid('#' + that._id, that.slick.data, that.slick.columns, that.slick.options);
                         that.grid.registerPlugin(that.slick.groupItemMetadataProvider);
 
 
-
-                        if(that.module.getConfiguration('slick.selectionModel') === 'row') {
+                        if (that.module.getConfiguration('slick.selectionModel') === 'row') {
                             that.grid.setSelectionModel(new Slick.RowSelectionModel());
                         }
                         else {
@@ -308,8 +315,8 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
 
                         // listen to group expansion...
-                        if(that.module.getConfigurationCheckbox('slickCheck', 'oneUncollapsed')) {
-                            that.slick.groupItemMetadataProvider.onGroupExpanded.subscribe(function(e, args) {
+                        if (that.module.getConfigurationCheckbox('slickCheck', 'oneUncollapsed')) {
+                            that.slick.groupItemMetadataProvider.onGroupExpanded.subscribe(function (e, args) {
                                 this.getData().collapseAllGroups(args.item.level);
                                 this.getData().expandGroup(args.item.groupingKey);
                             });
@@ -328,8 +335,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
 
                         that.grid.onAddNewRow.subscribe(function (e, args) {
-                            console.log(that.module.data[that.module.data.length-1]);
-                            that.module.controller.onRowNew(that.module.data.length-1, that.module.data[that.module.data.length-1]);
+                            that.module.controller.onRowNew(that.module.data.length - 1, that.module.data[that.module.data.length - 1]);
                             that.module.model.dataTriggerChange(that.module.data);
                             that._resetDeleteRowListeners();
 
@@ -346,21 +352,21 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             //});
                         });
 
-                        that.grid.onViewportChanged.subscribe(function() {
+                        that.grid.onViewportChanged.subscribe(function () {
                             // onViewportChange is not really working properly, so we hack by having a settimeout
                             // Acceptable since it is unlikely that someone click the delete button only 300 ms after
                             // the viewport has changed...
-                            setTimeout(function() {
+                            setTimeout(function () {
                                 that.lastViewport = that.grid.getViewport();
                                 that._resetDeleteRowListeners();
                                 that._jpathColor();
                             }, 300);
                             that.lastViewport = that.grid.getViewport();
-                            if(that.module.getConfigurationCheckbox('slickCheck', 'rowNumbering')) {
+                            if (that.module.getConfigurationCheckbox('slickCheck', 'rowNumbering')) {
                                 that.$rowHelp.html((that.lastViewport.bottom - (that.addRowAllowed ? 2 : 1)).toString() + '/' + that.grid.getDataLength());
                                 that.$rowHelp.fadeIn();
                                 clearTimeout(that.lastRowHelp);
-                                that.lastRowHelp = setTimeout(function() {
+                                that.lastRowHelp = setTimeout(function () {
                                     that.$rowHelp.fadeOut();
                                 }, 1000);
                             }
@@ -368,11 +374,10 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         });
 
 
-
-                        that.grid.onMouseEnter.subscribe(function(e) {
+                        that.grid.onMouseEnter.subscribe(function (e) {
                             // When scrolling fast, no mouseLeave event takes place
                             // Therefore we also have to un-highlight here
-                            if(that._hl) {
+                            if (that._hl) {
                                 API.highlightId(that._hl, 0);
                             }
 
@@ -380,39 +385,38 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             that.count++;
                             that.hovering = true;
                             var itemInfo = that._getItemInfoFromEvent(e);
-                            if(!itemInfo) return;
+                            if (!itemInfo) return;
 
 
                             var hl = itemInfo.item._highlight;
                             that._hl = hl;
-                            if(hl) {
-                                console.log('highlight id');
-                                API.highlightId(hl,1);
+                            if (hl) {
+                                API.highlightId(hl, 1);
                                 lastHighlight = hl;
                             }
                             that.module.controller.onHover(itemInfo.idx, itemInfo.item);
 
                         });
 
-                        that.grid.onMouseLeave.subscribe(function(e) {
+                        that.grid.onMouseLeave.subscribe(function (e) {
                             that._e = e;
                             that.count--;
                             that.hovering = false;
                             var itemInfo = that._getItemInfoFromEvent(e);
-                            if(!itemInfo) return;
+                            if (!itemInfo) return;
                             var hl = itemInfo.item._highlight;
-                            if(hl) {
-                                API.highlightId(hl,0);
+                            if (hl) {
+                                API.highlightId(hl, 0);
                             }
-                            else if(lastHighlight) {
-                                API.highlightId(lastHighlight,0);
+                            else if (lastHighlight) {
+                                API.highlightId(lastHighlight, 0);
                             }
 
                         });
 
-                        that.grid.onColumnsResized.subscribe(function() {
+                        that.grid.onColumnsResized.subscribe(function () {
                             var cols = that.grid.getColumns();
-                            for(var i=0; i<cols.length; i++) {
+                            for (var i = 0; i < cols.length; i++) {
                                 that.module.definition.configuration.groups.cols[0][i].width = cols[i].width;
                             }
                             that.grid.invalidate();
@@ -420,69 +424,79 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
                         that.grid.onCellChange.subscribe(function (e, args) {
                             var itemInfo = that._getItemInfoFromRow(args.row);
-                            if(itemInfo) {
+                            if (itemInfo) {
                                 that.module.controller.onRowChange(itemInfo.idx, itemInfo.item);
                             }
-
+                            that._resetDeleteRowListeners();
                         });
 
-                        that.grid.onClick.subscribe(function(e,args) {
+                        that.grid.onClick.subscribe(function (e, args) {
                             var columns = that.grid.getColumns();
                             var itemInfo = that._getItemInfoFromRow(args.row);
-                            if(itemInfo) {
-                                if(columns[args.cell] && columns[args.cell].id !== 'rowDeletion') {
+                            if (itemInfo) {
+                                if (columns[args.cell] && columns[args.cell].id !== 'rowDeletion') {
                                     that.module.controller.onClick(itemInfo.idx, itemInfo.item);
                                 }
                             }
                         });
 
-                        that.grid.onActiveCellChanged.subscribe(function(e, args) {
+                        that.grid.onActiveCellChanged.subscribe(function (e, args) {
                             that.lastActiveCell = args.cell;
                             that.lastActiveRow = args.row;
 
                             var columns = that.grid.getColumns();
                             var itemInfo = that._getItemInfoFromRow(args.row);
-                            if(itemInfo) {
-                                if(columns[args.cell] && columns[args.cell].id !== 'rowDeletion') {
+                            if (itemInfo) {
+                                if (columns[args.cell] && columns[args.cell].id !== 'rowDeletion') {
                                     that.module.controller.onActive(itemInfo.idx, itemInfo.item);
                                 }
                             }
 
                         });
 
-                        that.grid.onColumnsReordered.subscribe(function() {
+                        that.grid.onColumnsReordered.subscribe(function () {
                             var cols = that.grid.getColumns();
                             var conf = that.module.definition.configuration.groups.cols[0];
                             var names = _.pluck(conf, 'name');
                             var ids = _.pluck(cols, 'id');
 
-                            if(names.concat().sort().join() !== ids.concat().sort().join()) {
+                            if (names.concat().sort().join() !== ids.concat().sort().join()) {
                                 Debug.warn('Something might be wrong, number of columns in grid and in configuration do not match');
                                 return;
                             }
                             that.module.definition.configuration.groups.cols[0] = [];
-                            for(var i=0; i<cols.length; i++) {
+                            for (var i = 0; i < cols.length; i++) {
                                 var idx = names.indexOf(ids[i]);
-                                if(idx > -1) {
+                                if (idx > -1) {
                                     that.module.definition.configuration.groups.cols[0].push(conf[idx]);
                                 }
                             }
                         });
 
-                        that.grid.onSort.subscribe(function(e, args) {
+                        that.grid.onSelectedRowsChanged.subscribe(function (e, args) {
+                            that.lastSelectedRows = args.rows;
+                            var selected = [];
+                            for (var i = 0; i < args.rows.length; i++) {
+                                var itemInfo = that._getItemInfoFromRow(args.rows[i]);
+                                selected.push(itemInfo.item);
+                            }
+                            that.module.controller.onRowsSelected(selected);
+                        });
+
+                        that.grid.onSort.subscribe(function (e, args) {
                             // args.multiColumnSort indicates whether or not this is a multi-column sort.
                             // If it is, args.sortCols will have an array of {sortCol:..., sortAsc:...} objects.
                             // If not, the sort column and direction will be in args.sortCol & args.sortAsc.
 
                             that._makeDataObjects();
                             // We'll use a simple comparer function here.
-                            var items = that.slick.data.getItems(), i=0;
+                            var items = that.slick.data.getItems(), i = 0;
                             // Add a position indicatior ==> for stable sort
-                            for(i=0; i<items.length; i++) {
+                            for (i = 0; i < items.length; i++) {
                                 items[i].__elementPosition = i;
                             }
                             var sortCols;
-                            if(!args.sortCols) {
+                            if (!args.sortCols) {
                                 sortCols = [{
                                     sortCol: args.sortCol,
                                     sortAsc: args.sortAsc
@@ -491,19 +505,29 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             else {
                                 sortCols = args.sortCols;
                             }
-                            for(i=sortCols.length-1; i>=0; i--) {
-                                (function(i) {
+                            for (i = sortCols.length - 1; i >= 0; i--) {
+                                (function (i) {
                                     //var comparer = function(a) {
                                     //    return a.getChildSync(sortCols[i].sortCol.jpath).get();
                                     //};
 
-                                    var comparer1 = function(a, b) {
-                                        var val1 = a.getChildSync(sortCols[i].sortCol.jpath).get();
-                                        var val2 = b.getChildSync(sortCols[i].sortCol.jpath).get();
-                                        if(val1 < val2) {
+                                    var comparer1 = function (a, b) {
+                                        var val1 = a.getChildSync(sortCols[i].sortCol.jpath);
+                                        var val2 = b.getChildSync(sortCols[i].sortCol.jpath);
+                                        if (val1 === undefined) {
+                                            if (sortCols[i].sortAsc) return 1;
+                                            else return -1;
+                                        }
+                                        if (val2 === undefined) {
+                                            if (sortCols[i].sortAsc) return -1;
+                                            else return 1;
+                                        }
+                                        val1 = val1.get();
+                                        val2 = val2.get();
+                                        if (val1 < val2) {
                                             return -1;
                                         }
-                                        else if(val2 < val1) {
+                                        else if (val2 < val1) {
                                             return 1;
                                         }
                                         return a.__elementPosition - b.__elementPosition;
@@ -512,15 +536,15 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                                 })(i);
                             }
 
-                            for(i=0; i<items.length; i++) {
+                            for (i = 0; i < items.length; i++) {
                                 delete items[i].__elementPosition;
                             }
                             that._jpathColor();
                         });
 
 
-                        $(that.grid.getHeaderRow()).delegate(":input", "change keyup", function (e) {
-                            var columnId = $(this).data("columnId");
+                        $(that.grid.getHeaderRow()).delegate(':input', 'change keyup', function (e) {
+                            var columnId = $(this).data('columnId');
                             if (columnId != null) {
                                 columnFilters[columnId] = $.trim($(this).val());
                                 columnFilterFunctions[columnId] = getColumnFilterFunction(columnFilters[columnId]);
@@ -528,11 +552,11 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                             }
                         });
 
-                        that.grid.onHeaderRowCellRendered.subscribe(function(e, args) {
+                        that.grid.onHeaderRowCellRendered.subscribe(function (e, args) {
                             $(args.node).empty();
                             $("<input type='text'>")
                                 .css('width', '100%')
-                                .data("columnId", args.column.id)
+                                .data('columnId', args.column.id)
                                 .val(columnFilters[args.column.id])
                                 .appendTo(args.node);
                         });
@@ -573,14 +597,14 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         that.slick.data.beginUpdate();
 
                         var groupings = _.chain(that.module.getConfiguration('groupings'))
-                            .filter(function(val) {
+                            .filter(function (val) {
                                 if (val && val.groupName && val.getter) return true;
                                 return false;
                             })
-                            .map(function(val) {
+                            .map(function (val) {
                                 var r = {};
-                                if(val.getter && val.getter.length > 1) {
-                                    r.getter = function(row) {
+                                if (val.getter && val.getter.length > 1) {
+                                    r.getter = function (row) {
                                         return row.getChildSync(val.getter);
                                     };
                                     that._makeDataObjects();
@@ -589,17 +613,17 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                                     r.getter = val.getter[0];
                                 }
 
-                                r.formatter = function(g) {
-                                    return val.groupName + ': ' + g.value + "  <span style='color:green'>(" + g.count + " items)</span>";
+                                r.formatter = function (g) {
+                                    return val.groupName + ': ' + g.value + "  <span style='color:green'>(" + g.count + ' items)</span>';
                                 };
                                 r.aggregateCollapsed = false;
                                 r.lazyTotalsCalculation = true;
                                 return r;
                             }).value();
 
-                        if(groupings.length) {
+                        if (groupings.length) {
                             that.slick.data.setGrouping(groupings);
-                            if(that.module.getConfigurationCheckbox('slickCheck', 'collapseGroup')) {
+                            if (that.module.getConfigurationCheckbox('slickCheck', 'collapseGroup')) {
                                 that.slick.data.collapseAllGroups(0);
                             }
 
@@ -612,9 +636,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         }
 
 
-
-
-                        if(that.module.getConfigurationCheckbox('slickCheck', 'filterColumns')) {
+                        if (that.module.getConfigurationCheckbox('slickCheck', 'filterColumns')) {
                             that.slick.data.setFilter(filter);
                         }
 
@@ -622,12 +644,18 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                         that.slick.data.endUpdate();
 
                         // get back state before last update
-                        if(that.lastViewport && !that.module.getConfigurationCheckbox('slickCheck', 'backToTop')) {
+                        if (that.lastViewport && !that.module.getConfigurationCheckbox('slickCheck', 'backToTop')) {
                             that.grid.scrollRowToTop(that.lastViewport.top);
                         }
-                        if(!_.isUndefined(that.lastActiveRow) && !that.module.getConfigurationCheckbox('slickCheck', 'forgetLastActive')) {
+
+                        if (Array.isArray(that.lastSelectedRows)) {
+                            that.grid.setSelectedRows(that.lastSelectedRows);
+                        }
+
+                        else if (!_.isUndefined(that.lastActiveRow) && !that.module.getConfigurationCheckbox('slickCheck', 'forgetLastActive')) {
                             that.grid.setActiveCell(that.lastActiveRow, that.lastActiveCell);
                         }
+
 
                         that.grid.render();
                         that._resetDeleteRowListeners();
@@ -640,28 +668,28 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         },
 
         blank: {
-            list: function() {
+            list: function () {
                 this.$dom.html('');
             }
         },
 
-        _setBaseCellCssStyle: function() {
+        _setBaseCellCssStyle: function () {
             var cols = this.grid.getColumns();
             this.baseCellCssStyle = {};
-            for(var i=0; i<cols.length; i++) {
+            for (var i = 0; i < cols.length; i++) {
                 this.baseCellCssStyle[cols[i].id] = 'highlighted-cell';
             }
         },
 
-        _resetDeleteRowListeners: function() {
+        _resetDeleteRowListeners: function () {
             var that = this;
-            var $rb = that.$rb = $('#'+that._id).find('a.recycle-bin');
+            var $rb = that.$rb = $('#' + that._id).find('a.recycle-bin');
             $rb.off('click');
-            $rb.on('click', function(e) {
+            $rb.on('click', function (e) {
                 var columns = that.grid.getColumns();
                 var args = that.grid.getCellFromEvent(e);
                 that.lastViewport = that.grid.getViewport();
-                if(columns[args.cell] && columns[args.cell].id === 'rowDeletion') {
+                if (columns[args.cell] && columns[args.cell].id === 'rowDeletion') {
                     // delete the row...
                     var itemInfo = that._getItemInfoFromRow(args.row);
                     that.module.data.splice(itemInfo.idx, 1);
@@ -670,12 +698,12 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             });
         },
 
-        _getItemInfoFromEvent: function(e) {
+        _getItemInfoFromEvent: function (e) {
             var that = this;
             var cell = this.grid.getCellFromEvent(e);
-            if(!cell) return null;
+            if (!cell) return null;
             var id = that.slick.data.mapRowsToIds([cell.row])[0];
-            if(!id) return null;
+            if (!id) return null;
             return {
                 id: id,
                 idx: that.slick.data.getIdxById(id),
@@ -683,11 +711,11 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             };
         },
 
-        _getItemInfoFromRow: function(row) {
+        _getItemInfoFromRow: function (row) {
             var that = this;
-            if(_.isUndefined(row)) return null;
+            if (_.isUndefined(row)) return null;
             var id = that.slick.data.mapRowsToIds([row])[0];
-            if(!id) return null;
+            if (!id) return null;
             return {
                 id: id,
                 idx: that.slick.data.getIdxById(id),
@@ -695,19 +723,19 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             };
         },
 
-        _jpathColor: function() {
+        _jpathColor: function () {
             var that = this;
-            if(!that.lastViewport) return;
+            if (!that.lastViewport) return;
             var colorjPath = that.module.getConfiguration('colorjPath');
             var cols = that.grid.getColumns();
-            if(colorjPath && colorjPath.length > 0) {
+            if (colorjPath && colorjPath.length > 0) {
                 that._makeDataObjects();
-                for(var i=that.lastViewport.top; i<=that.lastViewport.bottom; i++ ) {
+                for (var i = that.lastViewport.top; i <= that.lastViewport.bottom; i++) {
                     var item = that.grid.getDataItem(i);
-                    if(item && item.__group !== true) {
+                    if (item && item.__group !== true) {
                         var color = item.getChildSync(colorjPath);
-                        if(color) {
-                            for(var j=0; j<cols.length; j++) {
+                        if (color) {
+                            for (var j = 0; j < cols.length; j++) {
                                 var node = that.grid.getCellNode(i, j);
                                 $(node).css('background-color', color.get());
                             }
@@ -717,19 +745,19 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             }
         },
 
-        _selectHighlight: function() {
-            if(this.hovering) {
+        _selectHighlight: function () {
+            if (this.hovering) {
                 return;
             }
             var that = this;
-            var idx = _.findIndex(this._highlights, function(val) {
+            var idx = _.findIndex(this._highlights, function (val) {
                 return val === that._highlighted[0] || (val.indexOf && val.indexOf(that._highlighted[0]) > -1);
             });
             this.lastViewport = this.grid.getViewport();
-            if(idx > -1 && this.module.getConfigurationCheckbox('slickCheck', 'highlightScroll')) {
+            if (idx > -1 && this.module.getConfigurationCheckbox('slickCheck', 'highlightScroll')) {
                 var item = that.slick.data.getItemByIdx(idx);
                 var gridRow = that.slick.data.mapIdsToRows([item[that.idPropertyName]])[0];
-                if(!gridRow) return;
+                if (!gridRow) return;
                 if (gridRow < this.lastViewport.top || gridRow >= this.lastViewport.bottom) {
                     // navigate
                     this.grid.scrollRowToTop(gridRow);
@@ -739,18 +767,18 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             }
         },
 
-        _drawHighlight: function() {
+        _drawHighlight: function () {
             var that = this;
             this.grid.removeCellCssStyles('highlight');
             var tmp = {};
             this._selectHighlight();
             this.lastViewport = this.grid.getViewport();
-            for(var i=this.lastViewport.top; i<=this.lastViewport.bottom; i++ ) {
+            for (var i = this.lastViewport.top; i <= this.lastViewport.bottom; i++) {
                 var item = this.grid.getDataItem(i);
-                if(!item) continue;
-                if(_.any(that._highlighted, function(k) {
+                if (!item) continue;
+                if (_.any(that._highlighted, function (k) {
                         var hl = item._highlight;
-                        if(!(hl instanceof Array)) {
+                        if (!(hl instanceof Array)) {
                             hl = [hl];
                         }
                         return hl.indexOf(k) > -1;
@@ -761,9 +789,9 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             this.grid.setCellCssStyles('highlight', tmp);
         },
 
-        _activateHighlights: function() {
+        _activateHighlights: function () {
             var that = this;
-            var hl = _(this.module.data).pluck('_highlight').flatten().filter(function(val) {
+            var hl = _(this.module.data).pluck('_highlight').flatten().filter(function (val) {
                 return !_.isUndefined(val);
             }).value();
 
@@ -771,17 +799,17 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
             API.killHighlight(this.module.getId());
 
-            for(var i=0; i<hl.length; i++) {
-                (function(i) {
-                    API.listenHighlight({_highlight: hl[i]}, function(onOff, key) {
-                        if(!key instanceof Array) {
+            for (var i = 0; i < hl.length; i++) {
+                (function (i) {
+                    API.listenHighlight({_highlight: hl[i]}, function (onOff, key) {
+                        if (!key instanceof Array) {
                             key = [key];
                         }
-                        if(onOff) {
+                        if (onOff) {
                             that._highlighted = _(that._highlighted).push(key).flatten().uniq().value();
                         }
                         else {
-                            that._highlighted = _.filter(that._highlighted, function(val) {
+                            that._highlighted = _.filter(that._highlighted, function (val) {
                                 return key.indexOf(val) === -1;
                             });
                         }
@@ -791,31 +819,31 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             }
         },
 
-        _makeDataObjects: function() {
-            if(this.dataObjectsDone) return;
-            for(var i=0; i<this.module.data.length; i++) {
+        _makeDataObjects: function () {
+            if (this.dataObjectsDone) return;
+            for (var i = 0; i < this.module.data.length; i++) {
                 this.module.data[i] = DataObject.check(this.module.data[i]);
             }
             this.dataObjectsDone = true;
         },
 
-        onResize: function() {
-            if(this.grid) {
+        onResize: function () {
+            if (this.grid) {
                 this.grid.resizeCanvas();
             }
-            this.$rowHelp.css( {
+            this.$rowHelp.css({
                 bottom: 0
-            })
+            });
         },
 
-        getNextIncrementalId: function() {
+        getNextIncrementalId: function () {
             return ++uniqueID;
         },
 
-        generateUniqIds: function() {
-            if(!this.module.data) return;
-            for(var i=0; i<this.module.data.length; i++) {
-                if(!this.module.data[i][this.idPropertyName]) {
+        generateUniqIds: function () {
+            if (!this.module.data) return;
+            for (var i = 0; i < this.module.data.length; i++) {
+                if (!this.module.data[i][this.idPropertyName]) {
                     Object.defineProperty(this.module.data[i], this.idPropertyName, {
                         value: 'id_' + ++uniqueID,
                         writable: false,
@@ -826,23 +854,23 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
             }
         },
 
-        exportToTabDelimited: function() {
+        exportToTabDelimited: function () {
             var cols = this.grid.getColumns();
             var txt = '';
             var line = [], i, j;
-            for(i=0; i<cols.length; i++) {
+            for (i = 0; i < cols.length; i++) {
                 line.push(cols[i].name || '');
             }
             txt += line.join('\t') + '\r\n';
-            for(i=0; i<this.module.data.length; i++) {
+            for (i = 0; i < this.module.data.length; i++) {
                 line = [];
-                for(j=0; j<cols.length; j++) {
+                for (j = 0; j < cols.length; j++) {
                     var jpath = cols[j].jpath;
                     jpath = jpath.slice(0);
                     jpath.unshift(i);
                     var el = this.module.data.getChildSync(jpath, false);
                     el = el ? el.get() : '';
-                    if (typeof el === "string") el = el.replace(/\r/g,"\\r").replace(/\n/g,"\\n").replace(/\t/g,"\\t");
+                    if (typeof el === 'string') el = el.replace(/\r/g, '\\r').replace(/\n/g, '\\n').replace(/\t/g, '\\t');
                     line.push(el);
                 }
                 txt += line.join('\t') + '\r\n';
@@ -851,17 +879,17 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         },
 
         onActionReceive: {
-            hoverRow: function(row) {
+            hoverRow: function (row) {
                 // row can be the row itself or the array's index
                 var item;
-                if(_.isNumber(row) || row instanceof DataNumber) {
+                if (_.isNumber(row) || row instanceof DataNumber) {
                     item = this.module.data[row];
                 }
                 else {
                     item = row;
                 }
 
-                if(item && item[this.idPropertyName]) {
+                if (item && item[this.idPropertyName]) {
                     var gridRow = this.slick.data.mapIdsToRows([item[this.idPropertyName]])[0];
                     var dataIdx = this.slick.data.getIdxById(item[this.idPropertyName]);
                     this.module.controller.onHover(dataIdx, item);
@@ -869,20 +897,20 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
                 }
             },
 
-            selectRow: function(row) {
+            selectRow: function (row) {
                 var item;
-                if(_.isNumber(row) || row instanceof DataNumber) {
+                if (_.isNumber(row) || row instanceof DataNumber) {
                     item = this.module.data[row];
                 }
                 else {
                     item = row;
                 }
 
-                if(item && item[this.idPropertyName]) {
+                if (item && item[this.idPropertyName]) {
                     var gridRow = this.slick.data.mapIdsToRows([item[this.idPropertyName]])[0];
                     var dataIdx = this.slick.data.getIdxById(item[this.idPropertyName]);
                     this.module.controller.onClick(dataIdx, item);
-                    if(!_.isUndefined(gridRow)) {
+                    if (!_.isUndefined(gridRow)) {
                         this.grid.scrollRowToTop(gridRow);
                         this.grid.setActiveCell(gridRow, 0);
                     }
@@ -893,7 +921,7 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
     });
 
     function waitingFormatter() {
-        return "...";
+        return '...';
     }
 
     function binFormatter() {
@@ -902,16 +930,16 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
 
     function requiredFieldValidator(value) {
         if (value == null || value == undefined || !value.length) {
-            return {valid: false, msg: "This is a required field"};
+            return {valid: false, msg: 'This is a required field'};
         } else {
             return {valid: true, msg: null};
         }
     }
 
     function typeRenderer(cellNode, row, dataContext, colDef) {
-        if(dataContext.__group) return;
+        if (dataContext.__group) return;
         this.module.data.traceSync([row]);
-        if(cellNode) {
+        if (cellNode) {
             Renderer.render(cellNode, dataContext, colDef.jpath);
         }
 
@@ -922,85 +950,85 @@ define(['require', 'modules/default/defaultview', 'src/util/debug', 'lodash', 's
         return a.toLowerCase().match(search.toLowerCase());
     };
 
-    filters.gt = function(a, b) {
+    filters.gt = function (a, b) {
         return a > b;
     };
 
-    filters.lt = function(a, b) {
+    filters.lt = function (a, b) {
         return a < b;
     };
 
-    filters.interval = function(a, low, high) {
+    filters.interval = function (a, low, high) {
         return a >= low && a <= high;
-    }
+    };
 
     filters.reg = function (a, reg, modifiers) {
         var reg = new RegExp(reg, modifiers);
         return a.match(reg);
-    }
+    };
 
     function getColumnFilterFunction(query) {
         var match;
 
         match = query.match(/^"(.*)"$/);
-        if(match) {
-            return function(val) {
+        if (match) {
+            return function (val) {
                 match = match.toLowerCase();
                 val = val.toString().toLowerCase();
                 return val.match(match[1]);
-            }
+            };
         }
 
         match = query.match(/^\/(.*)\/(i?)/);
-        if(match) {
-            return function(val) {
+        if (match) {
+            return function (val) {
                 return val.toString().match(new RegExp(match[1], match[2] || undefined));
-            }
+            };
         }
 
         match = query.match(/^([<>=]{1,2})([0-9.]+)$/);
-        if(match) {
-            if(match[1] === '<') {
-                return function(val) {
+        if (match) {
+            if (match[1] === '<') {
+                return function (val) {
                     return val < match[2];
-                }
+                };
             }
-            else if(match[1] === '<=' || match[1] === '=<') {
-                return function(val) {
-                    return val <= match[2]
-                }
+            else if (match[1] === '<=' || match[1] === '=<') {
+                return function (val) {
+                    return val <= match[2];
+                };
             }
-            else if(match[1] === '>') {
-                return function(val) {
+            else if (match[1] === '>') {
+                return function (val) {
                     return val > match[2];
-                }
+                };
             }
-            else if(match[1] === '>=' || match[1] === '=>') {
-                return function(val) {
+            else if (match[1] === '>=' || match[1] === '=>') {
+                return function (val) {
                     return val >= match[2];
-                }
+                };
             }
-            else if(match[1] === '==' || match[1] === '=') {
-                return function(val) {
+            else if (match[1] === '==' || match[1] === '=') {
+                return function (val) {
                     return val == match[2];
-                }
+                };
             }
         }
 
         match = query.match(/^([0-9.]+)\.\.([0-9.]*)$/);
-        if(match) {
-            return function(val) {
+        if (match) {
+            return function (val) {
                 return val >= match[1] && val <= match[2];
-            }
+            };
         }
 
-        return function(val) {
+        return function (val) {
             return val.toString().toLowerCase().match(query.toLowerCase());
-        }
+        };
     }
 
-
     var lastHighlight = '';
+
     return View;
 
 });

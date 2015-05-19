@@ -7,13 +7,12 @@ define([
     'src/util/versioning',
     'forms/button',
     'src/util/util',
-    'lib/webtoolkit/base64',
     'forms/form',
     'lib/couchdb/jquery.couch',
     'fancytree',
     'components/ui-contextmenu/jquery.ui-contextmenu.min',
     'jquery-ui/autocomplete'
-], function ($, ui, Default, Versioning, Button, Util, Base64, Form) {
+], function ($, ui, Default, Versioning, Button, Util, Form) {
 
     function CouchDBManager() {
     }
@@ -54,7 +53,7 @@ define([
                     Debug.info('CouchDB: beforeUrl error', err);
                     that.ready = true;
                 }
-            })
+            });
         },
 
         showError: function (e, type) {
@@ -206,18 +205,19 @@ define([
             }
             doc._attachments['meta.json'] = {
                 'content_type': 'application/json',
-                'data': Base64.encode(JSON.stringify(val))
+                'data': btoa( unescape( encodeURIComponent(JSON.stringify(val))))
             };
             that.database.saveDoc(doc, {
                 success: function (data) {
                     doc._rev = data.rev;
+                    node.data.hasMeta = true;
                     if (node.children)
                         child.lazyLoad(true);
 
                     that.showError('meta saved.', 2);
                 },
                 error: function () {
-                    that.showError.apply(that, arguments)
+                    that.showError.apply(that, arguments);
                 }
             });
         },
@@ -286,7 +286,7 @@ define([
                 };
                 doc._attachments[type.toLowerCase() + '.json'] = {
                     'content_type': 'application/json',
-                    'data': Base64.encode(content)
+                    'data': btoa( unescape( encodeURIComponent(content)))
                 };
                 this.database.saveDoc(doc, {
                     success: function (data) {
@@ -349,7 +349,7 @@ define([
                 success: function (data) {
                     that.loggedIn = true;
                     that.username = username;
-                    that.openMenu('tree')
+                    that.openMenu('tree');
                 },
                 error: function () {
                     that.showError.apply(that, arguments);
@@ -400,7 +400,6 @@ define([
                         break;
                 }
             }
-            ;
         },
 
         getLoginForm: function () {
@@ -481,7 +480,6 @@ define([
             };
             var treeContainer = $('<div>').attr('id', this.cssId('tree')).css(treeCSS).appendTo(dom);
             this.makePublicButton = new Button('Make Public', function () {
-                console.log('Make public');
                 ui.confirm('You are about to make your view public. This action is irreversible. It will enable anybody to access the saved view and data. Do you want to proceed?', 'Proceed', 'Cancel').then(function (proceed) {
                     if (!proceed || !that.currentDocument) return;
                     var node = that.currentDocument;
@@ -498,10 +496,9 @@ define([
                             that.showError('The view was made public', 2);
                         },
                         error: function () {
-                            that.showError.apply(that, arguments)
+                            that.showError.apply(that, arguments);
                         }
                     });
-                    console.log('proceed with make public');
                 });
             }, {color: 'red'});
             dom.append($('<div style="width:560px; height:35px;">').append('<input type="text" id="' + this.cssId('docName') + '"/>')
@@ -678,7 +675,8 @@ define([
                                                 type: 'combo',
                                                 options: [{key: 'text', title: 'Text'}, {key: 'html', title: 'html'}],
                                                 title: 'Content type',
-                                                displaySource: {text: 't', html: 'h'}
+                                                displaySource: {text: 't', html: 'h'},
+                                                default: 'text'
                                             },
                                             keyword: {
                                                 type: 'text',
@@ -755,13 +753,13 @@ define([
                         result[val.keyword[0]] = {
                             type: 'text',
                             value: val.contentText[0]
-                        }
+                        };
                     }
                     else if (val.contentType[0] === 'html') {
                         result[val.keyword[0]] = {
                             type: 'html',
                             value: val.contentHtml[0]
-                        }
+                        };
                     }
                 }
             }
@@ -819,7 +817,6 @@ define([
                 node: folder
             };
             this.lastNode = last;
-            console.log(this.lastNode.key);
             if (event.type === 'fancytreedblclick' && !node.folder)
                 return false;
 
@@ -903,7 +900,7 @@ define([
                                     theNode.moveTo(target, info.hitMode);
                                 },
                                 error: function () {
-                                    that.showError.apply(that, arguments)
+                                    that.showError.apply(that, arguments);
                                 }
                             });
                         },
@@ -945,7 +942,9 @@ define([
                             // When switching flavors, if this document is also
                             // in the new flavor we select it automatically
                             var id = that.currentDocument.data.doc._id;
-                            var d = _.find(data, function(d) {return d.id === id});
+                            var d = _.find(data, function(d) {
+                                return d.id === id;
+                            });
                             if(d) {
                                 var key = _.flatten([that.flavor, d.value.flavors]).join(':');
                                 thefTree.activateKey(key);
@@ -974,7 +973,7 @@ define([
                                 node.remove();
                             },
                             error: function () {
-                                that.showError.apply(that, arguments)
+                                that.showError.apply(that, arguments);
                             }
                         });
                     }
@@ -985,7 +984,7 @@ define([
                                 node.remove();
                             },
                             error: function () {
-                                that.showError.apply(that, arguments)
+                                that.showError.apply(that, arguments);
                             }
                         });
                     }

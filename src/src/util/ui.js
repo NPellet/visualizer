@@ -136,6 +136,7 @@ define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/version
                     }
                     Versioning.setDataJSON(val);
                 } catch (_) {
+                    // do nothing
                 }
 
                 div.dialog('close');
@@ -161,6 +162,7 @@ define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/version
                     }
                     Versioning.setViewJSON(val);
                 } catch (_) {
+                    // do nothing
                 }
 
                 div.dialog('close');
@@ -235,7 +237,7 @@ define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/version
     exports.showNotification = function(message) {
         $notification = $('.ci-visualizer-notification');
         if($notification.length === 0) {
-            $('#ci-visualizer').append('<div class="ci-visualizer-notification"></div>')
+            $('#ci-visualizer').append('<div class="ci-visualizer-notification"></div>');
             $notification = $('.ci-visualizer-notification');
         }
         $notification.show().html(message);

@@ -31,7 +31,7 @@ define(['lib/datamining/clustering/hclust', 'lib/datamining/math/distance'], fun
 
             var result = hclust.compute(data.get(), hclust.methods.completeLinkage, Distance.euclidean);
             var tree = getTree(result);
-            resolve({type: "tree", value: tree});
+            resolve({type: 'tree', value: tree});
 
         }
     };

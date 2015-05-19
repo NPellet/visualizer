@@ -17,7 +17,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
     //    var div;
     //    if(val instanceof Array) {
     //        div = MathJax.HTML.Element(
-    //            "div",
+    //            'div',
     //            val
     //        );
     //    }
@@ -27,7 +27,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
     //
     //    $el.html(val);
     //
-    //    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    //    MathJax.Hub.Queue(['Typeset',MathJax.Hub]);
     //};
 
     functions.sparkline = {};
@@ -48,12 +48,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
     functions.string = {};
     functions.string.toscreen = function (element, val) {
         val = String(val);
-        while (true) {
-            val = val.replace('<', '&lt;').replace('>', '&gt;');
-            if (val.indexOf('<') === -1 && val.indexOf('>') === -1) {
-                break;
-            }
-        }
+        val.replace(/</g, '&lt;').replace(/>/g, '&gt;');
         element.html(val);
     };
 
@@ -94,8 +89,13 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
     };
 
     functions.picture = {};
-    functions.picture.toscreen = function (element, val) {
-        element.html('<img src="' + val + '" />');
+    functions.picture.toscreen = function (element, val, rootVal, options) {
+        var $img = $('<img>');
+        $img.attr({
+            src: val,
+            width: options ? options.width : undefined
+        });
+        element.html($img);
     };
     
     functions.gif = functions.picture;
@@ -120,7 +120,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
         return element.html(value.replace(/^(.*)$/, '<a target="_blank" href="http://dx.doi.org/$1"><img src="bin/logo/doi.png" /></a>'));
     };
 
-    var OCL = 'components/openchemlib/dist/openchemlib-viewer';
+    var OCL = 'openchemlib/openchemlib-viewer';
     var defaultOpenChemLibStructureOptions = {
         suppressChiralText: true,
         suppressESR: true,
@@ -169,8 +169,8 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
         });
     };
 
-    functions.actelionID = {};
-    functions.actelionID.toscreen = function (element, val, root, options) {
+    functions.actelionid = {};
+    functions.actelionid.toscreen = function (element, val, root, options) {
         return new Promise(function (resolve) {
             require([OCL], function (ACT) {
                 if (!root.coordinates) {
@@ -198,7 +198,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
         });
     };
 
-    functions.molfile2D = functions.mol2d;
+    functions.molfile2d = functions.mol2d;
 
     functions.mf = {};
     functions.mf.toscreen = function (element, value) {
@@ -243,15 +243,15 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
     functions.mol3d = {};
     functions.mol3d.toscreen = bioPv.bind(functions.pdb, 'mol3d');
 
-    functions.molfile3D = functions.mol3d;
+    functions.molfile3d = functions.mol3d;
 
-    functions.downloadLink = {};
-    functions.downloadLink.toscreen = function (element, value) {
+    functions.downloadlink = {};
+    functions.downloadlink.toscreen = function (element, value) {
         element.html(value.replace(/^(.*)$/, '<a href="$1">⤵</a>'));
     };
 
-    functions.openLink = {};
-    functions.openLink.toscreen = function($element, value) {
+    functions.openlink = {};
+    functions.openlink.toscreen = function($element, value) {
         $element.html(value.replace(/^(.*)$/, '<a href="$1" target="_blank"><i class="fa fa-external-link"></i></a>'));
     };
 
@@ -263,28 +263,28 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
             element.html('<span style="color: red;">&#10008;</span>');
     };
 
-    functions.colorBar = {};
-    functions.colorBar.toscreen = function (element, value) {
+    functions.colorbar = {};
+    functions.colorbar.toscreen = function (element, value) {
 
-        var div = $('<div>');
-        var gradient = "linear-gradient(to right";
+        var div = $('<div>&nbsp;</div>');
+        var gradient = 'linear-gradient(to right';
 
         var total = 0, i = 0, l = value.length;
-        for (i = 0; i < l; total += value[i++][0]);
+        for (i = 0; i < l; total += value[i++][0])
 
         var start = 0, end, color;
         for (i = 0; i < l; i++) {
             end = start + value[i][0] / total * 100;
             color = value[i][1];
-            gradient += ", " + color + " " + start + "%, " + color + " " + end + "%";
+            gradient += ', ' + color + ' ' + start + '%, ' + color + ' ' + end + '%';
             start = end;
         }
-        gradient += ")";
+        gradient += ')';
 
         div.css({
-            height: "100%",
-            width: "100%"
-        })/*.css("background","-webkit-"+gradient).css("background","-moz-"+gradient)*/.css("background", gradient);
+            height: '100%',
+            width: '100%'
+        })/*.css('background','-webkit-'+gradient).css('background','-moz-'+gradient)*/.css('background', gradient);
         element.html(div);
     };
 
@@ -292,9 +292,9 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
     functions.indicator.init = function () {
 
         var tooltip = $('<div class="ci-tooltip"></div>').css({
-            display: "none",
+            display: 'none',
             opacity: 0
-        }).appendTo("#ci-visualizer");
+        }).appendTo('#ci-visualizer');
         var current;
 
         $('#modules-grid').on('mouseenter', '[data-tooltip]', function (e) {
@@ -305,8 +305,8 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
                 tooltip.css({
                     left: offset.left,
                     top: offset.top,
-                    display: "block"
-                }).text(target.attr("data-tooltip"));
+                    display: 'block'
+                }).text(target.attr('data-tooltip'));
                 tooltip.animate({
                     opacity: 1
                 });
@@ -317,7 +317,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
             clearTimeout(current);
             tooltip.css({
                 opacity: 0,
-                display: "none"
+                display: 'none'
             });
         });
 
@@ -333,8 +333,8 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
                 // if the first element of the array is a number ... we need to convert the array.
                 if (!isNaN(value[0])) {
                     value = value.map(function (value) {
-                        return {"size": value};
-                    })
+                        return {'size': value};
+                    });
                 }
 
                 var length = value.length;
@@ -351,8 +351,8 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
                 for (var i = 0; i < length; i++) {
                     var element = value[i];
                     var span = $('<td>&nbsp;</td>').css({
-                        "width": (100 * element.size / totalSize) + "%",
-                        "border": "none"
+                        'width': (100 * element.size / totalSize) + '%',
+                        'border': 'none'
                     });
                     if (element.bgcolor)
                         span.css('background-color', element.bgcolor);
@@ -367,7 +367,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
                     if (element.css)
                         span.css(element.css);
                     if (element.tooltip)
-                        span.attr("data-tooltip", element.tooltip);
+                        span.attr('data-tooltip', element.tooltip);
                     html += span.get(0).outerHTML;
                 }
                 html += '</tr></table>';
@@ -402,7 +402,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
         }
 
         return Promise.resolve(object.get(true)).then(function (value) {
-            var type = object.getType();
+            var type = object.getType().toLowerCase();
             if (!functions[type]) {
                 Util.warnOnce('no-typerenderer-' + type, 'No renderer found for type ' + type);
                 element.html(String(value));

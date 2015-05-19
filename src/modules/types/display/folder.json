@@ -17,6 +17,10 @@
       "url": "modules/types/display/panzoom/"
     },
     {
+      "moduleName": "Progress bar",
+      "url": "modules/types/display/progress/"
+    },
+    {
       "moduleName": "Sticky note",
       "url": "modules/types/display/postit/",
       "hidden": true

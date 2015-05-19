@@ -13,7 +13,7 @@ define([
         this._id = Util.getNextUniqueId();
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
         init: function () {
             this.plainHtml = this.module.getConfigurationCheckbox('plainHtml', 'yes');
         },
@@ -103,7 +103,7 @@ define([
                 this.dom.css({
                     background: Util.getCssVendorPrefix() + 'radial-gradient(center, ellipse cover, ' + ch.brighter().hex() + ' 0%, ' + ch.hex() + ' 100%)'
                     //background: 'radial-gradient(ellipse at center, ' + ch.brighter().hex() + ' 0%,' + ch.hex() + ' 100%)',
-                })
+                });
             }
             else {
                 this.dom.css({

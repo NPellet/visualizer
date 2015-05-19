@@ -1,21 +1,13 @@
-define( [ 'modules/default/defaultcontroller' ], function( Default ) {
-    
-    /**
-     * Creates a new empty controller
-     * @class Controller
-     * @name Controller
-     * @constructor
-     */
-    function controller() { };
+'use strict';
 
-    // Extends the default properties of the default controller
-    controller.prototype = $.extend( true, {}, Default );
+define(['modules/default/defaultcontroller'], function (Default) {
 
+    function Controller() {
+    }
 
-    /*
-        Information about the module
-    */
-    controller.prototype.moduleInformation = {
+    $.extend(true, Controller.prototype, Default);
+
+    Controller.prototype.moduleInformation = {
         name: 'Protein Feature Viewer',
         description: 'Displays Protein Annotations',
         author: 'Daniel Kostro',
@@ -23,79 +15,35 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
         license: 'MIT',
         cssClass: 'protein_viewer'
     };
-    
 
-
-  	/*
-  		Configuration of the input/output references of the module
-  	*/
-  	controller.prototype.references = {
-  	  feature: {
-        label: "An object describing a feature"
-  	  }
-  	};
-  
-    controller.prototype.events = {
-      onFeatureClicked: {
-        label: "A feature was clicked",
-        refVariable: ["feature"]
-      },
-      
-      onFeatureMouseOver: {
-        label: "The mouse is over a feature",
-        refVariable: ["feature"]
-      }
-    };
-	
-    controller.prototype.onFeatureClicked = function(val) {
-      this.createDataFromEvent("onFeatureClicked", "feature", DataObject.check(val, true));
-    }
-	  
-    controller.prototype.onFeatureMouseOver = function(val) {
-      this.createDataFromEvent('onFeatureMouseOver', 'feature', DataObject.check(val, true));
-    }
-    
-
-    /*
-        Configuration of the module for receiving events, as a static object
-        In the form of 
-    */
-    controller.prototype.variablesIn = ['feature' ];
-
-    /*
-        Received actions
-        In the form of
-
-        {
-            actionRef: 'actionLabel'
+    Controller.prototype.references = {
+        feature: {
+            label: 'An object describing a feature'
         }
-    */
-    controller.prototype.actionsIn = {
-    
-    };
-    
-        
-    controller.prototype.configurationStructure = function(section) {
-        
-        return {
-            groups: {
-                group: {
-                    options: {
-                        type: 'list'
-                    },
-
-                    fields: {
-
-                    }
-                }
-            }
-        };
     };
 
-        
-    controller.prototype.configAliases = {
+    Controller.prototype.events = {
+        onFeatureClicked: {
+            label: 'A feature was clicked',
+            refVariable: ['feature']
+        },
 
+        onFeatureMouseOver: {
+            label: 'The mouse is over a feature',
+            refVariable: ['feature']
+        }
     };
 
-    return controller;
+    Controller.prototype.onFeatureClicked = function (val) {
+        this.createDataFromEvent('onFeatureClicked', 'feature', DataObject.check(val, true));
+    };
+
+    Controller.prototype.onFeatureMouseOver = function (val) {
+        this.createDataFromEvent('onFeatureMouseOver', 'feature', DataObject.check(val, true));
+    };
+
+    Controller.prototype.variablesIn = ['feature'];
+
+    return Controller;
+
 });

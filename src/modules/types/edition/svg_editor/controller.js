@@ -1,7 +1,6 @@
 'use strict';
 
-define([
-    'modules/default/defaultcontroller'], function (Default) {
+define(['modules/default/defaultcontroller'], function (Default) {
 
     function Controller() {
     }
@@ -21,11 +20,9 @@ define([
             type: 'svg',
             label: 'A string describing an svg'
         },
-
         svgModifier: {
             label: 'An object describing svg modification'
         },
-
         info: {
             label: 'An info object'
         }
@@ -36,12 +33,10 @@ define([
             label: 'The svg content changed',
             refVariable: ['svgString']
         },
-
         onHover: {
             label: 'An svg element is hovered',
             refVariable: ['info']
         },
-
         onClick: {
             label: 'An svg element is clicked',
             refVariable: ['info']
