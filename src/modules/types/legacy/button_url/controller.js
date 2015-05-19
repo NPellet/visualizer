@@ -42,7 +42,7 @@ define( [ '../../../default/defaultcontroller' ], function( Default ) {
 		},
 
 		'disabled': {
-			type: ["boolean", "number"],
+			type: ['boolean', 'number'],
 			label: 'Disabled'
 		},
 

@@ -5,7 +5,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
     function Model() {
     }
 
-    Model.prototype = $.extend(true, {}, Default, {
+    $.extend(true, Model.prototype, Default, {
         getjPath: function (rel) {
             var data, el;
             switch (rel) {
@@ -22,7 +22,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
                     data = this.getAllDataFromRel('dataset');
                     if (data) {
                         var result = {};
-                        for (var i in data){
+                        for (var i in data) {
                             result[i] = {};
                         }
                         return Traversing.getJPathsFromElement(result);

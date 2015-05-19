@@ -17,6 +17,10 @@
       "url": "modules/types/display/panzoom/"
     },
     {
+      "moduleName": "Progress bar",
+      "url": "modules/types/display/progress/"
+    },
+    {
       "moduleName": "Sticky note",
       "url": "modules/types/display/postit/",
       "hidden": true
@@ -35,11 +39,12 @@
     },
     {
       "moduleName": "Two dimensional list",
-      "url": "modules/types/display/2d_list/"
+      "url": "modules/types/display/2d_list_fast/"
     },
     {
-      "moduleName": "Two dimensional list (fast)",
-      "url": "modules/types/display/2d_list_fast/"
+      "moduleName": "Two dimensional list (old)",
+      "url": "modules/types/display/2d_list/",
+      "hidden": true
     }
   ],
   "name": "Display",

@@ -5,7 +5,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: '1D NMR',
@@ -21,7 +21,6 @@ define(['modules/default/defaultcontroller'], function (Default) {
             label: 'The jcamp file',
             type: 'jcamp'
         },
-
         plot: {
             label: 'The Plot object',
             type: 'object'
@@ -73,7 +72,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                     }
                 }
             }
-        }
+        };
     };
 
     Controller.prototype.configAliases = {

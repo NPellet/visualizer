@@ -1,25 +1,27 @@
+'use strict';
 
-define( [ '../../fieldlistelement', './element' ], function( ElementDefault, ElementImpl ) {
+define(['../../fieldlistelement', './element'], function (ElementDefault, ElementImpl) {
 
-	var Element = function() {};
+    var Element = function () {
+    };
 
-	Element.prototype = new ElementDefault();
-	Element.prototype = $.extend(Element.prototype, ElementImpl.prototype, {
+    Element.prototype = new ElementDefault();
+    Element.prototype = $.extend(Element.prototype, ElementImpl.prototype, {
 
-		_makeDom: function() {
+        _makeDom: function () {
 
-			this.__makeDom();
+            this.__makeDom();
 
-			if( this.options.multiple ) {
-				this.dom.append( this.makeDuplicator( ) );
-			}
-			
-			this.checkValue();
+            if (this.options.multiple) {
+                this.dom.append(this.makeDuplicator());
+            }
 
-			return this.dom;
-		}
+            this.checkValue();
 
-	});
+            return this.dom;
+        }
 
-	return Element;
+    });
+
+    return Element;
 });

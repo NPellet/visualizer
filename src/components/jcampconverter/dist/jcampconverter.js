@@ -1,6 +1,6 @@
 /**
  * jcampconverter - Parse and convert JCAMP data
- * @version v2.0.5
+ * @version v2.0.8
  * @link https://github.com/cheminfo/jcampconverter
  * @license MIT
  */
@@ -28,6 +28,8 @@ function getConverter() {
 
     /*
      options.keepSpectra: keep the original spectra for a 2D
+     options.xy: true // create x / y array instead of a 1D array
+     options.keepRecordsRegExp: which fields do we keep
      */
 
     function convert(jcamp, options) {
@@ -78,7 +80,6 @@ function getConverter() {
             dataLabel = dataLabel.replace(/[_ -]/g, '').toUpperCase();
 
             if (dataLabel == 'DATATABLE') {
-
                 endLine = dataValue.indexOf('\n');
                 if (endLine == -1) endLine = dataValue.indexOf('\r');
                 if (endLine > 0) {
@@ -87,8 +88,7 @@ function getConverter() {
                     // ##DATA TABLE= (X++(I..I)), XYDATA
                     // We need to find the variables
 
-                    infos = dataValue.substring(0, endLine).split(/[ ,;\t]+/);
-
+                    infos = dataValue.substring(0, endLine).split(/[ ,;\t]{2,}/);
                     if (infos[0].indexOf('++') > 0) {
                         var firstVariable = infos[0].replace(/.*\(([a-zA-Z0-9]+)\+\+.*/, '$1');
                         var secondVariable = infos[0].replace(/.*\.\.([a-zA-Z0-9]+).*/, '$1');
@@ -173,30 +173,30 @@ function getConverter() {
                 //                 result.shiftOffsetNum = parseInt(parts[2].trim());
                 //                 result.shiftOffsetVal = parseFloat(parts[3].trim());
             } else if (dataLabel == 'VARNAME') {
-                ntuples.varname = dataValue.split(/[, \t]+/);
+                ntuples.varname = dataValue.split(/[, \t]{2,}/);
             } else if (dataLabel == 'SYMBOL') {
-                ntuples.symbol = dataValue.split(/[, \t]+/);
+                ntuples.symbol = dataValue.split(/[, \t]{2,}/);
             } else if (dataLabel == 'VARTYPE') {
-                ntuples.vartype = dataValue.split(/[, \t]+/);
+                ntuples.vartype = dataValue.split(/[, \t]{2,}/);
             } else if (dataLabel == 'VARFORM') {
-                ntuples.varform = dataValue.split(/[, \t]+/);
+                ntuples.varform = dataValue.split(/[, \t]{2,}/);
             } else if (dataLabel == 'VARDIM') {
-                ntuples.vardim = convertToFloatArray(dataValue.split(/[, \t]+/));
+                ntuples.vardim = convertToFloatArray(dataValue.split(/[, \t]{2,}/));
             } else if (dataLabel == 'UNITS') {
-                ntuples.units = dataValue.split(/[, \t]+/);
+                ntuples.units = dataValue.split(/[, \t]{2,}/);
             } else if (dataLabel == 'FACTOR') {
-                ntuples.factor = convertToFloatArray(dataValue.split(/[, \t]+/));
+                ntuples.factor = convertToFloatArray(dataValue.split(/[, \t]{2,}/));
             } else if (dataLabel == 'FIRST') {
-                ntuples.first = convertToFloatArray(dataValue.split(/[, \t]+/));
+                ntuples.first = convertToFloatArray(dataValue.split(/[, \t]{2,}/));
             } else if (dataLabel == 'LAST') {
-                ntuples.last = convertToFloatArray(dataValue.split(/[, \t]+/));
+                ntuples.last = convertToFloatArray(dataValue.split(/[, \t]{2,}/));
             } else if (dataLabel == 'MIN') {
-                ntuples.min = convertToFloatArray(dataValue.split(/[, \t]+/));
+                ntuples.min = convertToFloatArray(dataValue.split(/[, \t]{2,}/));
             } else if (dataLabel == 'MAX') {
-                ntuples.max = convertToFloatArray(dataValue.split(/[, \t]+/));
+                ntuples.max = convertToFloatArray(dataValue.split(/[, \t]{2,}/));
             } else if (dataLabel == '.NUCLEUS') {
                 if (result.twoD) {
-                    result.yType = dataValue.split(/[, \t]+/)[0];
+                    result.yType = dataValue.split(/[, \t]{2,}/)[0];
                 }
             } else if (dataLabel == 'PAGE') {
                 spectrum.page = dataValue.trim();
@@ -239,6 +239,20 @@ function getConverter() {
 
         if (result.profiling) result.profiling.push({action: 'Finished parsing', time: new Date() - start});
 
+        if (Object.keys(ntuples).length>0) {
+            var newNtuples=[];
+            var keys=Object.keys(ntuples);
+            for (var i=0; i<keys.length; i++) {
+                var key=keys[i];
+                var values=ntuples[key];
+                for (var j=0; j<values.length; j++) {
+                    if (! newNtuples[j]) newNtuples[j]={};
+                    newNtuples[j][key]=values[j];
+                }
+            }
+            result.ntuples=newNtuples;
+        }
+
         if (result.twoD) {
             add2D(result);
             if (result.profiling) result.profiling.push({
@@ -252,12 +266,34 @@ function getConverter() {
 
 
         // maybe it is a GC (HPLC) / MS. In this case we add a new format
-        if (spectra.length > 1 && spectra[0].dataType.toLowerCase().match(/.*mass./)) {
+        if (spectra.length > 1 && spectra[0].dataType && spectra[0].dataType.toLowerCase().match(/.*mass./)) {
             addGCMS(result);
             if (result.profiling) result.profiling.push({
                 action: 'Finished GCMS calculation',
                 time: new Date() - start
             });
+        }
+
+
+        if (options.xy) { // the spectraData should not be a oneD array but an object with x and y
+            if (spectra.length > 0) {
+                for (var i=0; i<spectra.length; i++) {
+                    var spectrum=spectra[i];
+                    if (spectrum.data.length>0) {
+                        for (var j=0; j<spectrum.data.length; j++) {
+                            var data=spectrum.data[j];
+                            var newData={x:Array(data.length/2), y:Array(data.length/2)};
+                            for (var k=0; k<data.length; k=k+2) {
+                                newData.x[k/2]=data[k];
+                                newData.y[k/2]=data[k+1];
+                            }
+                            spectrum.data[j]=newData;
+                        }
+
+                    }
+
+                }
+            }
         }
 
         if (result.profiling) {
@@ -330,6 +366,7 @@ function getConverter() {
     }
 
     function parsePeakTable(spectrum, value, result) {
+        spectrum.isPeaktable=true;
         var i, ii, j, jj, values;
         var currentData = [];
         spectrum.data = [currentData];
@@ -357,6 +394,8 @@ function getConverter() {
         if (!spectrum.deltaX) {
             spectrum.deltaX = (spectrum.lastX - spectrum.firstX) / (spectrum.nbPoints - 1);
         }
+
+        spectrum.isXYdata=true;
 
         var currentData = [];
         spectrum.data = [currentData];

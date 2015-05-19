@@ -5,7 +5,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
 
         init: function () {
             this.series = {};
@@ -14,10 +14,10 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             this.dom = $('<div />');
             this.zones = {};
             this.module.getDomContent().html(this.dom);
-            this.seriesActions = [ ];
+            this.seriesActions = [];
 
             this.colorId = 0;
-            this.colors = [ 'red', 'blue', 'green', 'black' ];
+            this.colors = ['red', 'blue', 'green', 'black'];
 
             this.deferreds = {};
             this.onchanges = {};
@@ -70,8 +70,14 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                         }
                         options.plugins['graph.plugin.zoom'] = zoomOptions;
                         options.plugins['graph.plugin.drag'] = {};
-                        options.pluginAction['graph.plugin.zoom'] = {shift: false, ctrl: false};
-                        options.pluginAction['graph.plugin.drag'] = {shift: true, ctrl: false};
+                        options.pluginAction['graph.plugin.zoom'] = {
+                            shift: false,
+                            ctrl: false
+                        };
+                        options.pluginAction['graph.plugin.drag'] = {
+                            shift: true,
+                            ctrl: false
+                        };
 
                         /*
                          // UPDATE NORMAN FOR DEV
@@ -92,7 +98,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                             options: {
                                 mode: 'total'
                             }
-                        }
+                        };
                     }
 
                     var wheel = cfg('wheelAction');
@@ -117,7 +123,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     if (cfgCheckbox('mouseTracking', 'track')) {
                         options.onMouseMoveData = function (event, result) {
                             self.module.model.trackData = result;
-                            self.module.controller.sendAction('trackData', result, 'onTrackMouse');
+                            self.module.controller.sendActionFromEvent('onTrackMouse', 'trackData', result);
                             self.module.controller.createDataFromEvent('onTrackMouse', 'trackData', result);
                         };
                     }
@@ -127,9 +133,9 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     var xOptions = {};
                     if (cfg('xaxismodification') == 'timestamptotime') {
                         xOptions.type = 'time';
-                    } else if( cfg('xaxismodification') == 'valtotime') {
+                    } else if (cfg('xaxismodification') == 'valtotime') {
                         xOptions.unitModification = 'time';
-                    } else if( cfg('xaxismodification') == 'valtotime:min.sec' ) {
+                    } else if (cfg('xaxismodification') == 'valtotime:min.sec') {
                         xOptions.unitModification = 'time:min.sec';
                     }
 
@@ -143,7 +149,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                         .forceMin(cfg('minX', false))
                         .forceMax(cfg('maxX', false))
                         .setAxisDataSpacing(cfg('xLeftSpacing', 0), cfg('xRightSpacing', 0));
-                    if(!cfgCheckbox('displayAxis', 'x')) {
+                    if (!cfgCheckbox('displayAxis', 'x')) {
                         xAxis.hide();
                     }
                     xAxis.on('zoom', function (min, max) {
@@ -172,7 +178,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     });
 
                     var legend = cfg('legend', 'none');
-                    if(legend !== 'none') {
+                    if (legend !== 'none') {
                         var theLegend = graph.makeLegend({
                             backgroundColor: 'rgba( 255, 255, 255, 0.8 )',
                             frame: true,
@@ -245,19 +251,19 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     API.highlight(shape.data, 0);
                 });
 
-                graph.shapeHandlers.onAfterResized.push( function( shape ) {
+                graph.shapeHandlers.onAfterResized.push(function (shape) {
 
-                    self.module.model.dataTriggerChange( shape.data );
+                    self.module.model.dataTriggerChange(shape.data);
 
-                } );
+                });
 
-                graph.on('shapeSelect', function( shape ) {
+                graph.on('shapeSelect', function (shape) {
                     self.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape.data);
-                    self.module.controller.sendAction('selectedShape', shape.data, 'onShapeSelect' );
+                    self.module.controller.sendActionFromEvent('onShapeSelect', 'selectedShape', shape.data);
                 });
                 graph.on('shapeUnselect', function (shape) {
                     self.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape.data);
-                    self.module.controller.sendAction('shapeInfos', shape.data, 'onShapeUnselect' );
+                    self.module.controller.sendActionFromEvent('onShapeUnselect', 'shapeInfos', shape.data);
                 });
 
                 self.onResize();
@@ -268,10 +274,10 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
         },
 
         onResize: function () {
-            if( ! this.graph ) {
+            if (!this.graph) {
                 return;
             }
-            this.graph.resize( this.width, this.height );
+            this.graph.resize(this.width, this.height);
             this.redraw(true);
         },
 
@@ -371,7 +377,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                         options.lineToZero = continuous == 'discrete';
                         options.useSlots = (plotinfos[i].optimizeSlots ? !!plotinfos[i].optimizeSlots[0] : false);
-                        options.strokeWidth = parseInt( plotinfos[ i ].strokewidth );
+                        options.strokeWidth = parseInt(plotinfos[i].strokewidth);
 
                         var pp = plotinfos[i].peakpicking[0];
                         if (pp) {
@@ -417,6 +423,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                         serie.setLineColor(Color.getColor(color));
                         serie.setLineWidth(parseFloat(plotinfos[i].strokewidth) || 1);
+                        serie.setLineStyle(parseInt(plotinfos[i].strokestyle) || 1);
 
                         if (plotinfos[i].markers[0] && serie.showMarkers) {
                             serie.showMarkers();
@@ -429,11 +436,11 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                             }]);
                         }
 
-                        if(plotinfos[i].monotoneous && plotinfos[i].monotoneous[0]) {
+                        if (plotinfos[i].monotoneous && plotinfos[i].monotoneous[0]) {
                             serie.XIsMonotoneous();
                         }
 
-                        if(plotinfos[i].degrade) {
+                        if (plotinfos[i].degrade) {
                             serie.degrade(plotinfos[i].degrade);
                         }
                     }
@@ -444,7 +451,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 API.listenHighlight({_highlight: highlight}, function (value, commonKeys) {
                     for (var i = 0, ii = commonKeys.length; i < ii; i++) {
                         var key = commonKeys[i];
-                        for(var j = 0, jj = highlight.length; j < jj; j++) {
+                        for (var j = 0, jj = highlight.length; j < jj; j++) {
                             var high = highlight[j];
                             if (Array.isArray(high)) {
                                 for (var k = 0; k < high.length; k++) {
@@ -516,24 +523,24 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                     var aData = data[i];
 
-                    if (i===0 && moduleValue.axis) {
-                        if(moduleValue.axis[aData.xAxis]) {
+                    if (i === 0 && moduleValue.axis) {
+                        if (moduleValue.axis[aData.xAxis]) {
                             this.xAxis.setLabel(moduleValue.axis[aData.xAxis].name);
                         }
-                        if(moduleValue.axis[aData.yAxis]) {
+                        if (moduleValue.axis[aData.yAxis]) {
                             this.yAxis.setLabel(moduleValue.axis[aData.yAxis].name);
                         }
                     }
 
 
-                    var serieName = data.serieLabel || varname;
+                    var serieName = aData.label || varname;
 
                     var valFinal = [];
 
-                    switch(aData.serieType) {
+                    switch (aData.serieType) {
                         case 'zone':
-                            if(aData.yMin && aData.yMax) {
-                                for(var j= 0, l= aData.yMax.length; j<l; j++) {
+                            if (aData.yMin && aData.yMax) {
+                                for (var j = 0, l = aData.yMax.length; j < l; j++) {
                                     valFinal.push(aData.x ? aData.x[j] : j);
                                     valFinal.push(aData.yMin[j], aData.yMax[j]);
                                 }
@@ -609,14 +616,14 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     val2.push(val[i]);
                 }
 
-                var serie = this.graph.newSerie(varname, this.getSerieOptions(varname, null , val2));
+                var serie = this.graph.newSerie(varname, this.getSerieOptions(varname, null, val2));
 
                 this.normalize(val2, varname);
 
                 serie.setData(val2);
                 serie.autoAxis();
                 this.setSerieParameters(serie, varname);
-                this.series[ varname ].push(serie);
+                this.series[varname].push(serie);
                 this.redraw(false, varname);
             },
 
@@ -631,7 +638,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                         var shape = self.graph.newShape(annotation, null, null, true);
                         self.annotations[varName][i] = shape;
 
-                        shape.setSerie( self.graph.getSerie( 0 ) );
+                        shape.setSerie(self.graph.getSerie(0));
 //TODO annotation.onChange
 //                Debug.debug('annotation.onChange is disabled, need to be fixed');
 //                annotation.onChange( annotation, function( value ) {
@@ -651,7 +658,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                             }
                         }, false, self.module.getId() + varName);
 
-                        self.module.model.dataListenChange( annotations.traceSync( [ i ] ), function( v ) {
+                        self.module.model.dataListenChange(annotations.traceSync([i]), function (v) {
 
                             shape.redraw();
 
@@ -684,24 +691,24 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                 this.zones[varname] = moduleValue._zones;
 
-                if (self.deferreds[ varname ]) {
-                    self.deferreds[ varname ].reject();
+                if (self.deferreds[varname]) {
+                    self.deferreds[varname].reject();
                 }
 
-                self.deferreds[ varname ] = $.Deferred();
-                var def = self.deferreds[ varname ];
+                self.deferreds[varname] = $.Deferred();
+                var def = self.deferreds[varname];
 
-                require([ 'components/jcampconverter/dist/jcampconverter.min' ], function (JcampConverter) {
+                require(['components/jcampconverter/dist/jcampconverter.min'], function (JcampConverter) {
 
-                    JcampConverter.convert(moduleValue, { lowRes: 1024 }, true).then(function (spectra) {
+                    JcampConverter.convert(moduleValue, {lowRes: 1024}, true).then(function (spectra) {
 
                         if (def.state() == 'rejected') {
                             return;
                         }
 
-                        self.deferreds[ varname ] = false;
-                        self.series[ varname ] = self.series[ varname ] || [];
-                        self.series[ varname ] = [];
+                        self.deferreds[varname] = false;
+                        self.series[varname] = self.series[varname] || [];
+                        self.series[varname] = [];
 
                         if (spectra.contourLines) {
 
@@ -710,7 +717,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                             serie.setData(spectra.contourLines);
                             serie.autoAxis();
                             self.setSerieParameters(serie, varname);
-                            self.series[ varname ].push(serie);
+                            self.series[varname].push(serie);
 
                         } else {
 
@@ -732,9 +739,9 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                                 for (var i = 0; i < commonKeys.length; i++) {
 
-                                    if (self.zones[ varname ][ commonKeys[ i ] ]) {
+                                    if (self.zones[varname][commonKeys[i]]) {
 
-                                        self.doZone(varname, self.zones[ varname ][ commonKeys [ i ] ], value, self.series[varname].options.lineColor);
+                                        self.doZone(varname, self.zones[varname][commonKeys [i]], value, self.series[varname].options.lineColor);
                                     }
                                 }
                             }, true, self.module.getId() + varname);
@@ -752,9 +759,9 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                  }*/
 
                 var self = this;
-                require([ 'src/util/color'], function( Color ) {
+                require(['src/util/color'], function (Color) {
 
-                    var colors = Color.getDistinctColors( data.length );
+                    var colors = Color.getDistinctColors(data.length);
                     //   self.graph.removeSeries();
 
                     //data = data.get();
@@ -766,22 +773,20 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                         var opts = self.getSerieOptions(varname, null, data[i].data);
 
-                        var serie = self.graph.newSerie( data[ i ].name, opts );
+                        var serie = self.graph.newSerie(data[i].name, opts);
 
 
                         serie.autoAxis();
-                        self.series[ varname ].push( serie );
+                        self.series[varname].push(serie);
 
-                        if( data[ i ].data ) {
-                            serie.setData(data[ i ].data);
-                        } else {
-                            console.log( data[ i ].data );
+                        if (data[i].data) {
+                            serie.setData(data[i].data);
                         }
 
                         //	serie.setLabel( data[ i ].label.toString( ) );
-                        serie.setLineWidth(data[ i ].lineWidth || opts.strokeWidth || 1 );
-                        serie.setLineColor(data[ i ].lineColor || 'rgb(' + colors[ i ].join() + ')' );
-                        serie.setLineWidth( 3, 'selected' );
+                        serie.setLineWidth(data[i].lineWidth || opts.strokeWidth || 1);
+                        serie.setLineColor(data[i].lineColor || 'rgb(' + colors[i].join() + ')');
+                        serie.setLineWidth(3, 'selected');
 
                         //                    serie.setLineColor(data[ i ].lineColor || Color.getColor(Color.getNextColorRGB(i, l)));
                         serie.extendStyles();
@@ -798,11 +803,11 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
         setOnChange: function (id, varname, obj) {
 
 
-            if (this.onchanges[ varname ]) {
-                this.onchanges[ varname ].obj.unbindChange(this.onchanges[ varname ].id);
+            if (this.onchanges[varname]) {
+                this.onchanges[varname].obj.unbindChange(this.onchanges[varname].id);
             }
 
-            this.onchanges[ varname ] = { obj: obj, id: id };
+            this.onchanges[varname] = {obj: obj, id: id};
 
 
         },
@@ -810,7 +815,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
         removeAnnotations: function (varName) {
             API.killHighlight(this.module.getId() + varName);
             if (this.annotations[varName]) {
-                for(var i = 0; i < this.annotations[varName].length; i++) {
+                for (var i = 0; i < this.annotations[varName].length; i++) {
                     this.annotations[varName][i].kill();
                 }
             }
@@ -843,7 +848,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             serie.autoAxis();
             serie.setData(data.data);
 
-            this.seriesActions.push([ value, serie, data.name ]);
+            this.seriesActions.push([value, serie, data.name]);
             this.setSerieParameters(serie, name);
 
             if (data.lineColor) {
@@ -889,8 +894,8 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                 for (var i = 0, l = this.seriesActions.length; i < l; i++) {
 
-                    if (this.seriesActions[ i ][ 0 ] == value) {
-                        this.seriesActions[ i ][ 1 ].kill();
+                    if (this.seriesActions[i][0] == value) {
+                        this.seriesActions[i][1].kill();
                         this.seriesActions.splice(i, 1);
                     }
                 }
@@ -906,20 +911,20 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 }
             },
 
-            selectSerie: function( serieName ) {
+            selectSerie: function (serieName) {
 
-                var s = this.graph.getSerie( serieName.valueOf() );
+                var s = this.graph.getSerie(serieName.valueOf());
 
-                if( s ) {
-                    s.select( 'selected' );
+                if (s) {
+                    s.select('selected');
                 }
             },
 
-            unselectSerie: function( serieName ) {
+            unselectSerie: function (serieName) {
 
-                var s = this.graph.getSerie( serieName.valueOf() );
+                var s = this.graph.getSerie(serieName.valueOf());
 
-                if( s ) {
+                if (s) {
                     s.unselect();
                 }
             }
@@ -935,19 +940,21 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             var normalize = '';
             for (i = 0, l = plotinfos.length; i < l; i++) {
                 if (varname == plotinfos[i].variable) {
-                    normalize = plotinfos[i].normalize
+                    normalize = plotinfos[i].normalize;
                 }
             }
             if (!normalize) return;
 
-            if(Array.isArray(array[0])) { // Normalize from [[x1,y1],[x2,y2]]
-                if (normalize == 'max1') {
+            if (Array.isArray(array[0])) { // Normalize from [[x1,y1],[x2,y2]]
+                if (normalize == 'max1' || normalize == 'max100' ) {
+                    var factor=1;
+                    if (normalize=='max100') factor=100;
                     maxValue = -Infinity;
                     for (i = 0; i < array.length; i++) {
                         if (array[i][1] > maxValue) maxValue = array[i][1];
                     }
                     for (i = 0; i < array.length; i++) {
-                        array[i][1] /= maxValue;
+                        array[i][1] /= maxValue/factor;
                     }
                 } else if (normalize == 'sum1') {
                     total = 0;
@@ -970,13 +977,15 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     }
                 }
             } else { // Normalize from [x1,y1,x2,y2]
-                if (normalize == 'max1') {
+                if (normalize == 'max1' || normalize == 'max100' ) {
+                    var factor=1;
+                    if (normalize=='max100') factor=100;
                     maxValue = -Infinity;
                     for (i = 1; i < array.length; i = i + 2) {
                         if (array[i] > maxValue) maxValue = array[i];
                     }
                     for (i = 1; i < array.length; i = i + 2) {
-                        array[i] /= maxValue;
+                        array[i] /= maxValue / factor;
                     }
                 } else if (normalize == 'sum1') {
                     total = 0;
@@ -1015,7 +1024,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     if (interval < minInterval) minInterval = interval;
                 }
             } else {
-                for(i = 0, ii = data.length - 1; i < ii; i++) {
+                for (i = 0, ii = data.length - 1; i < ii; i++) {
                     interval = data[i + 1][0] - data[i][0];
                     if (interval > maxInterval) maxInterval = interval;
                     if (interval < minInterval) minInterval = interval;

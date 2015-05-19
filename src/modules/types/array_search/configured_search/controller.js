@@ -5,7 +5,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'Configured array search',
@@ -40,12 +40,12 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
     Controller.prototype.events = {
         onSearchDone: {
             label: 'When a search is performed',
-            refVariable: [ 'filteredArray', 'flagArray' ],
-            refAction: [ 'filteredArray', 'flagArray', 'countResult' ]
+            refVariable: ['filteredArray', 'flagArray'],
+            refAction: ['filteredArray', 'flagArray', 'countResult']
         }
     };
 
-    Controller.prototype.variablesIn = [ 'array' ];
+    Controller.prototype.variablesIn = ['array'];
 
     Controller.prototype.actionsIn = {
         disable: 'Disable the search'
@@ -58,7 +58,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
 
         if (arr) {
             arr = arr.get();
-            Traversing.getJPathsFromElement(arr[ 0 ], all_jpaths);
+            Traversing.getJPathsFromElement(arr[0], all_jpaths);
         }
 
         return {
@@ -82,7 +82,10 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
                 }
             },
             sections: {
-                searchFields: FormCreator.makeConfig({ name: 'Search on', jpaths: all_jpaths }, { name: 'Comparison' })
+                searchFields: FormCreator.makeConfig({
+                    name: 'Search on',
+                    jpaths: all_jpaths
+                }, {name: 'Comparison'})
             }
         };
     };
@@ -92,17 +95,17 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
         // Sets the variable corresponding to the onSearchDone event
 
         this.createDataFromEvent('onSearchDone', 'flagArray', flags);
-        this.sendAction('flagArray', flags, 'onSearchDone');
+        this.sendActionFromEvent('onSearchDone', 'flagArray', flags);
 
         this.createDataFromEvent('onSearchDone', 'filteredArray', arr);
-        this.sendAction('filteredArray', arr, 'onSearchDone');
+        this.sendActionFromEvent('onSearchDone', 'filteredArray', arr);
         this.createDataFromEvent('onSearchDone', 'countResult', arr.length);
 
     };
 
     Controller.prototype.configFunctions = {
         searchfields: function (cfg) {
-            if (!Array.isArray( cfg )) {
+            if (!Array.isArray(cfg)) {
                 return [];
             }
             return cfg;
@@ -110,10 +113,11 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
     };
 
     Controller.prototype.configAliases = {
-        searchfields: [ 'sections', 'searchFields' ],
+        searchfields: ['sections', 'searchFields'],
         maxhits: ['groups', 'group', 0, 'max', 0],
         disableMessage: ['groups', 'group', 0, 'disableMessage', 0]
     };
 
     return Controller;
+
 });

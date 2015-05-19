@@ -17,6 +17,7 @@ define(function () {
         'string': 'string',
         'jpg': 'string',
         'jpeg': 'string',
+        'webp': 'string',
         'png': 'string',
         'svg': 'string',
         'number': 'number',

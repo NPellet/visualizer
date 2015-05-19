@@ -1,72 +1,73 @@
+'use strict';
 
-define( [ require, '../../field', 'fancytree' ], function( require, FieldDefaultConstructor ) {
+define([require, '../../field', 'fancytree'], function (require, FieldDefaultConstructor) {
 
-	var FieldConstructor = function(name) {
-            
-            $.ui.fancytree.debugLevel = 0;
+    var FieldConstructor = function (name) {
 
-		var self = this;
+        $.ui.fancytree.debugLevel = 0;
 
-		this.name = name;
-		this.domExpander = $("<div></div>").fancytree({
+        var self = this;
 
-			toggleEffect: false,
-			debut: 0,
-			source: [],
+        this.name = name;
+        this.domExpander = $('<div></div>').fancytree({
 
-			activate: function(event, node) {
-				node = node.node;
-				if( node.data.isFolder ) {
-					return;
-				}
+            toggleEffect: false,
+            debut: 0,
+            source: [],
 
-				if( self.getElementExpanded( ) ) {
-					self.getElementExpanded( ).value = node.key;
-				}
-			},
+            activate: function (event, node) {
+                node = node.node;
+                if (node.data.isFolder) {
+                    return;
+                }
 
-			click: function(event, node) {
-				node = node.node;
-				
-				if( node && ( ! node.children || ( node.children && node.children.length == 0 ) ) ) {
-					self.form.hideExpander( true );
-				}
-			}
-		});
+                if (self.getElementExpanded()) {
+                    self.getElementExpanded().value = node.key;
+                }
+            },
+
+            click: function (event, node) {
+                node = node.node;
+
+                if (node && ( !node.children || ( node.children && node.children.length == 0 ) )) {
+                    self.form.hideExpander(true);
+                }
+            }
+        });
 
 
-	};
+    };
 
-	FieldConstructor.prototype = new FieldDefaultConstructor( );
+    FieldConstructor.prototype = new FieldDefaultConstructor();
 
-	FieldConstructor.prototype.showExpander = function( fieldElement ) {
+    FieldConstructor.prototype.showExpander = function (fieldElement) {
 
-		var optionsSource = this.getOptions( fieldElement ),
-			i,
-			root = this.domExpander.fancytree( 'getRootNode' ),
-			tree = this.domExpander.fancytree( 'getTree' ),
-			node;
+        var optionsSource = this.getOptions(fieldElement),
+            i,
+            root = this.domExpander.fancytree('getRootNode'),
+            tree = this.domExpander.fancytree('getTree'),
+            node;
 
-		this._showExpander( fieldElement );
+        this._showExpander(fieldElement);
 
-		tree._callHook("treeClear", tree); // root.removeChildren() causes root ul to loose its classes => bad.
-		root.addChildren( optionsSource );
+        tree._callHook('treeClear', tree); // root.removeChildren() causes root ul to loose its classes => bad.
+        root.addChildren(optionsSource);
 
-		if( tree.getActiveNode ) {
-			if( ( node = tree.getActiveNode( ) ) != null ) {
-				node.setActive( false );
-			}
-		}
-		
-		if( tree.getNodeByKey && ( node = tree.getNodeByKey( fieldElement.value ) ) ) {
-			node.setActive( true );
-		}
+        if (tree.getActiveNode) {
+            if (( node = tree.getActiveNode() ) != null) {
+                node.setActive(false);
+            }
+        }
 
-		root.toggleExpanded();
+        if (tree.getNodeByKey && ( node = tree.getNodeByKey(fieldElement.value) )) {
+            node.setActive(true);
+        }
 
-	
-	};
+        root.toggleExpanded();
 
-	return FieldConstructor;
+
+    };
+
+    return FieldConstructor;
 
 });

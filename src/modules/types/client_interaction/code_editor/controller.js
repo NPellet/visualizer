@@ -5,7 +5,7 @@ define(['modules/default/defaultcontroller', 'src/data/structures', 'src/util/de
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'Code editor',
@@ -109,7 +109,7 @@ define(['modules/default/defaultcontroller', 'src/data/structures', 'src/util/de
         iseditable: ['groups', 'group', 0, 'iseditable', 0],
         hasButton: ['groups', 'group', 0, 'hasButton', 0],
         script: ['groups', 'group', 0, 'script', 0],
-        outputType: ['groups', 'group', 0, 'outputType', 0],
+        outputType: ['groups', 'group', 0, 'outputType', 0]
     };
 
     Controller.prototype.onEditorChanged = function (value) {
@@ -118,31 +118,31 @@ define(['modules/default/defaultcontroller', 'src/data/structures', 'src/util/de
         var json = getJsonValue(value);
         this.createDataFromEvent('onEditorChange', 'jsonValue', json);
         var typedValue = this.getTypedValue(value);
-        if(typedValue !== null)
+        if (typedValue !== null)
             this.createDataFromEvent('onEditorChange', 'typedValue', typedValue);
     };
 
     Controller.prototype.onButtonClick = function (value) {
         this.createDataFromEvent('onButtonClick', 'value', value);
-        this.sendAction('value', value, 'onButtonClick');
+        this.sendActionFromEvent('onButtonClick', 'value', value);
 
         var json = getJsonValue(value);
         this.createDataFromEvent('onButtonClick', 'jsonValue', json);
-        this.sendAction('jsonValue', json, 'onButtonClick');
+        this.sendActionFromEvent('onButtonClick', 'jsonValue', json);
 
         var typedValue = this.getTypedValue(value);
-        if(typedValue !== null)
-        this.createDataFromEvent('onButtonClick', 'typedValue', typedValue);
+        if (typedValue !== null)
+            this.createDataFromEvent('onButtonClick', 'typedValue', typedValue);
         //this.sendAction()
     };
 
-    Controller.prototype.getTypedValue = function(val) {
+    Controller.prototype.getTypedValue = function (val) {
         var type = this.module.getConfiguration('outputType');
-        if(!type) return null;
+        if (!type) return null;
         return {
             type: this.module.getConfiguration('outputType'),
             value: val
-        }
+        };
     };
 
     function getJsonValue(str) {

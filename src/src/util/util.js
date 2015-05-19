@@ -6,8 +6,6 @@
  */
 define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _) {
 
-    var uniqueid = 0;
-
     var months = ['January', 'February', 'March', 'April', 'Mai', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -18,7 +16,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
         regJpath = /^element\./;
 
     function makejPathFunction(jpath) {
-
+// comment
         if (!jpath) {
             return noop;
         }
@@ -51,7 +49,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
         ruleName = ruleName.toLowerCase();
 
         if (!document.styleSheets) {
-            return
+            return;
         }
 
         var i = 0, stylesheet, ii, cssRule;
@@ -112,14 +110,6 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
         },
         unmaskIframes: function () {
             $('.iframemask').remove();
-        },
-        getNextUniqueId: function (absolute) {
-
-            if (absolute) {
-                return 'id_' + Date.now() + Math.round(Math.random() * 100000);
-            }
-
-            return 'uniqid_' + (++uniqueid);
         },
         formatSize: function (size) {
 
@@ -190,7 +180,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
         makejPathFunction: makejPathFunction,
 
         addjPathFunction: function (stack, jpath) {
-            stack[jpath] = makejPathFunction(jpath)
+            stack[jpath] = makejPathFunction(jpath);
         },
 
         jpathToArray: function (val) {
@@ -286,43 +276,81 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
             }
 
             return access;
-        },
-
-        // Deprecated color methods. Moved to src/util/color
-        getDistinctColors: deprecate(Color.getDistinctColors, 'use Color.getDistinctColors'),
-        getNextColorRGB: deprecate(Color.getNextColorRGB, 'use Color.getNextColorRGB'),
-        hsl2rgb: deprecate(Color.hsl2rgb, 'use Color.hsl2rgb'),
-        hueToRgb: deprecate(Color.hue2rgb, 'use Color.hue2rgb'),
-        hexToRgb: deprecate(Color.hex2rgb, 'use Color.hex2rgb'),
-        rgbToHex: deprecate(Color.rgb2hex, 'use Color.rgb2hex'),
-        getColor: deprecate(Color.getColor, 'use Color.getColor')
+        }
 
     };
 
     /**
      * No-op function
      */
-    exports.noop = noop;
+    exports.noop = function noop() {
+    };
+
+    var uniqueid = 0;
+    /**
+     * Returns a unique id.
+     * @param {boolean} [absolute]
+     * @returns {string}
+     */
+    exports.getNextUniqueId = function getNextUniqueId(absolute) {
+        if (absolute) {
+            return 'id_' + Date.now() + Math.round(Math.random() * 100000);
+        }
+        return 'uniqid_' + (++uniqueid);
+    };
 
     /**
      * Mark that a method should not be used. Returns a modified function which warns once when called.
      * @param {Function} method - the deprecated method
      * @param {string} [message] - optional message to log
      */
-    exports.deprecate = deprecate;
-    function deprecate(method, message) {
+    exports.deprecate = function deprecate(method, message) {
         var warned = false;
         return function deprecated() {
             if (!warned) {
-                if (Debug.getDebugLevel() >= Debug.Levels.WARN) {
-                    Debug.warn('Method ' + method.name + ' is deprecated. ' + (message || ''));
-                    console.trace();
-                }
+                Debug.warn('Method ' + method.name + ' is deprecated. ' + (message || ''));
                 warned = true;
             }
             return method.apply(this, arguments);
-        }
+        };
+    };
+
+    /*
+     TODO remove when Set API is supported in more browsers
+     */
+    var warnOnceMap, warnOnceCheck;
+    if (typeof Set === 'undefined') {
+        warnOnceMap = {};
+        warnOnceCheck = function (name) {
+            if (warnOnceMap[name]) {
+                return true;
+            } else {
+                warnOnceMap[name] = true;
+                return false;
+            }
+        };
+    } else {
+        warnOnceMap = new Set();
+        warnOnceCheck = function (name) {
+            if (warnOnceMap.has(name)) {
+                return true;
+            } else {
+                warnOnceMap.add(name);
+                return false;
+            }
+        };
     }
+
+    /**
+     * Prints a warning message only once per id
+     * @param id
+     * @param message
+     */
+    exports.warnOnce = function warnOnce(id, message) {
+        if (!warnOnceCheck(id)) {
+            Debug.warn(message);
+        }
+    };
 
     /**
      * Make a constructor's prototype inherit another one, while adding optionally new methods to it. Also sets a `super_`
@@ -372,8 +400,45 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
             height: size,
             fill: color
         });
-
     };
+
+    exports.moduleIdFromUrl = function(url) {
+        var reg = /([^\/]+)(\/)?$/;
+        var res = url.match(reg);
+        return res[1];
+    };
+
+    exports.requireNeedsExtension = function(url) {
+        return /^https?:\/\/|^\.|^\//.test(url);
+    };
+
+    var utilReqPaths = {};
+    exports.rewriteRequirePath = function(url) {
+        if(!this.requireNeedsExtension(url)) {
+            // return same url without trailing backslash
+            return url.replace(/\/$/, '');
+        }
+        var reqPathStr = exports.getNextUniqueId(true);
+        url = url.replace(/\/$/,'');
+        if(utilReqPaths[url]) return utilReqPaths[url];
+        utilReqPaths[url] = reqPathStr;
+        var paths = {};
+        paths[reqPathStr] = url;
+        requirejs.config({
+            paths: paths
+        });
+
+        return reqPathStr;
+    };
+
+    // Deprecated color methods. Moved to src/util/color
+    exports.getDistinctColors = exports.deprecate(Color.getDistinctColors, 'use Color.getDistinctColors');
+    exports.getNextColorRGB = exports.deprecate(Color.getNextColorRGB, 'use Color.getNextColorRGB');
+    exports.hsl2rgb = exports.deprecate(Color.hsl2rgb, 'use Color.hsl2rgb');
+    exports.hueToRgb = exports.deprecate(Color.hue2rgb, 'use Color.hue2rgb');
+    exports.hexToRgb = exports.deprecate(Color.hex2rgb, 'use Color.hex2rgb');
+    exports.rgbToHex = exports.deprecate(Color.rgb2hex, 'use Color.rgb2hex');
+    exports.getColor = exports.deprecate(Color.getColor, 'use Color.getColor');
 
     return exports;
 

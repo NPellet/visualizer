@@ -1,204 +1,205 @@
-define(['jquery'], function($) {
+'use strict';
 
-	var GroupElement = function() {};
+define(['jquery'], function ($) {
 
-	GroupElement.defaultOptions = {
-		
-	};
+    var GroupElement = function () {
+    };
 
-	$.extend(GroupElement.prototype, {
-		
-		init: function(options) {
+    GroupElement.defaultOptions = {};
 
-			this.options = $.extend({}, GroupElement.defaultOptions, options); // Creates the options
-			this.splice = Array.prototype.splice;
+    $.extend(GroupElement.prototype, {
 
-			this.readyDef = $.Deferred();
-			this.fieldElements = {};
-		},
+        init: function (options) {
 
-		set section(section) {
-			this._section = section;
-		},
+            this.options = $.extend({}, GroupElement.defaultOptions, options); // Creates the options
+            this.splice = Array.prototype.splice;
 
-		get section() {
-			return this._section;
-		},
+            this.readyDef = $.Deferred();
+            this.fieldElements = {};
+        },
 
-		set sectionElement(el) {
-			this._sectionElement = el;
-		},
+        set section(section) {
+            this._section = section;
+        },
 
-		get sectionElement() {
-			return this._sectionElement;
-		},
+        get section() {
+            return this._section;
+        },
 
-		set group(group) {
-			this._group = group;
-		},
+        set sectionElement(el) {
+            this._sectionElement = el;
+        },
 
-		get group() {
-			return this._group;
-		},
+        get sectionElement() {
+            return this._sectionElement;
+        },
 
-		_fill: function( json, clearFirst ) {
-			
-			var self = this,
-				i, j, l,
-				done = 0;
-				
-			if( json._title ) {
-				this.setTitle( json._title );
-			}
+        set group(group) {
+            this._group = group;
+        },
 
-			this.group.eachFields(function(field) {
-				self.getFieldElement( field.getName( ) , 0 );
+        get group() {
+            return this._group;
+        },
 
-				if( ! json[ field.getName() ] ) {
+        _fill: function (json, clearFirst) {
 
-					json[ field.getName() ] = [];
+            var self = this,
+                i, j, l,
+                done = 0;
 
-				}
+            if (json._title) {
+                this.setTitle(json._title);
+            }
 
-			});
+            this.group.eachFields(function (field) {
+                self.getFieldElement(field.getName(), 0);
 
-			for( i in json ) {
-				// i is fieldname, json[i] is mixed (obj/array)
-				if( ! ( json[ i ] instanceof Array ) ) {
-					json[ i ] = [ json[ i ] ];
-				}
-				
-				j = 0,
-				l = json[ i ].length;
+                if (!json[field.getName()]) {
 
-				if( l == 0 ) {
-					json[ i ][ 0 ] = null;
-					l = 1;
-				}
+                    json[field.getName()] = [];
 
-				for( ; j < l ; j ++ ) {
-					done++;
-					this.fillElement( i, j, json[ i ][ j ], clearFirst ).then( function () {
-						done--;
-						if(done == 0) { // All has been created and filled. We can release the deferreds
-							self.readyDef.resolve();
-						}
-					});
-				}
-			}
+                }
 
-			return self.readyDef;
+            });
 
-		},
+            for (i in json) {
+                // i is fieldname, json[i] is mixed (obj/array)
+                if (!( json[i] instanceof Array )) {
+                    json[i] = [json[i]];
+                }
 
-		fill: function( json, clearFirst ) {
+                j = 0,
+                    l = json[i].length;
 
-			return this._fill( json, clearFirst );
-		},
+                if (l == 0) {
+                    json[i][0] = null;
+                    l = 1;
+                }
 
-		fillElement: function( i, j, json, clear ) {
+                for (; j < l; j++) {
+                    done++;
+                    this.fillElement(i, j, json[i][j], clearFirst).then(function () {
+                        done--;
+                        if (done == 0) { // All has been created and filled. We can release the deferreds
+                            self.readyDef.resolve();
+                        }
+                    });
+                }
+            }
 
-			return $.when( this.getFieldElement( i , j ) ).then( function( el ) { // When the field element is loaded.
+            return self.readyDef;
 
-				if( ! el ) {
-					return;
-				}
-				
-				el.setDefaultOr( json ); // The filling adds either the json, which is the data loaded, or the default from the structure (automatic)
-			} );
-		},
+        },
 
-		inDom: function() {
-			var self = this;
+        fill: function (json, clearFirst) {
 
-			this.group.eachFields( function( field ) {
-				self.eachFieldElements( field.getName() , function( fieldElement ) {
-					fieldElement._inDom = true;
-					fieldElement.inDom();
-					fieldElement._validate( fieldElement._value );
-				} );
-			} );
-		},
+            return this._fill(json, clearFirst);
+        },
 
-		visible: function() {
+        fillElement: function (i, j, json, clear) {
 
-		},
+            return $.when(this.getFieldElement(i, j)).then(function (el) { // When the field element is loaded.
+
+                if (!el) {
+                    return;
+                }
+
+                el.setDefaultOr(json); // The filling adds either the json, which is the data loaded, or the default from the structure (automatic)
+            });
+        },
+
+        inDom: function () {
+            var self = this;
+
+            this.group.eachFields(function (field) {
+                self.eachFieldElements(field.getName(), function (fieldElement) {
+                    fieldElement._inDom = true;
+                    fieldElement.inDom();
+                    fieldElement._validate(fieldElement._value);
+                });
+            });
+        },
+
+        visible: function () {
+
+        },
 
 
-		show: function() {
-			this.dom.show();
-		},
+        show: function () {
+            this.dom.show();
+        },
 
-		hide: function() {
-			this.dom.hide();
-		},
+        hide: function () {
+            this.dom.hide();
+        },
 
-		getFieldElement: function( fieldName, fieldId ) { // Creates the fieldEl and returns deferred OR returns the already created field element
-			var self = this,
-				el;
-			
-			if( ! this.group.getField( fieldName ) ) {
-				return;
+        getFieldElement: function (fieldName, fieldId) { // Creates the fieldEl and returns deferred OR returns the already created field element
+            var self = this,
+                el;
 
-			}
-			this.fieldElements[ fieldName ] = this.fieldElements[ fieldName ] || [];
+            if (!this.group.getField(fieldName)) {
+                return;
 
-			if( ! this.fieldElements[ fieldName ][ fieldId ] ) {
+            }
+            this.fieldElements[fieldName] = this.fieldElements[fieldName] || [];
 
-				el = this.group.getField( fieldName ).makeElement( ).done( function( fieldElement ) {
-					fieldElement.group = self.group;
-					fieldElement.groupElement = self;
+            if (!this.fieldElements[fieldName][fieldId]) {
 
-					// Adds the field element to its own section for logging purposes.
-					self.sectionElement.addFieldElement( fieldElement );
+                el = this.group.getField(fieldName).makeElement().done(function (fieldElement) {
+                    fieldElement.group = self.group;
+                    fieldElement.groupElement = self;
 
-					self.fieldElements[ fieldName ][ fieldId ] = fieldElement; // Adds to its own field elements
-				} );
+                    // Adds the field element to its own section for logging purposes.
+                    self.sectionElement.addFieldElement(fieldElement);
 
-				return el;
-			}
-			
-			return this.fieldElements[ fieldName ][ fieldId ]; // If no creation is needed, we return the fieldElement defined by fieldName and fieldId
-		},
+                    self.fieldElements[fieldName][fieldId] = fieldElement; // Adds to its own field elements
+                });
 
-		_getElement: function(stack, getter, name, id) {
+                return el;
+            }
 
-			var el;
-			stack[ name ] = stack[ name ] || [];
-			
-			return stack[ name ][ id ];
-		},
+            return this.fieldElements[fieldName][fieldId]; // If no creation is needed, we return the fieldElement defined by fieldName and fieldId
+        },
 
-		getFieldElements: function() {
-			return this.fieldElements;
-		},
+        _getElement: function (stack, getter, name, id) {
 
-		eachFieldElements: function(fieldName, callback) {
+            var el;
+            stack[name] = stack[name] || [];
 
-			var els = this.getFieldElements( )[ fieldName ],
-				i, l;
+            return stack[name][id];
+        },
 
-			if( ! els ) {
-				return this.form.throwError( "Cannot iterate over field. Field " + fieldName + " does not exist" );
-			}
+        getFieldElements: function () {
+            return this.fieldElements;
+        },
 
-			for( i = 0, l = els.length; i < l ; i ++ ) {
-				callback.call( this, els[ i ] );
-			}
-		},
+        eachFieldElements: function (fieldName, callback) {
 
-		makeDomTpl: function( ) {
-			return this._makeDomTpl();
-		},
+            var els = this.getFieldElements()[fieldName],
+                i, l;
 
-		getTitle: function() {
-			return this._title || this.group.getTitle();
-		},
+            if (!els) {
+                return this.form.throwError('Cannot iterate over field. Field ' + fieldName + ' does not exist');
+            }
 
-		setTitle: function( title ) {
-			this._title = title;
-		}
-	});
+            for (i = 0, l = els.length; i < l; i++) {
+                callback.call(this, els[i]);
+            }
+        },
 
-	return GroupElement;
+        makeDomTpl: function () {
+            return this._makeDomTpl();
+        },
+
+        getTitle: function () {
+            return this._title || this.group.getTitle();
+        },
+
+        setTitle: function (title) {
+            this._title = title;
+        }
+    });
+
+    return GroupElement;
 });

@@ -123,7 +123,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             if (this.$_elToOpen)
                 return this.$_elToOpen;
 
-            this.$_elToOpen = $("<div />").attr('id', 'visualizer-dataviews');
+            this.$_elToOpen = $('<div />').attr('id', 'visualizer-dataviews');
 
 
             this._ready = true;

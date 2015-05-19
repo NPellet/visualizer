@@ -5,7 +5,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
         init: function () {
             this.dom = document.createElement('div');
             this.dom.style.height = '100%';
@@ -228,18 +228,18 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
             val = color1.css();
             return function fixedColor() {
                 return val;
-            }
+            };
         } else if (type === 'range') {
             scale = chroma.scale([color1, color2]).mode(space);
             return function rangeColor(value) {
                 return scale(value[field1]).css();
-            }
+            };
         } else if (type === 'inter') {
             var interpolators = getInterpolators(colorA1, colorA2);
             var mean = (colorA1[3] + colorA2[3]) / 2;
             return function interpolatedColor(value) {
                 return chroma([interpolators[0](value[field1]), interpolators[1](value[field2]), interpolators[2](value[field3]), mean]).css();
-            }
+            };
         }
     }
 

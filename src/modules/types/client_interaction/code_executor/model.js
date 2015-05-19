@@ -1,21 +1,22 @@
 'use strict';
 
-define(['modules/types/client_interaction/code_editor/model', 'src/util/datatraversing'], function (CodeEditor, Traversing) {
+define(['modules/types/client_interaction/code_editor/model', 'src/util/datatraversing', 'src/util/util'], function (CodeEditor, Traversing, Util) {
 
     function Model() {
+        CodeEditor.call(this);
     }
 
-    Model.prototype = Object.create(CodeEditor.prototype);
+    Util.inherits(Model, CodeEditor, {
+        getjPath: function (rel) {
+            var jpath = [];
 
-    Model.prototype.getjPath = function (rel) {
-        var jpath = [];
+            if (rel === 'outputValue' && this.module.controller.outputObject) {
+                Traversing.getJPathsFromElement(this.module.controller.outputObject, jpath);
+            }
 
-        if (rel === 'outputValue' && this.module.controller.lastData) {
-            Traversing.getJPathsFromElement(this.module.controller.lastData, jpath);
+            return jpath;
         }
-
-        return jpath;
-    };
+    });
 
     return Model;
 

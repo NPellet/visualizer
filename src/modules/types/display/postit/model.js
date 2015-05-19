@@ -1,17 +1,16 @@
-define(['modules/default/defaultmodel'], function(Default) {
-	
-	function model() {};
-	model.prototype = $.extend(true, {}, Default, {
+'use strict';
 
-		getValue: function() {
-			return this.dataValue;
-		},
-				
-		
-		getjPath: function(rel, accepts) {
-			return {};
-		}
-	});
+define(['modules/default/defaultmodel'], function (Default) {
 
-	return model;
+    function Model() {
+    }
+
+    $.extend(true, Model.prototype, Default, {
+        getValue: function () {
+            return this.dataValue;
+        }
+    });
+
+    return Model;
+
 });

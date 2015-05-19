@@ -1,20 +1,13 @@
-define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/api', 'src/util/util'], function(Default, Traversing, API, Util) {
+'use strict';
 
-    /**
-     * Creates a new empty controller
-     * @class Controller
-     * @name Controller
-     * @constructor
-     */
-    function controller() { };
+define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/util/api', 'src/util/util'], function (Default, Traversing, API, Util) {
 
-    // Extends the default properties of the default controller
-    controller.prototype = $.extend( true, {}, Default );
+    function Controller() {
+    }
 
-    /*
-     Information about the module
-     */
-    controller.prototype.moduleInformation = {
+    $.extend(true, Controller.prototype, Default);
+
+    Controller.prototype.moduleInformation = {
         name: '3D scatter plot',
         description: 'Display 3D points',
         author: 'Daniel Kostro',
@@ -23,40 +16,29 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
         cssClass: 'scatter_3D'
     };
 
-
-    /*
-     Configuration of the module for sending events, as a static object
-     */
-    controller.prototype.events = {
-
-        // List of all possible events
-
+    Controller.prototype.events = {
         onHover: {
             label: 'Hover a 3D point',
-            refVariable: [ 'info', 'coordinates', 'point']
+            refVariable: ['info', 'coordinates', 'point']
         },
-
         onClick: {
             label: 'Click a 3D point',
             refVariable: ['info', 'coordinates', 'point']
         }
     };
 
-    controller.prototype.onHover = function(row) {
+    Controller.prototype.onHover = function (row) {
         var coord = [
             this.module.view._data.x[row],
             this.module.view._data.y[row],
             this.module.view._data.z[row]
         ];
 
-        this.setVarFromEvent('onHover', 'point', 'data3D', [row] );
+        this.setVarFromEvent('onHover', 'point', 'data3D', [row]);
         this.createDataFromEvent('onHover', 'coordinates', DataObject.check(coord));
     };
 
-    /*
-     Configuration of the input/output references of the module
-     */
-    controller.prototype.references = {
+    Controller.prototype.references = {
         chart: {
             type: 'chart',
             label: 'A json describing a chart'
@@ -79,42 +61,33 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
             type: 'array',
             label: 'Point coordinates'
         }
-
     };
 
-
-
-    controller.prototype.elementHover = function(element) {
-        if( ! element ) {
+    Controller.prototype.elementHover = function (element) {
+        if (!element) {
             return;
         }
 
         if (this._highlighted) {
-            API.highlight( this._highlighted, 0 );
+            API.highlight(this._highlighted, 0);
         }
-        API.highlight( element, 1 );
-        this._highlighted=element;
+        API.highlight(element, 1);
+        this._highlighted = element;
     };
 
-    controller.prototype.elementOut = function() {
+    Controller.prototype.elementOut = function () {
         if (this._highlighted) {
-            API.highlight( this._highlighted, 0 );
+            API.highlight(this._highlighted, 0);
         }
     };
 
+    Controller.prototype.variablesIn = ['chart', 'boolArray', 'data3D'];
 
-    /*
-     Configuration of the module for receiving events, as a static object
-     In the form of
-     */
-    controller.prototype.variablesIn = [ 'chart', 'boolArray', 'data3D' ];
-
-
-    controller.prototype.configurationStructure = function() {
+    Controller.prototype.configurationStructure = function () {
         var jpath = [];
         Traversing.getJPathsFromElement(this.module.data, jpath);
 
-        var jpathPoint = this.module.model.getjPath('point', false );
+        var jpathPoint = this.module.model.getjPath('point', false);
         return {
             groups: {
                 group: {
@@ -138,7 +111,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 
                         displayPointCoordinates: {
                             type: 'checkbox',
-                            title: "Display point coordinates",
+                            title: 'Display point coordinates',
                             options: {
                                 onhover: 'Yes (on hover)'
                             }
@@ -155,7 +128,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
                                 'yzsec': 'YZ Secondary',
                                 'xzsec': 'XZ Secondary'
                             },
-                            default: ['xy','yz','xz']
+                            default: ['xy', 'yz', 'xz']
                         },
 
                         secondaryGrids: {
@@ -202,17 +175,17 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
                                 'ylab': 'Y Label',
                                 'zlab': 'Z Label'
                             },
-                            default: ['x','y','z', 'xlab', 'ylab', 'zlab']
+                            default: ['x', 'y', 'z', 'xlab', 'ylab', 'zlab']
                         },
 
                         labels: {
                             type: 'combo',
                             title: 'Labels',
                             options: [
-                                { title: 'None', key: 'none'},
-                                { title: 'As Legend', key: 'alegend'},
-                                { title: 'On axis', key: 'axis'},
-                                {title: "Both", key: 'both'}
+                                {title: 'None', key: 'none'},
+                                {title: 'As Legend', key: 'alegend'},
+                                {title: 'On axis', key: 'axis'},
+                                {title: 'Both', key: 'both'}
                             ]
                         },
 
@@ -253,13 +226,13 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
                         backgroundColor: {
                             type: 'color',
                             title: 'Background Color',
-                            default: [230, 230, 230, 1],
+                            default: [230, 230, 230, 1]
                         },
 
                         annotationColor: {
                             type: 'color',
                             title: 'Annotation color',
-                            default: [50,50,50,1]
+                            default: [50, 50, 50, 1]
                         },
                         sizeNormalization: {
                             type: 'float',
@@ -327,36 +300,35 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
                     }
                 }
             }
-        }
+        };
     };
 
-    controller.prototype.configAliases = {
-        'tooltip': ['groups', 'group', 0, 'tooltip', 0],
-        'tooltipJpath': ['groups', 'group', 0, 'tooltipJpath', 0],
-        'grid': ['groups', 'group', 0, 'grid', 0],
-        'ticks': ['groups', 'group', 0, 'ticks', 0],
-        'projection': ['groups', 'group', 0, 'projection', 0],
-        'labels': ['groups', 'group', 0, 'labels', 0],
-        'minX': ['groups', 'group', 0, 'minX', 0],
-        'maxX': ['groups', 'group', 0, 'maxX', 0],
-        'minY': ['groups', 'group', 0, 'minY', 0],
-        'maxY': ['groups', 'group', 0, 'maxY', 0],
-        'minZ': ['groups', 'group', 0, 'minZ', 0],
-        'maxZ': ['groups', 'group', 0, 'maxZ', 0],
-        'backgroundColor': ['groups', 'group', 0, 'backgroundColor', 0],
-        'secondaryGrids': ['groups', 'group', 0, 'secondaryGrids', 0],
-        'appearance': ['groups', 'group', 0, 'appearance', 0],
-        'displayPointCoordinates': ['groups', 'group', 0, 'displayPointCoordinates', 0],
-        'annotationColor': ['groups', 'group', 0, 'annotationColor', 0],
-        'gridOriginX': ['groups', 'group', 0, 'gridOriginX', 0],
-        'gridOriginY': ['groups', 'group', 0, 'gridOriginY', 0],
-        'gridOriginZ': ['groups', 'group', 0, 'gridOriginZ', 0],
-        'sizeNormalization': ['groups', 'group', 0, 'sizeNormalization', 0],
-        'optimize': ['groups', 'group', 0, 'optimize', 0],
-        'dataJpaths': ['groups', 'dataJpaths', 0, 0]
+    Controller.prototype.configAliases = {
+        tooltip: ['groups', 'group', 0, 'tooltip', 0],
+        tooltipJpath: ['groups', 'group', 0, 'tooltipJpath', 0],
+        grid: ['groups', 'group', 0, 'grid', 0],
+        ticks: ['groups', 'group', 0, 'ticks', 0],
+        projection: ['groups', 'group', 0, 'projection', 0],
+        labels: ['groups', 'group', 0, 'labels', 0],
+        minX: ['groups', 'group', 0, 'minX', 0],
+        maxX: ['groups', 'group', 0, 'maxX', 0],
+        minY: ['groups', 'group', 0, 'minY', 0],
+        maxY: ['groups', 'group', 0, 'maxY', 0],
+        minZ: ['groups', 'group', 0, 'minZ', 0],
+        maxZ: ['groups', 'group', 0, 'maxZ', 0],
+        backgroundColor: ['groups', 'group', 0, 'backgroundColor', 0],
+        secondaryGrids: ['groups', 'group', 0, 'secondaryGrids', 0],
+        appearance: ['groups', 'group', 0, 'appearance', 0],
+        displayPointCoordinates: ['groups', 'group', 0, 'displayPointCoordinates', 0],
+        annotationColor: ['groups', 'group', 0, 'annotationColor', 0],
+        gridOriginX: ['groups', 'group', 0, 'gridOriginX', 0],
+        gridOriginY: ['groups', 'group', 0, 'gridOriginY', 0],
+        gridOriginZ: ['groups', 'group', 0, 'gridOriginZ', 0],
+        sizeNormalization: ['groups', 'group', 0, 'sizeNormalization', 0],
+        optimize: ['groups', 'group', 0, 'optimize', 0],
+        dataJpaths: ['groups', 'dataJpaths', 0, 0]
     };
 
+    return Controller;
 
-    return controller;
 });
-

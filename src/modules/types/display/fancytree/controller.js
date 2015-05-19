@@ -1,108 +1,112 @@
-define(['modules/default/defaultcontroller'], function(Default) {
+'use strict';
 
-	function controller() {}
-	
-	controller.prototype = $.extend(true, {}, Default);
+define(['modules/default/defaultcontroller'], function (Default) {
 
-	controller.prototype.moduleInformation = {
-		name: 'Hierarchical structure',
-		description: 'Displays a hierarchical structure',
-		author: 'Michaël Zasso',
-		date: '02.06.2014',
-		license: 'MIT',
-		cssClass: 'fancytree'
-	};
-	
-	controller.prototype.references = {
-		tree: {
-			label: "Hierarchical structure (tree)",
-			type: "tree"
-		},
-		nodeData: {
-			label: "Node data"
-		}
-	};
-	
-	controller.prototype.variablesIn = ['tree'];
-	
-	controller.prototype.events = {
-		onActivate: {
-			label: "Select a node",
-			refVariable: ["nodeData"]
-		}
-	};
+    function Controller() {
+    }
 
-	controller.prototype.configurationStructure = function() {
-		
-		var jpaths = this.module.model.getjPath("nodeData");
-		
-		return {
-			groups: {
-				group: {
-					options: {
-						type: 'list',
-						multiple: false
-					},
-					fields : {
-						expand: {
-							type: 'combo',
-							title: 'Auto-expand children',
-							default: 'none',
-							options: [
-								{
-									title:'None',
-									key:'none'
-								},
-								{
-									title: 'First level',
-									key:'lvl1'
-								},
-								{
-									title: 'All nodes',
-									key:'all'
-								}
-							]
-						}
-					}
-				},
-				cols: {
-					options: {
-						type: 'table',
-						multiple: true,
-						title: 'Columns'
-					},
+    $.extend(true, Controller.prototype, Default);
 
-					fields: {
+    Controller.prototype.moduleInformation = {
+        name: 'Hierarchical structure',
+        description: 'Displays a hierarchical structure',
+        author: 'Michaël Zasso',
+        date: '02.06.2014',
+        license: 'MIT',
+        cssClass: 'fancytree'
+    };
 
-						name: {
-							type: 'text',
-							title: 'Columns title'
-						},
+    Controller.prototype.references = {
+        tree: {
+            label: 'Hierarchical structure (tree)',
+            type: 'tree'
+        },
+        nodeData: {
+            label: 'Node data'
+        }
+    };
 
-						jpath: {
-							type: 'combo',
-							title: 'jPath',
-							options: jpaths
-						},
+    Controller.prototype.variablesIn = ['tree'];
 
-						width: {
-							type: 'text',
-							title: 'Width'
-						}
-					}
-				}
-			}
-		};
-	};
-	
-	controller.prototype.configAliases = {
-		columns: [ 'groups', 'cols', 0 ],
-		expand: [ 'groups', 'group', 0, 'expand', 0 ]
-	};
-	
-	controller.prototype.onActivate = function(data) {
-		this.createDataFromEvent("onActivate", "nodeData", data);
-	};
+    Controller.prototype.events = {
+        onActivate: {
+            label: 'Select a node',
+            refVariable: ['nodeData']
+        }
+    };
 
-	return controller;
+    Controller.prototype.configurationStructure = function () {
+
+        var jpaths = this.module.model.getjPath('nodeData');
+
+        return {
+            groups: {
+                group: {
+                    options: {
+                        type: 'list',
+                        multiple: false
+                    },
+                    fields: {
+                        expand: {
+                            type: 'combo',
+                            title: 'Auto-expand children',
+                            'default': 'none',
+                            options: [
+                                {
+                                    title: 'None',
+                                    key: 'none'
+                                },
+                                {
+                                    title: 'First level',
+                                    key: 'lvl1'
+                                },
+                                {
+                                    title: 'All nodes',
+                                    key: 'all'
+                                }
+                            ]
+                        }
+                    }
+                },
+                cols: {
+                    options: {
+                        type: 'table',
+                        multiple: true,
+                        title: 'Columns'
+                    },
+
+                    fields: {
+
+                        name: {
+                            type: 'text',
+                            title: 'Columns title'
+                        },
+
+                        jpath: {
+                            type: 'combo',
+                            title: 'jPath',
+                            options: jpaths
+                        },
+
+                        width: {
+                            type: 'text',
+                            title: 'Width'
+                        }
+                    }
+                }
+            }
+        };
+    };
+
+    Controller.prototype.configAliases = {
+        columns: ['groups', 'cols', 0],
+        expand: ['groups', 'group', 0, 'expand', 0]
+    };
+
+    Controller.prototype.onActivate = function (data) {
+        this.createDataFromEvent('onActivate', 'nodeData', data);
+    };
+
+    return Controller;
+
 });

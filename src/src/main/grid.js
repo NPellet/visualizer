@@ -1,10 +1,35 @@
 'use strict';
 
-define(['jquery', 'src/util/ui', 'src/util/util', 'modules/modulefactory', 'src/util/context', 'src/util/versioning', 'src/util/api', 'forms/form', 'src/main/variables', 'src/util/debug'], function ($, ui, Util, ModuleFactory, Context, Versioning, API, Form, Variables, Debug) {
+define([
+    'jquery',
+    'src/util/ui',
+    'src/util/util',
+    'src/util/diagram',
+    'modules/modulefactory',
+    'src/util/context',
+    'src/util/versioning',
+    'src/util/api',
+    'forms/form',
+    'src/main/variables',
+    'src/util/debug',
+    'version'
+], function ($,
+             ui,
+             Util,
+             diagram,
+             ModuleFactory,
+             Context,
+             Versioning,
+             API,
+             Form,
+             Variables,
+             Debug,
+             Version) {
 
     var definition, jqdom, moduleMove, isInit = false;
     var activeLayer = 'Default layer';
     var layersUl, layersLi;
+    var utilUl, utilLi;
 
     var defaults = {
         xWidth: 10,
@@ -354,7 +379,16 @@ define(['jquery', 'src/util/ui', 'src/util/util', 'modules/modulefactory', 'src/
             }
         }
 
-        module.getDomWrapper().remove().unbind();
+        try {
+            module.getDomWrapper().remove().unbind();
+        } catch(e) {
+            module.onReady().then(function () {
+                module.getDomWrapper().remove().unbind();
+            }).catch(function (e) {
+                Debug.warn('Could not remove module from dom.', e);
+            });
+        }
+
         ModuleFactory.removeModule(module);
 
         if (module.controller && module.controller.onRemove) {
@@ -434,9 +468,8 @@ define(['jquery', 'src/util/ui', 'src/util/util', 'modules/modulefactory', 'src/
 
         if (name) {
             return definition.layers[name] = {name: name};
-
-            setLayers()
-            def.resolve(definition.layers[name]);
+            //setLayers();
+            //def.resolve(definition.layers[name]);
         }
 
         var div = ui.dialog({
@@ -583,7 +616,6 @@ define(['jquery', 'src/util/ui', 'src/util/util', 'modules/modulefactory', 'src/
             }
 
             if (!API.isViewLocked()) {
-
                 Context.listen(Context.getRootDom(), [
                         ['<li name="paste"><a><span class="ui-icon ui-icon-clipboard"></span>Paste module</a></li>',
                             function () {
@@ -608,8 +640,6 @@ define(['jquery', 'src/util/ui', 'src/util/util', 'modules/modulefactory', 'src/
                                 for (var i = 0, l = json.length; i < l; i++) {
                                     makeRecursiveMenu(json[i], $ulModules);
                                 }
-                            } else {
-
                             }
 
                         });
@@ -627,6 +657,7 @@ define(['jquery', 'src/util/ui', 'src/util/util', 'modules/modulefactory', 'src/
 
                 layersLi = $('<li><a> Switch to layer</a></li>');
                 layersUl = $('<ul />').appendTo(layersLi);
+
 
                 if (API.getContextMenu().indexOf('all') > -1 || API.getContextMenu().indexOf('layers') > -1) {
                     Context.listen(dom, [], function (contextDom) {
@@ -661,6 +692,70 @@ define(['jquery', 'src/util/ui', 'src/util/util', 'modules/modulefactory', 'src/
                     });
                 }
 
+                utilLi = $('<li name="utils"><a>Utils</a></li>');
+                utilUl = $('<ul />').appendTo(utilLi);
+                Context.listen(dom, [], function (contextDom) {
+
+                    utilUl.empty();
+                    utilUl.append($('<li data-util="copyview"><a><span/>Copy view</a></li>').data('utilkey', 'copyview'));
+                    utilUl.append($('<li data-util="copydata"><a><span/>Copy data</a></li>').data('utilkey', 'copydata'));
+                    utilUl.append($('<li data-util="pasteview"><a><span/>Paste view</a></li>').data('utilkey', 'pasteview'));
+                    utilUl.append($('<li data-util="pastedata"><a><span/>Paste data</a></li>').data('utilkey', 'pastedata'));
+                    utilUl.append($('<li data-util="blankview"><a><span/>Blank view</a></li>').data('utilkey', 'blankview'));
+                    $(contextDom).append(utilLi);
+
+                    utilLi.bind('click', function (event) {
+                        var utilkey = $(event.target.parentNode).data('utilkey');
+                        switch(utilkey) {
+                            case 'copyview':
+                                ui.copyview();
+                                break;
+                            case 'blankview':
+                                Versioning.blankView();
+                                break;
+                            case 'copydata':
+                                ui.copyData();
+                                break;
+                            case 'pasteview':
+                                ui.pasteView();
+                                break;
+                            case 'pastedata':
+                                ui.pasteData();
+                                break;
+                            default:
+                                Debug.warn('Unknow util key');
+                                break;
+                        }
+                    });
+                });
+
+                Context.listen(Context.getRootDom(), [
+                        ['<li name="diagram"><a><span class="ui-icon ui-icon-zoomin"></span>View Diagram</a></li>',
+                            function () {
+                                diagram.showVariableDiagram();
+                            }]]
+                );
+                Context.listen(Context.getRootDom(), [
+                        ['<li class="ci-item-configureentrypoint" class="ui-state-disabled" id="context-menu-version"><a class="ui-state-disabled"><span class="ui-icon ui-icon-info"></span>' + Versioning.version + ' </a></li>',
+                            function () {
+                                window.open('https://github.com/NPellet/visualizer', '_blank');
+                            }]], null, function($ctxmenu) {
+                        var original = Versioning.originalVersion;
+                        var prefix = '';
+                        if (original !== 'none' && original !== Versioning.version) {
+                            prefix = original + '\u2192';
+                        }
+                        $ctxmenu.find('#context-menu-version a').html('<span class="ui-icon ui-icon-info"></span>' + prefix + Versioning.version + (Version.isRelease ? '' : ' (pre)'));
+                    }
+                );
+
+                if (Version.buildTime) {
+                    Context.listen(Context.getRootDom(), [
+                        ['<li id="context-menu-build-info"><a class="ui-state-disabled"><span class="ui-icon ui-icon-info"></span>Built ' + Version.buildTime + '</a></li>',
+                            Util.noop]], null, function($ctxmenu) {
+                        $ctxmenu.find('#context-menu-build-info').insertAfter($ctxmenu.find('#context-menu-version'));
+                    });
+                }
 
             }
 
@@ -699,6 +794,7 @@ define(['jquery', 'src/util/ui', 'src/util/util', 'modules/modulefactory', 'src/
             return Object.keys(definition.layers);
         },
         addModule: addModule,
+        newModule: newModule,
         removeModule: removeModule,
         addModuleFromJSON: addModuleFromJSON,
         checkDimensions: checkDimensions,

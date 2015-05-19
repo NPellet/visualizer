@@ -5,7 +5,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'Parallel coordinates',
@@ -80,8 +80,8 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
                             title: 'Brush mode',
                             options: [
                                 {key: 'None', title: 'None'},
-                                {key: '1D-axes', title:'1D axes'},
-                                {key: '2D-strums', title:'2D strums'}
+                                {key: '1D-axes', title: '1D axes'},
+                                {key: '2D-strums', title: '2D strums'}
                             ],
                             'default': '1D-axes',
                             displaySource: {

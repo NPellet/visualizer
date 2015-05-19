@@ -7,8 +7,8 @@
     <meta name="author" content="Fabian Jakobs">
     <!--
     Ace
-      version %version%
-      commit  %commit%
+      version 1.1.9
+      commit  
     -->
 
     <link rel="stylesheet" href="demo/kitchen-sink/styles.css" type="text/css" media="screen" charset="utf-8">
@@ -255,29 +255,19 @@
   </table>
   
   <a href="http://ace.c9.io">
-    <img id="ace-logo" src="doc/site/images/ace-logo.png" style="width: 134px;margin: 46px 0px 4px 66px;">
+    <img id="ace-logo" src="demo/kitchen-sink/ace-logo.png" style="width: 134px;margin: 46px 0px 4px 66px;">
   </a>
-
+  <div><a target="_test" href="./lib/ace/test/tests.html"
+    style="color: whitesmoke; text-align: left; padding: 1em;">tests</a>
+  </div>
   </div>
   </div>
 </div>
   <div id="editor-container"></div>
 
-<!--DEVEL-->
-  <script type="text/javascript">
-      var require = {
-          baseUrl: window.location.protocol + "//" + window.location.host + window.location.pathname.split("/").slice(0, -1).join("/"),
-          paths: {
-              ace: "lib/ace"
-          },
-          waitSeconds: 30
-      };
-  </script>
-  <script src="demo/kitchen-sink/require.js" data-main="demo/kitchen-sink/demo" type="text/javascript"></script>
 
-<!--DEVEL-->
 
-<!--PACKAGE
+
   <script src="src/ace.js" data-ace-base="src" type="text/javascript" charset="utf-8"></script>
   <script src="src/keybinding-vim.js"></script>
   <script src="src/keybinding-emacs.js"></script>
@@ -285,7 +275,7 @@
   <script type="text/javascript" charset="utf-8">
     require("kitchen-sink/demo");
   </script>
-    PACKAGE-->
+    
 
 </body>
 </html>

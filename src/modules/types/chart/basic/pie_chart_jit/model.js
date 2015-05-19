@@ -1,7 +1,12 @@
-define(['modules/default/defaultmodel'], function(Default) {
-	
-	function model() {};
-	model.prototype = $.extend(true, {}, Default, {});
-	
-	return model;
+'use strict';
+
+define(['modules/default/defaultmodel'], function (Default) {
+
+    function Model() {
+    }
+
+    $.extend(true, Model.prototype, Default);
+
+    return Model;
+
 });

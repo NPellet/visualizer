@@ -16,28 +16,22 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
     };
 
     Controller.prototype.references = {
-        value: {
-            type: 'array',
-            label: 'An array of words'
+        textvalue:{
+            type: 'string',
+            label: 'A string of words'
         }
     };
 
     Controller.prototype.events = {
-        //onBrushSelection: {
-        //    label: 'A selection has been made',
-        //    refVariable: ['value']
-        //}
     };
 
-    Controller.prototype.variablesIn = ['value'];
+    Controller.prototype.variablesIn = ['textvalue'];
 
     Controller.prototype.actionsIn = {
-        //addColumn: 'Add a column'
     };
 
     Controller.prototype.configurationStructure = function () {
 
-        //var jpaths = Traversing.getJPathsFromElement(this.module.view._value[0]);
         return {
             groups: {
                 group: {
@@ -59,11 +53,11 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
                             type: 'combo',
                             title: 'Scale',
                             options: [
-                                {key: 'logn', title: 'log n'},
-                                {key: 'sqrtn', title:'√n'},
-                                {key: 'n', title:'n'}
+                                {key: 'log', title: 'log n'},
+                                {key: 'sqrt', title:'√n'},
+                                {key: 'linear', title:'n'}
                             ],
-                            'default': 'logn'
+                            'default': 'log'
                         },
                         orientation: {
                             type: 'float',
@@ -99,9 +93,6 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
         orientation: ['groups', 'group', 0, 'orientation', 0],
         oneWordPerLine: ['groups', 'group', 0, 'oneWordPerLine', 0],
         fromTo: ['groups', 'group', 0, 'fromTo', 0]
-
     };
-
     return Controller;
-
 });

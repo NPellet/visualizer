@@ -7,7 +7,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'lib/loa
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
 
         init: function () {
             this.dom = $('<div class="ci-display-loading-plot"></div>');
@@ -58,7 +58,6 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'lib/loa
             },
 
             zoom: function (val) {
-                console.log(val);
                 if (!val) {
                     return;
                 }

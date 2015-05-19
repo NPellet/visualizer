@@ -7,13 +7,12 @@ define([
     'src/util/versioning',
     'forms/button',
     'src/util/util',
-    'lib/webtoolkit/base64',
     'forms/form',
     'lib/couchdb/jquery.couch',
     'fancytree',
     'components/ui-contextmenu/jquery.ui-contextmenu.min',
     'jquery-ui/autocomplete'
-], function ($, ui, Default, Versioning, Button, Util, Base64, Form) {
+], function ($, ui, Default, Versioning, Button, Util, Form) {
 
     function CouchDBManager() {
     }
@@ -22,7 +21,12 @@ define([
 
     Util.inherits(CouchDBManager, Default, {
         initImpl: function () {
-            this.ok = this.loggedIn = false;
+
+            this.ok = this.loggedIn = this.ready = false;
+            if(!this.options.beforeUrl) this.ready = true;
+            else {
+                this.beforeUrl();
+            }
             this.id = Util.getNextUniqueId();
             this.options.loginMethods = this.options.loginMethods || ['couchdb'];
             if (this.options.url) {
@@ -34,6 +38,24 @@ define([
             $.ui.fancytree.debugLevel = 0;
             this.checkDatabase();
         },
+
+        beforeUrl: function() {
+            var that = this;
+            var url = this.options.beforeUrl;
+            $.ajax({
+                type: 'GET',
+                url: url,
+                success: function() {
+                    Debug.info('CouchDB: beforeUrl success');
+                    that.ready = true;
+                },
+                error: function(err) {
+                    Debug.info('CouchDB: beforeUrl error', err);
+                    that.ready = true;
+                }
+            });
+        },
+
         showError: function (e, type) {
             var content;
             var color = 'red';
@@ -101,7 +123,7 @@ define([
             this.loadFlavor();
         },
         _onClick: function () {
-            if (this.ok) {
+            if (this.ok && this.ready) {
                 this.setStyleOpen(this._open);
                 if (this._open) {
                     this.createMenu();
@@ -111,9 +133,12 @@ define([
                     this.close();
                 }
             }
-            else {
+            else if(!this.ok) {
                 this.checkDatabase();
                 console.error('CouchDB header : unreachable database.');
+            }
+            else {
+                ui.showNotification('Couchdb button not ready');
             }
         },
         createMenu: function () {
@@ -175,21 +200,24 @@ define([
             var that = this;
             var node = that.currentDocument;
             var doc = node.data.doc;
-            doc.keywords = val.keywords.value;
+            if(val && val.keywords && val.keywords.value) {
+                doc.keywords = val.keywords.value;
+            }
             doc._attachments['meta.json'] = {
                 'content_type': 'application/json',
-                'data': Base64.encode(JSON.stringify(val))
+                'data': btoa( unescape( encodeURIComponent(JSON.stringify(val))))
             };
             that.database.saveDoc(doc, {
                 success: function (data) {
                     doc._rev = data.rev;
+                    node.data.hasMeta = true;
                     if (node.children)
                         child.lazyLoad(true);
 
                     that.showError('meta saved.', 2);
                 },
                 error: function () {
-                    that.showError.apply(that, arguments)
+                    that.showError.apply(that, arguments);
                 }
             });
         },
@@ -221,6 +249,8 @@ define([
             var that = this;
 
             if (child && !child.folder) {
+                // This doc has revs which means it has been saved to couchdb already
+                // Therefore we only need to update the attachment
                 doc = child.data.doc;
                 $.ajax({
                     url: this.database.uri + doc._id + '/' + type.toLowerCase() + '.json?rev=' + doc._rev,
@@ -239,6 +269,8 @@ define([
                 });
             }
             else {
+                // The doc is new so we need to save the whole document
+                // With a new uuid
                 var flavors = {}, flav = [];
                 if (last.key) {
                     flav = last.node.key.split(':');
@@ -254,7 +286,7 @@ define([
                 };
                 doc._attachments[type.toLowerCase() + '.json'] = {
                     'content_type': 'application/json',
-                    'data': Base64.encode(content)
+                    'data': btoa( unescape( encodeURIComponent(content)))
                 };
                 this.database.saveDoc(doc, {
                     success: function (data) {
@@ -317,7 +349,7 @@ define([
                 success: function (data) {
                     that.loggedIn = true;
                     that.username = username;
-                    that.openMenu('tree')
+                    that.openMenu('tree');
                 },
                 error: function () {
                     that.showError.apply(that, arguments);
@@ -368,7 +400,6 @@ define([
                         break;
                 }
             }
-            ;
         },
 
         getLoginForm: function () {
@@ -449,7 +480,6 @@ define([
             };
             var treeContainer = $('<div>').attr('id', this.cssId('tree')).css(treeCSS).appendTo(dom);
             this.makePublicButton = new Button('Make Public', function () {
-                console.log('Make public');
                 ui.confirm('You are about to make your view public. This action is irreversible. It will enable anybody to access the saved view and data. Do you want to proceed?', 'Proceed', 'Cancel').then(function (proceed) {
                     if (!proceed || !that.currentDocument) return;
                     var node = that.currentDocument;
@@ -466,10 +496,9 @@ define([
                             that.showError('The view was made public', 2);
                         },
                         error: function () {
-                            that.showError.apply(that, arguments)
+                            that.showError.apply(that, arguments);
                         }
                     });
-                    console.log('proceed with make public');
                 });
             }, {color: 'red'});
             dom.append($('<div style="width:560px; height:35px;">').append('<input type="text" id="' + this.cssId('docName') + '"/>')
@@ -646,7 +675,8 @@ define([
                                                 type: 'combo',
                                                 options: [{key: 'text', title: 'Text'}, {key: 'html', title: 'html'}],
                                                 title: 'Content type',
-                                                displaySource: {text: 't', html: 'h'}
+                                                displaySource: {text: 't', html: 'h'},
+                                                default: 'text'
                                             },
                                             keyword: {
                                                 type: 'text',
@@ -723,13 +753,13 @@ define([
                         result[val.keyword[0]] = {
                             type: 'text',
                             value: val.contentText[0]
-                        }
+                        };
                     }
                     else if (val.contentType[0] === 'html') {
                         result[val.keyword[0]] = {
                             type: 'html',
                             value: val.contentHtml[0]
-                        }
+                        };
                     }
                 }
             }
@@ -789,6 +819,7 @@ define([
             this.lastNode = last;
             if (event.type === 'fancytreedblclick' && !node.folder)
                 return false;
+
         },
         loadFlavor: function () {
             var proxyLazyLoad = $.proxy(this, 'lazyLoad'),
@@ -869,7 +900,7 @@ define([
                                     theNode.moveTo(target, info.hitMode);
                                 },
                                 error: function () {
-                                    that.showError.apply(that, arguments)
+                                    that.showError.apply(that, arguments);
                                 }
                             });
                         },
@@ -907,6 +938,18 @@ define([
                         theTree.contextmenu(menuOptions);
                         if (that.lastKeyLoaded)
                             thefTree.activateKey(that.lastKeyLoaded);
+                        if(that.currentDocument) {
+                            // When switching flavors, if this document is also
+                            // in the new flavor we select it automatically
+                            var id = that.currentDocument.data.doc._id;
+                            var d = _.find(data, function(d) {
+                                return d.id === id;
+                            });
+                            if(d) {
+                                var key = _.flatten([that.flavor, d.value.flavors]).join(':');
+                                thefTree.activateKey(key);
+                            }
+                        }
                     },
                     error: function (status) {
                         console.log(status);
@@ -930,7 +973,7 @@ define([
                                 node.remove();
                             },
                             error: function () {
-                                that.showError.apply(that, arguments)
+                                that.showError.apply(that, arguments);
                             }
                         });
                     }
@@ -941,7 +984,7 @@ define([
                                 node.remove();
                             },
                             error: function () {
-                                that.showError.apply(that, arguments)
+                                that.showError.apply(that, arguments);
                             }
                         });
                     }

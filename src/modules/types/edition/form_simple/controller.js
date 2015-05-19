@@ -1,10 +1,11 @@
 'use strict';
-define([ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 'src/util/datatraversing' ], function (Default, FormCreator, Traversing) {
+
+define(['modules/default/defaultcontroller', 'lib/formcreator/formcreator', 'src/util/datatraversing'], function (Default, FormCreator, Traversing) {
 
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'Simple Form',
@@ -33,19 +34,18 @@ define([ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 'sr
     Controller.prototype.events = {
         onChange: {
             label: 'Form has changed',
-            refVariable: [ 'output_object', 'formatted_output' ],
+            refVariable: ['output_object', 'formatted_output'],
             refAction: ['output_object', 'formatted_output']
         },
 
         formTriggered: {
             label: 'The button was clicked',
-            refAction: [ 'output_object', 'formatted_output' ],
-            refVariable: [ 'output_object', 'formatted_output' ]
+            refAction: ['output_object', 'formatted_output'],
+            refVariable: ['output_object', 'formatted_output']
         }
     };
 
-    Controller.prototype.variablesIn = [ 'input_object' ];
-
+    Controller.prototype.variablesIn = ['input_object'];
 
     Controller.prototype.configurationStructure = function () {
 
@@ -59,22 +59,29 @@ define([ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 'sr
 
         return {
             sections: {
-                structure: FormCreator.makeConfig({ jpaths: jpaths, name: 'Fill with'}),
+                structure: FormCreator.makeConfig({
+                    jpaths: jpaths,
+                    name: 'Fill with'
+                }),
                 trigger: {
-                    options: { title: 'Trigger' },
+                    options: {title: 'Trigger'},
                     groups: {
                         trigger: {
-                            options: { type: 'list' },
+                            options: {type: 'list'},
                             fields: {
                                 triggerType: {
                                     type: 'combo',
                                     title: 'Trigger type',
                                     options: [
                                         {key: 'btn', title: 'Button'},
-                                        { key: 'change', title: 'On change'},
-                                        { key: 'both', title: 'Both'}
+                                        {key: 'change', title: 'On change'},
+                                        {key: 'both', title: 'Both'}
                                     ],
-                                    displaySource: { btn: 'btn', change: 'change', both: 'both' }
+                                    displaySource: {
+                                        btn: 'btn',
+                                        change: 'change',
+                                        both: 'both'
+                                    }
                                 },
                                 buttonLabel: {
                                     type: 'text',
@@ -131,7 +138,7 @@ define([ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 'sr
                                     type: 'jscode',
                                     title: 'HTML template',
                                     mode: 'html',
-                                    default: '<span class="form-dyn" data-form-content="field:name:label"></span>\n<div class="form-dyn" data-form-content="field:name:dom"></div>'
+                                    'default': '<span class="form-dyn" data-form-content="field:name:label"></span>\n<div class="form-dyn" data-form-content="field:name:dom"></div>'
                                 }
                             }
                         }
@@ -148,27 +155,26 @@ define([ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 'sr
     };
 
     Controller.prototype.configAliases = {
-        structure: [ 'sections', 'structure' ],
-        tpl_file: [ 'sections', 'template', 0, 'groups', 'template', 0, 'file', 0 ],
-        tpl_html: [ 'sections', 'template', 0, 'groups', 'template', 0, 'html', 0 ],
-        trigger: [ 'sections', 'trigger', 0, 'groups', 'trigger', 0, 'triggerType', 0 ],
-        debounce: [ 'sections', 'trigger', 0, 'groups', 'trigger', 0, 'debounce', 0 ],
-        replaceObj: [ 'sections', 'formdata', 0, 'groups', 'formdata', 0, 'replaceEntryVar', 0, 0 ],
-        btnLabel: [ 'sections', 'trigger', 0, 'groups', 'trigger', 0, 'buttonLabel', 0 ]
+        structure: ['sections', 'structure'],
+        tpl_file: ['sections', 'template', 0, 'groups', 'template', 0, 'file', 0],
+        tpl_html: ['sections', 'template', 0, 'groups', 'template', 0, 'html', 0],
+        trigger: ['sections', 'trigger', 0, 'groups', 'trigger', 0, 'triggerType', 0],
+        debounce: ['sections', 'trigger', 0, 'groups', 'trigger', 0, 'debounce', 0],
+        replaceObj: ['sections', 'formdata', 0, 'groups', 'formdata', 0, 'replaceEntryVar', 0, 0],
+        btnLabel: ['sections', 'trigger', 0, 'groups', 'trigger', 0, 'buttonLabel', 0]
     };
-
 
     Controller.prototype.valueChanged = function (newValue) {
         if (this.module.getConfiguration('replaceObj')) {
 
             this.setVarFromEvent('onChange', 'output_object', 'input_object', []);
-            this.sendAction('output_object', newValue, 'onChange');
+            this.sendActionFromEvent('onChange', 'output_object', newValue);
 
         } else {
             var formattedValue = formatValue(newValue);
             this.createDataFromEvent('onChange', 'formatted_output', formattedValue);
             this.createDataFromEvent('onChange', 'output_object', newValue);
-            this.sendAction('formatted_output', formattedValue, 'onChange');
+            this.sendActionFromEvent('onChange', 'formatted_output', formattedValue);
         }
     };
 
@@ -183,8 +189,8 @@ define([ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 'sr
             this.createDataFromEvent('formTriggered', 'output_object', newValue);
         }
 
-        this.sendAction('formatted_output', formattedValue, 'formTriggered');
-        this.sendAction('output_object', newValue, 'formTriggered');
+        this.sendActionFromEvent('formTriggered', 'formatted_output', formattedValue);
+        this.sendActionFromEvent('formTriggered', 'output_object', newValue);
     };
 
     function formatValue(value) {
@@ -205,4 +211,5 @@ define([ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 'sr
     }
 
     return Controller;
+
 });

@@ -1,6 +1,6 @@
 'use strict';
 
-define([ '../../fieldlistelement', './element' ], function (ElementDefault, ElementImpl) {
+define(['../../fieldlistelement', './element'], function (ElementDefault, ElementImpl) {
 
     var Element = function () {
     };

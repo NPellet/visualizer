@@ -5,7 +5,7 @@ define(['modules/default/defaultview'], function (Default) {
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
 
         init: function () {
             var self = this;
@@ -51,7 +51,7 @@ define(['modules/default/defaultview'], function (Default) {
             this.module.getDomContent().html(this.dom);
 
             if (this.button) {
-                require([ 'forms/button' ], function (Button) {
+                require(['forms/button'], function (Button) {
                     self.system.append((self.buttonInst = new Button(self.cfg('buttonlabel'), function () {
                         self.module.controller.doAnalysis();
                     }) ).render());
@@ -133,4 +133,3 @@ define(['modules/default/defaultview'], function (Default) {
     return View;
 
 });
- 

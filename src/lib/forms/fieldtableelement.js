@@ -1,26 +1,26 @@
+'use strict';
 
-define(['./fieldelement'], function(FieldElement) {
+define(['./fieldelement'], function (FieldElement) {
 
 
-	var FieldTableElement = function() {};
+    var FieldTableElement = function () {
+    };
 
-	FieldTableElement.defaultOptions = {
-		
-	};
+    FieldTableElement.defaultOptions = {};
 
-	FieldTableElement.prototype = new FieldElement();
+    FieldTableElement.prototype = new FieldElement();
 
-	FieldTableElement.prototype.makeDom = function(forceMake) {
+    FieldTableElement.prototype.makeDom = function (forceMake) {
 
-/*
-		if( ! forceMake && this.dom ) {
-			this.updateDom( );
-		}
+        /*
+         if( ! forceMake && this.dom ) {
+         this.updateDom( );
+         }
 
-		*/
-		return (this._dom = this._dom || this._makeDom());
-	}
+         */
+        return (this._dom = this._dom || this._makeDom());
+    }
 
-	return FieldTableElement;
+    return FieldTableElement;
 
 });

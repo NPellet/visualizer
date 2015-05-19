@@ -1,44 +1,46 @@
+'use strict';
 
-define( [ ], function(  ) {
+define([], function () {
 
-	var FieldConstructor = function() {};
-	
-	FieldConstructor.prototype.__makeDom = function() {
-		
-		var self = this,
-			dom = $("<div />"),
-			div = $( "<div></div>" )
-					.addClass( 'form-field' )
-					.appendTo( dom )
-					.bind('click', function( event ) {
+    var FieldConstructor = function () {
+    };
 
-						self.toggleSelect( event );
+    FieldConstructor.prototype.__makeDom = function () {
 
-					}).bind('click', function( event ) {
+        var self = this,
+            dom = $('<div />'),
+            div = $('<div></div>')
+                .addClass('form-field')
+                .appendTo(dom)
+                .bind('click', function (event) {
 
-						event.stopPropagation();
-						
-					});
+                    self.toggleSelect(event);
 
-		this.div = div;
-		this.fieldElement = div;
-		this.dom = dom;
-		
-		return dom;
-	};
+                }).bind('click', function (event) {
 
-	FieldConstructor.prototype.checkValue = function() {
+                    event.stopPropagation();
 
-		if( this.dom ) {
-			if( ! ( this.value instanceof Array) ) {
-				this.value = [ 0, 0, 0, 1 ];
-				return;
-			}
+                });
 
-			this.div.html( "rgba(" + this.value.join( ',' ) + ")" );
-		}
-	}
+        this.div = div;
+        this.fieldElement = div;
+        this.dom = dom;
+
+        return dom;
+    };
+
+    FieldConstructor.prototype.checkValue = function () {
+
+        if (this.dom) {
+            if (!( this.value instanceof Array)) {
+                this.value = [0, 0, 0, 1];
+                return;
+            }
+
+            this.div.html('rgba(' + this.value.join(',') + ')');
+        }
+    }
 
 
-	return FieldConstructor;
+    return FieldConstructor;
 });

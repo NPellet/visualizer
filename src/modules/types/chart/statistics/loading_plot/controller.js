@@ -5,7 +5,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'Score plot',
@@ -20,11 +20,11 @@ define(['modules/default/defaultcontroller'], function (Default) {
         // Input
         loading: {
             label: 'Loading variable',
-            type: "loading"
+            type: 'loading'
         },
         preferences: {
             label: 'Preferences',
-            type: "object"
+            type: 'object'
         },
         // Output
         element: {
@@ -75,7 +75,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
         var data = this.module.getDataFromRel('loading'), opts = [];
         if (data && data.value)
             for (var i = 0; i < data.value.series.length; i++)
-                opts.push({title: data.value.series[i].label, key: data.value.series[i].category});
+                opts.push({
+                    title: data.value.series[i].label,
+                    key: data.value.series[i].category
+                });
         return {
             groups: {
                 general: {
@@ -113,7 +116,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
                                     type: 'combo',
                                     title: 'Display as',
                                     options: [
-                                        {key: 'ellipse', title: 'Ellipse / Circle'},
+                                        {
+                                            key: 'ellipse',
+                                            title: 'Ellipse / Circle'
+                                        },
                                         {key: 'pie', title: 'Pie chart'},
                                         {key: 'img', title: 'Image'}
                                     ]

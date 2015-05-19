@@ -79,16 +79,19 @@ define(function () {
             switch (color.length) {
                 case 3:
                     return 'rgb(' + color.join(',') + ')';
-                    break;
                 case 4:
                     return 'rgba(' + color.join(',') + ')';
-                    break;
             }
         } else if (typeof(color) == 'object') {
             return 'rgb(' + Math.round(color.r * 255) + ', ' + Math.round(color.g * 255) + ', ' + Math.round(color.b * 255) + ')';
         }
 
         return color;
+    };
+
+    exports.getBrightness = function (color) {
+        // from http://www.w3.org/WAI/ER/WD-AERT/#color-contrast
+        return ((color[0] / 255 * 299) + (color[1] / 255 * 587) + (color[2] / 255 * 114)) / (color[3] || 1);
     };
 
     return exports;

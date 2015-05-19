@@ -1,11 +1,18 @@
 'use strict';
 
-define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api', 'src/util/domdeferred', 'src/util/datatraversing', 'src/util/typerenderer', 'src/util/context'], function (require, Default, Util, API, DomDeferred, Traversing, Renderer, Context) {
+define([
+    'modules/default/defaultview',
+    'src/util/util',
+    'src/util/api',
+    'src/util/domdeferred',
+    'src/util/datatraversing',
+    'src/util/context'
+], function (Default, Util, API, DomDeferred, Traversing, Context) {
 
     function View() {
     }
 
-    View.prototype = $.extend(true, {}, Default, {
+    $.extend(true, View.prototype, Default, {
 
         init: function () {
 
@@ -14,7 +21,10 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
             var toggle = this.module.getConfiguration('toggle');
 
-            this.domTable = $('<table />', {cellpadding: 0, cellspacing: 0}).css({width: '100%'});
+            this.domTable = $('<table />', {
+                cellpadding: 0,
+                cellspacing: 0
+            }).css({width: '100%'});
             this.domHead = $('<thead />').appendTo(this.domTable);
             this.domBody = $('<tbody />').appendTo(this.domTable);
 
@@ -77,7 +87,11 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                         self.domTable.find('th[data-jpath-number="' + currentColSort.col + '"] .sort').remove();
                     }
 
-                    currentColSort = {asc: true, col: jpathId, span: $('<div class="sort up"></div>')};
+                    currentColSort = {
+                        asc: true,
+                        col: jpathId,
+                        span: $('<div class="sort up"></div>')
+                    };
 
                     self.domTable.find('th[data-jpath-number="' + currentColSort.col + '"]').append(currentColSort.span);
 
@@ -263,7 +277,11 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                 id = this.module.getId() + '_';
             for (var i = 0; i < l; i++) {
                 el = document.getElementById(id + i);
-                s[i] ? el.removeAttribute('style') : el.setAttribute('style', 'display:none');
+                if (s[i]) {
+                    el.removeAttribute('style');
+                } else {
+                    el.setAttribute('style', 'display:none');
+                }
             }
 
         },
@@ -338,7 +356,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
                 this.elements = this.elements || [];
 
-                if( this.module.getDataFromRel('list').indexOf( source ) > -1 ) {
+                if (this.module.getDataFromRel('list').indexOf(source) > -1) {
                     return;
                 }
 
@@ -382,10 +400,10 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
             },
 
-            toggleOn: function( source ) {
+            toggleOn: function (source) {
 
                 var index = this.module.getDataFromRel('list').indexOf(source);
-                
+
                 if (index == -1) {
                     return;
                 }
@@ -408,14 +426,14 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                 this.domBody.children().eq(index).addClass('toggled');
             },
 
-            scrollTo: function( source ) {
+            scrollTo: function (source) {
 
                 var index = this.module.getDataFromRel('list').indexOf(source);
                 if (index == -1) {
                     return;
                 }
 
-                var el = this.domBody.children().eq( index ).get();
+                var el = this.domBody.children().eq(index).get();
                 el.scrollIntoView();
             }
 

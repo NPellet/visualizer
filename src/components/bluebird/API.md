@@ -473,7 +473,7 @@ MyClass.prototype.method = function() {
 
 ```js
 somethingAsync().bind({})
-.then(function (aValue, bValue) {
+.spread(function (aValue, bValue) {
     this.aValue = aValue;
     this.bValue = bValue;
     return somethingElseAsync(aValue, bValue);
@@ -488,7 +488,7 @@ The above without `.bind()` could be achieved with:
 ```js
 var scope = {};
 somethingAsync()
-.then(function (aValue, bValue) {
+.spread(function (aValue, bValue) {
     scope.aValue = aValue;
     scope.bValue = bValue;
     return somethingElseAsync(aValue, bValue);
@@ -916,7 +916,7 @@ Promise.join(getPictures(), getComments(), getTweets(),
 
 Given an array, or a promise of an array, which contains promises (or a mix of promises and values) return a promise that is fulfilled when all the items in the array are either fulfilled or rejected. The fulfillment value is an array of [`PromiseInspection`](#synchronous-inspection) instances at respective positions in relation to the input array.
 
-This method is useful for when you have an array of promises and you'd like to know when all of them resolve - either by fulfilling of rejecting. For example:
+This method is useful for when you have an array of promises and you'd like to know when all of them resolve - either by fulfilling or rejecting. For example:
 
 ```js
 var fs = Promise.promisifyAll(require("fs"));
@@ -1300,8 +1300,8 @@ function getSqlConnection(connectionString) {
     return pg.connectAsync(connectionString).spread(function(client, done) {
         close = done;
         return client;
-    }).disposer(function(client) {
-        if (close) close(client);
+    }).disposer(function() {
+        if (close) close();
     });
 }
 
@@ -1818,6 +1818,7 @@ Promise.fromNode(object.foo.bind(object, "firstArgument")).then(function(result)
 <hr>
 
 #####`.nodeify([Function callback] [, Object options])` -> `Promise`
+#####`.asCallback([Function callback] [, Object options])` -> `Promise`
 
 Register a node-style callback on this promise. When this promise is either fulfilled or rejected, the node callback will be called back with the node.js convention where error reason is the first argument and success value is the second argument. The error argument will be `null` in case of success.
 
@@ -2208,7 +2209,9 @@ doSomething()
     .then(...)
 ```
 
+*Note: in browsers it is necessary to call `.tap` with `console.log.bind(console)` because console methods can not be called as stand-alone functions.*
 
+<hr>
 
 #####`.call(String propertyName [, dynamic arg...])` -> `Promise`
 

@@ -37,7 +37,10 @@ define([
 
             this.values = {};
             this.module.getDomContent().html(this.dom);
-            this.fillWithVal(this.module.getConfiguration('defaultvalue'));
+            this.fillWithVal({
+                type: 'html',
+                value: this.module.getConfiguration('defaultvalue', '')
+            });
             this.resolveReady();
             this._relsForLoading = ['value'];
         },
@@ -66,25 +69,12 @@ define([
             },
 
             value: function (varValue, varName) {
-                if (varValue == undefined) {
-                    this.fillWithVal(this.module.getConfiguration('defaultvalue') || '');
-                } else {
-                    this.render(varValue, varName);
-                }
+                this.values[varName] = varValue;
+                this.renderAll(varValue);
             }
         },
 
-        render: function (varValue, varName) {
-            var self = this;
-
-            var def = Renderer.toScreen(varValue, this.module);
-            def.always(function (val) {
-                self.values[varName] = val;
-                self.renderAll(val, def);
-            });
-        },
-
-        renderAll: function (val, def) {
+        renderAll: function (val) {
 
             var view = this,
                 sprintfVal = this.module.getConfiguration('sprintf'),
@@ -102,17 +92,17 @@ define([
 
                         val = sprintf.apply(this, args);
 
-                        view.fillWithVal(val, def);
+                        view.fillWithVal(val);
                     });
 
                 } catch (e) {
 
-                    view.fillWithVal(val, def);
+                    view.fillWithVal(val);
 
                 }
 
             } else {
-                view.fillWithVal(val, def);
+                view.fillWithVal(val);
             }
         },
 
@@ -121,7 +111,7 @@ define([
             this.dom.scrollTop(scroll_height);
         },
 
-        fillWithVal: function (val, def) {
+        fillWithVal: function (val) {
 
             var valign = this.module.getConfiguration('valign');
             var align = this.module.getConfiguration('align');
@@ -130,8 +120,6 @@ define([
             var font = this.module.getConfiguration('font');
             var preformatted = this.module.getConfigurationCheckbox('preformatted', 'pre');
             var selectable = this.module.getConfigurationCheckbox('preformatted', 'selectable');
-
-            var valstr = val != undefined ? val.toString() : '';
 
             var div;
 
@@ -150,7 +138,7 @@ define([
                     'white-space': preformatted ? 'pre' : 'normal',
                     'word-wrap': 'break-word',
                     'user-select': selectable ? 'text' : 'none'
-                }).html(valstr);
+                });
                 this.dom.append(div);
             }
             else {
@@ -166,17 +154,16 @@ define([
                     'white-space': preformatted ? 'pre' : 'normal',
                     'word-wrap': 'break-word',
                     'user-select': selectable ? 'text' : 'none'
-                }).html(valstr);
+                });
                 this.dom.html(div);
             }
 
             this._scrollDown();
 
-
-            if (def && def.build) {
-                def.build();
-                this._scrollDown();
-            }
+            var self = this;
+            Renderer.render(div, val).then(function () {
+                self._scrollDown();
+            });
 
             DomDeferred.notify(div);
         }

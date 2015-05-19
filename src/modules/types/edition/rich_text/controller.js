@@ -5,7 +5,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     function Controller() {
     }
 
-    Controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
         name: 'Rich text editor',
@@ -40,7 +40,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype.valueChanged = function (value) {
         this.module.definition.richtext = value;
         if (this.module.getConfigurationCheckbox('modifyInVariable', 'yes') && this.module.data) {
-            this.module.data.setValue(value);
+            this.module.data.setValue(value, true);
             this.module.model.dataTriggerChange(this.module.data);
         }
         this.createDataFromEvent('onEditorChange', 'html', DataObject.check({
@@ -85,6 +85,12 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             title: 'Looks like a postit',
                             options: {yes: 'Yes'},
                             'default': []
+                        },
+                        html: {
+                            type: 'checkbox',
+                            title: 'Render plain html',
+                            options: {yes: 'Yes'},
+                            'default': ['yes']
                         }
                     }
                 }
@@ -97,7 +103,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
         modifyInVariable: ['groups', 'group', 0, 'modifyInVariable', 0],
         autoHeight: ['groups', 'group', 0, 'autoHeight', 0],
         bgColor: ['groups', 'group', 0, 'bgColor', 0],
-        postit: ['groups', 'group', 0, 'postit', 0]
+        postit: ['groups', 'group', 0, 'postit', 0],
+        plainHtml: ['groups', 'group', 0, 'html', 0]
     };
 
     return Controller;

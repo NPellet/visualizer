@@ -31,7 +31,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
 			if(!(actions = this.module.vars_out()))	
 				return;
 			for(var i = 0; i < actions.length; i++) {
-				if(actions[i].event == "onChangePref") {
+				if(actions[i].event == 'onChangePref') {
 					CI.Repo.set(actions[i].name, obj);
 				}
 			}
@@ -59,7 +59,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
 		
 		configurationReceive: {
 			preferences: {
-				type: ["array"],
+				type: ['array'],
 				label: 'Preferences',
 				description: 'A list of preferences'
 			}		
@@ -169,7 +169,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
 			*/
 		},
 
-		"export": function() {
+		'export': function() {
 			//return this.module.view.table.exportToTabDelimited();
 		}
 

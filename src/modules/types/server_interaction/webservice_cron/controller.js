@@ -1,21 +1,17 @@
+'use strict';
 
-define(['modules/default/defaultcontroller','components/x2js/xml2json.min'], function(Default,X2JS) {
+define(['modules/default/defaultcontroller', 'components/x2js/xml2json.min'], function (Default, X2JS) {
 
-    function controller() {
+    function Controller() {
         this.running = false;
         this.runners = [];
         this.variables = new DataObject();
         this.converter = new X2JS();
     }
 
-    // Extends the default properties of the default controller
-    controller.prototype = $.extend(true, {}, Default);
+    $.extend(true, Controller.prototype, Default);
 
-
-    /*
-     Information about the module
-     */
-    controller.prototype.moduleInformation = {
+    Controller.prototype.moduleInformation = {
         name: 'Webservice Cron',
         description: 'Cron service allowing to fetch data from the server',
         author: 'Norman Pellet, Luc Patiny, Michaël Zasso',
@@ -24,13 +20,13 @@ define(['modules/default/defaultcontroller','components/x2js/xml2json.min'], fun
         cssClass: 'webservice_cron'
     };
 
-    controller.prototype.start = function() {
+    Controller.prototype.start = function () {
         if (this.running)
             this.stop();
         this.doVariables();
     };
 
-    controller.prototype.stop = function() {
+    Controller.prototype.stop = function () {
         if (!this.running)
             return;
         for (var i = 0, ii = this.runners.length; i < ii; i++) {
@@ -41,11 +37,7 @@ define(['modules/default/defaultcontroller','components/x2js/xml2json.min'], fun
         this.running = false;
     };
 
-
-    /*
-     Configuration of the input/output references of the module
-     */
-    controller.prototype.references = {
+    Controller.prototype.references = {
         // ouput	
         result: {
             label: 'Global result',
@@ -53,11 +45,7 @@ define(['modules/default/defaultcontroller','components/x2js/xml2json.min'], fun
         }
     };
 
-
-    /*
-     Configuration of the module for sending events, as a static object
-     */
-    controller.prototype.events = {
+    Controller.prototype.events = {
         // List of all possible events
         onUpdateResult: {
             label: 'Updated result',
@@ -65,11 +53,9 @@ define(['modules/default/defaultcontroller','components/x2js/xml2json.min'], fun
         }
     };
 
+    Controller.prototype.doVariables = function () {
 
-
-    controller.prototype.doVariables = function() {
-
-        var cfg = this.module.getConfiguration("cronInfos"), variable, time, url, datatype;
+        var cfg = this.module.getConfiguration('cronInfos'), variable, time, url, datatype;
 
         if (!cfg)
             return;
@@ -88,19 +74,17 @@ define(['modules/default/defaultcontroller','components/x2js/xml2json.min'], fun
         this.running = true;
     };
 
-
-
-    controller.prototype.doAjax = function(self, variable, url, datatype) {
+    Controller.prototype.doAjax = function (self, variable, url, datatype) {
         var ajax = {
             url: url,
             dataType: 'text'
         };
 
-        ajax.success = function(data) {
+        ajax.success = function (data) {
             var dataobj;
-            if(datatype==='json') {
+            if (datatype === 'json') {
                 dataobj = JSON.parse(data);
-            } else if(datatype==='xml') {
+            } else if (datatype === 'xml') {
                 dataobj = self.converter.xml_str2json(data);
             }
             self.addVar(variable, DataObject.check(dataobj, true));
@@ -111,20 +95,18 @@ define(['modules/default/defaultcontroller','components/x2js/xml2json.min'], fun
         ajax.method = 'get';
         ajax.type = 'get';
 
-        ajax.error = function() {
+        ajax.error = function () {
             self.module.view.log(false, variable);
         };
 
         $.ajax(ajax);
     };
 
-    controller.prototype.addVar = function(variable, data) {
+    Controller.prototype.addVar = function (variable, data) {
         this.variables[variable] = data;
     };
 
-
-
-    controller.prototype.configurationStructure = function() {
+    Controller.prototype.configurationStructure = function () {
         return {
             groups: {
                 group: {
@@ -156,10 +138,16 @@ define(['modules/default/defaultcontroller','components/x2js/xml2json.min'], fun
                             default: ''
                         },
                         datatype: {
-                            type: "combo",
-                            title: "Data type",
-                            options: [{title: "Text", key: "text"}, {title: "JSON", key: "json"}, {title: "XML", key: "xml"}],
-                            default:"json"
+                            type: 'combo',
+                            title: 'Data type',
+                            options: [{
+                                title: 'Text',
+                                key: 'text'
+                            }, {title: 'JSON', key: 'json'}, {
+                                title: 'XML',
+                                key: 'xml'
+                            }],
+                            default: 'json'
                         },
                         repeat: {
                             type: 'text',
@@ -172,14 +160,15 @@ define(['modules/default/defaultcontroller','components/x2js/xml2json.min'], fun
         };
     };
 
-    controller.prototype.configAliases = {
+    Controller.prototype.configAliases = {
         cronInfos: ['groups', 'cronInfos', 0],
         maxLogs: ['groups', 'group', 0, 'max', 0]
     };
-    
-    controller.prototype.onRemove = function() {
+
+    Controller.prototype.onRemove = function () {
         this.stop();
     };
 
-    return controller;
+    return Controller;
+
 });

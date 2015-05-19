@@ -1,68 +1,73 @@
+'use strict';
 
-define( [ require, '../../field', 'src/util/color', 'jquery-ui/slider', 'components/farbtastic/src/farbtastic' ], function( require, FieldDefaultConstructor, Color, ui ) {
+define([require, '../../field', 'src/util/color', 'jquery-ui/slider', 'components/farbtastic/src/farbtastic'], function (require, FieldDefaultConstructor, Color, ui) {
 
-	var FieldConstructor = function(name) {
+    var FieldConstructor = function (name) {
 
-		var self = this;
+        var self = this;
 
-		this.name = name;
-		this.domExpander = $("<div></div>");
+        this.name = name;
+        this.domExpander = $('<div></div>');
 
-		$("<div></div>").addClass('form-colorpicker').css({ 'float': 'left' }).farbtastic(function(color) {
+        $('<div></div>').addClass('form-colorpicker').css({'float': 'left'}).farbtastic(function (color) {
 
-			if( self.getElementExpanded( ) ) {
-				var value = Color.hex2rgb(color);
+            if (self.getElementExpanded()) {
+                var value = Color.hex2rgb(color);
 
-				self.getElementExpanded( ).value = [ value[ 0 ], value[ 1 ], value[ 2 ], self.getElementExpanded( ).value[ 3 ] ] ;
-			}
+                self.getElementExpanded().value = [value[0], value[1], value[2], self.getElementExpanded().value[3]];
+            }
 
-		}).appendTo( this.domExpander );
+        }).appendTo(this.domExpander);
 
-		$("<div></div>").addClass('form-slider').css({ height: '180px', marginLeft: '20px', float: 'left' }).slider({ 
+        $('<div></div>').addClass('form-slider').css({
+            height: '180px',
+            marginLeft: '20px',
+            float: 'left'
+        }).slider({
 
-			orientation: "vertical",
-		    min: 0,
-		    max: 1,
-		    step: 0.01,
+            orientation: 'vertical',
+            min: 0,
+            max: 1,
+            step: 0.01,
 
-		    start: function( event, ui ) {
-		    	//event.preventDefault();
-		    	event.stopPropagation();
-		    },
+            start: function (event, ui) {
+                //event.preventDefault();
+                event.stopPropagation();
+            },
 
-		    slide: function( event, ui ) {
+            slide: function (event, ui) {
 
-		    	self.getElementExpanded( ).value = [ self.getElementExpanded( ).value[ 0 ], self.getElementExpanded( ).value[ 1 ], self.getElementExpanded( ).value[ 2 ], ui.value ] ;
-		   		event.stopPropagation( );
-		    },
+                self.getElementExpanded().value = [self.getElementExpanded().value[0], self.getElementExpanded().value[1], self.getElementExpanded().value[2], ui.value];
+                event.stopPropagation();
+            },
 
-		    stop: function( event ) {
+            stop: function (event) {
 
-		    	event.preventDefault( );
+                event.preventDefault();
 
-		    }
+            }
 
-		}).appendTo( this.domExpander );
+        }).appendTo(this.domExpander);
 
 
-		$("<div />").addClass('clear').appendTo( this.domExpander );
-	};
+        $('<div />').addClass('clear').appendTo(this.domExpander);
+    };
 
-	FieldConstructor.prototype = new FieldDefaultConstructor( );
+    FieldConstructor.prototype = new FieldDefaultConstructor();
 
-	FieldConstructor.prototype.getOptions = function( fieldElement ) {
-		
-		return fieldElement.getOptions() || this.options.options
-	};
+    FieldConstructor.prototype.getOptions = function (fieldElement) {
 
-	FieldConstructor.prototype.showExpander = function( fieldElement ) {
+        return fieldElement.getOptions() || this.options.options
+    };
 
-		this._showExpander( fieldElement );
-		var value = fieldElement.value || [0, 0, 0, 1];
-		$.farbtastic( this.domExpander.children( '.form-colorpicker' ) ).setColor( Color.rgb2hex( value[0], value[1], value[2] ) );
-		this.domExpander.children( '.form-slider' ).slider( 'value', value[ 3 ] );
-	};
+    FieldConstructor.prototype.showExpander = function (fieldElement) {
 
-	return FieldConstructor;
+        this._showExpander(fieldElement);
+        var value = fieldElement.value || [0, 0, 0, 1];
+        $.farbtastic(this.domExpander.children('.form-colorpicker')).setColor(Color.rgb2hex(value[0], value[1], value[2]));
+        this.domExpander.children('.form-slider').slider('value', value[3]);
+    };
+
+    return FieldConstructor;
 
 });

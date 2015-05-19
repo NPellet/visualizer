@@ -1,24 +1,27 @@
-define(['modules/default/defaultmodel','src/util/datatraversing'], function(Default,Traversing) {
-	
-	function model() {};
-	model.prototype = $.extend(true, {}, Default, {
+'use strict';
 
-		getValue: function() {
-			return this.dataValue;
-		},
-				
-		getjPath: function(rel) {
-			var jpaths = [];
-			var data = this.module.getDataFromRel('list');
-			if(!data || data == null) {
-				return jpaths;
-			}
+define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (Default, Traversing) {
 
-			data = data[0];
-			Traversing.getJPathsFromElement(data, jpaths);
-			return jpaths;
-		}
-	});
+    function Model() {
+    }
 
-	return model;
+    $.extend(true, Model.prototype, Default, {
+        getValue: function () {
+            return this.dataValue;
+        },
+        getjPath: function () {
+            var jpaths = [];
+            var data = this.module.getDataFromRel('list');
+            if (!data || data == null) {
+                return jpaths;
+            }
+
+            data = data[0];
+            Traversing.getJPathsFromElement(data, jpaths);
+            return jpaths;
+        }
+    });
+
+    return Model;
+
 });

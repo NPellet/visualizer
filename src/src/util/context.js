@@ -11,7 +11,6 @@ define(['jquery', 'src/util/api', 'modules/modulefactory', 'jquery-ui/menu'], fu
 
             dom.addEventListener('contextmenu', function (e) {
 
-
                 if (onBeforeShow) {
                     onBeforeShow(contextMenu);
                 }
@@ -29,7 +28,7 @@ define(['jquery', 'src/util/api', 'modules/modulefactory', 'jquery-ui/menu'], fu
 
                                 callbackClick.call(this, e, e2);
                             }
-                        })
+                        });
 
                     })($(elements[i][0]), elements[i][1], elements[i][2]);
                 }
@@ -57,7 +56,7 @@ define(['jquery', 'src/util/api', 'modules/modulefactory', 'jquery-ui/menu'], fu
                 //e.preventDefault();
                 if (contextMenu) {
                     if (contextMenu.hasClass('ui-menu')) {
-                        contextMenu.menu('destroy')
+                        contextMenu.menu('destroy');
                     }
                     contextMenu.remove();
                 }
@@ -70,7 +69,7 @@ define(['jquery', 'src/util/api', 'modules/modulefactory', 'jquery-ui/menu'], fu
                     'left': left,
                     'top': top,
                     'z-index': 10000
-                }).appendTo($("body"));
+                }).appendTo($('body'));
 
                 contextMenu = $menu;
 
@@ -79,27 +78,27 @@ define(['jquery', 'src/util/api', 'modules/modulefactory', 'jquery-ui/menu'], fu
                     //e.preventDefault();
                     if (contextMenu) {
                         if (contextMenu.hasClass('ui-menu')) {
-                            contextMenu.menu('destroy')
+                            contextMenu.menu('destroy');
                         }
                         contextMenu.remove();
                     }
 
                     contextMenu = null;
                     $(document).unbind('click', clickHandler);
-                }
+                };
 
                 var rightClickHandler = function () {
 
                     //e.preventDefault();
                     if (contextMenu) {
                         if (contextMenu.hasClass('ui-menu')) {
-                            contextMenu.menu('destroy')
+                            contextMenu.menu('destroy');
                         }
                         contextMenu.remove();
                     }
 
                     contextMenu = null;
-                }
+                };
 
                 $(document).bind('click', clickHandler);
                 //		return false;
@@ -129,10 +128,10 @@ define(['jquery', 'src/util/api', 'modules/modulefactory', 'jquery-ui/menu'], fu
                     var clientH = document.documentElement.clientHeight;
                     var clientW = document.documentElement.clientWidth;
                     if (top + height > clientH) {
-                        contextMenu.css("top", Math.max(0, clientH - height - 10));
+                        contextMenu.css('top', Math.max(0, clientH - height - 10));
                     }
                     if (left + width > clientW) {
-                        contextMenu.css("left", Math.max(0, clientW - width - 10));
+                        contextMenu.css('left', Math.max(0, clientW - width - 10));
                     }
 
                     return false;
@@ -142,5 +141,6 @@ define(['jquery', 'src/util/api', 'modules/modulefactory', 'jquery-ui/menu'], fu
         }
 
 
-    }
+    };
+
 });

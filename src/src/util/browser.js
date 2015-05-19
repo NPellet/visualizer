@@ -1,3 +1,5 @@
+'use strict';
+
 define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'src/util/ui', 'jquery-cookie'], function(Debug, bowser, _, modernizr, ui) {
 
     var features = {
@@ -28,7 +30,7 @@ define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'src/util/ui', 'jquer
             features[f].has = false;
             features[f].color = 'red';
         }
-    }) ;
+    });
 
     var browserHasAllFeatures = _.every(_.map(features, function(val) {
         return val.has;
@@ -153,7 +155,6 @@ define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'src/util/ui', 'jquer
             });
 
         }
+    };
 
-
-    }
 });

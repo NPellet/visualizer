@@ -84,7 +84,7 @@ define(['modules/default/defaultview','src/util/datatraversing', 'src/util/api',
 				}
 			});
 
-	 		xhr.open("POST", this.module.getConfiguration('fileuploadurl'));
+	 		xhr.open('POST', this.module.getConfiguration('fileuploadurl'));
 	 		xhr.send(form);
 	 	},
 

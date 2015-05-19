@@ -1,37 +1,18 @@
 {
-    "name": "ace",
-    "description": "Ajax.org Code Editor is a full featured source code highlighting editor that powers the Cloud9 IDE",
-    "version": "1.1.8",
-    "homepage": "http://github.com/ajaxorg/ace",
-    "engines": {"node": ">= 0.6.0"},
-    "author": "Fabian Jakobs <fabian@c9.io>",
-    "main": "lib/ace",
+    "name": "ace-builds",
+    "version": "1.1.9",
+    "description": "Ace (Ajax.org Cloud9 Editor)",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
     "repository": {
         "type": "git",
-         "url": "http://github.com/ajaxorg/ace.git"
+        "url": "https://github.com/ajaxorg/ace-builds.git"
     },
-    "dependencies": {
-        "mime": "1.2.x"
+    "author": "",
+    "license": "BSD",
+    "bugs": {
+        "url": "https://github.com/ajaxorg/ace-builds/issues"
     },
-    "devDependencies": {
-        "asyncjs": "0.0.x",
-        "jsdom": "0.2.x",
-        "amd-loader": "~0.0.4",
-        "dryice": "0.4.11",
-        "architect-build": "https://github.com/c9/architect-build/tarball/a3bad51808"
-    },
-    "mappings": {
-        "ace": "."
-    },
-    "licenses": [{
-        "type": "BSD New",
-        "url": "http://opensource.org/licenses/BSD-3-Clause"
-    }],
-    "directories": {
-        "lib": "lib/ace"
-    },
-    "scripts": {
-        "start": "node static.js",
-        "test": "node lib/ace/test/all.js"
-    }
+    "homepage": "https://github.com/ajaxorg/ace-builds"
 }
