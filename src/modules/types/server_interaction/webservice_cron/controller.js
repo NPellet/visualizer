@@ -38,7 +38,7 @@ define(['modules/default/defaultcontroller', 'components/x2js/xml2json.min'], fu
     };
 
     Controller.prototype.references = {
-        // ouput	
+        // ouput
         result: {
             label: 'Global result',
             type: 'object'
