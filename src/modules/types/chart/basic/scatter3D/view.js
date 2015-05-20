@@ -623,15 +623,17 @@ define([
 
         },
 
-        _processColors: function() {
-            this.colorDomain = _.filter(this._data.color, function(v){
-                return !isNaN(v)
+        _processColors: function () {
+            this.colorDomain = _.filter(this._data.color, function (v) {
+                return !isNaN(v);
             });
             this.colorDomain = [Math.min.apply(null, this.colorDomain), Math.max.apply(null, this.colorDomain)];
             var gradient = this.module.getConfiguration('gradient');
-            gradient = _.filter(gradient, function(v) { return v.stopPosition !== undefined});
+            gradient = _.filter(gradient, function (v) {
+                return v.stopPosition !== undefined;
+            });
             this.stopPositions = _.pluck(gradient, 'stopPosition');
-            this.stopColors = _(gradient).pluck('color').map(colorUtil.getColor).map(function(v) {
+            this.stopColors = _(gradient).pluck('color').map(colorUtil.getColor).map(function (v) {
                 return colorUtil.rgb2hex(v);
             }).value();
             console.log(this.stopColors);
@@ -640,15 +642,15 @@ define([
                 stopPositions: this.stopPositions,
                 domain: this.colorDomain
             });
-            for(var i=0; i<this._data.color.length; i++) {
-                if(!isNaN(this._data.color[i])) {
+            for (var i = 0; i < this._data.color.length; i++) {
+                if (!isNaN(this._data.color[i])) {
                     this._data.color[i] = this.numberToColor(this._data.color[i]);
-                    if(Number.isNaN(this._data.color[i])) {
+                    if (Number.isNaN(this._data.color[i])) {
                         this._data.color[i] = DEFAULT_POINT_COLOR;
                         continue;
                     }
                     var r = this._data.color[i].match(/rgba?\(([^\)]*)\)/, 'i');
-                    if(r) {
+                    if (r) {
                         this._data.color[i] = colorUtil.getColor(r[1].split(','));
                     }
                 }
@@ -857,7 +859,7 @@ define([
             return mesh;
         },
 
-        _drawColorBar: function() {
+        _drawColorBar: function () {
             this.$colorbar.empty();
             this.$colorbar.css({
                 position: 'absolute',

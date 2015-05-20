@@ -60,7 +60,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                         showColorBar: {
                             type: 'checkbox',
                             title: 'Color bar',
-                            options: { show: 'Show'},
+                            options: {show: 'Show'},
                             default: []
                         }
                     }
