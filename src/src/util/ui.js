@@ -250,7 +250,7 @@ define([
 
     exports.showNotification = function (message) {
         $notification = $('.ci-visualizer-notification');
-        if($notification.length === 0) {
+        if ($notification.length === 0) {
             $('#ci-visualizer').append('<div class="ci-visualizer-notification"></div>');
             $notification = $('.ci-visualizer-notification');
         }

@@ -88,7 +88,7 @@ define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'vers
     }
 
     function updateView(newView) {
-        if(newView && newView.version) {
+        if (newView && newView.version) {
             originalVersion = newView.version;
         }
         var i;

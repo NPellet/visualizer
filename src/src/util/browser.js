@@ -29,7 +29,7 @@ define([
     };
 
     _.keys(features).forEach(function (f) {
-        if(modernizr[f]) {
+        if (modernizr[f]) {
             features[f].has = true;
             features[f].color = 'green';
         }
@@ -68,18 +68,18 @@ define([
     function checkBrowser() {
         // Check that it's not a bot
         var reg = /bot/i;
-        if(navigator.userAgent.match(reg)) {
+        if (navigator.userAgent.match(reg)) {
             return 'bot';
         }
         var browserKeys = _.keys(browsers);
-        var bmap = _.map(browserKeys, function (val){
+        var bmap = _.map(browserKeys, function (val) {
             return bowser[val];
         });
         var browserListed = _.any(bmap);
 
 
 
-        if(!browserListed) {
+        if (!browserListed) {
             Debug.warn('browser not recognized');
             return true;
         }
@@ -121,20 +121,20 @@ define([
         checkCompatibility: function () {
             return new Promise(function (resolve) {
                 // Bots always pass the test
-                if(browserIsCompatible === 'bot') {
+                if (browserIsCompatible === 'bot') {
                     return resolve();
                 }
-                if(!browserIsCompatible) {
+                if (!browserIsCompatible) {
                     Debug.error('browser is not compatible');
                     return resolve(browserErrorMessage());
                 }
 
-                if($.cookie('visualizer-skip-feature-warning')) {
+                if ($.cookie('visualizer-skip-feature-warning')) {
                     Debug.info('user does not want to see warning');
                     return resolve();
                 }
 
-                if(browserHasAllFeatures) {
+                if (browserHasAllFeatures) {
                     Debug.info('user has all required features');
                     return resolve();
                 }
@@ -147,7 +147,7 @@ define([
                     buttons: {
                         Ok: function () {
                             $(this).dialog('close');
-                            if($('#skip-warning-checkbox').is(':checked')) {
+                            if ($('#skip-warning-checkbox').is(':checked')) {
                                 $.cookie('visualizer-skip-feature-warning', true, { path: '/'});
                             }
                             resolve();

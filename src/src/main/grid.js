@@ -595,7 +595,7 @@ define([
                 if (elements.modules) {
 
                     for (var i = 0, l = elements.modules.length; i < l; i++) {
-                        if(elements.modules[i].hidden) {
+                        if (elements.modules[i].hidden) {
                             continue;
                         }
                         dom.append('<li class="ci-item-newmodule" data-url="' + encodeURIComponent(elements.modules[i].url) + '"><a>' + elements.modules[i].moduleName + '</a></li>');
@@ -706,7 +706,7 @@ define([
 
                     utilLi.bind('click', function (event) {
                         var utilkey = $(event.target.parentNode).data('utilkey');
-                        switch(utilkey) {
+                        switch (utilkey) {
                             case 'copyview':
                                 ui.copyview();
                                 break;
@@ -784,7 +784,7 @@ define([
             switchToLayer(activeLayer);
         },
         switchToLayer: function (name) {
-            if(definition.layers[name]) {
+            if (definition.layers[name]) {
                 switchToLayer(name);
             } else {
                 Debug.warn('Layer ' + name + ' is not defined');

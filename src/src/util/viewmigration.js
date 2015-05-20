@@ -283,8 +283,8 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
         '2.13.1-b2', function (view) {
             eachModule(view, function (module) {
                 var groupings = module.getChildSync(['configuration','groups', 'groupings', 0]);
-                if(!groupings) return;
-                for(var i = 0; i < groupings.length; i++) {
+                if (!groupings) return;
+                for (var i = 0; i < groupings.length; i++) {
                     groupings[i].getter = [groupings[i].getter];
                 }
             }, 'slick_grid');
@@ -293,7 +293,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
         '2.13.1-b3', function (view) {
             eachModule(view, function (module) {
                 var cols = module.getChildSync(['configuration', 'groups', 'cols', 0]);
-                for(var i = 0; i < cols.length; i++) {
+                for (var i = 0; i < cols.length; i++) {
                     delete cols[i].selectable;
                     delete cols[i].focusable;
                     delete cols[i].sortable;
@@ -305,7 +305,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                 delete group.toggle;
 
                 var slickCheck = group.slickCheck[0];
-                if(slickCheck instanceof Array) {
+                if (slickCheck instanceof Array) {
                     checkboxRemove(slickCheck, 'multiColumnSort');
                     checkboxRemove(slickCheck, 'enableColumnReorder');
                     checkboxRemove(slickCheck, 'enableTextSelectionOnCells');
@@ -330,7 +330,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
         '2.16.1-1', function (view) {
             eachModule(view, function (module) {
                 var slickCheck = module.getChildSync([ 'configuration', 'groups', 'group', 0, 'slickCheck', 0 ]);
-                if(slickCheck instanceof Array) {
+                if (slickCheck instanceof Array) {
                     checkboxAdd(slickCheck, 'highlightScroll');
                 }
             }, 'slick_grid');
@@ -344,14 +344,14 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
 
     function checkboxRemove(checkbox, name) {
         var idx = checkbox.indexOf(name);
-        if(idx > -1){
+        if (idx > -1) {
             checkbox.splice(idx, 1);
         }
     }
 
     function checkboxAdd(checkbox, name) {
         var idx = checkbox.indexOf(name);
-        if(idx === -1){
+        if (idx === -1) {
             checkbox.push(name);
         }
     }

@@ -396,7 +396,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
     var typeInit = {};
 
     function _render(element, object, options) {
-        if(object == undefined) {
+        if (object == undefined) {
             element.html('');
             return Promise.resolve();
         }

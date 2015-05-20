@@ -125,7 +125,7 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
 
                     if (value && jpath) {
 
-                        if( ! value.getChild ) {
+                        if ( ! value.getChild ) {
                             value = DataObject.check( value, true );
                         }
                         (function (actionname) {

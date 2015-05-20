@@ -48,13 +48,13 @@ define(['jquery', 'modules/module', 'src/util/debug', 'src/util/util'], function
         traverseModules: function (moduleCallback, obj) {
             obj = obj || allModules;
             var i;
-            if(obj.modules) {
-                for(i = 0; i < obj.modules.length; i++) {
+            if (obj.modules) {
+                for (i = 0; i < obj.modules.length; i++) {
                     moduleCallback(obj.modules[i]);
                 }
             }
-            if(obj.folders) {
-                for(var key in obj.folders) {
+            if (obj.folders) {
+                for (var key in obj.folders) {
                     this.traverseModules(moduleCallback, obj.folders[key]);
                 }
             }
@@ -98,7 +98,7 @@ define(['jquery', 'modules/module', 'src/util/debug', 'src/util/util'], function
             return Promise.all(prom).then(function () {
                 that.traverseModules(function (module) {
                     var id;
-                    if(id = Util.moduleIdFromUrl(module.url)) {
+                    if (id = Util.moduleIdFromUrl(module.url)) {
                         module.id = id;
                     }
                     module.url = module.url.replace(/\/$/, '') + '/';

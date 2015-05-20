@@ -23,7 +23,7 @@ define([
         initImpl: function () {
 
             this.ok = this.loggedIn = this.ready = false;
-            if(!this.options.beforeUrl) this.ready = true;
+            if (!this.options.beforeUrl) this.ready = true;
             else {
                 this.beforeUrl();
             }
@@ -133,7 +133,7 @@ define([
                     this.close();
                 }
             }
-            else if(!this.ok) {
+            else if (!this.ok) {
                 this.checkDatabase();
                 console.error('CouchDB header : unreachable database.');
             }
@@ -200,7 +200,7 @@ define([
             var that = this;
             var node = that.currentDocument;
             var doc = node.data.doc;
-            if(val && val.keywords && val.keywords.value) {
+            if (val && val.keywords && val.keywords.value) {
                 doc.keywords = val.keywords.value;
             }
             doc._attachments['meta.json'] = {
@@ -938,14 +938,14 @@ define([
                         theTree.contextmenu(menuOptions);
                         if (that.lastKeyLoaded)
                             thefTree.activateKey(that.lastKeyLoaded);
-                        if(that.currentDocument) {
+                        if (that.currentDocument) {
                             // When switching flavors, if this document is also
                             // in the new flavor we select it automatically
                             var id = that.currentDocument.data.doc._id;
                             var d = _.find(data, function (d) {
                                 return d.id === id;
                             });
-                            if(d) {
+                            if (d) {
                                 var key = _.flatten([that.flavor, d.value.flavors]).join(':');
                                 thefTree.activateKey(key);
                             }

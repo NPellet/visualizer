@@ -35,11 +35,11 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.layout.cloud'
             this.resolveReady();
         },
         onResize: function () {
-            if(this.parcoords){
+            if (this.parcoords) {
                 this.parcoords.width(this.width).height(this.height).resize().render();
             }
         },
-        redrawChart: function (mytext){
+        redrawChart: function (mytext) {
             //####### BEGIN VARS ########
             var that = this;
             var fill = d3.scale.category20b();

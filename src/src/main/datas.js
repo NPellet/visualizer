@@ -52,7 +52,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
     };
 
     DataObject.resurrect = function (obj) {
-        if(isSpecialObject(obj)) {
+        if (isSpecialObject(obj)) {
             return obj.resurrect();
         }
         return obj;

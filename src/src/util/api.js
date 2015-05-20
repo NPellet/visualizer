@@ -24,7 +24,7 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
 
     function createDataJpath(name, data, jpath, filter) {
 
-        if (data && data.__parent){
+        if (data && data.__parent) {
             data = data.resurrect();
         }
         data = DataObject.check(data, true);
@@ -96,7 +96,7 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
         },
 
         setAllFilters: function (filters) {
-            variableFilters = _([filters, variableFilters]).flatten().filter(function (v){
+            variableFilters = _([filters, variableFilters]).flatten().filter(function (v) {
                 return v && v.name && v.file;
             }).uniq(function (v) {
                 return v.file;

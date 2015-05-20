@@ -161,7 +161,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
         unloadCss: function (url) {
             var that = this;
             url = require.toUrl(url);
-            if(that.loadedCss[url]) {
+            if (that.loadedCss[url]) {
                 that.loadedCss[url].disabled = true;
             }
 
@@ -414,13 +414,13 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
 
     var utilReqPaths = {};
     exports.rewriteRequirePath = function (url) {
-        if(!this.requireNeedsExtension(url)) {
+        if (!this.requireNeedsExtension(url)) {
             // return same url without trailing backslash
             return url.replace(/\/$/, '');
         }
         var reqPathStr = exports.getNextUniqueId(true);
         url = url.replace(/\/$/,'');
-        if(utilReqPaths[url]) return utilReqPaths[url];
+        if (utilReqPaths[url]) return utilReqPaths[url];
         utilReqPaths[url] = reqPathStr;
         var paths = {};
         paths[reqPathStr] = url;
