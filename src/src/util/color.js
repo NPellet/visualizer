@@ -76,6 +76,9 @@ define(function () {
     exports.getColor = function getColor(color) {
 
         if (Array.isArray(color)) {
+            if(color.length >=3) {
+                for(var i=0; i<3; i++) color[i] = Math.round(color[i]);
+            }
             switch (color.length) {
                 case 3:
                     return 'rgb(' + color.join(',') + ')';
