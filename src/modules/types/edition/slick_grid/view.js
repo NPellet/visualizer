@@ -79,6 +79,7 @@ define([
             var that = this;
             if (!this.$container) {
                 this._id = Util.getNextUniqueId();
+                this.$rowHelp = $('<div>').attr('class', 'rowHelp');
                 this.$container = $('<div>').attr('id', this._id).css({
                     display: 'flex',
                     'min-height': '100%',
@@ -86,13 +87,6 @@ define([
                     width: '100%'
                 });
 
-                this.$rowHelp = $('<div>').attr('class', 'rowHelp');
-                this.$addButton = $('<input type="button" value="Add"></input>"');
-                this.$addButton.on('click', function() {
-                    that.preventRowHelp();
-                    that.grid.gotoCell(100, 0, true);
-                });
-                this.$rowToolbar = $('<div>').attr('class', 'rowToolbar').append(this.$addButton);
                 this.module.getDomContent().html(this.$rowHelp);
                 this.module.getDomContent().append(this.$container);
             }
@@ -109,6 +103,20 @@ define([
 
         preventRowHelp: function() {
             this._preventRowHelp = true;
+        },
+
+        deleteRowSelection: function() {
+            var rows = this.grid.getSelectedRows();
+            var idx = new Array(rows.length);
+            for(var i=0; i<rows.length; i++) {
+                var itemInfo = this._getItemInfoFromRow(rows[i]);
+                idx[i] = itemInfo.idx;
+            }
+            for(i=0; i<rows.length; i++) {
+                this.module.data.splice(idx[i], 1);
+            }
+            this.lastSelectedRows = [];
+            this.module.data.triggerChange();
         },
 
         getSlickColumns: function () {
@@ -295,7 +303,20 @@ define([
                         return that.cssLoaded;
                     })
                     .then(function () {
-                        console.log(that.$rowToolbar);
+                        that.$addButton = $('<input type="button" value="Add"/>');
+                        that.$addButton.on('click', function() {
+                            that.preventRowHelp();
+                            that.grid.gotoCell(100, 0, true);
+                        });
+
+                        that.$deleteButton = $('<input type="button" value="Delete"/>');
+                        that.$deleteButton.on('click', function() {
+                            that.deleteRowSelection();
+                        });
+                        that.$rowToolbar = $('<div>').attr('class', 'rowToolbar')
+                            .append(that.$addButton)
+                            .append(that.$deleteButton);
+
                         that.$slickgrid = $('<div>').css({
                             flex: 1
                         });
