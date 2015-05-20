@@ -13,7 +13,7 @@ define(['d3', 'src/util/util'], function(d3, Util) {
     };
 
     exports.getSvg = function(options) {
-        var el = document.createElement('div');
+        var el = $('<div>')[0];
         return exports.renderSvg(el, options);
     };
 
@@ -25,13 +25,14 @@ define(['d3', 'src/util/util'], function(d3, Util) {
         var svg = d3.select(el).append('svg')
             .attr('width', totalWidth)
             .attr('height', totalHeight);
+        var id = Util.getNextUniqueId();
         svg.append('defs').append('linearGradient')
             .attr({
                 x1: linearg[0],
                 y1: linearg[1],
                 x2: linearg[2],
                 y2: linearg[3],
-                id: 'grad1'
+                id: id
             })
             .selectAll('stop')
             .data(options.stops)
@@ -39,7 +40,7 @@ define(['d3', 'src/util/util'], function(d3, Util) {
             .attr('offset', function(d, i) {
                 return '' + (options.stopPositions[i]*100) + '%';
             })
-            .style('stop-color', function(d, i) {
+            .style('stop-color', function(d) {
                 return d;
             })
             .style('stop-opacity', 1);
@@ -65,7 +66,7 @@ define(['d3', 'src/util/util'], function(d3, Util) {
                 return 'translate(' + tx +',' + ty + ')';
             });
         g.append('rect')
-            .style('fill', 'url(#grad1)')
+            .style('fill', 'url(#' + id + ')')
             .attr('width', options.width)
             .attr('height', options.height);
 
