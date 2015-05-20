@@ -39,7 +39,7 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.layout.cloud'
                 this.parcoords.width(this.width).height(this.height).resize().render();
             }
         },
-        redrawChart: function(mytext){
+        redrawChart: function (mytext){
             //####### BEGIN VARS ########
             var that = this;
             var fill = d3.scale.category20b();
@@ -70,25 +70,25 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.layout.cloud'
             var layout = d3.layout.cloud()
                 .timeInterval(10)
                 .size([w, h])
-                .fontSize(function(d) { 
+                .fontSize(function (d) {
                     return fontSize(+d.value);
                 })
-                .text(function(d) {return d.key; })
+                .text(function (d) {return d.key; })
                 .on('end', draw);
             
             function parseText(text) {
                 tags = {};
                 var cases = {};
 
-                text.split(that.module.getConfigurationCheckbox('oneWordPerLine') ? /\n/g : wordSeparators).forEach(function(word) {
+                text.split(that.module.getConfigurationCheckbox('oneWordPerLine') ? /\n/g : wordSeparators).forEach(function (word) {
                     if (discard.test(word)) return;
                     word = word.replace(punctuation, '');
                     if (stopWords.test(word.toLowerCase())) return;
                     cases[word.toLowerCase()] = word;
                     tags[word = word.toLowerCase()] = (tags[word] || 0) + 1;
                 });
-                tags = d3.entries(tags).sort(function(a, b) { return b.value - a.value; });
-                tags.forEach(function(d) { d.key = cases[d.key]; });
+                tags = d3.entries(tags).sort(function (a, b) { return b.value - a.value; });
+                tags.forEach(function (d) { d.key = cases[d.key]; });
                 generate();
             }
 
@@ -109,25 +109,25 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.layout.cloud'
                     h / Math.abs(bounds[0].y - h / 2)) / 2 : 1;
                 words = data;
                 var text = vis.selectAll('text')
-                    .data(words, function(d) { return d.text.toLowerCase(); });
+                    .data(words, function (d) { return d.text.toLowerCase(); });
                 text.transition()
                     .duration(1000)
-                    .attr('transform', function(d) { return 'translate(' + [d.x, d.y] + ')rotate(' + d.rotate + ')'; })
-                    .style('font-size', function(d) { return d.size + 'px'; });
+                    .attr('transform', function (d) { return 'translate(' + [d.x, d.y] + ')rotate(' + d.rotate + ')'; })
+                    .style('font-size', function (d) { return d.size + 'px'; });
                 text.enter().append('text')
                     .attr('text-anchor', 'middle')
-                    .attr('transform', function(d) { return 'translate(' + [d.x, d.y] + ')rotate(' + d.rotate + ')'; })
+                    .attr('transform', function (d) { return 'translate(' + [d.x, d.y] + ')rotate(' + d.rotate + ')'; })
                     .style('font-size', '1px')
                     .transition()
                     .duration(1000)
-                    .style('font-size', function(d) { return d.size + 'px'; });
-                text.style('font-family', function(d) { return d.font; })
-                    .style('fill', function(d) { return fill(d.text.toLowerCase()); })
-                    .text(function(d) { return d.text; });
+                    .style('font-size', function (d) { return d.size + 'px'; });
+                text.style('font-family', function (d) { return d.font; })
+                    .style('fill', function (d) { return fill(d.text.toLowerCase()); })
+                    .text(function (d) { return d.text; });
                 var exitGroup = background.append('g')
                     .attr('transform', vis.attr('transform'));
                 var exitGroupNode = exitGroup.node();
-                text.exit().each(function() {
+                text.exit().each(function () {
                     exitGroupNode.appendChild(this);
                 });
                 exitGroup.transition()

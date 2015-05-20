@@ -128,10 +128,16 @@ define([
 
         var view = Versioning.getView();
         var data = Versioning.getData();
-        Promise.all([loadCustomFilters(), loadMainVariables(), loadPouchVariables(), configureRequirejs(), loadCustomModules()]).then(doInitScript).then(function() {
+        Promise.all([
+            loadCustomFilters(),
+            loadMainVariables(),
+            loadPouchVariables(),
+            configureRequirejs(),
+            loadCustomModules()
+        ]).then(doInitScript).then(function () {
             ActionManager.viewHasChanged(view);
             checkCustomModules();
-        }, function(e) {
+        }, function (e) {
             console.error('View loading problem', e, e.stack);
         });
 
@@ -154,7 +160,7 @@ define([
             if(!view.aliases) return;
             var paths = view.aliases;
 
-            paths = _.filter(paths, function(p) {
+            paths = _.filter(paths, function (p) {
                 return p && p.alias && p.path;
             });
             var conf = {paths:{}};
@@ -193,7 +199,7 @@ define([
         function loadCustomModules() {
             var modules = view.getChildSync(['custom_filters', 0, 'sections', 'modules', 0, 'groups', 'modules', 0]);
             if(!modules) return Promise.resolve();
-            modules = _.filter(modules, function(m) {
+            modules = _.filter(modules, function (m) {
                 return m && m.url;
             });
             for(var i=0; i<modules.length; i++) {
@@ -241,7 +247,7 @@ define([
                 }
                 var filtersLib = view.getChildSync('custom_filters', 0, 'sections', 'filtersLib', 0, 'groups', 'filters', 0);
                 if (filtersLib) {
-                    filtersLib= _.filter(filtersLib, function(v){
+                    filtersLib= _.filter(filtersLib, function (v){
                         return v && v.name && v.file;
                     });
                     API.setAllFilters(filtersLib);

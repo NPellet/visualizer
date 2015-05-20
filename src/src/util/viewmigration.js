@@ -280,8 +280,8 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             }, 'spectra_displayer');
         },
 
-        '2.13.1-b2', function(view) {
-            eachModule(view, function(module) {
+        '2.13.1-b2', function (view) {
+            eachModule(view, function (module) {
                 var groupings = module.getChildSync(['configuration','groups', 'groupings', 0]);
                 if(!groupings) return;
                 for(var i=0; i<groupings.length; i++) {
@@ -290,8 +290,8 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             }, 'slick_grid');
         },
 
-        '2.13.1-b3', function(view) {
-            eachModule(view, function(module) {
+        '2.13.1-b3', function (view) {
+            eachModule(view, function (module) {
                 var cols = module.getChildSync(['configuration', 'groups', 'cols', 0]);
                 for(var i=0; i<cols.length; i++) {
                     delete cols[i].selectable;
@@ -316,7 +316,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
         },
 
         '2.15.1', function (view) {
-            eachModule(view, function(module) {
+            eachModule(view, function (module) {
                 var actions_in = module.actions_in;
                 if (actions_in && actions_in.length) {
                     actions_in.forEach(function (action) {
@@ -327,8 +327,8 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                 }
             }, 'spectra_displayer');
         },
-        '2.16.1-1', function(view) {
-            eachModule(view, function(module) {
+        '2.16.1-1', function (view) {
+            eachModule(view, function (module) {
                 var slickCheck = module.getChildSync([ 'configuration', 'groups', 'group', 0, 'slickCheck', 0 ]);
                 if(slickCheck instanceof Array) {
                     checkboxAdd(slickCheck, 'highlightScroll');

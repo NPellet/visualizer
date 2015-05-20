@@ -1,6 +1,13 @@
 'use strict';
 
-define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'src/util/ui', 'jquery-cookie'], function(Debug, bowser, _, modernizr, ui) {
+define([
+    'src/util/debug',
+    'bowser',
+    'lodash',
+    'modernizr',
+    'src/util/ui',
+    'jquery-cookie'
+], function (Debug, bowser, _, modernizr, ui) {
 
     var features = {
         canvas: {
@@ -21,7 +28,7 @@ define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'src/util/ui', 'jquer
         }
     };
 
-    _.keys(features).forEach(function(f) {
+    _.keys(features).forEach(function (f) {
         if(modernizr[f]) {
             features[f].has = true;
             features[f].color = 'green';
@@ -32,7 +39,7 @@ define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'src/util/ui', 'jquer
         }
     });
 
-    var browserHasAllFeatures = _.every(_.map(features, function(val) {
+    var browserHasAllFeatures = _.every(_.map(features, function (val) {
         return val.has;
     }));
 
@@ -65,7 +72,7 @@ define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'src/util/ui', 'jquer
             return 'bot';
         }
         var browserKeys = _.keys(browsers);
-        var bmap = _.map(browserKeys, function(val){
+        var bmap = _.map(browserKeys, function (val){
             return bowser[val];
         });
         var browserListed = _.any(bmap);
@@ -111,8 +118,8 @@ define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'src/util/ui', 'jquer
 
 
     return {
-        checkCompatibility: function() {
-            return new Promise(function(resolve) {
+        checkCompatibility: function () {
+            return new Promise(function (resolve) {
                 // Bots always pass the test
                 if(browserIsCompatible === 'bot') {
                     return resolve();
@@ -138,7 +145,7 @@ define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'src/util/ui', 'jquer
                 $dialog.append('<input id="skip-warning-checkbox" type="checkbox">Don\'t show this again</input>');
                 ui.dialog($dialog, {
                     buttons: {
-                        Ok: function() {
+                        Ok: function () {
                             $(this).dialog('close');
                             if($('#skip-warning-checkbox').is(':checked')) {
                                 $.cookie('visualizer-skip-feature-warning', true, { path: '/'});
@@ -146,7 +153,7 @@ define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'src/util/ui', 'jquer
                             resolve();
                         }
                     },
-                    close: function() {
+                    close: function () {
                         resolve();
                     },
                     width: 600

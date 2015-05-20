@@ -16,10 +16,10 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
             this.resolveReady();
         },
 
-        getToolbar: function() {
+        getToolbar: function () {
             return [
                 {
-                    onClick: function() {
+                    onClick: function () {
                         this.doConfig(2);
                     },
                     title: 'Open Preferences',

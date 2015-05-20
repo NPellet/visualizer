@@ -31,12 +31,12 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
     //};
 
     functions.sparkline = {};
-    functions.sparkline.init = function() {
+    functions.sparkline.init = function () {
         return new Promise(function (resolve, reject) {
             require(['sparkline'], resolve);
         });
     };
-    functions.sparkline.toscreen = function($el, val, rootval, options) {
+    functions.sparkline.toscreen = function ($el, val, rootval, options) {
         var defaultOptions = {
             width: '100%',
             height: '100%'
@@ -251,7 +251,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
     };
 
     functions.openlink = {};
-    functions.openlink.toscreen = function($element, value) {
+    functions.openlink.toscreen = function ($element, value) {
         $element.html(value.replace(/^(.*)$/, '<a href="$1" target="_blank"><i class="fa fa-external-link"></i></a>'));
     };
 

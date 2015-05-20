@@ -13,6 +13,7 @@
     "no-dupe-keys": 2,
     "no-duplicate-case": 2,
     "no-empty": 2,
+    "no-empty-label": 2,
     "no-ex-assign": 2,
     "no-extra-semi": 2,
     "no-func-assign": 2,
@@ -29,6 +30,7 @@
     "quotes": [2, "single", "avoid-escape"],
     "semi": [2, "always"],
     "semi-spacing": [2, {"before": false, "after": true}],
+    "space-before-function-paren": [2, {"anonymous": "always", "named": "never"}],
     "strict": [2, "global"],
     "use-isnan": 2,
     "valid-typeof": 2

@@ -179,7 +179,7 @@ define([
                         module.moving = false;
                         checkDimensions(true);
                     },
-                    drag: function() {
+                    drag: function () {
                         checkDimensions(true);
                     }
 
@@ -739,7 +739,7 @@ define([
                         ['<li class="ci-item-configureentrypoint" class="ui-state-disabled" id="context-menu-version"><a class="ui-state-disabled"><span class="ui-icon ui-icon-info"></span>' + Versioning.version + ' </a></li>',
                             function () {
                                 window.open('https://github.com/NPellet/visualizer', '_blank');
-                            }]], null, function($ctxmenu) {
+                            }]], null, function ($ctxmenu) {
                         var original = Versioning.originalVersion;
                         var prefix = '';
                         if (original !== 'none' && original !== Versioning.version) {
@@ -752,7 +752,7 @@ define([
                 if (Version.buildTime) {
                     Context.listen(Context.getRootDom(), [
                         ['<li id="context-menu-build-info"><a class="ui-state-disabled"><span class="ui-icon ui-icon-info"></span>Built ' + Version.buildTime + '</a></li>',
-                            Util.noop]], null, function($ctxmenu) {
+                            Util.noop]], null, function ($ctxmenu) {
                         $ctxmenu.find('#context-menu-build-info').insertAfter($ctxmenu.find('#context-menu-version'));
                     });
                 }

@@ -158,7 +158,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
                 }
             });
         },
-        unloadCss: function(url) {
+        unloadCss: function (url) {
             var that = this;
             url = require.toUrl(url);
             if(that.loadedCss[url]) {
@@ -402,18 +402,18 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
         });
     };
 
-    exports.moduleIdFromUrl = function(url) {
+    exports.moduleIdFromUrl = function (url) {
         var reg = /([^\/]+)(\/)?$/;
         var res = url.match(reg);
         return res[1];
     };
 
-    exports.requireNeedsExtension = function(url) {
+    exports.requireNeedsExtension = function (url) {
         return /^https?:\/\/|^\.|^\//.test(url);
     };
 
     var utilReqPaths = {};
-    exports.rewriteRequirePath = function(url) {
+    exports.rewriteRequirePath = function (url) {
         if(!this.requireNeedsExtension(url)) {
             // return same url without trailing backslash
             return url.replace(/\/$/, '');

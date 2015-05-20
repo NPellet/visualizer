@@ -34,7 +34,7 @@ define([
         }
     }
 
-    Rectangle.prototype.init1 = function(minmin, width, height) {
+    Rectangle.prototype.init1 = function (minmin, width, height) {
         this.minmin = minmin;
         this.maxmax = {x: this.minmin.x + width, y: this.minmin.y + height};
         this.minmax = {x: this.minmin.x, y: this.maxmax.y};
@@ -43,7 +43,7 @@ define([
         this._init();
     };
 
-    Rectangle.prototype._init = function() {
+    Rectangle.prototype._init = function () {
         this.minx = this.minmin.x;
         this.maxx = this.maxmax.x;
         this.miny = this.minmin.y;
@@ -53,7 +53,7 @@ define([
         this.centery = (this.miny + this.maxy)/2;
     };
 
-    Rectangle.prototype.init2 = function() {
+    Rectangle.prototype.init2 = function () {
         var corners = arguments;
         var x = _.pluck(corners, 'x');
         var y = _.pluck(corners, 'y');
@@ -72,7 +72,7 @@ define([
         this._init();
     };
 
-    Rectangle.prototype.intersection = function(point) {
+    Rectangle.prototype.intersection = function (point) {
         var that = this, points;
 
         if(point.x !== this.centerx) {
@@ -86,7 +86,7 @@ define([
                 {x: this.maxx, y: a*this.maxx+b}
             ];
 
-            points = _.filter(points, function(p) {
+            points = _.filter(points, function (p) {
                 return that.isInside(p);
             });
         }
@@ -99,7 +99,7 @@ define([
         }
 
 
-        var distances = _.map(points, function(p) {
+        var distances = _.map(points, function (p) {
             return distance(p, point);
         });
 
@@ -108,7 +108,7 @@ define([
         return null;
     };
 
-    Rectangle.prototype.isInside = function(point) {
+    Rectangle.prototype.isInside = function (point) {
         return (point.x <= this.maxx && point.x >= this.minx && point.y <= this.maxy && point.y >= this.miny);
     };
 
@@ -154,7 +154,7 @@ define([
         }
         for(i=0; i<targets.length; i++) {
             // Try to find source with same name
-            var source = _.filter(sources, function(s) {
+            var source = _.filter(sources, function (s) {
                 return s.name === targets[i].name;
             });
 
@@ -190,7 +190,7 @@ define([
         }
 
         for(i=0; i<sources.length; i++) {
-            var target = _.filter(targets, function(t){
+            var target = _.filter(targets, function (t){
                 return t.name === sources[i].name;
             });
 
@@ -204,7 +204,7 @@ define([
     function getNodes(links) {
         var width = 1400, height=900;
         var nodes = {};
-        links.forEach(function(link) {
+        links.forEach(function (link) {
             link.source = nodes[link.source.id] || (nodes[link.source.id] = {info: link.source});
             link.target = nodes[link.target.id] || (nodes[link.target.id] = {info: link.target});
         });
@@ -220,8 +220,8 @@ define([
     }
 
 
-    exports.showVariableDiagram = function() {
-        Util.loadCss('src/util/diagram.css').then(function() {
+    exports.showVariableDiagram = function () {
+        Util.loadCss('src/util/diagram.css').then(function () {
             var type = 'rect'; // Use circ or rect
             var links = getLinks();
             var nodes = getNodes(links);
@@ -286,7 +286,7 @@ define([
             svg.append('defs').selectAll('marker')
                 .data(['normal'])
                 .enter().append('marker')
-                .attr('id', function(d) { return d; })
+                .attr('id', function (d) { return d; })
                 .attr('viewBox', '0 -5 10 10')
                 .attr('refX', 10)
                 .attr('refY', 0)
@@ -299,8 +299,8 @@ define([
             var path = svg.append('g').selectAll('path')
                 .data(force.links())
                 .enter().append('path')
-                .attr('class', function(d) { return 'link ' + d.type; })
-                .attr('marker-end', function(d) { return 'url(#' + d.type + ')'; });
+                .attr('class', function (d) { return 'link ' + d.type; })
+                .attr('marker-end', function (d) { return 'url(#' + d.type + ')'; });
 
             var node;
             if(type === 'circ') {

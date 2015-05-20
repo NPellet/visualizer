@@ -94,7 +94,7 @@ define([
         return $dialog;
     };
 
-    exports.copyview = function() {
+    exports.copyview = function () {
         var str = Versioning.getViewJSON('  ');
         var strlen = str.length;
         var txtarea = $('<textarea/>').text(str).css({
@@ -113,7 +113,7 @@ define([
         txtdom.focus();
     };
 
-    exports.copyData = function() {
+    exports.copyData = function () {
         var str = Versioning.getDataJSON('  ');
         var strlen = str.length;
         var txtarea = $('<textarea/>').text(str).css({
@@ -128,7 +128,7 @@ define([
         txtdom.focus();
     };
 
-    exports.pasteData = function() {
+    exports.pasteData = function () {
         var txtarea = $('<textarea></textarea>').css({
                 width: '100%',
                 height: '200px'
@@ -154,7 +154,7 @@ define([
         var div = exports.dialog(txtarea, {width: '80%'}).append(btn.render());
     };
 
-    exports.pasteView = function() {
+    exports.pasteView = function () {
         var txtarea = $('<textarea></textarea>').css({
                 width: '100%',
                 height: '200px'
@@ -180,7 +180,7 @@ define([
         var div = exports.dialog(txtarea, {width: '80%'}).append(btn.render());
     };
 
-    exports.feedback = function(options, shareOptions, dialogOptions) {
+    exports.feedback = function (options, shareOptions, dialogOptions) {
         var uniqid = Util.getNextUniqueId();
 
         var message = $('<span>').attr('id', uniqid + '-message').css('color', 'red');
@@ -228,7 +228,7 @@ define([
         exports.dialog(dialog, dialogOptions);
     };
 
-    exports.couchShare = function(options, dialogOptions) {
+    exports.couchShare = function (options, dialogOptions) {
         var uniqid = Util.getNextUniqueId();
         var dialog = $('<div>').html('<h3>Click the share button to make a snapshot of your view and generate a tiny URL</h3><br>').append(
             new Button('Share', function () {
@@ -248,14 +248,14 @@ define([
         exports.dialog(dialog, dialogOptions);
     };
 
-    exports.showNotification = function(message) {
+    exports.showNotification = function (message) {
         $notification = $('.ci-visualizer-notification');
         if($notification.length === 0) {
             $('#ci-visualizer').append('<div class="ci-visualizer-notification"></div>');
             $notification = $('.ci-visualizer-notification');
         }
         $notification.show().html(message);
-        setTimeout(function() {
+        setTimeout(function () {
             $notification.hide();
         }, 5000);
     };

@@ -45,7 +45,7 @@ define(['jquery', 'modules/module', 'src/util/debug', 'src/util/util'], function
             return allModules;
         },
 
-        traverseModules: function(moduleCallback, obj) {
+        traverseModules: function (moduleCallback, obj) {
             obj = obj || allModules;
             var i;
             if(obj.modules) {
@@ -95,8 +95,8 @@ define(['jquery', 'modules/module', 'src/util/debug', 'src/util/util'], function
             else {
                 allModules = list;
             }
-            return Promise.all(prom).then(function() {
-                that.traverseModules(function(module) {
+            return Promise.all(prom).then(function () {
+                that.traverseModules(function (module) {
                     var id;
                     if(id = Util.moduleIdFromUrl(module.url)) {
                         module.id = id;
@@ -111,7 +111,7 @@ define(['jquery', 'modules/module', 'src/util/debug', 'src/util/util'], function
             module.setId(++incrementalId);
             modules.push(module);
             definitions.push(definition);
-            module.ready.catch(function() {
+            module.ready.catch(function () {
                 Debug.error('Initialization of module failed');
             });
             return module;
@@ -131,9 +131,9 @@ define(['jquery', 'modules/module', 'src/util/debug', 'src/util/util'], function
             return definitions;
         },
 
-        getModulesById: function() {
+        getModulesById: function () {
             var modulesById = {};
-            this.traverseModules(function(mod) {
+            this.traverseModules(function (mod) {
                 modulesById[mod.id] = mod;
             });
             return modulesById;

@@ -1,9 +1,9 @@
 'use strict';
 
-define(['src/util/util', 'modules/modulefactory', 'src/main/grid','select2'], function(Util, ModuleFactory, Grid) {
-    return function() {
+define(['src/util/util', 'modules/modulefactory', 'src/main/grid','select2'], function (Util, ModuleFactory, Grid) {
+    return function () {
 
-        Util.loadCss('components/select2/dist/css/select2.css').then(function() {
+        Util.loadCss('components/select2/dist/css/select2.css').then(function () {
             var modules = ModuleFactory.getModulesById();
             var keys = Object.keys(modules);
 
@@ -42,7 +42,7 @@ define(['src/util/util', 'modules/modulefactory', 'src/main/grid','select2'], fu
                     zIndex: 5000
                 });
 
-            function outputTemplate (module) {
+            function outputTemplate(module) {
                 return module.moduleName;
             }
 
@@ -54,17 +54,17 @@ define(['src/util/util', 'modules/modulefactory', 'src/main/grid','select2'], fu
             }).select2('open');
 
             var selecting;
-            $select2.on('select2:selecting', function(e) {
+            $select2.on('select2:selecting', function (e) {
                 selecting = true;
             });
-            $select2.on('select2:select', function(e) {
+            $select2.on('select2:select', function (e) {
                 var url = e.params.data.url;
                 $select2.select2('destroy');
                 $select2.parent().remove();
                 Grid.newModule(url);
             });
 
-            $select2.on('select2:close', function(e) {
+            $select2.on('select2:close', function (e) {
                 if(!selecting) {
                     $select2.select2('destroy');
                     $select2.parent().remove();

@@ -39,17 +39,17 @@ define([
             this.checkDatabase();
         },
 
-        beforeUrl: function() {
+        beforeUrl: function () {
             var that = this;
             var url = this.options.beforeUrl;
             $.ajax({
                 type: 'GET',
                 url: url,
-                success: function() {
+                success: function () {
                     Debug.info('CouchDB: beforeUrl success');
                     that.ready = true;
                 },
-                error: function(err) {
+                error: function (err) {
                     Debug.info('CouchDB: beforeUrl error', err);
                     that.ready = true;
                 }
@@ -942,7 +942,7 @@ define([
                             // When switching flavors, if this document is also
                             // in the new flavor we select it automatically
                             var id = that.currentDocument.data.doc._id;
-                            var d = _.find(data, function(d) {
+                            var d = _.find(data, function (d) {
                                 return d.id === id;
                             });
                             if(d) {
