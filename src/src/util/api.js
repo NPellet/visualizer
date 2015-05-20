@@ -157,7 +157,7 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
             sourceVariable = null;
         }
         jpath = jpath || [];
-        var jpathNewVar = ( !sourceVariable ) ? jpath : sourceVariable.getjPath().concat(jpath);
+        var jpathNewVar = (!sourceVariable) ? jpath : sourceVariable.getjPath().concat(jpath);
 
         Variables.setVariable(name, jpathNewVar, false, filter);
     };

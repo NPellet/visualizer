@@ -183,7 +183,7 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                 height = 0;
 
 
-            navigator.getMedia = ( navigator.getUserMedia ||
+            navigator.getMedia = (navigator.getUserMedia ||
             navigator.webkitGetUserMedia ||
             navigator.mozGetUserMedia ||
             navigator.msGetUserMedia);

@@ -525,7 +525,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
                 return Promise.resolve();
             }
 
-            var elementType = jpath.length === 0 ? constructor : ( typeof jpath[0] === 'number' ? DataArray : DataObject );
+            var elementType = jpath.length === 0 ? constructor : (typeof jpath[0] === 'number' ? DataArray : DataObject);
 
             var name = el;
 
@@ -571,7 +571,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
                 return;
             }
 
-            var elementType = jpath.length === 0 ? constructor : ( typeof jpath[0] === 'number' ? DataArray : DataObject );
+            var elementType = jpath.length === 0 ? constructor : (typeof jpath[0] === 'number' ? DataArray : DataObject);
 
             var name = el;
 
@@ -776,7 +776,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
 
     var mergeWithObject = {
         value: function (objectToMerge, moduleId, noBubble) {
-            if ((typeof (objectToMerge) !== 'object') || Array.isArray(objectToMerge) || (objectToMerge == null ))
+            if ((typeof (objectToMerge) !== 'object') || Array.isArray(objectToMerge) || (objectToMerge == null))
                 return;
             merge(this, objectToMerge);
             this.triggerChange(noBubble, [moduleId]);
@@ -896,11 +896,11 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
     Object.defineProperties(DataBoolean.prototype, commonNativeProperties);
 
     function isSpecialObject(object) {
-        return ( object instanceof DataObject || object instanceof DataArray || isSpecialNativeObject(object) );
+        return (object instanceof DataObject || object instanceof DataArray || isSpecialNativeObject(object));
     }
 
     function isSpecialNativeObject(object) {
-        return ( object instanceof DataString || object instanceof DataNumber || object instanceof DataBoolean);
+        return (object instanceof DataString || object instanceof DataNumber || object instanceof DataBoolean);
     }
 
     function isTypedObject(object) {

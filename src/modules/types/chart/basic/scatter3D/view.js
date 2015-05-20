@@ -190,8 +190,8 @@ define([
 
             function getIntersectsBis(event) {
                 var vector = new THREE.Vector3(
-                    ( event.offsetX / $(self.renderer.domElement).width() ) * 2 - 1,
-                    -( event.offsetY / $(self.renderer.domElement).height() ) * 2 + 1,
+                    (event.offsetX / $(self.renderer.domElement).width()) * 2 - 1,
+                    -(event.offsetY / $(self.renderer.domElement).height()) * 2 + 1,
                     0.5
                 );
                 var projector = new THREE.Projector();

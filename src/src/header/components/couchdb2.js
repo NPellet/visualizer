@@ -203,7 +203,7 @@ define([
             }
             doc._attachments['meta.json'] = {
                 'content_type': 'application/json',
-                'data': btoa( unescape( encodeURIComponent(JSON.stringify(val))))
+                'data': btoa(unescape(encodeURIComponent(JSON.stringify(val))))
             };
             that.database.saveDoc(doc, {
                 success: function (data) {
@@ -283,7 +283,7 @@ define([
                 };
                 doc._attachments[type.toLowerCase() + '.json'] = {
                     'content_type': 'application/json',
-                    'data': btoa( unescape( encodeURIComponent(content)))
+                    'data': btoa(unescape(encodeURIComponent(content)))
                 };
                 this.database.saveDoc(doc, {
                     success: function (data) {

@@ -93,7 +93,7 @@ define(['src/util/util'], function (Util) {
         },
 
         relsForLoading: function () {
-            return this._relsForLoading || ( this._relsForLoading = [] );
+            return this._relsForLoading || (this._relsForLoading = []);
         }
     };
 

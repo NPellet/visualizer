@@ -49,7 +49,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, ui) {
                             });
 
 
-                        }) ).render());
+                        })).render());
                     });
 
                 }

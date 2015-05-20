@@ -102,7 +102,7 @@ define([
 
                 data.sort(function (a, b) {
 
-                    return (currentColSort.asc ? 1 : -1) * ( self.jpaths[jpaths[jpathId].jpath](a) > self.jpaths[jpaths[jpathId].jpath](b) ? 1 : -1 );
+                    return (currentColSort.asc ? 1 : -1) * (self.jpaths[jpaths[jpathId].jpath](a) > self.jpaths[jpaths[jpathId].jpath](b) ? 1 : -1);
                 });
 
                 self.module.model.dataTriggerChange(data);
@@ -234,7 +234,7 @@ define([
                             var dom = self.domBody.find('#' + self.module.getId() + '_' + j);
 
                             self.module.model.dataListenChange(self.module.data.get(j), function () {
-                                dom.replaceWith(( dom = $(self.buildElement(this, j, true)) ));
+                                dom.replaceWith((dom = $(self.buildElement(this, j, true))));
 
                             }, 'list');
 
@@ -381,7 +381,7 @@ define([
 
                 var index;
 
-                if (( index = this.selected.indexOf(rowId) ) > -1) {
+                if ((index = this.selected.indexOf(rowId)) > -1) {
                     this.selected.splice(index, 1);
                 }
 

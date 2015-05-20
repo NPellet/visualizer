@@ -547,7 +547,7 @@ define([
 
     function switchToLayer(layerId, noForm) {
 
-        var layer = ( !definition.layers[layerId] ) ? ( newLayer(false, layerId) ) : definition.layers[layerId];
+        var layer = (!definition.layers[layerId]) ? (newLayer(false, layerId)) : definition.layers[layerId];
 
         $.when(layer).then(function (layer2) {
 

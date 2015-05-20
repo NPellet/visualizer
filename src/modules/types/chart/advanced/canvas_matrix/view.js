@@ -448,7 +448,7 @@ define([
         },
 
         getHighContrast: function () {
-            return this.highContrast || (this.highContrast = this.module.getConfiguration('highContrast', false) );
+            return this.highContrast || (this.highContrast = this.module.getConfiguration('highContrast', false));
         },
 
         redoScale: function (min, max) {

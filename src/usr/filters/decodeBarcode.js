@@ -44,7 +44,7 @@ define(function () {
 
                         var filteredResult = [];
                         for (var i = 0; i < resultArray.length; i++) {
-                            var m = resultArray[i].match( /^([^:]*):(.*)$/ );
+                            var m = resultArray[i].match(/^([^:]*):(.*)$/);
                             if (m[1] && m[2]) {
                                 filteredResult.push({
                                     encoding: m[1],

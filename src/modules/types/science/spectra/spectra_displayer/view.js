@@ -946,7 +946,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             if (!normalize) return;
 
             if (Array.isArray(array[0])) { // Normalize from [[x1,y1],[x2,y2]]
-                if (normalize == 'max1' || normalize == 'max100' ) {
+                if (normalize == 'max1' || normalize == 'max100') {
                     var factor = 1;
                     if (normalize == 'max100') factor = 100;
                     maxValue = -Infinity;
@@ -977,7 +977,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     }
                 }
             } else { // Normalize from [x1,y1,x2,y2]
-                if (normalize == 'max1' || normalize == 'max100' ) {
+                if (normalize == 'max1' || normalize == 'max100') {
                     var factor = 1;
                     if (normalize == 'max100') factor = 100;
                     maxValue = -Infinity;

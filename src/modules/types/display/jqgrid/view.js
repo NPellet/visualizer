@@ -107,7 +107,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
                 for (; j < l; j++) {
 
-                    editable = ( jpaths[j].editable !== 'none' && jpaths[j].editable !== 'false' && jpaths[j].editable !== '' );
+                    editable = (jpaths[j].editable !== 'none' && jpaths[j].editable !== 'false' && jpaths[j].editable !== '');
                     colNames.push(jpaths[j].name);
                     colModel.push({
                         name: jpaths[j].name,

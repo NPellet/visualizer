@@ -66,7 +66,7 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function (Pou
                         continue;
                     }
 
-                    if (( i ).indexOf('_') === 0) {
+                    if ((i).indexOf('_') === 0) {
                         continue;
                     }
 

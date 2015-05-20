@@ -227,7 +227,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         var self = this,
             data = this.module.getDataFromRel('list');
 
-        this.allVariablesFor(( act == 'on' ? 'onToggleOn' : 'onToggleOff' ), 'selectedrows', function (varToSend) {
+        this.allVariablesFor((act == 'on' ? 'onToggleOn' : 'onToggleOff'), 'selectedrows', function (varToSend) {
 
             var results = new DataArray();
 

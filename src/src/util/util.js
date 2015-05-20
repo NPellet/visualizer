@@ -236,7 +236,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
             }
 
             var rule;
-            if (!( rule = getCSS(ruleName) )) {
+            if (!(rule = getCSS(ruleName))) {
 
                 if (document.styleSheets[0].addRule) {
                     document.styleSheets[0].addRule(ruleName, null, 0);
@@ -269,7 +269,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
             var access = arguments[0];
 
             for (var i = 1; i < arguments.length; i++) {
-                if (!( access = access[arguments[i]] )) {
+                if (!(access = access[arguments[i]])) {
                     return false;
                 }
             }

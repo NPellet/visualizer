@@ -221,7 +221,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs'], f
             // copy the colors as necessary to the face's vertexColors array.
             for (var i = 0; i < graphGeometry.faces.length; i++) {
                 face = graphGeometry.faces[i];
-                numberOfSides = ( face instanceof THREE.Face3 ) ? 3 : 4;
+                numberOfSides = (face instanceof THREE.Face3) ? 3 : 4;
                 for (var j = 0; j < numberOfSides; j++) {
                     vertexIndex = face[faceIndices[j]];
                     face.vertexColors[j] = graphGeometry.colors[vertexIndex];

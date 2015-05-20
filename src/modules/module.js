@@ -1048,7 +1048,7 @@ define([
                             layerName: [name],
                             moduletitle: [layer.title],
                             bgcolor: [layer.bgColor || [255, 255, 255, 0]],
-                            modulewrapper: [( layer.wrapper === true || layer.wrapper === undefined ) ? 'display' : '']
+                            modulewrapper: [(layer.wrapper === true || layer.wrapper === undefined) ? 'display' : '']
                         });
                     });
 

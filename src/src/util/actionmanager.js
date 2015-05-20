@@ -133,7 +133,7 @@ define(['require'], function (require) {
 
                         case 'setVar':
 
-                            if (!( event.data.variables )) {
+                            if (!event.data.variables) {
                                 return;
                             }
 

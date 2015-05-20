@@ -60,8 +60,8 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
                 return this._getLocal().pipe(function (data) {
                     //console.log(data);
 
-                    if (!( typeof el == 'object' )) {
-                        el = JSON.parse(el);
+                    if (typeof data !== 'object') {
+                        data = JSON.parse(data);
                     }
 
                     if (self.type == 'view') {
@@ -517,7 +517,7 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
 
             return db.getHead(this.type, this._dirUrl, branch).pipe(function (el) {
 
-                if (!( typeof el == 'object' )) {
+                if (typeof el !== 'object') {
                     el = JSON.parse(el);
                 }
 

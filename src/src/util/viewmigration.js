@@ -300,7 +300,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                     delete cols[i].defaultSortOnAsc;
                     delete cols[i].resizable;
                 }
-                var group = module.getChildSync([ 'configuration', 'groups', 'group', 0 ]);
+                var group = module.getChildSync(['configuration', 'groups', 'group', 0]);
 
                 delete group.toggle;
 
@@ -329,7 +329,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
         },
         '2.16.1-1', function (view) {
             eachModule(view, function (module) {
-                var slickCheck = module.getChildSync([ 'configuration', 'groups', 'group', 0, 'slickCheck', 0 ]);
+                var slickCheck = module.getChildSync(['configuration', 'groups', 'group', 0, 'slickCheck', 0]);
                 if (slickCheck instanceof Array) {
                     checkboxAdd(slickCheck, 'highlightScroll');
                 }

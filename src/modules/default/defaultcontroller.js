@@ -57,13 +57,13 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
 
             var varsOut, i = 0, first = true;
 
-            if (!( varsOut = this.module.vars_out() )) {
+            if (!(varsOut = this.module.vars_out())) {
                 return;
             }
 
             for (; i < varsOut.length; i++) {
 
-                if (varsOut[i].event == event && ( varsOut[i].rel == rel || !rel ) && varsOut[i].name) {
+                if (varsOut[i].event == event && (varsOut[i].rel == rel || !rel) && varsOut[i].name) {
 
                     if (first && callback) {
                         first = false;
@@ -86,13 +86,13 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
 
             var varsOut, i = 0, first = true;
 
-            if (!( varsOut = this.module.vars_out() )) {
+            if (!(varsOut = this.module.vars_out())) {
                 return;
             }
 
             for (; i < varsOut.length; i++) {
 
-                if (varsOut[i].event == event && ( varsOut[i].rel == rel || !rel ) && varsOut[i].name) {
+                if (varsOut[i].event == event && (varsOut[i].rel == rel || !rel) && varsOut[i].name) {
 
                     if (first && callback) {
                         first = false;
@@ -125,8 +125,8 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
 
                     if (value && jpath) {
 
-                        if ( ! value.getChild ) {
-                            value = DataObject.check( value, true );
+                        if (!value.getChild) {
+                            value = DataObject.check(value, true);
                         }
                         (function (actionname) {
 
@@ -150,13 +150,13 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
 
             var varsOut, i = 0;
 
-            if (!( varsOut = this.module.vars_out() )) {
+            if (!(varsOut = this.module.vars_out())) {
                 return;
             }
 
             for (; i < varsOut.length; i++) {
 
-                if (varsOut[i].event == event && ( varsOut[i].rel == rel || !rel )) {
+                if (varsOut[i].event == event && (varsOut[i].rel == rel || !rel)) {
 
                     callback(varsOut[i]);
                 }

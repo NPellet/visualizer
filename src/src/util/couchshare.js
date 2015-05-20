@@ -14,8 +14,8 @@ define(['src/util/versioning', 'lib/couchdb/jquery.couch'], function (Versioning
 
         // https://developer.mozilla.org/en-US/docs/Web/API/WindowBase64/Base64_encoding_and_decoding#The_.22Unicode_Problem.22
 
-        var encodedView = btoa( unescape( encodeURIComponent(JSON.stringify(view))));
-        var encodedData = btoa( unescape( encodeURIComponent(Versioning.getDataJSON())));
+        var encodedView = btoa(unescape(encodeURIComponent(JSON.stringify(view))));
+        var encodedData = btoa(unescape(encodeURIComponent(Versioning.getDataJSON())));
 
         var docid = guid();
 

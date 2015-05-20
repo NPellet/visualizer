@@ -147,7 +147,7 @@ define([
                         Ok: function () {
                             $(this).dialog('close');
                             if ($('#skip-warning-checkbox').is(':checked')) {
-                                $.cookie('visualizer-skip-feature-warning', true, { path: '/'});
+                                $.cookie('visualizer-skip-feature-warning', true, {path: '/'});
                             }
                             resolve();
                         }

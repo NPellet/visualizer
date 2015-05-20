@@ -54,7 +54,7 @@ define(['modules/default/defaultview'], function (Default) {
                 require(['forms/button'], function (Button) {
                     self.system.append((self.buttonInst = new Button(self.cfg('buttonlabel'), function () {
                         self.module.controller.doAnalysis();
-                    }) ).render());
+                    })).render());
                 });
             }
 
