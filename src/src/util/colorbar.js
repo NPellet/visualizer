@@ -3,6 +3,15 @@ define(['d3', 'src/util/util'], function(d3, Util) {
 
     Util.loadCss('src/util/colorbar.css');
 
+    exports.getColorScale = function(options) {
+        var domMin = d3.min(options.domain);
+        var domMax = d3.max(options.domain);
+        var domain = options.stopPositions.map(function(v) {
+            return domMin + v * (domMax - domMin);
+        });
+        return d3.scale.linear().domain(domain).range(options.stops);
+    };
+
     exports.getSvg = function(options) {
         var el = document.createElement('div');
         return exports.renderSvg(el, options);
