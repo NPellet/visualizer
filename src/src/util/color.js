@@ -19,6 +19,15 @@ define(function () {
     };
 
     exports.rgb2hex = function rgb2hex(r, g, b) {
+        if(arguments.length === 1) {
+            var x = r.match(/rgba?\(([^\(]*)\)/, 'i');
+            if(!x) return null;
+            var rgb = x[1].split(',');
+            console.log(rgb);
+            if(rgb.length >= 3) {
+                r =+rgb[0]; g=+rgb[1]; b=+rgb[2];
+            }
+        }
         return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     };
 
