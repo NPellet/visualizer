@@ -6,13 +6,15 @@ define([
     'src/util/datatraversing',
     'src/util/api',
     'src/util/util',
+    'src/util/color',
+    'src/util/colorbar',
     'lodash',
     'threejs',
     'src/util/debug',
     'chroma',
     'components/ml/dist/ml.min',
     'lib/threejs/TrackballControls'
-], function (Default, Data, Traversing, API, Util, _, THREE, Debug, chroma, ml) {
+], function (Default, Data, Traversing, API, Util, colorUtil, colorbar, _, THREE, Debug, chroma, ml) {
 
     var Stat = ml.Stat;
 
@@ -116,10 +118,8 @@ define([
     var ZOOM_START = 3;
     var DEFAULT_BACKGROUND_COLOR = '#eeeeee';
     var DEFAULT_PROJECTION_COLOR = '#888888';
-    var DEFAULT_POINT_COLOR = '#000000';
+    var DEFAULT_POINT_COLOR = 'lightblue';
     var DEFAULT_POINT_RADIUS = 0.03;
-    var DEFAULT_POINT_GEOMETRY = 'sphere';
-    var DEFAULT_POINT_APPEARANCE = 'none';
     var DEFAULT_POINT_SHAPE = 'sphere';
     var DEFAULT_TEXT_COLOR = 'rgba(0,0,0,1)';
     var HIGHLIGHT_OPACITY = 0.6;
@@ -287,7 +287,7 @@ define([
 
                 var info = data.info[pointedObjects[0]];
                 var label = info.getChildSync(jpath);
-                var $tooltip = $('#scatter3D_tooltip');
+                var $tooltip = self.$tooltip;
                 $tooltip.css('left', lastMouseMoveEvent.offsetX - TOOLTIP_WIDTH);
                 $tooltip.css('top', lastMouseMoveEvent.offsetY);
                 $tooltip.css('width', TOOLTIP_WIDTH);
@@ -296,7 +296,7 @@ define([
             }
 
             function hideTooltip() {
-                $('#scatter3D_tooltip').hide();
+                self.$tooltip.hide();
             }
 
             function showProjection() {
@@ -393,8 +393,12 @@ define([
                 container.innerHTML = '';
                 container.appendChild(self.renderer.domElement);
 
-                $(self.dom).append('<div id="scatter3D_tooltip" style="z-index: 10000; position:absolute; top: 20px; width:' + TOOLTIP_WIDTH + 100 + 'px; height: auto; background-color: #f9edbe;"> </div>');
-                $('#scatter3D_tooltip').hide();
+                self.$tooltip = $('<div style="z-index: 10000; position:absolute; top: 20px; width:' + (TOOLTIP_WIDTH + 100) + 'px; height: auto; background-color: #f9edbe;"> </div>');
+                $(self.dom).append(self.$tooltip);
+
+                self.$colorbar = $('<div>');
+                $(self.dom).append(self.$colorbar);
+                self.$tooltip.hide();
 
                 $(self.dom).append('<div id="legend" style="z-index: 10000; right:10px ;position:absolute; top: 25px; height: auto; background-color: #ffffff;"> </div>');
                 var $legend = $('#legend');
@@ -606,17 +610,49 @@ define([
             });
 
             // color normalization
-            if (_.all(self._data.color, _.isNumber)) {
-                var colorMin = Stat.array.min(self._data.color);
-                var colorMax = Stat.array.max(self._data.color);
-                var colorInt = colorMax - colorMin;
-                self._data.color = _.map(self._data.color, function (c) {
-                    var hue = colorInt === 0 ? 180 : 360 * (c - colorMin) / colorInt;
-                    var color = chroma('hsl(' + hue + ', 65%, 65%)');
-                    return color.hex();
-                });
-            }
+            //if (_.all(self._data.color, _.isNumber)) {
+            //    var colorMin = Stat.array.min(self._data.color);
+            //    var colorMax = Stat.array.max(self._data.color);
+            //    var colorInt = colorMax - colorMin;
+            //    self._data.color = _.map(self._data.color, function (c) {
+            //        var hue = colorInt === 0 ? 180 : 360 * (c - colorMin) / colorInt;
+            //        var color = chroma('hsl(' + hue + ', 65%, 65%)');
+            //        return color.hex();
+            //    });
+            //}
 
+        },
+
+        _processColors: function() {
+            this.colorDomain = _.filter(this._data.color, function(v){
+                return !isNaN(v)
+            });
+            this.colorDomain = [Math.min.apply(null, this.colorDomain), Math.max.apply(null, this.colorDomain)];
+            var gradient = this.module.getConfiguration('gradient');
+            gradient = _.filter(gradient, function(v) { return v.stopPosition !== undefined});
+            this.stopPositions = _.pluck(gradient, 'stopPosition');
+            this.stopColors = _(gradient).pluck('color').map(colorUtil.getColor).map(function(v) {
+                return colorUtil.rgb2hex(v);
+            }).value();
+            console.log(this.stopColors);
+            this.numberToColor = colorbar.getColorScale({
+                stops: this.stopColors,
+                stopPositions: this.stopPositions,
+                domain: this.colorDomain
+            });
+            for(var i=0; i<this._data.color.length; i++) {
+                if(!isNaN(this._data.color[i])) {
+                    this._data.color[i] = this.numberToColor(this._data.color[i]);
+                    if(Number.isNaN(this._data.color[i])) {
+                        this._data.color[i] = DEFAULT_POINT_COLOR;
+                        continue;
+                    }
+                    var r = this._data.color[i].match(/rgba?\(([^\)]*)\)/, 'i');
+                    if(r) {
+                        this._data.color[i] = colorUtil.getColor(r[1].split(','));
+                    }
+                }
+            }
         },
 
         _computeMinMax: function () {
@@ -819,6 +855,26 @@ define([
             mesh.applyMatrix(m2);
             this.scene.add(mesh);
             return mesh;
+        },
+
+        _drawColorBar: function() {
+            this.$colorbar.empty();
+            this.$colorbar.css({
+                position: 'absolute',
+                top: 0
+            });
+            colorbar.renderSvg(this.$colorbar[0], {
+                width: 20,
+                height: 200,
+                axis: {
+                    orientation: 'left',
+                    ticks: 5,
+                    order: 'asc'
+                },
+                stops: this.stopColors,
+                stopPositions: this.stopPositions,
+                domain: this.colorDomain
+            });
         },
 
         _drawLine: function (p1, p2, options) {
@@ -1191,7 +1247,7 @@ define([
                 color: 0xffffff,
                 side: THREE.DoubleSide,
                 transparent: true,
-                opacity: 0.6
+                opacity: HIGHLIGHT_OPACITY
             });
             var mesh1 = new THREE.Mesh(geometry1, material);
             var mesh2 = new THREE.Mesh(geometry2, material);
@@ -1205,7 +1261,6 @@ define([
             // Face 1
             m1 = new THREE.Matrix4();
             m2 = new THREE.Matrix4();
-            m3 = new THREE.Matrix4();
             m1.makeTranslation(NORM_CONSTANT / 2, NORM_CONSTANT / 2, self.gorigin.z);
             m2.makeTranslation(0, 0, NORM_CONSTANT / 2);
             mesh1.applyMatrix(m1);
@@ -1220,7 +1275,6 @@ define([
             m1.makeRotationY(Math.PI / 2);
             m2.makeTranslation(-NORM_CONSTANT / 2, NORM_CONSTANT / 2, self.gorigin.x);
             m2.multiplyMatrices(m1, m2);
-            // m3.makeTranslation(0, 0, self._data.len.x);
             m3.makeTranslation(0, 0, NORM_CONSTANT);
             mesh2.applyMatrix(m2);
             m3.multiplyMatrices(m2, m3);
@@ -1234,7 +1288,6 @@ define([
             m2.makeTranslation(NORM_CONSTANT / 2, NORM_CONSTANT / 2, -self.gorigin.y);
             m2.multiplyMatrices(m1, m2);
             mesh3.applyMatrix(m2);
-            // m3.makeTranslation(0, 0, -self._data.len.y);
             m3.makeTranslation(0, 0, -NORM_CONSTANT);
             m3.multiplyMatrices(m2, m3);
             mesh6.applyMatrix(m3);
@@ -1405,6 +1458,7 @@ define([
                 }
                 if (self._data) {
                     self._drawGraph();
+                    self._drawColorBar();
                 }
             });
         },
@@ -1512,7 +1566,6 @@ define([
             }
             object.material.attributes.size.needsUpdate = true;
             object.material.attributes.ca.needsUpdate = true;
-            //self.renderer.render(self.scene, self.camera);
         },
 
         _prepareHighlights: function (hl) {
@@ -1558,6 +1611,7 @@ define([
                 this._computeTickInfo();
                 this._computeInBoundaryIndexes();
                 this._normalizeData();
+                this._processColors();
                 this._setGridOrigin();
 
 
@@ -1584,6 +1638,7 @@ define([
                 this._computeTickInfo();
                 this._computeInBoundaryIndexes();
                 this._normalizeData();
+                this._processColors();
                 this._setGridOrigin();
 
                 if (!this._firstLoad) this._activateHighlights();
@@ -1689,15 +1744,6 @@ define([
             self._data._highlight = _.pluck(value, '_highlight');
             if (!_.any(self._data._highlight)) self._data._highlight = [];
             self._dispFilter = self._dispFilter || [];
-
-            // generate random x,y z
-            // var n = 1000;
-            // self._data.x =       generateRandomArray(n,0,5);
-            // self._data.y =       generateRandomArray(n,0,5);
-            // self._data.z =       generateRandomArray(n,0,5);
-            // self._data.size =    generateRandomArray(n, 0.01, 0.02);
-            // self._data.color =  generateRandomColors(n);
-            // self._data._highlight = generateRandomFromArray(['A','B','C','D'], n);
         },
 
         _convertChartToData: function (value) {

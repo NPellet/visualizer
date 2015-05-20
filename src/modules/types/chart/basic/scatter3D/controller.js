@@ -298,6 +298,24 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                             insertValue: Util.jpathToString
                         }
                     }
+                },
+                colorBar: {
+                    options: {
+                        type: 'table',
+                        multiple: true,
+                        title: 'Color gradient (colors must be numbers)'
+                    },
+                    fields: {
+                        color: {
+                            type: 'spectrum',
+                            title: 'Stop color'
+                        },
+                        stopPosition: {
+                            type: 'float',
+                            title: 'Stop position',
+                            default: 0
+                        }
+                    }
                 }
             }
         };
@@ -326,7 +344,8 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         gridOriginZ: ['groups', 'group', 0, 'gridOriginZ', 0],
         sizeNormalization: ['groups', 'group', 0, 'sizeNormalization', 0],
         optimize: ['groups', 'group', 0, 'optimize', 0],
-        dataJpaths: ['groups', 'dataJpaths', 0, 0]
+        dataJpaths: ['groups', 'dataJpaths', 0, 0],
+        gradient: ['groups', 'colorBar', 0]
     };
 
     return Controller;
