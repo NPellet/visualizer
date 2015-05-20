@@ -9,7 +9,7 @@ requirejs.config({
     }
 });
 
-define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/util', 'd3', 'src/util/colorbar', 'd3-plugins/hexbin/hexbin'], function (Default, _, Debug, Util, d3, colorbar) {
+define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/util', 'd3', 'src/util/color', 'src/util/colorbar', 'd3-plugins/hexbin/hexbin'], function (Default, _, Debug, Util, d3, colorUtil, colorbar) {
     var DEFAULT_COLOR = 'lightblue';
 
 
@@ -18,8 +18,6 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
 
     View.prototype = $.extend(true, {}, Default, {
         init: function () {
-            console.log('init');
-
         },
         inDom: function () {
             this.id = Util.getNextUniqueId();
@@ -53,9 +51,14 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                         this.data = data;
                         break;
                 }
+                // Extract data from chart object
                 this._chartData();
+                // Ignore invalid data
                 this._ignored();
+                // Normalize data (positive values)
                 this._normalize();
+                // Convert numbers to colors and use default when needed
+                this._processColors();
                 this.draw();
             }
         },
@@ -97,9 +100,34 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             _.pullAt(this.cubicData, ignored);
             _.pullAt(this.originalData, ignored);
             _.pullAt(this.label, ignored);
+        },
 
+        _processColors: function() {
+            this.colorDomain = _.filter(this.color, function(v){
+                return !isNaN(v)
+            });
+            this.colorDomain = [Math.min.apply(null, this.colorDomain), Math.max.apply(null, this.colorDomain)];
+            var gradient = this.module.getConfiguration('gradient');
+            gradient = _.filter(gradient, function(v) { return v.stopPosition !== undefined});
+            this.stopPositions = _.pluck(gradient, 'stopPosition');
+            this.stopColors = _(gradient).pluck('color').map(colorUtil.getColor).value();
+            this.numberToColor = colorbar.getColorScale({
+                stops: this.stopColors,
+                stopPositions: this.stopPositions,
+                domain: this.colorDomain
+            });
+            for(var i=0; i<this.color.length; i++) {
+                if(!isNaN(this.color[i])) {
+                    this.color[i] = this.numberToColor(this.color[i]);
+                    var r = this.color[i].match(/rgba?\(([^\)]*)\)/, 'i');
+                    if(r) {
+                        this.color[i] = colorUtil.getColor(r[1].split(','));
+                    }
+                }
+
+            }
             this.color = this.color.map(function(val) {
-                return val || DEFAULT_COLOR;
+                return val === undefined ?  DEFAULT_COLOR : val;
             });
         },
 
@@ -165,9 +193,9 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                     ticks: 5,
                     order: 'asc'
                 },
-                stops: ['#6e7c5a', '#a03333', '#d8b8b3'],
-                stopPositions: [0, 0.2, 1],
-                domain: [0.11,0.4]
+                stops: this.stopColors,
+                stopPositions: this.stopPositions,
+                domain: this.colorDomain
             });
 
             svgMarkup = '<g transform="translate(' + colorbarx + ',' + colorbary + ')">' + svgMarkup + '</g>';
@@ -394,6 +422,12 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         }
 
         return multArray([-1, 1, 0], arr[maxIdx] - arr[middleIdx]);
+    }
+
+    function allNumeric(arr) {
+        return !_.any(arr,function(v) {
+            return isNaN(v) && v !== undefined;
+        })
     }
 
     return View;

@@ -56,6 +56,29 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                         originZ: {
                             type: 'float',
                             title: 'Origin Z'
+                        },
+                        showColorBar: {
+                            type: 'checkbox',
+                            title: 'Color bar',
+                            options: { show: 'Show'},
+                            default: []
+                        }
+                    }
+                },
+                colorBar: {
+                    options: {
+                        type: 'table',
+                        multiple: true,
+                        title: 'Color gradient (colors must be numbers)'
+                    },
+                    fields: {
+                        color: {
+                            type: 'spectrum',
+                            title: 'Stop color'
+                        },
+                        stopPosition: {
+                            type: 'float',
+                            title: 'Stop position'
                         }
                     }
                 }
@@ -67,7 +90,8 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         coordinateSystem: ['groups', 'group', 0, 'coordinateSystem', 0],
         originX: ['groups', 'group', 0, 'originX', 0],
         originY: ['groups', 'group', 0, 'originY', 0],
-        originZ: ['groups', 'group', 0, 'originZ', 0]
+        originZ: ['groups', 'group', 0, 'originZ', 0],
+        gradient: ['groups', 'colorBar', 0]
     };
 
     return Controller;
