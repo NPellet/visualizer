@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], function (Default, Util, _) {
+define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/util/api'], function (Default, Util, _, API) {
 
     function Controller() {
     }
@@ -151,6 +151,23 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
                             title: 'Group Name'
                         }
                     }
+                },
+                actionOutButtons: {
+                    options: {
+                        type: 'table',
+                        multiple: true,
+                        title: 'Action out buttons'
+                    },
+                    fields: {
+                        actionName: {
+                            type: 'text',
+                            title: 'Action name'
+                        },
+                        buttonTitle: {
+                            type: 'text',
+                            title: 'Button title'
+                        }
+                    }
                 }
             }
         };
@@ -163,7 +180,8 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
         'slick.selectionModel': ['groups', 'group', 0, 'slick.selectionModel', 0],
         'slick.defaultColumnWidth': ['groups', 'group', 0, 'slick.defaultColumnWidth', 0],
         'cols': ['groups', 'cols', 0],
-        'groupings': ['groups', 'groupings', 0]
+        'groupings': ['groups', 'groupings', 0],
+        'actionOutButtons': ['groups', 'actionOutButtons', 0]
     };
 
     Controller.prototype.references = {
@@ -264,6 +282,10 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash'], functio
 
     Controller.prototype.export = function () {
         return this.module.view.exportToTabDelimited();
+    };
+
+    Controller.prototype.sendActionButton = function(name, items) {
+        API.doAction(name, items);
     };
 
     return Controller;

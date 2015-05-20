@@ -91,6 +91,12 @@ define([
                 this.module.getDomContent().append(this.$container);
             }
 
+            this.actionOutButtons = this.module.getConfiguration('actionOutButtons');
+            this.actionOutButtons = this.actionOutButtons || [];
+            this.actionOutButtons = _.filter(this.actionOutButtons, function(v) {
+                return v.actionName && v.buttonTitle;
+            });
+
             this.$container.on('mouseleave', function () {
                 that.module.controller.lastHoveredItemId = null;
             });
@@ -305,8 +311,14 @@ define([
                     .then(function () {
                         that.$addButton = $('<input type="button" value="Add"/>');
                         that.$addButton.on('click', function() {
-                            that.preventRowHelp();
-                            that.grid.gotoCell(100, 0, true);
+                            var cols = that.grid.getColumns();
+                            var idx = _.findIndex(cols, function(v) {
+                                return v.editor;
+                            })
+                            if(idx > -1) {
+                                that.preventRowHelp();
+                                that.grid.gotoCell(100, idx, true);
+                            }
                         });
 
                         that.$deleteButton = $('<input type="button" value="Delete"/>');
@@ -316,6 +328,18 @@ define([
                         that.$rowToolbar = $('<div>').attr('class', 'rowToolbar')
                             .append(that.$addButton)
                             .append(that.$deleteButton);
+
+                        that.$actionButtons = new Array(that.actionOutButtons.length);
+                        for(var i=0; i<that.actionOutButtons.length; i++) {
+                            (function(i){
+                                that.$actionButtons[i] = $('<input type="button" value="' + that.actionOutButtons[i].buttonTitle + '"/>');
+                                that.$actionButtons[i].on('click', function() {
+                                    that.module.controller.sendActionButton(that.actionOutButtons[i].actionName, that._getSelectedItems());
+                                })
+                            })(i);
+                        }
+
+                        that.$rowToolbar.append(that.$actionButtons);
 
                         that.$slickgrid = $('<div>').css({
                             flex: 1
@@ -505,12 +529,8 @@ define([
 
                         that.grid.onSelectedRowsChanged.subscribe(function (e, args) {
                             that.lastSelectedRows = args.rows;
-                            var selected = [];
-                            for (var i = 0; i < args.rows.length; i++) {
-                                var itemInfo = that._getItemInfoFromRow(args.rows[i]);
-                                selected.push(itemInfo.item);
-                            }
-                            that.module.controller.onRowsSelected(selected);
+                            var selectedItems = that._getItems(args.rows);
+                            that.module.controller.onRowsSelected(selectedItems);
                         });
 
                         that.grid.onSort.subscribe(function (e, args) {
@@ -849,6 +869,20 @@ define([
                 this.module.data[i] = DataObject.check(this.module.data[i]);
             }
             this.dataObjectsDone = true;
+        },
+
+        _getItems: function(rows) {
+            var selected = []
+            for (var i = 0; i < rows.length; i++) {
+                var itemInfo = this._getItemInfoFromRow(rows[i]);
+                if(itemInfo)
+                    selected.push(itemInfo.item);
+            }
+            return selected;
+        },
+
+        _getSelectedItems: function() {
+            return this._getItems(this.grid.getSelectedRows());
         },
 
         onResize: function () {
