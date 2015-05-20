@@ -157,8 +157,7 @@ define([
                 if (x.length === 0) {
                     x = that.newImageDom(varname);
                     $img = x.find('img');
-                }
-                else {
+                } else {
                     var $previousImg = x.find('img');
                     $img = $('<img/>');
                     x.find('.panzoom').append($img);
@@ -377,8 +376,7 @@ define([
                         //factor = computeFactor(this.imgWidth[i], this.dom.width());
                         domimg.width = this.dom.width() * factor;
                         domimg.height = this.images[i].height / this.images[i].width * this.dom.width() * factor;
-                    }
-                    else {
+                    } else {
                         //factor = computeFactor(this.imgHeight[i], this.dom.height());
                         domimg.height = this.dom.height() * factor;
                         domimg.width = this.images[i].width / this.images[i].height * this.dom.height() * factor;

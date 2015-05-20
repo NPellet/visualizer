@@ -57,8 +57,7 @@ define([
                 this.initTree().then(function () {
                     that.createButtons();
                 });
-            }
-            else {
+            } else {
                 this.close();
             }
         },
@@ -107,20 +106,18 @@ define([
             if (this.activeNode) {
                 dir = this.getDir(this.activeNode.data.path);
                 name = this.activeNode.title;
-            }
-            else if (this.viewURL) {
+            } else if (this.viewURL) {
                 dir = this.getDir(this.viewURL);
                 dir = dir.replace(/^\/views/, '.');
                 var idx = this.viewURL.lastIndexOf('/');
                 if (idx > -1) {
                     name = this.viewURL.slice(idx + 1);
-                }
-                else {
+                } else {
                     name = this.viewURL;
                 }
+            } else {
+                return;
             }
-            else return;
-
 
             confirm('You are about to save the current view to: ' + dir + name + '<br/>This operation will erase the previous content of this file and cannot be undone.').then(function (ok) {
                 if (!ok) return;

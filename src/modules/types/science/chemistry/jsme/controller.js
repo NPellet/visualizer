@@ -135,8 +135,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
             if (this.module.view._currentValue.type === 'mol2d') {
                 this.module.view._currentValue.setValue(mol, true);
-            }
-            else if (this.module.view._currentValue.type === 'jme') {
+            } else if (this.module.view._currentValue.type === 'jme') {
                 this.module.view._currentValue.setValue(jme, true);
             }
             this.module.model.dataTriggerChange(this.module.view._currentValue);

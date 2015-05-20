@@ -169,8 +169,7 @@ define(['jquery'], function ($) {
                     req2.onsuccess = function (e) {
                         def.resolve(obj);
                     };
-                }
-                else {
+                } else {
 
                     self.create(type, key, branch).done(function () {
                         self.storeToHead(type, key, branch, obj).done(function () {

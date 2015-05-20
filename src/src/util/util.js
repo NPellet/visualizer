@@ -188,8 +188,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
                 var val2 = val.split('.');
                 val2.shift();
                 return val2;
-            }
-            else {
+            } else {
                 return [];
             }
         },

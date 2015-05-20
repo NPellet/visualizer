@@ -62,8 +62,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
             for (var i = 0, ii = tree.children.length; i < ii; i++) {
                 treeToArray(arr, tree.children[i]);
             }
-        }
-        else if (tree.data) {
+        } else if (tree.data) {
             arr.push(tree.data);
         }
     }

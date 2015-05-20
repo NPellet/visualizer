@@ -56,8 +56,7 @@ define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'vers
                         uri['add' + urlType]('results', value.data.urls);
                         if (value.data.branch)
                             uri['add' + urlType]('dataBranch', value.data.branch);
-                    }
-                    else if (value.data.url) {
+                    } else if (value.data.url) {
                         uri['add' + urlType]('dataURL', value.data.url);
                     }
                 }
@@ -67,8 +66,7 @@ define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'vers
                         uri['add' + urlType]('views', value.view.urls);
                         if (value.view.branch)
                             uri['add' + urlType]('viewBranch', value.view.branch);
-                    }
-                    else if (value.view.url) {
+                    } else if (value.view.url) {
                         uri['add' + urlType]('viewURL', value.view.url);
                     }
                 }

@@ -285,8 +285,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
 
                     return this.get(true).then(processVal);
 
-                }
-                else {
+                } else {
                     var val = this.get(); // Current value
 
 
@@ -297,8 +296,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
                             val[prop] = DataObject.check(val[prop], true);
                         }
                         return val[prop];
-                    }
-                    else if (constructor) {
+                    } else if (constructor) {
                         val[prop] = new constructor();
                         return val[prop];
                     }
@@ -765,8 +763,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
             if (typeof el === 'object') {
                 if (Array.isArray(el)) {
                     to.set(i, el, true);
-                }
-                else if (el !== null) {
+                } else if (el !== null) {
                     if (!to.get(i))
                         to.set(i, new DataObject(), true);
                     merge(to.get(i), el);

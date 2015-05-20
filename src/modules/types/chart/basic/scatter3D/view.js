@@ -78,11 +78,9 @@ define([
     function arrayToRgba(arr) {
         if (arr.length === 3) {
             return 'rgba(' + arr[0] + ',' + arr[1] + ',' + arr[2] + ',1)';
-        }
-        else if (arr.length === 4) {
+        } else if (arr.length === 4) {
             return 'rgba(' + arr[0] + ',' + arr[1] + ',' + arr[2] + ',' + arr[3] + ')';
-        }
-        else {
+        } else {
             return 'rgba(0,0,0,1)';
         }
 
@@ -93,8 +91,7 @@ define([
         var m = shorthandRegex.exec(rgbString);
         if (m) {
             return rgbToHex(m[1], m[2], m[3]);
-        }
-        else {
+        } else {
             console.error('rgb string to hex conversion failed', rgbString);
             return '#ffffff';
         }
@@ -256,15 +253,13 @@ define([
                         API.highlightId(self._data._highlight[currentPoint], 0);
                         API.highlightId(self._data._highlight[newPoint], 1);
                         showPointCoordinates(index);
-                    }
-                    else if (pointChanged) {
+                    } else if (pointChanged) {
                         // highlight newPoint
                         API.highlightId(self._data._highlight[newPoint], 1);
                         showPointCoordinates(index);
                     }
                     currentPoint = newPoint;
-                }
-                else {
+                } else {
                     if (currentPoint !== null) {
                         // unhighlight currentPoint
                         API.highlightId(self._data._highlight[currentPoint], 0);
@@ -369,8 +364,7 @@ define([
                 self.camera = self.camera || new THREE.PerspectiveCamera(60, self.dom.width() / self.dom.height(), CAMERA_NEAR, CAMERA_FAR);
                 if (self.controls) {
                     // self.controls.reset();
-                }
-                else {
+                } else {
                     self.controls = new THREE.TrackballControls(self.camera, self.dom.get(0));
 
                     self.controls.rotateSpeed = 1.0;
@@ -728,8 +722,7 @@ define([
             var intdec = Math.floor(Math.log(unitPerTickCorrect) / Math.log(10));
             if (Math.abs(intdec) <= 1) {
                 self._data.intervalFactor[axis] = 1;
-            }
-            else {
+            } else {
                 self._data.intervalFactor[axis] = Math.pow(10, intdec);
             }
 
@@ -1155,11 +1148,9 @@ define([
                 for (var i = 0; i < num.length; i++) {
                     if (num[i] === '2' || num[i] === '3') {
                         result += String.fromCharCode(176 + parseInt(num[i]));
-                    }
-                    else if (num[i] >= '0' && num[i] < '9') {
+                    } else if (num[i] >= '0' && num[i] < '9') {
                         result += String.fromCharCode(8304 + parseInt(num[i]));
-                    }
-                    else if (num[i] === '-') {
+                    } else if (num[i] === '-') {
                         result += String.fromCharCode(8315);
                     }
                 }
@@ -1274,15 +1265,13 @@ define([
                     return false;
 
                 return true;
-            }
-            else if (_.isArray(point)) {
+            } else if (_.isArray(point)) {
                 return self._inBoundary({
                     x: point[0],
                     y: point[1],
                     z: point[2]
                 });
-            }
-            else {
+            } else {
                 return false;
             }
         },
@@ -1332,8 +1321,7 @@ define([
                 for (var i = 0; i < self._dispFilter.length; i++) {
                     filter[i] = self._dispFilter[i] && filter[i];
                 }
-            }
-            else {
+            } else {
                 filter = self._data.inBoundary;
             }
 
@@ -1398,8 +1386,7 @@ define([
                     self._activateHighlights();
                     self._zoomToFit();
                     self._firstLoad = false;
-                }
-                else {
+                } else {
                     self.camera.aspect = self.dom.width() / self.dom.height();
                     self.camera.updateProjectionMatrix();
                     self.renderer.setSize(self.dom.width(), self.dom.height());
@@ -1460,8 +1447,7 @@ define([
                     vertex.z = self._data.normalizedData.z[indexes[i]];
                     geometry.vertices.push(vertex);
                 }
-            }
-            else {
+            } else {
                 for (var i = 0; i < self._data.normalizedData.x.length; i++) {
                     var vertex = new THREE.Vector3();
                     vertex.x = self._data.normalizedData.x[i];
@@ -1498,8 +1484,7 @@ define([
                 for (var i = 0; i < self._dispFilter.length; i++) {
                     filter[i] = self._dispFilter[i] && filter[i];
                 }
-            }
-            else {
+            } else {
                 filter = self._data.inBoundary;
             }
             if (indexes) {
@@ -1509,21 +1494,18 @@ define([
                         : -1;
                     if (forcedColor) {
                         values_color[v] = forcedColor;
-                    }
-                    else if (updateColor) {
+                    } else if (updateColor) {
                         values_color[v] = new THREE.Color(color[indexes[v]] || DEFAULT_POINT_COLOR);
                     }
                 }
-            }
-            else {
+            } else {
                 for (var v = 0; v < vertices.length; v++) {
                     values_size[v] = filter[v]
                         ? (size[v] || DEFAULT_POINT_RADIUS) * factor
                         : 0;
                     if (forcedColor) {
                         values_color[v] = forcedColor;
-                    }
-                    else if (updateColor) {
+                    } else if (updateColor) {
                         values_color[v] = new THREE.Color(color[v] || DEFAULT_POINT_COLOR);
                     }
                 }
@@ -1584,8 +1566,7 @@ define([
                 // data are ready to be ploted
                 if (this.loadedData.state() === 'pending') {
                     this.loadedData.resolve();
-                }
-                else {
+                } else {
                     this._drawGraph();
                 }
             },
@@ -1611,8 +1592,7 @@ define([
                 // data are ready to be ploted
                 if (this.loadedData.state() === 'pending') {
                     this.loadedData.resolve();
-                }
-                else {
+                } else {
                     this._drawGraph();
                 }
             },
@@ -1736,8 +1716,7 @@ define([
                         self._data[key].push(value.data[j][key]);
                         self._data[key] = _.flatten(self._data[key], true);
 
-                    }
-                    else {
+                    } else {
                         self._data[key] = value.data[j][key];
                     }
                     _.filter(self._data[key], function (val) {
@@ -1787,8 +1766,7 @@ define([
                     API.listenHighlight({_highlight: hlset[k]}, function (onOff, key) {
                         if (onOff) {
                             drawHighlightBis(key);
-                        }
-                        else {
+                        } else {
                             undrawHighlightBis(key);
                         }
                     });
@@ -1812,8 +1790,7 @@ define([
                     if (self._highlightParticleObjects[shape][hl]) {
                         if (self._highlightParticleObjects[shape][hl].drawn === true) {
                             return;
-                        }
-                        else {
+                        } else {
                             self.scene.add(self._highlightParticleObjects[shape][hl]);
                             self._highlightParticleObjects[shape][hl].drawn = true;
                             self._updateParticleObject(self._highlightParticleObjects[shape][hl], {

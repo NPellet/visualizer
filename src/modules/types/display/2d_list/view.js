@@ -31,11 +31,9 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
                 if (e.type === 'mouseenter') {
                     self.module.controller.setVarFromEvent('onHover', 'cell', 'list', [elementId]);
                     API.highlight(value, 1);
-                }
-                else if (e.type === 'mouseleave') {
+                } else if (e.type === 'mouseleave') {
                     API.highlight(value, 0);
-                }
-                else if (e.type === 'click') {
+                } else if (e.type === 'click') {
                     self.module.controller.setVarFromEvent('onClick', 'cell', 'list', [elementId]);
                     self.module.controller.sendActionFromEvent('onClick', 'cell', value);
                 }

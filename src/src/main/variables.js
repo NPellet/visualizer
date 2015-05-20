@@ -95,7 +95,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
         }
     }
 
-    var data = new DataObject;
+    var data = new DataObject();
     data.onChange(handleChange);
 
     var Variable = function Variable(name) {

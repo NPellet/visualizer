@@ -109,14 +109,11 @@ define([
                 var obj = that.module.data.get(0).getChildSync(jpath);
                 if (obj instanceof DataString) {
                     editor = Slick.Editors.SpecialNativeObject;
-                }
-                else if (obj instanceof DataNumber) {
+                } else if (obj instanceof DataNumber) {
                     editor = Slick.Editors.DataNumberEditor;
-                }
-                else if (obj instanceof DataBoolean) {
+                } else if (obj instanceof DataBoolean) {
                     editor = Slick.Editors.DataBooleanEditor;
-                }
-                else {
+                } else {
                     editor = typeEditors[getType(jpath)];
                 }
                 return editor;
@@ -137,13 +134,11 @@ define([
                     if (!that.module.data.length) {
                         editor = Slick.Editors.SpecialNativeObject;
                         Debug.warn('Slick grid: using editor based on type when the input variable is empty. Cannot determine type');
-                    }
-                    else {
+                    } else {
                         editor = getEditor(row.jpath);
                         type = getType(row.jpath);
                     }
-                }
-                else {
+                } else {
                     editor = typeEditors[row.editor];
                     type = row.editor;
                 }
@@ -303,8 +298,7 @@ define([
 
                         if (that.module.getConfiguration('slick.selectionModel') === 'row') {
                             that.grid.setSelectionModel(new Slick.RowSelectionModel());
-                        }
-                        else {
+                        } else {
                             that.grid.setSelectionModel(new Slick.CellSelectionModel());
                         }
 
@@ -407,8 +401,7 @@ define([
                             var hl = itemInfo.item._highlight;
                             if (hl) {
                                 API.highlightId(hl, 0);
-                            }
-                            else if (lastHighlight) {
+                            } else if (lastHighlight) {
                                 API.highlightId(lastHighlight, 0);
                             }
 
@@ -501,8 +494,7 @@ define([
                                     sortCol: args.sortCol,
                                     sortAsc: args.sortAsc
                                 }];
-                            }
-                            else {
+                            } else {
                                 sortCols = args.sortCols;
                             }
                             for (i = sortCols.length - 1; i >= 0; i--) {
@@ -526,8 +518,7 @@ define([
                                         val2 = val2.get();
                                         if (val1 < val2) {
                                             return -1;
-                                        }
-                                        else if (val2 < val1) {
+                                        } else if (val2 < val1) {
                                             return 1;
                                         }
                                         return a.__elementPosition - b.__elementPosition;
@@ -608,8 +599,7 @@ define([
                                         return row.getChildSync(val.getter);
                                     };
                                     that._makeDataObjects();
-                                }
-                                else {
+                                } else {
                                     r.getter = val.getter[0];
                                 }
 
@@ -650,9 +640,7 @@ define([
 
                         if (Array.isArray(that.lastSelectedRows)) {
                             that.grid.setSelectedRows(that.lastSelectedRows);
-                        }
-
-                        else if (!_.isUndefined(that.lastActiveRow) && !that.module.getConfigurationCheckbox('slickCheck', 'forgetLastActive')) {
+                        } else if (!_.isUndefined(that.lastActiveRow) && !that.module.getConfigurationCheckbox('slickCheck', 'forgetLastActive')) {
                             that.grid.setActiveCell(that.lastActiveRow, that.lastActiveCell);
                         }
 
@@ -807,8 +795,7 @@ define([
                         }
                         if (onOff) {
                             that._highlighted = _(that._highlighted).push(key).flatten().uniq().value();
-                        }
-                        else {
+                        } else {
                             that._highlighted = _.filter(that._highlighted, function (val) {
                                 return key.indexOf(val) === -1;
                             });
@@ -884,8 +871,7 @@ define([
                 var item;
                 if (_.isNumber(row) || row instanceof DataNumber) {
                     item = this.module.data[row];
-                }
-                else {
+                } else {
                     item = row;
                 }
 
@@ -901,8 +887,7 @@ define([
                 var item;
                 if (_.isNumber(row) || row instanceof DataNumber) {
                     item = this.module.data[row];
-                }
-                else {
+                } else {
                     item = row;
                 }
 
@@ -992,23 +977,19 @@ define([
                 return function (val) {
                     return val < match[2];
                 };
-            }
-            else if (match[1] === '<=' || match[1] === '=<') {
+            } else if (match[1] === '<=' || match[1] === '=<') {
                 return function (val) {
                     return val <= match[2];
                 };
-            }
-            else if (match[1] === '>') {
+            } else if (match[1] === '>') {
                 return function (val) {
                     return val > match[2];
                 };
-            }
-            else if (match[1] === '>=' || match[1] === '=>') {
+            } else if (match[1] === '>=' || match[1] === '=>') {
                 return function (val) {
                     return val >= match[2];
                 };
-            }
-            else if (match[1] === '==' || match[1] === '=') {
+            } else if (match[1] === '==' || match[1] === '=') {
                 return function (val) {
                     return val == match[2];
                 };

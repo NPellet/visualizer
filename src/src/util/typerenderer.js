@@ -62,8 +62,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
         try {
             var d = new Date(val);
             element.html(d.toLocaleString());
-        }
-        catch (e) {
+        } catch (e) {
             element.html('Invalid date');
         }
     };

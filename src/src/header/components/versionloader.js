@@ -32,8 +32,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
                     this.load(this.options);
 
                 this.doElements();
-            }
-            else {
+            } else {
                 this.close();
             }
 

@@ -41,8 +41,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 } else {
                     this.close();
                 }
-            }
-            else {
+            } else {
                 this.checkDatabase();
                 console.error('CouchDB header : unreachable database.');
             }

@@ -4,9 +4,11 @@
     "amd": true
   },
   "rules": {
+    "brace-style": [2, "1tbs", {"allowSingleLine": true}],
     "comma-dangle": [2, "never"],
     "eol-last": 2,
     "indent": [2, 4],
+    "new-parens": 2,
     "no-constant-condition": 2,
     "no-debugger": 2,
     "no-dupe-args": 2,

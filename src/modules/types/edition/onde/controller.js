@@ -160,8 +160,7 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
         if (outputType === 'new') {
             this.createDataFromEvent('onFormSubmit', 'outputValue', data);
             this.sendActionFromEvent('onFormSubmit', 'outputValue', data);
-        }
-        else {
+        } else {
             if (this.module.view.inputObj) {
                 this.module.view.inputObj.mergeWith(data, this.module.getId());
             }

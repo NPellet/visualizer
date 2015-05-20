@@ -140,8 +140,7 @@ define([
                     'user-select': selectable ? 'text' : 'none'
                 });
                 this.dom.append(div);
-            }
-            else {
+            } else {
                 div = $('<div />').css({
                     fontFamily: font || 'Arial',
                     fontSize: fontsize || '10pt',

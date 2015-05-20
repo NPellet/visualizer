@@ -327,20 +327,16 @@ define([
             if (onOff) {
                 if (layer instanceof L.Marker) {
                     icon._marker.highlight(true);
-                }
-                else {
+                } else {
                     layer.setStyle({color: '#ff3300'});
                 }
-            }
-            else {
+            } else {
                 if (layer instanceof L.Marker) {
                     icon._marker.highlight(false);
-                }
-                else {
+                } else {
                     if (layer.feature && layer.feature.properties && layer.feature.properties.style) {
                         layer.setStyle(layer.feature.properties.style);
-                    }
-                    else {
+                    } else {
                         layer.setStyle({color: '#0033ff'});
                     }
                 }

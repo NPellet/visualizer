@@ -30,8 +30,7 @@ define(['jquery', 'modules/module', 'src/util/debug', 'src/util/util'], function
                     }, function (err) {
                         Debug.error('Caught error in ModuleFactory', err);
                     });
-                }
-                else {
+                } else {
                     if (typeof folderContent.folders === 'object')
                         result.folders = folderContent.folders;
                     resolve(result);
@@ -90,9 +89,7 @@ define(['jquery', 'modules/module', 'src/util/debug', 'src/util/util'], function
                 }
 
                 allModules = finalList;
-            }
-
-            else {
+            } else {
                 allModules = list;
             }
             return Promise.all(prom).then(function () {

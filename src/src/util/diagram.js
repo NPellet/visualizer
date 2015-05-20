@@ -14,19 +14,16 @@ define([
         var fail;
         if (arguments.length === 3) {
             this.init1.apply(this, arguments);
-        }
-        else if (arguments.length === 4) {
+        } else if (arguments.length === 4) {
             this.init2.apply(this, arguments);
-        }
-        else if (arguments.length === 1 && a instanceof Array) {
+        } else if (arguments.length === 1 && a instanceof Array) {
             if (arguments[0].length === 3)
                 this.init1.apply(this, arguments[0]);
             else if (arguments.length === 4)
                 this.init2.apply(this, arguments[0]);
             else
                 fail = true;
-        }
-        else {
+        } else {
             fail = true;
         }
         if (fail) {
@@ -89,9 +86,7 @@ define([
             points = _.filter(points, function (p) {
                 return that.isInside(p);
             });
-        }
-
-        else {
+        } else {
             points = [
                 {x: this.centerx, y: this.miny},
                 {x: this.centerx, y: this.maxy}
@@ -238,9 +233,7 @@ define([
                     height: nodeRadius * Math.sqrt(2),
                     padding: '2px 8px 2px 8px'
                 };
-            }
-
-            else {
+            } else {
                 nodeBox = {
                     width: 140,
                     height: 90,
@@ -318,8 +311,7 @@ define([
                     //.call(zoom)
                     //.call(drag)
                     .call(force.drag);
-            }
-            else if (type === 'rect') {
+            } else if (type === 'rect') {
                 node = svg.append('g').selectAll('rect')
                     .data(force.nodes())
                     .enter().append('rect')
@@ -473,8 +465,7 @@ define([
             if (ww / width < wh / height) {
                 dw = f * ww;
                 dh = dw * height / width;
-            }
-            else {
+            } else {
                 dh = f * wh;
                 dw = dh * width / height;
             }

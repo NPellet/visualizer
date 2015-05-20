@@ -263,8 +263,7 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function (Pou
             };
 
             this.froms[pouchName] = callback;
-        }
-        else {
+        } else {
             if (this.tos[pouchName])
                 return;
 
@@ -288,8 +287,7 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function (Pou
             req.onload = function () {
                 if (req.status === 200) {
                     resolve();
-                }
-                else {
+                } else {
                     reject(Error(req.status + ' : ' + req.statusText));
                 }
             };
@@ -536,8 +534,7 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function (Pou
             return pouch.getDoc(id, options).then(callback, function () {
                 Debug.error('Caught error in PouchManager.getDoc', dbname, id);
             });
-        }
-        else {
+        } else {
             return pouch.getDocs(options).then(callback, function () {
                 Debug.error('Caught error in PouchManager.getDocs', dbname);
             });

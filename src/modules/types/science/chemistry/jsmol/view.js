@@ -202,8 +202,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
                         }
                         if (onOff) {
                             that._highlighted = _(that._highlighted).push(key).flatten().uniq().value();
-                        }
-                        else {
+                        } else {
                             that._highlighted = _.filter(that._highlighted, function (val) {
                                 return key.indexOf(val) === -1;
                             });

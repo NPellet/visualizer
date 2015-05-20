@@ -13,8 +13,7 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/ui'], function 
             var buttonType = this.module.getConfiguration('toggle');
             if (buttonType === 'toggle') {
                 label = this.module.getConfiguration('offLabel');
-            }
-            else {
+            } else {
                 label = this.module.getConfiguration('label');
             }
             var self = this,
@@ -30,8 +29,7 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/ui'], function 
                             if (!val && buttonType === 'toggle') {
                                 button.setTitle(that.module.getConfiguration('offLabel'));
                                 that.setButtonColor(that.module.getConfiguration('offColor'));
-                            }
-                            else if (buttonType === 'toggle') {
+                            } else if (buttonType === 'toggle') {
                                 button.setTitle(that.module.getConfiguration('onLabel'));
                                 that.setButtonColor(that.module.getConfiguration('onColor'));
                             }

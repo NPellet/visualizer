@@ -53,8 +53,7 @@ define(function () {
                             }
                         }
                         return resolve(filteredResult);
-                    }
-                    else {
+                    } else {
                         if (resultArray.length === 0 && workerCount === 0) {
                             return reject('Docuding failed');
                         }

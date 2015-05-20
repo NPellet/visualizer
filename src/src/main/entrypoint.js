@@ -188,8 +188,7 @@ define([
             }
             if (changed === false) {
                 Debug.debug('No module urls rewritten in the view');
-            }
-            else {
+            } else {
                 Debug.info('Module urls were rewritten...');
                 Versioning.setViewJSON(v);
             }

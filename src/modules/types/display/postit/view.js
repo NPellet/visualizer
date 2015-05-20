@@ -35,9 +35,7 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/util', 'src/mai
                     });
                     done = true;
                 });
-            }
-
-            else {
+            } else {
                 this.inside = $('<div>', {
                     id: id,
                     class: 'inside'

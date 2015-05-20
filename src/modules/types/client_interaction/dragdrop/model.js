@@ -51,8 +51,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
                         continue;
                     if (rel === 'data' && !this.tmpVars.hasOwnProperty(def.variable)) {
                         this.tmpVars[def.variable] = standardFile;
-                    }
-                    else if (rel === 'dataarray' && !this.tmpVarsArray.hasOwnProperty(def.variable)) {
+                    } else if (rel === 'dataarray' && !this.tmpVarsArray.hasOwnProperty(def.variable)) {
                         this.tmpVarsArray[def.variable] = standardArray;
                     }
                 }

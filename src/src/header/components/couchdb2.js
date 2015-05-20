@@ -132,12 +132,10 @@ define([
                 } else {
                     this.close();
                 }
-            }
-            else if (!this.ok) {
+            } else if (!this.ok) {
                 this.checkDatabase();
                 console.error('CouchDB header : unreachable database.');
-            }
-            else {
+            } else {
                 ui.showNotification('Couchdb button not ready');
             }
         },
@@ -267,8 +265,7 @@ define([
                         that.showError(type + ' saved.', 2);
                     }
                 });
-            }
-            else {
+            } else {
                 // The doc is new so we need to save the whole document
                 // With a new uuid
                 var flavors = {}, flav = [];
@@ -529,8 +526,7 @@ define([
             var dom = this.makePublicButton.getDom();
             if ((node && node.data && !node.data.isPublic && dom)) {
                 dom.show();
-            }
-            else if (dom) {
+            } else if (dom) {
                 dom.hide();
             }
         },
@@ -620,8 +616,7 @@ define([
                 if (obj[key].type === 'text') {
                     n.contentText = [obj[key].value];
                     n.contentHtml = [''];
-                }
-                else if (obj[key].type === 'html') {
+                } else if (obj[key].type === 'html') {
                     n.contentHtml = [obj[key].value];
                     n.contentText = [''];
                 }
@@ -715,8 +710,7 @@ define([
                 var prom;
                 if (!that.currentDocument.data.hasMeta) {
                     prom = Promise.resolve({});
-                }
-                else {
+                } else {
                     prom = that.getMetaForm(that.currentDocument);
                 }
 
@@ -754,8 +748,7 @@ define([
                             type: 'text',
                             value: val.contentText[0]
                         };
-                    }
-                    else if (val.contentType[0] === 'html') {
+                    } else if (val.contentType[0] === 'html') {
                         result[val.keyword[0]] = {
                             type: 'html',
                             value: val.contentHtml[0]
@@ -976,8 +969,7 @@ define([
                                 that.showError.apply(that, arguments);
                             }
                         });
-                    }
-                    else { // Update current doc
+                    } else { // Update current doc
                         this.database.saveDoc(node.data.doc, {
                             success: function () {
                                 that.showError('Flavor deleted.', 2);
@@ -988,8 +980,7 @@ define([
                             }
                         });
                     }
-                }
-                else if (action === 'rename') {
+                } else if (action === 'rename') {
                     ui.dialog('New name : <input type="text" id="' + this.cssId('newname') + '" value="' + node.title + '" />', {
                         buttons: {
                             'Save': function () {
@@ -1028,8 +1019,7 @@ define([
                             }
                         }
                     });
-                }
-                else if (action === 'newflavor') {
+                } else if (action === 'newflavor') {
                     var div = $('<div>').html('Flavor :');
                     ui.dialog(div, {
                         buttons: {

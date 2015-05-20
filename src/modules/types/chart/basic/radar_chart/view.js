@@ -66,8 +66,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                         var obj = entry;
                         if (ev.toElement.outerHTML[ev.toElement.outerHTML.length - 3] == 'd') {
                             self.module.controller.elementHover(obj._highlight[0]);
-                        }
-                        else {
+                        } else {
                             self.module.controller.elementHover(obj._highlight[ev.toElement.outerHTML[ev.toElement.outerHTML.length - 3]]);
                         }
                     }

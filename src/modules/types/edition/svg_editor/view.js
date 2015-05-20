@@ -43,8 +43,7 @@ define([
             setTimeout(function () {
                 args[0].svgCanvas.getSvgString()(handleSvgData);
             }, 0);
-        }
-        else {
+        } else {
             var svgcode = args[0].dom.clone();
             var viewbox = svgcode[0].getAttribute('viewBox').split(' ');
             svgcode.attr('width', viewbox[2]).attr('height', viewbox[3]).removeAttr('viewBox');
@@ -115,8 +114,7 @@ define([
                     self.resolveReady();
                     self.onResize();
                 });
-            }
-            else {
+            } else {
                 var domContent = self.module.getDomContent();
                 Renderer.render(domContent, {
                     type: 'svg',
@@ -198,8 +196,7 @@ define([
                     if (anim.options.persistOnEnd) {
                         if (anim.tag === 'animate') {
                             $svgEl.attr(this.getAttribute('attributeName'), this.getAttribute('to'));
-                        }
-                        else {
+                        } else {
                             console.warn('Could not persist animation');
                         }
                     }
@@ -215,8 +212,7 @@ define([
                             $(el).remove();
                             self._saveSvg();
                         }, timeout);
-                    }
-                    else {
+                    } else {
                         // Don't clear anything
                     }
                 });
@@ -242,8 +238,7 @@ define([
                 for (var i = 0; i < animation.length; i++) {
                     this.addAnimation($svgEl, animation[i]);
                 }
-            }
-            else {
+            } else {
                 this.addAnimation($svgEl, animation);
             }
         },
@@ -254,8 +249,7 @@ define([
                     $svgEl.each(function () {
                         this.setAttribute(key, attributes[key].call());
                     });
-                }
-                else {
+                } else {
                     $svgEl.attr(key, attributes[key]);
                 }
             }
@@ -286,8 +280,7 @@ define([
 
             if (this._configCheckBox('editable', 'isEditable')) {
                 this.$svgcontent = $(self.iframeDoc).find('#svgcontent');
-            }
-            else {
+            } else {
                 this.$svgcontent = self.dom;
             }
 
@@ -335,15 +328,13 @@ define([
             // 4) In case you do both, they are considered separately
             //  attributes: {}, animation: { attributes: {}}
 
-
-            // Case 1)
             if (obj.attributes && !obj.animation) {
+                // Case 1)
                 if (_.any(obj.attributes, function (attribute) {
                         return typeof attribute === 'function';
                     })) {
                     this.setAttributesOneByOne($svgEl, obj.attributes);
-                }
-                else {
+                } else {
                     // Use straightforward solution
                     $svgEl.attr(obj.attributes);
                 }
@@ -351,15 +342,11 @@ define([
                     // svgedit.sanitize.sanitizeSvg(this, true);
                 });
                 self.removeStyleProperties($svgEl, obj.attributes);
-            }
-
-            // Case 2)
-            else if (obj.animation && !obj.attributes) {
+            } else if (obj.animation && !obj.attributes) {
+                // Case 2)
                 self.addAnimations($svgEl, obj.animation);
-            }
-
-            // Case 3)
-            else if (obj.attributes && obj.animation && !obj.animation.attributes) {
+            } else if (obj.attributes && obj.animation && !obj.animation.attributes) {
+                // Case 3)
                 obj.animation.attributes = [];
 
                 for (var k in obj.attributes) {
@@ -371,10 +358,8 @@ define([
 
                 delete obj.attributes;
                 self.addAnimations($svgEl, obj.animation);
-            }
-
-            // Case 4)
-            else if (obj.attributes && obj.animation && obj.animation.attributes) {
+            } else if (obj.attributes && obj.animation && obj.animation.attributes) {
+                // Case 4)
                 $svgEl.attr(obj.attributes);
                 self.removeStyleProperties($svgEl, obj.attributes);
                 self.addAnimations($svgEl, obj.animation);
@@ -434,8 +419,7 @@ define([
                     animation.options.clearAnimationTags = false;
                     animation.attributes.to = '1.25';
                     highlightCount[killId]++;
-                }
-                else if (!onOff && highlightCount[killId] === 1) {
+                } else if (!onOff && highlightCount[killId] === 1) {
                     animation.options.clearAnimationTags = false;
                     animation.attributes.to = '0.8';
                     highlightCount[killId]--;

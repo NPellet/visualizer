@@ -32,8 +32,7 @@ define([
         if (modernizr[f]) {
             features[f].has = true;
             features[f].color = 'green';
-        }
-        else {
+        } else {
             features[f].has = false;
             features[f].color = 'red';
         }
