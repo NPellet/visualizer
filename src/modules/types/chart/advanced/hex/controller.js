@@ -78,7 +78,8 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                         },
                         stopPosition: {
                             type: 'float',
-                            title: 'Stop position'
+                            title: 'Stop position',
+                            default: 0
                         }
                     }
                 }

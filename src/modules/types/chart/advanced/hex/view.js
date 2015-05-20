@@ -424,12 +424,6 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         return multArray([-1, 1, 0], arr[maxIdx] - arr[middleIdx]);
     }
 
-    function allNumeric(arr) {
-        return !_.any(arr,function(v) {
-            return isNaN(v) && v !== undefined;
-        })
-    }
-
     return View;
 });
 
