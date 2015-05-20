@@ -10,6 +10,7 @@
     "comma-style": [2, "last"],
     "eol-last": 2,
     "indent": [2, 4],
+    "key-spacing": [2, {"beforeColon": false, "afterColon": true}],
     "new-parens": 2,
     "no-constant-condition": 2,
     "no-debugger": 2,

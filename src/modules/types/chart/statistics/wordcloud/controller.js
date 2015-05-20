@@ -16,7 +16,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
     };
 
     Controller.prototype.references = {
-        textvalue:{
+        textvalue: {
             type: 'string',
             label: 'A string of words'
         }
@@ -40,22 +40,22 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
                         multiple: 'false'
                     },
                     fields: {
-                        spiral:{
+                        spiral: {
                             type: 'combo',
                             title: 'Spiral',
                             options: [
                                 {key: 'archimedean', title: 'Archimedean'},
-                                {key: 'rectangular', title:'Rectangular'}
+                                {key: 'rectangular', title: 'Rectangular'}
                             ],
                             'default': 'archimedean'
                         },
-                        scale:{
+                        scale: {
                             type: 'combo',
                             title: 'Scale',
                             options: [
                                 {key: 'log', title: 'log n'},
-                                {key: 'sqrt', title:'√n'},
-                                {key: 'linear', title:'n'}
+                                {key: 'sqrt', title: '√n'},
+                                {key: 'linear', title: 'n'}
                             ],
                             'default': 'log'
                         },

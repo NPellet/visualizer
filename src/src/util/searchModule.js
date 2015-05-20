@@ -24,13 +24,13 @@ define(['src/util/util', 'modules/modulefactory', 'src/main/grid', 'select2'], f
             $select2 = $select2.css({
                 position: 'fixed',
                 'justify-content': 'center',
-                top:0,
+                top: 0,
                 left: 0,
                 width: ww,
-                height:wh,
+                height: wh,
                 paddingLeft: Math.floor(ww / 2 - selectWidth / 2),
                 paddingTop: 50,
-                margin:0,
+                margin: 0,
                 'box-sizing': 'border-box',
                 opacity: 0.7,
                 backgroundColor: '#262b33'

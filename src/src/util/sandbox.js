@@ -21,7 +21,7 @@ define(function () {
         var win = this._win;
         this._frame = iframe;
         this._originalKeys = Object.keys(win);
-        Object.defineProperty(win, 'parent', {value:null});
+        Object.defineProperty(win, 'parent', {value: null});
         globals.forEach(function (global) {
             Object.defineProperty(win, global, {
                 value: window[global]

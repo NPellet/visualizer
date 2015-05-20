@@ -163,7 +163,7 @@ define([
             paths = _.filter(paths, function (p) {
                 return p && p.alias && p.path;
             });
-            var conf = {paths:{}};
+            var conf = {paths: {}};
             for (var i = 0; i < paths.length; i++) {
                 conf.paths[paths[i].alias] = paths[i].path;
             }

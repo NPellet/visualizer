@@ -50,7 +50,7 @@ define(['modules/default/defaultcontroller', 'src/util/api'], function (Default,
         },
         wkt: {
             label: 'WKT',
-            type:'string'
+            type: 'string'
         },
         topojson: {
             label: 'TopoJSON'
