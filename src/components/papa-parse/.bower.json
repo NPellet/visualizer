@@ -37,14 +37,14 @@
     "tests",
     "player"
   ],
-  "version": "4.1.0",
-  "_release": "4.1.0",
+  "version": "4.1.1",
+  "_release": "4.1.1",
   "_resolution": {
     "type": "version",
-    "tag": "4.1.0",
-    "commit": "3a28c0294f74cf23eb638c4f9b4cf30f8bea0aa5"
+    "tag": "4.1.1",
+    "commit": "81a643d2bb46cd18958988a1a0dd56d185608cea"
   },
   "_source": "git://github.com/mholt/PapaParse.git",
-  "_target": "4.1.0",
+  "_target": "4.1.1",
   "_originalSource": "papa-parse"
 }

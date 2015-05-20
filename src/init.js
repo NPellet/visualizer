@@ -37,6 +37,7 @@ requirejs.config({
         //mathjax:            'components/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML&amp;delayStartupUntil=configured',
         modernizr: 'components/modernizr/modernizr',
         openchemlib: 'components/openchemlib/dist',
+        papaparse: 'components/papa-parse/papaparse.min',
         plot: 'lib/plot/plot',
         pouchdb: 'components/pouchdb/dist/pouchdb.min',
         underscore: 'components/underscore/underscore-min',
@@ -81,9 +82,6 @@ requirejs.config({
         },
         modernizr: {
             exports: 'Modernizr'
-        },
-        'components/papa-parse/papaparse.min': {
-            exports: 'Papa'
         },
         'jquery-cookie': 'jquery',
         'select2': ['jquery'],

@@ -77,7 +77,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                 def.resolve(JSON.parse(value));
                 break;
             case 'csv':
-                require(['components/papa-parse/papaparse.min'], function (Papa) {
+                require(['papaparse'], function (Papa) {
                     def.resolve(Papa.parse(value).data);
                 });
                 break;
