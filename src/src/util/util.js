@@ -418,7 +418,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
             return url.replace(/\/$/, '');
         }
         var reqPathStr = exports.getNextUniqueId(true);
-        url = url.replace(/\/$/,'');
+        url = url.replace(/\/$/, '');
         if (utilReqPaths[url]) return utilReqPaths[url];
         utilReqPaths[url] = reqPathStr;
         var paths = {};

@@ -181,7 +181,7 @@ define([
                     Debug.warn('Your view contains an url to a module that does not correspond to any loaded modules');
                     continue;
                 }
-                if (module.url.replace(/\/$/,'') !== v.modules[j].url.replace(/\/$/,'')) {
+                if (module.url.replace(/\/$/, '') !== v.modules[j].url.replace(/\/$/, '')) {
                     changed = true;
                     v.modules[j].url = module.url;
                 }

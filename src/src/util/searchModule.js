@@ -1,6 +1,6 @@
 'use strict';
 
-define(['src/util/util', 'modules/modulefactory', 'src/main/grid','select2'], function (Util, ModuleFactory, Grid) {
+define(['src/util/util', 'modules/modulefactory', 'src/main/grid', 'select2'], function (Util, ModuleFactory, Grid) {
     return function () {
 
         Util.loadCss('components/select2/dist/css/select2.css').then(function () {

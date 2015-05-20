@@ -282,7 +282,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
 
         '2.13.1-b2', function (view) {
             eachModule(view, function (module) {
-                var groupings = module.getChildSync(['configuration','groups', 'groupings', 0]);
+                var groupings = module.getChildSync(['configuration', 'groups', 'groupings', 0]);
                 if (!groupings) return;
                 for (var i = 0; i < groupings.length; i++) {
                     groupings[i].getter = [groupings[i].getter];

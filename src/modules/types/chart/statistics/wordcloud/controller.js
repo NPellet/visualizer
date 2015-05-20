@@ -79,7 +79,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
                             min: -180,
                             max: 180,
                             step: 1,
-                            'default': [-60,60]
+                            'default': [-60, 60]
                         }
                     }
                 }

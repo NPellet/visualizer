@@ -28,7 +28,7 @@ define(function () {
                         workerCount--;
                         if (workerCount) {
                             if (resultArray.length == 0) {
-                                DecodeWorker.postMessage({ImageData: ctx.getImageData(0,0,Canvas.width,Canvas.height).data, Width: Canvas.width, Height: Canvas.height, cmd: 'flip'});
+                                DecodeWorker.postMessage({ImageData: ctx.getImageData(0, 0, Canvas.width, Canvas.height).data, Width: Canvas.width, Height: Canvas.height, cmd: 'flip'});
                             } else {
                                 workerCount--;
                             }
@@ -62,10 +62,10 @@ define(function () {
                 var DecodeWorker = new Worker('lib/BarcodeReader/src/DecoderWorker.js');
                 DecodeWorker.onmessage = receiveMessage;
 
-                ctx.drawImage(image,0,0,Canvas.width,Canvas.height);
+                ctx.drawImage(image, 0, 0, Canvas.width, Canvas.height);
                 resultArray = [];
                 workerCount = 2;
-                DecodeWorker.postMessage({ImageData: ctx.getImageData(0,0,Canvas.width,Canvas.height).data, Width: Canvas.width, Height: Canvas.height, cmd: 'normal'});
+                DecodeWorker.postMessage({ImageData: ctx.getImageData(0, 0, Canvas.width, Canvas.height).data, Width: Canvas.width, Height: Canvas.height, cmd: 'normal'});
             }
 
             // Expects a dataURL image
