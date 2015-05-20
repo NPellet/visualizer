@@ -77,19 +77,27 @@ define([
 
         init: function () {
             var that = this;
-            if (!this.$dom) {
+            if (!this.$container) {
                 this._id = Util.getNextUniqueId();
-                this.$dom = $('<div>').attr('id', this._id).css({
-                    width: '100%',
-                    height: '100%'
+                this.$container = $('<div>').attr('id', this._id).css({
+                    display: 'flex',
+                    'min-height': '100%',
+                    'flex-direction': 'column',
+                    width: '100%'
                 });
 
                 this.$rowHelp = $('<div>').attr('class', 'rowHelp');
+                this.$addButton = $('<input type="button" value="Add"></input>"');
+                this.$addButton.on('click', function() {
+                    that.preventRowHelp();
+                    that.grid.gotoCell(100, 0, true);
+                });
+                this.$rowToolbar = $('<div>').attr('class', 'rowToolbar').append(this.$addButton);
                 this.module.getDomContent().html(this.$rowHelp);
-                this.module.getDomContent().append(this.$dom);
+                this.module.getDomContent().append(this.$container);
             }
 
-            this.$dom.on('mouseleave', function () {
+            this.$container.on('mouseleave', function () {
                 that.module.controller.lastHoveredItemId = null;
             });
 
@@ -99,6 +107,9 @@ define([
             this.resolveReady();
         },
 
+        preventRowHelp: function() {
+            this._preventRowHelp = true;
+        },
 
         getSlickColumns: function () {
             var that = this;
@@ -284,15 +295,19 @@ define([
                         return that.cssLoaded;
                     })
                     .then(function () {
-
+                        console.log(that.$rowToolbar);
+                        that.$slickgrid = $('<div>').css({
+                            flex: 1
+                        });
+                        that.$container.append(that.$rowToolbar);
+                        that.$container.append(that.$slickgrid);
                         that.slick.groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
                         that.slick.data = new Slick.Data.DataView({
                             groupItemMetadataProvider: that.slick.groupItemMetadataProvider
                         });
 
                         that.slick.data.setModule(that.module);
-                        that.$dom = $('#' + that._id);
-                        that.grid = new Slick.Grid('#' + that._id, that.slick.data, that.slick.columns, that.slick.options);
+                        that.grid = new Slick.Grid(that.$slickgrid, that.slick.data, that.slick.columns, that.slick.options);
                         that.grid.registerPlugin(that.slick.groupItemMetadataProvider);
 
 
@@ -356,7 +371,8 @@ define([
                                 that._jpathColor();
                             }, 300);
                             that.lastViewport = that.grid.getViewport();
-                            if (that.module.getConfigurationCheckbox('slickCheck', 'rowNumbering')) {
+                            if (that.module.getConfigurationCheckbox('slickCheck', 'rowNumbering') && !that._preventRowHelp) {
+                                that._preventRowHelp = false;
                                 that.$rowHelp.html((that.lastViewport.bottom - (that.addRowAllowed ? 2 : 1)).toString() + '/' + that.grid.getDataLength());
                                 that.$rowHelp.fadeIn();
                                 clearTimeout(that.lastRowHelp);
@@ -657,7 +673,7 @@ define([
 
         blank: {
             list: function () {
-                this.$dom.html('');
+                this.$container.html('');
             }
         },
 
