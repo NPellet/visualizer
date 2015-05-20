@@ -179,7 +179,7 @@ define([
                     var animation = document.createElementNS('http://www.w3.org/2000/svg', anim.tag);
                     for (var attribute in anim.attributes[i]) {
                         var attrValue = anim.attributes[i][attribute];
-                        attrValue = (typeof  attrValue === 'function') ? attrValue.call() : attrValue;
+                        attrValue = (typeof attrValue === 'function') ? attrValue.call() : attrValue;
                         animation.setAttributeNS(null, attribute, attrValue);
                     }
                     $(this).append(animation);

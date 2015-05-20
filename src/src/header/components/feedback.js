@@ -24,7 +24,7 @@ define(['jquery', 'src/util/ui', 'src/header/components/default', './../../util/
         },
 
         _onClick: function () {
-            ui.feedback(this.options,  shareOptions, this.dialogOptions);
+            ui.feedback(this.options, shareOptions, this.dialogOptions);
         }
     });
 

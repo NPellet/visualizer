@@ -5,7 +5,16 @@
  * @module src/util/ui
  */
 
-define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/versioning', 'forms/button', 'src/util/couchshare', 'jquery-ui/dialog'], function (Util, Debug, _, $, Versioning, Button, Sharer) {
+define([
+    'src/util/util',
+    'src/util/debug',
+    'lodash',
+    'jquery',
+    'src/util/versioning',
+    'forms/button',
+    'src/util/couchshare',
+    'jquery-ui/dialog'
+], function (Util, Debug, _, $, Versioning, Button, Sharer) {
 
     var exports = {};
 
@@ -142,7 +151,7 @@ define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/version
                 div.dialog('close');
             });
 
-        var div  = exports.dialog(txtarea, {width: '80%'}).append(btn.render());
+        var div = exports.dialog(txtarea, {width: '80%'}).append(btn.render());
     };
 
     exports.pasteView = function() {
@@ -168,7 +177,7 @@ define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/version
                 div.dialog('close');
             });
 
-        var div  = exports.dialog(txtarea, {width: '80%'}).append(btn.render());
+        var div = exports.dialog(txtarea, {width: '80%'}).append(btn.render());
     };
 
     exports.feedback = function(options, shareOptions, dialogOptions) {
@@ -176,8 +185,13 @@ define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/version
 
         var message = $('<span>').attr('id', uniqid + '-message').css('color', 'red');
 
-        var dialog = $('<div>').html('<h2>Do you have a comment on the visualizer ? Did you find a bug ?</h2><p>Put your comment here and we will be notified.<br>A snapshot of you view and data will also be sent to us so feel free to describe exactly what you did and what happened !</p>' +
-        '<table><tr><td>Title : </td><td><input type="text" id="' + uniqid + '-title" style="width:500px" /></td></tr><tr><td>Description : </td><td><textarea id="' + uniqid + '-description" rows="12" cols="80"></textarea></td></tr></table>').append(
+        var dialog = $('<div>').html(
+            '<h2>Do you have a comment on the visualizer ? Did you find a bug ?</h2>' +
+            '<p>Put your comment here and we will be notified.<br>A snapshot of you view and data will also be sent to us so feel free to describe exactly what you did and what happened !</p>' +
+            '<table>' +
+            '<tr><td>Title : </td><td><input type="text" id="' + uniqid + '-title" style="width:500px" /></td></tr>' +
+            '<tr><td>Description : </td><td><textarea id="' + uniqid + '-description" rows="12" cols="80"></textarea></td></tr>' +
+            '</table>').append(
             new Button('Send', function () {
                 var button = this;
                 if (!options.disabled) {

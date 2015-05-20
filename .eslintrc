@@ -18,6 +18,7 @@
     "no-func-assign": 2,
     "no-irregular-whitespace": 2,
     "no-lone-blocks": 2,
+    "no-multi-spaces": 2,
     "no-negated-in-lhs": 2,
     "no-obj-calls": 2,
     "no-regex-spaces": 2,

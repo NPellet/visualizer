@@ -1,6 +1,14 @@
 'use strict';
 
-define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  'modules/modulefactory', 'd3'], function (Util, ui, Debug, _, $,ModuleFactory, d3) {
+define([
+    'src/util/util',
+    'src/util/ui',
+    'src/util/debug',
+    'lodash',
+    'jquery',
+    'modules/modulefactory',
+    'd3'
+], function (Util, ui, Debug, _, $,ModuleFactory, d3) {
 
     function Rectangle() {
         var fail;
@@ -389,12 +397,12 @@ define(['src/util/util', 'src/util/ui', 'src/util/debug', 'lodash', 'jquery',  '
                 var dx = d.target.x - d.source.x,
                     dy = d.target.y - d.source.y,
                     dr = Math.sqrt(dx * dx + dy * dy);
-                return 'M' + d.source.x  + ',' + d.source.y + 'A' + dr + ',' + dr + ' 0 0,1 ' + d.target.x  + ',' + (d.target.y + -40);
+                return 'M' + d.source.x + ',' + d.source.y + 'A' + dr + ',' + dr + ' 0 0,1 ' + d.target.x + ',' + (d.target.y + -40);
             }
 
             function linkLine(d) {
                 var target = getTargetPosition(d);
-                return 'M' + target.from.x  + ',' + target.from.y + 'L' + target.to.x + ' ' + target.to.y;
+                return 'M' + target.from.x + ',' + target.from.y + 'L' + target.to.x + ' ' + target.to.y;
             }
 
             function transformNode(d) {
