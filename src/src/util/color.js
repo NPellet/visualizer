@@ -64,7 +64,7 @@ define(function () {
         for (var i = 0; i < 360; i += 360 / numColors) {
             j++;
             var color = exports.hsl2rgb(i, 100, 30 + j % 4 * 15);
-            colors[j-1] = [Math.round(color.r * 255), Math.round(color.g * 255), Math.round(color.b * 255)];
+            colors[j - 1] = [Math.round(color.r * 255), Math.round(color.g * 255), Math.round(color.b * 255)];
         }
         return colors;
     };
@@ -76,8 +76,8 @@ define(function () {
     exports.getColor = function getColor(color) {
 
         if (Array.isArray(color)) {
-            if(color.length >=3) {
-                for(var i=0; i<3; i++) color[i] = Math.round(color[i]);
+            if(color.length >= 3) {
+                for(var i = 0; i < 3; i++) color[i] = Math.round(color[i]);
             }
             switch (color.length) {
                 case 3:

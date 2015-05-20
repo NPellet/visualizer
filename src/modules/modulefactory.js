@@ -49,7 +49,7 @@ define(['jquery', 'modules/module', 'src/util/debug', 'src/util/util'], function
             obj = obj || allModules;
             var i;
             if(obj.modules) {
-                for(i=0; i<obj.modules.length; i++) {
+                for(i = 0; i < obj.modules.length; i++) {
                     moduleCallback(obj.modules[i]);
                 }
             }

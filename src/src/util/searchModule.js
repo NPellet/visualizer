@@ -8,7 +8,7 @@ define(['src/util/util', 'modules/modulefactory', 'src/main/grid','select2'], fu
             var keys = Object.keys(modules);
 
             var modulesArr = new Array(keys.length);
-            for(var i=0; i<keys.length; i++) {
+            for(var i = 0; i < keys.length; i++) {
                 modulesArr[i] = modules[keys[i]];
                 modulesArr[i].text = keys[i] + ' ' + modulesArr[i].moduleName;
             }
@@ -28,7 +28,7 @@ define(['src/util/util', 'modules/modulefactory', 'src/main/grid','select2'], fu
                 left: 0,
                 width: ww,
                 height:wh,
-                paddingLeft: Math.floor(ww/2-selectWidth/2),
+                paddingLeft: Math.floor(ww / 2 - selectWidth / 2),
                 paddingTop: 50,
                 margin:0,
                 'box-sizing': 'border-box',

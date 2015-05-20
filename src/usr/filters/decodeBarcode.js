@@ -9,8 +9,8 @@ define(function () {
             var $c = $('<canvas/>');
             var Canvas = $c[0];
             var ctx = Canvas.getContext('2d');
-            Canvas.width=640;
-            Canvas.height=480;
+            Canvas.width = 640;
+            Canvas.height = 480;
             var resultArray = [];
             image.onload = doDecode;
 
@@ -43,7 +43,7 @@ define(function () {
                         }
 
                         var filteredResult = [];
-                        for(var i=0; i<resultArray.length; i++) {
+                        for(var i = 0; i < resultArray.length; i++) {
                             var m = resultArray[i].match( /^([^:]*):(.*)$/ );
                             if(m[1] && m[2]) {
                                 filteredResult.push({

@@ -284,7 +284,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             eachModule(view, function (module) {
                 var groupings = module.getChildSync(['configuration','groups', 'groupings', 0]);
                 if(!groupings) return;
-                for(var i=0; i<groupings.length; i++) {
+                for(var i = 0; i < groupings.length; i++) {
                     groupings[i].getter = [groupings[i].getter];
                 }
             }, 'slick_grid');
@@ -293,7 +293,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
         '2.13.1-b3', function (view) {
             eachModule(view, function (module) {
                 var cols = module.getChildSync(['configuration', 'groups', 'cols', 0]);
-                for(var i=0; i<cols.length; i++) {
+                for(var i = 0; i < cols.length; i++) {
                     delete cols[i].selectable;
                     delete cols[i].focusable;
                     delete cols[i].sortable;

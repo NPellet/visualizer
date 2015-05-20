@@ -56,7 +56,7 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.layout.cloud'
             var wordSeparators = /[ \f\n\r\t\v\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000\u3031-\u3035\u309b\u309c\u30a0\u30fc\uff70]+/g;
             var discard = /^(@|https?:|\/\/)/;
             
-            var svg = d3.select('#'+this._id).append('svg')
+            var svg = d3.select('#' + this._id).append('svg')
                 .attr('width', w)
                 .attr('height', h);
 

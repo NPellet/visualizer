@@ -164,7 +164,7 @@ define([
                 return p && p.alias && p.path;
             });
             var conf = {paths:{}};
-            for(var i=0; i<paths.length; i++) {
+            for(var i = 0; i < paths.length; i++) {
                 conf.paths[paths[i].alias] = paths[i].path;
             }
             requirejs.config(DataObject.resurrect(conf));
@@ -174,7 +174,7 @@ define([
             var v = Versioning.getView().duplicate();
             var changed = false;
             var modulesById = ModuleFactory.getModulesById();
-            for(var j=0; j< v.modules.length; j++) {
+            for(var j = 0; j < v.modules.length; j++) {
                 var moduleId = Util.moduleIdFromUrl(v.modules[j].url);
                 var module = modulesById[moduleId];
                 if(!module) {
@@ -202,7 +202,7 @@ define([
             modules = _.filter(modules, function (m) {
                 return m && m.url;
             });
-            for(var i=0; i<modules.length; i++) {
+            for(var i = 0; i < modules.length; i++) {
                 modules[i].url = modules[i].url.replace(/\/$/, '');
             }
             return ModuleFactory.setModules({
@@ -247,7 +247,7 @@ define([
                 }
                 var filtersLib = view.getChildSync('custom_filters', 0, 'sections', 'filtersLib', 0, 'groups', 'filters', 0);
                 if (filtersLib) {
-                    filtersLib= _.filter(filtersLib, function (v){
+                    filtersLib = _.filter(filtersLib, function (v){
                         return v && v.name && v.file;
                     });
                     API.setAllFilters(filtersLib);

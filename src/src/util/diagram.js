@@ -8,20 +8,20 @@ define([
     'jquery',
     'modules/modulefactory',
     'd3'
-], function (Util, ui, Debug, _, $,ModuleFactory, d3) {
+], function (Util, ui, Debug, _, $, ModuleFactory, d3) {
 
     function Rectangle() {
         var fail;
-        if(arguments.length === 3) {
+        if (arguments.length === 3) {
             this.init1.apply(this, arguments);
         }
-        else if(arguments.length === 4) {
+        else if (arguments.length === 4) {
             this.init2.apply(this, arguments);
         }
-        else if(arguments.length === 1 && a instanceof Array) {
-            if(arguments[0].length === 3)
-                this.init1.apply(this,arguments[0]);
-            else if(arguments.length === 4)
+        else if (arguments.length === 1 && a instanceof Array) {
+            if (arguments[0].length === 3)
+                this.init1.apply(this, arguments[0]);
+            else if (arguments.length === 4)
                 this.init2.apply(this, arguments[0]);
             else
                 fail = true;
@@ -29,7 +29,7 @@ define([
         else {
             fail = true;
         }
-        if(fail) {
+        if (fail) {
             throw new Error('Rectangle construction failed');
         }
     }
@@ -49,22 +49,22 @@ define([
         this.miny = this.minmin.y;
         this.maxy = this.maxmax.y;
 
-        this.centerx = (this.minx + this.maxx)/2;
-        this.centery = (this.miny + this.maxy)/2;
+        this.centerx = (this.minx + this.maxx) / 2;
+        this.centery = (this.miny + this.maxy) / 2;
     };
 
     Rectangle.prototype.init2 = function () {
         var corners = arguments;
         var x = _.pluck(corners, 'x');
         var y = _.pluck(corners, 'y');
-        for(var i=0; i<corners.length; i++) {
-            if(Math.max.apply(null, x) === corners[i].x && Math.max.apply(null, y) === corners[i].y)
+        for (var i = 0; i < corners.length; i++) {
+            if (Math.max.apply(null, x) === corners[i].x && Math.max.apply(null, y) === corners[i].y)
                 this.maxmax = corners[i];
-            else if(Math.min.apply(null, x) === corners[i].x && Math.max.apply(null, y) === corners[i].y)
+            else if (Math.min.apply(null, x) === corners[i].x && Math.max.apply(null, y) === corners[i].y)
                 this.minmax = corners[i];
-            else if(Math.max.apply(null, x) === corners[i].x && Math.min.apply(null, y) === corners[i].y)
+            else if (Math.max.apply(null, x) === corners[i].x && Math.min.apply(null, y) === corners[i].y)
                 this.maxmin = corners[i];
-            else if(Math.min.apply(null, x) === corners[i].x && Math.min.apply(null, y) === corners[i].y)
+            else if (Math.min.apply(null, x) === corners[i].x && Math.min.apply(null, y) === corners[i].y)
                 this.minmin = corners[i];
             else
                 throw new Error('Rectangle initialisation failed');
@@ -75,15 +75,15 @@ define([
     Rectangle.prototype.intersection = function (point) {
         var that = this, points;
 
-        if(point.x !== this.centerx) {
-            var a = (point.y - this.centery)/(point.x -this.centerx);
+        if (point.x !== this.centerx) {
+            var a = (point.y - this.centery) / (point.x - this.centerx);
             var b = point.y - a * point.x;
 
             points = [
-                {x: (this.miny-b)/a, y:this.miny},
-                {x: (this.maxy-b)/a, y:this.maxy},
-                {x: this.minx, y: a*this.minx+b},
-                {x: this.maxx, y: a*this.maxx+b}
+                {x: (this.miny - b) / a, y: this.miny},
+                {x: (this.maxy - b) / a, y: this.maxy},
+                {x: this.minx, y: a * this.minx + b},
+                {x: this.maxx, y: a * this.maxx + b}
             ];
 
             points = _.filter(points, function (p) {
@@ -93,7 +93,7 @@ define([
 
         else {
             points = [
-                {x: this.centerx, y:this.miny},
+                {x: this.centerx, y: this.miny},
                 {x: this.centerx, y: this.maxy}
             ];
         }
@@ -104,7 +104,7 @@ define([
         });
 
         var idx = distances.indexOf(Math.min.apply(null, distances));
-        if(idx > -1) return points[idx];
+        if (idx > -1) return points[idx];
         return null;
     };
 
@@ -113,23 +113,24 @@ define([
     };
 
     function distance(a, b) {
-        var dx = a.x- b.x;
-        var dy = a.y- b.y;
-        return Math.sqrt(dx*dx + dy*dy);
+        var dx = a.x - b.x;
+        var dy = a.y - b.y;
+        return Math.sqrt(dx * dx + dy * dy);
     }
 
     var exports = {};
     var $diagram;
+
     function getLinks() {
         // targets are vars_in, sources are vars_out
         var sources = [], targets = [], links = [], i, j;
         var modules = ModuleFactory.getModules();
-        for(i=0; i<modules.length; i++) {
+        for (i = 0; i < modules.length; i++) {
             var module = modules[i].definition;
 
-            for(j=0; j<module.vars_in.length; j++) {
+            for (j = 0; j < module.vars_in.length; j++) {
                 var var_in = module.vars_in[j];
-                if(!var_in.name) continue;
+                if (!var_in.name) continue;
                 targets.push({
                     module: modules[i],
                     id: DataObject.resurrect(module.id),
@@ -138,9 +139,9 @@ define([
                 });
             }
 
-            for(j=0; j<module.vars_out.length; j++) {
+            for (j = 0; j < module.vars_out.length; j++) {
                 var var_out = module.vars_out[j];
-                if(!var_out.name || !var_out.event) continue;
+                if (!var_out.name || !var_out.event) continue;
                 sources.push({
                     id: DataObject.resurrect(module.id),
                     filter: var_out.filter,
@@ -152,14 +153,14 @@ define([
                 });
             }
         }
-        for(i=0; i<targets.length; i++) {
+        for (i = 0; i < targets.length; i++) {
             // Try to find source with same name
             var source = _.filter(sources, function (s) {
                 return s.name === targets[i].name;
             });
 
-            if(source) {
-                for(j=0; j<source.length; j++) {
+            if (source) {
+                for (j = 0; j < source.length; j++) {
                     console.log(source[j].jpath);
                     links.push({
                         source: {
@@ -189,12 +190,12 @@ define([
             //}
         }
 
-        for(i=0; i<sources.length; i++) {
-            var target = _.filter(targets, function (t){
+        for (i = 0; i < sources.length; i++) {
+            var target = _.filter(targets, function (t) {
                 return t.name === sources[i].name;
             });
 
-            if(!target.length) {
+            if (!target.length) {
                 Debug.warn('The module ' + sources[i].id + ' has a var_out ' + sources[i].name + ' not used as an input of any other module');
             }
         }
@@ -202,14 +203,14 @@ define([
     }
 
     function getNodes(links) {
-        var width = 1400, height=900;
+        var width = 1400, height = 900;
         var nodes = {};
         links.forEach(function (link) {
             link.source = nodes[link.source.id] || (nodes[link.source.id] = {info: link.source});
             link.target = nodes[link.target.id] || (nodes[link.target.id] = {info: link.target});
         });
-        var n = Object.keys(nodes).length, i=0;
-        for(var key in nodes) {
+        var n = Object.keys(nodes).length, i = 0;
+        for (var key in nodes) {
             //nodes[key].x = i*width/n + (Math.random()-0.5) * i/n/10 * width;
             //nodes[key].y = i*height/n + (Math.random()-0.5) *i/n/10 * height;
             nodes[key].x = Math.random() * width;
@@ -231,10 +232,10 @@ define([
                 nodeRadius = 50,
                 nodeBox;
 
-            if(type === 'circ') {
+            if (type === 'circ') {
                 nodeBox = {
-                    width: nodeRadius*Math.sqrt(2), // Length of the biggest square in that circle
-                    height: nodeRadius*Math.sqrt(2),
+                    width: nodeRadius * Math.sqrt(2), // Length of the biggest square in that circle
+                    height: nodeRadius * Math.sqrt(2),
                     padding: '2px 8px 2px 8px'
                 };
             }
@@ -257,7 +258,7 @@ define([
                 .nodes(d3.values(nodes))
                 .links(links)
                 .size([width, height])
-                .linkDistance((Math.max(nodeBox.width, nodeBox.height) + Math.max(linkBox.width, linkBox.height)*1.7))
+                .linkDistance((Math.max(nodeBox.width, nodeBox.height) + Math.max(linkBox.width, linkBox.height) * 1.7))
                 .charge(-4000)
                 .on('tick', tick)
                 .start();
@@ -286,7 +287,9 @@ define([
             svg.append('defs').selectAll('marker')
                 .data(['normal'])
                 .enter().append('marker')
-                .attr('id', function (d) { return d; })
+                .attr('id', function (d) {
+                    return d;
+                })
                 .attr('viewBox', '0 -5 10 10')
                 .attr('refX', 10)
                 .attr('refY', 0)
@@ -299,11 +302,15 @@ define([
             var path = svg.append('g').selectAll('path')
                 .data(force.links())
                 .enter().append('path')
-                .attr('class', function (d) { return 'link ' + d.type; })
-                .attr('marker-end', function (d) { return 'url(#' + d.type + ')'; });
+                .attr('class', function (d) {
+                    return 'link ' + d.type;
+                })
+                .attr('marker-end', function (d) {
+                    return 'url(#' + d.type + ')';
+                });
 
             var node;
-            if(type === 'circ') {
+            if (type === 'circ') {
                 node = svg.append('g').selectAll('circle')
                     .data(force.nodes())
                     .enter().append('circle')
@@ -312,7 +319,7 @@ define([
                     //.call(drag)
                     .call(force.drag);
             }
-            else if(type === 'rect') {
+            else if (type === 'rect') {
                 node = svg.append('g').selectAll('rect')
                     .data(force.nodes())
                     .enter().append('rect')
@@ -406,47 +413,48 @@ define([
             }
 
             function transformNode(d) {
-                if(type === 'circ')
+                if (type === 'circ')
                     return 'translate(' + d.x + ',' + d.y + ')';
                 else
-                    return 'translate(' + (d.x - nodeBox.width/2) + ',' + (d.y - nodeBox.height/2) + ')';
+                    return 'translate(' + (d.x - nodeBox.width / 2) + ',' + (d.y - nodeBox.height / 2) + ')';
             }
 
             function transformLink(d) {
                 var target = getTargetPosition(d);
-                return 'translate(' + ((target.from.x + target.to.x)/2 - linkBox.width/2) + ',' + ((target.from.y + target.to.y)/2 - linkBox.height/2) + ')';
+                return 'translate(' + ((target.from.x + target.to.x) / 2 - linkBox.width / 2) + ',' + ((target.from.y + target.to.y) / 2 - linkBox.height / 2) + ')';
             }
 
             function transformNodeText(d) {
-                return 'translate(' + ((d.x + d.x)/2 - nodeBox.width/2) + ',' + ((d.y + d.y)/2 - nodeBox.height/2) + ')';
+                return 'translate(' + ((d.x + d.x) / 2 - nodeBox.width / 2) + ',' + ((d.y + d.y) / 2 - nodeBox.height / 2) + ')';
             }
 
             function getTargetPosition(d) {
-                switch(type) {
+                switch (type) {
                     case 'circ':
                         var dx = d.target.x - d.source.x,
                             dy = d.target.y - d.source.y,
                             dr = Math.sqrt(dx * dx + dy * dy);
-                        var factor = 1-(nodeRadius / dr);
+                        var factor = 1 - (nodeRadius / dr);
                         return {
                             from: {
-                                x: d.target.x - dx*factor,
-                                y: d.target.y - dy*factor
+                                x: d.target.x - dx * factor,
+                                y: d.target.y - dy * factor
                             },
                             to: {
-                                x: d.source.x + dx*factor,
-                                y: d.source.y + dy*factor
+                                x: d.source.x + dx * factor,
+                                y: d.source.y + dy * factor
                             }
                         };
-                    case 'rect': {
+                    case 'rect':
+                    {
                         var sourceRect = new Rectangle({
-                            x: d.source.x - nodeBox.width/2,
-                            y: d.source.y - nodeBox.height/2
+                            x: d.source.x - nodeBox.width / 2,
+                            y: d.source.y - nodeBox.height / 2
                         }, nodeBox.width, nodeBox.height);
 
                         var targetRect = new Rectangle({
-                            x: d.target.x -nodeBox.width/2,
-                            y: d.target.y - nodeBox.height/2
+                            x: d.target.x - nodeBox.width / 2,
+                            y: d.target.y - nodeBox.height / 2
                         }, nodeBox.width, nodeBox.height);
 
                         return {
@@ -462,13 +470,13 @@ define([
             var wh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
             var f = 0.94;
             var dw, dh; // dialog height and width
-            if(ww/width < wh/height) {
+            if (ww / width < wh / height) {
                 dw = f * ww;
-                dh = dw * height/width;
+                dh = dw * height / width;
             }
             else {
                 dh = f * wh;
-                dw = dh * width/height;
+                dw = dh * width / height;
             }
 
             ui.dialog($diagram, {
