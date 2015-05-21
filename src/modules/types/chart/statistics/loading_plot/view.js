@@ -1,6 +1,13 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'lib/loadingplot/loadingplot', 'components/jquery-mousewheel/jquery.mousewheel.min'], function (Default, Util, API, LoadingPlot) {
+define([
+    'modules/default/defaultview',
+    'src/util/util',
+    'src/util/api',
+    'src/util/ui',
+    'lib/loadingplot/loadingplot',
+    'components/jquery-mousewheel/jquery.mousewheel.min'
+], function (Default, Util, API, ui, LoadingPlot) {
 
     Util.loadCss('lib/loadingplot/svg.css');
 
@@ -10,14 +17,14 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'lib/loa
     $.extend(true, View.prototype, Default, {
 
         init: function () {
-            this.dom = $('<div class="ci-display-loading-plot"></div>');
+            this.dom = ui.getSafeElement('div');
             this.module.getDomContent().html(this.dom);
             this.resolveReady();
         },
 
         onResize: function (w, h) {
-            this._w = w - 10;
-            this._h = h - 10;
+            this._w = w //- 10;
+            this._h = h //- 10;
             if (this._w && this._h && this._svg) {
                 this._svg.setSize(this._w, this._h);
             }
@@ -80,6 +87,8 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'lib/loa
                 this._highlights = [];
 
                 var svg = new LoadingPlot.SVG(null, null, null, null, this.module.getConfiguration('navigation')[0][0] || false);
+
+                svg._svgEl.style.display='block';
 
                 svg.onZoomChange(function (zoom01) {
                     self.module.controller.onZoomChange(zoom01);
