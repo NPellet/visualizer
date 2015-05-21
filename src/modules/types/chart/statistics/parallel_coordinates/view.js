@@ -7,8 +7,9 @@ define([
     'src/util/context',
     'lib/d3/d3.parcoords',
     'src/util/api',
+    'src/util/ui',
     'lodash'
-], function (Default, Util, Traversing, Context, d3, API, _) {
+], function (Default, Util, Traversing, Context, d3, API, ui, _) {
 
     function View() {
         this._id = Util.getNextUniqueId();
@@ -21,15 +22,13 @@ define([
     Util.loadCss('lib/d3/d3.parcoords.css');
 
     $.extend(true, View.prototype, Default, {
-        init: function () {
-            var that = this;
-            var html = '<div class="parcoords" id="' + this._id + '"></div>';
-
-            this.dom = $(html).css({
-                height: '100%',
-                width: '100%'
+        inDom: function () {
+            this.dom = ui.getSafeElement('div').attr({
+                id: this._id,
+                'class': 'parcoords'
             });
 
+            var that = this;
             Context.listen(this.dom[0], [
                     ['<li><a><span class="ui-icon ui-icon-refresh"></span>Reset selection</a></li>',
                         function () {
@@ -43,7 +42,7 @@ define([
             this.preventHighlight = this.module.getConfigurationCheckbox('options', 'hide');
 
             this.module.getDomContent().html(this.dom);
-
+            this.resolveReady();
         },
         blank: {
             value: function () {
@@ -98,10 +97,10 @@ define([
                 }
             }
         },
-        inDom: function () {
-            this.resolveReady();
-        },
         onResize: function () {
+            // 2 pixels less because of https://github.com/syntagmatic/parallel-coordinates
+            this.dom.css('width', this.width - 2);
+
             if (this.parcoords) {
                 this.parcoords.width(this.width).height(this.height).resize().render();
             }

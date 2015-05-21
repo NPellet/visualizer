@@ -12,7 +12,8 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
         description: 'Multivariate data visualization',
         author: 'Michaël Zasso',
         date: '11.03.2014',
-        license: 'MIT'
+        license: 'MIT',
+        cssClass: 'parallel_coordinates'
     };
 
     Controller.prototype.references = {
@@ -48,7 +49,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
         removeColumn: 'Remove a column'
     };
 
-    Controller.prototype.configurationStructure = function (section) {
+    Controller.prototype.configurationStructure = function () {
 
         var jpaths = Traversing.getJPathsFromElement(this.module.view._value[0]);
         return {
