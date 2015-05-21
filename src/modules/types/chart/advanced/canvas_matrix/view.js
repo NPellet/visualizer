@@ -73,17 +73,16 @@ define([
         },
 
         inDom: function () {
-            this.canvasContainer.width(this.dom.width() - 55);
             this.onResize(true);
             this.initWorkers().then(this.resolveReady.bind(this));
             this.module.controller.initEvents();
         },
 
         onResize: function (doNotRedraw) {
-
+            this.canvasContainer.width(this.width - 55);
             // We only care about resizing
             this.canvas.width = this.canvasContainer.width();
-            this.canvas.height = this.canvasContainer.height();
+            this.canvas.height = this.height;
 
             if (!doNotRedraw) {
                 this.doCanvasErase();
