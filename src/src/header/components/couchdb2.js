@@ -686,6 +686,7 @@ define([
                                             contentHtml: {
                                                 type: 'wysiwyg',
                                                 title: 'Value',
+                                                default: ' ',
                                                 displayTarget: ['h']
                                             }
                                         }
