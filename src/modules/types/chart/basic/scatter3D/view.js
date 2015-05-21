@@ -361,7 +361,7 @@ define([
             }
 
             function init() {
-                self.camera = self.camera || new THREE.PerspectiveCamera(60, self.dom.width() / self.dom.height(), CAMERA_NEAR, CAMERA_FAR);
+                self.camera = self.camera || new THREE.PerspectiveCamera(60, self.width / self.height, CAMERA_NEAR, CAMERA_FAR);
                 if (self.controls) {
                     // self.controls.reset();
                 } else {
@@ -438,9 +438,9 @@ define([
             }
 
             function onWindowResize() {
-                self.camera.aspect = self.dom.width() / self.dom.height();
+                self.camera.aspect = self.width / self.height;
                 self.camera.updateProjectionMatrix();
-                self.renderer.setSize(self.dom.width(), self.dom.height());
+                self.renderer.setSize(self.width, self.height);
                 self.controls.handleResize();
                 render();
             }
@@ -1442,9 +1442,9 @@ define([
                     self._zoomToFit();
                     self._firstLoad = false;
                 } else {
-                    self.camera.aspect = self.dom.width() / self.dom.height();
+                    self.camera.aspect = self.width / self.height;
                     self.camera.updateProjectionMatrix();
-                    self.renderer.setSize(self.dom.width(), self.dom.height());
+                    self.renderer.setSize(self.width, self.height);
                     self.controls.handleResize();
                     self._render();
                     if (self.headlight) {
@@ -1531,7 +1531,7 @@ define([
             var values_color = object.material.attributes.ca.value;
             var color = self._data.color;
             var size = self._data.size;
-            var factor = 2.2388 * (options.sizeFactor || 1.0) * NORM_CONSTANT * self.dom.height();
+            var factor = 2.2388 * (options.sizeFactor || 1.0) * NORM_CONSTANT * self.height;
             var forcedColor = options.forcedColor ? new THREE.Color(options.forcedColor) : null;
             var updateColor = options.updateColor || true;
             var filter;
