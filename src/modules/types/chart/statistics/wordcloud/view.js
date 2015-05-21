@@ -49,6 +49,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/ui', 'lib/d3/d
             if (this.layout) {
                 this.dom.empty();
                 this.drawChart();
+                this.refresh();
             }
         },
         processChart: function (myvalues) {

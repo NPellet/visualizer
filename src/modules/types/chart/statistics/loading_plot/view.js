@@ -23,11 +23,12 @@ define([
         },
 
         onResize: function (w, h) {
-            this._w = w //- 10;
-            this._h = h //- 10;
+            this._w = w;
+            this._h = h;
             if (this._w && this._h && this._svg) {
                 this._svg.setSize(this._w, this._h);
             }
+            this.refresh();
         },
 
         blank: {

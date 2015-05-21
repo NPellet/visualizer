@@ -1,6 +1,6 @@
 'use strict';
 
-define(['require', 'modules/default/defaultview', 'src/util/api'], function (require, Default, API) {
+define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui'], function (require, Default, API, ui) {
 
     function View() {
     }
@@ -47,9 +47,10 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
             var id = this.module.getId();
             views[id] = this;
 
-            this.dom = $('<iframe>', {src: require.toUrl('./lib/jsme.html')}).css('border', 0);
+            this.dom = ui.getSafeElement('iframe').attr('src', require.toUrl('./lib/jsme.html'));
 
             this.module.getDomContent().html(this.dom);
+            this.module.getDomContent().css('overflow', 'hidden');
 
             this.dom.bind('load', function () {
                 self.postMessage('init', {
@@ -75,12 +76,12 @@ define(['require', 'modules/default/defaultview', 'src/util/api'], function (req
             this.dom.attr('width', this.width);
             this.dom.attr('height', this.height);
 
-            this.module.getDomContent().css('overflow', 'hidden');
-
             this.postMessage('setSize', {
                 width: this.width,
                 height: this.height
             });
+
+            this.refresh();
         },
 
         onProgress: function () {
