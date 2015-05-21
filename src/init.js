@@ -61,9 +61,6 @@ requirejs.config({
         //		return MathJax;
         //	}
         //},
-        d3: {
-            exports: 'd3'
-        },
         threejs: {
             exports: 'THREE',
             init: function () {
