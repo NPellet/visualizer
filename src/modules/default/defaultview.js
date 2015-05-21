@@ -94,6 +94,16 @@ define(['src/util/util'], function (Util) {
 
         relsForLoading: function () {
             return this._relsForLoading || (this._relsForLoading = []);
+        },
+
+        //TODO hack for chrome
+        // see http://jsfiddle.net/jub3ohct/3/
+        refresh: function () {
+            var el = this.module.getDomContent();
+            el.hide();
+            setImmediate(function () {
+                el.show();
+            });
         }
     };
 
