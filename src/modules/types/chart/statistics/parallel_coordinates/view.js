@@ -102,7 +102,7 @@ define([
             this.dom.css('width', this.width - 2);
 
             if (this.parcoords) {
-                this.parcoords.width(this.width).height(this.height).resize().render();
+                this.parcoords.width(this.width - 2).height(this.height).resize().render();
             }
         },
         redrawChart: function () {
