@@ -76,7 +76,7 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.layout.cloud'
                 for (var i = myarray.length - 1; i >= 0; i--) {
                     var key = myarray[i][0];
                     var word = myarray[i][1];
-                    if(key !== key.ParseInt() && word === word.ParseInt()){
+                    if(key !== parseInt(key) && word === parseInt(word)){
                         //oups I did it again ;)
                         var tmp=key;key=word;word=tmp;
                     }
