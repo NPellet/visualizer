@@ -96,7 +96,7 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.layout.cloud'
                 tags = {};
                 var cases = {};
 
-                text.split(that.module.getConfigurationCheckbox('oneWordPerLine') ? /\n/g : wordSeparators).forEach(function (word) {
+                text.split(that.module.getConfigurationCheckbox('oneWordPerLine','oneWordPerLine') ? /\n/g : wordSeparators).forEach(function (word) {
                     if (discard.test(word)) return;
                     word = word.replace(punctuation, '');
                     if (stopWords.test(word.toLowerCase())) return;
