@@ -312,12 +312,12 @@ define([
                         that.$addButton = $('<input type="button" value="Add"/>');
                         that.$addButton.on('click', function() {
                             var cols = that.grid.getColumns();
-                            var idx = _.findIndex(cols, function(v) {
+                            var colidx = _.findIndex(cols, function(v) {
                                 return v.editor;
-                            })
-                            if(idx > -1) {
+                            });
+                            if(colidx > -1) {
                                 that.preventRowHelp();
-                                that.grid.gotoCell(100, idx, true);
+                                that.grid.gotoCell(that.slick.data.getLength(), colidx, true);
                             }
                         });
 
