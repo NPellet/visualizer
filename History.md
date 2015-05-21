@@ -1,3 +1,49 @@
+2.20.0 / 2015-05-21
+===================
+
+* Core
+ * add eslint for style check of the codebase
+ * util: add ui.getSafeElement
+ * core: add workaround for chrome bug with svg elements
+ * new util: colorbar
+ * util/color: make rgb2hex to work with rgb css syntax
+ * util/color: round rgb values
+ * grid: try to wait for module readyness before removing it from the DOM
+ * typerenderer: make renderer selection case-insensitive
+ * typerenderer: fix colorBar
+* Modules
+ * new wordcloud module
+ * new hexagonal map module
+ * new OCL molecule editor
+ * Fix a lot of issues with scrollbars and sizing
+ * jsmol: add sync script action in and var out
+ * matrix: fix inversion out row and column for output variable
+ * scatter3D: add colorbar
+ * scatter3D: fix size computation
+ * slick_grid: fix CSV export
+ * slick_grid: custom action buttons
+ * slick_grid: delete toolbar button
+ * slick_grid: add toolbar button
+ * slick_grid: Change default selection model
+ * slick_grid: add multiple line selection var out
+ * slick_grid: Fix color editor when undefined
+ * slick_grid: reset delete listeners on cell change fix #548
+* Components
+ * :arrow_up: jsgraph v1.11.2
+ * :arrow_up: openchemlib v3.0.0-beta4
+ * :arrow_up: papaparse v4.1.1
+ * forms/wysiwyg: fix error loading ckeditor custom config
+ * remove bluebird
+ * remove chemcalc
+ * lib: add d3.layout.cloud
+ * Add d3 plugins
+ * twig: rendertype option precedes variable type
+ * forms: fix textstyle problem in strict mode
+* Header
+ * couchdb2: metadata wysiwyg default value
+ * meta form: default type is text
+ * On meta saved, change hasMeta flag fix #544
+
 2.19.2 / 2015-05-05
 ===================
 
