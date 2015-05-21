@@ -284,7 +284,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
         return this.module.view.exportToTabDelimited();
     };
 
-    Controller.prototype.sendActionButton = function(name, items) {
+    Controller.prototype.sendActionButton = function (name, items) {
         API.doAction(name, items);
     };
 

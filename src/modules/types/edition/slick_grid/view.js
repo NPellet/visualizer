@@ -93,7 +93,7 @@ define([
 
             this.actionOutButtons = this.module.getConfiguration('actionOutButtons');
             this.actionOutButtons = this.actionOutButtons || [];
-            this.actionOutButtons = _.filter(this.actionOutButtons, function(v) {
+            this.actionOutButtons = _.filter(this.actionOutButtons, function (v) {
                 return v.actionName && v.buttonTitle;
             });
 
@@ -107,18 +107,18 @@ define([
             this.resolveReady();
         },
 
-        preventRowHelp: function() {
+        preventRowHelp: function () {
             this._preventRowHelp = true;
         },
 
-        deleteRowSelection: function() {
+        deleteRowSelection: function () {
             var rows = this.grid.getSelectedRows();
             var idx = new Array(rows.length);
-            for(var i=0; i<rows.length; i++) {
+            for (var i = 0; i < rows.length; i++) {
                 var itemInfo = this._getItemInfoFromRow(rows[i]);
                 idx[i] = itemInfo.idx;
             }
-            for(i=0; i<rows.length; i++) {
+            for (i = 0; i < rows.length; i++) {
                 this.module.data.splice(idx[i], 1);
             }
             this.lastSelectedRows = [];
@@ -310,19 +310,19 @@ define([
                     })
                     .then(function () {
                         that.$addButton = $('<input type="button" value="Add"/>');
-                        that.$addButton.on('click', function() {
+                        that.$addButton.on('click', function () {
                             var cols = that.grid.getColumns();
-                            var colidx = _.findIndex(cols, function(v) {
+                            var colidx = _.findIndex(cols, function (v) {
                                 return v.editor;
                             });
-                            if(colidx > -1) {
+                            if (colidx > -1) {
                                 that.preventRowHelp();
                                 that.grid.gotoCell(that.slick.data.getLength(), colidx, true);
                             }
                         });
 
                         that.$deleteButton = $('<input type="button" value="Delete"/>');
-                        that.$deleteButton.on('click', function() {
+                        that.$deleteButton.on('click', function () {
                             that.deleteRowSelection();
                         });
                         that.$rowToolbar = $('<div>').attr('class', 'rowToolbar')
@@ -330,12 +330,12 @@ define([
                             .append(that.$deleteButton);
 
                         that.$actionButtons = new Array(that.actionOutButtons.length);
-                        for(var i=0; i<that.actionOutButtons.length; i++) {
-                            (function(i){
+                        for (var i = 0; i < that.actionOutButtons.length; i++) {
+                            (function (i) {
                                 that.$actionButtons[i] = $('<input type="button" value="' + that.actionOutButtons[i].buttonTitle + '"/>');
-                                that.$actionButtons[i].on('click', function() {
+                                that.$actionButtons[i].on('click', function () {
                                     that.module.controller.sendActionButton(that.actionOutButtons[i].actionName, that._getSelectedItems());
-                                })
+                                });
                             })(i);
                         }
 
@@ -871,17 +871,17 @@ define([
             this.dataObjectsDone = true;
         },
 
-        _getItems: function(rows) {
-            var selected = []
+        _getItems: function (rows) {
+            var selected = [];
             for (var i = 0; i < rows.length; i++) {
                 var itemInfo = this._getItemInfoFromRow(rows[i]);
-                if(itemInfo)
+                if (itemInfo)
                     selected.push(itemInfo.item);
             }
             return selected;
         },
 
-        _getSelectedItems: function() {
+        _getSelectedItems: function () {
             return this._getItems(this.grid.getSelectedRows());
         },
 
@@ -917,13 +917,15 @@ define([
             var txt = '';
             var line = [], i, j;
             for (i = 0; i < cols.length; i++) {
-                line.push(cols[i].name || '');
+                if (cols[i].jpath) // ignore special columns
+                    line.push(cols[i].name || '');
             }
             txt += line.join('\t') + '\r\n';
             for (i = 0; i < this.module.data.length; i++) {
                 line = [];
                 for (j = 0; j < cols.length; j++) {
                     var jpath = cols[j].jpath;
+                    if (!jpath) continue; // again
                     jpath = jpath.slice(0);
                     jpath.unshift(i);
                     var el = this.module.data.getChildSync(jpath, false);
