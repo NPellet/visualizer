@@ -343,7 +343,7 @@ define([
                             that.$rowToolbar.append(that.$actionButtons);
                             that.$container.append(that.$rowToolbar);
                         } else {
-                            if(that.$rowToolbar)
+                            if (that.$rowToolbar)
                                 that.$rowToolbar.remove();
                         }
 
