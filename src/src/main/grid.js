@@ -226,7 +226,6 @@ define([
 
 
     function moduleResize(module) {
-
         var wrapper = module.getDomWrapper();
 
         module.getSize(getActiveLayer()).set('width', wrapper.width() / definition.xWidth);
@@ -241,7 +240,6 @@ define([
         module.view.width = module.getDomContent().width();
         module.view.height = containerHeight;
         module.view.onResize(module.view.width, module.view.height);
-        module.view.refresh();
     }
 
     function newModule(url) {

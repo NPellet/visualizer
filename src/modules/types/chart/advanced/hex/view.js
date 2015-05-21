@@ -135,8 +135,8 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             this.label = _.pluck(this.chart.data, 'label');
         },
 
-        onResize: function (width, height) {
-
+        onResize: function () {
+            this.refresh();
         },
 
         draw: function () {

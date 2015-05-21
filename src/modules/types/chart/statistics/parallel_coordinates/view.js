@@ -104,6 +104,8 @@ define([
             if (this.parcoords) {
                 this.parcoords.width(this.width - 2).height(this.height).resize().render();
             }
+
+            this.refresh();
         },
         redrawChart: function () {
             var that = this;
