@@ -260,6 +260,16 @@ define([
         }, 5000);
     };
 
+    exports.getSafeElement = function (el) {
+        return $('<' + el + '>').css({
+            width: '100%',
+            height: '100%',
+            margin: 0,
+            padding: 0,
+            border: 'none'
+        });
+    };
+
     return exports;
 
 });
