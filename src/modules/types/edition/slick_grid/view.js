@@ -309,37 +309,39 @@ define([
                         return that.cssLoaded;
                     })
                     .then(function () {
-                        that.$addButton = $('<input type="button" value="Add"/>');
-                        that.$addButton.on('click', function () {
-                            var cols = that.grid.getColumns();
-                            var colidx = _.findIndex(cols, function (v) {
-                                return v.editor;
-                            });
-                            if (colidx > -1) {
-                                that.preventRowHelp();
-                                that.grid.gotoCell(that.slick.data.getLength(), colidx, true);
-                            }
-                        });
-
-                        that.$deleteButton = $('<input type="button" value="Delete"/>');
-                        that.$deleteButton.on('click', function () {
-                            that.deleteRowSelection();
-                        });
-                        that.$rowToolbar = $('<div>').attr('class', 'rowToolbar')
-                            .append(that.$addButton)
-                            .append(that.$deleteButton);
-
-                        that.$actionButtons = new Array(that.actionOutButtons.length);
-                        for (var i = 0; i < that.actionOutButtons.length; i++) {
-                            (function (i) {
-                                that.$actionButtons[i] = $('<input type="button" value="' + that.actionOutButtons[i].buttonTitle + '"/>');
-                                that.$actionButtons[i].on('click', function () {
-                                    that.module.controller.sendActionButton(that.actionOutButtons[i].actionName, that._getSelectedItems());
+                        if (that.module.getConfigurationCheckbox('slickCheck', 'showToolbar')) {
+                            that.$addButton = $('<input type="button" value="Add"/>');
+                            that.$addButton.on('click', function () {
+                                var cols = that.grid.getColumns();
+                                var colidx = _.findIndex(cols, function (v) {
+                                    return v.editor;
                                 });
-                            })(i);
-                        }
+                                if (colidx > -1) {
+                                    that.preventRowHelp();
+                                    that.grid.gotoCell(that.slick.data.getLength(), colidx, true);
+                                }
+                            });
 
-                        that.$rowToolbar.append(that.$actionButtons);
+                            that.$deleteButton = $('<input type="button" value="Delete"/>');
+                            that.$deleteButton.on('click', function () {
+                                that.deleteRowSelection();
+                            });
+                            that.$rowToolbar = $('<div>').attr('class', 'rowToolbar')
+                                .append(that.$addButton)
+                                .append(that.$deleteButton);
+
+                            that.$actionButtons = new Array(that.actionOutButtons.length);
+                            for (var i = 0; i < that.actionOutButtons.length; i++) {
+                                (function (i) {
+                                    that.$actionButtons[i] = $('<input type="button" value="' + that.actionOutButtons[i].buttonTitle + '"/>');
+                                    that.$actionButtons[i].on('click', function () {
+                                        that.module.controller.sendActionButton(that.actionOutButtons[i].actionName, that._getSelectedItems());
+                                    })
+                                })(i);
+                            }
+
+                            that.$rowToolbar.append(that.$actionButtons);
+                        }
 
                         that.$slickgrid = $('<div>').css({
                             flex: 1
@@ -872,7 +874,7 @@ define([
         },
 
         _getItems: function (rows) {
-            var selected = [];
+            var selected = []
             for (var i = 0; i < rows.length; i++) {
                 var itemInfo = this._getItemInfoFromRow(rows[i]);
                 if (itemInfo)
