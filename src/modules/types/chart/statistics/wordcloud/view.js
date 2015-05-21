@@ -29,7 +29,7 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.layout.cloud'
                     return;
                 }
                 value = value.get();
-                if (!Array.isArray(value)){
+                if (!Array.isArray(value)) {
                     return;
                 }
                 this.processChart(value);
@@ -57,7 +57,7 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.layout.cloud'
             //####### BEGIN VARS ########
             var that = this;
             var tags, fetcher;
-            that.fontSize;
+            that.fontSize = undefined;
             that.words = [];
 
             var unicodePunctuationRe = '!-#%-*,-/:;?@\\[-\\]_{}¡§«¶·»¿;·՚-՟։֊־׀׃׆׳״؉؊،؍؛؞؟٪-٭۔܀-܍߷-߹࠰-࠾࡞।॥॰૰෴๏๚๛༄-༒༔༺-༽྅࿐-࿔࿙࿚၊-၏჻፠-፨᐀᙭᙮᚛᚜᛫-᛭᜵᜶។-៖៘-៚᠀-᠊᥄᥅᨞᨟᪠-᪦᪨-᪭᭚-᭠᯼-᯿᰻-᰿᱾᱿᳀-᳇᳓‐-‧‰-⁃⁅-⁑⁓-⁞⁽⁾₍₎〈〉❨-❵⟅⟆⟦-⟯⦃-⦘⧘-⧛⧼⧽⳹-⳼⳾⳿⵰⸀-⸮⸰-⸻、-〃〈-】〔-〟〰〽゠・꓾꓿꘍-꘏꙳꙾꛲-꛷꡴-꡷꣎꣏꣸-꣺꤮꤯꥟꧁-꧍꧞꧟꩜-꩟꫞꫟꫰꫱꯫﴾﴿︐-︙︰-﹒﹔-﹡﹣﹨﹪﹫！-＃％-＊，-／：；？＠［-］＿｛｝｟-･';
@@ -69,23 +69,23 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.layout.cloud'
             
             that.drawChart();
             
-            function parseArray(myarray){
+            function parseArray(myarray) {
                 tags = {};
                 var cases = {};
 
                 for (var i = myarray.length - 1; i >= 0; i--) {
                     var key = myarray[i][0];
                     var word = myarray[i][1];
-                    if(key !== parseInt(key) && word === parseInt(word)){
+                    if (key !== parseInt(key) && word === parseInt(word)) {
                         //oups I did it again ;)
-                        var tmp=key;key=word;word=tmp;
+                        var tmp = key; key = word; word = tmp;
                     }
                     if (discard.test(word)) return;
                     word = word.replace(punctuation, '');
                     if (stopWords.test(word.toLowerCase())) return;
                     cases[word.toLowerCase()] = word;
                     tags[word = word.toLowerCase()] = (tags[word] || 0) + key;
-                };
+                }
                 
                 tags = d3.entries(tags).sort(function (a, b) { return b.value - a.value; });
                 tags.forEach(function (d) { d.key = cases[d.key]; });
@@ -96,7 +96,7 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.layout.cloud'
                 tags = {};
                 var cases = {};
 
-                text.split(that.module.getConfigurationCheckbox('oneWordPerLine','oneWordPerLine') ? /\n/g : wordSeparators).forEach(function (word) {
+                text.split(that.module.getConfigurationCheckbox('oneWordPerLine', 'oneWordPerLine') ? /\n/g : wordSeparators).forEach(function (word) {
                     if (discard.test(word)) return;
                     word = word.replace(punctuation, '');
                     if (stopWords.test(word.toLowerCase())) return;
@@ -118,9 +118,9 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.layout.cloud'
             }
 
             //####### END FUNCTIONS ########
-            if(Array.isArray(myvalues)){
+            if (Array.isArray(myvalues)) {
                 parseArray(myvalues);
-            }else{
+            }else {
                 parseText(myvalues);
             }
         },
@@ -137,29 +137,27 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.layout.cloud'
             var background = svg.append('g'),
                 vis = svg.append('g')
                     .attr('transform', 'translate(' + [w >> 1, h >> 1] + ')');
-            var from = that.module.getConfiguration('fromTo') ? Math.max(-90, Math.min(90, + that.module.getConfiguration('fromTo')[0] )) : 0;
-            var to = that.module.getConfiguration('fromTo') ? Math.max(-90, Math.min(90, + that.module.getConfiguration('fromTo')[1] )) : 0;
+            var from = that.module.getConfiguration('fromTo') ? Math.max(-90, Math.min(90, +that.module.getConfiguration('fromTo')[0])) : 0;
+            var to = that.module.getConfiguration('fromTo') ? Math.max(-90, Math.min(90, +that.module.getConfiguration('fromTo')[1])) : 0;
             var count = that.module.getConfiguration('orientation') > 0 ? that.module.getConfiguration('orientation') : 1;
 
             //####### END VARS ########
 
             //####### BEGIN FUNCTIONS ########
             //.rotate(function(d) { return ~~(Math.random() * 5) * 30 - 60; })
-            if(!that.layout){
-                
-                console.log(from,to,count)
-                that.layout =  d3.layout.cloud()
+            if (!that.layout) {
+                that.layout = d3.layout.cloud()
                     .timeInterval(10)
-                    .rotate(function(d) { return ~~(Math.random() * count) * from - to; })
+                    .rotate(function (d) { return ~~(Math.random() * count) * from - to; })
                     .size([w, h])
                     .fontSize(function (d) {
                         return that.fontSize(+d.value);
                     })
                     .text(function (d) {return d.key; })
                     .on('end', draw);
-            }else{
+            } else {
                 that.layout
-                .rotate(function(d) { return ~~(Math.random() * count) * from - to; })
+                .rotate(function (d) { return ~~(Math.random() * count) * from - to; })
                 .size([w, h])
                 .on('end', draw);
                 that.layout.stop().start();
