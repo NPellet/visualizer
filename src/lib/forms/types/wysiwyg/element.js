@@ -26,7 +26,7 @@ define(['require', 'jquery', 'src/util/util', 'ckeditor'], function (require, $,
         var self = this;
 
         var uri = require.toUrl('./ckeditor_config.js');
-        if (uri.indexOf('http') !== 0) {
+        if (!uri.startsWith('http') && !uri.startsWith('//') && !uri.startsWith('https')) {
             uri = '../../' + uri;
         }
 
