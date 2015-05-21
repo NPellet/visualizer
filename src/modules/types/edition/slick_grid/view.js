@@ -341,12 +341,15 @@ define([
                             }
 
                             that.$rowToolbar.append(that.$actionButtons);
+                            that.$container.append(that.$rowToolbar);
+                        } else {
+                            if(that.$rowToolbar)
+                                that.$rowToolbar.remove();
                         }
 
                         that.$slickgrid = $('<div>').css({
                             flex: 1
                         });
-                        that.$container.append(that.$rowToolbar);
                         that.$container.append(that.$slickgrid);
                         that.slick.groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
                         that.slick.data = new Slick.Data.DataView({
