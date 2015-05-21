@@ -19,13 +19,17 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
         textvalue: {
             type: 'string',
             label: 'A string of words'
+        },
+        arrayvalue: {
+            type: 'array',
+            label: 'An array of words'
         }
     };
 
     Controller.prototype.events = {
     };
 
-    Controller.prototype.variablesIn = ['textvalue'];
+    Controller.prototype.variablesIn = ['arrayvalue', 'textvalue'];
 
     Controller.prototype.actionsIn = {
     };

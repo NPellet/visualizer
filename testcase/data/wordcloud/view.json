@@ -24,15 +24,17 @@
                 "log"
               ],
               "orientation": [
-                5
+                1
               ],
               "oneWordPerLine": [
-                []
+                [
+                  "oneWordPerLine"
+                ]
               ],
               "fromTo": [
                 [
-                  -60,
-                  60
+                  0,
+                  0
                 ]
               ]
             }
@@ -66,7 +68,7 @@
       "id": 1,
       "vars_in": [
         {
-          "rel": "textvalue",
+          "rel": "arrayvalue",
           "name": "myvar"
         }
       ],
@@ -176,7 +178,7 @@
       "actions_in": [
         {}
       ],
-      "richtext": "cheminfo cheminfo cheminfo cheminfo cheminfo cheminfo visualizer visualizer visualizer visualizer visualizer visualizer visualizer visualizer visualizer visualizer visualizer javascript javascript javascript javascript chemical chemical chemical molecule molecule molecule molecule peak peak smiles smiles mass mass mass",
+      "richtext": "aaaa bbbb ccccc",
       "vars_out": [
         {
           "jpath": []
