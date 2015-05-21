@@ -9,7 +9,7 @@ requirejs.config({
     }
 });
 
-define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/util', 'd3', 'src/util/color', 'src/util/colorbar', 'd3-plugins/hexbin/hexbin'], function (Default, _, Debug, Util, d3, colorUtil, colorbar) {
+define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/util', 'd3', 'src/util/color', 'src/util/colorbar', 'src/util/ui', 'd3-plugins/hexbin/hexbin'], function (Default, _, Debug, Util, d3, colorUtil, colorbar, ui) {
     var DEFAULT_COLOR = 'lightblue';
 
 
@@ -21,10 +21,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         },
         inDom: function () {
             this.id = Util.getNextUniqueId();
-            this.dom = $('<div>').attr('id', this.id).css({
-                width: '99%',
-                height: '99%'
-            });
+            this.dom = ui.getSafeElement('div').attr('id', this.id);
             this.module.getDomContent().html(this.dom);
             this.resolveReady();
         },
@@ -157,33 +154,19 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             boundingBox[0] -= 100; // Keep some room for color bar
             boundingBox[2] += 100;
 
-
-            console.log('bounding box', boundingBox);
-            console.log('radius', hexRadius);
-
             function toPixel(point) {
                 return [point[0] * hexRadius * 1.75, point[1] * hexRadius * 1.5];
             }
 
-            var margin = {
-                top: 20 + hexRadius / 2, bottom: 30 + hexRadius / 2,
-                left: 40 + hexRadius / 2, right: 20 + hexRadius / 2
-            };
-
-            var width = this.dom.width() - margin.left - margin.right,
-                height = this.dom.height() - margin.top - margin.bottom;
-
-            //var h = this.
+            var width = this.width,
+                height = this.height;
 
             var svg = d3.select('#' + this.id).append('svg')
                 .attr('viewBox', boundingBox.join(','))
-                .style('margin', 0)
-                .style('padding', 0)
-                .attr('width', width + margin.left + margin.right)
-                .attr('height', height + margin.top + margin.bottom)
+                .attr('width', width)
+                .attr('height', height)
+                .style('display', 'block')
                 .append('g');
-            //.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
 
             var colorbarx = boundingBox[0] + 20;
             var colorbary = boundingBox[1] + 20;
@@ -201,7 +184,6 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             });
 
             svgMarkup = '<g transform="translate(' + colorbarx + ',' + colorbary + ')">' + svgMarkup + '</g>';
-            console.log('svg markup', svgMarkup);
             svg.html(svgMarkup);
 
 

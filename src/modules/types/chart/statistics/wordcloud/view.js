@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.layout.cloud'], function (Default, Util, d3) {
+define(['modules/default/defaultview', 'src/util/util', 'src/util/ui', 'lib/d3/d3.layout.cloud'], function (Default, Util, ui, d3) {
 
     function View() {
     }
@@ -8,11 +8,9 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.layout.cloud'
     View.prototype = $.extend(true, {}, Default, {
         init: function () {
             this._id = Util.getNextUniqueId();
-            var html = '<div class="layout-cloud" id="' + this._id + '"></div>';
-            this.dom = $(html).css({
-                height: '100%',
-                width: '100%'
-            });
+            this.dom = ui.getSafeElement('div')
+                .attr('id', this._id)
+                .attr('class', 'layout-cloud');
             this.module.getDomContent().html(this.dom);
         },
         blank: {
@@ -58,7 +56,8 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.layout.cloud'
             
             var svg = d3.select('#' + this._id).append('svg')
                 .attr('width', w)
-                .attr('height', h);
+                .attr('height', h)
+                .style('display', 'block');
 
             var background = svg.append('g'),
                 vis = svg.append('g')
