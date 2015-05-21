@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-34
+ * jsGraph JavaScript Graphing Library v1.11.2
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-02-11T15:42Z
+ * Date: 2015-05-18T08:51Z
  */
 
 (function( global, factory ) {
@@ -933,7 +933,7 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
             /*
   					Example:
   						13'453 (4) (1.345) => 1
-  						0.0000341 (-5) (3.41) => 5 
+  						0.0000341 (-5) (3.41) => 5
   				*/
 
             // Let's scale it back
@@ -1130,6 +1130,8 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       while ( this.groupGrids.firstChild ) {
         this.groupGrids.removeChild( this.groupGrids.firstChild );
       }
+
+      this.ticks = [];
     },
 
     drawLinearTicksWrapper: function( widthPx, valrange ) {
@@ -1731,6 +1733,7 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
       this.label.setAttribute( 'text-anchor', 'middle' );
       this.label.setAttribute( 'x', Math.abs( this.getMaxPx() - this.getMinPx() ) / 2 + this.getMinPx() );
       this.label.setAttribute( 'y', ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ? 10 : 15 ) + this.graph.options.fontSize ) );
+      this.labelTspan.textContent = this.getLabel();
 
       this.line.setAttribute( 'x1', this.getMinPx() );
       this.line.setAttribute( 'x2', this.getMaxPx() );
@@ -1908,6 +1911,9 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
       // Place label correctly
       //this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
       this.label.setAttribute( 'transform', 'translate(' + ( ( this.left ? 1 : -1 ) * ( -this.widthHeightTick - 10 - 5 ) ) + ', ' + ( Math.abs( this.getMaxPx() - this.getMinPx() ) / 2 + Math.min( this.getMinPx(), this.getMaxPx() ) ) + ') rotate(-90)' );
+
+      console.log( this.labelTspan, this.getLabel() );
+      this.labelTspan.textContent = this.getLabel();
 
       if ( !this.left ) {
         this.labelTspan.style.dominantBaseline = 'hanging';
@@ -5865,6 +5871,11 @@ build['./graph._serie'] = ( function( EventEmitter ) {
       }
     },
 
+    // Default set options
+    setOptions: function( options ) {
+      this.options = options;
+    },
+
     kill: function( noRedraw ) {
 
       this.graph.removeSerieFromDom( this );
@@ -7383,6 +7394,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         }
       };
 
+// Optimize is no markerPoints => save loops
+//      this.markerPoints = {};
+
       this.groupLines = document.createElementNS( this.graph.ns, 'g' );
       this.domMarker = document.createElementNS( this.graph.ns, 'path' );
       this.domMarker.style.cursor = 'pointer';
@@ -7418,8 +7432,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
       this.independantMarkers = [];
 
-      if ( this.initExtended1 )
+      if ( this.initExtended1 ) {
         this.initExtended1();
+      }
 
       if ( this.options.autoPeakPicking ) {
 
@@ -7471,13 +7486,16 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
     },
 
-    setAdditionalData: function( data ) {
-      this.additionalData = data;
-      return this;
-    },
+    setOptions: function( options ) {
+      this.options = $.extend( true, {}, GraphSerie.prototype.defaults, ( options || {} ) );
+      // Unselected style
+      this.styles.unselected = {
+        lineColor: this.options.lineColor,
+        lineStyle: this.options.lineStyle,
+        markers: this.options.markers
+      };
 
-    getAdditionalData: function() {
-      return this.additionalData;
+      this.applyLineStyles();
     },
 
     calculateSlots: function() {
@@ -7873,6 +7891,10 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         m,
         x,
         y,
+        k,
+        o,
+        lastX,
+        lastY,
         xpx,
         ypx,
         xpx2,
@@ -7880,9 +7902,17 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         xAxis = this.getXAxis(),
         yAxis = this.getYAxis();
 
+      var xMin = xAxis.getActualMin(),
+        yMin = yAxis.getActualMin(),
+        xMax = xAxis.getActualMax(),
+        yMax = yAxis.getActualMax();
+
       var incrXFlip = 0;
       var incrYFlip = 1;
 
+      var pointOutside = false;
+      var lastPointOutside = false;
+      var pointOnAxis;
       if ( this.isFlipped() ) {
         incrXFlip = 1;
         incrYFlip = 0;
@@ -7908,22 +7938,95 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
           x = data[ i ][ j + incrXFlip ];
           y = data[ i ][ j + incrYFlip ];
 
-          /*   if ( x < xAxis.getMin() || y < yAxis.getMin() || ( ( x > xAxis.getMax() ||  y > yAxis.getMax() ) && !this._optimizeMonotoneous ) ) {
-
-            lastPointX = x;
-            lastPointY = y;
-            continue;
-          }
-
-          if ( lastPoint ) {
-            xpx2 = this.getX( lastPointX );
-            ypx2 = this.getY( lastPointY );
-          }
-*/
           xpx2 = this.getX( x );
           ypx2 = this.getY( y );
 
+          pointOutside = ( x < xMin || y < yMin || x > xMax ||  y > yMax );
+
           if ( xpx2 == xpx && ypx2 == ypx ) {
+            continue;
+          }
+
+          if ( pointOutside || lastPointOutside ) {
+
+            if ( ( !lastX ||  !lastY ) && !lastPointOutside ) {
+              lastPointOutside = true;
+
+              xpx = xpx2;
+              ypx = ypx2;
+              lastX = x;
+              lastY = y;
+
+            } else {
+
+              pointOnAxis = [];
+              // Y crossing
+              var yLeftCrossing = ( x - xMin ) / ( x - lastX );
+              yLeftCrossing = ( yLeftCrossing <= 1 && yLeftCrossing >= 0 ) ? y - yLeftCrossing * ( y - lastY ) : false;
+              var yRightCrossing = ( x - xMax ) / ( x - lastX );
+              yRightCrossing = ( yRightCrossing <= 1 && yRightCrossing >= 0 ) ? y - yRightCrossing * ( y - lastY ) : false;
+
+              // X crossing
+              var xTopCrossing = ( y - yMin ) / ( y - lastY );
+              xTopCrossing = ( xTopCrossing <= 1 && xTopCrossing >= 0 ) ? x - xTopCrossing * ( x - lastX ) : false;
+              var xBottomCrossing = ( y - yMax ) / ( y - lastY );
+              xBottomCrossing = ( xBottomCrossing <= 1 && xBottomCrossing >= 0 ) ? x - xBottomCrossing * ( x - lastX ) : false;
+
+              if ( yLeftCrossing && yLeftCrossing < yMax && yLeftCrossing > yMin ) {
+                pointOnAxis.push( [ xMin, yLeftCrossing ] );
+              }
+
+              if ( yRightCrossing && yRightCrossing < yMax && yRightCrossing > yMin ) {
+                pointOnAxis.push( [ xMax, yRightCrossing ] );
+              }
+
+              if ( xTopCrossing && xTopCrossing < xMax && xTopCrossing > xMin ) {
+                pointOnAxis.push( [ xTopCrossing, yMin ] );
+              }
+
+              if ( xBottomCrossing && xBottomCrossing < xMax && xBottomCrossing > xMin ) {
+                pointOnAxis.push( [ xBottomCrossing, yMax ] );
+              }
+
+              if ( pointOnAxis.length > 0 ) {
+
+                if ( !pointOutside ) { // We were outside and now go inside
+
+                  if ( pointOnAxis.length > 1 ) {
+                    console.error( "Programmation error. Please e-mail me." );
+                  }
+
+                  lastPointOutside = false;
+
+                  this._createLine();
+                  this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
+                  this._addPoint( xpx2, ypx2 );
+
+                } else if ( !lastPointOutside ) { // We were inside and now go outside
+
+                  if ( pointOnAxis.length > 1 ) {
+                    console.error( "Programmation error. Please e-mail me." );
+                  }
+
+                  this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
+                  lastPointOutside = true;
+                } else {
+
+                  // No crossing: do nothing
+                  if ( pointOnAxis.length == 2 ) {
+                    this._createLine();
+                    this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
+                    this._addPoint( this.getX( pointOnAxis[ 1 ][ 0 ] ), this.getY( pointOnAxis[ 1 ][ 1 ] ), false, false );
+                  }
+                  lastPointOutside = true;
+                }
+              }
+            }
+
+            xpx = xpx2;
+            ypx = ypx2;
+            lastX = x;
+            lastY = y;
             continue;
           }
 
@@ -7956,6 +8059,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
           xpx = xpx2;
           ypx = ypx2;
+
+          lastX = x;
+          lastY = y;
         }
 
         this._createLine();
@@ -8116,12 +8222,20 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       showPeakPicking( this );
     },
 
+    /**
+     *  @param k Index of the point for which we should get the family
+     */
     getMarkerCurrentFamily: function( k ) {
+
+      if( ! this.markerPoints[ this.selectionType ] ) {
+        return;
+      }
 
       for ( var z = 0; z < this.markerPoints[ this.selectionType ].length; z++ ) {
         if ( this.markerPoints[ this.selectionType ][ z ][ 0 ] <= k )  { // This one is a possibility !
-          if ( this.markerPoints[ this.selectionType ][  z ][ 1 ] >= k ) { // Verify that it's in the boundary
+          if ( this.markerPoints[ this.selectionType ][ z ][ 1 ] >= k ) { // Verify that it's in the boundary
             this.markerCurrentFamily = this.markerPoints[ this.selectionType ][ z ][ 2 ];
+
           }
         } else {
           break;
@@ -8218,7 +8332,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       this.markerLabelSquare.setAttribute( 'display', 'none' );
     },
 
-    _addPoint: function( xpx, ypx, move ) {
+    _addPoint: function( xpx, ypx, move, allowMarker ) {
       var pos;
 
       /*if( ! this.currentLineId ) {
@@ -8256,8 +8370,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         return;
       }
 
-      if ( this.markersShown() && !( xpx > this.getXAxis().getMaxPx() ||  xpx < this.getXAxis().getMinPx() ) ) {
-
+      if ( this.markersShown() && allowMarker !== false ) {
         drawMarkerXY( this, this.markerFamilies[ this.selectionType ][ this.markerCurrentFamily ], xpx, ypx );
       }
 
@@ -8409,16 +8522,16 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
         dom.addEventListener( 'mouseover', function( e ) {
 
-          self.onMouseOverMarker( e, [ index, 0 ] );
+          self.onMouseOverMarker( e, [ index2, index1 ] );
         } );
 
         dom.addEventListener( 'mouseout', function( e ) {
 
-          self.onMouseOutMarker( e, [ index, 0 ] );
+          self.onMouseOutMarker( e, [ index2, index1 ] );
         } );
 
         dom.addEventListener( 'click', function( e ) {
-          self.onClickOnMarker( e, [ index, 0 ] );
+          self.onClickOnMarker( e, [ index2, index1 ] );
         } );
 
         this.independantMarkers[ index ] = dom;
@@ -8827,17 +8940,21 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
       this.showMarkers( selectionType, true );
 
-      if ( !families ) {
+      if( ! Array.isArray( families ) && typeof families == 'object') {
+        families = [ families ];
+      } else if( !families ) {
 
         families = [ {
           type: 1,
           zoom: 1,
           points: 'all'
-        } ]
+        } ];
       }
 
       var markerPoints = [];
+      // Overwriting any other undefined families
       markerPoints.push( [ 0, Infinity, null ] );
+
 
       for ( var i = 0, k = families.length; i < k; i++ ) {
 
@@ -8878,8 +8995,10 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         return ( a[ 0 ] - b[ 0 ] ) ||  ( a[ 2 ] == null ? -1 : 1 );
       } );
 
-      this.markerPoints = this.markerPoints ||  {};
+      this.markerPoints = this.markerPoints || {}; // By default, markerPoints doesn't exist, to optimize the cases without markers
       this.markerPoints[ selectionType || "unselected" ] = markerPoints;
+
+      return this;
     },
 
     insertMarkers: function() {
