@@ -70,11 +70,19 @@ define([
 
             value: function (varValue, varName) {
                 this.values[varName] = varValue;
-                this.renderAll(varValue);
+                this._lastValue = varValue;
+                this.renderAll();
             }
         },
 
-        renderAll: function (val) {
+        onResize: function () {
+            this.renderAll();
+            this.refresh();
+        },
+
+        renderAll: function () {
+            var val = this._lastValue;
+            if (!val) return;
 
             var view = this,
                 sprintfVal = this.module.getConfiguration('sprintf'),
