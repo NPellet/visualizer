@@ -89,7 +89,7 @@ define([
 
                 var svg = new LoadingPlot.SVG(null, null, null, null, this.module.getConfiguration('navigation')[0][0] || false);
 
-                svg._svgEl.style.display='block';
+                svg._svgEl.style.display = 'block';
 
                 svg.onZoomChange(function (zoom01) {
                     self.module.controller.onZoomChange(zoom01);
