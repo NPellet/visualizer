@@ -1,26 +1,18 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.phylogram', 'src/util/api'], function (Default, Util, d3, API) {
+define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.phylogram', 'src/util/api', 'src/util/ui'], function (Default, Util, d3, API, ui) {
 
     function View() {
     }
 
     $.extend(true, View.prototype, Default, {
         init: function () {
-
             this._id = Util.getNextUniqueId();
             this.selectorId = '#' + this._id;
             this.chart = null;
             this.currentHighlightId = null;
 
-            var $block = $('<div>', {id: this._id});
-            $block.css({
-                'display': 'table',
-                'height': '90%',
-                'width': '85%',
-                'overflow': 'hidden'
-            });
-            this.dom = $block;
+            this.dom = ui.getSafeElement('div').attr('id', this._id);
             this.module.getDomContent().html(this.dom);
             this.resolveReady();
         },
@@ -65,7 +57,8 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.phylogram', '
             if (data.children && data.children.length > 0)
                 skipBranchLengthScaling = (data.children[0].length === undefined);
             d3.phylogram.build(this.selectorId, data, {
-                //height : view._idHash.length*8,
+                height: that.height,
+                width: that.width,
                 skipBranchLengthScaling: skipBranchLengthScaling,
                 skipTicks: false,
                 skipLabels: true,
