@@ -118,8 +118,10 @@ define([
                 var itemInfo = this._getItemInfoFromRow(rows[i]);
                 idx[i] = itemInfo.idx;
             }
+            idx = idx.sort();
+            var j=0;
             for (i = 0; i < rows.length; i++) {
-                this.module.data.splice(idx[i], 1);
+                this.module.data.splice(idx[i] - j++, 1);
             }
             this.lastSelectedRows = [];
             this.module.data.triggerChange();
