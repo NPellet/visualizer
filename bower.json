@@ -43,8 +43,10 @@
     "jquery-ui": "1.11.3",
     "jsbarcode": "*",
     "jsgraph": "1.11.2",
+    "jsNMR": "NPellet/jsNMR#73cd9c371c8ebc53c32b7f6e6c36077e8a407d99",
     "json-chart": "1.0.0",
     "jsoneditor": "3.2.0",
+    "jszip": "2.5.0",
     "leaflet": "0.7.3",
     "leaflet-omnivore": "0.3.2",
     "lodash": "3.3.0",
@@ -71,6 +73,9 @@
     "x2js": "1.1.7",
     "select2": "4.0.0-rc.2",
     "file-saver.js": "~1.20150304.1"
+  },
+  "resolutions": {
+    "jsgraph": "1.11.2"
   },
   "private": true
 }
