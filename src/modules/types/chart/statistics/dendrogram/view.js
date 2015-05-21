@@ -1,6 +1,13 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api', 'src/util/util', 'lib/jit/jit-custom'], function (Default, Traversing, API, Util) {
+define([
+    'modules/default/defaultview',
+    'src/util/datatraversing',
+    'src/util/api',
+    'src/util/util',
+    'src/util/ui',
+    'lib/jit/jit-custom'
+], function (Default, Traversing, API, Util, ui) {
 
     function View() {
     }
@@ -21,7 +28,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
             // When we change configuration the method init is called again. Also the case when we change completely of view
             if (!this.dom) {
                 this._id = Util.getNextUniqueId();
-                this.dom = $('<div id="' + this._id + '"></div>').css('height', '100%').css('width', '100%');
+                this.dom = ui.getSafeElement('div').attr('id', this._id);
                 this.module.getDomContent().html(this.dom);
             }
 
