@@ -43,19 +43,25 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                                 {key: 'evenq', title: 'Even-q'},
                                 {key: 'oddr', title: 'Odd-r'}
                             ],
-                            'default': 'combinatorial'
+                            'default': 'combinatorial',
+                            displaySource: {
+                                combinatorial: 'comb'
+                            }
                         },
                         originX: {
                             type: 'float',
-                            title: 'Origin X'
+                            title: 'Origin X',
+                            displayTarget: ['comb']
                         },
                         originY: {
                             type: 'float',
-                            title: 'Origin Y'
+                            title: 'Origin Y',
+                            displayTarget: ['comb']
                         },
                         originZ: {
                             type: 'float',
-                            title: 'Origin Z'
+                            title: 'Origin Z',
+                            displayTarget: ['comb']
                         },
                         showColorBar: {
                             type: 'checkbox',
