@@ -101,7 +101,8 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         originX: ['groups', 'group', 0, 'originX', 0],
         originY: ['groups', 'group', 0, 'originY', 0],
         originZ: ['groups', 'group', 0, 'originZ', 0],
-        gradient: ['groups', 'colorBar', 0]
+        gradient: ['groups', 'colorBar', 0],
+        showColorBar: ['groups', 'group', 0, 'showColorBar', 0]
     };
 
     return Controller;

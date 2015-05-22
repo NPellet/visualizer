@@ -220,8 +220,10 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             }
 
             var boundingBox = _.flatten([toPixel([this.minX - 0.3, this.minY - 0.8]), toPixel([this.lenX + 1.5, this.lenY + 1.5])]);
-            boundingBox[0] -= 100; // Keep some room for color bar
-            boundingBox[2] += 100;
+            if(this.module.getConfigurationCheckbox('showColorBar', 'show')) {
+                boundingBox[0] -= 100; // Keep some room for color bar
+                boundingBox[2] += 100;
+            }
 
             function toPixel(point) {
                 return [point[0] * hexRadius * 1.75, point[1] * hexRadius * 1.5];
@@ -237,23 +239,26 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                 .style('display', 'block')
                 .append('g');
 
-            var colorbarx = boundingBox[0] + 20;
-            var colorbary = boundingBox[1] + 20;
-            var svgMarkup = colorbar.getSvg({
-                width: 20,
-                height: 200,
-                axis: {
-                    orientation: 'left',
-                    ticks: 5,
-                    order: 'asc'
-                },
-                stops: this.stopColors,
-                stopPositions: this.stopPositions,
-                domain: this.colorDomain
-            });
+            if(this.module.getConfigurationCheckbox('showColorBar', 'show')) {
+                var colorbarx = boundingBox[0];
+                var colorbary = boundingBox[1];
+                var svgMarkup = colorbar.getSvg({
+                    width: 20,
+                    height: boundingBox[3]-20,
+                    axis: {
+                        orientation: 'left',
+                        ticks: 5,
+                        order: 'asc'
+                    },
+                    stops: this.stopColors,
+                    stopPositions: this.stopPositions,
+                    domain: this.colorDomain
+                });
 
-            svgMarkup = '<g transform="translate(' + colorbarx + ',' + colorbary + ')">' + svgMarkup + '</g>';
-            svg.html(svgMarkup);
+                svgMarkup = '<g transform="translate(' + colorbarx + ',' + colorbary + ')">' + svgMarkup + '</g>';
+                svg.html(svgMarkup);
+            }
+
 
 
             var hexbin = d3.hexbin()
