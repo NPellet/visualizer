@@ -35,11 +35,12 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                 this.ignored = [];
                 this.chart = value.get();
                 var data = chartToArray(this.chart);
-                var coordinateSystem = this.module.getConfiguration('coordinateSystem');
+                this.originalData = data;
+                this.coordinateSystem = this.module.getConfiguration('coordinateSystem');
                 this.layout = 'vertical';
-                switch (coordinateSystem) {
+                switch (this.coordinateSystem) {
                     case 'combinatorial':
-                        this.originalData = data;
+                        this._combinatorialBoundaries(data);
                         this.data = combinatorialToCubic(data);
                         this.cubicData = this.data;
                         this.data = cubicToOddr(this.data);
@@ -60,6 +61,34 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             }
         },
 
+        _combinatorialBoundaries: function() {
+            // compute boundaries for each axis
+            console.log(this.originalData);
+            var x = _.pluck(this.originalData, 0);
+            var y = _.pluck(this.originalData, 1);
+            var z = _.pluck(this.originalData, 2);
+
+            this.combXmin = Math.min.apply(null, x);
+            this.combYmin = Math.min.apply(null, y);
+            this.combZmin = Math.min.apply(null, z);
+            this.combXmax = Math.max.apply(null, x);
+            this.combYmax = Math.max.apply(null, y);
+            this.combZmax = Math.max.apply(null, z);
+
+            this.combXYmax = Math.max(this.combXmax, this.combYmax);
+            this.combXZmax = Math.max(this.combXmax, this.combZmax);
+            this.combYZmax = Math.max(this.combYmax, this.combZmax);
+        },
+
+        _reMinMax: function(data) {
+            this.minX = Math.min(this.minX, Math.min.apply(null, _.pluck(data, 0)));
+            this.minY = Math.min(this.minY, Math.min.apply(null, _.pluck(data, 1)));
+            this.maxX = Math.max(this.maxX, Math.max.apply(null, _.pluck(data, 0)));
+            this.maxY = Math.max(this.maxX, Math.max.apply(null, _.pluck(data, 1)));
+            this.lenX = this.maxX - this.minX;
+            this.lenY = this.maxY - this.minY;
+        },
+
         _normalize: function () {
             var x = _.pluck(this.data, 0);
             var y = _.pluck(this.data, 1);
@@ -71,15 +100,16 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             this.lenY = maxY - minY;
             var min = Math.min(minX, minY);
             if (min % 2 !== 0) min = min - 1;
+            this.normConstant = -min;
 
             for (var i = 0; i < this.data.length; i++) {
-                this.data[i][0] -= min;
-                this.data[i][1] -= min;
+                this.data[i][0] += this.normConstant;
+                this.data[i][1] += this.normConstant;
             }
-            this.minX = minX - min;
-            this.minY = minY - min;
-            this.maxX = maxX - min;
-            this.maxY = maxY - min;
+            this.minX = minX + this.normConstant;
+            this.minY = minY + this.normConstant;
+            this.maxX = maxX + this.normConstant;
+            this.maxY = maxY + this.normConstant;
         },
 
         _ignored: function () {
@@ -133,6 +163,9 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         _chartData: function () {
             this.color = _.pluck(this.chart.data, 'color');
             this.label = _.pluck(this.chart.data, 'label');
+            if(this.chart.axis) {
+                this.axes = this.chart.axis;
+            }
         },
 
         onResize: function () {
@@ -141,6 +174,31 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
 
         draw: function () {
             var that = this;
+
+            if(this.coordinateSystem === 'combinatorial' && this.axes) {
+                // Generate 6 points;
+                // x=0, y=0, z=0
+                var axeData = [
+                    [this.combXmax + 1, 0, 0], [0, this.combYZmax + 1, this.combYZmax + 1],
+                    [0, this.combYmax + 1, 0], [this.combXZmax + 1, 0, this.combXZmax + 1],
+                    [0, 0, this.combZmax + 1], [this.combXYmax + 1, this.combXYmax + 1, 0]
+                ];
+
+                var axeLabels = [
+                    this.axes[0].name, this.axes[1].name + this.axes[2].name,
+                    this.axes[1].name, this.axes[0].name + this.axes[2].name,
+                    this.axes[2].name, this.axes[0].name + this.axes[1].name
+                ];
+                console.log('axe data', axeData)
+
+                axeData = combinatorialToCubic(axeData);
+                axeData = cubicToOddr(axeData);
+
+                for (i = 0; i < axeData.length; i++) {
+                    axeData[i] = offsetArray(axeData[i], this.normConstant);
+                }
+                this._reMinMax(axeData);
+            }
 
             var r1 = this.dom.width() / (2 + this.lenX * 1.5);
             var r2 = this.dom.height() / ((this.lenX + 1) * 1.75);
@@ -190,7 +248,35 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             var hexbin = d3.hexbin()
                 .radius(hexRadius);
 
+            // Generate axes
+            // Combinatorial axes
+            if(this.coordinateSystem === 'combinatorial') {
+                var axePoints = [];
+                for (i = 0; i < axeData.length; i++) {
+                    axePoints.push(toPixel(axeData[i]));
+                }
+                axePoints = hexbin(axePoints);
+
+                svg.append('g')
+                    .selectAll('.axes')
+                    .data(axePoints)
+                    .enter().append('text')
+                    .attr('class', 'axes')
+                    .attr('x', function(d){
+                        console.log(d);
+                        return d.x;
+                    })
+                    .attr('y', function(d){
+                        return d.y;
+                    })
+                    .html(function(d,i) {
+                        return axeLabels[i];
+                    });
+
+            }
+
             var hexbinPoints = hexbin(points);
+
             svg.append('g')
                 .selectAll('.hexagon')
                 .data(hexbinPoints)
@@ -407,7 +493,6 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
 
         return multArray([-1, 1, 0], arr[maxIdx] - arr[middleIdx]);
     }
-
     return View;
 });
 
