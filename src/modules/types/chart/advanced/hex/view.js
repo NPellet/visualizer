@@ -40,8 +40,15 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                 this.layout = 'vertical';
                 switch (this.coordinateSystem) {
                     case 'combinatorial':
-                        this._combinatorialBoundaries(data);
-                        this.data = combinatorialToCubic(data);
+                        this.origin = [
+                            this.module.getConfiguration('originX'),
+                            this.module.getConfiguration('originY'),
+                            this.module.getConfiguration('originZ')
+                        ];
+                        this.data = data;
+                        this._substractOrigin();
+                        this._combinatorialBoundaries(this.data);
+                        this.data = combinatorialToCubic(this.data);
                         this.cubicData = this.data;
                         this.data = cubicToOddr(this.data);
                         break;
@@ -61,9 +68,14 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             }
         },
 
-        _combinatorialBoundaries: function() {
+        _substractOrigin: function () {
+            for (var i = 0; i < this.data.length; i++) {
+                this.data[i] = addArray(this.data[i], multArray(this.origin, -1));
+            }
+        },
+
+        _combinatorialBoundaries: function () {
             // compute boundaries for each axis
-            console.log(this.originalData);
             var x = _.pluck(this.originalData, 0);
             var y = _.pluck(this.originalData, 1);
             var z = _.pluck(this.originalData, 2);
@@ -80,7 +92,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             this.combYZmax = Math.max(this.combYmax, this.combZmax);
         },
 
-        _reMinMax: function(data) {
+        _reMinMax: function (data) {
             this.minX = Math.min(this.minX, Math.min.apply(null, _.pluck(data, 0)));
             this.minY = Math.min(this.minY, Math.min.apply(null, _.pluck(data, 1)));
             this.maxX = Math.max(this.maxX, Math.max.apply(null, _.pluck(data, 0)));
@@ -163,7 +175,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         _chartData: function () {
             this.color = _.pluck(this.chart.data, 'color');
             this.label = _.pluck(this.chart.data, 'label');
-            if(this.chart.axis) {
+            if (this.chart.axis) {
                 this.axes = this.chart.axis;
             }
         },
@@ -175,7 +187,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         draw: function () {
             var that = this;
 
-            if(this.coordinateSystem === 'combinatorial' && this.axes) {
+            if (this.coordinateSystem === 'combinatorial' && this.axes) {
                 // Generate 6 points;
                 // x=0, y=0, z=0
                 var axeData = [
@@ -189,7 +201,6 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                     this.axes[1].name, this.axes[0].name + this.axes[2].name,
                     this.axes[2].name, this.axes[0].name + this.axes[1].name
                 ];
-                console.log('axe data', axeData)
 
                 axeData = combinatorialToCubic(axeData);
                 axeData = cubicToOddr(axeData);
@@ -250,7 +261,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
 
             // Generate axes
             // Combinatorial axes
-            if(this.coordinateSystem === 'combinatorial') {
+            if (this.coordinateSystem === 'combinatorial') {
                 var axePoints = [];
                 for (i = 0; i < axeData.length; i++) {
                     axePoints.push(toPixel(axeData[i]));
@@ -262,14 +273,13 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                     .data(axePoints)
                     .enter().append('text')
                     .attr('class', 'axes')
-                    .attr('x', function(d){
-                        console.log(d);
+                    .attr('x', function (d) {
                         return d.x;
                     })
-                    .attr('y', function(d){
+                    .attr('y', function (d) {
                         return d.y;
                     })
-                    .html(function(d,i) {
+                    .html(function (d, i) {
                         return axeLabels[i];
                     });
 
@@ -493,6 +503,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
 
         return multArray([-1, 1, 0], arr[maxIdx] - arr[middleIdx]);
     }
+
     return View;
 });
 

@@ -51,17 +51,20 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                         originX: {
                             type: 'float',
                             title: 'Origin X',
-                            displayTarget: ['comb']
+                            displayTarget: ['comb'],
+                            default: 0
                         },
                         originY: {
                             type: 'float',
                             title: 'Origin Y',
-                            displayTarget: ['comb']
+                            displayTarget: ['comb'],
+                            default: 0
                         },
                         originZ: {
                             type: 'float',
                             title: 'Origin Z',
-                            displayTarget: ['comb']
+                            displayTarget: ['comb'],
+                            default: 0
                         },
                         showColorBar: {
                             type: 'checkbox',
