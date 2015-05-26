@@ -215,8 +215,8 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             this.redraw();
         },
 
-        redraw: function() {
-            if(!this.data) return;
+        redraw: function () {
+            if (!this.data) return;
             var that = this;
             this.reset();
             var r1 = this.dom.width() / (2 + this.lenX * 1.5);
@@ -228,7 +228,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             }
 
             var boundingBox = _.flatten([toPixel([this.minX - 0.3, this.minY - 0.8]), toPixel([this.lenX + 1.5, this.lenY + 1.5])]);
-            if(this.module.getConfigurationCheckbox('showColorBar', 'show')) {
+            if (this.module.getConfigurationCheckbox('showColorBar', 'show')) {
                 boundingBox[0] -= 100; // Keep some room for color bar
                 boundingBox[2] += 100;
             }
@@ -247,12 +247,12 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                 .style('display', 'block')
                 .append('g');
 
-            if(this.module.getConfigurationCheckbox('showColorBar', 'show')) {
+            if (this.module.getConfigurationCheckbox('showColorBar', 'show')) {
                 var colorbarx = boundingBox[0];
                 var colorbary = boundingBox[1];
                 var svgMarkup = colorbar.getSvg({
                     width: 20,
-                    height: boundingBox[3]-20,
+                    height: boundingBox[3] - 20,
                     axis: {
                         orientation: 'left',
                         ticks: 5,
@@ -268,7 +268,6 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             }
 
 
-
             var hexbin = d3.hexbin()
                 .radius(hexRadius);
 
@@ -281,17 +280,29 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                 }
                 axePoints = hexbin(axePoints);
 
-                svg.append('g')
+                var axeText = svg.append('g')
                     .selectAll('.axes')
                     .data(axePoints)
-                    .enter().append('text')
-                    .attr('class', 'axes')
-                    .attr('x', function (d) {
-                        return d.x;
+                    .enter().append('foreignObject')
+                    .style('pointer-events', 'none')
+                    .attr({
+                        width: hexRadius,
+                        height: hexRadius
                     })
-                    .attr('y', function (d) {
-                        return d.y;
+                    .attr('transform', function(d) {
+                        return 'translate(' + (d.x-hexRadius/2) + ',' + (d.y-hexRadius/2) + ')';
+                    });
+
+                axeText.append('xhtml:div')
+                    .append('div')
+                    .style({
+                        display: 'flex',
+                        height: '' + hexRadius + 'px',
+                        width: '' + hexRadius + 'px',
+                        'box-sizing': 'border-box',
+                        'align-items': 'center',
                     })
+                    .attr('class', 'axe-text')
                     .html(function (d, i) {
                         return that.axeLabels[i];
                     });
@@ -335,7 +346,6 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                     width: '' + hexRadius + 'px',
                     padding: 0,
                     'align-items': 'center',
-                    'text-align': 'center',
                     'justify-content': 'center',
                     'box-sizing': 'border-box'
                 })
