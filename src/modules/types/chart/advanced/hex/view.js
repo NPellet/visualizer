@@ -181,7 +181,8 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         },
 
         onResize: function () {
-            this.refresh();
+            //this.refresh();
+            this.redraw();
         },
 
         draw: function () {
@@ -190,27 +191,34 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             if (this.coordinateSystem === 'combinatorial' && this.axes) {
                 // Generate 6 points;
                 // x=0, y=0, z=0
-                var axeData = [
+                this.axeData = [
                     [this.combXmax + 1, 0, 0], [0, this.combYZmax + 1, this.combYZmax + 1],
                     [0, this.combYmax + 1, 0], [this.combXZmax + 1, 0, this.combXZmax + 1],
                     [0, 0, this.combZmax + 1], [this.combXYmax + 1, this.combXYmax + 1, 0]
                 ];
 
-                var axeLabels = [
+                this.axeLabels = [
                     this.axes[0].name, this.axes[1].name + this.axes[2].name,
                     this.axes[1].name, this.axes[0].name + this.axes[2].name,
                     this.axes[2].name, this.axes[0].name + this.axes[1].name
                 ];
 
-                axeData = combinatorialToCubic(axeData);
-                axeData = cubicToOddr(axeData);
+                this.axeData = combinatorialToCubic(this.axeData);
+                this.axeData = cubicToOddr(this.axeData);
 
-                for (i = 0; i < axeData.length; i++) {
-                    axeData[i] = offsetArray(axeData[i], this.normConstant);
+                for (var i = 0; i < this.axeData.length; i++) {
+                    this.axeData[i] = offsetArray(this.axeData[i], this.normConstant);
                 }
-                this._reMinMax(axeData);
+                this._reMinMax(this.axeData);
             }
 
+            this.redraw();
+        },
+
+        redraw: function() {
+            if(!this.data) return;
+            var that = this;
+            this.reset();
             var r1 = this.dom.width() / (2 + this.lenX * 1.5);
             var r2 = this.dom.height() / ((this.lenX + 1) * 1.75);
             var hexRadius = Math.min(r1, r2);
@@ -268,8 +276,8 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             // Combinatorial axes
             if (this.coordinateSystem === 'combinatorial') {
                 var axePoints = [];
-                for (i = 0; i < axeData.length; i++) {
-                    axePoints.push(toPixel(axeData[i]));
+                for (i = 0; i < this.axeData.length; i++) {
+                    axePoints.push(toPixel(this.axeData[i]));
                 }
                 axePoints = hexbin(axePoints);
 
@@ -285,7 +293,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                         return d.y;
                     })
                     .html(function (d, i) {
-                        return axeLabels[i];
+                        return that.axeLabels[i];
                     });
 
             }
