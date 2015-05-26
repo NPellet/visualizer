@@ -10,7 +10,7 @@
   "scripts": {
     "build": "grunt build --clean-images",
     "eslint": "eslint src --reset",
-    "install-components": "bower install",
+    "install-components": "bower install --quiet --config.interactive=false",
     "postinstall": "npm run install-components"
   },
   "homepage": "https://github.com/NPellet/visualizer",
