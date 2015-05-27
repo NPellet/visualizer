@@ -33,6 +33,11 @@
                 [
                   "show"
                 ]
+              ],
+              "enableZoom": [
+                [
+                  "yes"
+                ]
               ]
             }
           ],

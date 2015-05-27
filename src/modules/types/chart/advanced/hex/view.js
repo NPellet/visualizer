@@ -406,11 +406,14 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
 
 
             // Zoom
-            var zoom = d3.behavior.zoom()
-                .scaleExtent([0.2, 10])
-                .on('zoom', zoomed);
+            if(this.module.getConfigurationCheckbox('enableZoom', 'yes')) {
+                var zoom = d3.behavior.zoom()
+                    .scaleExtent([0.2, 10])
+                    .on('zoom', zoomed);
 
-            mother.call(zoom);
+                mother.call(zoom);
+            }
+
 
             function zoomed() {
                 svg.attr('transform', 'translate(' + d3.event.translate + ')scale(' + d3.event.scale + ')');
