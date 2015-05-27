@@ -1,5 +1,5 @@
 {
-  "version": "2.19.3-0",
+  "version": "2.20.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -21,15 +21,42 @@
                 "combinatorial"
               ],
               "originX": [
-                null
+                0
               ],
               "originY": [
-                null
+                0
               ],
               "originZ": [
-                null
+                0
+              ],
+              "showColorBar": [
+                [
+                  "show"
+                ]
               ]
             }
+          ],
+          "colorBar": [
+            [
+              {
+                "color": [
+                  255,
+                  255,
+                  0,
+                  1
+                ],
+                "stopPosition": 0
+              },
+              {
+                "color": [
+                  0,
+                  255,
+                  0,
+                  1
+                ],
+                "stopPosition": 1
+              }
+            ]
           ]
         }
       },
@@ -41,7 +68,7 @@
           },
           "size": {
             "width": 74,
-            "height": 55
+            "height": 54
           },
           "zIndex": 0,
           "display": true,
@@ -89,7 +116,7 @@
                 ]
               ],
               "script": [
-                "var labels = ['N','S','O'];\nvar origin = [0,0,0];\nvar N = 3;\nvar arr = new Set();\nfor(var i=0; i<3; i++) {\n    for(var j=0; j<N; j++) {\n        for(var k=0; k<N; k++) {\n            if(i+k+j > N+1) continue;\n            //if(i!==0 && j!==0 && k!==0) continue;\n            arr.add([i,j,k]);\n        }\n    }\n}\nconsole.log(arr);\nvar chart = {data:[]};\nfor(var el of arr) {\n    var el = {\n        x: el[0],\n        y: el[1],\n        z: el[2],\n        label: getLabel(el)\n    }\n    chart.data.push(el);\n}\n\nfunction getLabel(v) {\n    var r = '';\n    for(var i=0; i<v.length; i++) {\n        if(v[i] > 0) {\n            r += labels[i] + v[i];\n        }\n    }\n    return r;\n}\nconsole.log(chart)\nthis.set('chart', chart);"
+                "var labels = ['N','S','O'];\nvar origin = [0,0,0];\nvar N = 3;\nvar arr = new Set();\nfor(var i=0; i<3; i++) {\n    for(var j=0; j<N; j++) {\n        for(var k=0; k<N; k++) {\n            if(i+k+j > N+1) continue;\n            //if(i!==0 && j!==0 && k!==0) continue;\n            arr.add([i,j,k]);\n        }\n    }\n}\nconsole.log(arr);\nvar chart = {data:[]};\nvar count=0;\nfor(var el of arr) {\n    var el = {\n        x: el[0],\n        y: el[1],\n        z: el[2],\n        label: getLabel(el),\n        color: ++count\n    }\n    chart.data.push(el);\n}\n\nfunction getLabel(v) {\n    var r = '';\n    for(var i=0; i<v.length; i++) {\n        if(v[i] > 0) {\n            r += labels[i] + v[i];\n        }\n    }\n    return r;\n}\nconsole.log(chart)\nthis.set('chart', chart);"
               ]
             }
           ],

@@ -185,8 +185,6 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         },
 
         draw: function () {
-            var that = this;
-
             if (this.coordinateSystem === 'combinatorial' && this.axes) {
                 // Generate 6 points;
                 // x=0, y=0, z=0
@@ -234,7 +232,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         },
 
         redraw: function () {
-            if (!this.data) return;
+            if (!this.data || this.data.length === 0) return;
             var that = this;
             this.reset();
             var r1 = this.dom.width() / (2 + this.lenX * 1.5);
@@ -291,7 +289,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
 
             // Generate axes
             // Combinatorial axes
-            if (this.coordinateSystem === 'combinatorial') {
+            if (this.coordinateSystem === 'combinatorial' && this.axes) {
                 var axePoints = [];
                 var startAxePoints = [];
                 var endAxePoints = [];
