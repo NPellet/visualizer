@@ -181,7 +181,6 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         },
 
         onResize: function () {
-            //this.refresh();
             this.redraw();
         },
 
@@ -191,10 +190,23 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             if (this.coordinateSystem === 'combinatorial' && this.axes) {
                 // Generate 6 points;
                 // x=0, y=0, z=0
-                this.axeData = [
+                this.axeData = {};
+                this.axeData.points = [
                     [this.combXmax + 1, 0, 0], [0, this.combYZmax + 1, this.combYZmax + 1],
                     [0, this.combYmax + 1, 0], [this.combXZmax + 1, 0, this.combXZmax + 1],
                     [0, 0, this.combZmax + 1], [this.combXYmax + 1, this.combXYmax + 1, 0]
+                ];
+
+                this.axeData.startPoints = [
+                    [this.combXmax, 0, 0], [0, this.combYZmax, this.combYZmax],
+                    [0, this.combYmax, 0], [this.combXZmax, 0, this.combXZmax],
+                    [0, 0, this.combZmax], [this.combXYmax, this.combXYmax, 0]
+                ];
+
+                this.axeData.endPoints = [
+                    [this.combXmax + 0.8, 0, 0], [0, this.combYZmax + 0.8, this.combYZmax + 0.8],
+                    [0, this.combYmax + 0.8, 0], [this.combXZmax + 0.8, 0, this.combXZmax + 0.8],
+                    [0, 0, this.combZmax + 0.8], [this.combXYmax + 0.8, this.combXYmax + 0.8, 0]
                 ];
 
                 this.axeLabels = [
@@ -203,13 +215,19 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                     this.axes[2].name, this.axes[0].name + this.axes[1].name
                 ];
 
-                this.axeData = combinatorialToCubic(this.axeData);
-                this.axeData = cubicToOddr(this.axeData);
+                this.axeData.points = combinatorialToCubic(this.axeData.points);
+                this.axeData.points = cubicToOddr(this.axeData.points);
+                this.axeData.startPoints = combinatorialToCubic(this.axeData.startPoints);
+                this.axeData.startPoints = cubicToOddr(this.axeData.startPoints);
+                this.axeData.endPoints = combinatorialToCubic(this.axeData.endPoints);
+                this.axeData.endPoints = cubicToOddr(this.axeData.endPoints);
 
-                for (var i = 0; i < this.axeData.length; i++) {
-                    this.axeData[i] = offsetArray(this.axeData[i], this.normConstant);
+                for (var i = 0; i < this.axeData.points.length; i++) {
+                    this.axeData.points[i] = offsetArray(this.axeData.points[i], this.normConstant);
+                    this.axeData.startPoints[i] = offsetArray(this.axeData.startPoints[i], this.normConstant);
+                    this.axeData.endPoints[i] = offsetArray(this.axeData.endPoints[i], this.normConstant);
                 }
-                this._reMinMax(this.axeData);
+                this._reMinMax(this.axeData.points);
             }
 
             this.redraw();
@@ -275,10 +293,32 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             // Combinatorial axes
             if (this.coordinateSystem === 'combinatorial') {
                 var axePoints = [];
-                for (i = 0; i < this.axeData.length; i++) {
-                    axePoints.push(toPixel(this.axeData[i]));
+                var startAxePoints = [];
+                var endAxePoints = [];
+                for (i = 0; i < this.axeData.points.length; i++) {
+                    axePoints.push(toPixel(this.axeData.points[i]));
+                    startAxePoints.push(toPixel(this.axeData.startPoints[i]));
+                    endAxePoints.push(toPixel(this.axeData.endPoints[i]));
                 }
+                startAxePoints = hexbin(startAxePoints);
+                endAxePoints = hexbin(endAxePoints, {noRound: true});
                 axePoints = hexbin(axePoints);
+
+                svg.append('defs').selectAll('marker')
+                    .data(['normal'])
+                    .enter().append('marker')
+                    .attr('id', function (d) {
+                        return d;
+                    })
+                    .attr('viewBox', '0 -5 10 10')
+                    .attr('refX', 10)
+                    .attr('refY', 0)
+                    .attr('markerWidth', 10)
+                    .attr('markerHeight', 10)
+                    .attr('orient', 'auto')
+                    .append('path')
+                    .attr('d', 'M0,-5L10,0L0,5');
+
 
                 var axeText = svg.append('g')
                     .selectAll('.axes')
@@ -307,6 +347,17 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                         return that.axeLabels[i];
                     });
 
+                var axeArrows = svg.append('g')
+                    .selectAll('.axe-arrow')
+                    .data(axePoints)
+                    .enter()
+                    .append('path')
+                    .attr('class', 'axe-arrow')
+                    .attr('marker-end', 'url(#normal)')
+                    .attr('d', function(d,i) {
+                        return 'M' + startAxePoints[i].x+ ',' + startAxePoints[i].y + 'L' + endAxePoints[i].x + ' ' + endAxePoints[i].y;
+                    });
+
             }
 
             var hexbinPoints = hexbin(points);
@@ -323,7 +374,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                 .attr('stroke-width', '1px')
                 .style('fill', function (d, i) {
                     return that.color[i];
-                });
+                })
 
             var nodeText = svg.append('g')
                 .selectAll('foreignObject')
@@ -359,7 +410,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                 .scaleExtent([0.2, 10])
                 .on('zoom', zoomed);
 
-            //svg.call(zoom);
+            svg.call(zoom);
 
             function zoomed() {
                 svg.attr('transform', 'translate(' + d3.event.translate + ')scale(' + d3.event.scale + ')');
