@@ -3,7 +3,7 @@
 define([
     'modules/default/defaultview',
     'components/jsNMR/src/nmr',
-    'components/jcampconverter/dist/jcampconverter.min',
+    'jcampconverter',
     'src/util/util'
 ], function (Default, NMR, JcampConverter, Util) {
 

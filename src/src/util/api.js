@@ -4,7 +4,14 @@
  * Main visualizer API
  * @module src/util/api
  */
-define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables', 'src/util/util', 'src/main/datas'], function (Traversing, ActionManager, Variables, Util, Data) {
+define([
+    'src/util/datatraversing',
+    'src/util/actionmanager',
+    'src/main/variables',
+    'src/util/util',
+    'src/main/datas',
+    'lodash'
+], function (Traversing, ActionManager, Variables, Util, Data, _) {
 
     var variableFilters;
     var viewLocked = false;
@@ -13,7 +20,11 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
     // Based on the name attribute of the li tag of the context menu
     // If all is set everything will appear no matter what
     // If undefined is set then not setting the name attribute will add it anyway
-    var contextMenu = ['undefined', 'all', 'global-configuration', 'configuration', 'copy', 'paste', 'duplicate', 'add', 'layers', 'remove', 'export', 'print', 'refresh', 'tofront', 'toback', 'move', 'custom', 'fullscreen'];
+    var contextMenu = [
+        'undefined', 'all', 'global-configuration', 'configuration',
+        'copy', 'paste', 'duplicate', 'add', 'layers',
+        'remove', 'export', 'print', 'refresh', 'tofront', 'toback', 'move', 'custom', 'fullscreen'
+    ];
 
     var loadingSVG = Util.getLoadingAnimation(64, 'slateblue');
     var loadingHtml = $('<div>', {id: 'ci-loading'})

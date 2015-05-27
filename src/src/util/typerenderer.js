@@ -1,6 +1,6 @@
 'use strict';
 
-define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/util/datatraversing', 'src/util/debug'], function (require, $, lodash, API, Util, Traversing, Debug) {
+define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], function (require, $, _, API, Util) {
     Util.loadCss('components/font-awesome/css/font-awesome.min.css');
 
     var functions = {};

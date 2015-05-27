@@ -1,5 +1,5 @@
 'use strict';
-
+/*global Biojs canvg*/
 Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
     /** @lends Biojs.DasProteinFeatureViewer */
     {
@@ -97,7 +97,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
                 var oldH = $svg.attr('height');
                 $svg.attr('width', $svg.width() + 'px');
                 $svg.attr('height', $svg.height() + 'px');
-                svg = document.getElementById('uniprotFeaturePainter-holder').innerHTML;
+                var svg = document.getElementById('uniprotFeaturePainter-holder').innerHTML;
                 var canvas = document.createElement('canvas');
                 canvg(canvas, svg);
                 dataURL = canvas.toDataURL();

@@ -1,5 +1,5 @@
 'use strict';
-
+/*global dhtmlXChart*/
 define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api', 'src/util/util', 'lib/dhtmlxchart/dhtmlxchart'], function (Default, Traversing, API, Util) {
 
     function View() {
@@ -107,7 +107,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
         getRandomColor: function (nbColor, i) {
 
             var currentColor = 360 / nbColor * i;
-            color = 'hsla(' + currentColor + ',100%,50%,0.3)';
+            var color = 'hsla(' + currentColor + ',100%,50%,0.3)';
 
             return color;
         },

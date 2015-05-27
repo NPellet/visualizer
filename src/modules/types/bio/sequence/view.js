@@ -6,7 +6,7 @@ define([
     'BiojsCore',
     'lib/biojs-1.0/src/main/javascript/Biojs.Tooltip',
     'lib/biojs-1.0/src/main/javascript/Biojs.Sequence'
-], function (Default, Util) {
+], function (Default, Util, Biojs) {
 
     function View() {
     }

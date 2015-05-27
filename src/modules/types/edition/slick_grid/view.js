@@ -1,5 +1,5 @@
 'use strict';
-
+/*global Slick*/
 require.config({
     paths: {
         // jQuery & jQuery UI

@@ -2,8 +2,9 @@
 
 define([
     'modules/default/defaultview',
-    'components/jsNMR/src/nmr'
-], function (Default, NMR) {
+    'components/jsNMR/src/nmr',
+    'jcampconverter'
+], function (Default, NMR, JcampConverter) {
 
     function View() {
     }
@@ -128,7 +129,7 @@ define([
         addSerieJcampXOrY: function (value, x, y) {
             var self = this;
 
-            name = 'SomeName';
+            var name = 'SomeName';
             var options = {
                 label: 'Chemical 1'
             };

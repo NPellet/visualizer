@@ -11,7 +11,8 @@
     "build": "grunt build --clean-images",
     "eslint": "eslint src --reset",
     "install-components": "bower install --quiet --config.interactive=false",
-    "postinstall": "npm run install-components"
+    "postinstall": "npm run install-components",
+    "test": "npm run eslint"
   },
   "homepage": "https://github.com/NPellet/visualizer",
   "bugs": {

@@ -97,7 +97,7 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
             var branch = this.currentPath[2];
             return $.when(this.getData()).pipe(function (alldata) {
 
-                data = alldata[branch].list;
+                var data = alldata[branch].list;
                 var all = {};
 
                 if (self.currentPath[1] == 'local' && alldata[branch].head)
