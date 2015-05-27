@@ -195,16 +195,18 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                     [0, 0, this.combZmax + 1], [this.combXYmax + 1, this.combXYmax + 1, 0]
                 ];
 
+                var startOffset = 0.49;
+                var endOffset = 0.8;
                 this.axeData.startPoints = [
-                    [this.combXmax, 0, 0], [0, this.combYZmax, this.combYZmax],
-                    [0, this.combYmax, 0], [this.combXZmax, 0, this.combXZmax],
-                    [0, 0, this.combZmax], [this.combXYmax, this.combXYmax, 0]
+                    [this.combXmax + startOffset, 0, 0], [0, this.combYZmax + startOffset, this.combYZmax + startOffset],
+                    [0, this.combYmax + startOffset, 0], [this.combXZmax + startOffset, 0, this.combXZmax + startOffset],
+                    [0, 0, this.combZmax + startOffset], [this.combXYmax + startOffset, this.combXYmax + startOffset, 0]
                 ];
 
                 this.axeData.endPoints = [
-                    [this.combXmax + 0.8, 0, 0], [0, this.combYZmax + 0.8, this.combYZmax + 0.8],
-                    [0, this.combYmax + 0.8, 0], [this.combXZmax + 0.8, 0, this.combXZmax + 0.8],
-                    [0, 0, this.combZmax + 0.8], [this.combXYmax + 0.8, this.combXYmax + 0.8, 0]
+                    [this.combXmax + endOffset, 0, 0], [0, this.combYZmax + endOffset, this.combYZmax + endOffset],
+                    [0, this.combYmax + endOffset, 0], [this.combXZmax + endOffset, 0, this.combXZmax + endOffset],
+                    [0, 0, this.combZmax + endOffset], [this.combXYmax + endOffset, this.combXYmax + endOffset, 0]
                 ];
 
                 this.axeLabels = [
@@ -300,7 +302,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                     startAxePoints.push(toPixel(this.axeData.startPoints[i]));
                     endAxePoints.push(toPixel(this.axeData.endPoints[i]));
                 }
-                startAxePoints = hexbin(startAxePoints);
+                startAxePoints = hexbin(startAxePoints, {noRound: true});
                 endAxePoints = hexbin(endAxePoints, {noRound: true});
                 axePoints = hexbin(axePoints);
 

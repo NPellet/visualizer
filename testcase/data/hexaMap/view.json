@@ -48,7 +48,7 @@
                   255,
                   255,
                   0,
-                  1
+                  0.18
                 ],
                 "stopPosition": 0
               },
@@ -121,7 +121,7 @@
                 ]
               ],
               "script": [
-                "var labels = ['N','S','O'];\nvar origin = [0,0,0];\nvar N = 3;\nvar arr = new Set();\nfor(var i=0; i<3; i++) {\n    for(var j=0; j<N; j++) {\n        for(var k=0; k<N; k++) {\n            if(i+k+j > N+1) continue;\n            //if(i!==0 && j!==0 && k!==0) continue;\n            arr.add([i,j,k]);\n        }\n    }\n}\nconsole.log(arr);\nvar chart = {data:[]};\nvar count=0;\nfor(var el of arr) {\n    var el = {\n        x: el[0],\n        y: el[1],\n        z: el[2],\n        label: getLabel(el),\n        color: ++count\n    }\n    chart.data.push(el);\n}\n\nfunction getLabel(v) {\n    var r = '';\n    for(var i=0; i<v.length; i++) {\n        if(v[i] > 0) {\n            r += labels[i] + v[i];\n        }\n    }\n    return r;\n}\nconsole.log(chart)\nthis.set('chart', chart);"
+                "var labels = ['N','S','O'];\nvar origin = [0,0,0];\nvar N = 3;\nvar arr = new Set();\nfor(var i=0; i<3; i++) {\n    for(var j=0; j<N; j++) {\n        for(var k=0; k<N; k++) {\n            if(i+k+j > N+1) continue;\n            //if(i!==0 && j!==0 && k!==0) continue;\n            arr.add([i,j,k]);\n        }\n    }\n}\nconsole.log(arr);\nvar chart = {data:[]};\nvar count=0;\nfor(var el of arr) {\n    var el = {\n        x: el[0],\n        y: el[1],\n        z: el[2],\n        label: getLabel(el),\n        color: ++count\n    }\n    chart.data.push(el);\n}\n\nchart.axis = [\n    {name: 'N'},\n    {name: 'S'},\n    {name: 'O'}\n];\n\nfunction getLabel(v) {\n    var r = '';\n    for(var i=0; i<v.length; i++) {\n        if(v[i] > 0) {\n            r += labels[i] + v[i];\n        }\n    }\n    return r;\n}\nconsole.log(chart)\nthis.set('chart', chart);"
               ]
             }
           ],
