@@ -7,7 +7,7 @@ define([
     'src/util/util',
     'src/util/ui',
     'lib/jit/jit-custom'
-], function (Default, Traversing, API, Util, ui) {
+], function (Default, Traversing, API, Util, ui, $jit) {
 
     function View() {
     }
@@ -15,12 +15,13 @@ define([
     $.extend(true, View.prototype, Default, {
 
         highlightNode: function (nodeID) {
-            node.setCanvasStyle('shadowBlur', 0, 'start');
-            node.setCanvasStyle('shadowBlur', 10, 'end');
-            this._rgraph.fx.animate({
-                modes: ['node-style:shadowBlur'],
-                duration: 200
-            });
+            // TODO fix ?
+            //node.setCanvasStyle('shadowBlur', 0, 'start');
+            //node.setCanvasStyle('shadowBlur', 10, 'end');
+            //this._rgraph.fx.animate({
+            //    modes: ['node-style:shadowBlur'],
+            //    duration: 200
+            //});
         },
 
         init: function () {

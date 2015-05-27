@@ -91,14 +91,14 @@ define([
             if (sprintfVal && sprintfVal != '') {
 
                 try {
-                    require(['components/sprintf/dist/sprintf.min'], function () {
+                    require(['sprintf'], function (sprintf) {
 
                         var args = [sprintfVal];
                         for (var i in view.values) {
                             args.push(view.values[i]);
                         }
 
-                        val = sprintf.apply(this, args);
+                        val = sprintf.sprintf.apply(this, args);
 
                         view.fillWithVal(val);
                     });

@@ -31,8 +31,8 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
             this._data = [];	// the data that will be sent to FLOT
             var cfg = $.proxy(this.module.getConfiguration, this.module);
-            axis = undefined;
-            x = undefined;
+            var axis;
+            var x;
             this.updateOptions(cfg, axis, x);
 
             this.resolveReady();
@@ -103,7 +103,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                 var highlight = value[j]._highlight;
                 var info = value[j].serieLabel;
                 var label = value[j].info[0].name;
-                s = [];
+                var s = [];
 
                 for (var i = 0; i < y.length; i++) {
                     if ($.isNumeric(x[i])) s.push({
@@ -144,8 +144,8 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                 xmin = axis[0].min;
                 ymin = axis[1].min;
                 if (Array.isArray(x)) {
-                    u = [];
-                    for (i = 0; i < x.length; i++) {
+                    var u = [];
+                    for (var i = 0; i < x.length; i++) {
                         u.push([i, x[i]]);
                     }
                     xunit = u;

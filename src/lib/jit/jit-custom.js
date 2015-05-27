@@ -64,5 +64,8 @@ define(['components/jit/Jit/jit'], function($jit) {
                 return this.nodeHelper.circle.contains(npos, pos, dim);
             }
         }
-    })
+    });
+
+    return $jit;
+
 });

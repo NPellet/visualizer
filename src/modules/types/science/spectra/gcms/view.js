@@ -181,7 +181,7 @@ define([
                 var self = this;
 
                 moduleValue = String(moduleValue.get());
-                require(['components/jcampconverter/dist/jcampconverter.min'], function (tojcamp) {
+                require(['jcampconverter'], function (tojcamp) {
 
                     tojcamp.convert(moduleValue, true).then(function (jcamp) {
 
@@ -219,10 +219,12 @@ define([
                 if (!this.gcmsInstance || !moduleValue)
                     return;
 
-                var jcamp = tojcamp(moduleValue.get()).done(function (jcamp) {
-                    if (jcamp.spectra) {
-                        self.gcmsInstance.setExternalGC(jcamp.spectra[0].data[0]);
-                    }
+                require(['jcampconverter'], function (tojcamp) {
+                    var jcamp = tojcamp(moduleValue.get()).done(function (jcamp) {
+                        if (jcamp.spectra) {
+                            self.gcmsInstance.setExternalGC(jcamp.spectra[0].data[0]);
+                        }
+                    });
                 });
             },
 

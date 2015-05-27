@@ -10,13 +10,13 @@ define([
     'd3'
 ], function (Util, ui, Debug, _, $, ModuleFactory, d3) {
 
-    function Rectangle() {
+    function Rectangle(arg1) {
         var fail;
         if (arguments.length === 3) {
             this.init1.apply(this, arguments);
         } else if (arguments.length === 4) {
             this.init2.apply(this, arguments);
-        } else if (arguments.length === 1 && a instanceof Array) {
+        } else if (arguments.length === 1 && arg1 instanceof Array) {
             if (arguments[0].length === 3)
                 this.init1.apply(this, arguments[0]);
             else if (arguments.length === 4)

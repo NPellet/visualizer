@@ -1,6 +1,6 @@
 'use strict';
-
-requirejs.config({
+/*global EmbeddedSVGEdit*/
+require.config({
     paths: {
         svgsanitize: 'lib/svg-edit-2.7/sanitize'
     },
