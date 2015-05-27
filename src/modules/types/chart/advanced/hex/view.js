@@ -256,12 +256,14 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             var width = this.width,
                 height = this.height;
 
-            var svg = d3.select('#' + this.id).append('svg')
+            var mother = d3.select('#' + this.id).append('svg')
                 .attr('viewBox', boundingBox.join(','))
                 .attr('width', width)
                 .attr('height', height)
                 .style('display', 'block')
                 .append('g');
+
+            var svg = mother.append('g');
 
             if (this.module.getConfigurationCheckbox('showColorBar', 'show')) {
                 var colorbarx = boundingBox[0];
@@ -408,7 +410,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                 .scaleExtent([0.2, 10])
                 .on('zoom', zoomed);
 
-            svg.call(zoom);
+            mother.call(zoom);
 
             function zoomed() {
                 svg.attr('transform', 'translate(' + d3.event.translate + ')scale(' + d3.event.scale + ')');
