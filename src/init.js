@@ -128,7 +128,6 @@ require([
     'src/main/datas',
     'src/main/entrypoint',
     'uri/URI.fragmentQuery',
-    'lib/IndexedDBShim/IndexedDBShim',
     'components/setImmediate/setImmediate'
 ], function ($, Datas, EntryPoint, URI) {
     $.browser = {msie: false}; // Property used by old libraries and not present in jQuery anymore
