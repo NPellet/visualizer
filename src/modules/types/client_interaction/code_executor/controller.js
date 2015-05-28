@@ -56,6 +56,14 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
                             },
                             'default': ['editor', 'buttons']
                         },
+                        execOnLoad: {
+                            type: 'checkbox',
+                            title: 'Execute on load',
+                            options: {
+                                yes: 'Yes'
+                            },
+                            default: []
+                        },
                         script: {
                             type: 'jscode',
                             title: 'Code',
@@ -105,6 +113,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
 
     Controller.prototype.configAliases = {
         script: ['groups', 'group', 0, 'script', 0],
+        execOnLoad: ['groups', 'group', 0, 'execOnLoad', 0],
         display: ['groups', 'group', 0, 'display', 0],
         libs: ['groups', 'libs', 0],
         buttons: ['groups', 'buttons', 0]
@@ -116,6 +125,13 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
             executor.execute();
         });
     };
+
+    Controller.prototype.onLoadScript = function() {
+        this.initExecutor().then(function (executor) {
+            executor.setLoadScript();
+            executor.execute();
+        });
+    }
 
     Controller.prototype.onVariableIn = function () {
         this.initExecutor().then(function (executor) {
@@ -283,6 +299,10 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
     ScriptExecutor.prototype.setButton = function (name) {
         this.context.event = 'button';
         this.context.button = name;
+    };
+
+    ScriptExecutor.prototype.setLoadScript = function() {
+        this.context.event = 'load';
     };
 
     ScriptExecutor.prototype.setVariable = function () {

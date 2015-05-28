@@ -1,5 +1,5 @@
 {
-  "version": "2.9.10",
+  "version": "2.20.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -93,8 +93,13 @@
                   "buttons"
                 ]
               ],
+              "execOnLoad": [
+                [
+                  "yes"
+                ]
+              ],
               "script": [
-                "console.log(getVariables());\n\nvar event = getEvent();\nif (event == 'button' && getDefined() == 1) {\n    var molfile = get('mol').get();\n    var molecule = ACT.Molecule.fromMolfile(molfile);\n    if (getButton() == 'idcode') {\n        set('idcode', molecule.getIDCode());\n    } else {\n        set('smiles', molecule.toSmiles());\n    }\n} else if(event == 'action' && getAction().name == 'exec') {\n    set('message', 'Hello')\n}\n\nsendAction('act1', 'value1')"
+                "console.log(getVariables());\n\nvar event = getEvent();\nif(event === 'load') {\n    console.log('on load');   \n}\nelse if (event == 'button' && getDefined() == 1) {\n    var molfile = get('mol').get();\n    var molecule = ACT.Molecule.fromMolfile(molfile);\n    if (getButton() == 'idcode') {\n        set('idcode', molecule.getIDCode());\n    } else {\n        set('smiles', molecule.toSmiles());\n    }\n} else if(event == 'action' && getAction().name == 'exec') {\n    set('message', 'Hello')\n}\n\nsendAction('act1', 'value1')"
               ]
             }
           ],
@@ -569,5 +574,6 @@
   "pouchvariables": [],
   "configuration": {
     "title": "Script executor"
-  }
+  },
+  "aliases": []
 }

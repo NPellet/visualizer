@@ -1,16 +1,28 @@
 'use strict';
 
-define(['modules/types/client_interaction/code_editor/view', 'src/util/util', 'ace/ace', 'src/util/context', 'jquery'], function (CodeEditor, Util, ace, Context, $) {
+define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/context', 'jquery'], function (Default, Util, ace, Context, $) {
 
     function View() {
-        CodeEditor.call(this);
     }
-
-    Util.inherits(View, CodeEditor);
+    $.extend(true, View.prototype, Default);
 
     View.prototype.init = function () {
-        CodeEditor.prototype.init.call(this);
+        this._id = Util.getNextUniqueId();
+        this._code = '';
+
+        var table = this.table = $('<table>').css({
+            height: '100%',
+            width: '100%'
+        });
+        var editorRow = $('<tr>').appendTo(table).css('height', 'auto');
+        this.buttonRow = $('<tr>').appendTo(table).css('height', '30px');
+        this.editorCell = $('<td>').css('height', '100%').appendTo(editorRow);
+        this.buttonCell = $('<td>').appendTo(this.buttonRow).css('text-align', 'center');
         this._input = {};
+        this.module.getDomContent().html(table);
+        if(this.module.getConfigurationCheckbox('execOnLoad', 'yes')) {
+            this.module.controller.onLoadScript(); // exec the script
+        }
     };
 
     View.prototype.inDom = function () {
