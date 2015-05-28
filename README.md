@@ -30,3 +30,4 @@ Installation
 ============
 To install the development version of the visualizer, you need Node.JS.  
 Run `npm install` and all the dependencies will be downloaded.
+
