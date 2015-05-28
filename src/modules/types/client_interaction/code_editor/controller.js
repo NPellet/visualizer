@@ -92,6 +92,20 @@ define(['modules/default/defaultcontroller', 'src/data/structures', 'src/util/de
                                 button: 'Show the button'
                             }
                         },
+                        variable: {
+                            title: 'Variable',
+                            type: 'combo',
+                            options: [
+                                { key: 'new', title: 'New output variable'},
+                                { key: 'modify', title: 'Modify input variable'}
+                            ],
+                            default: ['new']
+                        },
+                        debouncing: {
+                            title: 'Debouncing',
+                            type: 'float',
+                            default: 0
+                        },
                         script: {
                             type: 'jscode',
                             title: 'Code',
@@ -109,7 +123,9 @@ define(['modules/default/defaultcontroller', 'src/data/structures', 'src/util/de
         iseditable: ['groups', 'group', 0, 'iseditable', 0],
         hasButton: ['groups', 'group', 0, 'hasButton', 0],
         script: ['groups', 'group', 0, 'script', 0],
-        outputType: ['groups', 'group', 0, 'outputType', 0]
+        outputType: ['groups', 'group', 0, 'outputType', 0],
+        variable: ['groups', 'group', 0, 'variable', 0],
+        debouncing: ['groups', 'group', 0, 'debouncing', 0]
     };
 
     Controller.prototype.onEditorChanged = function (value) {
