@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/data/structures', 'src/util/debug'], function (Default, Structure, Debug) {
+define(['modules/default/defaultcontroller', 'src/data/structures', 'src/main/datas'], function (Default, Structure, Data) {
 
     function Controller() {
     }
@@ -94,12 +94,11 @@ define(['modules/default/defaultcontroller', 'src/data/structures', 'src/util/de
                         },
                         variable: {
                             title: 'Variable',
-                            type: 'combo',
-                            options: [
-                                { key: 'new', title: 'New output variable'},
-                                { key: 'modify', title: 'Modify input variable'}
-                            ],
-                            default: ['new']
+                            type: 'checkbox',
+                            options: {
+                                modify: 'Modify input variable'
+                            },
+                            default: []
                         },
                         debouncing: {
                             title: 'Debouncing',
@@ -129,8 +128,12 @@ define(['modules/default/defaultcontroller', 'src/data/structures', 'src/util/de
     };
 
     Controller.prototype.onEditorChanged = function (value) {
-        this.createDataFromEvent('onEditorChange', 'value', value);
+        if(this.module.getConfigurationCheckbox('variable', 'modify') && Data.isSpecialNativeObject(this.module.model.data)) {
+            this.module.model.data.setValue(value);
+            this.module.model.dataTriggerChange(this.module.model.data);
+        }
 
+        this.createDataFromEvent('onEditorChange', 'value', value);
         var json = getJsonValue(value);
         this.createDataFromEvent('onEditorChange', 'jsonValue', json);
         var typedValue = this.getTypedValue(value);
