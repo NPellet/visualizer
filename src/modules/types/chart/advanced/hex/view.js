@@ -272,7 +272,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                 var colorbary = boundingBox[1];
                 var svgMarkup = colorbar.getSvg({
                     width: 20,
-                    height: boundingBox[3] - 20,
+                    height: boundingBox[3]*0.95 - 20,
                     axis: {
                         orientation: 'left',
                         ticks: 5,
@@ -342,7 +342,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                         height: '' + hexRadius + 'px',
                         width: '' + hexRadius + 'px',
                         'box-sizing': 'border-box',
-                        'align-items': 'center',
+                        'align-items': 'center'
                     })
                     .attr('class', 'axe-text')
                     .html(function (d, i) {
