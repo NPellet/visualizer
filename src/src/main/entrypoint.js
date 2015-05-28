@@ -279,7 +279,7 @@ define([
                         // Defined by an URL
                         if (entryVar.url) {
 
-                            fetching.push(UrlData.get(entryVar.url, {
+                            fetching.push(UrlData.get(entryVar.url, entryVar.timeout | 0, {
                                 Accept: 'application/json'
                             }).then(function (v) {
 
