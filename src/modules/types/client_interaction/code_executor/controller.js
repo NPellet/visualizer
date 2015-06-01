@@ -126,12 +126,12 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         });
     };
 
-    Controller.prototype.onLoadScript = function() {
+    Controller.prototype.onLoadScript = function () {
         this.initExecutor().then(function (executor) {
             executor.setLoadScript();
             executor.execute();
         });
-    }
+    };
 
     Controller.prototype.onVariableIn = function () {
         this.initExecutor().then(function (executor) {
@@ -301,7 +301,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         this.context.button = name;
     };
 
-    ScriptExecutor.prototype.setLoadScript = function() {
+    ScriptExecutor.prototype.setLoadScript = function () {
         this.context.event = 'load';
     };
 

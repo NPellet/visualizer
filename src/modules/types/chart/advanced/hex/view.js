@@ -1,6 +1,6 @@
 'use strict';
 
-requirejs.config({
+require.config({
     paths: {
         'd3-plugins': 'components/d3-plugins'
     },
@@ -272,7 +272,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                 var colorbary = boundingBox[1];
                 var svgMarkup = colorbar.getSvg({
                     width: 20,
-                    height: boundingBox[3]*0.95 - 20,
+                    height: boundingBox[3] * 0.95 - 20,
                     axis: {
                         orientation: 'left',
                         ticks: 5,
@@ -331,8 +331,8 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                         width: hexRadius,
                         height: hexRadius
                     })
-                    .attr('transform', function(d) {
-                        return 'translate(' + (d.x-hexRadius/2) + ',' + (d.y-hexRadius/2) + ')';
+                    .attr('transform', function (d) {
+                        return 'translate(' + (d.x - hexRadius / 2) + ',' + (d.y - hexRadius / 2) + ')';
                     });
 
                 axeText.append('xhtml:div')
@@ -356,8 +356,8 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                     .append('path')
                     .attr('class', 'axe-arrow')
                     .attr('marker-end', 'url(#normal)')
-                    .attr('d', function(d,i) {
-                        return 'M' + startAxePoints[i].x+ ',' + startAxePoints[i].y + 'L' + endAxePoints[i].x + ' ' + endAxePoints[i].y;
+                    .attr('d', function (d, i) {
+                        return 'M' + startAxePoints[i].x + ',' + startAxePoints[i].y + 'L' + endAxePoints[i].x + ' ' + endAxePoints[i].y;
                     });
 
             }
@@ -376,7 +376,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                 .attr('stroke-width', '1px')
                 .style('fill', function (d, i) {
                     return that.color[i];
-                })
+                });
 
             var nodeText = svg.append('g')
                 .selectAll('foreignObject')
@@ -408,7 +408,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
 
 
             // Zoom
-            if(this.module.getConfigurationCheckbox('enableZoom', 'yes')) {
+            if (this.module.getConfigurationCheckbox('enableZoom', 'yes')) {
                 var zoom = d3.behavior.zoom()
                     .scaleExtent([0.2, 10])
                     .on('zoom', zoomed);

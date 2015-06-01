@@ -128,7 +128,7 @@ define(['modules/default/defaultcontroller', 'src/data/structures', 'src/main/da
     };
 
     Controller.prototype.onEditorChanged = function (value) {
-        if(this.module.getConfigurationCheckbox('variable', 'modify') && Data.isSpecialNativeObject(this.module.model.data)) {
+        if (this.module.getConfigurationCheckbox('variable', 'modify') && Data.isSpecialNativeObject(this.module.model.data)) {
             this.module.model.data.setValue(value);
             this.module.model.dataTriggerChange(this.module.model.data);
         }

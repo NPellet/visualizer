@@ -119,7 +119,7 @@ define([
                 idx[i] = itemInfo.idx;
             }
             idx = idx.sort();
-            var j=0;
+            var j = 0;
             for (i = 0; i < rows.length; i++) {
                 this.module.data.splice(idx[i] - j++, 1);
             }
@@ -338,7 +338,7 @@ define([
                                     that.$actionButtons[i] = $('<input type="button" value="' + that.actionOutButtons[i].buttonTitle + '"/>');
                                     that.$actionButtons[i].on('click', function () {
                                         that.module.controller.sendActionButton(that.actionOutButtons[i].actionName, that._getSelectedItems());
-                                    })
+                                    });
                                 })(i);
                             }
 
@@ -879,7 +879,7 @@ define([
         },
 
         _getItems: function (rows) {
-            var selected = []
+            var selected = [];
             for (var i = 0; i < rows.length; i++) {
                 var itemInfo = this._getItemInfoFromRow(rows[i]);
                 if (itemInfo)

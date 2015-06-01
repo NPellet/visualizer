@@ -21,10 +21,9 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
             this.buttonCell = $('<td>').appendTo(this.buttonRow).css('text-align', 'center');
 
             var debouncing = this.module.getConfiguration('debouncing');
-            if(debouncing > 0) {
+            if (debouncing > 0) {
                 this.editorChangedDebounced = _.debounce(this.editorChanged, debouncing);
-            }
-            else  {
+            } else {
                 this.editorChangedDebounced = this.editorChanged;
             }
 
