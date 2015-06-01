@@ -1,3 +1,34 @@
+2.20.0 / 2015-06-01
+===================
+* Modules
+ * code_executor: add execute script on load option Fix #512
+ * jqrid: don't reload on remove column action if nothing had to be removed
+ * code_editor: in situ option Fix #583
+ * code_editor: add debouncing option
+ * hex: adjust colorbar
+ * hex: add axes
+ * hex: redraw on resize
+ * dendrogram: fix output on hover
+
+* Core
+ * remove indexedDBshim
+ * fix error in dataurl
+ * fetch variables from general config: fix ignored timeout
+ * Delete .nojekyll
+ * shortcut: don't accept search module shortcut if alt key pressed
+
+* Components
+ * bower: install components quietly
+ * update d3-plugin dependency
+ * remove components folder from git
+ * bower: include jsNMR and jszip
+
+* npm scripts
+ * lint: add no-delete-var, no-label-var, no-shadow-restricted-names, no-undef and no-undef-init rules
+ * add npm test script
+
+
+
 2.20.0 / 2015-05-21
 ===================
 
