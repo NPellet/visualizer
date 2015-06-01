@@ -1,4 +1,4 @@
-2.20.0 / 2015-06-01
+2.20.1 / 2015-06-01
 ===================
 * Modules
  * code_executor: add execute script on load option Fix #512
