@@ -81,58 +81,6 @@ define([
             }
         },
 
-        addImages: function () {
-            var that = this;
-            var prom;
-            var variables = {};
-
-            function filterConf(c) {
-                var v = API.getData(c.variable);
-                if (v !== undefined) {
-                    variables[c.variable] = v;
-                    var op = parseFloat(c.opacity);
-                    if (op && op >= 0 && op <= 1) {
-                        return true;
-                    }
-                }
-                Debug.warn('Panzoom: ignoring invalid configuration line');
-                return false;
-            }
-
-            // Filter conf for valid data
-            var conf = this.module.getConfiguration('img');
-            conf = _.filter(conf, filterConf);
-
-            if (conf.length === 0) {
-                conf = this._buildConfFromVarsIn();
-                conf = _.filter(conf, filterConf);
-            }
-            prom = _.map(conf, function (c) {
-                return new Promise(function (resolve) {
-                    var image = {};
-                    var x = that.newImageDom(c.variable);
-                    var $img = x.find('img');
-                    $img
-                        .css('opacity', c.opacity)
-                        .addClass(c.rendering)
-                        .attr('src', variables[c.variable].get())
-                        .load(function () {
-                            image.name = c.variable;
-                            image.$panzoomEl = x.find('.panzoom');
-                            image.$img = x.find('img');
-                            image.$parent = x.find('.parent');
-                            image.width = this.width;
-                            image.height = this.height;
-                            image.conf = c;
-                            that.dom.append(x);
-                            that.images.push(image);
-                            resolve();
-                        });
-                });
-            });
-            return Promise.all(prom);
-        },
-
         addImage: function (varname, variable) {
             var that = this;
 
@@ -188,6 +136,9 @@ define([
                             that.images.push(image);
                         }
                         if ($previousImg) $previousImg.remove();
+                        if(that.transforms && that.transforms[conf.variable]) {
+                            $img.css('transform', that.transforms[conf.variable]);
+                        }
                         resolve();
                     })
                     .on('error', function () {
@@ -392,6 +343,14 @@ define([
             return this.dom;
         },
 
+        onActionReceive: {
+            transform: function(data) {
+                this.transforms  = this.transforms || {};
+                this.transforms[data.name] = data.transform;
+                this.doImage(data.name);
+            }
+        },
+
         _buildConfFromVarsIn: function () {
             var that = this;
             var i = 1;
@@ -411,6 +370,14 @@ define([
             };
         }
     });
+
+    // Unused for now but don't erase
+    function applyTransform(v, t) {
+        var r = new Array(2);
+        r[0] = v[0] * (+t[0]) + v[1] * (+t[1]) + (+t[4]);
+        r[1] = v[0] * (+t[2]) + v[1] * (+t[3]) + (+t[5]);
+        return r;
+    }
 
     return View;
 

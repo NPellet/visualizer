@@ -44,6 +44,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.variablesIn = ['picture'];
 
+    Controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {
+        transform: 'Send transform to specific image'
+    });
+
     Controller.prototype.configurationStructure = function () {
         var vars = [];
         var currentCfg = this.module.definition.vars_in;
