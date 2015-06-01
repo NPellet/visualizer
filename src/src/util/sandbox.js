@@ -21,10 +21,10 @@ define(function () {
         var win = this._win;
         this._frame = iframe;
         this._originalKeys = Object.keys(win);
-        if(Object.getOwnPropertyDescriptor(win, 'parent').configurable){
+        try {
             Object.defineProperty(win, 'parent', {value: null});
-        }
-        else { // Safari's parent object is unconfigurable (Safari 8.0.6)
+        } catch(e) {
+            // Cannot configure parent on Safari (8.0.6)
             win.parent = null;
         }
         globals.forEach(function (global) {
