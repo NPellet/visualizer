@@ -118,7 +118,10 @@ define([
                 if (image) foundImg = true;
                 image = image || {};
 
-
+                if(that.toHide && that.toHide[conf.variable]) {
+                    $previousImg && $previousImg.hide();
+                    return resolve();
+                }
                 $img
                     .css('opacity', conf.opacity)
                     .addClass(conf.rendering)
@@ -164,7 +167,7 @@ define([
                 var idx = _.findIndex(that.images, function (img) {
                     return img.name === varname;
                 });
-                start = idx;
+                start = (idx === -1 ? undefined : idx);
                 l = idx + 1;
             }
             for (var i = start; i < l; i++) {
@@ -347,6 +350,16 @@ define([
             transform: function(data) {
                 this.transforms  = this.transforms || {};
                 this.transforms[data.name] = data.transform;
+                this.doImage(data.name);
+            },
+            hide: function(data) {
+                this.toHide = this.toHide || {};
+                this.toHide[data.name] = true;
+                this.doImage(data.name);
+            },
+            show: function(data) {
+                this.toHide = this.toHide || {};
+                this.toHide[data.name] = false;
                 this.doImage(data.name);
             }
         },
