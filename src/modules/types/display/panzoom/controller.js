@@ -21,6 +21,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
             type: ['picture', 'png', 'jpeg', 'jpg', 'gif'],
             label: 'A picture'
         },
+        svg: {
+            type: ['svg'],
+            label: 'Inline svg'
+        },
         pixel: {
             label: 'A pixel'
         },
@@ -42,7 +46,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         }
     };
 
-    Controller.prototype.variablesIn = ['picture'];
+    Controller.prototype.variablesIn = ['picture', 'svg'];
 
     Controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {
         transform: 'Send transform to specific image',

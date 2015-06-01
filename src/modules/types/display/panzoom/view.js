@@ -41,12 +41,11 @@ define([
         update: {
             picture: function (value, varname) {
                 var that = this;
-                //currentPromise = currentPromise.then(function() { that.clearImages(); return that.addImages()}).then(function() {
-                //    that.panzoomMode();
-                //    that.onResize();
-                //    that.reorderImages();
-                //});
                 return that.doImage(varname, value);
+            },
+            svg: function(value, varname) {
+                var val = value.get();
+                return this.doImage(varname, new DataString('data:image/svg+xml;utf8,' + val));
             }
         },
 
@@ -335,7 +334,6 @@ define([
                         domimg.height = this.dom.height() * factor;
                         domimg.width = this.images[i].width / this.images[i].height * this.dom.height() * factor;
                     }
-
                 }
                 this.images[i].$parent.width(this.dom.parent().width()).height(this.dom.parent().height());
                 this.images[i].$panzoomEl.panzoom('resetDimensions');
