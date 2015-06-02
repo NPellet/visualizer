@@ -105,7 +105,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
 
     functions.svg = {};
     functions.svg.toscreen = function (element, val) {
-        var dom = $(val);
+        var dom = $(String(val));
         var viewbox = [0, 0, parseInt(dom.attr('width')), parseInt(dom.attr('height'))];
         dom[0].setAttribute('viewBox', viewbox.join(' '));
         dom.removeAttr('id');
