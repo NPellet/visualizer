@@ -249,7 +249,10 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
             defined: 0,
             'set': setter,
             'get': function (name) {
-                return this.variables[name];
+                var variable = this.variables[name];
+                if (variable) {
+                    return variable.get();
+                }
             },
             sendAction: sendAction,
             setAsync: setAsync,
@@ -276,7 +279,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
             },
             'set': setter,
             'get': function (name) {
-                return context.variables[name];
+                return context.get(name);
             },
             sendAction: sendAction,
             setAsync: setAsync,
