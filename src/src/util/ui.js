@@ -261,7 +261,11 @@ define([
     };
 
     exports.getSafeElement = function (el) {
-        return $('<' + el + '>').css({
+        return exports.makeElementSafe('<' + el + '>');
+    };
+
+    exports.makeElementSafe = function (el) {
+        return $(el).css({
             width: '100%',
             height: '100%',
             margin: 0,
