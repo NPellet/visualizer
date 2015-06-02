@@ -111,6 +111,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
         dom.removeAttr('id');
         dom.attr('width', '100%');
         dom.attr('height', '100%');
+        dom.css('display', 'block');
         element.html(dom);
     };
 
