@@ -230,12 +230,7 @@ define([
                     instance.setMatrix(that.lastTransform);
                 }
 
-                // This is a trick to get crisp images with chrome
-                // Since it does'n implement crisp-edges image rendering
-                // But pixelated rendering instead
-                if (bowser.chrome) {
-                    that.chromeCrisp();
-                }
+                that.rerender();
             });
 
             function getPixels(e, allPixels, pixel) {
@@ -310,6 +305,17 @@ define([
 
         },
 
+        rerender: _.debounce(function () {
+            for (var j = 0; j < this.images.length; j++) {
+                // Trick to get crisp images with chrome
+                // Since it does'n implement crisp-edges image rendering
+                // But pixelated rendering instead
+                console.log(this.images[j]);
+                if (this.images[j].conf.rerender && this.images[j].conf.rerender.indexOf('yes') > -1 || (this.images[j].conf.rendering === 'crisp-edges' && bowser.chrome))
+                    this.doImage(this.images[j].name);
+            }
+        }, 300),
+
         chromeCrisp: _.debounce(function () {
             for (var j = 0; j < this.images.length; j++) {
                 if (this.images[j].conf.rendering === 'crisp-edges')
@@ -352,13 +358,26 @@ define([
             },
             hide: function(data) {
                 this.toHide = this.toHide || {};
-                this.toHide[data.name] = true;
-                this.doImage(data.name);
+                var varname;
+                if(typeof data === 'string')
+                    varname = data;
+                else
+                    varname = data.name;
+                if(this.toHide[varname]) return;
+                this.toHide[varname] = true;
+                this.doImage(varname);
             },
             show: function(data) {
                 this.toHide = this.toHide || {};
-                this.toHide[data.name] = false;
-                this.doImage(data.name);
+                var varname;
+                if(typeof data === 'string')
+                    varname = data;
+                else
+                    varname = data.name;
+
+                if(!this.toHide[varname]) return;
+                this.toHide[varname] = false;
+                this.doImage(varname);
             }
         },
 

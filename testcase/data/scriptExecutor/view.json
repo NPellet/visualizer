@@ -99,7 +99,7 @@
                 ]
               ],
               "script": [
-                "console.log(getVariables());\n\nvar event = getEvent();\nif(event === 'load') {\n    console.log('on load');   \n}\nelse if (event == 'button' && getDefined() == 1) {\n    var molfile = get('mol');\n    var molecule = ACT.Molecule.fromMolfile(molfile);\n    if (getButton() == 'idcode') {\n        set('idcode', molecule.getIDCode());\n    } else {\n        set('smiles', molecule.toSmiles());\n    }\n} else if(event == 'action' && getAction().name == 'exec') {\n    set('message', 'Hello')\n}\n\nsendAction('act1', 'value1')"
+                "console.log(getVariables());\n\nvar event = getEvent();\nif(event === 'load') {\n    console.log(API)\n    console.log('on load');   \n}\nelse if (event == 'button' && getDefined() == 1) {\n    var molfile = get('mol');\n    var molecule = ACT.Molecule.fromMolfile(molfile);\n    if (getButton() == 'idcode') {\n        set('idcode', molecule.getIDCode());\n    } else {\n        set('smiles', molecule.toSmiles());\n    }\n} else if(event == 'action' && getAction().name == 'exec') {\n    set('message', 'Hello')\n}\n\nsendAction('act1', 'value1')"
               ]
             }
           ],

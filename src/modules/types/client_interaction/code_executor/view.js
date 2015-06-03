@@ -21,9 +21,6 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
         this.buttonCell = $('<td>').appendTo(this.buttonRow).css('text-align', 'center');
         this._input = {};
         this.module.getDomContent().html(table);
-        if (this.module.getConfigurationCheckbox('execOnLoad', 'yes')) {
-            this.module.controller.onLoadScript(); // exec the script
-        }
     };
 
     View.prototype.inDom = function () {
