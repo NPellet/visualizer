@@ -21,7 +21,12 @@ define(function () {
         var win = this._win;
         this._frame = iframe;
         this._originalKeys = Object.keys(win);
-        Object.defineProperty(win, 'parent', {value: null});
+        try {
+            Object.defineProperty(win, 'parent', {value: null});
+        } catch(e) {
+            // Cannot configure parent on Safari (8.0.6)
+            win.parent = null;
+        }
         globals.forEach(function (global) {
             Object.defineProperty(win, global, {
                 value: window[global]

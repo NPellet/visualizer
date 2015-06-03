@@ -15,7 +15,7 @@ define(['jquery', 'src/util/event'], function ($, Event) {
     var slicer = Array.prototype.slice;
     Observable.update = function (name, value) {
         this._value = this._value || {};
-        this._value[name] = args;
+        this._value[name] = value;
         return this;
     };
 
@@ -45,28 +45,28 @@ define(['jquery', 'src/util/event'], function ($, Event) {
     Observable.prototype.pull = function () {
         var mySet = this._proxiedSet();
         $.each(arguments, function (i, trgt) {
-            target.on('change', set);
+            trgt.on('change', mySet);
         });
     };
 
     Observable.prototype.unpull = function () {
         var mySet = this._proxiedSet();
         $.each(arguments, function (i, trgt) {
-            target.off('change', set);
+            trgt.off('change', mySet);
         });
     };
 
     Observable.prototype.push = function () {
         var self = this;
         $.each(arguments, function (i, trgt) {
-            self.on('change', target._proxiedSet);
+            self.on('change', trgt._proxiedSet);
         });
     };
 
     Observable.prototype.unpush = function () {
         var self = this;
         $.each(arguments, function (i, trgt) {
-            self.off('change', target._proxiedSet);
+            self.off('change', trgt._proxiedSet);
         });
     };
 

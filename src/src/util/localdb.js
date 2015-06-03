@@ -129,7 +129,7 @@ define(['jquery'], function ($) {
 
             // Create empty head, empty list
 
-            obj = {
+            var obj = {
                 readURL: key + ';' + branch,
                 url: key,
                 branch: branch,

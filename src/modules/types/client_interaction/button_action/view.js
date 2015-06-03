@@ -11,8 +11,10 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/ui'], function 
             var label;
             this.dom = $('<div></div>');
             var buttonType = this.module.getConfiguration('toggle');
-            if (buttonType === 'toggle') {
+            if (buttonType === 'toggle' && this.module.getConfiguration('startState') === 'off') {
                 label = this.module.getConfiguration('offLabel');
+            } else if (buttonType === 'toggle' && this.module.getConfiguration('startState') === 'on') {
+                label = this.module.getConfiguration('onLabel');
             } else {
                 label = this.module.getConfiguration('label');
             }
@@ -24,6 +26,7 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/ui'], function 
                         }
                         prom.then(function (ok) {
                             if (!ok) {
+                                debugger;
                                 return;
                             }
                             if (!val && buttonType === 'toggle') {
@@ -39,7 +42,8 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/ui'], function 
                     {
                         color: 'Grey',
                         disabled: false,
-                        checkbox: this.module.getConfiguration('toggle') !== 'click'
+                        checkbox: this.module.getConfiguration('toggle') !== 'click',
+                        value: this.module.getConfiguration('startState') === 'on'
                     }
                 );
 

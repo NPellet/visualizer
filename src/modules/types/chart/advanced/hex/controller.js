@@ -71,6 +71,12 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                             title: 'Color bar',
                             options: {show: 'Show'},
                             default: []
+                        },
+                        enableZoom: {
+                            type: 'checkbox',
+                            title: 'Enable pan & zoom',
+                            options: {yes: 'Yes'},
+                            default: []
                         }
                     }
                 },
@@ -102,7 +108,8 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         originY: ['groups', 'group', 0, 'originY', 0],
         originZ: ['groups', 'group', 0, 'originZ', 0],
         gradient: ['groups', 'colorBar', 0],
-        showColorBar: ['groups', 'group', 0, 'showColorBar', 0]
+        showColorBar: ['groups', 'group', 0, 'showColorBar', 0],
+        enableZoom: ['groups', 'group', 0, 'enableZoom', 0]
     };
 
     return Controller;

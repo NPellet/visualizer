@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller'], function (Default) {
+define(['modules/default/defaultcontroller', 'ckeditor'], function (Default, CKEDITOR) {
 
     function Controller() {
     }

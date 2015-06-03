@@ -27,7 +27,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
         if (!element) {
             return;
         }
-        this.setVarFromEvent('onHover', element, 'node');
+        this.createDataFromEvent('onHover', 'node', element);
     };
 
     Controller.prototype.references = {

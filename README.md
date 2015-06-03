@@ -25,3 +25,9 @@ The config file is typically common to your projects. It defines which modules a
 Variables and Actions
 ----------------------
 The visualizer allows the modules to comminucate via a central repository of variables and actions. When an event is triggered on a module ( mouse click, mouse hover, resize, ... ), a variable or an action is sent towards the repository.
+
+Installation
+============
+To install the development version of the visualizer, you need Node.JS.  
+Run `npm install` and all the dependencies will be downloaded.
+

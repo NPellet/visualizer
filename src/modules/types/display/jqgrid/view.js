@@ -421,7 +421,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                     jpath: jpath,
                     number: false
                 });
-                this.reloadModule();
+                this.module.reload();
             },
 
             removeColumn: function (jpath) {
@@ -433,26 +433,13 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                 for (; i < l; i++) {
                     if (jpaths[i].jpath == jpath) {
                         jpaths.splice(i, 1);
+                        this.module.reload();
                         break;
                     }
                 }
 
-                this.reloadModule();
+
             }
-        },
-
-        reloadModule: function () {
-            var module = this.module;
-
-            if (module.view.unload) {
-                module.view.unload();
-            }
-
-            module.view.init();
-            module.view.inDom();
-            module.view.onResize();
-            module.model.resetListeners();
-            module.updateAllView();
         }
 
     });

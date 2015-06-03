@@ -12,7 +12,7 @@
     }
 })();
 
-requirejs.config({
+require.config({
     waitSeconds: 0,
     paths: {
         ace: 'components/ace/src',
@@ -25,6 +25,7 @@ requirejs.config({
         forms: 'lib/forms',
         'file-saver': 'components/file-saver.js/FileSaver',
         'highlightjs': 'lib/highlight.js/highlight.pack',
+        jcampconverter: 'components/jcampconverter/dist/jcampconverter.min',
         jqgrid: 'components/jqgrid_edit/js/jquery.jqGrid',
         jquery: 'components/jquery/dist/jquery.min',
         'jquery-cookie': 'components/jquery-cookie/jquery.cookie',
@@ -42,7 +43,8 @@ requirejs.config({
         pouchdb: 'components/pouchdb/dist/pouchdb.min',
         underscore: 'components/underscore/underscore-min',
         select2: 'components/select2/dist/js/select2.full',
-        'sparkline': 'lib/jquery.sparkline/jquery.sparkline.min',
+        sparkline: 'lib/jquery.sparkline/jquery.sparkline.min',
+        sprintf: 'components/sprintf/dist/sprintf.min',
         'src/shape.1dnmr': 'components/jsNMR/src/shape.1dnmr',
         superagent: 'components/superagent/superagent',
         threejs: 'components/threejs/build/three.min',
@@ -86,8 +88,14 @@ requirejs.config({
         jqgrid: ['jquery', 'components/jqgrid_edit/js/i18n/grid.locale-en'],
         'libs/jsmol/js/JSmolApplet': ['libs/jsmol/JSmol.min.nojq'],
         'lib/flot/jquery.flot.pie': ['jquery', 'lib/flot/jquery.flot'],
-        'lib/pixastic/pixastic': ['lib/pixastic/pixastic/pixastic.core'],
+        'lib/pixastic/pixastic': {
+            deps: ['lib/pixastic/pixastic/pixastic.core'],
+            exports: 'Pixastic'
+        },
         fancytree: ['jquery-ui/droppable'],
+        BiojsCore: {
+            exports: 'Biojs'
+        },
         BiojsMyFeatureViewer: ['BiojsFeatureViewer'],
         BiojsFeatureViewer: [
             'BiojsCore',
@@ -120,7 +128,6 @@ require([
     'src/main/datas',
     'src/main/entrypoint',
     'uri/URI.fragmentQuery',
-    'lib/IndexedDBShim/IndexedDBShim',
     'components/setImmediate/setImmediate'
 ], function ($, Datas, EntryPoint, URI) {
     $.browser = {msie: false}; // Property used by old libraries and not present in jQuery anymore

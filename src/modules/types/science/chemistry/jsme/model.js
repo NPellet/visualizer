@@ -25,7 +25,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
             }
 
             var jpath = {};
-            Traversing._getjPath(data[i], jpath);
+            Traversing._getjPath(data[0], jpath);
             return jpath;
         }
     });

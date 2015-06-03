@@ -15,6 +15,7 @@
     "no-array-constructor": 2,
     "no-constant-condition": 2,
     "no-debugger": 2,
+    "no-delete-var": 2,
     "no-dupe-args": 2,
     "no-dupe-keys": 2,
     "no-duplicate-case": 2,
@@ -24,6 +25,7 @@
     "no-extra-semi": 2,
     "no-func-assign": 2,
     "no-irregular-whitespace": 2,
+    "no-label-var": 2,
     "no-lone-blocks": 2,
     "no-mixed-spaces-and-tabs": 2,
     "no-multi-spaces": 2,
@@ -32,9 +34,12 @@
     "no-new-wrappers": 2,
     "no-obj-calls": 2,
     "no-regex-spaces": 2,
+    "no-shadow-restricted-names": 2,
     "no-spaced-func": 2,
     "no-sparse-arrays": 2,
     "no-trailing-spaces": [2, {"skipBlankLines": true}],
+    "no-undef": 2,
+    "no-undef-init": 2,
     "no-unreachable": 2,
     "no-unused-expressions": 2,
     "no-with": 2,
@@ -51,5 +56,17 @@
     "strict": [2, "global"],
     "use-isnan": 2,
     "valid-typeof": 2
+  },
+  "globals": {
+    "setImmediate": false,
+    "escape": false,
+    "unescape": false,
+    "$": false,
+    "jQuery": false,
+    "DataObject": false,
+    "DataArray": false,
+    "DataString": false,
+    "DataNumber": false,
+    "DataBoolean": false
   }
 }

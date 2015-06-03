@@ -107,7 +107,7 @@ function drawCell(value, startX, startY, color, bufferData, nbValX) {
 
 
 var data, min, max, colors, pxPerCell, squareLoading, highContrast;
-onmessage = function (event) {
+self.onmessage = function (event) {
     var d = event.data;
 
     if (d.title == 'init') {

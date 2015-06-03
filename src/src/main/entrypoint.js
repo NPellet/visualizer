@@ -2,6 +2,7 @@
 
 define([
     'jquery',
+    'lodash',
     'src/header/header',
     'src/util/repository',
     'src/main/grid',
@@ -21,6 +22,7 @@ define([
     'src/util/shortcuts'
 ], function (
     $,
+    _,
     Header,
     Repository,
     Grid,
@@ -167,7 +169,7 @@ define([
             for (var i = 0; i < paths.length; i++) {
                 conf.paths[paths[i].alias] = paths[i].path;
             }
-            requirejs.config(DataObject.resurrect(conf));
+            require.config(DataObject.resurrect(conf));
         }
 
         function checkCustomModules() {
@@ -231,7 +233,7 @@ define([
                         defineStr += ') { \n ' + filter.script[0] + ' \n}';
 
                         try {
-                            var filterDef = undefined;
+                            var filterDef;
                             eval(defineStr);
                             require.undef(filter.name[0]);
                             define(filter.name[0], depsA, filterDef);
@@ -277,7 +279,7 @@ define([
                         // Defined by an URL
                         if (entryVar.url) {
 
-                            fetching.push(UrlData.get(entryVar.url, {
+                            fetching.push(UrlData.get(entryVar.url, entryVar.timeout | 0, {
                                 Accept: 'application/json'
                             }).then(function (v) {
 

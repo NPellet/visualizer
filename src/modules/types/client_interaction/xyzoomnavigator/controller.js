@@ -48,7 +48,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.zoom = function (zoom) {
         this.createDataFromEvent('onZoomChange', 'zoom', zoom);
-        this.sendActionFromEvent('onZoomChange', 'zoom', [x, y]);
+        // TODO x and y are not defined
+        // this.sendActionFromEvent('onZoomChange', 'zoom', [x, y]);
     };
 
     Controller.prototype.variablesIn = ['xycoords', 'zoom'];

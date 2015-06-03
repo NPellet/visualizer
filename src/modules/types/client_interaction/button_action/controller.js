@@ -97,6 +97,16 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             'default': [0, 0, 0, 1],
                             displayTarget: ['t']
                         },
+                        startState: {
+                            type: 'combo',
+                            title: 'Start State',
+                            options: [
+                                {key: 'on', title: 'On'},
+                                {key: 'off', title: 'Off'}
+                            ],
+                            default: 'off',
+                            displayTarget: ['t']
+                        },
                         text: {
                             type: 'text',
                             title: 'Action text to send'
@@ -143,8 +153,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
         askConfirm: ['groups', 'group', 0, 'askConfirm', 0],
         confirmText: ['groups', 'group', 0, 'confirmText', 0],
         okLabel: ['groups', 'group', 0, 'okLabel', 0],
-        cancelLabel: ['groups', 'group', 0, 'cancelLabel', 0]
-
+        cancelLabel: ['groups', 'group', 0, 'cancelLabel', 0],
+        startState: ['groups', 'group', 0, 'startState', 0]
     };
 
     return Controller;
