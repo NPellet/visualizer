@@ -42,10 +42,6 @@ define([
             picture: function (value, varname) {
                 var that = this;
                 return that.doImage(varname, value);
-            },
-            svg: function(value, varname) {
-                var val = value.get();
-                return this.doImage(varname, new DataString('data:image/svg+xml;utf8,' + val));
             }
         },
 
