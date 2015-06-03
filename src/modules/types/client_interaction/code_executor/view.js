@@ -60,6 +60,12 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
         this.resolveReady();
     };
 
+    View.prototype.onResize = function() {
+        if (this.editor) {
+            this.editor.resize();
+        }
+    };
+
     View.prototype.editorChanged = function () {
         var val = this.editor.getValue();
         this._code = val;
