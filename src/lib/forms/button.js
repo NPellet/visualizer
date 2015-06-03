@@ -16,7 +16,12 @@ define(['require', 'jquery', 'forms/title'], function (require, $, title) {
         this.title = new title(label);
         this.onclick = onclick;
         this.id = ++id;
-        this.value = false;
+        if(options.value) {
+            this.value = options.value;
+        }
+        else {
+            this.value = false;
+        }
         /*
          if(typeof onclick !== 'function' && !options)
          this.options = onclick;
@@ -118,7 +123,6 @@ define(['require', 'jquery', 'forms/title'], function (require, $, title) {
             } else {
                 this.dom.removeClass('disabled');
             }
-
             if (this.options.checkbox) {
                 if (this.value) {
                     this.dom.addClass('bi-active');
@@ -136,7 +140,7 @@ define(['require', 'jquery', 'forms/title'], function (require, $, title) {
         },
 
         doClick: function (event, item) {
-
+            debugger;
             this.value = !this.value;
             this.applyStyle();
             if (this.onclick)
