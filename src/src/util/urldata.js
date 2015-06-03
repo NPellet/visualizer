@@ -66,9 +66,9 @@ define(['components/superagent/superagent', 'src/util/lru', 'src/util/debug'], f
             }
 
             if (typeof force === 'number') {
+                headers = timeout;
                 timeout = force;
                 force = false;
-                headers = timeout;
             } else if (typeof force === 'object') {
                 headers = force;
                 timeout = 0;

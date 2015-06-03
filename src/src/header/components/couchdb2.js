@@ -2,6 +2,7 @@
 
 define([
     'jquery',
+    'lodash',
     'src/util/ui',
     'src/header/components/default',
     'src/util/versioning',
@@ -12,7 +13,7 @@ define([
     'fancytree',
     'components/ui-contextmenu/jquery.ui-contextmenu.min',
     'jquery-ui/autocomplete'
-], function ($, ui, Default, Versioning, Button, Util, Form) {
+], function ($, _, ui, Default, Versioning, Button, Util, Form) {
 
     function CouchDBManager() {
     }
@@ -210,7 +211,7 @@ define([
                     doc._rev = data.rev;
                     node.data.hasMeta = true;
                     if (node.children)
-                        child.lazyLoad(true);
+                        node.lazyLoad(true);
 
                     that.showError('meta saved.', 2);
                 },
@@ -488,7 +489,7 @@ define([
                             node.data.isPublic = true;
                             that.updateButtons();
                             if (node.children)
-                                child.lazyLoad(true);
+                                node.lazyLoad(true);
 
                             that.showError('The view was made public', 2);
                         },

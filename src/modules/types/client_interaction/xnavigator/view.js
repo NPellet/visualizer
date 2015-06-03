@@ -42,8 +42,8 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
             var self = this;
             var target = $(e.target || e.srcElement);
 
-            mode = (target.hasClass('left') ? 'left' : (target.hasClass('right') ? 'right' : 'left'));
-            var self = this, timeout;
+            var mode = (target.hasClass('left') ? 'left' : (target.hasClass('right') ? 'right' : 'left'));
+            var timeout;
 
             var getInterval = function () {
                 return 300000 / ((Date.now() - started) + 1500) + 10;

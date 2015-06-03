@@ -56,6 +56,14 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
                             },
                             'default': ['editor', 'buttons']
                         },
+                        execOnLoad: {
+                            type: 'checkbox',
+                            title: 'Execute on load',
+                            options: {
+                                yes: 'Yes'
+                            },
+                            default: []
+                        },
                         script: {
                             type: 'jscode',
                             title: 'Code',
@@ -105,6 +113,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
 
     Controller.prototype.configAliases = {
         script: ['groups', 'group', 0, 'script', 0],
+        execOnLoad: ['groups', 'group', 0, 'execOnLoad', 0],
         display: ['groups', 'group', 0, 'display', 0],
         libs: ['groups', 'libs', 0],
         buttons: ['groups', 'buttons', 0]
@@ -117,9 +126,16 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         });
     };
 
-    Controller.prototype.onVariableIn = function () {
+    Controller.prototype.onLoadScript = function () {
         this.initExecutor().then(function (executor) {
-            executor.setVariable();
+            executor.setLoadScript();
+            executor.execute();
+        });
+    };
+
+    Controller.prototype.onVariableIn = function (name) {
+        this.initExecutor().then(function (executor) {
+            executor.setVariable(name);
             executor.execute();
         });
     };
@@ -152,6 +168,10 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         this.neededAliases = aliases.join(', ');
         this.resolveReady();
         this.reloaded = true;
+
+        if (this.module.getConfigurationCheckbox('execOnLoad', 'yes')) {
+            this.onLoadScript(); // exec the script
+        }
     };
 
     Controller.prototype.initExecutor = function () {
@@ -233,7 +253,10 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
             defined: 0,
             'set': setter,
             'get': function (name) {
-                return this.variables[name];
+                var variable = this.variables[name];
+                if (variable) {
+                    return variable.get();
+                }
             },
             sendAction: sendAction,
             setAsync: setAsync,
@@ -243,6 +266,9 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         };
 
         var ctx = {
+            getVariable: function () {
+                return context.variable;
+            },
             getVariables: function () {
                 return context.variables;
             },
@@ -260,7 +286,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
             },
             'set': setter,
             'get': function (name) {
-                return context.variables[name];
+                return context.get(name);
             },
             sendAction: sendAction,
             setAsync: setAsync,
@@ -276,6 +302,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         this.context.event = null;
         this.context.button = null;
         this.context.action = null;
+        this.context.variable = null;
         this.context.variables = {};
         this.context.defined = 0;
     };
@@ -285,7 +312,12 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         this.context.button = name;
     };
 
-    ScriptExecutor.prototype.setVariable = function () {
+    ScriptExecutor.prototype.setLoadScript = function () {
+        this.context.event = 'load';
+    };
+
+    ScriptExecutor.prototype.setVariable = function (name) {
+        this.context.variable = name;
         this.context.event = 'variable';
     };
 

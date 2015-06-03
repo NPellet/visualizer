@@ -1,6 +1,6 @@
 'use strict';
 
-requirejs.config({
+require.config({
     paths: {
         'd3-plugins': 'components/d3-plugins'
     },
@@ -181,36 +181,62 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         },
 
         onResize: function () {
-            this.refresh();
+            this.redraw();
         },
 
         draw: function () {
-            var that = this;
-
             if (this.coordinateSystem === 'combinatorial' && this.axes) {
                 // Generate 6 points;
                 // x=0, y=0, z=0
-                var axeData = [
+                this.axeData = {};
+                this.axeData.points = [
                     [this.combXmax + 1, 0, 0], [0, this.combYZmax + 1, this.combYZmax + 1],
                     [0, this.combYmax + 1, 0], [this.combXZmax + 1, 0, this.combXZmax + 1],
                     [0, 0, this.combZmax + 1], [this.combXYmax + 1, this.combXYmax + 1, 0]
                 ];
 
-                var axeLabels = [
+                var startOffset = 0.49;
+                var endOffset = 0.8;
+                this.axeData.startPoints = [
+                    [this.combXmax + startOffset, 0, 0], [0, this.combYZmax + startOffset, this.combYZmax + startOffset],
+                    [0, this.combYmax + startOffset, 0], [this.combXZmax + startOffset, 0, this.combXZmax + startOffset],
+                    [0, 0, this.combZmax + startOffset], [this.combXYmax + startOffset, this.combXYmax + startOffset, 0]
+                ];
+
+                this.axeData.endPoints = [
+                    [this.combXmax + endOffset, 0, 0], [0, this.combYZmax + endOffset, this.combYZmax + endOffset],
+                    [0, this.combYmax + endOffset, 0], [this.combXZmax + endOffset, 0, this.combXZmax + endOffset],
+                    [0, 0, this.combZmax + endOffset], [this.combXYmax + endOffset, this.combXYmax + endOffset, 0]
+                ];
+
+                this.axeLabels = [
                     this.axes[0].name, this.axes[1].name + this.axes[2].name,
                     this.axes[1].name, this.axes[0].name + this.axes[2].name,
                     this.axes[2].name, this.axes[0].name + this.axes[1].name
                 ];
 
-                axeData = combinatorialToCubic(axeData);
-                axeData = cubicToOddr(axeData);
+                this.axeData.points = combinatorialToCubic(this.axeData.points);
+                this.axeData.points = cubicToOddr(this.axeData.points);
+                this.axeData.startPoints = combinatorialToCubic(this.axeData.startPoints);
+                this.axeData.startPoints = cubicToOddr(this.axeData.startPoints);
+                this.axeData.endPoints = combinatorialToCubic(this.axeData.endPoints);
+                this.axeData.endPoints = cubicToOddr(this.axeData.endPoints);
 
-                for (i = 0; i < axeData.length; i++) {
-                    axeData[i] = offsetArray(axeData[i], this.normConstant);
+                for (var i = 0; i < this.axeData.points.length; i++) {
+                    this.axeData.points[i] = offsetArray(this.axeData.points[i], this.normConstant);
+                    this.axeData.startPoints[i] = offsetArray(this.axeData.startPoints[i], this.normConstant);
+                    this.axeData.endPoints[i] = offsetArray(this.axeData.endPoints[i], this.normConstant);
                 }
-                this._reMinMax(axeData);
+                this._reMinMax(this.axeData.points);
             }
 
+            this.redraw();
+        },
+
+        redraw: function () {
+            if (!this.data || this.data.length === 0) return;
+            var that = this;
+            this.reset();
             var r1 = this.dom.width() / (2 + this.lenX * 1.5);
             var r2 = this.dom.height() / ((this.lenX + 1) * 1.75);
             var hexRadius = Math.min(r1, r2);
@@ -220,7 +246,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             }
 
             var boundingBox = _.flatten([toPixel([this.minX - 0.3, this.minY - 0.8]), toPixel([this.lenX + 1.5, this.lenY + 1.5])]);
-            if(this.module.getConfigurationCheckbox('showColorBar', 'show')) {
+            if (this.module.getConfigurationCheckbox('showColorBar', 'show')) {
                 boundingBox[0] -= 100; // Keep some room for color bar
                 boundingBox[2] += 100;
             }
@@ -232,19 +258,21 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             var width = this.width,
                 height = this.height;
 
-            var svg = d3.select('#' + this.id).append('svg')
+            var mother = d3.select('#' + this.id).append('svg')
                 .attr('viewBox', boundingBox.join(','))
                 .attr('width', width)
                 .attr('height', height)
                 .style('display', 'block')
                 .append('g');
 
-            if(this.module.getConfigurationCheckbox('showColorBar', 'show')) {
+            var svg = mother.append('g');
+
+            if (this.module.getConfigurationCheckbox('showColorBar', 'show')) {
                 var colorbarx = boundingBox[0];
                 var colorbary = boundingBox[1];
                 var svgMarkup = colorbar.getSvg({
                     width: 20,
-                    height: boundingBox[3]-20,
+                    height: boundingBox[3] * 0.95 - 20,
                     axis: {
                         orientation: 'left',
                         ticks: 5,
@@ -260,32 +288,76 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             }
 
 
-
             var hexbin = d3.hexbin()
                 .radius(hexRadius);
 
             // Generate axes
             // Combinatorial axes
-            if (this.coordinateSystem === 'combinatorial') {
+            if (this.coordinateSystem === 'combinatorial' && this.axes) {
                 var axePoints = [];
-                for (i = 0; i < axeData.length; i++) {
-                    axePoints.push(toPixel(axeData[i]));
+                var startAxePoints = [];
+                var endAxePoints = [];
+                for (i = 0; i < this.axeData.points.length; i++) {
+                    axePoints.push(toPixel(this.axeData.points[i]));
+                    startAxePoints.push(toPixel(this.axeData.startPoints[i]));
+                    endAxePoints.push(toPixel(this.axeData.endPoints[i]));
                 }
+                startAxePoints = hexbin(startAxePoints, {noRound: true});
+                endAxePoints = hexbin(endAxePoints, {noRound: true});
                 axePoints = hexbin(axePoints);
 
-                svg.append('g')
+                svg.append('defs').selectAll('marker')
+                    .data(['normal'])
+                    .enter().append('marker')
+                    .attr('id', function (d) {
+                        return d;
+                    })
+                    .attr('viewBox', '0 -5 10 10')
+                    .attr('refX', 10)
+                    .attr('refY', 0)
+                    .attr('markerWidth', 10)
+                    .attr('markerHeight', 10)
+                    .attr('orient', 'auto')
+                    .append('path')
+                    .attr('d', 'M0,-5L10,0L0,5');
+
+
+                var axeText = svg.append('g')
                     .selectAll('.axes')
                     .data(axePoints)
-                    .enter().append('text')
-                    .attr('class', 'axes')
-                    .attr('x', function (d) {
-                        return d.x;
+                    .enter().append('foreignObject')
+                    .style('pointer-events', 'none')
+                    .attr({
+                        width: hexRadius,
+                        height: hexRadius
                     })
-                    .attr('y', function (d) {
-                        return d.y;
+                    .attr('transform', function (d) {
+                        return 'translate(' + (d.x - hexRadius / 2) + ',' + (d.y - hexRadius / 2) + ')';
+                    });
+
+                axeText.append('xhtml:div')
+                    .append('div')
+                    .style({
+                        display: 'flex',
+                        height: '' + hexRadius + 'px',
+                        width: '' + hexRadius + 'px',
+                        'box-sizing': 'border-box',
+                        'align-items': 'center'
                     })
+                    .attr('class', 'axe-text')
                     .html(function (d, i) {
-                        return axeLabels[i];
+                        return that.axeLabels[i];
+                    });
+
+                var axeArrows = svg.append('g')
+                    .selectAll('.axe-arrow')
+                    .data(axePoints)
+                    .enter()
+                    .append('path')
+                    .attr('class', 'axe-arrow')
+                    .attr('marker-end', 'url(#normal)')
+                    .attr('d', function (d, i) {
+                        return 'M' + startAxePoints[i].x + ',' + startAxePoints[i].y + 'L' + endAxePoints[i].x + ' ' + endAxePoints[i].y;
                     });
 
             }
@@ -327,7 +399,6 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                     width: '' + hexRadius + 'px',
                     padding: 0,
                     'align-items': 'center',
-                    'text-align': 'center',
                     'justify-content': 'center',
                     'box-sizing': 'border-box'
                 })
@@ -337,11 +408,14 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
 
 
             // Zoom
-            var zoom = d3.behavior.zoom()
-                .scaleExtent([0.2, 10])
-                .on('zoom', zoomed);
+            if (this.module.getConfigurationCheckbox('enableZoom', 'yes')) {
+                var zoom = d3.behavior.zoom()
+                    .scaleExtent([0.2, 10])
+                    .on('zoom', zoomed);
 
-            //svg.call(zoom);
+                mother.call(zoom);
+            }
+
 
             function zoomed() {
                 svg.attr('transform', 'translate(' + d3.event.translate + ')scale(' + d3.event.scale + ')');

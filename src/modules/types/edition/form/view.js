@@ -21,6 +21,8 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                 tpl_html = this.module.getConfiguration('tpl_html'),
                 form;
 
+            var json, def;
+
             try {
                 json = JSON.parse(structure);
             } catch (e) {

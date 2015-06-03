@@ -1,5 +1,5 @@
 {
-  "version": "2.9.10",
+  "version": "2.20.2-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -93,8 +93,13 @@
                   "buttons"
                 ]
               ],
+              "execOnLoad": [
+                [
+                  "yes"
+                ]
+              ],
               "script": [
-                "console.log(getVariables());\n\nvar event = getEvent();\nif (event == 'button' && getDefined() == 1) {\n    var molfile = get('mol').get();\n    var molecule = ACT.Molecule.fromMolfile(molfile);\n    if (getButton() == 'idcode') {\n        set('idcode', molecule.getIDCode());\n    } else {\n        set('smiles', molecule.toSmiles());\n    }\n} else if(event == 'action' && getAction().name == 'exec') {\n    set('message', 'Hello')\n}\n\nsendAction('act1', 'value1')"
+                "console.log(getVariables());\n\nvar event = getEvent();\nif(event === 'load') {\n    console.log('on load');   \n}\nelse if (event == 'button' && getDefined() == 1) {\n    var molfile = get('mol');\n    var molecule = ACT.Molecule.fromMolfile(molfile);\n    if (getButton() == 'idcode') {\n        set('idcode', molecule.getIDCode());\n    } else {\n        set('smiles', molecule.toSmiles());\n    }\n} else if(event == 'action' && getAction().name == 'exec') {\n    set('message', 'Hello')\n} else if(event == 'variable') {\n    console.log('trigerred by input variable ' + getVariable())\n}\n\nsendAction('act1', 'value1')"
               ]
             }
           ],
@@ -128,7 +133,7 @@
           },
           "size": {
             "width": 52,
-            "height": 30
+            "height": 38
           },
           "zIndex": 0,
           "display": true,
@@ -182,7 +187,10 @@
                 ]
               ],
               "script": [
-                "console.log(this.variables);\n\nsetAsync();\n\nif (this.event == 'button' && this.defined == 1) {\n    var molfile = this.get('mol').get();\n    var molecule = ACT.Molecule.fromMolfile(molfile);\n    if (this.button == 'idcode') {\n        this.set('idcode', molecule.getIDCode());\n    } else {\n        this.set('smiles', molecule.toSmiles());\n    }\n} else if(this.event == 'action' && this.action.name == 'exec') {\n    this.set('message', 'Hello')\n}\n\nsetTimeout(function () {\n    sendAction('act2', 'value2')\n    done();\n}, 1000)"
+                "console.log(this.variables);\n\nsetAsync();\n\nif (this.event == 'button' && this.defined == 1) {\n    var molfile = this.get('mol');\n    var molecule = ACT.Molecule.fromMolfile(molfile);\n    if (this.button == 'idcode') {\n        this.set('idcode', molecule.getIDCode());\n    } else {\n        this.set('smiles', molecule.toSmiles());\n    }\n} else if(this.event == 'action' && this.action.name == 'exec') {\n    this.set('message', 'Hello')\n} else if(this.event == 'variable') {\n    console.log('trigerred by input variable ' + this.variable)\n}\n\nsetTimeout(function () {\n    sendAction('act2', 'value2')\n    done();\n}, 1000)"
+              ],
+              "execOnLoad": [
+                null
               ]
             }
           ],
@@ -212,11 +220,11 @@
         "Default layer": {
           "position": {
             "left": 58,
-            "top": 40
+            "top": 47
           },
           "size": {
             "width": 53,
-            "height": 36
+            "height": 47
           },
           "zIndex": 0,
           "display": true,
@@ -569,5 +577,6 @@
   "pouchvariables": [],
   "configuration": {
     "title": "Script executor"
-  }
+  },
+  "aliases": []
 }

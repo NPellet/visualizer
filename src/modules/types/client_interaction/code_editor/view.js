@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/context', 'jquery'], function (Default, Util, ace, Context, $) {
+define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/context', 'jquery', 'lodash'], function (Default, Util, ace, Context, $, _) {
 
     function View() {
     }
@@ -20,6 +20,13 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
             this.editorCell = $('<td>').css('height', '100%').appendTo(editorRow);
             this.buttonCell = $('<td>').appendTo(this.buttonRow).css('text-align', 'center');
 
+            var debouncing = this.module.getConfiguration('debouncing');
+            if (debouncing > 0) {
+                this.editorChangedDebounced = _.debounce(this.editorChanged, debouncing);
+            } else {
+                this.editorChangedDebounced = this.editorChanged;
+            }
+
             this.module.getDomContent().html(table);
 
         },
@@ -38,7 +45,7 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
                 this.editor.getSession().setMode(mode);
                 this.editor.setValue(initVal, -1);
                 this.editor.getSession().on('change', function () {
-                    self.editorChanged();
+                    self.editorChangedDebounced();
                 });
                 this.editorChanged();
             }
@@ -58,6 +65,7 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
         },
         update: {
             value: function (value) {
+                this.module.model.data = value;
                 var val = value.get();
                 this._code = val;
                 if (this.editable) {

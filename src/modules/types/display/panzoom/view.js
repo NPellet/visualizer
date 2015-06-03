@@ -41,12 +41,11 @@ define([
         update: {
             picture: function (value, varname) {
                 var that = this;
-                //currentPromise = currentPromise.then(function() { that.clearImages(); return that.addImages()}).then(function() {
-                //    that.panzoomMode();
-                //    that.onResize();
-                //    that.reorderImages();
-                //});
                 return that.doImage(varname, value);
+            },
+            svg: function(value, varname) {
+                var val = value.get();
+                return this.doImage(varname, new DataString('data:image/svg+xml;utf8,' + val));
             }
         },
 
@@ -79,58 +78,6 @@ define([
             for (var i = 0; i < this.images.length; i++) {
                 this.images[i].$panzoomEl.css('z-index', parseInt(this.images[i].conf.order) || i);
             }
-        },
-
-        addImages: function () {
-            var that = this;
-            var prom;
-            var variables = {};
-
-            function filterConf(c) {
-                var v = API.getData(c.variable);
-                if (v !== undefined) {
-                    variables[c.variable] = v;
-                    var op = parseFloat(c.opacity);
-                    if (op && op >= 0 && op <= 1) {
-                        return true;
-                    }
-                }
-                Debug.warn('Panzoom: ignoring invalid configuration line');
-                return false;
-            }
-
-            // Filter conf for valid data
-            var conf = this.module.getConfiguration('img');
-            conf = _.filter(conf, filterConf);
-
-            if (conf.length === 0) {
-                conf = this._buildConfFromVarsIn();
-                conf = _.filter(conf, filterConf);
-            }
-            prom = _.map(conf, function (c) {
-                return new Promise(function (resolve) {
-                    var image = {};
-                    var x = that.newImageDom(c.variable);
-                    var $img = x.find('img');
-                    $img
-                        .css('opacity', c.opacity)
-                        .addClass(c.rendering)
-                        .attr('src', variables[c.variable].get())
-                        .load(function () {
-                            image.name = c.variable;
-                            image.$panzoomEl = x.find('.panzoom');
-                            image.$img = x.find('img');
-                            image.$parent = x.find('.parent');
-                            image.width = this.width;
-                            image.height = this.height;
-                            image.conf = c;
-                            that.dom.append(x);
-                            that.images.push(image);
-                            resolve();
-                        });
-                });
-            });
-            return Promise.all(prom);
         },
 
         addImage: function (varname, variable) {
@@ -170,7 +117,10 @@ define([
                 if (image) foundImg = true;
                 image = image || {};
 
-
+                if(that.toHide && that.toHide[conf.variable]) {
+                    $previousImg && $previousImg.hide();
+                    return resolve();
+                }
                 $img
                     .css('opacity', conf.opacity)
                     .addClass(conf.rendering)
@@ -188,6 +138,9 @@ define([
                             that.images.push(image);
                         }
                         if ($previousImg) $previousImg.remove();
+                        if(that.transforms && that.transforms[conf.variable]) {
+                            $img.css('transform', that.transforms[conf.variable]);
+                        }
                         resolve();
                     })
                     .on('error', function () {
@@ -213,7 +166,7 @@ define([
                 var idx = _.findIndex(that.images, function (img) {
                     return img.name === varname;
                 });
-                start = idx;
+                start = (idx === -1 ? undefined : idx);
                 l = idx + 1;
             }
             for (var i = start; i < l; i++) {
@@ -277,12 +230,7 @@ define([
                     instance.setMatrix(that.lastTransform);
                 }
 
-                // This is a trick to get crisp images with chrome
-                // Since it does'n implement crisp-edges image rendering
-                // But pixelated rendering instead
-                if (bowser.chrome) {
-                    that.chromeCrisp();
-                }
+                that.rerender();
             });
 
             function getPixels(e, allPixels, pixel) {
@@ -357,6 +305,17 @@ define([
 
         },
 
+        rerender: _.debounce(function () {
+            for (var j = 0; j < this.images.length; j++) {
+                // Trick to get crisp images with chrome
+                // Since it does'n implement crisp-edges image rendering
+                // But pixelated rendering instead
+                console.log(this.images[j]);
+                if (this.images[j].conf.rerender && this.images[j].conf.rerender.indexOf('yes') > -1 || (this.images[j].conf.rendering === 'crisp-edges' && bowser.chrome))
+                    this.doImage(this.images[j].name);
+            }
+        }, 300),
+
         chromeCrisp: _.debounce(function () {
             for (var j = 0; j < this.images.length; j++) {
                 if (this.images[j].conf.rendering === 'crisp-edges')
@@ -381,7 +340,6 @@ define([
                         domimg.height = this.dom.height() * factor;
                         domimg.width = this.images[i].width / this.images[i].height * this.dom.height() * factor;
                     }
-
                 }
                 this.images[i].$parent.width(this.dom.parent().width()).height(this.dom.parent().height());
                 this.images[i].$panzoomEl.panzoom('resetDimensions');
@@ -390,6 +348,37 @@ define([
 
         getDom: function () {
             return this.dom;
+        },
+
+        onActionReceive: {
+            transform: function(data) {
+                this.transforms  = this.transforms || {};
+                this.transforms[data.name] = data.transform;
+                this.doImage(data.name);
+            },
+            hide: function(data) {
+                this.toHide = this.toHide || {};
+                var varname;
+                if(typeof data === 'string')
+                    varname = data;
+                else
+                    varname = data.name;
+                if(this.toHide[varname]) return;
+                this.toHide[varname] = true;
+                this.doImage(varname);
+            },
+            show: function(data) {
+                this.toHide = this.toHide || {};
+                var varname;
+                if(typeof data === 'string')
+                    varname = data;
+                else
+                    varname = data.name;
+
+                if(!this.toHide[varname]) return;
+                this.toHide[varname] = false;
+                this.doImage(varname);
+            }
         },
 
         _buildConfFromVarsIn: function () {
@@ -411,6 +400,14 @@ define([
             };
         }
     });
+
+    // Unused for now but don't erase
+    function applyTransform(v, t) {
+        var r = new Array(2);
+        r[0] = v[0] * (+t[0]) + v[1] * (+t[1]) + (+t[4]);
+        r[1] = v[0] * (+t[2]) + v[1] * (+t[3]) + (+t[5]);
+        return r;
+    }
 
     return View;
 

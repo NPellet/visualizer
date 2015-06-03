@@ -74,7 +74,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
             var self = this;
             var target = $(e.target || e.srcElement);
 
-            mode = target.hasClass('top') ? 'top' : (target.hasClass('bottom') ? 'bottom' : (target.hasClass('left') ? 'left' : (target.hasClass('right') ? 'right' : 'top')));
+            var mode = target.hasClass('top') ? 'top' : (target.hasClass('bottom') ? 'bottom' : (target.hasClass('left') ? 'left' : (target.hasClass('right') ? 'right' : 'top')));
             var timeout;
 
             var getInterval = function () {

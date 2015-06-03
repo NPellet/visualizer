@@ -1,4 +1,0 @@
-graph
-=====
-
-Dynamic graphing library

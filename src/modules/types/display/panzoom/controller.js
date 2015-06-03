@@ -21,6 +21,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
             type: ['picture', 'png', 'jpeg', 'jpg', 'gif'],
             label: 'A picture'
         },
+        svg: {
+            type: ['svg'],
+            label: 'Inline svg'
+        },
         pixel: {
             label: 'A pixel'
         },
@@ -42,7 +46,13 @@ define(['modules/default/defaultcontroller'], function (Default) {
         }
     };
 
-    Controller.prototype.variablesIn = ['picture'];
+    Controller.prototype.variablesIn = ['picture', 'svg'];
+
+    Controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {
+        transform: 'Send transform to specific image',
+        hide: 'Hide an image',
+        show: 'Show an image'
+    });
 
     Controller.prototype.configurationStructure = function () {
         var vars = [];
@@ -103,7 +113,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                                 {key: 'default', title: 'Normal'},
                                 {key: 'crisp-edges', title: 'Crisp edges'}
                             ],
-                            default: ['default']
+                            default: 'default'
                         },
                         scaling: {
                             type: 'combo',
@@ -111,11 +121,19 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             options: [
                                 {
                                     key: 'max',
-                                    title: 'Extend to 100% of available spcae'
+                                    title: 'Extend to 100% of available space'
                                 },
                                 {key: 'no', title: 'Keep original image size'}
                             ],
                             default: ['max']
+                        },
+                        rerender: {
+                            type: 'checkbox',
+                            title: 'Re-render on zoom',
+                            options: {
+                                yes: 'Yes'
+                            },
+                            default: []
                         }
                     }
                 }

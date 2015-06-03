@@ -1,5 +1,5 @@
 'use strict';
-
+/*global Parser*/
 define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs'], function (require, Default, Util, THREE) {
 
     function View() {

@@ -1,6 +1,6 @@
 'use strict';
 
-requirejs.config({
+require.config({
     shim: {
         'components/leaflet/dist/leaflet': {
             exports: 'L',

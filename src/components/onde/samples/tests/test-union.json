@@ -1,9 +1,0 @@
-{
-    "type": "object",
-    "properties": {
-        "bareUnion": ["string", "number"],
-        "union": {
-            "type": ["string", "number"]
-        }
-    }
-}

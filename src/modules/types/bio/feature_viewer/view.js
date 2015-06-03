@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/util', 'jquery-ui/slider', 'BiojsDasProteinFeatureViewer'], function (Default, Util) {
+define(['modules/default/defaultview', 'src/util/util', 'BiojsCore', 'jquery-ui/slider', 'BiojsDasProteinFeatureViewer'], function (Default, Util, Biojs) {
 
     function View() {
     }

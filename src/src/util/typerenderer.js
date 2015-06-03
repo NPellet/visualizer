@@ -1,6 +1,6 @@
 'use strict';
 
-define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/util/datatraversing', 'src/util/debug'], function (require, $, lodash, API, Util, Traversing, Debug) {
+define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], function (require, $, _, API, Util) {
     Util.loadCss('components/font-awesome/css/font-awesome.min.css');
 
     var functions = {};
@@ -105,12 +105,13 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'src/uti
 
     functions.svg = {};
     functions.svg.toscreen = function (element, val) {
-        var dom = $(val);
+        var dom = $(String(val));
         var viewbox = [0, 0, parseInt(dom.attr('width')), parseInt(dom.attr('height'))];
         dom[0].setAttribute('viewBox', viewbox.join(' '));
         dom.removeAttr('id');
         dom.attr('width', '100%');
         dom.attr('height', '100%');
+        dom.css('display', 'block');
         element.html(dom);
     };
 

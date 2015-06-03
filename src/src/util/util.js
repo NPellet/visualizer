@@ -423,7 +423,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
         utilReqPaths[url] = reqPathStr;
         var paths = {};
         paths[reqPathStr] = url;
-        requirejs.config({
+        require.config({
             paths: paths
         });
 

@@ -1,6 +1,6 @@
 'use strict';
 
-define(['require', 'modules/default/defaultview', 'src/util/api'], function (require, Default, API) {
+define(['require', 'lodash', 'modules/default/defaultview', 'src/util/api'], function (require, _, Default, API) {
 
     function View() {
     }

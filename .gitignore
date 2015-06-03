@@ -5,6 +5,8 @@ nbproject
 node_modules
 npm-debug.log
 
+src/components
+
 build
 build2
 
