@@ -43,4 +43,4 @@ prerelease, commit again and push the changes to GitHub.
 When a new release is done, the important changes should be added to History.md
 
 The following command helps to have a preformatted list of all commit messages since a given tag:  
-`git log v2.17.5..HEAD --pretty=" * %s" | cat`
+`git log v2.20.2..HEAD --pretty=" * %s" | cat`

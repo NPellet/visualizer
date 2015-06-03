@@ -1,3 +1,24 @@
+2.20.2 / 2015-06-03
+===================
+* Modules
+ * code_executor: call ace editor resize onResize Fixes the editor's viewport being 0 when switching layers
+ * button_action: add 'Start state' option
+ * panzoom: bug fixes
+ * panzoom: show, hide and transform actions in
+ * panzoom: rerender option
+ * code_executor: add context.variable
+ * code_executor: fix onload execution
+ * code_executor: change "get" behaviour to unwrap the object
+* Typerenderer
+ * svg renderer fix scroll bar
+ * fix svg renderer if input is DataString
+* Components
+ * :arrow_up: jsgraph
+* Core
+ * re: sandbox fix for Safari
+ * ui: add makeElementSafe to API
+ * lib/forms: allow to set button in 'on' state on initialization
+
 2.20.1 / 2015-06-01
 ===================
 * Modules
