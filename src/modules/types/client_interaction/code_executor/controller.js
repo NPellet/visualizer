@@ -168,6 +168,10 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         this.neededAliases = aliases.join(', ');
         this.resolveReady();
         this.reloaded = true;
+
+        if (this.module.getConfigurationCheckbox('execOnLoad', 'yes')) {
+            this.onLoadScript(); // exec the script
+        }
     };
 
     Controller.prototype.initExecutor = function () {
