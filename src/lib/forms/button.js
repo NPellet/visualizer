@@ -16,8 +16,10 @@ define(['require', 'jquery', 'forms/title'], function (require, $, title) {
         this.title = new title(label);
         this.onclick = onclick;
         this.id = ++id;
-        if(options.value) {
-            this.value = options.value;
+        this.options = options || {};
+
+        if(this.options.value) {
+            this.value = this.options.value;
         }
         else {
             this.value = false;
@@ -29,7 +31,7 @@ define(['require', 'jquery', 'forms/title'], function (require, $, title) {
          this.options = options || {};
          */
 
-        this.options = options || {};
+
         this.color = this.options.color;
         // Store button in the stack
         stack[this.id] = this;
