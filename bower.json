@@ -42,7 +42,7 @@
     "jquery-mousewheel": "3.1.12",
     "jquery-ui": "1.11.3",
     "jsbarcode": "*",
-    "jsgraph": "1.11.2",
+    "jsgraph": "v1.11.3-2",
     "jsNMR": "NPellet/jsNMR#73cd9c371c8ebc53c32b7f6e6c36077e8a407d99",
     "json-chart": "1.0.0",
     "jsoneditor": "3.2.0",
@@ -75,7 +75,7 @@
     "file-saver.js": "~1.20150304.1"
   },
   "resolutions": {
-    "jsgraph": "1.11.2"
+    "jsgraph": "v1.11.3-2"
   },
   "private": true
 }
