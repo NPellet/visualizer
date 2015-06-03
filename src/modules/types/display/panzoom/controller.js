@@ -113,7 +113,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                                 {key: 'default', title: 'Normal'},
                                 {key: 'crisp-edges', title: 'Crisp edges'}
                             ],
-                            default: ['default']
+                            default: 'default'
                         },
                         scaling: {
                             type: 'combo',
@@ -121,7 +121,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             options: [
                                 {
                                     key: 'max',
-                                    title: 'Extend to 100% of available spcae'
+                                    title: 'Extend to 100% of available space'
                                 },
                                 {key: 'no', title: 'Keep original image size'}
                             ],
