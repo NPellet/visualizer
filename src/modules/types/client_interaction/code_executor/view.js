@@ -75,7 +75,7 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
 
     View.prototype.update.inputValue = function (value, name) {
         this._input[name] = value;
-        this.module.controller.onVariableIn();
+        this.module.controller.onVariableIn(name);
     };
 
     View.prototype.onActionReceive.execute = function (value, name) {

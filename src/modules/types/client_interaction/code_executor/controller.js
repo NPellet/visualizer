@@ -133,9 +133,9 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         });
     };
 
-    Controller.prototype.onVariableIn = function () {
+    Controller.prototype.onVariableIn = function (name) {
         this.initExecutor().then(function (executor) {
-            executor.setVariable();
+            executor.setVariable(name);
             executor.execute();
         });
     };
@@ -262,6 +262,9 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         };
 
         var ctx = {
+            getVariable: function () {
+                return context.variable;
+            },
             getVariables: function () {
                 return context.variables;
             },
@@ -295,6 +298,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         this.context.event = null;
         this.context.button = null;
         this.context.action = null;
+        this.context.variable = null;
         this.context.variables = {};
         this.context.defined = 0;
     };
@@ -308,7 +312,8 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         this.context.event = 'load';
     };
 
-    ScriptExecutor.prototype.setVariable = function () {
+    ScriptExecutor.prototype.setVariable = function (name) {
+        this.context.variable = name;
         this.context.event = 'variable';
     };
 
