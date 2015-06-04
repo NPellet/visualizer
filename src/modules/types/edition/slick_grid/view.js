@@ -21,7 +21,9 @@ require.config({
             'components/slickgrid/plugins/slick.cellselectionmodel',
             'components/slickgrid/plugins/slick.rowselectionmodel',
             'components/slickgrid/slick.formatters',
-            'modules/types/edition/slick_grid/slick.editors.custom'],
+            'modules/types/edition/slick_grid/slick.editors.custom',
+            'components/slickgrid/plugins/slick.checkboxselectcolumn',
+            'components/slickgrid/controls/slick.columnpicker'],
         slickdataview: ['lodash', 'slickgrid', 'slickgroupitemmetadataprovider'],
         slickgroupitemmetadataprovider: ['slickgrid']
 
@@ -223,7 +225,7 @@ define([
 
             }
 
-            if (this.module.getConfigurationCheckbox('slickCheck', 'rowDelete')) {
+            if (this.module.getConfigurationCheckbox('autoColumns', 'remove')) {
                 slickCols.unshift({
                     id: 'rowDeletion',
                     width: 30,
@@ -235,6 +237,17 @@ define([
                     formatter: binFormatter
                 });
             }
+
+            if(this.module.getConfigurationCheckbox('autoColumns', 'select')) {
+                var checkboxSelector = new Slick.CheckboxSelectColumn({
+                    cssClass: "slick-cell-checkboxsel"
+                });
+
+                this.slick.plugins.push(checkboxSelector);
+
+                slickCols.unshift(checkboxSelector.getColumnDefinition());
+            }
+
             return slickCols;
         },
 
@@ -278,8 +291,8 @@ define([
                 var that = this;
                 this.module.data = moduleValue;
                 this._highlights = _.pluck(this.module.data, '_highlight');
-                that.dataObjectsDone = false;
-
+                this.dataObjectsDone = false;
+                this.slick.plugins = [];
                 this.slick.columns = this.getSlickColumns();
                 this.slick.options = this.getSlickOptions();
                 this.generateUniqIds();
@@ -356,13 +369,17 @@ define([
                         });
                         that.$container.append(that.$slickgrid);
                         that.slick.groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
+                        that.slick.plugins.push(that.slick.groupItemMetadataProvider);
                         that.slick.data = new Slick.Data.DataView({
                             groupItemMetadataProvider: that.slick.groupItemMetadataProvider
                         });
 
                         that.slick.data.setModule(that.module);
                         that.grid = new Slick.Grid(that.$slickgrid, that.slick.data, that.slick.columns, that.slick.options);
-                        that.grid.registerPlugin(that.slick.groupItemMetadataProvider);
+
+                        for(var i=0; i<that.slick.plugins.length; i++) {
+                            that.grid.registerPlugin(that.slick.plugins[i]);
+                        }
 
 
                         if (that.module.getConfiguration('slick.selectionModel') === 'row') {
@@ -370,6 +387,8 @@ define([
                         } else {
                             that.grid.setSelectionModel(new Slick.CellSelectionModel());
                         }
+
+                        //var columnpicker = new Slick.Controls.ColumnPicker(that.slick.columns, that.grid, that.slick.options);
 
                         that._activateHighlights();
 

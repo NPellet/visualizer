@@ -49,6 +49,15 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                             },
                             default: ['enableCellNavigation', 'rowNumbering', 'forceFitColumns', 'highlightScroll']
                         },
+                        autoColumns: {
+                            type: 'checkbox',
+                            title: 'Auto Columns',
+                            options: {
+                                remove: 'Column for one-click removal of a line',
+                                select: 'Column for easy selection of lines'
+                            },
+                            default: []
+                        },
                         toolbar: {
                             type: 'checkbox',
                             title: 'Toolbar options',
@@ -192,7 +201,8 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
         'cols': ['groups', 'cols', 0],
         'groupings': ['groups', 'groupings', 0],
         'actionOutButtons': ['groups', 'actionOutButtons', 0],
-        'toolbar': ['groups', 'group', 0, 'toolbar', 0]
+        'toolbar': ['groups', 'group', 0, 'toolbar', 0],
+        'autoColumns': ['groups', 'group', 0, 'autoColumns', 0]
     };
 
     Controller.prototype.references = {
