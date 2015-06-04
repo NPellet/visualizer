@@ -1,3 +1,11 @@
+2.20.3 / 2015-06-04
+===================
+* Core
+ * forms: fix important bug introduced button by last release
+ 
+* Modules
+ * slick grid: bug fix
+
 2.20.2 / 2015-06-03
 ===================
 * Modules
