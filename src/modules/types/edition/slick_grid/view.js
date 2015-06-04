@@ -8,9 +8,9 @@ require.config({
 
         // SlickGrid
         slickcore: 'components/slickgrid/slick.core',
-        slickgrid: 'modules/types/edition/slick_grid/slick.grid',
-        slickdataview: 'modules/types/edition/slick_grid/slick.dataview.custom',
-        slickgroupitemmetadataprovider: 'modules/types/edition/slick_grid/slick.groupitemmetadataprovider.custom'
+        slickgrid: 'components/slickgrid/slick.grid',
+        slickdataview: 'components/slickgrid/slick.dataview',
+        slickgroupitemmetadataprovider: 'components/slickgrid/slick.groupitemmetadataprovider'
     },
     shim: {
         dragevent: ['jquery'],
