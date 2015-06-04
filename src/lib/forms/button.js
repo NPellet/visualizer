@@ -142,7 +142,6 @@ define(['require', 'jquery', 'forms/title'], function (require, $, title) {
         },
 
         doClick: function (event, item) {
-            debugger;
             this.value = !this.value;
             this.applyStyle();
             if (this.onclick)

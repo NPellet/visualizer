@@ -327,7 +327,7 @@ define([
                             that.$rowToolbar.append(that.$addButton);
                         }
 
-                        if(that.module.getConfigurationCheckbox('toolbar','remove')) {
+                        if (that.module.getConfigurationCheckbox('toolbar', 'remove')) {
                             that.$deleteButton = $('<input type="button" value="Delete"/>');
                             that.$deleteButton.on('click', function () {
                                 that.deleteRowSelection();
@@ -347,7 +347,7 @@ define([
                         that.$rowToolbar.append(that.$actionButtons);
                         that.$container.append(that.$rowToolbar);
 
-                        if(that.module.getConfiguration('toolbar').length === 0 && that.$actionButtons.length === 0 && that.$rowToolbar) {
+                        if (that.module.getConfiguration('toolbar').length === 0 && that.$actionButtons.length === 0 && that.$rowToolbar) {
                             that.$rowToolbar.remove();
                         }
 

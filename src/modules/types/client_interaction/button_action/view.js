@@ -26,7 +26,6 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/ui'], function 
                         }
                         prom.then(function (ok) {
                             if (!ok) {
-                                debugger;
                                 return;
                             }
                             if (!val && buttonType === 'toggle') {

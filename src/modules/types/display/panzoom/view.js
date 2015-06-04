@@ -113,8 +113,8 @@ define([
                 if (image) foundImg = true;
                 image = image || {};
 
-                if(that.toHide && that.toHide[conf.variable]) {
-                    $previousImg && $previousImg.hide();
+                if (that.toHide && that.toHide[conf.variable]) {
+                    if ($previousImg) $previousImg.hide();
                     return resolve();
                 }
                 $img
@@ -134,7 +134,7 @@ define([
                             that.images.push(image);
                         }
                         if ($previousImg) $previousImg.remove();
-                        if(that.transforms && that.transforms[conf.variable]) {
+                        if (that.transforms && that.transforms[conf.variable]) {
                             $img.css('transform', that.transforms[conf.variable]);
                         }
                         resolve();
@@ -347,31 +347,31 @@ define([
         },
 
         onActionReceive: {
-            transform: function(data) {
-                this.transforms  = this.transforms || {};
+            transform: function (data) {
+                this.transforms = this.transforms || {};
                 this.transforms[data.name] = data.transform;
                 this.doImage(data.name);
             },
-            hide: function(data) {
+            hide: function (data) {
                 this.toHide = this.toHide || {};
                 var varname;
-                if(typeof data === 'string')
+                if (typeof data === 'string')
                     varname = data;
                 else
                     varname = data.name;
-                if(this.toHide[varname]) return;
+                if (this.toHide[varname]) return;
                 this.toHide[varname] = true;
                 this.doImage(varname);
             },
-            show: function(data) {
+            show: function (data) {
                 this.toHide = this.toHide || {};
                 var varname;
-                if(typeof data === 'string')
+                if (typeof data === 'string')
                     varname = data;
                 else
                     varname = data.name;
 
-                if(!this.toHide[varname]) return;
+                if (!this.toHide[varname]) return;
                 this.toHide[varname] = false;
                 this.doImage(varname);
             }
