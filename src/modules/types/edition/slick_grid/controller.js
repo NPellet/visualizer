@@ -45,10 +45,19 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                                 backToTop: 'Don\'t remember scroll position on new variable',
                                 forgetLastActive: 'Don\'t scroll back to last active row on new variable',
                                 highlightScroll: 'Scroll to highlighted line',
-                                collapseGroup: 'Collapse groups on start',
-                                showToolbar: 'Show toolbar'
+                                collapseGroup: 'Collapse groups on start'
                             },
                             default: ['enableCellNavigation', 'rowNumbering', 'forceFitColumns', 'highlightScroll']
+                        },
+                        toolbar: {
+                            type: 'checkbox',
+                            title: 'Toolbar options',
+                            options: {
+                                add: 'Add row',
+                                remove: 'Remove row',
+                                showHide: 'Show/hide column'
+                            },
+                            default: []
                         },
                         colorjpath: {
                             type: 'combo',
@@ -182,7 +191,8 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
         'slick.defaultColumnWidth': ['groups', 'group', 0, 'slick.defaultColumnWidth', 0],
         'cols': ['groups', 'cols', 0],
         'groupings': ['groups', 'groupings', 0],
-        'actionOutButtons': ['groups', 'actionOutButtons', 0]
+        'actionOutButtons': ['groups', 'actionOutButtons', 0],
+        'toolbar': ['groups', 'group', 0, 'toolbar', 0]
     };
 
     Controller.prototype.references = {
