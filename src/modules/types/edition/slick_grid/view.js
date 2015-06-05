@@ -107,6 +107,7 @@ define([
             this.slick = {};
             this.colConfig = this.module.getConfiguration('cols');
             this.idPropertyName = '_sgid';
+            this.hiddenColumns = [];
             this.resolveReady();
         },
 
@@ -130,7 +131,7 @@ define([
             this.module.data.triggerChange();
         },
 
-        getSlickColumns: function () {
+        getAllSlickColumns: function() {
             var that = this;
             var tp = $.proxy(typeRenderer, this);
 
@@ -248,8 +249,17 @@ define([
 
                 slickCols.unshift(checkboxSelector.getColumnDefinition());
             }
-
             return slickCols;
+        },
+
+        getSlickColumns: function () {
+            var that = this;
+            var slickCols = this.getAllSlickColumns();
+
+            console.log(this.hiddenColumns);
+            return slickCols.filter(function(v) {
+                return that.hiddenColumns.indexOf(v.name) === -1
+            });
         },
 
         getSlickOptions: function () {
@@ -337,6 +347,10 @@ define([
 
         },
 
+        doGrid: function() {
+            var that = this;
+        },
+
         update: {
 
             list: function (moduleValue) {
@@ -345,7 +359,6 @@ define([
                 this._highlights = _.pluck(this.module.data, '_highlight');
                 this.dataObjectsDone = false;
                 this.slick.plugins = [];
-                this.slick.columns = this.getSlickColumns();
                 this.slick.options = this.getSlickOptions();
                 this.generateUniqIds();
                 this.addRowAllowed = this.module.getConfigurationCheckbox('slickCheck', 'enableAddRow');
@@ -371,12 +384,10 @@ define([
                 }
 
 
-                cssLoaded
-                    .then(function () {
-                        return that.cssLoaded;
-                    })
-                    .then(function () {
-                        that.$rowToolbar = $('<div>').attr('class', 'rowToolbar');
+                cssLoaded.then(function doGrid() {
+                    that.slick.columns = that.getSlickColumns();
+
+                    that.$rowToolbar = $('<div>').attr('class', 'rowToolbar');
                         if (that.module.getConfigurationCheckbox('toolbar', 'add')) {
                             that.$addButton = $('<input type="button" value="New"/>');
                             that.$addButton.on('click', function () {
@@ -407,6 +418,39 @@ define([
                                 that.deleteRowSelection();
                             });
                             that.$rowToolbar.append(that.$deleteButton);
+                        }
+
+                        if(that.module.getConfigurationCheckbox('toolbar', 'showHide')) {
+                            var columns = that.getAllSlickColumns();
+
+                            that.$showHideSelection = $.tmpl('<input type="button" value="Select"/>\n    <div class="mutliSelect" style="display:none">\n        <ul>\n            {{each columns}}\n            \n            <li><input type="checkbox" value="${name}" checked/>${name}</li>\n            {{/each}}\n        </ul>\n    </div>', {
+                                columns: columns
+                            });
+                            if(that.columnSelectionShown) {
+                                that.$showHideSelection.filter('div').show();
+                            }
+                            that.$showHideSelection.on('click', function() {
+                                that.$showHideSelection.filter('div').toggle();
+                                that.columnSelectionShown = that.$showHideSelection.is(':visible');
+                            });
+                            for(var i=0; i<that.hiddenColumns.length; i++) {
+                                that.$showHideSelection.find('input[value="' + that.hiddenColumns[i] + '"]').removeAttr('checked');
+                            }
+                            that.$showHideSelection.find('input[type="checkbox"]').on('change', function() {
+                                if(this.checked) {
+                                    var idx = that.hiddenColumns.indexOf(this.value);
+                                    if(idx > -1) that.hiddenColumns.splice(idx,1);
+                                }
+                                else {
+                                    that.hiddenColumns.push(this.value);
+                                }
+                                console.log('cb change', that.hiddenColumns);
+                                that.$container.html('');
+                                return doGrid();
+
+                            });
+                            that.$rowToolbar.append(that.$showHideSelection);
+
                         }
 
                         that.$actionButtons = new Array(that.actionOutButtons.length);
