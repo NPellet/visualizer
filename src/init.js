@@ -30,6 +30,7 @@ require.config({
         jquery: 'components/jquery/dist/jquery.min',
         'jquery-cookie': 'components/jquery-cookie/jquery.cookie',
         'jquery-ui': 'components/jquery-ui/ui',
+        'jquery-tmpl': 'components/jquery-tmpl/jquery.tmpl.min',
         jszip: 'components/jszip/dist/jszip.min',
         loglevel: 'components/loglevel/dist/loglevel.min',
         lodash: 'components/lodash/lodash.min',

@@ -15,7 +15,7 @@ require.config({
     shim: {
         dragevent: ['jquery'],
         dropevent: ['jquery'],
-        slickcore: ['jquery-ui/core', 'jquery-ui/sortable'],
+        slickcore: ['jquery-ui/core', 'jquery-ui/sortable', 'jquery-tmpl'],
         slickgrid: ['slickcore', 'dragevent', 'dropevent', 'components/slickgrid/plugins/slick.cellrangedecorator',
             'components/slickgrid/plugins/slick.cellrangeselector',
             'components/slickgrid/plugins/slick.cellselectionmodel',
@@ -23,7 +23,8 @@ require.config({
             'components/slickgrid/slick.formatters',
             'modules/types/edition/slick_grid/slick.editors.custom',
             'components/slickgrid/plugins/slick.checkboxselectcolumn',
-            'components/slickgrid/controls/slick.columnpicker'],
+            'components/slickgrid/controls/slick.columnpicker',
+            'components/slickgrid/examples/slick.compositeeditor'],
         slickdataview: ['lodash', 'slickgrid', 'slickgroupitemmetadataprovider'],
         slickgroupitemmetadataprovider: ['slickgrid']
 
@@ -238,7 +239,7 @@ define([
                 });
             }
 
-            if(this.module.getConfigurationCheckbox('autoColumns', 'select')) {
+            if (this.module.getConfigurationCheckbox('autoColumns', 'select')) {
                 var checkboxSelector = new Slick.CheckboxSelectColumn({
                     cssClass: "slick-cell-checkboxsel"
                 });
@@ -277,6 +278,57 @@ define([
                 showHeaderRow: that.module.getConfigurationCheckbox('slickCheck', 'filterColumns'),
                 headerRowHeight: 30
             };
+        },
+
+        _openDetails: function () {
+            var that = this;
+            if (this.grid.getEditorLock().isActive() && !this.grid.getEditorLock().commitCurrentEdit()) {
+                return;
+            }
+            var editableColumns = this.slick.columns.filter(function(v) {
+                return v.editor;
+            });
+
+            if(editableColumns.length === 0) {
+                return;
+            }
+
+            var $modal = $("<div class='item-details-form'></div>");
+            $modal = $.tmpl('<div class=\'item-details-form\'>\n    {{each columns}}\n    <div class=\'item-details-label\'>\n        ${name}\n    </div>\n    <div class=\'item-details-editor-container\' data-editorid=\'${id}\'></div>\n    {{/each}}\n\n    <hr/>\n    <div class=\'item-details-form-buttons\'>\n        <button data-action=\'save\'>Save</button>\n        <button data-action=\'cancel\'>Cancel</button>\n    </div>\n</div>', {
+                context: this.grid.getDataItem(this.grid.getActiveCell().row),
+                columns: editableColumns
+            }).appendTo("body");
+            $modal.keydown(function (e) {
+                if (e.which == $.ui.keyCode.ENTER) {
+                    that.grid.getEditController().commitCurrentEdit();
+                    e.stopPropagation();
+                    e.preventDefault();
+                } else if (e.which == $.ui.keyCode.ESCAPE) {
+                    that.grid.getEditController().cancelCurrentEdit();
+                    e.stopPropagation();
+                    e.preventDefault();
+                }
+            });
+            $modal.find("[data-action=save]").click(function () {
+                that.grid.getEditController().commitCurrentEdit();
+            });
+            $modal.find("[data-action=cancel]").click(function () {
+                that.grid.getEditController().cancelCurrentEdit();
+            });
+            var containers = $.map(editableColumns, function (c) {
+                return $modal.find("[data-editorid=" + c.id + "]");
+            });
+            var compositeEditor = new Slick.CompositeEditor(
+                editableColumns,
+                containers,
+                {
+                    destroy: function () {
+                        $modal.remove();
+                    }
+                }
+            );
+            if(!this.grid.editActiveCell(compositeEditor))
+                $modal.remove();
         },
 
 
@@ -326,7 +378,7 @@ define([
                     .then(function () {
                         that.$rowToolbar = $('<div>').attr('class', 'rowToolbar');
                         if (that.module.getConfigurationCheckbox('toolbar', 'add')) {
-                            that.$addButton = $('<input type="button" value="Add"/>');
+                            that.$addButton = $('<input type="button" value="New"/>');
                             that.$addButton.on('click', function () {
                                 var cols = that.grid.getColumns();
                                 var colidx = _.findIndex(cols, function (v) {
@@ -336,8 +388,17 @@ define([
                                     that.preventRowHelp();
                                     that.grid.gotoCell(that.slick.data.getLength(), colidx, true);
                                 }
+                                //that._openDetails();
                             });
                             that.$rowToolbar.append(that.$addButton);
+                        }
+
+                        if(that.module.getConfigurationCheckbox('toolbar', 'update')) {
+                            that.$updateButton = $('<input type="button" value="Update"/>');
+                            that.$updateButton.on('click', function () {
+                                that._openDetails();
+                            });
+                            that.$rowToolbar.append(that.$updateButton);
                         }
 
                         if (that.module.getConfigurationCheckbox('toolbar', 'remove')) {
@@ -377,7 +438,7 @@ define([
                         that.slick.data.setModule(that.module);
                         that.grid = new Slick.Grid(that.$slickgrid, that.slick.data, that.slick.columns, that.slick.options);
 
-                        for(var i=0; i<that.slick.plugins.length; i++) {
+                        for (var i = 0; i < that.slick.plugins.length; i++) {
                             that.grid.registerPlugin(that.slick.plugins[i]);
                         }
 
@@ -1011,7 +1072,7 @@ define([
     }
 
     function binFormatter() {
-        return '<div style="width:100%; height: 100%; display: table-cell"><a class="recycle-bin"><i class="fa fa-remove fa-2"></i></a></div>';
+        return '<div style="width:100%; height: 100%; display: table-cell"><a class="recycle-bin"><i class="fa fa-trash"></i></a></div>';
     }
 
     function requiredFieldValidator(value) {

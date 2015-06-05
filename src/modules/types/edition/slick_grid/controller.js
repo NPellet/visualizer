@@ -63,6 +63,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                             title: 'Toolbar options',
                             options: {
                                 add: 'Add row',
+                                update: 'Update row',
                                 remove: 'Remove row',
                                 showHide: 'Show/hide column'
                             },

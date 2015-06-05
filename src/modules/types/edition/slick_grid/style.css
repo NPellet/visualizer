@@ -417,3 +417,46 @@ classes should alter those!
 .slick-columnpicker li a:hover {
     background: white;
 }
+
+/* =============== Item details =============*/
+.cell-title {
+    font-weight: bold;
+}
+.cell-effort-driven {
+    text-align: center;
+}
+.item-details-form {
+    z-index: 10000;
+    display: inline-block;
+    border: 1px solid black;
+    margin: 8px;
+    padding: 10px;
+    background: #efefef;
+    -moz-box-shadow: 0px 0px 15px black;
+    -webkit-box-shadow: 0px 0px 15px black;
+    box-shadow: 0px 0px 15px black;
+    position: absolute;
+    top: 10px;
+    left: 150px;
+}
+.item-details-form-buttons {
+    float: right;
+}
+.item-details-label {
+    margin-left: 10px;
+    margin-top: 20px;
+    display: block;
+    font-weight: bold;
+}
+.item-details-editor-container {
+    /*width: 200px;*/
+    /*height: 20px;*/
+    /*border: 1px solid silver;*/
+    /*background: white;*/
+    display: block;
+    margin: 10px;
+    margin-top: 4px;
+    padding: 0;
+    padding-left: 4px;
+    padding-right: 4px;
+}
