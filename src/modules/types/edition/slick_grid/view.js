@@ -388,7 +388,7 @@ define([
                                     that.preventRowHelp();
                                     that.grid.gotoCell(that.slick.data.getLength(), colidx, true);
                                 }
-                                //that._openDetails();
+                                that._openDetails();
                             });
                             that.$rowToolbar.append(that.$addButton);
                         }
@@ -478,6 +478,7 @@ define([
 
 
                         that.grid.onAddNewRow.subscribe(function (e, args) {
+                            console.log('new row');
                             that.module.controller.onRowNew(that.module.data.length - 1, that.module.data[that.module.data.length - 1]);
                             that.module.model.dataTriggerChange(that.module.data);
                             that._resetDeleteRowListeners();
@@ -506,7 +507,6 @@ define([
                             }, 300);
                             that.lastViewport = that.grid.getViewport();
                             if (that.module.getConfigurationCheckbox('slickCheck', 'rowNumbering') && !that._preventRowHelp) {
-                                that._preventRowHelp = false;
                                 that.$rowHelp.html((that.lastViewport.bottom - (that.addRowAllowed ? 2 : 1)).toString() + '/' + that.grid.getDataLength());
                                 that.$rowHelp.fadeIn();
                                 clearTimeout(that.lastRowHelp);
@@ -514,6 +514,7 @@ define([
                                     that.$rowHelp.fadeOut();
                                 }, 1000);
                             }
+                            that._preventRowHelp = false;
                             that._jpathColor();
                         });
 

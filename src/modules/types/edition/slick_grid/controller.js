@@ -62,7 +62,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                             type: 'checkbox',
                             title: 'Toolbar options',
                             options: {
-                                add: 'Add row',
+                                add: 'New row',
                                 update: 'Update row',
                                 remove: 'Remove row',
                                 showHide: 'Show/hide column'

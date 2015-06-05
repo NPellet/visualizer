@@ -62,7 +62,7 @@
     "requirejs": "2.1.17",
     "sdf-parser": "1.0.0",
     "setImmediate": "YuzuJS/setImmediate#1.0.2",
-    "slickgrid": "cheminfo/SlickGrid#188e70ce94e73581f325a7342173021213a8ca64",
+    "slickgrid": "cheminfo/SlickGrid#15ad556e31da07b3e78d04fcb8064e3b06abce56",
     "spectrum": "1.6.1",
     "sprintf": "1.0.2",
     "superagent": "0.21.0",

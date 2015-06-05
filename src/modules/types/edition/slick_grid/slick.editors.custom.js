@@ -216,12 +216,9 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
 
 
                 if(isNew) {
-                    var newItem = {};
-                    setItemId(newItem, this.args.grid);
-                    //newItem[args.grid.module.view.idPropertyName] = 'id_'+args.grid.module.view.getNextIncrementalId();
-                    newItem = DataObject.check(newItem, true);
-                    newItem.setChildSync(args.column.jpath, newState);
-                    args.grid.module.view.slick.data.addItem(newItem);
+                    setItemId(item, this.args.grid);
+                    item.setChildSync(args.column.jpath, newState);
+                    args.grid.module.view.slick.data.addItem(item);
                     return newState;
                 }
                 else {
@@ -274,12 +271,9 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
 
 
                 if(isNew) {
-                    var newItem = {};
-                    setItemId(newItem, this.args.grid);
-                    //newItem[this.args.grid.module.view.idPropertyName] = 'id_'+this.args.grid.module.view.getNextIncrementalId();
-                    newItem = DataObject.check(newItem, true);
-                    newItem.setChildSync(this.args.column.jpath, newState);
-                    this.args.grid.module.view.slick.data.addItem(newItem);
+                    setItemId(item, this.args.grid);
+                    item.setChildSync(this.args.column.jpath, newState);
+                    this.args.grid.module.view.slick.data.addItem(item);
                     return newState;
                 }
                 else {
@@ -364,12 +358,9 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
 
 
         if(isNew) {
-            var newItem = {};
-            setItemId(newItem, this.args.grid);
-            //newItem[this.args.grid.module.view.idPropertyName] = 'id_'+this.args.grid.module.view.getNextIncrementalId();
-            newItem = DataObject.check(newItem, true);
-            newItem.setChildSync(this.args.column.jpath, state);
-            this.args.grid.module.view.slick.data.addItem(newItem);
+            setItemId(item, this.args.grid);
+            item.setChildSync(this.args.column.jpath, state);
+            this.args.grid.module.view.slick.data.addItem(item);
             return newState;
         }
         else {
