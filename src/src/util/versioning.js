@@ -202,7 +202,9 @@ define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'vers
 
         isViewLocked: function () {
             return this.getView().configuration.lockView || false;
-        }
+        },
+
+        lastLoaded: lastLoaded
 
     };
 
