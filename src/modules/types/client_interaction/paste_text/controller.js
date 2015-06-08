@@ -82,7 +82,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                 });
                 break;
             case 'xml':
-                require(['components/x2js/xml2json.min'], function (X2JS) {
+                require(['x2js'], function (X2JS) {
                     def.resolve(new X2JS().xml_str2json(value));
                 });
                 break;

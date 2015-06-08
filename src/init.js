@@ -50,6 +50,7 @@ require.config({
         superagent: 'components/superagent/superagent',
         threejs: 'components/threejs/build/three.min',
         uri: 'components/uri.js/src',
+        x2js: 'components/x2js/xml2json.min',
         BiojsFeatureViewer: 'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer',
         BiojsCore: 'lib/biojs-1.0/src/main/javascript/Biojs',
         BiojsMyFeatureViewer: 'modules/types/bio/feature_viewer/Biojs.MyFeatureViewer',
@@ -71,7 +72,7 @@ require.config({
                 this.THREE.ImageUtils.crossOrigin = 'anonymous';
             }
         },
-        'components/x2js/xml2json.min': {
+        'x2js': {
             exports: 'X2JS'
         },
         'components/jit/Jit/jit': {

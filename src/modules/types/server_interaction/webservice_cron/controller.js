@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'components/x2js/xml2json.min'], function (Default, X2JS) {
+define(['modules/default/defaultcontroller', 'x2js'], function (Default, X2JS) {
 
     function Controller() {
         this.running = false;
