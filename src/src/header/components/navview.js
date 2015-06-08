@@ -2,7 +2,7 @@
 
 define([
     'jquery',
-    'components/superagent/superagent',
+    'superagent',
     'src/header/components/default',
     'src/util/versioning',
     'forms/button',

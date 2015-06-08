@@ -2,7 +2,7 @@
 
 var blobCache = {};
 
-define(['components/superagent/superagent'], function (agent) {
+define(['superagent'], function (agent) {
 
     return function getWorker(url) {
         return new Promise(function (resolve, reject) {

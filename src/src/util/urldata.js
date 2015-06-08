@@ -1,6 +1,6 @@
 'use strict';
 
-define(['components/superagent/superagent', 'src/util/lru', 'src/util/debug'], function (superagent, LRU, Debug) {
+define(['superagent', 'src/util/lru', 'src/util/debug'], function (superagent, LRU, Debug) {
 
     var pendings = {};
 

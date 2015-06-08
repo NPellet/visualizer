@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/util/api', 'components/superagent/superagent', 'uri/URITemplate', 'src/util/debug', 'lodash'], function (Default, API, superagent, URITemplate, Debug, _) {
+define(['modules/default/defaultcontroller', 'src/util/api', 'superagent', 'uri/URITemplate', 'src/util/debug', 'lodash'], function (Default, API, superagent, URITemplate, Debug, _) {
 
     function Controller() {
     }
