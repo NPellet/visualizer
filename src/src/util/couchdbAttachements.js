@@ -34,7 +34,7 @@ define(['src/util/versioning', 'superagent'], function(Versioning, superagent) {
     /**
         @return {Promise<Object>} the list
      */
-    CouchdbAttachments.prototype.getList = function(refresh) {
+    CouchdbAttachments.prototype.list = function(refresh) {
         var that = this;
 
         return Promise.resolve().then(function() {
@@ -56,7 +56,7 @@ define(['src/util/versioning', 'superagent'], function(Versioning, superagent) {
         var that = this;
         options = options || {};
 
-        return this.getList().then(function() {
+        return this.list().then(function() {
             return new Promise(function(resolve, reject) {
                 var exists = that.lastDoc._attachments[name];
                 console.log(that.lastDoc);
@@ -80,7 +80,7 @@ define(['src/util/versioning', 'superagent'], function(Versioning, superagent) {
             });
         }).then(function() {
             // We need to update the document after the upload
-            return that.getList(true);
+            return that.list(true);
         });
 
     };
@@ -94,7 +94,7 @@ define(['src/util/versioning', 'superagent'], function(Versioning, superagent) {
     CouchdbAttachments.prototype.get = function(name, refresh) {
         var that = this;
 
-        return this.getList().then(function() {
+        return this.list().then(function() {
             if(!refresh && that.attachments[name]) {
                 console.log('return attachment from cache');
                 return that.attachments[name];
@@ -133,7 +133,7 @@ define(['src/util/versioning', 'superagent'], function(Versioning, superagent) {
      */
     CouchdbAttachments.prototype.remove = function(name) {
         var that = this;
-        return this.getList().then(function() {
+        return this.list().then(function() {
             if(!that.lastDoc._attachments[name]) throw new Error('Cannot remove attachment, attachment does not exist.');
             return new Promise(function(resolve, reject) {
                 superagent
