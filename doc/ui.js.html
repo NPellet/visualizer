@@ -36,6 +36,10 @@
 						</li>
 						
 						<li>
+							<a href="couchdbAttachments.html">src/util/couchdbAttachments</a>
+						</li>
+						
+						<li>
 							<a href="ui.html">src/util/ui</a>
 						</li>
 						
@@ -72,7 +76,16 @@
  * @module src/util/ui
  */
 
-define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/versioning', 'forms/button', 'src/util/couchshare', 'jquery-ui/dialog'], function (Util, Debug, _, $, Versioning, Button, Sharer) {
+define([
+    'src/util/util',
+    'src/util/debug',
+    'lodash',
+    'jquery',
+    'src/util/versioning',
+    'forms/button',
+    'src/util/couchshare',
+    'jquery-ui/dialog'
+], function (Util, Debug, _, $, Versioning, Button, Sharer) {
 
     var exports = {};
 
@@ -152,14 +165,14 @@ define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/version
         return $dialog;
     };
 
-    exports.copyview = function() {
+    exports.copyview = function () {
         var str = Versioning.getViewJSON('  ');
         var strlen = str.length;
         var txtarea = $('&lt;textarea/>').text(str).css({
             width: '100%',
             height: '95%'
         });
-        this.dialog(txtarea, {
+        exports.dialog(txtarea, {
             width: '80%',
             height: $('#ci-visualizer').height() * 0.7
         });
@@ -171,14 +184,14 @@ define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/version
         txtdom.focus();
     };
 
-    exports.copyData = function() {
+    exports.copyData = function () {
         var str = Versioning.getDataJSON('  ');
         var strlen = str.length;
         var txtarea = $('&lt;textarea/>').text(str).css({
             width: '100%',
             height: '200px'
         });
-        this.dialog(txtarea, {width: '80%'});
+        exports.dialog(txtarea, {width: '80%'});
         var txtdom = txtarea.get(0);
 
         txtdom.selectionStart = 0;
@@ -186,7 +199,7 @@ define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/version
         txtdom.focus();
     };
 
-    exports.pasteData = function() {
+    exports.pasteData = function () {
         var txtarea = $('&lt;textarea>&lt;/textarea>').css({
                 width: '100%',
                 height: '200px'
@@ -203,15 +216,16 @@ define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/version
                     }
                     Versioning.setDataJSON(val);
                 } catch (_) {
+                    // do nothing
                 }
 
                 div.dialog('close');
             });
 
-        var div  = this.dialog(txtarea, {width: '80%'}).append(btn.render());
+        var div = exports.dialog(txtarea, {width: '80%'}).append(btn.render());
     };
 
-    exports.pasteView = function() {
+    exports.pasteView = function () {
         var txtarea = $('&lt;textarea>&lt;/textarea>').css({
                 width: '100%',
                 height: '200px'
@@ -228,21 +242,27 @@ define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/version
                     }
                     Versioning.setViewJSON(val);
                 } catch (_) {
+                    // do nothing
                 }
 
                 div.dialog('close');
             });
 
-        var div  = this.dialog(txtarea, {width: '80%'}).append(btn.render());
+        var div = exports.dialog(txtarea, {width: '80%'}).append(btn.render());
     };
 
-    exports.feedback = function(options, shareOptions, dialogOptions) {
+    exports.feedback = function (options, shareOptions, dialogOptions) {
         var uniqid = Util.getNextUniqueId();
 
         var message = $('&lt;span>').attr('id', uniqid + '-message').css('color', 'red');
 
-        var dialog = $('&lt;div>').html('&lt;h2>Do you have a comment on the visualizer ? Did you find a bug ?&lt;/h2>&lt;p>Put your comment here and we will be notified.&lt;br>A snapshot of you view and data will also be sent to us so feel free to describe exactly what you did and what happened !&lt;/p>' +
-        '&lt;table>&lt;tr>&lt;td>Title : &lt;/td>&lt;td>&lt;input type="text" id="' + uniqid + '-title" style="width:500px" />&lt;/td>&lt;/tr>&lt;tr>&lt;td>Description : &lt;/td>&lt;td>&lt;textarea id="' + uniqid + '-description" rows="12" cols="80">&lt;/textarea>&lt;/td>&lt;/tr>&lt;/table>').append(
+        var dialog = $('&lt;div>').html(
+            '&lt;h2>Do you have a comment on the visualizer ? Did you find a bug ?&lt;/h2>' +
+            '&lt;p>Put your comment here and we will be notified.&lt;br>A snapshot of you view and data will also be sent to us so feel free to describe exactly what you did and what happened !&lt;/p>' +
+            '&lt;table>' +
+            '&lt;tr>&lt;td>Title : &lt;/td>&lt;td>&lt;input type="text" id="' + uniqid + '-title" style="width:500px" />&lt;/td>&lt;/tr>' +
+            '&lt;tr>&lt;td>Description : &lt;/td>&lt;td>&lt;textarea id="' + uniqid + '-description" rows="12" cols="80">&lt;/textarea>&lt;/td>&lt;/tr>' +
+            '&lt;/table>').append(
             new Button('Send', function () {
                 var button = this;
                 if (!options.disabled) {
@@ -276,10 +296,10 @@ define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/version
                 }
             }, {color: 'blue'}).render()
         ).append(message);
-        this.dialog(dialog, dialogOptions);
+        exports.dialog(dialog, dialogOptions);
     };
 
-    exports.couchShare = function(options, dialogOptions) {
+    exports.couchShare = function (options, dialogOptions) {
         var uniqid = Util.getNextUniqueId();
         var dialog = $('&lt;div>').html('&lt;h3>Click the share button to make a snapshot of your view and generate a tiny URL&lt;/h3>&lt;br>').append(
             new Button('Share', function () {
@@ -296,19 +316,33 @@ define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/version
         ).append(
             $('&lt;input type="text" id="' + uniqid + '" />').css('width', '400px')
         );
-        this.dialog(dialog, dialogOptions);
+        exports.dialog(dialog, dialogOptions);
     };
 
-    exports.showNotification = function(message) {
+    exports.showNotification = function (message) {
         $notification = $('.ci-visualizer-notification');
-        if($notification.length === 0) {
-            $('#ci-visualizer').append('&lt;div class="ci-visualizer-notification">&lt;/div>')
+        if ($notification.length === 0) {
+            $('#ci-visualizer').append('&lt;div class="ci-visualizer-notification">&lt;/div>');
             $notification = $('.ci-visualizer-notification');
         }
         $notification.show().html(message);
-        setTimeout(function() {
+        setTimeout(function () {
             $notification.hide();
         }, 5000);
+    };
+
+    exports.getSafeElement = function (el) {
+        return exports.makeElementSafe('&lt;' + el + '>');
+    };
+
+    exports.makeElementSafe = function (el) {
+        return $(el).css({
+            width: '100%',
+            height: '100%',
+            margin: 0,
+            padding: 0,
+            border: 'none'
+        });
     };
 
     return exports;
@@ -330,7 +364,7 @@ define(['src/util/util', 'src/util/debug', 'lodash', 'jquery', 'src/util/version
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
-		on Fri Apr 10th 2015 using the <a
+		on Mon Jun 8th 2015 using the <a
 			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>

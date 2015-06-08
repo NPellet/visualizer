@@ -36,6 +36,10 @@
 						</li>
 						
 						<li>
+							<a href="couchdbAttachments.html">src/util/couchdbAttachments</a>
+						</li>
+						
+						<li>
 							<a href="ui.html">src/util/ui</a>
 						</li>
 						
@@ -83,7 +87,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
         regJpath = /^element\./;
 
     function makejPathFunction(jpath) {
-
+// comment
         if (!jpath) {
             return noop;
         }
@@ -116,7 +120,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
         ruleName = ruleName.toLowerCase();
 
         if (!document.styleSheets) {
-            return
+            return;
         }
 
         var i = 0, stylesheet, ii, cssRule;
@@ -225,10 +229,10 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
                 }
             });
         },
-        unloadCss: function(url) {
+        unloadCss: function (url) {
             var that = this;
             url = require.toUrl(url);
-            if(that.loadedCss[url]) {
+            if (that.loadedCss[url]) {
                 that.loadedCss[url].disabled = true;
             }
 
@@ -247,7 +251,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
         makejPathFunction: makejPathFunction,
 
         addjPathFunction: function (stack, jpath) {
-            stack[jpath] = makejPathFunction(jpath)
+            stack[jpath] = makejPathFunction(jpath);
         },
 
         jpathToArray: function (val) {
@@ -255,8 +259,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
                 var val2 = val.split('.');
                 val2.shift();
                 return val2;
-            }
-            else {
+            } else {
                 return [];
             }
         },
@@ -304,7 +307,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
             }
 
             var rule;
-            if (!( rule = getCSS(ruleName) )) {
+            if (!(rule = getCSS(ruleName))) {
 
                 if (document.styleSheets[0].addRule) {
                     document.styleSheets[0].addRule(ruleName, null, 0);
@@ -337,7 +340,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
             var access = arguments[0];
 
             for (var i = 1; i &lt; arguments.length; i++) {
-                if (!( access = access[arguments[i]] )) {
+                if (!(access = access[arguments[i]])) {
                     return false;
                 }
             }
@@ -356,7 +359,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
     var uniqueid = 0;
     /**
      * Returns a unique id.
-     * @param {boolean} absolute
+     * @param {boolean} [absolute]
      * @returns {string}
      */
     exports.getNextUniqueId = function getNextUniqueId(absolute) {
@@ -379,6 +382,43 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
                 warned = true;
             }
             return method.apply(this, arguments);
+        };
+    };
+
+    /*
+     TODO remove when Set API is supported in more browsers
+     */
+    var warnOnceMap, warnOnceCheck;
+    if (typeof Set === 'undefined') {
+        warnOnceMap = {};
+        warnOnceCheck = function (name) {
+            if (warnOnceMap[name]) {
+                return true;
+            } else {
+                warnOnceMap[name] = true;
+                return false;
+            }
+        };
+    } else {
+        warnOnceMap = new Set();
+        warnOnceCheck = function (name) {
+            if (warnOnceMap.has(name)) {
+                return true;
+            } else {
+                warnOnceMap.add(name);
+                return false;
+            }
+        };
+    }
+
+    /**
+     * Prints a warning message only once per id
+     * @param id
+     * @param message
+     */
+    exports.warnOnce = function warnOnce(id, message) {
+        if (!warnOnceCheck(id)) {
+            Debug.warn(message);
         }
     };
 
@@ -432,29 +472,29 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
         });
     };
 
-    exports.moduleIdFromUrl = function(url) {
+    exports.moduleIdFromUrl = function (url) {
         var reg = /([^\/]+)(\/)?$/;
         var res = url.match(reg);
         return res[1];
     };
 
-    exports.requireNeedsExtension = function(url) {
-        return /^https?:\/\/|\.|\//.test(url);
+    exports.requireNeedsExtension = function (url) {
+        return /^https?:\/\/|^\.|^\/|^\/\//.test(url);
     };
 
     var utilReqPaths = {};
-    exports.rewriteRequirePath = function(url) {
-        if(!this.requireNeedsExtension(url)) {
+    exports.rewriteRequirePath = function (url) {
+        if (!this.requireNeedsExtension(url)) {
             // return same url without trailing backslash
             return url.replace(/\/$/, '');
         }
         var reqPathStr = exports.getNextUniqueId(true);
-        url = url.replace(/\/$/,'');
-        if(utilReqPaths[url]) return utilReqPaths[url];
+        url = url.replace(/\/$/, '');
+        if (utilReqPaths[url]) return utilReqPaths[url];
         utilReqPaths[url] = reqPathStr;
         var paths = {};
         paths[reqPathStr] = url;
-        requirejs.config({
+        require.config({
             paths: paths
         });
 
@@ -489,7 +529,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
-		on Fri Apr 10th 2015 using the <a
+		on Mon Jun 8th 2015 using the <a
 			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>
