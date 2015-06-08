@@ -94,6 +94,9 @@ define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui']
             },
             jme: function () {
                 this.postMessage('clear', '*');
+            },
+            smiles: function () {
+                this.postMessage('clear', '*');
             }
         },
 
@@ -113,6 +116,15 @@ define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui']
 
                 this.postMessage('setJmeFile', moduleValue.get());
                 this._initHighlight(moduleValue);
+            },
+            smiles: function (moduleValue) {
+                var that = this;
+                require(['openchemlib/openchemlib-core'], function (OCL) {
+                    var smiles = String(moduleValue.get());
+                    var mol = OCL.Molecule.fromSmiles(smiles);
+                    that.postMessage('setMolFile', mol.toMolfile());
+                    that._initHighlight(moduleValue);
+                });
             }
         },
 

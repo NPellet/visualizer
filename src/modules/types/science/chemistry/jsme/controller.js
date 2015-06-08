@@ -20,14 +20,14 @@ define(['modules/default/defaultcontroller'], function (Default) {
         mol: {
             label: 'Molfile V2 2D',
             type: ['mol2d', 'molfile2d', 'string']
-
+        },
+        smiles: {
+            label: 'SMILES',
+            type: ['smiles', 'string']
         },
         jme: {
             label: 'JME file format',
-            type: 'jme'
-        },
-        smiles: {
-            label: 'Smiles'
+            type: ['jme', 'string']
         },
         molV3: {
             label: 'Molfile V3 2D',
@@ -42,7 +42,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         }
     };
 
-    Controller.prototype.variablesIn = ['mol', 'jme'];
+    Controller.prototype.variablesIn = ['mol', 'jme', 'smiles'];
 
     Controller.prototype.configurationStructure = function () {
         return {
