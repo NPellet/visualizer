@@ -1,16 +1,18 @@
+'use strict';
+
 /***
  * Contains basic SlickGrid editors.
  * @module Editors
  * @namespace Slick
  */
 
-define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], function(Util, _) {
+define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jquery-ui/datepicker'], function (Util, _) {
     Util.loadCss("./components/spectrum/spectrum.css");
 
     function setItemId(newItem, grid) {
-        if(!newItem[grid.module.view.idPropertyName]) {
+        if (!newItem[grid.module.view.idPropertyName]) {
             Object.defineProperty(newItem, grid.module.view.idPropertyName, {
-                value: 'id_'+grid.module.view.getNextIncrementalId(),
+                value: 'id_' + grid.module.view.getNextIncrementalId(),
                 enumerable: false,
                 writable: false,
                 configurable: false
@@ -26,6 +28,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
                     "TextValue": TextValueEditor,
                     "ColorValue": ColorEditor,
                     "Text": TextValueEditor,
+                    "DateValue": DateEditor,
                     "SpecialNativeObject": SpecialNativeObjectEditor,
                     "DataNumberEditor": DataNumberEditor,
                     "DataBooleanEditor": DataBooleanEditor
@@ -34,11 +37,117 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
         });
 
 
+        function DateEditor(args) {
+            this.args = args;
+            var $input;
+            var defaultValue;
+            var calendarOpen = false;
+
+            this.init = function () {
+                $input = $("<INPUT type=text class='editor-text' />");
+                $input.appendTo(args.container);
+                $input.focus().select();
+                $input.datepicker({
+                    showOn: "button",
+                    buttonImageOnly: true,
+                    buttonImage: require.toUrl("components/slickgrid/images/calendar.gif"),
+                    beforeShow: function () {
+                        calendarOpen = true
+                    },
+                    onClose: function () {
+                        calendarOpen = false
+                    }
+                });
+                $input.width($input.width() - 18);
+            };
+
+            this.destroy = function () {
+                $.datepicker.dpDiv.stop(true, true);
+                $input.datepicker("hide");
+                $input.datepicker("destroy");
+                $input.remove();
+            };
+
+            this.show = function () {
+                if (calendarOpen) {
+                    $.datepicker.dpDiv.stop(true, true).show();
+                }
+            };
+
+            this.hide = function () {
+                if (calendarOpen) {
+                    $.datepicker.dpDiv.stop(true, true).hide();
+                }
+            };
+
+            this.position = function (position) {
+                if (!calendarOpen) {
+                    return;
+                }
+                $.datepicker.dpDiv
+                    .css("top", position.top + 30)
+                    .css("left", position.left);
+            };
+
+            this.focus = function () {
+                $input.focus();
+            };
+
+            this.loadValue = function (item) {
+                defaultValue = item.getChildSync(args.column.jpath);
+                if (defaultValue) {
+                    defaultValue = defaultValue.value || '01/01/2000';
+                }
+                else {
+                    defaultValue = '01/01/2000';
+                }
+                $input.val(defaultValue);
+                $input[0].defaultValue = defaultValue;
+                $input.select();
+            };
+
+            this.serializeValue = function () {
+                return $input.val();
+            };
+
+            this.applyValue = function (item, state) {
+                var isNew = _.isEmpty(item);
+                DataObject.check(item, true);
+                var newState = {
+                    type: 'date',
+                    value: state
+                };
+
+
+                if (isNew) {
+                    setItemId(item, this.args.grid);
+                    item.setChildSync(args.column.jpath, newState);
+                    args.grid.module.view.slick.data.addItem(item);
+                    return newState;
+                }
+                else {
+                    args.grid.module.model.dataSetChildSync(item, args.column.jpath, newState);
+                }
+            };
+
+            this.isValueChanged = function () {
+                return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
+            };
+
+            this.validate = function () {
+                return {
+                    valid: true,
+                    msg: null
+                };
+            };
+
+            this.init();
+        }
 
         function ColorEditor(args) {
             this.args = args;
             var $cont, $input, defaultValue;
-            this.init = function() {
+            this.init = function () {
                 var that = this;
                 $cont = $('<div/>');
                 $cont.append('<input type="text">');
@@ -145,20 +254,20 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
                             'rgba(76,  17,  48, 1)'
                         ]],
                     preferredFormat: 'rgba',
-                    change: function(color) {
+                    change: function (color) {
                         that.color = color;
                         that.changed = true;
                         $input.spectrum('hide');
                         args.commitChanges('next');
                     },
-                    move: function(color) {
+                    move: function (color) {
 
                     },
-                    show: function() {
+                    show: function () {
 
                     },
-                    hide: function() {
-                        if(!that.changed) {
+                    hide: function () {
+                        if (!that.changed) {
                             args.cancelChanges();
                         }
                     },
@@ -168,25 +277,25 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
                 $input.next().first().click();
             };
 
-            this.destroy = function() {
+            this.destroy = function () {
                 $cont.remove();
             };
 
-            this.focus = function() {
+            this.focus = function () {
                 $input.focus();
             };
 
-            this.getValue = function() {
+            this.getValue = function () {
                 $input.val();
             };
 
-            this.setValue = function(val) {
+            this.setValue = function (val) {
                 $input.val(val);
             };
 
-            this.loadValue = function(item) {
+            this.loadValue = function (item) {
                 defaultValue = item.getChildSync(args.column.jpath);
-                if(defaultValue) {
+                if (defaultValue) {
                     defaultValue = defaultValue.value || '#000000';
                 }
                 else {
@@ -199,7 +308,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
             };
 
             this.serializeValue = function () {
-                if(this.color) {
+                if (this.color) {
                     return this.color.toRgbString();
                 }
                 return $input.val();
@@ -215,7 +324,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
                 };
 
 
-                if(isNew) {
+                if (isNew) {
                     setItemId(item, this.args.grid);
                     item.setChildSync(args.column.jpath, newState);
                     args.grid.module.view.slick.data.addItem(item);
@@ -261,7 +370,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
             this.isValueChanged = defaultIsValueChanged;
             this.validate = defaultValidate;
 
-            this.applyValue = function(item, state) {
+            this.applyValue = function (item, state) {
                 var isNew = _.isEmpty(item);
                 DataObject.check(item, true);
                 var newState = {
@@ -270,7 +379,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
                 };
 
 
-                if(isNew) {
+                if (isNew) {
                     setItemId(item, this.args.grid);
                     item.setChildSync(this.args.column.jpath, newState);
                     this.args.grid.module.view.slick.data.addItem(item);
@@ -357,7 +466,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
         var newState = state;
 
 
-        if(isNew) {
+        if (isNew) {
             setItemId(item, this.args.grid);
             item.setChildSync(this.args.column.jpath, state);
             this.args.grid.module.view.slick.data.addItem(item);
@@ -399,9 +508,9 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
             })
             .focus()
             .select()
-            .focusout(function() {
+            .focusout(function () {
                 // Shouldn't do this if auto-edit
-                if(!that.args.grid.module.view.slick.options.autoEdit)
+                if (!that.args.grid.module.view.slick.options.autoEdit)
                     that.args.commitChanges('next');
             })
     }
@@ -430,7 +539,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery'], fu
         this.$input = $("<INPUT type=checkbox value='true' class='editor-checkbox' hideFocus>");
         this.$input.appendTo(this.args.container);
         this.$input.focus();
-        this.$input.change(function(){
+        this.$input.change(function () {
             that.args.commitChanges('next');
         });
     }

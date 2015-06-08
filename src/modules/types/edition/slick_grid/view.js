@@ -71,6 +71,7 @@ define([
         color: Slick.Editors.ColorValue,
         string: Slick.Editors.TextValue,
         number: Slick.Editors.TextValue,
+        date: Slick.Editors.DateValue,
         DataString: Slick.Editors.SpecialNativeObject,
         DataNumber: Slick.Editors.DataNumberEditor,
         DataBoolean: Slick.Editors.DataBooleanEditor
