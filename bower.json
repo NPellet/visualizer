@@ -40,7 +40,7 @@
     "jquery.threedubmedia": "git://github.com/threedubmedia/jquery.threedubmedia",
     "jquery-cookie": "1.4.1",
     "jquery-mousewheel": "3.1.12",
-    "jquery-ui": "1.11.3",
+    "jquery-ui": "1.11.4",
     "jquery-tmpl": "BorisMoore/jquery-tmpl#vBeta1.0.0",
     "jsbarcode": "*",
     "jsgraph": "v1.11.3-2",
