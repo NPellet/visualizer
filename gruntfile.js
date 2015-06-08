@@ -101,7 +101,6 @@ module.exports = function (grunt) {
                             './jquery-tmpl/**',
                             './setImmediate/setImmediate.js',
                             './chroma-js/chroma.min.js',
-                            './sdf-parser/**',
                             './async/lib/async.js',
                             ['./jsNMR/lib/components/VisuMol/**', './jsNMR/src/**', './jsNMR/dist/**'],
                             './loglevel/dist/loglevel.min.js',
