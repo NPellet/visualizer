@@ -44,7 +44,7 @@ require.config({
         pouchdb: 'components/pouchdb/dist/pouchdb.min',
         underscore: 'components/underscore/underscore-min',
         select2: 'components/select2/dist/js/select2.full',
-        sparkline: 'lib/jquery.sparkline/jquery.sparkline',
+        sparkline: 'lib/jquery.sparkline/jquery.sparkline.min',
         sprintf: 'components/sprintf/dist/sprintf.min',
         'src/shape.1dnmr': 'components/jsNMR/src/shape.1dnmr',
         superagent: 'components/superagent/superagent',

@@ -42,7 +42,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
             height: '100%'
         };
         options = _.defaults(options, defaultOptions);
-        $el.sparkline(DataObject.resurrect(val), options);
+        $el.sparkline(val), options);
     };
 
     functions.string = {};
