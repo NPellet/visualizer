@@ -140,31 +140,32 @@ define([
                 ui.showNotification('Couchdb button not ready');
             }
         },
-        createMenu: function () {
-            if (this.$_elToOpen) {
-                if (this.loggedIn) {
-                    this.openMenu('tree');
-                } else {
-                    this.openMenu('login');
-                }
-                return;
+        createMenu: function (checkSession) {
+
+            if (!this.$_elToOpen) {
+                this.$_elToOpen = $('<div>').css('width', 560);
+                this.errorP = $('<p id="' + this.cssId('error') + '">');
+                checkSession = true;
             }
 
-            var that = this;
-            this.$_elToOpen = $('<div>').css('width', 560);
-            this.errorP = $('<p id="' + this.cssId('error') + '">');
-
-            $.couch.session({
-                success: function (data) {
-                    if (data.userCtx.name === null) {
-                        that.openMenu('login');
-                    } else {
-                        that.loggedIn = true;
-                        that.username = data.userCtx.name;
-                        that.openMenu('tree');
+            if (checkSession) {
+                var that = this;
+                $.couch.session({
+                    success: function (data) {
+                        if (data.userCtx.name === null) {
+                            that.openMenu('login');
+                        } else {
+                            that.loggedIn = true;
+                            that.username = data.userCtx.name;
+                            that.openMenu('tree');
+                        }
                     }
-                }
-            });
+                });
+            } else if (this.loggedIn) {
+                this.openMenu('tree');
+            } else {
+                this.openMenu('login');
+            }
 
         },
         openMenu: function (which) {
@@ -365,23 +366,23 @@ define([
             });
         },
         renderLoginMethods: function () {
-            var that = this;
 
             function doLogin() {
-                that.login(that.getFormContent('login-username'), that.getFormContent('login-password'));
+                this.login(this.getFormContent('login-username'), this.getFormContent('login-password'));
                 return false;
             }
 
+            var openLogin = this.openLogin.bind(this);
             for (var i = 0; i < this.options.loginMethods.length; i++) {
                 switch (this.options.loginMethods[i]) {
                     case 'google':
-                        this.loginForm.append('<a href=" ' + that.url + '/auth/google' + '">Google login</a><br/>');
+                        $('<a href=" ' + this.url + '/auth/google' + '">Google login</a><br/>').appendTo(this.loginForm).on('click', openLogin);
                         break;
                     case 'github':
-                        this.loginForm.append('<a href=" ' + that.url + '/auth/github' + '">Github login</a><br/>');
+                        $('<a href=" ' + this.url + '/auth/github' + '">Github login</a><br/>').appendTo(this.loginForm).on('click', openLogin);
                         break;
                     case 'facebook':
-                        this.loginForm.append('<a href=" ' + that.url + '/auth/facebook' + '">Facebook login</a><br/>');
+                        $('<a href=" ' + this.url + '/auth/facebook' + '">Facebook login</a><br/>').appendTo(this.loginForm).on('click', openLogin);
                         break;
                     case 'couchdb':
                         this.loginForm.append('<div> Couchdb Login </div>');
@@ -393,11 +394,22 @@ define([
                                 return doLogin();
                         });
                         break;
-                    default:
-
-                        break;
                 }
             }
+        },
+
+        openLogin: function (e) {
+            e.preventDefault();
+            var url = e.currentTarget.href;
+            var win = window.open(url, 'CI_Couch_Login', 'menubar=no');
+            clearInterval(this._loginWinI);
+            var self = this;
+            this._loginWinI = window.setInterval(function () {
+                if (win.closed) {
+                    self.createMenu(true);
+                    clearInterval(self._loginWinI);
+                }
+            }, 100);
         },
 
         getLoginForm: function () {
