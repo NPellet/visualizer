@@ -38,11 +38,11 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
     };
     functions.sparkline.toscreen = function ($el, val, rootval, options) {
         var defaultOptions = {
-            width: '100%',
+            width: (options.type === 'discrete' ? 'auto' : '100%'),
             height: '100%'
         };
         options = _.defaults(options, defaultOptions);
-        $el.sparkline(val), options);
+        $el.sparkline(val, options);
     };
 
     functions.string = {};
