@@ -1,0 +1,867 @@
+{
+  "version": "2.20.4-0",
+  "grid": {
+    "xWidth": 10,
+    "yHeight": 10,
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    }
+  },
+  "modules": [
+    {
+      "url": "modules/types/edition/object_editor/",
+      "id": 1,
+      "title": "One element",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "text"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                []
+              ],
+              "displayValue": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "zIndex": 0,
+          "display": true,
+          "title": "One element",
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "position": {
+            "left": 64,
+            "top": 72
+          },
+          "size": {
+            "width": 38,
+            "height": 46
+          },
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ]
+        }
+      },
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "element"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": []
+    },
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "id": 2,
+      "title": "JSON as a table",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll",
+                  "filterColumns"
+                ]
+              ],
+              "colorjpath": [
+                []
+              ],
+              "slick.defaultColumnWidth": [
+                null
+              ],
+              "slick.rowHeight": [
+                null
+              ],
+              "slick.selectionModel": [
+                "row"
+              ]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "editor": "none",
+                "formatter": "typerenderer",
+                "width": 52,
+                "jpath": []
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [
+            [
+              {}
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "zIndex": 0,
+          "display": true,
+          "title": "JSON as a table",
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "position": {
+            "left": 12,
+            "top": 0
+          },
+          "size": {
+            "width": 106,
+            "height": 30
+          },
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ]
+        }
+      },
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "elements"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "onHover",
+          "rel": "row",
+          "name": "element",
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ]
+    },
+    {
+      "url": "modules/types/server_interaction/webservice_search/",
+      "id": 3,
+      "title": "",
+      "configuration": {
+        "sections": {
+          "postvariables": [
+            {
+              "sections": {},
+              "groups": {
+                "postvariables": [
+                  [
+                    {
+                      "destination": "data",
+                      "filter": "none"
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        },
+        "groups": {
+          "group": [
+            {
+              "url": [
+                "http://googledocs.cheminfo.org/spreadsheets/d/1yyK-oqI6ryM0TyqugtbLRg7TXbgSeJcYArJJ3cujv5k/export?format=tsv"
+              ],
+              "method": [
+                "GET"
+              ],
+              "dataType": [
+                "form"
+              ],
+              "showStatus": [
+                []
+              ],
+              "button": [
+                [
+                  "button"
+                ]
+              ],
+              "buttonlabel": [
+                "Retrieve"
+              ],
+              "buttonlabel_exec": [
+                null
+              ],
+              "onloadsearch": [
+                [
+                  "button"
+                ]
+              ],
+              "debounce": [
+                0
+              ],
+              "resultfilter": [
+                "require([\"components/papa-parse/papaparse.min\"],function(Papa) {\n    var wikipedia=Papa.parse(data,\n        {\n            delimiter:\"\\t\",\n            header: true\n        }\n    );\n    \n    API.createData(\"header\", wikipedia.data[0]);\n    API.createData(\"elementsOri\", wikipedia.data.slice(1));\n})\n\n"
+              ],
+              "askConfirm": [
+                []
+              ],
+              "confirmText": [
+                "Are you sure?"
+              ]
+            }
+          ],
+          "headers": [
+            [
+              {}
+            ]
+          ],
+          "searchparams": [
+            [
+              {
+                "destination": "url",
+                "fieldtype": "text"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "position": {
+            "left": 0,
+            "top": 0.2
+          },
+          "size": {
+            "width": 11,
+            "height": 8
+          },
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ]
+        }
+      },
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ]
+    },
+    {
+      "url": "modules/types/client_interaction/code_editor/",
+      "id": 4,
+      "title": "",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "mode": [
+                "text"
+              ],
+              "outputType": [
+                null
+              ],
+              "btnvalue": [
+                "Send script"
+              ],
+              "iseditable": [
+                [
+                  "editable"
+                ]
+              ],
+              "hasButton": [
+                [
+                  "button"
+                ]
+              ],
+              "variable": [
+                [
+                  "modify"
+                ]
+              ],
+              "debouncing": [
+                0
+              ],
+              "script": [
+                "<style>\n    .element {\n        font-size:20px\n    }\n    div .element {\n        padding: 1em;\n        display:flex;\n    }\n    .element .electronsPerPeriod {\n        width: 20%;\n    }\n    .element .element-data {\n        width: 80%;\n    }\n    .element-name {\n        font-size: 2.5em;\n        padding-bottom: 0.3em;\n    }\n    .element .Z {\n        font-size: 1.4em;\n    }\n\n    .element-name abbr {\n        border-bottom: dotted grey 0.05em;\n    }\n    /* info : delay too long */\n    .element-name abbr:hover {\n        border-bottom: none;\n    }\n    .element .weight {\n        overflow : hidden;\n        text-overflow : ellipsis;\n    }\n    .element .electronsPerPeriod {\n        margin: 0;\n        padding:0;\n    }\n    .element li {\n        list-style : none;\n    }\n\n\n</style>\n\n<div class=\"element\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"weight\">{{ element.weight }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "position": {
+            "left": 32,
+            "top": 31
+          },
+          "size": {
+            "width": 81,
+            "height": 39
+          },
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ]
+        }
+      },
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "selectedTemplate"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "onEditorChange",
+          "rel": "value",
+          "name": "elementTemplate",
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ]
+    },
+    {
+      "url": "modules/types/display/template-twig/",
+      "id": 5,
+      "title": "",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "template": [
+                "<style>\n    .element {\n        font-size:20px\n    }\n    div .element {\n        padding: 1em;\n        display:flex;\n    }\n    .element .electronsPerPeriod {\n        width: 20%;\n    }\n    .element .element-data {\n        width: 80%;\n    }\n    .element-name {\n        font-size: 2.5em;\n        padding-bottom: 0.3em;\n    }\n    .element .Z {\n        font-size: 1.4em;\n    }\n\n    .element-name abbr {\n        border-bottom: dotted grey 0.05em;\n    }\n    /* info : delay too long */\n    .element-name abbr:hover {\n        border-bottom: none;\n    }\n    .element .weight {\n        overflow : hidden;\n        text-overflow : ellipsis;\n    }\n    .element .electronsPerPeriod {\n        margin: 0;\n        padding:0;\n    }\n    .element li {\n        list-style : none;\n    }\n\n\n</style>\n\n<div class=\"element\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"weight\">{{ element.weight }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "position": {
+            "left": 1,
+            "top": 31
+          },
+          "size": {
+            "width": 26,
+            "height": 30
+          },
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ]
+        }
+      },
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "element"
+        },
+        {
+          "rel": "tpl",
+          "name": "elementTemplate"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [],
+      "actions_out": []
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "id": 6,
+      "title": "",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "script": [
+                "console.clear();\nvar elements=get(\"elementsOri\").get();\n\n\n\nfor (var i=0; i<elements.length; i++) {\n    var element=elements[i];\n    element.electronsPerPeriod=element.nbElectrons.split(\" \");\n    \n    \n}\n\n\nset(\"elements\", elements);"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {}
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "position": {
+            "left": 0,
+            "top": 84
+          },
+          "size": {
+            "width": 38,
+            "height": 47
+          },
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ]
+        }
+      },
+      "vars_in": [
+        {
+          "rel": "inputValue",
+          "name": "elementsOri"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "onScriptEnded",
+          "rel": "outputValue",
+          "name": "elements",
+          "jpath": [
+            "elements"
+          ]
+        }
+      ],
+      "actions_out": []
+    },
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "id": 7,
+      "title": "",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll",
+                  "enableAddRow",
+                  "editable"
+                ]
+              ],
+              "colorjpath": [
+                []
+              ],
+              "slick.defaultColumnWidth": [
+                null
+              ],
+              "slick.rowHeight": [
+                null
+              ],
+              "slick.selectionModel": [
+                "row"
+              ]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "name": "Name",
+                "editor": "auto",
+                "formatter": "typerenderer",
+                "jpath": [
+                  "name"
+                ]
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [
+            [
+              {}
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "position": {
+            "left": 0,
+            "top": 62
+          },
+          "size": {
+            "width": 29,
+            "height": 20
+          },
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ]
+        }
+      },
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "templates"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "onSelect",
+          "rel": "row",
+          "name": "selectedTemplate",
+          "jpath": [
+            "template"
+          ]
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ]
+    },
+    {
+      "url": "modules/types/display/periodic_table/",
+      "id": 8,
+      "title": "",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "template": [
+                "<style>\n    .element {\n        font-size:20px\n    }\n    div .element {\n        padding: 1em;\n        display:flex;\n    }\n    .element .electronsPerPeriod {\n        width: 20%;\n    }\n    .element .element-data {\n        width: 80%;\n    }\n    .element-name {\n        font-size: 2.5em;\n        padding-bottom: 0.3em;\n    }\n    .element .Z {\n        font-size: 1.4em;\n    }\n\n    .element-name abbr {\n        border-bottom: dotted grey 0.05em;\n    }\n    /* info : delay too long */\n    .element-name abbr:hover {\n        border-bottom: none;\n    }\n    .element .weight {\n        overflow : hidden;\n        text-overflow : ellipsis;\n    }\n    .element .electronsPerPeriod {\n        margin: 0;\n        padding:0;\n    }\n    .element li {\n        list-style : none;\n    }\n\n\n</style>\n\n<div class=\"element\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"weight\">{{ element.weight }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "position": {
+            "left": 124,
+            "top": 14
+          },
+          "size": {
+            "width": 59,
+            "height": 54
+          },
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ]
+        }
+      },
+      "vars_in": [
+        {
+          "rel": "template",
+          "name": "elementTemplate"
+        },
+        {
+          "rel": "value",
+          "name": "elements"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [],
+      "actions_out": []
+    }
+  ],
+  "variables": [
+    {
+      "varname": "wikipediaData",
+      "jpath": [
+        "wikipediaData"
+      ]
+    },
+    {
+      "varname": "wikipedia",
+      "jpath": [
+        "wikipedia"
+      ]
+    },
+    {
+      "varname": "header",
+      "jpath": [
+        "header"
+      ]
+    },
+    {
+      "varname": "elements",
+      "jpath": [
+        "elements"
+      ]
+    },
+    {
+      "varname": "elementTemplate",
+      "jpath": [
+        "elementTemplate"
+      ]
+    },
+    {
+      "varname": "templates",
+      "jpath": [
+        "templates"
+      ]
+    },
+    {
+      "varname": "selectedTemplate",
+      "jpath": [
+        "templates",
+        "0",
+        "template"
+      ]
+    }
+  ],
+  "aliases": [
+    {}
+  ],
+  "pouchvariables": [
+    {}
+  ],
+  "configuration": {
+    "title": "No title"
+  },
+  "actionscripts": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          {
+            "name": [
+              null
+            ],
+            "script": [
+              null
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "couch_replication": [
+    {
+      "sections": {},
+      "groups": {
+        "couch": [
+          [
+            {
+              "direction": "both",
+              "continuous": []
+            }
+          ]
+        ]
+      }
+    }
+  ],
+  "init_script": [
+    {
+      "sections": {},
+      "groups": {
+        "general": [
+          {
+            "script": [
+              null
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "custom_filters": [
+    {
+      "sections": {
+        "modules": [
+          {
+            "sections": {},
+            "groups": {
+              "modules": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filtersLib": [
+          {
+            "sections": {},
+            "groups": {
+              "filters": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filters": [
+          {
+            "sections": {},
+            "groups": {
+              "filter": [
+                {
+                  "name": [
+                    null
+                  ],
+                  "script": [
+                    null
+                  ]
+                }
+              ],
+              "libs": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "groups": {}
+    }
+  ],
+  "actionfiles": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          [
+            {}
+          ]
+        ]
+      }
+    }
+  ]
+}

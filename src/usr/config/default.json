@@ -59,6 +59,18 @@
     "height": "30px",
     "elements": [
       {
+        "type": "couchdb2",
+        "label": "Couch DB",
+        "database": "c",
+        "url": "http://localhost/clp",
+        "loginMethods": [
+          "github",
+          "google",
+          "facebook",
+          "couchdb"
+        ]
+      },
+      {
         "type": "copydata",
         "label": "Copy data"
       },
@@ -85,6 +97,14 @@
       {
         "type": "pouchsaveview",
         "label": "Save local view"
+      },
+      {
+        "type": "pouchloaddata",
+        "label": "Load local data"
+      },
+      {
+        "type": "pouchsavedata",
+        "label": "Save local data"
       },
       {
         "type": "couchshare",

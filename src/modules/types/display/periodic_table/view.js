@@ -24,6 +24,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                 this.template = Twig.twig({
                     data: ''
                 });
+                this.dom.html('');
             }
         },
         inDom: function () {
@@ -38,6 +39,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                  (twig does some check depending on the filter used
                  and the values need to be native)
                  */
+
                 this.elements = value.resurrect();
                 this.render();
             },
@@ -57,13 +59,37 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
         render: function () {
             this.dom.html('');
             var renderers = [];
-            for(var i=0; i<this.elements.length; i++) {
-                renderers.push(this.template.renderAsync(this.elements[i]));
-                this.dom.append(renderers[i].html);
-                renderers[i].render();
+            var w  = this.width / 18;
+
+            for (var i = 0; i < this.elements.length; i++) {
+                console.log(this.elements[i]);
+                var position = calcPosition(this.elements[i]);
+                var $element = $(this.template.render({element: this.elements[i]}));
+                $element.css({
+                    'position': 'absolute',
+                    'left': position[0] * w,
+                    'top': position[1] * w
+                });
+                this.dom.append($element);
             }
+            //// Made with Daniel
+            //for(var i=0; i<this.elements.length; i++) {
+            //    var td = $('<td>');
+            //    td.append(this.template.render({element:this.elements[i]}));
+            //    this.dom.append(td);
+            //}
         }
+
+
     });
+
+    function calcPosition(element) {
+        //
+        var y = +element.period;
+        var x = +element.group;
+
+        return [x,y];
+    }
 
     return View;
 
