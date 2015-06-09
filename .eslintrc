@@ -1,73 +1,117 @@
-{
-  "env": {
-    "browser": true,
-    "amd": true
-  },
-  "rules": {
-    "brace-style": [2, "1tbs", {"allowSingleLine": true}],
-    "comma-dangle": [2, "never"],
-    "comma-spacing": 2,
-    "comma-style": [2, "last"],
-    "consistent-this": [2, "that"],
-    "eol-last": 2,
-    "indent": [2, 4],
-    "key-spacing": [2, {"beforeColon": false, "afterColon": true}],
-    "new-parens": 2,
-    "no-array-constructor": 2,
-    "no-constant-condition": 2,
-    "no-debugger": 2,
-    "no-delete-var": 2,
-    "no-dupe-args": 2,
-    "no-dupe-keys": 2,
-    "no-duplicate-case": 2,
-    "no-empty": 2,
-    "no-empty-label": 2,
-    "no-ex-assign": 2,
-    "no-extra-semi": 2,
-    "no-func-assign": 2,
-    "no-irregular-whitespace": 2,
-    "no-label-var": 2,
-    "no-lone-blocks": 2,
-    "no-mixed-spaces-and-tabs": 2,
-    "no-multi-spaces": 2,
-    "no-negated-in-lhs": 2,
-    "no-new-object": 2,
-    "no-new-wrappers": 2,
-    "no-obj-calls": 2,
-    "no-regex-spaces": 2,
-    "no-shadow-restricted-names": 2,
-    "no-spaced-func": 2,
-    "no-sparse-arrays": 2,
-    "no-trailing-spaces": [2, {"skipBlankLines": true}],
-    "no-undef": 2,
-    "no-undef-init": 2,
-    "no-unreachable": 2,
-    "no-unused-expressions": 2,
-    "no-with": 2,
-    "quotes": [2, "single", "avoid-escape"],
-    "semi": [2, "always"],
-    "semi-spacing": [2, {"before": false, "after": true}],
-    "space-after-keywords": 2,
-    "space-before-blocks": [2, "always"],
-    "space-before-function-paren": [2, {"anonymous": "always", "named": "never"}],
-    "space-in-brackets": 2,
-    "space-in-parens": 2,
-    "space-infix-ops": 2,
-    "space-return-throw-case": 2,
-    "strict": [2, "global"],
-    "use-isnan": 2,
-    "valid-typeof": 2
-  },
-  "globals": {
-    "setImmediate": false,
-    "escape": false,
-    "unescape": false,
-    "$": false,
-    "jQuery": false,
-    "DataObject": false,
-    "DataArray": false,
-    "DataString": false,
-    "DataNumber": false,
-    "DataBoolean": false
-  }
-}
+env:
+  browser: true,
+  amd: true
+
+rules:
+  # Possible errors
+  comma-dangle:
+    - 2
+    - "never"
+  # no-cond-assign
+  # no-console
+  no-constant-condition: 2
+  # no-control-regex
+  no-debugger: 2
+  no-dupe-args: 2
+  no-dupe-keys: 2
+  no-duplicate-case: 2
+  # no-empty-character-class
+  no-empty: 2
+  no-ex-assign: 2
+  # no-extra-boolean-cast
+  # no-extra-parens
+  no-extra-semi: 2
+  no-func-assign: 2
+  # no-inner-declarations
+  # no-invalid-regexp
+  no-irregular-whitespace: 2
+  no-negated-in-lhs: 2
+  no-obj-calls: 2
+  no-regex-spaces: 2
+  # no-reserved-keys
+  no-sparse-arrays: 2
+  no-unreachable: 2
+  use-isnan: 2
+  # valid-jsdoc
+  valid-typeof: 2
+
+  # Best practices
+  no-empty-label: 2
+  no-lone-blocks: 2
+  no-multi-spaces: 2
+  no-new-wrappers: 2
+  no-unused-expressions: 2
+  no-with: 2
+
+  # Strict mode
+  strict:
+    - 2
+    - "global"
+
+  # Variables
+  no-delete-var: 2
+  no-label-var: 2
+  no-shadow-restricted-names: 2
+  no-undef-init: 2
+  no-undef: 2
+
+  # Stylistic issues
+  brace-style:
+    - 2
+    - "1tbs"
+    - {allowSingleLine: true}
+  comma-spacing: 2
+  comma-style:
+    - 2
+    - "last"
+  consistent-this:
+    - 2
+    - "that"
+  eol-last: 2
+  indent:
+    - 2
+    - 4
+  key-spacing:
+    - 2
+    - {beforeColon: false, afterColon: true}
+  new-parens: 2
+  no-array-constructor: 2
+  no-mixed-spaces-and-tabs: 2
+  no-new-object: 2
+  no-spaced-func: 2
+  no-trailing-spaces:
+    - 2
+    - {skipBlankLines: true}
+  quotes:
+    - 2
+    - "single"
+    - "avoid-escape"
+  semi-spacing:
+    - 2
+    - {before: false, after: true}
+  semi:
+    - 2
+    - "always"
+  space-after-keywords: 2
+  space-before-blocks:
+    - 2
+    - "always"
+  space-before-function-paren:
+    - 2
+    - {anonymous: "always", named: "never"}
+  space-in-brackets: 2
+  space-in-parens: 2
+  space-infix-ops: 2
+  space-return-throw-case: 2
+
+globals:
+  setImmediate: false,
+  escape: false,
+  unescape: false,
+  $: false,
+  jQuery: false,
+  DataObject: false,
+  DataArray: false,
+  DataString: false,
+  DataNumber: false,
+  DataBoolean: false
