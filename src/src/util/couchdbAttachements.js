@@ -3,10 +3,17 @@
 // Mini-library to manage couchdb attachments
 // - Get and upload attachments just by their name
 // - Cache already downloaded attachments
-define(['src/util/versioning', 'superagent'], function(Versioning, superagent) {
+define(['src/util/versioning', 'superagent', 'src/util/lru'], function(Versioning, superagent, LRU) {
 
     // A namespace for preventing overwriting
     var prefix = 'upload/';
+    var storeName = '__couchdb-attachments';
+    var limitMemory = 200;
+    var limitStore = 500;
+    if (!LRU.exists(storeName)) {
+        LRU.create(storeName, limitMemory, limitStore);
+    }
+
 
     /**
      * @param url Set the docUrl. If none specified, will attempt to use the viewURL to set the docURL
@@ -74,13 +81,22 @@ define(['src/util/versioning', 'superagent'], function(Versioning, superagent) {
                         if(err) return reject(err);
                         if(res.status !== 201) return reject(new Error('Error uploading attachment, couchdb returned status code ' + res.status));
                         that.lastDoc._rev = res.body.rev;
-                        that.attachments[name] = data;
+                        //that.attachments[name] = data;
                         return resolve(res);
                     })
             });
         }).then(function() {
             // We need to update the document after the upload
-            return that.list(true);
+            var prom = that.list(true);
+            prom.then(function() {
+                Promise.resolve(LRU.store(storeName, that.lastDoc._attachments[name].digest, data)).then(function(r) {
+                    console.log('store success', r);
+                }, function(e){
+                    console.log('store error', e);
+                });
+            });
+
+            return prom;
         });
 
     };
@@ -91,20 +107,17 @@ define(['src/util/versioning', 'superagent'], function(Versioning, superagent) {
      * @param refresh Set to true if to force download (this will clear the cache)
      * @return {Promise} The parsed content of the attachment
      */
-    CouchdbAttachments.prototype.get = function(name, refresh) {
+    CouchdbAttachments.prototype.get = function(name) {
         var that = this;
 
         return this.list().then(function() {
-            if(!refresh && that.attachments[name]) {
-                console.log('return attachment from cache');
-                return that.attachments[name];
-            }
-
-            var r;
             var exists = that.lastDoc._attachments[name];
-            if(!refresh) r = Promise.resolve();
-            else r = that.refresh();
-            return r.then(function() {
+            if(!exists) throw new Error('The attachment ' + name + ' does not exist');
+            return Promise.resolve(LRU.get(storeName, exists.digest)).then(function(data) {
+                console.log('returning data from the lru store');
+                if(data) return data.data;
+                else return {}
+            }, function() {
                 return new Promise(function(resolve, reject) {
                     var req = superagent.get(that.docUrl + '/' + name);
                     if(exists) req.set('Accept', that.lastDoc._attachments[name].content_type);
@@ -112,17 +125,13 @@ define(['src/util/versioning', 'superagent'], function(Versioning, superagent) {
                         .end(function(err, res) {
                             if(err) return reject(err);
                             if(res.status !== 200) return reject(new Error('Error getting attachment, couchdb returned status code ' + res.status));
-                            debugger;
-                            that.attachments[name] = res.text;
-                            console.log(res.headers);
-                            console.log('body', res.body);
-                            console.log('text', res.text);
+                            //that.attachments[name] = res.text;
+                            LRU.store(storeName, exists.digest, res.body || res.text);
+                            console.log('returning data from request to couchdb');
                             return resolve(res.body || res.text);
                         });
-
                 });
             });
-
         });
     };
 
@@ -131,7 +140,7 @@ define(['src/util/versioning', 'superagent'], function(Versioning, superagent) {
      * @param name The name of the attachment
      * @returns {Promise.<Object>} The new list of attachments
      */
-    CouchdbAttachments.prototype.remove = function(name) {
+    CouchdbAttachments.prototype.remove = function(name) { // TODO: lru has no remove yet
         var that = this;
         return this.list().then(function() {
             if(!that.lastDoc._attachments[name]) throw new Error('Cannot remove attachment, attachment does not exist.');
@@ -149,7 +158,6 @@ define(['src/util/versioning', 'superagent'], function(Versioning, superagent) {
                         return resolve(that.lastDoc._attachments);
                     });
             });
-
         });
     };
 
