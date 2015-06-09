@@ -248,7 +248,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                         if (searchfields[i].groups.general[0].allow_undefined && searchfields[i].groups.general[0].allow_undefined[0]) {
                             allow_undefined = !!searchfields[i].groups.general[0].allow_undefined[0].length;
                         }
-                        toEval += ' ( ( el = self.getJpath( "' + searchOn[j] + '", row ) ) ? ( ';
+                        toEval += ' ( ( el = that.getJpath( "' + searchOn[j] + '", row ) ) ? ( ';
                         toEval += this._makeOp(searchfields[i].groups.general[0].operator[0], searchfields[i].groups.general[0].name[0], opts);
                         toEval += ' ) : ' + allow_undefined + ' ) ';
 

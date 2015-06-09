@@ -48,7 +48,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
             });
 
             var filter = this.module.getConfiguration('filterRow');
-            eval('self.filter = function(jqGrid, source, rowId) { try { \n ' + filter + '\n } catch(_) { console.log(_); } }');
+            eval('that.filter = function(jqGrid, source, rowId) { try { \n ' + filter + '\n } catch(_) { console.log(_); } }');
 
             this.module.getDomContent().html(this.dom);
 

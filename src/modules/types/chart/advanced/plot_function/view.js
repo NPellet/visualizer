@@ -141,10 +141,10 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs'], f
                 side: THREE.DoubleSide
             });
             var floorGeometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
-            self.floor = new THREE.Mesh(floorGeometry, wireframeMaterial);
+            this.floor = new THREE.Mesh(floorGeometry, wireframeMaterial);
             //floor.position.z = 0; // required, otherwise from time to time it is NaN !!!???
             // floor.rotation.x = Math.PI / 2;
-            scene.add(self.floor);
+            scene.add(this.floor);
         },
 
 
