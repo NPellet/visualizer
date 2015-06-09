@@ -84,7 +84,7 @@ define([
             var val = this._lastValue;
             if (!val) return;
 
-            var view = this,
+            var that = this,
                 sprintfVal = this.module.getConfiguration('sprintf'),
                 sprintfOrder = this.module.getConfiguration('sprintfOrder');
 
@@ -94,23 +94,23 @@ define([
                     require(['sprintf'], function (sprintf) {
 
                         var args = [sprintfVal];
-                        for (var i in view.values) {
-                            args.push(view.values[i]);
+                        for (var i in that.values) {
+                            args.push(that.values[i]);
                         }
 
                         val = sprintf.sprintf.apply(this, args);
 
-                        view.fillWithVal(val);
+                        that.fillWithVal(val);
                     });
 
                 } catch (e) {
 
-                    view.fillWithVal(val);
+                    that.fillWithVal(val);
 
                 }
 
             } else {
-                view.fillWithVal(val);
+                that.fillWithVal(val);
             }
         },
 
@@ -167,9 +167,9 @@ define([
 
             this._scrollDown();
 
-            var self = this;
+            var that = this;
             Renderer.render(div, val).then(function () {
-                self._scrollDown();
+                that._scrollDown();
             });
 
             DomDeferred.notify(div);

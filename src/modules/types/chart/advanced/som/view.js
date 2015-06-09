@@ -16,7 +16,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
             this.datasetInfo = {};
         },
         inDom: function () {
-            var self = this;
+            var that = this;
             var axisOptions = {
                 primaryGrid: false,
                 secondaryGrid: false
@@ -56,11 +56,11 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
                 left: [axisOptions]
             }, function (graph) {
                 graph.shapeHandlers.mouseOver.push(function (shape) {
-                    self.module.controller.onCellHover(shape.data);
+                    that.module.controller.onCellHover(shape.data);
                 });
                 graph.getXAxis().hide().setAxisDataSpacing(0, 0);
                 graph.getYAxis().hide().setAxisDataSpacing(0, 0);
-                self.resolveReady();
+                that.resolveReady();
             });
         },
         blank: {
@@ -167,7 +167,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
                     }
                 }
 
-                var self = this;
+                var that = this;
                 var data = value.getChildSync(['data', '0']);
                 var l = data.x.length;
                 var theData = new Array(l * 2);
@@ -196,7 +196,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
                 if (data.info) {
                     serie.on('mouseover', function (id) {
                         serie.selectPoint(id);
-                        self.module.controller.onElementHover(data.x[id], data.y[id], data.info[id]);
+                        that.module.controller.onElementHover(data.x[id], data.y[id], data.info[id]);
                     });
                     serie.on('mouseout', function (id) {
                         serie.selectPoint(id, false);

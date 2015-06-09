@@ -180,21 +180,21 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         if (!this.reloaded && this.currentScript == newScript) {
             promise = Promise.resolve(this._executor || this._loadingExecutor);
         } else {
-            var self = this;
+            var that = this;
             this.reloaded = false;
             var prom = new Promise(function (resolve, reject) {
-                require(self.neededUrls, function () {
-                    var libs = new Array(self.neededUrls.length);
-                    for (var i = 0; i < self.neededUrls.length; i++) {
+                require(that.neededUrls, function () {
+                    var libs = new Array(that.neededUrls.length);
+                    for (var i = 0; i < that.neededUrls.length; i++) {
                         libs[i] = arguments[i];
                     }
-                    if (self._executor) { // close previous sandbox
-                        self._executor._sandbox.close();
+                    if (that._executor) { // close previous sandbox
+                        that._executor._sandbox.close();
                     }
-                    var executor = new ScriptExecutor(self, libs);
-                    self.currentScript = newScript;
-                    self._executor = executor;
-                    self._loadingExecutor = null;
+                    var executor = new ScriptExecutor(that, libs);
+                    that.currentScript = newScript;
+                    that._executor = executor;
+                    that._loadingExecutor = null;
                     resolve(executor);
                 });
             });
@@ -367,10 +367,10 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
     };
 
     ScriptExecutor.prototype.setOutput = function () {
-        var self = this;
+        var that = this;
         this._done.then(function () {
-            if (self.wasSet) {
-                self.controller.createDataFromEvent('onScriptEnded', 'outputValue', self.controller.outputObject);
+            if (that.wasSet) {
+                that.controller.createDataFromEvent('onScriptEnded', 'outputValue', that.controller.outputObject);
             }
         }, function (e) {
             Debug.error('Code executor error', e);
@@ -380,9 +380,9 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
     ScriptExecutor.prototype.async = function () {
         if (this._async) return;
         this._async = true;
-        var self = this;
+        var that = this;
         this._done = new Promise(function (resolve, reject) {
-            self.done = function (v) {
+            that.done = function (v) {
                 if (v instanceof Error) {
                     reject(v);
                 } else {

@@ -35,7 +35,7 @@ define(['modules/default/defaultview', 'src/util/util', 'BiojsCore', 'jquery-ui/
 
         update: {
             feature: function (data) {
-                var self = this;
+                var that = this;
                 var myPainter = new Biojs.MyFeatureViewer({
                     target: this._id,
                     json: data,
@@ -52,12 +52,12 @@ define(['modules/default/defaultview', 'src/util/util', 'BiojsCore', 'jquery-ui/
 
                 myPainter.onFeatureClick(function (data) {
                     delete data.shape;
-                    self.module.controller.onFeatureClicked(data);
+                    that.module.controller.onFeatureClicked(data);
                 });
 
                 myPainter.onFeatureOn(function (data) {
                     delete data.shape;
-                    self.module.controller.onFeatureMouseOver(data);
+                    that.module.controller.onFeatureMouseOver(data);
                 });
             }
         },

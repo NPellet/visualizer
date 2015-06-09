@@ -413,14 +413,14 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
             jpath = jpath.slice();
 
             var el = jpath.shift();
-            var self = this;
+            var that = this;
 //console.log( this, this.get(el, true), el );
             var promise = this.get(el, true);
             return promise.then(function (subEl) {
                 if (typeof subEl !== 'undefined') {
-                    self.get()[el] = DataObject.check(subEl, true);
+                    that.get()[el] = DataObject.check(subEl, true);
                     if (subEl && subEl.linkToParent) {
-                        subEl.linkToParent(self, el);
+                        subEl.linkToParent(that, el);
                     }
                     if (!subEl || jpath.length === 0) {
                         return subEl;
@@ -496,7 +496,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
     var setChild = {
         value: function (jpath, newValue, triggerParams, constructor) {
 
-            var self = this;
+            var that = this;
 
             if (typeof jpath === 'string') { // Old version
                 jpath = jpath.split('.');
@@ -514,13 +514,13 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
             var el = jpath.shift();
 
             if (jpathLength === 1) {
-                var res = self.set(el, newValue, true); // noTrigger
+                var res = that.set(el, newValue, true); // noTrigger
                 if (res && res.linkToParent) {
-                    res.linkToParent(self, el);
+                    res.linkToParent(that, el);
                    // console.warn("TriggerChange removed. This can loop infinitely. Trigger should be done from the module");
                     res.triggerChange(false, triggerParams);
                 } else {
-                    self.triggerChange(false, triggerParams, el, res);
+                    that.triggerChange(false, triggerParams, el, res);
                 }
                 return Promise.resolve();
             }
@@ -534,8 +534,8 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
             return this
                 .get(el, true, elementType)
                 .then(function (val) {
-                    self.set(name, val, true);
-                    val.linkToParent(self, name);
+                    that.set(name, val, true);
+                    val.linkToParent(that, name);
                     val.setChild.apply(val, args);
                 });
         }
@@ -543,7 +543,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
 
     var setChildSync = {
         value: function (jpath, newValue, triggerParams, constructor) {
-            var self = this;
+            var that = this;
 
             if (typeof jpath === 'string') { // Old version
                 jpath = jpath.split('.');
@@ -561,12 +561,12 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
             var el = jpath.shift();
 
             if (jpathLength === 1) {
-                var res = self.set(el, newValue, true);
+                var res = that.set(el, newValue, true);
                 if (res && res.linkToParent) {
-                    res.linkToParent(self, el);
+                    res.linkToParent(that, el);
                     res.triggerChange(false, triggerParams);
                 } else {
-                    self.triggerChange(false, triggerParams);
+                    that.triggerChange(false, triggerParams);
                 }
                 return;
             }
@@ -579,7 +579,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
 
             var val = this.get(el, false, elementType);
             this.set(name, val, true);
-            val.linkToParent(self, name);
+            val.linkToParent(that, name);
             val.setChildSync.apply(val, args);
         }
     };
@@ -722,7 +722,7 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
                 return Promise.resolve(this);
             }
 
-            var self = this;
+            var that = this;
             return new Promise(function (resolve, reject) {
                 require(['src/util/urldata'], function (urlData) { // We don't know yet if URLData has been loaded
 
@@ -733,20 +733,20 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
                         };
                     }
 
-                    urlData.get(self.url, false, self.timeout, headers).then(function (data) {
+                    urlData.get(that.url, false, that.timeout, headers).then(function (data) {
 
                         data = DataObject.check(data, true);	// Transform the input into a DataObject
 
-                        Object.defineProperty(self, 'value', {// Sets the value to the object
-                            enumerable: self._keep || false, // If this._keep is true, then we will save the fetched data
+                        Object.defineProperty(that, 'value', {// Sets the value to the object
+                            enumerable: that._keep || false, // If this._keep is true, then we will save the fetched data
                             writable: true,
                             configurable: true,
                             value: data
                         });
 
-                        resolve(self);
+                        resolve(that);
                     }, function (err) {
-                        Debug.debug('Could not fetch ' + self.url + ' (' + err + ')');
+                        Debug.debug('Could not fetch ' + that.url + ' (' + err + ')');
                     });
                 });
             });

@@ -203,7 +203,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
 
         triggerChange: function (callback, moduleId) {
 
-            var self = this;
+            var that = this;
 
             if (this.rejectCurrentPromise) {
 
@@ -213,12 +213,12 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
 
             this.currentPromise = new Promise(function (resolve, reject) {
 
-                self.rejectCurrentPromise = reject;
+                that.rejectCurrentPromise = reject;
 
                 var _resolve = resolve,
                     _reject = reject;
 
-                data.trace(self._jpath).then(function gotDataChild(value) {
+                data.trace(that._jpath).then(function gotDataChild(value) {
 
                     if (callback) {
 
@@ -230,7 +230,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
                             .then(function (value) {
 
                                 value = DataObject.check(value, true);
-                                self._setValue(value);
+                                that._setValue(value);
                                 _resolve(value);
 
                             }, function (error) {
@@ -242,7 +242,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
 
                     } else {
 
-                        self._setValue(value);
+                        that._setValue(value);
                         _resolve(value);
 
                     }
@@ -261,9 +261,9 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
                 Debug.error('Error in getting the variable through variable.js', err.stack || err);
             });
 
-            for (var i = 0, l = self.listeners.length; i < l; i++) {
-                if (self.listeners[i].id !== moduleId) {
-                    self.listeners[i].callback.call(self, self);
+            for (var i = 0, l = that.listeners.length; i < l; i++) {
+                if (that.listeners[i].id !== moduleId) {
+                    that.listeners[i].callback.call(that, that);
                 }
             }
         },

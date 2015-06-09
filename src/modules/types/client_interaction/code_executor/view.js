@@ -24,7 +24,7 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
     };
 
     View.prototype.inDom = function () {
-        var self = this;
+        var that = this;
 
         var initVal = this.module.getConfiguration('script') || '';
         this._code = initVal;
@@ -42,11 +42,11 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
             var buttons = this.module.getConfiguration('buttons');
             if (buttons) {
                 buttons.forEach(function (button) {
-                    self.buttonCell.append(
+                    that.buttonCell.append(
                         $('<span>' + button.label + '</span>')
                             .addClass('form-button')
                             .on('click', function () {
-                                self.module.controller.onButtonClick(button.name);
+                                that.module.controller.onButtonClick(button.name);
                             })
                     );
                 });

@@ -9,7 +9,8 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
         init: function () {
 
-            var self = this, lastTr;
+            var that = this;
+            var lastTr;
 
             var actionsOut = this.module.actions_out();
             if (actionsOut) {
@@ -26,23 +27,22 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
             this.dataSize = 0;    // we remember the last arraySize
             this.currentPage = 1; // we remember the last selected page
 
-            this.dom.on('mouseover', 'tr.jqgrow', function () {
-                if (self.module.getConfigurationCheckbox('highlightLine', 'Yes')) {
+            this.dom.on('mouseover', 'tr.jqgrow', function (e) {
+                if (that.module.getConfigurationCheckbox('highlightLine', 'Yes')) {
                     $(this).addClass('ci-highlight');
                 }
                 if (this !== lastTr) {
-                    self.module.controller.lineHover(self.elements, $(this).attr('id').replace(self.uniqId, ''));
+                    that.module.controller.lineHover(that.elements, $(this).attr('id').replace(that.uniqId, ''));
                 }
-
-                lastTr = this;
+                lastTr = e.currentTarget;
 
             }).on('mouseout', 'tr.jqgrow', function () {
-                if (self.module.getConfigurationCheckbox('highlightLine', 'Yes')) {
+                if (that.module.getConfigurationCheckbox('highlightLine', 'Yes')) {
                     $(this).removeClass('ci-highlight');
                 }
                 if (this === lastTr) {
 
-                    self.module.controller.lineOut(self.elements, $(this).attr('id').replace(self.uniqId, ''));
+                    that.module.controller.lineOut(that.elements, $(this).attr('id').replace(that.uniqId, ''));
                     lastTr = null;
                 }
             });
@@ -92,7 +92,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
         },
 
         inDom: function () {
-            var self = this,
+            var that = this,
                 colNames = [],
                 colModel = [],
                 j = 0,
@@ -154,7 +154,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
                 resizeStop: function (width, index) {
 
-                    self.domTable.children().children().eq(0).children().each(function (i) {
+                    that.domTable.children().children().eq(0).children().each(function (i) {
                         jpaths[i].width = $(this).width();
                     });
                 },
@@ -168,17 +168,17 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
                 beforeSaveCell: function (rowId, colName, value, rowNum, colNum) {
 
-                    if (self.jpaths[colNum].number.indexOf('number') > -1) {
+                    if (that.jpaths[colNum].number.indexOf('number') > -1) {
                         value = parseFloat(value);
                     }
 
-                    self.module.model.dataSetChild(
-                        self.elements[rowId.replace(self.uniqId, '')],  // source
+                    that.module.model.dataSetChild(
+                        that.elements[rowId.replace(that.uniqId, '')],  // source
                         colModel[colNum]._jpath,	// jpath
                         value // value
                     );
 
-                    self.applyFilterToRow(rowId.replace(self.uniqId, ''), rowId);
+                    that.applyFilterToRow(rowId.replace(that.uniqId, ''), rowId);
 
                     return '<div id="' + getIDForCell(rowId, colName) + '">' + value + '</div>';
 
@@ -186,47 +186,47 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
                 loadComplete: function () {
 
-                    if (!self.jqGrid) {
+                    if (!that.jqGrid) {
                         return;
                     }
 
-                    var ids = self.jqGrid('getDataIDs'),
+                    var ids = that.jqGrid('getDataIDs'),
                         i = 0,
                         l = ids.length,
                         id;
 
                     for (; i < l; i++) {
-                        id = ids[i].replace(self.uniqId, '');
-                        self.applyFilterToRow(id, ids[i]);
-                        self.tableElements[id]._inDom.notify();
+                        id = ids[i].replace(that.uniqId, '');
+                        that.applyFilterToRow(id, ids[i]);
+                        that.tableElements[id]._inDom.notify();
                     }
                 },
 
                 viewrecords: true,
                 onSelectRow: function (rowid, status) {
                     //rowid--; // ?? Plugin mistake ?
-                    if (self.hasToggleAction) {
+                    if (that.hasToggleAction) {
                         if (status) {
                             $('#' + rowid).addClass('bg-orange').removeClass('ui-widget-content ui-state-highlight');
-                            self.module.controller.onToggleOn(self.elements, rowid.replace(self.uniqId, ''));
+                            that.module.controller.onToggleOn(that.elements, rowid.replace(that.uniqId, ''));
 
                         } else {
                             $('#' + rowid).removeClass('bg-orange');
-                            self.module.controller.onToggleOff(self.elements, rowid.replace(self.uniqId, ''));
+                            that.module.controller.onToggleOff(that.elements, rowid.replace(that.uniqId, ''));
 
                         }
                     }
 
-                    self.module.controller.lineClick(self.elements, rowid.replace(self.uniqId, ''));
+                    that.module.controller.lineClick(that.elements, rowid.replace(that.uniqId, ''));
                 },
 
                 onSortCol: function () {
-                    var ids = self.jqGrid('getDataIDs'),
+                    var ids = that.jqGrid('getDataIDs'),
                         i = 0,
                         l = ids.length;
 
                     for (; i < l; i++) {
-                        self.tableElements[i]._inDom.notify();
+                        that.tableElements[i]._inDom.notify();
                     }
                 }
             });
@@ -307,18 +307,17 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
         },
 
         buildElements: function (source, arrayToPush, jpaths) {
-            var self = this,
+            var that = this,
                 i = 0,
                 l = source.length;
 
             for (; i < l; i++) {
-                arrayToPush.push(this.buildElement(source.get(i), self.uniqId + i, jpaths));
+                arrayToPush.push(this.buildElement(source.get(i), that.uniqId + i, jpaths));
             }
         },
 
         buildElement: function (s, i, jp, m) {
-            var self = this,
-                element = {},
+            var element = {},
                 j = 0,
                 l = jp.length;
 
@@ -358,13 +357,13 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
         },
 
         listenFor: function (source, jpaths, id) {
-            var self = this,
+            var that = this,
                 body = $('body');
 
             this.module.model.dataListenChange(source, function () {
-                self.jqGrid('setRowData', id, self.buildElement(this, id, jpaths, true));
+                that.jqGrid('setRowData', id, that.buildElement(this, id, jpaths, true));
                 var scroll = body.scrollTop();
-                var target = $('tr#' + id, self.domTable).get(0);
+                var target = $('tr#' + id, that.domTable).get(0);
                 if (target) {
                     target.scrollIntoView();
                     body.scrollTop(scroll);

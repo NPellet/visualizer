@@ -39,39 +39,39 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
         },
 
         onResize: function () {
-            var self = this;
+            var that = this;
             // the size is now really defined (we are after inDom)
             // and we received the data ...
             this.loadedData.done(function () {
-                self._plot = $.plot('#' + self._id, self._data, self._options);
+                that._plot = $.plot('#' + that._id, that._data, that._options);
 
-                $('#' + self._id).bind('plotclick', function (event, pos, item) {
+                $('#' + that._id).bind('plotclick', function (event, pos, item) {
                     if (item) {
                         //TODO handle click?
                     }
                 });
-                $('#' + self._id).bind('plothover', function (event, pos, item) {
+                $('#' + that._id).bind('plothover', function (event, pos, item) {
                     if (item) {
-                        self.module.controller.elementHover(self._data[item.seriesIndex]);
+                        that.module.controller.elementHover(that._data[item.seriesIndex]);
                     } else {
-                        self.module.controller.elementOut();
+                        that.module.controller.elementOut();
                     }
                 });
 
 
-                API.killHighlight(self.module.getId());
+                API.killHighlight(that.module.getId());
 
-                for (var i = 0; i < self._data.length; i++) {
+                for (var i = 0; i < that._data.length; i++) {
                     var currentDataPoint = i;
-                    API.listenHighlight(self._data[i], function (onOff, key) {
+                    API.listenHighlight(that._data[i], function (onOff, key) {
 
                         // we need to highlight the correct shape ...
                         if (onOff) {
-                            self._plot.highlight(0, currentDataPoint);
+                            that._plot.highlight(0, currentDataPoint);
                         } else {
-                            self._plot.unhighlight(0, currentDataPoint);
+                            that._plot.unhighlight(0, currentDataPoint);
                         }
-                    }, false, self.module.getId());
+                    }, false, that.module.getId());
                 }
 
 
@@ -83,7 +83,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
          It will also be called at the beginning and in this case the value is null !
          */
         update: {
-            'chart': function (moduleValue) {
+            chart: function (moduleValue) {
 
                 if (!moduleValue || !moduleValue.value) return;
 
@@ -94,7 +94,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
                 this.onResize();
             },
-            'yArray': function (moduleValue) {
+            yArray: function (moduleValue) {
                 this._data = moduleValue.get();
                 this.loadedData.resolve();
 
@@ -104,7 +104,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
         _convertChartToData: function (value) {
             this._data = [];
-            var self = this;
+            var that = this;
             if (!Array.isArray(value.data) || !value.data[0] || !Array.isArray(value.data[0].y)) return;
             var y = value.data[0].y;
             var highlight = value.data[0]._highlight;
@@ -123,8 +123,8 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                 if (Array.isArray(infos) && infos.length > i) {
                     // Data can be retrieved async so to fetch an information from the "info" object we need this strange code
                     Traversing.getValueFromJPath(infos[i], 'element.name').done(function (elVal) {
-                        self._data[i].label = elVal;
-                        self._data[i].info = infos[i];
+                        that._data[i].label = elVal;
+                        that._data[i].info = infos[i];
                     });
                 }
             }

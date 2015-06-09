@@ -8,7 +8,7 @@ define(['modules/default/defaultview'], function (Default) {
     $.extend(true, View.prototype, Default, {
 
         init: function () {
-            var self = this;
+            var that = this;
 
             this.cfg = $.proxy(this.module.getConfiguration, this.module);
             this.button = this.cfg('button')[0] === 'button';
@@ -30,20 +30,20 @@ define(['modules/default/defaultview'], function (Default) {
             this.dom.append(this.systemSelector);
 
             this.systemSelector.on('change', 'select', function () {
-                var s = self.cfg('systemSize');
+                var s = that.cfg('systemSize');
                 s[0] = $(this).val();
-                self.init();
+                that.init();
             });
 
             this.system = $(this._getTable(this.cfg('systemSize')[0]));
 
             if (!this.button) {
                 this.system.on('keyup', 'input[type=text]', function () {
-                    self.module.controller.doAnalysis();
+                    that.module.controller.doAnalysis();
                 });
 
                 this.system.on('change', 'select, input[type=text]', function () {
-                    self.module.controller.doAnalysis();
+                    that.module.controller.doAnalysis();
                 });
             }
 
@@ -52,8 +52,8 @@ define(['modules/default/defaultview'], function (Default) {
 
             if (this.button) {
                 require(['forms/button'], function (Button) {
-                    self.system.append((self.buttonInst = new Button(self.cfg('buttonlabel'), function () {
-                        self.module.controller.doAnalysis();
+                    that.system.append((that.buttonInst = new Button(that.cfg('buttonlabel'), function () {
+                        that.module.controller.doAnalysis();
                     })).render());
                 });
             }

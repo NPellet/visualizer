@@ -247,10 +247,10 @@ define([
             geojson.addTo(this.map);
             this.mapLayers[varname] = geojson;
             this.mapBounds[varname] = new L.LatLngBounds();
-            var self = this;
+            var that = this;
             geojson.eachLayer(function (layer) {
-                addEvents.call(self, layer);
-                self.mapBounds[varname].extend(layer.getBounds ? layer.getBounds() : layer.getLatLng());
+                addEvents.call(that, layer);
+                that.mapBounds[varname].extend(layer.getBounds ? layer.getBounds() : layer.getLatLng());
             });
         },
         updateFit: function (varname) {
@@ -308,7 +308,7 @@ define([
     function addEvents(layer) {
 
         var data = layer.feature.properties || {};
-        var self = this;
+        var that = this;
 
         this.module.data = data;
 
@@ -345,10 +345,10 @@ define([
 
         layer.addEventListener({
             mouseover: function () {
-                self.module.controller.hoverElement(data);
+                that.module.controller.hoverElement(data);
             },
             click: function () {
-                self.module.controller.clickElement(data);
+                that.module.controller.clickElement(data);
             },
             mouseout: function () {
                 API.highlight(data, 0);

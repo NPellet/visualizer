@@ -403,11 +403,11 @@ define([
             var url = e.currentTarget.href;
             var win = window.open(url, 'CI_Couch_Login', 'menubar=no');
             clearInterval(this._loginWinI);
-            var self = this;
+            var that = this;
             this._loginWinI = window.setInterval(function () {
                 if (win.closed) {
-                    self.createMenu(true);
-                    clearInterval(self._loginWinI);
+                    that.createMenu(true);
+                    clearInterval(that._loginWinI);
                 }
             }, 100);
         },

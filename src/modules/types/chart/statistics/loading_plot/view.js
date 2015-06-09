@@ -80,7 +80,7 @@ define([
             },
 
             loading: function (moduleValue) {
-                var self = this;
+                var that = this;
                 if (!moduleValue || !moduleValue.value) {
                     return;
                 }
@@ -92,13 +92,13 @@ define([
                 svg._svgEl.style.display = 'block';
 
                 svg.onZoomChange(function (zoom01) {
-                    self.module.controller.onZoomChange(zoom01);
-                    self.module.controller.onChangeViewport(svg.getViewBox());
+                    that.module.controller.onZoomChange(zoom01);
+                    that.module.controller.onChangeViewport(svg.getViewBox());
                 });
 
                 svg.onMove(function (cx, cy) {
-                    self.module.controller.onMove(cx, cy);
-                    self.module.controller.onChangeViewport(svg.getViewBox());
+                    that.module.controller.onMove(cx, cy);
+                    that.module.controller.onChangeViewport(svg.getViewBox());
                 });
 
 
@@ -178,7 +178,7 @@ define([
                                 API.listenHighlight(datas[k], fnc, false, this.module.getId());
 
                                 el.hoverCallback = function () {
-                                    self.module.controller.hover(this._data);
+                                    that.module.controller.hover(this._data);
                                 };
 
                                 this._instances[j] = this._instances[j] || [];

@@ -18,8 +18,7 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/ui'], function 
             } else {
                 label = this.module.getConfiguration('label');
             }
-            var self = this,
-                button = new Button(label, function (e, val) {
+            var button = new Button(label, function (e, val) {
                         var prom = Promise.resolve(true);
                         if (that.module.getConfigurationCheckbox('askConfirm', 'yes')) {
                             prom = ui.confirm(that.module.getConfiguration('confirmText'), that.module.getConfiguration('okLabel'), that.module.getConfiguration('cancelLabel'));
@@ -35,7 +34,7 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/ui'], function 
                                 button.setTitle(that.module.getConfiguration('onLabel'));
                                 that.setButtonColor(that.module.getConfiguration('onColor'));
                             }
-                            self.module.controller.onClick(val);
+                            that.module.controller.onClick(val);
                         });
                     },
                     {

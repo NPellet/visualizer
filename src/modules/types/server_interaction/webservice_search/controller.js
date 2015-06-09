@@ -330,7 +330,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'superagent', 'uri/
 
     Controller.prototype._doSearch = function () {
 
-        var self = this,
+        var that = this,
             urltemplate = new URITemplate(this.module.view._url || this.module.getConfiguration('url'));
 
         var toPost = this.module.getConfiguration('postvariables', []);
@@ -370,21 +370,21 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'superagent', 'uri/
         this.request.end(function (err, response) {
             if (err) {
                 Debug.warn('Webservice search: request failed', err);
-                self.module.view.showError();
+                that.module.view.showError();
             } else {
-                if (self.module.getConfigurationCheckbox('showStatus', 'display')) {
-                    self.module.view.showSuccess(response.status);
+                if (that.module.getConfigurationCheckbox('showStatus', 'display')) {
+                    that.module.view.showSuccess(response.status);
                 }
                 var body = response.body;
                 if (body == null) {
                     body = response.text;
                 }
-                if (self.module.resultfilter) {
-                    body = self.module.resultfilter(body);
+                if (that.module.resultfilter) {
+                    body = that.module.resultfilter(body);
                 }
-                self.onSearchDone(body);
+                that.onSearchDone(body);
             }
-            self.module.view.unlock();
+            that.module.view.unlock();
         });
 
     };

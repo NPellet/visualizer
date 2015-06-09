@@ -9,11 +9,11 @@ define(['modules/default/defaultview'], function (Default) {
         init: function () {
             this.dom = $('<iframe>');
 
-            var self = this;
+            var that = this;
             this.dom.load(function () { // we remove the loading message
-                if (self.dom.attr('src') != 'about:blank') {
-                    if (self._loadingTimeout) clearTimeout(self._loadingTimeout);
-                    else self.hideLoading();
+                if (that.dom.attr('src') != 'about:blank') {
+                    if (that._loadingTimeout) clearTimeout(that._loadingTimeout);
+                    else that.hideLoading();
                 }
             });
 
@@ -27,11 +27,11 @@ define(['modules/default/defaultview'], function (Default) {
         },
         update: {
             url: function (moduleValue) {
-                var self = this;
-                if (self._loadingTimeout) clearTimeout(self._loadingTimeout);
+                var that = this;
+                if (that._loadingTimeout) clearTimeout(that._loadingTimeout);
                 this._loadingTimeout = setTimeout(function () {
-                    self._loadingTimeout = null;
-                    self.showLoading();
+                    that._loadingTimeout = null;
+                    that.showLoading();
                 }, 500);
                 this.dom.attr('src', moduleValue.get());
             }

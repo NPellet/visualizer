@@ -8,7 +8,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
     $.extend(true, View.prototype, Default, {
 
         init: function () {
-            var self = this;
+            var that = this;
             var parentDom = $('<div>').css({
                 position: 'relative',
                 height: '100%',
@@ -24,14 +24,14 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                 display: 'none'
             }).appendTo(parentDom).click(function (e) {
                 e.stopPropagation();
-                self.searchEnabled = true;
-                self.overlay.animate({
+                that.searchEnabled = true;
+                that.overlay.animate({
                     backgroundColor: 'rgba(200,200,200,0)',
                     color: 'rgba(50,50,50,0)'
                 }, 500, function () {
-                    self.overlay.css('display', 'none');
+                    that.overlay.css('display', 'none');
                 });
-                self.search();
+                that.search();
             }).append($('<div>' + this.module.getConfiguration('disableMessage') + '</div>').css({
                 textAlign: 'center',
                 width: '100%',
@@ -66,7 +66,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                                     fields: FormCreator.makeStructure(searchfields, function (field) {
 
                                         for (var k = 0, m = field.groups.general[0].searchOnField.length; k < m, field.groups.general[0].searchOnField[k]; k++) {
-                                            Util.addjPathFunction(self._jpathsFcts, field.groups.general[0].searchOnField[k]);
+                                            Util.addjPathFunction(that._jpathsFcts, field.groups.general[0].searchOnField[k]);
                                         }
                                     })
                                 }
@@ -91,8 +91,8 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                         cfgFinal[i] = cfg[i][0];
                     }
 
-                    $.extend(self.cfgValue, cfgFinal);
-                    self.search();
+                    $.extend(that.cfgValue, cfgFinal);
+                    that.search();
                 }
             });
 
@@ -102,7 +102,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
             });
 
             form.onLoaded().done(function () {
-                self.dom.html(form.makeDom(2));
+                that.dom.html(form.makeDom(2));
                 form.inDom();
                 form.fieldElementValueChanged();
             });
@@ -210,8 +210,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
         makeSearchFilter: function () {
 
 
-            var self = this,
-                searchfields = this.module.getConfiguration('searchfields'),
+            var searchfields = this.module.getConfiguration('searchfields'),
                 i = 0,
                 l = searchfields.length,
                 searchOn;

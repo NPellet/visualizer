@@ -84,17 +84,17 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function (Pou
                 var queue = [];
                 var saving = false;
 
-                var self = this;
+                var that = this;
 
                 function doSave(safe) {
                     if (saving && !safe)
                         return;
                     saving = true;
                     var el = queue.shift();
-                    self.getPouch().pouchdb.put(el, self._id, self._rev, function (err, response) {
+                    that.getPouch().pouchdb.put(el, that._id, that._rev, function (err, response) {
                         if (err)
                             return Debug.error('Error while writing PouchObject', err);
-                        self._rev = response.rev;
+                        that._rev = response.rev;
                         if (queue.length)
                             doSave(true);
                         else
@@ -103,7 +103,7 @@ define(['pouchdb', 'uri/URI', 'src/util/debug', 'src/main/datas'], function (Pou
                 }
 
                 this.onChange(function () {
-                    var toSave = self.exportForPouch();
+                    var toSave = that.exportForPouch();
                     queue.push(toSave);
                     doSave();
                 }, 'internal_pouch_change');

@@ -41,15 +41,15 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
         onResize: function () {
 
-            var self = this;
+            var that = this;
 
             this.loadedData.done(function () {
 
-                this._plot = self.plot(self._id, self._data, self._options);
-                var choiceContainer = $('#choices' + self._id);
+                this._plot = that.plot(that._id, that._data, that._options);
+                var choiceContainer = $('#choices' + that._id);
                 choiceContainer.empty();
 
-                $.each(self._data, function (key, val) {
+                $.each(that._data, function (key, val) {
                     choiceContainer.append("<br/><input type='checkbox' name='" + key +
                         "' checked='checked' id='id" + key + "'></input>" +
                         "<label for='id" + key + "'>"
@@ -57,7 +57,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                 });
 
                 choiceContainer.find('input').bind('click', function (event, pos, item) {
-                    self.plotAccordingToChoices(choiceContainer, self._id);
+                    that.plotAccordingToChoices(choiceContainer, that._id);
                 });
             });
 
@@ -69,32 +69,22 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
          It will also be called at the beginning and in this case the value is null !
          */
         update: {
-
-            'chart': function (moduleValue) {
-                if (!moduleValue || !moduleValue.value) return;
-
-                var self = this;
+            chart: function (moduleValue) {
                 var cfg = $.proxy(this.module.getConfiguration, this.module);
 
                 this._convertChartToData(moduleValue.get().data);
                 var axis = moduleValue.get().axis;
                 var x = moduleValue.get().data[0].x;
                 this.updateOptions(cfg, axis, x);
-                this._plot = self.plot(self._id, self._data, self._options);
+                this._plot = this.plot(this._id, this._data, this._options);
 
                 this.loadedData.resolve();
-
-
             }
-
-
         },
 
         _convertChartToData: function (value) {
 
             this._data = [];
-            var self = this;
-            self._data = this._data;
             if (!Array.isArray(value) || !value || !Array.isArray(value.x)) return;
 
             for (var j = 0; j < value.length; j++) {
@@ -231,7 +221,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
         plot: function (id, data, options) {
 
-            var self = this;
+            var that = this;
             this._plot = $.plot('#' + id, data, options);
             $('#' + id).bind('plotclick', function (event, pos, item) {
 
@@ -245,26 +235,26 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
             $('#' + id).bind('plothover', function (event, pos, item) {
 
                 if (item) {
-                    self.module.controller.elementHover(self._data[item.seriesIndex].data[item.dataIndex]);
+                    that.module.controller.elementHover(that._data[item.seriesIndex].data[item.dataIndex]);
 
                 } else {
-                    self.module.controller.elementOut();
+                    that.module.controller.elementOut();
                 }
             });
 
         },
         plotAccordingToChoices: function (choiceContainer, id) {
-            var self = this;
+            var that = this;
             var data = [];
             choiceContainer.find('input:checked').each(function () {
                 var key = $(this).attr('name');
-                if (key && self._data[key]) {
-                    data.push(self._data[key]);
+                if (key && that._data[key]) {
+                    data.push(that._data[key]);
                 }
             });
 
             if (data.length > 0) {
-                this.plot(id, data, self._options);
+                this.plot(id, data, that._options);
             }
         }
 

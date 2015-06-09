@@ -80,7 +80,7 @@ define(['jquery'], function ($) {
 
         getAll: function (type, key, branch) {
 
-            var def = $.Deferred(), self = this;
+            var def = $.Deferred(), that = this;
             type = (type == 'data' || type == 'localdata') ? 'localdata' : 'localview';
 
             var trans = db.transaction([type], 'readwrite');
@@ -98,7 +98,7 @@ define(['jquery'], function ($) {
 
                 if (branch) {
                     if (e.target.result == undefined) {
-                        self.create(type, key, branch).pipe(function (obj) {
+                        that.create(type, key, branch).pipe(function (obj) {
                             def.resolve(obj);
                         });
                     } else {
@@ -153,7 +153,7 @@ define(['jquery'], function ($) {
 
         storeToHead: function (type, key, branch, obj) {
 
-            var def = $.Deferred(), self = this;
+            var def = $.Deferred(), that = this;
             type = (type == 'data' || type == 'localdata') ? 'localdata' : 'localview';
             var trans = db.transaction(type, 'readwrite');
             var store = trans.objectStore(type);
@@ -171,8 +171,8 @@ define(['jquery'], function ($) {
                     };
                 } else {
 
-                    self.create(type, key, branch).done(function () {
-                        self.storeToHead(type, key, branch, obj).done(function () {
+                    that.create(type, key, branch).done(function () {
+                        that.storeToHead(type, key, branch, obj).done(function () {
                             def.resolve(obj);
                         });
                     });
@@ -222,9 +222,9 @@ define(['jquery'], function ($) {
         },
 
         getHead: function (type, key, branch) {
-            var self = this;
+            var that = this;
             return this.open().pipe(function () {
-                return self.getAll(type, key, branch).pipe(function (obj) {
+                return that.getAll(type, key, branch).pipe(function (obj) {
                     return obj.head;
                 });
             });

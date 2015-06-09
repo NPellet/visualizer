@@ -128,7 +128,7 @@ define([
 
 
         createDendrogram: function () {
-            var self = this;
+            var that = this;
 
             // ?????? how to put this in the model ?????
 
@@ -136,7 +136,7 @@ define([
             if (!actions || actions.length == 0) return;
             var hover = function (node) {
                 //	self.module.controller.onHover(new DataObject(self._idHash[node.id]), 'node');
-                self.module.controller.onHover(self._idHash[node.id]);
+                that.module.controller.onHover(that._idHash[node.id]);
             };
 
 

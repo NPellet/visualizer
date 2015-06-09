@@ -41,14 +41,13 @@ define([
 
         inDom: function () {
 
-            var self = this;
+            var that = this;
 
             var gcmsinstance = new GCMS(this.div1, this.div2, {
 
 
                 AUCCreated: function (auc) {
 
-                    var self = this;
                     var pos = Math.round(auc.data.pos.x);
                     var pos2 = Math.round(auc.data.pos2.x);
 //					var color = rgbToHex.apply( this, auc.data.color );
@@ -79,7 +78,7 @@ define([
 
                 onMsFromAUCChange: function (ms) {
 
-                    self.module.controller.createDataFromEvent('onMSChange', 'ms', ms);
+                    that.module.controller.createDataFromEvent('onMSChange', 'ms', ms);
 
                 },
 
@@ -94,9 +93,9 @@ define([
                      }*/
                     if (auc.data) {
 
-                        self.module.controller.createDataFromEvent('onIntegralSelect', 'GCIntegration', auc.data._originalSource);
+                        that.module.controller.createDataFromEvent('onIntegralSelect', 'GCIntegration', auc.data._originalSource);
 
-                        self.module.controller.sendActionFromEvent('onIntegralSelect', 'GCIntegration', auc.data._originalSource);
+                        that.module.controller.sendActionFromEvent('onIntegralSelect', 'GCIntegration', auc.data._originalSource);
 
                     } else {
                         //console.trace();
@@ -134,24 +133,24 @@ define([
 
                 MZChange: function (ms) {
 
-                    self.module.controller.sendActionFromEvent('onMZSelectionChange', 'mzList', ms);
+                    that.module.controller.sendActionFromEvent('onMZSelectionChange', 'mzList', ms);
                 },
 
                 MSChangeIndex: function (msIndex, ms) {
-                    self.module.controller.sendActionFromEvent('onMSIndexChanged', 'msIndex', msIndex);
-                    self.module.controller.createDataFromEvent('onMSIndexChanged', 'msMouse', ms);
+                    that.module.controller.sendActionFromEvent('onMSIndexChanged', 'msIndex', msIndex);
+                    that.module.controller.createDataFromEvent('onMSIndexChanged', 'msMouse', ms);
 
                 },
 
                 onZoomGC: function (from, to) {
 
-                    self.module.controller.sendActionFromEvent('onZoomGCChange', 'fromtoGC', [from, to]);
-                    self.module.controller.sendActionFromEvent('onZoomGCChange', 'centerGC', (to + from) / 2);
+                    that.module.controller.sendActionFromEvent('onZoomGCChange', 'fromtoGC', [from, to]);
+                    that.module.controller.sendActionFromEvent('onZoomGCChange', 'centerGC', (to + from) / 2);
                 },
 
                 ingredientSelected: function (ingredient) {
 
-                    self.module.controller.sendActionFromEvent('onIngredientSelected', 'selectedIngredient', ingredient);
+                    that.module.controller.sendActionFromEvent('onIngredientSelected', 'selectedIngredient', ingredient);
                 },
 
                 onlyOneMS: true
@@ -178,7 +177,7 @@ define([
 
         update: {
             'jcamp': function (moduleValue) {
-                var self = this;
+                var that = this;
 
                 moduleValue = String(moduleValue.get());
                 require(['jcampconverter'], function (tojcamp) {
@@ -187,13 +186,13 @@ define([
 
                         if (jcamp.gcms) {
 
-                            self.gcmsInstance.setGC(jcamp.gcms.gc);
-                            self.gcmsInstance.setMS(jcamp.gcms.ms);
+                            that.gcmsInstance.setGC(jcamp.gcms.gc);
+                            that.gcmsInstance.setMS(jcamp.gcms.ms);
 
-                            self.module.controller.createDataFromEvent('onJCampParsed', 'msdata', jcamp.gcms.ms);
-                            self.module.controller.createDataFromEvent('onJCampParsed', 'gcdata', jcamp.gcms.gc);
+                            that.module.controller.createDataFromEvent('onJCampParsed', 'msdata', jcamp.gcms.ms);
+                            that.module.controller.createDataFromEvent('onJCampParsed', 'gcdata', jcamp.gcms.gc);
 
-                            self.jcamp = jcamp;
+                            that.jcamp = jcamp;
                         }
                     });
 
@@ -215,14 +214,14 @@ define([
             },
 
             'gc': function (moduleValue) {
-                var self = this;
+                var that = this;
                 if (!this.gcmsInstance || !moduleValue)
                     return;
 
                 require(['jcampconverter'], function (tojcamp) {
                     var jcamp = tojcamp(moduleValue.get()).done(function (jcamp) {
                         if (jcamp.spectra) {
-                            self.gcmsInstance.setExternalGC(jcamp.spectra[0].data[0]);
+                            that.gcmsInstance.setExternalGC(jcamp.spectra[0].data[0]);
                         }
                     });
                 });
@@ -230,7 +229,6 @@ define([
 
 
             'ms': function (moduleValue, name, cont) {
-                var self = this;
                 if (!this.gcmsInstance || !moduleValue)
                     return;
 
@@ -243,7 +241,7 @@ define([
 
             'ingredientList': function (value, varName) {
 
-                var self = this;
+                var that = this;
 
                 if (!value) {
                     return;
@@ -253,7 +251,7 @@ define([
                 this.ingredientList = value;
 
                 this.ingredientList.map(function (source) {
-                    self.gcmsInstance.addIngredient(source);
+                    that.gcmsInstance.addIngredient(source);
                 });
             },
 
@@ -282,10 +280,10 @@ define([
 
         addAnnotations: function (a) {
 
-            var self = this;
+            var that = this;
             a.map(function (source) {
 
-                var shapeData = self.gcmsInstance.addAUC(source.from, source.to, source);
+                var shapeData = that.gcmsInstance.addAUC(source.from, source.to, source);
                 shapeData._originalSource = source;
             });
 
@@ -315,14 +313,14 @@ define([
 
             externalMS: function (value, name) {
 
-                var self = this;
+                var that = this;
                 if (!this.gcmsInstance || !value) {
                     return;
                 }
 
                 this.gcmsInstance.setExternalMS(value, {});
 
-                self.module.controller.createDataFromEvent('onMSChange', 'ms', value);
+                that.module.controller.createDataFromEvent('onMSChange', 'ms', value);
             },
 
             zoomOnAnnotation: function (value, name) {

@@ -14,16 +14,13 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
          */
         constructor: function (options) {
             this.base(options);
-            var self = this;
-            //Biojs.console.enable();
-
             try {
-                if (!Biojs.Utils.isEmpty(self.opt.json)) {
-                    self.paintFeatures(self.opt.json);
+                if (!Biojs.Utils.isEmpty(this.opt.json)) {
+                    this.paintFeatures(this.opt.json);
                 }
             } catch (err) {
-                document.getElementById(self.opt.target).innerHTML = '';
-                document.getElementById(self.opt.target).innerHTML = 'No image available. Did you provide a valid UniProt accession or identifier, and valid limits?';
+                document.getElementById(this.opt.target).innerHTML = '';
+                document.getElementById(this.opt.target).innerHTML = 'No image available. Did you provide a valid UniProt accession or identifier, and valid limits?';
             }
         },
 

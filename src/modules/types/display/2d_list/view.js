@@ -21,21 +21,21 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
             }
         },
         inDom: function () {
-            var self = this;
+            var that = this;
             this.dom.on('mouseenter mouseleave click', 'td', function (e) {
                 var tdIndex = $(this).index();
                 var trIndex = $(this).parent().index();
-                var cols = self.module.getConfiguration('colnumber', 4) || 4;
+                var cols = that.module.getConfiguration('colnumber', 4) || 4;
                 var elementId = trIndex * cols + tdIndex;
-                var value = self.list.get()[elementId];
+                var value = that.list.get()[elementId];
                 if (e.type === 'mouseenter') {
-                    self.module.controller.setVarFromEvent('onHover', 'cell', 'list', [elementId]);
+                    that.module.controller.setVarFromEvent('onHover', 'cell', 'list', [elementId]);
                     API.highlight(value, 1);
                 } else if (e.type === 'mouseleave') {
                     API.highlight(value, 0);
                 } else if (e.type === 'click') {
-                    self.module.controller.setVarFromEvent('onClick', 'cell', 'list', [elementId]);
-                    self.module.controller.sendActionFromEvent('onClick', 'cell', value);
+                    that.module.controller.setVarFromEvent('onClick', 'cell', 'list', [elementId]);
+                    that.module.controller.sendActionFromEvent('onClick', 'cell', value);
                 }
             });
             this.resolveReady();
@@ -78,7 +78,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
 
         renderElement: function (dom, index, css, colorJpath, valJpath) {
 
-            var self = this;
+            var that = this;
             var td = $('<td>').css(css).appendTo(dom);
 
             this.list.getChild([index]).then(function (element) {
@@ -96,7 +96,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
                     } else {
                         td.css('border-color', '');
                     }
-                }, false, self.module.getId());
+                }, false, that.module.getId());
             });
 
         }

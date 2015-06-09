@@ -193,7 +193,7 @@ define([
             '<tr><td>Description : </td><td><textarea id="' + uniqid + '-description" rows="12" cols="80"></textarea></td></tr>' +
             '</table>').append(
             new Button('Send', function () {
-                var button = this;
+                var that = this;
                 if (!options.disabled) {
                     Sharer.share(shareOptions).done(function (tinyUrl) {
                         var title = $('#' + uniqid + '-title').val();
@@ -211,7 +211,7 @@ define([
                             success: function (data) {
                                 console.log('success', data);
                                 message.html('Thank you for your feedback ! You can follow your issue <a target="_blank" href="' + data.description + '">here</a>');
-                                button.disable();
+                                that.disable();
                             },
                             error: function (data) {
                                 message.html('ERROR');
@@ -232,11 +232,11 @@ define([
         var uniqid = Util.getNextUniqueId();
         var dialog = $('<div>').html('<h3>Click the share button to make a snapshot of your view and generate a tiny URL</h3><br>').append(
             new Button('Share', function () {
-                var button = this;
+                var that = this;
                 if (!options.disabled) {
                     Sharer.share(options).done(function (tinyUrl) {
                         $('#' + uniqid).val(tinyUrl).focus().select();
-                        button.disable();
+                        that.disable();
                     }).fail(function () {
                         $('#' + uniqid).val('error');
                     });

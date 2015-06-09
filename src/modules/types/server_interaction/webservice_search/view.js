@@ -7,7 +7,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, ui) {
 
     $.extend(true, View.prototype, Default, {
         init: function () {
-            var self = this,
+            var that = this,
                 cfg = $.proxy(this.module.getConfiguration, this.module),
                 searchparams;
 
@@ -37,14 +37,14 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, ui) {
 
                     require(['forms/button'], function (Button) {
 
-                        self.search.append((self.buttonInst = new Button(cfg('buttonlabel') || 'Search', function () {
+                        that.search.append((that.buttonInst = new Button(cfg('buttonlabel') || 'Search', function () {
                             var prom = Promise.resolve(true);
-                            if (self.module.getConfigurationCheckbox('askConfirm', 'yes')) {
-                                prom = ui.confirm(self.module.getConfiguration('confirmText'));
+                            if (that.module.getConfigurationCheckbox('askConfirm', 'yes')) {
+                                prom = ui.confirm(that.module.getConfiguration('confirmText'));
                             }
                             prom.then(function (ok) {
                                 if (ok) {
-                                    self.module.controller.doSearch();
+                                    that.module.controller.doSearch();
                                 }
                             });
 
@@ -63,24 +63,24 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, ui) {
                     }
                     var searchName = $this.attr('name');
 
-                    if (!self.oldVal[searchName] || self.oldVal[searchName] !== searchTerm) {
+                    if (!that.oldVal[searchName] || that.oldVal[searchName] !== searchTerm) {
                         $this.trigger('change');
                     }
 
                     if (searchName !== undefined) {
-                        self.module.controller.addValue({
+                        that.module.controller.addValue({
                             name: searchName,
                             destination: $this.attr('data-dest')
                         }, searchTerm);
                     }
 
-                    if (!self.button) {
-                        self.module.controller.doSearch();
+                    if (!that.button) {
+                        that.module.controller.doSearch();
                     }
 
 
-                    if (self.buttonInst && e.keyCode == 13) {
-                        self.module.controller.doSearch();
+                    if (that.buttonInst && e.keyCode == 13) {
+                        that.module.controller.doSearch();
                     }
 
                 });
@@ -94,14 +94,14 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, ui) {
                     }
                     var searchName = $this.attr('name');
                     if (searchName !== undefined) {
-                        self.module.controller.addValue({
+                        that.module.controller.addValue({
                             name: searchName,
                             destination: $this.attr('data-dest')
                         }, searchTerm);
                     }
 
-                    if (!self.button) {
-                        self.module.controller.doSearch();
+                    if (!that.button) {
+                        that.module.controller.doSearch();
                     }
                 });
 
@@ -111,14 +111,14 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, ui) {
                     var searchName = $this.attr('name');
 
                     if (searchName !== undefined) {
-                        self.module.controller.addValue({
+                        that.module.controller.addValue({
                             name: searchName,
                             destination: $this.attr('data-dest')
                         }, searchTerm);
                     }
 
-                    if (!self.button) {
-                        self.module.controller.doSearch();
+                    if (!that.button) {
+                        that.module.controller.doSearch();
                     }
                 });
             }
@@ -213,12 +213,12 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, ui) {
         },
 
         _feedbackTimeout: function () {
-            var self = this;
+            var that = this;
             if (this._ftimeout) {
                 clearTimeout(this._ftimeout);
             }
             this._ftimeout = setTimeout(function () {
-                self.$feedback.html('');
+                that.$feedback.html('');
             }, 5000);
         }
 

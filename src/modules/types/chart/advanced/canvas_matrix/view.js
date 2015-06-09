@@ -35,40 +35,40 @@ define([
 
             this.buffers = {};
 
-            var self = this;
-            self.accumulatedDelta = 0;
+            var that = this;
+            that.accumulatedDelta = 0;
             $(this.canvasContainer).on('mousewheel', 'canvas', function (e) {
 
                 e.preventDefault();
                 var delta = e.originalEvent.detail || e.originalEvent.wheelDelta;
 
-                if (self.max && delta > 0 || self.min && delta < 0)
+                if (that.max && delta > 0 || that.min && delta < 0)
                     return;
 
-                self.accumulatedDelta += delta;
+                that.accumulatedDelta += delta;
                 if (delta !== undefined)
-                    self.changeZoom(self.accumulatedDelta / 1000, (e.offsetX || e.pageX - $(e.target).offset().left), (e.offsetY || e.pageY - $(e.target).offset().top));
+                    that.changeZoom(that.accumulatedDelta / 1000, (e.offsetX || e.pageX - $(e.target).offset().left), (e.offsetY || e.pageY - $(e.target).offset().top));
             }).on('dblclick', function (e) {
-                self.accumulatedDelta = 0;
-                self.changeZoom(self.accumulatedDelta / 1000, (e.offsetX || e.pageX - $(e.target).offset().left), (e.offsetY || e.pageY - $(e.target).offset().top));
+                that.accumulatedDelta = 0;
+                that.changeZoom(that.accumulatedDelta / 1000, (e.offsetX || e.pageX - $(e.target).offset().left), (e.offsetY || e.pageY - $(e.target).offset().top));
 
             });
 
             $(this.canvasContainer).drag(function (e1, e2) {
 
                 e1.preventDefault();
-                var baseShift = self.baseShift;
-                var shift = self.getXYShift();
+                var baseShift = that.baseShift;
+                var shift = that.getXYShift();
                 shift.x = baseShift.x + e2.deltaX;
                 shift.y = baseShift.y + e2.deltaY;
-                self.doCanvasErase();
-                self.doCanvasRedraw();
-                self.launchWorkers(true);
+                that.doCanvasErase();
+                that.doCanvasRedraw();
+                that.launchWorkers(true);
             });
 
             $(this.canvasContainer).drag('start', function (e1, e2) {
                 e1.preventDefault();
-                self.baseShift = $.extend({}, self.getXYShift());
+                that.baseShift = $.extend({}, that.getXYShift());
             });
         },
 
@@ -294,33 +294,33 @@ define([
 
             var minMaxWorker = Worker(require.toUrl('src/util/workers/getminmaxmatrix.js'));
             var mainWorker = Worker(require.toUrl('./worker.js'));
-            var self = this;
+            var that = this;
             return Promise.all([minMaxWorker, mainWorker]).then(function (workers) {
                 var minMaxWorker = workers[0];
                 minMaxWorker.addEventListener('message', function (event) {
 
-                    self.minValue = event.data.min;
-                    self.maxValue = event.data.max;
-                    self.doChangeWorkersData();
+                    that.minValue = event.data.min;
+                    that.maxValue = event.data.max;
+                    that.doChangeWorkersData();
                     // We can keep the actual workers, not a problem. We just need to erase the buffers array
-                    self.buffers = [];
-                    self.buffersDone = [];
-                    if (!self.getHighContrast()) {
-                        self.minValue = 0;
-                        self.maxValue = 1;
+                    that.buffers = [];
+                    that.buffersDone = [];
+                    if (!that.getHighContrast()) {
+                        that.minValue = 0;
+                        that.maxValue = 1;
                     }
-                    self.redoScale(self.minValue, self.maxValue);
-                    self.launchWorkers(true);
+                    that.redoScale(that.minValue, that.maxValue);
+                    that.launchWorkers(true);
                 });
-                self.minmaxworker = minMaxWorker;
+                that.minmaxworker = minMaxWorker;
 
                 var mainWorker = workers[1];
                 mainWorker.postMessage({
                     title: 'init',
                     message: {
-                        colors: self.getColors(),
-                        squareLoading: self.squareLoading,
-                        highcontrast: self.getHighContrast()
+                        colors: that.getColors(),
+                        squareLoading: that.squareLoading,
+                        highcontrast: that.getHighContrast()
                     }
                 });
                 mainWorker.addEventListener('message', function (event) {
@@ -329,13 +329,13 @@ define([
                     var buffIndexX = data.indexX;
                     var buffIndexY = data.indexY;
 
-                    self.buffers[self.getBufferKey(pxPerCell, buffIndexX, buffIndexY)] = data.data;
-                    if (self.getPxPerCell() == pxPerCell)
-                        self.doCanvasDrawBuffer(buffIndexX, buffIndexY);
+                    that.buffers[that.getBufferKey(pxPerCell, buffIndexX, buffIndexY)] = data.data;
+                    if (that.getPxPerCell() == pxPerCell)
+                        that.doCanvasDrawBuffer(buffIndexX, buffIndexY);
 
-                    self.launchWorkers();
+                    that.launchWorkers();
                 });
-                self.workers = mainWorker;
+                that.workers = mainWorker;
             });
         },
 

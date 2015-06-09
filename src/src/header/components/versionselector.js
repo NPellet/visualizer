@@ -24,13 +24,14 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
         },
 
         _onClick: function () {
+            var that = this;
 
             this.setStyleOpen(this._open);
 
             if (this._open) {
                 if (currentMenu && (currentMenu !== this) && currentMenu._open)
                     currentMenu.onClick();
-                currentMenu = this;
+                currentMenu = that;
 
                 this.doElements();
             } else {
@@ -40,7 +41,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
         },
 
         doElements: function () {
-            var self = this;
+            var that = this;
             var uri = new URI(document.location.href);
             var query = uri.query(true);
             var currentVersion;
@@ -50,25 +51,25 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
                 currentVersion = 'v' + Versioning.version;
             }
             getVersions().then(function (versions) {
-                var ul = self.$_elToOpen = $('<ul />'),
+                var ul = that.$_elToOpen = $('<ul />'),
                     i = 0,
                     l = versions.length;
                 for (; i < l; i++) {
                     var version = versions[i];
                     var bool = currentVersion === version;
-                    ul.append(self._buildSubElement(versions[i], bool));
+                    ul.append(that._buildSubElement(versions[i], bool));
                 }
-                self.open();
+                that.open();
             });
         },
 
         _buildSubElement: function (version, isSame) {
             var text = (isSame ? '• ' : '') + version;
-            var self = this,
+            var that = this,
                 dom = $('<li />').text(text);
             dom.addClass('hasEvent').bind('click', function () {
-                self.load(version);
-                self.onClick();
+                that.load(version);
+                that.onClick();
             });
             return dom;
         },

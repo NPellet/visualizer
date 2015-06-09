@@ -16,7 +16,7 @@ define([
 
         init: function () {
 
-            var self = this,
+            var that = this,
                 currentColSort;
 
             var toggle = this.module.getConfiguration('toggle');
@@ -36,7 +36,7 @@ define([
                 var dataRowId = $(this).index();
 
                 if (!isNaN(dataRowId)) {
-                    self.module.controller.lineHover(self.module.data, dataRowId);
+                    that.module.controller.lineHover(that.module.data, dataRowId);
                 }
 
                 // Mouseleave is better than mouseout in this case
@@ -45,46 +45,46 @@ define([
                 var dataRowId = $(this).index();
 
                 if (!isNaN(dataRowId)) {
-                    self.module.controller.lineOut(self.module.data, dataRowId);
+                    that.module.controller.lineOut(that.module.data, dataRowId);
                 }
 
 
             }).on('click', 'tr', function () {
                 var $this = $(this);
 
-                self.module.controller.lineClick(self.module.data, $this.index());
+                that.module.controller.lineClick(that.module.data, $this.index());
 
                 if (toggle) {
-                    if (toggle == 'single' && self.selected[0] !== undefined) {
+                    if (toggle == 'single' && that.selected[0] !== undefined) {
 
-                        self.module.controller.onToggleOff(self.module.data, self.selected[0]);
-                        $this.parent().children().eq(self.selected[0]).toggleClass('toggled');
+                        that.module.controller.onToggleOff(that.module.data, that.selected[0]);
+                        $this.parent().children().eq(that.selected[0]).toggleClass('toggled');
 
-                        self.selected = [];
+                        that.selected = [];
                     }
 
                     var index = $this.index();
 
                     if ($this.hasClass('toggled')) {
-                        self.module.controller.onToggleOff(self.module.data, index);
+                        that.module.controller.onToggleOff(that.module.data, index);
                     } else {
-                        self.module.controller.onToggleOn(self.module.data, index);
+                        that.module.controller.onToggleOn(that.module.data, index);
                     }
 
                     $this.toggleClass('toggled');
 
-                    self.selected.push(index);
+                    that.selected.push(index);
                 }
 
             }).on('click', 'th', function () { // Sorting
 
                 var jpathId = $(this).attr('data-jpath-number'),
-                    data = self.module.getDataFromRel('list');
+                    data = that.module.getDataFromRel('list');
 
                 if (!currentColSort || currentColSort.col !== jpathId) {
 
                     if (currentColSort) {
-                        self.domTable.find('th[data-jpath-number="' + currentColSort.col + '"] .sort').remove();
+                        that.domTable.find('th[data-jpath-number="' + currentColSort.col + '"] .sort').remove();
                     }
 
                     currentColSort = {
@@ -93,7 +93,7 @@ define([
                         span: $('<div class="sort up"></div>')
                     };
 
-                    self.domTable.find('th[data-jpath-number="' + currentColSort.col + '"]').append(currentColSort.span);
+                    that.domTable.find('th[data-jpath-number="' + currentColSort.col + '"]').append(currentColSort.span);
 
                 } else if (currentColSort.col === jpathId) {
                     currentColSort.asc = !currentColSort.asc;
@@ -102,12 +102,12 @@ define([
 
                 data.sort(function (a, b) {
 
-                    return (currentColSort.asc ? 1 : -1) * (self.jpaths[jpaths[jpathId].jpath](a) > self.jpaths[jpaths[jpathId].jpath](b) ? 1 : -1);
+                    return (currentColSort.asc ? 1 : -1) * (that.jpaths[jpaths[jpathId].jpath](a) > that.jpaths[jpaths[jpathId].jpath](b) ? 1 : -1);
                 });
 
-                self.module.model.dataTriggerChange(data);
-                self.blank.list.call(self);
-                self.update.list.call(self, data);
+                that.module.model.dataTriggerChange(data);
+                that.blank.list.call(that);
+                that.update.list.call(that, data);
             });
 
             this.dom = this.domTable;
@@ -198,7 +198,7 @@ define([
 
                 this.elements = moduleValue;
 
-                var self = this,
+                var that = this,
                     nbLines = this.module.getConfiguration('nbLines') || 20,
                     html = '',
                     i = 0,
@@ -221,29 +221,29 @@ define([
                 // Wait before setting the highlights
                 this.timeout = window.setTimeout(function () {
 
-                    API.killHighlight(self.module.getId());
+                    API.killHighlight(that.module.getId());
 
                     for (i = 0; i < l; i++) {
 
                         (function (j) {
 
-                            API.listenHighlight(self.module.data[j], function (val) {
-                                self.doHighlight(j, val);
-                            }, false, self.module.getId());
+                            API.listenHighlight(that.module.data[j], function (val) {
+                                that.doHighlight(j, val);
+                            }, false, that.module.getId());
 
-                            var dom = self.domBody.find('#' + self.module.getId() + '_' + j);
+                            var dom = that.domBody.find('#' + that.module.getId() + '_' + j);
 
-                            self.module.model.dataListenChange(self.module.data.get(j), function () {
-                                dom.replaceWith((dom = $(self.buildElement(this, j, true))));
+                            that.module.model.dataListenChange(that.module.data.get(j), function () {
+                                dom.replaceWith((dom = $(that.buildElement(this, j, true))));
 
                             }, 'list');
 
-                            if (self.module.data.get(j).removable) {
+                            if (that.module.data.get(j).removable) {
                                 Context.listen(dom.get(0), [
                                     [
                                         '<li><a><span class="ui-icon ui-icon-close"></span> Remove</a></li>',
                                         function () {
-                                            self.onActionReceive.removeRowById.call(self, j);
+                                            that.onActionReceive.removeRowById.call(that, j);
                                         }
                                     ]
                                 ]);
@@ -410,17 +410,17 @@ define([
 
 
                 var toggle = this.module.getConfiguration('toggle'),
-                    self = this;
+                    that = this;
 
-                if (toggle == 'single' && self.selected[0] !== undefined) {
+                if (toggle == 'single' && that.selected[0] !== undefined) {
 
-                    self.module.controller.onToggleOff(self.module.data, self.selected[0]);
-                    self.domBody.children().eq(self.selected[0]).toggleClass('toggled');
-                    self.selected = [];
+                    that.module.controller.onToggleOff(that.module.data, that.selected[0]);
+                    that.domBody.children().eq(that.selected[0]).toggleClass('toggled');
+                    that.selected = [];
                 }
 
 
-                self.selected.push(index);
+                that.selected.push(index);
 
                 this.module.controller.onToggleOn(this.module.data, index);
                 this.domBody.children().eq(index).addClass('toggled');

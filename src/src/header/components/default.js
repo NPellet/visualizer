@@ -15,12 +15,12 @@ define(['jquery', 'src/util/util'], function ($, Util) {
     Header.prototype.initImpl = Util.noop;
 
     Header.prototype.makeDom = function () {
-        var self = this;
+        var that = this;
         this._dom = document.createElement('li');
         this.$_dom = $(this._dom);
         this.$_dom.text(this.options.label || this.options.title || '');
         this.$_dom.bind('click', function () {
-            self.onClick();
+            that.onClick();
         });
     };
 

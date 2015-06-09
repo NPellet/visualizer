@@ -6,7 +6,7 @@ define(['require', 'jquery', 'src/util/versioning'], function (require, $, Versi
     return {
 
         init: function (headerConfig) {
-            var self = this;
+            var that = this;
 
             if (headerConfig.elements) {
                 this.loadHeaderElements(headerConfig.elements);
@@ -30,7 +30,7 @@ define(['require', 'jquery', 'src/util/versioning'], function (require, $, Versi
                 });
 
             Versioning.getViewHandler().versionChange().progress(function (el) {
-                self.setTitle(el);
+                that.setTitle(el);
             });
 
         },
@@ -48,7 +48,7 @@ define(['require', 'jquery', 'src/util/versioning'], function (require, $, Versi
             if (!$.isArray(all))
                 return;
 
-            var self = this,
+            var that = this,
                 i = 0,
                 l = all.length;
 
@@ -56,7 +56,7 @@ define(['require', 'jquery', 'src/util/versioning'], function (require, $, Versi
                 this.addHeaderElement(i, this.createElement(all[i]));
             }
 
-            Promise.all(elements).then(self.buildHeaderElements.bind(self));
+            Promise.all(elements).then(that.buildHeaderElements.bind(that));
 
         },
 

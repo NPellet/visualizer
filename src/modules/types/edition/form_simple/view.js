@@ -15,7 +15,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
         inDom: function () {
 
-            var self = this,
+            var that = this,
                 structure = this.module.getConfiguration('structure') || [],
                 tpl_file = this.module.getConfiguration('tpl_file'),
                 trigger = this.module.getConfiguration('trigger'),
@@ -48,37 +48,37 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
             }
 
             function triggerCommon() {
-                if (self.lockEvents) {
+                if (that.lockEvents) {
                     return;
                 }
 
                 var i, l;
 
                 var val = new DataObject(this.getValue(), true);
-                self.formValue = val;
+                that.formValue = val;
 
-                var input = self.module.getDataFromRel('input_object'),
-                    structure = self.module.getConfiguration('structure') || [],
+                var input = that.module.getDataFromRel('input_object'),
+                    structure = that.module.getConfiguration('structure') || [],
                     jpath;
 
                 var el = new DataObject();
 
                 if (input) {
 
-                    if (self.module.getConfiguration('replaceObj')) {
+                    if (that.module.getConfiguration('replaceObj')) {
 
                         for (i = 0, l = structure.length; i < l; i++) {
                             jpath = structure[i].groups.general[0].searchOnField[0];
-                            input.setChild(jpath, self.form.sectionElements.main[0].groupElements.main[0].fieldElements[structure[i].groups.general[0].name[0]][0].value, [self.module.getId()]);
+                            input.setChild(jpath, that.form.sectionElements.main[0].groupElements.main[0].fieldElements[structure[i].groups.general[0].name[0]][0].value, [that.module.getId()]);
                         }
 
-                        self.module.model.dataTriggerChange(input);
+                        that.module.model.dataTriggerChange(input);
 
                     } else {
 
                         for (i = 0, l = structure.length; i < l; i++) {
                             jpath = structure[i].groups.general[0].searchOnField[0];
-                            el.setChild(jpath, self.form.sectionElements.main[0].groupElements.main[0].fieldElements[structure[i].groups.general[0].name[0]][0].value);
+                            el.setChild(jpath, that.form.sectionElements.main[0].groupElements.main[0].fieldElements[structure[i].groups.general[0].name[0]][0].value);
                             //						input.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value );
                         }
                     }
@@ -90,12 +90,12 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
             var triggerFunction = function () {
                 var el = triggerCommon.call(this);
-                self.module.controller.formTriggered(el);
+                that.module.controller.formTriggered(el);
             };
 
             var changedFunction = function () {
                 var el = triggerCommon.call(this);
-                self.module.controller.valueChanged(el);
+                that.module.controller.valueChanged(el);
             };
 
             $.when(def).done(function (tpl) {
@@ -106,10 +106,10 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                 switch (trigger) {
                     case 'btn':
                     case 'both':
-                        var btnLabel = self.module.getConfiguration('btnLabel');
+                        var btnLabel = that.module.getConfiguration('btnLabel');
                         form.addButton(btnLabel, {color: 'blue'}, $.proxy(triggerFunction, form));
                     case 'change':
-                        var debounce = self.module.getConfiguration('debounce');
+                        var debounce = that.module.getConfiguration('debounce');
                         options.onValueChanged = debounce > 0 ? _.debounce(changedFunction, debounce) : changedFunction;
                 }
 
@@ -126,16 +126,16 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
                     form.setTpl(tpl);
 
-                    self.dom.html(form.makeDomTpl());
+                    that.dom.html(form.makeDomTpl());
                     form.inDom();
                     form.dom.submit(function (event) {
                         event.preventDefault();
                     });
                     triggerFunction.call(form);
-                    self.resolveReady();
+                    that.resolveReady();
                 });
 
-                self.form = form;
+                that.form = form;
 
             });
         },
@@ -143,36 +143,36 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
         update: {
             input_object: function (varValue) {
-                var self = this;
+                var that = this;
                 this.newValue(varValue);
 
 
                 this.module.model.dataListenChange(varValue, function () {
 
-                    self.newValue(this);
+                    that.newValue(this);
 
                 }, 'input_object');
             }
         },
 
         newValue: function (varValue) {
-            var self = this,
+            var that = this,
                 structure = this.module.getConfiguration('structure') || [],
                 jpath;
 
-            self.lockEvents = true;
-            self.nb = 0;
+            that.lockEvents = true;
+            that.nb = 0;
 
             for (var i = 0, l = structure.length; i < l; i++) {
                 jpath = structure[i].groups.general[0].searchOnField[0];
 
                 (function (j, jpath) {
-                    self.nb++;
+                    that.nb++;
 
                     varValue.getChild(jpath, true).then(function (returned) {
 
 
-                        self
+                        that
                             .form
                             .sectionElements
                             .main[0]
@@ -186,9 +186,9 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                             .value = (returned ? (returned.get ? returned.get() : returned.toString()) : '');
 
 
-                        self.nb--;
-                        if (self.nb == 0) {
-                            self.lockEvents = false;
+                        that.nb--;
+                        if (that.nb == 0) {
+                            that.lockEvents = false;
                         }
                     });
 

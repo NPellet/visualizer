@@ -9,7 +9,7 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/util', 'src/mai
 
         init: function () {
 
-            var self = this,
+            var that = this,
                 id = Util.getNextUniqueId(),
                 done = false;
 
@@ -19,19 +19,19 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/util', 'src/mai
                     id: id,
                     class: 'inside',
                     contentEditable: 'true'
-                }).html(self.module.definition.text || '');
+                }).html(that.module.definition.text || '');
 
                 require(['ckeditor'], function (CKEDITOR) {
                     if (done)
                         return;
                     CKEDITOR.disableAutoInline = true;
-                    self.instance = CKEDITOR.inline(self._id, {
+                    that.instance = CKEDITOR.inline(that._id, {
                         extraPlugins: 'mathjax'
                     });
-                    self.instance.on('change', function () {
-                        self.module.definition.text = self.instance.getData();
-                        self.module.getDomWrapper().height(self.inside.height() + 70);
-                        Grid.moduleResize(self.module);
+                    that.instance.on('change', function () {
+                        that.module.definition.text = that.instance.getData();
+                        that.module.getDomWrapper().height(that.inside.height() + 70);
+                        Grid.moduleResize(that.module);
                     });
                     done = true;
                 });
@@ -39,7 +39,7 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/util', 'src/mai
                 this.inside = $('<div>', {
                     id: id,
                     class: 'inside'
-                }).html(self.module.definition.text || '');
+                }).html(that.module.definition.text || '');
             }
 
             this.dom = $('<div />', {class: 'postit'}).css('font-family', this.module.getConfiguration('fontfamily') + ', Arial');

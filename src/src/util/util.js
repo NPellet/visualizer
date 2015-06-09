@@ -131,15 +131,15 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
             return days[day];
         },
         loadCss: function (url) {
-            var self = this;
+            var that = this;
             return new Promise(function (resolve, reject) {
                 url = require.toUrl(url);
 
-                self.loadedCss = self.loadedCss || {};
+                that.loadedCss = that.loadedCss || {};
 
-                if (self.loadedCss[url]) { // element is already loaded
-                    self.loadedCss[url].disabled = false;
-                    return resolve(self.loadedCss[url]);
+                if (that.loadedCss[url]) { // element is already loaded
+                    that.loadedCss[url].disabled = false;
+                    return resolve(that.loadedCss[url]);
                 }
 
                 var link = document.createElement('link');
@@ -147,7 +147,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
                 link.rel = 'stylesheet';
                 link.href = url;
                 link.onload = function () {
-                    self.loadedCss[url] = link;
+                    that.loadedCss[url] = link;
                     resolve(link);
                 };
 

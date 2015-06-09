@@ -42,7 +42,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui']
     $.extend(true, View.prototype, Default, {
 
         init: function () {
-            var self = this;
+            var that = this;
 
             var id = this.module.getId();
             views[id] = this;
@@ -53,11 +53,11 @@ define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui']
             this.module.getDomContent().css('overflow', 'hidden');
 
             this.dom.bind('load', function () {
-                self.postMessage('init', {
-                    prefs: self.getPrefs(),
-                    highlightColor: self.getHighlightColor(),
-                    bondwidth: self.module.getConfiguration('bondwidth'),
-                    labelsize: self.module.getConfiguration('labelsize'),
+                that.postMessage('init', {
+                    prefs: that.getPrefs(),
+                    highlightColor: that.getHighlightColor(),
+                    bondwidth: that.module.getConfiguration('bondwidth'),
+                    labelsize: that.module.getConfiguration('labelsize'),
                     id: id
                 });
             });
@@ -129,7 +129,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui']
         },
 
         _initHighlight: function (moduleValue) {
-            var self = this;
+            var that = this;
             API.killHighlight(this.module.getId());
             API.listenHighlight(moduleValue, function (onOff, highlightId) {
                 var atoms = [];
@@ -138,7 +138,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui']
                         moduleValue._atoms[highlightId[i]] = [moduleValue._atoms[highlightId[i]]];
                     atoms = atoms.concat(moduleValue._atoms[highlightId[i]]);
                 }
-                self.postMessage('setHighlight', {atoms: atoms, onOff: onOff});
+                that.postMessage('setHighlight', {atoms: atoms, onOff: onOff});
 
             }, false, this.module.getId());
         },

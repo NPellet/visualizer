@@ -55,7 +55,7 @@ define(['require', 'lodash', 'modules/default/defaultview', 'src/util/api'], fun
     $.extend(true, View.prototype, Default, {
 
         init: function () {
-            var self = this;
+            var that = this;
 
             var id = this.module.getId();
             views[id] = this;
@@ -66,7 +66,7 @@ define(['require', 'lodash', 'modules/default/defaultview', 'src/util/api'], fun
             this._highlights = this._highlights || [];
 
             this.dom.bind('load', function () {
-                self.postMessage('init', {
+                that.postMessage('init', {
                     id: id
                 });
             });
@@ -100,19 +100,19 @@ define(['require', 'lodash', 'modules/default/defaultview', 'src/util/api'], fun
 
         update: {
             data: function (data) {
-                var self = this;
+                var that = this;
                 this.module.data = data;
-                self.postMessage('setMolFile', {
+                that.postMessage('setMolFile', {
                     _modelLoad: data.get(),
                     _lattice: data._lattice,
                     _script: data._script
                 });
 
-                if (self.module.getConfiguration('script')) {
-                    self.postMessage('executeScript', [self.module.getConfiguration('script')]);
+                if (that.module.getConfiguration('script')) {
+                    that.postMessage('executeScript', [that.module.getConfiguration('script')]);
                 }
-                if (self.module.getConfiguration('syncScript')) {
-                    self.postMessage('executeScriptSync', [self.module.getConfiguration('syncScript')]);
+                if (that.module.getConfiguration('syncScript')) {
+                    that.postMessage('executeScriptSync', [that.module.getConfiguration('syncScript')]);
                 }
                 this._activateHighlights();
 

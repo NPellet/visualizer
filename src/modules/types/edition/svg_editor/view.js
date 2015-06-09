@@ -72,17 +72,17 @@ define([
     var blockHighlight = {};
 
     function View() {
-        var self = this;
+        var that = this;
         this.svgCanvas = null;
         this.iframeLoaded = $.Deferred();
         this.iframeLoaded.done(function () {
-            self.svgCanvas.zoomChanged(window, 'canvas');
+            that.svgCanvas.zoomChanged(window, 'canvas');
         });
     }
 
     $.extend(true, View.prototype, Default, {
         init: function () {
-            var self = this;
+            var that = this;
 
             if (this._configCheckBox('editable', 'isEditable')) {
                 if (this.dom) this.dom.remove();
@@ -94,36 +94,36 @@ define([
                 this.module.getDomContent().html(this.dom);
 
                 this.dom.bind('load', function () {
-                    var frame = self.dom[0];
+                    var frame = that.dom[0];
                     // document.getElementById('svgedit');
-                    self.svgCanvas = new EmbeddedSVGEdit(frame);
+                    that.svgCanvas = new EmbeddedSVGEdit(frame);
                     // Hide main button, as we will be controlling new, load, save, etc. from the host document
-                    self.iframeDoc = frame.contentDocument || frame.contentWindow.document;
-                    self.svgEditor = frame.contentWindow.svgEditor;
+                    that.iframeDoc = frame.contentDocument || frame.contentWindow.document;
+                    that.svgEditor = frame.contentWindow.svgEditor;
                     frame.contentWindow.svgedit.options = {};
 
                     // frame.contentWindow.svgedit.options.sanitize = self._configCheckBox('sanitize', 'doSanitize');
 
                     // What to do when the canvas changes
-                    self.svgCanvas.bind('changed', function () {
-                        self.svgEditor.showSaveWarning = false;
-                        self._saveSvg();
+                    that.svgCanvas.bind('changed', function () {
+                        that.svgEditor.showSaveWarning = false;
+                        that._saveSvg();
                     });
-                    self._loadSvg();
-                    self.iframeLoaded.resolve();
-                    self.resolveReady();
-                    self.onResize();
+                    that._loadSvg();
+                    that.iframeLoaded.resolve();
+                    that.resolveReady();
+                    that.onResize();
                 });
             } else {
-                var domContent = self.module.getDomContent();
+                var domContent = that.module.getDomContent();
                 Renderer.render(domContent, {
                     type: 'svg',
-                    value: self.module.getConfiguration('svgcode')
+                    value: that.module.getConfiguration('svgcode')
                 }).catch(function () {
                     domContent.html('<svg></svg>');
                 }).then(function () {
-                    self.dom = domContent.find('svg');
-                    self.resolveReady();
+                    that.dom = domContent.find('svg');
+                    that.resolveReady();
                 });
             }
         },
@@ -139,19 +139,18 @@ define([
 
         update: {
             svgModifier: function (data) {
-                var self = this;
                 // var clone = [];
 
                 // Avoid potential problems when separete elements of this array share the same reference to an object
                 // for(var i=0; i<data.length; i++) {
                 //     clone.push(_.cloneDeep(data[i]));
                 // }
-                self.modifySvgFromArray(data, true);
+                this.modifySvgFromArray(data, true);
             }
         },
 
         addAnimation: function ($svgEl, anim) {
-            var self = this;
+            var that = this;
             var $allAnimations = $([]);
             if (!anim.attributes) return;
             var id = $svgEl.attr('id');
@@ -161,7 +160,7 @@ define([
                 anim.attributes = [anim.attributes];
             }
             anim = _.defaults(anim, defaultAnimAttributes);
-            var highlightId = self.getHighlightId($svgEl);
+            var highlightId = that.getHighlightId($svgEl);
 
             var thisDefault = {};
             for (var k in anim) {
@@ -189,7 +188,7 @@ define([
                 $allAnimations = $allAnimations.add($animations);
             }
 
-            $allAnimations.each(function () {
+            $allAnimations.each(function (idx, element) {
                 this.addEventListener('endEvent', function () {
                     blockHighlight[highlightId] = false;
                     // Persist works only for <animate/>
@@ -202,15 +201,14 @@ define([
                     }
 
                     if (anim.options.clearAnimationTags) {
-                        self.$getAnimationTags($svgEl).remove();
+                        that.$getAnimationTags($svgEl).remove();
                     }
 
                     if (anim.options.clearOnEnd) {
-                        var el = this;
                         var timeout = anim.options.clearOnEnd.timeout || 0;
                         setTimeout(function () {
-                            $(el).remove();
-                            self._saveSvg();
+                            $(element).remove();
+                            that._saveSvg();
                         }, timeout);
                     } else {
                         // Don't clear anything
@@ -221,7 +219,7 @@ define([
                 });
                 this.addEventListener('beginEvent', function () {
                     if (anim.options.clearAnimationTagsBeforeBegin) {
-                        self.$getAnimationTags($svgEl).not($allAnimations).remove();
+                        that.$getAnimationTags($svgEl).not($allAnimations).remove();
                         highlightCount[highlightId] = 0;
                         blockHighlight[highlightId] = true;
                     }
@@ -267,7 +265,7 @@ define([
         },
 
         modifySvgFromArray: function (arr, isPrimaryCall) {
-            var self = this;
+            var that = this;
 
             // Convert to array if necessary
             if (!Array.isArray(arr)) {
@@ -279,20 +277,20 @@ define([
 
 
             if (this._configCheckBox('editable', 'isEditable')) {
-                this.$svgcontent = $(self.iframeDoc).find('#svgcontent');
+                this.$svgcontent = $(that.iframeDoc).find('#svgcontent');
             } else {
-                this.$svgcontent = self.dom;
+                this.$svgcontent = that.dom;
             }
 
-            self.module._data = [];
+            that.module._data = [];
             for (var i = 0; i < arr.length; i++) {
                 this.modifySvgFromObject(arr[i], isPrimaryCall);
             }
-            self._saveSvg();
+            that._saveSvg();
         },
 
         modifySvgFromObject: function (obj, isPrimaryCall) {
-            var self = this;
+            var that = this;
             var selector = obj.selector;
             if (!selector) return;
 
@@ -300,7 +298,7 @@ define([
 
 
             if (obj.info) {
-                self.module._data = obj.info;
+                that.module._data = obj.info;
             }
 
             var $svgEl;
@@ -341,10 +339,10 @@ define([
                 $svgEl.each(function () {
                     // svgedit.sanitize.sanitizeSvg(this, true);
                 });
-                self.removeStyleProperties($svgEl, obj.attributes);
+                that.removeStyleProperties($svgEl, obj.attributes);
             } else if (obj.animation && !obj.attributes) {
                 // Case 2)
-                self.addAnimations($svgEl, obj.animation);
+                that.addAnimations($svgEl, obj.animation);
             } else if (obj.attributes && obj.animation && !obj.animation.attributes) {
                 // Case 3)
                 obj.animation.attributes = [];
@@ -357,12 +355,12 @@ define([
                 }
 
                 delete obj.attributes;
-                self.addAnimations($svgEl, obj.animation);
+                that.addAnimations($svgEl, obj.animation);
             } else if (obj.attributes && obj.animation && obj.animation.attributes) {
                 // Case 4)
                 $svgEl.attr(obj.attributes);
-                self.removeStyleProperties($svgEl, obj.attributes);
-                self.addAnimations($svgEl, obj.animation);
+                that.removeStyleProperties($svgEl, obj.attributes);
+                that.addAnimations($svgEl, obj.animation);
             }
 
             // We don't set callback on secondary calls
@@ -375,7 +373,7 @@ define([
                  self.dataTimeout = window.setInterval( function( ) { console.log( obj.info ); obj.info.triggerChange(); } , 100 );
                  */
                 $(this).css('cursor', 'pointer');
-                self.module.controller.onHover(obj.info || {});
+                that.module.controller.onHover(obj.info || {});
 
             }
 
@@ -385,12 +383,12 @@ define([
             }
 
             function onMouseClick() {
-                self.module.controller.onClick(obj.info || {});
+                that.module.controller.onClick(obj.info || {});
             }
 
             // Listen to highlights
             if (doHighlight) {
-                var killId = self.getHighlightId($svgEl);
+                var killId = that.getHighlightId($svgEl);
                 API.killHighlight(killId);
                 API.listenHighlight({_highlight: obj._highlight}, cb, false, killId);
                 highlightCount[killId] = highlightCount[killId] || 0;
@@ -424,7 +422,7 @@ define([
                     animation.attributes.to = '0.8';
                     highlightCount[killId]--;
                 }
-                self.addAnimation($svgEl, animation);
+                that.addAnimation($svgEl, animation);
             }
 
             // Set mouse event callbacks
@@ -454,7 +452,7 @@ define([
                                 if (!obj[eventName].selector) {
                                     obj[eventName].selector = obj.selector;
                                 }
-                                self.modifySvgFromArray(obj[eventName], true);
+                                that.modifySvgFromArray(obj[eventName], true);
                             });
                         })(mouseEventNames[j]);
                     }

@@ -13,13 +13,14 @@ define(['jquery', 'src/header/components/default', 'src/main/grid', 'src/util/ut
         },
 
         _onClick: function () {
+            var that = this;
 
             this.setStyleOpen(this._open);
 
             if (this._open) {
                 if (currentMenu && (currentMenu !== this) && currentMenu._open)
                     currentMenu.onClick();
-                currentMenu = this;
+                currentMenu = that;
 
                 if (this.options.viewURL || this.options.dataURL)
                     this.load(this.options);
@@ -55,11 +56,11 @@ define(['jquery', 'src/header/components/default', 'src/main/grid', 'src/util/ut
         },
 
         _buildSubElement: function (el) {
-            var self = this,
+            var that = this,
                 dom = $('<li />').text(el);
             dom.addClass('hasEvent').bind('click', function () {
                 Grid.switchToLayer(el);
-                self.onClick();
+                that.onClick();
             });
             return dom;
         }

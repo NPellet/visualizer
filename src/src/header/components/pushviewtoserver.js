@@ -12,22 +12,22 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
         },
 
         _onClick: function () { // Overwrite usual onclick which loads a list / loads views/datas
-            var self = this;
+            var that = this;
             clearTimeout(this.timeout);
-            self.$_dom.css({color: '#000'});
-            self.viewHandler.serverPush(Versioning.getView()).then(function () {
-                self.$_dom.css({color: '#357535'});
-                self.returnToBlack();
+            that.$_dom.css({color: '#000'});
+            that.viewHandler.serverPush(Versioning.getView()).then(function () {
+                that.$_dom.css({color: '#357535'});
+                that.returnToBlack();
             }, function () {
-                self.$_dom.css({color: '#872A2A'});
-                self.returnToBlack();
+                that.$_dom.css({color: '#872A2A'});
+                that.returnToBlack();
             });
         },
 
         returnToBlack: function () {
-            var self = this;
+            var that = this;
             this.timeout = setTimeout(function () {
-                self.$_dom.animate({
+                that.$_dom.animate({
                     color: '#000'
                 }, 500);
             }, 500);

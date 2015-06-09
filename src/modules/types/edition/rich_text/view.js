@@ -35,7 +35,7 @@ define([
             }
         },
         initEditor: function () {
-            var self = this;
+            var that = this;
             var initText = this.module.definition.richtext || '';
             this.readOnly = !this.module.getConfigurationCheckbox('editable', 'isEditable');
             if (this.readOnly && this.plainHtml) {
@@ -65,10 +65,10 @@ define([
                 }
                 this.instance = CKEDITOR.inline(this._id, options);
                 this.instance.on('change', function () {
-                    self.module.controller.valueChanged(self.instance.getData());
-                    if (self.module.getConfigurationCheckbox('autoHeight', 'yes')) {
-                        self.module.getDomWrapper().height(self.getContentHeight() + 50);
-                        Grid.moduleResize(self.module);
+                    that.module.controller.valueChanged(that.instance.getData());
+                    if (that.module.getConfigurationCheckbox('autoHeight', 'yes')) {
+                        that.module.getDomWrapper().height(that.getContentHeight() + 50);
+                        Grid.moduleResize(that.module);
                     }
 
                 });

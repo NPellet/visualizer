@@ -8,13 +8,13 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
     $.extend(true, View.prototype, Default, {
         init: function () {
             this.dom = $('<div />');
-            var self = this;
+            var that = this;
             var img = $('<div class="ci-navigation-navigarrow"></div>');
             this.domNavig = $('<div />').addClass('')
                 .append(img.clone().addClass('left'))
                 .append(img.clone().addClass('right'))
                 .on('mousedown', '.ci-navigation-navigarrow', function (event) {
-                    self.moveStart(event);
+                    that.moveStart(event);
                 });
 
             this.dom.append(this.domNavig);
@@ -39,7 +39,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
             var started = Date.now();
             //self.moveStart(event);
 
-            var self = this;
+            var that = this;
             var target = $(e.target || e.srcElement);
 
             var mode = (target.hasClass('left') ? 'left' : (target.hasClass('right') ? 'right' : 'left'));
@@ -52,12 +52,12 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
             var execute = function () {
 
                 if (mode == 'left')
-                    self.cx -= self.step;
+                    that.cx -= that.step;
                 else if (mode == 'right')
-                    self.cx += self.step;
+                    that.cx += that.step;
 
 
-                self.module.controller.move(self.cx);
+                that.module.controller.move(that.cx);
                 setTimeout();
             };
 

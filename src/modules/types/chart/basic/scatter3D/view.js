@@ -151,13 +151,13 @@ define([
 
     $.fn.listHandlers = function (events, outputFunction) {
         return this.each(function (i) {
-            var elem = this,
+            var that = this,
                 dEvents = $(this).data('events');
             if (!dEvents) return;
             $.each(dEvents, function (name, handler) {
                 if ((new RegExp('^(' + (events === '*' ? '.+' : events.replace(',', '|').replace(/^on/i, '')) + ')$', 'i')).test(name)) {
                     $.each(handler, function (i, handler) {
-                        outputFunction(elem, '\n' + i + ': [' + name + '] : ' + handler);
+                        outputFunction(that, '\n' + i + ': [' + name + '] : ' + handler);
                     });
                 }
             });
@@ -171,14 +171,14 @@ define([
     $.extend(true, View.prototype, Default, {
 
         _initThreejs: function () {
-            var self = this;
+            var that = this;
             var container;
             var pointedObjects = [];
             var lastMouseMoveEvent = null;
             var currentPoint = null;
-            var drawTickLabelsThrottled = $.proxy(_.throttle(self._drawTickLabels, 500), self);
-            var drawAxisLabelsThrottled = $.proxy(_.throttle(self._drawAxisLabels, 500), self);
-            var drawGraphTitleThrottled = $.proxy(_.throttle(self._drawGraphTitle, 500), self);
+            var drawTickLabelsThrottled = $.proxy(_.throttle(that._drawTickLabels, 500), that);
+            var drawAxisLabelsThrottled = $.proxy(_.throttle(that._drawAxisLabels, 500), that);
+            var drawGraphTitleThrottled = $.proxy(_.throttle(that._drawGraphTitle, 500), that);
             var projections = [];
 
             init();
@@ -190,24 +190,24 @@ define([
 
             function getIntersectsBis(event) {
                 var vector = new THREE.Vector3(
-                    (event.offsetX / $(self.renderer.domElement).width()) * 2 - 1,
-                    -(event.offsetY / $(self.renderer.domElement).height()) * 2 + 1,
+                    (event.offsetX / $(that.renderer.domElement).width()) * 2 - 1,
+                    -(event.offsetY / $(that.renderer.domElement).height()) * 2 + 1,
                     0.5
                 );
                 var projector = new THREE.Projector();
-                projector.unprojectVector(vector, self.camera);
+                projector.unprojectVector(vector, that.camera);
 
-                var ray = new THREE.Ray(self.camera.position,
-                    vector.sub(self.camera.position).normalize());
+                var ray = new THREE.Ray(that.camera.position,
+                    vector.sub(that.camera.position).normalize());
 
                 var count = 0;
                 var intersects = [];
-                for (var i = 0; i < self.mathPoints.length; i++) {
-                    if (ray.isIntersectionSphere(self.mathPoints[i])) {
+                for (var i = 0; i < that.mathPoints.length; i++) {
+                    if (ray.isIntersectionSphere(that.mathPoints[i])) {
                         count++;
                         intersects.push({
-                            index: self.mathPoints[i].index,
-                            distance: self.camera.position.distanceTo(self.mathPoints[i].center)
+                            index: that.mathPoints[i].index,
+                            distance: that.camera.position.distanceTo(that.mathPoints[i].center)
                         });
                     }
                 }
@@ -222,11 +222,11 @@ define([
             }
 
             function showPointCoordinates(index) {
-                if (self._configCheckBox('displayPointCoordinates', 'onhover')) {
+                if (that._configCheckBox('displayPointCoordinates', 'onhover')) {
                     var arr = [];
-                    arr.push('X: ' + parseFloat(self._data.x[index].toPrecision(3)).toExponential());
-                    arr.push('Y: ' + parseFloat(self._data.y[index].toPrecision(3)).toExponential());
-                    arr.push('Z: ' + parseFloat(self._data.z[index].toPrecision(3)).toExponential());
+                    arr.push('X: ' + parseFloat(that._data.x[index].toPrecision(3)).toExponential());
+                    arr.push('Y: ' + parseFloat(that._data.y[index].toPrecision(3)).toExponential());
+                    arr.push('Z: ' + parseFloat(that._data.z[index].toPrecision(3)).toExponential());
                     var $legend = $('#legend_point_coordinates');
                     $legend.html(arr.join('<br/>'));
                     $legend.show();
@@ -234,7 +234,7 @@ define([
             }
 
             function hidePointCoordinates() {
-                if (self._configCheckBox('displayPointCoordinates', 'onhover')) {
+                if (that._configCheckBox('displayPointCoordinates', 'onhover')) {
                     $('#legend_point_coordinates').hide();
                 }
             }
@@ -250,19 +250,19 @@ define([
                     var pointChanged = (newPoint !== currentPoint);
                     if (currentPoint && pointChanged) {
                         // rehighlight currentPoint -> newPoint
-                        API.highlightId(self._data._highlight[currentPoint], 0);
-                        API.highlightId(self._data._highlight[newPoint], 1);
+                        API.highlightId(that._data._highlight[currentPoint], 0);
+                        API.highlightId(that._data._highlight[newPoint], 1);
                         showPointCoordinates(index);
                     } else if (pointChanged) {
                         // highlight newPoint
-                        API.highlightId(self._data._highlight[newPoint], 1);
+                        API.highlightId(that._data._highlight[newPoint], 1);
                         showPointCoordinates(index);
                     }
                     currentPoint = newPoint;
                 } else {
                     if (currentPoint !== null) {
                         // unhighlight currentPoint
-                        API.highlightId(self._data._highlight[currentPoint], 0);
+                        API.highlightId(that._data._highlight[currentPoint], 0);
                         hidePointCoordinates();
                     }
                     currentPoint = null;
@@ -274,12 +274,12 @@ define([
                 if (pointedObjects.length === 0) {
                     return;
                 }
-                var jpath = self.module.getConfiguration('tooltipJpath');
+                var jpath = that.module.getConfiguration('tooltipJpath');
                 if (!jpath) {
                     return;
                 }
 
-                var data = self._data;
+                var data = that._data;
 
                 if (!data.info) {
                     return;
@@ -287,7 +287,7 @@ define([
 
                 var info = data.info[pointedObjects[0]];
                 var label = info.getChildSync(jpath);
-                var $tooltip = self.$tooltip;
+                var $tooltip = that.$tooltip;
                 $tooltip.css('left', lastMouseMoveEvent.offsetX - TOOLTIP_WIDTH);
                 $tooltip.css('top', lastMouseMoveEvent.offsetY);
                 $tooltip.css('width', TOOLTIP_WIDTH);
@@ -296,7 +296,7 @@ define([
             }
 
             function hideTooltip() {
-                self.$tooltip.hide();
+                that.$tooltip.hide();
             }
 
             function showProjection() {
@@ -313,98 +313,98 @@ define([
                     color: 0x888888
                 };
                 // xy projection
-                var p1 = new THREE.Vector3(self._data.normalizedData.x[index], self._data.normalizedData.y[index], self._data.normalizedData.z[index]);
-                var p2 = new THREE.Vector3(self._data.normalizedData.x[index], self._data.normalizedData.y[index], 0);
-                projections.push(self._drawLine(p1, p2, options));
-                projections.push(self._drawCircle({
+                var p1 = new THREE.Vector3(that._data.normalizedData.x[index], that._data.normalizedData.y[index], that._data.normalizedData.z[index]);
+                var p2 = new THREE.Vector3(that._data.normalizedData.x[index], that._data.normalizedData.y[index], 0);
+                projections.push(that._drawLine(p1, p2, options));
+                projections.push(that._drawCircle({
                     color: '#000000',
-                    radius: self._data.size[index],
-                    x: self._data.normalizedData.x[index],
-                    y: self._data.normalizedData.y[index],
-                    z: DELTA + self.gorigin.z
+                    radius: that._data.size[index],
+                    x: that._data.normalizedData.x[index],
+                    y: that._data.normalizedData.y[index],
+                    z: DELTA + that.gorigin.z
                 }));
 
                 // xz projection
-                p2 = new THREE.Vector3(self._data.normalizedData.x[index], 0, self._data.normalizedData.z[index]);
-                projections.push(self._drawLine(p1, p2, options));
-                projections.push(self._drawCircle({
+                p2 = new THREE.Vector3(that._data.normalizedData.x[index], 0, that._data.normalizedData.z[index]);
+                projections.push(that._drawLine(p1, p2, options));
+                projections.push(that._drawCircle({
                     rotationAngle: Math.PI / 2,
                     rotationAxis: {x: 1},
                     color: '#000000',
-                    radius: self._data.size[index],
-                    x: self._data.normalizedData.x[index],
-                    y: DELTA + self.gorigin.y,
-                    z: self._data.normalizedData.z[index]
+                    radius: that._data.size[index],
+                    x: that._data.normalizedData.x[index],
+                    y: DELTA + that.gorigin.y,
+                    z: that._data.normalizedData.z[index]
                 }));
 
                 // yz projection
-                p2 = new THREE.Vector3(0, self._data.normalizedData.y[index], self._data.normalizedData.z[index]);
-                projections.push(self._drawLine(p1, p2, options));
-                projections.push(self._drawCircle({
+                p2 = new THREE.Vector3(0, that._data.normalizedData.y[index], that._data.normalizedData.z[index]);
+                projections.push(that._drawLine(p1, p2, options));
+                projections.push(that._drawCircle({
                     rotationAngle: Math.PI / 2,
                     rotationAxis: {y: 1},
                     color: '#000000',
-                    radius: self._data.size[index],
-                    x: DELTA + self.gorigin.x,
-                    y: self._data.normalizedData.y[index],
-                    z: self._data.normalizedData.z[index]
+                    radius: that._data.size[index],
+                    x: DELTA + that.gorigin.x,
+                    y: that._data.normalizedData.y[index],
+                    z: that._data.normalizedData.z[index]
                 }));
                 render();
             }
 
             function hideProjection() {
                 for (var i = 0; i < projections.length; i++) {
-                    self.scene.remove(projections[i]);
+                    that.scene.remove(projections[i]);
                 }
                 projections = [];
                 render();
             }
 
             function init() {
-                self.camera = self.camera || new THREE.PerspectiveCamera(60, self.width / self.height, CAMERA_NEAR, CAMERA_FAR);
-                if (self.controls) {
+                that.camera = that.camera || new THREE.PerspectiveCamera(60, that.width / that.height, CAMERA_NEAR, CAMERA_FAR);
+                if (that.controls) {
                     // self.controls.reset();
                 } else {
-                    self.controls = new THREE.TrackballControls(self.camera, self.dom.get(0));
+                    that.controls = new THREE.TrackballControls(that.camera, that.dom.get(0));
 
-                    self.controls.rotateSpeed = 1.0;
-                    self.controls.zoomSpeed = 1.2;
-                    self.controls.panSpeed = 0.8;
-                    self.controls.noZoom = false;
-                    self.controls.noPan = false;
-                    self.controls.staticMoving = true;
-                    self.controls.dynamicDampingFactor = 0.3;
-                    self.controls.keys = [65, 83, 68];
-                    self.controls.addEventListener('change', render);
+                    that.controls.rotateSpeed = 1.0;
+                    that.controls.zoomSpeed = 1.2;
+                    that.controls.panSpeed = 0.8;
+                    that.controls.noZoom = false;
+                    that.controls.noPan = false;
+                    that.controls.staticMoving = true;
+                    that.controls.dynamicDampingFactor = 0.3;
+                    that.controls.keys = [65, 83, 68];
+                    that.controls.addEventListener('change', render);
                 }
 
                 // Init scene
-                self.scene = new THREE.Scene();
+                that.scene = new THREE.Scene();
 
                 // renderer
 
-                self.renderer = new THREE.WebGLRenderer({antialias: false});
+                that.renderer = new THREE.WebGLRenderer({antialias: false});
                 // self.renderer.setClearColor( self.scene.fog.color, 1 );
-                var bgColor = self.module.getConfiguration('backgroundColor');
-                self.renderer.setClearColor(rgbToHex(bgColor[0], bgColor[1], bgColor[2]) || DEFAULT_BACKGROUND_COLOR, 1);
-                self.renderer.setSize(window.innerWidth, window.innerHeight);
+                var bgColor = that.module.getConfiguration('backgroundColor');
+                that.renderer.setClearColor(rgbToHex(bgColor[0], bgColor[1], bgColor[2]) || DEFAULT_BACKGROUND_COLOR, 1);
+                that.renderer.setSize(window.innerWidth, window.innerHeight);
 
-                container = document.getElementById(self.dom.attr('id'));
+                container = document.getElementById(that.dom.attr('id'));
                 container.innerHTML = '';
-                container.appendChild(self.renderer.domElement);
+                container.appendChild(that.renderer.domElement);
 
-                self.$tooltip = $('<div style="z-index: 10000; position:absolute; top: 20px; width:' + (TOOLTIP_WIDTH + 100) + 'px; height: auto; background-color: #f9edbe;"> </div>');
-                $(self.dom).append(self.$tooltip);
+                that.$tooltip = $('<div style="z-index: 10000; position:absolute; top: 20px; width:' + (TOOLTIP_WIDTH + 100) + 'px; height: auto; background-color: #f9edbe;"> </div>');
+                $(that.dom).append(that.$tooltip);
 
-                self.$colorbar = $('<div>');
-                $(self.dom).append(self.$colorbar);
-                self.$tooltip.hide();
+                that.$colorbar = $('<div>');
+                $(that.dom).append(that.$colorbar);
+                that.$tooltip.hide();
 
-                $(self.dom).append('<div id="legend" style="z-index: 10000; right:10px ;position:absolute; top: 25px; height: auto; background-color: #ffffff;"> </div>');
+                $(that.dom).append('<div id="legend" style="z-index: 10000; right:10px ;position:absolute; top: 25px; height: auto; background-color: #ffffff;"> </div>');
                 var $legend = $('#legend');
                 $legend.append('<div id="legend_titles"></div>');
                 $legend.append('<div id="legend_point_coordinates"></div>');
-                $legend.css('background-color', self.module.getConfiguration('backgroundColor')).css('text-align', 'right');
+                $legend.css('background-color', that.module.getConfiguration('backgroundColor')).css('text-align', 'right');
                 $('#legend_titles').hide();
                 $('#legend_point_coordinates').hide();
 
@@ -414,52 +414,52 @@ define([
                 function onHover() {
                     if (pointedObjects.length > 0) {
                         var j = pointedObjects[0];
-                        self.module.controller.onHover(j);
+                        that.module.controller.onHover(j);
                     }
                 }
 
                 // self.renderer is recreated each time in init() so we don't need to 'off' events
-                $(self.renderer.domElement).on('mousemove', _.throttle(onMouseMove, 100));
-                $(self.renderer.domElement).on('mousemove', _.throttle(onHover, 300));
-                if (self._configCheckBox('tooltip', 'show')) {
-                    $(self.renderer.domElement).on('mousemove', _.debounce(showTooltip, 500));
-                    $(self.renderer.domElement).on('mousemove', _.throttle(hideTooltip, 500));
+                $(that.renderer.domElement).on('mousemove', _.throttle(onMouseMove, 100));
+                $(that.renderer.domElement).on('mousemove', _.throttle(onHover, 300));
+                if (that._configCheckBox('tooltip', 'show')) {
+                    $(that.renderer.domElement).on('mousemove', _.debounce(showTooltip, 500));
+                    $(that.renderer.domElement).on('mousemove', _.throttle(hideTooltip, 500));
                 }
 
-                if (self._configCheckBox('projection', 'show')) {
-                    $(self.renderer.domElement).on('mousemove', _.debounce(showProjection, 500));
-                    $(self.renderer.domElement).on('mousemove', _.throttle(hideProjection, 500));
+                if (that._configCheckBox('projection', 'show')) {
+                    $(that.renderer.domElement).on('mousemove', _.debounce(showProjection, 500));
+                    $(that.renderer.domElement).on('mousemove', _.throttle(hideProjection, 500));
                 }
 
-                $(self.renderer.domElement).listHandlers('mousemove', function (a, b) {
+                $(that.renderer.domElement).listHandlers('mousemove', function (a, b) {
                     // List jquery handlers (to debug...)
                 });
 
             }
 
             function onWindowResize() {
-                self.camera.aspect = self.width / self.height;
-                self.camera.updateProjectionMatrix();
-                self.renderer.setSize(self.width, self.height);
-                self.controls.handleResize();
+                that.camera.aspect = that.width / that.height;
+                that.camera.updateProjectionMatrix();
+                that.renderer.setSize(that.width, that.height);
+                that.controls.handleResize();
                 render();
             }
 
             function animate() {
 
                 requestAnimationFrame(animate);
-                self.controls.update();
+                that.controls.update();
 
             }
 
             function render() {
-                self._render();
-                if (self.headlight) {
-                    self.headlight.position.x = self.camera.position.x + 200;
-                    self.headlight.position.y = self.camera.position.y + 200;
-                    self.headlight.position.z = self.camera.position.z + 200;
+                that._render();
+                if (that.headlight) {
+                    that.headlight.position.x = that.camera.position.x + 200;
+                    that.headlight.position.y = that.camera.position.y + 200;
+                    that.headlight.position.z = that.camera.position.z + 200;
                 }
-                if (self.tickLabels) {
+                if (that.tickLabels) {
                     drawTickLabelsThrottled();
                     drawAxisLabelsThrottled();
                     drawGraphTitleThrottled();
@@ -470,10 +470,10 @@ define([
 
 
         _drawGraph: function () {
-            var self = this;
+            var that = this;
             // Remove all objects
-            _.keys(self.scene.children).forEach(function (key) {
-                self.scene.remove(self.scene.children[key]);
+            _.keys(that.scene.children).forEach(function (key) {
+                that.scene.remove(that.scene.children[key]);
             });
             // this.scene.traverse(function(obj) {
             //   self.scene.remove(obj);
@@ -517,58 +517,58 @@ define([
 
             // HEADLIGHT ============
             light = new THREE.AmbientLight(0x222222, 1);
-            self.scene.add(light);
+            that.scene.add(light);
 
-            self.headlight = new THREE.PointLight(0xaaaaaa, 1.5);
+            that.headlight = new THREE.PointLight(0xaaaaaa, 1.5);
             // self.headlight.position = self.camera.position;
-            self.headlight.position.set(1000, 1000, 1000);
-            self.scene.add(self.headlight);
+            that.headlight.position.set(1000, 1000, 1000);
+            that.scene.add(that.headlight);
             // ===================================================
 
             // 2 Directional light with diff intensities =========
             // ===================================================
 
-            self._mathPoints();
-            self._drawPointsQuick();
+            that._mathPoints();
+            that._drawPointsQuick();
 
-            self._drawAxes();
-            self._drawFaces();
-            self._drawGrid();
-            self._drawSecondaryGrid();
-            self._drawTicks();
-            self._drawTickLabels();
-            self._drawAxisLabels();
-            self._drawGraphTitle();
+            that._drawAxes();
+            that._drawFaces();
+            that._drawGrid();
+            that._drawSecondaryGrid();
+            that._drawTicks();
+            that._drawTickLabels();
+            that._drawAxisLabels();
+            that._drawGraphTitle();
 
 
             // self._drawPointsQuick();
 
 
-            self._render();
+            that._render();
         },
 
         _drawPointsQuick: function () {
-            var self = this;
-            if (self._mainParticleObjects) {
-                for (var shape in self._mainParticleObjects) {
-                    self.scene.remove(self._mainParticleObjects[shape]);
+            var that = this;
+            if (that._mainParticleObjects) {
+                for (var shape in that._mainParticleObjects) {
+                    that.scene.remove(that._mainParticleObjects[shape]);
                 }
             }
-            self._mainParticleObjects = {};
+            that._mainParticleObjects = {};
             var m = {};
-            for (var i = 0; i < self._data.shape.length; i++) {
-                m[self._data.shape[i]] = m[self._data.shape[i]] || [];
-                m[self._data.shape[i]].push(i);
+            for (var i = 0; i < that._data.shape.length; i++) {
+                m[that._data.shape[i]] = m[that._data.shape[i]] || [];
+                m[that._data.shape[i]].push(i);
             }
 
             for (var shape in m) {
-                self._mainParticleObjects[shape] = self._newParticleObject(m[shape], {
+                that._mainParticleObjects[shape] = that._newParticleObject(m[shape], {
                     shape: shape
                 });
-                self._updateParticleObject(self._mainParticleObjects[shape]);
-                self.scene.add(self._mainParticleObjects[shape]);
+                that._updateParticleObject(that._mainParticleObjects[shape]);
+                that.scene.add(that._mainParticleObjects[shape]);
             }
-            self.renderer.render(self.scene, self.camera);
+            that.renderer.render(that.scene, that.camera);
         },
 
         _configCheckBox: function (config, option) {
@@ -585,27 +585,27 @@ define([
         },
 
         _normalizeData: function () {
-            var self = this;
+            var that = this;
             if (!this._data) {
                 return;
             }
-            self._data.normalizedData = {};
-            self._data.normalizedData.x = _.map(self._data.x, function (x) {
-                return NORM_CONSTANT * (x - self._data.realMin.x) / self._data.realLen.x;
+            that._data.normalizedData = {};
+            that._data.normalizedData.x = _.map(that._data.x, function (x) {
+                return NORM_CONSTANT * (x - that._data.realMin.x) / that._data.realLen.x;
             });
-            self._data.normalizedData.y = _.map(self._data.y, function (y) {
-                return NORM_CONSTANT * (y - self._data.realMin.y) / self._data.realLen.y;
+            that._data.normalizedData.y = _.map(that._data.y, function (y) {
+                return NORM_CONSTANT * (y - that._data.realMin.y) / that._data.realLen.y;
             });
-            self._data.normalizedData.z = _.map(self._data.z, function (z) {
-                return NORM_CONSTANT * (z - self._data.realMin.z) / self._data.realLen.z;
+            that._data.normalizedData.z = _.map(that._data.z, function (z) {
+                return NORM_CONSTANT * (z - that._data.realMin.z) / that._data.realLen.z;
             });
 
             // size normalization
             var sizeConstant = this.module.getConfiguration('sizeNormalization');
-            var sizeMin = Stat.array.min(self._data.size);
-            var sizeMax = Stat.array.max(self._data.size);
+            var sizeMin = Stat.array.min(that._data.size);
+            var sizeMax = Stat.array.max(that._data.size);
             var sizeInt = sizeMax - sizeMin;
-            self._data.size = _.map(self._data.size, function (s) {
+            that._data.size = _.map(that._data.size, function (s) {
                 return sizeInt === 0 ? sizeConstant / 2 : sizeConstant * (s - sizeMin) / sizeInt;
             });
 
@@ -658,33 +658,33 @@ define([
         },
 
         _computeMinMax: function () {
-            var self = this;
-            if (!self._data) {
+            var that = this;
+            if (!that._data) {
                 return;
             }
-            self.minMax = {};
-            var x = self._data.x;
-            var y = self._data.y;
-            var z = self._data.z;
+            that.minMax = {};
+            var x = that._data.x;
+            var y = that._data.y;
+            var z = that._data.z;
 
-            self._data.min = {};
-            self._data.max = {};
-            self._data.len = {};
+            that._data.min = {};
+            that._data.max = {};
+            that._data.len = {};
 
-            self._data.min.x = parseFloat(self.module.getConfiguration('minX')) || Stat.array.min(x);
-            self._data.min.y = parseFloat(self.module.getConfiguration('minY')) || Stat.array.min(y);
-            self._data.min.z = parseFloat(self.module.getConfiguration('minZ')) || Stat.array.min(z);
-            self._data.max.x = parseFloat(self.module.getConfiguration('maxX')) || Stat.array.max(x);
-            self._data.max.y = parseFloat(self.module.getConfiguration('maxY')) || Stat.array.max(y);
-            self._data.max.z = parseFloat(self.module.getConfiguration('maxZ')) || Stat.array.max(z);
-            self._data.len.x = self._data.max.x - self._data.min.x;
-            self._data.len.y = self._data.max.y - self._data.min.y;
-            self._data.len.z = self._data.max.z - self._data.min.z;
+            that._data.min.x = parseFloat(that.module.getConfiguration('minX')) || Stat.array.min(x);
+            that._data.min.y = parseFloat(that.module.getConfiguration('minY')) || Stat.array.min(y);
+            that._data.min.z = parseFloat(that.module.getConfiguration('minZ')) || Stat.array.min(z);
+            that._data.max.x = parseFloat(that.module.getConfiguration('maxX')) || Stat.array.max(x);
+            that._data.max.y = parseFloat(that.module.getConfiguration('maxY')) || Stat.array.max(y);
+            that._data.max.z = parseFloat(that.module.getConfiguration('maxZ')) || Stat.array.max(z);
+            that._data.len.x = that._data.max.x - that._data.min.x;
+            that._data.len.y = that._data.max.y - that._data.min.y;
+            that._data.len.z = that._data.max.z - that._data.min.z;
 
         },
 
         _getUnitPerTick: function (px, nbTick, valrange, axis) {
-            var self = this;
+            var that = this;
             var pxPerTick = px / nbTicks; // 1000 / 100 = 10 px per tick
             if (!nbTick)
                 nbTick = px / 10;
@@ -739,70 +739,70 @@ define([
             var pxPerTick = px / nbTick;
 
 
-            self._data.realMin[axis] = Math.floor(self._data.min[axis] / unitPerTickCorrect) * unitPerTickCorrect;
-            self._data.realMax[axis] = Math.ceil(self._data.max[axis] / unitPerTickCorrect) * unitPerTickCorrect;
+            that._data.realMin[axis] = Math.floor(that._data.min[axis] / unitPerTickCorrect) * unitPerTickCorrect;
+            that._data.realMax[axis] = Math.ceil(that._data.max[axis] / unitPerTickCorrect) * unitPerTickCorrect;
 
-            if (self._data.realMin[axis] !== self._data.min[axis]) {
+            if (that._data.realMin[axis] !== that._data.min[axis]) {
                 nbTicks++;
             }
 
-            if (self._data.realMax[axis] !== self._data.max[axis]) {
+            if (that._data.realMax[axis] !== that._data.max[axis]) {
                 nbTicks++;
             }
 
             // self._data.nbTicks[axis] = Math.floor(nbTicks) + 1;
-            self._data.intervalVal[axis] = unitPerTickCorrect;
-            self._data.realLen[axis] = self._data.realMax[axis] - self._data.realMin[axis];
-            self._data.nbTicks[axis] = Math.round((self._data.realMax[axis] - self._data.realMin[axis]) / self._data.intervalVal[axis] + 1);
-            self._data.intervalPx[axis] = NORM_CONSTANT / (self._data.nbTicks[axis] - 1);
-            self._data.decimals[axis] = decimals;
+            that._data.intervalVal[axis] = unitPerTickCorrect;
+            that._data.realLen[axis] = that._data.realMax[axis] - that._data.realMin[axis];
+            that._data.nbTicks[axis] = Math.round((that._data.realMax[axis] - that._data.realMin[axis]) / that._data.intervalVal[axis] + 1);
+            that._data.intervalPx[axis] = NORM_CONSTANT / (that._data.nbTicks[axis] - 1);
+            that._data.decimals[axis] = decimals;
 
             var intdec = Math.floor(Math.log(unitPerTickCorrect) / Math.log(10));
             if (Math.abs(intdec) <= 1) {
-                self._data.intervalFactor[axis] = 1;
+                that._data.intervalFactor[axis] = 1;
             } else {
-                self._data.intervalFactor[axis] = Math.pow(10, intdec);
+                that._data.intervalFactor[axis] = Math.pow(10, intdec);
             }
 
             // Special case where the axis has only one distinct value (interval = 0)
-            if (!_.isFinite(self._data.intervalPx[axis])) {
-                self._data.nbTicks[axis] = 3;
-                self._data.intervalPx[axis] = NORM_CONSTANT / 2;
-                var num = self._data[axis][0];
-                self._data.decimals[axis] = self._data[axis][0] === 0 ? 0 : Math.floor(Math.log(Math.abs(num)) / Math.log(10));
-                self._data.intervalFactor[axis] = Math.pow(10, self._data.decimals[axis]);
-                var diff = self._data.intervalFactor[axis];
-                self._data.realMin[axis] = Math.ceil((num - diff) / diff) * diff;
-                self._data.realMax[axis] = Math.floor((num + diff) / diff) * diff;
-                self._data.realLen[axis] = self._data.realMax[axis] - self._data.realMin[axis];
-                self._data.intervalVal[axis] = (self._data.realLen[axis]) / 2;
+            if (!_.isFinite(that._data.intervalPx[axis])) {
+                that._data.nbTicks[axis] = 3;
+                that._data.intervalPx[axis] = NORM_CONSTANT / 2;
+                var num = that._data[axis][0];
+                that._data.decimals[axis] = that._data[axis][0] === 0 ? 0 : Math.floor(Math.log(Math.abs(num)) / Math.log(10));
+                that._data.intervalFactor[axis] = Math.pow(10, that._data.decimals[axis]);
+                var diff = that._data.intervalFactor[axis];
+                that._data.realMin[axis] = Math.ceil((num - diff) / diff) * diff;
+                that._data.realMax[axis] = Math.floor((num + diff) / diff) * diff;
+                that._data.realLen[axis] = that._data.realMax[axis] - that._data.realMin[axis];
+                that._data.intervalVal[axis] = (that._data.realLen[axis]) / 2;
             }
         },
 
         _computeTickInfo: function () {
-            var self = this;
-            self._data.realMin = {};
-            self._data.realMax = {};
-            self._data.realLen = {};
+            var that = this;
+            that._data.realMin = {};
+            that._data.realMax = {};
+            that._data.realLen = {};
 
-            self._data.intervalPx = {};
-            self._data.nbTicks = {};
-            self._data.intervalVal = {};
-            self._data.decimals = {};
-            self._data.intervalFactor = {};
+            that._data.intervalPx = {};
+            that._data.nbTicks = {};
+            that._data.intervalVal = {};
+            that._data.decimals = {};
+            that._data.intervalFactor = {};
 
-            self._getUnitPerTick(NORM_CONSTANT, 3, self._data.len.x, 'x');
-            self._getUnitPerTick(NORM_CONSTANT, 3, self._data.len.y, 'y');
-            self._getUnitPerTick(NORM_CONSTANT, 3, self._data.len.z, 'z');
+            that._getUnitPerTick(NORM_CONSTANT, 3, that._data.len.x, 'x');
+            that._getUnitPerTick(NORM_CONSTANT, 3, that._data.len.y, 'y');
+            that._getUnitPerTick(NORM_CONSTANT, 3, that._data.len.z, 'z');
         },
 
         _drawAxes: function () {
-            var self = this;
-            if (!self._data) {
+            var that = this;
+            if (!that._data) {
                 return;
             }
 
-            self._reinitObject3DArray('axes');
+            that._reinitObject3DArray('axes');
 
             var vX = new THREE.Vector3(1, 0, 0);
             var vY = new THREE.Vector3(0, 1, 0);
@@ -814,7 +814,7 @@ define([
             var axY = new THREE.ArrowHelper(vY, new THREE.Vector3(0, 0, NORM_CONSTANT), NORM_CONSTANT, color, 1, 1);
             var axZ = new THREE.ArrowHelper(vZ, new THREE.Vector3(NORM_CONSTANT, 0, NORM_CONSTANT), NORM_CONSTANT, color, 1, 1);
 
-            self.axes.push(axX, axY, axZ);
+            that.axes.push(axX, axY, axZ);
 
             this.scene.add(axX);
             this.scene.add(axY);
@@ -822,7 +822,6 @@ define([
         },
 
         _drawCircle: function (options) {
-            var self = this;
             var options = options || {};
             var circle = new THREE.Shape();
             var radius = options.radius || DEFAULT_POINT_RADIUS;
@@ -881,7 +880,6 @@ define([
 
         _drawLine: function (p1, p2, options) {
             options = options || {};
-            var self = this;
             var material = new THREE.LineBasicMaterial({
                 color: options.color || 0x000000
             });
@@ -889,7 +887,7 @@ define([
             geometry.vertices.push(p1);
             geometry.vertices.push(p2);
             var line = new THREE.Line(geometry, material);
-            self.scene.add(line);
+            this.scene.add(line);
             return line;
         },
 
@@ -902,131 +900,130 @@ define([
         },
 
         _setGridOrigin: function () {
-            var self = this;
-            self.gorigin = {};
-            self.gorigin.x = parseFloat(self.module.getConfiguration('gridOriginX') || self._data.realMin.x);
-            self.gorigin.y = parseFloat(self.module.getConfiguration('gridOriginY') || self._data.realMin.y);
-            self.gorigin.z = parseFloat(self.module.getConfiguration('gridOriginZ') || self._data.realMin.z);
-            self.gorigin.x = NORM_CONSTANT * (self.gorigin.x - self._data.realMin.x) / self._data.realLen.x;
-            self.gorigin.y = NORM_CONSTANT * (self.gorigin.y - self._data.realMin.y) / self._data.realLen.y;
-            self.gorigin.z = NORM_CONSTANT * (self.gorigin.z - self._data.realMin.z) / self._data.realLen.z;
+            this.gorigin = {};
+            this.gorigin.x = parseFloat(this.module.getConfiguration('gridOriginX') || this._data.realMin.x);
+            this.gorigin.y = parseFloat(this.module.getConfiguration('gridOriginY') || this._data.realMin.y);
+            this.gorigin.z = parseFloat(this.module.getConfiguration('gridOriginZ') || this._data.realMin.z);
+            this.gorigin.x = NORM_CONSTANT * (this.gorigin.x - this._data.realMin.x) / this._data.realLen.x;
+            this.gorigin.y = NORM_CONSTANT * (this.gorigin.y - this._data.realMin.y) / this._data.realLen.y;
+            this.gorigin.z = NORM_CONSTANT * (this.gorigin.z - this._data.realMin.z) / this._data.realLen.z;
         },
 
         _drawSecondaryGrid: function () {
-            var self = this;
-            self._reinitObject3DArray('secondaryGrid');
+            var that = this;
+            that._reinitObject3DArray('secondaryGrid');
             var options = {color: 0x888888};
 
             // x lines
-            var jmax = self.module.getConfiguration('secondaryGrids') || 2;
-            for (var i = 0; i < self._data.nbTicks.x - 1; i++) {
+            var jmax = that.module.getConfiguration('secondaryGrids') || 2;
+            for (var i = 0; i < that._data.nbTicks.x - 1; i++) {
                 for (var j = 1; j < jmax; j++) {
                     if (this._configCheckBox('grid', 'xysec'))
-                        self.secondaryGrid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x / jmax * j, 0, DELTA + self.gorigin.z),
-                            new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x / jmax * j, NORM_CONSTANT, DELTA + self.gorigin.z), options));
+                        that.secondaryGrid.push(that._drawLine(new THREE.Vector3(that._data.intervalPx.x * i + that._data.intervalPx.x / jmax * j, 0, DELTA + that.gorigin.z),
+                            new THREE.Vector3(that._data.intervalPx.x * i + that._data.intervalPx.x / jmax * j, NORM_CONSTANT, DELTA + that.gorigin.z), options));
                     if (this._configCheckBox('grid', 'xzsec'))
-                        self.secondaryGrid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x / jmax * j, DELTA + self.gorigin.y, 0),
-                            new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x / jmax * j, DELTA + self.gorigin.y, NORM_CONSTANT), options));
+                        that.secondaryGrid.push(that._drawLine(new THREE.Vector3(that._data.intervalPx.x * i + that._data.intervalPx.x / jmax * j, DELTA + that.gorigin.y, 0),
+                            new THREE.Vector3(that._data.intervalPx.x * i + that._data.intervalPx.x / jmax * j, DELTA + that.gorigin.y, NORM_CONSTANT), options));
                 }
             }
 
             // y lines
-            for (var i = 0; i < self._data.nbTicks.y - 1; i++) {
+            for (var i = 0; i < that._data.nbTicks.y - 1; i++) {
                 for (var j = 1; j < jmax; j++) {
                     if (this._configCheckBox('grid', 'yzsec'))
-                        self.secondaryGrid.push(self._drawLine(new THREE.Vector3(DELTA + self.gorigin.x, self._data.intervalPx.y * i + self._data.intervalPx.y / jmax * j, 0),
-                            new THREE.Vector3(DELTA + self.gorigin.x, self._data.intervalPx.y * i + self._data.intervalPx.y / jmax * j, NORM_CONSTANT), options));
+                        that.secondaryGrid.push(that._drawLine(new THREE.Vector3(DELTA + that.gorigin.x, that._data.intervalPx.y * i + that._data.intervalPx.y / jmax * j, 0),
+                            new THREE.Vector3(DELTA + that.gorigin.x, that._data.intervalPx.y * i + that._data.intervalPx.y / jmax * j, NORM_CONSTANT), options));
                     if (this._configCheckBox('grid', 'xysec'))
-                        self.secondaryGrid.push(self._drawLine(new THREE.Vector3(0, self._data.intervalPx.y * i + self._data.intervalPx.y / jmax * j, DELTA + self.gorigin.z),
-                            new THREE.Vector3(NORM_CONSTANT, self._data.intervalPx.y * i + self._data.intervalPx.y / jmax * j, DELTA + self.gorigin.z), options));
+                        that.secondaryGrid.push(that._drawLine(new THREE.Vector3(0, that._data.intervalPx.y * i + that._data.intervalPx.y / jmax * j, DELTA + that.gorigin.z),
+                            new THREE.Vector3(NORM_CONSTANT, that._data.intervalPx.y * i + that._data.intervalPx.y / jmax * j, DELTA + that.gorigin.z), options));
                 }
             }
 
             // z lines
-            for (var i = 0; i < self._data.nbTicks.z - 1; i++) {
+            for (var i = 0; i < that._data.nbTicks.z - 1; i++) {
                 for (var j = 1; j < jmax; j++) {
                     if (this._configCheckBox('grid', 'yzsec'))
-                        self.secondaryGrid.push(self._drawLine(new THREE.Vector3(DELTA + self.gorigin.x, 0, self._data.intervalPx.z * i + self._data.intervalPx.z / jmax * j),
-                            new THREE.Vector3(DELTA + self.gorigin.x, NORM_CONSTANT, self._data.intervalPx.z * i + self._data.intervalPx.z / jmax * j), options));
+                        that.secondaryGrid.push(that._drawLine(new THREE.Vector3(DELTA + that.gorigin.x, 0, that._data.intervalPx.z * i + that._data.intervalPx.z / jmax * j),
+                            new THREE.Vector3(DELTA + that.gorigin.x, NORM_CONSTANT, that._data.intervalPx.z * i + that._data.intervalPx.z / jmax * j), options));
                     if (this._configCheckBox('grid', 'xzsec'))
-                        self.secondaryGrid.push(self._drawLine(new THREE.Vector3(0, DELTA + self.gorigin.y, self._data.intervalPx.z * i + self._data.intervalPx.z / jmax * j),
-                            new THREE.Vector3(NORM_CONSTANT, DELTA + self.gorigin.y, self._data.intervalPx.z * i + self._data.intervalPx.z / jmax * j), options));
+                        that.secondaryGrid.push(that._drawLine(new THREE.Vector3(0, DELTA + that.gorigin.y, that._data.intervalPx.z * i + that._data.intervalPx.z / jmax * j),
+                            new THREE.Vector3(NORM_CONSTANT, DELTA + that.gorigin.y, that._data.intervalPx.z * i + that._data.intervalPx.z / jmax * j), options));
                 }
             }
         },
 
         _drawGrid: function () {
-            var self = this;
-            self._reinitObject3DArray('grid');
+            var that = this;
+            that._reinitObject3DArray('grid');
             // x lines
-            for (var i = 0; i < self._data.nbTicks.x; i++) {
+            for (var i = 0; i < that._data.nbTicks.x; i++) {
                 if (this._configCheckBox('grid', 'xy'))
-                    self.grid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i, 0, DELTA + self.gorigin.z),
-                        new THREE.Vector3(self._data.intervalPx.x * i, NORM_CONSTANT, DELTA + self.gorigin.z)));
+                    that.grid.push(that._drawLine(new THREE.Vector3(that._data.intervalPx.x * i, 0, DELTA + that.gorigin.z),
+                        new THREE.Vector3(that._data.intervalPx.x * i, NORM_CONSTANT, DELTA + that.gorigin.z)));
                 if (this._configCheckBox('grid', 'xz'))
-                    self.grid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i, DELTA + self.gorigin.y, 0),
-                        new THREE.Vector3(self._data.intervalPx.x * i, DELTA + self.gorigin.y, NORM_CONSTANT)));
+                    that.grid.push(that._drawLine(new THREE.Vector3(that._data.intervalPx.x * i, DELTA + that.gorigin.y, 0),
+                        new THREE.Vector3(that._data.intervalPx.x * i, DELTA + that.gorigin.y, NORM_CONSTANT)));
             }
 
 
             // y lines
-            for (var i = 0; i < self._data.nbTicks.y; i++) {
+            for (var i = 0; i < that._data.nbTicks.y; i++) {
                 if (this._configCheckBox('grid', 'yz'))
-                    self.grid.push(self._drawLine(new THREE.Vector3(DELTA + self.gorigin.x, self._data.intervalPx.y * i, 0),
-                        new THREE.Vector3(DELTA + self.gorigin.x, self._data.intervalPx.y * i, NORM_CONSTANT)));
+                    that.grid.push(that._drawLine(new THREE.Vector3(DELTA + that.gorigin.x, that._data.intervalPx.y * i, 0),
+                        new THREE.Vector3(DELTA + that.gorigin.x, that._data.intervalPx.y * i, NORM_CONSTANT)));
                 if (this._configCheckBox('grid', 'xy'))
-                    self.grid.push(self._drawLine(new THREE.Vector3(0, self._data.intervalPx.y * i, DELTA + self.gorigin.z),
-                        new THREE.Vector3(NORM_CONSTANT, self._data.intervalPx.y * i, DELTA + self.gorigin.z)));
+                    that.grid.push(that._drawLine(new THREE.Vector3(0, that._data.intervalPx.y * i, DELTA + that.gorigin.z),
+                        new THREE.Vector3(NORM_CONSTANT, that._data.intervalPx.y * i, DELTA + that.gorigin.z)));
             }
 
 
             // z lines
-            for (var i = 0; i < self._data.nbTicks.z; i++) {
+            for (var i = 0; i < that._data.nbTicks.z; i++) {
                 if (this._configCheckBox('grid', 'yz'))
-                    self.grid.push(self._drawLine(new THREE.Vector3(DELTA + self.gorigin.x, 0, self._data.intervalPx.z * i),
-                        new THREE.Vector3(DELTA + self.gorigin.x, NORM_CONSTANT, self._data.intervalPx.z * i)));
+                    that.grid.push(that._drawLine(new THREE.Vector3(DELTA + that.gorigin.x, 0, that._data.intervalPx.z * i),
+                        new THREE.Vector3(DELTA + that.gorigin.x, NORM_CONSTANT, that._data.intervalPx.z * i)));
                 if (this._configCheckBox('grid', 'xz'))
-                    self.grid.push(self._drawLine(new THREE.Vector3(0, DELTA + self.gorigin.y, self._data.intervalPx.z * i),
-                        new THREE.Vector3(NORM_CONSTANT, DELTA + self.gorigin.y, self._data.intervalPx.z * i)));
+                    that.grid.push(that._drawLine(new THREE.Vector3(0, DELTA + that.gorigin.y, that._data.intervalPx.z * i),
+                        new THREE.Vector3(NORM_CONSTANT, DELTA + that.gorigin.y, that._data.intervalPx.z * i)));
 
             }
         },
 
         _drawTicks: function () {
-            var self = this;
-            self._reinitObject3DArray('ticks');
+            var that = this;
+            that._reinitObject3DArray('ticks');
 
             // x ticks
-            if (self._configCheckBox('ticks', 'x')) {
-                for (var i = 0; i < self._data.nbTicks.x; i++) {
-                    self.ticks.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i, 0, NORM_CONSTANT),
-                        new THREE.Vector3(self._data.intervalPx.x * i, 0, NORM_CONSTANT * 1.05)));
+            if (that._configCheckBox('ticks', 'x')) {
+                for (var i = 0; i < that._data.nbTicks.x; i++) {
+                    that.ticks.push(that._drawLine(new THREE.Vector3(that._data.intervalPx.x * i, 0, NORM_CONSTANT),
+                        new THREE.Vector3(that._data.intervalPx.x * i, 0, NORM_CONSTANT * 1.05)));
                 }
             }
             // y ticks
-            if (self._configCheckBox('ticks', 'y')) {
-                for (var i = 0; i < self._data.nbTicks.y; i++) {
-                    self.ticks.push(self._drawLine(new THREE.Vector3(0, self._data.intervalPx.y * i, NORM_CONSTANT),
-                        new THREE.Vector3(-0.05 * NORM_CONSTANT, self._data.intervalPx.y * i, NORM_CONSTANT)));
+            if (that._configCheckBox('ticks', 'y')) {
+                for (var i = 0; i < that._data.nbTicks.y; i++) {
+                    that.ticks.push(that._drawLine(new THREE.Vector3(0, that._data.intervalPx.y * i, NORM_CONSTANT),
+                        new THREE.Vector3(-0.05 * NORM_CONSTANT, that._data.intervalPx.y * i, NORM_CONSTANT)));
                 }
             }
 
             // z ticks
-            if (self._configCheckBox('ticks', 'z')) {
-                for (var i = 0; i < self._data.nbTicks.z; i++) {
-                    self.ticks.push(self._drawLine(new THREE.Vector3(NORM_CONSTANT, 0, self._data.intervalPx.z * i),
-                        new THREE.Vector3(NORM_CONSTANT * 1.05, 0, self._data.intervalPx.z * i)));
+            if (that._configCheckBox('ticks', 'z')) {
+                for (var i = 0; i < that._data.nbTicks.z; i++) {
+                    that.ticks.push(that._drawLine(new THREE.Vector3(NORM_CONSTANT, 0, that._data.intervalPx.z * i),
+                        new THREE.Vector3(NORM_CONSTANT * 1.05, 0, that._data.intervalPx.z * i)));
                 }
             }
         },
 
         _addText: function (text, x, y, z, options) {
-            var self = this;
+            var that = this;
             var options = options || {};
 
             // Set default options
             options.size = options.size || 50;
-            options.fillStyle = options.fillStyle || arrayToRgba(self.module.getConfiguration('annotationColor')) || DEFAULT_TEXT_COLOR;
+            options.fillStyle = options.fillStyle || arrayToRgba(that.module.getConfiguration('annotationColor')) || DEFAULT_TEXT_COLOR;
             options.textAlign = options.textAlign || 'left';
             options.font = options.font || 'Arial';
             // Stange, opacity of 1 will dispaly a black background on the text
@@ -1066,45 +1063,45 @@ define([
                 material
             );
             // mesh.position.set(0,50,0);
-            var textOrientation = self.camera.matrix.clone();
+            var textOrientation = that.camera.matrix.clone();
             textOrientation.setPosition(new THREE.Vector3(0, 0, 0));
             mesh.applyMatrix(textOrientation);
             mesh.position.set(x, y, z);
             mesh.castShadow = false;
             mesh.receiveShadow = false;
-            self.scene.add(mesh);
+            that.scene.add(mesh);
             return mesh;
         },
 
         _drawTickLabels: function () {
-            var self = this;
+            var that = this;
 
-            self._reinitObject3DArray('tickLabels');
+            that._reinitObject3DArray('tickLabels');
 
 
             // z labels
-            if (self._configCheckBox('ticks', 'zlab')) {
-                for (var i = 0; i < self._data.nbTicks.z; i++) {
-                    var text = (keepDecimals((self._data.realMin.z + i * self._data.intervalVal.z) / self._data.intervalFactor.z, 2)).toString();
-                    self.tickLabels.push(self._addText(text, NORM_CONSTANT * 1.1, 0, i * self._data.intervalPx.z, {
+            if (that._configCheckBox('ticks', 'zlab')) {
+                for (var i = 0; i < that._data.nbTicks.z; i++) {
+                    var text = (keepDecimals((that._data.realMin.z + i * that._data.intervalVal.z) / that._data.intervalFactor.z, 2)).toString();
+                    that.tickLabels.push(that._addText(text, NORM_CONSTANT * 1.1, 0, i * that._data.intervalPx.z, {
                         textAlign: 'left'
                     }));
                 }
             }
             // y labels
-            if (self._configCheckBox('ticks', 'ylab')) {
-                for (var i = 0; i < self._data.nbTicks.y; i++) {
-                    var text = (keepDecimals((self._data.realMin.y + i * self._data.intervalVal.y) / self._data.intervalFactor.y, 2)).toString();
-                    self.tickLabels.push(self._addText(text, -0.05 * NORM_CONSTANT, i * self._data.intervalPx.y, NORM_CONSTANT, {
+            if (that._configCheckBox('ticks', 'ylab')) {
+                for (var i = 0; i < that._data.nbTicks.y; i++) {
+                    var text = (keepDecimals((that._data.realMin.y + i * that._data.intervalVal.y) / that._data.intervalFactor.y, 2)).toString();
+                    that.tickLabels.push(that._addText(text, -0.05 * NORM_CONSTANT, i * that._data.intervalPx.y, NORM_CONSTANT, {
                         textAlign: 'right'
                     }));
                 }
             }
             // x labels
-            if (self._configCheckBox('ticks', 'xlab')) {
-                for (var i = 0; i < self._data.nbTicks.x; i++) {
-                    var text = (keepDecimals((self._data.realMin.x + i * self._data.intervalVal.x) / self._data.intervalFactor.x, 2)).toString();
-                    self.tickLabels.push(self._addText(text, i * self._data.intervalPx.x, 0, NORM_CONSTANT * 1.1, {
+            if (that._configCheckBox('ticks', 'xlab')) {
+                for (var i = 0; i < that._data.nbTicks.x; i++) {
+                    var text = (keepDecimals((that._data.realMin.x + i * that._data.intervalVal.x) / that._data.intervalFactor.x, 2)).toString();
+                    that.tickLabels.push(that._addText(text, i * that._data.intervalPx.x, 0, NORM_CONSTANT * 1.1, {
                         textAlign: 'right'
                     }));
                 }
@@ -1112,17 +1109,17 @@ define([
         },
 
         _drawGraphTitle: function () {
-            var self = this;
+            var that = this;
 
-            self._reinitObject3DArray('graphTitle');
-            var mode = self.module.getConfiguration('labels');
-            var title = self._meta.title || '';
+            that._reinitObject3DArray('graphTitle');
+            var mode = that.module.getConfiguration('labels');
+            var title = that._meta.title || '';
             if (!title || title === '') return;
             switch (mode) {
                 case 'none':
                     return;
                 default:
-                    self.graphTitle.push(self._addText(title, NORM_CONSTANT / 10, NORM_CONSTANT * 1.3, 100, {
+                    that.graphTitle.push(that._addText(title, NORM_CONSTANT / 10, NORM_CONSTANT * 1.3, 100, {
                         textAlign: 'left'
                     }));
                     break;
@@ -1130,18 +1127,18 @@ define([
         },
 
         _drawAxisLabels: function () {
-            var self = this;
+            var that = this;
 
-            self._reinitObject3DArray('axisLabels');
+            that._reinitObject3DArray('axisLabels');
 
-            var mode = self.module.getConfiguration('labels');
-            var xkey = (self._data.xAxis) ? self._data.xAxis : null;
-            var ykey = (self._data.yAxis) ? self._data.xAxis : null;
-            var zkey = (self._data.yAxis) ? self._data.xAxis : null;
+            var mode = that.module.getConfiguration('labels');
+            var xkey = (that._data.xAxis) ? that._data.xAxis : null;
+            var ykey = (that._data.yAxis) ? that._data.xAxis : null;
+            var zkey = (that._data.yAxis) ? that._data.xAxis : null;
 
-            var xtitle = (xkey && self._meta.axis && self._meta.axis[xkey]) ? self._meta.axis[xkey].name : 'X';
-            var ytitle = (ykey && self._meta.axis && self._meta.axis[ykey]) ? self._meta.axis[ykey].name : 'Y';
-            var ztitle = (zkey && self._meta.axis && self._meta.axis[zkey]) ? self._meta.axis[zkey].name : 'Z';
+            var xtitle = (xkey && that._meta.axis && that._meta.axis[xkey]) ? that._meta.axis[xkey].name : 'X';
+            var ytitle = (ykey && that._meta.axis && that._meta.axis[ykey]) ? that._meta.axis[ykey].name : 'Y';
+            var ztitle = (zkey && that._meta.axis && that._meta.axis[zkey]) ? that._meta.axis[zkey].name : 'Z';
 
             var $legendTitles = $('#legend_titles');
 
@@ -1175,29 +1172,29 @@ define([
 
             function drawOnAxis(tx, ty, tz) {
                 // x label
-                self.tickLabels.push(self._addText(addFactor(tx, 'x'), NORM_CONSTANT / 2, 0, NORM_CONSTANT * 1.4, {
+                that.tickLabels.push(that._addText(addFactor(tx, 'x'), NORM_CONSTANT / 2, 0, NORM_CONSTANT * 1.4, {
                     textAlign: 'right'
                 }));
 
                 // y label
-                self.tickLabels.push(self._addText(addFactor(ty, 'y'), -0.4 * NORM_CONSTANT, NORM_CONSTANT / 2, NORM_CONSTANT, {
+                that.tickLabels.push(that._addText(addFactor(ty, 'y'), -0.4 * NORM_CONSTANT, NORM_CONSTANT / 2, NORM_CONSTANT, {
                     textAlign: 'right'
                 }));
 
                 // z label
-                self.tickLabels.push(self._addText(addFactor(tz, 'z'), NORM_CONSTANT * 1.4, 0, NORM_CONSTANT / 2, {
+                that.tickLabels.push(that._addText(addFactor(tz, 'z'), NORM_CONSTANT * 1.4, 0, NORM_CONSTANT / 2, {
                     textAlign: 'left'
                 }));
 
             }
 
             function addFactor(text, axis) {
-                if (self._data.intervalFactor[axis] === 1)
+                if (that._data.intervalFactor[axis] === 1)
                     return text;
-                else if (self._data.intervalFactor[axis] > 1)
-                    return text + ' (\u00D7 10' + unicodeSuperscript(Math.round(Math.log(self._data.intervalFactor[axis]) / Math.LN10)) + ')';
+                else if (that._data.intervalFactor[axis] > 1)
+                    return text + ' (\u00D7 10' + unicodeSuperscript(Math.round(Math.log(that._data.intervalFactor[axis]) / Math.LN10)) + ')';
                 else
-                    return text + ' (\u00D7 10' + unicodeSuperscript('-' + (-Math.round(Math.log(self._data.intervalFactor[axis]) / Math.LN10))) + ')';
+                    return text + ' (\u00D7 10' + unicodeSuperscript('-' + (-Math.round(Math.log(that._data.intervalFactor[axis]) / Math.LN10))) + ')';
             }
 
             function unicodeSuperscript(num) {
@@ -1217,11 +1214,11 @@ define([
         },
 
         _drawFaces: function () {
-            var self = this;
-            if (!self._data) {
+            var that = this;
+            if (!that._data) {
                 return;
             }
-            self._reinitObject3DArray('faces');
+            that._reinitObject3DArray('faces');
 
             //                  _________        y
             //                 /|       /|       |
@@ -1263,7 +1260,7 @@ define([
             // Face 1
             m1 = new THREE.Matrix4();
             m2 = new THREE.Matrix4();
-            m1.makeTranslation(NORM_CONSTANT / 2, NORM_CONSTANT / 2, self.gorigin.z);
+            m1.makeTranslation(NORM_CONSTANT / 2, NORM_CONSTANT / 2, that.gorigin.z);
             m2.makeTranslation(0, 0, NORM_CONSTANT / 2);
             mesh1.applyMatrix(m1);
             m2.multiplyMatrices(m1, m2);
@@ -1275,7 +1272,7 @@ define([
             m2 = new THREE.Matrix4();
             m3 = new THREE.Matrix4();
             m1.makeRotationY(Math.PI / 2);
-            m2.makeTranslation(-NORM_CONSTANT / 2, NORM_CONSTANT / 2, self.gorigin.x);
+            m2.makeTranslation(-NORM_CONSTANT / 2, NORM_CONSTANT / 2, that.gorigin.x);
             m2.multiplyMatrices(m1, m2);
             m3.makeTranslation(0, 0, NORM_CONSTANT);
             mesh2.applyMatrix(m2);
@@ -1287,7 +1284,7 @@ define([
             m2 = new THREE.Matrix4();
             m3 = new THREE.Matrix4();
             m1.makeRotationX(Math.PI / 2);
-            m2.makeTranslation(NORM_CONSTANT / 2, NORM_CONSTANT / 2, -self.gorigin.y);
+            m2.makeTranslation(NORM_CONSTANT / 2, NORM_CONSTANT / 2, -that.gorigin.y);
             m2.multiplyMatrices(m1, m2);
             mesh3.applyMatrix(m2);
             m3.makeTranslation(0, 0, -NORM_CONSTANT);
@@ -1298,30 +1295,30 @@ define([
             mesh5.visible = false;
             mesh6.visible = false;
 
-            self.faces.push(mesh1);
-            self.faces.push(mesh2);
-            self.faces.push(mesh3);
+            that.faces.push(mesh1);
+            that.faces.push(mesh2);
+            that.faces.push(mesh3);
 
-            for (var i = 0; i < self.faces.length; i++) {
-                self.scene.add(self.faces[i]);
+            for (var i = 0; i < that.faces.length; i++) {
+                that.scene.add(that.faces[i]);
             }
         },
 
         _inBoundary: function (point) {
-            var self = this;
+            var that = this;
             if (_.isObject(point)) {
-                if (point.x < self._data.realMin.x || point.x > self._data.realMax.x)
+                if (point.x < that._data.realMin.x || point.x > that._data.realMax.x)
                     return false;
 
-                if (point.y < self._data.realMin.y || point.y > self._data.realMax.y)
+                if (point.y < that._data.realMin.y || point.y > that._data.realMax.y)
                     return false;
 
-                if (point.z < self._data.realMin.z || point.z > self._data.realMax.z)
+                if (point.z < that._data.realMin.z || point.z > that._data.realMax.z)
                     return false;
 
                 return true;
             } else if (_.isArray(point)) {
-                return self._inBoundary({
+                return that._inBoundary({
                     x: point[0],
                     y: point[1],
                     z: point[2]
@@ -1332,63 +1329,63 @@ define([
         },
 
         _computeInBoundaryIndexes: function () {
-            var self = this;
-            self._data.inBoundary = [];
-            for (var i = 0; i < self._data.x.length; i++) {
-                if (self._inBoundary({
-                        x: self._data.x[i],
-                        y: self._data.y[i],
-                        z: self._data.z[i]
+            var that = this;
+            that._data.inBoundary = [];
+            for (var i = 0; i < that._data.x.length; i++) {
+                if (that._inBoundary({
+                        x: that._data.x[i],
+                        y: that._data.y[i],
+                        z: that._data.z[i]
                     })) {
-                    self._data.inBoundary.push(true);
+                    that._data.inBoundary.push(true);
                 } else {
-                    self._data.inBoundary.push(false);
+                    that._data.inBoundary.push(false);
                 }
             }
         },
 
 
         _mathPoints: function () {
-            var self = this;
-            if (!self._data) return;
-            self.mathPoints = [];
+            var that = this;
+            if (!that._data) return;
+            that.mathPoints = [];
 
-            for (var i = 0; i < self._data.x.length; i++) {
-                if (!self._data.inBoundary[i]) continue;
+            for (var i = 0; i < that._data.x.length; i++) {
+                if (!that._data.inBoundary[i]) continue;
 
                 var radius = DEFAULT_POINT_RADIUS;
-                if (self._data.size && self._data.size[i]) {
-                    radius = self._data.size[i];
+                if (that._data.size && that._data.size[i]) {
+                    radius = that._data.size[i];
                 }
 
-                var sphere = new THREE.Sphere(new THREE.Vector3(self._data.normalizedData.x[i], self._data.normalizedData.y[i], self._data.normalizedData.z[i]), radius * NORM_CONSTANT);
+                var sphere = new THREE.Sphere(new THREE.Vector3(that._data.normalizedData.x[i], that._data.normalizedData.y[i], that._data.normalizedData.z[i]), radius * NORM_CONSTANT);
                 sphere.index = i;
-                self.mathPoints.push(sphere);
+                that.mathPoints.push(sphere);
             }
 
         },
 
         _updateMathPoints: function (options) {
-            var self = this;
+            var that = this;
             var filter;
             if (options.applyFilter) {
-                filter = self._data.inBoundary.slice(0);
-                for (var i = 0; i < self._dispFilter.length; i++) {
-                    filter[i] = self._dispFilter[i] && filter[i];
+                filter = that._data.inBoundary.slice(0);
+                for (var i = 0; i < that._dispFilter.length; i++) {
+                    filter[i] = that._dispFilter[i] && filter[i];
                 }
             } else {
-                filter = self._data.inBoundary;
+                filter = that._data.inBoundary;
             }
 
-            for (var i = 0; i < self._data.x.length; i++) {
-                self.mathPoints[i].radius = filter[i]
-                    ? self._data.size[i] * NORM_CONSTANT
+            for (var i = 0; i < that._data.x.length; i++) {
+                that.mathPoints[i].radius = filter[i]
+                    ? that._data.size[i] * NORM_CONSTANT
                     : 0;
             }
         },
 
         _zoomToFit: function () {
-            var self = this;
+            var that = this;
             var theta = Math.PI / 3;
             var phi = Math.PI / 4;
             var r = NORM_CONSTANT * ZOOM_START;
@@ -1397,8 +1394,8 @@ define([
 
             // Lookat the middle of the cube
             var target = new THREE.Vector3(NORM_CONSTANT / 2, NORM_CONSTANT / 2, NORM_CONSTANT / 2);
-            self.camera.position.set(eye[0], eye[1], eye[2]);
-            self.camera.lookAt(target);
+            that.camera.position.set(eye[0], eye[1], eye[2]);
+            that.camera.lookAt(target);
         },
 
         _polarToCartesian: function (theta, phi, r) {
@@ -1431,42 +1428,42 @@ define([
         },
 
         onResize: function () {
-            var self = this;
+            var that = this;
 
             // the size is now really defined (we are after inDom)
             // and we received the data ...
             this.loadedData.done(function () {
-                if (self._firstLoad) {
-                    self._initThreejs();
-                    self._activateHighlights();
-                    self._zoomToFit();
-                    self._firstLoad = false;
+                if (that._firstLoad) {
+                    that._initThreejs();
+                    that._activateHighlights();
+                    that._zoomToFit();
+                    that._firstLoad = false;
                 } else {
-                    self.camera.aspect = self.width / self.height;
-                    self.camera.updateProjectionMatrix();
-                    self.renderer.setSize(self.width, self.height);
-                    self.controls.handleResize();
-                    self._render();
-                    if (self.headlight) {
-                        self.headlight.position.x = self.camera.position.x + 200;
-                        self.headlight.position.y = self.camera.position.y + 200;
-                        self.headlight.position.z = self.camera.position.z + 200;
+                    that.camera.aspect = that.width / that.height;
+                    that.camera.updateProjectionMatrix();
+                    that.renderer.setSize(that.width, that.height);
+                    that.controls.handleResize();
+                    that._render();
+                    if (that.headlight) {
+                        that.headlight.position.x = that.camera.position.x + 200;
+                        that.headlight.position.y = that.camera.position.y + 200;
+                        that.headlight.position.z = that.camera.position.z + 200;
                     }
-                    if (self.tickLabels) {
-                        self._drawTickLabels();
-                        self._drawAxisLabels();
-                        self._drawGraphTitle();
+                    if (that.tickLabels) {
+                        that._drawTickLabels();
+                        that._drawAxisLabels();
+                        that._drawGraphTitle();
                     }
                 }
-                if (self._data) {
-                    self._drawGraph();
-                    self._drawColorBar();
+                if (that._data) {
+                    that._drawGraph();
+                    that._drawColorBar();
                 }
             });
         },
 
         _newParticleObject: function (indexes, options) {
-            var self = this;
+            var that = this;
             options = options || {};
             var image = shapeImages[options.shape] || shapeImages[DEFAULT_POINT_SHAPE];
             if (options.transparent) {
@@ -1498,17 +1495,17 @@ define([
             if (indexes) {
                 for (var i = 0; i < indexes.length; i++) {
                     var vertex = new THREE.Vector3();
-                    vertex.x = self._data.normalizedData.x[indexes[i]];
-                    vertex.y = self._data.normalizedData.y[indexes[i]];
-                    vertex.z = self._data.normalizedData.z[indexes[i]];
+                    vertex.x = that._data.normalizedData.x[indexes[i]];
+                    vertex.y = that._data.normalizedData.y[indexes[i]];
+                    vertex.z = that._data.normalizedData.z[indexes[i]];
                     geometry.vertices.push(vertex);
                 }
             } else {
-                for (var i = 0; i < self._data.normalizedData.x.length; i++) {
+                for (var i = 0; i < that._data.normalizedData.x.length; i++) {
                     var vertex = new THREE.Vector3();
-                    vertex.x = self._data.normalizedData.x[i];
-                    vertex.y = self._data.normalizedData.y[i];
-                    vertex.z = self._data.normalizedData.z[i];
+                    vertex.x = that._data.normalizedData.x[i];
+                    vertex.y = that._data.normalizedData.y[i];
+                    vertex.z = that._data.normalizedData.z[i];
                     geometry.vertices.push(vertex);
                 }
             }
@@ -1523,25 +1520,25 @@ define([
             if (!object) {
                 return;
             }
-            var self = this;
+            var that = this;
             options = options || {};
             var indexes = object.indexes;
             var vertices = object.geometry.vertices;
             var values_size = object.material.attributes.size.value;
             var values_color = object.material.attributes.ca.value;
-            var color = self._data.color;
-            var size = self._data.size;
-            var factor = 2.2388 * (options.sizeFactor || 1.0) * NORM_CONSTANT * self.height;
+            var color = that._data.color;
+            var size = that._data.size;
+            var factor = 2.2388 * (options.sizeFactor || 1.0) * NORM_CONSTANT * that.height;
             var forcedColor = options.forcedColor ? new THREE.Color(options.forcedColor) : null;
             var updateColor = options.updateColor || true;
             var filter;
             if (options.applyFilter) { // Filter point to display
-                filter = self._data.inBoundary.slice(0);
-                for (var i = 0; i < self._dispFilter.length; i++) {
-                    filter[i] = self._dispFilter[i] && filter[i];
+                filter = that._data.inBoundary.slice(0);
+                for (var i = 0; i < that._dispFilter.length; i++) {
+                    filter[i] = that._dispFilter[i] && filter[i];
                 }
             } else {
-                filter = self._data.inBoundary;
+                filter = that._data.inBoundary;
             }
             if (indexes) {
                 for (var v = 0; v < vertices.length; v++) {
@@ -1571,26 +1568,26 @@ define([
         },
 
         _prepareHighlights: function (hl) {
-            var self = this;
-            self._highlightParticleObjects = {};
+            var that = this;
+            that._highlightParticleObjects = {};
             var m = {};
 
             for (var i = 0; i < hl.length; i++) {
-                m[self._data.shape[i]] = m[self._data.shape[i]] || {};
-                m[self._data.shape[i]][hl[i]] = m[self._data.shape[i]][hl[i]] || [];
-                m[self._data.shape[i]][hl[i]].push(i);
+                m[that._data.shape[i]] = m[that._data.shape[i]] || {};
+                m[that._data.shape[i]][hl[i]] = m[that._data.shape[i]][hl[i]] || [];
+                m[that._data.shape[i]][hl[i]].push(i);
             }
 
             for (var shape in m) {
                 for (var hlkey in m[shape]) {
-                    self._highlightParticleObjects[shape] = self._highlightParticleObjects[shape] || {};
-                    self._highlightParticleObjects[shape][hlkey] = self._newParticleObject(m[shape][hlkey], {
+                    that._highlightParticleObjects[shape] = that._highlightParticleObjects[shape] || {};
+                    that._highlightParticleObjects[shape][hlkey] = that._newParticleObject(m[shape][hlkey], {
                         shape: shape || DEFAULT_POINT_SHAPE,
                         transparent: true
                     });
                 }
             }
-            self.renderer.render(self.scene, self.camera);
+            that.renderer.render(that.scene, that.camera);
 
         },
 
@@ -1658,57 +1655,57 @@ define([
                 if (!this._data || !this._mainParticleObjects) {
                     return;
                 }
-                var self = this;
+                var that = this;
                 if (!moduleValue || !moduleValue.get()) {
                     console.error('Unvalid value boolArray', moduleValue);
                     return;
                 }
-                self._dispFilter = moduleValue.get();
-                for (var shape in self._mainParticleObjects) {
-                    self._updateParticleObject(self._mainParticleObjects[shape], {
+                that._dispFilter = moduleValue.get();
+                for (var shape in that._mainParticleObjects) {
+                    that._updateParticleObject(that._mainParticleObjects[shape], {
                         applyFilter: true,
                         updateColor: false
                     });
                 }
 
-                self._updateMathPoints({applyFilter: true});
-                for (var shape in self._highlightParticleObjects) {
-                    for (var hlkey in self._highlightParticleObjects[shape]) {
-                        self._updateParticleObject(self._highlightParticleObjects[shape][hlkey], {
+                that._updateMathPoints({applyFilter: true});
+                for (var shape in that._highlightParticleObjects) {
+                    for (var hlkey in that._highlightParticleObjects[shape]) {
+                        that._updateParticleObject(that._highlightParticleObjects[shape][hlkey], {
                             applyFilter: true,
                             updateColor: false,
                             sizeFactor: 1.35
                         });
                     }
                 }
-                self.renderer.render(self.scene, self.camera);
+                that.renderer.render(that.scene, that.camera);
             }
         },
 
         _render: function () {
-            var self = this;
+            var that = this;
             setTimeout(function () {
-                self.renderer.render(self.scene, self.camera, 0);
+                that.renderer.render(that.scene, that.camera, 0);
             }, 20);
         },
 
         _convertData3dToData: function (value) {
-            var self = this;
+            var that = this;
             if (!Array.isArray(value) || value.length === 0) {
                 console.error('Data 3D not valid');
             }
 
 
-            self._data = {};
+            that._data = {};
 
-            var jpaths = self.module.getConfiguration('dataJpaths');
-            self._data.x = [];
-            self._data.y = [];
-            self._data.z = [];
-            self._data.size = [];
-            self._data.color = [];
-            self._data.shape = [];
-            self._data._highlight = [];
+            var jpaths = that.module.getConfiguration('dataJpaths');
+            that._data.x = [];
+            that._data.y = [];
+            that._data.z = [];
+            that._data.size = [];
+            that._data.color = [];
+            that._data.shape = [];
+            that._data._highlight = [];
 
             var jp = _.cloneDeep(Data.resurrect(jpaths));
             _.each(jp, function (v) {
@@ -1732,26 +1729,26 @@ define([
                 _.each(jp, function (v) {
                     v[0] = i;
                 });
-                self._data.x.push(getFromJpath(value, jp.x, 0));
-                self._data.y.push(getFromJpath(value, jp.y, 0));
-                self._data.z.push(getFromJpath(value, jp.z, 0));
-                self._data.color.push(getFromJpath(value, jp.color, DEFAULT_POINT_COLOR));
-                self._data.size.push(getFromJpath(value, jp.size, DEFAULT_POINT_RADIUS));
-                self._data.shape.push(getFromJpath(value, jp.shape, DEFAULT_POINT_SHAPE));
+                that._data.x.push(getFromJpath(value, jp.x, 0));
+                that._data.y.push(getFromJpath(value, jp.y, 0));
+                that._data.z.push(getFromJpath(value, jp.z, 0));
+                that._data.color.push(getFromJpath(value, jp.color, DEFAULT_POINT_COLOR));
+                that._data.size.push(getFromJpath(value, jp.size, DEFAULT_POINT_RADIUS));
+                that._data.shape.push(getFromJpath(value, jp.shape, DEFAULT_POINT_SHAPE));
             }
-            self._meta = {};
-            self._data.x = self._data.x || [];
-            self._data.y = self._data.y || [];
-            self._data.z = self._data.z || [];
-            self._data._highlight = _.pluck(value, '_highlight');
-            if (!_.any(self._data._highlight)) self._data._highlight = [];
-            self._dispFilter = self._dispFilter || [];
+            that._meta = {};
+            that._data.x = that._data.x || [];
+            that._data.y = that._data.y || [];
+            that._data.z = that._data.z || [];
+            that._data._highlight = _.pluck(value, '_highlight');
+            if (!_.any(that._data._highlight)) that._data._highlight = [];
+            that._dispFilter = that._dispFilter || [];
         },
 
         _convertChartToData: function (value) {
             this._data = {};
             this._meta = {};
-            var self = this;
+            var that = this;
             if (!Array.isArray(value.data) || !value.data[0] || !Array.isArray(value.data[0].y)) return;
             if (value.data.length > 0) {
                 Debug.warn('Scatter 3D module will merge series together');
@@ -1760,14 +1757,14 @@ define([
             for (var j = 0; j < value.data.length; j++) {
                 _.keys(value.data[j]).forEach(function (key) {
                     if (Array.isArray(value.data[j][key])) {
-                        self._data[key] = self._data[key] || [];
-                        self._data[key].push(value.data[j][key]);
-                        self._data[key] = _.flatten(self._data[key], true);
+                        that._data[key] = that._data[key] || [];
+                        that._data[key].push(value.data[j][key]);
+                        that._data[key] = _.flatten(that._data[key], true);
 
                     } else {
-                        self._data[key] = value.data[j][key];
+                        that._data[key] = value.data[j][key];
                     }
-                    _.filter(self._data[key], function (val) {
+                    _.filter(that._data[key], function (val) {
                         return val !== undefined;
                     });
                 });
@@ -1775,17 +1772,17 @@ define([
 
             _.keys(value).forEach(function (key) {
                 if (key === 'data') return;
-                else self._meta[key] = value[key];
+                else that._meta[key] = value[key];
             });
 
-            self._dispFilter = self._dispFilter || [];
+            that._dispFilter = that._dispFilter || [];
         },
 
         _completeData: function (name, defaultValue) {
-            var self = this;
-            self._data[name] = self._data[name] || [];
-            for (var i = 0; i < self._data.x.length; i++) {
-                if (self._data[name][i] === undefined) self._data[name][i] = defaultValue;
+            var that = this;
+            that._data[name] = that._data[name] || [];
+            for (var i = 0; i < that._data.x.length; i++) {
+                if (that._data[name][i] === undefined) that._data[name][i] = defaultValue;
             }
         },
 
@@ -1796,17 +1793,17 @@ define([
         },
 
         _activateHighlights: function () {
-            var self = this;
-            if (self._data) {
-                API.killHighlight(self.module.getId());
-                if (self._data._highlight) {
-                    listenHighlightsBis(self._data._highlight);
+            var that = this;
+            if (that._data) {
+                API.killHighlight(that.module.getId());
+                if (that._data._highlight) {
+                    listenHighlightsBis(that._data._highlight);
                 }
             }
 
 
             function listenHighlightsBis(hl) {
-                self._prepareHighlights(hl);
+                that._prepareHighlights(hl);
                 var hlset = _.uniq(hl);
 
                 _.keys(hlset).forEach(function (k) {
@@ -1823,30 +1820,30 @@ define([
 
             function undrawHighlightBis(hl) {
                 var doDraw = false;
-                for (var shape in self._highlightParticleObjects) {
-                    if (self._highlightParticleObjects[shape][hl] && self._highlightParticleObjects[shape][hl].drawn) {
-                        self.scene.remove(self._highlightParticleObjects[shape][hl]);
-                        self._highlightParticleObjects[shape][hl].drawn = false;
+                for (var shape in that._highlightParticleObjects) {
+                    if (that._highlightParticleObjects[shape][hl] && that._highlightParticleObjects[shape][hl].drawn) {
+                        that.scene.remove(that._highlightParticleObjects[shape][hl]);
+                        that._highlightParticleObjects[shape][hl].drawn = false;
                         doDraw = true;
                     }
                 }
-                if (doDraw) self._render();
+                if (doDraw) that._render();
             }
 
             function drawHighlightBis(hl) {
-                for (var shape in self._highlightParticleObjects) {
-                    if (self._highlightParticleObjects[shape][hl]) {
-                        if (self._highlightParticleObjects[shape][hl].drawn === true) {
+                for (var shape in that._highlightParticleObjects) {
+                    if (that._highlightParticleObjects[shape][hl]) {
+                        if (that._highlightParticleObjects[shape][hl].drawn === true) {
                             return;
                         } else {
-                            self.scene.add(self._highlightParticleObjects[shape][hl]);
-                            self._highlightParticleObjects[shape][hl].drawn = true;
-                            self._updateParticleObject(self._highlightParticleObjects[shape][hl], {
+                            that.scene.add(that._highlightParticleObjects[shape][hl]);
+                            that._highlightParticleObjects[shape][hl].drawn = true;
+                            that._updateParticleObject(that._highlightParticleObjects[shape][hl], {
                                 updateColor: true,
                                 sizeFactor: 1.35,
                                 transparent: true
                             });
-                            self._render();
+                            that._render();
                         }
                     }
                 }

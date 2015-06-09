@@ -6,7 +6,6 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
 
         this.currentPath = [];
         this._allData = {};
-        //self._head = {};
         this.dom = $('<div />');
 
         this.versionChangeDeferred = $.Deferred();
@@ -39,16 +38,16 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
         },
 
         getData: function () {
-            var self = this;
+            var that = this;
 
             if (this.currentPath[1] == 'server') {
 
                 return this._getServer().pipe(function (data) {
 
-                    if (self.type == 'view') {
-                        return self._data['server'] = new DataObject(data, true);
-                    } else if (self.type == 'data') {
-                        return self._data['server'] = new DataObject(data, true);
+                    if (that.type == 'view') {
+                        return that._data['server'] = new DataObject(data, true);
+                    } else if (that.type == 'data') {
+                        return that._data['server'] = new DataObject(data, true);
                     }
 
                 }, function () {
@@ -58,16 +57,15 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
             } else {
 
                 return this._getLocal().pipe(function (data) {
-                    //console.log(data);
 
                     if (typeof data !== 'object') {
                         data = JSON.parse(data);
                     }
 
-                    if (self.type == 'view') {
-                        return self._data['local'] = new DataObject(data, true);
-                    } else if (self.type == 'data') {
-                        return self._data['local'] = new DataObject(data, true);
+                    if (that.type == 'view') {
+                        return that._data['local'] = new DataObject(data, true);
+                    } else if (that.type == 'data') {
+                        return that._data['local'] = new DataObject(data, true);
                     }
 
                 }, function () {
@@ -78,14 +76,14 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
 
 
         getBranches: function () {
-            var self = this;
+            var that = this;
             return $.when(this.getData()).pipe(function (data) {
                 var branches = {};
 
                 for (var i in data) {
                     // i is branch name
                     // data.revisions is all revs || data[i].list
-                    branches[i] = i + ' (' + (data[i].list.length + (self.currentPath[1] == 'local' ? 1 : 0)) + ')';
+                    branches[i] = i + ' (' + (data[i].list.length + (that.currentPath[1] == 'local' ? 1 : 0)) + ')';
                 }
                 return branches;
             });
@@ -93,18 +91,18 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
 
         getElements: function (level) {
 
-            var self = this;
+            var that = this;
             var branch = this.currentPath[2];
             return $.when(this.getData()).pipe(function (alldata) {
 
                 var data = alldata[branch].list;
                 var all = {};
 
-                if (self.currentPath[1] == 'local' && alldata[branch].head)
-                    all['head'] = self.makeFilename(alldata[branch].head);
+                if (that.currentPath[1] == 'local' && alldata[branch].head)
+                    all['head'] = that.makeFilename(alldata[branch].head);
 
                 for (var i = data.length - 1; i >= 0; i--)
-                    all[data[i]._time] = self.makeFilename(data[i]);
+                    all[data[i]._time] = that.makeFilename(data[i]);
 
                 return all;
             });
@@ -122,9 +120,9 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
         },
 
         _getLocal: function () {
-            var self = this;
+            var that = this;
             return db.open().pipe(function () {
-                return db.getAll(self.type, self._dirUrl).pipe(function (all) {
+                return db.getAll(that.type, that._dirUrl).pipe(function (all) {
                     return all;
                 });
             });
@@ -161,7 +159,7 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
 
         makeMenu: function (level) {
 
-            var toOpen = this.structure, self = this;
+            var toOpen = this.structure, that = this;
             var i = 0;
             // Want to display the top level (server/local)
             if (level == 1) {
@@ -176,9 +174,9 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
             return $.when(toOpen).pipe(function (toOpen) {
                 // It's still an object
                 if (!Array.isArray(toOpen))
-                    return self.objectToMenu(toOpen, level, self.currentPath[level - 1] || null, self.currentPath[level - 2] || null);
+                    return that.objectToMenu(toOpen, level, that.currentPath[level - 1] || null, that.currentPath[level - 2] || null);
                 else
-                    return self.arrayToMenu(toOpen, level, self.currentPath[level - 1] || null, self.currentPath[level - 2] || null);
+                    return that.arrayToMenu(toOpen, level, that.currentPath[level - 1] || null, that.currentPath[level - 2] || null);
             });
         },
 
@@ -201,7 +199,7 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
         },
 
         bindEventsMenu: function (dom) {
-            var self = this;
+            var that = this;
 
             dom.on('mouseenter', 'li', function (e) {
 
@@ -211,23 +209,23 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
 
                 var ul = $this.parent();
                 var level = ul.data('level');
-                self.currentPath[level] = $this.data('el');
+                that.currentPath[level] = $this.data('el');
 
                 // Leaf
                 if (level == 3)
                     return;
 
-                self.makeMenu(level + 1).then(function (menu) {
+                that.makeMenu(level + 1).then(function (menu) {
                     menu = $(menu);
                     $this.find('ul').html(menu).addClass('ci-fetched');
-                    if (level + 1 == 3 && self.currentPath[2] == 'head')
+                    if (level + 1 == 3 && that.currentPath[2] == 'head')
                         menu.find('ul').remove();
-                    self._menu.menu('refresh');
+                    that._menu.menu('refresh');
 
                 }, function () {
 
                     $this.find('ul').html('<li><a>No element here</a></li>').addClass('ci-fetched');
-                    self._menu.menu('refresh');
+                    that._menu.menu('refresh');
 
                 });
                 return false;
@@ -238,12 +236,12 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
                 var $this = $(this);
                 var ul = $this.parent();
                 var level = ul.data('level');
-                self.currentPath[level] = $this.data('el');
+                that.currentPath[level] = $this.data('el');
 
                 if ($this.find('ul').length > 0)
                     return;
 
-                self.clickLeaf($this);
+                that.clickLeaf($this);
             });
         },
 
@@ -285,17 +283,17 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
         },
 
         bindEventsDom: function (dom) {
-            var self = this;
+            var that = this;
 
 
             dom.on('mousedown', 'li', function (e) {
                 var $this = $(this);
                 var pos = $this.position();
 
-                self.makeMenu($this.data('level')).done(function (menu) {
+                that.makeMenu($this.data('level')).done(function (menu) {
                     menu = $('<ul draggable="false" class="ci-dataview-menu" data-level="' + $this.data('level') + '"></ul>').append(menu).menu();
-                    self._menu = menu;
-                    self.bindEventsMenu(menu);
+                    that._menu = menu;
+                    that.bindEventsMenu(menu);
                     menu.appendTo('#visualizer-dataviews').css({
                         position: 'absolute',
                         left: pos.left,
@@ -335,7 +333,7 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
         },
 
         clickLeaf: function (li) {
-            var self = this;
+            var that = this;
             var i = li.data('el');
             var branch = li.data('parent');
             var mode = li.data('parent-parent');
@@ -348,12 +346,12 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
 
                 this.getFromServer(data).done(function (el) {
 
-                    self.currentPath[1] = 'server';
-                    self.currentPath[2] = branch;
-                    self.currentPath[3] = i;
-                    self.make(el, branch, i);
-                    self._savedServer = JSON.stringify(el);
-                    self.onReload(el);
+                    that.currentPath[1] = 'server';
+                    that.currentPath[2] = branch;
+                    that.currentPath[3] = i;
+                    that.make(el, branch, i);
+                    that._savedServer = JSON.stringify(el);
+                    that.onReload(el);
                 });
 
             } else {
@@ -373,18 +371,18 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
                         }
                     }
 
-                    self.currentPath[1] = 'local';
-                    self.currentPath[2] = branch;
-                    self.currentPath[3] = i;
-                    self.make(el, branch, i);
-                    self._savedLocal = JSON.stringify(el);
-                    self.onReload(el);
+                    that.currentPath[1] = 'local';
+                    that.currentPath[2] = branch;
+                    that.currentPath[3] = i;
+                    that.make(el, branch, i);
+                    that._savedLocal = JSON.stringify(el);
+                    that.onReload(el);
                 });
             }
         },
 
         loadReadonly: function (def) {
-            var self = this,
+            var that = this,
                 url = this._defaultUrl;
 
             $.ajax({
@@ -392,9 +390,9 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
                 timeout: 200000,
                 dataType: 'text',
                 success: function (data) {
-                    data = self._reviver(JSON.parse(data));
-                    self.make(data);
-                    self._onLoaded(data);
+                    data = that._reviver(JSON.parse(data));
+                    that.make(data);
+                    that._onLoaded(data);
                     def.resolve();
                 }
             });
@@ -406,7 +404,7 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
             this._defaultUrl = defaultUrl;
             this.defaultBranch = defaultBranch;
 
-            var self = this;
+            var that = this;
             var def = $.Deferred();
 
             if (!this._dirUrl && this._defaultUrl) {
@@ -419,7 +417,7 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
                 branch: branch,
                 action: 'Load'
             });
-            var defLocal = self._getLocalHead(branch);
+            var defLocal = that._getLocalHead(branch);
 
             // First load the server
             // Needed to identify branch and revision of the file
@@ -427,12 +425,12 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
             $.when(defServer).then(function (server) {
 
                 // Success
-                var branch = server._name || self.defaultBranch;
+                var branch = server._name || that.defaultBranch;
                 var rev = server._time || 'head';
                 var saved = server._saved || 0;
 
                 // Always compare to the head of the local branch
-                var defLocal = self._getLocalHead(branch);
+                var defLocal = that._getLocalHead(branch);
 
                 $.when(defLocal).then(function (el) {
 
@@ -440,7 +438,7 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
                     // to the head of the corresponding local branch
                     if (!el._saved) {
                         //doServer(server, branch, rev);
-                        self.serverCopy(server, branch, 'head').done(function () {
+                        that.serverCopy(server, branch, 'head').done(function () {
 
                             doLocal(server, server._name, 'head');
                         });
@@ -459,7 +457,7 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
                     doServer(server, branch, rev);
                 });
             }, function (server) {
-                $.when(self._getLocalHead(branch)).then(function (el) {
+                $.when(that._getLocalHead(branch)).then(function (el) {
 
                     doLocal(el, branch, el._time || 'head');
                 });
@@ -467,27 +465,27 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
 
             function doLocal(el, branch, rev) {
 
-                self.currentPath[1] = 'local';
-                self.currentPath[2] = branch;
-                self.currentPath[3] = rev;
+                that.currentPath[1] = 'local';
+                that.currentPath[2] = branch;
+                that.currentPath[3] = rev;
 
 
-                self._savedLocal = JSON.stringify(el);
-                self.make(el, self.currentPath[2], self.currentPath[3]);
+                that._savedLocal = JSON.stringify(el);
+                that.make(el, that.currentPath[2], that.currentPath[3]);
                 def.resolve(el);
 
-                self._onLoaded(el);
+                that._onLoaded(el);
             }
 
             function doServer(el, branch, rev) {
 
-                self.currentPath[1] = 'server';
-                self.currentPath[2] = branch;
-                self.currentPath[3] = rev;
-                self.make(el, self.currentPath[2], self.currentPath[3]);
-                self._savedServer = JSON.stringify(el);
+                that.currentPath[1] = 'server';
+                that.currentPath[2] = branch;
+                that.currentPath[3] = rev;
+                that.make(el, that.currentPath[2], that.currentPath[3]);
+                that._savedServer = JSON.stringify(el);
                 def.resolve(el);
-                self._onLoaded(el);
+                that._onLoaded(el);
             }
 
             return def;
@@ -527,7 +525,7 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
 
         _localSave: function (obj, mode, name) {
 
-            var self = this;
+            var that = this;
             obj._local = true;
             // IF: Already Head => Erase current head, IF: New head: Overwrite head (keep current)
             obj._time = mode == 'head' ? false : Date.now();
@@ -537,11 +535,11 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
 
             return db.open().pipe(function () {
 
-                return db[mode == 'head' ? 'storeToHead' : 'store'](self.type, self._dirUrl, name, obj).pipe(function (element) {
+                return db[mode == 'head' ? 'storeToHead' : 'store'](that.type, that._dirUrl, name, obj).pipe(function (element) {
 
-                    self.currentPath[1] = 'local';
-                    self.currentPath[2] = name;
-                    self.currentPath[3] = obj._time || 'head';
+                    that.currentPath[1] = 'local';
+                    that.currentPath[2] = name;
+                    that.currentPath[3] = obj._time || 'head';
                     return element;
                 });
             });
@@ -564,14 +562,14 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
         },
 
         localAutosave: function (val, callback, done) {
-            var self = this;
+            var that = this;
             if (this._autosaveLocal)
                 window.clearInterval(this._autosaveLocal);
 
             if (val)
                 this._autosaveLocal = window.setInterval(function () {
                     var el = callback();
-                    self._localSave(el, 'head', el._name || 'Master').done(function () {
+                    that._localSave(el, 'head', el._name || 'Master').done(function () {
                         if (done)
                             done();
                     });
@@ -582,19 +580,19 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
         localBranch: function (data, name) {
             data._name = name;
             data._time = false;
-            var self = this;
+            var that = this;
             return this._localSave(data, 'head', name).pipe(function (obj) {
 
-                self.make(obj, self.currentPath[2], self.currentPath[3]);
+                that.make(obj, that.currentPath[2], that.currentPath[3]);
             });
         },
 
         // Do not change branch, just change the head
         localRevert: function (data) {
-            var self = this;
+            var that = this;
             data._time = false;
             this._localSave(data, 'head', data._name || 'Master').done(function (obj) {
-                self.make(obj, self.currentPath[2], self.currentPath[3]);
+                that.make(obj, that.currentPath[2], that.currentPath[3]);
             });
         },
 
@@ -604,14 +602,14 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
         /************************/
 
         autosaveServer: function (val, callback, done) {
-            var self = this;
+            var that = this;
             if (this._autosaveServer)
                 window.clearInterval(this._autosaveServer);
 
             if (val)
                 this._autosaveServer = window.setInterval(function () {
 
-                    self._saveToServer(callback()).done(function () {
+                    that._saveToServer(callback()).done(function () {
                         if (done)
                             done();
                     });
@@ -641,7 +639,7 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
         },
 
         getFromServer: function (data) {
-            var self = this,
+            var that = this,
                 def = $.Deferred(),
                 url = this.getUrl() || this._defaultUrl;
 
@@ -657,8 +655,8 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
                 cache: false,
                 data: data || {},
                 success: function (data) { // data is now a text
-                    self._savedServer = data;
-                    data = self._reviver(JSON.parse(data));
+                    that._savedServer = data;
+                    data = that._reviver(JSON.parse(data));
                     def.resolve(data);
                 },
 
@@ -671,14 +669,14 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
         },
 
         serverCopy: function (data, branch, rev) {
-            var self = this;
+            var that = this;
 
             data._name = data._name || branch || 'Master';
             data._time = false;
             data._saved = Date.now();
 
             return this._localSave(data, 'head', data._name).pipe(function (el) {
-                return self.make(el, data._name, 'head');
+                return that.make(el, data._name, 'head');
             });
         },
 

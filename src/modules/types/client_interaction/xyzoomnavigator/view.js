@@ -9,7 +9,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
         init: function () {
 
             this.dom = $('<div />');
-            var self = this;
+            var that = this;
             var img = $('<div class="ci-navigation-navigarrow"></div>');
             this.domNavig = $('<div />').addClass('ci-navigation-navig')
                 .append(img.clone().addClass('top'))
@@ -17,7 +17,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
                 .append(img.clone().addClass('right'))
                 .append(img.clone().addClass('bottom'))
                 .on('mousedown', '.ci-navigation-navigarrow', function (event) {
-                    self.moveStart(event);
+                    that.moveStart(event);
                 });
 
             this.domZoom = $('<div class="ci-navigation-navigzoom"></div>');
@@ -30,7 +30,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
                 max: 1,
                 value: 0.5,
                 slide: function (event, ui) {
-                    self.zoom(ui.value);
+                    that.zoom(ui.value);
                 }
             });
 
@@ -71,7 +71,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
             var started = Date.now();
             //self.moveStart(event);
 
-            var self = this;
+            var that = this;
             var target = $(e.target || e.srcElement);
 
             var mode = target.hasClass('top') ? 'top' : (target.hasClass('bottom') ? 'bottom' : (target.hasClass('left') ? 'left' : (target.hasClass('right') ? 'right' : 'top')));
@@ -84,16 +84,16 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
             var execute = function () {
 
                 if (mode == 'top')
-                    self.cy -= self.step;
+                    that.cy -= that.step;
                 else if (mode == 'bottom')
-                    self.cy += self.step;
+                    that.cy += that.step;
                 else if (mode == 'left')
-                    self.cx -= self.step;
+                    that.cx -= that.step;
                 else if (mode == 'right')
-                    self.cx += self.step;
+                    that.cx += that.step;
 
 
-                self.module.controller.move(self.cx, self.cy);
+                that.module.controller.move(that.cx, that.cy);
                 setTimeout();
             };
 

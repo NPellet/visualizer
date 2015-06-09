@@ -23,7 +23,7 @@ define([
         },
 
         inDom: function () {
-            var self = this;
+            var that = this;
             var theSequence = 'METLCQRLNVCQDKILTHYENDSTDLRDHIDYWKHMRLECAIYYKAREMGFKHINHQVVPTLAVSKNKALQAIELQLTLETIYNSQYSNEKWTLQDVSLEVYLTAPTGCIKKHGYTVEVQFDGDICNTMHYTNWTHIYICEEAojs SVTVVEGQVDYYGLYYVHEGIRTYFVQFKDDAEKYSKNKVWEVHAGGQVILCPTSVFSSNEVSSPEIIRQHLANHPAATHTKAVALGTEETQTTIQRPRSEPDTGNPCHTTKLLHRDSVDSAPILTAFNSSHKGRINCNSNTTPIVHLKGDANTLKCLRYRFKKHCTLYTAVSSTWHWTGHNVKHKSAIVTLTYDSEWQRDQFLSQVKIPKTITVSTGFMSI';
             var mySequence = new Biojs.Sequence({
                 sequence: theSequence,
@@ -60,7 +60,7 @@ define([
             });
 
             mySequence.onSelectionChange(function (data) {
-                self.module.controller.onSequenceSelectionChanged(data);
+                that.module.controller.onSequenceSelectionChanged(data);
             });
 
             // var mySeq = new Biojs.Sequence({

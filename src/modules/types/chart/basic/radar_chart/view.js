@@ -58,16 +58,16 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
             this._radar.parse(data, 'json');
 
-            var self = this;
+            var that = this;
             this._radar.attachEvent('onMouseMove', function (id, ev, trg) {
                 data.forEach(function (entry) {
 
                     if (entry.id == id) {
                         var obj = entry;
                         if (ev.toElement.outerHTML[ev.toElement.outerHTML.length - 3] == 'd') {
-                            self.module.controller.elementHover(obj._highlight[0]);
+                            that.module.controller.elementHover(obj._highlight[0]);
                         } else {
-                            self.module.controller.elementHover(obj._highlight[ev.toElement.outerHTML[ev.toElement.outerHTML.length - 3]]);
+                            that.module.controller.elementHover(obj._highlight[ev.toElement.outerHTML[ev.toElement.outerHTML.length - 3]]);
                         }
                     }
 
@@ -77,7 +77,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
             });
             this._radar.attachEvent('onMouseOut', function (id, ev, trg) {
-                self.module.controller.elementOut();
+                that.module.controller.elementOut();
             });
 
 

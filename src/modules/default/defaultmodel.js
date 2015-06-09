@@ -91,7 +91,7 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
 
         onVarChange: function (variable) {
 
-            var self = this,
+            var that = this,
                 i,
                 l,
                 k,
@@ -105,7 +105,7 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
             }
 
             this.module.onReady().then(function () {
-                self.module.blankVariable(varName);
+                that.module.blankVariable(varName);
             });
 
             // Show loading state if it takes more than 500ms to get the data
@@ -114,14 +114,14 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
                 var timeout = setTimeout(resolve, 500);
                 rejectLatency = function () {
                     clearTimeout(timeout);
-                    self.module.endLoading(varName);
+                    that.module.endLoading(varName);
                     reject();
                 };
             });
 
             // Start loading
             Promise.all([this.module.onReady(), latency]).then(function () {
-                self.module.startLoading(varName);
+                that.module.startLoading(varName);
             }, function (err) {
                 // Fail silently (onReady is already covered and reject latency is expected)
             });
@@ -132,23 +132,23 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
                 var varValue = variable.getValue();
 
                 // Then validate
-                if (!varName || !self.sourceMap || !self.sourceMap[varName] || !self.module.controller.references[self.sourceMap[varName].rel]) {
+                if (!varName || !that.sourceMap || !that.sourceMap[varName] || !that.module.controller.references[that.sourceMap[varName].rel]) {
                     return rejectLatency();
                 }
 
-                var data = self.buildData(varValue, self.module.controller.references[self.sourceMap[varName].rel].type);
+                var data = that.buildData(varValue, that.module.controller.references[that.sourceMap[varName].rel].type);
 
                 if (!data) {
                     return rejectLatency();
                 }
 
-                rel = self.module.getDataRelFromName(varName);
+                rel = that.module.getDataRelFromName(varName);
 
                 i = 0;
                 l = rel.length;
                 k = 0;
 
-                var vars = self.module.vars_in();
+                var vars = that.module.vars_in();
 
                 rejectLatency();
 
@@ -156,7 +156,7 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
 
                 for (; k < m; k++) {
 
-                    if (vars[k].name == varName && self.module.view.update[vars[k].rel] && varValue !== null) {
+                    if (vars[k].name == varName && that.module.view.update[vars[k].rel] && varValue !== null) {
 
                         (function (j) {
 
@@ -178,9 +178,9 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
                                     resolve(varValue);
                                 }
                             }).then(function (varValue) {
-                                    self.setData(vars[j].rel, varName, varValue);
-                                    self.removeAllChangeListeners(vars[j].rel);
-                                    self.module.view.update[vars[j].rel].call(self.module.view, varValue, varName);
+                                    that.setData(vars[j].rel, varName, varValue);
+                                    that.removeAllChangeListeners(vars[j].rel);
+                                    that.module.view.update[vars[j].rel].call(that.module.view, varValue, varName);
 
                                 }, function (err) {
                                     Debug.error('Error while filtering the data : ', err.message, err.stack);
@@ -297,10 +297,10 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
                 return;
             }
 
-            var self = this,
+            var that = this,
                 proxiedCallback = function (target, moduleId) {
 
-                    if (moduleId == self.module.getId()) {
+                    if (moduleId == that.module.getId()) {
                         return;// Do not update itself;
                     }
 

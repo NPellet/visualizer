@@ -161,8 +161,7 @@ define([
         bindToolbar: function () {
             var that = this;
             var toolbar = this.controller.getToolbar();
-            this.dom.find('.ci-module-header-toolbar ul li').each(function () {
-                var el = this;
+            this.dom.find('.ci-module-header-toolbar ul li').each(function (idx, el) {
                 var t = _.find(toolbar, function (val) {
                     return val.title === el.title;
                 });
@@ -355,7 +354,7 @@ define([
             this.controller.inDom();
             this.model.inDom();
 
-            var self = this;
+            var that = this;
 
             if (!API.isViewLocked()) {
 
@@ -363,27 +362,27 @@ define([
 
                     ['<li name="fullscreen"><a><span class="ui-icon ui-icon-arrow-4-diag"></span> Fullscreen</a></li>',
                         function () {
-                            self.enableFullscreen();
+                            that.enableFullscreen();
                         }],
 
                     ['<li name="export"><a><span class="ui-icon ui-icon-suitcase"></span> Export</a></li>',
                         function () {
-                            self.exportData();
+                            that.exportData();
                         }],
 
                     ['<li name="config-example"><a><span class="ui-icon ui-icon-suitcase"></span> Config example</a></li>',
                         function () {
-                            self.exportConfigExample();
+                            that.exportConfigExample();
                         }],
 
                     ['<li name="print"><a><span class="ui-icon ui-icon-print"></span> Print</a></li>',
                         function () {
-                            self.printView();
+                            that.printView();
                         }],
 
                     ['<li name="configuration"><a><span class="ui-icon ui-icon-gear"></span> Parameters</a></li>',
                         function () {
-                            self.doConfig();
+                            that.doConfig();
                         }]
                 ]);
 
@@ -474,7 +473,7 @@ define([
 
         doConfig: function (sectionToOpen) {
 
-            var module = this;
+            var that = this;
             var div = ui.dialog({
                 autoPosition: true,
                 noHeader: true,
@@ -538,7 +537,7 @@ define([
             }
 
             // Receive configuration
-            var varsIn = module.controller.variablesIn,
+            var varsIn = that.controller.variablesIn,
                 varsInList = [];
 
             for (i = 0, l = varsIn.length; i < l; i++) {
@@ -561,7 +560,7 @@ define([
             var makeSendJpaths = function () {
 
                 for (var i in references) {
-                    alljpaths[i] = module.model.getjPath(i);
+                    alljpaths[i] = that.model.getjPath(i);
                 }
 
             };
@@ -634,7 +633,7 @@ define([
             }
 
             var allLayers = {};
-            module.eachLayer(function (layer, key) {
+            that.eachLayer(function (layer, key) {
                 allLayers[key] = key;
             });
 
@@ -747,7 +746,7 @@ define([
                 };
 
 
-                var specificStructure = module.controller.configurationStructure();
+                var specificStructure = that.controller.configurationStructure();
 
 
                 if (specificStructure) {
@@ -1025,11 +1024,11 @@ define([
 
                     var moduleInfosHtml =
                             '<table class="moduleInformation">' +
-                            '<tr><td>Module name</td><td>' + module.controller.moduleInformation.name + '</td></tr>' +
-                            '<tr><td></td><td><small>' + module.controller.moduleInformation.description + '</small></td></tr>' +
-                            '<tr><td>Module author</td><td>' + module.controller.moduleInformation.author + '</td></tr>' +
-                            '<tr><td>Creation date</td><td>' + module.controller.moduleInformation.date + '</td></tr>' +
-                            '<tr><td>Released under</td><td>' + module.controller.moduleInformation.license + '</td></tr>' +
+                            '<tr><td>Module name</td><td>' + that.controller.moduleInformation.name + '</td></tr>' +
+                            '<tr><td></td><td><small>' + that.controller.moduleInformation.description + '</small></td></tr>' +
+                            '<tr><td>Module author</td><td>' + that.controller.moduleInformation.author + '</td></tr>' +
+                            '<tr><td>Creation date</td><td>' + that.controller.moduleInformation.date + '</td></tr>' +
+                            '<tr><td>Released under</td><td>' + that.controller.moduleInformation.license + '</td></tr>' +
                             '</table>'
                         ;
 
@@ -1037,7 +1036,7 @@ define([
                     var allLayers = [],
                         allLayerDisplay = [];
 
-                    module.eachLayer(function (layer, name) {
+                    that.eachLayer(function (layer, name) {
 
                         if (layer.display) {
                             allLayerDisplay.push(name);
@@ -1060,12 +1059,12 @@ define([
                             }],
 
                             module_infos: [{groups: {group: [moduleInfosHtml]}}],
-                            module_specific_config: [module.definition.configuration || {}],
+                            module_specific_config: [that.definition.configuration || {}],
 
-                            vars_out: [{groups: {group: [module.vars_out()]}}],
-                            vars_in: [{groups: {group: [module.vars_in()]}}],
-                            actions_in: [{groups: {group: [module.actions_in()]}}],
-                            actions_out: [{groups: {group: [module.actions_out()]}}]
+                            vars_out: [{groups: {group: [that.vars_out()]}}],
+                            vars_in: [{groups: {group: [that.vars_in()]}}],
+                            actions_in: [{groups: {group: [that.actions_in()]}}],
+                            actions_out: [{groups: {group: [that.actions_out()]}}]
                         }
                     };
 
@@ -1082,42 +1081,42 @@ define([
 
                     var value = form.getValue().sections;
 
-                    module.definition.layers = module.definition.layers || {};
+                    that.definition.layers = that.definition.layers || {};
                     var l = value.module_config[0].sections.layer[0].groups.group;
 
                     var allDisplay = value.module_config[0].groups.layerDisplay[0].displayOn[0];
 
                     for (var i = 0, ll = l.length; i < ll; i++) {
 
-                        module.definition.layers[l[i].layerName[0]].display = allDisplay.indexOf(l[i].layerName[0]) > -1;
-                        module.definition.layers[l[i].layerName[0]].title = l[i].moduletitle[0];
-                        module.definition.layers[l[i].layerName[0]].bgColor = l[i].bgcolor[0];
-                        module.definition.layers[l[i].layerName[0]].wrapper = l[i].modulewrapper[0].indexOf('display') > -1;
+                        that.definition.layers[l[i].layerName[0]].display = allDisplay.indexOf(l[i].layerName[0]) > -1;
+                        that.definition.layers[l[i].layerName[0]].title = l[i].moduletitle[0];
+                        that.definition.layers[l[i].layerName[0]].bgColor = l[i].bgcolor[0];
+                        that.definition.layers[l[i].layerName[0]].wrapper = l[i].modulewrapper[0].indexOf('display') > -1;
                     }
 
 
                     if (value.vars_out) {
-                        module.setSendVars(value.vars_out[0].groups.group[0]);
+                        that.setSendVars(value.vars_out[0].groups.group[0]);
                     }
 
                     if (value.vars_in) {
-                        module.setSourceVars(value.vars_in[0].groups.group[0]);
+                        that.setSourceVars(value.vars_in[0].groups.group[0]);
                     }
 
                     if (value.actions_in) {
-                        module.setActionsIn(value.actions_in[0].groups.group[0]);
+                        that.setActionsIn(value.actions_in[0].groups.group[0]);
                     }
 
                     if (value.actions_out) {
-                        module.setActionsOut(value.actions_out[0].groups.group[0]);
+                        that.setActionsOut(value.actions_out[0].groups.group[0]);
                     }
 
 
                     if (value.module_specific_config) {
-                        module.definition.configuration = value.module_specific_config[0];
+                        that.definition.configuration = value.module_specific_config[0];
                     }
 
-                    module.reload();
+                    that.reload();
 
                     div.dialog('close');
                     document.getElementById('header').scrollIntoView(true);
@@ -1133,15 +1132,15 @@ define([
 
 
         resetReady: function () {
-            var module = this;
-            module.viewReady = new Promise(function (res) {
-                module._resolveView = res;
+            var that = this;
+            that.viewReady = new Promise(function (res) {
+                that._resolveView = res;
             });
 
-            module.controllerReady = new Promise(function (res) {
-                module._resolveController = res;
+            that.controllerReady = new Promise(function (res) {
+                that._resolveController = res;
             });
-            module._onReady = Promise.all([module.viewReady, module.controllerReady]);
+            that._onReady = Promise.all([that.viewReady, that.controllerReady]);
         },
 
 
@@ -1365,13 +1364,13 @@ define([
         },
 
         exportData: function () {
-            var module = this;
+            var that = this;
             ui.dialog('<div class="ci-module-export"><textarea></textarea></div>', {
-                title: 'Export data from module ' + module.getTitle(),
+                title: 'Export data from module ' + that.getTitle(),
                 width: '70%',
                 height: 500,
                 noWrap: true
-            }).children('textarea').text(module.controller['export']());
+            }).children('textarea').text(that.controller['export']());
         },
 
         printView: function () {
@@ -1476,13 +1475,13 @@ define([
         },
 
         exportConfigExample: function () {
-            var module = this;
+            var that = this;
             ui.dialog('<div class="ci-module-export"><textarea></textarea></div>', {
                 title: 'Config example',
                 width: '70%',
                 height: 500,
                 noWrap: true
-            }).children('textarea').text(JSON.stringify(module.getConfigExample(), null, 4));
+            }).children('textarea').text(JSON.stringify(that.getConfigExample(), null, 4));
         }
 
     };

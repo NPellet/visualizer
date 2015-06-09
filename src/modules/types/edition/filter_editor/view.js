@@ -9,7 +9,7 @@ define(['modules/types/client_interaction/code_editor/view', 'src/util/util', 'a
     Util.inherits(View, CodeEditor);
 
     View.prototype.inDom = function () {
-        var self = this;
+        var that = this;
 
         this.editable = true;
         $('<div id="' + this._id + '"></div>').css('height', '100%').css('width', '100%').appendTo(this.editorCell);
@@ -20,14 +20,14 @@ define(['modules/types/client_interaction/code_editor/view', 'src/util/util', 'a
         this.editor.getSession().setMode('./mode/javascript');
         this.editor.setValue(initVal, -1);
         this.editor.getSession().on('change', function () {
-            self.editorChanged();
+            that.editorChanged();
         });
 
         this.buttonCell.append(
             $('<span>Execute filter</span>')
                 .addClass('form-button')
                 .on('click', function () {
-                    self.module.controller.onButtonClick(self._code, self._object);
+                    that.module.controller.onButtonClick(that._code, that._object);
                 })
         );
 

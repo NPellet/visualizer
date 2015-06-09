@@ -63,7 +63,7 @@ define([
             },
 
             jcamp2d: function (moduleValue, varName) {
-                var self = this;
+                var that = this;
 
 
                 function hue2rgb(p, q, t) {
@@ -106,8 +106,8 @@ define([
 
                 JcampConverter.convert(String(moduleValue.get()), true).then(function (result) {
                     var data = result.contourLines;
-                    self.nmr.setSerie2D('SomeName', data, opts);
-                    self.redraw();
+                    that.nmr.setSerie2D('SomeName', data, opts);
+                    that.redraw();
                 });
             },
 
@@ -127,7 +127,7 @@ define([
 
 
         addSerieJcampXOrY: function (value, x, y) {
-            var self = this;
+            var that = this;
 
             var name = 'SomeName';
             var options = {
@@ -138,14 +138,14 @@ define([
                 var data = result.spectra[0].data[0];
 
                 if (x) {
-                    self.nmr.setSerie2DX(name, data, options);
+                    that.nmr.setSerie2DX(name, data, options);
                 }
 
                 if (y) {
-                    self.nmr.setSerie2DY(name, data, options);
+                    that.nmr.setSerie2DY(name, data, options);
                 }
 
-                self.redraw();
+                that.redraw();
             });
         },
 

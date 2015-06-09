@@ -15,7 +15,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
         inDom: function () {
 
-            var self = this,
+            var that = this,
                 structure = this.module.getConfiguration('structure'),
                 tpl_file = this.module.getConfiguration('tpl_file'),
                 tpl_html = this.module.getConfiguration('tpl_html'),
@@ -53,9 +53,9 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
                     form.onLoaded().done(function () {
                         form.setTpl(tpl);
-                        self.dom.html(form.makeDomTpl());
+                        that.dom.html(form.makeDomTpl());
                         form.inDom();
-                        self.resolveReady();
+                        that.resolveReady();
                     });
                 });
             });

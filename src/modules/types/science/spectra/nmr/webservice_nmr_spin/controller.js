@@ -23,7 +23,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/datatrave
 
     Controller.prototype.doAnalysis = function () {
 
-        var self = this,
+        var that = this,
             url = this.module.getConfiguration('url'),
             reg,
             val,
@@ -48,8 +48,8 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/datatrave
         this.module.view.lock();
 
         URL.post(url, toSend).then(function (data) {
-            self.module.view.unlock();
-            self.onAnalysisDone(data);
+            that.module.view.unlock();
+            that.onAnalysisDone(data);
         });
 
     };

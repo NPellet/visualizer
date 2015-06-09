@@ -31,7 +31,7 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
 
         },
         inDom: function () {
-            var self = this;
+            var that = this;
             var initVal = this.module.getConfiguration('script') || '';
             this._code = initVal;
 
@@ -45,7 +45,7 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
                 this.editor.getSession().setMode(mode);
                 this.editor.setValue(initVal, -1);
                 this.editor.getSession().on('change', function () {
-                    self.editorChangedDebounced();
+                    that.editorChangedDebounced();
                 });
                 this.editorChanged();
             }
@@ -55,7 +55,7 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
                     $('<span>' + this.module.getConfiguration('btnvalue') + '</span>')
                         .addClass('form-button')
                         .on('click', function () {
-                            self.module.controller.onButtonClick(self._code);
+                            that.module.controller.onButtonClick(that._code);
                         })
                 );
             } else {

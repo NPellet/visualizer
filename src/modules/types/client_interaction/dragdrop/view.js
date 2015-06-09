@@ -12,7 +12,7 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
 
         init: function () {
 
-            var self = this;
+            var that = this;
             var $fileInput = $('<input/>').css('display', 'none').attr({
                 type: 'file',
                 multiple: true
@@ -43,7 +43,7 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
             }).on('paste', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                self.module.controller.open(e.originalEvent.clipboardData);
+                that.module.controller.open(e.originalEvent.clipboardData);
             });
             var defaultMessage = this.module.getConfiguration('label');
             this.messages = {
@@ -61,19 +61,19 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
 
             this.dom.on('click', function (event) {
                 event.stopPropagation();
-                if (!useGetUserMedia || !self.module.getConfigurationCheckbox('getusermedia', 'yes')) $fileInput.click();
+                if (!useGetUserMedia || !that.module.getConfigurationCheckbox('getusermedia', 'yes')) $fileInput.click();
                 else {
                     confirm($('<video id="video"></video><canvas id="canvas" style="display:none;"></canvas>')).then(function (value) {
                         if (!value) return;
                         if (value) {
-                            self.module.controller.openPhoto(value);
+                            that.module.controller.openPhoto(value);
                         }
                     });
                 }
             });
 
             $fileInput.on('change', function (e) {
-                self.module.controller.open(self.module.controller.emulDataTransfer(e));
+                that.module.controller.open(that.module.controller.emulDataTransfer(e));
             });
 
             $fileInput.on('load', function (e) {
@@ -84,7 +84,7 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
 
         inDom: function () {
 
-            var self = this,
+            var that = this,
                 dom = this.dom.get(0);
 
             // We use a drag count to circumvent the fact that
@@ -94,8 +94,8 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
             dom.addEventListener('mouseenter', function (e) {
                 e.stopPropagation();
                 e.preventDefault();
-                self.messageP.html(self.messages.hover);
-                self.dom.addClass('dragdrop-over');
+                that.messageP.html(that.messages.hover);
+                that.dom.addClass('dragdrop-over');
             });
 
             dom.addEventListener('dragenter', function (e) {
@@ -103,8 +103,8 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                 e.stopPropagation();
                 e.preventDefault();
                 if (dragCount === 1) {
-                    self.messageP.html(self.messages.drag);
-                    self.dom.addClass('dragdrop-over');
+                    that.messageP.html(that.messages.drag);
+                    that.dom.addClass('dragdrop-over');
                 }
 
             });
@@ -119,8 +119,8 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                 e.stopPropagation();
                 e.preventDefault();
                 if (!dragCount) {
-                    self.messageP.html(self.messages.default);
-                    self.dom.removeClass('dragdrop-over');
+                    that.messageP.html(that.messages.default);
+                    that.dom.removeClass('dragdrop-over');
                 }
 
             });
@@ -128,15 +128,15 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
             dom.addEventListener('mouseleave', function (e) {
                 e.stopPropagation();
                 e.preventDefault();
-                self.messageP.html(self.messages.default);
-                self.dom.removeClass('dragdrop-over');
+                that.messageP.html(that.messages.default);
+                that.dom.removeClass('dragdrop-over');
             });
 
             dom.addEventListener('drop', function (e) {
                 dragCount = 0;
                 e.stopPropagation();
                 e.preventDefault();
-                self.module.controller.open(e.dataTransfer);
+                that.module.controller.open(e.dataTransfer);
             });
 
             this.resolveReady();

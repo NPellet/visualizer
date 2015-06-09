@@ -57,16 +57,16 @@ define(['jquery', 'src/util/event'], function ($, Event) {
     };
 
     Observable.prototype.push = function () {
-        var self = this;
+        var that = this;
         $.each(arguments, function (i, trgt) {
-            self.on('change', trgt._proxiedSet);
+            that.on('change', trgt._proxiedSet);
         });
     };
 
     Observable.prototype.unpush = function () {
-        var self = this;
+        var that = this;
         $.each(arguments, function (i, trgt) {
-            self.off('change', trgt._proxiedSet);
+            that.off('change', trgt._proxiedSet);
         });
     };
 

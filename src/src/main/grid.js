@@ -462,8 +462,7 @@ define([
 
     function newLayer(toggleToIt, name) {
 
-        var self = this,
-            def = $.Deferred();
+        var def = $.Deferred();
 
         if (name) {
             return definition.layers[name] = {name: name};

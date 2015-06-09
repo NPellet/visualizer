@@ -224,14 +224,14 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
 
     Controller.prototype.doToggle = function (act) {
 
-        var self = this,
+        var that = this,
             data = this.module.getDataFromRel('list');
 
         this.allVariablesFor((act == 'on' ? 'onToggleOn' : 'onToggleOff'), 'selectedrows', function (varToSend) {
 
             var results = new DataArray();
 
-            for (var i in self.toggleElements) {
+            for (var i in that.toggleElements) {
 
                 if (!data[i]) {
                     continue;

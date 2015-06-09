@@ -8,7 +8,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs'], f
     $.extend(true, View.prototype, Default, {
 
         init: function () {
-            var self = this;
+            var that = this;
             this.webgl = (function () {
                 try {
                     return !!window.WebGLRenderingContext && !!document.createElement('canvas').getContext('experimental-webgl');
@@ -17,7 +17,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs'], f
                 }
             })();
 
-            var cfg = $.proxy(self.module.getConfiguration, self.module);
+            var cfg = $.proxy(that.module.getConfiguration, that.module);
 
             this._id = Util.getNextUniqueId();
             var $block = $('<div>', {Id: this._id});
@@ -49,23 +49,23 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs'], f
 
             require(['./TrackballControls', 'lib/parser/Parser'], function () {
 
-                self.createGraph();
+                that.createGraph();
 
 
-                self.scene = new THREE.Scene();
-                if (!self.renderer) {
-                    if (self.webgl) {
-                        self.renderer = new THREE.WebGLRenderer({antialias: true});
+                that.scene = new THREE.Scene();
+                if (!that.renderer) {
+                    if (that.webgl) {
+                        that.renderer = new THREE.WebGLRenderer({antialias: true});
                     } else {
-                        self.renderer = new THREE.CanvasRenderer();
+                        that.renderer = new THREE.CanvasRenderer();
                     }
-                    self.renderer.setClearColor(0xEEEEEE, 1);
+                    that.renderer.setClearColor(0xEEEEEE, 1);
                 }
 
-                self.dom.append(self.renderer.domElement);
+                that.dom.append(that.renderer.domElement);
 
-                self.addFloor(self.scene);
-                self.resolveReady();
+                that.addFloor(that.scene);
+                that.resolveReady();
             });
 
             // This should reduce CPU if the mouse if not over and we can not move the object
@@ -73,11 +73,11 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs'], f
             this.doAnimation = false;
 
             this.dom.on('mouseenter', function () {
-                self.doAnimation = true;
+                that.doAnimation = true;
             });
 
             this.dom.on('mouseleave', function () {
-                self.doAnimation = false;
+                that.doAnimation = false;
             });
 
         },
@@ -90,9 +90,9 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs'], f
         onResize: function () {
 
             if (!this.webgl) return;
-            var self = this;
+            var that = this;
             this.module.viewReady.then(function () {
-                var cfg = $.proxy(self.module.getConfiguration, self.module);
+                var cfg = $.proxy(that.module.getConfiguration, that.module);
                 var segments = cfg('segments');
 
                 ///////////////////////
@@ -101,8 +101,8 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs'], f
 
                 // material choices: vertexColorMaterial, wireMaterial , normMaterial , shadeMaterial
 
-                if (self.graphMesh) {
-                    self.scene.remove(self.graphMesh);
+                if (that.graphMesh) {
+                    that.scene.remove(that.graphMesh);
                 }
 
                 var wireTexture = THREE.ImageUtils.loadTexture(require.toUrl('./square.png'));
@@ -115,19 +115,19 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs'], f
                 });
 
 
-                self.graphMesh = new THREE.Mesh(self.graphGeometry, wireMaterial);
+                that.graphMesh = new THREE.Mesh(that.graphGeometry, wireMaterial);
 
 
-                self.graphMesh.doubleSided = true;
-                self.scene.add(self.graphMesh);
+                that.graphMesh.doubleSided = true;
+                that.scene.add(that.graphMesh);
 
-                self.renderer.setSize(self.width, self.height);
+                that.renderer.setSize(that.width, that.height);
 
-                self.setCamera();
-                self.setControls();
+                that.setCamera();
+                that.setControls();
 
-                self.firstAnimation = 60;
-                self.animate();
+                that.firstAnimation = 60;
+                that.animate();
 
             });
 
@@ -155,12 +155,12 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs'], f
         },
 
         animate: function () {
-            var self = this;
-            requestAnimationFrame(self.animate.bind(self));
-            if (self.doAnimation || self.firstAnimation > 0) {
-                if (self.firstAnimation > 0) self.firstAnimation--;
-                self.renderer.render(self.scene, self.camera);
-                self.controls.update();
+            var that = this;
+            requestAnimationFrame(that.animate.bind(that));
+            if (that.doAnimation || that.firstAnimation > 0) {
+                if (that.firstAnimation > 0) that.firstAnimation--;
+                that.renderer.render(that.scene, that.camera);
+                that.controls.update();
             }
         },
 
@@ -179,14 +179,14 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs'], f
         },
 
         createGraph: function () {
-            var self = this;
-            var cfg = $.proxy(self.module.getConfiguration, self.module);
+            var that = this;
+            var cfg = $.proxy(that.module.getConfiguration, that.module);
             var segments = cfg('segments');
-            var zFunc = Parser.parse(self.zFunctionText).toJSFunction(['x', 'y']);
+            var zFunc = Parser.parse(that.zFunctionText).toJSFunction(['x', 'y']);
 
             var meshFunction = function (x, y) {
-                x = self.xRange * x + self.xMin;
-                y = self.yRange * y + self.yMin;
+                x = that.xRange * x + that.xMin;
+                y = that.yRange * y + that.yMin;
                 var z = zFunc(x, y); //= Math.cos(x) * Math.sqrt(y);
 
                 if (isNaN(z))
@@ -203,9 +203,9 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs'], f
             // calculate vertex colors based on Z values //
             ///////////////////////////////////////////////
             graphGeometry.computeBoundingBox();
-            self.zMin = graphGeometry.boundingBox.min.z;
-            self.zMax = graphGeometry.boundingBox.max.z;
-            self.zRange = self.zMax - self.zMin;
+            that.zMin = graphGeometry.boundingBox.min.z;
+            that.zMax = graphGeometry.boundingBox.max.z;
+            that.zRange = that.zMax - that.zMin;
 
 
             var color, point, face, numberOfSides, vertexIndex;
@@ -215,7 +215,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs'], f
             for (var i = 0; i < graphGeometry.vertices.length; i++) {
                 point = graphGeometry.vertices[i];
                 color = new THREE.Color(0x0000ff);
-                color.setHSL(0.7 * (self.zMax - point.z) / self.zRange, 1, 0.5);
+                color.setHSL(0.7 * (that.zMax - point.z) / that.zRange, 1, 0.5);
                 graphGeometry.colors[i] = color; // use this array for convenience
             }
             // copy the colors as necessary to the face's vertexColors array.
@@ -227,7 +227,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs'], f
                     face.vertexColors[j] = graphGeometry.colors[vertexIndex];
                 }
             }
-            self.graphGeometry = graphGeometry;
+            that.graphGeometry = graphGeometry;
 
         }
 

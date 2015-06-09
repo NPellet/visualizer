@@ -41,11 +41,11 @@ define([
 
         update: {
             jcamp: function (moduleValue, varname) {
-                var self = this;
+                var that = this;
 
                 JcampConverter.convert(String(moduleValue.get()), true).then(function (spectra) {
 
-                    self.nmr.setSerieX(varname, spectra.spectra[0].data[0], self.getOptions(varname));
+                    that.nmr.setSerieX(varname, spectra.spectra[0].data[0], that.getOptions(varname));
 
                 });
             }

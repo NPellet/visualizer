@@ -41,7 +41,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
         },
 
         inDom: function () {
-            var self = this;
+            var that = this;
             var options = {
 
                 paddingTop: 5,
@@ -78,10 +78,10 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 
                 onVerticalTracking: function (lineId, val, dasharray) {
 
-                    for (var i in self.series) {
+                    for (var i in that.series) {
                         LRU.get('http://lpidb.epfl.ch/content/ajax/getstabilityiv.ajax.php?id=' + i + '&date=' + val).done(function (data) {
                             for (var i in data) {
-                                self.doIv(lineId, i, data[i], self.graphs[0].getSerie(i).getLineColor(), dasharray);
+                                that.doIv(lineId, i, data[i], that.graphs[0].getSerie(i).getLineColor(), dasharray);
                             }
                         });
                     }
@@ -193,7 +193,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
         addLegend: function (id, name, description, color) {
             var div = $('<div />');
             this.legends[id] = div;
-            var self = this;
+            var that = this;
             var defaultText = '(Insert a comment here)';
 
             var square = $('<div />').css({
@@ -239,7 +239,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
                             fontStyle: 'italic'
                         });
                     else {
-                        self.editCellComment(id, text);
+                        that.editCellComment(id, text);
                     }
 
                 }).bind('change', function () {
