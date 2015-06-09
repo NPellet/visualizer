@@ -55,6 +55,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             }
         },
         render: function () {
+            this.dom.html('');
             var renderers = [];
             for(var i=0; i<this.elements.length; i++) {
                 renderers.push(this.template.renderAsync(this.elements[i]));
