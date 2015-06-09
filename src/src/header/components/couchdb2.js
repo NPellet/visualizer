@@ -401,7 +401,7 @@ define([
         openLogin: function (e) {
             e.preventDefault();
             var url = e.currentTarget.href;
-            var win = window.open(url, 'CI_Couch_Login', 'menubar=no');
+            var win = window.open(url + '?close=true', 'CI_Couch_Login', 'menubar=no');
             clearInterval(this._loginWinI);
             var that = this;
             this._loginWinI = window.setInterval(function () {
