@@ -400,12 +400,13 @@ define([
                         that.$showHideSelection = $.tmpl('<input type="button" value="Show/Hide Column"/>\n    <div class="mutliSelect" style="display:none">\n        <ul>\n            {{each columns}}\n            \n            <li><input type="checkbox" value="${name}" checked/>${name}</li>\n            {{/each}}\n        </ul>\n    </div>', {
                             columns: columns
                         });
+                        console.log(that.columnSelectionShown);
                         if (that.columnSelectionShown) {
                             that.$showHideSelection.filter('div').show();
                         }
                         that.$showHideSelection.on('click', function () {
                             that.$showHideSelection.filter('div').toggle();
-                            that.columnSelectionShown = that.$showHideSelection.is(':visible');
+                            that.columnSelectionShown = that.$showHideSelection.filter('div').is(':visible');
                             that.onResize();
                         });
                         for (var i = 0; i < that.hiddenColumns.length; i++) {
