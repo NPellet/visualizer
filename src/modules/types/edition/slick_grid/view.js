@@ -424,9 +424,12 @@ define([
                     }
 
                     if (that.module.getConfigurationCheckbox('toolbar', 'showHide')) {
-                        var columns = that.getAllSlickColumns();
+                        var columns = that.getAllSlickColumns().filter(function(val) {
+                            return val.id !== 'rowDeletion' && val.id !== '_checkbox_selector';
+                        });
+                        console.log(columns[0]);
 
-                        that.$showHideSelection = $.tmpl('<input type="button" value="Select"/>\n    <div class="mutliSelect" style="display:none">\n        <ul>\n            {{each columns}}\n            \n            <li><input type="checkbox" value="${name}" checked/>${name}</li>\n            {{/each}}\n        </ul>\n    </div>', {
+                        that.$showHideSelection = $.tmpl('<input type="button" value="Show/Hide"/>\n    <div class="mutliSelect" style="display:none">\n        <ul>\n            {{each columns}}\n            \n            <li><input type="checkbox" value="${name}" checked/>${name}</li>\n            {{/each}}\n        </ul>\n    </div>', {
                             columns: columns
                         });
                         if (that.columnSelectionShown) {
@@ -435,6 +438,7 @@ define([
                         that.$showHideSelection.on('click', function () {
                             that.$showHideSelection.filter('div').toggle();
                             that.columnSelectionShown = that.$showHideSelection.is(':visible');
+                            that.onResize();
                         });
                         for (var i = 0; i < that.hiddenColumns.length; i++) {
                             that.$showHideSelection.find('input[value="' + that.hiddenColumns[i] + '"]').removeAttr('checked');
