@@ -455,7 +455,8 @@ module.exports = function (grunt) {
         'uglify:build',
         'clean:build',
         'rename:afterBuild',
-        'buildTime:unset'
+        'buildTime:unset',
+        'copy:buildLib'
     ];
 
     if (grunt.option('clean-images')) {
