@@ -1,3 +1,41 @@
+2.20.4 / 2015-06-10
+===================
+* Modules
+ * slickgrid: move slickgrid core code to cheminfo/SlickGrid github repository
+ * slickgrid: Add toolbar options: add, update in pop-up div, remove, show/hide columns
+ * slickgrid: Add checkbox selection plugin
+ * slickgrid: add date editor
+ * slickgrid: bug fixes
+ * Add periodic table module
+ * wordcloud: fix fontSize initialization
+ * jsme: add support for SMILES input
+
+ 
+* Typerenderer
+ * Fix #514. Update sparkline renderer
+
+* Headers
+ * couchdb2: login in new window
+ 
+* Components
+ * Upgrade jsgraph v1.11.3-3
+ * Upgrade jquery-ui v1.11.4
+ * Upgrade jquery v2.1.4
+ * components: add x2js shortcut
+ * remove unused sdf-parser
+ * Upgrade requirejs v2.1.18
+
+* Code conventions
+ * switch eslintrc to yaml
+ * fix remaining uses of self
+ * lint: add consistent-this rule
+
+* Core
+ * utils: add couchdb attachment manager
+ * Issue #529 - Use lru in couchdb attachments api
+ * use superagent shortcut in require calls
+ * Update docs
+
 2.20.3 / 2015-06-04
 ===================
 * Core

@@ -429,7 +429,7 @@ define([
                         });
                         console.log(columns[0]);
 
-                        that.$showHideSelection = $.tmpl('<input type="button" value="Show/Hide"/>\n    <div class="mutliSelect" style="display:none">\n        <ul>\n            {{each columns}}\n            \n            <li><input type="checkbox" value="${name}" checked/>${name}</li>\n            {{/each}}\n        </ul>\n    </div>', {
+                        that.$showHideSelection = $.tmpl('<input type="button" value="Show/Hide Column"/>\n    <div class="mutliSelect" style="display:none">\n        <ul>\n            {{each columns}}\n            \n            <li><input type="checkbox" value="${name}" checked/>${name}</li>\n            {{/each}}\n        </ul>\n    </div>', {
                             columns: columns
                         });
                         if (that.columnSelectionShown) {
