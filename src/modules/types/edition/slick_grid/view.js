@@ -125,10 +125,13 @@ define([
             }
             idx = idx.sort();
             var j = 0;
+            var removedRows = [];
             for (i = 0; i < rows.length; i++) {
-                this.module.data.splice(idx[i] - j++, 1);
+                var removed = this.module.data.splice(idx[i] - j++, 1);
+                if(removed.length) removedRows.push(removed[0]);
             }
             this.lastSelectedRows = [];
+            this.module.controller.onRowsDelete(removedRows);
             this.module.data.triggerChange();
         },
 
@@ -868,7 +871,8 @@ define([
                 if (columns[args.cell] && columns[args.cell].id === 'rowDeletion') {
                     // delete the row...
                     var itemInfo = that._getItemInfoFromRow(args.row);
-                    that.module.data.splice(itemInfo.idx, 1);
+                    var removed = that.module.data.splice(itemInfo.idx, 1);
+                    if(removed.length) that.module.controller.onRowsDelete(removed);
                     that.module.data.triggerChange();
                 }
             });
