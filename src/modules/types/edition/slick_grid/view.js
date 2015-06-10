@@ -1,5 +1,5 @@
 'use strict';
-
+/*global Slick*/
 define([
     'require',
     'modules/default/defaultview',

@@ -306,7 +306,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
         this.sendActionFromEvent('onRowNew', 'row', item);
     };
 
-    Controller.prototype.onRowsDelete = function(items) {
+    Controller.prototype.onRowsDelete = function (items) {
         this.createDataFromEvent('onRowsDelete', 'rows', items);
     };
 

@@ -59,7 +59,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
         render: function () {
             this.dom.html('');
             var renderers = [];
-            var w  = this.width / 18;
+            var w = this.width / 18;
 
             for (var i = 0; i < this.elements.length; i++) {
                 console.log(this.elements[i]);
@@ -88,7 +88,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
         var y = +element.period;
         var x = +element.group;
 
-        return [x,y];
+        return [x, y];
     }
 
     return View;
