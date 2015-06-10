@@ -1,5 +1,5 @@
 'use strict';
-/*global Slick*/
+
 define([
     'require',
     'modules/default/defaultview',
@@ -9,7 +9,7 @@ define([
     'src/util/api',
     'src/util/typerenderer',
     'slickgrid'
-], function (require, Default, Debug, _, Util, API, Renderer) {
+], function (require, Default, Debug, _, Util, API, Renderer, Slick) {
 
     function View() {
     }
