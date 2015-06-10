@@ -128,7 +128,7 @@ define([
             var removedRows = [];
             for (i = 0; i < rows.length; i++) {
                 var removed = this.module.data.splice(idx[i] - j++, 1);
-                if(removed.length) removedRows.push(removed[0]);
+                if (removed.length) removedRows.push(removed[0]);
             }
             this.lastSelectedRows = [];
             this.module.controller.onRowsDelete(removedRows);
@@ -424,7 +424,7 @@ define([
                     }
 
                     if (that.module.getConfigurationCheckbox('toolbar', 'showHide')) {
-                        var columns = that.getAllSlickColumns().filter(function(val) {
+                        var columns = that.getAllSlickColumns().filter(function (val) {
                             return val.id !== 'rowDeletion' && val.id !== '_checkbox_selector';
                         });
                         console.log(columns[0]);
@@ -607,7 +607,9 @@ define([
                     });
 
                     that.grid.onColumnsResized.subscribe(function () {
-                        var cols = that.grid.getColumns();
+                        var cols = that.grid.getColumns().filter(function (val) {
+                            return val.id !== 'rowDeletion' && val.id !== '_checkbox_selector';
+                        });
                         for (var i = 0; i < cols.length; i++) {
                             that.module.definition.configuration.groups.cols[0][i].width = cols[i].width;
                         }
@@ -876,7 +878,7 @@ define([
                     // delete the row...
                     var itemInfo = that._getItemInfoFromRow(args.row);
                     var removed = that.module.data.splice(itemInfo.idx, 1);
-                    if(removed.length) that.module.controller.onRowsDelete(removed);
+                    if (removed.length) that.module.controller.onRowsDelete(removed);
                     that.module.data.triggerChange();
                 }
             });
