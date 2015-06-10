@@ -1,4 +1,4 @@
-2.20.4 / 2015-06-10
+2.21.1 / 2015-06-10
 ===================
 * Modules
  * slickgrid: move slickgrid core code to cheminfo/SlickGrid github repository
