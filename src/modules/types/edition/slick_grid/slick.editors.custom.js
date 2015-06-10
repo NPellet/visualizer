@@ -24,7 +24,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
         // register namespace
         $.extend(true, window, {
             "Slick": {
-                "Editors": {
+                "CustomEditors": {
                     "TextValue": TextValueEditor,
                     "ColorValue": ColorEditor,
                     "Text": TextValueEditor,

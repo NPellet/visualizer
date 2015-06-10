@@ -1,35 +1,4 @@
 'use strict';
-/*global Slick*/
-require.config({
-    paths: {
-        // jQuery & jQuery UI
-        dragevent: 'components/slickgrid/lib/jquery.event.drag-2.2',
-        dropevent: 'components/slickgrid/lib/jquery.event.drop-2.2',
-
-        // SlickGrid
-        slickcore: 'components/slickgrid/slick.core',
-        slickgrid: 'components/slickgrid/slick.grid',
-        slickdataview: 'components/slickgrid/slick.dataview',
-        slickgroupitemmetadataprovider: 'components/slickgrid/slick.groupitemmetadataprovider'
-    },
-    shim: {
-        dragevent: ['jquery'],
-        dropevent: ['jquery'],
-        slickcore: ['jquery-ui/core', 'jquery-ui/sortable', 'jquery-tmpl'],
-        slickgrid: ['slickcore', 'dragevent', 'dropevent', 'components/slickgrid/plugins/slick.cellrangedecorator',
-            'components/slickgrid/plugins/slick.cellrangeselector',
-            'components/slickgrid/plugins/slick.cellselectionmodel',
-            'components/slickgrid/plugins/slick.rowselectionmodel',
-            'components/slickgrid/slick.formatters',
-            'modules/types/edition/slick_grid/slick.editors.custom',
-            'components/slickgrid/plugins/slick.checkboxselectcolumn',
-            'components/slickgrid/controls/slick.columnpicker',
-            'components/slickgrid/examples/slick.compositeeditor'],
-        slickdataview: ['lodash', 'slickgrid', 'slickgroupitemmetadataprovider'],
-        slickgroupitemmetadataprovider: ['slickgrid']
-
-    }
-});
 
 define([
     'require',
@@ -39,8 +8,7 @@ define([
     'src/util/util',
     'src/util/api',
     'src/util/typerenderer',
-    'slickgrid',
-    'slickdataview'
+    'slickgrid'
 ], function (require, Default, Debug, _, Util, API, Renderer) {
 
     function View() {
@@ -66,15 +34,15 @@ define([
     };
 
     var typeEditors = {
-        boolean: Slick.Editors.Checkbox,
-        mf: Slick.Editors.TextValue,
-        color: Slick.Editors.ColorValue,
-        string: Slick.Editors.TextValue,
-        number: Slick.Editors.TextValue,
-        date: Slick.Editors.DateValue,
-        DataString: Slick.Editors.SpecialNativeObject,
-        DataNumber: Slick.Editors.DataNumberEditor,
-        DataBoolean: Slick.Editors.DataBooleanEditor
+        boolean: Slick.CustomEditors.Checkbox,
+        mf: Slick.CustomEditors.TextValue,
+        color: Slick.CustomEditors.ColorValue,
+        string: Slick.CustomEditors.TextValue,
+        number: Slick.CustomEditors.TextValue,
+        date: Slick.CustomEditors.DateValue,
+        DataString: Slick.CustomEditors.SpecialNativeObject,
+        DataNumber: Slick.CustomEditors.DataNumberEditor,
+        DataBoolean: Slick.CustomEditors.DataBooleanEditor
     };
 
     $.extend(true, View.prototype, Default, {
@@ -143,11 +111,11 @@ define([
                 var editor;
                 var obj = that.module.data.get(0).getChildSync(jpath);
                 if (obj instanceof DataString) {
-                    editor = Slick.Editors.SpecialNativeObject;
+                    editor = Slick.CustomEditors.SpecialNativeObject;
                 } else if (obj instanceof DataNumber) {
-                    editor = Slick.Editors.DataNumberEditor;
+                    editor = Slick.CustomEditors.DataNumberEditor;
                 } else if (obj instanceof DataBoolean) {
-                    editor = Slick.Editors.DataBooleanEditor;
+                    editor = Slick.CustomEditors.DataBooleanEditor;
                 } else {
                     editor = typeEditors[getType(jpath)];
                 }
@@ -167,7 +135,7 @@ define([
                 var editor, type;
                 if (row.editor === 'auto' && that.module.data) {
                     if (!that.module.data.length) {
-                        editor = Slick.Editors.SpecialNativeObject;
+                        editor = Slick.CustomEditors.SpecialNativeObject;
                         Debug.warn('Slick grid: using editor based on type when the input variable is empty. Cannot determine type');
                     } else {
                         editor = getEditor(row.jpath);
