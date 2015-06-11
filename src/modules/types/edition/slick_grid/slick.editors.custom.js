@@ -29,9 +29,10 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
                     "ColorValue": ColorEditor,
                     "Text": TextValueEditor,
                     "DateValue": DateEditor,
-                    "SpecialNativeObject": SpecialNativeObjectEditor,
+                    "DataStringEditor": DataStringEditor,
                     "DataNumberEditor": DataNumberEditor,
-                    "DataBooleanEditor": DataBooleanEditor
+                    "DataBooleanEditor": DataBooleanEditor,
+                    "LongText": LongTextEditor
                 }
             }
         });
@@ -111,23 +112,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
             };
 
             this.applyValue = function (item, state) {
-                var isNew = _.isEmpty(item);
-                DataObject.check(item, true);
-                var newState = {
-                    type: 'date',
-                    value: state
-                };
-
-
-                if (isNew) {
-                    setItemId(item, this.args.grid);
-                    item.setChildSync(args.column.jpath, newState);
-                    args.grid.module.view.slick.data.addItem(item);
-                    return newState;
-                }
-                else {
-                    args.grid.module.model.dataSetChildSync(item, args.column.jpath, newState);
-                }
+                defaultApplyValue.call(this, item, state, 'date');
             };
 
             this.isValueChanged = function () {
@@ -316,25 +301,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
 
 
             this.applyValue = function (item, state) {
-                var isNew = _.isEmpty(item);
-                DataObject.check(item, true);
-                var newState = {
-                    type: 'color',
-                    value: state
-                };
-
-
-                if (isNew) {
-                    setItemId(item, this.args.grid);
-                    item.setChildSync(args.column.jpath, newState);
-                    args.grid.module.view.slick.data.addItem(item);
-                    return newState;
-                }
-                else {
-                    args.grid.module.model.dataSetChildSync(item, args.column.jpath, newState);
-                }
-
-
+                defaultApplyValue.call(this, item, state, 'color');
             };
 
             this.isValueChanged = function () {
@@ -371,30 +338,14 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
             this.validate = defaultValidate;
 
             this.applyValue = function (item, state) {
-                var isNew = _.isEmpty(item);
-                DataObject.check(item, true);
-                var newState = {
-                    type: this.args.column.dataType,
-                    value: state
-                };
-
-
-                if (isNew) {
-                    setItemId(item, this.args.grid);
-                    item.setChildSync(this.args.column.jpath, newState);
-                    this.args.grid.module.view.slick.data.addItem(item);
-                    return newState;
-                }
-                else {
-                    this.args.grid.module.model.dataSetChildSync(item, this.args.column.jpath, newState);
-                }
+                defaultApplyValue.call(this, item, state, this.args.column.dataType);
             };
 
             this.init();
         }
 
 
-        function SpecialNativeObjectEditor(args) {
+        function DataStringEditor(args) {
             this.args = args;
             this.init = defaultInit;
             this.destroy = defaultDestroy;
@@ -423,6 +374,8 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
             this.validate = defaultValidate;
             this.init();
         }
+
+
 
         function DataBooleanEditor(args) {
             this.args = args;
@@ -460,10 +413,17 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
         return (!(this.$input.val() == "" && this.defaultValue == null)) && (this.$input.val() != this.defaultValue);
     }
 
-    function defaultApplyValue(item, state) {
-        var isNew = _.isEmpty(item);
+    function defaultApplyValue(item, state, type) {
+        var isNew = _.isEmpty(item), newState;
         DataObject.check(item, true);
-        var newState = state;
+        if(type) {
+            newState = {
+                type: type,
+                value: state
+            };
+        } else {
+            newState = state;
+        }
 
 
         if (isNew) {
@@ -565,6 +525,90 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
         state = !!state;
         defaultApplyValue.call(this, item, state);
     }
+
+    // ========== LONG TEXT ===================
+    function longTextInit() {
+        var that = this;
+        this.$container = $("body") ;
+
+        this.$wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:5px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
+            .appendTo(this.$container);
+
+        this.$input = $("<TEXTAREA hidefocus rows=5 style='backround:white;width:250px;height:80px;border:0;outline:0'>")
+            .appendTo(this.$wrapper);
+
+        $("<DIV style='text-align:right'><BUTTON>Save</BUTTON><BUTTON>Cancel</BUTTON></DIV>")
+            .appendTo(this.$wrapper);
+
+        this.$wrapper.find("button:first").bind("click", this.save);
+        this.$wrapper.find("button:last").bind("click", this.cancel);
+        this.$input.bind("keydown", function (e) {
+            if (e.which == $.ui.keyCode.ENTER && e.ctrlKey) {
+                that.save();
+            } else if (e.which == $.ui.keyCode.ESCAPE) {
+                e.preventDefault();
+                that.cancel();
+            } else if (e.which == $.ui.keyCode.TAB && e.shiftKey) {
+                e.preventDefault();
+                args.grid.navigatePrev();
+            } else if (e.which == $.ui.keyCode.TAB) {
+                e.preventDefault();
+                args.grid.navigateNext();
+            }
+        });
+
+        this.position(this.args.position);
+        this.$input.focus().select();
+    }
+
+    function defaultSave() {
+        this.args.commitChanges();
+    }
+
+    function defaultCancel() {
+        this.$input.val(this.defaultValue);
+        this.args.cancelChanges();
+    }
+
+    function detachedHide() {
+        this.$wrapper.hide();
+    }
+
+    function detachedShow() {
+        this.$wrapper.show();
+    }
+
+    function detachedPosition(position) {
+        this.$wrapper
+            .css("top", position.top - 5)
+            .css("left", position.left - 5)
+    }
+
+    function detachedDestroy() {
+        this.$wrapper.remove();
+    }
+
+    function LongTextEditor(args) {
+        this.args = args;
+        this.init = longTextInit;
+        this.destroy = detachedDestroy;
+        this.focus = defaultFocus;
+        this.getValue = defaultGetValue;
+        this.setValue = defaultSetValue;
+        this.loadValue = defaultLoadValue;
+        this.serializeValue = defaultSerializeValue;
+        this.applyValue = defaultApplyValue;
+        this.isValueChanged = defaultIsValueChanged;
+        this.validate = defaultValidate;
+        this.hide = detachedHide;
+        this.show = detachedShow;
+        this.position = detachedPosition;
+        this.save = defaultSave.bind(this);
+        this.cancel = defaultCancel.bind(this);
+        this.init();
+    }
+
+
 });
 
 

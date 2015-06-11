@@ -122,6 +122,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                             options: [
                                 {key: 'none', title: 'None'},
                                 {key: 'auto', title: 'Based on type'},
+                                {key: 'longtext', title: 'Long Text'},
                                 {key: 'DataString', title: 'DataString'},
                                 {key: 'DataNumber', title: 'DataNumber'},
                                 {key: 'DataBoolean', title: 'DataBoolean'},

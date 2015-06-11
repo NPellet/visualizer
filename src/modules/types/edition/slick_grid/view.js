@@ -40,9 +40,10 @@ define([
         string: Slick.CustomEditors.TextValue,
         number: Slick.CustomEditors.TextValue,
         date: Slick.CustomEditors.DateValue,
-        DataString: Slick.CustomEditors.SpecialNativeObject,
+        DataString: Slick.CustomEditors.DataStringEditor,
         DataNumber: Slick.CustomEditors.DataNumberEditor,
-        DataBoolean: Slick.CustomEditors.DataBooleanEditor
+        DataBoolean: Slick.CustomEditors.DataBooleanEditor,
+        longtext: Slick.CustomEditors.LongText
     };
 
     $.extend(true, View.prototype, Default, {
@@ -111,7 +112,7 @@ define([
                 var editor;
                 var obj = that.module.data.get(0).getChildSync(jpath);
                 if (obj instanceof DataString) {
-                    editor = Slick.CustomEditors.SpecialNativeObject;
+                    editor = Slick.CustomEditors.DataStringEditor;
                 } else if (obj instanceof DataNumber) {
                     editor = Slick.CustomEditors.DataNumberEditor;
                 } else if (obj instanceof DataBoolean) {
@@ -135,7 +136,7 @@ define([
                 var editor, type;
                 if (row.editor === 'auto' && that.module.data) {
                     if (!that.module.data.length) {
-                        editor = Slick.CustomEditors.SpecialNativeObject;
+                        editor = Slick.CustomEditors.DataString;
                         Debug.warn('Slick grid: using editor based on type when the input variable is empty. Cannot determine type');
                     } else {
                         editor = getEditor(row.jpath);
@@ -171,7 +172,7 @@ define([
                 return val.name;
             });
 
-            // No columns are define, we use the input object to define them
+            // No columns are defined, we use the input object to define them
             if (_.isEmpty(slickCols)) {
                 var colNames = [];
                 for (var i = 0; i < that.module.data.length; i++) {
