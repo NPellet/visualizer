@@ -1408,23 +1408,6 @@ define([
             }
         },
 
-        startLoading: function (variableName) {
-
-            var rels = this.getDataRelFromName(variableName);
-            for (var i = 0; i < rels.length; i++) {
-
-                this.view.startLoading(rels[i]);
-            }
-        },
-
-        endLoading: function (variableName) {
-
-            var rels = this.getDataRelFromName(variableName);
-            for (var i = 0; i < rels.length; i++) {
-
-                this.view.endLoading(rels[i]);
-            }
-        },
 
         get emptyConfig() {
             return new DataObject({

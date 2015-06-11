@@ -104,103 +104,86 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
                 this.stopVarChange();
             }
 
-            this.module.onReady().then(function () {
-                that.module.blankVariable(varName);
-            });
+            this._previous = this._previous || Promise.resolve();
+            this._previous = this._previous.then(function () {
+                that.module.onReady().then(function () {
+                    that.module.blankVariable(varName);
+                }).then(function () {
+                    return variable.onReady();
+                }).then(function () {
 
-            // Show loading state if it takes more than 500ms to get the data
-            var rejectLatency;
-            var latency = new Promise(function (resolve, reject) {
-                var timeout = setTimeout(resolve, 500);
-                rejectLatency = function () {
-                    clearTimeout(timeout);
-                    that.module.endLoading(varName);
-                    reject();
-                };
-            });
+                    // Gets through the input filter first
+                    var varValue = variable.getValue();
 
-            // Start loading
-            Promise.all([this.module.onReady(), latency]).then(function () {
-                that.module.startLoading(varName);
-            }, function (err) {
-                // Fail silently (onReady is already covered and reject latency is expected)
-            });
+                    // Then validate
+                    if (!varName || !that.sourceMap || !that.sourceMap[varName] || !that.module.controller.references[that.sourceMap[varName].rel]) {
+                        return;
+                    }
 
-            Promise.all([this.module.onReady(), variable.onReady()]).then(function () {
+                    var data = that.buildData(varValue, that.module.controller.references[that.sourceMap[varName].rel].type);
 
-                // Gets through the input filter first
-                var varValue = variable.getValue();
+                    if (!data) {
+                        return
+                    }
 
-                // Then validate
-                if (!varName || !that.sourceMap || !that.sourceMap[varName] || !that.module.controller.references[that.sourceMap[varName].rel]) {
-                    return rejectLatency();
-                }
+                    rel = that.module.getDataRelFromName(varName);
 
-                var data = that.buildData(varValue, that.module.controller.references[that.sourceMap[varName].rel].type);
+                    i = 0;
+                    l = rel.length;
+                    k = 0;
 
-                if (!data) {
-                    return rejectLatency();
-                }
+                    var vars = that.module.vars_in();
 
-                rel = that.module.getDataRelFromName(varName);
+                    m = vars.length;
 
-                i = 0;
-                l = rel.length;
-                k = 0;
+                    for (; k < m; k++) {
 
-                var vars = that.module.vars_in();
+                        if (vars[k].name == varName && that.module.view.update[vars[k].rel] && varValue !== null) {
 
-                rejectLatency();
+                            (function (j) {
 
-                m = vars.length;
+                                new Promise(function (resolve, reject) {
 
-                for (; k < m; k++) {
+                                    if (vars[j].filter) {
 
-                    if (vars[k].name == varName && that.module.view.update[vars[k].rel] && varValue !== null) {
+                                        require([vars[j].filter], function (filterFunction) {
 
-                        (function (j) {
+                                            if (filterFunction.filter) {
+                                                return filterFunction.filter(varValue, resolve, reject);
+                                            }
 
-                            new Promise(function (resolve, reject) {
+                                            reject('No filter function defined');
 
-                                if (vars[j].filter) {
+                                        });
 
-                                    require([vars[j].filter], function (filterFunction) {
+                                    } else {
+                                        resolve(varValue);
+                                    }
+                                }).then(function (varValue) {
+                                        that.setData(vars[j].rel, varName, varValue);
+                                        that.removeAllChangeListeners(vars[j].rel);
+                                        that.module.view.update[vars[j].rel].call(that.module.view, varValue, varName);
 
-                                        if (filterFunction.filter) {
-                                            return filterFunction.filter(varValue, resolve, reject);
-                                        }
-
-                                        reject('No filter function defined');
-
+                                    }, function (err) {
+                                        Debug.error('Error while filtering the data : ', err.message, err.stack);
+                                    }).catch(function (err) {
+                                        Debug.error('Error while updating module : ', err.message, err.stack);
                                     });
 
-                                } else {
-                                    resolve(varValue);
-                                }
-                            }).then(function (varValue) {
-                                    that.setData(vars[j].rel, varName, varValue);
-                                    that.removeAllChangeListeners(vars[j].rel);
-                                    that.module.view.update[vars[j].rel].call(that.module.view, varValue, varName);
+                            })(k);
 
-                                }, function (err) {
-                                    Debug.error('Error while filtering the data : ', err.message, err.stack);
-                                }).catch(function (err) {
-                                    Debug.error('Error while updating module : ', err.message, err.stack);
-                                });
-
-                        })(k);
+                        }
 
                     }
 
-                }
 
-
-            }, function () {
-                rejectLatency();
-            }).catch(function (err) {
-                rejectLatency();
-                Debug.error('Error while updating variable : ', err.message, err.stack);
-            });
+                }, function () {
+                    // Don't remove this callback
+                    // Prevents to catch after
+                }).catch(function (err) {
+                    Debug.error('Error while updating variable : ', err.message, err.stack);
+                });
+            })
 
         },
 
