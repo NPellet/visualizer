@@ -1,3 +1,13 @@
+2.21.2 / 2015-06-11
+===================
+* Modules
+ * slickgrid: add long text editor
+ * slickgrid: fix show/hide on refresh and small css change
+* Core
+ * fix gruntfile
+ * Remove unnecessary jshint inline configuration
+
+
 2.21.1 / 2015-06-10
 ===================
 * Modules
