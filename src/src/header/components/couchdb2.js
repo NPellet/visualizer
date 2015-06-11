@@ -366,9 +366,9 @@ define([
             });
         },
         renderLoginMethods: function () {
-
+            var that = this;
             function doLogin() {
-                this.login(this.getFormContent('login-username'), this.getFormContent('login-password'));
+                that.login(that.getFormContent('login-username'), that.getFormContent('login-password'));
                 return false;
             }
 
