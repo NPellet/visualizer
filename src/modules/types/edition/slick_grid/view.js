@@ -15,7 +15,7 @@ define([
     }
 
     var cssPromises = [];
-    cssPromises.push(Util.loadCss('./components/slickgrid/slick.grid.css'));
+    cssPromises.push(Util.loadCss(require.toUrl('components/slickgrid/slick.grid.css')));
     var cssLoaded = Promise.all(cssPromises);
 
     // A simple filter
@@ -325,7 +325,7 @@ define([
 
         update: {
 
-            list: function (moduleValue) {
+            list: function (moduleValue, varname) {
                 var that = this;
                 this.module.data = moduleValue;
                 this._highlights = _.pluck(this.module.data, '_highlight');
@@ -335,9 +335,7 @@ define([
                 this.generateUniqIds();
                 this.addRowAllowed = this.module.getConfigurationCheckbox('slickCheck', 'enableAddRow');
 
-
                 function filter(item) {
-
                     for (var columnId in columnFilters) {
                         if (columnId !== undefined && columnFilters[columnId] !== '') {
                             var idx = that.slick.data.getIdxById(item[that.idPropertyName]);
@@ -357,6 +355,7 @@ define([
 
 
                 cssLoaded.then(function doGrid() {
+                    that.$container.html('');
                     that.slick.columns = that.getSlickColumns();
 
                     that.$rowToolbar = $('<div>').attr('class', 'rowToolbar');
@@ -396,12 +395,10 @@ define([
                         var columns = that.getAllSlickColumns().filter(function (val) {
                             return val.id !== 'rowDeletion' && val.id !== '_checkbox_selector';
                         });
-                        console.log(columns[0]);
 
                         that.$showHideSelection = $.tmpl('<input type="button" value="Show/Hide Column"/>\n    <div class="mutliSelect" style="display:none">\n        <ul>\n            {{each columns}}\n            \n            <li><input type="checkbox" value="${name}" checked/>${name}</li>\n            {{/each}}\n        </ul>\n    </div>', {
                             columns: columns
                         });
-                        console.log(that.columnSelectionShown);
                         if (that.columnSelectionShown) {
                             that.$showHideSelection.filter('div').show();
                         }
@@ -468,8 +465,6 @@ define([
                         that.grid.setSelectionModel(new Slick.CellSelectionModel());
                     }
 
-                    //var columnpicker = new Slick.Controls.ColumnPicker(that.slick.columns, that.grid, that.slick.options);
-
                     that._activateHighlights();
 
 
@@ -500,18 +495,6 @@ define([
                         that.module.controller.onRowNew(that.module.data.length - 1, that.module.data[that.module.data.length - 1]);
                         that.module.model.dataTriggerChange(that.module.data);
                         that._resetDeleteRowListeners();
-
-                        //var item = args.item;
-                        //var jpath = args.column.jpath.slice();
-                        //jpath.unshift(that.module.data.length);
-                        //that.module.model.dataSetChild(that.module.data, jpath, item).then(function() {
-                        //    var row = that.module.data.length - 1;
-                        //    that.grid.updateRowCount();
-                        //    that.grid.invalidateRow(row);
-                        //    that.grid.render();
-                        //    that.module.controller.onRowNew(row);
-                        //    that._resetDeleteRowListeners();
-                        //});
                     });
 
                     that.grid.onViewportChanged.subscribe(function () {
@@ -823,7 +806,7 @@ define([
         },
 
         blank: {
-            list: function () {
+            list: function (varname) {
                 this.$container.html('');
             }
         },
@@ -1113,28 +1096,6 @@ define([
         }
 
     }
-
-    var filters = {};
-    filters.cointains = function (a, search) {
-        return a.toLowerCase().match(search.toLowerCase());
-    };
-
-    filters.gt = function (a, b) {
-        return a > b;
-    };
-
-    filters.lt = function (a, b) {
-        return a < b;
-    };
-
-    filters.interval = function (a, low, high) {
-        return a >= low && a <= high;
-    };
-
-    filters.reg = function (a, reg, modifiers) {
-        var reg = new RegExp(reg, modifiers);
-        return a.match(reg);
-    };
 
     function getColumnFilterFunction(query) {
         var match;
