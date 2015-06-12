@@ -1,19 +1,17 @@
 {
-  "version": "2.20.4-0",
+  "version": "2.21.2",
   "grid": {
-    "xWidth": 10,
-    "yHeight": 10,
     "layers": {
       "Default layer": {
         "name": "Default layer"
       }
-    }
+    },
+    "xWidth": 10,
+    "yHeight": 10
   },
   "modules": [
     {
       "url": "modules/types/edition/object_editor/",
-      "id": 1,
-      "title": "One element",
       "configuration": {
         "sections": {},
         "groups": {
@@ -43,12 +41,6 @@
       },
       "layers": {
         "Default layer": {
-          "zIndex": 0,
-          "display": true,
-          "title": "One element",
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer",
           "position": {
             "left": 64,
             "top": 72
@@ -57,14 +49,21 @@
             "width": 38,
             "height": 46
           },
+          "zIndex": 0,
+          "display": true,
+          "title": "One element",
           "bgColor": [
             255,
             255,
             255,
             0
-          ]
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
         }
       },
+      "id": 1,
       "vars_in": [
         {
           "rel": "value",
@@ -79,12 +78,11 @@
           "jpath": []
         }
       ],
+      "title": "One element",
       "actions_out": []
     },
     {
       "url": "modules/types/edition/slick_grid/",
-      "id": 2,
-      "title": "JSON as a table",
       "configuration": {
         "sections": {},
         "groups": {
@@ -116,10 +114,10 @@
           "cols": [
             [
               {
+                "jpath": [],
                 "editor": "none",
                 "formatter": "typerenderer",
-                "width": 52,
-                "jpath": []
+                "width": 52
               }
             ]
           ],
@@ -139,12 +137,6 @@
       },
       "layers": {
         "Default layer": {
-          "zIndex": 0,
-          "display": true,
-          "title": "JSON as a table",
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer",
           "position": {
             "left": 12,
             "top": 0
@@ -153,14 +145,21 @@
             "width": 106,
             "height": 30
           },
+          "zIndex": 0,
+          "display": true,
+          "title": "JSON as a table",
           "bgColor": [
             255,
             255,
             255,
             0
-          ]
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
         }
       },
+      "id": 2,
       "vars_in": [
         {
           "rel": "list",
@@ -170,12 +169,13 @@
       "actions_in": [
         {}
       ],
+      "title": "JSON as a table",
       "vars_out": [
         {
           "event": "onHover",
           "rel": "row",
-          "name": "element",
-          "jpath": []
+          "jpath": [],
+          "name": "element"
         }
       ],
       "actions_out": [
@@ -186,8 +186,6 @@
     },
     {
       "url": "modules/types/server_interaction/webservice_search/",
-      "id": 3,
-      "title": "",
       "configuration": {
         "sections": {
           "postvariables": [
@@ -268,12 +266,6 @@
       },
       "layers": {
         "Default layer": {
-          "zIndex": 0,
-          "display": true,
-          "title": "",
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer",
           "position": {
             "left": 0,
             "top": 0.2
@@ -282,20 +274,28 @@
             "width": 11,
             "height": 8
           },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
           "bgColor": [
             255,
             255,
             255,
             0
-          ]
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
         }
       },
+      "id": 3,
       "vars_in": [
         {}
       ],
       "actions_in": [
         {}
       ],
+      "title": "",
       "vars_out": [
         {
           "jpath": []
@@ -309,8 +309,6 @@
     },
     {
       "url": "modules/types/client_interaction/code_editor/",
-      "id": 4,
-      "title": "",
       "configuration": {
         "sections": {},
         "groups": {
@@ -344,7 +342,7 @@
                 0
               ],
               "script": [
-                "<style>\n    .element {\n        font-size:20px\n    }\n    div .element {\n        padding: 1em;\n        display:flex;\n    }\n    .element .electronsPerPeriod {\n        width: 20%;\n    }\n    .element .element-data {\n        width: 80%;\n    }\n    .element-name {\n        font-size: 2.5em;\n        padding-bottom: 0.3em;\n    }\n    .element .Z {\n        font-size: 1.4em;\n    }\n\n    .element-name abbr {\n        border-bottom: dotted grey 0.05em;\n    }\n    /* info : delay too long */\n    .element-name abbr:hover {\n        border-bottom: none;\n    }\n    .element .weight {\n        overflow : hidden;\n        text-overflow : ellipsis;\n    }\n    .element .electronsPerPeriod {\n        margin: 0;\n        padding:0;\n    }\n    .element li {\n        list-style : none;\n    }\n\n\n</style>\n\n<div class=\"element\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"weight\">{{ element.weight }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
+                "<div class=\"element e{{ element.Z }} period{{ element.period}} group{{ element.group }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"weight\">{{ element.weight }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
               ]
             }
           ]
@@ -352,12 +350,6 @@
       },
       "layers": {
         "Default layer": {
-          "zIndex": 0,
-          "display": true,
-          "title": "",
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer",
           "position": {
             "left": 32,
             "top": 31
@@ -366,14 +358,21 @@
             "width": 81,
             "height": 39
           },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
           "bgColor": [
             255,
             255,
             255,
             0
-          ]
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
         }
       },
+      "id": 4,
       "vars_in": [
         {
           "rel": "value",
@@ -387,10 +386,11 @@
         {
           "event": "onEditorChange",
           "rel": "value",
-          "name": "elementTemplate",
-          "jpath": []
+          "jpath": [],
+          "name": "elementTemplate"
         }
       ],
+      "title": "",
       "actions_out": [
         {
           "jpath": []
@@ -399,15 +399,13 @@
     },
     {
       "url": "modules/types/display/template-twig/",
-      "id": 5,
-      "title": "",
       "configuration": {
         "sections": {},
         "groups": {
           "group": [
             {
               "template": [
-                "<style>\n    .element {\n        font-size:20px\n    }\n    div .element {\n        padding: 1em;\n        display:flex;\n    }\n    .element .electronsPerPeriod {\n        width: 20%;\n    }\n    .element .element-data {\n        width: 80%;\n    }\n    .element-name {\n        font-size: 2.5em;\n        padding-bottom: 0.3em;\n    }\n    .element .Z {\n        font-size: 1.4em;\n    }\n\n    .element-name abbr {\n        border-bottom: dotted grey 0.05em;\n    }\n    /* info : delay too long */\n    .element-name abbr:hover {\n        border-bottom: none;\n    }\n    .element .weight {\n        overflow : hidden;\n        text-overflow : ellipsis;\n    }\n    .element .electronsPerPeriod {\n        margin: 0;\n        padding:0;\n    }\n    .element li {\n        list-style : none;\n    }\n\n\n</style>\n\n<div class=\"element\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"weight\">{{ element.weight }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
+                "<div class=\"element e{{ element.Z }} period{{ element.period}} group{{ element.group }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"weight\">{{ element.weight }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
               ]
             }
           ]
@@ -415,12 +413,6 @@
       },
       "layers": {
         "Default layer": {
-          "zIndex": 0,
-          "display": true,
-          "title": "",
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer",
           "position": {
             "left": 1,
             "top": 31
@@ -429,14 +421,21 @@
             "width": 26,
             "height": 30
           },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
           "bgColor": [
             255,
             255,
             255,
             0
-          ]
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
         }
       },
+      "id": 5,
       "vars_in": [
         {
           "rel": "value",
@@ -450,13 +449,12 @@
       "actions_in": [
         {}
       ],
+      "title": "",
       "vars_out": [],
       "actions_out": []
     },
     {
       "url": "modules/types/client_interaction/code_executor/",
-      "id": 6,
-      "title": "",
       "configuration": {
         "sections": {},
         "groups": {
@@ -490,12 +488,6 @@
       },
       "layers": {
         "Default layer": {
-          "zIndex": 0,
-          "display": true,
-          "title": "",
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer",
           "position": {
             "left": 0,
             "top": 84
@@ -504,14 +496,21 @@
             "width": 38,
             "height": 47
           },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
           "bgColor": [
             255,
             255,
             255,
             0
-          ]
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
         }
       },
+      "id": 6,
       "vars_in": [
         {
           "rel": "inputValue",
@@ -521,22 +520,21 @@
       "actions_in": [
         {}
       ],
+      "title": "",
       "vars_out": [
         {
           "event": "onScriptEnded",
           "rel": "outputValue",
-          "name": "elements",
           "jpath": [
             "elements"
-          ]
+          ],
+          "name": "elements"
         }
       ],
       "actions_out": []
     },
     {
       "url": "modules/types/edition/slick_grid/",
-      "id": 7,
-      "title": "",
       "configuration": {
         "sections": {},
         "groups": {
@@ -570,11 +568,11 @@
             [
               {
                 "name": "Name",
-                "editor": "auto",
-                "formatter": "typerenderer",
                 "jpath": [
                   "name"
-                ]
+                ],
+                "editor": "auto",
+                "formatter": "typerenderer"
               }
             ]
           ],
@@ -594,12 +592,6 @@
       },
       "layers": {
         "Default layer": {
-          "zIndex": 0,
-          "display": true,
-          "title": "",
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer",
           "position": {
             "left": 0,
             "top": 62
@@ -608,14 +600,21 @@
             "width": 29,
             "height": 20
           },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
           "bgColor": [
             255,
             255,
             255,
             0
-          ]
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
         }
       },
+      "id": 7,
       "vars_in": [
         {
           "rel": "list",
@@ -625,14 +624,15 @@
       "actions_in": [
         {}
       ],
+      "title": "",
       "vars_out": [
         {
           "event": "onSelect",
           "rel": "row",
-          "name": "selectedTemplate",
           "jpath": [
             "template"
-          ]
+          ],
+          "name": "selectedTemplate"
         }
       ],
       "actions_out": [
@@ -643,15 +643,13 @@
     },
     {
       "url": "modules/types/display/periodic_table/",
-      "id": 8,
-      "title": "",
       "configuration": {
         "sections": {},
         "groups": {
           "group": [
             {
               "template": [
-                "<style>\n    .element {\n        font-size:20px\n    }\n    div .element {\n        padding: 1em;\n        display:flex;\n    }\n    .element .electronsPerPeriod {\n        width: 20%;\n    }\n    .element .element-data {\n        width: 80%;\n    }\n    .element-name {\n        font-size: 2.5em;\n        padding-bottom: 0.3em;\n    }\n    .element .Z {\n        font-size: 1.4em;\n    }\n\n    .element-name abbr {\n        border-bottom: dotted grey 0.05em;\n    }\n    /* info : delay too long */\n    .element-name abbr:hover {\n        border-bottom: none;\n    }\n    .element .weight {\n        overflow : hidden;\n        text-overflow : ellipsis;\n    }\n    .element .electronsPerPeriod {\n        margin: 0;\n        padding:0;\n    }\n    .element li {\n        list-style : none;\n    }\n\n\n</style>\n\n<div class=\"element\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"weight\">{{ element.weight }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
+                "<div class=\"element e{{ element.Z }} period{{ element.period}} group{{ element.group }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"weight\">{{ element.weight }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
               ]
             }
           ]
@@ -659,28 +657,29 @@
       },
       "layers": {
         "Default layer": {
+          "position": {
+            "left": 128,
+            "top": 37
+          },
+          "size": {
+            "width": 57,
+            "height": 44
+          },
           "zIndex": 0,
           "display": true,
           "title": "",
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer",
-          "position": {
-            "left": 124,
-            "top": 14
-          },
-          "size": {
-            "width": 59,
-            "height": 54
-          },
           "bgColor": [
             255,
             255,
             255,
             0
-          ]
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
         }
       },
+      "id": 8,
       "vars_in": [
         {
           "rel": "template",
@@ -694,6 +693,7 @@
       "actions_in": [
         {}
       ],
+      "title": "",
       "vars_out": [],
       "actions_out": []
     }

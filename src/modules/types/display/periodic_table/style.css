@@ -1,3 +1,92 @@
 .periodic-table {
 
 }
+
+.per-table {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-left: -5px;
+}
+.per-table > * {
+    flex: 0 0 auto;
+    width: calc((100% / 18) - 5px);
+    margin-left: 5px;
+    display: block;  /* IE fix */
+}
+
+/* deco */
+.per-table * {
+    box-sizing: border-box;
+}
+
+[class*="table"] > div,
+[class*="simple"] > div {
+    margin-bottom: 10px;
+}
+
+.e2 {
+    margin-left: calc(100% / 18 * 16);
+}
+
+.e5, .e13 {
+    margin-left: calc(100% / 18 * 10)
+
+}
+.e57, .e58 {
+    align-self : flex-end;
+}
+
+/*.per-table {*/
+    /*display:flex;*/
+    /*flex-wrap :wrap;*/
+    /*width: 100%;*/
+/*}*/
+/*.per-table * {*/
+    /*box-sizing : border-box;*/
+/*}*/
+/*.per-table > * {*/
+    /*width: calc(100% / 18);*/
+/*}*/
+
+
+
+/*.element {*/
+    /*font-size:20px*/
+/*}*/
+/*/!*div.element {*!/*/
+    /*/!*padding: 1em;*!/*/
+    /*/!*display:flex;*!/*/
+/*}*/
+/*.element .electronsPerPeriod {*/
+    /*width: 20%;*/
+/*}*/
+/*.element .element-data {*/
+    /*width: 80%;*/
+/*}*/
+/*.element-name {*/
+    /*font-size: 2.5em;*/
+    /*padding-bottom: 0.3em;*/
+/*}*/
+/*.element .Z {*/
+    /*font-size: 1.4em;*/
+/*}*/
+
+.element-name abbr {
+    border-bottom: dotted grey 0.05em;
+}
+/* info : delay too long */
+.element-name abbr:hover {
+    border-bottom: none;
+}
+.element .weight {
+    overflow : hidden;
+    text-overflow : ellipsis;
+}
+.element .electronsPerPeriod {
+    margin: 0;
+    padding:0;
+}
+.element li {
+    list-style : none;
+}
