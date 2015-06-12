@@ -17,6 +17,9 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/ui', 'lib/d3/d
             arrayvalue: function () {
                 this.dom.empty();
             },
+            textlist: function () {
+                this.dom.empty();
+            },
             textvalue: function () {
                 this.dom.empty();
             }
@@ -30,6 +33,15 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/ui', 'lib/d3/d
                 if (!Array.isArray(value)) {
                     return;
                 }
+                this._oneWordPerLine = true;
+                this.processChart(value);
+            },
+            textlist: function (value) {
+                if (!value.get()) {
+                    return;
+                }
+                value = value.get();
+                this._oneWordPerLine = true;
                 this.processChart(value);
             },
             textvalue: function (value) {
@@ -37,6 +49,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/ui', 'lib/d3/d
                     return;
                 }
                 value = value.get();
+                this._oneWordPerLine = false;
                 this.processChart(value);
             }
         },
@@ -94,12 +107,13 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/ui', 'lib/d3/d
                 tags = {};
                 var cases = {};
 
-                text.split(that.module.getConfigurationCheckbox('oneWordPerLine', 'oneWordPerLine') ? /\n/g : wordSeparators).forEach(function (word) {
+                text.split(that._oneWordPerLine ? /\n/g : wordSeparators).forEach(function (word) {
                     if (discard.test(word)) return;
                     word = word.replace(punctuation, '');
                     if (stopWords.test(word.toLowerCase())) return;
                     cases[word.toLowerCase()] = word;
                     tags[word = word.toLowerCase()] = (tags[word] || 0) + 1;
+                    console.log("tags",tags)
                 });
                 tags = d3.entries(tags).sort(function (a, b) { return b.value - a.value; });
                 tags.forEach(function (d) { d.key = cases[d.key]; });
@@ -112,6 +126,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/ui', 'lib/d3/d
                 that.fontSize = d3.scale[that.module.getConfiguration('scale')]().range([10, 100]);
                 if (tags.length) that.fontSize.domain([+tags[tags.length - 1].value || 1, +tags[0].value]);
                 that.words = [];
+                console.log(that.fontSize)//HERE STOP domain maybe
                 that.layout.stop().words(tags).start();
             }
 
@@ -152,7 +167,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/ui', 'lib/d3/d
                     .fontSize(function (d) {
                         return that.fontSize(+d.value);
                     })
-                    .text(function (d) {return d.key; })
+                    .text(function (d) {console.log("key",d.key); return d.key; })
                     .on('end', draw);
             } else {
                 that.layout
@@ -170,6 +185,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/ui', 'lib/d3/d
                     h / Math.abs(bounds[0].y - h / 2)) / 2 : 1;
 
                 that.words = data;
+                console.log("that.words",data, bounds)
                 var text = vis.selectAll('text')
                     .data(that.words, function (d) { return d.text.toLowerCase(); });
                 text.transition()

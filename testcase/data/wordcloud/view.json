@@ -1,5 +1,5 @@
 {
-  "version": "2.19.3-0",
+  "version": "2.20.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -10,73 +10,6 @@
     "yHeight": 10
   },
   "modules": [
-    {
-      "url": "modules/types/chart/statistics/wordcloud/",
-      "configuration": {
-        "sections": {},
-        "groups": {
-          "group": [
-            {
-              "spiral": [
-                "archimedean"
-              ],
-              "scale": [
-                "log"
-              ],
-              "orientation": [
-                1
-              ],
-              "oneWordPerLine": [
-                [
-                  "oneWordPerLine"
-                ]
-              ],
-              "fromTo": [
-                [
-                  0,
-                  0
-                ]
-              ]
-            }
-          ]
-        }
-      },
-      "layers": {
-        "Default layer": {
-          "position": {
-            "left": 32,
-            "top": 13
-          },
-          "size": {
-            "width": 88,
-            "height": 37
-          },
-          "zIndex": 0,
-          "display": true,
-          "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer"
-        }
-      },
-      "id": 1,
-      "vars_in": [
-        {
-          "rel": "arrayvalue",
-          "name": "myvar"
-        }
-      ],
-      "actions_in": [],
-      "title": "",
-      "vars_out": [],
-      "actions_out": []
-    },
     {
       "url": "modules/types/legacy/var_editor/",
       "configuration": {},
@@ -178,7 +111,7 @@
       "actions_in": [
         {}
       ],
-      "richtext": "aaaa bbbb ccccc",
+      "richtext": "cheminfo cheminfo cheminfo cheminfo cheminfo cheminfo visualizer visualizer visualizer visualizer visualizer visualizer visualizer visualizer visualizer visualizer visualizer javascript javascript javascript javascript chemical chemical chemical molecule molecule molecule molecule peak peak smiles smiles mass mass mass",
       "vars_out": [
         {
           "jpath": []
@@ -270,6 +203,68 @@
       "actions_in": [
         {}
       ],
+      "title": "",
+      "vars_out": [],
+      "actions_out": []
+    },
+    {
+      "url": "modules/types/chart/statistics/wordcloud/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "spiral": [
+                "archimedean"
+              ],
+              "scale": [
+                "log"
+              ],
+              "orientation": [
+                5
+              ],
+              "fromTo": [
+                [
+                  -60,
+                  60
+                ]
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 32,
+            "top": 14
+          },
+          "size": {
+            "width": 87,
+            "height": 35
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 5,
+      "vars_in": [
+        {
+          "rel": "textlist",
+          "name": "myvar"
+        }
+      ],
+      "actions_in": [],
       "title": "",
       "vars_out": [],
       "actions_out": []
