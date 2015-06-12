@@ -62,12 +62,38 @@ define(['src/util/util'], function (Util) {
             this.module._resolveView();
         },
 
+        startLoading: function (rel) {
+            this.loadingElements = this.loadingElements || [];
+            if (this.relsForLoading().indexOf(rel) > -1 && this.loadingElements.indexOf(rel) == -1) {
+
+                this.loadingElements.push(rel);
+                this.showLoading();
+            }
+        },
+
+        endLoading: function (rel) {
+            this.loadingElements = this.loadingElements || [];
+
+            if (this.relsForLoading().indexOf(rel) > -1 && this.loadingElements.indexOf(rel) > -1) {
+
+                this.loadingElements.splice(this.loadingElements.indexOf(rel), 1);
+
+                if (this.loadingElements.length == 0) {
+                    this.hideLoading();
+                }
+            }
+        },
+
         showLoading: function () {
             this.module.domLoading.addClass('ci-module-loading-visible');
         },
 
         hideLoading: function () {
             this.module.domLoading.removeClass('ci-module-loading-visible');
+        },
+
+        relsForLoading: function () {
+            return this._relsForLoading || (this._relsForLoading = []);
         },
 
         //TODO hack for chrome
