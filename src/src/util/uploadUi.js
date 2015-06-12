@@ -13,6 +13,22 @@ define([
     'jquery',
     'slickgrid'
 ], function (Util, Debug, ui, _, $, Slick) {
+    function attachmentsFromCouch(data) {
+        var r = [];
+        for (var key in data) {
+            r.push({
+                name: key,
+                mimeType: data[key].content_type
+            });
+        }
+        return r;
+    }
+
+    var modes = {
+        couchdb: attachmentsFromCouch,
+        couch: attachmentsFromCouch
+    };
+
 
     var exports = {};
     var cssLoaded = Promise.all([
@@ -22,7 +38,10 @@ define([
 
     var prefix = 'upload/';
 
-    function uploadDialog(data) {
+    function uploadDialog(data, mode) {
+        if (data && mode && modes[mode]) {
+            data = modes[mode](data);
+        }
         data = data || [];
         return cssLoaded
             .then(function () {
@@ -70,7 +89,7 @@ define([
                                 $(this).dialog('close');
                             },
                             Upload: function () {
-                                var toUpload = _.filter(data,function (v) {
+                                var toUpload = _.filter(data, function (v) {
                                     return v.file;
                                 });
                                 resolve(toUpload);
@@ -81,10 +100,10 @@ define([
                         close: function () {
                             resolve(false);
                         },
-                        resize: function() {
+                        resize: function () {
                             grid.resizeCanvas();
                         },
-                        open: function() {
+                        open: function () {
                             $dialog.append($slick);
                             //$('body').append($slick);
                             grid = new Slick.Grid($slick, data, columns, slickOptions);
@@ -97,15 +116,15 @@ define([
                     $dialog[0].addEventListener('dragenter', function (e) {
                         e.preventDefault();
                         e.stopPropagation();
-                        dragCount++
-                        if(dragCount === 1)
+                        dragCount++;
+                        if (dragCount === 1)
                             $dialog.addClass('drop-over');
                     });
                     $dialog[0].addEventListener('dragleave', function (e) {
                         e.preventDefault();
                         e.stopPropagation();
                         dragCount--;
-                        if(!dragCount)
+                        if (!dragCount)
                             $dialog.removeClass('drop-over');
 
                     });
@@ -121,7 +140,7 @@ define([
                         });
                         if (exists) {
                             exists.file = file;
-                            exists.color = 'orange'
+                            exists.color = 'orange';
                         } else {
                             data.push({
                                 name: filePath,
@@ -146,24 +165,22 @@ define([
                         if (entry.isDirectory) {
                             return Promise.resolve().then(function () {
                                 var dirReader = entry.createReader();
-                                return new Promise(function(resolve, reject) {
+                                return new Promise(function (resolve, reject) {
                                     dirReader.readEntries(function (fileEntries) {
                                         var prom = [];
                                         for (var i = 0; i < fileEntries.length; i++) {
                                             var fileEntry = fileEntries[i];
                                             if (fileEntry.isFile) {
                                                 prom.push(doFile(fileEntry, name));
-                                            }
-                                            else if (fileEntry.isDirectory) {
-                                                prom.push(traverseEntries(fileEntry, name + '/' + fileEntry.name))
+                                            } else if (fileEntry.isDirectory) {
+                                                prom.push(traverseEntries(fileEntry, name + '/' + fileEntry.name));
                                             }
                                         }
                                         return resolve(Promise.all(prom));
                                     });
                                 });
-                            })
-                        }
-                        else {
+                            });
+                        } else {
                             return doFile(entry);
                         }
 
@@ -181,14 +198,14 @@ define([
                             var entry = e.dataTransfer.items[i].webkitGetAsEntry();
                             prom.push(traverseEntries(entry, entry.name));
                         }
-                        Promise.all(prom).then(function() {
+                        Promise.all(prom).then(function () {
                             grid.updateRowCount();
                             grid.render();
                             grid.autosizeColumns();
                         });
                     });
                 });
-            })
+            });
     }
 
     exports.uploadDialog = uploadDialog;
