@@ -9,11 +9,13 @@ define([
     'forms/button',
     'src/util/util',
     'forms/form',
+    'src/util/couchdbAttachments',
+    'src/util/uploadUi',
     'lib/couchdb/jquery.couch',
     'fancytree',
     'components/ui-contextmenu/jquery.ui-contextmenu.min',
     'jquery-ui/autocomplete'
-], function ($, _, ui, Default, Versioning, Button, Util, Form) {
+], function ($, _, ui, Default, Versioning, Button, Util, Form, CouchdbAttachments, uploadUi) {
 
     function CouchDBManager() {
     }
@@ -34,7 +36,8 @@ define([
                 $.couch.urlPrefix = this.options.url.replace(/\/$/, '');
             }
             this.url = $.couch.urlPrefix;
-            var db = this.options.database || 'visualizer';
+            var db = this.db = this.options.database || 'visualizer';
+            this.dbUrl = this.url + '/' + db;
             this.database = $.couch.db(db);
             $.ui.fancytree.debugLevel = 0;
             this.checkDatabase();
@@ -367,6 +370,7 @@ define([
         },
         renderLoginMethods: function () {
             var that = this;
+
             function doLogin() {
                 that.login(that.getFormContent('login-username'), that.getFormContent('login-password'));
                 return false;
@@ -528,7 +532,22 @@ define([
             );
 
 
-            dom.append('<hr>').append(this.makePublicButton.render().hide());
+            dom.append('<hr>')
+                .append(this.makePublicButton.render().hide())
+                .append(new Button('Upload', function () {
+                    if (!that.currentDocument) return;
+                    var docUrl = that.dbUrl + '/' + that.currentDocument.data.doc._id;
+                    var couchA = new CouchdbAttachments(docUrl);
+                    couchA.list().then(function (attachments) {
+                        console.log(attachments);
+                        uploadUi.uploadDialog(attachments, 'couch').then(function (toUpload) {
+                            console.log(toUpload);
+                            if (toUpload.length !== 0) {
+                                couchA.upload(toUpload[0].name, toUpload[0].file, { contentType: toUpload[0].mimeType});
+                            }
+                        });
+                    });
+                }, {color: 'green'}).render());
 
             this.loadFlavor();
 

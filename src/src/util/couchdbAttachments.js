@@ -54,7 +54,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
     /**
      *
      * @param name Name of the attachment to upload
-     * @param data The attachment's content to upload
+     * @param data The attachment's content to upload or a File
      * @param options
      * @returns {Promise.<Object>} The new list of attachments
      */
@@ -80,7 +80,6 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                         if (err) return reject(err);
                         if (res.status !== 201) return reject(new Error('Error uploading attachment, couchdb returned status code ' + res.status));
                         that.lastDoc._rev = res.body.rev;
-                        //that.attachments[name] = data;
                         return resolve(res);
                     });
             });
