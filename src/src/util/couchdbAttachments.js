@@ -13,7 +13,27 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
         LRU.create(storeName, limitMemory, limitStore);
     }
 
-    var dataURLreg = new RegExp(';base64,(.+)$');
+    function dataURLtoBase64(data) {
+        var pos;
+        var l = Math.min(100, data.length);
+        for (var i = 0; i < l; i++) {
+            if (data[i] === ';') {
+                pos = i + 1;
+                break;
+            }
+        }
+        console.log(pos);
+        var t = data.slice(pos, pos + 7);
+        console.log(pos);
+        console.log(t);
+        if (pos && t === 'base64,') {
+            pos = pos + 7;
+            return data.slice(pos);
+        } else {
+            throw new Error('Could not parse dataurl');
+        }
+    }
+
 
     /**
      * @param url Set the docUrl. If none specified, will attempt to use the viewURL to set the docURL
@@ -145,7 +165,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                             reader.onload = function (e) {
                                 return resolve({
                                     item: item,
-                                    base64data: dataURLreg.exec(e.target.result)[1]
+                                    base64data: dataURLtoBase64(e.target.result)
                                 });
                             };
                             reader.onerror = function () {
