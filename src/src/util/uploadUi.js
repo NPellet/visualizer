@@ -11,14 +11,17 @@ define([
     'src/util/ui',
     'lodash',
     'jquery',
-    'slickgrid'
-], function (Util, Debug, ui, _, $, Slick) {
+    'slickgrid',
+    'mime-types'
+], function (Util, Debug, ui, _, $, Slick, mimeTypes) {
     function attachmentsFromCouch(data) {
         var r = [];
         for (var key in data) {
             r.push({
                 name: key,
-                mimeType: data[key].content_type
+                contentType: data[key].content_type,
+                size: data[key].length,
+                toDelete: false
             });
         }
         return r;
@@ -50,7 +53,7 @@ define([
                         editable: true,
                         enableAddRow: false,
                         enableCellNavigation: true,
-                        autoEdit: false,
+                        autoEdit: true,
                         enableTextSelectionOnCells: true,
                         enableColumnReorder: true,
                         forceFitColumns: true,
@@ -58,27 +61,37 @@ define([
                         asyncEditorLoading: true,
                         asyncEditorLoadDelay: 30,
                         enableAsyncPostRender: true,
-                        asyncPostRenderDelay: 0
+                        asyncPostRenderDelay: 0,
+                        rowHeight: 20
                     };
 
-                    var columns = [{
-                        id: 'name',
-                        name: 'name',
-                        field: 'name',
-                        editor: Slick.Editors.Text,
-                        sortable: true
-                    }, {
-                        id: 'mimeType',
-                        name: 'mimeType',
-                        field: 'mimeType',
-                        editor: Slick.Editors.Text
-                    }, {
-                        id: 'toDelete',
-                        name: 'toDelete',
-                        field: 'toDelete',
-                        editor: Slick.Editors.Checkbox,
-                        formatter: Slick.Formatters.Checkmark
-                    }];
+                    var columns = [
+                        {
+                            id: 'name',
+                            name: 'name',
+                            field: 'name',
+                            editor: Slick.Editors.Text,
+                            sortable: true
+                        },
+                        {
+                            id: 'contentType',
+                            name: 'contentType',
+                            field: 'contentType',
+                            editor: Slick.Editors.Text
+                        },
+                        {
+                            id: 'size',
+                            name: 'size',
+                            field: 'size'
+                        },
+                        {
+                            id: 'toDelete',
+                            name: 'toDelete',
+                            field: 'toDelete',
+                            editor: Slick.Editors.Checkbox,
+                            formatter: Slick.Formatters.Checkmark
+                        }
+                    ];
                     var $dialog = $('<div class="upload-ui">');
                     var $slick = $('<div class="dropzone">');
                     var grid;
@@ -90,7 +103,7 @@ define([
                             },
                             Upload: function () {
                                 var toUpload = _.filter(data, function (v) {
-                                    return v.file;
+                                    return v.file || v.toDelete;
                                 });
                                 resolve(toUpload);
                                 $(this).dialog('close');
@@ -145,7 +158,9 @@ define([
                             data.push({
                                 name: filePath,
                                 file: file,
-                                mimeType: file.type,
+                                contentType: file.type || mimeTypes.lookup(filePath) || 'application/octet-stream',
+                                size: file.size || 0,
+                                toDelete: false,
                                 color: 'green'
                             });
                         }
