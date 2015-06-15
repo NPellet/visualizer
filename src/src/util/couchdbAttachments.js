@@ -6,7 +6,6 @@
 define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioning, superagent, LRU) {
 
     // A namespace for preventing overwriting
-    var prefix = 'upload/';
     var storeName = '__couchdb-attachments';
     var limitMemory = 200;
     var limitStore = 500;
@@ -51,6 +50,77 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
         });
     };
 
+
+    //CouchdbAttachments.prototype.uploads1 = function(files) {
+    //    var that = this;
+    //    if(!Array.isArray(files)) {
+    //        throw new Error('uploads expects an array as parameter')
+    //    }
+    //
+    //    return this.list().then(function() {
+    //        return new Promise(function (resolve, reject) {
+    //            var req = superagent.post(that.docUrl);
+    //
+    //            for (var i = 0; i < files.length; i++) {
+    //                var file = files[i];
+    //                req.attach('_attachments', new Blob(['<a id="a"><b id="b">hey!</b></a>'], { type: "text/html"}), 'upload/test.html');
+    //            }
+    //            req.field('_rev', that.lastDoc._rev);
+    //            req.end(function(err, res) {
+    //                if(err) return reject(err);
+    //                if(res.status !== 201) reject(new Error('Error uploading attachments, couchdb returned status code ' + res.status));
+    //                console.log(res.body);
+    //            })
+    //
+    //        });
+    //    })
+    //};
+    //CouchdbAttachments.prototype.uploads = function(options) {
+    //    var that = this;
+    //    if(!Array.isArray(options)) {
+    //        throw new Error('uploads expects an array as parameter')
+    //    }
+    //    return this.list().then(function() {
+    //        return new Promise(function (resolve, reject) {
+    //            var obj = {_attachments: {}};
+    //            for(var i=0; i<options.length; i++) {
+    //                var exists = that.lastDoc._attachments[options[i].name];
+    //                var isFile = (options[i].data instanceof window.File);
+    //                var contentType = options[i].contentType || (exists ? exists.content_type : undefined);
+    //                options[i].contentType = contentType;
+    //                if (!contentType) {
+    //                    return reject(new Error('Content-Type unresolved. Cannot upload document without content-type'));
+    //                }
+    //                obj._attachments[options[i].name] = {
+    //                    follows: true,
+    //                    content_type: contentType,
+    //                    length: isFile ? options[i].data.size : options[i].data.length
+    //                }
+    //            }
+    //            obj.body = 'blabla';
+    //
+    //            var req = superagent.put(that.docUrl)
+    //                .set('Content-Type', 'multipart/related')
+    //                .part()
+    //                .set('Content-Type', 'application/json')
+    //                .write(JSON.stringify(obj));
+    //
+    //            for(i=0; i<options.length; i++) {
+    //                req.part()
+    //                    .set('Content-Type', options[i].contentType)
+    //                    .write(options[i].data)
+    //            }
+    //
+    //            req.end(function(err, res) {
+    //                if(err) return reject(err);
+    //                console.log('status of multiple upload: ', res.status);
+    //                //that.lastDoc._rev = res.body.rev;
+    //                return resolve(res);
+    //            })
+    //        });
+    //    })
+    //};
+
     /**
      *
      * @param name Name of the attachment to upload
@@ -58,24 +128,24 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
      * @param options
      * @returns {Promise.<Object>} The new list of attachments
      */
-    CouchdbAttachments.prototype.upload = function (name, data, options) {
+    CouchdbAttachments.prototype.upload = function (options) {
         var that = this;
         options = options || {};
 
         return this.list().then(function () {
             return new Promise(function (resolve, reject) {
-                var exists = that.lastDoc._attachments[name];
+                var exists = that.lastDoc._attachments[options.name];
                 console.log(that.lastDoc);
                 var contentType = options.contentType || (exists ? exists.content_type : undefined);
                 if (!contentType) {
                     return reject(new Error('Content-Type unresolved. Cannot upload document without content-type'));
                 }
                 superagent
-                    .put(that.docUrl + '/' + name)
+                    .put(that.docUrl + '/' + options.name)
                     .query({rev: that.lastDoc._rev})
                     .set('Content-Type', contentType)
                     .set('Accept', 'application/json')
-                    .send(data)
+                    .send(options.data || options.file)
                     .end(function (err, res) {
                         if (err) return reject(err);
                         if (res.status !== 201) return reject(new Error('Error uploading attachment, couchdb returned status code ' + res.status));
@@ -87,7 +157,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
             // We need to update the document after the upload
             var prom = that.list(true);
             prom.then(function () {
-                Promise.resolve(LRU.store(storeName, that.lastDoc._attachments[name].digest, data)).then(function (r) {
+                Promise.resolve(LRU.store(storeName, that.lastDoc._attachments[options.name].digest, options.data || options.file)).then(function (r) {
                     console.log('store success', r);
                 }, function (e) {
                     console.log('store error', e);
@@ -96,7 +166,6 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
 
             return prom;
         });
-
     };
 
     /**

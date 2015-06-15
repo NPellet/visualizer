@@ -3,6 +3,7 @@
 define([
     'jquery',
     'lodash',
+    'src/util/api',
     'src/util/ui',
     'src/header/components/default',
     'src/util/versioning',
@@ -15,11 +16,12 @@ define([
     'fancytree',
     'components/ui-contextmenu/jquery.ui-contextmenu.min',
     'jquery-ui/autocomplete'
-], function ($, _, ui, Default, Versioning, Button, Util, Form, CouchdbAttachments, uploadUi) {
+], function ($, _, API, ui, Default, Versioning, Button, Util, Form, CouchdbAttachments, uploadUi) {
 
     function CouchDBManager() {
     }
 
+    var loadingId = Util.getNextUniqueId();
     var regAlphaNum = /^[a-zA-Z0-9]+$/;
 
     Util.inherits(CouchDBManager, Default, {
@@ -531,23 +533,33 @@ define([
                     .append(this.errorP)
             );
 
+            function uploadFiles() {
+                if (!that.currentDocument) return;
+                var docUrl = that.dbUrl + '/' + that.currentDocument.data.doc._id;
+                var couchA = new CouchdbAttachments(docUrl);
+                couchA.list().then(function (attachments) {
+                    console.log(attachments);
+                    uploadUi.uploadDialog(attachments, 'couch').then(function (toUpload) {
+                        if(!toUpload) return;
+                        var prom = [];
+                        for(var i=0; i<toUpload.length; i++) {
+                            prom.push(couchA.upload(toUpload[i]));
+                        }
+                        API.loading(loadingId, 'Uploading files...');
+                        Promise.all(prom).then(function() {
+                            API.stopLoading(loadingId);
+                            that.showError('Files uploaded successfully', 2);
+                        }, function() {
+                            API.stopLoading(loadingId);
+                            that.showError('Files upload failed (at least partially)');
+                        });
+                    });
+                });
+            }
 
             dom.append('<hr>')
                 .append(this.makePublicButton.render().hide())
-                .append(new Button('Upload', function () {
-                    if (!that.currentDocument) return;
-                    var docUrl = that.dbUrl + '/' + that.currentDocument.data.doc._id;
-                    var couchA = new CouchdbAttachments(docUrl);
-                    couchA.list().then(function (attachments) {
-                        console.log(attachments);
-                        uploadUi.uploadDialog(attachments, 'couch').then(function (toUpload) {
-                            console.log(toUpload);
-                            if (toUpload.length !== 0) {
-                                couchA.upload(toUpload[0].name, toUpload[0].file, { contentType: toUpload[0].mimeType});
-                            }
-                        });
-                    });
-                }, {color: 'green'}).render());
+                .append(new Button('Upload', uploadFiles, {color: 'green'}).render());
 
             this.loadFlavor();
 

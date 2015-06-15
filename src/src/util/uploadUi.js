@@ -18,7 +18,7 @@ define([
         for (var key in data) {
             r.push({
                 name: key,
-                mimeType: data[key].content_type
+                contentType: data[key].content_type
             });
         }
         return r;
@@ -68,9 +68,9 @@ define([
                         editor: Slick.Editors.Text,
                         sortable: true
                     }, {
-                        id: 'mimeType',
-                        name: 'mimeType',
-                        field: 'mimeType',
+                        id: 'contentType',
+                        name: 'contentType',
+                        field: 'contentType',
                         editor: Slick.Editors.Text
                     }, {
                         id: 'toDelete',
@@ -89,9 +89,12 @@ define([
                                 $(this).dialog('close');
                             },
                             Upload: function () {
-                                var toUpload = _.filter(data, function (v) {
+                                var toUpload = _(data).filter(function (v) {
                                     return v.file;
-                                });
+                                }).each(function(v) {
+                                    //if(v.contentType) v.file.type = v.contentType;
+                                    //v.file.name = v.name;
+                                }).value();
                                 resolve(toUpload);
                                 $(this).dialog('close');
 
@@ -145,7 +148,7 @@ define([
                             data.push({
                                 name: filePath,
                                 file: file,
-                                mimeType: file.type,
+                                contentType: file.type,
                                 color: 'green'
                             });
                         }
@@ -209,5 +212,24 @@ define([
     }
 
     exports.uploadDialog = uploadDialog;
+    exports.dummy = function() {
+        var formData = new FormData();
+
+        formData.append("_rev", "10-ba0805576b13ae9f877c15b0b82f62d0");
+
+
+        var content = '<a id="a"><b id="b">hey!</b></a>'; // the body of the new file...
+        var blob = new Blob([content], { type: "text/xml"});
+
+        formData.append("_attachments", blob, 'web.html');
+
+        $.ajax({
+            url: "http://127.0.0.1/localcouch/cheminfo/132bdb90c42b9daea9d5b6d658003339",
+            type: "POST",
+            data: formData,
+            processData: false,  // tell jQuery not to process the data
+            contentType: false   // tell jQuery not to set contentType
+        });
+    };
     return exports;
 });
