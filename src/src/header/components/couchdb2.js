@@ -540,16 +540,18 @@ define([
                 couchA.list().then(function (attachments) {
                     console.log(attachments);
                     uploadUi.uploadDialog(attachments, 'couch').then(function (toUpload) {
-                        if(!toUpload) return;
-                        var prom = [];
-                        for(var i=0; i<toUpload.length; i++) {
-                            prom.push(couchA.upload(toUpload[i]));
-                        }
-                        API.loading(loadingId, 'Uploading files...');
-                        Promise.all(prom).then(function() {
+                        if (!toUpload) return;
+                        //var prom = [];
+                        //for (var i = 0; i < toUpload.length; i++) {
+                        //    prom.push(couchA.upload(toUpload[i]));
+                        //}
+                        //API.loading(loadingId, 'Uploading files...');
+                        //var p = Promise.all(prom);
+                        var p = couchA.inlineUploads(toUpload);
+                        p.then(function () {
                             API.stopLoading(loadingId);
                             that.showError('Files uploaded successfully', 2);
-                        }, function() {
+                        }, function () {
                             API.stopLoading(loadingId);
                             that.showError('Files upload failed (at least partially)');
                         });

@@ -13,6 +13,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
         LRU.create(storeName, limitMemory, limitStore);
     }
 
+    var dataURLreg = new RegExp(';base64,(.+)$');
 
     /**
      * @param url Set the docUrl. If none specified, will attempt to use the viewURL to set the docURL
@@ -121,6 +122,72 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
     //    })
     //};
 
+    CouchdbAttachments.prototype.inlineUploads = function (options) {
+        var that = this;
+        if (!options) return Promise.resolve(this.lastDoc._attachments);
+        return Promise.resolve().then(function () {
+            if (!(Array.isArray(options))) {
+                throw new TypeError('options must be an array');
+            }
+
+            var prom = [];
+            for (var i = 0; i < options.length; i++) {
+                (function (i) {
+                    var item = options[i];
+                    if (item.data) {
+                        that.lastDoc._attachments[options.name] = {
+                            content_type: options.contentType,
+                            data: btoa(unescape(encodeURIComponent(item.data)))
+                        };
+                    } else if (item.file) {
+                        var p = new Promise(function (resolve, reject) {
+                            var reader = new FileReader();
+                            reader.onload = function (e) {
+                                return resolve({
+                                    item: item,
+                                    base64data: dataURLreg.exec(e.target.result)[1]
+                                });
+                            };
+                            reader.onerror = function () {
+                                return reject('Error while reading file');
+                            };
+                            reader.readAsDataURL(item.file);
+                        });
+                        prom.push(p);
+
+                    } else {
+                        return Promise.reject(new Error('Item must have data or file property'));
+                    }
+                })(i);
+            }
+            return Promise.all(prom);
+        }).then(function (toChange) {
+            return new Promise(function (resolve, reject) {
+                for (var i = 0; i < toChange.length; i++) {
+                    var c = toChange[i];
+                    that.lastDoc._attachments[c.item.name] = {
+                        content_type: c.item.contentType,
+                        data: c.base64data
+                    };
+                }
+                superagent
+                    .put(that.docUrl)
+                    .set('Content-Type', 'application/json')
+                    .set('Accept', 'application/json')
+                    .send(that.lastDoc)
+                    .end(function (err, res) {
+                        if (err) return reject(err);
+                        console.log('inline attachments status', res.status);
+                        return resolve(res);
+                    });
+            });
+
+
+        }).then(function () {
+            return that.list(true);
+        });
+    };
+
     /**
      *
      * @param name Name of the attachment to upload
@@ -156,13 +223,16 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
         }).then(function () {
             // We need to update the document after the upload
             var prom = that.list(true);
-            prom.then(function () {
-                Promise.resolve(LRU.store(storeName, that.lastDoc._attachments[options.name].digest, options.data || options.file)).then(function (r) {
-                    console.log('store success', r);
-                }, function (e) {
-                    console.log('store error', e);
+            if (options.data) { // Don't store in lru if it's a file
+                prom.then(function () {
+                    Promise.resolve(LRU.store(storeName, that.lastDoc._attachments[options.name].digest, options.data)).then(function (r) {
+                        console.log('store success', r);
+                    }, function (e) {
+                        console.log('store error', e);
+                    });
                 });
-            });
+            }
+
 
             return prom;
         });
