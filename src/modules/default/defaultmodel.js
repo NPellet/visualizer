@@ -195,7 +195,6 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
                     that.module.view.onActionReceive[actionRel].call(that.module.view, value, actionName[0]);
                 }
             });
-
         },
 
         buildData: function (data, sourceTypes) {

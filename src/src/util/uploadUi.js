@@ -53,7 +53,7 @@ define([
                         editable: true,
                         enableAddRow: false,
                         enableCellNavigation: true,
-                        autoEdit: false,
+                        autoEdit: true,
                         enableTextSelectionOnCells: true,
                         enableColumnReorder: true,
                         forceFitColumns: true,
@@ -61,7 +61,8 @@ define([
                         asyncEditorLoading: true,
                         asyncEditorLoadDelay: 30,
                         enableAsyncPostRender: true,
-                        asyncPostRenderDelay: 0
+                        asyncPostRenderDelay: 0,
+                        rowHeight: 20
                     };
 
                     var columns = [
@@ -102,7 +103,7 @@ define([
                             },
                             Upload: function () {
                                 var toUpload = _.filter(data, function (v) {
-                                    return v.file;
+                                    return v.file || v.toDelete;
                                 });
                                 resolve(toUpload);
                                 $(this).dialog('close');

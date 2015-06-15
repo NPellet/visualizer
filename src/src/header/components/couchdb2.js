@@ -541,7 +541,12 @@ define([
                     uploadUi.uploadDialog(attachments, 'couch').then(function (toUpload) {
                         if (!toUpload) return;
                         API.loading(loadingId, 'Uploading files...');
-                        var parts = _.partition(toUpload, function (v) {
+                        var parts;
+                        parts = _.partition(toUpload, function (v) {
+                            return v.toDelete;
+                        });
+                        var toDelete = parts[0];
+                        parts = _.partition(parts[1], function (v) {
                             return v.size < 10 * 1024 * 1024;
                         });
 
@@ -549,13 +554,16 @@ define([
                         var smallUploads = parts[0];
 
                         var prom = Promise.resolve();
+
+                        prom = prom.then(function () {
+                            return couchA.remove(_.pluck(toDelete, 'name'));
+                        });
                         for (var i = 0; i < largeUploads.length; i++) {
-                            (function(i) {
+                            (function (i) {
                                 prom = prom.then(function () {
                                     return couchA.upload(largeUploads[i]);
                                 });
                             })(i);
-
                         }
                         prom = prom.then(function () {
                             return couchA.inlineUploads(smallUploads);

@@ -49,8 +49,6 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
         } else {
             this.docUrl = arguments[0];
         }
-
-        this.attachments = {};
     };
 
     /**
@@ -92,7 +90,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                     return resolve();
                 });
             });
-        }).then(function() {
+        }).then(function () {
             return that.list(true);
         });
     };
@@ -230,7 +228,6 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                         .end(function (err, res) {
                             if (err) return reject(err);
                             if (res.status !== 200) return reject(new Error('Error getting attachment, couchdb returned status code ' + res.status));
-                            //that.attachments[name] = res.text;
                             LRU.store(storeName, exists.digest, res.body || res.text);
                             return resolve(res.body || res.text);
                         });
@@ -246,6 +243,9 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
      */
     CouchdbAttachments.prototype.remove = function (name) { // TODO: lru has no remove yet
         var that = this;
+        if (Array.isArray(name)) {
+            return this.inlineRemove(name);
+        }
         return this.list().then(function () {
             if (!that.lastDoc._attachments[name]) throw new Error('Cannot remove attachment, attachment does not exist.');
             return new Promise(function (resolve, reject) {
@@ -257,11 +257,35 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                         if (err) return reject(err);
                         if (res.status !== 200) return reject(new Error('Error deleting attachment, couchdb returned status code ' + res.status));
                         that.lastDoc._rev = res.body.rev;
-                        delete that.attachments[name];
                         delete that.lastDoc._attachments[name];
                         return resolve(that.lastDoc._attachments);
                     });
             });
+        });
+    };
+
+    CouchdbAttachments.prototype.inlineRemove = function (names) {
+        var that = this;
+        return Promise.resolve().then(function () {
+            if (!Array.isArray(names)) throw new TypeError('Argument should be an array');
+            if (names.length === 0) return that.list();
+            return new Promise(function (resolve, reject) {
+                for (var i = 0; i < names.length; i++) {
+                    delete that.lastDoc._attachments[names[i]];
+                }
+                superagent
+                    .put(that.docUrl)
+                    .set('Content-Type', 'application/json')
+                    .set('Accept', 'application/json')
+                    .send(that.lastDoc)
+                    .end(function (err, res) {
+                        if (err) return reject(err);
+                        if (res.status !== 201) return reject(new Error('Error uploading inline attachments, couchdb returned status code ' + res.status));
+                        return resolve();
+                    });
+            });
+        }).then(function () {
+            return that.list(true);
         });
     };
 
@@ -279,7 +303,6 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                 .end(function (err, res) {
                     if (err) return reject(err);
                     if (res.status !== 200) return reject(new Error('Error getting document, couchdb returned status code ' + res.status));
-                    that.attachments = {};
                     that.lastDoc = res.body;
                     return resolve(res.body._attachments);
                 });
