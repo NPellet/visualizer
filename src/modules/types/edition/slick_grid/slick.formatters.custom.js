@@ -54,6 +54,6 @@
     }
 
     function CheckmarkFormatter(row, cell, value, columnDef, dataContext) {
-        return value ? '<img src="' + require.toUrl('components/slickgrid/images/tick.png') + '"/>' : '';
+        return value ? '<span style="color: green;">&#10004;</span>' : '<span style="color: red;">&#10008;</span>';
     }
 })(jQuery);
