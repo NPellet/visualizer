@@ -113,7 +113,6 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/ui', 'lib/d3/d
                     if (stopWords.test(word.toLowerCase())) return;
                     cases[word.toLowerCase()] = word;
                     tags[word = word.toLowerCase()] = (tags[word] || 0) + 1;
-                    console.log("tags",tags)
                 });
                 tags = d3.entries(tags).sort(function (a, b) { return b.value - a.value; });
                 tags.forEach(function (d) { d.key = cases[d.key]; });
@@ -126,7 +125,6 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/ui', 'lib/d3/d
                 that.fontSize = d3.scale[that.module.getConfiguration('scale')]().range([10, 100]);
                 if (tags.length) that.fontSize.domain([+tags[tags.length - 1].value || 1, +tags[0].value]);
                 that.words = [];
-                console.log(that.fontSize)//HERE STOP domain maybe
                 that.layout.stop().words(tags).start();
             }
 
@@ -167,7 +165,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/ui', 'lib/d3/d
                     .fontSize(function (d) {
                         return that.fontSize(+d.value);
                     })
-                    .text(function (d) {console.log("key",d.key); return d.key; })
+                    .text(function (d) { return d.key; })
                     .on('end', draw);
             } else {
                 that.layout
@@ -185,7 +183,6 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/ui', 'lib/d3/d
                     h / Math.abs(bounds[0].y - h / 2)) / 2 : 1;
 
                 that.words = data;
-                console.log("that.words",data, bounds)
                 var text = vis.selectAll('text')
                     .data(that.words, function (d) { return d.text.toLowerCase(); });
                 text.transition()
