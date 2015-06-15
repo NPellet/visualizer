@@ -217,9 +217,10 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
      */
     CouchdbAttachments.prototype.upload = function (options) {
         var that = this;
-        options = options || {};
-
         return this.list().then(function () {
+            if (!options) {
+                throw new Error('Invalid argument');
+            }
             return new Promise(function (resolve, reject) {
                 var exists = that.lastDoc._attachments[options.name];
                 console.log(that.lastDoc);
