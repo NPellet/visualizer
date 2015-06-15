@@ -11,8 +11,9 @@ define([
     'src/util/ui',
     'lodash',
     'jquery',
-    'slickgrid'
-], function (Util, Debug, ui, _, $, Slick) {
+    'slickgrid',
+    'mime-types'
+], function (Util, Debug, ui, _, $, Slick, mimeTypes) {
     function attachmentsFromCouch(data) {
         var r = [];
         for (var key in data) {
@@ -89,12 +90,9 @@ define([
                                 $(this).dialog('close');
                             },
                             Upload: function () {
-                                var toUpload = _(data).filter(function (v) {
+                                var toUpload = _.filter(data, function (v) {
                                     return v.file;
-                                }).each(function(v) {
-                                    //if(v.contentType) v.file.type = v.contentType;
-                                    //v.file.name = v.name;
-                                }).value();
+                                });
                                 resolve(toUpload);
                                 $(this).dialog('close');
 
@@ -148,7 +146,7 @@ define([
                             data.push({
                                 name: filePath,
                                 file: file,
-                                contentType: file.type,
+                                contentType: file.type || mimeTypes.lookup(filePath),
                                 color: 'green'
                             });
                         }
@@ -212,24 +210,5 @@ define([
     }
 
     exports.uploadDialog = uploadDialog;
-    exports.dummy = function() {
-        var formData = new FormData();
-
-        formData.append("_rev", "10-ba0805576b13ae9f877c15b0b82f62d0");
-
-
-        var content = '<a id="a"><b id="b">hey!</b></a>'; // the body of the new file...
-        var blob = new Blob([content], { type: "text/xml"});
-
-        formData.append("_attachments", blob, 'web.html');
-
-        $.ajax({
-            url: "http://127.0.0.1/localcouch/cheminfo/132bdb90c42b9daea9d5b6d658003339",
-            type: "POST",
-            data: formData,
-            processData: false,  // tell jQuery not to process the data
-            contentType: false   // tell jQuery not to set contentType
-        });
-    };
     return exports;
 });
