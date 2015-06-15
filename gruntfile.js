@@ -113,7 +113,8 @@ module.exports = function (grunt) {
                             './jszip/dist/**',
                             './file-saver.js/*.js',
                             './json-chart/dist/*',
-                            './d3-plugins/**'
+                            './d3-plugins/**',
+                            './mime-types/**'
                         ],
 
                         dest: './build/components/'
