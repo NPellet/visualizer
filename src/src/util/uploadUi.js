@@ -146,7 +146,7 @@ define([
                             data.push({
                                 name: filePath,
                                 file: file,
-                                contentType: file.type || mimeTypes.lookup(filePath),
+                                contentType: file.type || mimeTypes.lookup(filePath) || 'application/octet-stream',
                                 color: 'green'
                             });
                         }
