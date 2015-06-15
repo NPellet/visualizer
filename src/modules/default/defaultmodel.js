@@ -123,7 +123,7 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
                     var data = that.buildData(varValue, that.module.controller.references[that.sourceMap[varName].rel].type);
 
                     if (!data) {
-                        return
+                        return;
                     }
 
                     rel = that.module.getDataRelFromName(varName);
@@ -183,7 +183,7 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
                 }).catch(function (err) {
                     Debug.error('Error while updating variable : ', err.message, err.stack);
                 });
-            })
+            });
 
         },
 
