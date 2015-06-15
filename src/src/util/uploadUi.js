@@ -19,7 +19,9 @@ define([
         for (var key in data) {
             r.push({
                 name: key,
-                contentType: data[key].content_type
+                contentType: data[key].content_type,
+                size: data[key].length,
+                toDelete: false
             });
         }
         return r;
@@ -62,24 +64,33 @@ define([
                         asyncPostRenderDelay: 0
                     };
 
-                    var columns = [{
-                        id: 'name',
-                        name: 'name',
-                        field: 'name',
-                        editor: Slick.Editors.Text,
-                        sortable: true
-                    }, {
-                        id: 'contentType',
-                        name: 'contentType',
-                        field: 'contentType',
-                        editor: Slick.Editors.Text
-                    }, {
-                        id: 'toDelete',
-                        name: 'toDelete',
-                        field: 'toDelete',
-                        editor: Slick.Editors.Checkbox,
-                        formatter: Slick.Formatters.Checkmark
-                    }];
+                    var columns = [
+                        {
+                            id: 'name',
+                            name: 'name',
+                            field: 'name',
+                            editor: Slick.Editors.Text,
+                            sortable: true
+                        },
+                        {
+                            id: 'contentType',
+                            name: 'contentType',
+                            field: 'contentType',
+                            editor: Slick.Editors.Text
+                        },
+                        {
+                            id: 'size',
+                            name: 'size',
+                            field: 'size'
+                        },
+                        {
+                            id: 'toDelete',
+                            name: 'toDelete',
+                            field: 'toDelete',
+                            editor: Slick.Editors.Checkbox,
+                            formatter: Slick.Formatters.Checkmark
+                        }
+                    ];
                     var $dialog = $('<div class="upload-ui">');
                     var $slick = $('<div class="dropzone">');
                     var grid;
@@ -147,6 +158,8 @@ define([
                                 name: filePath,
                                 file: file,
                                 contentType: file.type || mimeTypes.lookup(filePath) || 'application/octet-stream',
+                                size: file.size || 0,
+                                toDelete: false,
                                 color: 'green'
                             });
                         }
@@ -206,9 +219,12 @@ define([
                         });
                     });
                 });
-            });
+            }
+        )
+            ;
     }
 
     exports.uploadDialog = uploadDialog;
     return exports;
-});
+})
+;
