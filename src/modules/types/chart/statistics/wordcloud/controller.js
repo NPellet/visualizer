@@ -68,9 +68,13 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
                             'default': 'log'
                         },
                         orientation: {
-                            type: 'float',
-                            title: 'Orientation',
-                            'default': 5
+                            title: 'Number of orientations',
+                            type: 'slider',
+                            range: false,
+                            min: 1,
+                            max: 20,
+                            step: 1,
+                            'default': 2
                         },
                         /*oneWordPerLine: {
                             type: 'checkbox',
