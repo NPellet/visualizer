@@ -22,10 +22,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                 break;
             }
         }
-        console.log(pos);
         var t = data.slice(pos, pos + 7);
-        console.log(pos);
-        console.log(t);
         if (pos && t === 'base64,') {
             pos = pos + 7;
             return data.slice(pos);
@@ -54,7 +51,6 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
         }
 
         this.attachments = {};
-        console.log('document url is:', this.docUrl);
     };
 
     /**
@@ -71,76 +67,35 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
         });
     };
 
+    // This is an alternative strategy for storing multiple attachments in one revision
+    // The problem with this is that it doesn't allow to change the contentType
+    // (because Blobs are immutable) if the browser did not set it correctly or if
+    // the user wants to manually change it
+    CouchdbAttachments.prototype.uploads1 = function (files) {
+        var that = this;
+        if (!Array.isArray(files)) {
+            throw new Error('uploads expects an array as parameter');
+        }
 
-    //CouchdbAttachments.prototype.uploads1 = function(files) {
-    //    var that = this;
-    //    if(!Array.isArray(files)) {
-    //        throw new Error('uploads expects an array as parameter')
-    //    }
-    //
-    //    return this.list().then(function() {
-    //        return new Promise(function (resolve, reject) {
-    //            var req = superagent.post(that.docUrl);
-    //
-    //            for (var i = 0; i < files.length; i++) {
-    //                var file = files[i];
-    //                req.attach('_attachments', new Blob(['<a id="a"><b id="b">hey!</b></a>'], { type: "text/html"}), 'upload/test.html');
-    //            }
-    //            req.field('_rev', that.lastDoc._rev);
-    //            req.end(function(err, res) {
-    //                if(err) return reject(err);
-    //                if(res.status !== 201) reject(new Error('Error uploading attachments, couchdb returned status code ' + res.status));
-    //                console.log(res.body);
-    //            })
-    //
-    //        });
-    //    })
-    //};
-    //CouchdbAttachments.prototype.uploads = function(options) {
-    //    var that = this;
-    //    if(!Array.isArray(options)) {
-    //        throw new Error('uploads expects an array as parameter')
-    //    }
-    //    return this.list().then(function() {
-    //        return new Promise(function (resolve, reject) {
-    //            var obj = {_attachments: {}};
-    //            for(var i=0; i<options.length; i++) {
-    //                var exists = that.lastDoc._attachments[options[i].name];
-    //                var isFile = (options[i].data instanceof window.File);
-    //                var contentType = options[i].contentType || (exists ? exists.content_type : undefined);
-    //                options[i].contentType = contentType;
-    //                if (!contentType) {
-    //                    return reject(new Error('Content-Type unresolved. Cannot upload document without content-type'));
-    //                }
-    //                obj._attachments[options[i].name] = {
-    //                    follows: true,
-    //                    content_type: contentType,
-    //                    length: isFile ? options[i].data.size : options[i].data.length
-    //                }
-    //            }
-    //            obj.body = 'blabla';
-    //
-    //            var req = superagent.put(that.docUrl)
-    //                .set('Content-Type', 'multipart/related')
-    //                .part()
-    //                .set('Content-Type', 'application/json')
-    //                .write(JSON.stringify(obj));
-    //
-    //            for(i=0; i<options.length; i++) {
-    //                req.part()
-    //                    .set('Content-Type', options[i].contentType)
-    //                    .write(options[i].data)
-    //            }
-    //
-    //            req.end(function(err, res) {
-    //                if(err) return reject(err);
-    //                console.log('status of multiple upload: ', res.status);
-    //                //that.lastDoc._rev = res.body.rev;
-    //                return resolve(res);
-    //            })
-    //        });
-    //    })
-    //};
+        return Promise.resolve().then(function () {
+            return new Promise(function (resolve, reject) {
+                var req = superagent.post(that.docUrl);
+
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    req.attach('_attachments', file, file.name);
+                }
+                req.field('_rev', that.lastDoc._rev);
+                req.end(function (err, res) {
+                    if (err) return reject(err);
+                    if (res.status !== 201) reject(new Error('Error uploading attachments, couchdb returned status code ' + res.status));
+                    return resolve();
+                });
+            });
+        }).then(function() {
+            return that.list(true);
+        });
+    };
 
     CouchdbAttachments.prototype.inlineUploads = function (options) {
         var that = this;
@@ -197,8 +152,8 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                     .send(that.lastDoc)
                     .end(function (err, res) {
                         if (err) return reject(err);
-                        console.log('inline attachments status', res.status);
-                        return resolve(res);
+                        if (res.status !== 201) return reject(new Error('Error uploading inline attachments, couchdb returned status code ' + res.status));
+                        return resolve();
                     });
             });
 
@@ -223,7 +178,6 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
             }
             return new Promise(function (resolve, reject) {
                 var exists = that.lastDoc._attachments[options.name];
-                console.log(that.lastDoc);
                 var contentType = options.contentType || (exists ? exists.content_type : undefined);
                 if (!contentType) {
                     return reject(new Error('Content-Type unresolved. Cannot upload document without content-type'));
@@ -246,15 +200,9 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
             var prom = that.list(true);
             if (options.data) { // Don't store in lru if it's a file
                 prom.then(function () {
-                    Promise.resolve(LRU.store(storeName, that.lastDoc._attachments[options.name].digest, options.data)).then(function (r) {
-                        console.log('store success', r);
-                    }, function (e) {
-                        console.log('store error', e);
-                    });
+                    LRU.store(storeName, that.lastDoc._attachments[options.name].digest, options.data);
                 });
             }
-
-
             return prom;
         });
     };
@@ -272,7 +220,6 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
             var exists = that.lastDoc._attachments[name];
             if (!exists) throw new Error('The attachment ' + name + ' does not exist');
             return Promise.resolve(LRU.get(storeName, exists.digest)).then(function (data) {
-                console.log('returning data from the lru store');
                 if (data) return data.data;
                 else return {};
             }, function () {
@@ -285,7 +232,6 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                             if (res.status !== 200) return reject(new Error('Error getting attachment, couchdb returned status code ' + res.status));
                             //that.attachments[name] = res.text;
                             LRU.store(storeName, exists.digest, res.body || res.text);
-                            console.log('returning data from request to couchdb');
                             return resolve(res.body || res.text);
                         });
                 });
@@ -331,10 +277,8 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                 .get(that.docUrl)
                 .set('Accept', 'application/json')
                 .end(function (err, res) {
-                    console.log('status', res.status);
                     if (err) return reject(err);
                     if (res.status !== 200) return reject(new Error('Error getting document, couchdb returned status code ' + res.status));
-                    console.log('body', res);
                     that.attachments = {};
                     that.lastDoc = res.body;
                     return resolve(res.body._attachments);

@@ -538,7 +538,6 @@ define([
                 var docUrl = that.dbUrl + '/' + that.currentDocument.data.doc._id;
                 var couchA = new CouchdbAttachments(docUrl);
                 couchA.list().then(function (attachments) {
-                    console.log(attachments);
                     uploadUi.uploadDialog(attachments, 'couch').then(function (toUpload) {
                         if (!toUpload) return;
                         API.loading(loadingId, 'Uploading files...');
@@ -548,7 +547,6 @@ define([
 
                         var largeUploads = parts[1];
                         var smallUploads = parts[0];
-                        console.log(smallUploads, largeUploads);
 
                         var prom = Promise.resolve();
                         for (var i = 0; i < largeUploads.length; i++) {
