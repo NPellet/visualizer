@@ -3,21 +3,25 @@
 define([
     'jquery',
     'lodash',
+    'src/util/api',
     'src/util/ui',
     'src/header/components/default',
     'src/util/versioning',
     'forms/button',
     'src/util/util',
     'forms/form',
+    'src/util/couchdbAttachments',
+    'src/util/uploadUi',
     'lib/couchdb/jquery.couch',
     'fancytree',
     'components/ui-contextmenu/jquery.ui-contextmenu.min',
     'jquery-ui/autocomplete'
-], function ($, _, ui, Default, Versioning, Button, Util, Form) {
+], function ($, _, API, ui, Default, Versioning, Button, Util, Form, CouchdbAttachments, uploadUi) {
 
     function CouchDBManager() {
     }
 
+    var loadingId = Util.getNextUniqueId();
     var regAlphaNum = /^[a-zA-Z0-9]+$/;
 
     Util.inherits(CouchDBManager, Default, {
@@ -34,7 +38,8 @@ define([
                 $.couch.urlPrefix = this.options.url.replace(/\/$/, '');
             }
             this.url = $.couch.urlPrefix;
-            var db = this.options.database || 'visualizer';
+            var db = this.db = this.options.database || 'visualizer';
+            this.dbUrl = this.url + '/' + db;
             this.database = $.couch.db(db);
             $.ui.fancytree.debugLevel = 0;
             this.checkDatabase();
@@ -367,6 +372,7 @@ define([
         },
         renderLoginMethods: function () {
             var that = this;
+
             function doLogin() {
                 that.login(that.getFormContent('login-username'), that.getFormContent('login-password'));
                 return false;
@@ -527,8 +533,56 @@ define([
                     .append(this.errorP)
             );
 
+            function uploadFiles() {
+                if (!that.currentDocument) return;
+                var docUrl = that.dbUrl + '/' + that.currentDocument.data.doc._id;
+                var couchA = new CouchdbAttachments(docUrl);
+                couchA.list().then(function (attachments) {
+                    uploadUi.uploadDialog(attachments, 'couch').then(function (toUpload) {
+                        if (!toUpload) return;
+                        API.loading(loadingId, 'Uploading files...');
+                        var parts;
+                        parts = _.partition(toUpload, function (v) {
+                            return v.toDelete;
+                        });
+                        var toDelete = parts[0];
+                        parts = _.partition(parts[1], function (v) {
+                            return v.size < 10 * 1024 * 1024;
+                        });
 
-            dom.append('<hr>').append(this.makePublicButton.render().hide());
+                        var largeUploads = parts[1];
+                        var smallUploads = parts[0];
+
+                        var prom = Promise.resolve();
+
+                        prom = prom.then(function () {
+                            return couchA.remove(_.pluck(toDelete, 'name'));
+                        });
+                        for (var i = 0; i < largeUploads.length; i++) {
+                            (function (i) {
+                                prom = prom.then(function () {
+                                    return couchA.upload(largeUploads[i]);
+                                });
+                            })(i);
+                        }
+                        prom = prom.then(function () {
+                            return couchA.inlineUploads(smallUploads);
+                        });
+
+                        prom.then(function () {
+                            API.stopLoading(loadingId);
+                            that.showError('Files uploaded successfully', 2);
+                        }, function () {
+                            API.stopLoading(loadingId);
+                            that.showError('Files upload failed (at least partially)');
+                        });
+                    });
+                });
+            }
+
+            dom.append('<hr>')
+                .append(this.makePublicButton.render().hide())
+                .append(new Button('Upload', uploadFiles, {color: 'green'}).render());
 
             this.loadFlavor();
 

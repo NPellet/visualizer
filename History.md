@@ -1,3 +1,16 @@
+2.22.0 / 2015-06-15
+===================
+* Modules
+ * slickgrid: update checkmark formatter
+ * slickgrid: fix doubled rendering: reblank on update
+ * Update periodic table module and add CSS with flexbox layout 
+* Core
+ * add utils/couchAttachments: small library for managing attachments in a couchdb document
+ * add utils/uploadUi: a ui utility to drop files and folders
+ * add mime-types library: lookup mime-type from file name and more
+* Headers
+ * couchdb2: fix breaking change in couchdb login
+
 2.21.2 / 2015-06-11
 ===================
 * Modules
