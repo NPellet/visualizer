@@ -8,7 +8,10 @@ define(['jquery'], function ($) {
 
         open: function () {
             // In the following line, you should include the prefixes of implementations you want to test.
-            window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+            // This condition should not be removed. Prevents error in firefox
+            if (!('indexedDB' in window)) {
+                window.indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.oIndexedDB || window.msIndexedDB;
+            }
             // DON'T use 'var indexedDB = ...' if you're not in a function.
             // Moreover, you may need references to some window.IDB* objects:
             window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
