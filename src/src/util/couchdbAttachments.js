@@ -55,14 +55,8 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
      @return {Promise<Object>} the list
      */
     CouchdbAttachments.prototype.list = function (refresh) {
-        var that = this;
-
-        return Promise.resolve().then(function () {
-            if (!refresh && that.lastDoc) {
-                return that.lastDoc._attachments;
-            }
-            return that.refresh();
-        });
+        if (!this.lastDoc._attachments) throw new Error('List not available before calling fetchList');
+        return this.lastDoc._attachments;
     };
 
     // This is an alternative strategy for storing multiple attachments in one revision
@@ -91,7 +85,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                 });
             });
         }).then(function () {
-            return that.list(true);
+            return that.refresh();
         });
     };
 
@@ -157,7 +151,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
 
 
         }).then(function () {
-            return that.list(true);
+            return that.refresh();
         });
     };
 
@@ -195,7 +189,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
             });
         }).then(function () {
             // We need to update the document after the upload
-            var prom = that.list(true);
+            var prom = that.refresh();
             if (options.data) { // Don't store in lru if it's a file
                 prom.then(function () {
                     LRU.store(storeName, that.lastDoc._attachments[options.name].digest, options.data);
@@ -203,6 +197,23 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
             }
             return prom;
         });
+    };
+
+    CouchdbAttachments.prototype.names = function () {
+        return Object.keys(this.lastDoc._attachments);
+    };
+
+    CouchdbAttachments.prototype.urls = function (name) {
+        var that = this;
+        if (!name) {
+            var names = this.names();
+            return names.map(function (name) {
+                return that.docUrl + '/' + name;
+            });
+        }
+        if (!this.lastDoc._attachments || !this.lastDoc._attachments[name])
+            throw new Error('Name does not exist');
+        return this.docUrl + '/' + name;
     };
 
     /**
@@ -213,7 +224,6 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
      */
     CouchdbAttachments.prototype.get = function (name) {
         var that = this;
-
         return this.list().then(function () {
             var exists = that.lastDoc._attachments[name];
             if (!exists) throw new Error('The attachment ' + name + ' does not exist');
@@ -285,7 +295,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                     });
             });
         }).then(function () {
-            return that.list(true);
+            return that.refresh();
         });
     };
 
@@ -309,5 +319,6 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
         });
     };
 
+    CouchdbAttachments.prototype.fetchList = CouchdbAttachments.prototype.refresh;
     return CouchdbAttachments;
 });

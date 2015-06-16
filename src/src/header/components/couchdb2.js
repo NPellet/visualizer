@@ -537,7 +537,7 @@ define([
                 if (!that.currentDocument) return;
                 var docUrl = that.dbUrl + '/' + that.currentDocument.data.doc._id;
                 var couchA = new CouchdbAttachments(docUrl);
-                couchA.list().then(function (attachments) {
+                couchA.fetchList().then(function (attachments) {
                     uploadUi.uploadDialog(attachments, 'couch').then(function (toUpload) {
                         if (!toUpload) return;
                         API.loading(loadingId, 'Uploading files...');
