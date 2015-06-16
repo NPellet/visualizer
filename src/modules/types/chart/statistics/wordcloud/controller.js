@@ -16,6 +16,10 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
     };
 
     Controller.prototype.references = {
+        textlist: {
+            type: 'string',
+            label: 'A list of words'
+        },
         textvalue: {
             type: 'string',
             label: 'A string of words'
@@ -29,7 +33,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
     Controller.prototype.events = {
     };
 
-    Controller.prototype.variablesIn = ['arrayvalue', 'textvalue'];
+    Controller.prototype.variablesIn = ['textlist', 'textvalue', 'arrayvalue'];
 
     Controller.prototype.actionsIn = {
     };
@@ -64,18 +68,22 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
                             'default': 'log'
                         },
                         orientation: {
-                            type: 'float',
-                            title: 'Orientation',
-                            'default': 5
+                            title: 'Number of orientations',
+                            type: 'slider',
+                            range: false,
+                            min: 1,
+                            max: 20,
+                            step: 1,
+                            'default': 2
                         },
-                        oneWordPerLine: {
+                        /*oneWordPerLine: {
                             type: 'checkbox',
                             title: 'Options',
                             options: {
                                 oneWordPerLine: 'One Word Per Line'
                             },
                             'default': ['oneWordPerLine']
-                        },
+                        },*/
                         fromTo: {
                             type: 'slider',
                             title: 'From To',
@@ -95,7 +103,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
         spiral: ['groups', 'group', 0, 'spiral', 0],
         scale: ['groups', 'group', 0, 'scale', 0],
         orientation: ['groups', 'group', 0, 'orientation', 0],
-        oneWordPerLine: ['groups', 'group', 0, 'oneWordPerLine', 0],
+        //oneWordPerLine: ['groups', 'group', 0, 'oneWordPerLine', 0],
         fromTo: ['groups', 'group', 0, 'fromTo', 0]
     };
     return Controller;
