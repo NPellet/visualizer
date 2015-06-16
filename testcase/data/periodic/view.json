@@ -1,5 +1,5 @@
 {
-  "version": "2.21.2",
+  "version": "2.22.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -42,8 +42,8 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 64,
-            "top": 72
+            "left": 134,
+            "top": 10
           },
           "size": {
             "width": 38,
@@ -96,6 +96,12 @@
                   "highlightScroll",
                   "filterColumns"
                 ]
+              ],
+              "autoColumns": [
+                []
+              ],
+              "toolbar": [
+                []
               ],
               "colorjpath": [
                 []
@@ -231,9 +237,7 @@
                 null
               ],
               "onloadsearch": [
-                [
-                  "button"
-                ]
+                []
               ],
               "debounce": [
                 0
@@ -268,7 +272,7 @@
         "Default layer": {
           "position": {
             "left": 0,
-            "top": 0.2
+            "top": 0
           },
           "size": {
             "width": 11,
@@ -342,7 +346,7 @@
                 0
               ],
               "script": [
-                "<div class=\"element e{{ element.Z }} period{{ element.period}} group{{ element.group }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"weight\">{{ element.weight }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
+                "<div class=\"element e{{ element.Z }} period{{ element.period}} group{{ element.group }} block-{{ element.block }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"weight\">{{ element.weight }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
               ]
             }
           ]
@@ -405,7 +409,7 @@
           "group": [
             {
               "template": [
-                "<div class=\"element e{{ element.Z }} period{{ element.period}} group{{ element.group }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"weight\">{{ element.weight }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
+                "<div class=\"element e{{ element.Z }} period{{ element.period}} group{{ element.group }} block-{{ element.block }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"weight\">{{ element.weight }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
               ]
             }
           ]
@@ -649,7 +653,7 @@
           "group": [
             {
               "template": [
-                "<div class=\"element e{{ element.Z }} period{{ element.period}} group{{ element.group }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"weight\">{{ element.weight }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
+                "<div class=\"element e{{ element.Z }} period{{ element.period}} group{{ element.group }} block-{{ element.block }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"weight\">{{ element.weight }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
               ]
             }
           ]
@@ -658,12 +662,12 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 128,
-            "top": 37
+            "left": 45,
+            "top": 72
           },
           "size": {
-            "width": 57,
-            "height": 44
+            "width": 84,
+            "height": 58
           },
           "zIndex": 0,
           "display": true,

@@ -1,22 +1,25 @@
 .periodic-table {
-
-}
-
-.per-table {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     margin-left: -5px;
+    min-width: 600px;
+    min-height: 550px;
+    font-size: 10px;
 }
-.per-table > * {
+.periodic-table > * {
     flex: 0 0 auto;
     width: calc((100% / 18) - 5px);
     margin-left: 5px;
     display: block;  /* IE fix */
 }
 
+.periodic-table > .block-f {
+    width: calc((100% / 18) - 5px);
+}
+
 /* deco */
-.per-table * {
+.periodic-table * {
     box-sizing: border-box;
 }
 
@@ -26,15 +29,22 @@
 }
 
 .e2 {
-    margin-left: calc(100% / 18 * 16);
+    margin-left: calc(100% / 18 * 16 + 5px);
 }
 
 .e5, .e13 {
-    margin-left: calc(100% / 18 * 10)
+    margin-left: calc(100% / 18 * 10 + 5px);
 
 }
-.e57, .e58 {
-    align-self : flex-end;
+.e72, .e104 {
+    margin-left: calc(100% / 18 + 5px);
+}
+.e57, .e89 {
+    margin-left: calc(100% / 18 * 2 + 5px);
+}
+
+.block-f {
+    order: 1;
 }
 
 /*.per-table {*/

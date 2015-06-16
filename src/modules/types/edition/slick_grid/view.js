@@ -437,7 +437,7 @@ define([
                     that.$rowToolbar.append(that.$actionButtons);
                     that.$container.append(that.$rowToolbar);
 
-                    if (that.module.getConfiguration('toolbar').length === 0 && that.$actionButtons.length === 0 && that.$rowToolbar) {
+                    if (that.module.getConfiguration('toolbar') && that.module.getConfiguration('toolbar').length === 0 && that.$actionButtons && that.$actionButtons.length === 0 && that.$rowToolbar) {
                         that.$rowToolbar.remove();
                     }
 
