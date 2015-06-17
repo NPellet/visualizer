@@ -576,6 +576,10 @@ define([
                             API.stopLoading(loadingId);
                             that.showError('Files upload failed (at least partially)');
                         });
+
+                        prom.then(function () {
+                            that.loadFlavor(); // Reload flavor to update tree and linked documents
+                        });
                     });
                 });
             }
