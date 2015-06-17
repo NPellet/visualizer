@@ -2,20 +2,25 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    margin-left: -5px;
-    min-width: 600px;
-    min-height: 550px;
+    margin-left: -2px;
+    min-width: 112em;
+    min-height: 50em;
     font-size: 10px;
 }
 .periodic-table > * {
     flex: 0 0 auto;
-    width: calc((100% / 18) - 5px);
-    margin-left: 5px;
+    width: calc((100% / 18) - 2px);
+    margin-left: 2px;
     display: block;  /* IE fix */
+    border: 2px solid grey;
+    min-height: 6em;
+    min-width: 6em;
+    padding: 2px;
 }
 
+
 .periodic-table > .block-f {
-    width: calc((100% / 18) - 5px);
+    width: calc((100% / 18) - 2px);
 }
 
 /* deco */
@@ -25,78 +30,68 @@
 
 [class*="table"] > div,
 [class*="simple"] > div {
-    margin-bottom: 10px;
+    margin-bottom: 2px;
 }
 
 .e2 {
-    margin-left: calc(100% / 18 * 16 + 5px);
+    margin-left: calc(100% / 18 * 16 + 2px);
 }
 
 .e5, .e13 {
-    margin-left: calc(100% / 18 * 10 + 5px);
+    margin-left: calc(100% / 18 * 10 + 2px);
 
 }
 .e72, .e104 {
-    margin-left: calc(100% / 18 + 5px);
+    margin-left: calc(100% / 18 + 2px);
 }
 .e57, .e89 {
-    margin-left: calc(100% / 18 * 2 + 5px);
+    margin-left: calc(100% / 18 * 2 + 2px);
 }
 
 .block-f {
     order: 1;
 }
 
-/*.per-table {*/
-    /*display:flex;*/
-    /*flex-wrap :wrap;*/
-    /*width: 100%;*/
-/*}*/
-/*.per-table * {*/
-    /*box-sizing : border-box;*/
-/*}*/
-/*.per-table > * {*/
-    /*width: calc(100% / 18);*/
-/*}*/
-
-
-
-/*.element {*/
-    /*font-size:20px*/
-/*}*/
-/*/!*div.element {*!/*/
-    /*/!*padding: 1em;*!/*/
-    /*/!*display:flex;*!/*/
-/*}*/
-/*.element .electronsPerPeriod {*/
-    /*width: 20%;*/
-/*}*/
-/*.element .element-data {*/
-    /*width: 80%;*/
-/*}*/
-/*.element-name {*/
-    /*font-size: 2.5em;*/
-    /*padding-bottom: 0.3em;*/
-/*}*/
-/*.element .Z {*/
-    /*font-size: 1.4em;*/
-/*}*/
-
+.period6.block-f {
+    margin-top: 2em;
+}
+.element {
+    display: flex;
+}
+.element-data {
+    width: 80%;
+}
+.electronsPerPeriod {
+    width: 20%;
+}
+.element-name {
+    font-size: 1.8em;
+    padding: 0.2em 0 0.3em 0;
+}
 .element-name abbr {
-    border-bottom: dotted grey 0.05em;
+    border-bottom: dotted grey 1px;
 }
 /* info : delay too long */
 .element-name abbr:hover {
     border-bottom: none;
 }
-.element .weight {
+.element-data p {
     overflow : hidden;
     text-overflow : ellipsis;
+    white-space: nowrap;
 }
 .element .electronsPerPeriod {
     margin: 0;
     padding:0;
+    font-size: 0.7em;
 }
 .element li {
     list-style : none;
+}
+
+.elec-conf:hover .elec-conf-short, .elec-conf .elec-conf-long {
+    display: none;
+}
+.elec-conf:hover .elec-conf-long {
+    display:block;
 }
