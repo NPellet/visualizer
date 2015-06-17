@@ -1,3 +1,17 @@
+2.22.1 / 2015-06-17
+===================
+* Headers
+ * couchdb2: reload tree after upload
+* Core
+ * util/couchdbAttachments: update doc
+ * util/couchdbAttachments: add methods names, urls
+ * Prevent error in firefox when initializing the indexedDB global object
+* Modules
+ * webservice_search: don't show error if options not enabled
+ * webservice_search: fix dosearch being called unnecessarily often
+ * dragdrop: support alternative browsers for dropping files
+ * periodic table: Graphical changes
+
 2.22.0 / 2015-06-15
 ===================
 * Modules
