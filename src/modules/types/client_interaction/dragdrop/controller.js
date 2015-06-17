@@ -246,9 +246,8 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
     };
 
     Controller.prototype.open = function (data) {
-        if (!data.items.length)
+        if (!(data.items && data.items.length) && !data.files.length)
             return;
-
 
         this.module.model.tmpVars = new DataObject();
         this.module.model.tmpVarsArray = new DataObject();
@@ -259,23 +258,37 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         var cfg = this.fileCfg;
         var cfgString = this.stringCfg;
 
-        var i = 0, ii = data.items.length, item, meta, def;
-        for (; i < ii; i++) {
-            item = data.items[i];
-            def = $.Deferred();
-            defs.push(def);
-            if (item.kind === 'file') {
-                item = item.getAsFile();
+        var i, item, meta, def;
+        if (data.items) { // only supported by Chrome
+            for (i = 0; i < data.items.length; i++) {
+                item = data.items[i];
+                def = $.Deferred();
+                defs.push(def);
+                if (item.kind === 'file') {
+                    item = item.getAsFile();
+                    if (meta = this.checkFileMetadata(item, cfg)) {
+                        meta.def = def;
+                        this.read(item, meta);
+                    } else {
+                        def.resolve();
+                    }
+                } else {
+                    if (meta = this.checkStringMetadata(item, cfgString)) {
+                        meta.def = def;
+                        this.treatString(item, meta);
+                    } else {
+                        def.resolve();
+                    }
+                }
+            }
+        } else { // other browsers are limited to drop files
+            for (i = 0; i < data.files.length; i++) {
+                item = data.files[i];
+                def = $.Deferred();
+                defs.push(def);
                 if (meta = this.checkFileMetadata(item, cfg)) {
                     meta.def = def;
                     this.read(item, meta);
-                } else {
-                    def.resolve();
-                }
-            } else {
-                if (meta = this.checkStringMetadata(item, cfgString)) {
-                    meta.def = def;
-                    this.treatString(item, meta);
                 } else {
                     def.resolve();
                 }
