@@ -74,8 +74,8 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             //}
             // Made with Daniel
 
-            for(var i=0; i<this.elements.length; i++) {
-                this.dom.append(this.template.render({element:this.elements[i]}));
+            for (var i = 0; i < this.elements.length; i++) {
+                this.dom.append(this.template.render({element: this.elements[i]}));
             }
         }
 
