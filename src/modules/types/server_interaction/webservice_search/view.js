@@ -76,6 +76,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, ui) {
 
                     if (!that.button) {
                         that.module.controller.doSearch();
+                        return;
                     }
 
 
@@ -85,7 +86,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, ui) {
 
                 });
 
-                this.search.on('change', 'select, input[type=text], textarea', function () {
+                this.search.on('change', 'select', function () {
                     var $this = $(this);
 
                     var searchTerm = $this.val();
