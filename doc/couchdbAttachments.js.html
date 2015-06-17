@@ -1,4 +1,75 @@
-'use strict';
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Visualizer Source: couchdbAttachments.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.cosmo.css">
+
+</head>
+
+<body>
+<div class="container-fluid">
+	<div class="navbar navbar-fixed-top navbar-inverse">
+		<div class="navbar-inner">
+			<a class="brand" href="index.html">Visualizer</a>
+			<ul class="nav">
+				
+				<li class="dropdown">
+					<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b
+						class="caret"></b></a>
+
+					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="api.html">src/util/api</a>
+						</li>
+						
+						<li>
+							<a href="color.html">src/util/color</a>
+						</li>
+						
+						<li>
+							<a href="couchdbAttachments.html">src/util/couchdbAttachments</a>
+						</li>
+						
+						<li>
+							<a href="ui.html">src/util/ui</a>
+						</li>
+						
+						<li>
+							<a href="util.html">src/util/util</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+
+	<div class="row-fluid">
+
+		
+			<div class="span12">
+				
+				<div id="main">
+					
+
+
+		<h1 class="page-title">Source: couchdbAttachments.js</h1>
+    
+<section>
+	<article>
+		<pre
+			class="sunlight-highlight-javascript linenums">'use strict';
 
 // Mini-library to manage couchdb attachments
 // - Get and upload attachments just by their name
@@ -16,7 +87,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
     function dataURLtoBase64(data) {
         var pos;
         var l = Math.min(100, data.length);
-        for (var i = 0; i < l; i++) {
+        for (var i = 0; i &lt; l; i++) {
             if (data[i] === ';') {
                 pos = i + 1;
                 break;
@@ -76,7 +147,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
             return new Promise(function (resolve, reject) {
                 var req = superagent.post(that.docUrl);
 
-                for (var i = 0; i < files.length; i++) {
+                for (var i = 0; i &lt; files.length; i++) {
                     var file = files[i];
                     req.attach('_attachments', file, file.name);
                 }
@@ -98,7 +169,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
      * @param {string} options[].contentType - The contentType of the uploaded data
      * @param {string} options[].data - The attachment data to upload
      * @param {Blob} options[].file - The attachment data to upload
-     * @returns {Promise.<object>} The new list of attachments
+     * @returns {Promise.&lt;object>} The new list of attachments
      */
     CouchdbAttachments.prototype.inlineUploads = function (options) {
         var that = this;
@@ -109,7 +180,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
             }
 
             var prom = [];
-            for (var i = 0; i < options.length; i++) {
+            for (var i = 0; i &lt; options.length; i++) {
                 (function (i) {
                     var item = options[i];
                     if (item.data) {
@@ -141,7 +212,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
             return Promise.all(prom);
         }).then(function (toChange) {
             return new Promise(function (resolve, reject) {
-                for (var i = 0; i < toChange.length; i++) {
+                for (var i = 0; i &lt; toChange.length; i++) {
                     var c = toChange[i];
                     that.lastDoc._attachments[c.item.name] = {
                         content_type: c.item.contentType,
@@ -172,7 +243,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
      * @param {string} options.name - Name of the attachment to upload
      * @param {string} options.data -  The attachment's content to upload
      * @param {Blob} options.file - The attachments's content to upload
-     * @returns {Promise.<Object>} The new list of attachments
+     * @returns {Promise.&lt;Object>} The new list of attachments
      */
     CouchdbAttachments.prototype.upload = function (options) {
         var that = this;
@@ -269,7 +340,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
     /**
      * Remove an attachment
      * @param name The name of the attachment to remove.
-     * @returns {Promise.<Object>} The new list of attachments
+     * @returns {Promise.&lt;Object>} The new list of attachments
      */
     CouchdbAttachments.prototype.remove = function (name) { // TODO: lru has no remove yet
         var that = this;
@@ -301,7 +372,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
             if (!Array.isArray(names)) throw new TypeError('Argument should be an array');
             if (names.length === 0) return ctx.list();
             return new Promise(function (resolve, reject) {
-                for (var i = 0; i < names.length; i++) {
+                for (var i = 0; i &lt; names.length; i++) {
                     delete ctx.lastDoc._attachments[names[i]];
                 }
                 superagent
@@ -323,7 +394,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
     /**
      * An alias for fetchList
      * Fetches the list of attachment from couchdb.
-     * @returns {Promise.<Object>} attachments - The new list of attachments
+     * @returns {Promise.&lt;Object>} attachments - The new list of attachments
      */
         // Get documents with latest attachements' rev ids
     CouchdbAttachments.prototype.refresh = function () {
@@ -344,3 +415,100 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
     CouchdbAttachments.prototype.fetchList = CouchdbAttachments.prototype.refresh;
     return CouchdbAttachments;
 });
+</pre>
+	</article>
+</section>
+
+
+
+
+
+				</div>
+
+				<div class="clearfix"></div>
+				<footer>
+					
+					
+		<span class="jsdoc-message">
+		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
+		on Wed Jun 17th 2015 using the <a
+			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+		</span>
+				</footer>
+			</div>
+
+			
+			<br clear="both">
+		</div>
+
+	</div>
+	<!--<script src="scripts/sunlight.js"></script>-->
+	<script src="scripts/docstrap.lib.js"></script>
+	<script src="scripts/bootstrap-dropdown.js"></script>
+	<script src="scripts/toc.js"></script>
+
+	<script>
+		$( function () {
+			$( "[id*='$']" ).each( function () {
+				var $this = $( this );
+
+				$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+			} );
+
+			$( "#toc" ).toc( {
+				anchorName  : function ( i, heading, prefix ) {
+					return $( heading ).attr( "id" ) || ( prefix + i );
+				},
+				selectors   : "h1,h2,h3,h4",
+				showAndHide : false,
+				scrollTo    : "100px"
+			} );
+
+			$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
+			$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+			$( '.dropdown-toggle' ).dropdown();
+//			$( ".tutorial-section pre, .readme-section pre" ).addClass( "sunlight-highlight-javascript" ).addClass( "linenums" );
+
+			$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+				var $this = $( this );
+
+				var example = $this.find( "code" );
+				exampleText = example.html();
+				var lang = /{@lang (.*?)}/.exec( exampleText );
+				if ( lang && lang[1] ) {
+					exampleText = exampleText.replace( lang[0], "" );
+					example.html( exampleText );
+					lang = lang[1];
+				} else {
+					lang = "javascript";
+				}
+
+				if ( lang ) {
+
+					$this
+						.addClass( "sunlight-highlight-" + lang )
+						.addClass( "linenums" )
+						.html( example.html() );
+
+				}
+			} );
+
+			Sunlight.highlightAll( {
+				lineNumbers : true,
+				showMenu : true,
+				enableDoclinks : true
+			} );
+		} );
+	 </script>
+
+
+
+	<!--Navigation and Symbol Display-->
+	
+
+
+	<!--Google Analytics-->
+	
+
+</body>
+</html>
