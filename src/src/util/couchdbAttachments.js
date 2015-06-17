@@ -208,12 +208,12 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
         if (!name) {
             var names = this.names();
             return names.map(function (name) {
-                return that.docUrl + '/' + name;
+                return encodeURI(that.docUrl + '/' + name);
             });
         }
         if (!this.lastDoc._attachments || !this.lastDoc._attachments[name])
             throw new Error('Name does not exist');
-        return this.docUrl + '/' + name;
+        return encodeURI(this.docUrl + '/' + name);
     };
 
     /**
