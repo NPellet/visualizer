@@ -370,7 +370,10 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'superagent', 'uri/
         this.request.end(function (err, response) {
             if (err) {
                 Debug.warn('Webservice search: request failed', err);
-                that.module.view.showError();
+                if (that.module.getConfigurationCheckbox('showStatus', 'display')) {
+                    that.module.view.showError();
+                }
+
             } else {
                 if (that.module.getConfigurationCheckbox('showStatus', 'display')) {
                     that.module.view.showSuccess(response.status);
