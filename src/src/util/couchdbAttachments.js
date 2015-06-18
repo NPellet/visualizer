@@ -52,14 +52,16 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
     };
 
     /**
-     @return {object} attachments - The attachments as returned by couchdb. The keys of the object are the names of the attachments.
+     @return {object} attachments - An array with the attachments metadata
+     @return {number} attachments[].name - The name of the resource
      @return {string} attachments[].content_type - Resource's mime-type
      @return {string} attachments[].digest - base64 md5 digest of the resource
      @return {number} attachments[].length - Length in bytes of the resource
+     @return {number} attachments[].url - The url of the resource
      */
     CouchdbAttachments.prototype.list = function () {
         if (!this.lastDoc._attachments) throw new Error('List not available before calling fetchList');
-        return this.lastDoc._attachments;
+        return attachmentsAsArray(this, this.lastDoc._attachments);
     };
 
     // This is an alternative strategy for storing multiple attachments in one revision
@@ -102,7 +104,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
      */
     CouchdbAttachments.prototype.inlineUploads = function (options) {
         var that = this;
-        if (!options) return Promise.resolve(this.lastDoc._attachments);
+        if (!options) return Promise.resolve(attachmentsAsArray(this, this.lastAttachmentsResult));
         return Promise.resolve().then(function () {
             if (!(Array.isArray(options))) {
                 throw new TypeError('options must be an array');
@@ -159,8 +161,6 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                         return resolve();
                     });
             });
-
-
         }).then(function () {
             return that.refresh();
         });
@@ -178,7 +178,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
         var that = this;
         return this.list().then(function () {
             if (!options) {
-                throw new Error('Invalid argument');
+                throw new Error('Invalid arguments');
             }
             return new Promise(function (resolve, reject) {
                 var exists = that.lastDoc._attachments[options.name];
@@ -196,7 +196,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                         if (err) return reject(err);
                         if (res.status !== 201) return reject(new Error('Error uploading attachment, couchdb returned status code ' + res.status));
                         that.lastDoc._rev = res.body.rev;
-                        return resolve(res);
+                        return resolve();
                     });
             });
         }).then(function () {
@@ -209,32 +209,6 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
             }
             return prom;
         });
-    };
-
-    /**
-     * Get the attachments' names
-     * @returns {string[]} The list of names.
-     */
-    CouchdbAttachments.prototype.names = function () {
-        return Object.keys(this.lastDoc._attachments);
-    };
-
-    /**
-     * Get the url of all or of one attachment
-     * @param {string} [name] - The name of the attachment for which you want the url.
-     * @returns {*} An array of urls or the url for the given name
-     */
-    CouchdbAttachments.prototype.urls = function (name) {
-        var that = this;
-        if (!name) {
-            var names = this.names();
-            return names.map(function (name) {
-                return encodeURI(that.docUrl + '/' + name);
-            });
-        }
-        if (!this.lastDoc._attachments || !this.lastDoc._attachments[name])
-            throw new Error('Name does not exist');
-        return encodeURI(this.docUrl + '/' + name);
     };
 
     /**
@@ -288,7 +262,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                         if (res.status !== 200) return reject(new Error('Error deleting attachment, couchdb returned status code ' + res.status));
                         that.lastDoc._rev = res.body.rev;
                         delete that.lastDoc._attachments[name];
-                        return resolve(that.lastDoc._attachments);
+                        return resolve(attachmentsAsArray(that, that.lastDoc._attachments));
                     });
             });
         });
@@ -336,10 +310,23 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                     if (err) return reject(err);
                     if (res.status !== 200) return reject(new Error('Error getting document, couchdb returned status code ' + res.status));
                     that.lastDoc = res.body;
-                    return resolve(res.body._attachments);
+                    return resolve(attachmentsAsArray(that, res.body._attachments));
                 });
         });
     };
+
+    function attachmentsAsArray(ctx, att) {
+        var r = [];
+        var i = 0;
+        for (var key in att) {
+            r.push(att[key]);
+            r[i].name = key;
+            r[i].url = encodeURI(ctx.docUrl + '/' + key);
+            i++;
+        }
+        ctx.lastAttachmentsResult = r;
+        return r;
+    }
 
     CouchdbAttachments.prototype.fetchList = CouchdbAttachments.prototype.refresh;
     return CouchdbAttachments;
