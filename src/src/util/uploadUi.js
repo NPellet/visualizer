@@ -15,14 +15,15 @@ define([
     'mime-types'
 ], function (Util, Debug, ui, _, $, Slick, mimeTypes) {
     function attachmentsFromCouch(data) {
-        var r = [];
-        for (var key in data) {
-            r.push({
-                name: key,
-                contentType: data[key].content_type,
-                size: data[key].length,
+        var r = new Array(data.length);
+        for (var i = 0; i < data.length; i++) {
+            var d = data[i];
+            r[i] = {
+                name: d.name,
+                contentType: d.content_type,
+                size: d.length,
                 toDelete: false
-            });
+            };
         }
         return r;
     }
