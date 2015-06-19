@@ -3,13 +3,13 @@
     flex-direction: row;
     flex-wrap: wrap;
     margin-left: -2px;
-    min-width: 112em;
+    min-width: 118em;
     min-height: 50em;
     font-size: 10px;
 }
 .periodic-table > * {
     flex: 0 0 auto;
-    width: calc((100% / 18) - 2px);
+    width: calc((100% / 19) - 2px);
     margin-left: 2px;
     display: block;  /* IE fix */
     border: 2px solid grey;
@@ -18,9 +18,18 @@
     padding: 2px;
 }
 
+.indic-g, .indic-p, .indic-f {
+    justify-content: center;
+    align-items: center;
+    border:none;
+}
 
-.periodic-table > .block-f {
-    width: calc((100% / 18) - 2px);
+.indic-p {
+    justify-content: flex-end;
+}
+
+.indic-g {
+    align-items: flex-end;
 }
 
 /* deco */
@@ -34,28 +43,49 @@
 }
 
 .e2 {
-    margin-left: calc(100% / 18 * 16 + 2px);
+    margin-left: calc(100% / 19 * 16 + 2px);
 }
 
 .e5, .e13 {
-    margin-left: calc(100% / 18 * 10 + 2px);
+    margin-left: calc(100% / 19 * 10 + 2px);
 
 }
-.e72, .e104 {
+/*.e72, .e104 {
     margin-left: calc(100% / 18 + 2px);
-}
+}*/
 .e57, .e89 {
-    margin-left: calc(100% / 18 * 2 + 2px);
+    margin-left: calc(100% / 19 * 3 + 2px);
 }
-
-.block-f {
+.period1 {
     order: 1;
+}
+.period2 {
+    order: 2;
+}
+.period3 {
+    order: 3;
+}
+.period4 {
+    order : 4
+}
+.period5 {
+    order : 5
+}
+.period6 {
+    order : 6
+}
+.period7 {
+    order : 7
+}
+.block-f {
+    order: 8;
 }
 
 .period6.block-f {
     margin-top: 2em;
 }
-.element {
+
+.element, .indic-g, .indic-p, .indic-f {
     display: flex;
 }
 .element-data {
@@ -94,4 +124,10 @@
 }
 .elec-conf:hover .elec-conf-long {
     display:block;
+}
+
+.vert {
+    display: block;
+    width: 1px;
+    word-wrap: break-word;
 }
