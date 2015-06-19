@@ -1,6 +1,6 @@
 {
   "name": "visualizer",
-  "version": "2.21.2",
+  "version": "2.22.1",
   "description": "Data visualization framework",
   "main": "src/init.js",
   "keywords": [
@@ -72,7 +72,8 @@
     "uri.js": "1.14.1",
     "x2js": "1.1.7",
     "select2": "4.0.0-rc.2",
-    "file-saver.js": "~1.20150304.1"
+    "file-saver.js": "~1.20150304.1",
+    "mime-types": "stropitek/mime-types#v0.0.2"
   },
   "resolutions": {
     "jsgraph": "v1.11.3-3"

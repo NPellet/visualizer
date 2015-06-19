@@ -2,7 +2,7 @@
 
 define(['src/util/versioning', 'lib/couchdb/jquery.couch'], function (Versioning) {
 
-    function share(options) {
+    function share(options, callback) {
 
         var urlPrefix = (options.couchUrl || window.location.origin).replace(/\/$/, '');
         var database = options.database || 'x';
@@ -41,10 +41,16 @@ define(['src/util/versioning', 'lib/couchdb/jquery.couch'], function (Versioning
         db.saveDoc(doc, {
             success: function () {
                 var tinyUrl = tinyPrefix + docid;
+                if(callback) {
+                    callback(null, tinyUrl);
+                }
                 def.resolve(tinyUrl);
             },
-            error: function () {
-                def.reject();
+            error: function (e) {
+                if (callback) {
+                    callback(e);
+                }
+                def.reject(e);
             }
         });
 

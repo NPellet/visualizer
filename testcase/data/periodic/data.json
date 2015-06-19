@@ -1,5 +1,5 @@
 {
-  "elementTemplate": "<div class=\"element e{{ element.Z }} period{{ element.period}} group{{ element.group }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"weight\">{{ element.weight }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>",
+  "elementTemplate": "<div class=\"element e{{ element.Z }} period{{ element.period}} group{{ element.group }} block-{{ element.block }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <div class=\"elec-conf\">\n            <p class=\"elec-conf-short\"><span class=\"shorted\">{{ element.electronConfigurationShort }}</span></p>\n            <p class=\"elec-conf-long\">{{ element.electronConfiguration }}</p>\n        </div>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>",
   "header": {
     "Z": "Unit",
     "symbol": "",
@@ -19,7 +19,8 @@
     "electronConfigurationShort": "",
     "electronConfiguration": "",
     "nbElectrons": "",
-    "valence": ""
+    "valence": "",
+    "block": ""
   },
   "elementsOri": [
     {
@@ -42,6 +43,7 @@
       "electronConfiguration": "1s1",
       "nbElectrons": "1",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "1"
       ]
@@ -66,6 +68,7 @@
       "electronConfiguration": "1s2",
       "nbElectrons": "2",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2"
       ]
@@ -90,6 +93,7 @@
       "electronConfiguration": "1s2 2s1",
       "nbElectrons": "2 1",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2",
         "1"
@@ -115,6 +119,7 @@
       "electronConfiguration": "1s2 2s2",
       "nbElectrons": "2 2",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2",
         "2"
@@ -140,6 +145,7 @@
       "electronConfiguration": "1s2 2s2 2p1",
       "nbElectrons": "2 3",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "3"
@@ -165,6 +171,7 @@
       "electronConfiguration": "1s2 2s2 2p2",
       "nbElectrons": "2 4",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "4"
@@ -190,6 +197,7 @@
       "electronConfiguration": "1s2 2s2 2p3",
       "nbElectrons": "2 5",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "5"
@@ -215,6 +223,7 @@
       "electronConfiguration": "1s2 2s2 2p4",
       "nbElectrons": "2 6",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "6"
@@ -240,6 +249,7 @@
       "electronConfiguration": "1s2 2s2 2p5",
       "nbElectrons": "2 7",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "7"
@@ -265,6 +275,7 @@
       "electronConfiguration": "1s2 2s2 2p6",
       "nbElectrons": "2 8",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8"
@@ -290,6 +301,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s1",
       "nbElectrons": "2 8 1",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -316,6 +328,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2",
       "nbElectrons": "2 8 2",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -342,6 +355,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p1",
       "nbElectrons": "2 8 3",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -368,6 +382,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p2",
       "nbElectrons": "2 8 4",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -394,6 +409,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p3",
       "nbElectrons": "2 8 5",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -420,6 +436,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p4",
       "nbElectrons": "2 8 6",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -446,6 +463,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p5",
       "nbElectrons": "2 8 7",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -472,6 +490,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6",
       "nbElectrons": "2 8 8",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -498,6 +517,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 4s1",
       "nbElectrons": "2 8 8 1",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -525,6 +545,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 4s2",
       "nbElectrons": "2 8 8 2",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -552,6 +573,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d1 4s2",
       "nbElectrons": "2 8 9 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -579,6 +601,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d2 4s2",
       "nbElectrons": "2 8 10 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -606,6 +629,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d3 4s2",
       "nbElectrons": "2 8 11 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -633,6 +657,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d5 4s1",
       "nbElectrons": "2 8 13 1",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -660,6 +685,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d5 4s2",
       "nbElectrons": "2 8 13 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -687,6 +713,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d6 4s2",
       "nbElectrons": "2 8 14 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -714,6 +741,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d7 4s2",
       "nbElectrons": "2 8 15 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -741,6 +769,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d8 4s2",
       "nbElectrons": "2 8 16 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -768,6 +797,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s1",
       "nbElectrons": "2 8 18 1",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -795,6 +825,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2",
       "nbElectrons": "2 8 18 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -822,6 +853,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p1",
       "nbElectrons": "2 8 18 3",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -849,6 +881,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p2",
       "nbElectrons": "2 8 18 4",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -876,6 +909,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p3",
       "nbElectrons": "2 8 18 5",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -903,6 +937,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p4",
       "nbElectrons": "2 8 18 6",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -930,6 +965,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p5",
       "nbElectrons": "2 8 18 7",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -957,6 +993,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6",
       "nbElectrons": "2 8 18 8",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -984,6 +1021,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 5s1",
       "nbElectrons": "2 8 18 8 1",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1012,6 +1050,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 5s2",
       "nbElectrons": "2 8 18 8 2",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1040,6 +1079,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d1 5s2",
       "nbElectrons": "2 8 18 9 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1068,6 +1108,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d2 5s2",
       "nbElectrons": "2 8 18 10 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1096,6 +1137,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d4 5s1",
       "nbElectrons": "2 8 18 12 1",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1124,6 +1166,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d5 5s1",
       "nbElectrons": "2 8 18 13 1",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1152,6 +1195,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d5 5s2",
       "nbElectrons": "2 8 18 13 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1180,6 +1224,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d7 5s1",
       "nbElectrons": "2 8 18 15 1",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1208,6 +1253,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d8 5s1",
       "nbElectrons": "2 8 18 16 1",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1236,6 +1282,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10",
       "nbElectrons": "2 8 18 18",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1263,6 +1310,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s1",
       "nbElectrons": "2 8 18 18 1",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1291,6 +1339,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2",
       "nbElectrons": "2 8 18 18 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1319,6 +1368,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p1",
       "nbElectrons": "2 8 18 18 3",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1347,6 +1397,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p2",
       "nbElectrons": "2 8 18 18 4",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1375,6 +1426,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p3",
       "nbElectrons": "2 8 18 18 5",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1403,6 +1455,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p4",
       "nbElectrons": "2 8 18 18 6",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1431,6 +1484,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p5",
       "nbElectrons": "2 8 18 18 7",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1459,6 +1513,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p6",
       "nbElectrons": "2 8 18 18 8",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1487,6 +1542,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p6 6s1",
       "nbElectrons": "2 8 18 18 8 1",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1516,6 +1572,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 18 8 2",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1545,6 +1602,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p6 5d1 6s2",
       "nbElectrons": "2 8 18 18 9 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1574,6 +1632,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f1 5s2 5p6 5d1 6s2",
       "nbElectrons": "2 8 18 19 9 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1603,6 +1662,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f3 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 21 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1632,6 +1692,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f4 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 22 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1661,6 +1722,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f5 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 23 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1690,6 +1752,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f6 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 24 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1719,6 +1782,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f7 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 25 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1748,6 +1812,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f7 5s2 5p6 5d1 6s2",
       "nbElectrons": "2 8 18 25 9 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1777,6 +1842,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f9 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 27 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1806,6 +1872,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f10 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 28 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1835,6 +1902,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f11 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 29 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1864,6 +1932,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f12 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 30 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1893,6 +1962,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f13 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 31 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1922,6 +1992,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 32 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1951,6 +2022,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d1 6s2",
       "nbElectrons": "2 8 18 32 9 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1980,6 +2052,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d2 6s2",
       "nbElectrons": "2 8 18 32 10 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2009,6 +2082,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d3 6s2",
       "nbElectrons": "2 8 18 32 11 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2038,6 +2112,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d4 6s2",
       "nbElectrons": "2 8 18 32 12 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2067,6 +2142,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d5 6s2",
       "nbElectrons": "2 8 18 32 13 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2096,6 +2172,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d6 6s2",
       "nbElectrons": "2 8 18 32 14 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2125,6 +2202,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d7 6s2",
       "nbElectrons": "2 8 18 32 15 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2154,6 +2232,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d9 6s1",
       "nbElectrons": "2 8 18 32 17 1",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2183,6 +2262,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s1",
       "nbElectrons": "2 8 18 32 18 1",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2212,6 +2292,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2",
       "nbElectrons": "2 8 18 32 18 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2241,6 +2322,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p1",
       "nbElectrons": "2 8 18 32 18 3",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2270,6 +2352,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p2",
       "nbElectrons": "2 8 18 32 18 4",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2299,6 +2382,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p3",
       "nbElectrons": "2 8 18 32 18 5",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2328,6 +2412,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p4",
       "nbElectrons": "2 8 18 32 18 6",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2357,6 +2442,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p5",
       "nbElectrons": "2 8 18 32 18 7",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2386,6 +2472,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p6",
       "nbElectrons": "2 8 18 32 18 8",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2415,6 +2502,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p6 7s1",
       "nbElectrons": "2 8 18 32 18 8 1",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2445,6 +2533,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 18 8 2",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2475,6 +2564,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p6 6d1 7s2",
       "nbElectrons": "2 8 18 32 18 9 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2505,6 +2595,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p6 6d2 7s2",
       "nbElectrons": "2 8 18 32 18 10 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2535,6 +2626,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f2 6s2 6p6 6d1 7s2",
       "nbElectrons": "2 8 18 32 20 9 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2565,6 +2657,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f3 6s2 6p6 6d1 7s2",
       "nbElectrons": "2 8 18 32 21 9 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2595,6 +2688,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f4 6s2 6p6 6d1 7s2",
       "nbElectrons": "2 8 18 32 22 9 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2625,6 +2719,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f6 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 24 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2655,6 +2750,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f7 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 25 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2685,6 +2781,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f7 6s2 6p6 6d1 7s2",
       "nbElectrons": "2 8 18 32 25 9 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2715,6 +2812,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f9 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 27 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2745,6 +2843,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f10 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 28 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2775,6 +2874,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f11 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 29 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2805,6 +2905,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f12 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 30 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2835,6 +2936,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f13 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 31 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2865,6 +2967,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 32 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2895,6 +2998,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 7s2 7p1",
       "nbElectrons": "2 8 18 32 32 8 3",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2925,6 +3029,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d2 7s2",
       "nbElectrons": "2 8 18 32 32 10 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2955,6 +3060,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d3 7s2",
       "nbElectrons": "2 8 18 32 32 11 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2985,6 +3091,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d4 7s2",
       "nbElectrons": "2 8 18 32 32 12 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3015,6 +3122,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d5 7s2",
       "nbElectrons": "2 8 18 32 32 13 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3045,6 +3153,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d6 7s2",
       "nbElectrons": "2 8 18 32 32 14 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3075,6 +3184,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d7 7s2",
       "nbElectrons": "2 8 18 32 32 15 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3105,6 +3215,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d8 7s2",
       "nbElectrons": "2 8 18 32 32 16 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3135,6 +3246,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d9 7s2",
       "nbElectrons": "2 8 18 32 32 17 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3165,6 +3277,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2",
       "nbElectrons": "2 8 18 32 32 18 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3195,6 +3308,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2 7p1",
       "nbElectrons": "2 8 18 32 32 18 3",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3225,6 +3339,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2 7p2",
       "nbElectrons": "2 8 18 32 32 18 4",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3255,6 +3370,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2 7p3",
       "nbElectrons": "2 8 18 32 32 18 5",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3285,6 +3401,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2 7p4",
       "nbElectrons": "2 8 18 32 32 18 6",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3315,6 +3432,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2 7p5",
       "nbElectrons": "2 8 18 32 32 18 7",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3345,6 +3463,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2 7p6",
       "nbElectrons": "2 8 18 32 32 18 8",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3377,6 +3496,7 @@
       "electronConfiguration": "1s1",
       "nbElectrons": "1",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "1"
       ]
@@ -3401,6 +3521,7 @@
       "electronConfiguration": "1s2",
       "nbElectrons": "2",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2"
       ]
@@ -3425,6 +3546,7 @@
       "electronConfiguration": "1s2 2s1",
       "nbElectrons": "2 1",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2",
         "1"
@@ -3450,6 +3572,7 @@
       "electronConfiguration": "1s2 2s2",
       "nbElectrons": "2 2",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2",
         "2"
@@ -3475,6 +3598,7 @@
       "electronConfiguration": "1s2 2s2 2p1",
       "nbElectrons": "2 3",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "3"
@@ -3500,6 +3624,7 @@
       "electronConfiguration": "1s2 2s2 2p2",
       "nbElectrons": "2 4",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "4"
@@ -3525,6 +3650,7 @@
       "electronConfiguration": "1s2 2s2 2p3",
       "nbElectrons": "2 5",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "5"
@@ -3550,6 +3676,7 @@
       "electronConfiguration": "1s2 2s2 2p4",
       "nbElectrons": "2 6",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "6"
@@ -3575,6 +3702,7 @@
       "electronConfiguration": "1s2 2s2 2p5",
       "nbElectrons": "2 7",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "7"
@@ -3600,6 +3728,7 @@
       "electronConfiguration": "1s2 2s2 2p6",
       "nbElectrons": "2 8",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8"
@@ -3625,6 +3754,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s1",
       "nbElectrons": "2 8 1",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3651,6 +3781,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2",
       "nbElectrons": "2 8 2",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3677,6 +3808,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p1",
       "nbElectrons": "2 8 3",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3703,6 +3835,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p2",
       "nbElectrons": "2 8 4",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3729,6 +3862,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p3",
       "nbElectrons": "2 8 5",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3755,6 +3889,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p4",
       "nbElectrons": "2 8 6",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3781,6 +3916,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p5",
       "nbElectrons": "2 8 7",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3807,6 +3943,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6",
       "nbElectrons": "2 8 8",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3833,6 +3970,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 4s1",
       "nbElectrons": "2 8 8 1",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3860,6 +3998,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 4s2",
       "nbElectrons": "2 8 8 2",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3887,6 +4026,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d1 4s2",
       "nbElectrons": "2 8 9 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3914,6 +4054,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d2 4s2",
       "nbElectrons": "2 8 10 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3941,6 +4082,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d3 4s2",
       "nbElectrons": "2 8 11 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3968,6 +4110,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d5 4s1",
       "nbElectrons": "2 8 13 1",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3995,6 +4138,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d5 4s2",
       "nbElectrons": "2 8 13 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4022,6 +4166,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d6 4s2",
       "nbElectrons": "2 8 14 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4049,6 +4194,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d7 4s2",
       "nbElectrons": "2 8 15 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4076,6 +4222,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d8 4s2",
       "nbElectrons": "2 8 16 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4103,6 +4250,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s1",
       "nbElectrons": "2 8 18 1",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4130,6 +4278,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2",
       "nbElectrons": "2 8 18 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4157,6 +4306,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p1",
       "nbElectrons": "2 8 18 3",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4184,6 +4334,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p2",
       "nbElectrons": "2 8 18 4",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4211,6 +4362,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p3",
       "nbElectrons": "2 8 18 5",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4238,6 +4390,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p4",
       "nbElectrons": "2 8 18 6",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4265,6 +4418,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p5",
       "nbElectrons": "2 8 18 7",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4292,6 +4446,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6",
       "nbElectrons": "2 8 18 8",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4319,6 +4474,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 5s1",
       "nbElectrons": "2 8 18 8 1",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4347,6 +4503,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 5s2",
       "nbElectrons": "2 8 18 8 2",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4375,6 +4532,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d1 5s2",
       "nbElectrons": "2 8 18 9 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4403,6 +4561,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d2 5s2",
       "nbElectrons": "2 8 18 10 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4431,6 +4590,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d4 5s1",
       "nbElectrons": "2 8 18 12 1",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4459,6 +4619,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d5 5s1",
       "nbElectrons": "2 8 18 13 1",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4487,6 +4648,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d5 5s2",
       "nbElectrons": "2 8 18 13 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4515,6 +4677,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d7 5s1",
       "nbElectrons": "2 8 18 15 1",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4543,6 +4706,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d8 5s1",
       "nbElectrons": "2 8 18 16 1",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4571,6 +4735,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10",
       "nbElectrons": "2 8 18 18",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4598,6 +4763,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s1",
       "nbElectrons": "2 8 18 18 1",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4626,6 +4792,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2",
       "nbElectrons": "2 8 18 18 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4654,6 +4821,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p1",
       "nbElectrons": "2 8 18 18 3",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4682,6 +4850,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p2",
       "nbElectrons": "2 8 18 18 4",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4710,6 +4879,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p3",
       "nbElectrons": "2 8 18 18 5",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4738,6 +4908,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p4",
       "nbElectrons": "2 8 18 18 6",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4766,6 +4937,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p5",
       "nbElectrons": "2 8 18 18 7",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4794,6 +4966,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p6",
       "nbElectrons": "2 8 18 18 8",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4822,6 +4995,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p6 6s1",
       "nbElectrons": "2 8 18 18 8 1",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4851,6 +5025,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 18 8 2",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4880,6 +5055,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p6 5d1 6s2",
       "nbElectrons": "2 8 18 18 9 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4909,6 +5085,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f1 5s2 5p6 5d1 6s2",
       "nbElectrons": "2 8 18 19 9 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4938,6 +5115,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f3 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 21 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4967,6 +5145,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f4 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 22 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -4996,6 +5175,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f5 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 23 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5025,6 +5205,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f6 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 24 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5054,6 +5235,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f7 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 25 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5083,6 +5265,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f7 5s2 5p6 5d1 6s2",
       "nbElectrons": "2 8 18 25 9 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5112,6 +5295,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f9 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 27 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5141,6 +5325,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f10 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 28 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5170,6 +5355,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f11 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 29 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5199,6 +5385,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f12 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 30 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5228,6 +5415,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f13 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 31 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5257,6 +5445,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 32 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5286,6 +5475,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d1 6s2",
       "nbElectrons": "2 8 18 32 9 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5315,6 +5505,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d2 6s2",
       "nbElectrons": "2 8 18 32 10 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5344,6 +5535,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d3 6s2",
       "nbElectrons": "2 8 18 32 11 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5373,6 +5565,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d4 6s2",
       "nbElectrons": "2 8 18 32 12 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5402,6 +5595,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d5 6s2",
       "nbElectrons": "2 8 18 32 13 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5431,6 +5625,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d6 6s2",
       "nbElectrons": "2 8 18 32 14 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5460,6 +5655,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d7 6s2",
       "nbElectrons": "2 8 18 32 15 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5489,6 +5685,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d9 6s1",
       "nbElectrons": "2 8 18 32 17 1",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5518,6 +5715,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s1",
       "nbElectrons": "2 8 18 32 18 1",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5547,6 +5745,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2",
       "nbElectrons": "2 8 18 32 18 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5576,6 +5775,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p1",
       "nbElectrons": "2 8 18 32 18 3",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5605,6 +5805,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p2",
       "nbElectrons": "2 8 18 32 18 4",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5634,6 +5835,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p3",
       "nbElectrons": "2 8 18 32 18 5",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5663,6 +5865,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p4",
       "nbElectrons": "2 8 18 32 18 6",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5692,6 +5895,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p5",
       "nbElectrons": "2 8 18 32 18 7",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5721,6 +5925,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p6",
       "nbElectrons": "2 8 18 32 18 8",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5750,6 +5955,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p6 7s1",
       "nbElectrons": "2 8 18 32 18 8 1",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5780,6 +5986,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 18 8 2",
       "valence": "",
+      "block": "s",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5810,6 +6017,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p6 6d1 7s2",
       "nbElectrons": "2 8 18 32 18 9 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5840,6 +6048,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p6 6d2 7s2",
       "nbElectrons": "2 8 18 32 18 10 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5870,6 +6079,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f2 6s2 6p6 6d1 7s2",
       "nbElectrons": "2 8 18 32 20 9 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5900,6 +6110,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f3 6s2 6p6 6d1 7s2",
       "nbElectrons": "2 8 18 32 21 9 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5930,6 +6141,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f4 6s2 6p6 6d1 7s2",
       "nbElectrons": "2 8 18 32 22 9 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5960,6 +6172,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f6 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 24 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5990,6 +6203,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f7 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 25 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6020,6 +6234,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f7 6s2 6p6 6d1 7s2",
       "nbElectrons": "2 8 18 32 25 9 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6050,6 +6265,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f9 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 27 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6080,6 +6296,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f10 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 28 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6110,6 +6327,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f11 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 29 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6140,6 +6358,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f12 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 30 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6170,6 +6389,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f13 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 31 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6200,6 +6420,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 32 8 2",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6230,6 +6451,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 7s2 7p1",
       "nbElectrons": "2 8 18 32 32 8 3",
       "valence": "",
+      "block": "f",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6260,6 +6482,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d2 7s2",
       "nbElectrons": "2 8 18 32 32 10 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6290,6 +6513,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d3 7s2",
       "nbElectrons": "2 8 18 32 32 11 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6320,6 +6544,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d4 7s2",
       "nbElectrons": "2 8 18 32 32 12 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6350,6 +6575,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d5 7s2",
       "nbElectrons": "2 8 18 32 32 13 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6380,6 +6606,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d6 7s2",
       "nbElectrons": "2 8 18 32 32 14 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6410,6 +6637,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d7 7s2",
       "nbElectrons": "2 8 18 32 32 15 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6440,6 +6668,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d8 7s2",
       "nbElectrons": "2 8 18 32 32 16 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6470,6 +6699,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d9 7s2",
       "nbElectrons": "2 8 18 32 32 17 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6500,6 +6730,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2",
       "nbElectrons": "2 8 18 32 32 18 2",
       "valence": "",
+      "block": "d",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6530,6 +6761,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2 7p1",
       "nbElectrons": "2 8 18 32 32 18 3",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6560,6 +6792,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2 7p2",
       "nbElectrons": "2 8 18 32 32 18 4",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6590,6 +6823,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2 7p3",
       "nbElectrons": "2 8 18 32 32 18 5",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6620,6 +6854,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2 7p4",
       "nbElectrons": "2 8 18 32 32 18 6",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6650,6 +6885,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2 7p5",
       "nbElectrons": "2 8 18 32 32 18 7",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6680,6 +6916,7 @@
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2 7p6",
       "nbElectrons": "2 8 18 32 32 18 8",
       "valence": "",
+      "block": "p",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6694,35 +6931,35 @@
   "templates": [
     {
       "name": "weight",
-      "template": "<div class=\"element e{{ element.Z }} period{{ element.period}} group{{ element.group }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"weight\">{{ element.weight }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
+      "template": "<div class=\"element e{{ element.Z }} period{{ element.period}} group{{ element.group }} block-{{ element.block }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"weight\">{{ element.weight }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
     },
     {
       "name": "density",
-      "template": "<div class=\"element e{{ element.Z }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"density\">{{ element.density }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
+      "template": "<div class=\"element e{{ element.Z }} period{{ element.period}} group{{ element.group }} block-{{ element.block }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"density\">{{ element.density }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
     },
     {
       "name": "melting point",
-      "template": "<div class=\"element e{{ element.Z }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"melting\">{{ element.melting }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
+      "template": "<div class=\"element e{{ element.Z }} period{{ element.period}} group{{ element.group }} block-{{ element.block }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"melting\">{{ element.melting }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
     },
     {
       "name": "boiling point",
-      "template": "<div class=\"element e{{ element.Z }} \">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"boiling\">{{ element.boiling }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
+      "template": "<div class=\"element e{{ element.Z }} period{{ element.period}} group{{ element.group }} block-{{ element.block }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"boiling\">{{ element.boiling }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
     },
     {
       "name": "heating",
-      "template": "<div class=\"element e{{ element.Z }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"heating\">{{ element.heating }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
+      "template": "<div class=\"element e{{ element.Z }} period{{ element.period}} group{{ element.group }} block-{{ element.block }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"heating\">{{ element.heating }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
     },
     {
       "name": "negativity",
-      "template": "<div class=\"element e{{ element.Z }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"negativity\">{{ element.negativity }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
+      "template": "<div class=\"element e{{ element.Z }} period{{ element.period}} group{{ element.group }} block-{{ element.block }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"negativity\">{{ element.negativity }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
     },
     {
       "name": "abundance",
-      "template": "<div class=\"element e{{ element.Z }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"abundance\">{{ element.abundance }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
+      "template": "<div class=\"element e{{ element.Z }} period{{ element.period}} group{{ element.group }} block-{{ element.block }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"abundance\">{{ element.abundance }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
     },
     {
       "name": "orbitals",
-      "template": "<style>\n    .elec-conf:hover .elec-conf-short, .elec-conf .elec-conf-long {\n        display: none;\n    }\n    .elec-conf:hover .elec-conf-long {\n        display:block;\n    }\n    \n\n</style>\n\n<div class=\"element e{{ element.Z }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <div class=\"elec-conf\">\n            <p class=\"elec-conf-short\"><span class=\"shorted\">{{ element.electronConfigurationShort }}</span></p>\n            <p class=\"elec-conf-long\">{{ element.electronConfiguration }}</p>\n        </div>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
+      "template": "<div class=\"element e{{ element.Z }} period{{ element.period}} group{{ element.group }} block-{{ element.block }}\">\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <div class=\"elec-conf\">\n            <p class=\"elec-conf-short\"><span class=\"shorted\">{{ element.electronConfigurationShort }}</span></p>\n            <p class=\"elec-conf-long\">{{ element.electronConfiguration }}</p>\n        </div>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
     }
   ],
   "words": "(all (all (large) about Adding Advanced Advanced Advanced Advanced Advanced Advanced Advanced Advanced Advanced Advanced Advanced Advanced Advanced Advanced Advanced Advanced analysis analysis analysis analysis analysis analysis analysis analysis analysis analysis Analysis animation Approved Arithmetic array Array Arrays Arrays Arrays Arrays assign1D assignment atoms atoms atoms atoms atoms atoms Auto-assignment background background base64 Basic Basic Basic Basic between Binary Biology Bioreactor Bioreactor Bioreactor Bogota Boolean browse browse Browse Browse Browse Browse Browse Browse Browse Browse Bubbling bullets calculation calculation calculator Calculator charge charge charge chart chart Chart Chart Chart Chart Chart Chart Chart Chemcalc ChemCalc ChemCalc chemical Chemical Chemical Chemical Chemical Chemical Chemical Cheminformatics Cheminformatics Cheminformatics Cheminformatics Cheminformatics Cheminformatics Cheminformatics Cheminformatics Cheminformatics Cheminformatics Cheminformatics Cheminformatics Cheminformatics Cheminformatics Cheminformatics Cheminformatics Cheminformatics Cheminformatics Cheminformatics chemistry chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry Chemistry classify Classify Client Client Client Client Code Code Code Code color color color color color colors colors Colors combinatorial combinatorial Complex Complex Complex Conditions Conformers Confs Confs Confs Confs Confs Confs control Convert coordinates coordinates coordinates coordinates coordinates coordinates Coordinates Coordinates COSY COSY COSY COSY Create Create Create Create cristallOgraph cristallOgraph Cross data data data data data data data DataBase Dealing decode delimited delimited Demo Demo Demo Demo Demo Demo Demo Demo Demo Demo Demo Demo Demo Demo Demo Demo Demo Demo Demo Demo DEMO DEMO DEMO demonstration Determination Determination Determination Determine Determine Determine Determine Diastereotopic Diastereotopic Diastereotopic Diastereotopic Diastereotopic Diastereotopic different different different Display Display Display Display Display Display Display Display Display Display Display distribution distribution distribution download download Drag Drop DrugBank DrugBank DrugBank DrugBank Dynamic edition editor editor Editor effect elements) elements) Encode Eutrophication events example Example Examples Examples Examples Examples Examples Examples Examples Examples executor executor executor executor Executor Exercises Exercises Exercises Exercises Exercises Exercises Exercises Exercises Exercises Exercises Exercises Exercises Exercises Exercises Exercises Exercises Exercises Exercises Exercises experiment explorer explorer explorer explorer explorer explorer Explorer Filter filtering filters filters Find form form form FormatConverter FormatConverter formats Forms formula fragmentation fragmentation fragmentation fragmentation fragmentation fragmentation fragments fragments fragments fragments fragments from from from from from from from from from from from from from from from from from from from from from from from from from from from from from from from from From From From From From From From From Functions General General General Generate Generate generation generator grid grid grid Grid Griffith Griffith Group Group Group Hexagonal Highlight Highlight Highlight Highlight Highlight HMBC HMBC HMBC HMBC HMBC HMBC Home Home Home Home Home Home Home Home Home Home Home Home Home HPLC HSQC HSQC HSQC HSQC HSQC HSQC HTML HTML HTML IC50 IC50 IC50 image Image Image Image images Images Images Indicator Indicator Indicator Info information information information information information information information Information Information Information Information Information Information Information Information Information Information Information interaction interaction interaction interaction interaction internet Introduction Introduction Introduction Introduction Introduction Isoelectric Isoelectric Isoelectric Isoelectric Isoelectric Isotopic Isotopic Isotopic javascript JavaScript JavaScript JavaScript JavaScript JavaScript JavaScript JavaScript jcamp Jcamp JcampConverter JcampConverter JcampConverter Jpath Jpath Jpath JSmol JSMol JSMol JSMol json json JSON JSON JSON JSON JSON Laboratory layers Libraries Libraries Libraries library library library Lipinski Lipinski load lookup lookup lookup Many Maps Maps Markdown mask mass mass mass mass mass mass mass mass mass mass mass mass mass mass mass mass mass mass mass mass mass mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass Mass: MassTools MassTools Matrix metabo metabo models models models models Models Models module module Module Modules Modules Modules Modules Modules Modules Modules Modules Modules Modules Modules Modules Modules molecular molecule molecule Molecule Molecule Molecule Molecule molfile molfile Molfile Molfile molfiles molfiles monoisotopic monoisotopic monoisotopic monoisotopic monoisotopic monoisotopic monoisotopic monoisotopic monoisotopic monoisotopic monoisotopic monoisotopic monoisotopic monoisotopic monoisotopic Monoisotopic Monoisotopic Monoisotopic Monoisotopic Monoisotopic Monoisotopic Monoisotopic MSDS MSDS MSDS MSDS Multiple Multiple Name Name Name Name Name Nice Number Number Number Object Object OpenChemLib operators operators order Papaparser parallel Parallel Parallel Parallel Parallel Parallel Parallel Parallel Parsing Parsing Parsing Parsing Paste peak peak Peak Peak peptide peptide Peptide Peptide Peptide Peptide Peptide Peptide Peptide picking picking picking picking plot plot plot plot plot plot Plotter point point point point point Pollution potential prediction prediction prediction prediction prediction prediction Prediction Prediction Prediction Prediction Prediction Prediction Prediction Prediction Prediction Prediction Prediction Prediction Prediction Prediction Prediction Prediction Prediction Prediction Prediction Prediction predictions Predictions Predictions Predictions Predictions Predictions Predictions predictSpectra Primitive process Process Projection properties properties Protein Protein Protein Protein Protein Protein Protein Protein Protein Protein Proteins Proteins Proteins Quick Quick random Random reference regexp regexp RegExp RegExp RegExp remote renderer renderer renderer renderer renderer renderer renderer renderer renderer renderer renderer renderer renderer renderer Renderer Renderer Renderer Renderer Renderer Renderer RepoAssigner Repository Repository Resurrect Resurrect Resurrect RGBa Save scatter scatter Scatter Scatter Scatter Science Script scripting scripting Scripting search search search search search search search search search Search Second Selector Selector Services Services Services Similarity Similarity simple Simple Simulate Simulate Simulate Simulation Simulation Single Slick Slick smiles smiles Smiles Smiles Smiles SMILES SMILES SMILES SMILES SMILES SMILES SMILES Solution Solution Solution Soups Soups Soups Soups Soups sparkline Sparkline Sparkline Sparklines specific specific spectra spectra spectra spectra spectra spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectra Spectrophotometer spectrum spin spin spin started started started stringify structure structure structure structure structure structure structure structure structure structure structure structure structure structure structure structure structure structure Structure Structure Structure Structure Structure Structure Structure Structure Structure Surface Switch Syntax synthesis synthesis system system system table table table table table Table Table Table tables tables tables tables test test test test Test Test Test Test tests tests tool tool tools tools tools Tools Tools Tools Tools Tools Tools Tools Tools Tools Tools Tools Tools Trace Tree Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Tutorial Twig Twig Type Type Type Type Type Type Type Type Type typerenderer types Unsaturation Unsaturation Unsaturation Unsaturation Unsaturation Unsaturation using Utility Utility Utility Utility Utility Utility Utility Utility Utility Variables viewer viewer viewer viewer Viewer Viewer Viewer Viewer ViewRepo Virtual Virtual Webservice Wikipedia with work worker worker3 your"
