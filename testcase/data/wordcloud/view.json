@@ -1,5 +1,5 @@
 {
-  "version": "2.20.1-0",
+  "version": "2.21.3-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -37,7 +37,7 @@
           "name": "Default layer"
         }
       },
-      "id": 2
+      "id": 1
     },
     {
       "url": "modules/types/edition/rich_text/",
@@ -84,8 +84,8 @@
             "top": 0
           },
           "size": {
-            "width": 119,
-            "height": 12
+            "width": 118.9777777671814,
+            "height": 11.977777767181397
           },
           "zIndex": 0,
           "display": true,
@@ -101,17 +101,17 @@
           "name": "Default layer"
         }
       },
-      "id": 3,
+      "id": 2,
       "vars_in": [
         {
           "rel": "html",
-          "name": "myvar"
+          "name": "wordlist"
         }
       ],
       "actions_in": [
         {}
       ],
-      "richtext": "cheminfo cheminfo cheminfo cheminfo cheminfo cheminfo visualizer visualizer visualizer visualizer visualizer visualizer visualizer visualizer visualizer visualizer visualizer javascript javascript javascript javascript chemical chemical chemical molecule molecule molecule molecule peak peak smiles smiles mass mass mass",
+      "richtext": "cheminfo cheminfo \r\ncheminfo cheminfo \r\ncheminfo cheminfo \r\nvisualizer visualizer \r\nvisualizer visualizer \r\nvisualizer visualizer visualizer visualizer visualizer \r\nvisualizer visualizer \r\njavascript javascript \r\njavascript javascript \r\nchemical chemical \r\nchemical molecule \r\nmolecule molecule \r\nmolecule \r\npeak peak \r\nsmiles smiles mass mass mass",
       "vars_out": [
         {
           "jpath": []
@@ -176,8 +176,8 @@
             "top": 13
           },
           "size": {
-            "width": 30,
-            "height": 37
+            "width": 29.977777767181397,
+            "height": 36.977777767181394
           },
           "zIndex": 0,
           "display": true,
@@ -193,11 +193,11 @@
           "name": "Default layer"
         }
       },
-      "id": 4,
+      "id": 3,
       "vars_in": [
         {
           "rel": "value",
-          "name": "myvar"
+          "name": "wordlist"
         }
       ],
       "actions_in": [
@@ -221,7 +221,7 @@
                 "log"
               ],
               "orientation": [
-                5
+                1
               ],
               "fromTo": [
                 [
@@ -240,8 +240,8 @@
             "top": 14
           },
           "size": {
-            "width": 87,
-            "height": 35
+            "width": 86.9777777671814,
+            "height": 34.977777767181394
           },
           "zIndex": 0,
           "display": true,
@@ -257,11 +257,11 @@
           "name": "Default layer"
         }
       },
-      "id": 5,
+      "id": 4,
       "vars_in": [
         {
           "rel": "textlist",
-          "name": "myvar"
+          "name": "wordlist"
         }
       ],
       "actions_in": [],
@@ -278,15 +278,130 @@
       ]
     },
     {
-      "varname": "newvar",
+      "varname": "wordlist",
       "jpath": [
-        "newvar"
+        "wordlist"
       ]
     }
   ],
-  "pouchvariables": [],
+  "pouchvariables": [
+    {}
+  ],
   "configuration": {
     "title": "No title"
   },
-  "aliases": []
+  "aliases": [
+    {}
+  ],
+  "actionscripts": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          {
+            "name": [
+              null
+            ],
+            "script": [
+              null
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "couch_replication": [
+    {
+      "sections": {},
+      "groups": {
+        "couch": [
+          [
+            {
+              "direction": "both",
+              "continuous": []
+            }
+          ]
+        ]
+      }
+    }
+  ],
+  "init_script": [
+    {
+      "sections": {},
+      "groups": {
+        "general": [
+          {
+            "script": [
+              null
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "custom_filters": [
+    {
+      "sections": {
+        "modules": [
+          {
+            "sections": {},
+            "groups": {
+              "modules": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filtersLib": [
+          {
+            "sections": {},
+            "groups": {
+              "filters": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filters": [
+          {
+            "sections": {},
+            "groups": {
+              "filter": [
+                {
+                  "name": [
+                    null
+                  ],
+                  "script": [
+                    null
+                  ]
+                }
+              ],
+              "libs": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "groups": {}
+    }
+  ],
+  "actionfiles": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          [
+            {}
+          ]
+        ]
+      }
+    }
+  ]
 }
