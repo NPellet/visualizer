@@ -702,38 +702,6 @@ define([
                             .appendTo(args.node);
                     });
 
-                    //var sortjpath;
-                    //function comparer(a, b) {
-                    //    var x = a.get(sortjpath), y = b.get(sortjpath);
-                    //    return (x == y ? 0 : (x > y ? 1 : -1));
-                    //}
-                    //
-                    //that.grid.onSort.subscribe(function (e, args) {
-                    //    if(!args.multiColumnSort) {
-                    //        sortjpath = args.sortCol.jpath;
-                    //        // using native sort with comparer
-                    //        // can be very slow in IE with huge datasets
-                    //        that.slick.data.sort(comparer, args.sortAsc);
-                    //    }
-                    //    else {
-                    //        var cols = args.sortCols;
-                    //        that.slick.data.sort(function (dataRow1, dataRow2) {
-                    //            for (var i = 0, l = cols.length; i < l; i++) {
-                    //                var jpath = cols[i].sortCol.jpath;
-                    //                var sign = cols[i].sortAsc ? 1 : -1;
-                    //                var value1 = dataRow1.get(jpath), value2 = dataRow2.get(jpath);
-                    //                var result = (value1 == value2 ? 0 : (value1 > value2 ? 1 : -1)) * sign;
-                    //                if (result != 0) {
-                    //                    return result;
-                    //                }
-                    //            }
-                    //            return 0;
-                    //        });
-                    //    }
-                    //    grid.invalidate();
-                    //    grid.render();
-                    //
-                    //});
                     that.grid.init();
                     that.slick.data.beginUpdate();
 
@@ -917,7 +885,7 @@ define([
                 if (!item) continue;
                 if (_.any(that._highlighted, function (k) {
                         var hl = item._highlight;
-                        if (!(hl instanceof Array)) {
+                        if (!Array.isArray(hl)) {
                             hl = [hl];
                         }
                         return hl.indexOf(k) > -1;
@@ -941,7 +909,7 @@ define([
             for (var i = 0; i < hl.length; i++) {
                 (function (i) {
                     API.listenHighlight({_highlight: hl[i]}, function (onOff, key) {
-                        if (!key instanceof Array) {
+                        if (!Array.isArray(key)) {
                             key = [key];
                         }
                         if (onOff) {
