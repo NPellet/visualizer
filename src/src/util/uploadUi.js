@@ -46,7 +46,9 @@ define([
         if (data && mode && modes[mode]) {
             data = modes[mode](data);
         }
+        var slickData = new Slick.Data.DataView();
         data = data || [];
+        slickData.setItems(data, 'name');
         return cssLoaded
             .then(function () {
                 return new Promise(function (resolve) {
@@ -78,12 +80,14 @@ define([
                             id: 'contentType',
                             name: 'contentType',
                             field: 'contentType',
-                            editor: Slick.Editors.Text
+                            editor: Slick.Editors.Text,
+                            sortable: true
                         },
                         {
                             id: 'size',
                             name: 'size',
-                            field: 'size'
+                            field: 'size',
+                            sortable: true
                         },
                         {
                             id: 'toDelete',
@@ -120,7 +124,24 @@ define([
                         open: function () {
                             $dialog.append($slick);
                             //$('body').append($slick);
-                            grid = new Slick.Grid($slick, data, columns, slickOptions);
+                            grid = new Slick.Grid($slick, slickData, columns, slickOptions);
+                            grid.onSort.subscribe(function (e, args) {
+                                var cols = args.sortCols;
+                                slickData.sort(function (dataRow1, dataRow2) {
+                                    for (var i = 0, l = cols.length; i < l; i++) {
+                                        var field = cols[i].sortCol.field;
+                                        var sign = cols[i].sortAsc ? 1 : -1;
+                                        var value1 = dataRow1[field], value2 = dataRow2[field];
+                                        var result = (value1 == value2 ? 0 : (value1 > value2 ? 1 : -1)) * sign;
+                                        if (result != 0) {
+                                            return result;
+                                        }
+                                    }
+                                    return 0;
+                                });
+                                grid.invalidate();
+                                grid.render();
+                            });
                         },
                         closeOnEscape: false,
                         width: 700,
