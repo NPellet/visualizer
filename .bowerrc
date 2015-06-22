@@ -1,3 +1,5 @@
 {
-  "directory": "src/components"
+  "directory": "src/components",
+  "proxy":"http://gateway.zscaler.net:9480",
+"https-proxy":"http://gateway.zscaler.net:9480" 
 }
