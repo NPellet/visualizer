@@ -89,13 +89,17 @@
         });
 
 
-
-
-
         jsmeApplet.setAfterStructureModifiedCallback(changeCallback);
 
         // The notifyAtomHighLightJSfunction will receive two arguments: the molecule index and the atom index, both start at 1
         jsmeApplet.setNotifyAtomHighLightChangeJSfunction('(function(mol,atom) {this.doPostMessage("doHighlight", {mol: mol, atom:atom});})');
+
+
+
+        jsmeApplet.setCallBack('AtomHighlight', function(jsmeEvent) {this.doPostMessage("atomHover", {atom: jsmeEvent.atom});});
+        jsmeApplet.setCallBack('AtomClicked', function(jsmeEvent) {this.doPostMessage("atomClicked", {atom: jsmeEvent.atom});});
+  //      jsmeApplet.setCallBack('BondHighlight', function(jsmeEvent) {this.doPostMessage("bondHover", {bond: jsmeEvent.bond});});
+        jsmeApplet.setCallBack('BondClicked', function(jsmeEvent) {this.doPostMessage("bondClicked", {bond: jsmeEvent.bond});});
 
     }
 

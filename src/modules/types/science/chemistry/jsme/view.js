@@ -33,6 +33,18 @@ define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui']
             case 'doHighlight':
                 view._doHighlight(message.message.mol, message.message.atom);
                 break;
+            case 'atomHover':
+                console.log(message);
+                break;
+            case 'atomClicked':
+                console.log(message);
+                break;
+            case 'bondHover':
+                console.log(message);
+                break;
+            case 'bondClicked':
+                console.log(message);
+                break;
             default:
                 console.error('Message type not handled: ', message.type);
                 break;
