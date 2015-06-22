@@ -75,11 +75,11 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             // Made with Daniel
             this.dom.append('<div class="indic-p indic-g"></div>');
             for (var i = 1; i < 19; i++) {
-                this.dom.append('<div class="indic-g group' + i +'"><p>'+ i + '</p></div>');
+                this.dom.append('<div class="indic-g group' + i + '"><p>' + i + '</p></div>');
 
             }
             for (var i = 1; i < 8; i++) {
-                this.dom.append('<div class="indic-p period' + i +'"><p>'+ i + '</p></div>');
+                this.dom.append('<div class="indic-p period' + i + '"><p>' + i + '</p></div>');
             }
 
             for (var i = 0; i < this.elements.length; i++) {
@@ -87,12 +87,10 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             }
 
 
-
-
             var actinid = ('<div class="indic-f period7"><p>89-103</p></div>');
             var lanthanid = ('<div class="indic-f period6"><p>57-71</p></div>');
-            $("div.e56").after(lanthanid);
-            $("div.e88").after(actinid);
+            $('div.e56').after(lanthanid);
+            $('div.e88').after(actinid);
         }
 
 

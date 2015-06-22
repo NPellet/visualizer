@@ -41,7 +41,7 @@ define(['src/util/versioning', 'lib/couchdb/jquery.couch'], function (Versioning
         db.saveDoc(doc, {
             success: function () {
                 var tinyUrl = tinyPrefix + docid;
-                if(callback) {
+                if (callback) {
                     callback(null, tinyUrl);
                 }
                 def.resolve(tinyUrl);

@@ -6,8 +6,8 @@ define(['lib/semver/semver'], function (semver) {
     var MAJOR = 2;
     var MINOR = 22;
     var PATCH = 2;
-    var PRERELEASE = 0;
-    var IS_RELEASE = false;
+    var PRERELEASE = false;
+    var IS_RELEASE = true;
     var BUILD_TIME = null;
     /* END */
 

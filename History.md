@@ -1,3 +1,17 @@
+2.22.2 / 2015-06-22
+===================
+* Core
+ * uploadUi: make sortable
+ * couchdbAttachments: simplify
+ * couchshare: add callback argument
+* Components
+ * :arrow_up: mime-types
+* Modules
+ * slickgrid highlight: Check array with Array.isArray Fix #600
+ * Periodic table : adding indications for users like periods and groups numbers
+* Headers
+ * remove couch button from default config
+
 2.22.1 / 2015-06-17
 ===================
 * Headers
