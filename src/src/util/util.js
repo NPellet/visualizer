@@ -402,6 +402,7 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
     };
 
     exports.moduleIdFromUrl = function (url) {
+
         var reg = /([^\/]+)(\/)?$/;
         var res = url.match(reg);
         return res[1];
@@ -413,12 +414,12 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
 
     var utilReqPaths = {};
     exports.rewriteRequirePath = function (url) {
+        url = require.toUrl(url);
         if (!this.requireNeedsExtension(url)) {
             // return same url without trailing backslash
-            return url.replace(/\/$/, '');
+            return url;
         }
         var reqPathStr = exports.getNextUniqueId(true);
-        url = url.replace(/\/$/, '');
         if (utilReqPaths[url]) return utilReqPaths[url];
         utilReqPaths[url] = reqPathStr;
         var paths = {};
