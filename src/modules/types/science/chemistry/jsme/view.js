@@ -70,6 +70,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui']
                     highlightColor: that.getHighlightColor(),
                     bondwidth: that.module.getConfiguration('bondwidth'),
                     labelsize: that.module.getConfiguration('labelsize'),
+                    defaultaction: that.module.getConfiguration('defaultaction'),
                     id: id
                 });
             });

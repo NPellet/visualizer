@@ -39,8 +39,26 @@ define(['modules/default/defaultcontroller'], function (Default) {
         onStructureChange: {
             label: 'Molecular structure has changed',
             refVariable: ['mol', 'smiles', 'jme', 'molV3']
+        },
+        onAtomClicked: {
+            label: 'An atom was clicked',
+            refAction: ['atomClicked']
+        },
+        onBondClicked: {
+            label: 'A bond was clicked',
+            refAction: ['atomHover']
+        },
+        onAtomHover: {
+            label: 'An atom was hovered',
+            refAction: ['bondClicked']
+        },
+        onBondHover: {
+            label: 'A bond was hovered',
+            refAction: ['bondHover']
         }
     };
+
+
 
     Controller.prototype.variablesIn = ['mol', 'jme', 'smiles'];
 
@@ -72,8 +90,16 @@ define(['modules/default/defaultcontroller'], function (Default) {
                                 nopaste: 'Remove the paste menu',
                                 border: 'With depict option, display the border around the molecule',
                                 star: 'Display star button allowing highlight of atoms (placed in the smiles)',
+                                depictaction: 'Allows to specify an action in depict mode',
                                 oldlook: 'Use the old look'
                             }
+                        },
+                        defaultaction: {
+                            type: 'combo',
+                            title: 'Default action',
+                            options: [
+                                {title: 'Mark action', key: '105'}
+                            ]
                         },
                         labelsize: {
                             type: 'combo',
@@ -163,6 +189,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         prefs: ['groups', 'group', 0, 'prefs', 0],
         labelsize: ['groups', 'group', 0, 'labelsize', 0],
         bondwidth: ['groups', 'group', 0, 'bondwidth', 0],
+        defaultaction: ['groups', 'group', 0, 'defaultaction', 0],
         highlightColor: ['groups', 'group', 0, 'highlightColor', 0],
         outputResult: ['groups', 'group', 0, 'outputResult', 0]
     };
