@@ -8,10 +8,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
     $.extend(true, View.prototype, Default, {
         init: function () {
 
-            this.dom = $('<div class="periodic-table">').css({
-                height: '100%',
-                width: '100%'
-            });
+            this.dom = $('<div class="periodic-table">');
 
             this.elements = [];
             this.template = Twig.twig({
@@ -73,6 +70,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             //    this.dom.append($element);
             //}
             // Made with Daniel
+
             this.dom.append('<div class="indic-p indic-g"></div>');
             for (var i = 1; i < 19; i++) {
                 this.dom.append('<div class="indic-g group' + i + '"><p>' + i + '</p></div>');
@@ -82,10 +80,21 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                 this.dom.append('<div class="indic-p period' + i + '"><p>' + i + '</p></div>');
             }
 
-            for (var i = 0; i < this.elements.length; i++) {
-                this.dom.append(this.template.render({element: this.elements[i]}));
-            }
 
+            for (var i = 0; i < this.elements.length; i++) {
+                var $element = $(this.template.render({element: this.elements[i]}));
+
+                $element.addClass('element' +
+                ' e'+this.elements[i].Z +
+                ' period'+this.elements[i].period +
+                ' group'+this.elements[i].group +
+                ' block-'+this.elements[i].block +
+                ' '+this.elements[i].serie);
+
+                this.dom.append($element);
+            }
+            var legend = $('<div class="legend"><p>test</p></div>');
+            $('div.e1').after(legend);
 
             var actinid = ('<div class="indic-f period7"><p>89-103</p></div>');
             var lanthanid = ('<div class="indic-f period6"><p>57-71</p></div>');
