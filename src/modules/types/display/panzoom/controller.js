@@ -121,7 +121,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                                 },
                                 {key: 'no', title: 'Keep original image size'}
                             ],
-                            default: ['max']
+                            default: 'max'
                         },
                         rerender: {
                             type: 'checkbox',
