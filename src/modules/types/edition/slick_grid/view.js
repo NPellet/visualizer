@@ -78,6 +78,10 @@ define([
             this.colConfig = this.module.getConfiguration('cols');
             this.idPropertyName = '_sgid';
             this.hiddenColumns = [];
+            var filter = this.module.getConfiguration('filterRow');
+            if (filter) {
+                eval('that.filter = function(view, row, rowId) { try { \n ' + filter + '\n } catch(_) { console.log(_); } }');
+            }
             this.resolveReady();
         },
 
@@ -486,6 +490,13 @@ define([
                     });
 
                     that.slick.data.onRowsChanged.subscribe(function (e, args) {
+                        if (!that.module.getConfigurationCheckbox('justInTimeFilter', 'yes') && that.filter) {
+                            for (var i = 0; i < args.rows.length; i++) {
+                                var row = args.rows[i];
+                                var itemInfo = that._getItemInfoFromRow(row);
+                                that.filter(that, itemInfo.item, itemInfo.id);
+                            }
+                        }
                         that.grid.invalidateRows(args.rows);
                         that.grid.render();
                     });
@@ -505,6 +516,7 @@ define([
                             that.lastViewport = that.grid.getViewport();
                             that._resetDeleteRowListeners();
                             that._jpathColor();
+                            that._justInTimeFilter();
                         }, 300);
                         that.lastViewport = that.grid.getViewport();
                         if (that.module.getConfigurationCheckbox('slickCheck', 'rowNumbering') && !that._preventRowHelp) {
@@ -517,6 +529,7 @@ define([
                         }
                         that._preventRowHelp = false;
                         that._jpathColor();
+                        that._justInTimeFilter();
                     });
 
 
@@ -571,6 +584,9 @@ define([
 
                     that.grid.onCellChange.subscribe(function (e, args) {
                         var itemInfo = that._getItemInfoFromRow(args.row);
+                        if (that.filter) {
+                            that.filter(that, itemInfo.item, itemInfo.id);
+                        }
                         if (itemInfo) {
                             that.module.controller.onRowChange(itemInfo.idx, itemInfo.item);
                         }
@@ -681,6 +697,7 @@ define([
                             delete items[i].__elementPosition;
                         }
                         that._jpathColor();
+                        _that._justInTimeFilter();
                     });
 
 
@@ -768,6 +785,7 @@ define([
                     that._setBaseCellCssStyle();
                     that.lastViewport = that.grid.getViewport();
                     that._jpathColor();
+                    that._justInTimeFilter();
                 });
             }
 
@@ -849,6 +867,15 @@ define([
                         }
                     }
                 }
+            }
+        },
+
+        _justInTimeFilter: function () {
+            var that = this;
+            if (!that.lastViewport || !that.module.getConfigurationCheckbox('justInTimeFilter', 'yes')) return;
+            for (var i = that.lastViewport.top; i <= that.lastViewport.bottom; i++) {
+                var item = that.grid.getDataItem(i);
+                that.filter(that, item, item[that.idPropertyName]);
             }
         },
 

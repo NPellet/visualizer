@@ -94,6 +94,18 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                                 {key: 'cell', title: 'Cell Selection Model'}
                             ],
                             'default': 'row'
+                        },
+                        filterRow: {
+                            type: 'jscode',
+                            title: 'Filter'
+                        },
+                        justInTimeFilter: {
+                            type: 'checkbox',
+                            title: 'Just in time filter',
+                            options: {
+                                yes: 'Filter applied only when line is displayed'
+                            },
+                            default: []
                         }
                     }
                 },
@@ -200,6 +212,8 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
         'slick.rowHeight': ['groups', 'group', 0, 'slick.rowHeight', 0],
         'slick.selectionModel': ['groups', 'group', 0, 'slick.selectionModel', 0],
         'slick.defaultColumnWidth': ['groups', 'group', 0, 'slick.defaultColumnWidth', 0],
+        'filterRow': ['groups', 'group', 0, 'filterRow', 0],
+        'justInTimeFilter': ['groups', 'group', 0, 'justInTimeFilter', 0],
         'cols': ['groups', 'cols', 0],
         'groupings': ['groups', 'groupings', 0],
         'actionOutButtons': ['groups', 'actionOutButtons', 0],
