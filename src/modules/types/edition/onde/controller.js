@@ -120,6 +120,10 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
                             title: 'JSON schema',
                             'default': '{}',
                             displayTarget: ['c']
+                        },
+                        onchangeFilter: {
+                            type: 'jscode',
+                            title: 'Execute on change'
                         }
                     }
                 }
@@ -134,7 +138,8 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
         schema: ['groups', 'group', 0, 'schema', 0],
         button_text: ['groups', 'group', 0, 'button_text', 0],
         hasButton: ['groups', 'group', 0, 'hasButton', 0],
-        debouncing: ['groups', 'group', 0, 'debouncing', 0]
+        debouncing: ['groups', 'group', 0, 'debouncing', 0],
+        onchangeFilter: ['groups', 'group', 0, 'onchangeFilter', 0]
     };
 
     Controller.prototype.getSchema = function () {
@@ -152,8 +157,27 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
                 intSchema = JSON.parse(this.module.getConfiguration('schema'));
             $.extend(true, schema, intSchema);
         }
+        schemaJpath(schema, []);
         return schema;
     };
+
+    function schemaJpath(schema, jpath) {
+        if (schema.type === 'object') {
+            for (var key in schema.properties) {
+                schema.jpath = jpath;
+                var njpath = jpath.slice();
+                njpath.push(key);
+                schemaJpath(schema.properties[key], njpath);
+            }
+        } else if(schema.type === 'array') {
+            schema.jpath = jpath;
+            var njpath = jpath.slice();
+            njpath.push('$array$');
+            schemaJpath(schema.items, njpath);
+        } else {
+            schema.jpath = jpath;
+        }
+    }
 
     Controller.prototype.onSubmit = function (data) {
         var outputType = this.module.getConfiguration('output');

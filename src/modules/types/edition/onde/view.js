@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/onde/src/onde', 'forms/button', 'lodash'], function (Default, Util, $, onde, Button, _) {
+define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/onde/src/onde', 'forms/button', 'lodash', 'src/util/debug'], function (Default, Util, $, onde, Button, _, Debug) {
 
     function View() {
         this._id = Util.getNextUniqueId();
@@ -11,6 +11,10 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
     $.extend(true, View.prototype, Default, {
         init: function () {
             var that = this;
+            var filter = this.module.getConfiguration('onchangeFilter');
+            if (filter) {
+                eval('that.filter = function(data, jpath) { try { \n ' + filter + '\n } catch(_) { console.log(_); } }');
+            }
             this.dom = $('<form id="' + this._id + '">').css({
                 height: '100%',
                 width: '100%',
@@ -31,6 +35,13 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
                 return false;
             });
 
+            if(that.filter) {
+                this.dom.on('keyup change', function(e) {
+                    if (e.type === 'change' && (e.target.type === 'text' || e.target.type === 'textarea')) return;
+                    that._doFilter(e);
+                });
+            }
+
             var debouncing = this.module.getConfiguration('debouncing', -1);
             if (debouncing > -1) {
                 var cb = function (e) {
@@ -46,6 +57,38 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
             this.inputVal = {};
 
         },
+
+        _doFilter: function(e) {
+            var jpathSuccess = true;
+            var $target = $(e.target);
+            var fieldInfo = $target.data('fieldInfo');
+            if(!fieldInfo) {
+                fieldInfo = $target.parents('ol').first().data('fieldInfo');
+            }
+            if(!fieldInfo) {
+                jpathSuccess = false;
+            }
+            var jpath = fieldInfo.jpath.slice().reverse();
+            while(jpath.indexOf('$array$') > -1) {
+                var $firstOl = $target.parents('ol').first();
+                if(!$firstOl.length) break;
+                if(!$.contains(this.dom[0], $firstOl[0])) break;
+                var idx = $firstOl.children('li').index($target.parents('li.field.array-item')[0]);
+                $target = $firstOl;
+                jpath[jpath.indexOf('$array$')] = idx;
+            }
+            jpath = jpath.reverse();
+            if(jpath.indexOf('$array$') > -1 || jpath.indexOf(-1) > -1)
+                jpathSuccess = false;
+
+            if(jpathSuccess) {
+                this.filter(this.form.getData(), jpath);
+            }
+            else {
+                Debug.warn('Onde: Could not resolve jpath of modified element')
+            }
+        },
+
         blank: {
             inputValue: function () {
                 this.inputObj = null;
