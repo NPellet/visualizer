@@ -4,6 +4,8 @@ define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'vers
 
     var version = Version.version;
     var originalVersion = 'none';
+    var viewLocked = false;
+
 
     var dataHandler = new VersionHandler(),
         viewHandler = new VersionHandler(),
@@ -200,8 +202,12 @@ define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'vers
             urlType = type;
         },
 
+        viewLock: function () {
+            viewLocked = true;
+        },
+
         isViewLocked: function () {
-            return this.getView().configuration.lockView || false;
+            return viewLocked;
         },
 
         lastLoaded: lastLoaded

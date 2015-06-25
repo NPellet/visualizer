@@ -10,21 +10,12 @@ define([
     'src/main/variables',
     'src/util/util',
     'src/main/datas',
+    'src/util/versioning',
+    'src/util/config',
     'lodash'
-], function (Traversing, ActionManager, Variables, Util, Data, _) {
+], function (Traversing, ActionManager, Variables, Util, Data, Versioning, Config, _) {
 
     var variableFilters;
-    var viewLocked = false;
-
-    // Default List of what should appear in the context menu
-    // Based on the name attribute of the li tag of the context menu
-    // If all is set everything will appear no matter what
-    // If undefined is set then not setting the name attribute will add it anyway
-    var contextMenu = [
-        'undefined', 'all', 'global-configuration', 'configuration',
-        'copy', 'paste', 'duplicate', 'add', 'layers',
-        'remove', 'export', 'print', 'refresh', 'tofront', 'toback', 'move', 'custom', 'fullscreen'
-    ];
 
     var loadingSVG = Util.getLoadingAnimation(64, 'slateblue');
     var loadingHtml = $('<div>', {id: 'ci-loading'})
@@ -117,21 +108,16 @@ define([
             }).value();
         },
 
-        viewLock: function () {
-            $('body').addClass('locked');
-            viewLocked = true;
-        },
-
         isViewLocked: function () {
-            return viewLocked;
+            return Versioning.isViewLocked();
         },
 
-        setContextMenu: function (ctxMenu) {
-            contextMenu = ctxMenu;
+        viewLock: function() {
+            return Versioning.viewLock();
         },
 
         getContextMenu: function () {
-            return contextMenu;
+            return Config.contextMenu();
         },
 
         /* Extra functions used in filter testsuite. Allows compatibility of filters */
