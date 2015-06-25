@@ -87,7 +87,9 @@
         jsmeApplet = new JSApplet.JSME("appletContainer", w + "px", h + "px");
 
         def.done(function (message) {
-            jsmeApplet.options("star depict depictaction");
+            console.log(message.prefs);
+
+            jsmeApplet.options(message.prefs);
             setHighlightColor(message.highlightColor);
             jsmeApplet.setMolecularAreaLineWidth(message.bondwidth);
             jsmeApplet.setAtomMolecularAreaFontSize(message.labelsize);
@@ -110,7 +112,7 @@
 
         jsmeApplet.setCallBack('AtomHighlight', function(jsmeEvent) {this.doPostMessage("atomHover", {atom: jsmeEvent.atom});});
         jsmeApplet.setCallBack('AtomClicked', function(jsmeEvent) {this.doPostMessage("atomClicked", {atom: jsmeEvent.atom});});
-  //      jsmeApplet.setCallBack('BondHighlight', function(jsmeEvent) {this.doPostMessage("bondHover", {bond: jsmeEvent.bond});});
+        jsmeApplet.setCallBack('BondHighlight', function(jsmeEvent) {this.doPostMessage("bondHover", {bond: jsmeEvent.bond});});
         jsmeApplet.setCallBack('BondClicked', function(jsmeEvent) {this.doPostMessage("bondClicked", {bond: jsmeEvent.bond});});
 
     }
