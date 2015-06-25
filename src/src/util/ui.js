@@ -195,7 +195,7 @@ define([
             new Button('Send', function () {
                 var that = this;
                 if (!options.disabled) {
-                    Sharer.share(shareOptions).done(function (tinyUrl) {
+                    Sharer.share(shareOptions).then(function (tinyUrl) {
                         var title = $('#' + uniqid + '-title').val();
                         var description = $('#' + uniqid + '-description').val();
                         var json = {
@@ -218,7 +218,7 @@ define([
                                 console.log('error', data);
                             }
                         });
-                    }).fail(function (data) {
+                    }, function (data) {
                         message.html('ERROR');
                         console.log('error', data);
                     });
@@ -234,10 +234,10 @@ define([
             new Button('Share', function () {
                 var that = this;
                 if (!options.disabled) {
-                    Sharer.share(options).done(function (tinyUrl) {
+                    Sharer.share(options).then(function (tinyUrl) {
                         $('#' + uniqid).val(tinyUrl).focus().select();
                         that.disable();
-                    }).fail(function () {
+                    }, function () {
                         $('#' + uniqid).val('error');
                     });
                 }

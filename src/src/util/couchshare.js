@@ -2,59 +2,51 @@
 
 define(['src/util/versioning', 'lib/couchdb/jquery.couch'], function (Versioning) {
 
-    function share(options, callback) {
+    function share(options) {
+        return new Promise(function (resolve, reject) {
+            var urlPrefix = (options.couchUrl || window.location.origin).replace(/\/$/, '');
+            var database = options.database || 'x';
+            var tinyPrefix = (options.tinyUrl || window.location.origin + '/x/_design/x/_show/x').replace(/\/$/, '') + '/';
+            $.couch.urlPrefix = urlPrefix;
+            var db = $.couch.db(database);
 
-        var urlPrefix = (options.couchUrl || window.location.origin).replace(/\/$/, '');
-        var database = options.database || 'x';
-        var tinyPrefix = (options.tinyUrl || window.location.origin + '/x/_design/x/_show/x').replace(/\/$/, '') + '/';
-        $.couch.urlPrefix = urlPrefix;
-        var db = $.couch.db(database);
+            var view = Versioning.getView();
 
-        var view = Versioning.getView();
+            // https://developer.mozilla.org/en-US/docs/Web/API/WindowBase64/Base64_encoding_and_decoding#The_.22Unicode_Problem.22
 
-        // https://developer.mozilla.org/en-US/docs/Web/API/WindowBase64/Base64_encoding_and_decoding#The_.22Unicode_Problem.22
+            var encodedView = btoa(unescape(encodeURIComponent(JSON.stringify(view))));
+            var encodedData = btoa(unescape(encodeURIComponent(Versioning.getDataJSON())));
 
-        var encodedView = btoa(unescape(encodeURIComponent(JSON.stringify(view))));
-        var encodedData = btoa(unescape(encodeURIComponent(Versioning.getDataJSON())));
+            var docid = guid();
 
-        var docid = guid();
-
-        var doc = {
-            _id: docid,
-            _attachments: {
-                'view.json': {
-                    'content_type': 'application/json',
-                    'data': encodedView
+            var doc = {
+                _id: docid,
+                _attachments: {
+                    'view.json': {
+                        'content_type': 'application/json',
+                        'data': encodedView
+                    },
+                    'data.json': {
+                        'content_type': 'application/json',
+                        'data': encodedData
+                    }
                 },
-                'data.json': {
-                    'content_type': 'application/json',
-                    'data': encodedData
-                }
-            },
-            version: view.version,
-            visualizer: window.location.origin + window.location.pathname,
-            couchdb: urlPrefix + '/' + database + '/'
-        };
+                version: view.version,
+                visualizer: window.location.origin + window.location.pathname,
+                couchdb: urlPrefix + '/' + database + '/'
+            };
 
-        var def = $.Deferred();
 
-        db.saveDoc(doc, {
-            success: function () {
-                var tinyUrl = tinyPrefix + docid;
-                if (callback) {
-                    callback(null, tinyUrl);
+            db.saveDoc(doc, {
+                success: function () {
+                    var tinyUrl = tinyPrefix + docid;
+                    return resolve(tinyUrl);
+                },
+                error: function (e) {
+                    return reject(e);
                 }
-                def.resolve(tinyUrl);
-            },
-            error: function (e) {
-                if (callback) {
-                    callback(e);
-                }
-                def.reject(e);
-            }
+            });
         });
-
-        return def;
     }
 
     var str = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
