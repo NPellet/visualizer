@@ -18,10 +18,6 @@ define([
             name: 'WebGL',
             type: 'recommended'
         },
-        smil: {
-            name: 'SMIL (canvas animation)',
-            type: 'recommended'
-        },
         localstorage: {
             name: 'LocalStorage',
             type: 'recommended'
