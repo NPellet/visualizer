@@ -452,6 +452,7 @@ module.exports = function (grunt) {
         'copy:buildUsr',
         'copy:build',
         'copy:buildLib',
+        'css:modules',
         'requirejs',
         'uglify:build',
         'clean:build',
@@ -839,13 +840,67 @@ module.exports = function (grunt) {
     });
 
     function getVersionValue(str, name) {
-        var reg = new RegExp('var ' + name + ' = ([\\w\\d]+);');
+        var reg = new RegExp('var ' + name + ' = (.+?);\n');
         return reg.exec(str)[1];
     }
 
     function setVersionValue(str, name, value) {
-        var reg = new RegExp('var ' + name + ' = [\\w\\d]+;');
-        return str.replace(reg, 'var ' + name + ' = ' + value + ';');
+        var reg = new RegExp('var ' + name + ' = .+?;\n');
+        return str.replace(reg, 'var ' + name + ' = ' + value + ';\n');
+    }
+
+    grunt.registerTask('css:modules', function() {
+        var folderJson = JSON.parse(fs.readFileSync('./build/modules/types/folder.json'));
+        var mIds = applyModules(folderJson, moduleProcessCss)
+            .filter(function(v) {
+                return v !== undefined;
+            });
+        var versionJS = fs.readFileSync('./build/version.js', 'utf8');
+        var newVersionJS = setVersionValue(versionJS, 'INCLUDED_MODULE_CSS', JSON.stringify(mIds));
+        fs.writeFileSync('./build/version.js', newVersionJS);
+    });
+
+    function applyModules(folderJson, callback) {
+        var res = [];
+        if(Array.isArray(folderJson)) {
+            for (var i = 0; i < folderJson.length; i++) {
+                var el = folderJson[i];
+                res = res.concat(applyModules(el, callback));
+            }
+        }
+        else if(typeof folderJson === 'object') {
+            for(var key in folderJson) {
+                if(key === 'modules' && Array.isArray(folderJson[key])) {
+                    for (var i = 0; i < folderJson[key].length; i++) {
+                        var obj = folderJson[key][i];
+                        res.push(callback(obj));
+                    }
+                } else {
+                    res = res.concat(applyModules(folderJson[key], callback));
+                }
+            }
+        }
+        return res;
+    }
+
+    function moduleProcessCss(module) {
+        var p = path.join('./build/', module.url, 'style.css');
+        if(module.url && fs.existsSync(p)) {
+            append(p, './build/css/main.css');
+            return moduleIdFromUrl(module.url);
+        }
+        console.log(module);
+        return undefined;
+    }
+
+    function moduleIdFromUrl(url) {
+        var reg = /([^\/]+)(\/)?$/;
+        var res = url.match(reg);
+        return res[1];
+    }
+
+    function append(src, dest) {
+        fs.appendFileSync(dest, '\n' + fs.readFileSync(src));
     }
 
 };

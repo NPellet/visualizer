@@ -9,6 +9,7 @@ define(['lib/semver/semver'], function (semver) {
     var PRERELEASE = 0;
     var IS_RELEASE = false;
     var BUILD_TIME = null;
+    var INCLUDED_MODULE_CSS = [];
     /* END */
 
     var version = MAJOR + '.' + MINOR + '.' + PATCH;
@@ -43,6 +44,7 @@ define(['lib/semver/semver'], function (semver) {
         patch: PATCH,
         prerelease: PRERELEASE,
         isRelease: IS_RELEASE,
+        includedModuleCss: INCLUDED_MODULE_CSS,
         version: version,
         buildTime: buildTime,
         isBuild: buildTime != null
