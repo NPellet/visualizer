@@ -12,7 +12,8 @@ define([
     'src/main/datas',
     'src/util/versioning',
     'src/util/config',
-    'lodash'
+    'lodash',
+    'src/main/grid'
 ], function (Traversing, ActionManager, Variables, Util, Data, Versioning, Config, _) {
 
     var variableFilters;
@@ -25,7 +26,6 @@ define([
     var loadingNumber = 0;
 
     function createDataJpath(name, data, jpath, filter) {
-
         if (data && data.__parent) {
             data = data.resurrect();
         }
@@ -112,7 +112,7 @@ define([
             return Versioning.isViewLocked();
         },
 
-        viewLock: function() {
+        viewLock: function () {
             return Versioning.viewLock();
         },
 
@@ -297,6 +297,14 @@ define([
      */
     exports.cache.empty = function emptyCache() {
         cache = {};
+    };
+
+    exports.getLayerNames = function () {
+        return require('src/main/grid').getLayerNames();
+    };
+
+    exports.switchToLayer = function (name) {
+        return require('src/main/grid').switchToLayer(name);
     };
 
     return exports;
