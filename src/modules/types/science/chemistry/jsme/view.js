@@ -35,15 +35,16 @@ define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui']
                 break;
             case 'atomHover':
                 console.log(message);
+                view.module.controller.onAtomHover(message.message);
                 break;
             case 'atomClicked':
-                console.log(message);
+                view.module.controller.onAtomClick(message.message);
                 break;
             case 'bondHover':
-                console.log(message);
+                view.module.controller.onBondHover(message.message);
                 break;
             case 'bondClicked':
-                console.log(message);
+                view.module.controller.onBondClick(message.message);
                 break;
             default:
                 console.error('Message type not handled: ', message.type);

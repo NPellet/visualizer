@@ -8,11 +8,11 @@ define([
     'modules/modulefactory',
     'src/util/context',
     'src/util/versioning',
-    'src/util/api',
     'forms/form',
     'src/main/variables',
     'src/util/debug',
-    'version'
+    'version',
+    'src/util/config'
 ], function ($,
              ui,
              Util,
@@ -20,11 +20,11 @@ define([
              ModuleFactory,
              Context,
              Versioning,
-             API,
              Form,
              Variables,
              Debug,
-             Version) {
+             Version,
+             Config) {
 
     var definition, jqdom, moduleMove, isInit = false;
     var activeLayer = 'Default layer';
@@ -96,7 +96,7 @@ define([
 
             setModuleSize(module);
 
-            if (!API.isViewLocked()) {
+            if (!Versioning.isViewLocked()) {
                 Context.listen(module.getDomWrapper().get(0), [
 
                     ['<li name="tofront"><a><span class="ui-icon ui-icon-arrowreturn-1-n"></span> Move to front</a></li>',
@@ -141,7 +141,7 @@ define([
             }
 
 
-            if (!API.isViewLocked()) {
+            if (!Versioning.isViewLocked()) {
                 // Insert jQuery UI resizable and draggable
                 module.getDomWrapper().resizable({
                     grid: [definition.xWidth, definition.yHeight],
@@ -613,7 +613,7 @@ define([
                 }
             }
 
-            if (!API.isViewLocked()) {
+            if (!Versioning.isViewLocked()) {
                 Context.listen(Context.getRootDom(), [
                         ['<li name="paste"><a><span class="ui-icon ui-icon-clipboard"></span>Paste module</a></li>',
                             function () {
@@ -622,7 +622,7 @@ define([
                             }]]
                 );
 
-                if (API.getContextMenu().indexOf('all') > -1 || API.getContextMenu().indexOf('add') > -1) {
+                if (Config.contextMenu().indexOf('all') > -1 || Config.contextMenu().indexOf('add') > -1) {
                     Context.listen(dom, [], function (contextDom) {
                         var $li = $('<li name="add"><a> Add a module</a></li>');
 
@@ -657,7 +657,7 @@ define([
                 layersUl = $('<ul />').appendTo(layersLi);
 
 
-                if (API.getContextMenu().indexOf('all') > -1 || API.getContextMenu().indexOf('layers') > -1) {
+                if (Config.contextMenu().indexOf('all') > -1 || Config.contextMenu().indexOf('layers') > -1) {
                     Context.listen(dom, [], function (contextDom) {
 
                         layersUl.empty();

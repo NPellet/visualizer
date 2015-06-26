@@ -20,22 +20,22 @@
 
     window.setMolFile = function (mol) {
         jsmeApplet.readMolFile(mol);
-    }
+    };
 
     window.setJmeFile = function (mol) {
         jsmeApplet.readMolecule(mol);
-    }
+    };
 
     window.setSize = function (w, h) {
         var width = w + "px";
         var height = h + "px";
         jsmeApplet.setSize(width, height);
 //			jsmeApplet.repaint();
-    }
+    };
 
     window.clear = function () {
         jsmeApplet.reset();
-    }
+    };
 
     var highlightColor;
     window.setHighlightColor = function (color) {
@@ -57,13 +57,13 @@
             }
             jsmeApplet.setAtomBackgroundColors(molIndex, highlight.join(","))
         }
-    }
+    };
 
     window.clearHighlight = function (molIndex, atomsIndex) {
         jsmeApplet.resetAtomColors(molIndex);
-    }
+    };
 
-    var changeCallback=function(result) {
+    var changeCallback = function (result) {
         var mol = window.jsmeApplet.molFile();
         var molV3 = window.jsmeApplet.molFile(true);
         var jme = window.jsmeApplet.jmeFile();
@@ -95,12 +95,11 @@
             jsmeApplet.setAtomMolecularAreaFontSize(message.labelsize);
 
             if (message.defaultaction) {
-                self.defaultaction=message.defaultaction;
+                self.defaultaction = message.defaultaction;
                 setDefaultAction();
             }
             doPostMessage('ready');
         });
-
 
 
         jsmeApplet.setAfterStructureModifiedCallback(changeCallback);
@@ -109,11 +108,18 @@
         jsmeApplet.setNotifyAtomHighLightChangeJSfunction('(function(mol,atom) {this.doPostMessage("doHighlight", {mol: mol, atom:atom});})');
 
 
-
-        jsmeApplet.setCallBack('AtomHighlight', function(jsmeEvent) {this.doPostMessage("atomHover", {atom: jsmeEvent.atom});});
-        jsmeApplet.setCallBack('AtomClicked', function(jsmeEvent) {this.doPostMessage("atomClicked", {atom: jsmeEvent.atom});});
-        jsmeApplet.setCallBack('BondHighlight', function(jsmeEvent) {this.doPostMessage("bondHover", {bond: jsmeEvent.bond});});
-        jsmeApplet.setCallBack('BondClicked', function(jsmeEvent) {this.doPostMessage("bondClicked", {bond: jsmeEvent.bond});});
+        jsmeApplet.setCallBack('AtomHighlight', function (jsmeEvent) {
+            this.doPostMessage("atomHover", {atom: jsmeEvent.atom});
+        });
+        jsmeApplet.setCallBack('AtomClicked', function (jsmeEvent) {
+            this.doPostMessage("atomClicked", {atom: jsmeEvent.atom});
+        });
+        jsmeApplet.setCallBack('BondHighlight', function (jsmeEvent) {
+            this.doPostMessage("bondHover", {bond: jsmeEvent.bond});
+        });
+        jsmeApplet.setCallBack('BondClicked', function (jsmeEvent) {
+            this.doPostMessage("bondClicked", {bond: jsmeEvent.bond});
+        });
 
     }
 
@@ -134,7 +140,7 @@
 
         try {
             var message = JSON.parse(event.data);
-        } catch(e) {
+        } catch (e) {
             return;
         }
 

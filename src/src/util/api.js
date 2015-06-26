@@ -10,21 +10,13 @@ define([
     'src/main/variables',
     'src/util/util',
     'src/main/datas',
-    'lodash'
-], function (Traversing, ActionManager, Variables, Util, Data, _) {
+    'src/util/versioning',
+    'src/util/config',
+    'lodash',
+    'src/main/grid'
+], function (Traversing, ActionManager, Variables, Util, Data, Versioning, Config, _) {
 
     var variableFilters;
-    var viewLocked = false;
-
-    // Default List of what should appear in the context menu
-    // Based on the name attribute of the li tag of the context menu
-    // If all is set everything will appear no matter what
-    // If undefined is set then not setting the name attribute will add it anyway
-    var contextMenu = [
-        'undefined', 'all', 'global-configuration', 'configuration',
-        'copy', 'paste', 'duplicate', 'add', 'layers',
-        'remove', 'export', 'print', 'refresh', 'tofront', 'toback', 'move', 'custom', 'fullscreen'
-    ];
 
     var loadingSVG = Util.getLoadingAnimation(64, 'slateblue');
     var loadingHtml = $('<div>', {id: 'ci-loading'})
@@ -34,7 +26,6 @@ define([
     var loadingNumber = 0;
 
     function createDataJpath(name, data, jpath, filter) {
-
         if (data && data.__parent) {
             data = data.resurrect();
         }
@@ -117,21 +108,16 @@ define([
             }).value();
         },
 
-        viewLock: function () {
-            $('body').addClass('locked');
-            viewLocked = true;
-        },
-
         isViewLocked: function () {
-            return viewLocked;
+            return Versioning.isViewLocked();
         },
 
-        setContextMenu: function (ctxMenu) {
-            contextMenu = ctxMenu;
+        viewLock: function () {
+            return Versioning.viewLock();
         },
 
         getContextMenu: function () {
-            return contextMenu;
+            return Config.contextMenu();
         },
 
         /* Extra functions used in filter testsuite. Allows compatibility of filters */
@@ -311,6 +297,14 @@ define([
      */
     exports.cache.empty = function emptyCache() {
         cache = {};
+    };
+
+    exports.getLayerNames = function () {
+        return require('src/main/grid').getLayerNames();
+    };
+
+    exports.switchToLayer = function (name) {
+        return require('src/main/grid').switchToLayer(name);
     };
 
     return exports;

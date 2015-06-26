@@ -10,12 +10,15 @@ define([
     'src/util/debug',
     'src/main/variables',
     'src/util/ui',
+    'version',
     'src/main/grid'
-], function ($, _, ContextMenu, API, Util, Fullscreen, Debug, Variables, ui) {
+
+], function ($, _, ContextMenu, API, Util, Fullscreen, Debug, Variables, ui, Version) {
 
     function init(module) {
         //define object properties
-        var moduleURL = Util.rewriteRequirePath(String(module.definition.getChildSync(['url'], true).get())) + '/';
+        var originalURL = String(module.definition.getChildSync(['url'], true).get());
+        var moduleURL = Util.rewriteRequirePath(originalURL) + '/';
 
 
         module.viewReady = new Promise(function (res, rej) {
@@ -49,7 +52,12 @@ define([
                     return;
                 }
 
-                module._cssLoaded = Util.loadCss(moduleURL + 'style.css');
+                console.log(originalURL);
+                if(Version.includedModuleCss.indexOf(Util.moduleIdFromUrl(originalURL)) > -1) {
+                    console.log('no need to load module css', Util.moduleIdFromUrl(moduleURL));
+                    module._cssLoaded = Promise.resolve();
+                } else
+                    module._cssLoaded = Util.loadCss(moduleURL + 'style.css');
 
                 require([
 

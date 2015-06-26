@@ -1,5 +1,5 @@
 'use strict';
-define(['jquery', 'src/util/api', 'modules/modulefactory', 'jquery-ui/menu'], function ($, API, ModuleFactory) {
+define(['jquery', 'src/util/config', 'src/util/versioning', 'jquery-ui/menu'], function ($, Config, Versioning) {
 
     var contextMenu;
 
@@ -17,7 +17,7 @@ define(['jquery', 'src/util/api', 'modules/modulefactory', 'jquery-ui/menu'], fu
 
                 for (var i = 0, l = elements.length; i < l; i++) {
                     (function (element, callbackClick, callbackOpen) {
-                        if (API.isViewLocked() || (API.getContextMenu().indexOf('all') === -1 && API.getContextMenu().indexOf(element.attr('name') || 'undefined') === -1)) return;
+                        if (Versioning.isViewLocked() || (Config.contextMenu().indexOf('all') === -1 && Config.contextMenu().indexOf(element.attr('name') || 'undefined') === -1)) return;
                         if ((callbackOpen && callbackOpen(e, element)) || !callbackOpen) {
                             contextMenu.append(element);
                         }

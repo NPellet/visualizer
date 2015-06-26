@@ -19,6 +19,7 @@ define([
     'src/util/util',
     'src/util/urldata',
     'src/util/ui',
+    'src/util/config',
     'src/util/shortcuts'
 ], function (
     $,
@@ -38,7 +39,8 @@ define([
     browser,
     Util,
     UrlData,
-    ui
+    ui,
+    Config
 ) {
 
     var _viewLoaded, _dataLoaded;
@@ -823,8 +825,10 @@ define([
                         Debug.setDebugLevel(cfgJson.debugLevel || Debug.Levels.ERROR);
                     }
 
+                    Config.setConfig(cfgJson);
+
                     if (cfgJson.lockView || cfgJson.viewLock) {
-                        API.viewLock();
+                        Versioning.viewLock();
                     }
 
                     if (cfgJson.header) {
@@ -835,9 +839,6 @@ define([
                         ModuleFactory.setModules(cfgJson.modules);
                     }
 
-                    if (cfgJson.contextMenu) {
-                        API.setContextMenu(cfgJson.contextMenu);
-                    }
 
                     // Set the filters
                     API.setAllFilters(cfgJson.filters || []);
@@ -847,7 +848,7 @@ define([
                 }).always(function () {
                     require(['usr/datastructures/filelist'], function () {
                         Context.init(document.getElementById('modules-grid'));
-                        if (!API.isViewLocked()) {
+                        if (!Versioning.isViewLocked()) {
                             Context.listen(Context.getRootDom(), [
                                     ['<li class="ci-item-configureentrypoint"><a><span class="ui-icon ui-icon-key"></span>Global preferences</a></li>',
                                         function () {
