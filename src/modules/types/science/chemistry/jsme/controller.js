@@ -32,6 +32,12 @@ define(['modules/default/defaultcontroller'], function (Default) {
         molV3: {
             label: 'Molfile V3 2D',
             type: ['mol2d', 'molfile2d', 'string']
+        },
+        atom: {
+            label: 'Atom'
+        },
+        bond: {
+            label: 'Bond'
         }
     };
 
@@ -42,22 +48,21 @@ define(['modules/default/defaultcontroller'], function (Default) {
         },
         onAtomClicked: {
             label: 'An atom was clicked',
-            refAction: ['atomClicked']
+            refAction: ['atom']
         },
         onBondClicked: {
             label: 'A bond was clicked',
-            refAction: ['atomHover']
+            refAction: ['bond']
         },
         onAtomHover: {
             label: 'An atom was hovered',
-            refAction: ['bondClicked']
+            refAction: ['atom']
         },
         onBondHover: {
             label: 'A bond was hovered',
-            refAction: ['bondHover']
+            refAction: ['bond']
         }
     };
-
 
 
     Controller.prototype.variablesIn = ['mol', 'jme', 'smiles'];
@@ -183,6 +188,22 @@ define(['modules/default/defaultcontroller'], function (Default) {
             value: jme
         });
 
+    };
+
+    Controller.prototype.onAtomClick = function (atom) {
+        this.sendActionFromEvent('onAtomClicked', 'atom', atom);
+    };
+
+    Controller.prototype.onAtomHover = function (atom) {
+        this.sendActionFromEvent('onAtomHover', 'atom', atom);
+    };
+
+    Controller.prototype.onBondClick = function (bond) {
+        this.sendActionFromEvent('onBondClick', 'bond', bond);
+    };
+
+    Controller.prototype.onBondHover = function (bond) {
+        this.sendActionFromEvent('onBondHover', 'bond', bond);
     };
 
     Controller.prototype.configAliases = {
