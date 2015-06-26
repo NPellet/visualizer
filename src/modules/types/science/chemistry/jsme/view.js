@@ -34,7 +34,6 @@ define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui']
                 view._doHighlight(message.message.mol, message.message.atom);
                 break;
             case 'atomHover':
-                console.log(message);
                 view.module.controller.onAtomHover(message.message);
                 break;
             case 'atomClicked':
