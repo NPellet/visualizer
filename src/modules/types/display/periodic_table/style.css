@@ -134,8 +134,34 @@
     order:1;
     margin-left: calc(100% / 19 + 2px);
     width: calc(100% / 19 * 10 - 2px);
-    margin-bottom: calc(100% / -10);
+    margin-bottom: calc(-12em - 2px);
+    display:flex;
 }
+
+.element-zoom {
+    border: 1px solid #000;
+    flex: 1 0 auto;
+}
+.element-datas {
+    flex: 2 0 auto;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .alkali {
     background-color:rgba(206, 58, 90, 0.6);

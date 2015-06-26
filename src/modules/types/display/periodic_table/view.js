@@ -54,6 +54,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             }
         },
         render: function () {
+            var that = this;
             this.dom.html('');
             var renderers = [];
             //var w = this.width / 18;
@@ -82,7 +83,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
 
 
             for (var i = 0; i < this.elements.length; i++) {
-                var $element = $(this.template.render({element: this.elements[i]}));
+                var $element = $(this.template.render({element: this.elements[i]})).data('idx', i);
 
                 $element.addClass('element' +
                 ' e'+this.elements[i].Z +
@@ -91,10 +92,24 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                 ' block-'+this.elements[i].block +
                 ' '+this.elements[i].serie);
 
+
                 this.dom.append($element);
             }
-            var legend = $('<div class="legend"><p>test</p></div>');
+            var legend = $('<div class="legend"></div>');
             $('div.e1').after(legend);
+
+            var elementZoom = $('<div class="element-zoom"></div>');
+            var elementDatas = $('<div class="element-datas"><ul><li>data1</li><li>data2</li></ul></div>')
+            legend.append(elementZoom).append(elementDatas);
+
+            $('.element').mouseenter(function(){
+                var idx = $(this).data('idx');
+                var el = that.elements[idx];
+               elementZoom.append(that.template.render({element: el}));
+            });
+            $('.element').mouseleave(function(){
+                elementZoom.empty();
+            });
 
             var actinid = ('<div class="indic-f period7"><p>89-103</p></div>');
             var lanthanid = ('<div class="indic-f period6"><p>57-71</p></div>');
@@ -104,14 +119,6 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
 
 
     });
-
-    function calcPosition(element) {
-        //
-        var y = +element.period;
-        var x = +element.group;
-
-        return [x, y];
-    }
 
     return View;
 
