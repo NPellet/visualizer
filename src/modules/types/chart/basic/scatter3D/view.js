@@ -606,7 +606,7 @@ define([
             var sizeMax = Stat.array.max(that._data.size);
             var sizeInt = sizeMax - sizeMin;
             that._data.size = _.map(that._data.size, function (s) {
-                return sizeInt === 0 ? sizeConstant / 2 : sizeConstant * (s - sizeMin) / sizeInt;
+                return sizeInt === 0 ? sizeConstant / 2 : sizeConstant * ((s - sizeMin) / sizeInt + 0.01);
             });
 
             // color normalization
