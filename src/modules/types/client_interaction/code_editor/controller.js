@@ -16,7 +16,7 @@ define(['modules/default/defaultcontroller', 'src/data/structures', 'src/main/da
     };
 
     Controller.prototype.references = {
-        value: {
+        data: {
             label: 'String containing the code'
         },
         jsonValue: {
@@ -30,16 +30,16 @@ define(['modules/default/defaultcontroller', 'src/data/structures', 'src/main/da
     Controller.prototype.events = {
         onEditorChange: {
             label: 'The value in the editor has changed',
-            refVariable: ['value', 'jsonValue', 'typedValue']
+            refVariable: ['data', 'jsonValue', 'typedValue']
         },
         onButtonClick: {
             label: 'The button was clicked',
-            refAction: ['value', 'jsonValue'],
-            refVariable: ['value', 'jsonValue', 'typedValue']
+            refAction: ['data', 'jsonValue'],
+            refVariable: ['data', 'jsonValue', 'typedValue']
         }
     };
 
-    Controller.prototype.variablesIn = ['value'];
+    Controller.prototype.variablesIn = ['data'];
 
     Controller.prototype.configurationStructure = function () {
         var types = Structure._getList(), l = types.length, typeList = new Array(l);
@@ -133,7 +133,7 @@ define(['modules/default/defaultcontroller', 'src/data/structures', 'src/main/da
             this.module.model.dataTriggerChange(this.module.model.data);
         }
 
-        this.createDataFromEvent('onEditorChange', 'value', value);
+        this.createDataFromEvent('onEditorChange', 'data', value);
         var json = getJsonValue(value);
         this.createDataFromEvent('onEditorChange', 'jsonValue', json);
         var typedValue = this.getTypedValue(value);
@@ -142,8 +142,8 @@ define(['modules/default/defaultcontroller', 'src/data/structures', 'src/main/da
     };
 
     Controller.prototype.onButtonClick = function (value) {
-        this.createDataFromEvent('onButtonClick', 'value', value);
-        this.sendActionFromEvent('onButtonClick', 'value', value);
+        this.createDataFromEvent('onButtonClick', 'data', value);
+        this.sendActionFromEvent('onButtonClick', 'data', value);
 
         var json = getJsonValue(value);
         this.createDataFromEvent('onButtonClick', 'jsonValue', json);
