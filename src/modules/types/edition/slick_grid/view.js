@@ -14,6 +14,7 @@ define([
     function View() {
     }
 
+
     var cssPromises = [];
     cssPromises.push(Util.loadCss(require.toUrl('components/slickgrid/slick.grid.css')));
     var cssLoaded = Promise.all(cssPromises);
@@ -164,6 +165,7 @@ define([
                     sortable: true,
                     defaultSortAsc: true,
                     editor: editor,
+                    compositeEditor: (editor === Slick.CustomEditors.LongText) ? Slick.CustomEditors.SimpleLongText : undefined,
                     formatter: formatters[row.formatter],
                     asyncPostRender: (row.formatter === 'typerenderer') ? tp : undefined,
                     jpath: row.jpath,
