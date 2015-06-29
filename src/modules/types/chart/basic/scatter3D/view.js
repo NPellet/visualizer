@@ -530,7 +530,7 @@ define([
             that._mathPoints();
             that._drawPointsQuick();
 
-            that._drawAxes();
+            //that._drawAxes();
             that._drawFaces();
             that._drawGrid();
             that._drawSecondaryGrid();
