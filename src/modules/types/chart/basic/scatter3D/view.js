@@ -384,8 +384,7 @@ define([
 
                 that.renderer = new THREE.WebGLRenderer({antialias: false});
                 // self.renderer.setClearColor( self.scene.fog.color, 1 );
-                var bgColor = that.module.getConfiguration('backgroundColor');
-                that.renderer.setClearColor(rgbToHex(bgColor[0], bgColor[1], bgColor[2]) || DEFAULT_BACKGROUND_COLOR, 1);
+                that._setBackgroundColor();
                 that.renderer.setSize(window.innerWidth, window.innerHeight);
 
                 container = document.getElementById(that.dom.attr('id'));
@@ -1443,6 +1442,7 @@ define([
                     that.camera.aspect = that.width / that.height;
                     that.camera.updateProjectionMatrix();
                     that.renderer.setSize(that.width, that.height);
+                    that._setBackgroundColor();
                     that.controls.handleResize();
                     that._render();
                     if (that.headlight) {
@@ -1461,6 +1461,12 @@ define([
                     that._drawColorBar();
                 }
             });
+        },
+
+        _setBackgroundColor: function() {
+            var bgColor = this.module.getConfiguration('backgroundColor');
+            DEFAULT_BACKGROUND_COLOR = rgbToHex(bgColor[0], bgColor[1], bgColor[2])
+            this.renderer.setClearColor(DEFAULT_BACKGROUND_COLOR, 1);
         },
 
         _newParticleObject: function (indexes, options) {

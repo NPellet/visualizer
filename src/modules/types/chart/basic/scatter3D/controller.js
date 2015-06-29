@@ -224,7 +224,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                         },
 
                         backgroundColor: {
-                            type: 'color',
+                            type: 'spectrum',
                             title: 'Background Color',
                             default: [230, 230, 230, 1]
                         },
