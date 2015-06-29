@@ -1047,7 +1047,7 @@ define([
             var ctx = canvas.getContext('2d');
             ctx.font = 'Bold ' + options.size * 0.9 + 'px ' + options.font;
             ctx.fillStyle = options.fillStyle;
-            ctx.fillText(text, 0, options.size*0.9);
+            ctx.fillText(text, 0, options.size * 0.9);
 
             // canvas contents will be used for a texture
             var texture = new THREE.Texture(canvas);
@@ -1592,6 +1592,11 @@ define([
 
         },
 
+        blank: {
+            chart: blank,
+            data3D: blank
+        },
+
         /* When a value changes this method is called. It will be called for all
          possible received variable of this module.
          It will also be called at the beginning and in this case the value is null !
@@ -1624,10 +1629,10 @@ define([
                     this._drawGraph();
                 }
             },
-            'data3D': function (moduleValue) {
+            data3D: function (moduleValue) {
                 this.module.data = moduleValue;
                 if (!moduleValue || !moduleValue.get()) {
-                    Debug.error('Unvalid value' + moduleValue);
+                    Debug.error('Invalid value' + moduleValue);
                     return;
                 }
 
@@ -1866,6 +1871,15 @@ define([
             // var cfg = $.proxy( this.module.getConfiguration, this.module );
         }
     });
+
+    function blank() {
+        var that = this;
+        if (!this.scene || !this.scene.children) return;
+        _.keys(this.scene.children).forEach(function (key) {
+            that.scene.remove(that.scene.children[key]);
+        });
+        this._render();
+    }
 
     return View;
 
