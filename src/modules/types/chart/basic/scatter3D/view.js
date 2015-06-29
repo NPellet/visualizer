@@ -1408,8 +1408,9 @@ define([
 
 
         init: function () {
-            // When we change configuration the method init is called again. Also the case when we change completely of view
-
+            var c = this.module.getConfiguration('defaultPointColor');
+            console.log(c);
+            DEFAULT_POINT_COLOR = rgbToHex(c[0], c[1], c[2]);
 
             if (!this.dom) {
                 this._id = Util.getNextUniqueId();

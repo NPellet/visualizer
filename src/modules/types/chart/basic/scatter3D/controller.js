@@ -229,10 +229,16 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                             default: [230, 230, 230, 1]
                         },
 
+                        defaultPointColor: {
+                            type: 'spectrum',
+                            title: 'Default point color',
+                            default: [50, 50, 50, 1]
+                        },
+
                         annotationColor: {
                             type: 'color',
                             title: 'Annotation color',
-                            default: [50, 50, 50, 1]
+                            default: [173, 216, 222, 1]
                         },
                         sizeNormalization: {
                             type: 'float',
@@ -335,6 +341,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         minZ: ['groups', 'group', 0, 'minZ', 0],
         maxZ: ['groups', 'group', 0, 'maxZ', 0],
         backgroundColor: ['groups', 'group', 0, 'backgroundColor', 0],
+        defaultPointColor: ['groups', 'group', 0, 'defaultPointColor', 0],
         secondaryGrids: ['groups', 'group', 0, 'secondaryGrids', 0],
         appearance: ['groups', 'group', 0, 'appearance', 0],
         displayPointCoordinates: ['groups', 'group', 0, 'displayPointCoordinates', 0],
