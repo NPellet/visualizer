@@ -194,8 +194,7 @@ define([
                     -(event.offsetY / $(that.renderer.domElement).height()) * 2 + 1,
                     0.5
                 );
-                var projector = new THREE.Projector();
-                projector.unprojectVector(vector, that.camera);
+                vector.unproject(that.camera);
 
                 var ray = new THREE.Ray(that.camera.position,
                     vector.sub(that.camera.position).normalize());
