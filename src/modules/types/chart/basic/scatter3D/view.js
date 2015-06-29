@@ -1022,7 +1022,7 @@ define([
             var options = options || {};
 
             // Set default options
-            options.size = options.size || 50;
+            options.size = options.size || 64;
             options.fillStyle = options.fillStyle || arrayToRgba(that.module.getConfiguration('annotationColor')) || DEFAULT_TEXT_COLOR;
             options.textAlign = options.textAlign || 'left';
             options.font = options.font || 'Arial';
@@ -1032,7 +1032,7 @@ define([
 
             // create a canvas element
             var canvas = document.createElement('canvas');
-            canvas.height = options.size * 1.2;
+            canvas.height = options.size;
             canvas.width = options.size * text.length / 2 + options.size / 2;
 
             switch (options.textAlign) {
@@ -1045,9 +1045,9 @@ define([
             }
 
             var ctx = canvas.getContext('2d');
-            ctx.font = 'Bold ' + options.size + 'px ' + options.font;
+            ctx.font = 'Bold ' + options.size * 0.9 + 'px ' + options.font;
             ctx.fillStyle = options.fillStyle;
-            ctx.fillText(text, 0, options.size);
+            ctx.fillText(text, 0, options.size*0.9);
 
             // canvas contents will be used for a texture
             var texture = new THREE.Texture(canvas);
