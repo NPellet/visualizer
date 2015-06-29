@@ -636,7 +636,7 @@ define([
             this.stopColors = _(gradient).pluck('color').map(colorUtil.getColor).map(function (v) {
                 return colorUtil.rgb2hex(v);
             }).value();
-            console.log(this.stopColors);
+
             this.numberToColor = colorbar.getColorScale({
                 stops: this.stopColors,
                 stopPositions: this.stopPositions,
@@ -864,6 +864,7 @@ define([
                 position: 'absolute',
                 top: 0
             });
+            if (!this.module.getConfiguration('gradient') || this.module.getConfiguration('gradient').length <= 1) return;
             colorbar.renderSvg(this.$colorbar[0], {
                 width: 20,
                 height: 200,
