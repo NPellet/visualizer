@@ -1059,7 +1059,7 @@ define([
                 opacity: options.opacity
             });
             var mesh = new THREE.Mesh(
-                new THREE.PlaneGeometry(canvas.width, canvas.height),
+                new THREE.PlaneBufferGeometry(canvas.width, canvas.height),
                 material
             );
             // mesh.position.set(0,50,0);
@@ -1235,12 +1235,12 @@ define([
             // 6: xz top
 
 
-            var geometry1 = new THREE.PlaneGeometry(NORM_CONSTANT, NORM_CONSTANT);
-            var geometry2 = new THREE.PlaneGeometry(NORM_CONSTANT, NORM_CONSTANT);
-            var geometry3 = new THREE.PlaneGeometry(NORM_CONSTANT, NORM_CONSTANT);
-            var geometry4 = new THREE.PlaneGeometry(NORM_CONSTANT, NORM_CONSTANT);
-            var geometry5 = new THREE.PlaneGeometry(NORM_CONSTANT, NORM_CONSTANT);
-            var geometry6 = new THREE.PlaneGeometry(NORM_CONSTANT, NORM_CONSTANT);
+            var geometry1 = new THREE.PlaneBufferGeometry(NORM_CONSTANT, NORM_CONSTANT);
+            var geometry2 = new THREE.PlaneBufferGeometry(NORM_CONSTANT, NORM_CONSTANT);
+            var geometry3 = new THREE.PlaneBufferGeometry(NORM_CONSTANT, NORM_CONSTANT);
+            var geometry4 = new THREE.PlaneBufferGeometry(NORM_CONSTANT, NORM_CONSTANT);
+            var geometry5 = new THREE.PlaneBufferGeometry(NORM_CONSTANT, NORM_CONSTANT);
+            var geometry6 = new THREE.PlaneBufferGeometry(NORM_CONSTANT, NORM_CONSTANT);
 
             var material = new THREE.MeshBasicMaterial({
                 color: 0xffffff,
