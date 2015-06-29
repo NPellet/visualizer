@@ -334,6 +334,11 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                     checkboxAdd(slickCheck, 'highlightScroll');
                 }
             }, 'slick_grid');
+        },
+        '2.22.3-1', function (view) {
+            eachModule(view, function (module) {
+                modifyRel(module, 'value', 'data');
+            }, 'code_editor');
         }
 //  Add new migration functions here
 //      'x.y.z', function (view) {
@@ -341,6 +346,21 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
 //      }
 
     ];
+
+    function modifyRel(module, oldRel, newRel) {
+        var vars_in = module.getChildSync(['vars_in']);
+        var vars_out = module.getChildSync(['vars_out']);
+        var actions_out = module.getChildSync(['actions_out']);
+        vars_in.forEach(function (vars_in) {
+            if (vars_in && vars_in.rel && vars_in.rel === oldRel) vars_in.rel = newRel;
+        });
+        vars_out.forEach(function (vars_out) {
+            if (vars_out && vars_out.rel && vars_out.rel === oldRel) vars_out.rel = newRel;
+        });
+        actions_out.forEach(function (actions_out) {
+            if (actions_out && actions_out.rel && actions_out.rel === oldRel) actions_out.rel = newRel;
+        });
+    }
 
     function checkboxRemove(checkbox, name) {
         var idx = checkbox.indexOf(name);
