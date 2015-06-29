@@ -236,9 +236,9 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                         },
 
                         annotationColor: {
-                            type: 'color',
+                            type: 'spectrum',
                             title: 'Annotation color',
-                            default: [173, 216, 222, 1]
+                            default: [33, 33, 33, 1]
                         },
                         sizeNormalization: {
                             type: 'float',

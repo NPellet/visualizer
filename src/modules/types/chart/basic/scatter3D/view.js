@@ -1407,7 +1407,6 @@ define([
 
         init: function () {
             var c = this.module.getConfiguration('defaultPointColor');
-            console.log(c);
             DEFAULT_POINT_COLOR = rgbToHex(c[0], c[1], c[2]);
 
             if (!this.dom) {
