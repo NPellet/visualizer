@@ -105,6 +105,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
     functions.jpg = functions.picture;
     functions.png = functions.picture;
     functions.webp = functions.picture;
+    functions.image = functions.picture;
 
     functions.svg = {};
     functions.svg.toscreen = function (element, val) {
