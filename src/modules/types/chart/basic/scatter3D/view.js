@@ -1131,13 +1131,13 @@ define([
             that._reinitObject3DArray('axisLabels');
 
             var mode = that.module.getConfiguration('labels');
-            var xkey = (that._data.xAxis) ? that._data.xAxis : null;
-            var ykey = (that._data.yAxis) ? that._data.xAxis : null;
-            var zkey = (that._data.yAxis) ? that._data.xAxis : null;
+            var xt = that._meta.getChildSync(['axis', 0, 'name']);
+            var yt = that._meta.getChildSync(['axis', 1, 'name']);
+            var zt = that._meta.getChildSync(['axis', 2, 'name']);
 
-            var xtitle = (xkey && that._meta.axis && that._meta.axis[xkey]) ? that._meta.axis[xkey].name : 'X';
-            var ytitle = (ykey && that._meta.axis && that._meta.axis[ykey]) ? that._meta.axis[ykey].name : 'Y';
-            var ztitle = (zkey && that._meta.axis && that._meta.axis[zkey]) ? that._meta.axis[zkey].name : 'Z';
+            var xtitle = xt && xt.get() || 'X';
+            var ytitle = yt && yt.get() || 'Y';
+            var ztitle = zt && zt.get() || 'Z';
 
             var $legendTitles = $('#legend_titles');
 
@@ -1747,7 +1747,7 @@ define([
                 that._data.size.push(getFromJpath(value, jp.size, DEFAULT_POINT_RADIUS));
                 that._data.shape.push(getFromJpath(value, jp.shape, DEFAULT_POINT_SHAPE));
             }
-            that._meta = {};
+            that._meta = new DataObject();;
             that._data.x = that._data.x || [];
             that._data.y = that._data.y || [];
             that._data.z = that._data.z || [];
@@ -1758,13 +1758,14 @@ define([
 
         _convertChartToData: function (value) {
             this._data = {};
-            this._meta = {};
+            this._meta = new DataObject();
             var that = this;
             if (!Array.isArray(value.data) || !value.data[0] || !Array.isArray(value.data[0].y)) return;
             if (value.data.length > 0) {
                 Debug.warn('Scatter 3D module will merge series together');
             }
 
+            // Get data
             for (var j = 0; j < value.data.length; j++) {
                 _.keys(value.data[j]).forEach(function (key) {
                     if (Array.isArray(value.data[j][key])) {
@@ -1780,6 +1781,9 @@ define([
                     });
                 });
             }
+
+            // Get axis data
+            this._meta.axis = value.axis;
 
             _.keys(value).forEach(function (key) {
                 if (key === 'data') return;
