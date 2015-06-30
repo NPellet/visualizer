@@ -1138,9 +1138,9 @@ define([
             that._reinitObject3DArray('axisLabels');
 
             var mode = that.module.getConfiguration('labels');
-            var xt = that._meta.getChildSync(['axis', 0, 'name']);
-            var yt = that._meta.getChildSync(['axis', 1, 'name']);
-            var zt = that._meta.getChildSync(['axis', 2, 'name']);
+            var xt = that._meta.getChildSync(['axis', that._meta.xAxis || 0, 'name']);
+            var yt = that._meta.getChildSync(['axis', that._meta.yAxis || 1, 'name']);
+            var zt = that._meta.getChildSync(['axis', that._meta.zAxis || 2, 'name']);
             var xu = that._meta.getChildSync(['axis', 0, 'unit']);
             var yu = that._meta.getChildSync(['axis', 1, 'unit']);
             var zu = that._meta.getChildSync(['axis', 2, 'unit']);
@@ -1803,6 +1803,9 @@ define([
 
             // Get axis data
             this._meta.axis = value.axis;
+            this._meta.xAxis = value.xAxis;
+            this._meta.yAxis = value.yAxis;
+            this._meta.zAxis = value.zAxis;
 
             _.keys(value).forEach(function (key) {
                 if (key === 'data') return;
