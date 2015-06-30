@@ -1141,10 +1141,21 @@ define([
             var xt = that._meta.getChildSync(['axis', 0, 'name']);
             var yt = that._meta.getChildSync(['axis', 1, 'name']);
             var zt = that._meta.getChildSync(['axis', 2, 'name']);
+            var xu = that._meta.getChildSync(['axis', 0, 'unit']);
+            var yu = that._meta.getChildSync(['axis', 1, 'unit']);
+            var zu = that._meta.getChildSync(['axis', 2, 'unit']);
 
-            var xtitle = this.module.getConfiguration('xLabel') || xt && xt.get() || 'X';
-            var ytitle = this.module.getConfiguration('yLabel') || yt && yt.get() || 'Y';
-            var ztitle = this.module.getConfiguration('zLabel') || zt && zt.get() || 'Z';
+            xt = xt && xt.get();
+            yt = yt && yt.get();
+            zt = zt && zt.get();
+            xt = xu && (xt + ' [' + xu.get() + ']') || xt;
+            yt = yu && (yt + ' [' + yu.get() + ']') || yt;
+            zt = zu && (zt + ' [' + zu.get() + ']') || zt;
+
+            var xtitle = this.module.getConfiguration('xLabel') || xt || 'X';
+            var ytitle = this.module.getConfiguration('yLabel') || yt || 'Y';
+            var ztitle = this.module.getConfiguration('zLabel') || zt || 'Z';
+
 
             var $legendTitles = $('#legend_titles');
 
