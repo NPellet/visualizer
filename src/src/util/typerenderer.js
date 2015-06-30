@@ -94,9 +94,12 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
             src: val,
             width: options ? options.width : undefined
         });
+        if (options.css) {
+            $img.css(options.css);
+        }
         element.html($img);
     };
-    
+
     functions.gif = functions.picture;
     functions.jpeg = functions.picture;
     functions.jpg = functions.picture;
@@ -272,7 +275,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
         var total = 0, i = 0, l = value.length;
         for (i = 0; i < l; total += value[i++][0])
 
-        var start = 0, end, color;
+             var start = 0, end, color;
         for (i = 0; i < l; i++) {
             end = start + value[i][0] / total * 100;
             color = value[i][1];
