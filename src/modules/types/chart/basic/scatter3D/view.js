@@ -669,12 +669,19 @@ define([
             that._data.max = {};
             that._data.len = {};
 
-            that._data.min.x = parseFloat(that.module.getConfiguration('minX')) || Stat.array.min(x);
-            that._data.min.y = parseFloat(that.module.getConfiguration('minY')) || Stat.array.min(y);
-            that._data.min.z = parseFloat(that.module.getConfiguration('minZ')) || Stat.array.min(z);
-            that._data.max.x = parseFloat(that.module.getConfiguration('maxX')) || Stat.array.max(x);
-            that._data.max.y = parseFloat(that.module.getConfiguration('maxY')) || Stat.array.max(y);
-            that._data.max.z = parseFloat(that.module.getConfiguration('maxZ')) || Stat.array.max(z);
+            var xm = that._meta.getChildSync(['axis', 0, 'min']);
+            var xM = that._meta.getChildSync(['axis', 0, 'max']);
+            var ym = that._meta.getChildSync(['axis', 1, 'min']);
+            var yM = that._meta.getChildSync(['axis', 1, 'max']);
+            var zm = that._meta.getChildSync(['axis', 2, 'min']);
+            var zM = that._meta.getChildSync(['axis', 2, 'max']);
+
+            that._data.min.x = parseFloat(that.module.getConfiguration('minX')) || xm && xm.get() || Stat.array.min(x);
+            that._data.min.y = parseFloat(that.module.getConfiguration('minY')) || ym && ym.get() || Stat.array.min(y);
+            that._data.min.z = parseFloat(that.module.getConfiguration('minZ')) || zm && zm.get() || Stat.array.min(z);
+            that._data.max.x = parseFloat(that.module.getConfiguration('maxX')) || xM && xM.get() || Stat.array.max(x);
+            that._data.max.y = parseFloat(that.module.getConfiguration('maxY')) || yM && yM.get() || Stat.array.max(y);
+            that._data.max.z = parseFloat(that.module.getConfiguration('maxZ')) || zM && zM.get() || Stat.array.max(z);
             that._data.len.x = that._data.max.x - that._data.min.x;
             that._data.len.y = that._data.max.y - that._data.min.y;
             that._data.len.z = that._data.max.z - that._data.min.z;
