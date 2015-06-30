@@ -168,12 +168,12 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                             type: 'checkbox',
                             title: 'Ticks',
                             options: {
-                                'x': 'X',
-                                'y': 'Y',
-                                'z': 'Z',
-                                'xlab': 'X Label',
-                                'ylab': 'Y Label',
-                                'zlab': 'Z Label'
+                                'x': 'Show X tick',
+                                'y': 'Show Y tick',
+                                'z': 'Show Z tick',
+                                'xlab': 'Show X tick label',
+                                'ylab': 'Show Y tick label',
+                                'zlab': 'Show Z tick label'
                             },
                             default: ['x', 'y', 'z', 'xlab', 'ylab', 'zlab']
                         },
@@ -186,7 +186,29 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                                 {title: 'As Legend', key: 'alegend'},
                                 {title: 'On axis', key: 'axis'},
                                 {title: 'Both', key: 'both'}
-                            ]
+                            ],
+                            displaySource: {
+                                axis: 'l',
+                                both: 'l'
+                            }
+                        },
+
+                        xLabel: {
+                            type: 'text',
+                            title: 'X Label',
+                            displayTarget: ['l']
+                        },
+
+                        yLabel: {
+                            type: 'text',
+                            title: 'Y Label',
+                            displayTarget: ['l']
+                        },
+
+                        zLabel: {
+                            type: 'text',
+                            title: 'Z Label',
+                            displayTarget: ['l']
                         },
 
                         minX: {
@@ -340,6 +362,9 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         maxY: ['groups', 'group', 0, 'maxY', 0],
         minZ: ['groups', 'group', 0, 'minZ', 0],
         maxZ: ['groups', 'group', 0, 'maxZ', 0],
+        xLabel: ['groups', 'group', 0, 'xLabel', 0],
+        yLabel: ['groups', 'group', 0, 'yLabel', 0],
+        zLabel: ['groups', 'group', 0, 'zLabel', 0],
         backgroundColor: ['groups', 'group', 0, 'backgroundColor', 0],
         defaultPointColor: ['groups', 'group', 0, 'defaultPointColor', 0],
         secondaryGrids: ['groups', 'group', 0, 'secondaryGrids', 0],

@@ -1135,9 +1135,9 @@ define([
             var yt = that._meta.getChildSync(['axis', 1, 'name']);
             var zt = that._meta.getChildSync(['axis', 2, 'name']);
 
-            var xtitle = xt && xt.get() || 'X';
-            var ytitle = yt && yt.get() || 'Y';
-            var ztitle = zt && zt.get() || 'Z';
+            var xtitle = this.module.getConfiguration('xLabel') || xt && xt.get() || 'X';
+            var ytitle = this.module.getConfiguration('yLabel') || yt && yt.get() || 'Y';
+            var ztitle = this.module.getConfiguration('zLabel') || zt && zt.get() || 'Z';
 
             var $legendTitles = $('#legend_titles');
 
@@ -1462,7 +1462,7 @@ define([
             });
         },
 
-        _setBackgroundColor: function() {
+        _setBackgroundColor: function () {
             var bgColor = this.module.getConfiguration('backgroundColor');
             DEFAULT_BACKGROUND_COLOR = rgbToHex(bgColor[0], bgColor[1], bgColor[2])
             this.renderer.setClearColor(DEFAULT_BACKGROUND_COLOR, 1);
@@ -1747,7 +1747,8 @@ define([
                 that._data.size.push(getFromJpath(value, jp.size, DEFAULT_POINT_RADIUS));
                 that._data.shape.push(getFromJpath(value, jp.shape, DEFAULT_POINT_SHAPE));
             }
-            that._meta = new DataObject();;
+            that._meta = new DataObject();
+            ;
             that._data.x = that._data.x || [];
             that._data.y = that._data.y || [];
             that._data.z = that._data.z || [];
