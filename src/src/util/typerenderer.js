@@ -209,7 +209,8 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
         element.html(value.replace(/\[([0-9]+)/g, '[<sup>$1</sup>').replace(/([a-zA-Z)])([0-9]+)/g, '$1<sub>$2</sub>').replace(/\(([0-9+-]+)\)/g, '<sup>$1</sup>'));
     };
 
-    function bioPv(type, element, val) {
+    function bioPv(type, element, val, valRoot, options) {
+        options = options || {};
         return new Promise(function (resolve) {
             require(['lib/bio-pv/bio-pv.min'], function (pv) {
                 var div = $('<div style="width:100%; height:100%" />');
@@ -226,11 +227,15 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
                     quality: 'medium'
                 });
                 viewer.addListener('viewerReady', function () {
+                    options.mode = viewer[options.mode] ? options.mode : 'cartoon';
                     var id = Util.getNextUniqueId();
                     if (type === 'pdb') {
-                        var ligand = mol.select({rnames: ['RVP', 'SAH']});
-                        viewer.ballsAndSticks('ligand-' + id, ligand);
-                        viewer.cartoon(id, mol);
+                        if (options.mode === 'cartoon') {
+                            var ligand = mol.select({rnames: ['RVP', 'SAH']});
+                            viewer.ballsAndSticks('ligand-' + id, ligand);
+                        }
+                        viewer[options.mode](id, mol);
+
                     } else if (type === 'mol3d') {
                         viewer.ballsAndSticks(id, mol);
                     }
