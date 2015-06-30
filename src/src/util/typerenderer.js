@@ -212,7 +212,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
     function bioPv(type, element, val) {
         return new Promise(function (resolve) {
             require(['lib/bio-pv/bio-pv.min'], function (pv) {
-                var div = $('<div style="width:99%; height:99%" />');
+                var div = $('<div style="width:100%; height:100%" />');
                 element.html(div);
                 var mol;
                 if (type === 'pdb') {
@@ -221,8 +221,8 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
                     mol = pv.io.sdf(val);
                 }
                 var viewer = pv.Viewer(div.get(0), {
-                    width: element.width(),
-                    height: Math.max(250, element.height()),
+                    width: 0.99 * element.width(),
+                    height: Math.max(250, element.height() * 0.99),
                     quality: 'medium'
                 });
                 viewer.addListener('viewerReady', function () {
