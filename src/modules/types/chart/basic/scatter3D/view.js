@@ -1003,6 +1003,7 @@ define([
 
             // canvas contents will be used for a texture
             var texture = new THREE.Texture(canvas);
+            texture.minFilter = THREE.NearestFilter;
             texture.needsUpdate = true;
 
             var material = new THREE.MeshBasicMaterial({
