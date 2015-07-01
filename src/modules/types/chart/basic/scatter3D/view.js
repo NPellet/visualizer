@@ -426,46 +426,9 @@ define([
             _.keys(that.scene.children).forEach(function (key) {
                 that.scene.remove(that.scene.children[key]);
             });
-            // this.scene.traverse(function(obj) {
-            //   self.scene.remove(obj);
-            // });
 
-            // textGeo = new THREE.TextGeometry( 'hello', {
-            //
-            //   size: 70,
-            //   height: 20,
-            //
-            //   font: 'optimer',
-            //   weight: 'bold',
-            //   style: 'normal',
-            //
-            //   material: 0,
-            //   extrudeMaterial: 1
-            //
-            // });
-            //
-            // textGeo.computeBoundingBox();
-            // textGeo.computeVertexNormals();
-            //
-            // textMaterial = new THREE.MeshFaceMaterial( [
-            //   new THREE.MeshPhongMaterial( { color: 0xffffff, shading: THREE.FlatShading } ), // front
-            //   new THREE.MeshPhongMaterial( { color: 0xffffff, shading: THREE.SmoothShading } ) // side
-            //   ] );
-            // textMesh1 = new THREE.Mesh( textGeo, material );
-            // this.scene.add(textMesh1)
 
             var light;
-            // 8 DIRECTIONAL LIGHTS =======================
-            // for(var i=0; i<8; i++) {
-            //   var a = i%2 ? 1 : -1;
-            //   var b = parseInt(i/2)%2 ? 1 : -1;
-            //   var c = parseInt(i/4)%2 ? 1 : -1;
-            //   var light = new THREE.DirectionalLight(0x777777, 1);
-            //   light.position.set(a,b,c);
-            //   self.scene.add(light);
-            // }
-            // ===============================================
-
             // HEADLIGHT ============
             light = new THREE.AmbientLight(0x222222, 1);
             that.scene.add(light);
@@ -481,7 +444,6 @@ define([
 
             that._mathPoints();
             that._drawPointsQuick();
-
             //that._drawAxes();
             that._drawFaces();
             that._drawGrid();
@@ -490,11 +452,6 @@ define([
             that._drawTickLabels();
             that._drawAxisLabels();
             that._drawGraphTitle();
-
-
-            // self._drawPointsQuick();
-
-
             that._render();
         },
 
