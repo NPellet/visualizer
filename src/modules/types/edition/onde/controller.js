@@ -169,7 +169,7 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
                 njpath.push(key);
                 schemaJpath(schema.properties[key], njpath);
             }
-        } else if(schema.type === 'array' && schema.items && schema.items.length) {
+        } else if (schema.type === 'array' && schema.items && schema.items.length) {
             schema.jpath = jpath;
             var njpath = jpath.slice();
             njpath.push('$array$');

@@ -35,6 +35,8 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         ];
 
         this.setVarFromEvent('onHover', 'point', 'data3D', [row]);
+        var info = this.module.view._data.getChildSync(['info', row]);
+        this.createDataFromEvent('onHover', 'info', info);
         this.createDataFromEvent('onHover', 'coordinates', DataObject.check(coord));
     };
 

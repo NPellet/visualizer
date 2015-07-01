@@ -1138,9 +1138,9 @@ define([
             that._reinitObject3DArray('axisLabels');
 
             var mode = that.module.getConfiguration('labels');
-            var xt = that._meta.getChildSync(['axis', that._meta.xAxis || 0, 'name']);
-            var yt = that._meta.getChildSync(['axis', that._meta.yAxis || 1, 'name']);
-            var zt = that._meta.getChildSync(['axis', that._meta.zAxis || 2, 'name']);
+            var xt = that._meta.getChildSync(['axis', that._data.xAxis || 0, 'name']);
+            var yt = that._meta.getChildSync(['axis', that._data.yAxis || 1, 'name']);
+            var zt = that._meta.getChildSync(['axis', that._data.zAxis || 2, 'name']);
             var xu = that._meta.getChildSync(['axis', 0, 'unit']);
             var yu = that._meta.getChildSync(['axis', 1, 'unit']);
             var zu = that._meta.getChildSync(['axis', 2, 'unit']);
@@ -1725,7 +1725,7 @@ define([
             }
 
 
-            that._data = {};
+            that._data = new DataObject();
 
             var jpaths = that.module.getConfiguration('dataJpaths');
             that._data.x = [];
@@ -1766,17 +1766,17 @@ define([
                 that._data.shape.push(getFromJpath(value, jp.shape, DEFAULT_POINT_SHAPE));
             }
             that._meta = new DataObject();
-            ;
             that._data.x = that._data.x || [];
             that._data.y = that._data.y || [];
             that._data.z = that._data.z || [];
+            that._data.info = _.pluck(value, 'info');
             that._data._highlight = _.pluck(value, '_highlight');
             if (!_.any(that._data._highlight)) that._data._highlight = [];
             that._dispFilter = that._dispFilter || [];
         },
 
         _convertChartToData: function (value) {
-            this._data = {};
+            this._data = new DataObject();
             this._meta = new DataObject();
             var that = this;
             if (!Array.isArray(value.data) || !value.data[0] || !Array.isArray(value.data[0].y)) return;
@@ -1803,9 +1803,9 @@ define([
 
             // Get axis data
             this._meta.axis = value.axis;
-            this._meta.xAxis = value.xAxis;
-            this._meta.yAxis = value.yAxis;
-            this._meta.zAxis = value.zAxis;
+
+            // Highlight
+            this._data._highlight = this._data._highlight || [];
 
             _.keys(value).forEach(function (key) {
                 if (key === 'data') return;

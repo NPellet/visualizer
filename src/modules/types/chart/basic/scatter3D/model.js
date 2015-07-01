@@ -17,6 +17,10 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
                     }
 
                     break;
+                case 'info':
+                    data = this.module.view._data.getChildSync(['info', 0]);
+                    if (!data) return [];
+                    break;
                 default:
                     data = this.module._data;
                     break;
