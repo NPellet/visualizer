@@ -1085,9 +1085,9 @@ define([
             that._reinitObject3DArray('axisLabels');
 
             var mode = that.module.getConfiguration('labels');
-            var xt = that._meta.getChildSync(['axis', that._data.xAxis || 0, 'name']);
-            var yt = that._meta.getChildSync(['axis', that._data.yAxis || 1, 'name']);
-            var zt = that._meta.getChildSync(['axis', that._data.zAxis || 2, 'name']);
+            var xt = that._meta.getChildSync(['axis', that._data.xAxis || 0, 'label']);
+            var yt = that._meta.getChildSync(['axis', that._data.yAxis || 1, 'label']);
+            var zt = that._meta.getChildSync(['axis', that._data.zAxis || 2, 'label']);
             var xu = that._meta.getChildSync(['axis', 0, 'unit']);
             var yu = that._meta.getChildSync(['axis', 1, 'unit']);
             var zu = that._meta.getChildSync(['axis', 2, 'unit']);
