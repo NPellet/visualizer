@@ -240,6 +240,11 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
                         viewer.ballsAndSticks(id, mol);
                     }
                     viewer.fitTo(mol);
+                    element.on('remove', remove);
+                    function remove() {
+                        viewer.destroy();
+                        element.off('remove');
+                    }
                 });
                 resolve();
             });
