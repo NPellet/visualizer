@@ -32,42 +32,6 @@ define([
         return result;
     }
 
-    function generateRandomFromArray(arr, n) {
-        var x = generateRandomArray(n, 0, arr.length - 0.001);
-        x = x.map(function (a) {
-            return arr[Math.floor(a)];
-        });
-        return x;
-    }
-
-    function generateRandomColors(n) {
-        var result = [];
-        var letters = '0123456789ABCDEF'.split('');
-        for (var i = 0; i < n; i++) {
-            var color = '#';
-            for (var j = 0; j < 3; j++) {
-                color += letters[Math.floor(Math.random() * 16)];
-            }
-            result.push(color);
-        }
-        return result;
-    }
-
-    function hexToRgb(hex) {
-        // Expand shorthand form (e.g. '03F') to full form (e.g. '0033FF')
-        var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-        hex = hex.replace(shorthandRegex, function (m, r, g, b) {
-            return r + r + g + g + b + b;
-        });
-
-        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? {
-            r: parseInt(result[1], 16),
-            g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16)
-        } : null;
-    }
-
     function componentToHex(c) {
         var hex = c.toString(16);
         return hex.length == 1 ? '0' + hex : hex;
@@ -86,17 +50,6 @@ define([
             return 'rgba(0,0,0,1)';
         }
 
-    }
-
-    function rgbStringToHex(rgbString) {
-        var shorthandRegex = /^rgba?\(\s*(\d+),\s*(\d+),\s*(\d+)/;
-        var m = shorthandRegex.exec(rgbString);
-        if (m) {
-            return rgbToHex(m[1], m[2], m[3]);
-        } else {
-            console.error('rgb string to hex conversion failed', rgbString);
-            return '#ffffff';
-        }
     }
 
     function keepDecimals(num, n) {
@@ -606,19 +559,6 @@ define([
             that._data.size = _.map(that._data.size, function (s) {
                 return sizeInt === 0 ? sizeConstant / 2 : sizeConstant * ((s - sizeMin) / sizeInt + 0.01);
             });
-
-            // color normalization
-            //if (_.all(self._data.color, _.isNumber)) {
-            //    var colorMin = Stat.array.min(self._data.color);
-            //    var colorMax = Stat.array.max(self._data.color);
-            //    var colorInt = colorMax - colorMin;
-            //    self._data.color = _.map(self._data.color, function (c) {
-            //        var hue = colorInt === 0 ? 180 : 360 * (c - colorMin) / colorInt;
-            //        var color = chroma('hsl(' + hue + ', 65%, 65%)');
-            //        return color.hex();
-            //    });
-            //}
-
         },
 
         _processColors: function () {
@@ -652,6 +592,12 @@ define([
                         this._data.color[i] = colorUtil.getColor(r[1].split(','));
                     }
                 }
+            }
+
+            // Normalize
+            // No rgba accepted
+            for (i = 0; i < this._data.color.length; i++) {
+                this._data.color[i] = new chroma(this._data.color[i]).hex();
             }
         },
 
@@ -1482,7 +1428,7 @@ define([
 
         _setBackgroundColor: function () {
             var bgColor = this.module.getConfiguration('backgroundColor');
-            DEFAULT_BACKGROUND_COLOR = rgbToHex(bgColor[0], bgColor[1], bgColor[2])
+            DEFAULT_BACKGROUND_COLOR = rgbToHex(bgColor[0], bgColor[1], bgColor[2]);
             this.renderer.setClearColor(DEFAULT_BACKGROUND_COLOR, 1);
         },
 
