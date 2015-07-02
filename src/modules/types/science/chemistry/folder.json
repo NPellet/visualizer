@@ -11,6 +11,10 @@
     {
       "moduleName": "OCL Molecule editor",
       "url": "modules/types/science/chemistry/ocl_editor/"
+    },
+    {
+      "moduleName": "Periodic table",
+      "url": "modules/types/science/chemistry/periodic_table/"
     }
   ],
   "name": "Chemistry",
