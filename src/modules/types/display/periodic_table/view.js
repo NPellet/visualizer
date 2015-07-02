@@ -86,12 +86,11 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                 var $element = $(this.template.render({element: this.elements[i]})).data('idx', i);
 
                 $element.addClass('element' +
-                ' e'+this.elements[i].Z +
-                ' period'+this.elements[i].period +
-                ' group'+this.elements[i].group +
-                ' block-'+this.elements[i].block +
-                ' '+this.elements[i].serie);
-
+                ' e' + this.elements[i].Z +
+                ' period' + this.elements[i].period +
+                ' group' + this.elements[i].group +
+                ' block-' + this.elements[i].block +
+                ' ' + this.elements[i].serie);
 
                 this.dom.append($element);
             }
@@ -99,15 +98,15 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             $('div.e1').after(legend);
 
             var elementZoom = $('<div class="element-zoom"></div>');
-            var elementDatas = $('<div class="element-datas"><ul><li>data1</li><li>data2</li></ul></div>')
+            var elementDatas = $('<div class="element-datas"><ul><li>data1</li><li>data2</li></ul></div>');
             legend.append(elementZoom).append(elementDatas);
 
-            $('.element').mouseenter(function(){
+            $('.element').mouseenter(function () {
                 var idx = $(this).data('idx');
                 var el = that.elements[idx];
-               elementZoom.append(that.template.render({element: el}));
+                elementZoom.append(that.template.render({element: el}));
             });
-            $('.element').mouseleave(function(){
+            $('.element').mouseleave(function () {
                 elementZoom.empty();
             });
 

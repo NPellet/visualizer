@@ -35,8 +35,8 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
                 return false;
             });
 
-            if(that.filter) {
-                this.dom.on('keyup change', function(e) {
+            if (that.filter) {
+                this.dom.on('keyup change', function (e) {
                     if (e.type === 'change' && (e.target.type === 'text' || e.target.type === 'textarea')) return;
                     that._doFilter(e);
                 });
@@ -58,34 +58,33 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
 
         },
 
-        _doFilter: function(e) {
+        _doFilter: function (e) {
             var jpathSuccess = true;
             var $target = $(e.target);
             var fieldInfo = $target.data('fieldInfo');
-            if(!fieldInfo) {
+            if (!fieldInfo) {
                 fieldInfo = $target.parents('ol').first().data('fieldInfo');
             }
-            if(!fieldInfo) {
+            if (!fieldInfo) {
                 jpathSuccess = false;
             }
             var jpath = fieldInfo.jpath.slice().reverse();
-            while(jpath.indexOf('$array$') > -1) {
+            while (jpath.indexOf('$array$') > -1) {
                 var $firstOl = $target.parents('ol').first();
-                if(!$firstOl.length) break;
-                if(!$.contains(this.dom[0], $firstOl[0])) break;
+                if (!$firstOl.length) break;
+                if (!$.contains(this.dom[0], $firstOl[0])) break;
                 var idx = $firstOl.children('li').index($target.parents('li.field.array-item')[0]);
                 $target = $firstOl;
                 jpath[jpath.indexOf('$array$')] = idx;
             }
             jpath = jpath.reverse();
-            if(jpath.indexOf('$array$') > -1 || jpath.indexOf(-1) > -1)
+            if (jpath.indexOf('$array$') > -1 || jpath.indexOf(-1) > -1)
                 jpathSuccess = false;
 
-            if(jpathSuccess) {
+            if (jpathSuccess) {
                 this.filter(this.form.getData(), jpath);
-            }
-            else {
-                Debug.warn('Onde: Could not resolve jpath of modified element')
+            } else {
+                Debug.warn('Onde: Could not resolve jpath of modified element');
             }
         },
 

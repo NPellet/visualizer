@@ -699,7 +699,7 @@ define([
                             delete items[i].__elementPosition;
                         }
                         that._jpathColor();
-                        _that._justInTimeFilter();
+                        that._justInTimeFilter();
                     });
 
 

@@ -15,11 +15,11 @@ define([], function () {
             return config;
         },
 
-        setConfig: function(c) {
+        setConfig: function (c) {
             config = c;
         },
 
-        contextMenu: function() {
+        contextMenu: function () {
             return (config && config.contextMenu) || contextMenu;
         }
     };
