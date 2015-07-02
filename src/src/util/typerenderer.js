@@ -217,7 +217,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
                 element.html(div);
                 var mol;
                 if (type === 'pdb') {
-                    mol = pv.io.pdb(val);
+                    mol = pv.io.pdb(val, {loadAllModels: true});
                 } else if (type === 'mol3d') {
                     mol = pv.io.sdf(val);
                 }
@@ -230,12 +230,15 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
                     options.mode = viewer[options.mode] ? options.mode : 'cartoon';
                     var id = Util.getNextUniqueId();
                     if (type === 'pdb') {
-                        if (options.mode === 'cartoon') {
-                            var ligand = mol.select({rnames: ['RVP', 'SAH']});
-                            viewer.ballsAndSticks('ligand-' + id, ligand);
-                        }
-                        viewer[options.mode](id, mol);
-
+                        viewer.clear();
+                        mol.forEach(function (structure) {
+                            if (options.mode === 'cartoon') {
+                                var ligand = structure.select({rnames: ['RVP', 'SAH']});
+                                viewer.ballsAndSticks('ligand-' + id, ligand);
+                            }
+                            viewer[options.mode](id, structure);
+                            viewer.autoZoom();
+                        });
                     } else if (type === 'mol3d') {
                         viewer.ballsAndSticks(id, mol);
                     }
