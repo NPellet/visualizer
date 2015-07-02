@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 'src/util/color', 'chroma'], function (Default, Graph, Color, chroma) {
+define(['modules/default/defaultview', 'jsgraph', 'src/util/color', 'chroma'], function (Default, Graph, Color, chroma) {
 
     function View() {
     }
@@ -16,7 +16,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
             this.datasetInfo = {};
         },
         inDom: function () {
-            var that = this;
             var axisOptions = {
                 primaryGrid: false,
                 secondaryGrid: false
@@ -29,24 +28,24 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
                     bottom: false
                 },
                 plugins: {
-                    'graph.plugin.zoom': {
+                    zoom: {
                         zoomMode: 'xy'
                     },
-                    'graph.plugin.drag': {}
+                    drag: {}
                 },
                 pluginAction: {
-                    'graph.plugin.zoom': {
+                    zoom: {
                         shift: false,
                         ctrl: false
                     },
-                    'graph.plugin.drag': {
+                    drag: {
                         shift: true,
                         ctrl: false
                     }
                 },
                 dblclick: {
                     type: 'plugin',
-                    plugin: 'graph.plugin.zoom',
+                    plugin: 'zoom',
                     options: {
                         mode: 'total'
                     }
@@ -54,14 +53,17 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
             }, {
                 bottom: [axisOptions],
                 left: [axisOptions]
-            }, function (graph) {
-                graph.shapeHandlers.mouseOver.push(function (shape) {
-                    that.module.controller.onCellHover(shape.data);
-                });
-                graph.getXAxis().hide().setAxisDataSpacing(0, 0);
-                graph.getYAxis().hide().setAxisDataSpacing(0, 0);
-                that.resolveReady();
             });
+
+            var that = this;
+            this.graph.on('shapeMouseOver', function (shape) {
+                that.module.controller.onCellHover(shape._data);
+            });
+
+            this.graph.getXAxis().hide().setAxisDataSpacing(0, 0);
+            this.graph.getYAxis().hide().setAxisDataSpacing(0, 0);
+
+            this.resolveReady();
         },
         blank: {
             model: function () {
@@ -115,8 +117,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
 
                 for (i = 0; i < x; i++) {
                     for (var j = 0; j < y; j++) {
-                        var shape = graph.newShape({
-                            type: 'rect',
+                        var shape = graph.newShape('rect', {
                             pos: {
                                 x: i,
                                 y: j
@@ -125,12 +126,12 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph.min', 's
                                 x: i + 1,
                                 y: j + 1
                             },
-                            locked: true,
-                            selectable: false,
+                            // locked: true,
+                            // selectable: false,
                             fillColor: getColor(data[i][j]),
                             layer: 1,
                             info: data[i][j]
-                        }, null, null, true);
+                        });
                         shape.draw();
                         shape.redraw();
                     }

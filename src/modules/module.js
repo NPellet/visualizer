@@ -52,13 +52,11 @@ define([
                     return;
                 }
 
-                console.log(originalURL);
-                if(Version.includedModuleCss.indexOf(Util.moduleIdFromUrl(originalURL)) > -1) {
-                    console.log('no need to load module css', Util.moduleIdFromUrl(moduleURL));
+                if (Version.includedModuleCss.indexOf(Util.moduleIdFromUrl(originalURL)) > -1) {
                     module._cssLoaded = Promise.resolve();
-                } else
+                } else {
                     module._cssLoaded = Util.loadCss(moduleURL + 'style.css');
-
+                }
                 require([
 
                     moduleURL + 'model',

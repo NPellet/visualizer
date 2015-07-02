@@ -33,6 +33,7 @@ require.config({
         'jquery-cookie': 'components/jquery-cookie/jquery.cookie',
         'jquery-ui': 'components/jquery-ui/ui',
         'jquery-tmpl': 'components/jquery-tmpl/jquery.tmpl.min',
+        jsgraph: 'components/jsgraph/dist/jsgraph',
         jszip: 'components/jszip/dist/jszip.min',
         loglevel: 'components/loglevel/dist/loglevel.min',
         lodash: 'components/lodash/lodash.min',
@@ -133,16 +134,15 @@ require.config({
 
     map: {
         'components/jsNMR/src/nmr': {
-            'graph': 'components/jsgraph/dist/jsgraph.min',
+            'graph': 'jsgraph',
             'assignation': 'components/jsNMR/src/assignation',
-            'jcampconverter': 'components/jcampconverter/dist/jcampconverter.min',
             'lib/components/VisuMol/src/molecule': 'components/jsNMR/lib/components/VisuMol/src/molecule'
         },
         'src/shape.1dnmr': {
-            'graph': 'components/jsgraph/dist/jsgraph.min'
+            'graph': 'jsgraph'
         },//'components/jsNMR/src/shape.1dnmr'
         'lib/gcms/gcms': {
-            'graph': 'components/jsgraph/dist/jsgraph.min'
+            'graph': 'jsgraph'
         }
     }
 });
