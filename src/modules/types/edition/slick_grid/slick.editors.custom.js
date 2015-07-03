@@ -54,10 +54,10 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
                     buttonImageOnly: true,
                     buttonImage: require.toUrl('components/slickgrid/images/calendar.gif'),
                     beforeShow: function () {
-                        calendarOpen = true
+                        calendarOpen = true;
                     },
                     onClose: function () {
-                        calendarOpen = false
+                        calendarOpen = false;
                     }
                 });
                 $input.width($input.width() - 18);
@@ -99,8 +99,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
                 defaultValue = item.getChildSync(args.column.jpath);
                 if (defaultValue) {
                     defaultValue = defaultValue.value || '01/01/2000';
-                }
-                else {
+                } else {
                     defaultValue = '01/01/2000';
                 }
                 $input.val(defaultValue);
@@ -283,8 +282,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
                 defaultValue = item.getChildSync(args.column.jpath);
                 if (defaultValue) {
                     defaultValue = defaultValue.value || '#000000';
-                }
-                else {
+                } else {
                     defaultValue = '#000000';
                 }
                 $input.val(defaultValue);
@@ -328,7 +326,8 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
 
         function TextValueEditor(args, options) {
             this.args = args;
-            this.init = defaultInit(options);
+            this.initOptions = options;
+            this.init = defaultInit;
             this.destroy = defaultDestroy;
             this.focus = defaultFocus;
             this.getValue = defaultGetValue;
@@ -431,8 +430,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
             item.setChildSync(this.args.column.jpath, state);
             this.args.grid.module.view.slick.data.addItem(item);
             return newState;
-        }
-        else {
+        } else {
             this.args.grid.module.model.dataSetChildSync(item, this.args.column.jpath, newState);
         }
     }
@@ -457,11 +455,11 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
         return this.$input.val();
     }
 
-    function defaultInit(options) {
+    function defaultInit() {
         var that = this;
-        options = options || {};
         var $wrapper = this.args.container;
-        if (options.textarea) {
+        this.initOptions = this.initOptions || {};
+        if (this.initOptions.textarea) {
             $wrapper = $('<div>').appendTo(this.args.container);
             this.$input = $('<textarea  class="editor-text" rows="10" cols="60" style="z-index:10000; position: relative;"/>');
         } else {
@@ -634,11 +632,10 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
     function SimpleLongTextEditor(args) {
         var that = this;
         this.args = args;
-        this.init = function() {
-            defaultInit.call(that, {
-                textarea: true
-            });
+        this.initOptions = {
+            textarea: true
         };
+        this.init = defaultInit;
         this.destroy = defaultDestroy;
         this.focus = defaultFocus;
         this.getValue = defaultGetValue;
