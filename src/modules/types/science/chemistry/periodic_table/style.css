@@ -21,6 +21,45 @@
     margin-bottom: 2px;
 }
 
+.alkali {
+    background-color:rgba(206, 58, 90, 0.6);
+}
+.alkaline {
+    background-color:rgba(228, 109, 10, 0.6);
+}
+.transition {
+    background-color: rgba(255, 192, 0, 0.6);
+}
+.poor {
+    background-color: rgba(117, 146, 60, 0.6);
+}
+.metalloid {
+    background-color: rgba(49, 132, 155, 0.6);
+}
+.nonmetal {
+    background-color: rgba(0, 112, 192, 0.4);
+}
+.halogen {
+    background-color: rgba(23, 55, 93, 0.6);
+}
+.noble {
+    background-color: rgba(112, 48, 160, 0.6);
+}
+
+.lanthanoid {
+    background-color: rgba(148, 139, 84, 0.6);
+}
+.actinoid {
+    background-color: rgba(178, 161, 199, 0.6);
+}
+
+.element:hover, .el-selected {
+    border: 2px solid black;
+}
+
+.el-selected {
+    background-color: rgba(90,90,90,0.4);
+}
 .indic-g, .indic-p, .indic-f {
     justify-content: center;
     align-items: center;
@@ -88,7 +127,7 @@
     margin-top: 2em;
 }
 
-.element, .indic-g, .indic-p, .indic-f {
+.element, .indic-g, .indic-p, .indic-f, .element-zoom {
     display: flex;
 }
 .element-data {
@@ -113,12 +152,12 @@
     text-overflow : ellipsis;
     white-space: nowrap;
 }
-.element .electronsPerPeriod {
+.electronsPerPeriod {
     margin: 0;
     padding:0;
     font-size: 0.7em;
 }
-.element li {
+.electronsPerPeriod li {
     list-style : none;
 }
 
@@ -140,10 +179,15 @@
 
 .element-zoom {
     border: 1px solid #000;
-    flex: 1 0 auto;
+    flex: none;
+    width: 33.333333333%;
+    padding: 5px;
 }
 .element-datas {
-    flex: 2 0 auto;
+    flex: 1 0 auto;
+}
+.element-zoom, .element-datas {
+    font-size: 1.4em;
 }
 
 
@@ -163,37 +207,8 @@
 
 
 
-.alkali {
-    background-color:rgba(206, 58, 90, 0.6);
-}
-.alkaline {
-    background-color:rgba(228, 109, 10, 0.6);
-}
-.transition {
-    background-color: rgba(255, 192, 0, 0.6);
-}
-.poor {
-    background-color: rgba(117, 146, 60, 0.6);
-}
-.metalloid {
-    background-color: rgba(49, 132, 155, 0.6);
-}
-.nonmetal {
-    background-color: rgba(0, 112, 192, 0.4);
-}
-.halogen {
-    background-color: rgba(23, 55, 93, 0.6);
-}
-.noble {
-    background-color: rgba(112, 48, 160, 0.6);
-}
 
-.lanthanoid {
-    background-color: rgba(148, 139, 84, 0.6);
-}
-.actinoid {
-    background-color: rgba(178, 161, 199, 0.6);
-}
+
 
 
 /*grey : #5A5A5A*/

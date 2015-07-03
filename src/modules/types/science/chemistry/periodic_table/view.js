@@ -83,7 +83,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
 
 
             for (var i = 0; i < this.elements.length; i++) {
-                var $element = $(this.template.render({element: this.elements[i]})).data('idx', i);
+                var $element = $('<div>' + this.template.render({element: this.elements[i]})+ '</div>').data('idx', i);
 
                 $element.addClass('element' +
                 ' e' + this.elements[i].Z +
@@ -101,14 +101,33 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             var elementDatas = $('<div class="element-datas"><ul><li>data1</li><li>data2</li></ul></div>');
             legend.append(elementZoom).append(elementDatas);
 
+            var isFixed = false;
+
             $('.element').mouseenter(function () {
-                var idx = $(this).data('idx');
+                if(isFixed) return;
+                renderElement($(this));
+            });
+            $('.element').click(function () {
+                if(isFixed) {
+                    $('.el-selected').removeClass('el-selected');
+                }
+                $(this).addClass('el-selected');
+                renderElement($(this));
+                isFixed = true;
+            });
+
+            $('.element').dblclick(function () {
+                $(this).removeClass('el-selected');
+                isFixed = false;
+            });
+
+            function renderElement($el) {
+                var idx = $el.data('idx');
                 var el = that.elements[idx];
-                elementZoom.append(that.template.render({element: el}));
-            });
-            $('.element').mouseleave(function () {
+                if(!el) return;
                 elementZoom.empty();
-            });
+                elementZoom.append(that.template.render({element: el}));
+            }
 
             var actinid = ('<div class="indic-f period7"><p>89-103</p></div>');
             var lanthanid = ('<div class="indic-f period6"><p>57-71</p></div>');
