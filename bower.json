@@ -76,7 +76,7 @@
     "mime-types": "stropitek/mime-types#v0.0.3"
   },
   "resolutions": {
-    "jsgraph": "v1.11.3-3"
+    "jsgraph": "v1.12.2"
   },
   "private": true
 }
