@@ -61,7 +61,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
      */
     CouchdbAttachments.prototype.list = function () {
         if (!this.lastDoc._attachments) throw new Error('List not available before calling fetchList');
-        return attachmentsAsArray(this, this.lastDoc._attachments);
+        return Promise.resolve(attachmentsAsArray(this, this.lastDoc._attachments));
     };
 
     // This is an alternative strategy for storing multiple attachments in one revision
