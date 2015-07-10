@@ -134,10 +134,14 @@
     display: flex;
 }
 .element-data {
-    width: 80%;
+    flex:4;
+    text-align: center;
+}
+.element-data .Z {
+    text-align: left;
 }
 .electronsPerPeriod {
-    width: 20%;
+    flex:1;
 }
 .element-name {
     font-size: 1.8em;
@@ -180,9 +184,6 @@
 }
 .color-serie {
     font-size: 1em;
-    /*column-width: 25%;*/
-    /*-moz-column-width: 25%;*/
-    /*-webkit-column-width: 25%;*/
     column-count: 2;
     -moz-column-count: 2;
     -webkit-column-count: 2;

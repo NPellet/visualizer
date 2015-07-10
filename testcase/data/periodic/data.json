@@ -1,5 +1,5 @@
 {
-  "elementTemplate": "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <div class=\"elec-conf\">\n            <p class=\"elec-conf-short\"><span class=\"shorted\">{{ element.electronConfigurationShort }}</span></p>\n            <p class=\"elec-conf-long\">{{ element.electronConfiguration }}</p>\n        </div>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>",
+  "elementTemplate": "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p>{{ element.name }}</p>\n    </div>",
   "header": {
     "Z": "Unit",
     "symbol": "",
@@ -19,9 +19,9 @@
     "electronConfigurationShort": "",
     "electronConfiguration": "",
     "nbElectrons": "",
-    "valence": "",
     "block": "",
-    "serie": ""
+    "serie": "",
+    "metalColor": ""
   },
   "elementsOri": [
     {
@@ -43,12 +43,13 @@
       "electronConfigurationShort": "1s1",
       "electronConfiguration": "1s1",
       "nbElectrons": "1",
-      "valence": "",
       "block": "s",
       "serie": "nonmetal",
+      "metalColor": "",
       "electronsPerPeriod": [
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "2",
@@ -69,12 +70,13 @@
       "electronConfigurationShort": "1s2",
       "electronConfiguration": "1s2",
       "nbElectrons": "2",
-      "valence": "",
       "block": "s",
       "serie": "noble",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "3",
@@ -95,13 +97,14 @@
       "electronConfigurationShort": "[He] 2s1",
       "electronConfiguration": "1s2 2s1",
       "nbElectrons": "2 1",
-      "valence": "",
       "block": "s",
       "serie": "alkali",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "4",
@@ -122,13 +125,14 @@
       "electronConfigurationShort": "[He] 2s2",
       "electronConfiguration": "1s2 2s2",
       "nbElectrons": "2 2",
-      "valence": "",
       "block": "s",
       "serie": "alkaline",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "5",
@@ -149,13 +153,14 @@
       "electronConfigurationShort": "[He] 2s2 2p1",
       "electronConfiguration": "1s2 2s2 2p1",
       "nbElectrons": "2 3",
-      "valence": "",
       "block": "p",
       "serie": "metalloid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "3"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "6",
@@ -176,13 +181,14 @@
       "electronConfigurationShort": "[He] 2s2 2p2",
       "electronConfiguration": "1s2 2s2 2p2",
       "nbElectrons": "2 4",
-      "valence": "",
       "block": "p",
       "serie": "nonmetal",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "4"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "7",
@@ -203,13 +209,14 @@
       "electronConfigurationShort": "[He] 2s2 2p3",
       "electronConfiguration": "1s2 2s2 2p3",
       "nbElectrons": "2 5",
-      "valence": "",
       "block": "p",
       "serie": "nonmetal",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "5"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "8",
@@ -230,13 +237,14 @@
       "electronConfigurationShort": "[He] 2s2 2p4",
       "electronConfiguration": "1s2 2s2 2p4",
       "nbElectrons": "2 6",
-      "valence": "",
       "block": "p",
       "serie": "nonmetal",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "6"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "9",
@@ -257,13 +265,14 @@
       "electronConfigurationShort": "[He] 2s2 2p5",
       "electronConfiguration": "1s2 2s2 2p5",
       "nbElectrons": "2 7",
-      "valence": "",
       "block": "p",
       "serie": "halogen",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "7"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "10",
@@ -284,13 +293,14 @@
       "electronConfigurationShort": "[He] 2s2 2p6",
       "electronConfiguration": "1s2 2s2 2p6",
       "nbElectrons": "2 8",
-      "valence": "",
       "block": "p",
       "serie": "noble",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "11",
@@ -311,14 +321,15 @@
       "electronConfigurationShort": "[Ne] 3s1",
       "electronConfiguration": "1s2 2s2 2p6 3s1",
       "nbElectrons": "2 8 1",
-      "valence": "",
       "block": "s",
       "serie": "alkali",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "12",
@@ -339,14 +350,15 @@
       "electronConfigurationShort": "[Ne] 3s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2",
       "nbElectrons": "2 8 2",
-      "valence": "",
       "block": "s",
       "serie": "alkaline",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "13",
@@ -367,14 +379,15 @@
       "electronConfigurationShort": "[Ne] 3s2 3p1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p1",
       "nbElectrons": "2 8 3",
-      "valence": "",
       "block": "p",
       "serie": "poor",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "3"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "14",
@@ -395,14 +408,15 @@
       "electronConfigurationShort": "[Ne] 3s2 3p2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p2",
       "nbElectrons": "2 8 4",
-      "valence": "",
       "block": "p",
       "serie": "metalloid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "4"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "15",
@@ -423,14 +437,15 @@
       "electronConfigurationShort": "[Ne] 3s2 3p3",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p3",
       "nbElectrons": "2 8 5",
-      "valence": "",
       "block": "p",
       "serie": "nonmetal",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "5"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "16",
@@ -451,14 +466,15 @@
       "electronConfigurationShort": "[Ne] 3s2 3p4",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p4",
       "nbElectrons": "2 8 6",
-      "valence": "",
       "block": "p",
       "serie": "nonmetal",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "6"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "17",
@@ -479,14 +495,15 @@
       "electronConfigurationShort": "[Ne] 3s2 3p5",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p5",
       "nbElectrons": "2 8 7",
-      "valence": "",
       "block": "p",
       "serie": "halogen",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "7"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "18",
@@ -507,14 +524,15 @@
       "electronConfigurationShort": "[Ne] 3s2 3p6",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6",
       "nbElectrons": "2 8 8",
-      "valence": "",
       "block": "p",
       "serie": "noble",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "8"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "19",
@@ -535,15 +553,16 @@
       "electronConfigurationShort": "[Ar] 4s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 4s1",
       "nbElectrons": "2 8 8 1",
-      "valence": "",
       "block": "s",
       "serie": "alkali",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "8",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "20",
@@ -564,15 +583,16 @@
       "electronConfigurationShort": "[Ar] 4s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 4s2",
       "nbElectrons": "2 8 8 2",
-      "valence": "",
       "block": "s",
       "serie": "alkaline",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "21",
@@ -593,15 +613,16 @@
       "electronConfigurationShort": "[Ar] 3d1 4s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d1 4s2",
       "nbElectrons": "2 8 9 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "9",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "22",
@@ -622,15 +643,16 @@
       "electronConfigurationShort": "[Ar] 3d2 4s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d2 4s2",
       "nbElectrons": "2 8 10 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "10",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "23",
@@ -651,15 +673,16 @@
       "electronConfigurationShort": "[Ar] 3d3 4s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d3 4s2",
       "nbElectrons": "2 8 11 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "11",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "24",
@@ -680,15 +703,16 @@
       "electronConfigurationShort": "[Ar] 3d5 4s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d5 4s1",
       "nbElectrons": "2 8 13 1",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "13",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "25",
@@ -709,15 +733,16 @@
       "electronConfigurationShort": "[Ar] 3d5 4s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d5 4s2",
       "nbElectrons": "2 8 13 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "13",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "26",
@@ -738,15 +763,16 @@
       "electronConfigurationShort": "[Ar] 3d6 4s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d6 4s2",
       "nbElectrons": "2 8 14 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "14",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "27",
@@ -767,15 +793,16 @@
       "electronConfigurationShort": "[Ar] 3d7 4s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d7 4s2",
       "nbElectrons": "2 8 15 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "15",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "28",
@@ -796,15 +823,16 @@
       "electronConfigurationShort": "[Ar] 3d8 4s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d8 4s2",
       "nbElectrons": "2 8 16 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "16",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "29",
@@ -825,15 +853,16 @@
       "electronConfigurationShort": "[Ar] 3d10 4s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s1",
       "nbElectrons": "2 8 18 1",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "30",
@@ -854,15 +883,16 @@
       "electronConfigurationShort": "[Ar] 3d10 4s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2",
       "nbElectrons": "2 8 18 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "31",
@@ -883,15 +913,16 @@
       "electronConfigurationShort": "[Ar] 3d10 4s2 4p1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p1",
       "nbElectrons": "2 8 18 3",
-      "valence": "",
       "block": "p",
       "serie": "poor",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "3"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "32",
@@ -912,15 +943,16 @@
       "electronConfigurationShort": "[Ar] 3d10 4s2 4p2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p2",
       "nbElectrons": "2 8 18 4",
-      "valence": "",
       "block": "p",
       "serie": "metalloid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "4"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "33",
@@ -941,15 +973,16 @@
       "electronConfigurationShort": "[Ar] 3d10 4s2 4p3",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p3",
       "nbElectrons": "2 8 18 5",
-      "valence": "",
       "block": "p",
       "serie": "metalloid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "5"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "34",
@@ -970,15 +1003,16 @@
       "electronConfigurationShort": "[Ar] 3d10 4s2 4p4",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p4",
       "nbElectrons": "2 8 18 6",
-      "valence": "",
       "block": "p",
       "serie": "nonmetal",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "6"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "35",
@@ -999,15 +1033,16 @@
       "electronConfigurationShort": "[Ar] 3d10 4s2 4p5",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p5",
       "nbElectrons": "2 8 18 7",
-      "valence": "",
       "block": "p",
       "serie": "halogen",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "7"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "36",
@@ -1028,15 +1063,16 @@
       "electronConfigurationShort": "[Ar] 3d10 4s2 4p6",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6",
       "nbElectrons": "2 8 18 8",
-      "valence": "",
       "block": "p",
       "serie": "noble",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "8"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "37",
@@ -1057,16 +1093,17 @@
       "electronConfigurationShort": "[Kr] 5s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 5s1",
       "nbElectrons": "2 8 18 8 1",
-      "valence": "",
       "block": "s",
       "serie": "alkali",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "8",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "38",
@@ -1087,16 +1124,17 @@
       "electronConfigurationShort": "[Kr] 5s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 5s2",
       "nbElectrons": "2 8 18 8 2",
-      "valence": "",
       "block": "s",
       "serie": "alkaline",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "39",
@@ -1117,16 +1155,17 @@
       "electronConfigurationShort": "[Kr] 4d1 5s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d1 5s2",
       "nbElectrons": "2 8 18 9 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "9",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "40",
@@ -1147,16 +1186,17 @@
       "electronConfigurationShort": "[Kr] 4d2 5s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d2 5s2",
       "nbElectrons": "2 8 18 10 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "10",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "41",
@@ -1177,16 +1217,17 @@
       "electronConfigurationShort": "[Kr] 4d4 5s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d4 5s1",
       "nbElectrons": "2 8 18 12 1",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "12",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "42",
@@ -1207,16 +1248,17 @@
       "electronConfigurationShort": "[Kr] 4d5 5s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d5 5s1",
       "nbElectrons": "2 8 18 13 1",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "13",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "43",
@@ -1237,16 +1279,17 @@
       "electronConfigurationShort": "[Kr] 4d5 5s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d5 5s2",
       "nbElectrons": "2 8 18 13 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "13",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "44",
@@ -1267,16 +1310,17 @@
       "electronConfigurationShort": "[Kr] 4d7 5s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d7 5s1",
       "nbElectrons": "2 8 18 15 1",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "15",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "45",
@@ -1297,16 +1341,17 @@
       "electronConfigurationShort": "[Kr] 4d8 5s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d8 5s1",
       "nbElectrons": "2 8 18 16 1",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "16",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "46",
@@ -1327,15 +1372,16 @@
       "electronConfigurationShort": "[Kr] 4d10",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10",
       "nbElectrons": "2 8 18 18",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "18"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "47",
@@ -1356,16 +1402,17 @@
       "electronConfigurationShort": "[Kr] 4d10 5s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s1",
       "nbElectrons": "2 8 18 18 1",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "18",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "48",
@@ -1386,16 +1433,17 @@
       "electronConfigurationShort": "[Kr] 4d10 5s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2",
       "nbElectrons": "2 8 18 18 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "18",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "49",
@@ -1416,16 +1464,17 @@
       "electronConfigurationShort": "[Kr] 4d10 5s2 5p1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p1",
       "nbElectrons": "2 8 18 18 3",
-      "valence": "",
       "block": "p",
       "serie": "poor",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "18",
         "3"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "50",
@@ -1446,16 +1495,17 @@
       "electronConfigurationShort": "[Kr] 4d10 5s2 5p2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p2",
       "nbElectrons": "2 8 18 18 4",
-      "valence": "",
       "block": "p",
       "serie": "poor",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "18",
         "4"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "51",
@@ -1476,16 +1526,17 @@
       "electronConfigurationShort": "[Kr] 4d10 5s2 5p3",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p3",
       "nbElectrons": "2 8 18 18 5",
-      "valence": "",
       "block": "p",
       "serie": "metalloid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "18",
         "5"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "52",
@@ -1506,16 +1557,17 @@
       "electronConfigurationShort": "[Kr] 4d10 5s2 5p4",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p4",
       "nbElectrons": "2 8 18 18 6",
-      "valence": "",
       "block": "p",
       "serie": "metalloid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "18",
         "6"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "53",
@@ -1536,16 +1588,17 @@
       "electronConfigurationShort": "[Kr] 4d10 5s2 5p5",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p5",
       "nbElectrons": "2 8 18 18 7",
-      "valence": "",
       "block": "p",
       "serie": "halogen",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "18",
         "7"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "54",
@@ -1566,16 +1619,17 @@
       "electronConfigurationShort": "[Kr] 4d10 5s2 5p6",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p6",
       "nbElectrons": "2 8 18 18 8",
-      "valence": "",
       "block": "p",
       "serie": "noble",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "18",
         "8"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "55",
@@ -1596,9 +1650,9 @@
       "electronConfigurationShort": "[Xe] 6s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p6 6s1",
       "nbElectrons": "2 8 18 18 8 1",
-      "valence": "",
       "block": "s",
       "serie": "alkali",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1606,7 +1660,8 @@
         "18",
         "8",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "56",
@@ -1627,9 +1682,9 @@
       "electronConfigurationShort": "[Xe] 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 18 8 2",
-      "valence": "",
       "block": "s",
       "serie": "alkaline",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1637,7 +1692,8 @@
         "18",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "57",
@@ -1658,9 +1714,9 @@
       "electronConfigurationShort": "[Xe] 5d1 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p6 5d1 6s2",
       "nbElectrons": "2 8 18 18 9 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1668,7 +1724,8 @@
         "18",
         "9",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "58",
@@ -1689,9 +1746,9 @@
       "electronConfigurationShort": "[Xe] 4f1 5d1 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f1 5s2 5p6 5d1 6s2",
       "nbElectrons": "2 8 18 19 9 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1699,7 +1756,8 @@
         "19",
         "9",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "59",
@@ -1720,9 +1778,9 @@
       "electronConfigurationShort": "[Xe] 4f3 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f3 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 21 8 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1730,7 +1788,8 @@
         "21",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "60",
@@ -1751,9 +1810,9 @@
       "electronConfigurationShort": "[Xe] 4f4 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f4 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 22 8 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1761,7 +1820,8 @@
         "22",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "61",
@@ -1782,9 +1842,9 @@
       "electronConfigurationShort": "[Xe] 4f5 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f5 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 23 8 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1792,7 +1852,8 @@
         "23",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "62",
@@ -1813,9 +1874,9 @@
       "electronConfigurationShort": "[Xe] 4f6 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f6 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 24 8 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1823,7 +1884,8 @@
         "24",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "63",
@@ -1844,9 +1906,9 @@
       "electronConfigurationShort": "[Xe] 4f7 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f7 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 25 8 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1854,7 +1916,8 @@
         "25",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "64",
@@ -1875,9 +1938,9 @@
       "electronConfigurationShort": "[Xe] 4f7 5d1 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f7 5s2 5p6 5d1 6s2",
       "nbElectrons": "2 8 18 25 9 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1885,7 +1948,8 @@
         "25",
         "9",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "65",
@@ -1906,9 +1970,9 @@
       "electronConfigurationShort": "[Xe] 4f9 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f9 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 27 8 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1916,7 +1980,8 @@
         "27",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "66",
@@ -1937,9 +2002,9 @@
       "electronConfigurationShort": "[Xe] 4f10 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f10 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 28 8 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1947,7 +2012,8 @@
         "28",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "67",
@@ -1968,9 +2034,9 @@
       "electronConfigurationShort": "[Xe] 4f11 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f11 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 29 8 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -1978,7 +2044,8 @@
         "29",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "68",
@@ -1999,9 +2066,9 @@
       "electronConfigurationShort": "[Xe] 4f12 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f12 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 30 8 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2009,7 +2076,8 @@
         "30",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "69",
@@ -2030,9 +2098,9 @@
       "electronConfigurationShort": "[Xe] 4f13 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f13 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 31 8 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2040,7 +2108,8 @@
         "31",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "70",
@@ -2061,9 +2130,9 @@
       "electronConfigurationShort": "[Xe] 4f14 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 32 8 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2071,7 +2140,8 @@
         "32",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "71",
@@ -2092,9 +2162,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d1 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d1 6s2",
       "nbElectrons": "2 8 18 32 9 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2102,7 +2172,8 @@
         "32",
         "9",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "72",
@@ -2123,9 +2194,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d2 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d2 6s2",
       "nbElectrons": "2 8 18 32 10 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2133,7 +2204,8 @@
         "32",
         "10",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "73",
@@ -2154,9 +2226,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d3 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d3 6s2",
       "nbElectrons": "2 8 18 32 11 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2164,7 +2236,8 @@
         "32",
         "11",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "74",
@@ -2185,9 +2258,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d4 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d4 6s2",
       "nbElectrons": "2 8 18 32 12 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2195,7 +2268,8 @@
         "32",
         "12",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "75",
@@ -2216,9 +2290,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d5 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d5 6s2",
       "nbElectrons": "2 8 18 32 13 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2226,7 +2300,8 @@
         "32",
         "13",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "76",
@@ -2247,9 +2322,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d6 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d6 6s2",
       "nbElectrons": "2 8 18 32 14 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2257,7 +2332,8 @@
         "32",
         "14",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "77",
@@ -2278,9 +2354,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d7 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d7 6s2",
       "nbElectrons": "2 8 18 32 15 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2288,7 +2364,8 @@
         "32",
         "15",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "78",
@@ -2309,9 +2386,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d9 6s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d9 6s1",
       "nbElectrons": "2 8 18 32 17 1",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2319,7 +2396,8 @@
         "32",
         "17",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "79",
@@ -2340,9 +2418,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d10 6s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s1",
       "nbElectrons": "2 8 18 32 18 1",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2350,7 +2428,8 @@
         "32",
         "18",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "80",
@@ -2371,9 +2450,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d10 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2",
       "nbElectrons": "2 8 18 32 18 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2381,7 +2460,8 @@
         "32",
         "18",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "81",
@@ -2402,9 +2482,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d10 6s2 6p1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p1",
       "nbElectrons": "2 8 18 32 18 3",
-      "valence": "",
       "block": "p",
       "serie": "poor",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2412,7 +2492,8 @@
         "32",
         "18",
         "3"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "82",
@@ -2433,9 +2514,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d10 6s2 6p2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p2",
       "nbElectrons": "2 8 18 32 18 4",
-      "valence": "",
       "block": "p",
       "serie": "poor",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2443,7 +2524,8 @@
         "32",
         "18",
         "4"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "83",
@@ -2464,9 +2546,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d10 6s2 6p3",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p3",
       "nbElectrons": "2 8 18 32 18 5",
-      "valence": "",
       "block": "p",
       "serie": "poor",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2474,7 +2556,8 @@
         "32",
         "18",
         "5"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "84",
@@ -2495,9 +2578,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d10 6s2 6p4",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p4",
       "nbElectrons": "2 8 18 32 18 6",
-      "valence": "",
       "block": "p",
       "serie": "metalloid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2505,7 +2588,8 @@
         "32",
         "18",
         "6"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "85",
@@ -2526,9 +2610,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d10 6s2 6p5",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p5",
       "nbElectrons": "2 8 18 32 18 7",
-      "valence": "",
       "block": "p",
       "serie": "halogen",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2536,7 +2620,8 @@
         "32",
         "18",
         "7"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "86",
@@ -2557,9 +2642,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d10 6s2 6p6",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p6",
       "nbElectrons": "2 8 18 32 18 8",
-      "valence": "",
       "block": "p",
       "serie": "noble",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2567,7 +2652,8 @@
         "32",
         "18",
         "8"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "87",
@@ -2588,9 +2674,9 @@
       "electronConfigurationShort": "[Rn] 7s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p6 7s1",
       "nbElectrons": "2 8 18 32 18 8 1",
-      "valence": "",
       "block": "s",
       "serie": "alkali",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2599,7 +2685,8 @@
         "18",
         "8",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "88",
@@ -2620,9 +2707,9 @@
       "electronConfigurationShort": "[Rn] 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 18 8 2",
-      "valence": "",
       "block": "s",
       "serie": "alkaline",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2631,7 +2718,8 @@
         "18",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "89",
@@ -2652,9 +2740,9 @@
       "electronConfigurationShort": "[Rn] 6d1 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p6 6d1 7s2",
       "nbElectrons": "2 8 18 32 18 9 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2663,7 +2751,8 @@
         "18",
         "9",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "90",
@@ -2684,9 +2773,9 @@
       "electronConfigurationShort": "[Rn] 6d2 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p6 6d2 7s2",
       "nbElectrons": "2 8 18 32 18 10 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2695,7 +2784,8 @@
         "18",
         "10",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "91",
@@ -2716,9 +2806,9 @@
       "electronConfigurationShort": "[Rn] 5f2 6d1 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f2 6s2 6p6 6d1 7s2",
       "nbElectrons": "2 8 18 32 20 9 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2727,7 +2817,8 @@
         "20",
         "9",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "92",
@@ -2748,9 +2839,9 @@
       "electronConfigurationShort": "[Rn] 5f3 6d1 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f3 6s2 6p6 6d1 7s2",
       "nbElectrons": "2 8 18 32 21 9 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2759,7 +2850,8 @@
         "21",
         "9",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "93",
@@ -2780,9 +2872,9 @@
       "electronConfigurationShort": "[Rn] 5f4 6d1 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f4 6s2 6p6 6d1 7s2",
       "nbElectrons": "2 8 18 32 22 9 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2791,7 +2883,8 @@
         "22",
         "9",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "94",
@@ -2812,9 +2905,9 @@
       "electronConfigurationShort": "[Rn] 5f6 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f6 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 24 8 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2823,7 +2916,8 @@
         "24",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "95",
@@ -2844,9 +2938,9 @@
       "electronConfigurationShort": "[Rn] 5f7 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f7 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 25 8 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2855,7 +2949,8 @@
         "25",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "96",
@@ -2876,9 +2971,9 @@
       "electronConfigurationShort": "[Rn] 5f7 6d1 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f7 6s2 6p6 6d1 7s2",
       "nbElectrons": "2 8 18 32 25 9 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2887,7 +2982,8 @@
         "25",
         "9",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "97",
@@ -2908,9 +3004,9 @@
       "electronConfigurationShort": "[Rn] 5f9 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f9 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 27 8 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2919,7 +3015,8 @@
         "27",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "98",
@@ -2940,9 +3037,9 @@
       "electronConfigurationShort": "[Rn] 5f10 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f10 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 28 8 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2951,7 +3048,8 @@
         "28",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "99",
@@ -2972,9 +3070,9 @@
       "electronConfigurationShort": "[Rn] 5f11 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f11 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 29 8 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -2983,7 +3081,8 @@
         "29",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "100",
@@ -3004,9 +3103,9 @@
       "electronConfigurationShort": "[Rn] 5f12 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f12 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 30 8 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3015,7 +3114,8 @@
         "30",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "101",
@@ -3036,9 +3136,9 @@
       "electronConfigurationShort": "[Rn] 5f13 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f13 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 31 8 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3047,7 +3147,8 @@
         "31",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "102",
@@ -3068,9 +3169,9 @@
       "electronConfigurationShort": "[Rn] 5f14 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 32 8 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3079,7 +3180,8 @@
         "32",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "103",
@@ -3100,9 +3202,9 @@
       "electronConfigurationShort": "[Rn] 5f14 7s2 7p1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 7s2 7p1",
       "nbElectrons": "2 8 18 32 32 8 3",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3111,7 +3213,8 @@
         "32",
         "8",
         "3"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "104",
@@ -3132,9 +3235,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d2 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d2 7s2",
       "nbElectrons": "2 8 18 32 32 10 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3143,7 +3246,8 @@
         "32",
         "10",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "105",
@@ -3164,9 +3268,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d3 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d3 7s2",
       "nbElectrons": "2 8 18 32 32 11 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3175,7 +3279,8 @@
         "32",
         "11",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "106",
@@ -3196,9 +3301,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d4 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d4 7s2",
       "nbElectrons": "2 8 18 32 32 12 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3207,7 +3312,8 @@
         "32",
         "12",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "107",
@@ -3228,9 +3334,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d5 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d5 7s2",
       "nbElectrons": "2 8 18 32 32 13 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3239,7 +3345,8 @@
         "32",
         "13",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "108",
@@ -3260,9 +3367,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d6 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d6 7s2",
       "nbElectrons": "2 8 18 32 32 14 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3271,7 +3378,8 @@
         "32",
         "14",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "109",
@@ -3292,9 +3400,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d7 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d7 7s2",
       "nbElectrons": "2 8 18 32 32 15 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3303,7 +3411,8 @@
         "32",
         "15",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "110",
@@ -3324,9 +3433,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d8 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d8 7s2",
       "nbElectrons": "2 8 18 32 32 16 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3335,7 +3444,8 @@
         "32",
         "16",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "111",
@@ -3356,9 +3466,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d9 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d9 7s2",
       "nbElectrons": "2 8 18 32 32 17 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3367,7 +3477,8 @@
         "32",
         "17",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "112",
@@ -3388,9 +3499,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d10 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2",
       "nbElectrons": "2 8 18 32 32 18 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3399,7 +3510,8 @@
         "32",
         "18",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "113",
@@ -3420,9 +3532,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d10 7s2 7p1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2 7p1",
       "nbElectrons": "2 8 18 32 32 18 3",
-      "valence": "",
       "block": "p",
       "serie": "poor",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3431,7 +3543,8 @@
         "32",
         "18",
         "3"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "114",
@@ -3452,9 +3565,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d10 7s2 7p2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2 7p2",
       "nbElectrons": "2 8 18 32 32 18 4",
-      "valence": "",
       "block": "p",
       "serie": "poor",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3463,7 +3576,8 @@
         "32",
         "18",
         "4"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "115",
@@ -3484,9 +3598,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d10 7s2 7p3",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2 7p3",
       "nbElectrons": "2 8 18 32 32 18 5",
-      "valence": "",
       "block": "p",
       "serie": "poor",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3495,7 +3609,8 @@
         "32",
         "18",
         "5"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "116",
@@ -3516,9 +3631,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d10 7s2 7p4",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2 7p4",
       "nbElectrons": "2 8 18 32 32 18 6",
-      "valence": "",
       "block": "p",
       "serie": "poor",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3527,7 +3642,8 @@
         "32",
         "18",
         "6"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "117",
@@ -3548,9 +3664,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d10 7s2 7p5",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2 7p5",
       "nbElectrons": "2 8 18 32 32 18 7",
-      "valence": "",
       "block": "p",
       "serie": "halogen",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3559,7 +3675,8 @@
         "32",
         "18",
         "7"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "118",
@@ -3580,9 +3697,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d10 7s2 7p6",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2 7p6",
       "nbElectrons": "2 8 18 32 32 18 8",
-      "valence": "",
       "block": "p",
       "serie": "noble",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -3591,7 +3708,8 @@
         "32",
         "18",
         "8"
-      ]
+      ],
+      "test": "abc"
     }
   ],
   "elements": [
@@ -3614,12 +3732,13 @@
       "electronConfigurationShort": "1s1",
       "electronConfiguration": "1s1",
       "nbElectrons": "1",
-      "valence": "",
       "block": "s",
       "serie": "nonmetal",
+      "metalColor": "",
       "electronsPerPeriod": [
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "2",
@@ -3640,12 +3759,13 @@
       "electronConfigurationShort": "1s2",
       "electronConfiguration": "1s2",
       "nbElectrons": "2",
-      "valence": "",
       "block": "s",
       "serie": "noble",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "3",
@@ -3666,13 +3786,14 @@
       "electronConfigurationShort": "[He] 2s1",
       "electronConfiguration": "1s2 2s1",
       "nbElectrons": "2 1",
-      "valence": "",
       "block": "s",
       "serie": "alkali",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "4",
@@ -3693,13 +3814,14 @@
       "electronConfigurationShort": "[He] 2s2",
       "electronConfiguration": "1s2 2s2",
       "nbElectrons": "2 2",
-      "valence": "",
       "block": "s",
       "serie": "alkaline",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "5",
@@ -3720,13 +3842,14 @@
       "electronConfigurationShort": "[He] 2s2 2p1",
       "electronConfiguration": "1s2 2s2 2p1",
       "nbElectrons": "2 3",
-      "valence": "",
       "block": "p",
       "serie": "metalloid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "3"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "6",
@@ -3747,13 +3870,14 @@
       "electronConfigurationShort": "[He] 2s2 2p2",
       "electronConfiguration": "1s2 2s2 2p2",
       "nbElectrons": "2 4",
-      "valence": "",
       "block": "p",
       "serie": "nonmetal",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "4"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "7",
@@ -3774,13 +3898,14 @@
       "electronConfigurationShort": "[He] 2s2 2p3",
       "electronConfiguration": "1s2 2s2 2p3",
       "nbElectrons": "2 5",
-      "valence": "",
       "block": "p",
       "serie": "nonmetal",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "5"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "8",
@@ -3801,13 +3926,14 @@
       "electronConfigurationShort": "[He] 2s2 2p4",
       "electronConfiguration": "1s2 2s2 2p4",
       "nbElectrons": "2 6",
-      "valence": "",
       "block": "p",
       "serie": "nonmetal",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "6"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "9",
@@ -3828,13 +3954,14 @@
       "electronConfigurationShort": "[He] 2s2 2p5",
       "electronConfiguration": "1s2 2s2 2p5",
       "nbElectrons": "2 7",
-      "valence": "",
       "block": "p",
       "serie": "halogen",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "7"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "10",
@@ -3855,13 +3982,14 @@
       "electronConfigurationShort": "[He] 2s2 2p6",
       "electronConfiguration": "1s2 2s2 2p6",
       "nbElectrons": "2 8",
-      "valence": "",
       "block": "p",
       "serie": "noble",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "11",
@@ -3882,14 +4010,15 @@
       "electronConfigurationShort": "[Ne] 3s1",
       "electronConfiguration": "1s2 2s2 2p6 3s1",
       "nbElectrons": "2 8 1",
-      "valence": "",
       "block": "s",
       "serie": "alkali",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "12",
@@ -3910,14 +4039,15 @@
       "electronConfigurationShort": "[Ne] 3s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2",
       "nbElectrons": "2 8 2",
-      "valence": "",
       "block": "s",
       "serie": "alkaline",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "13",
@@ -3938,14 +4068,15 @@
       "electronConfigurationShort": "[Ne] 3s2 3p1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p1",
       "nbElectrons": "2 8 3",
-      "valence": "",
       "block": "p",
       "serie": "poor",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "3"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "14",
@@ -3966,14 +4097,15 @@
       "electronConfigurationShort": "[Ne] 3s2 3p2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p2",
       "nbElectrons": "2 8 4",
-      "valence": "",
       "block": "p",
       "serie": "metalloid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "4"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "15",
@@ -3994,14 +4126,15 @@
       "electronConfigurationShort": "[Ne] 3s2 3p3",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p3",
       "nbElectrons": "2 8 5",
-      "valence": "",
       "block": "p",
       "serie": "nonmetal",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "5"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "16",
@@ -4022,14 +4155,15 @@
       "electronConfigurationShort": "[Ne] 3s2 3p4",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p4",
       "nbElectrons": "2 8 6",
-      "valence": "",
       "block": "p",
       "serie": "nonmetal",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "6"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "17",
@@ -4050,14 +4184,15 @@
       "electronConfigurationShort": "[Ne] 3s2 3p5",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p5",
       "nbElectrons": "2 8 7",
-      "valence": "",
       "block": "p",
       "serie": "halogen",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "7"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "18",
@@ -4078,14 +4213,15 @@
       "electronConfigurationShort": "[Ne] 3s2 3p6",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6",
       "nbElectrons": "2 8 8",
-      "valence": "",
       "block": "p",
       "serie": "noble",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "8"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "19",
@@ -4106,15 +4242,16 @@
       "electronConfigurationShort": "[Ar] 4s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 4s1",
       "nbElectrons": "2 8 8 1",
-      "valence": "",
       "block": "s",
       "serie": "alkali",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "8",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "20",
@@ -4135,15 +4272,16 @@
       "electronConfigurationShort": "[Ar] 4s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 4s2",
       "nbElectrons": "2 8 8 2",
-      "valence": "",
       "block": "s",
       "serie": "alkaline",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "21",
@@ -4164,15 +4302,16 @@
       "electronConfigurationShort": "[Ar] 3d1 4s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d1 4s2",
       "nbElectrons": "2 8 9 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "9",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "22",
@@ -4193,15 +4332,16 @@
       "electronConfigurationShort": "[Ar] 3d2 4s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d2 4s2",
       "nbElectrons": "2 8 10 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "10",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "23",
@@ -4222,15 +4362,16 @@
       "electronConfigurationShort": "[Ar] 3d3 4s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d3 4s2",
       "nbElectrons": "2 8 11 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "11",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "24",
@@ -4251,15 +4392,16 @@
       "electronConfigurationShort": "[Ar] 3d5 4s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d5 4s1",
       "nbElectrons": "2 8 13 1",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "13",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "25",
@@ -4280,15 +4422,16 @@
       "electronConfigurationShort": "[Ar] 3d5 4s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d5 4s2",
       "nbElectrons": "2 8 13 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "13",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "26",
@@ -4309,15 +4452,16 @@
       "electronConfigurationShort": "[Ar] 3d6 4s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d6 4s2",
       "nbElectrons": "2 8 14 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "14",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "27",
@@ -4338,15 +4482,16 @@
       "electronConfigurationShort": "[Ar] 3d7 4s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d7 4s2",
       "nbElectrons": "2 8 15 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "15",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "28",
@@ -4367,15 +4512,16 @@
       "electronConfigurationShort": "[Ar] 3d8 4s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d8 4s2",
       "nbElectrons": "2 8 16 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "16",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "29",
@@ -4396,15 +4542,16 @@
       "electronConfigurationShort": "[Ar] 3d10 4s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s1",
       "nbElectrons": "2 8 18 1",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "30",
@@ -4425,15 +4572,16 @@
       "electronConfigurationShort": "[Ar] 3d10 4s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2",
       "nbElectrons": "2 8 18 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "31",
@@ -4454,15 +4602,16 @@
       "electronConfigurationShort": "[Ar] 3d10 4s2 4p1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p1",
       "nbElectrons": "2 8 18 3",
-      "valence": "",
       "block": "p",
       "serie": "poor",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "3"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "32",
@@ -4483,15 +4632,16 @@
       "electronConfigurationShort": "[Ar] 3d10 4s2 4p2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p2",
       "nbElectrons": "2 8 18 4",
-      "valence": "",
       "block": "p",
       "serie": "metalloid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "4"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "33",
@@ -4512,15 +4662,16 @@
       "electronConfigurationShort": "[Ar] 3d10 4s2 4p3",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p3",
       "nbElectrons": "2 8 18 5",
-      "valence": "",
       "block": "p",
       "serie": "metalloid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "5"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "34",
@@ -4541,15 +4692,16 @@
       "electronConfigurationShort": "[Ar] 3d10 4s2 4p4",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p4",
       "nbElectrons": "2 8 18 6",
-      "valence": "",
       "block": "p",
       "serie": "nonmetal",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "6"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "35",
@@ -4570,15 +4722,16 @@
       "electronConfigurationShort": "[Ar] 3d10 4s2 4p5",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p5",
       "nbElectrons": "2 8 18 7",
-      "valence": "",
       "block": "p",
       "serie": "halogen",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "7"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "36",
@@ -4599,15 +4752,16 @@
       "electronConfigurationShort": "[Ar] 3d10 4s2 4p6",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6",
       "nbElectrons": "2 8 18 8",
-      "valence": "",
       "block": "p",
       "serie": "noble",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "8"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "37",
@@ -4628,16 +4782,17 @@
       "electronConfigurationShort": "[Kr] 5s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 5s1",
       "nbElectrons": "2 8 18 8 1",
-      "valence": "",
       "block": "s",
       "serie": "alkali",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "8",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "38",
@@ -4658,16 +4813,17 @@
       "electronConfigurationShort": "[Kr] 5s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 5s2",
       "nbElectrons": "2 8 18 8 2",
-      "valence": "",
       "block": "s",
       "serie": "alkaline",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "39",
@@ -4688,16 +4844,17 @@
       "electronConfigurationShort": "[Kr] 4d1 5s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d1 5s2",
       "nbElectrons": "2 8 18 9 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "9",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "40",
@@ -4718,16 +4875,17 @@
       "electronConfigurationShort": "[Kr] 4d2 5s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d2 5s2",
       "nbElectrons": "2 8 18 10 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "10",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "41",
@@ -4748,16 +4906,17 @@
       "electronConfigurationShort": "[Kr] 4d4 5s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d4 5s1",
       "nbElectrons": "2 8 18 12 1",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "12",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "42",
@@ -4778,16 +4937,17 @@
       "electronConfigurationShort": "[Kr] 4d5 5s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d5 5s1",
       "nbElectrons": "2 8 18 13 1",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "13",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "43",
@@ -4808,16 +4968,17 @@
       "electronConfigurationShort": "[Kr] 4d5 5s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d5 5s2",
       "nbElectrons": "2 8 18 13 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "13",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "44",
@@ -4838,16 +4999,17 @@
       "electronConfigurationShort": "[Kr] 4d7 5s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d7 5s1",
       "nbElectrons": "2 8 18 15 1",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "15",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "45",
@@ -4868,16 +5030,17 @@
       "electronConfigurationShort": "[Kr] 4d8 5s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d8 5s1",
       "nbElectrons": "2 8 18 16 1",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "16",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "46",
@@ -4898,15 +5061,16 @@
       "electronConfigurationShort": "[Kr] 4d10",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10",
       "nbElectrons": "2 8 18 18",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "18"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "47",
@@ -4927,16 +5091,17 @@
       "electronConfigurationShort": "[Kr] 4d10 5s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s1",
       "nbElectrons": "2 8 18 18 1",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "18",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "48",
@@ -4957,16 +5122,17 @@
       "electronConfigurationShort": "[Kr] 4d10 5s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2",
       "nbElectrons": "2 8 18 18 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "18",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "49",
@@ -4987,16 +5153,17 @@
       "electronConfigurationShort": "[Kr] 4d10 5s2 5p1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p1",
       "nbElectrons": "2 8 18 18 3",
-      "valence": "",
       "block": "p",
       "serie": "poor",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "18",
         "3"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "50",
@@ -5017,16 +5184,17 @@
       "electronConfigurationShort": "[Kr] 4d10 5s2 5p2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p2",
       "nbElectrons": "2 8 18 18 4",
-      "valence": "",
       "block": "p",
       "serie": "poor",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "18",
         "4"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "51",
@@ -5047,16 +5215,17 @@
       "electronConfigurationShort": "[Kr] 4d10 5s2 5p3",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p3",
       "nbElectrons": "2 8 18 18 5",
-      "valence": "",
       "block": "p",
       "serie": "metalloid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "18",
         "5"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "52",
@@ -5077,16 +5246,17 @@
       "electronConfigurationShort": "[Kr] 4d10 5s2 5p4",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p4",
       "nbElectrons": "2 8 18 18 6",
-      "valence": "",
       "block": "p",
       "serie": "metalloid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "18",
         "6"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "53",
@@ -5107,16 +5277,17 @@
       "electronConfigurationShort": "[Kr] 4d10 5s2 5p5",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p5",
       "nbElectrons": "2 8 18 18 7",
-      "valence": "",
       "block": "p",
       "serie": "halogen",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "18",
         "7"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "54",
@@ -5137,16 +5308,17 @@
       "electronConfigurationShort": "[Kr] 4d10 5s2 5p6",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p6",
       "nbElectrons": "2 8 18 18 8",
-      "valence": "",
       "block": "p",
       "serie": "noble",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
         "18",
         "18",
         "8"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "55",
@@ -5167,9 +5339,9 @@
       "electronConfigurationShort": "[Xe] 6s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p6 6s1",
       "nbElectrons": "2 8 18 18 8 1",
-      "valence": "",
       "block": "s",
       "serie": "alkali",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5177,7 +5349,8 @@
         "18",
         "8",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "56",
@@ -5198,9 +5371,9 @@
       "electronConfigurationShort": "[Xe] 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 18 8 2",
-      "valence": "",
       "block": "s",
       "serie": "alkaline",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5208,7 +5381,8 @@
         "18",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "57",
@@ -5229,9 +5403,9 @@
       "electronConfigurationShort": "[Xe] 5d1 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 5s2 5p6 5d1 6s2",
       "nbElectrons": "2 8 18 18 9 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5239,7 +5413,8 @@
         "18",
         "9",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "58",
@@ -5260,9 +5435,9 @@
       "electronConfigurationShort": "[Xe] 4f1 5d1 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f1 5s2 5p6 5d1 6s2",
       "nbElectrons": "2 8 18 19 9 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5270,7 +5445,8 @@
         "19",
         "9",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "59",
@@ -5291,9 +5467,9 @@
       "electronConfigurationShort": "[Xe] 4f3 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f3 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 21 8 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5301,7 +5477,8 @@
         "21",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "60",
@@ -5322,9 +5499,9 @@
       "electronConfigurationShort": "[Xe] 4f4 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f4 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 22 8 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5332,7 +5509,8 @@
         "22",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "61",
@@ -5353,9 +5531,9 @@
       "electronConfigurationShort": "[Xe] 4f5 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f5 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 23 8 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5363,7 +5541,8 @@
         "23",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "62",
@@ -5384,9 +5563,9 @@
       "electronConfigurationShort": "[Xe] 4f6 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f6 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 24 8 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5394,7 +5573,8 @@
         "24",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "63",
@@ -5415,9 +5595,9 @@
       "electronConfigurationShort": "[Xe] 4f7 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f7 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 25 8 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5425,7 +5605,8 @@
         "25",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "64",
@@ -5446,9 +5627,9 @@
       "electronConfigurationShort": "[Xe] 4f7 5d1 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f7 5s2 5p6 5d1 6s2",
       "nbElectrons": "2 8 18 25 9 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5456,7 +5637,8 @@
         "25",
         "9",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "65",
@@ -5477,9 +5659,9 @@
       "electronConfigurationShort": "[Xe] 4f9 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f9 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 27 8 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5487,7 +5669,8 @@
         "27",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "66",
@@ -5508,9 +5691,9 @@
       "electronConfigurationShort": "[Xe] 4f10 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f10 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 28 8 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5518,7 +5701,8 @@
         "28",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "67",
@@ -5539,9 +5723,9 @@
       "electronConfigurationShort": "[Xe] 4f11 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f11 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 29 8 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5549,7 +5733,8 @@
         "29",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "68",
@@ -5570,9 +5755,9 @@
       "electronConfigurationShort": "[Xe] 4f12 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f12 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 30 8 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5580,7 +5765,8 @@
         "30",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "69",
@@ -5601,9 +5787,9 @@
       "electronConfigurationShort": "[Xe] 4f13 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f13 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 31 8 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5611,7 +5797,8 @@
         "31",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "70",
@@ -5632,9 +5819,9 @@
       "electronConfigurationShort": "[Xe] 4f14 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 6s2",
       "nbElectrons": "2 8 18 32 8 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5642,7 +5829,8 @@
         "32",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "71",
@@ -5663,9 +5851,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d1 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d1 6s2",
       "nbElectrons": "2 8 18 32 9 2",
-      "valence": "",
       "block": "f",
       "serie": "lanthanoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5673,7 +5861,8 @@
         "32",
         "9",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "72",
@@ -5694,9 +5883,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d2 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d2 6s2",
       "nbElectrons": "2 8 18 32 10 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5704,7 +5893,8 @@
         "32",
         "10",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "73",
@@ -5725,9 +5915,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d3 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d3 6s2",
       "nbElectrons": "2 8 18 32 11 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5735,7 +5925,8 @@
         "32",
         "11",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "74",
@@ -5756,9 +5947,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d4 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d4 6s2",
       "nbElectrons": "2 8 18 32 12 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5766,7 +5957,8 @@
         "32",
         "12",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "75",
@@ -5787,9 +5979,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d5 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d5 6s2",
       "nbElectrons": "2 8 18 32 13 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5797,7 +5989,8 @@
         "32",
         "13",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "76",
@@ -5818,9 +6011,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d6 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d6 6s2",
       "nbElectrons": "2 8 18 32 14 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5828,7 +6021,8 @@
         "32",
         "14",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "77",
@@ -5849,9 +6043,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d7 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d7 6s2",
       "nbElectrons": "2 8 18 32 15 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5859,7 +6053,8 @@
         "32",
         "15",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "78",
@@ -5880,9 +6075,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d9 6s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d9 6s1",
       "nbElectrons": "2 8 18 32 17 1",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5890,7 +6085,8 @@
         "32",
         "17",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "79",
@@ -5911,9 +6107,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d10 6s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s1",
       "nbElectrons": "2 8 18 32 18 1",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5921,7 +6117,8 @@
         "32",
         "18",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "80",
@@ -5942,9 +6139,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d10 6s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2",
       "nbElectrons": "2 8 18 32 18 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5952,7 +6149,8 @@
         "32",
         "18",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "81",
@@ -5973,9 +6171,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d10 6s2 6p1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p1",
       "nbElectrons": "2 8 18 32 18 3",
-      "valence": "",
       "block": "p",
       "serie": "poor",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -5983,7 +6181,8 @@
         "32",
         "18",
         "3"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "82",
@@ -6004,9 +6203,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d10 6s2 6p2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p2",
       "nbElectrons": "2 8 18 32 18 4",
-      "valence": "",
       "block": "p",
       "serie": "poor",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6014,7 +6213,8 @@
         "32",
         "18",
         "4"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "83",
@@ -6035,9 +6235,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d10 6s2 6p3",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p3",
       "nbElectrons": "2 8 18 32 18 5",
-      "valence": "",
       "block": "p",
       "serie": "poor",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6045,7 +6245,8 @@
         "32",
         "18",
         "5"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "84",
@@ -6066,9 +6267,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d10 6s2 6p4",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p4",
       "nbElectrons": "2 8 18 32 18 6",
-      "valence": "",
       "block": "p",
       "serie": "metalloid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6076,7 +6277,8 @@
         "32",
         "18",
         "6"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "85",
@@ -6097,9 +6299,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d10 6s2 6p5",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p5",
       "nbElectrons": "2 8 18 32 18 7",
-      "valence": "",
       "block": "p",
       "serie": "halogen",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6107,7 +6309,8 @@
         "32",
         "18",
         "7"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "86",
@@ -6128,9 +6331,9 @@
       "electronConfigurationShort": "[Xe] 4f14 5d10 6s2 6p6",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p6",
       "nbElectrons": "2 8 18 32 18 8",
-      "valence": "",
       "block": "p",
       "serie": "noble",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6138,7 +6341,8 @@
         "32",
         "18",
         "8"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "87",
@@ -6159,9 +6363,9 @@
       "electronConfigurationShort": "[Rn] 7s1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p6 7s1",
       "nbElectrons": "2 8 18 32 18 8 1",
-      "valence": "",
       "block": "s",
       "serie": "alkali",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6170,7 +6374,8 @@
         "18",
         "8",
         "1"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "88",
@@ -6191,9 +6396,9 @@
       "electronConfigurationShort": "[Rn] 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 18 8 2",
-      "valence": "",
       "block": "s",
       "serie": "alkaline",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6202,7 +6407,8 @@
         "18",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "89",
@@ -6223,9 +6429,9 @@
       "electronConfigurationShort": "[Rn] 6d1 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p6 6d1 7s2",
       "nbElectrons": "2 8 18 32 18 9 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6234,7 +6440,8 @@
         "18",
         "9",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "90",
@@ -6255,9 +6462,9 @@
       "electronConfigurationShort": "[Rn] 6d2 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 6s2 6p6 6d2 7s2",
       "nbElectrons": "2 8 18 32 18 10 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6266,7 +6473,8 @@
         "18",
         "10",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "91",
@@ -6287,9 +6495,9 @@
       "electronConfigurationShort": "[Rn] 5f2 6d1 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f2 6s2 6p6 6d1 7s2",
       "nbElectrons": "2 8 18 32 20 9 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6298,7 +6506,8 @@
         "20",
         "9",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "92",
@@ -6319,9 +6528,9 @@
       "electronConfigurationShort": "[Rn] 5f3 6d1 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f3 6s2 6p6 6d1 7s2",
       "nbElectrons": "2 8 18 32 21 9 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6330,7 +6539,8 @@
         "21",
         "9",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "93",
@@ -6351,9 +6561,9 @@
       "electronConfigurationShort": "[Rn] 5f4 6d1 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f4 6s2 6p6 6d1 7s2",
       "nbElectrons": "2 8 18 32 22 9 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6362,7 +6572,8 @@
         "22",
         "9",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "94",
@@ -6383,9 +6594,9 @@
       "electronConfigurationShort": "[Rn] 5f6 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f6 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 24 8 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6394,7 +6605,8 @@
         "24",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "95",
@@ -6415,9 +6627,9 @@
       "electronConfigurationShort": "[Rn] 5f7 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f7 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 25 8 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6426,7 +6638,8 @@
         "25",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "96",
@@ -6447,9 +6660,9 @@
       "electronConfigurationShort": "[Rn] 5f7 6d1 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f7 6s2 6p6 6d1 7s2",
       "nbElectrons": "2 8 18 32 25 9 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6458,7 +6671,8 @@
         "25",
         "9",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "97",
@@ -6479,9 +6693,9 @@
       "electronConfigurationShort": "[Rn] 5f9 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f9 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 27 8 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6490,7 +6704,8 @@
         "27",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "98",
@@ -6511,9 +6726,9 @@
       "electronConfigurationShort": "[Rn] 5f10 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f10 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 28 8 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6522,7 +6737,8 @@
         "28",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "99",
@@ -6543,9 +6759,9 @@
       "electronConfigurationShort": "[Rn] 5f11 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f11 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 29 8 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6554,7 +6770,8 @@
         "29",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "100",
@@ -6575,9 +6792,9 @@
       "electronConfigurationShort": "[Rn] 5f12 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f12 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 30 8 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6586,7 +6803,8 @@
         "30",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "101",
@@ -6607,9 +6825,9 @@
       "electronConfigurationShort": "[Rn] 5f13 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f13 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 31 8 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6618,7 +6836,8 @@
         "31",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "102",
@@ -6639,9 +6858,9 @@
       "electronConfigurationShort": "[Rn] 5f14 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 7s2",
       "nbElectrons": "2 8 18 32 32 8 2",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6650,7 +6869,8 @@
         "32",
         "8",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "103",
@@ -6671,9 +6891,9 @@
       "electronConfigurationShort": "[Rn] 5f14 7s2 7p1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 7s2 7p1",
       "nbElectrons": "2 8 18 32 32 8 3",
-      "valence": "",
       "block": "f",
       "serie": "actinoid",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6682,7 +6902,8 @@
         "32",
         "8",
         "3"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "104",
@@ -6703,9 +6924,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d2 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d2 7s2",
       "nbElectrons": "2 8 18 32 32 10 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6714,7 +6935,8 @@
         "32",
         "10",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "105",
@@ -6735,9 +6957,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d3 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d3 7s2",
       "nbElectrons": "2 8 18 32 32 11 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6746,7 +6968,8 @@
         "32",
         "11",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "106",
@@ -6767,9 +6990,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d4 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d4 7s2",
       "nbElectrons": "2 8 18 32 32 12 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6778,7 +7001,8 @@
         "32",
         "12",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "107",
@@ -6799,9 +7023,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d5 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d5 7s2",
       "nbElectrons": "2 8 18 32 32 13 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6810,7 +7034,8 @@
         "32",
         "13",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "108",
@@ -6831,9 +7056,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d6 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d6 7s2",
       "nbElectrons": "2 8 18 32 32 14 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6842,7 +7067,8 @@
         "32",
         "14",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "109",
@@ -6863,9 +7089,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d7 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d7 7s2",
       "nbElectrons": "2 8 18 32 32 15 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6874,7 +7100,8 @@
         "32",
         "15",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "110",
@@ -6895,9 +7122,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d8 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d8 7s2",
       "nbElectrons": "2 8 18 32 32 16 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6906,7 +7133,8 @@
         "32",
         "16",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "111",
@@ -6927,9 +7155,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d9 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d9 7s2",
       "nbElectrons": "2 8 18 32 32 17 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6938,7 +7166,8 @@
         "32",
         "17",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "112",
@@ -6959,9 +7188,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d10 7s2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2",
       "nbElectrons": "2 8 18 32 32 18 2",
-      "valence": "",
       "block": "d",
       "serie": "transition",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -6970,7 +7199,8 @@
         "32",
         "18",
         "2"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "113",
@@ -6991,9 +7221,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d10 7s2 7p1",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2 7p1",
       "nbElectrons": "2 8 18 32 32 18 3",
-      "valence": "",
       "block": "p",
       "serie": "poor",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -7002,7 +7232,8 @@
         "32",
         "18",
         "3"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "114",
@@ -7023,9 +7254,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d10 7s2 7p2",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2 7p2",
       "nbElectrons": "2 8 18 32 32 18 4",
-      "valence": "",
       "block": "p",
       "serie": "poor",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -7034,7 +7265,8 @@
         "32",
         "18",
         "4"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "115",
@@ -7055,9 +7287,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d10 7s2 7p3",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2 7p3",
       "nbElectrons": "2 8 18 32 32 18 5",
-      "valence": "",
       "block": "p",
       "serie": "poor",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -7066,7 +7298,8 @@
         "32",
         "18",
         "5"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "116",
@@ -7087,9 +7320,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d10 7s2 7p4",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2 7p4",
       "nbElectrons": "2 8 18 32 32 18 6",
-      "valence": "",
       "block": "p",
       "serie": "poor",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -7098,7 +7331,8 @@
         "32",
         "18",
         "6"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "117",
@@ -7119,9 +7353,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d10 7s2 7p5",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2 7p5",
       "nbElectrons": "2 8 18 32 32 18 7",
-      "valence": "",
       "block": "p",
       "serie": "halogen",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -7130,7 +7364,8 @@
         "32",
         "18",
         "7"
-      ]
+      ],
+      "test": "abc"
     },
     {
       "Z": "118",
@@ -7151,9 +7386,9 @@
       "electronConfigurationShort": "[Rn] 5f14 6d10 7s2 7p6",
       "electronConfiguration": "1s2 2s2 2p6 3s2 3p6 3d10 4s2 4p6 4d10 4f14 5s2 5p6 5d10 5f14 6s2 6p6 6d10 7s2 7p6",
       "nbElectrons": "2 8 18 32 32 18 8",
-      "valence": "",
       "block": "p",
       "serie": "noble",
+      "metalColor": "",
       "electronsPerPeriod": [
         "2",
         "8",
@@ -7162,37 +7397,42 @@
         "32",
         "18",
         "8"
-      ]
+      ],
+      "test": "abc"
     }
   ],
   "templates": [
     {
+      "name": "name",
+      "template": "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\">{{ element.symbol }}</h2>\n        <p>{{ element.name }}</p>\n    </div>"
+    },
+    {
       "name": "weight",
-      "template": "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"weight\">{{ element.weight }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>"
+      "template": "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p>{{ element.name }}</p>\n    </div>"
     },
     {
       "name": "density",
-      "template": "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"density\">{{ element.density }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>"
+      "template": "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"density\">{{ element.density }}</p>\n    </div>"
     },
     {
       "name": "melting point",
-      "template": "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"melting\">{{ element.melting }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>"
+      "template": "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"melting\">{{ element.melting }}</p>\n    </div>"
     },
     {
       "name": "boiling point",
-      "template": "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"boiling\">{{ element.boiling }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>"
+      "template": "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"boiling\">{{ element.boiling }}</p>\n    </div>"
     },
     {
       "name": "heating",
-      "template": "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"heating\">{{ element.heating }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>"
+      "template": "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"heating\">{{ element.heating }}</p>\n    </div>"
     },
     {
       "name": "negativity",
-      "template": "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"negativity\">{{ element.negativity }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>"
+      "template": "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"weight\">{{ element.weight }}</p>\n    </div>\n\n    <div class=\"element-info-left>\n        <p class=\"negativity\">{{ element.negativity }}</p>\n    </div>"
     },
     {
       "name": "abundance",
-      "template": "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"abundance\">{{ element.abundance }}</p>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>"
+      "template": "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p class=\"abundance\">{{ element.abundance }}</p>\n    </div>"
     },
     {
       "name": "orbitals",
