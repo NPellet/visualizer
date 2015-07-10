@@ -1,3 +1,19 @@
+/* Reset Style */
+
+.periodic-table {
+    font-size: 10px;
+}
+
+.periodic-table ul {
+    margin: 0;
+    padding: 0;
+}
+.periodic-table li {
+    list-style : none;
+}
+
+/* Table Style*/
+
 .periodic-table {
     display: flex;
     flex-direction: row;
@@ -5,7 +21,6 @@
     margin-left: -2px;
     min-width: 118em;
     min-height: 50em;
-    font-size: 10px;
     width: 100%;
     height: 100%;
 }
@@ -79,22 +94,10 @@
     box-sizing: border-box;
 }
 
-/*[class*="table"] > div,*/
-/*[class*="simple"] > div {*/
-    /*margin-bottom: 2px;*/
-/*}*/
-
-.e2 {
-    margin-left: calc(100% / 19 * 5);
-}
-
 .e5, .e13 {
     margin-left: calc(100% / 19 * 10 + 2px);
 
 }
-/*.e72, .e104 {
-    margin-left: calc(100% / 18 + 2px);
-}*/
 .e57, .e89 {
     margin-left: calc(100% / 19 * 4 + 2px);
 }
@@ -153,13 +156,9 @@
     white-space: nowrap;
 }
 .electronsPerPeriod {
-    margin: 0;
-    padding:0;
     font-size: 0.7em;
 }
-.electronsPerPeriod li {
-    list-style : none;
-}
+
 
 .elec-conf:hover .elec-conf-short, .elec-conf .elec-conf-long {
     display: none;
@@ -169,12 +168,61 @@
 }
 
 .legend {
-    background-color: grey;
+    border: none;
     order:1;
     margin-left: calc(100% / 19 + 2px);
     width: calc(100% / 19 * 10 - 2px);
     margin-bottom: calc(-12em - 2px);
     display:flex;
+}
+.inner-legend {
+    display:flex;
+}
+.color-serie {
+    font-size: 1em;
+    /*column-width: 25%;*/
+    /*-moz-column-width: 25%;*/
+    /*-webkit-column-width: 25%;*/
+    column-count: 2;
+    -moz-column-count: 2;
+    -webkit-column-count: 2;
+    flex: 2;
+}
+.color-serie li {
+    padding: 0.5em;
+    display: inline-block;
+    width:100%;
+    border: 1px solid grey;
+    break-inside: avoid-column;
+}
+.stateOfMatter {
+    flex:auto;
+    margin-left: 1em;
+}
+.stateOfMatter dt{
+    float:left;
+    clear:left;
+    margin-right: 1em;
+    width: 6.5em;
+}
+.stateOfMatter dt:after {
+    content: " : ";
+
+}
+td.solid, td.liquid, td.gas, td.unknown {
+    font-weight: bold;
+}
+.solid {
+    color: black;
+}
+.liquid {
+    color: blue;
+}
+.gas {
+    color: red;
+}
+.unknown {
+    color: grey;
 }
 
 .element-zoom {
@@ -186,12 +234,18 @@
 .element-datas {
     flex: 1 0 auto;
 }
-.element-zoom, .element-datas {
+.element-zoom, .element-datas, .default-legend {
     font-size: 1.4em;
 }
 
+.interactive-zone {
+    order:1;
+    width: calc(100% / 19 * 5 - 2px);
+}
 
-
+.hidden {
+    display: none;
+}
 
 
 

@@ -97,9 +97,34 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             var legend = $('<div class="legend"></div>');
             $('div.e1').after(legend);
 
-            var elementZoom = $('<div class="element-zoom"></div>');
-            var elementDatas = $('<div class="element-datas"><ul><li>data1</li><li>data2</li></ul></div>');
-            legend.append(elementZoom).append(elementDatas);
+            var defaultLegend = $('<div class="default-legend"></div>');
+            var elementZoom = $('<div class="element-zoom hidden"></div>');
+            var elementDatas = $('<div class="element-datas hidden"><ul><li>data1</li><li>data2</li></ul></div>');
+            legend.append(defaultLegend).append(elementZoom).append(elementDatas);
+
+            //default Legend. Better in a twig.
+            var innerLegend = $('<div class="inner-legend"></div>');
+            defaultLegend.append(innerLegend);
+            innerLegend.append('<ul class="color-serie">' +
+                '<li class="alkali">Alkali metals</li>' +
+                '<li class="alkaline">Alkalin earth metals</li>' +
+                '<li class="transition">Transition metals</li>' +
+                '<li class="lanthanoid">Lanthanoids</li>' +
+                '<li class="actinoid">Actinoids</li>' +
+                '<li class="poor">Post-transition metals</li>' +
+                '<li class="metalloid">Metalloids</li>' +
+                '<li class="nonmetal">Nonmetals</li>' +
+                '<li class="halogen">Halogens</li>' +
+                '<li class="noble">Noble gases</li>' +
+            '</ul>');
+            innerLegend.append('<div class="stateOfMatter"><table><tbody>' +
+            '<tr><td class="solid">S</td><td>Solid</td></tr>' +
+            '<tr><td class="liquid">L</td><td>Liquid</td></tr>' +
+            '<tr><td class="gas"">G</td><td>Gas</td></tr>' +
+            '<tr><td class="unknown">U</td><td>Unknown</td></tr>' +
+            '</tbody></table>' +
+            '<dl><dt>Temperature</dt><dd>293.5 K</dd>' +
+            '<dt>Pressure</dt><dd>101.325 kPa</dd></dl></div>');
 
             var isFixed = false;
 
@@ -121,13 +146,33 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                 isFixed = false;
             });
 
+            $('.element').mouseleave(function () {
+                if(isFixed) return;
+                $('.element-zoom').delay(50000).empty();
+                defaultLegend.removeClass('hidden');
+                elementZoom.addClass('hidden');
+                elementDatas.addClass('hidden');
+            });
             function renderElement($el) {
                 var idx = $el.data('idx');
                 var el = that.elements[idx];
                 if(!el) return;
+                defaultLegend.addClass('hidden');
+                elementZoom.removeClass('hidden');
+                elementDatas.removeClass('hidden');
                 elementZoom.empty();
                 elementZoom.append(that.template.render({element: el}));
             }
+
+            var interactZone = ('<div class="interactive-zone"><div id="slider"></div>');
+            //$( "#slider" ).slider({
+            //    orientation: "horizontal",
+            //    max: 6000,
+            //    min: 0
+            //});
+            var legend = $('<div class="legend"></div>');
+            $('.legend').after(interactZone);
+
 
             var actinid = ('<div class="indic-f period7"><p>89-103</p></div>');
             var lanthanid = ('<div class="indic-f period6"><p>57-71</p></div>');
