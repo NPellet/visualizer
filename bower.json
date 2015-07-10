@@ -55,7 +55,7 @@
     "marked": "0.3.3",
     "ml": "0.2.1",
     "modernizr": "2.8.3",
-    "onde": "cheminfo/onde",
+    "onde": "cheminfo/onde#9a90972d0907ad7cea2eb4299f742f32418cb2d0",
     "openchemlib": "v3.0.0-beta4",
     "papa-parse": "4.1.1",
     "pouchdb": "3.3.1",
