@@ -64,7 +64,7 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
             this.resolveReady();
         },
         update: {
-            value: function (value) {
+            data: function (value) {
                 this.module.model.data = value;
                 var val = value.get();
                 this._code = val;

@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/util/datatraversing', 'src/util/api', 'src/util/color'], function (Default, Graph, DataTraversing, API, Color) {
+define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'src/util/api', 'src/util/color'], function (Default, Graph, DataTraversing, API, Color) {
 
     function View() {
     }
@@ -68,13 +68,13 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                         } else {
                             zoomOptions.zoomMode = 'xy';
                         }
-                        options.plugins['graph.plugin.zoom'] = zoomOptions;
-                        options.plugins['graph.plugin.drag'] = {};
-                        options.pluginAction['graph.plugin.zoom'] = {
+                        options.plugins['zoom'] = zoomOptions;
+                        options.plugins['drag'] = {};
+                        options.pluginAction['zoom'] = {
                             shift: false,
                             ctrl: false
                         };
-                        options.pluginAction['graph.plugin.drag'] = {
+                        options.pluginAction['drag'] = {
                             shift: true,
                             ctrl: false
                         };
@@ -82,11 +82,11 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                         /*
                          // UPDATE NORMAN FOR DEV
 
-                         options.plugins['graph.plugin.shape'] = { type: 'rangex', color: [ 0, 100, 100 ], fillColor: 'rgba(0,100,100,0.3)', strokeColor: 'rgba(0,100,100,1)', strokeWidth: 2 }
+                         options.plugins['shape'] = { type: 'rangex', color: [ 0, 100, 100 ], fillColor: 'rgba(0,100,100,0.3)', strokeColor: 'rgba(0,100,100,1)', strokeWidth: 2 }
 
-                         options.pluginAction[ 'graph.plugin.zoom'] = {};
-                         options.pluginAction[ 'graph.plugin.drag'] = {};
-                         options.pluginAction[ 'graph.plugin.shape'] = { shift: true, ctrl: false };
+                         options.pluginAction[ 'zoom'] = {};
+                         options.pluginAction[ 'drag'] = {};
+                         options.pluginAction[ 'shape'] = { shift: true, ctrl: false };
 
                          // END UPDATE NORMAN FOR DEV
 
@@ -94,7 +94,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                         options.dblclick = {
                             type: 'plugin',
-                            plugin: 'graph.plugin.zoom',
+                            plugin: 'zoom',
                             options: {
                                 mode: 'total'
                             }
@@ -115,7 +115,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
                         options.wheel = {
                             type: 'plugin',
-                            plugin: 'graph.plugin.zoom',
+                            plugin: 'zoom',
                             options: wheelOptions
                         };
                     }
@@ -242,13 +242,13 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 that.xAxis = graph.getXAxis();
                 that.yAxis = graph.getYAxis();
 
-                graph.shapeHandlers.mouseOver.push(function (shape) {
+                graph.on('shapeMouseOver', function (shape) {
                     that.module.controller.createDataFromEvent('onMouseOverShape', 'shapeInfos', shape.data);
-                    API.highlight(shape.data, 1);
+                    API.highlight(shape._data, 1);
                 });
 
-                graph.shapeHandlers.mouseOut.push(function (shape) {
-                    API.highlight(shape.data, 0);
+                graph.on('shapeMouseOut', function (shape) {
+                    API.highlight(shape._data, 0);
                 });
 
                 graph.shapeHandlers.onAfterResized.push(function (shape) {
@@ -258,12 +258,12 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 });
 
                 graph.on('shapeSelect', function (shape) {
-                    that.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape.data);
-                    that.module.controller.sendActionFromEvent('onShapeSelect', 'selectedShape', shape.data);
+                    that.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape._data);
+                    that.module.controller.sendActionFromEvent('onShapeSelect', 'selectedShape', shape._data);
                 });
                 graph.on('shapeUnselect', function (shape) {
-                    that.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape.data);
-                    that.module.controller.sendActionFromEvent('onShapeUnselect', 'shapeInfos', shape.data);
+                    that.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape._data);
+                    that.module.controller.sendActionFromEvent('onShapeUnselect', 'shapeInfos', shape._data);
                 });
 
                 that.onResize();
@@ -635,7 +635,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 for (; i < l; i++) {
                     (function (i) {
                         var annotation = annotations[i];
-                        var shape = that.graph.newShape(annotation, null, null, true);
+                        var shape = that.graph.newShape(annotation.type, annotation);
                         that.annotations[varName][i] = shape;
 
                         shape.setSerie(that.graph.getSerie(0));

@@ -181,8 +181,20 @@ define([
     };
 
     exports.feedback = function (options, shareOptions, dialogOptions) {
+        options = options || {};
+        shareOptions = shareOptions || {};
+        dialogOptions = dialogOptions || {};
+        shareOptions = _.defaults(shareOptions, {
+            couchUrl: 'http://visualizer.epfl.ch',
+            database: 'x',
+            tinyUrl: 'http://visualizer.epfl.ch/tiny'
+        });
+        dialogOptions = _.defaults(dialogOptions, {
+            title: 'Feedback',
+            width: 900,
+            height: 350
+        });
         var uniqid = Util.getNextUniqueId();
-
         var message = $('<span>').attr('id', uniqid + '-message').css('color', 'red');
 
         var dialog = $('<div>').html(

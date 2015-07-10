@@ -162,14 +162,14 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
     };
 
     function schemaJpath(schema, jpath) {
-        if (schema.type === 'object') {
+        if (schema.type === 'object' && (typeof schema.properties === 'object')) {
             for (var key in schema.properties) {
                 schema.jpath = jpath;
                 var njpath = jpath.slice();
                 njpath.push(key);
                 schemaJpath(schema.properties[key], njpath);
             }
-        } else if(schema.type === 'array') {
+        } else if (schema.type === 'array' && schema.items && schema.items.length) {
             schema.jpath = jpath;
             var njpath = jpath.slice();
             njpath.push('$array$');

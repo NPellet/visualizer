@@ -7,7 +7,7 @@
  */
 
 define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jquery-ui/datepicker'], function (Util, _) {
-    Util.loadCss("./components/spectrum/spectrum.css");
+    Util.loadCss('./components/spectrum/spectrum.css');
 
     function setItemId(newItem, grid) {
         if (!newItem[grid.module.view.idPropertyName]) {
@@ -23,16 +23,17 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
     (function ($) {
         // register namespace
         $.extend(true, window, {
-            "Slick": {
-                "CustomEditors": {
-                    "TextValue": TextValueEditor,
-                    "ColorValue": ColorEditor,
-                    "Text": TextValueEditor,
-                    "DateValue": DateEditor,
-                    "DataStringEditor": DataStringEditor,
-                    "DataNumberEditor": DataNumberEditor,
-                    "DataBooleanEditor": DataBooleanEditor,
-                    "LongText": LongTextEditor
+            'Slick': {
+                'CustomEditors': {
+                    'TextValue': TextValueEditor,
+                    'ColorValue': ColorEditor,
+                    'Text': TextValueEditor,
+                    'DateValue': DateEditor,
+                    'DataStringEditor': DataStringEditor,
+                    'DataNumberEditor': DataNumberEditor,
+                    'DataBooleanEditor': DataBooleanEditor,
+                    'LongText': LongTextEditor,
+                    'SimpleLongText': SimpleLongTextEditor
                 }
             }
         });
@@ -45,18 +46,18 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
             var calendarOpen = false;
 
             this.init = function () {
-                $input = $("<INPUT type=text class='editor-text' />");
+                $input = $('<INPUT type="text" class="editor-text" />');
                 $input.appendTo(args.container);
                 $input.focus().select();
                 $input.datepicker({
-                    showOn: "button",
+                    showOn: 'button',
                     buttonImageOnly: true,
-                    buttonImage: require.toUrl("components/slickgrid/images/calendar.gif"),
+                    buttonImage: require.toUrl('components/slickgrid/images/calendar.gif'),
                     beforeShow: function () {
-                        calendarOpen = true
+                        calendarOpen = true;
                     },
                     onClose: function () {
-                        calendarOpen = false
+                        calendarOpen = false;
                     }
                 });
                 $input.width($input.width() - 18);
@@ -64,8 +65,8 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
 
             this.destroy = function () {
                 $.datepicker.dpDiv.stop(true, true);
-                $input.datepicker("hide");
-                $input.datepicker("destroy");
+                $input.datepicker('hide');
+                $input.datepicker('destroy');
                 $input.remove();
             };
 
@@ -86,8 +87,8 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
                     return;
                 }
                 $.datepicker.dpDiv
-                    .css("top", position.top + 30)
-                    .css("left", position.left);
+                    .css('top', position.top + 30)
+                    .css('left', position.left);
             };
 
             this.focus = function () {
@@ -98,8 +99,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
                 defaultValue = item.getChildSync(args.column.jpath);
                 if (defaultValue) {
                     defaultValue = defaultValue.value || '01/01/2000';
-                }
-                else {
+                } else {
                     defaultValue = '01/01/2000';
                 }
                 $input.val(defaultValue);
@@ -116,7 +116,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
             };
 
             this.isValueChanged = function () {
-                return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
+                return (!($input.val() == '' && defaultValue == null)) && ($input.val() != defaultValue);
             };
 
             this.validate = function () {
@@ -138,7 +138,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
                 $cont.append('<input type="text">');
                 $input = $cont.find('input');
                 $input.appendTo(args.container)
-                    .bind("keydown.nav", function (e) {
+                    .bind('keydown.nav', function (e) {
                         if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
                             e.stopImmediatePropagation();
                         }
@@ -282,8 +282,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
                 defaultValue = item.getChildSync(args.column.jpath);
                 if (defaultValue) {
                     defaultValue = defaultValue.value || '#000000';
-                }
-                else {
+                } else {
                     defaultValue = '#000000';
                 }
                 $input.val(defaultValue);
@@ -305,7 +304,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
             };
 
             this.isValueChanged = function () {
-                return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
+                return (!($input.val() == '' && defaultValue == null)) && ($input.val() != defaultValue);
             };
 
             this.validate = function () {
@@ -325,8 +324,9 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
             this.init();
         }
 
-        function TextValueEditor(args) {
+        function TextValueEditor(args, options) {
             this.args = args;
+            this.initOptions = options;
             this.init = defaultInit;
             this.destroy = defaultDestroy;
             this.focus = defaultFocus;
@@ -376,7 +376,6 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
         }
 
 
-
         function DataBooleanEditor(args) {
             this.args = args;
             this.init = booleanInit;
@@ -410,13 +409,13 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
     }
 
     function defaultIsValueChanged() {
-        return (!(this.$input.val() == "" && this.defaultValue == null)) && (this.$input.val() != this.defaultValue);
+        return (!(this.$input.val() == '' && this.defaultValue == null)) && (this.$input.val() != this.defaultValue);
     }
 
     function defaultApplyValue(item, state, type) {
         var isNew = _.isEmpty(item), newState;
         DataObject.check(item, true);
-        if(type) {
+        if (type) {
             newState = {
                 type: type,
                 value: state
@@ -431,8 +430,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
             item.setChildSync(this.args.column.jpath, state);
             this.args.grid.module.view.slick.data.addItem(item);
             return newState;
-        }
-        else {
+        } else {
             this.args.grid.module.model.dataSetChildSync(item, this.args.column.jpath, newState);
         }
     }
@@ -443,7 +441,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
 
     function defaultLoadValue(item) {
         this.defaultValue = item.getChildSync(this.args.column.jpath);
-        this.defaultValue = this.defaultValue ? this.defaultValue.get() || "" : "";
+        this.defaultValue = this.defaultValue ? this.defaultValue.get() || '' : '';
         this.$input.val(this.defaultValue);
         this.$input[0].defaultValue = this.defaultValue;
         this.$input.select();
@@ -459,9 +457,17 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
 
     function defaultInit() {
         var that = this;
-        this.$input = $("<INPUT type=text class='editor-text' />")
+        var $wrapper = this.args.container;
+        this.initOptions = this.initOptions || {};
+        if (this.initOptions.textarea) {
+            $wrapper = $('<div>').appendTo(this.args.container);
+            this.$input = $('<textarea  class="editor-text" rows="10" cols="60" style="z-index:10000; position: relative;"/>');
+        } else {
+            this.$input = $('<INPUT type="text" class="editor-text" />');
+        }
+        this.$input
             .appendTo(this.args.container)
-            .bind("keydown.nav", function (e) {
+            .bind('keydown.nav', function (e) {
                 if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
                     e.stopImmediatePropagation();
                 }
@@ -472,7 +478,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
                 // Shouldn't do this if auto-edit
                 if (!that.args.grid.module.view.slick.options.autoEdit)
                     that.args.commitChanges('next');
-            })
+            });
     }
 
     function defaultDestroy() {
@@ -480,7 +486,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
     }
 
     function defaultFocus() {
-        this.$input.focus();
+        this.$input.focus().select();
     }
 
     // =========== DATA NUMBER ===============
@@ -496,7 +502,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
     // =========== DATA BOOLEAN ==============
     function booleanInit() {
         var that = this;
-        this.$input = $("<INPUT type=checkbox value='true' class='editor-checkbox' hideFocus>");
+        this.$input = $('<input type="checkbox" value="true" class="editor-checkbox" hideFocus>');
         this.$input.appendTo(this.args.container);
         this.$input.focus();
         this.$input.change(function () {
@@ -507,9 +513,9 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
     function booleanLoadValue(item) {
         this.defaultValue = item.getChildSync(this.args.column.jpath);
         if (this.defaultValue && this.defaultValue.get()) {
-            this.$input.attr("checked", "checked");
+            this.$input.attr('checked', 'checked');
         } else {
-            this.$input.removeAttr("checked");
+            this.$input.removeAttr('checked');
         }
     }
 
@@ -529,20 +535,20 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
     // ========== LONG TEXT ===================
     function longTextInit() {
         var that = this;
-        this.$container = $("body") ;
+        this.$container = $('body');
 
-        this.$wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:5px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
+        this.$wrapper = $('<DIV style="z-index:10000; position:absolute;background:white; padding:5px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;"/>')
             .appendTo(this.$container);
 
-        this.$input = $("<TEXTAREA hidefocus rows=5 style='backround:white;width:250px;height:80px;border:0;outline:0'>")
+        this.$input = $('<textarea hidefocus rows=5 style="backround:white; width:250px; height:80px;border:0; outline:0">')
             .appendTo(this.$wrapper);
 
-        $("<DIV style='text-align:right'><BUTTON>Save</BUTTON><BUTTON>Cancel</BUTTON></DIV>")
+        $('<div style="text-align:right"><button>Save</button><button>Cancel</button></div>')
             .appendTo(this.$wrapper);
 
-        this.$wrapper.find("button:first").bind("click", this.save);
-        this.$wrapper.find("button:last").bind("click", this.cancel);
-        this.$input.bind("keydown", function (e) {
+        this.$wrapper.find('button:first').bind('click', this.save);
+        this.$wrapper.find('button:last').bind('click', this.cancel);
+        this.$input.bind('keydown', function (e) {
             if (e.which == $.ui.keyCode.ENTER && e.ctrlKey) {
                 that.save();
             } else if (e.which == $.ui.keyCode.ESCAPE) {
@@ -550,15 +556,24 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
                 that.cancel();
             } else if (e.which == $.ui.keyCode.TAB && e.shiftKey) {
                 e.preventDefault();
-                args.grid.navigatePrev();
+                that.args.grid.navigatePrev();
             } else if (e.which == $.ui.keyCode.TAB) {
                 e.preventDefault();
-                args.grid.navigateNext();
+                that.args.grid.navigateNext();
             }
         });
 
+
         this.position(this.args.position);
-        this.$input.focus().select();
+        //this.$input.hide();
+        this.$input
+            .focus()
+            .select()
+            .focusout(function () {
+                // Shouldn't do this if auto-edit
+                if (!that.args.grid.module.view.slick.options.autoEdit)
+                    that.args.commitChanges('next');
+            });
     }
 
     function defaultSave() {
@@ -580,19 +595,25 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
 
     function detachedPosition(position) {
         this.$wrapper
-            .css("top", position.top - 5)
-            .css("left", position.left - 5)
+            .css('top', position.top - 5)
+            .css('left', position.left - 5);
     }
 
     function detachedDestroy() {
         this.$wrapper.remove();
     }
 
+    function longTextFocus() {
+        this.$wrapper.show();
+        this.position(this.args.position);
+        this.$input.focus();
+    }
+
     function LongTextEditor(args) {
         this.args = args;
         this.init = longTextInit;
         this.destroy = detachedDestroy;
-        this.focus = defaultFocus;
+        this.focus = longTextFocus;
         this.getValue = defaultGetValue;
         this.setValue = defaultSetValue;
         this.loadValue = defaultLoadValue;
@@ -605,6 +626,29 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
         this.position = detachedPosition;
         this.save = defaultSave.bind(this);
         this.cancel = defaultCancel.bind(this);
+        this.init();
+    }
+
+    function SimpleLongTextEditor(args) {
+        var that = this;
+        this.args = args;
+        this.initOptions = {
+            textarea: true
+        };
+        this.init = defaultInit;
+        this.destroy = defaultDestroy;
+        this.focus = defaultFocus;
+        this.getValue = defaultGetValue;
+        this.setValue = defaultSetValue;
+        this.loadValue = defaultLoadValue;
+        this.serializeValue = defaultSerializeValue;
+        this.isValueChanged = defaultIsValueChanged;
+        this.validate = defaultValidate;
+
+        this.applyValue = function (item, state) {
+            defaultApplyValue.call(this, item, state, this.args.column.dataType);
+        };
+
         this.init();
     }
 

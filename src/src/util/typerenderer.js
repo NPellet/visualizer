@@ -94,14 +94,18 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
             src: val,
             width: options ? options.width : undefined
         });
+        if (options.css) {
+            $img.css(options.css);
+        }
         element.html($img);
     };
-    
+
     functions.gif = functions.picture;
     functions.jpeg = functions.picture;
     functions.jpg = functions.picture;
     functions.png = functions.picture;
     functions.webp = functions.picture;
+    functions.image = functions.picture;
 
     functions.svg = {};
     functions.svg.toscreen = function (element, val) {
@@ -205,32 +209,45 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
         element.html(value.replace(/\[([0-9]+)/g, '[<sup>$1</sup>').replace(/([a-zA-Z)])([0-9]+)/g, '$1<sub>$2</sub>').replace(/\(([0-9+-]+)\)/g, '<sup>$1</sup>'));
     };
 
-    function bioPv(type, element, val) {
+    function bioPv(type, element, val, valRoot, options) {
+        options = options || {};
         return new Promise(function (resolve) {
             require(['lib/bio-pv/bio-pv.min'], function (pv) {
-                var div = $('<div style="width:99%; height:99%" />');
+                var div = $('<div style="width:100%; height:100%" />');
                 element.html(div);
                 var mol;
                 if (type === 'pdb') {
-                    mol = pv.io.pdb(val);
+                    mol = pv.io.pdb(val, {loadAllModels: true});
                 } else if (type === 'mol3d') {
                     mol = pv.io.sdf(val);
                 }
                 var viewer = pv.Viewer(div.get(0), {
-                    width: element.width(),
-                    height: Math.max(250, element.height()),
+                    width: 0.99 * element.width(),
+                    height: Math.max(250, element.height() * 0.99),
                     quality: 'medium'
                 });
                 viewer.addListener('viewerReady', function () {
+                    options.mode = viewer[options.mode] ? options.mode : 'cartoon';
                     var id = Util.getNextUniqueId();
                     if (type === 'pdb') {
-                        var ligand = mol.select({rnames: ['RVP', 'SAH']});
-                        viewer.ballsAndSticks('ligand-' + id, ligand);
-                        viewer.cartoon(id, mol);
+                        viewer.clear();
+                        mol.forEach(function (structure) {
+                            if (options.mode === 'cartoon') {
+                                var ligand = structure.select({rnames: ['RVP', 'SAH']});
+                                viewer.ballsAndSticks('ligand-' + id, ligand);
+                            }
+                            viewer[options.mode](id, structure);
+                            viewer.autoZoom();
+                        });
                     } else if (type === 'mol3d') {
                         viewer.ballsAndSticks(id, mol);
                     }
                     viewer.fitTo(mol);
+                    element.on('remove', remove);
+                    function remove() {
+                        viewer.destroy();
+                        element.off('remove');
+                    }
                 });
                 resolve();
             });
@@ -272,7 +289,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
         var total = 0, i = 0, l = value.length;
         for (i = 0; i < l; total += value[i++][0])
 
-        var start = 0, end, color;
+             var start = 0, end, color;
         for (i = 0; i < l; i++) {
             end = start + value[i][0] / total * 100;
             color = value[i][1];

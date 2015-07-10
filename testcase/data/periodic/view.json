@@ -1,5 +1,5 @@
 {
-  "version": "2.22.3-0",
+  "version": "2.23.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -346,7 +346,7 @@
                 0
               ],
               "script": [
-                "<div>\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <div class=\"elec-conf\">\n            <p class=\"elec-conf-short\"><span class=\"shorted\">{{ element.electronConfigurationShort }}</span></p>\n            <p class=\"elec-conf-long\">{{ element.electronConfiguration }}</p>\n        </div>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
+                "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <div class=\"elec-conf\">\n            <p class=\"elec-conf-short\"><span class=\"shorted\">{{ element.electronConfigurationShort }}</span></p>\n            <p class=\"elec-conf-long\">{{ element.electronConfiguration }}</p>\n        </div>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>"
               ]
             }
           ]
@@ -379,7 +379,7 @@
       "id": 4,
       "vars_in": [
         {
-          "rel": "value",
+          "rel": "data",
           "name": "selectedTemplate"
         }
       ],
@@ -389,7 +389,7 @@
       "vars_out": [
         {
           "event": "onEditorChange",
-          "rel": "value",
+          "rel": "data",
           "jpath": [],
           "name": "elementTemplate"
         }
@@ -409,7 +409,7 @@
           "group": [
             {
               "template": [
-                "<div>\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <div class=\"elec-conf\">\n            <p class=\"elec-conf-short\"><span class=\"shorted\">{{ element.electronConfigurationShort }}</span></p>\n            <p class=\"elec-conf-long\">{{ element.electronConfiguration }}</p>\n        </div>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
+                "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <div class=\"elec-conf\">\n            <p class=\"elec-conf-short\"><span class=\"shorted\">{{ element.electronConfigurationShort }}</span></p>\n            <p class=\"elec-conf-long\">{{ element.electronConfiguration }}</p>\n        </div>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>"
               ]
             }
           ]
@@ -646,14 +646,14 @@
       ]
     },
     {
-      "url": "modules/types/display/periodic_table/",
+      "url": "modules/types/science/chemistry/periodic_table/",
       "configuration": {
         "sections": {},
         "groups": {
           "group": [
             {
               "template": [
-                "<div>\n    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <div class=\"elec-conf\">\n            <p class=\"elec-conf-short\"><span class=\"shorted\">{{ element.electronConfigurationShort }}</span></p>\n            <p class=\"elec-conf-long\">{{ element.electronConfiguration }}</p>\n        </div>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>\n</div>"
+                "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <div class=\"elec-conf\">\n            <p class=\"elec-conf-short\"><span class=\"shorted\">{{ element.electronConfigurationShort }}</span></p>\n            <p class=\"elec-conf-long\">{{ element.electronConfiguration }}</p>\n        </div>\n    </div>\n\n    <ul class=\"electronsPerPeriod\">\n    {% for i in element.electronsPerPeriod %}\n        <li>{{ i }}</li>\n    {% endfor %}\n    </ul>"
               ]
             }
           ]

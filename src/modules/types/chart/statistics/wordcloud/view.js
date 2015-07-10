@@ -87,7 +87,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/ui', 'lib/d3/d
                 
                 tags = d3.entries(tags).sort(function (a, b) { return b.value - a.value; });
                 tags.forEach(function (d) { d.key = cases[d.key]; });
-                generate();                
+                generate();
             }
             
             function parseText(text) {

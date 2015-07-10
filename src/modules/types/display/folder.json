@@ -45,10 +45,6 @@
       "moduleName": "Two dimensional list (old)",
       "url": "modules/types/display/2d_list/",
       "hidden": true
-    },
-    {
-      "moduleName": "Periodic table",
-      "url": "modules/types/display/periodic_table/"
     }
   ],
   "name": "Display",

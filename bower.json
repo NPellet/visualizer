@@ -1,6 +1,6 @@
 {
   "name": "visualizer",
-  "version": "2.22.2",
+  "version": "2.23.0",
   "description": "Data visualization framework",
   "main": "src/init.js",
   "keywords": [
@@ -43,7 +43,7 @@
     "jquery-ui": "1.11.4",
     "jquery-tmpl": "BorisMoore/jquery-tmpl#vBeta1.0.0",
     "jsbarcode": "*",
-    "jsgraph": "v1.11.3-3",
+    "jsgraph": "1.12.2",
     "jsNMR": "NPellet/jsNMR#73cd9c371c8ebc53c32b7f6e6c36077e8a407d99",
     "json-chart": "1.0.0",
     "jsoneditor": "3.2.0",
@@ -61,7 +61,7 @@
     "pouchdb": "3.3.1",
     "requirejs": "2.1.18",
     "setImmediate": "YuzuJS/setImmediate#1.0.2",
-    "slickgrid": "cheminfo/SlickGrid#15ad556e31da07b3e78d04fcb8064e3b06abce56",
+    "slickgrid": "cheminfo/SlickGrid#86eeaf3b667a26ea454efd7ab510e388e46f77b7",
     "spectrum": "1.6.1",
     "sprintf": "1.0.2",
     "superagent": "0.21.0",
@@ -76,7 +76,7 @@
     "mime-types": "stropitek/mime-types#v0.0.3"
   },
   "resolutions": {
-    "jsgraph": "v1.11.3-3"
+    "jsgraph": "v1.12.2"
   },
   "private": true
 }

@@ -5,16 +5,16 @@
       "url": "modules/types/chart/advanced/plot_function/"
     },
     {
+      "moduleName": "Hexagonal map",
+      "url": "modules/types/chart/advanced/hex/"
+    },
+    {
       "moduleName": "Matrix display",
       "url": "modules/types/chart/advanced/canvas_matrix/"
     },
     {
       "moduleName": "Self-organizing map",
       "url": "modules/types/chart/advanced/som/"
-    },
-    {
-      "moduleName": "Hexagonal map",
-      "url": "modules/types/chart/advanced/hex/"
     }
   ],
   "name": "Advanced charting",

@@ -32,42 +32,6 @@ define([
         return result;
     }
 
-    function generateRandomFromArray(arr, n) {
-        var x = generateRandomArray(n, 0, arr.length - 0.001);
-        x = x.map(function (a) {
-            return arr[Math.floor(a)];
-        });
-        return x;
-    }
-
-    function generateRandomColors(n) {
-        var result = [];
-        var letters = '0123456789ABCDEF'.split('');
-        for (var i = 0; i < n; i++) {
-            var color = '#';
-            for (var j = 0; j < 3; j++) {
-                color += letters[Math.floor(Math.random() * 16)];
-            }
-            result.push(color);
-        }
-        return result;
-    }
-
-    function hexToRgb(hex) {
-        // Expand shorthand form (e.g. '03F') to full form (e.g. '0033FF')
-        var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-        hex = hex.replace(shorthandRegex, function (m, r, g, b) {
-            return r + r + g + g + b + b;
-        });
-
-        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? {
-            r: parseInt(result[1], 16),
-            g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16)
-        } : null;
-    }
-
     function componentToHex(c) {
         var hex = c.toString(16);
         return hex.length == 1 ? '0' + hex : hex;
@@ -86,17 +50,6 @@ define([
             return 'rgba(0,0,0,1)';
         }
 
-    }
-
-    function rgbStringToHex(rgbString) {
-        var shorthandRegex = /^rgba?\(\s*(\d+),\s*(\d+),\s*(\d+)/;
-        var m = shorthandRegex.exec(rgbString);
-        if (m) {
-            return rgbToHex(m[1], m[2], m[3]);
-        } else {
-            console.error('rgb string to hex conversion failed', rgbString);
-            return '#ffffff';
-        }
     }
 
     function keepDecimals(num, n) {
@@ -194,8 +147,7 @@ define([
                     -(event.offsetY / $(that.renderer.domElement).height()) * 2 + 1,
                     0.5
                 );
-                var projector = new THREE.Projector();
-                projector.unprojectVector(vector, that.camera);
+                vector.unproject(that.camera);
 
                 var ray = new THREE.Ray(that.camera.position,
                     vector.sub(that.camera.position).normalize());
@@ -385,8 +337,7 @@ define([
 
                 that.renderer = new THREE.WebGLRenderer({antialias: false});
                 // self.renderer.setClearColor( self.scene.fog.color, 1 );
-                var bgColor = that.module.getConfiguration('backgroundColor');
-                that.renderer.setClearColor(rgbToHex(bgColor[0], bgColor[1], bgColor[2]) || DEFAULT_BACKGROUND_COLOR, 1);
+                that._setBackgroundColor();
                 that.renderer.setSize(window.innerWidth, window.innerHeight);
 
                 container = document.getElementById(that.dom.attr('id'));
@@ -475,46 +426,9 @@ define([
             _.keys(that.scene.children).forEach(function (key) {
                 that.scene.remove(that.scene.children[key]);
             });
-            // this.scene.traverse(function(obj) {
-            //   self.scene.remove(obj);
-            // });
 
-            // textGeo = new THREE.TextGeometry( 'hello', {
-            //
-            //   size: 70,
-            //   height: 20,
-            //
-            //   font: 'optimer',
-            //   weight: 'bold',
-            //   style: 'normal',
-            //
-            //   material: 0,
-            //   extrudeMaterial: 1
-            //
-            // });
-            //
-            // textGeo.computeBoundingBox();
-            // textGeo.computeVertexNormals();
-            //
-            // textMaterial = new THREE.MeshFaceMaterial( [
-            //   new THREE.MeshPhongMaterial( { color: 0xffffff, shading: THREE.FlatShading } ), // front
-            //   new THREE.MeshPhongMaterial( { color: 0xffffff, shading: THREE.SmoothShading } ) // side
-            //   ] );
-            // textMesh1 = new THREE.Mesh( textGeo, material );
-            // this.scene.add(textMesh1)
 
             var light;
-            // 8 DIRECTIONAL LIGHTS =======================
-            // for(var i=0; i<8; i++) {
-            //   var a = i%2 ? 1 : -1;
-            //   var b = parseInt(i/2)%2 ? 1 : -1;
-            //   var c = parseInt(i/4)%2 ? 1 : -1;
-            //   var light = new THREE.DirectionalLight(0x777777, 1);
-            //   light.position.set(a,b,c);
-            //   self.scene.add(light);
-            // }
-            // ===============================================
-
             // HEADLIGHT ============
             light = new THREE.AmbientLight(0x222222, 1);
             that.scene.add(light);
@@ -530,8 +444,7 @@ define([
 
             that._mathPoints();
             that._drawPointsQuick();
-
-            that._drawAxes();
+            //that._drawAxes();
             that._drawFaces();
             that._drawGrid();
             that._drawSecondaryGrid();
@@ -539,11 +452,6 @@ define([
             that._drawTickLabels();
             that._drawAxisLabels();
             that._drawGraphTitle();
-
-
-            // self._drawPointsQuick();
-
-
             that._render();
         },
 
@@ -606,21 +514,8 @@ define([
             var sizeMax = Stat.array.max(that._data.size);
             var sizeInt = sizeMax - sizeMin;
             that._data.size = _.map(that._data.size, function (s) {
-                return sizeInt === 0 ? sizeConstant / 2 : sizeConstant * (s - sizeMin) / sizeInt;
+                return sizeInt === 0 ? sizeConstant / 2 : sizeConstant * ((s - sizeMin) / sizeInt + 0.01);
             });
-
-            // color normalization
-            //if (_.all(self._data.color, _.isNumber)) {
-            //    var colorMin = Stat.array.min(self._data.color);
-            //    var colorMax = Stat.array.max(self._data.color);
-            //    var colorInt = colorMax - colorMin;
-            //    self._data.color = _.map(self._data.color, function (c) {
-            //        var hue = colorInt === 0 ? 180 : 360 * (c - colorMin) / colorInt;
-            //        var color = chroma('hsl(' + hue + ', 65%, 65%)');
-            //        return color.hex();
-            //    });
-            //}
-
         },
 
         _processColors: function () {
@@ -636,7 +531,7 @@ define([
             this.stopColors = _(gradient).pluck('color').map(colorUtil.getColor).map(function (v) {
                 return colorUtil.rgb2hex(v);
             }).value();
-            console.log(this.stopColors);
+
             this.numberToColor = colorbar.getColorScale({
                 stops: this.stopColors,
                 stopPositions: this.stopPositions,
@@ -655,6 +550,12 @@ define([
                     }
                 }
             }
+
+            // Normalize
+            // No rgba accepted
+            for (i = 0; i < this._data.color.length; i++) {
+                this._data.color[i] = new chroma(this._data.color[i]).hex();
+            }
         },
 
         _computeMinMax: function () {
@@ -671,12 +572,19 @@ define([
             that._data.max = {};
             that._data.len = {};
 
-            that._data.min.x = parseFloat(that.module.getConfiguration('minX')) || Stat.array.min(x);
-            that._data.min.y = parseFloat(that.module.getConfiguration('minY')) || Stat.array.min(y);
-            that._data.min.z = parseFloat(that.module.getConfiguration('minZ')) || Stat.array.min(z);
-            that._data.max.x = parseFloat(that.module.getConfiguration('maxX')) || Stat.array.max(x);
-            that._data.max.y = parseFloat(that.module.getConfiguration('maxY')) || Stat.array.max(y);
-            that._data.max.z = parseFloat(that.module.getConfiguration('maxZ')) || Stat.array.max(z);
+            var xm = that._meta.getChildSync(['axis', 0, 'min']);
+            var xM = that._meta.getChildSync(['axis', 0, 'max']);
+            var ym = that._meta.getChildSync(['axis', 1, 'min']);
+            var yM = that._meta.getChildSync(['axis', 1, 'max']);
+            var zm = that._meta.getChildSync(['axis', 2, 'min']);
+            var zM = that._meta.getChildSync(['axis', 2, 'max']);
+
+            that._data.min.x = parseFloat(that.module.getConfiguration('minX')) || xm && xm.get() || Stat.array.min(x);
+            that._data.min.y = parseFloat(that.module.getConfiguration('minY')) || ym && ym.get() || Stat.array.min(y);
+            that._data.min.z = parseFloat(that.module.getConfiguration('minZ')) || zm && zm.get() || Stat.array.min(z);
+            that._data.max.x = parseFloat(that.module.getConfiguration('maxX')) || xM && xM.get() || Stat.array.max(x);
+            that._data.max.y = parseFloat(that.module.getConfiguration('maxY')) || yM && yM.get() || Stat.array.max(y);
+            that._data.max.z = parseFloat(that.module.getConfiguration('maxZ')) || zM && zM.get() || Stat.array.max(z);
             that._data.len.x = that._data.max.x - that._data.min.x;
             that._data.len.y = that._data.max.y - that._data.min.y;
             that._data.len.z = that._data.max.z - that._data.min.z;
@@ -864,6 +772,7 @@ define([
                 position: 'absolute',
                 top: 0
             });
+            if (!this.module.getConfiguration('gradient') || this.module.getConfiguration('gradient').length <= 1) return;
             colorbar.renderSvg(this.$colorbar[0], {
                 width: 20,
                 height: 200,
@@ -1022,7 +931,7 @@ define([
             var options = options || {};
 
             // Set default options
-            options.size = options.size || 50;
+            options.size = options.size || 64;
             options.fillStyle = options.fillStyle || arrayToRgba(that.module.getConfiguration('annotationColor')) || DEFAULT_TEXT_COLOR;
             options.textAlign = options.textAlign || 'left';
             options.font = options.font || 'Arial';
@@ -1032,7 +941,7 @@ define([
 
             // create a canvas element
             var canvas = document.createElement('canvas');
-            canvas.height = options.size * 1.2;
+            canvas.height = options.size;
             canvas.width = options.size * text.length / 2 + options.size / 2;
 
             switch (options.textAlign) {
@@ -1045,12 +954,13 @@ define([
             }
 
             var ctx = canvas.getContext('2d');
-            ctx.font = 'Bold ' + options.size + 'px ' + options.font;
+            ctx.font = 'Bold ' + options.size * 0.9 + 'px ' + options.font;
             ctx.fillStyle = options.fillStyle;
-            ctx.fillText(text, 0, options.size);
+            ctx.fillText(text, 0, options.size * 0.9);
 
             // canvas contents will be used for a texture
             var texture = new THREE.Texture(canvas);
+            texture.minFilter = THREE.NearestFilter;
             texture.needsUpdate = true;
 
             var material = new THREE.MeshBasicMaterial({
@@ -1059,7 +969,7 @@ define([
                 opacity: options.opacity
             });
             var mesh = new THREE.Mesh(
-                new THREE.PlaneGeometry(canvas.width, canvas.height),
+                new THREE.PlaneBufferGeometry(canvas.width, canvas.height),
                 material
             );
             // mesh.position.set(0,50,0);
@@ -1132,13 +1042,24 @@ define([
             that._reinitObject3DArray('axisLabels');
 
             var mode = that.module.getConfiguration('labels');
-            var xkey = (that._data.xAxis) ? that._data.xAxis : null;
-            var ykey = (that._data.yAxis) ? that._data.xAxis : null;
-            var zkey = (that._data.yAxis) ? that._data.xAxis : null;
+            var xt = that._meta.getChildSync(['axis', that._data.xAxis || 0, 'label']);
+            var yt = that._meta.getChildSync(['axis', that._data.yAxis || 1, 'label']);
+            var zt = that._meta.getChildSync(['axis', that._data.zAxis || 2, 'label']);
+            var xu = that._meta.getChildSync(['axis', 0, 'unit']);
+            var yu = that._meta.getChildSync(['axis', 1, 'unit']);
+            var zu = that._meta.getChildSync(['axis', 2, 'unit']);
 
-            var xtitle = (xkey && that._meta.axis && that._meta.axis[xkey]) ? that._meta.axis[xkey].name : 'X';
-            var ytitle = (ykey && that._meta.axis && that._meta.axis[ykey]) ? that._meta.axis[ykey].name : 'Y';
-            var ztitle = (zkey && that._meta.axis && that._meta.axis[zkey]) ? that._meta.axis[zkey].name : 'Z';
+            xt = xt && xt.get();
+            yt = yt && yt.get();
+            zt = zt && zt.get();
+            xt = xu && (xt + ' [' + xu.get() + ']') || xt;
+            yt = yu && (yt + ' [' + yu.get() + ']') || yt;
+            zt = zu && (zt + ' [' + zu.get() + ']') || zt;
+
+            var xtitle = this.module.getConfiguration('xLabel') || xt || 'X';
+            var ytitle = this.module.getConfiguration('yLabel') || yt || 'Y';
+            var ztitle = this.module.getConfiguration('zLabel') || zt || 'Z';
+
 
             var $legendTitles = $('#legend_titles');
 
@@ -1235,12 +1156,12 @@ define([
             // 6: xz top
 
 
-            var geometry1 = new THREE.PlaneGeometry(NORM_CONSTANT, NORM_CONSTANT);
-            var geometry2 = new THREE.PlaneGeometry(NORM_CONSTANT, NORM_CONSTANT);
-            var geometry3 = new THREE.PlaneGeometry(NORM_CONSTANT, NORM_CONSTANT);
-            var geometry4 = new THREE.PlaneGeometry(NORM_CONSTANT, NORM_CONSTANT);
-            var geometry5 = new THREE.PlaneGeometry(NORM_CONSTANT, NORM_CONSTANT);
-            var geometry6 = new THREE.PlaneGeometry(NORM_CONSTANT, NORM_CONSTANT);
+            var geometry1 = new THREE.PlaneBufferGeometry(NORM_CONSTANT, NORM_CONSTANT);
+            var geometry2 = new THREE.PlaneBufferGeometry(NORM_CONSTANT, NORM_CONSTANT);
+            var geometry3 = new THREE.PlaneBufferGeometry(NORM_CONSTANT, NORM_CONSTANT);
+            var geometry4 = new THREE.PlaneBufferGeometry(NORM_CONSTANT, NORM_CONSTANT);
+            var geometry5 = new THREE.PlaneBufferGeometry(NORM_CONSTANT, NORM_CONSTANT);
+            var geometry6 = new THREE.PlaneBufferGeometry(NORM_CONSTANT, NORM_CONSTANT);
 
             var material = new THREE.MeshBasicMaterial({
                 color: 0xffffff,
@@ -1407,8 +1328,8 @@ define([
 
 
         init: function () {
-            // When we change configuration the method init is called again. Also the case when we change completely of view
-
+            var c = this.module.getConfiguration('defaultPointColor');
+            DEFAULT_POINT_COLOR = rgbToHex(c[0], c[1], c[2]);
 
             if (!this.dom) {
                 this._id = Util.getNextUniqueId();
@@ -1442,6 +1363,7 @@ define([
                     that.camera.aspect = that.width / that.height;
                     that.camera.updateProjectionMatrix();
                     that.renderer.setSize(that.width, that.height);
+                    that._setBackgroundColor();
                     that.controls.handleResize();
                     that._render();
                     if (that.headlight) {
@@ -1460,6 +1382,12 @@ define([
                     that._drawColorBar();
                 }
             });
+        },
+
+        _setBackgroundColor: function () {
+            var bgColor = this.module.getConfiguration('backgroundColor');
+            DEFAULT_BACKGROUND_COLOR = rgbToHex(bgColor[0], bgColor[1], bgColor[2]);
+            this.renderer.setClearColor(DEFAULT_BACKGROUND_COLOR, 1);
         },
 
         _newParticleObject: function (indexes, options) {
@@ -1591,6 +1519,11 @@ define([
 
         },
 
+        blank: {
+            chart: blank,
+            data3D: blank
+        },
+
         /* When a value changes this method is called. It will be called for all
          possible received variable of this module.
          It will also be called at the beginning and in this case the value is null !
@@ -1623,10 +1556,10 @@ define([
                     this._drawGraph();
                 }
             },
-            'data3D': function (moduleValue) {
+            data3D: function (moduleValue) {
                 this.module.data = moduleValue;
                 if (!moduleValue || !moduleValue.get()) {
-                    Debug.error('Unvalid value' + moduleValue);
+                    Debug.error('Invalid value' + moduleValue);
                     return;
                 }
 
@@ -1696,7 +1629,7 @@ define([
             }
 
 
-            that._data = {};
+            that._data = new DataObject();
 
             var jpaths = that.module.getConfiguration('dataJpaths');
             that._data.x = [];
@@ -1736,24 +1669,26 @@ define([
                 that._data.size.push(getFromJpath(value, jp.size, DEFAULT_POINT_RADIUS));
                 that._data.shape.push(getFromJpath(value, jp.shape, DEFAULT_POINT_SHAPE));
             }
-            that._meta = {};
+            that._meta = new DataObject();
             that._data.x = that._data.x || [];
             that._data.y = that._data.y || [];
             that._data.z = that._data.z || [];
+            that._data.info = _.pluck(value, 'info');
             that._data._highlight = _.pluck(value, '_highlight');
             if (!_.any(that._data._highlight)) that._data._highlight = [];
             that._dispFilter = that._dispFilter || [];
         },
 
         _convertChartToData: function (value) {
-            this._data = {};
-            this._meta = {};
+            this._data = new DataObject();
+            this._meta = new DataObject();
             var that = this;
             if (!Array.isArray(value.data) || !value.data[0] || !Array.isArray(value.data[0].y)) return;
             if (value.data.length > 0) {
                 Debug.warn('Scatter 3D module will merge series together');
             }
 
+            // Get data
             for (var j = 0; j < value.data.length; j++) {
                 _.keys(value.data[j]).forEach(function (key) {
                     if (Array.isArray(value.data[j][key])) {
@@ -1769,6 +1704,12 @@ define([
                     });
                 });
             }
+
+            // Get axis data
+            this._meta.axis = value.axis;
+
+            // Highlight
+            this._data._highlight = this._data._highlight || [];
 
             _.keys(value).forEach(function (key) {
                 if (key === 'data') return;
@@ -1865,6 +1806,15 @@ define([
             // var cfg = $.proxy( this.module.getConfiguration, this.module );
         }
     });
+
+    function blank() {
+        var that = this;
+        if (!this.scene || !this.scene.children) return;
+        _.keys(this.scene.children).forEach(function (key) {
+            that.scene.remove(that.scene.children[key]);
+        });
+        this._render();
+    }
 
     return View;
 

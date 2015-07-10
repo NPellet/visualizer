@@ -1,3 +1,35 @@
+2.23.0 / 2015-07-01
+===================
+* Modules
+ * onde: check items/properties exist when getting jpaths from schema
+ * scatter3d: rewrite colors with alpha value
+ * scatter3d: fix info out
+ * scatter3d: better support for chart format (axis min/max, xyzAxis, unit, label etc...)
+ * scatter3d: add x,y,z axe labels in module configuration
+ * scatter3D: fix backgroundColor and annotationColor options
+ * scatter3d: add default point color option
+ * scatter3D: add blank
+ * scatter3d: fix threejs warnings
+ * Fix bug in code_editor (non-built visualizer only) See issue #612
+ * slickgrid: alternative long text editor inside composite editor
+ * onde: callback script on change with jpath of modified element
+ * slickgrid: add filter with just-in-time option
+ * Add jsme hover/click atom/bond actions
+ * panzoom: fix default value for scaling method
+* Core
+ * typerenderer: destroy pv viewer on dom remove
+ * typerenderer: add pv viewer mode _option
+ * typrenderer: fix crollbars when pdb renderered in display_value
+ * type renderer: 'image' is an alias for 'picture'
+ * Add css option to picture renderer
+ * Add feedback  in contextual menu
+ * Built version concatenates module style files
+ * Add getLayerNames and switchToLayer in API
+ * remove SMIL browser requirement
+ * util: correctly normalize url before creating a requirejs path for it
+* Libraries
+ * Update JSME: support of click/hover on bonds/atoms
+
 2.22.2 / 2015-06-22
 ===================
 * Core

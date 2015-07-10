@@ -334,7 +334,6 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
     };
 
     ScriptExecutor.prototype.execute = function () {
-
         var variables = this.controller.module.view._input;
         var ctxVariables = {};
         var varNum = 0;
@@ -359,7 +358,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
             if (e && e.stack) {
                 err = e.stack;
             }
-            Debug.error('Code executor error', err);
+            Debug.error('Code executor error (' + this.controller.module.definition.title + '):', err);
         }
 
         this.setOutput();
@@ -373,7 +372,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
                 that.controller.createDataFromEvent('onScriptEnded', 'outputValue', that.controller.outputObject);
             }
         }, function (e) {
-            Debug.error('Code executor error', e);
+            Debug.error('Code executor error (' + that.controller.module.definition.title + '):', e);
         });
     };
 

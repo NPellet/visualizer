@@ -306,7 +306,6 @@ define([
                 // Trick to get crisp images with chrome
                 // Since it does'n implement crisp-edges image rendering
                 // But pixelated rendering instead
-                console.log(this.images[j]);
                 if (this.images[j].conf.rerender && this.images[j].conf.rerender.indexOf('yes') > -1 || (this.images[j].conf.rendering === 'crisp-edges' && bowser.chrome))
                     this.doImage(this.images[j].name);
             }

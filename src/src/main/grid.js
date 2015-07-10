@@ -380,7 +380,7 @@ define([
 
         try {
             module.getDomWrapper().remove().unbind();
-        } catch(e) {
+        } catch (e) {
             module.onReady().then(function () {
                 module.getDomWrapper().remove().unbind();
             }).catch(function (e) {
@@ -700,6 +700,7 @@ define([
                     utilUl.append($('<li data-util="pasteview"><a><span/>Paste view</a></li>').data('utilkey', 'pasteview'));
                     utilUl.append($('<li data-util="pastedata"><a><span/>Paste data</a></li>').data('utilkey', 'pastedata'));
                     utilUl.append($('<li data-util="blankview"><a><span/>Blank view</a></li>').data('utilkey', 'blankview'));
+                    utilUl.append($('<li data-util="feedback"><a><span/>Send Feedback</a></li>').data('utilkey', 'feedback'));
                     $(contextDom).append(utilLi);
 
                     utilLi.bind('click', function (event) {
@@ -719,6 +720,9 @@ define([
                                 break;
                             case 'pastedata':
                                 ui.pasteData();
+                                break;
+                            case 'feedback':
+                                ui.feedback();
                                 break;
                             default:
                                 Debug.warn('Unknow util key');
