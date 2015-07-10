@@ -83,7 +83,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
 
 
             for (var i = 0; i < this.elements.length; i++) {
-                var $element = $('<div>' + this.template.render({element: this.elements[i]})+ '</div>').data('idx', i);
+                var $element = $('<div>' + this.template.render({element: this.elements[i]}) + '</div>').data('idx', i);
 
                 $element.addClass('element' +
                 ' e' + this.elements[i].Z +
@@ -129,11 +129,11 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             var isFixed = false;
 
             $('.element').mouseenter(function () {
-                if(isFixed) return;
+                if (isFixed) return;
                 renderElement($(this));
             });
             $('.element').click(function () {
-                if(isFixed) {
+                if (isFixed) {
                     $('.el-selected').removeClass('el-selected');
                 }
                 $(this).addClass('el-selected');
@@ -147,7 +147,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             });
 
             $('.element').mouseleave(function () {
-                if(isFixed) return;
+                if (isFixed) return;
                 $('.element-zoom').delay(50000).empty();
                 defaultLegend.removeClass('hidden');
                 elementZoom.addClass('hidden');
@@ -156,7 +156,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             function renderElement($el) {
                 var idx = $el.data('idx');
                 var el = that.elements[idx];
-                if(!el) return;
+                if (!el) return;
                 defaultLegend.addClass('hidden');
                 elementZoom.removeClass('hidden');
                 elementDatas.removeClass('hidden');

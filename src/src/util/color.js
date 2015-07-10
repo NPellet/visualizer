@@ -83,9 +83,9 @@ define(function () {
     exports.getDistinctColorsAsString = function getDistinctColorsAsString(numColors) {
         var colors = exports.getDistinctColors(numColors);
         var colorsString = new Array(numColors);
-        for (var i=0; i<numColors; i++) {
-            colorsString[i]=exports.getColor(colors[i]);
-        };
+        for (var i = 0; i < numColors; i++) {
+            colorsString[i] = exports.getColor(colors[i]);
+        }
         return colorsString;
     };
 
