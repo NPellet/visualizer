@@ -57,7 +57,7 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/color', 'chroma'], f
 
             var that = this;
             this.graph.on('shapeMouseOver', function (shape) {
-                that.module.controller.onCellHover(shape._data);
+                that.module.controller.onCellHover(shape.getData());
             });
 
             this.graph.getXAxis().hide().setAxisDataSpacing(0, 0);

@@ -243,27 +243,25 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                 that.yAxis = graph.getYAxis();
 
                 graph.on('shapeMouseOver', function (shape) {
-                    that.module.controller.createDataFromEvent('onMouseOverShape', 'shapeInfos', shape.data);
-                    API.highlight(shape._data, 1);
+                    that.module.controller.createDataFromEvent('onMouseOverShape', 'shapeInfos', shape.getData());
+                    API.highlight(shape.getData(), 1);
                 });
 
                 graph.on('shapeMouseOut', function (shape) {
-                    API.highlight(shape._data, 0);
+                    API.highlight(shape.getData(), 0);
                 });
 
                 graph.shapeHandlers.onAfterResized.push(function (shape) {
-
-                    that.module.model.dataTriggerChange(shape.data);
-
+                    that.module.model.dataTriggerChange(shape.getData());
                 });
 
                 graph.on('shapeSelect', function (shape) {
-                    that.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape._data);
-                    that.module.controller.sendActionFromEvent('onShapeSelect', 'selectedShape', shape._data);
+                    that.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape.getData());
+                    that.module.controller.sendActionFromEvent('onShapeSelect', 'selectedShape', shape.getData());
                 });
                 graph.on('shapeUnselect', function (shape) {
-                    that.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape._data);
-                    that.module.controller.sendActionFromEvent('onShapeUnselect', 'shapeInfos', shape._data);
+                    that.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape.getData());
+                    that.module.controller.sendActionFromEvent('onShapeUnselect', 'shapeInfos', shape.getData());
                 });
 
                 that.onResize();
