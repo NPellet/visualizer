@@ -152,8 +152,11 @@ require([
     'src/main/datas',
     'src/main/entrypoint',
     'uri/URI.fragmentQuery',
+    'components/bluebird/js/browser/bluebird.min',
     'components/setImmediate/setImmediate'
-], function ($, Datas, EntryPoint, URI) {
+
+], function ($, Datas, EntryPoint, URI, Promise) {
+    window.Promise = Promise;
     $.browser = {msie: false}; // Property used by old libraries and not present in jQuery anymore
     $(document).ready(function () {
         var url = new URI(window.location.href);
