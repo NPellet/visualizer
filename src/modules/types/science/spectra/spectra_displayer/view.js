@@ -422,7 +422,11 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                         var color = forceColor ? forceColor : plotinfos[i].plotcolor;
 
                         serie.setLineColor(Color.getColor(color));
-                        serie.setLineWidth(parseFloat(plotinfos[i].strokewidth) || 1);
+
+                        var lineWidth = parseFloat(plotinfos[i].strokewidth);
+                        if (isNaN(lineWidth)) lineWidth = 1;
+
+                        serie.setLineWidth(lineWidth);
                         serie.setLineStyle(parseInt(plotinfos[i].strokestyle) || 1);
 
                         if (plotinfos[i].markers[0] && serie.showMarkers) {
