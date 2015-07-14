@@ -54,12 +54,7 @@ define([
             if (!this.$container) {
                 this._id = Util.getNextUniqueId();
                 this.$rowHelp = $('<div>').attr('class', 'rowHelp');
-                this.$container = $('<div>').attr('id', this._id).css({
-                    display: 'flex',
-                    'min-height': '100%',
-                    'flex-direction': 'column',
-                    width: '100%'
-                });
+                this.$container = $('<div>').attr('id', this._id).addClass('main-container');
 
                 this.module.getDomContent().html(this.$rowHelp);
                 this.module.getDomContent().append(this.$container);
@@ -447,9 +442,7 @@ define([
                         that.$rowToolbar.remove();
                     }
 
-                    that.$slickgrid = $('<div>').css({
-                        flex: 1
-                    });
+                    that.$slickgrid = $('<div>').addClass('flex-1');
                     that.$container.append(that.$slickgrid);
                     that.slick.groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
                     that.slick.plugins.push(that.slick.groupItemMetadataProvider);

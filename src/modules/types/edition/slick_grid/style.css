@@ -460,3 +460,19 @@ classes should alter those!
     padding-left: 4px;
     padding-right: 4px;
 }
+
+/* =========== MODULE CUSTOM CSS ============ */
+.ci-module-slickgrid .main-container{
+    display: -webkit-flex;
+    display: flex;
+    display: -webkit-flex;
+    min-height: 100%;
+    flex-direction: column;
+    -webkit-flex-direction: column;
+    width: 100%;
+}
+
+.ci-module-slickgrid .flex-1 {
+    flex: 1;
+    -webkit-flex: 1;
+}
