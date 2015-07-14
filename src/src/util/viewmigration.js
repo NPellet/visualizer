@@ -339,6 +339,17 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             eachModule(view, function (module) {
                 modifyRel(module, 'value', 'data');
             }, 'code_editor');
+        },
+        '2.23.1-1', function (view) {
+            eachModule(view, function (module) {
+                var plotinfos = module.getChildSync(['configuration', 'groups', 'plotinfos', 0]);
+                if (plotinfos) {
+                    plotinfos.forEach(function (plotinfo) {
+                        plotinfo.markerShape = '1';
+                        plotinfo.markerSize = 2;
+                    });
+                }
+            }, 'spectra_displayer');
         }
 //  Add new migration functions here
 //      'x.y.z', function (view) {

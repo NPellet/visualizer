@@ -428,8 +428,8 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                         if (plotinfos[i].markers[0] && serie.showMarkers) {
                             serie.showMarkers();
                             serie.setMarkers([{
-                                type: 1,
-                                zoom: 2,
+                                type: parseInt(plotinfos[i].markerShape),
+                                zoom: plotinfos[i].markerSize,
                                 strokeColor: Color.getColor(color),
                                 fillColor: Color.getColor(color),
                                 points: 'all'

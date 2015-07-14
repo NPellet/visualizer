@@ -446,6 +446,24 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
                             'default': []
                         },
 
+                        markerShape: {
+                            type: 'combo',
+                            title: 'Marker shape',
+                            options: [
+                                {key: '1', title: 'Square'},
+                                {key: '2', title: 'X cross'},
+                                {key: '3', title: '+ cross'},
+                                {key: '4', title: 'Triangle'}
+                            ],
+                            'default': '1'
+                        },
+
+                        markerSize: {
+                            type: 'float',
+                            title: 'Marker size',
+                            'default': 2
+                        },
+
                         normalize: {
                             type: 'combo',
                             title: 'Normalize',
