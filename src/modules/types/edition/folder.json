@@ -9,7 +9,7 @@
       "url": "modules/types/edition/filter_editor/"
     },
     {
-      "moduleName": "Object editor",
+      "moduleName": "JSON object editor",
       "url": "modules/types/edition/object_editor/"
     },
     {
