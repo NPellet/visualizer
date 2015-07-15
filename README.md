@@ -28,6 +28,5 @@ The visualizer allows the modules to comminucate via a central repository of var
 
 Installation
 ============
-To install the development version of the visualizer, you need Node.JS.  
+To install the development version of the visualizer, you need Node.js.  
 Run `npm install` and all the dependencies will be downloaded.
-
