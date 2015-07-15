@@ -1,4 +1,4 @@
-HEAD = 2015-07-15
+2.23.1 / 2015-07-15
 =================
 * Testcase
  * testcase: update array example
