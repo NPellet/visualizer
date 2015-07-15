@@ -96,10 +96,14 @@ classes should alter those!
 
 .slick-cell.invalid {
     border-color: red;
-    -moz-animation-duration: 0.2s;
     -webkit-animation-duration: 0.2s;
-    -moz-animation-name: slickgrid-invalid-hilite;
+    -moz-animation-duration: 0.2s;
+    -o-animation-duration: 0.2s;
+    animation-duration: 0.2s;
     -webkit-animation-name: slickgrid-invalid-hilite;
+    -moz-animation-name: slickgrid-invalid-hilite;
+    -o-animation-name: slickgrid-invalid-hilite;
+    animation-name: slickgrid-invalid-hilite;
 }
 
 @-moz-keyframes slickgrid-invalid-hilite {
@@ -111,6 +115,7 @@ classes should alter those!
     from { box-shadow: 0 0 6px red; }
     to { box-shadow: none; }
 }
+
 /* ============================================ */
 
 .ci-module-slickgrid h2 {
@@ -169,12 +174,14 @@ classes should alter those!
     padding: 2px 2px;
     -moz-border-radius: 2px;
     -webkit-border-radius: 2px;
+    border-radius: 2px;
     border: 1px solid silver;
 }
 
 .ci-module-slickgrid .options-panel {
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px;
+    border-radius: 6px;
     border: 1px solid silver;
     background: #f0f0f0;
     padding: 4px;
@@ -226,6 +233,7 @@ classes should alter those!
     height: 6px;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
+    border-radius: 3px;
 }
 
 /* Slick.Editors.Text, Slick.Editors.Date */
@@ -460,14 +468,13 @@ classes should alter those!
 .ci-module-slickgrid .main-container{
     display: -webkit-flex;
     display: flex;
-    display: -webkit-flex;
     min-height: 100%;
-    flex-direction: column;
     -webkit-flex-direction: column;
+    flex-direction: column;
     width: 100%;
 }
 
 .ci-module-slickgrid .flex-1 {
-    flex: 1;
     -webkit-flex: 1;
+    flex: 1;
 }
