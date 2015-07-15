@@ -1,0 +1,180 @@
+{
+  "version": "2.23.3-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "text"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                [
+                  "expand"
+                ]
+              ],
+              "displayValue": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{\"type\":\"chart\",\"value\":{\"axis\":[],\"data\":[{\"label\":\"My beautiful serie\",\"x\":[0,1,2,3,4,5],\"y\":[0,2,4,3,2,1]}]}}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 51,
+            "height": 65
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 1,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [],
+          "name": "chart"
+        }
+      ],
+      "title": "",
+      "actions_out": []
+    },
+    {
+      "url": "modules/types/display/single_value/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "defaultvalue": [
+                null
+              ],
+              "font": [
+                null
+              ],
+              "fontcolor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "fontsize": [
+                null
+              ],
+              "align": [
+                null
+              ],
+              "valign": [
+                null
+              ],
+              "sprintf": [
+                null
+              ],
+              "sprintfOrder": [
+                null
+              ],
+              "preformatted": [
+                []
+              ],
+              "append": [
+                []
+              ],
+              "maxEntries": [
+                1
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 52,
+            "top": 0
+          },
+          "size": {
+            "width": 86,
+            "height": 65
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 2,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "chart"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "",
+      "vars_out": [],
+      "actions_out": []
+    }
+  ],
+  "variables": [],
+  "aliases": [],
+  "pouchvariables": [],
+  "configuration": {
+    "title": "No title"
+  }
+}
