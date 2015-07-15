@@ -114,7 +114,8 @@ module.exports = function (grunt) {
                             './file-saver.js/*.js',
                             './json-chart/dist/*',
                             './d3-plugins/**',
-                            './mime-types/**'
+                            './mime-types/**',
+                            './bluebird/js/browser/**'
                         ],
 
                         dest: './build/components/'
@@ -145,7 +146,7 @@ module.exports = function (grunt) {
                         filter: function (filePath) {
                             var files = grunt.option('filterFiles');
                             for (var i = 0, l = files.length; i < l; i++) {
-                                if (path.relative(mapPath(files[ i ]), filePath) == '') {
+                                if (path.relative(mapPath(files[i]), filePath) == '') {
                                     return true;
                                 }
                             }
@@ -186,7 +187,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: './src/',
-                        src: ['./modules/**' ],
+                        src: ['./modules/**'],
                         dest: './build/',
                         filter: function (filepath) {
                             var modulesStack = grunt.option('modulesStack');
@@ -202,7 +203,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: './src/',
-                        src: ['./modules/module.js', './modules/modulefactory.js', './default/**', './modules/default/**' ],
+                        src: ['./modules/module.js', './modules/modulefactory.js', './default/**', './modules/default/**'],
                         dest: './build/'
                     }
 
@@ -214,26 +215,26 @@ module.exports = function (grunt) {
         clean: {
 
             build: {
-                src: [ 'build' ]
+                src: ['build']
             },
 
             buildTemp: {
-                src: [ 'build2' ]
+                src: ['build2']
             },
 
             modules: {
-                src: [ 'build/modules/**/.DS_Store' ]
+                src: ['build/modules/**/.DS_Store']
             },
 
             modulesJson: {
-                src: [ 'build/modules/**/*.json' ],
+                src: ['build/modules/**/*.json'],
                 filter: function (filepath) {
                     return ( !filepath.match('/lib/') && !filepath.match(/folder\.json$/) );
                 }
             },
 
             modulesJsonErase: {
-                src: [ 'src/modules/**/*.json' ],
+                src: ['src/modules/**/*.json'],
                 filter: function (filepath) {
                     return ( !filepath.match('/lib/') );
                 }
@@ -287,8 +288,8 @@ module.exports = function (grunt) {
                 src: ['src/src/util/*'],
                 options: {
                     destination: 'doc',
-                    template : 'node_modules/grunt-jsdoc/node_modules/ink-docstrap/template',
-                    configure : 'doc.conf.json'
+                    template: 'node_modules/grunt-jsdoc/node_modules/ink-docstrap/template',
+                    configure: 'doc.conf.json'
                 }
             }
         }
@@ -304,7 +305,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-ftp');
     grunt.loadNpmTasks('grunt-jsdoc');
 
-    grunt.registerTask('upload', [ 'ftp' ]);
+    grunt.registerTask('upload', ['ftp']);
 
     grunt.registerTask('clean-images', 'Clean all images that are not used in the build', function () {
         var options
@@ -353,7 +354,7 @@ module.exports = function (grunt) {
                         }
 
                         // Search for images specified in .js, .css and .html files
-                        var reg = new RegExp('[/\\.a-zA-Z_\\- 0-9]+\\.(png|jpeg|jpg|gif)','gi');
+                        var reg = new RegExp('[/\\.a-zA-Z_\\- 0-9]+\\.(png|jpeg|jpg|gif)', 'gi');
                         var res = content.match(reg);
                         if (res) {
                             _.keys(res).forEach(function (i) {
@@ -513,7 +514,7 @@ module.exports = function (grunt) {
                 j = 0,
                 i = 0,
                 l,
-                jsonStructure = { modules: [], folders: {} };
+                jsonStructure = {modules: [], folders: {}};
 //console.log( fileName );
             if (typeof fileName !== 'object') {
 
@@ -551,14 +552,12 @@ module.exports = function (grunt) {
 
             if (file.modules) {
                 for (j = 0, l = file.modules.length; j < l; j++) {
-                    modules[ file.modules[ j ].url ] = true;
-                    modulesStack[ file.modules[ j ].url ] = true;
+                    modules[file.modules[j].url] = true;
+                    modulesStack[file.modules[j].url] = true;
                     if (arguments.length === 2) {
-                        console.log('here...', file.modules[j].url);
                         file.modules[j].url = './usr/' + file.modules[j].url;
                     }
-                    // console.log('module added: ', file.modules[j]);
-                    jsonStructure.modules.push(file.modules[ j ]);
+                    jsonStructure.modules.push(file.modules[j]);
                 }
             }
 
@@ -577,7 +576,7 @@ module.exports = function (grunt) {
                 j = 0,
                 i = 0,
                 l,
-                jsonStructure = { modules: [], folders: {} };
+                jsonStructure = {modules: [], folders: {}};
             if (typeof fileName === 'string') {
                 if (!fs.existsSync(fileName)) {
                     return console.log('Folder file ' + fileName + ' does not exist');
@@ -598,9 +597,9 @@ module.exports = function (grunt) {
 
             if (file.modules) {
                 for (j = 0, l = file.modules.length; j < l; j++) {
-                    modules[ file.modules[ j ].url ] = true;
-                    modulesStack[ file.modules[ j ].url ] = true;
-                    jsonStructure.modules.push(file.modules[ j ]);
+                    modules[file.modules[j].url] = true;
+                    modulesStack[file.modules[j].url] = true;
+                    jsonStructure.modules.push(file.modules[j]);
                 }
             }
             return jsonStructure;
@@ -609,12 +608,10 @@ module.exports = function (grunt) {
         if (cfg.modules) {
             if (cfg.modules instanceof Array) {  // Backwards compatibility
                 for (var i = 0, l = cfg.modules.length; i < l; i++) {
-                    console.log(typeof cfg.modules[ i ]);
-                    console.log(cfg.modules[ i ]);
-                    if (typeof cfg.modules[ i ] == 'object') {
-                        extend(true, modulesFinal, oldLoadFile(cfg.modules[ i ]));
+                    if (typeof cfg.modules[i] == 'object') {
+                        extend(true, modulesFinal, oldLoadFile(cfg.modules[i]));
                     } else {
-                        extend(true, modulesFinal, oldLoadFile(cfg.modules[ i ]));
+                        extend(true, modulesFinal, oldLoadFile(cfg.modules[i]));
                         //        console.log( oldLoadFile( './src/' + cfg.modules[ i ] ) );
                         //       console.log( "___" );
                     }
@@ -624,9 +621,9 @@ module.exports = function (grunt) {
                 if (list.modules) {
                     modulesFinal.modules = [];
                     for (j = 0, l = list.modules.length; j < l; j++) {
-                        modules[ list.modules[ j ].url ] = true;
-                        modulesStack[ list.modules[ j ].url ] = true;
-                        modulesFinal.modules.push(list.modules[ j ]);
+                        modules[list.modules[j].url] = true;
+                        modulesStack[list.modules[j].url] = true;
+                        modulesFinal.modules.push(list.modules[j]);
                     }
                 }
                 modulesFinal.folders = {};
@@ -661,17 +658,17 @@ module.exports = function (grunt) {
     });
 
     // Takes care of module jsons
-    grunt.registerTask('eraseModuleJsons', [ 'clean:modulesJsonErase' ]);
+    grunt.registerTask('eraseModuleJsons', ['clean:modulesJsonErase']);
     grunt.registerTask('createJSONModules', 'Create all modules json', function () {
         recurseFolder('./src/modules/types', 'modules/types');
         recurseFolder('./src/usr/modules', 'usr/modules');
     });
 
-    grunt.registerTask('recurseFolder', 'Recurse Folder', function() {
+    grunt.registerTask('recurseFolder', 'Recurse Folder', function () {
         var from = grunt.option('recurseFolderFrom');
         var to = grunt.option('recurseFolderTo');
 
-        if(from && to) {
+        if (from && to) {
             recurseFolder(from, to);
         }
     });
@@ -686,17 +683,17 @@ module.exports = function (grunt) {
             subFolder;
 
         for (var i = 0, l = folders.length; i < l; i++) {
-            if (!fs.statSync(basePath + '/' + folders[ i ]).isDirectory() || folders[ i ] == 'lib') {
+            if (!fs.statSync(basePath + '/' + folders[i]).isDirectory() || folders[i] == 'lib') {
                 continue;
             }
 
-            if (fs.existsSync(basePath + '/' + folders[ i ] + '/model.js')) {
-                allModules.push(folders[ i ]);
+            if (fs.existsSync(basePath + '/' + folders[i] + '/model.js')) {
+                allModules.push(folders[i]);
             } else {
-                allFolders.push(folders[ i ]);
+                allFolders.push(folders[i]);
             }
 
-            containsModule = containsModule || fs.existsSync(basePath + '/' + folders[ i ] + '/model.js');
+            containsModule = containsModule || fs.existsSync(basePath + '/' + folders[i] + '/model.js');
         }
 
         if (allFolders.length == 0 && allModules.length == 0) {
@@ -705,17 +702,17 @@ module.exports = function (grunt) {
 
         target.modules = [];
         for (var i = 0, l = allModules.length; i < l; i++) {
-            var moduleInfo = /moduleInformation[^\{]+(\{[^}]+})/.exec(grunt.file.read(basePath + '/' + allModules[ i ] + '/controller.js'));
+            var moduleInfo = /moduleInformation[^\{]+(\{[^}]+})/.exec(grunt.file.read(basePath + '/' + allModules[i] + '/controller.js'));
 
             try {
-                eval ('moduleInfo = ' + moduleInfo[1]);
+                eval('moduleInfo = ' + moduleInfo[1]);
             } catch (e) {
-                throw new Error('Could not find module information for ' + basePath+'/'+allModules[i]);
+                throw new Error('Could not find module information for ' + basePath + '/' + allModules[i]);
             }
 
             var info = {
-                moduleName: (moduleInfo.name || allModules[ i ]),
-                url: ( relPath ) + '/' + allModules[ i ] + '/'
+                moduleName: (moduleInfo.name || allModules[i]),
+                url: ( relPath ) + '/' + allModules[i] + '/'
             };
 
             if (moduleInfo.hidden) {
@@ -727,10 +724,10 @@ module.exports = function (grunt) {
 
         target.folders = [];
         for (var i = 0, l = allFolders.length; i < l; i++) {
-            recurseFolder(basePath + '/' + allFolders[ i ], relPath + '/' + allFolders[ i ]);
+            recurseFolder(basePath + '/' + allFolders[i], relPath + '/' + allFolders[i]);
 
-            if (fs.existsSync(basePath + '/' + allFolders[ i ] + '/folder.json')) {
-                subFolder = grunt.file.readJSON(basePath + '/' + allFolders[ i ] + '/folder.json');
+            if (fs.existsSync(basePath + '/' + allFolders[i] + '/folder.json')) {
+                subFolder = grunt.file.readJSON(basePath + '/' + allFolders[i] + '/folder.json');
                 target.folders.push(allFolders[i]);
             }
         }
@@ -768,7 +765,7 @@ module.exports = function (grunt) {
 
         var semVersion = semver.parse(v);
 
-        console.log('Current version is ' +semVersion);
+        console.log('Current version is ' + semVersion);
 
         semVersion.inc(version || 'patch');
 
@@ -849,10 +846,10 @@ module.exports = function (grunt) {
         return str.replace(reg, 'var ' + name + ' = ' + value + ';\n');
     }
 
-    grunt.registerTask('css:modules', function() {
+    grunt.registerTask('css:modules', function () {
         var folderJson = JSON.parse(fs.readFileSync('./build/modules/types/folder.json'));
         var mIds = applyModules(folderJson, moduleProcessCss)
-            .filter(function(v) {
+            .filter(function (v) {
                 return v !== undefined;
             });
         var versionJS = fs.readFileSync('./build/version.js', 'utf8');
@@ -862,15 +859,15 @@ module.exports = function (grunt) {
 
     function applyModules(folderJson, callback) {
         var res = [];
-        if(Array.isArray(folderJson)) {
+        if (Array.isArray(folderJson)) {
             for (var i = 0; i < folderJson.length; i++) {
                 var el = folderJson[i];
                 res = res.concat(applyModules(el, callback));
             }
         }
-        else if(typeof folderJson === 'object') {
-            for(var key in folderJson) {
-                if(key === 'modules' && Array.isArray(folderJson[key])) {
+        else if (typeof folderJson === 'object') {
+            for (var key in folderJson) {
+                if (key === 'modules' && Array.isArray(folderJson[key])) {
                     for (var i = 0; i < folderJson[key].length; i++) {
                         var obj = folderJson[key][i];
                         res.push(callback(obj));
@@ -885,11 +882,10 @@ module.exports = function (grunt) {
 
     function moduleProcessCss(module) {
         var p = path.join('./build/', module.url, 'style.css');
-        if(module.url && fs.existsSync(p)) {
+        if (module.url && fs.existsSync(p)) {
             append(p, './build/css/main.css');
             return moduleIdFromUrl(module.url);
         }
-        console.log(module);
         return undefined;
     }
 
