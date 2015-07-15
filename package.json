@@ -16,7 +16,8 @@
     "release": "npm run release:patch",
     "release:major": "npm run test && grunt bump:major --release",
     "release:minor": "npm run test && grunt bump:minorminor --release",
-    "release:patch": "npm run test && grunt bump:patch --release"
+    "release:patch": "npm run test && grunt bump:patch --release",
+    "doc": "grunt jsdoc"
   },
   "homepage": "https://github.com/NPellet/visualizer",
   "bugs": {
