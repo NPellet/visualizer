@@ -170,6 +170,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
      *
      * @param {object} options
      * @param {string} options.name - Name of the attachment to upload
+     * @param {string} options.contentType - Content-Type of the attachment to upload
      * @param {string} options.data -  The attachment's content to upload
      * @param {Blob} options.file - The attachments's content to upload
      * @returns {Promise.<Object>} The new list of attachments
