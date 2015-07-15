@@ -40,7 +40,7 @@ define([
                         console.log(that);
                         var nodes = [];
                         if (!that.ftree) {
-                            ui.showNotification('Cannot save, couchdb tree not loaded yet');
+                            ui.showNotification('Cannot save, couchdb tree not loaded yet', 'info');
                             return;
                         }
                         that.ftree.visit(function (n) {
@@ -62,32 +62,32 @@ define([
                                     console.log('save view');
                                     $(this).dialog('close');
                                     that.saveNode('View', nodes[0]).then(function () {
-                                        ui.showNotification('View saved');
+                                        ui.showNotification('View saved', 'success');
                                     }, function (e) {
-                                        ui.showNotification(that.getErrorContent(e));
+                                        ui.showNotification(that.getErrorContent(e.status), 'error');
                                     });
                                 },
                                 'Save Data': function () {
                                     console.log('save data');
                                     $(this).dialog('close');
                                     that.saveNode('Data', nodes[0]).then(function () {
-                                        ui.showNotification('Data saved');
+                                        ui.showNotification('Data saved', 'success');
                                     }, function (e) {
-                                        ui.showNotification(that.getErrorContent(e));
+                                        ui.showNotification(that.getErrorContent(e.status), 'error');
                                     });
                                 },
                                 'Save Both': function () {
                                     console.log('save both');
                                     $(this).dialog('close');
                                     that.saveNode('View', nodes[0]).then(function () {
-                                        ui.showNotification('View saved');
+                                        ui.showNotification('View saved', 'success');
                                         that.saveNode('Data', nodes[0]).then(function () {
-                                            ui.showNotification('Data saved');
+                                            ui.showNotification('Data saved', 'success');
                                         }, function (e) {
-                                            ui.showNotification(that.getErrorContent(e));
+                                            ui.showNotification(that.getErrorContent(e.status), 'error');
                                         });
                                     }, function (e) {
-                                        ui.showNotification(that.getErrorContent(e));
+                                        ui.showNotification(that.getErrorContent(e.status), 'error');
                                     });
                                 }
                             }
@@ -304,8 +304,9 @@ define([
         saveNode: function (type, node) {
             var that = this;
             if (!node) {
-                this.showError('Cannot save node (undefined)');
-                return Promise.reject();
+                var msg = 'Cannot save node (undefined)';
+                this.showError(msg);
+                return Promise.reject(msg);
             }
             var doc = node.data.doc;
             var content = Versioning['get' + type + 'JSON']();
@@ -315,14 +316,15 @@ define([
                 contentType: 'application/json',
                 data: content,
                 dataType: 'json',
-                error: this.showError,
+                error: function (d, type) {
+                    that.showError(d.status, type);
+                },
                 success: function (data) {
                     doc._rev = data.rev;
                     node.data['has' + type] = true;
                     if (node.children)
                         node.lazyLoad(true);
                     that.showError(type + ' saved.', 2);
-
                 }
             }));
         },
@@ -364,7 +366,9 @@ define([
                     contentType: 'application/json',
                     data: content,
                     dataType: 'json',
-                    error: this.showError,
+                    error: function (e, type) {
+                        that.showError(e.status, type);
+                    },
                     success: function (data) {
                         doc._rev = data.rev;
                         child.data['has' + type] = true;

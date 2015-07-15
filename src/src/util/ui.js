@@ -260,16 +260,20 @@ define([
         exports.dialog(dialog, dialogOptions);
     };
 
-    exports.showNotification = function (message) {
-        $notification = $('.ci-visualizer-notification');
-        if ($notification.length === 0) {
-            $('#ci-visualizer').append('<div class="ci-visualizer-notification"></div>');
-            $notification = $('.ci-visualizer-notification');
-        }
-        $notification.show().html(message);
-        setTimeout(function () {
-            $notification.hide();
-        }, 5000);
+    exports.showNotification = function () {
+        var args = arguments;
+        require(['notifyjs'], function () {
+            $.notify.apply($.notify, args);
+        });
+        //$notification = $('.ci-visualizer-notification');
+        //if ($notification.length === 0) {
+        //    $('#ci-visualizer').append('<div class="ci-visualizer-notification"></div>');
+        //    $notification = $('.ci-visualizer-notification');
+        //}
+        //$notification.show().html(message);
+        //setTimeout(function () {
+        //    $notification.hide();
+        //}, 5000);
     };
 
     exports.getSafeElement = function (el) {
