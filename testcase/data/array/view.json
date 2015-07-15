@@ -203,8 +203,8 @@
 				"height": 19
 			},
 			"id": 4,
-			"vars_in": {},
-			"actions_in": {},
+			"vars_in": [],
+			"actions_in": [],
 			"text": "<p>A simple table with linked values for mouse over and mouse clicked.</p><p>And a post-it !</p>",
 			"url": "./modules/types/display/postit/"
 		},
@@ -331,7 +331,7 @@
 					"name": "data"
 				}
 			],
-			"actions_in": {},
+			"actions_in": [],
 			"vars_out": [
 				{}
 			],

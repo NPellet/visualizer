@@ -180,7 +180,7 @@
       },
       "id": 24,
       "vars_in": [],
-      "actions_in": {},
+      "actions_in": [],
       "text": "<p>Determine&nbsp;the charge of the observed molecular ion</p><p>Depending the ionization&nbsp;method a molecule can be charged many times.</p><p>In thiose example we only consider positively charged molecules.</p><p>Based on the theoretical mass spectrum and the difference of mass between isotopologues, determine the charge of the observed molecular ion.</p><p>Don't forget that some elements may have some fancy isotopes ...</p><p><br></p>",
       "vars_out": [{}],
       "actions_out": {},
@@ -225,7 +225,7 @@
       },
       "id": 25,
       "vars_in": [],
-      "actions_in": {},
+      "actions_in": [],
       "vars_out": {},
       "actions_out": [
         {

@@ -71,7 +71,7 @@
 					"name": "tree"
 				}
 			],
-			"actions_in": {},
+			"actions_in": [],
 			"title": "Untitled",
 			"vars_out": [
 				{
@@ -149,7 +149,7 @@
 					"name": "node"
 				}
 			],
-			"actions_in": {},
+			"actions_in": [],
 			"vars_out": [
 				{
 					"jpath": []
@@ -232,7 +232,7 @@
 					"name": "node2"
 				}
 			],
-			"actions_in": {},
+			"actions_in": [],
 			"title": "Untitled",
 			"vars_out": {},
 			"actions_out": {}

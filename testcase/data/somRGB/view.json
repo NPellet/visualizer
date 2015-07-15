@@ -189,7 +189,7 @@
           "name": "defaultOptions"
         }
       ],
-      "actions_in": {},
+      "actions_in": [],
       "title": "Options",
       "vars_out": [
         {

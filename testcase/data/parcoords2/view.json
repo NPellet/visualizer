@@ -435,7 +435,7 @@
 		  "name": "defaultColors"
 		}
 	  ],
-	  "actions_in": {},
+	  "actions_in": [],
 	  "title": "Data generation",
 	  "vars_out": [
 		{

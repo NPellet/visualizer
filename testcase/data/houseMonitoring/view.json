@@ -70,7 +70,7 @@
 					"name": "svgmodifier"
 				}
 			],
-			"actions_in": {},
+			"actions_in": [],
 			"title": "Bioreactor svg",
 			"vars_out": [
 				{
@@ -393,7 +393,7 @@
 			},
 			"id": 5,
 			"vars_in": [],
-			"actions_in": {},
+			"actions_in": [],
 			"title": "Untitled",
 			"text": "<p><- Click here to execute</p>\n",
 			"vars_out": [

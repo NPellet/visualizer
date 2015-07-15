@@ -50,7 +50,7 @@
 					"name": "dynamicChart"
 				}
 			],
-			"actions_in": {},
+			"actions_in": [],
 			"vars_out": [
 				{}
 			],
@@ -138,7 +138,7 @@
 			"vars_in": [
 				{}
 			],
-			"actions_in": {},
+			"actions_in": [],
 			"vars_out": [
 				{
 					"event": "onObjectChange",
@@ -194,7 +194,7 @@
 					"name": "stackChart"
 				}
 			],
-			"actions_in": {},
+			"actions_in": [],
 			"vars_out": [
 				{}
 			],
@@ -352,7 +352,7 @@
 					"name": "stackChart"
 				}
 			],
-			"actions_in": {},
+			"actions_in": [],
 			"vars_out": [
 				{}
 			],

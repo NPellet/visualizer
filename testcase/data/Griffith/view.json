@@ -86,7 +86,7 @@
           "name": "svgmodifier"
         }
       ],
-      "actions_in": {},
+      "actions_in": [],
       "title": "Laboratoire, expérience de Griffith",
       "vars_out": [
         {
@@ -400,7 +400,7 @@
           "name": "elDescription"
         }
       ],
-      "actions_in": {},
+      "actions_in": [],
       "title": "Info",
       "vars_out": {},
       "actions_out": {}
@@ -483,7 +483,7 @@
       "vars_in": [
         {}
       ],
-      "actions_in": {},
+      "actions_in": [],
       "vars_out": [
         {
           "event": "onObjectChange",
@@ -568,7 +568,7 @@
           "name": "s1modifier"
         }
       ],
-      "actions_in": {},
+      "actions_in": [],
       "title": "Vue Microscopique de Solution 1",
       "vars_out": [
         {
@@ -650,7 +650,7 @@
           "name": "s2modifier"
         }
       ],
-      "actions_in": {},
+      "actions_in": [],
       "title": "Vue microscopique de Solution 2",
       "vars_out": [
         {
@@ -755,7 +755,7 @@
           "name": "lastActions"
         }
       ],
-      "actions_in": {},
+      "actions_in": [],
       "title": "Actions effectuées",
       "vars_out": {},
       "actions_out": {}

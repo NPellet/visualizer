@@ -157,7 +157,7 @@
                     "name": "doi"
                 }
             ],
-            "actions_in": {},
+            "actions_in": [],
             "vars_out": {},
             "actions_out": {},
             "layers": {
@@ -236,7 +236,7 @@
                     "name": "doiURL"
                 }
             ],
-            "actions_in": {},
+            "actions_in": [],
             "vars_out": {},
             "actions_out": {},
             "layers": {
@@ -403,7 +403,7 @@
                     "name": "typedDoi"
                 }
             ],
-            "actions_in": {},
+            "actions_in": [],
             "vars_out": {},
             "actions_out": {},
             "layers": {
@@ -465,7 +465,7 @@
                     "name": "doiURL"
                 }
             ],
-            "actions_in": {},
+            "actions_in": [],
             "vars_out": {},
             "actions_out": {},
             "layers": {

@@ -43,7 +43,7 @@
 			},
 			"id": 1,
 			"vars_in": [],
-			"actions_in": {},
+			"actions_in": [],
 			"vars_out": [
 				{
 					"event": "onRead",
@@ -97,7 +97,7 @@
 					"name": "histogram"
 				}
 			],
-			"actions_in": {},
+			"actions_in": [],
 			"vars_out": [
 				{}
 			],

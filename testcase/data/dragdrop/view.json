@@ -46,7 +46,7 @@
 			},
 			"id": 1,
 			"vars_in": [],
-			"actions_in": {},
+			"actions_in": [],
 			"vars_out": [
 				{
 					"event": "onRead",

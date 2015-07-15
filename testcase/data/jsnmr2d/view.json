@@ -38,7 +38,7 @@
                     "name": "cosy"
                 }
             ],
-            "actions_in": {},
+            "actions_in": [],
             "title": "1H,1H / cosy",
             "vars_out": {},
             "actions_out": {}
@@ -81,7 +81,7 @@
                     "name": "cosy"
                 }
             ],
-            "actions_in": {},
+            "actions_in": [],
             "title": "cosy",
             "vars_out": {},
             "actions_out": {}
@@ -132,7 +132,7 @@
                     "name": "hsqc"
                 }
             ],
-            "actions_in": {},
+            "actions_in": [],
             "title": "13C,1H / hmbc,hsqc",
             "vars_out": {},
             "actions_out": {}
@@ -179,7 +179,7 @@
                     "name": "hsqc"
                 }
             ],
-            "actions_in": {},
+            "actions_in": [],
             "title": "1H / hmbc",
             "vars_out": {},
             "actions_out": {}

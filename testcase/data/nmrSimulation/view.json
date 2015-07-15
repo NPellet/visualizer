@@ -18,7 +18,7 @@
 			},
 			"id": 1,
 			"vars_in": [],
-			"actions_in": {},
+			"actions_in": [],
 			"text": "<p>Just enter the chemical shifts (in PPM) and the coupling constants (in Hz) and simulate exactly any system from AB to ABCDEF.</p>",
 			"vars_out": [
 				{}
@@ -200,7 +200,7 @@
 			},
 			"id": 3,
 			"vars_in": [],
-			"actions_in": {},
+			"actions_in": [],
 			"vars_out": [
 				{
 					"event": "onSearchReturn",

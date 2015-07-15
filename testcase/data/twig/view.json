@@ -103,7 +103,7 @@
 		  "name": "test"
 		}
 	  ],
-	  "actions_in": {},
+	  "actions_in": [],
 	  "vars_out": {},
 	  "actions_out": {},
 	  "layers": {
@@ -165,7 +165,7 @@
 	  "vars_in": [
 		{}
 	  ],
-	  "actions_in": {},
+	  "actions_in": [],
 	  "vars_out": [
 		{
 		  "event": "onObjectChange",

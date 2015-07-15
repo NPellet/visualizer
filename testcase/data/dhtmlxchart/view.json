@@ -64,7 +64,7 @@
 					"name": "radarChart"
 				}
 			],
-			"actions_in": {},
+			"actions_in": [],
 			"vars_out": [
 				{}
 			],
@@ -221,7 +221,7 @@
 					"name": "radarChart"
 				}
 			],
-			"actions_in": {},
+			"actions_in": [],
 			"vars_out": [
 				{}
 			],
@@ -306,7 +306,7 @@
 					"name": "radarChart"
 				}
 			],
-			"actions_in": {},
+			"actions_in": [],
 			"vars_out": [
 				{}
 			],
@@ -386,7 +386,7 @@
 					"name": "radarChart"
 				}
 			],
-			"actions_in": {},
+			"actions_in": [],
 			"vars_out": [
 				{}
 			],
@@ -474,7 +474,7 @@
 			"vars_in": [
 				{}
 			],
-			"actions_in": {},
+			"actions_in": [],
 			"vars_out": [
 				{
 					"event": "onObjectChange",
@@ -547,7 +547,7 @@
 					"name": "dynamicChart"
 				}
 			],
-			"actions_in": {},
+			"actions_in": [],
 			"vars_out": [
 				{}
 			],

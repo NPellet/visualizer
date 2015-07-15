@@ -572,7 +572,7 @@
           "name": "value"
         }
       ],
-      "actions_in": {},
+      "actions_in": [],
       "vars_out": [
         {
           "rel": "output"

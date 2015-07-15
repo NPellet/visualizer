@@ -60,7 +60,7 @@
             "vars_in": [
                 {}
             ],
-            "actions_in": {},
+            "actions_in": [],
             "title": "Untitled",
             "vars_out": [
                 {
@@ -187,7 +187,7 @@
             "vars_in": [
                 {}
             ],
-            "actions_in": {},
+            "actions_in": [],
             "title": "Untitled",
             "vars_out": [
                 {

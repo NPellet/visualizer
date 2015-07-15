@@ -70,7 +70,7 @@
 					"name": "svgmodifier"
 				}
 			],
-			"actions_in": {},
+			"actions_in": [],
 			"title": "Bioreactor svg",
 			"vars_out": [
 				{
@@ -148,7 +148,7 @@
 					"name": "svgmodifier"
 				}
 			],
-			"actions_in": {},
+			"actions_in": [],
 			"vars_out": [
 				{
 					"jpath": []
@@ -205,7 +205,7 @@
 			"vars_in": [
 				{}
 			],
-			"actions_in": {},
+			"actions_in": [],
 			"title": "Data generation",
 			"vars_out": [
 				{
@@ -272,7 +272,7 @@
 					"name": "filterObj"
 				}
 			],
-			"actions_in": {},
+			"actions_in": [],
 			"vars_out": [
 				{
 					"jpath": []
@@ -378,7 +378,7 @@
 			},
 			"id": 7,
 			"vars_in": [],
-			"actions_in": {},
+			"actions_in": [],
 			"title": "Untitled",
 			"zindex": 3,
 			"text": "<p><- click here to execute</p>\n"

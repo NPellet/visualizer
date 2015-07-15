@@ -76,7 +76,7 @@
 					"name": "pieChart"
 				}
 			],
-			"actions_in": {},
+			"actions_in": [],
 			"vars_out": [
 				{}
 			],
@@ -163,7 +163,7 @@
 					"name": "simpleArray"
 				}
 			],
-			"actions_in": {},
+			"actions_in": [],
 			"vars_out": [
 				{}
 			],

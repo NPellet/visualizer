@@ -598,8 +598,8 @@
 			},
 			"configuration": {},
 			"id": 7,
-			"vars_in": {},
-			"actions_in": {},
+			"vars_in": [],
+			"actions_in": [],
 			"text": "<p>Check if what you think is correct. You may search by substructure in a database of 10000 IR spectra and compare 2 spectra by clicking in the table.</p><p>Please allow some time to make the query !!!</p>",
 			"zindex": 2
 		}

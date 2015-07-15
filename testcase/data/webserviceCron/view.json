@@ -16,7 +16,7 @@
 			"configuration": {},
 			"id": 1,
 			"vars_in": [],
-			"actions_in": {}
+			"actions_in": []
 		},
 		{
 			"url": "./modules/types/server_interaction/webservice_search/",

@@ -61,7 +61,7 @@
                     "name": "stepsvgmodifier"
                 }
             ],
-            "actions_in": {},
+            "actions_in": [],
             "title": "Scheme",
             "vars_out": [
                 {
@@ -237,7 +237,7 @@
                     "name": "stepdescription"
                 }
             ],
-            "actions_in": {},
+            "actions_in": [],
             "title": "Explanation",
             "vars_out": {},
             "actions_out": {}
