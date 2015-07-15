@@ -1,559 +1,408 @@
 {
-  "modules": [
-	{
-	  "configuration": {
-		"sections": {},
-		"groups": {
-		  "group": [
-			{
-			  "nblines": [
-				10
-			  ],
-			  "toggle": [
-				null
-			  ],
-			  "colorjpath": [
-				"element.color"
-			  ],
-			  "filterRow": [
-				null
-			  ],
-			  "highlightLine": [
-				[
-				  "Yes"
-				]
-			  ]
-			}
-		  ],
-		  "cols": [
-			[
-			  {
-				"name": "ID",
-				"jpath": "element.id",
-				"number": [
-				  "number"
-				],
-				"editable": "none"
-			  },
-			  {
-				"name": "Value",
-				"jpath": "element.theValue",
-				"number": [
-				  "number"
-				],
-				"editable": "none"
-			  }
-			]
-		  ]
-		}
-	  },
-	  "id": 7,
-	  "vars_in": [
+	"modules": [
 		{
-		  "rel": "list",
-		  "name": "results"
-		}
-	  ],
-	  "actions_in": [
-		{}
-	  ],
-	  "vars_out": [
-		{
-		  "event": "onHover",
-		  "rel": "row",
-		  "jpath": [
-			"theValue"
-		  ],
-		  "name": "hoverValue"
-		},
-		{
-		  "event": "onSelect",
-		  "rel": "row",
-		  "jpath": [
-			"theValue"
-		  ],
-		  "name": "clickedValue"
-		}
-	  ],
-	  "actions_out": [
-		{
-		  "jpath": []
-		}
-	  ],
-	  "url": "modules/types/display/jqgrid/",
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 0,
-			"top": 0,
-			"right": 0
-		  },
-		  "size": {
-			"width": 21.9666666,
-			"height": 30.966666600000003
-		  },
-		  "display": true,
-		  "title": "Display > Table",
-		  "bgColor": [
-			255,
-			255,
-			255,
-			0
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		}
-	  },
-	  "title": "Display > Table"
-	},
-	{
-	  "configuration": {
-		"frontcolor": "",
-		"font": "arial",
-		"fontsize": "14pt",
-		"align": "center",
-		"valign": "middle",
-		"defaultvalue": "",
-		"sprintf": ""
-	  },
-	  "id": 8,
-	  "vars_in": [
-		{
-		  "rel": "value",
-		  "name": "hoverValue"
-		}
-	  ],
-	  "actions_in": [
-		{
-		  "rel": "",
-		  "name": ""
-		}
-	  ],
-	  "url": "modules/types/display/single_value/",
-	  "vars_out": [
-		{
-		  "event": "",
-		  "rel": "",
-		  "jpath": [],
-		  "name": ""
-		}
-	  ],
-	  "actions_out": [
-		{
-		  "event": "",
-		  "rel": "",
-		  "jpath": [],
-		  "name": ""
-		}
-	  ],
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 29,
-			"top": 33,
-			"right": 0
-		  },
-		  "size": {
-			"width": 14.9666666,
-			"height": 8.9666666
-		  },
-		  "display": true,
-		  "title": "Mouse over value",
-		  "bgColor": "",
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		}
-	  },
-	  "title": "Mouse over value"
-	},
-	{
-	  "configuration": {
-		"frontcolor": "",
-		"font": "arial",
-		"fontsize": "",
-		"align": "left",
-		"valign": "top",
-		"defaultvalue": "",
-		"sprintf": ""
-	  },
-	  "id": 9,
-	  "vars_in": [
-		{
-		  "rel": "value",
-		  "name": "clickedValue"
-		}
-	  ],
-	  "actions_in": [
-		{
-		  "rel": "",
-		  "name": ""
-		}
-	  ],
-	  "vars_out": [
-		{
-		  "event": "",
-		  "rel": "",
-		  "jpath": [],
-		  "name": ""
-		}
-	  ],
-	  "actions_out": [
-		{
-		  "event": "",
-		  "rel": "",
-		  "jpath": [],
-		  "name": ""
-		}
-	  ],
-	  "url": "modules/types/display/single_value/",
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 45,
-			"top": 33,
-			"right": 0
-		  },
-		  "size": {
-			"width": 17.9666666,
-			"height": 8.9666666
-		  },
-		  "display": true,
-		  "title": "Mouse clicked value",
-		  "bgColor": "",
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		}
-	  },
-	  "title": "Mouse clicked value"
-	},
-	{
-	  "url": "modules/types/display/fasttable/",
-	  "configuration": {
-		"sections": {},
-		"groups": {
-		  "group": [
-			{
-			  "nblines": [
-				20
-			  ],
-			  "toggle": [
-				null
-			  ],
-			  "colorjpath": [
-				"element.color"
-			  ],
-			  "filterRow": [
-				null
-			  ],
-			  "highlightLine": [
-				[
-				  "Yes"
-				]
-			  ]
-			}
-		  ],
-		  "cols": [
-			[
-			  {
-				"name": "Value",
-				"jpath": "element.theValue",
-				"number": [],
-				"editable": "none"
-			  },
-			  {
-				"name": "Label",
-				"jpath": "element.label",
-				"number": [],
-				"editable": "none"
-			  }
-			]
-		  ]
-		}
-	  },
-	  "id": 11,
-	  "vars_in": [
-		{
-		  "rel": "list",
-		  "name": "results"
-		}
-	  ],
-	  "actions_in": [
-		{}
-	  ],
-	  "vars_out": [
-		{
-		  "event": "onSelect",
-		  "rel": "row",
-		  "jpath": [
-			"theValue"
-		  ],
-		  "name": "clickedValue"
-		},
-		{
-		  "event": "onHover",
-		  "rel": "row",
-		  "jpath": [
-			"theValue"
-		  ],
-		  "name": "hoverValue"
-		}
-	  ],
-	  "actions_out": [
-		{
-		  "jpath": []
-		}
-	  ],
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 23,
-			"top": 0,
-			"right": 0
-		  },
-		  "size": {
-			"width": 23,
-			"height": 31
-		  },
-		  "display": true,
-		  "title": "Display > Table (fast)",
-		  "bgColor": [
-			255,
-			255,
-			255,
-			0
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		}
-	  },
-	  "title": "Display > Table (fast)"
-	},
-	{
-	  "url": "modules/types/edition/object_editor/",
-	  "configuration": {
-		"sections": {},
-		"groups": {
-		  "group": [
-			{
-			  "editable": [
-				"view"
-			  ],
-			  "expanded": [
-				[]
-			  ],
-			  "storeObject": [
-				[]
-			  ],
-			  "storedObject": [
-				"{}"
-			  ]
-			}
-		  ]
-		}
-	  },
-	  "id": 12,
-	  "vars_in": [
-		{
-		  "rel": "value",
-		  "name": "data"
-		}
-	  ],
-	  "actions_in": [],
-	  "vars_out": [
-		{
-		  "rel": "output"
-		}
-	  ],
-	  "actions_out": {},
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 85.99999780654908,
-			"top": 0,
-			"right": 0
-		  },
-		  "size": {
-			"width": 32.9666666,
-			"height": 49.9666666
-		  },
-		  "display": true,
-		  "title": "Input data",
-		  "bgColor": [
-			255,
-			255,
-			255,
-			0
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		}
-	  },
-	  "title": "Input data"
-	},
-	{
-	  "url": "modules/types/display/2d_list_fast/",
-	  "configuration": {
-		"sections": {},
-		"groups": {
-		  "group": [
-			{
-			  "colnumber": [
-				"5"
-			  ],
-			  "valjPath": [
-				"element.theValue"
-			  ],
-			  "colorjPath": [
-				"element.color"
-			  ],
-			  "height": [
-				""
-			  ]
-			}
-		  ]
-		}
-	  },
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 47,
-			"top": 0
-		  },
-		  "size": {
-			"width": 35,
-			"height": 31
-		  },
-		  "zIndex": 0,
-		  "display": true,
-		  "title": "Display > Two dimensional list",
-		  "bgColor": [
-			255,
-			255,
-			255,
-			0
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		}
-	  },
-	  "id": 13,
-	  "vars_in": [
-		{
-		  "rel": "list",
-		  "name": "results"
-		}
-	  ],
-	  "actions_in": [
-		{}
-	  ],
-	  "title": "Display > Two dimensional list",
-	  "vars_out": [
-		{
-		  "event": "onHover",
-		  "rel": "cell",
-		  "jpath": [
-			"theValue"
-		  ],
-		  "name": "hoverValue"
-		},
-		{
-		  "event": "onClick",
-		  "rel": "cell",
-		  "jpath": [
-			"theValue"
-		  ],
-		  "name": "clickedValue"
-		}
-	  ],
-	  "actions_out": [
-		{
-		  "jpath": []
-		}
-	  ]
-	}
-  ],
-  "variables": [
-	{
-	  "varname": "results",
-	  "jpath": [
-		"results"
-	  ]
-	},
-	{
-	  "varname": "myFirstValue",
-	  "jpath": [
-		"results",
-		"0",
-		"theValue"
-	  ]
-	},
-	{
-	  "varname": "data",
-	  "jpath": []
-	}
-  ],
-  "configuration": {
-	"title": "Simple table modules"
-  },
-  "version": "2.23.1-1",
-  "actionscripts": [
-	{
-	  "sections": {},
-	  "groups": {
-		"action": [
-		  {
-			"name": [
-			  null
+			"title": "Complex grid",
+			"displayWrapper": true,
+			"position": {
+				"left": 0.9985795021057129,
+				"top": 0.9985794067382813
+			},
+			"size": {
+				"width": 22.01818182468414,
+				"height": 51.01818182468414
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								""
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								"element.color"
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "ID",
+								"jpath": "element.id",
+								"number": [
+									"number"
+								],
+								"editable": "none"
+							},
+							{
+								"name": "Value",
+								"jpath": "element.theValue",
+								"number": [
+									"number"
+								],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 1,
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
 			],
-			"script": [
-			  null
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "results"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.theValue",
+					"name": "hoverValue"
+				},
+				{
+					"event": "onSelect",
+					"rel": "row",
+					"jpath": "element.theValue",
+					"name": "clickedValue"
+				}
+			],
+			"actions_out": [
+				{}
+			],
+			"url": "./modules/types/display/jqgrid/"
+		},
+		{
+			"title": "Mouse over value",
+			"displayWrapper": true,
+			"position": {
+				"left": 49.999997806549075,
+				"top": 22.99857940673828
+			},
+			"size": {
+				"width": 15.018181824684143,
+				"height": 9.018181824684143
+			},
+			"configuration": {
+				"frontcolor": "",
+				"font": "arial",
+				"fontsize": "14pt",
+				"align": "center",
+				"valign": "middle",
+				"defaultvalue": "",
+				"sprintf": ""
+			},
+			"id": 2,
+			"bgColor": "",
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "hoverValue"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"url": "./modules/types/display/single_value/",
+			"vars_out": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"actions_out": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
 			]
-		  }
-		]
-	  }
-	}
-  ],
-  "crons": {
-	"0": [
-	  {}
+		},
+		{
+			"title": "Mouse clicked value",
+			"displayWrapper": true,
+			"position": {
+				"left": 49.999997806549075,
+				"top": 33.99999847412109
+			},
+			"size": {
+				"width": 15.018181824684143,
+				"height": 9.018181824684143
+			},
+			"configuration": {
+				"frontcolor": "",
+				"font": "arial",
+				"fontsize": "",
+				"align": "left",
+				"valign": "top",
+				"defaultvalue": "",
+				"sprintf": ""
+			},
+			"id": 3,
+			"bgColor": "",
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "clickedValue"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"vars_out": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"actions_out": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"url": "./modules/types/display/single_value/"
+		},
+		{
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 51,
+				"top": 0
+			},
+			"size": {
+				"width": 33,
+				"height": 19
+			},
+			"id": 4,
+			"vars_in": [],
+			"actions_in": [],
+			"text": "<p>A simple table with linked values for mouse over and mouse clicked.</p><p>And a post-it !</p>",
+			"url": "./modules/types/display/postit/"
+		},
+		{
+			"url": "modules/types/display/fasttable/",
+			"title": "Fast grid",
+			"displayWrapper": true,
+			"position": {
+				"left": 24.99857873916626,
+				"top": 0.994317626953125
+			},
+			"size": {
+				"width": 23.01818182468414,
+				"height": 51.01818182468414
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								"element.color"
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Value",
+								"jpath": "element.theValue",
+								"number": [],
+								"editable": "none"
+							},
+							{
+								"name": "Label",
+								"jpath": "element.label",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 5,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "results"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onSelect",
+					"rel": "row",
+					"jpath": "element.theValue",
+					"name": "clickedValue"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.theValue",
+					"name": "hoverValue"
+				}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "modules/types/edition/object_editor/",
+			"title": "Input data",
+			"displayWrapper": true,
+			"position": {
+				"left": 85.99999780654908,
+				"top": 0
+			},
+			"size": {
+				"width": 33.01818182468414,
+				"height": 51.01818182468414
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"editable": [
+								"view"
+							],
+							"expanded": [
+								[]
+							],
+							"storeObject": [
+								[]
+							],
+							"storedObject": [
+								"{}"
+							]
+						}
+					]
+				}
+			},
+			"id": 6,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "data"
+				}
+			],
+			"actions_in": [],
+			"vars_out": [
+				{}
+			],
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		}
 	],
-	"cronurl": [
-	  null
+	"variables": [
+		{
+			"varname": "results",
+			"jpath": "element.results"
+		},
+		{
+			"varname": "myFirstValue",
+			"jpath": "element.results.0.theValue"
+		},
+		{
+			"varname": "data",
+			"jpath": "element"
+		}
 	],
-	"crontime": [
-	  null
-	],
-	"cronvariable": [
-	  null
-	]
-  },
-  "actionfiles": [
-	{
-	  "sections": {},
-	  "groups": {
-		"action": [
-		  [
-			{}
-		  ]
-		]
-	  }
-	}
-  ],
-  "grid": {
-	"layers": {
-	  "Default layer": {
-		"name": "Default layer"
-	  }
+	"configuration": {
+		"title": "Simple module demonstration"
 	},
-	"xWidth": 10,
-	"yHeight": 10
-  },
-  "aliases": [],
-  "pouchvariables": []
+	"version": "2.2.3",
+	"actionscripts": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					{
+						"name": [
+							null
+						],
+						"script": [
+							null
+						]
+					}
+				]
+			}
+		}
+	],
+	"crons": {
+		"0": [
+			{}
+		],
+		"cronurl": [
+			null
+		],
+		"crontime": [
+			null
+		],
+		"cronvariable": [
+			null
+		]
+	},
+	"actionfiles": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					[
+						{}
+					]
+				]
+			}
+		}
+	]
 }
