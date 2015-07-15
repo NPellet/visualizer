@@ -43,14 +43,28 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
 
         update: {
             list: function (moduleValue) {
-                var cfg = this.module.getConfiguration.bind(this.module);
-                var cols = (100 / (cfg('colnumber', 4) || 4)) + '%';
+
                 var val = moduleValue.get();
+                this.setDim(val);
 
-                this.dataReady = new Array(val.length);
-                this.dataDivs = new Array(val.length);
+                var cols, list, length;
 
-                this.list = val;
+                if (this.dim === 1) {
+                    var cfg = this.module.getConfiguration.bind(this.module);
+                    cols = (100 / (cfg('colnumber', 4) || 4)) + '%';
+                    list = val;
+                    length = val.length;
+                } else {
+                    var width = val[0].length;
+                    cols = (100 / val[0].length) + '%';
+                    length = val.length * width;
+                    list = convert2Dto1D(val);
+                }
+
+                this.dataReady = new Array(length);
+                this.dataDivs = new Array(length);
+
+                this.list = list;
 
                 var colorJpath = cfg('colorjpath', false),
                     valJpath = cfg('valjpath', ''),
@@ -62,7 +76,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
                     dimensions.height = height + 'px';
                 }
 
-                for (var i = 0; i < val.length; i++) {
+                for (var i = 0; i < length; i++) {
                     var data = this.renderElement(this.list.getChildSync([i]), dimensions, colorJpath, valJpath);
                     this.dataReady[i] = data[0];
                     this.dataDivs[i] = data[1];
@@ -72,7 +86,13 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
             },
 
             showList: function (value) {
-                this.showList = value.get();
+                var list = value.get();
+                this.setDim(list);
+                if (this.dim === 1) {
+                    this.showList = list;
+                } else {
+                    this.showList = convert2Dto1D(list);
+                }
                 this.updateVisibility();
             }
         },
@@ -113,9 +133,32 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
             }, false, this.module.getId());
 
             return [Renderer.render(td, element, valJpath), td];
+        },
+
+        setDim: function (val) {
+            var currentDim = this.dim;
+            var newDim = Array.isArray(val[0]) ? 2 : 1;
+            if (newDim !== currentDim) {
+                this.dim = newDim;
+                this.list = null;
+                this.showList = null;
+            }
         }
 
     });
+
+    function convert2Dto1D(val) {
+        var height = val.length;
+        var width = val[0].length;
+        var length = height * width;
+        var array = new Array(length);
+        for (var i = 0; i < height; i++) {
+            for (var j = 0; j < width; j++) {
+                array[i * width + j] = val[i][j];
+            }
+        }
+        return new DataArray(array);
+    }
 
     return View;
 
