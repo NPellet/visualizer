@@ -1,3 +1,43 @@
+HEAD = 2015-07-15
+=================
+* Testcase
+ * testcase: update array example
+ * fix some old views
+ 
+* Core
+ * add npm release scripts
+ * Return to bluebird for Promises (for IE11 support)
+ * add editorconfig file
+ * fix jslint
+ * fix jsgraph resolution in bower.json
+ * fix code lint
+ 
+* Modules
+ * spectra_displayer: fix when lineWidth option is 0
+ * spectra_displayer: add options for markers (shape and size)
+ * slickgrid: use dataurls instead of files for background images
+ * slickgrid: add -webkit prefixes for flexbox
+ * periodic table: hover and click to focus on an element
+ * move periodic table to science/chemistry
+ * onde: fix schema inspection (for arrays)
+ * code_executor: add title of module in error message
+ * slickgrid: fix bug with custom editors
+
+* Util
+ * move periodic table to science/chemistry
+ * couchdb attachments: fix list
+ * Add getDistinctColorsAsString to directly get the list of the colors to use in CSS for example
+
+* Libraries
+ * bower: :arrow_up: onde
+ * update bio-pv
+ * update jsgraph@1.12.2
+ * upgrade eslint to 0.24.0
+
+* Renderer
+ * pdb renderer: load all models
+
+
 2.23.0 / 2015-07-01
 ===================
 * Modules
