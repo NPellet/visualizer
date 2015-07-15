@@ -14,66 +14,82 @@
             {description: 'Multiview header', name: 'multiview'}
         ];
         var currentHeader = 'default';
-        var examples = [
-            {description: 'Fibers', folder: 'fiber'},
-            {description: 'ChemCalc Lookup', folder: 'chemcalcLookup'},
-            {description: 'Chart', folder: 'chart'},
-            {description: '3D function', folder: 'chart-function'},
-            {description: 'Molecule', folder: 'molecule'},
-            {description: 'Linked atoms - molecules', folder: 'linkedAtomMolecule'},
-            {description: 'Loading plot', folder: 'loadingPlot'},
-            {description: 'Dendrogram', folder: 'dendrogram'},
-            {description: 'Jcamp Viewer', folder: 'jcampViewer'},
-            {description: 'jsNMR 1D', folder: 'jsnmr1d'},
-            {description: 'jsNMR 2D', folder: 'jsnmr2d'},
-            {description: '2D Spectra', folder: 'spectra2D'},
-            {description: 'GC/MS', folder: 'gcms'},
-            {description: 'Single value and download link', folder: 'singleValue'},
-            {description: 'Simple table to display array data', folder: 'array'},
-            {description: 'JSMol', folder: 'jsmol'},
-            {description: 'JSMol - JSME', folder: 'jsmol-jsme'},
-            {description: 'JSMol Script', folder: 'jsmolScript'},
-            {description: 'JSME and database lookup', folder: 'jsme-lookup'},
-            {description: 'JSME display', folder: 'jsme-display'},
-            {description: 'Phylogram', folder: 'phylogram'},
-            {description: 'Phylogram 2', folder: 'phylogram2'},
-            {description: 'Array filtering', folder: 'filter'},
-            {description: 'Variable modification', folder: 'varedit'},
-            {description: 'Highlight', folder: 'highlight'},
-            {description: 'Filter - DOI', folder: 'filter-doi'},
-            {description: 'Dummy', folder: 'dummy'},
-            {description: 'NMR simulation', folder: 'nmrSimulation'},
-            {description: 'Flot Chart', folder: 'flotChart'},
-            {description: 'Flot Stack', folder: 'flotStack'},
-            {description: 'Radar Chart', folder: 'dhtmlxchart'},
-            {description: 'WebService CRON', folder: 'webserviceCron'},
-            {description: 'Matrix test', folder: 'matrixTest'},
-            {description: 'Leaflet Map', folder: 'leaflet-map'},
-            {description: 'Multiview', folder: 'multiview'},
-            {description: 'Drop image for histogram', folder: 'histogram'},
-            {description: 'Parallel coordinates', folder: 'parcoords'},
-            {description: 'Parallel coordinates (Big data)', folder: 'parcoords2'},
-            {description: 'Drag and drop / paste', folder: 'dragdrop'},
-            {description: 'Twig template', folder: 'twig'},
-            {description: 'Scatter 3D', folder: 'plot3D'},
-            {description: 'SVG Editor (Bioreactor)', folder: 'svgEditor'},
-            {description: 'House monitoring', folder: 'houseMonitoring'},
-            {description: 'Hierarchical structure explorer', folder: 'fancytree'},
-            {description: 'Bio - View AA sequence', folder: 'bioSequence'},
-            {description: 'Bio - Feature Viewer', folder: 'bioFeatureViewer'},
-            {description: 'Panzoom', folder: 'panzoom'},
-            {description: 'Bio-synthesis tutorial', folder: 'bioSynthesis'},
-            {description: 'Expérience de Griffith', folder: 'Griffith'},
-            {description: 'Self-organizing map of random colors', folder: 'somRGB'},
-            {description: 'Script executor', folder: 'scriptExecutor'},
-            {description: 'Loading screen API', folder: 'loading'},
-            {description: 'Chemistry exercise with jqGrid', folder: 'chem-exercise'},
-            {description: 'Progress bar', folder: 'progress'},
-            {description: 'OCL Molecule editor', folder: 'ocl_edit'},
-            {description: 'Hexagonal map', folder: 'hexaMap'},
-            {description: "Word Cloud", folder: "wordcloud"},
-            {description: "Periodic Table", folder: "periodic"},
-        ];
+        var examples = {
+            'Array search': [
+                {description: 'Configured array search', folder: 'filter'}
+            ],
+            'Bio': [
+                {description: 'Protein Feature Viewer', folder: 'bioFeatureViewer'},
+                {description: 'AA sequence displayer', folder: 'bioSequence'},
+                {description: 'Bio-synthesis tutorial', folder: 'bioSynthesis'},
+                {description: 'Expérience de Griffith', folder: 'Griffith'}
+            ],
+            'Chart': [
+                {description: '3D function', folder: 'chart-function'},
+                {description: 'Parallel coordinates', folder: 'parcoords'},
+                {description: 'Parallel coordinates (Big data)', folder: 'parcoords2'},
+                {description: 'Flot Chart', folder: 'flotChart'},
+                {description: 'Flot Stack', folder: 'flotStack'},
+                {description: 'Radar Chart', folder: 'dhtmlxchart'},
+                {description: 'Phylogram', folder: 'phylogram'},
+                {description: 'Phylogram 2', folder: 'phylogram2'},
+                {description: 'Leaflet Map', folder: 'leaflet-map'},
+                {description: 'Hexagonal map', folder: 'hexaMap'},
+                {description: "Word Cloud", folder: "wordcloud"},
+                {description: 'Fibers (similarity matrix)', folder: 'fiber'},
+                {description: 'Loading plot', folder: 'loadingPlot'},
+                {description: 'Dendrogram', folder: 'dendrogram'},
+                {description: 'Matrix test', folder: 'matrixTest'},
+                {description: 'Scatter 3D', folder: 'plot3D'},
+                {description: 'Self-organizing map of random colors', folder: 'somRGB'}
+            ],
+            'Chemistry': [
+                {description: 'Molecule', folder: 'molecule'},
+                {description: 'Linked atoms - molecules', folder: 'linkedAtomMolecule'},
+                {description: 'jsNMR 1D', folder: 'jsnmr1d'},
+                {description: 'jsNMR 2D', folder: 'jsnmr2d'},
+                {description: 'JSMol', folder: 'jsmol'},
+                {description: 'JSMol - JSME', folder: 'jsmol-jsme'},
+                {description: 'JSMol Script', folder: 'jsmolScript'},
+                {description: 'JSME and database lookup', folder: 'jsme-lookup'},
+                {description: 'JSME display', folder: 'jsme-display'},
+                {description: 'NMR simulation', folder: 'nmrSimulation'},
+                {description: 'OCL Molecule editor', folder: 'ocl_edit'},
+                {description: "Periodic Table", folder: "periodic"},
+                {description: 'Chemistry exercise with jqGrid', folder: 'chem-exercise'}
+            ],
+            'Client interaction': [
+                {description: 'Drag and drop / paste', folder: 'dragdrop'},
+                {description: 'Drop image for histogram', folder: 'histogram'}
+            ],
+            'Spectra displayer': [
+                {description: 'Chart', folder: 'chart'},
+                {description: 'Jcamp Viewer', folder: 'jcampViewer'},
+                {description: '2D Spectra', folder: 'spectra2D'},
+                {description: 'GC/MS', folder: 'gcms'}
+            ],
+            'Server interaction': [
+                {description: 'ChemCalc Lookup', folder: 'chemcalcLookup'},
+                {description: 'WebService CRON', folder: 'webserviceCron'}
+            ],
+            'Misc': [
+                {description: 'Single value and download link', folder: 'singleValue'},
+                {description: 'Simple table to display array data', folder: 'array'},
+                {description: 'Variable modification', folder: 'varedit'},
+                {description: 'Highlight', folder: 'highlight'},
+                {description: 'Dummy', folder: 'dummy'},
+                {description: 'Multiview', folder: 'multiview'},
+                {description: 'Filter - DOI', folder: 'filter-doi'},
+                {description: 'Twig template', folder: 'twig'},
+                {description: 'SVG Editor (Bioreactor)', folder: 'svgEditor'},
+                {description: 'House monitoring', folder: 'houseMonitoring'},
+                {description: 'Hierarchical structure explorer', folder: 'fancytree'},
+                {description: 'Panzoom', folder: 'panzoom'},
+                {description: 'Script executor', folder: 'scriptExecutor'},
+                {description: 'Loading screen API', folder: 'loading'},
+                {description: 'Progress bar', folder: 'progress'}
+            ]
+        };
     </script>
     <style>
         #left {
@@ -168,17 +184,22 @@
     function updateExamples() {
         var currentHeader = $('#selectedHeader').val();
         var version = $('#selectedVersion').val();
-        var html = [];
-        for (var i = 0; i < examples.length; i++) {
-            var viewURL = '../testcase/data/' + examples[i].folder + '/view.json';
-            var dataURL = '../testcase/data/' + examples[i].folder + '/data.json';
-            var configURL = '';
-            if (currentHeader) configURL = '../testcase/config/' + currentHeader + '.json';
-            var url = '../' + version + '/index.html?config=' + configURL + '&viewURL=' + viewURL + '&dataURL=' + dataURL;
-            html.push('<a href="' + url + '" onclick="openInIframe(\'' + url + '\');return false;">' + examples[i].description + '</a>');
-            html.push('<br>');
+        var $examples = $('#examples');
+        for (var name in examples) {
+            var html = ['<h3>' + name + '</h3><p>'];
+            var example = examples[name];
+            for (var i = 0; i < example.length; i++) {
+                var viewURL = '../testcase/data/' + example[i].folder + '/view.json';
+                var dataURL = '../testcase/data/' + example[i].folder + '/data.json';
+                var configURL = '';
+                if (currentHeader) configURL = '../testcase/config/' + currentHeader + '.json';
+                var url = '../' + version + '/index.html?config=' + configURL + '&viewURL=' + viewURL + '&dataURL=' + dataURL;
+                html.push('<a href="' + url + '" onclick="openInIframe(\'' + url + '\');return false;">' + example[i].description + '</a>');
+                html.push('<br>');
+            }
+            html.push('</p><br>');
+            $examples.append(html.join(''));
         }
-        $('#examples').html(html.join(''));
     }
     updateExamples();
 
