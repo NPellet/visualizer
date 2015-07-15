@@ -18,7 +18,7 @@ The are two kinds of actions that result in bumping the version number:
 * Releasing a new version of the project
 * Making a change that requires a view migration script
 
-In both cases, the procedure is done using the Grunt script `bump`.  
+In both cases, the procedure is done using npm release scripts.  
 
 ### Bump version without releasing
 
@@ -32,8 +32,8 @@ This command just updates the numbers in `version.js`. No commit is created.
 
 ### Bump and release
 
-To release a new version of the Visualizer, run a command like `grunt bump:patch --release`.
-The bump can be applied with `prerelease`, `patch`, `minor`, `major`
+To release a new version of the Visualizer, run a command like `npm run release:patch`.
+The bump can be applied with `patch`, `minor`, `major` or nothing which defaults to `patch`.  
 This will bump the version number, commit the files with a release message, 
 tag the release in Git, then it will immediately bump the version to the next
 prerelease, commit again and push the changes to GitHub.

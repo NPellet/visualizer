@@ -12,7 +12,11 @@
     "eslint": "eslint src --reset",
     "install-components": "bower install --quiet --config.interactive=false",
     "postinstall": "npm run install-components",
-    "test": "npm run eslint"
+    "test": "npm run eslint",
+    "release": "npm run release:patch",
+    "release:major": "npm run test && grunt bump:major --release",
+    "release:minor": "npm run test && grunt bump:minorminor --release",
+    "release:patch": "npm run test && grunt bump:patch --release"
   },
   "homepage": "https://github.com/NPellet/visualizer",
   "bugs": {
