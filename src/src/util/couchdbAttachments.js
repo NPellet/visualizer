@@ -187,7 +187,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                     return reject(new Error('Content-Type unresolved. Cannot upload document without content-type'));
                 }
                 superagent
-                    .put(encodeURI(that.docUrl + '/' + options.name))
+                    .put(that.docUrl + '/' + options.name)
                     .query({rev: that.lastDoc._rev})
                     .set('Content-Type', contentType)
                     .set('Accept', 'application/json')
@@ -226,7 +226,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                 else return {};
             }, function () {
                 return new Promise(function (resolve, reject) {
-                    var req = superagent.get(encodeURI(that.docUrl + '/' + name));
+                    var req = superagent.get(that.docUrl + '/' + name);
                     if (exists) req.set('Accept', that.lastDoc._attachments[name].content_type);
                     req.query({rev: that.lastDoc._rev})
                         .end(function (err, res) {
@@ -254,7 +254,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
             if (!that.lastDoc._attachments[name]) throw new Error('Cannot remove attachment, attachment does not exist.');
             return new Promise(function (resolve, reject) {
                 superagent
-                    .del(encodeURI(that.docUrl + '/' + name))
+                    .del(that.docUrl + '/' + name)
                     .query({rev: that.lastDoc._rev})
                     .set('Accept', 'application/json')
                     .end(function (err, res) {
