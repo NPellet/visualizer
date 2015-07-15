@@ -74,7 +74,8 @@
     "select2": "4.0.0",
     "file-saver.js": "~1.20150304.1",
     "mime-types": "stropitek/mime-types#v0.0.3",
-    "bluebird": "~2.9.33"
+    "bluebird": "~2.9.33",
+    "notifyjs": "~0.3.2"
   },
   "resolutions": {
     "jsgraph": "v1.12.2"

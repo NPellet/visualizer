@@ -33,6 +33,7 @@ require.config({
         'jquery-cookie': 'components/jquery-cookie/jquery.cookie',
         'jquery-ui': 'components/jquery-ui/ui',
         'jquery-tmpl': 'components/jquery-tmpl/jquery.tmpl.min',
+        'notifyjs': 'components/notifyjs/dist/notify-combined.min',
         jsgraph: 'components/jsgraph/dist/jsgraph',
         jszip: 'components/jszip/dist/jszip.min',
         loglevel: 'components/loglevel/dist/loglevel.min',

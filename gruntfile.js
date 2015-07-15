@@ -118,7 +118,8 @@ module.exports = function (grunt) {
                             './json-chart/dist/*',
                             './d3-plugins/**',
                             './mime-types/**',
-                            './bluebird/js/browser/**'
+                            './bluebird/js/browser/**',
+                            './notifyjs/dist/**'
                         ],
 
                         dest: './build/components/'
