@@ -26,6 +26,75 @@ define([
 
     Util.inherits(CouchDBManager, Default, {
         initImpl: function () {
+            var that = this;
+
+            $(document).keydown(function (event) {
+                    // If Control or Command key is pressed and the S key is pressed
+                    // run save function. 83 is the key code for S.
+                    if ((event.ctrlKey || event.metaKey) && !event.altKey && event.which == 83) {
+                        event.preventDefault();
+                        var viewUrl = Versioning.lastLoaded.view.url;
+                        var m = viewUrl.match(/\/([^\/]+)\/view\.json$/);
+                        if (m) console.log('id to save', m[1]);
+                        var loadedDocId = m[1];
+                        console.log(that);
+                        var nodes = [];
+                        if (!that.ftree) {
+                            ui.showNotification('Cannot save, couchdb tree not loaded yet');
+                            return;
+                        }
+                        that.ftree.visit(function (n) {
+                            nodes.push(n);
+                        });
+                        nodes = nodes.filter(function (n) {
+                            return !n.folder && n.data.doc && n.data.doc._id === loadedDocId;
+                        });
+                        if (!nodes.length) return;
+                        var compiled = _.template('<table>\n    <tr>\n        <td style="vertical-align: top;"><b>Document id</b></td>\n        <td><%= doc._id %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Flavor</b></td>\n        <td><%= flavor %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Name</b></td>\n        <td><% print(flavors[flavors.length-1]) %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Location</b></td>\n        <td><li><% print(flavors.join(\'</li><li>\')) %></li></td>\n    </tr>\n</table>');
+                        ui.dialog(compiled({
+                            doc: nodes[0].data.doc,
+                            flavor: that.flavor,
+                            flavors: nodes[0].data.doc.flavors[that.flavor]
+                        }), {
+                            width: '400px',
+                            buttons: {
+                                'Save View': function () {
+                                    console.log('save view');
+                                    $(this).dialog('close');
+                                    that.saveNode('View', nodes[0]).then(function () {
+                                        ui.showNotification('View saved');
+                                    }, function (e) {
+                                        ui.showNotification(that.getErrorContent(e));
+                                    });
+                                },
+                                'Save Data': function () {
+                                    console.log('save data');
+                                    $(this).dialog('close');
+                                    that.saveNode('Data', nodes[0]).then(function () {
+                                        ui.showNotification('Data saved');
+                                    }, function (e) {
+                                        ui.showNotification(that.getErrorContent(e));
+                                    });
+                                },
+                                'Save Both': function () {
+                                    console.log('save both');
+                                    $(this).dialog('close');
+                                    that.saveNode('View', nodes[0]).then(function () {
+                                        ui.showNotification('View saved');
+                                        that.saveNode('Data', nodes[0]).then(function () {
+                                            ui.showNotification('Data saved');
+                                        }, function (e) {
+                                            ui.showNotification(that.getErrorContent(e));
+                                        });
+                                    }, function (e) {
+                                        ui.showNotification(that.getErrorContent(e));
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+            );
 
             this.ok = this.loggedIn = this.ready = false;
             if (!this.options.beforeUrl) this.ready = true;
@@ -62,11 +131,8 @@ define([
             });
         },
 
-        showError: function (e, type) {
+        getErrorContent: function (e) {
             var content;
-            var color = 'red';
-            if (type === 2)
-                color = 'green';
             if (typeof e === 'number') {
                 switch (e) {
                     case 10:
@@ -99,6 +165,14 @@ define([
             } else {
                 content = e;
             }
+            return content;
+        },
+
+        showError: function (e, type) {
+            var color = 'red';
+            if (type === 2)
+                color = 'green';
+            var content = this.getErrorContent(e, type);
             this.errorP.text(content).css('color', color).show().delay(3000).fadeOut();
         },
         getFormContent: function (type) {
@@ -226,6 +300,33 @@ define([
                 }
             });
         },
+
+        saveNode: function (type, node) {
+            var that = this;
+            if (!node) {
+                this.showError('Cannot save node (undefined)');
+                return Promise.reject();
+            }
+            var doc = node.data.doc;
+            var content = Versioning['get' + type + 'JSON']();
+            return Promise.resolve($.ajax({
+                url: this.database.uri + doc._id + '/' + type.toLowerCase() + '.json?rev=' + doc._rev,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: content,
+                dataType: 'json',
+                error: this.showError,
+                success: function (data) {
+                    doc._rev = data.rev;
+                    node.data['has' + type] = true;
+                    if (node.children)
+                        node.lazyLoad(true);
+                    that.showError(type + ' saved.', 2);
+
+                }
+            }));
+        },
+
         save: function (type, name) {
 
             if (name.length < 1)
@@ -998,6 +1099,7 @@ define([
                             activate: proxyClick
                         }).children('ul').css('box-sizing', 'border-box');
                         var thefTree = theTree.data('ui-fancytree').getTree();
+                        that.ftree = thefTree;
                         thefTree.reload(tree);
                         thefTree.getNodeByKey(that.flavor).toggleExpanded();
                         theTree.contextmenu(menuOptions);
