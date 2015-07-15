@@ -47,7 +47,7 @@
 		  ]
 		}
 	  },
-	  "id": 7,
+	  "id": 1,
 	  "vars_in": [
 		{
 		  "rel": "list",
@@ -89,8 +89,8 @@
 			"right": 0
 		  },
 		  "size": {
-			"width": 21.9666666,
-			"height": 30.966666600000003
+			"width": 22,
+			"height": 31
 		  },
 		  "display": true,
 		  "title": "Display > Table",
@@ -117,7 +117,7 @@
 		"defaultvalue": "",
 		"sprintf": ""
 	  },
-	  "id": 8,
+	  "id": 2,
 	  "vars_in": [
 		{
 		  "rel": "value",
@@ -150,13 +150,13 @@
 	  "layers": {
 		"Default layer": {
 		  "position": {
-			"left": 29,
+			"left": 23,
 			"top": 33,
 			"right": 0
 		  },
 		  "size": {
-			"width": 14.9666666,
-			"height": 8.9666666
+			"width": 23,
+			"height": 8
 		  },
 		  "display": true,
 		  "title": "Mouse over value",
@@ -178,7 +178,7 @@
 		"defaultvalue": "",
 		"sprintf": ""
 	  },
-	  "id": 9,
+	  "id": 3,
 	  "vars_in": [
 		{
 		  "rel": "value",
@@ -211,13 +211,13 @@
 	  "layers": {
 		"Default layer": {
 		  "position": {
-			"left": 45,
-			"top": 33,
+			"left": 23,
+			"top": 44,
 			"right": 0
 		  },
 		  "size": {
-			"width": 17.9666666,
-			"height": 8.9666666
+			"width": 23,
+			"height": 8
 		  },
 		  "display": true,
 		  "title": "Mouse clicked value",
@@ -273,7 +273,7 @@
 		  ]
 		}
 	  },
-	  "id": 11,
+	  "id": 4,
 	  "vars_in": [
 		{
 		  "rel": "list",
@@ -348,6 +348,12 @@
 			  "storeObject": [
 				[]
 			  ],
+			  "displayValue": [
+				[]
+			  ],
+			  "output": [
+				"new"
+			  ],
 			  "storedObject": [
 				"{}"
 			  ]
@@ -355,30 +361,33 @@
 		  ]
 		}
 	  },
-	  "id": 12,
+	  "id": 5,
 	  "vars_in": [
 		{
 		  "rel": "value",
-		  "name": "data"
+		  "name": "results"
 		}
 	  ],
-	  "actions_in": [],
+	  "actions_in": [
+		{}
+	  ],
 	  "vars_out": [
 		{
-		  "rel": "output"
+		  "rel": "output",
+		  "jpath": []
 		}
 	  ],
 	  "actions_out": {},
 	  "layers": {
 		"Default layer": {
 		  "position": {
-			"left": 85.99999780654908,
+			"left": 83,
 			"top": 0,
 			"right": 0
 		  },
 		  "size": {
-			"width": 32.9666666,
-			"height": 49.9666666
+			"width": 33,
+			"height": 46
 		  },
 		  "display": true,
 		  "title": "Input data",
@@ -430,7 +439,7 @@
 		  },
 		  "zIndex": 0,
 		  "display": true,
-		  "title": "Display > Two dimensional list",
+		  "title": "Display > Two dimensional list (1D input)",
 		  "bgColor": [
 			255,
 			255,
@@ -442,7 +451,7 @@
 		  "name": "Default layer"
 		}
 	  },
-	  "id": 13,
+	  "id": 6,
 	  "vars_in": [
 		{
 		  "rel": "list",
@@ -452,7 +461,7 @@
 	  "actions_in": [
 		{}
 	  ],
-	  "title": "Display > Two dimensional list",
+	  "title": "Display > Two dimensional list (1D input)",
 	  "vars_out": [
 		{
 		  "event": "onHover",
@@ -469,6 +478,299 @@
 			"theValue"
 		  ],
 		  "name": "clickedValue"
+		}
+	  ],
+	  "actions_out": [
+		{
+		  "jpath": []
+		}
+	  ]
+	},
+	{
+	  "url": "modules/types/client_interaction/code_executor/",
+	  "configuration": {
+		"sections": {},
+		"groups": {
+		  "group": [
+			{
+			  "display": [
+				[
+				  "editor",
+				  "buttons"
+				]
+			  ],
+			  "execOnLoad": [
+				[]
+			  ],
+			  "script": [
+				"var results = this.get('results');\n\nvar width = 4;\nvar height = 25;\n\nvar twod = new Array(height);\nfor (var i = 0; i < height; i++) {\n    var row = new Array(width);\n    twod[i] = row;\n    for (var j = 0; j < width; j++) {\n        row[j] = results[i*width + j];\n    } \n}\n\nset('twod', twod);\n"
+			  ]
+			}
+		  ],
+		  "libs": [
+			[
+			  {}
+			]
+		  ],
+		  "buttons": [
+			[
+			  {
+				"name": "button1",
+				"label": "Execute"
+			  }
+			]
+		  ]
+		}
+	  },
+	  "layers": {
+		"Default layer": {
+		  "position": {
+			"left": 117,
+			"top": 0
+		  },
+		  "size": {
+			"width": 39,
+			"height": 46
+		  },
+		  "zIndex": 0,
+		  "display": true,
+		  "title": "",
+		  "bgColor": [
+			255,
+			255,
+			255,
+			0
+		  ],
+		  "wrapper": true,
+		  "created": true,
+		  "name": "Default layer"
+		}
+	  },
+	  "id": 7,
+	  "vars_in": [
+		{
+		  "rel": "inputValue",
+		  "name": "results"
+		}
+	  ],
+	  "actions_in": [
+		{}
+	  ],
+	  "title": "",
+	  "vars_out": [
+		{
+		  "event": "onScriptEnded",
+		  "rel": "outputValue",
+		  "jpath": [
+			"twod"
+		  ],
+		  "name": "twod"
+		}
+	  ],
+	  "actions_out": []
+	},
+	{
+	  "url": "modules/types/display/2d_list_fast/",
+	  "configuration": {
+		"sections": {},
+		"groups": {
+		  "group": [
+			{
+			  "colnumber": [
+				"5"
+			  ],
+			  "valjPath": [
+				"element.theValue"
+			  ],
+			  "colorjPath": [
+				"element.color"
+			  ],
+			  "height": [
+				""
+			  ]
+			}
+		  ]
+		}
+	  },
+	  "layers": {
+		"Default layer": {
+		  "position": {
+			"left": 47,
+			"top": 32
+		  },
+		  "size": {
+			"width": 35,
+			"height": 31
+		  },
+		  "zIndex": 0,
+		  "display": true,
+		  "title": "Display > Two dimensional list (2D input)",
+		  "bgColor": [
+			255,
+			255,
+			255,
+			0
+		  ],
+		  "wrapper": true,
+		  "created": true,
+		  "name": "Default layer"
+		}
+	  },
+	  "id": 8,
+	  "vars_in": [
+		{
+		  "rel": "list",
+		  "name": "twod"
+		}
+	  ],
+	  "actions_in": [
+		{}
+	  ],
+	  "title": "Display > Two dimensional list (2D input)",
+	  "vars_out": [
+		{
+		  "event": "onHover",
+		  "rel": "cell",
+		  "jpath": [
+			"theValue"
+		  ],
+		  "name": "hoverValue"
+		},
+		{
+		  "event": "onClick",
+		  "rel": "cell",
+		  "jpath": [
+			"theValue"
+		  ],
+		  "name": "clickedValue"
+		}
+	  ],
+	  "actions_out": [
+		{
+		  "event": "onClick",
+		  "rel": "cell",
+		  "jpath": [
+			"theValue"
+		  ],
+		  "name": "a"
+		}
+	  ]
+	},
+	{
+	  "url": "modules/types/edition/slick_grid/",
+	  "configuration": {
+		"sections": {},
+		"groups": {
+		  "group": [
+			{
+			  "slickCheck": [
+				[
+				  "enableCellNavigation",
+				  "rowNumbering",
+				  "forceFitColumns",
+				  "highlightScroll"
+				]
+			  ],
+			  "autoColumns": [
+				[]
+			  ],
+			  "toolbar": [
+				[]
+			  ],
+			  "colorjpath": [
+				[
+				  "color"
+				]
+			  ],
+			  "slick.defaultColumnWidth": [
+				null
+			  ],
+			  "slick.rowHeight": [
+				null
+			  ],
+			  "slick.selectionModel": [
+				"row"
+			  ],
+			  "filterRow": [
+				null
+			  ],
+			  "justInTimeFilter": [
+				[]
+			  ]
+			}
+		  ],
+		  "cols": [
+			[
+			  {
+				"name": "ID",
+				"jpath": [
+				  "id"
+				],
+				"editor": "none",
+				"formatter": "typerenderer"
+			  },
+			  {
+				"name": "Value",
+				"jpath": [
+				  "theValue"
+				],
+				"editor": "none",
+				"formatter": "typerenderer"
+			  }
+			]
+		  ],
+		  "groupings": [
+			[
+			  {
+				"getter": []
+			  }
+			]
+		  ],
+		  "actionOutButtons": [
+			[
+			  {}
+			]
+		  ]
+		}
+	  },
+	  "layers": {
+		"Default layer": {
+		  "position": {
+			"left": 0,
+			"top": 32
+		  },
+		  "size": {
+			"width": 22,
+			"height": 33
+		  },
+		  "zIndex": 0,
+		  "display": true,
+		  "title": "Edition > Slick Grid",
+		  "bgColor": [
+			255,
+			255,
+			255,
+			0
+		  ],
+		  "wrapper": true,
+		  "created": true,
+		  "name": "Default layer"
+		}
+	  },
+	  "id": 9,
+	  "vars_in": [
+		{
+		  "rel": "list",
+		  "name": "results"
+		}
+	  ],
+	  "actions_in": [
+		{}
+	  ],
+	  "title": "Edition > Slick Grid",
+	  "vars_out": [
+		{
+		  "jpath": []
 		}
 	  ],
 	  "actions_out": [
@@ -495,7 +797,9 @@
 	},
 	{
 	  "varname": "data",
-	  "jpath": []
+	  "jpath": [
+		""
+	  ]
 	}
   ],
   "configuration": {
@@ -509,10 +813,10 @@
 		"action": [
 		  {
 			"name": [
-			  null
+			  "a"
 			],
 			"script": [
-			  null
+			  "console.log(value)"
 			]
 		  }
 		]
@@ -554,6 +858,92 @@
 	"xWidth": 10,
 	"yHeight": 10
   },
-  "aliases": [],
-  "pouchvariables": []
+  "aliases": [
+	{}
+  ],
+  "pouchvariables": [
+	{}
+  ],
+  "couch_replication": [
+	{
+	  "sections": {},
+	  "groups": {
+		"couch": [
+		  [
+			{
+			  "direction": "both",
+			  "continuous": []
+			}
+		  ]
+		]
+	  }
+	}
+  ],
+  "init_script": [
+	{
+	  "sections": {},
+	  "groups": {
+		"general": [
+		  {
+			"script": [
+			  null
+			]
+		  }
+		]
+	  }
+	}
+  ],
+  "custom_filters": [
+	{
+	  "sections": {
+		"modules": [
+		  {
+			"sections": {},
+			"groups": {
+			  "modules": [
+				[
+				  {}
+				]
+			  ]
+			}
+		  }
+		],
+		"filtersLib": [
+		  {
+			"sections": {},
+			"groups": {
+			  "filters": [
+				[
+				  {}
+				]
+			  ]
+			}
+		  }
+		],
+		"filters": [
+		  {
+			"sections": {},
+			"groups": {
+			  "filter": [
+				{
+				  "name": [
+					null
+				  ],
+				  "script": [
+					null
+				  ]
+				}
+			  ],
+			  "libs": [
+				[
+				  {}
+				]
+			  ]
+			}
+		  }
+		]
+	  },
+	  "groups": {}
+	}
+  ]
 }
