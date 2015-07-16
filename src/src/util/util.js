@@ -431,6 +431,10 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
         return reqPathStr;
     };
 
+    exports.objectToString = function objectToString(obj) {
+        return Object.prototype.toString.call(obj).slice(8, -1);
+    };
+
     // Deprecated color methods. Moved to src/util/color
     exports.getDistinctColors = exports.deprecate(Color.getDistinctColors, 'use Color.getDistinctColors');
     exports.getNextColorRGB = exports.deprecate(Color.getNextColorRGB, 'use Color.getNextColorRGB');
