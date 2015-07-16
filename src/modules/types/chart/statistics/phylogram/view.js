@@ -49,14 +49,14 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.phylogram', '
             if (!this._data)
                 return;
 
-            var data = this._data;
+            var dataD = this._data;
             var that = this;
 
             this.dom.empty();
             var skipBranchLengthScaling = true;
-            if (data.children && data.children.length > 0)
-                skipBranchLengthScaling = (data.children[0].length === undefined);
-            d3.phylogram.build(this.selectorId, data, {
+            if (dataD.children && dataD.children.length > 0)
+                skipBranchLengthScaling = (dataD.children[0].length === undefined);
+            d3.phylogram.build(this.selectorId, dataD, {
                 height: that.height,
                 width: that.width,
                 skipBranchLengthScaling: skipBranchLengthScaling,
