@@ -51,7 +51,7 @@ define(['src/util/util', 'modules/modulefactory', 'src/main/grid', 'select2'], f
                 data: modulesArr,
                 templateResult: outputTemplate
 
-            }).select2('open');
+            }).select2('open').val(null).trigger('change');
 
             var selecting;
             $select2.on('select2:selecting', function (e) {
