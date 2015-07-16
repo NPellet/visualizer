@@ -101,7 +101,6 @@ define([
                     var $deleteAll = $('<input type="checkbox">Select/Unselect Delete</input>');
 
                     $deleteAll.on('change', function () {
-                        debugger;
                         var toSet;
                         if (this.checked) toSet = true;
                         else toSet = false;
