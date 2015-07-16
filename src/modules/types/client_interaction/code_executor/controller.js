@@ -216,11 +216,15 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         var theCode = this.controller.module.view._code;
         this._sandbox = new Sandbox();
         this._sandbox.setContext(context);
-        this._sandbox.run(
-            'var __exec__ = function(' +
-            controller.neededAliases +
-            ') {' + theCode + '\n};//# sourceURL=CodeExecutor' + this.controller.module.getId() + '@' + this.controller.scriptID++
-        );
+        try {
+            this._sandbox.run(
+                'var __exec__ = function(' +
+                controller.neededAliases +
+                ') {' + theCode + '\n};//# sourceURL=CodeExecutor' + this.controller.module.getId() + '@' + this.controller.scriptID++
+            );
+        } catch (e) {
+            reportError(this.title, e);
+        }
         this.wasSet = false;
         this.theFunction = this._sandbox.getContext().__exec__;
     }
