@@ -219,7 +219,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         this._sandbox.run(
             'var __exec__ = function(' +
             controller.neededAliases +
-            ') {' + theCode + '\n};//# sourceURL=' + this.controller.module.getId() + '@' + this.controller.scriptID++
+            ') {' + theCode + '\n};//# sourceURL=CodeExecutor' + this.controller.module.getId() + '@' + this.controller.scriptID++
         );
         this.wasSet = false;
         this.theFunction = this._sandbox.getContext().__exec__;
