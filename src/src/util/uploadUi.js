@@ -73,7 +73,6 @@ define([
                             id: 'name',
                             name: 'name',
                             field: 'name',
-                            editor: Slick.Editors.Text,
                             sortable: true
                         },
                         {
@@ -99,6 +98,19 @@ define([
                     ];
                     var $dialog = $('<div class="upload-ui">');
                     var $slick = $('<div class="dropzone">');
+                    var $deleteAll = $('<input type="checkbox">Select/Unselect Delete</input>');
+
+                    $deleteAll.on('change', function () {
+                        debugger;
+                        var toSet;
+                        if (this.checked) toSet = true;
+                        else toSet = false;
+                        data.forEach(function (d) {
+                            if (d.name !== 'view.json' || d.name === 'data.json' || d.name === 'meta.json') d.toDelete = toSet;
+                        });
+                        grid.invalidate();
+                        grid.render();
+                    });
                     var grid;
 
                     ui.dialog($dialog, {
@@ -123,6 +135,7 @@ define([
                         },
                         open: function () {
                             $dialog.append($slick);
+                            $dialog.append($deleteAll);
                             //$('body').append($slick);
                             grid = new Slick.Grid($slick, data, columns, slickOptions);
                             //grid.onSort.subscribe(function (e, args) {
@@ -153,14 +166,14 @@ define([
                         e.stopPropagation();
                         dragCount++;
                         if (dragCount === 1)
-                            $dialog.addClass('drop-over');
+                            $slick.addClass('drop-over');
                     });
                     $dialog[0].addEventListener('dragleave', function (e) {
                         e.preventDefault();
                         e.stopPropagation();
                         dragCount--;
                         if (!dragCount)
-                            $dialog.removeClass('drop-over');
+                            $slick.removeClass('drop-over');
 
                     });
                     $dialog[0].addEventListener('dragover', function (e) {
