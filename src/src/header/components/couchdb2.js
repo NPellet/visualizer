@@ -37,7 +37,6 @@ define([
                         var m = viewUrl.match(/\/([^\/]+)\/view\.json$/);
                         if (m) console.log('id to save', m[1]);
                         var loadedDocId = m[1];
-                        console.log(that);
                         var nodes = [];
                         if (!that.ftree) {
                             ui.showNotification('Cannot save, couchdb tree not loaded yet', 'info');
@@ -1178,6 +1177,7 @@ define([
                                                 node.key = node.key.replace(/[^:]+$/, name);
                                                 node.setTitle(name);
                                                 dialog.dialog('destroy');
+                                                that.setFormContent('docName', name);
                                             },
                                             error: function (status) {
                                                 console.log(status);
