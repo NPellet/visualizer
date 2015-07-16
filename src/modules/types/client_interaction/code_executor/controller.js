@@ -7,6 +7,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         this.currentScript = null;
         this.outputObject = {};
         this.reloaded = true;
+        this.scriptID = 0;
     }
 
     Util.inherits(Controller, CodeEditor);
@@ -62,7 +63,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
                             options: {
                                 yes: 'Yes'
                             },
-                            default: []
+                            'default': []
                         },
                         script: {
                             type: 'jscode',
@@ -209,6 +210,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
 
     function ScriptExecutor(controller, libs) {
         this.controller = controller;
+        this.title = String(controller.module.definition.title);
         this.libs = libs;
         var context = getNewContext(this);
         var theCode = this.controller.module.view._code;
@@ -217,7 +219,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         this._sandbox.run(
             'var __exec__ = function(' +
             controller.neededAliases +
-            ') {' + theCode + '\n};'
+            ') {' + theCode + '\n};//# sourceURL=' + this.controller.module.getId() + '@' + this.controller.scriptID++
         );
         this.wasSet = false;
         this.theFunction = this._sandbox.getContext().__exec__;
@@ -236,8 +238,8 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
             executor.wasSet = true;
             delete executor.controller.outputObject[name];
         };
-        var done = function () {
-            executor.done();
+        var done = function (e) {
+            executor.done(e);
         };
         var setAsync = function () {
             executor.async();
@@ -354,11 +356,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         try {
             this.theFunction.apply(this.context, this.libs);
         } catch (e) {
-            var err = e;
-            if (e && e.stack) {
-                err = e.stack;
-            }
-            Debug.error('Code executor error (' + this.controller.module.definition.title + '):', err);
+            reportError(this.title, e);
         }
 
         this.setOutput();
@@ -372,7 +370,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
                 that.controller.createDataFromEvent('onScriptEnded', 'outputValue', that.controller.outputObject);
             }
         }, function (e) {
-            Debug.error('Code executor error (' + that.controller.module.definition.title + '):', e);
+            reportError(that.title, e);
         });
     };
 
@@ -382,10 +380,10 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         var that = this;
         this._done = new Promise(function (resolve, reject) {
             that.done = function (v) {
-                if (v instanceof Error) {
+                if (Util.objectToString(v) === 'Error') {
                     reject(v);
                 } else {
-                    resolve(v);
+                    resolve();
                 }
             };
         });
@@ -393,6 +391,23 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
 
     ScriptExecutor.prototype.done = function () {
     };
+
+    function reportError(title, e) {
+        var message = '';
+        if (e && e.stack) {
+            message = e.message;
+            e = e.stack;
+        }
+        var str = 'Code executor error';
+        if (title) {
+            str += ' (' + title + ')';
+        }
+        if (message) {
+            str += ': ' + message;
+        }
+        Debug.error(str);
+        Debug.warn(e);
+    }
 
     return Controller;
 
