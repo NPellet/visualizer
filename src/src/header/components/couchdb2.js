@@ -310,21 +310,20 @@ define([
             }
             var doc = node.data.doc;
             var content = Versioning['get' + type + 'JSON']();
-            return Promise.resolve($.ajax({
-                url: this.database.uri + doc._id + '/' + type.toLowerCase() + '.json?rev=' + doc._rev,
-                type: 'PUT',
-                contentType: 'application/json',
-                data: content,
-                dataType: 'json',
-                error: function (d, type) {
-                    that.showError(d.status, type);
-                },
-                success: function (data) {
-                    doc._rev = data.rev;
+            doc._attachments[type.toLowerCase() + '.json'] = {
+                'content_type': 'application/json',
+                'data': btoa(unescape(encodeURIComponent(content)))
+            };
+
+            return Promise.resolve(that.database.saveDoc(doc, {
+                success: function () {
                     node.data['has' + type] = true;
                     if (node.children)
                         node.lazyLoad(true);
                     that.showError(type + ' saved.', 2);
+                },
+                error: function () {
+                    that.showError.apply(that, arguments);
                 }
             }));
         },
@@ -360,23 +359,23 @@ define([
                 // This doc has revs which means it has been saved to couchdb already
                 // Therefore we only need to update the attachment
                 doc = child.data.doc;
-                $.ajax({
-                    url: this.database.uri + doc._id + '/' + type.toLowerCase() + '.json?rev=' + doc._rev,
-                    type: 'PUT',
-                    contentType: 'application/json',
-                    data: content,
-                    dataType: 'json',
-                    error: function (e, type) {
-                        that.showError(e.status, type);
-                    },
-                    success: function (data) {
-                        doc._rev = data.rev;
+
+                doc._attachments[type.toLowerCase() + '.json'] = {
+                    'content_type': 'application/json',
+                    'data': btoa(unescape(encodeURIComponent(content)))
+                };
+
+                return Promise.resolve(that.database.saveDoc(doc, {
+                    success: function () {
                         child.data['has' + type] = true;
                         if (child.children)
                             child.lazyLoad(true);
                         that.showError(type + ' saved.', 2);
+                    },
+                    error: function () {
+                        that.showError.apply(that, arguments);
                     }
-                });
+                }));
             } else {
                 // The doc is new so we need to save the whole document
                 // With a new uuid
