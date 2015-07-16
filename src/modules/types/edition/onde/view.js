@@ -35,12 +35,6 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
                 return false;
             });
 
-            if (that.filter) {
-                this.dom.on('keyup change', function (e) {
-                    if (e.type === 'change' && (e.target.type === 'text' || e.target.type === 'textarea')) return;
-                    that._doFilter(e);
-                });
-            }
 
             var debouncing = this.module.getConfiguration('debouncing', -1);
             if (debouncing > -1) {
@@ -52,6 +46,13 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
                     cb = _.debounce(cb, debouncing);
                 }
                 this.dom.on('keyup change', cb);
+            }
+
+            if (that.filter) {
+                this.dom.on('keyup change', function (e) {
+                    if (e.type === 'change' && (e.target.type === 'text' || e.target.type === 'textarea')) return;
+                    that._doFilter(e);
+                });
             }
 
             this.inputVal = {};
