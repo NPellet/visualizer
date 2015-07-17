@@ -795,6 +795,7 @@ define([
         getLayerNames: function () {
             return Object.keys(definition.layers);
         },
+        getActiveLayerName: getActiveLayer,
         addModule: addModule,
         newModule: newModule,
         removeModule: removeModule,

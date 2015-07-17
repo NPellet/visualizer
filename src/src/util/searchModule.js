@@ -9,19 +9,21 @@ define(['src/util/util', 'src/util/api', 'modules/modulefactory', 'src/main/grid
 
             var modulesArr = new Array(keys.length);
             var layers = API.getLayerNames();
-            var layersArr = new Array(layers.length);
+            var activeLayer = API.getActiveLayerName();
+            var layersArr = []
             for (var i = 0; i < keys.length; i++) {
                 modulesArr[i] = modules[keys[i]];
                 modulesArr[i].text = keys[i] + ' ' + modulesArr[i].moduleName;
                 modulesArr[i].cat = 'module';
             }
 
-            for (i = 0; i < layersArr.length; i++) {
-                layersArr[i] = {};
-                layersArr[i] = {};
-                layersArr[i].text = layers[i];
-                layersArr[i].cat = 'layer';
-                layersArr[i].id = 'layer-' + layers[i];
+            for (i = 0; i < layers.length; i++) {
+                if(layers[i] === activeLayer) continue;
+                var l = {};
+                l.text = layers[i];
+                l.cat = 'layer';
+                l.id = 'layer-' + layers[i];
+                layersArr.push(l);
             }
             var $select2 = '<div><div style="height:50px"></div> <select>';
             var selectWidth = 500;
@@ -57,20 +59,24 @@ define(['src/util/util', 'src/util/api', 'modules/modulefactory', 'src/main/grid
                 return module.moduleName || module.text;
             }
 
+            var selectData = [];
+            if (layersArr.length) {
+                selectData.push({
+                    id: 'layer-list',
+                    text: 'Layers',
+                    children: layersArr
+                });
+            }
+            if (modulesArr.length) {
+                selectData.push({
+                    id: 'module-list',
+                    text: 'Modules',
+                    children: modulesArr
+                });
+            }
             $select2.select2({
                 placeholder: 'Select a module',
-                data: [
-                    {
-                        id: 'layer-list',
-                        text: 'Layers',
-                        children: layersArr
-                    },
-                    {
-                        id: 'module-list',
-                        text: 'Modules',
-                        children: modulesArr
-                    }
-                ],
+                data: selectData,
                 templateResult: outputTemplate
             }).select2('open').val(null).trigger('change');
 
