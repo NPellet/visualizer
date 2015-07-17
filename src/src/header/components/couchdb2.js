@@ -465,21 +465,14 @@ define([
         },
         logout: function () {
             var that = this;
-            $.couch.logout({
+            var prom = Promise.resolve($.couch.logout({
                 success: function () {
                     that.loggedIn = false;
                     that.username = null;
                     that.openMenu('login');
-                },
-                error: function (status) {
-                    // THis probably means that we are using httpd authentication
-                    // We need to reload the page to prompt the user for
-                    // authentication again
-                    if (status === 401) {
-                        window.location = window.location.href;
-                    }
                 }
-            });
+            }));
+            prom.catch(function(e) {if(e.status === 401) window.location = window.location.href; });
         },
         renderLoginMethods: function () {
             var that = this;
