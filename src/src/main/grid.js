@@ -645,7 +645,11 @@ define([
                         $(contextDom).append($li);
 
                         $li.bind('click', function (event) {
-                            var url = $(event.target.parentNode).attr('data-url');
+                            var module = $(event.target);
+                            if (module.prop('tagName') === 'A') {
+                                module = module.parent();
+                            }
+                            var url = module.attr('data-url');
                             if (url)
                                 newModule(decodeURIComponent(url));
                         });
