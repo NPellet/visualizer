@@ -116,7 +116,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                     var item = options[i];
                     if (item.data) {
                         that.lastDoc._attachments[item.name] = {
-                            content_type: options.contentType,
+                            content_type: item.contentType,
                             data: btoa(unescape(encodeURIComponent(item.data)))
                         };
                     } else if (item.file) {
