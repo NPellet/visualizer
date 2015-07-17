@@ -677,8 +677,11 @@ define([
                         $(contextDom).append(layersLi);
 
                         layersLi.bind('click', function (event) {
-                            var layer = $(event.target.parentNode).data('layerkey');
-
+                            var target = $(event.target);
+                            if (target.prop('tagName') === 'A') {
+                                target = target.parent();
+                            }
+                            var layer = target.data('layerkey');
                             if (layer !== '-1') {
                                 switchToLayer(layer);
 
