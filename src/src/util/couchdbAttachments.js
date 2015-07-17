@@ -97,6 +97,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
     /**
      * Upload several attachments in one revision
      * @param {object[]} options
+     * @param {string} options[].name - The name of the attachment
      * @param {string} options[].contentType - The contentType of the uploaded data
      * @param {string} options[].data - The attachment data to upload
      * @param {Blob} options[].file - The attachment data to upload
