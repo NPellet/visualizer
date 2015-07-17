@@ -6,7 +6,7 @@ define(['jquery'], function ($) {
             // run save function. 83 is the key code for S.
             if ((event.ctrlKey || event.metaKey) && !event.altKey && (event.which == 191 || event.which === 111)) {
                 event.preventDefault();
-                require(['src/util/searchModule'], function (searchModule) {
+                require(['src/util/searchBox'], function (searchModule) {
                     searchModule();
                 });
             }
