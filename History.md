@@ -1,5 +1,38 @@
+2.23.2 / 2015-07-17
+===================
+* Util
+ * search box: fix select first element
+ * Allow switch layer via search box
+ * rename searchModules -> searchBox
+ * util: add objectToString method
+ * Upload ui: Add checkbox to select/unselect all files to delete
+* Testcase
+ * update testcase structure
+* Headers
+ * couchdb2: fix upload inline as string
+ * Couchdb2: handle logout when httpd auth is used
+ * couchdb2: better logout when using httpd auth
+ * ctrl+s shortcut to save last loaded document
+* Libraries
+ * :arrow_up: couch.jquery
+ * new library: notifyjs
+ * :arrow_up: select2
+* Modules
+ * phylogram layout fixed
+ * code_executor: fix crash when eval fails because of syntax error
+ * code_executor: better name for evaled file
+ * code_executor: improve console output for errors
+ * scatter3d: fix error when module initialized
+ * onde: call filter after send var
+ * slickgrid: check filter exists in just in time filtering
+ * rename object editor
+ * 2d_list_fast: add support for matrix of objects
+* Core
+ * ctrl+s shortcut to save last loaded document
+
+
 2.23.1 / 2015-07-15
-=================
+===================
 * Testcase
  * testcase: update array example
  * fix some old views
