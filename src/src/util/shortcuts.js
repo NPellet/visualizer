@@ -12,4 +12,11 @@ define(['jquery'], function ($) {
             }
         }
     );
+
+    //$(document).on('copy', function(e) {
+    //    console.log('copy', e);
+    //    //var success = document.execCommand('copy', 'abc');
+    //    //console.log(success);
+    //    window.
+    //});
 });

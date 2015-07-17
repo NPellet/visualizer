@@ -1,6 +1,6 @@
 'use strict';
 
-define(['src/util/util', 'modules/modulefactory', 'src/main/grid', 'select2'], function (Util, ModuleFactory, Grid) {
+define(['src/util/util', 'src/util/api', 'modules/modulefactory', 'src/main/grid', 'select2'], function (Util, API, ModuleFactory, Grid) {
     return function () {
 
         Util.loadCss('components/select2/dist/css/select2.css').then(function () {
@@ -8,9 +8,20 @@ define(['src/util/util', 'modules/modulefactory', 'src/main/grid', 'select2'], f
             var keys = Object.keys(modules);
 
             var modulesArr = new Array(keys.length);
+            var layers = API.getLayerNames();
+            var layersArr = new Array(layers.length);
             for (var i = 0; i < keys.length; i++) {
                 modulesArr[i] = modules[keys[i]];
                 modulesArr[i].text = keys[i] + ' ' + modulesArr[i].moduleName;
+                modulesArr[i].cat = 'module';
+            }
+
+            for (i = 0; i < layersArr.length; i++) {
+                layersArr[i] = {};
+                layersArr[i] = {};
+                layersArr[i].text = layers[i];
+                layersArr[i].cat = 'layer';
+                layersArr[i].id = 'layer-' + layers[i];
             }
             var $select2 = '<div><div style="height:50px"></div> <select>';
             var selectWidth = 500;
@@ -43,14 +54,24 @@ define(['src/util/util', 'modules/modulefactory', 'src/main/grid', 'select2'], f
                 });
 
             function outputTemplate(module) {
-                return module.moduleName;
+                return module.moduleName || module.text;
             }
 
             $select2.select2({
                 placeholder: 'Select a module',
-                data: modulesArr,
+                data: [
+                    {
+                        id: 'layer-list',
+                        text: 'Layers',
+                        children: layersArr
+                    },
+                    {
+                        id: 'module-list',
+                        text: 'Modules',
+                        children: modulesArr
+                    }
+                ],
                 templateResult: outputTemplate
-
             }).select2('open').val(null).trigger('change');
 
             var selecting;
@@ -61,7 +82,12 @@ define(['src/util/util', 'modules/modulefactory', 'src/main/grid', 'select2'], f
                 var url = e.params.data.url;
                 $select2.select2('destroy');
                 $select2.parent().remove();
-                Grid.newModule(url);
+                if (e.params.data.cat === 'module') {
+                    Grid.newModule(url);
+                }
+                else if (e.params.data.cat === 'layer') {
+                    API.switchToLayer(e.params.data.text);
+                }
             });
 
             $select2.on('select2:close', function (e) {
