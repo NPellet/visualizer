@@ -18,11 +18,11 @@ define(['src/util/util', 'src/util/api', 'modules/modulefactory', 'src/main/grid
             }
 
             for (i = 0; i < layers.length; i++) {
-                if(layers[i] === activeLayer) continue;
                 var l = {};
                 l.text = layers[i];
                 l.cat = 'layer';
                 l.id = 'layer-' + layers[i];
+                if (layers[i] === activeLayer) l.disabled = true;
                 layersArr.push(l);
             }
             var $select2 = '<div><div style="height:50px"></div> <select>';
