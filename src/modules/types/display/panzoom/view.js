@@ -19,11 +19,18 @@ define([
     $.extend(true, View.prototype, Default, {
 
         init: function () {
+            this.toHide = this.toHide || {};
+            this.transforms = this.transforms || {};
+            var that = this;
             if (!this.dom) {
                 this._id = Util.getNextUniqueId();
                 this.dom = $(' <div id="' + this._id + '"></div>').css('height', '100%').css('width', '100%');
                 this.module.getDomContent().html(this.dom);
             }
+            this.dom.off('mouseleave');
+            this.dom.on('mouseleave', function () {
+                that.highlightOff();
+            });
             this.images = [];
             this.state = 'done';
         },
@@ -41,7 +48,7 @@ define([
         update: {
             picture: function (value, varname) {
                 var that = this;
-                return that.doImage(varname, value);
+                return that.doImage(varname, value, {}, true);
             }
         },
 
@@ -57,16 +64,21 @@ define([
             this.images = [];
         },
 
-        doImage: function (varname, value) {
+        doImage: function (varname, value, options, updateHighlights) {
+            console.log('do image', varname);
             var that = this;
             currentPromise = currentPromise.then(function () {
-                return that.addImage(varname, value);
+                return that.addImage(varname, value, options);
             }).then(function () {
                 that.panzoomMode(varname);
                 that.onResize();
                 that.reorderImages();
-            }, function () {
-                Debug.warn('panzoom: image failed to load');
+                if (updateHighlights) {
+                    that.processHighlights();
+                    that.listenHighlights();
+                }
+            }, function (e) {
+                Debug.warn('panzoom: image failed to load', e);
             });
         },
 
@@ -76,7 +88,7 @@ define([
             }
         },
 
-        addImage: function (varname, variable) {
+        addImage: function (varname, variable, options) {
             var that = this;
 
             return new Promise(function (resolve, reject) {
@@ -88,8 +100,9 @@ define([
                     return c.variable === varname;
                 });
 
-                if (!conf) {
-                    conf = that._getDefaultConf(varname);
+                conf = that._completeConf(conf, varname, options);
+                if (!conf.variable) {
+                    throw new Error('panzoom: conf is expected to have a variable name');
                 }
 
                 // Find if image already exists
@@ -102,7 +115,7 @@ define([
                     $img = x.find('img');
                 } else {
                     var $previousImg = x.find('img');
-                    $img = $('<img/>');
+                    $img = $('<img style="display: none;"/>');
                     x.find('.panzoom').append($img);
                 }
 
@@ -115,39 +128,163 @@ define([
 
                 if (that.toHide && that.toHide[conf.variable]) {
                     if ($previousImg) $previousImg.hide();
+                    $img.remove();
                     return resolve();
                 }
+
+                var imgUrl;
+                if (varname === '__highlight__') {
+                    imgUrl = that.highlightImage.dataUrl;
+                } else {
+                    imgUrl = variable.get();
+                }
+
                 $img
                     .css('opacity', conf.opacity)
                     .addClass(conf.rendering)
-                    .attr('src', variable.get())
+                    .attr('src', imgUrl)
                     .on('load', function () {
                         image.name = conf.variable;
                         image.$panzoomEl = x.find('.panzoom');
+                        image.$parent = image.$panzoomEl.parent('.parent');
                         image.$img = $img;
-                        image.$parent = x.find('.parent');
                         image.width = this.width;
                         image.height = this.height;
                         image.conf = conf;
+                        image.transform = null;
+                        console.log(image.name, image.conf.scaling);
+                        if (image.conf.scaling === 'max') {
+                            if (image.width / image.height > that.width / that.height) {
+                                image.f = that.width / image.width;
+                                image.transform = getCssTransform([image.f, 0, 0, image.f, 0, 0]);
+                            } else {
+                                image.f = that.height / image.height;
+                                image.transform = getCssTransform([image.f, 0, 0, image.f, 0, 0]);
+                            }
+                        }
+                        if (image.conf.scaling === 'asHighlight') {
+                            if (that.himg.f) {
+                                var transform = [that.himg.f, 0, 0, that.himg.f, that.highlightImage.shiftx * that.himg.f, that.highlightImage.shifty * that.himg.f];
+                                image.transform = getCssTransform(transform);
+                            }
+                        }
+
+
                         that.dom.append(x);
                         if (!foundImg) {
                             that.images.push(image);
                         }
                         if ($previousImg) $previousImg.remove();
-                        if (that.transforms && that.transforms[conf.variable]) {
-                            $img.css('transform', that.transforms[conf.variable]);
-                        }
+                        $img.css({
+                            transform: image.transform,
+                            transformOrigin: '0 0',
+                            display: 'block'
+                        });
+                        $img.show();
                         resolve();
                     })
-                    .on('error', function () {
+                    .on('error', function (e) {
                         if ($previousImg) $previousImg.remove();
-                        reject();
+                        reject(e);
                     });
             });
         },
 
+        processHighlights: function () {
+            var himg;
+            this.highlights = null;
+            for (var i = 0; i < this.images.length; i++) {
+                if (this.images[i].name === '__highlight__') continue;
+                if (API.getData(this.images[i].name)._highlight) himg = this.images[i];
+            }
+            if (!himg) return;
+            var data = API.getData(himg.name);
+            if (data._highlight.length !== himg.width * himg.height) {
+                Debug.warn('Panzoom: unexpected highlight length');
+                return;
+            }
+            this._highlight = data._highlight;
+            this.himg = himg;
+            this.highlights = {};
+            for (var i = 0; i < data._highlight.length; i++) {
+                var h = data._highlight[i];
+                if (!Util.objectToString(h) !== 'Array') {
+                    h = [h];
+                }
+                for (var j = 0; j < h.length; j++) {
+                    if (h[j] === undefined) continue;
+                    if (this.highlights[h[j]]) {
+                        this.highlights[h[j]].data.push(i);
+                    } else {
+                        this.highlights[h[j]] = {
+                            data: [i],
+                            shiftx: i % himg.width,
+                            shifty: i / himg.width | 0,
+                            shiftX: i % himg.width,
+                            shiftY: i / himg.width | 0
+                        };
+                    }
+
+                    var top = i / himg.width | 0;
+                    var left = i % himg.width;
+                    if (left < this.highlights[h[j]].shiftx) {
+                        this.highlights[h[j]].shiftx = left;
+                    } else if (left > this.highlights[h[j]].shiftX) {
+                        this.highlights[h[j]].shiftX = left;
+                    }
+                    if (top < this.highlights[h[j]].shifty) {
+                        this.highlights[h[j]].shifty = top;
+                    } else if (top > this.highlights[h[j]].shiftY) {
+                        this.highlights[h[j]].shiftY = top;
+                    }
+                }
+            }
+            for (var key in this.highlights) {
+                this.highlights[key].width = this.highlights[key].shiftX - this.highlights[key].shiftx + 1;
+                this.highlights[key].height = this.highlights[key].shiftY - this.highlights[key].shifty + 1;
+            }
+        },
+
+        listenHighlights: function () {
+            var that = this;
+            API.killHighlight(this.module.getId());
+            if (!this.highlights) return;
+            var hl = Object.keys(this.highlights);
+
+            that._highlighted = [];
+            for (var i = 0; i < hl.length; i++) {
+                (function (i) {
+                    API.listenHighlight({_highlight: hl[i]}, function (onOff, key) {
+                        if (!Array.isArray(key)) {
+                            key = [key];
+                        }
+                        if (onOff) {
+                            that._highlighted = _(that._highlighted).push(key).flatten().uniq().value();
+                        } else {
+                            that._highlighted = _.filter(that._highlighted, function (val) {
+                                return key.indexOf(val) === -1;
+                            });
+                        }
+                        that._drawHighlight();
+                    }, false, that.module.getId());
+                })(i);
+            }
+        },
+
+        _drawHighlight: function () {
+            if (!this._highlighted || !this._highlighted.length) {
+                this.toHide['__highlight__'] = true;
+                this.highlightImage = this.highlightImage || {};
+                this.highlightImage.dataUrl = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+            } else {
+                this.toHide['__highlight__'] = false;
+                this.highlightImage = this._createHighlightDataUrl(this._highlighted);
+            }
+            this.doImage('__highlight__');
+        },
+
         newImageDom: function (varname) {
-            return $('<div class="parent" id="' + this.getImageDomId(varname) + '"><div class="panzoom"><img/></div></div>');
+            return $('<div class="parent" id="' + this.getImageDomId(varname) + '"><div class="panzoom"><img style="display: none;"/></div></div>');
         },
 
         getImageDomId: function (varname) {
@@ -233,8 +370,8 @@ define([
                 for (var i = 0; i < that.images.length; i++) {
                     var rect = that.images[i].$img[0].getBoundingClientRect();
                     var p = {
-                        x: Math.floor((e.pageX - rect.left) * that.images[i].width / rect.width),
-                        y: Math.floor((e.pageY - rect.top) * that.images[i].height / rect.height)
+                        x: (e.pageX - rect.left) * that.images[i].width / rect.width | 0,
+                        y: (e.pageY - rect.top) * that.images[i].height / rect.height | 0
                     };
 
                     if (p.x >= 0 && p.x < that.images[i].width && p.y >= 0 && p.y < that.images[i].height) {
@@ -281,6 +418,13 @@ define([
                 if (!_.isEmpty(hoverPixel) && !_.isEqual(DataObject.resurrect(that.lastHoverPixel), hoverPixel)) {
                     that.module.controller.hoverPixel(hoverPixel);
                     that.lastHoverPixel = hoverPixel;
+                    that.highlightOn(hoverPixel);
+                }
+                if (_.isEmpty(hoverPixel)) {
+                    that.highlightOff();
+                }
+                if (!_.isEmpty(hoverPixel) && that._hl === undefined) {
+                    that.highlightOn(hoverPixel);
                 }
                 if (!_.isEmpty(allHoverPixels) && !_.isEqual(DataObject.resurrect(that.lastAllHoverPixels), allHoverPixels)) {
                     that.module.controller.allHoverPixels(allHoverPixels);
@@ -298,7 +442,87 @@ define([
                     }
                 }
             });
+        },
 
+        _createHighlightDataUrl: function (hl) {
+            if (!this.highlights) return null;
+            if (!Array.isArray(hl)) {
+                hl = [hl];
+            }
+            var shiftx = Infinity, shifty = Infinity, shiftX = -Infinity, shiftY = -Infinity;
+            for (var i = 0; i < hl.length; i++) {
+                var h = hl[i];
+                shiftx = Math.min(shiftx, this.highlights[h].shiftx);
+                shifty = Math.min(shifty, this.highlights[h].shifty);
+                shiftX = Math.max(shiftX, this.highlights[h].shiftX);
+                shiftY = Math.max(shiftY, this.highlights[h].shiftY);
+            }
+
+            // we create a canvas element
+            var canvas = document.createElement('canvas');
+            var height = shiftY - shifty + 1;
+            var width = shiftX - shiftx + 1;
+
+            canvas.height = height;
+            canvas.width = width;
+
+            // getting the context will allow to manipulate the image
+            var context = canvas.getContext('2d');
+
+            // Init image with yellow transparent pixels
+            var imageData = context.createImageData(width, height);
+            // The property data will contain an array of int8
+            var data = imageData.data;
+            for (var i = 0; i < height * width; i++) {
+                // Highlight color: see .ci-highlight in main.css
+                data[i * 4] = 0xFF | 0; // Red
+                data[i * 4 + 1] = 0x00; // Green
+                data[i * 4 + 2] = 0x00; // Blue
+                data[i * 4 + 3] = 0x00; // alpha (transparency)
+            }
+
+            // Change opacity for pixels that need to be seen
+            for (var j = 0; j < hl.length; j++) {
+                for (i = 0; i < this.highlights[hl[j]].data.length; i++) {
+                    var idx = this.highlights[hl[j]].data[i];
+                    var x = idx % this.himg.width;
+                    var y = idx / this.himg.width | 0;
+                    var xi = x - shiftx;
+                    var yi = y - shifty;
+                    var idxi = yi * width + xi;
+                    data[idxi * 4 + 3] = 255;
+                }
+            }
+            // we put this random image in the context
+            context.putImageData(imageData, 0, 0); // at coords 0,0
+            return {
+                dataUrl: canvas.toDataURL('image/png'),
+                shiftx: shiftx,
+                shifty: shifty
+            };
+        },
+
+        highlightOn: function (pixel) {
+            var that = this;
+            if (Array.isArray(that._highlight)) {
+                var idx = pixel.x + that.himg.width * pixel.y;
+                if (that._highlight[idx]) {
+                    if (that._hl !== that._highlight[idx]) {
+                        API.highlightId(that._hl, 0);
+                        API.highlightId(that._highlight[idx], 1);
+                        that._hl = that._highlight[idx];
+                    }
+                } else if (that._hl) {
+                    that.highlightOff();
+                }
+            }
+        },
+
+        highlightOff: function () {
+            if (this._hl !== undefined) {
+                API.highlightId(this._hl, 0);
+                this._hl = undefined;
+            }
         },
 
         rerender: _.debounce(function () {
@@ -306,39 +530,22 @@ define([
                 // Trick to get crisp images with chrome
                 // Since it does'n implement crisp-edges image rendering
                 // But pixelated rendering instead
-                if (this.images[j].conf.rerender && this.images[j].conf.rerender.indexOf('yes') > -1 || (this.images[j].conf.rendering === 'crisp-edges' && bowser.chrome))
+                if (this.images[j].conf.rerender && this.images[j].conf.rerender.indexOf('yes') > -1 || (this.images[j].conf.rendering === 'crisp-edges' && bowser.chrome)) {
                     this.doImage(this.images[j].name);
+                }
             }
         }, 300),
 
         chromeCrisp: _.debounce(function () {
             for (var j = 0; j < this.images.length; j++) {
-                if (this.images[j].conf.rendering === 'crisp-edges')
+                if (this.images[j].conf.rendering === 'crisp-edges') {
                     this.doImage(this.images[j].name);
+                }
             }
         }, 300),
 
         onResize: function () {
             if (!this.images) return;
-
-            for (var i = 0; i < this.images.length; i++) {
-                var scalingMethod = this.images[i].conf.scaling;
-                var domimg = this.images[i].$img[0];
-                var factor = 1;
-                if (scalingMethod === 'max') {
-                    if (this.images[i].width / this.images[i].height > this.dom.width() / this.dom.height()) {
-                        //factor = computeFactor(this.imgWidth[i], this.dom.width());
-                        domimg.width = this.dom.width() * factor;
-                        domimg.height = this.images[i].height / this.images[i].width * this.dom.width() * factor;
-                    } else {
-                        //factor = computeFactor(this.imgHeight[i], this.dom.height());
-                        domimg.height = this.dom.height() * factor;
-                        domimg.width = this.images[i].width / this.images[i].height * this.dom.height() * factor;
-                    }
-                }
-                this.images[i].$parent.width(this.dom.parent().width()).height(this.dom.parent().height());
-                this.images[i].$panzoomEl.panzoom('resetDimensions');
-            }
         },
 
         getDom: function () {
@@ -346,13 +553,7 @@ define([
         },
 
         onActionReceive: {
-            transform: function (data) {
-                this.transforms = this.transforms || {};
-                this.transforms[data.name] = data.transform;
-                this.doImage(data.name);
-            },
             hide: function (data) {
-                this.toHide = this.toHide || {};
                 var varname;
                 if (typeof data === 'string')
                     varname = data;
@@ -376,23 +577,28 @@ define([
             }
         },
 
-        _buildConfFromVarsIn: function () {
-            var that = this;
-            var i = 1;
-            return _.map(this.module.definition.vars_in, function (v) {
-                return that._getDefaultConf(v.name, i++);
-            });
-        },
-
-        _getDefaultConf: function (varname, zIndex) {
-            zIndex = zIndex || 1;
+        _getDefaultConf: function () {
             return {
-                variable: varname,
                 opacity: 0.5,
-                'z-index': zIndex,
+                'z-index': 1,
                 rendering: 'Normal',
                 scaling: 'max'
             };
+        },
+
+        _completeConf: function (conf, varname, options) {
+            if (!conf) {
+                return this._completeConf(this._getDefaultConf(), varname, options);
+            }
+            if (varname === '__highlight__') options = {
+                'z-index': 1000000,
+                scaling: 'asHighlight',
+                rendering: 'crisp-edges'
+            };
+            conf.variable = varname;
+            var x = _.assign(conf, options);
+            console.log(varname, options, x.scaling);
+            return x;
         }
     });
 
@@ -402,6 +608,13 @@ define([
         r[0] = v[0] * (+t[0]) + v[1] * (+t[1]) + (+t[4]);
         r[1] = v[0] * (+t[2]) + v[1] * (+t[3]) + (+t[5]);
         return r;
+    }
+
+    function getCssTransform(arr) {
+        if (arr.length !== 6) {
+            throw new Error('getCssTransform expects array of length 6');
+        }
+        return 'matrix(' + arr.join(',') + ')';
     }
 
     return View;

@@ -45,7 +45,6 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype.variablesIn = ['picture'];
 
     Controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {
-        transform: 'Send transform to specific image',
         hide: 'Hide an image',
         show: 'Show an image'
     });
