@@ -65,7 +65,6 @@ define([
         },
 
         doImage: function (varname, value, options, updateHighlights) {
-            console.log('do image', varname);
             var that = this;
             currentPromise = currentPromise.then(function () {
                 return that.addImage(varname, value, options);
@@ -151,7 +150,6 @@ define([
                         image.height = this.height;
                         image.conf = conf;
                         image.transform = null;
-                        console.log(image.name, image.conf.scaling);
                         if (image.conf.scaling === 'max') {
                             if (image.width / image.height > that.width / that.height) {
                                 image.f = that.width / image.width;
@@ -207,7 +205,7 @@ define([
             this.highlights = {};
             for (var i = 0; i < data._highlight.length; i++) {
                 var h = data._highlight[i];
-                if (!Util.objectToString(h) !== 'Array') {
+                if (Util.objectToString(h) !== 'Array') {
                     h = [h];
                 }
                 for (var j = 0; j < h.length; j++) {
@@ -603,7 +601,6 @@ define([
             };
             conf.variable = varname;
             var x = _.assign(conf, options);
-            console.log(varname, options, x.scaling);
             return x;
         }
     });
