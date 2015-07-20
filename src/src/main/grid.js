@@ -645,7 +645,11 @@ define([
                         $(contextDom).append($li);
 
                         $li.bind('click', function (event) {
-                            var url = $(event.target.parentNode).attr('data-url');
+                            var module = $(event.target);
+                            if (module.prop('tagName') === 'A') {
+                                module = module.parent();
+                            }
+                            var url = module.attr('data-url');
                             if (url)
                                 newModule(decodeURIComponent(url));
                         });
@@ -677,8 +681,11 @@ define([
                         $(contextDom).append(layersLi);
 
                         layersLi.bind('click', function (event) {
-                            var layer = $(event.target.parentNode).data('layerkey');
-
+                            var target = $(event.target);
+                            if (target.prop('tagName') === 'A') {
+                                target = target.parent();
+                            }
+                            var layer = target.data('layerkey');
                             if (layer !== '-1') {
                                 switchToLayer(layer);
 
