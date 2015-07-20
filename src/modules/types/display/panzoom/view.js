@@ -71,7 +71,6 @@ define([
                 return that.addImage(varname, value, options);
             }).then(function () {
                 that.panzoomMode(varname);
-                that.onResize();
                 that.reorderImages();
                 if (updateHighlights) {
                     that.processHighlights();
@@ -545,7 +544,14 @@ define([
         }, 300),
 
         onResize: function () {
-            if (!this.images) return;
+            // Rerender all images
+            this.doAllImages();
+        },
+
+        doAllImages: function() {
+            for (var i = 0; i < this.images.length; i++) {
+                this.doImage(this.images[i].name);
+            }
         },
 
         getDom: function () {
