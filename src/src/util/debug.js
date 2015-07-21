@@ -128,6 +128,9 @@ define(['loglevel'], function (log) {
                 return formatTime(this._total, format);
             }
         },
+        log: function() {
+            console.log(this.time());
+        },
         sum: function (name) {
             var elapsed = perfObj.now() - this._start;
             if (name) {

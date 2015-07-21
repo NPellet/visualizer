@@ -90,8 +90,7 @@ define(['src/util/util', 'src/util/api', 'modules/modulefactory', 'src/main/grid
                 $select2.parent().remove();
                 if (e.params.data.cat === 'module') {
                     Grid.newModule(url);
-                }
-                else if (e.params.data.cat === 'layer') {
+                } else if (e.params.data.cat === 'layer') {
                     API.switchToLayer(e.params.data.text);
                 }
             });

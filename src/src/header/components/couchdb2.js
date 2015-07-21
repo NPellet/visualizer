@@ -34,8 +34,8 @@ define([
                     if ((event.ctrlKey || event.metaKey) && !event.altKey && event.which == 83) {
                         event.preventDefault();
                         var viewUrl = Versioning.lastLoaded.view.url;
-                        var m = viewUrl.match(/\/([^\/]+)\/view\.json$/);
-                        if (m) console.log('id to save', m[1]);
+                        var reg = /\/([^\/]+)\/view\.json$/;
+                        var m = reg.exec(viewUrl);
                         var loadedDocId = m[1];
                         var nodes = [];
                         if (!that.ftree) {
@@ -58,7 +58,6 @@ define([
                             width: '400px',
                             buttons: {
                                 'Save View': function () {
-                                    console.log('save view');
                                     $(this).dialog('close');
                                     that.saveNode('View', nodes[0]).then(function () {
                                         ui.showNotification('View saved', 'success');
@@ -67,7 +66,6 @@ define([
                                     });
                                 },
                                 'Save Data': function () {
-                                    console.log('save data');
                                     $(this).dialog('close');
                                     that.saveNode('Data', nodes[0]).then(function () {
                                         ui.showNotification('Data saved', 'success');
@@ -76,7 +74,6 @@ define([
                                     });
                                 },
                                 'Save Both': function () {
-                                    console.log('save both');
                                     $(this).dialog('close');
                                     that.saveNode('View', nodes[0]).then(function () {
                                         ui.showNotification('View saved', 'success');
@@ -472,7 +469,9 @@ define([
                     that.openMenu('login');
                 }
             }));
-            prom.catch(function(e) {if(e.status === 401) window.location = window.location.href; });
+            prom.catch(function (e) {
+                if (e.status === 401) window.location = window.location.href;
+            });
         },
         renderLoginMethods: function () {
             var that = this;

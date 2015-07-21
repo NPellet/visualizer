@@ -134,7 +134,8 @@ define([
                 });
             }
 
-            for (j = 0; j < module.vars_out.length; j++) {
+            var vars_out = module.vars_out || [];
+            for (j = 0; j < vars_out.length; j++) {
                 var var_out = module.vars_out[j];
                 if (!var_out.name || !var_out.event) continue;
                 sources.push({
