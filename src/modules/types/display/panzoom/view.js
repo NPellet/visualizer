@@ -473,8 +473,8 @@ define([
             for (var i = 0; i < height * width; i++) {
                 // Highlight color: see .ci-highlight in main.css
                 data[i * 4] = 0xFF | 0; // Red
-                data[i * 4 + 1] = 0x00; // Green
-                data[i * 4 + 2] = 0x00; // Blue
+                data[i * 4 + 1] = 0xFF; // Green
+                data[i * 4 + 2] = 0x99; // Blue
                 data[i * 4 + 3] = 0x00; // alpha (transparency)
             }
 
