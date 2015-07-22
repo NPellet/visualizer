@@ -478,6 +478,8 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
                 // Shouldn't do this if auto-edit
                 if (!that.args.grid.module.view.slick.options.autoEdit)
                     that.args.commitChanges('next');
+                else
+                    that.args.commitChanges('none');
             });
     }
 
