@@ -123,7 +123,8 @@ define([
         for (i = 0; i < modules.length; i++) {
             var module = modules[i].definition;
 
-            for (j = 0; j < module.vars_in.length; j++) {
+            var vars_in = module.vars_in || []
+            for (j = 0; j < vars_in.length; j++) {
                 var var_in = module.vars_in[j];
                 if (!var_in.name) continue;
                 targets.push({
