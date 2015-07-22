@@ -1,0 +1,866 @@
+{
+  "version": "2.24.0",
+  "grid": {
+    "xWidth": 10,
+    "yHeight": 10,
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      },
+      "Hidden Layer": {
+        "name": "Hidden Layer"
+      }
+    }
+  },
+  "modules": [
+    {
+      "url": "modules/types/client_interaction/dragdrop/",
+      "id": 1,
+      "title": "Database",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "label": [
+                "Drop your database here"
+              ],
+              "dragoverlabel": [
+                null
+              ],
+              "hoverlabel": [
+                null
+              ],
+              "getusermedia": [
+                []
+              ],
+              "capture": [
+                "none"
+              ]
+            }
+          ],
+          "vars": [
+            [
+              {
+                "filter": "ext",
+                "extension": "*",
+                "filetype": "text",
+                "type": "string",
+                "variable": "file"
+              }
+            ]
+          ],
+          "string": [
+            [
+              {
+                "type": "string",
+                "filter": "text/plain",
+                "variable": "str"
+              }
+            ]
+          ],
+          "photo": [
+            [
+              {
+                "variable": "photo"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "zIndex": 0,
+          "display": true,
+          "title": "Database",
+          "wrapper": false,
+          "created": true,
+          "name": "Default layer",
+          "position": {
+            "left": 0,
+            "top": 0.9999996185302734
+          },
+          "size": {
+            "width": 34,
+            "height": 33
+          },
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ]
+        },
+        "Hidden Layer": {
+          "zIndex": 0,
+          "display": true,
+          "title": "Database",
+          "wrapper": false,
+          "created": true,
+          "name": "Default layer",
+          "position": {
+            "left": 0,
+            "top": 0.9999996185302734
+          },
+          "size": {
+            "width": 34,
+            "height": 33
+          },
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ]
+        }
+      },
+      "vars_out": [
+        {
+          "event": "onRead",
+          "rel": "dataarray",
+          "name": "database",
+          "jpath": [
+            "file"
+          ]
+        }
+      ],
+      "vars_in": [],
+      "actions_in": [
+        {}
+      ],
+      "actions_out": []
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "id": 2,
+      "title": "treatment",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "script": [
+                "// this.defined\n// this.variable\nconsole.log(\"treatment started\");\n\nfunction treatment(jcamp) {\n    // treatment for preferences\n    var spectra = Jcamp.convert(jcamp);\n    \n    spectra = spectra.spectra[0].data[0];\n    \n    var array = ML.ArrayUtils.coordArrayToCoordMatrix(spectra, 2);\n    \n    var result = ML.ArrayUtils.getEquallySpacedData(array[0], array[1], {\n             from: 1000, \n             to: 2000, \n             numberOfPoints: 100, \n             variant: \"smooth\"\n    });\n    \n    return result;\n}\n\nif(this.defined === 1) {\n    var database = get('database');\n    var spectra = new Array(database.length);\n    var table = new Array(database.length);\n    for(var i = 0; i < database.length; ++i) {\n        spectra[i] = treatment(database[i].content.value);\n        table[i] = {\n            filename: database[i].filename,\n            spectra: spectra[i],\n            _highlight: i+1\n        };\n    }\n    set('spectraDB', spectra);\n    set('table', table);\n}\n"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {
+                "lib": "ML",
+                "alias": "ML"
+              },
+              {
+                "lib": "Jcamp",
+                "alias": "Jcamp"
+              }
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "zIndex": 0,
+          "display": false,
+          "title": "treatment",
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "position": {
+            "left": 35.99857873916626,
+            "top": 34.99999885559082
+          },
+          "size": {
+            "width": 53,
+            "height": 33
+          },
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ]
+        },
+        "Hidden Layer": {
+          "zIndex": 0,
+          "display": true,
+          "title": "treatment",
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "position": {
+            "left": 54,
+            "top": 35
+          },
+          "size": {
+            "width": 53,
+            "height": 32
+          },
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ]
+        }
+      },
+      "vars_in": [
+        {
+          "rel": "inputValue",
+          "name": "database"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "onScriptEnded",
+          "rel": "outputValue",
+          "name": "spectraDB",
+          "jpath": [
+            "spectraDB"
+          ]
+        },
+        {
+          "event": "onScriptEnded",
+          "rel": "outputValue",
+          "name": "table",
+          "jpath": [
+            "table"
+          ]
+        }
+      ],
+      "actions_out": []
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "id": 3,
+      "title": "Hierarchical Clustering",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "script": [
+                "var matrix = get('table');\nif(matrix === undefined) {\n    return;\n}\n\nfunction traversal(node) {\n    if(node.children.length === 0) {\n        for(var i = 0; i < matrix.length; ++i) {\n            if(matrix[i].filename === node.data.filename) {\n                node.index = i;\n                break;\n            }\n        }       \n    } else {\n        for(var i = 0; i < node.children.length; ++i) {\n            traversal(node.children[i]);\n        }\n    }\n}\nvar spectras = new Array(matrix.length);\nvar data = new Array();\nfor(var i = 0; i < matrix.length; ++i) {\n    data[i] = {\n        color: i % 2 ? '#ff0000' : '#00ff00',\n        size: i + 3,\n        spectra: matrix[i].spectra,\n        shape: i % 2 ? 'circle' : 'triangle',\n        filename: matrix[i].filename\n    }\n    spectras[i] = matrix[i].spectra;\n}\n\nvar currentFunction = ML.Math.Distance[\"euclidean\"];\n\nvar HC = new ML.Clust.hclust.agnes(spectras, {\n    sim: currentFunction\n});\n\nvar dendrogram = HC.getDendogram(matrix);\n// assing index to each leaf\ntraversal(dendrogram);\n\nset('data', data);\nset('dendrogram', {type: 'tree', value: dendrogram});"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {
+                "lib": "ML",
+                "alias": "ML"
+              },
+              {
+                "lib": "src/util/tree",
+                "alias": "Tree"
+              }
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "zIndex": 0,
+          "display": false,
+          "title": "Hierarchical Clustering",
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "position": {
+            "left": 0.9985795021057129,
+            "top": 68.99999694824218
+          },
+          "size": {
+            "width": 53,
+            "height": 24
+          },
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ]
+        },
+        "Hidden Layer": {
+          "zIndex": 0,
+          "display": true,
+          "title": "Hierarchical Clustering",
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "position": {
+            "left": 0,
+            "top": 35
+          },
+          "size": {
+            "width": 53,
+            "height": 32
+          },
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ]
+        }
+      },
+      "vars_in": [
+        {
+          "rel": "inputValue",
+          "name": "table"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "onScriptEnded",
+          "rel": "outputValue",
+          "name": "dendrogram",
+          "jpath": [
+            "dendrogram"
+          ]
+        },
+        {
+          "event": "onScriptEnded",
+          "rel": "outputValue",
+          "name": "data",
+          "jpath": [
+            "data"
+          ]
+        }
+      ],
+      "actions_out": []
+    },
+    {
+      "url": "modules/types/edition/rich_text/",
+      "id": 4,
+      "richtext": "<p>&nbsp;</p>\n\n<p><span style=\"font-family:comic sans ms,cursive\"><span style=\"font-size:12px\">This view loads a database of Jcamp and applies a treatment that is the get equally spaced data, then apply a hierarchical clustering and finally shows the dendrogram of the clustering.</span></span></p>\n",
+      "title": "",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                [
+                  "isEditable"
+                ]
+              ],
+              "modifyInVariable": [
+                []
+              ],
+              "autoHeight": [
+                []
+              ],
+              "bgColor": [
+                [
+                  0,
+                  255,
+                  255,
+                  1
+                ]
+              ],
+              "postit": [
+                [
+                  "yes"
+                ]
+              ],
+              "html": [
+                [
+                  "yes"
+                ]
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "position": {
+            "left": 0,
+            "top": 35
+          },
+          "size": {
+            "width": 35,
+            "height": 10
+          },
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ]
+        },
+        "Hidden Layer": {
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "wrapper": false,
+          "created": true,
+          "name": "Hidden Layer",
+          "position": {
+            "left": 0,
+            "top": 35
+          },
+          "size": {
+            "width": 29,
+            "height": 33
+          },
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ]
+        }
+      },
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": []
+    },
+    {
+      "url": "modules/types/chart/statistics/dendrogram/",
+      "id": 5,
+      "title": "",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "jpathShape": [
+                [
+                  "shape"
+                ]
+              ],
+              "nodeType": [
+                "circle"
+              ],
+              "jpathSize": [
+                [
+                  "size"
+                ]
+              ],
+              "nodeSize": [
+                ""
+              ],
+              "jpathColor": [
+                [
+                  "color"
+                ]
+              ],
+              "nodeColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "labelSize": [
+                null
+              ],
+              "labelColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "edgeWidth": [
+                null
+              ],
+              "edgeColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "strokeWidth": [
+                null
+              ],
+              "strokeColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "position": {
+            "left": 36,
+            "top": 1
+          },
+          "size": {
+            "width": 64,
+            "height": 39
+          },
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ]
+        },
+        "Hidden Layer": {
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "wrapper": true,
+          "created": true,
+          "name": "Hidden Layer",
+          "position": {
+            "left": 35,
+            "top": 1
+          },
+          "size": {
+            "width": 45,
+            "height": 33
+          },
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ]
+        }
+      },
+      "vars_in": [
+        {
+          "rel": "newTree",
+          "name": "dendrogram"
+        },
+        {
+          "rel": "data",
+          "name": "data"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "onHover",
+          "rel": "node",
+          "name": "currentFile",
+          "jpath": [
+            "data",
+            "data",
+            "filename"
+          ]
+        }
+      ],
+      "actions_out": []
+    },
+    {
+      "url": "modules/types/display/single_value/",
+      "id": 6,
+      "title": "Current File",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "defaultvalue": [
+                null
+              ],
+              "font": [
+                null
+              ],
+              "fontcolor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "fontsize": [
+                null
+              ],
+              "align": [
+                null
+              ],
+              "valign": [
+                null
+              ],
+              "sprintf": [
+                null
+              ],
+              "sprintfOrder": [
+                null
+              ],
+              "preformatted": [
+                []
+              ],
+              "append": [
+                []
+              ],
+              "maxEntries": [
+                1
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "zIndex": 0,
+          "display": true,
+          "title": "Current File",
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "position": {
+            "left": 102,
+            "top": 1
+          },
+          "size": {
+            "width": 14,
+            "height": 5
+          },
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ]
+        },
+        "Hidden Layer": {
+          "zIndex": 0,
+          "display": true,
+          "title": "Current File",
+          "wrapper": true,
+          "created": true,
+          "name": "Hidden Layer",
+          "position": {
+            "left": 81,
+            "top": 1
+          },
+          "size": {
+            "width": 13,
+            "height": 5
+          },
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ]
+        }
+      },
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "currentFile"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [],
+      "actions_out": []
+    }
+  ],
+  "variables": [
+    {
+      "varname": "database",
+      "jpath": [
+        "database"
+      ]
+    }
+  ],
+  "aliases": [
+    {
+      "path": "http://www.lactame.com/lib/jcampconverter/2.0.9/jcampconverter",
+      "alias": "Jcamp"
+    },
+    {
+      "path": "http://www.lactame.com/lib/ml/HEAD/ml",
+      "alias": "ML"
+    }
+  ],
+  "pouchvariables": [
+    {}
+  ],
+  "configuration": {
+    "title": "Distance matrix"
+  },
+  "actionscripts": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          {
+            "name": [
+              null
+            ],
+            "script": [
+              null
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "couch_replication": [
+    {
+      "sections": {},
+      "groups": {
+        "couch": [
+          [
+            {
+              "direction": "both",
+              "continuous": []
+            }
+          ]
+        ]
+      }
+    }
+  ],
+  "init_script": [
+    {
+      "sections": {},
+      "groups": {
+        "general": [
+          {
+            "script": [
+              null
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "custom_filters": [
+    {
+      "sections": {
+        "modules": [
+          {
+            "sections": {},
+            "groups": {
+              "modules": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filtersLib": [
+          {
+            "sections": {},
+            "groups": {
+              "filters": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filters": [
+          {
+            "sections": {},
+            "groups": {
+              "filter": [
+                {
+                  "name": [
+                    null
+                  ],
+                  "script": [
+                    null
+                  ]
+                }
+              ],
+              "libs": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "groups": {}
+    }
+  ],
+  "actionfiles": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          [
+            {}
+          ]
+        ]
+      }
+    }
+  ]
+}

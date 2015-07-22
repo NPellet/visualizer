@@ -1,6 +1,8 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/util/datatraversing'], function (Default, Traversing) {
+define([
+    'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/util/util'
+], function (Default, Traversing, Util) {
 
     function Controller() {
     }
@@ -33,16 +35,31 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
     Controller.prototype.references = {
         tree: {
             type: ['tree'],
-            label: 'A hierarchical tree'
+            label: 'A Hierarchical tree'
+        },
+        newTree: {
+            type: ['tree'],
+            label: 'Annotated tree'
+        },
+        data: {
+            type: ['array'],
+            label: 'Annotation data'
         },
         node: {
             label: 'Node'
         }
     };
 
-    Controller.prototype.variablesIn = ['tree'];
+    Controller.prototype.variablesIn = ['tree', 'newTree', 'data'];
 
     Controller.prototype.configurationStructure = function () {
+
+        var dataJPath = [];
+        var data = this.module.getDataFromRel('data');
+        if (data) {
+            Traversing.getJPathsFromElement(data[0], dataJPath);
+        }
+
         return {
             groups: {
                 group: {
@@ -50,6 +67,13 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
                         type: 'list'
                     },
                     fields: {
+                        jpathShape: {
+                            type: 'combo',
+                            title: 'Shape jpath',
+                            options: dataJPath,
+                            extractValue: Util.jpathToArray,
+                            insertValue: Util.jpathToString
+                        },
                         nodeType: {
                             type: 'combo',
                             title: 'Node Type',
@@ -65,9 +89,23 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
                                 {title: 'Pie chart', key: 'piechart'}
                             ]
                         },
+                        jpathSize: {
+                            type: 'combo',
+                            title: 'Size jpath',
+                            options: dataJPath,
+                            extractValue: Util.jpathToArray,
+                            insertValue: Util.jpathToString
+                        },
                         nodeSize: {
                             type: 'text',
                             title: 'Default node size'
+                        },
+                        jpathColor: {
+                            type: 'combo',
+                            title: 'Color jpath',
+                            options: dataJPath,
+                            extractValue: Util.jpathToArray,
+                            insertValue: Util.jpathToString
                         },
                         nodeColor: {
                             type: 'color',
@@ -105,8 +143,11 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
 
     Controller.prototype.configAliases = {
         nodeType: ['groups', 'group', 0, 'nodeType', 0],
+        jpathShape: ['groups', 'group', 0, 'jpathShape', 0],
         nodeSize: ['groups', 'group', 0, 'nodeSize', 0],
+        jpathSize: ['groups', 'group', 0, 'jpathSize', 0],
         nodeColor: ['groups', 'group', 0, 'nodeColor', 0],
+        jpathColor: ['groups', 'group', 0, 'jpathColor', 0],
         labelSize: ['groups', 'group', 0, 'labelSize', 0],
         labelColor: ['groups', 'group', 0, 'labelColor', 0],
         edgeWidth: ['groups', 'group', 0, 'edgeWidth', 0],

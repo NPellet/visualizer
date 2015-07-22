@@ -6,8 +6,10 @@ define([
     'src/util/api',
     'src/util/util',
     'src/util/ui',
-    'lib/jit/jit-custom'
-], function (Default, Traversing, API, Util, ui, $jit) {
+    'lib/jit/jit-custom',
+    'src/util/tree',
+    'src/util/color'
+], function (Default, Traversing, API, Util, ui, $jit, Tree, Color) {
 
     function View() {
     }
@@ -68,37 +70,52 @@ define([
         },
 
 
-        /* When a vaue change this method is called. It will be called for all
+        /* When a value change this method is called. It will be called for all
          possible received variable of this module.
          It will also be called at the beginning and in this case the value is null !
          */
         update: {
-            'tree': function (moduleValue) {
-
-                if (!moduleValue || !moduleValue.value) return;
-
+            tree: function (moduleValue) {
                 this._value = $.extend(true, new DataObject({}), moduleValue.get());
-                this._idHash = {};
-                this.getIdHash(moduleValue.get());
+                this.updateTree();
+            },
 
+            newTree: function (moduleValue) {
+                this._tree = moduleValue.get();
+                this.doAnnotation();
+            },
 
-                //	this._value = moduleValue.get();
-
-                if (!this._rgraph) {
-                    if (!document.getElementById(this._id)) return; // this is the case when we change of view
-                    this.createDendrogram();
-                }
-
-                this.updateDendrogram();
-                /*
-                 moduleValue.fetch().done(
-                 function(dendrogram) {
-                 self._value = dendrogram.get();
-                 self.updateDendrogram();
-                 }
-                 );
-                 */
+            data: function (data) {
+                this._data = data.get();
+                this.doAnnotation();
             }
+        },
+
+        doAnnotation: function () {
+            if (this._tree) {
+                var options = this.getOptions();
+                this._value = Tree.annotateTree(this._tree, this._data || [], options);
+                this.updateTree();
+            }
+        },
+
+        updateTree: function () {
+            this._idHash = {};
+            this.getIdHash(this._value);
+            if (!this._rgraph) {
+                if (!document.getElementById(this._id)) return; // this is the case when we change of view
+                this.createDendrogram();
+            }
+            this.updateDendrogram();
+        },
+
+        getOptions: function () {
+            var options = {};
+            var getConf = this.module.getConfiguration.bind(this.module);
+            maybePutOption(options, '$color', getConf('jpathColor'));
+            maybePutOption(options, '$dim', getConf('jpathSize'));
+            maybePutOption(options, '$type', getConf('jpathShape'));
+            return options;
         },
 
         updateDendrogram: function () {
@@ -122,7 +139,7 @@ define([
 
             this._options = {
                 nodeSize: cfg('nodeSize') || 1,
-                nodeColor: cfg('nodeColor') || 'yellow'
+                nodeColor: Color.getColor(cfg('nodeColor')) || 'yellow'
             };
         },
 
@@ -153,31 +170,10 @@ define([
                 //concentric circles.
                 background: {
                     CanvasStyles: {
-                        strokeStyle: cfg('strokeColor') || '#333',
+                        strokeStyle: Color.getColor(cfg('strokeColor')) || '#333',
                         lineWidth: cfg('strokeWidth') || '1'
                     }
                 },
-
-                // onCreateLabel: function(domElement, node){},
-                // onPlaceLabel: function(domElement, node){},
-
-                /*
-                 NodeStyles: {
-                 enable: true,
-                 type: 'Native',
-                 stylesHover: {
-                 CanvasStyles: {
-                 lineWidth: 10,
-                 strokeStyle: '#f00',
-                 shadowColor: '#ccc',
-                 shadowBlur: 10
-                 }
-                 },
-                 duration: 0
-                 },
-                 */
-
-
 
                 //Add navigation capabilities:
                 //zooming by scrolling and panning.
@@ -190,13 +186,7 @@ define([
 
                 Edge: {
                     overridable: true,
-                    /*
-                     CanvasStyles: { // we need to specify it here if we want to change it later
-                     shadowColor: 'rgb(0, 0, 0)',
-                     shadowBlur: 0
-                     },
-                     */
-                    color: cfg('edgeColor') || 'green',
+                    color: Color.getColor(cfg('edgeColor')) || 'green',
                     lineWidth: cfg('edgeWidth') || 0.5
 
                 },
@@ -207,7 +197,7 @@ define([
                     family: 'sans-serif',
                     textAlign: 'center',
                     textBaseline: 'alphabetic',
-                    color: cfg('labelColor') || 'black'
+                    color: Color.getColor(cfg('labelColor')) || 'black'
                 },
 
                 Node: {
@@ -218,7 +208,7 @@ define([
 
                     overridable: true,
                     type: cfg('nodeType') || 'circle',
-                    color: cfg('nodeColor') || 'yellow',
+                    color: Color.getColor(cfg('nodeColor')) || 'yellow',
                     dim: cfg('nodeSize') || 3,
                     height: 3,
                     width: 3,
@@ -237,7 +227,6 @@ define([
                     enable: true,
                     enableForEdges: true,
                     type: 'Native', // otherwise the events are only on the labels (if auto)
-                    //		    onRightClick: function(node, eventInfo, e) {},
                     onClick: function (node, eventInfo, e) {
                         if (!node) return;
                         var rgraph = this.getRgraph(e);
@@ -322,5 +311,11 @@ define([
     });
 
     return View;
+
+    function maybePutOption(options, name, value) {
+        if (Array.isArray(value)) {
+            options[name] = value;
+        }
+    }
 
 });
