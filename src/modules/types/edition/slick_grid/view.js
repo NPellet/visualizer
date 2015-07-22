@@ -144,7 +144,7 @@ define([
                     }
                 } else {
                     editor = typeEditors[row.editor];
-                    type = row.editor;
+                    type = getType(row.jpath);
                 }
 
                 return {
