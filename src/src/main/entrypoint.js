@@ -171,6 +171,9 @@ define([
             for (var i = 0; i < paths.length; i++) {
                 conf.paths[paths[i].alias] = paths[i].path;
             }
+            for (var key in conf.paths) {
+                require.undef(key);
+            }
             require.config(DataObject.resurrect(conf));
         }
 
