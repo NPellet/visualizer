@@ -94,6 +94,28 @@ define([
         return $dialog;
     };
 
+    exports.copyToClipboard = function (str) {
+        var strlen = str.length;
+        var txtarea = $('<textarea/>').text(str).css({
+            width: 0,
+            height: 0,
+            position: 'fixed'
+        });
+
+        $('body').append(txtarea);
+
+        var txtdom = txtarea.get(0);
+
+        txtdom.selectionStart = 0;
+        txtdom.selectionEnd = strlen;
+        txtdom.focus();
+
+        var success = document.execCommand('copy');
+        if (success) exports.showNotification('Copy success', 'success');
+        else exports.showNotification('Copy failure', 'error');
+        txtarea.remove();
+    };
+
     exports.copyview = function () {
         var str = Versioning.getViewJSON('  ');
         var strlen = str.length;
