@@ -19,6 +19,14 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
         getToolbar: function () {
             return [
                 {
+                    onClick: function() {
+                        this.enableFullscreen();
+                    },
+                    title: 'Show fullscreen',
+                    cssClass: 'fa fa-expand',
+                    ifLocked: true
+                },
+                {
                     onClick: function () {
                         this.doConfig(2);
                     },
