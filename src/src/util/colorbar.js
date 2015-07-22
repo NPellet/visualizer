@@ -1,6 +1,6 @@
 'use strict';
 
-define(['d3', 'src/util/util'], function (d3, Util) {
+define(['d3', 'src/util/util', 'chroma'], function (d3, Util, chroma) {
     var exports = {};
 
     Util.loadCss('src/util/colorbar.css');
@@ -11,7 +11,11 @@ define(['d3', 'src/util/util'], function (d3, Util) {
         var domain = options.stopPositions.map(function (v) {
             return domMin + v * (domMax - domMin);
         });
-        return d3.scale.linear().domain(domain).range(options.stops);
+        // Normalize colors to be hexadecimal
+        var stops = options.stops.map(function (c) {
+            return chroma(c).hex();
+        });
+        return d3.scale.linear().domain(domain).range(stops);
     };
 
     exports.getSvg = function (options) {
