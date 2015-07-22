@@ -327,7 +327,6 @@ define([
         update: {
 
             list: function (moduleValue, varname) {
-                console.log('update list slickgrid');
                 var that = this;
                 this.module.data = moduleValue;
                 this._highlights = _.pluck(this.module.data, '_highlight');

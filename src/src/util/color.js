@@ -23,7 +23,6 @@ define(function () {
             var x = r.match(/rgba?\(([^\(]*)\)/, 'i');
             if (!x) return null;
             var rgb = x[1].split(',');
-            console.log(rgb);
             if (rgb.length >= 3) {
                 r = +rgb[0];
                 g = +rgb[1];
