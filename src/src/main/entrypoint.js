@@ -20,7 +20,8 @@ define([
     'src/util/urldata',
     'src/util/ui',
     'src/util/config',
-    'src/util/shortcuts'
+    'src/util/shortcuts',
+    'src/util/copyPasteManager'
 ], function (
     $,
     _,
