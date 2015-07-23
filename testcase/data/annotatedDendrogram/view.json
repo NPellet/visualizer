@@ -726,6 +726,99 @@
       ],
       "vars_out": [],
       "actions_out": []
+    },
+    {
+      "url": "modules/types/chart/statistics/phylogram/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "branchWidth": [
+                4
+              ],
+              "jpathColor": [
+                [
+                  "color"
+                ]
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 36,
+            "top": 41
+          },
+          "size": {
+            "width": 64,
+            "height": 27
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Hidden Layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Hidden Layer"
+        }
+      },
+      "id": 7,
+      "vars_in": [
+        {
+          "rel": "newTree",
+          "name": "dendrogram"
+        },
+        {
+          "rel": "data",
+          "name": "data"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "",
+      "vars_out": [
+        {
+          "event": "onLeafHover",
+          "rel": "leaf",
+          "jpath": [
+            "data",
+            "filename"
+          ],
+          "name": "currentFile"
+        }
+      ],
+      "actions_out": []
     }
   ],
   "variables": [
