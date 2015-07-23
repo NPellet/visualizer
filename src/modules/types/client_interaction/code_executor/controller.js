@@ -208,6 +208,10 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         });
     };
 
+    Controller.prototype.onGlobalPreferenceChange = function () {
+        this.reloaded = true;
+    };
+
     function ScriptExecutor(controller, libs) {
         this.controller = controller;
         this.title = String(controller.module.definition.title);

@@ -142,6 +142,11 @@ define([
         ]).then(doInitScript).then(function () {
             ActionManager.viewHasChanged(view);
             checkCustomModules();
+            ModuleFactory.getModules().forEach(function (module) {
+                if (module.controller && typeof module.controller.onGlobalPreferenceChange === 'function') {
+                    module.controller.onGlobalPreferenceChange();
+                }
+            });
         }, function (e) {
             console.error('View loading problem', e, e.stack);
         });
