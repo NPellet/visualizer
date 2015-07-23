@@ -150,7 +150,15 @@ define([
                         image.height = this.height;
                         image.conf = conf;
                         image.transform = null;
-                        if (image.conf.scaling === 'max') {
+                        var scaling = image.conf.scaling;
+                        if (scaling === 'maxIfLarge') {
+                            if (image.width > that.width || image.height > that.height) {
+                                scaling = 'max';
+                            } else {
+                                scaling = 'no';
+                            }
+                        }
+                        if (scaling === 'max') {
                             if (image.width / image.height > that.width / that.height) {
                                 image.f = that.width / image.width;
                                 image.transform = getCssTransform([image.f, 0, 0, image.f, 0, 0]);
@@ -159,7 +167,7 @@ define([
                                 image.transform = getCssTransform([image.f, 0, 0, image.f, 0, 0]);
                             }
                         }
-                        if (image.conf.scaling === 'asHighlight') {
+                        if (scaling === 'asHighlight') {
                             if (that.himg.f) {
                                 var transform = [that.himg.f, 0, 0, that.himg.f, that.highlightImage.shiftx * that.himg.f, that.highlightImage.shifty * that.himg.f];
                                 image.transform = getCssTransform(transform);

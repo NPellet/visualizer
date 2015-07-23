@@ -118,7 +118,14 @@ define(['modules/default/defaultcontroller'], function (Default) {
                                     key: 'max',
                                     title: 'Extend to 100% of available space'
                                 },
-                                {key: 'no', title: 'Keep original image size'}
+                                {
+                                    key: 'no',
+                                    title: 'Keep original image size'
+                                },
+                                {
+                                    key: 'maxIfLarge',
+                                    title: 'Normal if picture smaller than available space, 100% instead'
+                                }
                             ],
                             default: 'max'
                         },
