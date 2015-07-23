@@ -26,7 +26,6 @@ define(['src/util/mousetracker', 'modules/modulefactory', 'src/util/ui', 'src/ut
     });
 
     document.addEventListener('paste', function (e) {
-        console.log(e);
         var state = mouseTracker.getState();
         if (state.kind !== 'grid' && state.kind !== 'module') return;
         e.clipboardData.items[0].getAsString(function (s) {
