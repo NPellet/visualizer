@@ -34,8 +34,10 @@ define([], function () {
         }
 
         // go inside of each node
-        for (var i = 0; i < node.children.length; ++i) {
-            traversal(node.children[i], data, options, keys);
+        if(node.children !== undefined) {
+            for (var i = 0; i < node.children.length; ++i) {
+                traversal(node.children[i], data, options, keys);
+            }
         }
 
 

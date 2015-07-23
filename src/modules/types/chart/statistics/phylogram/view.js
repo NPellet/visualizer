@@ -1,6 +1,13 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.phylogram', 'src/util/api', 'src/util/ui'], function (Default, Util, d3, API, ui) {
+define([
+    'modules/default/defaultview',
+    'src/util/util',
+    'lib/d3/d3.phylogram',
+    'src/util/api',
+    'src/util/ui',
+    'src/util/tree'
+], function (Default, Util, d3, API, ui, Tree) {
 
     function View() {
     }
@@ -31,25 +38,51 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.phylogram', '
         },
         update: {
             tree: function (data) {
+                this._value = data.get();
+                this.updateTree();
+            },
 
-                data = data.get();
+            newTree: function (moduleValue) {
+                this._tree = moduleValue.get();
+                this.doAnnotation();
+            },
 
-                this._idHash = [];
-                this.getIdHash(data);
-
-                API.killHighlight(this._id);
-
-                this._data = data;
-
-                this.drawPhylogram();
+            data: function (data) {
+                this._data = data.get();
+                this.doAnnotation();
             }
         },
+
+        doAnnotation: function () {
+            if (this._tree) {
+                var options = this.getOptions();
+                this._value = Tree.annotateTree(this._tree, this._data || [], options);
+                this.updateTree();
+            }
+        },
+
+        updateTree: function () {
+            this._idHash = [];
+            this.getIdHash(this._value);
+
+            API.killHighlight(this._id);
+
+            this.drawPhylogram();
+        },
+
+        getOptions: function () {
+            var options = {};
+            var getConf = this.module.getConfiguration.bind(this.module);
+            maybePutOption(options, '$color', getConf('jpathColor'));
+            return options;
+        },
+
         drawPhylogram: function (data, view) {
 
-            if (!this._data)
+            if (!this._value)
                 return;
 
-            var dataD = this._data;
+            var dataD = this._value;
             var that = this;
 
             this.dom.empty();
@@ -133,4 +166,9 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/d3/d3.phylogram', '
 
     return View;
 
+    function maybePutOption(options, name, value) {
+        if (Array.isArray(value)) {
+            options[name] = value;
+        }
+    }
 });

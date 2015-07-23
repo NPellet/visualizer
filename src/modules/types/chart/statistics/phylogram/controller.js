@@ -1,6 +1,9 @@
 'use strict';
 
-define(['modules/default/defaultcontroller'], function (Default) {
+define(['modules/default/defaultcontroller',
+    'src/util/datatraversing',
+    'src/util/util'
+], function (Default, Traversing, Util) {
 
     function Controller() {
         this._data = new DataObject();
@@ -68,6 +71,12 @@ define(['modules/default/defaultcontroller'], function (Default) {
     }
 
     Controller.prototype.configurationStructure = function () {
+        var dataJPath = [];
+        var data = this.module.getDataFromRel('data');
+        if (data) {
+            Traversing.getJPathsFromElement(data[0], dataJPath);
+        }
+
         return {
             groups: {
                 group: {
@@ -79,6 +88,13 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             type: 'text',
                             'default': 4,
                             title: 'Branch width'
+                        },
+                        jpathColor: {
+                            type: 'combo',
+                            title: 'Color jpath',
+                            options: dataJPath,
+                            extractValue: Util.jpathToArray,
+                            insertValue: Util.jpathToString
                         }
                     }
                 }
@@ -87,7 +103,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
     };
 
     Controller.prototype.configAliases = {
-        branchWidth: ['groups', 'group', 0, 'branchWidth', 0]
+        branchWidth: ['groups', 'group', 0, 'branchWidth', 0],
+        jpathColor: ['groups', 'group', 0, 'jpathColor', 0]
     };
 
     Controller.prototype.events = {
@@ -120,10 +137,18 @@ define(['modules/default/defaultcontroller'], function (Default) {
         list: {
             type: 'array',
             label: 'A list of children'
+        },
+        newTree: {
+            type: ['tree'],
+            label: 'Annotated tree'
+        },
+        data: {
+            type: ['array'],
+            label: 'Annotation data'
         }
     };
 
-    Controller.prototype.variablesIn = ['tree'];
+    Controller.prototype.variablesIn = ['tree', 'newTree', 'data'];
 
     return Controller;
 
