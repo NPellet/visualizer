@@ -19,7 +19,7 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
         getToolbar: function () {
             return [
                 {
-                    onClick: function() {
+                    onClick: function () {
                         this.enableFullscreen();
                     },
                     title: 'Show fullscreen',

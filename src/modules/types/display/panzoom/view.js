@@ -546,7 +546,7 @@ define([
             this.doAllImages();
         },
 
-        doAllImages: function() {
+        doAllImages: function () {
             for (var i = 0; i < this.images.length; i++) {
                 this.doImage(this.images[i].name);
             }

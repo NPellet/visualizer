@@ -10,7 +10,7 @@ define(['src/util/util', 'src/util/api', 'modules/modulefactory', 'src/main/grid
             var modulesArr = new Array(keys.length);
             var layers = API.getLayerNames();
             var activeLayer = API.getActiveLayerName();
-            var layersArr = []
+            var layersArr = [];
             for (var i = 0; i < keys.length; i++) {
                 modulesArr[i] = modules[keys[i]];
                 modulesArr[i].text = keys[i] + ' ' + modulesArr[i].moduleName;
