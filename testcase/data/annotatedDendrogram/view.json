@@ -148,7 +148,7 @@
                 []
               ],
               "script": [
-                "// this.defined\n// this.variable\nconsole.log(\"treatment started\");\n\nfunction treatment(jcamp) {\n    // treatment for preferences\n    var spectra = Jcamp.convert(jcamp);\n    \n    spectra = spectra.spectra[0].data[0];\n    \n    var array = ML.ArrayUtils.coordArrayToCoordMatrix(spectra, 2);\n    \n    var result = ML.ArrayUtils.getEquallySpacedData(array[0], array[1], {\n             from: 1000, \n             to: 2000, \n             numberOfPoints: 100, \n             variant: \"smooth\"\n    });\n    \n    return result;\n}\n\nif(this.defined === 1) {\n    var database = get('database');\n    var spectra = new Array(database.length);\n    var table = new Array(database.length);\n    for(var i = 0; i < database.length; ++i) {\n        spectra[i] = treatment(database[i].content.value);\n        table[i] = {\n            filename: database[i].filename,\n            spectra: spectra[i],\n            _highlight: i+1\n        };\n    }\n    set('spectraDB', spectra);\n    set('table', table);\n}\n"
+                "// this.defined\n// this.variable\n\nfunction treatment(jcamp) {\n    // treatment for preferences\n    var spectra = Jcamp.convert(jcamp);\n    \n    spectra = spectra.spectra[0].data[0];\n    \n    var array = ML.ArrayUtils.coordArrayToCoordMatrix(spectra, 2);\n    \n    var result = ML.ArrayUtils.getEquallySpacedData(array[0], array[1], {\n             from: 1000, \n             to: 2000, \n             numberOfPoints: 100, \n             variant: \"smooth\"\n    });\n    \n    return result;\n}\n\nif(this.defined === 1) {\n    var database = get('database');\n    var spectra = new Array(database.length);\n    var table = new Array(database.length);\n    for(var i = 0; i < database.length; ++i) {\n        spectra[i] = treatment(database[i].content.value);\n        table[i] = {\n            filename: database[i].filename,\n            spectra: spectra[i],\n            _highlight: i+1\n        };\n    }\n    set('spectraDB', spectra);\n    set('table', table);\n}\n"
               ]
             }
           ],
@@ -267,7 +267,7 @@
                 []
               ],
               "script": [
-                "var matrix = get('table');\nif(matrix === undefined) {\n    return;\n}\n\nfunction traversal(node) {\n    if(node.children.length === 0) {\n        for(var i = 0; i < matrix.length; ++i) {\n            if(matrix[i].filename === node.data.filename) {\n                node.index = i;\n                break;\n            }\n        }       \n    } else {\n        for(var i = 0; i < node.children.length; ++i) {\n            traversal(node.children[i]);\n        }\n    }\n}\nvar spectras = new Array(matrix.length);\nvar data = new Array();\nfor(var i = 0; i < matrix.length; ++i) {\n    data[i] = {\n        color: i % 2 ? '#ff0000' : '#00ff00',\n        size: i + 3,\n        spectra: matrix[i].spectra,\n        shape: i % 2 ? 'circle' : 'triangle',\n        filename: matrix[i].filename\n    }\n    spectras[i] = matrix[i].spectra;\n}\n\nvar currentFunction = ML.Math.Distance[\"euclidean\"];\n\nvar HC = new ML.Clust.hclust.agnes(spectras, {\n    sim: currentFunction\n});\n\nvar dendrogram = HC.getDendogram(matrix);\n// assing index to each leaf\ntraversal(dendrogram);\n\nset('data', data);\nset('dendrogram', {type: 'tree', value: dendrogram});"
+                "var matrix = get('table');\nif(matrix === undefined) {\n    return;\n}\n\nvar spectras = new Array(matrix.length);\nvar data = new Array();\nfor(var i = 0; i < matrix.length; ++i) {\n    data[i] = {\n        color: i % 2 ? '#ff0000' : '#00ff00',\n        size: i + 3,\n        spectra: matrix[i].spectra,\n        shape: i % 2 ? 'circle' : 'triangle',\n        filename: matrix[i].filename\n    }\n    spectras[i] = matrix[i].spectra;\n}\n\nvar currentFunction = ML.Math.Distance.distance[\"euclidean\"];\n\nvar dendrogram = new ML.Clust.hclust.agnes(spectras, {\n    sim: currentFunction\n});\n\n// put an image\ndata[1].shape = 'image';\ndata[1].image = 'http://www.jpeg.org/images/jpeg-home.jpg';\ndata[1].size = 100;\n\nset('data', data);\nset('dendrogram', {type: 'tree', value: dendrogram});"
               ]
             }
           ],
@@ -471,156 +471,8 @@
       "actions_out": []
     },
     {
-      "url": "modules/types/chart/statistics/dendrogram/",
-      "id": 5,
-      "title": "",
-      "configuration": {
-        "sections": {},
-        "groups": {
-          "group": [
-            {
-              "jpathShape": [
-                [
-                  "shape"
-                ]
-              ],
-              "nodeType": [
-                "circle"
-              ],
-              "jpathSize": [
-                [
-                  "size"
-                ]
-              ],
-              "nodeSize": [
-                ""
-              ],
-              "jpathColor": [
-                [
-                  "color"
-                ]
-              ],
-              "nodeColor": [
-                [
-                  0,
-                  0,
-                  0,
-                  1
-                ]
-              ],
-              "labelSize": [
-                null
-              ],
-              "labelColor": [
-                [
-                  0,
-                  0,
-                  0,
-                  1
-                ]
-              ],
-              "edgeWidth": [
-                null
-              ],
-              "edgeColor": [
-                [
-                  0,
-                  0,
-                  0,
-                  1
-                ]
-              ],
-              "strokeWidth": [
-                null
-              ],
-              "strokeColor": [
-                [
-                  0,
-                  0,
-                  0,
-                  1
-                ]
-              ]
-            }
-          ]
-        }
-      },
-      "layers": {
-        "Default layer": {
-          "zIndex": 0,
-          "display": true,
-          "title": "",
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer",
-          "position": {
-            "left": 36,
-            "top": 1
-          },
-          "size": {
-            "width": 64,
-            "height": 39
-          },
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ]
-        },
-        "Hidden Layer": {
-          "zIndex": 0,
-          "display": true,
-          "title": "",
-          "wrapper": true,
-          "created": true,
-          "name": "Hidden Layer",
-          "position": {
-            "left": 35,
-            "top": 1
-          },
-          "size": {
-            "width": 45,
-            "height": 33
-          },
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ]
-        }
-      },
-      "vars_in": [
-        {
-          "rel": "newTree",
-          "name": "dendrogram"
-        },
-        {
-          "rel": "data",
-          "name": "data"
-        }
-      ],
-      "actions_in": [
-        {}
-      ],
-      "vars_out": [
-        {
-          "event": "onHover",
-          "rel": "node",
-          "name": "currentFile",
-          "jpath": [
-            "data",
-            "data",
-            "filename"
-          ]
-        }
-      ],
-      "actions_out": []
-    },
-    {
       "url": "modules/types/display/single_value/",
-      "id": 6,
+      "id": 5,
       "title": "Current File",
       "configuration": {
         "sections": {},
@@ -678,8 +530,8 @@
           "created": true,
           "name": "Default layer",
           "position": {
-            "left": 102,
-            "top": 1
+            "left": 137,
+            "top": 2
           },
           "size": {
             "width": 14,
@@ -718,7 +570,7 @@
       "vars_in": [
         {
           "rel": "value",
-          "name": "currentFile"
+          "name": "filename"
         }
       ],
       "actions_in": [
@@ -728,7 +580,157 @@
       "actions_out": []
     },
     {
+      "url": "modules/types/chart/statistics/dendrogram/",
+      "id": 6,
+      "title": "Circular dendrogram",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "jpathShape": [
+                [
+                  "shape"
+                ]
+              ],
+              "nodeType": [
+                "circle"
+              ],
+              "jpathSize": [
+                [
+                  "size"
+                ]
+              ],
+              "nodeSize": [
+                null
+              ],
+              "jpathColor": [
+                [
+                  "color"
+                ]
+              ],
+              "nodeColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "labelSize": [
+                null
+              ],
+              "labelColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "edgeWidth": [
+                null
+              ],
+              "edgeColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "strokeWidth": [
+                null
+              ],
+              "strokeColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "zIndex": 0,
+          "display": true,
+          "title": "Circular dendrogram",
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "position": {
+            "left": 35,
+            "top": 1
+          },
+          "size": {
+            "width": 44,
+            "height": 33
+          },
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ]
+        },
+        "Hidden Layer": {
+          "zIndex": 0,
+          "display": true,
+          "title": "Circular dendrogram",
+          "wrapper": true,
+          "created": true,
+          "name": "Hidden Layer",
+          "position": {
+            "left": 35,
+            "top": 1
+          },
+          "size": {
+            "width": 43,
+            "height": 32
+          },
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ]
+        }
+      },
+      "vars_in": [
+        {
+          "rel": "newTree",
+          "name": "dendrogram"
+        },
+        {
+          "rel": "data",
+          "name": "data"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "onHover",
+          "rel": "node",
+          "name": "filename",
+          "jpath": [
+            "data",
+            "data",
+            "filename"
+          ]
+        }
+      ],
+      "actions_out": []
+    },
+    {
       "url": "modules/types/chart/statistics/phylogram/",
+      "id": 7,
+      "title": "Phylogram",
       "configuration": {
         "sections": {},
         "groups": {
@@ -748,51 +750,50 @@
       },
       "layers": {
         "Default layer": {
-          "position": {
-            "left": 36,
-            "top": 41
-          },
-          "size": {
-            "width": 64,
-            "height": 27
-          },
           "zIndex": 0,
           "display": true,
-          "title": "",
+          "title": "Phylogram",
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "position": {
+            "left": 80,
+            "top": 1
+          },
+          "size": {
+            "width": 53,
+            "height": 33
+          },
           "bgColor": [
             255,
             255,
             255,
             0
-          ],
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer"
+          ]
         },
         "Hidden Layer": {
-          "position": {
-            "left": 0,
-            "top": 0
-          },
-          "size": {
-            "width": 20,
-            "height": 20
-          },
           "zIndex": 0,
           "display": true,
-          "title": "",
+          "title": "Phylogram",
+          "wrapper": true,
+          "created": true,
+          "name": "Hidden Layer",
+          "position": {
+            "left": 79,
+            "top": 8
+          },
+          "size": {
+            "width": 56,
+            "height": 25
+          },
           "bgColor": [
             255,
             255,
             255,
             0
-          ],
-          "wrapper": true,
-          "created": true,
-          "name": "Hidden Layer"
+          ]
         }
       },
-      "id": 7,
       "vars_in": [
         {
           "rel": "newTree",
@@ -806,16 +807,15 @@
       "actions_in": [
         {}
       ],
-      "title": "",
       "vars_out": [
         {
           "event": "onLeafHover",
           "rel": "leaf",
+          "name": "filename",
           "jpath": [
             "data",
             "filename"
-          ],
-          "name": "currentFile"
+          ]
         }
       ],
       "actions_out": []
@@ -835,7 +835,7 @@
       "alias": "Jcamp"
     },
     {
-      "path": "http://www.lactame.com/lib/ml/HEAD/ml",
+      "path": "http://direct.lactame.com/lib/ml/HEAD/ml",
       "alias": "ML"
     }
   ],

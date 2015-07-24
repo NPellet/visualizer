@@ -28,6 +28,10 @@ define([], function () {
                     var value = element.getChildSync(options[keys[i]]);
                     if (value) {
                         node['data'][keys[i]] = value.get();
+
+                        if(keys[i] === '$type' && value.get() === 'image') {
+                            node['data']['image'] = element.image;
+                        }
                     }
                 }
             }
