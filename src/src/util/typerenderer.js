@@ -423,7 +423,9 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
             }
 
             options = $.extend(options, object._options);
-
+            if (options.backgroundColor) {
+                $element.css('background-color', options.backgroundColor);
+            }
             var init = typeInit[type];
             if (!init) {
                 if (typeof functions[type].init === 'function') {
