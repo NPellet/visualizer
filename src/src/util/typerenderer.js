@@ -46,36 +46,36 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
     };
 
     functions.string = {};
-    functions.string.toscreen = function (element, val) {
+    functions.string.toscreen = function ($element, val) {
         val = String(val);
         val.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        element.html(val);
+        $element.html(val);
     };
 
     functions.html = {};
-    functions.html.toscreen = function (element, val) {
-        element.html(String(val));
+    functions.html.toscreen = function ($element, val) {
+        $element.html(String(val));
     };
 
     functions.date = {};
-    functions.date.toscreen = function (element, val) {
+    functions.date.toscreen = function ($element, val) {
         try {
             var d = new Date(val);
-            element.html(d.toLocaleString());
+            $element.html(d.toLocaleString());
         } catch (e) {
-            element.html('Invalid date');
+            $element.html('Invalid date');
         }
     };
 
     functions.color = {};
-    functions.color.toscreen = function (element, val) {
+    functions.color.toscreen = function ($element, val) {
         var result = '<div style="background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==); width:100%; height:100%">' +
             '<div style="background-color: ' + val + '; width: 100%; height:100%; padding:0; margin:0">&nbsp;</div></div>';
-        element.html(result);
+        $element.html(result);
     };
 
     functions.number = {};
-    functions.number.toscreen = function (element, val, rootVal, options) {
+    functions.number.toscreen = function ($element, val, rootVal, options) {
         var number = Number(val);
         if (isNaN(number)) {
             number = 'NaN';
@@ -84,7 +84,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
         } else if (options.hasOwnProperty('toFixed')) {
             number = number.toFixed(options.toFixed);
         }
-        element.html(number);
+        $element.html(number);
     };
 
     functions.picture = {};
@@ -108,7 +108,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
     functions.image = functions.picture;
 
     functions.svg = {};
-    functions.svg.toscreen = function (element, val) {
+    functions.svg.toscreen = function ($element, val) {
         var dom = $(String(val));
         var viewbox = [0, 0, parseInt(dom.attr('width')), parseInt(dom.attr('height'))];
         dom[0].setAttribute('viewBox', viewbox.join(' '));
@@ -116,12 +116,12 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
         dom.attr('width', '100%');
         dom.attr('height', '100%');
         dom.css('display', 'block');
-        element.html(dom);
+        $element.html(dom);
     };
 
     functions.doi = {};
-    functions.doi.toscreen = function (element, value) {
-        return element.html(value.replace(/^(.*)$/, '<a target="_blank" href="http://dx.doi.org/$1"><img src="bin/logo/doi.png" /></a>'));
+    functions.doi.toscreen = function ($element, value) {
+        return $element.html(value.replace(/^(.*)$/, '<a target="_blank" href="http://dx.doi.org/$1"><img src="bin/logo/doi.png" /></a>'));
     };
 
     var OCL = 'openchemlib/openchemlib-viewer';
@@ -132,17 +132,17 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
         noStereoProblem: true
     };
 
-    function renderOpenChemLibStructure(element, idcode, coordinates, options) {
+    function renderOpenChemLibStructure($element, idcode, coordinates, options) {
         return new Promise(function (resolve) {
             options = $.extend({}, defaultOpenChemLibStructureOptions, options);
             require([OCL], function (ACT) {
                 var id = Util.getNextUniqueId();
-                var h = Math.max(150, element.height()), w = element.width();
+                var h = Math.max(150, $element.height()), w = $element.width();
                 var can = $('<canvas>', {id: id});
                 var canEl = can.get(0);
                 canEl.height = h;
                 canEl.width = w;
-                element.html(can);
+                $element.html(can);
                 ACT.StructureView.drawStructure(id, idcode, coordinates, options);
                 resolve();
             });
@@ -150,7 +150,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
     }
 
     functions.jme = {};
-    functions.jme.toscreen = function (element, jme, jmeRoot, options) {
+    functions.jme.toscreen = function ($element, jme, jmeRoot, options) {
         return new Promise(function (resolve) {
             require(['lib/chemistry/jme-converter'], function (Converter) {
                 var converted = Converter.toMolfile(jme);
@@ -158,23 +158,23 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
                     type: 'mol2d',
                     value: converted
                 };
-                resolve(functions.mol2d.toscreen(element, converted, jmeRoot, options));
+                resolve(functions.mol2d.toscreen($element, converted, jmeRoot, options));
             });
         });
     };
 
     functions.smiles = {};
-    functions.smiles.toscreen = function (element, smi, smiRoot, options) {
+    functions.smiles.toscreen = function ($element, smi, smiRoot, options) {
         return new Promise(function (resolve) {
             require([OCL], function (ACT) {
                 var mol = ACT.Molecule.fromSmiles(String(smi));
-                resolve(renderOpenChemLibStructure(element, mol.getIDCode(), mol.getIDCoordinates(), options));
+                resolve(renderOpenChemLibStructure($element, mol.getIDCode(), mol.getIDCoordinates(), options));
             });
         });
     };
 
     functions.actelionid = {};
-    functions.actelionid.toscreen = function (element, val, root, options) {
+    functions.actelionid.toscreen = function ($element, val, root, options) {
         return new Promise(function (resolve) {
             require([OCL], function (ACT) {
                 if (!root.coordinates) {
@@ -187,17 +187,17 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
                         writable: true
                     });
                 }
-                resolve(renderOpenChemLibStructure(element, String(root.value), String(root.coordinates), options));
+                resolve(renderOpenChemLibStructure($element, String(root.value), String(root.coordinates), options));
             });
         });
     };
 
     functions.mol2d = {};
-    functions.mol2d.toscreen = function (element, molfile, molfileRoot, options) {
+    functions.mol2d.toscreen = function ($element, molfile, molfileRoot, options) {
         return new Promise(function (resolve) {
             require([OCL], function (ACT) {
                 var mol = ACT.Molecule.fromMolfile(molfile);
-                resolve(renderOpenChemLibStructure(element, mol.getIDCode(), mol.getIDCoordinates(), options));
+                resolve(renderOpenChemLibStructure($element, mol.getIDCode(), mol.getIDCoordinates(), options));
             });
         });
     };
@@ -205,8 +205,8 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
     functions.molfile2d = functions.mol2d;
 
     functions.mf = {};
-    functions.mf.toscreen = function (element, value) {
-        element.html(value.replace(/\[([0-9]+)/g, '[<sup>$1</sup>').replace(/([a-zA-Z)])([0-9]+)/g, '$1<sub>$2</sub>').replace(/\(([0-9+-]+)\)/g, '<sup>$1</sup>'));
+    functions.mf.toscreen = function ($element, value) {
+        $element.html(value.replace(/\[([0-9]+)/g, '[<sup>$1</sup>').replace(/([a-zA-Z)])([0-9]+)/g, '$1<sub>$2</sub>').replace(/\(([0-9+-]+)\)/g, '<sup>$1</sup>'));
     };
 
     function bioPv(type, element, val, valRoot, options) {
@@ -263,8 +263,8 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
     functions.molfile3d = functions.mol3d;
 
     functions.downloadlink = {};
-    functions.downloadlink.toscreen = function (element, value) {
-        element.html(value.replace(/^(.*)$/, '<a href="$1">⤵</a>'));
+    functions.downloadlink.toscreen = function ($element, value) {
+        $element.html(value.replace(/^(.*)$/, '<a href="$1">⤵</a>'));
     };
 
     functions.openlink = {};
@@ -273,15 +273,15 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
     };
 
     functions.boolean = {};
-    functions.boolean.toscreen = function (element, value) {
+    functions.boolean.toscreen = function ($element, value) {
         if (value)
-            element.html('<span style="color: green;">&#10004;</span>');
+            $element.html('<span style="color: green;">&#10004;</span>');
         else
-            element.html('<span style="color: red;">&#10008;</span>');
+            $element.html('<span style="color: red;">&#10008;</span>');
     };
 
     functions.colorbar = {};
-    functions.colorbar.toscreen = function (element, value) {
+    functions.colorbar.toscreen = function ($element, value) {
 
         var div = $('<div>&nbsp;</div>');
         var gradient = 'linear-gradient(to right';
@@ -302,7 +302,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
             height: '100%',
             width: '100%'
         })/*.css('background','-webkit-'+gradient).css('background','-moz-'+gradient)*/.css('background', gradient);
-        element.html(div);
+        $element.html(div);
     };
 
     functions.indicator = {};
@@ -315,7 +315,6 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
         var current;
 
         $('#modules-grid').on('mouseenter', '[data-tooltip]', function (e) {
-
             current = setTimeout(function () {
                 var target = $(e.target);
                 var offset = target.offset();
@@ -339,7 +338,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
         });
 
     };
-    functions.indicator.toscreen = function (htmlElement, value) {
+    functions.indicator.toscreen = function ($element, value) {
         return new Promise(function (resolve) {
             require(['src/util/color'], function (Color) {
                 if (!Array.isArray(value)) {
@@ -388,18 +387,18 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
                     html += span.get(0).outerHTML;
                 }
                 html += '</tr></table>';
-                htmlElement.html(html);
+                $element.html(html);
                 resolve();
             });
         });
     };
 
     functions.regexp = {};
-    functions.regexp.toscreen = function (element, val) {
+    functions.regexp.toscreen = function ($element, val) {
         var value = String(val);
         return new Promise(function (resolve) {
             require(['lib/regexper/regexper'], function (Parser) {
-                var div = $('<div>').appendTo(element);
+                var div = $('<div>').appendTo($element);
                 var parser = new Parser(div.get(0));
                 parser.parse(value).invoke('render');
                 resolve();
@@ -412,9 +411,9 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
     //TODO replace with a Map when more browsers are supported
     var typeInit = {};
 
-    function _render(element, object, options) {
+    function _render($element, object, options) {
         if (object == undefined) {
-            element.html('');
+            $element.html('');
             return Promise.resolve();
         }
 
@@ -422,7 +421,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
             var type = object.getType().toLowerCase();
             if (!functions[type]) {
                 Util.warnOnce('no-typerenderer-' + type, 'No renderer found for type ' + type);
-                element.html(String(value));
+                $element.html(String(value));
                 return;
             }
 
@@ -439,7 +438,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
             }
 
             return init.then(function () {
-                return functions[type].toscreen(element, value, object, options);
+                return functions[type].toscreen($element, value, object, options);
             });
         });
     }
@@ -450,14 +449,14 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
                 options = jpath;
                 jpath = null;
             }
-            element = $(element);
+            var $element = $(element);
             object = DataObject.check(object, true);
             if (jpath) {
                 return object.getChild(jpath).then(function (child) {
-                    return _render(element, child, options);
+                    return _render($element, child, options);
                 });
             } else {
-                return _render(element, object, options);
+                return _render($element, object, options);
             }
         },
         addType: function (name, renderer) {
