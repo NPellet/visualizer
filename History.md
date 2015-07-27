@@ -1,4 +1,36 @@
-2.23.2 / 2015-07-17
+2.25.0 / 2015-07-27
+===================
+* Modules
+ * dendrogram: Images now allowed in the annotated tree.
+ * phylogram: Annotated tree added.
+ * panzoom: add scaling option Fix #646
+ * code executor: reload when preferences are saved
+ * rich text editor and postit: replace tape.png with data url
+ * slickgrid editor: save custom chosen editor with same type as it had Fix #643
+ * Commit change without navigation when focusout in auto-edit mode Fix #640
+ * dendrogram: Annotated tree added.
+ * panzoom: fix error when checking array
+ * panzoom: fix onResize
+ * panzoom: implement highlight Also fixes image flickering new image arrives The transform action is no longer available Fix #633
+* Core
+ * correct eslint non-passing code
+ * Copy paste of module/view. Fix #635
+ * undef global config aliases before reconfiguring them ref: #528
+ * ui: add copyToClipboard Only tested in chrome. Works if called on user action (for example click)
+ * Add fullscreen icon to all modules
+ * fix css for fullscreen :warning: changing global css rule Fix #510
+ * Fix module selection in context menu
+ * Fix layer selection in context menu
+ * update testcase structure
+* Util
+ * colorbar: normalize to hexadecimal before creating scale Fix #644
+ * fix error in diagram when no vars_in
+ * fix error in diagram when no vars_out
+* Libraries
+ * :arrow_up: slickgrid
+
+
+2.24.0 / 2015-07-17
 ===================
 * Util
  * search box: fix select first element
