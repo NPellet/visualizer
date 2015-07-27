@@ -40,7 +40,7 @@ define([
         color: Slick.CustomEditors.ColorValue,
         string: Slick.CustomEditors.TextValue,
         number: Slick.CustomEditors.TextValue,
-        date: Slick.CustomEditors.DateValue,
+        date: Slick.CustomEditors.Date,
         DataString: Slick.CustomEditors.DataStringEditor,
         DataNumber: Slick.CustomEditors.DataNumberEditor,
         DataBoolean: Slick.CustomEditors.DataBooleanEditor,

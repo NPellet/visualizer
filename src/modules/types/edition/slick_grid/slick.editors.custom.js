@@ -28,7 +28,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
                     'TextValue': TextValueEditor,
                     'ColorValue': ColorEditor,
                     'Text': TextValueEditor,
-                    'DateValue': DateEditor,
+                    'Date': DateEditor,
                     'DataStringEditor': DataStringEditor,
                     'DataNumberEditor': DataNumberEditor,
                     'DataBooleanEditor': DataBooleanEditor,
@@ -112,7 +112,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
             };
 
             this.applyValue = function (item, state) {
-                defaultApplyValue.call(this, item, state, 'date');
+                defaultApplyValue.call(this, item, state, this.args.column.dataType);
             };
 
             this.isValueChanged = function () {
@@ -300,7 +300,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
 
 
             this.applyValue = function (item, state) {
-                defaultApplyValue.call(this, item, state, 'color');
+                defaultApplyValue.call(this, item, state, this.args.column.dataType);
             };
 
             this.isValueChanged = function () {

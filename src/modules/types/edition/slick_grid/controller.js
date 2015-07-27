@@ -139,7 +139,8 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                                 {key: 'DataNumber', title: 'DataNumber'},
                                 {key: 'DataBoolean', title: 'DataBoolean'},
                                 {key: 'mf', title: 'Molecular Formula'},
-                                {key: 'color', title: 'Color'}
+                                {key: 'color', title: 'Color'},
+                                {key: 'date', title: 'Date'}
                             ]
                         },
                         formatter: {
