@@ -29,7 +29,7 @@ define([], function () {
                     if (value) {
                         node['data'][keys[i]] = value.get();
 
-                        if(keys[i] === '$type' && value.get() === 'image') {
+                        if (keys[i] === '$type' && value.get() === 'image') {
                             node['data']['image'] = element.image;
                         }
                     }
@@ -38,7 +38,7 @@ define([], function () {
         }
 
         // go inside of each node
-        if(node.children !== undefined) {
+        if (node.children !== undefined) {
             for (var i = 0; i < node.children.length; ++i) {
                 traversal(node.children[i], data, options, keys);
             }
