@@ -620,7 +620,9 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
         this.setValue = defaultSetValue;
         this.loadValue = defaultLoadValue;
         this.serializeValue = defaultSerializeValue;
-        this.applyValue = defaultApplyValue;
+        this.applyValue = function (item, state) {
+            defaultApplyValue.call(this, item, state, this.args.column.dataType);
+        };
         this.isValueChanged = defaultIsValueChanged;
         this.validate = defaultValidate;
         this.hide = detachedHide;
