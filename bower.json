@@ -61,7 +61,7 @@
     "pouchdb": "3.3.1",
     "requirejs": "2.1.18",
     "setImmediate": "YuzuJS/setImmediate#1.0.2",
-    "slickgrid": "cheminfo/SlickGrid#e8b50a0e8384ff0e756141b199a01a0b7b09e23a",
+    "slickgrid": "cheminfo/SlickGrid#f27ed1ca9fae5841875e986141f719746c96da3a",
     "spectrum": "1.6.1",
     "sprintf": "1.0.2",
     "superagent": "0.21.0",
