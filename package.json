@@ -36,7 +36,9 @@
     "url": "https://github.com/NPellet/visualizer.git"
   },
   "devDependencies": {
+    "add-stream": "^1.0.0",
     "bower": "1.4.1",
+    "conventional-changelog": "^0.2.1",
     "eslint": "^0.24.0",
     "extend": "^2.0.0",
     "grunt": "~0.4.5",
@@ -51,6 +53,7 @@
     "grunt-text-replace": "~0.3.10",
     "mkpath": "^0.1.0",
     "semver": "^4.3.3",
+    "tempfile": "^1.1.1",
     "underscore": "^1.5.2",
     "walk": "^2.3.4"
   },

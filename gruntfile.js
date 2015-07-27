@@ -11,6 +11,9 @@ module.exports = function (grunt) {
     var extend = require('extend');
     var child_process = require('child_process');
     var semver = require('semver');
+    var changelog = require('conventional-changelog');
+    var tempfile = require('tempfile');
+    var addStream = require('add-stream');
 
     var usrPath = grunt.option('usr') || './src/usr';
 
@@ -746,6 +749,8 @@ module.exports = function (grunt) {
     }
 
     grunt.registerTask('bump', function (version) {
+        var done = this.async();
+
         var versionJS = fs.readFileSync('./src/version.js', 'utf8');
 
         var major = getVersionValue(versionJS, 'MAJOR');
@@ -774,8 +779,6 @@ module.exports = function (grunt) {
 
         if (grunt.option('release')) {
 
-            console.log('Publishing release');
-
             // Set IS_RELEASE flag to true
             versionJS = setVersionValue(versionJS, 'IS_RELEASE', 'true');
             fs.writeFileSync('./src/version.js', versionJS);
@@ -790,15 +793,36 @@ module.exports = function (grunt) {
             bower = bower.replace(/"version": ".+",/, '"version": "' + semVersion + '",');
             fs.writeFileSync('./bower.json', bower);
 
+            console.log('Writing changelog');
+            var changelogStream = changelog({
+                preset: 'angular'
+            });
+            var tmp = tempfile();
+
+            changelogStream
+                .pipe(addStream(fs.createReadStream('History.md')))
+                .pipe(fs.createWriteStream(tmp))
+                .on('finish', function () {
+                    fs.createReadStream(tmp)
+                        .pipe(fs.createWriteStream('History.md'))
+                        .on('finish', publish);
+                });
+        } else {
+            fs.writeFileSync('./src/version.js', versionJS);
+            done();
+        }
+
+        function publish() {
+            console.log('Publishing release');
+
             // Commit the version change and tag
             child_process.execFileSync('git', ['pull']);
-            child_process.execFileSync('git', ['add', 'src/version.js', 'bower.json', 'package.json']);
+            child_process.execFileSync('git', ['add', 'src/version.js', 'bower.json', 'package.json', 'History.md']);
             child_process.execFileSync('git', ['commit', '-m', 'Release v' + semVersion]);
             child_process.execFileSync('git', ['tag', '-a', 'v' + semVersion, '-m', 'Release v' + semVersion]);
 
             // Bump version to prepatch and reset IS_RELEASE to false
             versionJS = setVersionValue(versionJS, 'IS_RELEASE', 'false');
-            var previousVersion = semVersion.toString();
             semVersion.inc('prerelease');
             versionJS = setVersionValue(versionJS, 'PATCH', semVersion.patch);
             versionJS = setVersionValue(versionJS, 'PRERELEASE',
@@ -813,10 +837,9 @@ module.exports = function (grunt) {
             child_process.execFileSync('git', ['commit', '-m', 'Working on v' + semVersion]);
 
             // Push commits and tag
-            child_process.execFileSync('git', ['push', 'origin']);
-            child_process.execFileSync('git', ['push', 'origin', 'v' + previousVersion]);
-        } else {
-            fs.writeFileSync('./src/version.js', versionJS);
+            child_process.execFileSync('git', ['push', 'origin', 'master', '--follow-tags']);
+
+            done();
         }
 
     });

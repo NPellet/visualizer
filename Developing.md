@@ -7,6 +7,10 @@ Information for the core developers of the project.
 The project uses eslint to validate code style.  
 Command is `npm run eslint`
 
+## Write conventional commit messages
+
+We follow the rules from AngularJS project: https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit
+
 ## Versioning and release procedure
 
 The Visualizer project tries to follow [semantic versioning](http://semver.org/).  
@@ -34,13 +38,6 @@ This command just updates the numbers in `version.js`. No commit is created.
 
 To release a new version of the Visualizer, run a command like `npm run release:patch`.
 The bump can be applied with `patch`, `minor`, `major` or nothing which defaults to `patch`.  
-This will bump the version number, commit the files with a release message, 
+This will bump the version number, update the changelog, commit the files with a release message, 
 tag the release in Git, then it will immediately bump the version to the next
 prerelease, commit again and push the changes to GitHub.
-
-## Update History.md
-
-When a new release is done, the important changes should be added to History.md
-
-The following command helps to have a preformatted list of all commit messages since a given tag:  
-`git log v2.20.2..HEAD --pretty=" * %s" | cat`
