@@ -2,70 +2,33 @@
 
 define(function () {
 
-    var globals = [
-        'DataObject',
-        'DataArray',
-        'DataString',
-        'DataBoolean',
-        'DataNumber',
-        'Promise',
-        'require',
-        'setImmediate'
-    ];
-
     function Sandbox() {
-        var iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        document.body.appendChild(iframe);
-        this._win = iframe.contentWindow;
-        var win = this._win;
-        this._frame = iframe;
-        this._originalKeys = Object.keys(win);
-        try {
-            Object.defineProperty(win, 'parent', {value: null});
-        } catch(e) {
-            // Cannot configure parent on Safari (8.0.6)
-            win.parent = null;
-        }
-        globals.forEach(function (global) {
-            Object.defineProperty(win, global, {
-                value: window[global]
-            });
-        });
-        this._closed = false;
+        this.contextData = [];
+        this.contextString = '';
     }
 
-    Sandbox.prototype.close = function () {
-        document.body.removeChild(this._frame);
-        this._closed = true;
-    };
-
     Sandbox.prototype.setContext = function (context) {
-        var win = this._win;
-        Object.keys(context).forEach(function (key) {
-            win[key] = context[key];
+        var ctxString = '';
+        var ctxData = [];
+        Object.keys(context).forEach(function (key, i) {
+            ctxString += 'var ' + key + ' = __ctx__[' + i + ']; ';
+            ctxData.push(context[key]);
         });
+        this.contextString = ctxString;
+        this.contextData = ctxData;
     };
 
-    Sandbox.prototype.getContext = function () {
-        var context = {};
-        var orig = this._originalKeys;
-        var win = this._win;
-        Object.keys(win).forEach(function (key) {
-            if (orig.indexOf(key) === -1) {
-                context[key] = win[key];
-            }
-        });
-        return context;
-    };
-
-    Sandbox.prototype.run = function (script) {
-        if (this._closed) {
-            throw new Error('cannot run in closed sandbox');
+    Sandbox.prototype.run = function (script, sourceURL) {
+        if (sourceURL) {
+            script += '//# sourceURL=' + sourceURL;
         }
-        return this._win.eval(script);
+        return safeEval(script, this.contextString, this.contextData.slice());
     };
 
     return Sandbox;
+
+    function safeEval(script, ctxString, __ctx__, Sandbox) {
+        return eval(ctxString + script);
+    }
 
 });

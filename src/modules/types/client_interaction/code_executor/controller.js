@@ -189,9 +189,6 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
                     for (var i = 0; i < that.neededUrls.length; i++) {
                         libs[i] = arguments[i];
                     }
-                    if (that._executor) { // close previous sandbox
-                        that._executor._sandbox.close();
-                    }
                     var executor = new ScriptExecutor(that, libs);
                     that.currentScript = newScript;
                     that._executor = executor;
@@ -221,16 +218,16 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         this._sandbox = new Sandbox();
         this._sandbox.setContext(context);
         try {
-            this._sandbox.run(
-                'var __exec__ = function(' +
+            this.theFunction = this._sandbox.run(
+                'var result = function(' +
                 controller.neededAliases +
-                ') {' + theCode + '\n};//# sourceURL=CodeExecutor' + this.controller.module.getId() + '@' + this.controller.scriptID++
+                ') {' + theCode + '\n}; result;',
+                'CodeExecutor' + this.controller.module.getId() + '@' + this.controller.scriptID++
             );
         } catch (e) {
             reportError(this.title, e);
         }
         this.wasSet = false;
-        this.theFunction = this._sandbox.getContext().__exec__;
     }
 
     function getNewContext(executor) {
