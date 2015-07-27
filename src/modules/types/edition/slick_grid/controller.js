@@ -270,7 +270,8 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
         },
         onRowsDelete: {
             label: 'Rows have been deleted',
-            refVariable: ['rows']
+            refVariable: ['rows'],
+            refAction: ['rows']
         },
         onRowActive: {
             label: 'A new row became active',
@@ -279,7 +280,8 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
         },
         onRowsSelect: {
             label: 'Rows have been selected',
-            refVariable: ['rows']
+            refVariable: ['rows'],
+            refAction: ['rows']
         }
     };
 
@@ -288,6 +290,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
             return !!v;
         });
         this.createDataFromEvent('onRowsSelect', 'rows', items);
+        this.sendActionFromEvent('onRowsSelect', 'rows', items);
     };
 
     Controller.prototype.onHover = function (row, item) {
@@ -325,6 +328,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
 
     Controller.prototype.onRowsDelete = function (items) {
         this.createDataFromEvent('onRowsDelete', 'rows', items);
+        this.sendActionFromEvent('onRowsDelete', 'rows', items);
     };
 
     Controller.prototype.export = function () {
