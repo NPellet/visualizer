@@ -32,7 +32,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
 
     functions.sparkline = {};
     functions.sparkline.init = function () {
-        return new Promise(function (resolve, reject) {
+        return new Promise(function (resolve) {
             require(['sparkline'], resolve);
         });
     };
@@ -154,10 +154,6 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
         return new Promise(function (resolve) {
             require(['lib/chemistry/jme-converter'], function (Converter) {
                 var converted = Converter.toMolfile(jme);
-                var molfile = {
-                    type: 'mol2d',
-                    value: converted
-                };
                 resolve(functions.mol2d.toscreen($element, converted, jmeRoot, options));
             });
         });
@@ -314,7 +310,8 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
         }).appendTo('#ci-visualizer');
         var current;
 
-        $('#modules-grid').on('mouseenter', '[data-tooltip]', function (e) {
+        var $modulesGrid = $('#modules-grid');
+        $modulesGrid.on('mouseenter', '[data-tooltip]', function (e) {
             current = setTimeout(function () {
                 var target = $(e.target);
                 var offset = target.offset();
@@ -329,7 +326,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
             }, 500);
         });
 
-        $('#modules-grid').on('mouseleave', '[data-tooltip]', function (e) {
+        $modulesGrid.on('mouseleave', '[data-tooltip]', function (e) {
             clearTimeout(current);
             tooltip.css({
                 opacity: 0,
