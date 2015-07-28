@@ -1,6 +1,6 @@
 'use strict';
 
-define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
+define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, Debug, urlData) {
 
     function DataObject(object) {
         if (!object) {
@@ -717,38 +717,32 @@ define(['src/util/util', 'src/util/debug'], function (Util, Debug) {
 
     var fetch = {
         value: function (forceJson) {
-
             if (!this.url || !this.type || this.hasOwnProperty('value')) { // No need for fetching. Still returning a promise, though.
                 return Promise.resolve(this);
             }
 
+            var headers;
+            if (forceJson) {
+                headers = {
+                    Accept: 'application/json'
+                };
+            }
+
             var that = this;
-            return new Promise(function (resolve, reject) {
-                require(['src/util/urldata'], function (urlData) { // We don't know yet if URLData has been loaded
+            return urlData.get(that.url, false, that.timeout, headers).then(function (data) {
+                data = DataObject.check(data, true);	// Transform the input into a DataObject
 
-                    var headers;
-                    if (forceJson) {
-                        headers = {
-                            Accept: 'application/json'
-                        };
-                    }
-
-                    urlData.get(that.url, false, that.timeout, headers).then(function (data) {
-
-                        data = DataObject.check(data, true);	// Transform the input into a DataObject
-
-                        Object.defineProperty(that, 'value', {// Sets the value to the object
-                            enumerable: that._keep || false, // If this._keep is true, then we will save the fetched data
-                            writable: true,
-                            configurable: true,
-                            value: data
-                        });
-
-                        resolve(that);
-                    }, function (err) {
-                        Debug.debug('Could not fetch ' + that.url + ' (' + err + ')');
-                    });
+                Object.defineProperty(that, 'value', {// Sets the value to the object
+                    enumerable: that._keep || false, // If this._keep is true, then we will save the fetched data
+                    writable: true,
+                    configurable: true,
+                    value: data
                 });
+
+                return that;
+            }, function (err) {
+                Debug.debug('Could not fetch ' + that.url + ' (' + err + ')');
+                throw err;
             });
         }
     };
