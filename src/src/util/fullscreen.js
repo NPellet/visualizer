@@ -1,6 +1,6 @@
 'use strict';
 
-define(function () {
+define(['src/util/ui'], function (ui) {
 
     var currentFullscreenModule,
         currentFullscreenElement,
@@ -46,9 +46,7 @@ define(function () {
                     dom.msRequestFullscreen();
                 }
             } else {
-                require(['src/util/ui'], function (ui) {
-                    ui.showNotification('Sorry, fullscreen not available in this context', 'info');
-                });
+                ui.showNotification('Sorry, fullscreen not available in this context', 'info');
             }
         }
     };
