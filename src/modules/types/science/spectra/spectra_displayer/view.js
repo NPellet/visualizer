@@ -541,7 +541,7 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
 
                     var valFinal = [];
 
-                    switch (aData.serieType) {
+                    switch (aData.type) {
                         case 'zone':
                             if (aData.yMin && aData.yMax) {
                                 for (var j = 0, l = aData.yMax.length; j < l; j++) {
@@ -561,7 +561,7 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                     }
 
 
-                    var serie = this.graph.newSerie(serieName, this.getSerieOptions(varname, aData._highlight, valFinal), aData.serieType || undefined);
+                    var serie = this.graph.newSerie(serieName, this.getSerieOptions(varname, aData._highlight, valFinal), aData.type || undefined);
 
                     this.normalize(valFinal, varname);
                     serie.setData(valFinal);
@@ -571,7 +571,7 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                     }
 
                     serie.autoAxis();
-                    if (String(aData.serieType) != 'scatter') {
+                    if (String(aData.type) != 'scatter') {
                         var color = data.length > 1 ? Color.getNextColorRGB(i, data.length) : null;
                         this.setSerieParameters(serie, varname, aData._highlight, color);
                     }
