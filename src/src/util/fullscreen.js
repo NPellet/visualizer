@@ -45,6 +45,10 @@ define(function () {
                 } else if (dom.msRequestFullscreen) {
                     dom.msRequestFullscreen();
                 }
+            } else {
+                require(['src/util/ui'], function (ui) {
+                    ui.showNotification('Sorry, fullscreen not available in this context', 'info');
+                });
             }
         }
     };
