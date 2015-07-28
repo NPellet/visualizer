@@ -5,6 +5,7 @@ define(function () {
     function Sandbox() {
         this.contextData = [];
         this.contextString = '';
+        this.scriptID = 0;
     }
 
     Sandbox.prototype.setContext = function (context) {
@@ -20,7 +21,7 @@ define(function () {
 
     Sandbox.prototype.run = function (script, sourceURL) {
         if (sourceURL) {
-            script += '//# sourceURL=' + sourceURL;
+            script += '//# sourceURL=' + sourceURL + '@' + this.scriptID++;
         }
         return safeEval(script, this.contextString, this.contextData.slice());
     };

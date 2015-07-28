@@ -222,7 +222,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
                 'var result = function(' +
                 controller.neededAliases +
                 ') {' + theCode + '\n}; result;',
-                'CodeExecutor' + this.controller.module.getId() + '@' + this.controller.scriptID++
+                'CodeExecutor' + this.controller.module.getId()
             );
         } catch (e) {
             reportError(this.title, e);
