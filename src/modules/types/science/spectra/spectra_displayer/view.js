@@ -381,6 +381,10 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                             continuous = analyzeContinuous(data);
                         }
 
+                        if (plotinfos[i].markers[0]) {
+                            options.markersIndependant = true;
+                        }
+
                         options.lineToZero = continuous == 'discrete';
                         options.useSlots = (plotinfos[i].optimizeSlots ? !!plotinfos[i].optimizeSlots[0] : false);
                         options.strokeWidth = parseInt(plotinfos[i].strokewidth);
