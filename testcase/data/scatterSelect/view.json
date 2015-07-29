@@ -1,0 +1,382 @@
+{
+  "version": "2.25.1-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                [
+                  "yes"
+                ]
+              ],
+              "script": [
+                "var size = 10;\nvar y = new Array(size);\nvar x = new Array(size);\nvar info = new Array(size);\nvar chart = {\n    name: 'chart',\n    title: 'main data',\n    data: [\n        {\n            x,\n            y,\n            info,\n            type: 'scatter'\n        }\n    ]\n};\n\nfor (var i = 0; i < size; i++) {\n    x[i] = i;\n    y[i] = Math.random();\n    info[i] = {\n        i\n    };\n}\n\nset('chart', {type:'chart', value: chart});"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {}
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 39,
+            "height": 58
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "",
+      "vars_out": [
+        {
+          "event": "onScriptEnded",
+          "rel": "outputValue",
+          "jpath": [
+            "chart"
+          ],
+          "name": "chart"
+        }
+      ],
+      "actions_out": []
+    },
+    {
+      "url": "modules/types/science/spectra/spectra_displayer/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "graphurl": [
+                ""
+              ],
+              "flip": [
+                []
+              ],
+              "displayAxis": [
+                [
+                  "y",
+                  "x"
+                ]
+              ],
+              "grids": [
+                []
+              ],
+              "xLabel": [
+                ""
+              ],
+              "yTopSpacing": [
+                "0"
+              ],
+              "yBottomSpacing": [
+                "0"
+              ],
+              "xLeftSpacing": [
+                "0"
+              ],
+              "xRightSpacing": [
+                "0"
+              ],
+              "yLabel": [
+                ""
+              ],
+              "minX": [
+                ""
+              ],
+              "maxX": [
+                ""
+              ],
+              "minY": [
+                ""
+              ],
+              "maxY": [
+                ""
+              ],
+              "zoom": [
+                "none"
+              ],
+              "shiftxtozero": [
+                []
+              ],
+              "xaxismodification": [
+                []
+              ],
+              "wheelAction": [
+                "none"
+              ],
+              "wheelbaseline": [
+                0
+              ],
+              "fullOut": [
+                "both"
+              ],
+              "FitYToAxisOnFromTo": [
+                []
+              ],
+              "legend": [
+                null
+              ],
+              "mouseTracking": [
+                []
+              ],
+              "selectScatter": [
+                [
+                  "yes"
+                ]
+              ]
+            }
+          ],
+          "plotinfos": [
+            [
+              {
+                "variable": "chart",
+                "plotcolor": [
+                  1,
+                  1,
+                  255,
+                  1
+                ],
+                "strokewidth": "0",
+                "strokestyle": "1",
+                "plotcontinuous": "continuous",
+                "peakpicking": [],
+                "markers": [
+                  "markers"
+                ],
+                "markerShape": "1",
+                "markerSize": 5,
+                "normalize": "none",
+                "optimizeSlots": [],
+                "degrade": 0,
+                "monotoneous": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 40,
+            "top": 0
+          },
+          "size": {
+            "width": 59,
+            "height": 58
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 4,
+      "vars_in": [
+        {
+          "rel": "chart",
+          "name": "chart"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "",
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "vars_out": [
+        {
+          "event": "onSelectScatter",
+          "rel": "selectedData",
+          "jpath": [],
+          "name": "data"
+        }
+      ]
+    },
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll"
+                ]
+              ],
+              "autoColumns": [
+                []
+              ],
+              "toolbar": [
+                []
+              ],
+              "colorjpath": [
+                []
+              ],
+              "slick.defaultColumnWidth": [
+                null
+              ],
+              "slick.rowHeight": [
+                null
+              ],
+              "slick.selectionModel": [
+                "row"
+              ],
+              "filterRow": [
+                null
+              ],
+              "justInTimeFilter": [
+                []
+              ]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "jpath": [],
+                "editor": "none",
+                "formatter": "typerenderer"
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [
+            [
+              {}
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 100,
+            "top": 0
+          },
+          "size": {
+            "width": 30,
+            "height": 58
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 5,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "data"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "",
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "varname": "words",
+      "jpath": [
+        "words"
+      ]
+    }
+  ],
+  "aliases": [],
+  "pouchvariables": [],
+  "configuration": {
+    "title": "Scatter selection"
+  }
+}
