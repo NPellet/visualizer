@@ -41,14 +41,20 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
         if (this.module.getConfigurationCheckbox('display', 'buttons')) {
             var buttons = this.module.getConfiguration('buttons');
             if (buttons) {
-                buttons.forEach(function (button) {
+                buttons.forEach(function (button, idx) {
+                    var onclick = that.module.controller.onButtonClick.bind(that.module.controller, button.name);
                     that.buttonCell.append(
                         $('<span>' + button.label + '</span>')
                             .addClass('form-button')
-                            .on('click', function () {
-                                that.module.controller.onButtonClick(button.name);
-                            })
+                            .on('click', onclick)
                     );
+                    if (idx === 0) {
+                        that.editor.commands.addCommand({
+                            name: 'run',
+                            bindKey: {win: 'Ctrl-Return', mac: 'Command-Return'},
+                            exec: onclick
+                        });
+                    }
                 });
             } else {
                 this.buttonRow.css('height', 0);
