@@ -78,6 +78,10 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
         selectedShape: {
             type: 'object',
             label: 'Shape data'
+        },
+        selectedData: {
+            type: 'array',
+            label: 'Selected data'
         }
     };
 
@@ -130,6 +134,10 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
         onShapeClick: {
             label: 'When a shape is clicked',
             refVariable: ['shapeInfos']
+        },
+        onSelectScatter: {
+            label: 'Selection on a scatter plot',
+            refVariable: ['selectedData']
         }
     };
 
@@ -373,6 +381,12 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
                             type: 'checkbox',
                             title: 'Mouse tracking',
                             options: {track: ''}
+                        },
+
+                        selectScatter: {
+                            type: 'checkbox',
+                            title: 'Scatter serie',
+                            options: {yes: 'Enable scatter serie selection (draw, conflict with zoom)'}
                         }
                     }
                 },
@@ -551,6 +565,7 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
         fullOut: ['groups', 'group', 0, 'fullOut', 0],
         FitYToAxisOnFromTo: ['groups', 'group', 0, 'FitYToAxisOnFromTo', 0],
         mouseTracking: ['groups', 'group', 0, 'mouseTracking', 0],
+        selectScatter: ['groups', 'group', 0, 'selectScatter', 0],
         zoom: ['groups', 'group', 0, 'zoom', 0],
         minX: ['groups', 'group', 0, 'minX', 0],
         minY: ['groups', 'group', 0, 'minY', 0],
@@ -606,6 +621,11 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
     Controller.prototype.onMouseOutMarker = function (xy, infos) {
         this.createDataFromEvent('onMouseOutMarker', 'markerInfos', infos);
         this.createDataFromEvent('onMouseOutMarker', 'markerXY', xy);
+    };
+
+    Controller.prototype.onScatterSelection = function (selectedData) {
+        this.selectedData = selectedData;
+        this.createDataFromEvent('onSelectScatter', 'selectedData', selectedData);
     };
 
     Controller.prototype.print = function () {

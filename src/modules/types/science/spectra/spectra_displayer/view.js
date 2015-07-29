@@ -128,6 +128,14 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                         };
                     }
 
+                    if (cfgCheckbox('selectScatter', 'yes')) {
+                        options.plugins.selectScatter = {};
+                        options.pluginAction.selectScatter = {
+                            shift: false,
+                            ctrl: false // TODO replace with true when fixed upstream and change in controller
+                        };
+                    }
+
                     var graph = new Graph(that.dom.get(0), options);
 
                     var xOptions = {};
@@ -520,6 +528,7 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
 
                 moduleValue = moduleValue.get();
 
+                var that = this;
                 var data = moduleValue.data;
                 for (var i = 0; i < data.length; i++) {
 
@@ -569,7 +578,24 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                     }
 
                     serie.autoAxis();
-                    if (String(aData.type) != 'scatter') {
+                    if (String(aData.type) === 'scatter') {
+                        if (this.module.getConfigurationCheckbox('selectScatter', 'yes')) {
+                            var plugin = this.graph.getPlugin('selectScatter');
+                            plugin.setSerie(serie);
+                            (function (serie) {
+                                plugin.on('selectionEnd', function (selectedIndices) {
+                                    var result = [];
+                                    var info = serie.infos;
+                                    if (info) {
+                                        result = info.filter(function (value, index) {
+                                            return selectedIndices.indexOf(index) >= 0;
+                                        });
+                                    }
+                                    that.module.controller.onScatterSelection(result);
+                                });
+                            })(serie);
+                        }
+                    } else {
                         var color = data.length > 1 ? Color.getNextColorRGB(i, data.length) : null;
                         this.setSerieParameters(serie, varname, aData._highlight, color);
                     }

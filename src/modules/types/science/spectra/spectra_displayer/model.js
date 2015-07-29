@@ -64,6 +64,9 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
                 case 'trackData':
                     data = this.trackData;
                     break;
+                case 'selectedData':
+                    data = this.module.controller.selectedData;
+                    break;
                 default:
                     data = this.module.data;
                     break;
