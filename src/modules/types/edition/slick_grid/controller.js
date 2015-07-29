@@ -321,7 +321,6 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
 
 
     Controller.prototype.onRowNew = function (row, item) {
-        console.log('new row');
         this.setVarFromEvent('onRowNew', 'row', 'list', [row]);
         this.sendActionFromEvent('onRowNew', 'row', item);
     };
