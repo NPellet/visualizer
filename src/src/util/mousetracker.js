@@ -1,7 +1,9 @@
 'use strict';
 
 define(['jquery'], function ($) {
-    var state;
+    var state = {
+        kind: 'grid'
+    };
 
     document.addEventListener('mousemove', function (e) {
         var id = e.target.id;
