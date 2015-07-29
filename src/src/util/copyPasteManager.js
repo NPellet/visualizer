@@ -1,6 +1,6 @@
 'use strict';
 
-define(['src/util/mousetracker', 'modules/modulefactory', 'src/util/ui', 'src/util/versioning', 'src/main/grid'], function (mouseTracker, ModuleFactory, ui, Versioning, Grid) {
+define(['src/util/mousetracker', 'modules/modulefactory', 'src/util/ui', 'src/util/versioning', 'src/main/grid', 'src/util/debug'], function (mouseTracker, ModuleFactory, ui, Versioning, Grid, Debug) {
     document.addEventListener('copy', function (e) {
         var success = false;
         var state = mouseTracker.getState();
@@ -29,11 +29,15 @@ define(['src/util/mousetracker', 'modules/modulefactory', 'src/util/ui', 'src/ut
         var state = mouseTracker.getState();
         if (state.kind !== 'grid' && state.kind !== 'module') return;
         e.clipboardData.items[0].getAsString(function (s) {
-            var obj = JSON.parse(s);
-            if (obj.version) {
-                Versioning.setViewJSON(obj);
-            } else if (obj.url) {
-                Grid.addModuleFromJSON(obj);
+            try {
+                var obj = JSON.parse(s);
+                if (obj.version) {
+                    Versioning.setViewJSON(obj);
+                } else if (obj.url) {
+                    Grid.addModuleFromJSON(obj);
+                }
+            } catch(e) {
+                Debug.info('Ignored error while pasting');
             }
         });
     });
