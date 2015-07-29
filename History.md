@@ -21,7 +21,7 @@
 
 ### Features
 
-* don't be silent when fullscreen ([25bdf5e](https://github.com/NPellet/visualizer/commit/25bdf5e))
+* don't be silent when fullscreen fails ([25bdf5e](https://github.com/NPellet/visualizer/commit/25bdf5e))
 * **code_executor:** add Ctrl-Return command ([f9f725f](https://github.com/NPellet/visualizer/commit/f9f725f))
 * **lib:** :arrow_up: twig.js ([fad1d01](https://github.com/NPellet/visualizer/commit/fad1d01))
 * **slickgrid:** add action out on remove and on select ([74df15c](https://github.com/NPellet/visualizer/commit/74df15c))
