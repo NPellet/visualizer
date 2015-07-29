@@ -571,8 +571,11 @@ define([
                         var cols = that.grid.getColumns().filter(function (val) {
                             return val.id !== 'rowDeletion' && val.id !== '_checkbox_selector';
                         });
-                        for (var i = 0; i < cols.length; i++) {
-                            that.module.definition.configuration.groups.cols[0][i].width = cols[i].width;
+                        var configuredColN = that.module.definition.configuration.groups.cols[0].length;
+                        if (configuredColN === cols.length) {
+                            for (var i = 0; i < cols.length; i++) {
+                                that.module.definition.configuration.groups.cols[0][i].width = cols[i].width;
+                            }
                         }
                         that.grid.invalidate();
                     });
