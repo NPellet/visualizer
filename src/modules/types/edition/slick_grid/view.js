@@ -71,7 +71,7 @@ define([
             });
 
             this.slick = {};
-            this.colConfig = this.module.getConfiguration('cols').filter(function (row) {
+            this.colConfig = (this.module.getConfiguration('cols') || []).filter(function (row) {
                 return row.name;
             });
             this.idPropertyName = '_sgid';
