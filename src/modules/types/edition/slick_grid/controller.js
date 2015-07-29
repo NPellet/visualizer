@@ -118,7 +118,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                     fields: {
                         name: {
                             type: 'text',
-                            title: 'Columns title'
+                            title: 'Column title (mandatory)'
                         },
                         jpath: {
                             type: 'combo',

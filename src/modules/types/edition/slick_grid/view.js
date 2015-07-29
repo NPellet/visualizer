@@ -71,7 +71,9 @@ define([
             });
 
             this.slick = {};
-            this.colConfig = this.module.getConfiguration('cols');
+            this.colConfig = this.module.getConfiguration('cols').filter(function (row) {
+                return row.name;
+            });
             this.idPropertyName = '_sgid';
             this.hiddenColumns = [];
             var filter = this.module.getConfiguration('filterRow');
@@ -132,42 +134,47 @@ define([
                 return type;
             }
 
-            var slickCols = this.colConfig.map(function (row) {
-                var editor, type;
-                if (row.editor === 'auto' && that.module.data) {
-                    if (!that.module.data.length) {
-                        editor = Slick.CustomEditors.DataString;
-                        Debug.warn('Slick grid: using editor based on type when the input variable is empty. Cannot determine type');
+            var slickCols = this.colConfig
+                .filter(function (row) {
+                    return row.name;
+                })
+                .map(function (row) {
+                    var editor, type;
+                    if (row.editor === 'auto' && that.module.data) {
+                        if (!that.module.data.length) {
+                            editor = Slick.CustomEditors.DataString;
+                            Debug.warn('Slick grid: using editor based on type when the input variable is empty. Cannot determine type');
+                        } else {
+                            editor = getEditor(row.jpath);
+                            type = getType(row.jpath);
+                        }
                     } else {
-                        editor = getEditor(row.jpath);
+                        editor = typeEditors[row.editor];
                         type = getType(row.jpath);
                     }
-                } else {
-                    editor = typeEditors[row.editor];
-                    type = getType(row.jpath);
-                }
 
-                return {
-                    id: row.name,
-                    name: row.name,
-                    field: row.name,
-                    width: +row.width || undefined,
-                    minWidth: +row.minWidth || undefined,
-                    maxWidth: +row.maxWidth || undefined,
-                    resizable: true,
-                    selectable: true,
-                    focusable: true,
-                    sortable: true,
-                    defaultSortAsc: true,
-                    editor: editor,
-                    compositeEditor: (editor === Slick.CustomEditors.LongText) ? Slick.CustomEditors.SimpleLongText : undefined,
-                    formatter: formatters[row.formatter],
-                    asyncPostRender: (row.formatter === 'typerenderer') ? tp : undefined,
-                    jpath: row.jpath,
-                    simpleJpath: row.jpath.length === 1,
-                    dataType: type
-                };
-            });
+                    return {
+                        id: row.name,
+                        name: row.name,
+                        field: row.name,
+                        width: +row.width || undefined,
+                        minWidth: +row.minWidth || undefined,
+                        maxWidth: +row.maxWidth || undefined,
+                        resizable: true,
+                        selectable: true,
+                        focusable: true,
+                        sortable: true,
+                        defaultSortAsc: true,
+                        editor: editor,
+                        compositeEditor: (editor === Slick.CustomEditors.LongText) ? Slick.CustomEditors.SimpleLongText : undefined,
+                        formatter: formatters[row.formatter],
+                        asyncPostRender: (row.formatter === 'typerenderer') ? tp : undefined,
+                        jpath: row.jpath,
+                        simpleJpath: row.jpath.length === 1,
+                        dataType: type,
+                        colDef: row
+                    };
+                });
 
             slickCols = _.filter(slickCols, function (val) {
                 return val.name;
@@ -571,10 +578,14 @@ define([
                         var cols = that.grid.getColumns().filter(function (val) {
                             return val.id !== 'rowDeletion' && val.id !== '_checkbox_selector';
                         });
-                        var configuredColN = that.module.definition.configuration.groups.cols[0].length;
-                        if (configuredColN === cols.length) {
+
+                        if (that.colConfig.length === cols.length) {
                             for (var i = 0; i < cols.length; i++) {
-                                that.module.definition.configuration.groups.cols[0][i].width = cols[i].width;
+                                var colToChange = that.colConfig.filter(function (col) {
+                                    return col === cols[i].colDef;
+                                });
+                                if (colToChange.length)
+                                    colToChange[0].width = cols[i].width;
                             }
                         }
                         that.grid.invalidate();
