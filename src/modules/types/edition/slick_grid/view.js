@@ -327,10 +327,6 @@ define([
 
         },
 
-        doGrid: function () {
-            var that = this;
-        },
-
         update: {
 
             list: function (moduleValue, varname) {
@@ -350,9 +346,6 @@ define([
                             var c = that.grid.getColumns()[that.grid.getColumnIndex(columnId)];
                             var jpath = _.clone(DataObject.resurrect(c.jpath));
                             jpath.unshift(idx);
-                            //if (!that.module.data.getChildSync(jpath) || !that.module.data.getChildSync(jpath).get().toString().match(columnFilters[columnId])) {
-                            //    return false;
-                            //}
                             if (!that.module.data.getChildSync(jpath) || !columnFilterFunctions[columnId](that.module.data.getChildSync(jpath).get())) {
                                 return false;
                             }
@@ -515,23 +508,30 @@ define([
                         // Acceptable since it is unlikely that someone click the delete button only 300 ms after
                         // the viewport has changed...
                         setTimeout(function () {
+                            var v = that.grid.getViewport();
+                            if (v !== that.lastViewport) {
+                                viewportChanged();
+                            }
+                        }, 250);
+
+                        function viewportChanged() {
                             that.lastViewport = that.grid.getViewport();
+                            if (that.module.getConfigurationCheckbox('slickCheck', 'rowNumbering') && !that._preventRowHelp) {
+                                var totalLines = that.grid.getDataLength();
+                                that.$rowHelp.html((Math.min(totalLines, that.lastViewport.bottom - (that.addRowAllowed ? 2 : 1))).toString() + '/' + totalLines);
+                                that.$rowHelp.fadeIn();
+                                clearTimeout(that.lastRowHelp);
+                                that.lastRowHelp = setTimeout(function () {
+                                    that.$rowHelp.fadeOut();
+                                }, 1000);
+                            }
+                            that._preventRowHelp = false;
                             that._resetDeleteRowListeners();
                             that._jpathColor();
                             that._justInTimeFilter();
-                        }, 300);
-                        that.lastViewport = that.grid.getViewport();
-                        if (that.module.getConfigurationCheckbox('slickCheck', 'rowNumbering') && !that._preventRowHelp) {
-                            that.$rowHelp.html((that.lastViewport.bottom - (that.addRowAllowed ? 2 : 1)).toString() + '/' + that.grid.getDataLength());
-                            that.$rowHelp.fadeIn();
-                            clearTimeout(that.lastRowHelp);
-                            that.lastRowHelp = setTimeout(function () {
-                                that.$rowHelp.fadeOut();
-                            }, 1000);
                         }
-                        that._preventRowHelp = false;
-                        that._jpathColor();
-                        that._justInTimeFilter();
+
+                        viewportChanged();
                     });
 
 
