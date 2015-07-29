@@ -1,3 +1,35 @@
+<a name="2.26.0"></a>
+# 2.26.0 (2015-07-29)
+
+
+### Bug Fixes
+
+* **code_executor:** run code in current window ([c716eff](https://github.com/NPellet/visualizer/commit/c716eff))
+* **datas:** fetch can fail ([47ad16b](https://github.com/NPellet/visualizer/commit/47ad16b))
+* **onde:** :arrow_up: onde (remove logs) ([2eb72cc](https://github.com/NPellet/visualizer/commit/2eb72cc))
+* **slickgrid:** :arrow_up: slickgrid ([40b9876](https://github.com/NPellet/visualizer/commit/40b9876)), closes [#458](https://github.com/NPellet/visualizer/issues/458)
+* :arrow_up: jsgraph@v1.12.4-4 ([c142f32](https://github.com/NPellet/visualizer/commit/c142f32))
+* **slickgrid:** avoid layout problem when shrinking height of the module ([6b371e5](https://github.com/NPellet/visualizer/commit/6b371e5)), closes [#648](https://github.com/NPellet/visualizer/issues/648)
+* ignore errors when pasting ([2989a15](https://github.com/NPellet/visualizer/commit/2989a15))
+* initialize mousetracker state to  'grid' ([26d3b8a](https://github.com/NPellet/visualizer/commit/26d3b8a))
+* **slickgrid:** correct error when resizing column ([7c902dc](https://github.com/NPellet/visualizer/commit/7c902dc)), closes [#655](https://github.com/NPellet/visualizer/issues/655)
+* **slickgrid:** fix breaking change. Could not create slickgrid module. ([d638721](https://github.com/NPellet/visualizer/commit/d638721))
+* **slickgrid:** only consider configuration columns that have a name ([c1191dc](https://github.com/NPellet/visualizer/commit/c1191dc)), closes [#654](https://github.com/NPellet/visualizer/issues/654)
+* **slickgrid:** proper total number of lines in tooltip on load ([e29d593](https://github.com/NPellet/visualizer/commit/e29d593)), closes [#657](https://github.com/NPellet/visualizer/issues/657)
+* **spectra_displayer:** enable markersIndependant option ([5ab6344](https://github.com/NPellet/visualizer/commit/5ab6344)), closes [#477](https://github.com/NPellet/visualizer/issues/477)
+* **spectra_displayer:** serie type is in "type", not "serieType" ([1f21552](https://github.com/NPellet/visualizer/commit/1f21552))
+
+### Features
+
+* don't be silent when fullscreen ([25bdf5e](https://github.com/NPellet/visualizer/commit/25bdf5e))
+* **code_executor:** add Ctrl-Return command ([f9f725f](https://github.com/NPellet/visualizer/commit/f9f725f))
+* **lib:** :arrow_up: twig.js ([fad1d01](https://github.com/NPellet/visualizer/commit/fad1d01))
+* **slickgrid:** add action out on remove and on select ([74df15c](https://github.com/NPellet/visualizer/commit/74df15c))
+* **spectra_displayer:** add support for scatter select plugin ([ab2185b](https://github.com/NPellet/visualizer/commit/ab2185b))
+* **typerenderer:** add backgroundColor general option ([5859825](https://github.com/NPellet/visualizer/commit/5859825)), closes [#634](https://github.com/NPellet/visualizer/issues/634)
+
+
+
 2.25.0 / 2015-07-27
 ===================
 * Modules
