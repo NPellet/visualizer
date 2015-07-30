@@ -1,3 +1,13 @@
+<a name="2.26.1"></a>
+## 2.26.1 (2015-07-30)
+
+
+### Bug Fixes
+
+* **jspraph:** fix bug with 1d xy arrays ([0fd2145](https://github.com/NPellet/visualizer/commit/0fd2145)), closes [#656](https://github.com/NPellet/visualizer/issues/656) [#659](https://github.com/NPellet/visualizer/issues/659) [#661](https://github.com/NPellet/visualizer/issues/661)
+
+
+
 <a name="2.26.0"></a>
 # 2.26.0 (2015-07-29)
 
