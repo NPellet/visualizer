@@ -4,7 +4,7 @@
 
 ### Bug Fixes
 
-* **jspraph:** fix bug with 1d xy arrays ([0fd2145](https://github.com/NPellet/visualizer/commit/0fd2145)), closes [#656](https://github.com/NPellet/visualizer/issues/656) [#659](https://github.com/NPellet/visualizer/issues/659) [#661](https://github.com/NPellet/visualizer/issues/661)
+* **jsgraph:** fix bug with 1d xy arrays ([0fd2145](https://github.com/NPellet/visualizer/commit/0fd2145)), closes [#656](https://github.com/NPellet/visualizer/issues/656) [#659](https://github.com/NPellet/visualizer/issues/659) [#661](https://github.com/NPellet/visualizer/issues/661)
 
 
 
