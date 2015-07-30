@@ -6,6 +6,16 @@
 
 * **spectra_displayer:** chart input with multiple series and same name ([62dea07](https://github.com/NPellet/visualizer/commit/62dea07))
 
+### Features
+
+* **spectra_displayer:** change scatter selection shortcut to ALT+draw ([f0ce3b9](https://github.com/NPellet/visualizer/commit/f0ce3b9)), closes [#658](https://github.com/NPellet/visualizer/issues/658)
+
+
+### BREAKING CHANGES
+
+* Spectra displayer: the scatter selection plugin is now using ALT + draw interaction instead of just draw.
+Previous behavior was in conflict with the zoom plugin.
+
 
 
 <a name="2.26.1"></a>
