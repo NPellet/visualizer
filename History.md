@@ -8,7 +8,7 @@
 
 ### Features
 
-* **spectra_displayer:** change scatter selection shortcut to ALT+draw ([f0ce3b9](https://github.com/NPellet/visualizer/commit/f0ce3b9)), closes [#658](https://github.com/NPellet/visualizer/issues/658)
+* **spectra_displayer:** change scatter selection shortcut to ALT+draw ([664c96d](https://github.com/NPellet/visualizer/commit/664c96d)), closes [#658](https://github.com/NPellet/visualizer/issues/658)
 
 
 ### BREAKING CHANGES
