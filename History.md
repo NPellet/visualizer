@@ -1,3 +1,13 @@
+<a name="2.26.2"></a>
+## 2.26.2 (2015-07-30)
+
+
+### Bug Fixes
+
+* **spectra_displayer:** chart input with multiple series and same name ([62dea07](https://github.com/NPellet/visualizer/commit/62dea07))
+
+
+
 <a name="2.26.1"></a>
 ## 2.26.1 (2015-07-30)
 
