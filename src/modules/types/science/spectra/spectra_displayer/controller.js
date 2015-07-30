@@ -386,7 +386,7 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
                         selectScatter: {
                             type: 'checkbox',
                             title: 'Scatter serie',
-                            options: {yes: 'Enable scatter serie selection (draw, conflict with zoom)'}
+                            options: {yes: 'Enable scatter serie selection (ALT + draw)'}
                         }
                     }
                 },

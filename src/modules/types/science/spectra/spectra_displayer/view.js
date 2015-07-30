@@ -132,7 +132,8 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                         options.plugins.selectScatter = {};
                         options.pluginAction.selectScatter = {
                             shift: false,
-                            ctrl: false // TODO replace with true when fixed upstream and change in controller
+                            ctrl: false,
+                            alt: true
                         };
                     }
 
