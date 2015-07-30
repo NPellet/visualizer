@@ -526,11 +526,8 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                 this.series[varname] = this.series[varname] || [];
                 this.removeSerie(varname);
 
-                if (!moduleValue) {
-                    return;
-                }
-
                 moduleValue = moduleValue.get();
+                var existingNames = [];
 
                 var that = this;
                 var data = moduleValue.data;
@@ -549,6 +546,11 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
 
 
                     var serieName = aData.label || varname;
+                    if (existingNames.indexOf(serieName) > -1) {
+                        serieName += '-' + i;
+                    }
+
+                    existingNames.push(serieName);
 
                     var valFinal = [];
 
