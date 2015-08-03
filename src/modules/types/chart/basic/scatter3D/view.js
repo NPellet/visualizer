@@ -16,7 +16,36 @@ define([
     'lib/threejs/TrackballControls'
 ], function (Default, Data, Traversing, API, Util, colorUtil, colorbar, _, THREE, Debug, chroma, ml) {
 
+    var separation = 0.55,
+        incrementation = 0.001;
     var Stat = ml.Stat;
+
+    function addKeyHandler() {
+
+
+        document.addEventListener('keyup', onKeyUp, false);
+    }
+
+    function onKeyUp(event) {
+        event.preventDefault();
+
+        switch (event.keyCode) {
+            case 38: //Up
+                separation += incrementation;
+                break;
+            case 40: //Down
+                separation -= incrementation;
+                break;
+            case 39: //Right
+                incrementation *= 1.1;
+                break;
+            case 37:// left
+                incrementation *= 0.9;
+                break;
+        }
+    }
+
+    addKeyHandler();
 
     function preloadImages(img) {
         for (var key in img) {
@@ -142,9 +171,12 @@ define([
             };
 
             function getIntersectsBis(event) {
+                if(that._3d === 'sideBySide') width = that.width/2;
+                else var width = that.width;
+                var height = that.height;
                 var vector = new THREE.Vector3(
-                    (event.offsetX / $(that.renderer.domElement).width()) * 2 - 1,
-                    -(event.offsetY / $(that.renderer.domElement).height()) * 2 + 1,
+                    (event.offsetX / width) * 2 - 1,
+                    -(event.offsetY / height) * 2 + 1,
                     0.5
                 );
                 vector.unproject(that.camera);
@@ -314,6 +346,8 @@ define([
 
             function init() {
                 that.camera = that.camera || new THREE.PerspectiveCamera(60, that.width / that.height, CAMERA_NEAR, CAMERA_FAR);
+                that.cameraLeft = that.cameraLeft || new THREE.PerspectiveCamera(60, that.width / that.height, CAMERA_NEAR, CAMERA_FAR);
+                that.cameraRight = that.cameraRight || new THREE.PerspectiveCamera(60, that.width / that.height, CAMERA_NEAR, CAMERA_FAR);
                 if (that.controls) {
                     // self.controls.reset();
                 } else {
@@ -396,11 +430,34 @@ define([
                 render();
             }
 
-            function animate() {
 
+            function animate() {
                 requestAnimationFrame(animate);
                 that.controls.update();
 
+                if(that._3d) {
+                    that.camera.updateMatrix();
+                    var leftPos = new THREE.Vector3(-separation, 0, 0);
+                    var rightPos = new THREE.Vector3(separation, 0, 0);
+                    that.camera.localToWorld(leftPos);
+                    that.camera.localToWorld(rightPos);
+
+                    that.cameraLeft.position.x = leftPos.x;
+                    that.cameraLeft.position.y = leftPos.y;
+                    that.cameraLeft.position.z = leftPos.z;
+                    that.cameraLeft.rotation.x = that.camera.rotation.x;
+                    that.cameraLeft.rotation.y = that.camera.rotation.y;
+                    that.cameraLeft.rotation.z = that.camera.rotation.z;
+                    that.cameraLeft.updateMatrix();
+
+                    that.cameraRight.position.x = rightPos.x;
+                    that.cameraRight.position.y = rightPos.y;
+                    that.cameraRight.position.z = rightPos.z;
+                    that.cameraRight.rotation.x = that.camera.rotation.x;
+                    that.cameraRight.rotation.y = that.camera.rotation.y;
+                    that.cameraRight.rotation.z = that.camera.rotation.z;
+                    that.cameraRight.updateMatrix();
+                }
             }
 
             function render() {
@@ -476,7 +533,8 @@ define([
                 that._updateParticleObject(that._mainParticleObjects[shape]);
                 that.scene.add(that._mainParticleObjects[shape]);
             }
-            that.renderer.render(that.scene, that.camera);
+
+            that._doRender();
         },
 
         _configCheckBox: function (config, option) {
@@ -1317,6 +1375,12 @@ define([
             var target = new THREE.Vector3(NORM_CONSTANT / 2, NORM_CONSTANT / 2, NORM_CONSTANT / 2);
             that.camera.position.set(eye[0], eye[1], eye[2]);
             that.camera.lookAt(target);
+
+            that.cameraLeft.position.set(eye[0], eye[1], eye[2]);
+            that.cameraLeft.lookAt(target);
+
+            that.cameraRight.position.set(eye[0], eye[1], eye[2]);
+            that.cameraRight.lookAt(target);
         },
 
         _polarToCartesian: function (theta, phi, r) {
@@ -1515,7 +1579,7 @@ define([
                     });
                 }
             }
-            that.renderer.render(that.scene, that.camera);
+            that._doRender();
 
         },
 
@@ -1530,6 +1594,7 @@ define([
          */
         update: {
             chart: function (moduleValue) {
+                this._3d = this.module.getConfiguration('3d');
                 this.module.data = moduleValue;
                 if (!moduleValue.get()) {
                     console.error('Unvalid value', moduleValue);
@@ -1557,6 +1622,7 @@ define([
                 }
             },
             data3D: function (moduleValue) {
+                this._3d = this.module.getConfiguration('3d');
                 this.module.data = moduleValue;
                 if (!moduleValue || !moduleValue.get()) {
                     Debug.error('Invalid value' + moduleValue);
@@ -1611,15 +1677,42 @@ define([
                         });
                     }
                 }
-                that.renderer.render(that.scene, that.camera);
+                that._doRender();
             }
         },
 
         _render: function () {
             var that = this;
             setTimeout(function () {
-                that.renderer.render(that.scene, that.camera, 0);
+                that._doRender();
             }, 20);
+        },
+
+        _doRender: function () {
+            if (this._3d === 'sideBySide') {
+                var width = this.width / 2;
+                var height = this.height;
+                this.renderer.setViewport(0, 0, width, height);
+                this.renderer.setScissor(0, 0, width, height);
+                this.renderer.enableScissorTest(true);
+                this.cameraLeft.aspect = width * 2 / height;
+                this.cameraLeft.updateProjectionMatrix();
+                //this.cameraLeft.position.set( separation, 0, 3 );
+                this.renderer.render(this.scene, this.cameraLeft);
+
+                this.renderer.setViewport(width, 0, width, height);
+                this.renderer.setScissor(width, 0, width, height);
+                this.renderer.enableScissorTest(true);
+                this.cameraRight.aspect = width * 2 / height;
+                this.cameraRight.updateProjectionMatrix();
+                //this.cameraRight.position.set( -separation, 0, 3 );
+                this.renderer.render(this.scene, this.cameraRight);
+
+                this.renderer.setViewport(width * 2, height, 0, 0);
+                this.renderer.setScissor(width * 2, height, 0, 0);
+                this.renderer.enableScissorTest(true);
+            }
+            this.renderer.render(this.scene, this.camera);
         },
 
         _convertData3dToData: function (value) {

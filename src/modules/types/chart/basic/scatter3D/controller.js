@@ -268,6 +268,15 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                             type: 'float',
                             title: 'Size normalization',
                             default: 0.02
+                        },
+                        '3d': {
+                            type: 'combo',
+                            title: '3D',
+                            options: [
+                                {title: 'None', key: 'none'},
+                                {title: 'Side-by-side', key: 'sideBySide'}
+                            ],
+                            default: 'none'
                         }
                     }
                 },
@@ -379,7 +388,8 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         sizeNormalization: ['groups', 'group', 0, 'sizeNormalization', 0],
         optimize: ['groups', 'group', 0, 'optimize', 0],
         dataJpaths: ['groups', 'dataJpaths', 0, 0],
-        gradient: ['groups', 'colorBar', 0]
+        gradient: ['groups', 'colorBar', 0],
+        '3d': ['groups', 'group', 0, '3d', 0]
     };
 
     return Controller;
