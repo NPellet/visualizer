@@ -1,5 +1,5 @@
 {
-  "version": "2.20.1-0",
+  "version": "2.25.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -33,11 +33,6 @@
                 [
                   "show"
                 ]
-              ],
-              "enableZoom": [
-                [
-                  "yes"
-                ]
               ]
             }
           ],
@@ -45,16 +40,25 @@
             [
               {
                 "color": [
-                  255,
-                  255,
-                  0,
-                  0.18
+                  103,
+                  78,
+                  167,
+                  0.44
                 ],
                 "stopPosition": 0
               },
               {
                 "color": [
                   0,
+                  255,
+                  255,
+                  0.46
+                ],
+                "stopPosition": 0.3
+              },
+              {
+                "color": [
+                  255,
                   255,
                   0,
                   1
@@ -68,16 +72,16 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 1,
+            "left": 0,
             "top": 0
           },
           "size": {
-            "width": 74,
-            "height": 54
+            "width": 58,
+            "height": 43
           },
           "zIndex": 0,
           "display": true,
-          "title": "",
+          "title": "Combinatorial",
           "bgColor": [
             255,
             255,
@@ -93,13 +97,13 @@
       "vars_in": [
         {
           "rel": "chart",
-          "name": "chart"
+          "name": "chart1"
         }
       ],
       "actions_in": [
         {}
       ],
-      "title": "",
+      "title": "Combinatorial",
       "vars_out": [
         {
           "jpath": []
@@ -120,8 +124,101 @@
                   "buttons"
                 ]
               ],
+              "execOnLoad": [
+                [
+                  "yes"
+                ]
+              ],
               "script": [
-                "var labels = ['N','S','O'];\nvar origin = [0,0,0];\nvar N = 3;\nvar arr = new Set();\nfor(var i=0; i<3; i++) {\n    for(var j=0; j<N; j++) {\n        for(var k=0; k<N; k++) {\n            if(i+k+j > N+1) continue;\n            //if(i!==0 && j!==0 && k!==0) continue;\n            arr.add([i,j,k]);\n        }\n    }\n}\nconsole.log(arr);\nvar chart = {data:[]};\nvar count=0;\nfor(var el of arr) {\n    var el = {\n        x: el[0],\n        y: el[1],\n        z: el[2],\n        label: getLabel(el),\n        color: ++count\n    }\n    chart.data.push(el);\n}\n\nchart.axis = [\n    {name: 'N'},\n    {name: 'S'},\n    {name: 'O'}\n];\n\nfunction getLabel(v) {\n    var r = '';\n    for(var i=0; i<v.length; i++) {\n        if(v[i] > 0) {\n            r += labels[i] + v[i];\n        }\n    }\n    return r;\n}\nconsole.log(chart)\nthis.set('chart', chart);"
+                "var colors = ['lightblue','red', 'yellow', 'lightgray']\nvar labels = ['N','S','O'];\nvar origin = [0,0,0];\nvar N = 3;\nvar arr = new Set();\nfor(var i=0; i<N; i++) {\n    for(var j=0; j<N; j++) {\n        for(var k=0; k<N; k++) {\n            if(i+k+j > N+1) continue;\n            if(i!==0 && j!==0 && k!==0) continue;\n            arr.add([i,j,k].join(','));\n        }\n    }\n}\n\nvar chart = {data:[{x:[], y:[], z:[], info:[]}]};\nvar count = 0;\nfor(var el of arr) {\n    count++;\n    var v = el.split(',');\n    chart.data[0].x.push(+v[0]);\n    chart.data[0].y.push(+v[1]);\n    chart.data[0].z.push(+v[2]);\n    chart.data[0].info.push({\n        label: getLabel(v),\n        color: count\n    });\n}\n\nchart.data[0].info[0].color = 'white';\nchart.axis = [{\n  name: 'N'  \n},\n{\n    name: 'S'\n},{\n    name: 'O'\n}]\n\nfunction getLabel(v) {\n    var r = '';\n    for(var i=0; i<v.length; i++) {\n        if(v[i] > 0) {\n            r += labels[i] + v[i];\n        }\n    }\n    return r;\n}\n\nchart = jsonChart.check(chart);\nconsole.log(chart);\nthis.set('chart', chart);"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {
+                "lib": "http://www.lactame.com/lib/json-chart/1.0.0/json-chart.js",
+                "alias": "jsonChart"
+              }
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 59,
+            "top": 0
+          },
+          "size": {
+            "width": 41,
+            "height": 43
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 2,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {
+          "rel": "execute",
+          "name": "start"
+        }
+      ],
+      "title": "",
+      "vars_out": [
+        {
+          "event": "onScriptEnded",
+          "rel": "outputValue",
+          "jpath": [
+            "chart"
+          ],
+          "name": "chart1"
+        }
+      ],
+      "actions_out": []
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                [
+                  "yes"
+                ]
+              ],
+              "script": [
+                "var colors = ['lightblue','red', 'yellow', 'lightgray']\nvar labels = ['N','S','O'];\nvar origin = [0,0,0];\nvar Nx = 4;\nvar Ny = 4;\nvar arr = new Set();\nfor(var i=-Nx; i<=Nx; i++) {\n    for(var j=-Ny; j<=Ny; j++) {\n            arr.add([i,j]);\n    }\n}\nvar chart = {data:[{x:[], y:[], z:[], info:[]}]};\nfor(var el of arr) {\n    chart.data[0].x.push(el[0]);\n    chart.data[0].y.push(el[1]);\n    chart.data[0].info.push({\n        label: el.join(',')\n    });\n}\n\n\nthis.set('chart', chart);"
               ]
             }
           ],
@@ -143,12 +240,12 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 76,
-            "top": 0
+            "left": 54,
+            "top": 44
           },
           "size": {
-            "width": 48,
-            "height": 55
+            "width": 40,
+            "height": 40
           },
           "zIndex": 0,
           "display": true,
@@ -164,12 +261,15 @@
           "name": "Default layer"
         }
       },
-      "id": 2,
+      "id": 3,
       "vars_in": [
         {}
       ],
       "actions_in": [
-        {}
+        {
+          "rel": "execute",
+          "name": "start"
+        }
       ],
       "title": "",
       "vars_out": [
@@ -179,16 +279,202 @@
           "jpath": [
             "chart"
           ],
-          "name": "chart"
+          "name": "chart2"
+        }
+      ],
+      "actions_out": []
+    },
+    {
+      "url": "modules/types/chart/advanced/hex/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "coordinateSystem": [
+                "oddr"
+              ],
+              "originX": [
+                null
+              ],
+              "originY": [
+                null
+              ],
+              "originZ": [
+                null
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 44
+          },
+          "size": {
+            "width": 53,
+            "height": 40
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Odd-r",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 4,
+      "vars_in": [
+        {
+          "rel": "chart",
+          "name": "chart2"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "Odd-r",
+      "vars_out": [
+        {
+          "jpath": []
         }
       ],
       "actions_out": []
     }
   ],
-  "variables": [],
-  "aliases": [],
-  "pouchvariables": [],
+  "variables": [
+    {
+      "jpath": [
+        ""
+      ]
+    }
+  ],
+  "aliases": [
+    {}
+  ],
+  "pouchvariables": [
+    {}
+  ],
   "configuration": {
     "title": "No title"
-  }
+  },
+  "actionscripts": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          {
+            "name": [
+              null
+            ],
+            "script": [
+              null
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "couch_replication": [
+    {
+      "sections": {},
+      "groups": {
+        "couch": [
+          [
+            {
+              "direction": "both",
+              "continuous": []
+            }
+          ]
+        ]
+      }
+    }
+  ],
+  "init_script": [
+    {
+      "sections": {},
+      "groups": {
+        "general": [
+          {
+            "script": [
+              "API.doAction('start',{});"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "custom_filters": [
+    {
+      "sections": {
+        "modules": [
+          {
+            "sections": {},
+            "groups": {
+              "modules": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filtersLib": [
+          {
+            "sections": {},
+            "groups": {
+              "filters": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filters": [
+          {
+            "sections": {},
+            "groups": {
+              "filter": [
+                {
+                  "name": [
+                    null
+                  ],
+                  "script": [
+                    null
+                  ]
+                }
+              ],
+              "libs": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "groups": {}
+    }
+  ],
+  "actionfiles": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          [
+            {}
+          ]
+        ]
+      }
+    }
+  ]
 }

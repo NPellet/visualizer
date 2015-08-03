@@ -31,6 +31,9 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             }
         },
         update: {
+            // Chart format expected
+            // Color and labels should be in chart.data[].info[].color
+            //                               chart.data[].info[].label
             chart: function (value) {
                 this.ignored = [];
                 this.chart = value.get();
@@ -64,6 +67,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                 this._normalize();
                 // Convert numbers to colors and use default when needed
                 this._processColors();
+
                 this.draw();
             }
         },
@@ -173,8 +177,15 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         },
 
         _chartData: function () {
-            this.color = _.pluck(this.chart.data, 'color');
-            this.label = _.pluck(this.chart.data, 'label');
+            this.color = [];
+            this.label = [];
+            for (var i = 0; i < this.chart.data.length; i++) {
+                var d = this.chart.data[i];
+                this.color.push(_.pluck(d.info, 'color'));
+                this.label.push(_.pluck(d.info, 'label'));
+            }
+            this.color = _.flatten(this.color);
+            this.label = _.flatten(this.label);
             if (this.chart.axis) {
                 this.axes = this.chart.axis;
             }
@@ -437,12 +448,16 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         }
         var result = [];
 
+        // Series of the chart object are merged
         var hasZ = (chart.data[0].z !== undefined);
         for (var i = 0; i < chart.data.length; i++) {
-            var r = [chart.data[i].x, chart.data[i].y];
-            if (hasZ) r.push(chart.data[i].z);
-            result.push(r);
+            for (var j = 0; j < chart.data[i].x.length; j++) {
+                var r = [chart.data[i].x[j], chart.data[i].y[j]];
+                if (hasZ) r.push(chart.data[i].z[j]);
+                result.push(r);
+            }
         }
+
         return result;
     }
 
