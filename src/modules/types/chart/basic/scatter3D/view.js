@@ -171,8 +171,9 @@ define([
             };
 
             function getIntersectsBis(event) {
-                if(that._3d === 'sideBySide') width = that.width/2;
-                else var width = that.width;
+                var width, height;
+                if (that._3d === 'sideBySide') width = that.width / 2;
+                else width = that.width;
                 var height = that.height;
                 var vector = new THREE.Vector3(
                     (event.offsetX / width) * 2 - 1,
@@ -435,7 +436,7 @@ define([
                 requestAnimationFrame(animate);
                 that.controls.update();
 
-                if(that._3d) {
+                if (that._3d) {
                     that.camera.updateMatrix();
                     var leftPos = new THREE.Vector3(-separation, 0, 0);
                     var rightPos = new THREE.Vector3(separation, 0, 0);
