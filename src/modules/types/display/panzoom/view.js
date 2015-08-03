@@ -108,14 +108,23 @@ define([
                 // If it does destroy
                 x.find('.panzoom').panzoom('destroy');
                 var $img;
-                if (x.length === 0) {
+                if (x.length === 0 && varname !== '__highlight__') {
                     x = that.newImageDom(varname);
                     $img = x.find('img');
-                } else {
+                } else if (varname !== '__highlight__') {
                     var $previousImg = x.find('img');
                     $img = $('<img style="display: none;"/>');
                     x.find('.panzoom').append($img);
+                } else if (x.length === 0) {
+                    x = that.newCanvasDom(varname);
+                    $img = $(that.highlightImage.canvas);
+                    x.find('.panzoom').append($img);
+                } else {
+                    x.find('canvas').remove();
+                    $img = $(that.highlightImage.canvas);
+                    x.find('.panzoom').append($img);
                 }
+
 
                 var foundImg = false;
                 var image = _.find(that.images, function (img) {
@@ -137,61 +146,69 @@ define([
                     imgUrl = variable.get();
                 }
 
-                $img
-                    .css('opacity', conf.opacity)
-                    .addClass(conf.rendering)
-                    .attr('src', imgUrl)
-                    .on('load', function () {
-                        image.name = conf.variable;
-                        image.$panzoomEl = x.find('.panzoom');
-                        image.$parent = image.$panzoomEl.parent('.parent');
-                        image.$img = $img;
-                        image.width = this.width;
-                        image.height = this.height;
-                        image.conf = conf;
-                        image.transform = null;
-                        var scaling = image.conf.scaling;
-                        if (scaling === 'maxIfLarge') {
-                            if (image.width > that.width || image.height > that.height) {
-                                scaling = 'max';
-                            } else {
-                                scaling = 'no';
-                            }
-                        }
-                        if (scaling === 'max') {
-                            if (image.width / image.height > that.width / that.height) {
-                                image.f = that.width / image.width;
-                                image.transform = getCssTransform([image.f, 0, 0, image.f, 0, 0]);
-                            } else {
-                                image.f = that.height / image.height;
-                                image.transform = getCssTransform([image.f, 0, 0, image.f, 0, 0]);
-                            }
-                        }
-                        if (scaling === 'asHighlight') {
-                            if (that.himg.f) {
-                                var transform = [that.himg.f, 0, 0, that.himg.f, that.highlightImage.shiftx * that.himg.f, that.highlightImage.shifty * that.himg.f];
-                                image.transform = getCssTransform(transform);
-                            }
-                        }
+                $img.css('opacity', conf.opacity)
+                    .addClass(conf.rendering);
 
-
-                        that.dom.append(x);
-                        if (!foundImg) {
-                            that.images.push(image);
-                        }
-                        if ($previousImg) $previousImg.remove();
-                        $img.css({
-                            transform: image.transform,
-                            transformOrigin: '0 0',
-                            display: 'block'
+                if (varname === '__highlight__') {
+                    onLoaded.call(that.highlightImage.canvas);
+                } else {
+                    $img
+                        .attr('src', imgUrl)
+                        .on('load', onLoaded)
+                        .on('error', function (e) {
+                            if ($previousImg) $previousImg.remove();
+                            reject(e);
                         });
-                        $img.show();
-                        resolve();
-                    })
-                    .on('error', function (e) {
-                        if ($previousImg) $previousImg.remove();
-                        reject(e);
+                }
+
+
+                function onLoaded() {
+                    image.name = conf.variable;
+                    image.$panzoomEl = x.find('.panzoom');
+                    image.$parent = image.$panzoomEl.parent('.parent');
+                    image.$img = $img;
+                    image.width = this.width;
+                    image.height = this.height;
+                    image.conf = conf;
+                    image.transform = null;
+                    var scaling = image.conf.scaling;
+                    if (scaling === 'maxIfLarge') {
+                        if (image.width > that.width || image.height > that.height) {
+                            scaling = 'max';
+                        } else {
+                            scaling = 'no';
+                        }
+                    }
+                    if (scaling === 'max') {
+                        if (image.width / image.height > that.width / that.height) {
+                            image.f = that.width / image.width;
+                            image.transform = getCssTransform([image.f, 0, 0, image.f, 0, 0]);
+                        } else {
+                            image.f = that.height / image.height;
+                            image.transform = getCssTransform([image.f, 0, 0, image.f, 0, 0]);
+                        }
+                    }
+                    if (scaling === 'asHighlight') {
+                        if (that.himg.f) {
+                            var transform = [that.himg.f, 0, 0, that.himg.f, that.highlightImage.shiftx * that.himg.f, that.highlightImage.shifty * that.himg.f];
+                            image.transform = getCssTransform(transform);
+                        }
+                    }
+
+
+                    that.dom.append(x);
+                    if (!foundImg) {
+                        that.images.push(image);
+                    }
+                    if ($previousImg) $previousImg.remove();
+                    $img.css({
+                        transform: image.transform,
+                        transformOrigin: '0 0',
+                        display: 'block'
                     });
+                    $img.show();
+                    resolve();
+                }
             });
         },
 
@@ -283,13 +300,17 @@ define([
                 this.highlightImage.dataUrl = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
             } else {
                 this.toHide['__highlight__'] = false;
-                this.highlightImage = this._createHighlightDataUrl(this._highlighted);
+                this.highlightImage = this._createHighlight(this._highlighted);
             }
             this.doImage('__highlight__');
         },
 
         newImageDom: function (varname) {
             return $('<div class="parent" id="' + this.getImageDomId(varname) + '"><div class="panzoom"><img style="display: none;"/></div></div>');
+        },
+
+        newCanvasDom: function (varname) {
+            return $('<div class="parent" id="' + this.getImageDomId(varname) + '"><div class="panzoom"></div></div>');
         },
 
         getImageDomId: function (varname) {
@@ -449,7 +470,7 @@ define([
             });
         },
 
-        _createHighlightDataUrl: function (hl) {
+        _createHighlight: function (hl) {
             if (!this.highlights) return null;
             if (!Array.isArray(hl)) {
                 hl = [hl];
@@ -501,7 +522,7 @@ define([
             // we put this random image in the context
             context.putImageData(imageData, 0, 0); // at coords 0,0
             return {
-                dataUrl: canvas.toDataURL('image/png'),
+                canvas: canvas,
                 shiftx: shiftx,
                 shifty: shifty
             };
