@@ -45,7 +45,7 @@
     "jquery-ui": "1.11.4",
     "jquery-tmpl": "BorisMoore/jquery-tmpl#vBeta1.0.0",
     "jsbarcode": "*",
-    "jsgraph": "v1.12.4-9",
+    "jsgraph": "v1.12.4-12",
     "jsNMR": "NPellet/jsNMR#73cd9c371c8ebc53c32b7f6e6c36077e8a407d99",
     "json-chart": "1.0.0",
     "jsoneditor": "3.2.0",
@@ -78,7 +78,7 @@
     "x2js": "1.1.7"
   },
   "resolutions": {
-    "jsgraph": "v1.12.4-9"
+    "jsgraph": "v1.12.4-12"
   },
   "private": true
 }
