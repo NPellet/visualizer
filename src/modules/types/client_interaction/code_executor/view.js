@@ -48,7 +48,7 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
                             .addClass('form-button')
                             .on('click', onclick)
                     );
-                    if (idx === 0) {
+                    if (idx === 0 && that.editor) {
                         that.editor.commands.addCommand({
                             name: 'run',
                             bindKey: {win: 'Ctrl-Return', mac: 'Command-Return'},
