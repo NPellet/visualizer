@@ -1,6 +1,5 @@
 'use strict';
-/*global Parser*/
-define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs'], function (require, Default, Util, THREE) {
+define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs', 'src/util/debug', 'lib/parser/Parser', 'lib/threejs/TrackballControls'], function (require, Default, Util, THREE, Debug) {
 
     function View() {
     }
@@ -36,37 +35,10 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs'], f
             this.yRange = this.yMax - this.yMin;
 
 
-            if (this.scene) {
-                //	this.scene.remove
+            this.clearScene();
 
-                this.scene.remove(this.graphGeometry);
-                this.scene.remove(this.graphMesh);
-                this.scene.remove(this.floor);
-                delete this.graphGeometry;
-                delete this.graphMesh;
-                delete this.floor;
-            }
-
-            require(['./TrackballControls', 'lib/parser/Parser'], function () {
-
-                that.createGraph();
-
-
-                that.scene = new THREE.Scene();
-                if (!that.renderer) {
-                    if (that.webgl) {
-                        that.renderer = new THREE.WebGLRenderer({antialias: true});
-                    } else {
-                        that.renderer = new THREE.CanvasRenderer();
-                    }
-                    that.renderer.setClearColor(0xEEEEEE, 1);
-                }
-
-                that.dom.append(that.renderer.domElement);
-
-                that.addFloor(that.scene);
-                that.resolveReady();
-            });
+            this.createGraph();
+            this.resolveReady();
 
             // This should reduce CPU if the mouse if not over and we can not move the object
             // this is only valid for non animated graph
@@ -82,14 +54,30 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs'], f
 
         },
 
+        clearScene: function () {
+            if (this.scene) {
+                //	this.scene.remove
+
+                this.scene.remove(this.graphGeometry);
+                this.scene.remove(this.graphMesh);
+                this.scene.remove(this.floor);
+                delete this.graphGeometry;
+                delete this.graphMesh;
+                delete this.floor;
+            }
+        },
+
 
         blank: function () {
-            this.dom.empty();
+            this.clearScene();
         },
 
         onResize: function () {
 
-            if (!this.webgl) return;
+            if (!this.webgl) {
+                Debug.warn('webgl context does not exist');
+                return;
+            }
             var that = this;
             this.module.viewReady.then(function () {
                 var cfg = $.proxy(that.module.getConfiguration, that.module);
@@ -140,7 +128,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs'], f
                 wireframe: true,
                 side: THREE.DoubleSide
             });
-            var floorGeometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
+            var floorGeometry = new THREE.PlaneBufferGeometry(1000, 1000, 10, 10);
             this.floor = new THREE.Mesh(floorGeometry, wireframeMaterial);
             //floor.position.z = 0; // required, otherwise from time to time it is NaN !!!???
             // floor.rotation.x = Math.PI / 2;
@@ -150,7 +138,9 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs'], f
 
         update: {
             'function': function (data) {
-
+                this.zFunctionText = data.get();
+                this.createGraph();
+                this.onResize();
             }
         },
 
@@ -179,6 +169,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs'], f
         },
 
         createGraph: function () {
+            console.log('create graph');
             var that = this;
             var cfg = $.proxy(that.module.getConfiguration, that.module);
             var segments = cfg('segments');
@@ -228,6 +219,20 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs'], f
                 }
             }
             that.graphGeometry = graphGeometry;
+
+            that.scene = new THREE.Scene();
+            if (!that.renderer) {
+                if (that.webgl) {
+                    that.renderer = new THREE.WebGLRenderer({antialias: true});
+                } else {
+                    that.renderer = new THREE.CanvasRenderer();
+                }
+                that.renderer.setClearColor(0xEEEEEE, 1);
+            }
+
+            that.dom.append(that.renderer.domElement);
+
+            that.addFloor(that.scene);
 
         }
 
