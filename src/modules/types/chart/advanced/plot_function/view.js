@@ -68,8 +68,10 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs', 's
         },
 
 
-        blank: function () {
-            this.clearScene();
+        blank: {
+            'function': function () {
+                this.clearScene();
+            }
         },
 
         onResize: function () {
