@@ -530,7 +530,7 @@ define([
 
         highlightOn: function (pixel) {
             var that = this;
-            if (Array.isArray(that._highlight)) {
+            if (Util.objectToString(that._highlight).endsWith('Array')) {
                 var idx = pixel.x + that.himg.width * pixel.y;
                 if (that._highlight[idx]) {
                     if (that._hl !== that._highlight[idx]) {
