@@ -435,6 +435,12 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
         return Object.prototype.toString.call(obj).slice(8, -1);
     };
 
+    exports.isArray = function(arr) {
+        if(arr.length === undefined) return false;
+        var objString = exports.objectToString(arr);
+        return objString.indexOf('Array') === objString.length - 5;
+    };
+
     // Deprecated color methods. Moved to src/util/color
     exports.getDistinctColors = exports.deprecate(Color.getDistinctColors, 'use Color.getDistinctColors');
     exports.getNextColorRGB = exports.deprecate(Color.getNextColorRGB, 'use Color.getNextColorRGB');
