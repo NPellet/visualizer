@@ -1,3 +1,30 @@
+<a name="2.26.3"></a>
+## 2.26.3 (2015-08-10)
+
+
+### Bug Fixes
+
+* **code_executor:** fix crash when editor is not displayed ([bbb1309](https://github.com/NPellet/visualizer/commit/bbb1309)), closes [#665](https://github.com/NPellet/visualizer/issues/665)
+* **components:** :arrow_up: jsgraph v1.13.0 ([c6120ae](https://github.com/NPellet/visualizer/commit/c6120ae)), closes [#615](https://github.com/NPellet/visualizer/issues/615) [#666](https://github.com/NPellet/visualizer/issues/666)
+* **function_3d:** enable var in ([8c6b243](https://github.com/NPellet/visualizer/commit/8c6b243)), closes [#542](https://github.com/NPellet/visualizer/issues/542)
+* **function_3d:** fix blank ([c17856e](https://github.com/NPellet/visualizer/commit/c17856e))
+* **hex:** Accept the correct chart format ([ee7eb6f](https://github.com/NPellet/visualizer/commit/ee7eb6f)), closes [#550](https://github.com/NPellet/visualizer/issues/550)
+* **panzoom:** not using endsWith for browser compatibilty reason ([02f6ea1](https://github.com/NPellet/visualizer/commit/02f6ea1))
+
+### Features
+
+* **panzoom:** accept typed arrays as highlight ([47382d2](https://github.com/NPellet/visualizer/commit/47382d2))
+* **slickgrid:** side-by-side 3d ([bde1707](https://github.com/NPellet/visualizer/commit/bde1707)), closes [#652](https://github.com/NPellet/visualizer/issues/652)
+* **util:** add isArray ([4fb9ff6](https://github.com/NPellet/visualizer/commit/4fb9ff6))
+
+
+### BREAKING CHANGES
+
+* The chart input should be changed to the correct format.
+ See https://github.com/cheminfo/json-chart
+
+
+
 <a name="2.26.2"></a>
 ## 2.26.2 (2015-07-30)
 
