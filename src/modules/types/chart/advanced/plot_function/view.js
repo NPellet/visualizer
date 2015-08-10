@@ -1,5 +1,5 @@
 'use strict';
-define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs', 'src/util/debug', 'lib/parser/Parser', 'lib/threejs/TrackballControls'], function (require, Default, Util, THREE, Debug) {
+define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs', 'src/util/debug', 'lib/parser/Parser', 'lib/threejs/TrackballControls'], function (require, Default, Util, THREE, Debug, Parser) {
 
     function View() {
     }

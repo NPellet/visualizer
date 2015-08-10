@@ -431,14 +431,13 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
         return reqPathStr;
     };
 
+    var objToString = Object.prototype.toString;
     exports.objectToString = function objectToString(obj) {
-        return Object.prototype.toString.call(obj).slice(8, -1);
+        return objToString.call(obj).slice(8, -1);
     };
 
-    exports.isArray = function(arr) {
-        if(arr.length === undefined) return false;
-        var objString = exports.objectToString(arr);
-        return objString.indexOf('Array') === objString.length - 5;
+    exports.isArray = function isArray(arr) {
+        return exports.objectToString(arr).slice('-5') === 'Array';
     };
 
     // Deprecated color methods. Moved to src/util/color
