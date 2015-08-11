@@ -89,6 +89,9 @@ require.config({
         modernizr: {
             exports: 'Modernizr'
         },
+        'lib/parser/Parser': {
+            exports: 'Parser'
+        },
         'jquery-cookie': 'jquery',
         'select2': ['jquery'],
         'lib/threejs/TrackballControls': ['threejs'],
