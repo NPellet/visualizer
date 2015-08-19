@@ -314,6 +314,10 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
                             title: 'X axis modification',
                             options: [
                                 {
+                                    key: 'none',
+                                    title: 'None'
+                                },
+                                {
                                     key: 'timestamptotime',
                                     title: 'Timestamp to time'
                                 },
@@ -326,7 +330,7 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
                                     title: 'Seconds to min.sec'
                                 }
                             ],
-                            'default': []
+                            'default': 'none'
                         },
 
                         wheelAction: {
