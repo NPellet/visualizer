@@ -64,6 +64,9 @@ define(function () {
         'matrix': {
             'type': 'object'
         },
+        'chart': {
+            'type': 'object'
+        },
         'tree': {
             'type': 'object'
         },
