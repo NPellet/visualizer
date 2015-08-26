@@ -94,7 +94,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             this.combXYmax = commonMax(x, y);
             this.combXZmax = commonMax(x, z);
             this.combYZmax = commonMax(y, z);
-debugger;
+
             //this.combXYmax = Math.max(this.combXmax, this.combYmax);
             //this.combXZmax = Math.max(this.combXmax, this.combZmax);
             //this.combYZmax = Math.max(this.combYmax, this.combZmax);
@@ -178,6 +178,25 @@ debugger;
             this.color = this.color.map(function (val) {
                 return val === undefined ? DEFAULT_COLOR : val;
             });
+        },
+
+        _fontSize: function(px) {
+            var maxFontSize = 50;
+            function findFontSize(text) {
+                var arr = text.split('\n');
+                var n = arr.reduce(function(p, c) {
+                    return Math.max(p, c.length);
+                }, 0);
+                n = Math.max(n, arr.length);
+                return n ? px / n * 2 : maxFontSize;
+            }
+
+            var fontSize = this.label.reduce(function(prev, current) {
+                if(!current) return prev;
+                return Math.min(prev, findFontSize(current));
+            }, maxFontSize);
+
+            return (fontSize | 0) + 'px';
         },
 
         _chartData: function () {
@@ -307,6 +326,8 @@ debugger;
             var hexbin = d3.hexbin()
                 .radius(hexRadius);
 
+            var fontSize = that._fontSize(hexRadius);
+
             // Generate axes
             // Combinatorial axes
             if (this.coordinateSystem === 'combinatorial' && this.axes) {
@@ -358,7 +379,8 @@ debugger;
                         height: '' + hexRadius + 'px',
                         width: '' + hexRadius + 'px',
                         'box-sizing': 'border-box',
-                        'align-items': 'center'
+                        'align-items': 'center',
+                        'font-size': fontSize
                     })
                     .attr('class', 'axe-text')
                     .html(function (d, i) {
@@ -417,7 +439,8 @@ debugger;
                     padding: 0,
                     'align-items': 'center',
                     'justify-content': 'center',
-                    'box-sizing': 'border-box'
+                    'box-sizing': 'border-box',
+                    'font-size': fontSize
                 })
                 .html(function (d, i) {
                     return that.label[i];
@@ -443,7 +466,6 @@ debugger;
             this.dom.html('');
         }
     });
-
 
     function chartToArray(chart) {
         try {
