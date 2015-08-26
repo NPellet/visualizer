@@ -91,9 +91,13 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             this.combYmax = Math.max.apply(null, y);
             this.combZmax = Math.max.apply(null, z);
 
-            this.combXYmax = Math.max(this.combXmax, this.combYmax);
-            this.combXZmax = Math.max(this.combXmax, this.combZmax);
-            this.combYZmax = Math.max(this.combYmax, this.combZmax);
+            this.combXYmax = commonMax(x, y);
+            this.combXZmax = commonMax(x, z);
+            this.combYZmax = commonMax(y, z);
+debugger;
+            //this.combXYmax = Math.max(this.combXmax, this.combYmax);
+            //this.combXZmax = Math.max(this.combXmax, this.combZmax);
+            //this.combYZmax = Math.max(this.combYmax, this.combZmax);
         },
 
         _reMinMax: function (data) {
@@ -200,14 +204,15 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                 // Generate 6 points;
                 // x=0, y=0, z=0
                 this.axeData = {};
+                var pointOffset = 3;
                 this.axeData.points = [
-                    [this.combXmax + 1, 0, 0], [0, this.combYZmax + 1, this.combYZmax + 1],
-                    [0, this.combYmax + 1, 0], [this.combXZmax + 1, 0, this.combXZmax + 1],
-                    [0, 0, this.combZmax + 1], [this.combXYmax + 1, this.combXYmax + 1, 0]
+                    [this.combXmax + pointOffset, 0, 0], [0, this.combYZmax + pointOffset, this.combYZmax + pointOffset],
+                    [0, this.combYmax + pointOffset, 0], [this.combXZmax + pointOffset, 0, this.combXZmax + pointOffset],
+                    [0, 0, this.combZmax + pointOffset], [this.combXYmax + pointOffset, this.combXYmax + pointOffset, 0]
                 ];
 
-                var startOffset = 0.49;
-                var endOffset = 0.8;
+                var startOffset = 1;
+                var endOffset = 2;
                 this.axeData.startPoints = [
                     [this.combXmax + startOffset, 0, 0], [0, this.combYZmax + startOffset, this.combYZmax + startOffset],
                     [0, this.combYmax + startOffset, 0], [this.combXZmax + startOffset, 0, this.combXZmax + startOffset],
@@ -313,8 +318,8 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                     startAxePoints.push(toPixel(this.axeData.startPoints[i]));
                     endAxePoints.push(toPixel(this.axeData.endPoints[i]));
                 }
-                startAxePoints = hexbin(startAxePoints, {noRound: true});
-                endAxePoints = hexbin(endAxePoints, {noRound: true});
+                startAxePoints = hexbin(startAxePoints);
+                endAxePoints = hexbin(endAxePoints);
                 axePoints = hexbin(axePoints);
 
                 svg.append('defs').selectAll('marker')
@@ -373,6 +378,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
 
             }
 
+            // Generate hexgons
             var hexbinPoints = hexbin(points);
 
             svg.append('g')
@@ -596,6 +602,14 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         }
 
         return multArray([-1, 1, 0], arr[maxIdx] - arr[middleIdx]);
+    }
+
+    function commonMax(a, b) {
+        var m = 0;
+        for (var i = 0; i < a.length; i++) {
+            if(a[i] === b[i] && a[i] > m) m = a[i];
+        }
+        return m;
     }
 
     return View;
