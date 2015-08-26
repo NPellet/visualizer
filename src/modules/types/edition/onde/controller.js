@@ -183,12 +183,12 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
         var outputType = this.module.getConfiguration('output');
         if (outputType === 'new') {
             this.createDataFromEvent('onFormSubmit', 'outputValue', data);
-            this.sendActionFromEvent('onFormSubmit', 'outputValue', data);
         } else {
             if (this.module.view.inputObj) {
                 this.module.view.inputObj.mergeWith(data, this.module.getId());
             }
         }
+        this.sendActionFromEvent('onFormSubmit', 'outputValue', data);
     };
 
     return Controller;
