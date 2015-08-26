@@ -191,11 +191,13 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                 return n ? px / n * 2 : maxFontSize;
             }
 
-            var fontSize = this.label.reduce(function(prev, current) {
-                if(!current) return prev;
-                return Math.min(prev, findFontSize(current));
-            }, maxFontSize);
-
+            var fontSize;
+            if(!(fontSize = this.module.getConfiguration('fontSize'))) {
+                fontSize = this.label.reduce(function(prev, current) {
+                    if(!current) return prev;
+                    return Math.min(prev, findFontSize(current));
+                }, maxFontSize);
+            }
             return (fontSize | 0) + 'px';
         },
 

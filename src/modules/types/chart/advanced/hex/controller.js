@@ -66,6 +66,10 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                             displayTarget: ['comb'],
                             default: 0
                         },
+                        fontSize: {
+                            type: 'float',
+                            title: 'Font size (empty=auto)'
+                        },
                         showColorBar: {
                             type: 'checkbox',
                             title: 'Color bar',
@@ -107,6 +111,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         originX: ['groups', 'group', 0, 'originX', 0],
         originY: ['groups', 'group', 0, 'originY', 0],
         originZ: ['groups', 'group', 0, 'originZ', 0],
+        fontSize: ['groups', 'group', 0, 'fontSize', 0],
         gradient: ['groups', 'colorBar', 0],
         showColorBar: ['groups', 'group', 0, 'showColorBar', 0],
         enableZoom: ['groups', 'group', 0, 'enableZoom', 0]
