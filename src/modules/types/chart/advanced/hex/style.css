@@ -5,3 +5,7 @@ svg .axe-text {
 .axe-arrow {
     stroke: black;
 }
+
+.axe-arrow-legend {
+    stroke: black;
+}

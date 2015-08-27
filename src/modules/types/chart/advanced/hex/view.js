@@ -40,6 +40,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                 var data = chartToArray(this.chart);
                 this.originalData = data;
                 this.coordinateSystem = this.module.getConfiguration('coordinateSystem');
+                this.axesType = this.module.getConfiguration('axesType');
                 this.layout = 'vertical';
                 switch (this.coordinateSystem) {
                     case 'combinatorial':
@@ -221,7 +222,16 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         },
 
         draw: function () {
-            if (this.coordinateSystem === 'combinatorial' && this.axes) {
+            if (this.coordinateSystem === 'combinatorial' && this.axes && this.axesType !== 'none') {
+                // Combinatorial coordinate system
+                //      ZY  Y
+                //       \ /
+                //  Z --  O -- XY
+                //       / \
+                //      ZX  X
+                //
+                // [X, ZY, Y, ZX, Z, XY]
+
                 // Generate 6 points;
                 // x=0, y=0, z=0
                 this.axeData = {};
@@ -333,18 +343,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             // Generate axes
             // Combinatorial axes
             if (this.coordinateSystem === 'combinatorial' && this.axes) {
-                var axePoints = [];
-                var startAxePoints = [];
-                var endAxePoints = [];
-                for (i = 0; i < this.axeData.points.length; i++) {
-                    axePoints.push(toPixel(this.axeData.points[i]));
-                    startAxePoints.push(toPixel(this.axeData.startPoints[i]));
-                    endAxePoints.push(toPixel(this.axeData.endPoints[i]));
-                }
-                startAxePoints = hexbin(startAxePoints);
-                endAxePoints = hexbin(endAxePoints);
-                axePoints = hexbin(axePoints);
-
+                // Arrow definition
                 svg.append('defs').selectAll('marker')
                     .data(['normal'])
                     .enter().append('marker')
@@ -358,48 +357,110 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                     .attr('markerHeight', 10)
                     .attr('orient', 'auto')
                     .append('path')
-                    .attr('d', 'M0,-5L10,0L0,5');
+                    .attr('d', 'M0,-4L10,0L0,4');
 
+                if (this.axesType === 'graph') {
+                    // draw coordinates on the graph
+                    var axePoints = [];
+                    var startAxePoints = [];
+                    var endAxePoints = [];
+                    for (i = 0; i < this.axeData.points.length; i++) {
+                        axePoints.push(toPixel(this.axeData.points[i]));
+                        startAxePoints.push(toPixel(this.axeData.startPoints[i]));
+                        endAxePoints.push(toPixel(this.axeData.endPoints[i]));
+                    }
+                    startAxePoints = hexbin(startAxePoints);
+                    endAxePoints = hexbin(endAxePoints);
+                    axePoints = hexbin(axePoints);
 
-                var axeText = svg.append('g')
-                    .selectAll('.axes')
-                    .data(axePoints)
-                    .enter().append('foreignObject')
-                    .style('pointer-events', 'none')
-                    .attr({
-                        width: hexRadius,
-                        height: hexRadius
-                    })
-                    .attr('transform', function (d) {
-                        return 'translate(' + (d.x - hexRadius / 2) + ',' + (d.y - hexRadius / 2) + ')';
-                    });
+                    // Axe text
+                    svg.append('g')
+                        .selectAll('.axes')
+                        .data(axePoints)
+                        .enter().append('foreignObject')
+                        .style('pointer-events', 'none')
+                        .attr({
+                            width: hexRadius,
+                            height: hexRadius
+                        })
+                        .attr('transform', function (d) {
+                            return 'translate(' + (d.x - hexRadius / 2) + ',' + (d.y - hexRadius / 2) + ')';
+                        })
+                        .append('xhtml:div')
+                        .append('div')
+                        .style({
+                            display: 'flex',
+                            height: '' + hexRadius + 'px',
+                            width: '' + hexRadius + 'px',
+                            'box-sizing': 'border-box',
+                            'align-items': 'center',
+                            'font-size': fontSize
+                        })
+                        .attr('class', 'axe-text')
+                        .html(function (d, i) {
+                            return that.axeLabels[i];
+                        });
 
-                axeText.append('xhtml:div')
-                    .append('div')
-                    .style({
-                        display: 'flex',
-                        height: '' + hexRadius + 'px',
-                        width: '' + hexRadius + 'px',
-                        'box-sizing': 'border-box',
-                        'align-items': 'center',
-                        'font-size': fontSize
-                    })
-                    .attr('class', 'axe-text')
-                    .html(function (d, i) {
-                        return that.axeLabels[i];
-                    });
+                    // axe arrows
+                    svg.append('g')
+                        .selectAll('.axe-arrow')
+                        .data(axePoints)
+                        .enter()
+                        .append('path')
+                        .attr('class', 'axe-arrow')
+                        .attr('marker-end', 'url(#normal)')
+                        .attr('d', function (d, i) {
+                            return 'M' + startAxePoints[i].x + ',' + startAxePoints[i].y + 'L' + endAxePoints[i].x + ' ' + endAxePoints[i].y;
+                        });
 
-                var axeArrows = svg.append('g')
-                    .selectAll('.axe-arrow')
-                    .data(axePoints)
-                    .enter()
-                    .append('path')
-                    .attr('class', 'axe-arrow')
-                    .attr('marker-end', 'url(#normal)')
-                    .attr('d', function (d, i) {
-                        return 'M' + startAxePoints[i].x + ',' + startAxePoints[i].y + 'L' + endAxePoints[i].x + ' ' + endAxePoints[i].y;
-                    });
+                } else if (this.axesType === 'legend') {
+                    var radText = 30;
+                    var radArr = 20;
+                    var legendTextPoints = getLegendData(radText);
+                    var legendEndPoints = getLegendData(radArr);
+                    var legendStartPoints = fillArray({x: 0, y: 0}, 6);
+                    var legendSize = 20;
 
+                    // Legend text
+                    svg.append('g').attr('class', 'abcd')
+                        .selectAll('.axes-legend')
+                        .data(legendTextPoints)
+                        .enter().append('foreignObject')
+                        .style('pointer-events', 'none')
+                        .attr({
+                            width: legendSize,
+                            height: legendSize
+                        })
+                        .attr('transform', function (d) {
+                            return 'translate(' + (d.x - boundingBox[0] - legendSize / 2) + ',' + (d.y + boundingBox[1] + radText - legendSize / 2) + ')';
+                        })
+                        .append('xhtml:div')
+                        .append('div')
+                        .style({
+                            display: 'flex',
+                            height: '' + hexRadius + 'px',
+                            width: '' + hexRadius + 'px',
+                            'box-sizing': 'border-box',
+                            'font-size': 16,
+                            'align-items': 'center'
+                        })
+                        .attr('class', 'axe-corner-text')
+                        .html(function (d, i) {
+                            return that.axeLabels[i]
+                        });
+
+                    // Legend arrows
+                    svg.append('g')
+                        .selectAll('.axe-arrow-legend')
+                        .data(legendStartPoints)
+                        .enter()
+                        .append('path')
+                        .attr('class', 'axe-arrow-legend')
+                        .attr('marker-end', 'url(#normal)')
+                        .attr('d', function (d, i) {
+                            return 'M' + (legendStartPoints[i].x - boundingBox[0] - 4) + ',' + (legendStartPoints[i].y + boundingBox[1] + radText) + 'L' + (legendEndPoints[i].x - boundingBox[0] - 4) + ' ' + (legendEndPoints[i].y + boundingBox[1] + radText);
+                        });
+                }
             }
 
             // Generate hexgons
@@ -599,6 +660,14 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         return r;
     }
 
+    function fillArray(d, l) {
+        var arr = new Array(l);
+        for (var i = 0; i < arr.length; i++) {
+            arr[i] = d;
+        }
+        return arr;
+    }
+
     function getComponent1(arr, minIdx, middleIdx, maxIdx) {
         if (minIdx === middleIdx) {
             return [0, 0, 0];
@@ -634,6 +703,17 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             if(a[i] === b[i] && a[i] > m) m = a[i];
         }
         return m;
+    }
+
+    function getLegendData(rad) {
+        return [
+            {x: rad * Math.cos(-Math.PI / 3), y: rad * Math.sin(Math.PI / 3)},
+            {x: rad * Math.cos(Math.PI * 2 / 3), y: rad * Math.sin(-Math.PI * 2 / 3)},
+            {x: rad * Math.cos(Math.PI / 3), y: rad * Math.sin(-Math.PI / 3)},
+            {x: rad * Math.cos(-Math.PI * 2 / 3), y: rad * Math.sin(Math.PI * 2 / 3)},
+            {x: rad * Math.cos(Math.PI), y: rad * Math.sin(Math.PI)},
+            {x: rad * Math.cos(0), y: rad * Math.sin(0)}
+        ];
     }
 
     return View;

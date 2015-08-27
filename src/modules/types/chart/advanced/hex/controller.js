@@ -70,6 +70,16 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                             type: 'float',
                             title: 'Font size (empty=auto)'
                         },
+                        axesType: {
+                            type: 'combo',
+                            title: 'Axes type',
+                            options: [
+                                {key: 'graph', title: 'On graph'},
+                                {key: 'legend', title: 'As Legend'},
+                                {key: 'none', title: 'None'}
+                            ],
+                            default: 'graph'
+                        },
                         showColorBar: {
                             type: 'checkbox',
                             title: 'Color bar',
@@ -112,6 +122,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         originY: ['groups', 'group', 0, 'originY', 0],
         originZ: ['groups', 'group', 0, 'originZ', 0],
         fontSize: ['groups', 'group', 0, 'fontSize', 0],
+        axesType: ['groups', 'group', 0, 'axesType', 0],
         gradient: ['groups', 'colorBar', 0],
         showColorBar: ['groups', 'group', 0, 'showColorBar', 0],
         enableZoom: ['groups', 'group', 0, 'enableZoom', 0]
