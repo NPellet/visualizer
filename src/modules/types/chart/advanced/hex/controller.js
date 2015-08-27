@@ -94,11 +94,28 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                         }
                     }
                 },
+                colorBarOpt: {
+                    options: {
+                        type: 'list',
+                        multiple: true,
+                        title: 'Color bar options'
+                    },
+                    fields: {
+                        stopType: {
+                            type: 'combo',
+                            options: [
+                                {key: 'percent', title: 'Stops are given in percent (0 -> 1)'},
+                                {key: 'values', title: 'Values (Stop values are directly given)'}
+                            ],
+                            default: 'percent'
+                        }
+                    }
+                },
                 colorBar: {
                     options: {
                         type: 'table',
                         multiple: true,
-                        title: 'Color gradient (colors must be numbers)'
+                        title: 'Color bar (colors must be numbers)'
                     },
                     fields: {
                         color: {
@@ -124,6 +141,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         fontSize: ['groups', 'group', 0, 'fontSize', 0],
         axesType: ['groups', 'group', 0, 'axesType', 0],
         gradient: ['groups', 'colorBar', 0],
+        stopType: ['groups', 'colorBarOpt', 0, 'stopType', 0],
         showColorBar: ['groups', 'group', 0, 'showColorBar', 0],
         enableZoom: ['groups', 'group', 0, 'enableZoom', 0]
     };

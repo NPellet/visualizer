@@ -1,20 +1,33 @@
 'use strict';
 
-define(['d3', 'src/util/util', 'chroma'], function (d3, Util, chroma) {
+define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chroma) {
     var exports = {};
 
     Util.loadCss('src/util/colorbar.css');
 
     exports.getColorScale = function (options) {
+        var domain;
         var domMin = d3.min(options.domain);
         var domMax = d3.max(options.domain);
-        var domain = options.stopPositions.map(function (v) {
-            return domMin + v * (domMax - domMin);
-        });
+        // Default stop type is percent
+        if (options.stopType !== 'values') {
+            domain = options.stopPositions.map(function (v) {
+                return domMin + v * (domMax - domMin);
+            });
+        } else {
+            domain = _.cloneDeep(options.stopPositions);
+        }
+
         // Normalize colors to be hexadecimal
         var stops = options.stops.map(function (c) {
             return chroma(c).hex();
         });
+        console.log(domain);
+        domain.unshift(Number.MIN_VALUE);
+        domain.push(Number.MAX_VALUE);
+        stops.push(stops[stops.length-1]);
+        stops.unshift(stops[0]);
+
         return d3.scale.linear().domain(domain).range(stops);
     };
 
@@ -24,6 +37,18 @@ define(['d3', 'src/util/util', 'chroma'], function (d3, Util, chroma) {
     };
 
     exports.renderSvg = function (el, options) {
+        var stopPositions;
+        // Default stop type is percent
+        if (options.stopType === 'values') {
+            // convert values to percentages
+            var max = d3.max(options.stopPositions);
+            var min = d3.min(options.stopPositions);
+            stopPositions = options.stopPositions.map(function (s) {
+                return (s - min) / (max - min);
+            });
+        } else {
+            stopPositions = options.stopPositions;
+        }
         var linearg = getGradientXY(options.axis.orientation);
         var margin = 30;
         var totalWidth = options.width + margin;
@@ -44,7 +69,7 @@ define(['d3', 'src/util/util', 'chroma'], function (d3, Util, chroma) {
             .data(options.stops)
             .enter().append('stop')
             .attr('offset', function (d, i) {
-                return '' + (options.stopPositions[i] * 100) + '%';
+                return '' + (stopPositions[i] * 100) + '%';
             })
             .style('stop-color', function (d) {
                 return d;

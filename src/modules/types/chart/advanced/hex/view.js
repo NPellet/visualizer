@@ -151,20 +151,29 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         },
 
         _processColors: function () {
-            this.colorDomain = _.filter(this.color, function (v) {
-                return !isNaN(v);
-            });
-            this.colorDomain = [Math.min.apply(null, this.colorDomain), Math.max.apply(null, this.colorDomain)];
             var gradient = this.module.getConfiguration('gradient');
+            var stopType = this.module.getConfiguration('stopType');
             gradient = _.filter(gradient, function (v) {
                 return v.stopPosition !== undefined;
             });
             this.stopPositions = _.pluck(gradient, 'stopPosition');
+
+            if(stopType === 'percent') {
+                this.colorDomain = _.filter(this.color, function (v) {
+                    return !isNaN(v);
+                });
+                this.colorDomain = [Math.min.apply(null, this.colorDomain), Math.max.apply(null, this.colorDomain)];
+            } else { // means values
+                this.colorDomain = [Math.min.apply(null, this.stopPositions), Math.max.apply(null, this.stopPositions)]
+            }
+
+
             this.stopColors = _(gradient).pluck('color').map(colorUtil.getColor).value();
             this.numberToColor = colorbar.getColorScale({
                 stops: this.stopColors,
                 stopPositions: this.stopPositions,
-                domain: this.colorDomain
+                domain: this.colorDomain,
+                stopType: stopType
             });
             for (var i = 0; i < this.color.length; i++) {
                 if (!isNaN(this.color[i])) {
@@ -327,7 +336,8 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                     },
                     stops: this.stopColors,
                     stopPositions: this.stopPositions,
-                    domain: this.colorDomain
+                    domain: this.colorDomain,
+                    stopType: this.module.getConfiguration('stopType')
                 });
 
                 svgMarkup = '<g transform="translate(' + colorbarx + ',' + colorbary + ')">' + svgMarkup + '</g>';

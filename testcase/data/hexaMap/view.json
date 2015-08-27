@@ -1,5 +1,5 @@
 {
-  "version": "2.25.1-0",
+  "version": "2.26.4-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -29,10 +29,26 @@
               "originZ": [
                 0
               ],
+              "fontSize": [
+                null
+              ],
+              "axesType": [
+                "graph"
+              ],
               "showColorBar": [
                 [
                   "show"
                 ]
+              ],
+              "enableZoom": [
+                []
+              ]
+            }
+          ],
+          "colorBarOpt": [
+            {
+              "stopType": [
+                "values"
               ]
             }
           ],
@@ -40,21 +56,21 @@
             [
               {
                 "color": [
-                  103,
-                  78,
-                  167,
-                  0.44
+                  153,
+                  0,
+                  255,
+                  1
                 ],
-                "stopPosition": 0
+                "stopPosition": 10
               },
               {
                 "color": [
-                  0,
-                  255,
-                  255,
-                  0.46
+                  74,
+                  134,
+                  232,
+                  1
                 ],
-                "stopPosition": 0.3
+                "stopPosition": 11
               },
               {
                 "color": [
@@ -63,7 +79,7 @@
                   0,
                   1
                 ],
-                "stopPosition": 1
+                "stopPosition": 12
               }
             ]
           ]
@@ -76,8 +92,8 @@
             "top": 0
           },
           "size": {
-            "width": 58,
-            "height": 43
+            "width": 57.977777767181394,
+            "height": 42.977777767181394
           },
           "zIndex": 0,
           "display": true,
@@ -159,8 +175,8 @@
             "top": 0
           },
           "size": {
-            "width": 41,
-            "height": 43
+            "width": 40.977777767181394,
+            "height": 42.977777767181394
           },
           "zIndex": 0,
           "display": true,
@@ -244,8 +260,8 @@
             "top": 44
           },
           "size": {
-            "width": 40,
-            "height": 40
+            "width": 39.977777767181394,
+            "height": 39.977777767181394
           },
           "zIndex": 0,
           "display": true,
@@ -314,8 +330,8 @@
             "top": 44
           },
           "size": {
-            "width": 53,
-            "height": 40
+            "width": 52.977777767181394,
+            "height": 39.977777767181394
           },
           "zIndex": 0,
           "display": true,
