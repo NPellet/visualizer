@@ -323,6 +323,13 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
 
             var svg = mother.append('g');
 
+            var tickMode = this.module.getConfiguration('tickMode');
+            var tickNumber = this.module.getConfiguration('tickNumber');
+            var tickValues = this.module.getConfiguration('tickValues')
+                .split(',').map(function(v) {
+                    return +v;
+                });
+
             if (this.module.getConfigurationCheckbox('showColorBar', 'show')) {
                 var colorbarx = boundingBox[0];
                 var colorbary = boundingBox[1];
@@ -331,7 +338,8 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                     height: boundingBox[3] * 0.95 - 20,
                     axis: {
                         orientation: 'left',
-                        ticks: 5,
+                        ticks: tickMode === 'auto' ? tickNumber : undefined,
+                        tickValues: tickMode === 'manual' ? tickValues: undefined,
                         order: 'asc'
                     },
                     stops: this.stopColors,

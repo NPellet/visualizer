@@ -107,8 +107,13 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
         var axis = d3.svg.axis()
             .scale(x)
             .orient(options.axis.orientation)
-            .tickSize(6)
-            .ticks(options.axis.ticks);
+            .tickSize(6);
+        if(options.axis.ticks) {
+            axis.ticks(options.axis.ticks);
+        } else if(options.axis.tickValues) {
+            axis.tickValues(options.axis.tickValues);
+        }
+
         g.append('g')
             .attr('class', 'key')
             .attr('transform', function () {

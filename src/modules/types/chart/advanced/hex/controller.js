@@ -103,11 +103,37 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                     fields: {
                         stopType: {
                             type: 'combo',
+                            title: 'Stop type',
                             options: [
-                                {key: 'percent', title: 'Stops are given in percent (0 -> 1)'},
-                                {key: 'values', title: 'Values (Stop values are directly given)'}
+                                {key: 'percent', title: 'Percent - Stop positions are given as percent of domain (0 -> 1)'},
+                                {key: 'values', title: 'Values (Stop positions are directly given)'}
                             ],
                             default: 'percent'
+                        },
+                        tickMode: {
+                            type: 'combo',
+                            title: 'Ticks',
+                            options: [
+                                {key: 'auto', title: 'Automatic'},
+                                {key: 'manual', title: 'Manual'}
+                            ],
+                            default: 'auto',
+                            displaySource: {
+                                auto: 'a',
+                                manual: 'm'
+                            }
+                        },
+                        tickNumber: {
+                            type: 'float',
+                            title: 'Number of ticks',
+                            default: 5,
+                            displayTarget: ['a']
+                        },
+                        tickValues: {
+                            type: 'text',
+                            title: 'Tick values (,-separated)',
+                            default: '',
+                            displayTarget: ['m']
                         }
                     }
                 },
@@ -142,6 +168,9 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         axesType: ['groups', 'group', 0, 'axesType', 0],
         gradient: ['groups', 'colorBar', 0],
         stopType: ['groups', 'colorBarOpt', 0, 'stopType', 0],
+        tickMode: ['groups', 'colorBarOpt', 0, 'tickMode', 0],
+        tickNumber: ['groups', 'colorBarOpt', 0, 'tickNumber', 0],
+        tickValues: ['groups', 'colorBarOpt', 0, 'tickValues', 0],
         showColorBar: ['groups', 'group', 0, 'showColorBar', 0],
         enableZoom: ['groups', 'group', 0, 'enableZoom', 0]
     };
