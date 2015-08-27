@@ -325,7 +325,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
 
             var tickMode = this.module.getConfiguration('tickMode');
             var tickNumber = this.module.getConfiguration('tickNumber');
-            var tickValues = this.module.getConfiguration('tickValues')
+            var tickValues = (this.module.getConfiguration('tickValues') || '')
                 .split(',').map(function(v) {
                     return +v;
                 });
