@@ -87,8 +87,6 @@
         jsmeApplet = new JSApplet.JSME("appletContainer", w + "px", h + "px");
 
         def.done(function (message) {
-            console.log(message.prefs);
-
             jsmeApplet.options(message.prefs);
             setHighlightColor(message.highlightColor);
             jsmeApplet.setMolecularAreaLineWidth(message.bondwidth);
