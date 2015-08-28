@@ -1,3 +1,27 @@
+<a name="2.27.0"></a>
+# 2.27.0 (2015-08-28)
+
+
+### Bug Fixes
+
+* **hex:** fix the axe arrows ([05c2a58](https://github.com/NPellet/visualizer/commit/05c2a58))
+* incorrect usage of require.toUrl for CSS ([537b9a0](https://github.com/NPellet/visualizer/commit/537b9a0))
+* **module:** conflict with actionIn in Code executor and Filter editor ([1d140ad](https://github.com/NPellet/visualizer/commit/1d140ad)), closes [#686](https://github.com/NPellet/visualizer/issues/686)
+* **onde_module:** The action onSubmit is always send event in case of in-place modification ([ba25c33](https://github.com/NPellet/visualizer/commit/ba25c33))
+* **plot_function:** fix reference to Parser lib ([54b9d6b](https://github.com/NPellet/visualizer/commit/54b9d6b))
+* **spectra_displayer:** Add none option to x axis modification ([f097bb6](https://github.com/NPellet/visualizer/commit/f097bb6))
+* **util:** rewriteRequirePath should not rewrite valid URLs ([ab70686](https://github.com/NPellet/visualizer/commit/ab70686))
+
+### Features
+
+* **hex:** add font-size option ([d9902e2](https://github.com/NPellet/visualizer/commit/d9902e2))
+* **hex:** add possibility to manually decide which ticks to display ([a23a2c7](https://github.com/NPellet/visualizer/commit/a23a2c7))
+* **hex:** automatic font size ([c5ce997](https://github.com/NPellet/visualizer/commit/c5ce997))
+* **hex:** axes can be on graph, as legend or not present ([65b9a8e](https://github.com/NPellet/visualizer/commit/65b9a8e))
+* **hex:** stop postions can be given either as percent or as values ([719c420](https://github.com/NPellet/visualizer/commit/719c420))
+
+
+
 <a name="2.26.3"></a>
 ## 2.26.3 (2015-08-10)
 
