@@ -152,8 +152,8 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                     var xAxis = graph.getXAxis(null, xOptions);
                     xAxis
                         .flip(cfgCheckbox('flipAxis', 'flipX'))
-                        .togglePrimaryGrid(cfgCheckbox('grid', 'vmain'))
-                        .toggleSecondaryGrid(cfgCheckbox('grid', 'vsec'))
+                        .setPrimaryGrid(cfgCheckbox('grid', 'vmain'))
+                        .setSecondaryGrid(cfgCheckbox('grid', 'vsec'))
                         .setLabel(cfg('xLabel', ''))
                         .forceMin(cfg('minX', false))
                         .forceMax(cfg('maxX', false))
@@ -173,8 +173,8 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                     var yAxis = graph.getYAxis();
                     yAxis
                         .flip(cfgCheckbox('flipAxis', 'flipY'))
-                        .togglePrimaryGrid(cfgCheckbox('grid', 'hmain'))
-                        .toggleSecondaryGrid(cfgCheckbox('grid', 'hsec'))
+                        .setPrimaryGrid(cfgCheckbox('grid', 'hmain'))
+                        .setSecondaryGrid(cfgCheckbox('grid', 'hsec'))
                         .setLabel(cfg('yLabel', ''))
                         .forceMin(cfg('minY', false))
                         .forceMax(cfg('maxY', false))
@@ -325,10 +325,10 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
 
             this.graph.drawSeries();
 
-            var minX = this.xAxis.getActualMin();
-            var maxX = this.xAxis.getActualMax();
-            var minY = this.yAxis.getActualMin();
-            var maxY = this.yAxis.getActualMax();
+            var minX = this.xAxis.getCurrentMin();
+            var maxX = this.xAxis.getCurrentMax();
+            var minY = this.yAxis.getCurrentMin();
+            var maxY = this.yAxis.getCurrentMax();
 
             this.module.model.setXBoundaries(minX, maxX);
             this.module.model.setYBoundaries(minY, maxY);

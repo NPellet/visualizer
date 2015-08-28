@@ -3,9 +3,9 @@
 (function( global, factory ) {
 
 	if ( typeof module === "object" && typeof module.exports === "object" ) {
-		
+
 		module.exports = factory( global );
-			
+
 	} else {
 
 		factory( global );
@@ -70,7 +70,7 @@
 							'graph.plugin.zoom': { shift: false, ctrl: false },
 							'graph.plugin.shape': { shift: true, ctrl: false }
 						},
-					
+
 						wheel: {
 							type: 'plugin',
 							plugin: 'graph.plugin.zoom',
@@ -86,7 +86,7 @@
 								mode: 'total'
 							}
 						},
-						
+
 /*
 
 						onAnnotationMake: function( annot, shape ) {
@@ -97,13 +97,13 @@
 								break;
 							}
 
-	//						self.onAnnotationMake( annot );						
+	//						self.onAnnotationMake( annot );
 						},
 
 						onAnnotationSelect: function( annot, shape ) {
 
 							switch(annot.type) {
-								case 'areaundercurve': 
+								case 'areaundercurve':
 									self.doMsFromAUC( annot, shape );
 									//self.AUCSelected( annot );
 									self.trigger( 'AUCSelected', [ this ] );
@@ -134,7 +134,7 @@
 						},
 
 						onAnnotationUnselect: function(annot) {
-							
+
 							self.killMsFromAUC();
 
 						},
@@ -194,7 +194,7 @@
 							}
 						],
 
-						
+
 						top: [
 							{
 								labelValue: 'RI',
@@ -203,7 +203,7 @@
 							}
 						],
 
-						
+
 
 						left: [
 							{
@@ -219,7 +219,7 @@
 						]
 					},
 
-			
+
 					optionsMs = {
 
 						paddingTop: 5,
@@ -238,7 +238,7 @@
 						pluginAction: {
 							'graph.plugin.zoom': { shift: false, ctrl: false }
 						},
-					
+
 						wheel: {
 							type: 'plugin',
 							plugin: 'graph.plugin.zoom',
@@ -257,13 +257,13 @@
 	/*
 						onAnnotationMake: function( annot ) {
 
-							annot._msIon = new DataObject({ 
-								name: annot.id, 
-								data: [], 
-								lineColor: annot.fillColor || annot.strokeColor, 
+							annot._msIon = new DataObject({
+								name: annot.id,
+								data: [],
+								lineColor: annot.fillColor || annot.strokeColor,
 								lineWidth: '2'
 							});
-							
+
 							this.options.onAnnotationChange(annot);
 							self.onAnnotationMake(annot);
 						},
@@ -272,13 +272,13 @@
 
 							var annot = new DataObject(annot, true);
 
-							var val = annot.pos.x, 
-								index, 
-								index2, 
-								val, 
+							var val = annot.pos.x,
+								index,
+								index2,
+								val,
 								target = [];
 
-							
+
 							for(var i = 0, l = self.msData.length; i < l; i++) {
 
 								index = self.searchBinaryIndexMs(i, val),
@@ -316,7 +316,7 @@
 							{
 								labelValue: 'm/z',
 								unitModification: false,
-								
+
 								primaryGrid: false,
 								nbTicksPrimary: 10,
 								nbTicksSecondary: 4,
@@ -367,7 +367,7 @@
 				this.msGraph.redraw();
 
 				this.gcGraph.on('click', function( e ) {
-					
+
 					if( e.target.nodeName == 'path' || e.target.nodeName == 'text' ) {
 						return;
 					}
@@ -376,7 +376,7 @@
 				});
 
 				this.gcGraph.newShape({
-					pos: { 
+					pos: {
 						x: 100,
 						y: 'min'
 					},
@@ -401,11 +401,11 @@
 				});
 
 				this.msGraph.on("shapeUnselect", function( shape ) {
-					self.msShapesSelectChange();					
+					self.msShapesSelectChange();
 				});
 
 				this.gcGraph.on("shapeSelect", function( shape ) {
-					
+
 					if( shape.data.ingredient ) {
 						self.trigger("ingredientSelected", shape.data.ingredient );
 					}
@@ -422,9 +422,9 @@
 					if( ! ( shape.data.type == 'areaundercurve' ) ) {
 						return;
 					}
-					
+
 					shape.setSerie( self.gcGraph.getSerie( 0 ) );
-					
+
 					self.aucs.push( shape );
 					self.trigger('AUCCreated', shape );
 				} );
@@ -434,7 +434,7 @@
 					if( ! ( shape.data.type == 'areaundercurve' ) ) {
 						return;
 					}
-					
+
 					self.doMsFromAUC( shape.data, shape );
 					self.trigger('AUCChange', shape );
 				} );
@@ -444,7 +444,7 @@
 					if( ! ( shape.data.type == 'areaundercurve' ) ) {
 						return;
 					}
-					
+
 					self.doMsFromAUC( shape.data, shape );
 					self.trigger('AUCChange', shape );
 				} );
@@ -455,7 +455,7 @@
 						return;
 					}
 
-					self.trigger('AUCSelected', shape );					
+					self.trigger('AUCSelected', shape );
 				} );
 
 				this.gcGraph.shapeHandlers.onUnselected.push( function( shape ) {
@@ -472,10 +472,10 @@
 					if( ! ( shape.data.type == 'areaundercurve' ) ) {
 						return;
 					}
-					
+
 					self.trigger('AUCRemoved', shape );
 				} );
-			
+
 				this.gcGraph.getXAxis().on("zoom", function( ) {
 					self.gcGraph.getYAxis().scaleToFitAxis();
 				})
@@ -483,8 +483,8 @@
 				this.gcGraph.shapeHandlers.onSelected.push( function( shape ) {
 					self.doMsFromAUC( shape.data, shape );
 				} );
-*/	
-				
+*/
+
 				this.lockTrackingLine = false;
 
 			},
@@ -516,7 +516,7 @@
 			setRIComponents: function( components ) {
 
 
-				this.gcGraph.getTopAxis().linkToAxis( this.gcGraph.getBottomAxis(), function( val ) { 
+				this.gcGraph.getTopAxis().linkToAxis( this.gcGraph.getBottomAxis(), function( val ) {
 
 					var result = 0;
 					var i;
@@ -553,7 +553,7 @@
 					return;
 				}
 			//	console.log( self.msData, indexMin, indexMax );
-			
+
 				for(i = indexMin; i <= indexMax; i++) {
 
 					for(j = 0, l = self.msData[i].length; j < l; j+=2) {
@@ -562,7 +562,7 @@
 
 						if(obj[ floor ]) {
 
-							obj[ floor ] += self.msData[i][j+1];	
+							obj[ floor ] += self.msData[i][j+1];
 
 						} else {
 
@@ -573,7 +573,7 @@
 				}
 
 				allMs.sort( function(a, b) { return a - b; } );
-				
+
 				for( var i = 0; i < allMs.length; i ++ ) {
 					finalMs.push( allMs[ i ] );
 					finalMs.push( Math.round( obj[ allMs[ i ] ] / Math.abs( indexMax - indexMin ) ) );
@@ -630,7 +630,7 @@
 
 				var self = this,
 					obj = {
-					pos: { 
+					pos: {
 						x: from
 					},
 
@@ -643,18 +643,18 @@
 					fillColor: 'rgba(0,100,100,0.3)',
 					strokeColor: 'rgba(0,100,100,1)',
 					strokeWidth: 2,
-					selectable: true	
+					selectable: true
 				};
 
 				if( options.color ) {
 					obj.fillColor = options.color;
 				}
-				
+
 
 				if( options.linecolor ) {
 					obj.strokeColor = options.linecolor;
 				}
-				
+
 
 				this.gcGraph.newShape( obj ).then( function( shape ) {
 
@@ -676,13 +676,13 @@
 					auc.kill();
 
 					if( self.options.onlyOneMS ) {
-						
+
 						if( self.msFromAucSerie ) {
 							self.msFromAucSerie.kill();
 						}
 
 					} else {
-						
+
 						if( auc.msFromAucSerie ) {
 							auc.msFromAucSerie.kill();
 						}
@@ -692,7 +692,7 @@
 				this.aucs = [];
 			},
 
-			killMsFromAUC: function() {				
+			killMsFromAUC: function() {
 				return;
 				if( ! this.msFromAucSerie ) {
 					return;
@@ -785,12 +785,12 @@
 
 
 					var axis = this.gcGraph.getBottomAxis();
-					var from = axis.getActualMin();
-					var to = axis.getActualMax();
-					
+					var from = axis.getCurrentMin();
+					var to = axis.getCurrentMax();
+
 					this.trigger("onZoomGC", [ from, to ] );
 
-						
+
 
 					this.gcData = gc[ i ];
 					this.gcSeries.push( serie );
@@ -801,7 +801,7 @@
 				this.aucs.map( function( auc ) {
 
 					if( ! auc.getSerie() ) {
-						auc.setSerie( self.gcGraph.getSerie( 0 ) );			
+						auc.setSerie( self.gcGraph.getSerie( 0 ) );
 					}
 
 					auc.redraw();
@@ -812,7 +812,7 @@
 			},
 
 			setMS: function(ms) {
-				this.msData = ms;	
+				this.msData = ms;
 			},
 
 			setExternalGC: function( gc ) {
@@ -861,7 +861,7 @@
 				this.msGraph._updateAxes();
 
 				this.msGraph.getRightAxis().scaleToFitAxis( this.msGraph.getBottomAxis() );
-				
+
 
 				this.msGraph.redraw(true, true, false);
 				this.msGraph.drawSeries();
@@ -897,10 +897,10 @@
 			addIngredient: function( ingredient ) {
 				ingredient.color = ingredient.color || [100, 100, 100];
 
-				
+
 				var self = this,
 					obj = {
-					pos: { 
+					pos: {
 						x: ingredient.rt_x,
 						y: ingredient.rt_y,
 						dy: "-10px"
@@ -959,11 +959,11 @@
 				self.trigger('MSChangeIndex', [ x, ms ] );
 
 				if( ! self.msSerieMouseTrack ) {
-					
+
 					self.msSerieMouseTrack = self
 					.msGraph
-					.newSerie("", 
-						{ 
+					.newSerie("",
+						{
 							lineToZero: ! self.options.msIsContinuous,
 							lineColor: 'rgba( 100, 100, 100, 0.5 )'
 						}
@@ -974,7 +974,7 @@
 
 
 				var xVal = self.gcData[ x * 2 ];
-				
+
 				self.trackingLineGC.data.pos.x = xVal;
 				self.trackingLineGC.data.pos2.x = xVal;
 
@@ -983,8 +983,8 @@
 				if( ! ms ) {
 					return;
 				}
-			
-			
+
+
 				self.msSerieMouseTrack.setData( ms );
 
 
@@ -996,7 +996,7 @@
 				self.msGraph._updateAxes();
 
 
-				if( !isNaN( self.msGraph.getBottomAxis().getActualMin() ) ) {
+				if( !isNaN( self.msGraph.getBottomAxis().getMin() ) ) {
 
 					self.msGraph.getLeftAxis().scaleToFitAxis( self.msGraph.getBottomAxis(), self.msSerieMouseTrack );
 //								self.msGraph.getLeftAxis().setMinMaxToFitSeries();
@@ -1006,7 +1006,7 @@
 					self.msGraph.autoscaleAxes();
 				}
 				// Autoscale y ?
-				
+
 				self.msGraph.redraw();
 				self.msSerieMouseTrack.draw();
 			},
@@ -1014,25 +1014,25 @@
 			updateIngredientPeaks: function() {
 
 				var self = this;
-				var min = this.gcGraph.getXAxis().getActualMin();
-				var max = this.gcGraph.getXAxis().getActualMax();
+				var min = this.gcGraph.getXAxis().getMin();
+				var max = this.gcGraph.getXAxis().getMax();
 
 				this.ingredients = this.ingredients.sort( function( a, b ) {
 
 					if ( a[ 0 ].rt_x < min || a[ 0 ].rt_x > max ) {
-						
+
 						return 1;
 					}
 
 					if ( b[ 0 ].rt_x < min || b[ 0 ].rt_x > max ) {
-						
+
 						return - 1;
 					}
 
 					return - ( a[ 0 ].rt_y - b[ 0 ].rt_y );
 				});
 
-				
+
 				var i = 0;
 				var limit = 20,
 					xs = [];
@@ -1055,13 +1055,13 @@
 					};
 
 					if( cont ) {
-						
+
 						continue;
 					} else {
 						xs.push( valX );
 					}
 
-					
+
 					if( i < limit ) {
 						this.ingredients[ i ][ 1 ].toggleLabel( 0, true );
 					} else {
@@ -1077,14 +1077,14 @@
 
 
     if( typeof define === "function" && define.amd ) {
-        
+
         define( [ 'jquery', 'graph' ], function( $, Graph ) {
 
             return factory( $, Graph );
         });
 
     } else if( window ) {
-        
+
         if( window.Graph && window.$ ) {
 
         	// Namespace NMRHandler

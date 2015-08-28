@@ -338,8 +338,8 @@ define([
 
                 var a = this.gcmsInstance.getGC().getBottomAxis();
 
-                var mi = a.getActualMin();
-                var ma = a.getActualMax();
+                var mi = a.getCurrentMin();
+                var ma = a.getCurrentMax();
 
                 var interval = Math.abs(ma - mi) / 2;
 

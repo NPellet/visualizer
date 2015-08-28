@@ -38,14 +38,14 @@
     "jit": "2.0.2",
     "jqgrid_edit": "git://github.com/NPellet/jqGrid#4.5.6",
     "jquery": "2.1.4",
-    "jquery.panzoom": "cheminfo/jquery.panzoom#2cbe83a059b4f41181f4c5bba628e5267d6a12f5",
-    "jquery.threedubmedia": "git://github.com/threedubmedia/jquery.threedubmedia",
     "jquery-cookie": "1.4.1",
     "jquery-mousewheel": "3.1.12",
-    "jquery-ui": "1.11.4",
     "jquery-tmpl": "BorisMoore/jquery-tmpl#vBeta1.0.0",
+    "jquery-ui": "1.11.4",
+    "jquery.panzoom": "cheminfo/jquery.panzoom#2cbe83a059b4f41181f4c5bba628e5267d6a12f5",
+    "jquery.threedubmedia": "git://github.com/threedubmedia/jquery.threedubmedia",
     "jsbarcode": "*",
-    "jsgraph": "v1.13.1-0",
+    "jsgraph": "v1.13.3-11",
     "jsNMR": "NPellet/jsNMR#73cd9c371c8ebc53c32b7f6e6c36077e8a407d99",
     "json-chart": "1.0.0",
     "jsoneditor": "3.2.0",
@@ -78,7 +78,7 @@
     "x2js": "1.1.7"
   },
   "resolutions": {
-    "jsgraph": "v1.13.1-0"
+    "jsgraph": "v1.13.3-11"
   },
   "private": true
 }
