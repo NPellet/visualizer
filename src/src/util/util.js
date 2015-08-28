@@ -414,16 +414,16 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
 
     var utilReqPaths = {};
     exports.rewriteRequirePath = function (url) {
-        url = require.toUrl(url);
+        var rewrittenUrl = require.toUrl(url);
         if (!this.requireNeedsExtension(url)) {
-            // return same url without trailing backslash
+            // return original url without trailing slash
             return url;
         }
         var reqPathStr = exports.getNextUniqueId(true);
-        if (utilReqPaths[url]) return utilReqPaths[url];
-        utilReqPaths[url] = reqPathStr;
+        if (utilReqPaths[rewrittenUrl]) return utilReqPaths[url];
+        utilReqPaths[rewrittenUrl] = reqPathStr;
         var paths = {};
-        paths[reqPathStr] = url;
+        paths[reqPathStr] = rewrittenUrl;
         require.config({
             paths: paths
         });
