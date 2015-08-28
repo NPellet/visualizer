@@ -36,8 +36,8 @@ define([
 
     var exports = {};
     var cssLoaded = Promise.all([
-        Util.loadCss(require.toUrl('components/slickgrid/slick.grid.css')),
-        Util.loadCss(require.toUrl('src/util/uploadUi.css'))
+        Util.loadCss('components/slickgrid/slick.grid.css'),
+        Util.loadCss('src/util/uploadUi.css')
     ]);
 
     var prefix = 'upload/';

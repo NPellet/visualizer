@@ -1,7 +1,6 @@
 'use strict';
 
 define([
-    'require',
     'modules/default/defaultview',
     'src/util/debug',
     'lodash',
@@ -9,14 +8,14 @@ define([
     'src/util/api',
     'src/util/typerenderer',
     'slickgrid'
-], function (require, Default, Debug, _, Util, API, Renderer, Slick) {
+], function (Default, Debug, _, Util, API, Renderer, Slick) {
 
     function View() {
     }
 
 
     var cssPromises = [];
-    cssPromises.push(Util.loadCss(require.toUrl('components/slickgrid/slick.grid.css')));
+    cssPromises.push(Util.loadCss('components/slickgrid/slick.grid.css'));
     var cssLoaded = Promise.all(cssPromises);
 
     // A simple filter
