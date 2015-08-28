@@ -38,7 +38,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
 
     Controller.prototype.variablesIn = ['inputValue'];
 
-    Controller.prototype.actionsIn.execute = 'Execute the code';
+    Controller.prototype.actionsIn = $.extend({}, Controller.prototype.actionsIn, {execute: 'Execute the code'});
 
     Controller.prototype.configurationStructure = function () {
         return {

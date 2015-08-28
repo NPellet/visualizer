@@ -16,13 +16,10 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/uti
         license: 'MIT'
     };
 
-    Controller.prototype.references.dataobject = {
-        label: 'Object to filter'
-    };
-
-    Controller.prototype.references.filteredObject = {
-        label: 'Filtered object'
-    };
+    Controller.prototype.references = $.extend({}, Controller.prototype.references, {
+        dataobject: {label: 'Object to filter'},
+        filteredObject: {label: 'Filtered object'}
+    });
 
     Controller.prototype.events = {
         onButtonClick: {
@@ -33,7 +30,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/uti
 
     Controller.prototype.variablesIn = ['dataobject'];
 
-    Controller.prototype.actionsIn.doFilter = 'Trigger the filter';
+    Controller.prototype.actionsIn = $.extend({}, Controller.prototype.actionsIn, {doFilter: 'Trigger the filter'});
 
     Controller.prototype.configurationStructure = function () {
         return {
