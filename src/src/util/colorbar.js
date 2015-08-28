@@ -25,7 +25,7 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
         console.log(domain);
         domain.unshift(Number.MIN_VALUE);
         domain.push(Number.MAX_VALUE);
-        stops.push(stops[stops.length-1]);
+        stops.push(stops[stops.length - 1]);
         stops.unshift(stops[0]);
 
         return d3.scale.linear().domain(domain).range(stops);
@@ -108,9 +108,9 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
             .scale(x)
             .orient(options.axis.orientation)
             .tickSize(6);
-        if(options.axis.ticks) {
+        if (options.axis.ticks) {
             axis.ticks(options.axis.ticks);
-        } else if(options.axis.tickValues) {
+        } else if (options.axis.tickValues) {
             axis.tickValues(options.axis.tickValues);
         }
 

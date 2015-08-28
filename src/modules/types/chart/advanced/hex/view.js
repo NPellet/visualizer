@@ -158,13 +158,13 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             });
             this.stopPositions = _.pluck(gradient, 'stopPosition');
 
-            if(stopType === 'percent') {
+            if (stopType === 'percent') {
                 this.colorDomain = _.filter(this.color, function (v) {
                     return !isNaN(v);
                 });
                 this.colorDomain = [Math.min.apply(null, this.colorDomain), Math.max.apply(null, this.colorDomain)];
             } else { // means values
-                this.colorDomain = [Math.min.apply(null, this.stopPositions), Math.max.apply(null, this.stopPositions)]
+                this.colorDomain = [Math.min.apply(null, this.stopPositions), Math.max.apply(null, this.stopPositions)];
             }
 
 
@@ -190,11 +190,11 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             });
         },
 
-        _fontSize: function(px) {
+        _fontSize: function (px) {
             var maxFontSize = 50;
             function findFontSize(text) {
                 var arr = text.split('\n');
-                var n = arr.reduce(function(p, c) {
+                var n = arr.reduce(function (p, c) {
                     return Math.max(p, c.length);
                 }, 0);
                 n = Math.max(n, arr.length);
@@ -202,9 +202,9 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             }
 
             var fontSize;
-            if(!(fontSize = this.module.getConfiguration('fontSize'))) {
-                fontSize = this.label.reduce(function(prev, current) {
-                    if(!current) return prev;
+            if (!(fontSize = this.module.getConfiguration('fontSize'))) {
+                fontSize = this.label.reduce(function (prev, current) {
+                    if (!current) return prev;
                     return Math.min(prev, findFontSize(current));
                 }, maxFontSize);
             }
@@ -326,7 +326,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             var tickMode = this.module.getConfiguration('tickMode');
             var tickNumber = this.module.getConfiguration('tickNumber');
             var tickValues = (this.module.getConfiguration('tickValues') || '')
-                .split(',').map(function(v) {
+                .split(',').map(function (v) {
                     return +v;
                 });
 
@@ -339,7 +339,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                     axis: {
                         orientation: 'left',
                         ticks: tickMode === 'auto' ? tickNumber : undefined,
-                        tickValues: tickMode === 'manual' ? tickValues: undefined,
+                        tickValues: tickMode === 'manual' ? tickValues : undefined,
                         order: 'asc'
                     },
                     stops: this.stopColors,
@@ -464,7 +464,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                         })
                         .attr('class', 'axe-corner-text')
                         .html(function (d, i) {
-                            return that.axeLabels[i]
+                            return that.axeLabels[i];
                         });
 
                     // Legend arrows
@@ -718,7 +718,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
     function commonMax(a, b) {
         var m = 0;
         for (var i = 0; i < a.length; i++) {
-            if(a[i] === b[i] && a[i] > m) m = a[i];
+            if (a[i] === b[i] && a[i] > m) m = a[i];
         }
         return m;
     }
