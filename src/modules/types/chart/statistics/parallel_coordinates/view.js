@@ -98,13 +98,8 @@ define([
             }
         },
         onResize: function () {
-            // 2 pixels less because of https://github.com/syntagmatic/parallel-coordinates
             this.dom.css('width', this.width - 2);
-
-            if (this.parcoords) {
-                this.parcoords.width(this.width - 2).height(this.height).resize().render();
-            }
-
+            this.redrawChart();
             this.refresh();
         },
         redrawChart: function () {
