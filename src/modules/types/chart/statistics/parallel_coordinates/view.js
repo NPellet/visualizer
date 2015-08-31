@@ -100,7 +100,6 @@ define([
         onResize: function () {
             this.dom.css('width', this.width - 2);
             this.redrawChart();
-            this.refresh();
         },
         redrawChart: function () {
             var that = this;
@@ -155,6 +154,8 @@ define([
                 parcoords.on('brushend', exportBrush);
 
                 this._parcoords = parcoords;
+                console.log('redraw');
+
             } else {
                 this.dom.html('No column to display');
             }
