@@ -3,7 +3,8 @@ Library copied from https://github.com/syntagmatic/parallel-coordinates
 Last update: 2015-08-31
  */
 
-define(['d3'],function(d3){
+/*eslint-disable */
+define(['d3', './d3.svg.multibrush'], function (d3) {
 
 d3.parcoords = function(config) {
   var __ = {
