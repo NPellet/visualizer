@@ -11,7 +11,7 @@
 	"xWidth": 10,
 	"yHeight": 10
   },
-  "version": "2.9.3",
+  "version": "2.27.1-0",
   "modules": [
 	{
 	  "url": "modules/types/edition/filter_editor/",
@@ -121,7 +121,7 @@
 				]
 			  ],
 			  "brushMode": [
-				"1D-axes"
+				"1D-axes-multi"
 			  ],
 			  "predicate": [
 				"and"
@@ -227,15 +227,13 @@
 		"groups": {
 		  "group": [
 			{
-			  "toggle": [
-				null
-			  ],
 			  "colorjpath": [
 				[]
 			  ],
 			  "slickCheck": [
 				[
-				  "rowNumbering"
+				  "rowNumbering",
+				  "highlightScroll"
 				]
 			  ],
 			  "slick.defaultColumnWidth": [
@@ -248,9 +246,6 @@
 				[
 				  "cell"
 				]
-			  ],
-			  "filterRow": [
-				null
 			  ]
 			}
 		  ],
@@ -263,19 +258,17 @@
 				"editor": "none",
 				"formatter": "typerenderer",
 				"width": 275,
-				"selectable": [],
-				"resizable": [
-				  "yes"
-				],
-				"sortable": [],
-				"focusable": [],
 				"defaultSortAsc": []
 			  }
 			]
 		  ],
 		  "groupings": [
 			[
-			  {}
+			  {
+				"getter": [
+				  null
+				]
+			  }
 			]
 		  ]
 		}
@@ -554,5 +547,6 @@
 		]
 	  }
 	}
-  ]
+  ],
+  "aliases": []
 }

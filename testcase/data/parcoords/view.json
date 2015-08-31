@@ -1,5 +1,5 @@
 {
-  "version": "2.9.3",
+  "version": "2.27.1-0",
   "modules": [
 	{
 	  "url": "modules/types/chart/statistics/parallel_coordinates/",
@@ -11,8 +11,13 @@
 			  "colJPath": [
 				"element.color"
 			  ],
+			  "options": [
+				[
+				  "reorder"
+				]
+			  ],
 			  "brushMode": [
-				"1D-axes"
+				"1D-axes-multi"
 			  ],
 			  "predicate": [
 				"and"
@@ -469,5 +474,6 @@
 	  },
 	  "groups": {}
 	}
-  ]
+  ],
+  "aliases": []
 }
