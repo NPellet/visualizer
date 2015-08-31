@@ -82,13 +82,17 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
                             options: [
                                 {key: 'None', title: 'None'},
                                 {key: '1D-axes', title: '1D axes'},
-                                {key: '2D-strums', title: '2D strums'}
+                                {key: '1D-axes-multi', title: '1D axes multi'},
+                                {key: '2D-strums', title: '2D strums'},
+                                {key: 'angular', title: 'Angular'}
                             ],
-                            'default': '1D-axes',
+                            'default': '1D-axes-multi',
                             displaySource: {
                                 None: 'n',
                                 '1D-axes': 'y',
-                                '2D-strums': 'y'
+                                '1D-axes-multi': 'y',
+                                '2D-strums': 'y',
+                                'angular': 'y'
                             }
                         },
                         predicate: {
