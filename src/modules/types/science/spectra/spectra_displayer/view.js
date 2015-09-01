@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'src/util/api', 'src/util/color'], function (Default, Graph, DataTraversing, API, Color) {
+define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'src/util/api', 'src/util/color', 'src/util/debug'], function (Default, Graph, DataTraversing, API, Color, Debug) {
 
     function View() {
     }
@@ -276,6 +276,8 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                 that.onResize();
                 that.resolveReady();
 
+            }).catch(function (err) {
+                Debug.error('Error loading the graph', err);
             });
 
         },
