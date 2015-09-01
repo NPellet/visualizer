@@ -16,12 +16,13 @@ define([
     'src/util/api',
     'lodash',
     'modules/default/defaultview',
+    'src/util/debug',
     'src/util/typerenderer',
     'src/util/util',
     'src/util/datatraversing',
     'lib/svg-edit-2.7/embedapi',
     'svgsanitize'
-], function (require, API, _, Default, Renderer) {
+], function (require, API, _, Default, Debug, Renderer) {
     var saveSvgThrottled = _.throttle(function () {
         var args = arguments;
 
@@ -32,7 +33,7 @@ define([
 
         function handleSvgData(data, error) {
             if (error) {
-                console.error('Unable to get svg from iframe');
+                Debug.error('Unable to get svg from iframe');
                 return;
             }
             saveAndTrigger(data);
@@ -62,8 +63,6 @@ define([
             clearAnimationTagsBeforeBegin: false
         }
     };
-
-    //var animationAttr = ['dur', 'fill', 'repeatCount', 'repeatDur', 'restart', 'attributeType', 'calcMode', 'additive', 'accumulate'];
 
     var animationReserved = ['options', 'tag', 'attributes'];
     var mouseEventNames = ['click', 'dblclick', 'mouseenter', 'mouseleave'];
@@ -95,14 +94,11 @@ define([
 
                 this.dom.bind('load', function () {
                     var frame = that.dom[0];
-                    // document.getElementById('svgedit');
                     that.svgCanvas = new EmbeddedSVGEdit(frame);
                     // Hide main button, as we will be controlling new, load, save, etc. from the host document
                     that.iframeDoc = frame.contentDocument || frame.contentWindow.document;
                     that.svgEditor = frame.contentWindow.svgEditor;
                     frame.contentWindow.svgedit.options = {};
-
-                    // frame.contentWindow.svgedit.options.sanitize = self._configCheckBox('sanitize', 'doSanitize');
 
                     // What to do when the canvas changes
                     that.svgCanvas.bind('changed', function () {
@@ -139,12 +135,7 @@ define([
 
         update: {
             svgModifier: function (data) {
-                // var clone = [];
-
                 // Avoid potential problems when separete elements of this array share the same reference to an object
-                // for(var i=0; i<data.length; i++) {
-                //     clone.push(_.cloneDeep(data[i]));
-                // }
                 this.modifySvgFromArray(data, true);
             }
         },
@@ -168,9 +159,6 @@ define([
             }
             for (var i = 0; i < anim.attributes.length; i++) {
                 anim.attributes[i] = _.defaults(anim.attributes[i], thisDefault);
-                // rememberAnim(anim,id)
-                // memorizeAnim(anim, id);
-
 
                 $svgEl.each(function () {
                     var animation = document.createElementNS('http://www.w3.org/2000/svg', anim.tag);
@@ -196,7 +184,7 @@ define([
                         if (anim.tag === 'animate') {
                             $svgEl.attr(this.getAttribute('attributeName'), this.getAttribute('to'));
                         } else {
-                            console.warn('Could not persist animation');
+                            Debug.warn('Could not persist animation');
                         }
                     }
 
@@ -230,8 +218,6 @@ define([
         },
 
         addAnimations: function ($svgEl, animation) {
-            // First, remove all animations
-            // $svgEl.find(animationTags.join(',')).remove();
             if (Array.isArray(animation)) {
                 for (var i = 0; i < animation.length; i++) {
                     this.addAnimation($svgEl, animation[i]);
@@ -271,10 +257,6 @@ define([
             if (!Array.isArray(arr)) {
                 arr = [arr];
             }
-            // if(isPrimaryCall) {
-            //     this._clearEventCallbacks(arr);
-            // }
-
 
             if (this._configCheckBox('editable', 'isEditable')) {
                 this.$svgcontent = $(that.iframeDoc).find('#svgcontent');
@@ -309,7 +291,7 @@ define([
             }
 
             if ($svgEl.length === 0) {
-                console.warn('The svg element to modify was not found', selector);
+                Debug.warn('The svg element to modify was not found', selector);
                 return;
             }
             if (obj.innerVal) {
@@ -336,9 +318,6 @@ define([
                     // Use straightforward solution
                     $svgEl.attr(obj.attributes);
                 }
-                $svgEl.each(function () {
-                    // svgedit.sanitize.sanitizeSvg(this, true);
-                });
                 that.removeStyleProperties($svgEl, obj.attributes);
             } else if (obj.animation && !obj.attributes) {
                 // Case 2)
@@ -368,17 +347,12 @@ define([
                 return;
 
             function onMouseEnter() {
-
-                /*      if( self.dataTimeout) { window.clearInterval( self.dataTimeout); }
-                 self.dataTimeout = window.setInterval( function( ) { console.log( obj.info ); obj.info.triggerChange(); } , 100 );
-                 */
                 $(this).css('cursor', 'pointer');
                 that.module.controller.onHover(obj.info || {});
 
             }
 
             function onMouseLeave() {
-                // self.module.controller.onLeave(obj.info || {});
                 $(this).css('cursor', 'default');
             }
 
@@ -437,16 +411,10 @@ define([
                         .on('mouseleave.svgeditor.varout', onMouseLeave)
                         .on('click.svgeditor.varout', onMouseClick);
                 }
-                //     var events  = $._data($svgEl[k], 'events');
-                //     var isVaroutCallbackSet =  events.click && _.some(events.click, function(clickEvent) {
-                //         return clickEvent.namespace === 'svgeditor.varout';
-                //     };
-
 
                 for (var j = 0; j < mouseEventNames.length; j++) {
                     if (obj.hasOwnProperty(mouseEventNames[j])) {
                         (function (eventName) {
-                            //var namespacedEventName = eventName + '.svgeditor.svgmodifier';
                             $svgEl.off(eventName);
                             $svgEl.on(eventName, function () {
                                 if (!obj[eventName].selector) {

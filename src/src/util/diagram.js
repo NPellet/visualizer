@@ -158,7 +158,6 @@ define([
 
             if (source) {
                 for (j = 0; j < source.length; j++) {
-                    console.log(source[j].jpath);
                     links.push({
                         source: {
                             module: source[j].module,

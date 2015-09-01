@@ -138,7 +138,6 @@ define(['jquery', 'src/util/event'], function ($, Event) {
             this._killers[killerID] = this._killers[killerID] || [];
             this._killers[killerID].push(_callbackId);
         }
-//console.log( this._callbacks );
         bindKeysRecursively(this, keys, _callbackId, true);
 
         return callbackId;

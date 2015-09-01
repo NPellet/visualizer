@@ -148,7 +148,7 @@ define([
                 }
             });
         }, function (e) {
-            console.error('View loading problem', e, e.stack);
+            Debug.error('View loading problem', e, e.stack);
         });
 
         function doInitScript() {

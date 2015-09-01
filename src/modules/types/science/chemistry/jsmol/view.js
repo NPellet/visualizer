@@ -1,6 +1,6 @@
 'use strict';
 
-define(['require', 'lodash', 'modules/default/defaultview', 'src/util/api'], function (require, _, Default, API) {
+define(['require', 'lodash', 'modules/default/defaultview', 'src/util/api', 'src/util/debug'], function (require, _, Default, API, Debug) {
 
     function View() {
     }
@@ -19,7 +19,7 @@ define(['require', 'lodash', 'modules/default/defaultview', 'src/util/api'], fun
         }
         var id = message.id;
         if (!views[id]) {
-            console.error('No view with ID ' + id);
+            Debug.error('No view with ID ' + id);
             return;
         }
         var view = views[id];
@@ -41,13 +41,13 @@ define(['require', 'lodash', 'modules/default/defaultview', 'src/util/api'], fun
                 view.module.controller.onAtomHover(atom);
                 break;
             case 'error':
-                console.log('An error message was received', message.message);
+                Debug.warn('An error message was received', message.message);
                 break;
             case 'execSync':
                 view.module.controller.onSyncExecDone(message.message);
                 break;
             default:
-                console.error('Message type not handled: ', message.type);
+                Debug.error('Message type not handled: ', message.type);
                 break;
         }
     });

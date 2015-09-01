@@ -11,11 +11,7 @@ define(function () {
         var name = url;
 
         if (crons[name]) {
-
-            if (!overwrite) {
-                console.warn('Cron already exists');
-                return;
-            } else {
+            if (overwrite) {
                 remove(name);
             }
         }
@@ -32,9 +28,6 @@ define(function () {
     var start = function (name) {
 
         (function (cronName) {
-
-            //crons[ cronName ][ 2 ] = false;
-            //console.log( crons[ cronName ] );
             crons[cronName][3] = window.setTimeout(function () {
 
                 $.ajax({
@@ -42,14 +35,6 @@ define(function () {
                     timeout: 1200,
                     method: 'get',
                     success: function (response) {
-
-//					console.log( crons[ cronName ], cronName );
-                        /*
-                         if( crons[ cronName ][ 2 ] == true ) {
-                         return;
-                         }
-                         */
-
                         crons[cronName][4](response);
                         start(cronName);
                     }
@@ -62,21 +47,16 @@ define(function () {
     };
 
     var stop = function (name) {
-
         if (!crons[name]) {
-            console.warn('Cannot stop a cron that does not exist');
             return;
         }
 
         window.clearTimeout(crons[name][3]);
-        //crons[ name ][ 2 ] = true;
-
     };
 
     var remove = function (name) {
 
         if (!crons[name]) {
-            console.warn('Cannot remove a cron that does not exist');
             return;
         }
 

@@ -1,6 +1,16 @@
 'use strict';
 
-define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms/button', 'src/util/util', 'lib/couchdb/jquery.couch', 'fancytree', 'components/ui-contextmenu/jquery.ui-contextmenu.min'], function ($, Default, Versioning, Button, Util) {
+define([
+    'jquery',
+    'src/header/components/default',
+    'src/util/versioning',
+    'forms/button',
+    'src/util/util',
+    'src/util/debug',
+    'lib/couchdb/jquery.couch',
+    'fancytree',
+    'components/ui-contextmenu/jquery.ui-contextmenu.min'
+], function ($, Default, Versioning, Button, Util, Debug) {
 
     function CouchDBManager() {
     }
@@ -25,7 +35,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                     that.ok = true;
                 },
                 error: function (e, f, g) {
-                    console.error('CouchDB header : database connection error. Code:' + e + '.', g);
+                    Debug.error('CouchDB header : database connection error. Code:' + e + '.', g);
                 }
             });
         },
@@ -43,7 +53,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 }
             } else {
                 this.checkDatabase();
-                console.error('CouchDB header : unreachable database.');
+                Debug.error('CouchDB header : unreachable database.');
             }
         },
         createMenu: function () {

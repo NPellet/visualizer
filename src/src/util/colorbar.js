@@ -22,7 +22,6 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
         var stops = options.stops.map(function (c) {
             return chroma(c).hex();
         });
-        console.log(domain);
         domain.unshift(Number.MIN_VALUE);
         domain.push(Number.MAX_VALUE);
         stops.push(stops[stops.length - 1]);

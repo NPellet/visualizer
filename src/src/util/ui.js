@@ -243,18 +243,15 @@ define([
                             dataType: 'json',
                             data: JSON.stringify(json),
                             success: function (data) {
-                                console.log('success', data);
                                 message.html('Thank you for your feedback ! You can follow your issue <a target="_blank" href="' + data.description + '">here</a>');
                                 that.disable();
                             },
                             error: function (data) {
                                 message.html('ERROR');
-                                console.log('error', data);
                             }
                         });
                     }, function (data) {
                         message.html('ERROR');
-                        console.log('error', data);
                     });
                 }
             }, {color: 'blue'}).render()

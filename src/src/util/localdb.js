@@ -26,14 +26,11 @@ define(['jquery'], function ($) {
                 return def.resolve();
 
             var req = indexedDB.open('ci', 26);
-            /*if(req.error)
-             console.warn(req.error);*/
 
             req.onsuccess = function (e) {
 
                 process = false;
                 db = e.target.result;
-                //def.resolve();
                 def.resolve();
             };
 
@@ -44,12 +41,10 @@ define(['jquery'], function ($) {
                 var def1 = $.Deferred(), def2 = $.Deferred();
                 if (db.objectStoreNames.contains('localview')) {
                     db.deleteObjectStore('localview');
-                    //req.onsuccess = function() { def1.resolve(); }
                 }
 
                 if (db.objectStoreNames.contains('localdata')) {
                     db.deleteObjectStore('localdata');
-                    //req2.onsuccess = function() { def2.resolve();}
                 }
 
 
@@ -70,12 +65,7 @@ define(['jquery'], function ($) {
             };
 
             req.onerror = function (e) {
-                console.log(e.target);
                 def.reject();
-            };
-
-            req.oncomplete = function (e) {
-                console.warn(e.error);
             };
 
             return def;

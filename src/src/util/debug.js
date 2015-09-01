@@ -129,7 +129,7 @@ define(['loglevel'], function (log) {
             }
         },
         log: function () {
-            console.log(this.time());
+            Debug.info(this.time());
         },
         sum: function (name) {
             var elapsed = perfObj.now() - this._start;

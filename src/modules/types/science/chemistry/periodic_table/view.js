@@ -57,20 +57,6 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             var that = this;
             this.dom.html('');
             var renderers = [];
-            //var w = this.width / 18;
-            //
-            //for (var i = 0; i < this.elements.length; i++) {
-            //    console.log(this.elements[i]);
-            //    var position = calcPosition(this.elements[i]);
-            //    var $element = $(this.template.render({element: this.elements[i]}));
-            //    $element.css({
-            //        'position': 'absolute',
-            //        'left': position[0] * w,
-            //        'top': position[1] * w
-            //    });
-            //    this.dom.append($element);
-            //}
-            // Made with Daniel
 
             this.dom.append('<div class="indic-p indic-g"></div>');
             for (var i = 1; i < 19; i++) {
@@ -165,11 +151,6 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             }
 
             var interactZone = ('<div class="interactive-zone"><div id="slider"></div>');
-            //$( "#slider" ).slider({
-            //    orientation: "horizontal",
-            //    max: 6000,
-            //    min: 0
-            //});
             var legend = $('<div class="legend"></div>');
             $('.legend').after(interactZone);
 

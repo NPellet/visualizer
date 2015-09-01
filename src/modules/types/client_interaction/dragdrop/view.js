@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
+define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (Default, bowser, Debug) {
     bowser.mobileos = bowser.ios || bowser.android || bowser.blackberry || bowser.firefoxos || bowser.webos || false;
     var hasGetUserMedia = !!(navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
     var useGetUserMedia = !bowser.mobileos && hasGetUserMedia;
@@ -194,7 +194,7 @@ define(['modules/default/defaultview', 'bowser'], function (Default, bowser) {
                     audio: false
                 }, treatStream,
                 function (err) {
-                    console.error('An error occured! ' + err);
+                    Debug.error('An error occured! ' + err);
                 }
             );
 

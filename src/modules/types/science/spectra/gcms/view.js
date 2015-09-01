@@ -97,10 +97,7 @@ define([
 
                         that.module.controller.sendActionFromEvent('onIntegralSelect', 'GCIntegration', auc.data._originalSource);
 
-                    } else {
-                        //console.trace();
                     }
-
 
                 },
 

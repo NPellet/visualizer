@@ -12,11 +12,12 @@ define([
     'forms/form',
     'src/util/couchdbAttachments',
     'src/util/uploadUi',
+    'src/util/debug',
     'lib/couchdb/jquery.couch',
     'fancytree',
     'components/ui-contextmenu/jquery.ui-contextmenu.min',
     'jquery-ui/autocomplete'
-], function ($, _, API, ui, Default, Versioning, Button, Util, Form, CouchdbAttachments, uploadUi) {
+], function ($, _, API, ui, Default, Versioning, Button, Util, Form, CouchdbAttachments, uploadUi, Debug) {
 
     function CouchDBManager() {
     }
@@ -184,7 +185,7 @@ define([
                     that.ok = true;
                 },
                 error: function (e, f, g) {
-                    console.error('CouchDB header : database connection error. Code:' + e + '.', g);
+                    Debug.error('CouchDB header : database connection error. Code:' + e + '.', g);
                 }
             });
         },
@@ -210,7 +211,7 @@ define([
                 }
             } else if (!this.ok) {
                 this.checkDatabase();
-                console.error('CouchDB header : unreachable database.');
+                Debug.error('CouchDB header : unreachable database.');
             } else {
                 ui.showNotification('Couchdb button not ready');
             }
@@ -583,7 +584,7 @@ define([
                     });
                 },
                 error: function (status) {
-                    console.log(status);
+                    Debug.warn(status);
                 },
                 key: this.username
             });
@@ -712,8 +713,8 @@ define([
                     url: that.database.uri + doc._id + '/meta.json', // always the last revision
                     type: 'GET',
                     dataType: 'json',
-                    error: function () {
-                        console.error('Could not get meta data...');
+                    error: function (e) {
+                        Debug.warn('Could not get meta data...', e);
                         resolve({});
                     },
                     success: function (data) {
@@ -1073,7 +1074,7 @@ define([
                             });
                         },
                         error: function (status) {
-                            console.log(status);
+                            Debug.warn(status);
                         },
                         key: [that.flavor, that.username],
                         include_docs: false
@@ -1121,7 +1122,7 @@ define([
                         }
                     },
                     error: function (status) {
-                        console.log(status);
+                        Debug.warn(status);
                     }
                 });
         },
@@ -1180,12 +1181,12 @@ define([
                                                 that.setFormContent('docName', name);
                                             },
                                             error: function (status) {
-                                                console.log(status);
+                                                Debug.warn(status);
                                             }
                                         });
                                     },
                                     error: function (status) {
-                                        console.log(status);
+                                        Debug.warn(status);
                                     },
                                     key: [that.flavor, that.username],
                                     include_docs: false
@@ -1219,12 +1220,12 @@ define([
                                                     dialog.dialog('destroy');
                                                 },
                                                 error: function (status) {
-                                                    console.log(status);
+                                                    Debug.warn(status);
                                                 }
                                             });
                                         },
                                         error: function (status) {
-                                            console.log(status);
+                                            Debug.warn(status);
                                         },
                                         key: [flavor, that.username],
                                         include_docs: false
@@ -1247,7 +1248,7 @@ define([
                 } else if (action === 'flavors') {
                     // do nothing
                 } else {
-                    console.warn('Context menu action "' + action + '" not implemented !');
+                    Debug.warn('Context menu action "' + action + '" not implemented !');
                 }
             }
         }

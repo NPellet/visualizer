@@ -1,6 +1,6 @@
 'use strict';
 
-define(['jquery', 'src/data/structures'], function ($, Structures) {
+define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structures, Debug) {
 
     var asyncId = 0;
 
@@ -85,8 +85,8 @@ define(['jquery', 'src/data/structures'], function ($, Structures) {
                 urlData.get(element.url, false, element.timeout).then(function (data) {
                     data = {type: type, value: data};
                     deferred.resolve(data);
-                }, function (data) {
-                    console.log('Fetching error');
+                }, function (err) {
+                    Debug.error('Fetching error', err);
                 });
             });
             return deferred;
@@ -113,7 +113,7 @@ define(['jquery', 'src/data/structures'], function ($, Structures) {
             if (typeof element.type == 'undefined' || !element.value)
                 return 'object';
             else {
-                console.error('Type ' + element.type + ' could not be found');
+                Debug.error('Type ' + element.type + ' could not be found');
                 return;
             }
         }

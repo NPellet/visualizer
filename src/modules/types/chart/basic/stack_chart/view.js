@@ -224,13 +224,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
             var that = this;
             this._plot = $.plot('#' + id, data, options);
             $('#' + id).bind('plotclick', function (event, pos, item) {
-
                 event.preventDefault();
-                if (item) {
-                    console.log('Y:' + item.datapoint[1]);
-
-
-                }
             });
             $('#' + id).bind('plothover', function (event, pos, item) {
 

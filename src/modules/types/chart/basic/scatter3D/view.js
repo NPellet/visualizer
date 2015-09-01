@@ -1598,7 +1598,7 @@ define([
                 this._3d = this.module.getConfiguration('3d');
                 this.module.data = moduleValue;
                 if (!moduleValue.get()) {
-                    console.error('Unvalid value', moduleValue);
+                    Debug.error('Unvalid value', moduleValue);
                     return;
                 }
 
@@ -1657,7 +1657,7 @@ define([
                 }
                 var that = this;
                 if (!moduleValue || !moduleValue.get()) {
-                    console.error('Unvalid value boolArray', moduleValue);
+                    Debug.error('Unvalid value boolArray', moduleValue);
                     return;
                 }
                 that._dispFilter = moduleValue.get();
@@ -1719,7 +1719,7 @@ define([
         _convertData3dToData: function (value) {
             var that = this;
             if (!Array.isArray(value) || value.length === 0) {
-                console.error('Data 3D not valid');
+                Debug.error('Data 3D not valid');
             }
 
 

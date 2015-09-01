@@ -107,11 +107,6 @@ define(['jquery', 'src/util/config', 'src/util/versioning', 'jquery-ui/menu'], f
 
 
             dom.parentNode.addEventListener('contextmenu', function (e) {
-
-
-                //contextMenu.height(contextMenu.height(document.documentElement.clientHeight))
-
-                //console.log( contextMenu );
                 if (contextMenu.children().length > 0) {
                     contextMenu.menu({
                         select: function (event, ui) {

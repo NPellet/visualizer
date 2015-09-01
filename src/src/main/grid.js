@@ -174,8 +174,6 @@ define([
                         module.getPosition(getActiveLayer()).set('left', position.left / definition.xWidth);
                         module.getPosition(getActiveLayer()).set('top', position.top / definition.yHeight);
 
-                        //console.log( module.getPosition( getActiveLayer() ) );
-
                         module.moving = false;
                         checkDimensions(true);
                     },

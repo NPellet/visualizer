@@ -414,7 +414,6 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
 
             var el = jpath.shift();
             var that = this;
-//console.log( this, this.get(el, true), el );
             var promise = this.get(el, true);
             return promise.then(function (subEl) {
                 if (typeof subEl !== 'undefined') {
@@ -517,7 +516,6 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
                 var res = that.set(el, newValue, true); // noTrigger
                 if (res && res.linkToParent) {
                     res.linkToParent(that, el);
-                   // console.warn("TriggerChange removed. This can loop infinitely. Trigger should be done from the module");
                     res.triggerChange(false, triggerParams);
                 } else {
                     that.triggerChange(false, triggerParams, el, res);

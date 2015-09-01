@@ -1,6 +1,6 @@
 'use strict';
 
-define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui'], function (require, Default, API, ui) {
+define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui', 'src/util/debug'], function (require, Default, API, ui, Debug) {
 
     function View() {
     }
@@ -19,7 +19,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui']
         }
         var id = message.id;
         if (!views[id]) {
-            console.error('No view with ID ' + id);
+            Debug.error('No view with ID ' + id);
             return;
         }
         var view = views[id];
@@ -46,7 +46,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui']
                 view.module.controller.onBondClick(message.message);
                 break;
             default:
-                console.error('Message type not handled: ', message.type);
+                Debug.error('Message type not handled: ', message.type);
                 break;
         }
     });

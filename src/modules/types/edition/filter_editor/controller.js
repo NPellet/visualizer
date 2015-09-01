@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/types/client_interaction/code_editor/controller', 'src/util/util'], function (CodeEditor, Util) {
+define(['modules/types/client_interaction/code_editor/controller', 'src/util/util', 'src/util/debug'], function (CodeEditor, Util, Debug) {
 
     function Controller() {
         CodeEditor.call(this);
@@ -79,7 +79,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/uti
             if (typeof data !== 'undefined')
                 that.createDataFromEvent('onButtonClick', 'filteredObject', data);
         }, function (error) {
-            console.error('Filter execution error (filter title: ' + that.module.definition.title + ') : ', error);
+            Debug.error('Filter execution error (filter title: ' + that.module.definition.title + ') : ', error);
         });
     };
 

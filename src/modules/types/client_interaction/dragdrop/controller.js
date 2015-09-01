@@ -433,7 +433,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
             that.fileRead(e.target.result, meta);
         };
         reader.onerror = function (e) {
-            console.error(e);
+            Debug.error(e);
         };
 
         switch (meta.cfg.filetype) {

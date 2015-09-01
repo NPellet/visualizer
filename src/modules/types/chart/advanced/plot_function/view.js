@@ -171,7 +171,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs', 's
         },
 
         createGraph: function () {
-            console.log('create graph');
             var that = this;
             var cfg = $.proxy(that.module.getConfiguration, that.module);
             var segments = cfg('segments');

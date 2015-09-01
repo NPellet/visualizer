@@ -154,7 +154,6 @@ define([
                 parcoords.on('brushend', exportBrush);
 
                 this._parcoords = parcoords;
-                console.log('redraw');
 
             } else {
                 this.dom.html('No column to display');
