@@ -1,3 +1,17 @@
+<a name="2.27.1"></a>
+## 2.27.1 (2015-09-03)
+
+
+### Bug Fixes
+
+* **parallel_coordinates:** fix onResize handling ([6a07644](https://github.com/NPellet/visualizer/commit/6a07644)), closes [#695](https://github.com/NPellet/visualizer/issues/695)
+
+### Features
+
+* **parallel_coordinates:** add 1D-axes-multi and angular brush modes ([da1654e](https://github.com/NPellet/visualizer/commit/da1654e))
+
+
+
 <a name="2.27.0"></a>
 # 2.27.0 (2015-08-28)
 
