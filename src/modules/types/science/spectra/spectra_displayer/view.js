@@ -310,22 +310,18 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
             }
 
             if (forceReacalculateAxis) {
-                this.graph.redraw();
                 this.graph.autoscaleAxes();
             } else if (fullOut == 'none') {
-                this.graph.redraw(true, true);
+                // nothing to do
             } else if (fullOut == 'xAxis') {
-                this.graph.redraw(false, true);
                 this.xAxis.setMinMaxToFitSeries();
             } else if (fullOut == 'yAxis') {
-                this.graph.redraw(true, false);
                 this.yAxis.setMinMaxToFitSeries();
             } else {
-                this.graph.redraw();
                 this.graph.autoscaleAxes();
             }
 
-            this.graph.drawSeries();
+            this.graph.draw();
 
             var minX = this.xAxis.getCurrentMin();
             var maxX = this.xAxis.getCurrentMax();
@@ -640,7 +636,7 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
 // in fact it is a Y array ...
             xArray: function (moduleValue, varname) {
                 var val = moduleValue.get();
-
+                console.log(val, 'arrayr');
                 this.series[varname] = this.series[varname] || [];
                 this.removeSerie(varname);
 
