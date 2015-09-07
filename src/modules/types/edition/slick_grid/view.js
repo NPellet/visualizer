@@ -466,6 +466,26 @@ define([
                         that.grid.setSelectionModel(new Slick.CellSelectionModel());
                     }
 
+                    $(that.grid.getHeaderRow()).delegate(':input', 'change keyup', function (e) {
+                        var columnId = $(this).data('columnId');
+                        if (columnId != null) {
+                            columnFilters[columnId] = $.trim($(this).val());
+                            columnFilterFunctions[columnId] = getColumnFilterFunction(columnFilters[columnId]);
+                            that.slick.data.refresh();
+                        }
+                    });
+
+                    that.grid.onHeaderRowCellRendered.subscribe(function (e, args) {
+                        $(args.node).empty();
+                        $("<input type='text'>")
+                            .css('width', '100%')
+                            .data('columnId', args.column.id)
+                            .val(columnFilters[args.column.id])
+                            .appendTo(args.node);
+                    });
+
+                    that.grid.init();
+
                     that._activateHighlights();
 
 
@@ -712,26 +732,6 @@ define([
                         that.grid.render();
                     });
 
-
-                    $(that.grid.getHeaderRow()).delegate(':input', 'change keyup', function (e) {
-                        var columnId = $(this).data('columnId');
-                        if (columnId != null) {
-                            columnFilters[columnId] = $.trim($(this).val());
-                            columnFilterFunctions[columnId] = getColumnFilterFunction(columnFilters[columnId]);
-                            that.slick.data.refresh();
-                        }
-                    });
-
-                    that.grid.onHeaderRowCellRendered.subscribe(function (e, args) {
-                        $(args.node).empty();
-                        $("<input type='text'>")
-                            .css('width', '100%')
-                            .data('columnId', args.column.id)
-                            .val(columnFilters[args.column.id])
-                            .appendTo(args.node);
-                    });
-
-                    that.grid.init();
                     that.slick.data.beginUpdate();
 
                     var groupings = _.chain(that.module.getConfiguration('groupings'))
@@ -915,7 +915,7 @@ define([
             }
         },
 
-        _updateHighlights: function() {
+        _updateHighlights: function () {
             this._highlights = _.pluck(this.module.data, '_highlight');
         },
 
