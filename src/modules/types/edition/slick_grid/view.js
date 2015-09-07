@@ -331,7 +331,8 @@ define([
             list: function (moduleValue, varname) {
                 var that = this;
                 this.module.data = moduleValue;
-                this._highlights = _.pluck(this.module.data, '_highlight');
+                this._updateHighlights();
+
                 this.dataObjectsDone = false;
                 this.slick.plugins = [];
                 this.slick.options = this.getSlickOptions();
@@ -704,8 +705,9 @@ define([
                         for (i = 0; i < items.length; i++) {
                             delete items[i].__elementPosition;
                         }
-                        that._jpathColor();
-                        that._justInTimeFilter();
+                        that._updateHighlights();
+                        that.grid.invalidateAllRows();
+                        that.grid.render();
                     });
 
 
@@ -899,7 +901,9 @@ define([
             if (idx > -1 && this.module.getConfigurationCheckbox('slickCheck', 'highlightScroll')) {
                 var item = that.slick.data.getItemByIdx(idx);
                 var gridRow = that.slick.data.mapIdsToRows([item[that.idPropertyName]])[0];
-                if (!gridRow) return;
+                if (!gridRow) {
+                    return;
+                }
                 if (gridRow < this.lastViewport.top || gridRow >= this.lastViewport.bottom) {
                     // navigate
                     this.grid.scrollRowToTop(gridRow);
@@ -909,6 +913,10 @@ define([
             }
         },
 
+        _updateHighlights: function() {
+            this._highlights = _.pluck(this.module.data, '_highlight');
+        },
+
         _drawHighlight: function () {
             var that = this;
             this.grid.removeCellCssStyles('highlight');
@@ -916,8 +924,10 @@ define([
             this._selectHighlight();
             this.lastViewport = this.grid.getViewport();
             for (var i = this.lastViewport.top; i <= this.lastViewport.bottom; i++) {
-                var item = this.grid.getDataItem(i);
-                if (!item) continue;
+                //var item = this.grid.getDataItem(i);
+                var itemInfo = this._getItemInfoFromRow(i);
+                if (!itemInfo) continue;
+                var item = itemInfo.item;
                 if (_.any(that._highlighted, function (k) {
                         var hl = item._highlight;
                         if (!Array.isArray(hl)) {
@@ -925,7 +935,7 @@ define([
                         }
                         return hl.indexOf(k) > -1;
                     })) {
-                    tmp[i] = that.baseCellCssStyle;
+                    tmp[itemInfo.idx] = that.baseCellCssStyle;
                 }
             }
             this.grid.setCellCssStyles('highlight', tmp);
