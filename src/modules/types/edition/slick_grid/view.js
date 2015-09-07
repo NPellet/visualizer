@@ -126,7 +126,9 @@ define([
 
             function getType(jpath) {
                 var type;
-                var obj = that.module.data.get(0).getChildSync(jpath);
+                var jp = jpath.slice(0);
+                jp.unshift(0);
+                var obj = that.module.data.getChildSync(jp);
                 if (obj instanceof DataObject) {
                     type = obj.type;
                 }
