@@ -636,7 +636,6 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
 // in fact it is a Y array ...
             xArray: function (moduleValue, varname) {
                 var val = moduleValue.get();
-                console.log(val, 'arrayr');
                 this.series[varname] = this.series[varname] || [];
                 this.removeSerie(varname);
 
