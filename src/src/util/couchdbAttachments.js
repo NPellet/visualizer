@@ -39,6 +39,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
      */
     var CouchdbAttachments = function () {
         // get the document url from the view url
+        this._hasFetched = false;
         if (arguments.length === 0) {
             var viewUrl = Versioning.lastLoaded.view.url;
             if (!viewUrl) {
@@ -59,9 +60,19 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
      @return {number} attachments[].length - Length in bytes of the resource
      @return {number} attachments[].url - The url of the resource
      */
-    CouchdbAttachments.prototype.list = function () {
-        if (!this.lastDoc._attachments) throw new Error('List not available before calling fetchList');
-        return Promise.resolve(attachmentsAsArray(this, this.lastDoc._attachments));
+    CouchdbAttachments.prototype.list = function (asError) {
+        var that = this;
+        return Promise.resolve().then(function () {
+            var hasAtt = that.lastDoc && that.lastDoc._attachments;
+            if (!hasAtt && asError) {
+                throw new Error('Unexpected error: List of attachments not available');
+            } else if (!hasAtt) {
+                return that.refresh().then(function () {
+                    return that.list(true);
+                });
+            }
+            return attachmentsAsArray(that, that.lastDoc._attachments);
+        });
     };
 
     // This is an alternative strategy for storing multiple attachments in one revision
@@ -105,8 +116,11 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
      */
     CouchdbAttachments.prototype.inlineUploads = function (options) {
         var that = this;
-        if (!options) return Promise.resolve(attachmentsAsArray(this, this.lastAttachmentsResult));
-        return Promise.resolve().then(function () {
+        var prom = this.list();
+        if (!options) return prom.then(function () {
+            return attachmentsAsArray(this, this.lastAttachmentsResult);
+        });
+        return prom.then(function () {
             if (!(Array.isArray(options))) {
                 throw new TypeError('options must be an array');
             }
@@ -273,7 +287,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
 
     // Private function
     function inlineRemove(ctx, names) {
-        return Promise.resolve().then(function () {
+        return ctx.list().then(function () {
             if (!Array.isArray(names)) throw new TypeError('Argument should be an array');
             if (names.length === 0) return ctx.list();
             return new Promise(function (resolve, reject) {
@@ -312,6 +326,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                     if (err) return reject(err);
                     if (res.status !== 200) return reject(new Error('Error getting document, couchdb returned status code ' + res.status));
                     that.lastDoc = res.body;
+                    that._hasFetched = true;
                     return resolve(attachmentsAsArray(that, res.body._attachments));
                 });
         });
