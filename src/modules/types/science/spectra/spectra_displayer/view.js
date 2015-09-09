@@ -872,8 +872,7 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
             data.onChange(function () {
 
                 serie.setData(data.data);
-                that.graph.redraw();
-                that.graph.drawSeries();
+                that.graph.draw();
             });
 
             this.onActionReceive.removeSerieByName.call(this, data.name || {});
@@ -897,15 +896,13 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
         onActionReceive: {
 
             fromToX: function (value) {
-                this.xAxis._doZoomVal(value.from, value.to, true);
-                this.graph.redraw(true);
-                this.graph.drawSeries();
+                this.xAxis.zoom(value.from, value.to);
+                this.graph.draw();
             },
 
             fromToY: function (value) {
-                this.yAxis._doZoomVal(value.from, value.to, true);
-                this.graph.redraw(true);
-                this.graph.drawSeries();
+                this.yAxis.zoom(value.from, value.to);
+                this.graph.draw(true);
             },
 
             addSerie: function (value) {
