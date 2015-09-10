@@ -20,7 +20,7 @@ require.config({
         bowser: 'components/bowser/bowser.min',
         chroma: 'components/chroma-js/chroma.min',
         ckeditor: 'components/ckeditor/ckeditor',
-        d3: 'components/d3/d3',
+        d3: 'components/d3/d3.min',
         fancytree: 'components/fancytree/dist/jquery.fancytree-all',
         forms: 'lib/forms',
         'file-saver': 'components/file-saver.js/FileSaver',
