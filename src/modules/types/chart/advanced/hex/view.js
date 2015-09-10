@@ -192,6 +192,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
 
         _fontSize: function (px) {
             var maxFontSize = 50;
+
             function findFontSize(text) {
                 var arr = text.split('\n');
                 var n = arr.reduce(function (p, c) {
@@ -314,14 +315,14 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             var width = this.width,
                 height = this.height;
 
-            var mother = d3.select('#' + this.id).append('svg')
+            var motherSvg = d3.select('#' + this.id).append('svg')
                 .attr('viewBox', boundingBox.join(','))
                 .attr('width', width)
                 .attr('height', height)
-                .style('display', 'block')
-                .append('g');
+                .style('display', 'block');
 
-            var svg = mother.append('g');
+
+            var svg = motherSvg.append('g');
 
             var tickMode = this.module.getConfiguration('tickMode');
             var tickNumber = this.module.getConfiguration('tickNumber');
@@ -534,7 +535,12 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                     .scaleExtent([0.2, 10])
                     .on('zoom', zoomed);
 
-                mother.call(zoom);
+                motherSvg.call(zoom).on('dblclick.zoom', function () {
+                    zoom.scale(1);
+                    zoom.translate([0, 0]);
+                    zoom.event(motherSvg);
+                });
+
             }
 
 

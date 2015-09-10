@@ -1,5 +1,5 @@
 {
-  "version": "2.26.4-0",
+  "version": "2.27.2-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -41,7 +41,9 @@
                 ]
               ],
               "enableZoom": [
-                []
+                [
+                  "yes"
+                ]
               ]
             }
           ],
@@ -49,6 +51,15 @@
             {
               "stopType": [
                 "values"
+              ],
+              "tickMode": [
+                "auto"
+              ],
+              "tickNumber": [
+                5
+              ],
+              "tickValues": [
+                ""
               ]
             }
           ],
@@ -92,8 +103,8 @@
             "top": 0
           },
           "size": {
-            "width": 57.977777767181394,
-            "height": 42.977777767181394
+            "width": 58,
+            "height": 43
           },
           "zIndex": 0,
           "display": true,
@@ -175,8 +186,8 @@
             "top": 0
           },
           "size": {
-            "width": 40.977777767181394,
-            "height": 42.977777767181394
+            "width": 41,
+            "height": 43
           },
           "zIndex": 0,
           "display": true,
@@ -260,8 +271,8 @@
             "top": 44
           },
           "size": {
-            "width": 39.977777767181394,
-            "height": 39.977777767181394
+            "width": 40,
+            "height": 40
           },
           "zIndex": 0,
           "display": true,
@@ -330,8 +341,8 @@
             "top": 44
           },
           "size": {
-            "width": 52.977777767181394,
-            "height": 39.977777767181394
+            "width": 53,
+            "height": 40
           },
           "zIndex": 0,
           "display": true,
