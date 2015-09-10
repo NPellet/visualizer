@@ -905,7 +905,7 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
 
             fromToY: function (value) {
                 this.yAxis.zoom(value.from, value.to);
-                this.graph.draw(true);
+                this.graph.draw();
             },
 
             addSerie: function (value) {
