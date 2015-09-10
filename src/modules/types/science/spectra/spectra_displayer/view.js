@@ -562,6 +562,9 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                                 }
                             }
                             break;
+                        case 'contour':
+                            valFinal = aData.contourLines;
+                            break;
                         default:
                             if (aData.y) {
                                 for (var j = 0, l = aData.y.length; j < l; j++) {
