@@ -177,17 +177,20 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             });
             for (var i = 0; i < this.color.length; i++) {
                 if (!isNaN(this.color[i])) {
-                    this.color[i] = this.numberToColor(this.color[i]);
-                    var r = this.color[i].match(/rgba?\(([^\)]*)\)/, 'i');
-                    if (r) {
-                        this.color[i] = colorUtil.getColor(r[1].split(','));
-                    }
+                    var c = this.numberToColor(this.color[i]);
+                    this.color[i] = c.color;
+                    this.opacity[i] = c.opacity;
                 }
 
             }
             this.color = this.color.map(function (val) {
                 return val === undefined ? DEFAULT_COLOR : val;
             });
+
+            this.opacity = this.opacity.map(function(val) {
+                return val === undefined ? 1 : val;
+            })
+            console.log(this.color);
         },
 
         _fontSize: function (px) {
@@ -215,13 +218,16 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         _chartData: function () {
             this.color = [];
             this.label = [];
+            this.opacity = [];
             for (var i = 0; i < this.chart.data.length; i++) {
                 var d = this.chart.data[i];
                 this.color.push(_.pluck(d.info, 'color'));
                 this.label.push(_.pluck(d.info, 'label'));
+                this.opacity.push(_.pluck(d.info, 'opacity'));
             }
             this.color = _.flatten(this.color);
             this.label = _.flatten(this.label);
+            this.opacity = _.flatten(this.opacity);
             if (this.chart.axis) {
                 this.axes = this.chart.axis;
             }
@@ -497,6 +503,9 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                 .attr('stroke-width', '1px')
                 .style('fill', function (d, i) {
                     return that.color[i];
+                })
+                .style('fill-opacity', function(d, i) {
+                    return that.opacity[i];
                 });
 
             var nodeText = svg.append('g')

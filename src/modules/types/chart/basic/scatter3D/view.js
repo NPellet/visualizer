@@ -598,14 +598,10 @@ define([
             });
             for (var i = 0; i < this._data.color.length; i++) {
                 if (!isNaN(this._data.color[i])) {
-                    this._data.color[i] = this.numberToColor(this._data.color[i]);
+                    this._data.color[i] = this.numberToColor(this._data.color[i]).color;
                     if (Number.isNaN(this._data.color[i])) {
                         this._data.color[i] = DEFAULT_POINT_COLOR;
                         continue;
-                    }
-                    var r = this._data.color[i].match(/rgba?\(([^\)]*)\)/, 'i');
-                    if (r) {
-                        this._data.color[i] = colorUtil.getColor(r[1].split(','));
                     }
                 }
             }
