@@ -96,6 +96,7 @@ require.config({
         'select2': ['jquery'],
         'lib/threejs/TrackballControls': ['threejs'],
         jqgrid: ['jquery', 'components/jqgrid_edit/js/i18n/grid.locale-en'],
+        'lib/couchdb/jquery.couch': ['jquery'],
         slickgrid_core: ['jquery', 'jquery-ui/core', 'jquery-ui/sortable', 'jquery-tmpl'],
         slickgrid: {
             deps: ['slickgrid_core',
