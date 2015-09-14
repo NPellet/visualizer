@@ -14,17 +14,10 @@ define(['jquery', 'src/util/ui', 'src/header/components/default', './../../util/
     Util.inherits(Element, Default, {
 
         initImpl: function () {
-
-
-            this.dialogOptions = {
-                title: 'Feedback',
-                width: 900,
-                height: 350
-            };
         },
 
         _onClick: function () {
-            ui.feedback(this.options, shareOptions, this.dialogOptions);
+            ui.feedback(this.options, shareOptions);
         }
     });
 

@@ -202,61 +202,25 @@ define([
         var div = exports.dialog(txtarea, {width: '80%'}).append(btn.render());
     };
 
-    exports.feedback = function (options, shareOptions, dialogOptions) {
+    exports.feedback = function (options, shareOptions) {
         options = options || {};
         shareOptions = shareOptions || {};
-        dialogOptions = dialogOptions || {};
         shareOptions = _.defaults(shareOptions, {
             couchUrl: 'http://visualizer.epfl.ch',
             database: 'x',
             tinyUrl: 'http://visualizer.epfl.ch/tiny'
         });
-        dialogOptions = _.defaults(dialogOptions, {
-            title: 'Feedback',
-            width: 900,
-            height: 350
-        });
-        var uniqid = Util.getNextUniqueId();
-        var message = $('<span>').attr('id', uniqid + '-message').css('color', 'red');
 
-        var dialog = $('<div>').html(
-            '<h2>Do you have a comment on the visualizer ? Did you find a bug ?</h2>' +
-            '<p>Put your comment here and we will be notified.<br>A snapshot of you view and data will also be sent to us so feel free to describe exactly what you did and what happened !</p>' +
-            '<table>' +
-            '<tr><td>Title : </td><td><input type="text" id="' + uniqid + '-title" style="width:500px" /></td></tr>' +
-            '<tr><td>Description : </td><td><textarea id="' + uniqid + '-description" rows="12" cols="80"></textarea></td></tr>' +
-            '</table>').append(
-            new Button('Send', function () {
-                var that = this;
-                if (!options.disabled) {
-                    Sharer.share(shareOptions).then(function (tinyUrl) {
-                        var title = $('#' + uniqid + '-title').val();
-                        var description = $('#' + uniqid + '-description').val();
-                        var json = {
-                            title: title,
-                            body: description + '\n\nTestcase: ' + tinyUrl + ' ([Original URL](' + document.location.href + '))'
-                        };
-                        $.ajax({
-                            type: 'POST',
-                            url: 'http://visualizer.epfl.ch/github/api/issue',
-                            contentType: 'application/json',
-                            dataType: 'json',
-                            data: JSON.stringify(json),
-                            success: function (data) {
-                                message.html('Thank you for your feedback ! You can follow your issue <a target="_blank" href="' + data.description + '">here</a>');
-                                that.disable();
-                            },
-                            error: function (data) {
-                                message.html('ERROR');
-                            }
-                        });
-                    }, function (data) {
-                        message.html('ERROR');
-                    });
-                }
-            }, {color: 'blue'}).render()
-        ).append(message);
-        exports.dialog(dialog, dialogOptions);
+        if (!options.disabled) {
+            Sharer.share(shareOptions).then(function (tinyUrl) {
+                var description = '\n\nTestcase: ' + tinyUrl + ' ([Original URL](' + document.location.href + '))';
+                var url = 'https://github.com/NPellet/visualizer/issues/new?body=' + encodeURIComponent(description);
+                var win = window.open(url, '_blank');
+                win.focus();
+            }, function () {
+                exports.showNotification('Error with Feedback', 'error');
+            });
+        }
     };
 
     exports.couchShare = function (options, dialogOptions) {
