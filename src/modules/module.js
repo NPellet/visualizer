@@ -1125,7 +1125,6 @@ define([
                     that.reload();
 
                     div.dialog('close');
-                    document.getElementById('header').scrollIntoView(true);
                 });
 
                 form.onLoaded().done(function () {
