@@ -47,8 +47,11 @@ define([
 
         update: {
             picture: function (value, varname) {
-                var that = this;
-                return that.doImage(varname, value, {}, true);
+                return this.doImage(varname, value, {}, true);
+            },
+
+            svg: function (value, varname) {
+                this.doSvg(varname, value, {}, true);
             }
         },
 
@@ -78,12 +81,23 @@ define([
             }, function (e) {
                 Debug.warn('panzoom: image failed to load', e);
             });
+
+            return currentPromise;
+        },
+
+        doSvg: function (varname, value, options, updateHighlights) {
+            options.isSvg = true;
+            return this.doImage(varname, value, options, updateHighlights);
         },
 
         reorderImages: function () {
             for (var i = 0; i < this.images.length; i++) {
                 this.images[i].$panzoomEl.css('z-index', parseInt(this.images[i].conf.order) || i);
             }
+        },
+
+        addSvg: function (varname, variable, options) {
+
         },
 
         addImage: function (varname, variable, options) {
@@ -104,25 +118,48 @@ define([
                 }
 
                 // Find if image already exists
-                var x = that.dom.find('#' + that.getImageDomId(varname));
-                // If it does destroy
-                x.find('.panzoom').panzoom('destroy');
-                var $img;
-                if (x.length === 0 && varname !== '__highlight__') {
-                    x = that.newImageDom(varname);
-                    $img = x.find('img');
+                var $parent = that.dom.find('#' + that.getImageDomId(varname));
+                // If it does destroy the panzoom element
+                $parent.find('.panzoom').panzoom('destroy');
+
+                var imgType;
+
+                // $img can be <img>, <canvas> or <svg>
+                var $img, $previousImg;
+                if ($parent.length === 0 && variable.type === 'svg') {
+                    // New svg element
+                    $parent = that.newSvgDom(varname);
+                    $img = $(variable.get());
+                    $parent.find('.panzoom').append($img);
+                    imgType = 'svg';
+                } else if (variable.type === 'svg') {
+                    $previousImg = $parent.find('svg');
+                    $img = $(variable.get());
+                    $parent.find('.panzoom').append($img);
+                    imgType = 'svg';
+                } else if ($parent.length === 0 && varname !== '__highlight__') {
+                    // New image
+                    $parent = that.newImageDom(varname);
+                    $img = $parent.find('img');
+                    imgType = 'image';
                 } else if (varname !== '__highlight__') {
-                    var $previousImg = x.find('img');
+                    // Existing image
+                    $previousImg = $parent.find('img');
                     $img = $('<img style="display: none;"/>');
-                    x.find('.panzoom').append($img);
-                } else if (x.length === 0) {
-                    x = that.newCanvasDom(varname);
+                    $parent.find('.panzoom').append($img);
+                    imgType = 'image';
+                } else if ($parent.length === 0) {
+                    // New highlight
+                    $parent = that.newCanvasDom(varname);
                     $img = $(that.highlightImage.canvas);
-                    x.find('.panzoom').append($img);
+                    $parent.find('.panzoom').append($img);
+                    imgType = 'canvas';
                 } else {
-                    x.find('canvas').remove();
+                    // Existing highlight
+                    $parent.find('canvas').remove();
                     $img = $(that.highlightImage.canvas);
-                    x.find('.panzoom').append($img);
+                    $parent.find('.panzoom').append($img);
+                    imgType = 'canvas';
                 }
 
 
@@ -139,38 +176,43 @@ define([
                     return resolve();
                 }
 
-                var imgUrl;
-                if (varname === '__highlight__') {
-                    imgUrl = that.highlightImage.dataUrl;
-                } else {
-                    imgUrl = variable.get();
-                }
-
                 $img.css('opacity', conf.opacity)
                     .addClass(conf.rendering);
 
                 if (varname === '__highlight__') {
                     onLoaded.call(that.highlightImage.canvas);
+                } else if (variable.type === 'svg') {
+                    onLoaded.call($img);
                 } else {
                     $img
-                        .attr('src', imgUrl)
+                        .attr('src', variable.get())
                         .on('load', onLoaded)
-                        .on('error', function (e) {
-                            if ($previousImg) $previousImg.remove();
-                            reject(e);
-                        });
+                        .on('error', onError);
                 }
 
-
+                function onError(e) {
+                    if ($previousImg) $previousImg.remove();
+                    reject(e);
+                }
                 function onLoaded() {
+                    image.type = imgType;
                     image.name = conf.variable;
-                    image.$panzoomEl = x.find('.panzoom');
-                    image.$parent = image.$panzoomEl.parent('.parent');
+                    image.$panzoomEl = $parent.find('.panzoom');
+                    image.$parent = $parent;
                     image.$img = $img;
-                    image.width = this.width;
-                    image.height = this.height;
                     image.conf = conf;
                     image.transform = null;
+
+                    that.dom.append($parent);
+
+                    if (imgType === 'svg') {
+                        image.width = this.width();
+                        image.height = this.height();
+                    } else {
+                        image.width = this.width;
+                        image.height = this.height;
+                    }
+
                     var scaling = image.conf.scaling;
                     if (scaling === 'maxIfLarge') {
                         if (image.width > that.width || image.height > that.height) {
@@ -196,7 +238,6 @@ define([
                     }
 
 
-                    that.dom.append(x);
                     if (!foundImg) {
                         that.images.push(image);
                     }
@@ -306,11 +347,15 @@ define([
         },
 
         newImageDom: function (varname) {
-            return $('<div class="parent" id="' + this.getImageDomId(varname) + '"><div class="panzoom"><img style="display: none;"/></div></div>');
+            return $('<div class="ci-panzoom-parent" id="' + this.getImageDomId(varname) + '"><div class="panzoom"><img style="display: none;"/></div></div>');
         },
 
         newCanvasDom: function (varname) {
-            return $('<div class="parent" id="' + this.getImageDomId(varname) + '"><div class="panzoom"></div></div>');
+            return $('<div class="ci-panzoom-parent" id="' + this.getImageDomId(varname) + '"><div class="panzoom"></div></div>');
+        },
+
+        newSvgDom: function (varname) {
+            return $('<div class="ci-panzoom-parent" id="' + this.getImageDomId(varname) + '"><div class="panzoom"></div></div>');
         },
 
         getImageDomId: function (varname) {
@@ -321,6 +366,8 @@ define([
             var that = this;
             var start = 0;
             var l = this.images.length;
+            // if varname specified, do for all
+            // otherwise just for that var
             if (varname) {
                 var idx = _.findIndex(that.images, function (img) {
                     return img.name === varname;
@@ -342,10 +389,14 @@ define([
                         }
                     }
                 }).css('cursor', 'pointer');
+
+                // Use last transform to initialize transformation matrix
                 if (that.lastTransform) {
                     var instance = that.images[i].$panzoomEl.panzoom('instance');
                     instance.setMatrix(that.lastTransform);
                 }
+
+                // Pan behavior
                 that.images[i].$panzoomEl.off('panzoompan');
                 that.images[i].$panzoomEl.on('panzoompan', function (data, panzoom) {
 
@@ -366,7 +417,7 @@ define([
                 });
             }
 
-
+            // Zoom behavior
             that.dom.off('mousewheel.focal');
             that.dom.on('mousewheel.focal', function (e) {
                 e.preventDefault();
@@ -378,6 +429,9 @@ define([
                 }
                 var delta = e.delta || e.originalEvent.wheelDelta;
                 var zoomOut = delta ? delta < 0 : e.originalEvent.deltaY > 0;
+
+                // Use zoom on the first image, and use the resulting
+                // transform on all other panzoom elements
                 that.images[0].$panzoomEl.panzoom('zoom', zoomOut, {
                     increment: increment,
                     animate: false,
@@ -411,6 +465,7 @@ define([
                 }
             }
 
+            // Handle click event
             that.dom.off('click.panzoom');
             that.dom.on('click.panzoom', function (e) {
                 // Don't generate event if we are panning
@@ -433,6 +488,7 @@ define([
                 }
             });
 
+            // Handle pan event
             that.dom.off('mousemove.panzoom');
             that.dom.on('mousemove.panzoom', function (e) {
                 if (that.state === 'pan') {
@@ -458,7 +514,7 @@ define([
                 }
             });
 
-
+            // Double click event
             this.dom.off('dblclick');
             this.dom.dblclick(function () {
                 for (var i = 0; i < that.images.length; i++) {
@@ -562,14 +618,6 @@ define([
             }
         }, 300),
 
-        chromeCrisp: _.debounce(function () {
-            for (var j = 0; j < this.images.length; j++) {
-                if (this.images[j].conf.rendering === 'crisp-edges') {
-                    this.doImage(this.images[j].name);
-                }
-            }
-        }, 300),
-
         onResize: function () {
             // Rerender all images
             this.doAllImages();
@@ -634,7 +682,7 @@ define([
         }
     });
 
-    // Unused for now but don't erase
+// Unused for now but don't erase
     function applyTransform(v, t) {
         var r = new Array(2);
         r[0] = v[0] * (+t[0]) + v[1] * (+t[1]) + (+t[4]);
@@ -651,4 +699,5 @@ define([
 
     return View;
 
-});
+})
+;

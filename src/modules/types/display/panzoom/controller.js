@@ -18,7 +18,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.references = {
         picture: {
-            type: ['picture', 'png', 'jpeg', 'jpg', 'gif'],
+            type: ['picture', 'png', 'jpeg', 'jpg', 'gif', 'svg'],
             label: 'A picture'
         },
         pixel: {
@@ -124,7 +124,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                                 },
                                 {
                                     key: 'maxIfLarge',
-                                    title: 'Normal if picture smaller than available space, 100% instead'
+                                    title: 'Normal if picture smaller than available space, 100% if not'
                                 }
                             ],
                             default: 'max'
