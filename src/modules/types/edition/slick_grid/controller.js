@@ -96,7 +96,8 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                         },
                         filterRow: {
                             type: 'jscode',
-                            title: 'Filter'
+                            title: 'Filter',
+                            default: '// This script will be called on each line once on load\n// And then each time the line is modified\n// Available:\n// this.event\n// this.row\n// this.cell\n// this.jpathRow,\n// this.jpathCell\n// this.data\n// \n'
                         },
                         justInTimeFilter: {
                             type: 'checkbox',

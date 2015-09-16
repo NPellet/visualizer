@@ -887,7 +887,9 @@ define([
             if (!that.filter || !that.lastViewport || !that.module.getConfigurationCheckbox('justInTimeFilter', 'yes')) return;
             for (var i = that.lastViewport.top; i <= that.lastViewport.bottom; i++) {
                 var item = that.grid.getDataItem(i);
-                that.filter(that, item, item[that.idPropertyName]);
+                if (item) {
+                    that.filter(that, item, item[that.idPropertyName]);
+                }
             }
         },
 
