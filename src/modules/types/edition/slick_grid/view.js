@@ -336,6 +336,9 @@ define([
             script: function (moduleValue, varname) {
                 if (this.module.getConfiguration('filterType') === 'invar') {
                     this._setScript(moduleValue.get());
+                    this._runFilter({
+                        event: 'scriptChanged'
+                    });
                 }
             },
 
@@ -921,7 +924,6 @@ define([
                     'Slickgrid' + this.module.getId()
                 );
             } catch (e) {
-                console.log(e);
                 this._reportError(e);
             }
         },
