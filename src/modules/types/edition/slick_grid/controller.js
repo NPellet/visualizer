@@ -94,10 +94,21 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                             ],
                             'default': 'row'
                         },
+                        filterType: {
+                            type: 'combo',
+                            title: 'Filter script source',
+                            options: [
+                                {key: 'pref', title: 'Define in preferences'},
+                                {key: 'invar', title: 'From input variable'}
+                            ],
+                            displaySource: {pref: 'p', invar: 'i'},
+                            default: 'pref'
+                        },
                         filterRow: {
                             type: 'jscode',
                             title: 'Filter',
-                            default: '// Always available:\n//    getData();          returns the modules input array\n//    getGrid();          returns the slick grid instance\n//    this.event          The type of event that triggered the filter\n\n// Context that depends on event:\n//    this.rows           Content of the rows associated to event\n//    this.row            Content of the row associated to event\n//    this.cell           Content of the cell associated to event\n//    this.column         Description of the column associated to event\n\n// Row description\n//    row.id              The id of the row\n//    row.idx             The idx of the row in the original array\n//    row.item            The contents of the row\n\n// Possible events:\n//    rowChanged          A row has changed\n//    cellChanged         A cell has changed\n//    inView              Rows are now in view\n//    rowsSelected        A new selection of rows has been made\n'
+                            default: '// Always available:\n//    getData();          returns the modules input array\n//    getGrid();          returns the slick grid instance\n//    this.event          The type of event that triggered the filter\n\n// Context that depends on event:\n//    this.rows           Content of the rows associated to event\n//    this.row            Content of the row associated to event\n//    this.cell           Content of the cell associated to event\n//    this.column         Description of the column associated to event\n\n// Row description\n//    row.id              The id of the row\n//    row.idx             The idx of the row in the original array\n//    row.item            The contents of the row\n\n// Possible events:\n//    rowChanged          A row has changed\n//    cellChanged         A cell has changed\n//    inView              Rows are now in view\n//    rowsSelected        A new selection of rows has been made\n',
+                            displayTarget: ['p']
                         }
                     }
                 },
@@ -205,6 +216,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
         'slick.rowHeight': ['groups', 'group', 0, 'slick.rowHeight', 0],
         'slick.selectionModel': ['groups', 'group', 0, 'slick.selectionModel', 0],
         'slick.defaultColumnWidth': ['groups', 'group', 0, 'slick.defaultColumnWidth', 0],
+        'filterType': ['groups', 'group', 0, 'filterType', 0],
         'filterRow': ['groups', 'group', 0, 'filterRow', 0],
         'cols': ['groups', 'cols', 0],
         'groupings': ['groups', 'groupings', 0],
@@ -221,13 +233,17 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
             label: 'Table',
             type: 'array'
         },
+        script: {
+            label: 'Filter script',
+            type: 'string'
+        },
         rows: {
             label: 'Row selection',
             type: 'array'
         }
     };
 
-    Controller.prototype.variablesIn = ['list'];
+    Controller.prototype.variablesIn = ['list', 'script'];
 
     Controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {
         hoverRow: 'Mimic hover row',

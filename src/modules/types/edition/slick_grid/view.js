@@ -51,6 +51,7 @@ define([
 
         init: function () {
             var that = this;
+            this._setScript('');
             this.title = String(this.module.definition.title);
             if (!this.$container) {
                 this._id = Util.getNextUniqueId();
@@ -77,7 +78,9 @@ define([
             });
             this.idPropertyName = '_sgid';
             this.hiddenColumns = [];
-            this.hasFilter = this._hasFilter();
+            if (this.module.getConfiguration('filterType') === 'pref') {
+                this._setScript(this.module.getConfiguration('filterRow'));
+            }
 
             this.resolveReady();
         },
@@ -330,6 +333,12 @@ define([
 
         update: {
 
+            script: function (moduleValue, varname) {
+                if (this.module.getConfiguration('filterType') === 'invar') {
+                    this._setScript(moduleValue.get());
+                }
+            },
+
             list: function (moduleValue, varname) {
                 var that = this;
                 this.module.data = moduleValue;
@@ -455,17 +464,7 @@ define([
                     that.slick.data.setModule(that.module);
                     that.grid = new Slick.Grid(that.$slickgrid, that.slick.data, that.slick.columns, that.slick.options);
 
-                    that._sandbox = new Sandbox();
-                    that._sandbox.setContext(that._getNewContext());
-                    var theCode = that.module.getConfiguration('filterRow');
-                    try {
-                        that.filter = that._sandbox.run(
-                            '(function() {' + theCode + '\n})',
-                            'Slickgrid' + that.module.getId()
-                        );
-                    } catch (e) {
-                        that._reportError(that.title, e);
-                    }
+                    that._newSandbox();
 
                     for (var i = 0; i < that.slick.plugins.length; i++) {
                         that.grid.registerPlugin(that.slick.plugins[i]);
@@ -826,6 +825,11 @@ define([
         blank: {
             list: function (varname) {
                 this.$container.html('');
+            },
+            script: function (varname) {
+                if (this.module.getConfiguration('filterType') === 'invar') {
+                    this._setScript('');
+                }
             }
         },
 
@@ -899,6 +903,25 @@ define([
                         }
                     }
                 }
+            }
+        },
+
+        _setScript: function (script) {
+            this.filterScript = script;
+            this.hasFilter = this._hasFilter();
+            this._newSandbox();
+        },
+
+        _newSandbox: function () {
+            this._sandbox = new Sandbox();
+            this._sandbox.setContext(this._getNewContext());
+            try {
+                this.filter = this._sandbox.run(
+                    '(function() {' + this.filterScript + '\n})',
+                    'Slickgrid' + this.module.getId()
+                );
+            } catch (e) {
+                this._reportError(this.title, e);
             }
         },
 
@@ -1078,7 +1101,7 @@ define([
             var jpath = this.getSlickColumns()[args.cell].jpath.slice();
             jpath.unshift(itemInfo.idx);
             var r = this.module.data.getChildSync(jpath);
-            if(r !== undefined) r = r.get();
+            if (r !== undefined) r = r.get();
             return r;
         },
 
@@ -1114,8 +1137,7 @@ define([
         },
 
         _hasFilter: function () {
-            var filter = this.module.getConfiguration('filterRow');
-            return _.any(filter.split('\n'), function (line) {
+            return _.any(this.filterScript.split('\n'), function (line) {
                 var l = line.replace(' ', '');
                 // return false if void line
                 return l ? !l.match(/^\s*\/\/a/) : false;
