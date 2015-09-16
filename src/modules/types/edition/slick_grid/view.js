@@ -522,14 +522,11 @@ define([
 
                     that.slick.data.onRowsChanged.subscribe(function (e, args) {
                         if (that.hasFilter) {
-                            for (var i = 0; i < args.rows.length; i++) {
-                                var row = args.rows[i];
-                                var itemInfo = that._getItemInfoFromRow(row);
-                                that._runFilter({
-                                    event: 'rowChanged',
-                                    row: itemInfo
-                                });
-                            }
+                            var items = that._getItemsInfo(args.rows);
+                            that._runFilter({
+                                event: 'rowsChanged',
+                                rows: items
+                            });
                         }
                         that.grid.invalidateRows(args.rows);
                         that.grid.render();
