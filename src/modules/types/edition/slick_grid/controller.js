@@ -97,15 +97,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                         filterRow: {
                             type: 'jscode',
                             title: 'Filter',
-                            default: '// This script will be called on each line once on load\n// And then each time the line is modified\n// Available:\n// this.event\n// this.row\n// this.cell\n// this.jpathRow,\n// this.jpathCell\n// this.data\n// \n'
-                        },
-                        justInTimeFilter: {
-                            type: 'checkbox',
-                            title: 'Just in time filter',
-                            options: {
-                                yes: 'Filter applied only when line is displayed'
-                            },
-                            default: []
+                            default: '// This script will be called on each line once on load\n// And then each time the line is modified\n// Always available:\n//    getData();          returns the modules input array\n//    getGrid();          returns the slick grid instance\n//    this.event          The type of event that triggered the filter\n\n// Context that depends on event:\n//    this.rows           Content of the rows associated to event\n//    this.row            Content of the row associated to event\n//    this.cell           Content of the cell associated to event\n//    this.column         Description of the column associated to event\n\n// Possible events:\n//    rowChanged          A row has changed\n//    cellChanged         A cell has changed\n//    inView              Rows are now in view\n//    rowsSelected        A new selection of rows has been made\n'
                         }
                     }
                 },
@@ -214,7 +206,6 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
         'slick.selectionModel': ['groups', 'group', 0, 'slick.selectionModel', 0],
         'slick.defaultColumnWidth': ['groups', 'group', 0, 'slick.defaultColumnWidth', 0],
         'filterRow': ['groups', 'group', 0, 'filterRow', 0],
-        'justInTimeFilter': ['groups', 'group', 0, 'justInTimeFilter', 0],
         'cols': ['groups', 'cols', 0],
         'groupings': ['groups', 'groupings', 0],
         'actionOutButtons': ['groups', 'actionOutButtons', 0],

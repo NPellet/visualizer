@@ -7,8 +7,9 @@ define([
     'src/util/util',
     'src/util/api',
     'src/util/typerenderer',
-    'slickgrid'
-], function (Default, Debug, _, Util, API, Renderer, Slick) {
+    'slickgrid',
+    'src/util/sandbox'
+], function (Default, Debug, _, Util, API, Renderer, Slick, Sandbox) {
 
     function View() {
     }
@@ -50,6 +51,7 @@ define([
 
         init: function () {
             var that = this;
+            this.title = String(this.module.definition.title);
             if (!this.$container) {
                 this._id = Util.getNextUniqueId();
                 this.$rowHelp = $('<div>').attr('class', 'rowHelp');
@@ -75,10 +77,8 @@ define([
             });
             this.idPropertyName = '_sgid';
             this.hiddenColumns = [];
-            var filter = this.module.getConfiguration('filterRow');
-            if (filter) {
-                eval('that.filter = function(view, row, rowId) { try { \n ' + filter + '\n } catch(_) { console.log(_); } }');
-            }
+            this.hasFilter = this._hasFilter();
+
             this.resolveReady();
         },
 
@@ -455,6 +455,18 @@ define([
                     that.slick.data.setModule(that.module);
                     that.grid = new Slick.Grid(that.$slickgrid, that.slick.data, that.slick.columns, that.slick.options);
 
+                    that._sandbox = new Sandbox();
+                    that._sandbox.setContext(that._getNewContext());
+                    var theCode = that.module.getConfiguration('filterRow');
+                    try {
+                        that.filter = that._sandbox.run(
+                            '(function() {' + theCode + '\n})',
+                            'Slickgrid' + that.module.getId()
+                        );
+                    } catch (e) {
+                        that._reportError(that.title, e);
+                    }
+
                     for (var i = 0; i < that.slick.plugins.length; i++) {
                         that.grid.registerPlugin(that.slick.plugins[i]);
                     }
@@ -507,11 +519,14 @@ define([
                     });
 
                     that.slick.data.onRowsChanged.subscribe(function (e, args) {
-                        if (!that.module.getConfigurationCheckbox('justInTimeFilter', 'yes') && that.filter) {
+                        if (that.hasFilter) {
                             for (var i = 0; i < args.rows.length; i++) {
                                 var row = args.rows[i];
                                 var itemInfo = that._getItemInfoFromRow(row);
-                                that.filter(that, itemInfo.item, itemInfo.id);
+                                that._runFilter({
+                                    event: 'rowChanged',
+                                    row: itemInfo
+                                });
                             }
                         }
                         that.grid.invalidateRows(args.rows);
@@ -550,7 +565,7 @@ define([
                             that._preventRowHelp = false;
                             that._resetDeleteRowListeners();
                             that._jpathColor();
-                            that._justInTimeFilter();
+                            that._inViewFilter();
                         }
 
                         viewportChanged();
@@ -614,11 +629,17 @@ define([
                     });
 
                     that.grid.onCellChange.subscribe(function (e, args) {
+                        var column = that.getSlickColumns()[args.cell];
                         var itemInfo = that._getItemInfoFromRow(args.row);
-                        if (that.filter) {
-                            that.filter(that, itemInfo.item, itemInfo.id);
-                        }
                         if (itemInfo) {
+                            if (that.hasFilter) {
+                                that._runFilter({
+                                    event: 'cellChanged',
+                                    row: itemInfo,
+                                    cell: that._getCell(args),
+                                    column: column
+                                });
+                            }
                             that.module.controller.onRowChange(itemInfo.idx, itemInfo.item);
                         }
                         that._resetDeleteRowListeners();
@@ -669,8 +690,14 @@ define([
 
                     that.grid.onSelectedRowsChanged.subscribe(function (e, args) {
                         that.lastSelectedRows = args.rows;
-                        var selectedItems = that._getItems(args.rows);
-                        that.module.controller.onRowsSelected(selectedItems);
+                        var selectedItems = that._getItemsInfo(args.rows);
+                        if (that.hasFilter) {
+                            that._runFilter({
+                                event: 'rowsSelected',
+                                rows: selectedItems
+                            });
+                        }
+                        that.module.controller.onRowsSelected(_.pluck(selectedItems, 'item'));
                     });
 
                     that.grid.onSort.subscribe(function (e, args) {
@@ -763,13 +790,6 @@ define([
                         if (that.module.getConfigurationCheckbox('slickCheck', 'collapseGroup')) {
                             that.slick.data.collapseAllGroups(0);
                         }
-
-                        //_.each(groupings, function(val) {
-                        //    if(val.collapse) {
-                        //        that.slick.data.expandGroup(val.getter);
-                        //    }
-                        //});
-
                     }
 
 
@@ -797,7 +817,7 @@ define([
                     that._setBaseCellCssStyle();
                     that.lastViewport = that.grid.getViewport();
                     that._jpathColor();
-                    that._justInTimeFilter();
+                    that._inViewFilter();
                 });
             }
 
@@ -882,15 +902,58 @@ define([
             }
         },
 
-        _justInTimeFilter: function () {
-            var that = this;
-            if (!that.filter || !that.lastViewport || !that.module.getConfigurationCheckbox('justInTimeFilter', 'yes')) return;
-            for (var i = that.lastViewport.top; i <= that.lastViewport.bottom; i++) {
-                var item = that.grid.getDataItem(i);
-                if (item) {
-                    that.filter(that, item, item[that.idPropertyName]);
+        _runFilter: function (context) {
+            if (this.hasFilter) {
+                try {
+                    this.filter.call(context);
+                } catch (e) {
+                    this._reportError(e);
                 }
             }
+        },
+
+        _getNewContext: function () {
+            var that = this;
+            return {
+                getGrid: function () {
+                    return that.grid;
+                },
+                getData: function () {
+                    return that.module.data;
+                }
+            };
+        },
+
+        _reportError: function (e) {
+            var message = '';
+            if (e && e.stack) {
+                message = e.message;
+                e = e.stack;
+            }
+            var str = 'Code executor error';
+            if (this.title) {
+                str += ' (' + this.title + ')';
+            }
+            if (message) {
+                str += ': ' + message;
+            }
+            Debug.error(str);
+            Debug.warn(e);
+        },
+
+        _inViewFilter: function () {
+            var that = this;
+            if (!that.hasFilter || !that.lastViewport) return;
+            var rows = that._getRowsFromViewport();
+            var items = that._getItemsInfo(rows);
+            that._runFilter({
+                rows: items,
+                cell: null,
+                event: 'inView'
+            });
+            // If used asynchronously (e.g. in debounce)
+            //that.grid.invalidateAllRows();
+            //that.grid.render();
         },
 
         _selectHighlight: function () {
@@ -982,14 +1045,41 @@ define([
             this.dataObjectsDone = true;
         },
 
-        _getItems: function (rows) {
+        _getRowsFromViewport: function () {
+            if (!this.lastViewport) return [];
+            var rows = new Array(this.lastViewport.bottom - this.lastViewport.top + 1);
+            for (var i = 0; i < rows.length; i++) {
+                rows[i] = this.lastViewport.top + i;
+            }
+            return rows;
+        },
+
+        _getItemsInfo: function (rows) {
             var selected = [];
+            if (!this.slick.data) return selected;
             for (var i = 0; i < rows.length; i++) {
                 var itemInfo = this._getItemInfoFromRow(rows[i]);
                 if (itemInfo)
-                    selected.push(itemInfo.item);
+                    selected.push(itemInfo);
             }
             return selected;
+        },
+
+        _getItems: function (rows) {
+            var items = this._getItemsInfo(rows);
+            return _.pluck(items, 'item');
+        },
+
+        _getCell: function (args) {
+            if (!args || args.row === undefined || args.cell === undefined) {
+                return null;
+            }
+            var itemInfo = this._getItemInfoFromRow(args.row);
+            var jpath = this.getSlickColumns()[args.cell].jpath.slice();
+            jpath.unshift(itemInfo.idx);
+            var r = this.module.data.getChildSync(jpath);
+            if(r !== undefined) r = r.get();
+            return r;
         },
 
         _getSelectedItems: function () {
@@ -1021,6 +1111,15 @@ define([
                     });
                 }
             }
+        },
+
+        _hasFilter: function () {
+            var filter = this.module.getConfiguration('filterRow');
+            return _.any(filter.split('\n'), function (line) {
+                var l = line.replace(' ', '');
+                // return false if void line
+                return l ? !l.match(/^\s*\/\/a/) : false;
+            });
         },
 
         exportToTabDelimited: function () {
@@ -1111,7 +1210,6 @@ define([
         if (cellNode) {
             Renderer.render(cellNode, dataContext, colDef.jpath);
         }
-
     }
 
     function getColumnFilterFunction(query) {
@@ -1170,8 +1268,10 @@ define([
         };
     }
 
+
     var lastHighlight = '';
 
     return View;
 
-});
+})
+;

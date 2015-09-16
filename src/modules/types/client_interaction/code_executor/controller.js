@@ -219,9 +219,9 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         this._sandbox.setContext(context);
         try {
             this.theFunction = this._sandbox.run(
-                'var result = function(' +
+                '(function(' +
                 controller.neededAliases +
-                ') {' + theCode + '\n}; result;',
+                ') {' + theCode + '\n})',
                 'CodeExecutor' + this.controller.module.getId()
             );
         } catch (e) {
