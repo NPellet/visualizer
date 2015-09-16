@@ -267,6 +267,7 @@ module.exports = function (grunt) {
                     optimizeCss: 'none',
                     optimize: 'none',
                     removeCombined: true,
+                    useStrict: true,
                     modules: [
                         {
                             name: 'init'
