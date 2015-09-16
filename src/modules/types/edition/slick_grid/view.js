@@ -921,7 +921,8 @@ define([
                     'Slickgrid' + this.module.getId()
                 );
             } catch (e) {
-                this._reportError(this.title, e);
+                console.log(e);
+                this._reportError(e);
             }
         },
 
