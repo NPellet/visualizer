@@ -204,6 +204,10 @@ define([
                     image.conf = conf;
                     image.transform = null;
 
+                    if(image.name === '__highlight__') $parent.css({
+                        'pointer-events': 'none'
+                    });
+
                     that.dom.append($parent);
 
                     if (imgType === 'svg') {
@@ -381,7 +385,7 @@ define([
                 start = (idx === -1 ? undefined : idx);
                 l = idx + 1;
             }
-            for (var i = start; i < l; i++) {
+            for (let i = start; i < l; i++) {
                 that.images[i].$panzoomEl.panzoom({
                     increment: 0.1,
                     maxScale: 100.0,
@@ -403,9 +407,10 @@ define([
                 }
 
                 // Pan behavior
+                console.log(that.images[i]);
                 that.images[i].$panzoomEl.off('panzoompan');
                 that.images[i].$panzoomEl.on('panzoompan', function (data, panzoom) {
-
+                    console.log('panzoompan');
                     that.lastTransform = panzoom.getMatrix();
 
                     for (var j = 0; j < that.images.length; j++) {
@@ -494,7 +499,7 @@ define([
                 }
             });
 
-            // Handle pan event
+            // Handle move event
             that.dom.off('mousemove.panzoom');
             that.dom.on('mousemove.panzoom', function (e) {
                 if (that.state === 'pan') {
@@ -595,7 +600,7 @@ define([
             if (Util.isArray(that._highlightArray)) {
                 var idx = pixel.x + that.himg.width * pixel.y;
                 var hl = that._highlightArray[idx];
-                var doHighlight = _.any(hl, function(hl) {
+                var doHighlight = _.any(hl, function (hl) {
                     return that._highlight.indexOf(hl) !== -1;
                 });
                 if (hl && doHighlight) {
