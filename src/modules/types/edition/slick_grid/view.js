@@ -907,7 +907,7 @@ define([
         },
 
         _setScript: function (script) {
-            this.filterScript = script;
+            this.filterScript = script || '';
             this.hasFilter = this._hasFilter();
             this._newSandbox();
         },
