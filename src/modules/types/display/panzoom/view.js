@@ -259,24 +259,29 @@ define([
             this.highlights = null;
             for (var i = 0; i < this.images.length; i++) {
                 if (this.images[i].name === '__highlight__') continue;
-                if (API.getData(this.images[i].name)._highlight) himg = this.images[i];
+                if (API.getData(this.images[i].name)._highlightArray) himg = this.images[i];
             }
             if (!himg) return;
             var data = API.getData(himg.name);
-            if (data._highlight.length !== himg.width * himg.height) {
+            if (data._highlightArray.length !== himg.width * himg.height) {
                 Debug.warn('Panzoom: unexpected highlight length');
                 return;
             }
-            this._highlight = data._highlight;
+            this._highlightArray = data._highlightArray;
+            this._highlight = data._highlight || [];
+            if (Util.objectToString(this._highlight) !== 'Array') {
+                this._highlight = [this._highlight];
+            }
             this.himg = himg;
             this.highlights = {};
-            for (var i = 0; i < data._highlight.length; i++) {
-                var h = data._highlight[i];
+            for (var i = 0; i < data._highlightArray.length; i++) {
+                var h = data._highlightArray[i];
                 if (Util.objectToString(h) !== 'Array') {
                     h = [h];
                 }
                 for (var j = 0; j < h.length; j++) {
                     if (h[j] === undefined) continue;
+                    if (this._highlight.indexOf(h[j]) === -1) continue;
                     if (this.highlights[h[j]]) {
                         this.highlights[h[j]].data.push(i);
                     } else {
@@ -587,13 +592,17 @@ define([
 
         highlightOn: function (pixel) {
             var that = this;
-            if (Util.isArray(that._highlight)) {
+            if (Util.isArray(that._highlightArray)) {
                 var idx = pixel.x + that.himg.width * pixel.y;
-                if (that._highlight[idx]) {
-                    if (that._hl !== that._highlight[idx]) {
+                var hl = that._highlightArray[idx];
+                var doHighlight = _.any(hl, function(hl) {
+                    return that._highlight.indexOf(hl) !== -1;
+                });
+                if (hl && doHighlight) {
+                    if (that._hl !== hl) {
                         API.highlightId(that._hl, 0);
-                        API.highlightId(that._highlight[idx], 1);
-                        that._hl = that._highlight[idx];
+                        API.highlightId(hl, 1);
+                        that._hl = hl;
                     }
                 } else if (that._hl) {
                     that.highlightOff();
