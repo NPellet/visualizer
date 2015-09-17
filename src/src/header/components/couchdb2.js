@@ -1083,7 +1083,10 @@ define([
 
                 }
             };
-            this.database.list('flavor/sort', 'docs', {
+            this.database.list(
+                'flavor/sort',
+                'docs',
+                {
                     key: [this.flavor, this.username],
                     include_docs: true
                 },
@@ -1124,7 +1127,8 @@ define([
                     error: function (status) {
                         Debug.warn(status);
                     }
-                });
+                }
+            );
         },
         contextClick: function (node, action, ctx) {
             var that = this;

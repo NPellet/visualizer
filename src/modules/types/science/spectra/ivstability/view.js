@@ -242,8 +242,6 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
                         that.editCellComment(id, text);
                     }
 
-                }).bind('change', function () {
-
                 }).trigger('blur');
 
 

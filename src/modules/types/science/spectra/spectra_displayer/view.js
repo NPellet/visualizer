@@ -228,7 +228,8 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                         if (cfgCheckbox('flipAxis', 'flipY')) {
                             y = (y === 'min' ? 'max' : 'min');
                         }
-                        theLegend.setPosition({
+                        theLegend.setPosition(
+                            {
                                 dx: '0px',
                                 dy: '0px',
                                 x: x,

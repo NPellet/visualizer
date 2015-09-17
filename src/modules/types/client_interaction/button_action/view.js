@@ -18,32 +18,34 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/ui'], function 
             } else {
                 label = this.module.getConfiguration('label');
             }
-            var button = new Button(label, function (e, val) {
-                        var prom = Promise.resolve(true);
-                        if (that.module.getConfigurationCheckbox('askConfirm', 'yes')) {
-                            prom = ui.confirm(that.module.getConfiguration('confirmText'), that.module.getConfiguration('okLabel'), that.module.getConfiguration('cancelLabel'));
-                        }
-                        prom.then(function (ok) {
-                            if (!ok) {
-                                return;
-                            }
-                            if (!val && buttonType === 'toggle') {
-                                button.setTitle(that.module.getConfiguration('offLabel'));
-                                that.setButtonColor(that.module.getConfiguration('offColor'));
-                            } else if (buttonType === 'toggle') {
-                                button.setTitle(that.module.getConfiguration('onLabel'));
-                                that.setButtonColor(that.module.getConfiguration('onColor'));
-                            }
-                            that.module.controller.onClick(val);
-                        });
-                    },
-                    {
-                        color: 'Grey',
-                        disabled: false,
-                        checkbox: this.module.getConfiguration('toggle') !== 'click',
-                        value: this.module.getConfiguration('startState') === 'on'
+            var button = new Button(
+                label,
+                function (e, val) {
+                    var prom = Promise.resolve(true);
+                    if (that.module.getConfigurationCheckbox('askConfirm', 'yes')) {
+                        prom = ui.confirm(that.module.getConfiguration('confirmText'), that.module.getConfiguration('okLabel'), that.module.getConfiguration('cancelLabel'));
                     }
-                );
+                    prom.then(function (ok) {
+                        if (!ok) {
+                            return;
+                        }
+                        if (!val && buttonType === 'toggle') {
+                            button.setTitle(that.module.getConfiguration('offLabel'));
+                            that.setButtonColor(that.module.getConfiguration('offColor'));
+                        } else if (buttonType === 'toggle') {
+                            button.setTitle(that.module.getConfiguration('onLabel'));
+                            that.setButtonColor(that.module.getConfiguration('onColor'));
+                        }
+                        that.module.controller.onClick(val);
+                    });
+                },
+                {
+                    color: 'Grey',
+                    disabled: false,
+                    checkbox: this.module.getConfiguration('toggle') !== 'click',
+                    value: this.module.getConfiguration('startState') === 'on'
+                }
+            );
 
             this.module.getDomContent().html(this.dom);
             this.dom.html(button.render());

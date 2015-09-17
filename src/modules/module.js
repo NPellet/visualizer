@@ -1531,18 +1531,15 @@ define([
     function getFieldExample(field) {
         switch (field.type) {
             case 'checkbox':
-            {
                 var result = [];
                 for (var i in field.options) {
                     result.push(i);
                 }
                 return result;
-            }
             case 'color':
             case 'spectrum':
                 return [0, 0, 0, 1];
             case 'combo':
-            {
                 var val = field.options[0];
                 if (val) {
                     val = val.key;
@@ -1553,7 +1550,6 @@ define([
                     val = field.extractValue(val);
                 }
                 return val;
-            }
             case 'float':
                 return field.default || 0;
             case 'jscode':

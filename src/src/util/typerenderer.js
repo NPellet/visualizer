@@ -283,9 +283,9 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
         var gradient = 'linear-gradient(to right';
 
         var total = 0, i = 0, l = value.length;
-        for (i = 0; i < l; total += value[i++][0])
+        for (; i < l; total += value[i++][0]);
 
-             var start = 0, end, color;
+        var start = 0, end, color;
         for (i = 0; i < l; i++) {
             end = start + value[i][0] / total * 100;
             color = value[i][1];
