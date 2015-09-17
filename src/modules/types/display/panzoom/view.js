@@ -126,7 +126,19 @@ define([
 
                 // $img can be <img>, <canvas> or <svg>
                 var $img, $previousImg;
-                if ($parent.length === 0 && variable.type === 'svg') {
+                if ($parent.length === 0 && varname === '__highlight__') {
+                    // New highlight
+                    $parent = that.newCanvasDom(varname);
+                    $img = $(that.highlightImage.canvas);
+                    $parent.find('.panzoom').append($img);
+                    imgType = 'canvas';
+                } else if (varname === '__highlight__') {
+                    // Existing highlight
+                    $parent.find('canvas').remove();
+                    $img = $(that.highlightImage.canvas);
+                    $parent.find('.panzoom').append($img);
+                    imgType = 'canvas';
+                } else if ($parent.length === 0 && variable.type === 'svg') {
                     // New svg element
                     $parent = that.newSvgDom(varname);
                     $img = $(variable.get());
@@ -137,29 +149,17 @@ define([
                     $img = $(variable.get());
                     $parent.find('.panzoom').append($img);
                     imgType = 'svg';
-                } else if ($parent.length === 0 && varname !== '__highlight__') {
+                } else if ($parent.length === 0) {
                     // New image
                     $parent = that.newImageDom(varname);
                     $img = $parent.find('img');
                     imgType = 'image';
-                } else if (varname !== '__highlight__') {
+                } else {
                     // Existing image
                     $previousImg = $parent.find('img');
                     $img = $('<img style="display: none;"/>');
                     $parent.find('.panzoom').append($img);
                     imgType = 'image';
-                } else if ($parent.length === 0) {
-                    // New highlight
-                    $parent = that.newCanvasDom(varname);
-                    $img = $(that.highlightImage.canvas);
-                    $parent.find('.panzoom').append($img);
-                    imgType = 'canvas';
-                } else {
-                    // Existing highlight
-                    $parent.find('canvas').remove();
-                    $img = $(that.highlightImage.canvas);
-                    $parent.find('.panzoom').append($img);
-                    imgType = 'canvas';
                 }
 
 
@@ -194,6 +194,7 @@ define([
                     if ($previousImg) $previousImg.remove();
                     reject(e);
                 }
+
                 function onLoaded() {
                     image.type = imgType;
                     image.name = conf.variable;
