@@ -2,6 +2,8 @@
 
 define(['src/util/mousetracker', 'modules/modulefactory', 'src/util/ui', 'src/util/versioning', 'src/main/grid', 'src/util/debug'], function (mouseTracker, ModuleFactory, ui, Versioning, Grid, Debug) {
     document.addEventListener('copy', function (e) {
+        var currentFocus = document.activeElement;
+        if (currentFocus && currentFocus.nodeName === 'TEXTAREA') return;
         var success = false;
         var state = mouseTracker.getState();
         if (state.kind === 'grid') {
