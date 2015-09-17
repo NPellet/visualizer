@@ -36,7 +36,7 @@ define(['src/util/mousetracker', 'modules/modulefactory', 'src/util/ui', 'src/ut
                 } else if (obj.url) {
                     Grid.addModuleFromJSON(obj);
                 }
-            } catch(e) {
+            } catch (e) {
                 Debug.info('Ignored error while pasting');
             }
         });

@@ -1309,10 +1309,10 @@ define([
             that._data.inBoundary = [];
             for (var i = 0; i < that._data.x.length; i++) {
                 if (that._inBoundary({
-                        x: that._data.x[i],
-                        y: that._data.y[i],
-                        z: that._data.z[i]
-                    })) {
+                    x: that._data.x[i],
+                    y: that._data.y[i],
+                    z: that._data.z[i]
+                })) {
                     that._data.inBoundary.push(true);
                 } else {
                     that._data.inBoundary.push(false);

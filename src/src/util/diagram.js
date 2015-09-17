@@ -439,7 +439,6 @@ define([
                             }
                         };
                     case 'rect':
-                    {
                         var sourceRect = new Rectangle({
                             x: d.source.x - nodeBox.width / 2,
                             y: d.source.y - nodeBox.height / 2
@@ -454,7 +453,6 @@ define([
                             from: sourceRect.intersection(d.target),
                             to: targetRect.intersection(d.source)
                         };
-                    }
                 }
 
             }

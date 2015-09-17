@@ -56,6 +56,7 @@ rules:
   no-undef: 2
 
   # Stylistic issues
+  array-bracket-spacing: 2
   brace-style:
     - 2
     - "1tbs"
@@ -71,6 +72,7 @@ rules:
   indent:
     - 2
     - 4
+    - {SwitchCase: 1}
   key-spacing:
     - 2
     - {beforeColon: false, afterColon: true}
@@ -82,6 +84,7 @@ rules:
   no-trailing-spaces:
     - 2
     - {skipBlankLines: true}
+  object-curly-spacing: 2
   quotes:
     - 2
     - "single"
@@ -99,7 +102,6 @@ rules:
   space-before-function-paren:
     - 2
     - {anonymous: "always", named: "never"}
-  space-in-brackets: 2
   space-in-parens: 2
   space-infix-ops: 2
   space-return-throw-case: 2

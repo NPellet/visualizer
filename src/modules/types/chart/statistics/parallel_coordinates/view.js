@@ -30,12 +30,13 @@ define([
 
             var that = this;
             Context.listen(this.dom[0], [
-                    ['<li><a><span class="ui-icon ui-icon-refresh"></span>Reset selection</a></li>',
-                        function () {
-                            that.resetBrush();
-                        }]
+                [
+                    '<li><a><span class="ui-icon ui-icon-refresh"></span>Reset selection</a></li>',
+                    function () {
+                        that.resetBrush();
+                    }
                 ]
-            );
+            ]);
 
             this.jpathConfig = $.extend(true, [], this.module.getConfiguration('colsjPaths'));
 

@@ -187,9 +187,9 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                 return val === undefined ? DEFAULT_COLOR : val;
             });
 
-            this.opacity = this.opacity.map(function(val) {
+            this.opacity = this.opacity.map(function (val) {
                 return val === undefined ? 1 : val;
-            })
+            });
             console.log(this.color);
         },
 
@@ -504,7 +504,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                 .style('fill', function (d, i) {
                     return that.color[i];
                 })
-                .style('fill-opacity', function(d, i) {
+                .style('fill-opacity', function (d, i) {
                     return that.opacity[i];
                 });
 
