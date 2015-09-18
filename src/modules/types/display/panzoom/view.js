@@ -385,7 +385,7 @@ define([
                 start = (idx === -1 ? undefined : idx);
                 l = idx + 1;
             }
-            for (let i = start; i < l; i++) {
+            for (var i = start; i < l; i++) {
                 that.images[i].$panzoomEl.panzoom({
                     increment: 0.1,
                     maxScale: 100.0,

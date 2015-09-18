@@ -4,7 +4,7 @@
  * Global utility methods
  * @module src/util/util
  */
-define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _) {
+define(['src/util/debug', 'src/util/color', 'lodash', 'components/web-animations-js/web-animations.min.js'], function (Debug, Color, _) {
 
     var months = ['January', 'February', 'March', 'April', 'Mai', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -170,9 +170,9 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
         getCssVendorPrefix: function () {
             var styles = window.getComputedStyle(document.documentElement, '');
             var pre = (Array.prototype.slice
-                .call(styles)
-                .join('')
-                .match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
+                    .call(styles)
+                    .join('')
+                    .match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
             )[1];
             return '-' + pre + '-';
         },
@@ -377,28 +377,38 @@ define(['src/util/debug', 'src/util/color', 'lodash'], function (Debug, Color, _
         if (size === undefined) size = 32;
         if (color === undefined) color = 'black';
         // Image taken from https://github.com/jxnblk/loading (loading-bars.svg)
-        return $('\
+        var $elem = $('\
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="black">\
-            <path transform="translate(2)" d="M0 12 V20 H4 V12z">\
-                <animate attributeName="d" values="M0 12 V20 H4 V12z; M0 4 V28 H4 V4z; M0 12 V20 H4 V12z; M0 12 V20 H4 V12z" dur="1.2s" repeatCount="indefinite" begin="0" keytimes="0;.2;.5;1" keySplines="0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.8 0.4 0.8" calcMode="spline"  />\
-            </path>\
-            <path transform="translate(8)" d="M0 12 V20 H4 V12z">\
-                <animate attributeName="d" values="M0 12 V20 H4 V12z; M0 4 V28 H4 V4z; M0 12 V20 H4 V12z; M0 12 V20 H4 V12z" dur="1.2s" repeatCount="indefinite" begin="0.2" keytimes="0;.2;.5;1" keySplines="0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.8 0.4 0.8" calcMode="spline"  />\
-            </path>\
-            <path transform="translate(14)" d="M0 12 V20 H4 V12z">\
-                <animate attributeName="d" values="M0 12 V20 H4 V12z; M0 4 V28 H4 V4z; M0 12 V20 H4 V12z; M0 12 V20 H4 V12z" dur="1.2s" repeatCount="indefinite" begin="0.4" keytimes="0;.2;.5;1" keySplines="0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.8 0.4 0.8" calcMode="spline" />\
-            </path>\
-            <path transform="translate(20)" d="M0 12 V20 H4 V12z">\
-                <animate attributeName="d" values="M0 12 V20 H4 V12z; M0 4 V28 H4 V4z; M0 12 V20 H4 V12z; M0 12 V20 H4 V12z" dur="1.2s" repeatCount="indefinite" begin="0.6" keytimes="0;.2;.5;1" keySplines="0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.8 0.4 0.8" calcMode="spline" />\
-            </path>\
-            <path transform="translate(26)" d="M0 12 V20 H4 V12z">\
-                <animate attributeName="d" values="M0 12 V20 H4 V12z; M0 4 V28 H4 V4z; M0 12 V20 H4 V12z; M0 12 V20 H4 V12z" dur="1.2s" repeatCount="indefinite" begin="0.8" keytimes="0;.2;.5;1" keySplines="0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.8 0.4 0.8" calcMode="spline" />\
-            </path>\
+            <rect x="0" y="12" width="4" height="8" transform-origin="50% 50%"></rect>\
+            <rect x="7" y="12" width="4" height="8" transform-origin="50% 50%"></rect>\
+            <rect x="14" y="12" width="4" height="8" transform-origin="50% 50%"></rect>\
+            <rect x="21" y="12" width="4" height="8" transform-origin="50% 50%"></rect>\
+            <rect x="28" y="12" width="4" height="8" transform-origin="50% 50%"></rect>\
         </svg>').attr({
             width: size,
             height: size,
             fill: color
         });
+
+        var delay = 0;
+        var duration = 1000;
+
+        $elem.find('rect').each(function () {
+            this.animate([
+                {transform: 'scale(1,1)'},
+                {transform: 'scale(1,3)'},
+                {transform: 'scale(1,1)'},
+                {transform: 'scale(1,1)'},
+                {transform: 'scale(1,1)'}
+            ], {
+                duration: duration,
+                iterations: Infinity,
+                delay: delay
+            });
+            delay += duration / 6;
+        });
+
+        return $elem;
     };
 
     exports.moduleIdFromUrl = function (url) {
