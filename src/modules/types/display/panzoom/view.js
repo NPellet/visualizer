@@ -328,7 +328,7 @@ define([
             that._highlighted = [];
             for (var i = 0; i < hl.length; i++) {
                 (function (i) {
-                    API.listenHighlight({_highlight: hl[i]}, function (onOff, key) {
+                    API.listenHighlight({_highlight: hl[i]}, function (onOff, key, killerId, senderId) {
                         if (!Array.isArray(key)) {
                             key = [key];
                         }
@@ -339,13 +339,13 @@ define([
                                 return key.indexOf(val) === -1;
                             });
                         }
-                        that._drawHighlight();
+                        that._drawHighlight(senderId);
                     }, false, that.module.getId());
                 })(i);
             }
         },
 
-        _drawHighlight: function () {
+        _drawHighlight: function (senderId) {
             var that = this;
             if (!this._highlighted || !this._highlighted.length) {
                 this.toHide['__highlight__'] = true;
@@ -356,7 +356,7 @@ define([
                 this.highlightImage = this._createHighlight(this._highlighted);
             }
             this.doImage('__highlight__').then(function () {
-                if (that.module.getConfigurationCheckbox('focusOnHighlight', 'yes')) {
+                if (that.module.getConfigurationCheckbox('focusOnHighlight', 'yes') && senderId !== that.module.getId()) {
                     var w = that.highlightImage.canvas.width;
                     var h = that.highlightImage.canvas.height;
                     var x = that.highlightImage.shiftx;
@@ -626,8 +626,8 @@ define([
                 });
                 if (hl && doHighlight) {
                     if (that._hl !== hl) {
-                        API.highlightId(that._hl, 0);
-                        API.highlightId(hl, 1);
+                        that.module.model.highlightId(that._hl, 0);
+                        that.module.model.highlightId(hl, 1);
                         that._hl = hl;
                     }
                 } else if (that._hl) {
@@ -638,7 +638,7 @@ define([
 
         highlightOff: function () {
             if (this._hl !== undefined) {
-                API.highlightId(this._hl, 0);
+                this.module.model.highlightId(this._hl, 0);
                 this._hl = undefined;
             }
         },
