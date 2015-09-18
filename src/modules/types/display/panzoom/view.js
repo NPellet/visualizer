@@ -12,6 +12,7 @@ define([
 ], function (API, Debug, Default, Util, _, bowser) {
 
     var currentPromise = Promise.resolve();
+    var focusR = 0.5;
 
     function View() {
     }
@@ -204,7 +205,7 @@ define([
                     image.conf = conf;
                     image.transform = null;
 
-                    if(image.name === '__highlight__') $parent.css({
+                    if (image.name === '__highlight__') $parent.css({
                         'pointer-events': 'none'
                     });
 
@@ -345,6 +346,7 @@ define([
         },
 
         _drawHighlight: function () {
+            var that = this;
             if (!this._highlighted || !this._highlighted.length) {
                 this.toHide['__highlight__'] = true;
                 this.highlightImage = this.highlightImage || {};
@@ -353,7 +355,20 @@ define([
                 this.toHide['__highlight__'] = false;
                 this.highlightImage = this._createHighlight(this._highlighted);
             }
-            this.doImage('__highlight__');
+            this.doImage('__highlight__').then(function () {
+                if (that.module.getConfigurationCheckbox('focusOnHighlight', 'yes')) {
+                    var w = that.highlightImage.canvas.width;
+                    var h = that.highlightImage.canvas.height;
+                    var x = that.highlightImage.shiftx;
+                    var y = that.highlightImage.shifty;
+                    x = Math.max(x - focusR * w, 0);
+                    y = Math.max(y - focusR * h, 0);
+                    var z = Math.min(that.himg.width / w * focusR, that.himg.height / h * focusR);
+                    z = Math.max(1, z);
+                    var transform = [z, 0, 0, z, -z * that.himg.f * x, -z * that.himg.f * y];
+                    that.setTransform(transform);
+                }
+            });
         },
 
         newImageDom: function (varname) {
@@ -385,7 +400,7 @@ define([
                 start = (idx === -1 ? undefined : idx);
                 l = idx + 1;
             }
-            for (let i = start; i < l; i++) {
+            for (var i = start; i < l; i++) {
                 that.images[i].$panzoomEl.panzoom({
                     increment: 0.1,
                     maxScale: 100.0,
@@ -407,10 +422,8 @@ define([
                 }
 
                 // Pan behavior
-                console.log(that.images[i]);
                 that.images[i].$panzoomEl.off('panzoompan');
                 that.images[i].$panzoomEl.on('panzoompan', function (data, panzoom) {
-                    console.log('panzoompan');
                     that.lastTransform = panzoom.getMatrix();
 
                     for (var j = 0; j < that.images.length; j++) {
@@ -535,6 +548,14 @@ define([
                     }
                 }
             });
+        },
+
+        setTransform: function (transform) {
+            this.lastTransform = transform;
+            for (var j = 0; j < this.images.length; j++) {
+                var panzoomInstance = this.images[j].$panzoomEl.panzoom('instance');
+                panzoomInstance.setMatrix(this.lastTransform);
+            }
         },
 
         _createHighlight: function (hl) {

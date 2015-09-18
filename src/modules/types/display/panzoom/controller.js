@@ -73,7 +73,16 @@ define(['modules/default/defaultcontroller'], function (Default) {
                         type: 'list'
                     },
 
-                    fields: {}
+                    fields: {
+                        focusOnHighlight: {
+                            type: 'checkbox',
+                            title: 'Focus on highlight',
+                            options: {
+                                yes: 'Yes'
+                            },
+                            default: []
+                        }
+                    }
                 },
 
                 img: {
@@ -145,7 +154,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
 
     Controller.prototype.configAliases = {
-        img: ['groups', 'img', 0]
+        img: ['groups', 'img', 0],
+        focusOnHighlight: ['groups', 'group', 0, 'focusOnHighlight', 0]
     };
 
     Controller.prototype.clickedPixel = function (clickedPixel) {
