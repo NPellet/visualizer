@@ -44,8 +44,8 @@ define([
 
     }
 
-    function setHighlightId(id, value) {
-        this.repositoryHighlights.set(id, value);
+    function setHighlightId(id, value, senderId) {
+        this.repositoryHighlights.set(id, value, null, senderId);
     }
 
 

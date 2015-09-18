@@ -2,7 +2,7 @@
 
 define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/util/debug', 'src/util/util'], function (Entry, Traversing, API, Debug, Util) {
 
-    return {
+    var model = {
 
         setModule: function (module) {
             this.module = module;
@@ -316,6 +316,10 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
             }
         },
 
+        highlightId: function (key, onOff) {
+            API.highlightId(key, onOff, this.module.getId());
+        },
+
         dataTriggerChange: function (data) { // self is not available
 
             data.triggerChange(false, [this.module.getId()]);
@@ -362,4 +366,7 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
             data.unbindChange(callback);
         }
     };
+
+    model.setHighlightId = model.highlightId;
+    return model;
 });

@@ -57,7 +57,7 @@ define(['jquery', 'src/util/event'], function ($, Event) {
         this.options = options || {doNotSave: false};
         var i;
 
-        this.on('change', function (sourcekeys, value) {
+        this.on('change', function (sourcekeys, value, senderId) {
 
             var callbacks = {};
             this._keys = this._keys || [];
@@ -81,7 +81,7 @@ define(['jquery', 'src/util/event'], function ($, Event) {
                 if (commonKeys.length > 0 || ((!commonKeys || commonKeys.length == 0) && currentCallback[2])) {
                     for (var killerID in this._killers) {
                         if (this._killers[killerID].indexOf(+i) > -1) {
-                            currentCallback[1](value, commonKeys, killerID);
+                            currentCallback[1](value, commonKeys, killerID, senderId);
                             continue loop1;
                         }
                     }
@@ -100,7 +100,7 @@ define(['jquery', 'src/util/event'], function ($, Event) {
         return this._value[key];
     };
 
-    Repository.prototype.set = function (keys, value, noTrigger) {
+    Repository.prototype.set = function (keys, value, noTrigger, senderId) {
 
         if (!Array.isArray(keys))
             keys = [keys];
@@ -113,7 +113,7 @@ define(['jquery', 'src/util/event'], function ($, Event) {
             this._value[keys] = [keys, value];
 
         if (!noTrigger) {
-            this.trigger('change', keys, value);
+            this.trigger('change', keys, value, senderId);
         }
     };
 
