@@ -42,7 +42,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     };
 
     Controller.prototype.elementHover = function (element) {
-        if (!element) {
+        if (!element || this._highlighted === element) {
             return;
         }
 
@@ -57,6 +57,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     Controller.prototype.elementOut = function () {
         if (this._highlighted) {
             API.highlight(this._highlighted, 0);
+            this._highlighted = null;
         }
     };
 

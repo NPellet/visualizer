@@ -62,19 +62,20 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                 API.killHighlight(that.module.getId());
 
                 for (var i = 0; i < that._data.length; i++) {
-                    var currentDataPoint = i;
-                    API.listenHighlight(that._data[i], function (onOff, key) {
-
-                        // we need to highlight the correct shape ...
-                        if (onOff) {
-                            that._plot.highlight(0, currentDataPoint);
-                        } else {
-                            that._plot.unhighlight(0, currentDataPoint);
-                        }
-                    }, false, that.module.getId());
+                    if (!that._data[i]._highlight) continue;
+                    (function (i) {
+                        API.listenHighlight(that._data[i], function (onOff, key) {
+                            // we need to highlight the correct shape ...
+                            if (onOff) {
+                                //that.module.controller.elementHover(that._data[i]);
+                                that._plot.highlight(0, i);
+                            } else {
+                                //that.module.controller.elementOut();
+                                that._plot.unhighlight(0, i);
+                            }
+                        }, false, that.module.getId());
+                    })(i);
                 }
-
-
             });
         },
 
