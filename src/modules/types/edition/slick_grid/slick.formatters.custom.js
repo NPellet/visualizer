@@ -58,8 +58,4 @@
     function CheckmarkFormatter(row, cell, value, columnDef, dataContext) {
         return value ? '<span style="color: green;">&#10004;</span>' : '<span style="color: red;">&#10008;</span>';
     }
-
-    function sprintfFormatter(row, cell, value, columnDef) {
-        return value ? "" : sprintf.sprintf(columnDef.colDef.formatterOptions, value);
-    }
 })(jQuery);

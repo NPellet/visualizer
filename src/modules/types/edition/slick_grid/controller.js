@@ -154,11 +154,6 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                             ],
                             default: 'typerenderer'
                         },
-                        formatterOptions: {
-                            type: 'text',
-                            title: 'Formatter options',
-                            default: ''
-                        },
                         width: {
                             type: 'text',
                             title: 'Width'
