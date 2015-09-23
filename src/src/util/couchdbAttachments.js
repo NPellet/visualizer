@@ -111,7 +111,24 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
      * @param {string} options[].name - The name of the attachment
      * @param {string} options[].contentType - The contentType of the uploaded data
      * @param {string} options[].data - The attachment data to upload
-     * @param {Blob} options[].file - The attachment data to upload
+     * @param {Blob|string} options[].file - The attachment data to upload. If string, must be a valid base64 encoded dataURL
+     * @example
+     * // With dataurl
+     * cdb.inlineUploads([{
+     *   name: 'example.png',
+     *   file: 'data:image/png;base64,ORK5CYII='
+     * }]);
+     * // With Blob
+     * cdb.inlineUploads([{
+     *   name: 'example.txt',
+     *   file: new Blob(['example'], {content_type: 'text/plain'});
+     * }]);
+     * // With data
+     * cdb.inlineUploads([{
+     *   name: 'example.txt',
+     *   contentType: 'text/plain',
+     *   data: 'example'
+     * }]);
      * @returns {Promise.<object>} The new list of attachments
      */
     CouchdbAttachments.prototype.inlineUploads = function (options) {

@@ -110,6 +110,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
      */
     var CouchdbAttachments = function () {
         // get the document url from the view url
+        this._hasFetched = false;
         if (arguments.length === 0) {
             var viewUrl = Versioning.lastLoaded.view.url;
             if (!viewUrl) {
@@ -130,9 +131,19 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
      @return {number} attachments[].length - Length in bytes of the resource
      @return {number} attachments[].url - The url of the resource
      */
-    CouchdbAttachments.prototype.list = function () {
-        if (!this.lastDoc._attachments) throw new Error('List not available before calling fetchList');
-        return Promise.resolve(attachmentsAsArray(this, this.lastDoc._attachments));
+    CouchdbAttachments.prototype.list = function (asError) {
+        var that = this;
+        return Promise.resolve().then(function () {
+            var hasAtt = that.lastDoc && that.lastDoc._attachments;
+            if (!hasAtt && asError) {
+                throw new Error('Unexpected error: List of attachments not available');
+            } else if (!hasAtt) {
+                return that.refresh().then(function () {
+                    return that.list(true);
+                });
+            }
+            return attachmentsAsArray(that, that.lastDoc._attachments);
+        });
     };
 
     // This is an alternative strategy for storing multiple attachments in one revision
@@ -171,13 +182,33 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
      * @param {string} options[].name - The name of the attachment
      * @param {string} options[].contentType - The contentType of the uploaded data
      * @param {string} options[].data - The attachment data to upload
-     * @param {Blob} options[].file - The attachment data to upload
+     * @param {Blob|string} options[].file - The attachment data to upload. If string, must be a valid base64 encoded dataURL
+     * @example
+     * // With dataurl
+     * cdb.inlineUploads([{
+     *   name: 'example.png',
+     *   file: 'data:image/png;base64,ORK5CYII='
+     * }]);
+     * // With Blob
+     * cdb.inlineUploads([{
+     *   name: 'example.txt',
+     *   file: new Blob(['example'], {content_type: 'text/plain'});
+     * }]);
+     * // With data
+     * cdb.inlineUploads([{
+     *   name: 'example.txt',
+     *   contentType: 'text/plain',
+     *   data: 'example'
+     * }]);
      * @returns {Promise.&lt;object>} The new list of attachments
      */
     CouchdbAttachments.prototype.inlineUploads = function (options) {
         var that = this;
-        if (!options) return Promise.resolve(attachmentsAsArray(this, this.lastAttachmentsResult));
-        return Promise.resolve().then(function () {
+        var prom = this.list();
+        if (!options) return prom.then(function () {
+            return attachmentsAsArray(this, this.lastAttachmentsResult);
+        });
+        return prom.then(function () {
             if (!(Array.isArray(options))) {
                 throw new TypeError('options must be an array');
             }
@@ -191,7 +222,14 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                             content_type: item.contentType,
                             data: btoa(unescape(encodeURIComponent(item.data)))
                         };
-                    } else if (item.file) {
+                    } else if (item.file && typeof item.file === 'string') {
+                        var match = /data:([a-z]+\/[a-z]+);base64,(.+)/.exec(item.file);
+                        if (!match) throw new Error('File is string but not valid base64 encoded dataURL');
+                        that.lastDoc._attachments[item.name] = {
+                            content_type: match[1],
+                            data: match[2]
+                        };
+                    } else if (item.file && item.file instanceof Blob) {
                         var p = new Promise(function (resolve, reject) {
                             var reader = new FileReader();
                             reader.onload = function (e) {
@@ -208,7 +246,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                         prom.push(p);
 
                     } else {
-                        return Promise.reject(new Error('Item must have data or file property'));
+                        return Promise.reject(new Error('Item must have a valid data or file property'));
                     }
                 })(i);
             }
@@ -344,7 +382,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
 
     // Private function
     function inlineRemove(ctx, names) {
-        return Promise.resolve().then(function () {
+        return ctx.list().then(function () {
             if (!Array.isArray(names)) throw new TypeError('Argument should be an array');
             if (names.length === 0) return ctx.list();
             return new Promise(function (resolve, reject) {
@@ -383,6 +421,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                     if (err) return reject(err);
                     if (res.status !== 200) return reject(new Error('Error getting document, couchdb returned status code ' + res.status));
                     that.lastDoc = res.body;
+                    that._hasFetched = true;
                     return resolve(attachmentsAsArray(that, res.body._attachments));
                 });
         });
@@ -420,7 +459,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
-		on Fri Jul 17th 2015 using the <a
+		on Wed Sep 23rd 2015 using the <a
 			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>
