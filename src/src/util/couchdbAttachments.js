@@ -134,7 +134,14 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                             content_type: item.contentType,
                             data: btoa(unescape(encodeURIComponent(item.data)))
                         };
-                    } else if (item.file) {
+                    } else if (item.file && typeof item.file === 'string') {
+                        var match = /data:([a-z]+\/[a-z]+);base64,(.+)/.exec(item.file);
+                        if (!match) throw new Error('File is string but not valid base64 encoded dataURL');
+                        that.lastDoc._attachments[item.name] = {
+                            content_type: match[1],
+                            data: match[2]
+                        };
+                    } else if (item.file && item.file instanceof Blob) {
                         var p = new Promise(function (resolve, reject) {
                             var reader = new FileReader();
                             reader.onload = function (e) {
@@ -151,7 +158,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                         prom.push(p);
 
                     } else {
-                        return Promise.reject(new Error('Item must have data or file property'));
+                        return Promise.reject(new Error('Item must have a valid data or file property'));
                     }
                 })(i);
             }
