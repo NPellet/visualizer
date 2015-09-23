@@ -1,3 +1,48 @@
+<a name="2.28.0"></a>
+# 2.28.0 (2015-09-23)
+
+
+### Bug Fixes
+
+* **core:** make sure couch.jquery is loaded after jQuery ([567aa70](https://github.com/NPellet/visualizer/commit/567aa70))
+* **pie_chart:** highlight called only when necessary ([8c1b5ab](https://github.com/NPellet/visualizer/commit/8c1b5ab))
+* remove useless and problematic line in module save dialog ([9ffe1cf](https://github.com/NPellet/visualizer/commit/9ffe1cf))
+* **slickgrid:** correct slick grid filter 'documentation' ([0232baa](https://github.com/NPellet/visualizer/commit/0232baa))
+* **slickgrid:** fix error when first element of array is undefined ([e80f273](https://github.com/NPellet/visualizer/commit/e80f273))
+* **slickgrid:** fix just-in-time filter when an item does not exist ([4eec928](https://github.com/NPellet/visualizer/commit/4eec928))
+* **slickgrid:** handle pref script is undefined ([4a2bef1](https://github.com/NPellet/visualizer/commit/4a2bef1))
+* **slickgrid:** init slick before listeners ([6fe647e](https://github.com/NPellet/visualizer/commit/6fe647e)), closes [#690](https://github.com/NPellet/visualizer/issues/690)
+* **slickgrid:** log error correctly when eval fails ([01a379c](https://github.com/NPellet/visualizer/commit/01a379c))
+* **slickgrid:** update the highlights array after sorting ([82076cb](https://github.com/NPellet/visualizer/commit/82076cb)), closes [#694](https://github.com/NPellet/visualizer/issues/694)
+* **spectra_displayer:** correctly redraw graph ([aa903cf](https://github.com/NPellet/visualizer/commit/aa903cf)), closes [#675](https://github.com/NPellet/visualizer/issues/675)
+* **spectra_displayer:** Update jsgraph to v1.13.3-17 ([d4f11ba](https://github.com/NPellet/visualizer/commit/d4f11ba)), closes [#701](https://github.com/NPellet/visualizer/issues/701)
+
+### Features
+
+* **colorbar:** support colors with opacity ([52c12cf](https://github.com/NPellet/visualizer/commit/52c12cf)), closes [#685](https://github.com/NPellet/visualizer/issues/685)
+* **core:** add possibility to specify senderId in highlight ([42cc263](https://github.com/NPellet/visualizer/commit/42cc263))
+* **couchdbAttachments:** add support for uploading dataurls ([1504631](https://github.com/NPellet/visualizer/commit/1504631))
+* **couchdbAttachments:** Allow to call any method without having to call fetchList first ([f5b5bd9](https://github.com/NPellet/visualizer/commit/f5b5bd9))
+* **feedback:** change feedback to open new tab in github issues ([626e2e8](https://github.com/NPellet/visualizer/commit/626e2e8))
+* **hex:** reset zoom on double click ([0fe1fe9](https://github.com/NPellet/visualizer/commit/0fe1fe9)), closes [#688](https://github.com/NPellet/visualizer/issues/688)
+* **panzoom:** add inline svg support ([1ea67fe](https://github.com/NPellet/visualizer/commit/1ea67fe)), closes [#707](https://github.com/NPellet/visualizer/issues/707)
+* **panzoom:** implement focus on highlight option ([18f7995](https://github.com/NPellet/visualizer/commit/18f7995)), closes [#671](https://github.com/NPellet/visualizer/issues/671)
+* **panzoom:** use 2 arrays for highlight (_highlight, _highlightArray) ([b8bedd6](https://github.com/NPellet/visualizer/commit/b8bedd6)), closes [#667](https://github.com/NPellet/visualizer/issues/667)
+* **slickgrid:** add scriptChanged event in filter ([f1d3d5c](https://github.com/NPellet/visualizer/commit/f1d3d5c))
+* **slickgrid:** filter now called with event ([3de7ecc](https://github.com/NPellet/visualizer/commit/3de7ecc))
+* **slickgrid:** script as var in ([aebfafa](https://github.com/NPellet/visualizer/commit/aebfafa)), closes [#705](https://github.com/NPellet/visualizer/issues/705)
+
+
+### BREAKING CHANGES
+
+* S:
+Changes both how and when the filter function is called in slick grid
+Breaks previous view that use the filter feature
+
+* The colorbar interpolation function now returns on object {color: '#ff0000', opacity: 0.5} and not directly a color
+
+
+
 <a name="2.27.1"></a>
 ## 2.27.1 (2015-09-03)
 
