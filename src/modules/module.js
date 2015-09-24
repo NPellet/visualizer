@@ -437,6 +437,7 @@ define([
         setLayers: function (layers, blankLayer) {
             this.definition.layers = this.definition.layers || new DataObject();
 
+            // TODO: remove unused values
             for (var i in layers) {
                 if (this.definition.layers[i]) {
                     continue;
