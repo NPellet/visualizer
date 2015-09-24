@@ -696,7 +696,7 @@ define([
 
         _getDefaultConf: function () {
             return {
-                opacity: 0.5,
+                opacity: 1,
                 'z-index': 1,
                 rendering: 'Normal',
                 scaling: 'max'
