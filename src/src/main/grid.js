@@ -535,6 +535,76 @@ define([
         return def;
     }
 
+    function removeLayer() {
+
+        var def = $.Deferred();
+
+        var div = ui.dialog({
+                autoPosition: true,
+                title: 'Remove layer',
+                width: '600px'
+            }),
+            form = new Form({});
+
+        form.init();
+        form.setStructure({
+            sections: {
+                layeropts: {
+                    options: {},
+                    groups: {
+                        layeropts: {
+                            options: {
+                                type: 'list',
+                                multiple: true
+                            },
+                            fields: {
+                                layername: {
+                                    type: 'text',
+                                    title: 'Layer name',
+                                    validation: {
+                                        rules: [{
+                                            nonEmpty: true,
+                                            feedback: {
+                                                _class: true,
+                                                message: 'The layer name cannot be empty'
+                                            }
+                                        }]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        form.onStructureLoaded().done(function () {
+            form.fill({});
+        });
+
+        form.addButton('Validate', {color: 'green'}, function () {
+
+            div.dialog('close');
+            var value = form.getValue().sections.layeropts[0].groups.layeropts[0],
+                layer = {name: value.layername[0]};
+
+            if (definition.layers[layer.name] && (Object.keys(definition.layers).length > 1)) {
+                definition.layers[layer.name] = undefined;
+            } else {
+                console.log("layer doesn't exist");
+            }
+
+            setLayers();
+        });
+
+        form.onLoaded().done(function () {
+            div.html(form.makeDom(2));
+            form.inDom();
+        });
+
+        return def;
+    }
+
     function setLayers(newIsBlank) {
         eachModules(function (moduleInstance) {
             moduleInstance.setLayers(definition.layers, newIsBlank);
@@ -675,6 +745,7 @@ define([
                         });
 
                         $('<li data-layer=""><a>+ Add a new layer</a></li>').data('layerkey', '-1').appendTo(layersUl);
+                        $('<li data-layer=""><a>- Remove a layer</a></li>').data('layerkey', '-2').appendTo(layersUl);
 
                         $(contextDom).append(layersLi);
 
@@ -684,11 +755,12 @@ define([
                                 target = target.parent();
                             }
                             var layer = target.data('layerkey');
-                            if (layer !== '-1') {
+                            if ((layer !== '-1') && (layer !== '-2')) {
                                 switchToLayer(layer);
-
                             } else if (layer == '-1') {
                                 newLayer();
+                            } else if (layer == '-2') {
+                                removeLayer();
                             }
                         });
 
