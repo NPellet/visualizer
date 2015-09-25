@@ -606,7 +606,7 @@ define([
                 ui.showNotification('Layer "'+layer.name+'" doesn\'t exist', 'error');
             }
 
-            setLayers(false, layer.name);
+            setLayers(false, {remove: layer.name});
         });
 
         form.onLoaded().done(function () {
@@ -617,9 +617,101 @@ define([
         return def;
     }
 
-    function setLayers(newIsBlank, delete_layer) {
+    function renameLayer() {
+
+        var def = $.Deferred();
+
+        var div = ui.dialog({
+                autoPosition: true,
+                title: 'Rename layer',
+                width: '600px'
+            }),
+            form = new Form({});
+
+        form.init();
+        form.setStructure({
+            sections: {
+                layeropts: {
+                    options: {},
+                    groups: {
+                        layeropts: {
+                            options: {
+                                type: 'list',
+                                multiple: true
+                            },
+                            fields: {
+                                originalname: {
+                                    type: 'text',
+                                    title: 'Original layer name',
+                                    validation: {
+                                        rules: [{
+                                            nonEmpty: true,
+                                            feedback: {
+                                                _class: true,
+                                                message: 'The layer name cannot be empty'
+                                            }
+                                        }]
+                                    }
+                                },
+                                newname: {
+                                    type: 'text',
+                                    title: 'New layer name',
+                                    validation: {
+                                        rules: [{
+                                            nonEmpty: true,
+                                            feedback: {
+                                                _class: true,
+                                                message: 'The layer name cannot be empty'
+                                            }
+                                        }]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        form.onStructureLoaded().done(function () {
+            form.fill({});
+        });
+
+        form.addButton('Validate', {color: 'green'}, function () {
+
+            div.dialog('close');
+            var value = form.getValue().sections.layeropts[0].groups.layeropts[0],
+                layer = {old: value.originalname[0], new: value.newname[0]};
+
+            if (definition.layers[layer.old]) {
+                if (definition.layers[layer.new]) {
+                    ui.showNotification('Layer "'+layer.new+'" already exist', 'error');
+                } else {
+                    definition.layers[layer.new] = {name: layer.new};
+                    delete definition.layers[layer.old];
+                    if (layer.old === activeLayer) {
+                        switchToLayer(layer.new);
+                    }
+                    ui.showNotification('Layer "'+layer.old+'" renamed to "'+layer.new+'"', 'success');
+                }
+            } else {
+                ui.showNotification('Layer "'+layer.old+'" doesn\'t exist', 'error');
+            }
+
+            setLayers(false, {rename: layer});
+        });
+
+        form.onLoaded().done(function () {
+            div.html(form.makeDom(2));
+            form.inDom();
+        });
+
+        return def;
+    }
+
+    function setLayers(newIsBlank, modify_layer) {
         eachModules(function (moduleInstance) {
-            moduleInstance.setLayers(definition.layers, newIsBlank, delete_layer);
+            moduleInstance.setLayers(definition.layers, newIsBlank, modify_layer);
         });
     }
 
@@ -758,6 +850,7 @@ define([
 
                         $('<li data-layer=""><a>+ Add a new layer</a></li>').data('layerkey', '-1').appendTo(layersUl);
                         $('<li data-layer=""><a>- Remove a layer</a></li>').data('layerkey', '-2').appendTo(layersUl);
+                        $('<li data-layer=""><a>= Rename a layer</a></li>').data('layerkey', '-3').appendTo(layersUl);
 
                         $(contextDom).append(layersLi);
 
@@ -767,12 +860,14 @@ define([
                                 target = target.parent();
                             }
                             var layer = target.data('layerkey');
-                            if ((layer !== '-1') && (layer !== '-2')) {
+                            if ((layer !== '-1') && (layer !== '-2') && (layer !== '-3')) {
                                 switchToLayer(layer);
                             } else if (layer == '-1') {
                                 newLayer();
                             } else if (layer == '-2') {
                                 removeLayer();
+                            } else if (layer == '-3') {
+                                renameLayer();
                             }
                         });
 

@@ -434,11 +434,16 @@ define([
             }
         },
 
-        setLayers: function (layers, blankLayer, delete_layer) {
+        setLayers: function (layers, blankLayer, modify_layer) {
             this.definition.layers = this.definition.layers || new DataObject();
 
-            if (delete_layer) {
-                delete this.definition.layers[delete_layer];
+            if (modify_layer) {
+                if (modify_layer.remove) {
+                    delete this.definition.layers[modify_layer.remove];
+                } else if (modify_layer.rename) {
+                    this.definition.layers[modify_layer.rename.new] = this.definition.layers[modify_layer.rename.old];
+                    delete this.definition.layers[modify_layer.rename.old];
+                }
             } else {
                 for (var i in layers) {
                     if (this.definition.layers[i]) {
