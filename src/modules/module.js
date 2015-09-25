@@ -434,26 +434,29 @@ define([
             }
         },
 
-        setLayers: function (layers, blankLayer) {
+        setLayers: function (layers, blankLayer, delete_layer) {
             this.definition.layers = this.definition.layers || new DataObject();
 
-            // TODO: remove unused values
-            for (var i in layers) {
-                if (this.definition.layers[i]) {
-                    continue;
+            if (delete_layer) {
+                delete this.definition.layers[delete_layer];
+            } else {
+                for (var i in layers) {
+                    if (this.definition.layers[i]) {
+                        continue;
+                    }
+
+                    // new layer
+                    this.definition.layers[i] = new DataObject();
+
+                    if (blankLayer) {
+                        $.extend(true, this.definition.layers[i], Module.prototype.emptyConfig);
+                        this.definition.layers[i].name = i;
+                    } else {
+                        $.extend(true, this.definition.layers[i], this.getLayer(this.getActiveLayerName()));
+                    }
+
+                    this.definition.layers[i] = this.definition.layers[i].duplicate();
                 }
-
-                // new layer
-                this.definition.layers[i] = new DataObject();
-
-                if (blankLayer) {
-                    $.extend(true, this.definition.layers[i], Module.prototype.emptyConfig);
-                    this.definition.layers[i].name = i;
-                } else {
-                    $.extend(true, this.definition.layers[i], this.getLayer(this.getActiveLayerName()));
-                }
-
-                this.definition.layers[i] = this.definition.layers[i].duplicate();
             }
         },
 
