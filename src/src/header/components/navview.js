@@ -22,7 +22,8 @@ define([
             this.id = Util.getNextUniqueId();
             $.ui.fancytree.debugLevel = 0;
 
-            $(document).keydown(function (event) {
+            $(document).keydown(
+                function (event) {
                     // If Control or Command key is pressed and the S key is pressed
                     // run save function. 83 is the key code for S.
                     if ((event.ctrlKey || event.metaKey) && event.which == 83) {

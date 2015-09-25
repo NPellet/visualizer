@@ -311,8 +311,8 @@ define([
             if (obj.attributes && !obj.animation) {
                 // Case 1)
                 if (_.any(obj.attributes, function (attribute) {
-                        return typeof attribute === 'function';
-                    })) {
+                    return typeof attribute === 'function';
+                })) {
                     this.setAttributesOneByOne($svgEl, obj.attributes);
                 } else {
                     // Use straightforward solution
@@ -462,8 +462,8 @@ define([
 
         _configCheckBox: function (config, option) {
             return this.module.getConfiguration(config) && _.find(this.module.getConfiguration(config), function (val) {
-                    return val === option;
-                });
+                return val === option;
+            });
         },
 
         memorizeAnim: function (anim, id) {
