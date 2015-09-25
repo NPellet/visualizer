@@ -589,12 +589,24 @@ define([
                 layer = {name: value.layername[0]};
 
             if (definition.layers[layer.name] && (Object.keys(definition.layers).length > 1)) {
-                definition.layers[layer.name] = undefined;
+                ui.confirm('<p>Are you sure that you want to delete the layer "'+layer.name+'"</p>', 'Confirm', 'Cancel')
+                    .then(function (conf) {
+                        if (conf) {
+                            // changes to other layer if is in the actual
+                            if (layer.name === activeLayer) {
+                                switchToLayer(Object.keys(definition.layers)[0]);
+                            }
+                            delete definition.layers[layer.name];
+                            ui.showNotification('Layer "'+layer.name+'" deleted', 'success');
+                        } else {
+                            ui.showNotification('Cancel layer deletion', 'info');
+                        }
+                    });
             } else {
-                console.log("layer doesn't exist");
+                ui.showNotification('Layer "'+layer.name+'" doesn\'t exist', 'error');
             }
 
-            setLayers();
+            setLayers(false, layer.name);
         });
 
         form.onLoaded().done(function () {
@@ -605,9 +617,9 @@ define([
         return def;
     }
 
-    function setLayers(newIsBlank) {
+    function setLayers(newIsBlank, delete_layer) {
         eachModules(function (moduleInstance) {
-            moduleInstance.setLayers(definition.layers, newIsBlank);
+            moduleInstance.setLayers(definition.layers, newIsBlank, delete_layer);
         });
     }
 
