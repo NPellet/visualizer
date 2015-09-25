@@ -1019,12 +1019,12 @@ define([
                 if (!itemInfo) continue;
                 var item = itemInfo.item;
                 if (_.any(that._highlighted, function (k) {
-                        var hl = item._highlight;
-                        if (!Array.isArray(hl)) {
-                            hl = [hl];
-                        }
-                        return hl.indexOf(k) > -1;
-                    })) {
+                    var hl = item._highlight;
+                    if (!Array.isArray(hl)) {
+                        hl = [hl];
+                    }
+                    return hl.indexOf(k) > -1;
+                })) {
                     tmp[itemInfo.idx] = that.baseCellCssStyle;
                 }
             }
