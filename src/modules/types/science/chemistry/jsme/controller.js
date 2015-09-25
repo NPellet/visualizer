@@ -96,7 +96,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
                                 border: 'With depict option, display the border around the molecule',
                                 star: 'Display star button allowing highlight of atoms (placed in the smiles)',
                                 depictaction: 'Allows to specify an action in depict mode',
-                                oldlook: 'Use the old look'
+                                oldlook: 'Use the old look',
+                                v2000chiralflag: 'Allow the molfile v2000 chiral flag'
                             }
                         },
                         defaultaction: {
