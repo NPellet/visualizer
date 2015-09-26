@@ -600,7 +600,7 @@ define([
                 layer = {name: value.layername[0]};
 
             if (definition.layers[layer.name] && (Object.keys(definition.layers).length > 1)) {
-                ui.confirm('<p>Are you sure that you want to delete the layer "'+layer.name+'"</p>', 'Confirm', 'Cancel')
+                ui.confirm('<p>Are you sure that you want to delete the layer "' + layer.name + '"</p>', 'Confirm', 'Cancel')
                     .then(function (conf) {
                         if (conf) {
                             // changes to other layer if is in the actual
@@ -608,13 +608,13 @@ define([
                                 switchToLayer(Object.keys(definition.layers)[0]);
                             }
                             delete definition.layers[layer.name];
-                            ui.showNotification('Layer "'+layer.name+'" deleted', 'success');
+                            ui.showNotification('Layer "' + layer.name + '" deleted', 'success');
                         } else {
                             ui.showNotification('Cancel layer deletion', 'info');
                         }
                     });
             } else {
-                ui.showNotification('Layer "'+layer.name+'" doesn\'t exist', 'error');
+                ui.showNotification('Layer "' + layer.name + '" doesn\'t exist', 'error');
             }
 
             setLayers(false, {remove: layer.name});
@@ -696,17 +696,17 @@ define([
 
             if (definition.layers[layer.old]) {
                 if (definition.layers[layer.new]) {
-                    ui.showNotification('Layer "'+layer.new+'" already exist', 'error');
+                    ui.showNotification('Layer "' + layer.new + '" already exist', 'error');
                 } else {
                     definition.layers[layer.new] = {name: layer.new};
                     delete definition.layers[layer.old];
                     if (layer.old === activeLayer) {
                         switchToLayer(layer.new);
                     }
-                    ui.showNotification('Layer "'+layer.old+'" renamed to "'+layer.new+'"', 'success');
+                    ui.showNotification('Layer "' + layer.old + '" renamed to "' + layer.new + '"', 'success');
                 }
             } else {
-                ui.showNotification('Layer "'+layer.old+'" doesn\'t exist', 'error');
+                ui.showNotification('Layer "' + layer.old + '" doesn\'t exist', 'error');
             }
 
             setLayers(false, {rename: layer});
