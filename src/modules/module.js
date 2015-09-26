@@ -434,7 +434,7 @@ define([
             }
         },
 
-        setLayers: function (layers, blankLayer, modify_layer) {
+        setLayers: function (layers, blankLayer, modify_layer, blank) {
             this.definition.layers = this.definition.layers || new DataObject();
 
             if (modify_layer) {
@@ -458,6 +458,9 @@ define([
                         this.definition.layers[i].name = i;
                     } else {
                         $.extend(true, this.definition.layers[i], this.getLayer(this.getActiveLayerName()));
+                        if (blank) {
+                            this.definition.layers[i].display = false;
+                        }
                     }
 
                     this.definition.layers[i] = this.definition.layers[i].duplicate();

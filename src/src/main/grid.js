@@ -499,6 +499,13 @@ define([
                                             }
                                         }]
                                     }
+                                },
+                                blanklayer: {
+                                    type: 'checkbox',
+                                    title: 'Blank layer?',
+                                    options: {
+                                        'blank': ' yes / no'
+                                    }
                                 }
                             }
                         }
@@ -520,7 +527,11 @@ define([
             definition.layers[layer.name] = layer;
             def.resolve(layer);
 
-            setLayers();
+            if (value.blanklayer[0].length === 0) {
+                setLayers(false, undefined, false);
+            } else {
+                setLayers(false, undefined, true);
+            }
 
             if (toggleToIt) {
                 switchToLayer(layer.name);
@@ -709,9 +720,9 @@ define([
         return def;
     }
 
-    function setLayers(newIsBlank, modify_layer) {
+    function setLayers(newIsBlank, modify_layer, blank) {
         eachModules(function (moduleInstance) {
-            moduleInstance.setLayers(definition.layers, newIsBlank, modify_layer);
+            moduleInstance.setLayers(definition.layers, newIsBlank, modify_layer, blank);
         });
     }
 
