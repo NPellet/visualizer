@@ -290,44 +290,37 @@ define([
             // Map highlights to array of indexes in the image
             for (i = 0; i < data._highlightArray.length; i++) {
                 var h = data._highlightArray[i];
-                //if (Util.objectToString(h) !== 'Array') {
-                if (!Array.isArray(h)) {
-                    h = [h];
-                }
-
                 var left = i % himg.width;
                 var top = i / himg.width | 0;
 
-                for (var j = 0; j < h.length; j++) {
-                    var hlj = h[j];
-                    if (hlj === undefined) continue;
-                    // Skip highlights that are not in the _highlight array
-                    if (!hMap.get(hlj)) continue;
+                if (h === undefined) continue;
+                // Skip highlights that are not in the _highlight array
+                if (!hMap.get(h)) continue;
 
-                    if (this.highlights[hlj]) {
-                        this.highlights[hlj].data.push(i);
-                    } else {
-                        this.highlights[hlj] = {
-                            data: [i],
-                            shiftx: left,
-                            shifty: top,
-                            shiftX: left,
-                            shiftY: top
-                        };
-                    }
+                if (this.highlights[h]) {
+                    this.highlights[h].data.push(i);
+                } else {
+                    this.highlights[h] = {
+                        data: [i],
+                        shiftx: left,
+                        shifty: top,
+                        shiftX: left,
+                        shiftY: top
+                    };
+                }
 
-                    if (left < this.highlights[hlj].shiftx) {
-                        this.highlights[hlj].shiftx = left;
-                    } else if (left > this.highlights[hlj].shiftX) {
-                        this.highlights[hlj].shiftX = left;
-                    }
-                    if (top < this.highlights[hlj].shifty) {
-                        this.highlights[hlj].shifty = top;
-                    } else if (top > this.highlights[hlj].shiftY) {
-                        this.highlights[hlj].shiftY = top;
-                    }
+                if (left < this.highlights[h].shiftx) {
+                    this.highlights[h].shiftx = left;
+                } else if (left > this.highlights[h].shiftX) {
+                    this.highlights[h].shiftX = left;
+                }
+                if (top < this.highlights[h].shifty) {
+                    this.highlights[h].shifty = top;
+                } else if (top > this.highlights[h].shiftY) {
+                    this.highlights[h].shiftY = top;
                 }
             }
+
             var keys = Object.keys(this.highlights);
             for (i = 0; i < keys.length; i++) {
                 var key = keys[i];
