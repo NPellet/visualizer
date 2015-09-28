@@ -65,7 +65,6 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
         },
         update: {
             data: function (value) {
-                this.module.model.data = value;
                 var val = value.get();
                 this._code = val;
                 if (this.editable) {
