@@ -534,8 +534,14 @@ define([
 
 
                     that.grid.onAddNewRow.subscribe(function (e, args) {
-                        that.module.controller.onRowNew(that.module.data.length - 1, that.module.data[that.module.data.length - 1]);
+                        var newRow = that.module.data[that.module.data.length - 1];
+                        that.module.controller.onRowNew(that.module.data.length - 1, newRow);
                         that.module.model.dataTriggerChange(that.module.data);
+                        that._runFilter({
+                            row: newRow,
+                            cell: null,
+                            event: 'newRow'
+                        });
                         that._resetDeleteRowListeners();
                     });
 
