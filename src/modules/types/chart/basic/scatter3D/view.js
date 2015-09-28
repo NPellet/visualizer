@@ -540,8 +540,8 @@ define([
 
         _configCheckBox: function (config, option) {
             return this.module.getConfiguration(config) && _.find(this.module.getConfiguration(config), function (val) {
-                    return val === option;
-                });
+                return val === option;
+            });
         },
 
         _getDataField: function (field) {

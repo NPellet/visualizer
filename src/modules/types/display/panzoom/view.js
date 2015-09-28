@@ -261,6 +261,7 @@ define([
 
         processHighlights: function () {
             var himg;
+
             this.highlights = null;
             for (var i = 0; i < this.images.length; i++) {
                 if (this.images[i].name === '__highlight__') continue;
@@ -279,41 +280,50 @@ define([
             }
             this.himg = himg;
             this.highlights = {};
-            for (var i = 0; i < data._highlightArray.length; i++) {
-                var h = data._highlightArray[i];
-                if (Util.objectToString(h) !== 'Array') {
-                    h = [h];
-                }
-                for (var j = 0; j < h.length; j++) {
-                    if (h[j] === undefined) continue;
-                    if (this._highlight.indexOf(h[j]) === -1) continue;
-                    if (this.highlights[h[j]]) {
-                        this.highlights[h[j]].data.push(i);
-                    } else {
-                        this.highlights[h[j]] = {
-                            data: [i],
-                            shiftx: i % himg.width,
-                            shifty: i / himg.width | 0,
-                            shiftX: i % himg.width,
-                            shiftY: i / himg.width | 0
-                        };
-                    }
 
-                    var top = i / himg.width | 0;
-                    var left = i % himg.width;
-                    if (left < this.highlights[h[j]].shiftx) {
-                        this.highlights[h[j]].shiftx = left;
-                    } else if (left > this.highlights[h[j]].shiftX) {
-                        this.highlights[h[j]].shiftX = left;
-                    }
-                    if (top < this.highlights[h[j]].shifty) {
-                        this.highlights[h[j]].shifty = top;
-                    } else if (top > this.highlights[h[j]].shiftY) {
-                        this.highlights[h[j]].shiftY = top;
-                    }
+            // For speed, transform _highlight into Map
+            var hMap = new Map();
+            for (var i = 0; i < this._highlight.length; i++) {
+                hMap.set(this._highlight[i], true);
+            }
+
+            // Map highlights to array of indexes in the image
+            for (i = 0; i < data._highlightArray.length; i++) {
+                var h = data._highlightArray[i];
+                var left = i % himg.width;
+                var top = i / himg.width | 0;
+
+                if (h === undefined) continue;
+                // Skip highlights that are not in the _highlight array
+                if (!hMap.get(h)) continue;
+
+                if (this.highlights[h]) {
+                    this.highlights[h].data.push(i);
+                } else {
+                    this.highlights[h] = {
+                        data: [i],
+                        shiftx: left,
+                        shifty: top,
+                        shiftX: left,
+                        shiftY: top
+                    };
+                }
+
+                if (left < this.highlights[h].shiftx) {
+                    this.highlights[h].shiftx = left;
+                } else if (left > this.highlights[h].shiftX) {
+                    this.highlights[h].shiftX = left;
+                }
+                if (top < this.highlights[h].shifty) {
+                    this.highlights[h].shifty = top;
+                } else if (top > this.highlights[h].shiftY) {
+                    this.highlights[h].shiftY = top;
                 }
             }
-            for (var key in this.highlights) {
+
+            var keys = Object.keys(this.highlights);
+            for (i = 0; i < keys.length; i++) {
+                var key = keys[i];
                 this.highlights[key].width = this.highlights[key].shiftX - this.highlights[key].shiftx + 1;
                 this.highlights[key].height = this.highlights[key].shiftY - this.highlights[key].shifty + 1;
             }
@@ -563,7 +573,8 @@ define([
             if (!Array.isArray(hl)) {
                 hl = [hl];
             }
-            var shiftx = Infinity, shifty = Infinity, shiftX = -Infinity, shiftY = -Infinity;
+            var shiftx = this.highlights[hl[0]].shiftx, shifty = this.highlights[hl[0]].shifty;
+            var shiftX = this.highlights[hl[0]].shiftx, shiftY = this.highlights[hl[0]].shiftY;
             for (var i = 0; i < hl.length; i++) {
                 var h = hl[i];
                 shiftx = Math.min(shiftx, this.highlights[h].shiftx);
@@ -587,24 +598,27 @@ define([
             var imageData = context.createImageData(width, height);
             // The property data will contain an array of int8
             var data = imageData.data;
+            var idx;
             for (var i = 0; i < height * width; i++) {
                 // Highlight color: see .ci-highlight in main.css
-                data[i * 4] = 0xFF | 0; // Red
-                data[i * 4 + 1] = 0xFF; // Green
-                data[i * 4 + 2] = 0x99; // Blue
-                data[i * 4 + 3] = 0x00; // alpha (transparency)
+                idx = i * 4;
+                data[idx] = 0xFF | 0; // Red
+                data[idx + 1] = 0xFF; // Green
+                data[idx + 2] = 0x99; // Blue
+                data[idx + 3] = 0x00; // alpha (transparency)
             }
 
             // Change opacity for pixels that need to be seen
             for (var j = 0; j < hl.length; j++) {
-                for (i = 0; i < this.highlights[hl[j]].data.length; i++) {
-                    var idx = this.highlights[hl[j]].data[i];
+                var hlj = hl[j];
+                for (i = 0; i < this.highlights[hlj].data.length; i++) {
+                    idx = this.highlights[hlj].data[i];
                     var x = idx % this.himg.width;
                     var y = idx / this.himg.width | 0;
                     var xi = x - shiftx;
                     var yi = y - shifty;
                     var idxi = yi * width + xi;
-                    data[idxi * 4 + 3] = 255;
+                    data[idxi * 4 + 3] = 0xFF;
                 }
             }
             // we put this random image in the context

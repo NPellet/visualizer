@@ -178,15 +178,15 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
                                     resolve(varValue);
                                 }
                             }).then(function (varValue) {
-                                    that.setData(vars[j].rel, varName, varValue);
-                                    that.removeAllChangeListeners(vars[j].rel);
-                                    that.module.view.update[vars[j].rel].call(that.module.view, varValue, varName);
+                                that.setData(vars[j].rel, varName, varValue);
+                                that.removeAllChangeListeners(vars[j].rel);
+                                that.module.view.update[vars[j].rel].call(that.module.view, varValue, varName);
 
-                                }, function (err) {
-                                    Debug.error('Error while filtering the data : ', err.message, err.stack);
-                                }).catch(function (err) {
-                                    Debug.error('Error while updating module : ', err.message, err.stack);
-                                });
+                            }, function (err) {
+                                Debug.error('Error while filtering the data : ', err.message, err.stack);
+                            }).catch(function (err) {
+                                Debug.error('Error while updating module : ', err.message, err.stack);
+                            });
 
                         })(k);
 
