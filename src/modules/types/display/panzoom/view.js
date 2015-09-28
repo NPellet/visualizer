@@ -261,6 +261,7 @@ define([
 
         processHighlights: function () {
             var himg;
+
             this.highlights = null;
             for (var i = 0; i < this.images.length; i++) {
                 if (this.images[i].name === '__highlight__') continue;
@@ -280,8 +281,14 @@ define([
             this.himg = himg;
             this.highlights = {};
 
+            // For speed, transform _highlight into Map
+            var hMap = new Map();
+            for (var i = 0; i < this._highlight.length; i++) {
+                hMap.set(this._highlight[i], true);
+            }
+
             // Map highlights to array of indexes in the image
-            for (var i = 0; i < data._highlightArray.length; i++) {
+            for (i = 0; i < data._highlightArray.length; i++) {
                 var h = data._highlightArray[i];
                 //if (Util.objectToString(h) !== 'Array') {
                 if (!Array.isArray(h)) {
@@ -295,7 +302,7 @@ define([
                     var hlj = h[j];
                     if (hlj === undefined) continue;
                     // Skip highlights that are not in the _highlight array
-                    if (this._highlight.indexOf(hlj) === -1) continue;
+                    if (!hMap.get(hlj)) continue;
 
                     if (this.highlights[hlj]) {
                         this.highlights[hlj].data.push(i);
