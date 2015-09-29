@@ -80,6 +80,13 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'superagent', 'uri/
                             ],
                             'default': 'form'
                         },
+                        withCredentials: {
+                            type: 'checkbox',
+                            title: 'Send credentials (for cross origin requests)',
+                            options: {
+                                yes: 'yes'
+                            }
+                        },
                         showStatus: {
                             type: 'checkbox',
                             title: 'Show response status',
@@ -255,6 +262,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'superagent', 'uri/
         showStatus: ['groups', 'group', 0, 'showStatus', 0],
         url: ['groups', 'group', 0, 'url', 0],
         method: ['groups', 'group', 0, 'method', 0],
+        withCredentials: ['groups', 'group', 0, 'withCredentials', 0],
         searchparams: ['groups', 'searchparams', 0],
         buttonlabel: ['groups', 'group', 0, 'buttonlabel', 0],
         buttonlabel_exec: ['groups', 'group', 0, 'buttonlabel_exec', 0],
@@ -360,6 +368,9 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'superagent', 'uri/
 
         this.request = superagent(this.method, this.url);
 
+        if (this.module.getConfigurationCheckbox('withCredentials', 'yes')) {
+            this.request.withCredentials();
+        }
         this.request.set(this.headers)
             .query(this.queryValues)
             .send(this.dataValues)
