@@ -85,7 +85,8 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'superagent', 'uri/
                             title: 'Send credentials (for cross origin requests)',
                             options: {
                                 yes: 'yes'
-                            }
+                            },
+                            default: []
                         },
                         showStatus: {
                             type: 'checkbox',
