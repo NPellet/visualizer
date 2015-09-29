@@ -344,7 +344,7 @@ define([
 
             list: function (moduleValue, varname) {
                 var that = this;
-                this.module.data = moduleValue;
+                this.module.data = moduleValue.get();
                 this._updateHighlights();
 
                 this.dataObjectsDone = false;
