@@ -635,10 +635,7 @@ define([
             if (Util.isArray(that._highlightArray)) {
                 var idx = pixel.x + that.himg.width * pixel.y;
                 var hl = that._highlightArray[idx];
-                var doHighlight = _.any(hl, function (hl) {
-                    return that._highlight.indexOf(hl) !== -1;
-                });
-                if (hl && doHighlight) {
+                if (hl !== undefined) {
                     if (that._hl !== hl) {
                         that.module.model.highlightId(that._hl, 0);
                         that.module.model.highlightId(hl, 1);
