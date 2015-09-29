@@ -91,6 +91,7 @@ define([
 
         deleteRowSelection: function () {
             var rows = this.grid.getSelectedRows();
+            var data = this.module.data.get();
             var idx = new Array(rows.length);
             for (var i = 0; i < rows.length; i++) {
                 var itemInfo = this._getItemInfoFromRow(rows[i]);
@@ -100,7 +101,7 @@ define([
             var j = 0;
             var removedRows = [];
             for (i = 0; i < rows.length; i++) {
-                var removed = this.module.data.splice(idx[i] - j++, 1);
+                var removed = data.splice(idx[i] - j++, 1);
                 if (removed.length) removedRows.push(removed[0]);
             }
             this.lastSelectedRows = [];
@@ -145,7 +146,7 @@ define([
                 .map(function (row) {
                     var editor, type;
                     if (row.editor === 'auto' && that.module.data) {
-                        if (!that.module.data.length) {
+                        if (!that.module.data.get().length) {
                             editor = Slick.CustomEditors.DataString;
                             Debug.warn('Slick grid: using editor based on type when the input variable is empty. Cannot determine type');
                         } else {
@@ -187,8 +188,9 @@ define([
             // No columns are defined, we use the input object to define them
             if (_.isEmpty(slickCols)) {
                 var colNames = [];
-                for (var i = 0; i < that.module.data.length; i++) {
-                    colNames = _(colNames).push(_.keys(that.module.data[i])).flatten().uniq().value();
+                var data = that.module.data.get();
+                for (var i = 0; i < data.length; i++) {
+                    colNames = _(colNames).push(_.keys(data[i])).flatten().uniq().value();
                 }
 
                 slickCols = _(colNames).filter(function (v) {
@@ -344,7 +346,7 @@ define([
 
             list: function (moduleValue, varname) {
                 var that = this;
-                this.module.data = moduleValue.get();
+                this.module.data = moduleValue;
                 this._updateHighlights();
 
                 this.dataObjectsDone = false;
@@ -534,8 +536,9 @@ define([
 
 
                     that.grid.onAddNewRow.subscribe(function (e, args) {
-                        var newRow = that.module.data[that.module.data.length - 1];
-                        that.module.controller.onRowNew(that.module.data.length - 1, newRow);
+                        var data = that.module.data.get();
+                        var newRow = data[data.length - 1];
+                        that.module.controller.onRowNew(data.length - 1, newRow);
                         that.module.model.dataTriggerChange(that.module.data);
                         that._runFilter({
                             row: newRow,
@@ -802,7 +805,7 @@ define([
                         that.slick.data.setFilter(filter);
                     }
 
-                    that.slick.data.setItems(that.module.data, that.idPropertyName);
+                    that.slick.data.setItems(that.module.data.get(), that.idPropertyName);
                     that.slick.data.endUpdate();
 
                     // get back state before last update
@@ -858,7 +861,7 @@ define([
                 if (columns[args.cell] && columns[args.cell].id === 'rowDeletion') {
                     // delete the row...
                     var itemInfo = that._getItemInfoFromRow(args.row);
-                    var removed = that.module.data.splice(itemInfo.idx, 1);
+                    var removed = that.module.data.get().splice(itemInfo.idx, 1);
                     if (removed.length) that.module.controller.onRowsDelete(removed);
                     that.module.data.triggerChange();
                 }
@@ -948,7 +951,7 @@ define([
                     return that.grid;
                 },
                 getData: function () {
-                    return that.module.data;
+                    return that.module.data.get();
                 }
             };
         },
@@ -1010,7 +1013,7 @@ define([
         },
 
         _updateHighlights: function () {
-            this._highlights = _.pluck(this.module.data, '_highlight');
+            this._highlights = _.pluck(this.module.data.get(), '_highlight');
         },
 
         _drawHighlight: function () {
@@ -1039,7 +1042,7 @@ define([
 
         _activateHighlights: function () {
             var that = this;
-            var hl = _(this.module.data).pluck('_highlight').flatten().filter(function (val) {
+            var hl = _(this.module.data.get()).pluck('_highlight').flatten().filter(function (val) {
                 return !_.isUndefined(val);
             }).value();
 
@@ -1068,8 +1071,9 @@ define([
 
         _makeDataObjects: function () {
             if (this.dataObjectsDone) return;
-            for (var i = 0; i < this.module.data.length; i++) {
-                this.module.data[i] = DataObject.check(this.module.data[i]);
+            var data = this.module.data.get();
+            for (var i = 0; i < data.length; i++) {
+                data[i] = DataObject.check(data[i]);
             }
             this.dataObjectsDone = true;
         },
@@ -1130,9 +1134,10 @@ define([
 
         generateUniqIds: function () {
             if (!this.module.data) return;
-            for (var i = 0; i < this.module.data.length; i++) {
-                if (!this.module.data[i][this.idPropertyName]) {
-                    Object.defineProperty(this.module.data[i], this.idPropertyName, {
+            var data = this.module.data.get();
+            for (var i = 0; i < data.length; i++) {
+                if (!data[i][this.idPropertyName]) {
+                    Object.defineProperty(data[i], this.idPropertyName, {
                         value: 'id_' + ++uniqueID,
                         writable: false,
                         configurable: false,
@@ -1152,6 +1157,7 @@ define([
 
         exportToTabDelimited: function () {
             var cols = this.grid.getColumns();
+            var data = this.module.data.get();
             var txt = '';
             var line = [], i, j;
             for (i = 0; i < cols.length; i++) {
@@ -1159,7 +1165,7 @@ define([
                     line.push(cols[i].name || '');
             }
             txt += line.join('\t') + '\r\n';
-            for (i = 0; i < this.module.data.length; i++) {
+            for (i = 0; i < data.length; i++) {
                 line = [];
                 for (j = 0; j < cols.length; j++) {
                     var jpath = cols[j].jpath;
@@ -1180,8 +1186,9 @@ define([
             hoverRow: function (row) {
                 // row can be the row itself or the array's index
                 var item;
+                var data = this.module.data.get();
                 if (_.isNumber(row) || row instanceof DataNumber) {
-                    item = this.module.data[row];
+                    item = data[row];
                 } else {
                     item = row;
                 }
@@ -1196,8 +1203,9 @@ define([
 
             selectRow: function (row) {
                 var item;
+                var data = this.module.data.get();
                 if (_.isNumber(row) || row instanceof DataNumber) {
-                    item = this.module.data[row];
+                    item = data[row];
                 } else {
                     item = row;
                 }
