@@ -274,6 +274,10 @@ define([
                 return;
             }
             this._highlightArray = data._highlightArray;
+            if (this._highlightArray !== undefined && !Util.isArray(this._highlightArray)) {
+                debug.warn('_highlightArray should be an Array');
+                this._highlightArray = undefined;
+            }
             this._highlight = data._highlight || [];
             if (Util.objectToString(this._highlight) !== 'Array') {
                 this._highlight = [this._highlight];
@@ -632,7 +636,7 @@ define([
 
         highlightOn: function (pixel) {
             var that = this;
-            if (Util.isArray(that._highlightArray)) {
+            if (that._highlightArray) {
                 var idx = pixel.x + that.himg.width * pixel.y;
                 var hl = that._highlightArray[idx];
                 if (hl !== undefined) {
