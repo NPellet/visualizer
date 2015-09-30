@@ -290,7 +290,7 @@ define([
             }
 
             var $modal = $("<div class='item-details-form'></div>");
-            $modal = $.tmpl('<div class=\'item-details-form\'>\n    {{each columns}}\n    <div class=\'item-details-label\'>\n        ${name}\n    </div>\n    <div class=\'item-details-editor-container\' data-editorid=\'${id}\'></div>\n    {{/each}}\n\n    <hr/>\n    <div class=\'item-details-form-buttons\'>\n        <button data-action=\'save\'>Save</button>\n        <button data-action=\'cancel\'>Cancel</button>\n    </div>\n</div>', {
+            $modal = $.tmpl('<div class=\'item-details-form\'>\n    {{each columns}}\n    <div class=\'item-details-label\'>\n        ${name}\n    </div>\n    <div class=\'item-details-editor-container\' data-editorid=\'${id.replace(/[^a-zA-Z0-9_-]/g, "_")}\'></div>\n    {{/each}}\n\n    <hr/>\n    <div class=\'item-details-form-buttons\'>\n        <button data-action=\'save\'>Save</button>\n        <button data-action=\'cancel\'>Cancel</button>\n    </div>\n</div>', {
                 context: this.grid.getDataItem(this.grid.getActiveCell().row),
                 columns: editableColumns
             }).appendTo('body');
@@ -312,7 +312,7 @@ define([
                 that.grid.getEditController().cancelCurrentEdit();
             });
             var containers = $.map(editableColumns, function (c) {
-                return $modal.find('[data-editorid=' + c.id + ']');
+                return $modal.find('[data-editorid=' + c.id.replace(/[^a-zA-Z0-9_-]/g, '_') + ']');
             });
             var compositeEditor = new Slick.CompositeEditor(
                 editableColumns,
