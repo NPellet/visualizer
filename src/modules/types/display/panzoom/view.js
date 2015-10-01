@@ -275,7 +275,7 @@ define([
             }
             this._highlightArray = data._highlightArray;
             if (this._highlightArray !== undefined && !Util.isArray(this._highlightArray)) {
-                debug.warn('_highlightArray should be an Array');
+                Debug.warn('_highlightArray should be an Array');
                 this._highlightArray = undefined;
             }
             this._highlight = data._highlight || [];
