@@ -187,6 +187,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
             });
         });
     };
+    functions.oclid = functions.actelionid;
 
     functions.mol2d = {};
     functions.mol2d.toscreen = function ($element, molfile, molfileRoot, options) {
