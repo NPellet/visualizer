@@ -1,3 +1,27 @@
+<a name="2.28.1"></a>
+## 2.28.1 (2015-10-02)
+
+
+### Bug Fixes
+
+* **code_editor:** fix bug due to misuse of model.data ([a0000f6](https://github.com/NPellet/visualizer/commit/a0000f6))
+* **couchdb:** better handling of DataObjects ([d4e9ac5](https://github.com/NPellet/visualizer/commit/d4e9ac5))
+* **panzoom:** highlight out was not working ([119e773](https://github.com/NPellet/visualizer/commit/119e773))
+* **slickgrid:** call get() on input variable ([9513ba4](https://github.com/NPellet/visualizer/commit/9513ba4)), closes [#717](https://github.com/NPellet/visualizer/issues/717)
+* **slickgrid:** fix error with pop-up update/new when column name is has special characters ([634a5b1](https://github.com/NPellet/visualizer/commit/634a5b1))
+
+### Features
+
+* Update JSME to allow the chiral flag in molfile V2000 ([3831a44](https://github.com/NPellet/visualizer/commit/3831a44))
+* **grid:** add create blank layer option ([c6e6da7](https://github.com/NPellet/visualizer/commit/c6e6da7))
+* **grid:** add rename layer option ([7e50be3](https://github.com/NPellet/visualizer/commit/7e50be3))
+* **grid:** add the remove layer option ([89e1cc5](https://github.com/NPellet/visualizer/commit/89e1cc5))
+* **grid:** remove layer notification and update setLayers ([b6193f7](https://github.com/NPellet/visualizer/commit/b6193f7))
+* **slickgrid:** add newRow filter event ([5ec9227](https://github.com/NPellet/visualizer/commit/5ec9227))
+* **webservice_search:** add withCredentials options ([3adb484](https://github.com/NPellet/visualizer/commit/3adb484))
+
+
+
 <a name="2.28.0"></a>
 # 2.28.0 (2015-09-23)
 
