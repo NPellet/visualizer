@@ -152,7 +152,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                             data: btoa(unescape(encodeURIComponent(item.data)))
                         };
                     } else if (item.file && typeof item.file === 'string') {
-                        var match = /^data:([a-z]+\/[a-z]+);base64,/.exec(item.file.slice(0,64));
+                        var match = /^data:([a-z]+\/[a-z]+);base64,/.exec(item.file.slice(0, 64));
 
                         if (!match) throw new Error('File is string but not valid base64 encoded dataURL');
                         that.lastDoc._attachments[item.name] = {
