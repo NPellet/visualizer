@@ -163,7 +163,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.onChange = function (mol, molV3, smiles, jme, action) {
 
-        if (action != null && action!= 'readRXNFile' && action != 'readMolFile' && action != 'reset' && this.module.view._currentValue && this.module.getConfigurationCheckbox('outputResult', 'yes')) {
+        if (action != null && action != 'readRXNFile' && action != 'readMolFile' && action != 'reset' && this.module.view._currentValue && this.module.getConfigurationCheckbox('outputResult', 'yes')) {
 
             if (this.module.view._currentValue.type === 'mol2d') {
                 this.module.view._currentValue.setValue(mol, true);

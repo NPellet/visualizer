@@ -1032,6 +1032,10 @@
                 } else {
                     throw errorMessage + ": " + resp.reason;
                 }
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
             }
         }, obj), ajaxOptions));
     }
