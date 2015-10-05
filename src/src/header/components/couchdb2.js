@@ -268,7 +268,9 @@ define([
                     url: this.database.uri + node.data.doc._id + '/view.json' + (rev ? '?rev=' + rev : '')
                 };
             }
-            Versioning.switchView(result, true, this.options);
+            Versioning.switchView(result, true, {
+                withCredentials: true
+            });
 
             this.lastKeyLoaded = node.key;
         },
