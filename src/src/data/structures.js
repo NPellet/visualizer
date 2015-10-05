@@ -11,6 +11,7 @@ define(function () {
         'jme': 'string',
         'smiles': 'string',
         'actelionID': 'string',
+        'oclID': 'string',
         'doi': 'string',
         'gif': 'string',
         'picture': 'string',

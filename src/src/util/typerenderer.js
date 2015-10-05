@@ -169,8 +169,8 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
         });
     };
 
-    functions.actelionid = {};
-    functions.actelionid.toscreen = function ($element, val, root, options) {
+    functions.oclid = {};
+    functions.oclid.toscreen = function ($element, val, root, options) {
         return new Promise(function (resolve) {
             require([OCL], function (ACT) {
                 if (!root.coordinates) {
@@ -187,7 +187,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
             });
         });
     };
-    functions.oclid = functions.actelionid;
+    functions.actelionid = functions.oclid;
 
     functions.mol2d = {};
     functions.mol2d.toscreen = function ($element, molfile, molfileRoot, options) {

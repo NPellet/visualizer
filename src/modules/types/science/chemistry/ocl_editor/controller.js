@@ -28,7 +28,7 @@ define(['modules/default/defaultcontroller', 'openchemlib/openchemlib-full'], fu
             label: 'Smiles'
         },
         actid: {
-            label: 'Actelion ID'
+            label: 'OCL molecule ID'
         }
     };
 
@@ -57,7 +57,7 @@ define(['modules/default/defaultcontroller', 'openchemlib/openchemlib-full'], fu
                 value: mol.toSmiles()
             });
             this.createDataFromEvent('onStructureChange', 'actid', {
-                type: 'actelionID',
+                type: 'oclID',
                 value: split[0],
                 coordinates: split[1]
             });
