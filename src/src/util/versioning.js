@@ -35,10 +35,10 @@ define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'vers
         }
     };
 
-    function switchView(value, pushstate) {
+    function switchView(value, pushstate, options) {
         var def;
         if (value.data && (lastLoaded.data.url !== value.data.url || (lastLoaded.data.urls !== value.data.urls && lastLoaded.data.branch !== value.data.branch))) {
-            def = setData(value.data.urls, value.data.branch, value.data.url);
+            def = setData(value.data.urls, value.data.branch, value.data.url, options);
             lastLoaded.data = value.data;
         } else {
             def = $.Deferred().resolve();
@@ -46,7 +46,7 @@ define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'vers
         if (value.view && (lastLoaded.view.url !== value.view.url || (lastLoaded.view.urls !== value.view.urls && lastLoaded.view.branch !== value.view.branch))) {
             def = def.then(function () {
                 lastLoaded.view = value.view;
-                return setView(value.view.urls, value.view.branch, value.view.url);
+                return setView(value.view.urls, value.view.branch, value.view.url, options);
             });
         }
         if (pushstate) {
@@ -79,12 +79,12 @@ define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'vers
         return def;
     }
 
-    function setView(url, branch, defUrl) {
-        return viewHandler.load(url, branch, defUrl);
+    function setView(url, branch, defUrl, options) {
+        return viewHandler.load(url, branch, defUrl, options);
     }
 
     function setData(url, branch, defUrl) {
-        return dataHandler.load(url, branch, defUrl);
+        return dataHandler.load(url, branch, defUrl, options);
     }
 
     function updateView(newView) {

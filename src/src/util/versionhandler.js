@@ -381,9 +381,14 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
             }
         },
 
-        loadReadonly: function (def) {
+        loadReadonly: function (def, options) {
             var that = this,
                 url = this._defaultUrl;
+
+            var xhrFields = {};
+            if (options && options.withCredentials) {
+                xhrFields.withCredentials = true;
+            }
 
             $.ajax({
                 url: url,
@@ -394,11 +399,13 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
                     that.make(data);
                     that._onLoaded(data);
                     def.resolve();
-                }
+                },
+                xhrFields: xhrFields
             });
         },
 
-        load: function (dirUrl, defaultBranch, defaultUrl) {
+        load: function (dirUrl, defaultBranch, defaultUrl, options) {
+
 
             this._dirUrl = dirUrl;
             this._defaultUrl = defaultUrl;
@@ -408,7 +415,7 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
             var def = $.Deferred();
 
             if (!this._dirUrl && this._defaultUrl) {
-                this.loadReadonly(def);
+                this.loadReadonly(def, options);
                 return def;
             }
 
