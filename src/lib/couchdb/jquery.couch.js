@@ -219,6 +219,10 @@
                         throw 'An error occurred logging in: ' + resp.reason;
                     }
                     if (options.complete) options.complete();
+                },
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
                 }
             });
         },
@@ -250,6 +254,10 @@
                         throw 'An error occurred logging out: ' + resp.reason;
                     }
                     if (options.complete) options.complete();
+                },
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
                 }
             });
         },
@@ -651,6 +659,10 @@
                             } else {
                                 throw "The document could not be saved: " + resp.reason;
                             }
+                        },
+                        crossDomain: true,
+                        xhrFields: {
+                            withCredentials: true
                         }
                     });
                 },
