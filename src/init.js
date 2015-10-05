@@ -157,7 +157,7 @@ require([
     'src/main/datas',
     'src/main/entrypoint',
     'uri/URI.fragmentQuery',
-    'components/bluebird/js/browser/bluebird.min',
+    'components/bluebird/js/browser/bluebird.core.min',
     'components/setImmediate/setImmediate'
 
 ], function ($, Datas, EntryPoint, URI, Promise) {
