@@ -266,7 +266,7 @@ define(['jquery', './section', './sectionelement', './conditionalelementdisplaye
         _getElement: SectionElement.prototype._getElement,
 
         getSection: function (sectionName) {
-            return this.sections[sectionName] || this.throwError('Cannot find section ' + sectionName + '.');
+            return this.sections[sectionName];
         },
 
 
