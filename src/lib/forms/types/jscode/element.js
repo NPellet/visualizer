@@ -73,7 +73,7 @@ define(['require', 'jquery', 'src/util/util', 'ace/ace'], function (require, $, 
     FieldConstructor.prototype.checkValue = function () {
 
         if (this.editor) {
-            this.editor.setValue(this.value);
+            this.editor.setValue(this.value || '');
         }
     };
 
