@@ -83,7 +83,7 @@ define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'vers
         return viewHandler.load(url, branch, defUrl, options);
     }
 
-    function setData(url, branch, defUrl) {
+    function setData(url, branch, defUrl, options) {
         return dataHandler.load(url, branch, defUrl, options);
     }
 
