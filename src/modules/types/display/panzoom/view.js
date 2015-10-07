@@ -725,7 +725,8 @@ define([
             if (varname === '__highlight__') options = {
                 'z-index': 1000000,
                 scaling: 'asHighlight',
-                rendering: 'crisp-edges'
+                rendering: 'crisp-edges',
+                opacity: 0.7
             };
             conf.variable = varname;
             var x = _.assign(conf, options);
