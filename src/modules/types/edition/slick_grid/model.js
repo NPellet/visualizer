@@ -19,8 +19,13 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
                 case 'selectedrows':
                 case 'row':
                 case 'element': // Wants to get the row ?
-                    data = (temporary && temporary['list']) ? temporary['list'] : (this.module.getDataFromRel('list') || new DataArray());
-                    data = data.get(0);
+                    if (this.module.controller.lastClickedItemId) {
+                        data = this.module.view.slick.data.getItemById(this.module.controller.lastClickedItemId);
+                    } else {
+                        data = (temporary && temporary['list']) ? temporary['list'] : (this.module.getDataFromRel('list') || new DataArray());
+                        data = data.get(0);
+                    }
+
 
                     if (!data)
                         return [];

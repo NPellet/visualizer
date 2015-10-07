@@ -309,14 +309,14 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
     };
 
     Controller.prototype.onClick = _.throttle(function (row, item) {
+        var itemId = item[this.module.view.idPropertyName];
+        if (this.lastClickedItemId === itemId) return;
+        this.lastClickedItemId = itemId;
         this.setVarFromEvent('onSelect', 'row', 'list', [row]);
         this.sendActionFromEvent('onSelect', 'row', item);
     }, 250, {trailing: false});
 
     Controller.prototype.onActive = function (row, item) {
-        var itemId = item[this.module.view.idPropertyName];
-        if (this.lastClickedItemId === itemId) return;
-        this.lastClickedItemId = itemId;
         this.setVarFromEvent('onRowActive', 'row', 'list', [row]);
         this.sendActionFromEvent('onRowActive', 'row', item);
     };
