@@ -171,6 +171,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     };
 
     Controller.prototype.allHoverPixels = function (allHoverPixels) {
+        this.lastHoverPixels = allHoverPixels;
         this.createDataFromEvent('hover', 'allpixel', allHoverPixels);
     };
 
