@@ -19,8 +19,8 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
                 case 'selectedrows':
                 case 'row':
                 case 'element': // Wants to get the row ?
-                    if (this.module.controller.lastClickedItemId) {
-                        data = this.module.view.slick.data.getItemById(this.module.controller.lastClickedItemId);
+                    if (this.module.controller.lastClickedItem) {
+                        data = this.module.controller.lastClickedItem;
                     } else {
                         data = (temporary && temporary['list']) ? temporary['list'] : (this.module.getDataFromRel('list') || new DataArray());
                         data = data.get(0);
