@@ -1,3 +1,21 @@
+<a name="2.28.2"></a>
+## 2.28.2 (2015-10-13)
+
+
+### Bug Fixes
+
+* No event sent when click on 123 or new molecule in JSME ([c973d65](https://github.com/NPellet/visualizer/commit/c973d65))
+* **jquery.couch:** send xhrFields everywhere ([4555025](https://github.com/NPellet/visualizer/commit/4555025))
+* update jsgraph to v1.13.3-18 ([70ce50e](https://github.com/NPellet/visualizer/commit/70ce50e))
+
+### Features
+
+* **couchdb2:** can perform switchView withCredentials ([38c3b2b](https://github.com/NPellet/visualizer/commit/38c3b2b))
+* **panzoom:** add possibility to select a jpath from hover and click pixels events ([5fb93c1](https://github.com/NPellet/visualizer/commit/5fb93c1)), closes [#723](https://github.com/NPellet/visualizer/issues/723)
+* **slickgrid:** If an element was clicked, jpath structure in var out is calculated on this elem ([037db0d](https://github.com/NPellet/visualizer/commit/037db0d))
+
+
+
 <a name="2.28.1"></a>
 ## 2.28.1 (2015-10-02)
 
