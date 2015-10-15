@@ -55,7 +55,7 @@ define([
             return val.id !== 'rowDeletion' && val.id !== '_checkbox_selector';
         });
 
-        if(!ctx.hiddenColumns) {
+        if (!ctx.hiddenColumns) {
             ctx.hiddenColumns = columns.map(function (col) {
                 if (col.colDef.hideColumn && col.colDef.hideColumn[0] === 'yes') {
                     return col.name;
@@ -1234,7 +1234,7 @@ define([
         },
 
         showColumn: function (column) {
-            if(!this.hiddenColumns) return;
+            if (!this.hiddenColumns) return;
             if (this.hiddenColumns.indexOf(column) === -1) {
                 this.hiddenColumns.push(column);
                 doGrid(this);
@@ -1242,7 +1242,7 @@ define([
         },
 
         hideColumn: function (column) {
-            if(!this.hiddenColumns) return;
+            if (!this.hiddenColumns) return;
             var idx = this.hiddenColumns.indexOf(column);
             if (idx > -1) {
                 this.hiddenColumns.splice(idx, 1);
