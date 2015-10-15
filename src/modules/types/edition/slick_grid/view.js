@@ -915,6 +915,29 @@ define([
             }
         },
 
+        // Always available:
+        //    getData();          returns the modules input array
+        //    getGrid();          returns the slick grid instance
+        //    this.event          The type of event that triggered the filter
+
+        // Context that depends on event:
+        //    this.rows           Content of the rows associated to event
+        //    this.row            Content of the row associated to event
+        //    this.cell           Content of the cell associated to event
+        //    this.column         Description of the column associated to event
+
+        // Row description
+        //    row.id              The id of the row
+        //    row.idx             The idx of the row in the original array
+        //    row.item            The contents of the row
+
+        // Possible events:
+        //    rowsChanged         Rows has changed
+        //    cellChanged         A cell has changed
+        //    inView              Rows are now in view
+        //    rowsSelected        A new selection of rows has been made
+        //    newRow              A new row has been commited to the input array
+        //    scriptChanged       The filter script changed
         _setScript: function (script) {
             this.filterScript = script || '';
             this.hasFilter = this._hasFilter();
@@ -1028,12 +1051,12 @@ define([
                 if (!itemInfo) continue;
                 var item = itemInfo.item;
                 if (_.any(that._highlighted, function (k) {
-                    var hl = item._highlight;
-                    if (!Array.isArray(hl)) {
-                        hl = [hl];
-                    }
-                    return hl.indexOf(k) > -1;
-                })) {
+                        var hl = item._highlight;
+                        if (!Array.isArray(hl)) {
+                            hl = [hl];
+                        }
+                        return hl.indexOf(k) > -1;
+                    })) {
                     tmp[itemInfo.idx] = that.baseCellCssStyle;
                 }
             }
