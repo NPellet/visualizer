@@ -468,6 +468,7 @@ define([
 
                     that.slick.data.setModule(that.module);
                     that.grid = new Slick.Grid(that.$slickgrid, that.slick.data, that.slick.columns, that.slick.options);
+                    that.slick.grid = that.grid;
 
                     that._newSandbox();
 
@@ -546,6 +547,10 @@ define([
                             event: 'newRow'
                         });
                         that._resetDeleteRowListeners();
+                    });
+
+                    that.grid.onRenderCompleted.subscribe(function () {
+                        that._jpathColor();
                     });
 
                     that.grid.onViewportChanged.subscribe(function () {
@@ -646,6 +651,10 @@ define([
                                     row: itemInfo,
                                     cell: that._getCell(args),
                                     column: column
+                                });
+                                that._runFilter({
+                                    event: 'rowsChanged',
+                                    rows: [itemInfo]
                                 });
                             }
                             that.module.controller.onRowChange(itemInfo.idx, itemInfo.item);
@@ -917,7 +926,9 @@ define([
 
         // Always available:
         //    getData();          returns the modules input array
-        //    getGrid();          returns the slick grid instance
+        //    getSlick();         returns the slick instance, an object with:
+        //                           grid: the grid (handles rendering logic)
+        //                           data: the DataView
         //    this.event          The type of event that triggered the filter
 
         // Context that depends on event:
@@ -970,8 +981,8 @@ define([
         _getNewContext: function () {
             var that = this;
             return {
-                getGrid: function () {
-                    return that.grid;
+                getSlick: function () {
+                    return that.slick;
                 },
                 getData: function () {
                     return that.module.data.get();
