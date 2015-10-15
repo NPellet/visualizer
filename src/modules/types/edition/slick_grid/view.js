@@ -47,6 +47,472 @@ define([
         longtext: Slick.CustomEditors.LongText
     };
 
+    function doGrid(ctx) {
+        ctx.$container.html('');
+        ctx.slick.columns = ctx.getSlickColumns();
+
+        ctx.$rowToolbar = $('<div>').attr('class', 'rowToolbar');
+        if (ctx.module.getConfigurationCheckbox('toolbar', 'add')) {
+            ctx.$addButton = $('<input type="button" value="New"/>');
+            ctx.$addButton.on('click', function () {
+                var cols = ctx.grid.getColumns();
+                var colidx = _.findIndex(cols, function (v) {
+                    return v.editor;
+                });
+                if (colidx > -1) {
+                    ctx.preventRowHelp();
+                    ctx.grid.gotoCell(ctx.slick.data.getLength(), colidx, true);
+                }
+                ctx._openDetails();
+            });
+            ctx.$rowToolbar.append(ctx.$addButton);
+        }
+
+        if (ctx.module.getConfigurationCheckbox('toolbar', 'update')) {
+            ctx.$updateButton = $('<input type="button" value="Update"/>');
+            ctx.$updateButton.on('click', function () {
+                ctx._openDetails();
+            });
+            ctx.$rowToolbar.append(ctx.$updateButton);
+        }
+
+        if (ctx.module.getConfigurationCheckbox('toolbar', 'remove')) {
+            ctx.$deleteButton = $('<input type="button" value="Delete"/>');
+            ctx.$deleteButton.on('click', function () {
+                ctx.deleteRowSelection();
+            });
+            ctx.$rowToolbar.append(ctx.$deleteButton);
+        }
+
+        if (ctx.module.getConfigurationCheckbox('toolbar', 'showHide')) {
+            var columns = ctx.getAllSlickColumns().filter(function (val) {
+                return val.id !== 'rowDeletion' && val.id !== '_checkbox_selector';
+            });
+
+            ctx.$showHideSelection = $.tmpl('<input type="button" value="Show/Hide Column"/>\n    <div class="mutliSelect" style="display:none">\n        <ul>\n            {{each columns}}\n            \n            <li><input type="checkbox" value="${name}" checked/>${name}</li>\n            {{/each}}\n        </ul>\n    </div>', {
+                columns: columns
+            });
+            if (ctx.columnSelectionShown) {
+                ctx.$showHideSelection.filter('div').show();
+            }
+            ctx.$showHideSelection.on('click', function () {
+                ctx.$showHideSelection.filter('div').toggle();
+                ctx.columnSelectionShown = ctx.$showHideSelection.filter('div').is(':visible');
+                ctx.onResize();
+            });
+            for (var i = 0; i < ctx.hiddenColumns.length; i++) {
+                ctx.$showHideSelection.find('input[value="' + ctx.hiddenColumns[i] + '"]').removeAttr('checked');
+            }
+            ctx.$showHideSelection.find('input[type="checkbox"]').on('change', function () {
+                if (this.checked) {
+                    var idx = ctx.hiddenColumns.indexOf(this.value);
+                    if (idx > -1) ctx.hiddenColumns.splice(idx, 1);
+                } else {
+                    ctx.hiddenColumns.push(this.value);
+                }
+                ctx.$container.html('');
+                return doGrid(ctx);
+
+            });
+            ctx.$rowToolbar.append(ctx.$showHideSelection);
+
+        }
+
+        ctx.$actionButtons = new Array(ctx.actionOutButtons.length);
+        for (var i = 0; i < ctx.actionOutButtons.length; i++) {
+            (function (i) {
+                ctx.$actionButtons[i] = $('<input type="button" value="' + ctx.actionOutButtons[i].buttonTitle + '"/>');
+                ctx.$actionButtons[i].on('click', function () {
+                    ctx.module.controller.sendActionButton(ctx.actionOutButtons[i].actionName, ctx._getSelectedItems());
+                });
+            })(i);
+        }
+        ctx.$rowToolbar.append(ctx.$actionButtons);
+        ctx.$container.append(ctx.$rowToolbar);
+
+        if (ctx.module.getConfiguration('toolbar') && ctx.module.getConfiguration('toolbar').length === 0 && ctx.$actionButtons && ctx.$actionButtons.length === 0 && ctx.$rowToolbar) {
+            ctx.$rowToolbar.remove();
+        }
+
+        ctx.$slickgrid = $('<div>').addClass('flex-1');
+        ctx.$container.append(ctx.$slickgrid);
+        ctx.slick.groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
+        ctx.slick.plugins.push(ctx.slick.groupItemMetadataProvider);
+        ctx.slick.data = new Slick.Data.DataView({
+            groupItemMetadataProvider: ctx.slick.groupItemMetadataProvider
+        });
+
+        ctx.slick.data.setModule(ctx.module);
+        ctx.grid = new Slick.Grid(ctx.$slickgrid, ctx.slick.data, ctx.slick.columns, ctx.slick.options);
+        ctx.slick.grid = ctx.grid;
+
+        ctx._newSandbox();
+
+        for (var i = 0; i < ctx.slick.plugins.length; i++) {
+            ctx.grid.registerPlugin(ctx.slick.plugins[i]);
+        }
+
+
+        if (ctx.module.getConfiguration('slick.selectionModel') === 'row') {
+            ctx.grid.setSelectionModel(new Slick.RowSelectionModel());
+        } else {
+            ctx.grid.setSelectionModel(new Slick.CellSelectionModel());
+        }
+
+        $(ctx.grid.getHeaderRow()).delegate(':input', 'change keyup', function (e) {
+            var columnId = $(this).data('columnId');
+            if (columnId != null) {
+                columnFilters[columnId] = $.trim($(this).val());
+                columnFilterFunctions[columnId] = getColumnFilterFunction(columnFilters[columnId]);
+                ctx.slick.data.refresh();
+            }
+        });
+
+        ctx.grid.onHeaderRowCellRendered.subscribe(function (e, args) {
+            $(args.node).empty();
+            $("<input type='text'>")
+                .css('width', '100%')
+                .data('columnId', args.column.id)
+                .val(columnFilters[args.column.id])
+                .appendTo(args.node);
+        });
+
+        ctx.grid.init();
+
+        ctx._activateHighlights();
+
+
+        ctx.grid.module = ctx.module;
+
+
+        // listen to group expansion...
+        if (ctx.module.getConfigurationCheckbox('slickCheck', 'oneUncollapsed')) {
+            ctx.slick.groupItemMetadataProvider.onGroupExpanded.subscribe(function (e, args) {
+                this.getData().collapseAllGroups(args.item.level);
+                this.getData().expandGroup(args.item.groupingKey);
+            });
+        }
+
+        // wire up model events to drive the grid
+        ctx.slick.data.onRowCountChanged.subscribe(function (e, args) {
+            ctx.grid.updateRowCount();
+            ctx.grid.render();
+        });
+
+        ctx.slick.data.onRowsChanged.subscribe(function (e, args) {
+            if (ctx.hasFilter) {
+                var items = ctx._getItemsInfo(args.rows);
+                ctx._runFilter({
+                    event: 'rowsChanged',
+                    rows: items
+                });
+            }
+            ctx.grid.invalidateRows(args.rows);
+            ctx.grid.render();
+        });
+
+
+        ctx.grid.onAddNewRow.subscribe(function (e, args) {
+            var data = ctx.module.data.get();
+            var newRow = data[data.length - 1];
+            ctx.module.controller.onRowNew(data.length - 1, newRow);
+            ctx.module.model.dataTriggerChange(ctx.module.data);
+            ctx._runFilter({
+                row: newRow,
+                cell: null,
+                event: 'newRow'
+            });
+            ctx._resetDeleteRowListeners();
+        });
+
+        ctx.grid.onRenderCompleted.subscribe(function () {
+            ctx._jpathColor();
+        });
+
+        ctx.grid.onViewportChanged.subscribe(function () {
+            // onViewportChange is not really working properly, so we hack by having a settimeout
+            // Acceptable since it is unlikely ctx someone click the delete button only 300 ms after
+            // the viewport has changed...
+            setTimeout(function () {
+                var v = ctx.grid.getViewport();
+                if (v !== ctx.lastViewport) {
+                    viewportChanged();
+                }
+            }, 250);
+
+            function viewportChanged() {
+                ctx.lastViewport = ctx.grid.getViewport();
+                if (ctx.module.getConfigurationCheckbox('slickCheck', 'rowNumbering') && !ctx._preventRowHelp) {
+                    var totalLines = ctx.grid.getDataLength();
+                    ctx.$rowHelp.html((Math.min(totalLines, ctx.lastViewport.bottom - (ctx.addRowAllowed ? 2 : 1))).toString() + '/' + totalLines);
+                    ctx.$rowHelp.fadeIn();
+                    clearTimeout(ctx.lastRowHelp);
+                    ctx.lastRowHelp = setTimeout(function () {
+                        ctx.$rowHelp.fadeOut();
+                    }, 1000);
+                }
+                ctx._preventRowHelp = false;
+                ctx._resetDeleteRowListeners();
+                ctx._jpathColor();
+                ctx._inViewFilter();
+            }
+
+            viewportChanged();
+        });
+
+
+        ctx.grid.onMouseEnter.subscribe(function (e) {
+            // When scrolling fast, no mouseLeave event takes place
+            // Therefore we also have to un-highlight here
+            if (ctx._hl) {
+                API.highlightId(ctx._hl, 0);
+            }
+
+            ctx.count = ctx.count === undefined ? 0 : ctx.count;
+            ctx.count++;
+            ctx.hovering = true;
+            var itemInfo = ctx._getItemInfoFromEvent(e);
+            if (!itemInfo) return;
+
+
+            var hl = itemInfo.item._highlight;
+            ctx._hl = hl;
+            if (hl) {
+                API.highlightId(hl, 1);
+                lastHighlight = hl;
+            }
+            ctx.module.controller.onHover(itemInfo.idx, itemInfo.item);
+
+        });
+
+        ctx.grid.onMouseLeave.subscribe(function (e) {
+            ctx._e = e;
+            ctx.count--;
+            ctx.hovering = false;
+            var itemInfo = ctx._getItemInfoFromEvent(e);
+            if (!itemInfo) return;
+            var hl = itemInfo.item._highlight;
+            if (hl) {
+                API.highlightId(hl, 0);
+            } else if (lastHighlight) {
+                API.highlightId(lastHighlight, 0);
+            }
+
+        });
+
+        ctx.grid.onColumnsResized.subscribe(function () {
+            var cols = ctx.grid.getColumns().filter(function (val) {
+                return val.id !== 'rowDeletion' && val.id !== '_checkbox_selector';
+            });
+
+            if (ctx.colConfig.length === cols.length) {
+                for (var i = 0; i < cols.length; i++) {
+                    var colToChange = ctx.colConfig.filter(function (col) {
+                        return col === cols[i].colDef;
+                    });
+                    if (colToChange.length)
+                        colToChange[0].width = cols[i].width;
+                }
+            }
+            ctx.grid.invalidate();
+        });
+
+        ctx.grid.onCellChange.subscribe(function (e, args) {
+            var column = ctx.getSlickColumns()[args.cell];
+            var itemInfo = ctx._getItemInfoFromRow(args.row);
+            if (itemInfo) {
+                if (ctx.hasFilter) {
+                    ctx._runFilter({
+                        event: 'cellChanged',
+                        row: itemInfo,
+                        cell: ctx._getCell(args),
+                        column: column
+                    });
+                    ctx._runFilter({
+                        event: 'rowsChanged',
+                        rows: [itemInfo]
+                    });
+                }
+                ctx.module.controller.onRowChange(itemInfo.idx, itemInfo.item);
+            }
+            ctx._resetDeleteRowListeners();
+        });
+
+        ctx.grid.onClick.subscribe(function (e, args) {
+            var columns = ctx.grid.getColumns();
+            var itemInfo = ctx._getItemInfoFromRow(args.row);
+            if (itemInfo) {
+                if (columns[args.cell] && columns[args.cell].id !== 'rowDeletion') {
+                    ctx.module.controller.onClick(itemInfo.idx, itemInfo.item);
+                }
+            }
+        });
+
+        ctx.grid.onActiveCellChanged.subscribe(function (e, args) {
+            ctx.lastActiveCell = args.cell;
+            ctx.lastActiveRow = args.row;
+
+            var columns = ctx.grid.getColumns();
+            var itemInfo = ctx._getItemInfoFromRow(args.row);
+            if (itemInfo) {
+                if (columns[args.cell] && columns[args.cell].id !== 'rowDeletion') {
+                    ctx.module.controller.onActive(itemInfo.idx, itemInfo.item);
+                }
+            }
+
+        });
+
+        ctx.grid.onColumnsReordered.subscribe(function () {
+            var cols = ctx.grid.getColumns();
+            var conf = ctx.module.definition.configuration.groups.cols[0];
+            var names = _.pluck(conf, 'name');
+            var ids = _.pluck(cols, 'id');
+
+            if (names.concat().sort().join() !== ids.concat().sort().join()) {
+                Debug.warn('Something might be wrong, number of columns in grid and in configuration do not match');
+                return;
+            }
+            ctx.module.definition.configuration.groups.cols[0] = [];
+            for (var i = 0; i < cols.length; i++) {
+                var idx = names.indexOf(ids[i]);
+                if (idx > -1) {
+                    ctx.module.definition.configuration.groups.cols[0].push(conf[idx]);
+                }
+            }
+        });
+
+        ctx.grid.onSelectedRowsChanged.subscribe(function (e, args) {
+            ctx.lastSelectedRows = args.rows;
+            var selectedItems = ctx._getItemsInfo(args.rows);
+            if (ctx.hasFilter) {
+                ctx._runFilter({
+                    event: 'rowsSelected',
+                    rows: selectedItems
+                });
+            }
+            ctx.module.controller.onRowsSelected(_.pluck(selectedItems, 'item'));
+        });
+
+        ctx.grid.onSort.subscribe(function (e, args) {
+            // args.multiColumnSort indicates whether or not this is a multi-column sort.
+            // If it is, args.sortCols will have an array of {sortCol:..., sortAsc:...} objects.
+            // If not, the sort column and direction will be in args.sortCol & args.sortAsc.
+
+            ctx._makeDataObjects();
+            // We'll use a simple comparer function here.
+            var items = ctx.slick.data.getItems(), i = 0;
+            // Add a position indicatior ==> for stable sort
+            for (i = 0; i < items.length; i++) {
+                items[i].__elementPosition = i;
+            }
+            var sortCols;
+            if (!args.sortCols) {
+                sortCols = [{
+                    sortCol: args.sortCol,
+                    sortAsc: args.sortAsc
+                }];
+            } else {
+                sortCols = args.sortCols;
+            }
+            for (i = sortCols.length - 1; i >= 0; i--) {
+                (function (i) {
+                    //var comparer = function(a) {
+                    //    return a.getChildSync(sortCols[i].sortCol.jpath).get();
+                    //};
+
+                    var comparer1 = function (a, b) {
+                        var val1 = a.getChildSync(sortCols[i].sortCol.jpath);
+                        var val2 = b.getChildSync(sortCols[i].sortCol.jpath);
+                        if (val1 === undefined) {
+                            if (sortCols[i].sortAsc) return 1;
+                            else return -1;
+                        }
+                        if (val2 === undefined) {
+                            if (sortCols[i].sortAsc) return -1;
+                            else return 1;
+                        }
+                        val1 = val1.get();
+                        val2 = val2.get();
+                        if (val1 < val2) {
+                            return -1;
+                        } else if (val2 < val1) {
+                            return 1;
+                        }
+                        return a.__elementPosition - b.__elementPosition;
+                    };
+                    ctx.slick.data.sort(comparer1, sortCols[i].sortAsc);
+                })(i);
+            }
+
+            for (i = 0; i < items.length; i++) {
+                delete items[i].__elementPosition;
+            }
+            ctx._updateHighlights();
+            ctx.grid.invalidateAllRows();
+            ctx.grid.render();
+        });
+
+        ctx.slick.data.beginUpdate();
+
+        var groupings = _.chain(ctx.module.getConfiguration('groupings'))
+            .filter(function (val) {
+                if (val && val.groupName && val.getter) return true;
+                return false;
+            })
+            .map(function (val) {
+                var r = {};
+                if (val.getter && val.getter.length > 1) {
+                    r.getter = function (row) {
+                        return row.getChildSync(val.getter);
+                    };
+                    ctx._makeDataObjects();
+                } else {
+                    r.getter = val.getter[0];
+                }
+
+                r.formatter = function (g) {
+                    return val.groupName + ': ' + g.value + "  <span style='color:green'>(" + g.count + ' items)</span>';
+                };
+                r.aggregateCollapsed = false;
+                r.lazyTotalsCalculation = true;
+                return r;
+            }).value();
+
+        if (groupings.length) {
+            ctx.slick.data.setGrouping(groupings);
+            if (ctx.module.getConfigurationCheckbox('slickCheck', 'collapseGroup')) {
+                ctx.slick.data.collapseAllGroups(0);
+            }
+        }
+
+
+        if (ctx.module.getConfigurationCheckbox('slickCheck', 'filterColumns')) {
+            ctx.slick.data.setFilter(filter);
+        }
+
+        ctx.slick.data.setItems(ctx.module.data.get(), ctx.idPropertyName);
+        ctx.slick.data.endUpdate();
+
+        // get back state before last update
+        if (ctx.lastViewport && !ctx.module.getConfigurationCheckbox('slickCheck', 'backToTop')) {
+            ctx.grid.scrollRowToTop(ctx.lastViewport.top);
+        }
+
+        if (Array.isArray(ctx.lastSelectedRows)) {
+            ctx.grid.setSelectedRows(ctx.lastSelectedRows);
+        } else if (!_.isUndefined(ctx.lastActiveRow) && !ctx.module.getConfigurationCheckbox('slickCheck', 'forgetLastActive')) {
+            ctx.grid.setActiveCell(ctx.lastActiveRow, ctx.lastActiveCell);
+        }
+
+
+        ctx.grid.render();
+        ctx._resetDeleteRowListeners();
+        ctx._setBaseCellCssStyle();
+        ctx.lastViewport = ctx.grid.getViewport();
+        ctx._jpathColor();
+        ctx._inViewFilter();
+    }
+
     $.extend(true, View.prototype, Default, {
 
         init: function () {
@@ -370,474 +836,10 @@ define([
                     return true;
                 }
 
-
-                cssLoaded.then(function doGrid() {
-                    that.$container.html('');
-                    that.slick.columns = that.getSlickColumns();
-
-                    that.$rowToolbar = $('<div>').attr('class', 'rowToolbar');
-                    if (that.module.getConfigurationCheckbox('toolbar', 'add')) {
-                        that.$addButton = $('<input type="button" value="New"/>');
-                        that.$addButton.on('click', function () {
-                            var cols = that.grid.getColumns();
-                            var colidx = _.findIndex(cols, function (v) {
-                                return v.editor;
-                            });
-                            if (colidx > -1) {
-                                that.preventRowHelp();
-                                that.grid.gotoCell(that.slick.data.getLength(), colidx, true);
-                            }
-                            that._openDetails();
-                        });
-                        that.$rowToolbar.append(that.$addButton);
-                    }
-
-                    if (that.module.getConfigurationCheckbox('toolbar', 'update')) {
-                        that.$updateButton = $('<input type="button" value="Update"/>');
-                        that.$updateButton.on('click', function () {
-                            that._openDetails();
-                        });
-                        that.$rowToolbar.append(that.$updateButton);
-                    }
-
-                    if (that.module.getConfigurationCheckbox('toolbar', 'remove')) {
-                        that.$deleteButton = $('<input type="button" value="Delete"/>');
-                        that.$deleteButton.on('click', function () {
-                            that.deleteRowSelection();
-                        });
-                        that.$rowToolbar.append(that.$deleteButton);
-                    }
-
-                    if (that.module.getConfigurationCheckbox('toolbar', 'showHide')) {
-                        var columns = that.getAllSlickColumns().filter(function (val) {
-                            return val.id !== 'rowDeletion' && val.id !== '_checkbox_selector';
-                        });
-
-                        that.$showHideSelection = $.tmpl('<input type="button" value="Show/Hide Column"/>\n    <div class="mutliSelect" style="display:none">\n        <ul>\n            {{each columns}}\n            \n            <li><input type="checkbox" value="${name}" checked/>${name}</li>\n            {{/each}}\n        </ul>\n    </div>', {
-                            columns: columns
-                        });
-                        if (that.columnSelectionShown) {
-                            that.$showHideSelection.filter('div').show();
-                        }
-                        that.$showHideSelection.on('click', function () {
-                            that.$showHideSelection.filter('div').toggle();
-                            that.columnSelectionShown = that.$showHideSelection.filter('div').is(':visible');
-                            that.onResize();
-                        });
-                        for (var i = 0; i < that.hiddenColumns.length; i++) {
-                            that.$showHideSelection.find('input[value="' + that.hiddenColumns[i] + '"]').removeAttr('checked');
-                        }
-                        that.$showHideSelection.find('input[type="checkbox"]').on('change', function () {
-                            if (this.checked) {
-                                var idx = that.hiddenColumns.indexOf(this.value);
-                                if (idx > -1) that.hiddenColumns.splice(idx, 1);
-                            } else {
-                                that.hiddenColumns.push(this.value);
-                            }
-                            that.$container.html('');
-                            return doGrid();
-
-                        });
-                        that.$rowToolbar.append(that.$showHideSelection);
-
-                    }
-
-                    that.$actionButtons = new Array(that.actionOutButtons.length);
-                    for (var i = 0; i < that.actionOutButtons.length; i++) {
-                        (function (i) {
-                            that.$actionButtons[i] = $('<input type="button" value="' + that.actionOutButtons[i].buttonTitle + '"/>');
-                            that.$actionButtons[i].on('click', function () {
-                                that.module.controller.sendActionButton(that.actionOutButtons[i].actionName, that._getSelectedItems());
-                            });
-                        })(i);
-                    }
-                    that.$rowToolbar.append(that.$actionButtons);
-                    that.$container.append(that.$rowToolbar);
-
-                    if (that.module.getConfiguration('toolbar') && that.module.getConfiguration('toolbar').length === 0 && that.$actionButtons && that.$actionButtons.length === 0 && that.$rowToolbar) {
-                        that.$rowToolbar.remove();
-                    }
-
-                    that.$slickgrid = $('<div>').addClass('flex-1');
-                    that.$container.append(that.$slickgrid);
-                    that.slick.groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
-                    that.slick.plugins.push(that.slick.groupItemMetadataProvider);
-                    that.slick.data = new Slick.Data.DataView({
-                        groupItemMetadataProvider: that.slick.groupItemMetadataProvider
-                    });
-
-                    that.slick.data.setModule(that.module);
-                    that.grid = new Slick.Grid(that.$slickgrid, that.slick.data, that.slick.columns, that.slick.options);
-                    that.slick.grid = that.grid;
-
-                    that._newSandbox();
-
-                    for (var i = 0; i < that.slick.plugins.length; i++) {
-                        that.grid.registerPlugin(that.slick.plugins[i]);
-                    }
-
-
-                    if (that.module.getConfiguration('slick.selectionModel') === 'row') {
-                        that.grid.setSelectionModel(new Slick.RowSelectionModel());
-                    } else {
-                        that.grid.setSelectionModel(new Slick.CellSelectionModel());
-                    }
-
-                    $(that.grid.getHeaderRow()).delegate(':input', 'change keyup', function (e) {
-                        var columnId = $(this).data('columnId');
-                        if (columnId != null) {
-                            columnFilters[columnId] = $.trim($(this).val());
-                            columnFilterFunctions[columnId] = getColumnFilterFunction(columnFilters[columnId]);
-                            that.slick.data.refresh();
-                        }
-                    });
-
-                    that.grid.onHeaderRowCellRendered.subscribe(function (e, args) {
-                        $(args.node).empty();
-                        $("<input type='text'>")
-                            .css('width', '100%')
-                            .data('columnId', args.column.id)
-                            .val(columnFilters[args.column.id])
-                            .appendTo(args.node);
-                    });
-
-                    that.grid.init();
-
-                    that._activateHighlights();
-
-
-                    that.grid.module = that.module;
-
-
-                    // listen to group expansion...
-                    if (that.module.getConfigurationCheckbox('slickCheck', 'oneUncollapsed')) {
-                        that.slick.groupItemMetadataProvider.onGroupExpanded.subscribe(function (e, args) {
-                            this.getData().collapseAllGroups(args.item.level);
-                            this.getData().expandGroup(args.item.groupingKey);
-                        });
-                    }
-
-                    // wire up model events to drive the grid
-                    that.slick.data.onRowCountChanged.subscribe(function (e, args) {
-                        that.grid.updateRowCount();
-                        that.grid.render();
-                    });
-
-                    that.slick.data.onRowsChanged.subscribe(function (e, args) {
-                        if (that.hasFilter) {
-                            var items = that._getItemsInfo(args.rows);
-                            that._runFilter({
-                                event: 'rowsChanged',
-                                rows: items
-                            });
-                        }
-                        that.grid.invalidateRows(args.rows);
-                        that.grid.render();
-                    });
-
-
-                    that.grid.onAddNewRow.subscribe(function (e, args) {
-                        var data = that.module.data.get();
-                        var newRow = data[data.length - 1];
-                        that.module.controller.onRowNew(data.length - 1, newRow);
-                        that.module.model.dataTriggerChange(that.module.data);
-                        that._runFilter({
-                            row: newRow,
-                            cell: null,
-                            event: 'newRow'
-                        });
-                        that._resetDeleteRowListeners();
-                    });
-
-                    that.grid.onRenderCompleted.subscribe(function () {
-                        that._jpathColor();
-                    });
-
-                    that.grid.onViewportChanged.subscribe(function () {
-                        // onViewportChange is not really working properly, so we hack by having a settimeout
-                        // Acceptable since it is unlikely that someone click the delete button only 300 ms after
-                        // the viewport has changed...
-                        setTimeout(function () {
-                            var v = that.grid.getViewport();
-                            if (v !== that.lastViewport) {
-                                viewportChanged();
-                            }
-                        }, 250);
-
-                        function viewportChanged() {
-                            that.lastViewport = that.grid.getViewport();
-                            if (that.module.getConfigurationCheckbox('slickCheck', 'rowNumbering') && !that._preventRowHelp) {
-                                var totalLines = that.grid.getDataLength();
-                                that.$rowHelp.html((Math.min(totalLines, that.lastViewport.bottom - (that.addRowAllowed ? 2 : 1))).toString() + '/' + totalLines);
-                                that.$rowHelp.fadeIn();
-                                clearTimeout(that.lastRowHelp);
-                                that.lastRowHelp = setTimeout(function () {
-                                    that.$rowHelp.fadeOut();
-                                }, 1000);
-                            }
-                            that._preventRowHelp = false;
-                            that._resetDeleteRowListeners();
-                            that._jpathColor();
-                            that._inViewFilter();
-                        }
-
-                        viewportChanged();
-                    });
-
-
-                    that.grid.onMouseEnter.subscribe(function (e) {
-                        // When scrolling fast, no mouseLeave event takes place
-                        // Therefore we also have to un-highlight here
-                        if (that._hl) {
-                            API.highlightId(that._hl, 0);
-                        }
-
-                        that.count = that.count === undefined ? 0 : that.count;
-                        that.count++;
-                        that.hovering = true;
-                        var itemInfo = that._getItemInfoFromEvent(e);
-                        if (!itemInfo) return;
-
-
-                        var hl = itemInfo.item._highlight;
-                        that._hl = hl;
-                        if (hl) {
-                            API.highlightId(hl, 1);
-                            lastHighlight = hl;
-                        }
-                        that.module.controller.onHover(itemInfo.idx, itemInfo.item);
-
-                    });
-
-                    that.grid.onMouseLeave.subscribe(function (e) {
-                        that._e = e;
-                        that.count--;
-                        that.hovering = false;
-                        var itemInfo = that._getItemInfoFromEvent(e);
-                        if (!itemInfo) return;
-                        var hl = itemInfo.item._highlight;
-                        if (hl) {
-                            API.highlightId(hl, 0);
-                        } else if (lastHighlight) {
-                            API.highlightId(lastHighlight, 0);
-                        }
-
-                    });
-
-                    that.grid.onColumnsResized.subscribe(function () {
-                        var cols = that.grid.getColumns().filter(function (val) {
-                            return val.id !== 'rowDeletion' && val.id !== '_checkbox_selector';
-                        });
-
-                        if (that.colConfig.length === cols.length) {
-                            for (var i = 0; i < cols.length; i++) {
-                                var colToChange = that.colConfig.filter(function (col) {
-                                    return col === cols[i].colDef;
-                                });
-                                if (colToChange.length)
-                                    colToChange[0].width = cols[i].width;
-                            }
-                        }
-                        that.grid.invalidate();
-                    });
-
-                    that.grid.onCellChange.subscribe(function (e, args) {
-                        var column = that.getSlickColumns()[args.cell];
-                        var itemInfo = that._getItemInfoFromRow(args.row);
-                        if (itemInfo) {
-                            if (that.hasFilter) {
-                                that._runFilter({
-                                    event: 'cellChanged',
-                                    row: itemInfo,
-                                    cell: that._getCell(args),
-                                    column: column
-                                });
-                                that._runFilter({
-                                    event: 'rowsChanged',
-                                    rows: [itemInfo]
-                                });
-                            }
-                            that.module.controller.onRowChange(itemInfo.idx, itemInfo.item);
-                        }
-                        that._resetDeleteRowListeners();
-                    });
-
-                    that.grid.onClick.subscribe(function (e, args) {
-                        var columns = that.grid.getColumns();
-                        var itemInfo = that._getItemInfoFromRow(args.row);
-                        if (itemInfo) {
-                            if (columns[args.cell] && columns[args.cell].id !== 'rowDeletion') {
-                                that.module.controller.onClick(itemInfo.idx, itemInfo.item);
-                            }
-                        }
-                    });
-
-                    that.grid.onActiveCellChanged.subscribe(function (e, args) {
-                        that.lastActiveCell = args.cell;
-                        that.lastActiveRow = args.row;
-
-                        var columns = that.grid.getColumns();
-                        var itemInfo = that._getItemInfoFromRow(args.row);
-                        if (itemInfo) {
-                            if (columns[args.cell] && columns[args.cell].id !== 'rowDeletion') {
-                                that.module.controller.onActive(itemInfo.idx, itemInfo.item);
-                            }
-                        }
-
-                    });
-
-                    that.grid.onColumnsReordered.subscribe(function () {
-                        var cols = that.grid.getColumns();
-                        var conf = that.module.definition.configuration.groups.cols[0];
-                        var names = _.pluck(conf, 'name');
-                        var ids = _.pluck(cols, 'id');
-
-                        if (names.concat().sort().join() !== ids.concat().sort().join()) {
-                            Debug.warn('Something might be wrong, number of columns in grid and in configuration do not match');
-                            return;
-                        }
-                        that.module.definition.configuration.groups.cols[0] = [];
-                        for (var i = 0; i < cols.length; i++) {
-                            var idx = names.indexOf(ids[i]);
-                            if (idx > -1) {
-                                that.module.definition.configuration.groups.cols[0].push(conf[idx]);
-                            }
-                        }
-                    });
-
-                    that.grid.onSelectedRowsChanged.subscribe(function (e, args) {
-                        that.lastSelectedRows = args.rows;
-                        var selectedItems = that._getItemsInfo(args.rows);
-                        if (that.hasFilter) {
-                            that._runFilter({
-                                event: 'rowsSelected',
-                                rows: selectedItems
-                            });
-                        }
-                        that.module.controller.onRowsSelected(_.pluck(selectedItems, 'item'));
-                    });
-
-                    that.grid.onSort.subscribe(function (e, args) {
-                        // args.multiColumnSort indicates whether or not this is a multi-column sort.
-                        // If it is, args.sortCols will have an array of {sortCol:..., sortAsc:...} objects.
-                        // If not, the sort column and direction will be in args.sortCol & args.sortAsc.
-
-                        that._makeDataObjects();
-                        // We'll use a simple comparer function here.
-                        var items = that.slick.data.getItems(), i = 0;
-                        // Add a position indicatior ==> for stable sort
-                        for (i = 0; i < items.length; i++) {
-                            items[i].__elementPosition = i;
-                        }
-                        var sortCols;
-                        if (!args.sortCols) {
-                            sortCols = [{
-                                sortCol: args.sortCol,
-                                sortAsc: args.sortAsc
-                            }];
-                        } else {
-                            sortCols = args.sortCols;
-                        }
-                        for (i = sortCols.length - 1; i >= 0; i--) {
-                            (function (i) {
-                                //var comparer = function(a) {
-                                //    return a.getChildSync(sortCols[i].sortCol.jpath).get();
-                                //};
-
-                                var comparer1 = function (a, b) {
-                                    var val1 = a.getChildSync(sortCols[i].sortCol.jpath);
-                                    var val2 = b.getChildSync(sortCols[i].sortCol.jpath);
-                                    if (val1 === undefined) {
-                                        if (sortCols[i].sortAsc) return 1;
-                                        else return -1;
-                                    }
-                                    if (val2 === undefined) {
-                                        if (sortCols[i].sortAsc) return -1;
-                                        else return 1;
-                                    }
-                                    val1 = val1.get();
-                                    val2 = val2.get();
-                                    if (val1 < val2) {
-                                        return -1;
-                                    } else if (val2 < val1) {
-                                        return 1;
-                                    }
-                                    return a.__elementPosition - b.__elementPosition;
-                                };
-                                that.slick.data.sort(comparer1, sortCols[i].sortAsc);
-                            })(i);
-                        }
-
-                        for (i = 0; i < items.length; i++) {
-                            delete items[i].__elementPosition;
-                        }
-                        that._updateHighlights();
-                        that.grid.invalidateAllRows();
-                        that.grid.render();
-                    });
-
-                    that.slick.data.beginUpdate();
-
-                    var groupings = _.chain(that.module.getConfiguration('groupings'))
-                        .filter(function (val) {
-                            if (val && val.groupName && val.getter) return true;
-                            return false;
-                        })
-                        .map(function (val) {
-                            var r = {};
-                            if (val.getter && val.getter.length > 1) {
-                                r.getter = function (row) {
-                                    return row.getChildSync(val.getter);
-                                };
-                                that._makeDataObjects();
-                            } else {
-                                r.getter = val.getter[0];
-                            }
-
-                            r.formatter = function (g) {
-                                return val.groupName + ': ' + g.value + "  <span style='color:green'>(" + g.count + ' items)</span>';
-                            };
-                            r.aggregateCollapsed = false;
-                            r.lazyTotalsCalculation = true;
-                            return r;
-                        }).value();
-
-                    if (groupings.length) {
-                        that.slick.data.setGrouping(groupings);
-                        if (that.module.getConfigurationCheckbox('slickCheck', 'collapseGroup')) {
-                            that.slick.data.collapseAllGroups(0);
-                        }
-                    }
-
-
-                    if (that.module.getConfigurationCheckbox('slickCheck', 'filterColumns')) {
-                        that.slick.data.setFilter(filter);
-                    }
-
-                    that.slick.data.setItems(that.module.data.get(), that.idPropertyName);
-                    that.slick.data.endUpdate();
-
-                    // get back state before last update
-                    if (that.lastViewport && !that.module.getConfigurationCheckbox('slickCheck', 'backToTop')) {
-                        that.grid.scrollRowToTop(that.lastViewport.top);
-                    }
-
-                    if (Array.isArray(that.lastSelectedRows)) {
-                        that.grid.setSelectedRows(that.lastSelectedRows);
-                    } else if (!_.isUndefined(that.lastActiveRow) && !that.module.getConfigurationCheckbox('slickCheck', 'forgetLastActive')) {
-                        that.grid.setActiveCell(that.lastActiveRow, that.lastActiveCell);
-                    }
-
-
-                    that.grid.render();
-                    that._resetDeleteRowListeners();
-                    that._setBaseCellCssStyle();
-                    that.lastViewport = that.grid.getViewport();
-                    that._jpathColor();
-                    that._inViewFilter();
+                cssLoaded.then(function () {
+                    doGrid(that);
                 });
             }
-
         },
 
         blank: {
@@ -1253,6 +1255,21 @@ define([
                         this.grid.setActiveCell(gridRow, 0);
                     }
 
+                }
+            },
+
+            showColumn: function (column) {
+                if (this.hiddenColumns.indexOf(column) === -1) {
+                    this.hiddenColumns.push(column);
+                    doGrid(this);
+                }
+            },
+
+            hideColumn: function (column) {
+                var idx = this.hiddenColumns.indexOf(column);
+                if (idx > -1) {
+                    this.hiddenColumns.splice(idx, 1);
+                    doGrid(this);
                 }
             }
         }

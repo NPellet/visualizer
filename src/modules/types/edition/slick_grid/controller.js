@@ -249,9 +249,8 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
         hoverRow: 'Mimic hover row',
         selectRow: 'Mimic select row',
         addRow: 'Add a new row',
-        addColumn: 'Add a new column',
-        removeColumn: 'Remove a column',
-        removeRow: 'Remove a row'
+        showColumn: 'Show a column',
+        hideColumn: 'Hide a column'
     });
 
     Controller.prototype.events = {
