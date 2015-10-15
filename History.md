@@ -1,3 +1,13 @@
+<a name="2.28.3"></a>
+## 2.28.3 (2015-10-15)
+
+
+### Bug Fixes
+
+* **slickgrid:** click event should be generated on each consecutive click ([d1b913f](https://github.com/NPellet/visualizer/commit/d1b913f))
+
+
+
 <a name="2.28.2"></a>
 ## 2.28.2 (2015-10-13)
 
