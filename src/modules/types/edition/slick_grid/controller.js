@@ -107,7 +107,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                         filterRow: {
                             type: 'jscode',
                             title: 'Filter',
-                            default: '// See link...',
+                            default: '// Documentation: https://github.com/NPellet/visualizer/blob/db85d9cc12c6204e4a3afb69bba6d695f6f8bad5/src/modules/types/edition/slick_grid/view.js#L918-L940',
                             displayTarget: ['p']
                         }
                     }
