@@ -165,6 +165,14 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                         maxWidth: {
                             type: 'text',
                             title: 'Max Width'
+                        },
+                        hideColumn: {
+                            type: 'checkbox',
+                            title: 'Hide column at init',
+                            options: {
+                                yes: 'Yes'
+                            },
+                            default: []
                         }
                     }
                 },

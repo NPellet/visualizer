@@ -50,6 +50,21 @@ define([
 
     function doGrid(ctx) {
         ctx.$container.html('');
+
+        var columns = ctx.getAllSlickColumns().filter(function (val) {
+            return val.id !== 'rowDeletion' && val.id !== '_checkbox_selector';
+        });
+
+        if(!ctx.hiddenColumns) {
+            ctx.hiddenColumns = columns.map(function (col) {
+                if (col.colDef.hideColumn && col.colDef.hideColumn[0] === 'yes') {
+                    return col.name;
+                }
+            }).filter(function (v) {
+                return v;
+            });
+        }
+
         ctx.slick.columns = ctx.getSlickColumns();
 
         ctx.$rowToolbar = $('<div>').attr('class', 'rowToolbar');
@@ -86,9 +101,6 @@ define([
         }
 
         if (ctx.module.getConfigurationCheckbox('toolbar', 'showHide')) {
-            var columns = ctx.getAllSlickColumns().filter(function (val) {
-                return val.id !== 'rowDeletion' && val.id !== '_checkbox_selector';
-            });
 
             ctx.$showHideSelection = $.tmpl('<input type="button" value="Show/Hide Column"/>\n    <div class="mutliSelect" style="display:none">\n        <ul>\n            {{each columns}}\n            \n            <li><input type="checkbox" value="${name}" checked/>${name}</li>\n            {{/each}}\n        </ul>\n    </div>', {
                 columns: columns
@@ -106,10 +118,9 @@ define([
             }
             ctx.$showHideSelection.find('input[type="checkbox"]').on('change', function () {
                 if (this.checked) {
-                    var idx = ctx.hiddenColumns.indexOf(this.value);
-                    if (idx > -1) ctx.hiddenColumns.splice(idx, 1);
+                    ctx.hideColumn(this.value);
                 } else {
-                    ctx.hiddenColumns.push(this.value);
+                    ctx.showColumn(this.value);
                 }
                 ctx.$container.html('');
                 return doGrid(ctx);
@@ -539,12 +550,12 @@ define([
                 that.module.controller.lastHoveredItemId = null;
             });
 
+            this.hiddenColumns = undefined;
             this.slick = {};
             this.colConfig = (this.module.getConfiguration('cols') || []).filter(function (row) {
                 return row.name;
             });
             this.idPropertyName = '_sgid';
-            this.hiddenColumns = [];
             if (this.module.getConfiguration('filterType') === 'pref') {
                 this._setScript(this.module.getConfiguration('filterRow'));
             }
@@ -1222,6 +1233,23 @@ define([
             return txt;
         },
 
+        showColumn: function (column) {
+            if(!this.hiddenColumns) return;
+            if (this.hiddenColumns.indexOf(column) === -1) {
+                this.hiddenColumns.push(column);
+                doGrid(this);
+            }
+        },
+
+        hideColumn: function (column) {
+            if(!this.hiddenColumns) return;
+            var idx = this.hiddenColumns.indexOf(column);
+            if (idx > -1) {
+                this.hiddenColumns.splice(idx, 1);
+                doGrid(this);
+            }
+        },
+
         onActionReceive: {
             hoverRow: function (row) {
                 // row can be the row itself or the array's index
@@ -1263,18 +1291,11 @@ define([
             },
 
             showColumn: function (column) {
-                if (this.hiddenColumns.indexOf(column) === -1) {
-                    this.hiddenColumns.push(column);
-                    doGrid(this);
-                }
+                this.showColumn(column);
             },
 
             hideColumn: function (column) {
-                var idx = this.hiddenColumns.indexOf(column);
-                if (idx > -1) {
-                    this.hiddenColumns.splice(idx, 1);
-                    doGrid(this);
-                }
+                this.hideColumn(column);
             }
         }
     });
