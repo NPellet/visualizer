@@ -24,6 +24,7 @@ define([
     var columnFilterFunctions = {};
 
     var uniqueID = 0;
+    var searchFilter;
 
 
     var formatters = {
@@ -487,7 +488,7 @@ define([
 
 
         if (ctx.module.getConfigurationCheckbox('slickCheck', 'filterColumns')) {
-            ctx.slick.data.setFilter(filter);
+            ctx.slick.data.setFilter(searchFilter);
         }
 
         ctx.slick.data.setItems(ctx.module.data.get(), ctx.idPropertyName);
@@ -821,7 +822,7 @@ define([
                 this.generateUniqIds();
                 this.addRowAllowed = this.module.getConfigurationCheckbox('slickCheck', 'enableAddRow');
 
-                function filter(item) {
+                searchFilter = function (item) {
                     for (var columnId in columnFilters) {
                         if (columnId !== undefined && columnFilters[columnId] !== '') {
                             var idx = that.slick.data.getIdxById(item[that.idPropertyName]);
@@ -834,7 +835,7 @@ define([
                         }
                     }
                     return true;
-                }
+                };
 
                 cssLoaded.then(function () {
                     doGrid(that);
@@ -1063,13 +1064,16 @@ define([
                 var itemInfo = this._getItemInfoFromRow(i);
                 if (!itemInfo) continue;
                 var item = itemInfo.item;
-                if (_.any(that._highlighted, function (k) {
-                        var hl = item._highlight;
-                        if (!Array.isArray(hl)) {
-                            hl = [hl];
-                        }
-                        return hl.indexOf(k) > -1;
-                    })) {
+                if (_.any(
+                        that._highlighted,
+                        function (k) {
+                            var hl = item._highlight;
+                            if (!Array.isArray(hl)) {
+                                hl = [hl];
+                            }
+                            return hl.indexOf(k) > -1;
+                        })
+                ) {
                     tmp[itemInfo.idx] = that.baseCellCssStyle;
                 }
             }
