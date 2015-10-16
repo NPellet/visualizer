@@ -41,7 +41,8 @@ define([
     var browsers = {
         chrome: 5.0,
         msie: 11.0,
-        firefox: 5.0
+        firefox: 5.0,
+        msedge: 0
     };
 
     var recommendedBrowsers = {
