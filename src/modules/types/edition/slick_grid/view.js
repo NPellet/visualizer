@@ -57,7 +57,7 @@ define([
 
         if (!ctx.hiddenColumns) {
             ctx.hiddenColumns = columns.map(function (col) {
-                if (col.colDef.hideColumn && col.colDef.hideColumn[0] === 'yes') {
+                if (col.colDef && col.colDef.hideColumn && col.colDef.hideColumn[0] === 'yes') {
                     return col.name;
                 }
             }).filter(function (v) {
