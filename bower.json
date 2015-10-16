@@ -24,7 +24,7 @@
     "ace": "ajaxorg/ace-builds#b082bcb4bf2da27a8def3c438a33ebf0dffe5afe",
     "async": "0.9.2",
     "bluebird": "2.10.2",
-    "bowser": "0.7.2",
+    "bowser": "1.0.0",
     "chroma-js": "0.6.1",
     "ckeditor": "4.4.7",
     "colors": "2.0.0",
