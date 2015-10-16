@@ -107,10 +107,9 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                             options: [
                                 {title: 'Text', key: 'text'},
                                 {title: 'Base64 Encoded', key: 'base64'},
-                                {
-                                    title: 'Object URL',
-                                    key: 'url'
-                                }/*, {title: 'Binary string', key: 'binary'}, {title: 'Array buffer', key: 'b'}*/
+                                {title: 'Object URL', key: 'url'},
+                                {title: 'Array buffer', key: 'buffer'}
+                                /*{title: 'Binary string', key: 'binary'}*/
                             ],
                             'default': 'text'
                         },
@@ -413,15 +412,12 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                 break;
 
             case 'url':
+            case 'buffer':
                 this.tmpVar(result, meta);
                 break;
 
             /*case 'binary':
              reader.readAsBinaryString(file);
-             break;
-
-             case 'buffer':
-             reader.readAsArrayBuffer(file);
              break;*/
         }
     };
@@ -446,12 +442,12 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                 reader.readAsDataURL(file);
                 break;
 
+            case 'buffer':
+                reader.readAsArrayBuffer(file);
+                break;
+
             /*case 'binary':
              reader.readAsBinaryString(file);
-             break;
-
-             case 'buffer':
-             reader.readAsArrayBuffer(file);
              break;*/
         }
     };
