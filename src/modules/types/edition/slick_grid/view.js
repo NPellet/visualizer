@@ -230,7 +230,9 @@ define([
             ctx.module.controller.onRowNew(data.length - 1, newRow);
             ctx.module.model.dataTriggerChange(ctx.module.data);
             ctx._runFilter({
-                row: newRow,
+                row: {
+                    item: newRow
+                },
                 cell: null,
                 event: 'newRow'
             });
@@ -1000,6 +1002,14 @@ define([
                 },
                 getData: function () {
                     return that.module.data.get();
+                },
+                rerender: function(rows) {
+                    if(!rows) {
+                        that.grid.invalidateAllRows();
+                    } else {
+                        that.grid.invalidateRows(rows);
+                    }
+                    that.grid.render();
                 }
             };
         },
