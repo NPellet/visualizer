@@ -2,6 +2,8 @@
 
 define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api', 'src/util/domdeferred', 'src/util/datatraversing', 'src/util/typerenderer', 'jqgrid'], function (require, Default, Util, API, DomDeferred, Traversing, Renderer, JQGrid) {
 
+    Util.loadCss('components/jqgrid_edit/css/ui.jqgrid.css');
+
     function View() {
     }
 

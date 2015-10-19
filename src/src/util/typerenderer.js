@@ -1,7 +1,6 @@
 'use strict';
 
 define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], function (require, $, _, API, Util) {
-    Util.loadCss('components/font-awesome/css/font-awesome.min.css');
 
     var functions = {};
 

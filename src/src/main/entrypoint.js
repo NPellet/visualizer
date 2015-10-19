@@ -780,8 +780,8 @@ define([
                 'components/jquery-ui/themes/smoothness/jquery-ui.min.css',
                 'lib/forms/style.css',
                 'components/fancytree/dist/skin-lion/ui.fancytree.css',
-                'components/jqgrid_edit/css/ui.jqgrid.css',
-                'css/overwrite_styles.css'
+                'css/overwrite_styles.css',
+                'components/font-awesome/css/font-awesome.min.css' // needed for typerenderer
             ];
 
             css.forEach(function (css) {
