@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'lib/formcreator/formcreator'], function (Default, FormCreator) {
+define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
 
     function Controller() {
     }
@@ -16,8 +16,22 @@ define(['modules/default/defaultcontroller', 'lib/formcreator/formcreator'], fun
         cssClass: 'form'
     };
 
-    Controller.prototype.configurationStructure = function () {
+    Controller.prototype.references = {
+        data: {
+            type: 'object',
+            label: 'Form data'
+        }
+    };
 
+    Controller.prototype.events = {
+        onChange: {
+            label: 'Form data has changed',
+            refVariable: ['data'],
+            refAction: ['data']
+        }
+    };
+
+    Controller.prototype.configurationStructure = function () {
         return {
             sections: {
                 structure: {
@@ -50,6 +64,13 @@ define(['modules/default/defaultcontroller', 'lib/formcreator/formcreator'], fun
                                 multiple: false
                             },
                             fields: {
+                                options: {
+                                    type: 'checkbox',
+                                    options: {
+                                        defaultTpl: 'Use default template'
+                                    },
+                                    default: ['defaultTpl']
+                                },
                                 file: {
                                     type: 'text',
                                     title: 'Template file'
@@ -67,8 +88,14 @@ define(['modules/default/defaultcontroller', 'lib/formcreator/formcreator'], fun
         };
     };
 
+    Controller.prototype.dataChanged = function (data) {
+        this.createDataFromEvent('onChange', 'data', data);
+        this.sendActionFromEvent('onChange', 'data', data);
+    };
+
     Controller.prototype.configAliases = {
         structure: ['sections', 'structure', 0, 'groups', 'group', 0, 'json', 0],
+        options: ['sections', 'template', 0, 'groups', 'template', 0, 'options', 0],
         tpl_file: ['sections', 'template', 0, 'groups', 'template', 0, 'file', 0],
         tpl_html: ['sections', 'template', 0, 'groups', 'template', 0, 'html', 0]
     };

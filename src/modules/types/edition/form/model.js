@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (Default, Traversing) {
+define(['jquery', 'modules/default/defaultmodel'], function ($, Default) {
 
     function Model() {
     }
