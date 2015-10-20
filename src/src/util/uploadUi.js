@@ -101,9 +101,7 @@ define([
                     var $deleteAll = $('<input type="checkbox">Select/Unselect Delete</input>');
 
                     $deleteAll.on('change', function () {
-                        var toSet;
-                        if (this.checked) toSet = true;
-                        else toSet = false;
+                        var toSet = !!this.checked;
                         data.forEach(function (d) {
                             if (d.name !== 'view.json' || d.name === 'data.json' || d.name === 'meta.json') d.toDelete = toSet;
                         });

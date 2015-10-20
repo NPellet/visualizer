@@ -11,15 +11,99 @@ define([
     'lodash',
     'jquery',
     'src/util/versioning',
+    'slickgrid',
     'forms/button',
     'src/util/couchshare',
     'jquery-ui/dialog'
-], function (Util, Debug, _, $, Versioning, Button, Sharer) {
+], function (Util, Debug, _, $, Versioning, Slick, Button, Sharer) {
 
     var exports = {};
 
     var $dialog;
-    var $notification;
+
+    exports.choose = function (obj, slickOptions) {
+        slickOptions = slickOptions || {};
+        var keys = Object.keys(obj);
+        var arr = new Array(keys.length);
+        for (var i = 0; i < arr.length; i++) {
+            arr[i] = {
+                key: keys[i],
+                description: obj[keys[i]]
+            };
+        }
+
+        function htmlFormatter(row, cell, value, columnDef, dataContext) {
+            return value;
+        }
+
+        return new Promise(function (resolve) {
+            Util.loadCss('components/slickgrid/slick.grid.css').then(function () {
+                var slickDefaultOptions = {
+                    editable: true,
+                    enableAddRow: false,
+                    enableTextSelectionOnCells: true,
+                    forceFitColumns: true,
+                    explicitInitialization: true,
+                    rowHeight: 20
+                };
+
+                slickOptions = _.defaults(slickOptions, slickDefaultOptions);
+
+                var columns = [
+                    {
+                        id: 'key',
+                        name: 'key',
+                        field: 'key'
+                    },
+                    {
+                        id: 'description',
+                        name: 'description',
+                        field: 'description',
+                        formatter: htmlFormatter
+                    }
+                ];
+
+                var $dialog = $('<div>');
+                var $slick = $('<div>').css('height', 410);
+                var grid, data, lastClickedId;
+
+                exports.dialog($dialog, {
+                    buttons: {
+                        Cancel: function () {
+                            $(this).dialog('close');
+                        },
+                        Select: function () {
+                            resolve(lastClickedId);
+                            $(this).dialog('close');
+                        }
+                    },
+                    close: function () {
+                        resolve();
+                    },
+                    resize: function () {
+                        grid.resizeCanvas();
+                    },
+                    open: function () {
+                        $dialog.append($slick);
+                        //$('body').append($slick);
+                        data = new Slick.Data.DataView();
+                        data.setItems(arr, 'key');
+                        grid = new Slick.Grid($slick, data, columns, slickOptions);
+                        grid.setSelectionModel(new Slick.RowSelectionModel());
+                        grid.onClick.subscribe(function (e, args) {
+                            lastClickedId = data.mapRowsToIds([args.row])[0];
+                        });
+                        grid.init();
+                    },
+                    closeOnEscape: false,
+                    width: 700,
+                    height: 500
+                });
+            });
+        });
+
+    };
+
     exports.confirm = function (html, okLabel, cancelLabel) {
         if (_.isUndefined(okLabel)) okLabel = 'Ok';
         if (_.isUndefined(cancelLabel)) cancelLabel = 'Cancel';
@@ -248,15 +332,6 @@ define([
         require(['notifyjs'], function () {
             $.notify.apply($.notify, args);
         });
-        //$notification = $('.ci-visualizer-notification');
-        //if ($notification.length === 0) {
-        //    $('#ci-visualizer').append('<div class="ci-visualizer-notification"></div>');
-        //    $notification = $('.ci-visualizer-notification');
-        //}
-        //$notification.show().html(message);
-        //setTimeout(function () {
-        //    $notification.hide();
-        //}, 5000);
     };
 
     exports.getSafeElement = function (el) {
