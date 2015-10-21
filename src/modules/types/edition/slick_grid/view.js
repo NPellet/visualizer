@@ -246,9 +246,9 @@ define([
             ctx.module.model.dataTriggerChange(ctx.module.data);
             ctx._runFilter({
                 row: {
-                    item: newRow,
-                    column: args.column
+                    item: newRow
                 },
+                column: args.column,
                 cell: null,
                 event: 'newRow'
             });
