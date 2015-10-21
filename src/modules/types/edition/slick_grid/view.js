@@ -1028,7 +1028,8 @@ define([
                         that.grid.invalidateRows(rows);
                     }
                     that.grid.render();
-                }
+                },
+                API: API
             };
         },
 
