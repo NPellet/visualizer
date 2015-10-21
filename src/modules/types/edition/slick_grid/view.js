@@ -530,7 +530,8 @@ define([
 
         if (Array.isArray(ctx.lastSelectedRows)) {
             ctx.grid.setSelectedRows(ctx.lastSelectedRows);
-        } else if (!_.isUndefined(ctx.lastActiveRow) && !ctx.module.getConfigurationCheckbox('slickCheck', 'forgetLastActive')) {
+        }
+        if (!_.isUndefined(ctx.lastActiveRow) && !ctx.module.getConfigurationCheckbox('slickCheck', 'forgetLastActive')) {
             ctx.grid.setActiveCell(ctx.lastActiveRow, ctx.lastActiveCell);
         }
 
