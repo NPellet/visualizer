@@ -487,9 +487,10 @@ define([
             function getPixels(e, allPixels, pixel) {
                 for (var i = 0; i < that.images.length; i++) {
                     var rect = that.images[i].$img[0].getBoundingClientRect();
+                    console.log('left', rect);
                     var p = {
-                        x: (e.pageX - rect.left) * that.images[i].width / rect.width | 0,
-                        y: (e.pageY - rect.top) * that.images[i].height / rect.height | 0
+                        x: (e.clientX - rect.left) * that.images[i].width / rect.width | 0,
+                        y: (e.clientY - rect.top) * that.images[i].height / rect.height | 0
                     };
 
                     if (p.x >= 0 && p.x < that.images[i].width && p.y >= 0 && p.y < that.images[i].height) {
