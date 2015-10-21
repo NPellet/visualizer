@@ -154,6 +154,11 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                             ],
                             default: 'typerenderer'
                         },
+                        rendererOptions: {
+                            type: 'text',
+                            title: 'Renderer Options',
+                            default: ''
+                        },
                         width: {
                             type: 'text',
                             title: 'Width'

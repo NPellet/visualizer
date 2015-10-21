@@ -14,6 +14,21 @@ define([
     function View() {
     }
 
+    function _rendererOptions(options) {
+        var result;
+        if (!options) return undefined;
+        if (!options.match(/^\s*\{/)) {
+            options = '{' + options + '}';
+        }
+        try {
+            eval('result = ' + options);
+            return result;
+        } catch (e) {
+            Debug.warn('rendererOptions invalid in SlickGrid preferences');
+            return undefined;
+        }
+    }
+
 
     var cssPromises = [];
     cssPromises.push(Util.loadCss('components/slickgrid/slick.grid.css'));
@@ -638,6 +653,7 @@ define([
                         type = getType(row.jpath);
                     }
 
+                    var rendererOptions = _rendererOptions(row.rendererOptions);
                     return {
                         id: row.name,
                         name: row.name,
@@ -657,7 +673,8 @@ define([
                         jpath: row.jpath,
                         simpleJpath: row.jpath.length === 1,
                         dataType: type,
-                        colDef: row
+                        colDef: row,
+                        rendererOptions: rendererOptions
                     };
                 });
 
@@ -1003,8 +1020,8 @@ define([
                 getData: function () {
                     return that.module.data.get();
                 },
-                rerender: function(rows) {
-                    if(!rows) {
+                rerender: function (rows) {
+                    if (!rows) {
                         that.grid.invalidateAllRows();
                     } else {
                         that.grid.invalidateRows(rows);
@@ -1330,7 +1347,7 @@ define([
         if (dataContext.__group) return;
         this.module.data.traceSync([row]);
         if (cellNode) {
-            Renderer.render(cellNode, dataContext, colDef.jpath);
+            Renderer.render(cellNode, dataContext, colDef.jpath, colDef.rendererOptions);
         }
     }
 
