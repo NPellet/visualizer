@@ -359,7 +359,10 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         this._done = Promise.resolve();
 
         try {
-            this.theFunction.apply(this.context, this.libs);
+            var result = Promise.resolve(this.theFunction.apply(this.context, this.libs));
+            if (!this._async) {
+                this._done = result;
+            }
         } catch (e) {
             reportError(this.title, e);
         }

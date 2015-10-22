@@ -1,0 +1,347 @@
+{
+  "version": "2.28.5-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "script": [
+                "set('x', 1);"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {}
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 32,
+            "height": 10
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Sync script",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 2,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "Sync script",
+      "vars_out": [
+        {
+          "event": "onScriptEnded",
+          "rel": "outputValue",
+          "jpath": [
+            "x"
+          ],
+          "name": "x"
+        }
+      ],
+      "actions_out": []
+    },
+    {
+      "url": "modules/types/display/single_value/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "defaultvalue": [
+                null
+              ],
+              "font": [
+                null
+              ],
+              "fontcolor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "fontsize": [
+                null
+              ],
+              "align": [
+                null
+              ],
+              "valign": [
+                null
+              ],
+              "sprintf": [
+                null
+              ],
+              "sprintfOrder": [
+                null
+              ],
+              "preformatted": [
+                []
+              ],
+              "append": [
+                []
+              ],
+              "maxEntries": [
+                1
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 34,
+            "top": 18
+          },
+          "size": {
+            "width": 15,
+            "height": 8
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "x"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "",
+      "vars_out": [],
+      "actions_out": []
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "script": [
+                "setAsync();\n\nsetTimeout(function(){\n    set('x', 2);\n    done();\n}, 500);"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {}
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 11
+          },
+          "size": {
+            "width": 32,
+            "height": 22
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Async script",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 4,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "Async script",
+      "vars_out": [
+        {
+          "event": "onScriptEnded",
+          "rel": "outputValue",
+          "jpath": [
+            "x"
+          ],
+          "name": "x"
+        }
+      ],
+      "actions_out": []
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "script": [
+                "return Promise.resolve()\n    .then(function(){\n        set('x', 3);\n    });"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {}
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 34
+          },
+          "size": {
+            "width": 32,
+            "height": 22
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Async script with a Promise",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 5,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "Async script with a Promise",
+      "vars_out": [
+        {
+          "event": "onScriptEnded",
+          "rel": "outputValue",
+          "jpath": [
+            "x"
+          ],
+          "name": "x"
+        }
+      ],
+      "actions_out": []
+    }
+  ],
+  "variables": [],
+  "aliases": [],
+  "pouchvariables": [],
+  "configuration": {
+    "title": "No title"
+  }
+}
