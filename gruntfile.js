@@ -122,7 +122,9 @@ module.exports = function (grunt) {
                             './d3-plugins/**',
                             './mime-types/**',
                             './bluebird/js/browser/**',
-                            './notifyjs/dist/**'
+                            './notifyjs/dist/**',
+                            './web-animations-js/*.js',
+                            './web-animations-js/*.js.map'
                         ],
 
                         dest: './build/components/'
