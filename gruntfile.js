@@ -342,16 +342,19 @@ module.exports = function (grunt) {
                     var expressions;
 
                     expressions = [/\.jpg$/, /\.png$/, /\.jpeg$/, /\.gif$/];
-                    if (_.any(expressions, function (exp) {
-                            return fileStats.name.match(exp);
-                        })) {
+                    if (_.any(expressions,
+                            function (exp) {
+                                return fileStats.name.match(exp);
+                            })
+                        ) {
                         allimages.push(root + '/' + fileStats.name);
                     }
 
                     expressions = [/\.css$/, /\.js$/, /\.html$/];
-                    if (_.any(expressions, function (exp) {
-                            return fileStats.name.match(exp);
-                        })) {
+                    if (_.any(expressions,
+                            function (exp) {
+                                return fileStats.name.match(exp);
+                            })) {
                         // File content
                         var content = fs.readFileSync(root + '/' + fileStats.name).toString();
 
@@ -885,8 +888,7 @@ module.exports = function (grunt) {
                 var el = folderJson[i];
                 res = res.concat(applyModules(el, callback));
             }
-        }
-        else if (typeof folderJson === 'object') {
+        } else if (typeof folderJson === 'object') {
             for (var key in folderJson) {
                 if (key === 'modules' && Array.isArray(folderJson[key])) {
                     for (var i = 0; i < folderJson[key].length; i++) {
