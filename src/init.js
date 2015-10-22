@@ -53,6 +53,7 @@ require.config({
         sprintf: 'components/sprintf/dist/sprintf.min',
         'src/shape.1dnmr': 'components/jsNMR/src/shape.1dnmr',
         superagent: 'components/superagent/superagent',
+        'superagent-promise': 'lib/superagent-promise/index',
         threejs: 'components/threejs/build/three.min',
         uri: 'components/uri.js/src',
         x2js: 'components/x2js/xml2json.min',
