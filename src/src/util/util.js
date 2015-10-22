@@ -379,11 +379,11 @@ define(['src/util/debug', 'src/util/color', 'lodash', 'components/web-animations
         // Image taken from https://github.com/jxnblk/loading (loading-bars.svg)
         var $elem = $('\
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="black">\
-            <rect x="0" y="12" width="4" height="8" transform-origin="50% 50%"></rect>\
-            <rect x="7" y="12" width="4" height="8" transform-origin="50% 50%"></rect>\
-            <rect x="14" y="12" width="4" height="8" transform-origin="50% 50%"></rect>\
-            <rect x="21" y="12" width="4" height="8" transform-origin="50% 50%"></rect>\
-            <rect x="28" y="12" width="4" height="8" transform-origin="50% 50%"></rect>\
+            <rect x="0" y="12" width="4" height="8"></rect>\
+            <rect x="7" y="12" width="4" height="8"></rect>\
+            <rect x="14" y="12" width="4" height="8"></rect>\
+            <rect x="21" y="12" width="4" height="8"></rect>\
+            <rect x="28" y="12" width="4" height="8"></rect>\
         </svg>').attr({
             width: size,
             height: size,
@@ -396,7 +396,7 @@ define(['src/util/debug', 'src/util/color', 'lodash', 'components/web-animations
         $elem.find('rect').each(function () {
             this.animate([
                 {transform: 'scale(1,1)'},
-                {transform: 'scale(1,3)'},
+                {transform: 'matrix(1,0,0,2,0,-16)'},
                 {transform: 'scale(1,1)'},
                 {transform: 'scale(1,1)'},
                 {transform: 'scale(1,1)'}
