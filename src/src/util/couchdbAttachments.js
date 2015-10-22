@@ -85,22 +85,15 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
             throw new Error('uploads expects an array as parameter');
         }
 
-        return Promise.resolve().then(function () {
-            return new Promise(function (resolve, reject) {
-                var req = superagent.post(that.docUrl);
+        var req = superagent.post(that.docUrl);
 
-                for (var i = 0; i < files.length; i++) {
-                    var file = files[i];
-                    req.attach('_attachments', file, file.name);
-                }
-                req.field('_rev', that.lastDoc._rev);
-                req.end(function (err, res) {
-                    if (err) return reject(err);
-                    if (res.status !== 201) reject(new Error('Error uploading attachments, couchdb returned status code ' + res.status));
-                    return resolve();
-                });
-            });
-        }).then(function () {
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            req.attach('_attachments', file, file.name);
+        }
+        req.field('_rev', that.lastDoc._rev);
+        return req.end().then(function (res) {
+            if (res.status !== 201) throw new Error('Error uploading attachments, couchdb returned status code ' + res.status);
             return that.refresh();
         });
     };
@@ -343,18 +336,15 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
         // Get documents with latest attachements' rev ids
     CouchdbAttachments.prototype.refresh = function () {
         var that = this;
-        return new Promise(function (resolve, reject) {
-            superagent
-                .get(that.docUrl)
-                .set('Accept', 'application/json')
-                .end(function (err, res) {
-                    if (err) return reject(err);
-                    if (res.status !== 200) return reject(new Error('Error getting document, couchdb returned status code ' + res.status));
-                    that.lastDoc = res.body;
-                    that._hasFetched = true;
-                    return resolve(attachmentsAsArray(that, res.body._attachments));
-                });
-        });
+        return superagent
+            .get(this.docUrl)
+            .set('Accept', 'application/json')
+            .end().then(function (res) {
+                if (res.status !== 200) throw new Error('Error getting document, couchdb returned status code ' + res.status);
+                that.lastDoc = res.body;
+                that._hasFetched = true;
+                return attachmentsAsArray(that, res.body._attachments);
+            });
     };
 
     function attachmentsAsArray(ctx, att) {

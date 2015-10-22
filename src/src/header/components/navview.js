@@ -2,7 +2,6 @@
 
 define([
     'jquery',
-    'superagent',
     'src/header/components/default',
     'src/util/versioning',
     'forms/button',
@@ -10,7 +9,7 @@ define([
     'fancytree',
     'components/ui-contextmenu/jquery.ui-contextmenu.min',
     'jquery-ui/dialog'
-], function ($, superagent, Default, Versioning, Button, Util) {
+], function ($, Default, Versioning, Button, Util) {
 
     function Element() {
     }
