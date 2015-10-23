@@ -33,7 +33,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                             type: 'checkbox',
                             title: 'Slick options',
                             options: {
-                                editable: 'Editable',
+                                editable: 'Editable / Selectable',
                                 enableAddRow: 'Enable add row',
                                 autoEdit: 'Enable Auto Edit',
                                 forceFitColumns: 'Force fit Columns',
