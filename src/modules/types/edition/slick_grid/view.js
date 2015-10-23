@@ -1085,7 +1085,6 @@ define([
                     // navigate
                     this.grid.scrollRowToTop(gridRow);
                 }
-
                 //this.grid.setActiveCell(gridRow, 0);
             }
         },
@@ -1165,7 +1164,9 @@ define([
             for (var i = 0; i < rows.length; i++) {
                 rows[i] = this.lastViewport.top + i;
             }
-            return rows;
+            return rows.filter(function (row) {
+                return row >= 0;
+            });
         },
 
         _getItemsInfo: function (rows) {
