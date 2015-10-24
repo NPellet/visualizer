@@ -44,7 +44,7 @@ define([
     Config
 ) {
 
-    var _viewLoaded, _dataLoaded;
+    var _viewLoaded, _dataLoaded, _modulesSet;
 
     var RepositoryData = new Repository(),
         RepositoryHighlight = new Repository(),
@@ -141,12 +141,12 @@ define([
             loadCustomModules()
         ]).then(doInitScript).then(function () {
             ActionManager.viewHasChanged(view);
-            checkCustomModules();
             ModuleFactory.getModules().forEach(function (module) {
                 if (module.controller && typeof module.controller.onGlobalPreferenceChange === 'function') {
                     module.controller.onGlobalPreferenceChange();
                 }
             });
+            _modulesSet.then(checkCustomModules, checkCustomModules);
         }, function (e) {
             Debug.error('View loading problem', e, e.stack);
         });
@@ -187,11 +187,12 @@ define([
             var v = Versioning.getView().duplicate();
             var changed = false;
             var modulesById = ModuleFactory.getModulesById();
+            console.log('modules by id', modulesById);
             for (var j = 0; j < v.modules.length; j++) {
                 var moduleId = Util.moduleIdFromUrl(v.modules[j].url);
                 var module = modulesById[moduleId];
                 if (!module) {
-                    Debug.warn('Your view contains an url to a module that does not correspond to any loaded modules');
+                    Debug.warn('Your view contains an url to a module (id: ' + moduleId + ') that does not correspond to any loaded modules');
                     continue;
                 }
                 if (module.url.replace(/\/$/, '') !== v.modules[j].url.replace(/\/$/, '')) {
@@ -845,7 +846,7 @@ define([
                     }
 
                     if (cfgJson.modules) {
-                        ModuleFactory.setModules(cfgJson.modules);
+                        _modulesSet = ModuleFactory.setModules(cfgJson.modules);
                     }
 
 
