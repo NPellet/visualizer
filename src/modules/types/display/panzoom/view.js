@@ -37,8 +37,12 @@ define([
         },
 
         blank: {
-            picture: function () {
-                //this.clearImages();
+            picture: function (varname) {
+                this.clearImage(varname);
+            },
+
+            svg: function(varname) {
+                this.clearImage(varname);
             }
         },
 
@@ -66,6 +70,16 @@ define([
             }
             this.dom.html('');
             this.images = [];
+        },
+
+        clearImage: function(varname) {
+            var idx = _.findIndex(this.images, function (img) {
+                return img.name === varname;
+            });
+            if(idx === -1) return;
+            this.images[idx].$panzoomEl.panzoom('destroy');
+            this.images[idx].$parent.remove();
+            this.images.slice(idx, 1);
         },
 
         doImage: function (varname, value, options, updateHighlights) {
