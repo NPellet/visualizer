@@ -50,7 +50,7 @@ define(['src/util/debug'], function (Debug) {
             options = options || {};
             var annotation = {};
             annotation.type = 'rect';
-            annotation._highlight = [id];
+            annotation._highlight = [String(id)];
             annotation.pos = {x: from, y: (options.y || 30) + 'px'};
             annotation.pos2 = {x: to, y: (options.y || 30) + (options.height || 30) + 'px'}; // can be specified also as x and y or dx and dy
             annotation.fillColor = '#EEEEEE';
