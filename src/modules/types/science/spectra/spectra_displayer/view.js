@@ -545,7 +545,7 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                     }
 
 
-                    var defaultStyle = data.defaultStyle || {};
+                    var defaultStyle = aData.defaultStyle || {};
                     var serieName = aData.label || varname;
                     if (existingNames.indexOf(serieName) > -1) {
                         serieName += '-' + i;
