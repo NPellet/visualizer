@@ -1,13 +1,15 @@
-/* 
+'use strict';
+
+/*
  * This class can simulate a GC trace using Gaussian curves.
  * Data needs to be in the following format : [[time1,intensity1],[time2,intensity2], ...]
  */
-define(function() {
-    
+define(function () {
+
     var gaussian = [];
     var gaussianFactor = 5;   // after 5 the value is nearly 0, nearly no artefacts
     var gaussianWidth = 1000; // half height peak Width in point
-    
+
     // init gaussian
     function initGaussian() {
         if (gaussian.length > 0)
@@ -17,15 +19,15 @@ define(function() {
             gaussian[i] = 1 / Math.sqrt(2 * Math.PI) * Math.exp(-1 / 2 * Math.pow((i - (gaussianFactor * gaussianWidth / 2)) * 2 / gaussianWidth * ratio, 2));
         }
     }
-    
-    var getWidth = function(time) {
+
+    var getWidth = function (time) {
         return 1 + 3 * time / 1000;
     };
 
     function GCGenerator(options) {
-        
+
         initGaussian();
-        
+
         options = options || {};
         this.maxTime = options.maxTime || 3600;
         this.nbPointsPerSecond = options.nbPointsPerSecond || 5;
@@ -37,44 +39,41 @@ define(function() {
             this.spectrum[i + 1] = 0;
         }
 
-        this.appendPeaks = function(peaks, id) {
+        this.appendPeaks = function (peaks, id) {
             for (var i = 0; i < peaks.length; i++) {
                 this.appendPeak(peaks[i], id);
             }
         };
 
 
-        this.appendAnnotation = function(from, to, id, info) {
+        this.appendAnnotation = function (from, to, id, info) {
             var annotation = {};
-            annotation.type = "rect";
+            annotation.type = 'rect';
             annotation._highlight = [id];
-            annotation.pos = {x: from, y: 30 + "px"};
-            annotation.pos2 = {x: to, y: 60 + "px"}; // can be specified also as x and y or dx and dy
-            annotation.fillColor = "#EEEEEE";
-            annotation.strokeColor = "#CC0000";
-            annotation.strokeWidth = "0px";
+            annotation.pos = {x: from, y: 30 + 'px'};
+            annotation.pos2 = {x: to, y: 60 + 'px'}; // can be specified also as x and y or dx and dy
+            annotation.fillColor = '#EEEEEE';
+            annotation.strokeColor = '#CC0000';
+            annotation.strokeWidth = '0px';
 
             annotation.info = info;
             this.annotations.push(annotation);
         };
 
-        this.random = function(nbGroups, maxNbPeaks) {
+        this.random = function (nbGroups, maxNbPeaks) {
             // We generate randomly a peaks
-            var annotations = [];
             var maxNbPeaks = maxNbPeaks || 1;
             for (var i = 0; i < nbGroups; i++) {
                 var random = Math.random() * maxNbPeaks + 1;
                 for (var j = 0; j < random; j++) {
-                    var annotation = {};
                     var time = Math.floor(Math.random() * this.maxTime);
                     var height = Math.random();
                     this.appendPeak([time, height], i);
                 }
             }
-            return peaksDescription;
         };
 
-        this.appendPeak = function(peak, id) {
+        this.appendPeak = function (peak, id) {
             var time = peak[0];
             var height = peak[1];
             var width = this.getWidth(time);
@@ -96,10 +95,10 @@ define(function() {
                 this.appendAnnotation(firstAnnotationTime, lastAnnotationTime, id);
             }
         };
-        this.getSpectrum = function() {
+        this.getSpectrum = function () {
             return this.spectrum;
         };
-        this.getAnnotations = function() {
+        this.getAnnotations = function () {
             return this.annotations;
         };
     }
