@@ -4,7 +4,7 @@
  * This class can simulate a GC trace using Gaussian curves.
  * Data needs to be in the following format : [[time1,intensity1],[time2,intensity2], ...]
  */
-define(function () {
+define(['src/util/debug'], function (Debug) {
 
     var gaussian = [];
     var gaussianFactor = 5;   // after 5 the value is nearly 0, nearly no artefacts
@@ -92,14 +92,21 @@ define(function () {
                 }
             }
             if (id) {
-                this.appendAnnotation(firstAnnotationTime, lastAnnotationTime, id);
+                this.appendAnnotation(firstAnnotationTime, lastAnnotationTime, id, {peak: peak});
             }
         };
         this.getSpectrum = function () {
             return this.spectrum;
         };
-        this.getAnnotations = function () {
-            return this.annotations;
+        this.getAnnotations = function (options) {
+            options = options || {};
+            var annotations = this.annotations;
+            if (options.minIntensity) {
+                annotations = annotations.filter(function (annotation) {
+                    return annotation.info && annotation.info.peak[1] > options.minIntensity;
+                });
+            }
+            return annotations;
         };
     }
 
