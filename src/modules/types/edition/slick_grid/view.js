@@ -70,6 +70,13 @@ define([
             return val.id !== 'rowDeletion' && val.id !== '_checkbox_selector';
         });
 
+        var cids = _.pluck(columns, 'id');
+        for (var key in columnFilters) {
+            if (cids.indexOf(key) === -1) {
+                delete columnFilters[key];
+            }
+        }
+
         if (!ctx.hiddenColumns) {
             ctx.hiddenColumns = columns.map(function (col) {
                 if (col.colDef && col.colDef.hideColumn && col.colDef.hideColumn[0] === 'yes') {
