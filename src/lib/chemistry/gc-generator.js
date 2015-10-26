@@ -39,19 +39,20 @@ define(['src/util/debug'], function (Debug) {
             this.spectrum[i + 1] = 0;
         }
 
-        this.appendPeaks = function (peaks, id) {
+        this.appendPeaks = function (peaks, id, annotationOptions) {
             for (var i = 0; i < peaks.length; i++) {
-                this.appendPeak(peaks[i], id);
+                this.appendPeak(peaks[i], id, annotationOptions);
             }
         };
 
 
-        this.appendAnnotation = function (from, to, id, info) {
+        this.appendAnnotation = function (from, to, id, info, options) {
+            options = options || {};
             var annotation = {};
             annotation.type = 'rect';
             annotation._highlight = [id];
-            annotation.pos = {x: from, y: 30 + 'px'};
-            annotation.pos2 = {x: to, y: 60 + 'px'}; // can be specified also as x and y or dx and dy
+            annotation.pos = {x: from, y: (options.y || 30) + 'px'};
+            annotation.pos2 = {x: to, y: (options.y || 30) + (options.height || 30) + 'px'}; // can be specified also as x and y or dx and dy
             annotation.fillColor = '#EEEEEE';
             annotation.strokeColor = '#CC0000';
             annotation.strokeWidth = '0px';
@@ -73,7 +74,7 @@ define(['src/util/debug'], function (Debug) {
             }
         };
 
-        this.appendPeak = function (peak, id) {
+        this.appendPeak = function (peak, id, annotationOptions) {
             var time = peak[0];
             var height = peak[1];
             var width = this.getWidth(time);
@@ -92,12 +93,14 @@ define(['src/util/debug'], function (Debug) {
                 }
             }
             if (id) {
-                this.appendAnnotation(firstAnnotationTime, lastAnnotationTime, id, {peak: peak});
+                this.appendAnnotation(firstAnnotationTime, lastAnnotationTime, id, {peak: peak}, annotationOptions);
             }
         };
+
         this.getSpectrum = function () {
             return this.spectrum;
         };
+
         this.getAnnotations = function (options) {
             options = options || {};
             var annotations = this.annotations;
