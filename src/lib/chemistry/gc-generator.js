@@ -4,7 +4,7 @@
  * This class can simulate a GC trace using Gaussian curves.
  * Data needs to be in the following format : [[time1,intensity1],[time2,intensity2], ...]
  */
-define(['src/util/debug'], function (Debug) {
+define(function () {
 
     var gaussian = [];
     var gaussianFactor = 5;   // after 5 the value is nearly 0, nearly no artefacts
