@@ -98,6 +98,11 @@ define(['modules/default/defaultcontroller', 'ckeditor'], function (Default, CKE
         };
     };
 
+    Controller.prototype.actionsIn = {
+        insertHtml: 'Insert html',
+        insertText: 'Insert text'
+    };
+
     Controller.prototype.configAliases = {
         editable: ['groups', 'group', 0, 'editable', 0],
         modifyInVariable: ['groups', 'group', 0, 'modifyInVariable', 0],
