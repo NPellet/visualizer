@@ -89,7 +89,9 @@ define(['src/util/util', 'src/util/api', 'modules/modulefactory', 'src/main/grid
                 $select2.select2('destroy');
                 $select2.parent().remove();
                 if (e.params.data.cat === 'module') {
-                    Grid.newModule(url);
+                    setImmediate(function () {
+                        Grid.newModule(url);
+                    });
                 } else if (e.params.data.cat === 'layer') {
                     API.switchToLayer(e.params.data.text);
                 }
