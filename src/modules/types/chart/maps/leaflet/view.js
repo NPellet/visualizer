@@ -204,7 +204,7 @@ define([
             },
             csv: function (csv, varname) {
                 try {
-                    this.addGeoJSON(omnivore.csv.parse(csv.get()), varname);
+                    this.addGeoJSON(omnivore.csv.parse(String(csv.get())), varname);
                 } catch (e) {
                     // do nothing
                 }
@@ -212,7 +212,7 @@ define([
             },
             kml: function (kml, varname) {
                 try {
-                    this.addGeoJSON(omnivore.kml.parse(kml.get()), varname);
+                    this.addGeoJSON(omnivore.kml.parse(String(kml.get())), varname);
                 } catch (e) {
                     // do nothing
                 }
@@ -220,7 +220,7 @@ define([
             },
             gpx: function (gpx, varname) {
                 try {
-                    this.addGeoJSON(omnivore.gpx.parse(gpx.get()), varname);
+                    this.addGeoJSON(omnivore.gpx.parse(String(gpx.get())), varname);
                 } catch (e) {
                     // do nothing
                 }
@@ -228,7 +228,7 @@ define([
             },
             wkt: function (wkt, varname) {
                 try {
-                    this.addGeoJSON(omnivore.wkt.parse(wkt.get()), varname);
+                    this.addGeoJSON(omnivore.wkt.parse(String(wkt.get())), varname);
                 } catch (e) {
                     // do nothing
                 }
