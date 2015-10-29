@@ -1,3 +1,26 @@
+<a name="2.29.0"></a>
+# 2.29.0 (2015-10-29)
+
+
+### Bug Fixes
+
+* copy web-animations-js when building ([3c1abf9](https://github.com/NPellet/visualizer/commit/3c1abf9))
+* **data:** do not overwrite prototype with DataObject ([b4618eb](https://github.com/NPellet/visualizer/commit/b4618eb))
+* **panzoom:** fix incorrect mouse to pixel mapping when page is scrolled ([a615ea9](https://github.com/NPellet/visualizer/commit/a615ea9)), closes [#736](https://github.com/NPellet/visualizer/issues/736)
+* **slickgrid:** fix bug when renaming a column that is filtered ([dde8c78](https://github.com/NPellet/visualizer/commit/dde8c78))
+* **spectra_displayer:** update jsgraph to v1.13.3-20 ([7cf325a](https://github.com/NPellet/visualizer/commit/7cf325a))
+
+### Features
+
+* **dragdrop:** allow to read as ArrayBuffer ([6b328d3](https://github.com/NPellet/visualizer/commit/6b328d3))
+* **form:** templated forms can use default template ([55da27c](https://github.com/NPellet/visualizer/commit/55da27c))
+* **richtext:** add action that add text or html on cursor position ([6608a0e](https://github.com/NPellet/visualizer/commit/6608a0e))
+* **script_executor:** allow to return a Promise for async scripts ([fc9ac0a](https://github.com/NPellet/visualizer/commit/fc9ac0a))
+* **slickgrid:** type renderer options for a column ([377c395](https://github.com/NPellet/visualizer/commit/377c395)), closes [#689](https://github.com/NPellet/visualizer/issues/689)
+* **util/ui:** add choose to api (choose from list) ([3f31464](https://github.com/NPellet/visualizer/commit/3f31464))
+
+
+
 <a name="2.28.4"></a>
 ## 2.28.4 (2015-10-16)
 
