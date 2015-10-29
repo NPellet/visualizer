@@ -19,26 +19,35 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
     }
 
     DataObject.check = function (object, transformNatives) {
-
+        var currentProto, nextProto;
         if (isSpecialObject(object)) {
-
             return object;
-
         } else if (Array.isArray(object)) {
-
-            object.__proto__ = DataArray.prototype;
+            currentProto = object;
+            while (true) { // eslint-disable-line no-constant-condition
+                nextProto = currentProto.__proto__;
+                if (nextProto === null || (nextProto.constructor && nextProto.constructor.name === 'Array')) {
+                    currentProto.__proto__ = DataArray.prototype;
+                    break;
+                }
+                currentProto = nextProto;
+            }
             return object;
-
         } else if (object === null) {
-
             return null;
-
         } else {
-
             var type = typeof object;
 
             if (type === 'object') {
-                object.__proto__ = DataObject.prototype;
+                currentProto = object;
+                while (true) { // eslint-disable-line no-constant-condition
+                    nextProto = currentProto.__proto__;
+                    if (nextProto === null || (nextProto.constructor && nextProto.constructor.name === 'Object')) {
+                        currentProto.__proto__ = DataObject.prototype;
+                        break;
+                    }
+                    currentProto = nextProto;
+                }
                 return object;
             }
 
@@ -47,7 +56,6 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
             }
 
             return transformNative(object);
-
         }
     };
 

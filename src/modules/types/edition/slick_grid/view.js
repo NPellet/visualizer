@@ -70,6 +70,13 @@ define([
             return val.id !== 'rowDeletion' && val.id !== '_checkbox_selector';
         });
 
+        var cids = _.pluck(columns, 'id');
+        for (var key in columnFilters) {
+            if (cids.indexOf(key) === -1) {
+                delete columnFilters[key];
+            }
+        }
+
         if (!ctx.hiddenColumns) {
             ctx.hiddenColumns = columns.map(function (col) {
                 if (col.colDef && col.colDef.hideColumn && col.colDef.hideColumn[0] === 'yes') {
@@ -1077,8 +1084,8 @@ define([
             this.lastViewport = this.grid.getViewport();
             if (idx > -1 && this.module.getConfigurationCheckbox('slickCheck', 'highlightScroll')) {
                 var item = that.slick.data.getItemByIdx(idx);
-                var gridRow = that.slick.data.mapIdsToRows([item[that.idPropertyName]])[0];
-                if (!gridRow) {
+                var gridRow = that.slick.data.getRowById(item[that.idPropertyName]);
+                if (gridRow === undefined) {
                     return;
                 }
                 if (gridRow < this.lastViewport.top || gridRow >= this.lastViewport.bottom) {
@@ -1293,7 +1300,7 @@ define([
                 }
 
                 if (item && item[this.idPropertyName]) {
-                    var gridRow = this.slick.data.mapIdsToRows([item[this.idPropertyName]])[0];
+                    var gridRow = this.slick.data.getRowById(item[this.idPropertyName]);
                     var dataIdx = this.slick.data.getIdxById(item[this.idPropertyName]);
                     this.module.controller.onHover(dataIdx, item);
                     this.grid.scrollRowToTop(gridRow);
@@ -1310,7 +1317,7 @@ define([
                 }
 
                 if (item && item[this.idPropertyName]) {
-                    var gridRow = this.slick.data.mapIdsToRows([item[this.idPropertyName]])[0];
+                    var gridRow = this.slick.data.getRowById(item[this.idPropertyName]);
                     var dataIdx = this.slick.data.getIdxById(item[this.idPropertyName]);
                     this.module.controller.onClick(dataIdx, item);
                     if (!_.isUndefined(gridRow)) {

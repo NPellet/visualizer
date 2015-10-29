@@ -545,6 +545,7 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                     }
 
 
+                    var defaultStyle = aData.defaultStyle || {};
                     var serieName = aData.label || varname;
                     if (existingNames.indexOf(serieName) > -1) {
                         serieName += '-' + i;
@@ -605,7 +606,7 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                             })(serie);
                         }
                     } else {
-                        var color = data.length > 1 ? Color.getNextColorRGB(i, data.length) : null;
+                        var color = defaultStyle.lineColor || (data.length > 1 ? Color.getNextColorRGB(i, data.length) : null);
                         this.setSerieParameters(serie, varname, aData._highlight, color);
                     }
 

@@ -88,6 +88,16 @@ define([
             });
             return height;
         },
+
+        onActionReceive: {
+            insertHtml: function (html) {
+                this.instance.insertHtml(html, 'unfiltered_html');
+            },
+            insertText: function (text) {
+                this.instance.insertText(text);
+            }
+        },
+
         _setCss: function () {
             var bgColor = this.module.getConfiguration('bgColor');
             this.dom.css({
