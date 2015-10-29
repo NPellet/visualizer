@@ -41,7 +41,7 @@ define([
                 this.clearImage(varname);
             },
 
-            svg: function(varname) {
+            svg: function (varname) {
                 this.clearImage(varname);
             }
         },
@@ -72,11 +72,11 @@ define([
             this.images = [];
         },
 
-        clearImage: function(varname) {
+        clearImage: function (varname) {
             var idx = _.findIndex(this.images, function (img) {
                 return img.name === varname;
             });
-            if(idx === -1) return;
+            if (idx === -1) return;
             this.images[idx].$panzoomEl.panzoom('destroy');
             this.images[idx].$parent.remove();
             this.images.slice(idx, 1);
@@ -501,7 +501,7 @@ define([
             function getPixels(e, allPixels, pixel) {
                 for (var i = 0; i < that.images.length; i++) {
                     var rect = that.images[i].$img[0].getBoundingClientRect();
-              //      console.log('left', rect);
+                    //      console.log('left', rect);
                     var p = {
                         x: (e.clientX - rect.left) * that.images[i].width / rect.width | 0,
                         y: (e.clientY - rect.top) * that.images[i].height / rect.height | 0
