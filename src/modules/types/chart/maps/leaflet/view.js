@@ -102,6 +102,7 @@ define([
     $.extend(true, View.prototype, Default, {
         init: function () {
             this.mapLayers = {};
+            this.mapLayer = {};
             this.mapBounds = {};
             this.dom = $('<div id="' + this.mapID + '"></div>').css({
                 height: '100%',
@@ -180,11 +181,12 @@ define([
             kml: clearLayer,
             gpx: clearLayer,
             wkt: clearLayer,
-            topojson: clearLayer
+            topojson: clearLayer,
+            point: clearLayer
         },
         update: {
             position: function (value) {
-                if (value.length !== 2)
+                if (value.length < 2)
                     return;
                 this.map.setView(L.latLng(value[0], value[1]));
             },
@@ -241,8 +243,27 @@ define([
                     // do nothing
                 }
                 this.updateFit(varname);
+            },
+
+            point: function(point, varname) {
+                var latlng = L.latLng(point[0], point[1]);
+                var circle = L.circle(latlng, 20, {
+                    color: '#f00',
+                    fillColor: '#f00'
+                });
+                //circle.addTo(this.map);
+                this.addLayer(circle, varname);
+                this.updateFit(varname);
             }
         },
+
+        addLayer: function(layer, varname) {
+            layer.addTo(this.map);
+            this.mapLayer[varname] = layer;
+            this.mapBounds[varname] = new L.LatLngBounds();
+            this.mapBounds[varname].extend(layer.getBounds ? layer.getBounds() : layer.getLatLng());
+        },
+
         addGeoJSON: function (geojson, varname) {
             geojson.addTo(this.map);
             this.mapLayers[varname] = geojson;
@@ -361,6 +382,9 @@ define([
         if (this.mapLayers.hasOwnProperty(varname)) {
             this.mapLayers[varname].clearLayers();
             delete this.mapLayers[varname];
+        }
+        if(this.mapLayer.hasOwnProperty(varname)) {
+            this.map.removeLayer(this.mapLayer[varname]);
         }
         if (this.mapBounds.hasOwnProperty(varname)) {
             delete this.mapBounds[varname];
