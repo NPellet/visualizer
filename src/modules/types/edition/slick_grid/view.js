@@ -1289,6 +1289,14 @@ define([
         },
 
         onActionReceive: {
+            rerender: function() {
+                console.log('action receive rerender...');
+                if(this.grid) {
+                    console.log('rerender...');
+                    this.grid.invalidateAllRows();
+                    this.grid.render();
+                }
+            },
             hoverRow: function (row) {
                 // row can be the row itself or the array's index
                 var item;

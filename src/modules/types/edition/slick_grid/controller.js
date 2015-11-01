@@ -263,7 +263,8 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
         selectRow: 'Mimic select row',
         addRow: 'Add a new row',
         showColumn: 'Show a column',
-        hideColumn: 'Hide a column'
+        hideColumn: 'Hide a column',
+        rerender: 'Rerender the grid'
     });
 
     Controller.prototype.events = {
