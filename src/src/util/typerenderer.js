@@ -341,7 +341,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
                 if (!Array.isArray(value)) {
                     return resolve();
                 }
-                var html = '<table cellpadding="0" cellspacing="0" style="text-align: center; height:100%; width:100%"><tr>';
+                var html = '<table cellpadding="0" cellspacing="0" style="text-align: center; height:100%; width:100%; table-layout: fixed;"><tr>';
 
                 // if the first element of the array is a number ... we need to convert the array.
                 if (!isNaN(value[0])) {
@@ -365,7 +365,11 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
                     var element = value[i];
                     var span = $('<td>&nbsp;</td>').css({
                         'width': (100 * element.size / totalSize) + '%',
-                        'border': 'none'
+                        'border': 'none',
+                        overflow: 'hidden',
+                        'max-width': (100 * element.size / totalSize) + '%',
+                        'white-space': 'nowrap',
+                        'text-overflow': 'ellipsis'
                     });
                     if (element.bgcolor)
                         span.css('background-color', element.bgcolor);
