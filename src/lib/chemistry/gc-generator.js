@@ -16,7 +16,7 @@ define(function () {
             return;
         var ratio = Math.sqrt(2 * Math.log(2) / Math.log(Math.E));
         for (var i = 0; i <= gaussianWidth * gaussianFactor; i++) {
-            gaussian[i] = 1 / Math.sqrt(2 * Math.PI) * Math.exp(-1 / 2 * Math.pow((i - (gaussianFactor * gaussianWidth / 2)) * 2 / gaussianWidth * ratio, 2));
+            gaussian[i] = Math.exp(-1 / 2 * Math.pow((i - (gaussianFactor * gaussianWidth / 2)) * 2 / gaussianWidth * ratio, 2));
         }
     }
 
