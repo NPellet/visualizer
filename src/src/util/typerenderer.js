@@ -74,12 +74,18 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'
     };
 
     function checkDate(options) {
-        return options.hasOwnProperty('dateFormat');
+        return options.hasOwnProperty('dateFormat')
+            || options.hasOwnProperty('dateFromNow')
+            || options.hasOwnProperty('dateCalendar');
     }
 
     function toDate(value, options) {
         if (options.dateFormat) {
             return moment(value).format(options.dateFormat);
+        } else if (options.dateFromNow) {
+            return moment(value).fromNow();
+        } else if (options.dateCalendar) {
+            return moment(value).calendar();
         }
     }
 
