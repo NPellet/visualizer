@@ -1289,9 +1289,9 @@ define([
         },
 
         onActionReceive: {
-            rerender: function() {
+            rerender: function () {
                 console.log('action receive rerender...');
-                if(this.grid) {
+                if (this.grid) {
                     console.log('rerender...');
                     this.grid.invalidateAllRows();
                     this.grid.render();

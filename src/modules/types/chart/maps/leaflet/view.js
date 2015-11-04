@@ -245,7 +245,7 @@ define([
                 this.updateFit(varname);
             },
 
-            point: function(point, varname) {
+            point: function (point, varname) {
                 var latlng = L.latLng(point[0], point[1]);
                 var circle = L.circle(latlng, 20, {
                     color: '#f00',
@@ -257,7 +257,7 @@ define([
             }
         },
 
-        addLayer: function(layer, varname) {
+        addLayer: function (layer, varname) {
             layer.addTo(this.map);
             this.mapLayer[varname] = layer;
             this.mapBounds[varname] = new L.LatLngBounds();
@@ -383,7 +383,7 @@ define([
             this.mapLayers[varname].clearLayers();
             delete this.mapLayers[varname];
         }
-        if(this.mapLayer.hasOwnProperty(varname)) {
+        if (this.mapLayer.hasOwnProperty(varname)) {
             this.map.removeLayer(this.mapLayer[varname]);
         }
         if (this.mapBounds.hasOwnProperty(varname)) {
