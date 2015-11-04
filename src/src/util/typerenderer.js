@@ -45,9 +45,12 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'
     };
 
     functions.string = {};
-    functions.string.toscreen = function ($element, val) {
+    functions.string.toscreen = function ($element, val, rootVal, options) {
         val = String(val);
         val.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        if (checkDate(options)) {
+            val = toDate(val, options);
+        }
         $element.html(val);
     };
 
