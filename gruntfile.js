@@ -124,7 +124,8 @@ module.exports = function (grunt) {
                             './bluebird/js/browser/**',
                             './notifyjs/dist/**',
                             './web-animations-js/*.js',
-                            './web-animations-js/*.js.map'
+                            './web-animations-js/*.js.map',
+                            './moment/min/moment.min.js'
                         ],
 
                         dest: './build/components/'

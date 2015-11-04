@@ -1,6 +1,6 @@
 'use strict';
 
-define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], function (require, $, _, API, Util) {
+define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'], function (require, $, _, API, Util, moment) {
 
     var functions = {};
 
@@ -73,6 +73,16 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
         $element.html(result);
     };
 
+    function checkDate(options) {
+        return options.hasOwnProperty('dateFormat');
+    }
+
+    function toDate(value, options) {
+        if (options.dateFormat) {
+            return moment(value).format(options.dateFormat);
+        }
+    }
+
     functions.number = {};
     functions.number.toscreen = function ($element, val, rootVal, options) {
         var number = Number(val);
@@ -82,6 +92,8 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util'], functio
             number = number.toPrecision(options.toPrecision);
         } else if (options.hasOwnProperty('toFixed')) {
             number = number.toFixed(options.toFixed);
+        } else if (checkDate(options)) {
+            number = toDate(number, options);
         }
         $element.html(number);
     };

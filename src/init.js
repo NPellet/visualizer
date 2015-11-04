@@ -15,6 +15,7 @@
 require.config({
     waitSeconds: 0,
     paths: {
+        moment: 'components/moment/min/moment.min',
         ace: 'components/ace/src',
         async: 'components/async/lib/async',
         bowser: 'components/bowser/bowser.min',

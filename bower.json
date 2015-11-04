@@ -76,7 +76,8 @@
     "underscore": "1.8.2",
     "uri.js": "1.14.1",
     "x2js": "1.1.7",
-    "web-animations-js": "2.1.2"
+    "web-animations-js": "2.1.2",
+    "moment": "~2.10.6"
   },
   "resolutions": {
     "jsgraph": "v1.13.3-20"
