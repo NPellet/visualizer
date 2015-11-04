@@ -1,3 +1,21 @@
+<a name="2.30.0"></a>
+# 2.30.0 (2015-11-04)
+
+
+### Bug Fixes
+
+* **leaflet:** Convert to string before parsing ([bdfd4e9](https://github.com/NPellet/visualizer/commit/bdfd4e9))
+* **typerenderer:** in indicator, cell should not grow with text ([284f5ba](https://github.com/NPellet/visualizer/commit/284f5ba))
+
+### Features
+
+* **leaflet:** add point var in (renders a circle on the map) ([1d80f1f](https://github.com/NPellet/visualizer/commit/1d80f1f))
+* **typerenderer:** date rendering for strings ([cd5102c](https://github.com/NPellet/visualizer/commit/cd5102c))
+* **typerenderer:** for number add dateFromNow and dateCalendar options ([35df8d1](https://github.com/NPellet/visualizer/commit/35df8d1))
+* **typerenderer:** possibility to render number as date ([0a8b545](https://github.com/NPellet/visualizer/commit/0a8b545)), closes [#743](https://github.com/NPellet/visualizer/issues/743)
+
+
+
 <a name="2.29.0"></a>
 # 2.29.0 (2015-10-29)
 
