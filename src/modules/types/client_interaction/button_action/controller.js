@@ -121,7 +121,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                         confirmText: {
                             type: 'wysiwyg',
                             title: 'Confirmation text',
-                            'default': 'Are you sure?',
+                            default: 'Are you sure?',
                             displayTarget: ['y']
                         },
                         okLabel: {
@@ -135,6 +135,12 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             title: 'Cancel label',
                             'default': 'Cancel',
                             displayTarget: ['y']
+                        },
+                        imageUrl: {
+                            type: 'jscode',
+                            title: 'Image url',
+                            mode: 'html',
+                            default: ''
                         }
                     }
                 }
@@ -154,7 +160,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
         confirmText: ['groups', 'group', 0, 'confirmText', 0],
         okLabel: ['groups', 'group', 0, 'okLabel', 0],
         cancelLabel: ['groups', 'group', 0, 'cancelLabel', 0],
-        startState: ['groups', 'group', 0, 'startState', 0]
+        startState: ['groups', 'group', 0, 'startState', 0],
+        imageUrl: ['groups', 'group', 0, 'imageUrl', 0]
     };
 
     return Controller;
