@@ -41,6 +41,32 @@ define(['modules/default/defaultcontroller', 'openchemlib/openchemlib-full'], fu
         }
     };
 
+    Controller.prototype.configurationStructure = function () {
+        return {
+            groups: {
+                group: {
+                    options: {
+                        type: 'list'
+                    },
+                    fields: {
+                        prefs: {
+                            type: 'checkbox',
+                            title: 'Options',
+                            default: [],
+                            options: {
+                                queryFeatures: 'Enable query features'
+                            }
+                        }
+                    }
+                }
+            }
+        };
+    };
+
+    Controller.prototype.configAliases = {
+        prefs: ['groups', 'group', 0, 'prefs', 0]
+    };
+
     Controller.prototype.onChange = function (actid) {
         actid = actid || ' ';
         var split = actid.split(' ');

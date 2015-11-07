@@ -43,9 +43,11 @@ define(['modules/default/defaultview', 'src/util/util', 'openchemlib/openchemlib
         update: {
             mol: function (val) {
                 this.editor.setMolFile(String(val.get()));
+                this.setFragment();
             },
             smiles: function (val) {
                 this.editor.setSmiles(String(val.get()));
+                this.setFragment();
             },
             actid: function (val) {
                 var value = String(val.get());
@@ -53,17 +55,25 @@ define(['modules/default/defaultview', 'src/util/util', 'openchemlib/openchemlib
                     value += ' ' + value.coordinates;
                 }
                 this.editor.setIDCode(value);
+                this.setFragment();
             }
         },
 
         initEditor: function () {
             this.editor = OCL.StructureEditor.createEditor(this.id);
             this.editor.setChangeListenerCallback(this.module.controller.onChange.bind(this.module.controller));
+            this.setFragment();
             this.resolveReady();
         },
 
         clearEditor: function () {
             this.editor.setIDCode('');
+        },
+
+        setFragment: function () {
+            if (this.module.getConfigurationCheckbox('prefs', 'queryFeatures')) {
+                this.editor.setFragment(true);
+            }
         }
 
     });
