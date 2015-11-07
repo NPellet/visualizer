@@ -23,9 +23,8 @@ define(['modules/default/defaultview', 'src/util/util', 'openchemlib/openchemlib
         },
 
         onResize: function () {
-            if (!this.editor) {
-                this.initEditor();
-            }
+            this.dom.empty();
+            this.initEditor();
         },
 
         blank: {
@@ -60,8 +59,10 @@ define(['modules/default/defaultview', 'src/util/util', 'openchemlib/openchemlib
         },
 
         initEditor: function () {
+            var controller = this.module.controller;
             this.editor = OCL.StructureEditor.createEditor(this.id);
-            this.editor.setChangeListenerCallback(this.module.controller.onChange.bind(this.module.controller));
+            this.editor.setChangeListenerCallback(this.module.controller.onChange.bind(controller));
+            this.editor.setIDCode(controller.currentMol.idcode, controller.currentMol.coordinates);
             this.setFragment();
             this.resolveReady();
         },
