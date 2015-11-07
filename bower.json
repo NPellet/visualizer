@@ -60,7 +60,7 @@
     "modernizr": "2.8.3",
     "notifyjs": "0.3.2",
     "onde": "cheminfo/onde#8ec2565c856edce7ce3c97767c608db91977c63e",
-    "openchemlib": "v3.0.0-beta4",
+    "openchemlib": "3.1.1",
     "papa-parse": "4.1.1",
     "pouchdb": "3.3.1",
     "requirejs": "2.1.18",
