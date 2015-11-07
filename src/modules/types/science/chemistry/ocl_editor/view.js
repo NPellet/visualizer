@@ -74,7 +74,9 @@ define(['modules/default/defaultview', 'src/util/util', 'openchemlib/openchemlib
         setFragment: function () {
             if (this.module.getConfigurationCheckbox('prefs', 'queryFeatures')) {
                 this.editor.setFragment(true);
-            }
+            } else {
+                this.editor.setFragment(false);
+	    }
         }
 
     });
