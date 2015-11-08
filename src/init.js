@@ -16,6 +16,7 @@ require.config({
     waitSeconds: 0,
     paths: {
         moment: 'components/moment/min/moment.min',
+        'moment-duration-format': 'components/moment-duration-format/lib/moment-duration-format',
         ace: 'components/ace/src',
         async: 'components/async/lib/async',
         bowser: 'components/bowser/bowser.min',
@@ -124,6 +125,7 @@ require.config({
             exports: 'Pixastic'
         },
         fancytree: ['jquery-ui/droppable'],
+        'moment-duration-format': ['moment'],
         BiojsCore: {
             exports: 'Biojs'
         },
