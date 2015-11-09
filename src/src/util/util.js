@@ -59,7 +59,7 @@ define(['src/util/debug', 'src/util/color', 'lodash', 'components/web-animations
             ii = 0;
             cssRule = false;
             do {                                             // For each rule in stylesheet
-                cssRule = stylesheet.cssRules ? stylesheet.cssRules[ii] : stylesheet.rules[ii];
+                cssRule = stylesheet.cssRules ? stylesheet.cssRules[ii] : (stylesheet.rules ? stylesheet.rules[ii] : null);
                 if (!cssRule || !cssRule.selectorText) {
                     ii++;
                     continue;
