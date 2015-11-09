@@ -1,3 +1,14 @@
+<a name="2.30.1"></a>
+## 2.30.1 (2015-11-09)
+
+
+### Features
+
+* **button_action:** possibility to insert image ([673b66f](https://github.com/NPellet/visualizer/commit/673b66f))
+* **ocl_editor:** add option to enable query features ([7e8d4d3](https://github.com/NPellet/visualizer/commit/7e8d4d3))
+
+
+
 <a name="2.30.0"></a>
 # 2.30.0 (2015-11-04)
 
