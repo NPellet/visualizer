@@ -187,7 +187,6 @@ define([
             var v = Versioning.getView().duplicate();
             var changed = false;
             var modulesById = ModuleFactory.getModulesById();
-            console.log('modules by id', modulesById);
             for (var j = 0; j < v.modules.length; j++) {
                 var moduleId = Util.moduleIdFromUrl(v.modules[j].url);
                 var module = modulesById[moduleId];
