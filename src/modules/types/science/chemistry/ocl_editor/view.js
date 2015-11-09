@@ -76,7 +76,7 @@ define(['modules/default/defaultview', 'src/util/util', 'openchemlib/openchemlib
                 this.editor.setFragment(true);
             } else {
                 this.editor.setFragment(false);
-	    }
+            }
         }
 
     });
