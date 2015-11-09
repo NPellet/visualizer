@@ -322,7 +322,18 @@ module.exports = function (grunt) {
     grunt.registerTask('clean-images', 'Clean all images that are not used in the build', function () {
         var options;
         var walker;
-        var whiteset = {};
+        var whiteset = {
+            'build/lib/forms/images/arrow_merge.png': true,
+            'build/lib/forms/images/table_row_delete.png': true,
+            'build/lib/forms/images/basket_go.png': true,
+            'build/lib/forms/images/beer.png': true,
+            'build/lib/forms/images/basket_add.png': true,
+            'build/lib/forms/images/table_sort.png': true,
+            'build/lib/forms/images/money_dollar.png': true,
+            'build/lib/forms/images/basket_full.png': true,
+            'build/lib/forms/images/emotion_bad_smelly.png': true,
+            'build/lib/forms/images/basket_error.png': true
+        };
         var allimages = [];
 
         // To be truly synchronous in the emitter and maintain a compatible api,
@@ -335,7 +346,7 @@ module.exports = function (grunt) {
                         while (m != null) {
                             var fn = 'build/lib/forms/images/' + m[1] + '.png';
                             if (fs.existsSync(fn)) {
-                                whiteset[fn] = '';
+                                whiteset[fn] = true;
                             }
                             m = iconreg.exec(content);
                         }
@@ -348,7 +359,7 @@ module.exports = function (grunt) {
                             function (exp) {
                                 return fileStats.name.match(exp);
                             })
-                        ) {
+                    ) {
                         allimages.push(root + '/' + fileStats.name);
                     }
 
@@ -376,7 +387,7 @@ module.exports = function (grunt) {
                                 if (res[i][0] !== '/') { // ignore absolute path
                                     var filepath = path.join(root, res[i]);
                                     if (fs.existsSync(filepath)) {
-                                        whiteset[filepath] = '';
+                                        whiteset[filepath] = true;
                                     }
                                 }
                             });
@@ -395,7 +406,7 @@ module.exports = function (grunt) {
         // Delete images that are not in the white set
         var delcount = 0;
         _.keys(allimages).forEach(function (i) {
-            if (!_.has(whiteset, allimages[i])) {
+            if (!whiteset[allimages[i]]) {
                 fs.unlinkSync(allimages[i]);
                 delcount++;
             }
