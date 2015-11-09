@@ -1,403 +1,406 @@
 {
-  "modules": [
-	{
-	  "configuration": {
-		"sections": {},
-		"groups": {
-		  "group": [
-			{
-			  "nblines": [
-				20
-			  ],
-			  "toggle": [
-				null
-			  ],
-			  "colorjpath": [
-				null
-			  ],
-			  "filterRow": [
-				null
-			  ]
-			}
-		  ],
-		  "cols": [
-			[
-			  {
-				"name": "Label",
-				"jpath": "element.l",
-				"number": [],
-				"editable": "none"
-			  }
-			]
-		  ]
-		}
-	  },
-	  "zindex": 3,
-	  "id": 1,
-	  "url": "./modules/types/display/jqgrid/",
-	  "actions_out": [
-		{}
-	  ],
-	  "vars_in": [
+	"modules": [
 		{
-		  "rel": "list",
-		  "name": "spectra"
-		}
-	  ],
-	  "actions_in": [
-		{}
-	  ],
-	  "vars_out": [
-		{
-		  "event": "onHover",
-		  "rel": "row",
-		  "jpath": [
-			"jcamp"
-		  ],
-		  "name": "jcamp"
-		}
-	  ],
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 80.00000133514405,
-			"top": 0,
-			"right": 0
-		  },
-		  "size": {
-			"width": 13.966666662693024,
-			"height": 67.96666666269303
-		  },
-		  "display": true,
-		  "title": "IR spectra",
-		  "bgColor": [
-			255,
-			255,
-			255,
-			0
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		}
-	  },
-	  "title": "IR spectra"
-	},
-	{
-	  "configuration": {
-		"sections": {},
-		"groups": {
-		  "group": [
-			{
-			  "nblines": [
-				20
-			  ],
-			  "toggle": [
-				null
-			  ],
-			  "colorjpath": [
-				null
-			  ],
-			  "filterRow": [
-				null
-			  ]
-			}
-		  ],
-		  "cols": [
-			[
-			  {
-				"name": "Label",
-				"jpath": "element.l",
-				"number": [],
-				"editable": "none"
-			  }
-			]
-		  ]
-		}
-	  },
-	  "zindex": 1,
-	  "id": 2,
-	  "url": "./modules/types/display/jqgrid/",
-	  "actions_out": [
-		{}
-	  ],
-	  "vars_in": [
-		{
-		  "rel": "list",
-		  "name": "components"
-		}
-	  ],
-	  "actions_in": [
-		{}
-	  ],
-	  "vars_out": [
-		{}
-	  ],
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 96.00000743865967,
-			"top": 0,
-			"right": 0
-		  },
-		  "size": {
-			"width": 43.96666666269302,
-			"height": 25.966666662693022
-		  },
-		  "display": true,
-		  "title": "Components",
-		  "bgColor": [
-			255,
-			255,
-			255,
-			0
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		}
-	  },
-	  "title": "Components"
-	},
-	{
-	  "configuration": {
-		"flipX": false,
-		"flipY": false,
-		"plotinfos": [
-		  {
-			"variable": "jcamp",
-			"plotcolor": "",
-			"plotcontinuous": true
-		  }
-		]
-	  },
-	  "dataSend": [
-		{
-		  "event": "",
-		  "rel": "",
-		  "jpath": "",
-		  "name": ""
-		}
-	  ],
-	  "id": 3,
-	  "url": "./modules/types/science/spectra/spectra_displayer/",
-	  "vars_in": [
-		{
-		  "rel": "jcamp",
-		  "name": "jcamp",
-		  "type": [
-			null
-		  ]
-		}
-	  ],
-	  "actions_in": [],
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 96,
-			"top": 28,
-			"right": 0
-		  },
-		  "size": {
-			"width": 43.96666666269302,
-			"height": 39.96666666269302
-		  },
-		  "display": true,
-		  "title": "IR Spectrum",
-		  "bgColor": "",
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		}
-	  },
-	  "title": "IR Spectrum"
-	},
-	{
-	  "url": "modules/types/chart/statistics/loading_plot/",
-	  "configuration": {
-		"sections": {
-		  "module_layers": [
-			{
-			  "sections": {},
-			  "groups": {
-				"group": [
-				  {
-					"el": [
-					  "Components"
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
 					],
-					"type": [
-					  "ellipse"
-					],
-					"color": [
-					  [
-						0,
-						0,
-						0,
-						1
-					  ]
-					],
-					"labels": [
-					  [
-						"display_labels",
-						"scalelabel"
-					  ]
-					],
-					"labelsize": [
-					  "30"
-					],
-					"labelzoomthreshold": [
-					  "0"
-					],
-					"highlightmag": [
-					  "1"
-					],
-					"highlighteffect": [
-					  [
-						"stroke"
-					  ]
+					"cols": [
+						[
+							{
+								"name": "Label",
+								"jpath": "element.l",
+								"number": [],
+								"editable": "none"
+							}
+						]
 					]
-				  }
-				]
-			  }
+				}
 			},
-			{
-			  "sections": {},
-			  "groups": {
-				"group": [
-				  {
-					"el": [
-					  "Spectra"
+			"zindex": 3,
+			"id": 5,
+			"url": "modules/types/display/jqgrid/",
+			"actions_out": [
+				{}
+			],
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "spectra"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": [
+						"jcamp"
 					],
-					"type": [
-					  "ellipse"
+					"name": "jcamp"
+				}
+			],
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 80.00000133514405,
+						"top": 0,
+						"right": 0
+					},
+					"size": {
+						"width": 14,
+						"height": 68
+					},
+					"display": true,
+					"title": "IR spectra",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
 					],
-					"color": [
-					  [
-						0,
-						0,
-						0,
-						1
-					  ]
-					],
-					"labels": [
-					  [
-						"display_labels",
-						"scalelabel"
-					  ]
-					],
-					"labelsize": [
-					  "10"
-					],
-					"labelzoomthreshold": [
-					  "10"
-					],
-					"highlightmag": [
-					  "1"
-					],
-					"highlighteffect": [
-					  [
-						"stroke"
-					  ]
-					]
-				  }
-				]
-			  }
-			}
-		  ]
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "IR spectra"
 		},
-		"groups": {
-		  "general": [
-			{
-			  "navigation": [
-				[]
-			  ]
-			}
-		  ]
-		}
-	  },
-	  "id": 4,
-	  "vars_in": [
 		{
-		  "rel": "loading",
-		  "name": "scatter"
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Label",
+								"jpath": "element.l",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"zindex": 1,
+			"id": 6,
+			"url": "modules/types/display/jqgrid/",
+			"actions_out": [
+				{}
+			],
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "components"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 96.00000743865967,
+						"top": 0,
+						"right": 0
+					},
+					"size": {
+						"width": 44,
+						"height": 26
+					},
+					"display": true,
+					"title": "Components",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Components"
+		},
+		{
+			"configuration": {
+				"flipX": false,
+				"flipY": false,
+				"plotinfos": [
+					{
+						"variable": "jcamp",
+						"plotcolor": "",
+						"plotcontinuous": true
+					}
+				]
+			},
+			"id": 7,
+			"url": "modules/types/science/spectra/spectra_displayer/",
+			"vars_in": [
+				{
+					"rel": "jcamp",
+					"name": "jcamp",
+					"type": [
+						null
+					]
+				}
+			],
+			"actions_in": [],
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 96,
+						"top": 28,
+						"right": 0
+					},
+					"size": {
+						"width": 44,
+						"height": 40
+					},
+					"display": true,
+					"title": "IR Spectrum",
+					"bgColor": "",
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "IR Spectrum",
+			"actions_out": [],
+			"vars_out": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			]
+		},
+		{
+			"url": "modules/types/chart/statistics/loading_plot/",
+			"configuration": {
+				"sections": {
+					"module_layers": [
+						{
+							"sections": {},
+							"groups": {
+								"group": [
+									{
+										"el": [
+											"Components"
+										],
+										"type": [
+											"ellipse"
+										],
+										"color": [
+											[
+												0,
+												0,
+												0,
+												1
+											]
+										],
+										"labels": [
+											[
+												"display_labels",
+												"scalelabel",
+												"forcefield"
+											]
+										],
+										"labelsize": [
+											"30"
+										],
+										"labelzoomthreshold": [
+											"0"
+										],
+										"highlightmag": [
+											"1"
+										],
+										"highlighteffect": [
+											[
+												"stroke"
+											]
+										]
+									}
+								]
+							}
+						},
+						{
+							"sections": {},
+							"groups": {
+								"group": [
+									{
+										"el": [
+											"Spectra"
+										],
+										"type": [
+											"ellipse"
+										],
+										"color": [
+											[
+												0,
+												0,
+												0,
+												1
+											]
+										],
+										"labels": [
+											[
+												"display_labels",
+												"scalelabel",
+												"forcefield"
+											]
+										],
+										"labelsize": [
+											"10"
+										],
+										"labelzoomthreshold": [
+											"10"
+										],
+										"highlightmag": [
+											"1"
+										],
+										"highlighteffect": [
+											[
+												"stroke"
+											]
+										]
+									}
+								]
+							}
+						}
+					]
+				},
+				"groups": {
+					"general": [
+						{
+							"navigation": [
+								[]
+							]
+						}
+					]
+				}
+			},
+			"id": 8,
+			"vars_in": [
+				{
+					"rel": "loading",
+					"name": "scatter"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": {},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 0,
+						"right": 0
+					},
+					"size": {
+						"width": 79,
+						"height": 68
+					},
+					"display": true,
+					"title": "Untitled module",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Untitled module"
 		}
-	  ],
-	  "actions_in": [
-		{}
-	  ],
-	  "vars_out": [
-		{}
-	  ],
-	  "actions_out": {},
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 0,
-			"top": 0,
-			"right": 0
-		  },
-		  "size": {
-			"width": 78.96666666269303,
-			"height": 67.96666666269303
-		  },
-		  "display": true,
-		  "title": "Untitled module",
-		  "bgColor": [
-			255,
-			255,
-			255,
-			0
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
+	],
+	"configuration": {
+		"showMenuBarOnStart": false,
+		"showModuleHeaderOnHover": false,
+		"title": "Principal Component Analysis and loading plot",
+		"moduleBackground": "#ffffff",
+		"variableFilters": {}
+	},
+	"variables": [
+		{
+			"varname": "scatter",
+			"jpath": [
+				"scatter"
+			],
+			"url": ""
+		},
+		{
+			"varname": "spectra",
+			"jpath": [
+				"spectra"
+			],
+			"url": ""
+		},
+		{
+			"varname": "components",
+			"jpath": [
+				"components"
+			],
+			"url": ""
 		}
-	  },
-	  "title": "Untitled module"
-	}
-  ],
-  "configuration": {
-	"showMenuBarOnStart": false,
-	"showModuleHeaderOnHover": false,
-	"title": "Principal Component Analysis and loading plot",
-	"moduleBackground": "#ffffff",
-	"variableFilters": {}
-  },
-  "_local": false,
-  "_saved": 1359621161694,
-  "_time": 1359621161694,
-  "variables": [
-	{
-	  "varname": "scatter",
-	  "jpath": [
-		"scatter"
-	  ],
-	  "url": ""
+	],
+	"version": "2.30.1-0",
+	"pouchvariables": [],
+	"grid": {
+		"layers": {
+			"Default layer": {
+				"name": "Default layer"
+			}
+		},
+		"xWidth": 10,
+		"yHeight": 10
 	},
-	{
-	  "varname": "spectra",
-	  "jpath": [
-		"spectra"
-	  ],
-	  "url": ""
-	},
-	{
-	  "varname": "components",
-	  "jpath": [
-		"components"
-	  ],
-	  "url": ""
-	}
-  ],
-  "version": "2.9.10",
-  "pouchvariables": [],
-  "grid": {
-	"layers": {
-	  "Default layer": {
-		"name": "Default layer"
-	  }
-	},
-	"xWidth": 10,
-	"yHeight": 10
-  }
+	"aliases": []
 }
