@@ -25,7 +25,7 @@ define(['jquery', 'modules/default/defaultview', 'lodash'], function ($, Default
             }).appendTo(div);
 
             if (!this._query) {
-                this._query = this.module.getConfiguration('initialValue')
+                this._query = this.module.getConfiguration('initialValue');
             }
             input.val(this._query);
 
