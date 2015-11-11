@@ -37,6 +37,14 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
             }
         },
 
+        blank: {
+            chart: function () {
+                if (this.dom) {
+                    this.dom.empty();
+                }
+            }
+        },
+
         _redraw: function () {
             if (!this.value) {
                 return;
