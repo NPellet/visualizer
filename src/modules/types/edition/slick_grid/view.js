@@ -1121,7 +1121,7 @@ define([
                             return hl.indexOf(k) > -1;
                         })
                 ) {
-                    tmp[itemInfo.idx] = that.baseCellCssStyle;
+                    tmp[i] = that.baseCellCssStyle;
                 }
             }
             this.grid.setCellCssStyles('highlight', tmp);
