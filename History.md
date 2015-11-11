@@ -1,3 +1,18 @@
+<a name="2.31.0"></a>
+# 2.31.0 (2015-11-11)
+
+
+### Bug Fixes
+
+* **slickgrid:** Fix wrong highlighted line when table is filtered ([f694a3f](https://github.com/NPellet/visualizer/commit/f694a3f))
+
+### Features
+
+* add smart-array-filter library ([7edd214](https://github.com/NPellet/visualizer/commit/7edd214))
+* add smart-array-filter module ([2d64a90](https://github.com/NPellet/visualizer/commit/2d64a90))
+
+
+
 <a name="2.30.1"></a>
 ## 2.30.1 (2015-11-09)
 
