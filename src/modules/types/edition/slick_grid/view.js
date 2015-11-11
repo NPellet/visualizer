@@ -218,6 +218,9 @@ define([
 
         ctx.grid.module = ctx.module;
 
+        // Make sure selected elements are correct even when filtering
+        ctx.slick.data.syncGridSelection(ctx.grid, true);
+
 
         // listen to group expansion...
         if (ctx.module.getConfigurationCheckbox('slickCheck', 'oneUncollapsed')) {
