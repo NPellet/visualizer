@@ -36,25 +36,37 @@ define(['jquery', 'modules/default/defaultcontroller', 'smart-array-filter'], fu
 
     Controller.prototype.variablesIn = ['input'];
 
-    //Controller.prototype.configurationStructure = function () {
-    //    return {
-    //        groups: {
-    //            group: {
-    //                options: {
-    //                    type: 'list'
-    //                },
-    //                fields: {
-    //                }
-    //            }
-    //        }
-    //    };
-    //};
-    //
-    //Controller.prototype.configAliases = {
-    //};
+    Controller.prototype.configurationStructure = function () {
+        return {
+            groups: {
+                group: {
+                    options: {
+                        type: 'list'
+                    },
+                    fields: {
+                        debounce: {
+                            type: 'float',
+                            title: 'Search debouncing (ms)',
+                            default: 100
+                        },
+                        initialValue: {
+                            type: 'text',
+                            title: 'Initial value',
+                            default: ''
+                        }
+                    }
+                }
+            }
+        };
+    };
+
+    Controller.prototype.configAliases = {
+        debounce: ['groups', 'group', 0, 'debounce', 0],
+        initialValue: ['groups', 'group', 0, 'initialValue', 0]
+    };
 
     Controller.prototype.onQuery = function (query) {
-        var array = this.module.view._data;
+        var array = JSON.parse(this.module.view._data);
         if (!array) return;
         var result = filter(array, {keywords: query});
         this.createDataFromEvent('onQuery', 'output', result);

@@ -1,32 +1,44 @@
 'use strict';
 
-define(['jquery', 'modules/default/defaultview'], function ($, Default) {
+define(['jquery', 'modules/default/defaultview', 'lodash'], function ($, Default, _) {
 
     function View() {
+        this._query = null;
+        this._data = null;
     }
 
     $.extend(true, View.prototype, Default, {
         inDom: function () {
-            if (!this._div) {
-                var that = this;
+            this.module.getDomContent().empty();
 
-                var div = this._div = $('<div>').css({
-                    width: '100%',
-                    fontSize: '20px'
-                }).appendTo(this.module.getDomContent());
+            var that = this;
 
-                var input = this._input = $('<input type="text" />').css({
-                    padding: '1px 0px',
-                    margin: '0',
-                    display: 'inline-block'
-                }).appendTo(div);
+            var div = this._div = $('<div>').css({
+                width: '100%',
+                fontSize: '20px'
+            }).appendTo(this.module.getDomContent());
 
-                input.on('keyup', function () {
-                    that.module.controller.onQuery(input.val());
-                });
+            var input = this._input = $('<input type="text" />').css({
+                padding: '1px 0px',
+                margin: '0',
+                display: 'inline-block'
+            }).appendTo(div);
 
-                div.append('&nbsp;<i class="fa fa-search"></i>');
+            if (!this._query) {
+                this._query = this.module.getConfiguration('initialValue')
             }
+            input.val(this._query);
+
+            var debounce = this.module.getConfiguration('debounce');
+
+            input.on('keyup', _.debounce(function () {
+                var value = input.val();
+                if (value === that._query) return;
+                that._query = value;
+                that.module.controller.onQuery(value);
+            }, debounce));
+
+            div.append('&nbsp;<i class="fa fa-search"></i>');
 
             this.resizeInput();
 
@@ -39,8 +51,8 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
         },
         update: {
             input: function (value) {
-                this._data = value.resurrect();
-                this.module.controller.onQuery('');
+                this._data = JSON.stringify(value);
+                this.module.controller.onQuery(this._query || '');
             }
         },
         resizeInput: function () {
