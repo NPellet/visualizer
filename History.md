@@ -1,3 +1,13 @@
+<a name="2.31.1"></a>
+## 2.31.1 (2015-11-11)
+
+
+### Bug Fixes
+
+* **smart_array_filter:** handle DataObjects ([80d0495](https://github.com/NPellet/visualizer/commit/80d0495))
+
+
+
 <a name="2.31.0"></a>
 # 2.31.0 (2015-11-11)
 
