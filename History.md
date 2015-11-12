@@ -1,3 +1,18 @@
+<a name="2.32.0"></a>
+# 2.32.0 (2015-11-12)
+
+
+### Bug Fixes
+
+* **slickgrid:** correct selected elements when filtering ([37c1394](https://github.com/NPellet/visualizer/commit/37c1394))
+
+### Features
+
+* **action button:** 3 types of content possible: image url, svg, or just content ([6a4c385](https://github.com/NPellet/visualizer/commit/6a4c385))
+* **slickgrid:** add selectRows action in ([e3f1bed](https://github.com/NPellet/visualizer/commit/e3f1bed))
+
+
+
 <a name="2.31.1"></a>
 ## 2.31.1 (2015-11-11)
 
