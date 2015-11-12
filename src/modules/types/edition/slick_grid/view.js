@@ -1339,6 +1339,21 @@ define([
                 }
             },
 
+            selectRows: function (rows) {
+                var srows;
+                if (rows === 'all') {
+                    srows = new Array(this.slick.data.getLength());
+                    for (var i = 0; i < srows.length; i++) {
+                        srows[i] = i;
+                    }
+                } else if (Array.isArray(rows)) {
+                    srows = rows;
+                } else {
+                    srows = [];
+                }
+                this.grid.setSelectedRows(srows);
+            },
+
             showColumn: function (column) {
                 this.showColumn(column);
             },

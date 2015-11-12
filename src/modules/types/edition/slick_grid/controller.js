@@ -259,8 +259,9 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
     Controller.prototype.variablesIn = ['list', 'script'];
 
     Controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {
-        hoverRow: 'Mimic hover row',
-        selectRow: 'Mimic select row',
+        hoverRow: 'Mimic row being hovered',
+        selectRow: 'Mimic row being clicked',
+        selectRows: 'Set selected rows',
         addRow: 'Add a new row',
         showColumn: 'Show a column',
         hideColumn: 'Hide a column',
