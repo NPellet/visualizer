@@ -136,11 +136,21 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             'default': 'Cancel',
                             displayTarget: ['y']
                         },
-                        imageUrl: {
+                        content: {
                             type: 'jscode',
-                            title: 'Image url',
+                            title: 'Content',
                             mode: 'html',
                             default: ''
+                        },
+                        contentType: {
+                            type: 'combo',
+                            title: 'Content Type',
+                            options: [
+                                {key: 'imageUrl', title: 'Image url'},
+                                {key: 'svg', title: 'svg'},
+                                {key: 'content', title: 'Content'}
+                            ],
+                            default: 'content'
                         }
                     }
                 }
@@ -161,7 +171,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
         okLabel: ['groups', 'group', 0, 'okLabel', 0],
         cancelLabel: ['groups', 'group', 0, 'cancelLabel', 0],
         startState: ['groups', 'group', 0, 'startState', 0],
-        imageUrl: ['groups', 'group', 0, 'imageUrl', 0]
+        content: ['groups', 'group', 0, 'content', 0],
+        contentType: ['groups', 'group', 0, 'contentType', 0]
     };
 
     return Controller;

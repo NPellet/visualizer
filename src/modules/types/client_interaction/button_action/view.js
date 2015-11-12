@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'forms/button', 'src/util/ui'], function (Default, Button, ui) {
+define(['modules/default/defaultview', 'forms/button', 'src/util/ui', 'src/util/typerenderer'], function (Default, Button, ui, Renderer) {
 
     function View() {
     }
@@ -10,7 +10,8 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/ui'], function 
             var that = this;
             var label;
             this.dom = $('<div></div>');
-            var imageUrl = this.module.getConfiguration('imageUrl');
+            var content = this.module.getConfiguration('content');
+            var contentType = this.module.getConfiguration('contentType');
             var buttonType = this.module.getConfiguration('toggle');
             if (buttonType === 'toggle' && this.module.getConfiguration('startState') === 'off') {
                 label = this.module.getConfiguration('offLabel');
@@ -29,16 +30,17 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/ui'], function 
                     if (!ok) {
                         return;
                     }
-                    if (!val && buttonType === 'toggle' && !imageUrl) {
+                    if (!val && buttonType === 'toggle' && !content) {
                         button.setTitle(that.module.getConfiguration('offLabel'));
                         that.setButtonColor(that.module.getConfiguration('offColor'));
-                    } else if (buttonType === 'toggle' && !imageUrl) {
+                    } else if (buttonType === 'toggle' && !content) {
                         button.setTitle(that.module.getConfiguration('onLabel'));
                         that.setButtonColor(that.module.getConfiguration('onColor'));
                     }
                     that.module.controller.onClick(val);
                 });
             }
+
             var button = new Button(
                 label,
                 onClick,
@@ -51,16 +53,31 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/ui'], function 
             );
 
             this.module.getDomContent().html(this.dom);
-            if (!imageUrl) {
+            if (!content) {
                 this.dom.html(button.render());
-            } else {
-                this.dom.html('<img src="' + imageUrl + '" width="100%" height="100%" style="cursor: pointer;"/>');
+            } else if (contentType === 'imageUrl') {
+                this.dom.html('<img src="' + content + '" width="100%" height="100%" style="cursor: pointer;"/>');
                 this.dom.on('click', onClick);
-
+            } else if (contentType === 'svg') {
+                var $div = $('<div>');
+                $div.append(content);
+                $div.css('cursor', 'pointer');
+                Renderer.render($div, {
+                    type: 'svg',
+                    value: content
+                });
+                $div.on('click', onClick);
+                this.dom.html($div);
+            } else {
+                var $div = $('<div>');
+                $div.append(content);
+                $div.css('cursor', 'pointer');
+                $div.on('click', onClick);
+                this.dom.html($div);
             }
             this.button = button;
 
-            if (buttonType === 'toggle' && !imageUrl) {
+            if (buttonType === 'toggle' && !content) {
                 that.setButtonColor(that.module.getConfiguration('offColor'));
             }
 
