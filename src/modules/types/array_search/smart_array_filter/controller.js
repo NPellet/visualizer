@@ -53,6 +53,11 @@ define(['jquery', 'modules/default/defaultcontroller', 'smart-array-filter'], fu
                             type: 'text',
                             title: 'Initial value',
                             default: ''
+                        },
+                        fontSize: {
+                            type: 'float',
+                            title: 'Font size',
+                            default: 20
                         }
                     }
                 }
@@ -62,7 +67,8 @@ define(['jquery', 'modules/default/defaultcontroller', 'smart-array-filter'], fu
 
     Controller.prototype.configAliases = {
         debounce: ['groups', 'group', 0, 'debounce', 0],
-        initialValue: ['groups', 'group', 0, 'initialValue', 0]
+        initialValue: ['groups', 'group', 0, 'initialValue', 0],
+        fontSize: ['groups', 'group', 0, 'fontSize', 0]
     };
 
     Controller.prototype.onQuery = function (query) {

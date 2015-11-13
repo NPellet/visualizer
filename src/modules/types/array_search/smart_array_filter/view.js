@@ -10,18 +10,19 @@ define(['jquery', 'modules/default/defaultview', 'lodash'], function ($, Default
     $.extend(true, View.prototype, Default, {
         inDom: function () {
             this.module.getDomContent().empty();
-
+            var fontSize = this._fontSize = this.module.getConfiguration('fontSize');
             var that = this;
 
             var div = this._div = $('<div>').css({
                 width: '100%',
-                fontSize: '20px'
+                fontSize: fontSize + 'px'
             }).appendTo(this.module.getDomContent());
 
             var input = this._input = $('<input type="text" />').css({
-                padding: '1px 0px',
+                padding: '0px 0px',
                 margin: '0',
-                display: 'inline-block'
+                display: 'inline-block',
+                fontSize: fontSize + 'px'
             }).appendTo(div);
 
             if (!this._query) {
@@ -57,7 +58,7 @@ define(['jquery', 'modules/default/defaultview', 'lodash'], function ($, Default
         },
         resizeInput: function () {
             var width = this._div.width();
-            this._input.css('width', width - 40);
+            this._input.css('width', width - this._fontSize * 2);
         },
         onResize: function () {
             this.resizeInput();
