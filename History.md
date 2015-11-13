@@ -1,3 +1,13 @@
+<a name="2.34.0"></a>
+# 2.34.0 (2015-11-13)
+
+
+### Features
+
+* **smart_array_filter:** choose font-size ([82650b8](https://github.com/NPellet/visualizer/commit/82650b8))
+
+
+
 <a name="2.33.0"></a>
 # 2.33.0 (2015-11-13)
 
