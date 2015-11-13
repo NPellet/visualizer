@@ -1,3 +1,13 @@
+<a name="2.33.0"></a>
+# 2.33.0 (2015-11-13)
+
+
+### Features
+
+* **slickgrid:** implement addRow action ([7d31a1d](https://github.com/NPellet/visualizer/commit/7d31a1d))
+
+
+
 <a name="2.32.0"></a>
 # 2.32.0 (2015-11-12)
 
