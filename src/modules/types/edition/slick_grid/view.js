@@ -1228,14 +1228,18 @@ define([
             if (!this.module.data) return;
             var data = this.module.data.get();
             for (var i = 0; i < data.length; i++) {
-                if (!data[i][this.idPropertyName]) {
-                    Object.defineProperty(data[i], this.idPropertyName, {
-                        value: 'id_' + ++uniqueID,
-                        writable: false,
-                        configurable: false,
-                        enumerable: false
-                    });
-                }
+                this.setNextUniqId(data[i]);
+            }
+        },
+
+        setNextUniqId: function (item, force) {
+            if (!item[this.idPropertyName] || force) {
+                Object.defineProperty(item, this.idPropertyName, {
+                    value: 'id_' + ++uniqueID,
+                    writable: false,
+                    configurable: false,
+                    enumerable: false
+                });
             }
         },
 
@@ -1292,6 +1296,13 @@ define([
         },
 
         onActionReceive: {
+            addRow: function (item) {
+                if (this.slick.data) {
+                    item = item.resurrect();
+                    this.setNextUniqId(item, true);
+                    this.slick.data.addItem(item);
+                }
+            },
             rerender: function () {
                 console.log('action receive rerender...');
                 if (this.grid) {
