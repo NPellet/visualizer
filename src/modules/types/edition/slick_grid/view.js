@@ -252,17 +252,7 @@ define([
         ctx.grid.onAddNewRow.subscribe(function (e, args) {
             var data = ctx.module.data.get();
             var newRow = data[data.length - 1];
-            ctx.module.controller.onRowNew(data.length - 1, newRow);
-            ctx.module.model.dataTriggerChange(ctx.module.data);
-            ctx._runFilter({
-                row: {
-                    item: newRow
-                },
-                column: args.column,
-                cell: null,
-                event: 'newRow'
-            });
-            ctx._resetDeleteRowListeners();
+            ctx._newRow(newRow, args);
         });
 
         ctx.grid.onRenderCompleted.subscribe(function () {
@@ -896,6 +886,20 @@ define([
             }
         },
 
+        _newRow: function (newRow, args) {
+            this.module.controller.onRowNew(this.slick.data.getLength() - 1, newRow);
+            this.module.model.dataTriggerChange(this.module.data);
+            this._runFilter({
+                row: {
+                    item: newRow
+                },
+                column: args ? args.column : null,
+                cell: null,
+                event: 'newRow'
+            });
+            this._resetDeleteRowListeners();
+        },
+
         _setBaseCellCssStyle: function () {
             var cols = this.grid.getColumns();
             this.baseCellCssStyle = {};
@@ -1301,6 +1305,7 @@ define([
                     item = item.resurrect();
                     this.setNextUniqId(item, true);
                     this.slick.data.addItem(item);
+                    this._newRow(item);
                 }
             },
             rerender: function () {
