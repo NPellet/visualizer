@@ -857,6 +857,7 @@ define([
                 searchFilter = function (item) {
                     for (var columnId in columnFilters) {
                         if (columnId !== undefined && columnFilters[columnId] !== '') {
+                            try{
                             var idx = that.slick.data.getIdxById(item[that.idPropertyName]);
                             var c = that.grid.getColumns()[that.grid.getColumnIndex(columnId)];
                             var jpath = _.clone(DataObject.resurrect(c.jpath));
@@ -864,6 +865,7 @@ define([
                             if (!that.module.data.getChildSync(jpath) || !columnFilterFunctions[columnId](that.module.data.getChildSync(jpath).get())) {
                                 return false;
                             }
+                            } catch(e) { return true;}
                         }
                     }
                     return true;
