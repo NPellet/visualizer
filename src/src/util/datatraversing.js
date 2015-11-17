@@ -258,7 +258,15 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
         },
 
 
-        getStructureFromElement: function (element) {
+        getStructureFromElement: function (element, options, recursion) {
+
+            options = options || {};
+            recursion = recursion || 0;
+
+            if (options.recursionLimit && recursion >= options.recursionLimit) {
+                return;
+            }
+
 
             var structure = {};
 
@@ -281,7 +289,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
                 var length = Math.min(5, element.length);
 
                 for (var i = 0; i < length; i++) {
-                    structure.elements[i] = this.getStructureFromElement(element.get(i, false));
+                    structure.elements[i] = this.getStructureFromElement(element.get(i, false), options, recursion + 1);
                 }
 
             } else if (type == 'object') {
@@ -291,7 +299,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
 
                 for (var i in element) {
                     if (i[0] !== '_')
-                        structure.elements[i] = this.getStructureFromElement(element.get(i, false));
+                        structure.elements[i] = this.getStructureFromElement(element.get(i, false), options, recursion + 1);
                 }
 
             } else if (type && Structures[type] && (element.value || element.url)) {
@@ -328,7 +336,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
 
             } else {
 
-                var structure = this.getStructureFromElement(element, structure);
+                var structure = this.getStructureFromElement(element, {recursionLimit: 7});
                 this.getJPathsFromStructure(structure, null, jpaths);
 
             }
