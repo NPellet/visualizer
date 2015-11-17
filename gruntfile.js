@@ -333,7 +333,11 @@ module.exports = function (grunt) {
             'build/lib/forms/images/money_dollar.png': true,
             'build/lib/forms/images/basket_full.png': true,
             'build/lib/forms/images/emotion_bad_smelly.png': true,
-            'build/lib/forms/images/basket_error.png': true
+            'build/lib/forms/images/basket_error.png': true,
+            'build/lib/forms/images/application_form_add.png': true,
+            'build/lib/forms/images/table_select_column.png': true,
+            'build/lib/forms/images/buttons.png': true,
+            'build/lib/forms/images/lock.png': true
         };
         var allimages = [];
 
