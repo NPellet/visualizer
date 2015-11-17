@@ -154,9 +154,11 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
         return String(value);
     };
 
-    var StringProperties = ['charAt', 'charCodeAt', 'concat', 'fromCharCode', 'indexOf', 'lastIndexOf', 'localCompare',
-        'match', 'replace', 'search', 'slice', 'split', 'substr', 'substring', 'toLocaleLowerCase', 'toLocaleUpperCase',
-        'toLowerCase', 'toUpperCase', 'trim'];
+    var StringProperties = [
+        'charAt', 'charCodeAt', 'codePointAt', 'concat', 'includes', 'endsWith', 'indexOf', 'lastIndexOf',
+        'localeCompare', 'match', 'normalize', 'repeat', 'replace', 'search', 'slice', 'split', 'startsWith', 'substr',
+        'substring', 'toLocaleLowerCase', 'toLocaleUpperCase', 'toLowerCase', 'toUpperCase', 'trim'
+    ];
 
     for (var i = 0, l = StringProperties.length; i < l; i++) {
         (function (j) {
