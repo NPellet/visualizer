@@ -1,3 +1,13 @@
+<a name="2.34.2"></a>
+## 2.34.2 (2015-11-20)
+
+
+### Bug Fixes
+
+* **ocl_editor:** dialog box must be over other elements ([bdcd730](https://github.com/NPellet/visualizer/commit/bdcd730))
+
+
+
 <a name="2.34.1"></a>
 ## 2.34.1 (2015-11-16)
 
