@@ -261,7 +261,7 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                     API.highlight(shape.getData(), 0);
                 });
 
-                graph.shapeHandlers.onAfterResized.push(function (shape) {
+                graph.on('shapeResized', function (shape) {
                     that.module.model.dataTriggerChange(shape.getData());
                 });
 
