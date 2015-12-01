@@ -336,8 +336,7 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
         doZone: function (varname, zone, value, color) {
             if (value && !zone[2]) {
 
-                var rect = this.graph.makeShape({
-                    type: 'rect',
+                var rect = this.graph.newShape('rect', {
                     pos: {
                         x: zone[0]
                     },
@@ -555,7 +554,7 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
 
                     var valFinal = [];
 
-                    switch (aData.type) {
+                    switch (String(aData.type)) {
                         case 'zone':
                             if (aData.yMin && aData.yMax) {
                                 for (var j = 0, l = aData.yMax.length; j < l; j++) {
@@ -672,7 +671,7 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                 for (; i < l; i++) {
                     (function (i) {
                         var annotation = annotations[i];
-                        var shape = that.graph.newShape(annotation.type, annotation);
+                        var shape = that.graph.newShape(String(annotation.type), annotation);
                         that.annotations[varName][i] = shape;
 
                         shape.setSerie(that.graph.getSerie(0));
