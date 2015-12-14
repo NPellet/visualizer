@@ -1,85 +1,459 @@
 {
-	"grid": {
-		"layers": {
-			"Default layer": {
-				"name": "Default layer"
-			}
-		},
-		"xWidth": 10,
-		"yHeight": 10
-	},
-	"version": "2.4.0b2",
-	"modules": [
-		{
-			"url": "modules/types/display/panzoom/",
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{}
-					],
-					"img": [
-						[
-							{
-								"variable": "baby_tiger",
-								"opacity": "0.5",
-								"order": "2"
-							}
-						]
-					]
-				}
-			},
-			"layers": {
-				"Default layer": {
-					"position": {
-						"left": 37,
-						"top": 8
-					},
-					"size": {
-						"width": 53,
-						"height": 31
-					},
-					"zIndex": 0,
-					"display": true,
-					"title": "Untitled",
-					"bgColor": [
-						255,
-						255,
-						255,
-						0
-					],
-					"wrapper": true,
-					"created": true,
-					"name": "Default layer"
-				}
-			},
-			"id": 1,
-			"vars_in": [
-				{
-					"rel": "picture",
-					"name": "baby_tiger"
-				},
-				{
-					"rel": "picture",
-					"name": "tiger"
-				}
-			],
-			"actions_in": [],
-			"title": "Untitled",
-			"vars_out": {},
-			"actions_out": {}
-		}
-	],
-	"variables": [
-		{
-			"varname": "image1",
-			"jpath": [
-				"image1"
-			]
-		}
-	],
-	"pouchvariables": [],
-	"configuration": {
-		"title": "No title"
-	}
+  "version": "2.34.3-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                [
+                  "yes"
+                ]
+              ],
+              "script": [
+                "// we create a canvas element\nvar canvas = document.createElement('canvas');\nvar height=20;\nvar width=20;\n\ncanvas.height=height;\ncanvas.width=width;\n// getting the context will allow to manipulate the image\nvar context = canvas.getContext(\"2d\");\n\n// We create a new imageData.\nvar imageData=context.createImageData(width, height);\n// The property data will contain an array of int8\nvar data=imageData.data;\nfor (var i=0; i<height*width; i++) {\n     data[i*4+0]=Math.random()*256 | 0; // Red\n     data[i*4+1]=Math.random()*256 | 0; // Green\n     data[i*4+2]=Math.random()*256 | 0; // Blue\n     data[i*4+3]=255; // alpha (transparency)\n}\n// we put this random image in the context\ncontext.putImageData(imageData, 0, 0); // at coords 0,0\nvar nbHighlight = 4;\n\n// Highlight matrix\nvar highlightMatrix = new Array(nbHighlight);\nfor(var i=0; i<nbHighlight; i++) {\n    highlightMatrix[i] = new Array(nbHighlight);\n    for(var j=0; j<nbHighlight; j++) {\n        highlightMatrix[i][j] = String.fromCharCode(97 + (i*nbHighlight + j)%26); \n    }\n}\n\nvar highlight = new Array(width*height);\nfor(var i=0; i<highlight.length; i++) {\n    var x = Math.floor((i%width)/width*nbHighlight);\n    var y = Math.floor(i/width/height*nbHighlight);\n    highlight[i] = highlightMatrix[x][y];\n}\n\nvar table = _(highlightMatrix).flatten().unique().value();\nvar tableH = table.map(function(el) {\n    return {\n        a: el,\n        _highlight: [el]\n    } \n});\n\nvar value=canvas.toDataURL('image/png');\nvar png =  { \n    type:'png',\n    value:value,\n    _highlightArray: highlight,\n    _highlight: table\n}\n\n\nset('png', png);\nset('table', tableH);\n\n\n"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {
+                "lib": "lodash",
+                "alias": "_"
+              }
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 35,
+            "top": 60
+          },
+          "size": {
+            "width": 63,
+            "height": 45
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Random creation of a 100 x 100 image",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 1,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "Random creation of a 100 x 100 image",
+      "vars_out": [
+        {
+          "event": "onScriptEnded",
+          "rel": "outputValue",
+          "jpath": [
+            "png"
+          ],
+          "name": "png"
+        },
+        {
+          "event": "onScriptEnded",
+          "rel": "outputValue",
+          "jpath": [
+            "table"
+          ],
+          "name": "table"
+        }
+      ],
+      "actions_out": []
+    },
+    {
+      "url": "modules/types/display/panzoom/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "focusOnHighlight": [
+                [
+                  "yes"
+                ]
+              ]
+            }
+          ],
+          "img": [
+            [
+              {
+                "variable": "png",
+                "opacity": "1",
+                "order": "",
+                "rendering": "crisp-edges",
+                "scaling": "max",
+                "rerender": [
+                  "yes"
+                ]
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 57,
+            "height": 59
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 2,
+      "vars_in": [
+        {
+          "rel": "picture",
+          "name": "png"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "",
+      "vars_out": [
+        {
+          "event": "hover",
+          "rel": "pixel",
+          "jpath": [],
+          "name": "hoverPixel"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ]
+    },
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll"
+                ]
+              ],
+              "autoColumns": [
+                []
+              ],
+              "toolbar": [
+                []
+              ],
+              "colorjpath": [
+                []
+              ],
+              "slick.defaultColumnWidth": [
+                null
+              ],
+              "slick.rowHeight": [
+                null
+              ],
+              "slick.selectionModel": [
+                "row"
+              ],
+              "filterRow": [
+                null
+              ],
+              "justInTimeFilter": [
+                []
+              ]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "jpath": [],
+                "editor": "none",
+                "formatter": "typerenderer"
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [
+            [
+              {}
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 58,
+            "top": 0
+          },
+          "size": {
+            "width": 9,
+            "height": 59
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "table"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "",
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ]
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "view"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                []
+              ],
+              "displayValue": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 1,
+            "top": 60
+          },
+          "size": {
+            "width": 33,
+            "height": 45
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 4,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "hoverPixel"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "title": "",
+      "actions_out": []
+    },
+    {
+      "url": "modules/types/display/panzoom/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "focusOnHighlight": [
+                [
+                  "yes"
+                ]
+              ]
+            }
+          ],
+          "img": [
+            [
+              {
+                "variable": "png",
+                "opacity": "1",
+                "order": "",
+                "rendering": "crisp-edges",
+                "scaling": "max",
+                "rerender": [
+                  "yes"
+                ]
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 68,
+            "top": 0
+          },
+          "size": {
+            "width": 57,
+            "height": 59
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 5,
+      "vars_in": [
+        {
+          "rel": "picture",
+          "name": "png"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "",
+      "vars_out": [
+        {
+          "event": "hover",
+          "rel": "pixel",
+          "jpath": [],
+          "name": "hoverPixel"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "varname": "twitter",
+      "jpath": [
+        "twitter"
+      ]
+    }
+  ],
+  "pouchvariables": [],
+  "configuration": {
+    "title": "Creating PNG image from javascript"
+  },
+  "aliases": []
 }
