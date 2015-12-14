@@ -845,6 +845,8 @@ define([
 
             list: function (moduleValue, varname) {
                 var that = this;
+
+                this.module.controller.lastClickedItem = undefined;
                 this.module.data = moduleValue;
                 this._updateHighlights();
 
