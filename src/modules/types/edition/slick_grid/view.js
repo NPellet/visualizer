@@ -1178,7 +1178,9 @@ define([
 
         _getRowsFromViewport: function () {
             if (!this.lastViewport) return [];
-            var rows = new Array(this.lastViewport.bottom - this.lastViewport.top + 1);
+            var rowCount = this.lastViewport.bottom - this.lastViewport.top + 1;
+            if(Number.isNaN(rowCount)) return [];
+            var rows = new Array(rowCount);
             for (var i = 0; i < rows.length; i++) {
                 rows[i] = this.lastViewport.top + i;
             }
