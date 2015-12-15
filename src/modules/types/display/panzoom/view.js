@@ -249,6 +249,9 @@ define([
                             image.f = that.height / image.height;
                             image.transform = getCssTransform([image.f, 0, 0, image.f, 0, 0]);
                         }
+                    } else if (scaling === 'no') {
+                        image.f = 1;
+                        image.transform = getCssTransform([image.f, 0, 0, image.f, 0, 0]);
                     }
                     if (scaling === 'asHighlight') {
                         if (that.himg.f) {
