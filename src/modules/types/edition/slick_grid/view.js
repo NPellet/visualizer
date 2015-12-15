@@ -193,14 +193,14 @@ define([
             ctx.grid.setSelectionModel(new Slick.CellSelectionModel());
         }
 
-        $(ctx.grid.getHeaderRow()).delegate(':input', 'change keyup', function (e) {
+        $(ctx.grid.getHeaderRow()).delegate(':input', 'change keyup', _.debounce(function (e) {
             var columnId = $(this).data('columnId');
             if (columnId != null) {
                 columnFilters[columnId] = $.trim($(this).val());
                 columnFilterFunctions[columnId] = getColumnFilterFunction(columnFilters[columnId]);
                 ctx.slick.data.refresh();
             }
-        });
+        }, 250));
 
         ctx.grid.onHeaderRowCellRendered.subscribe(function (e, args) {
             $(args.node).empty();
