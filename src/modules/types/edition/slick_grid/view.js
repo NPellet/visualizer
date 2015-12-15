@@ -480,6 +480,7 @@ define([
             ctx._updateHighlights();
             ctx.grid.invalidateAllRows();
             ctx.grid.render();
+            ctx.module.model.dataTriggerChange(this.module.data);
         });
 
         ctx.slick.data.beginUpdate();
@@ -1179,7 +1180,7 @@ define([
         _getRowsFromViewport: function () {
             if (!this.lastViewport) return [];
             var rowCount = this.lastViewport.bottom - this.lastViewport.top + 1;
-            if(Number.isNaN(rowCount)) return [];
+            if (Number.isNaN(rowCount)) return [];
             var rows = new Array(rowCount);
             for (var i = 0; i < rows.length; i++) {
                 rows[i] = this.lastViewport.top + i;
