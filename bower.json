@@ -61,7 +61,7 @@
     "moment": "2.10.6",
     "notifyjs": "0.3.2",
     "onde": "cheminfo/onde#8ec2565c856edce7ce3c97767c608db91977c63e",
-    "openchemlib": "3.1.1",
+    "openchemlib": "3.2.2",
     "papa-parse": "4.1.1",
     "pouchdb": "3.3.1",
     "requirejs": "2.1.18",
