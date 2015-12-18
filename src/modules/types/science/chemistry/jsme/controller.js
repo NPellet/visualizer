@@ -29,6 +29,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
             label: 'JME file format',
             type: ['jme', 'string']
         },
+        svg: {
+            label: 'SVG containing the picture',
+            type: ['svg', 'string']
+        },
         molV3: {
             label: 'Molfile V3 2D',
             type: ['mol2d', 'molfile2d', 'string']
@@ -44,7 +48,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype.events = {
         onStructureChange: {
             label: 'Molecular structure has changed',
-            refVariable: ['mol', 'smiles', 'jme', 'molV3']
+            refVariable: ['mol', 'smiles', 'jme', 'molV3', 'svg']
         },
         onAtomClicked: {
             label: 'An atom was clicked',
@@ -161,7 +165,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         };
     };
 
-    Controller.prototype.onChange = function (mol, molV3, smiles, jme, action) {
+    Controller.prototype.onChange = function (mol, molV3, smiles, jme, svg, action) {
 
         if (action != null && action != 'readRXNFile' && action != 'readMolFile' && action != 'reset' && this.module.view._currentValue && this.module.getConfigurationCheckbox('outputResult', 'yes')) {
 
@@ -176,6 +180,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
         // Always create smiles because smiles is not a possible input variable
         this.createDataFromEvent('onStructureChange', 'smiles', smiles);
+        this.createDataFromEvent('onStructureChange', 'svg', {
+            type: 'svg',
+            value: svg
+        });
         this.createDataFromEvent('onStructureChange', 'mol', {
             type: 'mol2d',
             value: mol

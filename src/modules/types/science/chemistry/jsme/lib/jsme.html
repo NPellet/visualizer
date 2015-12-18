@@ -68,7 +68,8 @@
         var molV3 = window.jsmeApplet.molFile(true);
         var jme = window.jsmeApplet.jmeFile();
         var smiles = window.jsmeApplet.smiles();
-        window.doPostMessage("onChange", {mol: mol, molV3: molV3, smiles: smiles, jme: jme, action: result.action});
+        var svg = window.jsmeApplet.getMolecularAreaGraphicsString();
+        window.doPostMessage("onChange", {mol: mol, molV3: molV3, smiles: smiles, jme: jme, svg: svg, action: result.action});
     };
 
     function setDefaultAction() {
