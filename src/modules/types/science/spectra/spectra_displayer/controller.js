@@ -374,10 +374,10 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
                             title: 'Show legend',
                             options: [
                                 {key: 'none', title: 'No legend'},
-                                {key: 'topleft', title: 'Top-left'},
-                                {key: 'topright', title: 'Top-right'},
-                                {key: 'bottomleft', title: 'Bottom-left'},
-                                {key: 'bottomright', title: 'Bottom-right'}
+                                {key: 'left', title: 'Left'},
+                                {key: 'top', title: 'Top'},
+                                {key: 'bottom', title: 'Bottom'},
+                                {key: 'right', title: 'Right'}
                             ]
                         },
 

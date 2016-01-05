@@ -350,6 +350,27 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                     });
                 }
             }, 'spectra_displayer');
+        },
+        '2.34.3-0', function (view) {
+            eachModule(view, function (module) {
+                var legend = module.getChildSync(['configuration', 'groups', 'group', 0, 'legend']);
+                if (legend) {
+                    switch (String(legend[0])) {
+                        case 'topright':
+                            legend[0] = 'top';
+                            break;
+                        case 'bottomright':
+                            legend[0] = 'right';
+                            break;
+                        case 'bottomleft':
+                            legend[0] = 'bottom';
+                            break;
+                        case 'topleft':
+                            legend[0] = 'left';
+                            break;
+                    }
+                }
+            }, 'spectra_displayer');
         }
 //  Add new migration functions here
 //      'x.y.z', function (view) {

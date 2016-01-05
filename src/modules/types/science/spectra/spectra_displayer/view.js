@@ -195,49 +195,7 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                             frameColor: 'rgba( 100, 100, 100, 0.5 )',
                             movable: true
                         });
-                        var posX, posY, x, y;
-                        switch (legend) {
-                            case 'topright':
-                                posX = 'right';
-                                posY = 'top';
-                                x = 'max';
-                                y = 'max';
-                                break;
-                            case 'bottomright':
-                                posX = 'right';
-                                posY = 'bottom';
-                                x = 'max';
-                                y = 'min';
-                                break;
-                            case 'topleft':
-                                posX = 'left';
-                                posY = 'top';
-                                x = 'min';
-                                y = 'max';
-                                break;
-                            case 'bottomleft':
-                                posX = 'left';
-                                posY = 'bottom';
-                                x = 'min';
-                                y = 'min';
-                                break;
-                        }
-                        if (cfgCheckbox('flipAxis', 'flipX')) {
-                            x = (x === 'min' ? 'max' : 'min');
-                        }
-                        if (cfgCheckbox('flipAxis', 'flipY')) {
-                            y = (y === 'min' ? 'max' : 'min');
-                        }
-                        theLegend.setPosition(
-                            {
-                                dx: '0px',
-                                dy: '0px',
-                                x: x,
-                                y: y
-                            },
-                            posX,
-                            posY
-                        );
+                        theLegend.setAutoPosition(legend);
                     }
 
                     resolve(graph);
