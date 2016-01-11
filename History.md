@@ -1,3 +1,18 @@
+<a name="2.35.0"></a>
+# 2.35.0 (2016-01-11)
+
+
+### Bug Fixes
+
+* **panzoom:** set transform to identity when scaling mode is 'no' ([f23cea2](https://github.com/NPellet/visualizer/commit/f23cea2))
+* **slickgrid:** sorting should trigger change ([423f954](https://github.com/NPellet/visualizer/commit/423f954))
+
+### Features
+
+* **spectra_displayer:** legend is now displayed outside of the graph ([8aae5d1](https://github.com/NPellet/visualizer/commit/8aae5d1))
+
+
+
 <a name="2.34.2"></a>
 ## 2.34.2 (2015-11-20)
 
