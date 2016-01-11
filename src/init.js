@@ -149,7 +149,7 @@ require.config({
         },
         'src/shape.1dnmr': {
             'graph': 'jsgraph'
-        },//'components/jsNMR/src/shape.1dnmr'
+        }, //'components/jsNMR/src/shape.1dnmr'
         'lib/gcms/gcms': {
             'graph': 'jsgraph'
         }
