@@ -227,7 +227,8 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'superagent', 'uri/
                                     options: [
                                         {key: 'url', title: 'URL'},
                                         {key: 'query', title: 'Query string'},
-                                        {key: 'data', title: 'Post data'}
+                                        {key: 'data', title: 'Post data'},
+                                        {key: 'header', title: 'Header'}
                                     ],
                                     'default': 'data'
                                 },
@@ -333,6 +334,11 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'superagent', 'uri/
                 break;
             case 'data':
                 this.dataValues[option.name] = str ? value : ((this.dataType === 'form') ? JSON.stringify(value) : value);
+                break;
+            case 'header':
+                if (str) {
+                    this.headers[option.name] = value;
+                }
                 break;
         }
     };
