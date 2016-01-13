@@ -304,7 +304,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'superagent', 'uri/
         this.dataType = this.module.getConfiguration('dataType');
 
         if (this.module.getConfiguration('resultfilter')) {
-            eval('this.module.resultfilter = function(data) { try { \n ' + this.module.getConfiguration('resultfilter') + '\n } catch(_) { console.log(_); } }');
+            eval('this.module.resultfilter = function(data) { \n ' + this.module.getConfiguration('resultfilter') + '\n }');
         } else {
             delete this.module.resultfilter;
         }
@@ -400,12 +400,19 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'superagent', 'uri/
                 if (body == null) {
                     body = response.text;
                 }
+                body = Promise.resolve(body);
                 if (that.module.resultfilter) {
-                    body = that.module.resultfilter(body);
+                    body = body.then(that.module.resultfilter);
                 }
-                that.onSearchDone(body);
+
+                body.then(function(data) {
+                    that.onSearchDone(data);
+                    that.module.view.unlock();
+                }).catch(function(e) {
+                    console.error(e, e.stack);
+                    that.module.view.unlock();
+                });
             }
-            that.module.view.unlock();
         });
 
     };
