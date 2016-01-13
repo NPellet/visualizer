@@ -1,3 +1,13 @@
+<a name="2.35.1"></a>
+## 2.35.1 (2016-01-13)
+
+
+### Bug Fixes
+
+* **webservice_search:** Can set header from input variable ([c44f42c](https://github.com/NPellet/visualizer/commit/c44f42c))
+
+
+
 <a name="2.35.0"></a>
 # 2.35.0 (2016-01-11)
 
