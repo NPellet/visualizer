@@ -139,7 +139,10 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
 
                     var graph = new Graph(that.dom.get(0), options);
 
-                    var xOptions = {};
+                    var xOptions = {
+                        nbTicksPrimary: cfg('xnbTicksPrimary', 5)
+                    };
+
                     if (cfg('xaxismodification') == 'timestamptotime') {
                         xOptions.type = 'time';
                     } else if (cfg('xaxismodification') == 'valtotime') {
@@ -170,7 +173,11 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                         });
                     }
 
-                    var yAxis = graph.getYAxis();
+                    var yOptions = {
+                        nbTicksPrimary: cfg('ynbTicksPrimary', 5)
+                    };
+
+                    var yAxis = graph.getYAxis(null, yOptions);
                     yAxis
                         .flip(cfg('flipY', false))
                         .setPrimaryGrid(cfg('horGridMain', false))

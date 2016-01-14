@@ -189,6 +189,11 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
             type: 'text',
             title: 'Force max',
             default: ''
+        },
+        nbTicksPrimary: {
+            type: 'float',
+            title: 'Primary ticks',
+            default: 5
         }
     };
 
@@ -525,6 +530,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
         xRightSpacing: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'afterSpacing', 0],
         minX: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'min', 0],
         maxX: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'max', 0],
+        xnbTicksPrimary: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'nbTicksPrimary', 0],
         xaxismodification: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'axismodification', 0],
         // Y Axis
         displayYAxis: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'checkboxes', 0],
@@ -536,6 +542,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
         yTopSpacing: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'afterSpacing', 0],
         minY: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'min', 0],
         maxY: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'max', 0],
+        ynbTicksPrimary: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'nbTicksPrimary', 0],
         FitYToAxisOnFromTo: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'fitToAxisOnFromTo', 0],
         // Variables
         plotinfos: ['sections', 'variables', 0, 'groups', 'variables', 0]
