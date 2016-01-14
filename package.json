@@ -13,6 +13,7 @@
     "eslint-fix": "eslint src --fix",
     "install-components": "bower install --quiet --config.interactive=false",
     "postinstall": "npm run install-components",
+    "prerelease": "grunt bump:prerelease",
     "test": "npm run eslint",
     "release": "npm run release:patch",
     "release:major": "npm run test && grunt bump:major --release",

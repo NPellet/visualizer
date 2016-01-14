@@ -351,8 +351,9 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                 }
             }, 'spectra_displayer');
         },
-        '2.34.3-0', function (view) {
+        '2.35.2-1', function (view) {
             eachModule(view, function (module) {
+                // legend was changed in an earlier version but the prerelease version was not bumped at that time
                 var legend = module.getChildSync(['configuration', 'groups', 'group', 0, 'legend']);
                 if (legend) {
                     switch (String(legend[0])) {
@@ -370,9 +371,84 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                             break;
                     }
                 }
+
+                var oldConfig = module.getChildSync(['configuration']);
+                function getChild(name) {
+                    return oldConfig.getChildSync(['groups', 'group', 0, name]);
+                }
+
+                var xCheckBoxes = [];
+                var yCheckBoxes = [];
+
+                var display = getChild('displayAxis');
+                if (Array.isArray(display) && Array.isArray(display[0])) {
+                    if (display[0].indexOf('x') > -1) xCheckBoxes.push('display');
+                    if (display[0].indexOf('y') > -1) yCheckBoxes.push('display');
+                }
+
+                var flip = getChild('flip');
+                if (Array.isArray(flip) && Array.isArray(flip[0])) {
+                    if (flip[0].indexOf('flipX') > -1) xCheckBoxes.push('flip');
+                    if (flip[0].indexOf('flipY') > -1) yCheckBoxes.push('flip');
+                }
+
+                var grid = getChild('grids');
+                if (Array.isArray(grid) && Array.isArray(grid[0])) {
+                    if (grid[0].indexOf('vmain') > -1) xCheckBoxes.push('main');
+                    if (grid[0].indexOf('vsec') > -1) xCheckBoxes.push('sec');
+                    if (grid[0].indexOf('hmain') > -1) yCheckBoxes.push('main');
+                    if (grid[0].indexOf('hsec') > -1) yCheckBoxes.push('sec');
+                }
+
+                module.configuration = {
+                    sections: {
+                        axis: [{
+                            groups: {
+                                xAxis: [{
+                                    afterSpacing: getChild('xRightSpacing'),
+                                    axismodification: getChild('xaxismodification'),
+                                    beforeSpacing: getChild('xLeftSpacing'),
+                                    checkboxes: [xCheckBoxes],
+                                    label: getChild('xLabel'),
+                                    max: getChild('maxX'),
+                                    min: getChild('minX')
+                                }],
+                                yAxis: [{
+                                    afterSpacing: getChild('yTopSpacing'),
+                                    beforeSpacing: getChild('yBottomSpacing'),
+                                    checkboxes: [yCheckBoxes],
+                                    fitToAxisOnFromTo: getChild('FitYToAxisOnFromTo'),
+                                    label: getChild('yLabel'),
+                                    max: getChild('maxY'),
+                                    min: getChild('minY')
+                                }]
+                            }
+                        }],
+                        graph: [{
+                            groups: {
+                                graph: [{
+                                    fullOut: getChild('fullOut'),
+                                    legend: getChild('legend'),
+                                    mouseTracking: getChild('mouseTracking'),
+                                    selectScatter: getChild('selectScatter'),
+                                    url: getChild('graphurl'),
+                                    wheelAction: getChild('wheelAction'),
+                                    wheelbaseline: getChild('wheelbaseline'),
+                                    zoom: getChild('zoom')
+                                }]
+                            }
+                        }],
+                        variables: [{
+                            groups: {
+                                variables: oldConfig.getChildSync(['groups', 'plotinfos'])
+                            }
+                        }]
+                    }
+                };
             }, 'spectra_displayer');
         }
 //  Add new migration functions here
+//  Do not forget to `npm run prerelease` before creating your migration script
 //      'x.y.z', function (view) {
 //          // Do something to the view
 //      }

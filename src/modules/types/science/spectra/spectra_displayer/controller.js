@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
+define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Default, _, $) {
 
     function Controller() {
     }
@@ -153,6 +153,45 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
         unselectSerie: 'Unselect serie'
     };
 
+    var axisFields = {
+        checkboxes: {
+            type: 'checkbox',
+            title: 'Options',
+            options: {
+                display: 'Display axis',
+                flip: 'Flip axis',
+                main: 'Show main grid',
+                sec: 'Show secondary grid'
+            },
+            default: ['display']
+        },
+        label: {
+            type: 'text',
+            title: 'Axis label',
+            default: ''
+        },
+        beforeSpacing: {
+            type: 'text',
+            title: 'Spacing before',
+            default: '0'
+        },
+        afterSpacing: {
+            type: 'text',
+            title: 'Spacing after',
+            default: 0
+        },
+        min: {
+            type: 'text',
+            title: 'Force min',
+            default: ''
+        },
+        max: {
+            type: 'text',
+            title: 'Force max',
+            default: ''
+        }
+    };
+
     Controller.prototype.configurationStructure = function () {
         var vars = [];
         var currentCfg = this.module.definition.vars_in;
@@ -181,338 +220,258 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
         }
 
         return {
-            groups: {
-                group: {
+            sections: {
+                graph: {
                     options: {
-                        type: 'list'
+                        title: 'Graph config',
+                        multiple: false
                     },
-                    fields: {
-
-                        graphurl: {
-                            type: 'text',
-                            title: 'Graph URL',
-                            'default': ''
-                        },
-
-                        flip: {
-                            type: 'checkbox',
-                            title: 'Axis flipping',
-                            options: {flipX: 'Flip X', flipY: 'Flip Y'},
-                            caseDisplay: {
-                                flipX: 1,
-                                flipY: 2
-                            },
-                            'default': []
-                        },
-
-                        displayAxis: {
-                            type: 'checkbox',
-                            title: 'Display axis',
+                    groups: {
+                        graph: {
                             options: {
-                                x: 'X',
-                                y: 'Y'
+                                type: 'list',
+                                multiple: false
                             },
-                            displayCase: [1],
-                            'default': ['y']
-                        },
-
-                        grids: {
-                            type: 'checkbox',
-                            title: 'Grids',
-                            displayCase: [2],
-                            options: {
-                                hmain: 'Horizontal Main',
-                                hsec: 'Honrizontal Seconday',
-                                vmain: 'Vertical Main',
-                                vsec: 'Vertical Secondary'
-                            },
-                            'default': []
-                        },
-
-                        xLabel: {
-                            type: 'text',
-                            title: 'X axis label',
-                            'default': ''
-                        },
-
-                        yTopSpacing: {
-                            type: 'text',
-                            title: 'Spacing above the data',
-                            'default': '0'
-                        },
-
-                        yBottomSpacing: {
-                            type: 'text',
-                            title: 'Spacing below the data',
-                            'default': '0'
-                        },
-
-                        xLeftSpacing: {
-                            type: 'text',
-                            title: 'Spacing left',
-                            'default': '0'
-                        },
-
-                        xRightSpacing: {
-                            type: 'text',
-                            title: 'Spacing right',
-                            'default': '0'
-                        },
-
-                        yLabel: {
-                            type: 'text',
-                            title: 'Y axis label',
-                            'default': ''
-                        },
-
-                        minX: {
-                            type: 'text',
-                            title: 'Min X',
-                            'default': ''
-                        },
-
-                        maxX: {
-                            type: 'text',
-                            title: 'Max X',
-                            'default': ''
-                        },
-
-                        minY: {
-                            type: 'text',
-                            title: 'Min Y',
-                            'default': ''
-                        },
-
-                        maxY: {
-                            type: 'text',
-                            title: 'Max Y',
-                            'default': ''
-                        },
-
-                        zoom: {
-                            type: 'combo',
-                            multiple: true,
-                            title: 'Zoom',
-                            options: [
-                                {key: 'x', title: 'X only'},
-                                {key: 'y', title: 'Y only'},
-                                {key: 'xy', title: 'XY'},
-                                {key: 'none', title: 'None'}
-                            ],
-                            'default': 'none'
-                        },
-
-                        shiftxtozero: {
-                            type: 'checkbox',
-                            title: 'Shift X to Min',
-                            options: {shift: ''},
-                            'default': []
-                        },
-
-                        xaxismodification: {
-                            type: 'combo',
-                            title: 'X axis modification',
-                            options: [
-                                {
-                                    key: 'none',
-                                    title: 'None'
+                            fields: {
+                                url: {
+                                    type: 'text',
+                                    title: 'Graph URL',
+                                    default: ''
                                 },
-                                {
-                                    key: 'timestamptotime',
-                                    title: 'Timestamp to time'
+                                zoom: {
+                                    type: 'combo',
+                                    title: 'Zoom',
+                                    options: [
+                                        {key: 'none', title: 'None'},
+                                        {key: 'x', title: 'X only'},
+                                        {key: 'y', title: 'Y only'},
+                                        {key: 'xy', title: 'XY'}
+                                    ],
+                                    default: 'none'
                                 },
-                                {
-                                    key: 'valtotime',
-                                    title: 'Value to time from 0'
+                                wheelAction: {
+                                    type: 'combo',
+                                    title: 'Mouse Wheel',
+                                    options: [
+                                        {key: 'zoomX', title: 'Zoom X'},
+                                        {key: 'zoomY', title: 'Zoom Y'},
+                                        {key: 'none', title: 'None'}
+                                    ],
+                                    default: 'none'
                                 },
-                                {
-                                    key: 'valtotime:min.sec',
-                                    title: 'Seconds to min.sec'
+                                wheelbaseline: {
+                                    type: 'float',
+                                    title: 'Wheel baseline',
+                                    default: 0
+                                },
+                                fullOut: {
+                                    type: 'combo',
+                                    title: 'Full out on load',
+                                    options: [
+                                        {key: 'none', title: 'Never'},
+                                        {key: 'xAxis', title: 'X axis'},
+                                        {key: 'yAxis', title: 'Y axis'},
+                                        {key: 'both', title: 'Both axis'},
+                                        {key: 'once', title: 'Once per input variable'}
+                                    ],
+                                    default: 'both'
+                                },
+                                legend: {
+                                    type: 'combo',
+                                    title: 'Show legend',
+                                    options: [
+                                        {key: 'none', title: 'No legend'},
+                                        {key: 'left', title: 'Left'},
+                                        {key: 'top', title: 'Top'},
+                                        {key: 'bottom', title: 'Bottom'},
+                                        {key: 'right', title: 'Right'}
+                                    ]
+                                },
+                                mouseTracking: {
+                                    type: 'checkbox',
+                                    title: 'Mouse tracking',
+                                    options: {track: ''}
+                                },
+                                selectScatter: {
+                                    type: 'checkbox',
+                                    title: 'Scatter serie',
+                                    options: {
+                                        yes: 'Enable scatter serie selection (ALT + draw)'
+                                    }
                                 }
-                            ],
-                            'default': 'none'
-                        },
-
-                        wheelAction: {
-                            type: 'combo',
-                            title: 'Mouse Wheel',
-                            options: [
-                                {key: 'zoomX', title: 'Zoom X'},
-                                {key: 'zoomY', title: 'Zoom Y'},
-                                {key: 'none', title: 'None'}
-                            ],
-                            'default': 'none'
-                        },
-
-                        wheelbaseline: {
-                            type: 'float',
-                            title: 'Wheel baseline',
-                            'default': 0
-                        },
-
-                        fullOut: {
-                            type: 'combo',
-                            title: 'Full out on load',
-                            options: [
-                                {key: 'none', title: 'Never'},
-                                {key: 'xAxis', title: 'X axis'},
-                                {key: 'yAxis', title: 'Y axis'},
-                                {key: 'both', title: 'Both axis'},
-                                {key: 'once', title: 'Once per input variable'}
-                            ],
-                            'default': 'both'
-                        },
-
-                        FitYToAxisOnFromTo: {
-                            type: 'checkbox',
-                            title: 'Rescale Y axis on FromTo receive',
-                            options: {rescale: ''}
-                        },
-
-                        legend: {
-                            type: 'combo',
-                            title: 'Show legend',
-                            options: [
-                                {key: 'none', title: 'No legend'},
-                                {key: 'left', title: 'Left'},
-                                {key: 'top', title: 'Top'},
-                                {key: 'bottom', title: 'Bottom'},
-                                {key: 'right', title: 'Right'}
-                            ]
-                        },
-
-                        mouseTracking: {
-                            type: 'checkbox',
-                            title: 'Mouse tracking',
-                            options: {track: ''}
-                        },
-
-                        selectScatter: {
-                            type: 'checkbox',
-                            title: 'Scatter serie',
-                            options: {yes: 'Enable scatter serie selection (ALT + draw)'}
+                            }
                         }
                     }
                 },
-                plotinfos: {
+                axis: {
                     options: {
-                        type: 'table',
-                        multiple: true
+                        title: 'Axis config',
+                        multiple: false
                     },
-                    fields: {
-
-                        variable: {
-                            type: 'combo',
-                            title: 'Variable',
-                            options: vars,
-                            'default': ''
+                    groups: {
+                        xAxis: {
+                            options: {
+                                title: 'X Axis',
+                                type: 'list',
+                                multiple: false
+                            },
+                            fields: $.extend({}, axisFields, {
+                                axismodification: {
+                                    type: 'combo',
+                                    title: 'Axis modification',
+                                    options: [
+                                        {
+                                            key: 'none',
+                                            title: 'None'
+                                        },
+                                        {
+                                            key: 'timestamptotime',
+                                            title: 'Timestamp to time'
+                                        },
+                                        {
+                                            key: 'valtotime',
+                                            title: 'Value to time from 0'
+                                        },
+                                        {
+                                            key: 'valtotime:min.sec',
+                                            title: 'Seconds to min.sec'
+                                        }
+                                    ],
+                                    default: 'none'
+                                }
+                            })
                         },
-
-                        plotcolor: {
-                            type: 'color',
-                            title: 'Color',
-                            'default': [1, 1, 255, 1]
-                        },
-
-                        strokewidth: {
-                            type: 'text',
-                            title: 'Width (px)',
-                            'default': '1'
-                        },
-
-                        strokestyle: {
-                            type: 'combo',
-                            title: 'Stroke style',
-                            options: [
-                                {key: '1', title: '1'},
-                                {key: '2', title: '2'},
-                                {key: '3', title: '3'},
-                                {key: '4', title: '4'},
-                                {key: '5', title: '5'},
-                                {key: '6', title: '6'},
-                                {key: '7', title: '7'},
-                                {key: '8', title: '8'},
-                                {key: '9', title: '9'},
-                                {key: '10', title: '10'},
-                                {key: '11', title: '11'}
-                            ],
-                            'default': '1'
-                        },
-
-                        plotcontinuous: {
-                            type: 'combo',
-                            title: 'Continuous',
-                            options: [
-                                {key: 'continuous', title: 'Continuous'},
-                                {key: 'discrete', title: 'Discrete'},
-                                {key: 'auto', title: 'Auto'}
-                            ],
-                            'default': 'continuous'
-                        },
-
-                        peakpicking: {
-                            type: 'checkbox',
-                            title: 'Peak Picking',
-                            options: {picking: 'Peak Picking'},
-                            'default': []
-                        },
-
-                        markers: {
-                            type: 'checkbox',
-                            title: 'Markers',
-                            options: {markers: 'Show markers'},
-                            'default': []
-                        },
-
-                        markerShape: {
-                            type: 'combo',
-                            title: 'Marker shape',
-                            options: [
-                                {key: '1', title: 'Square'},
-                                {key: '2', title: 'X cross'},
-                                {key: '3', title: '+ cross'},
-                                {key: '4', title: 'Triangle'}
-                            ],
-                            'default': '1'
-                        },
-
-                        markerSize: {
-                            type: 'float',
-                            title: 'Marker size',
-                            'default': 2
-                        },
-
-                        normalize: {
-                            type: 'combo',
-                            title: 'Normalize',
-                            options: [
-                                {key: 'none', title: 'None'},
-                                {key: 'max1', title: 'Set max to 1'},
-                                {key: 'max100', title: 'Set max to 100'},
-                                {key: 'sum1', title: 'Set sum to 1'},
-                                {key: 'max1min0', title: 'Max 1, Min 0'}
-                            ],
-                            'default': 'none'
-                        },
-
-                        optimizeSlots: {
-                            type: 'checkbox',
-                            title: 'Optimize with slots',
-                            options: {slots: ''},
-                            'default': []
-                        },
-
-                        degrade: {
-                            type: 'float',
-                            title: 'Degrade serie (px/pt)',
-                            'default': 0
-                        },
-
-                        monotoneous: {
-                            type: 'checkbox',
-                            title: 'X is monotoneous',
-                            options: {yes: ''},
-                            'default': []
+                        yAxis: {
+                            options: {
+                                title: 'Y Axis',
+                                type: 'list',
+                                multiple: false
+                            },
+                            fields: $.extend({}, axisFields, {
+                                fitToAxisOnFromTo: {
+                                    type: 'checkbox',
+                                    title: 'Rescale axis on FromTo',
+                                    options: {rescale: ''},
+                                    default: []
+                                }
+                            })
+                        }
+                    }
+                },
+                variables: {
+                    options: {
+                        title: 'Variables',
+                        multiple: false
+                    },
+                    groups: {
+                        variables: {
+                            options: {
+                                type: 'table',
+                                multiple: true
+                            },
+                            fields: {
+                                variable: {
+                                    type: 'combo',
+                                    title: 'Variable',
+                                    options: vars,
+                                    default: ''
+                                },
+                                plotcolor: {
+                                    type: 'color',
+                                    title: 'Color',
+                                    default: [1, 1, 255, 1]
+                                },
+                                strokewidth: {
+                                    type: 'text',
+                                    title: 'Width (px)',
+                                    default: '1'
+                                },
+                                strokestyle: {
+                                    type: 'combo',
+                                    title: 'Stroke style',
+                                    options: [
+                                        {key: '1', title: '1'},
+                                        {key: '2', title: '2'},
+                                        {key: '3', title: '3'},
+                                        {key: '4', title: '4'},
+                                        {key: '5', title: '5'},
+                                        {key: '6', title: '6'},
+                                        {key: '7', title: '7'},
+                                        {key: '8', title: '8'},
+                                        {key: '9', title: '9'},
+                                        {key: '10', title: '10'},
+                                        {key: '11', title: '11'}
+                                    ],
+                                    default: '1'
+                                },
+                                plotcontinuous: {
+                                    type: 'combo',
+                                    title: 'Continuous',
+                                    options: [
+                                        {key: 'continuous', title: 'Continuous'},
+                                        {key: 'discrete', title: 'Discrete'},
+                                        {key: 'auto', title: 'Auto'}
+                                    ],
+                                    default: 'continuous'
+                                },
+                                peakpicking: {
+                                    type: 'checkbox',
+                                    title: 'Peak Picking',
+                                    options: {picking: 'Peak Picking'},
+                                    default: []
+                                },
+                                markers: {
+                                    type: 'checkbox',
+                                    title: 'Markers',
+                                    options: {markers: 'Show markers'},
+                                    default: []
+                                },
+                                markerShape: {
+                                    type: 'combo',
+                                    title: 'Marker shape',
+                                    options: [
+                                        {key: '1', title: 'Square'},
+                                        {key: '2', title: 'X cross'},
+                                        {key: '3', title: '+ cross'},
+                                        {key: '4', title: 'Triangle'}
+                                    ],
+                                    default: '1'
+                                },
+                                markerSize: {
+                                    type: 'float',
+                                    title: 'Marker size',
+                                    default: 2
+                                },
+                                normalize: {
+                                    type: 'combo',
+                                    title: 'Normalize',
+                                    options: [
+                                        {key: 'none', title: 'None'},
+                                        {key: 'max1', title: 'Set max to 1'},
+                                        {key: 'max100', title: 'Set max to 100'},
+                                        {key: 'sum1', title: 'Set sum to 1'},
+                                        {key: 'max1min0', title: 'Max 1, Min 0'}
+                                    ],
+                                    default: 'none'
+                                },
+                                optimizeSlots: {
+                                    type: 'checkbox',
+                                    title: 'Optimize with slots',
+                                    options: {slots: ''},
+                                    default: []
+                                },
+                                degrade: {
+                                    type: 'float',
+                                    title: 'Degrade serie (px/pt)',
+                                    default: 0
+                                },
+                                monotoneous: {
+                                    type: 'checkbox',
+                                    title: 'X is monotoneous',
+                                    options: {yes: ''},
+                                    default: []
+                                }
+                            }
                         }
                     }
                 }
@@ -521,21 +480,18 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
     };
 
     Controller.prototype.configFunctions = {
-        displayYAxis: indexOf('y'),
-        displayXAxis: indexOf('x'),
-        vertGridMain: indexOf('vmain'),
-        vertGridSec: indexOf('vsec'),
-        horGridMain: indexOf('hmain'),
-        horGridSec: indexOf('hsec'),
-        shiftxtozero: indexOf('shift'),
-        //FitYToAxisOnFromTo: indexOf('rescale'),
+        displayYAxis: indexOf('display'),
+        displayXAxis: indexOf('display'),
+        vertGridMain: indexOf('main'),
+        vertGridSec: indexOf('sec'),
+        horGridMain: indexOf('main'),
+        horGridSec: indexOf('sec'),
         minX: getFloat,
         minY: getFloat,
         maxX: getFloat,
         maxY: getFloat,
-        //   xaxismodification: indexOf('xaxismodification'),
-        flipX: indexOf('flipX'),
-        flipY: indexOf('flipY')
+        flipX: indexOf('flip'),
+        flipY: indexOf('flip')
     };
 
     function indexOf(name) {
@@ -550,40 +506,39 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
     }
 
     Controller.prototype.configAliases = {
-        graphurl: ['groups', 'group', 0, 'graphurl', 0],
-        shiftxtozero: ['groups', 'group', 0, 'shiftxtozero', 0],
-        displayYAxis: ['groups', 'group', 0, 'displayAxis', 0],
-        yLabel: ['groups', 'group', 0, 'yLabel', 0],
-        displayXAxis: ['groups', 'group', 0, 'displayAxis', 0],
-        xLabel: ['groups', 'group', 0, 'xLabel', 0],
-        vertGridMain: ['groups', 'group', 0, 'grids', 0],
-        vertGridSec: ['groups', 'group', 0, 'grids', 0],
-        xastime: ['groups', 'group', 0, 'xastime', 0],
-        horGridMain: ['groups', 'group', 0, 'grids', 0],
-        horGridSec: ['groups', 'group', 0, 'grids', 0],
-        xLeftSpacing: ['groups', 'group', 0, 'xLeftSpacing', 0],
-        xRightSpacing: ['groups', 'group', 0, 'xRightSpacing', 0],
-        yBottomSpacing: ['groups', 'group', 0, 'yBottomSpacing', 0],
-        yTopSpacing: ['groups', 'group', 0, 'yTopSpacing', 0],
-        wheelAction: ['groups', 'group', 0, 'wheelAction', 0],
-        fullOut: ['groups', 'group', 0, 'fullOut', 0],
-        FitYToAxisOnFromTo: ['groups', 'group', 0, 'FitYToAxisOnFromTo', 0],
-        mouseTracking: ['groups', 'group', 0, 'mouseTracking', 0],
-        selectScatter: ['groups', 'group', 0, 'selectScatter', 0],
-        zoom: ['groups', 'group', 0, 'zoom', 0],
-        minX: ['groups', 'group', 0, 'minX', 0],
-        minY: ['groups', 'group', 0, 'minY', 0],
-        maxX: ['groups', 'group', 0, 'maxX', 0],
-        maxY: ['groups', 'group', 0, 'maxY', 0],
-        flipX: ['groups', 'group', 0, 'flip', 0],
-        flipY: ['groups', 'group', 0, 'flip', 0],
-        plotinfos: ['groups', 'plotinfos', 0],
-        wheelbaseline: ['groups', 'group', 0, 'wheelbaseline', 0],
-        displayAxis: ['groups', 'group', 0, 'displayAxis', 0],
-        flipAxis: ['groups', 'group', 0, 'flip', 0],
-        grid: ['groups', 'group', 0, 'grids', 0],
-        xaxismodification: ['groups', 'group', 0, 'xaxismodification', 0],
-        legend: ['groups', 'group', 0, 'legend', 0]
+        // Graph
+        graphurl: ['sections', 'graph', 0, 'groups', 'graph', 0, 'url', 0],
+        zoom: ['sections', 'graph', 0, 'groups', 'graph', 0, 'zoom', 0],
+        wheelAction: ['sections', 'graph', 0, 'groups', 'graph', 0, 'wheelAction', 0],
+        wheelbaseline: ['sections', 'graph', 0, 'groups', 'graph', 0, 'wheelbaseline', 0],
+        fullOut: ['sections', 'graph', 0, 'groups', 'graph', 0, 'fullOut', 0],
+        legend: ['sections', 'graph', 0, 'groups', 'graph', 0, 'legend', 0],
+        mouseTracking: ['sections', 'graph', 0, 'groups', 'graph', 0, 'mouseTracking', 0],
+        selectScatter: ['sections', 'graph', 0, 'groups', 'graph', 0, 'selectScatter', 0],
+        // X Axis
+        displayXAxis: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'checkboxes', 0],
+        flipX: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'checkboxes', 0],
+        vertGridMain: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'checkboxes', 0],
+        vertGridSec: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'checkboxes', 0],
+        xLabel: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'label', 0],
+        xLeftSpacing: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'beforeSpacing', 0],
+        xRightSpacing: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'afterSpacing', 0],
+        minX: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'min', 0],
+        maxX: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'max', 0],
+        xaxismodification: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'axismodification', 0],
+        // Y Axis
+        displayYAxis: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'checkboxes', 0],
+        flipY: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'checkboxes', 0],
+        horGridMain: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'checkboxes', 0],
+        horGridSec: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'checkboxes', 0],
+        yLabel: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'label', 0],
+        yBottomSpacing: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'beforeSpacing', 0],
+        yTopSpacing: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'afterSpacing', 0],
+        minY: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'min', 0],
+        maxY: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'max', 0],
+        FitYToAxisOnFromTo: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'fitToAxisOnFromTo', 0],
+        // Variables
+        plotinfos: ['sections', 'variables', 0, 'groups', 'variables', 0]
     };
 
     Controller.prototype.zoomChanged = function (axis, min, max) {

@@ -151,14 +151,14 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                     // Axes
                     var xAxis = graph.getXAxis(null, xOptions);
                     xAxis
-                        .flip(cfgCheckbox('flipAxis', 'flipX'))
-                        .setPrimaryGrid(cfgCheckbox('grid', 'vmain'))
-                        .setSecondaryGrid(cfgCheckbox('grid', 'vsec'))
+                        .flip(cfg('flipX', false))
+                        .setPrimaryGrid(cfg('vertGridMain', false))
+                        .setSecondaryGrid(cfg('vertGridSec', false))
                         .setLabel(cfg('xLabel', ''))
                         .forceMin(cfg('minX', false))
                         .forceMax(cfg('maxX', false))
                         .setAxisDataSpacing(cfg('xLeftSpacing', 0), cfg('xRightSpacing', 0));
-                    if (!cfgCheckbox('displayAxis', 'x')) {
+                    if (!cfg('displayXAxis', true)) {
                         xAxis.hide();
                     }
                     xAxis.on('zoom', function (min, max) {
@@ -172,14 +172,14 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
 
                     var yAxis = graph.getYAxis();
                     yAxis
-                        .flip(cfgCheckbox('flipAxis', 'flipY'))
-                        .setPrimaryGrid(cfgCheckbox('grid', 'hmain'))
-                        .setSecondaryGrid(cfgCheckbox('grid', 'hsec'))
+                        .flip(cfg('flipY', false))
+                        .setPrimaryGrid(cfg('horGridMain', false))
+                        .setSecondaryGrid(cfg('horGridSec', false))
                         .setLabel(cfg('yLabel', ''))
                         .forceMin(cfg('minY', false))
                         .forceMax(cfg('maxY', false))
                         .setAxisDataSpacing(cfg('yBottomSpacing', 0), cfg('yTopSpacing', 0));
-                    if (!cfgCheckbox('displayAxis', 'y')) {
+                    if (!cfg('displayYAxis', true)) {
                         yAxis.hide();
                     }
                     yAxis.on('zoom', function (min, max) {
