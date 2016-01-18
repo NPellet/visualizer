@@ -61,36 +61,41 @@ define(['modules/default/defaultcontroller', 'ckeditor'], function (Default, CKE
                             type: 'checkbox',
                             title: 'Is Editable',
                             options: {isEditable: 'Yes'},
-                            'default': ['isEditable']
+                            default: ['isEditable']
+                        },
+                        debouncing: {
+                            type: 'float',
+                            title: 'Debouncing (ms)',
+                            default: 0
                         },
                         modifyInVariable: {
                             type: 'checkbox',
                             title: 'Modify Input Variable',
                             options: {yes: 'Yes'},
-                            'default': []
+                            default: []
                         },
                         autoHeight: {
                             type: 'checkbox',
                             title: 'Automatic Height',
                             options: {yes: 'Yes'},
-                            'default': []
+                            default: []
                         },
                         bgColor: {
                             type: 'spectrum',
                             title: 'Background color',
-                            'default': [255, 255, 255, 1]
+                            default: [255, 255, 255, 1]
                         },
                         postit: {
                             type: 'checkbox',
                             title: 'Looks like a postit',
                             options: {yes: 'Yes'},
-                            'default': []
+                            default: []
                         },
                         html: {
                             type: 'checkbox',
                             title: 'Render plain html',
                             options: {yes: 'Yes'},
-                            'default': ['yes']
+                            default: ['yes']
                         }
                     }
                 }
@@ -109,7 +114,8 @@ define(['modules/default/defaultcontroller', 'ckeditor'], function (Default, CKE
         autoHeight: ['groups', 'group', 0, 'autoHeight', 0],
         bgColor: ['groups', 'group', 0, 'bgColor', 0],
         postit: ['groups', 'group', 0, 'postit', 0],
-        plainHtml: ['groups', 'group', 0, 'html', 0]
+        plainHtml: ['groups', 'group', 0, 'html', 0],
+        debouncing: ['groups', 'group', 0, 'debouncing', 0]
     };
 
     return Controller;

@@ -15,7 +15,12 @@ define([
 
     $.extend(true, View.prototype, Default, {
         init: function () {
+            var that = this;
             this.plainHtml = this.module.getConfigurationCheckbox('plainHtml', 'yes');
+            this.debounce = this.module.getConfiguration('debouncing');
+            this.valueChanged = _.debounce(function () {
+                that.module.controller.valueChanged.apply(that.module.controller, arguments);
+            }, this.debounce)
         },
         inDom: function () {
             this.initEditor();
@@ -65,7 +70,7 @@ define([
                 }
                 this.instance = CKEDITOR.inline(this._id, options);
                 this.instance.on('change', function () {
-                    that.module.controller.valueChanged(that.instance.getData());
+                    that.valueChanged(that.instance.getData());
                     if (that.module.getConfigurationCheckbox('autoHeight', 'yes')) {
                         that.module.getDomWrapper().height(that.getContentHeight() + 50);
                         Grid.moduleResize(that.module);
