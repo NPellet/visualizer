@@ -147,7 +147,7 @@
 					]
 				}
 			},
-			"id": 8,
+			"id": 1,
 			"vars_in": [
 				{
 					"rel": "xArray",
@@ -253,7 +253,7 @@
 					]
 				}
 			},
-			"id": 9,
+			"id": 2,
 			"vars_in": [
 				{
 					"rel": "list",
@@ -436,7 +436,7 @@
 					]
 				}
 			},
-			"id": 10,
+			"id": 3,
 			"vars_in": [
 				{
 					"rel": "chart",
@@ -499,73 +499,106 @@
 		{
 			"configuration": {
 				"sections": {
-					"axis": [
+					"graph": [
 						{
+							"sections": {},
 							"groups": {
-								"xAxis": [
+								"graph": [
 									{
-										"afterSpacing": [
+										"url": [
+											""
+										],
+										"zoom": [
+											"xy"
+										],
+										"wheelAction": [
+											"none"
+										],
+										"wheelbaseline": [
+											0
+										],
+										"fullOut": [
+											"both"
+										],
+										"legend": [
 											null
 										],
-										"beforeSpacing": [
-											null
+										"mouseTracking": [
+											[]
 										],
-										"checkboxes": [
-											[
-												"display"
-											]
-										],
-										"label": [
-											null
-										],
-										"max": [
-											null
-										],
-										"min": [
-											null
-										]
-									}
-								],
-								"yAxis": [
-									{
-										"afterSpacing": [
-											null
-										],
-										"beforeSpacing": [
-											null
-										],
-										"checkboxes": [
-											[
-												"display"
-											]
-										],
-										"label": [
-											null
-										],
-										"max": [
-											null
-										],
-										"min": [
-											null
+										"selectScatter": [
+											[]
 										]
 									}
 								]
 							}
 						}
 					],
-					"graph": [
+					"axis": [
 						{
+							"sections": {},
 							"groups": {
-								"graph": [
+								"xAxis": [
 									{
-										"url": [
-											null
+										"checkboxes": [
+											[
+												"display",
+												"main",
+												"sec"
+											]
 										],
-										"wheelAction": [
-											null
+										"label": [
+											""
 										],
-										"zoom": [
-											"xy"
+										"beforeSpacing": [
+											"0"
+										],
+										"afterSpacing": [
+											0
+										],
+										"min": [
+											""
+										],
+										"max": [
+											""
+										],
+										"nbTicksPrimary": [
+											5
+										],
+										"axismodification": [
+											"none"
+										]
+									}
+								],
+								"yAxis": [
+									{
+										"checkboxes": [
+											[
+												"display",
+												"main",
+												"sec"
+											]
+										],
+										"label": [
+											""
+										],
+										"beforeSpacing": [
+											"0"
+										],
+										"afterSpacing": [
+											0
+										],
+										"min": [
+											""
+										],
+										"max": [
+											""
+										],
+										"nbTicksPrimary": [
+											5
+										],
+										"fitToAxisOnFromTo": [
+											[]
 										]
 									}
 								]
@@ -574,6 +607,7 @@
 					],
 					"variables": [
 						{
+							"sections": {},
 							"groups": {
 								"variables": [
 									[
@@ -585,27 +619,31 @@
 												0,
 												1
 											],
-											"strokewidth": null,
+											"strokewidth": "1",
+											"strokestyle": "1",
 											"plotcontinuous": "continuous",
 											"peakpicking": [],
 											"markers": [
 												"markers"
 											],
-											"normalize": null,
+											"markerShape": "1",
+											"markerSize": 2,
+											"normalize": "none",
 											"optimizeSlots": [
 												"slots"
 											],
-											"markerShape": "1",
-											"markerSize": 2
+											"degrade": 0,
+											"monotoneous": []
 										}
 									]
 								]
 							}
 						}
 					]
-				}
+				},
+				"groups": {}
 			},
-			"id": 11,
+			"id": 4,
 			"vars_in": [
 				{
 					"rel": "chart",
@@ -613,10 +651,7 @@
 				}
 			],
 			"actions_in": [
-				{
-					"rel": null,
-					"name": null
-				}
+				{}
 			],
 			"vars_out": [
 				{
@@ -630,10 +665,7 @@
 			],
 			"actions_out": [
 				{
-					"event": null,
-					"rel": null,
-					"jpath": null,
-					"name": null
+					"jpath": []
 				}
 			],
 			"url": "modules/types/science/spectra/spectra_displayer/",
@@ -763,7 +795,7 @@
 					]
 				}
 			},
-			"id": 12,
+			"id": 5,
 			"vars_in": [
 				{
 					"rel": "xyArray",
@@ -922,7 +954,7 @@
 					]
 				}
 			},
-			"id": 13,
+			"id": 6,
 			"vars_in": [
 				{
 					"rel": "xArray",
@@ -1014,7 +1046,7 @@
 					]
 				}
 			},
-			"id": 14,
+			"id": 7,
 			"vars_in": [
 				{
 					"rel": "value",
