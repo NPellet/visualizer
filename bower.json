@@ -22,7 +22,7 @@
   "license": "MIT",
   "dependencies": {
     "ace": "ajaxorg/ace-builds#v1.2.3",
-    "async": "0.9.2",
+    "async": "1.5.2",
     "bluebird": "2.10.2",
     "bowser": "1.0.0",
     "chroma-js": "0.6.1",
