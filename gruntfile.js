@@ -92,7 +92,7 @@ module.exports = function (grunt) {
                             './twig.js/twig.*',
                             './onde/src/*',
                             ['./spectrum/spectrum.js', './spectrum/spectrum.css'],
-                            './superagent/superagent.js',
+                            './superagent-dist/superagent.js',
                             './modernizr/modernizr.js',
                             './underscore/underscore-min',
                             './lodash/lodash.min.js',
