@@ -66,9 +66,7 @@ define([
     function doGrid(ctx) {
         ctx.$container.html('');
 
-        var columns = ctx.getAllSlickColumns().filter(function (val) {
-            return val.id !== 'rowDeletion' && val.id !== '_checkbox_selector';
-        });
+        var columns = ctx.getAllSlickColumns().filter(filterSpecialColumns);
 
         var cids = _.pluck(columns, 'id');
         for (var key in columnFilters) {
@@ -87,7 +85,7 @@ define([
             });
         }
 
-        ctx.slick.columns = ctx.getSlickColumns();
+        ctx.slick.columns = ctx.getInMainColumns();
 
         ctx.$rowToolbar = $('<div>').attr('class', 'rowToolbar');
         if (ctx.module.getConfigurationCheckbox('toolbar', 'add')) {
@@ -348,16 +346,35 @@ define([
         });
 
         ctx.grid.onCellChange.subscribe(function (e, args) {
-            var column = ctx.getSlickColumns()[args.cell];
+            if(ctx.fromPopup) { // We don't really know what has been edited...
+                var columns = ctx.getColumnsGivenEditContext();
+            } else {
+                var column = ctx._getChangedColumn(args.cell);
+            }
             var itemInfo = ctx._getItemInfoFromRow(args.row);
             if (itemInfo) {
                 if (ctx.hasFilter) {
-                    ctx._runFilter({
-                        event: 'cellChanged',
-                        row: itemInfo,
-                        cell: ctx._getCell(args),
-                        column: column
-                    });
+                    if(columns) {
+                        for(var i=0; i<columns.length; i++) {
+                            ctx._runFilter({
+                                event: 'cellChanged',
+                                row: itemInfo,
+                                cell: ctx._getCell({
+                                    row: args.row,
+                                    cell: i
+                                }),
+                                column: columns[i]
+                            });
+                        }
+                    } else {
+                        ctx._runFilter({
+                            event: 'cellChanged',
+                            row: itemInfo,
+                            cell: ctx._getCell(args),
+                            column: column
+                        });
+                    }
+
                     ctx._runFilter({
                         event: 'rowsChanged',
                         rows: [itemInfo]
@@ -748,6 +765,34 @@ define([
             });
         },
 
+        getInMainColumns: function () {
+            return this.getSlickColumns().filter(function (col) {
+                if(!col.colDef) { // Special columns always in main
+                    return true;
+                }
+                return !col.colDef.visibility || col.colDef.visibility === 'main' || col.colDef.visibility === 'both';
+            });
+        },
+
+        getInPopupColumns: function () {
+            return this.getAllSlickColumns().filter(function (col) {
+                if(!col.colDef) { // Special columns never in popup
+                    return false;
+                }
+                return col.colDef.visibility === 'popup' || col.colDef.visibility === 'both';
+            }).filter(function (col) {
+                return col.editor;
+            }).filter(filterSpecialColumns);
+        },
+
+        getColumnsGivenEditContext() {
+            if (this.fromPopup) {
+                return this.getInPopupColumns();
+            } else {
+                return this.getInMainColumns();
+            }
+        },
+
         getSlickOptions: function () {
             var that = this;
             return {
@@ -781,9 +826,7 @@ define([
             if (this.grid.getEditorLock().isActive() && !this.grid.getEditorLock().commitCurrentEdit()) {
                 return;
             }
-            var editableColumns = this.slick.columns.filter(function (v) {
-                return v.editor;
-            });
+            var editableColumns = this.getInPopupColumns();
 
             if (editableColumns.length === 0) {
                 return;
@@ -796,20 +839,28 @@ define([
             }).appendTo('body');
             $modal.keydown(function (e) {
                 if (e.which == $.ui.keyCode.ENTER) {
+                    that.fromPopup = true;
                     that.grid.getEditController().commitCurrentEdit();
+                    that.fromPopup = false;
                     e.stopPropagation();
                     e.preventDefault();
                 } else if (e.which == $.ui.keyCode.ESCAPE) {
+                    that.fromPopup = true;
                     that.grid.getEditController().cancelCurrentEdit();
+                    that.fromPopup = false;
                     e.stopPropagation();
                     e.preventDefault();
                 }
             });
             $modal.find('[data-action=save]').click(function () {
+                that.fromPopup = true;
                 that.grid.getEditController().commitCurrentEdit();
+                that.fromPopup = false;
             });
             $modal.find('[data-action=cancel]').click(function () {
+                that.fromPopup = true;
                 that.grid.getEditController().cancelCurrentEdit();
+                that.fromPopup = false;
             });
             var containers = $.map(editableColumns, function (c) {
                 return $modal.find('[data-editorid=' + c.id.replace(/[^a-zA-Z0-9_-]/g, '_') + ']');
@@ -868,7 +919,9 @@ define([
                                 if (!that.module.data.getChildSync(jpath) || !columnFilterFunctions[columnId](that.module.data.getChildSync(jpath).get())) {
                                     return false;
                                 }
-                            } catch (e) { return true;}
+                            } catch (e) {
+                                return true;
+                            }
                         }
                     }
                     return true;
@@ -1206,12 +1259,17 @@ define([
             return _.pluck(items, 'item');
         },
 
+        _getChangedColumn(cell) {
+            return this.getColumnsGivenEditContext()[cell];
+        },
+
         _getCell: function (args) {
             if (!args || args.row === undefined || args.cell === undefined) {
                 return null;
             }
             var itemInfo = this._getItemInfoFromRow(args.row);
-            var jpath = this.getSlickColumns()[args.cell].jpath.slice();
+
+            var jpath = this.getColumnsGivenEditContext()[args.cell].jpath.slice();
             jpath.unshift(itemInfo.idx);
             var r = this.module.data.getChildSync(jpath);
             if (r !== undefined) r = r.get();
@@ -1470,7 +1528,10 @@ define([
 
     var lastHighlight = '';
 
+    function filterSpecialColumns(col) {
+        return col.id !== 'rowDeletion' && col.id !== '_checkbox_selector';
+    }
+
     return View;
 
-})
-;
+});

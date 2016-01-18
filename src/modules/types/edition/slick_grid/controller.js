@@ -154,6 +154,18 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                             ],
                             default: 'typerenderer'
                         },
+
+                        visibility: {
+                            type: 'combo',
+                            title: 'Visibility',
+                            options: [
+                                {key: 'both', title: 'Main and Popup'},
+                                {key: 'main', title: 'Main'},
+                                {key: 'popup', title: 'Popup'}
+                            ],
+                            default: 'both'
+                        },
+
                         rendererOptions: {
                             type: 'text',
                             title: 'Renderer Options',
