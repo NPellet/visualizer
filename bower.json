@@ -72,7 +72,7 @@
     "smart-array-filter": "0.3.0",
     "spectrum": "1.6.1",
     "sprintf": "1.0.2",
-    "superagent": "0.21.0",
+    "superagent-dist": "1.6.2",
     "threejs": "*",
     "twig.js": "0.8.4",
     "ui-contextmenu": "1.8.1",

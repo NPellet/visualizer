@@ -1,6 +1,6 @@
 'use strict';
 // https://github.com/lightsofapollo/superagent-promise
-define(['components/superagent/superagent'], function (superagent) {
+define(['components/superagent-dist/superagent'], function (superagent) {
 
 /**
  * Promise wrapper for superagent
