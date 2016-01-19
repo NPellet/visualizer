@@ -645,16 +645,8 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                         var shape = that.graph.newShape(String(annotation.type), annotation);
                         that.annotations[varName][i] = shape;
 
-                        shape.setSerie(that.graph.getSerie(0));
-//TODO annotation.onChange
-//                Debug.debug('annotation.onChange is disabled, need to be fixed');
-//                annotation.onChange( annotation, function( value ) {
-//
-//                 shape.draw();
-//                 shape.redraw();
-//
-//                 }, self.module.getId() );
-//
+                        shape.autoAxes();
+
                         API.listenHighlight(annotation, function (onOff) {
                             if (onOff) {
                                 shape.highlight({
