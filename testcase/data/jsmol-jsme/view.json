@@ -8,7 +8,7 @@
         "xWidth": 10,
         "yHeight": 10
     },
-    "version": "2.4.2",
+    "version": "2.35.2-1",
     "modules": [
         {
             "url": "modules/types/science/chemistry/jsme/",
@@ -22,11 +22,20 @@
                                     "oldlook"
                                 ]
                             ],
+                            "defaultaction": [
+                                null
+                            ],
                             "labelsize": [
                                 14
                             ],
                             "bondwidth": [
                                 1
+                            ],
+                            "highlightColor": [
+                                "3"
+                            ],
+                            "outputResult": [
+                                []
                             ]
                         }
                     ]
@@ -39,8 +48,8 @@
                         "top": 28
                     },
                     "size": {
-                        "width": 41.96666666269302,
-                        "height": 31.966666662693022
+                        "width": 42,
+                        "height": 41
                     },
                     "zIndex": 0,
                     "display": true,
@@ -56,22 +65,33 @@
                     "name": "Default layer"
                 }
             },
-            "id": 2,
+            "id": 4,
             "vars_in": [
                 {}
             ],
-            "actions_in": [],
+            "actions_in": [
+                {}
+            ],
             "title": "Untitled",
             "vars_out": [
                 {
                     "event": "onStructureChange",
                     "rel": "mol",
                     "jpath": [],
-                    "filter": "",
                     "name": "molfile"
+                },
+                {
+                    "event": "onStructureChange",
+                    "rel": "svg",
+                    "jpath": [],
+                    "name": "svg"
                 }
             ],
-            "actions_out": {}
+            "actions_out": [
+                {
+                    "jpath": []
+                }
+            ]
         },
         {
             "url": "modules/types/science/chemistry/jsmol/",
@@ -94,8 +114,8 @@
                         "top": 0
                     },
                     "size": {
-                        "width": 82.96666666269303,
-                        "height": 69.96666666269303
+                        "width": 83,
+                        "height": 70
                     },
                     "zIndex": 0,
                     "display": true,
@@ -111,7 +131,7 @@
                     "name": "Default layer"
                 }
             },
-            "id": 3,
+            "id": 5,
             "vars_in": [
                 {
                     "rel": "data",
@@ -166,8 +186,8 @@
                         "top": 4
                     },
                     "size": {
-                        "width": 27.966666662693022,
-                        "height": 15.966666662693024
+                        "width": 28,
+                        "height": 16
                     },
                     "zIndex": 0,
                     "display": true,
@@ -183,7 +203,7 @@
                     "name": "Default layer"
                 }
             },
-            "id": 4,
+            "id": 6,
             "vars_in": [
                 {}
             ],
@@ -197,11 +217,98 @@
             "actions_out": [
                 {
                     "event": "onButtonClick",
-                    "rel": "value",
+                    "rel": "data",
                     "jpath": [],
                     "name": "script"
                 }
             ]
+        },
+        {
+            "url": "modules/types/display/single_value/",
+            "configuration": {
+                "sections": {},
+                "groups": {
+                    "group": [
+                        {
+                            "defaultvalue": [
+                                null
+                            ],
+                            "font": [
+                                null
+                            ],
+                            "fontcolor": [
+                                [
+                                    0,
+                                    0,
+                                    0,
+                                    1
+                                ]
+                            ],
+                            "fontsize": [
+                                null
+                            ],
+                            "align": [
+                                null
+                            ],
+                            "valign": [
+                                null
+                            ],
+                            "sprintf": [
+                                null
+                            ],
+                            "sprintfOrder": [
+                                null
+                            ],
+                            "preformatted": [
+                                []
+                            ],
+                            "append": [
+                                []
+                            ],
+                            "maxEntries": [
+                                1
+                            ]
+                        }
+                    ]
+                }
+            },
+            "layers": {
+                "Default layer": {
+                    "position": {
+                        "left": 129,
+                        "top": 11
+                    },
+                    "size": {
+                        "width": 48,
+                        "height": 37
+                    },
+                    "zIndex": 0,
+                    "display": true,
+                    "title": "SVG",
+                    "bgColor": [
+                        255,
+                        255,
+                        255,
+                        0
+                    ],
+                    "wrapper": true,
+                    "created": true,
+                    "name": "Default layer"
+                }
+            },
+            "id": 7,
+            "vars_in": [
+                {
+                    "rel": "value",
+                    "name": "svg"
+                }
+            ],
+            "actions_in": [
+                {}
+            ],
+            "title": "SVG",
+            "vars_out": [],
+            "actions_out": []
         }
     ],
     "variables": [
@@ -273,5 +380,6 @@
                 ]
             }
         }
-    ]
+    ],
+    "aliases": []
 }
