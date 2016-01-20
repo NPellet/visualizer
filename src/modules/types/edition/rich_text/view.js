@@ -61,7 +61,8 @@ define([
                 var options = {
                     extraPlugins: 'mathjax,font,sourcedialog,codesnippet',
                     removeButtons: '',
-                    language: 'en'
+                    language: 'en',
+                    mathJaxLib: '//cdn.mathjax.org/mathjax/2.2-latest/MathJax.js?config=TeX-AMS_HTML'
                 };
                 if (this.readOnly) {
                     options.readOnly = true;
