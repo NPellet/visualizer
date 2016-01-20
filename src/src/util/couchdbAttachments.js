@@ -85,7 +85,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
             throw new Error('uploads expects an array as parameter');
         }
 
-        var req = superagent.post(that.docUrl);
+        var req = superagent.post(that.docUrl).withCredentials();
 
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
@@ -185,12 +185,13 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                 }
                 superagent
                     .put(that.docUrl)
+                    .withCredentials()
                     .set('Content-Type', 'application/json')
                     .set('Accept', 'application/json')
                     .send(that.lastDoc)
                     .end(function (err, res) {
                         if (err) return reject(err);
-                        if (res.status !== 201) return reject(new Error('Error uploading inline attachments, couchdb returned status code ' + res.status));
+                        if (res.status !== 201 && res.status !== 200) return reject(new Error('Error uploading inline attachments, couchdb returned status code ' + res.status));
                         return resolve();
                     });
             });
@@ -222,13 +223,14 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                 }
                 superagent
                     .put(that.docUrl + '/' + options.name)
+                    .withCredentials()
                     .query({rev: that.lastDoc._rev})
                     .set('Content-Type', contentType)
                     .set('Accept', 'application/json')
                     .send(options.data || options.file)
                     .end(function (err, res) {
                         if (err) return reject(err);
-                        if (res.status !== 201) return reject(new Error('Error uploading attachment, couchdb returned status code ' + res.status));
+                        if (res.status !== 201 && res.status !== 200) return reject(new Error('Error uploading attachment, couchdb returned status code ' + res.status));
                         that.lastDoc._rev = res.body.rev;
                         return resolve();
                     });
@@ -260,7 +262,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                 else return {};
             }, function () {
                 return new Promise(function (resolve, reject) {
-                    var req = superagent.get(that.docUrl + '/' + name);
+                    var req = superagent.get(that.docUrl + '/' + name).withCredentials();
                     if (exists) req.set('Accept', that.lastDoc._attachments[name].content_type);
                     req.query({rev: that.lastDoc._rev})
                         .end(function (err, res) {
@@ -289,6 +291,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
             return new Promise(function (resolve, reject) {
                 superagent
                     .del(that.docUrl + '/' + name)
+                    .withCredentials()
                     .query({rev: that.lastDoc._rev})
                     .set('Accept', 'application/json')
                     .end(function (err, res) {
@@ -314,12 +317,13 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                 }
                 superagent
                     .put(ctx.docUrl)
+                    .withCredentials()
                     .set('Content-Type', 'application/json')
                     .set('Accept', 'application/json')
                     .send(ctx.lastDoc)
                     .end(function (err, res) {
                         if (err) return reject(err);
-                        if (res.status !== 201) return reject(new Error('Error uploading inline attachments, couchdb returned status code ' + res.status));
+                        if (res.status !== 201 && res.status !== 200) return reject(new Error('Error uploading inline attachments, couchdb returned status code ' + res.status));
                         return resolve();
                     });
             });
@@ -338,6 +342,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
         var that = this;
         return superagent
             .get(this.docUrl)
+            .withCredentials()
             .set('Accept', 'application/json')
             .end().then(function (res) {
                 if (res.status !== 200) throw new Error('Error getting document, couchdb returned status code ' + res.status);

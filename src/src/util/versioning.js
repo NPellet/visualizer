@@ -36,17 +36,20 @@ define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'vers
     };
 
     function switchView(value, pushstate, options) {
-        var def;
+        options = options || {};
+        var def = Promise.resolve();
         if (value.data && (lastLoaded.data.url !== value.data.url || (lastLoaded.data.urls !== value.data.urls && lastLoaded.data.branch !== value.data.branch))) {
-            def = setData(value.data.urls, value.data.branch, value.data.url, options);
+            if (!options.doNotLoad) {
+                def = setData(value.data.urls, value.data.branch, value.data.url, options);
+            }
             lastLoaded.data = value.data;
-        } else {
-            def = $.Deferred().resolve();
         }
         if (value.view && (lastLoaded.view.url !== value.view.url || (lastLoaded.view.urls !== value.view.urls && lastLoaded.view.branch !== value.view.branch))) {
             def = def.then(function () {
                 lastLoaded.view = value.view;
-                return setView(value.view.urls, value.view.branch, value.view.url, options);
+                if (!options.doNotLoad) {
+                    return setView(value.view.urls, value.view.branch, value.view.url, options);
+                }
             });
         }
         if (pushstate) {
