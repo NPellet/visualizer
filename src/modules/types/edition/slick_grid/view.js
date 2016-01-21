@@ -1367,7 +1367,7 @@ define([
         onActionReceive: {
             addRow: function (item) {
                 if (this.slick.data) {
-                    item = item.resurrect();
+                    item = DataObject.resurrect(item)
                     this.setNextUniqId(item, true);
                     this.slick.data.addItem(item);
                     this._newRow(item);
