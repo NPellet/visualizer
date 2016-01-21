@@ -37,7 +37,7 @@ rules:
   valid-typeof: 2
 
   # Best practices
-  no-empty-label: 2
+  no-extra-label: 2
   no-lone-blocks: 2
   no-multi-spaces: 2
   no-new-wrappers: 2
@@ -74,6 +74,7 @@ rules:
     - 2
     - 4
     - {SwitchCase: 1}
+  keyword-spacing: 2
   key-spacing:
     - 2
     - {beforeColon: false, afterColon: true}
@@ -96,7 +97,6 @@ rules:
   semi:
     - 2
     - "always"
-  space-after-keywords: 2
   space-before-blocks:
     - 2
     - "always"
@@ -105,7 +105,6 @@ rules:
     - {anonymous: "always", named: "never"}
   space-in-parens: 2
   space-infix-ops: 2
-  space-return-throw-case: 2
 
 globals:
   setImmediate: false,
