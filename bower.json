@@ -30,7 +30,7 @@
     "colors": "2.0.0",
     "d3": "3.5.12",
     "d3-plugins": "cheminfo/d3-plugins#ea652308c616f3accde0a418f7ccc6254a932985",
-    "fancytree": "2.8.0",
+    "fancytree": "2.15.0",
     "farbtastic": "2.0.0-alpha.1",
     "file-saver.js": "1.20150304.1",
     "font-awesome": "4.3.0",
