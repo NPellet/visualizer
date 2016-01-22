@@ -21,7 +21,7 @@ define([
 
     var $dialog;
 
-    exports.choose = function (obj, slickOptions) {
+    exports.choose = function (obj, slickOptions, options) {
         slickOptions = slickOptions || {};
         var keys = Object.keys(obj);
         var arr = new Array(keys.length);
@@ -65,10 +65,12 @@ define([
 
                 var $dialog = $('<div>');
                 var $slick = $('<div>').css('height', 410);
-                var grid, data, lastClickedId;
+                var grid, data, lastClickedId, buttons;
 
-                exports.dialog($dialog, {
-                    buttons: {
+                if(options.noConfirmation) {
+                    buttons = {};
+                } else {
+                    buttons = {
                         Cancel: function () {
                             $(this).dialog('close');
                         },
@@ -76,7 +78,11 @@ define([
                             resolve(lastClickedId);
                             $(this).dialog('close');
                         }
-                    },
+                    };
+                }
+
+                exports.dialog($dialog, {
+                    buttons: buttons,
                     close: function () {
                         resolve();
                     },
@@ -84,6 +90,7 @@ define([
                         grid.resizeCanvas();
                     },
                     open: function () {
+                        var that = this;
                         $dialog.append($slick);
                         //$('body').append($slick);
                         data = new Slick.Data.DataView();
@@ -92,6 +99,10 @@ define([
                         grid.setSelectionModel(new Slick.RowSelectionModel());
                         grid.onClick.subscribe(function (e, args) {
                             lastClickedId = data.mapRowsToIds([args.row])[0];
+                            if(options.noConfirmation) {
+                                resolve(lastClickedId);
+                                $(that).dialog('close');
+                            }
                         });
                         grid.init();
                     },
