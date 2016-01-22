@@ -405,10 +405,10 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'superagent', 'uri/
                     body = body.then(that.module.resultfilter);
                 }
 
-                body.then(function(data) {
+                body.then(function (data) {
                     that.onSearchDone(data);
                     that.module.view.unlock();
-                }).catch(function(e) {
+                }).catch(function (e) {
                     console.error(e, e.stack);
                     that.module.view.unlock();
                 });

@@ -20,7 +20,7 @@ define([
             this.debounce = this.module.getConfiguration('debouncing');
             this.valueChanged = _.debounce(function () {
                 that.module.controller.valueChanged.apply(that.module.controller, arguments);
-            }, this.debounce)
+            }, this.debounce);
         },
         inDom: function () {
             this.initEditor();

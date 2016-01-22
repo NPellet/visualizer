@@ -173,7 +173,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'
     functions.jme.toscreen = function ($element, jme, jmeRoot, options) {
         return new Promise(function (resolve) {
             require(['lib/chemistry/jme-converter'], function (Converter) {
-                var converted = Converter.toMolfile(jme+"");
+                var converted = Converter.toMolfile(String(jme));
                 resolve(functions.mol2d.toscreen($element, converted, jmeRoot, options));
             });
         });
