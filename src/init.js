@@ -15,6 +15,7 @@
 require.config({
     waitSeconds: 0,
     paths: {
+        numeral: 'components/numeral/min/numeral.min',
         moment: 'components/moment/min/moment.min',
         'moment-duration-format': 'components/moment-duration-format/lib/moment-duration-format',
         ace: 'components/ace/src',
