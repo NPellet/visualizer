@@ -20,13 +20,41 @@ define([
 
     var exports = {};
 
+    // Slick Rendering
+    function waitFormatter() {
+        return '...';
+    }
+
+    function typeRenderer(cellNode, row, dataContext, colDef) {
+        if (cellNode) {
+            console.log(dataContext);
+            Renderer.render(cellNode, dataContext[colDef.field], colDef.rendererOptions);
+        }
+    }
+
+    // Default values
+    var slickDefaultOptions = {
+        editable: true,
+        enableAddRow: false,
+        enableTextSelectionOnCells: true,
+        forceFitColumns: true,
+        explicitInitialization: true,
+        rowHeight: 20,
+        enableAsyncPostRender: true
+    };
+
+    var slickDefaultColumn = {
+        formatter: waitFormatter,
+        asyncPostRender: typeRenderer
+    };
+
     var $dialog;
 
     exports.choose = function (list, slickOptions, options) {
         slickOptions = slickOptions || {};
-        var grid, data, lastClickedId, buttons, arr;
+        var grid, data, lastClickedId, buttons, arr, columns;
         var fromArray = Array.isArray(list);
-        if(fromArray) {
+        if (fromArray) {
             arr = list;
         } else {
             var keys = Object.keys(list);
@@ -40,56 +68,36 @@ define([
         }
 
 
-        function htmlFormatter(row, cell, value, columnDef, dataContext) {
-            return value;
+        if (options.columns) {
+            columns = options.columns;
+        } else {
+            columns = [
+                {
+                    id: 'key',
+                    name: 'key',
+                    field: 'key'
+                },
+                {
+                    id: 'description',
+                    name: 'description',
+                    field: 'description'
+                }
+            ];
         }
 
-        function waitFormatter() {
-            return '...';
-        }
-
-        function typeRenderer(cellNode, row, dataContext, colDef) {
-            if (cellNode) {
-                console.log(dataContext);
-                Renderer.render(cellNode, dataContext[colDef.field], colDef.rendererOptions);
-            }
+        for (var i = 0; i < columns.length; i++) {
+            columns[i] = _.defaults(columns[i], slickDefaultColumn);
         }
 
         return new Promise(function (resolve) {
             Util.loadCss('components/slickgrid/slick.grid.css').then(function () {
-                var slickDefaultOptions = {
-                    editable: true,
-                    enableAddRow: false,
-                    enableTextSelectionOnCells: true,
-                    forceFitColumns: true,
-                    explicitInitialization: true,
-                    rowHeight: 20,
-                    enableAsyncPostRender: true
-                };
-
                 slickOptions = _.defaults(slickOptions, slickDefaultOptions);
 
-                var columns = [
-                    {
-                        id: 'key',
-                        name: 'key',
-                        field: 'key',
-                        formatter: waitFormatter,
-                        asyncPostRender: typeRenderer
-                    },
-                    {
-                        id: 'description',
-                        name: 'description',
-                        field: 'description',
-                        formatter: waitFormatter,
-                        asyncPostRender: typeRenderer
-                    }
-                ];
 
                 var $dialog = $('<div>');
                 var $slick = $('<div>').css('height', 410);
 
-                if(options.noConfirmation) {
+                if (options.noConfirmation) {
                     buttons = {};
                 } else {
                     buttons = {
@@ -115,13 +123,13 @@ define([
                         var that = this;
                         $dialog.append($slick);
                         data = new Slick.Data.DataView();
-                        data.setItems(arr, 'key');
+                        data.setItems(arr, options.idField || 'key');
                         grid = new Slick.Grid($slick, data, columns, slickOptions);
                         grid.setSelectionModel(new Slick.RowSelectionModel());
                         grid.onClick.subscribe(function (e, args) {
                             // Get id
                             lastClickedId = data.mapRowsToIds([args.row])[0];
-                            if(options.noConfirmation) {
+                            if (options.noConfirmation) {
                                 resolve(lastClickedId);
                                 $(that).dialog('close');
                             }
@@ -134,9 +142,9 @@ define([
                 });
             });
         }).then(function (result) {
-            if(options.returnRow) {
+            if (options.returnRow) {
                 return data.getItemById(result);
-            } else if(options.returnColumn) {
+            } else if (options.returnColumn) {
                 return data.getItemById(result)[options.returnColumn];
             } else {
                 return result;
