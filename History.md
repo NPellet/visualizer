@@ -1,3 +1,26 @@
+<a name="2.36.0"></a>
+# 2.36.0 (2016-01-22)
+
+
+### Bug Fixes
+
+* **jsme:** output correct SVG ([f09c0a5](https://github.com/NPellet/visualizer/commit/f09c0a5))
+* **rich_text:** when instantiating ckeditor configure path to mathjax lib ([2d209a8](https://github.com/NPellet/visualizer/commit/2d209a8))
+* **slickgrid:** on update, scrolling back to row should not set focus on it ([fdb269f](https://github.com/NPellet/visualizer/commit/fdb269f))
+* **spectra_displayer:** set a different primary grid color ([57f85d2](https://github.com/NPellet/visualizer/commit/57f85d2))
+* **spectra_displayer:** shapes can be drawn again ([3ab42d5](https://github.com/NPellet/visualizer/commit/3ab42d5))
+* **type_renderer:** when a molfile is loaded from url ([29b9e02](https://github.com/NPellet/visualizer/commit/29b9e02))
+
+### Features
+
+* **rich_text:** add possibility to debounce output variable ([a056f17](https://github.com/NPellet/visualizer/commit/a056f17))
+* **slick_grid:** Choose which columns to be displayed in main and in popup ([a857e5a](https://github.com/NPellet/visualizer/commit/a857e5a))
+* **spectra_displayer:** add option to control the number of primary axis ticks ([ecc6af4](https://github.com/NPellet/visualizer/commit/ecc6af4))
+* **spectra_displayer:** redesign configuration tab ([f574b31](https://github.com/NPellet/visualizer/commit/f574b31))
+* **webservice_search:** allow filter to return a Promise ([dd3d5b3](https://github.com/NPellet/visualizer/commit/dd3d5b3))
+
+
+
 <a name="2.35.1"></a>
 ## 2.35.1 (2016-01-13)
 
