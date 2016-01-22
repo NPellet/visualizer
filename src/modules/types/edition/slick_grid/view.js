@@ -346,7 +346,7 @@ define([
         });
 
         ctx.grid.onCellChange.subscribe(function (e, args) {
-            if(ctx.fromPopup) { // We don't really know what has been edited...
+            if (ctx.fromPopup) { // We don't really know what has been edited...
                 var columns = ctx.getColumnsGivenEditContext();
             } else {
                 var column = ctx._getChangedColumn(args.cell);
@@ -354,8 +354,8 @@ define([
             var itemInfo = ctx._getItemInfoFromRow(args.row);
             if (itemInfo) {
                 if (ctx.hasFilter) {
-                    if(columns) {
-                        for(var i=0; i<columns.length; i++) {
+                    if (columns) {
+                        for (var i = 0; i < columns.length; i++) {
                             ctx._runFilter({
                                 event: 'cellChanged',
                                 row: itemInfo,
@@ -767,7 +767,7 @@ define([
 
         getInMainColumns: function () {
             return this.getSlickColumns().filter(function (col) {
-                if(!col.colDef) { // Special columns always in main
+                if (!col.colDef) { // Special columns always in main
                     return true;
                 }
                 return !col.colDef.visibility || col.colDef.visibility === 'main' || col.colDef.visibility === 'both';
@@ -776,7 +776,7 @@ define([
 
         getInPopupColumns: function () {
             return this.getAllSlickColumns().filter(function (col) {
-                if(!col.colDef) { // Special columns never in popup
+                if (!col.colDef) { // Special columns never in popup
                     return false;
                 }
                 return col.colDef.visibility === 'popup' || col.colDef.visibility === 'both';
@@ -785,7 +785,7 @@ define([
             }).filter(filterSpecialColumns);
         },
 
-        getColumnsGivenEditContext() {
+        getColumnsGivenEditContext: function () {
             if (this.fromPopup) {
                 return this.getInPopupColumns();
             } else {
@@ -1259,7 +1259,7 @@ define([
             return _.pluck(items, 'item');
         },
 
-        _getChangedColumn(cell) {
+        _getChangedColumn: function (cell) {
             return this.getColumnsGivenEditContext()[cell];
         },
 
@@ -1367,7 +1367,7 @@ define([
         onActionReceive: {
             addRow: function (item) {
                 if (this.slick.data) {
-                    item = DataObject.resurrect(item)
+                    item = DataObject.resurrect(item);
                     this.setNextUniqId(item, true);
                     this.slick.data.addItem(item);
                     this._newRow(item);
