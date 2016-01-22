@@ -1,6 +1,6 @@
 'use strict';
 
-define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment', 'numeral'], function (require, $, _, API, Util, moment) {
+define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment', 'numeral', 'sprintf'], function (require, $, _, API, Util, moment, numeral, sprintf) {
 
     var functions = {};
 
@@ -103,6 +103,8 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'
             number = number.toFixed(options.toFixed);
         } else if(options.hasOwnProperty('numeral')) {
             number = numeral(number).format(options.numeral);
+        } else if(options.hasOwnProperty('sprintf')) {
+            number = sprintf.sprintf(options.sprintf, number);
         }
         else if (checkDate(options)) {
             number = toDate(number, options);
