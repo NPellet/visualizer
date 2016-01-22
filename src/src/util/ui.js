@@ -10,30 +10,49 @@ define([
     'src/util/debug',
     'lodash',
     'jquery',
+    'src/util/typerenderer',
     'src/util/versioning',
     'slickgrid',
     'forms/button',
     'src/util/couchshare',
     'jquery-ui/dialog'
-], function (Util, Debug, _, $, Versioning, Slick, Button, Sharer) {
+], function (Util, Debug, _, $, Renderer, Versioning, Slick, Button, Sharer) {
 
     var exports = {};
 
     var $dialog;
 
-    exports.choose = function (obj, slickOptions, options) {
+    exports.choose = function (list, slickOptions, options) {
         slickOptions = slickOptions || {};
-        var keys = Object.keys(obj);
-        var arr = new Array(keys.length);
-        for (var i = 0; i < arr.length; i++) {
-            arr[i] = {
-                key: keys[i],
-                description: obj[keys[i]]
-            };
+        var grid, data, lastClickedId, buttons, arr;
+        var fromArray = Array.isArray(list);
+        if(fromArray) {
+            arr = list;
+        } else {
+            var keys = Object.keys(list);
+            arr = new Array(keys.length);
+            for (var i = 0; i < arr.length; i++) {
+                arr[i] = {
+                    key: keys[i],
+                    description: list[keys[i]]
+                };
+            }
         }
+
 
         function htmlFormatter(row, cell, value, columnDef, dataContext) {
             return value;
+        }
+
+        function waitFormatter() {
+            return '...';
+        }
+
+        function typeRenderer(cellNode, row, dataContext, colDef) {
+            if (cellNode) {
+                console.log(dataContext);
+                Renderer.render(cellNode, dataContext[colDef.field], colDef.rendererOptions);
+            }
         }
 
         return new Promise(function (resolve) {
@@ -44,7 +63,8 @@ define([
                     enableTextSelectionOnCells: true,
                     forceFitColumns: true,
                     explicitInitialization: true,
-                    rowHeight: 20
+                    rowHeight: 20,
+                    enableAsyncPostRender: true
                 };
 
                 slickOptions = _.defaults(slickOptions, slickDefaultOptions);
@@ -53,19 +73,21 @@ define([
                     {
                         id: 'key',
                         name: 'key',
-                        field: 'key'
+                        field: 'key',
+                        formatter: waitFormatter,
+                        asyncPostRender: typeRenderer
                     },
                     {
                         id: 'description',
                         name: 'description',
                         field: 'description',
-                        formatter: htmlFormatter
+                        formatter: waitFormatter,
+                        asyncPostRender: typeRenderer
                     }
                 ];
 
                 var $dialog = $('<div>');
                 var $slick = $('<div>').css('height', 410);
-                var grid, data, lastClickedId, buttons;
 
                 if(options.noConfirmation) {
                     buttons = {};
@@ -92,12 +114,12 @@ define([
                     open: function () {
                         var that = this;
                         $dialog.append($slick);
-                        //$('body').append($slick);
                         data = new Slick.Data.DataView();
                         data.setItems(arr, 'key');
                         grid = new Slick.Grid($slick, data, columns, slickOptions);
                         grid.setSelectionModel(new Slick.RowSelectionModel());
                         grid.onClick.subscribe(function (e, args) {
+                            // Get id
                             lastClickedId = data.mapRowsToIds([args.row])[0];
                             if(options.noConfirmation) {
                                 resolve(lastClickedId);
@@ -111,6 +133,14 @@ define([
                     height: 500
                 });
             });
+        }).then(function (result) {
+            if(options.returnRow) {
+                return data.getItemById(result);
+            } else if(options.returnColumn) {
+                return data.getItemById(result)[options.returnColumn];
+            } else {
+                return result;
+            }
         });
 
     };
