@@ -19,7 +19,6 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
     Controller.prototype.references = {
         value: {
             label: 'Any displayable object'
-
         },
         color: {
             type: 'string',
@@ -87,6 +86,11 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
                                 {title: 'Bottom', key: 'bottom'}
                             ]
                         },
+                        rendererOptions: {
+                            type: 'text',
+                            title: 'Renderer options',
+                            default: ''
+                        },
                         sprintf: {
                             type: 'text',
                             title: 'Sprintf'
@@ -135,6 +139,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
         valign: ['groups', 'group', 0, 'valign', 0],
         defaultvalue: ['groups', 'group', 0, 'defaultvalue', 0],
         sprintf: ['groups', 'group', 0, 'sprintf', 0],
+        rendererOptions: ['groups', 'group', 0, 'rendererOptions', 0],
         sprintfOrder: ['groups', 'group', 0, 'sprintfOrder'],
         preformatted: ['groups', 'group', 0, 'preformatted', 0],
         append: ['groups', 'group', 0, 'append', 0],

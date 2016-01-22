@@ -14,21 +14,6 @@ define([
     function View() {
     }
 
-    function _rendererOptions(options) {
-        var result;
-        if (!options) return undefined;
-        if (!options.match(/^\s*\{/)) {
-            options = '{' + options + '}';
-        }
-        try {
-            eval('result = ' + options);
-            return result;
-        } catch (e) {
-            Debug.warn('rendererOptions invalid in SlickGrid preferences');
-            return undefined;
-        }
-    }
-
 
     var cssPromises = [];
     cssPromises.push(Util.loadCss('components/slickgrid/slick.grid.css'));
@@ -673,7 +658,7 @@ define([
                         type = getType(row.jpath);
                     }
 
-                    var rendererOptions = _rendererOptions(row.rendererOptions);
+                    var rendererOptions = Util.evalOptions(row.rendererOptions);
                     return {
                         id: row.name,
                         name: row.name,

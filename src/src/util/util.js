@@ -459,6 +459,21 @@ define(['src/util/debug', 'src/util/color', 'lodash', 'components/web-animations
     exports.rgbToHex = exports.deprecate(Color.rgb2hex, 'use Color.rgb2hex');
     exports.getColor = exports.deprecate(Color.getColor, 'use Color.getColor');
 
+    exports.evalOptions = function (options) {
+        var result;
+        if (!options) return undefined;
+        if (!options.match(/^\s*\{/)) {
+            options = '{' + options + '}';
+        }
+        try {
+            eval('result = ' + options);
+            return result;
+        } catch (e) {
+            Debug.warn('could not eval options');
+            return undefined;
+        }
+    };
+
     return exports;
 
 });

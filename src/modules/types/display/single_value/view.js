@@ -2,15 +2,17 @@
 
 define([
     'modules/default/defaultview',
-    'src/util/domdeferred',
+    'src/util/util',
     'src/util/api',
     'src/util/typerenderer',
-    'src/util/color'
+    'src/util/color',
+    'sprintf'
 ], function (Default,
-             DomDeferred,
+             Util,
              API,
              Renderer,
-             Color) {
+             Color,
+             sprintf) {
 
     function View() {
     }
@@ -86,31 +88,31 @@ define([
 
             var that = this,
                 sprintfVal = this.module.getConfiguration('sprintf'),
-                sprintfOrder = this.module.getConfiguration('sprintfOrder');
-
-            if (sprintfVal && sprintfVal != '') {
-
-                try {
-                    require(['sprintf'], function (sprintf) {
-
+                rendererOptions = Util.evalOptions(this.module.getConfiguration('rendererOptions')) || {};
+            if (sprintfVal) {
+                if (rendererOptions) {
+                    var prom = [];
+                    for (var i in that.values) {
+                        prom.push(this.renderVal(that.values[i], rendererOptions));
+                    }
+                    Promise.all(prom).then(function (rendered) {
+                        var args = [sprintfVal].concat(rendered);
+                        that.fillWithVal(sprintf.sprintf.apply(null, args));
+                    });
+                } else {
+                    try {
                         var args = [sprintfVal];
                         for (var i in that.values) {
                             args.push(that.values[i]);
                         }
-
                         val = sprintf.sprintf.apply(this, args);
-
-                        that.fillWithVal(val);
-                    });
-
-                } catch (e) {
-
-                    that.fillWithVal(val);
-
+                        that.fillWithVal(val, rendererOptions);
+                    } catch (e) {
+                        that.fillWithVal(val, rendererOptions);
+                    }
                 }
-
             } else {
-                that.fillWithVal(val);
+                that.fillWithVal(val, rendererOptions);
             }
         },
 
@@ -119,7 +121,18 @@ define([
             this.dom.scrollTop(scroll_height);
         },
 
-        fillWithVal: function (val) {
+        renderVal: function (val, options) {
+            var $span = $('<span>');
+            return Renderer.render($span, val, options)
+                .then(function () {
+                    return $span.html();
+                })
+                .catch(function () {
+                    return '[failed]';
+                });
+        },
+
+        fillWithVal: function (val, rendererOptions) {
 
             var valign = this.module.getConfiguration('valign');
             var align = this.module.getConfiguration('align');
@@ -168,11 +181,9 @@ define([
             this._scrollDown();
 
             var that = this;
-            Renderer.render(div, val).then(function () {
+            Renderer.render(div, val, rendererOptions).then(function () {
                 that._scrollDown();
             });
-
-            DomDeferred.notify(div);
         }
 
     });
