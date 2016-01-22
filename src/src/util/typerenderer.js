@@ -163,7 +163,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'
                 canEl.height = h;
                 canEl.width = w;
                 $element.html(can);
-                ACT.StructureView.drawStructure(id, idcode, coordinates, options);
+                ACT.StructureView.drawStructure(id, String(idcode), String(coordinates), options);
                 resolve();
             });
         });
@@ -173,7 +173,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'
     functions.jme.toscreen = function ($element, jme, jmeRoot, options) {
         return new Promise(function (resolve) {
             require(['lib/chemistry/jme-converter'], function (Converter) {
-                var converted = Converter.toMolfile(jme);
+                var converted = Converter.toMolfile(jme+"");
                 resolve(functions.mol2d.toscreen($element, converted, jmeRoot, options));
             });
         });
@@ -195,7 +195,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'
             require([OCL], function (ACT) {
                 if (!root.coordinates) {
                     var value = String(root.value);
-                    var mol = ACT.Molecule.fromIDCode(value, true);
+                    var mol = ACT.Molecule.fromIDCode(String(value), true);
                     Object.defineProperty(root, 'coordinates', {
                         configurable: true,
                         enumerable: false,
@@ -213,7 +213,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'
     functions.mol2d.toscreen = function ($element, molfile, molfileRoot, options) {
         return new Promise(function (resolve) {
             require([OCL], function (ACT) {
-                var mol = ACT.Molecule.fromMolfile(molfile);
+                var mol = ACT.Molecule.fromMolfile(String(molfile));
                 resolve(renderOpenChemLibStructure($element, mol.getIDCode(), mol.getIDCoordinates(), options));
             });
         });
