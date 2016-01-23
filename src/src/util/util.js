@@ -450,6 +450,21 @@ define(['src/util/debug', 'src/util/color', 'lodash', 'components/web-animations
         return exports.objectToString(arr).slice('-5') === 'Array';
     };
 
+    // inspired rom : https://github.com/janl/mustache.js/blob/master/mustache.js
+    var entityMap = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': '&quot;',
+        "'": '&#39;',
+        "/": '&#x2F;'
+    };
+    exports.escapeHTML = function (string) {
+        return String(string).replace(/[&<>"'\/]/g, function (s) {
+          return entityMap[s];
+        }
+    }
+
     // Deprecated color methods. Moved to src/util/color
     exports.getDistinctColors = exports.deprecate(Color.getDistinctColors, 'use Color.getDistinctColors');
     exports.getNextColorRGB = exports.deprecate(Color.getNextColorRGB, 'use Color.getNextColorRGB');
