@@ -31,6 +31,31 @@ module.exports = function (grunt) {
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
+        babel: {
+            options: {
+                sourceMap: true,
+                presets: ['es2015']
+            },
+            build: {
+                files: [
+                    {
+                        expand: true,     // Enable dynamic expansion.
+                        cwd: './build2/',      // Src matches are relative to this path.
+                        src: [
+                            'init.js',
+                            'modules/**/*.js',
+                            '!modules/**/lib/**/*.js',
+                            'src/**/*.js',
+                            '!lib/**/*',
+                            'lib/chemistry/*.js'
+                        ], // Actual pattern(s) to match.
+                        dest: './build2/',   // Destination path prefix.
+                        //overwrite: true,
+                        ext: '.js'   // Dest filepaths will have this extension.
+                    }
+                ]
+            }
+        },
         uglify: {
             options: {
                 screwIE8: true
@@ -310,6 +335,7 @@ module.exports = function (grunt) {
     });
 
     // Load the plugin that provides the "uglify" task.
+    grunt.loadNpmTasks('grunt-babel');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-copy');
@@ -484,6 +510,7 @@ module.exports = function (grunt) {
         'copy:buildLib',
         'css:modules',
         'requirejs',
+        'babel:build',
         'uglify:build',
         'clean:build',
         'rename:afterBuild',

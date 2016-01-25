@@ -42,7 +42,7 @@ define([
             }
         }
 
-        var _ready = new Promise(function(resolve) {
+        var _ready = new Promise(resolve => {
             readyToAddItems = resolve;
         });
 
@@ -186,8 +186,8 @@ define([
                         });
                         grid.init();
                         readyToAddItems({
-                            data: data,
-                            grid: grid
+                            data,
+                            grid
                         });
                         updateHeader();
                     },
