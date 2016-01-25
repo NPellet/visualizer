@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'ckeditor'], function (Default, CKEDITOR) {
+define(['jquery', 'modules/default/defaultcontroller', 'ckeditor'], function ($, Default, CKEDITOR) {
 
     function Controller() {
     }
@@ -74,6 +74,12 @@ define(['modules/default/defaultcontroller', 'ckeditor'], function (Default, CKE
                             options: {yes: 'Yes'},
                             default: []
                         },
+                        storeInView: {
+                            type: 'checkbox',
+                            title: 'Store content in view',
+                            options: {yes: 'Yes'},
+                            default: ['yes']
+                        },
                         autoHeight: {
                             type: 'checkbox',
                             title: 'Automatic Height',
@@ -111,6 +117,7 @@ define(['modules/default/defaultcontroller', 'ckeditor'], function (Default, CKE
     Controller.prototype.configAliases = {
         editable: ['groups', 'group', 0, 'editable', 0],
         modifyInVariable: ['groups', 'group', 0, 'modifyInVariable', 0],
+        storeInView: ['groups', 'group', 0, 'storeInView', 0],
         autoHeight: ['groups', 'group', 0, 'autoHeight', 0],
         bgColor: ['groups', 'group', 0, 'bgColor', 0],
         postit: ['groups', 'group', 0, 'postit', 0],

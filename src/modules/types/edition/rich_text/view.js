@@ -1,13 +1,14 @@
 'use strict';
 
 define([
+    'jquery',
     'modules/default/defaultview',
     'src/util/util',
     'ckeditor',
     'lodash',
     'src/main/grid',
     'chroma'
-], function (Default, Util, CKEDITOR, _, Grid, chroma) {
+], function ($, Default, Util, CKEDITOR, _, Grid, chroma) {
 
     function View() {
         this._id = Util.getNextUniqueId();
@@ -18,6 +19,7 @@ define([
             var that = this;
             this.plainHtml = this.module.getConfigurationCheckbox('plainHtml', 'yes');
             this.debounce = this.module.getConfiguration('debouncing');
+            this.storeInView = this.module.getConfigurationCheckbox('storeInView', 'yes');
             this.valueChanged = _.debounce(function () {
                 that.module.controller.valueChanged.apply(that.module.controller, arguments);
             }, this.debounce);
@@ -35,7 +37,9 @@ define([
             html: function (moduleValue) {
                 this.module.data = moduleValue;
                 var val = moduleValue.get();
-                this.module.definition.richtext = val;
+                if (this.storeInView) {
+                    this.module.definition.richtext = val;
+                }
                 this.updateEditor(val);
             }
         },
@@ -45,15 +49,19 @@ define([
             this.readOnly = !this.module.getConfigurationCheckbox('editable', 'isEditable');
             if (this.readOnly && this.plainHtml) {
                 this.dom = $('<div>');
-                this.dom.html(initText);
+                if (this.storeInView) {
+                    this.dom.html(initText);
+                }
                 this.module.getDomContent().html(this.dom);
                 this._setCss();
             } else {
                 this.dom = $('<div id="' + this._id + '" contenteditable="true">');
-                this.dom.html(initText);
+                if (this.storeInView) {
+                    this.dom.html(initText);
+                    this.module.controller.valueChanged(initText);
+                }
                 this.module.getDomContent().html(this.dom);
                 this._setCss();
-                this.module.controller.valueChanged(initText);
                 if (CKEDITOR.instances[this._id]) {
                     CKEDITOR.instances[this._id].destroy();
                 }
