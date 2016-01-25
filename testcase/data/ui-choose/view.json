@@ -1,0 +1,380 @@
+{
+  "version": "2.36.1-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "script": [
+                "var list = {\n    abc: 'abc',\n    xyz: 'xyz'\n}\n\nui.choose(list, {\n    noConfirmation: true,\n    returnRow: true\n}).then(function(res) {\n    console.log(res);\n});"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {
+                "lib": "src/util/ui",
+                "alias": "ui"
+              }
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 36,
+            "height": 46
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Use key-value",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 1,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "Use key-value",
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": []
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "script": [
+                "function createArray(n, idStart) {\n    var arr = new Array(n);\n    for(var i=0; i<n; i++) {\n        arr[i] = {\n            a:Math.random().toString(36).substring(7),\n            id: idStart + i\n        }\n    }\n    return arr;\n}\n\nui.choose(createArray(100,0), {\n    noConfirmation: true,\n    returnRow: true,\n    columns: [\n        {\n            id: 'id',\n            name: 'id',\n            field: 'id'\n        },\n        {\n            id: 'a',\n            name: 'a',\n            field: 'a'\n        },\n    ],\n    idField: 'id'\n}).then(function(res) {\n    console.log(res);\n});"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {
+                "lib": "src/util/ui",
+                "alias": "ui"
+              }
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 37,
+            "top": 0
+          },
+          "size": {
+            "width": 45,
+            "height": 46
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Use array of objects",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 2,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "Use array of objects",
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": []
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "script": [
+                "function createArray(n, idStart) {\n    var arr = new Array(n);\n    for(var i=0; i<n; i++) {\n        arr[i] = {\n            a:Math.random().toString(36).substring(7),\n            id: idStart + i\n        }\n    }\n    return arr;\n}\n\nvar prom1 = new Promise(function(resolve) {\n    setTimeout(function() {\n        console.log('resolve');\n        resolve(createArray(100, 10));\n    },3000);\n});\n\nvar prom2 = new Promise(function(resolve) {\n    setTimeout(function() {\n        console.log('resolve');\n        resolve([{a:'a', id: 0}, {a: 'b', id: 1}]);\n    },1000);\n});\n\n\nvar list = [{promise:prom1}, {promise: prom2}];\n\nui.choose(list, {\n    asynchronous: true,\n    noConfirmation: true,\n    returnRow: true,\n    columns: [\n        {\n            id: 'id',\n            name: 'id',\n            field: 'id'\n        },\n        {\n            id: 'a',\n            name: 'a',\n            field: 'a'\n        },\n    ],\n    idField: 'id'\n}).then(function(res) {\n    console.log(res);\n});"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {
+                "lib": "src/util/ui",
+                "alias": "ui"
+              },
+              {
+                "lib": "lodash",
+                "alias": "_"
+              }
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 83,
+            "top": 0
+          },
+          "size": {
+            "width": 44,
+            "height": 46
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Asynchronous",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "Asynchronous",
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": []
+    }
+  ],
+  "variables": [
+    {
+      "varname": "num",
+      "jpath": [
+        "num"
+      ]
+    }
+  ],
+  "aliases": [
+    {}
+  ],
+  "pouchvariables": [
+    {}
+  ],
+  "configuration": {
+    "title": "No title"
+  },
+  "actionscripts": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          {
+            "name": [
+              null
+            ],
+            "script": [
+              null
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "couch_replication": [
+    {
+      "sections": {},
+      "groups": {
+        "couch": [
+          [
+            {
+              "direction": "both",
+              "continuous": []
+            }
+          ]
+        ]
+      }
+    }
+  ],
+  "init_script": [
+    {
+      "sections": {},
+      "groups": {
+        "general": [
+          {
+            "script": [
+              "API.createData('table', [{a:1}])"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "custom_filters": [
+    {
+      "sections": {
+        "modules": [
+          {
+            "sections": {},
+            "groups": {
+              "modules": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filtersLib": [
+          {
+            "sections": {},
+            "groups": {
+              "filters": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filters": [
+          {
+            "sections": {},
+            "groups": {
+              "filter": [
+                {
+                  "name": [
+                    null
+                  ],
+                  "script": [
+                    null
+                  ]
+                }
+              ],
+              "libs": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "groups": {}
+    }
+  ],
+  "actionfiles": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          [
+            {}
+          ]
+        ]
+      }
+    }
+  ]
+}
