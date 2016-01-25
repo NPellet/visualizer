@@ -186,7 +186,8 @@ define([
                         });
                         grid.init();
                         readyToAddItems({
-                            data, grid
+                            data: data,
+                            grid: grid
                         });
                         updateHeader();
                     },
