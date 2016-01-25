@@ -918,3 +918,19 @@ li.safari {
     right: 0px;
     width: 200px;
 }
+
+/* Helper css */
+.flex-main-container{
+    display: -webkit-flex;
+    display: flex;
+    min-height: 100%;
+    max-height: 100%;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    width: 100%;
+}
+
+.flex-1 {
+    -webkit-flex: 1;
+    flex: 1;
+}

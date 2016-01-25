@@ -48,14 +48,12 @@ define([
 
         // Display
         function updateHeader() {
-            $header.html('Loading from ' + sources + ' sources');
+            $header.html(sources ? (sources + ' sources left') : 'All sources loaded.' + (failedSources ? (' (' + failedSources + ' failed)') : ''));
         }
 
 
         function addItems(arr) {
-            console.log('add items');
             return _ready.then(function (slick) {
-                console.log('begin update', arr);
                 slick.data.beginUpdate();
                 for(var i=0; i<arr.length ;i++) {
                     slick.data.addItem(arr[i]);
@@ -63,6 +61,7 @@ define([
                 slick.data.endUpdate();
                 slick.grid.invalidateAllRows();
                 slick.grid.render();
+                slick.grid.resizeCanvas();
                 sources--;
                 updateHeader();
             });
@@ -84,7 +83,7 @@ define([
             asyncPostRender: typeRenderer
         };
 
-        var grid, data, lastClickedId, buttons, arr, columns, sources, $header;
+        var grid, data, lastClickedId, buttons, arr, columns, sources, failedSources = 0, $header;
         var fromArray = Array.isArray(list);
 
         if (!options.asynchronous) {
@@ -106,7 +105,7 @@ define([
             for (var i = 0; i < list.length; i++) {
                 list[i].promise.then(addItems).catch(function (e) {
                     sources--;
-                    console.log('promise failed');
+                    failedSources++;
                     updateHeader();
                 });
             }
@@ -140,7 +139,8 @@ define([
         return new Promise(function (resolve) {
             Util.loadCss('components/slickgrid/slick.grid.css').then(function () {
                 var $dialog = $('<div>');
-                var $slick = $('<div>').css('height', 410);
+                var $slick = $('<div>');
+                var $container = $('<div>').css('height', 410);
 
                 if (options.noConfirmation) {
                     buttons = {};
@@ -166,9 +166,12 @@ define([
                     },
                     open: function () {
                         var that = this;
+                        $container.addClass('flex-main-container');
+                        $slick.addClass('flex-1');
                         $header = $('<div>');
-                        $dialog.append($header);
-                        $dialog.append($slick);
+                        $container.append($header);
+                        $container.append($slick);
+                        $dialog.append($container);
                         data = new Slick.Data.DataView();
                         data.setItems([], options.idField || 'key');
                         grid = new Slick.Grid($slick, data, columns, slickOptions);
@@ -185,6 +188,7 @@ define([
                         readyToAddItems({
                             data, grid
                         });
+                        updateHeader();
                     },
                     closeOnEscape: false,
                     width: 700,
