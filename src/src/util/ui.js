@@ -20,53 +20,101 @@ define([
 
     var exports = {};
 
-    // Slick Rendering
-    function waitFormatter() {
-        return '...';
-    }
-
-    function typeRenderer(cellNode, row, dataContext, colDef) {
-        if (cellNode) {
-            console.log(dataContext);
-            Renderer.render(cellNode, dataContext[colDef.field], colDef.rendererOptions);
-        }
-    }
-
-    // Default values
-    var slickDefaultOptions = {
-        editable: true,
-        enableAddRow: false,
-        enableTextSelectionOnCells: true,
-        forceFitColumns: true,
-        explicitInitialization: true,
-        rowHeight: 20,
-        enableAsyncPostRender: true
-    };
-
-    var slickDefaultColumn = {
-        formatter: waitFormatter,
-        asyncPostRender: typeRenderer
-    };
 
     var $dialog;
 
-    exports.choose = function (list, slickOptions, options) {
-        slickOptions = slickOptions || {};
-        var grid, data, lastClickedId, buttons, arr, columns;
-        var fromArray = Array.isArray(list);
-        if (fromArray) {
-            arr = list;
-        } else {
-            var keys = Object.keys(list);
-            arr = new Array(keys.length);
-            for (var i = 0; i < arr.length; i++) {
-                arr[i] = {
-                    key: keys[i],
-                    description: list[keys[i]]
-                };
+    exports.choose = function (list, options) {
+        options = options || {};
+        options = _.defaults(options, {
+            slick: {}
+        });
+
+        var readyToAddItems;
+
+        // Slick Rendering
+        function waitFormatter() {
+            return '...';
+        }
+
+        function typeRenderer(cellNode, row, dataContext, colDef) {
+            if (cellNode) {
+                Renderer.render(cellNode, dataContext[colDef.field], colDef.rendererOptions);
             }
         }
 
+        var _ready = new Promise(function(resolve) {
+            readyToAddItems = resolve;
+        });
+
+        // Display
+        function updateHeader() {
+            $header.html('Loading from ' + sources + ' sources');
+        }
+
+
+        function addItems(arr) {
+            console.log('add items');
+            return _ready.then(function (slick) {
+                console.log('begin update', arr);
+                slick.data.beginUpdate();
+                for(var i=0; i<arr.length ;i++) {
+                    slick.data.addItem(arr[i]);
+                }
+                slick.data.endUpdate();
+                slick.grid.invalidateAllRows();
+                slick.grid.render();
+                sources--;
+                updateHeader();
+            });
+        }
+
+        // Default values
+        var slickDefaultOptions = {
+            editable: true,
+            enableAddRow: false,
+            enableTextSelectionOnCells: true,
+            forceFitColumns: true,
+            explicitInitialization: true,
+            rowHeight: 20,
+            enableAsyncPostRender: true
+        };
+
+        var slickDefaultColumn = {
+            formatter: waitFormatter,
+            asyncPostRender: typeRenderer
+        };
+
+        var grid, data, lastClickedId, buttons, arr, columns, sources, $header;
+        var fromArray = Array.isArray(list);
+
+        if (!options.asynchronous) {
+            if (fromArray) {
+                arr = list;
+            } else {
+                var keys = Object.keys(list);
+                arr = new Array(keys.length);
+                for (var i = 0; i < arr.length; i++) {
+                    arr[i] = {
+                        key: keys[i],
+                        description: list[keys[i]]
+                    };
+                }
+            }
+            addItems(arr);
+        } else if (fromArray) {
+            sources = list.length;
+            for (var i = 0; i < list.length; i++) {
+                list[i].promise.then(addItems).catch(function (e) {
+                    sources--;
+                    console.log('promise failed');
+                    updateHeader();
+                });
+            }
+        } else {
+            throw new Error('Invalid arguments');
+        }
+
+        var slickOptions = _.defaults(options.slick, slickDefaultOptions);
 
         if (options.columns) {
             columns = options.columns;
@@ -91,9 +139,6 @@ define([
 
         return new Promise(function (resolve) {
             Util.loadCss('components/slickgrid/slick.grid.css').then(function () {
-                slickOptions = _.defaults(slickOptions, slickDefaultOptions);
-
-
                 var $dialog = $('<div>');
                 var $slick = $('<div>').css('height', 410);
 
@@ -121,9 +166,11 @@ define([
                     },
                     open: function () {
                         var that = this;
+                        $header = $('<div>');
+                        $dialog.append($header);
                         $dialog.append($slick);
                         data = new Slick.Data.DataView();
-                        data.setItems(arr, options.idField || 'key');
+                        data.setItems([], options.idField || 'key');
                         grid = new Slick.Grid($slick, data, columns, slickOptions);
                         grid.setSelectionModel(new Slick.RowSelectionModel());
                         grid.onClick.subscribe(function (e, args) {
@@ -135,6 +182,9 @@ define([
                             }
                         });
                         grid.init();
+                        readyToAddItems({
+                            data, grid
+                        });
                     },
                     closeOnEscape: false,
                     width: 700,
