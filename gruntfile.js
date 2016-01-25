@@ -127,7 +127,8 @@ module.exports = function (grunt) {
                             './web-animations-js/*.js.map',
                             './moment/min/moment.min.js',
                             './moment-duration-format/lib/moment-duration-format.js',
-                            './smart-array-filter/dist/*'
+                            './smart-array-filter/dist/*',
+                            './numeral/min/numeral.min.js'
                         ],
 
                         dest: './build/components/'
