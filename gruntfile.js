@@ -33,14 +33,13 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON('package.json'),
         babel: {
             options: {
-                sourceMap: true,
                 presets: ['es2015']
             },
             build: {
                 files: [
                     {
                         expand: true,     // Enable dynamic expansion.
-                        cwd: './build2/',      // Src matches are relative to this path.
+                        cwd: './build/',      // Src matches are relative to this path.
                         src: [
                             'init.js',
                             'modules/**/*.js',
@@ -49,7 +48,7 @@ module.exports = function (grunt) {
                             '!lib/**/*',
                             'lib/chemistry/*.js'
                         ], // Actual pattern(s) to match.
-                        dest: './build2/',   // Destination path prefix.
+                        dest: './build/',   // Destination path prefix.
                         //overwrite: true,
                         ext: '.js'   // Dest filepaths will have this extension.
                     }
@@ -509,8 +508,8 @@ module.exports = function (grunt) {
         'copy:build',
         'copy:buildLib',
         'css:modules',
-        'requirejs',
         'babel:build',
+        'requirejs',
         'uglify:build',
         'clean:build',
         'rename:afterBuild',
