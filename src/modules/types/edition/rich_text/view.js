@@ -26,7 +26,6 @@ define([
         },
         inDom: function () {
             this.initEditor();
-            this.resolveReady();
         },
         blank: {
             html: function () {
@@ -84,7 +83,9 @@ define([
                         that.module.getDomWrapper().height(that.getContentHeight() + 50);
                         Grid.moduleResize(that.module);
                     }
-
+                });
+                this.instance.on('loaded', function() {
+                    that.resolveReady();
                 });
             }
         },
