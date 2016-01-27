@@ -290,7 +290,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'
 
     functions.downloadlink = {};
     functions.downloadlink.toscreen = function ($element, value) {
-        $element.html(value.replace(/^(.*)$/, '<a href="$1">⤵</a>'));
+        $element.html(value.replace(/^(.*)$/, '<a download href="$1">⤵</a>'));
     };
 
     functions.openlink = {};
