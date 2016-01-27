@@ -1,3 +1,23 @@
+<a name="2.37.0"></a>
+# 2.37.0 (2016-01-27)
+
+
+### Bug Fixes
+
+* Remove destructuring declarations because uglifyjs cannot parse it ([43bad10](https://github.com/NPellet/visualizer/commit/43bad10))
+* **rich_text:** wait for ckeditor to be ready before resolveReady ([0e1804c](https://github.com/NPellet/visualizer/commit/0e1804c))
+
+### Features
+
+* **core:** use babel to translate es-2015 into browser-compliant javascript ([248d5a3](https://github.com/NPellet/visualizer/commit/248d5a3))
+* **rich_text:** new option allows not to store the content in view ([57703b2](https://github.com/NPellet/visualizer/commit/57703b2))
+* **single_value:** typerenderer options ([1832d10](https://github.com/NPellet/visualizer/commit/1832d10))
+* **typerenderer:** add numeral ([e6db670](https://github.com/NPellet/visualizer/commit/e6db670))
+* **typerenderer:** add sprintf option for number ([d9cf55d](https://github.com/NPellet/visualizer/commit/d9cf55d))
+* **ui:** ui.choose no confirmation option ([bcaf287](https://github.com/NPellet/visualizer/commit/bcaf287))
+
+
+
 <a name="2.36.0"></a>
 # 2.36.0 (2016-01-22)
 
