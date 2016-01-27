@@ -227,7 +227,12 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'
 
     functions.mf = {};
     functions.mf.toscreen = function ($element, value) {
-        $element.html(value.replace(/\[([0-9]+)/g, '[<sup>$1</sup>').replace(/([a-zA-Z)])([0-9]+)/g, '$1<sub>$2</sub>').replace(/\(([0-9+-]+)\)/g, '<sup>$1</sup>'));
+        if (value) {
+            $element.html(value.replace(/\[([0-9]+)/g, '[<sup>$1</sup>').replace(/([a-zA-Z)])([0-9]+)/g, '$1<sub>$2</sub>').replace(/\(([0-9+-]+)\)/g, '<sup>$1</sup>'));
+        } else {
+            $element.html('');
+        }
+
     };
 
     function bioPv(type, element, val, valRoot, options) {
