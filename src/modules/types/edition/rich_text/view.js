@@ -84,7 +84,7 @@ define([
                         Grid.moduleResize(that.module);
                     }
                 });
-                this.instance.on('loaded', function() {
+                this.instance.on('loaded', function () {
                     that.resolveReady();
                 });
             }
