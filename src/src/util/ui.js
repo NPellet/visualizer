@@ -55,7 +55,7 @@ define([
         function addItems(arr) {
             return _ready.then(function (slick) {
                 slick.data.beginUpdate();
-                for(var i=0; i<arr.length ;i++) {
+                for (var i = 0; i < arr.length; i++) {
                     slick.data.addItem(arr[i]);
                 }
                 slick.data.endUpdate();
