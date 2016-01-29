@@ -1,6 +1,11 @@
 'use strict';
 
-define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], function (Default, Twig, Debug) {
+define([
+    'jquery',
+    'modules/default/defaultview',
+    'lib/twigjs/twig',
+    'src/util/debug'
+], function ($, Default, Twig, Debug) {
 
     function View() {
     }

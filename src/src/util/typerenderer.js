@@ -439,6 +439,26 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'
 
     functions.regex = functions.regexp;
 
+    functions.object = {};
+    functions.object.init = function () {
+        return new Promise(resolve => {
+            require(['lib/twigjs/twig'], function (twig) {
+                functions.object.twig = twig;
+                resolve();
+            });
+        });
+    };
+    functions.object.toscreen = function ($element, value, root, options) {
+        if (options.twig) {
+            const template = functions.object.twig.twig({data: options.twig});
+            const render = template.renderAsync(value);
+            $element.html(render.html);
+            render.render();
+        } else {
+            $element.html(Object.prototype.toString.call(value));
+        }
+    };
+
     //TODO replace with a Map when more browsers are supported
     var typeInit = {};
 
