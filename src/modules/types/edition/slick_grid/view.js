@@ -589,16 +589,16 @@ define([
 
             this.actionRenderer = function (cellNode, row, dataContext, colDef) {
                 if (cellNode) {
-                    cellNode.innerHTML = 'abc';
                     var context = {
                         event: 'renderAction',
+                        column: colDef,
                         row: {
                             item: dataContext
                         },
                         renderOptions: {
                             icon: colDef.colDef.icon,
                             disabled: false,
-                            action: colDef.colDef.action,
+                            action: colDef.colDef.action
                         }
                     };
 
