@@ -36,6 +36,30 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
                         type: 'list'
                     },
                     fields: {
+                        append: {
+                            type: 'checkbox',
+                            title: 'Append values',
+                            options: {
+                                yes: 'Yes'
+                            },
+                            displaySource: {
+                                yes: 'a'
+                            }
+                        },
+                        maxEntries: {
+                            type: 'float',
+                            title: 'Max entries',
+                            'default': 1,
+                            displayTarget: ['a']
+                        },
+                        editable: {
+                            title: 'Editable',
+                            type: 'checkbox',
+                            options: {
+                                yes: 'Yes'
+                            },
+                            default: []
+                        },
                         defaultvalue: {
                             type: 'wysiwyg',
                             title: 'Default value'
@@ -108,22 +132,6 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
                                 selectable: 'Make text selectable'
                             },
                             'default': []
-                        },
-                        append: {
-                            type: 'checkbox',
-                            title: 'Append values',
-                            options: {
-                                yes: 'Yes'
-                            },
-                            displaySource: {
-                                yes: 'a'
-                            }
-                        },
-                        maxEntries: {
-                            type: 'float',
-                            title: 'Max entries',
-                            'default': 1,
-                            displayTarget: ['a']
                         }
                     }
                 }
@@ -132,6 +140,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
     };
 
     Controller.prototype.configAliases = {
+        editable: ['groups', 'group', 0, 'editable', 0],
         fontcolor: ['groups', 'group', 0, 'fontcolor', 0],
         font: ['groups', 'group', 0, 'font', 0],
         fontsize: ['groups', 'group', 0, 'fontsize', 0],

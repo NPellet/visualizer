@@ -71,6 +71,9 @@ define([
             },
 
             value: function (varValue, varName) {
+                if(varValue instanceof DataObject || varValue.type === 'number') {
+                    this._lastValueNumber = true;
+                }
                 this.values[varName] = varValue;
                 this._lastValue = varValue;
                 this.renderAll();
@@ -133,7 +136,7 @@ define([
         },
 
         fillWithVal: function (val, rendererOptions) {
-
+            var that = this;
             var valign = this.module.getConfiguration('valign');
             var align = this.module.getConfiguration('align');
             var fontcolor = this.module.getConfiguration('fontcolor');
@@ -176,6 +179,19 @@ define([
                     'user-select': selectable ? 'text' : 'none'
                 });
                 this.dom.html(div);
+                if (this.module.getConfigurationCheckbox('editable', 'yes')) {
+                    div.attr('contenteditable', true);
+                    div.on('input', function (e) {
+
+                        var replaceValue = e.target.innerHTML.replace(/<[^>]*>/g, '');
+                        if(that._lastValueNumber) {
+                            replaceValue = +replaceValue;
+                        }
+
+                        that._lastValue.setValue(replaceValue, true);
+                        that.module.model.dataTriggerChange(that._lastValue);
+                    });
+                }
             }
 
             this._scrollDown();
