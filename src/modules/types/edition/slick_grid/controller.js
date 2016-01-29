@@ -216,6 +216,15 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                             type: 'text',
                             title: 'Action to send'
                         },
+                        position: {
+                            type: 'combo',
+                            title: 'Position',
+                            options: [
+                                {key: 'begin', title: 'Begin'},
+                                {key: 'end', title: 'End'}
+                            ],
+                            default: 'end'
+                        },
                         width: {
                             type: 'text',
                             title: 'Width'

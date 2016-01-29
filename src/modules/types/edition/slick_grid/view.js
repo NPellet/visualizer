@@ -742,6 +742,17 @@ define([
 
             }
 
+            // Action columns
+            var actionColumns = this.getActionColumns();
+            for(var i=0; i<actionColumns.length ;i++) {
+                if(actionColumns[i].colDef.position === 'begin') {
+                    slickCols.unshift(actionColumns[i]);
+                } else {
+                    slickCols.push(actionColumns[i]);
+                }
+            }
+
+            // Auto columns
             if (this.module.getConfigurationCheckbox('autoColumns', 'remove')) {
                 slickCols.unshift({
                     id: 'rowDeletion',
@@ -765,7 +776,6 @@ define([
                 slickCols.unshift(checkboxSelector.getColumnDefinition());
             }
 
-            slickCols = slickCols.concat(this.getActionColumns());
             return slickCols;
         },
 
