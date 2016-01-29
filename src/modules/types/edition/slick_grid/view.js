@@ -945,6 +945,8 @@ define([
                         event: 'scriptChanged'
                     });
                 }
+                // Can be needed in some cases (script changing may affect rendering)
+                this.rerender();
             },
 
             list: function (moduleValue, varname) {
@@ -1147,15 +1149,20 @@ define([
                     return that.module.data.get();
                 },
                 rerender: function (rows) {
-                    if (!rows) {
-                        that.grid.invalidateAllRows();
-                    } else {
-                        that.grid.invalidateRows(rows);
-                    }
-                    that.grid.render();
+                    that.rerender(rows);
+
                 },
                 API: API
             };
+        },
+
+        rerender: function (rows) {
+            if (!rows) {
+                this.grid.invalidateAllRows();
+            } else {
+                this.grid.invalidateRows(rows);
+            }
+            this.grid.render();
         },
 
         _reportError: function (e) {

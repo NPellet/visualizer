@@ -1,5 +1,5 @@
 {
-  "version": "2.36.1-0",
+  "version": "2.37.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -286,7 +286,7 @@
                 0
               ],
               "script": [
-                "if(this.event === 'renderAction') {\n    console.log('render action');\n    this.abc = 'abc';\n    if(this.row.item && this.row.item.a > 5) {\n        console.log(this.renderOptions.icon);\n        this.renderOptions.icon = 'fa-trash';\n    }\n}\n\nif(this.event === 'cellChanged') {\n    console.log(this.cell);\n    console.log(this.column);\n\n}"
+                "if(this.event === 'renderAction') {\n    console.log('render action');\n    console.log(this.column);\n    if(this.column.name === 'def' && this.row.item && this.row.item.a > 5) {\n        console.log(this.renderOptions.icon);\n        this.renderOptions.icon = 'fa-trash';\n    }\n}\n\nif(this.event === 'cellChanged') {\n    console.log(this.cell);\n    console.log(this.column);\n\n}"
               ]
             }
           ]
