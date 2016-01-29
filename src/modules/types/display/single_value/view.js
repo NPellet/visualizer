@@ -179,7 +179,7 @@ define([
                     'user-select': selectable ? 'text' : 'none'
                 });
                 this.dom.html(div);
-                if (this.module.getConfigurationCheckbox('editable', 'yes')) {
+                if (this.module.getConfigurationCheckbox('editable', 'yes') && isEditable(this._lastValue)) {
                     div.attr('contenteditable', true);
                     div.on('input', function (e) {
 
@@ -203,6 +203,20 @@ define([
         }
 
     });
+
+    function isEditable(value) {
+        return isString(value) || isNumber(value);
+    }
+
+    function isString(value) {
+        if(!value) return false;
+        return (value instanceof DataString) || value.type === 'string';
+    }
+
+    function isNumber(value) {
+        if(!value) return false;
+        return (value instanceof DataNumber) || value.type === 'number';
+    }
 
     return View;
 
