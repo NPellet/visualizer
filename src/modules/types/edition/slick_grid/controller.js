@@ -121,7 +121,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                     fields: {
                         name: {
                             type: 'text',
-                            title: 'Column title (mandatory)'
+                            title: 'Column ID (mandatory)'
                         },
                         jpath: {
                             type: 'combo',
@@ -193,6 +193,43 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                         }
                     }
                 },
+                actionCols: {
+                    options: {
+                        type: 'table',
+                        multiple: true,
+                        title: 'Action columns'
+                    },
+                    fields: {
+                        name: {
+                            type: 'text',
+                            title: 'Column ID (mandatory)'
+                        },
+                        tooltip: {
+                            type: 'text',
+                            title: 'Tooltip'
+                        },
+                        icon: {
+                            type: 'text',
+                            title: 'Icon'
+                        },
+                        action: {
+                            type: 'text',
+                            title: 'Action to send'
+                        },
+                        width: {
+                            type: 'text',
+                            title: 'Width'
+                        },
+                        minWidth: {
+                            type: 'text',
+                            title: 'Min Width'
+                        },
+                        maxWidth: {
+                            type: 'text',
+                            title: 'Max Width'
+                        }
+                    }
+                },
                 groupings: {
                     options: {
                         type: 'table',
@@ -244,6 +281,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
         'filterType': ['groups', 'group', 0, 'filterType', 0],
         'filterRow': ['groups', 'group', 0, 'filterRow', 0],
         'cols': ['groups', 'cols', 0],
+        'actionCols': ['groups', 'actionCols', 0],
         'groupings': ['groups', 'groupings', 0],
         'actionOutButtons': ['groups', 'actionOutButtons', 0],
         'toolbar': ['groups', 'group', 0, 'toolbar', 0],

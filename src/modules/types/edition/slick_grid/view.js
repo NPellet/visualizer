@@ -118,9 +118,11 @@ define([
                 ctx.columnSelectionShown = ctx.$showHideSelection.filter('div').is(':visible');
                 ctx.onResize();
             });
+
             for (var i = 0; i < ctx.hiddenColumns.length; i++) {
                 ctx.$showHideSelection.find('input[value="' + ctx.hiddenColumns[i] + '"]').removeAttr('checked');
             }
+
             ctx.$showHideSelection.find('input[type="checkbox"]').on('change', function () {
                 if (this.checked) {
                     ctx.hideColumn(this.value);
@@ -577,10 +579,34 @@ define([
             this.colConfig = (this.module.getConfiguration('cols') || []).filter(function (row) {
                 return row.name;
             });
+            this.actionColConfig = (this.module.getConfiguration('actionCols') || []).filter(function (row) {
+                return row.name;
+            });
             this.idPropertyName = '_sgid';
             if (this.module.getConfiguration('filterType') === 'pref') {
                 this._setScript(this.module.getConfiguration('filterRow'));
             }
+
+            this.actionRenderer = function (cellNode, row, dataContext, colDef) {
+                if (cellNode) {
+                    cellNode.innerHTML = 'abc';
+                    var context = {
+                        event: 'renderAction',
+                        renderOptions: {
+                            icon: colDef.colDef.icon,
+                            disabled: false,
+                            action: colDef.colDef.action
+                        }
+                    };
+
+                    that._runFilter(context);
+
+                    cellNode.innerHTML = `<div style="width:100%; height: 100%"><a class="icon-container"><i class="fa ${context.renderOptions.icon} centered-icon"></i></a></div>`;
+                    $(cellNode).find('a')[0].onclick = function () {
+                        API.doAction(context.renderOptions.action, dataContext);
+                    };
+                }
+            };
 
             this.resolveReady();
         },
@@ -738,6 +764,8 @@ define([
 
                 slickCols.unshift(checkboxSelector.getColumnDefinition());
             }
+
+            slickCols = slickCols.concat(this.getActionColumns());
             return slickCols;
         },
 
@@ -755,6 +783,7 @@ define([
                 if (!col.colDef) { // Special columns always in main
                     return true;
                 }
+                // Action columns always in main
                 return !col.colDef.visibility || col.colDef.visibility === 'main' || col.colDef.visibility === 'both';
             });
         },
@@ -768,6 +797,26 @@ define([
             }).filter(function (col) {
                 return col.editor;
             }).filter(filterSpecialColumns);
+        },
+
+        getActionColumns: function () {
+            var that = this;
+            return this.actionColConfig.map(col => {
+                return {
+                    id: col.name,
+                    name: col.name,
+                    width: +col.width || 25,
+                    minWidth: +col.minWidth || 25,
+                    maxWidth: +col.maxWidth || 25,
+                    selectable: false,
+                    resizable: true,
+                    focusable: false,
+                    sortable: false,
+                    formatter: waitingFormatter,
+                    asyncPostRender: that.actionRenderer,
+                    colDef: col
+                }
+            });
         },
 
         getColumnsGivenEditContext: function () {
@@ -1435,7 +1484,7 @@ define([
     }
 
     function binFormatter() {
-        return '<div style="width:100%; height: 100%; display: table-cell"><a class="recycle-bin"><i class="fa fa-trash"></i></a></div>';
+        return '<div style="width:100%; height: 100%;"><a class="recycle-bin"><i class="centered-icon fa fa-trash"></i></a></div>';
     }
 
     function requiredFieldValidator(value) {
