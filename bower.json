@@ -70,7 +70,7 @@
     "setImmediate": "YuzuJS/setImmediate#1.0.2",
     "slickgrid": "cheminfo/SlickGrid#d883591c6b46196b9104f65939592e7d757cefb1",
     "smart-array-filter": "0.3.0",
-    "spectrum": "1.6.1",
+    "spectrum": "1.8.0",
     "sprintf": "1.0.2",
     "superagent-dist": "1.6.2",
     "threejs": "*",
