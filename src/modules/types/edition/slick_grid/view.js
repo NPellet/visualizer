@@ -592,16 +592,24 @@ define([
                     cellNode.innerHTML = 'abc';
                     var context = {
                         event: 'renderAction',
+                        row: {
+                            item: dataContext
+                        },
                         renderOptions: {
                             icon: colDef.colDef.icon,
                             disabled: false,
-                            action: colDef.colDef.action
+                            action: colDef.colDef.action,
                         }
                     };
 
                     that._runFilter(context);
 
-                    cellNode.innerHTML = `<div style="width:100%; height: 100%"><a class="icon-container"><i class="fa ${context.renderOptions.icon} centered-icon"></i></a></div>`;
+                    if(context.renderOptions.icon.startsWith('fa-')) {
+                        cellNode.innerHTML = `<div style="width:100%; height: 100%"><a class="icon-container"><i class="fa ${context.renderOptions.icon} centered-icon"></i></a></div>`;
+                    } else {
+                        cellNode.innerHTML = `<div style="width:100%; height: 100%"><a class="icon-container">${context.renderOptions.icon}</a></div>`;
+                    }
+
                     $(cellNode).find('a')[0].onclick = function () {
                         API.doAction(context.renderOptions.action, dataContext);
                     };
@@ -744,8 +752,8 @@ define([
 
             // Action columns
             var actionColumns = this.getActionColumns();
-            for(var i=0; i<actionColumns.length ;i++) {
-                if(actionColumns[i].colDef.position === 'begin') {
+            for (var i = 0; i < actionColumns.length; i++) {
+                if (actionColumns[i].colDef.position === 'begin') {
                     slickCols.unshift(actionColumns[i]);
                 } else {
                     slickCols.push(actionColumns[i]);
@@ -1418,9 +1426,7 @@ define([
                 }
             },
             rerender: function () {
-                console.log('action receive rerender...');
                 if (this.grid) {
-                    console.log('rerender...');
                     this.grid.invalidateAllRows();
                     this.grid.render();
                 }
