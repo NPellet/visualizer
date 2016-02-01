@@ -48,7 +48,19 @@ define([
 
         // Display
         function updateHeader() {
-            $header.html(sources ? (sources + ' sources left') : 'All sources loaded.' + (failedSources ? (' (' + failedSources + ' failed)') : ''));
+            $header.html(`
+                <table><tr><td>
+                ${sources ? (sources + ' sources left') : 'All sources loaded.' + (failedSources ? (' (' + failedSources + ' failed)') : '')}
+                </td>
+                <td id="abc">
+                </td></tr>
+                `);
+            var animCell = $($header.find('td')[1]);
+            animCell.append(Util.getLoadingAnimation(16, 'blue'));
+
+            if(!sources) {
+                animCell.remove();
+            }
         }
 
 
