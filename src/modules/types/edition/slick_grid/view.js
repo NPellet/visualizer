@@ -598,7 +598,8 @@ define([
                         renderOptions: {
                             icon: colDef.colDef.icon,
                             disabled: false,
-                            action: colDef.colDef.action
+                            action: colDef.colDef.action,
+                            tooltip: colDef.colDef.tooltip
                         }
                     };
 
@@ -610,7 +611,11 @@ define([
                         cellNode.innerHTML = `<div style="width:100%; height: 100%"><a class="icon-container">${context.renderOptions.icon}</a></div>`;
                     }
 
-                    $(cellNode).find('a')[0].onclick = function () {
+                    var $cellNode = $(cellNode);
+                    var $a = $cellNode.find('a');
+                    $a.attr('title', context.renderOptions.tooltip);
+
+                    $a[0].onclick = function () {
                         API.doAction(context.renderOptions.action, dataContext);
                     };
                 }
