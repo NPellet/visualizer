@@ -274,9 +274,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
                 if (typeof val !== 'object' || val === null)
                     return val;
                 if (typeof val[prop] !== 'undefined') {
-                    if (!isSpecialObject(val[prop])) {
-                        val[prop] = DataObject.check(val[prop], true);
-                    }
+                    dataObjectify(val, prop);
                     if (val[prop] instanceof DataObject) {
                         return val[prop].fetch(true);
                     } else {
@@ -302,10 +300,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
                     if (typeof val !== 'object' || val === null)
                         return val;
                     if (typeof val[prop] !== 'undefined') {
-                        if (!isSpecialObject(val[prop])) {
-                            val[prop] = DataObject.check(val[prop], true);
-                        }
-                        return val[prop];
+                        return dataObjectify(val, prop);
                     } else if (constructor) {
                         val[prop] = new constructor();
                         return val[prop];
@@ -315,7 +310,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
             } else {
                 if (prop === true) {
                     if (this.hasOwnProperty('type') && this.hasOwnProperty('value')) {
-                        return Promise.resolve(this.value);
+                        return Promise.resolve(dataObjectify(this, 'value'));
                     } else if (this.hasOwnProperty('type') && this.hasOwnProperty('url')) {
                         return this.fetch(true).then(function (self) {
                             return self.get();
@@ -325,12 +320,19 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
                     }
                 } else {
                     if (this.hasOwnProperty('value') && this.hasOwnProperty('type'))
-                        return this.value;
+                        return dataObjectify(this, 'value');
                     return this;
                 }
             }
         }
     };
+
+    function dataObjectify(parent, prop) {
+        if (!isSpecialObject(parent[prop])) {
+            parent[prop] = DataObject.check(parent[prop], true);
+        }
+        return parent[prop];
+    }
 
     var dataSetter = {
         value: function (prop, value, noTrigger) {
