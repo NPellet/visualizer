@@ -1,3 +1,20 @@
+<a name="2.38.0"></a>
+# 2.38.0 (2016-02-02)
+
+
+### Bug Fixes
+
+* **datas:** DataObject#get should return DataObjects ([f315687](https://github.com/NPellet/visualizer/commit/f315687)), closes [#777](https://github.com/NPellet/visualizer/issues/777)
+
+### Features
+
+* **single_value:** inline editing of strings and numbers ([e978ed8](https://github.com/NPellet/visualizer/commit/e978ed8))
+* **slick_grid:** action columns can be added at end or beginning of line ([7cba2ee](https://github.com/NPellet/visualizer/commit/7cba2ee))
+* **slick_grid:** actionRender event in filter ([3d1c6b7](https://github.com/NPellet/visualizer/commit/3d1c6b7))
+* **typerenderer:** add renderer for object and allow twig option ([255cf66](https://github.com/NPellet/visualizer/commit/255cf66)), closes [#774](https://github.com/NPellet/visualizer/issues/774)
+
+
+
 <a name="2.37.0"></a>
 # 2.37.0 (2016-01-27)
 
