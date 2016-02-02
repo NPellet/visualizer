@@ -391,6 +391,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'superagent', 'uri/
                 if (that.module.getConfigurationCheckbox('showStatus', 'display')) {
                     that.module.view.showError();
                 }
+                that.module.view.unlock();
 
             } else {
                 if (that.module.getConfigurationCheckbox('showStatus', 'display')) {
