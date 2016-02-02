@@ -31,9 +31,9 @@ define([
         }
         data = DataObject.check(data, true);
 
-        if (data && data.getChild) {
+        if (data && data.trace) {
 
-            data.getChild(jpath).then(function (data) {
+            data.trace(jpath).then(function (data) {
 
                 Variables.setVariable(name, false, data, filter);
             });
