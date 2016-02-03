@@ -90,6 +90,7 @@ define([
             }
         },
         updateEditor: function (html) {
+            html = String(html);
             if (this.plainHtml) {
                 this.dom.html(html);
             } else {
