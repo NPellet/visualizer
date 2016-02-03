@@ -152,6 +152,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
 
 
         createData: function (jpath, dataToCreate, callback) {
+            dataToCreate = DataObject.resurrect(dataToCreate);
             data.setChild(jpath, dataToCreate);
             this.setjPath(jpath, callback);
         },
