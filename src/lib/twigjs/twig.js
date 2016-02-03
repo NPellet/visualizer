@@ -15,10 +15,12 @@ define([
 
             return {
                 render: function () {
+                    var prom = [];
                     for (var i = 0; i < waiting.length; i++) {
                         var data = waiting[i];
-                        Renderer.render($('#' + data[0]), data[1], data[2]);
+                        prom.push(Renderer.render($('#' + data[0]), data[1], data[2]));
                     }
+                    return Promise.all(prom);
                 },
                 html: this.render.apply(this, arguments)
             };

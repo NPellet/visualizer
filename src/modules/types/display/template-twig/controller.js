@@ -23,6 +23,18 @@ define(['modules/default/defaultcontroller'], function (Default) {
         tpl: {
             label: 'Template',
             type: 'string'
+        },
+        renderedHtml: {
+            label: 'Rendered HTML',
+            type: 'string'
+        }
+    };
+
+    Controller.prototype.events = {
+        onRendered: {
+            label: 'Html was rendered',
+            refVariable: ['renderedHtml'],
+            refAction: ['renderedHtml']
         }
     };
 
@@ -52,6 +64,11 @@ define(['modules/default/defaultcontroller'], function (Default) {
         template: ['groups', 'group', 0, 'template', 0]
     };
 
-    return Controller;
+    Controller.prototype.onRendered = function (renderedHtml) {
+        setTimeout(() => { // Figure out why I have to set timeout
+            this.createDataFromEvent('onRendered', 'renderedHtml', renderedHtml);
+        });
+    };
 
+    return Controller;
 });

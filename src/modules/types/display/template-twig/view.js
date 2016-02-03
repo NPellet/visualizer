@@ -63,9 +63,13 @@ define([
             }
         },
         render: function () {
+            var that = this;
             var render = this.template.renderAsync(this._values);
             this.dom.html(render.html);
-            render.render();
+            render.render().then(function () {
+                console.log('dom', that.dom.html());
+                that.module.controller.onRendered(that.dom.html());
+            });
         }
     });
 
