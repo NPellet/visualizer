@@ -32,7 +32,6 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'
         var defaultOptions = {
             format: 'CODE128'
         };
-        console.log(defaultOptions);
         var $img = $('<img>');
         $element.append($img);
         $img.JsBarcode(String(val), Object.assign(defaultOptions, options));
@@ -170,10 +169,10 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'
             options = $.extend({}, defaultOpenChemLibStructureOptions, options);
             require([OCL], function (ACT) {
                 var id = Util.getNextUniqueId();
-                var h = Math.max(150, $element.height()), w = $element.width();
+                var h = Math.max(100, $element.height()), w = $element.width();
                 var can = $('<canvas>', {id: id});
                 var canEl = can.get(0);
-                canEl.height = h;
+                canEl.height = h - 3;
                 canEl.width = w;
                 $element.html(can);
                 ACT.StructureView.drawStructure(id, String(idcode), String(coordinates), options);
@@ -226,6 +225,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'
     functions.mol2d.toscreen = function ($element, molfile, molfileRoot, options) {
         return new Promise(function (resolve) {
             require([OCL], function (ACT) {
+                debugger;
                 var mol = ACT.Molecule.fromMolfile(String(molfile));
                 resolve(renderOpenChemLibStructure($element, mol.getIDCode(), mol.getIDCoordinates(), options));
             });
