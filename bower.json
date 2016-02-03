@@ -80,7 +80,8 @@
     "uri.js": "1.14.1",
     "x2js": "1.1.7",
     "web-animations-js": "2.1.2",
-    "numeral": "~1.5.3"
+    "numeral": "~1.5.3",
+    "qrcode.js": "davidshimjs/qrcodejs#04f46c6a0708418cb7b96fc563eacae0fbf77674"
   },
   "resolutions": {
     "jsgraph": "v1.13.3-45"

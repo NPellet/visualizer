@@ -4,6 +4,23 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'
 
     var functions = {};
 
+    functions.qrcode = {};
+    functions.qrcode.init = function () {
+        return new Promise(function(resolve) {
+            require(['components/qrcode.js/qrcode'], resolve);
+        });
+    };
+    functions.qrcode.toscreen = function ($element, val, rootVal, options) {
+        var l = Math.min($element.width(), $element.height());
+        var defaultOptions = {
+            width: l,
+            height: l,
+            text: String(val)
+        };
+
+        new QRCode($element[0], Object.assign(defaultOptions, options));
+    };
+
     functions.barcode = {};
     functions.barcode.init = function () {
         return new Promise(function (resolve) {
