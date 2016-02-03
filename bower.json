@@ -73,7 +73,7 @@
     "spectrum": "1.8.0",
     "sprintf": "1.0.2",
     "superagent-dist": "1.6.2",
-    "threejs": "*",
+    "threejs": "r71",
     "twig.js": "0.8.4",
     "ui-contextmenu": "1.8.1",
     "underscore": "1.8.2",
