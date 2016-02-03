@@ -58,7 +58,7 @@ define([
             var animCell = $($header.find('td')[1]);
             animCell.append(Util.getLoadingAnimation(16, 'blue'));
 
-            if(!sources) {
+            if (!sources) {
                 animCell.remove();
             }
         }

@@ -71,7 +71,7 @@ define([
             },
 
             value: function (varValue, varName) {
-                if(varValue instanceof DataObject || varValue.type === 'number') {
+                if (varValue instanceof DataObject || varValue.type === 'number') {
                     this._lastValueNumber = true;
                 }
                 this.values[varName] = varValue;
@@ -184,7 +184,7 @@ define([
                     div.on('input', function (e) {
 
                         var replaceValue = e.target.innerHTML.replace(/<[^>]*>/g, '');
-                        if(that._lastValueNumber) {
+                        if (that._lastValueNumber) {
                             replaceValue = +replaceValue;
                         }
 
@@ -209,12 +209,12 @@ define([
     }
 
     function isString(value) {
-        if(!value) return false;
+        if (!value) return false;
         return (value instanceof DataString) || value.type === 'string';
     }
 
     function isNumber(value) {
-        if(!value) return false;
+        if (!value) return false;
         return (value instanceof DataNumber) || value.type === 'number';
     }
 

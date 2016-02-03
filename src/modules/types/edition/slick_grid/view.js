@@ -605,7 +605,7 @@ define([
 
                     that._runFilter(context);
 
-                    if(context.renderOptions.icon.startsWith('fa-')) {
+                    if (context.renderOptions.icon.startsWith('fa-')) {
                         cellNode.innerHTML = `<div style="width:100%; height: 100%"><a class="icon-container"><i class="fa ${context.renderOptions.icon} centered-icon"></i></a></div>`;
                     } else {
                         cellNode.innerHTML = `<div style="width:100%; height: 100%"><a class="icon-container">${context.renderOptions.icon}</a></div>`;
@@ -838,7 +838,7 @@ define([
                     formatter: waitingFormatter,
                     asyncPostRender: that.actionRenderer,
                     colDef: col
-                }
+                };
             });
         },
 
