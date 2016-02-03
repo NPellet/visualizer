@@ -15,6 +15,7 @@
 require.config({
     waitSeconds: 0,
     paths: {
+        jsbarcode: 'components/jsbarcode/JsBarcode',
         numeral: 'components/numeral/min/numeral.min',
         moment: 'components/moment/min/moment.min',
         'moment-duration-format': 'components/moment-duration-format/lib/moment-duration-format',
@@ -98,6 +99,7 @@ require.config({
         },
         'jquery-cookie': 'jquery',
         'select2': ['jquery'],
+        'jsbarcode': ['jquery', 'components/jsbarcode/CODE39', 'components/jsbarcode/EAN_UPC', 'components/jsbarcode/ITF', 'components/jsbarcode/CODE128', 'components/jsbarcode/pharmacode'],
         'lib/threejs/TrackballControls': ['threejs'],
         jqgrid: ['jquery', 'components/jqgrid_edit/js/i18n/grid.locale-en'],
         'lib/couchdb/jquery.couch': ['jquery'],

@@ -4,30 +4,22 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'
 
     var functions = {};
 
-    //functions.mathjax = {};
-    //
-    //functions.mathjax.init = function() {
-    //    return new Promise(function(resolve, reject) {
-    //        require(['mathjax'], resolve);
-    //    });
-    //};
-    //
-    //functions.mathjax.toscreen = function($el, val, rootval, options) {
-    //    var div;
-    //    if(val instanceof Array) {
-    //        div = MathJax.HTML.Element(
-    //            'div',
-    //            val
-    //        );
-    //    }
-    //    else {
-    //        div = val;
-    //    }
-    //
-    //    $el.html(val);
-    //
-    //    MathJax.Hub.Queue(['Typeset',MathJax.Hub]);
-    //};
+    functions.barcode = {};
+    functions.barcode.init = function () {
+        return new Promise(function (resolve) {
+            require(['jsbarcode'], resolve);
+        });
+    };
+
+    functions.barcode.toscreen = function ($element, val, rootVal, options) {
+        var defaultOptions = {
+            format: 'CODE128'
+        };
+        console.log(defaultOptions);
+        var $img = $('<img>');
+        $element.append($img);
+        $img.JsBarcode(String(val), Object.assign(defaultOptions, options));
+    };
 
     functions.sparkline = {};
     functions.sparkline.init = function () {
