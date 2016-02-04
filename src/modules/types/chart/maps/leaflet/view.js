@@ -12,13 +12,14 @@ require.config({
 });
 
 define([
+    'jquery',
     'modules/default/defaultview',
     'src/util/util',
     'src/util/api',
     'src/util/color',
     'components/leaflet/dist/leaflet',
     'components/leaflet-omnivore/leaflet-omnivore.min'
-], function (Default, Util, API, Color, L, omnivore) {
+], function ($, Default, Util, API, Color, L, omnivore) {
 
     function View() {
         this.mapID = Util.getNextUniqueId();
@@ -194,7 +195,17 @@ define([
                 try {
                     var geoJson = geo.get();
                     var converted = L.geoJson(geoJson, {
-                        style: function (feature) {
+                        pointToLayer: (feature, latlng) => {
+                            return L.circleMarker(latlng, {
+                                radius: 4,
+                                fillColor: '#0074D9',
+                                color: '#000000',
+                                weight: 1,
+                                opacity: 1,
+                                fillOpacity: 0.8
+                            });
+                        },
+                        style: feature => {
                             return feature.properties && feature.properties.style;
                         }
                     });
