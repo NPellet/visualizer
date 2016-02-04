@@ -387,6 +387,10 @@ module.exports = function (grunt) {
             'build/lib/forms/images/buttons.png': true,
             'build/lib/forms/images/lock.png': true
         };
+
+        var acceptedReg = [
+            /build\/lib\/svg-edit\/images\/.*/
+        ];
         var allimages = [];
 
         // To be truly synchronous in the emitter and maintain a compatible api,
@@ -459,7 +463,9 @@ module.exports = function (grunt) {
         // Delete images that are not in the white set
         var delcount = 0;
         _.keys(allimages).forEach(function (i) {
-            if (!whiteset[allimages[i]]) {
+            if (!whiteset[allimages[i]] && !_.any(acceptedReg, function (reg) {
+                    return reg.test(allimages[i]);
+                })) {
                 fs.unlinkSync(allimages[i]);
                 delcount++;
             }
