@@ -421,6 +421,11 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'
                 var html = '<table cellpadding="0" cellspacing="0" style="text-align: center; height:100%; width:100%; table-layout: fixed;"><tr>';
 
                 // if the first element of the array is a number ... we need to convert the array.
+
+                // Create a copy of the array
+                value = DataObject.resurrect(value);
+                value = _.cloneDeep(value);
+
                 if (!isNaN(value[0])) {
                     value = value.map(function (value) {
                         return {'size': value};
