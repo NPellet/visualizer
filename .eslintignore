@@ -1,5 +1,6 @@
 src/components
 src/lib
+src/browserified
 src/modules/types/legacy
 src/modules/types/science/chemistry/jsmol/lib
 src/modules/types/science/chemistry/jsme/lib

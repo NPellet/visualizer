@@ -9,7 +9,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'
     functions.country.init = function () {
         var prom = [];
         prom.push(Util.loadCss('components/flag-icon-css/css/flag-icon.min.css'));
-        prom.push(new Promise(function(resolve) {
+        prom.push(new Promise(function (resolve) {
             require(['browserified/country-data/index.js'], resolve);
         }));
 
@@ -20,17 +20,17 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'
     functions.country.toscreen = function ($element, val, rootVal, options) {
         val = String(val);
         var country;
-        if(val.length === 2) {
+        if (val.length === 2) {
             val = val.toUpperCase();
-            country =countryData.lookup.countries({alpha2: val})[0];
-        } else if(val.length === 3) {
+            country = countryData.lookup.countries({alpha2: val})[0];
+        } else if (val.length === 3) {
             val = val.toUpperCase();
-            country =countryData.lookup.countries({alpha3: val})[0];
+            country = countryData.lookup.countries({alpha3: val})[0];
         } else {
-            val = val.slice(0,1).toUpperCase() + val.slice(1, val.length);
+            val = val.slice(0, 1).toUpperCase() + val.slice(1, val.length);
             country = countryData.lookup.countries({name: val})[0];
         }
-        if(country) {
+        if (country) {
             $element.html(`<span title="${country.name}" class="flag-icon flag-icon-${country.alpha2.toLowerCase()}"></span>`);
         } else {
             $element.html(val);
@@ -39,7 +39,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'
 
     functions.qrcode = {};
     functions.qrcode.init = function () {
-        return new Promise(function(resolve) {
+        return new Promise(function (resolve) {
             require(['components/qrcode.js/qrcode'], resolve);
         });
     };
@@ -51,7 +51,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'
             text: String(val)
         };
 
-        new QRCode($element[0], Object.assign(defaultOptions, options));
+        new window.QRCode($element[0], Object.assign(defaultOptions, options));
     };
 
     functions.barcode = {};
@@ -68,7 +68,7 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'
         var $img = $('<img>');
         $element.append($img);
         var opts = Object.assign({}, defaultOptions, options);
-        if(opts.format.startsWith('CODE')) {
+        if (opts.format.startsWith('CODE')) {
             val = String(val);
         } else {
             val = Number(val);
@@ -264,7 +264,6 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'
     functions.mol2d.toscreen = function ($element, molfile, molfileRoot, options) {
         return new Promise(function (resolve) {
             require([OCL], function (ACT) {
-                debugger;
                 var mol = ACT.Molecule.fromMolfile(String(molfile));
                 resolve(renderOpenChemLibStructure($element, mol.getIDCode(), mol.getIDCoordinates(), options));
             });
