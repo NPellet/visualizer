@@ -6,6 +6,7 @@ node_modules
 npm-debug.log
 
 src/components
+src/browserified
 
 build
 build2

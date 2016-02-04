@@ -30,6 +30,18 @@ module.exports = function (grunt) {
 
     // Project configuration.
     grunt.initConfig({
+        browserify: {
+            dist: {
+                files: {
+                    'src/browserified/country-data/index.js': ['./node_modules/country-data/index.js']
+                },
+                options: {
+                    browserifyOptions: {
+                        standalone: 'CountryData'
+                    }
+                }
+            }
+        },
         pkg: grunt.file.readJSON('package.json'),
         babel: {
             options: {
@@ -343,6 +355,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-rename');
     grunt.loadNpmTasks('grunt-ftp');
     grunt.loadNpmTasks('grunt-jsdoc');
+    grunt.loadNpmTasks('grunt-browserify');
 
     grunt.registerTask('upload', ['ftp']);
 

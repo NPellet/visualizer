@@ -3,6 +3,39 @@
 define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment', 'numeral', 'sprintf'], function (require, $, _, API, Util, moment, numeral, sprintf) {
 
     var functions = {};
+    var countryData;
+
+    functions.country = {};
+    functions.country.init = function () {
+        var prom = [];
+        prom.push(Util.loadCss('components/flag-icon-css/css/flag-icon.min.css'));
+        prom.push(new Promise(function(resolve) {
+            require(['browserified/country-data/index.js'], resolve);
+        }));
+
+        return Promise.all(prom).then(data => {
+            countryData = data[1];
+        });
+    };
+    functions.country.toscreen = function ($element, val, rootVal, options) {
+        val = String(val);
+        var country;
+        if(val.length === 2) {
+            val = val.toUpperCase();
+            country =countryData.lookup.countries({alpha2: val})[0];
+        } else if(val.length === 3) {
+            val = val.toUpperCase();
+            country =countryData.lookup.countries({alpha3: val})[0];
+        } else {
+            val = val.slice(0,1).toUpperCase() + val.slice(1, val.length);
+            country = countryData.lookup.countries({name: val})[0];
+        }
+        if(country) {
+            $element.html(`<span title="${country.name}" class="flag-icon flag-icon-${country.alpha2.toLowerCase()}"></span>`);
+        } else {
+            $element.html(val);
+        }
+    };
 
     functions.qrcode = {};
     functions.qrcode.init = function () {
@@ -34,7 +67,13 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'
         };
         var $img = $('<img>');
         $element.append($img);
-        $img.JsBarcode(String(val), Object.assign(defaultOptions, options));
+        var opts = Object.assign({}, defaultOptions, options);
+        if(opts.format.startsWith('CODE')) {
+            val = String(val);
+        } else {
+            val = Number(val);
+        }
+        $img.JsBarcode(val, opts);
     };
 
     functions.sparkline = {};
