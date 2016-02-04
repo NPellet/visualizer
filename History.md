@@ -1,3 +1,25 @@
+<a name="2.39.0"></a>
+# 2.39.0 (2016-02-04)
+
+
+### Bug Fixes
+
+* make sure editor is updated with a native string ([8bf5d15](https://github.com/NPellet/visualizer/commit/8bf5d15)), closes [#782](https://github.com/NPellet/visualizer/issues/782)
+* **scatter3d:** fix incompatible threejs version ([a373c2e](https://github.com/NPellet/visualizer/commit/a373c2e))
+* **typerenderer:** remove scrollbars ([c696fa4](https://github.com/NPellet/visualizer/commit/c696fa4)), closes [#767](https://github.com/NPellet/visualizer/issues/767)
+* **webservice_search:** unlock button after error. Closes #780 ([874ca48](https://github.com/NPellet/visualizer/commit/874ca48)), closes [#780](https://github.com/NPellet/visualizer/issues/780)
+
+### Features
+
+* **datas:** add DataObject.getType static method ([3a854da](https://github.com/NPellet/visualizer/commit/3a854da))
+* **JSME:** add help icon ([b0c1dd4](https://github.com/NPellet/visualizer/commit/b0c1dd4)), closes [#784](https://github.com/NPellet/visualizer/issues/784)
+* **spectra_displayer:** allow the jcamp input type to be an object ([a597556](https://github.com/NPellet/visualizer/commit/a597556))
+* **template-twig:** add var out ([8944ab0](https://github.com/NPellet/visualizer/commit/8944ab0)), closes [#783](https://github.com/NPellet/visualizer/issues/783)
+* **typerenderer:** add qrcode type renderer. Closes #753 ([f7584ad](https://github.com/NPellet/visualizer/commit/f7584ad)), closes [#753](https://github.com/NPellet/visualizer/issues/753)
+* **typerenderer:** country renderer ([185643e](https://github.com/NPellet/visualizer/commit/185643e))
+
+
+
 <a name="2.38.0"></a>
 # 2.38.0 (2016-02-02)
 
