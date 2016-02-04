@@ -764,7 +764,7 @@ define([
         },
 
         makeSerie: function (data, value, name) {
-            var that = this
+            var that = this;
             var serie = this.graph.newSerie(data.name);
 
             data.onChange(function () {
