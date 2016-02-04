@@ -1,6 +1,14 @@
 'use strict';
 
-define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'src/util/api', 'src/util/color', 'src/util/debug'], function (Default, Graph, DataTraversing, API, Color, Debug) {
+define([
+    'jquery',
+    'modules/default/defaultview',
+    'jsgraph',
+    'src/util/datatraversing',
+    'src/util/api',
+    'src/util/color',
+    'src/util/debug'
+], function ($, Default, Graph, DataTraversing, API, Color, Debug) {
 
     function View() {
     }
@@ -12,7 +20,6 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
             this.seriesDrawn = {};
             this.annotations = {};
             this.dom = $('<div />');
-            this.zones = {};
             this.module.getDomContent().html(this.dom);
             this.seriesActions = [];
 
@@ -304,34 +311,6 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
             this.module.model.setYBoundaries(minY, maxY);
         },
 
-        doZone: function (varname, zone, value, color) {
-            if (value && !zone[2]) {
-
-                var rect = this.graph.newShape('rect', {
-                    pos: {
-                        x: zone[0]
-                    },
-
-                    pos2: {
-                        x: zone[1]
-                    },
-
-                    fillColor: color,
-                    opacity: '0.5'
-                });
-
-                rect.setFullHeight();
-
-                zone.push(rect);
-
-            } else if (zone[2] && !value) {
-
-                zone[2].kill();
-                zone.splice(2, 1);
-
-            }
-        },
-
         getSerieOptions: function (varname, highlight, data) {
             var that = this,
                 plotinfos = this.module.getConfiguration('plotinfos');
@@ -450,48 +429,35 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                     }
                 }, false, this.module.getId());
             }
-
         },
 
-
         blank: {
-
             xyArray: function (varName) {
-
                 this.removeSerie(varName);
             },
 
             xArray: function (varName) {
-
                 this.removeSerie(varName);
             },
-
 
             series_xy1d: function (varName) {
-
                 this.removeSerie(varName);
             },
 
-
             jcamp: function (varName) {
-
                 this.removeSerie(varName);
             },
 
             chart: function (varName) {
-
                 this.removeSerie(varName);
             },
 
             annotations: function (varName) {
                 this.removeAnnotations(varName);
             }
-
         },
 
-
         update: {
-
             chart: function (moduleValue, varname) {
                 this.series[varname] = this.series[varname] || [];
                 this.removeSerie(varname);
@@ -587,7 +553,6 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
             },
 
             xyArray: function (moduleValue, varname) {
-
                 this.series[varname] = this.series[varname] || [];
                 this.removeSerie(varname);
 
@@ -671,24 +636,12 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
             },
 
             jcamp: function (moduleValue, varname) {
-
-                if (!moduleValue) {
-                    return;
-                }
-
-                moduleValue = String(moduleValue.get()); // Get the true jcamp value
-
-                var that = this,
-                    serie,
-                    spectra;
-
-                API.killHighlight(this.module.getId() + varname);
+                var that = this;
+                var serie;
 
                 if (!this.graph) {
                     return;
                 }
-
-                this.zones[varname] = moduleValue._zones;
 
                 if (that.deferreds[varname]) {
                     that.deferreds[varname].reject();
@@ -697,66 +650,52 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                 that.deferreds[varname] = $.Deferred();
                 var def = that.deferreds[varname];
 
-                require(['jcampconverter'], function (JcampConverter) {
+                var value = moduleValue.get();
+                var valueType = DataObject.getType(value);
+                if (valueType === 'string') {
+                    require(['jcampconverter'], JcampConverter => {
+                        JcampConverter.convert(String(moduleValue.get()), {lowRes: 1024}, true).then(displaySpectra);
+                    });
+                } else {
+                    displaySpectra(moduleValue.get());
+                }
 
-                    JcampConverter.convert(moduleValue, {lowRes: 1024}, true).then(function (spectra) {
+                function displaySpectra(spectra) {
+                    if (def.state() == 'rejected') {
+                        return;
+                    }
 
-                        if (def.state() == 'rejected') {
-                            return;
-                        }
+                    that.deferreds[varname] = false;
+                    that.series[varname] = that.series[varname] || [];
+                    that.series[varname] = [];
 
-                        that.deferreds[varname] = false;
-                        that.series[varname] = that.series[varname] || [];
-                        that.series[varname] = [];
+                    if (spectra.contourLines) {
+                        serie = that.graph.newSerie(varname, that.getSerieOptions(varname), 'contour');
 
-                        if (spectra.contourLines) {
+                        serie.setData(spectra.contourLines);
+                        serie.autoAxis();
+                        that.setSerieParameters(serie, varname);
+                        that.series[varname].push(serie);
+                    } else {
+                        spectra = spectra.spectra;
+                        for (var i = 0, l = spectra.length; i < l; i++) {
+                            var data = spectra[i].data[spectra[i].data.length - 1];
 
-                            serie = that.graph.newSerie(varname, that.getSerieOptions(varname), 'contour');
+                            serie = that.graph.newSerie(varname, that.getSerieOptions(varname, null, data));
 
-                            serie.setData(spectra.contourLines);
+                            that.normalize(data, varname);
+                            serie.setData(data);
                             serie.autoAxis();
                             that.setSerieParameters(serie, varname);
                             that.series[varname].push(serie);
-
-                        } else {
-
-                            spectra = spectra.spectra;
-                            for (var i = 0, l = spectra.length; i < l; i++) {
-                                var data = spectra[i].data[spectra[i].data.length - 1];
-
-                                serie = that.graph.newSerie(varname, that.getSerieOptions(varname, null, data));
-
-                                that.normalize(data, varname);
-                                serie.setData(data);
-                                serie.autoAxis();
-                                that.setSerieParameters(serie, varname);
-                                that.series[varname].push(serie);
-                                break;
-                            }
-
-                            API.listenHighlight(moduleValue._highlight || [], function (value, commonKeys) {
-
-                                for (var i = 0; i < commonKeys.length; i++) {
-
-                                    if (that.zones[varname][commonKeys[i]]) {
-
-                                        that.doZone(varname, that.zones[varname][commonKeys [i]], value, that.series[varname].options.lineColor);
-                                    }
-                                }
-                            }, true, that.module.getId() + varname);
+                            break;
                         }
-                        that.redraw(false, varname);
-                    });
-                });
+                    }
+                    that.redraw(false, varname);
+                }
             },
 
-
             series_xy1d: function (data, varname) { // Receives an array of series. Blank the other ones.
-
-                /*if( ! data.data ) {
-                 return;
-                 }*/
-
                 var that = this;
                 require(['src/util/color'], function (Color) {
 
@@ -792,23 +731,16 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                     }
 
                     that.redraw();
-
-
                 });
-
             }
         },
 
         setOnChange: function (id, varname, obj) {
-
-
             if (this.onchanges[varname]) {
                 this.onchanges[varname].obj.unbindChange(this.onchanges[varname].id);
             }
 
             this.onchanges[varname] = {obj: obj, id: id};
-
-
         },
 
         removeAnnotations: function (varName) {
@@ -832,12 +764,10 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
         },
 
         makeSerie: function (data, value, name) {
-
-            var that = this,
-                serie = this.graph.newSerie(data.name);
+            var that = this
+            var serie = this.graph.newSerie(data.name);
 
             data.onChange(function () {
-
                 serie.setData(data.data);
                 that.graph.draw();
             });
@@ -861,7 +791,6 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
         },
 
         onActionReceive: {
-
             fromToX: function (value) {
                 this.xAxis.zoom(value.from, value.to);
                 this.graph.draw();
@@ -873,7 +802,6 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
             },
 
             addSerie: function (value) {
-
                 this.colorId++;
 
                 if (value.name) {
@@ -887,7 +815,6 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
             },
 
             removeSerie: function (value) {
-
                 for (var i = 0, l = this.seriesActions.length; i < l; i++) {
 
                     if (this.seriesActions[i][0] == value) {
@@ -908,7 +835,6 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
             },
 
             selectSerie: function (serieName) {
-
                 var s = this.graph.getSerie(serieName.valueOf());
 
                 if (s) {
@@ -917,7 +843,6 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
             },
 
             unselectSerie: function (serieName) {
-
                 var s = this.graph.getSerie(serieName.valueOf());
 
                 if (s) {
@@ -928,7 +853,6 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
         },
 
         normalize: function (array, varname) {
-
             var plotinfos = this.module.getConfiguration('plotinfos');
             var maxValue, minValue, total, ratio, i, l;
 
@@ -1005,7 +929,6 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/datatraversing', 'sr
                 }
             }
         }
-
     });
 
     function analyzeContinuous(data) {
