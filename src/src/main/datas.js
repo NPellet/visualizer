@@ -725,6 +725,14 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
         }
     };
 
+    DataObject.getType = function (value) {
+        if (isSpecialObject(value)) {
+            return value.getType();
+        } else {
+            return typeof value;
+        }
+    };
+
     var fetch = {
         value: function (forceJson) {
             if (!this.url || !this.type || this.hasOwnProperty('value')) { // No need for fetching. Still returning a promise, though.
