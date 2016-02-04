@@ -137,7 +137,7 @@ module.exports = function (grunt) {
                             './chemcalc/lib.js',
                             './jsgraph/dist/**',
                             './jcampconverter/dist/*',
-                            './jsbarcode/jsBarcode.min.js',
+                            './jsbarcode/*.js',
                             './slickgrid/**',
                             './ml/dist/*',
                             './jquery-tmpl/**',
@@ -164,11 +164,20 @@ module.exports = function (grunt) {
                             './moment/min/moment.min.js',
                             './moment-duration-format/lib/moment-duration-format.js',
                             './smart-array-filter/dist/*',
-                            './numeral/min/numeral.min.js'
+                            './numeral/min/numeral.min.js',
+                            './flag-icon-css/css/flag-icon.min.css',
+                            './flag-icon-css/flags/**',
+                            './qrcode.js/qrcode.js'
                         ],
-
                         dest: './build/components/'
-
+                    },
+                    {
+                        expand: true,
+                        cwd: './src/browserified/',
+                        src: [
+                            './country-data/index.js'
+                        ],
+                        dest: './build/browserified/'
                     }
                 ]
             },
