@@ -2,12 +2,12 @@
 /*global EmbeddedSVGEdit*/
 require.config({
     paths: {
-        svgsanitize: 'lib/svg-edit-2.7/sanitize'
+        svgsanitize: 'lib/svg-edit/sanitize'
     },
     shim: {
-        'svgsanitize': ['lib/svg-edit-2.7/svgedit', 'lib/svg-edit-2.7/browser', 'lib/svg-edit-2.7/svgutils'],
-        'lib/svg-edit-2.7/svgutils': ['lib/svg-edit-2.7/browser', 'lib/svg-edit-2.7/svgtransformlist', 'lib/svg-edit-2.7/units'],
-        'lib/svg-edit-2.7/svgtransformlist': ['lib/svg-edit-2.7/browser']
+        'svgsanitize': ['lib/svg-edit/svgedit', 'lib/svg-edit/browser', 'lib/svg-edit/svgutils'],
+        'lib/svg-edit/svgutils': ['lib/svg-edit/browser', 'lib/svg-edit/svgtransformlist', 'lib/svg-edit/units'],
+        'lib/svg-edit/svgtransformlist': ['lib/svg-edit/browser']
     }
 });
 
@@ -20,7 +20,7 @@ define([
     'src/util/typerenderer',
     'src/util/util',
     'src/util/datatraversing',
-    'lib/svg-edit-2.7/embedapi',
+    'lib/svg-edit/embedapi',
     'svgsanitize'
 ], function (require, API, _, Default, Debug, Renderer) {
     var saveSvgThrottled = _.throttle(function () {
@@ -86,7 +86,7 @@ define([
             if (this._configCheckBox('editable', 'isEditable')) {
                 if (this.dom) this.dom.remove();
                 this.svgCanvas = null;
-                this.dom = $('<iframe src="lib/svg-edit-2.7/svg-editor.html?extensions=ext-xdomain-messaging.js' +
+                this.dom = $('<iframe src="lib/svg-edit/svg-editor.html?extensions=ext-xdomain-messaging.js' +
                     window.location.href.replace(/\?(.*)$/, '&$1') + // Append arguments to this file onto the iframe
                     '"></iframe>');
 
