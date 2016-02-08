@@ -705,8 +705,8 @@ define([
                             (function (i) {
                                 prom = prom.then(function () {
                                     return couchA.inlineUploads(inlineUploads[i]);
-                                })
-                            })(i)
+                                });
+                            })(i);
                         }
 
                         prom.then(function () {
