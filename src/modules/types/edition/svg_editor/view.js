@@ -126,6 +126,7 @@ define([
 
         onResize: function () {
             if (this._configCheckBox('editable', 'isEditable') && this.dom) {
+                this.dom.parent().css({overflow: 'hidden'});
                 this.dom.height(this.height).width(this.width);
                 if (this.svgCanvas) {
                     this.svgCanvas.zoomChanged(window, 'canvas');
