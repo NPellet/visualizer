@@ -33,7 +33,7 @@ define(['modules/default/defaultview'], function (Default) {
                     that._loadingTimeout = null;
                     that.showLoading();
                 }, 500);
-                this.dom.attr('src', moduleValue.get());
+fix                this.dom.attr('src', String(moduleValue.get()));
             }
         }
     });
