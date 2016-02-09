@@ -820,7 +820,8 @@ define([
                 Id: ${view.id}<br>
                 Revision: ${view.revid}<br><br>
                 Created on: ${view.creationDate.toLocaleString()}<br>
-                Last modified: ${view.modificationDate.toLocaleString()}`
+                Last modified: ${view.modificationDate.toLocaleString()}<br>
+                Owner: ${view.owner}`
             );
             this.$publicCheckbox.prop('checked', view.public);
             this.$ownersList.html('Owners: ' + view.owners.join(', '));
