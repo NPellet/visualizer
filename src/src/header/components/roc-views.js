@@ -361,7 +361,16 @@ define([
             var checkboxContainer = $('<div>')
                 .append(publicCheckbox)
                 .append('Public');
-            this.$permissionsBox.append(checkboxContainer);
+
+            var ownersList = this.$ownersList = $('<div>');
+            var addOwnerButton = $('<button>Add owner</button>').click(() => this.addOwner());
+            var ownersContainer = $('<div>')
+                .append(ownersList)
+                .append(addOwnerButton);
+
+            this.$permissionsBox
+                .append(checkboxContainer)
+                .append(ownersContainer);
 
             rightAccordion.accordion({
                 heightStyle: 'content'
@@ -811,6 +820,7 @@ define([
                 Last modified: ${view.modificationDate.toLocaleString()}`
             );
             this.$publicCheckbox.prop('checked', view.public);
+            this.$ownersList.html(view.owners.join(', '))
         }
 
         saveAs() {
@@ -1081,6 +1091,31 @@ define([
                 this.renderLoadedNode();
                 if (!ok) {
                     UI.showNotification('Could not change permissions', 'error');
+                }
+            });
+        }
+
+        addOwner() {
+            if (!this.loadedNode) return;
+            var div = $('<div>User email address: </div>');
+            var input = $('<input type="text" />').appendTo(div);
+            var dialog = UI.dialog(div, {
+                buttons: {
+                    Add: () => {
+                        var value = input.val();
+                        if (!Util.isEmail(value)) {
+                            return UI.showNotification('Invalid email', 'error');
+                        }
+                        this.showHide(true);
+                        this.loadedNode.data.view.addGroup(value).then(ok => {
+                            if (!ok) {
+                                UI.showNotification('Could not add owner', 'error');
+                            }
+                            this.renderLoadedNode();
+                            this.showHide(false);
+                        });
+                        dialog.dialog('destroy');
+                    }
                 }
             });
         }

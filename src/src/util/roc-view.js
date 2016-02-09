@@ -1,6 +1,6 @@
 'use strict';
 
-define(function () {
+define(['./util'], function (Util) {
 
     const ANON_READ = 'anonymousRead';
 
@@ -36,6 +36,10 @@ define(function () {
 
         get owner() {
             return this.view.$owners[0];
+        }
+
+        get owners() {
+            return this.view.$owners.slice(1).filter(Util.isEmail);
         }
 
         get revid() {
@@ -185,11 +189,11 @@ define(function () {
         }
 
         addGroup(name) {
-            return this.manager.putRequestDB(`/_owners/${this.id}/${name}`).then(() => this.reload());
+            return this.manager.putRequestDB(`/_owners/${this.id}/${name}`).then(() => this.reload()).then(retTrue, retFalse);
         }
 
         removeGroup(name) {
-            return this.manager.deleteRequestDB(`/_owners/${this.id}/${name}`).then(() => this.reload());
+            return this.manager.deleteRequestDB(`/_owners/${this.id}/${name}`).then(() => this.reload()).then(retTrue, retFalse);
         }
 
         reload() {
@@ -198,13 +202,11 @@ define(function () {
         }
 
         togglePublic() {
-            var prom;
             if (this.view.$owners.indexOf(ANON_READ) === -1) {
-                prom = this.addGroup(ANON_READ);
+                return this.addGroup(ANON_READ);
             } else {
-                prom = this.removeGroup(ANON_READ);
+                return this.removeGroup(ANON_READ);
             }
-            return prom.then(retTrue, retFalse);
         }
     }
 
