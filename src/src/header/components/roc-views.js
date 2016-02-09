@@ -362,7 +362,10 @@ define([
                 .append(publicCheckbox)
                 .append('Public');
 
-            var ownersList = this.$ownersList = $('<div>');
+            var ownersList = this.$ownersList = $('<div>').css({
+                marginTop: '5px',
+                marginBottom: '5px'
+            });
             var addOwnerButton = $('<button>Add owner</button>').click(() => this.addOwner());
             var ownersContainer = $('<div>')
                 .append(ownersList)
@@ -820,7 +823,7 @@ define([
                 Last modified: ${view.modificationDate.toLocaleString()}`
             );
             this.$publicCheckbox.prop('checked', view.public);
-            this.$ownersList.html(view.owners.join(', '))
+            this.$ownersList.html('Owners: ' + view.owners.join(', '));
         }
 
         saveAs() {
