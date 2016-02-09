@@ -354,7 +354,14 @@ define([
             rightAccordion.append('<h3>Permissions</h3>');
             this.$permissionsBox = $('<div>').appendTo(rightAccordion);
 
-            this.$permissionsBox.html('coming soon...');
+            var publicCheckbox = this.$publicCheckbox = $('<input type="checkbox" />').click(e => {
+                e.preventDefault();
+                this.togglePublic();
+            });
+            var checkboxContainer = $('<div>')
+                .append(publicCheckbox)
+                .append('Public');
+            this.$permissionsBox.append(checkboxContainer);
 
             rightAccordion.accordion({
                 heightStyle: 'content'
@@ -370,7 +377,7 @@ define([
             var closeButton = this.$closeButton = $('<button>Close</button>').button({disabled: true}).click(() => this.closeLoadedView());
             var saveButton = this.$saveButton = $('<button>Save</button>').button({disabled: true}).click(() => this.saveLoadedView());
             var saveAsButton = this.$saveAsButton = $('<button>Save as</button>').button({disabled: true}).click(() => this.saveAs());
-            var saveAsText = this.$saveAsText = $('<input type="text" />').css('display', 'none');
+            var saveAsText = this.$saveAsText = $('<input type="text" size="15" />').css('display', 'none');
 
             rightButtons
                 .append(closeButton)
@@ -788,7 +795,7 @@ define([
 
         populateInfo(node) {
             if (!node) {
-                this.$title.empty();
+                this.$title.html('&nbsp;');
                 this.$infoBox.empty();
                 return;
             }
@@ -803,6 +810,7 @@ define([
                 Created on: ${view.creationDate.toLocaleString()}<br>
                 Last modified: ${view.modificationDate.toLocaleString()}`
             );
+            this.$publicCheckbox.prop('checked', view.public);
         }
 
         saveAs() {
@@ -1052,7 +1060,6 @@ define([
                         UI.showNotification('Files uploaded successfully', 'success');
                     }, () => {
                         this.showHide(false);
-                        API.stopLoading('Uploading files...');
                         UI.showNotification('Files upload failed (at least partially)', 'error');
                     });
 
@@ -1064,6 +1071,18 @@ define([
         reloadCurrent() {
             if (!this.loadedNode) return;
             return this.loadedNode.data.view.reload().then(() => this.renderLoadedNode());
+        }
+
+        togglePublic() {
+            if (!this.loadedNode) return;
+            this.showHide(true);
+            return this.loadedNode.data.view.togglePublic().then(ok => {
+                this.showHide(false);
+                this.renderLoadedNode();
+                if (!ok) {
+                    UI.showNotification('Could not change permissions', 'error');
+                }
+            });
         }
     }
 

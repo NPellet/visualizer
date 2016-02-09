@@ -2,6 +2,8 @@
 
 define(function () {
 
+    const ANON_READ = 'anonymousRead';
+
     class RocView {
         constructor(view, manager) {
             this.view = view;
@@ -57,6 +59,10 @@ define(function () {
 
         get version() {
             return this.content.version || '0.0.0';
+        }
+
+        get public() {
+            return this.view.$owners.indexOf(ANON_READ) !== -1;
         }
 
         getPath(flavor) {
@@ -178,9 +184,27 @@ define(function () {
             }
         }
 
+        addGroup(name) {
+            return this.manager.putRequestDB(`/_owners/${this.id}/${name}`).then(() => this.reload());
+        }
+
+        removeGroup(name) {
+            return this.manager.deleteRequestDB(`/_owners/${this.id}/${name}`).then(() => this.reload());
+        }
+
         reload() {
             return this.manager.getRequestDB(`/${this.id}`)
                 .then(getRes => this.view = getRes.body);
+        }
+
+        togglePublic() {
+            var prom;
+            if (this.view.$owners.indexOf(ANON_READ) === -1) {
+                prom = this.addGroup(ANON_READ);
+            } else {
+                prom = this.removeGroup(ANON_READ);
+            }
+            return prom.then(retTrue, retFalse);
         }
     }
 
