@@ -17,7 +17,10 @@ define([
     function init(module) {
         //define object properties
         var originalURL = String(module.definition.getChildSync(['url'], true).get());
-        var moduleURL = Util.rewriteRequirePath(originalURL) + '/';
+        var moduleURL = Util.rewriteRequirePath(originalURL);
+        if (moduleURL[moduleURL.length - 1] !== '/') {
+            moduleURL = moduleURL + '/';
+        }
 
         module.viewReady = new Promise(function (res, rej) {
             module._resolveView = res;

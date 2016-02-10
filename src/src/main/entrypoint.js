@@ -21,7 +21,8 @@ define([
     'src/util/ui',
     'src/util/config',
     'src/util/shortcuts',
-    'src/util/copyPasteManager'
+    'src/util/copyPasteManager',
+    './forceLoad'
 ], function (
     $,
     _,
