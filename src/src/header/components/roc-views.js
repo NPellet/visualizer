@@ -766,6 +766,9 @@ define([
             if (this.flavor !== flavorName) {
                 this.flavor = flavorName;
                 this.renderFlavor();
+                if (this.loadedNode && !this.loadedNode.data.view.hasFlavor(flavorName)) {
+                    this.setLoadedNode(null);
+                }
             }
         }
 

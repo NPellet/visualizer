@@ -74,6 +74,10 @@ define(['./util'], function (Util) {
             return '/' + path.join('/');
         }
 
+        hasFlavor(name) {
+            return !!this.flavors[name];
+        }
+
         hasView() {
             return this.view._attachments && this.view._attachments['view.json'];
         }
