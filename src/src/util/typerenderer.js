@@ -1,6 +1,16 @@
 'use strict';
 
-define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment', 'numeral', 'sprintf'], function (require, $, _, API, Util, moment, numeral, sprintf) {
+define([
+    'require',
+    'jquery',
+    'lodash',
+    'moment',
+    'numeral',
+    'sprintf',
+    './api',
+    './util',
+    './typerenderer/chart'
+], function (require, $, _, moment, numeral, sprintf, API, Util, chartRenderer) {
 
     var functions = {};
     var countryData;
@@ -510,6 +520,8 @@ define(['require', 'jquery', 'lodash', 'src/util/api', 'src/util/util', 'moment'
             $element.html(Object.prototype.toString.call(value));
         }
     };
+
+    functions.chart = chartRenderer;
 
     //TODO replace with a Map when more browsers are supported
     var typeInit = {};
