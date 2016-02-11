@@ -19,9 +19,10 @@ define([
     'modules/default/defaultmodel',
     'modules/default/defaultview',
 
-    'modules/types/client_interaction/code_executor/controller',
-    'modules/types/client_interaction/code_executor/model',
-    'modules/types/client_interaction/code_executor/view',
+    // code executor loads the ace editor. This is problematic for dynamic loading of syntax coloring files
+    //'modules/types/client_interaction/code_executor/controller',
+    //'modules/types/client_interaction/code_executor/model',
+    //'modules/types/client_interaction/code_executor/view',
     'modules/types/display/single_value/controller',
     'modules/types/display/single_value/model',
     'modules/types/display/single_value/view',
