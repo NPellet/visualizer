@@ -388,7 +388,6 @@ define([
                 flav.push(name);
                 flavors[this.flavor] = flav;
                 doc = {
-                    _id: $.couch.newUUID(),
                     flavors: flavors,
                     name: this.username,
                     _attachments: {}
@@ -399,6 +398,7 @@ define([
                 };
                 this.database.saveDoc(doc, {
                     success: function (data) {
+                        doc._id = data.id;
                         doc._rev = data.rev;
                         var newNode = {
                             doc: doc,
