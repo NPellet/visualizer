@@ -1,3 +1,25 @@
+<a name="2.40.0"></a>
+# 2.40.0 (2016-02-12)
+
+
+### Bug Fixes
+
+* **build:** fix svg-edit images not being included in build ([465af99](https://github.com/NPellet/visualizer/commit/465af99))
+* **couchdb2:** batch inline uploads ([5da1607](https://github.com/NPellet/visualizer/commit/5da1607))
+* **couchdb2:** do not generate a synchronous _id ([2947de2](https://github.com/NPellet/visualizer/commit/2947de2))
+* **forms:** prevent array defaults to be used in different places ([0c6b5ab](https://github.com/NPellet/visualizer/commit/0c6b5ab))
+* **svg_edit:** remove scrollbars ([f706119](https://github.com/NPellet/visualizer/commit/f706119)), closes [#770](https://github.com/NPellet/visualizer/issues/770)
+* **svg-edit:** update svg-edit to 2.8.1 ([da054e2](https://github.com/NPellet/visualizer/commit/da054e2)), closes [#332](https://github.com/NPellet/visualizer/issues/332)
+* **typerenderer:** in indicator renderer create a copy of the value. ([1738ea0](https://github.com/NPellet/visualizer/commit/1738ea0)), closes [#752](https://github.com/NPellet/visualizer/issues/752)
+
+### Features
+
+* **header:** add rest-on-couch view manager ([5e982ce](https://github.com/NPellet/visualizer/commit/5e982ce))
+* **leaflet:** customize style of geoJSON points ([ac35fdc](https://github.com/NPellet/visualizer/commit/ac35fdc))
+* **typerenderer:** add support for chart objects ([583607c](https://github.com/NPellet/visualizer/commit/583607c))
+
+
+
 <a name="2.39.0"></a>
 # 2.39.0 (2016-02-04)
 
