@@ -87,11 +87,11 @@ define(['./util'], function (Util) {
         }
 
         getViewUrl() {
-            return this.hasView() ? `${this.manager.rocDbUrl}/${this.id}/view.json` : null;
+            return this.hasView() ? `${this.manager.rocDbUrl}/entry/${this.id}/view.json` : null;
         }
 
         getDataUrl() {
-            return this.hasData() ? `${this.manager.rocDbUrl}/${this.id}/data.json` : null;
+            return this.hasData() ? `${this.manager.rocDbUrl}/entry/${this.id}/data.json` : null;
         }
 
         getViewSwitcher() {
@@ -124,10 +124,10 @@ define(['./util'], function (Util) {
             };
 
             if (this.id) {
-                return this.manager.putRequestDB('/' + this.id, this.view)
+                return this.manager.putRequestDB(`/entry/${this.id}`, this.view)
                     .then(afterRes);
             } else {
-                return this.manager.postRequestDB('/', this.view)
+                return this.manager.postRequestDB('/entry/', this.view)
                     .then(afterRes);
             }
         }
@@ -157,7 +157,7 @@ define(['./util'], function (Util) {
         }
 
         remove() {
-            return this.manager.deleteRequestDB('/' + this.id)
+            return this.manager.deleteRequestDB(`/entry/${this.id}`)
                 .then(retTrue, retFalse);
         }
 
@@ -193,15 +193,15 @@ define(['./util'], function (Util) {
         }
 
         addGroup(name) {
-            return this.manager.putRequestDB(`/_owners/${this.id}/${name}`).then(() => this.reload()).then(retTrue, retFalse);
+            return this.manager.putRequestDB(`/entry/${this.id}/_owner/${name}`).then(() => this.reload()).then(retTrue, retFalse);
         }
 
         removeGroup(name) {
-            return this.manager.deleteRequestDB(`/_owners/${this.id}/${name}`).then(() => this.reload()).then(retTrue, retFalse);
+            return this.manager.deleteRequestDB(`/entry/${this.id}/_owner/${name}`).then(() => this.reload()).then(retTrue, retFalse);
         }
 
         reload() {
-            return this.manager.getRequestDB(`/${this.id}`)
+            return this.manager.getRequestDB(`/entry/${this.id}`)
                 .then(getRes => this.view = getRes.body);
         }
 

@@ -420,7 +420,7 @@ define([
         }
 
         getViews() {
-            return this.getRequestDB('/_all/entries', {right: 'write'}).then(returnBody);
+            return this.getRequestDB('/entry/_all', {right: 'write'}).then(returnBody);
         }
 
         refresh() {
@@ -1006,7 +1006,7 @@ define([
 
         uploadFiles() {
             if (!this.loadedNode) return;
-            var docUrl = `${this.rocDbUrl}/${this.loadedNode.data.view.id}`;
+            var docUrl = `${this.rocDbUrl}/entry/${this.loadedNode.data.view.id}`;
             var couchA = new CouchdbAttachments(docUrl);
             return couchA.fetchList().then(attachments => {
                 return uploadUi.uploadDialog(attachments, 'couch').then(toUpload => {
