@@ -121,7 +121,7 @@ define([
                                 });
                                 resolve(toUpload);
                                 $(this).dialog('close');
-                            },
+                            }
                         },
                         close: function () {
                             resolve(false);

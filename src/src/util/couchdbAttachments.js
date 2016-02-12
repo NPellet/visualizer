@@ -139,9 +139,9 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                 (function (i) {
                     var item = options[i];
                     var data = item.data || item.file;
-                    if(typeof data === 'string') {
+                    if (typeof data === 'string') {
                         var dataUrl = /^data:([a-z]+\/[a-z]+);base64,/.exec(data.slice(0, 64));
-                        if(!dataUrl) {
+                        if (!dataUrl) {
                             that.lastDoc._attachments[item.name] = {
                                 content_type: item.contentType,
                                 data: btoa(unescape(encodeURIComponent(data)))
@@ -153,8 +153,8 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                             };
                         }
                     }
-                    else if(data instanceof Blob) {
-                        if(!item.contentType && data.type) {
+                    else if (data instanceof Blob) {
+                        if (!item.contentType && data.type) {
                             item.contentType = data.type;
                         }
                         var p = new Promise(function (resolve, reject) {
@@ -222,10 +222,10 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
             return new Promise(function (resolve, reject) {
                 var _att = that.lastDoc._attachments[options.name];
                 var contentType = options.contentType;
-                if(!contentType && data instanceof Blob) {
-                    contentType = data.type
+                if (!contentType && data instanceof Blob) {
+                    contentType = data.type;
                 }
-                if(!contentType && _att && _att.content_type) {
+                if (!contentType && _att && _att.content_type) {
                     contentType = _att.content_type;
                 }
                 if (!contentType) {
