@@ -152,8 +152,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                                 data: data.slice(dataUrl[0].length)
                             };
                         }
-                    }
-                    else if (data instanceof Blob) {
+                    } else if (data instanceof Blob) {
                         if (!item.contentType && data.type) {
                             item.contentType = data.type;
                         }
