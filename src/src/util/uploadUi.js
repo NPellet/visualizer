@@ -121,8 +121,7 @@ define([
                                 });
                                 resolve(toUpload);
                                 $(this).dialog('close');
-
-                            }
+                            },
                         },
                         close: function () {
                             resolve(false);
@@ -153,7 +152,7 @@ define([
                             //    grid.render();
                             //});
                         },
-                        closeOnEscape: false,
+                        closeOnEscape: true,
                         width: 700,
                         height: 500
                     });
