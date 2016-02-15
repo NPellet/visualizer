@@ -54,10 +54,9 @@ define([
         });
     };
     functions.qrcode.toscreen = function ($element, val, rootVal, options) {
-        var l = Math.min($element.width(), $element.height());
         var defaultOptions = {
-            width: l,
-            height: l,
+            width: 128,
+            height: 128,
             text: String(val)
         };
 
