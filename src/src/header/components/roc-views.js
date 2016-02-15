@@ -1009,7 +1009,10 @@ define([
             var docUrl = `${this.rocDbUrl}/entry/${this.loadedNode.data.view.id}`;
             var couchA = new CouchdbAttachments(docUrl);
             return couchA.fetchList().then(attachments => {
-                return uploadUi.uploadDialog(attachments, 'couch').then(toUpload => {
+                return uploadUi.uploadDialog(attachments, {
+                    mode: 'couch',
+                    docUrl
+                }).then(toUpload => {
                     if (!toUpload || toUpload.length === 0) return;
                     this.showHide(true);
                     var parts;

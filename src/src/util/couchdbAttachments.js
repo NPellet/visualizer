@@ -261,28 +261,26 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
      * @param name The name of the attachment to get
      * @return {Promise} The parsed content of the attachment
      */
-    CouchdbAttachments.prototype.get = function (name) {
+    CouchdbAttachments.prototype.get = function (name, options) {
+        options = options || {};
         var that = this;
         return this.list().then(function () {
             var _att = that.lastDoc._attachments[name];
             if (!_att) throw new Error('The attachment ' + name + ' does not exist');
-            return Promise.resolve(LRU.get(storeName, _att.digest)).then(function (data) {
-                if (data) return data.data;
-                else return {};
-            }, function () {
                 return new Promise(function (resolve, reject) {
                     var req = superagent.get(that.docUrl + '/' + name).withCredentials();
                     if (_att) req.set('Accept', that.lastDoc._attachments[name].content_type);
                     req.query({rev: that.lastDoc._rev})
-                        .end(function (err, res) {
+                        .end(function (err, res, payload) {
+                            console.log(payload);
                             if (err) return reject(err);
                             if (res.status !== 200) return reject(new Error('Error getting attachment, couchdb returned status code ' + res.status));
                             LRU.store(storeName, _att.digest, res.body || res.text);
+                            if(options.raw) return resolve(res.text);
                             return resolve(res.body || res.text);
                         });
                 });
             });
-        });
     };
 
     /**

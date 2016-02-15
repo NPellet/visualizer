@@ -14,7 +14,7 @@ define([
     'slickgrid',
     'mime-types'
 ], function (Util, Debug, ui, _, $, Slick, mimeTypes) {
-    function attachmentsFromCouch(data) {
+    function attachmentsFromCouch(data, options) {
         var r = new Array(data.length);
         for (var i = 0; i < data.length; i++) {
             var d = data[i];
@@ -24,6 +24,9 @@ define([
                 size: d.length,
                 toDelete: false
             };
+            if(options.docUrl) {
+                r[i].downloadUrl = options.docUrl + '/' + (d.name);
+            }
         }
         return r;
     }
@@ -42,9 +45,10 @@ define([
 
     var prefix = 'upload/';
 
-    function uploadDialog(data, mode) {
+    function uploadDialog(data, options) {
+        var mode = options.mode;
         if (data && mode && modes[mode]) {
-            data = modes[mode](data);
+            data = modes[mode](data, options);
         }
         var slickData = new Slick.Data.DataView();
         data = data || [];
@@ -73,29 +77,42 @@ define([
                             id: 'name',
                             name: 'name',
                             field: 'name',
-                            sortable: true
+                            sortable: false
                         },
                         {
                             id: 'contentType',
                             name: 'contentType',
                             field: 'contentType',
                             editor: Slick.Editors.Text,
-                            sortable: true
+                            sortable: false
                         },
                         {
                             id: 'size',
                             name: 'size',
                             field: 'size',
-                            sortable: true
+                            sortable: false
                         },
                         {
                             id: 'toDelete',
                             name: 'toDelete',
                             field: 'toDelete',
+                            width: 40,
                             editor: Slick.Editors.Checkbox,
                             formatter: Slick.Formatters.Checkmark
                         }
+
                     ];
+
+                    if(data[0] && data[0].downloadUrl) {
+                        columns.push({
+                            id: '__download_attachment__',
+                            name: 'Download',
+                            field: '__download_attachment__',
+                            sortable: false,
+                            width: 30,
+                            formatter: downloadFormatter
+                        })
+                    }
                     var $dialog = $('<div class="upload-ui">');
                     var $slick = $('<div class="dropzone">');
                     var $deleteAll = $('<input type="checkbox">Select/Unselect Delete</input>');
@@ -132,30 +149,14 @@ define([
                         open: function () {
                             $dialog.append($slick);
                             $dialog.append($deleteAll);
-                            //$('body').append($slick);
                             grid = new Slick.Grid($slick, data, columns, slickOptions);
-                            //grid.onSort.subscribe(function (e, args) {
-                            //    var cols = args.sortCols;
-                            //    slickData.sort(function (dataRow1, dataRow2) {
-                            //        for (var i = 0, l = cols.length; i < l; i++) {
-                            //            var field = cols[i].sortCol.field;
-                            //            var sign = cols[i].sortAsc ? 1 : -1;
-                            //            var value1 = dataRow1[field], value2 = dataRow2[field];
-                            //            var result = (value1 == value2 ? 0 : (value1 > value2 ? 1 : -1)) * sign;
-                            //            if (result != 0) {
-                            //                return result;
-                            //            }
-                            //        }
-                            //        return 0;
-                            //    });
-                            //    grid.invalidate();
-                            //    grid.render();
-                            //});
                         },
                         closeOnEscape: true,
                         width: 700,
                         height: 500
                     });
+
+
                     var dragCount = 0;
                     $dialog[0].addEventListener('dragenter', function (e) {
                         e.preventDefault();
@@ -252,6 +253,11 @@ define([
                     });
                 });
             });
+    }
+
+    function downloadFormatter(row, cell, value, coldef, dataContext) {
+        var name = dataContext.name.replace(/^.*\//, '');
+        return `<div style="width:100%; height: 100%;"><a href="${dataContext.downloadUrl}" download="${name}" class="download-attachment"><i class="centered-icon fa fa-download"></i></a></div>`;
     }
 
     exports.uploadDialog = uploadDialog;

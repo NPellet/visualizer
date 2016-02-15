@@ -13,11 +13,12 @@ define([
     'src/util/couchdbAttachments',
     'src/util/uploadUi',
     'src/util/debug',
+    'file-saver',
     'lib/couchdb/jquery.couch',
     'fancytree',
     'components/ui-contextmenu/jquery.ui-contextmenu.min',
     'jquery-ui/autocomplete'
-], function ($, _, API, ui, Default, Versioning, Button, Util, Form, CouchdbAttachments, uploadUi, Debug) {
+], function ($, _, API, ui, Default, Versioning, Button, Util, Form, CouchdbAttachments, uploadUi, Debug, fileSaver) {
 
     function CouchDBManager() {
     }
@@ -646,7 +647,10 @@ define([
                 var docUrl = that.dbUrl + '/' + that.currentDocument.data.doc._id;
                 var couchA = new CouchdbAttachments(docUrl);
                 couchA.fetchList().then(function (attachments) {
-                    uploadUi.uploadDialog(attachments, 'couch').then(function (toUpload) {
+                    uploadUi.uploadDialog(attachments, {
+                        mode: 'couch',
+                        docUrl: docUrl
+                    }).then(function (toUpload) {
                         if (!toUpload) return;
                         API.loading(loadingId, 'Uploading files...');
                         var parts;
