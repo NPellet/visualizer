@@ -45,10 +45,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jsoneditor', 'src/util/
                     }
                     this.module.controller.sendValue(result, 'onObjectChange');
                 },
-                onModeChange: () => {
-                    console.log('mode changed')
-                    this.setSendButton();
-                },
+                onModeChange: () => this.setSendButton(),
 
                 search: this.module.getConfigurationCheckbox('searchBox', 'search')
             });
