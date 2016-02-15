@@ -117,7 +117,7 @@ module.exports = function (grunt) {
                             './requirejs/require.js',
                             './x2js/xml2json.min.js',
                             ['./leaflet/dist/**', './leaflet-omnivore/leaflet-omnivore.min.js'],
-                            ['./jsoneditor/jsoneditor.min*', './jsoneditor/img/*'],
+                            './jsoneditor/dist/**',
                             './jit/Jit/**/*',
                             './ui-contextmenu/jquery.ui-contextmenu.min.js',
                             './papa-parse/papaparse.min.js',

@@ -200,13 +200,9 @@ define([
                     v.modules[j].url = module.url;
                 }
             }
-            if (changed === false) {
-                Debug.debug('No module urls rewritten in the view');
-            } else {
-                Debug.info('Module urls were rewritten...');
+            if (changed) {
                 Versioning.setViewJSON(v);
             }
-
         }
 
         function loadCustomModules() {

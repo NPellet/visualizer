@@ -989,7 +989,7 @@ define([
         getConfigurationCheckbox: function (aliasName, optionName) {
             var conf = this.getConfiguration(aliasName);
             if (!Array.isArray(conf)) {
-                return undefined;
+                return false;
             }
 
             return conf.indexOf(optionName) > -1;
