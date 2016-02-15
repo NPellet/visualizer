@@ -45,26 +45,36 @@ define(['modules/default/defaultview', 'src/util/util', 'jsoneditor', 'src/util/
                     }
                     this.module.controller.sendValue(result, 'onObjectChange');
                 },
+                onModeChange: () => {
+                    console.log('mode changed')
+                    this.setSendButton();
+                },
+
                 search: this.module.getConfigurationCheckbox('searchBox', 'search')
             });
 
             if (this.module.getConfigurationCheckbox('sendButton', 'send')) {
-                var sendButton = this.dom
-                    .find('.jsoneditor-menu')
-                    .prepend('<button class="send" style="width: 45px; float: left; background: none; font-size: small;">\n    <span style="font-size: 10pt;">Send</span>\n</button>')
-                    .find('button.send');
-
-                sendButton.on('click', () => {
-                    this.module.controller.sendValue(this.editor.get(), 'onObjectSend');
-                }).on('mouseenter', function () {
-                    $(this).css('background-color', '#f0f2f5');
-                }).on('mouseleave', function () {
-                    $(this).css('background-color', '#e3eaf6');
-                }).css('background-color', '#e3eaf6');
+                this.setSendButton();
             }
 
             this.update.value.call(this, this.inputData);
             this.resolveReady();
+        },
+
+        setSendButton: function () {
+
+            var sendButton = this.dom
+                .find('.jsoneditor-menu')
+                .prepend('<button class="send" style="width: 45px; float: left; background: none; font-size: small;">\n    <span style="font-size: 10pt; color: black">Send</span>\n</button>')
+                .find('button.send');
+
+            sendButton.on('click', () => {
+                this.module.controller.sendValue(this.editor.get(), 'onObjectSend');
+            }).on('mouseenter', function () {
+                $(this).css('background-color', '#f0f2f5');
+            }).on('mouseleave', function () {
+                $(this).css('background-color', '#e3eaf6');
+            }).css('background-color', '#e3eaf6');
         },
         update: {
             value(value) {
