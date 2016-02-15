@@ -548,7 +548,7 @@ define([
             if (!this._data) {
                 return [];
             }
-            return _.flatten(_.pluck(this._data.data, field));
+            return _.flatten(_.map(this._data.data, field));
         },
 
         _normalizeData: function () {
@@ -586,10 +586,8 @@ define([
             gradient = _.filter(gradient, function (v) {
                 return v.stopPosition !== undefined;
             });
-            this.stopPositions = _.pluck(gradient, 'stopPosition');
-            this.stopColors = _(gradient).pluck('color').map(colorUtil.getColor).map(function (v) {
-                return colorUtil.rgb2hex(v);
-            }).value();
+            this.stopPositions = _.map(gradient, 'stopPosition');
+            this.stopColors = _(gradient).map('color').map(colorUtil.getColor).map(v => colorUtil.rgb2hex(v)).value();
 
             this.numberToColor = colorbar.getColorScale({
                 stops: this.stopColors,
@@ -1731,9 +1729,7 @@ define([
             that._data._highlight = [];
 
             var jp = _.cloneDeep(Data.resurrect(jpaths));
-            _.each(jp, function (v) {
-                v.unshift(0);
-            });
+            _.each(jp, v => v.unshift(0));
 
 
             function validate(x) {
@@ -1749,9 +1745,7 @@ define([
             }
 
             for (var i = 0; i < value.length; i++) {
-                _.each(jp, function (v) {
-                    v[0] = i;
-                });
+                _.each(jp, v => v[0] = i);
                 that._data.x.push(getFromJpath(value, jp.x, 0));
                 that._data.y.push(getFromJpath(value, jp.y, 0));
                 that._data.z.push(getFromJpath(value, jp.z, 0));
@@ -1763,9 +1757,9 @@ define([
             that._data.x = that._data.x || [];
             that._data.y = that._data.y || [];
             that._data.z = that._data.z || [];
-            that._data.info = _.pluck(value, 'info');
-            that._data._highlight = _.pluck(value, '_highlight');
-            if (!_.any(that._data._highlight)) that._data._highlight = [];
+            that._data.info = _.map(value, 'info');
+            that._data._highlight = _.map(value, '_highlight');
+            if (!_.some(that._data._highlight)) that._data._highlight = [];
             that._dispFilter = that._dispFilter || [];
         },
 

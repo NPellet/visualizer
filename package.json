@@ -57,10 +57,10 @@
     "grunt-jsdoc": "^0.5.7",
     "grunt-rename": "^0.1.4",
     "grunt-text-replace": "~0.3.10",
+    "lodash": "^4.3.0",
     "mkpath": "^0.1.0",
     "semver": "^4.3.3",
     "tempfile": "^1.1.1",
-    "underscore": "^1.5.2",
     "walk": "^2.3.4"
   },
   "private": true,

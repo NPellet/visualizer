@@ -215,7 +215,7 @@ define([
                 modules[i].url = modules[i].url.replace(/\/$/, '');
             }
             return ModuleFactory.setModules({
-                folders: _.pluck(modules, 'url')
+                folders: _.map(modules, 'url')
             });
         }
 

@@ -158,10 +158,7 @@ define([
             var that = this;
             var toolbar = this.controller.getToolbar();
             this.dom.find('.ci-module-header-toolbar ul li').each(function (idx, el) {
-                var t = _.find(toolbar, function (val) {
-                    return val.title === el.title;
-                });
-
+                var t = _.find(toolbar, val => val.title === el.title);
                 if (t && t.onClick) {
                     $(el).on('click', t.onClick.bind(that));
                 }

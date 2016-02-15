@@ -53,7 +53,7 @@
     "jszip": "2.5.0",
     "leaflet": "0.7.7",
     "leaflet-omnivore": "0.3.2",
-    "lodash": "3.3.0",
+    "lodash": "4.3.0",
     "loglevel": "1.2.0",
     "marked": "0.3.3",
     "mime-types": "stropitek/mime-types#v0.0.3",
@@ -79,7 +79,6 @@
     "threejs": "r71",
     "twig.js": "0.8.4",
     "ui-contextmenu": "1.11.0",
-    "underscore": "1.8.2",
     "uri.js": "1.14.1",
     "x2js": "1.1.7",
     "web-animations-js": "2.1.2"

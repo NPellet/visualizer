@@ -71,7 +71,7 @@ define([
         var bmap = _.map(browserKeys, function (val) {
             return bowser[val];
         });
-        var browserListed = _.any(bmap);
+        var browserListed = _.some(bmap);
 
 
 

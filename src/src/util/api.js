@@ -98,14 +98,15 @@ define([
         },
 
         setAllFilters: function (filters) {
-            variableFilters = _([filters, variableFilters]).flatten().filter(function (v) {
-                return v && v.name && v.file;
-            }).uniq(function (v) {
-                return v.file;
-            }).unshift({
-                file: '',
-                name: 'No filter'
-            }).value();
+            variableFilters = _([filters, variableFilters])
+                .flatten()
+                .filter(v=> v && v.name && v.file)
+                .uniq(v => v.file)
+                .unshift({
+                    file: '',
+                    name: 'No filter'
+                })
+                .value();
         },
 
         isViewLocked: function () {

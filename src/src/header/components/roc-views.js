@@ -1054,7 +1054,7 @@ define([
                     var prom = Promise.resolve();
 
                     prom = prom.then(function () {
-                        return couchA.remove(_.pluck(toDelete, 'name'));
+                        return couchA.remove(_.map(toDelete, 'name'));
                     });
                     for (i = 0; i < largeUploads.length; i++) {
                         (function (i) {

@@ -52,8 +52,8 @@ define([
 
     Rectangle.prototype.init2 = function () {
         var corners = arguments;
-        var x = _.pluck(corners, 'x');
-        var y = _.pluck(corners, 'y');
+        var x = _.map(corners, 'x');
+        var y = _.map(corners, 'y');
         for (var i = 0; i < corners.length; i++) {
             if (Math.max.apply(null, x) === corners[i].x && Math.max.apply(null, y) === corners[i].y)
                 this.maxmax = corners[i];

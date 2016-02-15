@@ -5,7 +5,7 @@ module.exports = function (grunt) {
 
     var walk = require('walk');
     var fs = require('fs');
-    var _ = require('underscore');
+    var _ = require('lodash');
     var mkpath = require('mkpath');
     var path = require('path');
     var extend = require('extend');
@@ -130,8 +130,7 @@ module.exports = function (grunt) {
                             ['./spectrum/spectrum.js', './spectrum/spectrum.css'],
                             './superagent-dist/superagent.js',
                             './modernizr/modernizr.js',
-                            './underscore/underscore-min',
-                            './lodash/lodash.min.js',
+                            './lodash/dist/lodash.min.js',
                             './bowser/bowser.min.js',
                             './jquery-cookie/jquery.cookie.js',
                             './chemcalc/lib.js',
@@ -412,7 +411,7 @@ module.exports = function (grunt) {
                     var expressions;
 
                     expressions = [/\.jpg$/, /\.png$/, /\.jpeg$/, /\.gif$/];
-                    if (_.any(expressions,
+                    if (_.some(expressions,
                             function (exp) {
                                 return fileStats.name.match(exp);
                             })
@@ -421,7 +420,7 @@ module.exports = function (grunt) {
                     }
 
                     expressions = [/\.css$/, /\.js$/, /\.html$/];
-                    if (_.any(expressions,
+                    if (_.some(expressions,
                             function (exp) {
                                 return fileStats.name.match(exp);
                             })) {
@@ -463,7 +462,7 @@ module.exports = function (grunt) {
         // Delete images that are not in the white set
         var delcount = 0;
         _.keys(allimages).forEach(function (i) {
-            if (!whiteset[allimages[i]] && !_.any(acceptedReg, function (reg) {
+            if (!whiteset[allimages[i]] && !_.some(acceptedReg, function (reg) {
                     return reg.test(allimages[i]);
                 })) {
                 fs.unlinkSync(allimages[i]);
