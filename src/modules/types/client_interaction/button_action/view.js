@@ -1,14 +1,11 @@
 'use strict';
 
-define(['modules/default/defaultview', 'forms/button', 'src/util/ui', 'src/util/typerenderer'], function (Default, Button, ui, Renderer) {
+define(['jquery', 'modules/default/defaultview', 'forms/button', 'src/util/ui', 'src/util/typerenderer'], function ($, Default, Button, ui, Renderer) {
 
     function View() {
     }
 
     $.extend(true, View.prototype, Default, {
-        init: function() {
-
-        },
         onResize: function () {
             var that = this;
             var label;
