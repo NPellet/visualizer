@@ -23,7 +23,7 @@ define(['jquery', 'modules/default/defaultview', 'lodash'], function ($, Default
                 margin: '0',
                 display: 'inline-block',
                 fontSize: fontSize + 'px'
-            }).appendTo(div);
+            }).attr('placeholder', this.module.getConfiguration('placeholder', '')).appendTo(div);
 
             if (!this._query) {
                 this._query = this.module.getConfiguration('initialValue');
