@@ -33,6 +33,7 @@
     "fancytree": "2.15.0",
     "farbtastic": "2.0.0-alpha.1",
     "file-saver.js": "1.20150304.1",
+    "flag-icon-css": "^1.1.0",
     "font-awesome": "4.3.0",
     "jcampconverter": "v2.0.8",
     "jit": "2.0.2",
@@ -61,10 +62,12 @@
     "moment": "2.10.6",
     "moment-duration-format": "~1.3.0",
     "notifyjs": "0.3.2",
+    "numeral": "~1.5.3",
     "onde": "cheminfo/onde#8ec2565c856edce7ce3c97767c608db91977c63e",
     "openchemlib": "3.2.2",
     "papa-parse": "4.1.1",
     "pouchdb": "3.3.1",
+    "qrcode.js": "davidshimjs/qrcodejs#04f46c6a0708418cb7b96fc563eacae0fbf77674",
     "requirejs": "2.1.22",
     "select2": "4.0.0",
     "setImmediate": "YuzuJS/setImmediate#1.0.2",
@@ -79,10 +82,7 @@
     "underscore": "1.8.2",
     "uri.js": "1.14.1",
     "x2js": "1.1.7",
-    "web-animations-js": "2.1.2",
-    "numeral": "~1.5.3",
-    "qrcode.js": "davidshimjs/qrcodejs#04f46c6a0708418cb7b96fc563eacae0fbf77674",
-    "flag-icon-css": "^1.1.0"
+    "web-animations-js": "2.1.2"
   },
   "resolutions": {
     "jsgraph": "v1.13.3-51"
