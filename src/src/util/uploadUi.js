@@ -24,7 +24,7 @@ define([
                 size: d.length,
                 toDelete: false
             };
-            if(options.docUrl) {
+            if (options.docUrl) {
                 r[i].downloadUrl = options.docUrl + '/' + (d.name);
             }
         }
@@ -103,7 +103,7 @@ define([
 
                     ];
 
-                    if(data[0] && data[0].downloadUrl) {
+                    if (data[0] && data[0].downloadUrl) {
                         columns.push({
                             id: '__download_attachment__',
                             name: 'Download',
@@ -111,7 +111,7 @@ define([
                             sortable: false,
                             width: 30,
                             formatter: downloadFormatter
-                        })
+                        });
                     }
                     var $dialog = $('<div class="upload-ui">');
                     var $slick = $('<div class="dropzone">');

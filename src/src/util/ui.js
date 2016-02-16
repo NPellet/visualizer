@@ -158,10 +158,10 @@ define([
                 Promise.all(allProm).then(() => {
                     console.log('all done');
                     var len = data.getLength();
-                    if(len === 0) {
+                    if (len === 0) {
                         reject(new Error('empty data'));
                         $dialog.dialog('close');
-                    } else if(len === 1 && options.autoSelect) {
+                    } else if (len === 1 && options.autoSelect) {
                         var id = data.mapRowsToIds([0])[0];
                         resolve(id);
                         $dialog.dialog('close');
