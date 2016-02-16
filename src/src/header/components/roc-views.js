@@ -576,64 +576,62 @@ define([
 
         newFlavor() {
             var div = $('<div>Name of the new flavor: </div>');
-            var input = $('<input type="text" />').appendTo(div);
-            var dialog = UI.dialog(div, {
-                buttons: {
-                    Create: () => {
-                        var name = validateFlavor(input.val());
-                        if (!name) {
-                            return UI.showNotification('Invalid name', 'error');
-                        }
-                        if (this.flavors.indexOf(name) === -1) {
-                            this.tree.rootNode.addNode({
-                                folder: true,
-                                title: name,
-                                path: [name]
-                            });
-                            this.flavors.push(name);
-                            this.flavors.sort();
-                        }
-                        this.switchToFlavor(name);
-                        dialog.dialog('destroy');
-                    }
-                }
+            var input = $('<input type="text" />').appendTo(div).on('keypress', evt => {
+                if (evt.keyCode === 13) Create();
             });
+            const Create = () => {
+                var name = validateFlavor(input.val());
+                if (!name) {
+                    return UI.showNotification('Invalid name', 'error');
+                }
+                if (this.flavors.indexOf(name) === -1) {
+                    this.tree.rootNode.addNode({
+                        folder: true,
+                        title: name,
+                        path: [name]
+                    });
+                    this.flavors.push(name);
+                    this.flavors.sort();
+                }
+                this.switchToFlavor(name);
+                dialog.dialog('destroy');
+            };
+            var dialog = UI.dialog(div, {buttons: {Create}});
         }
 
         createFolder(node) {
             var div = $('<div>Name of the directory: </div>');
-            var input = $('<input type="text" />').appendTo(div);
-            var dialog = UI.dialog(div, {
-                buttons: {
-                    Save: () => {
-                        var name = validateName(input.val());
-                        if (!name) {
-                            return UI.showNotification('Invalid name', 'error');
-                        }
+            var input = $('<input type="text" />').appendTo(div).on('keypress', evt => {
+                if (evt.keyCode === 13) Save();
+            });
+            const Save = () => {
+                var name = validateName(input.val());
+                if (!name) {
+                    return UI.showNotification('Invalid name', 'error');
+                }
 
-                        // Check if folder already exists
-                        var children = node.getChildren();
-                        if (children) {
-                            for (var i = 0; i < children.length; i++) {
-                                if (children[i].title === name && children[i].folder) {
-                                    return UI.showNotification(`Folder ${name} already exists`, 'error');
-                                }
-                            }
+                // Check if folder already exists
+                var children = node.getChildren();
+                if (children) {
+                    for (var i = 0; i < children.length; i++) {
+                        if (children[i].title === name && children[i].folder) {
+                            return UI.showNotification(`Folder ${name} already exists`, 'error');
                         }
-
-                        node.setExpanded(true);
-                        var newNode = node.addNode({
-                            folder: true,
-                            title: name,
-                            path: node.data.path.concat(name)
-                        });
-                        node.sortChildren(sortFancytree);
-                        newNode.setActive();
-                        dialog.dialog('destroy');
-                        this.renderFlavor();
                     }
                 }
-            });
+
+                node.setExpanded(true);
+                var newNode = node.addNode({
+                    folder: true,
+                    title: name,
+                    path: node.data.path.concat(name)
+                });
+                node.sortChildren(sortFancytree);
+                newNode.setActive();
+                dialog.dialog('destroy');
+                this.renderFlavor();
+            };
+            var dialog = UI.dialog(div, {buttons: {Save}});
         }
 
         deleteView(node) {
@@ -661,31 +659,30 @@ define([
 
         renameView(node) {
             var div = $(`<div>Renaming view "${node.title}"<br>New name: </div>`);
-            var input = $('<input type="text" />').appendTo(div);
-            var dialog = UI.dialog(div, {
-                buttons: {
-                    Rename: () => {
-                        var name = input.val().trim();
-                        if (name.length === 0) {
-                            return UI.showNotification('Name cannot be empty', 'error');
-                        }
-
-                        this.showHide(true);
-                        return node.data.view.rename(node.data.flavor, name)
-                            .then(ok => {
-                                this.showHide(false);
-                                if (ok) {
-                                    UI.showNotification('View was renamed', 'success');
-                                    node.setTitle(name);
-                                    this.renderLoadedNode();
-                                } else {
-                                    UI.showNotification('Error while renaming view', 'error');
-                                }
-                                dialog.dialog('destroy');
-                            });
-                    }
-                }
+            var input = $('<input type="text" />').appendTo(div).on('keypress', evt => {
+                if (evt.keyCode === 13) Rename();
             });
+            const Rename = () => {
+                var name = input.val().trim();
+                if (name.length === 0) {
+                    return UI.showNotification('Name cannot be empty', 'error');
+                }
+
+                this.showHide(true);
+                return node.data.view.rename(node.data.flavor, name)
+                    .then(ok => {
+                        this.showHide(false);
+                        if (ok) {
+                            UI.showNotification('View was renamed', 'success');
+                            node.setTitle(name);
+                            this.renderLoadedNode();
+                        } else {
+                            UI.showNotification('Error while renaming view', 'error');
+                        }
+                        dialog.dialog('destroy');
+                    });
+            };
+            var dialog = UI.dialog(div, {buttons: {Rename}});
         }
 
         toggleFlavor(node, flavor) {
@@ -1145,26 +1142,25 @@ define([
         addOwner() {
             if (!this.loadedNode) return;
             var div = $('<div>User email address: </div>');
-            var input = $('<input type="text" />').appendTo(div);
-            var dialog = UI.dialog(div, {
-                buttons: {
-                    Add: () => {
-                        var value = input.val();
-                        if (!Util.isEmail(value)) {
-                            return UI.showNotification('Invalid email', 'error');
-                        }
-                        this.showHide(true);
-                        this.loadedNode.data.view.addGroup(value).then(ok => {
-                            if (!ok) {
-                                UI.showNotification('Could not add owner', 'error');
-                            }
-                            this.renderLoadedNode();
-                            this.showHide(false);
-                        });
-                        dialog.dialog('destroy');
-                    }
-                }
+            var input = $('<input type="text" />').appendTo(div).on('keypress', evt => {
+                if (evt.keyCode === 13) Add();
             });
+            const Add = () => {
+                var value = input.val();
+                if (!Util.isEmail(value)) {
+                    return UI.showNotification('Invalid email', 'error');
+                }
+                this.showHide(true);
+                this.loadedNode.data.view.addGroup(value).then(ok => {
+                    if (!ok) {
+                        UI.showNotification('Could not add owner', 'error');
+                    }
+                    this.renderLoadedNode();
+                    this.showHide(false);
+                });
+                dialog.dialog('destroy');
+            };
+            var dialog = UI.dialog(div, {buttons: {Add}});
         }
     }
 
