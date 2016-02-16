@@ -38,7 +38,7 @@
     "jcampconverter": "v2.0.8",
     "jit": "2.0.2",
     "jqgrid_edit": "git://github.com/NPellet/jqGrid#4.5.6",
-    "jquery": "3.0.0-beta1",
+    "jquery": "2.2.0",
     "jquery-cookie": "1.4.1",
     "jquery-mousewheel": "3.1.12",
     "jquery-tmpl": "BorisMoore/jquery-tmpl#vBeta1.0.0",
