@@ -818,7 +818,7 @@ define([
             this.$title.text(view.title);
             this.$infoBox.html(
                 `Name: <b>${_.escape(node.title)}</b><br>
-                Folder: ${view.getPath(this.flavor)}<br><br>
+                Folder: ${view.getPath(node.data.flavor)}<br><br>
                 Size: ${Util.formatSize(view.size)}<br>
                 Id: ${view.id}<br>
                 Revision: ${view.revid}<br><br>
@@ -903,6 +903,12 @@ define([
                 return;
             }
             // Load view
+            var flavor = node.data.flavor;
+            this.switchToFlavor(flavor);
+            if (this.inSearch) {
+                this.doSearch('');
+            }
+            node.setActive(true);
             this.setLoadedNode(node);
             var view = node.data.view;
             Versioning.switchView(view.getViewSwitcher(), true, {
