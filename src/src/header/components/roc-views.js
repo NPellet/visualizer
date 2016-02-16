@@ -355,7 +355,9 @@ define([
                 .append(ownersList)
                 .append(addOwnerButton);
 
-            this.$permissionsBox
+            const permissionsContainer = this.$permissionsContainer = $('<div>');
+            this.$permissionsBox.html(permissionsContainer);
+            permissionsContainer
                 .append(checkboxContainer)
                 .append(ownersContainer);
 
@@ -793,6 +795,7 @@ define([
             if (!node) {
                 this.$title.html('&nbsp;');
                 this.$infoBox.empty();
+                this.$permissionsBox.empty();
                 return;
             }
             const view = node.data.view;
@@ -807,6 +810,7 @@ define([
                 Last modified: ${view.modificationDate.toLocaleString()}<br>
                 Owner: ${view.owner}`
             );
+            this.$permissionsBox.html(this.$permissionsContainer);
             this.$publicCheckbox.prop('checked', view.public);
             this.$ownersList.html('Owners: ' + view.owners.join(', '));
         }
