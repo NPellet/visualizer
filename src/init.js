@@ -33,7 +33,7 @@ require.config({
         jqgrid: 'components/jqgrid_edit/js/jquery.jqGrid',
         slickgrid_core: 'components/slickgrid/slick.core',
         slickgrid: 'components/slickgrid/slick.grid',
-        jquery: 'components/jquery/dist/jquery.min',
+        jquery: 'components/jquery/dist/jquery',
         'jquery-cookie': 'components/jquery-cookie/jquery.cookie',
         'jquery-ui': 'components/jquery-ui/ui',
         'jquery-tmpl': 'components/jquery-tmpl/jquery.tmpl.min',
