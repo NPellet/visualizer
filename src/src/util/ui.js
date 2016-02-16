@@ -114,8 +114,9 @@ define([
             addItems(arr);
         } else if (fromArray) {
             sources = list.length;
+            var allProm = new Array(list.length);
             for (var i = 0; i < list.length; i++) {
-                list[i].promise.then(addItems).catch(function (e) {
+                allProm[i] = list[i].promise.then(addItems).catch(function (e) {
                     sources--;
                     failedSources++;
                     updateHeader();
@@ -148,11 +149,24 @@ define([
             columns[i] = _.defaults(columns[i], slickDefaultColumn);
         }
 
-        return new Promise(function (resolve) {
+        return new Promise(function (resolve, reject) {
             Util.loadCss('components/slickgrid/slick.grid.css').then(function () {
                 var $dialog = $('<div>');
                 var $slick = $('<div>');
                 var $container = $('<div>').css('height', 410);
+
+                Promise.all(allProm).then(() => {
+                    console.log('all done');
+                    var len = data.getLength();
+                    if(len === 0) {
+                        reject(new Error('empty data'));
+                        $dialog.dialog('close');
+                    } else if(len === 1 && options.autoSelect) {
+                        var id = data.mapRowsToIds([0])[0];
+                        resolve(id);
+                        $dialog.dialog('close');
+                    }
+                });
 
                 if (options.noConfirmation) {
                     buttons = {};
@@ -169,6 +183,7 @@ define([
                 }
 
                 exports.dialog($dialog, {
+                    noWrap: true,
                     buttons: buttons,
                     close: function () {
                         resolve();
