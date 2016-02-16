@@ -815,13 +815,45 @@ define([
         }
 
         saveAs() {
-            var name = validateName(this.$saveAsText.val());
-            if (!name) {
-                return UI.showNotification('Invalid name', 'error');
+            let folder = this.activeNode;
+            if (!folder.folder) return;
+
+            const value = this.$saveAsText.val().split('/');
+            for (let i = 0; i < value.length; i++) {
+                const val = validateName(value[i]);
+                if (!val) {
+                    return UI.showNotification('Invalid name', 'error');
+                }
+                value[i] = val;
             }
 
-            const folder = this.activeNode;
-            if (!folder.folder) return;
+            // folders
+            main: for (let i = 0; i < value.length - 1; i++) {
+                const name = value[i];
+
+                // Check if folder already exists
+                var children = folder.getChildren();
+                if (children) {
+                    for (let j = 0; j < children.length; j++) {
+                        if (children[j].title === name && children[j].folder) {
+                            folder = children[j];
+                            continue main;
+                        }
+                    }
+                }
+
+                folder.setExpanded(true);
+                const newFolder = folder.addNode({
+                    folder: true,
+                    title: name,
+                    path: folder.data.path.concat(name)
+                });
+
+                folder.sortChildren(sortFancytree);
+                folder = newFolder;
+            }
+
+            const name = value[value.length - 1];
 
             const view = getCurrentView();
             const flavor = this.flavor;
