@@ -268,18 +268,18 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
             var _att = that.lastDoc._attachments[name];
             if (!_att) throw new Error('The attachment ' + name + ' does not exist');
             return new Promise(function (resolve, reject) {
-                    var req = superagent.get(that.docUrl + '/' + name).withCredentials();
-                    if (_att) req.set('Accept', that.lastDoc._attachments[name].content_type);
-                    req.query({rev: that.lastDoc._rev})
-                        .end(function (err, res, payload) {
-                            console.log(payload);
-                            if (err) return reject(err);
-                            if (res.status !== 200) return reject(new Error('Error getting attachment, couchdb returned status code ' + res.status));
-                            LRU.store(storeName, _att.digest, res.body || res.text);
-                            if (options.raw) return resolve(res.text);
-                            return resolve(res.body || res.text);
-                        });
-                });
+                var req = superagent.get(that.docUrl + '/' + name).withCredentials();
+                if (_att) req.set('Accept', that.lastDoc._attachments[name].content_type);
+                req.query({rev: that.lastDoc._rev})
+                    .end(function (err, res, payload) {
+                        console.log(payload);
+                        if (err) return reject(err);
+                        if (res.status !== 200) return reject(new Error('Error getting attachment, couchdb returned status code ' + res.status));
+                        LRU.store(storeName, _att.digest, res.body || res.text);
+                        if (options.raw) return resolve(res.text);
+                        return resolve(res.body || res.text);
+                    });
+            });
         });
     };
 
