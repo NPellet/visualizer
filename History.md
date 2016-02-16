@@ -1,3 +1,23 @@
+<a name="2.41.0"></a>
+# 2.41.0 (2016-02-16)
+
+
+### Bug Fixes
+
+* **action_button:** img is contained in module without scrollbars ([fe5d0c0](https://github.com/NPellet/visualizer/commit/fe5d0c0)), closes [#799](https://github.com/NPellet/visualizer/issues/799)
+* **object_editor:** fix send button ([7579792](https://github.com/NPellet/visualizer/commit/7579792)), closes [#804](https://github.com/NPellet/visualizer/issues/804)
+* **roc-views:** correctly handle flavor in search ([082586a](https://github.com/NPellet/visualizer/commit/082586a))
+* **typerenderer:** set default size of qrcode to 128x128 ([46c4b38](https://github.com/NPellet/visualizer/commit/46c4b38)), closes [#800](https://github.com/NPellet/visualizer/issues/800)
+
+### Features
+
+* **roc-views:** create directories when saving name with slashes ([45b36bd](https://github.com/NPellet/visualizer/commit/45b36bd))
+* **smart_array_filter:** add placeholder option ([68b240a](https://github.com/NPellet/visualizer/commit/68b240a))
+* **ui.choose:** add autoSelect option if only one result this one is automatically choosen ([ce069c7](https://github.com/NPellet/visualizer/commit/ce069c7))
+* **uploadUi:** possibility to download attachment ([e1b3f6c](https://github.com/NPellet/visualizer/commit/e1b3f6c)), closes [#794](https://github.com/NPellet/visualizer/issues/794)
+
+
+
 <a name="2.40.1"></a>
 ## 2.40.1 (2016-02-12)
 
