@@ -106,7 +106,7 @@ module.exports = function (grunt) {
                             './d3/d3.min.js',
                             ['./fancytree/dist/jquery.fancytree*.js', './fancytree/dist/skin-lion/*'],
                             ['./jqgrid_edit/js/*.js', './jqgrid_edit/js/i18n/grid.locale-en.js', './jqgrid_edit/css/*.css'],
-                            './jquery/dist/jquery.min.js',
+                            './jquery/dist/*',
                             ['./jquery-ui/ui/*.js', './jquery-ui/themes/smoothness/**'],
                             './threejs/build/three.min.js',
                             './ace/src/**',
