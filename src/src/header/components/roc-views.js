@@ -35,6 +35,7 @@ define([
         cursor: 'pointer',
         textDecoration: 'underline'
     };
+    var compiled = _.template('<table>\n    <tr>\n        <td style="vertical-align: top;"><b>Document id</b></td>\n        <td><%= view.id %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Flavor</b></td>\n        <td><%= flavor %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Name</b></td>\n        <td><% print(flavors[flavors.length-1]) %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Location</b></td>\n        <td><li><% print(flavors.join(\'</li><li>\')) %></li></td>\n    </tr>\n</table>');
 
     class RocViewManager extends Default {
         get flavor() {
@@ -71,28 +72,11 @@ define([
             this.verifyRoc();
 
             // setup CTRL + S for view saving
-            var compiled = _.template('<table>\n    <tr>\n        <td style="vertical-align: top;"><b>Document id</b></td>\n        <td><%= view.id %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Flavor</b></td>\n        <td><%= flavor %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Name</b></td>\n        <td><% print(flavors[flavors.length-1]) %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Location</b></td>\n        <td><li><% print(flavors.join(\'</li><li>\')) %></li></td>\n    </tr>\n</table>');
             $(document).keydown(
                 event => {
                     if ((event.ctrlKey || event.metaKey) && !event.altKey && event.which === 83) {
                         event.preventDefault();
-                        if (this.loadedNode) {
-                            const dialog = UI.dialog(compiled({
-                                view: this.loadedNode.data.view,
-                                flavor: this.flavor,
-                                flavors: this.loadedNode.data.view.flavors[this.flavor]
-                            }), {
-                                width: '400px',
-                                buttons: {
-                                    'Save': () => {
-                                        dialog.dialog('close');
-                                        this.saveLoadedView();
-                                    }
-                                }
-                            });
-                        } else {
-                            UI.showNotification('No view loaded in view manager', 'error');
-                        }
+                        this.saveLoadedView();
                     }
                 }
             );
@@ -687,7 +671,7 @@ define([
                         }
 
                         this.showHide(true);
-                        return node.data.view.rename(this.flavor, name)
+                        return node.data.view.rename(node.data.flavor, name)
                             .then(ok => {
                                 this.showHide(false);
                                 if (ok) {
@@ -883,18 +867,33 @@ define([
         }
 
         saveLoadedView() {
-            if (!this.loadedNode) return;
-            this.showHide(true);
-            this.loadedNode.data.view.saveView(getCurrentView())
-                .then(ok => {
-                    this.showHide(false);
-                    if (ok) {
-                        UI.showNotification('View saved', 'success');
-                        this.renderLoadedNode();
-                    } else {
-                        UI.showNotification('View could not be saved', 'error');
+            if (this.loadedNode) {
+                const dialog = UI.dialog(compiled({
+                    view: this.loadedNode.data.view,
+                    flavor: this.loadedNode.data.flavor,
+                    flavors: this.loadedNode.data.view.flavors[this.loadedNode.data.flavor]
+                }), {
+                    width: '400px',
+                    buttons: {
+                        'Save': () => {
+                            dialog.dialog('close');
+                            this.showHide(true);
+                            this.loadedNode.data.view.saveView(getCurrentView())
+                                .then(ok => {
+                                    this.showHide(false);
+                                    if (ok) {
+                                        UI.showNotification('View saved', 'success');
+                                        this.renderLoadedNode();
+                                    } else {
+                                        UI.showNotification('View could not be saved', 'error');
+                                    }
+                                });
+                        }
                     }
                 });
+            } else {
+                UI.showNotification('No view loaded in view manager', 'error');
+            }
         }
 
         onDblclick(event, data) {
