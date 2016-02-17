@@ -758,7 +758,7 @@ define([
         renderFlavor() {
             var found = false;
             this.tree.filterBranches(node => {
-                if (node.title === this.flavor) {
+                if (node.title === this.flavor && node.data.path.length === 1) {
                     found = true;
                     node.setExpanded(true);
                     return true;
