@@ -23,16 +23,29 @@ define([
 
     var $dialog;
 
-    exports.enterValue = function (label, buttonLabel) {
-        buttonLabel = buttonLabel || 'Save';
-        label = label || 'Enter a value';
+    exports.enterValue = function (opts) {
+        opts = opts || {};
+        const defaultOptions = {
+            label: 'Enter a value',
+            buttonLabel: 'Submit',
+            validationMessage: 'What you entered is not valid'
+        };
+
+        opts = Object.assign({}, defaultOptions, opts);
+
         return new Promise(function(resolve) {
-            var div = $(`<div>${label}: </div>`);
+            var div = $(`<div>${opts.label}: </div>`);
             var input = $('<input type="text" />').appendTo(div).on('keypress', evt => {
                 if (evt.keyCode === 13) done();
             });
             const done = () => {
                 var value = input.val();
+                if(opts.validation && typeof opts.validation === 'function') {
+                    if(!opts.validation(value)) {
+                        exports.showNotification(opts.validationMessage, 'error');
+                        return;
+                    }
+                }
                 resolve(value);
                 dialog.dialog('destroy');
             };
@@ -43,7 +56,7 @@ define([
                     dialog.dialog('destroy');
                 }
             };
-            options.buttons[buttonLabel] = done;
+            options.buttons[opts.buttonLabel] = done;
             var dialog = exports.dialog(div, options);
         });
     };
