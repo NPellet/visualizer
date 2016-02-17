@@ -795,7 +795,7 @@ define([
             if (!node) {
                 this.$title.html('&nbsp;');
                 this.$infoBox.empty();
-                this.$permissionsBox.empty();
+                this.$permissionsContainer.hide();
                 return;
             }
             const view = node.data.view;
@@ -810,7 +810,7 @@ define([
                 Last modified: ${view.modificationDate.toLocaleString()}<br>
                 Owner: ${view.owner}`
             );
-            this.$permissionsBox.html(this.$permissionsContainer);
+            this.$permissionsContainer.show();
             this.$publicCheckbox.prop('checked', view.public);
             this.$ownersList.html('Owners: ' + view.owners.join(', '));
         }
