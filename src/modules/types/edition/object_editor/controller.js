@@ -10,6 +10,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype.moduleInformation = {
         name: 'JSON object editor',
         description: 'Display and/or modify a JSON object',
+        cssClass: 'jsoneditor',
         author: 'Michaël Zasso',
         date: '29.08.2014',
         license: 'MIT'
