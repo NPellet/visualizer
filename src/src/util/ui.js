@@ -485,6 +485,14 @@ define([
 
     exports.showNotification = function () {
         var args = arguments;
+        if(args[1] && (typeof args[1] === 'string')) {
+            args[1] = {
+                className: args[1],
+                autoHide: args[1] !== 'error'
+            };
+        } else if(args[1] && args[1].className === 'error'){
+            args[1] = Object.assign({autoHide: false}, args[1]);
+        }
         require(['notifyjs'], function () {
             $.notify.apply($.notify, args);
         });
