@@ -23,6 +23,31 @@ define([
 
     var $dialog;
 
+    exports.enterValue = function (label, buttonLabel) {
+        buttonLabel = buttonLabel || 'Save';
+        label = label || 'Enter a value';
+        return new Promise(function(resolve) {
+            var div = $(`<div>${label}: </div>`);
+            var input = $('<input type="text" />').appendTo(div).on('keypress', evt => {
+                if (evt.keyCode === 13) done();
+            });
+            const done = () => {
+                var value = input.val();
+                resolve(value);
+                dialog.dialog('destroy');
+            };
+            var options = {
+                buttons: {},
+                close: function() {
+                    resolve();
+                    dialog.dialog('destroy');
+                }
+            };
+            options.buttons[buttonLabel] = done;
+            var dialog = exports.dialog(div, options);
+        });
+    };
+
     exports.choose = function (list, options) {
         options = options || {};
         options = _.defaults(options, {
