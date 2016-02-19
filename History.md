@@ -1,3 +1,19 @@
+<a name="2.42.0"></a>
+# 2.42.0 (2016-02-19)
+
+
+### Bug Fixes
+
+* **roc-views:** make public checkbox is now working ([78f0154](https://github.com/NPellet/visualizer/commit/78f0154))
+* **roc-views:** only match root folders when rendering flavor ([d3967e9](https://github.com/NPellet/visualizer/commit/d3967e9))
+
+### Features
+
+* **ui:** add enterValue to api ([7e2a394](https://github.com/NPellet/visualizer/commit/7e2a394))
+* **ui:** add validation option to enterValue ([cbf78f0](https://github.com/NPellet/visualizer/commit/cbf78f0))
+
+
+
 <a name="2.41.1"></a>
 ## 2.41.1 (2016-02-16)
 
