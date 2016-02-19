@@ -28,14 +28,15 @@ define([
         const defaultOptions = {
             label: 'Enter a value',
             buttonLabel: 'Submit',
-            validationMessage: 'What you entered is not valid'
+            validationMessage: 'What you entered is not valid',
+            value: ''
         };
 
         opts = Object.assign({}, defaultOptions, opts);
 
         return new Promise(function (resolve) {
             var div = $(`<div>${opts.label}: </div>`);
-            var input = $('<input type="text" />').appendTo(div).on('keypress', evt => {
+            var input = $(`<input type="text" value="${opts.value}"/>`).appendTo(div).on('keypress', evt => {
                 if (evt.keyCode === 13) done();
             });
             const done = () => {
