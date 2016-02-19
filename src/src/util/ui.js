@@ -33,15 +33,15 @@ define([
 
         opts = Object.assign({}, defaultOptions, opts);
 
-        return new Promise(function(resolve) {
+        return new Promise(function (resolve) {
             var div = $(`<div>${opts.label}: </div>`);
             var input = $('<input type="text" />').appendTo(div).on('keypress', evt => {
                 if (evt.keyCode === 13) done();
             });
             const done = () => {
                 var value = input.val();
-                if(opts.validation && typeof opts.validation === 'function') {
-                    if(!opts.validation(value)) {
+                if (opts.validation && typeof opts.validation === 'function') {
+                    if (!opts.validation(value)) {
                         exports.showNotification(opts.validationMessage, 'error');
                         return;
                     }
@@ -51,7 +51,7 @@ define([
             };
             var options = {
                 buttons: {},
-                close: function() {
+                close: function () {
                     resolve();
                     dialog.dialog('destroy');
                 }
@@ -498,12 +498,12 @@ define([
 
     exports.showNotification = function () {
         var args = arguments;
-        if(args[1] && (typeof args[1] === 'string')) {
+        if (args[1] && (typeof args[1] === 'string')) {
             args[1] = {
                 className: args[1],
                 autoHide: args[1] !== 'error'
             };
-        } else if(args[1] && args[1].className === 'error'){
+        } else if (args[1] && args[1].className === 'error') {
             args[1] = Object.assign({autoHide: false}, args[1]);
         }
         require(['notifyjs'], function () {
