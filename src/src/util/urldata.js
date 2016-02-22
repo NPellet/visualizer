@@ -3,30 +3,45 @@
 define(['superagent', 'src/util/lru', 'src/util/debug'], function (superagent, LRU, Debug) {
 
     var pendings = {};
+    var credentials = {};
 
     function doByUrl(url, headers) {
+        var host = new URL(url).host, withCredentials;
+        withCredentials = credentials[host];
+
         Debug.debug('DataURL: Looking for ' + url + ' by AJAX');
-        return (pendings[url] = new Promise(function (resolve, reject) {
-            superagent.get(url)
-                .timeout(120000) // 2 minutes timeout
-                .set(headers || {})
-                .end(function urldataGetResult(err, res) {
-                    delete pendings[url];
-                    if (err || res.status != 200) {
-                        Debug.info('DataURL: Failing in retrieving ' + url + ' by AJAX.');
-                        reject(err || res.status);
-                    } else {
-                        var data = res.body || res.text;
-                        Debug.info('DataURL: Found ' + url + ' by AJAX');
-                        // We set 20 data in memory, 500 in local database
-                        if (!LRU.exists('urlData')) {
-                            LRU.create('urlData', 20, 500);
-                        }
-                        LRU.store('urlData', url, data);
-                        resolve(data);
-                    }
-                });
-        }));
+        var req = superagent.get(url)
+            .timeout(120000) // 2 minutes timeout
+            .set(headers || {});
+        if (withCredentials) {
+            req.withCredentials();
+        }
+        return req.end().then(function(res) {
+            delete pendings[url];
+            if (res.status != 200) {
+                Debug.info('DataURL: Failing in retrieving ' + url + ' by AJAX.');
+                throw new Error(`Expected status !== 200, got ${res.status}`);
+            } else {
+                var data = res.body || res.text;
+                Debug.info('DataURL: Found ' + url + ' by AJAX');
+                // We set 20 data in memory, 500 in local database
+                if (!LRU.exists('urlData')) {
+                    LRU.create('urlData', 20, 500);
+                }
+                LRU.store('urlData', url, data);
+                return data;
+            }
+        }, function(err) {
+            if(err.status === 401 && credentials[host] === undefined) {
+                credentials[host] = true;
+                return doByUrl(url, headers);
+            }
+            if(credentials[host] !== undefined) {
+                credentials[host] = undefined;
+            }
+            throw err;
+        });
+
     }
 
     function doLRUOrAjax(url, force, timeout, headers) {
