@@ -11,7 +11,6 @@ define(['jquery', 'modules/default/defaultview', 'lodash'], function ($, Default
         inDom: function () {
             this.module.getDomContent().empty();
             var fontSize = this._fontSize = this.module.getConfiguration('fontSize');
-            var that = this;
 
             var div = this._div = $('<div>').css({
                 width: '100%',
@@ -23,7 +22,7 @@ define(['jquery', 'modules/default/defaultview', 'lodash'], function ($, Default
                 margin: '0',
                 display: 'inline-block',
                 fontSize: fontSize + 'px'
-            }).appendTo(div);
+            }).attr('placeholder', this.module.getConfiguration('placeholder', '')).appendTo(div);
 
             if (!this._query) {
                 this._query = this.module.getConfiguration('initialValue');
@@ -32,11 +31,11 @@ define(['jquery', 'modules/default/defaultview', 'lodash'], function ($, Default
 
             var debounce = this.module.getConfiguration('debounce');
 
-            input.on('keyup', _.debounce(function () {
+            input.on('keyup', _.debounce(() => {
                 var value = input.val();
-                if (value === that._query) return;
-                that._query = value;
-                that.module.controller.onQuery(value);
+                if (value === this._query) return;
+                this._query = value;
+                this.module.controller.onQuery(value);
             }, debounce));
 
             div.append('&nbsp;<i class="fa fa-search"></i>');

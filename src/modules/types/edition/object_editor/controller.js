@@ -10,6 +10,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype.moduleInformation = {
         name: 'JSON object editor',
         description: 'Display and/or modify a JSON object',
+        cssClass: 'jsoneditor',
         author: 'Michaël Zasso',
         date: '29.08.2014',
         license: 'MIT'
@@ -47,11 +48,11 @@ define(['modules/default/defaultcontroller'], function (Default) {
                     fields: {
                         editable: {
                             type: 'combo',
-                            title: 'Editable ?',
+                            title: 'Mode',
                             options: [
-                                {title: 'No', key: 'view'},
-                                {title: 'Yes', key: 'tree'},
-                                {title: 'Text', key: 'text'}
+                                {title: 'View', key: 'view'},
+                                {title: 'Tree', key: 'tree'},
+                                {title: 'Code', key: 'text'}
                             ],
                             default: 'view'
                         },
@@ -69,6 +70,17 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             type: 'checkbox',
                             title: 'Display value',
                             options: {display: 'Yes'}
+                        },
+                        searchBox: {
+                            type: 'checkbox',
+                            title: 'Show search box',
+                            options: {search: 'Yes'},
+                            default: ['search']
+                        },
+                        sendButton: {
+                            type: 'checkbox',
+                            title: 'Show send button',
+                            options: {send: 'Yes'}
                         },
                         output: {
                             type: 'combo',
@@ -98,6 +110,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
         expanded: ['groups', 'group', 0, 'expanded', 0],
         storeObject: ['groups', 'group', 0, 'storeObject', 0],
         displayValue: ['groups', 'group', 0, 'displayValue', 0],
+        searchBox: ['groups', 'group', 0, 'searchBox', 0],
+        sendButton: ['groups', 'group', 0, 'sendButton', 0],
         storedObject: ['groups', 'group', 0, 'storedObject', 0],
         output: ['groups', 'group', 0, 'output', 0]
 

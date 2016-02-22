@@ -17,7 +17,10 @@ define([
     function init(module) {
         //define object properties
         var originalURL = String(module.definition.getChildSync(['url'], true).get());
-        var moduleURL = Util.rewriteRequirePath(originalURL) + '/';
+        var moduleURL = Util.rewriteRequirePath(originalURL);
+        if (moduleURL[moduleURL.length - 1] !== '/') {
+            moduleURL = moduleURL + '/';
+        }
 
         module.viewReady = new Promise(function (res, rej) {
             module._resolveView = res;
@@ -155,10 +158,7 @@ define([
             var that = this;
             var toolbar = this.controller.getToolbar();
             this.dom.find('.ci-module-header-toolbar ul li').each(function (idx, el) {
-                var t = _.find(toolbar, function (val) {
-                    return val.title === el.title;
-                });
-
+                var t = _.find(toolbar, val => val.title === el.title);
                 if (t && t.onClick) {
                     $(el).on('click', t.onClick.bind(that));
                 }
@@ -986,7 +986,7 @@ define([
         getConfigurationCheckbox: function (aliasName, optionName) {
             var conf = this.getConfiguration(aliasName);
             if (!Array.isArray(conf)) {
-                return undefined;
+                return false;
             }
 
             return conf.indexOf(optionName) > -1;

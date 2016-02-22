@@ -81,9 +81,9 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
 
         _combinatorialBoundaries: function () {
             // compute boundaries for each axis
-            var x = _.pluck(this.originalData, 0);
-            var y = _.pluck(this.originalData, 1);
-            var z = _.pluck(this.originalData, 2);
+            var x = _.map(this.originalData, 0);
+            var y = _.map(this.originalData, 1);
+            var z = _.map(this.originalData, 2);
 
             this.combXmin = Math.min.apply(null, x);
             this.combYmin = Math.min.apply(null, y);
@@ -102,17 +102,17 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         },
 
         _reMinMax: function (data) {
-            this.minX = Math.min(this.minX, Math.min.apply(null, _.pluck(data, 0)));
-            this.minY = Math.min(this.minY, Math.min.apply(null, _.pluck(data, 1)));
-            this.maxX = Math.max(this.maxX, Math.max.apply(null, _.pluck(data, 0)));
-            this.maxY = Math.max(this.maxX, Math.max.apply(null, _.pluck(data, 1)));
+            this.minX = Math.min(this.minX, Math.min.apply(null, _.map(data, 0)));
+            this.minY = Math.min(this.minY, Math.min.apply(null, _.map(data, 1)));
+            this.maxX = Math.max(this.maxX, Math.max.apply(null, _.map(data, 0)));
+            this.maxY = Math.max(this.maxX, Math.max.apply(null, _.map(data, 1)));
             this.lenX = this.maxX - this.minX;
             this.lenY = this.maxY - this.minY;
         },
 
         _normalize: function () {
-            var x = _.pluck(this.data, 0);
-            var y = _.pluck(this.data, 1);
+            var x = _.map(this.data, 0);
+            var y = _.map(this.data, 1);
             var minX = Math.min.apply(null, x);
             var minY = Math.min.apply(null, y);
             var maxX = Math.max.apply(null, x);
@@ -153,22 +153,18 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         _processColors: function () {
             var gradient = this.module.getConfiguration('gradient');
             var stopType = this.module.getConfiguration('stopType');
-            gradient = _.filter(gradient, function (v) {
-                return v.stopPosition !== undefined;
-            });
-            this.stopPositions = _.pluck(gradient, 'stopPosition');
+            gradient = _.filter(gradient, v => v.stopPosition !== undefined);
+            this.stopPositions = _.map(gradient, 'stopPosition');
 
             if (stopType === 'percent') {
-                this.colorDomain = _.filter(this.color, function (v) {
-                    return !isNaN(v);
-                });
+                this.colorDomain = _.filter(this.color, v => !isNaN(v));
                 this.colorDomain = [Math.min.apply(null, this.colorDomain), Math.max.apply(null, this.colorDomain)];
             } else { // means values
                 this.colorDomain = [Math.min.apply(null, this.stopPositions), Math.max.apply(null, this.stopPositions)];
             }
 
 
-            this.stopColors = _(gradient).pluck('color').map(colorUtil.getColor).value();
+            this.stopColors = _(gradient).map('color').map(colorUtil.getColor).value();
             this.numberToColor = colorbar.getColorScale({
                 stops: this.stopColors,
                 stopPositions: this.stopPositions,
@@ -221,9 +217,9 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             this.opacity = [];
             for (var i = 0; i < this.chart.data.length; i++) {
                 var d = this.chart.data[i];
-                this.color.push(_.pluck(d.info, 'color'));
-                this.label.push(_.pluck(d.info, 'label'));
-                this.opacity.push(_.pluck(d.info, 'opacity'));
+                this.color.push(_.map(d.info, 'color'));
+                this.label.push(_.map(d.info, 'label'));
+                this.opacity.push(_.map(d.info, 'opacity'));
             }
             this.color = _.flatten(this.color);
             this.label = _.flatten(this.label);

@@ -26,7 +26,8 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/util', 'src/mai
                         return;
                     CKEDITOR.disableAutoInline = true;
                     that.instance = CKEDITOR.inline(that._id, {
-                        extraPlugins: 'mathjax'
+                        extraPlugins: 'mathjax',
+                        mathJaxLib: '//cdn.mathjax.org/mathjax/2.2-latest/MathJax.js?config=TeX-AMS_HTML'
                     });
                     that.instance.on('change', function () {
                         that.module.definition.text = that.instance.getData();

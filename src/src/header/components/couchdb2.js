@@ -13,17 +13,19 @@ define([
     'src/util/couchdbAttachments',
     'src/util/uploadUi',
     'src/util/debug',
+    'file-saver',
     'lib/couchdb/jquery.couch',
     'fancytree',
     'components/ui-contextmenu/jquery.ui-contextmenu.min',
     'jquery-ui/autocomplete'
-], function ($, _, API, ui, Default, Versioning, Button, Util, Form, CouchdbAttachments, uploadUi, Debug) {
+], function ($, _, API, ui, Default, Versioning, Button, Util, Form, CouchdbAttachments, uploadUi, Debug, fileSaver) {
 
     function CouchDBManager() {
     }
 
     var loadingId = Util.getNextUniqueId();
     var regAlphaNum = /^[a-zA-Z0-9]+$/;
+    var UPLOAD_LIMIT = 50 * 1024 * 1024;
 
     Util.inherits(CouchDBManager, Default, {
         initImpl: function () {
@@ -387,7 +389,6 @@ define([
                 flav.push(name);
                 flavors[this.flavor] = flav;
                 doc = {
-                    _id: $.couch.newUUID(),
                     flavors: flavors,
                     name: this.username,
                     _attachments: {}
@@ -398,6 +399,7 @@ define([
                 };
                 this.database.saveDoc(doc, {
                     success: function (data) {
+                        doc._id = data.id;
                         doc._rev = data.rev;
                         var newNode = {
                             doc: doc,
@@ -625,19 +627,19 @@ define([
                 });
             }, {color: 'red'});
             dom.append($('<div style="width:560px; height:35px;">').append('<input type="text" id="' + this.cssId('docName') + '"/>')
-                    .append(new Button('Edit Meta', function () {
-                        that.metaData();
-                    }, {color: 'blue'}).render())
-                    .append(new Button('Save data', function () {
-                        that.save('Data', that.getFormContent('docName'));
-                    }, {color: 'red'}).render())
-                    .append(new Button('Save view', function () {
-                        that.save('View', that.getFormContent('docName'));
-                    }, {color: 'red'}).render())
-                    .append(new Button('Mkdir', function () {
-                        that.mkdir(that.getFormContent('docName'));
-                    }, {color: 'blue'}).render())
-                    .append(this.errorP)
+                .append(new Button('Edit Meta', function () {
+                    that.metaData();
+                }, {color: 'blue'}).render())
+                .append(new Button('Save data', function () {
+                    that.save('Data', that.getFormContent('docName'));
+                }, {color: 'red'}).render())
+                .append(new Button('Save view', function () {
+                    that.save('View', that.getFormContent('docName'));
+                }, {color: 'red'}).render())
+                .append(new Button('Mkdir', function () {
+                    that.mkdir(that.getFormContent('docName'));
+                }, {color: 'blue'}).render())
+                .append(this.errorP)
             );
 
             function uploadFiles() {
@@ -645,7 +647,10 @@ define([
                 var docUrl = that.dbUrl + '/' + that.currentDocument.data.doc._id;
                 var couchA = new CouchdbAttachments(docUrl);
                 couchA.fetchList().then(function (attachments) {
-                    uploadUi.uploadDialog(attachments, 'couch').then(function (toUpload) {
+                    uploadUi.uploadDialog(attachments, {
+                        mode: 'couch',
+                        docUrl: docUrl
+                    }).then(function (toUpload) {
                         if (!toUpload) return;
                         API.loading(loadingId, 'Uploading files...');
                         var parts;
@@ -654,27 +659,59 @@ define([
                         });
                         var toDelete = parts[0];
                         parts = _.partition(parts[1], function (v) {
-                            return v.size < 10 * 1024 * 1024;
+                            return v.size < UPLOAD_LIMIT;
                         });
 
                         var largeUploads = parts[1];
                         var smallUploads = parts[0];
 
+                        // Sort to minimize number of requests
+                        smallUploads.sort(function (a, b) {
+                            if (a.size < b.size) return 1;
+                            else if (a.size === b.size) return 0;
+                            else return -1;
+                        });
+
+                        // Create inline uploads batch
+                        var inlineUploads = [];
+                        var current = [];
+                        var uploadSum = 0;
+                        var i;
+                        for (i = 0; i < smallUploads.length; i++) {
+                            uploadSum += smallUploads[i].size;
+                            if (uploadSum < UPLOAD_LIMIT) {
+                                current.push(smallUploads[i]);
+                            } else {
+                                inlineUploads.push(current);
+                                current = [smallUploads[i]];
+                                uploadSum = smallUploads[i].size;
+                            }
+                        }
+
+                        if (current.length) {
+                            inlineUploads.push(current);
+                        }
+
                         var prom = Promise.resolve();
 
                         prom = prom.then(function () {
-                            return couchA.remove(_.pluck(toDelete, 'name'));
+                            return couchA.remove(_.map(toDelete, 'name'));
                         });
-                        for (var i = 0; i < largeUploads.length; i++) {
+                        for (i = 0; i < largeUploads.length; i++) {
                             (function (i) {
                                 prom = prom.then(function () {
                                     return couchA.upload(largeUploads[i]);
                                 });
                             })(i);
                         }
-                        prom = prom.then(function () {
-                            return couchA.inlineUploads(smallUploads);
-                        });
+
+                        for (i = 0; i < inlineUploads.length; i++) {
+                            (function (i) {
+                                prom = prom.then(function () {
+                                    return couchA.inlineUploads(inlineUploads[i]);
+                                });
+                            })(i);
+                        }
 
                         prom.then(function () {
                             API.stopLoading(loadingId);

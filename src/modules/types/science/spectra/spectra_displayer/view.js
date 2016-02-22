@@ -56,10 +56,10 @@ define([
 
                     var options = {
                         close: {
-                            left: false,
-                            right: false,
                             top: false,
-                            bottom: false
+                            right: false,
+                            bottom: false,
+                            left: false
                         },
                         plugins: {},
                         pluginAction: {}
@@ -473,10 +473,10 @@ define([
 
                     if (i === 0 && moduleValue.axis) {
                         if (moduleValue.axis[aData.xAxis]) {
-                            this.xAxis.setLabel(moduleValue.axis[aData.xAxis].name);
+                            this.xAxis.setLabel(moduleValue.axis[aData.xAxis].label);
                         }
                         if (moduleValue.axis[aData.yAxis]) {
-                            this.yAxis.setLabel(moduleValue.axis[aData.yAxis].name);
+                            this.yAxis.setLabel(moduleValue.axis[aData.yAxis].label);
                         }
                     }
 

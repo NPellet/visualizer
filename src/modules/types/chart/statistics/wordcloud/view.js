@@ -66,7 +66,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/ui', 'lib/d3/d
             var discard = /^(@|https?:|\/\/)/;
 
             that.drawChart();
-            
+
             function parseArray(myarray) {
                 tags = {};
                 var cases = {};
@@ -84,12 +84,12 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/ui', 'lib/d3/d
                     cases[word.toLowerCase()] = word;
                     tags[word = word.toLowerCase()] = (tags[word] || 0) + key;
                 }
-                
+
                 tags = d3.entries(tags).sort(function (a, b) { return b.value - a.value; });
                 tags.forEach(function (d) { d.key = cases[d.key]; });
                 generate();
             }
-            
+
             function parseText(text) {
                 tags = {};
                 var cases = {};
@@ -118,7 +118,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/ui', 'lib/d3/d
             //####### END FUNCTIONS ########
             if (Array.isArray(myvalues)) {
                 parseArray(myvalues);
-            }else {
+            } else {
                 parseText(myvalues);
             }
         },

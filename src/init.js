@@ -33,15 +33,16 @@ require.config({
         jqgrid: 'components/jqgrid_edit/js/jquery.jqGrid',
         slickgrid_core: 'components/slickgrid/slick.core',
         slickgrid: 'components/slickgrid/slick.grid',
-        jquery: 'components/jquery/dist/jquery.min',
+        jquery: 'components/jquery/dist/jquery',
         'jquery-cookie': 'components/jquery-cookie/jquery.cookie',
         'jquery-ui': 'components/jquery-ui/ui',
         'jquery-tmpl': 'components/jquery-tmpl/jquery.tmpl.min',
         'notifyjs': 'components/notifyjs/dist/notify-combined.min',
         jsgraph: 'components/jsgraph/dist/jsgraph',
+        jsoneditor: 'components/jsoneditor/dist/jsoneditor.min',
         jszip: 'components/jszip/dist/jszip.min',
         loglevel: 'components/loglevel/dist/loglevel.min',
-        lodash: 'components/lodash/lodash.min',
+        lodash: 'components/lodash/dist/lodash.min',
         'markdown-js': 'components/markdown-js/lib/markdown',
         'mime-types': 'components/mime-types/dist/mime-types.min',
         marked: 'components/marked/lib/marked',
@@ -51,7 +52,6 @@ require.config({
         papaparse: 'components/papa-parse/papaparse.min',
         plot: 'lib/plot/plot',
         pouchdb: 'components/pouchdb/dist/pouchdb.min',
-        underscore: 'components/underscore/underscore-min',
         select2: 'components/select2/dist/js/select2.full',
         'smart-array-filter': 'components/smart-array-filter/dist/smart-array-filter.min',
         sparkline: 'lib/jquery.sparkline/jquery.sparkline.min',
@@ -131,7 +131,7 @@ require.config({
         'components/qrcode.js/qrcode': {
             exports: 'QRCode'
         },
-        fancytree: ['jquery-ui/droppable'],
+        fancytree: ['jquery-ui/core', 'jquery-ui/effect-blind', 'jquery-ui/droppable', 'jquery-ui/draggable'],
         'moment-duration-format': ['moment'],
         BiojsCore: {
             exports: 'Biojs'

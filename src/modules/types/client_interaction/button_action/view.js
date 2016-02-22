@@ -1,15 +1,18 @@
 'use strict';
 
-define(['modules/default/defaultview', 'forms/button', 'src/util/ui', 'src/util/typerenderer'], function (Default, Button, ui, Renderer) {
+define(['jquery', 'modules/default/defaultview', 'forms/button', 'src/util/ui', 'src/util/typerenderer'], function ($, Default, Button, ui, Renderer) {
 
     function View() {
     }
 
     $.extend(true, View.prototype, Default, {
-        init: function () {
+        onResize: function () {
             var that = this;
             var label;
-            this.dom = $('<div></div>');
+            this.dom = $('<div></div>').css({
+                width: '100%',
+                height: '100%'
+            });
             var content = this.module.getConfiguration('content');
             var contentType = this.module.getConfiguration('contentType');
             var buttonType = this.module.getConfiguration('toggle');
@@ -56,7 +59,18 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/ui', 'src/util/
             if (!content) {
                 this.dom.html(button.render());
             } else if (contentType === 'imageUrl') {
-                this.dom.html('<img src="' + content + '" width="100%" height="100%" style="cursor: pointer;"/>');
+                var $img = $('<img src="' + content + '"/>');
+                $img.css({
+                    width: this.width,
+                    height: this.height,
+                    cursor: 'pointer',
+                    objectFit: 'contain'
+                });
+                this.dom.html($img);
+                this.dom.css({
+                    overflow: 'hidden'
+                });
+
                 this.dom.on('click', onClick);
             } else if (contentType === 'svg') {
                 var $div = $('<div>');

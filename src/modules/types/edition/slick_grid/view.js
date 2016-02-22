@@ -53,7 +53,7 @@ define([
 
         var columns = ctx.getAllSlickColumns().filter(filterSpecialColumns);
 
-        var cids = _.pluck(columns, 'id');
+        var cids = _.map(columns, 'id');
         for (var key in columnFilters) {
             if (cids.indexOf(key) === -1) {
                 delete columnFilters[key];
@@ -399,8 +399,8 @@ define([
         ctx.grid.onColumnsReordered.subscribe(function () {
             var cols = ctx.grid.getColumns();
             var conf = ctx.module.definition.configuration.groups.cols[0];
-            var names = _.pluck(conf, 'name');
-            var ids = _.pluck(cols, 'id');
+            var names = _.map(conf, 'name');
+            var ids = _.map(cols, 'id');
 
             if (names.concat().sort().join() !== ids.concat().sort().join()) {
                 Debug.warn('Something might be wrong, number of columns in grid and in configuration do not match');
@@ -424,7 +424,7 @@ define([
                     rows: selectedItems
                 });
             }
-            ctx.module.controller.onRowsSelected(_.pluck(selectedItems, 'item'));
+            ctx.module.controller.onRowsSelected(_.map(selectedItems, 'item'));
         });
 
         ctx.grid.onSort.subscribe(function (e, args) {
@@ -490,11 +490,8 @@ define([
         ctx.slick.data.beginUpdate();
 
         var groupings = _.chain(ctx.module.getConfiguration('groupings'))
-            .filter(function (val) {
-                if (val && val.groupName && val.getter) return true;
-                return false;
-            })
-            .map(function (val) {
+            .filter(val => val && val.groupName && val.getter)
+            .map(val => {
                 var r = {};
                 if (val.getter && val.getter.length > 1) {
                     r.getter = function (row) {
@@ -566,9 +563,7 @@ define([
 
             this.actionOutButtons = this.module.getConfiguration('actionOutButtons');
             this.actionOutButtons = this.actionOutButtons || [];
-            this.actionOutButtons = _.filter(this.actionOutButtons, function (v) {
-                return v.actionName && v.buttonTitle;
-            });
+            this.actionOutButtons = _.filter(this.actionOutButtons, v => v.actionName && v.buttonTitle);
 
             this.$container.on('mouseleave', function () {
                 that.module.controller.lastHoveredItemId = null;
@@ -722,9 +717,7 @@ define([
                     };
                 });
 
-            slickCols = _.filter(slickCols, function (val) {
-                return val.name;
-            });
+            slickCols = _.filter(slickCols, val => val.name);
 
             // No columns are defined, we use the input object to define them
             if (_.isEmpty(slickCols)) {
@@ -734,10 +727,9 @@ define([
                     colNames = _(colNames).push(_.keys(data[i])).flatten().uniq().value();
                 }
 
-                slickCols = _(colNames).filter(function (v) {
-                    return v[0] !== '_';
-                }).map(function (rowName) {
-                    return {
+                slickCols = _(colNames)
+                    .filter(v => v[0] !== '_')
+                    .map(rowName => ({
                         id: rowName,
                         name: rowName,
                         field: rowName,
@@ -750,8 +742,7 @@ define([
                         jpath: [rowName],
                         formatter: formatters.typerenderer,
                         asyncPostRender: tp
-                    };
-                }).value();
+                    })).value();
 
             }
 
@@ -1226,7 +1217,7 @@ define([
         },
 
         _updateHighlights: function () {
-            this._highlights = _.pluck(this.module.data.get(), '_highlight');
+            this._highlights = _.map(this.module.data.get(), '_highlight');
         },
 
         _drawHighlight: function () {
@@ -1240,7 +1231,7 @@ define([
                 var itemInfo = this._getItemInfoFromRow(i);
                 if (!itemInfo) continue;
                 var item = itemInfo.item;
-                if (_.any(
+                if (_.some(
                         that._highlighted,
                         function (k) {
                             var hl = item._highlight;
@@ -1258,9 +1249,7 @@ define([
 
         _activateHighlights: function () {
             var that = this;
-            var hl = _(this.module.data.get()).pluck('_highlight').flatten().filter(function (val) {
-                return !_.isUndefined(val);
-            }).value();
+            var hl = _(this.module.data.get()).map('_highlight').flatten().filter(val => !_.isUndefined(val)).value();
 
             that._highlighted = [];
 
@@ -1320,7 +1309,7 @@ define([
 
         _getItems: function (rows) {
             var items = this._getItemsInfo(rows);
-            return _.pluck(items, 'item');
+            return _.map(items, 'item');
         },
 
         _getChangedColumn: function (cell) {
@@ -1377,7 +1366,7 @@ define([
         },
 
         _hasFilter: function () {
-            return _.any(this.filterScript.split('\n'), function (line) {
+            return _.some(this.filterScript.split('\n'), function (line) {
                 var l = line.replace(' ', '');
                 // return false if void line
                 return l ? !l.match(/^\s*\/\/a/) : false;

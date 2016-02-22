@@ -385,23 +385,40 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
             var that = this,
                 url = this._defaultUrl;
 
-            var xhrFields = {};
+            var retry = true;
             if (options && options.withCredentials) {
-                xhrFields.withCredentials = true;
+                retry = false;
             }
 
             $.ajax({
                 url: url,
                 timeout: 200000,
                 dataType: 'text',
-                success: function (data) {
-                    data = that._reviver(JSON.parse(data));
-                    that.make(data);
-                    that._onLoaded(data);
-                    def.resolve();
+                success: onSuccess,
+                error: function (e) {
+                    if (retry) {
+                        $.ajax({
+                            url,
+                            timeout: 200000,
+                            dataType: 'text',
+                            success: onSuccess,
+                            error: function (e) {
+                                def.reject(e);
+                            }
+                        });
+                    } else {
+                        def.reject(e);
+                    }
                 },
-                xhrFields: xhrFields
+                xhrFields: {withCredentials: true}
             });
+
+            function onSuccess(data) {
+                data = that._reviver(JSON.parse(data));
+                that.make(data);
+                that._onLoaded(data);
+                def.resolve();
+            }
         },
 
         load: function (dirUrl, defaultBranch, defaultUrl, options) {

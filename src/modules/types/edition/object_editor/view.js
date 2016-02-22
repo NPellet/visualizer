@@ -1,88 +1,80 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/util', 'components/jsoneditor/jsoneditor.min', 'src/util/context', 'jquery'], function (Default, Util, jsoneditor, Context, $) {
+define(['modules/default/defaultview', 'src/util/util', 'jsoneditor', 'src/util/context', 'jquery'], function (Default, Util, jsoneditor, Context, $) {
 
     function View() {
         this._id = Util.getNextUniqueId();
     }
 
-    Util.loadCss('components/jsoneditor/jsoneditor.min.css');
+    Util.loadCss('components/jsoneditor/dist/jsoneditor.min.css');
 
     $.extend(true, View.prototype, Default, {
-        init: function () {
-            var that = this;
+        init() {
             if (!this.dom) {
                 this.dom = $('<div id="' + this._id + '"></div>').css({
                     height: '100%',
                     width: '100%'
                 });
                 this.module.getDomContent().html(this.dom);
-                Context.listen(this.module.getDomWrapper().get(0), [], function (contextDom) {
-                    var li = $('<li><a>Change editor type</a></li>');
-
-                    var ul = $('<ul/>').appendTo(li);
-
-                    var elements = {Read: 'view', Edit: 'tree', Text: 'text'};
-                    for (var i in elements) {
-                        var li2 = $('<li>').appendTo(ul);
-                        li2.html('<a>' + i + '</a>');
-                    }
-                    $(contextDom).append(li);
-                    li.bind('click', function (event) {
-                        var mode = elements[event.target.text];
-                        that.editor.setMode(mode);
-                        that.module.definition.configuration.groups.group[0].editable[0] = mode; // temporary waiting for API
-                    });
-                });
             }
 
         },
         blank: {
-            value: function () {
+            value() {
                 this.editor.set({});
             }
         },
-        inDom: function () {
-            var that = this;
+        inDom() {
             this.dom.empty();
 
             var mode = this.module.getConfiguration('editable');
+            if (mode === 'text') mode = 'code'; // backward compatibility
             this.expand = !!this.module.getConfiguration('expanded', false)[0];
             this.storeObject = !!this.module.getConfiguration('storeObject', false)[0];
             this.changeInputData(DataObject.check(JSON.parse(this.module.getConfiguration('storedObject')), true));
 
             this.editor = new jsoneditor(document.getElementById(this._id), {
-                mode: mode, change: function () {
+                mode,
+                modes: ['view', 'tree', 'code'],
+                onChange: () => {
                     var result;
                     try {
-                        result = that.editor.get();
+                        result = this.editor.get();
                     } catch (e) {
                         result = 'Invalid JSON: ' + e.message;
                     }
-                    that.module.controller.sendValue(result, 'onObjectChange');
+                    this.module.controller.sendValue(result, 'onObjectChange');
                 },
-                module: this.module
+                onModeChange: () => this.setSendButton(),
+
+                search: this.module.getConfigurationCheckbox('searchBox', 'search')
             });
 
-            var sendButton = this.dom.find('.menu').prepend('<button class="send" style="width: 45px; float: left; background: none; font-size: small;">\n    <span style="font-size: 10pt;">Send</span>\n</button>').find('button.send');
-
-            sendButton.on('click', function () {
-                that.module.controller.sendValue(that.editor.get(), 'onObjectSend');
-            })
-                .on('mouseenter', function () {
-                    $(this).css('background-color', '#f0f2f5');
-                })
-                .on('mouseleave', function () {
-                    $(this).css('background-color', '#e3eaf6');
-                })
-                .css('background-color', '#e3eaf6');
-
+            if (this.module.getConfigurationCheckbox('sendButton', 'send')) {
+                this.setSendButton();
+            }
 
             this.update.value.call(this, this.inputData);
             this.resolveReady();
         },
+
+        setSendButton: function () {
+
+            var sendButton = this.dom
+                .find('.jsoneditor-menu')
+                .prepend('<button class="send" style="width: 45px; float: left; background: none; font-size: small;">\n    <span style="font-size: 10pt; color: black">Send</span>\n</button>')
+                .find('button.send');
+
+            sendButton.on('click', () => {
+                this.module.controller.sendValue(this.editor.get(), 'onObjectSend');
+            }).on('mouseenter', function () {
+                $(this).css('background-color', '#f0f2f5');
+            }).on('mouseleave', function () {
+                $(this).css('background-color', '#e3eaf6');
+            }).css('background-color', '#e3eaf6');
+        },
         update: {
-            value: function (value) {
+            value(value) {
                 if (this.module.getConfigurationCheckbox('displayValue', 'display')) {
                     value = value.get();
                 }
@@ -94,7 +86,7 @@ define(['modules/default/defaultview', 'src/util/util', 'components/jsoneditor/j
                 this.module.controller.sendValue(valNative, 'onObjectChange');
             }
         },
-        changeInputData: function (newData) {
+        changeInputData(newData) {
             if (this.inputData === newData)
                 return;
             //var that = this;

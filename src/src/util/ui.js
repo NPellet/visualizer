@@ -23,6 +23,45 @@ define([
 
     var $dialog;
 
+    exports.enterValue = function (opts) {
+        opts = opts || {};
+        const defaultOptions = {
+            label: 'Enter a value',
+            buttonLabel: 'Submit',
+            validationMessage: 'What you entered is not valid',
+            value: ''
+        };
+
+        opts = Object.assign({}, defaultOptions, opts);
+
+        return new Promise(function (resolve) {
+            var div = $(`<div>${opts.label}: </div>`);
+            var input = $(`<input type="text" value="${opts.value}"/>`).appendTo(div).on('keypress', evt => {
+                if (evt.keyCode === 13) done();
+            });
+            const done = () => {
+                var value = input.val();
+                if (opts.validation && typeof opts.validation === 'function') {
+                    if (!opts.validation(value)) {
+                        exports.showNotification(opts.validationMessage, 'error');
+                        return;
+                    }
+                }
+                resolve(value);
+                dialog.dialog('destroy');
+            };
+            var options = {
+                buttons: {},
+                close: function () {
+                    resolve();
+                    dialog.dialog('destroy');
+                }
+            };
+            options.buttons[opts.buttonLabel] = done;
+            var dialog = exports.dialog(div, options);
+        });
+    };
+
     exports.choose = function (list, options) {
         options = options || {};
         options = _.defaults(options, {
@@ -114,8 +153,9 @@ define([
             addItems(arr);
         } else if (fromArray) {
             sources = list.length;
+            var allProm = new Array(list.length);
             for (var i = 0; i < list.length; i++) {
-                list[i].promise.then(addItems).catch(function (e) {
+                allProm[i] = list[i].promise.then(addItems).catch(function (e) {
                     sources--;
                     failedSources++;
                     updateHeader();
@@ -148,11 +188,24 @@ define([
             columns[i] = _.defaults(columns[i], slickDefaultColumn);
         }
 
-        return new Promise(function (resolve) {
+        return new Promise(function (resolve, reject) {
             Util.loadCss('components/slickgrid/slick.grid.css').then(function () {
                 var $dialog = $('<div>');
                 var $slick = $('<div>');
                 var $container = $('<div>').css('height', 410);
+
+                Promise.all(allProm).then(() => {
+                    console.log('all done');
+                    var len = data.getLength();
+                    if (len === 0) {
+                        reject(new Error('empty data'));
+                        $dialog.dialog('close');
+                    } else if (len === 1 && options.autoSelect) {
+                        var id = data.mapRowsToIds([0])[0];
+                        resolve(id);
+                        $dialog.dialog('close');
+                    }
+                });
 
                 if (options.noConfirmation) {
                     buttons = {};
@@ -169,6 +222,7 @@ define([
                 }
 
                 exports.dialog($dialog, {
+                    noWrap: true,
                     buttons: buttons,
                     close: function () {
                         resolve();
@@ -445,6 +499,14 @@ define([
 
     exports.showNotification = function () {
         var args = arguments;
+        if (args[1] && (typeof args[1] === 'string')) {
+            args[1] = {
+                className: args[1],
+                autoHide: args[1] !== 'error'
+            };
+        } else if (args[1] && args[1].className === 'error') {
+            args[1] = Object.assign({autoHide: false}, args[1]);
+        }
         require(['notifyjs'], function () {
             $.notify.apply($.notify, args);
         });

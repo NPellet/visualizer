@@ -15,6 +15,8 @@ define(['src/util/debug', 'src/util/color', 'lodash', 'components/web-animations
     var regQuote = /"/g,
         regJpath = /^element\./;
 
+    const units = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
+
     function makejPathFunction(jpath) {
 // comment
         if (!jpath) {
@@ -112,14 +114,12 @@ define(['src/util/debug', 'src/util/color', 'lodash', 'components/web-animations
             $('.iframemask').remove();
         },
         formatSize: function (size) {
-
-            var i = 0;
+            let i = 0;
             while (size > 1024) {
                 size = size / 1024;
                 i++;
             }
-            var units = ['o', 'Ko', 'Mo', 'Go', 'To'];
-            return (Math.round(size * 10) / 10) + ' ' + units[i];
+            return `${Math.round(size * 100) / 100} ${units[i]}`;
         },
         pad: function (val) {
             return val < 10 ? '0' + val : val;
@@ -472,6 +472,11 @@ define(['src/util/debug', 'src/util/color', 'lodash', 'components/web-animations
             Debug.warn('could not eval options');
             return undefined;
         }
+    };
+
+    const isEmail = /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
+    exports.isEmail = function (str) {
+        return isEmail.test(str);
     };
 
     return exports;

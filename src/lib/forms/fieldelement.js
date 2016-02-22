@@ -212,7 +212,12 @@ define(['jquery'], function ($) {
             if (el !== undefined && el !== null) {
                 this.value = this.insertValue(el);
             } else {
-                this.value = this.insertValue(this.field.options.default);
+                var defaultValue = this.field.options.default;
+                if (Array.isArray(defaultValue)) {
+                    // prevent the same instance to be used in different places
+                    defaultValue = defaultValue.slice();
+                }
+                this.value = this.insertValue(defaultValue);
             }
         },
 

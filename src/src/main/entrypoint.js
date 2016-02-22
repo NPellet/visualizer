@@ -21,7 +21,8 @@ define([
     'src/util/ui',
     'src/util/config',
     'src/util/shortcuts',
-    'src/util/copyPasteManager'
+    'src/util/copyPasteManager',
+    './forceLoad'
 ], function (
     $,
     _,
@@ -199,13 +200,9 @@ define([
                     v.modules[j].url = module.url;
                 }
             }
-            if (changed === false) {
-                Debug.debug('No module urls rewritten in the view');
-            } else {
-                Debug.info('Module urls were rewritten...');
+            if (changed) {
                 Versioning.setViewJSON(v);
             }
-
         }
 
         function loadCustomModules() {
@@ -218,7 +215,7 @@ define([
                 modules[i].url = modules[i].url.replace(/\/$/, '');
             }
             return ModuleFactory.setModules({
-                folders: _.pluck(modules, 'url')
+                folders: _.map(modules, 'url')
             });
         }
 
