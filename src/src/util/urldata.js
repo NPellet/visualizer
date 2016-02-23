@@ -16,7 +16,7 @@ define(['superagent', 'src/util/lru', 'src/util/debug'], function (superagent, L
         if (withCredentials) {
             req.withCredentials();
         }
-        return req.end().then(function(res) {
+        return req.end().then(function (res) {
             delete pendings[url];
             if (res.status != 200) {
                 Debug.info('DataURL: Failing in retrieving ' + url + ' by AJAX.');
@@ -31,12 +31,12 @@ define(['superagent', 'src/util/lru', 'src/util/debug'], function (superagent, L
                 LRU.store('urlData', url, data);
                 return data;
             }
-        }, function(err) {
-            if(err.status === 401 && credentials[host] === undefined) {
+        }, function (err) {
+            if (err.status === 401 && credentials[host] === undefined) {
                 credentials[host] = true;
                 return doByUrl(url, headers);
             }
-            if(credentials[host] !== undefined) {
+            if (credentials[host] !== undefined) {
                 credentials[host] = undefined;
             }
             throw err;

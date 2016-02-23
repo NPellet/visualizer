@@ -63,7 +63,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
         var that = this;
         return Promise.resolve().then(function () {
             var hasAtt = that.lastDoc && that.lastDoc._attachments;
-            if(!that.lastDoc && secondRound) {
+            if (!that.lastDoc && secondRound) {
                 throw new Error('Unreachable');
             }
             if (!hasAtt && !secondRound) {
