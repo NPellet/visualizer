@@ -1,3 +1,13 @@
+<a name="2.43.1"></a>
+## 2.43.1 (2016-02-23)
+
+
+### Bug Fixes
+
+* **couchdbAttachments:** fix bug when document has no attachments yet ([bab5ca6](https://github.com/NPellet/visualizer/commit/bab5ca6))
+
+
+
 <a name="2.43.0"></a>
 # 2.43.0 (2016-02-23)
 
