@@ -479,6 +479,31 @@ define(['src/util/debug', 'src/util/color', 'lodash', 'components/web-animations
         return isEmail.test(str);
     };
 
+    // Taken from http://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
+    exports.b64toBlob = function(b64Data, contentType, sliceSize) {
+        contentType = contentType || '';
+        sliceSize = sliceSize || 512;
+
+        var byteCharacters = atob(b64Data);
+        var byteArrays = [];
+
+        for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+            var byteNumbers = new Array(slice.length);
+            for (var i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            var byteArray = new Uint8Array(byteNumbers);
+
+            byteArrays.push(byteArray);
+        }
+
+        var blob = new Blob(byteArrays, {type: contentType});
+        return blob;
+    }
+
     return exports;
 
 });
