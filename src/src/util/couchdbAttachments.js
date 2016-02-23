@@ -59,18 +59,19 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
      @return {number} attachments[].length - Length in bytes of the resource
      @return {number} attachments[].url - The url of the resource
      */
-    CouchdbAttachments.prototype.list = function (asError) {
+    CouchdbAttachments.prototype.list = function (secondRound) {
         var that = this;
         return Promise.resolve().then(function () {
             var hasAtt = that.lastDoc && that.lastDoc._attachments;
-            if (!hasAtt && asError) {
-                throw new Error('Unexpected error: List of attachments not available');
-            } else if (!hasAtt) {
+            if(!that.lastDoc && secondRound) {
+                throw new Error('Unreachable');
+            }
+            if (!hasAtt && !secondRound) {
                 return that.refresh().then(function () {
                     return that.list(true);
                 });
             }
-            return attachmentsAsArray(that, that.lastDoc._attachments);
+            return attachmentsAsArray(that, that.lastDoc._attachments || {});
         });
     };
 
