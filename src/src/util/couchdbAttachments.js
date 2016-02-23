@@ -70,8 +70,10 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                 return that.refresh().then(function () {
                     return that.list(true);
                 });
+            } else if(!hasAtt) {
+                that.lastDoc._attachments = {};
             }
-            return attachmentsAsArray(that, that.lastDoc._attachments || {});
+            return attachmentsAsArray(that, that.lastDoc._attachments);
         });
     };
 
