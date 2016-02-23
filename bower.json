@@ -1,6 +1,6 @@
 {
   "name": "visualizer",
-  "version": "2.42.0",
+  "version": "2.43.0",
   "description": "Data visualization framework",
   "main": "src/init.js",
   "keywords": [

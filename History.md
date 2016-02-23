@@ -1,3 +1,18 @@
+<a name="2.43.0"></a>
+# 2.43.0 (2016-02-23)
+
+
+### Bug Fixes
+
+* **couchdbAttachments:** don't treat missing doc._attachments as error ([7368db5](https://github.com/NPellet/visualizer/commit/7368db5))
+
+### Features
+
+* **core:** urldata try with credentials when unauthorized ([026069e](https://github.com/NPellet/visualizer/commit/026069e))
+* **ui:** enterValue you can now pre-fill input with a value ([593ab7a](https://github.com/NPellet/visualizer/commit/593ab7a))
+
+
+
 <a name="2.42.0"></a>
 # 2.42.0 (2016-02-19)
 
