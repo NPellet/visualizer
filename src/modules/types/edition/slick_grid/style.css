@@ -463,7 +463,7 @@ classes should alter those!
     cursor: pointer;
 }
 
-.slick-cell a.icon-container {
+.slick-cell a.icon-clickable {
     cursor: pointer;
 }
 

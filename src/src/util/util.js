@@ -502,7 +502,7 @@ define(['src/util/debug', 'src/util/color', 'lodash', 'components/web-animations
 
         var blob = new Blob(byteArrays, {type: contentType});
         return blob;
-    }
+    };
 
     return exports;
 
