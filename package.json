@@ -16,7 +16,6 @@
     "postinstall": "npm run install-components && npm run install-browserified",
     "prerelease": "grunt bump:prerelease",
     "test": "npm run eslint",
-    "release": "npm run release:patch",
     "release:major": "npm run test && grunt bump:major --release",
     "release:minor": "npm run test && grunt bump:minor --release",
     "release:patch": "npm run test && grunt bump:patch --release",
