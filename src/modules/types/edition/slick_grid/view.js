@@ -610,7 +610,7 @@ define([
                     var $a = $cellNode.find('a');
                     $a.attr('title', context.renderOptions.tooltip);
 
-                    if(context.renderOptions.action) {
+                    if (context.renderOptions.action) {
                         $a.addClass('icon-clickable');
                         $a[0].onclick = function () {
                             API.doAction(context.renderOptions.action, dataContext);

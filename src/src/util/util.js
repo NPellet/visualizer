@@ -480,7 +480,7 @@ define(['src/util/debug', 'src/util/color', 'lodash', 'components/web-animations
     };
 
     // Taken from http://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
-    exports.b64toBlob = function(b64Data, contentType, sliceSize) {
+    exports.b64toBlob = function (b64Data, contentType, sliceSize) {
         contentType = contentType || '';
         sliceSize = sliceSize || 512;
 
