@@ -5,8 +5,6 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
     function Controller() {
     }
 
-    var reg = new RegExp(';base64,(.+)$');
-
     $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
@@ -407,8 +405,8 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                 break;
 
             case 'base64':
-                var base64 = reg.exec(result)[1];
-                this.tmpVar(base64, meta);
+                var b64idx = result.indexOf(';base64,');
+                this.tmpVar(result.substr(b64idx + 8), meta);
                 break;
 
             case 'url':
