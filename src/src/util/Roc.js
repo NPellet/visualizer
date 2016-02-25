@@ -4,8 +4,10 @@ define([
         'src/util/api',
         'superagent',
         'uri/URI',
-        'lodash'],
-    function (API, superagent, URI, _) {
+        'lodash',
+        'src/util/couchdbAttachments'
+    ],
+    function (API, superagent, URI, _, CDB) {
         var viewSearch = ['key', 'startkey', 'endkey'];
         class Roc {
             constructor(opts) {
@@ -42,8 +44,6 @@ define([
                         if (res && res.body && res.status == 200) {
                             API.createData(this.varName, res.body);
                             this.data = res.body;
-                        } else {
-                            throw new Error('Could not do request', err);
                         }
                     });
             }
@@ -62,11 +62,11 @@ define([
                                 if (res.body && res.status == 200) {
                                     return res.body;
                                 }
-                            })
+                            });
                     }
 
                 });
-            };
+            }
 
             getById(id) {
                 var id = DataObject.resurrect(id);
@@ -112,7 +112,7 @@ define([
                     }).then(res => {
                         if (!res) return;
                         if (res.body && res.status == 200) {
-                            if(oldEntry) {
+                            if (oldEntry) {
                                 var entryIdx = this.data.findIndex(e => String(e._id) === String(entry._id));
                                 this.data.traceSync([entryIdx]);
                                 this.data[entryIdx].triggerChange();
@@ -126,6 +126,13 @@ define([
                 this.init();
             }
 
+            addAttachmentsByUuid(uuid, attachments) {
+                var docUrl = `${this.entryUrl}/${uuid}`;
+                var cdb = new CDB(docUrl);
+
+                
+            }
+
 
             removeByUuid(uuid, force) {
                 uuid = String(uuid);
@@ -137,7 +144,7 @@ define([
                 return prom.then(() => {
                     return superagent.del(`${this.entryUrl}/${uuid}`)
                         .withCredentials()
-                        .end()
+                        .end();
                 }).then(res => {
                     if (res.body && res.status == 200) {
                         var idx = this.data.findIndex(entry => {
