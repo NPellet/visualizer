@@ -1,3 +1,18 @@
+<a name="2.44.0"></a>
+# 2.44.0 (2016-02-25)
+
+
+### Bug Fixes
+
+* **dragdrop:** strange bug with regexp ([50c0d3a](https://github.com/NPellet/visualizer/commit/50c0d3a))
+* **slickgrid:** in action column cursor is pointer only if associated action exists ([62de45c](https://github.com/NPellet/visualizer/commit/62de45c))
+
+### Features
+
+* **smart_array_filter:** add search string variable out ([2aef5f0](https://github.com/NPellet/visualizer/commit/2aef5f0))
+
+
+
 <a name="2.43.1"></a>
 ## 2.43.1 (2016-02-23)
 
