@@ -1,5 +1,5 @@
 {
-  "version": "2.30.1-0",
+  "version": "2.43.2-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -12,7 +12,27 @@
   "modules": [
     {
       "url": "modules/types/array_search/smart_array_filter/",
-      "configuration": {},
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "debounce": [
+                100
+              ],
+              "initialValue": [
+                ""
+              ],
+              "placeholder": [
+                "Type a search query"
+              ],
+              "fontSize": [
+                20
+              ]
+            }
+          ]
+        }
+      },
       "layers": {
         "Default layer": {
           "position": {
@@ -54,6 +74,12 @@
           "rel": "output",
           "jpath": [],
           "name": "output"
+        },
+        {
+          "event": "onQuery",
+          "rel": "search",
+          "jpath": [],
+          "name": "str"
         }
       ],
       "actions_out": []
@@ -111,7 +137,7 @@
           "name": "Default layer"
         }
       },
-      "id": 3,
+      "id": 2,
       "vars_in": [
         {
           "rel": "value",
@@ -182,7 +208,7 @@
           "name": "Default layer"
         }
       },
-      "id": 4,
+      "id": 3,
       "vars_in": [
         {
           "rel": "value",
@@ -198,6 +224,99 @@
         }
       ],
       "title": "",
+      "actions_out": []
+    },
+    {
+      "url": "modules/types/display/single_value/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "append": [
+                []
+              ],
+              "maxEntries": [
+                1
+              ],
+              "editable": [
+                []
+              ],
+              "defaultvalue": [
+                null
+              ],
+              "font": [
+                null
+              ],
+              "fontcolor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "fontsize": [
+                null
+              ],
+              "align": [
+                null
+              ],
+              "valign": [
+                null
+              ],
+              "rendererOptions": [
+                ""
+              ],
+              "sprintf": [
+                "Searching for %s"
+              ],
+              "sprintfOrder": [
+                null
+              ],
+              "preformatted": [
+                []
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 34,
+            "top": 79
+          },
+          "size": {
+            "width": 50,
+            "height": 9
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 4,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "str"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "",
+      "vars_out": [],
       "actions_out": []
     }
   ],

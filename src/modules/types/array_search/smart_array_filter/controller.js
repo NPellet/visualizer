@@ -24,13 +24,17 @@ define(['jquery', 'modules/default/defaultcontroller', 'smart-array-filter'], fu
         output: {
             label: 'Output array',
             type: 'array'
+        },
+        search: {
+            label: 'Search string',
+            type: 'string'
         }
     };
 
     Controller.prototype.events = {
         onQuery: {
             label: 'Query is changed',
-            refVariable: ['output']
+            refVariable: ['output', 'search']
         }
     };
 
@@ -81,6 +85,7 @@ define(['jquery', 'modules/default/defaultcontroller', 'smart-array-filter'], fu
         var array = JSON.parse(this.module.view._data);
         if (!array) return;
         var result = filter(array, {keywords: query});
+        this.createDataFromEvent('onQuery', 'search', query);
         this.createDataFromEvent('onQuery', 'output', result);
     };
 
