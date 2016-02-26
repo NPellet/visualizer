@@ -162,6 +162,8 @@ require.config({
     }
 });
 
+window.CKEDITOR_BASEPATH = requirejs.toUrl('components/ckeditor/');
+
 require([
     'jquery',
     'src/main/datas',
