@@ -9,6 +9,8 @@ define([
     ],
     function (API, superagent, URI, _, CDB) {
         var viewSearch = ['key', 'startkey', 'endkey'];
+        var mandatoryOptions = ['url', 'database'];
+
         class Roc {
             constructor(opts) {
                 this.url = opts.url;
@@ -28,9 +30,6 @@ define([
                 }
 
                 this.requestUrl = this.requestUrl.normalize().href();
-
-                //this.host = this.databaseUrl.host();
-                //this.protocol = this.databaseUrl.protocol();
                 this.varName = opts.varName;
 
 
@@ -50,9 +49,8 @@ define([
 
             getByUuid(uuid, force) {
                 return this.__init.then(() => {
-                    const data = API.getData(this.varName);
                     if (!force) {
-                        return data.find(entry => String(entry._id) === String(uuid));
+                        return this._findByUuid(uuid);
                     } else {
                         console.log('force get');
                         return superagent.get(`${this.entryUrl}/${uuid}`)
@@ -60,12 +58,17 @@ define([
                             .end()
                             .then(res => {
                                 if (res.body && res.status == 200) {
+                                    this._updateByUuid(uuid, res.body);
                                     return res.body;
                                 }
                             });
                     }
-
                 });
+            }
+
+            _updateByUuid(uuid, data) {
+                var idx = this._findIndexByUuid(uuid);
+                this.data.setChildSync([idx], data);
             }
 
             getById(id) {
@@ -76,6 +79,19 @@ define([
                         return _.isEqual($id, id);
                     });
                 });
+            }
+
+            _findByUuid(uuid) {
+                return this.data.find(entry => String(entry._id) === String(uuid));
+            }
+
+            _findIndexByUuid(uuid) {
+                this.data.findIndex(entry => String(entry._id) === String(uuid));
+            }
+
+            _findById(id) {
+                id = DataObject.resurrect(id);
+                return this.data.find(entry => _.isEqual(id, DataObject.resurrect(entry.$id)));
             }
 
             create(toSave) {
@@ -113,9 +129,7 @@ define([
                         if (!res) return;
                         if (res.body && res.status == 200) {
                             if (oldEntry) {
-                                var entryIdx = this.data.findIndex(e => String(e._id) === String(entry._id));
-                                this.data.traceSync([entryIdx]);
-                                this.data[entryIdx].triggerChange();
+                                this._updateByUuid(entry._id, entry);
                             }
 
                         }
@@ -126,11 +140,27 @@ define([
                 this.init();
             }
 
-            addAttachmentsByUuid(uuid, attachments) {
-                var docUrl = `${this.entryUrl}/${uuid}`;
-                var cdb = new CDB(docUrl);
+            addAttachmentByUuid(uuid, attachments) {
+                return this.__init.then(() => {
+                    var docUrl = `${this.entryUrl}/${uuid}`;
+                    var cdb = new CDB(docUrl);
 
-                
+                    return cdb.inlineUploads(attachments)
+                        .then(attachments => {
+                            return this.getByUuid(uuid, true).then(res => {
+                                if(res._id === uuid) {
+                                    return attachments;
+                                }
+                            });
+                        });
+                });
+            }
+
+            addAttachmentById(id, attachment) {
+                return this.__init.then(() => {
+                    var uuid = this._findById(id)._id;
+                    return this.addAttachmentByUuid(uuid, attachment);
+                });
             }
 
 
