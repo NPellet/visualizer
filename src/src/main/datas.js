@@ -806,12 +806,12 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
         value: function (newValue, noTrigger) {
             if (this.hasOwnProperty('type') && this.hasOwnProperty('value')) {
                 if (this.value instanceof DataString || this.value instanceof DataNumber || this.value instanceof DataBoolean) {
-                    this.value.setValue(newValue, noTrigger);
+                    this.value.setValue(newValue, true);
                 } else {
                     this.value = newValue;
-                    if (!noTrigger) {
-                        this.triggerChange(false, []);
-                    }
+                }
+                if (!noTrigger) {
+                    this.triggerChange(false, []);
                 }
             } else {
                 Debug.warn('Cannot set value of untyped DataObject');
