@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/util', 'jsoneditor', 'src/util/context', 'jquery'], function (Default, Util, jsoneditor, Context, $) {
+define(['modules/default/defaultview', 'src/util/util', 'jsoneditor', 'src/util/context', 'jquery', 'ace/ace'], function (Default, Util, jsoneditor, Context, $, ace) {
 
     function View() {
         this._id = Util.getNextUniqueId();
@@ -36,6 +36,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jsoneditor', 'src/util/
             this.editor = new jsoneditor(document.getElementById(this._id), {
                 mode,
                 modes: ['view', 'tree', 'code'],
+                ace: ace,
                 onChange: () => {
                     var result;
                     try {

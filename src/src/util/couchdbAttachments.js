@@ -3,7 +3,14 @@
 // Mini-library to manage couchdb attachments
 // - Get and upload attachments just by their name
 // - Cache already downloaded attachments
-define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioning, superagent, LRU) {
+define([
+    'src/util/versioning',
+    'superagent',
+    'src/util/lru',
+    'src/util/util'
+], function (Versioning, superagent, LRU, util) {
+
+    var base64DataUrlReg = /^data:([a-z]+\/[a-z]+);base64,/;
 
     // A namespace for preventing overwriting
     var storeName = '__couchdb-attachments';
@@ -143,7 +150,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                     var item = options[i];
                     var data = item.data || item.file;
                     if (typeof data === 'string') {
-                        var dataUrl = /^data:([a-z]+\/[a-z]+);base64,/.exec(data.slice(0, 64));
+                        var dataUrl = base64DataUrlReg.exec(data.slice(0, 64));
                         if (!dataUrl) {
                             that.lastDoc._attachments[item.name] = {
                                 content_type: item.contentType,
@@ -226,10 +233,18 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                 var contentType = options.contentType;
                 if (!contentType && data instanceof Blob) {
                     contentType = data.type;
+                } else if (typeof data === 'string') {
+                    var dataUrl = base64DataUrlReg.exec(data.slice(0, 64));
+                    if (!dataUrl) {
+                        throw new Error('Bad base64 url');
+                    }
+                    data = util.b64toBlob(data.slice(dataUrl[0].length), dataUrl[1]);
+                    contentType = dataUrl[1];
+                } else {
+                    throw new Error('Data must be Blob or base64 dataUrl');
                 }
-                if (!contentType && _att && _att.content_type) {
-                    contentType = _att.content_type;
-                }
+
+
                 if (!contentType) {
                     return reject(new Error('Content-Type unresolved. Cannot upload document without content-type'));
                 }
