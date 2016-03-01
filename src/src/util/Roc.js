@@ -9,6 +9,10 @@ define([
         'src/util/couchdbAttachments'
     ],
     function (API, ui, superagent, URI, _, CDB) {
+        var defaultOptions = {
+            messages: {}
+        };
+
         var viewSearch = ['key', 'startkey', 'endkey'];
         var mandatoryOptions = ['url', 'database'];
 
@@ -17,6 +21,8 @@ define([
                 this.url = opts.url;
                 this.view = opts.view;
                 this.database = opts.database;
+                this.messages = opts.messages || {};
+                this.showNotifications = opts.showNotifications;
 
 
                 this.requestUrl = new URI(opts.url);
@@ -41,24 +47,25 @@ define([
 
             init() {
                 if (!this.view) {
-                    return Promise.resolve();
+                    return Promise.resolve({});
                 }
-                superagent.get(this.requestUrl)
+                return superagent.get(this.requestUrl)
                     .withCredentials()
                     .then(res => {
                         if (res && res.body && res.status == 200) {
                             API.createData(this.varName, res.body);
                             this.data = res.body;
                         }
+                        return res;
                     });
             }
 
-            getByUuid(uuid, force) {
+            getByUuid(uuid, options) {
+                options = createOptions(options);
                 return this.__ready.then(() => {
-                    if (!force && this.view) {
+                    if (!options.force && this.view) {
                         return this._findByUuid(uuid);
                     } else {
-                        console.log('force get');
                         return superagent.get(`${this.entryUrl}/${uuid}`)
                             .withCredentials()
                             .end()
@@ -67,27 +74,29 @@ define([
                                     this._updateByUuid(uuid, res.body);
                                     return res.body;
                                 }
-                            });
+                            }).catch(handleError(this, options));
                     }
                 });
             }
 
             _updateByUuid(uuid, data) {
                 var idx = this._findIndexByUuid(uuid);
-                if(idx !== -1) {
+                if (idx !== -1) {
+                    console.log('set child sync', idx, data);
                     this.data.setChildSync([idx], data);
                 }
             }
 
-            getById(id, force) {
+            getById(id, options) {
+                options = createOptions(options);
                 var id = DataObject.resurrect(id);
                 return this.__ready.then(() => {
-                    if (!force && this.view) {
+                    if (!options.force && this.view) {
                         return this._findById(id);
                     } else {
                         throw new Error('Not yet possible get by id');
                     }
-                });
+                }).catch(handleError(this, options));
             }
 
             _findByUuid(uuid) {
@@ -95,7 +104,7 @@ define([
             }
 
             _findIndexByUuid(uuid) {
-                this.data.findIndex(entry => String(entry._id) === String(uuid));
+                return this.data.findIndex(entry => String(entry._id) === String(uuid));
             }
 
             _findById(id) {
@@ -103,7 +112,8 @@ define([
                 return this.data.find(entry => _.isEqual(id, DataObject.resurrect(entry.$id)));
             }
 
-            create(toSave) {
+            create(toSave, options) {
+                options = createOptions(options);
                 return this.__ready
                     .then(() => {
                         return superagent.post(this.entryUrl)
@@ -111,37 +121,42 @@ define([
                             .send(toSave)
                             .end();
                     })
+                    .then(handleSuccess(this, options))
                     .then(res => {
                         if (res.body && (res.status == 200 || res.status == 201)) {
-                            return this.getByUuid(res.body.id, true);
-                        } else {
-                            console.log(res);
+                            return this.getByUuid(res.body.id, {force: true});
                         }
                     })
                     .then(entry => {
                         if (!entry) return;
                         this.data.push(entry);
                         this.data.triggerChange();
-                    });
+                    }).catch(handleError(this, options));
             }
 
-            update(entry, force) {
+            update(entry, options) {
+                options = createOptions(options);
+                // Todo force
                 return this.__ready.then(() => {
                     return superagent.put(`${this.entryUrl}/${String(entry._id)}`)
                         .withCredentials()
                         .send(entry);
-                }).then(res => {
+                })
+                    .then(handleSuccess)
+                    .then(res => {
                     if (res.body && res.status == 200) {
                         if (this.view) {
                             this._updateByUuid(entry._id, entry);
                         }
-
                     }
-                });
+                }).catch(handleError(this, options));
             }
 
-            refresh() {
-                this.__ready = this.init();
+            refresh(options) {
+                options = createOptions(options);
+                this.__ready = this.init()
+                    .then(handleSuccess(this, options))
+                    .catch(handleError(this, options));
             }
 
             _getCdb(uuid) {
@@ -149,44 +164,50 @@ define([
                 return new CDB(docUrl);
             }
 
-            removeAttachmentsByUuid(uuid, attachments) {
+            removeAttachmentsByUuid(uuid, attachments, options) {
+                options = createOptions(options);
                 if (Array.isArray(attachments) && attachments.length === 0) return [];
                 return this.__ready.then(() => {
                     const cdb = this._getCdb(uuid);
                     return cdb.remove(attachments)
                         .then(attachments => {
-                            return this.getByUuid(uuid, true).then(data => {
-                                this._updateByUuid(uuid, data)
+                            return this.getByUuid(uuid, {force: true}).then(data => {
+                                console.log('got doc', data);
+                                this._updateByUuid(uuid, data);
                                 return attachments;
                             });
                         });
-                })
+                }).catch(handleError(this, options))
             }
 
-            addAttachmentsByUuid(uuid, attachments) {
+            addAttachmentsByUuid(uuid, attachments, options) {
+                options = createOptions(options);
                 return this.__ready.then(() => {
                     const cdb = this._getCdb(uuid);
                     return cdb.inlineUploads(attachments)
                         .then(attachments => {
-                            return this.getByUuid(uuid, true).then(data => {
-                                this._updateByUuid(uuid, data)
+                            return this.getByUuid(uuid, {force: true}).then(data => {
+                                console.log('got document',data);
+                                this._updateByUuid(uuid, data);
                                 return attachments;
                             });
                         });
-                });
+                }).catch(handleError(this, options));
             }
 
-            addAttachmentsById(id, attachment) {
+            addAttachmentsById(id, attachment, options) {
+                options = createOptions(options);
                 return this.__ready.then(() => {
                     var uuid = this._findById(id)._id;
                     return this.addAttachmentsByUuid(uuid, attachment);
-                });
+                }).catch(handleError(this, options));
             }
 
 
-            removeByUuid(uuid, force) {
+            removeByUuid(uuid, options) {
+                options = createOptions(options);
                 uuid = String(uuid);
-                if (force) {
+                if (options.force) {
                     var prom = Promise.resolve();
                 } else {
                     prom = this.__ready;
@@ -195,17 +216,64 @@ define([
                     return superagent.del(`${this.entryUrl}/${uuid}`)
                         .withCredentials()
                         .end();
-                }).then(res => {
+                })
+                    .then(handleSuccess(this, options))
+                    .then(res => {
                     if (res.body && res.status == 200) {
-                        var idx = this.data.findIndex(entry => {
-                            return String(entry._id) === uuid;
-                        });
+                        var idx = this._findIndexByUuid(uuid)
                         if (idx !== -1) {
                             this.data.splice(idx, 1);
                             this.data.triggerChange();
                         }
                     }
-                });
+                    return res;
+                }).catch(handleError(this, options));
+            }
+        }
+
+        function createOptions(options) {
+            if(options && options.message) {
+                var messages = Object.assign(defaultOptions.message, options.messages);
+            }
+            options = Object.assign(defaultOptions, options);
+            if(messages) options.messages = messages;
+            return options;
+        }
+
+        function handleError(ctx, options) {
+            return function (err) {
+                if (err.status || err.timeout) { // error comes from superagent
+                    handleSuperagentError(err, ctx, options);
+                }
+                // Propagate error
+                throw err;
+            };
+        }
+
+        function handleSuccess(ctx, options) {
+            return function(data) {
+                if(data.status) {
+                    handleSuperagentSuccess(data, ctx, options);
+                }
+                return data;
+            }
+        }
+
+        function handleSuperagentSuccess(data, ctx, options) {
+            if(ctx.showNotifications) {
+                const message = options.messages[data.status] || ctx.messages[data.status];
+                if(message) {
+                    ui.showNotification(message, 'success');
+                }
+            }
+        }
+
+        function handleSuperagentError(err, ctx, options) {
+            if(ctx.showNotifications) {
+                const message = options.messages[err.status] || ctx.messages[err.status];
+                if(message) {
+                    ui.showNotification(message, 'error');
+                }
             }
         }
 
