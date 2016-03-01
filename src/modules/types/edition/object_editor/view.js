@@ -37,6 +37,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jsoneditor', 'src/util/
                 mode,
                 modes: ['view', 'tree', 'code'],
                 ace: ace,
+                theme: 'ace/theme/textmate',
                 onChange: () => {
                     var result;
                     try {
