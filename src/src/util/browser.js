@@ -131,7 +131,6 @@ define([
                 }
 
                 if (browserHasAllFeatures) {
-                    Debug.info('user has all required features');
                     return resolve();
                 }
 
