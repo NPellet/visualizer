@@ -1,69 +1,86 @@
 'use strict';
 
 define([
-    'src/util/api',
-    'src/util/ui',
-    'superagent',
-    'uri/URI',
-    'lodash',
-    'src/util/couchdbAttachments'
-],
+        'src/util/api',
+        'src/util/ui',
+        'superagent',
+        'uri/URI',
+        'lodash',
+        'src/util/couchdbAttachments'
+    ],
     function (API, ui, superagent, URI, _, CDB) {
-        var defaultOptions = {
+
+        const defaultOptions = {
             messages: {}
         };
 
-        var viewSearch = ['key', 'startkey', 'endkey'];
-        var mandatoryOptions = ['url', 'database'];
+        const viewSearch = ['key', 'startkey', 'endkey'];
+        const mandatoryOptions = ['url', 'database'];
 
         class Roc {
             constructor(opts) {
-                this.url = opts.url;
-                this.view = opts.view;
-                this.database = opts.database;
-                this.messages = opts.messages || {};
-                this.showNotifications = opts.showNotifications;
+                for (var key in opts) {
+                    this[key] = opts[key];
+                }
+                this.messages = this.messages || {};
+                this.variables = {};
 
 
                 this.requestUrl = new URI(opts.url);
                 this.databaseUrl = this.requestUrl.directory(`${this.requestUrl.directory()}/db/${this.database}`).normalize().href();
                 this.entryUrl = `${this.databaseUrl}entry`;
-
-                if (this.view) {
-                    this.requestUrl = new URI(`${this.databaseUrl}_view/${this.view}`);
-
-                    for (let i = 0; i < viewSearch.length; i++) {
-                        if (opts[viewSearch[i]]) {
-                            this.requestUrl.addSearch(viewSearch[i], JSON.stringify(opts[viewSearch[i]]));
-                        }
-                    }
-
-                    this.requestUrl = this.requestUrl.normalize().href();
-                }
-
-                this.varName = opts.varName;
-                this.refresh();
+                this.__ready = Promise.resolve();
             }
 
-            init() {
-                if (!this.view) {
-                    return Promise.resolve({});
+            view(viewName, options) {
+                options = createOptions(options);
+                let requestUrl = new URI(`${this.databaseUrl}_view/${viewName}`);
+
+                for (let i = 0; i < viewSearch.length; i++) {
+                    if (options[viewSearch[i]]) {
+                        requestUrl.addSearch(viewSearch[i], JSON.stringify(options[viewSearch[i]]));
+                    }
                 }
-                return superagent.get(this.requestUrl)
+
+                requestUrl = requestUrl.normalize().href();
+
+                return superagent.get(requestUrl)
                     .withCredentials()
                     .then(res => {
                         if (res && res.body && res.status == 200) {
-                            API.createData(this.varName, res.body);
-                            this.data = res.body;
+                            if (options.varName) {
+                                this.variables[options.varName] = {
+                                    type: 'view',
+                                    requestUrl,
+                                    data: res.body
+                                };
+                                API.createData(options.varName, res.body);
+                            }
                         }
                         return res;
-                    });
+                    })
+                    .then(handleSuccess(this, options))
+                    .catch(handleError(this, options));
+            }
+
+            document(uuid, options) {
+                return this.getByUuid(uuid).then(doc => {
+                    if (!doc) return;
+                    if (options.varName) {
+                        this.variables[options.varName] = {
+                            type: 'document',
+                            data: doc
+                        };
+                        API.createData(options.varName, doc);
+                        return doc;
+                    }
+                });
             }
 
             getByUuid(uuid, options) {
                 options = createOptions(options);
                 return this.__ready.then(() => {
-                    if (!options.force && this.view) {
+                    if (options.fromCache) {
                         return this._findByUuid(uuid);
                     } else {
                         return superagent.get(`${this.entryUrl}/${uuid}`)
@@ -79,37 +96,73 @@ define([
                 });
             }
 
-            _updateByUuid(uuid, data) {
-                var idx = this._findIndexByUuid(uuid);
-                if (idx !== -1) {
-                    console.log('set child sync', idx, data);
-                    this.data.setChildSync([idx], data);
-                }
-            }
-
             getById(id, options) {
                 options = createOptions(options);
-                var id = DataObject.resurrect(id);
                 return this.__ready.then(() => {
-                    if (!options.force && this.view) {
-                        return this._findById(id);
-                    } else {
-                        throw new Error('Not yet possible get by id');
-                    }
+                    return this._findById(id);
                 }).catch(handleError(this, options));
             }
 
-            _findByUuid(uuid) {
-                return this.data.find(entry => String(entry._id) === String(uuid));
+            _findByUuid(uuid, key) {
+                if (key === undefined) {
+                    var result;
+                    // Return the first one found (they are all supposed to be the same...)
+                    for (let key in this.variables) {
+                        result = this._findByUuid(uuid, key);
+                        if (result) return result;
+                    }
+                    return null;
+                }
+
+                if (!this.variables[key]) return null;
+                return this.variables[key].data.find(entry => String(entry._id) === String(uuid));
             }
 
-            _findIndexByUuid(uuid) {
-                return this.data.findIndex(entry => String(entry._id) === String(uuid));
-            }
-
-            _findById(id) {
+            _findById(id, key) {
+                if (key === undefined) {
+                    var result;
+                    for (let key in this.variables) {
+                        result = this._findById(id, key);
+                        if (result) return result;
+                    }
+                    return null;
+                }
+                if (!this.variables[key]) return null;
                 id = DataObject.resurrect(id);
-                return this.data.find(entry => _.isEqual(id, DataObject.resurrect(entry.$id)));
+                if(this.variables[key].type === 'document' && _.isEqual(DataObject.resurrect(this.variables[key].data.$id), id)) {
+                    return this.variables[key].data;
+                } else if(this.variables[key.type === 'view']) {
+                    return this.variables[key].data.find(entry => _.isEqual(id, DataObject.resurrect(entry.$id)));
+                }
+                return null;
+            }
+
+            _findIndexByUuid(uuid, key) {
+                if (!this.variables[key]) return null;
+                if(this.variables[key].type === 'document') {
+                    return -1;
+                }
+                return this.variables[key].data.findIndex(entry => String(entry._id) === String(uuid));
+            }
+
+            _updateByUuid(uuid, data) {
+                for (let key in this.variables) {
+                    if(this.variables[key].type === 'view') {
+                        const idx = this._findIndexByUuid(uuid, key);
+                        if (idx !== -1) {
+                            this.variables[key].data.setChildSync([idx], _.cloneDeep(DataObject.resurrect(data)));
+                        }
+                    } else if (this.variables[key].type === 'document') {
+                        uuid = String(uuid);
+                        const _id = this.variables[key].data._id;
+                        if(uuid === _id) {
+                            var newData = _.cloneDeep(DataObject.resurrect(data));
+                            this.variables[key].data = newData;
+                            API.createData(key, newData);
+                        }
+                    }
+                }
+
             }
 
             create(toSave, options) {
@@ -124,13 +177,15 @@ define([
                     .then(handleSuccess(this, options))
                     .then(res => {
                         if (res.body && (res.status == 200 || res.status == 201)) {
-                            return this.getByUuid(res.body.id, {force: true});
+                            return this.getByUuid(res.body.id);
                         }
                     })
                     .then(entry => {
                         if (!entry) return;
-                        this.data.push(entry);
-                        this.data.triggerChange();
+                        for (var key in this.variables) {
+                            this.variables[key].data.push(_.cloneDeep(entry));
+                            this.variables[key].data.triggerChange();
+                        }
                     }).catch(handleError(this, options));
             }
 
@@ -138,25 +193,19 @@ define([
                 options = createOptions(options);
                 // Todo force
                 return this.__ready.then(() => {
-                    return superagent.put(`${this.entryUrl}/${String(entry._id)}`)
-                        .withCredentials()
-                        .send(entry);
-                })
-                    .then(handleSuccess)
+                        return superagent.put(`${this.entryUrl}/${String(entry._id)}`)
+                            .withCredentials()
+                            .send(entry)
+                            .end();
+                    })
+                    .then(handleSuccess(this, options))
                     .then(res => {
                         if (res.body && res.status == 200) {
-                            if (this.view) {
-                                this._updateByUuid(entry._id, entry);
-                            }
+                            entry._rev = res.body.rev;
+                            this._updateByUuid(entry._id, entry);
                         }
+                        return res.body;
                     }).catch(handleError(this, options));
-            }
-
-            refresh(options) {
-                options = createOptions(options);
-                this.__ready = this.init()
-                    .then(handleSuccess(this, options))
-                    .catch(handleError(this, options));
             }
 
             _getCdb(uuid) {
@@ -171,7 +220,7 @@ define([
                     const cdb = this._getCdb(uuid);
                     return cdb.remove(attachments)
                         .then(attachments => {
-                            return this.getByUuid(uuid, {force: true}).then(data => {
+                            return this.getByUuid(uuid).then(data => {
                                 console.log('got doc', data);
                                 this._updateByUuid(uuid, data);
                                 return attachments;
@@ -186,8 +235,8 @@ define([
                     const cdb = this._getCdb(uuid);
                     return cdb.inlineUploads(attachments)
                         .then(attachments => {
-                            return this.getByUuid(uuid, {force: true}).then(data => {
-                                console.log('got document', data);
+                            return this.getByUuid(uuid).then(data => {
+                                console.log('got doc add att', data);
                                 this._updateByUuid(uuid, data);
                                 return attachments;
                             });
@@ -198,8 +247,9 @@ define([
             addAttachmentsById(id, attachment, options) {
                 options = createOptions(options);
                 return this.__ready.then(() => {
-                    var uuid = this._findById(id)._id;
-                    return this.addAttachmentsByUuid(uuid, attachment);
+                    var doc = this._findById(id);
+                    if (!doc) return;
+                    return this.addAttachmentsByUuid(doc._id, attachment);
                 }).catch(handleError(this, options));
             }
 
@@ -213,18 +263,21 @@ define([
                     prom = this.__ready;
                 }
                 return prom.then(() => {
-                    return superagent.del(`${this.entryUrl}/${uuid}`)
-                        .withCredentials()
-                        .end();
-                })
+                        return superagent.del(`${this.entryUrl}/${uuid}`)
+                            .withCredentials()
+                            .end();
+                    })
                     .then(handleSuccess(this, options))
                     .then(res => {
                         if (res.body && res.status == 200) {
-                            var idx = this._findIndexByUuid(uuid);
-                            if (idx !== -1) {
-                                this.data.splice(idx, 1);
-                                this.data.triggerChange();
+                            for (let key in this.variables) {
+                                const idx = this._findIndexByUuid(uuid);
+                                if (idx !== -1) {
+                                    this.variables[key].data.splice(idx, 1);
+                                    this.variables[key].data.triggerChange();
+                                }
                             }
+
                         }
                         return res;
                     }).catch(handleError(this, options));
