@@ -1156,7 +1156,7 @@ define([
         },
 
         rerender: function (rows) {
-            if(!this.grid) return;
+            if (!this.grid) return;
             if (!rows) {
                 this.grid.invalidateAllRows();
             } else {

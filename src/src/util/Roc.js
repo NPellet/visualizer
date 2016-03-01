@@ -1,13 +1,13 @@
 'use strict';
 
 define([
-        'src/util/api',
-        'src/util/ui',
-        'superagent',
-        'uri/URI',
-        'lodash',
-        'src/util/couchdbAttachments'
-    ],
+    'src/util/api',
+    'src/util/ui',
+    'superagent',
+    'uri/URI',
+    'lodash',
+    'src/util/couchdbAttachments'
+],
     function (API, ui, superagent, URI, _, CDB) {
         var defaultOptions = {
             messages: {}
@@ -144,12 +144,12 @@ define([
                 })
                     .then(handleSuccess)
                     .then(res => {
-                    if (res.body && res.status == 200) {
+                        if (res.body && res.status == 200) {
                         if (this.view) {
                             this._updateByUuid(entry._id, entry);
                         }
                     }
-                }).catch(handleError(this, options));
+                    }).catch(handleError(this, options));
             }
 
             refresh(options) {
@@ -177,7 +177,7 @@ define([
                                 return attachments;
                             });
                         });
-                }).catch(handleError(this, options))
+                }).catch(handleError(this, options));
             }
 
             addAttachmentsByUuid(uuid, attachments, options) {
@@ -187,7 +187,7 @@ define([
                     return cdb.inlineUploads(attachments)
                         .then(attachments => {
                             return this.getByUuid(uuid, {force: true}).then(data => {
-                                console.log('got document',data);
+                                console.log('got document', data);
                                 this._updateByUuid(uuid, data);
                                 return attachments;
                             });
@@ -219,24 +219,24 @@ define([
                 })
                     .then(handleSuccess(this, options))
                     .then(res => {
-                    if (res.body && res.status == 200) {
-                        var idx = this._findIndexByUuid(uuid)
+                        if (res.body && res.status == 200) {
+                        var idx = this._findIndexByUuid(uuid);
                         if (idx !== -1) {
                             this.data.splice(idx, 1);
                             this.data.triggerChange();
                         }
                     }
-                    return res;
-                }).catch(handleError(this, options));
+                        return res;
+                    }).catch(handleError(this, options));
             }
         }
 
         function createOptions(options) {
-            if(options && options.message) {
+            if (options && options.message) {
                 var messages = Object.assign(defaultOptions.message, options.messages);
             }
             options = Object.assign(defaultOptions, options);
-            if(messages) options.messages = messages;
+            if (messages) options.messages = messages;
             return options;
         }
 
@@ -251,27 +251,27 @@ define([
         }
 
         function handleSuccess(ctx, options) {
-            return function(data) {
-                if(data.status) {
+            return function (data) {
+                if (data.status) {
                     handleSuperagentSuccess(data, ctx, options);
                 }
                 return data;
-            }
+            };
         }
 
         function handleSuperagentSuccess(data, ctx, options) {
-            if(ctx.showNotifications) {
+            if (ctx.showNotifications) {
                 const message = options.messages[data.status] || ctx.messages[data.status];
-                if(message) {
+                if (message) {
                     ui.showNotification(message, 'success');
                 }
             }
         }
 
         function handleSuperagentError(err, ctx, options) {
-            if(ctx.showNotifications) {
+            if (ctx.showNotifications) {
                 const message = options.messages[err.status] || ctx.messages[err.status];
-                if(message) {
+                if (message) {
                     ui.showNotification(message, 'error');
                 }
             }
