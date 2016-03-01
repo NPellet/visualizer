@@ -23,7 +23,7 @@
   "dependencies": {
     "ace": "ajaxorg/ace-builds#4c1551465499afb012ddb053a18872de83350357",
     "async": "1.5.2",
-    "bluebird": "3.3.1",
+    "bluebird": "3.3.3",
     "bowser": "1.0.0",
     "chroma-js": "0.6.1",
     "ckeditor": "4.5.6",
