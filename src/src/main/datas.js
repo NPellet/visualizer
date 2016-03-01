@@ -739,6 +739,10 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
                 return Promise.resolve(this);
             }
 
+            if (this._fetching) {
+                return this._fetching;
+            }
+
             var headers;
             if (forceJson) {
                 headers = {
@@ -746,22 +750,25 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
                 };
             }
 
-            var that = this;
-            return urlData.get(that.url, false, that.timeout, headers).then(function (data) {
+            this._fetching = urlData.get(this.url, false, this.timeout, headers).then(data => {
+                delete this._fetching;
                 data = DataObject.check(data, true);	// Transform the input into a DataObject
 
-                Object.defineProperty(that, 'value', {// Sets the value to the object
-                    enumerable: that._keep || false, // If this._keep is true, then we will save the fetched data
+                Object.defineProperty(this, 'value', {// Sets the value to the object
+                    enumerable: this._keep || false, // If this._keep is true, then we will save the fetched data
                     writable: true,
                     configurable: true,
                     value: data
                 });
 
-                return that;
-            }, function (err) {
-                Debug.debug('Could not fetch ' + that.url + ' (' + err + ')');
+                return this;
+            }, err => {
+                delete this._fetching;
+                Debug.debug('Could not fetch ' + this.url + ' (' + err + ')');
                 throw err;
             });
+
+            return this._fetching;
         }
     };
 
