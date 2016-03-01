@@ -65,7 +65,7 @@
     "numeral": "~1.5.3",
     "onde": "cheminfo/onde#8ec2565c856edce7ce3c97767c608db91977c63e",
     "openchemlib": "3.2.2",
-    "papa-parse": "4.1.1",
+    "papa-parse": "4.1.2",
     "pouchdb": "3.3.1",
     "qrcode.js": "davidshimjs/qrcodejs#04f46c6a0708418cb7b96fc563eacae0fbf77674",
     "requirejs": "2.1.22",
