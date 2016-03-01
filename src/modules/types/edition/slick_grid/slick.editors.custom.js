@@ -31,9 +31,6 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
                     ColorValue: ColorEditor,
                     Text: TextValueEditor,
                     Date: DateEditor,
-                    DataStringEditor: DataStringEditor,
-                    DataNumberEditor: DataNumberEditor,
-                    DataBooleanEditor: DataBooleanEditor,
                     LongText: LongTextEditor,
                     SimpleLongText: SimpleLongTextEditor
                 }
@@ -340,7 +337,6 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
             this.validate = defaultValidate;
 
             this.applyValue = function (item, state) {
-                console.log('apply value', this.args.column.dataType);
                 defaultApplyValue.call(this, item, state, this.args.column.dataType);
             };
 
@@ -348,35 +344,6 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
         }
 
 
-        function DataStringEditor(args) {
-            this.args = args;
-            this.init = defaultInit;
-            this.destroy = defaultDestroy;
-            this.focus = defaultFocus;
-            this.getValue = defaultGetValue;
-            this.setValue = defaultSetValue;
-            this.loadValue = defaultLoadValue;
-            this.serializeValue = defaultSerializeValue;
-            this.applyValue = defaultApplyValue;
-            this.isValueChanged = defaultIsValueChanged;
-            this.validate = defaultValidate;
-            this.init();
-        }
-
-        function DataNumberEditor(args) {
-            this.args = args;
-            this.init = defaultInit;
-            this.destroy = defaultDestroy;
-            this.focus = defaultFocus;
-            this.getValue = numberGetValue;
-            this.setValue = defaultSetValue;
-            this.loadValue = defaultLoadValue;
-            this.serializeValue = defaultSerializeValue;
-            this.applyValue = numberApplyValue;
-            this.isValueChanged = defaultIsValueChanged;
-            this.validate = defaultValidate;
-            this.init();
-        }
 
         function NumberValueEditor(args) {
             this.args = args;
@@ -390,27 +357,12 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
             this.isValueChanged = defaultIsValueChanged;
             this.validate = defaultValidate;
             this.applyValue = function (item, state) {
-                defaultApplyValue.call(this, item, state, this.args.column.dataType);
+                numberApplyValue.call(this, item, state, this.args.column.dataType);
             };
 
             this.init();
         }
 
-
-        function DataBooleanEditor(args) {
-            this.args = args;
-            this.init = booleanInit;
-            this.destroy = defaultDestroy;
-            this.focus = defaultFocus;
-            this.getValue = numberGetValue;
-            this.setValue = defaultSetValue;
-            this.loadValue = booleanLoadValue;
-            this.serializeValue = booleanSerializeValue;
-            this.applyValue = booleanApplyValue;
-            this.isValueChanged = booleanIsValueChanged;
-            this.validate = defaultValidate;
-            this.init();
-        }
 
         function BooleanValueEditor(args) {
             this.args = args;
@@ -425,7 +377,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
             this.validate = defaultValidate;
 
             this.applyValue = function (item, state) {
-                defaultApplyValue.call(this, item, state, this.args.column.dataType);
+                booleanApplyValue.call(this, item, state, this.args.column.dataType);
             };
             this.init();
         }
@@ -536,9 +488,9 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
         return +this.$input.val();
     }
 
-    function numberApplyValue(item, state) {
+    function numberApplyValue(item, state, type) {
         state = +state;
-        return defaultApplyValue.call(this, item, _.isNaN(state) ? 'NaN' : state);
+        return defaultApplyValue.call(this, item, _.isNaN(state) ? 'NaN' : state, type);
     }
 
     // =========== DATA BOOLEAN ==============
@@ -554,8 +506,15 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
 
     function booleanLoadValue(item) {
         this.defaultValue = item.getChildSync(this.args.column.jpath);
-        if (this.defaultValue && this.defaultValue.get()) {
-            this.$input.attr('checked', 'checked');
+        if(this.defaultValue) {
+            var val = this.defaultValue.get();
+        }
+        if (val) {
+            if((val instanceof DataBoolean) && !val.get()) {
+                this.$input.removeAttr('checked');
+            } else {
+                this.$input.attr('checked', 'checked');
+            }
         } else {
             this.$input.removeAttr('checked');
         }
@@ -569,9 +528,9 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
         return this.serializeValue !== this.defaultValue;
     }
 
-    function booleanApplyValue(item, state) {
+    function booleanApplyValue(item, state, type) {
         state = !!state;
-        defaultApplyValue.call(this, item, state);
+        defaultApplyValue.call(this, item, state, type);
     }
 
     // ========== LONG TEXT ===================

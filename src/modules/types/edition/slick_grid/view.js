@@ -40,9 +40,6 @@ define([
         string: Slick.CustomEditors.TextValue,
         number: Slick.CustomEditors.NumberValue,
         boolean: Slick.CustomEditors.BooleanValue,
-        DataString: Slick.CustomEditors.DataStringEditor,
-        DataNumber: Slick.CustomEditors.DataNumberEditor,
-        DataBoolean: Slick.CustomEditors.DataBooleanEditor,
         color: Slick.CustomEditors.ColorValue,
         date: Slick.CustomEditors.Date,
         longtext: Slick.CustomEditors.LongText
@@ -657,14 +654,15 @@ define([
             var tp = $.proxy(typeRenderer, this);
 
             function getEditor(jpath) {
+                debugger;
                 var editor;
                 var obj = that.module.data.get(0).getChildSync(jpath);
                 if (obj instanceof DataString) {
-                    editor = Slick.CustomEditors.DataStringEditor;
+                    editor = Slick.CustomEditors.TextValue;
                 } else if (obj instanceof DataNumber) {
-                    editor = Slick.CustomEditors.DataNumberEditor;
+                    editor = Slick.CustomEditors.NumberValue;
                 } else if (obj instanceof DataBoolean) {
-                    editor = Slick.CustomEditors.DataBooleanEditor;
+                    editor = Slick.CustomEditors.BooleanValue;
                 } else {
                     editor = typeEditors[getType(jpath)];
                 }
