@@ -80,7 +80,7 @@
     "twig.js": "0.8.8",
     "ui-contextmenu": "1.11.0",
     "uri.js": "1.14.1",
-    "x2js": "1.1.7",
+    "x2js": "1.2.0",
     "web-animations-js": "2.1.2"
   },
   "resolutions": {
