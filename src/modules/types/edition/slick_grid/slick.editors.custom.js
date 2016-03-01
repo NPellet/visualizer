@@ -24,16 +24,18 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
         // register namespace
         $.extend(true, window, {
             'Slick': {
-                'CustomEditors': {
-                    'TextValue': TextValueEditor,
-                    'ColorValue': ColorEditor,
-                    'Text': TextValueEditor,
-                    'Date': DateEditor,
-                    'DataStringEditor': DataStringEditor,
-                    'DataNumberEditor': DataNumberEditor,
-                    'DataBooleanEditor': DataBooleanEditor,
-                    'LongText': LongTextEditor,
-                    'SimpleLongText': SimpleLongTextEditor
+                CustomEditors: {
+                    TextValue: TextValueEditor,
+                    NumberValue: NumberValueEditor,
+                    BooleanValue: BooleanValueEditor,
+                    ColorValue: ColorEditor,
+                    Text: TextValueEditor,
+                    Date: DateEditor,
+                    DataStringEditor: DataStringEditor,
+                    DataNumberEditor: DataNumberEditor,
+                    DataBooleanEditor: DataBooleanEditor,
+                    LongText: LongTextEditor,
+                    SimpleLongText: SimpleLongTextEditor
                 }
             }
         });
@@ -338,6 +340,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
             this.validate = defaultValidate;
 
             this.applyValue = function (item, state) {
+                console.log('apply value', this.args.column.dataType);
                 defaultApplyValue.call(this, item, state, this.args.column.dataType);
             };
 
@@ -375,6 +378,24 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
             this.init();
         }
 
+        function NumberValueEditor(args) {
+            this.args = args;
+            this.init = defaultInit;
+            this.destroy = defaultDestroy;
+            this.focus = defaultFocus;
+            this.getValue = numberGetValue;
+            this.setValue = defaultSetValue;
+            this.loadValue = defaultLoadValue;
+            this.serializeValue = defaultSerializeValue;
+            this.isValueChanged = defaultIsValueChanged;
+            this.validate = defaultValidate;
+            this.applyValue = function (item, state) {
+                defaultApplyValue.call(this, item, state, this.args.column.dataType);
+            };
+
+            this.init();
+        }
+
 
         function DataBooleanEditor(args) {
             this.args = args;
@@ -390,6 +411,25 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
             this.validate = defaultValidate;
             this.init();
         }
+
+        function BooleanValueEditor(args) {
+            this.args = args;
+            this.init = booleanInit;
+            this.destroy = defaultDestroy;
+            this.focus = defaultFocus;
+            this.getValue = numberGetValue;
+            this.setValue = defaultSetValue;
+            this.loadValue = booleanLoadValue;
+            this.serializeValue = booleanSerializeValue;
+            this.isValueChanged = booleanIsValueChanged;
+            this.validate = defaultValidate;
+
+            this.applyValue = function (item, state) {
+                defaultApplyValue.call(this, item, state, this.args.column.dataType);
+            };
+            this.init();
+        }
+
     })(jQuery);
 
 
@@ -427,7 +467,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
 
         if (isNew) {
             setItemId(item, this.args.grid);
-            item.setChildSync(this.args.column.jpath, state);
+            item.setChildSync(this.args.column.jpath, newState);
             this.args.grid.module.view.slick.data.addItem(item);
             return newState;
         } else {

@@ -137,14 +137,21 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                             options: [
                                 {key: 'none', title: 'None'},
                                 {key: 'auto', title: 'Based on type'},
-                                {key: 'longtext', title: 'Long Text'},
+                                {key: 'string', title: 'String'},
+                                {key: 'number', title: 'Number'},
+                                {key: 'boolean', title: 'Boolean'},
                                 {key: 'DataString', title: 'DataString'},
                                 {key: 'DataNumber', title: 'DataNumber'},
                                 {key: 'DataBoolean', title: 'DataBoolean'},
-                                {key: 'mf', title: 'Molecular Formula'},
                                 {key: 'color', title: 'Color'},
-                                {key: 'date', title: 'Date'}
+                                {key: 'date', title: 'Date'},
+                                {key: 'longtext', title: 'Long Text'}
                             ]
+                        },
+                        forceType: {
+                            type: 'text',
+                            title: 'Force type',
+                            default: ''
                         },
                         formatter: {
                             type: 'combo',

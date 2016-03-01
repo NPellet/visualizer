@@ -8,8 +8,9 @@ define([
     'src/util/api',
     'src/util/typerenderer',
     'slickgrid',
-    'src/util/sandbox'
-], function (Default, Debug, _, Util, API, Renderer, Slick, Sandbox) {
+    'src/util/sandbox',
+    'src/data/structures'
+], function (Default, Debug, _, Util, API, Renderer, Slick, Sandbox, structures) {
 
     function View() {
     }
@@ -36,17 +37,22 @@ define([
     };
 
     var typeEditors = {
-        boolean: Slick.CustomEditors.Checkbox,
-        mf: Slick.CustomEditors.TextValue,
-        color: Slick.CustomEditors.ColorValue,
         string: Slick.CustomEditors.TextValue,
-        number: Slick.CustomEditors.TextValue,
-        date: Slick.CustomEditors.Date,
+        number: Slick.CustomEditors.NumberValue,
+        boolean: Slick.CustomEditors.BooleanValue,
         DataString: Slick.CustomEditors.DataStringEditor,
         DataNumber: Slick.CustomEditors.DataNumberEditor,
         DataBoolean: Slick.CustomEditors.DataBooleanEditor,
+        color: Slick.CustomEditors.ColorValue,
+        date: Slick.CustomEditors.Date,
         longtext: Slick.CustomEditors.LongText
     };
+
+    for(var key in structures) {
+        if(typeof structures[key] === 'string') {
+            typeEditors[key] = typeEditors[structures[key]];
+        }
+    }
 
     function doGrid(ctx) {
         ctx.$container.html('');
@@ -687,12 +693,12 @@ define([
                             editor = Slick.CustomEditors.DataString;
                             Debug.warn('Slick grid: using editor based on type when the input variable is empty. Cannot determine type');
                         } else {
-                            editor = getEditor(row.jpath);
-                            type = getType(row.jpath);
+                            editor = row.forceType ? typeEditors[row.forceType] : getEditor(row.jpath);
+                            type = row.forceType ? row.forceType : getType(row.jpath);
                         }
                     } else {
                         editor = typeEditors[row.editor];
-                        type = getType(row.jpath);
+                        type = row.forceType ? row.forceType : getType(row.jpath);
                     }
 
                     var rendererOptions = Util.evalOptions(row.rendererOptions);
