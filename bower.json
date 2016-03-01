@@ -28,7 +28,7 @@
     "chroma-js": "1.1.1",
     "ckeditor": "4.5.7",
     "colors": "2.0.0",
-    "d3": "3.5.12",
+    "d3": "3.5.16",
     "d3-plugins": "cheminfo/d3-plugins#ea652308c616f3accde0a418f7ccc6254a932985",
     "fancytree": "2.15.0",
     "farbtastic": "2.0.0-alpha.1",
