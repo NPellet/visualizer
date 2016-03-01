@@ -145,10 +145,10 @@ define([
                     .then(handleSuccess)
                     .then(res => {
                         if (res.body && res.status == 200) {
-                        if (this.view) {
-                            this._updateByUuid(entry._id, entry);
+                            if (this.view) {
+                                this._updateByUuid(entry._id, entry);
+                            }
                         }
-                    }
                     }).catch(handleError(this, options));
             }
 
@@ -220,12 +220,12 @@ define([
                     .then(handleSuccess(this, options))
                     .then(res => {
                         if (res.body && res.status == 200) {
-                        var idx = this._findIndexByUuid(uuid);
-                        if (idx !== -1) {
-                            this.data.splice(idx, 1);
-                            this.data.triggerChange();
+                            var idx = this._findIndexByUuid(uuid);
+                            if (idx !== -1) {
+                                this.data.splice(idx, 1);
+                                this.data.triggerChange();
+                            }
                         }
-                    }
                         return res;
                     }).catch(handleError(this, options));
             }

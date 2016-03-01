@@ -48,8 +48,8 @@ define([
         longtext: Slick.CustomEditors.LongText
     };
 
-    for(var key in structures) {
-        if(typeof structures[key] === 'string') {
+    for (var key in structures) {
+        if (typeof structures[key] === 'string') {
             typeEditors[key] = typeEditors[structures[key]];
         }
     }
