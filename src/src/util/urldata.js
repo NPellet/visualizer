@@ -36,9 +36,6 @@ define(['superagent', 'src/util/lru', 'src/util/debug'], function (superagent, L
                 credentials[host] = true;
                 return doByUrl(url, headers);
             }
-            if (credentials[host] !== undefined) {
-                credentials[host] = undefined;
-            }
             throw err;
         });
 
