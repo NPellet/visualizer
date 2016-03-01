@@ -1,3 +1,18 @@
+<a name="2.45.0"></a>
+# 2.45.0 (2016-03-01)
+
+
+### Bug Fixes
+
+* **object_editor:** use minimalist json-editor (without ace included) ([403902c](https://github.com/NPellet/visualizer/commit/403902c)), closes [#797](https://github.com/NPellet/visualizer/issues/797)
+* **slickgrid:** rerender should do nothing if grid not yet initialized ([bfde451](https://github.com/NPellet/visualizer/commit/bfde451))
+
+### Features
+
+* **slickgrid:** smarter automatic editor and force type option ([c0b845e](https://github.com/NPellet/visualizer/commit/c0b845e))
+
+
+
 <a name="2.44.0"></a>
 # 2.44.0 (2016-02-25)
 
