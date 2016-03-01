@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/util/api'], function (Default, Util, _, API) {
+define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/util/api', 'src/data/structures'], function (Default, Util, _, API, structures) {
 
     function Controller() {
     }
@@ -17,6 +17,15 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
     };
 
     Controller.prototype.configurationStructure = function () {
+
+        var typeList = [];
+        typeList.push({key: '', title: 'none'});
+        var types = structures._getList(), l = types.length;
+        for (var i = 0; i < l; i++) {
+            if(typeof types[i] === 'string') {
+                typeList.push({key: types[i], title: types[i]});
+            }
+        }
 
         var jpaths = this.module.model.getjPath('row', false);
 
@@ -140,18 +149,16 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                                 {key: 'string', title: 'String'},
                                 {key: 'number', title: 'Number'},
                                 {key: 'boolean', title: 'Boolean'},
-                                {key: 'DataString', title: 'DataString'},
-                                {key: 'DataNumber', title: 'DataNumber'},
-                                {key: 'DataBoolean', title: 'DataBoolean'},
                                 {key: 'color', title: 'Color'},
                                 {key: 'date', title: 'Date'},
                                 {key: 'longtext', title: 'Long Text'}
                             ]
                         },
                         forceType: {
-                            type: 'text',
+                            type: 'combo',
                             title: 'Force type',
-                            default: ''
+                            default: '',
+                            options: typeList
                         },
                         formatter: {
                             type: 'combo',
