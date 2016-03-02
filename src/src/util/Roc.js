@@ -138,7 +138,7 @@ define([
             }
 
             _findIndexByUuid(uuid, key) {
-                if (!this.variables[key]) return null;
+                if (!this.variables[key]) return -1;
                 if (this.variables[key].type === 'document') {
                     return -1;
                 }
@@ -271,7 +271,7 @@ define([
                     .then(res => {
                         if (res.body && res.status == 200) {
                             for (let key in this.variables) {
-                                const idx = this._findIndexByUuid(uuid);
+                                const idx = this._findIndexByUuid(uuid, key);
                                 if (idx !== -1) {
                                     this.variables[key].data.splice(idx, 1);
                                     this.variables[key].data.triggerChange();
