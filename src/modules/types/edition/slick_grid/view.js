@@ -654,7 +654,6 @@ define([
             var tp = $.proxy(typeRenderer, this);
 
             function getEditor(jpath) {
-                debugger;
                 var editor;
                 var obj = that.module.data.get(0).getChildSync(jpath);
                 if (obj instanceof DataString) {

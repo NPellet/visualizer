@@ -1,13 +1,13 @@
 'use strict';
 
 define([
-        'src/util/api',
-        'src/util/ui',
-        'superagent',
-        'uri/URI',
-        'lodash',
-        'src/util/couchdbAttachments'
-    ],
+    'src/util/api',
+    'src/util/ui',
+    'superagent',
+    'uri/URI',
+    'lodash',
+    'src/util/couchdbAttachments'
+],
     function (API, ui, superagent, URI, _, CDB) {
 
         const defaultOptions = {
@@ -129,9 +129,9 @@ define([
                 }
                 if (!this.variables[key]) return null;
                 id = DataObject.resurrect(id);
-                if(this.variables[key].type === 'document' && _.isEqual(DataObject.resurrect(this.variables[key].data.$id), id)) {
+                if (this.variables[key].type === 'document' && _.isEqual(DataObject.resurrect(this.variables[key].data.$id), id)) {
                     return this.variables[key].data;
-                } else if(this.variables[key.type === 'view']) {
+                } else if (this.variables[key.type === 'view']) {
                     return this.variables[key].data.find(entry => _.isEqual(id, DataObject.resurrect(entry.$id)));
                 }
                 return null;
@@ -139,7 +139,7 @@ define([
 
             _findIndexByUuid(uuid, key) {
                 if (!this.variables[key]) return null;
-                if(this.variables[key].type === 'document') {
+                if (this.variables[key].type === 'document') {
                     return -1;
                 }
                 return this.variables[key].data.findIndex(entry => String(entry._id) === String(uuid));
@@ -147,7 +147,7 @@ define([
 
             _updateByUuid(uuid, data) {
                 for (let key in this.variables) {
-                    if(this.variables[key].type === 'view') {
+                    if (this.variables[key].type === 'view') {
                         const idx = this._findIndexByUuid(uuid, key);
                         if (idx !== -1) {
                             this.variables[key].data.setChildSync([idx], _.cloneDeep(DataObject.resurrect(data)));
@@ -155,7 +155,7 @@ define([
                     } else if (this.variables[key].type === 'document') {
                         uuid = String(uuid);
                         const _id = this.variables[key].data._id;
-                        if(uuid === _id) {
+                        if (uuid === _id) {
                             var newData = _.cloneDeep(DataObject.resurrect(data));
                             this.variables[key].data = newData;
                             API.createData(key, newData);
@@ -193,11 +193,11 @@ define([
                 options = createOptions(options);
                 // Todo force
                 return this.__ready.then(() => {
-                        return superagent.put(`${this.entryUrl}/${String(entry._id)}`)
+                    return superagent.put(`${this.entryUrl}/${String(entry._id)}`)
                             .withCredentials()
                             .send(entry)
                             .end();
-                    })
+                })
                     .then(handleSuccess(this, options))
                     .then(res => {
                         if (res.body && res.status == 200) {
@@ -263,10 +263,10 @@ define([
                     prom = this.__ready;
                 }
                 return prom.then(() => {
-                        return superagent.del(`${this.entryUrl}/${uuid}`)
+                    return superagent.del(`${this.entryUrl}/${uuid}`)
                             .withCredentials()
                             .end();
-                    })
+                })
                     .then(handleSuccess(this, options))
                     .then(res => {
                         if (res.body && res.status == 200) {
