@@ -286,9 +286,9 @@ define([
 
         function createOptions(options) {
             if (options && options.message) {
-                var messages = Object.assign(defaultOptions.message, options.messages);
+                var messages = Object.assign({}, defaultOptions.message, options.messages);
             }
-            options = Object.assign(defaultOptions, options);
+            options = Object.assign({}, defaultOptions, options);
             if (messages) options.messages = messages;
             return options;
         }
