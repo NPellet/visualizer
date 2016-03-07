@@ -64,6 +64,7 @@
   },
   "private": true,
   "dependencies": {
-    "country-data": "0.0.24"
+    "country-data": "0.0.24",
+    "mime-types": "^2.1.10"
   }
 }

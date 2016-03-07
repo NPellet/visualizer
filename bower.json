@@ -56,7 +56,6 @@
     "lodash": "4.3.0",
     "loglevel": "1.2.0",
     "marked": "0.3.3",
-    "mime-types": "stropitek/mime-types#v0.0.3",
     "ml": "0.2.1",
     "modernizr": "2.8.3",
     "moment": "2.10.6",

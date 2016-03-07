@@ -44,7 +44,7 @@ require.config({
         loglevel: 'components/loglevel/dist/loglevel.min',
         lodash: 'components/lodash/dist/lodash.min',
         'markdown-js': 'components/markdown-js/lib/markdown',
-        'mime-types': 'components/mime-types/dist/mime-types.min',
+        'mime-types': 'browserified/mime-types/index',
         marked: 'components/marked/lib/marked',
         //mathjax:            'components/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML&amp;delayStartupUntil=configured',
         modernizr: 'components/modernizr/modernizr',

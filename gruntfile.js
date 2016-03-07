@@ -31,13 +31,23 @@ module.exports = function (grunt) {
     // Project configuration.
     grunt.initConfig({
         browserify: {
-            dist: {
+            countries: {
                 files: {
                     'src/browserified/country-data/index.js': ['./node_modules/country-data/index.js']
                 },
                 options: {
                     browserifyOptions: {
                         standalone: 'CountryData'
+                    }
+                }
+            },
+            mimeTypes: {
+                files: {
+                    'src/browserified/mime-types/index.js': ['./node_modules/mime-types/index.js']
+                },
+                options: {
+                    browserifyOptions: {
+                        standalone: 'mimeTypes'
                     }
                 }
             }
