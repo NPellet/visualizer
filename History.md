@@ -1,3 +1,18 @@
+<a name="2.46.0"></a>
+# 2.46.0 (2016-03-07)
+
+
+### Bug Fixes
+
+* **spectra_displayer:** shape selection event name changed ([15d9047](https://github.com/NPellet/visualizer/commit/15d9047))
+
+### Features
+
+* **single_value:** add forceType option ([59b03b9](https://github.com/NPellet/visualizer/commit/59b03b9))
+* **typerenderer:** allow to force type with option `forceType` ([3dcb141](https://github.com/NPellet/visualizer/commit/3dcb141))
+
+
+
 <a name="2.45.4"></a>
 ## 2.45.4 (2016-03-04)
 
