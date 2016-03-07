@@ -1,0 +1,287 @@
+{
+  "version": "2.45.5-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "text"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                [
+                  "expand"
+                ]
+              ],
+              "displayValue": [
+                []
+              ],
+              "searchBox": [
+                [
+                  "search"
+                ]
+              ],
+              "sendButton": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "[{\"type\":\"rect\",\"position\":[{\"x\":0.004166666666666667,\"y\":0.1},{\"x\":0.1625,\"y\":0.3}],\"strokeWidth\":\"0px\",\"fillColor\":\"lightgreen\",\"info\":{\"categorie\":{\"low\":null,\"high\":200,\"min\":0.1,\"max\":0.3}},\"_id\":\"0cb8ef41-d7a6-4cd2-adc4-851a055674f5\"},{\"type\":\"rect\",\"position\":[{\"x\":0.004166666666666667,\"y\":0},{\"x\":0.1625,\"y\":1}],\"strokeWidth\":\"0px\",\"fillColor\":\"rgba(0,0,0,0)\",\"info\":{\"categorie\":{\"low\":null,\"high\":200,\"min\":0.1,\"max\":0.3}},\"_id\":\"d0ed94d9-41f5-49fb-9570-8563336c01b4\"},{\"type\":\"label\",\"labels\":[{\"text\":\"< 200\",\"color\":\"green\",\"size\":12,\"baseline\":\"hanging\",\"anchor\":\"middle\",\"position\":{\"x\":0.08333333333333333,\"y\":-0.1}}],\"_id\":\"b3e19c01-59a6-48eb-9a56-e42a1f54e85c\",\"label\":[{\"text\":\"< 200\",\"color\":\"green\",\"size\":12,\"baseline\":\"hanging\",\"anchor\":\"middle\",\"position\":{\"x\":0.08333333333333333,\"y\":-0.1}}]},{\"type\":\"line\",\"position\":[{\"x\":0.004166666666666667,\"y\":0.44430894308943086},{\"x\":0.1625,\"y\":0.44430894308943086}],\"strokeWidth\":\"2px\",\"info\":{\"categorie\":{\"low\":null,\"high\":200,\"min\":0.1,\"max\":0.3}},\"strokeColor\":\"red\",\"_id\":\"4c4b84aa-7bb5-4c07-9920-7096ddac859e\"},{\"type\":\"rect\",\"position\":[{\"x\":0.17083333333333334,\"y\":0.15},{\"x\":0.32916666666666666,\"y\":0.2}],\"strokeWidth\":\"0px\",\"fillColor\":\"lightgreen\",\"info\":{\"categorie\":{\"low\":200,\"high\":500,\"min\":0.15,\"max\":0.2}},\"_id\":\"26b4537e-5e5f-47ac-bcbc-360edf20839a\"},{\"type\":\"rect\",\"position\":[{\"x\":0.17083333333333334,\"y\":0},{\"x\":0.32916666666666666,\"y\":1}],\"strokeWidth\":\"0px\",\"fillColor\":\"rgba(0,0,0,0)\",\"info\":{\"categorie\":{\"low\":200,\"high\":500,\"min\":0.15,\"max\":0.2}},\"_id\":\"9f7caa70-a3da-4cb3-89be-a0dbe9ed9fe9\"},{\"type\":\"label\",\"labels\":[{\"text\":\"200 - 500\",\"color\":\"green\",\"size\":12,\"baseline\":\"hanging\",\"anchor\":\"middle\",\"position\":{\"x\":0.25,\"y\":-0.1}}],\"_id\":\"b09fec46-3b7a-4368-8b98-c92b957f4cdf\",\"label\":[{\"text\":\"200 - 500\",\"color\":\"green\",\"size\":12,\"baseline\":\"hanging\",\"anchor\":\"middle\",\"position\":{\"x\":0.25,\"y\":-0.1}}]},{\"type\":\"line\",\"position\":[{\"x\":0.17083333333333334,\"y\":0.06300813008130081},{\"x\":0.32916666666666666,\"y\":0.06300813008130081}],\"strokeWidth\":\"2px\",\"info\":{\"categorie\":{\"low\":200,\"high\":500,\"min\":0.15,\"max\":0.2}},\"strokeColor\":\"red\",\"_id\":\"9dffbf2e-7472-4bbd-b128-c137758ee8c6\"},{\"type\":\"rect\",\"position\":[{\"x\":0.33749999999999997,\"y\":0.3},{\"x\":0.4958333333333333,\"y\":0.5}],\"strokeWidth\":\"0px\",\"fillColor\":\"lightgreen\",\"info\":{\"categorie\":{\"low\":500,\"high\":900,\"min\":0.3,\"max\":0.5}},\"_id\":\"97372b69-4412-4904-8967-b270c2135680\"},{\"type\":\"rect\",\"position\":[{\"x\":0.33749999999999997,\"y\":0},{\"x\":0.4958333333333333,\"y\":1}],\"strokeWidth\":\"0px\",\"fillColor\":\"rgba(0,0,0,0)\",\"info\":{\"categorie\":{\"low\":500,\"high\":900,\"min\":0.3,\"max\":0.5}},\"_id\":\"81dc6721-cc61-452e-863e-a806fc1f791c\"},{\"type\":\"label\",\"labels\":[{\"text\":\"500 - 900\",\"color\":\"green\",\"size\":12,\"baseline\":\"hanging\",\"anchor\":\"middle\",\"position\":{\"x\":0.41666666666666663,\"y\":-0.1}}],\"_id\":\"daf19d9b-a5ea-4f9c-b56c-f7630704a1cd\",\"label\":[{\"text\":\"500 - 900\",\"color\":\"green\",\"size\":12,\"baseline\":\"hanging\",\"anchor\":\"middle\",\"position\":{\"x\":0.41666666666666663,\"y\":-0.1}}]},{\"type\":\"line\",\"position\":[{\"x\":0.33749999999999997,\"y\":0.13414634146341464},{\"x\":0.4958333333333333,\"y\":0.13414634146341464}],\"strokeWidth\":\"2px\",\"info\":{\"categorie\":{\"low\":500,\"high\":900,\"min\":0.3,\"max\":0.5}},\"strokeColor\":\"red\",\"_id\":\"bbf928c4-c990-4b38-a36f-7868264d3274\"},{\"type\":\"rect\",\"position\":[{\"x\":0.5041666666666667,\"y\":0.1},{\"x\":0.6625,\"y\":0.2}],\"strokeWidth\":\"0px\",\"fillColor\":\"lightgreen\",\"info\":{\"categorie\":{\"low\":900,\"high\":1400,\"min\":0.1,\"max\":0.2}},\"_id\":\"7fd80ec7-54dc-4c9e-b185-3d2f958067fe\"},{\"type\":\"rect\",\"position\":[{\"x\":0.5041666666666667,\"y\":0},{\"x\":0.6625,\"y\":1}],\"strokeWidth\":\"0px\",\"fillColor\":\"rgba(0,0,0,0)\",\"info\":{\"categorie\":{\"low\":900,\"high\":1400,\"min\":0.1,\"max\":0.2}},\"_id\":\"98b83f51-64d3-41f1-99ee-d26103bf6b46\"},{\"type\":\"label\",\"labels\":[{\"text\":\"900 - 1400\",\"color\":\"green\",\"size\":12,\"baseline\":\"hanging\",\"anchor\":\"middle\",\"position\":{\"x\":0.5833333333333333,\"y\":-0.1}}],\"_id\":\"7375ddf1-b3ea-46e3-b15c-920c19d93333\",\"label\":[{\"text\":\"900 - 1400\",\"color\":\"green\",\"size\":12,\"baseline\":\"hanging\",\"anchor\":\"middle\",\"position\":{\"x\":0.5833333333333333,\"y\":-0.1}}]},{\"type\":\"line\",\"position\":[{\"x\":0.5041666666666667,\"y\":0.014634146341463415},{\"x\":0.6625,\"y\":0.014634146341463415}],\"strokeWidth\":\"2px\",\"info\":{\"categorie\":{\"low\":900,\"high\":1400,\"min\":0.1,\"max\":0.2}},\"strokeColor\":\"red\",\"_id\":\"5d051c23-b9da-4ab2-9b8f-7765bf3e7604\"},{\"type\":\"rect\",\"position\":[{\"x\":0.6708333333333333,\"y\":0},{\"x\":0.8291666666666666,\"y\":0.1}],\"strokeWidth\":\"0px\",\"fillColor\":\"lightgreen\",\"info\":{\"categorie\":{\"low\":1400,\"high\":null,\"min\":0,\"max\":0.1}},\"_id\":\"ecadd3ad-c8d7-4fe4-a95a-0761913d163f\"},{\"type\":\"rect\",\"position\":[{\"x\":0.6708333333333333,\"y\":0},{\"x\":0.8291666666666666,\"y\":1}],\"strokeWidth\":\"0px\",\"fillColor\":\"rgba(0,0,0,0)\",\"info\":{\"categorie\":{\"low\":1400,\"high\":null,\"min\":0,\"max\":0.1}},\"_id\":\"d4fd1ec3-b45d-4008-9046-8e0e17b50c2e\"},{\"type\":\"label\",\"labels\":[{\"text\":\"> 1400\",\"color\":\"green\",\"size\":12,\"baseline\":\"hanging\",\"anchor\":\"middle\",\"position\":{\"x\":0.75,\"y\":-0.1}}],\"_id\":\"af1f6128-6798-402b-90c5-65457e13a326\",\"label\":[{\"text\":\"> 1400\",\"color\":\"green\",\"size\":12,\"baseline\":\"hanging\",\"anchor\":\"middle\",\"position\":{\"x\":0.75,\"y\":-0.1}}]},{\"type\":\"line\",\"position\":[{\"x\":0.6708333333333333,\"y\":0},{\"x\":0.8291666666666666,\"y\":0}],\"strokeWidth\":\"2px\",\"info\":{\"categorie\":{\"low\":1400,\"high\":null,\"min\":0,\"max\":0.1}},\"strokeColor\":\"green\",\"_id\":\"5fbcd72c-9f7b-458b-ba68-61da66be321e\"},{\"type\":\"label\",\"labels\":[{\"text\":\"no data\",\"color\":\"green\",\"size\":12,\"baseline\":\"hanging\",\"anchor\":\"middle\",\"position\":{\"x\":0.9166666666666665,\"y\":-0.1}}],\"_id\":\"22876006-fb4e-4760-a71c-91caca8668c8\",\"label\":[{\"text\":\"no data\",\"color\":\"green\",\"size\":12,\"baseline\":\"hanging\",\"anchor\":\"middle\",\"position\":{\"x\":0.9166666666666665,\"y\":-0.1}}]},{\"type\":\"line\",\"position\":[{\"x\":0.8374999999999999,\"y\":0.34390243902439027},{\"x\":0.9958333333333332,\"y\":0.34390243902439027}],\"strokeWidth\":\"2px\",\"info\":{\"categorie\":null},\"_id\":\"7107d3a5-b2a3-448d-b3fb-45a50e6e0907\"}]"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 18,
+            "top": 17
+          },
+          "size": {
+            "width": 46,
+            "height": 49
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 1,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [],
+          "name": "a"
+        }
+      ],
+      "title": "",
+      "actions_out": []
+    },
+    {
+      "url": "modules/types/science/spectra/spectra_displayer/",
+      "configuration": {
+        "sections": {
+          "graph": [
+            {
+              "sections": {},
+              "groups": {
+                "graph": [
+                  {
+                    "url": [
+                      ""
+                    ],
+                    "zoom": [
+                      "none"
+                    ],
+                    "wheelAction": [
+                      "none"
+                    ],
+                    "wheelbaseline": [
+                      0
+                    ],
+                    "fullOut": [
+                      "both"
+                    ],
+                    "legend": [
+                      null
+                    ],
+                    "mouseTracking": [
+                      []
+                    ],
+                    "selectScatter": [
+                      []
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "axis": [
+            {
+              "sections": {},
+              "groups": {
+                "xAxis": [
+                  {
+                    "checkboxes": [
+                      [
+                        "display"
+                      ]
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      "0"
+                    ],
+                    "afterSpacing": [
+                      0
+                    ],
+                    "min": [
+                      "0"
+                    ],
+                    "max": [
+                      "1"
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "axismodification": [
+                      "none"
+                    ]
+                  }
+                ],
+                "yAxis": [
+                  {
+                    "checkboxes": [
+                      [
+                        "display"
+                      ]
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      "0"
+                    ],
+                    "afterSpacing": [
+                      0
+                    ],
+                    "min": [
+                      "0"
+                    ],
+                    "max": [
+                      "1"
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "fitToAxisOnFromTo": [
+                      []
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "variables": [
+            {
+              "sections": {},
+              "groups": {
+                "variables": [
+                  [
+                    {
+                      "variable": "",
+                      "plotcolor": [
+                        1,
+                        1,
+                        255,
+                        1
+                      ],
+                      "strokewidth": "1",
+                      "strokestyle": "1",
+                      "plotcontinuous": "continuous",
+                      "peakpicking": [],
+                      "markers": [],
+                      "markerShape": "1",
+                      "markerSize": 2,
+                      "normalize": "none",
+                      "optimizeSlots": [],
+                      "degrade": 0,
+                      "monotoneous": []
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        },
+        "groups": {}
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 71,
+            "top": 21
+          },
+          "size": {
+            "width": 72,
+            "height": 40
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 2,
+      "vars_in": [
+        {
+          "rel": "annotations",
+          "name": "a"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "",
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ]
+    }
+  ],
+  "variables": [],
+  "aliases": [],
+  "pouchvariables": [],
+  "configuration": {
+    "title": "No title"
+  }
+}

@@ -243,11 +243,11 @@ define([
                     that.module.model.dataTriggerChange(shape.getData());
                 });
 
-                graph.on('shapeSelect', function (shape) {
+                graph.on('shapeSelected', function (shape) {
                     that.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape.getData());
                     that.module.controller.sendActionFromEvent('onShapeSelect', 'selectedShape', shape.getData());
                 });
-                graph.on('shapeUnselect', function (shape) {
+                graph.on('shapeUnselected', function (shape) {
                     that.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape.getData());
                     that.module.controller.sendActionFromEvent('onShapeUnselect', 'shapeInfos', shape.getData());
                 });

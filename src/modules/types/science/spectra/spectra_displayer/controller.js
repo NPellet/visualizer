@@ -87,7 +87,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
 
     Controller.prototype.events = {
         onZoomChange: {
-            label: 'Zoom changed',
+            label: 'Zoom level changed',
             refAction: ['fromToX', 'fromToY', 'fromToXY'],
             refVariable: ['fromToX', 'fromToY', 'fromToXY']
         },
@@ -124,15 +124,15 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
             refVariable: ['shapeInfos']
         },
         onShapeSelect: {
-            label: 'When a shape is selected',
+            label: 'Shape is selected',
             refAction: ['selectedShape']
         },
         onShapeUnselect: {
-            label: 'When a shape is unselected',
+            label: 'Shape is unselected',
             refAction: ['shapeInfos']
         },
         onShapeClick: {
-            label: 'When a shape is clicked',
+            label: 'Shape is clicked',
             refVariable: ['shapeInfos']
         },
         onSelectScatter: {
