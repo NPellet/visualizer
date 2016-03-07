@@ -19,15 +19,15 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
     Controller.prototype.references = {
         // ouput
         x: {
-            label: 'X position',
+            label: 'X value',
             type: 'number'
         },
         markerInfos: {
-            label: 'Marker infos',
+            label: 'Marker data',
             type: 'object'
         },
         markerXY: {
-            label: 'Marker [x,y]',
+            label: 'Marker [x, y]',
             type: 'array'
         },
         shapeInfos: {
@@ -69,11 +69,11 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
         },
         annotations: {
             type: ['array'],
-            label: 'Annotation file'
+            label: 'Annotations'
         },
         series_xy1d: {
             type: 'array',
-            label: 'List of series in 1D format ( [ x, y, x, y, ... ] )'
+            label: 'List of series in 1D format ( [[ x, y, x, y, ...], ...] )'
         },
         selectedShape: {
             type: 'object',
@@ -148,9 +148,9 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
         fromToY: 'From - To Y',
         addSerie: 'Add a serie',
         removeSerie: 'Remove a serie',
-        removeSerieByName: 'Remove serie (name as input)',
-        selectSerie: 'Select serie',
-        unselectSerie: 'Unselect serie'
+        removeSerieByName: 'Remove a serie (name as input)',
+        selectSerie: 'Select a serie',
+        unselectSerie: 'Unselect a serie'
     };
 
     var axisFields = {
