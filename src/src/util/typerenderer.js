@@ -356,6 +356,9 @@ define([
 
     functions.boolean = {};
     functions.boolean.toscreen = function ($element, value) {
+        if(value instanceof DataBoolean) {
+            value = value.get();
+        }
         if (value)
             $element.html('<span style="color: green;">&#10004;</span>');
         else
