@@ -6,19 +6,10 @@
 define([
     'src/util/versioning',
     'superagent',
-    'src/util/lru',
     'src/util/util'
-], function (Versioning, superagent, LRU, util) {
+], function (Versioning, superagent, util) {
 
     var base64DataUrlReg = /^data:([a-z]+\/[a-z]+);base64,/;
-
-    // A namespace for preventing overwriting
-    var storeName = '__couchdb-attachments';
-    var limitMemory = 200;
-    var limitStore = 500;
-    if (!LRU.exists(storeName)) {
-        LRU.create(storeName, limitMemory, limitStore);
-    }
 
     function dataURLtoBase64(data) {
         var pos;
@@ -121,10 +112,11 @@ define([
 
                 var prom = [];
                 for (let i = 0; i < options.length; i++) {
-                    var item = options[i];
-                    var data = item.data || item.file || item.content;
+                    let name = getName(options[i]);
+                    let item = options[i];
+                    let data = item.data || item.file || item.content;
                     if (typeof data === 'string') {
-                        var dataUrl = base64DataUrlReg.exec(data.slice(0, 64));
+                        let dataUrl = base64DataUrlReg.exec(data.slice(0, 64));
                         if (!dataUrl) {
                             this.lastDoc._attachments[item.name] = {
                                 content_type: item.contentType,
@@ -140,8 +132,8 @@ define([
                         if (!item.contentType && data.type) {
                             item.contentType = data.type;
                         }
-                        var p = new Promise((resolve, reject) => {
-                            var reader = new FileReader();
+                        let p = new Promise((resolve, reject) => {
+                            let reader = new FileReader();
                             reader.onload = function (e) {
                                 return resolve({
                                     item: item,
@@ -160,8 +152,8 @@ define([
                 }
                 return Promise.all(prom);
             }).then(toChange => {
-                for (var i = 0; i < toChange.length; i++) {
-                    var c = toChange[i];
+                for (let i = 0; i < toChange.length; i++) {
+                    const c = toChange[i];
                     this.lastDoc._attachments[c.item.name] = {
                         content_type: c.item.contentType,
                         data: c.base64data
@@ -182,6 +174,7 @@ define([
          *
          * @param {object} options
          * @param {string} options.name - Name of the attachment to upload
+         * @param {string} options.filename - Alias for name
          * @param {string} options.contentType - Content-Type of the attachment to upload
          * @param {string|Blob} options.data -  The attachment's content to upload
          * @param {string|Blob} options.file - The attachments's content to upload
@@ -189,16 +182,16 @@ define([
          * @returns {Promise.<Object>} The new list of attachments
          */
         upload(options) {
-            var data = options.data || options.file || options.content;
+            let data = options.data || options.file || options.content;
             return this.list().then(() => {
                 if (!options) {
                     throw new Error('Invalid arguments');
                 }
-                var contentType = options.contentType;
+                let contentType = options.contentType;
                 if (!contentType && data instanceof Blob) {
                     contentType = data.type;
                 } else if (typeof data === 'string') {
-                    var dataUrl = base64DataUrlReg.exec(data.slice(0, 64));
+                    let dataUrl = base64DataUrlReg.exec(data.slice(0, 64));
                     if (dataUrl) {
                         data = util.b64toBlob(data.slice(dataUrl[0].length), dataUrl[1]);
                         contentType = dataUrl[1];
@@ -214,7 +207,7 @@ define([
                     throw new Error('Content-Type unresolved. Cannot upload document without content-type');
                 }
                 return superagent
-                    .put(this.docUrl + '/' + options.name)
+                    .put(this.docUrl + '/' + getName(options))
                     .withCredentials()
                     .query({rev: this.lastDoc._rev})
                     .set('Content-Type', contentType)
@@ -236,9 +229,9 @@ define([
         get(name, options) {
             options = options || {};
             return this.list().then(() => {
-                var _att = this.lastDoc._attachments[name];
+                const _att = this.lastDoc._attachments[name];
                 if (!_att) throw new Error('The attachment ' + name + ' does not exist');
-                var req = superagent.get(this.docUrl + '/' + name).withCredentials();
+                const req = superagent.get(this.docUrl + '/' + name).withCredentials();
                 if (_att) req.set('Accept', this.lastDoc._attachments[name].content_type);
                 return req.query({rev: this.lastDoc._rev})
                     .then(res => {
@@ -253,7 +246,7 @@ define([
          * @param name The name of the attachment to remove.
          * @returns {Promise.<Object>} The new list of attachments
          */
-        remove(name) { // TODO: lru has no remove yet
+        remove(name) {
             if (Array.isArray(name)) {
                 return inlineRemove(this, name);
             }
@@ -372,6 +365,10 @@ define([
         }
         ctx.lastAttachmentsResult = r;
         return r;
+    }
+
+    function getName(options) {
+        return options.name || options.filename;
     }
 
     return CouchdbAttachments;
