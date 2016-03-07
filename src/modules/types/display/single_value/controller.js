@@ -29,6 +29,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
     Controller.prototype.variablesIn = ['value', 'color'];
 
     Controller.prototype.configurationStructure = function () {
+        var typeList = Util.getStructuresComboOptions();
         return {
             groups: {
                 group: {
@@ -115,6 +116,12 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
                             title: 'Renderer options',
                             default: ''
                         },
+                        forceType: {
+                            type: 'combo',
+                            options: typeList,
+                            title: 'Force type',
+                            default: ''
+                        },
                         sprintf: {
                             type: 'text',
                             title: 'Sprintf'
@@ -149,6 +156,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
         defaultvalue: ['groups', 'group', 0, 'defaultvalue', 0],
         sprintf: ['groups', 'group', 0, 'sprintf', 0],
         rendererOptions: ['groups', 'group', 0, 'rendererOptions', 0],
+        forceType: ['groups', 'group', 0, 'forceType', 0],
         sprintfOrder: ['groups', 'group', 0, 'sprintfOrder'],
         preformatted: ['groups', 'group', 0, 'preformatted', 0],
         append: ['groups', 'group', 0, 'append', 0],

@@ -4,7 +4,7 @@
  * Global utility methods
  * @module src/util/util
  */
-define(['src/util/debug', 'src/util/color', 'lodash', 'components/web-animations-js/web-animations.min'], function (Debug, Color, _) {
+define(['src/util/debug', 'src/util/color', 'lodash', 'src/data/structures', 'components/web-animations-js/web-animations.min'], function (Debug, Color, _, structures) {
 
     var months = ['January', 'February', 'March', 'April', 'Mai', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -502,6 +502,17 @@ define(['src/util/debug', 'src/util/color', 'lodash', 'components/web-animations
 
         var blob = new Blob(byteArrays, {type: contentType});
         return blob;
+    };
+
+    exports.getStructuresComboOptions = function() {
+        var typeList = [];
+        typeList.push({key: '', title: 'none'});
+        var types = structures._getList(), l = types.length;
+        for (var i = 0; i < l; i++) {
+            typeList.push({key: types[i], title: types[i]});
+        }
+
+        return typeList;
     };
 
     return exports;

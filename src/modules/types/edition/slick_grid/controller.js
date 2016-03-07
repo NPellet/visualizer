@@ -18,14 +18,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
 
     Controller.prototype.configurationStructure = function () {
 
-        var typeList = [];
-        typeList.push({key: '', title: 'none'});
-        var types = structures._getList(), l = types.length;
-        for (var i = 0; i < l; i++) {
-            if (typeof types[i] === 'string') {
-                typeList.push({key: types[i], title: types[i]});
-            }
-        }
+        var typeList = Util.getStructuresComboOptions();
 
         var jpaths = this.module.model.getjPath('row', false);
 

@@ -92,8 +92,14 @@ define([
             var that = this,
                 sprintfVal = this.module.getConfiguration('sprintf'),
                 rendererOptions = Util.evalOptions(this.module.getConfiguration('rendererOptions')) || {};
+            var forceType = this.module.getConfiguration('forceType');
+            if(forceType) {
+                rendererOptions.forceType = forceType;
+            }
+
             if (sprintfVal) {
-                if (rendererOptions) {
+                if (Object.keys(rendererOptions).length > 0) {
+                    debugger;
                     var prom = [];
                     for (var i in that.values) {
                         prom.push(this.renderVal(that.values[i], rendererOptions));
