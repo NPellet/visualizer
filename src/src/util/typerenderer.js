@@ -532,7 +532,12 @@ define([
         }
 
         return Promise.resolve(object.get(true)).then(function (value) {
-            var type = object.getType().toLowerCase();
+            var type;
+            if(options.forceType) {
+                type = options.forceType;
+            } else {
+                type = object.getType().toLowerCase();
+            }
             if (!functions[type]) {
                 Util.warnOnce('no-typerenderer-' + type, 'No renderer found for type ' + type);
                 $element.html(String(value));
