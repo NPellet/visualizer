@@ -903,10 +903,7 @@ define([
                             }
                         };
                         window.history.replaceState({type: 'viewchange', value: viewInfo}, '');
-                        Versioning.switchView(viewInfo, false)
-                            .then(function () {
-                                Debug.info('Successfully switched view');
-                            });
+                        Versioning.switchView(viewInfo, false);
                     });
                 });
             }
