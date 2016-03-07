@@ -691,11 +691,11 @@ define([
                             Debug.warn('Slick grid: using editor based on type when the input variable is empty. Cannot determine type');
                         } else {
                             editor = row.forceType ? typeEditors[row.forceType] : getEditor(row.jpath);
-                            type = row.forceType ? row.forceType : getType(row.jpath);
+                            type = getType(row.jpath);
                         }
                     } else {
                         editor = typeEditors[row.editor];
-                        type = row.forceType ? row.forceType : getType(row.jpath);
+                        type = getType(row.jpath);
                     }
 
                     var rendererOptions = Util.evalOptions(row.rendererOptions);
@@ -718,6 +718,7 @@ define([
                         jpath: row.jpath,
                         simpleJpath: row.jpath.length === 1,
                         dataType: type,
+                        renderType: row.forceType,
                         colDef: row,
                         rendererOptions: rendererOptions
                     };
@@ -1523,7 +1524,11 @@ define([
         if (dataContext.__group) return;
         this.module.data.traceSync([row]);
         if (cellNode) {
-            Renderer.render(cellNode, dataContext, colDef.jpath, colDef.rendererOptions);
+            var rendererOptions = colDef.rendererOptions || {};
+            if(colDef.renderType) {
+                rendererOptions.forceType = colDef.renderType;
+            }
+            Renderer.render(cellNode, dataContext, colDef.jpath, rendererOptions);
         }
     }
 
