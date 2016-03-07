@@ -118,12 +118,12 @@ define([
                     if (typeof data === 'string') {
                         let dataUrl = base64DataUrlReg.exec(data.slice(0, 64));
                         if (!dataUrl) {
-                            this.lastDoc._attachments[item.name] = {
+                            this.lastDoc._attachments[name] = {
                                 content_type: item.contentType,
                                 data: btoa(unescape(encodeURIComponent(data)))
                             };
                         } else {
-                            this.lastDoc._attachments[item.name] = {
+                            this.lastDoc._attachments[name] = {
                                 content_type: dataUrl[1],
                                 data: data.slice(dataUrl[0].length)
                             };
@@ -154,7 +154,7 @@ define([
             }).then(toChange => {
                 for (let i = 0; i < toChange.length; i++) {
                     const c = toChange[i];
-                    this.lastDoc._attachments[c.item.name] = {
+                    this.lastDoc._attachments[getName(c.item)] = {
                         content_type: c.item.contentType,
                         data: c.base64data
                     };
@@ -320,7 +320,7 @@ define([
 
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
-                req.attach('_attachments', file, file.name);
+                req.attach('_attachments', file, getName(file));
             }
             req.field('_rev', this.lastDoc._rev);
             return req.end().then(res => {
