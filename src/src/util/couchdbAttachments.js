@@ -112,8 +112,9 @@ define([
      * @param {object[]} options
      * @param {string} options[].name - The name of the attachment
      * @param {string} options[].contentType - The contentType of the uploaded data
-     * @param {string} options[].data - The attachment data to upload
-     * @param {Blob|string} options[].file - The attachment data to upload. If string, must be a valid base64 encoded dataURL
+     * @param {string} options[].data - The attachment data to upload. If string, must be a valid base64 encoded dataURL.
+     * @param {string} options[].content - The attachment data to upload. Alias of data.
+     * @param {Blob|string} options[].file - The attachment data to upload. Alias of data.
      * @example
      * // With dataurl
      * cdb.inlineUploads([{
@@ -148,7 +149,7 @@ define([
             for (var i = 0; i < options.length; i++) {
                 (function (i) {
                     var item = options[i];
-                    var data = item.data || item.file;
+                    var data = item.data || item.file || item.content;
                     if (typeof data === 'string') {
                         var dataUrl = base64DataUrlReg.exec(data.slice(0, 64));
                         if (!dataUrl) {
@@ -219,11 +220,12 @@ define([
      * @param {string} options.contentType - Content-Type of the attachment to upload
      * @param {string|Blob} options.data -  The attachment's content to upload
      * @param {string|Blob} options.file - The attachments's content to upload
+     * @param {string|Blob} options.content - The attachments's content to upload
      * @returns {Promise.<Object>} The new list of attachments
      */
     CouchdbAttachments.prototype.upload = function (options) {
         var that = this;
-        var data = options.data || options.file;
+        var data = options.data || options.file || options.content;
         return this.list().then(function () {
             if (!options) {
                 throw new Error('Invalid arguments');
@@ -267,7 +269,7 @@ define([
             var prom = that.refresh();
             if (!(data instanceof Blob)) { // Don't store in lru if it's a file
                 prom.then(function () {
-                    LRU.store(storeName, that.lastDoc._attachments[options.name].digest, options.data);
+                    LRU.store(storeName, that.lastDoc._attachments[options.name].digest, data);
                 });
             }
             return prom;
