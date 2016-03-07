@@ -540,7 +540,7 @@ define([
                 if(value && value.value) {
                     value = value.value;
                 }
-                type = options.forceType;
+                type = options.forceType.toLowerCase();
             } else {
                 type = object.getType().toLowerCase();
             }
