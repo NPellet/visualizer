@@ -504,7 +504,7 @@ define(['src/util/debug', 'src/util/color', 'lodash', 'src/data/structures', 'co
         return blob;
     };
 
-    exports.getStructuresComboOptions = function() {
+    exports.getStructuresComboOptions = function () {
         var typeList = [];
         typeList.push({key: '', title: 'none'});
         var types = structures._getList(), l = types.length;

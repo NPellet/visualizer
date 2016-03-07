@@ -1525,7 +1525,7 @@ define([
         this.module.data.traceSync([row]);
         if (cellNode) {
             var rendererOptions = colDef.rendererOptions || {};
-            if(colDef.renderType) {
+            if (colDef.renderType) {
                 rendererOptions.forceType = colDef.renderType;
             }
             Renderer.render(cellNode, dataContext, colDef.jpath, rendererOptions);

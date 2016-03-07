@@ -356,7 +356,7 @@ define([
 
     functions.boolean = {};
     functions.boolean.toscreen = function ($element, value) {
-        if(value instanceof DataBoolean) {
+        if (value instanceof DataBoolean) {
             value = value.get();
         }
         if (value)
@@ -536,8 +536,8 @@ define([
 
         return Promise.resolve(object.get(true)).then(function (value) {
             var type;
-            if(options && options.forceType) {
-                if(value && value.value) {
+            if (options && options.forceType) {
+                if (value && value.value) {
                     value = value.value;
                 }
                 type = options.forceType.toLowerCase();
