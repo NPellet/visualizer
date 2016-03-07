@@ -536,7 +536,7 @@ define([
 
         return Promise.resolve(object.get(true)).then(function (value) {
             var type;
-            if(options.forceType) {
+            if(options && options.forceType) {
                 type = options.forceType;
             } else {
                 type = object.getType().toLowerCase();
