@@ -38,127 +38,100 @@ define([
         }
     }
 
-
-    /**
-     * @param url Set the docUrl. If none specified, will attempt to use the viewURL to set the docURL
-     * @constructor
-     * @exports src/util/couchdbAttachments
-     */
-    var CouchdbAttachments = function () {
-        // get the document url from the view url
-        if (arguments.length === 0) {
-            var viewUrl = Versioning.lastLoaded.view.url;
-            if (!viewUrl) {
-                throw new Error('couchdb attachments initialization failed: No view url');
+    class CouchdbAttachments {
+        /**
+         * @param url Set the docUrl. If none specified, will attempt to use the viewURL to set the docURL
+         * @constructor
+         * @exports src/util/couchdbAttachments
+         */
+        constructor() {
+            // get the document url from the view url
+            if (arguments.length === 0) {
+                var viewUrl = Versioning.lastLoaded.view.url;
+                if (!viewUrl) {
+                    throw new Error('couchdb attachments initialization failed: No view url');
+                }
+                this.docUrl = viewUrl.replace(/\/[^\/]+$/, '');
+            } else {
+                this.docUrl = arguments[0];
             }
-            this.docUrl = viewUrl.replace(/\/[^\/]+$/, '');
-            this.url = '';
-        } else {
-            this.docUrl = arguments[0];
-        }
-    };
-
-    /**
-     @return {object} attachments - An array with the attachments metadata
-     @return {number} attachments[].name - The name of the resource
-     @return {string} attachments[].content_type - Resource's mime-type
-     @return {string} attachments[].digest - base64 md5 digest of the resource
-     @return {number} attachments[].length - Length in bytes of the resource
-     @return {number} attachments[].url - The url of the resource
-     */
-    CouchdbAttachments.prototype.list = function (secondRound) {
-        var that = this;
-        return Promise.resolve().then(function () {
-            var hasAtt = that.lastDoc && that.lastDoc._attachments;
-            if (!that.lastDoc && secondRound) {
-                throw new Error('Unreachable');
-            }
-            if (!hasAtt && !secondRound) {
-                return that.refresh().then(function () {
-                    return that.list(true);
-                });
-            } else if (!hasAtt) {
-                that.lastDoc._attachments = {};
-            }
-            return attachmentsAsArray(that, that.lastDoc._attachments);
-        });
-    };
-
-    // This is an alternative strategy for storing multiple attachments in one revision
-    // The problem with this is that it doesn't allow to change the contentType
-    // (because Blobs are immutable) if the browser did not set it correctly or if
-    // the user wants to manually change it will not work properly
-    CouchdbAttachments.prototype.uploads1 = function (files) {
-        var that = this;
-        if (!Array.isArray(files)) {
-            throw new Error('uploads expects an array as parameter');
         }
 
-        var req = superagent.post(that.docUrl).withCredentials();
-
-        for (var i = 0; i < files.length; i++) {
-            var file = files[i];
-            req.attach('_attachments', file, file.name);
+        /**
+         @return {object} attachments - An array with the attachments metadata
+         @return {number} attachments[].name - The name of the resource
+         @return {string} attachments[].content_type - Resource's mime-type
+         @return {string} attachments[].digest - base64 md5 digest of the resource
+         @return {number} attachments[].length - Length in bytes of the resource
+         @return {number} attachments[].url - The url of the resource
+         */
+        list(secondRound) {
+            return Promise.resolve().then(() => {
+                var hasAtt = this.lastDoc && this.lastDoc._attachments;
+                if (!this.lastDoc && secondRound) {
+                    throw new Error('Unreachable');
+                }
+                if (!hasAtt && !secondRound) {
+                    return this.refresh().then(() => {
+                        return this.list(true);
+                    });
+                } else if (!hasAtt) {
+                    this.lastDoc._attachments = {};
+                }
+                return this.attachmentsAsArray(this, this.lastDoc._attachments);
+            });
         }
-        req.field('_rev', that.lastDoc._rev);
-        return req.end().then(function (res) {
-            if (res.status !== 201) throw new Error('Error uploading attachments, couchdb returned status code ' + res.status);
-            return that.refresh();
-        });
-    };
 
-    /**
-     * Upload several attachments in one revision
-     * @param {object[]} options
-     * @param {string} options[].name - The name of the attachment
-     * @param {string} options[].contentType - The contentType of the uploaded data
-     * @param {string} options[].data - The attachment data to upload. If string, must be a valid base64 encoded dataURL.
-     * @param {string} options[].content - The attachment data to upload. Alias of data.
-     * @param {Blob|string} options[].file - The attachment data to upload. Alias of data.
-     * @example
-     * // With dataurl
-     * cdb.inlineUploads([{
+        /**
+         * Upload several attachments in one revision
+         * @param {object[]} options
+         * @param {string} options[].name - The name of the attachment
+         * @param {string} options[].contentType - The contentType of the uploaded data
+         * @param {string} options[].data - The attachment data to upload. If string, must be a valid base64 encoded dataURL.
+         * @param {string} options[].content - The attachment data to upload. Alias of data.
+         * @param {Blob|string} options[].file - The attachment data to upload. Alias of data.
+         * @example
+         * // With dataurl
+         * cdb.inlineUploads([{
      *   name: 'example.png',
      *   file: 'data:image/png;base64,ORK5CYII='
      * }]);
-     * // With Blob
-     * cdb.inlineUploads([{
+         * // With Blob
+         * cdb.inlineUploads([{
      *   name: 'example.txt',
      *   file: new Blob(['example'], {content_type: 'text/plain'});
      * }]);
-     * // With data
-     * cdb.inlineUploads([{
+         * // With data
+         * cdb.inlineUploads([{
      *   name: 'example.txt',
      *   contentType: 'text/plain',
      *   data: 'example'
      * }]);
-     * @returns {Promise.<object>} The new list of attachments
-     */
-    CouchdbAttachments.prototype.inlineUploads = function (options) {
-        var that = this;
-        var prom = this.list();
-        if (!options) return prom.then(function () {
-            return attachmentsAsArray(this, this.lastAttachmentsResult);
-        });
-        return prom.then(function () {
-            if (!(Array.isArray(options))) {
-                throw new TypeError('options must be an array');
-            }
+         * @returns {Promise.<object>} The new list of attachments
+         */
+        inlineUploads(options) {
+            var prom = this.list();
+            if (!options) return prom.then(() => {
+                return attachmentsAsArray(this, this.lastAttachmentsResult);
+            });
+            return prom.then(() => {
+                if (!(Array.isArray(options))) {
+                    throw new TypeError('options must be an array');
+                }
 
-            var prom = [];
-            for (var i = 0; i < options.length; i++) {
-                (function (i) {
+                var prom = [];
+                for (let i = 0; i < options.length; i++) {
                     var item = options[i];
                     var data = item.data || item.file || item.content;
                     if (typeof data === 'string') {
                         var dataUrl = base64DataUrlReg.exec(data.slice(0, 64));
                         if (!dataUrl) {
-                            that.lastDoc._attachments[item.name] = {
+                            this.lastDoc._attachments[item.name] = {
                                 content_type: item.contentType,
                                 data: btoa(unescape(encodeURIComponent(data)))
                             };
                         } else {
-                            that.lastDoc._attachments[item.name] = {
+                            this.lastDoc._attachments[item.name] = {
                                 content_type: dataUrl[1],
                                 data: data.slice(dataUrl[0].length)
                             };
@@ -167,7 +140,7 @@ define([
                         if (!item.contentType && data.type) {
                             item.contentType = data.type;
                         }
-                        var p = new Promise(function (resolve, reject) {
+                        var p = new Promise((resolve, reject) => {
                             var reader = new FileReader();
                             reader.onload = function (e) {
                                 return resolve({
@@ -184,199 +157,209 @@ define([
                     } else {
                         return Promise.reject(new Error('Item must have a valid data or file property'));
                     }
-                })(i);
-            }
-            return Promise.all(prom);
-        }).then(function (toChange) {
-            return new Promise(function (resolve, reject) {
+                }
+                return Promise.all(prom);
+            }).then(toChange => {
                 for (var i = 0; i < toChange.length; i++) {
                     var c = toChange[i];
-                    that.lastDoc._attachments[c.item.name] = {
+                    this.lastDoc._attachments[c.item.name] = {
                         content_type: c.item.contentType,
                         data: c.base64data
                     };
                 }
-                superagent
-                    .put(that.docUrl)
+                return superagent
+                    .put(this.docUrl)
                     .withCredentials()
                     .set('Content-Type', 'application/json')
                     .set('Accept', 'application/json')
-                    .send(that.lastDoc)
-                    .end(function (err, res) {
-                        if (err) return reject(err);
-                        if (res.status !== 201 && res.status !== 200) return reject(new Error('Error uploading inline attachments, couchdb returned status code ' + res.status));
-                        return resolve();
-                    });
-            });
-        }).then(function () {
-            return that.refresh();
-        });
-    };
+                    .send(this.lastDoc)
+                    .end()
+            }).then(() => this.refresh());
+        }
 
-    /**
-     *
-     * @param {object} options
-     * @param {string} options.name - Name of the attachment to upload
-     * @param {string} options.contentType - Content-Type of the attachment to upload
-     * @param {string|Blob} options.data -  The attachment's content to upload
-     * @param {string|Blob} options.file - The attachments's content to upload
-     * @param {string|Blob} options.content - The attachments's content to upload
-     * @returns {Promise.<Object>} The new list of attachments
-     */
-    CouchdbAttachments.prototype.upload = function (options) {
-        var that = this;
-        var data = options.data || options.file || options.content;
-        return this.list().then(function () {
-            if (!options) {
-                throw new Error('Invalid arguments');
-            }
-            return new Promise(function (resolve, reject) {
-                var _att = that.lastDoc._attachments[options.name];
+
+        /**
+         *
+         * @param {object} options
+         * @param {string} options.name - Name of the attachment to upload
+         * @param {string} options.contentType - Content-Type of the attachment to upload
+         * @param {string|Blob} options.data -  The attachment's content to upload
+         * @param {string|Blob} options.file - The attachments's content to upload
+         * @param {string|Blob} options.content - The attachments's content to upload
+         * @returns {Promise.<Object>} The new list of attachments
+         */
+        upload(options) {
+            var data = options.data || options.file || options.content;
+            return this.list().then(() => {
+                if (!options) {
+                    throw new Error('Invalid arguments');
+                }
                 var contentType = options.contentType;
                 if (!contentType && data instanceof Blob) {
                     contentType = data.type;
                 } else if (typeof data === 'string') {
                     var dataUrl = base64DataUrlReg.exec(data.slice(0, 64));
-                    if (!dataUrl) {
-                        throw new Error('Bad base64 url');
+                    if (dataUrl) {
+                        data = util.b64toBlob(data.slice(dataUrl[0].length), dataUrl[1]);
+                        contentType = dataUrl[1];
+                    } else {
+                        data = new Blob([data], {content_type: options.contentType});
                     }
-                    data = util.b64toBlob(data.slice(dataUrl[0].length), dataUrl[1]);
-                    contentType = dataUrl[1];
+
                 } else {
                     throw new Error('Data must be Blob or base64 dataUrl');
                 }
 
-
                 if (!contentType) {
-                    return reject(new Error('Content-Type unresolved. Cannot upload document without content-type'));
+                    throw new Error('Content-Type unresolved. Cannot upload document without content-type');
                 }
-                superagent
-                    .put(that.docUrl + '/' + options.name)
+                return superagent
+                    .put(this.docUrl + '/' + options.name)
                     .withCredentials()
-                    .query({rev: that.lastDoc._rev})
+                    .query({rev: this.lastDoc._rev})
                     .set('Content-Type', contentType)
                     .set('Accept', 'application/json')
                     .send(data)
-                    .end(function (err, res) {
-                        if (err) return reject(err);
-                        if (res.status !== 201 && res.status !== 200) return reject(new Error('Error uploading attachment, couchdb returned status code ' + res.status));
-                        that.lastDoc._rev = res.body.rev;
-                        return resolve();
+                    .then(res => {
+                        if (res && res.body && res.body.rev) {
+                            this.lastDoc._rev = res.body.rev;
+                        }
                     });
-            });
-        }).then(function () {
-            // We need to update the document after the upload
-            var prom = that.refresh();
-            if (!(data instanceof Blob)) { // Don't store in lru if it's a file
-                prom.then(function () {
-                    LRU.store(storeName, that.lastDoc._attachments[options.name].digest, data);
-                });
-            }
-            return prom;
-        });
-    };
-
-    /**
-     * Get the content of an attachment
-     * @param name The name of the attachment to get
-     * @return {Promise} The parsed content of the attachment
-     */
-    CouchdbAttachments.prototype.get = function (name, options) {
-        options = options || {};
-        var that = this;
-        return this.list().then(function () {
-            var _att = that.lastDoc._attachments[name];
-            if (!_att) throw new Error('The attachment ' + name + ' does not exist');
-            return new Promise(function (resolve, reject) {
-                var req = superagent.get(that.docUrl + '/' + name).withCredentials();
-                if (_att) req.set('Accept', that.lastDoc._attachments[name].content_type);
-                req.query({rev: that.lastDoc._rev})
-                    .end(function (err, res, payload) {
-                        console.log(payload);
-                        if (err) return reject(err);
-                        if (res.status !== 200) return reject(new Error('Error getting attachment, couchdb returned status code ' + res.status));
-                        LRU.store(storeName, _att.digest, res.body || res.text);
-                        if (options.raw) return resolve(res.text);
-                        return resolve(res.body || res.text);
-                    });
-            });
-        });
-    };
-
-    /**
-     * Remove an attachment
-     * @param name The name of the attachment to remove.
-     * @returns {Promise.<Object>} The new list of attachments
-     */
-    CouchdbAttachments.prototype.remove = function (name) { // TODO: lru has no remove yet
-        var that = this;
-        if (Array.isArray(name)) {
-            return inlineRemove(this, name);
+            }).then(() => this.refresh());
         }
-        return this.list().then(function () {
-            if (!that.lastDoc._attachments[name]) throw new Error('Cannot remove attachment, attachment does not exist.');
-            return new Promise(function (resolve, reject) {
-                superagent
-                    .del(that.docUrl + '/' + name)
-                    .withCredentials()
-                    .query({rev: that.lastDoc._rev})
-                    .set('Accept', 'application/json')
-                    .end(function (err, res) {
-                        if (err) return reject(err);
-                        if (res.status !== 200) return reject(new Error('Error deleting attachment, couchdb returned status code ' + res.status));
-                        that.lastDoc._rev = res.body.rev;
-                        delete that.lastDoc._attachments[name];
-                        return resolve(attachmentsAsArray(that, that.lastDoc._attachments));
+
+        /**
+         * Get the content of an attachment
+         * @param name The name of the attachment to get
+         * @return {Promise} The parsed content of the attachment
+         */
+        get(name, options) {
+            options = options || {};
+            return this.list().then(() => {
+                var _att = this.lastDoc._attachments[name];
+                if (!_att) throw new Error('The attachment ' + name + ' does not exist');
+                var req = superagent.get(this.docUrl + '/' + name).withCredentials();
+                if (_att) req.set('Accept', this.lastDoc._attachments[name].content_type);
+                return req.query({rev: this.lastDoc._rev})
+                    .then(res => {
+                        if (options.raw) return res.text;
+                        return res.body;
                     });
             });
-        });
-    };
+        }
+
+        /**
+         * Remove an attachment
+         * @param name The name of the attachment to remove.
+         * @returns {Promise.<Object>} The new list of attachments
+         */
+        remove(name) { // TODO: lru has no remove yet
+            if (Array.isArray(name)) {
+                return inlineRemove(this, name);
+            }
+            return this.list().then(() => {
+                if (!this.lastDoc._attachments[name]) throw new Error('Cannot remove attachment, attachment does not exist.');
+                return superagent
+                    .del(this.docUrl + '/' + name)
+                    .withCredentials()
+                    .query({rev: this.lastDoc._rev})
+                    .set('Accept', 'application/json')
+                    .then(res => {
+                        if (res && res.body && res.body.rev) {
+                            this.lastDoc._rev = res.body.rev;
+                            delete this.lastDoc._attachments[name];
+                            return attachmentsAsArray(this, this.lastDoc._attachments);
+                        } else {
+                            throw new Error('Unexpected error when removing attachments');
+                        }
+                    })
+            });
+        }
+
+        /**
+         * Refreshes the list of attachment from couchdb.
+         * @returns {Promise.<Object>} attachments - The new list of attachments
+         */
+        // Get documents with latest attachements' rev ids
+        refresh() {
+            return superagent
+                .get(this.docUrl)
+                .withCredentials()
+                .set('Accept', 'application/json')
+                .then(res => {
+                    this.lastDoc = res.body;
+                    return attachmentsAsArray(this, res.body._attachments);
+                });
+        }
+
+        /**
+         * An alias for refresh
+         * Refreshes the list of attachment from couchdb.
+         * @returns {Promise.<Object>} attachments - The new list of attachments
+         */
+        fetchList() {
+            return this.refresh();
+        }
+
+        attachmentsAsArray() {
+            var r = [];
+            var i = 0;
+            for (var key in this.lastDoc._attachments) {
+                r.push(this.lastDoc._attachments[key]);
+                r[i].name = key;
+                r[i].url = encodeURI(this.docUrl + '/' + key);
+                i++;
+            }
+            this.lastAttachmentsResult = r;
+            return r;
+        }
+
+        // This is an alternative strategy for storing multiple attachments in one revision
+        // The problem with this is that it doesn't allow to change the contentType
+        // (because Blobs are immutable) if the browser did not set it correctly or if
+        // the user wants to manually change it will not work properly
+        uploads1(files) {
+            if (!Array.isArray(files)) {
+                throw new Error('uploads expects an array as parameter');
+            }
+
+            var req = superagent.post(this.docUrl).withCredentials();
+
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                req.attach('_attachments', file, file.name);
+            }
+            req.field('_rev', this.lastDoc._rev);
+            return req.end().then(res => {
+                if (res.status !== 201) throw new Error('Error uploading attachments, couchdb returned status code ' + res.status);
+                return this.refresh();
+            });
+        }
+    }
 
 
     // Private function
     function inlineRemove(ctx, names) {
-        return ctx.list().then(function () {
+        return ctx.list().then(() => {
             if (!Array.isArray(names)) throw new TypeError('Argument should be an array');
             if (names.length === 0) return ctx.list();
-            return new Promise(function (resolve, reject) {
-                for (var i = 0; i < names.length; i++) {
-                    delete ctx.lastDoc._attachments[names[i]];
-                }
-                superagent
-                    .put(ctx.docUrl)
-                    .withCredentials()
-                    .set('Content-Type', 'application/json')
-                    .set('Accept', 'application/json')
-                    .send(ctx.lastDoc)
-                    .end(function (err, res) {
-                        if (err) return reject(err);
-                        if (res.status !== 201 && res.status !== 200) return reject(new Error('Error uploading inline attachments, couchdb returned status code ' + res.status));
-                        return resolve();
-                    });
-            });
-        }).then(function () {
-            return ctx.refresh();
-        });
+            for (var i = 0; i < names.length; i++) {
+                delete ctx.lastDoc._attachments[names[i]];
+            }
+            return superagent
+                .put(ctx.docUrl)
+                .withCredentials()
+                .set('Content-Type', 'application/json')
+                .set('Accept', 'application/json')
+                .send(ctx.lastDoc)
+                .then(res => {
+                    if (res && res.body && res.body.rev) {
+                        ctx.lastDoc._rev = res.body.rev;
+                        return attachmentsAsArray(ctx, ctx.lastDoc._attachments);
+                    }
+                })
+        }).then(ctx.refresh);
     }
-
-    /**
-     * An alias for fetchList
-     * Fetches the list of attachment from couchdb.
-     * @returns {Promise.<Object>} attachments - The new list of attachments
-     */
-        // Get documents with latest attachements' rev ids
-    CouchdbAttachments.prototype.refresh = function () {
-        var that = this;
-        return superagent
-            .get(this.docUrl)
-            .withCredentials()
-            .set('Accept', 'application/json')
-            .end().then(function (res) {
-                if (res.status !== 200) throw new Error('Error getting document, couchdb returned status code ' + res.status);
-                that.lastDoc = res.body;
-                return attachmentsAsArray(that, res.body._attachments);
-            });
-    };
 
     function attachmentsAsArray(ctx, att) {
         var r = [];
@@ -391,6 +374,5 @@ define([
         return r;
     }
 
-    CouchdbAttachments.prototype.fetchList = CouchdbAttachments.prototype.refresh;
     return CouchdbAttachments;
 });
