@@ -9,6 +9,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
     var standardFile = new DataObject({
         filename: '',
         mimetype: '',
+        contentType: '',
         content: ''
     });
 

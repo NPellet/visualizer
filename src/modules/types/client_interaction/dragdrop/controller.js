@@ -461,6 +461,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         var variable = new DataObject({
             filename: meta.filename,
             mimetype: meta.mime,
+            contentType: meta.mime,
             content: obj
         });
         if (!this.module.model.tmpVarsArray[name])
