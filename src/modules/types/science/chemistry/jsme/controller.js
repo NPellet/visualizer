@@ -189,17 +189,22 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
     };
 
     Controller.prototype.onChange = function (mol, molV3, smiles, jme, svg, action) {
+        var currentValue = this.module.view._currentValue;
 
-        if (action != null && action != 'readRXNFile' && action != 'readMolFile' && action != 'reset' && this.module.view._currentValue && this.module.getConfigurationCheckbox('outputResult', 'yes')) {
+        if (action != null &&
+            action != 'readRXNFile' &&
+            action != 'readMolFile' &&
+            action != 'reset' &&
+            currentValue &&
+            this.module.getConfigurationCheckbox('outputResult', 'yes')) {
 
-            if (this.module.view._currentValue.type === 'mol2d') {
-                this.module.view._currentValue.setValue(mol, true);
-            } else if (this.module.view._currentValue.type === 'jme') {
-                this.module.view._currentValue.setValue(jme, true);
+            if (currentValue.type === 'mol2d' || currentValue instanceof DataString) {
+                currentValue.setValue(mol, true);
+            } else if (currentValue.type === 'jme') {
+                currentValue.setValue(jme, true);
             }
-            this.module.model.dataTriggerChange(this.module.view._currentValue);
+            this.module.model.dataTriggerChange(currentValue);
         }
-
 
         // Always create smiles because smiles is not a possible input variable
         this.createDataFromEvent('onStructureChange', 'smiles', smiles);
