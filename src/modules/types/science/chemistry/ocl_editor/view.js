@@ -41,17 +41,23 @@ define(['modules/default/defaultview', 'src/util/util', 'openchemlib/openchemlib
 
         update: {
             mol: function (val) {
+                this._currentValue = val;
+                this._currentType = 'mol';
                 this.editor.setMolFile(String(val.get()));
                 this.setFragment();
             },
             smiles: function (val) {
+                this._currentValue = val;
+                this._currentType = 'smiles';
                 this.editor.setSmiles(String(val.get()));
                 this.setFragment();
             },
             actid: function (val) {
+                this._currentValue = val;
+                this._currentType = 'oclid';
                 var value = String(val.get());
-                if (value.coordinates) {
-                    value += ' ' + value.coordinates;
+                if (val.coordinates) {
+                    value += ' ' + val.coordinates;
                 }
                 this.editor.setIDCode(value);
                 this.setFragment();
@@ -68,6 +74,8 @@ define(['modules/default/defaultview', 'src/util/util', 'openchemlib/openchemlib
         },
 
         clearEditor: function () {
+            this._currentValue = null;
+            this._currentType = null;
             this.editor.setIDCode('');
         },
 
