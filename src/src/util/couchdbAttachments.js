@@ -165,7 +165,7 @@ define([
                     .set('Content-Type', 'application/json')
                     .set('Accept', 'application/json')
                     .send(this.lastDoc)
-                    .end()
+                    .end();
             }).then(() => this.refresh());
         }
 
@@ -265,7 +265,7 @@ define([
                         } else {
                             throw new Error('Unexpected error when removing attachments');
                         }
-                    })
+                    });
             });
         }
 
@@ -350,7 +350,7 @@ define([
                         ctx.lastDoc._rev = res.body.rev;
                         return attachmentsAsArray(ctx, ctx.lastDoc._attachments);
                     }
-                })
+                });
         }).then(ctx.refresh);
     }
 
