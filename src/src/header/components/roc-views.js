@@ -1116,9 +1116,10 @@ define([
                     prom = prom.then(() => {
                         this.showHide(false);
                         UI.showNotification('Files uploaded successfully', 'success');
-                    }, () => {
+                    }, err => {
                         this.showHide(false);
                         UI.showNotification('Files upload failed (at least partially)', 'error');
+                        console.error(err.message, err.stack);
                     });
 
                     return prom.then(() => this.reloadCurrent());

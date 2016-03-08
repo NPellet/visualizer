@@ -716,9 +716,10 @@ define([
                         prom.then(function () {
                             API.stopLoading(loadingId);
                             that.showError('Files uploaded successfully', 2);
-                        }, function () {
+                        }, function (err) {
                             API.stopLoading(loadingId);
                             that.showError('Files upload failed (at least partially)');
+                            console.error(err.message, err.stack);
                         });
 
                         prom.then(function () {
