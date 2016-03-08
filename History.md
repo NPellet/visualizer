@@ -1,3 +1,13 @@
+<a name="2.46.2"></a>
+## 2.46.2 (2016-03-08)
+
+
+### Bug Fixes
+
+* **build:** copy everything from browserified ([615a463](https://github.com/NPellet/visualizer/commit/615a463))
+
+
+
 <a name="2.46.1"></a>
 ## 2.46.1 (2016-03-08)
 
