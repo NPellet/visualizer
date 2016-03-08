@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versioning', 'src/data/structures', 'src/util/debug'], function (Default, API, Versioning, Structure, Debug) {
+define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versioning', 'src/data/structures', 'src/util/debug', 'src/util/util'], function (Default, API, Versioning, Structure, Debug, Util) {
 
     function Controller() {
     }
@@ -34,10 +34,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
 
     Controller.prototype.configurationStructure = function () {
 
-        var types = Structure._getList(), l = types.length, typeList = new Array(l);
-        for (var i = 0; i < l; i++) {
-            typeList[i] = {key: types[i], title: types[i]};
-        }
+        var typeList = Util.getStructuresComboOptions();
 
         return {
             groups: {
@@ -235,7 +232,12 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
 
     Controller.prototype.parseString = function (value, meta) {
         try {
-            var result = Structure._parse(meta.cfg.type, value);
+            debugger;
+            if(meta.cfg.type) {
+                var result = Structure._parse(meta.cfg.type, value);
+            } else {
+                result = value;
+            }
             this.tmpVar(result, meta);
         } catch (e) {
             Debug.info('Value could not be parsed: ', value, e);
@@ -451,7 +453,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
     };
 
     Controller.prototype.tmpVar = function (obj, meta) {
-        if (typeof obj !== 'object') {
+        if (typeof obj !== 'object' && meta.cfg.type) {
             obj = {
                 type: meta.cfg.type,
                 value: obj
