@@ -198,9 +198,9 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
             currentValue &&
             this.module.getConfigurationCheckbox('outputResult', 'yes')) {
 
-            if (currentValue.type === 'mol2d' || currentValue instanceof DataString) {
+            if (this.module.view._currentType === 'mol') {
                 currentValue.setValue(mol, true);
-            } else if (currentValue.type === 'jme') {
+            } else if (this.module.view._currentType === 'jme') {
                 currentValue.setValue(jme, true);
             }
             this.module.model.dataTriggerChange(currentValue);

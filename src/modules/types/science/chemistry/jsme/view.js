@@ -103,12 +103,18 @@ define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui',
 
         blank: {
             mol: function () {
+                this._currentValue = null;
+                this._currentType = null;
                 this.postMessage('clear', '*');
             },
             jme: function () {
+                this._currentValue = null;
+                this._currentType = null;
                 this.postMessage('clear', '*');
             },
             smiles: function () {
+                this._currentValue = null;
+                this._currentType = null;
                 this.postMessage('clear', '*');
             }
         },
