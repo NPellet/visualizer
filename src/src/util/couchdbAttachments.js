@@ -351,7 +351,7 @@ define([
                         return attachmentsAsArray(ctx, ctx.lastDoc._attachments);
                     }
                 });
-        }).then(ctx.refresh);
+        }).then(() => ctx.refresh());
     }
 
     function attachmentsAsArray(ctx, att) {
