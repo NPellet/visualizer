@@ -182,11 +182,9 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
-                        cwd: './src/browserified/',
-                        src: [
-                            './country-data/index.js'
-                        ],
-                        dest: './build/browserified/'
+                        cwd: './src/browserified',
+                        src: ['**'],
+                        dest: './build/browserified'
                     }
                 ]
             },
