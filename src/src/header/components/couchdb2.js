@@ -293,7 +293,7 @@ define([
                     doc._rev = data.rev;
                     node.data.hasMeta = true;
                     if (node.children)
-                        node.lazyLoad(true);
+                        node.load(true);
 
                     that.showError('meta saved.', 2);
                 },
@@ -321,7 +321,7 @@ define([
                 success: function () {
                     node.data['has' + type] = true;
                     if (node.children)
-                        node.lazyLoad(true);
+                        node.load(true);
                     that.showError(type + ' saved.', 2);
                 },
                 error: function () {
@@ -371,7 +371,7 @@ define([
                     success: function () {
                         child.data['has' + type] = true;
                         if (child.children)
-                            child.lazyLoad(true);
+                            child.load(true);
                         that.showError(type + ' saved.', 2);
                     },
                     error: function () {
@@ -616,7 +616,7 @@ define([
                             node.data.isPublic = true;
                             that.updateButtons();
                             if (node.children)
-                                node.lazyLoad(true);
+                                node.load(true);
 
                             that.showError('The view was made public', 2);
                         },

@@ -129,7 +129,7 @@ define([
                 success: function (data) {
                     if (update) {
                         last.node.data.lastRev = data.rev;
-                        if (last.node.children) last.node.lazyLoad(true);
+                        if (last.node.children) last.node.load(true);
                     } else {
                         folderNode.addNode({
                             id: data.id,
