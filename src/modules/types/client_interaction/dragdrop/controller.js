@@ -112,7 +112,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                             type: 'combo',
                             title: 'Force type',
                             options: typeList,
-                            'default': 'string'
+                            'default': ''
                         },
                         mime: {
                             type: 'text',
@@ -136,7 +136,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                             type: 'combo',
                             title: 'Force type',
                             options: typeList,
-                            'default': 'string'
+                            'default': ''
                         },
                         filter: {
                             type: 'text',
