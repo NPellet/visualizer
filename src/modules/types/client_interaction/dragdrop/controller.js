@@ -232,7 +232,6 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
 
     Controller.prototype.parseString = function (value, meta) {
         try {
-            debugger;
             if(meta.cfg.type) {
                 var result = Structure._parse(meta.cfg.type, value);
             } else {
