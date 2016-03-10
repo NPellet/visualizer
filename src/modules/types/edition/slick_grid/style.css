@@ -487,3 +487,8 @@ classes should alter those!
     width: 100%;
     text-align: center;
 }
+
+.cell-reorder {
+    cursor: move !important;
+    background: url("../../../../components/slickgrid/images/drag-handle.png") no-repeat center center;
+}

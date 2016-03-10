@@ -181,6 +181,110 @@ define([
             ctx.grid.setSelectionModel(new Slick.CellSelectionModel());
         }
 
+        if(ctx.module.getConfigurationCheckbox('autoColumns', 'reorder')) {
+            var moveRowsPlugin = new Slick.RowMoveManager({
+                cancelEditOnDrag: true
+            });
+            moveRowsPlugin.onBeforeMoveRows.subscribe(function (e, data) {
+                for (var i = 0; i < data.rows.length; i++) {
+                    // no point in moving before or after itself
+                    if (data.rows[i] == data.insertBefore || data.rows[i] == data.insertBefore - 1) {
+                        e.stopPropagation();
+                        return false;
+                    }
+                }
+                return true;
+            });
+
+            moveRowsPlugin.onMoveRows.subscribe(function (e, args) {
+                var rows = args.rows;
+                rows = rows.map(function (r) {
+                    return ctx._getItemInfoFromRow(r).idx;
+                });
+                var insertBefore = ctx._getItemInfoFromRow(args.insertBefore).idx;
+                console.log(rows);
+                ctx._makeDataObjects();
+                // We'll use a simple comparer function here.
+                var items = ctx.slick.data.getItems();
+                // Add a position indicatior ==> for stable sort
+                for (var i = 0; i < items.length; i++) {
+                    if(rows.indexOf(i) !== -1) items[i].__pos = 2;
+                    else if(i < insertBefore) items[i].__pos = 1;
+                    else items[i].__pos = 3;
+                    items[i].__elementPosition = i;
+                }
+
+
+                ctx.slick.data.sort(compMove);
+
+                for (var i = 0; i < items.length; i++) {
+                    delete items[i].__pos;
+                    delete items[i].__elementPosition;
+                }
+
+                ctx.grid.invalidateAllRows();
+                ctx.grid.render();
+                ctx.module.model.dataTriggerChange(ctx.module.data);
+            });
+            ctx.grid.registerPlugin(moveRowsPlugin);
+            ctx.grid.onDragInit.subscribe(function (e, dd) {
+                // prevent the ctx.grid.from cancelling drag'n'drop by default
+                e.stopImmediatePropagation();
+            });
+            ctx.grid.onDragStart.subscribe(function (e, dd) {
+                var data = this.module.data.get();
+                var cell = ctx.grid.getCellFromEvent(e);
+                if (!cell) {
+                    return;
+                }
+                dd.row = cell.row;
+                if (!data[dd.row]) {
+                    return;
+                }
+                if (Slick.GlobalEditorLock.isActive()) {
+                    return;
+                }
+                e.stopImmediatePropagation();
+                dd.mode = "recycle";
+                var selectedRows = ctx.grid.getSelectedRows();
+                if (!selectedRows.length || $.inArray(dd.row, selectedRows) == -1) {
+                    selectedRows = [dd.row];
+                    ctx.grid.setSelectedRows(selectedRows);
+                }
+                dd.rows = selectedRows;
+                dd.count = selectedRows.length;
+                var proxy = $("<span></span>")
+                    .css({
+                        position: "absolute",
+                        display: "inline-block",
+                        padding: "4px 10px",
+                        background: "#e0e0e0",
+                        border: "1px solid gray",
+                        "z-index": 99999,
+                        "-moz-border-radius": "8px",
+                        "-moz-box-shadow": "2px 2px 6px silver"
+                    })
+                    .text("Drag to Recycle Bin to delete " + dd.count + " selected row(s)")
+                    .appendTo("body");
+                dd.helper = proxy;
+                $(dd.available).css("background", "pink");
+                return proxy;
+            });
+            ctx.grid.onDrag.subscribe(function (e, dd) {
+                if (dd.mode != "recycle") {
+                    return;
+                }
+                dd.helper.css({top: e.pageY + 5, left: e.pageX + 5});
+            });
+            ctx.grid.onDragEnd.subscribe(function (e, dd) {
+                if (dd.mode != "recycle") {
+                    return;
+                }
+                dd.helper.remove();
+                $(dd.available).css("background", "beige");
+            });
+        }
+
         $(ctx.grid.getHeaderRow()).delegate(':input', 'change keyup', _.debounce(function (e) {
             var columnId = $(this).data('columnId');
             if (columnId != null) {
@@ -380,7 +484,7 @@ define([
             var itemInfo = ctx._getItemInfoFromRow(args.row);
             if (itemInfo) {
                 if (columns[args.cell] && columns[args.cell].id !== 'rowDeletion') {
-                    if(!columns[args.cell].colDef || !columns[args.cell].colDef.isAction) {
+                    if (!columns[args.cell].colDef || !columns[args.cell].colDef.isAction) {
                         ctx.module.controller.onClick(itemInfo.idx, itemInfo.item);
                     }
                 }
@@ -581,7 +685,7 @@ define([
             });
             this.actionColConfig = (this.module.getConfiguration('actionCols') || []).filter(function (row) {
                 return row.name;
-            }).map(function(row) {
+            }).map(function (row) {
                 row.isAction = true;
                 return row;
             });
@@ -790,6 +894,19 @@ define([
                 this.slick.plugins.push(checkboxSelector);
 
                 slickCols.unshift(checkboxSelector.getColumnDefinition());
+            }
+
+            if (this.module.getConfigurationCheckbox('autoColumns', 'reorder')) {
+                slickCols.unshift({
+                    id: "__selectAndMove",
+                    name: "",
+                    width: 40,
+                    behavior: "selectAndMove",
+                    selectable: false,
+                    resizable: false,
+                    cssClass: "cell-reorder dnd",
+                    formatter: function() {return ''}
+                });
             }
 
             return slickCols;
@@ -1597,7 +1714,13 @@ define([
     var lastHighlight = '';
 
     function filterSpecialColumns(col) {
-        return col.id !== 'rowDeletion' && col.id !== '_checkbox_selector';
+        return col.id !== 'rowDeletion' && col.id !== '_checkbox_selector' && col.id !== '__selectAndMove';
+    }
+
+    function compMove(a, b) {
+        var diff = a.__pos - b.__pos;
+        if(diff !== 0) return diff;
+        return a.__elementPosition - b.__elementPosition;
     }
 
     return View;

@@ -55,7 +55,8 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                             title: 'Auto Columns',
                             options: {
                                 remove: 'Column for one-click removal of a line',
-                                select: 'Column for easy selection of lines'
+                                select: 'Column for easy selection of lines',
+                                reorder: 'Column for reordering lines by drag and drop'
                             },
                             default: []
                         },
