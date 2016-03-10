@@ -121,7 +121,6 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
                                 star: 'Display star button allowing highlight of atoms (placed in the smiles)',
                                 depictaction: 'Allows to specify an action in depict mode',
                                 oldlook: 'Use the old look',
-                                v2000chiralflag: 'Allow the molfile v2000 chiral flag',
                                 atommovebutton: 'Add button to move atoms',
                                 removehs: 'Remove hydrogens when reading a molecule with explicit hydrogens',
                                 removehsc: 'Remove hydrogens bounded to C when reading a molecule with explicit hydrogens'
