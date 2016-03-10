@@ -380,7 +380,9 @@ define([
             var itemInfo = ctx._getItemInfoFromRow(args.row);
             if (itemInfo) {
                 if (columns[args.cell] && columns[args.cell].id !== 'rowDeletion') {
-                    ctx.module.controller.onClick(itemInfo.idx, itemInfo.item);
+                    if(!columns[args.cell].colDef || !columns[args.cell].colDef.isAction) {
+                        ctx.module.controller.onClick(itemInfo.idx, itemInfo.item);
+                    }
                 }
             }
         });
@@ -579,6 +581,9 @@ define([
             });
             this.actionColConfig = (this.module.getConfiguration('actionCols') || []).filter(function (row) {
                 return row.name;
+            }).map(function(row) {
+                row.isAction = true;
+                return row;
             });
             this.idPropertyName = '_sgid';
             if (this.module.getConfiguration('filterType') === 'pref') {
