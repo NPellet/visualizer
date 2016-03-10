@@ -18,8 +18,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.references = {
         tree: {
-            label: 'Hierarchical structure (tree)',
-            type: 'tree'
+            label: 'Hierarchical structure (tree)'
         },
         nodeData: {
             label: 'Node data'
