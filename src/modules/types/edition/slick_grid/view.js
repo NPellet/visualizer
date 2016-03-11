@@ -201,14 +201,16 @@ define([
                 rows = rows.map(function (r) {
                     return ctx._getItemInfoFromRow(r).idx;
                 });
-                var insertBefore = ctx._getItemInfoFromRow(args.insertBefore).idx;
+                var insertBefore = ctx._getItemInfoFromRow(args.insertBefore);
+                if(insertBefore !== null) insertBefore = insertBefore.idx;
+
                 ctx._makeDataObjects();
                 // We'll use a simple comparer function here.
                 var items = ctx.slick.data.getItems();
                 // Add a position indicatior ==> for stable sort
                 for (var i = 0; i < items.length; i++) {
                     if(rows.indexOf(i) !== -1) items[i].__pos = 2;
-                    else if(i < insertBefore) items[i].__pos = 1;
+                    else if(i < insertBefore || insertBefore === null) items[i].__pos = 1;
                     else items[i].__pos = 3;
                     items[i].__elementPosition = i;
                 }
