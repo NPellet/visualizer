@@ -5,16 +5,27 @@
  * @module src/util/api
  */
 define([
-    'src/util/datatraversing',
-    'src/util/actionmanager',
+    './cache',
+    './datatraversing',
+    './actionmanager',
+    './util',
+    './versioning',
+    './config',
     'src/main/variables',
-    'src/util/util',
     'src/main/datas',
-    'src/util/versioning',
-    'src/util/config',
     'lodash',
     'src/main/grid'
-], function (Traversing, ActionManager, Variables, Util, Data, Versioning, Config, _) {
+], function (
+    Cache,
+    Traversing,
+    ActionManager,
+    Util,
+    Versioning,
+    Config,
+    Variables,
+    Data,
+    _
+) {
 
     var variableFilters;
 
@@ -277,8 +288,6 @@ define([
         ActionManager.execute(name, value);
     }, 'API.doAction is the recommended method.');
 
-    var cache = {};
-
     /**
      * Cache a value in memory or retrieve it. The value can be retrieved anywhere API is available
      * @param {string} name - Name of the cached value
@@ -287,17 +296,17 @@ define([
      */
     exports.cache = function cacheHandler(name, value) {
         if (arguments.length === 1) {
-            return cache[name];
+            return Cache.get(name);
         } else {
-            cache[name] = value;
+            Cache.set(name, value);
         }
     };
 
     /**
      * Set the cache to an empty object
      */
-    exports.cache.empty = function emptyCache() {
-        cache = {};
+    exports.cache.clear = function clearCache() {
+        return Cache.clear();
     };
 
     exports.getLayerNames = function () {
