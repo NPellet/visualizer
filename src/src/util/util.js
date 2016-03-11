@@ -517,8 +517,6 @@ define(['src/util/debug', 'src/util/color', 'lodash', 'src/data/structures', 'co
 
     exports.contentTypeToType = function (contentType) {
         switch (contentType) {
-            case 'chemical/x-jcamp-dx':
-                return 'jcamp';
             case 'image/gif':
                 return 'gif';
             case 'image/tif':
