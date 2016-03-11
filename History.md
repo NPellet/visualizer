@@ -1,3 +1,13 @@
+<a name="2.47.1"></a>
+## 2.47.1 (2016-03-11)
+
+
+### Bug Fixes
+
+* update jsgraph ([98a83ff](https://github.com/NPellet/visualizer/commit/98a83ff)), closes [#834](https://github.com/NPellet/visualizer/issues/834)
+
+
+
 <a name="2.47.0"></a>
 # 2.47.0 (2016-03-11)
 
