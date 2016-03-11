@@ -337,12 +337,12 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
 
     Controller.prototype.events = {
         onSelect: {
-            label: 'Row click',
+            label: 'Row clicked',
             refVariable: ['row'],
             refAction: ['row']
         },
         onHover: {
-            label: 'Row hover',
+            label: 'Row hovered',
             refVariable: ['row'],
             refAction: ['row']
         },
@@ -362,7 +362,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
             refAction: ['rows']
         },
         onRowActive: {
-            label: 'Row active',
+            label: 'Row actived',
             refVariable: ['row'],
             refAction: ['row']
         },
