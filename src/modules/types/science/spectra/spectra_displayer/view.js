@@ -125,6 +125,10 @@ define([
                             plugin: 'zoom',
                             options: wheelOptions
                         };
+
+                        if (!options.plugins.zoom) {
+                            options.plugins.zoom = {};
+                        }
                     }
 
                     if (cfgCheckbox('mouseTracking', 'track')) {
