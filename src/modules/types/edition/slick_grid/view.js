@@ -202,7 +202,6 @@ define([
                     return ctx._getItemInfoFromRow(r).idx;
                 });
                 var insertBefore = ctx._getItemInfoFromRow(args.insertBefore).idx;
-                console.log(rows);
                 ctx._makeDataObjects();
                 // We'll use a simple comparer function here.
                 var items = ctx.slick.data.getItems();

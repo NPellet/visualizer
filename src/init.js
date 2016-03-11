@@ -115,7 +115,7 @@ require.config({
                 'components/slickgrid/plugins/slick.cellrangeselector',
                 'components/slickgrid/plugins/slick.cellselectionmodel',
                 'components/slickgrid/plugins/slick.rowselectionmodel',
-                'components/slickgrid/plugins/slick.rowmovemanager.js',
+                'components/slickgrid/plugins/slick.rowmovemanager',
                 'components/slickgrid/slick.editors',
                 'modules/types/edition/slick_grid/slick.editors.custom',
                 'modules/types/edition/slick_grid/slick.formatters.custom',
