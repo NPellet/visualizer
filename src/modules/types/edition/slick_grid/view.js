@@ -265,7 +265,6 @@ define([
                         "-moz-border-radius": "8px",
                         "-moz-box-shadow": "2px 2px 6px silver"
                     })
-                    .text("Drag to Recycle Bin to delete " + dd.count + " selected row(s)")
                     .appendTo("body");
                 dd.helper = proxy;
                 $(dd.available).css("background", "pink");
@@ -375,7 +374,6 @@ define([
                     }, 1000);
                 }
                 ctx._preventRowHelp = false;
-                ctx._resetDeleteRowListeners();
                 ctx._jpathColor();
                 ctx._inViewFilter();
             }
@@ -477,7 +475,6 @@ define([
                 }
                 ctx.module.controller.onRowChange(itemInfo.idx, itemInfo.item);
             }
-            ctx._resetDeleteRowListeners();
         });
 
         ctx.grid.onClick.subscribe(function (e, args) {
@@ -649,7 +646,6 @@ define([
 
 
         ctx.grid.render();
-        ctx._resetDeleteRowListeners();
         ctx._setBaseCellCssStyle();
         ctx.lastViewport = ctx.grid.getViewport();
         ctx._jpathColor();
@@ -669,6 +665,7 @@ define([
 
                 this.module.getDomContent().html(this.$rowHelp);
                 this.module.getDomContent().append(this.$container);
+                this._setDeleteRowListener();
             }
 
             this.actionOutButtons = this.module.getConfiguration('actionOutButtons');
@@ -1135,7 +1132,6 @@ define([
                 cell: null,
                 event: 'newRow'
             });
-            this._resetDeleteRowListeners();
         },
 
         _setBaseCellCssStyle: function () {
@@ -1146,11 +1142,9 @@ define([
             }
         },
 
-        _resetDeleteRowListeners: function () {
+        _setDeleteRowListener: function() {
             var that = this;
-            var $rb = that.$rb = $('#' + that._id).find('a.recycle-bin');
-            $rb.off('click');
-            $rb.on('click', function (e) {
+            this.$container.on('click', 'a.recycle-bin', function (e) {
                 var columns = that.grid.getColumns();
                 var args = that.grid.getCellFromEvent(e);
                 that.lastViewport = that.grid.getViewport();
