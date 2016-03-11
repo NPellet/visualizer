@@ -1,6 +1,12 @@
 'use strict';
 
-define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'version'], function (VersionHandler, Debug, Variables, Version) {
+define([
+    './cache',
+    './versionhandler',
+    './debug',
+    'src/main/variables',
+    'version'
+], function (Cache, VersionHandler, Debug, Variables, Version) {
 
     var version = Version.version;
     var originalVersion = 'none';
@@ -95,13 +101,21 @@ define(['src/util/versionhandler', 'src/util/debug', 'src/main/variables', 'vers
             originalVersion = newView.version;
         }
         var i;
+        // clear current view
         for (i in view) {
             delete view[i];
         }
+        // clear current data and variables
+        for (i in data) {
+            delete data[i];
+        }
+        Variables.eraseAll();
+        // clear cache
+        Cache.clear();
+
         for (i in newView) {
             view[i] = DataObject.recursiveTransform(newView[i]);
         }
-        Variables.eraseAll();
     }
 
     function updateData(newData) {
