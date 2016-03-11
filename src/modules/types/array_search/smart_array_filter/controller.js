@@ -40,6 +40,12 @@ define(['jquery', 'modules/default/defaultcontroller', 'smart-array-filter'], fu
 
     Controller.prototype.variablesIn = ['input'];
 
+    Controller.prototype.actionsIn = {
+        clearQuery: 'Clear current query',
+        setQuery: 'Set query',
+        appendQuery: 'Append to current query'
+    };
+
     Controller.prototype.configurationStructure = function () {
         return {
             groups: {

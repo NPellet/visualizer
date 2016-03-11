@@ -33,9 +33,7 @@ define(['jquery', 'modules/default/defaultview', 'lodash'], function ($, Default
 
             input.on('keyup', _.debounce(() => {
                 var value = input.val();
-                if (value === this._query) return;
-                this._query = value;
-                this.module.controller.onQuery(value);
+                this.onQuery(value);
             }, debounce));
 
             div.append('&nbsp;<i class="fa fa-search"></i>');
@@ -43,6 +41,11 @@ define(['jquery', 'modules/default/defaultview', 'lodash'], function ($, Default
             this.resizeInput();
 
             this.resolveReady();
+        },
+        onQuery: function (query) {
+            if (query === this._query) return;
+            this._query = query;
+            this.module.controller.onQuery(query);
         },
         blank: {
             input: function () {
@@ -53,6 +56,25 @@ define(['jquery', 'modules/default/defaultview', 'lodash'], function ($, Default
             input: function (value) {
                 this._data = JSON.stringify(value);
                 this.module.controller.onQuery(this._query || '');
+            }
+        },
+        onActionReceive: {
+            clearQuery: function () {
+                this._input.val('');
+                this.onQuery('');
+            },
+            setQuery: function (value) {
+                value = String(value);
+                this._input.val(value);
+                this.onQuery(value);
+            },
+            appendQuery: function (value) {
+                value = String(value);
+                if (this._query && value) {
+                    value = this._query + ' ' + value;
+                }
+                this._input.val(value);
+                this.onQuery(value);
             }
         },
         resizeInput: function () {

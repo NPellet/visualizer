@@ -1,5 +1,5 @@
 {
-  "version": "2.43.2-0",
+  "version": "2.46.3-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -57,7 +57,7 @@
           "name": "Default layer"
         }
       },
-      "id": 1,
+      "id": 5,
       "vars_in": [
         {
           "rel": "input",
@@ -65,7 +65,18 @@
         }
       ],
       "actions_in": [
-        {}
+        {
+          "rel": "clearQuery",
+          "name": "clearQuery"
+        },
+        {
+          "rel": "setQuery",
+          "name": "setQuery"
+        },
+        {
+          "rel": "appendQuery",
+          "name": "appendQuery"
+        }
       ],
       "title": "",
       "vars_out": [
@@ -137,7 +148,7 @@
           "name": "Default layer"
         }
       },
-      "id": 2,
+      "id": 6,
       "vars_in": [
         {
           "rel": "value",
@@ -208,7 +219,7 @@
           "name": "Default layer"
         }
       },
-      "id": 3,
+      "id": 7,
       "vars_in": [
         {
           "rel": "value",
@@ -289,7 +300,7 @@
           },
           "size": {
             "width": 50,
-            "height": 9
+            "height": 7
           },
           "zIndex": 0,
           "display": true,
@@ -305,7 +316,7 @@
           "name": "Default layer"
         }
       },
-      "id": 4,
+      "id": 8,
       "vars_in": [
         {
           "rel": "value",
@@ -318,6 +329,315 @@
       "title": "",
       "vars_out": [],
       "actions_out": []
+    },
+    {
+      "url": "modules/types/client_interaction/button_action/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "toggle": [
+                "click"
+              ],
+              "label": [
+                "Clear query"
+              ],
+              "onLabel": [
+                "Toggle action off"
+              ],
+              "offLabel": [
+                "Toggle action on"
+              ],
+              "onColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "offColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "startState": [
+                "off"
+              ],
+              "text": [
+                ""
+              ],
+              "askConfirm": [
+                []
+              ],
+              "confirmText": [
+                "Are you sure?"
+              ],
+              "okLabel": [
+                "Ok"
+              ],
+              "cancelLabel": [
+                "Cancel"
+              ],
+              "content": [
+                ""
+              ],
+              "contentType": [
+                "content"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 87,
+            "top": 69
+          },
+          "size": {
+            "width": 22,
+            "height": 7
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 9,
+      "vars_in": [],
+      "actions_in": [
+        {}
+      ],
+      "title": "",
+      "vars_out": [],
+      "actions_out": [
+        {
+          "event": "onClick",
+          "rel": "actionText",
+          "jpath": [],
+          "name": "clearQuery"
+        }
+      ]
+    },
+    {
+      "url": "modules/types/client_interaction/button_action/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "toggle": [
+                "click"
+              ],
+              "label": [
+                "Set query"
+              ],
+              "onLabel": [
+                "Toggle action off"
+              ],
+              "offLabel": [
+                "Toggle action on"
+              ],
+              "onColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "offColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "startState": [
+                "off"
+              ],
+              "text": [
+                "mw:>300"
+              ],
+              "askConfirm": [
+                []
+              ],
+              "confirmText": [
+                "Are you sure?"
+              ],
+              "okLabel": [
+                "Ok"
+              ],
+              "cancelLabel": [
+                "Cancel"
+              ],
+              "content": [
+                ""
+              ],
+              "contentType": [
+                "content"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 87,
+            "top": 79
+          },
+          "size": {
+            "width": 22,
+            "height": 7
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 10,
+      "vars_in": [],
+      "actions_in": [
+        {}
+      ],
+      "title": "",
+      "vars_out": [],
+      "actions_out": [
+        {
+          "event": "onClick",
+          "rel": "actionText",
+          "jpath": [],
+          "name": "setQuery"
+        }
+      ]
+    },
+    {
+      "url": "modules/types/client_interaction/button_action/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "toggle": [
+                "click"
+              ],
+              "label": [
+                "Append query"
+              ],
+              "onLabel": [
+                "Toggle action off"
+              ],
+              "offLabel": [
+                "Toggle action on"
+              ],
+              "onColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "offColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "startState": [
+                "off"
+              ],
+              "text": [
+                "iupac1:acetate"
+              ],
+              "askConfirm": [
+                []
+              ],
+              "confirmText": [
+                "Are you sure?"
+              ],
+              "okLabel": [
+                "Ok"
+              ],
+              "cancelLabel": [
+                "Cancel"
+              ],
+              "content": [
+                ""
+              ],
+              "contentType": [
+                "content"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 87,
+            "top": 89
+          },
+          "size": {
+            "width": 22,
+            "height": 7
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 11,
+      "vars_in": [],
+      "actions_in": [
+        {}
+      ],
+      "title": "",
+      "vars_out": [],
+      "actions_out": [
+        {
+          "event": "onClick",
+          "rel": "actionText",
+          "jpath": [],
+          "name": "appendQuery"
+        }
+      ]
     }
   ],
   "variables": [
