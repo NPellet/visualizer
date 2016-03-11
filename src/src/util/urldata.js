@@ -6,7 +6,13 @@ define(['superagent', 'src/util/lru', 'src/util/debug'], function (superagent, L
     var credentials = {};
 
     function doByUrl(url, headers) {
-        var host = new URL(url).host, withCredentials;
+        var host, withCredentials;
+        try {
+            host = new URL(url).host;
+        } catch (e) {
+            // `new URL()` can fail with relative URLs. Use current host in that case.
+            host = window.location.host;
+        }
         withCredentials = credentials[host];
 
         Debug.debug('DataURL: Looking for ' + url + ' by AJAX');
