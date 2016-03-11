@@ -1,3 +1,22 @@
+<a name="2.47.0"></a>
+# 2.47.0 (2016-03-11)
+
+
+### Bug Fixes
+
+* **jsme:** allow inplace modification of DataString ([fa6e97b](https://github.com/NPellet/visualizer/commit/fa6e97b))
+* **slickgrid:** fix reorder when inserting after last element ([cd4bb0d](https://github.com/NPellet/visualizer/commit/cd4bb0d))
+* **spectra_displayer:** activate zoom plugin for mouse wheel ([77d6099](https://github.com/NPellet/visualizer/commit/77d6099))
+* **urldata:** allow fetching from relative URLs ([aa8615f](https://github.com/NPellet/visualizer/commit/aa8615f))
+
+### Features
+
+* **dragdrop:** allow content not to be typed ([762cb06](https://github.com/NPellet/visualizer/commit/762cb06))
+* **slick_grid:** enable manual reordering of lines with drag and drop ([b1ccf9d](https://github.com/NPellet/visualizer/commit/b1ccf9d))
+* **smartArray:** add actions clearQuery, setQuery, appendQuery ([3af1195](https://github.com/NPellet/visualizer/commit/3af1195))
+
+
+
 <a name="2.46.2"></a>
 ## 2.46.2 (2016-03-08)
 
