@@ -515,6 +515,33 @@ define(['src/util/debug', 'src/util/color', 'lodash', 'src/data/structures', 'co
         return typeList;
     };
 
+    exports.contentTypeToType = function(contentType) {
+        switch (contentType) {
+            case 'chemical/x-jcamp-dx':
+                return "jcamp";
+            case 'image/gif':
+                return "gif";
+            case "image/tif":
+            case "image/tiff":
+                return "tiff";
+            case "image/jpg":
+            case "image/jpeg":
+                return "jpg";
+            case "image/png":
+                return "png";
+            case "image/svg":
+                return "svg";
+            case "chemical/x-jcamp-dx":
+                return "jcamp";
+            case "chemical/x-mdl-sdfile":
+                return "sdf";
+            case "chemical/x-mdl-molfile":
+                return "mol2d";
+            default:
+                return null;
+        }
+    };
+
     return exports;
 
 });
