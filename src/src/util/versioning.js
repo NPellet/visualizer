@@ -105,10 +105,7 @@ define([
         for (i in view) {
             delete view[i];
         }
-        // clear current data and variables
-        for (i in data) {
-            delete data[i];
-        }
+        // clear current variables
         Variables.eraseAll();
         // clear cache
         Cache.clear();
