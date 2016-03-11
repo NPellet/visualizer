@@ -106,20 +106,30 @@
         };
     </script>
     <style>
+        body, div, iframe {
+            margin: 0;
+            padding: 0;
+        }
+        #container {
+            display: flex;
+            height: 100vh;
+        }
+
         #left {
-            float: left;
-            width: 500px;
+            padding-left: 10px;
+            width: 350px;
+            height: 100%;
+            overflow: auto;
         }
 
         #right {
-            float: right;
+            flex: 1;
             height: 100%;
-            width: calc(100% - 520px);
         }
 
         #frame {
             border: none;
-            height: 100vh;
+            height: 100%;
             width: 100%;
         }
     </style>
@@ -128,39 +138,8 @@
 <body>
 <div id="container">
     <div id="left">
-        The visualizer page requires 3 parameters:
-        <ul>
-            <li>viewURL: url towards a JSON file describing the elements to
-                display
-            </li>
-            <li>dataURL: url pointing to the JSON containing the data</li>
-            <li>config: url point to a JSON containing information about the
-                header
-                of
-                the page (optional)
-            </li>
-        </ul>
-
         <h1>Examples</h1>
-
-        <p>
-            Please note that some of the examples will required an internet
-            connection.
-        </p>
-
-        <p>
-            Also the examples DO NOT WORK with CHROME. Ajax query on local
-            harddisk
-            are not allowed in the current version of Chrome.
-        </p>
-
-        <p>
-            Or starts chrome using command line (on MacOSx): open
-            /Applications/Google\ Chrome.app --args
-            -allow-file-access-from-files
-        </p>
         <br>
-
         <div style="margin-left: 40px">
             Select the config type:
             <div id="configs" style="display: inline-block"></div>
