@@ -326,8 +326,8 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
     Controller.prototype.variablesIn = ['list', 'script'];
 
     Controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {
-        hoverRow: 'Mimic row being hovered',
-        selectRow: 'Mimic row being clicked',
+        hoverRow: 'Mimic row hover',
+        selectRow: 'Mimic row click',
         selectRows: 'Set selected rows',
         addRow: 'Add a new row',
         showColumn: 'Show a column',
@@ -337,37 +337,37 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
 
     Controller.prototype.events = {
         onSelect: {
-            label: 'A row was clicked',
+            label: 'Row click',
             refVariable: ['row'],
             refAction: ['row']
         },
         onHover: {
-            label: 'Hovers a line',
+            label: 'Row hover',
             refVariable: ['row'],
             refAction: ['row']
         },
         onRowChange: {
-            label: 'A row has been edited',
+            label: 'Row changed',
             refVariable: ['row'],
             refAction: ['row']
         },
         onRowNew: {
-            label: 'A new row has been added',
+            label: 'Row added',
             refVariable: ['row'],
             refAction: ['row']
         },
         onRowsDelete: {
-            label: 'Rows have been deleted',
+            label: 'Rows deleted',
             refVariable: ['rows'],
             refAction: ['rows']
         },
         onRowActive: {
-            label: 'A new row became active',
+            label: 'Row active',
             refVariable: ['row'],
             refAction: ['row']
         },
         onRowsSelect: {
-            label: 'Rows have been selected',
+            label: 'Rows selected',
             refVariable: ['rows'],
             refAction: ['rows']
         }
