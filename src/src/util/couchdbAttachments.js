@@ -124,7 +124,7 @@ define([
                             };
                         } else {
                             this.lastDoc._attachments[name] = {
-                                content_type: dataUrl[1],
+                                content_type: item.contentType || dataUrl[1],
                                 data: data.slice(dataUrl[0].length)
                             };
                         }
