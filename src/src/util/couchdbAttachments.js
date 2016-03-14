@@ -9,7 +9,7 @@ define([
     'src/util/util'
 ], function (Versioning, superagent, util) {
 
-    var base64DataUrlReg = /^data:([a-z]+\/[a-z]+);base64,/;
+    var base64DataUrlReg = /^data:([a-z]+\/[a-z]+)?;base64,/;
 
     function dataURLtoBase64(data) {
         var pos;
