@@ -1,0 +1,370 @@
+{
+  "version": "2.47.2-0",
+  "grid": {
+	"layers": {
+	  "Default layer": {
+		"name": "Default layer"
+	  }
+	},
+	"xWidth": 10,
+	"yHeight": 10
+  },
+  "modules": [
+	{
+	  "url": "modules/types/client_interaction/code_editor/",
+	  "configuration": {
+		"sections": {},
+		"groups": {
+		  "group": [
+			{
+			  "mode": [
+				"text"
+			  ],
+			  "outputType": [
+				"string"
+			  ],
+			  "btnvalue": [
+				"Send script"
+			  ],
+			  "iseditable": [
+				[
+				  "editable"
+				]
+			  ],
+			  "hasButton": [
+				[]
+			  ],
+			  "variable": [
+				[]
+			  ],
+			  "debouncing": [
+				1
+			  ],
+			  "script": [
+				"AAAaa"
+			  ]
+			}
+		  ]
+		}
+	  },
+	  "layers": {
+		"Default layer": {
+		  "position": {
+			"left": 0,
+			"top": 0
+		  },
+		  "size": {
+			"width": 23.9666666,
+			"height": 13.9666666
+		  },
+		  "zIndex": 0,
+		  "display": true,
+		  "title": "Generate data",
+		  "bgColor": [
+			255,
+			255,
+			255,
+			0
+		  ],
+		  "wrapper": true,
+		  "created": true,
+		  "name": "Default layer"
+		}
+	  },
+	  "id": 7,
+	  "vars_in": [
+		{}
+	  ],
+	  "actions_in": [
+		{}
+	  ],
+	  "vars_out": [
+		{
+		  "event": "onEditorChange",
+		  "rel": "typedValue",
+		  "jpath": [],
+		  "name": "data"
+		}
+	  ],
+	  "title": "Generate data",
+	  "actions_out": [
+		{
+		  "jpath": []
+		}
+	  ]
+	},
+	{
+	  "url": "modules/types/client_interaction/code_editor/",
+	  "configuration": {
+		"sections": {},
+		"groups": {
+		  "group": [
+			{
+			  "mode": [
+				"text"
+			  ],
+			  "outputType": [
+				null
+			  ],
+			  "btnvalue": [
+				"Send script"
+			  ],
+			  "iseditable": [
+				[
+				  "editable"
+				]
+			  ],
+			  "hasButton": [
+				[]
+			  ],
+			  "variable": [
+				[
+				  "modify"
+				]
+			  ],
+			  "debouncing": [
+				1
+			  ],
+			  "script": [
+				"AAAaaAAAA"
+			  ]
+			}
+		  ]
+		}
+	  },
+	  "layers": {
+		"Default layer": {
+		  "position": {
+			"left": 25,
+			"top": 0
+		  },
+		  "size": {
+			"width": 36.9666666,
+			"height": 13.9666666
+		  },
+		  "zIndex": 0,
+		  "display": true,
+		  "title": "Input data, In place modif, Output data2",
+		  "bgColor": [
+			255,
+			255,
+			255,
+			0
+		  ],
+		  "wrapper": true,
+		  "created": true,
+		  "name": "Default layer"
+		}
+	  },
+	  "id": 8,
+	  "vars_in": [
+		{
+		  "rel": "data",
+		  "name": "data"
+		}
+	  ],
+	  "actions_in": [
+		{}
+	  ],
+	  "vars_out": [
+		{
+		  "event": "onEditorChange",
+		  "rel": "data",
+		  "jpath": [],
+		  "name": "data2"
+		}
+	  ],
+	  "title": "Input data, In place modif, Output data2",
+	  "actions_out": [
+		{
+		  "jpath": []
+		}
+	  ]
+	},
+	{
+	  "url": "modules/types/client_interaction/code_editor/",
+	  "configuration": {
+		"sections": {},
+		"groups": {
+		  "group": [
+			{
+			  "mode": [
+				"text"
+			  ],
+			  "outputType": [
+				null
+			  ],
+			  "btnvalue": [
+				"Send script"
+			  ],
+			  "iseditable": [
+				[
+				  "editable"
+				]
+			  ],
+			  "hasButton": [
+				[]
+			  ],
+			  "variable": [
+				[]
+			  ],
+			  "debouncing": [
+				0
+			  ],
+			  "script": [
+				"AAAaa"
+			  ]
+			}
+		  ]
+		}
+	  },
+	  "layers": {
+		"Default layer": {
+		  "position": {
+			"left": 63,
+			"top": 0
+		  },
+		  "size": {
+			"width": 23.9666666,
+			"height": 13.9666666
+		  },
+		  "zIndex": 0,
+		  "display": true,
+		  "title": "Display data",
+		  "bgColor": [
+			255,
+			255,
+			255,
+			0
+		  ],
+		  "wrapper": true,
+		  "created": true,
+		  "name": "Default layer"
+		}
+	  },
+	  "id": 9,
+	  "vars_in": [
+		{
+		  "rel": "data",
+		  "name": "data"
+		}
+	  ],
+	  "actions_in": [
+		{}
+	  ],
+	  "vars_out": [
+		{
+		  "jpath": []
+		}
+	  ],
+	  "title": "Display data",
+	  "actions_out": [
+		{
+		  "jpath": []
+		}
+	  ]
+	},
+	{
+	  "url": "modules/types/client_interaction/code_editor/",
+	  "configuration": {
+		"sections": {},
+		"groups": {
+		  "group": [
+			{
+			  "mode": [
+				"text"
+			  ],
+			  "outputType": [
+				null
+			  ],
+			  "btnvalue": [
+				"Send script"
+			  ],
+			  "iseditable": [
+				[
+				  "editable"
+				]
+			  ],
+			  "hasButton": [
+				[]
+			  ],
+			  "variable": [
+				[]
+			  ],
+			  "debouncing": [
+				0
+			  ],
+			  "script": [
+				"AAAaaAAAA"
+			  ]
+			}
+		  ]
+		}
+	  },
+	  "layers": {
+		"Default layer": {
+		  "position": {
+			"left": 25,
+			"top": 15
+		  },
+		  "size": {
+			"width": 36.9666666,
+			"height": 11.9666666
+		  },
+		  "zIndex": 0,
+		  "display": true,
+		  "title": "Input data2",
+		  "bgColor": [
+			255,
+			255,
+			255,
+			0
+		  ],
+		  "wrapper": true,
+		  "created": true,
+		  "name": "Default layer"
+		}
+	  },
+	  "id": 10,
+	  "vars_in": [
+		{
+		  "rel": "data",
+		  "name": "data2"
+		}
+	  ],
+	  "actions_in": [
+		{}
+	  ],
+	  "vars_out": [
+		{
+		  "jpath": []
+		}
+	  ],
+	  "title": "Input data2",
+	  "actions_out": [
+		{
+		  "jpath": []
+		}
+	  ]
+	}
+  ],
+  "variables": [
+	{
+	  "varname": "mols2d",
+	  "jpath": [
+		"mols2d"
+	  ]
+	},
+	{
+	  "varname": "molfile",
+	  "jpath": [
+		"molfile"
+	  ]
+	}
+  ],
+  "aliases": [],
+  "pouchvariables": [],
+  "configuration": {
+	"title": "No title"
+  }
+}

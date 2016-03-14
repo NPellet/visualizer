@@ -1,342 +1,557 @@
 {
-	"modules": [
-		{
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 0,
-				"top": 0
-			},
-			"size": {
-				"width": 37,
-				"height": 34
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"nblines": [
-								20
-							],
-							"toggle": [
-								null
-							],
-							"colorjpath": [
-								null
-							],
-							"filterRow": [
-								null
-							],
-							"displaySearch": []
-						}
-					],
-					"cols": [
-						[
-							{
-								"name": "Molecule",
-								"jpath": "element.molfile",
-								"number": [],
-								"editable": "none"
-							}
-						]
-					]
-				}
-			},
-			"id": 2,
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"vars_in": [
-				{
-					"rel": "list",
-					"name": "mols2d"
-				}
-			],
-			"actions_in": [
-				{}
-			],
-			"vars_out": [
-				{
-					"event": "onHover",
-					"rel": "row",
-					"jpath": "element.molfile",
-					"name": "mol2d"
-				}
-			],
-			"actions_out": [
-				{}
-			],
-			"url": "modules/types/display/jqgrid/"
-		},
-		{
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 42,
-				"top": 0
-			},
-			"size": {
-				"width": 50,
-				"height": 45
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"prefs": [
-								[
-									"oldlook"
-								]
-							],
-							"labelsize": [
-								"7"
-							],
-							"bondwidth": [
-								"2"
-							]
-						}
-					]
-				}
-			},
-			"id": 3,
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"vars_in": [
-				{
-					"rel": "mol",
-					"name": "mol2d"
-				}
-			],
-			"actions_in": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
-			"vars_out": [
-				{
-					"event": "onStructureChange",
-					"rel": "mol",
-					"jpath": "_2",
-					"name": "molfile"
-				},
-				{
-					"event": "onStructureChange",
-					"rel": "smiles",
-					"name": "smiles"
-				}
-			],
-			"url": "modules/types/science/chemistry/jsme/",
-			"actions_out": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
+  "modules": [
+	{
+	  "configuration": {
+		"sections": {},
+		"groups": {
+		  "group": [
+			{
+			  "nblines": [
+				20
+			  ],
+			  "toggle": [
+				null
+			  ],
+			  "colorjpath": [
+				null
+			  ],
+			  "filterRow": [
+				null
+			  ],
+			  "highlightLine": [
+				[
+				  "Yes"
+				]
+			  ]
+			}
+		  ],
+		  "cols": [
+			[
+			  {
+				"name": "Molecule",
+				"jpath": "element.molfile",
+				"number": [],
+				"editable": "none"
+			  }
 			]
-		},
-		{
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 0,
-				"top": 37
-			},
-			"size": {
-				"width": 38,
-				"height": 34
-			},
-			"configuration": {
-				"prefs": [
-					"depict",
-					"oldlook"
-				]
-			},
-			"id": 4,
-			"bgColor": "",
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
-			],
-			"vars_in": [
-				{
-					"rel": "mol",
-					"name": "mol2d"
-				}
-			],
-			"actions_in": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
-			"vars_out": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
-			],
-			"url": "modules/types/science/chemistry/jsme/"
-		},
-		{
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 94,
-				"top": 0
-			},
-			"size": {
-				"width": 51,
-				"height": 51
-			},
-			"configuration": {
-				"prefs": [
-					"depict"
-				]
-			},
-			"id": 5,
-			"bgColor": "",
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
-			],
-			"vars_in": [
-				{
-					"rel": "mol",
-					"name": "molfile"
-				}
-			],
-			"actions_in": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
-			"vars_out": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
-			],
-			"url": "modules/types/science/chemistry/jsme/"
-		},
-		{
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 96,
-				"top": 55
-			},
-			"size": {
-				"width": 45,
-				"height": 28
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"defaultvalue": [
-								null
-							],
-							"fontcolor": [
-								[
-									0,
-									0,
-									0,
-									1
-								]
-							],
-							"font": [
-								null
-							],
-							"fontsize": [
-								null
-							],
-							"align": [
-								null
-							],
-							"valign": [
-								null
-							],
-							"sprintf": [
-								null
-							]
-						}
-					]
-				}
-			},
-			"id": 6,
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"vars_in": [
-				{
-					"rel": "value",
-					"name": "mol2d"
-				}
-			],
-			"actions_in": [
-				{}
-			],
-			"vars_out": [
-				{}
-			],
-			"actions_out": [
-				{}
-			],
-			"url": "modules/types/display/single_value/"
+		  ]
 		}
-	],
-	"variables": [
+	  },
+	  "id": 1,
+	  "vars_in": [
 		{
-			"varname": "mol2d",
-			"jpath": "element.mol2d"
-		},
-		{
-			"varname": "mols3d",
-			"jpath": "element.mols3d"
-		},
-		{
-			"varname": "mol3d",
-			"jpath": "element.mol3d"
-		},
-		{
-			"varname": "mols2d",
-			"jpath": "element.mols2d"
+		  "rel": "list",
+		  "name": "mols2d"
 		}
-	],
-	"configuration": {
-		"title": "No title"
+	  ],
+	  "actions_in": [
+		{}
+	  ],
+	  "vars_out": [
+		{
+		  "event": "onHover",
+		  "rel": "row",
+		  "jpath": [
+			"molfile"
+		  ],
+		  "name": "mol2d"
+		}
+	  ],
+	  "actions_out": [
+		{
+		  "jpath": []
+		}
+	  ],
+	  "url": "modules/types/display/jqgrid/",
+	  "layers": {
+		"Default layer": {
+		  "position": {
+			"left": 0,
+			"top": 0,
+			"right": 0
+		  },
+		  "size": {
+			"width": 40,
+			"height": 41
+		  },
+		  "display": true,
+		  "title": "Untitled module",
+		  "bgColor": [
+			255,
+			255,
+			255,
+			0
+		  ],
+		  "wrapper": true,
+		  "created": true,
+		  "name": "Default layer"
+		}
+	  },
+	  "title": "Untitled module"
 	},
-	"_local": false,
-	"_saved": 1380886298789,
-	"_time": 1380886298789,
-	"_name": "Master",
-	"version": "2.2.3"
+	{
+	  "configuration": {
+		"sections": {},
+		"groups": {
+		  "group": [
+			{
+			  "prefs": [
+				[
+				  "oldlook"
+				]
+			  ],
+			  "defaultaction": [
+				null
+			  ],
+			  "labelsize": [
+				"7"
+			  ],
+			  "bondwidth": [
+				"2"
+			  ],
+			  "highlightColor": [
+				"3"
+			  ],
+			  "outputResult": [
+				[]
+			  ]
+			}
+		  ]
+		}
+	  },
+	  "id": 2,
+	  "vars_in": [
+		{
+		  "rel": "mol",
+		  "name": "mol2d"
+		}
+	  ],
+	  "actions_in": [
+		{}
+	  ],
+	  "vars_out": [
+		{
+		  "jpath": []
+		}
+	  ],
+	  "url": "modules/types/science/chemistry/jsme/",
+	  "actions_out": [
+		{
+		  "jpath": []
+		}
+	  ],
+	  "layers": {
+		"Default layer": {
+		  "position": {
+			"left": 0,
+			"top": 42,
+			"right": 0
+		  },
+		  "size": {
+			"width": 40,
+			"height": 35
+		  },
+		  "display": true,
+		  "title": "Display the mol2d with strange style",
+		  "bgColor": [
+			255,
+			255,
+			255,
+			0
+		  ],
+		  "wrapper": true,
+		  "created": true,
+		  "name": "Default layer"
+		}
+	  },
+	  "title": "Display the mol2d with strange style"
+	},
+	{
+	  "configuration": {
+		"sections": {},
+		"groups": {
+		  "group": [
+			{
+			  "prefs": [
+				[
+				  "oldlook"
+				]
+			  ],
+			  "defaultaction": [
+				null
+			  ],
+			  "labelsize": [
+				14
+			  ],
+			  "bondwidth": [
+				1
+			  ],
+			  "highlightColor": [
+				"3"
+			  ],
+			  "outputResult": [
+				[]
+			  ]
+			}
+		  ]
+		}
+	  },
+	  "id": 3,
+	  "vars_in": [
+		{
+		  "rel": "mol",
+		  "name": "mol2d"
+		}
+	  ],
+	  "actions_in": [
+		{}
+	  ],
+	  "vars_out": [
+		{
+		  "event": "onStructureChange",
+		  "rel": "mol",
+		  "jpath": [],
+		  "name": "molfile"
+		}
+	  ],
+	  "url": "modules/types/science/chemistry/jsme/",
+	  "layers": {
+		"Default layer": {
+		  "position": {
+			"left": 41,
+			"top": 0,
+			"right": 0
+		  },
+		  "size": {
+			"width": 47,
+			"height": 41
+		  },
+		  "display": true,
+		  "title": "Input mol2d, output molfile",
+		  "bgColor": [
+			255,
+			255,
+			255,
+			0
+		  ],
+		  "wrapper": true,
+		  "created": true,
+		  "name": "Default layer"
+		}
+	  },
+	  "title": "Input mol2d, output molfile",
+	  "actions_out": [
+		{
+		  "jpath": []
+		}
+	  ]
+	},
+	{
+	  "configuration": {
+		"sections": {},
+		"groups": {
+		  "group": [
+			{
+			  "prefs": [
+				[
+				  "oldlook"
+				]
+			  ],
+			  "defaultaction": [
+				null
+			  ],
+			  "labelsize": [
+				14
+			  ],
+			  "bondwidth": [
+				1
+			  ],
+			  "highlightColor": [
+				"3"
+			  ],
+			  "outputResult": [
+				[]
+			  ]
+			}
+		  ]
+		}
+	  },
+	  "id": 4,
+	  "vars_in": [
+		{
+		  "rel": "mol",
+		  "name": "molfile"
+		}
+	  ],
+	  "actions_in": [
+		{}
+	  ],
+	  "vars_out": [
+		{
+		  "jpath": []
+		}
+	  ],
+	  "url": "modules/types/science/chemistry/jsme/",
+	  "layers": {
+		"Default layer": {
+		  "position": {
+			"left": 89,
+			"top": 0,
+			"right": 0
+		  },
+		  "size": {
+			"width": 51,
+			"height": 41
+		  },
+		  "display": true,
+		  "title": "Allow to reedit the molfile",
+		  "bgColor": [
+			255,
+			255,
+			255,
+			0
+		  ],
+		  "wrapper": true,
+		  "created": true,
+		  "name": "Default layer"
+		}
+	  },
+	  "title": "Allow to reedit the molfile",
+	  "actions_out": [
+		{
+		  "jpath": []
+		}
+	  ]
+	},
+	{
+	  "configuration": {
+		"sections": {},
+		"groups": {
+		  "group": [
+			{
+			  "append": [
+				[]
+			  ],
+			  "maxEntries": [
+				1
+			  ],
+			  "editable": [
+				[]
+			  ],
+			  "defaultvalue": [
+				null
+			  ],
+			  "font": [
+				null
+			  ],
+			  "fontcolor": [
+				[
+				  0,
+				  0,
+				  0,
+				  1
+				]
+			  ],
+			  "fontsize": [
+				null
+			  ],
+			  "align": [
+				null
+			  ],
+			  "valign": [
+				null
+			  ],
+			  "rendererOptions": [
+				""
+			  ],
+			  "forceType": [
+				""
+			  ],
+			  "sprintf": [
+				null
+			  ],
+			  "sprintfOrder": [
+				null
+			  ],
+			  "preformatted": [
+				[]
+			  ]
+			}
+		  ]
+		}
+	  },
+	  "id": 5,
+	  "vars_in": [
+		{
+		  "rel": "value",
+		  "name": "molfile"
+		}
+	  ],
+	  "actions_in": [
+		{}
+	  ],
+	  "vars_out": [
+		{}
+	  ],
+	  "actions_out": [
+		{}
+	  ],
+	  "url": "modules/types/display/single_value/",
+	  "layers": {
+		"Default layer": {
+		  "position": {
+			"left": 89,
+			"top": 42,
+			"right": 0
+		  },
+		  "size": {
+			"width": 51,
+			"height": 35
+		  },
+		  "display": true,
+		  "title": "Display the molfile",
+		  "bgColor": [
+			255,
+			255,
+			255,
+			0
+		  ],
+		  "wrapper": true,
+		  "created": true,
+		  "name": "Default layer"
+		}
+	  },
+	  "title": "Display the molfile"
+	},
+	{
+	  "url": "modules/types/client_interaction/code_editor/",
+	  "configuration": {
+		"sections": {},
+		"groups": {
+		  "group": [
+			{
+			  "mode": [
+				"text"
+			  ],
+			  "outputType": [
+				null
+			  ],
+			  "btnvalue": [
+				"Send script"
+			  ],
+			  "iseditable": [
+				[
+				  "editable"
+				]
+			  ],
+			  "hasButton": [
+				[]
+			  ],
+			  "variable": [
+				[
+				  "modify"
+				]
+			  ],
+			  "debouncing": [
+				1
+			  ],
+			  "script": [
+				"c1ccccc1\nJME 2016-03-13 Mon Mar 14 07:32:06 GMT+100 2016\n\n  6  6  0  0  0  0  0  0  0  0999 V2000\n    0.0000    2.1000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.0000    0.7000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.2125    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.4249    0.7000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.4249    2.1000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.2125    2.7999    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  2  0  0  0  0\n  2  3  1  0  0  0  0\n  3  4  2  0  0  0  0\n  4  5  1  0  0  0  0\n  5  6  2  0  0  0  0\n  6  1  1  0  0  0  0\nM  END\n"
+			  ]
+			}
+		  ]
+		}
+	  },
+	  "layers": {
+		"Default layer": {
+		  "position": {
+			"left": 41,
+			"top": 42
+		  },
+		  "size": {
+			"width": 47,
+			"height": 35
+		  },
+		  "zIndex": 0,
+		  "display": true,
+		  "title": "Display the molfile and allow in-line editing",
+		  "bgColor": [
+			255,
+			255,
+			255,
+			0
+		  ],
+		  "wrapper": true,
+		  "created": true,
+		  "name": "Default layer"
+		}
+	  },
+	  "id": 6,
+	  "vars_in": [
+		{
+		  "rel": "data",
+		  "name": "molfile"
+		}
+	  ],
+	  "actions_in": [
+		{}
+	  ],
+	  "vars_out": [
+		{
+		  "jpath": []
+		}
+	  ],
+	  "title": "Display the molfile and allow in-line editing",
+	  "actions_out": [
+		{
+		  "jpath": []
+		}
+	  ]
+	}
+  ],
+  "variables": [
+	{
+	  "varname": "mol2d",
+	  "jpath": [
+		"mol2d"
+	  ]
+	},
+	{
+	  "varname": "mols3d",
+	  "jpath": [
+		"mols3d"
+	  ]
+	},
+	{
+	  "varname": "mol3d",
+	  "jpath": [
+		"mol3d"
+	  ]
+	},
+	{
+	  "varname": "mols2d",
+	  "jpath": [
+		"mols2d"
+	  ]
+	}
+  ],
+  "configuration": {
+	"title": "No title"
+  },
+  "_local": false,
+  "_saved": 1380886298789,
+  "_time": 1380886298789,
+  "_name": "Master",
+  "version": "2.47.2-0",
+  "grid": {
+	"layers": {
+	  "Default layer": {
+		"name": "Default layer"
+	  }
+	},
+	"xWidth": 10,
+	"yHeight": 10
+  },
+  "aliases": [],
+  "pouchvariables": []
 }
