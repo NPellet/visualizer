@@ -714,7 +714,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
 
     var getType = {
         value: function () {
-            var type = typeof this;
+            var type = Util.objectToString(this).toLowerCase();
             if (type !== 'object') // Native types: number, string, boolean
                 return type;
             if (Array.isArray(this))
@@ -729,7 +729,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
         if (isSpecialObject(value)) {
             return value.getType();
         } else {
-            return typeof value;
+            return Util.objectToString(value).toLowerCase();
         }
     };
 
