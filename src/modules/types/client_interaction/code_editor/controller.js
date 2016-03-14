@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/data/structures', 'src/main/datas'], function (Default, Structure, Data) {
+define(['modules/default/defaultcontroller', 'src/data/structures'], function (Default, Structure) {
 
     function Controller() {
     }
@@ -128,9 +128,9 @@ define(['modules/default/defaultcontroller', 'src/data/structures', 'src/main/da
     };
 
     Controller.prototype.onEditorChanged = function (value) {
-        if (this.module.getConfigurationCheckbox('variable', 'modify') && Data.isSpecialNativeObject(this.module.model.data)) {
-            this.module.model.data.setValue(value);
-            this.module.model.dataTriggerChange(this.module.model.data);
+        if (this.module.getConfigurationCheckbox('variable', 'modify') && DataObject.getType(this.module.view._data) === 'string') {
+            this.module.view._data.setValue(value);
+            this.module.model.dataTriggerChange(this.module.view._data);
         }
 
         this.createDataFromEvent('onEditorChange', 'data', value);
