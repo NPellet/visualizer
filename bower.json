@@ -80,7 +80,8 @@
     "ui-contextmenu": "1.11.0",
     "uri.js": "1.14.1",
     "x2js": "1.2.0",
-    "web-animations-js": "2.1.2"
+    "web-animations-js": "2.1.2",
+    "eventEmitter": "^4.3.0"
   },
   "resolutions": {
     "jsgraph": "v1.13.3-55",
