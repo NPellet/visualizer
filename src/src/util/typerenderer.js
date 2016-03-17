@@ -50,17 +50,14 @@ define([
     functions.qrcode = {};
     functions.qrcode.init = function () {
         return new Promise(function (resolve) {
-            require(['components/qrcode.js/qrcode'], resolve);
+            require(['components/jquery-qrcode/jquery.qrcode.min'], resolve);
         });
     };
     functions.qrcode.toscreen = function ($element, val, rootVal, options) {
-        var defaultOptions = {
-            width: 128,
-            height: 128,
-            text: String(val)
-        };
-
-        new window.QRCode($element[0], Object.assign(defaultOptions, options));
+        options = Object.assign({
+            width: 128, height: 128, text: String(val)
+        }, options);
+        $element.qrcode(options);
     };
 
     functions.barcode = {};

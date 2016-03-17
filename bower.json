@@ -66,7 +66,6 @@
     "openchemlib": "4.0.1",
     "papa-parse": "4.1.2",
     "pouchdb": "3.3.1",
-    "qrcode.js": "davidshimjs/qrcodejs#04f46c6a0708418cb7b96fc563eacae0fbf77674",
     "requirejs": "2.1.22",
     "select2": "4.0.0",
     "setImmediate": "YuzuJS/setImmediate#1.0.2",
@@ -81,11 +80,13 @@
     "uri.js": "1.14.1",
     "x2js": "1.2.0",
     "web-animations-js": "2.1.2",
-    "eventEmitter": "^4.3.0"
+    "eventEmitter": "^4.3.0",
+    "jquery-qrcode": "cheminfo/jquery-qrcode#1170d085ffb9e8c5de5290041902923ceca3c9e7"
   },
   "resolutions": {
     "jsgraph": "v1.13.3-55",
-    "jcampconverter": "~2.2.2"
+    "jcampconverter": "~2.2.2",
+    "jquery": "2.2.1"
   },
   "private": true
 }

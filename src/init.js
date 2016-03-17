@@ -130,9 +130,6 @@ require.config({
             deps: ['lib/pixastic/pixastic/pixastic.core'],
             exports: 'Pixastic'
         },
-        'components/qrcode.js/qrcode': {
-            exports: 'QRCode'
-        },
         fancytree: ['jquery-ui/core', 'jquery-ui/effect-blind', 'jquery-ui/droppable', 'jquery-ui/draggable'],
         'moment-duration-format': ['moment'],
         BiojsCore: {
