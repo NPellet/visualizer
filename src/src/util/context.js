@@ -17,7 +17,7 @@ define(['jquery', 'src/util/config', 'src/util/versioning', 'jquery-ui/menu'], f
 
                 for (var i = 0, l = elements.length; i < l; i++) {
                     (function (element, callbackClick, callbackOpen) {
-                        if (Versioning.isViewLocked() || (Config.contextMenu().indexOf('all') === -1 && Config.contextMenu().indexOf(element.attr('name') || 'undefined') === -1)) return;
+                        if (Config.contextMenu().indexOf('all') === -1 && Config.contextMenu().indexOf(element.attr('name') || 'undefined') === -1) return;
                         if ((callbackOpen && callbackOpen(e, element)) || !callbackOpen) {
                             contextMenu.append(element);
                         }
