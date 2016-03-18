@@ -1,15 +1,15 @@
 'use strict';
 
 define([
-        'src/util/api',
-        'src/util/ui',
-        'src/util/util',
-        'superagent',
-        'uri/URI',
-        'lodash',
-        'src/util/couchdbAttachments',
-        'mime-types'
-    ],
+    'src/util/api',
+    'src/util/ui',
+    'src/util/util',
+    'superagent',
+    'uri/URI',
+    'lodash',
+    'src/util/couchdbAttachments',
+    'mime-types'
+],
     function (API, ui, Util, superagent, URI, _, CDB, mimeTypes) {
 
         const defaultOptions = {
@@ -128,7 +128,7 @@ define([
                                         requestUrl,
                                         data: res.body
                                     };
-                                    for(var i=0; i<res.body.length; i++) {
+                                    for (var i = 0; i < res.body.length; i++) {
                                         this._typeUrl(res.body[i].$content, res.body[i]);
                                     }
                                     API.createData(options.varName, res.body);
@@ -193,7 +193,7 @@ define([
                 return this.__ready
                     .then(() => {
                         options = createOptions(options, 'create');
-                        if(!entry.$kind) {
+                        if (!entry.$kind) {
                             entry.$kind = this.kind;
                         }
                         this._defaults(entry.$content);
@@ -241,14 +241,14 @@ define([
 
             deleteAttachment(entry, attachments, options) {
                 return this.__ready.then(() => {
-                    if(!entry || !entry._attachments) return;
+                    if (!entry || !entry._attachments) return;
                     options = createOptions(options, 'deleteAttachment');
                     if (Array.isArray(attachments) && attachments.length === 0) return entry;
-                    if(!Array.isArray(attachments)) attachments = [attachments];
+                    if (!Array.isArray(attachments)) attachments = [attachments];
 
                     attachments = attachments.map(String);
                     this._deleteFilename(entry.$content, attachments);
-                    for(var i=0; i<attachments.length; i++) {
+                    for (var i = 0; i < attachments.length; i++) {
                         delete entry._attachments[attachments[i]];
                     }
                     return this.update(entry, options);
@@ -263,15 +263,15 @@ define([
                 return this.__ready.then(() => {
                     options = createOptions(options, 'update');
                     // Confirm?
-                    if(!this.processor) throw new Error('no processor');
+                    if (!this.processor) throw new Error('no processor');
 
                     //var arr = this.processor.getType('nmr', entry.$content, this.kind);
-                    if(!row.__parent) {
+                    if (!row.__parent) {
                         throw new Error('row must be linked to parent for unattach to work');
                     }
                     var arr = row.__parent;
                     var idx = arr.indexOf(row);
-                    if(idx === -1) {
+                    if (idx === -1) {
                         console.warn('element to unattach not found');
                         return;
                     }
@@ -282,13 +282,13 @@ define([
                     var toKeep = this._findFilename(entry.$content, toDelete);
                     toKeep = toKeep.map(k => String(k.filename));
                     toDelete = _.difference(toDelete, toKeep);
-                    if(entry._attachments) {
-                        for(var i=0; i<toDelete.length; i++) {
+                    if (entry._attachments) {
+                        for (var i = 0; i < toDelete.length; i++) {
                             delete entry._attachments[toDelete[i]];
                         }
                     }
 
-                    return this.update(entry, options)
+                    return this.update(entry, options);
                 });
             }
 
@@ -377,7 +377,7 @@ define([
                         })
                         .then(handleSuccess(this, options))
                         .catch(handleError(this, options));
-                })
+                });
             }
 
             addAttachmentById(id, attachment, options) {
@@ -493,9 +493,9 @@ define([
             }
 
             _defaults(content) {
-                if(this.processor) {
+                if (this.processor) {
                     var kind = this.kind;
-                    if(kind) {
+                    if (kind) {
                         this.processor.defaults(kind, content);
                     }
                 }
@@ -522,12 +522,11 @@ define([
 
             _findFilename(v, filename) {
                 var r = [];
-                if(!Array.isArray(filename) && typeof filename !== 'undefined') filename = [filename];
-                this._traverseFilename(v, function(v) {
-                    if(typeof filename === 'undefined') {
+                if (!Array.isArray(filename) && typeof filename !== 'undefined') filename = [filename];
+                this._traverseFilename(v, function (v) {
+                    if (typeof filename === 'undefined') {
                         r.push(v);
-                    }
-                    else if(filename.indexOf(String(v.filename)) !== -1) {
+                    } else if (filename.indexOf(String(v.filename)) !== -1) {
                         r.push(v);
                     }
                 });
@@ -536,7 +535,7 @@ define([
 
             _deleteFilename(v, filename) {
                 var filenames = this._findFilename(v, filename);
-                for(var i=0; i<filenames.length; i++) {
+                for (var i = 0; i < filenames.length; i++) {
                     delete filenames[i].filename;
                 }
             }
@@ -544,13 +543,13 @@ define([
             _typeUrl(v, entry) {
                 this._traverseFilename(v, v => {
                     var filename = String(v.filename);
-                    if(!entry._attachments) return;
+                    if (!entry._attachments) return;
                     var att = entry._attachments[filename];
-                    if(!att) return;
+                    if (!att) return;
                     var contentType = att.content_type;
                     var vtype = Util.contentTypeToType(contentType);
                     var prop;
-                    if(typeValue.indexOf(vtype) !== -1) {
+                    if (typeValue.indexOf(vtype) !== -1) {
                         prop = 'value';
                     } else {
                         prop = 'url';
@@ -569,7 +568,7 @@ define([
                         enumerable: false,
                         writable: true
                     });
-                })
+                });
             }
         }
 

@@ -710,7 +710,7 @@ define([
 
                     that._runFilter(context);
 
-                    if(context.renderOptions.disabled) {
+                    if (context.renderOptions.disabled) {
                         cellNode.innerHTML = '';
                     } else {
                         if (context.renderOptions.icon.startsWith('fa-')) {
@@ -726,7 +726,7 @@ define([
 
                     if (context.renderOptions.action) {
                         $a.addClass('icon-clickable');
-                        if($a.length) {
+                        if ($a.length) {
                             $a[0].onclick = function () {
                                 API.doAction(context.renderOptions.action, dataContext);
                             };
