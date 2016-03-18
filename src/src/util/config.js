@@ -7,7 +7,7 @@ define(['./versioning'], function (Versioning) {
     // If undefined is set then not setting the name attribute will add it anyway
     var defaultContextMenu = [
         'undefined', 'all', 'global-configuration', 'configuration',
-        'copy', 'paste', 'duplicate', 'add', 'layers',
+        'copy', 'paste', 'duplicate', 'add', 'layers', 'utils',
         'remove', 'export', 'print', 'refresh', 'tofront', 'toback', 'move', 'custom', 'fullscreen'
     ];
     return {

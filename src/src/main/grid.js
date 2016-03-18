@@ -887,44 +887,47 @@ define([
 
                 utilLi = $('<li name="utils"><a>Utils</a></li>');
                 utilUl = $('<ul />').appendTo(utilLi);
-                Context.listen(dom, [], function (contextDom) {
 
-                    utilUl.empty();
-                    utilUl.append($('<li data-util="copyview"><a><span/>Copy view</a></li>').data('utilkey', 'copyview'));
-                    utilUl.append($('<li data-util="copydata"><a><span/>Copy data</a></li>').data('utilkey', 'copydata'));
-                    utilUl.append($('<li data-util="pasteview"><a><span/>Paste view</a></li>').data('utilkey', 'pasteview'));
-                    utilUl.append($('<li data-util="pastedata"><a><span/>Paste data</a></li>').data('utilkey', 'pastedata'));
-                    utilUl.append($('<li data-util="blankview"><a><span/>Blank view</a></li>').data('utilkey', 'blankview'));
-                    utilUl.append($('<li data-util="feedback"><a><span/>Send Feedback</a></li>').data('utilkey', 'feedback'));
-                    $(contextDom).append(utilLi);
+                if (Config.contextMenu().indexOf('all') > -1 || Config.contextMenu().indexOf('utils') > -1) {
+                    Context.listen(dom, [], function (contextDom) {
 
-                    utilLi.bind('click', function (event) {
-                        var utilkey = $(event.target.parentNode).data('utilkey');
-                        switch (utilkey) {
-                            case 'copyview':
-                                ui.copyview();
-                                break;
-                            case 'blankview':
-                                Versioning.blankView();
-                                break;
-                            case 'copydata':
-                                ui.copyData();
-                                break;
-                            case 'pasteview':
-                                ui.pasteView();
-                                break;
-                            case 'pastedata':
-                                ui.pasteData();
-                                break;
-                            case 'feedback':
-                                ui.feedback();
-                                break;
-                            default:
-                                Debug.warn('Unknow util key');
-                                break;
-                        }
+                        utilUl.empty();
+                        utilUl.append($('<li data-util="copyview"><a><span/>Copy view</a></li>').data('utilkey', 'copyview'));
+                        utilUl.append($('<li data-util="copydata"><a><span/>Copy data</a></li>').data('utilkey', 'copydata'));
+                        utilUl.append($('<li data-util="pasteview"><a><span/>Paste view</a></li>').data('utilkey', 'pasteview'));
+                        utilUl.append($('<li data-util="pastedata"><a><span/>Paste data</a></li>').data('utilkey', 'pastedata'));
+                        utilUl.append($('<li data-util="blankview"><a><span/>Blank view</a></li>').data('utilkey', 'blankview'));
+                        utilUl.append($('<li data-util="feedback"><a><span/>Send Feedback</a></li>').data('utilkey', 'feedback'));
+                        $(contextDom).append(utilLi);
+
+                        utilLi.bind('click', function (event) {
+                            var utilkey = $(event.target.parentNode).data('utilkey');
+                            switch (utilkey) {
+                                case 'copyview':
+                                    ui.copyview();
+                                    break;
+                                case 'blankview':
+                                    Versioning.blankView();
+                                    break;
+                                case 'copydata':
+                                    ui.copyData();
+                                    break;
+                                case 'pasteview':
+                                    ui.pasteView();
+                                    break;
+                                case 'pastedata':
+                                    ui.pasteData();
+                                    break;
+                                case 'feedback':
+                                    ui.feedback();
+                                    break;
+                                default:
+                                    Debug.warn('Unknow util key');
+                                    break;
+                            }
+                        });
                     });
-                });
+                }
 
                 Context.listen(Context.getRootDom(), [
                         ['<li name="diagram"><a><span class="ui-icon ui-icon-zoomin"></span>View Diagram</a></li>',
