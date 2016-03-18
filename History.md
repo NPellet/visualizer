@@ -1,3 +1,19 @@
+<a name="2.47.2"></a>
+## 2.47.2 (2016-03-18)
+
+
+### Bug Fixes
+
+* update jsgraph to 1.13.3-55 ([2d55e8b](https://github.com/NPellet/visualizer/commit/2d55e8b))
+* **code_editor:** in-place modification now working ([f91fc6d](https://github.com/NPellet/visualizer/commit/f91fc6d))
+* **core:** DataObject.getType should return 'null' if null is passed ([948b95a](https://github.com/NPellet/visualizer/commit/948b95a))
+* **couchdbAttachments:** content type does not have to be in base64 url string ([4af0688](https://github.com/NPellet/visualizer/commit/4af0688))
+* **slickgrid:** fix disable column action ([283479f](https://github.com/NPellet/visualizer/commit/283479f))
+* **slickgrid:** make handlebar base64 url -> will show up in build ([1624f4f](https://github.com/NPellet/visualizer/commit/1624f4f))
+* **typerenderer:** fix oclid with force type ([4c61454](https://github.com/NPellet/visualizer/commit/4c61454))
+
+
+
 <a name="2.47.1"></a>
 ## 2.47.1 (2016-03-11)
 
