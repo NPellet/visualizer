@@ -710,10 +710,14 @@ define([
 
                     that._runFilter(context);
 
-                    if (context.renderOptions.icon.startsWith('fa-')) {
-                        cellNode.innerHTML = `<div style="width:100%; height: 100%"><a><i class="fa ${context.renderOptions.icon} centered-icon"></i></a></div>`;
+                    if(context.renderOptions.disabled) {
+                        cellNode.innerHTML = '';
                     } else {
-                        cellNode.innerHTML = `<div style="width:100%; height: 100%"><a>${context.renderOptions.icon}</a></div>`;
+                        if (context.renderOptions.icon.startsWith('fa-')) {
+                            cellNode.innerHTML = `<div style="width:100%; height: 100%"><a><i class="fa ${context.renderOptions.icon} centered-icon"></i></a></div>`;
+                        } else {
+                            cellNode.innerHTML = `<div style="width:100%; height: 100%"><a>${context.renderOptions.icon}</a></div>`;
+                        }
                     }
 
                     var $cellNode = $(cellNode);
@@ -722,9 +726,12 @@ define([
 
                     if (context.renderOptions.action) {
                         $a.addClass('icon-clickable');
-                        $a[0].onclick = function () {
-                            API.doAction(context.renderOptions.action, dataContext);
-                        };
+                        if($a.length) {
+                            $a[0].onclick = function () {
+                                API.doAction(context.renderOptions.action, dataContext);
+                            };
+                        }
+
                     }
                 }
             };
