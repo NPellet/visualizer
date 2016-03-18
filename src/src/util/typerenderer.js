@@ -251,8 +251,7 @@ define([
         return new Promise(function (resolve) {
             require([OCL], function (ACT) {
                 if (!root.coordinates) {
-                    var value = String(root.value);
-                    var mol = ACT.Molecule.fromIDCode(String(value), true);
+                    var mol = ACT.Molecule.fromIDCode(String(val), true);
                     Object.defineProperty(root, 'coordinates', {
                         configurable: true,
                         enumerable: false,
@@ -260,7 +259,7 @@ define([
                         writable: true
                     });
                 }
-                resolve(renderOpenChemLibStructure($element, String(root.value), String(root.coordinates), options));
+                resolve(renderOpenChemLibStructure($element, String(val), String(root.coordinates), options));
             });
         });
     };
