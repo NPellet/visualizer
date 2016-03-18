@@ -55,7 +55,7 @@ define([
     };
     functions.qrcode.toscreen = function ($element, val, rootVal, options) {
         options = Object.assign({
-            width: 128, height: 128, text: String(val)
+            width: 128, height: 128, text: String(val), render: 'table'
         }, options);
         $element.qrcode(options);
     };
