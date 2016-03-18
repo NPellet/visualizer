@@ -342,8 +342,11 @@ define([
     functions.molfile3d = functions.mol3d;
 
     functions.downloadlink = {};
-    functions.downloadlink.toscreen = function ($element, value) {
-        $element.html(value.replace(/^(.*)$/, '<a download href="$1">⤵</a>'));
+    functions.downloadlink.toscreen = function ($element, value, root, options) {
+        var title = options && options.title;
+        title = title || 'Download resource';
+
+        $element.html(`<a download title="${title}" href="${value}">⤵</a>`);
     };
 
     functions.openlink = {};
