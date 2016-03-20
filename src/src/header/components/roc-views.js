@@ -372,7 +372,7 @@ define([
                 }
             });
 
-            var closeButton = this.$closeButton = $('<button>Close</button>').button({disabled: true}).click(() => this.closeLoadedView());
+            var closeButton = this.$closeButton = $('<button>Close view</button>').button({disabled: true}).click(() => this.closeLoadedView());
             var saveButton = this.$saveButton = $('<button>Save</button>').button({disabled: true}).click(() => this.saveLoadedView());
             var saveAsButton = this.$saveAsButton = $('<button>Save as</button>').button({disabled: true}).click(() => this.saveAs());
             var saveAsText = this.$saveAsText = $('<input type="text" size="15" />').css('display', 'none');
