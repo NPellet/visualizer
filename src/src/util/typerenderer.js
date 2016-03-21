@@ -201,7 +201,7 @@ define([
         return $element.html(value.replace(/^(.*)$/, '<a target="_blank" href="http://dx.doi.org/$1"><img src="bin/logo/doi.png" /></a>'));
     };
 
-    var OCL = 'openchemlib/openchemlib-viewer';
+    var OCL = 'openchemlib/openchemlib-full';
     var defaultOpenChemLibStructureOptions = {
         suppressChiralText: true,
         suppressESR: true,
