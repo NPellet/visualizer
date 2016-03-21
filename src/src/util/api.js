@@ -179,7 +179,7 @@ define([
      * @param {string} [filter] - Url of the filter to use with this variable
      */
     exports.createData = function createData(name, data, filter) {
-        Variables.setVariable(name, false, data, filter);
+        return Variables.setVariable(name, false, data, filter);
     };
 
     /**

@@ -60,11 +60,11 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
 
         if (jpath) {
 
-            variable.setjPath(jpath, filterFunction);
+            return variable.setjPath(jpath, filterFunction);
 
         } else {
 
-            variable.createData([name], newData, filterFunction);
+            return variable.createData([name], newData, filterFunction);
 
         }
     }
@@ -153,8 +153,11 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
 
         createData: function (jpath, dataToCreate, callback) {
             dataToCreate = DataObject.resurrect(dataToCreate);
-            data.setChild(jpath, dataToCreate);
+            var prom = data.setChild(jpath, dataToCreate);
             this.setjPath(jpath, callback);
+            return prom.then(function ()  {
+                return dataToCreate;
+            });
         },
 
         getData: function () {
