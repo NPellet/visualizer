@@ -89,7 +89,7 @@ define([
         function updateHeader() {
             $header.html(`
                 <table><tr><td>
-                ${sources ? (sources + ' sources left') : 'All sources loaded.' + (failedSources ? (' (' + failedSources + ' failed)') : '')}
+                ${sources ? (sources + ' sources left') : 'Sources loaded.' + (failedSources ? (' (' + failedSources + ' failed)') : '')}
                 </td>
                 <td id="abc">
                 </td></tr>
@@ -138,6 +138,7 @@ define([
         var fromArray = Array.isArray(list);
 
         if (!options.asynchronous) {
+            allProm = [];
             if (fromArray) {
                 arr = list;
             } else {
@@ -195,12 +196,8 @@ define([
                 var $container = $('<div>').css('height', 410);
 
                 Promise.all(allProm).then(() => {
-                    console.log('all done');
                     var len = data.getLength();
-                    if (len === 0) {
-                        reject(new Error('empty data'));
-                        $dialog.dialog('close');
-                    } else if (len === 1 && options.autoSelect) {
+                    if (len === 1 && options.autoSelect) {
                         var id = data.mapRowsToIds([0])[0];
                         resolve(id);
                         $dialog.dialog('close');
