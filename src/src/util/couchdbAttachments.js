@@ -360,7 +360,7 @@ define([
         for (var key in att) {
             r.push(att[key]);
             r[i].name = key;
-            r[j].filename = key;
+            r[i].filename = key;
             r[i].url = encodeURI(ctx.docUrl + '/' + key);
             i++;
         }
