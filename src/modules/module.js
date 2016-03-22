@@ -1064,7 +1064,7 @@ define([
         },
 
         getId: function () {
-            return this.definition.id;
+            return DataObject.resurrect(this.definition.id);
         },
 
         setId: function (id) {
