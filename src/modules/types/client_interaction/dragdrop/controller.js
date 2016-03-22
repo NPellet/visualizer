@@ -219,6 +219,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                 } else {
                     eCfgEl.match = /^text\/plain$/i;
                 }
+                eCfgEl.filetype = 'text';
             }
             this.stringCfg = enhancedStringCfg;
 
@@ -459,7 +460,9 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
             };
         }
         var name = meta.cfg.variable;
+        debugger;
         var variable = new DataObject({
+            readtype: meta.cfg.filetype,
             filename: meta.filename,
             mimetype: meta.mime,
             contentType: meta.mime,
