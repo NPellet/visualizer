@@ -116,18 +116,26 @@ define([
                     let item = options[i];
                     let data = item.data || item.file || item.content;
                     if (typeof data === 'string') {
-                        let dataUrl = base64DataUrlReg.exec(data.slice(0, 64));
-                        if (!dataUrl) {
+                        if(item.readtype === 'base64') {
                             this.lastDoc._attachments[name] = {
                                 content_type: item.contentType,
-                                data: btoa(unescape(encodeURIComponent(data)))
-                            };
+                                data: data
+                            }
                         } else {
-                            this.lastDoc._attachments[name] = {
-                                content_type: item.contentType || dataUrl[1],
-                                data: data.slice(dataUrl[0].length)
-                            };
+                            let dataUrl = base64DataUrlReg.exec(data.slice(0, 64));
+                            if (!dataUrl) {
+                                this.lastDoc._attachments[name] = {
+                                    content_type: item.contentType,
+                                    data: btoa(unescape(encodeURIComponent(data)))
+                                };
+                            } else {
+                                this.lastDoc._attachments[name] = {
+                                    content_type: item.contentType || dataUrl[1],
+                                    data: data.slice(dataUrl[0].length)
+                                };
+                            }
                         }
+
                     } else if (data instanceof Blob) {
                         if (!item.contentType && data.type) {
                             item.contentType = data.type;
@@ -191,14 +199,17 @@ define([
                 if (!contentType && data instanceof Blob) {
                     contentType = data.type;
                 } else if (typeof data === 'string') {
-                    let dataUrl = base64DataUrlReg.exec(data.slice(0, 64));
-                    if (dataUrl) {
-                        data = util.b64toBlob(data.slice(dataUrl[0].length), dataUrl[1]);
-                        contentType = dataUrl[1];
+                    if(options.readtype === 'base64') {
+                        data = options.data;
                     } else {
-                        data = new Blob([data], {content_type: options.contentType});
+                        let dataUrl = base64DataUrlReg.exec(data.slice(0, 64));
+                        if (dataUrl) {
+                            data = util.b64toBlob(data.slice(dataUrl[0].length), dataUrl[1]);
+                            contentType = dataUrl[1];
+                        } else {
+                            data = new Blob([data], {content_type: options.contentType});
+                        }
                     }
-
                 } else {
                     throw new Error('Data must be Blob or base64 dataUrl');
                 }
