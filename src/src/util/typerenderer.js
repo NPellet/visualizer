@@ -100,7 +100,18 @@ define([
     functions.string = {};
     functions.string.toscreen = function ($element, val, rootVal, options) {
         val = String(val);
-        val.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        val = val.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+        if(options.search && options.replace) {
+            var search;
+            try {
+                search = new RegExp(options.search);
+            } catch(e) {
+                search = options.search;
+            }
+            val = val.replace(search, options.replace);
+        }
+
         if (checkDate(options)) {
             val = toDate(val, options);
         }
