@@ -116,7 +116,7 @@ define([
                     let item = options[i];
                     let data = item.data || item.file || item.content;
                     if (typeof data === 'string') {
-                        if(item.readtype === 'base64') {
+                        if(item.encoding === 'base64') {
                             this.lastDoc._attachments[name] = {
                                 content_type: item.contentType,
                                 data: data
@@ -199,7 +199,7 @@ define([
                 if (!contentType && data instanceof Blob) {
                     contentType = data.type;
                 } else if (typeof data === 'string') {
-                    if(options.readtype === 'base64') {
+                    if(options.encoding === 'base64') {
                         data = options.data;
                     } else {
                         let dataUrl = base64DataUrlReg.exec(data.slice(0, 64));
