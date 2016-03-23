@@ -6,7 +6,7 @@ define(['lib/semver/semver'], function (semver) {
     var MAJOR = 2;
     var MINOR = 47;
     var PATCH = 3;
-    var PRERELEASE = 0;
+    var PRERELEASE = 1;
     var IS_RELEASE = false;
     var BUILD_TIME = null;
     var INCLUDED_MODULE_CSS = [];

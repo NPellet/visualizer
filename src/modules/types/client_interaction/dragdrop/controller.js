@@ -1,6 +1,12 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versioning', 'src/data/structures', 'src/util/debug', 'src/util/util'], function (Default, API, Versioning, Structure, Debug, Util) {
+define(['modules/default/defaultcontroller',
+    'src/util/api', 'src/util/versioning',
+    'src/data/structures', 'src/util/debug',
+    'src/util/util',
+    'src/util/ui',
+    'mime-types'
+], function (Default, API, Versioning, Structure, Debug, Util, ui, mimeTypes) {
 
     function Controller() {
     }
@@ -125,6 +131,20 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                         }
                     }
                 },
+                string_general: {
+                    options: {
+                        type: 'list',
+                        title: 'For strings (general)'
+                    },
+                    fields: {
+                        askFilename: {
+                            type: 'checkbox',
+                            title: 'Ask for filename',
+                            options: {yes: 'Yes'},
+                            default: []
+                        }
+                    }
+                },
                 string: {
                     options: {
                         type: 'table',
@@ -132,16 +152,29 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                         title: 'For strings'
                     },
                     fields: {
+                        filter: {
+                            type: 'combo',
+                            title: 'filter on',
+                            options: [
+                                {title: 'File extension', key: 'ext'},
+                                {title: 'Mime-type', key: 'mime'}
+                            ],
+                            'default': 'ext'
+                        },
+                        extension: {
+                            type: 'text',
+                            title: 'Filter',
+                            'default': '*'
+                        },
                         type: {
                             type: 'combo',
                             title: 'Force type',
                             options: typeList,
                             'default': ''
                         },
-                        filter: {
+                        mime: {
                             type: 'text',
-                            title: 'filter (mime-type)',
-                            'default': 'text/plain'
+                            title: 'Force mime-type'
                         },
                         variable: {
                             type: 'text',
@@ -179,7 +212,8 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         string: ['groups', 'string', 0],
         photo: ['groups', 'photo', 0],
         showPhotoButton: ['groups', 'group', 0, 'showPhotoButton', 0],
-        capture: ['groups', 'group', 0, 'capture', 0]
+        capture: ['groups', 'group', 0, 'capture', 0],
+        askFilename: ['groups', 'string_general', 0, 'askFilename', 0],
     };
 
     Controller.prototype.initImpl = function () {
@@ -215,7 +249,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                 eCfgEl = $.extend({}, cfgEl);
                 enhancedStringCfg.push(eCfgEl);
                 if (cfgEl.filter) {
-                    eCfgEl.match = new RegExp('^' + cfgEl.filter.replace(/\*/g, '.*').replace(/\?/g, '.') + '$', 'i');
+                    eCfgEl.match = new RegExp('^' + cfgEl.extension.replace(/\*/g, '.*').replace(/\?/g, '.') + '$', 'i');
                 } else {
                     eCfgEl.match = /^text\/plain$/i;
                 }
@@ -265,19 +299,17 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                 defs.push(def);
                 if (item.kind === 'file') {
                     item = item.getAsFile();
-                    if (meta = this.checkFileMetadata(item, cfg)) {
+                    if (meta = this.checkMetadata(item, cfg, mimeFromName('application/octet-stream'))) {
                         meta.def = def;
                         this.read(item, meta);
                     } else {
                         def.resolve();
                     }
                 } else {
-                    if (meta = this.checkStringMetadata(item, cfgString)) {
-                        meta.def = def;
-                        this.treatString(item, meta);
-                    } else {
-                        def.resolve();
-                    }
+                    meta = {};
+                    meta.cfg = cfgString;
+                    meta.def = def;
+                    this.treatString(item, meta);
                 }
             }
         } else { // other browsers are limited to drop files
@@ -285,7 +317,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                 item = data.files[i];
                 def = $.Deferred();
                 defs.push(def);
-                if (meta = this.checkFileMetadata(item, cfg)) {
+                if (meta = this.checkMetadata(item, cfg, mimeFromName('application/octet-stream'))) {
                     meta.def = def;
                     this.read(item, meta);
                 } else {
@@ -314,46 +346,38 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
 
     Controller.prototype.treatString = function (item, meta) {
         var that = this;
-        item.getAsString(function (str) {
-            that.parseString(str, meta);
+        item.getAsString(str => {
+            if(this.module.getConfigurationCheckbox('askFilename', 'yes')) {
+                ui.enterValue('enter a filename').then(val => {
+                    if(val === undefined) return;
+                    var m = this.checkMetadata(item, meta.cfg, mimeFromName('text/plain'), val);
+                    if(!m) {
+                        meta.def.resolve();
+                        return;
+                    }
+                    Object.assign(meta, m);
+                    that.parseString(str, meta);
+                });
+            } else {
+                var m = this.checkMetadata(item, meta.cfg, mimeFromName('text/plain'));
+                if(!m) {
+                    meta.def.resolve();
+                    return;
+                }
+                Object.assign(meta, m);
+                that.parseString(str, meta);
+            }
         });
     };
 
-    Controller.prototype.checkStringMetadata = function (item, cfg) {
-        if (!cfg) {
-            return Debug.warn('No string filter configured');
-        }
-
-        var mime = item.type || 'text/plain',
-            lineCfg;
-
-        for (var i = 0, l = cfg.length; i < l; i++) {
-            var matcher = cfg[i].match;
-            if (matcher.test(mime)) {
-                lineCfg = cfg[i];
-                break;
-            }
-        }
-
-        if (!lineCfg) {
-            return Debug.warn("String item's mime-type doesn't match: " + mime);
-        }
-
-        return {
-            filename: '',
-            mime: mime,
-            cfg: lineCfg
-        };
-    };
-
-    Controller.prototype.checkFileMetadata = function (item, cfg) {
+    Controller.prototype.checkMetadata = function (item, cfg, getMime, name) {
         if (!cfg) {
             return Debug.warn('No file filter configured');
         }
 
-        var name = item.name || '',
-            mime = item.type,
-            split = name.split('.'),
+        name = name || item.name || '';
+        var mime = item.type || getMime(name);
+        var split = name.split('.'),
             ext, lineCfg;
         if (split.length < 2) {
             ext = '';
@@ -376,10 +400,10 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
                 }
             }
         }
-        if (!lineCfg && name) {
-            return Debug.warn('Extension ' + ext + ' not configured (filename: ' + name + ')');
-        } else if (!lineCfg) {
-            return Debug.warn("Item has no filename and mime-type doesn't match: " + mime);
+        if (!lineCfg) {
+            var msg  = `Did not find match for ${name} (${mime})`;
+            ui.showNotification(msg, 'warn');
+            return Debug.warn(msg);
         }
 
         return {
@@ -492,6 +516,13 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         }
         return emul;
     };
+
+    function mimeFromName(defaultType) {
+        return function(name) {
+            return mimeTypes.lookup(name) || defaultType;
+        }
+    }
+
 
     return Controller;
 
