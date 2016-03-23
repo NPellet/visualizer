@@ -102,14 +102,14 @@ define([
         val = String(val);
         val = val.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-        if(options.search && options.replace) {
+        if(options.search) {
             var search;
             try {
                 search = new RegExp(options.search);
             } catch(e) {
                 search = options.search;
             }
-            val = val.replace(search, options.replace);
+            val = val.replace(search, options.replace || '');
         }
 
         if (checkDate(options)) {
