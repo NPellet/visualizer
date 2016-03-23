@@ -26,6 +26,7 @@ define([
     exports.enterValue = function (opts) {
         opts = opts || {};
         const defaultOptions = {
+            description: '',
             label: 'Enter a value',
             buttonLabel: 'Submit',
             validationMessage: 'What you entered is not valid',
@@ -35,8 +36,9 @@ define([
         opts = Object.assign({}, defaultOptions, opts);
 
         return new Promise(function (resolve) {
-            var div = $(`<div>${opts.label}: </div>`);
-            var input = $(`<input type="text" value="${opts.value}"/>`).appendTo(div).on('keypress', evt => {
+
+            var div = $(`<div>${opts.description}<div>${opts.label}: </div></div>`);
+            var input = $(`<input type="text" value="${opts.value}"/>`).appendTo(div.find('div')).on('keypress', evt => {
                 if (evt.keyCode === 13) done();
             });
             const done = () => {
