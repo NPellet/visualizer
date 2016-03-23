@@ -100,10 +100,6 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
 
             var varName = variable.getName();
 
-            if (this.stopVarChange) {
-                this.stopVarChange();
-            }
-
             this.module.onReady().then(function () {
                 that.module.blankVariable(varName);
             });
