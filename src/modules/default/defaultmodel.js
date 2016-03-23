@@ -29,7 +29,6 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
         inDom: Util.noop,
 
         resetListeners: function () {
-
             this.sourceMap = null;
             this.mapVars();
             //API.getRepositoryData( ).unListen( this.getVarNameList(), this._varlisten );
@@ -69,7 +68,6 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
         },
 
         getActionNameList: function () {
-
             var list = this.module.actions_in(),
                 names = [],
                 i,
@@ -91,51 +89,25 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
 
         onVarChange: function (variable) {
 
-            var that = this,
-                i,
-                l,
-                k,
-                m,
-                rel;
+            var that = this;
+            var i, l, k, m, rel;
 
             var varName = variable.getName();
 
-            this.module.onReady().then(function () {
-                that.module.blankVariable(varName);
-            });
-
-            // Show loading state if it takes more than 500ms to get the data
-            var rejectLatency;
-            var latency = new Promise(function (resolve, reject) {
-                var timeout = setTimeout(resolve, 500);
-                rejectLatency = function () {
-                    clearTimeout(timeout);
-                    that.module.endLoading(varName);
-                    reject();
-                };
-            });
-
-            // Start loading
-            Promise.all([this.module.onReady(), latency]).then(function () {
-                that.module.startLoading(varName);
-            }, function (err) {
-                // Fail silently (onReady is already covered and reject latency is expected)
-            });
-
             Promise.all([this.module.onReady(), variable.onReady()]).then(function () {
+                that.module.blankVariable(varName);
 
                 // Gets through the input filter first
                 var varValue = variable.getValue();
 
                 // Then validate
                 if (!varName || !that.sourceMap || !that.sourceMap[varName] || !that.module.controller.references[that.sourceMap[varName].rel]) {
-                    return rejectLatency();
+                    return;
                 }
 
                 var data = that.buildData(varValue, that.module.controller.references[that.sourceMap[varName].rel].type);
-
                 if (!data) {
-                    return rejectLatency();
+                    return;
                 }
 
                 rel = that.module.getDataRelFromName(varName);
@@ -146,30 +118,18 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
 
                 var vars = that.module.vars_in();
 
-                rejectLatency();
-
                 m = vars.length;
-
                 for (; k < m; k++) {
-
                     if (vars[k].name == varName && that.module.view.update[vars[k].rel] && varValue !== null) {
-
                         (function (j) {
-
                             new Promise(function (resolve, reject) {
-
                                 if (vars[j].filter) {
-
                                     require([vars[j].filter], function (filterFunction) {
-
                                         if (filterFunction.filter) {
                                             return filterFunction.filter(varValue, resolve, reject);
                                         }
-
                                         reject('No filter function defined');
-
                                     });
-
                                 } else {
                                     resolve(varValue);
                                 }
@@ -177,24 +137,17 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
                                 that.setData(vars[j].rel, varName, varValue);
                                 that.removeAllChangeListeners(vars[j].rel);
                                 that.module.view.update[vars[j].rel].call(that.module.view, varValue, varName);
-
                             }, function (err) {
                                 Debug.error('Error while filtering the data : ', err.message, err.stack);
                             }).catch(function (err) {
                                 Debug.error('Error while updating module : ', err.message, err.stack);
                             });
-
                         })(k);
-
                     }
-
                 }
-
-
             }, function () {
-                rejectLatency();
+                // ignore
             }).catch(function (err) {
-                rejectLatency();
                 Debug.error('Error while updating variable : ', err.message, err.stack);
             });
 
@@ -211,7 +164,6 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
         },
 
         buildData: function (data, sourceTypes) {
-
             if (!data) {
                 return false;
             }
@@ -287,14 +239,12 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
         },
 
         dataListenChange: function (data, callback, bindToRel) {
-
             if (!data) {
                 return;
             }
 
             var that = this,
                 proxiedCallback = function (target, moduleId) {
-
                     if (moduleId == that.module.getId()) {
                         return;// Do not update itself;
                     }
@@ -303,7 +253,6 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
                 };
 
             if (this.addChangeListener(bindToRel, data, proxiedCallback)) {
-
                 data.onChange(proxiedCallback);
 
             } else {
@@ -317,22 +266,18 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
         },
 
         dataTriggerChange: function (data) { // self is not available
-
             data.triggerChange(false, [this.module.getId()]);
         },
 
         dataSetChild: function (data, jpath, value) {
-
             return data.setChild(jpath, value, this.module.getId());
         },
 
         dataSetChildSync: function (data, jpath, value) {
-
             return data.setChildSync(jpath, value, this.module.getId());
         },
 
         addChangeListener: function (rel, data, callback) {
-
             if (!rel) {
                 return false;
             }
@@ -348,7 +293,6 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
         },
 
         removeAllChangeListeners: function (rel) {
-
             if (!this.triggerChangeCallbacksByRels[rel]) {
                 return;
             }
