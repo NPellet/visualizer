@@ -346,12 +346,21 @@ define(['modules/default/defaultcontroller',
 
     Controller.prototype.treatString = function (item, meta) {
         var that = this;
+        var description = getDescription(meta.cfg);
         item.getAsString(str => {
-            if(this.module.getConfigurationCheckbox('askFilename', 'yes')) {
-                ui.enterValue('enter a filename').then(val => {
-                    if(val === undefined) return;
+            if (this.module.getConfigurationCheckbox('askFilename', 'yes')) {
+                ui.enterValue({
+                    description: description,
+                    label: 'Enter filename',
+                    validationMessage: 'Incorrect file extension',
+                    validation: val => {
+                        return this.checkMetadata(item, meta.cfg, mimeFromName('text/plain'), val);
+                    }
+
+                }).then(val => {
+                    if (val === undefined) return;
                     var m = this.checkMetadata(item, meta.cfg, mimeFromName('text/plain'), val);
-                    if(!m) {
+                    if (!m) {
                         meta.def.resolve();
                         return;
                     }
@@ -360,7 +369,7 @@ define(['modules/default/defaultcontroller',
                 });
             } else {
                 var m = this.checkMetadata(item, meta.cfg, mimeFromName('text/plain'));
-                if(!m) {
+                if (!m) {
                     meta.def.resolve();
                     return;
                 }
@@ -401,7 +410,7 @@ define(['modules/default/defaultcontroller',
             }
         }
         if (!lineCfg) {
-            var msg  = `Did not find match for ${name} (${mime})`;
+            var msg = `Did not find match for ${name} (${mime})`;
             ui.showNotification(msg, 'warn');
             return Debug.warn(msg);
         }
@@ -518,9 +527,24 @@ define(['modules/default/defaultcontroller',
     };
 
     function mimeFromName(defaultType) {
-        return function(name) {
+        return function (name) {
             return mimeTypes.lookup(name) || defaultType;
         }
+    }
+
+    function getDescription(cfg) {
+        var d = '';
+        for (let i = 0; i < cfg.length; i++) {
+            var c = cfg[i];
+            if (c.filter === 'mime') {
+                d += `Mime: `;
+            } else {
+                d += `Extension: `
+            }
+            d += c.extension + '<br>';
+        }
+        d += '<br><br>';
+        return d;
     }
 
 
