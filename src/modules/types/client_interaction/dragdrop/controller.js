@@ -460,9 +460,8 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
             };
         }
         var name = meta.cfg.variable;
-        debugger;
         var variable = new DataObject({
-            readtype: meta.cfg.filetype,
+            encoding: meta.cfg.filetype,
             filename: meta.filename,
             mimetype: meta.mime,
             contentType: meta.mime,
