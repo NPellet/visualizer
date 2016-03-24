@@ -1,3 +1,20 @@
+<a name="2.48.0"></a>
+# 2.48.0 (2016-03-24)
+
+
+### Bug Fixes
+
+* **slick_grid:** fix move row handle image ([d2230c7](https://github.com/NPellet/visualizer/commit/d2230c7))
+
+### Features
+
+* **api:** API.createData returns a promise that resolves with created data ([527a8d7](https://github.com/NPellet/visualizer/commit/527a8d7))
+* **dragdrop:** ask for filename option. strings now have extension and mimetype options ([5893c64](https://github.com/NPellet/visualizer/commit/5893c64))
+* **dragdrop:** var out contains additional property readtype (base64, text ...) ([39cfee8](https://github.com/NPellet/visualizer/commit/39cfee8))
+* **typerenderer:** add search replace options ([ef275b4](https://github.com/NPellet/visualizer/commit/ef275b4))
+
+
+
 <a name="2.47.2"></a>
 ## 2.47.2 (2016-03-18)
 
