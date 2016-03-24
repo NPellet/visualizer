@@ -7,6 +7,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
 
     var versionURL;
     var versions;
+    var type;
 
     var currentMenu;
 
@@ -21,6 +22,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
 
         initImpl: function () {
             versionURL = this.options.url;
+            type = this.options.type || 'query';
         },
 
         _onClick: function () {
@@ -43,7 +45,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
         doElements: function () {
             var that = this;
             var uri = new URI(document.location.href);
-            var query = uri.query(true);
+            var query = getQuery(uri);
             var currentVersion;
             if (query.v) {
                 currentVersion = query.v;
@@ -76,13 +78,32 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
 
         load: function (version) {
             var uri = new URI(document.location.href);
-            var query = uri.query(true);
+            var query = getQuery(uri);
             if (query.v !== version) {
-                uri.setQuery('v', version);
+                setQuery(uri, 'v', version);
                 document.location = uri.href();
             }
         }
     });
+
+    function getQuery(uri) {
+        var query;
+        if(type === 'query') {
+            query = uri.query(true);
+        } else if (type === 'fragment') {
+            query = uri.fragment(true);
+        }
+        return query;
+    }
+
+    function setQuery(uri, prop, val) {
+        if(type === 'query') {
+            uri.setQuery(prop, val);
+        } else if(type === 'fragment') {
+            uri.addFragment(prop, val);
+        }
+        return uri;
+    }
 
     return VersionSelector;
 
