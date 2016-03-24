@@ -22,7 +22,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
 
         initImpl: function () {
             versionURL = this.options.url;
-            type = this.options.type || 'query';
+            type = this.options.queryType || 'query';
         },
 
         _onClick: function () {
@@ -81,7 +81,11 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
             var query = getQuery(uri);
             if (query.v !== version) {
                 setQuery(uri, 'v', version);
+                console.log('load', uri.href())
                 document.location = uri.href();
+                if(type === 'fragment') {
+                    document.location.reload();
+                }
             }
         }
     });
@@ -100,6 +104,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
         if(type === 'query') {
             uri.setQuery(prop, val);
         } else if(type === 'fragment') {
+            uri.removeFragment(prop);
             uri.addFragment(prop, val);
         }
         return uri;
