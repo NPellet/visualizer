@@ -155,7 +155,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
             dataToCreate = DataObject.resurrect(dataToCreate);
             var prom = data.setChild(jpath, dataToCreate);
             this.setjPath(jpath, callback);
-            return prom.then(function ()  {
+            return prom.then(function () {
                 return dataToCreate;
             });
         },

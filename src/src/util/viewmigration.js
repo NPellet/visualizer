@@ -447,17 +447,17 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                 };
             }, 'spectra_displayer');
         },
-        '2.47.3-1', function(view) {
-            eachModule(view, function(module) {
+        '2.47.3-1', function (view) {
+            eachModule(view, function (module) {
                 var str = module.getChildSync(['configuration', 'groups', 'string', 0]);
-                if(str && str.length) {
-                    for(var i=0; i<str.length; i++) {
+                if (str && str.length) {
+                    for (var i = 0; i < str.length; i++) {
                         var extension = str.getChildSync([i, 'filter']);
                         module.setChildSync(['configuration', 'groups', 'string', 0, i, 'extension'], extension);
                         module.setChildSync(['configuration', 'groups', 'string', 0, i, 'filter'], 'mime');
                     }
                 }
-            }, 'dragdrop')
+            }, 'dragdrop');
         }
 //  Add new migration functions here
 //  Do not forget to `npm run prerelease` before creating your migration script

@@ -102,11 +102,11 @@ define([
         val = String(val);
         val = val.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-        if(options.search) {
+        if (options.search) {
             var search;
             try {
                 search = new RegExp(options.search);
-            } catch(e) {
+            } catch (e) {
                 search = options.search;
             }
             val = val.replace(search, options.replace || '');

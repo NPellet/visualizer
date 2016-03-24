@@ -213,7 +213,7 @@ define(['modules/default/defaultcontroller',
         photo: ['groups', 'photo', 0],
         showPhotoButton: ['groups', 'group', 0, 'showPhotoButton', 0],
         capture: ['groups', 'group', 0, 'capture', 0],
-        askFilename: ['groups', 'string_general', 0, 'askFilename', 0],
+        askFilename: ['groups', 'string_general', 0, 'askFilename', 0]
     };
 
     Controller.prototype.initImpl = function () {
@@ -529,7 +529,7 @@ define(['modules/default/defaultcontroller',
     function mimeFromName(defaultType) {
         return function (name) {
             return mimeTypes.lookup(name) || defaultType;
-        }
+        };
     }
 
     function getDescription(cfg) {
@@ -537,9 +537,9 @@ define(['modules/default/defaultcontroller',
         for (let i = 0; i < cfg.length; i++) {
             var c = cfg[i];
             if (c.filter === 'mime') {
-                d += `Mime: `;
+                d += 'Mime: ';
             } else {
-                d += `Extension: `
+                d += 'Extension: ';
             }
             d += c.extension + '<br>';
         }
