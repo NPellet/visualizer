@@ -6,9 +6,9 @@ define(['jquery', 'src/util/ui', 'src/header/components/default', './../../util/
     }
 
     var shareOptions = {
-        couchUrl: 'http://visualizer.epfl.ch',
+        couchUrl: 'https://visualizer.epfl.ch',
         database: 'x',
-        tinyUrl: 'http://visualizer.epfl.ch/tiny'
+        tinyUrl: 'https://visualizer.epfl.ch/tiny'
     };
 
     Util.inherits(Element, Default, {
