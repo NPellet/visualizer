@@ -537,6 +537,7 @@ define([
 
     //TODO replace with a Map when more browsers are supported
     var typeInit = {};
+    const renderingMap = new WeakMap();
 
     function _render($element, object, options) {
         if (object == undefined) {
@@ -586,15 +587,28 @@ define([
                 options = jpath;
                 jpath = null;
             }
+            var renderingPromise;
+            if (renderingMap.has(element)) {
+                renderingPromise = renderingMap.get(element);
+            } else {
+                renderingPromise = Promise.resolve();
+            }
             var $element = $(element);
             object = DataObject.check(object, true);
-            if (jpath) {
-                return object.getChild(jpath).then(function (child) {
-                    return _render($element, child, options);
-                });
-            } else {
-                return _render($element, object, options);
-            }
+
+            var callback = () => {
+                if (jpath) {
+                    return object.getChild(jpath).then(function (child) {
+                        return _render($element, child, options);
+                    });
+                } else {
+                    return _render($element, object, options);
+                }
+            };
+
+            renderingPromise = renderingPromise.then(callback, callback);
+            renderingMap.set(element, renderingPromise);
+            return renderingPromise;
         },
         addType: function (name, renderer) {
             functions[name] = renderer;
