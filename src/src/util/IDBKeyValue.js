@@ -53,10 +53,19 @@ define(function () {
         });
     };
 
-    Storage.prototype.delete = function (key, value) {
-        window.indexedDB.deleteDatabase(this.dbName);
+    Storage.prototype.delete = function (key) {
+        return this.ready.then(() => {
+            return new Promise((resolve, reject) => {
+                var request = this.getStore().delete(key);
+                request.onsuccess = resolve;
+                request.onerror = reject;
+            });
+        });
     };
 
+    Storage.deleteDatabase = function (dbName) {
+        window.indexedDB.deleteDatabase(dbName);
+    };
     return Storage;
 
 });
