@@ -71,7 +71,7 @@ define([
             },
 
             value: function (varValue, varName) {
-                if (varValue instanceof DataObject || varValue.type === 'number') {
+                if (varValue instanceof DataNumber || varValue.type === 'number') {
                     this._lastValueNumber = true;
                 }
                 this.values[varName] = varValue;
@@ -187,7 +187,6 @@ define([
                 if (this.module.getConfigurationCheckbox('editable', 'yes') && isEditable(this._lastValue)) {
                     div.attr('contenteditable', true);
                     div.on('input', function (e) {
-
                         var replaceValue = e.target.innerHTML.replace(/<[^>]*>/g, '');
                         if (that._lastValueNumber) {
                             replaceValue = +replaceValue;
@@ -196,12 +195,34 @@ define([
                         that._lastValue.setValue(replaceValue, true);
                         that.module.model.dataTriggerChange(that._lastValue);
                     });
+                    div.on('keyup', function(e) {
+                        if(e.keyCode === 27) { // Esc character
+                            div.blur();
+                        }
+                    });
+                    div.on('click', function() {
+                        if(rendererOptions.forceType) {
+                            var tmpOptions = Object.assign({}, rendererOptions);
+                            delete tmpOptions.forceType;
+                            Renderer.render(div, val, tmpOptions).then(function () {
+                                that._scrollDown();
+                                div.focus();
+                            });
+                        }
+                    });
+
+                    div.on('blur', function() {
+                        Renderer.render(div, val, rendererOptions).then(function () {
+                            that._scrollDown();
+                        });
+                    })
+
+
                 }
             }
 
             this._scrollDown();
 
-            var that = this;
             Renderer.render(div, val, rendererOptions).then(function () {
                 that._scrollDown();
             });
