@@ -1,16 +1,17 @@
 'use strict';
 
 define([
-    'src/util/api',
-    'src/util/ui',
-    'src/util/util',
-    'superagent',
-    'uri/URI',
-    'lodash',
-    'src/util/couchdbAttachments',
-    'mime-types'
-],
-    function (API, ui, Util, superagent, URI, _, CDB, mimeTypes) {
+        'src/util/api',
+        'src/util/ui',
+        'src/util/util',
+        'superagent',
+        'uri/URI',
+        'lodash',
+        'src/util/couchdbAttachments',
+        'mime-types',
+        'src/util/IDBKeyValue'
+    ],
+    function (API, ui, Util, superagent, URI, _, CDB, mimeTypes, IDB) {
 
         const defaultOptions = {
             messages: {
@@ -122,6 +123,9 @@ define([
                         .withCredentials()
                         .then(res => {
                             if (res && res.body && res.status == 200) {
+                                if (options.filter) {
+                                    res.body = res.body.filter(options.filter);
+                                }
                                 if (options.varName) {
                                     this.variables[options.varName] = {
                                         type: 'view',
@@ -131,7 +135,7 @@ define([
                                     for (var i = 0; i < res.body.length; i++) {
                                         this._typeUrl(res.body[i].$content, res.body[i]);
                                     }
-                                    API.createData(options.varName, res.body);
+                                    return API.createData(options.varName, res.body);
                                 }
                             }
                             return res.body;
@@ -150,9 +154,24 @@ define([
                             data: doc
                         };
                         this._typeUrl(doc.$content, doc);
-                        API.createData(options.varName, doc);
-                        return doc;
+                        var idb = new IDB('roc-documents');
+                        return API.createData(options.varName, doc).then(data => {
+                            data.onChange(() => {
+                                idb.set(data._id, data.resurrect());
+                            });
+
+                            idb.get(data._id).then(localEntry => {
+                                if(!localEntry) return;
+                                if(localEntry._rev === doc._rev) {
+                                    this._updateByUuid(data._id, localEntry);
+                                } else {
+                                    idb.delete(data._id);
+                                }
+                            });
+                            return data;
+                        });
                     }
+                    return doc;
                 });
             }
 
@@ -169,7 +188,9 @@ define([
                             .then(res => {
                                 if (res.body && res.status == 200) {
                                     this._defaults(res.body.$content);
-                                    this._updateByUuid(uuid, res.body);
+                                    if (!options.noUpdate) {
+                                        this._updateByUuid(uuid, res.body);
+                                    }
                                     return res.body;
                                 }
                             }).catch(handleError(this, options));
@@ -223,14 +244,16 @@ define([
             update(entry, options) {
                 return this.__ready.then(() => {
                     options = createOptions(options, 'update');
-                    entry = DataObject.resurrect(entry);
+                    var reqEntry = DataObject.resurrect(entry);
                     return superagent.put(`${this.entryUrl}/${String(entry._id)}`)
                         .withCredentials()
-                        .send(entry)
+                        .send(reqEntry)
                         .then(handleSuccess(this, options))
                         .then(res => {
                             if (res.body && res.status == 200) {
                                 entry._rev = res.body.rev;
+                                entry.$creationDate = res.body.$creationDate;
+                                entry.$modificationDate = res.body.$modificationDate;
                                 this._updateByUuid(entry._id, entry);
                             }
                             return entry;
@@ -247,11 +270,26 @@ define([
                     if (!Array.isArray(attachments)) attachments = [attachments];
 
                     attachments = attachments.map(String);
-                    this._deleteFilename(entry.$content, attachments);
-                    for (var i = 0; i < attachments.length; i++) {
-                        delete entry._attachments[attachments[i]];
-                    }
-                    return this.update(entry, options);
+                    return this.get(entry, {fromCache: true})
+                        .then(entry => {
+                            this._deleteFilename(entry.$content, attachments);
+                            for (var i = 0; i < attachments.length; i++) {
+                                delete entry._attachments[attachments[i]];
+                            }
+                            var cdb = this._getCdb(getUuid(entry));
+                            return cdb.remove(attachments).then(() => {
+                                return this.get(entry, {noUpdate: true}).then(data => {
+                                    entry._rev = data._rev;
+                                    entry._attachments = data._attachments;
+                                    entry.$creationDate = data.$creationDate;
+                                    entry.$modificationDate = data.$modificationDate;
+                                    entry.triggerChange();
+                                    return entry;
+                                });
+                            });
+                        })
+                        .then(handleSuccess(this, options))
+                        .catch(handleError(this, options));
                 });
             }
 
@@ -261,11 +299,10 @@ define([
 
             unattach(entry, row, options) {
                 return this.__ready.then(() => {
-                    options = createOptions(options, 'update');
+                    options = createOptions(options, 'deleteAttachment');
                     // Confirm?
                     if (!this.processor) throw new Error('no processor');
 
-                    //var arr = this.processor.getType('nmr', entry.$content, this.kind);
                     if (!row.__parent) {
                         throw new Error('row must be linked to parent for unattach to work');
                     }
@@ -282,61 +319,53 @@ define([
                     var toKeep = this._findFilename(entry.$content, toDelete);
                     toKeep = toKeep.map(k => String(k.filename));
                     toDelete = _.difference(toDelete, toKeep);
-                    if (entry._attachments) {
-                        for (var i = 0; i < toDelete.length; i++) {
-                            delete entry._attachments[toDelete[i]];
-                        }
-                    }
-
-                    return this.update(entry, options);
+                    return this.deleteAttachment(entry, toDelete, options).then(() => {
+                        arr.splice(idx, 1);
+                        arr.triggerChange();
+                        return entry;
+                    });
                 });
             }
 
             attach(type, entry, attachment, options) {
                 return this.__ready.then(() => {
-                    var fallbackContentType = 'application/octet-stream';
                     var attachOptions = createOptions(options, 'attach');
                     var prom = Promise.resolve();
                     if (!attachment.filename) {
-                        fallbackContentType = 'plain/text';
-                        attachment.contentType = undefined;
-                        prom = ui.enterValue().then(val => {
-                            attachment.filename = val;
-                        });
+                        prom = ui.enterValue('Enter a filename');
                     }
 
-                    return prom.then(() => {
-                        if (!attachment.filename) {
-                            return;
-                        }
+                    return prom.then(filename => {
+                            if (filename) attachment.filename = filename;
+                            if (!attachment.filename) {
+                                return;
+                            }
 
-                        attachment.filename = this.processor.getFilename(type, attachment.filename);
+                            attachment.filename = this.processor.getFilename(type, attachment.filename);
 
-                        // Ideally jcamp extensions should be handled by mime-types
-                        if (!attachment.contentType || attachment.contentType === 'application/octet-stream') {
-                            attachment.contentType = mimeTypes.lookup(attachment.filename);
-                        }
-                        if (!attachment.contentType && /\.j?dx$/.test(attachment.filename)) {
-                            attachment.contentType = 'chemical/x-jcamp-dx';
-                        }
-                        if (!attachment.contentType) {
-                            attachment.contentType = fallbackContentType;
-                        }
-                        // Mute error so that it doesn't show up twice
-                        return this.addAttachment(entry, attachment, createOptions(options, 'addAttachment', {muteError: true}))
-                            .then(entry => {
-                                if (!this.processor) {
-                                    throw new Error('no processor');
-                                }
-                                this.processor.process(type, entry.$content, attachment);
-                                return entry;
-                            })
-                            .then(entry => {
-                                return this.update(entry);
-                            })
-                            .then(handleSuccess(this, attachOptions))
-                            .catch(handleError(this, attachOptions));
-                    });
+                            // If we had to ask for a filename, resolve content type
+                            var fallback;
+                            if (filename) {
+                                fallback = attachment.contentType;
+                                attachment.contentType = undefined;
+                            }
+                            setContentType(attachment, fallback);
+
+                            return this.get(entry, {fromCache: true})
+                                .then(entry => {
+                                    return this.addAttachment(entry, attachment, createOptions(options, 'addAttachment'))
+                                        .then(entry => {
+                                            if (!this.processor) {
+                                                throw new Error('no processor');
+                                            }
+                                            this.processor.process(type, entry.$content, attachment);
+                                            entry.triggerChange();
+                                            return entry;
+                                        })
+                                })
+                        })
+                        .then(handleSuccess(this, attachOptions))
+                        .catch(handleError(this, attachOptions));
                 });
             }
 
@@ -360,24 +389,60 @@ define([
 
             addAttachment(entry, attachments, options) {
                 return this.__ready.then(() => {
+                    var prom = Promise.resolve(true);
                     attachments = DataObject.resurrect(attachments);
-                    if (!Array.isArray(attachments)) {
-                        attachments = [attachments];
+                    if (attachments.length === 1) {
+                        attachments = attachments[0];
                     }
-                    var uuid = getUuid(entry);
-                    options = createOptions(options, 'addAttachment');
-                    const cdb = this._getCdb(uuid);
-                    return cdb.inlineUploads(attachments)
-                        .then(() => {
-                            return this.get(uuid).then(data => {
-                                console.log('got doc add att', data);
-                                this._updateByUuid(uuid, data);
-                                return data;
+
+                    if (!Array.isArray(attachments)) {
+                        if (!attachments.filename) {
+                            prom = ui.enterValue('Enter a filename').then(filename => {
+                                if (filename) attachments.filename = filename;
+                                if (!attachments.filename) {
+                                    return;
+                                }
+                                // If we had to ask for a filename, resolve content type
+                                var fallback = attachments.contentType;
+                                attachments.contentType = undefined;
+                                setContentType(attachments, fallback);
+                                attachments = [attachments];
+                                return filename;
                             });
-                        })
-                        .then(handleSuccess(this, options))
-                        .catch(handleError(this, options));
-                });
+                        } else {
+                            attachments = [attachments];
+                        }
+                    }
+
+                    attachments.forEach(attachment => {
+                        setContentType(attachment);
+                    });
+
+
+                    return prom.then(filename => {
+                        if (!filename) return;
+
+
+                        return this.get(entry, {fromCache: true})
+                            .then(entry => {
+                                var uuid = getUuid(entry);
+                                options = createOptions(options, 'addAttachment');
+                                const cdb = this._getCdb(uuid);
+                                return cdb.inlineUploads(attachments)
+                                    .then(() => this.get(uuid, {noUpdate: true}))
+                                    .then(data => {
+                                        entry._rev = data._rev;
+                                        entry._attachments = data._attachments;
+                                        entry.$creationDate = data.$creationDate;
+                                        entry.$modificationDate = data.$modificationDate;
+                                        entry.triggerChange();
+                                        return entry;
+                                    })
+                            })
+                            .then(handleSuccess(this, options))
+                            .catch(handleError(this, options));
+                    });
+                })
             }
 
             addAttachmentById(id, attachment, options) {
@@ -477,18 +542,31 @@ define([
                         const idx = this._findIndexByUuid(uuid, key);
                         if (idx !== -1) {
                             this._typeUrl(data.$content, data);
-                            this.variables[key].data.setChildSync([idx], data);
+                            //this.variables[key].data.setChildSync([idx], data);
+                            let row = this.variables[key].data.getChildSync([idx]);
+                            this._updateDocument(row, data);
                         }
                     } else if (this.variables[key].type === 'document') {
                         uuid = String(uuid);
                         const _id = this.variables[key].data._id;
                         if (uuid === _id) {
-                            var newData = DataObject.resurrect(data);
-                            this.variables[key].data = newData;
-                            this._typeUrl(newData.$content, newData);
-                            API.createData(key, newData);
+                            //var newData = DataObject.resurrect(data);
+                            this._typeUrl(data.$content, data);
+                            let doc = this.variables[key].data;
+                            this._updateDocument(doc, data);
                         }
                     }
+                }
+            }
+
+            _updateDocument(doc, data) {
+                if (doc && data) {
+                    let keys = Object.keys(data);
+                    for (let i = 0; i < keys.length; i++) {
+                        let key = keys[i];
+                        doc[key] = data[key];
+                    }
+                    doc.triggerChange();
                 }
             }
 
@@ -526,7 +604,8 @@ define([
                 this._traverseFilename(v, function (v) {
                     if (typeof filename === 'undefined') {
                         r.push(v);
-                    } else if (filename.indexOf(String(v.filename)) !== -1) {
+                    }
+                    else if (filename.indexOf(String(v.filename)) !== -1) {
                         r.push(v);
                     }
                 });
@@ -568,7 +647,26 @@ define([
                         enumerable: false,
                         writable: true
                     });
-                });
+                })
+            }
+
+            _setSyncState(name, state) {
+                if (syncState[name] === undefined) {
+                    // create new div
+                }
+
+                if (syncState[name].state === state) return;
+                else {
+                    var bg;
+                    syncState[name].state = state;
+                    if (state) {
+                        bg = 'lightgreen';
+                        syncState[name].div.css('background-color', 'lightgreen');
+                    } else {
+                        syncState[name].div.css('ba')
+                    }
+                }
+
             }
         }
 
@@ -618,6 +716,7 @@ define([
             const message = options.messages[err.status] || ctx.messages[err.status];
             if (message && !options.disableNotification) {
                 ui.showNotification(message, 'error');
+                console.error(err, err.stack);
             }
         }
 
@@ -636,6 +735,26 @@ define([
 
         function defaultErrorHandler(err) {
             ui.showNotification(`Error: ${err.message}`, 'error');
+            console.error(err, err.stack);
+        }
+
+        function setContentType(attachment, fallback) {
+            fallback = fallback || 'application/octet-stream';
+            var filename = attachment.filename;
+            var contentType = attachment.contentType;
+            if (contentType && contentType !== 'application/octet-stream') {
+                return;
+            }
+
+            // Ideally jcamp extensions should be handled by mime-types
+            contentType = mimeTypes.lookup(filename);
+            if (!contentType && /\.j?dx$/.test(filename)) {
+                contentType = 'chemical/x-jcamp-dx';
+            }
+            if (!contentType) {
+                contentType = fallback;
+            }
+            attachment.contentType = contentType;
         }
 
         const typeValue = ['gif', 'tiff', 'jpeg', 'jpg', 'png'];
