@@ -37,7 +37,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, ui) {
 
                     require(['forms/button'], function (Button) {
 
-                        that.search.append((that.buttonInst = new Button(cfg('buttonlabel') || 'Search', function () {
+                        that.dom.append((that.buttonInst = new Button(cfg('buttonlabel') || 'Search', function () {
                             var prom = Promise.resolve(true);
                             if (that.module.getConfigurationCheckbox('askConfirm', 'yes')) {
                                 prom = ui.confirm(that.module.getConfiguration('confirmText'));
