@@ -1,6 +1,13 @@
 'use strict';
 
-define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/util/util', 'uri/URI'], function ($, Default, Versioning, Util, URI) {
+define([
+    'jquery',
+    'src/header/components/default',
+    'src/util/versioning',
+    'src/util/util',
+    'uri/URI',
+    'lib/semver/semver'
+], function ($, Default, Versioning, Util, URI, semver) {
 
     function VersionSelector() {
     }
@@ -23,6 +30,11 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
         initImpl: function () {
             versionURL = this.options.url;
             type = this.options.queryType || 'query';
+            if (this.options.minVersion && semver.valid(this.options.minVersion)) {
+                this.minVersion = this.options.minVersion;
+            } else {
+                this.minVersion = '0.0.0';
+            }
         },
 
         _onClick: function () {
@@ -52,12 +64,13 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
             } else {
                 currentVersion = 'v' + Versioning.version;
             }
-            getVersions().then(function (versions) {
-                var ul = that.$_elToOpen = $('<ul />'),
-                    i = 0,
-                    l = versions.length;
-                for (; i < l; i++) {
+            getVersions().then(versions => {
+                var ul = that.$_elToOpen = $('<ul />');
+                for (var i = 0; i < versions.length; i++) {
                     var version = versions[i];
+                    if (semver.valid(version) && semver.lt(version, this.minVersion)) {
+                        continue;
+                    }
                     var bool = currentVersion === version;
                     ul.append(that._buildSubElement(versions[i], bool));
                 }
@@ -81,9 +94,8 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
             var query = getQuery(uri);
             if (query.v !== version) {
                 setQuery(uri, 'v', version);
-                console.log('load', uri.href())
                 document.location = uri.href();
-                if(type === 'fragment') {
+                if (type === 'fragment') {
                     document.location.reload();
                 }
             }
@@ -92,7 +104,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
 
     function getQuery(uri) {
         var query;
-        if(type === 'query') {
+        if (type === 'query') {
             query = uri.query(true);
         } else if (type === 'fragment') {
             query = uri.fragment(true);
@@ -101,9 +113,9 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
     }
 
     function setQuery(uri, prop, val) {
-        if(type === 'query') {
+        if (type === 'query') {
             uri.setQuery(prop, val);
-        } else if(type === 'fragment') {
+        } else if (type === 'fragment') {
             uri.removeFragment(prop);
             uri.addFragment(prop, val);
         }
