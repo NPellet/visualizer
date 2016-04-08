@@ -1,4 +1,4 @@
-//
+// Based on https://gist.github.com/wilsonpage/01d2eb139959c79e0d9a
 
 'use strict';
 
@@ -10,14 +10,12 @@ define(function () {
             var request = window.indexedDB.open(this.dbName);
 
             request.onupgradeneeded = e => {
-                console.log('create object store');
                 this.db = e.target.result;
                 this.db.createObjectStore('store');
 
             };
 
             request.onsuccess = e => {
-                console.log('on success');
                 this.db = e.target.result;
                 resolve();
             };
@@ -56,7 +54,7 @@ define(function () {
     };
 
     Storage.prototype.delete = function (key, value) {
-        window.indexedDB.deleteDatabase(location.origin);
+        window.indexedDB.deleteDatabase(this.dbName);
     };
 
     return Storage;
