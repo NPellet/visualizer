@@ -59,7 +59,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui',
             var id = this.module.getId();
             views[id] = this;
 
-            this.dom = ui.getSafeElement('iframe').attr('src', require.toUrl('./lib/jsme.html'));
+            this.dom = ui.getSafeElement('iframe').attr('src', require.toUrl('./jsme.html'));
 
             this.module.getDomContent().html(this.dom);
             this.module.getDomContent().css('overflow', 'hidden');
