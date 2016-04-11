@@ -145,6 +145,7 @@ module.exports = function (grunt) {
                             './jquery-cookie/jquery.cookie.js',
                             './chemcalc/lib.js',
                             './jsgraph/dist/**',
+                            './jsme/**',
                             './jcampconverter/dist/*',
                             './jsbarcode/*.js',
                             './slickgrid/**',
