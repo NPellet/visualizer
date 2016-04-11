@@ -6,4 +6,5 @@ src/modules/types/science/chemistry/jsmol/lib
 src/modules/types/science/chemistry/jsme/lib
 src/modules/types/edition/slick_grid/slick.*
 src/modules/types/chart/advanced/plot_function/TrackballControls.js
+src/modules/types/science/chemistry/jsme/jquery.min.js
 src/src/util/workers

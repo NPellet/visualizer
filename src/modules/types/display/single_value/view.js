@@ -195,13 +195,13 @@ define([
                         that._lastValue.setValue(replaceValue, true);
                         that.module.model.dataTriggerChange(that._lastValue);
                     });
-                    div.on('keyup', function(e) {
-                        if(e.keyCode === 27) { // Esc character
+                    div.on('keyup', function (e) {
+                        if (e.keyCode === 27) { // Esc character
                             div.blur();
                         }
                     });
-                    div.on('click', function() {
-                        if(rendererOptions.forceType) {
+                    div.on('click', function () {
+                        if (rendererOptions.forceType) {
                             var tmpOptions = Object.assign({}, rendererOptions);
                             delete tmpOptions.forceType;
                             Renderer.render(div, val, tmpOptions).then(function () {
@@ -211,11 +211,11 @@ define([
                         }
                     });
 
-                    div.on('blur', function() {
+                    div.on('blur', function () {
                         Renderer.render(div, val, rendererOptions).then(function () {
                             that._scrollDown();
                         });
-                    })
+                    });
 
 
                 }
