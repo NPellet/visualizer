@@ -21,7 +21,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
             label: 'Hierarchical structure (tree)'
         },
         nodeData: {
-            label: 'Node data'
+            label: 'Node data (info property on node)'
+        },
+        node: {
+            label: 'Node'
         }
     };
 
@@ -30,7 +33,15 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype.events = {
         onActivate: {
             label: 'Select a node',
-            refVariable: ['nodeData']
+            refVariable: ['nodeData', 'node']
+        },
+        onActivateLeaf: {
+            label: 'Select a leaf',
+            refVariable: ['nodeData', 'node']
+        },
+        onActivateParent: {
+            label: 'Select a parent',
+            refVariable: ['nodeData', 'node']
         }
     };
 
@@ -103,7 +114,16 @@ define(['modules/default/defaultcontroller'], function (Default) {
     };
 
     Controller.prototype.onActivate = function (data) {
-        this.createDataFromEvent('onActivate', 'nodeData', data);
+        this.createDataFromEvent('onActivate', 'nodeData', data.info);
+        this.createDataFromEvent('onActivate', 'node', data);
+
+        if(data.children) {
+            this.createDataFromEvent('onActivateParent', 'nodeData', data.info);
+            this.createDataFromEvent('onActivateParent', 'node', data);
+        } else {
+            this.createDataFromEvent('onActivateLeaf', 'nodeData', data.info);
+            this.createDataFromEvent('onActivateLeaf', 'node', data.info);
+        }
     };
 
     return Controller;

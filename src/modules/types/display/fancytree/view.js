@@ -51,7 +51,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
                     indentation: 20,
                     nodeColumnIdx: 0
                 },
-                icons: false,
+                icon: false,
                 renderColumns: function (event, data) {
                     var node = data.node,
                         dataObj = node.data.dataObj,
@@ -64,7 +64,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
                     }
                 },
                 activate: function (event, data) {
-                    that.module.controller.onActivate(data.node.data.dataObj.info);
+                    that.module.controller.onActivate(data.node.data.dataObj);
                 }
             });
 
