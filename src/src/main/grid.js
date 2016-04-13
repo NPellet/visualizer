@@ -88,7 +88,7 @@ define([
 
     function addModule(module) {
 
-        module.setLayers(definition.getChildSync(['layers'], true), true);
+        module.setLayers(definition.getChildSync(['layers'], true), true, false, false, getActiveLayer());
 
         module.ready.then(function () {
 
@@ -722,7 +722,7 @@ define([
 
     function setLayers(newIsBlank, modify_layer, blank) {
         eachModules(function (moduleInstance) {
-            moduleInstance.setLayers(definition.layers, newIsBlank, modify_layer, blank);
+            moduleInstance.setLayers(definition.layers, newIsBlank, modify_layer, blank, getActiveLayer());
         });
     }
 

@@ -368,7 +368,7 @@ define([
             }
         },
 
-        setLayers: function (layers, blankLayer, modify_layer, blank) {
+        setLayers: function (layers, blankLayer, modify_layer, blank, activeLayer) {
             this.definition.layers = this.definition.layers || new DataObject();
 
             if (modify_layer) {
@@ -390,6 +390,9 @@ define([
                     if (blankLayer) {
                         $.extend(true, this.definition.layers[i], Module.prototype.emptyConfig);
                         this.definition.layers[i].name = i;
+                        if (i !== activeLayer) {
+                            this.definition.layers[i].display = false;
+                        }
                     } else {
                         $.extend(true, this.definition.layers[i], this.getLayer(this.getActiveLayerName()));
                         if (blank) {
