@@ -422,17 +422,14 @@ define([
         });
 
         ctx.grid.onColumnsResized.subscribe(function () {
-            var cols = ctx.grid.getColumns().filter(function (val) {
-                return val.id !== 'rowDeletion' && val.id !== '_checkbox_selector';
-            });
+            var cols = ctx.grid.getColumns();
 
-            if (ctx.colConfig.length === cols.length) {
-                for (var i = 0; i < cols.length; i++) {
-                    var colToChange = ctx.colConfig.filter(function (col) {
-                        return col === cols[i].colDef;
-                    });
-                    if (colToChange.length)
-                        colToChange[0].width = cols[i].width;
+            for (var i = 0; i < cols.length; i++) {
+                var colToChange = ctx.colConfig.find(function (col) {
+                    return col === cols[i].colDef;
+                });
+                if (colToChange) {
+                    colToChange.width = cols[i].width;
                 }
             }
             ctx.grid.invalidate();
@@ -917,7 +914,9 @@ define([
                     selectable: false,
                     resizable: false,
                     cssClass: 'cell-reorder dnd',
-                    formatter: function () {return '';}
+                    formatter: function () {
+                        return '';
+                    }
                 });
             }
 
