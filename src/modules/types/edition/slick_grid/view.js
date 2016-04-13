@@ -704,7 +704,9 @@ define([
                             icon: colDef.colDef.icon,
                             disabled: false,
                             action: colDef.colDef.action,
-                            tooltip: colDef.colDef.tooltip
+                            tooltip: colDef.colDef.tooltip,
+                            backgroundColor: colDef.colDef.backgroundColor,
+                            color: colDef.colDef.color
                         }
                     };
 
@@ -720,7 +722,12 @@ define([
                         }
                     }
 
+
                     var $cellNode = $(cellNode);
+
+                    $cellNode.css('backgroundColor', context.renderOptions.backgroundColor);
+                    $cellNode.find('a').css('color', context.renderOptions.color);
+
                     var $a = $cellNode.find('a');
                     $a.attr('title', context.renderOptions.tooltip);
 
