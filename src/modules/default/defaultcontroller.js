@@ -23,6 +23,8 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
                 var custom = this.module.definition.toolbar.custom[0];
             }
 
+            if(!common) common = ['Open Preferences'];
+
             var toolbar = [
                 {
                     onClick: function () {
