@@ -36,20 +36,20 @@ define([
         'slick.yesno': Slick.Formatters.YesNoSelect
     };
 
-    var typeEditors = {
-        string: Slick.CustomEditors.TextValue,
-        number: Slick.CustomEditors.NumberValue,
-        boolean: Slick.CustomEditors.BooleanValue,
-        color: Slick.CustomEditors.ColorValue,
-        date: Slick.CustomEditors.Date,
-        longtext: Slick.CustomEditors.LongText
-    };
+    var typeEditors = {};
 
     for (var key in structures) {
         if (typeof structures[key] === 'string') {
             typeEditors[key] = typeEditors[structures[key]];
         }
     }
+
+    typeEditors.string = Slick.CustomEditors.TextValue;
+    typeEditors.number = Slick.CustomEditors.NumberValue;
+    typeEditors.boolean = Slick.CustomEditors.BooleanValue;
+    typeEditors.color = Slick.CustomEditors.ColorValue;
+    typeEditors.date = Slick.CustomEditors.Date;
+    typeEditors.longtext = Slick.CustomEditors.LongText;
 
     function doGrid(ctx) {
         ctx.$container.html('');
