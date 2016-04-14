@@ -5,6 +5,7 @@ define(['jquery', 'modules/default/defaultview', 'lodash'], function ($, Default
     function View() {
         this._query = null;
         this._data = null;
+        this._originalData = null;
     }
 
     $.extend(true, View.prototype, Default, {
@@ -50,12 +51,13 @@ define(['jquery', 'modules/default/defaultview', 'lodash'], function ($, Default
         blank: {
             input: function () {
                 this._data = null;
+                this._originalData = null;
             }
         },
         update: {
             input: function (value) {
-                this._originalData = value.slice();
                 this._data = value.resurrect();
+                this._originalData = value.slice();
                 this.module.controller.onQuery(this._query || '');
             }
         },
