@@ -12,7 +12,6 @@ define([
     'src/util/versioning',
     'src/util/couchdbAttachments',
     'src/util/uploadUi',
-    'src/util/api',
     'fancytree',
     'components/ui-contextmenu/jquery.ui-contextmenu.min',
     'jquery-ui/accordion'
@@ -26,8 +25,7 @@ define([
              RocView,
              Versioning,
              CouchdbAttachments,
-             uploadUi,
-             API) {
+             uploadUi) {
 
     var UPLOAD_LIMIT = 50 * 1024 * 1024;
     var fakeLink = {
@@ -802,7 +800,8 @@ define([
             this.$title.text(view.title);
             this.$infoBox.html(
                 `Name: <b>${_.escape(node.title)}</b><br>
-                Folder: ${view.getPath(node.data.flavor)}<br><br>
+                Folder: ${view.getPath(node.data.flavor)}<br>
+                Visualizer version: ${view.version}<br><br>
                 Size: ${Util.formatSize(view.size)}<br>
                 Id: ${view.id}<br>
                 Revision: ${view.revid}<br><br>
