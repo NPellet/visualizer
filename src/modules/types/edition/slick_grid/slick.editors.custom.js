@@ -130,13 +130,18 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
 
         function ColorEditor(args) {
             this.args = args;
-            var $cont, $input, defaultValue;
+            var defaultValue;
             this.init = function () {
                 var that = this;
-                $cont = $('<div/>');
-                $cont.append('<input type="text">');
-                $input = $cont.find('input');
-                $input.appendTo(args.container)
+                this.$input = $('<input type="text">');
+                var box = args.container.getBoundingClientRect();
+                this.$div = $('<div>').css({
+                    position: 'fixed',
+                    left: box.left,
+                    top: box.top
+                });
+                $('body').append(this.$div);
+                this.$input.appendTo(this.$div)
                     .bind('keydown.nav', function (e) {
                         if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
                             e.stopImmediatePropagation();
@@ -144,7 +149,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
                     })
                     .focus()
                     .select();
-                $input.spectrum({
+                this.$input.spectrum({
                     color: (args.item && args.item.getChildSync && args.item.getChildSync(args.column.jpath)) ? args.item.getChildSync(args.column.jpath).get() : undefined,
                     appendTo: 'body',
                     showInitial: true,
@@ -241,7 +246,6 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
                     change: function (color) {
                         that.color = color;
                         that.changed = true;
-                        $input.spectrum('hide');
                         args.commitChanges('next');
                     },
                     move: function (color) {
@@ -258,43 +262,48 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
                     localStorageKey: 'visualizer-spectrum'
                 });
 
-                $input.next().first().click();
+                this.$input.next().first().click();
+
             };
 
             this.destroy = function () {
-                $cont.remove();
+                var d = this.$input.data()
+                if(d['spectrum.id'] === undefined) debugger;
+                this.$input.spectrum('destroy');
+                this.$div.remove();
+                //this.$input.remove();
             };
 
             this.focus = function () {
-                $input.focus();
+                this.$input.focus();
             };
 
             this.getValue = function () {
-                $input.val();
+                this.$input.val();
             };
 
             this.setValue = function (val) {
-                $input.val(val);
+                this.$input.val(val);
             };
 
             this.loadValue = function (item) {
                 defaultValue = item.getChildSync(args.column.jpath);
                 if (defaultValue) {
-                    defaultValue = defaultValue.value || '#000000';
+                    defaultValue = String(defaultValue.get()) || '#000000';
                 } else {
                     defaultValue = '#000000';
                 }
-                $input.val(defaultValue);
-                $input.spectrum('set', defaultValue);
-                $input[0].defaultValue = defaultValue;
-                $input.select();
+                this.$input.val(defaultValue);
+                this.$input.spectrum('set', defaultValue);
+                this.$input[0].defaultValue = defaultValue;
+                this.$input.select();
             };
 
             this.serializeValue = function () {
                 if (this.color) {
                     return this.color.toRgbString();
                 }
-                return $input.val();
+                return this.$input.val();
             };
 
 
@@ -303,12 +312,12 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
             };
 
             this.isValueChanged = function () {
-                return (!($input.val() == '' && defaultValue == null)) && ($input.val() != defaultValue);
+                return (!(this.$input.val() == '' && defaultValue == null)) && (this.$input.val() != defaultValue);
             };
 
             this.validate = function () {
                 if (args.column.validator) {
-                    var validationResults = args.column.validator($input.val());
+                    var validationResults = args.column.validator(this.$input.val());
                     if (!validationResults.valid) {
                         return validationResults;
                     }
