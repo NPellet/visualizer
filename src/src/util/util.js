@@ -535,6 +535,10 @@ define(['src/util/debug', 'src/util/color', 'lodash', 'src/data/structures', 'co
                 return 'sdf';
             case 'chemical/x-mdl-molfile':
                 return 'mol2d';
+            case 'text/html':
+                return 'html';
+            case 'text/plain':
+                return 'string';
             default:
                 return null;
         }
