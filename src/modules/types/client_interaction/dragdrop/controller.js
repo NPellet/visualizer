@@ -278,9 +278,42 @@ define(['modules/default/defaultcontroller',
         }
     };
 
+    function treatMultiplePaste(items) {
+        var pitems = [];
+        for(let i=0; i<items.length; i++) {
+            let item = items[i];
+            pitems.push({
+                kind: item.kind,
+                type: item.type === 'text/plain' ? 'auto' : item.type,
+                str: new Promise(function(resolve) {
+                    item.getAsString(resolve);
+                }),
+                id: i
+            });
+        }
+
+        return pitems;
+    }
+
+
     Controller.prototype.open = function (data) {
         if (!(data.items && data.items.length) && !data.files.length)
             return;
+
+        var items;
+
+
+        var multiplePaste = true;
+        for (let i = 0; i < data.items.length; i++) {
+            if (data.items[i].kind !== 'string') multiplePaste = false;
+        }
+        if(data.items.length === 1) multiplePaste = false;
+
+        if (multiplePaste) {
+            items = treatMultiplePaste(data.items);
+        } else {
+            items = data.items;
+        }
 
         this.module.model.tmpVars = new DataObject();
         this.module.model.tmpVarsArray = new DataObject();
@@ -292,24 +325,32 @@ define(['modules/default/defaultcontroller',
         var cfgString = this.stringCfg;
 
         var i, item, meta, def;
-        if (data.items) { // only supported by Chrome
-            for (i = 0; i < data.items.length; i++) {
-                item = data.items[i];
-                def = $.Deferred();
-                defs.push(def);
-                if (item.kind === 'file') {
-                    item = item.getAsFile();
-                    if (meta = this.checkMetadata(item, cfg, mimeFromName('application/octet-stream'))) {
-                        meta.def = def;
-                        this.read(item, meta);
+        if (items) { // only supported by Chrome
+            if(multiplePaste) {
+                var meta = {};
+                meta.cfg = cfgString;
+                meta.def = $.Deferred();
+                defs.push(meta.def);
+                this.treatMultipleString(items, meta);
+            } else {
+                for (i = 0; i < items.length; i++) {
+                    item = items[i];
+                    def = $.Deferred();
+                    defs.push(def);
+                    if (item.kind === 'file') {
+                        item = item.getAsFile();
+                        if (meta = this.checkMetadata(item, cfg, mimeFromName('application/octet-stream'))) {
+                            meta.def = def;
+                            this.read(item, meta);
+                        } else {
+                            def.resolve();
+                        }
                     } else {
-                        def.resolve();
+                        meta = {};
+                        meta.cfg = cfgString;
+                        meta.def = def;
+                        this.treatString(item, meta);
                     }
-                } else {
-                    meta = {};
-                    meta.cfg = cfgString;
-                    meta.def = def;
-                    this.treatString(item, meta);
                 }
             }
         } else { // other browsers are limited to drop files
@@ -341,6 +382,31 @@ define(['modules/default/defaultcontroller',
         meta.def.done(function () {
             that.createDataFromEvent('onRead', 'data', that.module.model.tmpVars);
             that.createDataFromEvent('onRead', 'dataarray', that.module.model.tmpVarsArray);
+        });
+    };
+
+    Controller.prototype.treatMultipleString = function(items, meta) {
+        ui.choose(items, {
+            noConfirmation: true,
+            returnRow: true,
+            idField: 'id',
+            columns: [
+                {
+                    id: 'key',
+                    name: 'content-type',
+                    field: 'type'
+                }
+            ]
+        }).then(row => {
+            if(row.type === 'auto') row.type = '';
+            if(row === undefined) {
+                meta.def.resolve();
+                return;
+            }
+            row.getAsString = function(cb) {
+                row.str.then(cb);
+            };
+            this.treatString(row, meta);
         });
     };
 
