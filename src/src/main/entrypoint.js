@@ -300,7 +300,7 @@ define([
 
                             // If there is no jpath, we assume the variable is an object and we add it in the data stack
                             // Note: if that's not an object, we will have a problem...
-                            API.createData(name, false);
+                            fetching.push(API.createData(name, false));
 
                         } else {
 
