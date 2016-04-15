@@ -61,7 +61,7 @@ define(['jquery', 'modules/default/defaultview', 'forms/button', 'src/util/ui', 
             if (!content) {
                 this.dom.html(button.render().css({
                     position: 'absolute',
-                    bottom:3
+                    bottom: 3
                 }));
             } else if (contentType === 'imageUrl') {
                 var $img = $('<img src="' + content + '"/>');

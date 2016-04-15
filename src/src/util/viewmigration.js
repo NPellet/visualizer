@@ -373,6 +373,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                 }
 
                 var oldConfig = module.getChildSync(['configuration']);
+
                 function getChild(name) {
                     return oldConfig.getChildSync(['groups', 'group', 0, name]);
                 }
@@ -459,10 +460,13 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                 }
             }, 'dragdrop');
         },
-        '2.49.1-1', function(view) {
-            eachModule(view, function(module) {
-                if(!module.toolbar) {
-                    module.toolbar = {"custom":[[{"title":"","icon":"","action":"","position":"begin"}]],"common":[{"toolbar":[["Open Preferences"]]}]};
+        '2.49.1-1', function (view) {
+            eachModule(view, function (module) {
+                if (!module.toolbar) {
+                    module.toolbar = {
+                        'custom': [[{'title': '', 'icon': '', 'action': '', 'position': 'begin'}]],
+                        'common': [{'toolbar': [['Open Preferences']]}]
+                    };
                 }
             });
         }

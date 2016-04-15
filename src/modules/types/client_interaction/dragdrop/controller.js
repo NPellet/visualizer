@@ -280,12 +280,12 @@ define(['modules/default/defaultcontroller',
 
     function treatMultiplePaste(items) {
         var pitems = [];
-        for(let i=0; i<items.length; i++) {
+        for (let i = 0; i < items.length; i++) {
             let item = items[i];
             pitems.push({
                 kind: item.kind,
                 type: item.type === 'text/plain' ? 'auto' : item.type,
-                str: new Promise(function(resolve) {
+                str: new Promise(function (resolve) {
                     item.getAsString(resolve);
                 }),
                 id: i
@@ -307,7 +307,7 @@ define(['modules/default/defaultcontroller',
         for (let i = 0; i < data.items.length; i++) {
             if (data.items[i].kind !== 'string') multiplePaste = false;
         }
-        if(data.items.length === 1) multiplePaste = false;
+        if (data.items.length === 1) multiplePaste = false;
 
         if (multiplePaste) {
             items = treatMultiplePaste(data.items);
@@ -326,7 +326,7 @@ define(['modules/default/defaultcontroller',
 
         var i, item, meta, def;
         if (items) { // only supported by Chrome
-            if(multiplePaste) {
+            if (multiplePaste) {
                 var meta = {};
                 meta.cfg = cfgString;
                 meta.def = $.Deferred();
@@ -385,7 +385,7 @@ define(['modules/default/defaultcontroller',
         });
     };
 
-    Controller.prototype.treatMultipleString = function(items, meta) {
+    Controller.prototype.treatMultipleString = function (items, meta) {
         ui.choose(items, {
             noConfirmation: true,
             returnRow: true,
@@ -398,12 +398,12 @@ define(['modules/default/defaultcontroller',
                 }
             ]
         }).then(row => {
-            if(row.type === 'auto') row.type = '';
-            if(row === undefined) {
+            if (row.type === 'auto') row.type = '';
+            if (row === undefined) {
                 meta.def.resolve();
                 return;
             }
-            row.getAsString = function(cb) {
+            row.getAsString = function (cb) {
                 row.str.then(cb);
             };
             this.treatString(row, meta);

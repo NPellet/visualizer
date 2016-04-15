@@ -356,7 +356,7 @@ define([
         var title = options && options.title;
         title = title || 'Download resource';
 
-        $element.html(`<a download${options.filename ? ('=' + options.filename): ''} title="${title}" href="${value}">⤵</a>`);
+        $element.html(`<a download${options.filename ? ('=' + options.filename) : ''} title="${title}" href="${value}">⤵</a>`);
     };
 
     functions.openlink = {};

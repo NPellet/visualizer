@@ -139,7 +139,7 @@ define([
             return html;
         },
 
-        drawToolbar: function() {
+        drawToolbar: function () {
             var isLocked = API.isViewLocked();
             var $ul = this.dom.find('.ci-module-header-toolbar ul');
             var toolbar = this.controller.getToolbar();
@@ -160,11 +160,11 @@ define([
 
         bindToolbar: function () {
             var that = this;
-            this.dom.find('.ci-module-header-toolbar ul').on('click', 'li', function(event) {
+            this.dom.find('.ci-module-header-toolbar ul').on('click', 'li', function (event) {
                 var toolbar = that.controller.getToolbar();
                 var title = $(event.target).parent('li').attr('title');
                 var t = _.find(toolbar, val => val.title === title);
-                if(t && t.onClick) {
+                if (t && t.onClick) {
                     t.onClick.apply(that);
                 }
             });
@@ -930,7 +930,7 @@ define([
                 var allLayers = [];
                 var allLayerDisplay = [];
 
-                if(that.definition.toolbar) {
+                if (that.definition.toolbar) {
                     var commonToolbar = that.definition.toolbar.common;
                     var customToolbar = that.definition.toolbar.custom;
                 }

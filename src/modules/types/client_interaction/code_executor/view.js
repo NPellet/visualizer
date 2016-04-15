@@ -69,10 +69,10 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
     View.prototype.onResize = function () {
         if (this.editor) {
             var $editor = $('#' + this._id);
-            if($editor.height() < 20) {
+            if ($editor.height() < 20) {
                 $editor.hide();
             } else {
-                $editor.show()
+                $editor.show();
             }
             this.editor.resize();
         }

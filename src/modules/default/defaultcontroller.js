@@ -23,7 +23,7 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
                 var custom = this.module.definition.toolbar.custom[0];
             }
 
-            if(!common) common = ['Open Preferences'];
+            if (!common) common = ['Open Preferences'];
 
             var toolbar = [
                 {
@@ -100,10 +100,10 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
                             API.doAction(custom[i].action);
                         }
                     };
-                    if(custom[i].position === 'begin') {
+                    if (custom[i].position === 'begin') {
                         toolbar.unshift(el);
                     } else {
-                        toolbar.push(el)
+                        toolbar.push(el);
                     }
                 }
             }

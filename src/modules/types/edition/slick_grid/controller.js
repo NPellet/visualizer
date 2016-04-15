@@ -228,7 +228,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                         color: {
                             type: 'spectrum',
                             title: 'Color',
-                            default: [0,0,0,1]
+                            default: [0, 0, 0, 1]
                         },
                         action: {
                             type: 'text',
