@@ -5,7 +5,7 @@ define(['modules/default/defaultcontroller',
     'src/data/structures', 'src/util/debug',
     'src/util/util',
     'src/util/ui',
-    'mime-types'
+    'src/util/mimeTypes'
 ], function (Default, API, Versioning, Structure, Debug, Util, ui, mimeTypes) {
 
     function Controller() {
