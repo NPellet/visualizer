@@ -57,15 +57,10 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
             };
         }
 
-
         if (jpath) {
-
             return variable.setjPath(jpath, filterFunction);
-
         } else {
-
             return variable.createData([name], newData, filterFunction);
-
         }
     }
 
@@ -142,7 +137,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
                 this._jpath.shift();
             }
 
-            this.triggerChange(callback);
+            return this.triggerChange(callback);
         },
 
 
@@ -255,7 +250,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
                     _reject(err);
                 });
             });
-            this.currentPromise.catch(function (err) {
+            var prom = this.currentPromise.catch(function (err) {
                 if (
                     err === 'filter' || // Already caught
                     err === 'latency' // Expected
@@ -270,6 +265,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
                     that.listeners[i].callback.call(that, that);
                 }
             }
+            return prom;
         },
 
         onReady: function () {
