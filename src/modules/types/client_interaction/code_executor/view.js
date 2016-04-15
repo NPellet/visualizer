@@ -46,7 +46,6 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
                     that.buttonCell.append(
                         $('<span>' + button.label + '</span>')
                             .addClass('form-button')
-                            .css('margin-bottom', '5px')
                             .on('click', onclick)
                     );
                     if (idx === 0 && that.editor) {
