@@ -293,7 +293,7 @@ define([
 
                                 var varname = entryVar.varname;
                                 data.setChild([varname], v, true);
-                                API.setVariable(varname, false, [varname]);
+                                return API.setVariable(varname, false, [varname]);
                             }));
 
                         } else if (!entryVar.jpath) {
@@ -309,7 +309,7 @@ define([
                                 entryVar.jpath.shift();
                             }
 
-                            API.setVariable(entryVar.varname, false, entryVar.jpath);
+                            fetching.push(API.setVariable(entryVar.varname, false, entryVar.jpath));
                         }
                     }
                 })(i);
