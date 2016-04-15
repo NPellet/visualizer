@@ -349,17 +349,17 @@ define([
                     return prom.then(filename => {
                         if (filename) attachment.filename = filename;
                         if (!attachment.filename) {
-                                return;
-                            }
+                            return;
+                        }
 
                         attachment.filename = this.processor.getFilename(type, attachment.filename);
 
                             // If we had to ask for a filename, resolve content type
                         var fallback;
                         if (filename) {
-                                fallback = attachment.contentType;
-                                attachment.contentType = undefined;
-                            }
+                            fallback = attachment.contentType;
+                            attachment.contentType = undefined;
+                        }
                         setContentType(attachment, fallback);
 
                         return this.get(entry, {fromCache: true})
