@@ -1,3 +1,16 @@
+<a name="2.49.0"></a>
+# 2.49.0 (2016-04-11)
+
+
+### Features
+
+* **fancytree:** var out can be the node itself + select anynode, leaf or parent ([7e336e6](https://github.com/NPellet/visualizer/commit/7e336e6))
+* **single_value:** smarter editor, unforce type when editing ([12cf4ea](https://github.com/NPellet/visualizer/commit/12cf4ea)), closes [#820](https://github.com/NPellet/visualizer/issues/820)
+* **versionselector:** add minVersion option ([315cd8f](https://github.com/NPellet/visualizer/commit/315cd8f))
+* **versionselector:** can use fragment instead of query string ([93b16f6](https://github.com/NPellet/visualizer/commit/93b16f6))
+
+
+
 <a name="2.48.0"></a>
 # 2.48.0 (2016-03-24)
 

@@ -458,6 +458,13 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                     }
                 }
             }, 'dragdrop');
+        },
+        '2.49.1-1', function(view) {
+            eachModule(view, function(module) {
+                if(!module.toolbar) {
+                    module.toolbar = {"custom":[[{"title":"","icon":"","action":"","position":"begin"}]],"common":[{"toolbar":[["Open Preferences"]]}]};
+                }
+            });
         }
 //  Add new migration functions here
 //  Do not forget to `npm run prerelease` before creating your migration script

@@ -17,7 +17,31 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
         },
 
         getToolbar: function () {
-            return [
+            var tb = this.module.definition.toolbar;
+            if (tb) {
+                var common = this.module.definition.toolbar.common[0].toolbar[0];
+                var custom = this.module.definition.toolbar.custom[0];
+            }
+
+            if(!common) common = ['Open Preferences'];
+
+            var toolbar = [
+                {
+                    onClick: function () {
+                        this.exportData();
+                    },
+                    title: 'Export Data',
+                    cssClass: 'fa fa-file',
+                    ifLocked: true
+                },
+                {
+                    onClick: function () {
+                        this.printView();
+                    },
+                    title: 'Print',
+                    cssClass: 'fa fa-print',
+                    ifLocked: true
+                },
                 {
                     onClick: function () {
                         this.enableFullscreen();
@@ -57,6 +81,34 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
                 //    cssClass: 'fa fa-close fa-lg'
                 //}
             ];
+
+            if (common) {
+                toolbar = toolbar.filter(t => {
+                    return common.some(c => {
+                        return c === t.title;
+                    });
+                });
+            }
+
+            if (custom) {
+                for (let i = 0; i < custom.length; i++) {
+                    let el = {
+                        ifLocked: true,
+                        title: custom[i].title,
+                        cssClass: 'fa ' + custom[i].icon,
+                        onClick: function () {
+                            API.doAction(custom[i].action);
+                        }
+                    };
+                    if(custom[i].position === 'begin') {
+                        toolbar.unshift(el);
+                    } else {
+                        toolbar.push(el)
+                    }
+                }
+            }
+
+            return toolbar;
         },
 
         inDom: Util.noop,

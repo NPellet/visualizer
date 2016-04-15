@@ -117,7 +117,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         this.createDataFromEvent('onActivate', 'nodeData', data.info);
         this.createDataFromEvent('onActivate', 'node', data);
 
-        if(data.children && data.children.length) {
+        if (data.children && data.children.length) {
             this.createDataFromEvent('onActivateParent', 'nodeData', data.info);
             this.createDataFromEvent('onActivateParent', 'node', data);
         } else {
@@ -127,5 +127,4 @@ define(['modules/default/defaultcontroller'], function (Default) {
     };
 
     return Controller;
-
 });

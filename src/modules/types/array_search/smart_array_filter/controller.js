@@ -88,11 +88,16 @@ define(['jquery', 'modules/default/defaultcontroller', 'smart-array-filter'], fu
     };
 
     Controller.prototype.onQuery = function (query) {
-        var array = JSON.parse(this.module.view._data);
+        var array = this.module.view._data;
         if (!array) return;
-        var result = filter(array, {keywords: query});
+        var result = filter(array, {keywords: query, index: true});
+        var original = this.module.view._originalData;
+        var toSend = new Array(result.length);
+        for (var i = 0; i < result.length; i++) {
+            toSend[i] = original[result[i]];
+        }
         this.createDataFromEvent('onQuery', 'search', query);
-        this.createDataFromEvent('onQuery', 'output', result);
+        this.createDataFromEvent('onQuery', 'output', toSend);
     };
 
     return Controller;

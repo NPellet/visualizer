@@ -168,7 +168,7 @@ define([
         jpath = jpath || [];
         var jpathNewVar = (!sourceVariable) ? jpath : sourceVariable.getjPath().concat(jpath);
 
-        Variables.setVariable(name, jpathNewVar, false, filter);
+        return Variables.setVariable(name, jpathNewVar, false, filter);
     };
     exports.setVar = exports.setVariable;
 

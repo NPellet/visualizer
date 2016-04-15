@@ -1,16 +1,16 @@
 'use strict';
 
 define([
-        'src/util/api',
-        'src/util/ui',
-        'src/util/util',
-        'superagent',
-        'uri/URI',
-        'lodash',
-        'src/util/couchdbAttachments',
-        'mime-types',
-        'src/util/IDBKeyValue'
-    ],
+    'src/util/api',
+    'src/util/ui',
+    'src/util/util',
+    'superagent',
+    'uri/URI',
+    'lodash',
+    'src/util/couchdbAttachments',
+    'mime-types',
+    'src/util/IDBKeyValue'
+],
     function (API, ui, Util, superagent, URI, _, CDB, mimeTypes, IDB) {
 
         const defaultOptions = {
@@ -161,8 +161,8 @@ define([
                             });
 
                             idb.get(data._id).then(localEntry => {
-                                if(!localEntry) return;
-                                if(localEntry._rev === doc._rev) {
+                                if (!localEntry) return;
+                                if (localEntry._rev === doc._rev) {
                                     this._updateByUuid(data._id, localEntry);
                                 } else {
                                     idb.delete(data._id);
@@ -336,36 +336,36 @@ define([
                     }
 
                     return prom.then(filename => {
-                            if (filename) attachment.filename = filename;
-                            if (!attachment.filename) {
-                                return;
-                            }
+                        if (filename) attachment.filename = filename;
+                        if (!attachment.filename) {
+                            return;
+                        }
 
-                            attachment.filename = this.processor.getFilename(type, attachment.filename);
+                        attachment.filename = this.processor.getFilename(type, attachment.filename);
 
-                            // If we had to ask for a filename, resolve content type
-                            var fallback;
-                            if (filename) {
-                                fallback = attachment.contentType;
-                                attachment.contentType = undefined;
-                            }
-                            setContentType(attachment, fallback);
+                        // If we had to ask for a filename, resolve content type
+                        var fallback;
+                        if (filename) {
+                            fallback = attachment.contentType;
+                            attachment.contentType = undefined;
+                        }
+                        setContentType(attachment, fallback);
 
-                            return this.get(entry, {fromCache: true})
-                                .then(entry => {
-                                    return this.addAttachment(entry, attachment, createOptions(options, 'addAttachment'))
-                                        .then(entry => {
-                                            if (!this.processor) {
-                                                throw new Error('no processor');
-                                            }
-                                            this.processor.process(type, entry.$content, attachment);
-                                            entry.triggerChange();
-                                            return entry;
-                                        })
-                                })
-                        })
-                        .then(handleSuccess(this, attachOptions))
-                        .catch(handleError(this, attachOptions));
+                        return this.get(entry, {fromCache: true})
+                            .then(entry => {
+                                return this.addAttachment(entry, attachment, createOptions(options, 'addAttachment'))
+                                    .then(entry => {
+                                        if (!this.processor) {
+                                            throw new Error('no processor');
+                                        }
+                                        this.processor.process(type, entry.$content, attachment);
+                                        entry.triggerChange();
+                                        return entry;
+                                    });
+                            });
+                    })
+                    .then(handleSuccess(this, attachOptions))
+                    .catch(handleError(this, attachOptions));
                 });
             }
 
@@ -437,12 +437,12 @@ define([
                                         entry.$modificationDate = data.$modificationDate;
                                         entry.triggerChange();
                                         return entry;
-                                    })
+                                    });
                             })
                             .then(handleSuccess(this, options))
                             .catch(handleError(this, options));
                     });
-                })
+                });
             }
 
             addAttachmentById(id, attachment, options) {
@@ -604,8 +604,7 @@ define([
                 this._traverseFilename(v, function (v) {
                     if (typeof filename === 'undefined') {
                         r.push(v);
-                    }
-                    else if (filename.indexOf(String(v.filename)) !== -1) {
+                    } else if (filename.indexOf(String(v.filename)) !== -1) {
                         r.push(v);
                     }
                 });
@@ -647,26 +646,7 @@ define([
                         enumerable: false,
                         writable: true
                     });
-                })
-            }
-
-            _setSyncState(name, state) {
-                if (syncState[name] === undefined) {
-                    // create new div
-                }
-
-                if (syncState[name].state === state) return;
-                else {
-                    var bg;
-                    syncState[name].state = state;
-                    if (state) {
-                        bg = 'lightgreen';
-                        syncState[name].div.css('background-color', 'lightgreen');
-                    } else {
-                        syncState[name].div.css('ba')
-                    }
-                }
-
+                });
             }
         }
 

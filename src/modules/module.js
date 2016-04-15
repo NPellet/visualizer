@@ -128,21 +128,6 @@ define([
             html += '</div>';
             html += '<div class="ci-module-header-toolbar">';
             html += '<ul>';
-
-            var toolbar = this.controller.getToolbar();
-            var isLocked = API.isViewLocked();
-            for (var i = 0; i < toolbar.length; i++) {
-                if (!toolbar[i].ifLocked && isLocked) continue;
-                html += '<li title="' + (toolbar[i].title || '') + '">';
-                if (toolbar[i].icon) {
-                    html += '<img src="' + toolbar[i].icon + '"/>';
-                }
-                if (toolbar[i].cssClass) {
-                    html += '<span style="color: rgba(170, 170, 170, 0.9);" class="' + toolbar[i].cssClass + '"/>';
-                }
-                html += '</li>';
-            }
-
             html += '</ul>';
             html += '</div>';
             html += '</div><div class="ci-module-content">';
@@ -154,13 +139,33 @@ define([
             return html;
         },
 
+        drawToolbar: function() {
+            var isLocked = API.isViewLocked();
+            var $ul = this.dom.find('.ci-module-header-toolbar ul');
+            var toolbar = this.controller.getToolbar();
+            var html = '';
+            for (var i = 0; i < toolbar.length; i++) {
+                if (!toolbar[i].ifLocked && isLocked) continue;
+                html += '<li title="' + (toolbar[i].title || '') + '">';
+                if (toolbar[i].icon) {
+                    html += '<img src="' + toolbar[i].icon + '"/>';
+                }
+                if (toolbar[i].cssClass) {
+                    html += '<span style="color: rgba(170, 170, 170, 0.9);" class="' + toolbar[i].cssClass + '"/>';
+                }
+                html += '</li>';
+            }
+            $ul.html(html);
+        },
+
         bindToolbar: function () {
             var that = this;
-            var toolbar = this.controller.getToolbar();
-            this.dom.find('.ci-module-header-toolbar ul li').each(function (idx, el) {
-                var t = _.find(toolbar, val => val.title === el.title);
-                if (t && t.onClick) {
-                    $(el).on('click', t.onClick.bind(that));
+            this.dom.find('.ci-module-header-toolbar ul').on('click', 'li', function(event) {
+                var toolbar = that.controller.getToolbar();
+                var title = $(event.target).parent('li').attr('title');
+                var t = _.find(toolbar, val => val.title === title);
+                if(t && t.onClick) {
+                    t.onClick.apply(that);
                 }
             });
         },
@@ -302,6 +307,7 @@ define([
         },
 
         inDom: function () {
+            this.drawToolbar();
             this.view.inDom();
             this.controller.inDom();
             this.model.inDom();
@@ -368,7 +374,7 @@ define([
             }
         },
 
-        setLayers: function (layers, blankLayer, modify_layer, blank) {
+        setLayers: function (layers, blankLayer, modify_layer, blank, activeLayer) {
             this.definition.layers = this.definition.layers || new DataObject();
 
             if (modify_layer) {
@@ -390,6 +396,9 @@ define([
                     if (blankLayer) {
                         $.extend(true, this.definition.layers[i], Module.prototype.emptyConfig);
                         this.definition.layers[i].name = i;
+                        if (i !== activeLayer) {
+                            this.definition.layers[i].display = false;
+                        }
                     } else {
                         $.extend(true, this.definition.layers[i], this.getLayer(this.getActiveLayerName()));
                         if (blank) {
@@ -596,6 +605,60 @@ define([
                                         type: 'checkbox',
                                         title: 'Display on layers',
                                         options: allLayers
+                                    }
+                                }
+                            },
+                            commonToolbar: {
+                                options: {
+                                    title: 'Common toolbar options',
+                                    type: 'list'
+                                },
+                                fields: {
+                                    toolbar: {
+                                        type: 'checkbox',
+                                        title: 'Common toolbar options',
+                                        options: {
+                                            'Open Preferences': 'Open Preferences',
+                                            'Show fullscreen': 'Show fullscreen',
+                                            'Export Data': 'Export Data',
+                                            Print: 'Print'
+
+
+                                        },
+                                        default: ['Open Preferences']
+                                    }
+                                }
+                            },
+                            customToolbar: {
+                                options: {
+                                    title: 'Custom toolbar options',
+                                    type: 'table',
+                                    multiple: true
+                                },
+                                fields: {
+                                    title: {
+                                        type: 'text',
+                                        title: 'Title',
+                                        default: ''
+                                    },
+                                    icon: {
+                                        title: 'Icon',
+                                        type: 'text',
+                                        default: ''
+                                    },
+                                    action: {
+                                        title: 'Action',
+                                        type: 'text',
+                                        default: ''
+                                    },
+                                    position: {
+                                        title: 'Position',
+                                        type: 'combo',
+                                        options: [
+                                            {key: 'begin', title: 'Begin'},
+                                            {key: 'end', title: 'End'}
+                                        ],
+                                        default: 'begin'
                                     }
                                 }
                             }
@@ -867,6 +930,12 @@ define([
                 var allLayers = [];
                 var allLayerDisplay = [];
 
+                if(that.definition.toolbar) {
+                    var commonToolbar = that.definition.toolbar.common;
+                    var customToolbar = that.definition.toolbar.custom;
+                }
+
+
                 that.eachLayer(function (layer, name) {
                     if (layer.display) {
                         allLayerDisplay.push(name);
@@ -883,7 +952,11 @@ define([
                 var fill = {
                     sections: {
                         module_config: [{
-                            groups: {layerDisplay: [{displayOn: [allLayerDisplay]}]},
+                            groups: {
+                                layerDisplay: [{displayOn: [allLayerDisplay]}],
+                                commonToolbar,
+                                customToolbar
+                            },
                             sections: {layer: [{groups: {group: allLayers}}]}
                         }],
                         module_infos: [{groups: {group: [moduleInfosHtml]}}],
@@ -912,6 +985,10 @@ define([
                     that.definition.layers[l[i].layerName[0]].bgColor = l[i].bgcolor[0];
                     that.definition.layers[l[i].layerName[0]].wrapper = l[i].modulewrapper[0].indexOf('display') > -1;
                 }
+
+                that.definition.toolbar = {};
+                that.definition.toolbar.custom = value.module_config[0].groups.customToolbar;
+                that.definition.toolbar.common = value.module_config[0].groups.commonToolbar;
 
                 if (value.vars_out) {
                     that.setSendVars(value.vars_out[0].groups.group[0]);
@@ -1219,6 +1296,7 @@ define([
             this.resetReady();
             this.controller.init();
             this.view.init();
+            this.drawToolbar();
             this.view.inDom();
             this.toggleLayer(this.getActiveLayerName());
             this.model.resetListeners();

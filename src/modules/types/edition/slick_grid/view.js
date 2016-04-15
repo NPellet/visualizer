@@ -36,20 +36,20 @@ define([
         'slick.yesno': Slick.Formatters.YesNoSelect
     };
 
-    var typeEditors = {
-        string: Slick.CustomEditors.TextValue,
-        number: Slick.CustomEditors.NumberValue,
-        boolean: Slick.CustomEditors.BooleanValue,
-        color: Slick.CustomEditors.ColorValue,
-        date: Slick.CustomEditors.Date,
-        longtext: Slick.CustomEditors.LongText
-    };
+    var typeEditors = {};
 
     for (var key in structures) {
         if (typeof structures[key] === 'string') {
             typeEditors[key] = typeEditors[structures[key]];
         }
     }
+
+    typeEditors.string = Slick.CustomEditors.TextValue;
+    typeEditors.number = Slick.CustomEditors.NumberValue;
+    typeEditors.boolean = Slick.CustomEditors.BooleanValue;
+    typeEditors.color = Slick.CustomEditors.ColorValue;
+    typeEditors.date = Slick.CustomEditors.Date;
+    typeEditors.longtext = Slick.CustomEditors.LongText;
 
     function doGrid(ctx) {
         ctx.$container.html('');
@@ -422,17 +422,14 @@ define([
         });
 
         ctx.grid.onColumnsResized.subscribe(function () {
-            var cols = ctx.grid.getColumns().filter(function (val) {
-                return val.id !== 'rowDeletion' && val.id !== '_checkbox_selector';
-            });
+            var cols = ctx.grid.getColumns();
 
-            if (ctx.colConfig.length === cols.length) {
-                for (var i = 0; i < cols.length; i++) {
-                    var colToChange = ctx.colConfig.filter(function (col) {
-                        return col === cols[i].colDef;
-                    });
-                    if (colToChange.length)
-                        colToChange[0].width = cols[i].width;
+            for (var i = 0; i < cols.length; i++) {
+                var colToChange = ctx.colConfig.find(function (col) {
+                    return col === cols[i].colDef;
+                });
+                if (colToChange) {
+                    colToChange.width = cols[i].width;
                 }
             }
             ctx.grid.invalidate();
@@ -704,7 +701,9 @@ define([
                             icon: colDef.colDef.icon,
                             disabled: false,
                             action: colDef.colDef.action,
-                            tooltip: colDef.colDef.tooltip
+                            tooltip: colDef.colDef.tooltip,
+                            backgroundColor: colDef.colDef.backgroundColor,
+                            color: colDef.colDef.color
                         }
                     };
 
@@ -720,7 +719,12 @@ define([
                         }
                     }
 
+
                     var $cellNode = $(cellNode);
+
+                    $cellNode.css('backgroundColor', context.renderOptions.backgroundColor);
+                    $cellNode.find('a').css('color', context.renderOptions.color);
+
                     var $a = $cellNode.find('a');
                     $a.attr('title', context.renderOptions.tooltip);
 
@@ -910,7 +914,9 @@ define([
                     selectable: false,
                     resizable: false,
                     cssClass: 'cell-reorder dnd',
-                    formatter: function () {return '';}
+                    formatter: function () {
+                        return '';
+                    }
                 });
             }
 

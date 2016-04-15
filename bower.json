@@ -1,6 +1,6 @@
 {
   "name": "visualizer",
-  "version": "2.48.0",
+  "version": "2.49.0",
   "description": "Data visualization framework",
   "main": "src/init.js",
   "keywords": [
@@ -70,8 +70,8 @@
     "requirejs": "2.1.22",
     "select2": "4.0.0",
     "setImmediate": "YuzuJS/setImmediate#1.0.2",
-    "slickgrid": "cheminfo/SlickGrid#d883591c6b46196b9104f65939592e7d757cefb1",
-    "smart-array-filter": "0.4.1",
+    "slickgrid": "cheminfo/SlickGrid#c181108465a79c757a1853936eadb33f43269ca4",
+    "smart-array-filter": "0.5.0",
     "spectrum": "1.8.0",
     "sprintf": "1.0.3",
     "superagent-dist": "1.6.2",

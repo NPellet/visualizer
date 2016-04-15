@@ -220,6 +220,16 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                             type: 'text',
                             title: 'Icon'
                         },
+                        backgroundColor: {
+                            type: 'spectrum',
+                            title: 'Background Color',
+                            default: [255, 255, 255, 1]
+                        },
+                        color: {
+                            type: 'spectrum',
+                            title: 'Color',
+                            default: [0,0,0,1]
+                        },
                         action: {
                             type: 'text',
                             title: 'Action to send'

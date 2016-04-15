@@ -293,14 +293,14 @@ define([
 
                                 var varname = entryVar.varname;
                                 data.setChild([varname], v, true);
-                                API.setVariable(varname, false, [varname]);
+                                return API.setVariable(varname, false, [varname]);
                             }));
 
                         } else if (!entryVar.jpath) {
 
                             // If there is no jpath, we assume the variable is an object and we add it in the data stack
                             // Note: if that's not an object, we will have a problem...
-                            API.createData(name, false);
+                            fetching.push(API.createData(name, false));
 
                         } else {
 
@@ -309,7 +309,7 @@ define([
                                 entryVar.jpath.shift();
                             }
 
-                            API.setVariable(entryVar.varname, false, entryVar.jpath);
+                            fetching.push(API.setVariable(entryVar.varname, false, entryVar.jpath));
                         }
                     }
                 })(i);

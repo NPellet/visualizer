@@ -470,8 +470,8 @@ define([
                 var url = 'https://github.com/NPellet/visualizer/issues/new?body=' + encodeURIComponent(description);
                 var win = window.open(url, '_blank');
                 win.focus();
-            }, function () {
-                exports.showNotification('Error with Feedback', 'error');
+            }).catch(error => {
+                exports.showNotification('Error with Feedback, maybe pop-up was blocked', 'error');
             });
         }
     };
