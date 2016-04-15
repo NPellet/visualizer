@@ -619,7 +619,11 @@ define([
                                         title: 'Common toolbar options',
                                         options: {
                                             'Open Preferences': 'Open Preferences',
-                                            'Show fullscreen': 'Show fullscreen'
+                                            'Show fullscreen': 'Show fullscreen',
+                                            'Export Data': 'Export Data',
+                                            Print: 'Print'
+
+
                                         },
                                         default: ['Open Preferences']
                                     }

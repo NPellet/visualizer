@@ -28,6 +28,22 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
             var toolbar = [
                 {
                     onClick: function () {
+                        this.exportData();
+                    },
+                    title: 'Export Data',
+                    cssClass: 'fa fa-file',
+                    ifLocked: true
+                },
+                {
+                    onClick: function () {
+                        this.printView();
+                    },
+                    title: 'Print',
+                    cssClass: 'fa fa-print',
+                    ifLocked: true
+                },
+                {
+                    onClick: function () {
                         this.enableFullscreen();
                     },
                     title: 'Show fullscreen',
