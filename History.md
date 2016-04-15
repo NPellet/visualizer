@@ -1,3 +1,27 @@
+<a name="2.50.0"></a>
+# 2.50.0 (2016-04-15)
+
+
+### Bug Fixes
+
+* **code_executor:** hide the code when the space given to display it is really small ([c467b1d](https://github.com/NPellet/visualizer/commit/c467b1d))
+* **core:** entrypoint wait for data creation when loading main variables ([c1719e3](https://github.com/NPellet/visualizer/commit/c1719e3))
+* api.setVariable should return promise ([f085c06](https://github.com/NPellet/visualizer/commit/f085c06))
+* **dragdrop:** handle paste with multiple possible content types ([4f8f2e3](https://github.com/NPellet/visualizer/commit/4f8f2e3))
+* **roc-views:** show visualizer version in info box ([e526098](https://github.com/NPellet/visualizer/commit/e526098))
+* **slickgrid:** date and color editors were overriden by text editor ([8c5a5eb](https://github.com/NPellet/visualizer/commit/8c5a5eb))
+* **slickgrid:** fix color editor edition should not be contained within slick grid ([c78471b](https://github.com/NPellet/visualizer/commit/c78471b))
+* **slickgrid:** width of columns was broken when using action columns or other special columns ([377b29a](https://github.com/NPellet/visualizer/commit/377b29a))
+* **smart_array_filter:** keep original array elements when creating result ([e536b01](https://github.com/NPellet/visualizer/commit/e536b01))
+
+### Features
+
+* **module:** each module has header toolbar options ([302ba8b](https://github.com/NPellet/visualizer/commit/302ba8b)), closes [#847](https://github.com/NPellet/visualizer/issues/847)
+* **slick_grid:** add color and backgroundColor options to action columns ([115efc7](https://github.com/NPellet/visualizer/commit/115efc7))
+* **typerenderer:** downloadLink add filename option to decide downloaded filename ([05189ca](https://github.com/NPellet/visualizer/commit/05189ca))
+
+
+
 <a name="2.49.0"></a>
 # 2.49.0 (2016-04-11)
 
