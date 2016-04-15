@@ -9,7 +9,7 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
 
     Controller.prototype.getToolbar = function () {
         var base = Default.getToolbar.call(this);
-        base.push({
+        base.unshift({
             onClick: function () {
                 var w = $(window).width();
                 var h = $(window).height();
