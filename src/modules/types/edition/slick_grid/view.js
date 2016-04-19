@@ -212,7 +212,6 @@ define([
                     if (rows.indexOf(i) !== -1) items[i].__pos = 2;
                     else if (i < insertBefore || insertBefore === null) items[i].__pos = 1;
                     else items[i].__pos = 3;
-                    items[i].__elementPosition = i;
                 }
 
 
@@ -220,7 +219,6 @@ define([
 
                 for (var i = 0; i < items.length; i++) {
                     delete items[i].__pos;
-                    delete items[i].__elementPosition;
                 }
 
                 ctx.grid.invalidateAllRows();
@@ -539,10 +537,6 @@ define([
             ctx._makeDataObjects();
             // We'll use a simple comparer function here.
             var items = ctx.slick.data.getItems(), i = 0;
-            // Add a position indicatior ==> for stable sort
-            for (i = 0; i < items.length; i++) {
-                items[i].__elementPosition = i;
-            }
             var sortCols;
             if (!args.sortCols) {
                 sortCols = [{
@@ -576,15 +570,12 @@ define([
                         } else if (val2 < val1) {
                             return 1;
                         }
-                        return a.__elementPosition - b.__elementPosition;
+                        return 0;
                     };
                     ctx.slick.data.sort(comparer1, sortCols[i].sortAsc);
                 })(i);
             }
 
-            for (i = 0; i < items.length; i++) {
-                delete items[i].__elementPosition;
-            }
             ctx._updateHighlights();
             ctx.grid.invalidateAllRows();
             ctx.grid.render();
@@ -1726,9 +1717,7 @@ define([
     }
 
     function compMove(a, b) {
-        var diff = a.__pos - b.__pos;
-        if (diff !== 0) return diff;
-        return a.__elementPosition - b.__elementPosition;
+        return a.__pos - b.__pos;
     }
 
     return View;
