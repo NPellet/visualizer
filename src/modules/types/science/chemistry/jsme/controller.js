@@ -123,7 +123,8 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
                                 oldlook: 'Use the old look',
                                 atommovebutton: 'Add button to move atoms',
                                 removehs: 'Remove hydrogens when reading a molecule with explicit hydrogens',
-                                removehsc: 'Remove hydrogens bounded to C when reading a molecule with explicit hydrogens'
+                                removehsc: 'Remove hydrogens bounded to C when reading a molecule with explicit hydrogens',
+                                nozoom: 'Prevent zoom with scroll wheel'
                             }
                         },
                         defaultaction: {
