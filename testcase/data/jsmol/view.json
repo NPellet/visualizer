@@ -1,62 +1,46 @@
 {
+    "version": "2.50.1-0",
+    "grid": {
+        "layers": {
+            "Default layer": {
+                "name": "Default layer"
+            }
+        },
+        "xWidth": 10,
+        "yHeight": 10
+    },
     "modules": [
         {
+            "url": "modules/types/science/chemistry/jsmol/",
             "configuration": {
                 "sections": {},
                 "groups": {
                     "group": [
                         {
-                            "btnvalue": [
-                                "Run script"
-                            ],
-                            "iseditable": [
-                                [
-                                    "editable"
-                                ]
-                            ],
                             "script": [
-                                "cpk 0 ;"
+                                "wireframe 0;\nribbon on;\n"
                             ],
-                            "mode": [
-                                "text"
+                            "syncScript": [
+                                null
                             ]
                         }
                     ]
                 }
             },
-            "id": 1,
-            "vars_in": [
-                {}
-            ],
-            "actions_in": [
-                {}
-            ],
-            "vars_out": [
-                {}
-            ],
-            "actions_out": [
-                {
-                    "event": "onButtonClick",
-                    "rel": "value",
-                    "jpath": [],
-                    "name": "testscript"
-                }
-            ],
-            "url": "modules/types/client_interaction/code_editor/",
             "layers": {
                 "Default layer": {
                     "position": {
-                        "left": 55,
-                        "top": 0,
-                        "right": 0
+                        "left": 0,
+                        "top": 0
                     },
                     "size": {
-                        "width": 41,
-                        "height": 53
+                        "width": 59,
+                        "height": 51
                     },
+                    "zIndex": 0,
                     "display": true,
-                    "title": "Script editor",
-                    "bgcolor": [
+                    "title": "",
+                    "bgColor": [
                         255,
                         255,
                         255,
@@ -67,22 +51,7 @@
                     "name": "Default layer"
                 }
             },
-            "title": "Script editor"
-        },
-        {
-            "configuration": {
-                "sections": {},
-                "groups": {
-                    "group": [
-                        {
-                            "script": [
-                                "wireframe 0;\nribbon on;\n"
-                            ]
-                        }
-                    ]
-                }
-            },
-            "id": 2,
+            "id": 1,
             "vars_in": [
                 {
                     "rel": "data",
@@ -95,27 +64,88 @@
                     "name": "testscript"
                 }
             ],
+            "title": "",
             "vars_out": [
-                {}
+                {
+                    "jpath": []
+                }
             ],
-            "actions_out": [
-                {}
-            ],
-            "url": "./modules/types/science/chemistry/jsmol/",
+            "actions_out": [],
+            "toolbar": {
+                "custom": [
+                    [
+                        {
+                            "title": "",
+                            "icon": "",
+                            "action": "",
+                            "position": "begin"
+                        }
+                    ]
+                ],
+                "common": [
+                    {
+                        "toolbar": [
+                            [
+                                "Open Preferences"
+                            ]
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "url": "modules/types/client_interaction/code_editor/",
+            "configuration": {
+                "sections": {},
+                "groups": {
+                    "group": [
+                        {
+                            "mode": [
+                                "text"
+                            ],
+                            "outputType": [
+                                null
+                            ],
+                            "btnvalue": [
+                                "Run script"
+                            ],
+                            "iseditable": [
+                                [
+                                    "editable"
+                                ]
+                            ],
+                            "hasButton": [
+                                [
+                                    "button"
+                                ]
+                            ],
+                            "variable": [
+                                []
+                            ],
+                            "debouncing": [
+                                0
+                            ],
+                            "script": [
+                                "cpk 0 ;"
+                            ]
+                        }
+                    ]
+                }
+            },
             "layers": {
                 "Default layer": {
                     "position": {
-                        "left": 0,
-                        "top": 0,
-                        "right": 0
+                        "left": 60,
+                        "top": 0
                     },
                     "size": {
-                        "width": 54,
-                        "height": 53
+                        "width": 41,
+                        "height": 51
                     },
+                    "zIndex": 0,
                     "display": true,
-                    "title": "Untitled module",
-                    "bgcolor": [
+                    "title": "",
+                    "bgColor": [
                         255,
                         255,
                         255,
@@ -126,9 +156,51 @@
                     "name": "Default layer"
                 }
             },
-            "title": "Untitled module"
+            "id": 2,
+            "vars_in": [
+                {}
+            ],
+            "actions_in": [
+                {}
+            ],
+            "vars_out": [
+                {
+                    "jpath": []
+                }
+            ],
+            "title": "",
+            "actions_out": [
+                {
+                    "event": "onButtonClick",
+                    "rel": "data",
+                    "jpath": [],
+                    "name": "testscript"
+                }
+            ],
+            "toolbar": {
+                "custom": [
+                    [
+                        {
+                            "title": "",
+                            "icon": "",
+                            "action": "",
+                            "position": "begin"
+                        }
+                    ]
+                ],
+                "common": [
+                    {
+                        "toolbar": [
+                            [
+                                "Open Preferences"
+                            ]
+                        ]
+                    }
+                ]
+            }
         },
         {
+            "url": "modules/types/display/fasttable/",
             "configuration": {
                 "sections": {},
                 "groups": {
@@ -145,6 +217,11 @@
                             ],
                             "filterRow": [
                                 null
+                            ],
+                            "highlightLine": [
+                                [
+                                    "Yes"
+                                ]
                             ]
                         }
                     ],
@@ -160,6 +237,30 @@
                     ]
                 }
             },
+            "layers": {
+                "Default layer": {
+                    "position": {
+                        "left": 107,
+                        "top": 9
+                    },
+                    "size": {
+                        "width": 24,
+                        "height": 17
+                    },
+                    "zIndex": 0,
+                    "display": true,
+                    "title": "",
+                    "bgColor": [
+                        255,
+                        255,
+                        255,
+                        0
+                    ],
+                    "wrapper": true,
+                    "created": true,
+                    "name": "Default layer"
+                }
+            },
             "id": 3,
             "vars_in": [
                 {
@@ -170,6 +271,7 @@
             "actions_in": [
                 {}
             ],
+            "title": "",
             "vars_out": [
                 {
                     "event": "onSelect",
@@ -185,109 +287,27 @@
                     "jpath": []
                 }
             ],
-            "url": "./modules/types/display/fasttable/",
-            "layers": {
-                "Default layer": {
-                    "position": {
-                        "left": 101,
-                        "top": 9,
-                        "right": 0
-                    },
-                    "size": {
-                        "width": 19,
-                        "height": 23
-                    },
-                    "display": true,
-                    "title": "Untitled module",
-                    "bgcolor": [
-                        255,
-                        255,
-                        255,
-                        0
-                    ],
-                    "wrapper": true,
-                    "created": true,
-                    "name": "Default layer",
-                    "bgColor": [
-                        255,
-                        255,
-                        255,
-                        0
-                    ]
-                }
-            },
-            "title": "Untitled module"
-        },
-        {
-            "configuration": {
-                "sections": {},
-                "groups": {
-                    "group": [
+            "toolbar": {
+                "custom": [
+                    [
                         {
-                            "label": [
-                                null
-                            ],
-                            "filter": [
-                                null
-                            ]
+                            "title": "",
+                            "icon": "",
+                            "action": "",
+                            "position": "begin"
                         }
-                    ],
-                    "vars": [
-                        [
-                            {
-                                "extension": "",
-                                "filetype": "text",
-                                "type": "pdb",
-                                "variable": "pdb"
-                            }
-                        ]
                     ]
-                }
-            },
-            "id": 4,
-            "vars_in": [
-                {}
-            ],
-            "actions_in": [
-                {}
-            ],
-            "vars_out": [
-                {
-                    "event": "onRead",
-                    "rel": "object",
-                    "jpath": [],
-                    "name": "pdb"
-                }
-            ],
-            "actions_out": [
-                {}
-            ],
-            "url": "./modules/types/client_interaction/dragdrop/",
-            "layers": {
-                "Default layer": {
-                    "position": {
-                        "left": 98,
-                        "top": 36.00000190734863,
-                        "right": 0
-                    },
-                    "size": {
-                        "width": 26,
-                        "height": 16
-                    },
-                    "display": true,
-                    "title": "Untitled module",
-                    "bgcolor": [
-                        255,
-                        255,
-                        255,
-                        0
-                    ],
-                    "wrapper": true,
-                    "created": true,
-                    "name": "Default layer"
-                }
-            },
-            "title": "Untitled module"
+                ],
+                "common": [
+                    {
+                        "toolbar": [
+                            [
+                                "Open Preferences"
+                            ]
+                        ]
+                    }
+                ]
+            }
         }
     ],
     "variables": [
@@ -296,8 +316,7 @@
             "jpath": [
                 "result",
                 "pdbs"
-            ],
-            "url": ""
+            ]
         },
         {
             "varname": "pdb",
@@ -306,22 +325,127 @@
                 "pdbs",
                 "0",
                 "pdb"
-            ],
-            "url": ""
+            ]
         }
     ],
+    "aliases": [
+        {}
+    ],
+    "pouchvariables": [
+        {}
+    ],
     "configuration": {
-        "title": "Scripting JSMol"
+        "title": "No title"
     },
-    "version": "2.4.0b2",
-    "grid": {
-        "layers": {
-            "Default layer": {
-                "name": "Default layer"
+    "actionscripts": [
+        {
+            "sections": {},
+            "groups": {
+                "action": [
+                    {
+                        "name": [
+                            null
+                        ],
+                        "script": [
+                            null
+                        ]
+                    }
+                ]
             }
-        },
-        "xWidth": 10,
-        "yHeight": 10
-    },
-    "pouchvariables": []
+        }
+    ],
+    "couch_replication": [
+        {
+            "sections": {},
+            "groups": {
+                "couch": [
+                    [
+                        {
+                            "direction": "both",
+                            "continuous": []
+                        }
+                    ]
+                ]
+            }
+        }
+    ],
+    "init_script": [
+        {
+            "sections": {},
+            "groups": {
+                "general": [
+                    {
+                        "script": [
+                            null
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "custom_filters": [
+        {
+            "sections": {
+                "modules": [
+                    {
+                        "sections": {},
+                        "groups": {
+                            "modules": [
+                                [
+                                    {}
+                                ]
+                            ]
+                        }
+                    }
+                ],
+                "filtersLib": [
+                    {
+                        "sections": {},
+                        "groups": {
+                            "filters": [
+                                [
+                                    {}
+                                ]
+                            ]
+                        }
+                    }
+                ],
+                "filters": [
+                    {
+                        "sections": {},
+                        "groups": {
+                            "filter": [
+                                {
+                                    "name": [
+                                        null
+                                    ],
+                                    "script": [
+                                        null
+                                    ]
+                                }
+                            ],
+                            "libs": [
+                                [
+                                    {}
+                                ]
+                            ]
+                        }
+                    }
+                ]
+            },
+            "groups": {}
+        }
+    ],
+    "actionfiles": [
+        {
+            "sections": {},
+            "groups": {
+                "action": [
+                    [
+                        {}
+                    ]
+                ]
+            }
+        }
+    ]
 }
