@@ -146,6 +146,7 @@ module.exports = function (grunt) {
                             './chemcalc/lib.js',
                             './jsgraph/dist/**',
                             './jsme/**',
+                            './jsmol/**',
                             './jcampconverter/dist/*',
                             './jsbarcode/*.js',
                             './slickgrid/**',
@@ -397,7 +398,8 @@ module.exports = function (grunt) {
         };
 
         var acceptedReg = [
-            /build\/lib\/svg-edit\/images\/.*/
+            /build\/lib\/svg-edit\/images\/.*/,
+            /build\/components/
         ];
         var allimages = [];
 

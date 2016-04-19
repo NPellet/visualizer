@@ -3,8 +3,11 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <title></title>
-
-    <script type="text/javascript" language="javascript" src="./lib/JSmol.min.js"></script>
+    <script>
+        // jsmol prints too many debug lines
+        console.log = function() {};
+    </script>
+    <script type="text/javascript" language="javascript" src="../../../../../components/jsmol/src/JSmol.min.js"></script>
 
 
 </head>
@@ -38,7 +41,7 @@
             color: "0xF0F0F0",
             addSelectionOptions: false,
             use: "HTML5",
-            j2sPath: "./lib/j2s",
+            j2sPath: "../../../../../components/jsmol/src/j2s",
             isSigned: useSignedApplet,
             disableJ2SLoadMonitor: true,
             disableInitialConsole: true,

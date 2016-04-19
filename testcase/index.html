@@ -182,6 +182,7 @@
         var currentHeader = $('#selectedHeader').val();
         var version = $('#selectedVersion').val();
         var $examples = $('#examples');
+        $examples.empty();
         for (var name in examples) {
             var html = ['<h3>' + name + '</h3><p>'];
             var example = examples[name];
