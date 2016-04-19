@@ -495,7 +495,6 @@ define([
                     ctx.module.controller.onActive(itemInfo.idx, itemInfo.item);
                 }
             }
-
         });
 
         ctx.grid.onColumnsReordered.subscribe(function () {
@@ -536,7 +535,6 @@ define([
 
             ctx._makeDataObjects();
             // We'll use a simple comparer function here.
-            var items = ctx.slick.data.getItems(), i = 0;
             var sortCols;
             if (!args.sortCols) {
                 sortCols = [{
@@ -546,34 +544,30 @@ define([
             } else {
                 sortCols = args.sortCols;
             }
-            for (i = sortCols.length - 1; i >= 0; i--) {
-                (function (i) {
-                    //var comparer = function(a) {
-                    //    return a.getChildSync(sortCols[i].sortCol.jpath).get();
-                    //};
-
-                    var comparer1 = function (a, b) {
-                        var val1 = a.getChildSync(sortCols[i].sortCol.jpath);
-                        var val2 = b.getChildSync(sortCols[i].sortCol.jpath);
-                        if (val1 === undefined) {
-                            if (sortCols[i].sortAsc) return 1;
-                            else return -1;
-                        }
-                        if (val2 === undefined) {
-                            if (sortCols[i].sortAsc) return -1;
-                            else return 1;
-                        }
-                        val1 = val1.get();
-                        val2 = val2.get();
-                        if (val1 < val2) {
-                            return -1;
-                        } else if (val2 < val1) {
-                            return 1;
-                        }
-                        return 0;
-                    };
-                    ctx.slick.data.sort(comparer1, sortCols[i].sortAsc);
-                })(i);
+            for (let i = sortCols.length - 1; i >= 0; i--) {
+                var comparer1 = function (val1, val2) {
+                    if (val1 === undefined) {
+                        if (sortCols[i].sortAsc) return 1;
+                        else return -1;
+                    }
+                    if (val2 === undefined) {
+                        if (sortCols[i].sortAsc) return -1;
+                        else return 1;
+                    }
+                    if (val1 < val2) {
+                        return -1;
+                    } else if (val2 < val1) {
+                        return 1;
+                    }
+                    return 0;
+                };
+                let sortCol = sortCols[i];
+                let jpath = sortCol.sortCol.jpath;
+                ctx.slick.data.sort(comparer1, sortCol.sortAsc, function (item) {
+                    var val = item.getChildSync(jpath);
+                    if (val !== undefined) val = val.get();
+                    return val;
+                });
             }
 
             ctx._updateHighlights();
