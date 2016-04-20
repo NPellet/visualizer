@@ -18,7 +18,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.references = {
         picture: {
-            type: ['picture', 'png', 'jpeg', 'jpg', 'gif', 'svg'],
+            type: ['picture', 'png', 'jpeg', 'jpg', 'gif', 'svg', 'string'],
             label: 'A picture'
         },
         pixel: {

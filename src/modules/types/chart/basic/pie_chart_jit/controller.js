@@ -18,7 +18,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.references = {
         chart: {
-            type: ['chart'],
+            type: ['chart', 'object'],
             label: 'A json describing a chart'
         },
         yArray: {

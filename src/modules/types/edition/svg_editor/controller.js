@@ -17,7 +17,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.references = {
         svgString: {
-            type: 'svg',
+            type: ['svg', 'string'],
             label: 'A string describing an svg'
         },
         svgModifier: {

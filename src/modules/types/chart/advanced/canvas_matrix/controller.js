@@ -85,7 +85,7 @@ define([
         matrix: {
             label: 'Matrix',
             description: 'A 2D array representing the matrix',
-            type: 'matrix'
+            type: ['matrix', 'object']
         }
     };
 

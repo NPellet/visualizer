@@ -17,11 +17,11 @@ define(['modules/default/defaultcontroller', 'src/util/api'], function (Default,
 
     Controller.prototype.references = {
         geojson: {
-            type: 'geojson',
+            type: ['geojson', 'object'],
             label: 'A GeoJSON object'
         },
         viewport: {
-            type: 'geojson',
+            type: ['geojson', 'object'],
             label: 'Current map view'
         },
         position: {

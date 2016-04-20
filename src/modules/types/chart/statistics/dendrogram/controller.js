@@ -34,11 +34,11 @@ define([
 
     Controller.prototype.references = {
         tree: {
-            type: ['tree'],
+            type: ['tree', 'object'],
             label: 'A Hierarchical tree'
         },
         newTree: {
-            type: ['tree'],
+            type: ['tree', 'object'],
             label: 'Annotated tree'
         },
         data: {

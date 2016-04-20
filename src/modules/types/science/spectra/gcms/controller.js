@@ -29,7 +29,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
         fromtoMS: {
             label: 'From - To on MS',
-            type: 'fromTo'
+            type: ['fromTo', 'object']
         },
 
         ingredientList: {
@@ -53,7 +53,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         },
 
         gcms: {
-            type: ['jcamp', 'array', 'object'],
+            type: ['jcamp', 'array', 'object', 'string'],
             label: 'GC-MS data'
         },
 
@@ -63,7 +63,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         },
 
         gc: {
-            type: ['jcamp'],
+            type: ['jcamp', 'string'],
             label: 'GC'
         },
 
@@ -83,7 +83,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         },
 
         mscont: {
-            type: ['jcamp'],
+            type: ['jcamp', 'string'],
             label: 'Continuous MS'
         },
 

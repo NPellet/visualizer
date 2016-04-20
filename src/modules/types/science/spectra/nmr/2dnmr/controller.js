@@ -18,19 +18,19 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.references = {
         jcampx: {
-            type: 'jcamp',
+            type: ['jcamp', 'string'],
             label: 'Jcamp on top axis'
         },
         jcampy: {
-            type: 'jcamp',
+            type: ['jcamp', 'string'],
             label: 'Jcamp on left axis'
         },
         jcampxy: {
-            type: 'jcamp',
+            type: ['jcamp', 'string'],
             label: 'Jcamp on left and top axis'
         },
         jcamp2d: {
-            type: 'jcamp',
+            type: ['jcamp', 'string'],
             label: '2D Jcamp'
         },
         annotations: {

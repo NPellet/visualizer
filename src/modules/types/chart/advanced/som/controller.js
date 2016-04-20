@@ -21,7 +21,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         },
         dataset: {
             label: 'Projected dataset',
-            type: 'chart'
+            type: ['chart', 'object']
         },
         element: {
             label: 'Dataset element'

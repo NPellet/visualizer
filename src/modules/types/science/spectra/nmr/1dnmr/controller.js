@@ -19,7 +19,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype.references = {
         jcamp: {
             label: 'The jcamp file',
-            type: 'jcamp'
+            type: ['jcamp', 'string']
         },
         plot: {
             label: 'The Plot object',

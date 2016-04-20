@@ -18,7 +18,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
 
     Controller.prototype.references = {
         chart: {
-            type: 'chart',
+            type: ['chart', 'object'],
             label: 'A json describing a chart'
         }
     };

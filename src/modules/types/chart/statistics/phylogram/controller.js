@@ -128,7 +128,7 @@ define(['modules/default/defaultcontroller',
 
     Controller.prototype.references = {
         tree: {
-            type: ['tree'],
+            type: ['tree', 'object'],
             label: 'A tree with children'
         },
         leaf: {
@@ -139,7 +139,7 @@ define(['modules/default/defaultcontroller',
             label: 'A list of children'
         },
         newTree: {
-            type: ['tree'],
+            type: ['tree', 'object'],
             label: 'Annotated tree'
         },
         data: {

@@ -36,11 +36,11 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
         },
         fromToX: {
             label: 'From - To X',
-            type: 'fromTo'
+            type: ['fromTo', 'object']
         },
         fromToY: {
             label: 'From - To Y',
-            type: 'fromTo'
+            type: ['fromTo', 'object']
         },
         fromToXY: {
             label: 'Axis boundaries',
@@ -52,7 +52,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
         },
         // input
         chart: {
-            type: 'chart',
+            type: ['chart', 'object'],
             label: 'Chart object'
         },
         xArray: {
