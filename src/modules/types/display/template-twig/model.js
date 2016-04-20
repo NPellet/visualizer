@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultmodel'], function (Default) {
+define(['jquery', 'modules/default/defaultmodel'], function ($, Default) {
 
     function Model() {
     }

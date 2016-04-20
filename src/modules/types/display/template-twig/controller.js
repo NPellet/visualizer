@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller'], function (Default) {
+define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
 
     function Controller() {
     }
@@ -67,7 +67,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype.onRendered = function (renderedHtml) {
         setTimeout(() => { // Figure out why I have to set timeout
             this.createDataFromEvent('onRendered', 'renderedHtml', renderedHtml);
-        });
+        }, 0);
     };
 
     return Controller;

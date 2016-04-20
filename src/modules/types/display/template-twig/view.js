@@ -24,11 +24,10 @@ define([
             });
         },
         blank: {
-            value: function (varName) {
+            value: function () {
                 this.dom.empty();
             },
             tpl: function () {
-                this.module.definition.configuration.groups.group[0].template[0] = '';
                 this.template = Twig.twig({
                     data: ''
                 });
@@ -55,7 +54,6 @@ define([
                     this.template = Twig.twig({
                         data: tpl
                     });
-                    this.module.definition.configuration.groups.group[0].template[0] = tpl;
                     this.render();
                 } catch (e) {
                     Debug.info('Problem with template: ' + e);
