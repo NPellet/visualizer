@@ -100,6 +100,14 @@ define(['modules/default/defaultcontroller', 'src/data/structures'], function (D
                             },
                             default: []
                         },
+                        storeOnChange: {
+                            title: 'On change',
+                            type: 'checkbox',
+                            options: {
+                                store: 'Store value in the preferences on change'
+                            },
+                            default: ['store']
+                        },
                         debouncing: {
                             title: 'Debouncing',
                             type: 'float',
@@ -124,6 +132,7 @@ define(['modules/default/defaultcontroller', 'src/data/structures'], function (D
         script: ['groups', 'group', 0, 'script', 0],
         outputType: ['groups', 'group', 0, 'outputType', 0],
         variable: ['groups', 'group', 0, 'variable', 0],
+        storeOnChange: ['groups', 'group', 0, 'storeOnChange', 0],
         debouncing: ['groups', 'group', 0, 'debouncing', 0]
     };
 
