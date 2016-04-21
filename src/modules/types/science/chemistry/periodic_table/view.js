@@ -8,7 +8,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
     const STEP_TEMPERATURE = 1;
 
     function View() {
-    };
+    }
 
     $.extend(true, View.prototype, Default, {
         init: function () {
@@ -22,8 +22,13 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
         },
         blank: {
             template: function () {
-                this.module.definition.configuration.groups.group[0].template[0] = '';
                 this.template = Twig.twig({
+                    data: ''
+                });
+                this.dom.html('');
+            },
+            hltemplate: function () {
+                this.hltemplate = Twig.twig({
                     data: ''
                 });
                 this.dom.html('');
@@ -37,6 +42,28 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             this.resolveReady();
             this.render();
         },
+
+        createTemplateFromPref: function (name) {
+            var source = name + 'templateSource';
+            source = this.module.getConfiguration(source);
+            if (source === 'pref') {
+                var tpl = this.module.getConfiguration(name + 'template');
+                this[name + 'Template'] = Twig.twig({
+                    data: tpl
+                });
+            }
+        },
+
+        createTemplateFromVar: function (name, tpl) {
+            var source = name + 'templateSource';
+            source = this.module.getConfiguration(source);
+            if (source === 'varin') {
+                this[name + 'template'] = Twig.twig({
+                    data: tpl
+                });
+            }
+        },
+
         update: {
             value: function (value, name) {
                 /*
@@ -45,19 +72,28 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                  and the values need to be native)
                  */
 
+                this.createTemplateFromPref('', 'pref');
+                this.createTemplateFromPref('hl', 'pref');
+
                 this.elements = JSON.parse(JSON.stringify(value.resurrect()));
                 this.render();
             },
             template: function (value) {
                 var tpl = value.get().toString();
                 try {
-                    this.template = Twig.twig({
-                        data: tpl
-                    });
-                    this.module.definition.configuration.groups.group[0].template[0] = tpl;
+                    this.createTemplateFromVar('', tpl);
                     this.render();
                 } catch (e) {
                     Debug.info('Problem with template: ' + e);
+                }
+            },
+            hltemplate: function (value, name) {
+                var tpl = String(value.get());
+                try {
+                    this.createTemplateFromVar('hl', tpl);
+                    this.render();
+                } catch (e) {
+                    DEBUG.info('Problem with highlight template: ' + e);
                 }
             }
         },
@@ -100,18 +136,18 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             //default Legend. Better in a twig.
             var innerLegend = $('<div class="inner-legend"></div>');
             defaultLegend.append(innerLegend);
-            innerLegend.append('<ul class="color-serie">' +
-                '<li class="alkali">Alkali metals</li>' +
-                '<li class="alkaline">Alkalin earth metals</li>' +
-                '<li class="transition">Transition metals</li>' +
-                '<li class="lanthanoid">Lanthanoids</li>' +
-                '<li class="actinoid">Actinoids</li>' +
-                '<li class="poor">Post-transition metals</li>' +
-                '<li class="metalloid">Metalloids</li>' +
-                '<li class="nonmetal">Nonmetals</li>' +
-                '<li class="halogen">Halogens</li>' +
-                '<li class="noble">Noble gases</li>' +
-                '</ul>');
+            innerLegend.append(`<ul class="color-serie">
+                <li class="alkali">Alkali metals</li>
+                <li class="alkaline">Alkalin earth metals</li>
+                <li class="transition">Transition metals</li>
+                <li class="lanthanoid">Lanthanoids</li>
+                <li class="actinoid">Actinoids</li>
+                <li class="poor">Post-transition metals</li>
+                <li class="metalloid">Metalloids</li>
+                <li class="nonmetal">Nonmetals</li>
+                <li class="halogen">Halogens</li>
+                <li class="noble">Noble gases</li>
+                </ul>`);
             innerLegend.append(`<div class="stateOfMatter"><table><tbody>
                 <tr><td class="solid">S</td><td>Solid</td></tr>
                 <tr><td class="liquid">L</td><td>Liquid</td></tr>
@@ -119,22 +155,24 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                 <tr><td class="unknown">U</td><td>Unknown</td></tr>
                 </tbody></table>
                 <dl><dt>Temperature</dt><dd id="periodicTemperature">${INITIAL_TEMPERATURE} K</dd>
-                <dt>Pressure</dt><dd>101.325 kPa</dd></dl></div>
-                <input id="periodicTemperatureSlider" type="range" min="${MIN_TEMPERATURE}" max="${MAX_TEMPERATURE}" step="${STEP_TEMPERATURE}" value="${INITIAL_TEMPERATURE}"/>`);
+                <dt>Pressure</dt><dd>101.325 kPa</dd></dl></div>`);
+            defaultLegend.append(`<input id="periodicTemperatureSlider" type="range" min="${MIN_TEMPERATURE}" max="${MAX_TEMPERATURE}" step="${STEP_TEMPERATURE}" value="${INITIAL_TEMPERATURE}"/>`);
 
             var isFixed = false;
 
-            innerLegend.on('input', '#periodicTemperatureSlider', event => {
+            defaultLegend.on('input', '#periodicTemperatureSlider', event => {
                 console.log(event.target.value);
                 innerLegend.find('#periodicTemperature').html('' + event.target.value + ' K');
                 this.updateElementPhase();
             });
 
-            $('.element').mouseenter(function () {
+            var $elements = $('.element');
+
+            $elements.mouseenter(function () {
                 if (isFixed) return;
                 renderElement($(this));
             });
-            $('.element').click(function () {
+            $elements.click(function () {
                 if (isFixed) {
                     $('.el-selected').removeClass('el-selected');
                 }
@@ -143,12 +181,12 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                 isFixed = true;
             });
 
-            $('.element').dblclick(function () {
+            $elements.dblclick(function () {
                 $(this).removeClass('el-selected');
                 isFixed = false;
             });
 
-            $('.element').mouseleave(function () {
+            $elements.mouseleave(function () {
                 if (isFixed) return;
                 $('.element-zoom').delay(50000).empty();
                 defaultLegend.removeClass('hidden');
@@ -163,7 +201,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                 elementZoom.removeClass('hidden');
                 elementDatas.removeClass('hidden');
                 elementZoom.empty();
-                elementZoom.append(that.template.render({element: el}));
+                elementZoom.append(that.hltemplate.render({element: el}));
             }
 
             var interactZone = ('<div class="interactive-zone"><div id="slider"></div>');
@@ -175,7 +213,9 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             var lanthanid = ('<div class="indic-f period6"><p>57-71</p></div>');
             $('div.e56').after(lanthanid);
             $('div.e88').after(actinid);
-        },
+        }
+
+        ,
 
         updateElementPhase: function () {
             var $elements = this.dom.find('.element');
@@ -193,7 +233,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                     } else if (temperature < melting) {
                         $el.removeClass('liquid gas unknown');
                         $el.addClass('solid');
-                    } else if(temperature < boiling) {
+                    } else if (temperature < boiling) {
                         $el.removeClass('solid gas unknown');
                         $el.addClass('liquid');
                     } else {
@@ -202,15 +242,19 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                     }
                 }
             }
-        },
+        }
+        ,
 
-        getTemperature() {
+        getTemperature()
+        {
             return this.dom.find('#periodicTemperatureSlider')[0].value;
         }
 
 
-    });
+    })
+    ;
 
     return View;
 
-});
+})
+;

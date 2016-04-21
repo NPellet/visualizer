@@ -18,14 +18,17 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.references = {
         template: {
-            label: 'Template'
+            label: 'template'
         },
         value: {
             label: 'Periodic tabel elements'
+        },
+        hltemplate: {
+            label: 'Highlight template'
         }
     };
 
-    Controller.prototype.variablesIn = ['template', 'value'];
+    Controller.prototype.variablesIn = ['template', 'hltemplate', 'value'];
 
     Controller.prototype.configurationStructure = function () {
         return {
@@ -35,10 +38,38 @@ define(['modules/default/defaultcontroller'], function (Default) {
                         type: 'list'
                     },
                     fields: {
+                        templateSource: {
+                            type: 'combo',
+                            title: 'Table template source',
+                            options: [
+                                {key: 'varin', title: 'Variable in'},
+                                {key: 'pref', title: 'Preferences'}
+                            ],
+                            displaySource: {varin: 'v', pref: 'p'},
+                            default: 'varin'
+                        },
                         template: {
                             type: 'jscode',
-                            title: 'Template',
+                            title: 'Table template',
                             mode: 'html',
+                            displayTarget: ['p'],
+                            'default': ''
+                        },
+                        hltemplateSource: {
+                            type: 'combo',
+                            title: 'Highlight template source',
+                            options: [
+                                {key: 'varin', title: 'Variable in'},
+                                {key: 'pref', title: 'Preferences'}
+                            ],
+                            displaySource: {varin: 'hv', pref: 'hp'},
+                            default: 'varin'
+                        },
+                        hltemplate: {
+                            type: 'jscode',
+                            title: 'Highlight template',
+                            mode: 'html',
+                            displayTarget: ['hp'],
                             'default': ''
                         }
                     }
@@ -48,6 +79,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
     };
 
     Controller.prototype.configAliases = {
+        template: ['groups', 'group', 0, 'template', 0],
+        templateSource: ['groups', 'group', 0, 'templateSource', 0],
+        hltemplate: ['groups', 'group', 0, 'hltemplate', 0],
+        hltemplateSource: ['groups', 'group', 0, 'hltemplateSource', 0]
     };
 
     return Controller;
