@@ -31,7 +31,7 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
                         this.exportData();
                     },
                     title: 'Export Data',
-                    cssClass: 'fa fa-file',
+                    cssClass: 'fa fa-sign-out',
                     ifLocked: true
                 },
                 {
