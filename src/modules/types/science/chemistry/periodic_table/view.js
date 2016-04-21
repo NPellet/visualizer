@@ -2,8 +2,13 @@
 
 define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], function (Default, Twig, Debug) {
 
+    const MIN_TEMPERATURE = 0;
+    const MAX_TEMPERATURE = 6000;
+    const INITIAL_TEMPERATURE = 293;
+    const STEP_TEMPERATURE = 1;
+
     function View() {
-    }
+    };
 
     $.extend(true, View.prototype, Default, {
         init: function () {
@@ -21,6 +26,9 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                 this.template = Twig.twig({
                     data: ''
                 });
+                this.dom.html('');
+            },
+            value: function () {
                 this.dom.html('');
             }
         },
@@ -53,6 +61,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                 }
             }
         },
+
         render: function () {
             var that = this;
             this.dom.html('');
@@ -72,11 +81,11 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                 var $element = $('<div>' + this.template.render({element: this.elements[i]}) + '</div>').data('idx', i);
 
                 $element.addClass('element' +
-                ' e' + this.elements[i].Z +
-                ' period' + this.elements[i].period +
-                ' group' + this.elements[i].group +
-                ' block-' + this.elements[i].block +
-                ' ' + this.elements[i].serie);
+                    ' e' + this.elements[i].Z +
+                    ' period' + this.elements[i].period +
+                    ' group' + this.elements[i].group +
+                    ' block-' + this.elements[i].block +
+                    ' ' + this.elements[i].serie);
 
                 this.dom.append($element);
             }
@@ -102,17 +111,24 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                 '<li class="nonmetal">Nonmetals</li>' +
                 '<li class="halogen">Halogens</li>' +
                 '<li class="noble">Noble gases</li>' +
-            '</ul>');
-            innerLegend.append('<div class="stateOfMatter"><table><tbody>' +
-            '<tr><td class="solid">S</td><td>Solid</td></tr>' +
-            '<tr><td class="liquid">L</td><td>Liquid</td></tr>' +
-            '<tr><td class="gas"">G</td><td>Gas</td></tr>' +
-            '<tr><td class="unknown">U</td><td>Unknown</td></tr>' +
-            '</tbody></table>' +
-            '<dl><dt>Temperature</dt><dd>293.5 K</dd>' +
-            '<dt>Pressure</dt><dd>101.325 kPa</dd></dl></div>');
+                '</ul>');
+            innerLegend.append(`<div class="stateOfMatter"><table><tbody>
+                <tr><td class="solid">S</td><td>Solid</td></tr>
+                <tr><td class="liquid">L</td><td>Liquid</td></tr>
+                <tr><td class="gas"">G</td><td>Gas</td></tr>
+                <tr><td class="unknown">U</td><td>Unknown</td></tr>
+                </tbody></table>
+                <dl><dt>Temperature</dt><dd id="periodicTemperature">${INITIAL_TEMPERATURE} K</dd>
+                <dt>Pressure</dt><dd>101.325 kPa</dd></dl></div>
+                <input id="periodicTemperatureSlider" type="range" min="${MIN_TEMPERATURE}" max="${MAX_TEMPERATURE}" step="${STEP_TEMPERATURE}" value="${INITIAL_TEMPERATURE}"/>`);
 
             var isFixed = false;
+
+            innerLegend.on('input', '#periodicTemperatureSlider', event => {
+                console.log(event.target.value);
+                innerLegend.find('#periodicTemperature').html('' + event.target.value + ' K');
+                this.updateElementPhase();
+            });
 
             $('.element').mouseenter(function () {
                 if (isFixed) return;
@@ -159,6 +175,37 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             var lanthanid = ('<div class="indic-f period6"><p>57-71</p></div>');
             $('div.e56').after(lanthanid);
             $('div.e88').after(actinid);
+        },
+
+        updateElementPhase: function () {
+            var $elements = this.dom.find('.element');
+            var temperature = this.getTemperature();
+            for (let i = 0; i < $elements.length; i++) {
+                let $el = $($elements[i]);
+                var idx = $el.data('idx');
+                if (idx !== undefined) {
+                    let el = this.elements[idx];
+                    let boiling = +el.boiling;
+                    let melting = +el.melting;
+                    if (isNaN(boiling) && isNaN(melting)) {
+                        $el.removeClass('solid liquid gas');
+                        $el.addClass('unknown');
+                    } else if (temperature < melting) {
+                        $el.removeClass('liquid gas unknown');
+                        $el.addClass('solid');
+                    } else if(temperature < boiling) {
+                        $el.removeClass('solid gas unknown');
+                        $el.addClass('liquid');
+                    } else {
+                        $el.removeClass('liquid solid unknown');
+                        $el.addClass('gas');
+                    }
+                }
+            }
+        },
+
+        getTemperature() {
+            return this.dom.find('#periodicTemperatureSlider')[0].value;
         }
 
 

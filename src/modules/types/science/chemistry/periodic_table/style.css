@@ -248,22 +248,9 @@ td.solid, td.liquid, td.gas, td.unknown {
     display: none;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#periodicTemperatureSlider {
+    width: 200px;
+}
 
 
 /*grey : #5A5A5A*/
