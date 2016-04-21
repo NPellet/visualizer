@@ -291,7 +291,33 @@ define([
     functions.mf = {};
     functions.mf.toscreen = function ($element, value) {
         if (value) {
-            $element.html(value.replace(/\[([0-9]+)/g, '[<sup>$1</sup>').replace(/([a-zA-Z)])([0-9]+)/g, '$1<sub>$2</sub>').replace(/\(([0-9+-]+)\)/g, '<sup>$1</sup>'));
+            value=value.replace(/\[([0-9]+)/g,"[<sup>$1</sup>");
+            
+            // replace number following parenthesis or letter
+            value=value.replace(/([a-zA-Z)\]])([0-9.]+)/g,'$1<sub>$2</sub>');
+            
+            value=value.replace(/([+-]+)/g, function(match) {
+                var charge=0;
+                for (var i=0; i<match.length; i++) {
+                    if (match.charAt(i)==='+') charge++;
+                    else charge--;
+                }
+                if (charge>1) {
+                    return '<sup>'+charge+'+</sup>';
+                } else if (charge<-1) {
+                    return '<sup>'+-charge+'‒</sup>';
+                } else if (charge===1) {
+                    return '<sup>+</sup>';
+                } else if (charge===-1) {
+                    return '<sup>‒</sup>';
+                }
+                return '';
+            })
+        
+            // overlap sub and sup
+            value=value.replace(/<sub>([0-9.]+)<\/sub><sup>([0-9]*[+‒])<\/sup>/g,'<span style="position: relative;"><span style="position: absolute; left:0; font-size: smaller"><sup style="position: relative; vertical-align: baseline; top: -0.4em;">$2</sup></span><span style="position: absolute; left:0; font-size: smaller"><sub style="position: relative; vertical-align: baseline; top: 0.6em;">3</sub></span></span>');
+
+            $element.html(value);
         } else {
             $element.html('');
         }
