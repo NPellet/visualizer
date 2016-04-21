@@ -1,5 +1,5 @@
 {
-  "version": "2.23.1-0",
+  "version": "2.50.0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -129,7 +129,28 @@
         }
       ],
       "title": "One element",
-      "actions_out": []
+      "actions_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/edition/slick_grid/",
@@ -288,7 +309,28 @@
         {
           "jpath": []
         }
-      ]
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/server_interaction/webservice_search/",
@@ -375,8 +417,8 @@
             "top": 0
           },
           "size": {
-            "width": 11,
-            "height": 8
+            "width": 29,
+            "height": 7
           },
           "zIndex": 0,
           "display": true,
@@ -415,7 +457,7 @@
         },
         "Data": {
           "position": {
-            "left": 0,
+            "left": 119,
             "top": 0
           },
           "size": {
@@ -453,7 +495,28 @@
         {
           "jpath": []
         }
-      ]
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/client_interaction/code_editor/",
@@ -490,7 +553,7 @@
                 0
               ],
               "script": [
-                "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p>{{ element.name }}</p>\n    </div>"
+                "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\">{{ element.symbol }}</h2>\n        <p>{{ element.name }}</p>\n    </div>"
               ]
             }
           ]
@@ -587,7 +650,28 @@
         {
           "jpath": []
         }
-      ]
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/display/template-twig/",
@@ -597,7 +681,7 @@
           "group": [
             {
               "template": [
-                "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p>{{ element.name }}</p>\n    </div>"
+                "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\">{{ element.symbol }}</h2>\n        <p>{{ element.name }}</p>\n    </div>"
               ]
             }
           ]
@@ -687,7 +771,28 @@
       ],
       "title": "",
       "vars_out": [],
-      "actions_out": []
+      "actions_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/client_interaction/code_executor/",
@@ -814,7 +919,28 @@
           "name": "elements"
         }
       ],
-      "actions_out": []
+      "actions_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/edition/slick_grid/",
@@ -844,6 +970,18 @@
               ],
               "slick.selectionModel": [
                 "row"
+              ],
+              "autoColumns": [
+                null
+              ],
+              "toolbar": [
+                null
+              ],
+              "filterType": [
+                null
+              ],
+              "filterRow": [
+                null
               ]
             }
           ],
@@ -877,11 +1015,11 @@
         "Default layer": {
           "position": {
             "left": 0,
-            "top": 0
+            "top": 8
           },
           "size": {
             "width": 29,
-            "height": 68
+            "height": 60
           },
           "zIndex": 0,
           "display": true,
@@ -966,7 +1104,28 @@
         {
           "jpath": []
         }
-      ]
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/science/chemistry/periodic_table/",
@@ -976,7 +1135,7 @@
           "group": [
             {
               "template": [
-                "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\"><abbr title=\"{{ element.name }}\">{{ element.symbol }}</abbr></h2>\n        <p>{{ element.name }}</p>\n    </div>"
+                "    <div class=\"element-data\">\n        <p class=\"Z\">{{ element.Z }}</p>\n        <h2 class=\"element-name\">{{ element.symbol }}</h2>\n        <p>{{ element.name }}</p>\n    </div>"
               ]
             }
           ]
@@ -1008,7 +1167,7 @@
         "Admin": {
           "position": {
             "left": 34,
-            "top": 72
+            "top": 64
           },
           "size": {
             "width": 132,
@@ -1029,8 +1188,8 @@
         },
         "Data": {
           "position": {
-            "left": 30,
-            "top": 0
+            "left": 38,
+            "top": 32
           },
           "size": {
             "width": 132,
@@ -1066,7 +1225,28 @@
       ],
       "title": "",
       "vars_out": [],
-      "actions_out": []
+      "actions_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     }
   ],
   "variables": [
