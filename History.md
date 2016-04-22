@@ -1,3 +1,14 @@
+<a name="2.51.0"></a>
+# 2.51.0 (2016-04-22)
+
+
+### Features
+
+* **code_editor:** add option to disable storing the code on change ([63b2f8e](https://github.com/NPellet/visualizer/commit/63b2f8e))
+* **periodic_table:** add temperature slider ([b69313a](https://github.com/NPellet/visualizer/commit/b69313a))
+
+
+
 <a name="2.50.0"></a>
 # 2.50.0 (2016-04-15)
 
