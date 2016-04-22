@@ -93,7 +93,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                     this.createTemplateFromVar('hl', tpl);
                     this.render();
                 } catch (e) {
-                    DEBUG.info('Problem with highlight template: ' + e);
+                    Debug.info('Problem with highlight template: ' + e);
                 }
             }
         },
@@ -213,9 +213,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             var lanthanid = ('<div class="indic-f period6"><p>57-71</p></div>');
             $('div.e56').after(lanthanid);
             $('div.e88').after(actinid);
-        }
-
-        ,
+        },
 
         updateElementPhase: function () {
             var $elements = this.dom.find('.element');
@@ -242,19 +240,15 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                     }
                 }
             }
-        }
-        ,
+        },
 
-        getTemperature()
-        {
+        getTemperature() {
             return this.dom.find('#periodicTemperatureSlider')[0].value;
         }
 
 
-    })
-    ;
+    });
 
     return View;
 
-})
-;
+});
