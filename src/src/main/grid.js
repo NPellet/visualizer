@@ -420,8 +420,8 @@ define([
 
             var gridPos = jqdom.position();
 
-            var left = Math.max(0, Math.round((moduleMove.left) / definition.xWidth));
-            var top = Math.max(0, Math.round((moduleMove.top) / definition.yHeight));
+            var left = Math.max(-3, Math.round((moduleMove.left) / definition.xWidth));
+            var top = Math.max(-3, Math.round((moduleMove.top) / definition.yHeight));
 
             moduleMove.module.getPosition(getActiveLayer()).top = top;
             moduleMove.module.getPosition(getActiveLayer()).left = left;
