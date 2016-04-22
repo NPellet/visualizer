@@ -315,7 +315,7 @@ define([
             });
         
             // overlap sub and sup
-            value = value.replace(/<sub>([0-9.]+)<\/sub><sup>([0-9]*[+‒])<\/sup>/g, '<span style="position: relative;"><span style="position: absolute; left:0; font-size: smaller"><sup style="position: relative; vertical-align: baseline; top: -0.4em;">$2</sup></span><span style="position: absolute; left:0; font-size: smaller"><sub style="position: relative; vertical-align: baseline; top: 0.6em;">3</sub></span></span>');
+            value = value.replace(/<sub>([0-9.]+)<\/sub><sup>([0-9]*[+‒])<\/sup>/g, '<span style="position: relative;"><span style="position: absolute; left:0; font-size: smaller"><sup style="position: relative; vertical-align: baseline; top: -0.4em;">$2</sup></span><span style="position: absolute; left:0; font-size: smaller"><sub style="position: relative; vertical-align: baseline; top: 0.6em;">$1</sub></span></span>');
 
             $element.html(value);
         } else {
