@@ -4,7 +4,8 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
 
     function View() {
         this._id = Util.getNextUniqueId();
-        this._code = '';
+        this._code = null;
+        this._data = null;
     }
 
     $.extend(true, View.prototype, Default, {
@@ -30,7 +31,7 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
 
         },
         inDom() {
-            var initVal = this.module.getConfiguration('script') || '';
+            var initVal = String(this.module.getConfiguration('script') || '');
             this.setCode(initVal);
 
             if (this.module.getConfigurationCheckbox('iseditable', 'editable')) {
@@ -55,6 +56,15 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
                 this.buttonRow.remove();
             }
             this.resolveReady();
+        },
+        blank: {
+            data() {
+                this._data = null;
+                this.setCode('');
+                if (this.editable) {
+                    this.editor.setValue('');
+                }
+            }
         },
         update: {
             data(value) {
