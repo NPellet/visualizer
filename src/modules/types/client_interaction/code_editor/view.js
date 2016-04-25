@@ -47,7 +47,7 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
                 this.editor.getSession().on('change', function () {
                     that.editorChangedDebounced();
                 });
-                this.editorChanged();
+                this.editorChanged(true);
             }
 
             if (this.module.getConfigurationCheckbox('hasButton', 'button')) {
@@ -80,10 +80,10 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
                 }
             }
         },
-        editorChanged: function () {
+        editorChanged: function (force) {
             var val = this.editor.getValue();
             var currentVal = this._code;
-            if (val === currentVal) {
+            if (val === currentVal && !force) {
                 return;
             }
             this._code = val;
