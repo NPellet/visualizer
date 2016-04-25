@@ -3,13 +3,12 @@
 define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/context', 'jquery', 'lodash'], function (Default, Util, ace, Context, $, _) {
 
     function View() {
+        this._id = Util.getNextUniqueId();
+        this._code = '';
     }
 
     $.extend(true, View.prototype, Default, {
-        init: function () {
-
-            this._id = Util.getNextUniqueId();
-            this._code = '';
+        init() {
 
             var table = this.table = $('<table>').css({
                 height: '100%',
@@ -30,10 +29,9 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
             this.module.getDomContent().html(table);
 
         },
-        inDom: function () {
-            var that = this;
+        inDom() {
             var initVal = this.module.getConfiguration('script') || '';
-            this._code = initVal;
+            this.setCode(initVal);
 
             if (this.module.getConfigurationCheckbox('iseditable', 'editable')) {
                 this.editable = true;
@@ -44,19 +42,14 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
                 this.editor.$blockScrolling = Infinity;
                 this.editor.getSession().setMode(mode);
                 this.editor.setValue(initVal, -1);
-                this.editor.getSession().on('change', function () {
-                    that.editorChangedDebounced();
-                });
-                this.editorChanged(true);
+                this.editor.getSession().on('change', () => this.editorChangedDebounced());
             }
 
             if (this.module.getConfigurationCheckbox('hasButton', 'button')) {
                 this.buttonCell.append(
                     $('<span>' + this.module.getConfiguration('btnvalue') + '</span>')
                         .addClass('form-button')
-                        .on('click', function () {
-                            that.module.controller.onButtonClick(that._code);
-                        })
+                        .on('click', () => this.module.controller.onButtonClick(this.getCode()))
                 );
             } else {
                 this.buttonRow.remove();
@@ -64,10 +57,10 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
             this.resolveReady();
         },
         update: {
-            data: function (value) {
+            data(value) {
                 this._data = value;
                 var val = String(value.get());
-                this._code = val;
+                this.setCode(val);
                 if (this.editable) {
                     var currentVal = this.editor.getValue();
                     if (val === currentVal) {
@@ -76,26 +69,30 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
                     this.editor.setValue(val);
                     this.editor.scrollToLine(0);
                     this.editor.clearSelection();
-                    this.editorChanged();
                 }
             }
         },
-        editorChanged: function (force) {
-            var val = this.editor.getValue();
-            var currentVal = this._code;
-            if (val === currentVal && !force) {
-                return;
-            }
-            this._code = val;
-            if (this.module.getConfigurationCheckbox('storeOnChange', 'store') && this.module.definition.configuration.groups) {
-                this.module.definition.configuration.groups.group[0].script[0] = val;
-            }
-            this.module.controller.onEditorChanged(this._code);
+        editorChanged() {
+            this.setCode(this.editor.getValue());
         },
-        onResize: function () {
+        onResize() {
             if (this.editor) {
                 this.editor.resize();
             }
+        },
+        setCode(value) {
+            var currentValue = this._code;
+            if (currentValue === value) {
+                return;
+            }
+            this._code = value;
+            if (this.module.getConfigurationCheckbox('storeOnChange', 'store') && this.module.definition.configuration.groups) {
+                this.module.definition.configuration.groups.group[0].script[0] = value;
+            }
+            this.module.controller.onEditorChanged(value);
+        },
+        getCode() {
+            return this._code;
         }
     });
 
