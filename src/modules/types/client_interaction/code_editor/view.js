@@ -69,6 +69,10 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
                 var val = String(value.get());
                 this._code = val;
                 if (this.editable) {
+                    var currentVal = this.editor.getValue();
+                    if (val === currentVal) {
+                        return;
+                    }
                     this.editor.setValue(val);
                     this.editor.scrollToLine(0);
                     this.editor.clearSelection();
@@ -78,6 +82,10 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
         },
         editorChanged: function () {
             var val = this.editor.getValue();
+            var currentVal = this._code;
+            if (val === currentVal) {
+                return;
+            }
             this._code = val;
             if (this.module.getConfigurationCheckbox('storeOnChange', 'store') && this.module.definition.configuration.groups) {
                 this.module.definition.configuration.groups.group[0].script[0] = val;
