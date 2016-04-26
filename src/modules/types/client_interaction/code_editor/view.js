@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/context', 'jquery', 'lodash'], function (Default, Util, ace, Context, $, _) {
+define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/context', 'jquery', 'lodash', 'src/util/aceHelper'], function (Default, Util, ace, Context, $, _, aceHelper) {
 
     function View() {
         this._id = Util.getNextUniqueId();
@@ -40,6 +40,7 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
                 this.editor = ace.edit(this._id);
                 var mode = './mode/' + this.module.getConfiguration('mode');
 
+                aceHelper.applyConfig(this.module, this.editor);
                 this.editor.$blockScrolling = Infinity;
                 this.editor.getSession().setMode(mode);
                 this.editor.setValue(initVal, -1);

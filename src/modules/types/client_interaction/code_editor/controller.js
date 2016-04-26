@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/data/structures'], function (Default, Structure) {
+define(['modules/default/defaultcontroller', 'src/data/structures', 'src/util/aceHelper'], function (Default, Structure, aceHelper) {
 
     function Controller() {
     }
@@ -46,7 +46,7 @@ define(['modules/default/defaultcontroller', 'src/data/structures'], function (D
         for (var i = 0; i < l; i++) {
             typeList[i] = {key: types[i], title: types[i]};
         }
-        return {
+        const config =  {
             groups: {
                 group: {
                     options: {
@@ -122,9 +122,14 @@ define(['modules/default/defaultcontroller', 'src/data/structures'], function (D
                 }
             }
         };
+
+        config.groups.ace = aceHelper.getConfig();
+        aceHelper.getConfig();
+
+        return config;
     };
 
-    Controller.prototype.configAliases = {
+    Controller.prototype.configAliases = Object.assign(aceHelper.getAliases('ace'), {
         mode: ['groups', 'group', 0, 'mode', 0],
         btnvalue: ['groups', 'group', 0, 'btnvalue', 0],
         iseditable: ['groups', 'group', 0, 'iseditable', 0],
@@ -134,7 +139,7 @@ define(['modules/default/defaultcontroller', 'src/data/structures'], function (D
         variable: ['groups', 'group', 0, 'variable', 0],
         storeOnChange: ['groups', 'group', 0, 'storeOnChange', 0],
         debouncing: ['groups', 'group', 0, 'debouncing', 0]
-    };
+    });
 
     Controller.prototype.onEditorChanged = function (value) {
         if (this.module.getConfigurationCheckbox('variable', 'modify') && DataObject.getType(this.module.view._data) === 'string') {
