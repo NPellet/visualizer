@@ -61,7 +61,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
                 });
             }
 
-            this.inputVal = {};
+            this.inputVal = null;
 
         },
 
@@ -130,6 +130,11 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
         },
         renderForm: function () {
             var schema = this.module.controller.getSchema();
+            if(!schema) {
+                this.dom.find('.form-button').hide();
+                return;
+            }
+            this.dom.find('.form-button').show();
             this.form.render(schema, this.inputVal, {});
             if (this.module.getConfigurationCheckbox('hasButton', 'onload')) {
                 this.exportForm();

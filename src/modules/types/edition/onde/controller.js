@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function (Default, Schema) {
+define(['modules/default/defaultcontroller', 'lib/json-schema/schema', 'lodash'], function (Default, Schema, _) {
 
     function Controller() {
     }
@@ -145,7 +145,7 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
     Controller.prototype.getSchema = function () {
         var mode = this.module.getConfiguration('mode');
         var schema = {};
-        if (mode === 'object' || mode === 'both') {
+        if ((mode === 'object' || mode === 'both') && this.module.view.inputVal !== null) {
             schema = Schema.fromObject(this.module.view.inputVal);
         }
         if (mode === 'schema' || mode === 'both') {
@@ -157,6 +157,7 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
                 intSchema = JSON.parse(this.module.getConfiguration('schema'));
             $.extend(true, schema, intSchema);
         }
+        if(_.isEmpty(schema)) return;
         schemaJpath(schema, []);
         return schema;
     };
