@@ -292,10 +292,10 @@ define([
     functions.mf.toscreen = function ($element, value) {
         if (value) {
             value = value.replace(/\[([0-9]+)/g, '[<sup>$1</sup>');
-            
+
             // replace number following parenthesis or letter
             value = value.replace(/([a-zA-Z)\]])([0-9.]+)/g, '$1<sub>$2</sub>');
-            
+
             value = value.replace(/([+-]+)/g, function (match) {
                 var charge = 0;
                 for (var i = 0; i < match.length; i++) {
@@ -313,7 +313,7 @@ define([
                 }
                 return '';
             });
-        
+
             // overlap sub and sup
             value = value.replace(/<sub>([0-9.]+)<\/sub><sup>([0-9]*[+‒])<\/sup>/g, '<span style="position: relative;"><span style="position: absolute; left:0; font-size: smaller"><sup style="position: relative; vertical-align: baseline; top: -0.4em;">$2</sup></span><span style="position: absolute; left:0; font-size: smaller"><sub style="position: relative; vertical-align: baseline; top: 0.6em;">$1</sub></span></span>&nbsp;');
 
@@ -554,6 +554,8 @@ define([
             const render = template.renderAsync(value);
             $element.html(render.html);
             render.render();
+        } else if(options.toJSON) {
+            $element.html(JSON.stringify(value));
         } else {
             $element.html(Object.prototype.toString.call(value));
         }
