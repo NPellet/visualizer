@@ -15,7 +15,8 @@ define([
 
             this.dom = $('<div>').css({
                 height: '100%',
-                width: '100%'
+                width: '100%',
+                'user-select': this.module.getConfigurationCheckbox('selectable', 'yes') ? 'initial' : 'none'
             });
 
             this._values = new DataObject();

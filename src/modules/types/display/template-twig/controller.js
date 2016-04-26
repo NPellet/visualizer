@@ -48,6 +48,13 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
                         type: 'list'
                     },
                     fields: {
+                        selectable: {
+                            type: 'checkbox',
+                            title: 'Selectable',
+                            options: {
+                                yes: 'Yes'
+                            }
+                        },
                         template: {
                             type: 'jscode',
                             title: 'Template',
@@ -61,7 +68,8 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
     };
 
     Controller.prototype.configAliases = {
-        template: ['groups', 'group', 0, 'template', 0]
+        template: ['groups', 'group', 0, 'template', 0],
+        selectable: ['groups', 'group', 0, 'selectable', 0]
     };
 
     Controller.prototype.onRendered = function (renderedHtml) {
