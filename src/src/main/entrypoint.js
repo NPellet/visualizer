@@ -792,6 +792,10 @@ define([
                 debugSet = true;
             }
 
+            if(urls['lockView']) {
+                API.viewLock();
+            }
+
             browser.checkCompatibility().then(doInit);
 
             // Sets the header
