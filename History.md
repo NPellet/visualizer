@@ -1,3 +1,17 @@
+<a name="2.52.0"></a>
+# 2.52.0 (2016-04-27)
+
+
+### Bug Fixes
+
+* **code_editor:** do not trigger event if text is the same ([ca61580](https://github.com/NPellet/visualizer/commit/ca61580))
+
+### Features
+
+* **type_renderer:** render object toJSON option ([97e8d6e](https://github.com/NPellet/visualizer/commit/97e8d6e)), closes [#858](https://github.com/NPellet/visualizer/issues/858)
+
+
+
 <a name="2.51.0"></a>
 # 2.51.0 (2016-04-22)
 
