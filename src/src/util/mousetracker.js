@@ -1,11 +1,11 @@
 'use strict';
 
-define(['jquery'], function ($) {
+define(['jquery', 'lodash'], function ($, _) {
     var state = {
         kind: 'grid'
     };
 
-    document.addEventListener('mousemove', function (e) {
+    document.addEventListener('mousemove', _.throttle(e => {
         var id = e.target.id;
         if (id === 'modules-grid') {
             state = {
@@ -14,7 +14,7 @@ define(['jquery'], function ($) {
             return;
         }
         var $target = $(e.target);
-        if ($target.hasClass('ci-module-header')) {
+        if ($target.hasClass('ci-module-header') || $target.parents('.ci-module-header').length) {
             var moduleId = $target.parents('.ci-module-wrapper').attr('data-module-id');
             state = {
                 kind: 'module',
@@ -24,7 +24,7 @@ define(['jquery'], function ($) {
         }
 
         state = {};
-    });
+    }, 200));
 
     return {
         getState: function () {
