@@ -157,7 +157,7 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema', 'lodash']
                 intSchema = JSON.parse(this.module.getConfiguration('schema'));
             $.extend(true, schema, intSchema);
         }
-        if(_.isEmpty(schema)) return;
+        if (_.isEmpty(schema)) return;
         schemaJpath(schema, []);
         return schema;
     };

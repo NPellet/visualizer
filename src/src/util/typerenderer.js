@@ -554,7 +554,7 @@ define([
             const render = template.renderAsync(value);
             $element.html(render.html);
             render.render();
-        } else if(options.toJSON) {
+        } else if (options.toJSON) {
             $element.html(JSON.stringify(value));
         } else {
             $element.html(Object.prototype.toString.call(value));

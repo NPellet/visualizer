@@ -130,7 +130,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
         },
         renderForm: function () {
             var schema = this.module.controller.getSchema();
-            if(!schema) {
+            if (!schema) {
                 this.dom.find('.form-button').hide();
                 return;
             }

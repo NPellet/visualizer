@@ -46,7 +46,7 @@ define(['modules/default/defaultcontroller', 'src/data/structures', 'src/util/ac
         for (var i = 0; i < l; i++) {
             typeList[i] = {key: types[i], title: types[i]};
         }
-        const config =  {
+        const config = {
             groups: {
                 group: {
                     options: {

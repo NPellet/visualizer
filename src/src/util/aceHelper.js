@@ -31,7 +31,7 @@ define(function () {
         return {
             useSoftTabs: ['groups', name, 0, 'useSoftTabs', 0],
             tabSize: ['groups', name, 0, 'tabSize', 0]
-        }
+        };
     };
 
     aceHelper.applyConfig = function (module, editor) {
