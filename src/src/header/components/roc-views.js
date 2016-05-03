@@ -40,13 +40,13 @@ define([
             if (this._flavor) {
                 return this._flavor;
             } else {
-                return this._flavor = window.sessionStorage.getItem('ci-visualizer-roc-views-flavor') || 'default';
+                return this._flavor = window.localStorage.getItem('ci-visualizer-roc-views-flavor') || 'default';
             }
         }
 
         set flavor(value) {
             this._flavor = value;
-            window.sessionStorage.setItem('ci-visualizer-roc-views-flavor', value);
+            window.localStorage.setItem('ci-visualizer-roc-views-flavor', value);
         }
 
         initImpl() {
