@@ -1,13 +1,14 @@
 'use strict';
 
 define([
+    'jquery',
     'require',
     'modules/default/defaultview',
     'src/util/util',
     'src/util/color',
     'src/util/worker',
     'components/jquery.threedubmedia/event.drag/jquery.event.drag'
-], function (require, Default, Util, Color, Worker) {
+], function ($, require, Default, Util, Color, Worker) {
 
     function View() {
     }
@@ -107,7 +108,6 @@ define([
         },
 
         getBufferIndices: function (pxPerCell) {
-
             var currentPxPerCell = this.getPxPerCell();
             var ratioIndex = currentPxPerCell / pxPerCell;
             var shift = this.getXYShift();
@@ -173,7 +173,6 @@ define([
         },
 
         resetZoomPrefetch: function () {
-
             var currentIndex, i, len;
             for (i = 0; i < this.availableZooms.length; i++) {
                 if (this.availableZooms[i] == this.pxPerCell) {
@@ -270,28 +269,21 @@ define([
 
         // Here we receive new data, we need to relaunch the workers
         update: {
-
             matrix: function (moduleValue) {
-
                 if (!this.canvas)
                     return;
 
                 moduleValue = moduleValue.get();
 
-
-                // Get the new module value
-                this.gridData = moduleValue.data;
+                this.gridData = moduleValue.data ? moduleValue.data : moduleValue;
                 this.canvasNbX = this.gridData[0].length;
                 this.canvasNbY = this.gridData.length;
 
-                this.minmaxworker.postMessage(JSON.stringify(moduleValue.data));
+                this.minmaxworker.postMessage(JSON.stringify(this.gridData));
             }
-
-
         },
 
         initWorkers: function () {
-
             var minMaxWorker = Worker(require.toUrl('src/util/workers/getminmaxmatrix.js'));
             var mainWorker = Worker(require.toUrl('./worker.js'));
             var that = this;
@@ -344,12 +336,10 @@ define([
         },
 
         incrementPxPerCellFetch: function () {
-            var next = false;
             return this.currentPxFetch = this.availableZoomsForFetch.shift();
         },
 
         launchWorkers: function (restartAtNormal) {
-
             var pxPerCell;
             this.cachedPxPerCell = this.pxPerCell;
             if (restartAtNormal) {
@@ -364,17 +354,12 @@ define([
             if (!this.postNextMessageToWorker(pxPerCell)) {
                 if (this.incrementPxPerCellFetch())
                     this.launchWorkers();
-                else
-                    return;
             }
         },
 
         //http://localhost:8888/git/visualizer/?viewURL=http%3A//script.epfl.ch/servletScript/JavaScriptServlet%3Faction%3DLoadFile%26filename%3Dlpatiny/data//Demo/Basic/LargeMatrix.view%26key%3DZv1Ib2VDf6&dataURL=http%3A//script.epfl.ch/servletScript/JavaScriptServlet%3Faction%3DLoadFile%26filename%3Dlpatiny/result/2012-07-06/2012-07-06_09-11-38oE4j5XDDPd%26key%3DieGxx34DhR&saveViewURL=http%3A//script.epfl.ch/servletScript/JavaScriptServlet%3Faction%3DSaveFile%26filename%3Dlpatiny/data//Demo/Basic/LargeMatrix.view%26key%3Dh5fKTxoIWD
-
         postNextMessageToWorker: function (pxPerCell) {
-
             var bufferIndices = this.getBufferIndices(pxPerCell);
-
             for (var i = bufferIndices.minXIndexBuffer; i <= bufferIndices.maxXIndexBuffer; i++) {
                 for (var j = bufferIndices.minYIndexBuffer; j <= bufferIndices.maxYIndexBuffer; j++) {
                     var key = this.getBufferKey(pxPerCell, i, j);
@@ -393,9 +378,7 @@ define([
         },
 
         doPostNextMessageToWorker: function (pxPerCell, indexX, indexY) {
-
             if (!this.buffers[this.getBufferKey(pxPerCell, indexX, indexY)]) {
-
                 var w = this.squareLoading,
                     h = this.squareLoading;
 

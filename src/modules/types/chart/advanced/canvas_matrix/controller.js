@@ -1,9 +1,10 @@
 'use strict';
 
 define([
+    'jquery',
     'modules/default/defaultcontroller',
     'lodash'
-], function (Default, _) {
+], function ($, Default, _) {
 
     function Controller() {
     }
@@ -36,7 +37,8 @@ define([
         var x = Math.floor((e.offsetX - shift.x) / pxPerCell);
         var y = Math.floor((e.offsetY - shift.y) / pxPerCell);
 
-        var gridData = moduleValue.get().data;
+        var gridData = moduleValue.get();
+        gridData = gridData.data ? gridData.data : gridData;
 
         if (!gridData || !gridData[0] || x < 0 || y < 0 || y > gridData.length || x > gridData[0].length) {
             return false;
@@ -56,7 +58,34 @@ define([
 
             controller.setVarFromEvent(name, 'row', 'matrix', ['xLabel', keyed[1]]);
             controller.setVarFromEvent(name, 'col', 'matrix', ['yLabel', keyed[0]]);
-            controller.setVarFromEvent(name, 'intersect', 'matrix', ['data', keyed[1], keyed[0]]);
+
+            var intersect = [keyed[1], keyed[0]];
+            var data = controller.module.getDataFromRel('matrix').get();
+            if (data.data) {
+                data = data.data;
+                intersect.unshift('data');
+            }
+
+            controller.setVarFromEvent(name, 'intersect', 'matrix', intersect);
+
+            if (typeof data[keyed[0]] === 'undefined') {
+                return;
+            }
+
+            controller.createDataFromEvent(name, 'point', {
+                row: keyed[1],
+                column: keyed[0],
+                value: data[keyed[0]][keyed[1]]
+            });
+
+            controller.createDataFromEvent(name, 'fullRow', data[keyed[1]].slice());
+
+            var l = data[0].length;
+            var col = new Array(l);
+            for (var i = 0; i < l; i++) {
+                col[i] = data[i][keyed[0]];
+            }
+            controller.createDataFromEvent(name, 'fullCol', col);
         };
     }
 
@@ -71,21 +100,27 @@ define([
 
     Controller.prototype.references = {
         row: {
-            label: 'Row',
-            description: 'Sends the information description the row'
+            label: 'Row index'
+        },
+        fullRow: {
+            label: 'Full row'
         },
         col: {
-            label: 'Column',
-            description: 'Sends the information description the column'
+            label: 'Column index'
+        },
+        fullCol: {
+            label: 'Full column'
         },
         intersect: {
-            label: 'Intersection',
-            description: 'Sends the information description the intersection where the mouse is located'
+            label: 'Intersection value'
+        },
+        point: {
+            label: 'Coordinates and value'
         },
         matrix: {
             label: 'Matrix',
             description: 'A 2D array representing the matrix',
-            type: ['matrix', 'object']
+            type: ['matrix', 'object', 'array']
         }
     };
 
@@ -95,12 +130,12 @@ define([
         onPixelHover: {
             label: 'Hover on a pixel',
             description: 'When the mouses moves over a new pixel of the data matrix',
-            refVariable: ['row', 'col', 'intersect']
+            refVariable: ['row', 'col', 'intersect', 'point', 'fullRow', 'fullCol']
         },
         onPixelClick: {
             label: 'Click on a pixel',
             description: 'When the users click on any pixel',
-            refVariable: ['row', 'col', 'intersect']
+            refVariable: ['row', 'col', 'intersect', 'point', 'fullRow', 'fullCol']
         }/*,
          onPixelDblClick: {
          label: 'double click on a pixel',
