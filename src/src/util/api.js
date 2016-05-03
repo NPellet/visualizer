@@ -321,6 +321,16 @@ define([
         return require('src/main/grid').getActiveLayerName();
     };
 
+    exports.preventUnload = function (message) {
+        window.onbeforeunload = function () {
+            return message;
+        };
+    };
+
+    exports.clearPreventUnload = function () {
+        window.onbeforeunload = null;
+    };
+
     return exports;
 
 });
