@@ -1,0 +1,334 @@
+{
+  "version": "2.52.1-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "script": [
+                "var name = \"a\";\nvar value = {\n    type: \"number\",\n    label: 'A',\n    description: 'Bonjour'\n};\n\nif (this.button === 'n2') {\n    value.default = 5;\n} else if (this.button === 'n3') {\n    value.default = 6;\n    name = \"b\"\n    value.label = \"B\"\n}\n\n\n\nvar schema = {\n    \"type\": \"object\",\n    \"properties\": {\n        [name]: value\n    }\n};\n\nAPI.createData('o', {});\nthis.set('schema', schema);\n"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {}
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "n1",
+                "label": "One"
+              },
+              {
+                "name": "n2",
+                "label": "Two"
+              },
+              {
+                "name": "n3",
+                "label": "Three"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 4
+          },
+          "size": {
+            "width": 72,
+            "height": 66
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 1,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "",
+      "vars_out": [
+        {
+          "event": "onScriptEnded",
+          "rel": "outputValue",
+          "jpath": [
+            "schema"
+          ],
+          "name": "schema"
+        }
+      ],
+      "actions_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "url": "modules/types/edition/onde/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "hasButton": [
+                [
+                  "onload"
+                ]
+              ],
+              "button_text": [
+                "Export"
+              ],
+              "debouncing": [
+                0
+              ],
+              "output": [
+                "new"
+              ],
+              "mode": [
+                "schema"
+              ],
+              "schemaSource": [
+                "variable"
+              ],
+              "schema": [
+                "{}"
+              ],
+              "onchangeFilter": [
+                null
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 75,
+            "top": 4
+          },
+          "size": {
+            "width": 43,
+            "height": 52
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 2,
+      "vars_in": [
+        {
+          "rel": "schema",
+          "name": "schema"
+        }
+      ],
+      "actions_in": [],
+      "title": "",
+      "vars_out": [
+        {
+          "event": "onFormSubmit",
+          "rel": "outputValue",
+          "jpath": [],
+          "name": "output"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "view"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                []
+              ],
+              "displayValue": [
+                []
+              ],
+              "searchBox": [
+                [
+                  "search"
+                ]
+              ],
+              "sendButton": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 121,
+            "top": 12
+          },
+          "size": {
+            "width": 26,
+            "height": 25
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "output"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "title": "",
+      "actions_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "variables": [],
+  "aliases": [],
+  "pouchvariables": [],
+  "configuration": {
+    "title": "No title"
+  }
+}
