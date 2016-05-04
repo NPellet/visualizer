@@ -17,6 +17,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
     };
 
     Controller.prototype.configurationStructure = function () {
+        var that = this;
 
         var typeList = Util.getStructuresComboOptions();
 
@@ -299,9 +300,56 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                             title: 'Button title'
                         }
                     }
+                },
+                data: {
+                    options: {
+                        type: 'list',
+                        title: 'Data'
+                    },
+                    fields: {
+                        saveInView: {
+                            type: 'checkbox',
+                            title: 'Save in view',
+                            options: {
+                                yes: 'yes'
+                            },
+                            displaySource: {yes: 'saveInView'},
+                            default: []
+                        },
+                        varname: {
+                            type: 'text',
+                            title: 'Variable name',
+                            default: '',
+                            displayTarget:['saveInView']
+                        },
+                        data: {
+                            type: 'jscode',
+                            title: 'Filter',
+                            default: '[]',
+                            displayTarget:['saveInView']
+                        }
+                    }
                 }
             }
         };
+    };
+
+    Controller.prototype.onBeforeSave = function(formValue) {
+        var varname = formValue.module_specific_config[0].groups.data[0].varname[0];
+        var vars_in = formValue.vars_in[0].groups.group[0];
+        var varin = vars_in.find(function(el) {
+            return el.rel === 'data';
+        });
+        if(varname) {
+            if(varin) {
+                varin.name = varname;
+            } else {
+                vars_in.push({
+                    rel: 'data',
+                    name: varname
+                });
+            }
+        }
     };
 
     Controller.prototype.configAliases = {
@@ -319,6 +367,9 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
         'toolbar': ['groups', 'group', 0, 'toolbar', 0],
         'autoColumns': ['groups', 'group', 0, 'autoColumns', 0],
         'customJpaths': ['groups', 'group', 0, 'customJpaths', 0],
+        'saveInView': ['groups', 'data', 0, 'saveInView', 0],
+        'data': ['groups', 'data', 0, 'data', 0],
+        'varname': ['groups', 'data', 0, 'varname', 0],
     };
 
     Controller.prototype.references = {
@@ -336,10 +387,14 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
         rows: {
             label: 'Row selection',
             type: 'array'
+        },
+        data: {
+            label: 'Auto',
+            type: 'array'
         }
     };
 
-    Controller.prototype.variablesIn = ['list', 'script'];
+    Controller.prototype.variablesIn = ['list', 'script', 'data'];
 
     Controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {
         hoverRow: 'Mimic row hover',

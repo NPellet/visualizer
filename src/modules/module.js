@@ -976,6 +976,9 @@ define([
 
             form.addButton('Save', {color: 'green'}, function () {
                 var value = form.getValue().sections;
+                if(that.controller.onBeforeSave) {
+                    that.controller.onBeforeSave(value);
+                }
                 that.definition.layers = that.definition.layers || {};
                 var l = value.module_config[0].sections.layer[0].groups.group;
                 var allDisplay = value.module_config[0].groups.layerDisplay[0].displayOn[0];

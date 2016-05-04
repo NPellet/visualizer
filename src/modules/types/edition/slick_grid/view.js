@@ -637,7 +637,7 @@ define([
     $.extend(true, View.prototype, Default, {
 
         init: function () {
-            var that = this;
+            var that = this, varname;
             this._setScript('');
             this.title = String(this.module.definition.title);
             if (!this.$container) {
@@ -648,6 +648,12 @@ define([
                 this.module.getDomContent().html(this.$rowHelp);
                 this.module.getDomContent().append(this.$container);
                 this._setDeleteRowListener();
+            }
+
+            if(this.module.getConfigurationCheckbox('saveInView', 'yes')) {
+                varname = this.module.getConfiguration('varname');
+            } else {
+                varname = undefined;
             }
 
             this.actionOutButtons = this.module.getConfiguration('actionOutButtons');
@@ -725,7 +731,17 @@ define([
                 }
             };
 
-            this.resolveReady();
+            if(varname) {
+                API.createData(varname, JSON.parse(this.module.getConfiguration('data'))).then(data => {
+                    data.onChange(() => {
+                        this.module.definition.configuration.groups.data[0].data[0] = JSON.stringify(data);
+                    });
+                    that.resolveReady();
+                });
+            } else {
+                that.resolveReady();
+            }
+
         },
 
         preventRowHelp: function () {
@@ -1059,7 +1075,7 @@ define([
 
         update: {
 
-            script: function (moduleValue, varname) {
+            script: function (moduleValue) {
                 if (this.module.getConfiguration('filterType') === 'invar') {
                     this._setScript(moduleValue.get());
                     this._runFilter({
@@ -1070,7 +1086,12 @@ define([
                 this.rerender();
             },
 
-            list: function (moduleValue, varname) {
+            data: function(moduleValue, varName) {
+                console.log('data...');
+                this.update.list.call(this, moduleValue, varName);
+            },
+
+            list: function (moduleValue, varName) {
                 var that = this;
 
                 this.module.controller.lastClickedItem = undefined;
