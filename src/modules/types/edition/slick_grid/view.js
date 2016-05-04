@@ -1087,7 +1087,6 @@ define([
             },
 
             data: function(moduleValue, varName) {
-                console.log('data...');
                 this.update.list.call(this, moduleValue, varName);
             },
 
