@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/util/api', 'src/data/structures'], function (Default, Util, _, API, structures) {
+define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/util/api'], function (Default, Util, _, API) {
 
     function Controller() {
     }
@@ -112,6 +112,11 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                             title: 'Filter',
                             default: '// Documentation: https://github.com/NPellet/visualizer/blob/db85d9cc12c6204e4a3afb69bba6d695f6f8bad5/src/modules/types/edition/slick_grid/view.js#L918-L940',
                             displayTarget: ['p']
+                        },
+                        customJpaths: {
+                            type: 'text',
+                            title: 'Custom jpaths',
+                            default: ''
                         }
                     }
                 },
@@ -312,7 +317,8 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
         'groupings': ['groups', 'groupings', 0],
         'actionOutButtons': ['groups', 'actionOutButtons', 0],
         'toolbar': ['groups', 'group', 0, 'toolbar', 0],
-        'autoColumns': ['groups', 'group', 0, 'autoColumns', 0]
+        'autoColumns': ['groups', 'group', 0, 'autoColumns', 0],
+        'customJpaths': ['groups', 'group', 0, 'customJpaths', 0],
     };
 
     Controller.prototype.references = {

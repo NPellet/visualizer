@@ -137,6 +137,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
         }
     }
 
+
     return {
 
         getType: getType,
@@ -166,6 +167,18 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
             }
 
             return _setValueFromJPath(element, jpathSplitted, newValue, moduleId, mute);
+        },
+
+        getTreeFromJpaths: function(jpaths, data) {
+            data = new DataObject(data);
+            for(let i=0; i<jpaths.length; i++) {
+                data.setChildSync(jpaths[i], '');
+            }
+
+            var tree = [];
+            var structure = this.getStructureFromElement(data);
+            this.getJPathsFromStructure(structure, null, tree);
+            return tree;
         },
 
         getJPathsFromStructure: function (structure, title, jpathspool, jpathString) {

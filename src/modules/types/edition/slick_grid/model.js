@@ -36,9 +36,18 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
                     break;
             }
 
-            var jpaths = [];
-            Traversing.getJPathsFromElement(data, jpaths);
-            return jpaths;
+            var customJpaths = this.module.definition.configuration.groups;
+            if(customJpaths) {
+                customJpaths = customJpaths.group[0].customJpaths;
+                if(customJpaths) {
+                    customJpaths = customJpaths[0];
+                    customJpaths = customJpaths.split(',').map(function (el) {
+                        return el.split('.');
+                    });
+                }
+            }
+            customJpaths = customJpaths || [];
+            return Traversing.getTreeFromJpaths(customJpaths, DataObject.resurrect(data));
         }
     });
 
