@@ -30,6 +30,7 @@
     "colors": "3.0.0",
     "d3": "3.5.17",
     "d3-plugins": "cheminfo/d3-plugins#ea652308c616f3accde0a418f7ccc6254a932985",
+    "eventEmitter": "^4.3.0",
     "fancytree": "2.18.0",
     "farbtastic": "2.0.0-alpha.1",
     "file-saver.js": "1.20150304.1",
@@ -41,6 +42,7 @@
     "jquery": "2.2.1",
     "jquery-cookie": "1.4.1",
     "jquery-mousewheel": "3.1.13",
+    "jquery-qrcode": "cheminfo/jquery-qrcode#1170d085ffb9e8c5de5290041902923ceca3c9e7",
     "jquery-tmpl": "BorisMoore/jquery-tmpl#vBeta1.0.0",
     "jquery-ui": "1.11.4",
     "jquery.panzoom": "cheminfo/jquery.panzoom#2cbe83a059b4f41181f4c5bba628e5267d6a12f5",
@@ -80,10 +82,8 @@
     "twig.js": "0.8.9",
     "ui-contextmenu": "1.11.0",
     "uri.js": "1.18.0",
-    "x2js": "1.2.0",
     "web-animations-js": "2.2.1",
-    "eventEmitter": "^4.3.0",
-    "jquery-qrcode": "cheminfo/jquery-qrcode#1170d085ffb9e8c5de5290041902923ceca3c9e7"
+    "x2js": "1.2.0"
   },
   "resolutions": {
     "jsgraph": "v1.13.3-71",
