@@ -654,14 +654,16 @@ define([
                 that.deferreds[varname] = $.Deferred();
                 var def = that.deferreds[varname];
 
+                var options = moduleValue._options || {};
+                
                 var value = moduleValue.get();
                 var valueType = DataObject.getType(value);
                 if (valueType === 'string') {
                     require(['jcampconverter'], JcampConverter => {
-                        JcampConverter.convert(String(moduleValue.get()), {lowRes: 1024}, true).then(displaySpectra);
+                        JcampConverter.convert(String(value), options, true).then(displaySpectra);
                     });
                 } else {
-                    displaySpectra(moduleValue.get());
+                    displaySpectra(value);
                 }
 
                 function displaySpectra(spectra) {

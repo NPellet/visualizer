@@ -96,7 +96,11 @@
   ],
   "cosy": {
     "type": "jcamp",
-    "url": "../testcase/data/spectra2D/cosy.jdx"
+    "url": "../testcase/data/spectra2D/cosy.jdx",
+    "_options": {
+      "nbContourLevels": 10,
+      "noiseMultiplier": 2
+    }
   },
   "hsqc": {
     "type": "jcamp",
