@@ -18,6 +18,16 @@ define(function () {
         ] : [0, 0, 0];
     };
 
+    exports.array2rgba = function (arr) {
+        if (arr.length === 3) {
+            return 'rgba(' + arr[0] + ',' + arr[1] + ',' + arr[2] + ',1)';
+        } else if (arr.length === 4) {
+            return 'rgba(' + arr[0] + ',' + arr[1] + ',' + arr[2] + ',' + arr[3] + ')';
+        } else {
+            return 'rgba(0,0,0,1)';
+        }
+    };
+
     exports.rgb2hex = function rgb2hex(r, g, b) {
         if (arguments.length === 1) {
             var x = r.match(/rgba?\(([^\(]*)\)/, 'i');

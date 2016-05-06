@@ -70,17 +70,6 @@ define([
         return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
     }
 
-    function arrayToRgba(arr) {
-        if (arr.length === 3) {
-            return 'rgba(' + arr[0] + ',' + arr[1] + ',' + arr[2] + ',1)';
-        } else if (arr.length === 4) {
-            return 'rgba(' + arr[0] + ',' + arr[1] + ',' + arr[2] + ',' + arr[3] + ')';
-        } else {
-            return 'rgba(0,0,0,1)';
-        }
-
-    }
-
     function keepDecimals(num, n) {
         num = '' + num;
         var idx = num.indexOf('.');
@@ -985,7 +974,7 @@ define([
 
             // Set default options
             options.size = options.size || 64;
-            options.fillStyle = options.fillStyle || arrayToRgba(that.module.getConfiguration('annotationColor')) || DEFAULT_TEXT_COLOR;
+            options.fillStyle = options.fillStyle || Color.array2rgba(that.module.getConfiguration('annotationColor')) || DEFAULT_TEXT_COLOR;
             options.textAlign = options.textAlign || 'left';
             options.font = options.font || 'Arial';
             // Stange, opacity of 1 will dispaly a black background on the text

@@ -5,12 +5,13 @@ define([
     'src/util/debug',
     'lodash',
     'src/util/util',
+    'src/util/color',
     'src/util/api',
     'src/util/typerenderer',
     'slickgrid',
     'src/util/sandbox',
     'src/data/structures'
-], function (Default, Debug, _, Util, API, Renderer, Slick, Sandbox, structures) {
+], function (Default, Debug, _, Util, Color, API, Renderer, Slick, Sandbox, structures) {
 
     function View() {
     }
@@ -693,7 +694,7 @@ define([
                             disabled: false,
                             action: colDef.colDef.action,
                             tooltip: colDef.colDef.tooltip,
-                            backgroundColor: colDef.colDef.backgroundColor,
+                            backgroundColor: Color.array2rgba(colDef.colDef.backgroundColor),
                             color: colDef.colDef.color
                         }
                     };
