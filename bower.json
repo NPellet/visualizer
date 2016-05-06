@@ -55,7 +55,7 @@
     "jszip": "2.5.0",
     "leaflet": "0.7.7",
     "leaflet-omnivore": "0.3.2",
-    "lodash": "4.3.0",
+    "lodash": "4.11.2",
     "loglevel": "1.2.0",
     "marked": "0.3.3",
     "ml": "0.2.1",
