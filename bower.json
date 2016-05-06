@@ -79,7 +79,7 @@
     "threejs": "r71",
     "twig.js": "0.8.9",
     "ui-contextmenu": "1.11.0",
-    "uri.js": "1.14.1",
+    "uri.js": "1.18.0",
     "x2js": "1.2.0",
     "web-animations-js": "2.1.2",
     "eventEmitter": "^4.3.0",
