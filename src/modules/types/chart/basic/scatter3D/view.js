@@ -974,7 +974,7 @@ define([
 
             // Set default options
             options.size = options.size || 64;
-            options.fillStyle = options.fillStyle || Color.array2rgba(that.module.getConfiguration('annotationColor')) || DEFAULT_TEXT_COLOR;
+            options.fillStyle = options.fillStyle || colorUtil.array2rgba(that.module.getConfiguration('annotationColor')) || DEFAULT_TEXT_COLOR;
             options.textAlign = options.textAlign || 'left';
             options.font = options.font || 'Arial';
             // Stange, opacity of 1 will dispaly a black background on the text
