@@ -104,18 +104,19 @@ define(['jquery', './groupelement'], function ($, GroupElement) {
 
         this.updateDom();
         return this.dom;
-    }
+    };
 
 
     GroupListElement.prototype.condDisplay = function (fieldName, displayOrHide) {
         this.eachFieldElements(fieldName, function (fieldEl) {
             if (displayOrHide) {
                 this.fieldElementsDom[fieldName].parent().show();
+                if(fieldEl.afterShow) fieldEl.afterShow();
             } else {
                 this.fieldElementsDom[fieldName].parent().hide();
             }
         });
-    }
+    };
 
     GroupListElement.prototype.getFieldIndex = function (fieldElement) {
 

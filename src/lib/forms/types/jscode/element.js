@@ -41,6 +41,10 @@ define(['require', 'jquery', 'src/util/util', 'ace/ace'], function (require, $, 
         return dom;
     };
 
+    FieldConstructor.prototype.afterShow = function () {
+        this.editor.resize();
+    };
+
     FieldConstructor.prototype.focus = function () {
 
         if (this.editor) {
