@@ -168,11 +168,12 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                 if (isFixed) return;
                 renderElement($(this));
             });
-            $elements.click(function () {
-                $elements.removeClass('el-selected');
+            $elements.click(function (event) {
+                that.unselectElements(event, $elements);
                 var $el = $(this);
                 $el.addClass('el-selected');
                 renderElement($el);
+                that.elementsSelected();
                 isFixed = true;
             });
 
@@ -189,26 +190,26 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                 elementDatas.addClass('hidden');
             });
 
-            that.dom.on('click', '.indic-p', function () {
+            that.dom.on('click', '.indic-p', function (event) {
                 // find period to which it belongs
                 var p = $(this).attr('class').replace(/^.*(period\d+).*$/, '$1');
                 var pN = p.substr(6);
-                $elements.removeClass('el-selected');
+                that.unselectElements(event, $elements);
                 var $selected = $elements.filter('.' + p);
                 $selected.addClass('el-selected');
                 that.module.controller.periodSelected(pN);
-                that.elementsSelected($selected);
+                that.elementsSelected();
             });
 
-            that.dom.on('click', '.indic-g', function () {
+            that.dom.on('click', '.indic-g', function (event) {
                 // find group to which it belongs
                 var g = $(this).attr('class').replace(/^.*(group\d+).*$/, '$1');
                 var gN = g.substr(5);
-                $elements.removeClass('el-selected');
+                that.unselectElements(event, $elements);
                 var $selected = $elements.filter('.' + g);
                 $selected.addClass('el-selected');
                 that.module.controller.groupSelected(gN);
-                that.elementsSelected($selected);
+                that.elementsSelected();
             });
 
             function renderElement($el) {
@@ -232,8 +233,14 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             that.dom.find('div.e88').after(actinid);
         },
 
-        elementsSelected($el) {
-            var sel = $el.map((idx, el) => {
+        unselectElements(event, $el) {
+            if(!event.ctrlKey) {
+                $el.removeClass('el-selected');
+            }
+        },
+
+        elementsSelected() {
+            var sel = this.dom.find('.el-selected').map((idx,el) => {
                 return $(el).attr('class').replace(/^.*[^a-zA-Z]e(\d+).*$/, '$1');
             }).toArray();
             this.module.controller.elementsSelected(sel);
