@@ -81,7 +81,7 @@
     "ui-contextmenu": "1.11.0",
     "uri.js": "1.18.0",
     "x2js": "1.2.0",
-    "web-animations-js": "2.1.2",
+    "web-animations-js": "2.2.1",
     "eventEmitter": "^4.3.0",
     "jquery-qrcode": "cheminfo/jquery-qrcode#1170d085ffb9e8c5de5290041902923ceca3c9e7"
   },
