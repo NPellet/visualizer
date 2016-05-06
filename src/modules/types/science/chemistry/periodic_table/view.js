@@ -234,13 +234,13 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
         },
 
         unselectElements(event, $el) {
-            if(!event.ctrlKey) {
+            if (!event.ctrlKey) {
                 $el.removeClass('el-selected');
             }
         },
 
         elementsSelected() {
-            var sel = this.dom.find('.el-selected').map((idx,el) => {
+            var sel = this.dom.find('.el-selected').map((idx, el) => {
                 return $(el).attr('class').replace(/^.*[^a-zA-Z]e(\d+).*$/, '$1');
             }).toArray();
             this.module.controller.elementsSelected(sel);
