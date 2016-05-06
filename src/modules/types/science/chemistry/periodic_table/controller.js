@@ -103,7 +103,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         hltemplateSource: ['groups', 'group', 0, 'hltemplateSource', 0]
     };
 
-    Controller.prototype.periodSelected = function(period) {
+    Controller.prototype.periodSelected = function (period) {
         var elements = this.module.getDataFromRel('value');
         elements = elements.filter(el => {
             return el.period == period;
@@ -112,7 +112,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         this.createDataFromEvent('onPeriodSelect', 'elements', elements);
     };
 
-    Controller.prototype.groupSelected = function(group) {
+    Controller.prototype.groupSelected = function (group) {
         var elements = this.module.getDataFromRel('value');
         elements = elements.filter(el => {
             return el.group == group;
@@ -121,7 +121,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         this.createDataFromEvent('onGroupSelect', 'elements', elements);
     };
 
-    Controller.prototype.elementsSelected = function(atomicNumbers) {
+    Controller.prototype.elementsSelected = function (atomicNumbers) {
         atomicNumbers = atomicNumbers.map(el => +el);
         var elements = this.module.getDataFromRel('value');
         elements = elements.filter(el => {

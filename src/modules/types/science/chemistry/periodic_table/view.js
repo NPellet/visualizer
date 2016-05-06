@@ -233,7 +233,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
         },
 
         elementsSelected($el) {
-            var sel = $el.map((idx,el) => {
+            var sel = $el.map((idx, el) => {
                 return $(el).attr('class').replace(/^.*[^a-zA-Z]e(\d+).*$/, '$1');
             }).toArray();
             this.module.controller.elementsSelected(sel);
