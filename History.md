@@ -1,3 +1,23 @@
+<a name="2.53.0"></a>
+# 2.53.0 (2016-05-06)
+
+
+### Bug Fixes
+
+* better detect if over module header ([7c4d2f5](https://github.com/NPellet/visualizer/commit/7c4d2f5)), closes [#865](https://github.com/NPellet/visualizer/issues/865)
+* **onde:** do not store output object as input ([72df615](https://github.com/NPellet/visualizer/commit/72df615))
+
+### Features
+
+* **API:** add preventUnload and clearPreventUnload functions ([ef34b24](https://github.com/NPellet/visualizer/commit/ef34b24))
+* **core:** viewLock flag in url locks view ([2407eea](https://github.com/NPellet/visualizer/commit/2407eea))
+* **matrix:** various improvements ([7109a82](https://github.com/NPellet/visualizer/commit/7109a82))
+* **periodic_table:** group and period selection ([e4d78b8](https://github.com/NPellet/visualizer/commit/e4d78b8))
+* **slick_grid:** save data in view ([492fc28](https://github.com/NPellet/visualizer/commit/492fc28))
+* **slickgrid:** allow custom jpaths ([0ebe1cd](https://github.com/NPellet/visualizer/commit/0ebe1cd))
+
+
+
 <a name="2.52.0"></a>
 # 2.52.0 (2016-04-27)
 
