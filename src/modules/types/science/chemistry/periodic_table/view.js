@@ -11,7 +11,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
     }
 
     $.extend(true, View.prototype, Default, {
-        init: function () {
+        init() {
 
             this.dom = $('<div class="periodic-table">');
 
@@ -21,29 +21,29 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             });
         },
         blank: {
-            template: function () {
+            template() {
                 this.template = Twig.twig({
                     data: ''
                 });
                 this.dom.html('');
             },
-            hltemplate: function () {
+            hltemplate() {
                 this.hltemplate = Twig.twig({
                     data: ''
                 });
                 this.dom.html('');
             },
-            value: function () {
+            value() {
                 this.dom.html('');
             }
         },
-        inDom: function () {
+        inDom() {
             this.module.getDomContent().html(this.dom);
             this.resolveReady();
             this.render();
         },
 
-        createTemplateFromPref: function (name) {
+        createTemplateFromPref(name) {
             var source = name + 'templateSource';
             source = this.module.getConfiguration(source);
             if (source === 'pref') {
@@ -54,7 +54,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             }
         },
 
-        createTemplateFromVar: function (name, tpl) {
+        createTemplateFromVar(name, tpl) {
             var source = name + 'templateSource';
             source = this.module.getConfiguration(source);
             if (source === 'varin') {
@@ -65,7 +65,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
         },
 
         update: {
-            value: function (value, name) {
+            value(value) {
                 /*
                  Convert special DataObjects
                  (twig does some check depending on the filter used
@@ -78,7 +78,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                 this.elements = JSON.parse(JSON.stringify(value.resurrect()));
                 this.render();
             },
-            template: function (value) {
+            template(value) {
                 var tpl = value.get().toString();
                 try {
                     this.createTemplateFromVar('', tpl);
@@ -87,7 +87,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                     Debug.info('Problem with template: ' + e);
                 }
             },
-            hltemplate: function (value, name) {
+            hltemplate(value) {
                 var tpl = String(value.get());
                 try {
                     this.createTemplateFromVar('hl', tpl);
@@ -98,22 +98,18 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             }
         },
 
-        render: function () {
+        render() {
             var that = this;
-            this.dom.html('');
-            var renderers = [];
-
-            this.dom.append('<div class="indic-p indic-g"></div>');
-            for (var i = 1; i < 19; i++) {
-                this.dom.append('<div class="indic-g group' + i + '"><p>' + i + '</p></div>');
-
+            that.dom.html('');
+            that.dom.append('<div class="indic-p indic-g"></div>');
+            for (let i = 1; i < 19; i++) {
+                that.dom.append('<div class="indic-g group' + i + '"><p>' + i + '</p></div>');
             }
-            for (var i = 1; i < 8; i++) {
-                this.dom.append('<div class="indic-p period' + i + '"><p>' + i + '</p></div>');
+            for (let i = 1; i < 8; i++) {
+                that.dom.append('<div class="indic-p period' + i + '"><p>' + i + '</p></div>');
             }
 
-
-            for (var i = 0; i < this.elements.length; i++) {
+            for (let i = 0; i < this.elements.length; i++) {
                 var $element = $('<div>' + this.template.render({element: this.elements[i]}) + '</div>').data('idx', i);
 
                 $element.addClass('element' +
@@ -123,10 +119,10 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                     ' block-' + this.elements[i].block +
                     ' ' + this.elements[i].serie);
 
-                this.dom.append($element);
+                that.dom.append($element);
             }
             var legend = $('<div class="legend"></div>');
-            $('div.e1').after(legend);
+            that.dom.find('div.e1').after(legend);
 
             var defaultLegend = $('<div class="default-legend"></div>');
             var elementZoom = $('<div class="element-zoom hidden"></div>');
@@ -166,18 +162,17 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                 this.updateElementPhase();
             });
 
-            var $elements = $('.element');
+            var $elements = that.dom.find('.element');
 
             $elements.mouseenter(function () {
                 if (isFixed) return;
                 renderElement($(this));
             });
             $elements.click(function () {
-                if (isFixed) {
-                    $('.el-selected').removeClass('el-selected');
-                }
-                $(this).addClass('el-selected');
-                renderElement($(this));
+                $elements.removeClass('el-selected');
+                var $el = $(this);
+                $el.addClass('el-selected');
+                renderElement($el);
                 isFixed = true;
             });
 
@@ -193,6 +188,21 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                 elementZoom.addClass('hidden');
                 elementDatas.addClass('hidden');
             });
+
+            that.dom.on('click', '.indic-p', function () {
+                // find period to which it belongs
+                var p = $(this).attr('class').replace(/^.*(period\d+).*$/, '$1');
+                $elements.removeClass('el-selected');
+                $elements.filter('.' + p).addClass('el-selected');
+            });
+
+            that.dom.on('click', '.indic-g', function () {
+                // find group to which it belongs
+                var p = $(this).attr('class').replace(/^.*(group\d+).*$/, '$1');
+                $elements.removeClass('el-selected');
+                $elements.filter('.' + p).addClass('el-selected');
+            });
+
             function renderElement($el) {
                 var idx = $el.data('idx');
                 var el = that.elements[idx];
@@ -205,17 +215,16 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             }
 
             var interactZone = ('<div class="interactive-zone"><div id="slider"></div>');
-            var legend = $('<div class="legend"></div>');
-            $('.legend').after(interactZone);
+            legend.after(interactZone);
 
 
             var actinid = ('<div class="indic-f period7"><p>89-103</p></div>');
             var lanthanid = ('<div class="indic-f period6"><p>57-71</p></div>');
-            $('div.e56').after(lanthanid);
-            $('div.e88').after(actinid);
+            that.dom.find('div.e56').after(lanthanid);
+            that.dom.find('div.e88').after(actinid);
         },
 
-        updateElementPhase: function () {
+        updateElementPhase() {
             var $elements = this.dom.find('.element');
             var temperature = this.getTemperature();
             for (let i = 0; i < $elements.length; i++) {
