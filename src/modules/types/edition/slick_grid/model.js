@@ -39,7 +39,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
             var customJpaths = this.module.definition.configuration.groups;
             if (customJpaths) {
                 customJpaths = customJpaths.group[0].customJpaths;
-                if (customJpaths) {
+                if (customJpaths && customJpaths[0]) {
                     customJpaths = customJpaths[0];
                     customJpaths = customJpaths.split(',').map(function (el) {
                         return el.split('.');
