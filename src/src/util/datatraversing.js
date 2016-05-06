@@ -169,9 +169,9 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
             return _setValueFromJPath(element, jpathSplitted, newValue, moduleId, mute);
         },
 
-        getTreeFromJpaths: function(jpaths, data) {
+        getTreeFromJpaths: function (jpaths, data) {
             data = new DataObject(data);
-            for(let i=0; i<jpaths.length; i++) {
+            for (let i = 0; i < jpaths.length; i++) {
                 data.setChildSync(jpaths[i], '');
             }
 

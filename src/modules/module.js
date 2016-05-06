@@ -976,7 +976,7 @@ define([
 
             form.addButton('Save', {color: 'green'}, function () {
                 var value = form.getValue().sections;
-                if(that.controller.onBeforeSave) {
+                if (that.controller.onBeforeSave) {
                     that.controller.onBeforeSave(value);
                 }
                 that.definition.layers = that.definition.layers || {};

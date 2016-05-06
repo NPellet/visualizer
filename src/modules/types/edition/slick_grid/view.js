@@ -650,7 +650,7 @@ define([
                 this._setDeleteRowListener();
             }
 
-            if(this.module.getConfigurationCheckbox('saveInView', 'yes')) {
+            if (this.module.getConfigurationCheckbox('saveInView', 'yes')) {
                 varname = this.module.getConfiguration('varname');
             } else {
                 varname = undefined;
@@ -731,7 +731,7 @@ define([
                 }
             };
 
-            if(varname) {
+            if (varname) {
                 API.createData(varname, JSON.parse(this.module.getConfiguration('data'))).then(data => {
                     data.onChange(() => {
                         this.module.definition.configuration.groups.data[0].data[0] = JSON.stringify(data);
@@ -1086,7 +1086,7 @@ define([
                 this.rerender();
             },
 
-            data: function(moduleValue, varName) {
+            data: function (moduleValue, varName) {
                 this.update.list.call(this, moduleValue, varName);
             },
 

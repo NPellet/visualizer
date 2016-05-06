@@ -792,7 +792,7 @@ define([
                 debugSet = true;
             }
 
-            if(urls['lockView']) {
+            if (urls['lockView']) {
                 API.viewLock();
             }
 
