@@ -25,16 +25,16 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                 this.template = Twig.twig({
                     data: ''
                 });
-                this.dom.html('');
+                this.dom.empty().unbind();
             },
             hltemplate() {
                 this.hltemplate = Twig.twig({
                     data: ''
                 });
-                this.dom.html('');
+                this.dom.empty().unbind();
             },
             value() {
-                this.dom.html('');
+                this.dom.empty().unbind();
             }
         },
         inDom() {
@@ -100,7 +100,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
 
         render() {
             var that = this;
-            that.dom.html('');
+            that.dom.empty().unbind();
             that.dom.append('<div class="indic-p indic-g"></div>');
             for (let i = 1; i < 19; i++) {
                 that.dom.append('<div class="indic-g group' + i + '"><p>' + i + '</p></div>');
@@ -156,13 +156,13 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
 
             var isFixed = false;
 
+            var $elements = that.dom.find('.element');
+
             defaultLegend.on('input', '#periodicTemperatureSlider', event => {
-                console.log(event.target.value);
                 innerLegend.find('#periodicTemperature').html('' + event.target.value + ' K');
                 this.updateElementPhase();
             });
 
-            var $elements = that.dom.find('.element');
 
             $elements.mouseenter(function () {
                 if (isFixed) return;
@@ -183,7 +183,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
 
             $elements.mouseleave(function () {
                 if (isFixed) return;
-                $('.element-zoom').delay(50000).empty();
+                $('.element-zoom').delay(50000).empty().unbind();
                 defaultLegend.removeClass('hidden');
                 elementZoom.addClass('hidden');
                 elementDatas.addClass('hidden');
@@ -192,15 +192,23 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             that.dom.on('click', '.indic-p', function () {
                 // find period to which it belongs
                 var p = $(this).attr('class').replace(/^.*(period\d+).*$/, '$1');
+                var pN = p.substr(6);
                 $elements.removeClass('el-selected');
-                $elements.filter('.' + p).addClass('el-selected');
+                var $selected = $elements.filter('.' + p);
+                $selected.addClass('el-selected');
+                that.module.controller.periodSelected(pN);
+                that.elementsSelected($selected);
             });
 
             that.dom.on('click', '.indic-g', function () {
                 // find group to which it belongs
-                var p = $(this).attr('class').replace(/^.*(group\d+).*$/, '$1');
+                var g = $(this).attr('class').replace(/^.*(group\d+).*$/, '$1');
+                var gN = g.substr(5);
                 $elements.removeClass('el-selected');
-                $elements.filter('.' + p).addClass('el-selected');
+                var $selected = $elements.filter('.' + g);
+                $selected.addClass('el-selected');
+                that.module.controller.groupSelected(gN);
+                that.elementsSelected($selected);
             });
 
             function renderElement($el) {
@@ -210,7 +218,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                 defaultLegend.addClass('hidden');
                 elementZoom.removeClass('hidden');
                 elementDatas.removeClass('hidden');
-                elementZoom.empty();
+                elementZoom.empty().unbind();
                 elementZoom.append(that.hltemplate.render({element: el}));
             }
 
@@ -222,6 +230,13 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             var lanthanid = ('<div class="indic-f period6"><p>57-71</p></div>');
             that.dom.find('div.e56').after(lanthanid);
             that.dom.find('div.e88').after(actinid);
+        },
+
+        elementsSelected($el) {
+            var sel = $el.map((idx,el) => {
+                return $(el).attr('class').replace(/^.*[^a-zA-Z]e(\d+).*$/, '$1');
+            }).toArray();
+            this.module.controller.elementsSelected(sel);
         },
 
         updateElementPhase() {

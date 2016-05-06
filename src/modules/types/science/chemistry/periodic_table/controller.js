@@ -25,6 +25,24 @@ define(['modules/default/defaultcontroller'], function (Default) {
         },
         hltemplate: {
             label: 'Highlight template'
+        },
+        elements: {
+            label: 'A selection of elements'
+        }
+    };
+
+    Controller.prototype.events = {
+        onPeriodSelect: {
+            label: 'Period selected',
+            refVariable: ['elements']
+        },
+        onGroupSelect: {
+            label: 'Group selected',
+            refVariable: ['elements']
+        },
+        onElementsSelect: {
+            label: 'Elements selected',
+            refVariable: ['elements']
         }
     };
 
@@ -83,6 +101,33 @@ define(['modules/default/defaultcontroller'], function (Default) {
         templateSource: ['groups', 'group', 0, 'templateSource', 0],
         hltemplate: ['groups', 'group', 0, 'hltemplate', 0],
         hltemplateSource: ['groups', 'group', 0, 'hltemplateSource', 0]
+    };
+
+    Controller.prototype.periodSelected = function(period) {
+        var elements = this.module.getDataFromRel('value');
+        elements = elements.filter(el => {
+            return el.period == period;
+        });
+
+        this.createDataFromEvent('onPeriodSelect', 'elements', elements);
+    };
+
+    Controller.prototype.groupSelected = function(group) {
+        var elements = this.module.getDataFromRel('value');
+        elements = elements.filter(el => {
+            return el.group == group;
+        });
+
+        this.createDataFromEvent('onGroupSelect', 'elements', elements);
+    };
+
+    Controller.prototype.elementsSelected = function(atomicNumbers) {
+        atomicNumbers = atomicNumbers.map(el => +el);
+        var elements = this.module.getDataFromRel('value');
+        elements = elements.filter(el => {
+            return atomicNumbers.indexOf(+DataObject.resurrect(el.Z)) > -1;
+        });
+        this.createDataFromEvent('onElementsSelect', 'elements', elements);
     };
 
     return Controller;
