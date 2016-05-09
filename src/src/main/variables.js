@@ -129,13 +129,29 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
         },
 
         setjPath: function (jpath, callback) { // Reroute variable to some other place in the data
+            if (typeof jpath === 'string') {
+                jpath = jpath.split('.');
+                jpath.shift();
+            }
+
+            var currentJpath = this._jpath;
+            var same = true;
+            if (currentJpath && jpath.length === currentJpath.length) {
+                for (var i = 0; i < currentJpath.length; i++) {
+                    if (String(currentJpath[i]) !== String(jpath[i])) {
+                        same = false;
+                        break;
+                    }
+                }
+            } else {
+                same = false;
+            }
+
+            if (!same) {
+                return;
+            }
 
             this._jpath = jpath;
-
-            if (typeof this._jpath == 'string') {
-                this._jpath = this._jpath.split('.');
-                this._jpath.shift();
-            }
 
             return this.triggerChange(callback);
         },
