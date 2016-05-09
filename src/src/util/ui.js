@@ -23,6 +23,23 @@ define([
 
     var $dialog;
 
+    exports.showCode = function(opts) {
+        var opts = Object.assign({
+            mode: 'json',
+            content: '',
+            width: 800,
+            height: 600
+        }, opts);
+        require(['ace/ace'], function (ace) {
+            var id = Util.getNextUniqueId(true);
+            exports.dialog($(`<div style="width: 100%; height: 100%;" id="${id}"></div>`), opts);
+            var editor = ace.edit(id);
+            var mode = './mode/' + opts.mode;
+            editor.getSession().setMode(mode);
+            editor.setValue(opts.content, -1);
+        });
+    };
+
     exports.enterValue = function (opts) {
         opts = opts || {};
         const defaultOptions = {
