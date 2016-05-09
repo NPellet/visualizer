@@ -1,3 +1,14 @@
+<a name="2.53.1"></a>
+## 2.53.1 (2016-05-09)
+
+
+### Bug Fixes
+
+* **form:** resize ace editor after show ([6085d7d](https://github.com/NPellet/visualizer/commit/6085d7d))
+* **slick_grid:** fix crash in slickgrid when loading preferences ([aa4de88](https://github.com/NPellet/visualizer/commit/aa4de88))
+
+
+
 <a name="2.53.0"></a>
 # 2.53.0 (2016-05-06)
 
