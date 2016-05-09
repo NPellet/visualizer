@@ -64,7 +64,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
             label: '1D XY array'
         },
         jcamp: {
-            type: ['jcamp', 'string'],
+            type: ['jcamp', 'string', 'object'],
             label: 'Jcamp data'
         },
         annotations: {
