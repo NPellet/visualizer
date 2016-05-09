@@ -4,11 +4,12 @@ define([
     'jquery',
     'modules/default/defaultview',
     'jsgraph',
+    'json-chart',
     'src/util/datatraversing',
     'src/util/api',
     'src/util/color',
     'src/util/debug'
-], function ($, Default, Graph, DataTraversing, API, Color, Debug) {
+], function ($, Default, Graph, JSONChart, DataTraversing, API, Color, Debug) {
 
     function View() {
     }
@@ -509,7 +510,7 @@ define([
                 this.series[varname] = this.series[varname] || [];
                 this.removeSerie(varname);
 
-                moduleValue = moduleValue.get();
+                moduleValue = JSONChart.check(moduleValue.get());
                 var existingNames = [];
 
                 var that = this;

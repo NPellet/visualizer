@@ -38,6 +38,7 @@ require.config({
         'jquery-cookie': 'components/jquery-cookie/jquery.cookie',
         'jquery-ui': 'components/jquery-ui/ui',
         'jquery-tmpl': 'components/jquery-tmpl/jquery.tmpl.min',
+        'json-chart': 'components/json-chart/dist/json-chart.min',
         'notifyjs': 'components/notifyjs/dist/notify-combined.min',
         jsgraph: 'components/jsgraph/dist/jsgraph',
         jsoneditor: 'components/jsoneditor/dist/jsoneditor-minimalist.min',
