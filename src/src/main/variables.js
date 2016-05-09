@@ -147,7 +147,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
                 same = false;
             }
 
-            if (!same) {
+            if (same) {
                 return;
             }
 
