@@ -24,11 +24,12 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
                     } else {
                         data = (temporary && temporary['list']) ? temporary['list'] : (this.module.getDataFromRel('list') || new DataArray());
                         data = data.get(0);
+                        if(!data) {
+                            data = (temporary && temporary['data']) ? temporary['data'] : (this.module.getDataFromRel('data') || new DataArray());
+                            data = data.get(0);
+                        }
                     }
 
-
-                    if (!data)
-                        return [];
                     break;
 
                 default:
