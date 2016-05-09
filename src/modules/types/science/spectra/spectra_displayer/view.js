@@ -265,8 +265,8 @@ define([
                 var yOptions = {
                     nbTicksPrimary: cfg('ynbTicksPrimary', 5)
                 };
-                yAxis = this.graph.getYAxis(index, yOptions);
-                if (index === 0) {
+                yAxis = this.graph.getYAxis(i, yOptions);
+                if (i === 0) {
                     yAxis
                         .setPrimaryGrid(cfg('horGridMain', false))
                         .setSecondaryGrid(cfg('horGridSec', false))
