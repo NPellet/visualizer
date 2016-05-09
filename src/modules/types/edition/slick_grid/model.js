@@ -48,7 +48,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
             }
             customJpaths = customJpaths || [];
             customJpaths = customJpaths.filter(jp => jp);
-            return Traversing.getTreeFromJpaths(customJpaths, DataObject.resurrect(data));
+            return Traversing.getTreeFromJpaths(customJpaths, data);
         }
     });
 
