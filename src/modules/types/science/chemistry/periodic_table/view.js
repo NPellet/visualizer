@@ -234,7 +234,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
         },
 
         unselectElements(event, $el) {
-            if (!event.ctrlKey) {
+            if (!event.ctrlKey && !event.metaKey) {
                 $el.removeClass('el-selected');
             }
         },
