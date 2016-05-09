@@ -1,3 +1,14 @@
+<a name="2.53.4"></a>
+## 2.53.4 (2016-05-09)
+
+
+### Bug Fixes
+
+* **slickgrid:** allow metakey for multiple selection (osx compatibility) ([28fec5f](https://github.com/NPellet/visualizer/commit/28fec5f))
+* **slickgrid:** fix bug in configuration with custom jpath when no var in ([4616d47](https://github.com/NPellet/visualizer/commit/4616d47))
+
+
+
 <a name="2.53.3"></a>
 ## 2.53.3 (2016-05-09)
 
