@@ -203,7 +203,9 @@ define([
                             frame: true,
                             frameWidth: '1',
                             frameColor: 'rgba( 100, 100, 100, 0.5 )',
-                            movable: true
+                            movable: cfgCheckbox('legendOptions', 'movable'),
+                            isSerieHideable: cfgCheckbox('legendOptions', 'isSerieHideable'),
+                            isSerieSelectable: cfgCheckbox('legendOptions', 'isSerieSelectable')
                         });
                         theLegend.setAutoPosition(legend);
                     }

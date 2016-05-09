@@ -292,6 +292,16 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
                                         {key: 'right', title: 'Right'}
                                     ]
                                 },
+                                legendOptions: {
+                                    type: 'checkbox',
+                                    title: 'Legend options',
+                                    options: {
+                                        movable: 'Movable',
+                                        isSerieHideable: 'Hideable series',
+                                        isSerieSelectable: 'Selectable series'
+                                    },
+                                    default: ['isSerieHideable', 'isSerieSelectable']
+                                },
                                 mouseTracking: {
                                     type: 'checkbox',
                                     title: 'Mouse tracking',
@@ -525,6 +535,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
         wheelbaseline: ['sections', 'graph', 0, 'groups', 'graph', 0, 'wheelbaseline', 0],
         fullOut: ['sections', 'graph', 0, 'groups', 'graph', 0, 'fullOut', 0],
         legend: ['sections', 'graph', 0, 'groups', 'graph', 0, 'legend', 0],
+        legendOptions: ['sections', 'graph', 0, 'groups', 'graph', 0, 'legendOptions', 0],
         mouseTracking: ['sections', 'graph', 0, 'groups', 'graph', 0, 'mouseTracking', 0],
         selectScatter: ['sections', 'graph', 0, 'groups', 'graph', 0, 'selectScatter', 0],
         independantYZoom: ['sections', 'graph', 0, 'groups', 'graph', 0, 'independantYZoom', 0],
