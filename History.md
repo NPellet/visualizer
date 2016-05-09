@@ -1,3 +1,13 @@
+<a name="2.53.2"></a>
+## 2.53.2 (2016-05-09)
+
+
+### Bug Fixes
+
+* **slickgrid:** no resurrect for determining jpaths ([5bdd5e9](https://github.com/NPellet/visualizer/commit/5bdd5e9))
+
+
+
 <a name="2.53.1"></a>
 ## 2.53.1 (2016-05-09)
 
