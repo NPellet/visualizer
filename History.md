@@ -1,3 +1,14 @@
+<a name="2.53.3"></a>
+## 2.53.3 (2016-05-09)
+
+
+### Bug Fixes
+
+* **spectra_displayer:** accept jcamp input as object ([c638708](https://github.com/NPellet/visualizer/commit/c638708))
+* **spectra_displayer:** fix Y axis generation ([ccae438](https://github.com/NPellet/visualizer/commit/ccae438))
+
+
+
 <a name="2.53.2"></a>
 ## 2.53.2 (2016-05-09)
 
