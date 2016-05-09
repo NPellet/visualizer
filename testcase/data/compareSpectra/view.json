@@ -230,7 +230,7 @@
                       "x"
                     ],
                     "wheelAction": [
-                      "none"
+                      "zoomY"
                     ],
                     "wheelbaseline": [
                       0
@@ -246,6 +246,11 @@
                     ],
                     "selectScatter": [
                       []
+                    ],
+                    "independantYZoom": [
+                      [
+                        "yes"
+                      ]
                     ]
                   }
                 ]
@@ -260,7 +265,8 @@
                   {
                     "checkboxes": [
                       [
-                        "display"
+                        "display",
+                        "flip"
                       ]
                     ],
                     "label": [
@@ -289,9 +295,7 @@
                 "yAxis": [
                   {
                     "checkboxes": [
-                      [
-                        "display"
-                      ]
+                      []
                     ],
                     "label": [
                       ""

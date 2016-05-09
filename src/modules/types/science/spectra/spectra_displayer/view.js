@@ -36,9 +36,9 @@ define([
 
             var prom = new Promise(function (resolve) {
 
-                var cfg = that.module.getConfiguration.bind(that.module),
-                    cfgCheckbox = that.module.getConfigurationCheckbox.bind(that.module),
-                    graphurl = cfg('graphurl');
+                var cfg = that.cfg = that.module.getConfiguration.bind(that.module);
+                var cfgCheckbox = that.cfgCheckbox = that.module.getConfigurationCheckbox.bind(that.module);
+                var graphurl = cfg('graphurl');
 
                 if (graphurl) {
 
@@ -74,6 +74,9 @@ define([
                             zoomOptions.zoomMode = 'y';
                         } else {
                             zoomOptions.zoomMode = 'xy';
+                        }
+                        if (cfgCheckbox('independantYZoom', 'yes')) {
+                            zoomOptions.axes = 'serieSelected';
                         }
                         options.plugins['zoom'] = zoomOptions;
                         options.plugins['drag'] = {};
@@ -149,6 +152,7 @@ define([
                     }
 
                     var graph = new Graph(that.dom.get(0), options);
+                    that.graph = graph;
 
                     var xOptions = {
                         nbTicksPrimary: cfg('xnbTicksPrimary', 5)
@@ -163,7 +167,8 @@ define([
                     }
 
                     // Axes
-                    var xAxis = graph.getXAxis(null, xOptions);
+                    var xAxis = graph.getXAxis(0, xOptions);
+                    that.xAxis = xAxis;
                     xAxis
                         .flip(cfg('flipX', false))
                         .setPrimaryGrid(cfg('vertGridMain', false))
@@ -187,28 +192,9 @@ define([
                         });
                     }
 
-                    var yOptions = {
-                        nbTicksPrimary: cfg('ynbTicksPrimary', 5)
-                    };
-
-                    var yAxis = graph.getYAxis(null, yOptions);
-                    yAxis
-                        .flip(cfg('flipY', false))
-                        .setPrimaryGrid(cfg('horGridMain', false))
-                        .setSecondaryGrid(cfg('horGridSec', false))
-                        .setPrimaryGridColor('#DADADA')
-                        .setSecondaryGridColor('#F0F0F0')
-                        .setGridLinesStyle()
-                        .setLabel(cfg('yLabel', ''))
-                        .forceMin(cfg('minY', false))
-                        .forceMax(cfg('maxY', false))
-                        .setAxisDataSpacing(cfg('yBottomSpacing', 0), cfg('yTopSpacing', 0));
-                    if (!cfg('displayYAxis', true)) {
-                        yAxis.hide();
-                    }
-                    yAxis.on('zoom', function (min, max) {
-                        that.module.model.setYBoundaries(min, max);
-                    });
+                    that.numberOfYAxes = 0;
+                    var yAxis = that.getYAxis(0);
+                    that.yAxis = yAxis;
 
                     var legend = cfg('legend', 'none');
                     if (legend !== 'none') {
@@ -231,8 +217,8 @@ define([
             prom.then(function (graph) {
 
                 that.graph = graph;
-                that.xAxis = graph.getXAxis();
-                that.yAxis = graph.getYAxis();
+                that.xAxis = graph.getXAxis(0);
+                that.yAxis = graph.getYAxis(0);
 
                 graph.on('shapeMouseOver', function (shape) {
                     that.module.controller.createDataFromEvent('onMouseOverShape', 'shapeInfos', shape.getData());
@@ -263,6 +249,52 @@ define([
                 Debug.error('Error loading the graph', err);
             });
 
+        },
+
+        getYAxis(index) {
+            if (this.numberOfYAxes > index) {
+                return this.graph.getYAxis(index);
+            }
+
+            var cfg = this.cfg;
+
+            var yAxis;
+            for (var i = this.numberOfYAxes; i <= index; i++) {
+                var yOptions = {
+                    nbTicksPrimary: cfg('ynbTicksPrimary', 5)
+                };
+                yAxis = this.graph.getYAxis(index, yOptions);
+                if (index === 0) {
+                    yAxis
+                        .setPrimaryGrid(cfg('horGridMain', false))
+                        .setSecondaryGrid(cfg('horGridSec', false))
+                        .setPrimaryGridColor('#DADADA')
+                        .setSecondaryGridColor('#F0F0F0')
+                        .setGridLinesStyle()
+                        .setLabel(cfg('yLabel', ''));
+                    if (!cfg('displayYAxis', true)) {
+                        yAxis.hide();
+                    }
+                    // yAxis.on('zoom', function (min, max) {
+                    //     that.module.model.setYBoundaries(min, max);
+                    // });
+                } else {
+                    yAxis
+                        .setPrimaryGrid(false)
+                        .setSecondaryGrid(false)
+                        .setGridLinesStyle()
+                        .hide();
+                }
+                yAxis
+                    .flip(cfg('flipY', false))
+                    .forceMin(cfg('minY', false))
+                    .forceMax(cfg('maxY', false))
+                    .setAxisDataSpacing(cfg('yBottomSpacing', 0), cfg('yTopSpacing', 0));
+
+                this.numberOfYAxes++;
+            }
+
+            return yAxis;
         },
 
         onResize: function () {
@@ -375,12 +407,17 @@ define([
         },
 
         setSerieParameters: function (serie, varname, highlight, forceColor) {
+
+            serie.setXAxis(0);
+
             var plotinfos = this.module.getConfiguration('plotinfos');
 
+            var foundInfo = false;
             if (plotinfos) {
-
                 for (var i = 0, l = plotinfos.length; i < l; i++) {
                     if (varname == plotinfos[i].variable) {
+                        foundInfo = true;
+                        serie.setYAxis(this.getYAxis(i));
 
                         var color = forceColor ? forceColor : plotinfos[i].plotcolor;
 
@@ -412,6 +449,10 @@ define([
                         }
                     }
                 }
+            }
+
+            if (!foundInfo) {
+                serie.setYAxis(this.getYAxis(0));
             }
 
             if (highlight) {
@@ -570,7 +611,6 @@ define([
 
                 this.normalize(val, varname);
                 serie.setData(val);
-                serie.autoAxis();
                 this.setSerieParameters(serie, varname);
 
                 this.series[varname].push(serie);
@@ -597,7 +637,6 @@ define([
                 this.normalize(val2, varname);
 
                 serie.setData(val2);
-                serie.autoAxis();
                 this.setSerieParameters(serie, varname);
                 this.series[varname].push(serie);
                 this.redraw(false, varname);
@@ -655,7 +694,7 @@ define([
                 var def = that.deferreds[varname];
 
                 var options = moduleValue._options || {};
-                
+
                 var value = moduleValue.get();
                 var valueType = DataObject.getType(value);
                 if (valueType === 'string') {
@@ -679,7 +718,6 @@ define([
                         serie = that.graph.newSerie(varname, that.getSerieOptions(varname), 'contour');
 
                         serie.setData(spectra.contourLines);
-                        serie.autoAxis();
                         that.setSerieParameters(serie, varname);
                         that.series[varname].push(serie);
                     } else {
@@ -691,7 +729,6 @@ define([
 
                             that.normalize(data, varname);
                             serie.setData(data);
-                            serie.autoAxis();
                             that.setSerieParameters(serie, varname);
                             that.series[varname].push(serie);
                             break;
@@ -779,7 +816,6 @@ define([
             });
 
             this.onActionReceive.removeSerieByName.call(this, data.name || {});
-            serie.autoAxis();
             serie.setData(data.data);
 
             this.seriesActions.push([value, serie, data.name]);

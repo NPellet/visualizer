@@ -303,6 +303,13 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
                                     options: {
                                         yes: 'Enable scatter serie selection (ALT + draw)'
                                     }
+                                },
+                                independantYZoom: {
+                                    type: 'checkbox',
+                                    title: 'Independant Y zoom',
+                                    options: {
+                                        yes: 'Allow Y axis to be scaled separatly for each input variable (only the first axis can be displayed)'
+                                    }
                                 }
                             }
                         }
@@ -520,6 +527,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
         legend: ['sections', 'graph', 0, 'groups', 'graph', 0, 'legend', 0],
         mouseTracking: ['sections', 'graph', 0, 'groups', 'graph', 0, 'mouseTracking', 0],
         selectScatter: ['sections', 'graph', 0, 'groups', 'graph', 0, 'selectScatter', 0],
+        independantYZoom: ['sections', 'graph', 0, 'groups', 'graph', 0, 'independantYZoom', 0],
         // X Axis
         displayXAxis: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'checkboxes', 0],
         flipX: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'checkboxes', 0],
