@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], function (Default, Twig, Debug) {
+define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src/util/colorbar', 'src/util/color'], function (Default, Twig, Debug, Colorbar, Color) {
 
     const MIN_TEMPERATURE = 0;
     const MAX_TEMPERATURE = 6000;
@@ -19,6 +19,11 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             this.template = Twig.twig({
                 data: this.module.getConfiguration('template')
             });
+
+            // Set background and foreground color models
+            this.foreground = this._getOptions('foreground');
+            this.background = this._getOptions('background');
+
         },
         blank: {
             template() {
@@ -75,6 +80,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                 this.createTemplateFromPref('', 'pref');
                 this.createTemplateFromPref('hl', 'pref');
 
+                this.dataElements = value;
                 this.elements = JSON.parse(JSON.stringify(value.resurrect()));
                 this.render();
             },
@@ -100,6 +106,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
 
         render() {
             var that = this;
+            var cfg = this.module.getConfiguration.bind(this.module);
             that.dom.empty().unbind();
             that.dom.append('<div class="indic-p indic-g"></div>');
             for (let i = 1; i < 19; i++) {
@@ -124,15 +131,15 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             var legend = $('<div class="legend"></div>');
             that.dom.find('div.e1').after(legend);
 
-            var defaultLegend = $('<div class="default-legend"></div>');
+            that.defaultLegend = $('<div class="default-legend"></div>');
             var elementZoom = $('<div class="element-zoom hidden"></div>');
             var elementDatas = $('<div class="element-datas hidden"><ul><li>data1</li><li>data2</li></ul></div>');
-            legend.append(defaultLegend).append(elementZoom).append(elementDatas);
+            legend.append(that.defaultLegend).append(elementZoom).append(elementDatas);
 
             //default Legend. Better in a twig.
-            var innerLegend = $('<div class="inner-legend"></div>');
-            defaultLegend.append(innerLegend);
-            innerLegend.append(`<ul class="color-serie">
+            that.innerLegend = $('<div class="inner-legend"></div>');
+            that.defaultLegend.append(that.innerLegend);
+            that.innerLegend.append(`<ul class="color-serie">
                 <li class="alkali">Alkali metals</li>
                 <li class="alkaline">Alkalin earth metals</li>
                 <li class="transition">Transition metals</li>
@@ -144,25 +151,50 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                 <li class="halogen">Halogens</li>
                 <li class="noble">Noble gases</li>
                 </ul>`);
-            innerLegend.append(`<div class="stateOfMatter"><table><tbody>
-                <tr><td class="solid">S</td><td>Solid</td></tr>
-                <tr><td class="liquid">L</td><td>Liquid</td></tr>
-                <tr><td class="gas"">G</td><td>Gas</td></tr>
-                <tr><td class="unknown">U</td><td>Unknown</td></tr>
+            that.innerLegend.append(`<div class="stateOfMatter"><table><tbody>
+                <tr><td class="solid">S</td><td>Solid</td><td class="liquid">L</td><td>Liquid</td></tr>
+                <tr><td class="gas"">G</td><td>Gas</td><td class="unknown">U</td><td>Unknown</td></tr>
                 </tbody></table>
-                <dl><dt>Temperature</dt><dd id="periodicTemperature">${INITIAL_TEMPERATURE} K</dd>
-                <dt>Pressure</dt><dd>101.325 kPa</dd></dl></div>`);
-            defaultLegend.append(`<input id="periodicTemperatureSlider" type="range" min="${MIN_TEMPERATURE}" max="${MAX_TEMPERATURE}" step="${STEP_TEMPERATURE}" value="${INITIAL_TEMPERATURE}"/>`);
+                <dl class="periodic-value-list"><dt>Pressure</dt><dd>101.325 kPa</dd></dl></div>`);
 
-            var isFixed = false;
 
             var $elements = that.dom.find('.element');
 
-            defaultLegend.on('input', '#periodicTemperatureSlider', event => {
-                innerLegend.find('#periodicTemperature').html('' + event.target.value + ' K');
-                this.updateElementPhase();
+            if (that.foreground.mode === 'state') {
+                that.defaultLegend.append(`<input class="periodicSlider" id="foregroundSlider" type="range" min="${MIN_TEMPERATURE}" max="${MAX_TEMPERATURE}" step="${STEP_TEMPERATURE}" value="${INITIAL_TEMPERATURE}"/>`);
+                that.innerLegend.find('dl').append(`<dt>Temperature</dt><dd id="foregroundVal">${INITIAL_TEMPERATURE} K</dd>`);
+                this.updateElementPhase(INITIAL_TEMPERATURE);
+            } else if (that.foreground.mode === 'custom') {
+                that._addSlider('foreground');
+                that.updateColors('foreground', that.foreground.val);
+            } else if(that.foreground.mode === 'fixed') {
+                $elements.css('color', that.foreground.fixedcolor);
+            }
+
+            if (that.background.mode === 'custom') {
+                that._addSlider('background');
+                that.updateColors('background', that.background.val);
+            } else if(that.background.mode === 'fixed') {
+                $elements.css('background-color', that.background.fixedcolor);
+            }
+
+            var isFixed = false;
+
+            that.defaultLegend.on('input', '#foregroundSlider', event => {
+                console.log('foreground slider');
+                if(that.foreground.mode === 'state') {
+                    this.updateElementPhase(event.target.value);
+                    that.innerLegend.find('#foregroundVal').html('' + event.target.value + ' K');
+                } else {
+                    this.updateColors('foreground', event.target.value);
+                    that.innerLegend.find('#foregroundVal').html('' + event.target.value + this.foreground.unit);
+                }
             });
 
+            that.defaultLegend.on('input', '#backgroundSlider', event => {
+                this.updateColors('background', event.target.value);
+                that.innerLegend.find('#backgroundVal').html('' + event.target.value + this.foreground.unit);
+            });
 
             $elements.mouseenter(function () {
                 if (isFixed) return;
@@ -185,7 +217,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             $elements.mouseleave(function () {
                 if (isFixed) return;
                 $('.element-zoom').delay(50000).empty().unbind();
-                defaultLegend.removeClass('hidden');
+                that.defaultLegend.removeClass('hidden');
                 elementZoom.addClass('hidden');
                 elementDatas.addClass('hidden');
             });
@@ -216,7 +248,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                 var idx = $el.data('idx');
                 var el = that.elements[idx];
                 if (!el) return;
-                defaultLegend.addClass('hidden');
+                that.defaultLegend.addClass('hidden');
                 elementZoom.removeClass('hidden');
                 elementDatas.removeClass('hidden');
                 elementZoom.empty().unbind();
@@ -233,6 +265,35 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             that.dom.find('div.e88').after(actinid);
         },
 
+        _getOptions(type) {
+            var cfg = this.module.getConfiguration.bind(this.module);
+            var r = {};
+            ['Min', 'Max', 'Val', 'MinColor', 'MaxColor', 'NeutralColor', 'NoValueColor', 'FixedColor', 'Step', 'Label', 'Unit', 'Mode', 'Jpath'].forEach(val => {
+                r[val.toLowerCase()] = cfg(`${type}${val}`)
+            });
+            [['ShowSlider', 'yes']].forEach(val => {
+                r[val[0].toLowerCase()] = this.module.getConfigurationCheckbox(`${type}${val[0]}`, val[1]);
+            });
+            r.novaluecolor = Color.array2rgba(r.novaluecolor);
+            return r;
+        },
+
+        _getGradientFunction(type, value) {
+            return Colorbar.getColorScale({
+                stops: [this[type].mincolor, this[type].neutralcolor, this[type].maxcolor],
+                stopPositions: [this[type].min, value, this[type].max],
+                domain: [this[type].min, this[type].max],
+                stopType: 'values'
+            });
+        },
+
+        _addSlider(type) {
+            if(this[type].showslider) {
+                this.defaultLegend.append(`<input class="periodicSlider" id="${type}Slider" type="range" min="${this[type].min}" max="${this[type].max}" step="${this[type].step}" value="${this[type].val}"/>`);
+            }
+            this.innerLegend.find('dl').append(`<dt>${this[type].label}</dt><dd id="${type}Val">${this[type].val} ${this[type].unit}</dd>`);
+        },
+
         unselectElements(event, $el) {
             if (!event.ctrlKey && !event.metaKey) {
                 $el.removeClass('el-selected');
@@ -246,9 +307,36 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
             this.module.controller.elementsSelected(sel);
         },
 
-        updateElementPhase() {
+        updateColors(type, val) {
+            var fn = this._getGradientFunction(type, val);
             var $elements = this.dom.find('.element');
-            var temperature = this.getTemperature();
+            for (let i = 0; i < $elements.length; i++) {
+                let $el = $($elements[i]);
+                var idx = $el.data('idx');
+                var elVal = Number(this.dataElements.getChildSync([idx].concat(this[type].jpath)));
+                if(isNaN(elVal)) {
+                    var c = {
+                        rgba: this[type].novaluecolor
+                    }
+                } else {
+                    c = fn(elVal);
+                    c.rgba = Color.array2rgba(Color.hex2rgb(c.color).concat(c.opacity));
+                }
+
+                if(type === 'foreground') {
+                    $el.css({
+                        color: c.rgba
+                    });
+                } else {
+                    $el.css({
+                        backgroundColor: c.rgba
+                    });
+                }
+            }
+        },
+
+        updateElementPhase(temperature) {
+            var $elements = this.dom.find('.element');
             for (let i = 0; i < $elements.length; i++) {
                 let $el = $($elements[i]);
                 var idx = $el.data('idx');
@@ -271,10 +359,6 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug'], fun
                     }
                 }
             }
-        },
-
-        getTemperature() {
-            return this.dom.find('#periodicTemperatureSlider')[0].value;
         }
 
 

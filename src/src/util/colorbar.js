@@ -21,10 +21,12 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
         // Normalize colors to be hexadecimal
         var stops = options.stops.map(function (c) {
             var ch = chroma(c);
-            return {
+            var r = {
                 color: ch.hex(),
                 opacity: ch.alpha()
             };
+
+            return r;
         });
         // make sure that colors outside range have
         // the same color as the min/max of the domain

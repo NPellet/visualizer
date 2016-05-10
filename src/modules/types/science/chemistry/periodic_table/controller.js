@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller'], function (Default) {
+define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], function (Default, _, Util) {
 
     function Controller() {
     }
@@ -21,7 +21,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
             label: 'template'
         },
         value: {
-            label: 'Periodic tabel elements'
+            label: 'Periodic table elements'
         },
         hltemplate: {
             label: 'Highlight template'
@@ -49,6 +49,115 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype.variablesIn = ['template', 'hltemplate', 'value'];
 
     Controller.prototype.configurationStructure = function () {
+        var jpaths = this.module.model.getjPath();
+
+        var background = {
+            options: {
+                type: 'list',
+                title: 'Background'
+            },
+            fields: {
+                mode: {
+                    type: 'combo',
+                    title: 'Mode',
+                    options: [
+                        {key: 'none', title: 'None'},
+                        {key: 'jpath', title: 'Based on color jpath'},
+                        {key: 'custom', title: 'Based on property'},
+                        {key: 'fixed', title: 'Fixed'}
+                    ],
+                    displaySource: {custom: 'c', jpath: 'j', fixed: 'f'},
+                    default: 'none'
+                },
+                jpath: {
+                    type: 'combo',
+                    title: 'jPath',
+                    options: jpaths,
+                    extractValue: Util.jpathToArray,
+                    insertValue: Util.jpathToString,
+                    displayTarget: ['c', 'j']
+                },
+                min: {
+                    type: 'float',
+                    displayTarget: ['c'],
+                    title: 'Min value'
+                },
+                max: {
+                    type: 'float',
+                    title: 'Max value',
+                    displayTarget: ['c']
+                },
+                val: {
+                    type: 'float',
+                    title: 'Default value',
+                    displayTarget: ['c']
+                },
+                step: {
+                    type: 'float',
+                    title: 'Step',
+                    displayTarget: ['c']
+                },
+                label: {
+                    type: 'text',
+                    title: 'Label',
+                    displayTarget: ['c'],
+                    default: ''
+                },
+                unit: {
+                    type: 'text',
+                    title: 'Unit',
+                    displayTarget: ['c'],
+                    default: ''
+                },
+                mincolor: {
+                    type: 'spectrum',
+                    title: 'Min color',
+                    displayTarget: ['c'],
+                    default: [0, 0, 255, 1]
+                },
+                neutralcolor: {
+                    type: 'spectrum',
+                    title: 'Neutral color',
+                    displayTarget: ['c'],
+                    default: [255, 255, 255, 1]
+                },
+                maxcolor: {
+                    type: 'spectrum',
+                    title: 'Max color',
+                    displayTarget: ['c'],
+                    default: [255, 0, 0, 1]
+                },
+                novaluecolor: {
+                    type: 'spectrum',
+                    title: 'No value color',
+                    displayTarget: ['c'],
+                    default: [90, 90, 90, 0.4]
+                },
+                fixedcolor: {
+                    type: 'spectrum',
+                    title: 'Fixed color',
+                    displayTarget: ['f'],
+                    default: [255, 255, 255, 1]
+                },
+                showslider: {
+                    type: 'checkbox',
+                    title: 'Show slider',
+                    options: {
+                        yes: 'Yes'
+                    },
+                    default: ['yes']
+                }
+            }
+        };
+
+        var foreground = _.cloneDeep(background);
+        foreground.options.title = 'Foreground';
+        foreground.fields.mode.options.push({
+            key: 'state', title: 'State'
+        });
+        foreground.fields.fixedcolor.default = [0, 0, 0, 1];
+
+
         return {
             groups: {
                 group: {
@@ -58,7 +167,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                     fields: {
                         templateSource: {
                             type: 'combo',
-                            title: 'Table template source',
+                            title: 'Table template',
                             options: [
                                 {key: 'varin', title: 'Variable in'},
                                 {key: 'pref', title: 'Preferences'}
@@ -75,7 +184,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                         },
                         hltemplateSource: {
                             type: 'combo',
-                            title: 'Highlight template source',
+                            title: 'Highlight template',
                             options: [
                                 {key: 'varin', title: 'Variable in'},
                                 {key: 'pref', title: 'Preferences'}
@@ -91,7 +200,9 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             'default': ''
                         }
                     }
-                }
+                },
+                foreground,
+                background
             }
         };
     };
@@ -100,8 +211,18 @@ define(['modules/default/defaultcontroller'], function (Default) {
         template: ['groups', 'group', 0, 'template', 0],
         templateSource: ['groups', 'group', 0, 'templateSource', 0],
         hltemplate: ['groups', 'group', 0, 'hltemplate', 0],
-        hltemplateSource: ['groups', 'group', 0, 'hltemplateSource', 0]
+        hltemplateSource: ['groups', 'group', 0, 'hltemplateSource', 0],
+        foreground: ['groups', 'foreground', 0, 'mode', 0],
+        background: ['groups', 'background', 0, 'mode', 0],
+        foregroundStep: ['groups', 'foreground', 0, 'step', 0],
+        backgroundStep: ['groups', 'background', 0, 'step', 0]
     };
+
+    ['Min', 'Max', 'Val', 'MinColor', 'MaxColor', 'NeutralColor', 'FixedColor', 'Label', 'Unit', 'Mode', 'Jpath', 'NoValueColor', 'ShowSlider'].forEach(val => {
+        Controller.prototype.configAliases[`foreground${val}`] = ['groups', 'foreground', 0, val.toLowerCase(), 0];
+        Controller.prototype.configAliases[`background${val}`] = ['groups', 'background', 0, val.toLowerCase(), 0];
+    });
+
 
     Controller.prototype.periodSelected = function (period) {
         var elements = this.module.getDataFromRel('value');
