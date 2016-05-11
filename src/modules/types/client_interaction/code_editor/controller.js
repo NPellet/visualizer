@@ -143,7 +143,7 @@ define(['modules/default/defaultcontroller', 'src/data/structures', 'src/util/ac
 
     Controller.prototype.onEditorChanged = function (value) {
         if (this.module.getConfigurationCheckbox('variable', 'modify') && DataObject.getType(this.module.view._data) === 'string') {
-            this.module.view._data.setValue(value);
+            this.module.view._data.setValue(value, true);
             this.module.model.dataTriggerChange(this.module.view._data);
         }
 

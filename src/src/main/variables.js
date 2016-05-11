@@ -129,7 +129,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
         }
 
         listen(module, callback) {
-            var id = String(module.getId());
+            var id = module.getId();
             // If the module already listens for this variable, we should definitely not listen for it again.
             if (!this._listenedBy.has(id)) {
                 this._listeners.push({
@@ -141,7 +141,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
         }
 
         unlisten(moduleId) {
-            moduleId = String(moduleId);
+            moduleId = moduleId;
             if (this._listenedBy.has(moduleId)) {
                 for (var i = 0, ii = this._listeners.length; i < ii; i++) {
                     if (this._listeners[i].id === moduleId) {
