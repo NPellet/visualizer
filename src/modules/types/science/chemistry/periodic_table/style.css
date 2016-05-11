@@ -199,6 +199,7 @@
     width:100%;
     border: 1px solid grey;
     break-inside: avoid-column;
+    cursor: pointer;
 }
 .stateOfMatter {
     flex:auto;

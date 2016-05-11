@@ -7,6 +7,8 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
     const INITIAL_TEMPERATURE = 293;
     const STEP_TEMPERATURE = 1;
 
+    const series = ["alkali", "alkaline", "transition", "lanthanoid", "actinoid", "poor", "metalloid", "nonmetal", "halogen", "noble"];
+
     function View() {
     }
 
@@ -178,6 +180,18 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
             }
 
             var isFixed = false;
+
+            this.innerLegend.on('click', 'ul.color-serie li', event => {
+                that.unselectElements(event, $elements);
+                var classes = $(event.target).attr('class').split(' ');
+                var found = series.find(s => {
+                    return classes.some(c => c === s);
+                });
+
+                if(!found) return;
+                $elements.filter('.' + found).addClass('el-selected');
+                that.elementsSelected();
+            });
 
             that.defaultLegend.on('input', '#foregroundSlider>input', event => {
                 console.log('foreground slider');
