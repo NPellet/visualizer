@@ -337,15 +337,13 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
     Controller.prototype.onBeforeSave = function (formValue) {
         var varname = formValue.module_specific_config[0].groups.data[0].varname[0];
         var vars_in = formValue.vars_in[0].groups.group[0];
-        var varin = vars_in.find(function (el) {
-            return el.rel === 'data';
-        });
+        var varin = vars_in[0];
         if (varname) {
-            if (varin) {
+            if (varin && varin.name) {
                 varin.name = varname;
             } else {
                 vars_in.push({
-                    rel: 'data',
+                    rel: 'list',
                     name: varname
                 });
             }
