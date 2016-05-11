@@ -36,29 +36,9 @@ define([
     var loading = {};
     var loadingNumber = 0;
 
-    function createDataJpath(name, data, jpath, filter) {
-        if (data && data.__parent) {
-            data = data.resurrect();
-        }
-        data = DataObject.check(data, true);
-
-        if (data && data.trace) {
-
-            data.trace(jpath).then(function (data) {
-
-                Variables.setVariable(name, false, data, filter);
-            });
-
-        } else {
-            Variables.setVariable(name, false, data, filter);
-        }
-
-    }
-
     function setHighlightId(id, value, senderId) {
         this.repositoryHighlights.set(id, value, null, senderId);
     }
-
 
     var exports = {
 
@@ -85,8 +65,6 @@ define([
         setRepositoryActions: function (repo) {
             this.repositoryActions = repo;
         },
-
-        createDataJpath: createDataJpath,
 
         listenHighlight: function () {
 
@@ -179,7 +157,17 @@ define([
      * @param {string} [filter] - Url of the filter to use with this variable
      */
     exports.createData = function createData(name, data, filter) {
-        return Variables.setVariable(name, false, data, filter);
+        return exports.createDataJpath(name, data, [], filter);
+    };
+
+    exports.createDataJpath = function createDataJpath(name, data, jpath, filter) {
+        data = Data.check(Data.resurrect(data), true);
+        if (data && data.trace) {
+            return data.trace(jpath)
+                .then(data => Variables.setVariable(name, false, data, filter));
+        } else {
+            return Variables.setVariable(name, false, data, filter);
+        }
     };
 
     /**
