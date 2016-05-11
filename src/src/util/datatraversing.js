@@ -137,6 +137,28 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
         }
     }
 
+    function addToTree(tree, customJpaths) {
+        if(!tree || !tree.children) return;
+        var el = tree.children.find(el => {
+            return el.title === customJpaths[0];
+        });
+        if(!el) {
+            tree.children.push({
+                key: tree.key + '.' + customJpaths[0],
+                title: customJpaths[0],
+                children: []
+            });
+            if(customJpaths.length > 1) {
+                customJpaths = customJpaths.splice(1, customJpaths.length -1);
+                addToTree(tree.children[tree.children.length-1], customJpaths);
+            }
+        } else {
+            if(customJpaths.length > 1) {
+                customJpaths = customJpaths.splice(1, customJpaths.length -1);
+                addToTree(el, customJpaths);
+            }
+        }
+    }
 
     return {
 
@@ -169,16 +191,8 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
             return _setValueFromJPath(element, jpathSplitted, newValue, moduleId, mute);
         },
 
-        getTreeFromJpaths: function (jpaths, data) {
-            data = new DataObject(data);
-            for (let i = 0; i < jpaths.length; i++) {
-                data.setChildSync(jpaths[i], '');
-            }
-
-            var tree = [];
-            var structure = this.getStructureFromElement(data);
-            this.getJPathsFromStructure(structure, null, tree);
-            return tree;
+        addJpathToTree: function (tree, customJpaths) {
+            return addToTree(tree[0], customJpaths);
         },
 
         getJPathsFromStructure: function (structure, title, jpathspool, jpathString) {
