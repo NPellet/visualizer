@@ -23,7 +23,7 @@ define([
 
     var $dialog;
 
-    exports.showCode = function(opts) {
+    exports.showCode = function (opts) {
         var opts = Object.assign({
             mode: 'json',
             content: '',

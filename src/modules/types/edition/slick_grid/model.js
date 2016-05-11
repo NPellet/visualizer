@@ -51,7 +51,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
             customJpaths = customJpaths.filter(jp => jp);
             var jpaths = [];
             Traversing.getJPathsFromElement(data, jpaths);
-            for(let i=0; i<customJpaths.length; i++) {
+            for (let i = 0; i < customJpaths.length; i++) {
                 Traversing.addJpathToTree(jpaths, customJpaths[i]);
             }
 

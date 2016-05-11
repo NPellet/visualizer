@@ -138,23 +138,23 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
     }
 
     function addToTree(tree, customJpaths) {
-        if(!tree || !tree.children) return;
+        if (!tree || !tree.children) return;
         var el = tree.children.find(el => {
             return el.title === customJpaths[0];
         });
-        if(!el) {
+        if (!el) {
             tree.children.push({
                 key: tree.key + '.' + customJpaths[0],
                 title: customJpaths[0],
                 children: []
             });
-            if(customJpaths.length > 1) {
-                customJpaths = customJpaths.splice(1, customJpaths.length -1);
-                addToTree(tree.children[tree.children.length-1], customJpaths);
+            if (customJpaths.length > 1) {
+                customJpaths = customJpaths.splice(1, customJpaths.length - 1);
+                addToTree(tree.children[tree.children.length - 1], customJpaths);
             }
         } else {
-            if(customJpaths.length > 1) {
-                customJpaths = customJpaths.splice(1, customJpaths.length -1);
+            if (customJpaths.length > 1) {
+                customJpaths = customJpaths.splice(1, customJpaths.length - 1);
                 addToTree(el, customJpaths);
             }
         }

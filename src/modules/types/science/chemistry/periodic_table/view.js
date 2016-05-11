@@ -270,7 +270,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
             ['Min', 'Max', 'Val', 'MinColor', 'MaxColor', 'NeutralColor', 'NoValueColor', 'FixedColor', 'Step', 'Label', 'Unit', 'Mode', 'Jpath'].forEach(val => {
                 var prop = val.toLowerCase();
                 r[prop] = cfg(`${type}${val}`);
-                if(val.match(/color/i)) {
+                if (val.match(/color/i)) {
                     r[prop] = Color.array2rgba(r[prop]);
                 }
             });
@@ -281,7 +281,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
         },
 
         _getGradientFunction(type, value) {
-            var width = this.defaultLegend.width()-30, height = 21;
+            var width = this.defaultLegend.width() - 30, height = 21;
             var options = {
                 stops: [this[type].mincolor, this[type].neutralcolor, this[type].maxcolor],
                 stopPositions: [this[type].min, value, this[type].max],
@@ -296,7 +296,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
             options.axis.tickValues = options.stopPositions;
             var $div = this.defaultLegend.find(`#${type}Slider .periodicGradient`);
             $div.empty();
-            if($div[0]) {
+            if ($div[0]) {
                 Colorbar.renderSvg($div[0], options);
             }
             return Colorbar.getColorScale(options);
@@ -332,7 +332,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                 if (isNaN(elVal)) {
                     var c = {
                         rgba: this[type].novaluecolor
-                    }
+                    };
                 } else {
                     c = fn(elVal);
                     c.rgba = Color.array2rgba(Color.hex2rgb(c.color).concat(c.opacity));
