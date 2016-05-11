@@ -101,6 +101,8 @@
 }
 .period1 {
     order: 1;
+    min-height: 3em;
+    max-height: 8em;
 }
 .period2 {
     order: 2;
@@ -161,6 +163,10 @@
     font-size: 0.7em;
 }
 
+.periodic-empty {
+    border: none
+}
+
 
 .elec-conf:hover .elec-conf-short, .elec-conf .elec-conf-long {
     display: none;
@@ -174,7 +180,7 @@
     order:1;
     margin-left: calc(100% / 19 + 2px);
     width: calc(100% / 19 * 10 - 2px);
-    margin-bottom: calc(-12em - 2px);
+    margin-bottom: calc(-13em - 2px);
     display:flex;
 }
 .inner-legend {
@@ -231,9 +237,9 @@ td.solid, td.liquid, td.gas, td.unknown {
 }
 
 .element-zoom {
-    border: 1px solid #000;
+    border: 1px solid black;
     flex: none;
-    width: 33.333333333%;
+    width: 33%;
     padding: 5px;
 }
 .element-datas {
@@ -253,9 +259,21 @@ td.solid, td.liquid, td.gas, td.unknown {
 }
 
 .periodicSlider {
+    height: 50px;
+}
+
+.periodicSlider input{
     width: calc(100% - 30px);
     margin-left: 15px;
     margin-right: 15px;
+    position:relative;
+    top: 15px;
+    z-index: 200;
+}
+
+.periodicSlider .periodicGradient {
+    position: relative;
+    top: -40px;
 }
 
 

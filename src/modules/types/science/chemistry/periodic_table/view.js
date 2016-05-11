@@ -106,7 +106,6 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
 
         render() {
             var that = this;
-            var cfg = this.module.getConfiguration.bind(this.module);
             that.dom.empty().unbind();
             that.dom.append('<div class="indic-p indic-g"></div>');
             for (let i = 1; i < 19; i++) {
@@ -161,28 +160,28 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
             var $elements = that.dom.find('.element');
 
             if (that.foreground.mode === 'state') {
-                that.defaultLegend.append(`<input class="periodicSlider" id="foregroundSlider" type="range" min="${MIN_TEMPERATURE}" max="${MAX_TEMPERATURE}" step="${STEP_TEMPERATURE}" value="${INITIAL_TEMPERATURE}"/>`);
+                that.defaultLegend.append(`<div class="periodicSlider" id="foregroundSlider"><input type="range" min="${MIN_TEMPERATURE}" max="${MAX_TEMPERATURE}" step="${STEP_TEMPERATURE}" value="${INITIAL_TEMPERATURE}"/></div>`);
                 that.innerLegend.find('dl').append(`<dt>Temperature</dt><dd id="foregroundVal">${INITIAL_TEMPERATURE} K</dd>`);
                 this.updateElementPhase(INITIAL_TEMPERATURE);
             } else if (that.foreground.mode === 'custom') {
                 that._addSlider('foreground');
                 that.updateColors('foreground', that.foreground.val);
-            } else if(that.foreground.mode === 'fixed') {
+            } else if (that.foreground.mode === 'fixed') {
                 $elements.css('color', that.foreground.fixedcolor);
             }
 
             if (that.background.mode === 'custom') {
                 that._addSlider('background');
                 that.updateColors('background', that.background.val);
-            } else if(that.background.mode === 'fixed') {
+            } else if (that.background.mode === 'fixed') {
                 $elements.css('background-color', that.background.fixedcolor);
             }
 
             var isFixed = false;
 
-            that.defaultLegend.on('input', '#foregroundSlider', event => {
+            that.defaultLegend.on('input', '#foregroundSlider>input', event => {
                 console.log('foreground slider');
-                if(that.foreground.mode === 'state') {
+                if (that.foreground.mode === 'state') {
                     this.updateElementPhase(event.target.value);
                     that.innerLegend.find('#foregroundVal').html('' + event.target.value + ' K');
                 } else {
@@ -191,7 +190,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                 }
             });
 
-            that.defaultLegend.on('input', '#backgroundSlider', event => {
+            that.defaultLegend.on('input', '#backgroundSlider>input', event => {
                 this.updateColors('background', event.target.value);
                 that.innerLegend.find('#backgroundVal').html('' + event.target.value + this.foreground.unit);
             });
@@ -269,27 +268,43 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
             var cfg = this.module.getConfiguration.bind(this.module);
             var r = {};
             ['Min', 'Max', 'Val', 'MinColor', 'MaxColor', 'NeutralColor', 'NoValueColor', 'FixedColor', 'Step', 'Label', 'Unit', 'Mode', 'Jpath'].forEach(val => {
-                r[val.toLowerCase()] = cfg(`${type}${val}`)
+                var prop = val.toLowerCase();
+                r[prop] = cfg(`${type}${val}`);
+                if(val.match(/color/i)) {
+                    r[prop] = Color.array2rgba(r[prop]);
+                }
             });
             [['ShowSlider', 'yes']].forEach(val => {
                 r[val[0].toLowerCase()] = this.module.getConfigurationCheckbox(`${type}${val[0]}`, val[1]);
             });
-            r.novaluecolor = Color.array2rgba(r.novaluecolor);
             return r;
         },
 
         _getGradientFunction(type, value) {
-            return Colorbar.getColorScale({
+            var width = this.defaultLegend.width()-30, height = 21;
+            var options = {
                 stops: [this[type].mincolor, this[type].neutralcolor, this[type].maxcolor],
                 stopPositions: [this[type].min, value, this[type].max],
                 domain: [this[type].min, this[type].max],
-                stopType: 'values'
-            });
+                stopType: 'values',
+                width, height,
+                returnMode: 'svg',
+                axis: {
+                    orientation: 'top'
+                }
+            };
+            options.axis.tickValues = options.stopPositions;
+            var $div = this.defaultLegend.find(`#${type}Slider .periodicGradient`);
+            $div.empty();
+            if($div[0]) {
+                Colorbar.renderSvg($div[0], options);
+            }
+            return Colorbar.getColorScale(options);
         },
 
         _addSlider(type) {
-            if(this[type].showslider) {
-                this.defaultLegend.append(`<input class="periodicSlider" id="${type}Slider" type="range" min="${this[type].min}" max="${this[type].max}" step="${this[type].step}" value="${this[type].val}"/>`);
+            if (this[type].showslider) {
+                this.defaultLegend.append(`<div class="periodicSlider" id="${type}Slider"><input type="range" min="${this[type].min}" max="${this[type].max}" step="${this[type].step}" value="${this[type].val}"/><div class="periodicGradient"></div></div>`);
             }
             this.innerLegend.find('dl').append(`<dt>${this[type].label}</dt><dd id="${type}Val">${this[type].val} ${this[type].unit}</dd>`);
         },
@@ -314,7 +329,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                 let $el = $($elements[i]);
                 var idx = $el.data('idx');
                 var elVal = Number(this.dataElements.getChildSync([idx].concat(this[type].jpath)));
-                if(isNaN(elVal)) {
+                if (isNaN(elVal)) {
                     var c = {
                         rgba: this[type].novaluecolor
                     }
@@ -323,7 +338,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                     c.rgba = Color.array2rgba(Color.hex2rgb(c.color).concat(c.opacity));
                 }
 
-                if(type === 'foreground') {
+                if (type === 'foreground') {
                     $el.css({
                         color: c.rgba
                     });
