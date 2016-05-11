@@ -1,3 +1,14 @@
+<a name="2.53.5"></a>
+## 2.53.5 (2016-05-11)
+
+
+### Features
+
+* **periodic_table:** add various ways to set background and foreground ([3ec42e6](https://github.com/NPellet/visualizer/commit/3ec42e6))
+* **util:** util .showCode ([735b311](https://github.com/NPellet/visualizer/commit/735b311))
+
+
+
 <a name="2.53.4"></a>
 ## 2.53.4 (2016-05-09)
 
