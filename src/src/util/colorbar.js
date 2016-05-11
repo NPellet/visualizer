@@ -88,7 +88,6 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
             .attr('transform', function () {
                 var tx = 0;
                 var ty = 0;
-                var r = 'translate(';
                 if (options.axis.orientation === 'left' || options.axis.orientation === 'right') {
                     ty += margin / 2;
                 } else if (options.axis.orientation === 'bottom' || options.axis.orientation === 'top') {
@@ -109,8 +108,11 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
 
 
         var x = d3.scale.linear()
-            .domain(options.domain).nice()
-            .range([0, (options.axis.orientation === 'bottom' || options.axis.orientation === 'top' ? options.width : options.height)]);
+            .domain(options.domain);
+        if (!options.axis.tickValues) {
+            x = x.nice();
+        }
+        x.range([0, (options.axis.orientation === 'bottom' || options.axis.orientation === 'top' ? options.width : options.height)]);
         var axis = d3.svg.axis()
             .scale(x)
             .orient(options.axis.orientation)
