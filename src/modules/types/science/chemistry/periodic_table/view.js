@@ -55,7 +55,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
             source = this.module.getConfiguration(source);
             if (source === 'pref') {
                 var tpl = this.module.getConfiguration(name + 'template');
-                this[name + 'Template'] = Twig.twig({
+                this[name + 'template'] = Twig.twig({
                     data: tpl
                 });
             }

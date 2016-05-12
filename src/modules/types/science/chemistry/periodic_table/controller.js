@@ -173,14 +173,14 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
                                 {key: 'pref', title: 'Preferences'}
                             ],
                             displaySource: {varin: 'v', pref: 'p'},
-                            default: 'varin'
+                            default: 'pref'
                         },
                         template: {
                             type: 'jscode',
                             title: 'Table template',
                             mode: 'html',
                             displayTarget: ['p'],
-                            'default': ''
+                            default: '<div class="element-data"><p class="Z">{{ element.Z }}</p><h2 class="element-name">{{ element.symbol }}</h2><p>{{ element.name }}</p></div>'
                         },
                         hltemplateSource: {
                             type: 'combo',
@@ -190,14 +190,14 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
                                 {key: 'pref', title: 'Preferences'}
                             ],
                             displaySource: {varin: 'hv', pref: 'hp'},
-                            default: 'varin'
+                            default: 'pref'
                         },
                         hltemplate: {
                             type: 'jscode',
                             title: 'Highlight template',
                             mode: 'html',
                             displayTarget: ['hp'],
-                            'default': ''
+                            default: '<div class="element-data"><p class="Z">{{ element.Z }}</p><h2 class="element-name">{{ element.symbol }}</h2><p>{{ element.name }}</p></div>'
                         }
                     }
                 },
