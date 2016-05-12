@@ -200,14 +200,21 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                 <li class="halogen">Halogens</li>
                 <li class="noble">Noble gases</li>
                 </ul>`);
-            that.innerLegend.append(`<div class="stateOfMatter"><table><tbody>
-                <tr><td class="solid">S</td><td>Solid</td><td class="liquid">L</td><td>Liquid</td></tr>
-                <tr><td class="gas"">G</td><td>Gas</td><td class="unknown">U</td><td>Unknown</td></tr>
-                </tbody></table>
-                <dl class="periodic-value-list"><dt>Pressure</dt><dd>101.325 kPa</dd></dl></div>`);
-
 
             var $elements = that.dom.find('.element');
+
+            that.innerLegend.append('<div class="stateOfMatter"></div>');
+            that.stateOfMatter = that.innerLegend.find('.stateOfMatter');
+
+
+            if (that.foreground.mode === 'state') {
+                that.stateOfMatter.append(`<table><tbody>
+                <tr><td class="solid">S</td><td>Solid</td><td class="liquid">L</td><td>Liquid</td></tr>
+                <tr><td class="gas"">G</td><td>Gas</td><td class="unknown">U</td><td>Unknown</td></tr>
+                </tbody></table>`);
+            }
+
+            that.stateOfMatter.append('<dl class="periodic-value-list"><dt>Pressure</dt><dd>101.325 kPa</dd></dl></div>');
 
             if (that.foreground.mode === 'state') {
                 that.defaultLegend.append(`<div class="periodicSlider" id="foregroundSlider"><input type="range" min="${MIN_TEMPERATURE}" max="${MAX_TEMPERATURE}" step="${STEP_TEMPERATURE}" value="${INITIAL_TEMPERATURE}"/></div>`);
