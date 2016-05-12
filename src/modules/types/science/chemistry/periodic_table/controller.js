@@ -165,6 +165,35 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
                         type: 'list'
                     },
                     fields: {
+                        elementsSource: {
+                            type: 'combo',
+                            title: 'Elements source',
+                            options: [
+                                {key: 'varin', title: 'Variable in'},
+                                {key: 'pref', title: 'Preferences'},
+                                {key: 'url', title: 'Url'}
+                            ],
+                            displaySource: {
+                                url: 'elUrl',
+                                pref: 'elPref',
+                                varin: 'elVarin'
+                            },
+                            default: 'varin'
+                        },
+                        elementsUrl: {
+                            type: 'text',
+                            title: 'Elements url',
+                            default: '',
+                            displayTarget: ['elUrl']
+                        },
+                        elementsCode: {
+                            type: 'jscode',
+                            mode: 'text',
+                            title: 'Elements (JSON or csv)',
+                            default: '',
+                            displayTarget: ['elPref']
+                        },
+
                         templateSource: {
                             type: 'combo',
                             title: 'Table template',
@@ -208,6 +237,9 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
     };
 
     Controller.prototype.configAliases = {
+        elementsSource: ['groups', 'group', 0, 'elementsSource', 0],
+        elementsUrl: ['groups', 'group', 0, 'elementsUrl', 0],
+        elementsCode: ['groups', 'group', 0, 'elementsCode', 0],
         template: ['groups', 'group', 0, 'template', 0],
         templateSource: ['groups', 'group', 0, 'templateSource', 0],
         hltemplate: ['groups', 'group', 0, 'hltemplate', 0],

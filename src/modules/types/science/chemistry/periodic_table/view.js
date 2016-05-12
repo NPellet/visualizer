@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src/util/colorbar', 'src/util/color'], function (Default, Twig, Debug, Colorbar, Color) {
+define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src/util/colorbar', 'src/util/color', 'components/papa-parse/papaparse.min', 'superagent'], function (Default, Twig, Debug, Colorbar, Color, Papa, superagent) {
 
     const MIN_TEMPERATURE = 0;
     const MAX_TEMPERATURE = 6000;
@@ -18,13 +18,13 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
             this.dom = $('<div class="periodic-table">');
 
             this.elements = [];
-            this.template = Twig.twig({
-                data: this.module.getConfiguration('template')
-            });
 
             // Set background and foreground color models
             this.foreground = this._getOptions('foreground');
             this.background = this._getOptions('background');
+
+            this.createTemplateFromPref('', 'pref');
+            this.createTemplateFromPref('hl', 'pref');
 
         },
         blank: {
@@ -46,8 +46,10 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
         },
         inDom() {
             this.module.getDomContent().html(this.dom);
-            this.resolveReady();
-            this.render();
+            this.getElements().then(() => {
+                this.resolveReady();
+                this.render();
+            });
         },
 
         createTemplateFromPref(name) {
@@ -57,6 +59,10 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                 var tpl = this.module.getConfiguration(name + 'template');
                 this[name + 'template'] = Twig.twig({
                     data: tpl
+                });
+            } else {
+                this[name + 'template'] = Twig.twig({
+                    data: ''
                 });
             }
         },
@@ -78,13 +84,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                  (twig does some check depending on the filter used
                  and the values need to be native)
                  */
-
-                this.createTemplateFromPref('', 'pref');
-                this.createTemplateFromPref('hl', 'pref');
-
-                this.dataElements = value;
-                this.elements = JSON.parse(JSON.stringify(value.resurrect()));
-                this.render();
+                this.getElements(value).then(() => this.render());
             },
             template(value) {
                 var tpl = value.get().toString();
@@ -104,6 +104,55 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                     Debug.info('Problem with highlight template: ' + e);
                 }
             }
+        },
+
+        getElements(value) {
+            return Promise.resolve().then(() => {
+                var source = this.module.getConfiguration('elementsSource');
+                var toParse = this.module.getConfiguration('elementsCode');
+                var sourceUrl = this.module.getConfiguration('elementsUrl');
+
+                if (source === 'varin' && value) {
+                    this.dataElements = value;
+                    this.elements = JSON.parse(JSON.stringify(value.resurrect()));
+                } else if (source === 'pref') {
+                    this.parseElements(toParse);
+                } else if (source === 'url') {
+                    return superagent.get(sourceUrl).then(res => {
+                        this.parseElements(res.text);
+                    });
+                }
+            });
+        },
+
+        parseElements(toParse) {
+            var obj;
+            if (typeof toParse === 'string') {
+                try {
+                    obj = JSON.parse(toParse);
+                    if (!Array.isArray(obj)) {
+                        throw new Error();
+                    }
+                } catch (e) {
+                    try {
+                        obj = Papa.parse(toParse,
+                            {
+                                delimiter: '\t',
+                                header: true
+                            }
+                        );
+                        obj = obj.data.slice(1);
+                    } catch (e) {
+                        console.error('Could not parse elements');
+                        return;
+                    }
+                }
+            } else {
+                obj = toParse;
+            }
+            this.dataElements = DataObject.check(obj, true);
+            this.elements = JSON.parse(JSON.stringify(DataObject.resurrect(obj)));
+            debugger;
         },
 
         render() {
