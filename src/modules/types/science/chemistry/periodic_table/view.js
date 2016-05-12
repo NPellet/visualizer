@@ -245,16 +245,16 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                 console.log('foreground slider');
                 if (that.foreground.mode === 'state') {
                     this.updateElementPhase(event.target.value);
-                    that.innerLegend.find('#foregroundVal').html('' + event.target.value + ' K');
+                    that.innerLegend.find('#foregroundVal').html(`${event.target.value} K`);
                 } else {
                     this.updateColors('foreground', event.target.value);
-                    that.innerLegend.find('#foregroundVal').html('' + event.target.value + this.foreground.unit);
+                    that.innerLegend.find('#foregroundVal').html(`${event.target.value} ${this.foreground.unit}`);
                 }
             });
 
             that.defaultLegend.on('input', '#backgroundSlider>input', event => {
                 this.updateColors('background', event.target.value);
-                that.innerLegend.find('#backgroundVal').html('' + event.target.value + this.foreground.unit);
+                that.innerLegend.find('#backgroundVal').html(`${event.target.value} ${this.background.unit}`);
             });
 
             $elements.mouseenter(function () {
