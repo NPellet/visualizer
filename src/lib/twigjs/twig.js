@@ -51,7 +51,7 @@ define([
 
         this.waiting.push([id, value, options]);
 
-        return '<span style="display:inline-block; width:100%" id="' +
+        return '<span id="' +
             id + '"></span>';
 
     });
