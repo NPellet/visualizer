@@ -156,12 +156,12 @@ define([
                 } else if ($parent.length === 0 && variable.type === 'svg') {
                     // New svg element
                     $parent = that.newSvgDom(varname);
-                    $img = $(variable.get());
+                    $img = $(String(variable.get()));
                     $parent.find('.panzoom').append($img);
                     imgType = 'svg';
                 } else if (variable.type === 'svg') {
                     $previousImg = $parent.find('svg');
-                    $img = $(variable.get());
+                    $img = $(String(variable.get()));
                     $parent.find('.panzoom').append($img);
                     imgType = 'svg';
                 } else if ($parent.length === 0) {
@@ -200,7 +200,7 @@ define([
                     onLoaded.call($img);
                 } else {
                     $img
-                        .attr('src', variable.get())
+                        .attr('src', String(variable.get()))
                         .on('load', onLoaded)
                         .on('error', onError);
                 }
