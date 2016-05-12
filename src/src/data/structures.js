@@ -65,6 +65,9 @@ define(function () {
         'matrix': {
             'type': 'object'
         },
+        'sparkline': {
+            'type': 'object'
+        },
         'chart': {
             'type': 'object'
         },
