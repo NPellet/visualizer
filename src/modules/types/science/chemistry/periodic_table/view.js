@@ -152,7 +152,6 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
             }
             this.dataElements = DataObject.check(obj, true);
             this.elements = JSON.parse(JSON.stringify(DataObject.resurrect(obj)));
-            debugger;
         },
 
         render() {
