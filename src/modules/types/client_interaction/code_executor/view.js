@@ -13,9 +13,11 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
 
         var table = this.table = $('<table>').css({
             height: '100%',
-            width: '100%'
+            width: '100%',
+            bottom: 0
         });
         var editorRow = $('<tr>').appendTo(table).css('height', 'auto');
+        this.editorRow = editorRow;
         this.buttonRow = $('<tr>').appendTo(table).css('height', '30px');
         this.editorCell = $('<td>').css('height', '100%').appendTo(editorRow);
         this.buttonCell = $('<td>').appendTo(this.buttonRow).css('text-align', 'center');
@@ -68,13 +70,12 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
 
     View.prototype.onResize = function () {
         if (this.editor) {
-            var $editor = $('#' + this._id);
-            if ($editor.height() < 30) {
-                $editor.hide();
+            if (this.height - this.buttonRow.height() < 30) {
+                this.editorCell.hide();
             } else {
-                $editor.show();
+                this.editorCell.show();
+                this.editor.resize();
             }
-            this.editor.resize();
         }
     };
 
