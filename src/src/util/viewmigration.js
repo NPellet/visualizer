@@ -470,12 +470,12 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                 }
             });
         },
-        '2.53.6-1', function (view) {
+        '2.53.6-2', function (view) {
             // See NPellet/visualizer/issues/881
             eachModule(view, function (module) {
                 var actionCols = module.getChildSync(['configuration', 'groups', 'actionCols', 0]);
                 if (actionCols && !Array.isArray(actionCols)) {
-                    actionCols = [];
+                    module.setChildSync(['configuration', 'groups', 'actionCols', 0], []);
                 }
             }, 'slick_grid');
         }
