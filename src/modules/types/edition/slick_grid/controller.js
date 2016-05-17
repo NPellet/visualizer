@@ -385,14 +385,10 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
         rows: {
             label: 'Row selection',
             type: 'array'
-        },
-        data: {
-            label: 'In view data (auto-edited)',
-            type: 'array'
         }
     };
 
-    Controller.prototype.variablesIn = ['list', 'script', 'data'];
+    Controller.prototype.variablesIn = ['list', 'script'];
 
     Controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {
         hoverRow: 'Mimic row hover',
