@@ -469,6 +469,15 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                     };
                 }
             });
+        },
+        '2.53.6-1', function (view) {
+            // See NPellet/visualizer/issues/881
+            eachModule(view, function (module) {
+                var actionCols = module.getChildSync(['configuration', 'groups', 'actionCols', 0]);
+                if (actionCols && !Array.isArray(actionCols)) {
+                    actionCols = [];
+                }
+            }, 'slick_grid');
         }
 //  Add new migration functions here
 //  Do not forget to `npm run prerelease` before creating your migration script
