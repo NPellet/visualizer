@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src/util/colorbar', 'src/util/color', 'components/papa-parse/papaparse.min', 'superagent'], function (Default, Twig, Debug, Colorbar, Color, Papa, superagent) {
+define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src/util/colorbar', 'src/util/color', 'components/papa-parse/papaparse.min', 'superagent', 'src/util/api'], function (Default, Twig, Debug, Colorbar, Color, Papa, superagent, API) {
 
     const MIN_TEMPERATURE = 0;
     const MAX_TEMPERATURE = 6000;
@@ -47,6 +47,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
         inDom() {
             this.module.getDomContent().html(this.dom);
             this.getElements().then(() => {
+                this._activateHighlights();
                 this.resolveReady();
                 this.render();
             });
@@ -84,7 +85,10 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                  (twig does some check depending on the filter used
                  and the values need to be native)
                  */
-                this.getElements(value).then(() => this.render());
+                this.getElements(value).then(() => {
+                    this._activateHighlights();
+                    this.render()
+                });
             },
             template(value) {
                 var tpl = value.get().toString();
@@ -123,6 +127,10 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                     });
                 }
             });
+        },
+
+        getElement($el) {
+
         },
 
         parseElements(toParse) {
@@ -201,7 +209,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                 <li class="noble">Noble gases</li>
                 </ul>`);
 
-            var $elements = that.dom.find('.element');
+            var $elements = that.$elements = that.dom.find('.element');
 
             that.innerLegend.append('<div class="stateOfMatter"></div>');
             that.stateOfMatter = that.innerLegend.find('.stateOfMatter');
@@ -249,7 +257,6 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
             });
 
             that.defaultLegend.on('input', '#foregroundSlider>input', event => {
-                console.log('foreground slider');
                 if (that.foreground.mode === 'state') {
                     this.updateElementPhase(event.target.value);
                     that.innerLegend.find('#foregroundVal').html(`${event.target.value} K`);
@@ -265,9 +272,24 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
             });
 
             $elements.mouseenter(function () {
+                var $el = $(this);
+                var Z = that.getZ($el);
+                that._doHighlight(Z, true);
                 if (isFixed) return;
-                renderElement($(this));
+                renderElement($el);
             });
+
+            $elements.mouseleave(function () {
+                var $el = $(this);
+                var Z = that.getZ($el);
+                that._doHighlight(Z, false);
+                if (isFixed) return;
+                $('.element-zoom').delay(50000).empty().unbind();
+                that.defaultLegend.removeClass('hidden');
+                elementZoom.addClass('hidden');
+                elementDatas.addClass('hidden');
+            });
+
             $elements.click(function (event) {
                 that.unselectElements(event, $elements);
                 var $el = $(this);
@@ -280,14 +302,6 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
             $elements.dblclick(function () {
                 $(this).removeClass('el-selected');
                 isFixed = false;
-            });
-
-            $elements.mouseleave(function () {
-                if (isFixed) return;
-                $('.element-zoom').delay(50000).empty().unbind();
-                that.defaultLegend.removeClass('hidden');
-                elementZoom.addClass('hidden');
-                elementDatas.addClass('hidden');
             });
 
             that.dom.on('click', '.indic-p', function (event) {
@@ -386,9 +400,13 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
 
         elementsSelected() {
             var sel = this.dom.find('.el-selected').map((idx, el) => {
-                return $(el).attr('class').replace(/^.*[^a-zA-Z]e(\d+).*$/, '$1');
+                return this.getZ($(el));
             }).toArray();
             this.module.controller.elementsSelected(sel);
+        },
+
+        getZ($el) {
+            return $el.attr('class').replace(/^.*[^a-zA-Z]e(\d+).*$/, '$1');
         },
 
         updateColors(type, val) {
@@ -443,9 +461,71 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                     }
                 }
             }
+        },
+
+        _activateHighlights: function () {
+            var that = this;
+            var hl = _(that.elements).map('_highlight').flatten().filter(val => !_.isUndefined(val)).value();
+
+            that._highlighted = [];
+
+            API.killHighlight(that.module.getId());
+
+            for (let i = 0; i < hl.length; i++) {
+                API.listenHighlight({_highlight: hl[i]}, function (onOff, key, killerId, senderId) {
+                    // Ignore if sent my the module itself
+                    if(senderId === that.module.getId()) return;
+                    if (!Array.isArray(key)) {
+                        key = [key];
+                    }
+                    if (onOff) {
+                        that._highlighted = _(that._highlighted).push(key).flatten().uniq().value();
+                    } else {
+                        that._highlighted = _.filter(that._highlighted, function (val) {
+                            return key.indexOf(val) === -1;
+                        });
+                    }
+                    that._drawHighlight();
+                }, false, that.module.getId());
+            }
+        },
+
+        _doHighlight(Z, state) {
+            if (!this.elements) return;
+            var el = this.elements.find(el => {
+                return el.Z == Z;
+            });
+            if (el) {
+                API.highlightId(el.name, state, this.module.getId());
+            }
+        },
+
+        _drawHighlight() {
+            // find first
+            if (!this.elements || !this.$elements) return;
+            var el = this.elements.filter(el => {
+                return this._highlighted.indexOf(el._highlight) > -1;
+            });
+
+            // Clear previous highlights
+            this._unhighlightElements();
+            el.forEach(el => {
+                this._highlightElement(el.Z);
+            });
+        },
+
+        _unhighlightElements() {
+            this.$elements.css({
+                border: ''
+            });
+        },
+
+        _highlightElement(Z) {
+            var $el = this.$elements.filter('.e' + Z);
+            $el.css({
+                border: 'solid 2px red'
+            });
         }
-
-
     });
 
     return View;
