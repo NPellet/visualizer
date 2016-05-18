@@ -18,7 +18,11 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype.references = {
         svgString: {
             type: ['svg', 'string'],
-            label: 'A string describing an svg'
+            label: 'Svg string'
+        },
+        svgInput: {
+            label: 'Svg input',
+            type: 'string'
         },
         svgModifier: {
             label: 'An object describing svg modification'
@@ -58,7 +62,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         this.createDataFromEvent('onClick', 'info', val);
     };
 
-    Controller.prototype.variablesIn = ['svgModifier'];
+    Controller.prototype.variablesIn = ['svgModifier', 'svgInput'];
 
     Controller.prototype.configurationStructure = function () {
         return {

@@ -80,48 +80,60 @@ define([
     }
 
     $.extend(true, View.prototype, Default, {
-        init: function () {
+        _renderSvg: function (svgCode) {
             var that = this;
-
-            if (this._configCheckBox('editable', 'isEditable')) {
-                if (this.dom) this.dom.remove();
-                this.svgCanvas = null;
-                this.dom = $('<iframe src="lib/svg-edit/svg-editor.html?extensions=ext-xdomain-messaging.js' +
-                    window.location.href.replace(/\?(.*)$/, '&$1') + // Append arguments to this file onto the iframe
-                    '"></iframe>');
-
-                this.module.getDomContent().html(this.dom);
-
-                this.dom.bind('load', function () {
-                    var frame = that.dom[0];
-                    that.svgCanvas = new EmbeddedSVGEdit(frame);
-                    // Hide main button, as we will be controlling new, load, save, etc. from the host document
-                    that.iframeDoc = frame.contentDocument || frame.contentWindow.document;
-                    that.svgEditor = frame.contentWindow.svgEditor;
-                    frame.contentWindow.svgedit.options = {};
-
-                    // What to do when the canvas changes
-                    that.svgCanvas.bind('changed', function () {
-                        that.svgEditor.showSaveWarning = false;
-                        that._saveSvg();
-                    });
-                    that._loadSvg();
-                    that.iframeLoaded.resolve();
-                    that.resolveReady();
-                    that.onResize();
-                });
+            if (svgCode) {
+                svgCode = String(svgCode.get());
             } else {
-                var domContent = that.module.getDomContent();
-                Renderer.render(domContent, {
-                    type: 'svg',
-                    value: that.module.getConfiguration('svgcode')
-                }).catch(function () {
-                    domContent.html('<svg></svg>');
-                }).then(function () {
-                    that.dom = domContent.find('svg');
-                    that.resolveReady();
-                });
+                svgCode = that.module.getConfiguration('svgcode');
             }
+
+            return new Promise((resolve, reject) => {
+                if (this._configCheckBox('editable', 'isEditable')) {
+                    if (this.dom) this.dom.remove();
+                    this.svgCanvas = null;
+                    this.dom = $('<iframe src="lib/svg-edit/svg-editor.html?extensions=ext-xdomain-messaging.js' +
+                        window.location.href.replace(/\?(.*)$/, '&$1') + // Append arguments to this file onto the iframe
+                        '"></iframe>');
+
+                    this.module.getDomContent().html(this.dom);
+
+                    this.dom.bind('load', function () {
+                        var frame = that.dom[0];
+                        that.svgCanvas = new EmbeddedSVGEdit(frame);
+                        // Hide main button, as we will be controlling new, load, save, etc. from the host document
+                        that.iframeDoc = frame.contentDocument || frame.contentWindow.document;
+                        that.svgEditor = frame.contentWindow.svgEditor;
+                        frame.contentWindow.svgedit.options = {};
+
+                        // What to do when the canvas changes
+                        that.svgCanvas.bind('changed', function () {
+                            that.svgEditor.showSaveWarning = false;
+                            that._saveSvg();
+                        });
+                        that._loadSvg();
+                        that.iframeLoaded.resolve();
+                        that.onResize();
+                        return resolve();
+                    });
+                } else {
+                    var domContent = that.module.getDomContent();
+                    return Renderer.render(domContent, {
+                        type: 'svg',
+                        value: svgCode
+                    }).catch(function () {
+                        domContent.html('<svg></svg>');
+                    }).then(function () {
+                        that.dom = domContent.find('svg');
+                    }).then(resolve);
+                }
+            });
+        },
+
+        init: function () {
+            this._renderSvg().then(() => {
+                this.resolveReady();
+            });
         },
 
         onResize: function () {
@@ -138,6 +150,9 @@ define([
             svgModifier: function (data) {
                 // Avoid potential problems when separete elements of this array share the same reference to an object
                 this.modifySvgFromArray(data, true);
+            },
+            svgInput: function (svgCode) {
+                this._renderSvg(svgCode);
             }
         },
 
@@ -348,7 +363,6 @@ define([
             function onMouseEnter() {
                 $(this).css('cursor', 'pointer');
                 that.module.controller.onHover(obj.info || {});
-
             }
 
             function onMouseLeave() {
