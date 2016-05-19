@@ -516,14 +516,18 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
 
         _unhighlightElements() {
             this.$elements.css({
-                border: ''
+                border: '',
+                transform: 'scale(1)',
+                zIndex: 0
             });
         },
 
         _highlightElement(Z) {
             var $el = this.$elements.filter('.e' + Z);
             $el.css({
-                border: 'solid 2px red'
+                border: 'solid 2px red',
+                transform: 'scale(1.1)',
+                zIndex: 1
             });
         }
     });
