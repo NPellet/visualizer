@@ -1,3 +1,21 @@
+<a name="2.54.0"></a>
+# 2.54.0 (2016-05-19)
+
+
+### Bug Fixes
+
+* **code_executor:** fix auto-hide of code editor when module small ([f2f5dd7](https://github.com/NPellet/visualizer/commit/f2f5dd7))
+* **panzoom:** cast DataStrings ([f24799c](https://github.com/NPellet/visualizer/commit/f24799c))
+* **svg_editor:** reprocess svgModifier when svg changes ([01c710b](https://github.com/NPellet/visualizer/commit/01c710b))
+
+### Features
+
+* **periodic_table:** add highlights ([a94b1a3](https://github.com/NPellet/visualizer/commit/a94b1a3))
+* **periodic_table:** allow several source types for elements (url, pref, varin) ([2ab7f46](https://github.com/NPellet/visualizer/commit/2ab7f46))
+* **svg_editor:** allow svg as input variable ([8bfd49a](https://github.com/NPellet/visualizer/commit/8bfd49a))
+
+
+
 <a name="2.53.5"></a>
 ## 2.53.5 (2016-05-11)
 
