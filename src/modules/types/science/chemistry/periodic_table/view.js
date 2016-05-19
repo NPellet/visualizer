@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src/util/colorbar', 'src/util/color', 'components/papa-parse/papaparse.min', 'superagent', 'src/util/api'], function (Default, Twig, Debug, Colorbar, Color, Papa, superagent, API) {
+define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src/util/colorbar', 'src/util/color', 'components/papa-parse/papaparse.min', 'superagent', 'src/util/api', 'lodash'], function (Default, Twig, Debug, Colorbar, Color, Papa, superagent, API, _) {
 
     const MIN_TEMPERATURE = 0;
     const MAX_TEMPERATURE = 6000;
@@ -87,7 +87,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                  */
                 this.getElements(value).then(() => {
                     this._activateHighlights();
-                    this.render()
+                    this.render();
                 });
             },
             template(value) {
@@ -474,7 +474,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
             for (let i = 0; i < hl.length; i++) {
                 API.listenHighlight({_highlight: hl[i]}, function (onOff, key, killerId, senderId) {
                     // Ignore if sent my the module itself
-                    if(senderId === that.module.getId()) return;
+                    if (senderId === that.module.getId()) return;
                     if (!Array.isArray(key)) {
                         key = [key];
                     }
