@@ -294,6 +294,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                 that.unselectElements(event, $elements);
                 var $el = $(this);
                 $el.addClass('el-selected');
+                that.elementSelected($el);
                 renderElement($el);
                 that.elementsSelected();
                 isFixed = true;
@@ -396,6 +397,10 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
             if (!event.ctrlKey && !event.metaKey) {
                 $el.removeClass('el-selected');
             }
+        },
+        
+        elementSelected($el) {
+            this.module.controller.elementSelected(this.getZ($el));
         },
 
         elementsSelected() {

@@ -28,6 +28,9 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
         },
         elements: {
             label: 'A selection of elements'
+        },
+        element: {
+            label: 'An element'
         }
     };
 
@@ -43,6 +46,10 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
         onElementsSelect: {
             label: 'Elements selected',
             refVariable: ['elements']
+        },
+        onElementSelect: {
+            label: 'Element clicked',
+            refVariable: ['element']
         }
     };
 
@@ -272,6 +279,15 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
         });
 
         this.createDataFromEvent('onGroupSelect', 'elements', elements);
+    };
+
+    Controller.prototype.elementSelected = function (atomicNumber) {
+        atomicNumber = +atomicNumber;
+        var elements = this.module.view.elements;
+        var el = elements.find(el => +DataObject.resurrect(el.Z) === atomicNumber);
+        if (el) {
+            this.createDataFromEvent('onElementSelect', 'element', el);
+        }
     };
 
     Controller.prototype.elementsSelected = function (atomicNumbers) {
