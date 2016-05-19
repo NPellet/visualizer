@@ -136,6 +136,7 @@
 .element-data {
     flex:4;
     text-align: center;
+    width: 100%;
 }
 .element-data .Z {
     text-align: left;
