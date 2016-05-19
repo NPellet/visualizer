@@ -1,3 +1,18 @@
+<a name="2.54.1"></a>
+## 2.54.1 (2016-05-19)
+
+
+### Bug Fixes
+
+* **periodic_table:** make ellipsis text overflow work ([4a6baf9](https://github.com/NPellet/visualizer/commit/4a6baf9))
+* **periodic_table:** select event were failing in some cases ([898f846](https://github.com/NPellet/visualizer/commit/898f846))
+
+### Features
+
+* **periodic_table:** add element clicked event ([3b3bc69](https://github.com/NPellet/visualizer/commit/3b3bc69))
+
+
+
 <a name="2.54.0"></a>
 # 2.54.0 (2016-05-19)
 
