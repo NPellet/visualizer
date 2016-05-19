@@ -257,7 +257,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
 
 
     Controller.prototype.periodSelected = function (period) {
-        var elements = this.module.getDataFromRel('value');
+        var elements = this.module.view.elements;
         elements = elements.filter(el => {
             return el.period == period;
         });
@@ -266,7 +266,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
     };
 
     Controller.prototype.groupSelected = function (group) {
-        var elements = this.module.getDataFromRel('value');
+        var elements = this.module.view.elements;
         elements = elements.filter(el => {
             return el.group == group;
         });
@@ -276,7 +276,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
 
     Controller.prototype.elementsSelected = function (atomicNumbers) {
         atomicNumbers = atomicNumbers.map(el => +el);
-        var elements = this.module.getDataFromRel('value');
+        var elements = this.module.view.elements;
         elements = elements.filter(el => {
             return atomicNumbers.indexOf(+DataObject.resurrect(el.Z)) > -1;
         });
