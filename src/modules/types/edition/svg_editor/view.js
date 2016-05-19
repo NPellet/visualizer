@@ -127,6 +127,8 @@ define([
                         that.dom = domContent.find('svg');
                     }).then(resolve);
                 }
+            }).then(() => {
+                this.modifySvgFromArray(this.queuedSvgModifier, true);
             });
         },
 
@@ -149,7 +151,7 @@ define([
         update: {
             svgModifier: function (data) {
                 // Avoid potential problems when separete elements of this array share the same reference to an object
-                this.modifySvgFromArray(data, true);
+                this.queuedSvgModifier = data;
             },
             svgInput: function (svgCode) {
                 this._renderSvg(svgCode);
@@ -269,6 +271,7 @@ define([
         modifySvgFromArray: function (arr, isPrimaryCall) {
             var that = this;
 
+            if (!arr) return;
             // Convert to array if necessary
             if (!Array.isArray(arr)) {
                 arr = [arr];
