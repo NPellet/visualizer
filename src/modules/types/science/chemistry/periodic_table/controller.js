@@ -50,6 +50,10 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
         onElementSelect: {
             label: 'Element clicked',
             refVariable: ['element']
+        },
+        onElementHover: {
+            label: 'Element hovered',
+            refVariable: ['element']
         }
     };
 
@@ -287,6 +291,15 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
         var el = elements.find(el => +DataObject.resurrect(el.Z) === atomicNumber);
         if (el) {
             this.createDataFromEvent('onElementSelect', 'element', el);
+        }
+    };
+
+    Controller.prototype.elementHovered = function (atomicNumber) {
+        atomicNumber = +atomicNumber;
+        var elements = this.module.view.elements;
+        var el = elements.find(el => +DataObject.resurrect(el.Z) === atomicNumber);
+        if (el) {
+            this.createDataFromEvent('onElementHover', 'element', el);
         }
     };
 

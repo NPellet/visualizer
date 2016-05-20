@@ -275,6 +275,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                 var $el = $(this);
                 var Z = that.getZ($el);
                 that._doHighlight(Z, true);
+                that.module.controller.elementHovered(Z);
                 if (isFixed) return;
                 renderElement($el);
             });
@@ -301,7 +302,8 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
             });
 
             $elements.dblclick(function () {
-                $(this).removeClass('el-selected');
+                var $el = $(this);
+                $el.removeClass('el-selected');
                 isFixed = false;
             });
 
