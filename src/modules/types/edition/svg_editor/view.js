@@ -88,7 +88,7 @@ define([
                 svgCode = that.module.getConfiguration('svgcode');
             }
 
-            return new Promise((resolve, reject) => {
+            return new Promise(resolve => {
                 if (this._configCheckBox('editable', 'isEditable')) {
                     if (this.dom) this.dom.remove();
                     this.svgCanvas = null;
@@ -150,8 +150,8 @@ define([
 
         update: {
             svgModifier: function (data) {
-                // Avoid potential problems when separete elements of this array share the same reference to an object
                 this.queuedSvgModifier = data;
+                this.modifySvgFromArray(this.queuedSvgModifier, true);
             },
             svgInput: function (svgCode) {
                 this._renderSvg(svgCode);
@@ -305,7 +305,7 @@ define([
             var $svgEl;
             var $svgcontent = this.$svgcontent;
             $svgEl = $svgcontent.find(selector);
-            if ($svgEl.length === 0) {
+            if ($svgEl.length === 0 && selector[0] !== '#') {
                 $svgEl = $svgcontent.find('#' + selector);
             }
 
@@ -359,7 +359,7 @@ define([
                 that.addAnimations($svgEl, obj.animation);
             }
 
-            // We don't set callback on secondary calls
+            // We don't set callbacks on secondary calls
             if (!isPrimaryCall)
                 return;
 
@@ -436,7 +436,7 @@ define([
                                 if (!obj[eventName].selector) {
                                     obj[eventName].selector = obj.selector;
                                 }
-                                that.modifySvgFromArray(obj[eventName], true);
+                                that.modifySvgFromArray(obj[eventName], false);
                             });
                         })(mouseEventNames[j]);
                     }
@@ -449,18 +449,6 @@ define([
                 return this.getAttribute('id');
             }).toArray().join(',');
         },
-
-        _clearEventCallbacks: function (svgModifier) {
-            // This is a bit brutal, since we potentially clear callbacks that we did not set...
-            for (var i = 0; i < svgModifier.length; i++) {
-                if (svgModifier.selector) {
-                    for (var j = 0; j < mouseEventNames.length; j++) {
-                        $(svgModifier.selector).off(mouseEventNames[j] + '.svgeditor.svgmodifier');
-                    }
-                }
-            }
-        },
-
 
         getDom: function () {
             return this.dom;
