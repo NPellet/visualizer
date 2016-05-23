@@ -411,7 +411,13 @@ define([
                 for (var i = 0, l = plotinfos.length; i < l; i++) {
                     if (varname == plotinfos[i].variable) {
                         foundInfo = true;
-                        serie.setYAxis(this.getYAxis(plotinfos[i].axis ? Number(plotinfos[i].axis) : 0));
+                        var axis = this.getYAxis(plotinfos[i].axis ? Number(plotinfos[i].axis) : 0);
+                        serie.setYAxis(axis);
+
+                        if (plotinfos[i].adaptTo && String(plotinfos[i].adaptTo) !== 'none') {
+                            var other = this.getYAxis(Number(plotinfos[i].adaptTo));
+                            axis.adaptTo(other, 0, 0);
+                        }
 
                         var color = forceColor ? forceColor : plotinfos[i].plotcolor;
 

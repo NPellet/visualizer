@@ -200,6 +200,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
     Controller.prototype.configurationStructure = function () {
         var vars = [];
         var varsAxis = [];
+        var adaptAxis = [{title: 'None', key: 'none'}];
         var numAxis = 0;
         var currentCfg = this.module.definition.vars_in;
 
@@ -217,6 +218,10 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
                         title: String(numAxis),
                         key: String(numAxis)
                     });
+                    adaptAxis.push({
+                        title: String(numAxis),
+                        key: String(numAxis)
+                    });
                     numAxis++;
                 }
             }
@@ -229,6 +234,10 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
                     key: this.module.view.seriesActions[i][2]
                 });
                 varsAxis.push({
+                    title: String(numAxis),
+                    key: String(numAxis)
+                });
+                adaptAxis.push({
                     title: String(numAxis),
                     key: String(numAxis)
                 });
@@ -415,6 +424,12 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
                                     title: 'Axis',
                                     options: varsAxis,
                                     default: '0'
+                                },
+                                adaptTo: {
+                                    type: 'combo',
+                                    title: 'Adapt axis to',
+                                    options: adaptAxis,
+                                    default: 'none'
                                 },
                                 plotcolor: {
                                     type: 'color',
