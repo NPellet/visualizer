@@ -1502,7 +1502,7 @@ define([
             if (!item[this.idPropertyName] || force) {
                 Object.defineProperty(item, this.idPropertyName, {
                     value: 'id_' + ++uniqueID,
-                    writable: false,
+                    writable: true,
                     configurable: false,
                     enumerable: false
                 });
@@ -1562,12 +1562,19 @@ define([
         },
 
         onActionReceive: {
-            addRow: function (item) {
+            addRow: function (items) {
                 if (this.slick.data) {
-                    item = DataObject.resurrect(item);
-                    this.setNextUniqId(item, true);
-                    this.slick.data.addItem(item);
-                    this._newRow(item);
+                    if (!Array.isArray(items)) {
+                        items = [items];
+                    }
+                    for (let i = 0; i < items.length; i++) {
+                        let item = items[i];
+                        item = DataObject.resurrect(item);
+                        this.setNextUniqId(item, true);
+                        this.slick.data.addItem(item);
+                        this._newRow(item);
+                    }
+
                 }
             },
             rerender: function () {

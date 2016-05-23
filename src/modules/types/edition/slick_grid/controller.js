@@ -394,7 +394,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
         hoverRow: 'Mimic row hover',
         selectRow: 'Mimic row click',
         selectRows: 'Set selected rows',
-        addRow: 'Add a new row',
+        addRow: 'Add new row(s)',
         showColumn: 'Show a column',
         hideColumn: 'Hide a column',
         rerender: 'Rerender the grid'
