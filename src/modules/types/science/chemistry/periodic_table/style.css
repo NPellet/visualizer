@@ -132,6 +132,7 @@
 
 .element, .indic-g, .indic-p, .indic-f, .element-zoom {
     display: flex;
+    cursor: pointer;
 }
 .element-data {
     flex:4;
