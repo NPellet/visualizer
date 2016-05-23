@@ -146,7 +146,8 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                         obj = Papa.parse(toParse,
                             {
                                 delimiter: '\t',
-                                header: true
+                                header: true,
+                                dynamicTyping: true
                             }
                         );
                         obj = obj.data.slice(1);
@@ -400,7 +401,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                 $el.removeClass('el-selected');
             }
         },
-        
+
         elementSelected($el) {
             this.module.controller.elementSelected(this.getZ($el));
         },
