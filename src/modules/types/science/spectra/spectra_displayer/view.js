@@ -511,7 +511,7 @@ define([
                 this.removeSerie(varname);
 
                 moduleValue = JSONChart.check(moduleValue.get());
-                var existingNames = [];
+                var existingNames = new Set();
 
                 var that = this;
                 var data = moduleValue.data;
@@ -530,12 +530,13 @@ define([
 
 
                     var defaultStyle = aData.defaultStyle || {};
-                    var serieName = aData.label || varname;
-                    if (existingNames.indexOf(serieName) > -1) {
+                    var serieName = varname;
+                    if (existingNames.has(serieName)) {
                         serieName += '-' + i;
                     }
+                    existingNames.add(serieName);
 
-                    existingNames.push(serieName);
+                    var serieLabel = aData.label || serieName;
 
                     var valFinal = [];
 
@@ -563,6 +564,7 @@ define([
 
 
                     var serie = this.graph.newSerie(serieName, this.getSerieOptions(varname, aData._highlight, valFinal), aData.type || undefined);
+                    serie.setLabel(serieLabel);
 
                     this.normalize(valFinal, varname);
                     serie.setData(valFinal);

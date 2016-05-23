@@ -147,7 +147,7 @@
 					]
 				}
 			},
-			"id": 1,
+			"id": 8,
 			"vars_in": [
 				{
 					"rel": "xArray",
@@ -209,7 +209,28 @@
 					"name": "Default layer"
 				}
 			},
-			"title": "Untitled module"
+			"title": "Untitled module",
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			}
 		},
 		{
 			"configuration": {
@@ -253,7 +274,7 @@
 					]
 				}
 			},
-			"id": 2,
+			"id": 9,
 			"vars_in": [
 				{
 					"rel": "list",
@@ -308,7 +329,28 @@
 					"name": "Default layer"
 				}
 			},
-			"title": "Untitled module"
+			"title": "Untitled module",
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			}
 		},
 		{
 			"configuration": {
@@ -436,7 +478,7 @@
 					]
 				}
 			},
-			"id": 3,
+			"id": 10,
 			"vars_in": [
 				{
 					"rel": "chart",
@@ -494,7 +536,28 @@
 					"name": "Default layer"
 				}
 			},
-			"title": "Untitled module"
+			"title": "Untitled module",
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			}
 		},
 		{
 			"configuration": {
@@ -521,12 +584,21 @@
 											"both"
 										],
 										"legend": [
-											null
+											"bottom"
+										],
+										"legendOptions": [
+											[
+												"isSerieHideable",
+												"isSerieSelectable"
+											]
 										],
 										"mouseTracking": [
 											[]
 										],
 										"selectScatter": [
+											[]
+										],
+										"independantYZoom": [
 											[]
 										]
 									}
@@ -643,7 +715,7 @@
 				},
 				"groups": {}
 			},
-			"id": 4,
+			"id": 11,
 			"vars_in": [
 				{
 					"rel": "chart",
@@ -693,7 +765,28 @@
 					"name": "Default layer"
 				}
 			},
-			"title": "Untitled module"
+			"title": "Untitled module",
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			}
 		},
 		{
 			"configuration": {
@@ -795,7 +888,7 @@
 					]
 				}
 			},
-			"id": 5,
+			"id": 12,
 			"vars_in": [
 				{
 					"rel": "xyArray",
@@ -849,7 +942,28 @@
 					"name": "Default layer"
 				}
 			},
-			"title": "Untitled module"
+			"title": "Untitled module",
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			}
 		},
 		{
 			"configuration": {
@@ -954,7 +1068,7 @@
 					]
 				}
 			},
-			"id": 6,
+			"id": 13,
 			"vars_in": [
 				{
 					"rel": "xArray",
@@ -1008,7 +1122,28 @@
 					"name": "Default layer"
 				}
 			},
-			"title": "Untitled module"
+			"title": "Untitled module",
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			}
 		},
 		{
 			"configuration": {
@@ -1046,7 +1181,7 @@
 					]
 				}
 			},
-			"id": 7,
+			"id": 14,
 			"vars_in": [
 				{
 					"rel": "value",
@@ -1100,7 +1235,28 @@
 					"name": "Default layer"
 				}
 			},
-			"title": "Untitled module"
+			"title": "Untitled module",
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			}
 		}
 	],
 	"variables": [
@@ -1150,7 +1306,7 @@
 	"configuration": {
 		"title": "Chart demonstration"
 	},
-	"version": "2.35.2-1",
+	"version": "2.54.2-0",
 	"grid": {
 		"layers": {
 			"Default layer": {

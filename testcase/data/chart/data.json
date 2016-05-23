@@ -362,6 +362,7 @@
                     ]
                 },
                 {
+                    "label": "customLabel",
                     "xAxis": "0",
                     "yAxis": "1",
                     "info": [
