@@ -16,7 +16,7 @@ define([
 
     $.extend(true, View.prototype, Default, {
 
-        init: function () {
+        init() {
             this.series = {};
             this.seriesDrawn = {};
             this.annotations = {};
@@ -31,28 +31,21 @@ define([
             this.onchanges = {};
         },
 
-        inDom: function () {
+        inDom() {
+            var prom = new Promise(resolve => {
 
-            var that = this;
-
-            var prom = new Promise(function (resolve) {
-
-                var cfg = that.cfg = that.module.getConfiguration.bind(that.module);
-                var cfgCheckbox = that.cfgCheckbox = that.module.getConfigurationCheckbox.bind(that.module);
+                var cfg = this.cfg = this.module.getConfiguration.bind(this.module);
+                var cfgCheckbox = this.cfgCheckbox = this.module.getConfigurationCheckbox.bind(this.module);
                 var graphurl = cfg('graphurl');
 
                 if (graphurl) {
-
-                    $.getJSON(graphurl, {}, function (data) {
-
-                        data.options.onMouseMoveData = function (e, val) {
-                            that.module.controller.sendAction('mousetrack', val);
+                    $.getJSON(graphurl, {}, data => {
+                        data.options.onMouseMoveData = (e, val) => {
+                            this.module.controller.sendAction('mousetrack', val);
                         };
 
-                        resolve(new Graph(that.dom.get(0), data.options, data.axis));
-
+                        resolve(new Graph(this.dom.get(0), data.options, data.axis));
                     });
-
                 } else {
 
                     var options = {
@@ -136,10 +129,10 @@ define([
                     }
 
                     if (cfgCheckbox('mouseTracking', 'track')) {
-                        options.onMouseMoveData = function (event, result) {
-                            that.module.model.trackData = result;
-                            that.module.controller.sendActionFromEvent('onTrackMouse', 'trackData', result);
-                            that.module.controller.createDataFromEvent('onTrackMouse', 'trackData', result);
+                        options.onMouseMoveData = (event, result) => {
+                            this.module.model.trackData = result;
+                            this.module.controller.sendActionFromEvent('onTrackMouse', 'trackData', result);
+                            this.module.controller.createDataFromEvent('onTrackMouse', 'trackData', result);
                         };
                     }
 
@@ -152,8 +145,8 @@ define([
                         };
                     }
 
-                    var graph = new Graph(that.dom.get(0), options);
-                    that.graph = graph;
+                    var graph = new Graph(this.dom.get(0), options);
+                    this.graph = graph;
 
                     var xOptions = {
                         nbTicksPrimary: cfg('xnbTicksPrimary', 5)
@@ -169,7 +162,7 @@ define([
 
                     // Axes
                     var xAxis = graph.getXAxis(0, xOptions);
-                    that.xAxis = xAxis;
+                    this.xAxis = xAxis;
                     xAxis
                         .flip(cfg('flipX', false))
                         .setPrimaryGrid(cfg('vertGridMain', false))
@@ -184,8 +177,8 @@ define([
                     if (!cfg('displayXAxis', true)) {
                         xAxis.hide();
                     }
-                    xAxis.on('zoom', function (min, max) {
-                        that.module.model.setXBoundaries(min, max);
+                    xAxis.on('zoom', (min, max) => {
+                        this.module.model.setXBoundaries(min, max);
                     });
                     if (cfgCheckbox('FitYToAxisOnFromTo', 'rescale')) {
                         xAxis.on('zoom', function () {
@@ -193,9 +186,9 @@ define([
                         });
                     }
 
-                    that.numberOfYAxes = 0;
-                    var yAxis = that.getYAxis(0);
-                    that.yAxis = yAxis;
+                    this.numberOfYAxes = 0;
+                    var yAxis = this.getYAxis(0);
+                    this.yAxis = yAxis;
 
                     var legend = cfg('legend', 'none');
                     if (legend !== 'none') {
@@ -217,38 +210,37 @@ define([
 
             });
 
-            prom.then(function (graph) {
+            prom.then(graph => {
+                this.graph = graph;
+                this.xAxis = graph.getXAxis(0);
+                this.yAxis = graph.getYAxis(0);
 
-                that.graph = graph;
-                that.xAxis = graph.getXAxis(0);
-                that.yAxis = graph.getYAxis(0);
-
-                graph.on('shapeMouseOver', function (shape) {
-                    that.module.controller.createDataFromEvent('onMouseOverShape', 'shapeInfos', shape.getData());
+                graph.on('shapeMouseOver', shape => {
+                    this.module.controller.createDataFromEvent('onMouseOverShape', 'shapeInfos', shape.getData());
                     API.highlight(shape.getData(), 1);
                 });
 
-                graph.on('shapeMouseOut', function (shape) {
+                graph.on('shapeMouseOut', shape => {
                     API.highlight(shape.getData(), 0);
                 });
 
-                graph.on('shapeResized', function (shape) {
-                    that.module.model.dataTriggerChange(shape.getData());
+                graph.on('shapeResized', shape => {
+                    this.module.model.dataTriggerChange(shape.getData());
                 });
 
-                graph.on('shapeSelected', function (shape) {
-                    that.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape.getData());
-                    that.module.controller.sendActionFromEvent('onShapeSelect', 'selectedShape', shape.getData());
+                graph.on('shapeSelected', shape => {
+                    this.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape.getData());
+                    this.module.controller.sendActionFromEvent('onShapeSelect', 'selectedShape', shape.getData());
                 });
-                graph.on('shapeUnselected', function (shape) {
-                    that.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape.getData());
-                    that.module.controller.sendActionFromEvent('onShapeUnselect', 'shapeInfos', shape.getData());
+                graph.on('shapeUnselected', shape => {
+                    this.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape.getData());
+                    this.module.controller.sendActionFromEvent('onShapeUnselect', 'shapeInfos', shape.getData());
                 });
 
-                that.onResize();
-                that.resolveReady();
+                this.onResize();
+                this.resolveReady();
 
-            }).catch(function (err) {
+            }).catch(err => {
                 Debug.error('Error loading the graph', err);
             });
 
@@ -279,7 +271,7 @@ define([
                         yAxis.hide();
                     }
                     // yAxis.on('zoom', function (min, max) {
-                    //     that.module.model.setYBoundaries(min, max);
+                    //     this.module.model.setYBoundaries(min, max);
                     // });
                 } else {
                     yAxis
@@ -300,7 +292,7 @@ define([
             return yAxis;
         },
 
-        onResize: function () {
+        onResize() {
             if (!this.graph) {
                 return;
             }
@@ -308,7 +300,7 @@ define([
             this.redraw(true);
         },
 
-        shouldAutoscale: function (varName) {
+        shouldAutoscale(varName) {
             if (this.seriesDrawn[varName]) {
                 return false;
             } else {
@@ -317,7 +309,7 @@ define([
             }
         },
 
-        redraw: function (forceReacalculateAxis, varName) {
+        redraw(forceReacalculateAxis, varName) {
             var fullOut = this.module.getConfiguration('fullOut');
             if (varName && fullOut === 'once') {
                 if (!this.shouldAutoscale(varName)) {
@@ -350,9 +342,8 @@ define([
             this.module.model.setYBoundaries(minY, maxY);
         },
 
-        getSerieOptions: function (varname, highlight, data) {
-            var that = this,
-                plotinfos = this.module.getConfiguration('plotinfos');
+        getSerieOptions(varname, highlight, data) {
+            var plotinfos = this.module.getConfiguration('plotinfos');
 
             highlight = highlight || [];
 
@@ -393,23 +384,23 @@ define([
             // 3 June 2014, Norman
             // Ok here for instance we have a problem. The data generated by the graph is NOT in another variable
             // Therefore we create this data from scratch. Easy.
-            options.onMouseOverMarker = function (index, infos, xy) {
+            options.onMouseOverMarker = (index, infos, xy) => {
                 API.highlightId(highlight[index[0]], 1);
-                that.module.controller.onMouseOverMarker(xy, infos);
+                this.module.controller.onMouseOverMarker(xy, infos);
             };
-            options.onMouseOutMarker = function (index, infos, xy) {
+            options.onMouseOutMarker = (index, infos, xy) => {
                 API.highlightId(highlight[index[0]], 0);
-                that.module.controller.onMouseOutMarker(xy, infos);
+                this.module.controller.onMouseOutMarker(xy, infos);
             };
-            options.onToggleMarker = function (xy, infos, toggledOn) {
-                that.module.controller.onClickMarker(xy, infos, toggledOn);
+            options.onToggleMarker = (xy, infos, toggledOn) => {
+                this.module.controller.onClickMarker(xy, infos, toggledOn);
             };
 
             return options;
 
         },
 
-        setSerieParameters: function (serie, varname, highlight, forceColor) {
+        setSerieParameters(serie, varname, highlight, forceColor) {
 
             serie.setXAxis(0);
 
@@ -459,7 +450,7 @@ define([
             }
 
             if (highlight) {
-                API.listenHighlight({_highlight: highlight}, function (value, commonKeys) {
+                API.listenHighlight({_highlight: highlight}, (value, commonKeys) => {
                     for (var i = 0, ii = commonKeys.length; i < ii; i++) {
                         var key = commonKeys[i];
                         for (var j = 0, jj = highlight.length; j < jj; j++) {
@@ -480,42 +471,41 @@ define([
         },
 
         blank: {
-            xyArray: function (varName) {
+            xyArray(varName) {
                 this.removeSerie(varName);
             },
 
-            xArray: function (varName) {
+            xArray(varName) {
                 this.removeSerie(varName);
             },
 
-            series_xy1d: function (varName) {
+            series_xy1d(varName) {
                 this.removeSerie(varName);
             },
 
-            jcamp: function (varName) {
+            jcamp(varName) {
                 this.removeSerie(varName);
             },
 
-            chart: function (varName) {
+            chart(varName) {
                 this.removeSerie(varName);
             },
 
-            annotations: function (varName) {
+            annotations(varName) {
                 this.removeAnnotations(varName);
             }
         },
 
         update: {
-            chart: function (moduleValue, varname) {
+            chart(moduleValue, varname) {
                 this.series[varname] = this.series[varname] || [];
                 this.removeSerie(varname);
 
                 moduleValue = JSONChart.check(moduleValue.get());
                 var existingNames = new Set();
 
-                var that = this;
                 var data = moduleValue.data;
-                for (var i = 0; i < data.length; i++) {
+                for (let i = 0; i < data.length; i++) {
 
                     var aData = data[i];
 
@@ -578,18 +568,14 @@ define([
                         if (this.module.getConfigurationCheckbox('selectScatter', 'yes')) {
                             var plugin = this.graph.getPlugin('selectScatter');
                             plugin.setSerie(serie);
-                            (function (serie) {
-                                plugin.on('selectionEnd', function (selectedIndices) {
-                                    var result = [];
-                                    var info = serie.infos;
-                                    if (info) {
-                                        result = info.filter(function (value, index) {
-                                            return selectedIndices.indexOf(index) >= 0;
-                                        });
-                                    }
-                                    that.module.controller.onScatterSelection(result);
-                                });
-                            })(serie);
+                            plugin.on('selectionEnd', selectedIndices => {
+                                var result = [];
+                                var info = serie.infos;
+                                if (info) {
+                                    result = info.filter((value, index) => selectedIndices.indexOf(index) >= 0);
+                                }
+                                this.module.controller.onScatterSelection(result);
+                            });
                         }
                     } else {
                         var color = defaultStyle.lineColor || (data.length > 1 ? Color.getNextColorRGB(i, data.length) : null);
@@ -602,7 +588,7 @@ define([
                 this.redraw(false, varname);
             },
 
-            xyArray: function (moduleValue, varname) {
+            xyArray(moduleValue, varname) {
                 this.series[varname] = this.series[varname] || [];
                 this.removeSerie(varname);
 
@@ -623,7 +609,7 @@ define([
             },
 
 // in fact it is a Y array ...
-            xArray: function (moduleValue, varname) {
+            xArray(moduleValue, varname) {
                 var val = moduleValue.get();
                 this.series[varname] = this.series[varname] || [];
                 this.removeSerie(varname);
@@ -647,43 +633,36 @@ define([
                 this.redraw(false, varname);
             },
 
-            annotations: function (value, varName) {
+            annotations(value, varName) {
                 this.annotations[varName] = this.annotations[varName] || [];
                 var annotations = value.get();
-                var i = 0, l = annotations.length;
-                var that = this;
-                for (; i < l; i++) {
-                    (function (i) {
-                        var annotation = annotations[i];
-                        var shape = that.graph.newShape(String(annotation.type), annotation);
-                        that.annotations[varName][i] = shape;
+                for (let i = 0; i < annotations.length; i++) {
+                    var annotation = annotations[i];
+                    var shape = this.graph.newShape(String(annotation.type), annotation);
+                    this.annotations[varName][i] = shape;
 
-                        shape.autoAxes();
+                    shape.autoAxes();
 
-                        API.listenHighlight(annotation, function (onOff) {
-                            if (onOff) {
-                                shape.highlight({
-                                    fill: 'black'
-                                });
-                            } else {
-                                shape.unHighlight();
-                            }
-                        }, false, that.module.getId() + varName);
+                    API.listenHighlight(annotation, onOff => {
+                        if (onOff) {
+                            shape.highlight({
+                                fill: 'black'
+                            });
+                        } else {
+                            shape.unHighlight();
+                        }
+                    }, false, this.module.getId() + varName);
 
-                        that.module.model.dataListenChange(annotations.traceSync([i]), function (v) {
-
-                            shape.redraw();
-
-                        }, 'annotations');
-
-                        shape.draw();
+                    this.module.model.dataListenChange(annotations.traceSync([i]), v => {
                         shape.redraw();
+                    }, 'annotations');
 
-                    })(i);
+                    shape.draw();
+                    shape.redraw();
                 }
             },
 
-            jcamp: function (moduleValue, varname) {
+            jcamp(moduleValue, varname) {
                 var that = this;
                 var serie;
 
@@ -691,12 +670,12 @@ define([
                     return;
                 }
 
-                if (that.deferreds[varname]) {
-                    that.deferreds[varname].reject();
+                if (this.deferreds[varname]) {
+                    this.deferreds[varname].reject();
                 }
 
-                that.deferreds[varname] = $.Deferred();
-                var def = that.deferreds[varname];
+                this.deferreds[varname] = $.Deferred();
+                var def = this.deferreds[varname];
 
                 var options = moduleValue._options || {};
 
@@ -743,9 +722,8 @@ define([
                 }
             },
 
-            series_xy1d: function (data, varname) { // Receives an array of series. Blank the other ones.
-                var that = this;
-                require(['src/util/color'], function (Color) {
+            series_xy1d(data, varname) { // Receives an array of series. Blank the other ones.
+                require(['src/util/color'], Color => {
 
                     var colors = Color.getDistinctColors(data.length);
                     //   self.graph.removeSeries();
@@ -757,13 +735,13 @@ define([
 
                     for (; i < l; i++) {
 
-                        var opts = that.getSerieOptions(varname, null, data[i].data);
+                        var opts = this.getSerieOptions(varname, null, data[i].data);
 
-                        var serie = that.graph.newSerie(data[i].name, opts);
+                        var serie = this.graph.newSerie(data[i].name, opts);
 
 
                         serie.autoAxis();
-                        that.series[varname].push(serie);
+                        this.series[varname].push(serie);
 
                         if (data[i].data) {
                             serie.setData(data[i].data);
@@ -778,12 +756,12 @@ define([
                         serie.extendStyles();
                     }
 
-                    that.redraw();
+                    this.redraw();
                 });
             }
         },
 
-        setOnChange: function (id, varname, obj) {
+        setOnChange(id, varname, obj) {
             if (this.onchanges[varname]) {
                 this.onchanges[varname].obj.unbindChange(this.onchanges[varname].id);
             }
@@ -791,7 +769,7 @@ define([
             this.onchanges[varname] = {obj: obj, id: id};
         },
 
-        removeAnnotations: function (varName) {
+        removeAnnotations(varName) {
             API.killHighlight(this.module.getId() + varName);
             if (this.annotations[varName]) {
                 for (var i = 0; i < this.annotations[varName].length; i++) {
@@ -801,7 +779,7 @@ define([
             this.annotations[varName] = [];
         },
 
-        removeSerie: function (serieName) {
+        removeSerie(serieName) {
             if (this.series[serieName]) {
                 for (var i = 0; i < this.series[serieName].length; i++) {
                     this.series[serieName][i].kill(true);
@@ -811,13 +789,12 @@ define([
             this.series[serieName] = [];
         },
 
-        makeSerie: function (data, value, name) {
-            var that = this;
+        makeSerie(data, value, name) {
             var serie = this.graph.newSerie(data.name);
 
-            data.onChange(function () {
+            data.onChange(() => {
                 serie.setData(data.data);
-                that.graph.draw();
+                this.graph.draw();
             });
 
             this.onActionReceive.removeSerieByName.call(this, data.name || {});
@@ -838,17 +815,17 @@ define([
         },
 
         onActionReceive: {
-            fromToX: function (value) {
+            fromToX(value) {
                 this.xAxis.zoom(value.from, value.to);
                 this.graph.draw();
             },
 
-            fromToY: function (value) {
+            fromToY(value) {
                 this.yAxis.zoom(value.from, value.to);
                 this.graph.draw();
             },
 
-            addSerie: function (value) {
+            addSerie(value) {
                 this.colorId++;
 
                 if (value.name) {
@@ -861,9 +838,8 @@ define([
                 }
             },
 
-            removeSerie: function (value) {
+            removeSerie(value) {
                 for (var i = 0, l = this.seriesActions.length; i < l; i++) {
-
                     if (this.seriesActions[i][0] == value) {
                         this.seriesActions[i][1].kill();
                         this.seriesActions.splice(i, 1);
@@ -871,7 +847,7 @@ define([
                 }
             },
 
-            removeSerieByName: function (value) {
+            removeSerieByName(value) {
                 for (var i = 0; i < this.seriesActions.length; i++) {
                     if (this.seriesActions[i][2] == value) {
                         this.seriesActions[i][1].kill();
@@ -881,7 +857,7 @@ define([
                 }
             },
 
-            selectSerie: function (serieName) {
+            selectSerie(serieName) {
                 var s = this.graph.getSerie(serieName.valueOf());
 
                 if (s) {
@@ -889,7 +865,7 @@ define([
                 }
             },
 
-            unselectSerie: function (serieName) {
+            unselectSerie(serieName) {
                 var s = this.graph.getSerie(serieName.valueOf());
 
                 if (s) {
@@ -899,7 +875,7 @@ define([
 
         },
 
-        normalize: function (array, varname) {
+        normalize(array, varname) {
             var plotinfos = this.module.getConfiguration('plotinfos');
             var maxValue, minValue, total, ratio, i, l;
 
