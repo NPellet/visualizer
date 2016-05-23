@@ -192,6 +192,13 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
         },
 
         addJpathToTree: function (tree, customJpaths) {
+            if (tree.length === 0) {
+                tree.push({
+                    title: 'element',
+                    key: 'element',
+                    children: []
+                });
+            }
             return addToTree(tree[0], customJpaths);
         },
 
