@@ -182,13 +182,10 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema', 'lodash']
 
     Controller.prototype.onSubmit = function (data) {
         var outputType = this.module.getConfiguration('output');
-        if (outputType === 'new') {
-            this.createDataFromEvent('onFormSubmit', 'outputValue', data);
-        } else {
-            if (this.module.view.inputObj) {
-                this.module.view.inputObj.mergeWith(data, this.module.getId());
-            }
+        if (outputType === 'modified' && this.module.view.inputObj) {
+            this.module.view.inputObj.mergeWith(data, this.module.getId());
         }
+        this.createDataFromEvent('onFormSubmit', 'outputValue', data);
         this.sendActionFromEvent('onFormSubmit', 'outputValue', data);
     };
 
