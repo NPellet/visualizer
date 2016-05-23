@@ -161,6 +161,11 @@ define(['./util'], function (Util) {
                 .then(retTrue, retFalse);
         }
 
+        getName(flavor) {
+            var path = this.flavors[flavor];
+            return path[path.length - 1];
+        }
+
         rename(flavor, newName) {
             var path = this.flavors[flavor];
             var currentName = path[path.length - 1];

@@ -659,9 +659,9 @@ define([
 
         renameView(node) {
             var div = $(`<div>Renaming view "${node.title}"<br>New name: </div>`);
-            var input = $('<input type="text" />').appendTo(div).on('keypress', evt => {
+            var input = $(`<input type="text" value="${node.data.view.getName(node.data.flavor)}"/>`).appendTo(div).on('keypress', evt => {
                 if (evt.keyCode === 13) Rename();
-            });
+            }).select();
             const Rename = () => {
                 var name = input.val().trim();
                 if (name.length === 0) {
