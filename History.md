@@ -1,3 +1,19 @@
+<a name="2.54.2"></a>
+## 2.54.2 (2016-05-23)
+
+
+### Bug Fixes
+
+* **svg_editor:** fix remaining problems ([7d27848](https://github.com/NPellet/visualizer/commit/7d27848))
+* **util:** mimeTypes use same fallback mechanism as mime-type library ([e85250f](https://github.com/NPellet/visualizer/commit/e85250f))
+
+### Features
+
+* **periodic_table:** hover event ([7c12b64](https://github.com/NPellet/visualizer/commit/7c12b64))
+* **slickgrid:** addRow action in now accepts an array ([90d13e6](https://github.com/NPellet/visualizer/commit/90d13e6))
+
+
+
 <a name="2.54.1"></a>
 ## 2.54.1 (2016-05-19)
 
