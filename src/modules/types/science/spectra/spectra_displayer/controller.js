@@ -199,6 +199,8 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
 
     Controller.prototype.configurationStructure = function () {
         var vars = [];
+        var varsAxis = [];
+        var numAxis = 0;
         var currentCfg = this.module.definition.vars_in;
 
         if (currentCfg) {
@@ -211,6 +213,11 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
                         title: currentCfg[i].name,
                         key: currentCfg[i].name
                     });
+                    varsAxis.push({
+                        title: String(numAxis),
+                        key: String(numAxis)
+                    });
+                    numAxis++;
                 }
             }
         }
@@ -221,6 +228,11 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
                     title: this.module.view.seriesActions[i][2],
                     key: this.module.view.seriesActions[i][2]
                 });
+                varsAxis.push({
+                    title: String(numAxis),
+                    key: String(numAxis)
+                });
+                numAxis++;
             }
         }
 
@@ -397,6 +409,12 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
                                     title: 'Variable',
                                     options: vars,
                                     default: ''
+                                },
+                                axis: {
+                                    type: 'combo',
+                                    title: 'Axis',
+                                    options: varsAxis,
+                                    default: '0'
                                 },
                                 plotcolor: {
                                     type: 'color',

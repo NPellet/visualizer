@@ -420,7 +420,7 @@ define([
                 for (var i = 0, l = plotinfos.length; i < l; i++) {
                     if (varname == plotinfos[i].variable) {
                         foundInfo = true;
-                        serie.setYAxis(this.getYAxis(i));
+                        serie.setYAxis(this.getYAxis(plotinfos[i].axis ? Number(plotinfos[i].axis) : 0));
 
                         var color = forceColor ? forceColor : plotinfos[i].plotcolor;
 
