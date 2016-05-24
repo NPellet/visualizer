@@ -300,6 +300,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                 renderElement($el);
                 that.elementsSelected();
                 isFixed = true;
+                event.stopPropagation();
             });
 
             $elements.dblclick(function () {
@@ -317,6 +318,12 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                 $selected.toggleClass('el-selected');
                 that.module.controller.periodSelected(pN);
                 that.elementsSelected();
+                event.stopPropagation();
+            });
+
+            that.module.getDomContent().on('click', function () {
+                $elements.removeClass('el-selected');
+                that.module.controller.elementsSelected(that.elements.map(el => el.Z));
             });
 
             that.dom.on('click', '.indic-g', function (event) {
@@ -328,6 +335,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                 $selected.toggleClass('el-selected');
                 that.module.controller.groupSelected(gN);
                 that.elementsSelected();
+                event.stopPropagation();
             });
 
             function renderElement($el) {
@@ -349,6 +357,9 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
             var lanthanid = ('<div class="indic-f period6"><p>57-71</p></div>');
             that.dom.find('div.e56').after(lanthanid);
             that.dom.find('div.e88').after(actinid);
+
+            // By default all elements selected
+            that.module.controller.elementsSelected(that.elements.map(el => el.Z));
         },
 
         _getOptions(type) {
@@ -500,9 +511,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
 
         _doHighlight(Z, state) {
             if (!this.elements) return;
-            var el = this.elements.find(el => {
-                return el.Z == Z;
-            });
+            var el = this.elements.find(el => el.Z == Z);
             if (el) {
                 API.highlightId(el.name, state, this.module.getId());
             }
