@@ -1,6 +1,10 @@
 'use strict';
 
-define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (Default, Traversing) {
+define([
+    'jquery',
+    'modules/default/defaultmodel',
+    'src/util/datatraversing'
+], function ($, Default, Traversing) {
 
     function Model() {
     }
@@ -9,7 +13,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
         getValue: function () {
             return this.dataValue;
         },
-        getjPath: function (rel, accepts) {
+        getjPath: function (rel) {
             var value = this.module.view._value || {};
             while (value.children && value.children.length > 0) {
                 value = value.children[0];

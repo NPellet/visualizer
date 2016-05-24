@@ -1,8 +1,11 @@
 'use strict';
 
 define([
-    'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/util/util'
-], function (Default, Traversing, Util) {
+    'jquery',
+    'modules/default/defaultcontroller',
+    'src/util/datatraversing',
+    'src/util/util'
+], function ($, Default, Traversing, Util) {
 
     function Controller() {
     }
@@ -53,7 +56,6 @@ define([
     Controller.prototype.variablesIn = ['tree', 'newTree', 'data'];
 
     Controller.prototype.configurationStructure = function () {
-
         var dataJPath = [];
         var data = this.module.getDataFromRel('data');
         if (data) {

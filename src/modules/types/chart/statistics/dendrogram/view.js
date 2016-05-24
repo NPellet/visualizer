@@ -1,6 +1,7 @@
 'use strict';
 
 define([
+    'jquery',
     'modules/default/defaultview',
     'src/util/datatraversing',
     'src/util/api',
@@ -9,14 +10,14 @@ define([
     'lib/jit/jit-custom',
     'src/util/tree',
     'src/util/color'
-], function (Default, Traversing, API, Util, ui, $jit, Tree, Color) {
+], function ($, Default, Traversing, API, Util, ui, $jit, Tree, Color) {
 
     function View() {
     }
 
     $.extend(true, View.prototype, Default, {
 
-        highlightNode: function (nodeID) {
+        highlightNode(nodeID) {
             // TODO fix ?
             //node.setCanvasStyle('shadowBlur', 0, 'start');
             //node.setCanvasStyle('shadowBlur', 10, 'end');
@@ -26,8 +27,7 @@ define([
             //});
         },
 
-        init: function () {
-
+        init() {
             // When we change configuration the method init is called again. Also the case when we change completely of view
             if (!this.dom) {
                 this._id = Util.getNextUniqueId();
@@ -35,11 +35,9 @@ define([
                 this.module.getDomContent().html(this.dom);
             }
 
-
             if (this.dom) {
                 // in the dom exists and the preferences has been changed we need to clean the canvas
                 this.dom.empty();
-
             }
             if (this._rgraph) { // if the dom existedd there was probably a rgraph or when changing of view
                 delete this._rgraph;
@@ -48,17 +46,15 @@ define([
             this.updateOptions();
 
             this.resolveReady();
-
-
         },
 
-        onResize: function () {
+        onResize() {
             this.createDendrogram();
             this.updateDendrogram();
         },
 
 
-        getIdHash: function (currentNode) {
+        getIdHash(currentNode) {
             if (currentNode.id) {
                 this._idHash[currentNode.id] = currentNode;
             }
@@ -69,29 +65,22 @@ define([
             }
         },
 
-
-        /* When a value change this method is called. It will be called for all
-         possible received variable of this module.
-         It will also be called at the beginning and in this case the value is null !
-         */
         update: {
-            tree: function (moduleValue) {
+            tree(moduleValue) {
                 this._value = $.extend(true, new DataObject({}), moduleValue.get());
                 this.updateTree();
             },
-
-            newTree: function (moduleValue) {
+            newTree(moduleValue) {
                 this._tree = moduleValue.get();
                 this.doAnnotation();
             },
-
-            data: function (data) {
+            data(data) {
                 this._data = data.get();
                 this.doAnnotation();
             }
         },
 
-        doAnnotation: function () {
+        doAnnotation() {
             if (this._tree) {
                 var options = this.getOptions();
                 this._value = Tree.annotateTree(this._tree, this._data || [], options);
@@ -99,7 +88,7 @@ define([
             }
         },
 
-        updateTree: function () {
+        updateTree() {
             this._idHash = {};
             this.getIdHash(this._value);
             if (!this._rgraph) {
@@ -109,7 +98,7 @@ define([
             this.updateDendrogram();
         },
 
-        getOptions: function () {
+        getOptions() {
             var options = {};
             var getConf = this.module.getConfiguration.bind(this.module);
             maybePutOption(options, '$color', getConf('jpathColor'));
@@ -118,13 +107,13 @@ define([
             return options;
         },
 
-        updateDendrogram: function () {
+        updateDendrogram() {
             if (!this._rgraph || !this._value) return;
 
             this._rgraph.loadJSON(this._value);
 
             // in each node we had the content of 'label'
-            $jit.Graph.Util.each(this._rgraph.graph, function (node) {
+            $jit.Graph.Util.each(this._rgraph.graph, node => {
                 if (node.data && node.data.label) {
                     node.name = node.data.label;
                 } else {
@@ -134,7 +123,7 @@ define([
             this._rgraph.refresh();
         },
 
-        updateOptions: function () {
+        updateOptions() {
             var cfg = $.proxy(this.module.getConfiguration, this.module);
 
             this._options = {
@@ -143,19 +132,13 @@ define([
             };
         },
 
-
-        createDendrogram: function () {
-            var that = this;
-
-            // ?????? how to put this in the model ?????
-
+        createDendrogram() {
             var actions = this.module.vars_out();
             if (!actions || actions.length == 0) return;
-            var hover = function (node) {
+            var hover = node => {
                 //	self.module.controller.onHover(new DataObject(self._idHash[node.id]), 'node');
-                that.module.controller.onHover(that._idHash[node.id]);
+                this.module.controller.onHover(this._idHash[node.id]);
             };
-
 
             var cfg = $.proxy(this.module.getConfiguration, this.module);
 
@@ -216,18 +199,17 @@ define([
                 },
 
                 Events: {
-                    getRgraph: function (e) {
+                    getRgraph(e) {
                         var src = e.srcElement.id.replace(/-.*/, '');
                         if ($jit.existingInstance[src]) return $jit.existingInstance[src];
                         // maybe we clicked on a label
                         src = e.srcElement.parentElement.id.replace(/-.*/, '');
                         if ($jit.existingInstance[src]) return $jit.existingInstance[src];
-                        return;
                     },
                     enable: true,
                     enableForEdges: true,
                     type: 'Native', // otherwise the events are only on the labels (if auto)
-                    onClick: function (node, eventInfo, e) {
+                    onClick(node, eventInfo, e) {
                         if (!node) return;
                         var rgraph = this.getRgraph(e);
 
@@ -276,11 +258,11 @@ define([
                         }
                     },
                     //		    onMouseMove: function(node, eventInfo, e) {},
-                    onMouseEnter: function (node, eventInfo, e) {
+                    onMouseEnter(node, eventInfo, e) {
                         hover(node);
                         this.getRgraph(e).canvas.getElement().style.cursor = 'pointer';
                     },
-                    onMouseLeave: function (node, eventInfo, e) {
+                    onMouseLeave(node, eventInfo, e) {
                         this.getRgraph(e).canvas.getElement().style.cursor = '';
                     }
                 },
@@ -292,11 +274,9 @@ define([
             // we store in a cache to have access to the rgraph from an ID
             $jit.existingInstance = $jit.existingInstance || {};
             $jit.existingInstance[this._id] = this._rgraph;
-
-
         },
 
-        _doHighlight: function (id, val) {
+        _doHighlight(id, val) {
             if (this._highlighted[id] && val)
                 return;
             if (!this._highlighted[id] && !val)
