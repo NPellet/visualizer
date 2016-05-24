@@ -13,6 +13,7 @@ define([
 ], function ($, Default, Traversing, API, Util, ui, $jit, Tree, Color) {
 
     function View() {
+        this._value = {};
     }
 
     $.extend(true, View.prototype, Default, {
@@ -55,6 +56,7 @@ define([
 
 
         getIdHash(currentNode) {
+            if (!currentNode) return;
             if (currentNode.id) {
                 this._idHash[currentNode.id] = currentNode;
             }
@@ -62,6 +64,23 @@ define([
                 for (var i = 0; i < currentNode.children.length; i++) {
                     this.getIdHash(currentNode.children[i]);
                 }
+            }
+        },
+
+        blank: {
+            tree() {
+                this._value = {};
+                this.updateTree();
+            },
+            newTree() {
+                this._tree = null;
+                this._value = {};
+                this.updateTree();
+            },
+            data() {
+                this._data = null;
+                this._value = {};
+                this.updateTree();
             }
         },
 
@@ -108,9 +127,11 @@ define([
         },
 
         updateDendrogram() {
-            if (!this._rgraph || !this._value) return;
+            if (!this._rgraph) return;
 
             this._rgraph.loadJSON(this._value);
+
+            if (!this._value) return;
 
             // in each node we had the content of 'label'
             $jit.Graph.Util.each(this._rgraph.graph, node => {
