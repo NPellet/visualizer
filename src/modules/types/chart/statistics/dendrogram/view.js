@@ -157,8 +157,10 @@ define([
             var actions = this.module.vars_out();
             if (!actions || actions.length == 0) return;
             var hover = node => {
-                //	self.module.controller.onHover(new DataObject(self._idHash[node.id]), 'node');
                 this.module.controller.onHover(this._idHash[node.id]);
+            };
+            var click = node => {
+                this.module.controller.onClick(this._idHash[node.id]);
             };
 
             var cfg = $.proxy(this.module.getConfiguration, this.module);
@@ -259,26 +261,25 @@ define([
                             if (currentNode.collapsed) {
                                 rgraph.op.expand(currentNode, {
                                     type: 'animate',
-                                    duration: 1000,
+                                    duration: 500,
                                     hideLabels: false,
                                     transition: $jit.Trans.Quart.easeInOut
                                 });
                             } else {
                                 rgraph.op.contract(node.nodeFrom, {
                                     type: 'animate',
-                                    duration: 1000,
+                                    duration: 500,
                                     hideLabels: true,
                                     transition: $jit.Trans.Quart.easeInOut
                                 });
                             }
                         } else {	// click on a node
                             if (!node.ignore) { // hidden node ?
-                                rgraph.onClick(node.id);
+                                // rgraph.onClick(node.id);
+                                click(node);
                             }
-
                         }
                     },
-                    //		    onMouseMove: function(node, eventInfo, e) {},
                     onMouseEnter(node, eventInfo, e) {
                         hover(node);
                         this.getRgraph(e).canvas.getElement().style.cursor = 'pointer';

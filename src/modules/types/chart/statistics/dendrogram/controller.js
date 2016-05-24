@@ -23,7 +23,11 @@ define([
 
     Controller.prototype.events = {
         onHover: {
-            label: 'Hovers a node',
+            label: 'Hover a node',
+            refVariable: ['node']
+        },
+        onClick: {
+            label: 'Click a node',
             refVariable: ['node']
         }
     };
@@ -33,6 +37,13 @@ define([
             return;
         }
         this.createDataFromEvent('onHover', 'node', element);
+    };
+
+    Controller.prototype.onClick = function (element) {
+        if (!element) {
+            return;
+        }
+        this.createDataFromEvent('onClick', 'node', element);
     };
 
     Controller.prototype.references = {

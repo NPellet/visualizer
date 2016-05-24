@@ -1,225 +1,410 @@
 {
-  "version": "2.20.1-0",
-  "grid": {
-	"layers": {
-	  "Default layer": {
-		"name": "Default layer"
-	  }
-	},
-	"xWidth": 10,
-	"yHeight": 10
-  },
-  "modules": [
-	{
-	  "url": "modules/types/chart/statistics/dendrogram/",
-	  "configuration": {
-		"sections": {},
-		"groups": {
-		  "group": [
-			{
-			  "nodeType": [
-				"circle"
-			  ],
-			  "nodeSize": [
-				null
-			  ],
-			  "nodeColor": [
-				[
-				  0,
-				  0,
-				  0,
-				  1
-				]
-			  ],
-			  "labelSize": [
-				null
-			  ],
-			  "labelColor": [
-				[
-				  0,
-				  0,
-				  0,
-				  1
-				]
-			  ],
-			  "edgeWidth": [
-				null
-			  ],
-			  "edgeColor": [
-				[
-				  0,
-				  0,
-				  0,
-				  1
-				]
-			  ],
-			  "strokeWidth": [
-				null
-			  ],
-			  "strokeColor": [
-				[
-				  0,
-				  0,
-				  0,
-				  1
-				]
-			  ]
+	"version": "2.54.3-0",
+	"grid": {
+		"layers": {
+			"Default layer": {
+				"name": "Default layer"
 			}
-		  ]
-		}
-	  },
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 15,
-			"top": 6
-		  },
-		  "size": {
-			"width": 82,
-			"height": 50
-		  },
-		  "zIndex": 0,
-		  "display": true,
-		  "title": "",
-		  "bgColor": [
-			255,
-			255,
-			255,
-			0
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		}
-	  },
-	  "id": 1,
-	  "vars_in": [
-		{
-		  "rel": "tree",
-		  "name": "tree"
-		}
-	  ],
-	  "actions_in": [
-		{}
-	  ],
-	  "vars_out": [
-		{
-		  "event": "onHover",
-		  "rel": "node",
-		  "jpath": [
-			"id"
-		  ],
-		  "name": "id"
-		}
-	  ],
-	  "title": "",
-	  "actions_out": []
+		},
+		"xWidth": 10,
+		"yHeight": 10
 	},
-	{
-	  "url": "modules/types/display/single_value/",
-	  "configuration": {
-		"sections": {},
-		"groups": {
-		  "group": [
-			{
-			  "defaultvalue": [
-				null
-			  ],
-			  "font": [
-				null
-			  ],
-			  "fontcolor": [
-				[
-				  0,
-				  0,
-				  0,
-				  1
+	"modules": [
+		{
+			"url": "modules/types/chart/statistics/dendrogram/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"jpathShape": [
+								[]
+							],
+							"nodeType": [
+								"circle"
+							],
+							"jpathSize": [
+								[]
+							],
+							"nodeSize": [
+								null
+							],
+							"jpathColor": [
+								[]
+							],
+							"nodeColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"labelSize": [
+								null
+							],
+							"labelColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"edgeWidth": [
+								null
+							],
+							"edgeColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"strokeWidth": [
+								null
+							],
+							"strokeColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 15,
+						"top": 6
+					},
+					"size": {
+						"width": 82,
+						"height": 50
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": "tree",
+					"name": "tree"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onHover",
+					"rel": "node",
+					"jpath": [
+						"id"
+					],
+					"name": "id"
+				},
+				{
+					"event": "onClick",
+					"rel": "node",
+					"jpath": [
+						"id"
+					],
+					"name": "id2"
+				}
+			],
+			"title": "",
+			"actions_out": [],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
 				]
-			  ],
-			  "fontsize": [
-				null
-			  ],
-			  "align": [
-				null
-			  ],
-			  "valign": [
-				null
-			  ],
-			  "sprintf": [
-				null
-			  ],
-			  "sprintfOrder": [
-				null
-			  ],
-			  "preformatted": [
-				[]
-			  ],
-			  "append": [
-				[]
-			  ],
-			  "maxEntries": [
-				1
-			  ]
 			}
-		  ]
-		}
-	  },
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 103,
-			"top": 14
-		  },
-		  "size": {
-			"width": 54,
-			"height": 38
-		  },
-		  "zIndex": 0,
-		  "display": true,
-		  "title": "",
-		  "bgColor": [
-			255,
-			255,
-			255,
-			0
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		}
-	  },
-	  "id": 2,
-	  "vars_in": [
+		},
 		{
-		  "rel": "value",
-		  "name": "id"
+			"url": "modules/types/display/single_value/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue": [
+								null
+							],
+							"font": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"fontsize": [
+								null
+							],
+							"align": [
+								null
+							],
+							"valign": [
+								null
+							],
+							"sprintf": [
+								null
+							],
+							"sprintfOrder": [
+								null
+							],
+							"preformatted": [
+								[]
+							],
+							"append": [
+								[]
+							],
+							"maxEntries": [
+								1
+							],
+							"editable": [
+								null
+							],
+							"rendererOptions": [
+								null
+							],
+							"forceType": [
+								null
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 103,
+						"top": 14
+					},
+					"size": {
+						"width": 54,
+						"height": 9
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "id"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"title": "",
+			"vars_out": [],
+			"actions_out": [],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			}
+		},
+		{
+			"url": "modules/types/display/single_value/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"append": [
+								[]
+							],
+							"maxEntries": [
+								1
+							],
+							"editable": [
+								[]
+							],
+							"defaultvalue": [
+								null
+							],
+							"font": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"fontsize": [
+								null
+							],
+							"align": [
+								null
+							],
+							"valign": [
+								null
+							],
+							"rendererOptions": [
+								""
+							],
+							"forceType": [
+								""
+							],
+							"sprintf": [
+								null
+							],
+							"sprintfOrder": [
+								null
+							],
+							"preformatted": [
+								[]
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 105,
+						"top": 34
+					},
+					"size": {
+						"width": 46,
+						"height": 21
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 3,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "id2"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"title": "",
+			"vars_out": [],
+			"actions_out": [],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			}
 		}
-	  ],
-	  "actions_in": [
-		{}
-	  ],
-	  "title": "",
-	  "vars_out": [],
-	  "actions_out": []
+	],
+	"variables": [
+		{
+			"varname": "tree",
+			"jpath": [
+				"tree"
+			]
+		},
+		{
+			"varname": "labels",
+			"jpath": [
+				"labels"
+			]
+		}
+	],
+	"aliases": [],
+	"pouchvariables": [],
+	"configuration": {
+		"title": "No title"
 	}
-  ],
-  "variables": [
-	{
-	  "varname": "tree",
-	  "jpath": [
-		"tree"
-	  ]
-	},
-	{
-	  "varname": "labels",
-	  "jpath": [
-		"labels"
-	  ]
-	}
-  ],
-  "aliases": [],
-  "pouchvariables": [],
-  "configuration": {
-	"title": "No title"
-  }
 }
