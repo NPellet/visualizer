@@ -1,3 +1,17 @@
+<a name="2.55.0"></a>
+# 2.55.0 (2016-05-24)
+
+
+### Bug Fixes
+
+* **periodic_table:** ctrl+click toggles selection as expected ([d1388a6](https://github.com/NPellet/visualizer/commit/d1388a6))
+
+### Features
+
+* **dendrogram:** add onClick event ([5fcc3e3](https://github.com/NPellet/visualizer/commit/5fcc3e3))
+
+
+
 <a name="2.54.2"></a>
 ## 2.54.2 (2016-05-23)
 
