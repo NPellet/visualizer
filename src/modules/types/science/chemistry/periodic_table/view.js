@@ -253,7 +253,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                 });
 
                 if (!found) return;
-                $elements.filter('.' + found).addClass('el-selected');
+                $elements.filter('.' + found).toggleClass('el-selected');
                 that.elementsSelected();
             });
 
@@ -295,7 +295,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
             $elements.click(function (event) {
                 that.unselectElements(event, $elements);
                 var $el = $(this);
-                $el.addClass('el-selected');
+                $el.toggleClass('el-selected');
                 that.elementSelected($el);
                 renderElement($el);
                 that.elementsSelected();
@@ -314,7 +314,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                 var pN = p.substr(6);
                 that.unselectElements(event, $elements);
                 var $selected = $elements.filter('.' + p);
-                $selected.addClass('el-selected');
+                $selected.toggleClass('el-selected');
                 that.module.controller.periodSelected(pN);
                 that.elementsSelected();
             });
@@ -325,7 +325,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                 var gN = g.substr(5);
                 that.unselectElements(event, $elements);
                 var $selected = $elements.filter('.' + g);
-                $selected.addClass('el-selected');
+                $selected.toggleClass('el-selected');
                 that.module.controller.groupSelected(gN);
                 that.elementsSelected();
             });
