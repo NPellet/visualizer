@@ -187,7 +187,7 @@ define([
                 if (this.module.getConfigurationCheckbox('editable', 'yes') && isEditable(this._lastValue)) {
                     div.attr('contenteditable', true);
                     div.on('input', function (e) {
-                        var replaceValue = e.target.innerHTML.replace(/<[^>]*>/g, '');
+                        var replaceValue = e.target.innerText;
                         if (that._lastValueNumber) {
                             replaceValue = +replaceValue;
                         }
