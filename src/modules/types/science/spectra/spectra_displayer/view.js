@@ -965,15 +965,16 @@ define([
             var minInterval = Infinity;
             var maxInterval = -Infinity;
             var interval, i, ii;
+            var MIN_FOR_CONTINUOUS=20;
             if (typeof data[0] === 'number') {
-                if (data.length < 7) return 'discrete';
+                if (data.length < (MIN_FOR_CONTINUOUS*2-1)) return 'discrete';
                 for (i = 0, ii = data.length - 2; i < ii; i += 2) {
                     interval = data[i + 2] - data[i];
                     if (interval > maxInterval) maxInterval = interval;
                     if (interval < minInterval) minInterval = interval;
                 }
             } else {
-                if (data.length < 4) return 'discrete';
+                if (data.length < MIN_FOR_CONTINUOUS) return 'discrete';
                 for (i = 0, ii = data.length - 1; i < ii; i++) {
                     interval = data[i + 1][0] - data[i][0];
                     if (interval > maxInterval) maxInterval = interval;
