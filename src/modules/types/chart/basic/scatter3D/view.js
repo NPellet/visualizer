@@ -1354,7 +1354,6 @@ define([
             var r = NORM_CONSTANT * ZOOM_START;
             var eye = this._polarToCartesian(theta, phi, r);
 
-
             // Lookat the middle of the cube
             var target = new THREE.Vector3(NORM_CONSTANT / 2, NORM_CONSTANT / 2, NORM_CONSTANT / 2);
             that.camera.position.set(eye[0], eye[1], eye[2]);
@@ -1376,6 +1375,7 @@ define([
 
 
         init: function () {
+            var that = this;
             var c = this.module.getConfiguration('defaultPointColor');
             DEFAULT_POINT_COLOR = rgbToHex(c[0], c[1], c[2]);
 
@@ -1385,6 +1385,11 @@ define([
                     height: '100%',
                     width: '100%',
                     overflow: 'hidden'
+                });
+
+                this.dom.on('dblclick', function () {
+                    that.controls.reset();
+                    that._zoomToFit();
                 });
                 this.module.getDomContent().html(this.dom);
             }
