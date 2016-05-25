@@ -551,7 +551,7 @@ define([
     functions.object.toscreen = function ($element, value, root, options) {
         if (options.twig) {
             const template = functions.object.twig.twig({data: options.twig});
-            const render = template.renderAsync(value);
+            const render = template.renderAsync(JSON.parse(JSON.stringify(value)));
             $element.html(render.html);
             render.render();
         } else if (options.toJSON) {
