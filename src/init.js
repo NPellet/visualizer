@@ -50,6 +50,7 @@ require.config({
         marked: 'components/marked/lib/marked',
         //mathjax:            'components/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML&amp;delayStartupUntil=configured',
         modernizr: 'components/modernizr/modernizr',
+        'nmr-simulation': 'components/nmr-simulation/dist/nmr-simulation',
         openchemlib: 'components/openchemlib/dist',
         papaparse: 'components/papa-parse/papaparse.min',
         plot: 'lib/plot/plot',

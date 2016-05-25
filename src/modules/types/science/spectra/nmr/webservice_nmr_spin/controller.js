@@ -1,6 +1,10 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/datatraversing', 'src/util/urldata'], function (Default, API, Traversing, URL) {
+define([
+    'jquery',
+    'modules/default/defaultcontroller',
+    'nmr-simulation'
+], function ($, Default, simulation) {
 
     function Controller() {
     }
@@ -16,57 +20,72 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/datatrave
         cssClass: 'webservice_nmr_spin'
     };
 
-    Controller.prototype.initimpl = function () {
-        this.result = null;
-        this.request = null;
-    };
+    var regDelta = /^delta_(\d+)/;
+    var regCoupling = /^coupling_(\d+)_(\d+)/;
 
     Controller.prototype.doAnalysis = function () {
-
-        var that = this,
-            url = this.module.getConfiguration('url'),
-            reg,
-            val,
-            variable;
-
-        // Replace all variables in the URL
-        reg = /\<var:([a-zA-Z0-9]+)\>/;
-        while (val = reg.exec(url)) {
-            variable = API.getRepositoryData().get(val[1]) || [''];
-            variable = variable[1];
-            url = url.replace('<var:' + val[1] + '>', encodeURIComponent(variable));
-        }
-
-        this.url = url;
-
         var data = this.module.view.system.serializeArray();
-        var toSend = {};
-        for (var i = 0; i < data.length; i++) {
-            toSend[data[i].name] = data[i].value;
+
+        var chemicalShifts = [];
+        var multiplicity = [];
+        var options = {};
+
+        var name, res, i, j;
+        for (i = 0; i < data.length; i++) {
+            name = data[i].name;
+            if (res = regDelta.exec(name)) {
+                chemicalShifts[res[1]] = +data[i].value;
+                multiplicity[res[1]] = 2;
+            }
         }
 
-        this.module.view.lock();
+        var coupling = new Array(chemicalShifts.length);
+        for (i = 0; i < chemicalShifts.length; i++) {
+            coupling[i] = new Array(chemicalShifts.length);
+            for (j = 0; j < chemicalShifts.length; j++) {
+                coupling[i][j] = 0;
+            }
+        }
 
-        URL.post(url, toSend).then(function (data) {
-            that.module.view.unlock();
-            that.onAnalysisDone(data);
-        });
+        for (i = 0; i < data.length; i++) {
+            name = data[i].name;
+            if (regDelta.test(name)) {
+                // already handled
+            } else if (res = regCoupling.exec(name)) {
+                coupling[res[1]][res[2]] = +data[i].value;
+                coupling[res[2]][res[1]] = +data[i].value;
+            } else {
+                options[name] = +data[i].value;
+            }
+        }
 
+        var spinSystem = new simulation.SpinSystem(chemicalShifts, coupling, multiplicity);
+        var spectrum = simulation.simulate1D(spinSystem, options);
+
+        var chart = {
+            data: [{
+                x: getX(options.from, options.to, options.nbPoints),
+                y: spectrum
+            }]
+        };
+
+        this.createDataFromEvent('onSearchReturn', 'results', chart);
     };
 
-
-    Controller.prototype.onAnalysisDone = function (elements) {
-        this.createDataFromEvent('onSearchReturn', 'results', elements);
-        this.createDataFromEvent('onSearchReturn', 'url', this.url);
-
-    };
+    function getX(from, to, nbPoints) {
+        const result = new Array(nbPoints);
+        const step = (to - from) / nbPoints;
+        var value = from;
+        for (var i = 0; i < nbPoints; i++) {
+            result[i] = value;
+            value += step;
+        }
+        return result;
+    }
 
     Controller.prototype.references = {
         results: {
-            label: 'Results'
-        },
-        url: {
-            label: 'URL'
+            label: 'Spectrum'
         }
     };
 
@@ -86,10 +105,6 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/datatrave
                         type: 'list'
                     },
                     fields: {
-                        url: {
-                            type: 'text',
-                            title: 'Service URL'
-                        },
                         systemSize: {
                             type: 'combo',
                             title: 'Spin system',
@@ -131,7 +146,6 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/datatrave
     };
 
     Controller.prototype.configAliases = {
-        url: ['groups', 'group', 0, 'url', 0],
         button: ['groups', 'group', 0, 'button', 0],
         systemSize: ['groups', 'group', 0, 'systemSize'],
         buttonlabel: ['groups', 'group', 0, 'buttonlabel', 0],

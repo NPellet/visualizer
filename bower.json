@@ -64,6 +64,7 @@
     "modernizr": "2.8.3",
     "moment": "2.13.0",
     "moment-duration-format": "~1.3.0",
+    "nmr-simulation": "0.0.4",
     "notifyjs": "0.3.2",
     "numeral": "~1.5.3",
     "onde": "cheminfo/onde#126c1571a3b212abbefb5351ad9b192cef35e7a1",

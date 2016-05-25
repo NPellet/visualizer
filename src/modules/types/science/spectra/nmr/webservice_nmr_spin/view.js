@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview'], function (Default) {
+define(['jquery', 'modules/default/defaultview'], function ($, Default) {
 
     function View() {
     }
@@ -42,7 +42,7 @@ define(['modules/default/defaultview'], function (Default) {
                     that.module.controller.doAnalysis();
                 });
 
-                this.system.on('change', 'select, input[type=text]', function () {
+                this.system.on('change', 'select', function () {
                     that.module.controller.doAnalysis();
                 });
             }
@@ -100,14 +100,21 @@ define(['modules/default/defaultview'], function (Default) {
             content.push('<option value="500">500 MHz</option>');
             content.push('<option value="600">600 MHz</option>');
             content.push('<option value="800">800 MHz</option>');
-            content.push('<option value="800">800 MHz</option>');
             content.push('<option value="1000">1000 MHz</option>');
             content.push('</select></p>');
 
-            content.push('<p>Line width: <input onchange="if (this.value<0.5) {alert(\'The minimal resolution is 0.5\'); this.value=0.5;}" type="text" value=1 name="lineWidth" size=4 id="lineWidth"> Hz.');
+            content.push('<p>Line width: <input type="text" value=1 name="lineWidth" size=4 id="lineWidth" /> Hz.</p>');
 
-
-            content.push('');
+            content.push('<p>Number of points: <select id="nbPoints" name="nbPoints">');
+            content.push('<option value="1024">1k</option>');
+            content.push('<option value="2048">2k</option>');
+            content.push('<option value="4096">4k</option>');
+            content.push('<option value="8192">8k</option>');
+            content.push('<option value="16384" selected>16k</option>');
+            content.push('<option value="32768">32k</option>');
+            content.push('<option value="65536">64k</option>');
+            content.push('<option value="131072">128k</option>');
+            content.push('</select></p>');
 
             return '<form>' + content.join('') + '</form>';
         },
