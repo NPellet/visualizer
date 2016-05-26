@@ -1762,7 +1762,7 @@ define([
             this._meta = new DataObject();
             var that = this;
             if (!Array.isArray(value.data) || !value.data[0] || !Array.isArray(value.data[0].y)) return;
-            if (value.data.length > 0) {
+            if (value.data.length > 1) {
                 Debug.warn('Scatter 3D module will merge series together');
             }
 
