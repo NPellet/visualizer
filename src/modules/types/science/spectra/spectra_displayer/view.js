@@ -641,10 +641,10 @@ define([
 
             annotations(value, varName) {
                 this.annotations[varName] = this.annotations[varName] || [];
-                var annotations = value.get();
+                const annotations = value.get();
                 for (let i = 0; i < annotations.length; i++) {
-                    var annotation = annotations[i];
-                    var shape = this.graph.newShape(String(annotation.type), annotation);
+                    let annotation = annotations[i];
+                    let shape = this.graph.newShape(String(annotation.type), annotation);
                     this.annotations[varName][i] = shape;
 
                     shape.autoAxes();
