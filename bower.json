@@ -54,7 +54,7 @@
     "jsNMR": "NPellet/jsNMR#73cd9c371c8ebc53c32b7f6e6c36077e8a407d99",
     "json-chart": "1.1.0",
     "jsoneditor": "5.5.2",
-    "jszip": "2.5.0",
+    "jszip": "3.0.0",
     "leaflet": "0.7.7",
     "leaflet-omnivore": "0.3.2",
     "lodash": "4.11.2",
