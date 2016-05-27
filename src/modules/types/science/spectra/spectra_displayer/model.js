@@ -15,16 +15,16 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
     $.extend(true, Model.prototype, Default, {
 
         setXBoundaries: function (min, max) {
-            min = min | 0;
-            max = max | 0;
+            min = min || 0;
+            max = max || 0;
             this.boundaries.xMin = min;
             this.boundaries.xMax = max;
             this.module.controller.zoomChanged('X', min, max);
         },
 
         setYBoundaries: function (min, max) {
-            min = min | 0;
-            max = max | 0;
+            min = min || 0;
+            max = max || 0;
             this.boundaries.yMin = min;
             this.boundaries.yMax = max;
             this.module.controller.zoomChanged('Y', min, max);

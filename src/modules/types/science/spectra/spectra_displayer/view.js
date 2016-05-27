@@ -177,7 +177,7 @@ define([
                     if (!cfg('displayXAxis', true)) {
                         xAxis.hide();
                     }
-                    xAxis.on('zoom', (min, max) => {
+                    xAxis.on('zoom', ([min, max]) => {
                         this.module.model.setXBoundaries(min, max);
                     });
                     if (cfgCheckbox('FitYToAxisOnFromTo', 'rescale')) {
@@ -270,9 +270,9 @@ define([
                     if (!cfg('displayYAxis', true)) {
                         yAxis.hide();
                     }
-                    // yAxis.on('zoom', function (min, max) {
-                    //     this.module.model.setYBoundaries(min, max);
-                    // });
+                    yAxis.on('zoom', ([min, max]) => {
+                        this.module.model.setYBoundaries(min, max);
+                    });
                 } else {
                     yAxis
                         .setPrimaryGrid(false)
