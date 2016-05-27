@@ -210,7 +210,7 @@ define([
                             data = new Blob([data], {content_type: options.contentType});
                         }
                     }
-                } else {
+                } else if (!(data instanceof Blob)) {
                     throw new Error('Data must be Blob or base64 dataUrl');
                 }
 
