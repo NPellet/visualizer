@@ -243,10 +243,14 @@ define([
                 const _att = this.lastDoc._attachments[name];
                 if (!_att) throw new Error('The attachment ' + name + ' does not exist');
                 const req = superagent.get(this.docUrl + '/' + name).withCredentials();
+                if (options.responseType) {
+                    req.responseType(options.responseType);
+                }
                 if (_att) req.set('Accept', this.lastDoc._attachments[name].content_type);
                 return req.query({rev: this.lastDoc._rev})
                     .then(res => {
                         if (options.raw) return res.text;
+                        else if (options.responseType === 'blob') return res.xhr.response;
                         return res.body;
                     });
             });
