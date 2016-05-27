@@ -50,6 +50,16 @@ module.exports = function (grunt) {
                         standalone: 'mimeTypes'
                     }
                 }
+            },
+            superagent: {
+                files: {
+                    'src/browserified/superagent/index.js': ['./node_modules/superagent/lib/node/index.js']
+                },
+                options: {
+                    browserifyOptions: {
+                        standalone: 'superagent'
+                    }
+                }
             }
         },
         pkg: grunt.file.readJSON('package.json'),
@@ -138,7 +148,7 @@ module.exports = function (grunt) {
                             './twig.js/twig.*',
                             './onde/src/*',
                             ['./spectrum/spectrum.js', './spectrum/spectrum.css'],
-                            './superagent-dist/superagent.js',
+                            './superagent/superagent.js',
                             './modernizr/modernizr.js',
                             './lodash/dist/lodash.min.js',
                             './bowser/bowser.min.js',

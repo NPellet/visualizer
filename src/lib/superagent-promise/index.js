@@ -1,7 +1,6 @@
 'use strict';
 // https://github.com/lightsofapollo/superagent-promise
-define(['components/superagent-dist/superagent'], function (superagent) {
-
+define(['browserified/superagent/index'], function (superagent) {
 /**
  * Promise wrapper for superagent
  */
@@ -118,6 +117,7 @@ function wrap(superagent, Promise) {
     };
 
     // Export the request builder
+
     return request;
 }
 
