@@ -324,7 +324,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                         },
                         data: {
                             type: 'jscode',
-                            title: 'Filter',
+                            title: 'Data',
                             default: '[]',
                             displayTarget: ['saveInView']
                         }
