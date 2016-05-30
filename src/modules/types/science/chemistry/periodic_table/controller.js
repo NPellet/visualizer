@@ -244,6 +244,14 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
                             mode: 'html',
                             displayTarget: ['hp'],
                             default: '<div class="element-data"><p class="Z">{{ element.Z }}</p><h2 class="element-name">{{ element.symbol }}</h2><p>{{ element.name }}</p></div>'
+                        },
+                        useHighlights: {
+                            type: 'checkbox',
+                            title: 'Use highlights',
+                            options: {
+                                yes: 'Yes'
+                            },
+                            default: ['yes']
                         }
                     }
                 },
@@ -262,6 +270,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
         templateSource: ['groups', 'group', 0, 'templateSource', 0],
         hltemplate: ['groups', 'group', 0, 'hltemplate', 0],
         hltemplateSource: ['groups', 'group', 0, 'hltemplateSource', 0],
+        useHighlights: ['groups', 'group', 0, 'useHighlights', 0],
         foreground: ['groups', 'foreground', 0, 'mode', 0],
         background: ['groups', 'background', 0, 'mode', 0],
         foregroundStep: ['groups', 'foreground', 0, 'step', 0],
