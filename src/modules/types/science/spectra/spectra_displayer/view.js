@@ -982,9 +982,9 @@ define([
             var minInterval = Infinity;
             var maxInterval = -Infinity;
             var interval, i, ii;
-            var MIN_FOR_CONTINUOUS=20;
+            var MIN_FOR_CONTINUOUS = 20;
             if (typeof data[0] === 'number') {
-                if (data.length < (MIN_FOR_CONTINUOUS*2-1)) return 'discrete';
+                if (data.length < (MIN_FOR_CONTINUOUS * 2 - 1)) return 'discrete';
                 for (i = 0, ii = data.length - 2; i < ii; i += 2) {
                     interval = data[i + 2] - data[i];
                     if (interval > maxInterval) maxInterval = interval;

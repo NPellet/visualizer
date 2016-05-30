@@ -133,7 +133,6 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                 return String(el.label) === 'atom';
             });
 
-            debugger;
             if (this.module.getConfigurationCheckbox('useHighlights', 'yes')) {
                 for (var i = 0; i < elements.length; i++) {
                     elements[i]._highlight = elements[i].name;
