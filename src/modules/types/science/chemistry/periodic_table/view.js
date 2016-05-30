@@ -169,7 +169,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                                 dynamicTyping: true
                             }
                         );
-                        obj = obj.data.slice(1);
+                        obj = obj.data;
                     } catch (e) {
                         console.error('Could not parse elements');
                         return;
