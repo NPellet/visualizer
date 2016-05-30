@@ -558,12 +558,29 @@ define([
                             break;
                     }
 
+                    var serieType = aData.type;
+                    var hasColor = false;
+                    if (!serieType && Array.isArray(aData.color)) {
+                        hasColor = true;
+                        serieType = 'line.color';
+                    }
+                    var serie = this.graph.newSerie(serieName, this.getSerieOptions(varname, aData._highlight, valFinal), serieType);
 
-                    var serie = this.graph.newSerie(serieName, this.getSerieOptions(varname, aData._highlight, valFinal), aData.type || undefined);
                     serie.setLabel(serieLabel);
 
                     this.normalize(valFinal, varname);
                     serie.setData(valFinal);
+
+                    if (hasColor) {
+                        let colors = aData.color;
+                        if (!Array.isArray(colors)) {
+                            throw new Error('Serie colors must be an array');
+                        }
+                        if (!Array.isArray(colors[0])) {
+                            colors = [colors];
+                        }
+                        serie.setColors(colors);
+                    }
 
                     if (aData.info) {
                         serie.infos = aData.info;
