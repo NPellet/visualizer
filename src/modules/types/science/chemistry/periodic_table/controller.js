@@ -176,6 +176,12 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
                         type: 'list'
                     },
                     fields: {
+                        varName: {
+                            type: 'text',
+                            title: 'Variable name',
+                            displayTarget: ['elPref', 'elUrl'],
+                            default: ''
+                        },
                         elementsSource: {
                             type: 'combo',
                             title: 'Elements source',
@@ -248,6 +254,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
     };
 
     Controller.prototype.configAliases = {
+        varName: ['groups', 'group', 0, 'varName', 0],
         elementsSource: ['groups', 'group', 0, 'elementsSource', 0],
         elementsUrl: ['groups', 'group', 0, 'elementsUrl', 0],
         elementsCode: ['groups', 'group', 0, 'elementsCode', 0],

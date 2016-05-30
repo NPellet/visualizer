@@ -117,8 +117,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                 var sourceUrl = this.module.getConfiguration('elementsUrl');
 
                 if (source === 'varin' && value) {
-                    this.dataElements = value;
-                    this.elements = JSON.parse(JSON.stringify(value.resurrect()));
+                    this.setElements(value);
                 } else if (source === 'pref') {
                     this.parseElements(toParse);
                 } else if (source === 'url') {
@@ -129,8 +128,21 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
             });
         },
 
-        getElement($el) {
+        setElements(value) {
+            var elements = value.filter(el => {
+                return String(el.label) === 'atom';
+            });
+            this.metadata = value.filter(el => {
+                return String(el.label) !== 'atom';
+            });
 
+            var varName = this.module.getConfiguration('varName');
+            if (varName && this.module.getConfiguration('elementsSource') !== 'varin') {
+                API.createData(varName, value);
+            }
+
+            this.dataElements = DataObject.check(elements, true);
+            this.elements = JSON.parse(JSON.stringify(DataObject.resurrect(elements)));
         },
 
         parseElements(toParse) {
@@ -159,8 +171,8 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
             } else {
                 obj = toParse;
             }
-            this.dataElements = DataObject.check(obj, true);
-            this.elements = JSON.parse(JSON.stringify(DataObject.resurrect(obj)));
+
+            this.setElements(obj);
         },
 
         render() {
