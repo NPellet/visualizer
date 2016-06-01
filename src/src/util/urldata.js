@@ -4,9 +4,12 @@ define(['superagent', 'src/util/lru', 'src/util/debug'], function (superagent, L
 
     var pendings = {};
     var credentials = {};
+    var DEFAULT_STORE_NAME = 'urlData';
+    var DEFAULT_STORE_DB_LIMIT = 500;
 
-    function doByUrl(url, headers) {
+    function doByUrl(url, headers, options) {
         var host, withCredentials;
+        var storeName = options.storeName || DEFAULT_STORE_NAME;
         try {
             host = new URL(url).host;
         } catch (e) {
@@ -30,33 +33,30 @@ define(['superagent', 'src/util/lru', 'src/util/debug'], function (superagent, L
             } else {
                 var data = res.body || res.text;
                 Debug.info('DataURL: Found ' + url + ' by AJAX');
-                // We set 20 data in memory, 500 in local database
-                if (!LRU.exists('urlData')) {
-                    LRU.create('urlData', 20, 500);
-                }
-                LRU.store('urlData', url, data);
+                LRU.create(storeName, options.databaseLimit || DEFAULT_STORE_DB_LIMIT);
+                LRU.store(storeName, url, data);
                 return data;
             }
         }, function (err) {
             if (err.status === 401 && credentials[host] === undefined) {
                 credentials[host] = true;
-                return doByUrl(url, headers);
+                return doByUrl(url, headers, options);
             }
             throw err;
         });
 
     }
 
-    function doLRUOrAjax(url, force, timeout, headers) {
+    function doLRUOrAjax(url, force, timeout, headers, options) {
         // Check in the memory if the url exists
         Debug.debug('DataURL: Looking in LRU for ' + url + ' with timeout of ' + timeout + ' seconds');
-        return doLRU(url).then(function foundLRU(data) {
+        return doLRU(url, options).then(function foundLRU(data) {
             Debug.debug('DataURL: Found ' + url + ' in local DB. Timeout: ' + data.timeout);
 
             // If timeouted. If no timeout is defined, then the link is assumed permanent
             if (timeout !== undefined && (Date.now() - data.timeout > timeout * 1000)) {
                 Debug.debug('DataURL: URL is over timeout threshold. Looking by AJAX');
-                return doByUrl(url, headers).catch(function notFoundAjax() {
+                return doByUrl(url, headers, options).catch(function notFoundAjax() {
                     Debug.debug('DataURL: Failed in retrieving URL by AJAX. Fallback to cached version');
                     return data.data;
                 });
@@ -67,18 +67,19 @@ define(['superagent', 'src/util/lru', 'src/util/debug'], function (superagent, L
 
         }, function notFoundLRU() {
             Debug.debug('DataURL: URL ' + url + ' not found in LRU. Look for AJAX');
-            return doByUrl(url, headers);
+            return doByUrl(url, headers, options);
         });
     }
 
-    function doLRU(url) {
+    function doLRU(url, options) {
         Debug.debug('DataURL: Looking into LRU for ' + url);
-        return Promise.resolve(LRU.get('urlData', url));
+        return Promise.resolve(LRU.get(options.storeName || DEFAULT_STORE_NAME, url));
     }
 
     return {
 
-        get: function urldataGet(url, force, timeout, headers) {
+        get: function urldataGet(url, force, timeout, headers, options) {
+            options = options || {};
             if (pendings[url]) {
                 return pendings[url];
             }
@@ -99,14 +100,14 @@ define(['superagent', 'src/util/lru', 'src/util/debug'], function (superagent, L
             Debug.debug('DataURL: getting ' + url + ' with force set to ' + force + ' and timeout to ' + timeout);
 
             if (force || timeout < 0 || typeof timeout === 'undefined') {
-                return doByUrl(url, headers).catch(function notFoundForceAjax() {
+                return doByUrl(url, headers, options).catch(function notFoundForceAjax() {
                     // If ajax fails (no internet), go for LRU
-                    return doLRU(url).then(function foundLRUForceAjax(data) {
+                    return doLRU(url, options).then(function foundLRUForceAjax(data) {
                         return data.data;
                     });
                 });
             } else {
-                return doLRUOrAjax(url, force, timeout, headers);
+                return doLRUOrAjax(url, force, timeout, headers, options);
             }
         },
 
@@ -127,18 +128,10 @@ define(['superagent', 'src/util/lru', 'src/util/debug'], function (superagent, L
             });
         },
 
-        emptyMemory: function emptyMemory() {
-            LRU.empty('urlData', true, false);
-        },
-
-        emptyDB: function emptyDB() {
-            LRU.empty('urlData', false, true);
-        },
-
-        emptyAll: function emptyAll() {
-            LRU.empty('urlData', true, true);
+        empty: function (options) {
+            options = options || {};
+            LRU.empty(options.storeName || DEFAULT_STORE_NAME);
         }
-
     };
 
 });

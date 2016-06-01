@@ -2,83 +2,10 @@
 
 // LRU
 define(['jquery', 'src/util/debug'], function ($, Debug) {
-
-    var memory = {},
-        memoryHead = {},
-        memoryCount = {},
-        memoryLimit = {};
-
     var indexedDB, IDBTransaction, IDBKeyRange;
     var db, dbname = 'cilru';
 
-    function getFromMemory(store, index) {
-        var obj, head;
-        if (memory[store] && memory[store][index]) {
-
-            head = memoryHead[store];
-
-            obj = memory[store][index];
-            obj.prev = head;
-            obj.next = head.next;
-            head.next.prev = obj;
-            head.next = obj;
-
-            memoryHead[store] = obj;
-            return obj.data;
-        }
-    }
-
-    function storeInMemory(store, index, data) {
-        var toStore, toDelete, head;
-        if (memory[store] && memoryCount[store] !== undefined && memoryLimit[store]) {
-            head = memoryHead[store];
-            if (memory[store][index])
-                return getFromMemory(store, index);
-
-            toStore = {data: {data: data, timeout: Date.now()}};
-
-            if (typeof head == 'undefined') {
-                toStore.prev = toStore;
-                toStore.next = toStore;
-            } else {
-                toStore.prev = head.prev;
-                toStore.next = head.next;
-                head.next.prev = toStore;
-                head.next = toStore;
-            }
-
-            memoryHead[store] = toStore;
-            // Effictively store the data
-            memory[store][index] = toStore;
-            memoryCount[store]++;
-
-            // Remove oldest one
-            if (memoryCount[store] > memoryLimit[store] && head) {
-                toDelete = head.next;
-                head.next.next.prev = head;
-                head.next = head.next.next;
-                toDelete.next.next = undefined;
-                toDelete.next.prev = undefined;
-                //delete toDelete; WTF
-                memoryCount[store]--;
-            }
-
-            return data;
-        }
-    }
-
-    function createStoreMemory(store, limit) {
-        limit = limit || 50;
-        if (!memory[store]) {
-            memory[store] = {};
-            memoryCount[store] = 0;
-        }
-
-        memoryLimit[store] = limit;
-    }
-
     function createStoreDB(store, limit) {
-        limit = limit || 500;
         var storeName = store;
         var deferred = $.Deferred();
 
@@ -89,18 +16,29 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
 
             lruGet.onsuccess = function (e) {
                 var lru = e.target.result;
-                // Add the store only if it doesn't exist
-                if (!lru)
-                    store.put({
-                        index: '__lrudata' + storeName,
-                        data: {},
-                        store: storeName,
-                        key: '__lrudata',
-                        _count: 0,
-                        _limit: limit
-                    });
+                var toStore = {
+                    index: '__lrudata' + storeName,
+                    data: {},
+                    store: storeName,
+                    _count: 0,
+                    _limit: limit
+                };
+                if (lru) {
+                    toStore.data = lru.data;
+                    toStore._count = lru._count;
+                    if (!limit) toStore._limit = lru._limit;
+                }
+                var req = store.put(toStore);
+                req.onsuccess = function (e) {
+                    Debug.info('success storing store', e);
+                    deferred.resolve();
+                };
+                req.onerror = function (e) {
+                    Debug.error('error storing store ' + storeName, e);
+                    deferred.reject();
+                };
             };
-            deferred.resolve();
+
         }, function () {
             Debug.warn('IDB opening failure');
             deferred.reject();
@@ -109,11 +47,6 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
         return deferred;
     }
 
-    function emptyMemory(store) {
-        memoryCount[store] = 0;
-        memory[store] = {};
-        memoryHead[store] = undefined;
-    }
 
     function openDb() {
 
@@ -135,7 +68,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
             return ready;
         }
 
-        var openrequest = indexedDB.open(dbname, 1);
+        var openrequest = indexedDB.open(dbname, 2);
 
         // Database is open
         openrequest.onsuccess = function (e) {
@@ -152,16 +85,18 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
 
         openrequest.onupgradeneeded = function (e) {
             db = e.target.result;
-            if (db.objectStoreNames.contains('lru'))
-                return;
-            var objectStore = db.createObjectStore('lru', {keyPath: 'index'});
-            objectStore.createIndex('key', 'key', {unique: true});
-            objectStore.createIndex('store', 'store', {unique: false});
+            switch (e.oldVersion) {
+                case 0:
+                    if (db.objectStoreNames.contains('lru'))
+                        return;
+                    var objectStore = db.createObjectStore('lru', {keyPath: 'index'});
+                    objectStore.createIndex('key', 'key', {unique: true});
+                    objectStore.createIndex('store', 'store', {unique: false});
+                case 1:
+                    if (!objectStore) objectStore = e.currentTarget.transaction.objectStore('lru');
+                    objectStore.deleteIndex('key');
 
-            objectStore.onsuccess = function () {
-
-            };
-
+            }
         };
 
         return ready;
@@ -171,12 +106,12 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
 
         var deferred = $.Deferred();
 
+
         $.when(openDb()).then(function () {
 
             var store = db.transaction('lru', 'readwrite').objectStore('lru'),
                 getter = store.get(storeName + index),
-                data,
-                defGet = $.Deferred(), defSet = $.Deferred();
+                defGet = $.Deferred();
 
             getter.onsuccess = function (e) {
 
@@ -186,25 +121,26 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
                     defGet.reject();
             };
 
-            getter = store.get('__lrudata' + storeName);
-            getter.onsuccess = function (e) {
+            var getStore = store.get('__lrudata' + storeName);
+            getStore.onsuccess = function (e) {
                 var lru = e.target.result;
-
                 if (!lru)
-                    return defGet.reject();
+                    return;
 
-                lru.data[index] = Date.now(); // Update the date of the object
-                var setter = store.put(lru);
+                if (lru.data[index]) {
+                    lru.data[index] = Date.now(); // Update the date of the object
+                    var setter = store.put(lru);
 
-                setter.onsuccess = function (e) {
-                    defSet.resolve();
-                };
+                    setter.onsuccess = function (e) {
+                        Debug.info('success update resource\'s timestamp');
+                    };
+                }
+
             };
 
-            $.when(defGet, defSet).then(function (data) {
+            $.when(defGet).then(function (data) {
 
                 // A getter from the db must trigger a setter in the memory
-                storeInMemory(storeName, index, data);
                 deferred.resolve(data);
             }, function () {
                 deferred.reject();
@@ -230,8 +166,15 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
                 data: {
                     data: data,
                     timeout: Date.now()
-                }, index: storeName + index, key: index, store: storeName
+                }, index: storeName + index, store: storeName
             });
+
+            storingRequest.onsuccess = function (e) {
+                Debug.info('success storing data', e);
+            };
+            storingRequest.onerror = function (e) {
+                Debug.error('error storing data', e);
+            };
             var lruGet = store.get('__lrudata' + storeName);
             lruGet.onsuccess = function (e) {
                 var lru = e.target.result;
@@ -241,34 +184,38 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
                 if (!lru.data)
                     lru.data = {};
 
+
                 if (!lru.data[index]) {
-                    lru['_count'] = 0 || lru['_count'] + 1;
+                    lru['_count'] = lru['_count'] + 1;
                 }
 
                 lru.data[index] = Date.now();
 
                 // We overflow the limit
                 if (lru._count > lru._limit) {
-                    // We have to look for the oldest timestamp
-                    var time = Date.now(), oldestIndex;
-                    for (var i in lru.data) {
-                        if (lru.data[i] < time) {
-                            time = lru.data[i];
-                            oldestIndex = i;
+                    // We have to look for the oldest timestamps
+                    var keys = Object.keys(lru.data);
+                    keys.sort(function (a, b) {
+                        // a goes first if timestamp smaller
+                        if (lru.data[a] < lru.data[b]) {
+                            return -1;
+                        } else if (lru.data[a] > lru.data[b]) {
+                            return 1;
+                        } else {
+                            return 0;
                         }
+                    });
+
+                    for (var i = 0; i < lru._count - lru._limit; i++) {
+                        delete lru.data[keys[i]];
+                        store.delete(storeName + keys[i]);
                     }
-
-                    delete lru.data[oldestIndex];
-
-                    lru._count--;
-                    // The oldest index is now known
-                    var deleteRequest = store.delete(storeName + oldestIndex);
+                    lru._count = lru._limit;
                 }
                 store.put({
                     index: '__lrudata' + storeName,
                     data: lru.data,
                     store: storeName,
-                    key: '__lrudata',
                     _count: lru._count,
                     _limit: lru._limit
                 });
@@ -289,43 +236,21 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
 
     return {
 
-        useDb: function (dbtouse) {
-            dbname = dbtouse;
-        },
-
-        create: function (store, limitMemory, limitDB) {
-            createStoreMemory(store, limitMemory);
-            createStoreDB(store, limitDB);
+        create: function (store, limit) {
+            createStoreDB(store, limit);
         },
 
         get: function (store, index) {
-            var result;
-
-            if ((result = getFromMemory(store, index)) != undefined)
-                return result;
-
-            if ((result = getFromDB(store, index)) != undefined)
-                return result;
+            return getFromDB(store, index);
         },
 
         store: function (store, index, value) {
-
-            // Storing goes into both memory and db
-            storeInMemory(store, index, value);
             storeInDb(store, index, value); // Remember, this is asynchronous, but never mind, we don't need to wait to continue
             return value;
         },
 
-        empty: function (store, memory, db) {
-            if (memory)
-                emptyMemory(store);
-
-            if (db)
-                emptyDb(store);
-        },
-
-        exists: function (store) {
-            return (memory[store]);
+        empty: function (store) {
+            emptyDb(store);
         }
     };
 
