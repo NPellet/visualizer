@@ -55,6 +55,8 @@ define([
     function doGrid(ctx) {
         ctx.$container.html('');
 
+        ctx.ignoreMyHighlights = ctx.module.getConfigurationCheckbox('slickCheck', 'ignoreMyHighlights')
+
         var columns = ctx.getAllSlickColumns().filter(filterSpecialColumns);
 
         var cids = _.map(columns, 'id');
@@ -385,7 +387,7 @@ define([
             // When scrolling fast, no mouseLeave event takes place
             // Therefore we also have to un-highlight here
             if (ctx._hl) {
-                API.highlightId(ctx._hl, 0);
+               ctx.module.model.highlightId(ctx._hl, 0);
             }
 
             ctx.count = ctx.count === undefined ? 0 : ctx.count;
@@ -398,7 +400,8 @@ define([
             var hl = itemInfo.item._highlight;
             ctx._hl = hl;
             if (hl) {
-                API.highlightId(hl, 1);
+                debugger;
+               ctx.module.model.highlightId(hl, 1);
                 lastHighlight = hl;
             }
             ctx.module.controller.onHover(itemInfo.idx, itemInfo.item);
@@ -413,9 +416,9 @@ define([
             if (!itemInfo) return;
             var hl = itemInfo.item._highlight;
             if (hl) {
-                API.highlightId(hl, 0);
+               ctx.module.model.highlightId(hl, 0);
             } else if (lastHighlight) {
-                API.highlightId(lastHighlight, 0);
+               ctx.module.model.highlightId(lastHighlight, 0);
             }
 
         });
@@ -1401,7 +1404,10 @@ define([
 
             for (var i = 0; i < hl.length; i++) {
                 (function (i) {
-                    API.listenHighlight({_highlight: hl[i]}, function (onOff, key) {
+                    API.listenHighlight({_highlight: hl[i]}, function (onOff, key, killerId, senderId) {
+                        if (that.ignoreMyHighlights && senderId === that.module.getId()) {
+                            return;
+                        }
                         if (!Array.isArray(key)) {
                             key = [key];
                         }
