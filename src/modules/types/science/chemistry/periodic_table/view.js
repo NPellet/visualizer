@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src/util/colorbar', 'src/util/color', 'components/papa-parse/papaparse.min', 'superagent', 'src/util/api', 'lodash'], function (Default, Twig, Debug, Colorbar, Color, Papa, superagent, API, _) {
+define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src/util/colorbar', 'src/util/color', 'components/papa-parse/papaparse.min', 'src/util/api', 'lodash', 'src/util/urldata'], function (Default, Twig, Debug, Colorbar, Color, Papa, API, _, urlData) {
 
     const MIN_TEMPERATURE = 0;
     const MAX_TEMPERATURE = 6000;
@@ -121,8 +121,8 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                 } else if (source === 'pref') {
                     this.parseElements(toParse);
                 } else if (source === 'url') {
-                    return superagent.get(sourceUrl).then(res => {
-                        this.parseElements(res.text);
+                    return urlData.get(sourceUrl, 1800).then(res => {
+                        this.parseElements(res);
                     });
                 }
             });
