@@ -128,7 +128,8 @@ define([
                         }
                     }
 
-                    if (cfgCheckbox('mouseTracking', 'track')) {
+                    const useMouseTracking = cfgCheckbox('mouseTracking', 'track');
+                    if (useMouseTracking) {
                         options.onMouseMoveData = (event, result) => {
                             this.module.model.trackData = result;
                             this.module.controller.sendActionFromEvent('onTrackMouse', 'trackData', result);
@@ -147,6 +148,15 @@ define([
 
                     var graph = new Graph(this.dom.get(0), options);
                     this.graph = graph;
+
+                    if (useMouseTracking) {
+                        graph.on('click', () => {
+                            if (this.module.model.trackData) {
+                                this.module.controller.sendActionFromEvent('onTrackClick', 'trackData', this.module.model.trackData);
+                                this.module.controller.createDataFromEvent('onTrackClick', 'trackData', this.module.model.trackData);
+                            }
+                        });
+                    }
 
                     var xOptions = {
                         nbTicksPrimary: cfg('xnbTicksPrimary', 5)

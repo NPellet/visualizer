@@ -92,7 +92,12 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
             refVariable: ['fromToX', 'fromToY', 'fromToXY']
         },
         onTrackMouse: {
-            label: 'Mouse tracking',
+            label: 'Mouse tracking (move)',
+            refVariable: ['trackData'],
+            refAction: ['trackData']
+        },
+        onTrackClick: {
+            label: 'Mouse tracking (click)',
             refVariable: ['trackData'],
             refAction: ['trackData']
         },
