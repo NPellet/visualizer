@@ -55,7 +55,7 @@ define([
     function doGrid(ctx) {
         ctx.$container.html('');
 
-        ctx.ignoreMyHighlights = ctx.module.getConfigurationCheckbox('slickCheck', 'ignoreMyHighlights')
+        ctx.ignoreMyHighlights = ctx.module.getConfigurationCheckbox('slickCheck', 'ignoreMyHighlights');
 
         var columns = ctx.getAllSlickColumns().filter(filterSpecialColumns);
 
@@ -387,7 +387,7 @@ define([
             // When scrolling fast, no mouseLeave event takes place
             // Therefore we also have to un-highlight here
             if (ctx._hl) {
-               ctx.module.model.highlightId(ctx._hl, 0);
+                ctx.module.model.highlightId(ctx._hl, 0);
             }
 
             ctx.count = ctx.count === undefined ? 0 : ctx.count;
@@ -400,8 +400,7 @@ define([
             var hl = itemInfo.item._highlight;
             ctx._hl = hl;
             if (hl) {
-                debugger;
-               ctx.module.model.highlightId(hl, 1);
+                ctx.module.model.highlightId(hl, 1);
                 lastHighlight = hl;
             }
             ctx.module.controller.onHover(itemInfo.idx, itemInfo.item);
@@ -416,9 +415,9 @@ define([
             if (!itemInfo) return;
             var hl = itemInfo.item._highlight;
             if (hl) {
-               ctx.module.model.highlightId(hl, 0);
+                ctx.module.model.highlightId(hl, 0);
             } else if (lastHighlight) {
-               ctx.module.model.highlightId(lastHighlight, 0);
+                ctx.module.model.highlightId(lastHighlight, 0);
             }
 
         });

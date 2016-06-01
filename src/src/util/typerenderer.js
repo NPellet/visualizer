@@ -226,8 +226,8 @@ define([
             require([OCL], function (ACT) {
                 var id = Util.getNextUniqueId();
                 var h = Math.max(100, $element.height());
-                var w = $element.width()>50 ? $element.width() : 200;
-                console.log(h,w);
+                var w = $element.width() > 50 ? $element.width() : 200;
+                console.log(h, w);
                 var can = $('<canvas>', {id: id});
                 var canEl = can.get(0);
                 canEl.height = h - 3;
