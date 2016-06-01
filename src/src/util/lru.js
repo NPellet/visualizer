@@ -30,7 +30,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
 
     function storeInMemory(store, index, data) {
         var toStore, toDelete, head;
-        if (memory[store] && memoryCount[store] && memoryLimit[store]) {
+        if (memory[store] && memoryCount[store] !== undefined && memoryLimit[store]) {
             head = memoryHead[store];
             if (memory[store][index])
                 return getFromMemory(store, index);
