@@ -124,7 +124,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
                 this.renderForm();
             },
             schema: function (value) {
-                this.module.controller.inputSchema = value;
+                this.module.controller.inputSchema = value.resurrect();
                 this.renderForm();
             }
         },
